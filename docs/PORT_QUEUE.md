@@ -18,7 +18,7 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 - **Bilet kartı:** Tek satır: fiyat, tahmini yolcu/koltuk, gelir, doluluk çubuğu ve "Ayarla ›". Dokununca alttan fiyat paneli açılır (alt panel gizlenir). İçeriği:
   - −/+ butonları ve isimli rakip fiyatları ("Göreme €195").
   - **Fiyat algısı ölçeği:** "Turistlere göre: Uygun / Biraz pahalı / Pahalı / Çok pahalı". Fiyat isteği eşikleri ≥%85 / ≥%60 / ≥%35, ölçekte dört eşit renk bölgesi.
-  - **Pazar cümlesi:** "Bugün X turist var, rakiplerle birlikte gökyüzünde Y koltuk: koltuk fazla, rekabet sert / turist fazla, balonlar kolay dolar."
+  - **Pazar cümlesi:** "Bugün X turist var, rakiplerle birlikte gökyüzünde Y koltuk: koltuk fazla, rekabet sert / turist fazla, balonlar kolay dolar." Turist sayısı fiyattan bağımsızdır: pazar talebi + otel misafirleri + rehber (5) + influencer (8) + popülerlik bonusunun fiyatsız hali (`touristsToday()`). Fiyat sadece kaçının seni seçtiğini değiştirir.
   - **Sonuç:** büyük "228/272 koltuk dolar" ve tahmini gelir. Gelirin panel açıldığındaki haline göre farkı ▲/▼ ile gösterilir. Altında doluluk çubuğu ve "Tamam".
 
 ## Tekel cezası (denge değişikliği)

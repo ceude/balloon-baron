@@ -1350,6 +1350,11 @@ function holdRepeat(btn, d) {
 }
 /* ölçek etiketlerle aynı 4 bölgeye bölünür: uygun / biraz pahalı / pahalı / çok pahalı */
 function feelPos(w) { const cuts = [1, .85, .6, .35, 0]; for (let i = 0; i < 4; i++) if (w >= cuts[i + 1]) return Math.round((i + (cuts[i] - w) / (cuts[i] - cuts[i + 1])) * 25); return 100; }
+/* günün turist sayısı fiyattan bağımsız: fiyat sadece kaçının seni seçtiğini değiştirir */
+function touristsToday() {
+  const hotels = myHotels().reduce((a, x) => a + Math.round(x.pax * (owns(x) ? 1.5 : 1) * (S.winter ? .6 : 1)), 0);
+  return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? 5 : 0) + (S.day <= S.influUntil ? 8 : 0) + repBonusRaw();
+}
 function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0); }
 function renderAct() {
   const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), n = fl.length;
@@ -1357,7 +1362,7 @@ function renderAct() {
   const direct = extraSources().reduce((a, x) => a + x.n, 0);
   const income = pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0);
   const w = willing(S.price), feel = w >= .85 ? ['Uygun fiyat', 'g'] : w >= .6 ? ['Biraz pahalı', 'y'] : w >= .35 ? ['Pahalı', 'o'] : ['Çok pahalı', 'r'];
-  const tour = S.demand + direct, crowded = seats > tour;
+  const tour = touristsToday(), crowded = seats > tour;
   $('dem').innerHTML = `<div class="feel"><div class="fl"><span>Turistlere göre</span><b class="${feel[1]}">${feel[0]}</b></div><div class="meter"><i style="left:${feelPos(w)}%"></i></div><div class="fl sm"><span>ucuz</span><span>pahalı</span></div></div>
     <p class="mood">Bugün <b>${tour}</b> turist var, rakiplerle birlikte gökyüzünde <b>${seats}</b> koltuk: ${crowded ? 'koltuk fazla, rekabet sert.' : 'turist fazla, balonlar kolay dolar.'}</p>`;
   const delta = psBase == null ? 0 : income - psBase;
