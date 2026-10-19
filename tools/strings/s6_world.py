@@ -350,3 +350,13 @@ add("report.holding",
  "Caja del holding +%1$@ de regiones en piloto automático, tras los gastos del holding (%2$@). Caja del holding: %3$@.",
  "自動運営の地域からホールディングスへ+%1$@（経費%2$@差引後）。ホールディングス残高：%3$@。",
  "자동 운영 지역에서 지주회사로 +%1$@ (지주회사 경비 %2$@ 차감). 지주회사 금고: %3$@.")
+
+# Setup: the first review
+add("country.goreme", "Göreme", "Göreme", "Göreme", "Göreme", "ギョレメ", "괴레메")
+add("review.welcome.0",
+ "I hear {c} is starting tours. Finally a proper company, it seems!",
+ "{c} turlara başlıyormuş. Sonunda galiba düzgün bir şirket geldi!",
+ "Wie ich höre, startet {c} mit Touren. Endlich mal eine ordentliche Firma, scheint's!",
+ "Dicen que {c} empieza con los vuelos. ¡Por fin una empresa como es debido, parece!",
+ "{c}がツアーを始めるらしい。ようやくまともな会社が来たみたいだ！",
+ "{c}가 투어를 시작한대요. 드디어 제대로 된 회사가 온 것 같네요!")

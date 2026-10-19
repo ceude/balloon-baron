@@ -211,6 +211,14 @@ public struct GameState: Codable, Equatable, Sendable {
         local.balloons.append(Balloon(id: nextID, size: .S, name: Rules.balloonNames[0]))
         local.flagship = nextID
         nextID += 1
+        // A rival never wears your colors.
+        for i in local.rivals.indices where local.rivals[i].colors[0].lowercased() == colors.first?.lowercased() {
+            if let alt = Rules.rivalColors.first(where: { c in c[0] != colors.first && !local.rivals.contains { $0.colors[0] == c[0] } }) {
+                local.rivals[i].colors = alt
+            }
+        }
+        // A local from Göreme is glad a proper company is starting up.
+        local.reviews.append(Review(reviewer: Review.reviewers.count - 1, kind: .welcome, variant: 0, stars: 5, day: 1, args: [:]))
     }
 
     public var stars: Double { Rules.stars(local.rep) }

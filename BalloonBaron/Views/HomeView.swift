@@ -23,6 +23,9 @@ struct HomeView: View {
     @State private var showPrice = false
     /// Page picked inside the flight plan, opened once the sheet is gone.
     @State private var pendingPage: Page?
+    /// Top of the dock and bottom of the HUD on screen; the scene puts its ground and sky scale there.
+    @State private var dockTop: CGFloat = 0
+    @State private var hudBottom: CGFloat = 56
 
     var body: some View {
         if let game = store.game {
@@ -49,26 +52,64 @@ struct HomeView: View {
 
     private func content(_ game: Game) -> some View {
         let s = game.state
-        return ScrollView {
-            VStack(spacing: 14) {
+        return ZStack(alignment: .top) {
+            OfficeSceneView(groundY: dockTop, topY: hudBottom + 40)
+            VStack(spacing: 10) {
                 hud(s)
-                HStack(alignment: .top, spacing: 10) {
-                    VStack(spacing: 14) {
-                        if let w = s.weather { weatherCard(w, winter: s.winter != nil) }
+                    .background {
+                        GeometryReader { g in
+                            Color.clear.preference(key: HudBottomKey.self, value: g.frame(in: .global).maxY)
+                        }
                     }
-                    .frame(maxWidth: .infinity)
+                HStack(alignment: .top, spacing: 10) {
+                    if let w = s.weather { weatherWidget(w, winter: s.winter != nil) }
+                    Spacer(minLength: 0)
                     navColumn(s)
                 }
-                dock(game)
-                #if DEBUG
-                Button(loc("debug.reset")) { store.resetForTesting() }
-                    .font(Theme.font(13))
-                    .foregroundStyle(.white.opacity(0.7))
-                    .padding(.top, 8)
-                #endif
+                Spacer(minLength: 0)
+                if !store.collecting {
+                    dockPanel(game)
+                        .layoutPriority(1)
+                }
             }
-            .padding(16)
+            .padding(.horizontal, 12)
+            .padding(.top, 10)
+            .padding(.bottom, 6)
         }
+        .onPreferenceChange(DockTopKey.self) { v in
+            if v >= 0 && abs(v - dockTop) > 0.5 { dockTop = v }
+        }
+        .onPreferenceChange(HudBottomKey.self) { v in
+            if v >= 0 && abs(v - hudBottom) > 0.5 { hudBottom = v }
+        }
+    }
+
+    /// The prototype's glass dock over the ground. Scrolls only when it doesn't fit.
+    private func dockPanel(_ game: Game) -> some View {
+        ViewThatFits(in: .vertical) {
+            dockGlass(game)
+            ScrollView(showsIndicators: false) { dockGlass(game) }
+        }
+        .frame(maxWidth: 560)
+        .background {
+            GeometryReader { g in
+                Color.clear.preference(key: DockTopKey.self, value: g.frame(in: .global).minY)
+            }
+        }
+    }
+
+    private func dockGlass(_ game: Game) -> some View {
+        VStack(spacing: 10) {
+            dock(game)
+            #if DEBUG
+            Button(loc("debug.reset")) { store.resetForTesting() }
+                .font(Theme.font(13))
+                .foregroundStyle(.white.opacity(0.7))
+            #endif
+        }
+        .padding(12)
+        .background(Theme.glass, in: RoundedRectangle(cornerRadius: 24))
+        .shadow(color: Color(red: 10 / 255, green: 5 / 255, blue: 30 / 255).opacity(0.4), radius: 15, y: 10)
     }
 
     private func openPendingPage() {
@@ -102,26 +143,64 @@ struct HomeView: View {
 
     // MARK: Cards
 
-    private func weatherCard(_ w: Weather, winter: Bool) -> some View {
-        card {
+    /// Compact glass weather widget (the prototype's `.wxw`): flag, surface wind and the four wind bands.
+    private func weatherWidget(_ w: Weather, winter: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
             HStack(spacing: 10) {
-                Circle().fill(Theme.flagColor(w.flag)).frame(width: 14, height: 14)
-                Text(w.flag.title).font(Theme.font(22, .heavy, condensed: true)).foregroundStyle(Theme.ink)
-                Spacer()
-                if winter {
-                    Text(loc("home.winter")).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
+                RoundedRectangle(cornerRadius: 3)
+                    .fill(Theme.flagColor(w.flag))
+                    .frame(width: 14, height: 22)
+                    .background(Rectangle().fill(Color.white).frame(width: 3).offset(x: -8))
+                    .padding(.leading, 3)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(w.flag.title)
+                        .font(Theme.font(19, .heavy, condensed: true))
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    Text(loc("home.wind", num(w.surfaceWind)))
+                        .font(Theme.font(12))
+                        .opacity(0.75)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                    if winter {
+                        Text(loc("home.winter"))
+                            .font(Theme.font(12, .semibold))
+                            .foregroundStyle(Color(hex: "#bfe0ff"))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
                 }
             }
-            Text(w.flag.note).font(Theme.font(15)).foregroundStyle(Theme.ink2)
-            Text(loc("home.wind", num(w.surfaceWind))).font(Theme.font(14, .semibold)).foregroundStyle(Theme.ink2)
+            .padding(.bottom, 2)
+            ForEach([3, 2, 1, 0], id: \.self) { i in
+                windRow(i, w)
+            }
         }
+        .foregroundStyle(.white)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 12)
+        .frame(width: 204, alignment: .leading)
+        .background(Theme.glass, in: RoundedRectangle(cornerRadius: 18))
+        .accessibilityElement(children: .combine)
     }
 
-    private func card<C: View>(@ViewBuilder _ content: () -> C) -> some View {
-        VStack(alignment: .leading, spacing: 8, content: content)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(16)
-            .background(Theme.paper, in: RoundedRectangle(cornerRadius: 20))
+    private func windRow(_ i: Int, _ w: Weather) -> some View {
+        let band = FlightWorld.bands[i]
+        let v = i < w.layers.count ? w.layers[i] : 0
+        return HStack(spacing: 6) {
+            Text("\(num(Int(band.lowerBound)))–\(num(Int(band.upperBound))) m")
+                .font(Theme.font(11))
+                .opacity(0.7)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(width: 60, alignment: .leading)
+            WindBar(speed: v)
+                .frame(height: 8)
+            Text(num(Int((abs(v) * 3.6).rounded())))
+                .font(Theme.font(14, .bold, condensed: true))
+                .monospacedDigit()
+                .frame(width: 22, alignment: .trailing)
+        }
     }
 
     // MARK: Side buttons
@@ -518,4 +597,39 @@ struct HomeView: View {
             .opacity(none ? 0.5 : 1)
         }
     }
+}
+
+/// One wind band in the weather widget: an arrow from the center, right for east, left for west.
+struct WindBar: View {
+    let speed: Double
+
+    var body: some View {
+        Canvas { ctx, size in
+            let mid = size.width / 2
+            ctx.fill(Path(CGRect(x: mid - 0.5, y: 0, width: 1, height: size.height)), with: .color(.white.opacity(0.3)))
+            let len = min(0.44, abs(speed) / 10 * 0.44) * Double(size.width)
+            guard len > 0.5 else { return }
+            let w = CGFloat(len), right = speed >= 0
+            let x0 = right ? mid : mid - w
+            ctx.fill(Path(roundedRect: CGRect(x: x0, y: 2, width: w, height: 4), cornerRadius: 2), with: .color(Theme.sun))
+            var head = Path()
+            let tip = right ? mid + w + 8 : mid - w - 8, base = right ? mid + w : mid - w
+            head.move(to: CGPoint(x: base, y: -2))
+            head.addLine(to: CGPoint(x: tip, y: 4))
+            head.addLine(to: CGPoint(x: base, y: 10))
+            head.closeSubpath()
+            ctx.fill(head, with: .color(Theme.sun))
+        }
+        .accessibilityHidden(true)
+    }
+}
+
+private struct DockTopKey: PreferenceKey {
+    static var defaultValue: CGFloat = -1
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+private struct HudBottomKey: PreferenceKey {
+    static var defaultValue: CGFloat = -1
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
 }

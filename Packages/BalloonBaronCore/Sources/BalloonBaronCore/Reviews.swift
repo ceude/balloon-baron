@@ -4,7 +4,7 @@ import Foundation
 public struct Review: Codable, Equatable, Sendable {
     public enum Kind: String, Codable, CaseIterable, Sendable {
         case perfect, good, far, hard, crash, accident, red, skip, cheap, pricey, general, ad, cancel
-        case influencer, guide, proposal, valley, panorama, precision, xl, meh, rival, absent, design
+        case influencer, guide, proposal, valley, panorama, precision, xl, meh, rival, absent, design, welcome
 
         /// Stars of each variant; the count is the number of text variants.
         public var variants: [Int] {
@@ -31,6 +31,7 @@ public struct Review: Codable, Equatable, Sendable {
             case .rival: [5, 4]
             case .absent: [3, 2]
             case .design: [5, 5, 4]
+            case .welcome: [5]
             }
         }
 
@@ -48,7 +49,7 @@ public struct Review: Codable, Equatable, Sendable {
     public static let reviewers: [(name: String, country: String)] = [
         ("Emily", "gb"), ("Kenji", "jp"), ("Lucía", "es"), ("Mehmet", "istanbul"), ("Ji-woo", "kr"), ("Ahmed", "eg"),
         ("Olga", "pl"), ("Marco", "it"), ("Priya", "in"), ("Tom", "us"), ("Chloé", "fr"), ("Wei", "cn"),
-        ("Ayşe", "ankara"), ("Lukas", "de"), ("Ana", "br"), ("Noah", "nl")
+        ("Ayşe", "ankara"), ("Lukas", "de"), ("Ana", "br"), ("Noah", "nl"), ("Mehmet", "goreme")
     ]
 
     public var reviewer: Int
