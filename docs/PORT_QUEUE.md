@@ -15,7 +15,11 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 - **Uyarılar:** Önem sırasına göre dizilir: kırmızı, görev, sarı, yeşil, kış. Sadece ilki görünür, kalanlar "+N uyarı daha" ile açılır. Her sabah yeniden kapanır.
 - **Filo çubuğu:** Balon sayısından bağımsız her zaman tek çubuk. Altında "Amirali sen/pilot uçuruyor" yazar. Yan yana kartlar kaldırıldı.
 - **"Kendim uçururum":** Sigorta çiplerinden çıktı, uçuş planının en üstüne taşındı: "Şafak balonunu kim uçursun? SEN / PİLOT", altında kurucu primi ve görev açıklaması. Lisans düşmüşse sadece "Amiral balonunu sen uçurmalısın" yazar.
-- **Bilet kartı:** Tek satır: fiyat, tahmini yolcu/koltuk, gelir, doluluk çubuğu ve "Ayarla ›". Dokununca alttan fiyat paneli açılır (alt panel gizlenir): −/+ butonları, rakip fiyatları, üç kutucuk (turist, gökyüzündeki koltuk, bu fiyata razı olanların oranı), tahmin ve "Tamam".
+- **Bilet kartı:** Tek satır: fiyat, tahmini yolcu/koltuk, gelir, doluluk çubuğu ve "Ayarla ›". Dokununca alttan fiyat paneli açılır (alt panel gizlenir). İçeriği:
+  - −/+ butonları ve isimli rakip fiyatları ("Göreme €195").
+  - **Fiyat algısı ölçeği:** "Turistlere göre: Uygun / Biraz pahalı / Pahalı / Çok pahalı". Fiyat isteği eşikleri ≥%85 / ≥%60 / ≥%35, ölçekte dört eşit renk bölgesi.
+  - **Pazar cümlesi:** "Bugün X turist var, rakiplerle birlikte gökyüzünde Y koltuk: koltuk fazla, rekabet sert / turist fazla, balonlar kolay dolar."
+  - **Sonuç:** büyük "228/272 koltuk dolar" ve tahmini gelir. Gelirin panel açıldığındaki haline göre farkı ▲/▼ ile gösterilir. Altında doluluk çubuğu ve "Tamam".
 
 ## Tekel cezası (denge değişikliği)
 - Uyarı metninde ceza oranı yazmaz, sadece "Rekabet Kurumu seni izliyor" der. Hezarfen de "şirketinin büyüklüğüne göre ağır bir ceza" der.

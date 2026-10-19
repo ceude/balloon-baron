@@ -144,6 +144,25 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .tile{background:rgba(255,255,255,.08);border-radius:14px;padding:8px 6px;text-align:center}
 .tile b{display:block;font-family:var(--cond);font-weight:800;font-size:24px;line-height:1.05}
 .tile span{font-size:11.5px;opacity:.75}
+.feel{display:flex;flex-direction:column;gap:6px}
+.fl{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;opacity:.9}
+.fl.sm{font-size:11px;opacity:.6;margin-top:-2px}
+.fl b{font-family:var(--cond);font-size:20px}
+.fl b.g{color:#5ee08f}.fl b.y{color:var(--sun)}.fl b.o{color:#ff9a4d}.fl b.r{color:#ff6b55}
+.meter{position:relative;height:10px;border-radius:5px;background:linear-gradient(90deg,#3ad07a 0%,#3ad07a 18%,#ffc23d 32%,#ffc23d 43%,#ff8a3d 57%,#ff8a3d 68%,#ff5540 82%)}
+.meter i{position:absolute;top:-4px;width:6px;height:18px;margin-left:-3px;border-radius:3px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);transition:left .15s}
+.mood{margin:2px 0 0;font-size:13px;line-height:1.4;opacity:.85;text-align:left}
+.mood b{font-family:var(--cond);font-size:15px}
+.res{display:flex;justify-content:space-between;align-items:flex-end;width:100%}
+.res div{display:flex;flex-direction:column}
+.res .rr{text-align:right;align-items:flex-end}
+.psh .res b{font-family:var(--cond);font-weight:800;font-size:30px;color:#fff;line-height:1}
+.res span{font-size:12px;opacity:.75}
+.res em{font-style:normal;font-weight:700}
+.res em.up{color:#5ee08f}.res em.dn{color:#ff6b55}
+.psh .est{flex-direction:column;gap:8px}
+.bar.big{height:9px;border-radius:5px;background:rgba(255,255,255,.15);overflow:hidden;width:100%}
+.bar.big i{display:block;height:100%;background:var(--green)}
 .alert.more{background:rgba(255,255,255,.1);font-weight:700;text-align:center}
 .dock .ghost{background:rgba(255,255,255,.14);color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.3)}
 #page{position:absolute;inset:0;z-index:6;background:#f6f3fb;display:flex;flex-direction:column;animation:pgin .22s ease-out}
@@ -1233,7 +1252,7 @@ function renderHome() {
   if (unlocked('ins')) chip(S.ins.hull, `Gövde sigortası ${red ? '(geçersiz)' : eur(tot('hull'))}`, () => { S.ins.hull = !S.ins.hull; refresh(); });
   if (unlocked('ins')) chip(S.ins.pax, `Yolcu sigortası ${red ? '(geçersiz)' : eur(tot('pax'))}`, () => { S.ins.pax = !S.ins.pax; refresh(); });
   $('pVal').textContent = eur(S.price);
-  $('pRivals').innerHTML = S.rivals.filter(r => r.alive).map(r => `<span><i style="background:${r.col}"></i>${eur(r.price)}</span>`).join('');
+  $('pRivals').innerHTML = S.rivals.filter(r => r.alive).map(r => `<span><i style="background:${r.col}"></i>${esc(r.name.split(' ')[0])} ${eur(r.price)}</span>`).join('');
   requestAnimationFrame(placeWidgets);
 }
 /* ---------- fleet plan ---------- */
@@ -1329,13 +1348,20 @@ function holdRepeat(btn, d) {
   btn.addEventListener('pointerdown', e => { e.preventDefault(); stepPrice(d); t1 = setTimeout(() => { t2 = setInterval(() => stepPrice(d), 70); }, 350); });
   ['pointerup', 'pointerleave', 'pointercancel'].forEach(ev => btn.addEventListener(ev, stop));
 }
+/* ölçek etiketlerle aynı 4 bölgeye bölünür: uygun / biraz pahalı / pahalı / çok pahalı */
+function feelPos(w) { const cuts = [1, .85, .6, .35, 0]; for (let i = 0; i < 4; i++) if (w >= cuts[i + 1]) return Math.round((i + (cuts[i] - w) / (cuts[i] - cuts[i + 1])) * 25); return 100; }
+function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0); }
 function renderAct() {
   const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), n = fl.length;
   const m = market(S.price, cap), pax = m.pax[0], seats = m.caps.reduce((a, b) => a + b, 0);
   const direct = extraSources().reduce((a, x) => a + x.n, 0);
   const income = pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0);
-  $('dem').innerHTML = `<div class="tiles"><div class="tile"><b>${S.demand + direct}</b><span>turist${direct ? `, ${direct}'i tavsiyeyle` : ''}</span></div><div class="tile"><b>${seats}</b><span>gökyüzündeki koltuk</span></div><div class="tile"><b>%${Math.round(willing(S.price) * 100)}</b><span>bu fiyata razı</span></div></div>`;
-  $('est').innerHTML = n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu${m.bonus ? `, ${m.bonus} tavsiyeyle` : ''}</span><span>Gelir <b>${eur(income)}</b></span>` : `<span>Bugün uçacak balon yok</span><span>${S.demand} turist bekliyor</span>`;
+  const w = willing(S.price), feel = w >= .85 ? ['Uygun fiyat', 'g'] : w >= .6 ? ['Biraz pahalı', 'y'] : w >= .35 ? ['Pahalı', 'o'] : ['Çok pahalı', 'r'];
+  const tour = S.demand + direct, crowded = seats > tour;
+  $('dem').innerHTML = `<div class="feel"><div class="fl"><span>Turistlere göre</span><b class="${feel[1]}">${feel[0]}</b></div><div class="meter"><i style="left:${feelPos(w)}%"></i></div><div class="fl sm"><span>ucuz</span><span>pahalı</span></div></div>
+    <p class="mood">Bugün <b>${tour}</b> turist var, rakiplerle birlikte gökyüzünde <b>${seats}</b> koltuk: ${crowded ? 'koltuk fazla, rekabet sert.' : 'turist fazla, balonlar kolay dolar.'}</p>`;
+  const delta = psBase == null ? 0 : income - psBase;
+  $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>` : `<span>Bugün uçacak balon yok</span>`;
   $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span>` : '<span>Bugün uçacak balon yok</span>'}</span><span class="pgo">Ayarla ›</span>`;
   const go = $('go'); go.disabled = !n;
   go.textContent = n ? `Yolcu topla (${n} balon)` : 'Uçacak balon yok';
@@ -2193,7 +2219,8 @@ function draw(dt) {
 /* ---------- boot ---------- */
 $('go').onclick = () => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); };
 $('skip').onclick = () => launch(true);
-function priceSheet(open) { $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; if (open) renderAct(); else { save(); refresh(); } }
+let psBase = null;
+function priceSheet(open) { $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; psBase = null; if (open) { renderAct(); psBase = estIncome(); renderAct(); } else { save(); refresh(); } }
 $('pcard').onclick = () => priceSheet(true);
 $('psOk').onclick = $('psClose').onclick = () => priceSheet(false);
 $('psheet').addEventListener('click', e => { if (e.target.id === 'psheet') priceSheet(false); });
