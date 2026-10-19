@@ -82,6 +82,27 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .fchip.off .ic{filter:grayscale(.85);opacity:.55}
 .fchip.blocked{background:rgba(255,255,255,.05);box-shadow:none;opacity:.8}
 .fchip:active{transform:translateY(3px)}
+.fsum{flex:1;display:flex;align-items:center;gap:10px;padding:8px 12px 8px 6px;border-radius:16px;background:#fff;color:var(--ink);box-shadow:0 4px 0 var(--coral);text-align:left}
+.fsum.warn{box-shadow:0 4px 0 var(--sun)}
+.fsum .ic{width:32px;height:32px;flex:none}
+.fsum .fc{flex:1;display:flex;flex-direction:column;line-height:1.3;font-size:12px;min-width:0}
+.fsum .fc b{font-size:15px}
+.fsum .fc span{color:var(--ink2)}
+.fsum .fgo{font-family:var(--cond);font-weight:800;font-size:15px;color:var(--coral);flex:none}
+.fsum:active{transform:translateY(3px)}
+.fplan{gap:8px}
+.fplan .btns{margin-bottom:4px}
+.fgh{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;font-size:13px;color:var(--ink2)}
+.fgh b{color:var(--ink)}
+.fgb{display:flex;gap:6px;flex:none}
+.fgb button{font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:9px;background:var(--haze);color:var(--ink)}
+.frow{display:flex;align-items:center;gap:10px;padding:6px 10px;border-radius:14px;background:var(--haze)}
+.frow .ic{width:28px;height:28px;flex:none}
+.frow .main{flex:1;min-width:0}
+.frow .t{font-weight:700;font-size:14.5px}
+.frow .s{font-size:12.5px;color:var(--ink2)}
+.frow.off .ic{filter:grayscale(.85);opacity:.55}
+.frow.blocked{opacity:.7}
 .rd{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 3px 0 5px}
 .rd.g{background:#3ad07a}.rd.y{background:var(--sun)}.rd.r{background:#ff6b55}
 .ochip{flex:none;display:flex;align-items:center;gap:7px;height:36px;padding:0 12px 0 6px;border-radius:12px;font-size:13px;font-weight:600;background:rgba(255,255,255,.1);color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.28)}
@@ -571,7 +592,8 @@ const licenseOk = () => licenseLeft() >= 0;
 const selfFlying = () => S.selfFly || !licenseOk(); /* lisans düşünce amirali sen uçurmak zorundasın */
 function assignPilots() {
   S.balloons.forEach(b => b.pilot = null);
-  const need = S.balloons.filter(b => !(b.id === S.flag && selfFlying())).sort((a, b) => SIZES[b.size].cap - SIZES[a.size].cap);
+  const down = b => b.dmgUntil > S.day || cond(b) <= 0; /* onarımdaki balona pilot harcama */
+  const need = S.balloons.filter(b => !(b.id === S.flag && selfFlying())).sort((a, b) => down(a) - down(b) || SIZES[b.size].cap - SIZES[a.size].cap);
   const ps = S.pilots.slice().sort((a, b) => b.lvl - a.lvl);
   need.forEach((b, i) => { if (ps[i]) b.pilot = ps[i].id; });
 }
@@ -1166,17 +1188,9 @@ function renderHome() {
   if (!selfFlying() && away >= ABSENT_GRACE - 1) alert('yel', `<b>${away} gündür sepete binmedin.</b> ${away > ABSENT_GRACE ? 'Yolcular kurucuyu arıyor, popülerliğin her gün eriyor.' : `${ABSENT_GRACE} günü geçerse yolcular kurucuyu aramaya başlar ve popülerliğin erir.`} Dokun, uçuşu sen üstlen.`, () => { S.selfFly = true; assignPilots(); refresh(); });
   if (fbm && isSelf(fbm) && canFly(fbm) === 'ok' && fbm.fly) alert('grn', `<b>Kurucuyla uçuş:</b> amiral balonundaki yolcular %${FOUNDER * 100} fazla öder.`);
   const fc = $('fleetChips'); fc.replaceChildren();
-  for (const b of S.balloons) {
-    const st = canFly(b), p = pilotOf(b), on = st === 'ok' && b.fly;
-    const c = h('button', 'fchip ' + (st !== 'ok' ? 'blocked' : on ? 'on' : 'off'));
-    const sub = st === 'license' ? 'Lisans bekliyor' : st === 'worn' ? 'Zarf yenilenmeli' : st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : st === 'nopilot' ? 'Pilot gerekli' : isSelf(b) ? 'Pilot: sen' : `Pilot: ${p.name.split(' ')[0]}`;
-    const risk = st === 'ok' && Wx.flag !== 'red' ? accP(b) : null;
-    c.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<span class="fc"><b>${esc(b.name)}</b><span>${SIZES[b.size].cap} kişi${risk != null ? `<i class="rd ${risk < .01 ? 'g' : risk < .04 ? 'y' : 'r'}"></i>risk ${pct(risk)}` : ''}</span><span>${sub}</span></span><span class="fstate">${st !== 'ok' ? '' : on ? 'UÇACAK' : 'YERDE'}</span>`;
-    if (st === 'ok') c.onclick = () => { b.fly = !b.fly; refresh(); };
-    else if (st === 'nopilot' || st === 'license') c.onclick = () => openPage('crew');
-    else if (st === 'worn') c.onclick = () => openPage('fleet');
-    fc.appendChild(c);
-  }
+  const fleet = sortedFleet();
+  if (fleet.length <= FLEET_INLINE) fleet.forEach(b => fc.appendChild(fleetChip(b)));
+  else fc.appendChild(fleetSummary());
   const oc = $('optChips'); oc.replaceChildren();
   const chip = (on, label, fn) => { const c = h('button', 'ochip' + (on ? ' on' : ''), `<span class="ck">${on ? '✓' : ''}</span>${label}`); c.onclick = fn; oc.appendChild(c); };
   const fl = flying(), red = Wx.flag === 'red', tot = k => fl.reduce((a, b) => a + premium(b.size, accP(b))[k], 0);
@@ -1186,6 +1200,81 @@ function renderHome() {
   $('pVal').textContent = eur(S.price);
   $('pRivals').innerHTML = S.rivals.filter(r => r.alive).map(r => `<span><i style="background:${r.col}"></i>${eur(r.price)}</span>`).join('');
   requestAnimationFrame(placeWidgets);
+}
+/* ---------- fleet plan ---------- */
+const FLEET_INLINE = 4;
+/* amiral önce, sonra büyükten küçüğe */
+const sortedFleet = () => S.balloons.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag) || SIZES[b.size].cap - SIZES[a.size].cap || a.name.localeCompare(b.name, 'tr'));
+function fleetSub(b) {
+  const st = canFly(b), p = pilotOf(b);
+  return st === 'license' ? 'Lisans bekliyor' : st === 'worn' ? 'Zarf yenilenmeli' : st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : st === 'nopilot' ? 'Pilot gerekli' : isSelf(b) ? 'Pilot: sen' : `Pilot: ${p.name.split(' ')[0]}`;
+}
+function riskDot(b) {
+  const risk = canFly(b) === 'ok' && S.weather.flag !== 'red' ? accP(b) : null;
+  return risk != null ? `<i class="rd ${risk < .01 ? 'g' : risk < .04 ? 'y' : 'r'}"></i>risk ${pct(risk)}` : '';
+}
+function blockedTap(b) {
+  const st = canFly(b);
+  return st === 'nopilot' || st === 'license' ? () => openPage('crew') : st === 'worn' ? () => openPage('fleet') : null;
+}
+function fleetChip(b) {
+  const st = canFly(b), on = st === 'ok' && b.fly;
+  const c = h('button', 'fchip ' + (st !== 'ok' ? 'blocked' : on ? 'on' : 'off'));
+  c.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<span class="fc"><b>${esc(b.name)}</b><span>${SIZES[b.size].cap} kişi${riskDot(b)}</span><span>${fleetSub(b)}</span></span><span class="fstate">${st !== 'ok' ? '' : on ? 'UÇACAK' : 'YERDE'}</span>`;
+  c.onclick = st === 'ok' ? () => { b.fly = !b.fly; refresh(); } : blockedTap(b);
+  return c;
+}
+function fleetCounts() {
+  const fl = flying(), why = {};
+  S.balloons.forEach(b => { const st = canFly(b); if (st !== 'ok') why[st] = (why[st] || 0) + 1; });
+  const names = { dmg: 'onarımda', nopilot: 'pilot bekliyor', worn: 'zarf yenilenmeli', license: 'lisans bekliyor', ban: 'yasaklı' };
+  const ground = S.balloons.filter(b => canFly(b) === 'ok' && !b.fly).length;
+  const parts = Object.keys(names).filter(k => why[k]).map(k => `${why[k]} ${names[k]}`);
+  if (ground) parts.unshift(`${ground} yerde`);
+  return { n: fl.length, total: S.balloons.length, seats: fl.reduce((a, b) => a + SIZES[b.size].cap, 0), parts, alarm: !!(why.nopilot || why.worn || why.license) };
+}
+function fleetSummary() {
+  const c = fleetCounts(), btn = h('button', 'fsum' + (c.alarm ? ' warn' : ''));
+  btn.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<span class="fc"><b>Filo: ${c.n}/${c.total} balon uçacak</b><span>${c.seats} koltuk${c.parts.length ? ' · ' + c.parts.join(' · ') : ''}</span></span><span class="fgo">Plan ›</span>`;
+  btn.onclick = showFleetPlan;
+  return btn;
+}
+function showFleetPlan() {
+  const m = $('menu');
+  const draw = () => {
+    m.replaceChildren();
+    const c = h('div', 'card fplan'), k = fleetCounts();
+    c.appendChild(h('h1', null, 'Bugünün uçuş planı'));
+    c.appendChild(h('p', 'lead', `<b>${k.n}/${k.total}</b> balon uçacak, <b>${k.seats}</b> koltuk.${k.parts.length ? ' ' + k.parts.join(', ') + '.' : ''}`));
+    const set = (list, v) => { list.forEach(b => { if (canFly(b) === 'ok') b.fly = v; }); refresh(); draw(); };
+    const top = h('div', 'btns');
+    const all = h('button', 'ghost', 'Hepsi uçsun'); all.onclick = () => set(S.balloons, true);
+    const none = h('button', 'ghost', 'Hepsi yerde'); none.onclick = () => set(S.balloons, false);
+    top.append(all, none); c.appendChild(top);
+    for (const z of ['XL', 'L', 'M', 'S']) {
+      const list = sortedFleet().filter(b => b.size === z);
+      if (!list.length) continue;
+      const okList = list.filter(b => canFly(b) === 'ok'), on = okList.filter(b => b.fly).length;
+      const gh = h('div', 'fgh', `<span><b>${SIZES[z].label}</b> · ${SIZES[z].cap} kişi · ${on}/${list.length} uçacak</span>`);
+      if (okList.length > 1) {
+        const g = h('span', 'fgb');
+        const a = h('button', null, 'Hepsi'); a.onclick = () => set(list, true);
+        const n = h('button', null, 'Hiçbiri'); n.onclick = () => set(list, false);
+        g.append(a, n); gh.appendChild(g);
+      }
+      c.appendChild(gh);
+      for (const b of list) {
+        const st = canFly(b), row = h('div', 'frow' + (st !== 'ok' ? ' blocked' : b.fly ? '' : ' off'));
+        row.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<div class="main"><div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}</div><div class="s">${fleetSub(b)}${riskDot(b)}</div></div>`;
+        if (st === 'ok') row.appendChild(sw(b.fly, () => { b.fly = !b.fly; refresh(); draw(); }, b.name + ' uçsun'));
+        else { const t = blockedTap(b); if (t) { const go = h('button', 'pbtn light', st === 'worn' ? 'Filo' : 'Ekip'); go.onclick = () => { m.hidden = true; t(); }; row.appendChild(go); } }
+        c.appendChild(row);
+      }
+    }
+    const ok = h('button', 'big', 'Tamam'); ok.onclick = () => { m.hidden = true; refresh(); }; c.appendChild(ok);
+    m.appendChild(c);
+  };
+  draw(); m.hidden = false;
 }
 function placeWidgets() {
   const hud = $('hud').offsetHeight;
@@ -1257,13 +1346,28 @@ function tabCrew(body) {
   } else body.appendChild(h('div', 'callout grn', `<b>Pilot lisansın geçerli.</b> Lisansın düşmemesi için en az ${LICENSE_DAYS} günde bir kendin uçmalısın. Kalan süre: ${licenseLeft()} gün. Düşerse diğer balonların yerde kalır.`));
   const need = S.balloons.filter(b => canFly(b) === 'nopilot').length;
   if (need) body.appendChild(h('div', 'callout yel', `<b>${need} balonun pilotsuz bekliyor.</b> Aşağıdan bir pilot işe al.`));
-  const s = h('div', 'sec'); s.appendChild(h('h2', null, 'Pilotların'));
-  if (!S.pilots.length) s.appendChild(h('p', 'hint', 'Henüz pilotun yok. Tek balonu kendin uçuruyorsun.'));
   const avCol = ['#9a8fb8', '#14a39a', '#ff5e3a'];
-  for (const p of S.pilots) {
-    const it = h('div', 'item'), b = S.balloons.find(x => x.pilot === p.id);
+  const balOf = p => S.balloons.find(x => x.pilot === p.id);
+  const idle = S.pilots.filter(p => !balOf(p));
+  if (idle.length) {
+    const is = h('div', 'sec'); is.appendChild(h('h2', null, `Boştaki pilotlar (${idle.length})`));
+    is.appendChild(h('div', 'callout yel', `<b>${idle.length} pilot boşta bekliyor.</b> Her gün toplam ${eur(idle.reduce((a, p) => a + pilotWage(p), 0))} maaş alıyorlar ama uçmuyorlar. Yeni balon al ya da kov.`));
+    for (const p of idle.sort((a, b) => pilotWage(b) - pilotWage(a))) {
+      const it = h('div', 'item');
+      it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
+      it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}</div><div class="s">${eur(pilotWage(p))}/gün, risk ×${LEVELS[p.lvl].risk.toLocaleString('tr-TR')}. Boşta.</div>`));
+      it.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); refresh(); }, false, true));
+      is.appendChild(it);
+    }
+    body.appendChild(is);
+  }
+  const s = h('div', 'sec'); s.appendChild(h('h2', null, idle.length ? 'Görevdeki pilotlar' : 'Pilotların'));
+  if (!S.pilots.length) s.appendChild(h('p', 'hint', 'Henüz pilotun yok. Tek balonu kendin uçuruyorsun.'));
+  const working = S.pilots.filter(p => balOf(p)).sort((a, b) => SIZES[balOf(b).size].cap - SIZES[balOf(a).size].cap);
+  for (const p of working) {
+    const it = h('div', 'item'), b = balOf(p), bst = canFly(b);
     it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
-    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}</div><div class="s">${eur(pilotWage(p))}/gün, risk ×${LEVELS[p.lvl].risk.toLocaleString('tr-TR')}. ${b ? b.name + ' balonunda.' : 'Boşta.'}${p.lvl < 3 ? ` Tecrübe ${p.xp || 0}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}</div>`));
+    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}</div><div class="s">${eur(pilotWage(p))}/gün, risk ×${LEVELS[p.lvl].risk.toLocaleString('tr-TR')}. ${b.name} balonunda${bst === 'dmg' ? ' (onarımda)' : bst === 'worn' ? ' (zarf yenilenmeli)' : bst === 'license' ? ' (lisans bekliyor)' : ''}.${p.lvl < 3 ? ` Tecrübe ${p.xp || 0}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}</div>`));
     it.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); refresh(); }, false, true));
     s.appendChild(it);
   }
