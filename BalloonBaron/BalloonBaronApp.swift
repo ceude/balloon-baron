@@ -25,9 +25,13 @@ struct RootView: View {
         ZStack {
             Theme.sky.ignoresSafeArea()
             if store.game == nil {
-                SetupView()
+                if !store.showIntro { SetupView() }
             } else {
                 HomeView()
+            }
+            if store.collecting && store.game != nil {
+                CollectView()
+                    .transition(.move(edge: .bottom))
             }
             if let p = store.page, store.game != nil {
                 page(p)
@@ -49,14 +53,20 @@ struct RootView: View {
                 HezarfenView(message: m) { store.dismissHezarfen() }
                     .transition(.opacity)
             }
+            if store.showIntro {
+                IntroView()
+                    .transition(.opacity)
+                    .zIndex(10)
+            }
         }
         .animation(.easeOut(duration: 0.25), value: store.hezarfen)
         .animation(.easeOut(duration: 0.25), value: store.page)
         .animation(.easeOut(duration: 0.25), value: store.issueRegion)
         .animation(.easeOut(duration: 0.25), value: store.chapter)
         .animation(.easeOut(duration: 0.25), value: store.merge)
+        .animation(.easeOut(duration: 0.25), value: store.collecting)
         .fullScreenCover(isPresented: Binding(get: { store.flightPax != nil }, set: { _ in })) {
-            FlightPlaceholderView()
+            FlightView()
                 .environment(store)
         }
         .fullScreenCover(isPresented: Binding(get: { store.report != nil }, set: { _ in })) {

@@ -30,11 +30,11 @@ struct HomeView: View {
     var body: some View {
         if let game = store.game {
             content(game)
-                .alert(loc("home.redConfirm"), isPresented: $confirmRed) {
-                    Button(loc("home.redFly"), role: .destructive) { store.fly() }
-                    Button(loc("common.cancel"), role: .cancel) {}
-                } message: {
-                    Text(loc("home.redConfirmBody", eur(Rules.redFine)))
+                .overlay {
+                    if confirmRed {
+                        RedFlagView(onClose: { confirmRed = false })
+                            .transition(.opacity)
+                    }
                 }
                 .sheet(isPresented: $showPlan, onDismiss: openPendingPage) {
                     FleetPlanView(openPage: { pendingPage = $0 })
@@ -591,7 +591,7 @@ struct HomeView: View {
             BigButton(title: loc("home.skip"), style: .ghost) { store.fly(skip: true) }
                 .frame(width: 140)
             BigButton(title: loc(none ? "home.noneFlying" : "home.collect")) {
-                if s.weather?.flag == .red { confirmRed = true } else { store.fly() }
+                if s.weather?.flag == .red { confirmRed = true } else { store.startCollect() }
             }
             .disabled(none)
             .opacity(none ? 0.5 : 1)

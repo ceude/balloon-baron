@@ -42,8 +42,8 @@
 		CDE747CAF5B1BDD693D6FB79 /* OfficeSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DC99A8B37B92CB3C497642 /* OfficeSceneView.swift */; };
 		D94B9EE2BB63306E4E84C569 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A7F9E6E220C47610C3B3C41 /* Assets.xcassets */; };
 		DEEAB119EDBF9CB14089F610 /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B31687098E5783CD57B19E0E /* BarlowCondensed-SemiBold.ttf */; };
-		E28661DABAA45F85137B0056 /* FlightPlaceholderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3746192069D9134F4C044882 /* FlightPlaceholderView.swift */; };
 		E97DB4A97AA58EE10F7572BE /* HezarfenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258193DAFB836A70F64C8C53 /* HezarfenView.swift */; };
+		EF3F4E97DEC19EE3C40076E6 /* FlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662F101C27DC417A5D0A108 /* FlightView.swift */; };
 		F6619D4C8ABDAD92780F1168 /* MergeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E8C0DF1F0146F2DEF826B2 /* MergeView.swift */; };
 		F81E8DEC76F22207B34A4722 /* IntroView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C804C45BE5B7FBFE970EB00E /* IntroView.swift */; };
 		FBB1577947D1181702411204 /* PriceSheetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74743D6DF14E3F20528EAA46 /* PriceSheetView.swift */; };
@@ -58,7 +58,6 @@
 		258193DAFB836A70F64C8C53 /* HezarfenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HezarfenView.swift"; sourceTree = "<group>"; };
 		32555776BC90AFB75C336EF3 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SetupView.swift"; sourceTree = "<group>"; };
 		344C57C234A4658DBD789843 /* Barlow-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Medium.ttf"; sourceTree = "<group>"; };
-		3746192069D9134F4C044882 /* FlightPlaceholderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FlightPlaceholderView.swift"; sourceTree = "<group>"; };
 		3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorldMapView.swift"; sourceTree = "<group>"; };
 		3E80660872C36D7349FC2CB0 /* ChapterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterView.swift"; sourceTree = "<group>"; };
 		55E8C0DF1F0146F2DEF826B2 /* MergeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MergeView.swift"; sourceTree = "<group>"; };
@@ -74,6 +73,7 @@
 		7EDB158A34F42484C541CFE0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeView.swift"; sourceTree = "<group>"; };
 		8480E19BC8DE8F1B439520EE /* BalloonArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BalloonArt.swift"; sourceTree = "<group>"; };
 		91B03A718CB585C5CECBF617 /* SoundSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoundSettingsButton.swift"; sourceTree = "<group>"; };
+		9662F101C27DC417A5D0A108 /* FlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FlightView.swift"; sourceTree = "<group>"; };
 		9F81A32D63C6E3949B8B2AA2 /* FleetPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FleetPlanView.swift"; sourceTree = "<group>"; };
 		A429A91A72084FD301F9A3E5 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-Bold.ttf"; sourceTree = "<group>"; };
 		A87581606A4966EC52B22837 /* DesignStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DesignStudioView.swift"; sourceTree = "<group>"; };
@@ -172,7 +172,7 @@
 				A87581606A4966EC52B22837 /* DesignStudioView.swift */,
 				9F81A32D63C6E3949B8B2AA2 /* FleetPlanView.swift */,
 				D5B20ABBDA63F2F318C03DED /* FleetView.swift */,
-				3746192069D9134F4C044882 /* FlightPlaceholderView.swift */,
+				9662F101C27DC417A5D0A108 /* FlightView.swift */,
 				BA6CB771A7741DFE9025EA00 /* GoalsView.swift */,
 				258193DAFB836A70F64C8C53 /* HezarfenView.swift */,
 				D3ED97BD630A253467C06E76 /* HoldingView.swift */,
@@ -305,7 +305,7 @@
 				195F108E685D8DDDF7933829 /* DesignStudioView.swift in Sources */,
 				988D0F2211B78B583593F5FD /* FleetPlanView.swift in Sources */,
 				247D71012621FEDAFD91686F /* FleetView.swift in Sources */,
-				E28661DABAA45F85137B0056 /* FlightPlaceholderView.swift in Sources */,
+				EF3F4E97DEC19EE3C40076E6 /* FlightView.swift in Sources */,
 				8FFFF3B3D192A53D1D07FB92 /* GoalsView.swift in Sources */,
 				E97DB4A97AA58EE10F7572BE /* HezarfenView.swift in Sources */,
 				3F0B240D7BF72C3BE57BA5F9 /* HoldingView.swift in Sources */,
