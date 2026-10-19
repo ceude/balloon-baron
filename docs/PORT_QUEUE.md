@@ -29,3 +29,15 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 - "Sen ve rakiplerin" bölümünde en üstte oyuncunun kendi kartı: rakip kartlarıyla aynı dört kutu (balon, fiyat, popülerlik, dünkü doluluk), mercan çerçeve ve "Sen" etiketi.
 - Her kartın başlığında dünkü pazar payı etiketi ("pay %74").
 - Dünkü doluluk için `lastShare`'a dünkü koltuk sayısı (`cap`) eklendi.
+
+## Rakipler güçlendi (denge değişikliği)
+- **Büyüme:** Rakip, 3 gün üst üste %70 üstü dolulukla uçarsa (eskiden %90) ve kasası yetiyorsa, 4 günde bir balon alır (temkinli L, diğerleri M). Filo tavanları temkinli 25, orta 18, riskli 12 (eskiden 10/7/5). Sahiplerin çektiği para için eşik artık bir sonraki balonun fiyatının %60'ını da içerir; rakip büyümek için birikim yapar.
+- **Yeni gelenler (`entrantFleet`):**
+  - Bosphorus Balloons her zaman oyuncunun balon sayısı + 3 balonla girer (L L M M M karışımı). Kasası en az 60.000 + 9.000 × balon.
+  - Diğerleri 50. günden sonra oyuncunun yarısı kadar balonla girer; ek balon başına +6.000 kasa.
+  - Yeni gelenlerin kasası ilk 20 gün çekilmez (savaş sandığı).
+- **Birleşme (`mergeRivals`):** En küçük iki rakip tek şirket olur ("A & B Balloons"). Filolar toplanır, kasa = (iki kasa) × 1,3 + 40.000, popülerlik ikisinin yükseği, fiyat ortalaması, 20 gün savaş sandığı.
+  - **Tetik:** 30. günden sonra oyuncunun payı %50'nin üstünde ve 4+ gün sürmüşse günlük %35, ya da bir rakibin kasası −€4.000'in altına inmiş ve oyuncunun payı %40'ın üstündeyse günlük %60.
+  - En fazla 25 günde bir olur.
+  - Oyuncuya kırmızı "SON DAKİKA: Rakiplerin sana karşı birleşti!" uyarısı çıkar: iki balon ikonu, yeni şirketin adı, balon/kasa/popülerlik, "Mücadeleye hazırım" butonu. Diğer açılır pencerelerden önce gösterilir.
+  - Pazar sekmesinde birleşen eski şirket "Birleşti · X çatısı altında" diye görünür.

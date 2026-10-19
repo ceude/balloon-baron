@@ -250,6 +250,12 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .legend i{width:10px;height:10px;border-radius:3px}
 .legend b{font-family:var(--cond)}
 .rv .t{display:flex;align-items:center;gap:6px}
+.merge{border-top:6px solid var(--red)}
+.merge .mico{display:flex;align-items:center;gap:6px;font-family:var(--cond);font-weight:800;font-size:28px;color:var(--ink2)}
+.merge .mico .ic{width:56px;height:56px}
+.merge .mtag{align-self:flex-start;font-family:var(--cond);font-weight:800;letter-spacing:.08em;font-size:13px;color:#fff;background:var(--red);padding:3px 9px;border-radius:8px}
+.merge .stats{grid-template-columns:repeat(3,1fr)}
+.merge .stats div{background:var(--haze)}
 #page .item.rv.me{background:#fff3e8;box-shadow:0 0 0 2px var(--coral) inset, 0 2px 0 var(--line)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
 .stats div{background:#fff;border-radius:10px;padding:5px 6px;text-align:center;font-size:11px;color:var(--ink2)}
@@ -750,6 +756,7 @@ function unlockCheck() {
 }
 function nextPopup() {
   if (mode !== 'office' || !$('menu').hidden || !$('report').hidden || !$('page').hidden || !$('hez').hidden) return;
+  if (S.mergeNews) { showMerge(); return; }
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
   if (S.poach) { showPoach(); return; }
   checkDeals();
@@ -887,6 +894,9 @@ function finishDay(flight) {
   const rp = S.plan.rpax.reduce((a, b) => a + b, 0), shr = paxTotal + rp ? paxTotal / (paxTotal + rp) : 0;
   if (S.day >= 20 && shr > .6 && S.rivals.some(r => r.alive)) S.monoDays = (S.monoDays || 0) + 1; else S.monoDays = Math.max(0, (S.monoDays || 0) - 1);
   if (S.monoDays >= 3) hezAdd('antitrust');
+  S.domDays = S.day >= 30 && shr > .5 ? (S.domDays || 0) + 1 : Math.max(0, (S.domDays || 0) - 1);
+  const sinking = S.rivals.some(r => r.alive && r.cash < -4000) && shr > .4; /* batmak üzere olan rakip kurtarıcı arar */
+  if (S.day - (S.lastMerge || -99) >= 25 && ((S.domDays >= 4 && Math.random() < .35) || (sinking && Math.random() < .6))) mergeRivals(shr, rev);
   if (S.monoDays >= 5 && Math.random() < .25) {
     /* ceza şirketin toplam değerinden: kasayı boşaltmak kurtarmaz */
     const worth = Math.max(0, S.cash) + S.balloons.reduce((a, b) => a + SIZES[b.size].cost, 0) + (S.ownHotels || []).reduce((a, id) => a + HOTELS.find(x => x.id === id).buy, 0);
@@ -923,6 +933,46 @@ function finishDay(flight) {
   rivalFlyPlan(); assignPilots(); buildWorld(); save();
   showReport();
 }
+/* Bosphorus her zaman oyuncudan 3 balon fazlasıyla gelir; diğerleri 50. günden sonra oyuncunun yarısı kadar */
+function entrantFleet(e) {
+  const mine = S.balloons.length;
+  let n = e.balloons.length;
+  if (e.name === 'Bosphorus Balloons') n = Math.max(n, mine + 3);
+  else if (S.day >= 50) n = Math.max(n, Math.round(mine / 2));
+  const mixes = { safe: ['L', 'L', 'M', 'M', 'M'], mid: ['L', 'M', 'M', 'M', 'S'], risky: ['M', 'S', 'S', 'S', 'M'] }, mix = mixes[e.style];
+  const balloons = n === e.balloons.length ? e.balloons.slice() : Array.from({ length: n }, (_, i) => mix[i % mix.length]);
+  const extra = n - e.balloons.length;
+  const cash = e.name === 'Bosphorus Balloons' ? Math.max(e.cash, 60000 + 9000 * n) : e.cash + 6000 * extra;
+  return { balloons, cash };
+}
+/* pazarı ele geçiren oyuncuya karşı en zayıf iki rakip birleşir */
+function mergeRivals(shr, rev) {
+  const alive = S.rivals.filter(r => r.alive);
+  if (alive.length < 2) return;
+  const size = r => r.balloons.reduce((a, z) => a + SIZES[z].cap, 0);
+  const [a, b] = alive.sort((x, y) => size(x) - size(y));
+  const name = `${a.name.split(' ')[0]} & ${b.name.split(' ')[0]} Balloons`;
+  const big = size(a) >= size(b) ? a : b, other = big === a ? b : a;
+  const cash = Math.round((Math.max(0, a.cash) + Math.max(0, b.cash)) * 1.3 + 40000); /* yatırımcılar da para koyar */
+  S.mergeNews = { a: a.name, b: b.name, name, n: a.balloons.length + b.balloons.length, cash, share: Math.round(shr * 100), rep: Math.max(a.rep, b.rep), col: big.col, col2: big.col2, col3: other.col };
+  Object.assign(big, { name, style: a.style === 'safe' || b.style === 'safe' ? 'safe' : 'mid', balloons: a.balloons.concat(b.balloons), dmg: a.dmg.concat(b.dmg), cash, rep: Math.max(a.rep, b.rep), price: Math.round((a.price + b.price) / 2), lowDays: 0, highDays: 0, offer: null, offerSeen: false, offerNo: false, warChestUntil: S.day + 20, merged: null, fly: [] });
+  Object.assign(other, { alive: false, deadDay: S.day, forSale: null, offer: null, merged: name, fly: [] });
+  S.lastMerge = S.day;
+  rev.push(`${S.mergeNews.a} ile ${S.mergeNews.b} birleşti: yeni şirket ${name}, ${S.mergeNews.n} balon.`);
+}
+function showMerge() {
+  const M = S.mergeNews; S.mergeNews = null; save();
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card merge');
+  c.insertAdjacentHTML('beforeend', `<div class="mico">${balloonIcon(M.col, M.col2)}<span>+</span>${balloonIcon(M.col3, '#ffffff')}</div>`);
+  c.appendChild(h('div', 'mtag', 'SON DAKİKA'));
+  c.appendChild(h('h1', null, 'Rakiplerin sana karşı birleşti!'));
+  c.appendChild(h('p', 'lead', `<b>${esc(M.a)}</b> ile <b>${esc(M.b)}</b>, pazarın %${M.share}'ini elinde tutmana dayanamadı ve güçlerini birleştirdi. Yeni şirket: <b>${esc(M.name)}</b>.`));
+  c.appendChild(h('div', 'stats', `<div><b>${M.n}</b>balon</div><div><b>${eur(M.cash)}</b>kasa</div><div><b>${stars(M.rep)}</b>popülerlik</div>`));
+  c.appendChild(h('p', 'hint', 'Yeni şirket büyük kasasıyla fiyat kırabilir, otellerini kapmaya çalışabilir ve hızla büyüyecek. Popülerliğini koru, otel anlaşmalarını sağlamlaştır.'));
+  const ok = h('button', 'big', 'Mücadeleye hazırım'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); };
+  c.appendChild(ok); m.appendChild(c); m.hidden = false; sfx('low');
+}
 function simRivals(rev) {
   const F = FLAGS[S.weather.flag], red = S.weather.flag === 'red';
   S.rivals.forEach((r, ri) => {
@@ -933,7 +983,8 @@ function simRivals(rev) {
         const used = S.rivals.map(x => x.name), pool = ENTRANTS.filter(e => !used.includes(e.name)), e = pick(pool.length ? pool : ENTRANTS);
         const cols = RIVAL_ALT.filter(c => c[0] !== myCol()[0] && !S.rivals.some(o => o.alive && o.col === c[0]));
         const c = cols.length ? pick(cols) : RIVAL_ALT[0];
-        Object.assign(r, { name: e.name, style: e.style, balloons: e.balloons.slice(), price: e.price, rep: e.rep, cash: e.cash, col: c[0], col2: c[1], alive: true, dmg: e.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, offer: null, lowDays: 0, highDays: 0, deadDay: null, offerSeen: false, offerNo: false, saleSeen: false, saleNo: false, fly: [] });
+        const fleet = entrantFleet(e);
+        Object.assign(r, { name: e.name, style: e.style, balloons: fleet.balloons, price: e.price, rep: e.rep, cash: fleet.cash, col: c[0], col2: c[1], alive: true, dmg: fleet.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, offer: null, lowDays: 0, highDays: 0, deadDay: null, offerSeen: false, offerNo: false, saleSeen: false, saleNo: false, fly: [], warChestUntil: S.day + 20, merged: null });
         rev.push(`Yeni rakip: ${e.name} Kapadokya'da uçmaya başladı!`); S.hezQ.push('news:' + e.intro);
       }
       return;
@@ -954,8 +1005,9 @@ function simRivals(rev) {
     if (hit) rev.push(`${r.name}: ${hit} balonu kaza yaptı.`);
     if (red && r.fly.length) { if (Math.random() < .35) { cost += 5000; rev.push(`${r.name} kırmızı bayrakta uçtu ve €5.000 ceza yedi.`); } else rev.push(`${r.name} kırmızı bayrakta gizlice uçtu.`); }
     r.cash += income - cost;
-    const reserve = 8000 + 1500 * r.balloons.length;
-    if (r.cash > reserve) r.cash -= (r.cash - reserve) * .25;
+    const nextB = r.style === 'safe' ? 'L' : 'M';
+    const reserve = 8000 + 1500 * r.balloons.length + SIZES[nextB].cost * .6; /* büyümek için birikim yapar */
+    if (r.cash > reserve && !(r.warChestUntil > S.day)) r.cash -= (r.cash - reserve) * .25;
     r.rep = clamp(lerp(r.rep, r.style === 'safe' ? 1.1 : r.style === 'risky' ? .9 : 1, .04), .4, 1.4);
     r.lastPax = pax; r.lastCap = cap;
     if (S.pilots.length && !S.poach && r.cash > 15000 && Math.random() < .04) {
@@ -984,8 +1036,8 @@ function simRivals(rev) {
       r.price = clamp(Math.round(r.price), Math.round(clamp(floor, 55, Math.min(220, ceil))), ceil);
       if (Math.abs(r.price - old) >= 8) rev.push(`${r.name} fiyatını ${eur(old)} → ${eur(r.price)} yaptı.`);
       r.lowDays = load < .5 ? r.lowDays + 1 : 0;
-      r.highDays = load > .9 ? (r.highDays || 0) + 1 : 0;
-      const next = r.style === 'safe' ? 'L' : 'M', maxB = r.style === 'safe' ? 10 : r.style === 'mid' ? 7 : 5;
+      r.highDays = load > .7 ? (r.highDays || 0) + 1 : 0;
+      const next = nextB, maxB = r.style === 'safe' ? 25 : r.style === 'mid' ? 18 : 12;
       if (r.cash > SIZES[next].cost * .6 && r.highDays >= 3 && r.balloons.length < maxB && S.day - (r.lastBuy || 0) >= 4) { r.lastBuy = S.day; r.cash -= SIZES[next].cost * .5; r.balloons.push(next); r.dmg.push(0); rev.push(`${r.name} filosuna yeni bir balon ekledi.`); }
     }
     if (r.cash < -10000 && S.day >= 5) {
@@ -1518,7 +1570,8 @@ function tabMarket(body) {
       const rsh = ls ? shareOf(ls.rivals[S.rivals.indexOf(r)] || 0) : null;
       m.innerHTML = `<div class="t">${r.name}${rsh != null ? ` <span class="tag n">pay %${rsh}</span>` : ''}${r.offer ? ' <span class="tag y">Zor durumda</span>' : ''}</div><div class="s">${style[r.style]}</div>
         <div class="stats"><div><b>${r.balloons.length}</b>balon</div><div><b>${eur(r.price)}</b>fiyat</div><div><b>${stars(r.rep)}</b>popülerlik</div><div><b>${r.lastCap ? Math.round(r.lastPax / r.lastCap * 100) + '%' : '–'}</b>doluluk</div></div>`;
-    } else m.innerHTML = `<div class="t">${r.name} <span class="tag r">İflas etti</span></div><div class="s">${r.forSale ? 'Filosu satışta.' : 'Filosu satıldı.'}</div>`;
+    } else if (r.merged) m.innerHTML = `<div class="t">${r.name} <span class="tag y">Birleşti</span></div><div class="s">${esc(r.merged)} çatısı altında.</div>`;
+    else m.innerHTML = `<div class="t">${r.name} <span class="tag r">İflas etti</span></div><div class="s">${r.forSale ? 'Filosu satışta.' : 'Filosu satıldı.'}</div>`;
     it.appendChild(m); t.appendChild(it);
     if (r.alive && r.offer) {
       const c = h('div', 'callout yel', `<b>${r.name} satılık.</b> Doluluğu düştü ya da parası azaldı. Şirketi ve ${r.balloons.length} balonunu ${eur(r.offer)}'ya devralabilirsin.`);
