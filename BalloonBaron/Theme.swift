@@ -67,7 +67,10 @@ struct BigButton: View {
     enum Style { case primary, ghost }
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            SoundEngine.shared.play(.click)
+            action()
+        } label: {
             Text(title)
                 .font(Theme.font(19, .heavy, condensed: true))
                 .textCase(.uppercase)

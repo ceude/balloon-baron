@@ -4,7 +4,10 @@ import SwiftUI
 struct BalloonBaronApp: App {
     @State private var store = GameStore()
 
-    init() { Theme.registerFonts() }
+    init() {
+        Theme.registerFonts()
+        SoundEngine.shared.start()
+    }
 
     var body: some Scene {
         WindowGroup {

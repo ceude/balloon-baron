@@ -33,6 +33,7 @@
 		AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8480E19BC8DE8F1B439520EE /* BalloonArt.swift */; };
 		B029C9E05045367DA00E324C /* Barlow-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC2D92AE9D2D2735F75E90DE /* Barlow-ExtraBold.ttf */; };
 		B4A22707D30CFDF9F41A012B /* BalloonBaronCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8AEE5594E690F60982F7CB66 /* BalloonBaronCore */; };
+		B5EA4D949BD133F8B876E74F /* SoundSettingsButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91B03A718CB585C5CECBF617 /* SoundSettingsButton.swift */; };
 		BC27AE17F47E178813ADC9E7 /* Barlow-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 344C57C234A4658DBD789843 /* Barlow-Medium.ttf */; };
 		C2B154218D66DBAE24868DA9 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158AFE69FAF9C43034FBC847 /* Theme.swift */; };
 		C9DAAF451BF565688EC4D187 /* ChapterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E80660872C36D7349FC2CB0 /* ChapterView.swift */; };
@@ -68,6 +69,7 @@
 		74743D6DF14E3F20528EAA46 /* PriceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PriceSheetView.swift"; sourceTree = "<group>"; };
 		7EDB158A34F42484C541CFE0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeView.swift"; sourceTree = "<group>"; };
 		8480E19BC8DE8F1B439520EE /* BalloonArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BalloonArt.swift"; sourceTree = "<group>"; };
+		91B03A718CB585C5CECBF617 /* SoundSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoundSettingsButton.swift"; sourceTree = "<group>"; };
 		9F81A32D63C6E3949B8B2AA2 /* FleetPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FleetPlanView.swift"; sourceTree = "<group>"; };
 		A429A91A72084FD301F9A3E5 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-Bold.ttf"; sourceTree = "<group>"; };
 		A87581606A4966EC52B22837 /* DesignStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DesignStudioView.swift"; sourceTree = "<group>"; };
@@ -139,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				64334C9F947BE9EF2E1B63A6 /* Sound.swift */,
+				91B03A718CB585C5CECBF617 /* SoundSettingsButton.swift */,
 			);
 			path = "Audio";
 			sourceTree = "<group>";
@@ -280,6 +283,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3AAB38726CD2EDBCEB8BD584 /* Sound.swift in Sources */,
+				B5EA4D949BD133F8B876E74F /* SoundSettingsButton.swift in Sources */,
 				43D34FF299E13570C04FCAA5 /* ScenePainter.swift in Sources */,
 				AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */,
 				C9DAAF451BF565688EC4D187 /* ChapterView.swift in Sources */,
