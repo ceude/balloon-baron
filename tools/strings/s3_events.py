@@ -67,12 +67,12 @@ add("event.founderAbsent",
  "%@日間バスケットに乗っていない。乗客は創業者を探し、人気が落ちている。",
  "%@일째 바스켓에 타지 않았습니다. 승객들이 창업자를 찾고 인기가 떨어지고 있습니다.")
 add("event.redCaught",
- "Caught flying on a red flag: €5,000 fine, strike %@/3.",
- "Kırmızı bayrakta uçarken yakalandın: €5.000 ceza, uyarı %@/3.",
- "Bei roter Flagge erwischt: 5.000 € Strafe, Verwarnung %@/3.",
- "Te pillaron volando con bandera roja: multa de 5.000 €, aviso %@/3.",
- "赤い旗の日の飛行が発覚：罰金€5,000、警告%@/3。",
- "빨간 깃발에 비행하다 적발: 벌금 €5,000, 경고 %@/3.")
+ "Caught flying on a red flag: %2$@ fine, strike %1$@/3.",
+ "Kırmızı bayrakta uçarken yakalandın: %2$@ ceza, uyarı %1$@/3.",
+ "Bei roter Flagge erwischt: %2$@ Strafe, Verwarnung %1$@/3.",
+ "Te pillaron volando con bandera roja: multa de %2$@, aviso %1$@/3.",
+ "赤い旗の日の飛行が発覚：罰金%2$@、警告%1$@/3。",
+ "빨간 깃발에 비행하다 적발: 벌금 %2$@, 경고 %1$@/3.")
 add("event.redBan",
  "Third strike: your company is banned from flying for 3 days.",
  "Üçüncü uyarı: şirketine 3 gün uçuş yasağı geldi.",
@@ -132,9 +132,9 @@ add("event.hotelLeft",
 
 # Rivals
 add("event.rivalFleetSold", "The %@ fleet was sold to another buyer.", "%@ filosu başka bir alıcıya satıldı.", "Die Flotte von %@ wurde an einen anderen Käufer verkauft.", "La flota de %@ se vendió a otro comprador.", "%@の機材は別の買い手に売られた。", "%@ 기구단이 다른 구매자에게 팔렸습니다.")
-add("event.newEntrant", "New rival: %@ has started flying in Cappadocia!", "Yeni rakip: %@ Kapadokya'da uçmaya başladı!", "Neue Konkurrenz: %@ fliegt jetzt in Kappadokien!", "Nuevo rival: ¡%@ empieza a volar en Capadocia!", "新たなライバル：%@がカッパドキアで飛行を開始！", "새 경쟁자: %@ 카파도키아에서 비행을 시작했습니다!")
+add("event.newEntrant", "New rival: %1$@ has started flying in %2$@!", "Yeni rakip: %1$@ %2$@ bölgesinde uçmaya başladı!", "Neue Konkurrenz: %1$@ fliegt jetzt in %2$@!", "Nuevo rival: ¡%1$@ empieza a volar en %2$@!", "新たなライバル：%1$@が%2$@で飛行を開始！", "새 경쟁자: %1$@ %2$@에서 비행을 시작했습니다!")
 add("event.rivalAccidents", "%1$@ had accidents. Balloons damaged: %2$@.", "%1$@ kaza yaptı. Hasarlı balon: %2$@.", "%1$@ hatte Unfälle. Beschädigte Ballone: %2$@.", "%1$@ tuvo accidentes. Globos dañados: %2$@.", "%1$@で事故。損傷した気球：%2$@機。", "%1$@ 사고 발생. 파손된 열기구: %2$@대.")
-add("event.rivalRedFined", "%@ flew on a red flag and got a €5,000 fine.", "%@ kırmızı bayrakta uçtu ve €5.000 ceza yedi.", "%@ flog bei roter Flagge und bekam 5.000 € Strafe.", "%@ voló con bandera roja y recibió una multa de 5.000 €.", "%@が赤い旗の日に飛び、€5,000の罰金。", "%@ 빨간 깃발에 비행해 €5,000 벌금을 받았습니다.")
+add("event.rivalRedFined", "%1$@ flew on a red flag and got a %2$@ fine.", "%1$@ kırmızı bayrakta uçtu ve %2$@ ceza yedi.", "%1$@ flog bei roter Flagge und bekam %2$@ Strafe.", "%1$@ voló con bandera roja y recibió una multa de %2$@.", "%1$@が赤い旗の日に飛び、%2$@の罰金。", "%1$@ 빨간 깃발에 비행해 %2$@ 벌금을 받았습니다.")
 add("event.rivalRedSneaked", "%@ secretly flew on a red flag.", "%@ kırmızı bayrakta gizlice uçtu.", "%@ ist heimlich bei roter Flagge geflogen.", "%@ voló a escondidas con bandera roja.", "%@がこっそり赤い旗の日に飛んだ。", "%@ 빨간 깃발에 몰래 비행했습니다.")
 add("event.poachAttempt", "%1$@ offered your pilot %2$@ a job!", "%1$@, pilotun %2$@ için iş teklifi yaptı!", "%1$@ hat deinem Piloten %2$@ einen Job angeboten!", "¡%1$@ ofreció trabajo a tu piloto %2$@!", "%1$@があなたのパイロット%2$@を引き抜こうとしている！", "%1$@ 측이 내 조종사 %2$@에게 일자리를 제안했습니다!")
 add("event.rivalHotelDeal", "%1$@ signed with %2$@. The hotel won't work with anyone else for 12 days.", "%1$@, %2$@ ile anlaştı. Otel 12 gün boyunca başka şirketle çalışmayacak.", "%1$@ hat einen Vertrag mit %2$@. Das Hotel arbeitet 12 Tage mit niemand anderem.", "%1$@ firmó con %2$@. El hotel no trabajará con nadie más durante 12 días.", "%1$@が%2$@と契約。ホテルは12日間ほかの会社と組まない。", "%1$@ 측이 %2$@와 제휴했습니다. 호텔은 12일간 다른 회사와 일하지 않습니다.")

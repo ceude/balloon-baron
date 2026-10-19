@@ -2,14 +2,27 @@ import Foundation
 import Observation
 import BalloonBaronCore
 
+/// Office pages opened from the side buttons on the home screen.
+enum Page: String, Identifiable {
+    case fleet, crew, market, goals, holding, map
+    var id: String { rawValue }
+}
+
 /// Owns the running game and persists it after every change.
 @Observable
 final class GameStore {
-    var game: Game?
+    var game: Game? { didSet { currentRegion = game?.state.region ?? .cap } }
     /// The report shown after a day ends.
     var report: DayReport?
     /// Hezarfen's message currently on screen.
     var hezarfen: HezMessage?
+    /// Chapter ceremony or merger news on screen; these come before Hezarfen.
+    var chapter: ChapterNews?
+    var merge: MergeNews?
+    /// The office page on screen.
+    var page: Page?
+    /// A parked region whose problem the player is deciding.
+    var issueRegion: RegionID?
     /// Passengers riding with you while the flight scene runs.
     var flightPax: Int?
 
@@ -51,13 +64,45 @@ final class GameStore {
         save()
     }
 
+    /// Shows the next popup in the prototype's order: chapter ceremony, merger news, then Hezarfen.
     func showNextHezarfen() {
-        guard hezarfen == nil, report == nil, flightPax == nil else { return }
-        act { hezarfen = $0.nextHezarfen() }
+        guard hezarfen == nil, chapter == nil, merge == nil, report == nil, flightPax == nil, page == nil, issueRegion == nil,
+              let s = game?.state else { return }
+        if let c = s.chapterNews {
+            chapter = c
+            act { $0.state.chapterNews = nil }
+        } else if let m = s.mergeNews {
+            merge = m
+            act { $0.state.mergeNews = nil }
+        } else {
+            act { hezarfen = $0.nextHezarfen() }
+        }
     }
 
     func dismissHezarfen() {
         hezarfen = nil
+        showNextHezarfen()
+    }
+
+    func dismissPopup() {
+        chapter = nil
+        merge = nil
+        showNextHezarfen()
+    }
+
+    func closePage() {
+        page = nil
+        issueRegion = nil
+        showNextHezarfen()
+    }
+
+    /// Moves to another region (or into a new one) and closes the office pages.
+    func goTo(_ r: RegionID) {
+        page = nil
+        issueRegion = nil
+        act { g in
+            if g.state.owns(r) { g.switchRegion(r) } else { _ = g.enterRegion(r) }
+        }
         showNextHezarfen()
     }
 
@@ -86,6 +131,10 @@ final class GameStore {
         game = nil
         report = nil
         hezarfen = nil
+        chapter = nil
+        merge = nil
+        page = nil
+        issueRegion = nil
         flightPax = nil
     }
     #endif

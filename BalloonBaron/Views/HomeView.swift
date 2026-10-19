@@ -30,7 +30,7 @@ struct HomeView: View {
                 Button(loc("home.redFly"), role: .destructive) { store.fly() }
                 Button(loc("common.cancel"), role: .cancel) {}
             } message: {
-                Text(loc("home.redConfirmBody"))
+                Text(loc("home.redConfirmBody", eur(Rules.redFine)))
             }
         }
     }
