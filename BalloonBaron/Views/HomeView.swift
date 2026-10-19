@@ -126,8 +126,25 @@ struct HomeView: View {
             chip(loc("hud.day", num(s.day)))
             if multi { chip(s.region.title) }
             Spacer(minLength: 4)
-            chip(eur(s.cash), color: s.cash < 0 ? Theme.red : .white)
-            chip(starsText(s.rep), color: Theme.sun)
+            Button {
+                if s.unlocked.contains(.bank) { store.page = .bank }
+            } label: {
+                chip(eur(s.cash), color: s.cash < 0 ? Theme.red : .white)
+            }
+            .buttonStyle(.plain)
+            Button { store.showRepChart = true } label: {
+                chip(starsText(s.rep), color: Theme.sun)
+            }
+            .buttonStyle(.plain)
+            Button { store.showMenu = true } label: {
+                Image(systemName: "line.3.horizontal")
+                    .font(.system(size: 17, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 38, height: 38)
+                    .background(Theme.glass, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(loc("menu.open"))
         }
     }
 
@@ -136,6 +153,7 @@ struct HomeView: View {
             .font(Theme.font(17, .bold, condensed: true))
             .foregroundStyle(color)
             .lineLimit(1)
+            .minimumScaleFactor(0.7)
             .padding(.horizontal, 12)
             .padding(.vertical, 8)
             .background(Theme.glass, in: Capsule())
@@ -223,6 +241,9 @@ struct HomeView: View {
             }
             if s.unlocked.contains(.crew) {
                 navButton("person.2.fill", loc("home.nav.crew"), .crew, dot: crewDot)
+            }
+            if s.unlocked.contains(.bank) {
+                navButton("banknote.fill", loc("home.nav.bank"), .bank)
             }
             if s.unlocked.contains(.market) {
                 navButton("chart.bar.fill", loc("home.nav.market"), .market, dot: marketDot)
