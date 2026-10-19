@@ -3,3 +3,6 @@ xcuserdata/
 DerivedData/
 *.xcuserstate
 build/
+.build/
+.swiftpm/
+Package.resolved

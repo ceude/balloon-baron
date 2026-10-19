@@ -1,0 +1,23 @@
+# Balloon Baron: Cappadocia
+
+iOS hot-air-balloon company tycoon. Solo developer (Turkish speaker) + Claude. All code, art and sound are made in code.
+
+## Layout
+- `Packages/BalloonBaronCore`: pure-Swift game logic (no UIKit/SwiftUI). Builds and tests on Linux.
+- `BalloonBaron/`: iOS app (SwiftUI menus, SpriteKit flight scene). The Xcode project uses a synchronized folder, so new files in `BalloonBaron/` are picked up without editing `project.pbxproj`.
+- `prototype/balloon-baron.html`: the playable HTML prototype. It is the reference for behaviour and balance numbers.
+- `docs/GAME_DESIGN.md`: mechanics and numbers. Keep it in sync when balance changes.
+
+## Rules
+- The core never contains player-facing text. It emits ids and enums (`DayEvent`, `HezMessage`, `Review`), and the app localizes them.
+- Every player-facing string lives in `BalloonBaron/Localizable.xcstrings` with all six languages: en (source), tr, de, es, ja, ko. Use `loc("key", args…)` with `%@` / `%1$@` placeholders. Avoid plurals by writing "Label: N". In Turkish, never put a suffix directly after a name placeholder.
+- Money is shown with `eur()`, which formats for the player's locale.
+- Port prototype behaviour faithfully; balance changes are the user's call.
+- Minimum iOS 17, portrait only.
+
+## Testing in the cloud
+```
+tools/install-swift-linux.sh && export PATH=/opt/swift/usr/bin:$PATH
+cd Packages/BalloonBaronCore && swift test
+```
+The app target itself (SwiftUI, SpriteKit) only builds on a Mac with Xcode.

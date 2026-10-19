@@ -1,0 +1,167 @@
+import Foundation
+
+/// The whole simulation. A value type: the app keeps one in an observable store and saves `state`.
+public struct Game: Sendable {
+    public var state: GameState
+    var rng: SplitMix64
+
+    public init(company: String, colors: [String], seed: UInt64 = .random(in: 0...UInt64.max)) {
+        state = GameState(company: company, colors: colors)
+        rng = SplitMix64(seed: seed)
+    }
+
+    public init(state: GameState, seed: UInt64 = .random(in: 0...UInt64.max)) {
+        self.state = state
+        rng = SplitMix64(seed: seed)
+    }
+
+    // MARK: Day start
+
+    /// Fills in today's weather, demand and candidates if missing, and queues Hezarfen's lessons.
+    public mutating func startDay() {
+        if state.weather == nil { state.weather = newWeather() }
+        if state.demand == nil { state.demand = dayDemand() }
+        if state.candidates.isEmpty { newCandidates() }
+        if state.rivalPlanDay != state.day { planRivalFlights() }
+        unlockCheck()
+        assignPilots()
+    }
+
+    func demandGrowth() -> Double { 1 + 0.6 * (1 - exp(-Double(state.day - 1) / 50)) }
+
+    mutating func dayDemand() -> Int {
+        let flag = state.weather?.flag ?? .green
+        return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? 0.55 : 1))
+    }
+
+    mutating func newWeather() -> Weather {
+        let r = rng.unit(), winter = state.winter != nil
+        let gq = winter ? 0.35 : 0.55, yq = winter ? 0.7 : 0.85
+        let flag: Flag = state.day == 1 ? .green : r < gq ? .green : r < yq ? .yellow : .red
+        let surf = flag == .green ? rng.range(3, 10) : flag == .yellow ? rng.range(11, 18) : rng.range(19, 30)
+        var l = [(rng.chance(0.5) ? -1.0 : 1.0) * surf / 3.6 * 0.45,
+                 rng.range(-4, 4) * flag.wind, rng.range(-6, 6) * flag.wind, rng.range(-8, 8) * flag.wind]
+        // Always leave one layer that carries you east and one that brings you back.
+        if !l.contains(where: { $0 > 3 }) { l[1 + rng.int(3)] = rng.range(3.5, 6) * flag.wind }
+        if !l.contains(where: { $0 < -0.5 }) {
+            var m = 0
+            for (i, v) in l.enumerated() where v < 3 && (l[m] >= 3 || v < l[m]) { m = i }
+            l[m] = -rng.range(1, 4) * flag.wind
+        }
+        let target = 220 + rng.range(1300, 2100)
+        var mission: Mission? = state.day <= 2 || rng.chance(0.4) ? nil
+            : (flag == .yellow && rng.chance(0.5) ? .precision : rng.pick(Mission.allCases))
+        if !state.firstMissionGiven && state.day >= 3 && flag != .red {
+            mission = .proposal
+            state.firstMissionGiven = true
+        } else if !state.firstMissionGiven {
+            mission = nil
+        }
+        return Weather(flag: flag, surfaceWind: jsRound(surf), layers: l, target: target, seed: rng.next(),
+                       mission: mission, valley: 220 + (target - 220) * rng.range(0.35, 0.6))
+    }
+
+    mutating func newCandidates() {
+        func make(_ level: PilotLevel, school: Bool = false) -> Pilot {
+            let initial = Character(UnicodeScalar(65 + rng.int(26))!)
+            defer { state.nextID += 1 }
+            return Pilot(id: state.nextID, name: "\(rng.pick(Rules.pilotNames)) \(initial).", level: level, fromSchool: school)
+        }
+        state.candidates = []
+        for _ in 0..<3 {
+            let r = rng.unit()
+            state.candidates.append(make(r < 0.5 ? .rookie : r < 0.85 ? .experienced : .senior))
+        }
+        if state.school { state.candidates.insert(make(rng.chance(0.3) ? .experienced : .rookie, school: true), at: 0) }
+    }
+
+    mutating func queueTip(_ t: Tip) {
+        if !state.tipsSeen.contains(t) && !state.hezQueue.contains(.tip(t)) { state.hezQueue.append(.tip(t)) }
+    }
+
+    mutating func unlockCheck() {
+        let s = state
+        let rules: [Feature: Bool] = [
+            .insurance: s.day >= 2, .fleet: s.day >= 3 || s.cash >= 7000, .bank: s.day >= 4,
+            .market: s.day >= 5, .crew: s.balloons.count >= 2 || s.day >= 6
+        ]
+        let tipFor: [Feature: Tip] = [.insurance: .insurance, .fleet: .fleet, .bank: .bank, .market: .market, .crew: .crew]
+        for f in Feature.allCases where rules[f]! && !state.unlocked.contains(f) {
+            state.unlocked.insert(f)
+            queueTip(tipFor[f]!)
+        }
+        queueTip(.welcome)
+        if s.weather?.flag == .yellow { queueTip(.yellow) }
+        if s.weather?.flag == .red { queueTip(.red) }
+        if s.weather?.mission != nil { queueTip(.mission) }
+        if s.rep < Rules.crisisRep { queueTip(.crisis) }
+        if s.balloons.contains(where: { $0.condition < 0.3 }) { queueTip(.aging) }
+        if s.stars > 4.5 { queueTip(.expect) }
+        if s.unlocked.contains(.market) {
+            if s.day >= 7 { queueTip(.rivals) }
+            if s.day >= 10 { queueTip(.rivals2) }
+            if s.day >= 13 { queueTip(.rivals3) }
+        }
+        if s.balloons.contains(where: { $0.damagedUntil > s.day }) { queueTip(.accident) }
+    }
+
+    /// Pops the next Hezarfen message and marks lessons as seen.
+    public mutating func nextHezarfen() -> HezMessage? {
+        guard !state.hezQueue.isEmpty else { return nil }
+        let m = state.hezQueue.removeFirst()
+        if case .tip(let t) = m { state.tipsSeen.insert(t) }
+        return m
+    }
+
+    public mutating func replayRivalTips() {
+        state.hezQueue.append(contentsOf: [.tip(.rivals), .tip(.rivals2), .tip(.rivals3)])
+    }
+
+    /// Best pilots go to the biggest balloons; the flagship is yours while your license is valid.
+    public mutating func assignPilots() {
+        for i in state.balloons.indices { state.balloons[i].pilot = nil }
+        let need = state.balloons.indices
+            .filter { !(state.balloons[$0].id == state.flagship && state.flyingSelf) }
+            .sorted { state.balloons[$0].size.capacity > state.balloons[$1].size.capacity }
+        let ps = state.pilots.sorted { $0.level > $1.level }
+        for (k, i) in need.enumerated() where k < ps.count { state.balloons[i].pilot = ps[k].id }
+    }
+
+    mutating func planRivalFlights() {
+        let flag = state.weather?.flag ?? .green
+        state.rivalPlanDay = state.day
+        for i in state.rivals.indices {
+            var r = state.rivals[i]
+            r.flyToday = []
+            if r.alive {
+                let go: Double = flag == .green ? 1 : flag == .yellow ? (r.style == .safe ? 0.5 : 1)
+                    : (r.style == .risky && rng.chance(0.5) ? 1 : 0)
+                let avail = r.balloons.indices.filter { r.damagedUntil[$0] <= state.day }
+                r.flyToday = go == 1 ? avail : go == 0.5 ? avail.enumerated().filter { $0.offset % 2 == 0 }.map(\.element) : []
+            }
+            state.rivals[i] = r
+        }
+    }
+
+    // MARK: Risk and insurance
+
+    public func accidentChance(_ b: Balloon) -> Double {
+        let flag = state.weather?.flag ?? .green
+        let pilotRisk = state.isSelf(b) ? 1 : state.pilot(of: b)?.level.risk ?? 1
+        return flag.accident * pilotRisk * b.size.risk * (b.condition < 0.3 ? 1.5 : 1)
+    }
+
+    /// Daily premiums for one balloon given its accident chance. Nothing is insurable on a red day.
+    public func premium(_ size: BalloonSize, chance p: Double) -> (hull: Int, pax: Int) {
+        if state.weather?.flag == .red { return (0, 0) }
+        let cost = Double(size.cost), cap = Double(size.capacity)
+        return (jsRound(max(cost * 0.001, p * cost * 0.21 * 1.3)), jsRound(max(cap * 2, p * cap * 1500 * 1.3)))
+    }
+
+    public func premiums() -> (hull: Int, pax: Int) {
+        state.flyingToday.reduce((0, 0)) { acc, b in
+            let q = premium(b.size, chance: accidentChance(b))
+            return (acc.0 + q.hull, acc.1 + q.pax)
+        }
+    }
+}
