@@ -143,7 +143,7 @@ extension Game {
                 }
                 state.pilots[pi] = p
             }
-            if state.balloons[i].condition <= 0 { ev.append(.envelopeWorn(balloon: state.balloons[i].name)) }
+            if state.condition(state.balloons[i]) <= 0 { ev.append(.envelopeWorn(balloon: state.balloons[i].name)) }
         }
         lg.upkeep = state.balloons.reduce(0) { $0 + $1.size.upkeep }
         for h in state.activeHotels {
@@ -165,6 +165,17 @@ extension Game {
         state.rep = clamp(lerp(state.rep, 1, 0.01), Rules.repRange.lowerBound, Rules.repRange.upperBound)
         if state.stars > 4.5 { state.rep -= 0.006 }
         state.rep += Double(flyingIDs.compactMap(state.balloon).filter { $0.size == .XL }.count) * Rules.xlRepPerFlight
+        // Painted balloons get talked about; fresh, creative designs most of all.
+        let painted = flyingIDs.compactMap(state.balloon).filter { state.design(of: $0) != nil }
+        let designRep = min(Studio.maxDailyRep, painted.reduce(0) { acc, b in
+            let d = state.design(of: b)!
+            return acc + 0.003 * Double(d.score) / 100 * freshness(d)
+        })
+        if designRep > 0 {
+            state.rep += designRep
+            lg.designRep = designRep
+            if rng.chance(0.25), let d = state.design(of: rng.pick(painted)) { addReview(.design, ["d": String(d.id)]) }
+        }
         if state.licenseDaysLeft == 0 { ev.append(.licenseExpiring) }
         // Passengers miss the founder: popularity erodes while the balloons fly without you.
         let absent = state.daysSinceSelfFly
@@ -187,8 +198,16 @@ extension Game {
             state.monopolyDays = max(0, state.monopolyDays - 1)
         }
         if state.monopolyDays >= 3 { queueTip(.antitrust) }
-        if state.monopolyDays >= 5 && rng.chance(0.25) && state.cash > 0 {
-            let fine = max(5000, jsRound(Double(state.cash) * 0.08 / 100) * 100)
+        // Rivals merge against a player who holds the market, or when one of them is sinking.
+        state.dominanceDays = state.day >= 30 && share > 0.5 ? state.dominanceDays + 1 : max(0, state.dominanceDays - 1)
+        let sinking = state.rivals.contains { $0.alive && $0.cash < -4000 } && share > 0.4
+        if state.day - (state.lastMerge ?? -99) >= 25 && ((state.dominanceDays >= 4 && rng.chance(0.35)) || (sinking && rng.chance(0.6))) {
+            mergeRivals(share: share, events: &rev)
+        }
+        if state.monopolyDays >= 5 && rng.chance(0.25) {
+            // The fine follows company worth, so emptying the cash box doesn't help.
+            let worth = max(0, state.cash) + state.balloons.reduce(0) { $0 + $1.size.cost } + state.ownHotels.reduce(0) { $0 + $1.buyPrice }
+            let fine = max(Rules.redFine, jsRound(Double(worth) * Rules.monopolyRate / 100) * 100)
             lg.antitrust = fine
             state.cash -= fine
             state.monopolyDays = 0
@@ -225,12 +244,27 @@ extension Game {
         }
         state.repHistory.append(RepPoint(day: state.day, rep: state.rep))
         if state.repHistory.count > 120 { state.repHistory.removeFirst() }
-        state.lastShare = MarketShare(me: paxTotal, rivals: plan.rivalPax, demand: state.demand ?? 0, extra: min(plan.referrals, paxTotal))
+        state.lastShare = MarketShare(me: paxTotal, cap: capToday, rivals: plan.rivalPax, demand: state.demand ?? 0, extra: min(plan.referrals, paxTotal))
+        state.netHistory = Array((state.netHistory + [lg.net]).suffix(14))
+        runAutopilots()
+        lg.holdingNet = holdingDay()
+        if state.fiesta != nil && !flyingIDs.isEmpty { state.fiestaFlown += 1 }
+        if paxTotal + rivalPax > 0 { state.shareNow = Double(paxTotal) / Double(paxTotal + rivalPax) }
+        lg.chapterReward = checkChapters(events: &ev)
         let report = DayReport(day: state.day, flag: weather.flag, ledger: lg, events: ev, rivalEvents: rev,
                                passengers: paxTotal, capacity: capToday, skipped: plan.skipped)
 
         state.day += 1
         state.plan = nil
+        if state.region.hasFiesta {
+            if let f = state.fiesta, state.day > f.end {
+                state.fiesta = nil
+                state.fiestaNext = state.day + Rules.fiestaEvery
+            } else if state.fiesta == nil && state.day >= (state.fiestaNext ?? 0) && state.winter == nil {
+                state.fiesta = Fiesta(start: state.day, end: state.day + Rules.fiestaDays - 1)
+                state.hezQueue.append(.fiestaStarted)
+            }
+        }
         if let w = state.winter, state.day > w.end {
             state.winter = nil
             state.nextWinter = state.day + 45

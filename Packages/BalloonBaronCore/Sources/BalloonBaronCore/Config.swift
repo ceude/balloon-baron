@@ -91,13 +91,20 @@ public enum RivalStyle: String, Codable, Sendable { case safe, mid, risky }
 
 public enum Entrant: String, Codable, CaseIterable, Sendable {
     case bosphorus, anatolian, periLuxe, aegean
+    case mesaGold, turquoise, desertBloom, bigSky
 
-    public var name: String { ["Bosphorus Balloons", "Anatolian Sky", "Peri Luxe Flights", "Aegean Air Tours"][index] }
-    var style: RivalStyle { [.safe, .risky, .mid, .mid][index] }
-    var balloons: [BalloonSize] { [[.L, .L, .M, .M], [.M, .M, .S, .S, .S], [.M, .M], [.L, .M, .M]][index] }
-    var price: Int { [190, 125, 250, 175][index] }
-    var rep: Double { [1.1, 0.9, 1.25, 1][index] }
-    var cash: Double { [70000, 30000, 50000, 40000][index] }
+    public var name: String {
+        ["Bosphorus Balloons", "Anatolian Sky", "Peri Luxe Flights", "Aegean Air Tours",
+         "Mesa Gold Balloons", "Turquoise Trail Air", "Desert Bloom Flights", "Big Sky Fiesta Co."][index]
+    }
+    public var region: RegionID { index < 4 ? .cap : .abq }
+    /// A rich chain: it always arrives with more balloons than you.
+    var rich: Bool { self == .bosphorus || self == .mesaGold }
+    var style: RivalStyle { [.safe, .risky, .mid, .mid][index % 4] }
+    var balloons: [BalloonSize] { [[.L, .L, .M, .M], [.M, .M, .S, .S, .S], [.M, .M], [.L, .M, .M]][index % 4] }
+    var price: Int { [190, 125, 250, 175][index % 4] }
+    var rep: Double { [1.1, 0.9, 1.25, 1][index % 4] }
+    var cash: Double { [70000, 30000, 50000, 40000][index % 4] }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
 }
 
@@ -132,6 +139,10 @@ public enum Rules {
     public static let seatWeight = 1.0
     /// At 5★ popularity fills up to this share of your seats on its own.
     public static let popularitySeatShare = 0.5
+    /// Antitrust fine: this share of company worth (cash, balloons, hotels), at least `redFine`.
+    public static let monopolyRate = 0.03
+    public static let fiestaDays = 4, fiestaEvery = 30, fiestaDemand = 1.9
+    public static let fiestaBalloons = 46
 
     public static let loans = [
         LoanOffer(amount: 10000, days: 40, installment: 300, balloonsNeeded: 0),

@@ -64,8 +64,44 @@ extension Game {
     /// Extra passengers popularity brings regardless of rivals, at today's price. It scales with
     /// your own seats so a tiny newcomer can't fill up on reputation alone.
     public func popularityBonus() -> Int {
-        let raw = jsRound(Double(state.capacityToday) * Rules.popularitySeatShare * clamp((state.rep - 0.7) / 0.7, 0, 1))
-        return jsRound(Double(raw) * Rules.willing(Double(state.price)))
+        jsRound(Double(popularityBonusRaw()) * Rules.willing(Double(state.price)))
+    }
+
+    func popularityBonusRaw() -> Int {
+        jsRound(Double(state.capacityToday) * Rules.popularitySeatShare * clamp((state.rep - 0.7) / 0.7, 0, 1))
+    }
+
+    /// Tourists looking for a flight today, whatever your price: the market plus hotel guests,
+    /// guide and influencer referrals and your fans. Price only changes how many pick you.
+    public func touristsToday() -> Int {
+        let s = state, winter = s.winter != nil
+        let hotels = s.activeHotels.reduce(0) { acc, h in
+            acc + jsRound(Double(h.guests) * (s.ownHotels.contains(h) ? 1.5 : 1) * (winter ? 0.6 : 1))
+        }
+        return (s.demand ?? 0) + hotels + (s.day <= s.guideUntil ? 5 : 0) + (s.day <= s.influencerUntil ? 8 : 0) + popularityBonusRaw()
+    }
+
+    /// Ticket money (plus the founder premium) you'd make at `price` with today's fleet.
+    public func estimatedIncome(price: Int? = nil) -> (pax: Int, seats: Int, income: Int) {
+        var g = self
+        if let price { g.state.price = price }
+        let fl = g.state.flyingToday, cap = fl.reduce(0) { $0 + $1.size.capacity }
+        let pax = g.market(price: g.state.price, capacity: cap).pax[0]
+        var income = pax * g.state.price
+        if let fb = fl.first(where: { g.state.isSelf($0) }) {
+            income += jsRound(Double(min(pax, fb.size.capacity) * g.state.price) * Rules.founderPremium)
+        }
+        return (pax, cap, income)
+    }
+
+    /// Where `price` sits on the tourists' scale: 0 = good value … 100 = far too expensive.
+    /// Bands: ≥85% willing, ≥60%, ≥35%, below.
+    public static func feel(price: Int) -> Int {
+        let w = Rules.willing(Double(price)), cuts = [1, 0.85, 0.6, 0.35, 0]
+        for i in 0..<4 where w >= cuts[i + 1] {
+            return jsRound((Double(i) + (cuts[i] - w) / (cuts[i] - cuts[i + 1])) * 25)
+        }
+        return 100
     }
 
     /// Referral sources before capacity limits.

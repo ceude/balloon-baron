@@ -56,9 +56,10 @@ extension Game {
                 }
             }
             r.cash += income - cost
-            // Owners take money out, so rivals don't hoard forever.
-            let reserve = 8000 + 1500 * Double(r.balloons.count)
-            if r.cash > reserve { r.cash -= (r.cash - reserve) * 0.25 }
+            // Owners take money out, so rivals don't hoard forever, but they save up for the next balloon.
+            let next: BalloonSize = r.style == .safe ? .L : .M
+            let reserve = 8000 + 1500 * Double(r.balloons.count) + Double(next.cost) * 0.6
+            if r.cash > reserve && r.warChestUntil <= day { r.cash -= (r.cash - reserve) * 0.25 }
             r.rep = clamp(lerp(r.rep, r.style == .safe ? 1.1 : r.style == .risky ? 0.9 : 1, 0.04), 0.4, 1.4)
             r.lastPax = pax
             r.lastCap = cap
@@ -107,9 +108,8 @@ extension Game {
                 r.price = clamp(jsRound(price), lo, ceiling)
                 if abs(r.price - old) >= 8 { rev.append(.rivalPrice(rival: r.name, from: old, to: r.price)) }
                 r.lowDays = load < 0.5 ? r.lowDays + 1 : 0
-                r.highDays = load > 0.9 ? r.highDays + 1 : 0
-                let next: BalloonSize = r.style == .safe ? .L : .M
-                let maxBalloons = r.style == .safe ? 10 : r.style == .mid ? 7 : 5
+                r.highDays = load > 0.7 ? r.highDays + 1 : 0
+                let maxBalloons = r.style == .safe ? 25 : r.style == .mid ? 18 : 12
                 if r.cash > Double(next.cost) * 0.6 && r.highDays >= 3 && r.balloons.count < maxBalloons && day - r.lastBuy >= 4 {
                     r.lastBuy = day
                     r.cash -= Double(next.cost) * 0.5
@@ -142,14 +142,73 @@ extension Game {
     }
 
     mutating func newEntrant(replacing old: Rival) -> Rival {
-        let used = Set(state.rivals.map(\.name))
-        let pool = Entrant.allCases.filter { !used.contains($0.name) }
-        let e = rng.pick(pool.isEmpty ? Entrant.allCases : pool)
+        // Skip brands already flying or for sale, also inside merged names like "X & Bosphorus Balloons".
+        let used = state.rivals.filter { $0.alive || $0.forSale != nil }.map(\.name).joined(separator: " ")
+        let all = state.region.entrants
+        let pool = all.filter { !used.contains($0.name.split(separator: " ")[0]) }
+        let e = rng.pick(pool.isEmpty ? all : pool)
         let taken = Set(state.rivals.filter(\.alive).map { $0.colors[0] })
         let cols = Rules.rivalColors.filter { $0[0] != state.colors[0] && !taken.contains($0[0]) }
         let c = cols.isEmpty ? Rules.rivalColors[0] : rng.pick(cols)
-        var r = Rival(id: old.id, name: e.name, colors: c, style: e.style, balloons: e.balloons, price: e.price, rep: e.rep, cash: e.cash)
+        let fleet = entrantFleet(e)
+        var r = Rival(id: old.id, name: e.name, colors: c, style: e.style, balloons: fleet.balloons, price: e.price, rep: e.rep, cash: fleet.cash)
         r.entrant = e
+        r.warChestUntil = state.day + 20
         return r
+    }
+
+    /// A rich chain arrives with three balloons more than you; after day 50 others come with half your fleet.
+    func entrantFleet(_ e: Entrant) -> (balloons: [BalloonSize], cash: Double) {
+        let mine = state.balloons.count
+        var n = e.balloons.count
+        if e.rich { n = max(n, mine + 3) } else if state.day >= 50 { n = max(n, jsRound(Double(mine) / 2)) }
+        let mix: [BalloonSize] = switch e.style {
+        case .safe: [.L, .L, .M, .M, .M]
+        case .mid: [.L, .M, .M, .M, .S]
+        case .risky: [.M, .S, .S, .S, .M]
+        }
+        let balloons = n == e.balloons.count ? e.balloons : (0..<n).map { mix[$0 % mix.count] }
+        let extra = Double(n - e.balloons.count)
+        return (balloons, e.rich ? max(e.cash, 60000 + 9000 * Double(n)) : e.cash + 6000 * extra)
+    }
+
+    /// The two smallest rivals join forces against a player who owns the market.
+    mutating func mergeRivals(share: Double, events rev: inout [DayEvent]) {
+        func seats(_ r: Rival) -> Int { r.balloons.reduce(0) { $0 + $1.capacity } }
+        let alive = state.rivals.indices.filter { state.rivals[$0].alive }.sorted { seats(state.rivals[$0]) < seats(state.rivals[$1]) }
+        guard alive.count >= 2 else { return }
+        let a = state.rivals[alive[0]], b = state.rivals[alive[1]]
+        let name = "\(a.name.split(separator: " ")[0]) & \(b.name.split(separator: " ")[0]) Balloons"
+        let (bi, oi) = seats(a) >= seats(b) ? (alive[0], alive[1]) : (alive[1], alive[0])
+        let big = state.rivals[bi], other = state.rivals[oi]
+        let cash = jsRound((max(0, a.cash) + max(0, b.cash)) * 1.3 + 40000)
+        let rep = max(a.rep, b.rep)
+        state.mergeNews = MergeNews(a: a.name, b: b.name, name: name, balloons: a.balloons.count + b.balloons.count, cash: cash,
+                                    sharePercent: jsRound(share * 100), rep: rep, colors: big.colors + [other.colors[0]])
+        var m = big
+        m.name = name
+        m.style = a.style == .safe || b.style == .safe ? .safe : .mid
+        m.balloons = a.balloons + b.balloons
+        m.damagedUntil = a.damagedUntil + b.damagedUntil
+        m.cash = Double(cash)
+        m.rep = rep
+        m.price = jsRound(Double(a.price + b.price) / 2)
+        m.lowDays = 0; m.highDays = 0
+        m.offer = nil; m.offerSeen = false; m.offerDeclined = false
+        m.warChestUntil = state.day + 20
+        m.mergedInto = nil
+        m.entrant = nil
+        m.flyToday = []
+        var o = other
+        o.alive = false
+        o.deadDay = state.day
+        o.forSale = nil
+        o.offer = nil
+        o.mergedInto = name
+        o.flyToday = []
+        state.rivals[bi] = m
+        state.rivals[oi] = o
+        state.lastMerge = state.day
+        rev.append(.rivalsMerged(a: a.name, b: b.name, name: name, balloons: m.balloons.count))
     }
 }

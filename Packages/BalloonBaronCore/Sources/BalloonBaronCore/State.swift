@@ -10,9 +10,8 @@ public struct Balloon: Codable, Identifiable, Equatable, Sendable {
     public var pilot: Int?
     public var flights = 0
     public var ad: Sponsor?
-
-    /// Envelope condition, 1 = new, 0 = grounded.
-    public var condition: Double { clamp(1 - Double(flights) / Double(Rules.envelopeLife), 0, 1) }
+    /// Id of a workshop design painted on the envelope.
+    public var design: Int?
 }
 
 public struct Pilot: Codable, Identifiable, Equatable, Sendable {
@@ -65,6 +64,10 @@ public struct Rival: Codable, Identifiable, Equatable, Sendable {
     public var lastBuy = 0
     public var offerSeen = false, offerDeclined = false
     public var saleSeen = false, saleDeclined = false
+    /// New and merged companies don't pay their owners for a while: they're out to grow.
+    public var warChestUntil = 0
+    /// Set on the company that disappeared in a merger: the name it joined.
+    public var mergedInto: String?
 
     init(id: Int, name: String, colors: [String], style: RivalStyle, balloons: [BalloonSize], price: Int, rep: Double, cash: Double) {
         self.id = id; self.name = name; self.colors = colors; self.style = style
@@ -104,6 +107,8 @@ public struct PoachOffer: Codable, Equatable, Sendable {
 
 public struct MarketShare: Codable, Equatable, Sendable {
     public var me: Int
+    /// Your seats that day.
+    public var cap: Int
     public var rivals: [Int]
     public var demand: Int
     /// Tourists who came straight to you through referrals.
@@ -119,7 +124,7 @@ public enum Feature: String, Codable, CaseIterable, Sendable { case insurance, f
 /// Hezarfen's one-off lessons. Text lives in the string catalog under `hez.<rawValue>`.
 public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
-    case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold
+    case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold, goals
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {
@@ -127,6 +132,31 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case winterComing
     case spring
     case entrant(Entrant)
+    /// Cappadocia baron: the holding opens.
+    case holdingOpened
+    case enteredRegion(RegionID)
+    case fiestaStarted
+    case regionIssue(RegionID, Issue)
+    case officeOpened(Office)
+    case allOffices
+    case celebritySigned(Int)
+}
+
+/// Shown once, before other popups, when two rivals join forces against you.
+public struct MergeNews: Codable, Equatable, Sendable {
+    public var a: String, b: String, name: String
+    public var balloons: Int
+    public var cash: Int
+    public var sharePercent: Int
+    public var rep: Double
+    /// Colors of the bigger partner and the main color of the other.
+    public var colors: [String]
+}
+
+/// A finished chapter, shown as a ceremony the next morning.
+public struct ChapterNews: Codable, Equatable, Sendable {
+    public var region: RegionID
+    public var index: Int
 }
 
 public struct DayPlan: Codable, Equatable, Sendable {
@@ -138,99 +168,105 @@ public struct DayPlan: Codable, Equatable, Sendable {
     public var referrals: Int
 }
 
+@dynamicMemberLookup
 public struct GameState: Codable, Equatable, Sendable {
-    public static let currentVersion = 1
+    /// 2: per-region state and the holding.
+    public static let currentVersion = 2
     public var version = GameState.currentVersion
 
     public var day = 1
-    public var cash = Rules.startCash
-    public var rep = 1.0
-    public var price = Rules.startPrice
     public var company: String
     public var colors: [String]
-    public var strikes = 0
-    public var banUntil = 0
-    public var selfFly = true
     public var lastSelfFly = 1
     public var nextID = 1
-    public var flagship = 0
     public var insureHull = true
     public var insurePax = true
-    public var balloons: [Balloon] = []
-    public var pilots: [Pilot] = []
-    public var candidates: [Pilot] = []
-    public var loans: [Loan] = []
-    public var demandBase = Rules.startDemand
-    public var rivals: [Rival]
-    public var lastShare: MarketShare?
     public var tutorialDone = false
-    public var reviews: [Review] = []
-    public var repHistory: [RepPoint] = []
-    public var influencerUntil = 0, influencerCooldown = 0
-    public var guideUntil = 0, guideCooldown = 0
-    public var hotelDeals: [Hotel] = []
-    public var ownHotels: [Hotel] = []
-    public var hotelLocks: [Hotel: HotelLock] = [:]
     public var unlocked: Set<Feature> = []
     public var tipsSeen: Set<Tip> = []
     public var hezQueue: [HezMessage] = []
-    public var poach: PoachOffer?
-    public var school = false
-    public var winter: Winter?
-    public var nextWinter: Int?
-    public var monopolyDays = 0
-    public var firstMissionGiven = false
-    public var weather: Weather?
-    public var demand: Int?
-    public var plan: DayPlan?
-    var rivalPlanDay = 0
-    var absentNoticeDay = 0
     public var over = false
+
+    /// The region you're playing. Its state is `local`; reach its fields directly (`state.cash`).
+    public var region = RegionID.cap
+    public var local: RegionState
+    public var parked: [RegionID: ParkedRegion] = [:]
+    /// Day you became baron of each region.
+    public var barons: [RegionID: Int] = [:]
+    public var holding = Holding()
+    public var workshopDay: Int?
+    public var designs: [Design] = []
+    public var chapterNews: ChapterNews?
+    public var mergeNews: MergeNews?
+
+    public subscript<T>(dynamicMember path: WritableKeyPath<RegionState, T>) -> T {
+        get { local[keyPath: path] }
+        set { local[keyPath: path] = newValue }
+    }
 
     public init(company: String, colors: [String]) {
         self.company = company
         self.colors = colors
-        rivals = [
-            Rival(id: 0, name: "Göreme Sky", colors: ["#5aa9e6", "#eaf4fc"], style: .safe, balloons: [.L, .L, .L, .M, .M, .M], price: 195, rep: 1.15, cash: 50000),
-            Rival(id: 1, name: "Peribaca Balloons", colors: ["#9b7be0", "#f2ebff"], style: .mid, balloons: [.M, .M, .M, .S], price: 165, rep: 1, cash: 20000),
-            Rival(id: 2, name: "Kızıl Vadi Air", colors: ["#c73a2a", "#ffd9a8"], style: .risky, balloons: [.S, .S, .S], price: 135, rep: 0.85, cash: 9000)
-        ]
-        balloons.append(Balloon(id: nextID, size: .S, name: Rules.balloonNames[0]))
-        flagship = nextID
+        local = RegionState(rivals: RegionID.cap.startingRivals())
+        local.balloons.append(Balloon(id: nextID, size: .S, name: Rules.balloonNames[0]))
+        local.flagship = nextID
         nextID += 1
     }
 
-    public var stars: Double { Rules.stars(rep) }
+    public var stars: Double { Rules.stars(local.rep) }
     public var licenseDaysLeft: Int { Rules.licenseDays - (day - lastSelfFly) }
     public var licenseValid: Bool { licenseDaysLeft >= 0 }
     /// With an expired license you must fly the flagship yourself (a free renewal flight) or pay to renew.
-    public var flyingSelf: Bool { selfFly || !licenseValid }
+    public var flyingSelf: Bool { local.selfFly || !licenseValid }
     public var daysSinceSelfFly: Int { day - lastSelfFly }
 
-    public func balloon(_ id: Int) -> Balloon? { balloons.first { $0.id == id } }
-    public func pilot(of b: Balloon) -> Pilot? { pilots.first { $0.id == b.pilot } }
-    public func isSelf(_ b: Balloon) -> Bool { b.id == flagship && flyingSelf }
-    public func hotelActive(_ h: Hotel) -> Bool { hotelDeals.contains(h) || ownHotels.contains(h) }
+    /// Flights an envelope lasts; holding research stretches it.
+    public var envelopeLife: Int { holding.research > 0 ? Holding.researchLevels[holding.research - 1].life : Rules.envelopeLife }
+    /// Envelope condition, 1 = new, 0 = grounded.
+    public func condition(_ b: Balloon) -> Double { clamp(1 - Double(b.flights) / Double(envelopeLife), 0, 1) }
+
+    public func balloon(_ id: Int) -> Balloon? { local.balloons.first { $0.id == id } }
+    public func pilot(of b: Balloon) -> Pilot? { local.pilots.first { $0.id == b.pilot } }
+    public func isSelf(_ b: Balloon) -> Bool { b.id == local.flagship && flyingSelf }
+    public func hotelActive(_ h: Hotel) -> Bool { local.hotelDeals.contains(h) || local.ownHotels.contains(h) }
     public var activeHotels: [Hotel] { Hotel.allCases.filter(hotelActive) }
 
     public func hotelIncome(_ h: Hotel) -> Int {
-        jsRound(Double(h.roomIncome) * (stars < h.minStars ? 0.5 : 1) * (winter != nil ? 0.6 : 1))
+        jsRound(Double(h.roomIncome) * (stars < h.minStars ? 0.5 : 1) * (local.winter != nil ? 0.6 : 1))
     }
 
     public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold }
 
     public func status(_ b: Balloon) -> FlyStatus {
-        if banUntil >= day { return .banned }
+        if local.banUntil >= day { return .banned }
         if b.damagedUntil > day { return .damaged }
-        if b.condition <= 0 { return .worn }
-        if !licenseValid && b.id != flagship { return .licenseHold }
+        if condition(b) <= 0 { return .worn }
+        if !licenseValid && b.id != local.flagship { return .licenseHold }
         if !isSelf(b) && b.pilot == nil { return .noPilot }
         return .ok
     }
 
     /// Balloons that will actually go up today.
-    public var flyingToday: [Balloon] { balloons.filter { $0.fly && status($0) == .ok } }
+    public var flyingToday: [Balloon] { local.balloons.filter { $0.fly && status($0) == .ok } }
     public var capacityToday: Int { flyingToday.reduce(0) { $0 + $1.size.capacity } }
 
-    public var influencerCost: Int { Rules.influencerCost(balloons: balloons.count) }
+    public var influencerCost: Int { Rules.influencerCost(balloons: local.balloons.count) }
+
+    /// Flagship first, then biggest, then by name.
+    public var sortedFleet: [Balloon] {
+        local.balloons.sorted {
+            ($0.id == local.flagship ? 1 : 0, $0.size.capacity, $1.name) > ($1.id == local.flagship ? 1 : 0, $1.size.capacity, $0.name)
+        }
+    }
+
+    /// Hired pilots with no balloon to fly.
+    public var idlePilots: [Pilot] {
+        let busy = Set(local.balloons.compactMap(\.pilot))
+        return local.pilots.filter { !busy.contains($0.id) }
+    }
+
+    public func isBaron(_ r: RegionID? = nil) -> Bool { barons[r ?? region] != nil }
+    public var anyBaron: Bool { !barons.isEmpty }
+    public func owns(_ r: RegionID) -> Bool { r == region || parked[r] != nil }
+    public func design(of b: Balloon) -> Design? { b.design.flatMap { id in designs.first { $0.id == id } } }
 }

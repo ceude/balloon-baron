@@ -31,7 +31,8 @@ public struct Game: Sendable {
 
     mutating func dayDemand() -> Int {
         let flag = state.weather?.flag ?? .green
-        return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? 0.55 : 1))
+        return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? 0.55 : 1)
+                       * (state.fiesta != nil ? Rules.fiestaDemand : 1) * holdingBoost(state.region))
     }
 
     mutating func newWeather() -> Weather {
@@ -41,6 +42,9 @@ public struct Game: Sendable {
         let surf = flag == .green ? rng.range(3, 10) : flag == .yellow ? rng.range(11, 18) : rng.range(19, 30)
         var l = [(rng.chance(0.5) ? -1.0 : 1.0) * surf / 3.6 * 0.45,
                  rng.range(-4, 4) * flag.wind, rng.range(-6, 6) * flag.wind, rng.range(-8, 8) * flag.wind]
+        if state.region.boxWinds {
+            l = [-rng.range(2, 4) * flag.wind, rng.range(3, 5.5) * flag.wind, -rng.range(1, 3.5) * flag.wind, rng.range(4, 7) * flag.wind]
+        }
         // Always leave one layer that carries you east and one that brings you back.
         if !l.contains(where: { $0 > 3 }) { l[1 + rng.int(3)] = rng.range(3.5, 6) * flag.wind }
         if !l.contains(where: { $0 < -0.5 }) {
@@ -48,7 +52,7 @@ public struct Game: Sendable {
             for (i, v) in l.enumerated() where v < 3 && (l[m] >= 3 || v < l[m]) { m = i }
             l[m] = -rng.range(1, 4) * flag.wind
         }
-        let target = 220 + rng.range(1300, 2100)
+        let target = 220 + (state.region.boxWinds ? rng.range(1000, 1700) : rng.range(1300, 2100))
         var mission: Mission? = state.day <= 2 || rng.chance(0.4) ? nil
             : (flag == .yellow && rng.chance(0.5) ? .precision : rng.pick(Mission.allCases))
         if !state.firstMissionGiven && state.day >= 3 && flag != .red {
@@ -65,7 +69,7 @@ public struct Game: Sendable {
         func make(_ level: PilotLevel, school: Bool = false) -> Pilot {
             let initial = Character(UnicodeScalar(65 + rng.int(26))!)
             defer { state.nextID += 1 }
-            return Pilot(id: state.nextID, name: "\(rng.pick(Rules.pilotNames)) \(initial).", level: level, fromSchool: school)
+            return Pilot(id: state.nextID, name: "\(rng.pick(state.region.pilotNames)) \(initial).", level: level, fromSchool: school)
         }
         state.candidates = []
         for _ in 0..<3 {
@@ -91,11 +95,12 @@ public struct Game: Sendable {
             queueTip(tipFor[f]!)
         }
         queueTip(.welcome)
+        if s.day >= 2 { queueTip(.goals) }
         if s.weather?.flag == .yellow { queueTip(.yellow) }
         if s.weather?.flag == .red { queueTip(.red) }
         if s.weather?.mission != nil { queueTip(.mission) }
         if s.rep < Rules.crisisRep { queueTip(.crisis) }
-        if s.balloons.contains(where: { $0.condition < 0.3 }) { queueTip(.aging) }
+        if s.balloons.contains(where: { s.condition($0) < 0.3 }) { queueTip(.aging) }
         if s.stars > 4.5 { queueTip(.expect) }
         if s.unlocked.contains(.market) {
             if s.day >= 7 { queueTip(.rivals) }
@@ -118,14 +123,19 @@ public struct Game: Sendable {
         state.hezQueue.append(contentsOf: [.tip(.rivals), .tip(.rivals2), .tip(.rivals3)])
     }
 
-    /// Best pilots go to the biggest balloons; the flagship is yours while your license is valid.
+    /// Best pilots go to the biggest balloons that can fly; balloons in repair or with a worn
+    /// envelope come last. The flagship is yours while you fly it yourself.
     public mutating func assignPilots() {
-        for i in state.balloons.indices { state.balloons[i].pilot = nil }
-        let need = state.balloons.indices
-            .filter { !(state.balloons[$0].id == state.flagship && state.flyingSelf) }
-            .sorted { state.balloons[$0].size.capacity > state.balloons[$1].size.capacity }
-        let ps = state.pilots.sorted { $0.level > $1.level }
-        for (k, i) in need.enumerated() where k < ps.count { state.balloons[i].pilot = ps[k].id }
+        var bs = state.balloons
+        for i in bs.indices { bs[i].pilot = nil }
+        let s = state
+        func down(_ b: Balloon) -> Int { b.damagedUntil > s.day || s.condition(b) <= 0 ? 1 : 0 }
+        let need = bs.indices
+            .filter { !(bs[$0].id == s.flagship && s.flyingSelf) }
+            .sorted { (down(bs[$0]), -bs[$0].size.capacity) < (down(bs[$1]), -bs[$1].size.capacity) }
+        let ps = s.pilots.sorted { ($0.level, $0.xp) > ($1.level, $1.xp) }
+        for (k, i) in need.enumerated() where k < ps.count { bs[i].pilot = ps[k].id }
+        state.balloons = bs
     }
 
     mutating func planRivalFlights() {
@@ -149,7 +159,7 @@ public struct Game: Sendable {
     public func accidentChance(_ b: Balloon) -> Double {
         let flag = state.weather?.flag ?? .green
         let pilotRisk = state.isSelf(b) ? 1 : state.pilot(of: b)?.level.risk ?? 1
-        return flag.accident * pilotRisk * b.size.risk * (b.condition < 0.3 ? 1.5 : 1)
+        return flag.accident * pilotRisk * b.size.risk * (state.condition(b) < 0.3 ? 1.5 : 1)
     }
 
     /// Daily premiums for one balloon given its accident chance. Nothing is insurable on a red day.

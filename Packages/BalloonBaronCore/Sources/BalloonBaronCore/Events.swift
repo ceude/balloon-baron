@@ -24,6 +24,8 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case antitrustFine(sharePercent: Int, fine: Int)
     case seized(balloon: String, value: Int)
     case hotelLeft(Hotel)
+    case chapterDone(String, reward: Int)
+    case baron(RegionID)
 
     // Rivals
     case rivalFleetSold(rival: String)
@@ -39,19 +41,25 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case rivalNewBalloon(rival: String)
     case rivalBankrupt(rival: String, balloons: Int, price: Int)
     case rivalForSale(rival: String, price: Int)
+    case rivalsMerged(a: String, b: String, name: String, balloons: Int)
 }
 
 public struct Ledger: Codable, Equatable, Sendable {
     // Income
     public var tickets = 0, founderBonus = 0, hotelIncome = 0, mission = 0, ads = 0, tips = 0, insurancePaid = 0, seizure = 0
+    public var chapterReward = 0
     public var missionDone: Mission?
     public var adRepLoss = 0.0
+    /// Popularity your designs brought today.
+    public var designRep = 0.0
+    /// What reached the holding today from parked regions, after its expenses. Not part of `net`.
+    public var holdingNet = 0
     // Costs
     public var fuel = 0, wages = 0, upkeep = 0, insurance = 0, loans = 0, repairs = 0, compensation = 0
     public var fines = 0, cancellations = 0, hotelFees = 0, antitrust = 0
 
     public var net: Int {
-        tickets + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure
+        tickets + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
             - fuel - wages - upkeep - insurance - loans - repairs - compensation - fines - cancellations - hotelFees - antitrust
     }
 }

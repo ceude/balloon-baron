@@ -34,7 +34,7 @@ extension Game {
 
     mutating func addBalloon(_ size: BalloonSize) {
         let used = Set(state.balloons.map(\.name))
-        let name = size == .XL ? Rules.xlName : Rules.balloonNames.first { !used.contains($0) } ?? "Balon \(state.nextID)"
+        let name = size == .XL ? state.region.xlName : state.region.balloonNames.first { !used.contains($0) } ?? "Balloon \(state.nextID)"
         state.balloons.append(Balloon(id: state.nextID, size: size, name: name))
         state.nextID += 1
     }
@@ -58,6 +58,7 @@ extension Game {
         guard state.cash >= cost else { return false }
         state.cash -= cost
         state.balloons[i].flights = 0
+        assignPilots()
         return true
     }
 
@@ -188,6 +189,7 @@ extension Game {
         state.rep = min(1.4, state.rep + 0.1)
         state.influencerUntil = state.day + 3
         state.influencerCooldown = state.day + 10
+        state.influencerCount += 1
         addReview(.influencer)
         return true
     }
@@ -199,6 +201,7 @@ extension Game {
         state.rep = min(1.4, state.rep + 0.05)
         state.guideCooldown = state.day + 5
         state.guideUntil = state.day + 3
+        state.guideCount += 1
         addReview(.guide)
         return true
     }
