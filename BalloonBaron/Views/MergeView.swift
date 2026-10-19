@@ -33,6 +33,7 @@ struct MergeView: View {
                 .foregroundStyle(Theme.ink2)
             BigButton(title: loc("merge.ready")) { store.dismissPopup() }
         }
+        .onAppear { SoundEngine.shared.play(.low) }
     }
 
     private var icons: some View {

@@ -6,4 +6,3 @@ _Şu an boş._ Son toplu aktarım: filo/ekip arayüzü, sade ana ekran ve fiyat 
 
 Aktarımda bilerek eksik kalanlar (ileride):
 - (yok)
-- Bölüm töreninde fanfar ve alkış sesi (ses aşamasında).
