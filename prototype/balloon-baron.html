@@ -272,6 +272,11 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .baron{border-top:6px solid var(--sun);background:linear-gradient(#fff8e1,var(--paper) 40%)}
 .crown{width:84px;height:63px;align-self:center}
 .world{gap:12px}
+.hbox{display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:20px;background:linear-gradient(135deg,#2b2350,#4a3a7a);color:#fff}
+.hbox .hk{display:flex;flex-direction:column}
+.hbox .hk span{font-size:13px;opacity:.75}
+.hbox .hk b{font-family:var(--cond);font-weight:800;font-size:36px;color:var(--sun);line-height:1.05}
+.hbox .hf{display:flex;flex-direction:column;gap:3px;font-size:13px;opacity:.9}
 .issue{border-top:6px solid var(--red)}
 .issue .chap{color:var(--red)}
 .hzline{display:flex;gap:10px;align-items:center;font-size:13.5px;line-height:1.4;color:var(--ink2);background:var(--haze);border-radius:14px;padding:8px 10px}
@@ -621,7 +626,7 @@ function newState() {
       { name: 'Peribaca Balloons', col: '#9b7be0', col2: '#f2ebff', style: 'mid',   balloons: ['M', 'M', 'M', 'S'],      price: 165, rep: 1,    cash: 20000 },
       { name: 'Kızıl Vadi Air',    col: '#c73a2a', col2: '#ffd9a8', style: 'risky', balloons: ['S', 'S', 'S'],           price: 135, rep: .85,  cash: 12000 }
     ],
-    region: 'cap', regions: {}, barons: {}, designs: [], lastShare: null, monopolyShown: false, over: false, tutorialDone: false, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, hotels: [], unl: {}, tips: {}, hezQ: [], hotelTaken: {}, poach: null, ownHotels: [], school: false, winter: null, nextWinter: null, monoDays: 0
+    region: 'cap', regions: {}, barons: {}, designs: [], holding: 0, hold: null, lastShare: null, monopolyShown: false, over: false, tutorialDone: false, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, hotels: [], unl: {}, tips: {}, hezQ: [], hotelTaken: {}, poach: null, ownHotels: [], school: false, winter: null, nextWinter: null, monoDays: 0
   };
   s.rivals.forEach(r => { r.alive = true; r.dmg = r.balloons.map(() => 0); r.lastPax = 0; r.lastCap = 0; r.forSale = null; r.lowDays = 0; });
   s.balloons.push({ id: s.nextId++, size: 'S', name: 'Şafak', fly: true, dmgUntil: 0, pilot: null });
@@ -650,6 +655,8 @@ function migrate(s) {
   if (!s.regions) s.regions = {};
   if (!s.barons) s.barons = s.baron ? { cap: s.baron.cap } : {};
   if (!s.designs) s.designs = [];
+  if (s.holding == null) s.holding = 0;
+  for (const id in s.regions) { if (s.regions[id].cash == null) { s.regions[id].cash = 0; s.regions[id].loans = []; } }
   return s;
 }
 const KEY = 'safak-balon-v1';
@@ -730,7 +737,7 @@ function canFly(b) {
 const flying = () => S.balloons.filter(b => b.fly && canFly(b) === 'ok');
 const pilotOf = b => S.pilots.find(p => p.id === b.pilot);
 const isSelf = b => b.id === S.flag && selfFlying();
-const cond = b => clamp(1 - (b.flights || 0) / LIFE, 0, 1);
+const cond = b => clamp(1 - (b.flights || 0) / envLife(), 0, 1);
 const SCHOOL_COST = 60000, WORKSHOP_COST = 75000;
 const pilotWage = p => p.wage || Math.round(LEVELS[p.lvl].wage * (p.school ? .7 : 1));
 function accP(b) { const p = pilotOf(b); return FLAGS[S.weather.flag].acc * (isSelf(b) ? 1 : p ? LEVELS[p.lvl].risk : 1) * SIZES[b.size].risk * (cond(b) < .3 ? 1.5 : 1); }
@@ -800,7 +807,7 @@ function market(myPrice, myCap) {
 
 /* ---------- day flow ---------- */
 const demandGrowth = () => 1 + .6 * (1 - Math.exp(-(S.day - 1) / 50));
-const dayDemand = () => Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? 1.9 : 1));
+const dayDemand = () => Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? 1.9 : 1) * holdBoost(S.region));
 let mode = 'office', tab = 'plan', FL = null, lastReport = null;
 function hezAdd(k) { if (!S.tips[k] && !S.hezQ.includes(k)) S.hezQ.push(k); }
 function unlockCheck() {
@@ -942,7 +949,7 @@ function finishDay(flight) {
   });
   Lg.up = S.balloons.reduce((a, b) => a + SIZES[b.size].up, 0);
   myHotels().forEach(x => { if (owns(x)) { Lg.hotelInc += hotelInc(x); S.rep = Math.min(1.4, S.rep + x.rep * 1.5); } else { Lg.hotel += x.fee; S.rep = Math.min(1.4, S.rep + x.rep); } });
-  S.loans.forEach(l => { Lg.loan += Math.round(l.inst * FX()); l.left--; });
+  S.loans.forEach(l => { Lg.loan += l.inst; l.left--; });
   S.loans = S.loans.filter(l => l.left > 0);
   let net = Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
   S.cash += net;
@@ -996,7 +1003,7 @@ function finishDay(flight) {
   S.repHist.push({ d: S.day, r: S.rep }); if (S.repHist.length > 120) S.repHist.shift();
   S.lastShare = { me: paxTotal, cap: capToday, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
   S.netHist = (S.netHist || []).concat([net]).slice(-14);
-  const ai = autoRegions(); if (ai) { Lg.auto = ai; S.cash += ai; net += ai; }
+  autoRegions(); const hn = holdingDay(); if (hn) Lg.hold = hn;
   if (S.fiesta && fl.length) S.fiestaFlown = (S.fiestaFlown || 0) + 1;
   const rpTot = paxTotal + S.plan.rpax.reduce((a, b) => a + b, 0);
   if (rpTot) S.shareNow = paxTotal / rpTot;
@@ -1091,7 +1098,10 @@ function checkChapters(ev, Lg, flew) {
   const C = chap()[S.chapter];
   if (!C || !C.goals.every(goalDone)) return 0;
   S.chapterNews = S.chapter; S.chapter++;
-  if (S.chapter >= chap().length) { if (!S.barons) S.barons = {}; S.barons[S.region] = S.day; if (S.region === 'cap') S.baron = { cap: S.day }; }
+  if (S.chapter >= chap().length) {
+    if (!S.barons) S.barons = {}; S.barons[S.region] = S.day;
+    if (S.region === 'cap') { S.baron = { cap: S.day }; S.hezQ.push('news:Artık bir holdingin var evlat! Sağdaki Holding butonuna dokun. Kapadokya kasasından holdinge para çekebilirsin; Albuquerque\'nin giriş bedeli holdingden ödenir. Bir uyarı: holding parası ülkelere geri dönmez, her ülke kendi kasasıyla büyür.'); }
+  }
   ev.push(C.reward ? `Bölüm tamamlandı: ${C.name}! Yatırımcılar ${eur(C.reward)} ödül verdi.` : `${C.name} unvanını kazandın!`);
   Lg.chapter = C.reward; Lg.chapterName = C.name; S.cash += C.reward;
   return C.reward;
@@ -1173,7 +1183,7 @@ function showWorldMap() {
     let tag = '', sub = '';
     if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = R.id === 'cap' ? 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.' : 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.'; }
     else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
-    else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} (FAA lisansı ve ofis).`; }
+    else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.`; }
     else if (R.id === 'abq') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Kapadokya baronu olunca açılır.'; }
     else { tag = '<span class="tag n">Yakında</span>'; sub = R.mystery ? 'Gizemli bir bölge. Ne zaman açılacağını Hezarfen bile bilmiyor.' : 'Nil kıyısında, firavunların vadisi üstünde. Çok yakında.'; }
     if (isBaron(R.id)) tag += ' <span class="tag g">Baron</span>';
@@ -1183,7 +1193,7 @@ function showWorldMap() {
     if (owned && !here) {
       if (A && A.issue) acts.appendChild(pbtn('Karar ver', () => showIssue(R.id)));
       acts.appendChild(pbtn('Bölgeye git', () => switchRegion(R.id), false, true));
-    } else if (open && !owned) acts.appendChild(pbtn(`Gir ${eurH(ENTRY_FEE)}`, () => enterRegion(R.id), S.cash < ENTRY_FEE * FX()));
+    } else if (open && !owned) acts.appendChild(pbtn(`Gir ${eurH(ENTRY_FEE)}`, () => enterRegion(R.id), (S.holding || 0) < ENTRY_FEE));
     if (acts.children.length) it.appendChild(acts);
     list.appendChild(it);
   }
@@ -1470,7 +1480,7 @@ const ICONS = {
 };
 const TABS = [['fleet', 'Filo'], ['crew', 'Ekip'], ['bank', 'Banka'], ['market', 'Pazar']];
 const unlocked = k => !!(S.unl && S.unl[k]);
-const PAGES = { fleet: ['Filo', () => tabFleet], crew: ['Ekip', () => tabCrew], bank: ['Banka', () => tabBank], market: ['Pazar', () => tabMarket] };
+const PAGES = { holding: ['Holding', () => tabHolding], fleet: ['Filo', () => tabFleet], crew: ['Ekip', () => tabCrew], bank: ['Banka', () => tabBank], market: ['Pazar', () => tabMarket] };
 let page = null;
 function openPage(k) { page = k; $('page').hidden = false; $('page').style.paddingTop = $('hud').offsetHeight + 'px'; $('pTitle').textContent = PAGES[k][0]; renderTab(); $('tabBody').scrollTop = 0; }
 function closePage() { page = null; $('page').hidden = true; refresh(); }
@@ -1479,10 +1489,10 @@ function renderNav() {
   const dots = { crew: S.balloons.some(b => canFly(b) === 'nopilot') || !licenseOk(), market: S.rivals.some(r => (r.offer && r.alive && !r.offerNo) || (r.forSale && !r.saleNo)) };
   { /* tek buton: baron olana kadar "Hedef", sonra "Dünya" (bölgenin hedefleri ve harita içinde) */
     const C = isBaron() ? null : chap()[S.chapter || 0], done = C ? C.goals.filter(goalDone).length : 0, world = anyBaron();
-    const g = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS[world ? 'world' : 'goals']}</svg></span>${world ? 'Dünya' : 'Hedef'}`);
+    const g = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS[world ? 'world' : 'goals']}</svg></span>${world ? 'Holding' : 'Hedef'}`);
     if (C) g.appendChild(h('span', 'gbadge', `${done}/${C.goals.length}`));
     if (world && (Object.values(S.regions || {}).some(r => r.auto && r.auto.issue) || (isBaron('cap') && !ownsRegion('abq')))) g.appendChild(h('span', 'dot'));
-    g.onclick = C ? showGoals : showWorldMap; el.appendChild(g);
+    g.onclick = world ? () => openPage('holding') : showGoals; el.appendChild(g);
   }
   for (const [k, label] of TABS) {
     if (!unlocked(k)) continue;
@@ -1677,7 +1687,7 @@ function tabFleet(body) {
     it.appendChild(acts);
     s.appendChild(it);
   }
-  s.appendChild(h('p', 'hint', `Balon zarfı yaklaşık ${LIFE} uçuşta yıpranır. %30 altında kaza riski artar, %0'da balon uçamaz. Yenilemek balon fiyatının %35'i.`));
+  s.appendChild(h('p', 'hint', `Balon zarfı yaklaşık ${envLife()} uçuşta yıpranır. %30 altında kaza riski artar, %0'da balon uçamaz. Yenilemek balon fiyatının %35'i.`));
   s.appendChild(h('p', 'hint', 'Amiral balonunu sen uçurursun. Diğer balonlara pilot gerekir. Balonuna reklam alırsan sponsor her uçuşta öder, ama yolcular reklamlı balonu sevmez ve popülerliğin her uçuşta biraz düşer.'));
   body.appendChild(s);
   const b2 = h('div', 'sec'); b2.appendChild(h('h2', null, 'Yeni balon al'));
@@ -1754,16 +1764,13 @@ function tabCrew(body) {
   body.appendChild(c);
 }
 function tabBank(body) {
-  if (S.region !== 'cap' || Object.keys(S.regions || {}).length) {
-    const hs = h('div', 'callout grn', `<b>Holding kasası: ${eurH(S.cash / FX())}</b>${S.region === 'abq' ? ` (bu bölgede ${eur(S.cash)} olarak görünür, 1 € = 1,1 $)` : ''}. Krediler holding adına euro ile çekilir.`);
-    body.appendChild(hs);
-  }
+  if (S.region !== 'cap' || Object.keys(S.regions || {}).length) body.appendChild(h('div', 'callout grn', `<b>${RD().name} bankası.</b> Krediler bu bölgenin kasasına girer ve buradan ödenir.`));
   const s = h('div', 'sec'); s.appendChild(h('h2', null, 'Kredilerin'));
   if (!S.loans.length) s.appendChild(h('p', 'hint', 'Borcun yok.'));
   for (const l of S.loans) {
     const it = h('div', 'item'), payoff = Math.round(l.inst * l.left * .9);
-    it.appendChild(h('div', 'main', `<div class="t">${eurH(l.amt)} kredi</div><div class="s">Günlük ${eurH(l.inst)}, ${l.left} gün kaldı.</div>`));
-    it.appendChild(pbtn(`Kapat ${eurH(payoff)}`, () => { S.cash -= payoff * FX(); S.loans = S.loans.filter(x => x !== l); refresh(); }, S.cash < payoff * FX(), true));
+    it.appendChild(h('div', 'main', `<div class="t">${eur(l.amt)} kredi</div><div class="s">Günlük ${eur(l.inst)}, ${l.left} gün kaldı.</div>`));
+    it.appendChild(pbtn(`Kapat ${eur(payoff)}`, () => { S.cash -= payoff; S.loans = S.loans.filter(x => x !== l); refresh(); }, S.cash < payoff, true));
     s.appendChild(it);
   }
   body.appendChild(s);
@@ -1771,8 +1778,8 @@ function tabBank(body) {
   LOANS.forEach(L => {
     const total = L.inst * L.days, rate = (total - L.amt) / L.amt, it = h('div', 'item');
     const locked = S.balloons.length < L.need, full = S.loans.length >= 2;
-    it.appendChild(h('div', 'main', `<div class="t">${eurH(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eurH(L.inst)}, toplam ${eurH(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}</div>`));
-    it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt * FX(); S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
+    it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}</div>`));
+    it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
     o.appendChild(it);
   });
   o.appendChild(h('p', 'hint', `Aynı anda en fazla iki kredi. Kasa ${eur(-5000)} altına düşerse banka bir balonuna el koyar ve yarı fiyatına satar.`));
@@ -1877,10 +1884,11 @@ function showReport() {
   line('Bilet geliri', L.rev); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
   line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan);
   line('Kaza: onarım', -L.repair); line('Kaza: yolcu tazminatı', -L.comp); line('Sigorta ödemesi', L.insPay);
-  line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize); line(`${Object.keys(S.regions || {}).map(id => REGION_DEF[id].name).join(', ')} (otomatik mod)`, L.auto || 0); line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
+  line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize);  line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
   led.appendChild(h('div', 'tot', `<span>Net</span><span class="v ${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span>`));
   led.appendChild(h('div', null, `<span>Kasa</span><span class="v">${eur(S.cash)}</span>`));
   b.appendChild(led);
+  if (L.hold) b.appendChild(h('div', 'callout grn', `<b>Holding kasasına +${eurH(L.hold)}.</b> ${Object.keys(S.regions || {}).map(id => REGION_DEF[id].name).join(', ')} otomatik modda kazandı, holding giderleri (%${HOLD_COST * 100}) düşüldü. Holding kasası: ${eurH(S.holding || 0)}.`));
   if (L.designRep) b.appendChild(h('div', 'callout grn', `<b>Tasarımların konuşuluyor.</b> Desenli balonların bugün popülerliğine +${(L.designRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ ekledi.`));
   if (L.adRep) b.appendChild(h('div', 'callout yel', `<b>Puanını aldığın reklamlar da etkiliyor.</b> Bugün balonlarındaki reklamlar popülerliğini ${(L.adRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ düşürdü.`));
   if (R.ev.length || R.rev.length) {
@@ -2560,7 +2568,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist'];
+const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist'];
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'M', 'M', 'M'], price: 195, rep: 1.15, cash: 50000 },
   { name: 'Rio Grande Balloons', col: '#3c9a8f', col2: '#e6fff9', style: 'mid', balloons: ['M', 'M', 'M', 'S'], price: 165, rep: 1, cash: 20000 },
@@ -2584,7 +2592,7 @@ const anyBaron = () => !!(S.barons && Object.keys(S.barons).length);
 const ownsRegion = id => id === S.region || !!(S.regions && S.regions[id]);
 function newRegionState(id) {
   const st = {
-    weather: null, demand: null, balloons: [], pilots: [], candidates: [], price: 170, rep: 1, strikes: 0, banUntil: 0, selfFly: true,
+    cash: 3000, loans: [], weather: null, demand: null, balloons: [], pilots: [], candidates: [], price: 170, rep: 1, strikes: 0, banUntil: 0, selfFly: true,
     lastShare: null, shareNow: 0, hotels: [], ownHotels: [], hotelTaken: {}, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, guideUntil: 0,
     influCount: 0, guideCount: 0, plan: null, winter: null, nextWinter: S.day + 40, monoDays: 0, domDays: 0, lastMerge: null, firstMis: 1, poach: null,
     school: false, demandBase: 165, chapter: 0, monopolyShown: false, absentNotice: 0, fiesta: null, fiestaNext: S.day + 12, fiestaFlown: 0, netHist: []
@@ -2606,7 +2614,7 @@ function makeAuto(rs, id) {
 }
 function switchRegion(id) {
   if (id === S.region) return;
-  const eurCash = S.cash / FX(), cur = {};
+  const cur = {};
   RKEYS.forEach(k => { cur[k] = S[k]; });
   cur.auto = makeAuto(cur, S.region);
   if (!S.regions) S.regions = {};
@@ -2614,15 +2622,16 @@ function switchRegion(id) {
   const next = S.regions[id] || newRegionState(id);
   delete S.regions[id];
   RKEYS.forEach(k => { S[k] = next[k]; });
-  S.region = id; S.cash = Math.round(eurCash * FX());
+  S.region = id;
   S.weather = null; S.demand = null; S.plan = null; S.rivals.forEach(r => { r.fly = null; });
   S.candidates = [];
   applyRegionTheme();
   $('menu').hidden = true; tab = 'plan'; startDay();
 }
 function enterRegion(id) {
-  S.cash -= ENTRY_FEE * FX();
-  if (id === 'abq') S.hezQ.push('news:Amerika evlat! Albuquerque\'de rüzgâr bambaşka: meşhur "kutu". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ama holding kasan euro; 1 euro 1,1 dolar eder. Kapadokya bu arada otomatik modda para kazanmaya devam edecek, bir sorun olursa seni çağırırım.');
+  if ((S.holding || 0) < ENTRY_FEE) return;
+  S.holding -= ENTRY_FEE;
+  if (id === 'abq') S.hezQ.push('news:Amerika evlat! Albuquerque\'de rüzgâr bambaşka: meşhur "kutu". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: 3.000 dolar ve bir küçük balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika\'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım.');
   switchRegion(id);
 }
 
@@ -2652,7 +2661,7 @@ function autoRegions() {
     A.mods = (A.mods || []).filter(m => m.until > S.day);
     const mult = A.mods.reduce((a, m) => a * m.mult, 1) * (A.issue ? .5 : 1);
     const inc = A.base * rnd(.85, 1.15) * mult;
-    A.today = Math.round(inc); total += inc;
+    A.todayRaw = inc; A.today = Math.round(inc * holdBoost(id)); total += inc;
     if (!A.issue && S.day - (A.lastIssue || A.since) >= 6 && Math.random() < .07) {
       const k = pick(Object.keys(ISSUES)); A.issue = { k, day: S.day }; A.lastIssue = S.day;
       S.hezQ.push(`news:${REGION_DEF[id].name} bölgesinden haber var evlat: ${ISSUES[k].d} Karar verene kadar oradaki kazancın yarıya düştü. Ana ekrandaki uyarıya ya da dünya haritasına dokun.`);
@@ -2670,8 +2679,8 @@ function showIssue(id) {
   c.appendChild(h('div', 'hzline', `${HEZ_AV}<span><b>Hezarfen:</b> ${I.hz}</span>`));
   const opt = (o, fn, cls) => {
     const cost = issueCost(A, o[1]), b = h('button', 'opt ' + cls, `<b>${o[0]}${cost ? ` (${eurH(cost)})` : ''}</b><span>${cost ? 'Holding kasasından ödenir, sorun kapanır.' : o[1]}</span>`);
-    if (cost && S.cash < cost * FX()) b.disabled = true;
-    b.onclick = () => { if (cost) S.cash -= cost * FX(); const r = fn(A, id, rs); A.issue = null; m.hidden = true; if (r === 'go') switchRegion(id); else { refresh(); setTimeout(nextPopup, 250); } };
+    if (cost && (S.holding || 0) < cost) b.disabled = true;
+    b.onclick = () => { if (cost) S.holding -= cost; const r = fn(A, id, rs); A.issue = null; m.hidden = true; if (r === 'go') switchRegion(id); else { refresh(); setTimeout(nextPopup, 250); } };
     c.appendChild(b);
   };
   opt(I.a, I.A, 'a'); opt(I.b, I.B, 'b');
@@ -2691,6 +2700,7 @@ function designScore(d) {
   let s = PATTERNS[d.pat][1] * .6 + contrast * 30 + (distinct - 1) * 6 + 10;
   if ((S.designs || []).some(o => o !== d && o.pat === d.pat && o.cols[0] === d.cols[0])) s -= 20; /* kendini tekrar etme */
   if (S.rivals.some(r => r.alive && r.col === d.cols[0])) s -= 10; /* rakibe benziyor */
+  if (S.hold && S.hold.hq === 'tyo') s += 10;
   return clamp(Math.round(s), 5, 100);
 }
 const iconCols = b => { const d = designOf(b); return d ? [d.cols[0], d.cols[1]] : myCol(); };
@@ -2765,7 +2775,7 @@ function showDesigner() {
     const nm = h('input', 'nm'); nm.placeholder = 'Tasarımın adı (ör. Gün Batımı)'; nm.value = dr.name; nm.maxLength = 22; nm.oninput = () => { dr.name = nm.value; };
     c.appendChild(nm);
     c.appendChild(h('p', 'hint', 'Tasarımlı balonlar her uçuşta popülerlik getirir; yaratıcılık ne kadar yüksekse etki o kadar büyük. Yeni tasarımlar zamanla eskir, arada yenilerini üret. Aynı deseni aynı renkle tekrarlamak ya da bir rakibin rengini kullanmak puanı düşürür.'));
-    const cost = DESIGN_COST * FX(), mk = h('button', 'big', `Üret ${eur(cost)}`); mk.disabled = S.cash < cost;
+    const cost = DESIGN_COST, mk = h('button', 'big', `Üret ${eur(cost)}`); mk.disabled = S.cash < cost;
     mk.onclick = () => {
       S.cash -= cost; if (!S.designs) S.designs = [];
       const d = { id: S.nextId++, name: (dr.name || '').trim() || `${PATTERNS[dr.pat][0]} ${S.designs.length + 1}`, pat: dr.pat, cols: dr.cols.slice(), day: S.day };
@@ -2780,13 +2790,13 @@ function openDesignPicker(b) {
   const m = $('menu'); m.replaceChildren();
   const c = h('div', 'card');
   c.appendChild(h('h1', null, `${esc(b.name)} deseni`));
-  c.appendChild(h('p', 'lead', `Balonu yeniden boyamak ${eur(RESKIN_COST * FX())}.`));
+  c.appendChild(h('p', 'lead', `Balonu yeniden boyamak ${eur(RESKIN_COST)}.`));
   const opts = [null].concat(S.designs || []);
   for (const d of opts) {
     const it = h('div', 'item'), cur = (b.design || null) === (d ? d.id : null);
     it.insertAdjacentHTML('beforeend', d ? `<img class="dthumb" src="${designThumb(d, 44, 56)}" alt="">` : balloonIcon(myCol()[0], myCol()[1]));
     it.appendChild(h('div', 'main', d ? `<div class="t">${esc(d.name)}</div><div class="s">Yaratıcılık ${d.score}, tazelik %${Math.round(freshness(d) * 100)}</div>` : '<div class="t">Şirket renkleri</div><div class="s">Desensiz, klasik çizgili.</div>'));
-    it.appendChild(pbtn(cur ? 'Seçili' : 'Giydir', () => { S.cash -= RESKIN_COST * FX(); b.design = d ? d.id : null; m.hidden = true; refresh(); }, cur || S.cash < RESKIN_COST * FX()));
+    it.appendChild(pbtn(cur ? 'Seçili' : 'Giydir', () => { S.cash -= RESKIN_COST; b.design = d ? d.id : null; m.hidden = true; refresh(); }, cur || S.cash < RESKIN_COST));
     c.appendChild(it);
   }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
@@ -2796,8 +2806,8 @@ function studioSection(body) {
   const ws = h('div', 'sec'); ws.appendChild(h('h2', null, 'Balon atölyesi'));
   if (!S.workshop) {
     const it = h('div', 'item');
-    it.appendChild(h('div', 'main', `<div class="t">Kendi balon atölyeni kur</div><div class="s">Balonlarının desenlerini kendin tasarlarsın. Yaratıcı tasarımlar yolcuların ilgisini çeker ve popülerlik getirir. Atölye holdingindir, bütün bölgelerde kullanılır.</div>`));
-    it.appendChild(pbtn(eurH(WORKSHOP_COST), () => { S.cash -= WORKSHOP_COST * FX(); S.workshop = { day: S.day }; refresh(); }, S.cash < WORKSHOP_COST * FX()));
+    it.appendChild(h('div', 'main', `<div class="t">Kendi balon atölyeni kur</div><div class="s">Balonlarının desenlerini kendin tasarlarsın. Yaratıcı tasarımlar yolcuların ilgisini çeker ve popülerlik getirir. Atölye bir kez kurulur, tasarımların bütün bölgelerde kullanılır.</div>`));
+    it.appendChild(pbtn(eur(WORKSHOP_COST), () => { S.cash -= WORKSHOP_COST; S.workshop = { day: S.day }; refresh(); }, S.cash < WORKSHOP_COST));
     ws.appendChild(it); body.appendChild(ws); return;
   }
   const ds = S.designs || [];
@@ -2821,6 +2831,110 @@ function mesa(x, base, w, hgt, body, cap) {
 function tree(x, base, w, hgt, crown, trunk) {
   ctx.fillStyle = trunk; ctx.fillRect(x - w * .07, base - hgt * .45, w * .14, hgt * .45);
   ell(x, base - hgt * .62, w * .5, hgt * .3, crown); ell(x - w * .22, base - hgt * .5, w * .3, hgt * .2, crown); ell(x + w * .2, base - hgt * .78, w * .3, hgt * .2, crown);
+}
+
+/* ---------- holding ---------- */
+/* holding kasası euro; bölgelere para aktaramaz. Otomatik moddaki bölgelerin kazancı buraya gelir,
+   oynanan bölgeden ise sadece holding sayfasından istenince çekilir. */
+const HOLD_COST = .25; /* maaş, bina vb. giderler: otomatik gelirin %25'i */
+const CELEBS = ['Selin Arda (oyuncu)', 'Kenji Mori (aktör)', 'Lucía Varela (şarkıcı)', 'Emre Kaan (futbolcu)', 'Ji-ho Park (K-pop yıldızı)', 'Maya Collins (sunucu)'];
+const HQ_CITIES = {
+  nyc: { name: 'New York', cost: 1500000, perk: 'TV kampanyaları %25 daha ucuz.', icon: '🗽' },
+  ist: { name: 'İstanbul', cost: 1200000, perk: 'Kapadokya\'nın otomatik kazancı %15 artar.', icon: '🕌' },
+  tyo: { name: 'Tokyo', cost: 1400000, perk: 'Tasarımların yaratıcılık puanı +10.', icon: '🗼' },
+  sel: { name: 'Seul', cost: 1300000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun sürer.', icon: '🏙️' }
+};
+const HQ = () => S.hold && S.hold.hq ? HQ_CITIES[S.hold.hq] : null;
+const tvCost = () => Math.round(250000 * (S.hold && S.hold.hq === 'nyc' ? .75 : 1));
+const RD_LEVELS = [{ cost: 400000, life: 160 }, { cost: 900000, life: 200 }];
+const envLife = () => S && S.hold && S.hold.rnd ? RD_LEVELS[S.hold.rnd - 1].life : 120;
+const holdOn = () => S && S.hold;
+/* holding yatırımlarının bir bölgedeki talep çarpanı */
+function holdBoost(id) {
+  const H = S.hold; if (!H) return 1;
+  return (H.tvUntil > S.day ? 1.2 : 1) * (H.celeb && H.celeb.until > S.day ? 1.1 : 1) * (H.bb && H.bb[id] > S.day ? 1.1 : 1);
+}
+function holdingDay() {
+  if (!S.hold) S.hold = { log: [] };
+  let gross = 0;
+  for (const id in (S.regions || {})) {
+    const A = S.regions[id].auto; if (!A) continue;
+    const mult = holdBoost(id) * (S.hold.hq === 'ist' && id === 'cap' ? 1.15 : 1);
+    gross += (A.todayRaw || 0) * mult;
+  }
+  gross = Math.round(gross);
+  const cost = Math.round(gross * HOLD_COST);
+  S.holding = (S.holding || 0) + gross - cost;
+  S.hold.today = { gross, cost };
+  return gross - cost;
+}
+function withdraw(share) {
+  const keep = 10000, amt = Math.max(0, Math.floor(share === 1 ? S.cash - keep : S.cash * share));
+  if (amt <= 0) return;
+  S.cash -= amt; S.holding = (S.holding || 0) + amt / FX(); sfx('coin'); refresh();
+}
+function holdBuy(cost, fn) { if ((S.holding || 0) < cost) return; S.holding -= cost; fn(); sfx('coin'); refresh(); }
+function tabHolding(body) {
+  const H = S.hold || (S.hold = { log: [] }), hc = HQ();
+  const top = h('div', 'hbox');
+  top.innerHTML = `<div class="hk"><span>Holding kasası</span><b>${eurH(S.holding || 0)}</b></div>` +
+    (H.today && H.today.gross ? `<div class="hf"><span>Dün otomatik bölgelerden <b>+${eurH(H.today.gross)}</b></span><span>Holding giderleri (maaş, bina) <b>−${eurH(H.today.cost)}</b></span></div>` : '<div class="hf"><span>Henüz otomatik moddaki bölgen yok. Holdinge para, buradan ülke kasasından çekerek girer.</span></div>');
+  body.appendChild(top);
+  if (!isBaron()) {
+    const C = chap()[S.chapter || 0], done = C.goals.filter(goalDone).length, g = h('div', 'callout yel', `<b>${RD().name}: ${C.name}</b>, ${done}/${C.goals.length} hedef tamam.`);
+    const gb = pbtn('Hedefler', showGoals); gb.style.marginTop = '8px'; g.appendChild(gb); body.appendChild(g);
+  }
+
+  const w = h('div', 'sec'); w.appendChild(h('h2', null, `${RD().name} kasasından çek`));
+  w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Çektiğin para holdinge ${S.region === 'abq' ? '1,1\'e bölünerek euro olarak ' : ''}geçer. Holding parası ülkelere geri aktarılamaz.`));
+  const row = h('div', 'btns');
+  [[.25, '%25'], [.5, '%50'], [1, `Hepsi (${eur(10000)} kalsın)`]].forEach(([k, l]) => { const b = h('button', 'ghost', l); b.disabled = S.cash <= 10000; b.onclick = () => withdraw(k); row.appendChild(b); });
+  w.appendChild(row); body.appendChild(w);
+
+  const r = h('div', 'sec'); r.appendChild(h('h2', null, 'Bölgeler'));
+  for (const R of REGIONS) {
+    if (!ownsRegion(R.id) && !(R.id === 'abq' && isBaron('cap'))) continue;
+    const here = R.id === S.region, rs = S.regions && S.regions[R.id], A = rs && rs.auto, it = h('div', 'item');
+    const sub = here ? 'Buradasın. Kasası ve bankası kendine ait.' : A ? `Otomatik mod: günde yaklaşık ${eurH(Math.round((A.todayRaw || A.base) * holdBoost(R.id)))} brüt.${A.issue ? ` <b>${ISSUES[A.issue.k].t}</b>, karar verene kadar yarıda.` : ''}` : `Giriş bedeli ${eurH(ENTRY_FEE)}, holding kasasından. Bölgede sıfırdan başlarsın: ${REGION_DEF[R.id].cur}3.000 ve bir küçük balon.`;
+    it.appendChild(h('div', 'main', `<div class="t">${R.name}${here ? ' <span class="tag g">Buradasın</span>' : A ? (A.issue ? ' <span class="tag r">Sorun var</span>' : ' <span class="tag y">Otomatik</span>') : ' <span class="tag y">Açıldı</span>'}${isBaron(R.id) ? ' <span class="tag g">Baron</span>' : ''}</div><div class="s">${sub}</div>`));
+    const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
+    if (A && A.issue) acts.appendChild(pbtn('Karar ver', () => showIssue(R.id)));
+    if (!here && ownsRegion(R.id)) acts.appendChild(pbtn('Bölgeye git', () => { closePage(); switchRegion(R.id); }, false, true));
+    if (!ownsRegion(R.id)) acts.appendChild(pbtn(`Gir ${eurH(ENTRY_FEE)}`, () => { closePage(); enterRegion(R.id); }, (S.holding || 0) < ENTRY_FEE));
+    if (acts.children.length) it.appendChild(acts);
+    r.appendChild(it);
+  }
+  const mb = pbtn('Dünya haritası', showWorldMap, false, true); mb.style.alignSelf = 'flex-start'; r.appendChild(mb);
+  body.appendChild(r);
+
+  const v = h('div', 'sec'); v.appendChild(h('h2', null, 'Holding yatırımları'));
+  const inv = (title, desc, label, cost, fn, dis, status) => {
+    const it = h('div', 'item'); it.appendChild(h('div', 'main', `<div class="t">${title}${status ? ` <span class="tag g">${status}</span>` : ''}</div><div class="s">${desc}</div>`));
+    if (label) it.appendChild(pbtn(label, () => holdBuy(cost, fn), dis || (S.holding || 0) < cost));
+    v.appendChild(it);
+  };
+  const tvOn = H.tvUntil > S.day, tvCd = (H.tvCd || 0) > S.day;
+  inv('TV reklam kampanyası', `Ulusal kanallarda prime time reklam. 14 gün boyunca bütün bölgelerde talep +%20, bulunduğun bölgede popülerlik +0,4★.${tvCd && !tvOn ? ` Yeni kampanya için ${H.tvCd - S.day} gün bekle.` : ''}`, eurH(tvCost()), tvCost(), () => { H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, tvCd, tvOn ? `${H.tvUntil - S.day} gün` : '');
+  const ce = H.celeb && H.celeb.until > S.day, days = H.hq === 'sel' ? 180 : 90;
+  inv('Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü. Bütün bölgelerde talep +%10, sözleşme ${H.celeb.until - S.day} gün daha sürüyor.` : `Ünlü biriyle ${days} günlük sözleşme. Bütün bölgelerde talep +%10, bulunduğun bölgede popülerlik +0,6★.`, ce ? null : eurH(600000), 600000, () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, false, ce ? 'Sözleşmeli' : '');
+  const bbOn = H.bb && H.bb[S.region] > S.day;
+  inv(`Otoban billboardları: ${RD().name}`, `Havalimanı yolu ve otobanlarda dev afişler. 20 gün boyunca ${RD().name} bölgesinde talep +%10.`, bbOn ? null : eurH(120000), 120000, () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; }, false, bbOn ? `${H.bb[S.region] - S.day} gün` : '');
+  const lv = H.rnd || 0, next = RD_LEVELS[lv];
+  inv('Akademisyenlerle zarf Ar-Ge\'si', next ? `Üniversitelerle yeni kumaş araştırması. Balon zarfları ${envLife()} yerine ${next.life} uçuş dayanır, bütün bölgelerde kalıcı.` : `Zarflar artık ${envLife()} uçuş dayanıyor. Araştırma tamamlandı.`, next ? eurH(next.cost) : null, next ? next.cost : 0, () => { H.rnd = lv + 1; }, false, lv ? `Seviye ${lv}` : '');
+  body.appendChild(v);
+
+  const q = h('div', 'sec'); q.appendChild(h('h2', null, 'Genel merkez'));
+  if (hc) q.appendChild(h('div', 'callout grn', `<b>${hc.icon} Genel merkez: ${hc.name}.</b> ${hc.perk}`));
+  else {
+    q.appendChild(h('p', 'hint', 'Holdingin kalbi. Bir şehir seç, merkez binanı satın al; her şehrin kendi avantajı var.'));
+    for (const k in HQ_CITIES) {
+      const c = HQ_CITIES[k], it = h('div', 'item');
+      it.appendChild(h('div', 'main', `<div class="t">${c.icon} ${c.name}</div><div class="s">${c.perk}</div>`));
+      it.appendChild(pbtn(eurH(c.cost), () => holdBuy(c.cost, () => { H.hq = k; S.hezQ.push(`news:Genel merkez binan açıldı evlat: ${c.name}! Bir balon şirketinden holdinge... Galata'dan bakınca bile görünüyorsun.`); }), (S.holding || 0) < c.cost));
+      q.appendChild(it);
+    }
+  }
+  body.appendChild(q);
 }
 
 /* ---------- boot ---------- */

@@ -29,6 +29,6 @@ Balon desenleri, reklamsız paket, ödüllü reklam. Parayla güç satın alma y
    - Eski bölge otomatik moda geçer, nakit getirmeye devam eder. Sorun çıkınca Hezarfen yönlendirir, oyuncu gidip karar verir.
    - Luksor ve diğer bölgeler haritada "Yakında" ve gizemli kalır.
 3. ✅ **Balon atölyesi tasarım stüdyosu** (prototipte): kendi desenlerin, yaratıcı tasarımlar popülerlik getirir.
-4. ⬜ **Globalleşme:** holding genel merkezi (New York, İstanbul, Tokyo ya da Seul, oyuncu seçer), TV reklamları, global hedefler.
+4. ✅ **Holding** (prototipte): ayrı kasalar, holding giderleri, TV reklamı, ünlü reklam yüzü, billboard, zarf Ar-Ge'si, genel merkez (New York, İstanbul, Tokyo ya da Seul).
 
 Simülasyonla ölçülen bölüm süreleri (hedef odaklı oynayan oyuncu, 8 deneme): Kuruluş 28–35. gün, Büyüme 68–106. gün, Baron 99–172. gün (çoğunlukla 110–120).

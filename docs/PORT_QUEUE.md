@@ -60,10 +60,10 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 - **Lisans tuzağı uyarısı:** Lisans düşmüşken amiral balon uçamıyorsa (zarf eskimiş ya da onarımda), uyarı çıkış yolunu söyler: zarfı yenile, başka balonu amiral yap ya da ücreti öde.
 
 ## Bölgeler: Albuquerque ve otomatik mod (Faz 2)
-- **Bölge yapısı:** Her bölgenin kendi durumu var (`RKEYS`): filo, pilotlar, rakipler, oteller, popülerlik, fiyat, yorumlar, bölüm, kış, Fiesta vb. Holding seviyesinde kalanlar: kasa, krediler, kurucu lisansı, atölye, tasarımlar, Hezarfen dersleri, gün sayacı.
-- **Para birimi:** Her bölgede aynı rakamlar geçerli (Kapadokya'da €15.000 olan balon Albuquerque'de $15.000). `S.cash` aktif bölgenin para biriminde tutulur; bölge değişince holding kasası `EUR = USD / 1,1` ile çevrilir. Krediler, giriş bedeli, atölye ve tasarımlar holding (euro) fiyatıyla, bölgede kur ile ödenir. `eur()` aktif bölgenin simgesini, `eurH()` her zaman euroyu gösterir. Banka sekmesinde holding kasası euro olarak yazar.
+- **Bölge yapısı:** Her bölgenin kendi durumu var (`RKEYS`): kendi kasası ve bankası (krediler), filo, pilotlar, rakipler, oteller, popülerlik, fiyat, yorumlar, bölüm, kış, Fiesta vb. Holding seviyesinde kalanlar: holding kasası, kurucu lisansı, atölye, tasarımlar, Hezarfen dersleri, gün sayacı.
+- **Para birimi ve kasalar:** Her bölgede aynı rakamlar geçerli (Kapadokya'da €15.000 olan balon Albuquerque'de $15.000). Her bölgenin kasası kendi para birimindedir; `eur()` aktif bölgenin simgesini, `eurH()` her zaman euroyu gösterir. Krediler, atölye ve tasarımlar oynanan bölgenin kasasından ödenir.
 - **Albuquerque:**
-  - Kapadokya baronu olunca açılır, giriş €100.000. Bir küçük balonla başlanır.
+  - Kapadokya baronu olunca açılır. Giriş €100.000, holding kasasından. Bölgede sıfırdan başlanır: $3.000 ve bir küçük balon.
   - Kendi rakipleri: Sandia Sky Rides, Rio Grande Balloons, Route 66 Air.
   - Yeni gelenler: Mesa Gold Balloons (zengin zincir, oyuncu + 3 balon kuralı), Turquoise Trail Air, Desert Bloom Flights, Big Sky Fiesta Co.
   - Bölgeye özgü otel, sponsor, balon ve pilot isimleri (`REGION_DEF`), imza balon "Fiesta Yıldızı". Vadi görevi "Rio Grande dokunuşu" olur.
@@ -71,7 +71,7 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
   - **Balloon Fiesta:** her 30 günde bir, 4 gün, talep ×1,9, gökyüzünde 46'ya kadar arka plan balonu. Öncesinde 3 gün uyarı, sırasında görev uyarısı.
   - Görsel: daha sıcak gökyüzü, pembe Sandia sırtı, masa (düz tepeli) tepeler, kum rengi zemin, Rio Grande nehri, engel olarak kavak ağaçları.
   - Bölümler: **Yeni Dünya** ($5.000: 5 balon, 4,0★, otel anlaşması, rehber), **Fiesta** ($20.000: 10 balon, otel satın al, bir Fiesta'da uç, influencer, %50 pazar), **Albuquerque Baronu** (%70 pazar, 2 otel, pilot okulu, 4,8★, imza balon).
-- **Otomatik mod:** Ayrılınan bölge son 14 günün ortanca net kârının %85'ini (euroya çevrilmiş) her gün ±%15 oynayarak holding kasasına getirir; uçuş defterinde "X (otomatik mod)" satırı.
+- **Otomatik mod:** Ayrılınan bölge son 14 günün ortanca net kârının %85'ini (euroya çevrilmiş) her gün ±%15 oynayarak holding kasasına getirir. Bölgenin kendi kasası olduğu gibi bekler.
   - Bölgede sorun yokken 6 günde bir sonrası her gün %7 ihtimalle sorun çıkar; Hezarfen haber verir, ana ekranda kırmızı uyarı, dünya haritasında "Sorun var".
   - Karar verilene kadar kazanç yarıya iner.
   - **Sorunlar** (her biri iki seçenekli, Hezarfen tavsiyeli):
@@ -80,15 +80,35 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
     - Sert iniş: bölgeye gidip ilgilen (popülerlik −0,05) ya da 7 gün −%15.
     - Otel kapışması: 5 günlük kazanç kadar öde ya da kalıcı −%5.
     - Yıpranan zarflar: 8 günlük kazanç kadar öde ya da 10 gün −%12.
+    - Ödemeler holding kasasından yapılır.
 - **Dünya haritası:** Bölge kartlarında "Buradasın / Otomatik mod / Sorun var / Açıldı" ve "Bölgeye git", "Karar ver", "Gir €100.000" butonları.
-- **Yan menü:** Baron olana kadar "Hedef", sonra tek "Dünya" butonu (sorun varsa kırmızı nokta). Hedef kartında baronlar için "Dünya haritası ›" kısayolu.
+- **Yan menü:** Baron olana kadar "Hedef", sonra tek "Holding" butonu (holding sayfası; sorun varsa kırmızı nokta, bölge baronu olunmadıysa hedef rozeti). Hedef kartında baronlar için "Dünya haritası ›" kısayolu.
 - **Üst çubuk:** Birden fazla bölge varsa şirket adı yerine bölge adı.
 - Hardcoded "€5.000" gibi tutarlar bölge para birimiyle yazılır.
 
 ## Balon atölyesi ve tasarım stüdyosu (Faz 3)
-- Atölye holdingin (€75.000), bütün bölgelerde geçerli. Kurulunca Filo sayfasında "Balon atölyesi" bölümü: tasarımların listesi (küçük resim, yaratıcılık, tazelik, kaç balonda) ve "Yeni tasarım".
+- Atölye bir kez kurulur (€75.000, oynanan bölgenin kasasından), tasarımlar bütün bölgelerde geçerli. Kurulunca Filo sayfasında "Balon atölyesi" bölümü: tasarımların listesi (küçük resim, yaratıcılık, tazelik, kaç balonda) ve "Yeni tasarım".
 - **Tasarım stüdyosu:** 9 desen (çizgili, zikzak, damalı, yıldızlı, kalpli, güneş, dalga, gökkuşağı, puantiyeli), 12 renklik paletten ana/desen/vurgu rengi, isim. Canlı önizleme ve yaratıcılık puanı. Üretim €5.000.
 - **Yaratıcılık puanı (5–100):** desen tabanı × 0,6 + ana/desen rengi parlaklık farkı × 30 + farklı renk sayısı + 10. Aynı desen ve ana rengi tekrar ederse −20, yaşayan bir rakibin ana rengini kullanırsa −10.
 - Balon kartında "Desen: X" butonu: tasarım giydirmek €1.000.
 - **Etki:** Tasarımlı her balon uçuşta popülerliğe 0,003 × puan/100 × tazelik ekler, günlük toplam en fazla 0,012. Tazelik 40 günde %100'den %20'ye iner. Uçuş defterinde "Tasarımların konuşuluyor" notu, %25 ihtimalle tasarım adını anan yolcu yorumu.
 - Uçuşta, yerde ve listelerde balonlar desenleriyle çizilir.
+
+## Holding (Faz 4)
+- **Holding kasası (euro):** Ülkelere para aktaramaz. İki yoldan para girer:
+  - Otomatik moddaki bölgelerin kazancı her gün doğrudan girer.
+  - Oynanan bölgenin kasasından, sadece holding sayfasından ve istek üzerine çekilir (%25, %50, ya da 10.000 bırakıp hepsi). Dolar kasadan çekilen para 1,1'e bölünerek euro olur.
+- **Holding giderleri:** Maaş, bina vb. için otomatik gelirin %25'i her gün düşülür. Uçuş defterinde "Holding kasasına +€X" notu.
+- **Holding sayfası** (yan menüde "Holding"): kasa ve dünün akışı; bölge hedefi özeti; oynanan bölgeden para çekme; bölgeler (Karar ver / Bölgeye git / Gir); dünya haritası; yatırımlar; genel merkez.
+- **Yatırımlar** (hepsi holding kasasından):
+  - **TV reklam kampanyası:** €250.000. 14 gün bütün bölgelerde talep +%20, bulunulan bölgede +0,4★. 30 gün bekleme.
+  - **Ünlü reklam yüzü:** €600.000, 90 günlük sözleşme (uydurma ünlüler). Bütün bölgelerde talep +%10, bulunulan bölgede +0,6★.
+  - **Otoban billboardları:** €120.000, bulunulan bölgede 20 gün talep +%10.
+  - **Akademisyenlerle zarf Ar-Ge'si:** €400.000 ile zarf ömrü 120 → 160 uçuş, €900.000 ile 200 uçuş. Bütün bölgelerde kalıcı.
+- **Talep etkisi:** Bu yatırımlar oynanan bölgenin günlük talebini ve otomatik bölgelerin kazancını (`holdBoost`) çarpar.
+- **Genel merkez** (bir kez, şehir seçimli):
+  - New York (€1,5 M): TV kampanyaları %25 ucuz.
+  - İstanbul (€1,2 M): Kapadokya otomatik kazancı +%15.
+  - Tokyo (€1,4 M): tasarım yaratıcılığı +10.
+  - Seul (€1,3 M): ünlü sözleşmeleri iki kat uzun.
+- Kapadokya baronu olununca Hezarfen holdingi tanıtır: para çekme, giriş bedeli, holding parasının ülkelere dönmediği.
