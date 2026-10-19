@@ -58,3 +58,37 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 - Hezarfen'in yeni "goals" dersi 2. gün çıkar.
 - Yeni gelen rakip seçilirken, yaşayan ya da satıştaki şirketlerin adında geçen markalar (ör. birleşmiş "X & Bosphorus") dışarıda tutulur.
 - **Lisans tuzağı uyarısı:** Lisans düşmüşken amiral balon uçamıyorsa (zarf eskimiş ya da onarımda), uyarı çıkış yolunu söyler: zarfı yenile, başka balonu amiral yap ya da ücreti öde.
+
+## Bölgeler: Albuquerque ve otomatik mod (Faz 2)
+- **Bölge yapısı:** Her bölgenin kendi durumu var (`RKEYS`): filo, pilotlar, rakipler, oteller, popülerlik, fiyat, yorumlar, bölüm, kış, Fiesta vb. Holding seviyesinde kalanlar: kasa, krediler, kurucu lisansı, atölye, tasarımlar, Hezarfen dersleri, gün sayacı.
+- **Para birimi:** Her bölgede aynı rakamlar geçerli (Kapadokya'da €15.000 olan balon Albuquerque'de $15.000). `S.cash` aktif bölgenin para biriminde tutulur; bölge değişince holding kasası `EUR = USD / 1,1` ile çevrilir. Krediler, giriş bedeli, atölye ve tasarımlar holding (euro) fiyatıyla, bölgede kur ile ödenir. `eur()` aktif bölgenin simgesini, `eurH()` her zaman euroyu gösterir. Banka sekmesinde holding kasası euro olarak yazar.
+- **Albuquerque:**
+  - Kapadokya baronu olunca açılır, giriş €100.000. Bir küçük balonla başlanır.
+  - Kendi rakipleri: Sandia Sky Rides, Rio Grande Balloons, Route 66 Air.
+  - Yeni gelenler: Mesa Gold Balloons (zengin zincir, oyuncu + 3 balon kuralı), Turquoise Trail Air, Desert Bloom Flights, Big Sky Fiesta Co.
+  - Bölgeye özgü otel, sponsor, balon ve pilot isimleri (`REGION_DEF`), imza balon "Fiesta Yıldızı". Vadi görevi "Rio Grande dokunuşu" olur.
+  - **Kutu rüzgârı:** katmanlar sırayla −, +, −, + yönde. İniş alanı 1.000–1.700 m.
+  - **Balloon Fiesta:** her 30 günde bir, 4 gün, talep ×1,9, gökyüzünde 46'ya kadar arka plan balonu. Öncesinde 3 gün uyarı, sırasında görev uyarısı.
+  - Görsel: daha sıcak gökyüzü, pembe Sandia sırtı, masa (düz tepeli) tepeler, kum rengi zemin, Rio Grande nehri, engel olarak kavak ağaçları.
+  - Bölümler: **Yeni Dünya** ($5.000: 5 balon, 4,0★, otel anlaşması, rehber), **Fiesta** ($20.000: 10 balon, otel satın al, bir Fiesta'da uç, influencer, %50 pazar), **Albuquerque Baronu** (%70 pazar, 2 otel, pilot okulu, 4,8★, imza balon).
+- **Otomatik mod:** Ayrılınan bölge son 14 günün ortanca net kârının %85'ini (euroya çevrilmiş) her gün ±%15 oynayarak holding kasasına getirir; uçuş defterinde "X (otomatik mod)" satırı.
+  - Bölgede sorun yokken 6 günde bir sonrası her gün %7 ihtimalle sorun çıkar; Hezarfen haber verir, ana ekranda kırmızı uyarı, dünya haritasında "Sorun var".
+  - Karar verilene kadar kazanç yarıya iner.
+  - **Sorunlar** (her biri iki seçenekli, Hezarfen tavsiyeli):
+    - Pilotlar zam istiyor: kalıcı −%6 ya da 3 gün sıfır.
+    - Fiyat savaşı: kalıcı −%10 ya da %50 şansla 10 gün −%25.
+    - Sert iniş: bölgeye gidip ilgilen (popülerlik −0,05) ya da 7 gün −%15.
+    - Otel kapışması: 5 günlük kazanç kadar öde ya da kalıcı −%5.
+    - Yıpranan zarflar: 8 günlük kazanç kadar öde ya da 10 gün −%12.
+- **Dünya haritası:** Bölge kartlarında "Buradasın / Otomatik mod / Sorun var / Açıldı" ve "Bölgeye git", "Karar ver", "Gir €100.000" butonları.
+- **Yan menü:** Baron olana kadar "Hedef", sonra tek "Dünya" butonu (sorun varsa kırmızı nokta). Hedef kartında baronlar için "Dünya haritası ›" kısayolu.
+- **Üst çubuk:** Birden fazla bölge varsa şirket adı yerine bölge adı.
+- Hardcoded "€5.000" gibi tutarlar bölge para birimiyle yazılır.
+
+## Balon atölyesi ve tasarım stüdyosu (Faz 3)
+- Atölye holdingin (€75.000), bütün bölgelerde geçerli. Kurulunca Filo sayfasında "Balon atölyesi" bölümü: tasarımların listesi (küçük resim, yaratıcılık, tazelik, kaç balonda) ve "Yeni tasarım".
+- **Tasarım stüdyosu:** 9 desen (çizgili, zikzak, damalı, yıldızlı, kalpli, güneş, dalga, gökkuşağı, puantiyeli), 12 renklik paletten ana/desen/vurgu rengi, isim. Canlı önizleme ve yaratıcılık puanı. Üretim €5.000.
+- **Yaratıcılık puanı (5–100):** desen tabanı × 0,6 + ana/desen rengi parlaklık farkı × 30 + farklı renk sayısı + 10. Aynı desen ve ana rengi tekrar ederse −20, yaşayan bir rakibin ana rengini kullanırsa −10.
+- Balon kartında "Desen: X" butonu: tasarım giydirmek €1.000.
+- **Etki:** Tasarımlı her balon uçuşta popülerliğe 0,003 × puan/100 × tazelik ekler, günlük toplam en fazla 0,012. Tazelik 40 günde %100'den %20'ye iner. Uçuş defterinde "Tasarımların konuşuluyor" notu, %25 ihtimalle tasarım adını anan yolcu yorumu.
+- Uçuşta, yerde ve listelerde balonlar desenleriyle çizilir.

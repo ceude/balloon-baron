@@ -23,12 +23,12 @@ Balon desenleri, reklamsız paket, ödüllü reklam. Parayla güç satın alma y
 
 ## Bölgeler ve globalleşme (prototipte fazlar halinde)
 1. ✅ Bölüm hedefleri, Kapadokya Baronu töreni, dünya haritası önizlemesi.
-2. ⬜ **Albuquerque bölgesi ve otomatik mod.** Kararlar:
+2. ✅ **Albuquerque bölgesi ve otomatik mod** (prototipte). Kararlar:
    - Giriş bedeli: €100.000.
-   - Albuquerque'de fiyatlar ve gelirler dolarla gösterilir. Holding kasası euro çalışır, kur sabit: 1 € = 1,1 $.
+   - Albuquerque'de tüm tutarlar Kapadokya'dakiyle aynı rakam ama dolar ($15.000'lik balon). Holding kasası euro çalışır, etkisi 1,1'e bölünerek gelir.
    - Eski bölge otomatik moda geçer, nakit getirmeye devam eder. Sorun çıkınca Hezarfen yönlendirir, oyuncu gidip karar verir.
    - Luksor ve diğer bölgeler haritada "Yakında" ve gizemli kalır.
-3. ⬜ **Balon atölyesi tasarım stüdyosu:** kendi desenlerin, yaratıcı tasarımlar popülerlik getirir.
+3. ✅ **Balon atölyesi tasarım stüdyosu** (prototipte): kendi desenlerin, yaratıcı tasarımlar popülerlik getirir.
 4. ⬜ **Globalleşme:** holding genel merkezi (New York, İstanbul, Tokyo ya da Seul, oyuncu seçer), TV reklamları, global hedefler.
 
 Simülasyonla ölçülen bölüm süreleri (hedef odaklı oynayan oyuncu, 8 deneme): Kuruluş 28–35. gün, Büyüme 68–106. gün, Baron 99–172. gün (çoğunlukla 110–120).
