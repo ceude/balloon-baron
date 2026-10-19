@@ -41,3 +41,4 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
   - En fazla 25 günde bir olur.
   - Oyuncuya kırmızı "SON DAKİKA: Rakiplerin sana karşı birleşti!" uyarısı çıkar: iki balon ikonu, yeni şirketin adı, balon/kasa/popülerlik, "Mücadeleye hazırım" butonu. Diğer açılır pencerelerden önce gösterilir.
   - Pazar sekmesinde birleşen eski şirket "Birleşti · X çatısı altında" diye görünür.
+- **Kızıl Vadi Air başlangıç kasası:** €15.000 (eskiden €9.000).
