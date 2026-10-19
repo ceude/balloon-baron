@@ -23,6 +23,10 @@ final class GameStore {
     var page: Page?
     /// A parked region whose problem the player is deciding.
     var issueRegion: RegionID?
+    /// The dream-flight intro runs at every launch, like the prototype.
+    var showIntro = true
+    /// Passengers are being gathered (the seat-filling screen before take-off).
+    var collecting = false
     /// Passengers riding with you while the flight scene runs.
     var flightPax: Int?
 
@@ -68,7 +72,7 @@ final class GameStore {
 
     /// Shows the next popup in the prototype's order: chapter ceremony, merger news, then Hezarfen.
     func showNextHezarfen() {
-        guard hezarfen == nil, chapter == nil, merge == nil, report == nil, flightPax == nil, page == nil, issueRegion == nil,
+        guard !showIntro, !collecting, hezarfen == nil, chapter == nil, merge == nil, report == nil, flightPax == nil, page == nil, issueRegion == nil,
               let s = game?.state else { return }
         if let c = s.chapterNews {
             chapter = c
@@ -108,7 +112,22 @@ final class GameStore {
         showNextHezarfen()
     }
 
+    func startCollect() {
+        collecting = true
+    }
+
+    /// The intro balloon has left the screen.
+    func finishIntro() {
+        showIntro = false
+        showNextHezarfen()
+    }
+
+    func cancelCollect() {
+        collecting = false
+    }
+
     func fly(skip: Bool = false) {
+        collecting = false
         var selfPax: Int?
         act { selfPax = $0.launch(skip: skip) }
         if let selfPax { flightPax = selfPax } else { endDay(nil) }
