@@ -1,6 +1,6 @@
 # Balloon Baron: Cappadocia — Oyun Tasarımı
 
-Bu belge `prototype/balloon-baron.html` içindeki güncel mekanikleri ve sayıları özetler. Swift portu bu sayıları referans alır. Para birimi €.
+Bu belge `prototype/balloon-baron.html` içindeki güncel mekanikleri ve sayıları özetler. Swift portu bu sayıları referans alır. Para birimi Kapadokya'da €, Albuquerque'de $ (aynı rakamlar), holding kasası her zaman €.
 
 ## Günlük döngü
 1. **Sabah:** hava bayrağı (yeşil/sarı/kırmızı), fiyat, uçacak balonlar, kendin uçmak.
@@ -21,7 +21,7 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 | XL Kapadokya Yıldızı | 32 | 150.000 | 170 | 140 | ×1,15 |
 
 - XL özel tasarım dev balondur. Her uçuş +0,005 popülerlik verir.
-- Ömür 120 uçuş. Yenileme fiyatın %35'i.
+- Ömür 120 uçuş (holding Ar-Ge'siyle 160 / 200). Yenileme fiyatın %35'i.
 
 ## Kurucu (sen)
 - **Lisans:** En az 15 günde bir kendin uçmalısın. Lisans düşerse amiral dışındaki tüm balonlar yerde kalır. Ya amirali kendin uçurursun (ücretsiz yenileme uçuşu) ya da €15.000 ödersin.
@@ -38,6 +38,7 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 - XP eşikleri 0 / 40 / 100.
 - Rakipler pilot ayartabilir (günlük %4 şans).
 - Pilot okulu €60.000'a kurulur.
+- **Atama:** Pilotlar önce uçabilecek balonlara, büyükten küçüğe atanır; onarımdaki veya zarfı bitmiş balonlar en sona kalır. Kıdemli ve tecrübesi (XP) yüksek olan önce gelir.
 
 ## Hava
 | Bayrak | Kaza olasılığı | Not |
@@ -67,6 +68,7 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 - **Çekicilik:** `rep² × (190 / p)^1.5 × koltuk`. Büyük şirket daha görünür. Popülerlik < 0,5 ise ×0,35 (kriz).
 - **Popülerlik bonusu:** Rakiplerden bağımsız gelen yolcu, koltuklarının en fazla %50'si (2,8★'da 0, 5★'da %50), fiyat isteğiyle çarpılır.
 - **Başlangıç baskısı:** 1. gün tek küçük balonla €170'te 7/8 dolar, dolması için yaklaşık €155'e inmek gerekir.
+- **Turist sayısı:** Günün turisti fiyattan bağımsızdır (pazar talebi + otel misafirleri + rehber 5 + influencer 8 + fiyatsız popülerlik bonusu). Fiyat sadece kaçının seni seçtiğini değiştirir. Fiyat algısı eşikleri: fiyat isteği ≥%85 uygun, ≥%60 biraz pahalı, ≥%35 pahalı, altı çok pahalı.
 - **Dağıtım sırası:** önce sözleşmeli kaynaklar (otel, rehber, influencer), sonra pazar, en son popülerlik bonusu. Boş koltuğu olanlara taşma havuzu dağıtılır.
 - **Yıldız:** `clamp(3 + (rep − 0,75) × 4, 1, 5)`. Popülerlik 0,4–1,4 arasında tutulur.
 - **4,5★ üstü:**
@@ -115,14 +117,61 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 |---|---|---|---|---|---|
 | Göreme Sky | temkinli | L L L M M M | 195 | 1,15 | 50.000 |
 | Peribaca Balloons | orta | M M M S | 165 | 1,0 | 20.000 |
-| Kızıl Vadi Air | riskli | S S S | 135 | 0,85 | 9.000 |
+| Kızıl Vadi Air | riskli | S S S | 135 | 0,85 | 12.000 |
 
 - Fiyat tabanı maliyetten hesaplanır (en fazla 220). Tavanlar: riskli 190, orta 260.
 - 5. günden sonra zor durumdaki rakip satışa çıkar (filo satın alma veya devralma).
-- **Yeni girenler:** Bosphorus Balloons, Anatolian Sky, Peri Luxe Flights, Aegean Air Tours. Batan rakibin yerine 6+ gün sonra, günlük %30 şansla gelirler.
+- **Büyüme:** 3 gün üst üste %70 üstü dolulukla uçan ve kasası balon fiyatının %60'ına yeten rakip 4 günde bir balon alır (temkinli L, diğerleri M). Tavanlar: temkinli 25, orta 18, riskli 12 balon. Sahipler kasadan para çeker ama bir sonraki balonun %60'ı kadar birikim bırakırlar.
+- **Yeni girenler:** Bosphorus Balloons, Anatolian Sky, Peri Luxe Flights, Aegean Air Tours (Albuquerque'de Mesa Gold, Turquoise Trail, Desert Bloom, Big Sky Fiesta). Batan rakibin yerine 6+ gün sonra, günlük %30 şansla gelirler.
+  - Zengin zincir (Bosphorus / Mesa Gold) oyuncunun balon sayısı + 3 balonla ve en az 60.000 + 9.000 × balon kasayla gelir.
+  - Diğerleri 50. günden sonra oyuncunun yarısı kadar balonla gelir (ek balon başına +6.000 kasa).
+  - Yeni gelenlerin kasasından 20 gün para çekilmez (savaş sandığı).
+- **Birleşme:** 30. günden sonra oyuncunun payı %50'yi 4+ gün aşarsa günlük %35, ya da bir rakibin kasası −€4.000'in altındayken oyuncunun payı %40'ı aşarsa günlük %60 şansla en küçük iki rakip "A & B Balloons" olarak birleşir. Filolar toplanır, kasa (iki kasa) × 1,3 + 40.000, popülerlik yüksek olanınki, fiyat ortalama, 20 gün savaş sandığı. En fazla 25 günde bir.
 - **Tekel cezası:** 20. günden sonra pazar payı > %60 olan her gün sayılır.
-  - 3. günde Hezarfen uyarır.
-  - 5 ve üstünde her gün %25 şansla max(€5.000, kasanın %8'i) ceza.
+  - 3. günde Hezarfen uyarır (oran yazmaz).
+  - 5 ve üstünde her gün %25 şansla max(€5.000, şirket değerinin %3'ü) ceza. Şirket değeri: pozitif kasa + balonların alış fiyatı + sahip olunan oteller.
+
+## Bölümler ve Baron
+Hedefler gün sonunda kontrol edilir. Bölüm bitince ödül kasaya girer, ertesi sabah tören açılır.
+
+| Bölge | Bölüm | Ödül | Hedefler |
+|---|---|---|---|
+| Kapadokya | Kuruluş | 5.000 | 5 balon, 4,0★, otel anlaşması, kasada 20.000 |
+| Kapadokya | Büyüme | 20.000 | 10 balon, otel satın al, influencer, rehber, pazarın %50'si, balon atölyesi |
+| Kapadokya | Kapadokya Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL |
+| Albuquerque | Yeni Dünya | 5.000 | 5 balon, 4,0★, otel anlaşması, rehber |
+| Albuquerque | Fiesta | 20.000 | 10 balon, otel satın al, Fiesta'da uç, influencer, pazarın %50'si |
+| Albuquerque | Albuquerque Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL |
+
+Simülasyon (hedef odaklı oyuncu): Kuruluş 28–35. gün, Büyüme 68–106. gün, Baron 99–172. gün.
+
+## Bölgeler ve otomatik mod
+- Kapadokya baronu olunca holding açılır. Albuquerque'ye giriş €100.000 (holdingden). Orada sıfırdan başlanır: $3.000 ve bir S balon.
+- Her bölgenin kendi kasası, bankası, filosu, pilotları, rakipleri, otelleri, popülerliği, bölümü vardır. Kurucu lisansı, atölye, tasarımlar ve gün sayacı ortaktır.
+- **Kutu rüzgârı (Albuquerque):** katmanlar −, +, −, + yönünde. Hedef 1.000–1.700 m.
+- **Balloon Fiesta:** her 30 günde bir, 4 gün, talep ×1,9 (ilki girişten 12 gün sonra).
+- **Otomatik mod:** Ayrılınan bölge son 14 günün ortanca net kârının %85'ini (euroya çevrilmiş) her gün ±%15 oynayarak holdinge getirir.
+- **Sorunlar:** son sorundan 6 gün sonra her gün %7. Karar verilene kadar kazanç yarıda.
+  - Zam: kalıcı −%6 ya da 3 gün sıfır.
+  - Fiyat savaşı: kalıcı −%10 ya da %50 şansla 10 gün −%25.
+  - Sert iniş: bölgeye git (popülerlik −0,05) ya da 7 gün −%15.
+  - Otel kapışması: 5 günlük kazanç öde ya da kalıcı −%5.
+  - Yıpranan zarflar: 8 günlük kazanç öde ya da 10 gün −%12.
+
+## Holding
+- Holding kasası euro. Ülkelere para aktaramaz. Otomatik bölgelerin kazancı her gün gelir; oynanan bölgeden %25, %50 ya da 10.000 bırakıp hepsi çekilebilir (dolar 1,1'e bölünür).
+- Giderler: otomatik gelirin %25'i (dört ofis açıksa %20).
+- **TV kampanyası:** €250.000, 14 gün bütün bölgelerde talep +%20, bulunulan bölgede +0,1 popülerlik, 30 gün bekleme.
+- **Ünlü reklam yüzü:** €600.000, 90 gün talep +%10, +0,15 popülerlik.
+- **Billboard:** €120.000, bulunulan bölgede 20 gün talep +%10.
+- **Zarf Ar-Ge'si:** €400.000 ile ömür 160, €900.000 ile 200 uçuş.
+- **Ofisler:** İstanbul €350.000 (Kapadokya otomatik +%25), New York €450.000 (TV %25 ucuz, Albuquerque otomatik +%20), Seul €400.000 (ünlü sözleşmesi 180 gün ve €420.000), Tokyo €400.000 (tasarım bedava, yaratıcılık +10, tazelik 60 gün, ileride Asya girişi yarı fiyatına).
+
+## Balon atölyesi ve tasarımlar
+- Atölye €75.000, bir kez. Tasarım €5.000, balona giydirme €1.000.
+- Yaratıcılık (5–100): desen tabanı × 0,6 + ana/desen rengi parlaklık farkı × 30 + (farklı renk − 1) × 6 + 10. Aynı desen ve ana renk tekrarı −20, yaşayan bir rakibin ana rengi −10.
+- Desen tabanları: çizgili 35, zikzak 60, damalı 55, yıldızlı 70, kalpli 70, güneş 75, dalga 60, gökkuşağı 65, puantiyeli 50.
+- Etki: tasarımlı balon her uçuşta 0,003 × puan/100 × tazelik, günlük en fazla 0,012. Tazelik 40 günde %100'den %20'ye iner.
 
 ## Kış
 - En erken 40. gün, kasa ≥ €50.000 iken başlar ve 8 gün sürer.
@@ -137,6 +186,7 @@ Yaşlı, karizmatik mentor. Daktilo efektli konuşma balonuyla konuşur. Konular
 - görev, kaza, kriz
 - rakipleri batırma ipuçları
 - beklenti (4,5★), tekel, eskime
+- hedefler, holding, Albuquerque, Fiesta, bölge sorunları, ofisler, ünlü anlaşması
 - dinamik haberler (kış, yeni rakip)
 
 ## Görsel ve ses
@@ -146,4 +196,4 @@ Yaşlı, karizmatik mentor. Daktilo efektli konuşma balonuyla konuşur. Konular
 - **Sesler (sentez):** brülör gürültüsü, kuş ve ortam sesi, formant sesli kalabalık uğultusu, alkış, fanfar, para, tık.
 
 ## Yerelleştirme
-Tüm metinler TR ve EN olacak. Swift'te String Catalog kullanılacak. Türkçe ek uyumu ("Balon'a/Air'e") için metinler şirket adının arkasına ek gelmeyecek şekilde yazılır.
+Metinler altı dilde: İngilizce (kaynak), Türkçe, Almanca, İspanyolca, Japonca, Korece. Swift'te String Catalog kullanılır (`tools/strings`). Türkçe ek uyumu ("Balon'a/Air'e") için metinler şirket adının arkasına ek gelmeyecek şekilde yazılır.

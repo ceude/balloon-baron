@@ -11,7 +11,8 @@ struct ReportView: View {
         let income: [(String, Int)] = [
             (loc("ledger.tickets"), lg.tickets), (loc("ledger.founderBonus"), lg.founderBonus), (loc("ledger.hotelIncome"), lg.hotelIncome),
             (loc("ledger.mission", lg.missionDone?.title ?? ""), lg.mission), (loc("ledger.ads"), lg.ads),
-            (loc("ledger.tips"), lg.tips), (loc("ledger.insurancePaid"), lg.insurancePaid), (loc("ledger.seizure"), lg.seizure)
+            (loc("ledger.tips"), lg.tips), (loc("ledger.insurancePaid"), lg.insurancePaid), (loc("ledger.seizure"), lg.seizure),
+            (loc("ledger.chapterReward"), lg.chapterReward)
         ].filter { $0.1 != 0 }
         let costs: [(String, Int)] = [
             (loc("ledger.fuel"), lg.fuel), (loc("ledger.wages"), lg.wages), (loc("ledger.upkeep"), lg.upkeep),
@@ -52,6 +53,15 @@ struct ReportView: View {
                     .foregroundStyle(Theme.ink)
                     .padding(.vertical, 6)
 
+                    if lg.designRep > 0 {
+                        Text(loc("report.designBuzz")).font(Theme.font(15, .semibold)).foregroundStyle(Theme.green)
+                    }
+                    if lg.holdingNet != 0 {
+                        Text(loc("report.holding", eurH(lg.holdingNet), percent(store.state?.holding.expenseRate ?? 0.25),
+                                 eurH(store.state?.holding.cash ?? 0)))
+                            .font(Theme.font(15, .semibold))
+                            .foregroundStyle(Theme.green)
+                    }
                     events(loc("report.events"), report.events)
                     events(loc("report.rivals"), report.rivalEvents)
 

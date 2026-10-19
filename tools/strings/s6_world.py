@@ -333,3 +333,20 @@ add("review.design.2",
  "El diseño \"{d}\" es muy creativo, a los niños les encantó.",
  "「{d}」のデザインはとても独創的。子どもたちが大喜び。",
  "'{d}' 디자인이 정말 창의적이에요. 아이들이 너무 좋아했어요.")
+
+# Day report
+add("ledger.chapterReward", "Chapter award", "Bölüm ödülü", "Kapitelpreis", "Premio del capítulo", "章の賞金", "챕터 상금")
+add("report.designBuzz",
+ "Your designs are the talk of the town: popularity is up.",
+ "Tasarımların konuşuluyor: popülerliğin arttı.",
+ "Deine Designs sind Stadtgespräch: Die Beliebtheit steigt.",
+ "Todo el mundo habla de tus diseños: tu popularidad sube.",
+ "君のデザインが話題だ。人気が上がった。",
+ "디자인이 화제가 되어 인기가 올랐습니다.")
+add("report.holding",
+ "Holding cash +%1$@ from regions on autopilot, after holding expenses (%2$@). Holding cash: %3$@.",
+ "Holding kasasına +%1$@: otomatik moddaki bölgeler kazandı, holding giderleri (%2$@) düşüldü. Holding kasası: %3$@.",
+ "Holding-Kasse +%1$@ aus Regionen im Autopilot, nach Holding-Ausgaben (%2$@). Holding-Kasse: %3$@.",
+ "Caja del holding +%1$@ de regiones en piloto automático, tras los gastos del holding (%2$@). Caja del holding: %3$@.",
+ "自動運営の地域からホールディングスへ+%1$@（経費%2$@差引後）。ホールディングス残高：%3$@。",
+ "자동 운영 지역에서 지주회사로 +%1$@ (지주회사 경비 %2$@ 차감). 지주회사 금고: %3$@.")
