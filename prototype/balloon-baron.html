@@ -102,6 +102,9 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .frow .t{font-weight:700;font-size:14.5px}
 .frow .s{font-size:12.5px;color:var(--ink2)}
 .frow.off .ic{filter:grayscale(.85);opacity:.55}
+.flybtn{flex:none;min-width:84px;height:36px;padding:0 12px;border-radius:12px;font-family:var(--cond);font-weight:800;font-size:15px;letter-spacing:.04em;background:#e4deef;color:var(--ink2);box-shadow:0 3px 0 #c9c1db}
+.flybtn.on{background:var(--coral);color:#fff;box-shadow:0 3px 0 #c7381a}
+.flybtn:active{transform:translateY(3px);box-shadow:none}
 .frow.blocked{opacity:.7}
 .rd{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 3px 0 5px}
 .rd.g{background:#3ad07a}.rd.y{background:var(--sun)}.rd.r{background:#ff6b55}
@@ -1207,7 +1210,7 @@ const FLEET_INLINE = 4;
 const sortedFleet = () => S.balloons.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag) || SIZES[b.size].cap - SIZES[a.size].cap || a.name.localeCompare(b.name, 'tr'));
 function fleetSub(b) {
   const st = canFly(b), p = pilotOf(b);
-  return st === 'license' ? 'Lisans bekliyor' : st === 'worn' ? 'Zarf yenilenmeli' : st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : st === 'nopilot' ? 'Pilot gerekli' : isSelf(b) ? 'Pilot: sen' : `Pilot: ${p.name.split(' ')[0]}`;
+  return st === 'license' ? 'Lisans bekliyor' : st === 'worn' ? 'Zarf yenilenmeli' : st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : st === 'nopilot' ? 'Pilot gerekli' : isSelf(b) ? 'Pilot: sen' : `Pilot: ${p.name.split(' ')[0]} (${LEVELS[p.lvl].name})`;
 }
 function riskDot(b) {
   const risk = canFly(b) === 'ok' && S.weather.flag !== 'red' ? accP(b) : null;
@@ -1266,7 +1269,7 @@ function showFleetPlan() {
       for (const b of list) {
         const st = canFly(b), row = h('div', 'frow' + (st !== 'ok' ? ' blocked' : b.fly ? '' : ' off'));
         row.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<div class="main"><div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}</div><div class="s">${fleetSub(b)}${riskDot(b)}</div></div>`;
-        if (st === 'ok') row.appendChild(sw(b.fly, () => { b.fly = !b.fly; refresh(); draw(); }, b.name + ' uçsun'));
+        if (st === 'ok') { const fb = h('button', 'flybtn' + (b.fly ? ' on' : ''), b.fly ? 'UÇACAK' : 'YERDE'); fb.setAttribute('aria-pressed', String(!!b.fly)); fb.onclick = () => { b.fly = !b.fly; sfx('tick'); refresh(); draw(); }; row.appendChild(fb); }
         else { const t = blockedTap(b); if (t) { const go = h('button', 'pbtn light', st === 'worn' ? 'Filo' : 'Ekip'); go.onclick = () => { m.hidden = true; t(); }; row.appendChild(go); } }
         c.appendChild(row);
       }
