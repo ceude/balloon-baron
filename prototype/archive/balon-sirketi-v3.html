@@ -1,0 +1,1198 @@
+<title>Şafak Balon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* Layout: dawn sky canvas on top, a white "ground crew" sheet below with a big ignition button, icon tab bar at the very bottom */
+:root{
+  --ink:#2b2350;        /* dawn indigo: text */
+  --ink2:#6c6488;       /* secondary text */
+  --paper:#ffffff;
+  --haze:#f1edf8;       /* row fill */
+  --line:#e2dcef;
+  --coral:#ff5e3a;      /* burner flame: primary */
+  --coral-d:#d9411f;
+  --sun:#ffc23d;
+  --green:#22a45d; --yellow:#e0a400; --red:#e5432f;
+  --body:"Barlow", "Segoe UI", system-ui, sans-serif;
+  --cond:"Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
+  color-scheme:light;
+}
+html,body{height:100%}
+[hidden]{display:none!important}
+body{background:#1b1840;color:var(--ink);font-family:var(--body);font-size:15px;overflow:hidden;-webkit-tap-highlight-color:transparent}
+#wrap{position:relative;height:100%;overflow:hidden}
+#cv{position:absolute;inset:0;display:block;touch-action:none;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.n{font-family:var(--cond);font-variant-numeric:tabular-nums;font-weight:700}
+
+/* HUD chips over the sky */
+#hud{position:absolute;top:0;left:0;right:0;z-index:4;display:flex;align-items:center;gap:6px;
+  padding:10px max(12px, env(safe-area-inset-right, 0px)) 0 max(12px, env(safe-area-inset-left, 0px))}
+.chip{display:flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:17px;background:rgba(255,255,255,.92);
+  box-shadow:0 2px 0 rgba(43,35,80,.25);font-family:var(--cond);font-weight:700;font-size:18px;white-space:nowrap}
+.chip.name{font-size:16px;margin-right:auto;min-width:0;overflow:hidden;text-overflow:ellipsis;background:rgba(43,35,80,.55);color:#fff;box-shadow:none}
+.chip .fl{width:10px;height:10px;border-radius:50%}
+.chip.neg{color:var(--red)}
+#bMenu{width:34px;padding:0;justify-content:center}
+#bMenu svg{width:18px;height:18px}
+
+/* sheet */
+#sheet{position:absolute;left:50%;transform:translateX(-50%);bottom:0;z-index:5;width:min(560px,100%);height:min(64%,680px);
+  display:flex;flex-direction:column;background:var(--paper);border-radius:26px 26px 0 0;box-shadow:0 -6px 30px rgba(20,10,40,.35)}
+#sheet::before{content:"";position:absolute;top:8px;left:50%;width:38px;height:4px;margin-left:-19px;border-radius:2px;background:var(--line)}
+#tabBody{flex:1;overflow-y:auto;padding:22px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px));display:flex;flex-direction:column;gap:20px}
+.act{padding:10px 16px 10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
+.est{font-size:13.5px;color:var(--ink2);display:flex;justify-content:space-between;gap:8px}
+.est b{color:var(--ink);font-family:var(--cond);font-size:17px}
+.btns{display:flex;gap:10px}
+.big{flex:1;height:54px;border-radius:16px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:22px;letter-spacing:.01em;
+  box-shadow:0 5px 0 var(--coral-d);transition:transform .06s, box-shadow .06s}
+.big:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--coral-d)}
+.big:disabled{background:#cfc8dd;box-shadow:0 5px 0 #b3aac6;cursor:not-allowed}
+.ghost{height:54px;padding:0 16px;border-radius:16px;background:var(--haze);font-family:var(--cond);font-weight:700;font-size:18px;box-shadow:0 5px 0 var(--line)}
+.ghost:active{transform:translateY(4px);box-shadow:0 1px 0 var(--line)}
+nav{display:flex;border-top:1px solid var(--line);padding:4px max(8px, env(safe-area-inset-right, 0px)) max(6px, env(safe-area-inset-bottom, 0px)) max(8px, env(safe-area-inset-left, 0px))}
+nav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 0 4px;font-size:11.5px;font-weight:600;color:var(--ink2);position:relative;border-radius:12px}
+nav button svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+nav button[aria-selected="true"]{color:var(--coral)}
+nav button .dot{position:absolute;top:4px;right:calc(50% - 18px);width:9px;height:9px;border-radius:50%;background:var(--red);border:2px solid #fff}
+
+/* content blocks */
+h2{margin:0;font-family:var(--cond);font-weight:700;font-size:22px;line-height:1.1}
+.sec{display:flex;flex-direction:column;gap:10px}
+.hint{margin:0;font-size:13.5px;line-height:1.45;color:var(--ink2)}
+.weather{display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.flagbig{width:58px;height:64px;position:relative}
+.flagbig i{position:absolute;left:4px;top:0;width:4px;height:64px;border-radius:2px;background:var(--ink)}
+.flagbig b{position:absolute;left:8px;top:3px;width:46px;height:30px;border-radius:0 6px 6px 0;animation:wave 2.2s ease-in-out infinite;transform-origin:left center}
+@keyframes wave{50%{transform:skewY(-4deg) scaleX(.94)}}
+.wtitle{font-family:var(--cond);font-weight:800;font-size:26px;line-height:1}
+.wsub{font-size:14px;color:var(--ink2);margin-top:4px;line-height:1.4}
+.ladder{display:flex;flex-direction:column;gap:4px;background:linear-gradient(#e8e2ff,#ffe6d2);border-radius:14px;padding:10px 12px}
+.rung{display:grid;grid-template-columns:76px 1fr 64px;align-items:center;gap:10px;font-size:12.5px;color:var(--ink2)}
+.rung .track{position:relative;height:10px}
+.rung .track::before{content:"";position:absolute;left:50%;top:0;bottom:0;width:2px;margin-left:-1px;background:rgba(43,35,80,.18)}
+.rung .arr{position:absolute;top:2px;height:6px;border-radius:3px;background:var(--ink)}
+.rung .arr::after{content:"";position:absolute;top:-4px;border:7px solid transparent}
+.rung .arr.r::after{right:-10px;border-left-color:var(--ink)}
+.rung .arr.l::after{left:-10px;border-right-color:var(--ink)}
+.rung .sp{font-family:var(--cond);font-weight:700;font-size:15px;color:var(--ink);text-align:right}
+.callout{padding:12px 14px;border-radius:14px;font-size:14px;line-height:1.45}
+.callout.red{background:#fde6e2;color:#8c2414}
+.callout.yel{background:#fff3cf;color:#6b4c00}
+.callout.grn{background:#dcf3e5;color:#145c34}
+.callout b{font-weight:700}
+.callout .pbtn{display:block}
+.pricebox{display:flex;align-items:flex-end;justify-content:space-between}
+.pricebig{font-family:var(--cond);font-weight:800;font-size:40px;line-height:.9;color:var(--coral)}
+input[type=range]{width:100%;accent-color:var(--coral);height:28px}
+.rivalmarks{position:relative;height:22px;margin:-6px 0 0}
+.rm{position:absolute;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-family:var(--cond);font-weight:700;font-size:12px;color:var(--ink2)}
+.rm i{width:8px;height:8px;border-radius:50%;margin-bottom:1px}
+.item{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;background:var(--haze)}
+.item .main{flex:1;min-width:0}
+.item .t{font-weight:700;font-size:15.5px}
+.item .s{font-size:13px;color:var(--ink2);margin-top:1px;line-height:1.35}
+.ic{width:38px;height:38px;flex:none}
+.av{width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:17px;color:#fff}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:4px;vertical-align:1px}
+.tag.g{background:#dcf3e5;color:#145c34}.tag.y{background:#fff3cf;color:#6b4c00}.tag.r{background:#fde6e2;color:#8c2414}.tag.n{background:#fff;color:var(--ink2)}
+.sw{width:50px;height:30px;border-radius:15px;background:#d4cde2;position:relative;flex:none;transition:background .15s}
+.sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s}
+.sw[aria-pressed="true"]{background:var(--green)}
+.sw[aria-pressed="true"]::after{transform:translateX(20px)}
+.pbtn{height:38px;padding:0 14px;border-radius:12px;background:var(--ink);color:#fff;font-family:var(--cond);font-weight:700;font-size:16px;white-space:nowrap;box-shadow:0 3px 0 #17122f}
+.pbtn.light{background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--line)}
+.pbtn:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #17122f}
+.pbtn:disabled{opacity:.35;cursor:not-allowed}
+.sharebar{display:flex;height:22px;border-radius:11px;overflow:hidden;background:var(--haze)}
+.sharebar span{height:100%}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px}
+.legend b{font-family:var(--cond)}
+.rv .t{display:flex;align-items:center;gap:6px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
+.stats div{background:#fff;border-radius:10px;padding:5px 6px;text-align:center;font-size:11px;color:var(--ink2)}
+.stats b{display:block;font-family:var(--cond);font-size:17px;color:var(--ink)}
+
+/* modals */
+.modal{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(27,24,64,.55);
+  padding:16px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px))}
+.card{width:min(420px,100%);max-height:100%;overflow-y:auto;background:var(--paper);border-radius:24px;padding:22px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
+.card h1{margin:0;font-family:var(--cond);font-weight:800;font-size:32px;line-height:1}
+/* flight log ticket */
+.ticket{width:min(420px,100%);max-height:100%;overflow-y:auto;display:flex;flex-direction:column;filter:drop-shadow(0 20px 40px rgba(0,0,0,.35))}
+.stub{background:var(--ink);color:#fff;border-radius:22px 22px 0 0;padding:18px 20px 16px;display:flex;justify-content:space-between;align-items:flex-end;gap:10px}
+.stub .d{font-family:var(--cond);font-weight:800;font-size:34px;line-height:.9}
+.stub .m{font-size:13px;opacity:.75;margin-top:4px}
+.perf{height:18px;background:radial-gradient(circle at 0 50%, transparent 9px, #fff 9.5px) left/51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 9px, #fff 9.5px) right/51% 100% no-repeat;position:relative}
+.perf::after{content:"";position:absolute;left:16px;right:16px;top:50%;border-top:2px dashed var(--line)}
+.tbody{background:#fff;border-radius:0 0 22px 22px;padding:6px 20px 20px;display:flex;flex-direction:column;gap:14px}
+.led{display:flex;flex-direction:column;gap:5px;font-size:14.5px}
+.led div{display:flex;justify-content:space-between;gap:10px}
+.led .v{font-family:var(--cond);font-weight:700;font-size:17px}
+.led .tot{border-top:2px solid var(--ink);padding-top:8px;margin-top:4px;font-weight:700}
+.led .tot .v{font-size:22px}
+.pos{color:var(--green)} .neg{color:var(--red)}
+.ev{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.4}
+.ev li{display:flex;gap:10px}
+.ev li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;margin-top:6px;background:var(--coral)}
+.ev li.r{color:var(--ink2)}
+.ev li.r::before{background:#c3bbd6}
+.palette{display:flex;gap:12px}
+.palette button{width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:var(--haze);border:3px solid transparent}
+.palette button[aria-pressed="true"]{border-color:var(--ink)}
+.field{height:50px;border-radius:14px;border:2px solid var(--line);padding:0 14px;font:600 18px var(--body);color:var(--ink);width:100%}
+.sugg{display:flex;flex-wrap:wrap;gap:6px}
+.sugg button{padding:6px 10px;border-radius:10px;background:var(--haze);font-size:13.5px;font-weight:600}
+textarea{width:100%;font:13px var(--body);border:2px solid var(--line);border-radius:12px;padding:10px;resize:vertical;color:var(--ink)}
+
+/* flight */
+#tip{position:absolute;left:50%;transform:translateX(-50%);bottom:max(20px, env(safe-area-inset-bottom, 0px));z-index:4;
+  width:min(420px,calc(100% - 140px));text-align:left;font-size:14.5px;line-height:1.45;padding:12px 16px;border-radius:18px;background:#fff;box-shadow:0 6px 20px rgba(0,0,0,.25)}
+#tip.wide{width:min(420px,calc(100% - 32px))}
+#burn{position:absolute;right:max(16px, env(safe-area-inset-right, 0px));bottom:max(22px, env(safe-area-inset-bottom, 0px));z-index:4;
+  width:96px;height:96px;border-radius:50%;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:18px;
+  box-shadow:0 7px 0 var(--coral-d),0 10px 24px rgba(0,0,0,.3);touch-action:none;-webkit-user-select:none;user-select:none}
+#burn.on{transform:translateY(5px);box-shadow:0 2px 0 var(--coral-d),0 0 0 8px rgba(255,194,61,.45)}
+.chirp{position:absolute;left:50%;transform:translateX(-50%);z-index:4;width:min(440px,calc(100% - 24px));display:flex;gap:10px;align-items:flex-start;
+  padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 4px 14px rgba(20,10,40,.25);transition:opacity .35s, transform .35s}
+.chirp.out{opacity:0;transform:translate(-50%,-8px)}
+.chirp .av,.rev .av{width:34px;height:34px;font-size:15px}
+.who{font-size:12.5px;color:var(--ink2)}
+.who b{color:var(--ink);font-size:14px;margin-right:4px}
+.stars{color:#f0a000;font-size:13px;letter-spacing:1px}
+.chirp .tx{font-size:14px;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rev{align-items:flex-start}
+.rev .tx{font-size:14px;line-height:1.4;margin-top:2px}
+.avg{display:flex;align-items:center;gap:12px}
+.avg .big2{font-family:var(--cond);font-weight:800;font-size:44px;line-height:1}
+#intro{position:absolute;inset:0;z-index:6;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;
+  padding-bottom:max(28px, calc(env(safe-area-inset-bottom, 0px) + 16px))}
+#introBurn{pointer-events:auto;position:relative;width:104px;height:104px;border-radius:50%;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:19px;
+  box-shadow:0 7px 0 var(--coral-d),0 12px 28px rgba(40,10,30,.35);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+#introBurn::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:3px solid rgba(255,255,255,.85);animation:ring 1.5s ease-in-out infinite}
+#introBurn.on{transform:translateY(5px);box-shadow:0 2px 0 var(--coral-d),0 0 0 10px rgba(255,194,61,.45)}
+#introBurn.on::before{animation:none;opacity:0}
+@keyframes ring{0%,100%{transform:scale(.94);opacity:.9}50%{transform:scale(1.1);opacity:.35}}
+#fade{position:absolute;inset:0;z-index:9;background:#fff6ea;opacity:0;pointer-events:none;transition:opacity .45s}
+#fade.on{opacity:1}
+#setup{background:transparent;align-items:flex-end;pointer-events:none}
+#setup .card{pointer-events:auto}
+#setup .card{box-shadow:0 10px 40px rgba(20,10,40,.4)}
+.lead{margin:0;font-size:16px;line-height:1.45;color:var(--ink2)}
+@media (prefers-reduced-motion: reduce){.flagbig b,#introBurn::before{animation:none}*{transition:none!important}}
+</style>
+
+<div id="wrap">
+  <canvas id="cv"></canvas>
+  <div id="hud">
+    <div class="chip name" id="hName"></div>
+    <div class="chip" id="hDay"></div>
+    <div class="chip n" id="hCash"></div>
+    <div class="chip n" id="hRep"></div>
+    <button class="chip" id="bMenu" aria-label="Menü"><svg viewBox="0 0 24 24" fill="none" stroke="#2b2350" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+  </div>
+
+  <div id="sheet">
+    <div id="tabBody"></div>
+    <div class="act" id="act">
+      <div class="est" id="est"></div>
+      <div class="btns"><button class="ghost" id="skip">Pas geç</button><button class="big" id="go"></button></div>
+    </div>
+    <nav id="nav" role="tablist"></nav>
+  </div>
+
+  <div id="tip" hidden></div>
+  <button id="burn" hidden>BRÜLÖR</button>
+
+  <div class="modal" id="report" hidden></div>
+  <div class="modal" id="menu" hidden></div>
+  <div class="modal" id="setup" hidden></div>
+  <div class="chirp" id="chirp" hidden></div>
+  <div id="intro" hidden><button id="introBurn" aria-label="Brülörü yak">BRÜLÖR</button></div>
+  <div id="fade"></div>
+</div>
+
+<script>
+"use strict";
+const $ = id => document.getElementById(id);
+const cv = $('cv'), ctx = cv.getContext('2d');
+let W = 1, H = 1, DPR = 1, T = 0;
+
+/* ---------- constants ---------- */
+const SIZES = {
+  S: { cap: 8,  cost: 7000,  fuel: 60,  up: 40, risk: .8,  label: 'Küçük sepet' },
+  M: { cap: 16, cost: 15000, fuel: 90,  up: 60, risk: 1,   label: 'Orta sepet' },
+  L: { cap: 24, cost: 26000, fuel: 120, up: 80, risk: 1.3, label: 'Büyük sepet' }
+};
+const LEVELS = [null, { name: 'Çaylak', wage: 90, risk: 1.6 }, { name: 'Deneyimli', wage: 150, risk: 1 }, { name: 'Kıdemli', wage: 240, risk: .6 }];
+const FLAGS = {
+  green:  { name: 'Yeşil bayrak',   acc: .006, dem: 1,  wind: 1,    gust: .25, col: '#22a45d', note: 'Uçuşa uygun, rüzgâr hafif.' },
+  yellow: { name: 'Sarı bayrak',    acc: .03,  dem: .9, wind: 1.45, gust: .9,  col: '#e0a400', note: 'Uçabilirsin ama kaza riski ve sigorta primleri yüksek.' },
+  red:    { name: 'Kırmızı bayrak', acc: .14,  dem: 1,  wind: 2,    gust: 1.7, col: '#e5432f', note: 'Uçuş yasak. Kalkarsan yakalanabilirsin ve sigorta hiçbir şeyi ödemez.' }
+};
+const BANDS = [[0, 60], [60, 180], [180, 350], [350, 650]], CENTERS = [30, 120, 265, 500];
+const B_NAMES = ['Şafak', 'Güvercin', 'Zelve', 'Uçhisar', 'Avanos', 'Ihlara', 'Ortahisar', 'Kızılçukur', 'Paşabağ', 'Erciyes', 'Soğanlı', 'Mustafapaşa', 'Göreme', 'Çavuşin', 'Ürgüp', 'Sinasos'];
+const P_NAMES = ['Mert', 'Elif', 'Kerem', 'Zeynep', 'Hakan', 'Selin', 'Burak', 'Derya', 'Emre', 'Aslı', 'Onur', 'Ceren', 'Tolga', 'Melis', 'Cem', 'İpek'];
+const LOANS = [
+  { amt: 10000, days: 40, inst: 300, need: 0 },
+  { amt: 25000, days: 45, inst: 650, need: 2 },
+  { amt: 50000, days: 50, inst: 1250, need: 3 }
+];
+const PALETTES = [['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9'], ['#2b2350', '#ffc23d'], ['#ff6fa8', '#fff0f6']];
+const LICENSE_DAYS = 15, RECERT = 1500, PRICE_MIN = 40, PRICE_MAX = 320;
+const SIM = 6;
+
+const rnd = (a, b) => a + Math.random() * (b - a);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
+const lerp = (a, b, k) => a + (b - a) * k;
+const eur = n => (n < 0 ? '−€' : '€') + Math.abs(Math.round(n)).toLocaleString('tr-TR');
+const pct = n => '%' + (n * 100).toLocaleString('tr-TR', { maximumFractionDigits: 1 });
+const stars = r => clamp(3 + (r - .75) * 4, 1, 5).toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '★';
+function hex(h) { return [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)); }
+function mix(a, b, k) { const A = hex(a), B = hex(b); k = clamp(k, 0, 1); return '#' + A.map((x, i) => Math.round(lerp(x, B[i], k)).toString(16).padStart(2, '0')).join(''); }
+function mulberry32(a) { return function () { a |= 0; a = a + 0x6D2B79F5 | 0; let q = Math.imul(a ^ a >>> 15, 1 | a); q = q + Math.imul(q ^ q >>> 7, 61 | q) ^ q; return ((q ^ q >>> 14) >>> 0) / 4294967296; }; }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+/* ---------- state ---------- */
+let S = null;
+function newState() {
+  const s = {
+    day: 1, cash: 3000, rep: 1, price: 170, strikes: 0, banUntil: 0, selfFly: true, nextId: 1, lastSelfFly: 1,
+    company: '', colors: PALETTES[0],
+    ins: { hull: true, pax: true }, balloons: [], pilots: [], candidates: [], loans: [], demandBase: 165,
+    rivals: [
+      { name: 'Göreme Sky',        col: '#5aa9e6', col2: '#eaf4fc', style: 'safe',  balloons: ['L', 'L', 'M', 'M', 'M'], price: 195, rep: 1.15, cash: 40000 },
+      { name: 'Peribaca Balloons', col: '#9b7be0', col2: '#f2ebff', style: 'mid',   balloons: ['M', 'M', 'S'],           price: 165, rep: 1,    cash: 12000 },
+      { name: 'Kızıl Vadi Air',    col: '#c73a2a', col2: '#ffd9a8', style: 'risky', balloons: ['S', 'S'],                price: 135, rep: .85,  cash: 5000 }
+    ],
+    lastShare: null, monopolyShown: false, over: false, tutorialDone: false, reviews: []
+  };
+  s.rivals.forEach(r => { r.alive = true; r.dmg = r.balloons.map(() => 0); r.lastPax = 0; r.lastCap = 0; r.forSale = null; r.lowDays = 0; });
+  s.balloons.push({ id: s.nextId++, size: 'S', name: 'Şafak', fly: true, dmgUntil: 0, pilot: null });
+  s.flag = s.balloons[0].id;
+  return s;
+}
+function migrate(s) {
+  if (s.lastSelfFly == null) s.lastSelfFly = s.day;
+  if (!s.colors) s.colors = PALETTES[0];
+  if (s.company == null) s.company = '';
+  if (!s.reviews) s.reviews = [];
+  s.rivals.forEach(r => { if (r.lowDays == null) r.lowDays = 0; });
+  return s;
+}
+const KEY = 'safak-balon-v1';
+let savedOk = false;
+function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); savedOk = true; } catch (e) { savedOk = false; } }
+function load() { try { const j = localStorage.getItem(KEY); return j ? JSON.parse(j) : null; } catch (e) { return null; } }
+const myCol = () => S.colors || PALETTES[0];
+
+/* ---------- weather & world ---------- */
+function newWeather() {
+  const r = Math.random(), flag = S.day === 1 ? 'green' : r < .55 ? 'green' : r < .85 ? 'yellow' : 'red', F = FLAGS[flag];
+  const surf = flag === 'green' ? rnd(3, 10) : flag === 'yellow' ? rnd(11, 18) : rnd(19, 30);
+  const L = [(Math.random() < .5 ? -1 : 1) * surf / 3.6 * .45, rnd(-4, 4) * F.wind, rnd(-6, 6) * F.wind, rnd(-8, 8) * F.wind];
+  if (!L.some(v => v > 3)) { const i = 1 + Math.floor(Math.random() * 3); L[i] = rnd(3.5, 6) * F.wind; }
+  if (!L.some(v => v < -.5)) { let m = 0; L.forEach((v, i) => { if (v < 3 && (L[m] >= 3 || v < L[m])) m = i; }); L[m] = -rnd(1, 4) * F.wind; }
+  return { flag, surf: Math.round(surf), layers: L, target: 220 + rnd(1300, 2100), seed: Math.floor(Math.random() * 1e9) };
+}
+function windAt(alt, t) {
+  const Wx = S.weather, Ls = Wx.layers, g = FLAGS[Wx.flag].gust;
+  let v;
+  if (alt <= CENTERS[0]) v = Ls[0];
+  else if (alt >= CENTERS[3]) v = Ls[3];
+  else {
+    let i = 0; while (alt > CENTERS[i + 1]) i++;
+    const k = (alt - CENTERS[i]) / (CENTERS[i + 1] - CENTERS[i]);
+    const s = clamp((k - .5) / .35 + .5, 0, 1), sm = s * s * (3 - 2 * s);
+    v = lerp(Ls[i], Ls[i + 1], sm);
+  }
+  return v + g * .6 * (Math.sin(t * .11 + alt * .013) + .6 * Math.sin(t * .37 + alt * .031));
+}
+let terrain = [], bgBalloons = [];
+function buildWorld() {
+  const R = mulberry32(S.weather.seed), tx = S.weather.target;
+  terrain = [];
+  for (let x = -600; x < 4200; x += rnd(90, 190)) {
+    if (Math.abs(x - 220) < 160 || Math.abs(x - tx) < 140) continue;
+    terrain.push({ x, h: 30 + R() * 65, w: 26 + R() * 22, tone: R() });
+  }
+  bgBalloons = [];
+  const owners = [];
+  S.rivals.forEach(r => { if (r.alive) for (let i = 0; i < r.balloons.length; i++) owners.push([r.col, r.col2]); });
+  for (let i = 0; i < S.balloons.length - 1; i++) owners.push(myCol());
+  const n = Math.min(18, owners.length);
+  for (let i = 0; i < n; i++) bgBalloons.push({ x: rnd(-400, 3400), alt: rnd(60, 560), c: owners[i % owners.length], ph: Math.random() * 6, s: rnd(.55, .85) });
+}
+function terrainH(x) {
+  let h = 0;
+  for (const c of terrain) { const d = Math.abs(x - c.x); if (d < c.w / 2) h = Math.max(h, c.h * Math.pow(1 - d / (c.w / 2), .6)); }
+  return h;
+}
+
+/* ---------- fleet helpers ---------- */
+const bal = id => S.balloons.find(b => b.id === id);
+const licenseLeft = () => LICENSE_DAYS - (S.day - S.lastSelfFly);
+const licenseOk = () => licenseLeft() >= 0;
+const selfFlying = () => S.selfFly && licenseOk();
+function assignPilots() {
+  S.balloons.forEach(b => b.pilot = null);
+  const need = S.balloons.filter(b => !(b.id === S.flag && selfFlying())).sort((a, b) => SIZES[b.size].cap - SIZES[a.size].cap);
+  const ps = S.pilots.slice().sort((a, b) => b.lvl - a.lvl);
+  need.forEach((b, i) => { if (ps[i]) b.pilot = ps[i].id; });
+}
+function canFly(b) {
+  if (S.banUntil >= S.day) return 'ban';
+  if (b.dmgUntil > S.day) return 'dmg';
+  if (!(b.id === S.flag && selfFlying()) && !b.pilot) return 'nopilot';
+  return 'ok';
+}
+const flying = () => S.balloons.filter(b => b.fly && canFly(b) === 'ok');
+const pilotOf = b => S.pilots.find(p => p.id === b.pilot);
+const isSelf = b => b.id === S.flag && selfFlying();
+function accP(b) { const p = pilotOf(b); return FLAGS[S.weather.flag].acc * (isSelf(b) ? 1 : p ? LEVELS[p.lvl].risk : 1) * SIZES[b.size].risk; }
+function premium(size, p) {
+  if (S.weather.flag === 'red') return { hull: 0, pax: 0 };
+  const z = SIZES[size];
+  return { hull: Math.round(Math.max(z.cost * .001, p * z.cost * .21 * 1.3)), pax: Math.round(Math.max(z.cap * 2, p * z.cap * 1500 * 1.3)) };
+}
+function newCandidates() {
+  S.candidates = [];
+  for (let i = 0; i < 3; i++) {
+    const r = Math.random(), lvl = r < .5 ? 1 : r < .85 ? 2 : 3;
+    S.candidates.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + '.', lvl });
+  }
+}
+function addBalloon(size) {
+  const used = new Set(S.balloons.map(x => x.name)); const name = B_NAMES.find(n => !used.has(n)) || ('Balon ' + S.nextId);
+  S.balloons.push({ id: S.nextId++, size, name, fly: true, dmgUntil: 0, pilot: null });
+}
+
+/* ---------- market ---------- */
+function allocate(comps, T) {
+  const att = comps.map(c => c.cap > 0 ? c.rep * Math.pow(190 / c.price, 2.4) : 0);
+  const sum = att.reduce((a, b) => a + b, 0);
+  const capSum = comps.reduce((a, c) => a + c.cap, 0);
+  const avgP = capSum ? comps.reduce((a, c) => a + c.price * c.cap, 0) / capSum : 180;
+  const Te = T * clamp(Math.pow(185 / avgP, 1.1), .5, 1.4);
+  const pax = comps.map((c, i) => sum ? Math.min(c.cap, Math.floor(Te * att[i] / sum)) : 0);
+  let left = (Te - pax.reduce((a, b) => a + b, 0)) * .7;
+  for (let pass = 0; pass < 3 && left >= 1; pass++) {
+    const sp = comps.map((c, i) => c.cap - pax[i] > 0 ? att[i] : 0), s2 = sp.reduce((a, b) => a + b, 0);
+    if (!s2) break; let used = 0;
+    comps.forEach((c, i) => { if (!sp[i]) return; const add = Math.min(c.cap - pax[i], Math.max(1, Math.floor(left * sp[i] / s2))); pax[i] += add; used += add; });
+    left -= used; if (!used) break;
+  }
+  return pax;
+}
+function rivalFlyPlan() {
+  const flag = S.weather.flag;
+  S.rivals.forEach(r => {
+    r.fly = [];
+    if (!r.alive) return;
+    const go = flag === 'green' ? 1 : flag === 'yellow' ? (r.style === 'safe' ? .5 : 1) : (r.style === 'risky' && Math.random() < .5 ? 1 : 0);
+    const avail = []; r.balloons.forEach((s, i) => { if (r.dmg[i] <= S.day) avail.push(i); });
+    r.fly = go === 1 ? avail : go === .5 ? avail.filter((_, k) => k % 2 === 0) : [];
+  });
+}
+function market(myPrice, myCap) {
+  const comps = [{ price: myPrice, rep: S.rep, cap: myCap }].concat(S.rivals.map(r => ({ price: r.price, rep: r.rep, cap: r.alive ? r.fly.reduce((a, i) => a + SIZES[r.balloons[i]].cap, 0) : 0 })));
+  return { pax: allocate(comps, S.demand), caps: comps.map(c => c.cap) };
+}
+
+/* ---------- day flow ---------- */
+const demandGrowth = () => 1 + .6 * (1 - Math.exp(-(S.day - 1) / 50));
+let mode = 'office', tab = 'plan', FL = null, lastReport = null;
+function startDay() {
+  if (!S.company) { showSetup(1); return; }
+  if (!S.weather) S.weather = newWeather();
+  if (!S.demand) S.demand = Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem);
+  if (!S.candidates.length) newCandidates();
+  if (!S.rivals[0].fly) rivalFlyPlan();
+  assignPilots(); buildWorld(); save();
+  mode = 'office'; hideAll(); $('hud').hidden = false; $('sheet').hidden = false;
+  refresh();
+}
+function launch(skip) {
+  const fl = skip ? [] : flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0);
+  const m = market(S.price, cap);
+  const plan = { skip: !!skip, fly: fl.map(b => b.id), pax: {}, rpax: m.pax.slice(1), rcap: m.caps.slice(1) };
+  let left = m.pax[0];
+  const order = fl.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag));
+  for (const b of order) { const n = Math.min(left, SIZES[b.size].cap); plan.pax[b.id] = n; left -= n; }
+  S.plan = plan;
+  const fb = bal(S.flag);
+  if (fb && isSelf(fb) && fl.includes(fb)) startFlight(plan.pax[fb.id] || 0);
+  else finishDay(null);
+}
+function finishDay(flight) {
+  const red = S.weather.flag === 'red', ev = [], rev = [];
+  const Lg = { rev: 0, tips: 0, fuel: 0, wage: 0, up: 0, ins: 0, loan: 0, repair: 0, comp: 0, insPay: 0, fine: 0, seize: 0 };
+  const fl = S.plan.fly.map(bal).filter(Boolean), accNames = [];
+  let paxTotal = 0;
+  for (const b of fl) {
+    const z = SIZES[b.size], pax = S.plan.pax[b.id] || 0, self = isSelf(b); paxTotal += pax;
+    Lg.rev += pax * S.price; Lg.fuel += z.fuel;
+    const pr = premium(b.size, accP(b));
+    if (S.ins.hull) Lg.ins += pr.hull; if (S.ins.pax) Lg.ins += pr.pax;
+    let sev = 0;
+    if (self && flight) {
+      S.lastSelfFly = S.day;
+      const q = flight.q;
+      if (q === 'perfect') { Lg.tips += pax * 15; S.rep += .03; ev.push(`${b.name}: kusursuz iniş. Yolcular ${eur(pax * 15)} bahşiş bıraktı.`); }
+      else if (q === 'good') { Lg.tips += pax * 6; S.rep += .01; ev.push(`${b.name}: düzgün iniş, yolcular memnun.`); }
+      else if (q === 'far') { S.rep -= .02; ev.push(`${b.name}: hedeften ${Math.round(flight.dist)} m uzağa indin, yer ekibi seni geç buldu.`); }
+      else if (q === 'hard') sev = .3;
+      else if (q === 'crash') sev = .8;
+    } else if (Math.random() < accP(b)) sev = rnd(.2, 1);
+    else S.rep += .004;
+    if (sev) {
+      const repair = Math.round(z.cost * .35 * sev), comp = Math.round(pax * 2500 * sev), days = 1 + Math.ceil(4 * sev);
+      const hullPaid = S.ins.hull && !red, paxPaid = S.ins.pax && !red;
+      Lg.repair += repair; Lg.comp += comp;
+      if (hullPaid) Lg.insPay += repair; if (paxPaid) Lg.insPay += comp;
+      b.dmgUntil = S.day + days; S.rep -= .08 + .15 * sev;
+      if (!self) accNames.push(b.name);
+      const who = self ? 'Sen' : (pilotOf(b) ? pilotOf(b).name : 'Pilot');
+      const paid = hullPaid && paxPaid ? 'Sigorta tamamını ödedi.' : hullPaid ? 'Sigorta onarımı ödedi, tazminat kasadan çıktı.' : paxPaid ? 'Sigorta tazminatı ödedi, onarım kasadan çıktı.' : 'Sigorta yoktu, hepsi kasadan çıktı.';
+      ev.push(`${b.name} (${who}) ${sev > .6 ? 'ağır kaza yaptı' : 'sert iniş yaptı'} ve ${days} gün yerde kalacak. Onarım ${eur(repair)}, tazminat ${eur(comp)}. ${paid}`);
+    }
+  }
+  if (red && fl.length) {
+    if (Math.random() < .35) {
+      Lg.fine += 5000; S.strikes++;
+      ev.push(`Kırmızı bayrakta uçarken yakalandın: €5.000 ceza, uyarı ${S.strikes}/3.`);
+      if (S.strikes >= 3) { S.banUntil = S.day + 3; S.strikes = 0; ev.push('Üçüncü uyarı: şirketine 3 gün uçuş yasağı geldi.'); }
+    } else ev.push('Kırmızı bayrakta uçtun ve kimse fark etmedi. Bu sefer.');
+  }
+  Lg.wage = S.pilots.reduce((a, p) => a + LEVELS[p.lvl].wage, 0);
+  Lg.up = S.balloons.reduce((a, b) => a + SIZES[b.size].up, 0);
+  S.loans.forEach(l => { Lg.loan += l.inst; l.left--; });
+  S.loans = S.loans.filter(l => l.left > 0);
+  let net = Lg.rev + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine;
+  S.cash += net;
+  S.rep = clamp(lerp(S.rep, 1, .01), .4, 1.4);
+  if (S.selfFly && licenseLeft() === 0) ev.push('Pilot lisansın bugün sona eriyor. Yarın amiral balonunu kendin uçuramazsın; Ekip sekmesinden yenileyebilirsin.');
+
+  simRivals(rev);
+
+  if (S.cash < -5000) {
+    const sellable = S.balloons.filter(b => b.id !== S.flag).sort((a, b) => SIZES[b.size].cost - SIZES[a.size].cost);
+    const take = sellable[0] || S.balloons[0];
+    if (take) {
+      const v = SIZES[take.size].cost * .5; S.cash += v; Lg.seize = v; net += v;
+      S.balloons = S.balloons.filter(b => b !== take);
+      ev.push(`Banka borcun için ${take.name} balonuna el koydu ve ${eur(v)}'ya sattı.`);
+      if (take.id === S.flag && S.balloons.length) S.flag = S.balloons[0].id;
+    }
+    if (!S.balloons.length) S.over = true;
+  }
+
+  const capToday = fl.reduce((a, b) => a + SIZES[b.size].cap, 0);
+  genReviews({ q: flight ? flight.q : null, acc: accNames, red, flew: fl.length > 0, skip: S.plan.skip, flag: S.weather.flag });
+  chirpI = 0; chirpT = 0;
+  S.lastShare = { me: paxTotal, rivals: S.plan.rpax.slice(), demand: S.demand };
+  lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
+  S.day++; S.plan = null;
+  newCandidates();
+  S.weather = newWeather();
+  S.demand = Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem);
+  rivalFlyPlan(); assignPilots(); buildWorld(); save();
+  showReport();
+}
+function simRivals(rev) {
+  const F = FLAGS[S.weather.flag], red = S.weather.flag === 'red';
+  S.rivals.forEach((r, ri) => {
+    if (!r.alive) return;
+    const pax = S.plan.rpax[ri] || 0, cap = S.plan.rcap[ri] || 0;
+    const insured = r.style !== 'risky', pr = r.style === 'safe' ? .8 : r.style === 'risky' ? 1.3 : 1;
+    let cost = r.balloons.reduce((a, s) => a + SIZES[s].up + 180, 0) + 150, income = pax * r.price, hit = 0, base = 0;
+    r.fly.forEach(i => {
+      const z = SIZES[r.balloons[i]], p = F.acc * pr * z.risk; cost += z.fuel;
+      if (insured && !red) { const q = premium(r.balloons[i], p); cost += q.hull + q.pax; }
+      base = cost;
+      if (Math.random() < p) {
+        const sev = rnd(.2, 1), share = cap ? pax * z.cap / cap : 0;
+        if (!(insured && !red)) cost += z.cost * .35 * sev + share * 2500 * sev;
+        r.dmg[i] = S.day + 1 + Math.ceil(4 * sev); r.rep -= .1 + .12 * sev; hit++;
+      }
+    });
+    if (hit) rev.push(`${r.name}: ${hit} balonu kaza yaptı.`);
+    if (red && r.fly.length) { if (Math.random() < .35) { cost += 5000; rev.push(`${r.name} kırmızı bayrakta uçtu ve €5.000 ceza yedi.`); } else rev.push(`${r.name} kırmızı bayrakta gizlice uçtu.`); }
+    r.cash += income - cost;
+    const reserve = 8000 + 1500 * r.balloons.length;
+    if (r.cash > reserve) r.cash -= (r.cash - reserve) * .25;
+    r.rep = clamp(lerp(r.rep, r.style === 'safe' ? 1.1 : r.style === 'risky' ? .9 : 1, .04), .4, 1.4);
+    r.lastPax = pax; r.lastCap = cap;
+    if (cap) {
+      const load = pax / cap, perSeat = (base || cost) / Math.max(1, cap), floor = perSeat / .75 * (r.style === 'safe' ? 1 : r.style === 'mid' ? .9 : .75);
+      const old = r.price;
+      if (load < .6) r.price *= .95; else if (load > .95) r.price *= 1.04;
+      if (S.price < r.price * .9 && load < .7) r.price *= .94;
+      r.price = clamp(Math.round(r.price), Math.round(clamp(floor, 55, 220)), PRICE_MAX);
+      if (Math.abs(r.price - old) >= 8) rev.push(`${r.name} fiyatını ${eur(old)} → ${eur(r.price)} yaptı.`);
+      r.lowDays = load < .5 ? r.lowDays + 1 : 0;
+      r.highDays = load > .9 ? (r.highDays || 0) + 1 : 0;
+      const next = r.style === 'safe' ? 'L' : 'M', maxB = r.style === 'safe' ? 10 : r.style === 'mid' ? 7 : 5;
+      if (r.cash > SIZES[next].cost * 1.2 && r.highDays >= 3 && r.balloons.length < maxB && S.day - (r.lastBuy || 0) >= 4) { r.lastBuy = S.day; r.cash -= SIZES[next].cost; r.balloons.push(next); r.dmg.push(0); rev.push(`${r.name} filosuna yeni bir balon ekledi.`); }
+    }
+    if (r.cash < -10000) {
+      r.alive = false; r.offer = null;
+      const v = r.balloons.reduce((a, s) => a + SIZES[s].cost, 0) * .45;
+      r.forSale = { sizes: r.balloons.slice(), price: Math.round(v / 100) * 100 };
+      rev.push(`${r.name} iflas etti! Filosu satışta: ${r.balloons.length} balon, ${eur(r.forSale.price)}.`);
+    } else if (r.lowDays >= 4 || r.cash < 5000) {
+      const v = r.balloons.reduce((a, s) => a + SIZES[s].cost, 0) * .6 + Math.max(0, r.cash);
+      const was = !!r.offer; r.offer = Math.round(v / 100) * 100;
+      if (!was) rev.push(`${r.name} zor durumda. Şirketi devralma teklifi yapabilirsin: ${eur(r.offer)}.`);
+    } else r.offer = null;
+  });
+}
+
+/* ---------- reviews ---------- */
+const REVIEWERS = [['Emily', 'Birleşik Krallık'], ['Kenji', 'Japonya'], ['Lucía', 'İspanya'], ['Mehmet', 'İstanbul'], ['Ji-woo', 'Güney Kore'], ['Ahmed', 'Mısır'],
+  ['Olga', 'Polonya'], ['Marco', 'İtalya'], ['Priya', 'Hindistan'], ['Tom', 'ABD'], ['Chloé', 'Fransa'], ['Wei', 'Çin'], ['Ayşe', 'Ankara'], ['Lukas', 'Almanya'], ['Ana', 'Brezilya'], ['Noah', 'Hollanda']];
+const REV = {
+  perfect: [[5, 'Pilot bizi tarlanın tam ortasına kuş tüyü gibi indirdi. Şampanya bile dökülmedi!'], [5, 'Gün doğumu, peribacaları ve kusursuz bir iniş. Hayatımın sabahıydı.'], [5, 'Kaptan rüzgârı okuyor resmen. Kesinlikle tekrar uçarım.']],
+  good: [[4, 'Manzara muhteşemdi, iniş biraz sarsıntılıydı ama sorun değil.'], [4, 'Ekip çok ilgiliydi, inişteki sıcak çikolata ikramı harikaydı.'], [5, 'Fotoğraflar inanılmaz çıktı, pilot en güzel açıları biliyordu.']],
+  far: [[3, 'İnişten sonra bir tarlada bir saat araç bekledik. Manzara güzeldi ama…'], [2, 'Pilot nereye indiğimizi kendisi de bilmiyordu sanırım.']],
+  hard: [[2, 'Sepet devrildi, dizim hâlâ ağrıyor. Bir daha düşünürüm.'], [1, 'İniş tam bir rodeo gibiydi. Hiç komik değil.']],
+  crash: [[1, 'Peribacasına çarptık! Herkes iyi ama bu kabul edilemez.'], [1, 'Hayatımın en korkunç sabahı. Uzak durun.']],
+  acc: [[1, '{b} balonundaydık, çok sert indik. Kimse doğru düzgün ilgilenmedi.'], [2, '{b} balonunun inişi korkunçtu. Pilot çok tecrübesiz görünüyordu.']],
+  red: [[2, 'Rüzgâr uğulduyordu, başka hiçbir balon kalkmamıştı. Biz neden uçtuk?!'], [1, 'Kurallara uymayan bir şirket. Bayrak kırmızıydı, yine de kaldırdılar.']],
+  skip: [[4, 'Hava yüzünden uçuş iptal oldu ama paramızı hemen iade ettiler. Güvenlik önce gelir.'], [4, 'Rüzgâr yüzünden ertelendi, ertesi güne hemen yer buldular.']],
+  cheap: [[5, 'Bu fiyata bu manzara mı? Kaçırmayın!'], [5, '{p} ödedim, Kapadokya\'nın en iyi fiyatı bu olabilir.']],
+  pricey: [[3, 'Güzeldi ama {p} biraz fazla. Yan firmada daha ucuza uçmuşlar.'], [3, 'Deneyim iyiydi, fiyat ise cüzdanımı ağlattı.']],
+  general: [[5, 'Kapadokya\'ya gelip balona binmemek olmaz. Bu ekip çok profesyonel.'], [4, 'Sabah 4\'te kalkmaya değdi. Gökyüzü yüzlerce balonla doluydu.'], [5, '{c} ile uçtuk, her şey dakikası dakikasına planlıydı.']],
+  rival: [[5, 'Önce {r} ile uçacaktık, iyi ki {c}\'e geçmişiz.'], [4, '{r} doluydu, {c} ile uçtuk. Hiç pişman değiliz.']]
+};
+function addReview(kind, vars) {
+  const [stars, text] = pick(REV[kind]), [n, c] = pick(REVIEWERS);
+  let t = text; for (const k in vars || {}) t = t.split('{' + k + '}').join(vars[k]);
+  t = t.split('{c}').join(S.company);
+  S.reviews.unshift({ n, c, stars, t, day: S.day });
+  if (S.reviews.length > 40) S.reviews.length = 40;
+}
+function genReviews(o) {
+  const before = S.reviews.length;
+  if (o.q) addReview(o.q);
+  o.acc.forEach(b => addReview('acc', { b }));
+  if (o.red && o.flew) addReview('red');
+  if (o.skip && o.flag !== 'green') addReview('skip');
+  if (o.flew && S.price <= 120 && Math.random() < .6) addReview('cheap', { p: eur(S.price) });
+  if (o.flew && S.price >= 230 && Math.random() < .6) addReview('pricey', { p: eur(S.price) });
+  const alive = S.rivals.filter(r => r.alive);
+  if (o.flew && !o.acc.length && alive.length && Math.random() < .25) addReview('rival', { r: pick(alive).name });
+  if (o.flew && !o.acc.length && (S.reviews.length - before < 2) && Math.random() < .8) addReview('general');
+}
+let chirpI = 0, chirpT = 0;
+function avatarCol(n) { let h = 0; for (const ch of n) h = (h * 31 + ch.charCodeAt(0)) % 360; return `hsl(${h},55%,52%)`; }
+const starStr = n => '★'.repeat(n) + '☆'.repeat(5 - n);
+function revHTML(r) { return `<div class="av" style="background:${avatarCol(r.n)}">${r.n[0]}</div><div class="main"><div class="who"><b>${esc(r.n)}</b>${esc(r.c)}, gün ${r.day}</div><div class="stars">${starStr(r.stars)}</div><div class="tx">${esc(r.t)}</div></div>`; }
+function updateChirp(dt) {
+  const el = $('chirp'), show = mode === 'office' && !$('sheet').hidden && S && S.reviews && S.reviews.length;
+  if (!show) { el.hidden = true; return; }
+  if (el.hidden) { el.hidden = false; chirpT = 0; }
+  el.style.top = ($('hud').offsetHeight + 8) + 'px';
+  chirpT -= dt;
+  if (chirpT <= 0) {
+    chirpT = 7;
+    const list = S.reviews.slice(0, 6), r = list[chirpI++ % list.length];
+    el.classList.add('out');
+    setTimeout(() => { el.innerHTML = revHTML(r); el.classList.remove('out'); }, el.innerHTML ? 350 : 0);
+  }
+}
+
+/* ---------- UI helpers ---------- */
+function h(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
+function pbtn(label, on, disabled, light) { const b = h('button', 'pbtn' + (light ? ' light' : '')); b.textContent = label; b.onclick = on; if (disabled) b.disabled = true; return b; }
+function sw(on, onToggle, label) { const b = h('button', 'sw'); b.setAttribute('aria-pressed', String(!!on)); b.setAttribute('aria-label', label); b.onclick = onToggle; return b; }
+function balloonIcon(c1, c2) {
+  return `<svg class="ic" viewBox="0 0 38 38"><path d="M19 3c-7 0-12 5-12 11.5 0 5.5 5 9.5 8 13.5h8c3-4 8-8 8-13.5C31 8 26 3 19 3z" fill="${c1}"/><path d="M19 3c-2.6 0-4.6 5-4.6 11.5 0 5.5 1.6 9.5 3 13.5h3.2c1.4-4 3-8 3-13.5C23.6 8 21.6 3 19 3z" fill="${c2}"/><path d="M15.5 28.5v3.5M22.5 28.5v3.5" stroke="#6b4426" stroke-width="1.2"/><rect x="15" y="31.5" width="8" height="4.5" rx="1" fill="#8a5a32"/></svg>`;
+}
+function riskTag(p) { const c = p < .01 ? 'g' : p < .04 ? 'y' : 'r'; return `<span class="tag ${c}">kaza riski ${pct(p)}</span>`; }
+function refresh() { renderHud(); renderNav(); renderTab(); renderAct(); save(); }
+
+function renderHud() {
+  $('hName').textContent = S.company || 'Balon şirketi';
+  $('hDay').innerHTML = `<span class="fl" style="background:${FLAGS[S.weather ? S.weather.flag : 'green'].col}"></span><span class="n">Gün ${S.day}</span>`;
+  $('hCash').textContent = eur(S.cash); $('hCash').classList.toggle('neg', S.cash < 0);
+  $('hRep').textContent = stars(S.rep);
+}
+const ICONS = {
+  plan: '<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 6v2.5M5.2 9.6l1.7 1.7M18.8 9.6l-1.7 1.7"/>',
+  fleet: '<path d="M12 3a6.5 6.5 0 0 0-6.5 6.5c0 3.6 3.5 6.6 4.7 8.5h3.6c1.2-1.9 4.7-4.9 4.7-8.5A6.5 6.5 0 0 0 12 3z"/><path d="M10 21h4"/>',
+  crew: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20.5c0-3.4 2.7-6 6-6s6 2.6 6 6"/><circle cx="17.2" cy="9" r="2.4"/><path d="M16 14.4c3 .3 5 2.6 5 5.6"/>',
+  bank: '<path d="M3 9.5 12 4l9 5.5M5.5 10.5v7M10 10.5v7M14 10.5v7M18.5 10.5v7M3 20.5h18"/>',
+  market: '<path d="M4 20.5v-7M10 20.5V5M16 20.5v-10M2.5 20.5h19"/>'
+};
+const TABS = [['plan', 'Sabah'], ['fleet', 'Filo'], ['crew', 'Ekip'], ['bank', 'Banka'], ['market', 'Pazar']];
+function renderNav() {
+  const el = $('nav'); el.replaceChildren();
+  const dots = { crew: S.balloons.some(b => canFly(b) === 'nopilot') || !licenseOk(), market: S.rivals.some(r => r.forSale || r.offer) };
+  for (const [k, label] of TABS) {
+    const b = h('button', null, `<svg viewBox="0 0 24 24">${ICONS[k]}</svg>${label}`);
+    b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(tab === k));
+    if (dots[k]) b.appendChild(h('span', 'dot'));
+    b.onclick = () => { tab = k; renderNav(); renderTab(); $('tabBody').scrollTop = 0; };
+    el.appendChild(b);
+  }
+}
+function renderTab() {
+  const body = $('tabBody'), st = body.scrollTop; body.replaceChildren();
+  ({ plan: tabPlan, fleet: tabFleet, crew: tabCrew, bank: tabBank, market: tabMarket })[tab](body);
+  body.scrollTop = st;
+}
+function renderAct() {
+  const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), n = fl.length;
+  const m = market(S.price, cap), pax = m.pax[0];
+  $('est').innerHTML = n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu</span><span>Gelir <b>${eur(pax * S.price)}</b></span>` : `<span>Bugün uçacak balon yok</span><span>${S.demand} turist bekliyor</span>`;
+  const go = $('go'); go.disabled = !n;
+  go.textContent = n ? `${n} balon uçur` : 'Uçacak balon yok';
+}
+
+/* ---------- tabs ---------- */
+function tabPlan(body) {
+  const Wx = S.weather, F = FLAGS[Wx.flag];
+  const w = h('div', 'weather');
+  w.append(h('div', 'flagbig', `<i></i><b style="background:${F.col}"></b>`), h('div', null, `<div class="wtitle">${F.name}</div><div class="wsub">Yerde rüzgâr ${Wx.surf} km/s. ${F.note}</div>`));
+  const sec = h('div', 'sec'); sec.appendChild(w);
+  const lad = h('div', 'ladder');
+  const maxV = 10;
+  for (let i = 3; i >= 0; i--) {
+    const v = Wx.layers[i], wpx = Math.min(50, Math.abs(v) / maxV * 50);
+    const r = h('div', 'rung', `<span>${BANDS[i][0]}–${BANDS[i][1]} m</span><span class="track"><span class="arr ${v >= 0 ? 'r' : 'l'}" style="${v >= 0 ? 'left:50%' : 'right:50%'};width:${wpx}%"></span></span><span class="sp">${Math.round(Math.abs(v) * 3.6)} km/s</span>`);
+    lad.appendChild(r);
+  }
+  sec.append(lad, h('p', 'hint', 'İniş alanı doğuda, yani sağda. Seni sağa taşıyan katmanı bul.'));
+  body.appendChild(sec);
+
+  if (S.banUntil >= S.day) body.appendChild(h('div', 'callout red', `<b>Uçuş yasağın var.</b> ${S.banUntil - S.day + 1} gün daha hiçbir balonun kalkamaz.`));
+  if (Wx.flag === 'red' && flying().length) body.appendChild(h('div', 'callout red', '<b>Bugün uçuş yasak.</b> Kalkarsan %35 ihtimalle €5.000 ceza ve bir uyarı alırsın. Üç uyarıda 3 gün yasak gelir. Sigorta bugün hiçbir şeyi ödemez. Uçmak istemiyorsan Pas geç\'e bas.'));
+  const ll = licenseLeft();
+  if (S.selfFly && !licenseOk()) body.appendChild(h('div', 'callout red', `<b>Pilot lisansın doldu.</b> ${LICENSE_DAYS} gün boyunca hiç uçmadın. Amiral balonunu bir pilot uçuracak. Ekip sekmesinden ${eur(RECERT)} ödeyip yenileyebilirsin.`));
+  else if (S.selfFly && ll <= 4) body.appendChild(h('div', 'callout yel', `<b>Lisansın için uçman gerek.</b> ${ll === 0 ? 'Bugün' : ll + ' gün içinde'} en az bir kez kendin uçmazsan pilot lisansın düşer.`));
+
+  const ps = h('div', 'sec');
+  const pb = h('div', 'pricebox', `<h2>Bilet fiyatı</h2>`);
+  const pv = h('div', 'pricebig', eur(S.price)); pb.appendChild(pv); ps.appendChild(pb);
+  const inp = document.createElement('input'); inp.type = 'range'; inp.min = PRICE_MIN; inp.max = PRICE_MAX; inp.step = 5; inp.value = S.price; inp.id = 'priceIn'; inp.setAttribute('aria-label', 'Bilet fiyatı');
+  inp.oninput = () => { S.price = +inp.value; pv.textContent = eur(S.price); renderAct(); };
+  inp.onchange = save;
+  ps.appendChild(inp);
+  const mk = h('div', 'rivalmarks');
+  S.rivals.filter(r => r.alive).forEach(r => { const t = h('span', 'rm', `<i style="background:${r.col}"></i>${eur(r.price)}`); t.style.left = ((r.price - PRICE_MIN) / (PRICE_MAX - PRICE_MIN) * 100) + '%'; mk.appendChild(t); });
+  ps.append(mk, h('p', 'hint', 'Renkli noktalar rakiplerin bugünkü fiyatı. Ucuzlarsan daha çok yolcu gelir ama rakipler de fiyat kırabilir.'));
+  body.appendChild(ps);
+
+  const fs = h('div', 'sec'); fs.appendChild(h('h2', null, 'Bugün uçacaklar'));
+  for (const b of S.balloons) {
+    const it = h('div', 'item'), st = canFly(b), p = pilotOf(b);
+    const who = isSelf(b) ? 'Pilot: sen' : p ? `Pilot: ${p.name}, ${LEVELS[p.lvl].name.toLowerCase()}` : 'Pilot yok';
+    it.insertAdjacentHTML('beforeend', balloonIcon(myCol()[0], myCol()[1]));
+    const m = h('div', 'main', `<div class="t">${esc(b.name)} <span class="tag n">${SIZES[b.size].cap} kişi</span></div><div class="s">${who}${st === 'ok' && Wx.flag !== 'red' ? ' ' + riskTag(accP(b)) : ''}</div>`);
+    it.appendChild(m);
+    if (st === 'ok') it.appendChild(sw(b.fly, () => { b.fly = !b.fly; refresh(); }, `${b.name} uçsun`));
+    else it.appendChild(h('span', 'tag ' + (st === 'nopilot' ? 'y' : 'r'), st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : 'Pilot gerekli'));
+    fs.appendChild(it);
+  }
+  const fb = bal(S.flag);
+  if (fb && licenseOk()) {
+    const it = h('div', 'item');
+    it.appendChild(h('div', 'main', `<div class="t">${esc(fb.name)} balonunu kendin uçur</div><div class="s">${S.selfFly ? `İyi iniş bahşiş ve itibar getirir. Lisans için ${ll} gün içinde uçmalısın.` : 'Bir pilotun uçuracak. Lisansın için yine de arada bir uçmalısın.'}</div>`));
+    it.appendChild(sw(S.selfFly, () => { S.selfFly = !S.selfFly; assignPilots(); refresh(); }, 'Kendim uçurayım'));
+    fs.appendChild(it);
+  }
+  body.appendChild(fs);
+
+  const is = h('div', 'sec'); is.appendChild(h('h2', null, 'Sigorta'));
+  const fl2 = flying();
+  const tot = k => fl2.reduce((a, b) => a + premium(b.size, accP(b))[k], 0);
+  const row = (key, title, sub) => {
+    const it = h('div', 'item');
+    it.appendChild(h('div', 'main', `<div class="t">${title}</div><div class="s">${sub}. ${Wx.flag === 'red' ? 'Kırmızı bayrakta geçersiz.' : `Bugünkü prim <b class="n">${eur(tot(key))}</b>.`}</div>`));
+    it.appendChild(sw(S.ins[key], () => { S.ins[key] = !S.ins[key]; refresh(); }, title));
+    return it;
+  };
+  is.append(row('hull', 'Gövde sigortası', 'Kazada balonun onarımını öder'), row('pax', 'Yolcu sigortası', 'Yaralanan yolculara tazminatı öder'));
+  is.appendChild(h('p', 'hint', 'Prim balonun büyüklüğüne, pilotun tecrübesine ve havaya göre değişir. Rüzgârlı günde büyük balonu çaylak pilota uçurtmak pahalıya gelir.'));
+  body.appendChild(is);
+}
+function tabFleet(body) {
+  const s = h('div', 'sec'); s.appendChild(h('h2', null, 'Balonların'));
+  for (const b of S.balloons) {
+    const z = SIZES[b.size], it = h('div', 'item'), st = canFly(b);
+    it.insertAdjacentHTML('beforeend', balloonIcon(myCol()[0], myCol()[1]));
+    it.appendChild(h('div', 'main', `<div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş.</div>`));
+    const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
+    if (b.id !== S.flag) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); }, false, true));
+    if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(z.cost * .6)}`, () => { S.cash += z.cost * .6; S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); refresh(); }, false, true));
+    it.appendChild(acts);
+    s.appendChild(it);
+  }
+  s.appendChild(h('p', 'hint', 'Amiral balonunu sen uçurursun. Diğer balonlara pilot gerekir.'));
+  body.appendChild(s);
+  const b2 = h('div', 'sec'); b2.appendChild(h('h2', null, 'Yeni balon al'));
+  for (const k of ['S', 'M', 'L']) {
+    const z = SIZES[k], it = h('div', 'item');
+    it.insertAdjacentHTML('beforeend', balloonIcon('#cfc8dd', '#ffffff'));
+    it.appendChild(h('div', 'main', `<div class="t">${z.label}, ${z.cap} kişi</div><div class="s">Rüzgârda risk ×${z.risk.toLocaleString('tr-TR')}. Bakım ${eur(z.up)}/gün.</div>`));
+    it.appendChild(pbtn(eur(z.cost), () => { S.cash -= z.cost; addBalloon(k); assignPilots(); refresh(); }, S.cash < z.cost));
+    b2.appendChild(it);
+  }
+  body.appendChild(b2);
+}
+function tabCrew(body) {
+  if (!licenseOk()) {
+    const c = h('div', 'callout red', `<b>Pilot lisansın doldu.</b> Yeniden sertifika uçuşu ${eur(RECERT)}. Ödeyince amiral balonunu yine kendin uçurabilirsin.`);
+    const b = pbtn(`Lisansı yenile ${eur(RECERT)}`, () => { S.cash -= RECERT; S.lastSelfFly = S.day; S.selfFly = true; assignPilots(); refresh(); }, S.cash < RECERT);
+    b.style.marginTop = '10px'; c.appendChild(b); body.appendChild(c);
+  } else body.appendChild(h('div', 'callout grn', `<b>Pilot lisansın geçerli.</b> Lisansın düşmemesi için en az ${LICENSE_DAYS} günde bir kendin uçmalısın. Kalan süre: ${licenseLeft()} gün.`));
+  const need = S.balloons.filter(b => canFly(b) === 'nopilot').length;
+  if (need) body.appendChild(h('div', 'callout yel', `<b>${need} balonun pilotsuz bekliyor.</b> Aşağıdan bir pilot işe al.`));
+  const s = h('div', 'sec'); s.appendChild(h('h2', null, 'Pilotların'));
+  if (!S.pilots.length) s.appendChild(h('p', 'hint', 'Henüz pilotun yok. Tek balonu kendin uçuruyorsun.'));
+  const avCol = ['#9a8fb8', '#14a39a', '#ff5e3a'];
+  for (const p of S.pilots) {
+    const it = h('div', 'item'), b = S.balloons.find(x => x.pilot === p.id);
+    it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
+    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span></div><div class="s">${eur(LEVELS[p.lvl].wage)}/gün, risk ×${LEVELS[p.lvl].risk.toLocaleString('tr-TR')}. ${b ? b.name + ' balonunda.' : 'Boşta.'}</div>`));
+    it.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); refresh(); }, false, true));
+    s.appendChild(it);
+  }
+  body.appendChild(s);
+  const c = h('div', 'sec'); c.appendChild(h('h2', null, 'Başvuranlar'));
+  for (const p of S.candidates) {
+    const it = h('div', 'item');
+    it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
+    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span></div><div class="s">${eur(LEVELS[p.lvl].wage)}/gün, kaza riski ×${LEVELS[p.lvl].risk.toLocaleString('tr-TR')}</div>`));
+    it.appendChild(pbtn('İşe al', () => { S.pilots.push(p); S.candidates = S.candidates.filter(x => x !== p); assignPilots(); refresh(); }));
+    c.appendChild(it);
+  }
+  c.appendChild(h('p', 'hint', 'Maaşlar balon uçmasa da her gün ödenir. Başvuranlar her sabah değişir. En tecrübeli pilot en büyük balona geçer.'));
+  body.appendChild(c);
+}
+function tabBank(body) {
+  const s = h('div', 'sec'); s.appendChild(h('h2', null, 'Kredilerin'));
+  if (!S.loans.length) s.appendChild(h('p', 'hint', 'Borcun yok.'));
+  for (const l of S.loans) {
+    const it = h('div', 'item'), payoff = Math.round(l.inst * l.left * .9);
+    it.appendChild(h('div', 'main', `<div class="t">${eur(l.amt)} kredi</div><div class="s">Günlük ${eur(l.inst)}, ${l.left} gün kaldı.</div>`));
+    it.appendChild(pbtn(`Kapat ${eur(payoff)}`, () => { S.cash -= payoff; S.loans = S.loans.filter(x => x !== l); refresh(); }, S.cash < payoff, true));
+    s.appendChild(it);
+  }
+  body.appendChild(s);
+  const o = h('div', 'sec'); o.appendChild(h('h2', null, 'Kredi teklifleri'));
+  LOANS.forEach(L => {
+    const total = L.inst * L.days, rate = (total - L.amt) / L.amt, it = h('div', 'item');
+    const locked = S.balloons.length < L.need, full = S.loans.length >= 2;
+    it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}</div>`));
+    it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
+    o.appendChild(it);
+  });
+  o.appendChild(h('p', 'hint', 'Aynı anda en fazla iki kredi. Kasa −€5.000\'in altına düşerse banka bir balonuna el koyar ve yarı fiyatına satar.'));
+  body.appendChild(o);
+}
+function tabMarket(body) {
+  const ls = S.lastShare, s = h('div', 'sec'); s.appendChild(h('h2', null, 'Dünkü pazar payı'));
+  if (ls) {
+    const tot = ls.me + ls.rivals.reduce((a, b) => a + b, 0) || 1, bar = h('div', 'sharebar'), lg = h('div', 'legend');
+    const seg = (n, col, name) => { const sp = document.createElement('span'); sp.style.width = (n / tot * 100) + '%'; sp.style.background = col; bar.appendChild(sp); lg.appendChild(h('span', null, `<i style="background:${col}"></i>${esc(name)} <b>%${Math.round(n / tot * 100)}</b>`)); };
+    seg(ls.me, myCol()[0], S.company);
+    S.rivals.forEach((r, i) => { if (r.alive || ls.rivals[i]) seg(ls.rivals[i] || 0, r.col, r.name); });
+    s.append(bar, lg, h('p', 'hint', `Dün ${ls.demand} turist balona binmek istedi, ${tot} kişi uçtu.`));
+  } else s.appendChild(h('p', 'hint', 'İlk günün sonunda pazar payını burada göreceksin.'));
+  body.appendChild(s);
+  const t = h('div', 'sec'); t.appendChild(h('h2', null, 'Rakipler'));
+  const style = { safe: 'Temkinli ve pahalı. Sarı bayrakta filosunun yarısıyla uçar.', mid: 'Orta yolcu. Sarı bayrakta da uçar.', risky: 'Ucuz ve sigortasız. Kırmızı bayrakta bile kalkabilir.' };
+  S.rivals.forEach(r => {
+    const it = h('div', 'item rv');
+    it.insertAdjacentHTML('beforeend', balloonIcon(r.col, r.col2));
+    const m = h('div', 'main');
+    if (r.alive) {
+      m.innerHTML = `<div class="t">${r.name}${r.offer ? ' <span class="tag y">Zor durumda</span>' : ''}</div><div class="s">${style[r.style]}</div>
+        <div class="stats"><div><b>${r.balloons.length}</b>balon</div><div><b>${eur(r.price)}</b>fiyat</div><div><b>${stars(r.rep)}</b>itibar</div><div><b>${r.lastCap ? Math.round(r.lastPax / r.lastCap * 100) + '%' : '–'}</b>doluluk</div></div>`;
+    } else m.innerHTML = `<div class="t">${r.name} <span class="tag r">İflas etti</span></div><div class="s">${r.forSale ? 'Filosu satışta.' : 'Filosu satıldı.'}</div>`;
+    it.appendChild(m); t.appendChild(it);
+    if (r.alive && r.offer) {
+      const c = h('div', 'callout yel', `<b>${r.name} satılık.</b> Doluluğu düştü ya da parası azaldı. Şirketi ve ${r.balloons.length} balonunu ${eur(r.offer)}'ya devralabilirsin.`);
+      const b = pbtn(`Devral ${eur(r.offer)}`, () => { S.cash -= r.offer; r.balloons.forEach(addBalloon); r.alive = false; r.forSale = null; r.offer = null; assignPilots(); refresh(); }, S.cash < r.offer);
+      b.style.marginTop = '10px'; c.appendChild(b); t.appendChild(c);
+    }
+    if (r.forSale) {
+      const c = h('div', 'callout grn', `<b>${r.name} filosu satışta:</b> ${r.forSale.sizes.map(z => SIZES[z].label.toLowerCase()).join(', ')}.`);
+      const b = pbtn(`Satın al ${eur(r.forSale.price)}`, () => { S.cash -= r.forSale.price; r.forSale.sizes.forEach(addBalloon); r.forSale = null; assignPilots(); refresh(); }, S.cash < r.forSale.price);
+      b.style.marginTop = '10px'; c.appendChild(b); t.appendChild(c);
+    }
+  });
+  t.appendChild(h('p', 'hint', 'Rakipler doluluğu %50\'nin altında kalınca para kaybeder. Dört gün üst üste yarı boş uçan ya da parası azalan rakip satılığa çıkar. Parası tamamen biterse iflas eder.'));
+  body.appendChild(t);
+  const rs = h('div', 'sec'); rs.appendChild(h('h2', null, 'Yolcu yorumları'));
+  if (S.reviews.length) {
+    const last = S.reviews.slice(0, 20), avg = last.reduce((a, r) => a + r.stars, 0) / last.length;
+    rs.appendChild(h('div', 'avg', `<span class="big2">${avg.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span><span><span class="stars" style="font-size:18px">${starStr(Math.round(avg))}</span><br><span class="hint">Son ${last.length} yorumun ortalaması</span></span>`));
+    S.reviews.slice(0, 8).forEach(r => rs.appendChild(h('div', 'item rev', revHTML(r))));
+  } else rs.appendChild(h('p', 'hint', 'İlk uçuşundan sonra yolcuların yorum yazmaya başlayacak.'));
+  body.appendChild(rs);
+}
+
+/* ---------- report ---------- */
+function showReport() {
+  const R = lastReport, L = R.Lg, m = $('report'); m.replaceChildren();
+  const tk = h('div', 'ticket');
+  tk.appendChild(h('div', 'stub', `<div><div class="d">Gün ${R.day}</div><div class="m">${FLAGS[R.flag].name}, ${R.skip ? 'uçuş yapılmadı' : `${R.paxTotal}/${R.capToday} koltuk doldu`}</div></div><div style="text-align:right"><div class="m">Uçuş defteri</div><div class="d" style="font-size:24px">${esc(S.company)}</div></div>`));
+  tk.appendChild(h('div', 'perf'));
+  const b = h('div', 'tbody'), led = h('div', 'led');
+  const line = (k, v) => { if (!v) return; led.appendChild(h('div', null, `<span>${k}</span><span class="v ${v > 0 ? 'pos' : 'neg'}">${v > 0 ? '+' : ''}${eur(v)}</span>`)); };
+  line('Bilet geliri', L.rev); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
+  line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan);
+  line('Kaza: onarım', -L.repair); line('Kaza: yolcu tazminatı', -L.comp); line('Sigorta ödemesi', L.insPay);
+  line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize);
+  led.appendChild(h('div', 'tot', `<span>Net</span><span class="v ${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span>`));
+  led.appendChild(h('div', null, `<span>Kasa</span><span class="v">${eur(S.cash)}</span>`));
+  b.appendChild(led);
+  if (R.ev.length || R.rev.length) {
+    const ul = h('ul', 'ev');
+    R.ev.forEach(e => ul.appendChild(h('li', null, esc(e))));
+    R.rev.forEach(e => ul.appendChild(h('li', 'r', esc(e))));
+    b.appendChild(ul);
+  }
+  const allDead = S.rivals.every(r => !r.alive);
+  if (S.over) {
+    b.appendChild(h('div', 'callout red', `<b>Tüm balonların elden çıktı.</b> ${esc(S.company)} kapandı.`));
+    const nb = h('button', 'big', 'Yeni şirket kur'); nb.onclick = () => { S = newState(); setupName = ''; startIntro(); }; b.appendChild(nb);
+  } else {
+    if (allDead && !S.monopolyShown) { S.monopolyShown = true; save(); b.appendChild(h('div', 'callout grn', '<b>Kapadokya göğünde tek şirket sensin.</b> Fiyatı artık sen belirliyorsun.')); }
+    b.appendChild(h('p', 'hint', `Yarın ${FLAGS[S.weather.flag].name.toLowerCase()}, yerde rüzgâr ${S.weather.surf} km/s.`));
+    const nb = h('button', 'big', `Gün ${S.day} sabahına geç`); nb.onclick = () => { tab = 'plan'; startDay(); }; b.appendChild(nb);
+  }
+  tk.appendChild(b); m.appendChild(tk);
+  m.hidden = false; $('sheet').hidden = true; $('tip').hidden = true; $('burn').hidden = true;
+  mode = 'office'; renderHud();
+}
+
+/* ---------- intro & setup ---------- */
+const INTRO = { y: 0, vy: 0, hold: false, t: 0, out: false };
+let pickI = 0, setupName = '';
+function hideAll() { ['sheet', 'report', 'menu', 'setup', 'tip', 'burn', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
+function startIntro() {
+  if (!S.weather) S.weather = newWeather();
+  buildWorld();
+  Object.assign(INTRO, { y: 0, vy: 0, hold: false, t: 0, out: false });
+  mode = 'intro'; hideAll(); $('hud').hidden = true; $('intro').hidden = false;
+}
+function updateIntro(dt) {
+  const I = INTRO; I.t += dt;
+  if (I.hold) I.vy = Math.min(I.vy + 240 * dt, 230); else I.vy = Math.max(I.vy - 160 * dt, I.y > 0 ? -35 : 0);
+  I.y = Math.max(0, I.y + I.vy * dt);
+  $('intro').hidden = I.out;
+  $('introBurn').classList.toggle('on', I.hold);
+  const R = Math.min(W, H) * .085;
+  if (!I.out && H * .74 - I.y - R * 2.7 < -8) {
+    I.out = true; $('fade').classList.add('on');
+    setTimeout(() => {
+      $('fade').classList.remove('on');
+      if (S.company) { $('hud').hidden = false; startDay(); } else showSetup(1);
+    }, 480);
+  }
+}
+function pickSpots() {
+  return PALETTES.map((_, i) => ({ x: W * (.17 + i * .22), y: H * ([.34, .26, .36, .28][i]) + Math.sin(T * 1.1 + i * 1.7) * 6, R: Math.min(W * .08, H * .055) }));
+}
+function drawIntro(dt) {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const groundY = H * .74, kx = clamp(W / 900, .4, 1.4), camX = 220 - (W * .5) / kx;
+  scenery(mode === 'intro' ? .2 + Math.min(.1, INTRO.y / 3000) : .3, groundY, 40, camX, kx, dt, mode !== 'intro', false);
+  const R = Math.min(W, H) * .085;
+  if (mode === 'intro') {
+    const sway = INTRO.y > 2 ? Math.sin(INTRO.t * 2.1) * R * .1 : 0;
+    ctx.fillStyle = 'rgba(40,20,30,.25)'; ctx.beginPath(); ctx.ellipse(W / 2, groundY + 3, R * .5 / (1 + INTRO.y / 120), R * .1, 0, 0, 7); ctx.fill();
+    balloon(W / 2 + sway, groundY - INTRO.y, R, myCol()[0], myCol()[1], INTRO.hold);
+  }
+  if (mode === 'pick') {
+    pickSpots().forEach((b, i) => {
+      if (i === pickI) {
+        const g = ctx.createRadialGradient(b.x, b.y - b.R * 1.5, 0, b.x, b.y - b.R * 1.5, b.R * 2.6);
+        g.addColorStop(0, 'rgba(255,240,200,.7)'); g.addColorStop(1, 'rgba(255,240,200,0)');
+        ctx.fillStyle = g; ctx.fillRect(b.x - b.R * 3, b.y - b.R * 4.2, b.R * 6, b.R * 5.5);
+      }
+      balloon(b.x, b.y, b.R * (i === pickI ? 1.15 : 1), PALETTES[i][0], PALETTES[i][1], i === pickI && Math.sin(T * 6) > 0);
+    });
+  }
+}
+function showSetup(step) {
+  const m = $('setup'); m.replaceChildren(); hideAll(); m.hidden = false; $('hud').hidden = true;
+  const c = h('div', 'card');
+  if (step === 1) {
+    mode = 'setup';
+    c.appendChild(h('h1', null, 'Gökyüzü seni bekliyor'));
+    c.appendChild(h('p', 'lead', 'Balon imparatorluğunu kurmaya başlamak için afilli bir isme ihtiyacımız var.'));
+    const inp = document.createElement('input'); inp.className = 'field'; inp.id = 'coName'; inp.maxLength = 24; inp.placeholder = 'Şirketinin adı'; inp.value = setupName || S.company || '';
+    c.appendChild(inp);
+    const sg = h('div', 'sugg');
+    ['Şafak Balon', 'Göğe Yolculuk', 'Rüzgârgülü Air', 'Peri Bulutu', 'Sıcak Hava Kardeşler'].forEach(n => { const b = h('button', null, n); b.onclick = () => { inp.value = n; }; sg.appendChild(b); });
+    c.appendChild(sg);
+    const err = h('p', 'hint'); err.style.color = 'var(--red)';
+    const go = h('button', 'big', 'Devam');
+    const next = () => { const n = inp.value.trim(); if (!n) { err.textContent = 'Şirketine bir isim yaz ya da önerilerden birini seç.'; inp.focus(); return; } setupName = n; showSetup(2); };
+    go.onclick = next; inp.onkeydown = e => { if (e.key === 'Enter') next(); };
+    c.append(err, go);
+    setTimeout(() => inp.focus(), 60);
+  } else {
+    mode = 'pick';
+    pickI = Math.max(0, PALETTES.findIndex(p => p[0] === myCol()[0]));
+    c.appendChild(h('h1', null, 'Balonunu seç'));
+    c.appendChild(h('p', 'lead', `${esc(setupName)} filosu bu renklerle uçacak. Gökyüzündeki balonlardan birine dokun.`));
+    const row = h('div', 'btns');
+    const back = h('button', 'ghost', 'Geri'); back.onclick = () => showSetup(1);
+    const go = h('button', 'big', 'Bu balonla uç');
+    go.onclick = () => { S.company = setupName; S.colors = PALETTES[pickI]; $('hud').hidden = false; tab = 'plan'; startDay(); };
+    row.append(back, go); c.appendChild(row);
+  }
+  m.appendChild(c);
+}
+function showMenu() {
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Menü'));
+  if (mode !== 'flight') save();
+  c.appendChild(h('p', 'hint', savedOk ? `Oyunun bu tarayıcıya kaydedildi: gün ${S.day}, kasa ${eur(S.cash)}. Her sabah ve yaptığın her değişiklikte otomatik kaydedilir.` : 'Bu tarayıcı kayda izin vermiyor. İlerlemeni kaybetmemek için aşağıdaki kodu kopyala.'));
+  c.appendChild(h('h2', null, 'Kayıt kodu'));
+  c.appendChild(h('p', 'hint', 'Başka bir cihazda devam etmek için kodu kopyala, orada bu kutuya yapıştırıp Yükle\'ye bas.'));
+  const ta = document.createElement('textarea'); ta.rows = 3; ta.id = 'saveCode';
+  try { ta.value = btoa(unescape(encodeURIComponent(JSON.stringify(S)))); } catch (e) {}
+  const msg = h('p', 'hint');
+  const row = h('div', 'btns');
+  row.append(pbtn('Kopyala', () => { navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = 'Kopyalandı.'; }).catch(() => { ta.focus(); ta.select(); msg.textContent = 'Kod seçildi, kopyalamak için Ctrl+C ya da Kopyala.'; }); }, false, true),
+    pbtn('Yükle', () => {
+      try { const s = JSON.parse(decodeURIComponent(escape(atob(ta.value.trim())))); if (!s || !s.balloons || !s.rivals) throw 0; S = migrate(s); m.hidden = true; tab = 'plan'; startDay(); }
+      catch (e) { msg.textContent = 'Bu kod okunamadı. Kodun tamamını yapıştırdığından emin ol.'; }
+    }, false, true));
+  c.append(ta, row, msg);
+  const nb = pbtn('Yeni oyun başlat', () => {
+    if (!nb.dataset.arm) { nb.dataset.arm = '1'; nb.textContent = 'Emin misin? Tekrar dokun'; return; }
+    S = newState(); setupName = ''; m.hidden = true; startIntro();
+  }, false, true);
+  const close = h('button', 'big', 'Devam et'); close.onclick = () => { m.hidden = true; };
+  c.append(nb, close); m.appendChild(c); m.hidden = false;
+}
+
+/* ---------- flight ---------- */
+function startFlight(pax) {
+  FL = { x: 220, alt: 0, vx: 0, vy: 0, heat: .42, fuel: 100, t: 0, air: false, done: false, burning: false, pax, msg: 0 };
+  mode = 'flight'; $('sheet').hidden = true; $('burn').hidden = false;
+  const tip = $('tip'); tip.hidden = false; tip.className = '';
+  tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> İniş alanı doğuda.` : '<b>Brülöre basılı tut:</b> balon ısınır ve yükselir. <b>Bırak:</b> soğur ve alçalır. Her yükseklikte rüzgâr farklı eser. Seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
+}
+function setBurn(on) { if (mode !== 'flight' || !FL || FL.done) return; FL.burning = on; $('burn').classList.toggle('on', on); if (on && FL.t > 1 && !FL.msg) $('tip').hidden = true; }
+function updateFlight(dt) {
+  const f = FL; if (!f || f.done) return;
+  const s = dt * SIM;
+  if (f.burning && f.fuel > 0) { f.heat += .05 * s; f.fuel = Math.max(0, f.fuel - 2 * dt); }
+  f.heat = clamp(f.heat - .012 * s, 0, 1);
+  const acc = (f.heat - .5) * 4 - .4 * f.vy;
+  f.vy = clamp(f.vy + acc * s, -6, 6);
+  f.alt += f.vy * s;
+  if (!f.air && f.alt <= 0) { f.alt = 0; f.vy = Math.max(0, f.vy); }
+  const w = windAt(f.alt, f.t);
+  if (f.alt > 1) { f.vx += (w - f.vx) * (1 - Math.exp(-s / 6)); f.x += f.vx * s; }
+  f.t += s;
+  if (f.alt > 15 && !f.air) { f.air = true; if (!S.tutorialDone) $('tip').hidden = true; }
+  if (f.air) {
+    const th = terrainH(f.x);
+    if (th > 4 && f.alt < th) return land('crash');
+    if (f.alt <= 0) { f.alt = 0; return land(-f.vy > 2.6 ? 'hard' : null); }
+  }
+  if (f.air && f.alt > 0 && f.fuel <= 0 && !f.msg) { f.msg = 1; $('tip').hidden = false; $('tip').innerHTML = '<b>Yakıt bitti!</b> Balon soğuyarak iniyor.'; }
+}
+function land(q) {
+  const f = FL; f.done = true; f.burning = false; $('burn').classList.remove('on'); $('burn').hidden = true;
+  f.dist = Math.abs(f.x - S.weather.target);
+  if (!q) q = f.dist < 70 ? 'perfect' : f.dist < 260 ? 'good' : 'far';
+  S.tutorialDone = true;
+  const msg = {
+    perfect: '<b>Kusursuz iniş!</b> İniş alanının tam ortası.',
+    good: '<b>İyi iniş.</b> Yer ekibi seni hemen buldu.',
+    far: `<b>Hedeften ${Math.round(f.dist)} m uzağa indin.</b> Yolcular bir saat beklemek zorunda kaldı.`,
+    hard: '<b>Sert iniş!</b> Sepet devrildi, yolcularda hafif yaralanmalar var.',
+    crash: '<b>Peribacasına çarptın!</b> Balon ağır hasarlı, yolcular yaralı.'
+  }[q];
+  const tip = $('tip'); tip.hidden = false; tip.className = 'wide'; tip.replaceChildren(h('div', null, msg));
+  const b = h('button', 'big', 'Gün sonu raporu'); b.style.cssText = 'width:100%;margin-top:12px'; b.onclick = () => finishDay({ q, dist: f.dist }); tip.appendChild(b);
+}
+$('burn').addEventListener('pointerdown', ev => { ev.preventDefault(); setBurn(true); });
+['pointerup', 'pointercancel', 'pointerleave'].forEach(e => $('burn').addEventListener(e, () => setBurn(false)));
+cv.addEventListener('pointerdown', e => {
+  if (mode === 'intro') { INTRO.hold = true; return; }
+  if (mode === 'pick') {
+    const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+    pickSpots().forEach((b, i) => { if (Math.hypot(x - b.x, y - (b.y - b.R * 1.6)) < b.R * 1.6) pickI = i; });
+    return;
+  }
+  setBurn(true);
+});
+['pointerup', 'pointercancel', 'pointerleave'].forEach(e => cv.addEventListener(e, () => { INTRO.hold = false; }));
+$('introBurn').addEventListener('pointerdown', e => { e.preventDefault(); if (mode === 'intro') INTRO.hold = true; });
+['pointerup', 'pointercancel', 'pointerleave'].forEach(e => $('introBurn').addEventListener(e, () => { INTRO.hold = false; }));
+$('introBurn').addEventListener('contextmenu', e => e.preventDefault());
+['pointerup', 'pointercancel', 'pointerleave'].forEach(e => cv.addEventListener(e, () => setBurn(false)));
+window.addEventListener('keydown', e => { if (e.code === 'Space' && mode === 'intro') { e.preventDefault(); INTRO.hold = true; } if (e.code === 'Space' && mode === 'flight') { e.preventDefault(); setBurn(true); } });
+window.addEventListener('keyup', e => { if (e.code === 'Space') { setBurn(false); INTRO.hold = false; } });
+
+/* ---------- rendering ---------- */
+function resize() {
+  const r = $('wrap').getBoundingClientRect(); W = Math.max(1, r.width); H = Math.max(1, r.height); DPR = Math.min(2, window.devicePixelRatio || 1);
+  cv.width = Math.round(W * DPR); cv.height = Math.round(H * DPR); cv.style.width = W + 'px'; cv.style.height = H + 'px';
+}
+function ell(x, y, rx, ry, c) { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(x, y, Math.max(.1, rx), Math.max(.1, ry), 0, 0, 7); ctx.fill(); }
+function rrect(x, y, w, hh, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + hh, r); ctx.arcTo(x + w, y + hh, x, y + hh, r); ctx.arcTo(x, y + hh, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function chimney(x, base, w, hgt, body, shade, cap) {
+  ctx.fillStyle = body; ctx.beginPath();
+  ctx.moveTo(x - w / 2, base); ctx.quadraticCurveTo(x - w * .32, base - hgt * .55, x - w * .12, base - hgt);
+  ctx.lineTo(x + w * .12, base - hgt); ctx.quadraticCurveTo(x + w * .32, base - hgt * .55, x + w / 2, base); ctx.closePath(); ctx.fill();
+  if (shade) { ctx.fillStyle = shade; ctx.beginPath(); ctx.moveTo(x + w * .05, base - hgt); ctx.lineTo(x + w * .12, base - hgt); ctx.quadraticCurveTo(x + w * .32, base - hgt * .55, x + w / 2, base); ctx.lineTo(x + w * .1, base); ctx.closePath(); ctx.fill(); }
+  ell(x, base - hgt, w * .25, w * .1, cap); ell(x, base - hgt - w * .07, w * .15, w * .09, cap);
+}
+function balloon(x, y, R, c1, c2, burn, alpha) {
+  ctx.save(); ctx.globalAlpha = alpha ?? 1;
+  const top = y - R * 2.55, cy = top + R;
+  ctx.beginPath(); ctx.arc(x, cy, R, Math.PI * .85, Math.PI * .15, false);
+  ctx.quadraticCurveTo(x + R * .75, cy + R * 1.15, x + R * .22, cy + R * 1.55); ctx.lineTo(x - R * .22, cy + R * 1.55);
+  ctx.quadraticCurveTo(x - R * .75, cy + R * 1.15, x - R * Math.cos(Math.PI * .15), cy + R * Math.sin(Math.PI * .15));
+  ctx.closePath(); ctx.fillStyle = c1; ctx.fill();
+  ctx.save(); ctx.clip();
+  ctx.fillStyle = c2;
+  for (let i = -3; i <= 3; i += 2) { ctx.beginPath(); ctx.ellipse(x + i * R * .18, cy + R * .1, R * .1, R * 1.6, 0, 0, 7); ctx.fill(); }
+  const g = ctx.createLinearGradient(x - R, 0, x + R, 0); g.addColorStop(0, 'rgba(255,255,255,.18)'); g.addColorStop(.6, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(40,10,40,.35)');
+  ctx.fillStyle = g; ctx.fillRect(x - R, top, R * 2, R * 3);
+  ctx.restore();
+  ctx.strokeStyle = 'rgba(60,35,30,.8)'; ctx.lineWidth = 1;
+  const by = cy + R * 1.55, bb = y - R * .32;
+  ctx.beginPath(); ctx.moveTo(x - R * .22, by); ctx.lineTo(x - R * .24, bb); ctx.moveTo(x + R * .22, by); ctx.lineTo(x + R * .24, bb); ctx.stroke();
+  ctx.fillStyle = '#6b4426'; ctx.fillRect(x - R * .3, bb, R * .6, R * .32);
+  if (burn) { const f = 1 + Math.sin(T * 40) * .2; ell(x, by + R * .02, R * .1, R * .28 * f, 'rgba(255,200,90,.95)'); ell(x, by + R * .06, R * .05, R * .14 * f, '#fff4cc'); }
+  ctx.restore();
+}
+function scenery(p, groundY, topY, camX, kx, dt, showBg, f) {
+  const ky = (groundY - topY) / 650, sx = wx => (wx - camX) * kx, sy = a => groundY - a * ky;
+  const g = ctx.createLinearGradient(0, 0, 0, groundY);
+  g.addColorStop(0, mix('#1b1840', '#5f8fc6', p)); g.addColorStop(.55, mix('#6b3e6e', '#f0b48c', p)); g.addColorStop(1, mix('#f08a4a', '#ffe2ac', p));
+  ctx.fillStyle = g; ctx.fillRect(0, 0, W, groundY);
+  const sunX = W * .7 - camX * kx * .02, sunY = groundY - (groundY - topY) * (.04 + p * .5), sr = Math.min(W, H) * .05;
+  const sg = ctx.createRadialGradient(sunX, sunY, 0, sunX, sunY, sr * 6); sg.addColorStop(0, 'rgba(255,220,150,.55)'); sg.addColorStop(1, 'rgba(255,200,140,0)');
+  ctx.fillStyle = sg; ctx.fillRect(sunX - sr * 6, sunY - sr * 6, sr * 12, sr * 12); ell(sunX, sunY, sr, sr, '#fff0c8');
+
+  const vh = groundY - topY;
+  ctx.fillStyle = mix('#4a3050', '#c9967e', p);
+  ctx.beginPath(); ctx.moveTo(0, groundY);
+  for (let x = -20; x <= W + 40; x += 40) { const wx = (x / kx + camX * .15) * .01; ctx.lineTo(x, groundY - vh * (.11 + .06 * Math.sin(wx * 1.7) + .035 * Math.sin(wx * 4.3))); }
+  ctx.lineTo(W, groundY); ctx.closePath(); ctx.fill();
+  const R = mulberry32(5);
+  for (let i = 0; i < 40; i++) {
+    const wx = i * 130 + R() * 60 - 600, x = (wx - camX * .45) * kx, hh = vh * (.07 + R() * .1), ww = hh * (.4 + R() * .2);
+    if (x < -60 || x > W + 60) continue;
+    chimney(x, groundY + 2, ww, hh, mix('#5c3a4a', '#d9a07a', p), null, mix('#3e2836', '#9a6448', p));
+  }
+  if (showBg) for (const b of bgBalloons) {
+    b.x += windAt(b.alt, T * 6) * dt * (f ? SIM : 2);
+    if (b.x > camX + W / kx + 900) b.x = camX - 600; if (b.x < camX - 900) b.x = camX + W / kx + 500;
+    const yy = sy(b.alt + Math.sin(T * .4 + b.ph) * 6), xx = sx(b.x);
+    if (xx > -50 && xx < W + 50) balloon(xx, yy, Math.max(7, vh * .045 * b.s), b.c[0], b.c[1], false, .92);
+  }
+  const gg = ctx.createLinearGradient(0, groundY, 0, H); gg.addColorStop(0, mix('#5a3a32', '#c48a62', p)); gg.addColorStop(1, mix('#2e1e22', '#7a5040', p));
+  ctx.fillStyle = gg; ctx.fillRect(0, groundY, W, H - groundY);
+  return vh;
+}
+function draw(dt) {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  if (!S || !S.weather) { ctx.fillStyle = '#1b1840'; ctx.fillRect(0, 0, W, H); return; }
+  const f = FL && mode === 'flight' ? FL : null;
+  const p = f ? clamp(f.t / 420, 0, 1) * .85 + .1 : .12 + Math.sin(T * .05) * .02;
+  const top = $('hud').offsetHeight + 6;
+  const sheetH = !$('sheet').hidden ? $('sheet').offsetHeight : 0;
+  const groundY = f ? H * .86 : Math.max(H * .3, H - sheetH + 6), topY = top + 34;
+  const ky = (groundY - topY) / 650, kx = clamp(W / 900, .4, 1.4);
+  const focusX = f ? f.x : 220 + Math.sin(T * .03) * 40;
+  const camX = focusX - (W * .36) / kx;
+  const sx = wx => (wx - camX) * kx, sy = a => groundY - a * ky;
+  const myc = myCol();
+
+  const vh = scenery(p, groundY, topY, camX, kx, dt, true, !!f);
+  const tx = S.weather.target, lzx0 = sx(tx - 70), lzx1 = sx(tx + 70);
+  ctx.fillStyle = mix('#4b5a34', '#a7b46a', p); ctx.fillRect(lzx0, groundY - 2, lzx1 - lzx0, 7);
+  for (const fx of [tx - 70, tx + 70]) { const X = sx(fx); ctx.strokeStyle = '#2a1a14'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X, groundY); ctx.lineTo(X, groundY - 22); ctx.stroke(); ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.moveTo(X, groundY - 22); ctx.lineTo(X + 11, groundY - 18); ctx.lineTo(X, groundY - 14); ctx.fill(); }
+  const trx = sx(tx + 35); ctx.fillStyle = '#f2eee6'; ctx.fillRect(trx, groundY - 13, 22, 9); ctx.fillRect(trx + 14, groundY - 18, 9, 6); ctx.fillStyle = '#7b5a3c'; ctx.fillRect(trx - 18, groundY - 10, 16, 6);
+  ell(trx + 4, groundY - 3, 3, 3, '#1d1418'); ell(trx + 18, groundY - 3, 3, 3, '#1d1418'); ell(trx - 10, groundY - 3, 3, 3, '#1d1418');
+  const lx = sx(220); ctx.fillStyle = mix('#5c4a3a', '#b9996e', p); ctx.fillRect(lx - 40, groundY - 1, 80, 4);
+  for (const c of terrain) {
+    const x = sx(c.x); if (x < -80 || x > W + 80) continue;
+    chimney(x, groundY + 1, c.w * kx, c.h * ky, mix(mix('#6a4038', '#e2b48a', p), '#d6a27a', c.tone * .3), mix('#4a2c2a', '#b07a58', p), mix('#3a2420', '#7e5038', p));
+  }
+  const PR = Math.max(12, vh * .065);
+  if (f) {
+    const curAlt = f.alt;
+    ctx.font = '700 13px "Barlow Condensed", system-ui, sans-serif';
+    for (let i = 0; i < 4; i++) {
+      const v = S.weather.layers[i], y = sy(CENTERS[i]), active = curAlt >= BANDS[i][0] && curAlt < BANDS[i][1];
+      if (i > 0) { ctx.strokeStyle = 'rgba(255,255,255,.14)'; ctx.setLineDash([4, 6]); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, sy(BANDS[i][0])); ctx.lineTo(W, sy(BANDS[i][0])); ctx.stroke(); ctx.setLineDash([]); }
+      const len = 12 + Math.abs(v) * 5, x0 = 14, dir = Math.sign(v) || 1, ax0 = dir > 0 ? x0 : x0 + len, ax1 = dir > 0 ? x0 + len : x0;
+      ctx.fillStyle = active ? 'rgba(255,255,255,.95)' : 'rgba(255,255,255,.35)';
+      rrect(6, y - 13, 112, 26, 13); ctx.fill();
+      ctx.strokeStyle = ctx.fillStyle = active ? '#ff5e3a' : '#2b2350'; ctx.lineWidth = 3; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(ax0, y); ctx.lineTo(ax1, y); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(ax1 + dir * 2, y); ctx.lineTo(ax1 - dir * 5, y - 5); ctx.lineTo(ax1 - dir * 5, y + 5); ctx.fill();
+      ctx.fillStyle = '#2b2350'; ctx.fillText(`${Math.round(Math.abs(v) * 3.6)} km/s`, 70, y + 5);
+    }
+    balloon(sx(f.x), sy(f.alt), PR * .75, myc[0], myc[1], f.burning && f.fuel > 0);
+    const dx = tx - f.x, tsx = sx(tx);
+    if (tsx > W - 20 || tsx < 20) {
+      const ax = tsx > W ? W - 18 : 18, ay = groundY - 44, d = Math.sign(dx);
+      ctx.font = '700 15px "Barlow Condensed", system-ui, sans-serif';
+      const label = `İniş alanı ${(Math.abs(dx) / 1000).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} km`, tw = ctx.measureText(label).width;
+      ctx.fillStyle = '#fff'; rrect(d > 0 ? ax - tw - 34 : ax - 6, ay - 15, tw + 40, 30, 15); ctx.fill();
+      ctx.fillStyle = '#ff5e3a'; ctx.beginPath(); ctx.moveTo(ax + d * 8, ay); ctx.lineTo(ax - d * 4, ay - 7); ctx.lineTo(ax - d * 4, ay + 7); ctx.fill();
+      ctx.fillStyle = '#2b2350'; ctx.textAlign = d > 0 ? 'right' : 'left'; ctx.fillText(label, ax - d * 12, ay + 5); ctx.textAlign = 'left';
+    }
+    const iw = 132, ix = W - iw - 12, iy = top + 4;
+    ctx.fillStyle = 'rgba(255,255,255,.94)'; rrect(ix, iy, iw, 92, 16); ctx.fill();
+    ctx.fillStyle = '#6c6488'; ctx.font = '600 11px Barlow, system-ui, sans-serif';
+    ctx.fillText('İrtifa', ix + 12, iy + 18); ctx.fillText('Dikey', ix + 72, iy + 18);
+    ctx.fillStyle = '#2b2350'; ctx.font = '800 22px "Barlow Condensed", system-ui, sans-serif';
+    ctx.fillText(`${Math.round(f.alt)} m`, ix + 12, iy + 40);
+    ctx.fillStyle = Math.abs(f.vy) > 2.6 && f.vy < 0 ? '#e5432f' : '#2b2350';
+    ctx.fillText(`${f.vy >= 0 ? '↑' : '↓'}${Math.abs(f.vy).toFixed(1)}`, ix + 72, iy + 40);
+    ctx.fillStyle = '#6c6488'; ctx.font = '600 11px Barlow, system-ui, sans-serif'; ctx.fillText('Yakıt', ix + 12, iy + 62);
+    ctx.fillStyle = '#ece7f4'; rrect(ix + 12, iy + 68, iw - 24, 10, 5); ctx.fill();
+    ctx.fillStyle = f.fuel < 20 ? '#e5432f' : '#ff5e3a'; if (f.fuel > 1) { rrect(ix + 12, iy + 68, (iw - 24) * f.fuel / 100, 10, 5); ctx.fill(); }
+  } else {
+    balloon(lx, groundY - 1, PR, myc[0], myc[1], Math.sin(T * 1.3) > .6);
+    let i = 1;
+    for (const b of S.balloons) { if (b.id === S.flag) continue; balloon(lx - i * PR * 2.4, groundY - 1, PR * .85, myc[0], myc[1], false); i++; if (i > 4) break; }
+  }
+}
+
+/* ---------- boot ---------- */
+$('go').onclick = () => launch(false);
+$('skip').onclick = () => launch(true);
+$('bMenu').onclick = showMenu;
+let last = performance.now();
+function frame(now) {
+  const dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
+  if (mode === 'flight') updateFlight(dt);
+  if (mode === 'intro') updateIntro(dt);
+  if (mode === 'intro' || mode === 'setup' || mode === 'pick') drawIntro(dt); else draw(dt);
+  if (S) updateChirp(dt);
+  requestAnimationFrame(frame);
+}
+window.addEventListener('resize', resize);
+resize();
+S = load();
+if (!S || !S.balloons || !S.balloons.length || S.over) S = newState(); else S = migrate(S);
+startIntro();
+requestAnimationFrame(frame);
+</script>

@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>Balloon Baron: Cappadocia</title>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#2b2350; --ink2:#6c6488; --paper:#fffaf5; --haze:#f1edf8;
+  --coral:#ff5e3a; --sun:#ffc23d; --pink:#ff6fa8; --teal:#3ad0c0;
+  --body:"Barlow", "Segoe UI", sans-serif; --cond:"Barlow Condensed", "Arial Narrow", sans-serif;
+}
+@page{size:A4;margin:0}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--body);color:var(--ink);-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.page{width:210mm;height:297mm;position:relative;overflow:hidden;page-break-after:always;padding:16mm 15mm}
+.page:last-child{page-break-after:auto}
+h1,h2,h3{font-family:var(--cond);margin:0;line-height:.95}
+h2{font-size:40pt;font-weight:800}
+h3{font-size:17pt;font-weight:700}
+p{margin:0;font-size:11pt;line-height:1.5}
+.lead{font-size:13pt;line-height:1.5;color:var(--ink2);max-width:150mm}
+.phone{border-radius:7mm;overflow:hidden;box-shadow:0 4mm 10mm rgba(30,20,60,.35);border:2.2mm solid #15102c;background:#15102c}
+.phone img{display:block;width:100%}
+.kicker{font-family:var(--cond);font-weight:700;font-size:12pt;color:var(--coral);letter-spacing:.02em;margin-bottom:3mm}
+
+/* cover */
+.cover{background:linear-gradient(#1b1840 0%, #4a2d63 38%, #c45a6a 70%, #ffb070 100%);color:#fff;padding:20mm 16mm}
+.cover .title{font-family:var(--cond);font-weight:800;font-size:66pt;line-height:.85;letter-spacing:-.01em}
+.cover .sub{font-family:var(--cond);font-weight:700;font-size:26pt;color:var(--sun);margin-top:3mm}
+.cover .tag{font-size:13.5pt;line-height:1.45;margin-top:8mm;max-width:78mm;color:rgba(255,255,255,.9)}
+.cover .phones{position:absolute;right:8mm;top:84mm;width:100mm;height:170mm}
+.cover .phones .phone{position:absolute;width:60mm}
+.cover .p1{left:0;top:28mm;transform:rotate(-5deg)}
+.cover .p2{right:0;top:0;transform:rotate(4deg)}
+.cover .foot{position:absolute;left:16mm;right:16mm;bottom:16mm;display:flex;align-items:flex-end;gap:7mm}
+.cover .qr{width:34mm;height:34mm;background:#fff;border-radius:3mm;padding:1.5mm}
+.cover .qr img{width:100%;height:100%}
+.cover .foot p{font-size:11.5pt;color:#fff}
+.cover .foot b{color:var(--sun)}
+.ground{position:absolute;left:0;right:0;bottom:0;height:60mm;background:linear-gradient(transparent,rgba(30,16,30,.55))}
+.chim{position:absolute;bottom:0;background:#3e2433;border-radius:50% 50% 0 0/80% 80% 0 0}
+
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:6mm;margin-top:10mm}
+.step .phone{border-width:1.6mm;border-radius:5mm}
+.step .n{font-family:var(--cond);font-weight:800;font-size:26pt;color:var(--coral);margin-top:5mm}
+.step h3{margin-top:1mm}
+.step p{font-size:10pt;margin-top:2mm;color:var(--ink2)}
+
+/* two col */
+.two{display:grid;grid-template-columns:62mm 1fr;gap:10mm;margin-top:9mm;align-items:start}
+.list{display:flex;flex-direction:column;gap:5mm}
+.it{display:grid;grid-template-columns:11mm 1fr;gap:4mm;align-items:start}
+.ic{width:11mm;height:11mm;border-radius:3mm;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:14pt;color:#fff}
+.it h3{font-size:14pt}
+.it p{font-size:10.5pt;color:var(--ink2);margin-top:1mm}
+.band{margin-top:9mm;border-radius:5mm;padding:6mm 7mm;background:var(--ink);color:#fff;display:grid;grid-template-columns:repeat(4,1fr);gap:5mm}
+.band b{display:block;font-family:var(--cond);font-size:22pt;color:var(--sun)}
+.band span{font-size:9.5pt;color:rgba(255,255,255,.8);line-height:1.35;display:block}
+
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:6mm;margin-top:8mm}
+.card{background:var(--haze);border-radius:5mm;padding:5mm}
+.card h3{font-size:14pt}
+.card p{font-size:10pt;color:var(--ink2);margin-top:1.5mm}
+.shots3{display:grid;grid-template-columns:repeat(3,1fr);gap:7mm;margin-top:8mm}
+.shots3 .phone{border-width:1.6mm;border-radius:5mm}
+.cap{font-size:9.5pt;color:var(--ink2);margin-top:2.5mm;text-align:center}
+
+.ask{background:linear-gradient(#fff6ea,#ffe6d2)}
+.qbox{margin-top:9mm;display:flex;flex-direction:column;gap:5mm}
+.q{display:grid;grid-template-columns:12mm 1fr;gap:4mm;align-items:start;background:#fff;border-radius:5mm;padding:5mm 6mm;box-shadow:0 1mm 0 rgba(43,35,80,.08)}
+.q .n{font-family:var(--cond);font-weight:800;font-size:24pt;color:var(--coral);line-height:1}
+.q h3{font-size:14pt}
+.q p{font-size:10.5pt;color:var(--ink2);margin-top:1mm}
+.howto{margin-top:10mm;display:grid;grid-template-columns:44mm 1fr;gap:8mm;align-items:center;background:var(--ink);color:#fff;border-radius:6mm;padding:7mm}
+.howto img{width:44mm;height:44mm;background:#fff;border-radius:3mm;padding:1.5mm}
+.howto p{font-size:11pt;color:rgba(255,255,255,.88)}
+.howto h3{color:var(--sun);font-size:20pt;margin-bottom:2mm}
+.link{font-family:var(--cond);font-weight:700;font-size:13pt;color:#fff;margin-top:3mm;word-break:break-all}
+.pfoot{position:absolute;left:15mm;right:15mm;bottom:9mm;display:flex;justify-content:space-between;font-size:8.5pt;color:var(--ink2)}
+.cover .pfoot{display:none}
+</style>
+</head>
+<body>
+
+<!-- 1 cover -->
+<section class="page cover">
+  <div class="title">Balloon<br>Baron</div>
+  <div class="sub">Cappadocia</div>
+  <p class="tag">Gün doğumunda Kapadokya. Elinde tek bir balon, kafanda bir imparatorluk. Rüzgârı oku, yolcularını uçur, rakiplerini gökyüzünden sil.</p>
+  <div class="phones">
+    <div class="phone p2"><img src="screenshots/04_home.png" alt=""></div>
+    <div class="phone p1"><img src="screenshots/01_intro.png" alt=""></div>
+  </div>
+  <div class="ground"></div>
+  <div class="foot">
+    <div class="qr"><img src="qr.svg" alt="Oyunun bağlantısı için QR kod"></div>
+    <p><b>Prototipi telefonundan dene.</b><br>Kameranla QR kodu okut ya da son sayfadaki bağlantıyı aç.<br>iPhone için geliştiriliyor.</p>
+  </div>
+</section>
+
+<!-- 2 how to play -->
+<section class="page">
+  <div class="kicker">Nasıl oynanır</div>
+  <h2>Her sabah dört adım</h2>
+  <p class="lead" style="margin-top:4mm">Her oyun günü bir Kapadokya sabahı. Kararını ver, yolcunu topla, havalan ve günün hesabını gör. Sonra yeni bir sabah.</p>
+  <div class="steps">
+    <div class="step"><div class="phone"><img src="screenshots/04_home.png" alt=""></div><div class="n">1</div><h3>Sabahı planla</h3><p>Bayrak rengine ve rüzgâr katmanlarına bak. Bilet fiyatını ayarla, hangi balonların kalkacağını ve sigortayı seç.</p></div>
+    <div class="step"><div class="phone"><img src="screenshots/05_collect.png" alt=""></div><div class="n">2</div><h3>Yolcu topla</h3><p>Koltuklar renk renk doluyor: pazardaki turistler, anlaştığın oteller, rehberler, influencerlar.</p></div>
+    <div class="step"><div class="phone"><img src="screenshots/06_flight.png" alt=""></div><div class="n">3</div><h3>Kendin uç</h3><p>Brülöre basılı tut, ısın ve yüksel. Seni iniş alanına götüren rüzgâr katmanını bul, yumuşacık in.</p></div>
+    <div class="step"><div class="phone"><img src="screenshots/08_report.png" alt=""></div><div class="n">4</div><h3>Uçuş defteri</h3><p>Bilet, bahşiş, maaşlar, sigorta, kazalar. Günün sonunda kasan ne durumda, rakipler ne yaptı?</p></div>
+  </div>
+  <div class="pfoot"><span>Balloon Baron: Cappadocia</span><span>2</span></div>
+</section>
+
+<!-- 3 flight -->
+<section class="page">
+  <div class="kicker">Oyunun kalbi</div>
+  <h2>Yön veremezsin.<br>Sadece yükselip alçalırsın.</h2>
+  <div class="two">
+    <div>
+      <div class="phone"><img src="screenshots/07_proposal.png" alt=""></div>
+      <p class="cap">Evlilik teklifi görevi: pembe alanda kesintisiz 8 saniye.</p>
+    </div>
+    <div class="list">
+      <p class="lead">Gerçek balon pilotları gibi: her yükseklikte rüzgâr farklı yöne eser. Doğru katmanı yakalayan, iniş alanına ulaşır. Yanlış katmanda kalan, peribacalarının arasında kaybolur.</p>
+      <div class="it"><div class="ic" style="background:var(--pink)">♥</div><div><h3>Evlilik teklifi</h3><p>Balonu 250–350 metrede tut. Sepette diz çöken bir adam, sarılan bir çift, kalpler ve alkış.</p></div></div>
+      <div class="it"><div class="ic" style="background:var(--sun);color:var(--ink)">V</div><div><h3>Güvercinlik Vadisi turu</h3><p>Vadinin üstünden 150 metrenin altında, kayalara değecek kadar alçaktan geç.</p></div></div>
+      <div class="it"><div class="ic" style="background:var(--teal)">P</div><div><h3>Panorama fotoğrafı</h3><p>Fotoğrafçın için 550 metrenin üstüne çık, bütün Kapadokya ayaklarının altında.</p></div></div>
+      <div class="it"><div class="ic" style="background:var(--coral)">⌖</div><div><h3>Hassas iniş</h3><p>Rüzgârlı bir sabah yer ekibinin karavanının 40 metre yakınına kon.</p></div></div>
+    </div>
+  </div>
+  <div class="band">
+    <div><b>Yeşil</b><span>Uçuşa uygun, rüzgâr hafif.</span></div>
+    <div><b>Sarı</b><span>Uçabilirsin ama kaza riski ve sigorta primi yüksek.</span></div>
+    <div><b>Kırmızı</b><span>Uçuş yasak. Kalkarsan ceza, sigorta da ödemez.</span></div>
+    <div><b>Kış</b><span>8 gün boyunca turist yarıya iner, kar yağar.</span></div>
+  </div>
+  <div class="pfoot"><span>Balloon Baron: Cappadocia</span><span>3</span></div>
+</section>
+
+<!-- 4 empire -->
+<section class="page">
+  <div class="kicker">Şirketini büyüt</div>
+  <h2>Tek sepetten imparatorluğa</h2>
+  <p class="lead" style="margin-top:4mm">Küçük bir balonla başlarsın. Sonra filo, pilotlar, oteller ve gökyüzünün en büyük balonu gelir. Ama her büyüme bir risktir.</p>
+  <div class="shots3">
+    <div><div class="phone"><img src="screenshots/09_market.png" alt=""></div><p class="cap">Pazar payı ve rakiplerin.</p></div>
+    <div><div class="phone"><img src="screenshots/10_hotels.png" alt=""></div><p class="cap">Otellerle anlaş ya da satın al.</p></div>
+    <div><div class="phone"><img src="screenshots/11_winter.png" alt=""></div><p class="cap">Hezarfen Usta yol gösterir.</p></div>
+  </div>
+  <div class="grid3">
+    <div class="card"><h3>Filo ve pilotlar</h3><p>8, 16 ve 24 kişilik sepetler. Çaylak pilotlar uçtukça tecrübe kazanır. Pilot okulun mezunları ömür boyu ucuza çalışır.</p></div>
+    <div class="card"><h3>Popülerlik</h3><p>Turistler seni yıldızına göre seçer. Kusursuz iniş, otel, influencer yükseltir. Kaza ve reklam düşürür.</p></div>
+    <div class="card"><h3>Kapadokya Yıldızı</h3><p>Senin renklerinde 32 kişilik dev imza balon. Herkesin fotoğrafına girer.</p></div>
+  </div>
+  <div class="pfoot"><span>Balloon Baron: Cappadocia</span><span>4</span></div>
+</section>
+
+<!-- 5 rivals -->
+<section class="page">
+  <div class="kicker">Gökyüzü kalabalık</div>
+  <h2>Rakiplerin uyumaz</h2>
+  <p class="lead" style="margin-top:4mm">Kapadokya'nın sabahlarını paylaştığın şirketler fiyat kırar, pilotlarını kapar, otellerini elinden alır. Sen de onları satın alabilirsin.</p>
+  <div class="grid3" style="grid-template-columns:repeat(2,1fr)">
+    <div class="card"><h3>Göreme Sky</h3><p>Temkinli, pahalı ve zengin. Büyük balonlar, sağlam sigorta. Yenmesi en zor rakip.</p></div>
+    <div class="card"><h3>Peribaca Balloons</h3><p>Orta yolcu. Sarı bayrakta da uçar, fiyatını sana göre ayarlar.</p></div>
+    <div class="card"><h3>Kızıl Vadi Air</h3><p>Ucuz ve kuralsız. Kırmızı bayrakta bile kalkar, sigortası yoktur.</p></div>
+    <div class="card"><h3>Ve yenileri</h3><p>Biri batınca yerine başkası gelir: İstanbul'dan zengin bir zincir, agresif bir ucuzcu ya da lüks bir butik.</p></div>
+  </div>
+  <div class="list" style="margin-top:9mm">
+    <div class="it"><div class="ic" style="background:var(--ink)">€</div><div><h3>Devral ya da batır</h3><p>Yarı boş uçan rakip satılığa çıkar. Kasası biten iflas eder, filosu satışa düşer.</p></div></div>
+    <div class="it"><div class="ic" style="background:var(--coral)">!</div><div><h3>Ama dikkat: Rekabet Kurumu</h3><p>Pazarın %60'ından fazlasını tutarsan kasanın %8'i kadar tekel cezası yiyebilirsin.</p></div></div>
+    <div class="it"><div class="ic" style="background:var(--teal)">★</div><div><h3>Zirvede kalmak zor</h3><p>4,5 yıldızın üstünde yolcular mükemmellik bekler. Popülerlik her gün biraz aşınır.</p></div></div>
+  </div>
+  <div class="pfoot"><span>Balloon Baron: Cappadocia</span><span>5</span></div>
+</section>
+
+<!-- 6 ask -->
+<section class="page ask">
+  <div class="kicker">Senden ricam</div>
+  <h2>Oyna, sonra bana dürüstçe yaz</h2>
+  <p class="lead" style="margin-top:4mm">Bu bir prototip. Görseller, sesler ve rakamlar henüz kesin değil. En değerli şey senin ilk izlenimin.</p>
+  <div class="qbox">
+    <div class="q"><div class="n">1</div><div><h3>Uçuş keyifli mi?</h3><p>Rüzgâr katmanlarıyla yön bulmak zor mu, kolay mı, sıkıcı mı?</p></div></div>
+    <div class="q"><div class="n">2</div><div><h3>Kaçıncı günde bıraktın, neden?</h3><p>Sıkıldığın, kaybolduğun ya da anlamadığın ilk an neydi?</p></div></div>
+    <div class="q"><div class="n">3</div><div><h3>Bir daha açar mısın?</h3><p>Yarın sabah aklına gelir mi? Para verip balon deseni alır mıydın?</p></div></div>
+  </div>
+  <div class="howto">
+    <img src="qr.svg" alt="Oyunun bağlantısı için QR kod">
+    <div>
+      <h3>Nasıl denersin?</h3>
+      <p>Telefonunun kamerasıyla QR kodu okut ya da bağlantıyı tarayıcında aç. Kurulum yok. Ses için bir kez ekrana dokun, iPhone sessiz moddaysa ses çıkmayabilir. İlerlemen tarayıcına kaydedilir.</p>
+      <div class="link">claude.ai/artifact/1mBPBfaqsUMAMPLj5fzwdA</div>
+    </div>
+  </div>
+  <div class="pfoot"><span>Balloon Baron: Cappadocia</span><span>6</span></div>
+</section>
+</body>
+</html>
