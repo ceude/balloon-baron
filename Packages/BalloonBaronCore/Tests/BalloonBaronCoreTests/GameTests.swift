@@ -52,10 +52,13 @@ final class GameTests: XCTestCase {
     func testFirstDayEconomy() {
         var g = newGame()
         let cash = g.state.cash
+        XCTAssertLessThan(g.market(price: 170, capacity: 8).pax[0], 8, "rivals' fleets leave a newcomer short at the default price")
+        g.setPrice(150)
         let pax = g.launch()
-        XCTAssertEqual(pax, 8, "the flagship fills on day 1")
+        XCTAssertEqual(pax, 8, "a price cut fills the basket")
         let r = g.finishDay(flight: FlightResult(landing: .perfect, distance: 30))
-        XCTAssertEqual(r.ledger.tickets, 8 * 170)
+        XCTAssertEqual(r.ledger.tickets, 8 * 150)
+        XCTAssertEqual(r.ledger.founderBonus, 8 * 150 * 3 / 10, "passengers pay extra to fly with the founder")
         XCTAssertEqual(r.ledger.tips, 8 * 15)
         XCTAssertEqual(g.state.cash, cash + r.net)
         XCTAssertEqual(g.state.day, 2)
@@ -79,6 +82,12 @@ final class GameTests: XCTestCase {
         g.launch()
         let r = g.finishDay(flight: FlightResult(landing: .hard, mission: .proposal, missionDone: true))
         XCTAssertEqual(r.ledger.mission, 450)
+
+        var big = newGame()
+        big.state.balloons[0].size = .M
+        big.launch()
+        let r2 = big.finishDay(flight: FlightResult(landing: .good, mission: .proposal, missionDone: true))
+        XCTAssertEqual(r2.ledger.mission, 900, "a medium basket doubles the reward")
         XCTAssertGreaterThan(r.ledger.repairs, 0)
         XCTAssertTrue(r.events.contains(.missionDone(.proposal, reward: 450)))
     }
@@ -115,15 +124,80 @@ final class GameTests: XCTestCase {
         XCTAssertTrue(g.sellBalloon(g.state.balloons[1].id))
     }
 
-    func testLicenseExpires() {
+    func testExpiredLicenseGroundsFleetUntilYouFly() {
+        var g = newGame()
+        g.state.cash = 100_000
+        g.buyBalloon(.M)
+        g.hire(g.state.candidates[0].id)
+        g.setSelfFly(false)
+        g.state.lastSelfFly = g.state.day - 16
+        g.assignPilots()
+        XCTAssertFalse(g.state.licenseValid)
+        let other = g.state.balloons[1]
+        XCTAssertEqual(g.state.status(other), .licenseHold, "other balloons wait for the license")
+        XCTAssertTrue(g.state.isSelf(g.state.balloons[0]), "you must fly the flagship yourself")
+        XCTAssertEqual(g.state.status(g.state.balloons[0]), .ok)
+        XCTAssertNotNil(g.launch())
+        let r = g.finishDay(flight: FlightResult(landing: .good))
+        XCTAssertTrue(r.events.contains(.licenseRenewedByFlight))
+        XCTAssertTrue(g.state.licenseValid)
+        XCTAssertEqual(g.state.status(g.state.balloons[1]), .ok)
+    }
+
+    func testPayingRenewsLicense() {
         var g = newGame()
         g.state.lastSelfFly = g.state.day - 16
-        XCTAssertFalse(g.state.licenseValid)
-        g.assignPilots()
-        XCTAssertEqual(g.state.status(g.state.balloons[0]), .noPilot)
         g.state.cash = 20000
         XCTAssertTrue(g.renewLicense())
-        XCTAssertEqual(g.state.status(g.state.balloons[0]), .ok)
+        XCTAssertTrue(g.state.licenseValid)
+        XCTAssertEqual(g.state.cash, 5000)
+    }
+
+    func testPopularityErodesWithoutTheFounder() {
+        var g = newGame()
+        g.state.cash = 100_000
+        g.buyBalloon(.S)
+        for c in g.state.candidates.prefix(2) { g.hire(c.id) }
+        g.setSelfFly(false)
+        var absentEvent = false
+        var reps: [Double] = []
+        for _ in 0..<9 {
+            g.startDay()
+            g.launch(skip: g.state.weather?.flag == .red)
+            let r = g.finishDay(flight: nil)
+            if r.events.contains(where: { if case .founderAbsent = $0 { true } else { false } }) { absentEvent = true }
+            reps.append(g.state.rep)
+        }
+        XCTAssertTrue(absentEvent)
+        XCTAssertTrue(g.state.tipsSeen.contains(.absent) || g.state.hezQueue.contains(.tip(.absent)))
+        XCTAssertLessThan(reps.last!, reps[4], "popularity falls once the founder stays away")
+    }
+
+    /// Someone who never flies unless forced should end up far behind someone who flies daily.
+    func testFlyingYourselfPaysOff() {
+        func worth(passive: Bool, seed: UInt64) -> Int {
+            var g = newGame(seed: seed)
+            for _ in 0..<40 {
+                g.startDay()
+                while g.nextHezarfen() != nil {}
+                if passive { g.setSelfFly(false) }
+                while g.state.balloons.contains(where: { g.state.status($0) == .noPilot }), let c = g.state.candidates.first { g.hire(c.id) }
+                g.setPrice(160)
+                if g.launch(skip: g.state.weather?.flag == .red) != nil {
+                    let m = g.state.weather?.mission
+                    g.finishDay(flight: FlightResult(landing: passive ? .far : .good, distance: 300, mission: m, missionDone: !passive && m != nil))
+                } else {
+                    g.finishDay(flight: nil)
+                }
+                if g.state.cash > 25000 { g.buyBalloon(.S) }
+                if g.state.poach != nil { g.answerPoach(match: true) }
+            }
+            return g.state.cash + g.state.balloons.reduce(0) { $0 + $1.size.cost } / 2
+        }
+        for seed: UInt64 in 1...3 {
+            let a = worth(passive: false, seed: seed), p = worth(passive: true, seed: seed)
+            XCTAssertGreaterThan(Double(a), Double(p) * 1.5, "seed \(seed): active \(a) vs passive \(p)")
+        }
     }
 
     func testSaveRoundTrip() throws {

@@ -1149,6 +1149,47 @@
         }
       }
     },
+    "event.founderAbsent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du warst seit %@ Tagen nicht im Korb. Die Passagiere fragen nach dem Gründer, die Beliebtheit bröckelt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You haven't been in a basket for %@ days. Passengers keep asking for the founder, and popularity is slipping."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Llevas %@ días sin subir a una cesta. Los pasajeros preguntan por el fundador y la popularidad cae."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@日間バスケットに乗っていない。乗客は創業者を探し、人気が落ちている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@일째 바스켓에 타지 않았습니다. 승객들이 창업자를 찾고 인기가 떨어지고 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ gündür sepete binmedin. Yolcular kurucuyu soruyor, popülerlik eriyor."
+          }
+        }
+      }
+    },
     "event.goodLanding": {
       "extractionState": "manual",
       "localizations": {
@@ -1268,6 +1309,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pilot lisansın bugün sona eriyor. Yarın amiral balonunu kendin uçuramazsın; Ekip sekmesinden yenileyebilirsin."
+          }
+        }
+      }
+    },
+    "event.licenseRenewedByFlight": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du hast den Erneuerungsflug selbst gemacht. Lizenz erneuert, deine Ballone dürfen wieder starten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You flew the renewal flight yourself. License renewed, your balloons can take off again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiciste tú mismo el vuelo de renovación. Licencia renovada; tus globos pueden volver a despegar."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "更新フライトを自分で飛んだ。免許が更新され、気球はまた飛べる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "갱신 비행을 직접 마쳤습니다. 면허가 갱신되어 열기구들이 다시 이륙할 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yenileme uçuşunu kendin yaptın. Lisansın yenilendi, balonların yeniden kalkabilir."
           }
         }
       }
@@ -2543,6 +2625,47 @@
         }
       }
     },
+    "hez.absent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lehrling, die Passagiere fragen immer wieder: 'Wo ist der Gründer?' Eine Firma, deren Kapitän nie fliegt, verliert ihre Seele. Steig wieder in den Korb, jeder Tag Abwesenheit kostet dich Beliebtheit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kid, the passengers keep asking: 'Where is the founder?' A company whose captain never flies loses its soul. Get back in the basket; every day you stay away, your popularity wears down."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprendiz, los pasajeros no dejan de preguntar: '¿Dónde está el fundador?' Una empresa cuyo capitán nunca vuela pierde el alma. Vuelve a la cesta; cada día que faltas, tu popularidad se desgasta."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "弟子よ、乗客はみな『創業者はどこだ？』と聞いておる。船長が飛ばない会社は魂を失う。バスケットに戻れ。離れている一日ごとに人気がすり減るぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "제자여, 승객들이 계속 묻는다네. '창업자는 어디 있나요?' 선장이 날지 않는 회사는 영혼을 잃지. 바스켓으로 돌아오게. 떠나 있는 하루하루 인기가 닳고 있다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evlat, yolcular hep aynı şeyi soruyor: 'Kurucu nerede?' Kaptanı uçmayan şirketin ruhu kaybolur. Sepete geri dön; uzak kaldığın her gün popülerliğin aşınıyor."
+          }
+        }
+      }
+    },
     "hez.accident": {
       "extractionState": "manual",
       "localizations": {
@@ -3076,6 +3199,47 @@
         }
       }
     },
+    "hez.licenseHold": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Lizenz ist abgelaufen, Lehrling, und die Behörde hat deine Ballone gesperrt. Zwei Auswege: Steig heute in den Korb und flieg das Flaggschiff selbst, dieser Erneuerungsflug kostet nichts. Oder zahl die Gebühr. Du weißt, was ich wählen würde."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your license has lapsed, kid, and the authority has grounded your balloons. Two ways out: get in the basket today and fly the flagship yourself, that renewal flight costs nothing, or pay the fee. I know which one I'd choose."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu licencia ha caducado, aprendiz, y la autoridad ha dejado tus globos en tierra. Dos salidas: súbete hoy a la cesta y pilota tú el globo insignia, ese vuelo de renovación es gratis. O paga la tasa. Ya sabes cuál elegiría yo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "免許が切れたぞ、弟子よ。当局が気球を飛行停止にした。道は二つ。今日バスケットに乗って旗艦を自分で飛ばすか。この更新フライトはただだ。あるいは手数料を払うか。わしならどちらを選ぶか、わかっておろう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "면허가 만료됐네, 제자여. 당국이 열기구 운항을 막았지. 방법은 두 가지라네. 오늘 바스켓에 타서 기함을 직접 조종하게, 그 갱신 비행은 공짜야. 아니면 수수료를 내게. 내가 뭘 고를지는 알 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lisansın düştü evlat, otorite balonlarını yere indirdi. İki yol var: bugün sepete geç ve amiral balonunu kendin uçur, bu yenileme uçuşu bedava. Ya da ücreti öde. Ben olsam hangisini seçerdim, biliyorsun."
+          }
+        }
+      }
+    },
     "hez.market": {
       "extractionState": "manual",
       "localizations": {
@@ -3568,6 +3732,47 @@
         }
       }
     },
+    "home.absent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tage seit deinem letzten Flug: %@. Die Passagiere vermissen den Gründer, die Beliebtheit sinkt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days since you last flew: %@. Passengers miss the founder; popularity is falling."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días desde tu último vuelo: %@. Los pasajeros echan de menos al fundador y la popularidad baja."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最後に飛んでからの日数：%@。乗客は創業者を恋しがり、人気が下がっている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마지막 비행 후 지난 날: %@. 승객들이 창업자를 찾고 있어 인기가 떨어지고 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son uçuşundan bu yana geçen gün: %@. Yolcular kurucuyu arıyor, popülerlik düşüyor."
+          }
+        }
+      }
+    },
     "home.fly": {
       "extractionState": "manual",
       "localizations": {
@@ -3605,6 +3810,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uç"
+          }
+        }
+      }
+    },
+    "home.founderBonus": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flug mit dem Gründer: Passagiere zahlen 30 % mehr."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flying with the founder: passengers pay +30%."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volar con el fundador: los pasajeros pagan un 30 % más."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "創業者と飛ぶフライト：乗客は30%多く払う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "창업자와 함께하는 비행: 승객이 30% 더 냅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kurucuyla uçuş: yolcular %30 fazla öder."
           }
         }
       }
@@ -3656,37 +3902,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine Pilotenlizenz ist abgelaufen."
+            "value": "Deine Lizenz ist abgelaufen: Deine anderen Ballone bleiben am Boden. Flieg heute selbst das Flaggschiff (kostenloser Erneuerungsflug) oder zahle %@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your pilot license has expired."
+            "value": "Your license has expired: your other balloons are grounded. Fly the flagship yourself today (free renewal flight) or pay %@ to renew."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu licencia de piloto ha caducado."
+            "value": "Tu licencia ha caducado: tus otros globos están en tierra. Pilota hoy tú mismo el globo insignia (vuelo de renovación gratuito) o paga %@ para renovarla."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "操縦免許が切れた。"
+            "value": "免許が切れた：ほかの気球は飛べない。今日、旗艦を自分で飛ばす（無料の更新フライト）か、%@を払って更新しよう。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "조종 면허가 만료되었습니다."
+            "value": "면허가 만료되어 다른 열기구는 운항할 수 없습니다. 오늘 기함을 직접 조종하거나(무료 갱신 비행) %@를 내고 갱신하세요."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilot lisansın doldu."
+            "value": "Lisansın doldu: diğer balonların yerde. Bugün amiral balonunu kendin uçur (ücretsiz yenileme uçuşu) ya da %@ ödeyip yenile."
           }
         }
       }
@@ -3697,37 +3943,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sonderwunsch: %@"
+            "value": "Sonderwunsch: %1$@ (%2$@)"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Special request: %@"
+            "value": "Special request: %1$@ (%2$@)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Petición especial: %@"
+            "value": "Petición especial: %1$@ (%2$@)"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "特別な依頼：%@"
+            "value": "特別な依頼：%1$@（%2$@）"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "특별 요청: %@"
+            "value": "특별 요청: %1$@ (%2$@)"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Özel istek: %@"
+            "value": "Özel istek: %1$@ (%2$@)"
+          }
+        }
+      }
+    },
+    "home.missionSelf": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das kannst nur du übernehmen: Flieg das Flaggschiff selbst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Only you can take this one: fly the flagship yourself."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo tú puedes encargarte: pilota tú el globo insignia."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この依頼はあなたにしかできない。旗艦を自分で飛ばそう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 임무는 당신만 할 수 있습니다. 기함을 직접 조종하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu görevi sadece sen yapabilirsin: amiral balonunu kendin uçur."
           }
         }
       }
@@ -3892,6 +4179,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yine de uç"
+          }
+        }
+      }
+    },
+    "home.renew": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gegen Gebühr erneuern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pay to renew"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagar y renovar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "支払って更新"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비용 내고 갱신"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ücret öde ve yenile"
           }
         }
       }
@@ -4835,6 +5163,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ceza"
+          }
+        }
+      }
+    },
+    "ledger.founderBonus": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gründerflug-Aufschlag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Founder's flight bonus"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prima del vuelo con el fundador"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "創業者フライト割増"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "창업자 비행 할증"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kurucu uçuşu primi"
           }
         }
       }
@@ -6311,6 +6680,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uçuş defteri"
+          }
+        }
+      }
+    },
+    "review.absent.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schöner Flug, aber laut Prospekt sollte der Gründer selbst fliegen. Den haben wir nie gesehen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nice flight, but the brochure promised the founder would be our pilot. We never saw them."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buen vuelo, pero el folleto prometía que el fundador sería el piloto. Nunca lo vimos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フライトは良かったが、パンフレットには創業者が操縦すると書いてあった。一度も見なかった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행은 좋았지만 브로슈어에는 창업자가 직접 조종한다고 쓰여 있었어요. 한 번도 못 봤어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçuş güzeldi ama broşürde kurucunun bizzat pilotluk yaptığı yazıyordu. Hiç görmedik."
+          }
+        }
+      }
+    },
+    "review.absent.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es fühlt sich jetzt wie eine Fabrik an. Der Geist des Familienbetriebs ist weg."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It feels like a factory now. The family company spirit is gone."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora parece una fábrica. Ya no queda el espíritu de empresa familiar."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今では工場のよう。家族経営の雰囲気はもうない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이제 공장 같아요. 가족 회사 분위기가 사라졌어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artık fabrika gibi olmuş. Aile şirketi havası kalmamış."
           }
         }
       }

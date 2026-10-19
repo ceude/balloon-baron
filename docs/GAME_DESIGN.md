@@ -22,7 +22,11 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 
 - XL özel tasarım dev balondur. Her uçuş +0,005 popülerlik verir.
 - Ömür 120 uçuş. Yenileme fiyatın %35'i.
-- Lisans her 15 günde bir yenilenir, ücreti €15.000.
+
+## Kurucu (sen)
+- **Lisans:** En az 15 günde bir kendin uçmalısın. Lisans düşerse amiral dışındaki tüm balonlar yerde kalır. Ya amirali kendin uçurursun (ücretsiz yenileme uçuşu) ya da €15.000 ödersin.
+- **Kurucu uçuşu primi:** Amiral balonunu sen uçurursan o balonun yolcuları %30 fazla öder.
+- **Kurucu yokluğu:** 5 günden uzun süre kendin uçmazsan, balon uçan her gün popülerlik −0,008 (yaklaşık −0,03★) düşer. Hezarfen uyarır, yolcular yorumlarda kurucuyu sorar.
 
 ## Pilotlar
 | Seviye | Maaş/gün | Kaza riski |
@@ -60,7 +64,9 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 ## Pazar ve popülerlik
 - **Fiyat:** €40–320 arası.
 - **Fiyat isteği:** `willing(p) = 1 / (1 + exp((p − 230) / 30))`
-- **Çekicilik:** `rep² × (190 / p)^1.5`. Popülerlik < 0,5 ise ×0,35 (kriz).
+- **Çekicilik:** `rep² × (190 / p)^1.5 × koltuk`. Büyük şirket daha görünür. Popülerlik < 0,5 ise ×0,35 (kriz).
+- **Popülerlik bonusu:** Rakiplerden bağımsız gelen yolcu, koltuklarının en fazla %50'si (2,8★'da 0, 5★'da %50), fiyat isteğiyle çarpılır.
+- **Başlangıç baskısı:** 1. gün tek küçük balonla €170'te 7/8 dolar, dolması için yaklaşık €155'e inmek gerekir.
 - **Dağıtım sırası:** önce sözleşmeli kaynaklar (otel, rehber, influencer), sonra pazar, en son popülerlik bonusu. Boş koltuğu olanlara taşma havuzu dağıtılır.
 - **Yıldız:** `clamp(3 + (rep − 0,75) × 4, 1, 5)`. Popülerlik 0,4–1,4 arasında tutulur.
 - **4,5★ üstü:**
@@ -93,7 +99,9 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 - Kışın gelir ×0,6.
 
 ## Görevler
-| Görev | Ödül |
+Ödül amiral balonunun boyuyla çarpılır: S ×1, M ×2, L ×3, XL ×4.
+
+| Görev | Taban ödül |
 |---|---|
 | Evlilik teklifi: 250–350 m arasında kesintisiz 8 sn kal | 450 |
 | Vadi | 300 |
@@ -105,9 +113,9 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 ## Rakipler
 | Şirket | Tarz | Filo | Fiyat | Popülerlik | Kasa |
 |---|---|---|---|---|---|
-| Göreme Sky | temkinli | L L M M M | 195 | 1,15 | 40.000 |
-| Peribaca Balloons | orta | M M S | 165 | 1,0 | 12.000 |
-| Kızıl Vadi Air | riskli | S S | 135 | 0,85 | 5.000 |
+| Göreme Sky | temkinli | L L L M M M | 195 | 1,15 | 50.000 |
+| Peribaca Balloons | orta | M M M S | 165 | 1,0 | 20.000 |
+| Kızıl Vadi Air | riskli | S S S | 135 | 0,85 | 9.000 |
 
 - Fiyat tabanı maliyetten hesaplanır (en fazla 220). Tavanlar: riskli 190, orta 260.
 - 5. günden sonra zor durumdaki rakip satışa çıkar (filo satın alma veya devralma).

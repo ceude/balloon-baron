@@ -9,7 +9,7 @@ struct ReportView: View {
     var body: some View {
         let lg = report.ledger
         let income: [(String, Int)] = [
-            (loc("ledger.tickets"), lg.tickets), (loc("ledger.hotelIncome"), lg.hotelIncome),
+            (loc("ledger.tickets"), lg.tickets), (loc("ledger.founderBonus"), lg.founderBonus), (loc("ledger.hotelIncome"), lg.hotelIncome),
             (loc("ledger.mission", lg.missionDone?.title ?? ""), lg.mission), (loc("ledger.ads"), lg.ads),
             (loc("ledger.tips"), lg.tips), (loc("ledger.insurancePaid"), lg.insurancePaid), (loc("ledger.seizure"), lg.seizure)
         ].filter { $0.1 != 0 }

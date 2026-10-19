@@ -60,12 +60,15 @@ extension Game {
 
             var severity = 0.0
             if isSelf, let f = flight {
+                if !state.licenseValid { ev.append(.licenseRenewedByFlight) }
                 state.lastSelfFly = state.day
+                lg.founderBonus += jsRound(Double(pax * state.price) * Rules.founderPremium)
                 if f.missionDone, let m = f.mission {
-                    lg.mission += m.reward
+                    let reward = m.reward(for: z)
+                    lg.mission += reward
                     lg.missionDone = m
                     state.rep += 0.02
-                    ev.append(.missionDone(m, reward: m.reward))
+                    ev.append(.missionDone(m, reward: reward))
                 } else if let m = f.mission {
                     ev.append(.missionFailed(m))
                 }
@@ -163,6 +166,16 @@ extension Game {
         if state.stars > 4.5 { state.rep -= 0.006 }
         state.rep += Double(flyingIDs.compactMap(state.balloon).filter { $0.size == .XL }.count) * Rules.xlRepPerFlight
         if state.licenseDaysLeft == 0 { ev.append(.licenseExpiring) }
+        // Passengers miss the founder: popularity erodes while the balloons fly without you.
+        let absent = state.daysSinceSelfFly
+        if !flyingIDs.isEmpty && absent > Rules.absentGraceDays {
+            state.rep -= Rules.absentRepLoss
+            if state.absentNoticeDay < state.lastSelfFly || state.day - state.absentNoticeDay >= 5 {
+                state.absentNoticeDay = state.day
+                ev.append(.founderAbsent(days: absent))
+            }
+            queueTip(.absent)
+        }
 
         simulateRivals(plan: plan, weather: weather, events: &rev)
 
@@ -198,6 +211,7 @@ extension Game {
         let flown = flyingIDs.compactMap(state.balloon)
         let capToday = flown.reduce(0) { $0 + $1.size.capacity }
         let landedOK = flight.map { $0.missionDone && $0.landing != .hard && $0.landing != .crash } ?? false
+        if !flyingIDs.isEmpty && absent > Rules.absentGraceDays && rng.chance(0.3) { addReview(.absent) }
         generateReviews(ReviewContext(xl: flown.contains { $0.size == .XL }, mission: landedOK ? flight?.mission : nil, ads: ads,
                                       landing: flight?.landing, accidents: accidents, red: red, flew: paxTotal > 0,
                                       skipped: plan.skipped, flag: weather.flag))

@@ -10,9 +10,9 @@ iOS hot-air-balloon company tycoon. Solo developer (Turkish speaker) + Claude. A
 
 ## Rules
 - The core never contains player-facing text. It emits ids and enums (`DayEvent`, `HezMessage`, `Review`), and the app localizes them.
-- Every player-facing string lives in `BalloonBaron/Localizable.xcstrings` with all six languages: en (source), tr, de, es, ja, ko. Use `loc("key", args…)` with `%@` / `%1$@` placeholders. Avoid plurals by writing "Label: N". In Turkish, never put a suffix directly after a name placeholder.
+- Every player-facing string lives in `BalloonBaron/Localizable.xcstrings` with all six languages: en (source), tr, de, es, ja, ko. The catalog is generated: edit `tools/strings/*.py`, then run `python3 tools/strings/build.py` (it checks placeholders match across languages). Use `loc("key", args…)` with `%@` / `%1$@` placeholders. Avoid plurals by writing "Label: N". In Turkish, never put a suffix directly after a name placeholder.
 - Money is shown with `eur()`, which formats for the player's locale.
-- Port prototype behaviour faithfully; balance changes are the user's call.
+- Port prototype behaviour faithfully; balance changes are the user's call. When balance changes, update the prototype, the core and `docs/GAME_DESIGN.md` together.
 - Minimum iOS 17, portrait only.
 
 ## Testing in the cloud

@@ -19,6 +19,8 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case pilotPromoted(name: String, level: PilotLevel, wage: Int)
     case envelopeWorn(balloon: String)
     case licenseExpiring
+    case licenseRenewedByFlight
+    case founderAbsent(days: Int)
     case antitrustFine(sharePercent: Int, fine: Int)
     case seized(balloon: String, value: Int)
     case hotelLeft(Hotel)
@@ -41,7 +43,7 @@ public enum DayEvent: Codable, Equatable, Sendable {
 
 public struct Ledger: Codable, Equatable, Sendable {
     // Income
-    public var tickets = 0, hotelIncome = 0, mission = 0, ads = 0, tips = 0, insurancePaid = 0, seizure = 0
+    public var tickets = 0, founderBonus = 0, hotelIncome = 0, mission = 0, ads = 0, tips = 0, insurancePaid = 0, seizure = 0
     public var missionDone: Mission?
     public var adRepLoss = 0.0
     // Costs
@@ -49,7 +51,7 @@ public struct Ledger: Codable, Equatable, Sendable {
     public var fines = 0, cancellations = 0, hotelFees = 0, antitrust = 0
 
     public var net: Int {
-        tickets + hotelIncome + mission + ads + tips + insurancePaid + seizure
+        tickets + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure
             - fuel - wages - upkeep - insurance - loans - repairs - compensation - fines - cancellations - hotelFees - antitrust
     }
 }

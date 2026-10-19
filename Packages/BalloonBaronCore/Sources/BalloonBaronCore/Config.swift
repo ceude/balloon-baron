@@ -76,6 +76,8 @@ public enum Mission: String, Codable, CaseIterable, Sendable {
     case proposal, valley, panorama, precision
 
     public var reward: Int { [450, 300, 250, 400][index] }
+    /// Bigger baskets carry more guests, so the client pays more: S ×1, M ×2, L ×3, XL ×4.
+    public func reward(for size: BalloonSize) -> Int { reward * size.capacity / 8 }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
 }
 
@@ -121,6 +123,15 @@ public enum Rules {
     public static let redCatch = 0.35
     public static let xlName = "Kapadokya Yıldızı"
     public static let xlRepPerFlight = 0.005
+    /// Passengers pay this much extra to fly with the founder.
+    public static let founderPremium = 0.3
+    /// After this many days without flying yourself, popularity erodes.
+    public static let absentGraceDays = 5
+    public static let absentRepLoss = 0.008
+    /// Bigger companies are more visible: market appeal scales with seats to this power.
+    public static let seatWeight = 1.0
+    /// At 5★ popularity fills up to this share of your seats on its own.
+    public static let popularitySeatShare = 0.5
 
     public static let loans = [
         LoanOffer(amount: 10000, days: 40, installment: 300, balloonsNeeded: 0),

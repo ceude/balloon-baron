@@ -32,7 +32,7 @@ public enum Market {
         let t = Double(tourists)
         let w = comps.map { Rules.willing($0.price) }
         let att = comps.map { c -> Double in
-            c.cap > 0 ? c.rep * c.rep * (c.rep < Rules.crisisRep ? 0.35 : 1) * pow(190 / c.price, 1.5) : 0
+            c.cap > 0 ? c.rep * c.rep * (c.rep < Rules.crisisRep ? 0.35 : 1) * pow(190 / c.price, 1.5) * pow(Double(c.cap), Rules.seatWeight) : 0
         }
         let sum = att.reduce(0, +)
         guard sum > 0 else { return comps.map { _ in 0 } }
@@ -61,9 +61,10 @@ public enum Market {
 }
 
 extension Game {
-    /// Extra passengers popularity brings regardless of rivals, at today's price.
+    /// Extra passengers popularity brings regardless of rivals, at today's price. It scales with
+    /// your own seats so a tiny newcomer can't fill up on reputation alone.
     public func popularityBonus() -> Int {
-        let raw = jsRound(Double(state.demand ?? 0) * 0.3 * clamp((state.rep - 0.7) / 0.7, 0, 1))
+        let raw = jsRound(Double(state.capacityToday) * Rules.popularitySeatShare * clamp((state.rep - 0.7) / 0.7, 0, 1))
         return jsRound(Double(raw) * Rules.willing(Double(state.price)))
     }
 

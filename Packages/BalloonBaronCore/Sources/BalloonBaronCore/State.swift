@@ -119,7 +119,7 @@ public enum Feature: String, Codable, CaseIterable, Sendable { case insurance, f
 /// Hezarfen's one-off lessons. Text lives in the string catalog under `hez.<rawValue>`.
 public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
-    case rivals, rivals2, rivals3, expect, antitrust, aging
+    case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {
@@ -184,15 +184,16 @@ public struct GameState: Codable, Equatable, Sendable {
     public var demand: Int?
     public var plan: DayPlan?
     var rivalPlanDay = 0
+    var absentNoticeDay = 0
     public var over = false
 
     public init(company: String, colors: [String]) {
         self.company = company
         self.colors = colors
         rivals = [
-            Rival(id: 0, name: "Göreme Sky", colors: ["#5aa9e6", "#eaf4fc"], style: .safe, balloons: [.L, .L, .M, .M, .M], price: 195, rep: 1.15, cash: 40000),
-            Rival(id: 1, name: "Peribaca Balloons", colors: ["#9b7be0", "#f2ebff"], style: .mid, balloons: [.M, .M, .S], price: 165, rep: 1, cash: 12000),
-            Rival(id: 2, name: "Kızıl Vadi Air", colors: ["#c73a2a", "#ffd9a8"], style: .risky, balloons: [.S, .S], price: 135, rep: 0.85, cash: 5000)
+            Rival(id: 0, name: "Göreme Sky", colors: ["#5aa9e6", "#eaf4fc"], style: .safe, balloons: [.L, .L, .L, .M, .M, .M], price: 195, rep: 1.15, cash: 50000),
+            Rival(id: 1, name: "Peribaca Balloons", colors: ["#9b7be0", "#f2ebff"], style: .mid, balloons: [.M, .M, .M, .S], price: 165, rep: 1, cash: 20000),
+            Rival(id: 2, name: "Kızıl Vadi Air", colors: ["#c73a2a", "#ffd9a8"], style: .risky, balloons: [.S, .S, .S], price: 135, rep: 0.85, cash: 9000)
         ]
         balloons.append(Balloon(id: nextID, size: .S, name: Rules.balloonNames[0]))
         flagship = nextID
@@ -202,7 +203,9 @@ public struct GameState: Codable, Equatable, Sendable {
     public var stars: Double { Rules.stars(rep) }
     public var licenseDaysLeft: Int { Rules.licenseDays - (day - lastSelfFly) }
     public var licenseValid: Bool { licenseDaysLeft >= 0 }
-    public var flyingSelf: Bool { selfFly && licenseValid }
+    /// With an expired license you must fly the flagship yourself (a free renewal flight) or pay to renew.
+    public var flyingSelf: Bool { selfFly || !licenseValid }
+    public var daysSinceSelfFly: Int { day - lastSelfFly }
 
     public func balloon(_ id: Int) -> Balloon? { balloons.first { $0.id == id } }
     public func pilot(of b: Balloon) -> Pilot? { pilots.first { $0.id == b.pilot } }
@@ -214,12 +217,13 @@ public struct GameState: Codable, Equatable, Sendable {
         jsRound(Double(h.roomIncome) * (stars < h.minStars ? 0.5 : 1) * (winter != nil ? 0.6 : 1))
     }
 
-    public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot }
+    public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold }
 
     public func status(_ b: Balloon) -> FlyStatus {
         if banUntil >= day { return .banned }
         if b.damagedUntil > day { return .damaged }
         if b.condition <= 0 { return .worn }
+        if !licenseValid && b.id != flagship { return .licenseHold }
         if !isSelf(b) && b.pilot == nil { return .noPilot }
         return .ok
     }

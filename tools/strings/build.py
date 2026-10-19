@@ -1,0 +1,25 @@
+"""Builds BalloonBaron/Localizable.xcstrings from these sources. Edit the .py files, then run: python3 tools/strings/build.py"""
+import json, os, re, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import s1_ui, s2_hez, s3_events, s4_reviews, s5_v2
+S = s1_ui.S
+LANGS = ["en", "tr", "de", "es", "ja", "ko"]
+def specs(t):
+    t = t.replace("%%", "")
+    pos = re.findall(r"%(\d)\$@", t)
+    plain = len(re.findall(r"%@", t))
+    braces = sorted(re.findall(r"\{[a-z]\}", t))
+    return (sorted(set(pos)) if pos else plain, sorted(set(braces)))
+bad = 0
+for k, v in S.items():
+    ref = specs(v["en"])
+    for l in LANGS:
+        if specs(v[l]) != ref:
+            print("MISMATCH", k, l, specs(v[l]), ref); bad += 1
+out = {"sourceLanguage": "en", "strings": {}, "version": "1.0"}
+for k in sorted(S):
+    out["strings"][k] = {"extractionState": "manual", "localizations": {
+        l: {"stringUnit": {"state": "translated", "value": S[k][l]}} for l in LANGS}}
+target = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), '../../BalloonBaron/Localizable.xcstrings')
+json.dump(out, open(target, "w"), ensure_ascii=False, indent=2, sort_keys=True)
+print(len(S), "keys,", bad, "problems")

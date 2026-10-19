@@ -13,7 +13,7 @@ struct HomeView: View {
                 VStack(spacing: 14) {
                     hud(s)
                     if let w { weatherCard(w, winter: s.winter != nil) }
-                    if let m = w?.mission { missionCard(m) }
+                    if let m = w?.mission { missionCard(m, s) }
                     marketCard(game)
                     priceCard(s)
                     actions(s)
@@ -68,10 +68,16 @@ struct HomeView: View {
         }
     }
 
-    private func missionCard(_ m: Mission) -> some View {
-        card {
-            Text(loc("home.mission", m.title)).font(Theme.font(19, .heavy, condensed: true)).foregroundStyle(Theme.coral)
+    private func missionCard(_ m: Mission, _ s: GameState) -> some View {
+        let size = s.balloon(s.flagship)?.size ?? .S
+        return card {
+            Text(loc("home.mission", m.title, eur(m.reward(for: size)))).font(Theme.font(19, .heavy, condensed: true)).foregroundStyle(Theme.coral)
             Text(m.detail).font(Theme.font(15)).foregroundStyle(Theme.ink2)
+            if !s.flyingSelf {
+                Button(loc("home.missionSelf")) { store.act { $0.setSelfFly(true) } }
+                    .font(Theme.font(14, .bold))
+                    .foregroundStyle(Theme.coral)
+            }
         }
     }
 
@@ -84,10 +90,20 @@ struct HomeView: View {
                 stat(loc("home.seats"), num(s.capacityToday))
                 stat(loc("home.rivalSeats"), num(rivalSeats))
             }
-            if s.flyingSelf {
+            if !s.licenseValid {
+                Text(loc("home.licenseExpired", eur(Rules.recertCost))).font(Theme.font(14, .bold)).foregroundStyle(Theme.red)
+                Button(loc("home.renew") + " " + eur(Rules.recertCost)) { store.act { $0.renewLicense() } }
+                    .font(Theme.font(14, .bold))
+                    .foregroundStyle(Theme.coral)
+                    .disabled(s.cash < Rules.recertCost)
+            } else {
                 Text(loc("home.license", num(s.licenseDaysLeft))).font(Theme.font(13)).foregroundStyle(Theme.ink2)
-            } else if !s.licenseValid {
-                Text(loc("home.licenseExpired")).font(Theme.font(13, .bold)).foregroundStyle(Theme.red)
+            }
+            if s.flyingToday.contains(where: { s.isSelf($0) }) {
+                Text(loc("home.founderBonus")).font(Theme.font(13, .semibold)).foregroundStyle(Theme.green)
+            }
+            if s.daysSinceSelfFly > Rules.absentGraceDays - 2 && !s.flyingSelf {
+                Text(loc("home.absent", num(s.daysSinceSelfFly))).font(Theme.font(13, .bold)).foregroundStyle(Theme.yellow)
             }
         }
     }

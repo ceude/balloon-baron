@@ -103,6 +103,7 @@ public struct Game: Sendable {
             if s.day >= 13 { queueTip(.rivals3) }
         }
         if s.balloons.contains(where: { $0.damagedUntil > s.day }) { queueTip(.accident) }
+        if !s.licenseValid { queueTip(.licenseHold) }
     }
 
     /// Pops the next Hezarfen message and marks lessons as seen.
