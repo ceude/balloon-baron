@@ -49,6 +49,22 @@ struct RootView: View {
                 MergeView(news: m)
                     .transition(.opacity)
             }
+            if let p = store.poach {
+                PoachView(offer: p)
+                    .transition(.opacity)
+            }
+            if let d = store.deal {
+                DealView(offer: d)
+                    .transition(.opacity)
+            }
+            if store.showRepChart {
+                RepChartView()
+                    .transition(.opacity)
+            }
+            if store.showMenu {
+                MenuView()
+                    .transition(.opacity)
+            }
             if let m = store.hezarfen {
                 HezarfenView(message: m) { store.dismissHezarfen() }
                     .transition(.opacity)
@@ -65,6 +81,10 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.chapter)
         .animation(.easeOut(duration: 0.25), value: store.merge)
         .animation(.easeOut(duration: 0.25), value: store.collecting)
+        .animation(.easeOut(duration: 0.25), value: store.poach)
+        .animation(.easeOut(duration: 0.25), value: store.deal)
+        .animation(.easeOut(duration: 0.25), value: store.showMenu)
+        .animation(.easeOut(duration: 0.25), value: store.showRepChart)
         .fullScreenCover(isPresented: Binding(get: { store.flightPax != nil }, set: { _ in })) {
             FlightView()
                 .environment(store)
@@ -82,6 +102,7 @@ struct RootView: View {
         switch p {
         case .fleet: FleetView()
         case .crew: CrewView()
+        case .bank: BankView()
         case .market: MarketView()
         case .goals: GoalsView()
         case .holding: HoldingView()
