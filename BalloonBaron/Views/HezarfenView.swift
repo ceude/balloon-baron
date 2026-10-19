@@ -13,11 +13,7 @@ struct HezarfenView: View {
             Color.black.opacity(0.45).ignoresSafeArea()
             HStack(alignment: .bottom, spacing: 10) {
                 VStack(spacing: 4) {
-                    Circle()
-                        .fill(LinearGradient(colors: [Color(hex: "#2f2560"), Color(hex: "#b9506a"), Color(hex: "#ffae6a")],
-                                             startPoint: .top, endPoint: .bottom))
-                        .frame(width: 64, height: 64)
-                        .overlay(Text("H").font(Theme.font(30, .heavy, condensed: true)).foregroundStyle(Theme.sun))
+                    HezarfenAvatar(size: 64)
                     Text(loc("hez.name"))
                         .font(Theme.font(12, .bold, condensed: true))
                         .foregroundStyle(.white)

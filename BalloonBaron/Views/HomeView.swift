@@ -66,6 +66,10 @@ struct HomeView: View {
                     Spacer(minLength: 0)
                     navColumn(s)
                 }
+                // Passenger reviews pop up under the HUD, over the sky, like the prototype's chirp.
+                .overlay(alignment: .top) {
+                    if !store.collecting { ReviewChirpView() }
+                }
                 Spacer(minLength: 0)
                 if !store.collecting {
                     dockPanel(game)

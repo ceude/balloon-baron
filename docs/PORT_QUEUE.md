@@ -5,6 +5,5 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 _Şu an boş._ Son toplu aktarım: filo/ekip arayüzü, sade ana ekran ve fiyat paneli, tekel cezası, pazar kartları, güçlü rakipler ve birleşmeler, bölümler ve Baron, Albuquerque ve otomatik mod, tasarım stüdyosu, holding ve ofisler.
 
 Aktarımda bilerek eksik kalanlar (ileride):
-- Balon zarfında sponsor yazısı, pazar sekmesindeki yorum listesi, hava kartındaki rüzgâr katmanı çubukları.
+- (yok)
 - Bölüm töreninde fanfar ve alkış sesi (ses aşamasında).
-- Banka sekmesi henüz uygulamada yok.
