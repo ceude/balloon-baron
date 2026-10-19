@@ -44,14 +44,17 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 - **Kızıl Vadi Air başlangıç kasası:** €12.000 (eskiden €9.000).
 
 ## Bölümler ve Baron (Faz 1)
-- **Kapadokya'da 3 bölüm (`CHAPTERS`):**
-  1. **Kuruluş:** 3 balon, 4,0★, kasada €20.000. Ödül €5.000.
-  2. **Büyüme:** 8 balon, en az bir otel anlaşması ya da sahipliği, pazarın %35'i. Ödül €20.000.
-  3. **Kapadokya Baronu:** pazarın %70'i ve 4,8★, ikisi birden 3 gün üst üste (`baronDays`; sadece uçuş olan günlerde sayılır, kırmızı bayrakta pas geçmek seriyi bozmaz).
+- **Kapadokya'da 3 bölüm (`CHAPTERS`), hedefler gün sonunda kontrol edilir:**
+  1. **Kuruluş** (ödül €5.000): 5 balon, 4,0★, en az bir otel anlaşması, kasada €20.000.
+  2. **Büyüme** (ödül €20.000): 10 balon, bir otel satın alımı, en az bir influencer kampanyası, en az bir rehber tanıtım uçuşu, pazarın %50'si, balon atölyesi.
+  3. **Kapadokya Baronu** (unvan + dünya haritası): pazarın %70'i, 2 otelin sahibi, pilot okulu, 4,8★, imza balon (XL). Hepsi aynı gün.
+- Influencer ve rehber kullanım sayıları tutulur (`influCount`, `guideCount`). Eski kayıtlarda `influCd > 0` / `guideCd > 0` kullanılmış sayılır.
 - Pazar payı `shareNow` olarak tutulur; kimsenin uçmadığı günde son değer korunur.
+- **Balon atölyesi:** Filo sayfasında €75.000'e kurulur. Tasarım stüdyosu Faz 3'te gelecek.
 - Bölüm gün sonunda tamamlanınca ödül kasaya girer ve uçuş defterinde "Bölüm ödülü: X" satırı çıkar. Ertesi sabah tören penceresi açılır (diğer pencerelerden önce).
-- Yan menüde en üstte "Hedef" butonu, üstünde "1/3" rozetiyle. Hedef kartında her hedefin ilerleme çubuğu ve sayısı var. Baron olunca buton "Dünya" olur.
+- Yan menüde en üstte "Hedef" butonu, üstünde "1/4" rozetiyle. Hedef kartında her hedefin ilerleme çubuğu ve sayısı var (evet/hayır hedeflerinde "tamam / yok"). Baron olunca buton "Dünya" olur.
 - **Baron töreni:** taç, Hezarfen'in sözleri, fanfar ve alkış, "Dünya haritasını aç".
-- **Dünya haritası:** Kapadokya (Baron), Albuquerque (Baron olunca "Açıldı"; Faz 2'de oynanabilir olacak), Luksor ve iki gizemli "???" bölge (Yakında).
+- **Dünya haritası:** Gerçek koordinatlardan çizilmiş kıtalar, boylam −130…130, enlem 70…−40 kırpılmış. Kapadokya (Baron), Albuquerque (Baron olunca "Açıldı"), Luksor ve iki gizemli "???" bölge (Asya, Avrupa; Yakında).
 - Hezarfen'in yeni "goals" dersi 2. gün çıkar.
 - Yeni gelen rakip seçilirken, yaşayan ya da satıştaki şirketlerin adında geçen markalar (ör. birleşmiş "X & Bosphorus") dışarıda tutulur.
+- **Lisans tuzağı uyarısı:** Lisans düşmüşken amiral balon uçamıyorsa (zarf eskimiş ya da onarımda), uyarı çıkış yolunu söyler: zarfı yenile, başka balonu amiral yap ya da ücreti öde.
