@@ -55,7 +55,6 @@ struct HomeView: View {
                 HStack(alignment: .top, spacing: 10) {
                     VStack(spacing: 14) {
                         if let w = s.weather { weatherCard(w, winter: s.winter != nil) }
-                        if let m = s.weather?.mission { missionCard(m, s) }
                     }
                     .frame(maxWidth: .infinity)
                     navColumn(s)
@@ -115,19 +114,6 @@ struct HomeView: View {
             }
             Text(w.flag.note).font(Theme.font(15)).foregroundStyle(Theme.ink2)
             Text(loc("home.wind", num(w.surfaceWind))).font(Theme.font(14, .semibold)).foregroundStyle(Theme.ink2)
-        }
-    }
-
-    private func missionCard(_ m: Mission, _ s: GameState) -> some View {
-        let size = s.balloon(s.flagship)?.size ?? .S
-        return card {
-            Text(loc("home.mission", m.title, eur(m.reward(for: size)))).font(Theme.font(19, .heavy, condensed: true)).foregroundStyle(Theme.coral)
-            Text(m.detail).font(Theme.font(15)).foregroundStyle(Theme.ink2)
-            if !s.flyingSelf {
-                Button(loc("home.missionSelf")) { store.act { $0.setSelfFly(true) } }
-                    .font(Theme.font(14, .bold))
-                    .foregroundStyle(Theme.coral)
-            }
         }
     }
 
