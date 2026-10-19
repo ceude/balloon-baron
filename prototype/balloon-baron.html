@@ -104,6 +104,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .frow.off .ic{filter:grayscale(.85);opacity:.55}
 .flybtn{flex:none;min-width:84px;height:36px;padding:0 12px;border-radius:12px;font-family:var(--cond);font-weight:800;font-size:15px;letter-spacing:.04em;background:#e4deef;color:var(--ink2);box-shadow:0 3px 0 #c9c1db}
 .flybtn.on{background:var(--coral);color:#fff;box-shadow:0 3px 0 #c7381a}
+.whofly{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:16px;background:#fff3e8;font-size:13px;color:var(--ink2)}
+.whofly b{color:var(--ink);font-size:15px}
+.whob{display:flex;gap:8px;margin-top:4px}
+.whob .flybtn{flex:1}
 .flybtn:active{transform:translateY(3px);box-shadow:none}
 .frow.blocked{opacity:.7}
 .rd{display:inline-block;width:7px;height:7px;border-radius:50%;margin:0 3px 0 5px}
@@ -121,8 +125,26 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .pmid .pricebig{color:var(--sun);font-size:38px}
 .prv{display:flex;justify-content:center;gap:10px;font-family:var(--cond);font-weight:700;font-size:13px;opacity:.85;margin-top:3px}
 .prv i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:3px}
-.dock .est{color:rgba(255,255,255,.8)}
-.dock .est b{color:#fff}
+.dock .est,.psh .est{color:rgba(255,255,255,.8)}
+.dock .est b,.psh .est b{color:#fff}
+.pcard{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:16px;background:rgba(255,255,255,.1);color:#fff;text-align:left;box-shadow:0 4px 0 rgba(0,0,0,.28)}
+.pcard:active{transform:translateY(3px)}
+.pcard .pp{display:flex;flex-direction:column;line-height:1.05}
+.pcard .pp small{font-size:11px;opacity:.7}
+.pcard .pp b{font-family:var(--cond);font-weight:800;font-size:28px;color:var(--sun)}
+.pcard .pf{flex:1;display:flex;flex-direction:column;gap:4px;font-size:12px;opacity:.9}
+.pcard .bar{height:7px;border-radius:4px;background:rgba(255,255,255,.15);overflow:hidden}
+.pcard .bar i{display:block;height:100%;background:var(--green);border-radius:4px}
+.pcard .pgo{font-family:var(--cond);font-weight:800;font-size:15px;color:var(--sun)}
+#psheet{position:absolute;inset:0;z-index:7;background:rgba(20,15,45,.45);display:flex;align-items:flex-end;justify-content:center}
+.psh{width:min(560px,calc(100% - 16px));margin-bottom:max(10px, env(safe-area-inset-bottom, 0px));padding:16px;border-radius:24px;background:var(--glass);color:#fff;display:flex;flex-direction:column;gap:14px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:pgin .2s ease-out}
+.pshh{display:flex;align-items:center;justify-content:space-between;font-family:var(--cond);font-size:22px}
+.psh .pclose{background:rgba(255,255,255,.15);color:#fff}
+.tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.tile{background:rgba(255,255,255,.08);border-radius:14px;padding:8px 6px;text-align:center}
+.tile b{display:block;font-family:var(--cond);font-weight:800;font-size:24px;line-height:1.05}
+.tile span{font-size:11.5px;opacity:.75}
+.alert.more{background:rgba(255,255,255,.1);font-weight:700;text-align:center}
 .dock .ghost{background:rgba(255,255,255,.14);color:#fff;box-shadow:0 5px 0 rgba(0,0,0,.3)}
 #page{position:absolute;inset:0;z-index:6;background:#f6f3fb;display:flex;flex-direction:column;animation:pgin .22s ease-out}
 @keyframes pgin{from{transform:translateY(24px);opacity:.4}}
@@ -343,12 +365,17 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
       <div class="alerts" id="alerts"></div>
       <div class="chips" id="fleetChips"></div>
       <div class="chips" id="optChips"></div>
-      <div class="pricer"><button class="rb" id="pMinus" aria-label="Fiyatı düşür">−</button><div class="pmid"><div class="pl">Bilet fiyatı</div><div class="pricebig" id="pVal"></div><div class="prv" id="pRivals"></div></div><button class="rb" id="pPlus" aria-label="Fiyatı artır">+</button></div>
-      <div class="dem" id="dem"></div>
-      <div class="est" id="est"></div>
+      <button class="pcard" id="pcard"></button>
       <div class="btns"><button class="ghost" id="skip">Pas geç</button><button class="big" id="go"></button></div>
     </div>
   </div>
+  <div id="psheet" hidden><div class="psh">
+    <div class="pshh"><b>Bilet fiyatı</b><button class="pclose" id="psClose" aria-label="Kapat">✕</button></div>
+    <div class="pricer"><button class="rb" id="pMinus" aria-label="Fiyatı düşür">−</button><div class="pmid"><div class="pricebig" id="pVal"></div><div class="prv" id="pRivals"></div></div><button class="rb" id="pPlus" aria-label="Fiyatı artır">+</button></div>
+    <div class="dem" id="dem"></div>
+    <div class="est" id="est"></div>
+    <button class="big" id="psOk">Tamam</button>
+  </div></div>
   <div id="page" hidden><div class="phead"><h1 id="pTitle"></h1><button class="pclose" id="pClose" aria-label="Kapat">✕</button></div><div id="tabBody"></div></div>
 
   <div id="collect" hidden></div>
@@ -427,6 +454,7 @@ const repBonusRaw = () => Math.round(flying().reduce((a, b) => a + SIZES[b.size]
 const repBonus = () => Math.round(repBonusRaw() * 1 / (1 + Math.exp((S.price - 230) / 30)));
 const CANCEL_COMP = 40;
 const LICENSE_DAYS = 15, RECERT = 15000, PRICE_MIN = 40, PRICE_MAX = 320;
+const MONO_RATE = .03;
 const FOUNDER = .3, ABSENT_GRACE = 5, ABSENT_LOSS = .008;
 const misReward = (k, size) => MISSIONS[k].reward * SIZES[size || (bal(S.flag) || { size: 'S' }).size].cap / 8;
 const SIM = 6;
@@ -454,7 +482,7 @@ const HEZ = {
   rivals2: 'İkinci sır: popülerlik fiyattan güçlüdür. Turist seni popülerliğinin karesiyle seçer. Ucuzlamadan önce yıldızını parlat, otellerle anlaş. Anlaşmalı otelin misafiri rakibe hiç uğramaz.',
   rivals3: 'Üçüncü sır sabırdır. Dört gün yarı boş uçan ya da kasası azalan rakip satılığa çıkar, fırsatı kaçırma. Kızıl Vadi kırmızı bayrakta uçar, ceza yer, sigortası yoktur. İlk o düşer.',
   expect: 'Tebrikler evlat, 4,5 yıldızı geçtin! Ama dikkat: artık beklentiler çok daha yüksek. Yolcular mükemmellik istiyor; düzgün bir iniş artık puan kazandırmaz, uzak iniş iki kat kaybettirir ve popülerliğin her gün biraz aşınır. Zirvede kalmak için kusursuz inişler, görevler ve iyi oteller lazım.',
-  antitrust: 'Dikkat evlat! Pazarın çoğu senin elinde ve Rekabet Kurumu kapıda. Tekel olmaya devam edersen kasanın yüzde sekizi kadar ceza kesebilirler. Ya bunu göze al ya da fiyatını biraz yükseltip rakiplere nefes aldır.',
+  antitrust: 'Dikkat evlat! Pazarın çoğu senin elinde ve Rekabet Kurumu kapıda. Tekel olmaya devam edersen şirketinin büyüklüğüne göre ağır bir ceza kesebilirler. Ya bunu göze al ya da fiyatını biraz yükseltip rakiplere nefes aldır.',
   absent: 'Evlat, yolcular hep aynı şeyi soruyor: "Kurucu nerede?" Kaptanı uçmayan şirketin ruhu kaybolur. Sepete geri dön; uzak kaldığın her gün popülerliğin aşınıyor.',
   licenseHold: 'Lisansın düştü evlat, otorite balonlarını yere indirdi. İki yol var: bugün sepete geç ve amiral balonunu kendin uçur, bu yenileme uçuşu bedava. Ya da ücreti öde. Ben olsam hangisini seçerdim, biliyorsun.',
   aging: 'Bir balonunun zarfı yorulmuş. Eski kumaş sert rüzgârda kazaya davetiyedir. Filo sayfasından yenile.'
@@ -736,6 +764,7 @@ function showPoach() {
   c.append(yes, no); m.appendChild(c); m.hidden = false;
 }
 function startDay() {
+  alertsOpen = false;
   if (!S.company) { showSetup(1); return; }
   if (!S.weather) S.weather = newWeather();
   if (!S.demand) S.demand = dayDemand();
@@ -838,8 +867,10 @@ function finishDay(flight) {
   const rp = S.plan.rpax.reduce((a, b) => a + b, 0), shr = paxTotal + rp ? paxTotal / (paxTotal + rp) : 0;
   if (S.day >= 20 && shr > .6 && S.rivals.some(r => r.alive)) S.monoDays = (S.monoDays || 0) + 1; else S.monoDays = Math.max(0, (S.monoDays || 0) - 1);
   if (S.monoDays >= 3) hezAdd('antitrust');
-  if (S.monoDays >= 5 && Math.random() < .25 && S.cash > 0) {
-    const fine = Math.max(5000, Math.round(S.cash * .08 / 100) * 100); Lg.mono = fine; S.cash -= fine; net -= fine; S.monoDays = 0;
+  if (S.monoDays >= 5 && Math.random() < .25) {
+    /* ceza şirketin toplam değerinden: kasayı boşaltmak kurtarmaz */
+    const worth = Math.max(0, S.cash) + S.balloons.reduce((a, b) => a + SIZES[b.size].cost, 0) + (S.ownHotels || []).reduce((a, id) => a + HOTELS.find(x => x.id === id).buy, 0);
+    const fine = Math.max(5000, Math.round(worth * MONO_RATE / 100) * 100); Lg.mono = fine; S.cash -= fine; net -= fine; S.monoDays = 0;
     ev.push(`Rekabet Kurumu pazarın %${Math.round(shr * 100)}'ini elinde tuttuğun için ${eur(fine)} tekel cezası kesti.`);
   }
 
@@ -1166,6 +1197,7 @@ function renderTab() {
   PAGES[page][1]()(body);
   body.scrollTop = st;
 }
+let alertsOpen = false;
 function renderHome() {
   if (!S.weather) return;
   const Wx = S.weather, F = FLAGS[Wx.flag];
@@ -1174,7 +1206,7 @@ function renderHome() {
   const al = $('alerts'); al.replaceChildren();
   const alert = (cls, html, on) => { const a = h(on ? 'button' : 'div', 'alert ' + cls, html); if (on) a.onclick = on; al.appendChild(a); };
   if (S.winter) alert('win', `<b>Kış, ${S.day - S.winter.start + 1}/8. gün.</b> Turist yarı yarıya az, kırmızı bayrak sık. Gereksiz balonları yerde tut.`);
-  const ls0 = S.lastShare; if (ls0 && S.day > 20) { const tot0 = ls0.me + ls0.rivals.reduce((a, b) => a + b, 0); if (tot0 && ls0.me / tot0 > .6 && S.rivals.some(r => r.alive)) alert('yel', `<b>Pazarın %${Math.round(ls0.me / tot0 * 100)}'i senin.</b> Rekabet Kurumu seni izliyor. Tekel cezası kasanın %8'i olabilir.`); }
+  const ls0 = S.lastShare; if (ls0 && S.day > 20) { const tot0 = ls0.me + ls0.rivals.reduce((a, b) => a + b, 0); if (tot0 && ls0.me / tot0 > .6 && S.rivals.some(r => r.alive)) alert('yel', `<b>Pazarın %${Math.round(ls0.me / tot0 * 100)}'i senin.</b> Rekabet Kurumu seni izliyor.`); }
   const fbm = bal(S.flag);
   if (Wx.mission && fbm && canFly(fbm) !== 'dmg' && canFly(fbm) !== 'worn') {
     const M = MISSIONS[Wx.mission];
@@ -1190,14 +1222,14 @@ function renderHome() {
   const away = S.day - S.lastSelfFly;
   if (!selfFlying() && away >= ABSENT_GRACE - 1) alert('yel', `<b>${away} gündür sepete binmedin.</b> ${away > ABSENT_GRACE ? 'Yolcular kurucuyu arıyor, popülerliğin her gün eriyor.' : `${ABSENT_GRACE} günü geçerse yolcular kurucuyu aramaya başlar ve popülerliğin erir.`} Dokun, uçuşu sen üstlen.`, () => { S.selfFly = true; assignPilots(); refresh(); });
   if (fbm && isSelf(fbm) && canFly(fbm) === 'ok' && fbm.fly) alert('grn', `<b>Kurucuyla uçuş:</b> amiral balonundaki yolcular %${FOUNDER * 100} fazla öder.`);
+  const rank = { red: 0, mis: 1, yel: 2, grn: 3, win: 4 }, pr = x => rank[[...x.classList].find(c => c in rank)] ?? 5;
+  const all = [...al.children].sort((a, b) => pr(a) - pr(b)); al.replaceChildren(...all);
+  if (all.length > 1 && !alertsOpen) { all.slice(1).forEach(x => x.remove()); const more = h('button', 'alert more', `+${all.length - 1} uyarı daha`); more.onclick = () => { alertsOpen = true; renderHome(); }; al.appendChild(more); }
   const fc = $('fleetChips'); fc.replaceChildren();
-  const fleet = sortedFleet();
-  if (fleet.length <= FLEET_INLINE) fleet.forEach(b => fc.appendChild(fleetChip(b)));
-  else fc.appendChild(fleetSummary());
+  fc.appendChild(fleetSummary());
   const oc = $('optChips'); oc.replaceChildren();
   const chip = (on, label, fn) => { const c = h('button', 'ochip' + (on ? ' on' : ''), `<span class="ck">${on ? '✓' : ''}</span>${label}`); c.onclick = fn; oc.appendChild(c); };
   const fl = flying(), red = Wx.flag === 'red', tot = k => fl.reduce((a, b) => a + premium(b.size, accP(b))[k], 0);
-  if (bal(S.flag) && licenseOk()) chip(S.selfFly, 'Kendim uçururum', () => { S.selfFly = !S.selfFly; assignPilots(); refresh(); });
   if (unlocked('ins')) chip(S.ins.hull, `Gövde sigortası ${red ? '(geçersiz)' : eur(tot('hull'))}`, () => { S.ins.hull = !S.ins.hull; refresh(); });
   if (unlocked('ins')) chip(S.ins.pax, `Yolcu sigortası ${red ? '(geçersiz)' : eur(tot('pax'))}`, () => { S.ins.pax = !S.ins.pax; refresh(); });
   $('pVal').textContent = eur(S.price);
@@ -1205,7 +1237,6 @@ function renderHome() {
   requestAnimationFrame(placeWidgets);
 }
 /* ---------- fleet plan ---------- */
-const FLEET_INLINE = 4;
 /* amiral önce, sonra büyükten küçüğe */
 const sortedFleet = () => S.balloons.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag) || SIZES[b.size].cap - SIZES[a.size].cap || a.name.localeCompare(b.name, 'tr'));
 function fleetSub(b) {
@@ -1220,13 +1251,6 @@ function blockedTap(b) {
   const st = canFly(b);
   return st === 'nopilot' || st === 'license' ? () => openPage('crew') : st === 'worn' ? () => openPage('fleet') : null;
 }
-function fleetChip(b) {
-  const st = canFly(b), on = st === 'ok' && b.fly;
-  const c = h('button', 'fchip ' + (st !== 'ok' ? 'blocked' : on ? 'on' : 'off'));
-  c.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<span class="fc"><b>${esc(b.name)}</b><span>${SIZES[b.size].cap} kişi${riskDot(b)}</span><span>${fleetSub(b)}</span></span><span class="fstate">${st !== 'ok' ? '' : on ? 'UÇACAK' : 'YERDE'}</span>`;
-  c.onclick = st === 'ok' ? () => { b.fly = !b.fly; refresh(); } : blockedTap(b);
-  return c;
-}
 function fleetCounts() {
   const fl = flying(), why = {};
   S.balloons.forEach(b => { const st = canFly(b); if (st !== 'ok') why[st] = (why[st] || 0) + 1; });
@@ -1238,7 +1262,8 @@ function fleetCounts() {
 }
 function fleetSummary() {
   const c = fleetCounts(), btn = h('button', 'fsum' + (c.alarm ? ' warn' : ''));
-  btn.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<span class="fc"><b>Filo: ${c.n}/${c.total} balon uçacak</b><span>${c.seats} koltuk${c.parts.length ? ' · ' + c.parts.join(' · ') : ''}</span></span><span class="fgo">Plan ›</span>`;
+  const fb = bal(S.flag), who = fb && isSelf(fb) ? 'Amirali sen uçuruyorsun' : 'Amirali pilot uçuruyor';
+  btn.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<span class="fc"><b>Filo: ${c.n}/${c.total} balon uçacak</b><span>${c.seats} koltuk · ${who}${c.parts.length ? ' · ' + c.parts.join(' · ') : ''}</span></span><span class="fgo">Plan ›</span>`;
   btn.onclick = showFleetPlan;
   return btn;
 }
@@ -1249,6 +1274,19 @@ function showFleetPlan() {
     const c = h('div', 'card fplan'), k = fleetCounts();
     c.appendChild(h('h1', null, 'Bugünün uçuş planı'));
     c.appendChild(h('p', 'lead', `<b>${k.n}/${k.total}</b> balon uçacak, <b>${k.seats}</b> koltuk.${k.parts.length ? ' ' + k.parts.join(', ') + '.' : ''}`));
+    const fb = bal(S.flag);
+    if (fb) {
+      const box = h('div', 'whofly');
+      if (!licenseOk()) box.innerHTML = `<b>Amiral balonunu sen uçurmalısın.</b><span>Lisansın doldu: yenileme uçuşu bedava, ya da Ekip'ten ${eur(RECERT)} öde.</span>`;
+      else {
+        box.innerHTML = `<b>${esc(fb.name)} balonunu kim uçursun?</b><span>Sen uçarsan yolcular %${FOUNDER * 100} fazla öder ve görevleri alabilirsin.</span>`;
+        const row = h('div', 'whob');
+        const me = h('button', 'flybtn' + (S.selfFly ? ' on' : ''), 'SEN'); me.onclick = () => { S.selfFly = true; assignPilots(); sfx('tick'); refresh(); draw(); };
+        const pl = h('button', 'flybtn' + (!S.selfFly ? ' on' : ''), 'PİLOT'); pl.onclick = () => { S.selfFly = false; assignPilots(); sfx('tick'); refresh(); draw(); };
+        row.append(me, pl); box.appendChild(row);
+      }
+      c.appendChild(box);
+    }
     const set = (list, v) => { list.forEach(b => { if (canFly(b) === 'ok') b.fly = v; }); refresh(); draw(); };
     const top = h('div', 'btns');
     const all = h('button', 'ghost', 'Hepsi uçsun'); all.onclick = () => set(S.balloons, true);
@@ -1295,8 +1333,10 @@ function renderAct() {
   const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), n = fl.length;
   const m = market(S.price, cap), pax = m.pax[0], seats = m.caps.reduce((a, b) => a + b, 0);
   const direct = extraSources().reduce((a, x) => a + x.n, 0);
-  $('dem').innerHTML = `Bugün <b>${S.demand + direct}</b> turist balona binmek istiyor${direct ? `, <b>${direct}</b>'i tavsiyeyle doğrudan sana geliyor` : ''}. Gökyüzünde <b>${seats}</b> koltuk var. ${eur(S.price)} bilete turistlerin <b>%${Math.round(willing(S.price) * 100)}</b>'i razı.`;
-  $('est').innerHTML = n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu${m.bonus ? `, ${m.bonus} kişi tavsiyelerle` : ''}</span><span>Gelir <b>${eur(pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0))}</b></span>` : `<span>Bugün uçacak balon yok</span><span>${S.demand} turist bekliyor</span>`;
+  const income = pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0);
+  $('dem').innerHTML = `<div class="tiles"><div class="tile"><b>${S.demand + direct}</b><span>turist${direct ? `, ${direct}'i tavsiyeyle` : ''}</span></div><div class="tile"><b>${seats}</b><span>gökyüzündeki koltuk</span></div><div class="tile"><b>%${Math.round(willing(S.price) * 100)}</b><span>bu fiyata razı</span></div></div>`;
+  $('est').innerHTML = n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu${m.bonus ? `, ${m.bonus} tavsiyeyle` : ''}</span><span>Gelir <b>${eur(income)}</b></span>` : `<span>Bugün uçacak balon yok</span><span>${S.demand} turist bekliyor</span>`;
+  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span>` : '<span>Bugün uçacak balon yok</span>'}</span><span class="pgo">Ayarla ›</span>`;
   const go = $('go'); go.disabled = !n;
   go.textContent = n ? `Yolcu topla (${n} balon)` : 'Uçacak balon yok';
 }
@@ -2153,6 +2193,10 @@ function draw(dt) {
 /* ---------- boot ---------- */
 $('go').onclick = () => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); };
 $('skip').onclick = () => launch(true);
+function priceSheet(open) { $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; if (open) renderAct(); else { save(); refresh(); } }
+$('pcard').onclick = () => priceSheet(true);
+$('psOk').onclick = $('psClose').onclick = () => priceSheet(false);
+$('psheet').addEventListener('click', e => { if (e.target.id === 'psheet') priceSheet(false); });
 $('bMenu').onclick = showMenu;
 $('pClose').onclick = closePage;
 $('abort').onclick = confirmAbort;
