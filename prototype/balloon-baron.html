@@ -594,7 +594,7 @@ function assignPilots() {
   S.balloons.forEach(b => b.pilot = null);
   const down = b => b.dmgUntil > S.day || cond(b) <= 0; /* onarımdaki balona pilot harcama */
   const need = S.balloons.filter(b => !(b.id === S.flag && selfFlying())).sort((a, b) => down(a) - down(b) || SIZES[b.size].cap - SIZES[a.size].cap);
-  const ps = S.pilots.slice().sort((a, b) => b.lvl - a.lvl);
+  const ps = S.pilots.slice().sort((a, b) => b.lvl - a.lvl || (b.xp || 0) - (a.xp || 0)); /* kıdemli ve tecrübeli olan büyük balona */
   need.forEach((b, i) => { if (ps[i]) b.pilot = ps[i].id; });
 }
 function canFly(b) {
@@ -1362,6 +1362,7 @@ function tabCrew(body) {
     body.appendChild(is);
   }
   const s = h('div', 'sec'); s.appendChild(h('h2', null, idle.length ? 'Görevdeki pilotlar' : 'Pilotların'));
+  if (S.pilots.length > 1) s.appendChild(h('p', 'hint', 'Pilotlar her sabah otomatik dağıtılır: en kıdemli pilot en büyük balona, çaylaklar küçüklere. Pilot yetmezse önce küçük balonlar yerde kalır.'));
   if (!S.pilots.length) s.appendChild(h('p', 'hint', 'Henüz pilotun yok. Tek balonu kendin uçuruyorsun.'));
   const working = S.pilots.filter(p => balOf(p)).sort((a, b) => SIZES[balOf(b).size].cap - SIZES[balOf(a).size].cap);
   for (const p of working) {
