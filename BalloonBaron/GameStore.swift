@@ -11,7 +11,7 @@ enum Page: String, Identifiable {
 /// Owns the running game and persists it after every change.
 @Observable
 final class GameStore {
-    var game: Game? { didSet { currentRegion = game?.state.region ?? .cap } }
+    var game: Game?
     /// The report shown after a day ends.
     var report: DayReport?
     /// Hezarfen's message currently on screen.
@@ -38,6 +38,7 @@ final class GameStore {
             var g = Game(state: state)
             g.startDay()
             game = g
+            currentRegion = state.region
         }
     }
 
@@ -61,6 +62,7 @@ final class GameStore {
         guard var g = game else { return }
         f(&g)
         game = g
+        currentRegion = g.state.region
         save()
     }
 
@@ -129,6 +131,7 @@ final class GameStore {
     func resetForTesting() {
         try? FileManager.default.removeItem(at: Self.saveURL)
         game = nil
+        currentRegion = .cap
         report = nil
         hezarfen = nil
         chapter = nil

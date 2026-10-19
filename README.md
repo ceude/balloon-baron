@@ -9,7 +9,7 @@ Kapadokya'da sıcak hava balonu şirketi kurup büyüttüğün bir tycoon oyunu.
 
 ## Mac'te ilk açılış
 1. `git clone https://github.com/ceude/balloon-baron.git`
-2. `BalloonBaron.xcodeproj` dosyasını Xcode 16 veya üstüyle aç.
+2. `BalloonBaron.xcodeproj` dosyasını Xcode 15.2 veya üstüyle aç.
 3. Sol üstte **BalloonBaron** hedefini ve bir iPhone simülatörünü seç, ▶︎ ile çalıştır.
 4. Gerçek iPhone'da denemek için: proje ayarlarında *Signing & Capabilities* altında kendi Apple ID ekibini seç.
 

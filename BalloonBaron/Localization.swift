@@ -8,7 +8,7 @@ func loc(_ key: String, _ args: CVarArg...) -> String {
 }
 
 /// The region on screen. `GameStore` keeps it in sync so money and local names follow the region.
-nonisolated(unsafe) var currentRegion: RegionID = .cap
+var currentRegion: RegionID = .cap
 
 /// Money of the region you're playing (euros in Cappadocia, dollars in Albuquerque), without cents,
 /// in the player's locale (€1.213, 1.213 €, $1,213…).

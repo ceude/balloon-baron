@@ -4,7 +4,7 @@ iOS hot-air-balloon company tycoon. Solo developer (Turkish speaker) + Claude. A
 
 ## Layout
 - `Packages/BalloonBaronCore`: pure-Swift game logic (no UIKit/SwiftUI). Builds and tests on Linux.
-- `BalloonBaron/`: iOS app (SwiftUI menus, SpriteKit flight scene). The Xcode project uses a synchronized folder, so new files in `BalloonBaron/` are picked up without editing `project.pbxproj`.
+- `BalloonBaron/`: iOS app (SwiftUI menus, SpriteKit flight scene). The developer's Mac only runs **Xcode 15.2** (Swift 5.9, iOS 17.2 SDK), so `project.pbxproj` is the classic format listing every file. After adding, removing or renaming files in `BalloonBaron/`, run `python3 tools/gen_xcodeproj.py`. Don't use Swift 5.10+ features (e.g. `nonisolated(unsafe)`) or SwiftUI APIs newer than iOS 17.2.
 - `prototype/balloon-baron.html`: the playable HTML prototype. It is the reference for behaviour and balance numbers.
 - `docs/GAME_DESIGN.md`: mechanics and numbers. Keep it in sync when balance changes.
 
