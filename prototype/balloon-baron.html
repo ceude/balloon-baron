@@ -250,6 +250,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .legend i{width:10px;height:10px;border-radius:3px}
 .legend b{font-family:var(--cond)}
 .rv .t{display:flex;align-items:center;gap:6px}
+#page .item.rv.me{background:#fff3e8;box-shadow:0 0 0 2px var(--coral) inset, 0 2px 0 var(--line)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
 .stats div{background:#fff;border-radius:10px;padding:5px 6px;text-align:center;font-size:11px;color:var(--ink2)}
 .stats b{display:block;font-family:var(--cond);font-size:17px;color:var(--ink)}
@@ -911,7 +912,7 @@ function finishDay(flight) {
   myHotels().forEach(x => { if (!owns(x) && starVal(S.rep) < x.min - .3) { S.hotels = S.hotels.filter(id => id !== x.id); ev.push(`${x.name} anlaşmayı bitirdi. Popülerliğin ${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ seviyesinin çok altına düştü.`); } });
   if (S.day <= S.influUntil) { S.rep = Math.min(1.4, S.rep + .03); if (Math.random() < .6) addReview('influ'); }
   S.repHist.push({ d: S.day, r: S.rep }); if (S.repHist.length > 120) S.repHist.shift();
-  S.lastShare = { me: paxTotal, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
+  S.lastShare = { me: paxTotal, cap: capToday, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
   S.day++; S.plan = null;
   if (S.winter && S.day > S.winter.end) { S.winter = null; S.nextWinter = S.day + 45; S.hezQ.push('news:Bahar geldi evlat! Turistler geri dönüyor, gökyüzü yine kalabalıklaşacak. Kışı atlattın, şimdi büyüme zamanı.'); }
@@ -1498,14 +1499,24 @@ function tabMarket(body) {
     s.append(bar, lg, h('p', 'hint', ls.extra ? `Dün ${ls.demand + ls.extra} turist balona binmek istedi, ${ls.extra}'i tavsiyeyle doğrudan sana geldi. ${tot} kişi uçtu.` : `Dün ${ls.demand} turist balona binmek istedi, ${tot} kişi uçtu.`));
   } else s.appendChild(h('p', 'hint', 'İlk günün sonunda pazar payını burada göreceksin.'));
   body.appendChild(s);
-  const t = h('div', 'sec'); t.appendChild(h('h2', null, 'Rakipler'));
+  const t = h('div', 'sec'); t.appendChild(h('h2', null, 'Sen ve rakiplerin'));
+  const shareOf = n => { if (!ls) return null; const tot = ls.me + ls.rivals.reduce((a, b) => a + b, 0); return tot ? Math.round(n / tot * 100) : null; };
+  {
+    const it = h('div', 'item rv me');
+    it.insertAdjacentHTML('beforeend', balloonIcon(myCol()[0], myCol()[1]));
+    const sh = ls ? shareOf(ls.me) : null;
+    it.appendChild(h('div', 'main', `<div class="t">${esc(S.company)} <span class="tag g">Sen</span>${sh != null ? ` <span class="tag n">pay %${sh}</span>` : ''}</div><div class="s">Dünkü uçuşlarına göre.</div>
+      <div class="stats"><div><b>${S.balloons.length}</b>balon</div><div><b>${eur(S.price)}</b>fiyat</div><div><b>${stars(S.rep)}</b>popülerlik</div><div><b>${ls && ls.cap ? Math.round(ls.me / ls.cap * 100) + '%' : '–'}</b>doluluk</div></div>`));
+    t.appendChild(it);
+  }
   const style = { safe: 'Temkinli ve pahalı. Sarı bayrakta filosunun yarısıyla uçar.', mid: 'Orta yolcu. Sarı bayrakta da uçar.', risky: 'Ucuz ve sigortasız. Kırmızı bayrakta bile kalkabilir.' };
   S.rivals.forEach(r => {
     const it = h('div', 'item rv');
     it.insertAdjacentHTML('beforeend', balloonIcon(r.col, r.col2));
     const m = h('div', 'main');
     if (r.alive) {
-      m.innerHTML = `<div class="t">${r.name}${r.offer ? ' <span class="tag y">Zor durumda</span>' : ''}</div><div class="s">${style[r.style]}</div>
+      const rsh = ls ? shareOf(ls.rivals[S.rivals.indexOf(r)] || 0) : null;
+      m.innerHTML = `<div class="t">${r.name}${rsh != null ? ` <span class="tag n">pay %${rsh}</span>` : ''}${r.offer ? ' <span class="tag y">Zor durumda</span>' : ''}</div><div class="s">${style[r.style]}</div>
         <div class="stats"><div><b>${r.balloons.length}</b>balon</div><div><b>${eur(r.price)}</b>fiyat</div><div><b>${stars(r.rep)}</b>popülerlik</div><div><b>${r.lastCap ? Math.round(r.lastPax / r.lastCap * 100) + '%' : '–'}</b>doluluk</div></div>`;
     } else m.innerHTML = `<div class="t">${r.name} <span class="tag r">İflas etti</span></div><div class="s">${r.forSale ? 'Filosu satışta.' : 'Filosu satıldı.'}</div>`;
     it.appendChild(m); t.appendChild(it);

@@ -24,3 +24,8 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 ## Tekel cezası (denge değişikliği)
 - Uyarı metninde ceza oranı yazmaz, sadece "Rekabet Kurumu seni izliyor" der. Hezarfen de "şirketinin büyüklüğüne göre ağır bir ceza" der.
 - Ceza = max(€5.000, şirket değerinin %3'ü). Şirket değeri: pozitif kasa + balonların alış fiyatı + sahip olunan otellerin alış fiyatı. Kasası boş olana da kesilir (eskiden `cash > 0` şartı vardı).
+
+## Pazar sekmesi
+- "Sen ve rakiplerin" bölümünde en üstte oyuncunun kendi kartı: rakip kartlarıyla aynı dört kutu (balon, fiyat, popülerlik, dünkü doluluk), mercan çerçeve ve "Sen" etiketi.
+- Her kartın başlığında dünkü pazar payı etiketi ("pay %74").
+- Dünkü doluluk için `lastShare`'a dünkü koltuk sayısı (`cap`) eklendi.
