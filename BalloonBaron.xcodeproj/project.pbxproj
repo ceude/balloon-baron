@@ -24,6 +24,7 @@
 		593654C519329CF20E4DD5BF /* RepChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCD169363A678C776CEF029 /* RepChartView.swift */; };
 		79B8CE209311039EBF6C306B /* DealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3655D7D3B1C7B70D724F89A0 /* DealView.swift */; };
 		830D0F939F4AAC7708ACF61A /* CrewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EF8C34E905788B88E5C1BE /* CrewView.swift */; };
+		85AF43A366075059ABDDD599 /* ProtoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */; };
 		86F9815AF00AF54BD422516A /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */; };
 		89A5610C4F91854923A845D3 /* MarketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0BD7F812F90140ACBE8488 /* MarketView.swift */; };
 		8BD37C376F8E07FC1122C02F /* Barlow-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03D4B6CAC1ADC8096C50F9DB /* Barlow-SemiBold.ttf */; };
@@ -80,6 +81,7 @@
 		73CE86E1131A0D2F69D02D15 /* ReviewChirpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReviewChirpView.swift"; sourceTree = "<group>"; };
 		74743D6DF14E3F20528EAA46 /* PriceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PriceSheetView.swift"; sourceTree = "<group>"; };
 		7979FE3F575B19E31E0B24FD /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MenuView.swift"; sourceTree = "<group>"; };
+		7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProtoIcon.swift"; sourceTree = "<group>"; };
 		7EDB158A34F42484C541CFE0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeView.swift"; sourceTree = "<group>"; };
 		8480E19BC8DE8F1B439520EE /* BalloonArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BalloonArt.swift"; sourceTree = "<group>"; };
 		8BCD169363A678C776CEF029 /* RepChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RepChartView.swift"; sourceTree = "<group>"; };
@@ -201,6 +203,7 @@
 				55E8C0DF1F0146F2DEF826B2 /* MergeView.swift */,
 				CF94474E4B1A4F2261794B11 /* PoachView.swift */,
 				74743D6DF14E3F20528EAA46 /* PriceSheetView.swift */,
+				7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */,
 				D319BFA50E962451010EB785 /* RedFlagView.swift */,
 				8BCD169363A678C776CEF029 /* RepChartView.swift */,
 				23D4D33454C06481C5DCFCD1 /* ReportView.swift */,
@@ -341,6 +344,7 @@
 				F6619D4C8ABDAD92780F1168 /* MergeView.swift in Sources */,
 				D8A8F36DCC2528347D214C6F /* PoachView.swift in Sources */,
 				FBB1577947D1181702411204 /* PriceSheetView.swift in Sources */,
+				85AF43A366075059ABDDD599 /* ProtoIcon.swift in Sources */,
 				51EA18F07C7C4E78551CC5A9 /* RedFlagView.swift in Sources */,
 				593654C519329CF20E4DD5BF /* RepChartView.swift in Sources */,
 				967FF1B2FEFAF78ACD025DDE /* ReportView.swift in Sources */,

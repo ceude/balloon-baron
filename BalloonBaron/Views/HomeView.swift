@@ -236,21 +236,21 @@ struct HomeView: View {
         }
         return VStack(spacing: 10) {
             if s.anyBaron {
-                navButton("building.columns.fill", loc("home.nav.holding"), .holding, badge: badge, dot: issue)
+                navButton(.world, loc("home.nav.holding"), .holding, badge: badge, dot: issue)
             } else {
-                navButton("flag.fill", loc("home.nav.goals"), .goals, badge: badge)
+                navButton(.goals, loc("home.nav.goals"), .goals, badge: badge)
             }
             if s.unlocked.contains(.fleet) {
-                navButton("balloon.fill", loc("home.nav.fleet"), .fleet)
+                navButton(.fleet, loc("home.nav.fleet"), .fleet)
             }
             if s.unlocked.contains(.crew) {
-                navButton("person.2.fill", loc("home.nav.crew"), .crew, dot: crewDot)
+                navButton(.crew, loc("home.nav.crew"), .crew, dot: crewDot)
             }
             if s.unlocked.contains(.bank) {
-                navButton("banknote.fill", loc("home.nav.bank"), .bank)
+                navButton(.bank, loc("home.nav.bank"), .bank)
             }
             if s.unlocked.contains(.market) {
-                navButton("chart.bar.fill", loc("home.nav.market"), .market, dot: marketDot)
+                navButton(.market, loc("home.nav.market"), .market, dot: marketDot)
             }
         }
     }
@@ -262,26 +262,15 @@ struct HomeView: View {
         return "\(num(done))/\(num(c.goals.count))"
     }
 
-    private func navButton(_ icon: String, _ title: String, _ page: Page, badge: String? = nil, dot: Bool = false) -> some View {
-        Button { store.page = page } label: {
-            VStack(spacing: 3) {
-                Image(systemName: icon)
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(.white)
-                    .frame(width: 46, height: 46)
-                    .background(Theme.glass, in: RoundedRectangle(cornerRadius: 14))
-                Text(title)
-                    .font(Theme.font(12, .bold, condensed: true))
-                    .foregroundStyle(.white)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.7)
-            }
-            .frame(width: 64)
-            .overlay(alignment: .topTrailing) {
-                navMark(badge: badge, dot: dot)
-            }
+    /// The prototype's `.side` buttons: white tile with an ink line icon and a hard drop shadow.
+    private func navButton(_ icon: ProtoIcon.Kind, _ title: String, _ page: Page, badge: String? = nil, dot: Bool = false) -> some View {
+        Button {
+            SoundEngine.shared.play(.click)
+            store.page = page
+        } label: {
+            EmptyView()
         }
-        .buttonStyle(.plain)
+        .buttonStyle(SideTileStyle(icon: icon, title: title, badge: navMark(badge: badge, dot: dot)))
     }
 
     @ViewBuilder
@@ -299,9 +288,9 @@ struct HomeView: View {
         } else if dot {
             Circle()
                 .fill(Theme.red)
-                .frame(width: 11, height: 11)
-                .overlay(Circle().stroke(Color.white, lineWidth: 1.5))
-                .offset(x: -4, y: -2)
+                .frame(width: 14, height: 14)
+                .overlay(Circle().stroke(Color.white, lineWidth: 2))
+                .offset(x: 0, y: -3)
         }
     }
 
@@ -657,4 +646,32 @@ private struct DockTopKey: PreferenceKey {
 private struct HudBottomKey: PreferenceKey {
     static var defaultValue: CGFloat = -1
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+/// Pressing pushes the tile down onto its shadow, like `.side button:active .ib`.
+private struct SideTileStyle<Badge: View>: ButtonStyle {
+    let icon: ProtoIcon.Kind
+    let title: String
+    let badge: Badge
+
+    func makeBody(configuration: Configuration) -> some View {
+        let down = configuration.isPressed
+        return VStack(spacing: 4) {
+            ProtoIcon(kind: icon)
+                .frame(width: 26, height: 26)
+                .frame(width: 50, height: 50)
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+                .shadow(color: Theme.ink.opacity(0.4), radius: 0, x: 0, y: down ? 1 : 4)
+                .offset(y: down ? 3 : 0)
+            Text(title)
+                .font(Theme.font(11.5, .bold))
+                .foregroundStyle(.white)
+                .shadow(color: .black.opacity(0.6), radius: 2, x: 0, y: 1)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .frame(width: 58)
+        .overlay(alignment: .topTrailing) { badge }
+        .contentShape(Rectangle())
+    }
 }
