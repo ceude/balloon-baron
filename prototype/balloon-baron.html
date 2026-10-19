@@ -656,6 +656,7 @@ function migrate(s) {
   if (!s.barons) s.barons = s.baron ? { cap: s.baron.cap } : {};
   if (!s.designs) s.designs = [];
   if (s.holding == null) s.holding = 0;
+  if (s.hold && s.hold.hq) { s.hold.offices = { [s.hold.hq]: s.day }; delete s.hold.hq; }
   for (const id in s.regions) { if (s.regions[id].cash == null) { s.regions[id].cash = 0; s.regions[id].loans = []; } }
   return s;
 }
@@ -1888,7 +1889,7 @@ function showReport() {
   led.appendChild(h('div', 'tot', `<span>Net</span><span class="v ${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span>`));
   led.appendChild(h('div', null, `<span>Kasa</span><span class="v">${eur(S.cash)}</span>`));
   b.appendChild(led);
-  if (L.hold) b.appendChild(h('div', 'callout grn', `<b>Holding kasasına +${eurH(L.hold)}.</b> ${Object.keys(S.regions || {}).map(id => REGION_DEF[id].name).join(', ')} otomatik modda kazandı, holding giderleri (%${HOLD_COST * 100}) düşüldü. Holding kasası: ${eurH(S.holding || 0)}.`));
+  if (L.hold) b.appendChild(h('div', 'callout grn', `<b>Holding kasasına +${eurH(L.hold)}.</b> ${Object.keys(S.regions || {}).map(id => REGION_DEF[id].name).join(', ')} otomatik modda kazandı, holding giderleri (%${Math.round(holdCostRate() * 100)}) düşüldü. Holding kasası: ${eurH(S.holding || 0)}.`));
   if (L.designRep) b.appendChild(h('div', 'callout grn', `<b>Tasarımların konuşuluyor.</b> Desenli balonların bugün popülerliğine +${(L.designRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ ekledi.`));
   if (L.adRep) b.appendChild(h('div', 'callout yel', `<b>Puanını aldığın reklamlar da etkiliyor.</b> Bugün balonlarındaki reklamlar popülerliğini ${(L.adRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ düşürdü.`));
   if (R.ev.length || R.rev.length) {
@@ -2700,7 +2701,7 @@ function designScore(d) {
   let s = PATTERNS[d.pat][1] * .6 + contrast * 30 + (distinct - 1) * 6 + 10;
   if ((S.designs || []).some(o => o !== d && o.pat === d.pat && o.cols[0] === d.cols[0])) s -= 20; /* kendini tekrar etme */
   if (S.rivals.some(r => r.alive && r.col === d.cols[0])) s -= 10; /* rakibe benziyor */
-  if (S.hold && S.hold.hq === 'tyo') s += 10;
+  if (hasOffice('tyo')) s += 10;
   return clamp(Math.round(s), 5, 100);
 }
 const iconCols = b => { const d = designOf(b); return d ? [d.cols[0], d.cols[1]] : myCol(); };
@@ -2844,8 +2845,11 @@ const HQ_CITIES = {
   tyo: { name: 'Tokyo', cost: 1400000, perk: 'Tasarımların yaratıcılık puanı +10.', icon: '🗼' },
   sel: { name: 'Seul', cost: 1300000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun sürer.', icon: '🏙️' }
 };
-const HQ = () => S.hold && S.hold.hq ? HQ_CITIES[S.hold.hq] : null;
-const tvCost = () => Math.round(250000 * (S.hold && S.hold.hq === 'nyc' ? .75 : 1));
+/* ofisler: her şehirde bir tane açılabilir, avantajları birikir; dördü birden açıksa holding giderleri azalır */
+const hasOffice = k => !!(S && S.hold && S.hold.offices && S.hold.offices[k]);
+const officeCount = () => Object.keys(HQ_CITIES).filter(hasOffice).length;
+const holdCostRate = () => officeCount() === 4 ? .2 : HOLD_COST;
+const tvCost = () => Math.round(250000 * (hasOffice('nyc') ? .75 : 1));
 const RD_LEVELS = [{ cost: 400000, life: 160 }, { cost: 900000, life: 200 }];
 const envLife = () => S && S.hold && S.hold.rnd ? RD_LEVELS[S.hold.rnd - 1].life : 120;
 const holdOn = () => S && S.hold;
@@ -2859,11 +2863,11 @@ function holdingDay() {
   let gross = 0;
   for (const id in (S.regions || {})) {
     const A = S.regions[id].auto; if (!A) continue;
-    const mult = holdBoost(id) * (S.hold.hq === 'ist' && id === 'cap' ? 1.15 : 1);
+    const mult = holdBoost(id) * (hasOffice('ist') && id === 'cap' ? 1.15 : 1);
     gross += (A.todayRaw || 0) * mult;
   }
   gross = Math.round(gross);
-  const cost = Math.round(gross * HOLD_COST);
+  const cost = Math.round(gross * holdCostRate());
   S.holding = (S.holding || 0) + gross - cost;
   S.hold.today = { gross, cost };
   return gross - cost;
@@ -2875,10 +2879,10 @@ function withdraw(share) {
 }
 function holdBuy(cost, fn) { if ((S.holding || 0) < cost) return; S.holding -= cost; fn(); sfx('coin'); refresh(); }
 function tabHolding(body) {
-  const H = S.hold || (S.hold = { log: [] }), hc = HQ();
+  const H = S.hold || (S.hold = { log: [] });
   const top = h('div', 'hbox');
   top.innerHTML = `<div class="hk"><span>Holding kasası</span><b>${eurH(S.holding || 0)}</b></div>` +
-    (H.today && H.today.gross ? `<div class="hf"><span>Dün otomatik bölgelerden <b>+${eurH(H.today.gross)}</b></span><span>Holding giderleri (maaş, bina) <b>−${eurH(H.today.cost)}</b></span></div>` : '<div class="hf"><span>Henüz otomatik moddaki bölgen yok. Holdinge para, buradan ülke kasasından çekerek girer.</span></div>');
+    (H.today && H.today.gross ? `<div class="hf"><span>Dün otomatik bölgelerden <b>+${eurH(H.today.gross)}</b></span><span>Holding giderleri (maaş, ofisler, %${Math.round(holdCostRate() * 100)}) <b>−${eurH(H.today.cost)}</b></span></div>` : '<div class="hf"><span>Henüz otomatik moddaki bölgen yok. Holdinge para, buradan ülke kasasından çekerek girer.</span></div>');
   body.appendChild(top);
   if (!isBaron()) {
     const C = chap()[S.chapter || 0], done = C.goals.filter(goalDone).length, g = h('div', 'callout yel', `<b>${RD().name}: ${C.name}</b>, ${done}/${C.goals.length} hedef tamam.`);
@@ -2915,7 +2919,7 @@ function tabHolding(body) {
   };
   const tvOn = H.tvUntil > S.day, tvCd = (H.tvCd || 0) > S.day;
   inv('TV reklam kampanyası', `Ulusal kanallarda prime time reklam. 14 gün boyunca bütün bölgelerde talep +%20, bulunduğun bölgede popülerlik +0,4★.${tvCd && !tvOn ? ` Yeni kampanya için ${H.tvCd - S.day} gün bekle.` : ''}`, eurH(tvCost()), tvCost(), () => { H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, tvCd, tvOn ? `${H.tvUntil - S.day} gün` : '');
-  const ce = H.celeb && H.celeb.until > S.day, days = H.hq === 'sel' ? 180 : 90;
+  const ce = H.celeb && H.celeb.until > S.day, days = hasOffice('sel') ? 180 : 90;
   inv('Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü. Bütün bölgelerde talep +%10, sözleşme ${H.celeb.until - S.day} gün daha sürüyor.` : `Ünlü biriyle ${days} günlük sözleşme. Bütün bölgelerde talep +%10, bulunduğun bölgede popülerlik +0,6★.`, ce ? null : eurH(600000), 600000, () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, false, ce ? 'Sözleşmeli' : '');
   const bbOn = H.bb && H.bb[S.region] > S.day;
   inv(`Otoban billboardları: ${RD().name}`, `Havalimanı yolu ve otobanlarda dev afişler. 20 gün boyunca ${RD().name} bölgesinde talep +%10.`, bbOn ? null : eurH(120000), 120000, () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; }, false, bbOn ? `${H.bb[S.region] - S.day} gün` : '');
@@ -2923,16 +2927,16 @@ function tabHolding(body) {
   inv('Akademisyenlerle zarf Ar-Ge\'si', next ? `Üniversitelerle yeni kumaş araştırması. Balon zarfları ${envLife()} yerine ${next.life} uçuş dayanır, bütün bölgelerde kalıcı.` : `Zarflar artık ${envLife()} uçuş dayanıyor. Araştırma tamamlandı.`, next ? eurH(next.cost) : null, next ? next.cost : 0, () => { H.rnd = lv + 1; }, false, lv ? `Seviye ${lv}` : '');
   body.appendChild(v);
 
-  const q = h('div', 'sec'); q.appendChild(h('h2', null, 'Genel merkez'));
-  if (hc) q.appendChild(h('div', 'callout grn', `<b>${hc.icon} Genel merkez: ${hc.name}.</b> ${hc.perk}`));
-  else {
-    q.appendChild(h('p', 'hint', 'Holdingin kalbi. Bir şehir seç, merkez binanı satın al; her şehrin kendi avantajı var.'));
-    for (const k in HQ_CITIES) {
-      const c = HQ_CITIES[k], it = h('div', 'item');
-      it.appendChild(h('div', 'main', `<div class="t">${c.icon} ${c.name}</div><div class="s">${c.perk}</div>`));
-      it.appendChild(pbtn(eurH(c.cost), () => holdBuy(c.cost, () => { H.hq = k; S.hezQ.push(`news:Genel merkez binan açıldı evlat: ${c.name}! Bir balon şirketinden holdinge... Galata'dan bakınca bile görünüyorsun.`); }), (S.holding || 0) < c.cost));
-      q.appendChild(it);
-    }
+  const q = h('div', 'sec'); q.appendChild(h('h2', null, `Ofisler ${officeCount()}/4`));
+  q.appendChild(h('p', 'hint', officeCount() === 4 ? 'Dört kıtada ofisin var. Holding giderlerin %25 yerine %20.' : 'Dünyanın büyük şehirlerinde ofis aç; her ofisin kendi avantajı var. Dördünü birden açarsan holding giderleri %25 yerine %20 olur.'));
+  for (const k in HQ_CITIES) {
+    const c = HQ_CITIES[k], it = h('div', 'item'), own = hasOffice(k);
+    it.appendChild(h('div', 'main', `<div class="t">${c.icon} ${c.name}${own ? ' <span class="tag g">Açık</span>' : ''}</div><div class="s">${c.perk}</div>`));
+    if (!own) it.appendChild(pbtn(eurH(c.cost), () => holdBuy(c.cost, () => {
+      if (!H.offices) H.offices = {}; H.offices[k] = S.day;
+      S.hezQ.push(officeCount() === 4 ? 'news:Dört ofisin de açık evlat! New York, İstanbul, Tokyo, Seul... Artık gerçek bir dünya şirketisin. Ortak giderler azaldı, holding giderlerin %20\'ye indi.' : `news:Yeni ofisin açıldı evlat: ${c.name}! ${c.perk}`);
+    }), (S.holding || 0) < c.cost));
+    q.appendChild(it);
   }
   body.appendChild(q);
 }

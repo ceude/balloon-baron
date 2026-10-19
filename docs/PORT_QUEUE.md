@@ -104,16 +104,17 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
   - Otomatik moddaki bölgelerin kazancı her gün doğrudan girer.
   - Oynanan bölgenin kasasından, sadece holding sayfasından ve istek üzerine çekilir (%25, %50, ya da 10.000 bırakıp hepsi). Dolar kasadan çekilen para 1,1'e bölünerek euro olur.
 - **Holding giderleri:** Maaş, bina vb. için otomatik gelirin %25'i her gün düşülür. Uçuş defterinde "Holding kasasına +€X" notu.
-- **Holding sayfası** (yan menüde "Holding"): kasa ve dünün akışı; bölge hedefi özeti; oynanan bölgeden para çekme; bölgeler (Karar ver / Bölgeye git / Gir); dünya haritası; yatırımlar; genel merkez.
+- **Holding sayfası** (yan menüde "Holding"): kasa ve dünün akışı; bölge hedefi özeti; oynanan bölgeden para çekme; bölgeler (Karar ver / Bölgeye git / Gir); dünya haritası; yatırımlar; ofisler.
 - **Yatırımlar** (hepsi holding kasasından):
   - **TV reklam kampanyası:** €250.000. 14 gün bütün bölgelerde talep +%20, bulunulan bölgede +0,4★. 30 gün bekleme.
   - **Ünlü reklam yüzü:** €600.000, 90 günlük sözleşme (uydurma ünlüler). Bütün bölgelerde talep +%10, bulunulan bölgede +0,6★.
   - **Otoban billboardları:** €120.000, bulunulan bölgede 20 gün talep +%10.
   - **Akademisyenlerle zarf Ar-Ge'si:** €400.000 ile zarf ömrü 120 → 160 uçuş, €900.000 ile 200 uçuş. Bütün bölgelerde kalıcı.
 - **Talep etkisi:** Bu yatırımlar oynanan bölgenin günlük talebini ve otomatik bölgelerin kazancını (`holdBoost`) çarpar.
-- **Genel merkez** (bir kez, şehir seçimli):
+- **Ofisler (0/4):** Her şehirde bir ofis açılabilir, avantajlar birikir:
   - New York (€1,5 M): TV kampanyaları %25 ucuz.
   - İstanbul (€1,2 M): Kapadokya otomatik kazancı +%15.
   - Tokyo (€1,4 M): tasarım yaratıcılığı +10.
   - Seul (€1,3 M): ünlü sözleşmeleri iki kat uzun.
+  - Dördü de açıksa holding giderleri %25 yerine %20. Her açılışta Hezarfen haber verir; dördüncüde "gerçek bir dünya şirketisin" kutlaması.
 - Kapadokya baronu olununca Hezarfen holdingi tanıtır: para çekme, giriş bedeli, holding parasının ülkelere dönmediği.
