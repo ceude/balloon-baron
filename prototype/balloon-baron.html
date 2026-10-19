@@ -256,6 +256,33 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .merge .mtag{align-self:flex-start;font-family:var(--cond);font-weight:800;letter-spacing:.08em;font-size:13px;color:#fff;background:var(--red);padding:3px 9px;border-radius:8px}
 .merge .stats{grid-template-columns:repeat(3,1fr)}
 .merge .stats div{background:var(--haze)}
+.side .gbadge{position:absolute;top:-4px;right:-4px;min-width:26px;height:18px;padding:0 5px;border-radius:9px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:12px;line-height:18px;border:2px solid #fff;text-shadow:none}
+.goals .chap{font-family:var(--cond);font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--coral);text-transform:uppercase}
+.goal{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--haze)}
+.goal .gk{width:28px;height:28px;flex:none;border-radius:9px;border:2px solid #cfc6e0;display:grid;place-items:center;font-weight:800;color:#fff}
+.goal.done .gk{background:var(--green);border-color:var(--green)}
+.goal .gm{flex:1;min-width:0}
+.goal .gt{display:flex;justify-content:space-between;gap:8px;font-size:14px}
+.goal .gt span{font-family:var(--cond);font-weight:700;color:var(--ink2);white-space:nowrap}
+.goal .gb{height:7px;border-radius:4px;background:#e2dcef;margin-top:6px;overflow:hidden}
+.goal .gb i{display:block;height:100%;background:var(--coral);border-radius:4px}
+.goal.done .gb i{background:var(--green)}
+.chapdone{border-top:6px solid var(--sun)}
+.baron{border-top:6px solid var(--sun);background:linear-gradient(#fff8e1,var(--paper) 40%)}
+.crown{width:84px;height:63px;align-self:center}
+.world{gap:12px}
+.wmap{position:relative;height:220px;border-radius:18px;background:linear-gradient(#2f2560,#4a3a7a);overflow:hidden}
+.wmap .wbg{position:absolute;inset:0;width:100%;height:100%}
+.wpin{position:absolute;transform:translate(-50%,-50%);display:flex;flex-direction:column;align-items:center;gap:3px}
+.wpin .pd{width:14px;height:14px;border-radius:50%;background:#9a8fb8;border:2px solid #fff}
+.wpin.own .pd{background:var(--sun);box-shadow:0 0 0 5px rgba(255,194,61,.35)}
+.wpin.open .pd{background:var(--coral);box-shadow:0 0 0 5px rgba(255,94,58,.35);animation:pulse 1.4s infinite}
+.wpin .pl{font-size:10px;color:rgba(255,255,255,.75);text-align:center;line-height:1.15;white-space:nowrap}
+.wpin .pl b{display:block;font-family:var(--cond);font-size:13px;color:#fff}
+.wpin.soon{opacity:.6}
+@keyframes pulse{50%{box-shadow:0 0 0 9px rgba(255,94,58,.1)}}
+.wlist{display:flex;flex-direction:column;gap:8px}
+.wlist .item.lock{opacity:.65}
 #page .item.rv.me{background:#fff3e8;box-shadow:0 0 0 2px var(--coral) inset, 0 2px 0 var(--line)}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;margin-top:6px}
 .stats div{background:#fff;border-radius:10px;padding:5px 6px;text-align:center;font-size:11px;color:var(--ink2)}
@@ -509,6 +536,7 @@ const HEZ = {
   rivals3: 'Üçüncü sır sabırdır. Dört gün yarı boş uçan ya da kasası azalan rakip satılığa çıkar, fırsatı kaçırma. Kızıl Vadi kırmızı bayrakta uçar, ceza yer, sigortası yoktur. İlk o düşer.',
   expect: 'Tebrikler evlat, 4,5 yıldızı geçtin! Ama dikkat: artık beklentiler çok daha yüksek. Yolcular mükemmellik istiyor; düzgün bir iniş artık puan kazandırmaz, uzak iniş iki kat kaybettirir ve popülerliğin her gün biraz aşınır. Zirvede kalmak için kusursuz inişler, görevler ve iyi oteller lazım.',
   antitrust: 'Dikkat evlat! Pazarın çoğu senin elinde ve Rekabet Kurumu kapıda. Tekel olmaya devam edersen şirketinin büyüklüğüne göre ağır bir ceza kesebilirler. Ya bunu göze al ya da fiyatını biraz yükseltip rakiplere nefes aldır.',
+  goals: 'Her büyük şirketin bir yol haritası olur evlat. Sağdaki bayrağa dokun: orada bölüm hedeflerin yazıyor. Üç bölümü bitiren Kapadokya\'nın baronu olur, sonra da dünya seni bekler.',
   absent: 'Evlat, yolcular hep aynı şeyi soruyor: "Kurucu nerede?" Kaptanı uçmayan şirketin ruhu kaybolur. Sepete geri dön; uzak kaldığın her gün popülerliğin aşınıyor.',
   licenseHold: 'Lisansın düştü evlat, otorite balonlarını yere indirdi. İki yol var: bugün sepete geç ve amiral balonunu kendin uçur, bu yenileme uçuşu bedava. Ya da ücreti öde. Ben olsam hangisini seçerdim, biliyorsun.',
   aging: 'Bir balonunun zarfı yorulmuş. Eski kumaş sert rüzgârda kazaya davetiyedir. Filo sayfasından yenile.'
@@ -742,6 +770,7 @@ function unlockCheck() {
   const rules = { ins: S.day >= 2, fleet: S.day >= 3 || S.cash >= 7000, bank: S.day >= 4, market: S.day >= 5, crew: S.balloons.length >= 2 || S.day >= 6 };
   for (const k in rules) if (rules[k] && !S.unl[k]) { S.unl[k] = 1; hezAdd(k); }
   hezAdd('welcome');
+  if (S.day >= 2) hezAdd('goals');
   if (S.weather.flag === 'yellow') hezAdd('yellow');
   if (S.weather.flag === 'red') hezAdd('red');
   if (S.weather.mission) hezAdd('mission');
@@ -756,6 +785,7 @@ function unlockCheck() {
 }
 function nextPopup() {
   if (mode !== 'office' || !$('menu').hidden || !$('report').hidden || !$('page').hidden || !$('hez').hidden) return;
+  if (S.chapterNews != null) { showChapter(); return; }
   if (S.mergeNews) { showMerge(); return; }
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
   if (S.poach) { showPoach(); return; }
@@ -923,6 +953,9 @@ function finishDay(flight) {
   if (S.day <= S.influUntil) { S.rep = Math.min(1.4, S.rep + .03); if (Math.random() < .6) addReview('influ'); }
   S.repHist.push({ d: S.day, r: S.rep }); if (S.repHist.length > 120) S.repHist.shift();
   S.lastShare = { me: paxTotal, cap: capToday, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
+  const rpTot = paxTotal + S.plan.rpax.reduce((a, b) => a + b, 0);
+  if (rpTot) S.shareNow = paxTotal / rpTot;
+  net += checkChapters(ev, Lg, rpTot > 0);
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
   S.day++; S.plan = null;
   if (S.winter && S.day > S.winter.end) { S.winter = null; S.nextWinter = S.day + 45; S.hezQ.push('news:Bahar geldi evlat! Turistler geri dönüyor, gökyüzü yine kalabalıklaşacak. Kışı atlattın, şimdi büyüme zamanı.'); }
@@ -973,6 +1006,110 @@ function showMerge() {
   const ok = h('button', 'big', 'Mücadeleye hazırım'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); };
   c.appendChild(ok); m.appendChild(c); m.hidden = false; sfx('low');
 }
+/* ---------- chapters ---------- */
+const CHAPTERS = [
+  { name: 'Kuruluş', reward: 5000, goals: [['balloons', 3, '3 balonluk filo'], ['stars', 4.0, '4,0★ popülerlik'], ['cash', 20000, 'Kasada €20.000']] },
+  { name: 'Büyüme', reward: 20000, goals: [['balloons', 8, '8 balonluk filo'], ['hotel', 1, 'Bir otelle anlaş ya da otel satın al'], ['share', .35, 'Pazarın %35\'i']] },
+  { name: 'Kapadokya Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['stars', 4.8, '4,8★ popülerlik'], ['hold', 3, 'İkisini 3 gün üst üste koru']] }
+];
+const BARON_SHARE = .7, BARON_STARS = 4.8;
+function goalVal(k) {
+  return k === 'balloons' ? S.balloons.length : k === 'stars' ? starVal(S.rep) : k === 'cash' ? S.cash : k === 'hotel' ? S.hotels.length + (S.ownHotels || []).length : k === 'share' ? (S.shareNow || 0) : (S.baronDays || 0);
+}
+const goalDone = g => goalVal(g[0]) >= g[1] - 1e-9;
+function goalText(g) {
+  const v = goalVal(g[0]), f1 = x => x.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  return g[0] === 'stars' ? `${f1(v)}★ / ${f1(g[1])}★` : g[0] === 'cash' ? `${eur(v)} / ${eur(g[1])}` : g[0] === 'share' ? `%${Math.round(v * 100)} / %${Math.round(g[1] * 100)}` : g[0] === 'hold' ? `${v}/${g[1]} gün` : `${v}/${g[1]}`;
+}
+const goalPct = g => clamp(goalVal(g[0]) / g[1], 0, 1);
+function checkChapters(ev, Lg, flew) {
+  if (S.chapter == null) S.chapter = 0;
+  if (flew) S.baronDays = (S.shareNow || 0) >= BARON_SHARE && starVal(S.rep) >= BARON_STARS ? (S.baronDays || 0) + 1 : 0;
+  const C = CHAPTERS[S.chapter];
+  if (!C || !C.goals.every(goalDone)) return 0;
+  S.chapterNews = S.chapter; S.chapter++;
+  if (S.chapter >= CHAPTERS.length) S.baron = { cap: S.day };
+  ev.push(C.reward ? `Bölüm tamamlandı: ${C.name}! Yatırımcılar ${eur(C.reward)} ödül verdi.` : `${C.name} unvanını kazandın!`);
+  Lg.chapter = C.reward; Lg.chapterName = C.name; S.cash += C.reward;
+  return C.reward;
+}
+const CROWN = '<svg viewBox="0 0 64 48" class="crown"><path d="M6 40 2 12l16 12L32 4l14 20 16-12-4 28z" fill="#ffc23d" stroke="#c98a00" stroke-width="2" stroke-linejoin="round"/><rect x="6" y="38" width="52" height="7" rx="2" fill="#e0a400"/><circle cx="32" cy="22" r="4" fill="#ff5e3a"/><circle cx="16" cy="28" r="3" fill="#3ad0c0"/><circle cx="48" cy="28" r="3" fill="#3ad0c0"/></svg>';
+function showGoals() {
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card goals');
+  if (S.baron) {
+    c.insertAdjacentHTML('beforeend', CROWN);
+    c.appendChild(h('h1', null, 'Kapadokya Baronu'));
+    c.appendChild(h('p', 'lead', 'Kapadokya göğü senin. Yeni ufuklar dünya haritasında seni bekliyor.'));
+    const w = h('button', 'big', 'Dünya haritası'); w.onclick = showWorldMap; c.appendChild(w);
+  } else {
+    const C = CHAPTERS[S.chapter || 0];
+    c.appendChild(h('div', 'chap', `Bölüm ${(S.chapter || 0) + 1}/${CHAPTERS.length}`));
+    c.appendChild(h('h1', null, C.name));
+    for (const g of C.goals) {
+      const done = goalDone(g), it = h('div', 'goal' + (done ? ' done' : ''));
+      it.innerHTML = `<span class="gk">${done ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${g[2]}</b><span>${goalText(g)}</span></div><div class="gb"><i style="width:${Math.round(goalPct(g) * 100)}%"></i></div></div>`;
+      c.appendChild(it);
+    }
+    c.appendChild(h('p', 'hint', C.reward ? `Bölümü bitirince yatırımcılar ${eur(C.reward)} ödül verir.` : `Pazarın %${BARON_SHARE * 100}'ini ve ${BARON_STARS.toLocaleString('tr-TR')}★ popülerliği 3 gün üst üste koruyan, Kapadokya'nın baronu olur ve dünyaya açılır. Dikkat: Rekabet Kurumu ve birleşen rakipler seni durdurmaya çalışacak.`));
+  }
+  const ok = h('button', S.baron ? 'ghost' : 'big', 'Kapat'); ok.onclick = () => { m.hidden = true; }; if (S.baron) ok.style.width = '100%'; c.appendChild(ok);
+  m.appendChild(c); m.hidden = false;
+}
+function showChapter() {
+  const i = S.chapterNews; S.chapterNews = null; save();
+  const C = CHAPTERS[i], m = $('menu'); m.replaceChildren();
+  const baron = i === CHAPTERS.length - 1, c = h('div', 'card goals ' + (baron ? 'baron' : 'chapdone'));
+  if (baron) {
+    c.insertAdjacentHTML('beforeend', CROWN);
+    c.appendChild(h('div', 'chap', 'TÖREN'));
+    c.appendChild(h('h1', null, 'Kapadokya Baronu'));
+    c.appendChild(h('p', 'lead', `Gün ${S.day}. Kapadokya göğündeki her üç balondan ikisi ${esc(S.company)} renklerinde. Hezarfen Usta gözleri dolu: "Galata'dan Üsküdar'a uçtuğum gün bile bu kadar gururlanmamıştım, evlat."`));
+    c.appendChild(h('p', 'hint', 'Kapadokya şirketin artık dünyaya açılabilir. Dünya haritasında ilk yeni bölgen seni bekliyor.'));
+    const w = h('button', 'big', 'Dünya haritasını aç'); w.onclick = showWorldMap; c.appendChild(w);
+    sfx('fanfare'); setTimeout(() => sfx('applause'), 600);
+  } else {
+    c.appendChild(h('div', 'chap', `Bölüm ${i + 1} tamamlandı`));
+    c.appendChild(h('h1', null, C.name));
+    c.appendChild(h('p', 'lead', `Yatırımcılar ${eur(C.reward)} ödül verdi.`));
+    const N = CHAPTERS[i + 1];
+    c.appendChild(h('div', 'chap', `Sıradaki: Bölüm ${i + 2}, ${N.name}`));
+    N.goals.forEach(g => c.appendChild(h('div', 'goal', `<span class="gk"></span><div class="gm"><div class="gt"><b>${g[2]}</b></div></div>`)));
+    const ok = h('button', 'big', 'Devam'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
+    sfx('fanfare');
+  }
+  m.appendChild(c); m.hidden = false;
+}
+const REGIONS = [
+  { id: 'cap', name: 'Kapadokya', land: 'Türkiye', x: 61, y: 33 },
+  { id: 'abq', name: 'Albuquerque', land: 'ABD', x: 21, y: 38 },
+  { id: 'lux', name: 'Luksor', land: 'Mısır', x: 55, y: 58, soon: true },
+  { id: 'q1', name: '???', land: 'Asya', x: 82, y: 50, soon: true, mystery: true },
+  { id: 'q2', name: '???', land: 'Avrupa', x: 51, y: 22, soon: true, mystery: true }
+];
+function showWorldMap() {
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card world');
+  c.appendChild(h('h1', null, 'Dünya haritası'));
+  const map = h('div', 'wmap');
+  map.innerHTML = `<svg viewBox="0 0 100 60" preserveAspectRatio="none" class="wbg"><path d="M8 20c6-8 18-10 26-6 4 3 2 8-2 11-3 3-1 8-5 10-4 3-9 0-11-4-3-4-10-5-8-11z M24 37c4-1 7 2 7 6s-2 10-5 12c-3-2-4-8-4-12 0-3 0-5 2-6z M45 18c5-4 13-5 20-3 8 1 16-1 23 3 4 3 2 7-3 9-4 2-6 6-11 6-4 1-6 5-10 6-5 0-6-4-9-6-4-2-9-1-10-5-1-3-2-7 0-10z M50 38c4-1 8 0 10 4 1 5-1 10-5 12-3-2-5-6-6-10-1-3-1-5 1-6z M80 46c3-1 7 0 9 3 0 3-3 5-6 5-3-1-5-3-3-8z" fill="rgba(255,255,255,.14)"/></svg>`;
+  for (const R of REGIONS) {
+    const own = R.id === 'cap', open = R.id === 'abq' && S.baron;
+    const pin = h('div', 'wpin' + (own ? ' own' : open ? ' open' : ' soon'));
+    pin.style.left = R.x + '%'; pin.style.top = R.y + '%';
+    pin.innerHTML = `<span class="pd"></span><span class="pl"><b>${R.name}</b>${own ? (S.baron ? 'Baron' : 'Merkez') : open ? 'Açıldı' : 'Yakında'}</span>`;
+    map.appendChild(pin);
+  }
+  c.appendChild(map);
+  const list = h('div', 'wlist');
+  for (const R of REGIONS) {
+    const own = R.id === 'cap', open = R.id === 'abq' && S.baron;
+    list.appendChild(h('div', 'item' + (own || open ? '' : ' lock'), `<div class="main"><div class="t">${R.mystery ? '???' : R.name}, ${R.land}${own ? ' <span class="tag g">' + (S.baron ? 'Baron' : 'Merkez') + '</span>' : open ? ' <span class="tag y">Açıldı</span>' : ' <span class="tag n">Yakında</span>'}</div><div class="s">${own ? 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.' : R.id === 'abq' ? (open ? 'Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Bölge yakında oynanabilir olacak.' : 'Kapadokya baronu olunca açılır.') : R.mystery ? 'Gizemli bir bölge. Ne zaman açılacağını Hezarfen bile bilmiyor.' : 'Nil kıyısında, firavunların vadisi üstünde. Çok yakında.'}</div></div>`));
+  }
+  c.appendChild(list);
+  const ok = h('button', 'big', 'Kapat'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
+  m.appendChild(c); m.hidden = false;
+}
 function simRivals(rev) {
   const F = FLAGS[S.weather.flag], red = S.weather.flag === 'red';
   S.rivals.forEach((r, ri) => {
@@ -980,7 +1117,7 @@ function simRivals(rev) {
       if (r.deadDay == null) r.deadDay = S.day;
       if (r.forSale && S.day - r.deadDay > 8) { r.forSale = null; rev.push(`${r.name} filosu başka bir alıcıya satıldı.`); }
       if (!r.forSale && S.day - r.deadDay >= 6 && Math.random() < .3) {
-        const used = S.rivals.map(x => x.name), pool = ENTRANTS.filter(e => !used.includes(e.name)), e = pick(pool.length ? pool : ENTRANTS);
+        const used = S.rivals.filter(x => x.alive || x.forSale).map(x => x.name).join(' '), pool = ENTRANTS.filter(e => !used.includes(e.name.split(' ')[0])), e = pick(pool.length ? pool : ENTRANTS);
         const cols = RIVAL_ALT.filter(c => c[0] !== myCol()[0] && !S.rivals.some(o => o.alive && o.col === c[0]));
         const c = cols.length ? pick(cols) : RIVAL_ALT[0];
         const fleet = entrantFleet(e);
@@ -1244,7 +1381,9 @@ const ICONS = {
   fleet: '<path d="M12 3a6.5 6.5 0 0 0-6.5 6.5c0 3.6 3.5 6.6 4.7 8.5h3.6c1.2-1.9 4.7-4.9 4.7-8.5A6.5 6.5 0 0 0 12 3z"/><path d="M10 21h4"/>',
   crew: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20.5c0-3.4 2.7-6 6-6s6 2.6 6 6"/><circle cx="17.2" cy="9" r="2.4"/><path d="M16 14.4c3 .3 5 2.6 5 5.6"/>',
   bank: '<path d="M3 9.5 12 4l9 5.5M5.5 10.5v7M10 10.5v7M14 10.5v7M18.5 10.5v7M3 20.5h18"/>',
-  market: '<path d="M4 20.5v-7M10 20.5V5M16 20.5v-10M2.5 20.5h19"/>'
+  market: '<path d="M4 20.5v-7M10 20.5V5M16 20.5v-10M2.5 20.5h19"/>',
+  goals: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  world: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.5 3.5 5.5 3.5 8.5s-1 6-3.5 8.5c-2.5-2.5-3.5-5.5-3.5-8.5s1-6 3.5-8.5z"/>'
 };
 const TABS = [['fleet', 'Filo'], ['crew', 'Ekip'], ['bank', 'Banka'], ['market', 'Pazar']];
 const unlocked = k => !!(S.unl && S.unl[k]);
@@ -1255,6 +1394,13 @@ function closePage() { page = null; $('page').hidden = true; refresh(); }
 function renderNav() {
   const el = $('nav'); el.replaceChildren();
   const dots = { crew: S.balloons.some(b => canFly(b) === 'nopilot') || !licenseOk(), market: S.rivals.some(r => (r.offer && r.alive && !r.offerNo) || (r.forSale && !r.saleNo)) };
+  {
+    const C = CHAPTERS[S.chapter || 0], done = C ? C.goals.filter(goalDone).length : 0;
+    const g = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS[S.baron ? 'world' : 'goals']}</svg></span>${S.baron ? 'Dünya' : 'Hedef'}`);
+    if (!S.baron) g.appendChild(h('span', 'gbadge', `${done}/${C.goals.length}`));
+    g.onclick = S.baron ? showWorldMap : showGoals;
+    el.appendChild(g);
+  }
   for (const [k, label] of TABS) {
     if (!unlocked(k)) continue;
     const b = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS[k]}</svg></span>${label}`);
@@ -1640,7 +1786,7 @@ function showReport() {
   line('Bilet geliri', L.rev); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
   line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan);
   line('Kaza: onarım', -L.repair); line('Kaza: yolcu tazminatı', -L.comp); line('Sigorta ödemesi', L.insPay);
-  line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize);
+  line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize); line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
   led.appendChild(h('div', 'tot', `<span>Net</span><span class="v ${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span>`));
   led.appendChild(h('div', null, `<span>Kasa</span><span class="v">${eur(S.cash)}</span>`));
   b.appendChild(led);

@@ -42,3 +42,16 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
   - Oyuncuya kırmızı "SON DAKİKA: Rakiplerin sana karşı birleşti!" uyarısı çıkar: iki balon ikonu, yeni şirketin adı, balon/kasa/popülerlik, "Mücadeleye hazırım" butonu. Diğer açılır pencerelerden önce gösterilir.
   - Pazar sekmesinde birleşen eski şirket "Birleşti · X çatısı altında" diye görünür.
 - **Kızıl Vadi Air başlangıç kasası:** €12.000 (eskiden €9.000).
+
+## Bölümler ve Baron (Faz 1)
+- **Kapadokya'da 3 bölüm (`CHAPTERS`):**
+  1. **Kuruluş:** 3 balon, 4,0★, kasada €20.000. Ödül €5.000.
+  2. **Büyüme:** 8 balon, en az bir otel anlaşması ya da sahipliği, pazarın %35'i. Ödül €20.000.
+  3. **Kapadokya Baronu:** pazarın %70'i ve 4,8★, ikisi birden 3 gün üst üste (`baronDays`; sadece uçuş olan günlerde sayılır, kırmızı bayrakta pas geçmek seriyi bozmaz).
+- Pazar payı `shareNow` olarak tutulur; kimsenin uçmadığı günde son değer korunur.
+- Bölüm gün sonunda tamamlanınca ödül kasaya girer ve uçuş defterinde "Bölüm ödülü: X" satırı çıkar. Ertesi sabah tören penceresi açılır (diğer pencerelerden önce).
+- Yan menüde en üstte "Hedef" butonu, üstünde "1/3" rozetiyle. Hedef kartında her hedefin ilerleme çubuğu ve sayısı var. Baron olunca buton "Dünya" olur.
+- **Baron töreni:** taç, Hezarfen'in sözleri, fanfar ve alkış, "Dünya haritasını aç".
+- **Dünya haritası:** Kapadokya (Baron), Albuquerque (Baron olunca "Açıldı"; Faz 2'de oynanabilir olacak), Luksor ve iki gizemli "???" bölge (Yakında).
+- Hezarfen'in yeni "goals" dersi 2. gün çıkar.
+- Yeni gelen rakip seçilirken, yaşayan ya da satıştaki şirketlerin adında geçen markalar (ör. birleşmiş "X & Bosphorus") dışarıda tutulur.
