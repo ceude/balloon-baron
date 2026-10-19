@@ -112,10 +112,11 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
   - **Akademisyenlerle zarf Ar-Ge'si:** €400.000 ile zarf ömrü 120 → 160 uçuş, €900.000 ile 200 uçuş. Bütün bölgelerde kalıcı.
 - **Talep etkisi:** Bu yatırımlar oynanan bölgenin günlük talebini ve otomatik bölgelerin kazancını (`holdBoost`) çarpar.
 - **Ofisler (0/4):** Her şehirde bir ofis açılabilir, avantajlar birikir:
-  - New York (€1,5 M): TV kampanyaları %25 ucuz.
-  - İstanbul (€1,2 M): Kapadokya otomatik kazancı +%15.
-  - Tokyo (€1,4 M): tasarım yaratıcılığı +10.
-  - Seul (€1,3 M): ünlü sözleşmeleri iki kat uzun.
+  - İstanbul (€350.000): Kapadokya otomatik kazancı +%25.
+  - New York (€450.000): TV kampanyaları %25 ucuz, Albuquerque otomatik kazancı +%20.
+  - Seul (€400.000): ünlü sözleşmeleri iki kat uzun (180 gün) ve %30 ucuz (€420.000).
+  - Tokyo (€400.000): tasarım üretimi bedava, yaratıcılık +10, tazelik 40 yerine 60 günde düşer. İleride Asya girişi yarı fiyatına.
+  - Otomatik bölge kazancı ofis çarpanıyla (`officeMult`) hem holdinge hem gösterilen tahmine yansır.
   - Dördü de açıksa holding giderleri %25 yerine %20. Her açılışta Hezarfen haber verir; dördüncüde "gerçek bir dünya şirketisin" kutlaması.
 - Kapadokya baronu olununca Hezarfen holdingi tanıtır: para çekme, giriş bedeli, holding parasının ülkelere dönmediği.
 

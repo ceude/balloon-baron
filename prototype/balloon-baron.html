@@ -2706,7 +2706,7 @@ function autoRegions() {
     A.mods = (A.mods || []).filter(m => m.until > S.day);
     const mult = A.mods.reduce((a, m) => a * m.mult, 1) * (A.issue ? .5 : 1);
     const inc = A.base * rnd(.85, 1.15) * mult;
-    A.todayRaw = inc; A.today = Math.round(inc * holdBoost(id)); total += inc;
+    A.todayRaw = inc; A.today = Math.round(inc * holdBoost(id) * officeMult(id)); total += inc;
     if (!A.issue && S.day - (A.lastIssue || A.since) >= 6 && Math.random() < .07) {
       const k = pick(Object.keys(ISSUES)); A.issue = { k, day: S.day }; A.lastIssue = S.day;
       S.hezQ.push(`news:${REGION_DEF[id].name} bölgesinden haber var evlat: ${ISSUES[k].d} Karar verene kadar oradaki kazancın yarıya düştü. Ana ekrandaki uyarıya ya da dünya haritasına dokun.`);
@@ -2738,7 +2738,8 @@ const DESIGN_COST = 5000, RESKIN_COST = 1000;
 const PATTERNS = { stripes: ['Çizgili', 35], zigzag: ['Zikzak', 60], checker: ['Damalı', 55], stars: ['Yıldızlı', 70], hearts: ['Kalpli', 70], sunburst: ['Güneş', 75], waves: ['Dalga', 60], rainbow: ['Gökkuşağı', 65], dots: ['Puantiyeli', 50] };
 const SWATCHES = ['#ff5e3a', '#ffc23d', '#2b2350', '#14a39a', '#ff6fa8', '#5aa9e6', '#9b7be0', '#22a45d', '#e5432f', '#ffffff', '#1f1b2e', '#f3e08a'];
 const designOf = b => b && b.design && (S.designs || []).find(d => d.id === b.design);
-const freshness = d => clamp(1 - (S.day - d.day) / 40, .2, 1);
+const designCost = () => hasOffice('tyo') ? 0 : DESIGN_COST;
+const freshness = d => clamp(1 - (S.day - d.day) / (hasOffice('tyo') ? 60 : 40), .2, 1);
 const lum = c => { const [r, g, b] = hex(c); return (.299 * r + .587 * g + .114 * b) / 255; };
 function designScore(d) {
   const contrast = Math.abs(lum(d.cols[0]) - lum(d.cols[1])), distinct = new Set(d.cols).size;
@@ -2820,7 +2821,7 @@ function showDesigner() {
     const nm = h('input', 'nm'); nm.placeholder = 'Tasarımın adı (ör. Gün Batımı)'; nm.value = dr.name; nm.maxLength = 22; nm.oninput = () => { dr.name = nm.value; };
     c.appendChild(nm);
     c.appendChild(h('p', 'hint', 'Tasarımlı balonlar her uçuşta popülerlik getirir; yaratıcılık ne kadar yüksekse etki o kadar büyük. Yeni tasarımlar zamanla eskir, arada yenilerini üret. Aynı deseni aynı renkle tekrarlamak ya da bir rakibin rengini kullanmak puanı düşürür.'));
-    const cost = DESIGN_COST, mk = h('button', 'big', `Üret ${eur(cost)}`); mk.disabled = S.cash < cost;
+    const cost = designCost(), mk = h('button', 'big', cost ? `Üret ${eur(cost)}` : 'Üret (Tokyo ofisi karşılıyor)'); mk.disabled = S.cash < cost;
     mk.onclick = () => {
       S.cash -= cost; if (!S.designs) S.designs = [];
       const d = { id: S.nextId++, name: (dr.name || '').trim() || `${PATTERNS[dr.pat][0]} ${S.designs.length + 1}`, pat: dr.pat, cols: dr.cols.slice(), day: S.day };
@@ -2884,16 +2885,18 @@ function tree(x, base, w, hgt, crown, trunk) {
 const HOLD_COST = .25; /* maaş, bina vb. giderler: otomatik gelirin %25'i */
 const CELEBS = ['Selin Arda (oyuncu)', 'Kenji Mori (aktör)', 'Lucía Varela (şarkıcı)', 'Emre Kaan (futbolcu)', 'Ji-ho Park (K-pop yıldızı)', 'Maya Collins (sunucu)'];
 const HQ_CITIES = {
-  nyc: { name: 'New York', cost: 1500000, perk: 'TV kampanyaları %25 daha ucuz.', icon: '🗽' },
-  ist: { name: 'İstanbul', cost: 1200000, perk: 'Kapadokya\'nın otomatik kazancı %15 artar.', icon: '🕌' },
-  tyo: { name: 'Tokyo', cost: 1400000, perk: 'Tasarımların yaratıcılık puanı +10.', icon: '🗼' },
-  sel: { name: 'Seul', cost: 1300000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun sürer.', icon: '🏙️' }
+  nyc: { name: 'New York', cost: 450000, perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: '🗽' },
+  ist: { name: 'İstanbul', cost: 350000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: '🕌' },
+  tyo: { name: 'Tokyo', cost: 400000, perk: 'Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya\'ya giriş yarı fiyatına.', icon: '🗼' },
+  sel: { name: 'Seul', cost: 400000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun ve %30 ucuz.', icon: '🏙️' }
 };
 /* ofisler: her şehirde bir tane açılabilir, avantajları birikir; dördü birden açıksa holding giderleri azalır */
 const hasOffice = k => !!(S && S.hold && S.hold.offices && S.hold.offices[k]);
 const officeCount = () => Object.keys(HQ_CITIES).filter(hasOffice).length;
 const holdCostRate = () => officeCount() === 4 ? .2 : HOLD_COST;
 const tvCost = () => Math.round(250000 * (hasOffice('nyc') ? .75 : 1));
+const officeMult = id => (hasOffice('ist') && id === 'cap' ? 1.25 : 1) * (hasOffice('nyc') && id === 'abq' ? 1.2 : 1);
+const celebCost = () => hasOffice('sel') ? 420000 : 600000;
 const RD_LEVELS = [{ cost: 400000, life: 160 }, { cost: 900000, life: 200 }];
 const envLife = () => S && S.hold && S.hold.rnd ? RD_LEVELS[S.hold.rnd - 1].life : 120;
 const holdOn = () => S && S.hold;
@@ -2907,7 +2910,7 @@ function holdingDay() {
   let gross = 0;
   for (const id in (S.regions || {})) {
     const A = S.regions[id].auto; if (!A) continue;
-    const mult = holdBoost(id) * (hasOffice('ist') && id === 'cap' ? 1.15 : 1);
+    const mult = holdBoost(id) * officeMult(id);
     gross += (A.todayRaw || 0) * mult;
   }
   gross = Math.round(gross);
@@ -3019,7 +3022,7 @@ function tabHolding(body) {
   deal('tv', 'Prime time', 'TV reklam kampanyası', 'Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların.', ['Bütün bölgelerde talep +%20', '14 gün', `${RD().name}: +0,4★`], tvCost(), 'Yayına al',
     () => { H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, { active: tvOn ? `Yayında · ${H.tvUntil - S.day} gün kaldı` : '', lock: tvCd && !tvOn ? `Yeni kampanya için ${H.tvCd - S.day} gün` : '' });
   const ce = H.celeb && H.celeb.until > S.day, days = hasOffice('sel') ? 180 : 90;
-  deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], 600000, 'Sözleşme imzala',
+  deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], celebCost(), 'Sözleşme imzala',
     () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
   const bbOn = H.bb && H.bb[S.region] > S.day;
   deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
