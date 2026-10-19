@@ -1064,8 +1064,8 @@ function showMerge() {
 }
 /* ---------- chapters ---------- */
 const CHAPTERS = [
-  { name: 'Kuruluş', reward: 5000, goals: [['balloons', 5, '5 balonluk filo'], ['stars', 4.0, '4,0★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['cash', 20000, 'Kasada €20.000']] },
-  { name: 'Büyüme', reward: 20000, goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['influ', 1, 'Bir influencer kampanyası yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['share', .5, 'Pazarın %50\'si'], ['workshop', 1, 'Balon atölyesi kur']] },
+  { name: 'Kuruluş', reward: 5000, award: 'Kapadokya Turizm Derneği seni yılın genç girişimcisi seçti', awardShort: 'Kapadokya Turizm Derneği ödülü', goals: [['balloons', 5, '5 balonluk filo'], ['stars', 4.0, '4,0★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['cash', 20000, 'Kasada €20.000']] },
+  { name: 'Büyüme', reward: 20000, award: 'Türkiye Turizm Ödülleri\'nde Yılın Balon Şirketi seçildin', awardShort: 'Türkiye Turizm Ödülleri', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['influ', 1, 'Bir influencer kampanyası yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['share', .5, 'Pazarın %50\'si'], ['workshop', 1, 'Balon atölyesi kur']] },
   { name: 'Kapadokya Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'İmza balonun gökyüzünde: Kapadokya Yıldızı']] }
 ];
 const BARON_SHARE = .7, BARON_STARS = 4.8;
@@ -1102,7 +1102,7 @@ function checkChapters(ev, Lg, flew) {
     if (!S.barons) S.barons = {}; S.barons[S.region] = S.day;
     if (S.region === 'cap') { S.baron = { cap: S.day }; S.hezQ.push('news:Artık bir holdingin var evlat! Sağdaki Holding butonuna dokun. Kapadokya kasasından holdinge para çekebilirsin; Albuquerque\'nin giriş bedeli holdingden ödenir. Bir uyarı: holding parası ülkelere geri dönmez, her ülke kendi kasasıyla büyür.'); }
   }
-  ev.push(C.reward ? `Bölüm tamamlandı: ${C.name}! Yatırımcılar ${eur(C.reward)} ödül verdi.` : `${C.name} unvanını kazandın!`);
+  ev.push(C.reward ? `Bölüm tamamlandı: ${C.name}! ${C.award}: ${eur(C.reward)} ödül.` : `${C.name} unvanını kazandın!`);
   Lg.chapter = C.reward; Lg.chapterName = C.name; S.cash += C.reward;
   return C.reward;
 }
@@ -1125,7 +1125,7 @@ function showGoals() {
       it.innerHTML = `<span class="gk">${done ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${g[2]}</b><span>${goalText(g)}</span></div><div class="gb"><i style="width:${Math.round(goalPct(g) * 100)}%"></i></div></div>`;
       c.appendChild(it);
     }
-    c.appendChild(h('p', 'hint', C.reward ? `Bölümü bitirince yatırımcılar ${eur(C.reward)} ödül verir.` : `Hepsini aynı gün sağlayan, Kapadokya'nın baronu olur ve dünyaya açılır. Dikkat: Rekabet Kurumu ve birleşen rakipler seni durdurmaya çalışacak.`));
+    c.appendChild(h('p', 'hint', C.reward ? `Bölümü bitirince: ${C.awardShort}, ${eur(C.reward)}.` : `Hepsini aynı gün sağlayan, Kapadokya'nın baronu olur ve dünyaya açılır. Dikkat: Rekabet Kurumu ve birleşen rakipler seni durdurmaya çalışacak.`));
   }
   const ok = h('button', isBaron() ? 'ghost' : 'big', 'Kapat'); ok.onclick = () => { m.hidden = true; }; if (isBaron()) ok.style.width = '100%'; c.appendChild(ok);
   m.appendChild(c); m.hidden = false;
@@ -1145,10 +1145,10 @@ function showChapter() {
   } else {
     c.appendChild(h('div', 'chap', `Bölüm ${i + 1} tamamlandı`));
     c.appendChild(h('h1', null, C.name));
-    c.appendChild(h('p', 'lead', `Yatırımcılar ${eur(C.reward)} ödül verdi.`));
+    c.appendChild(h('p', 'lead', `${C.award}! Ödül: ${eur(C.reward)}.`));
     const N = chap()[i + 1];
     c.appendChild(h('div', 'chap', `Sıradaki: Bölüm ${i + 2}, ${N.name}`));
-    N.goals.forEach(g => c.appendChild(h('div', 'goal', `<span class="gk"></span><div class="gm"><div class="gt"><b>${g[2]}</b></div></div>`)));
+    N.goals.forEach(g => { const done = goalDone(g); c.appendChild(h('div', 'goal' + (done ? ' done' : ''), `<span class="gk">${done ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${g[2]}</b><span>${goalText(g)}</span></div><div class="gb"><i style="width:${Math.round(goalPct(g) * 100)}%"></i></div></div>`)); });
     const ok = h('button', 'big', 'Devam'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
     sfx('fanfare');
   }
@@ -2582,8 +2582,8 @@ const ENTRANTS_ABQ = [
 ];
 const regionEntrants = () => S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
 const CHAPTERS_ABQ = [
-  { name: 'Yeni Dünya', reward: 5000, goals: [['balloons', 5, '5 balonluk filo'], ['stars', 4.0, '4,0★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap']] },
-  { name: 'Fiesta', reward: 20000, goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['influ', 1, 'Bir influencer kampanyası yap'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['balloons', 5, '5 balonluk filo'], ['stars', 4.0, '4,0★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap']] },
+  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['influ', 1, 'Bir influencer kampanyası yap'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'İmza balonun gökyüzünde: Fiesta Yıldızı']] }
 ];
 const chap = () => S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;

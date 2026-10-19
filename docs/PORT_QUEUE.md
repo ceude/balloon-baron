@@ -51,7 +51,12 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 - Influencer ve rehber kullanım sayıları tutulur (`influCount`, `guideCount`). Eski kayıtlarda `influCd > 0` / `guideCd > 0` kullanılmış sayılır.
 - Pazar payı `shareNow` olarak tutulur; kimsenin uçmadığı günde son değer korunur.
 - **Balon atölyesi:** Filo sayfasında €75.000'e kurulur. Tasarım stüdyosu Faz 3'te gelecek.
-- Bölüm gün sonunda tamamlanınca ödül kasaya girer ve uçuş defterinde "Bölüm ödülü: X" satırı çıkar. Ertesi sabah tören penceresi açılır (diğer pencerelerden önce).
+- Bölüm gün sonunda tamamlanınca ödül kasaya girer ve uçuş defterinde "Bölüm ödülü: X" satırı çıkar. Ertesi sabah tören penceresi açılır (diğer pencerelerden önce). Pencerede sıradaki bölümün hedefleri gerçek ilerlemeyle gösterilir: tamamlananlar tikli, diğerleri çubuk ve sayıyla.
+- **Ödüller hikâyeye bağlı** ("yatırımcılar" yok):
+  - Kuruluş: "Kapadokya Turizm Derneği seni yılın genç girişimcisi seçti".
+  - Büyüme: "Türkiye Turizm Ödülleri'nde Yılın Balon Şirketi seçildin".
+  - Yeni Dünya: "Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti".
+  - Fiesta: "Balloon Fiesta jürisi seni Fiesta'nın Yıldızı seçti".
 - Yan menüde en üstte "Hedef" butonu, üstünde "1/4" rozetiyle. Hedef kartında her hedefin ilerleme çubuğu ve sayısı var (evet/hayır hedeflerinde "tamam / yok"). Baron olunca buton "Dünya" olur.
 - **Baron töreni:** taç, Hezarfen'in sözleri, fanfar ve alkış, "Dünya haritasını aç".
 - **Dünya haritası:** Gerçek koordinatlardan çizilmiş kıtalar, boylam −130…130, enlem 70…−40 kırpılmış. Kapadokya (Baron), Albuquerque (Baron olunca "Açıldı"), Luksor ve iki gizemli "???" bölge (Asya, Avrupa; Yakında).
