@@ -118,3 +118,11 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
   - Seul (€1,3 M): ünlü sözleşmeleri iki kat uzun.
   - Dördü de açıksa holding giderleri %25 yerine %20. Her açılışta Hezarfen haber verir; dördüncüde "gerçek bir dünya şirketisin" kutlaması.
 - Kapadokya baronu olununca Hezarfen holdingi tanıtır: para çekme, giriş bedeli, holding parasının ülkelere dönmediği.
+
+## Holding görünümü
+- Holding sayfası koyu "yönetim kurulu" temasında (lacivert-mor zemin, altın başlıklar); başlık "{Şirket} Holding".
+- **Nakit akışı kutusu (en üstte):** holding kasası, son 14 günün Gelir (yeşil) / Gider (kırmızı) / Net kâr (altın) toplamları ve günlük çubuk grafik (gelir sıfır çizgisinin üstünde, gider altında; her çubukta gün, gelir, gider, net ipucu). Ölçek normal günlere göre (sıfır olmayan değerlerin ortancasının 3 katı); bunu aşan tek seferlik büyük tutarlar kesik işaretiyle çizilir.
+- Gelir: otomatik bölgelerin brüt kazancı ve ülkelerden aktarımlar. Gider: holding giderleri, yatırımlar, giriş bedelleri, sorun ödemeleri (`holdLog`, son 30 gün tutulur).
+- **Kampanyalar ve anlaşmalar** büyük kartlar halinde: çizim (TV, yıldız, billboard, laboratuvar), üst etiket (Prime time, Yüz anlaşması, Açık hava, Ar-Ge), başlık, açıklama, etki rozetleri, altın fiyat ve altın buton ("Yayına al", "Sözleşme imzala", "Afişleri as", "Seviye X'i fonla"). Aktif olanlar yeşil çerçeve ve kalan gün.
+- **Ofisler** 2×2 şehir kartları (ikon, şehir, avantaj, "Aç €X" ya da "Açık").
+- Dünya haritasında ve listede "???" yok: haritada gizemli pinler sadece "Yakında", listede "Yeni bölge: Asya / Avrupa".

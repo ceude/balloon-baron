@@ -272,7 +272,51 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .baron{border-top:6px solid var(--sun);background:linear-gradient(#fff8e1,var(--paper) 40%)}
 .crown{width:84px;height:63px;align-self:center}
 .world{gap:12px}
-.hbox{display:flex;flex-direction:column;gap:8px;padding:16px;border-radius:20px;background:linear-gradient(135deg,#2b2350,#4a3a7a);color:#fff}
+.hbox{display:flex;flex-direction:column;gap:10px;padding:16px;border-radius:20px;background:linear-gradient(135deg,#231c48,#3d2f6e);color:#fff;box-shadow:0 0 0 1px rgba(255,194,61,.35) inset}
+.cf3{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.cf3 div{background:rgba(255,255,255,.07);border-radius:12px;padding:7px 8px}
+.cf3 span{display:block;font-size:11.5px;opacity:.7}
+.cf3 b{font-family:var(--cond);font-weight:800;font-size:19px}
+.cf3 .g b{color:#5ee08f}.cf3 .r b{color:#ff8a78}.cf3 .n b{color:var(--sun)}
+.cfcap{font-size:11.5px;opacity:.7;line-height:1.4}
+.cfcap .lg{display:inline-block;width:9px;height:9px;border-radius:3px;margin:0 3px 0 4px;vertical-align:-1px}
+.cfcap .lg.g{background:#3ad07a}.cfcap .lg.r{background:#ff6b55}
+.cfchart{width:100%;height:auto;display:block}
+.cfchart .cfd:hover rect[fill="transparent"]{fill:rgba(255,255,255,.08)}
+.cfempty{font-size:12.5px;opacity:.7;padding:18px 0;text-align:center}
+#page.lux{background:linear-gradient(#17122f,#221a45 40%,#17122f);color:#f4efff}
+#page.lux .phead h1{color:var(--sun)}
+#page.lux h2{color:#ffe08a}
+#page.lux .hint{color:rgba(244,239,255,.65)}
+#page.lux .item{background:rgba(255,255,255,.07);box-shadow:none;color:#f4efff}
+#page.lux .item .s{color:rgba(244,239,255,.7)}
+#page.lux .ghost{background:rgba(255,255,255,.1);color:#fff;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+#page.lux .pbtn.light{background:rgba(255,255,255,.12);color:#fff}
+#page.lux .pclose{background:rgba(255,255,255,.12);color:#fff}
+.deal{display:grid;grid-template-columns:64px 1fr;gap:10px 12px;padding:14px;border-radius:20px;background:linear-gradient(135deg,#2e2460,#1d1740);box-shadow:0 0 0 1px rgba(255,194,61,.28) inset,0 6px 18px rgba(0,0,0,.35)}
+.deal.on{box-shadow:0 0 0 2px #3ad07a inset,0 6px 18px rgba(0,0,0,.35)}
+.deal .dart{width:64px;height:64px;border-radius:16px;background:rgba(255,255,255,.06);display:grid;place-items:center}
+.deal .dart svg{width:48px;height:48px}
+.deal .dk{font-family:var(--cond);font-weight:800;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--sun)}
+.deal .dt{font-family:var(--cond);font-weight:800;font-size:21px;line-height:1.1;color:#fff}
+.deal .dd{font-size:13px;color:rgba(244,239,255,.72);margin-top:3px;line-height:1.35}
+.deal .dchips{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.deal .dchips span{font-size:11.5px;font-weight:700;padding:3px 8px;border-radius:8px;background:rgba(58,208,122,.16);color:#7ff0ae}
+.deal .dfoot{grid-column:1/-1;display:flex;align-items:center;gap:10px;flex-wrap:wrap;border-top:1px dashed rgba(255,255,255,.15);padding-top:10px}
+.deal .dprice{font-family:var(--cond);font-weight:800;font-size:24px;color:var(--sun);margin-right:auto}
+.dcta{padding:10px 16px;border-radius:13px;background:linear-gradient(#ffd25e,#ffb21d);color:#2b1d00;font-family:var(--cond);font-weight:800;font-size:16px;box-shadow:0 3px 0 #b07800}
+.dcta:disabled{opacity:.45}
+.dcta:active{transform:translateY(3px);box-shadow:none}
+.deal .dstat{font-weight:800;color:#7ff0ae;font-size:14px}
+.deal .dnote{width:100%;font-size:12px;color:rgba(244,239,255,.6)}
+.offices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.office{display:flex;flex-direction:column;gap:5px;padding:12px;border-radius:18px;background:linear-gradient(160deg,#2e2460,#1d1740);box-shadow:0 0 0 1px rgba(255,194,61,.25) inset}
+.office.on{box-shadow:0 0 0 2px var(--sun) inset}
+.office .oi{font-size:30px;line-height:1}
+.office .onm{font-family:var(--cond);font-weight:800;font-size:19px;color:#fff}
+.office .op{font-size:12px;color:rgba(244,239,255,.7);line-height:1.35;flex:1}
+.office .ostat{font-family:var(--cond);font-weight:800;color:var(--sun);font-size:15px}
+.office .dcta{font-size:14px;padding:8px 10px}
 .hbox .hk{display:flex;flex-direction:column}
 .hbox .hk span{font-size:13px;opacity:.75}
 .hbox .hk b{font-family:var(--cond);font-weight:800;font-size:36px;color:var(--sun);line-height:1.05}
@@ -1172,7 +1216,7 @@ function showWorldMap() {
     const own = ownsRegion(R.id), open = R.id === 'abq' && isBaron('cap') && !own;
     const pin = h('div', 'wpin' + (own ? ' own' : open ? ' open' : ' soon'));
     pin.style.left = ((R.lon + 130) / 260 * 100) + '%'; pin.style.top = ((70 - R.lat) / 110 * 100) + '%'; pin.classList.add('s' + R.side);
-    pin.innerHTML = `<span class="pd"></span><span class="pl"><b>${R.name}</b>${R.id === S.region ? 'Buradasın' : own ? 'Otomatik' : open ? 'Açıldı' : 'Yakında'}</span>`;
+    pin.innerHTML = R.mystery ? '<span class="pd"></span><span class="pl"><b>Yakında</b></span>' : `<span class="pd"></span><span class="pl"><b>${R.name}</b>${R.id === S.region ? 'Buradasın' : own ? 'Otomatik' : open ? 'Açıldı' : 'Yakında'}</span>`;
     map.appendChild(pin);
   }
   c.appendChild(map);
@@ -1186,9 +1230,9 @@ function showWorldMap() {
     else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
     else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.`; }
     else if (R.id === 'abq') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Kapadokya baronu olunca açılır.'; }
-    else { tag = '<span class="tag n">Yakında</span>'; sub = R.mystery ? 'Gizemli bir bölge. Ne zaman açılacağını Hezarfen bile bilmiyor.' : 'Nil kıyısında, firavunların vadisi üstünde. Çok yakında.'; }
+    else { tag = '<span class="tag n">Yakında</span>'; sub = R.mystery ? `${R.land} göğünde yeni bir macera. Nerede olduğunu Hezarfen bile bilmiyor.` : 'Nil kıyısında, firavunların vadisi üstünde. Çok yakında.'; }
     if (isBaron(R.id)) tag += ' <span class="tag g">Baron</span>';
-    const main = h('div', 'main', `<div class="t">${R.mystery ? '???' : R.name}, ${R.land} ${tag}</div><div class="s">${sub}</div>`);
+    const main = h('div', 'main', `<div class="t">${R.mystery ? `Yeni bölge: ${R.land}` : `${R.name}, ${R.land}`} ${tag}</div><div class="s">${sub}</div>`);
     it.appendChild(main);
     const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
     if (owned && !here) {
@@ -1483,7 +1527,7 @@ const TABS = [['fleet', 'Filo'], ['crew', 'Ekip'], ['bank', 'Banka'], ['market',
 const unlocked = k => !!(S.unl && S.unl[k]);
 const PAGES = { holding: ['Holding', () => tabHolding], fleet: ['Filo', () => tabFleet], crew: ['Ekip', () => tabCrew], bank: ['Banka', () => tabBank], market: ['Pazar', () => tabMarket] };
 let page = null;
-function openPage(k) { page = k; $('page').hidden = false; $('page').style.paddingTop = $('hud').offsetHeight + 'px'; $('pTitle').textContent = PAGES[k][0]; renderTab(); $('tabBody').scrollTop = 0; }
+function openPage(k) { page = k; $('page').hidden = false; $('page').classList.toggle('lux', k === 'holding'); $('page').style.paddingTop = $('hud').offsetHeight + 'px'; $('pTitle').textContent = PAGES[k][0]; renderTab(); $('tabBody').scrollTop = 0; }
 function closePage() { page = null; $('page').hidden = true; refresh(); }
 function renderNav() {
   const el = $('nav'); el.replaceChildren();
@@ -2631,7 +2675,7 @@ function switchRegion(id) {
 }
 function enterRegion(id) {
   if ((S.holding || 0) < ENTRY_FEE) return;
-  S.holding -= ENTRY_FEE;
+  S.holding -= ENTRY_FEE; holdLog('exp', ENTRY_FEE);
   if (id === 'abq') S.hezQ.push('news:Amerika evlat! Albuquerque\'de rüzgâr bambaşka: meşhur "kutu". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: 3.000 dolar ve bir küçük balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika\'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım.');
   switchRegion(id);
 }
@@ -2681,7 +2725,7 @@ function showIssue(id) {
   const opt = (o, fn, cls) => {
     const cost = issueCost(A, o[1]), b = h('button', 'opt ' + cls, `<b>${o[0]}${cost ? ` (${eurH(cost)})` : ''}</b><span>${cost ? 'Holding kasasından ödenir, sorun kapanır.' : o[1]}</span>`);
     if (cost && (S.holding || 0) < cost) b.disabled = true;
-    b.onclick = () => { if (cost) S.holding -= cost; const r = fn(A, id, rs); A.issue = null; m.hidden = true; if (r === 'go') switchRegion(id); else { refresh(); setTimeout(nextPopup, 250); } };
+    b.onclick = () => { if (cost) { S.holding -= cost; holdLog('exp', cost); } const r = fn(A, id, rs); A.issue = null; m.hidden = true; if (r === 'go') switchRegion(id); else { refresh(); setTimeout(nextPopup, 250); } };
     c.appendChild(b);
   };
   opt(I.a, I.A, 'a'); opt(I.b, I.B, 'b');
@@ -2869,28 +2913,73 @@ function holdingDay() {
   gross = Math.round(gross);
   const cost = Math.round(gross * holdCostRate());
   S.holding = (S.holding || 0) + gross - cost;
+  if (gross) { holdLog('inc', gross); holdLog('exp', cost); }
   S.hold.today = { gross, cost };
   return gross - cost;
 }
 function withdraw(share) {
   const keep = 10000, amt = Math.max(0, Math.floor(share === 1 ? S.cash - keep : S.cash * share));
   if (amt <= 0) return;
-  S.cash -= amt; S.holding = (S.holding || 0) + amt / FX(); sfx('coin'); refresh();
+  S.cash -= amt; S.holding = (S.holding || 0) + amt / FX(); holdLog('inc', amt / FX()); sfx('coin'); refresh();
 }
-function holdBuy(cost, fn) { if ((S.holding || 0) < cost) return; S.holding -= cost; fn(); sfx('coin'); refresh(); }
+function holdBuy(cost, fn) { if ((S.holding || 0) < cost) return; S.holding -= cost; holdLog('exp', cost); fn(); sfx('coin'); refresh(); }
+/* holding nakit akışı kaydı: gelir (otomatik bölgeler, ülkelerden aktarım) ve gider (holding giderleri, yatırımlar) */
+function holdLog(kind, amt) {
+  if (!S.hold) S.hold = {};
+  const hist = S.hold.hist || (S.hold.hist = []);
+  let e = hist[hist.length - 1];
+  if (!e || e.d !== S.day) { e = { d: S.day, inc: 0, exp: 0 }; hist.push(e); if (hist.length > 30) hist.shift(); }
+  e[kind] += Math.round(amt);
+}
+function cashflowChart(hist) {
+  const W = 320, H = 150, pad = 6, mid = H * .56, days = hist.slice(-14);
+  /* tek seferlik büyük aktarımlar günlük akışı ezmesin: ölçek normal günlere göre, aşanlar kesik çizilir */
+  const vals = days.flatMap(e => [e.inc, e.exp]).filter(v => v > 0).sort((a, b) => a - b), med = vals.length ? vals[Math.floor(vals.length / 2)] : 1;
+  const n = 14, bw = (W - pad * 2) / n, max = Math.max(1, Math.min(Math.max(...vals, 1), med * 3));
+  const up = mid - 12, down = H - mid - 14;
+  let bars = '';
+  days.forEach((e, i) => {
+    const x = pad + (n - days.length + i) * bw + 3, w = bw - 6;
+    const hi = Math.min(1, e.inc / max) * up, he = Math.min(1, e.exp / max) * down, net = e.inc - e.exp;
+    const cut = (y) => `<path d="M${x - 1} ${y + 2}l${w + 2} -4M${x - 1} ${y + 6}l${w + 2} -4" stroke="#231c48" stroke-width="2"/>`;
+    bars += `<g class="cfd"><title>Gün ${e.d}: gelir ${eurH(e.inc)}, gider ${eurH(e.exp)}, net ${eurH(net)}</title><rect x="${x - 2}" y="0" width="${w + 4}" height="${H}" fill="transparent"/>` +
+      (hi > .5 ? `<rect x="${x}" y="${mid - 1 - hi}" width="${w}" height="${hi}" rx="${Math.min(4, w / 2)}" fill="#3ad07a"/>` : '') +
+      (he > .5 ? `<rect x="${x}" y="${mid + 1}" width="${w}" height="${he}" rx="${Math.min(4, w / 2)}" fill="#ff6b55"/>` : '') +
+      (e.inc > max ? cut(mid - 1 - hi + 6) : '') + (e.exp > max ? cut(mid + he - 12) : '') + '</g>';
+  });
+  const first = days[0], last = days[days.length - 1];
+  return `<svg viewBox="0 0 ${W} ${H}" class="cfchart" role="img" aria-label="Son 14 günün holding geliri ve gideri">
+    <line x1="${pad}" x2="${W - pad}" y1="${mid}" y2="${mid}" stroke="rgba(255,255,255,.35)" stroke-width="1"/>
+    ${bars}
+    ${first ? `<text x="${pad}" y="${H - 1}" font-size="10" fill="rgba(255,255,255,.55)">Gün ${first.d}</text><text x="${W - pad}" y="${H - 1}" font-size="10" fill="rgba(255,255,255,.55)" text-anchor="end">Gün ${last.d}</text>` : ''}
+  </svg>`;
+}
+const INVEST_ART = {
+  tv: '<svg viewBox="0 0 64 64"><rect x="6" y="12" width="52" height="34" rx="6" fill="#1f1b2e" stroke="#ffc23d" stroke-width="3"/><rect x="11" y="17" width="42" height="24" rx="3" fill="#ff5e3a"/><path d="M26 23l12 6-12 6z" fill="#fff"/><path d="M24 52h16M32 46v6" stroke="#ffc23d" stroke-width="3" stroke-linecap="round"/></svg>',
+  celeb: '<svg viewBox="0 0 64 64"><path d="M32 6l7 15 16 2-12 11 3 16-14-8-14 8 3-16L9 23l16-2z" fill="#ffc23d"/><circle cx="32" cy="29" r="6" fill="#fff3c4"/></svg>',
+  bb: '<svg viewBox="0 0 64 64"><rect x="6" y="10" width="52" height="28" rx="3" fill="#ffc23d"/><text x="32" y="29" text-anchor="middle" font-size="11" font-weight="800" fill="#2b2350" font-family="Barlow Condensed,sans-serif">BALON!</text><path d="M18 38v18M46 38v18M12 56h40" stroke="#c9c1db" stroke-width="3" stroke-linecap="round"/></svg>',
+  lab: '<svg viewBox="0 0 64 64"><path d="M24 8h16M27 8v16L12 50a5 5 0 0 0 4 7h32a5 5 0 0 0 4-7L37 24V8" fill="none" stroke="#ffc23d" stroke-width="3" stroke-linejoin="round"/><path d="M17 44h30l4 7a2 2 0 0 1-2 3H15a2 2 0 0 1-2-3z" fill="#3ad0c0"/><circle cx="28" cy="38" r="2.5" fill="#3ad0c0"/><circle cx="36" cy="33" r="1.8" fill="#3ad0c0"/></svg>'
+};
 function tabHolding(body) {
-  const H = S.hold || (S.hold = { log: [] });
+  const H = S.hold || (S.hold = {});
+  $('pTitle').textContent = `${S.company || 'Balon'} Holding`;
+  const hist = H.hist || [], last14 = hist.slice(-14);
+  const inc = last14.reduce((a, e) => a + e.inc, 0), exp = last14.reduce((a, e) => a + e.exp, 0), net = inc - exp;
+
   const top = h('div', 'hbox');
-  top.innerHTML = `<div class="hk"><span>Holding kasası</span><b>${eurH(S.holding || 0)}</b></div>` +
-    (H.today && H.today.gross ? `<div class="hf"><span>Dün otomatik bölgelerden <b>+${eurH(H.today.gross)}</b></span><span>Holding giderleri (maaş, ofisler, %${Math.round(holdCostRate() * 100)}) <b>−${eurH(H.today.cost)}</b></span></div>` : '<div class="hf"><span>Henüz otomatik moddaki bölgen yok. Holdinge para, buradan ülke kasasından çekerek girer.</span></div>');
+  top.innerHTML = `<div class="hk"><span>Holding kasası</span><b>${eurH(S.holding || 0)}</b></div>
+    <div class="cf3"><div class="g"><span>Gelir</span><b>+${eurH(inc)}</b></div><div class="r"><span>Gider</span><b>−${eurH(exp)}</b></div><div class="n"><span>Net kâr</span><b>${net >= 0 ? '+' : '−'}${eurH(Math.abs(net))}</b></div></div>
+    <div class="cfcap">Son 14 gün · <i class="lg g"></i>gelir: otomatik bölgeler ve ülkelerden aktarım · <i class="lg r"></i>gider: holding giderleri (%${Math.round(holdCostRate() * 100)}) ve yatırımlar</div>
+    ${last14.length ? cashflowChart(hist) : '<div class="cfempty">Grafik, holdinge ilk para girdiğinde dolmaya başlar.</div>'}`;
   body.appendChild(top);
+
   if (!isBaron()) {
     const C = chap()[S.chapter || 0], done = C.goals.filter(goalDone).length, g = h('div', 'callout yel', `<b>${RD().name}: ${C.name}</b>, ${done}/${C.goals.length} hedef tamam.`);
     const gb = pbtn('Hedefler', showGoals); gb.style.marginTop = '8px'; g.appendChild(gb); body.appendChild(g);
   }
 
-  const w = h('div', 'sec'); w.appendChild(h('h2', null, `${RD().name} kasasından çek`));
-  w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Çektiğin para holdinge ${S.region === 'abq' ? '1,1\'e bölünerek euro olarak ' : ''}geçer. Holding parası ülkelere geri aktarılamaz.`));
+  const w = h('div', 'sec'); w.appendChild(h('h2', null, `${RD().name} kasasından aktar`));
+  w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Aktardığın para holdinge ${S.region === 'abq' ? '1,1\'e bölünerek euro olarak ' : ''}geçer; holding parası ülkelere geri dönmez.`));
   const row = h('div', 'btns');
   [[.25, '%25'], [.5, '%50'], [1, `Hepsi (${eur(10000)} kalsın)`]].forEach(([k, l]) => { const b = h('button', 'ghost', l); b.disabled = S.cash <= 10000; b.onclick = () => withdraw(k); row.appendChild(b); });
   w.appendChild(row); body.appendChild(w);
@@ -2911,33 +3000,53 @@ function tabHolding(body) {
   const mb = pbtn('Dünya haritası', showWorldMap, false, true); mb.style.alignSelf = 'flex-start'; r.appendChild(mb);
   body.appendChild(r);
 
-  const v = h('div', 'sec'); v.appendChild(h('h2', null, 'Holding yatırımları'));
-  const inv = (title, desc, label, cost, fn, dis, status) => {
-    const it = h('div', 'item'); it.appendChild(h('div', 'main', `<div class="t">${title}${status ? ` <span class="tag g">${status}</span>` : ''}</div><div class="s">${desc}</div>`));
-    if (label) it.appendChild(pbtn(label, () => holdBuy(cost, fn), dis || (S.holding || 0) < cost));
-    v.appendChild(it);
+  /* kampanyalar: büyük, parlak anlaşma kartları */
+  const v = h('div', 'sec'); v.appendChild(h('h2', null, 'Kampanyalar ve anlaşmalar'));
+  const deal = (art, kicker, title, desc, chips, cost, cta, fn, opt = {}) => {
+    const c = h('div', 'deal' + (opt.active ? ' on' : ''));
+    c.innerHTML = `<div class="dart">${INVEST_ART[art]}</div><div class="dmain"><div class="dk">${kicker}</div><div class="dt">${title}</div><div class="dd">${desc}</div><div class="dchips">${chips.map(x => `<span>${x}</span>`).join('')}</div></div>`;
+    const foot = h('div', 'dfoot');
+    if (opt.active) foot.innerHTML = `<span class="dstat">${opt.active}</span>`;
+    else if (cost != null) {
+      foot.innerHTML = `<span class="dprice">${eurH(cost)}</span>`;
+      const b = h('button', 'dcta', cta); b.disabled = !!opt.lock || (S.holding || 0) < cost; b.onclick = () => holdBuy(cost, fn);
+      foot.appendChild(b);
+      if (opt.lock) foot.appendChild(h('span', 'dnote', opt.lock));
+    }
+    c.appendChild(foot); v.appendChild(c);
   };
   const tvOn = H.tvUntil > S.day, tvCd = (H.tvCd || 0) > S.day;
-  inv('TV reklam kampanyası', `Ulusal kanallarda prime time reklam. 14 gün boyunca bütün bölgelerde talep +%20, bulunduğun bölgede popülerlik +0,4★.${tvCd && !tvOn ? ` Yeni kampanya için ${H.tvCd - S.day} gün bekle.` : ''}`, eurH(tvCost()), tvCost(), () => { H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, tvCd, tvOn ? `${H.tvUntil - S.day} gün` : '');
+  deal('tv', 'Prime time', 'TV reklam kampanyası', 'Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların.', ['Bütün bölgelerde talep +%20', '14 gün', `${RD().name}: +0,4★`], tvCost(), 'Yayına al',
+    () => { H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, { active: tvOn ? `Yayında · ${H.tvUntil - S.day} gün kaldı` : '', lock: tvCd && !tvOn ? `Yeni kampanya için ${H.tvCd - S.day} gün` : '' });
   const ce = H.celeb && H.celeb.until > S.day, days = hasOffice('sel') ? 180 : 90;
-  inv('Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü. Bütün bölgelerde talep +%10, sözleşme ${H.celeb.until - S.day} gün daha sürüyor.` : `Ünlü biriyle ${days} günlük sözleşme. Bütün bölgelerde talep +%10, bulunduğun bölgede popülerlik +0,6★.`, ce ? null : eurH(600000), 600000, () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, false, ce ? 'Sözleşmeli' : '');
+  deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], 600000, 'Sözleşme imzala',
+    () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
   const bbOn = H.bb && H.bb[S.region] > S.day;
-  inv(`Otoban billboardları: ${RD().name}`, `Havalimanı yolu ve otobanlarda dev afişler. 20 gün boyunca ${RD().name} bölgesinde talep +%10.`, bbOn ? null : eurH(120000), 120000, () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; }, false, bbOn ? `${H.bb[S.region] - S.day} gün` : '');
+  deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
+    () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; }, { active: bbOn ? `Asılı · ${H.bb[S.region] - S.day} gün` : '' });
   const lv = H.rnd || 0, next = RD_LEVELS[lv];
-  inv('Akademisyenlerle zarf Ar-Ge\'si', next ? `Üniversitelerle yeni kumaş araştırması. Balon zarfları ${envLife()} yerine ${next.life} uçuş dayanır, bütün bölgelerde kalıcı.` : `Zarflar artık ${envLife()} uçuş dayanıyor. Araştırma tamamlandı.`, next ? eurH(next.cost) : null, next ? next.cost : 0, () => { H.rnd = lv + 1; }, false, lv ? `Seviye ${lv}` : '');
+  deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [`Zarf ömrü ${envLife()} → ${next ? next.life : envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
+    () => { H.rnd = lv + 1; }, { active: next ? '' : `Seviye ${lv} · tamamlandı` });
   body.appendChild(v);
 
   const q = h('div', 'sec'); q.appendChild(h('h2', null, `Ofisler ${officeCount()}/4`));
   q.appendChild(h('p', 'hint', officeCount() === 4 ? 'Dört kıtada ofisin var. Holding giderlerin %25 yerine %20.' : 'Dünyanın büyük şehirlerinde ofis aç; her ofisin kendi avantajı var. Dördünü birden açarsan holding giderleri %25 yerine %20 olur.'));
+  const grid = h('div', 'offices');
   for (const k in HQ_CITIES) {
-    const c = HQ_CITIES[k], it = h('div', 'item'), own = hasOffice(k);
-    it.appendChild(h('div', 'main', `<div class="t">${c.icon} ${c.name}${own ? ' <span class="tag g">Açık</span>' : ''}</div><div class="s">${c.perk}</div>`));
-    if (!own) it.appendChild(pbtn(eurH(c.cost), () => holdBuy(c.cost, () => {
-      if (!H.offices) H.offices = {}; H.offices[k] = S.day;
-      S.hezQ.push(officeCount() === 4 ? 'news:Dört ofisin de açık evlat! New York, İstanbul, Tokyo, Seul... Artık gerçek bir dünya şirketisin. Ortak giderler azaldı, holding giderlerin %20\'ye indi.' : `news:Yeni ofisin açıldı evlat: ${c.name}! ${c.perk}`);
-    }), (S.holding || 0) < c.cost));
-    q.appendChild(it);
+    const c = HQ_CITIES[k], own = hasOffice(k), it = h('div', 'office' + (own ? ' on' : ''));
+    it.innerHTML = `<div class="oi">${c.icon}</div><div class="onm">${c.name}</div><div class="op">${c.perk}</div>`;
+    if (own) it.appendChild(h('div', 'ostat', 'Açık'));
+    else {
+      const b = h('button', 'dcta', `Aç ${eurH(c.cost)}`); b.disabled = (S.holding || 0) < c.cost;
+      b.onclick = () => holdBuy(c.cost, () => {
+        if (!H.offices) H.offices = {}; H.offices[k] = S.day;
+        S.hezQ.push(officeCount() === 4 ? 'news:Dört ofisin de açık evlat! New York, İstanbul, Tokyo, Seul... Artık gerçek bir dünya şirketisin. Ortak giderler azaldı, holding giderlerin %20\'ye indi.' : `news:Yeni ofisin açıldı evlat: ${c.name}! ${c.perk}`);
+      });
+      it.appendChild(b);
+    }
+    grid.appendChild(it);
   }
+  q.appendChild(grid);
   body.appendChild(q);
 }
 
