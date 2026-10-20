@@ -71,7 +71,7 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 - **Turist sayısı:** Günün turisti fiyattan bağımsızdır (pazar talebi + otel misafirleri + rehber 5 + influencer 8 + fiyatsız popülerlik bonusu). Fiyat sadece kaçının seni seçtiğini değiştirir. Fiyat algısı eşikleri: fiyat isteği ≥%85 uygun, ≥%60 biraz pahalı, ≥%35 pahalı, altı çok pahalı.
 - **Dağıtım sırası:** önce sözleşmeli kaynaklar (otel, rehber, influencer), sonra pazar, en son popülerlik bonusu. Boş koltuğu olanlara taşma havuzu dağıtılır.
 - **Yıldız:** `clamp(3 + (rep − 0,75) × 4, 1, 5)`. Popülerlik 0,4–1,4 arasında tutulur.
-- **PR tavanı:** Otel anlaşması ya da sahip olunan otel yoksa ve son 10 günde rehber uçuşu yapılmadıysa popülerlik 4,2★'ı geçemez.
+- **PR tavanı:** Otel anlaşması ya da sahip olunan otel yoksa ve son 10 günde rehber uçuşu yapılmadıysa popülerlik 4,2★'ı geçemez; son 10 günde influencer kampanyası varsa tavan 4,5★.
 - **4,5★ üstü:**
   - Günde −0,006 popülerlik.
   - İyi iniş popülerlik getirmez.
