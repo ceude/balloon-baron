@@ -173,6 +173,12 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .pclose{width:44px;height:44px;border-radius:14px;background:#fff;box-shadow:0 3px 0 var(--line);font-size:20px;font-weight:700}
 #tabBody{flex:1;overflow-y:auto;padding:8px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px));display:flex;flex-direction:column;gap:20px}
 #page .item{background:#fff;box-shadow:0 2px 0 var(--line)}
+#town{position:absolute;inset:0;z-index:6;background:#e9c79b;animation:pgin .22s ease-out}
+#town canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+#town .phead{position:relative;z-index:1;pointer-events:none}
+#town .phead h1{color:#2b2350;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+#town .pclose{pointer-events:auto}
+#town .thint{position:absolute;left:0;right:0;bottom:max(14px, env(safe-area-inset-bottom, 0px));text-align:center;font-size:13px;color:#5a3a2a;pointer-events:none}
 .sw8{width:66px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:13px;flex:none}
 .sw8.none{background:var(--haze);color:var(--ink2)}
 .adbtn{margin-top:8px;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:10px;background:var(--haze);box-shadow:0 2px 0 var(--line);font-size:13px;font-weight:600}
@@ -508,6 +514,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
     <div class="est" id="est"></div>
     <button class="big" id="psOk">Tamam</button>
   </div></div>
+  <div id="town" hidden><canvas id="tcv"></canvas><div class="phead"><h1>Şirketim</h1><button class="pclose" id="tClose" aria-label="Kapat">✕</button></div><div class="thint">Sürükle, iki parmakla yakınlaştır. Binalara dokun.</div></div>
   <div id="page" hidden><div class="phead"><h1 id="pTitle"></h1><button class="pclose" id="pClose" aria-label="Kapat">✕</button></div><div id="tabBody"></div></div>
 
   <div id="collect" hidden></div>
@@ -1530,6 +1537,7 @@ const ICONS = {
   bank: '<path d="M3 9.5 12 4l9 5.5M5.5 10.5v7M10 10.5v7M14 10.5v7M18.5 10.5v7M3 20.5h18"/>',
   market: '<path d="M4 20.5v-7M10 20.5V5M16 20.5v-10M2.5 20.5h19"/>',
   goals: '<path d="M5 21V4M5 4h11l-2 4 2 4H5"/>',
+  town: '<path d="M3 20.5h18M5 20.5v-8l4-3 4 3v8M13 20.5v-11l4-3 3 2.4v11.6M8 14.5h2M8 17.5h2M16 12.5h1.5M16 15.5h1.5"/>',
   world: '<circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.5 2.5 3.5 5.5 3.5 8.5s-1 6-3.5 8.5c-2.5-2.5-3.5-5.5-3.5-8.5s1-6 3.5-8.5z"/>'
 };
 const TABS = [['fleet', 'Filo'], ['crew', 'Ekip'], ['bank', 'Banka'], ['market', 'Pazar']];
@@ -1548,11 +1556,10 @@ function renderNav() {
     if (world && (Object.values(S.regions || {}).some(r => r.auto && r.auto.issue) || (isBaron('cap') && !ownsRegion('abq')))) g.appendChild(h('span', 'dot'));
     g.onclick = world ? () => openPage('holding') : showGoals; el.appendChild(g);
   }
-  for (const [k, label] of TABS) {
-    if (!unlocked(k)) continue;
-    const b = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS[k]}</svg></span>${label}`);
-    if (dots[k]) b.appendChild(h('span', 'dot'));
-    b.onclick = () => openPage(k);
+  { /* Şirketim: the company town replaces the separate fleet, crew, bank and market buttons */
+    const b = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS.town}</svg></span>Şirketim`);
+    if (dots.crew || dots.market) b.appendChild(h('span', 'dot'));
+    b.onclick = openTown;
     el.appendChild(b);
   }
 }
@@ -1969,7 +1976,7 @@ function showReport() {
 /* ---------- intro & setup ---------- */
 const INTRO = { y: 0, vy: 0, hold: false, t: 0, out: false };
 let pickI = 0, setupName = '';
-function hideAll() { page = null; ['hez', 'sheet', 'collect', 'page', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
+function hideAll() { page = null; TOWN.open = false; ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
 function startIntro() {
   if (!S.weather) S.weather = newWeather();
   buildWorld();
@@ -2234,10 +2241,10 @@ function showRepChart() {
   act('Otellerle anlaş', `Oteller misafirlerine seni önerir, her gün popülerlik ve turist getirir. ${S.hotels.length ? S.hotels.length + ' otelle anlaşman var.' : 'Henüz anlaşman yok.'}`, 'Oteller', () => { m.hidden = true; openPage('market'); setTimeout(() => { const t = [...document.querySelectorAll('#tabBody h2')].find(x => x.textContent === 'Otel anlaşmaları'); if (t) t.scrollIntoView(); }, 50); });
   const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
   act('Influencer kampanyası', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : `Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir.`, eur(influCost()), () => {
-    S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); hezAdd('influ'); m.hidden = true; refresh(); setTimeout(nextPopup, 300);
+    m.hidden = true; doInfluencer();
   }, icd > 0 || S.cash < influCost());
   act('Rehberlere tanıtım uçuşu', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', eur(GUIDE_COST), () => {
-    S.cash -= GUIDE_COST; S.rep = Math.min(1.4, S.rep + .05); S.guideCd = S.day + 5; S.guideUntil = S.day + 3; S.guideCount = (S.guideCount || 0) + 1; S.lastGuide = S.day; addReview('guide'); m.hidden = true; refresh();
+    m.hidden = true; doGuide();
   }, gcd > 0 || S.cash < GUIDE_COST);
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
@@ -3061,6 +3068,277 @@ function tabHolding(body) {
   q.appendChild(grid);
   body.appendChild(q);
 }
+
+/* ---------- Şirketim: isometric company town ---------- */
+/* Every office page becomes a place: tap a building to open it. Plots show what you can still build. */
+const TOWN = { open: false, z: 1, ox: 0, oy: 0, ptrs: new Map(), pinch: null, down: null, raf: 0, hits: [] };
+const TW = 128, TH = 64; /* tile size in world units */
+const tiso = (gx, gy) => [(gx - gy) * TW / 2, (gx + gy) * TH / 2];
+function openSection(pageKey, heading) {
+  openPage(pageKey);
+  if (heading) setTimeout(() => { const t = [...document.querySelectorAll('#tabBody h2')].find(x => x.textContent.startsWith(heading)); if (t) t.scrollIntoView(); }, 60);
+}
+function doInfluencer() {
+  S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); hezAdd('influ'); sfx('coin'); refresh(); setTimeout(nextPopup, 300);
+}
+function doGuide() {
+  S.cash -= GUIDE_COST; S.rep = Math.min(1.4, S.rep + .05); S.guideCd = S.day + 5; S.guideUntil = S.day + 3; S.guideCount = (S.guideCount || 0) + 1; S.lastGuide = S.day; addReview('guide'); sfx('coin'); refresh();
+}
+const UNLOCK_DAY = { fleet: 3, bank: 4, market: 5, crew: 6 };
+/* A small info card with one action, shown over the town. */
+function townCard(title, text, label, fn, dis) {
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card'); c.appendChild(h('h1', null, title)); c.appendChild(h('p', 'lead', text));
+  if (label) { const b = h('button', 'big', label); b.disabled = !!dis; b.onclick = () => { m.hidden = true; fn(); drawTown(); }; c.appendChild(b); }
+  const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
+function lockedCard(name, key) { townCard(name, `Bu bina ${UNLOCK_DAY[key]}. günde açılır. O zamana kadar ilk balonunla uçmaya devam et evlat.`); }
+
+/* The buildings: footprint on the grid, look, state (0 plot, 1 built, 2 grown), label and what a tap does. */
+function townBuildings() {
+  const L = [];
+  const add = (o) => L.push(o);
+  const n = S.balloons.length, np = S.pilots.length, ds = (S.designs || []).length;
+  add({ id: 'hangar', gx: 1, gy: 1, w: 3, d: 2, name: 'Hangar', look: 'hangar', lv: n >= 8 ? 2 : 1, sub: `Balon: ${n}`, tap: () => unlocked('fleet') ? openSection('fleet', 'Balonların') : lockedCard('Hangar', 'fleet') });
+  add({ id: 'shop', gx: 5, gy: 1, w: 2, d: 2, name: 'Balon atölyesi', look: 'workshop', lv: S.workshop ? (ds >= 3 ? 2 : 1) : 0,
+    sub: S.workshop ? `Tasarım: ${ds}` : `Kur: ${eur(WORKSHOP_COST)}`, tap: () => unlocked('fleet') ? openSection('fleet', 'Balon atölyesi') : lockedCard('Balon atölyesi', 'fleet') });
+  add({ id: 'office', gx: 9, gy: 1, w: 2, d: 2, name: 'Pilot ofisi', look: 'office', lv: unlocked('crew') ? (np >= 6 ? 2 : 1) : -1,
+    sub: unlocked('crew') ? `Pilot: ${np}` : 'Yakında', tap: () => unlocked('crew') ? openSection('crew') : lockedCard('Pilot ofisi', 'crew') });
+  add({ id: 'school', gx: 12, gy: 1, w: 2, d: 2, name: 'Pilot okulu', look: 'school', lv: S.school ? (np >= 8 ? 2 : 1) : (unlocked('crew') ? 0 : -1),
+    sub: S.school ? 'Açık' : `Kur: ${eur(SCHOOL_COST)}`, tap: () => unlocked('crew') ? openSection('crew', 'Pilot okulu') : lockedCard('Pilot okulu', 'crew') });
+  add({ id: 'bank', gx: 9, gy: 5, w: 2, d: 2, name: 'Banka', look: 'bank', lv: unlocked('bank') ? (S.loans.length ? 2 : 1) : -1,
+    sub: unlocked('bank') ? (S.loans.length ? `Kredi: ${S.loans.length}` : 'Kredi yok') : 'Yakında', tap: () => unlocked('bank') ? openSection('bank') : lockedCard('Banka', 'bank') });
+  add({ id: 'holding', gx: 12, gy: 5, w: 2, d: 2, name: 'Holding', look: 'tower', lv: anyBaron() ? 2 : -1,
+    sub: anyBaron() ? eurH(S.holding || 0) : 'Baron olunca', tap: () => anyBaron() ? openPage('holding') : showGoals() });
+  HOTELS.forEach((x, i) => {
+    const own = owns(x), deal = S.hotels.includes(x.id), lock = S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day;
+    add({ id: 'hotel' + i, gx: [1, 4, 1, 4][i], gy: [9, 9, 12, 12][i], w: i === 3 ? 3 : 2, d: 2, name: x.name, look: 'hotel', star: i, lv: own ? 2 : 1,
+      flag: own || deal ? myCol()[0] : lock ? (S.rivals.find(r => r.name === S.hotelTaken[x.id].by) || {}).col : null,
+      sub: own ? 'Senin' : deal ? 'Anlaşmalı' : lock ? 'Rakibinle anlaşmalı' : `${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ ister`,
+      tap: () => unlocked('market') ? openSection('market', 'Otel anlaşmaları') : lockedCard(x.name, 'market') });
+  });
+  const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
+  add({ id: 'influ', gx: 9, gy: 9, w: 2, d: 2, name: 'Influencer ajansı', look: 'agency', lv: unlocked('market') ? (S.day <= S.influUntil ? 2 : 1) : -1,
+    sub: !unlocked('market') ? 'Yakında' : S.day <= S.influUntil ? 'Kampanya sürüyor' : icd > 0 ? `Bekle: ${icd} gün` : eur(influCost()),
+    tap: () => !unlocked('market') ? lockedCard('Influencer ajansı', 'market') : townCard('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : 'Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir. Otelin yoksa popülerliğini 4,5★\'a kadar taşır.', `Kampanya yap ${eur(influCost())}`, doInfluencer, icd > 0 || S.cash < influCost()) });
+  add({ id: 'guide', gx: 12, gy: 9, w: 2, d: 2, name: 'Rehber ofisi', look: 'guide', lv: unlocked('market') ? (S.day <= (S.guideUntil || 0) ? 2 : 1) : -1,
+    sub: !unlocked('market') ? 'Yakında' : S.day <= (S.guideUntil || 0) ? 'Rehberler seni öneriyor' : gcd > 0 ? `Bekle: ${gcd} gün` : eur(GUIDE_COST),
+    tap: () => !unlocked('market') ? lockedCard('Rehber ofisi', 'market') : townCard('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', `Tanıtım uçuşu ${eur(GUIDE_COST)}`, doGuide, gcd > 0 || S.cash < GUIDE_COST) });
+  S.rivals.forEach((r, i) => add({ id: 'rival' + i, gx: 9 + i * 1.6, gy: 12.2, w: 1.2, d: 1.2, name: r.name, look: 'rival', lv: r.alive ? 1 : 0, col: r.col, col2: r.col2,
+    sub: r.alive ? `Balon: ${r.balloons.length}` : r.merged ? 'Birleşti' : r.forSale ? 'Satışta' : 'Kapandı', small: true,
+    tap: () => unlocked('market') ? openSection('market', 'Sen ve rakiplerin') : lockedCard(r.name, 'market') }));
+  return L;
+}
+
+/* ---------- isometric drawing ---------- */
+function tpoly(pts, fill, stroke) { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 1.5; ctx.stroke(); } }
+/* Box on the grid: returns its corners for decoration. h in world px. */
+function tbox(gx, gy, w, d, h, top, left, right) {
+  const A = tiso(gx, gy), B = tiso(gx + w, gy), C = tiso(gx + w, gy + d), D = tiso(gx, gy + d), up = p => [p[0], p[1] - h];
+  tpoly([D, C, up(C), up(D)], left);
+  tpoly([C, B, up(B), up(C)], right);
+  tpoly([up(A), up(B), up(C), up(D)], top);
+  return { A, B, C, D, a: up(A), b: up(B), c: up(C), d: up(D) };
+}
+/* Draw on a face: u runs along the bottom edge from p to q, v goes up h. fn draws in a unit square. */
+function tface(p, q, h, fn) { ctx.save(); ctx.transform(q[0] - p[0], q[1] - p[1], 0, -h, p[0], p[1]); fn(); ctx.restore(); }
+function arches(n, col, y0 = .1, hgt = .45, wd = .5) {
+  ctx.fillStyle = col;
+  for (let i = 0; i < n; i++) { const cx = (i + .5) / n, w = wd / n; ctx.beginPath(); ctx.moveTo(cx - w / 2, y0); ctx.lineTo(cx - w / 2, y0 + hgt - w / 2); ctx.quadraticCurveTo(cx, y0 + hgt + w * .3, cx + w / 2, y0 + hgt - w / 2); ctx.lineTo(cx + w / 2, y0); ctx.fill(); }
+}
+function tflag(x, y, col, t) {
+  ctx.strokeStyle = '#3a2416'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - 60); ctx.stroke();
+  const wv = Math.sin(t * 3 + x) * 4; ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x, y - 60); ctx.quadraticCurveTo(x + 18, y - 64 + wv, x + 34, y - 56); ctx.lineTo(x + 34, y - 40); ctx.quadraticCurveTo(x + 18, y - 46 + wv, x, y - 40); ctx.fill();
+}
+const STONE = { top: '#f3d6ae', left: '#d9a77a', right: '#b9825c' };
+function tplot(b, t) {
+  const A = tiso(b.gx, b.gy), B = tiso(b.gx + b.w, b.gy), C = tiso(b.gx + b.w, b.gy + b.d), D = tiso(b.gx, b.gy + b.d);
+  tpoly([A, B, C, D], '#c9a273', 'rgba(90,60,30,.5)');
+  ctx.setLineDash([8, 8]); tpoly([A, B, C, D], null, 'rgba(255,255,255,.6)'); ctx.setLineDash([]);
+  for (const p of [A, B, C, D]) { ctx.fillStyle = '#6a4426'; ctx.fillRect(p[0] - 3, p[1] - 22, 6, 22); }
+  const m = [(A[0] + C[0]) / 2, (A[1] + C[1]) / 2];
+  if (b.lv === -1) { /* scaffolding for what isn't open yet */
+    ctx.strokeStyle = '#8a6a48'; ctx.lineWidth = 3;
+    for (let i = -1; i <= 1; i++) { ctx.beginPath(); ctx.moveTo(m[0] + i * 30, m[1]); ctx.lineTo(m[0] + i * 30, m[1] - 90); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(m[0] - 30, m[1] - 30); ctx.lineTo(m[0] + 30, m[1] - 60); ctx.moveTo(m[0] - 30, m[1] - 60); ctx.lineTo(m[0] + 30, m[1] - 90); ctx.stroke();
+    return;
+  }
+  ctx.fillStyle = '#5a3a20'; ctx.fillRect(m[0] - 3, m[1] - 70, 6, 70);
+  ctx.fillStyle = '#fff6e6'; rrect(m[0] - 46, m[1] - 98, 92, 36, 6); ctx.fill(); ctx.strokeStyle = '#ff5e3a'; ctx.lineWidth = 3; ctx.stroke();
+  ctx.fillStyle = '#ff5e3a'; ctx.font = '800 20px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('SATILIK', m[0], m[1] - 73); ctx.textAlign = 'left';
+}
+function tbuilding(b, t) {
+  if (b.lv <= 0 && b.look !== 'rival') return tplot(b, t);
+  const g = b.gx + .15, k = b.gy + .15, w = b.w - .3, d = b.d - .3, big = b.lv === 2;
+  switch (b.look) {
+    case 'hangar': {
+      const h = big ? 120 : 95, f = tbox(g, k, w, d, h, '#e9d2b0', '#c79a72', '#a87a58');
+      tface(f.D, f.C, h, () => { ctx.fillStyle = '#4a3226'; ctx.beginPath(); ctx.moveTo(.18, 0); ctx.lineTo(.18, .55); ctx.quadraticCurveTo(.5, 1.05, .82, .55); ctx.lineTo(.82, 0); ctx.fill(); ctx.strokeStyle = 'rgba(255,220,180,.5)'; ctx.lineWidth = .01; for (let i = 1; i < 6; i++) { ctx.beginPath(); ctx.moveTo(.18 + i * .107, 0); ctx.lineTo(.18 + i * .107, .7); ctx.stroke(); } });
+      tface(f.C, f.B, h, () => arches(2, '#5a3a2a', .4, .4));
+      /* barrel roof stripes in company colors */
+      const c = myCol(); for (let i = 0; i < 4; i++) { const u0 = i / 4, u1 = (i + 1) / 4, P = (p, q, u) => [lerp(p[0], q[0], u), lerp(p[1], q[1], u)]; tpoly([P(f.a, f.b, u0), P(f.a, f.b, u1), P(f.d, f.c, u1), P(f.d, f.c, u0)], i % 2 ? c[1] : c[0]); }
+      if (big) tflag(f.b[0] - 10, f.b[1], myCol()[0], t);
+      break;
+    }
+    case 'workshop': {
+      const h = big ? 110 : 80, f = tbox(g, k, w, d, h, STONE.top, STONE.left, STONE.right);
+      tface(f.D, f.C, h, () => arches(2, '#5a3a2a', .05, .55, .6));
+      tface(f.C, f.B, h, () => { arches(1, '#ffcf7a', .45, .35, .4); });
+      /* a design swatch board on the roof */
+      const c = (S.designs && S.designs[S.designs.length - 1]) ? S.designs[S.designs.length - 1].cols : ['#ff5e3a', '#ffc23d', '#2b2350'];
+      c.forEach((col, i) => { ctx.fillStyle = col; ctx.beginPath(); ctx.arc(f.a[0] + (f.c[0] - f.a[0]) * (.3 + i * .2), f.a[1] + (f.c[1] - f.a[1]) * (.3 + i * .2), 9, 0, 7); ctx.fill(); });
+      if (big) tflag(f.b[0] - 10, f.b[1], c[0], t);
+      break;
+    }
+    case 'office': case 'school': case 'bank': case 'guide': {
+      const h = b.look === 'bank' ? 105 : big ? 115 : 85;
+      const pal = b.look === 'bank' ? { top: '#e8e2d6', left: '#c9bfae', right: '#a89e8c' } : STONE;
+      const f = tbox(g, k, w, d, h, pal.top, pal.left, pal.right);
+      tface(f.D, f.C, h, () => { arches(b.look === 'bank' ? 4 : 3, b.look === 'bank' ? '#7a6e5c' : '#5a3a2a', .08, b.look === 'bank' ? .6 : .45, b.look === 'bank' ? .35 : .55); });
+      tface(f.C, f.B, h, () => arches(2, '#ffcf7a', .5, .3, .4));
+      if (b.look === 'school') { /* bell tower */ const tb = tbox(g + w * .35, k + d * .35, .5, .5, h + 45, '#f3d6ae', '#d9a77a', '#b9825c'); ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.arc((tb.a[0] + tb.c[0]) / 2, (tb.a[1] + tb.c[1]) / 2 - 22, 9, 0, 7); ctx.fill(); }
+      if (b.look === 'bank') { ctx.fillStyle = '#c98a00'; ctx.font = '800 28px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText(RD().cur, (f.a[0] + f.c[0]) / 2, (f.a[1] + f.c[1]) / 2 + 10); ctx.textAlign = 'left'; }
+      if (b.look === 'guide') { ctx.fillStyle = '#3ad0c0'; ctx.beginPath(); ctx.arc((f.a[0] + f.c[0]) / 2, (f.a[1] + f.c[1]) / 2, 16, 0, 7); ctx.fill(); ctx.fillStyle = '#fff'; ctx.font = '800 22px "Barlow Condensed"'; ctx.textAlign = 'center'; ctx.fillText('i', (f.a[0] + f.c[0]) / 2, (f.a[1] + f.c[1]) / 2 + 8); ctx.textAlign = 'left'; }
+      if (big) tflag(f.b[0] - 10, f.b[1], b.look === 'guide' ? '#3ad0c0' : myCol()[0], t);
+      break;
+    }
+    case 'agency': {
+      const h = 120, f = tbox(g, k, w, d, h, '#3a2f4a', '#2b2350', '#1f1838');
+      tface(f.D, f.C, h, () => { ctx.fillStyle = 'rgba(160,220,255,.5)'; for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) ctx.fillRect(.08 + i * .23, .1 + j * .22, .16, .14); });
+      tface(f.C, f.B, h, () => { ctx.fillStyle = 'rgba(160,220,255,.4)'; for (let j = 0; j < 4; j++) ctx.fillRect(.1, .1 + j * .22, .8, .12); });
+      /* neon play sign, pulsing while a campaign runs */
+      const cx = (f.a[0] + f.c[0]) / 2, cy = (f.a[1] + f.c[1]) / 2 - 20, glow = big ? .6 + .4 * Math.sin(t * 5) : .5;
+      ctx.save(); ctx.globalAlpha = glow; ctx.shadowColor = '#ff6fa8'; ctx.shadowBlur = big ? 30 : 8; ctx.fillStyle = '#ff6fa8'; rrect(cx - 30, cy - 22, 60, 44, 12); ctx.fill(); ctx.restore();
+      ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.moveTo(cx - 8, cy - 12); ctx.lineTo(cx + 12, cy); ctx.lineTo(cx - 8, cy + 12); ctx.fill();
+      break;
+    }
+    case 'tower': {
+      const f = tbox(g + .2, k + .2, w - .4, d - .4, 260, '#ffe6a8', '#d9a64a', '#a87420');
+      tface(f.D, f.C, 260, () => { ctx.fillStyle = 'rgba(80,40,10,.25)'; for (let j = 0; j < 12; j++) ctx.fillRect(0, j / 12, 1, .02); });
+      tface(f.C, f.B, 260, () => { ctx.fillStyle = 'rgba(80,40,10,.3)'; for (let j = 0; j < 12; j++) ctx.fillRect(0, j / 12, 1, .02); });
+      const cx = (f.a[0] + f.c[0]) / 2, cy = (f.a[1] + f.c[1]) / 2; ctx.save(); ctx.translate(cx, cy - 16); ctx.scale(.9, .9);
+      ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.moveTo(-26, 14); ctx.lineTo(-30, -14); ctx.lineTo(-14, 0); ctx.lineTo(0, -22); ctx.lineTo(14, 0); ctx.lineTo(30, -14); ctx.lineTo(26, 14); ctx.closePath(); ctx.fill(); ctx.restore();
+      break;
+    }
+    case 'hotel': {
+      const tall = [70, 95, 110, 140][b.star], f = tbox(g, k, w, d, tall, STONE.top, STONE.left, STONE.right);
+      tface(f.D, f.C, tall, () => { const rows = b.star + 1; for (let r = 0; r < rows; r++) { ctx.save(); ctx.translate(0, r / rows); ctx.scale(1, 1 / rows); arches(3, r % 2 ? '#ffcf7a' : '#5a3a2a', .15, .6, .5); ctx.restore(); } });
+      tface(f.C, f.B, tall, () => arches(2, '#ffcf7a', .3, .4, .4));
+      if (b.star === 3) { ctx.fillStyle = '#6fbfd8'; tpoly([tiso(g + .3, k + d + .1), tiso(g + w - .3, k + d + .1), tiso(g + w - .3, k + d + .6), tiso(g + .3, k + d + .6)], '#6fbfd8'); } /* pool */
+      const cx = (f.a[0] + f.c[0]) / 2, cy = (f.a[1] + f.c[1]) / 2;
+      ctx.fillStyle = '#ffc23d'; ctx.font = '800 22px "Barlow Condensed"'; ctx.textAlign = 'center'; ctx.fillText('★'.repeat(b.star + 2), cx, cy + 8); ctx.textAlign = 'left';
+      if (b.flag) tflag(f.b[0] - 10, f.b[1], b.flag, t);
+      if (b.lv === 2) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const gl = ctx.createRadialGradient(cx, cy, 0, cx, cy, 120); gl.addColorStop(0, 'rgba(255,200,90,.35)'); gl.addColorStop(1, 'rgba(255,200,90,0)'); ctx.fillStyle = gl; ctx.fillRect(cx - 120, cy - 120, 240, 240); ctx.restore(); }
+      break;
+    }
+    case 'rival': {
+      const h = b.lv ? 70 : 30, f = tbox(g, k, w, d, h, b.lv ? '#e8e2d6' : '#9a8a78', b.lv ? mix(b.col, '#ffffff', .2) : '#7a6a58', b.lv ? mix(b.col, '#000000', .25) : '#5a4a38');
+      if (b.lv) tflag(f.b[0] - 6, f.b[1], b.col, t);
+      else { ctx.strokeStyle = '#3a2416'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(f.d[0], f.d[1]); ctx.lineTo(f.b[0], f.b[1]); ctx.stroke(); }
+      break;
+    }
+  }
+}
+function tdecor(t) {
+  /* roads */
+  const road = (gx0, gy0, gx1, gy1) => tpoly([tiso(gx0, gy0), tiso(gx1, gy0), tiso(gx1, gy1), tiso(gx0, gy1)], '#b08a62');
+  road(0, 7.6, 15, 8.4); road(7.6, 0, 8.4, 15); road(0, 3.6, 7.6, 4.0);
+  ctx.setLineDash([14, 14]); ctx.strokeStyle = 'rgba(255,240,210,.55)'; ctx.lineWidth = 2;
+  ctx.beginPath(); ctx.moveTo(...tiso(0, 8)); ctx.lineTo(...tiso(15, 8)); ctx.moveTo(...tiso(8, 0)); ctx.lineTo(...tiso(8, 15)); ctx.stroke(); ctx.setLineDash([]);
+  /* launch field: your balloons ready to fly */
+  tpoly([tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)], '#a9b46a', 'rgba(60,80,30,.4)');
+}
+/* Fairy chimneys and balloons sorted with the buildings by depth. */
+function townScenery() {
+  const R = mulberry32(19), items = [];
+  const spots = [[0.3, 6.5], [14.4, 3.2], [14.5, 7.2], [6.9, 13.4], [0.2, 14.2], [14.4, 14.3], [7.2, 2.8], [3.6, 14.6], [11, 14.6], [14.6, 11.5], [0.5, 3.4]];
+  for (const [gx, gy] of spots) items.push({ depth: gx + gy, draw: () => { const [x, y] = tiso(gx, gy), hh = 120 + R() * 120; chimney(x, y, hh * .4, hh, '#e7b98e', '#c0906a', '#6a4430'); } });
+  const fl = S.balloons.slice(0, 6);
+  fl.forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, draw: () => { const [x, y] = tiso(gx, gy); balloon(x, y, b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (T * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
+  return items;
+}
+/* Name tag above a building. Small when zoomed out (name only), full when zoomed in. Returns its rect. */
+function townLabel(b, sx, sy, sc, full, taken) {
+  const fn = Math.round((b.small ? 13 : 16) * sc), fs = Math.round((b.small ? 11 : 13) * sc);
+  ctx.font = `800 ${fn}px "Barlow Condensed", sans-serif`; const nw = ctx.measureText(b.name).width;
+  ctx.font = `600 ${fs}px Barlow, sans-serif`; const sw = full ? ctx.measureText(b.sub).width : 0;
+  const w = Math.max(nw, sw) + 16 * sc, hh = (full ? fn + fs + 14 : fn + 10) * 1;
+  const rect = [sx - w / 2, sy - hh, sx + w / 2, sy];
+  if (taken.some(r => rect[0] < r[2] && rect[2] > r[0] && rect[1] < r[3] && rect[3] > r[1])) return;
+  taken.push(rect);
+  ctx.fillStyle = b.lv === -1 ? 'rgba(43,35,80,.72)' : 'rgba(255,250,243,.94)'; rrect(rect[0], rect[1], w, hh, 9 * sc); ctx.fill();
+  if (b.lv === 0) { ctx.strokeStyle = '#ff5e3a'; ctx.lineWidth = 1.5; rrect(rect[0], rect[1], w, hh, 9 * sc); ctx.stroke(); }
+  ctx.textAlign = 'center';
+  ctx.fillStyle = b.lv === -1 ? '#fff' : '#2b2350'; ctx.font = `800 ${fn}px "Barlow Condensed", sans-serif`; ctx.fillText(b.name, sx, rect[1] + fn + 3);
+  if (full) { ctx.fillStyle = b.lv === 0 ? '#ff5e3a' : b.lv === -1 ? 'rgba(255,255,255,.75)' : '#6c6488'; ctx.font = `600 ${fs}px Barlow, sans-serif`; ctx.fillText(b.sub, sx, sy - 6); }
+  ctx.textAlign = 'left';
+}
+function drawTown() {
+  const cvs = $('tcv'); if (!cvs || !TOWN.open) return;
+  const r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (cvs.width !== Math.round(r.width * dpr)) { cvs.width = Math.round(r.width * dpr); cvs.height = Math.round(r.height * dpr); }
+  const keep = ctx; ctx = cvs.getContext('2d');
+  try {
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const g = ctx.createLinearGradient(0, 0, 0, r.height); g.addColorStop(0, '#f6d3a4'); g.addColorStop(1, '#d9a874'); ctx.fillStyle = g; ctx.fillRect(0, 0, r.width, r.height);
+    ctx.setTransform(dpr * TOWN.z, 0, 0, dpr * TOWN.z, dpr * TOWN.ox, dpr * TOWN.oy);
+    tpoly([tiso(-1, -1), tiso(16, -1), tiso(16, 16), tiso(-1, 16)], '#e2bd8c', 'rgba(150,100,60,.4)');
+    tdecor(T);
+    const bs = townBuildings();
+    const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => tbuilding(b, T) })).concat(townScenery());
+    items.sort((a, b) => a.depth - b.depth).forEach(it => it.draw());
+    /* labels in screen space, and hit boxes for taps */
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    TOWN.hits = [];
+    const sc = clamp(TOWN.z / .5, .75, 1.15), full = TOWN.z >= .42, taken = [];
+    /* front buildings label first so they win overlaps; the rest appear as you zoom in */
+    for (const b of bs.slice().sort((p, q) => (q.gx + q.gy) - (p.gx + p.gy))) {
+      const [cx, cy] = tiso(b.gx + b.w / 2, b.gy + b.d / 2), top = b.look === 'tower' ? 290 : b.small ? 80 : b.lv <= 0 ? 100 : 135;
+      const sx = cx * TOWN.z + TOWN.ox, sy = (cy - top) * TOWN.z + TOWN.oy;
+      const pts = [tiso(b.gx, b.gy), tiso(b.gx + b.w, b.gy), tiso(b.gx + b.w, b.gy + b.d), tiso(b.gx, b.gy + b.d)].map(([x, y]) => [x * TOWN.z + TOWN.ox, y * TOWN.z + TOWN.oy]);
+      TOWN.hits.push({ b, pts, box: [sx - 50, sy - 30, sx + 50, Math.max(...pts.map(p => p[1]))], depth: b.gx + b.gy });
+      townLabel(b, sx, sy, sc, full, taken);
+    }
+  } finally { ctx = keep; }
+}
+function townLoop() { if (!TOWN.open) return; drawTown(); TOWN.raf = requestAnimationFrame(townLoop); }
+function openTown() {
+  const el = $('town'); el.hidden = false; TOWN.open = true; el.style.paddingTop = $('hud').offsetHeight + 'px';
+  const r = el.getBoundingClientRect();
+  TOWN.z = clamp(r.width / 1150, .3, .9);
+  const [cx, cy] = tiso(6.5, 6.5); TOWN.ox = r.width / 2 - cx * TOWN.z; TOWN.oy = r.height * .5 - cy * TOWN.z;
+  cancelAnimationFrame(TOWN.raf); townLoop();
+}
+function closeTown() { TOWN.open = false; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh(); }
+function townTap(x, y) {
+  const inPoly = (p, pts) => { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; };
+  const hit = TOWN.hits.slice().sort((a, b) => b.depth - a.depth).find(hh => inPoly([x, y], hh.pts) || (x > hh.box[0] && x < hh.box[2] && y > hh.box[1] && y < hh.box[3]));
+  if (hit) { sfx('click'); hit.b.tap(); }
+}
+(function townInput() {
+  const cvs = $('tcv');
+  const pos = e => { const r = cvs.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
+  const zoomAt = (px, py, k) => { const z = clamp(TOWN.z * k, .25, 1.6); k = z / TOWN.z; TOWN.ox = px - (px - TOWN.ox) * k; TOWN.oy = py - (py - TOWN.oy) * k; TOWN.z = z; };
+  cvs.addEventListener('pointerdown', e => { cvs.setPointerCapture(e.pointerId); TOWN.ptrs.set(e.pointerId, pos(e)); if (TOWN.ptrs.size === 1) TOWN.down = { p: pos(e), t: performance.now(), moved: 0 }; else TOWN.down = null; });
+  cvs.addEventListener('pointermove', e => {
+    if (!TOWN.ptrs.has(e.pointerId)) return;
+    const prev = TOWN.ptrs.get(e.pointerId), cur = pos(e); TOWN.ptrs.set(e.pointerId, cur);
+    if (TOWN.ptrs.size === 1) { TOWN.ox += cur[0] - prev[0]; TOWN.oy += cur[1] - prev[1]; if (TOWN.down) TOWN.down.moved += Math.hypot(cur[0] - prev[0], cur[1] - prev[1]); }
+    else if (TOWN.ptrs.size === 2) {
+      const [a, b] = [...TOWN.ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
+      if (TOWN.pinch) zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / TOWN.pinch);
+      TOWN.pinch = d;
+    }
+  });
+  const up = e => {
+    if (TOWN.down && TOWN.ptrs.size === 1 && TOWN.down.moved < 10 && performance.now() - TOWN.down.t < 500) townTap(...pos(e));
+    TOWN.ptrs.delete(e.pointerId); if (TOWN.ptrs.size < 2) TOWN.pinch = null; if (!TOWN.ptrs.size) TOWN.down = null;
+  };
+  cvs.addEventListener('pointerup', up); cvs.addEventListener('pointercancel', up);
+  cvs.addEventListener('wheel', e => { e.preventDefault(); const p = pos(e); zoomAt(p[0], p[1], e.deltaY < 0 ? 1.1 : 1 / 1.1); }, { passive: false });
+  $('tClose').onclick = closeTown;
+})();
 
 /* ---------- boot ---------- */
 $('go').onclick = () => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); };
