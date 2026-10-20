@@ -22,7 +22,6 @@ struct ReviewChirpView: View {
                     .frame(maxWidth: 440, alignment: .leading)
                     .background(Color.white.opacity(0.96), in: RoundedRectangle(cornerRadius: 16))
                     .shadow(color: Color(red: 20 / 255, green: 10 / 255, blue: 40 / 255).opacity(0.25), radius: 7, y: 4)
-                    .padding(.horizontal, 12)
                     .transition(.opacity.combined(with: .offset(y: -8)))
             }
         }

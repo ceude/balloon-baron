@@ -62,13 +62,13 @@ struct HomeView: View {
                         }
                     }
                 HStack(alignment: .top, spacing: 10) {
-                    if let w = s.weather { weatherWidget(w, winter: s.winter != nil) }
-                    Spacer(minLength: 0)
+                    // Passenger reviews pop up below the weather, left of the side buttons, so they never cover either.
+                    VStack(alignment: .leading, spacing: 10) {
+                        if let w = s.weather { weatherWidget(w, winter: s.winter != nil) }
+                        if !store.collecting { ReviewChirpView() }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
                     navColumn(s)
-                }
-                // Passenger reviews pop up under the HUD, over the sky, like the prototype's chirp.
-                .overlay(alignment: .top) {
-                    if !store.collecting { ReviewChirpView() }
                 }
                 Spacer(minLength: 0)
                 if !store.collecting {
