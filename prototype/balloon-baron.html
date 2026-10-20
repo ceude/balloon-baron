@@ -867,7 +867,6 @@ function unlockCheck() {
   hezAdd('welcome');
   if (S.day >= 2) hezAdd('goals');
   if (S.day >= 6) hezAdd('pr');
-  if (S.day >= 9 && S.unl.market) hezAdd('influ');
   if (S.weather.flag === 'yellow') hezAdd('yellow');
   if (S.weather.flag === 'red') hezAdd('red');
   if (S.weather.mission) hezAdd('mission');
@@ -2234,7 +2233,7 @@ function showRepChart() {
   act('Otellerle anlaş', `Oteller misafirlerine seni önerir, her gün popülerlik ve turist getirir. ${S.hotels.length ? S.hotels.length + ' otelle anlaşman var.' : 'Henüz anlaşman yok.'}`, 'Oteller', () => { m.hidden = true; openPage('market'); setTimeout(() => { const t = [...document.querySelectorAll('#tabBody h2')].find(x => x.textContent === 'Otel anlaşmaları'); if (t) t.scrollIntoView(); }, 50); });
   const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
   act('Influencer kampanyası', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : `Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir.`, eur(influCost()), () => {
-    S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); m.hidden = true; refresh();
+    S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); hezAdd('influ'); m.hidden = true; refresh(); setTimeout(nextPopup, 300);
   }, icd > 0 || S.cash < influCost());
   act('Rehberlere tanıtım uçuşu', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', eur(GUIDE_COST), () => {
     S.cash -= GUIDE_COST; S.rep = Math.min(1.4, S.rep + .05); S.guideCd = S.day + 5; S.guideUntil = S.day + 3; S.guideCount = (S.guideCount || 0) + 1; S.lastGuide = S.day; addReview('guide'); m.hidden = true; refresh();
