@@ -1548,7 +1548,6 @@ function openPage(k) { page = k; $('page').hidden = false; $('page').classList.t
 function closePage() { page = null; $('page').hidden = true; refresh(); }
 function renderNav() {
   const el = $('nav'); el.replaceChildren();
-  const dots = { crew: S.balloons.some(b => canFly(b) === 'nopilot') || !licenseOk(), market: S.rivals.some(r => (r.offer && r.alive && !r.offerNo) || (r.forSale && !r.saleNo)) };
   { /* tek buton: baron olana kadar "Hedef", sonra "Dünya" (bölgenin hedefleri ve harita içinde) */
     const C = isBaron() ? null : chap()[S.chapter || 0], done = C ? C.goals.filter(goalDone).length : 0, world = anyBaron();
     const g = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS[world ? 'world' : 'goals']}</svg></span>${world ? 'Holding' : 'Hedef'}`);
@@ -1556,13 +1555,10 @@ function renderNav() {
     if (world && (Object.values(S.regions || {}).some(r => r.auto && r.auto.issue) || (isBaron('cap') && !ownsRegion('abq')))) g.appendChild(h('span', 'dot'));
     g.onclick = world ? () => openPage('holding') : showGoals; el.appendChild(g);
   }
-  { /* Şirketim: the company town replaces the separate fleet, crew, bank and market buttons */
-    const b = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS.town}</svg></span>Şirketim`);
-    if (dots.crew || dots.market) b.appendChild(h('span', 'dot'));
-    b.onclick = openTown;
-    el.appendChild(b);
-  }
+  /* no Şirketim button: the town is the home screen; its alerts sit on the zones */
 }
+/* Things that need you, shown as red dots on the town's zones. */
+function navDots() { return { crew: S.balloons.some(b => canFly(b) === 'nopilot') || !licenseOk(), market: S.rivals.some(r => (r.offer && r.alive && !r.offerNo) || (r.forSale && !r.saleNo)) }; }
 function renderTab() {
   if (!page) return;
   const body = $('tabBody'), st = body.scrollTop; body.replaceChildren();
@@ -1694,7 +1690,7 @@ function showFleetPlan() {
 function placeWidgets() {
   const hud = $('hud').offsetHeight;
   $('wx').style.top = (hud + 92) + 'px';
-  $('nav').style.bottom = ($('dock').offsetHeight + 24) + 'px';
+  $('nav').style.top = (hud + 12) + 'px';
 }
 function stepPrice(d) { S.price = clamp(S.price + d, PRICE_MIN, PRICE_MAX); $('pVal').textContent = eur(S.price); renderAct(); }
 function holdRepeat(btn, d) {
@@ -3576,9 +3572,9 @@ const LABEL_Z = .55;
 const TOWN_ZONES = [
   { text: 'AMBAR', gx: 4, gy: 3.55, at: [4, 2] },
   { text: 'FİNANS', gx: 11.3, gy: 3.85, at: [11.3, 2] },
-  { text: 'EKİP', gx: 10.9, gy: 7.5, at: [11, 6] },
+  { text: 'EKİP', gx: 10.9, gy: 7.5, at: [11, 6], alert: 'crew' },
   { text: 'AJANS', gx: 15.05, gy: 10, at: [11, 10], side: true },
-  { text: 'ŞİRKETLER', gx: 11.9, gy: 14.25, at: [11.9, 12.8] },
+  { text: 'ŞİRKETLER', gx: 11.9, gy: 14.25, at: [11.9, 12.8], alert: 'market' },
   { text: 'OTELLER', gx: 3.3, gy: 15.25, at: [3.3, 11.8] },
 ];
 const ZONE_PX = 95; /* font size; 100 px = one tile */
@@ -3731,6 +3727,12 @@ function renderTown(V, w, h, dpr, offY) {
       const pts = [tiso(b.gx, b.gy), tiso(b.gx + b.w, b.gy), tiso(b.gx + b.w, b.gy + b.d), tiso(b.gx, b.gy + b.d)].map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]);
       V.hits.push({ b, pts, box: [sx - 50 * V.z / .5, sy - 30, sx + 50 * V.z / .5, Math.max(...pts.map(p => p[1]))], depth: b.gx + b.gy });
       if (full) townLabel(b, sx, sy, sc, full, taken);
+    }
+    /* red dots on zones that need you: pilots or licence (EKİP), offers and sales (ŞİRKETLER) */
+    const dots = navDots();
+    for (const zn of TOWN_ZONES) if (zn.alert && dots[zn.alert]) {
+      const q = zoneQuad(zn), p = [q[1][0] * V.z + V.ox + 4, q[1][1] * V.z + V.oy], r = 7 + Math.sin(T * 4) * 1.2; /* just past the end of the word */
+      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(p[0] + 6, p[1] - 6, r + 2, 0, 7); ctx.fill(); ctx.fillStyle = '#e5432f'; ctx.beginPath(); ctx.arc(p[0] + 6, p[1] - 6, r, 0, 7); ctx.fill();
     }
     V.zoneHits = V.z < LABEL_Z ? TOWN_ZONES.map(zn => ({ zn, pts: zoneQuad(zn).map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]) })) : [];
   } finally { ctx.restore(); TV = prevV; }
