@@ -11,7 +11,7 @@ const fs = require('fs');
   const p = await b.newPage({ viewport: { width: 1290, height: 2796 } });
   const errs = [];
   p.on('pageerror', e => errs.push(e.message));
-  for (let s = 1; s <= 5; s++) {
+  for (let s = 1; s <= 7; s++) {
     await p.goto('file://' + path.join(__dirname, 'render.html') + `?s=${s}&lang=${lang}`);
     await p.waitForFunction(() => document.title === 'done', null, { timeout: 60000 });
     await p.locator('#c').screenshot({ path: path.join(out, `${s}.jpg`), type: 'jpeg', quality: 93 });

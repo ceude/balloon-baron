@@ -159,6 +159,7 @@ function balloon(x, y, R, cols, o = {}) {
     for (let i = steps; i >= 0; i--) { const yy = lerp(topY - 4, mouth + 4, i / steps); p.lineTo(half(yy) * Math.sin(a1) * 1.002, yy); }
     p.closePath(); ctx.fillStyle = cols[k % cols.length]; ctx.fill(p);
   }
+  if (o.pattern) pattern(o.pattern, R, topY, mouth, o.pc || ['#ffc23d', '#ffffff']);
   if (o.band) { ctx.fillStyle = o.band; ctx.fillRect(-R, R * .38, R * 2, R * .2); ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.fillRect(-R, R * .38, R * 2, R * .025); ctx.fillRect(-R, R * .555, R * 2, R * .025); }
   if (o.text) { ctx.fillStyle = o.textColor || '#fff'; ctx.font = `800 ${R * .2}px BC`; ctx.textAlign = 'center'; ctx.fillText(o.text, 0, R * .53); }
   /* volume: key light, core shadow, bounce, and a glow from the flame */
@@ -198,6 +199,21 @@ function balloon(x, y, R, cols, o = {}) {
   ctx.fillStyle = '#2a160c'; ctx.fillRect(-bw / 2 - 2, by - R * .02, bw + 4, R * .035);
   if (o.people) { ctx.fillStyle = '#1d1418'; for (let i = 0; i < o.people; i++) { const px = -bw * .35 + i * bw * .7 / Math.max(1, o.people - 1); ctx.beginPath(); ctx.arc(px, by - R * .05, R * .028, 0, 7); ctx.fill(); ctx.fillRect(px - R * .025, by - R * .03, R * .05, R * .05); } }
   ctx.restore();
+}
+/* The studio's patterns, painted inside the clipped envelope (origin at the equator). */
+function pattern(kind, R, top, mouth, [c2, c3]) {
+  const star = (x, y, r, c) => { ctx.fillStyle = c; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; ctx.lineTo(x + Math.cos(a) * rr, y + Math.sin(a) * rr); } ctx.closePath(); ctx.fill(); };
+  const heart = (x, y, s, c) => { ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(x, y + s * .35); ctx.bezierCurveTo(x - s * 1.1, y - s * .35, x - s * .45, y - s * 1.05, x, y - s * .45); ctx.bezierCurveTo(x + s * .45, y - s * 1.05, x + s * 1.1, y - s * .35, x, y + s * .35); ctx.fill(); };
+  switch (kind) {
+    case 'stars': ctx.fillStyle = c2; ctx.fillRect(-R, -R * .12, R * 2, R * .42); for (const [dx, dy, s] of [[-.5, -.45, .2], [.45, -.5, .17], [0, -.78, .14], [-.35, .75, .15], [.4, .7, .17]]) star(dx * R, dy * R, s * R, c3); break;
+    case 'hearts': for (const [dx, dy, s, k] of [[-.45, -.4, .22, 0], [.4, -.5, .2, 1], [0, .05, .3, 0], [-.4, .65, .18, 1], [.42, .6, .2, 0]]) heart(dx * R, dy * R, s * R, k ? c3 : c2); break;
+    case 'zigzag': for (let r = 0; r < 4; r++) { ctx.fillStyle = r % 2 ? c3 : c2; ctx.beginPath(); const y0 = top + R * (.5 + r * .6); for (let k = 0; k <= 8; k++) ctx.lineTo(-R + k * R / 4, y0 + (k % 2 ? -R * .14 : R * .14)); for (let k = 8; k >= 0; k--) ctx.lineTo(-R + k * R / 4, y0 + R * .24 + (k % 2 ? -R * .14 : R * .14)); ctx.fill(); } break;
+    case 'dots': for (let i = 0; i < 5; i++) for (let j = 0; j < 7; j++) { ctx.fillStyle = (i + j) % 3 ? c2 : c3; ctx.beginPath(); ctx.arc(-R + R * .2 + i * R * .42 + (j % 2) * R * .21, top + R * .25 + j * R * .42, R * .11, 0, 7); ctx.fill(); } break;
+    case 'sunburst': for (let k = 0; k < 14; k++) { ctx.fillStyle = k % 2 ? c2 : c3; ctx.beginPath(); ctx.moveTo(0, R * 1.5); const a0 = -Math.PI / 2 + (k - 7) * .16, a1 = a0 + .16; ctx.lineTo(Math.cos(a0) * R * 4, R * 1.5 + Math.sin(a0) * R * 4); ctx.lineTo(Math.cos(a1) * R * 4, R * 1.5 + Math.sin(a1) * R * 4); ctx.fill(); } break;
+    case 'waves': ctx.lineWidth = R * .16; ctx.lineCap = 'round'; for (let r = 0; r < 5; r++) { ctx.strokeStyle = r % 2 ? c2 : c3; ctx.beginPath(); const y0 = top + R * (.45 + r * .48); for (let k = 0; k <= 20; k++) { const xx = -R + k * R / 10, yy = y0 + Math.sin(k * .9) * R * .09; k ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); } break;
+    case 'rainbow': { const cs = ['#e5432f', '#ff8a3d', '#ffc23d', '#22a45d', '#3ad0c0', '#9b7be0']; for (let k = 0; k < 6; k++) { ctx.fillStyle = cs[k]; ctx.fillRect(-R + k * R / 3, top, R / 3 + .6, mouth - top + 10); } break; }
+    case 'checker': { const s = R * .4; for (let i = 0; i < 6; i++) for (let j = 0; j < 8; j++) if ((i + j) % 2) { ctx.fillStyle = (i + j) % 4 === 1 ? c2 : c3; ctx.fillRect(-R + i * s, top + j * s, s, s); } break; }
+  }
 }
 function flame(x, y, s) {
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
@@ -301,11 +317,15 @@ function crown(x, y, s) {
 const T = {
   tr: {
     s1: ['KAPADOKYA’NIN EN BÜYÜK', 'BALON İMPARATORLUĞU', 'SENİN OLSUN', 'Bir sepetle başla, göğü fethet'],
-    s2: ['BRÜLÖRÜ YAK', 'RÜZGÂRI OKU', 'KUSURSUZ İN', 'Uçuşu kendin yap, yolcular %25 fazla öder'],
+    s2: ['BRÜLÖRÜ YAK', 'RÜZGÂRI OKU', 'KUSURSUZ İN', 'İster kendin uç, ister pilot çalıştır'],
+    s6: ['ATÖLYE KUR', 'BALONLARINI', 'TASARLA', 'Yaratıcı desenler, popülerlik getirir'],
+    s7: ['PİLOT OKULU AÇ', 'KENDİ PİLOTLARINI', 'YETİŞTİR', 'Çaylaktan kıdemliye, filon büyüsün'],
     s3: ['OTELLERİ AL', 'INFLUENCER’LARLA', 'ANLAŞ', 'Popülerliğini 5 yıldıza taşı'],
     s4: ['RAKİPLERİNİ BATIR', 'GÖĞÜN TEK', 'HÂKİMİ OL', 'Kapadokya Baronu unvanı seni bekliyor'],
     s5: ['BİR SEPETTEN', 'HOLDİNGE', 'Amerika’da uç, dünyaya açıl'],
-    k: ['SICAK HAVA BALONU İMPARATORLUĞU', 'GERÇEK UÇUŞ, GERÇEK RİSK', 'İŞİNİ BÜYÜT', 'REKABET', 'GLOBAL OL'],
+    k: ['SICAK HAVA BALONU İMPARATORLUĞU', 'GERÇEK UÇUŞ, GERÇEK RİSK', 'İŞİNİ BÜYÜT', 'REKABET', 'GLOBAL OL', 'TASARIM STÜDYOSU', 'EKİBİNİ KUR'],
+    c5: ['Gün Batımı', 'Güneş deseni · yeni tasarım', 'Yaratıcılık 92/100'],
+    c6: ['Elif K. · Kıdemli pilot', 'Okul mezunu · %30 daha ucuz', 'Kaza riski %40 daha az'],
     c1: ['Saray Resort', 'Satın alındı · +27 misafir/gün', '★ 4,4 → 5,0'],
     c2: ['Influencer kampanyası', '1,2 milyon görüntülenme', '★ +0,4 · koltuklar doldu'],
     c3: ['Peribaca Balloons', 'İflas etti · filo satışta', 'Pazarın %72’si senin'],
@@ -313,11 +333,15 @@ const T = {
   },
   en: {
     s1: ['BUILD CAPPADOCIA’S', 'GREATEST BALLOON', 'EMPIRE', 'Start with one basket, conquer the sky'],
-    s2: ['FIRE THE BURNER', 'READ THE WIND', 'LAND IT PERFECT', 'Fly it yourself, passengers pay 25% more'],
+    s2: ['FIRE THE BURNER', 'READ THE WIND', 'LAND IT PERFECT', 'Fly it yourself, or hire pilots'],
+    s6: ['BUILD A WORKSHOP', 'DESIGN YOUR', 'BALLOONS', 'Creative patterns win popularity'],
+    s7: ['OPEN A', 'PILOT SCHOOL', 'TRAIN YOUR CREW', 'From rookie to senior, grow your fleet'],
     s3: ['BUY HOTELS', 'SIGN', 'INFLUENCERS', 'Push your popularity to five stars'],
     s4: ['CRUSH YOUR RIVALS', 'RULE THE', 'WHOLE SKY', 'The Baron of Cappadocia title awaits'],
     s5: ['FROM ONE BASKET', 'TO AN EMPIRE', 'Fly in America, go global'],
-    k: ['HOT-AIR BALLOON TYCOON', 'REAL FLIGHT, REAL RISK', 'GROW YOUR BUSINESS', 'COMPETITION', 'GO GLOBAL'],
+    k: ['HOT-AIR BALLOON TYCOON', 'REAL FLIGHT, REAL RISK', 'GROW YOUR BUSINESS', 'COMPETITION', 'GO GLOBAL', 'DESIGN STUDIO', 'BUILD YOUR CREW'],
+    c5: ['Sunset', 'Sunburst pattern · new design', 'Creativity 92/100'],
+    c6: ['Elif K. · Senior pilot', 'School graduate · 30% cheaper', '40% lower accident risk'],
     c1: ['Palace Resort', 'Bought · +27 guests/day', '★ 4.4 → 5.0'],
     c2: ['Influencer campaign', '1.2 million views', '★ +0.4 · seats sold out'],
     c3: ['Peribaca Balloons', 'Bankrupt · fleet for sale', 'You own 72% of the market'],
@@ -456,8 +480,69 @@ function slide5() {
   grain(9, 11);
 }
 
+function slide6() {
+  dawnSky();
+  sun(W * .3, H * .7, 60); rays(W * .3, H * .7, 20, H * .9, '#ffd29a', .1, 33);
+  ridge(H * .74, 200, '#b06a6c', 9);
+  balloonSky(30, 81, H * .2, H * .66, 10, 60, '#f0a07a');
+  chimneyField(H * .86, 14, 180, 420, 91, { lit: '#f0b88c', dark: '#6a3a44', haze: .22, hazeColor: '#e89a78' });
+  haze(H * .82, H, '#120814', 0, .85);
+  /* a showcase of the studio's patterns */
+  const show = [
+    [W * .24, 1250, 170, ['#2b2350', '#2b2350'], 'stars', ['#ffc23d', '#ffffff']],
+    [W * .76, 1180, 150, ['#ff6fa8', '#ff6fa8'], 'hearts', ['#ffffff', '#e5432f']],
+    [W * .5, 1700, 260, ['#ff5e3a', '#ff5e3a'], 'sunburst', ['#ffc23d', '#2b2350']],
+    [W * .17, 1950, 130, ['#14a39a', '#14a39a'], 'waves', ['#e8fff9', '#ffc23d']],
+    [W * .84, 1990, 140, ['#9b7be0', '#9b7be0'], 'dots', ['#ffffff', '#ffc23d']],
+    [W * .62, 1080, 95, ['#ffc23d', '#ffc23d'], 'zigzag', ['#2b2350', '#ff5e3a']],
+    [W * .38, 1020, 80, ['#ffffff', '#ffffff'], 'rainbow', ['#ffc23d', '#ffffff']],
+  ];
+  for (const [x, y, r, cols, pat, pc] of show) balloon(x, y, r, cols, { gores: 12, pattern: pat, pc, flame: r > 200, flameScale: .55, light: 1, people: r > 200 ? 4 : 0 });
+  card(90, 2250, W - 180, 270, T.c5[0], T.c5.slice(1), '#ff5e3a', (x, y) => balloon(x, y - 14, 34, ['#ff5e3a', '#ff5e3a'], { gores: 10, pattern: 'sunburst', pc: ['#ffc23d', '#2b2350'] }));
+  vignette(.45);
+  headline(250, T.k[5], T.s6.slice(0, 3), { size: 150 });
+  subline(860, T.s6[3], 50);
+  brand(H - 140);
+  grain(9, 13);
+}
+
+function slide7() {
+  sky([[0, '#140b2e'], [.3, '#40205a'], [.55, '#c05e5c'], [.7, '#ffa866'], [.82, '#ffd59a'], [1, '#e8b080']]);
+  sun(W * .7, H * .66, 60); rays(W * .7, H * .66, 22, H * .9, '#ffc98a', .12, 44);
+  ridge(H * .7, 200, '#b06a6c', 12);
+  balloonSky(26, 101, H * .18, H * .58, 10, 70, '#f0a07a');
+  chimneyField(H * .78, 12, 160, 380, 111, { lit: '#f0b88c', dark: '#6a3a44', haze: .25, hazeColor: '#e89a78' });
+  /* launch field: crews inflating a row of balloons */
+  const gg = ctx.createLinearGradient(0, H * .76, 0, H); gg.addColorStop(0, '#b07a58'); gg.addColorStop(1, '#2a160e'); ctx.fillStyle = gg; ctx.fillRect(0, H * .76, W, H * .24);
+  const field = [[W * .2, ['#ff5e3a', '#ffc23d']], [W * .5, ['#14a39a', '#e8fff9']], [W * .8, ['#2b2350', '#ffc23d']]];
+  field.forEach(([x, c], i) => balloon(x, H * .77 + (i === 1 ? -40 : 0), i === 1 ? 230 : 200, c, { gores: 12, flame: true, flameScale: .6, light: 1, people: 3 }));
+  /* ground crews and trainees, holding the crown lines */
+  const R7 = mulberry32(7);
+  for (let i = 0; i < 16; i++) {
+    const px = 50 + i * 80 + R7() * 20, py = H * .935 + (i % 3) * 22, hh = 120 + R7() * 30;
+    ctx.fillStyle = '#1d1418'; ctx.beginPath(); ctx.arc(px, py - hh, hh * .13, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(px - hh * .16, py - hh * .85); ctx.lineTo(px + hh * .16, py - hh * .85); ctx.lineTo(px + hh * .13, py); ctx.lineTo(px - hh * .13, py); ctx.fill();
+    if (i % 4 === 1) { ctx.fillStyle = '#ffc23d'; ctx.fillRect(px - hh * .17, py - hh * 1.12, hh * .34, hh * .06); }
+  }
+  ctx.strokeStyle = 'rgba(40,20,20,.7)'; ctx.lineWidth = 3;
+  for (const [x0, x1] of [[90, W * .2], [560, W * .5], [1180, W * .8]]) { ctx.beginPath(); ctx.moveTo(x0, H * .9); ctx.quadraticCurveTo((x0 + x1) / 2, H * .86, x1, H * .77 + 300); ctx.stroke(); }
+  haze(H * .95, H, '#0e0610', 0, .8);
+  /* graduation cap */
+  ctx.save(); ctx.translate(W / 2, 1130); ctx.globalCompositeOperation = 'lighter'; const gl = ctx.createRadialGradient(0, 0, 0, 0, 0, 260); gl.addColorStop(0, 'rgba(255,200,90,.45)'); gl.addColorStop(1, 'rgba(255,200,90,0)'); ctx.fillStyle = gl; ctx.fillRect(-260, -260, 520, 520); ctx.globalCompositeOperation = 'source-over';
+  ctx.fillStyle = '#2b2350'; ctx.beginPath(); ctx.moveTo(0, -90); ctx.lineTo(200, -20); ctx.lineTo(0, 50); ctx.lineTo(-200, -20); ctx.closePath(); ctx.fill();
+  ctx.fillStyle = '#3a3070'; ctx.beginPath(); ctx.moveTo(-110, 10); ctx.lineTo(-110, 90); ctx.quadraticCurveTo(0, 140, 110, 90); ctx.lineTo(110, 10); ctx.lineTo(0, 50); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = '#ffc23d'; ctx.lineWidth = 10; ctx.beginPath(); ctx.moveTo(0, -20); ctx.lineTo(170, 20); ctx.lineTo(170, 120); ctx.stroke();
+  ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.arc(170, 130, 18, 0, 7); ctx.fill(); ctx.restore();
+  card(90, 1400, W - 180, 270, T.c6[0], T.c6.slice(1), '#22a45d', (x, y) => { ctx.fillStyle = '#ffd27a'; ctx.beginPath(); ctx.arc(x, y - 10, 30, 0, 7); ctx.fill(); ctx.fillStyle = '#2b2350'; ctx.fillRect(x - 32, y + 22, 64, 34); ctx.fillStyle = '#ffc23d'; ctx.font = '800 30px BC'; ctx.textAlign = 'center'; ctx.fillText('★★★', x, y + 50); ctx.textAlign = 'left'; });
+  vignette(.45);
+  headline(250, T.k[6], T.s7.slice(0, 3), { size: 150 });
+  subline(860, T.s7[3], 50);
+  brand(H - 140);
+  grain(9, 15);
+}
+
 document.fonts.load('800 100px BC').then(() => Promise.all([document.fonts.load('700 40px BC'), document.fonts.load('600 40px B'), document.fonts.load('600 40px BC')])).then(() => {
-  [null, slide1, slide2, slide3, slide4, slide5][slide]();
+  [null, slide1, slide2, slide3, slide4, slide5, slide6, slide7][slide]();
   document.title = 'done';
 });
 </script>
