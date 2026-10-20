@@ -17,7 +17,7 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
   - Banka → Banka. Krediler varken gelişmiş görünüm.
   - Otel sokağı (4 otel) → Pazar, "Otel anlaşmaları". Anlaşmalıysa senin bayrağın, sahibiysen bayrak + ışıltı, rakiple anlaşmalıysa rakibin bayrağı; yıldız sayısı otelin sınıfı.
   - Influencer ajansı ve rehber ofisi → doğrudan kampanya kartı (bekleme süresi, fiyat). Kampanya sürerken neon tabela yanıp söner.
-  - Rakiplerin ofisleri → Pazar, "Sen ve rakiplerin". Batan rakibin ofisi kapalı.
+  - Satış ofisleri sırası (v58) → Pazar, "Sen ve rakiplerin". Önce senin ofisin (adı şirket adın, alt yazı balon sayın), yanında rakiplerinki; hepsi aynı taş kiosk, tek fark tente ve çatıdaki minyatür balonun şirketin balon renklerinde olması. Batan rakibin ofisi tahtalarla kapalı. Etiketler hep aynı yükseklikte; sıra sağa doğru aşağı indiği için birbirine binmez.
   - Holding kulesi (Baron olunca) → Holding; öncesinde arsa ve "Baron olunca".
   - Henüz açılmamış özellikler iskeleyle ve koyu etiketle görünür; dokununca "X. günde açılır" kartı.
 - Etiketler yakınlaştırmaya göre küçülür (uzakta sadece ad), birbirinin üstüne binenler gizlenir. Fırlatma alanında filodaki balonlar (ilk 6) desenleriyle durur.

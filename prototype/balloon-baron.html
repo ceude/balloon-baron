@@ -3125,7 +3125,10 @@ function townBuildings() {
   add({ id: 'guide', gx: 12, gy: 9, w: 2, d: 2, name: 'Rehber ofisi', look: 'guide', lv: unlocked('market') ? (S.day <= (S.guideUntil || 0) ? 2 : 1) : -1,
     sub: !unlocked('market') ? 'Yakında' : S.day <= (S.guideUntil || 0) ? 'Rehberler seni öneriyor' : gcd > 0 ? `Bekle: ${gcd} gün` : eur(GUIDE_COST),
     tap: () => !unlocked('market') ? lockedCard('Rehber ofisi', 'market') : townCard('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', `Tanıtım uçuşu ${eur(GUIDE_COST)}`, doGuide, gcd > 0 || S.cash < GUIDE_COST) });
-  S.rivals.forEach((r, i) => add({ id: 'rival' + i, gx: 9 + i * 1.6, gy: 12.2, w: 1.2, d: 1.2, name: r.name, look: 'rival', lv: r.alive ? 1 : 0, col: r.col, col2: r.col2,
+  /* booking offices side by side: yours first, then the rivals; same kiosk, awning in each company's balloon colours */
+  add({ id: 'mine', gx: 8.7, gy: 12.2, w: 1.2, d: 1.2, name: S.company || 'Senin ofisin', look: 'rival', lv: 1, col: myCol()[0], col2: myCol()[1],
+    sub: `Balon: ${n}`, small: true, tap: () => unlocked('market') ? openSection('market', 'Sen ve rakiplerin') : lockedCard(S.company || 'Senin ofisin', 'market') });
+  S.rivals.forEach((r, i) => add({ id: 'rival' + i, gx: 10.55 + i * 1.85, gy: 12.2, w: 1.2, d: 1.2, name: r.name, look: 'rival', lv: r.alive ? 1 : 0, col: r.col, col2: r.col2,
     sub: r.alive ? `Balon: ${r.balloons.length}` : r.merged ? 'Birleşti' : r.forSale ? 'Satışta' : 'Kapandı', small: true,
     tap: () => unlocked('market') ? openSection('market', 'Sen ve rakiplerin') : lockedCard(r.name, 'market') }));
   return L;
@@ -3510,7 +3513,7 @@ function tdecor(t) {
 function townScenery(t) {
   const items = [];
   /* fairy chimneys stay on the edges and gaps so they never hide a building */
-  const chims = [[0.3, 6.6, 150], [14.4, 2.6, 170], [15.2, 8, 140], [7.6, 15.3, 180], [0.4, 12.6, 130], [14.8, 15.2, 160], [7.7, 0.3, 120], [5.6, 15.2, 150], [15.3, 10.6, 130], [0.5, 3.0, 160], [12.8, 0.2, 140]];
+  const chims = [[0.3, 6.6, 150], [14.4, 2.6, 170], [15.2, 8, 140], [0.4, 12.6, 130], [7.7, 0.3, 120], [5.6, 15.2, 150], [15.3, 10.6, 130], [0.5, 3.0, 160], [12.8, 0.2, 140]];
   for (const [gx, gy, hh] of chims) items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .16); }, draw: () => { const p = tiso(gx, gy); chimney(p[0], p[1], hh * .42, hh, '#efc79e', '#c69068', '#6a4430'); } });
   const trees = [[7.1, 6.9], [7.1, 9.2], [8.9, 6.9], [3.4, 8.9], [6.6, 10.7], [12.6, 7.0], [10.8, 4.4], [4.3, 7.0], [8.4, 15]];
   trees.forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); i % 3 ? roundTree(p[0], p[1], .9, i % 2 ? '#7aa04a' : '#8aa84e') : cypress(p[0], p[1], 1); } }));
@@ -3532,6 +3535,7 @@ function townSky(t) {
 function townTop(b) {
   if (b.lv <= 0 && b.look !== 'rival') return 90;
   if (b.look === 'hotel') return [95, 165, 190, 200][b.star];
+  if (b.look === 'rival') return 80; /* the kiosk row steps down to the right, so neighbouring labels clear each other */
   return { hangar: 120, workshop: 110, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 90, agency: 150, tower: 300, rival: 85 }[b.look] || 135;
 }
 function townLabel(b, sx, sy, sc, full, taken) {
