@@ -74,6 +74,9 @@ struct HomeTownView: View {
     let hudBottom: CGFloat
     @Binding var zoomed: Bool
     @State private var model = TownCanvasModel()
+    /// Where this view's own (safe-area) frame starts on screen. The canvas ignores the safe area and draws in
+    /// screen coordinates, while tap and pinch locations arrive in the view's frame; adding this lines them up.
+    @State private var origin: CGPoint = .zero
 
     var body: some View {
         if let s = store.state {
@@ -94,7 +97,15 @@ struct HomeTownView: View {
                 }
                 .ignoresSafeArea()
                 .gesture(pan.simultaneously(with: pinch), including: zoomed ? .all : .none)
-                .onTapGesture { p in tap(p) }
+                .onTapGesture { p in tap(CGPoint(x: p.x + origin.x, y: p.y + origin.y)) }
+                .background {
+                    GeometryReader { g in
+                        let o = g.frame(in: .global).origin
+                        Color.clear
+                            .onAppear { origin = o }
+                            .onChange(of: o) { _, v in origin = v }
+                    }
+                }
                 .accessibilityElement()
                 .accessibilityLabel(loc("town.title"))
                 .accessibilityAddTraits(.isButton)
@@ -185,7 +196,8 @@ struct HomeTownView: View {
                 model.anim = nil
                 let start = model.pinchStart ?? model.view
                 if model.pinchStart == nil { model.pinchStart = start }
-                let z = min(max(start.z * v.magnification, model.home.z), 1.6), k = z / start.z, p = v.startLocation
+                let z = min(max(start.z * v.magnification, model.home.z), 1.6), k = z / start.z
+                let p = CGPoint(x: v.startLocation.x + origin.x, y: v.startLocation.y + origin.y)
                 model.view = TownViewport(z: z, ox: p.x - (p.x - start.ox) * k, oy: p.y - (p.y - start.oy) * k)
                 if z <= model.home.z * 1.04 { zoomOut() }
             }
