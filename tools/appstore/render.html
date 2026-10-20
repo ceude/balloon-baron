@@ -322,8 +322,10 @@ const T = {
     s7: ['PİLOT OKULU AÇ', 'KENDİ PİLOTLARINI', 'YETİŞTİR', 'Çaylaktan kıdemliye, filon büyüsün'],
     s3: ['OTELLERİ AL', 'INFLUENCER’LARLA', 'ANLAŞ', 'Popülerliğini 5 yıldıza taşı'],
     s4: ['RAKİPLERİNİ BATIR', 'GÖĞÜN TEK', 'HÂKİMİ OL', 'Kapadokya Baronu unvanı seni bekliyor'],
-    s5: ['BİR SEPETTEN', 'HOLDİNGE', 'Amerika’da uç, dünyaya açıl'],
-    k: ['SICAK HAVA BALONU İMPARATORLUĞU', 'GERÇEK UÇUŞ, GERÇEK RİSK', 'İŞİNİ BÜYÜT', 'REKABET', 'GLOBAL OL', 'TASARIM STÜDYOSU', 'EKİBİNİ KUR'],
+    s5: ['AMERİKA’DA UÇ', 'GLOBALE AÇIL', 'Kapadokya’dan Albuquerque’ye, Balloon Fiesta seni bekliyor'],
+    s8: ['BİR SEPETTEN', 'HOLDİNGE', 'New York, İstanbul, Tokyo, Seul: ofislerini aç'],
+    signs: [['KAPADOKYA', 'TÜRKİYE'], ['ALBUQUERQUE', 'ABD'], ['NEW YORK', 'İSTANBUL', 'TOKYO', 'SEUL']],
+    k: ['SICAK HAVA BALONU İMPARATORLUĞU', 'GERÇEK UÇUŞ, GERÇEK RİSK', 'İŞİNİ BÜYÜT', 'REKABET', 'GLOBAL OL', 'TASARIM STÜDYOSU', 'EKİBİNİ KUR', 'HOLDİNG PATRONU'],
     c5: ['Gün Batımı', 'Güneş deseni · yeni tasarım', 'Yaratıcılık 92/100'],
     c6: ['Elif K. · Kıdemli pilot', 'Okul mezunu · %30 daha ucuz', 'Kaza riski %40 daha az'],
     c1: ['Saray Resort', 'Satın alındı · +27 misafir/gün', '★ 4,4 → 5,0'],
@@ -338,8 +340,10 @@ const T = {
     s7: ['OPEN A', 'PILOT SCHOOL', 'TRAIN YOUR CREW', 'From rookie to senior, grow your fleet'],
     s3: ['BUY HOTELS', 'SIGN', 'INFLUENCERS', 'Push your popularity to five stars'],
     s4: ['CRUSH YOUR RIVALS', 'RULE THE', 'WHOLE SKY', 'The Baron of Cappadocia title awaits'],
-    s5: ['FROM ONE BASKET', 'TO AN EMPIRE', 'Fly in America, go global'],
-    k: ['HOT-AIR BALLOON TYCOON', 'REAL FLIGHT, REAL RISK', 'GROW YOUR BUSINESS', 'COMPETITION', 'GO GLOBAL', 'DESIGN STUDIO', 'BUILD YOUR CREW'],
+    s5: ['FLY IN AMERICA', 'GO GLOBAL', 'From Cappadocia to Albuquerque, the Balloon Fiesta awaits'],
+    s8: ['FROM ONE BASKET', 'TO A HOLDING', 'New York, Istanbul, Tokyo, Seoul: open your offices'],
+    signs: [['CAPPADOCIA', 'TÜRKİYE'], ['ALBUQUERQUE', 'USA'], ['NEW YORK', 'ISTANBUL', 'TOKYO', 'SEOUL']],
+    k: ['HOT-AIR BALLOON TYCOON', 'REAL FLIGHT, REAL RISK', 'GROW YOUR BUSINESS', 'COMPETITION', 'GO GLOBAL', 'DESIGN STUDIO', 'BUILD YOUR CREW', 'HOLDING TYCOON'],
     c5: ['Sunset', 'Sunburst pattern · new design', 'Creativity 92/100'],
     c6: ['Elif K. · Senior pilot', 'School graduate · 30% cheaper', '40% lower accident risk'],
     c1: ['Palace Resort', 'Bought · +27 guests/day', '★ 4.4 → 5.0'],
@@ -449,6 +453,21 @@ function slide4() {
   grain(9, 9);
 }
 
+/* A wooden signpost with the place's name. */
+function signpost(x, y, name, land, s = 1) {
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  ctx.fillStyle = '#3a2416'; ctx.fillRect(-10, -20, 20, 200);
+  ctx.font = '800 64px BC'; const w = Math.max(ctx.measureText(name).width, 260) + 80;
+  ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 30; ctx.shadowOffsetY = 10;
+  const g = ctx.createLinearGradient(0, -170, 0, -20); g.addColorStop(0, '#8a5a32'); g.addColorStop(1, '#5a3418');
+  ctx.fillStyle = g; rrect(-w / 2, -175, w, 150, 18); ctx.fill(); ctx.shadowColor = 'transparent';
+  ctx.strokeStyle = '#ffc23d'; ctx.lineWidth = 5; rrect(-w / 2 + 10, -165, w - 20, 130, 12); ctx.stroke();
+  ctx.fillStyle = '#2a1608'; for (const nx of [-w / 2 + 26, w / 2 - 26]) { ctx.beginPath(); ctx.arc(nx, -100, 7, 0, 7); ctx.fill(); }
+  ctx.textAlign = 'center'; ctx.fillStyle = '#fff3d6'; ctx.fillText(name, 0, -92);
+  ctx.font = '700 34px BC'; ctx.letterSpacing = '8px'; ctx.fillStyle = '#ffc23d'; ctx.fillText(land, 0, -46);
+  ctx.restore();
+}
+
 function slide5() {
   /* upper half: Cappadocia at dawn; lower half: Albuquerque desert sunset */
   sky([[0, '#0e0a2a'], [.3, '#3a2060'], [.48, '#c0606a'], [.52, '#2a1e4a'], [.75, '#c8506a'], [.9, '#ff9a50'], [1, '#ffc070']]);
@@ -460,24 +479,101 @@ function slide5() {
   const ds = ctx.createLinearGradient(0, H * .44, 0, H); ds.addColorStop(0, '#2a1a4a'); ds.addColorStop(.45, '#d0586a'); ds.addColorStop(.7, '#ff9a50'); ds.addColorStop(1, '#ffcf80'); ctx.fillStyle = ds; ctx.fillRect(0, H * .44, W, H * .56);
   sun(W * .3, H * .82, 70, '#fff0c8', '#ffa050');
   ctx.fillStyle = '#d98a96'; ctx.beginPath(); ctx.moveTo(0, H * .86); for (let x = 0; x <= W; x += 20) ctx.lineTo(x, H * .8 - 90 * Math.sin(x * .003 + 1) - 40 * Math.sin(x * .011)); ctx.lineTo(W, H); ctx.lineTo(0, H); ctx.fill();
-  balloonSky(30, 51, H * .56, H * .78, 10, 70, '#e0907a', { light: 1 });
+  balloonSky(34, 51, H * .56, H * .8, 10, 80, '#e0907a', { light: 1 });
   for (const [x, w, h] of [[160, 360, 150], [620, 520, 210], [1100, 420, 170]]) mesa(x, H * .9, w, h, '#a0503a', '#6a3022');
   const gr = ctx.createLinearGradient(0, H * .88, 0, H); gr.addColorStop(0, '#6a3a24'); gr.addColorStop(1, '#1a0c08'); ctx.fillStyle = gr; ctx.fillRect(0, H * .9, W, H * .1);
   ctx.restore();
   /* the seam between the two worlds, glowing */
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.strokeStyle = 'rgba(255,200,110,.85)'; ctx.lineWidth = 6; ctx.shadowColor = '#ffb060'; ctx.shadowBlur = 40;
   ctx.beginPath(); ctx.moveTo(0, H * .54); ctx.lineTo(W, H * .44); ctx.stroke(); ctx.restore();
-  /* flight path arcing from Cappadocia to Albuquerque */
-  ctx.save(); ctx.setLineDash([22, 18]); ctx.strokeStyle = 'rgba(255,230,180,.9)'; ctx.lineWidth = 7;
-  ctx.beginPath(); ctx.moveTo(W * .82, H * .34); ctx.bezierCurveTo(W * 1.05, H * .5, W * .2, H * .48, W * .3, H * .66); ctx.stroke(); ctx.restore();
-  for (const [x, y] of [[W * .82, H * .34], [W * .3, H * .66]]) { ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.arc(x, y, 18, 0, 7); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 6; ctx.stroke(); }
-  balloon(W * .66, H * .6, 200, ['#ffc23d', '#2b2350'], { gores: 14, flame: true, flameScale: .7, light: -1, people: 4 });
-  card(90, 2170, W - 180, 270, T.c4[0], T.c4.slice(1), '#c98a00', (x, y) => crown(x, y + 4, .75));
+  /* the route */
+  const A = [W * .78, H * .36], B = [W * .27, H * .7];
+  ctx.save(); ctx.setLineDash([24, 18]); ctx.strokeStyle = 'rgba(255,236,190,.95)'; ctx.lineWidth = 8; ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 12;
+  ctx.beginPath(); ctx.moveTo(...A); ctx.bezierCurveTo(W * 1.02, H * .52, W * .1, H * .5, ...B); ctx.stroke(); ctx.restore();
+  for (const [x, y] of [A, B]) { ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.arc(x, y, 22, 0, 7); ctx.fill(); ctx.strokeStyle = '#fff'; ctx.lineWidth = 7; ctx.stroke(); }
+  balloon(W * .6, H * .555, 170, ['#ffc23d', '#2b2350'], { gores: 14, flame: true, flameScale: .7, light: -1, people: 4, tilt: -.08 });
+  signpost(A[0] - 60, A[1] - 40, T.signs[0][0], T.signs[0][1], .95);
+  signpost(B[0] + 40, B[1] + 330, T.signs[1][0], T.signs[1][1], .95);
   vignette(.45);
   headline(250, T.k[4], T.s5.slice(0, 2), { size: 160 });
-  subline(700, T.s5[2], 56);
+  subline(690, T.s5[2], 38);
   brand(H - 120);
   grain(9, 11);
+}
+
+/* ---------- skyline pieces ---------- */
+function tower(x, base, w, h, body, lit, seed) {
+  const R = mulberry32(seed);
+  const g = ctx.createLinearGradient(x, 0, x + w, 0); g.addColorStop(0, mix(body, '#000000', .35)); g.addColorStop(.5, body); g.addColorStop(1, mix(body, '#000000', .55));
+  ctx.fillStyle = g; ctx.fillRect(x, base - h, w, h);
+  for (let yy = base - h + 18; yy < base - 12; yy += 26) for (let xx = x + 10; xx < x + w - 10; xx += 22) if (R() < lit) { ctx.fillStyle = R() < .5 ? 'rgba(255,214,140,.85)' : 'rgba(255,180,100,.65)'; ctx.fillRect(xx, yy, 10, 12); }
+}
+function empireState(x, base, s, c) {
+  ctx.fillStyle = c;
+  for (const [w, h] of [[220, 520], [170, 680], [120, 820], [80, 900], [40, 960]]) ctx.fillRect(x - w * s / 2, base - h * s, w * s, h * s);
+  ctx.fillRect(x - 6 * s, base - 1080 * s, 12 * s, 130 * s);
+}
+function lotteTower(x, base, s, c) {
+  ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(x - 110 * s, base); ctx.quadraticCurveTo(x - 90 * s, base - 700 * s, x - 14 * s, base - 1180 * s); ctx.lineTo(x + 14 * s, base - 1180 * s); ctx.quadraticCurveTo(x + 90 * s, base - 700 * s, x + 110 * s, base); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,220,160,.35)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, base); ctx.lineTo(x, base - 1170 * s); ctx.stroke();
+}
+function tokyoTower(x, base, s) {
+  ctx.strokeStyle = '#e8402c'; ctx.lineWidth = 10 * s; ctx.lineJoin = 'round';
+  const H0 = 900 * s, legs = [[-150, 0], [150, 0]];
+  ctx.beginPath(); ctx.moveTo(x - 150 * s, base); ctx.quadraticCurveTo(x - 40 * s, base - H0 * .5, x - 8 * s, base - H0); ctx.moveTo(x + 150 * s, base); ctx.quadraticCurveTo(x + 40 * s, base - H0 * .5, x + 8 * s, base - H0); ctx.stroke();
+  ctx.lineWidth = 4 * s;
+  for (let k = 1; k < 12; k++) { const t = k / 12, y = base - H0 * t, hw = (150 - 142 * Math.pow(t, .6)) * s; ctx.strokeStyle = k % 2 ? '#ffffff' : '#e8402c'; ctx.beginPath(); ctx.moveTo(x - hw, y); ctx.lineTo(x + hw, y - H0 / 12); ctx.moveTo(x + hw, y); ctx.lineTo(x - hw, y - H0 / 12); ctx.stroke(); }
+  ctx.fillStyle = '#e8402c'; ctx.fillRect(x - 60 * s, base - H0 * .38, 120 * s, 34 * s); ctx.fillStyle = '#fff'; ctx.fillRect(x - 34 * s, base - H0 * .72, 68 * s, 24 * s);
+  ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 5 * s; ctx.beginPath(); ctx.moveTo(x, base - H0); ctx.lineTo(x, base - H0 - 140 * s); ctx.stroke();
+}
+function mosque(x, base, s, c) {
+  ctx.fillStyle = c;
+  ctx.fillRect(x - 260 * s, base - 160 * s, 520 * s, 160 * s);
+  ctx.beginPath(); ctx.arc(x, base - 160 * s, 170 * s, Math.PI, 0); ctx.fill();
+  for (const dx of [-190, 190]) { ctx.beginPath(); ctx.arc(x + dx * s, base - 160 * s, 70 * s, Math.PI, 0); ctx.fill(); }
+  ctx.fillRect(x - 4 * s, base - 380 * s, 8 * s, 60 * s);
+  for (const dx of [-330, -290, 290, 330]) { ctx.fillRect(x + dx * s - 9 * s, base - 560 * s, 18 * s, 560 * s); ctx.beginPath(); ctx.moveTo(x + dx * s - 11 * s, base - 560 * s); ctx.lineTo(x + dx * s, base - 640 * s); ctx.lineTo(x + dx * s + 11 * s, base - 560 * s); ctx.fill(); ctx.fillRect(x + dx * s - 14 * s, base - 420 * s, 28 * s, 10 * s); }
+}
+function cityTag(x, y, name) {
+  ctx.save(); ctx.font = '800 40px BC'; ctx.letterSpacing = '4px'; const w = ctx.measureText(name).width + 48;
+  ctx.fillStyle = 'rgba(20,10,30,.78)'; rrect(x - w / 2, y - 34, w, 58, 29); ctx.fill(); ctx.strokeStyle = '#ffc23d'; ctx.lineWidth = 3; rrect(x - w / 2, y - 34, w, 58, 29); ctx.stroke();
+  ctx.fillStyle = '#ffe6a8'; ctx.textAlign = 'center'; ctx.fillText(name, x, y + 9); ctx.restore();
+}
+
+function slide8() {
+  sky([[0, '#0c0820'], [.3, '#2e1a52'], [.55, '#a04a6a'], [.7, '#ff8a4a'], [.8, '#ffc27a'], [1, '#ffc27a']]);
+  sun(W * .5, H * .76, 80); rays(W * .5, H * .76, 26, H, '#ffc98a', .12, 51);
+  clouds(H * .55, 5, '#ffb489', .3, 8);
+  balloonSky(40, 121, H * .2, H * .62, 10, 80, '#e09080');
+  const base = H * .86;
+  /* far city */
+  const R = mulberry32(141);
+  for (let x = -40; x < W + 40; x += 70) { const h = 200 + R() * 380; tower(x, base, 64, h, '#5a3a62', .25, 900 + x); }
+  haze(H * .55, base, '#ff9a70', 0, .35);
+  /* landmarks, left to right: Istanbul, New York, the holding tower, Tokyo, Seoul */
+  const dark = '#2a1830';
+  mosque(190, base, .72, '#3a2240');
+  empireState(420, base, 1.45, dark);
+  tokyoTower(930, base, .95);
+  lotteTower(1170, base, 1.05, dark);
+  /* holding headquarters, glass and gold */
+  const hx = W * .5, hw = 260, hh = 1180;
+  const hg = ctx.createLinearGradient(hx - hw / 2, 0, hx + hw / 2, 0); hg.addColorStop(0, '#3a2a40'); hg.addColorStop(.45, '#ffcf7a'); hg.addColorStop(.6, '#a06a30'); hg.addColorStop(1, '#2a1a20');
+  ctx.fillStyle = hg; ctx.beginPath(); ctx.moveTo(hx - hw / 2, base); ctx.lineTo(hx - hw / 2, base - hh + 120); ctx.lineTo(hx, base - hh); ctx.lineTo(hx + hw / 2, base - hh + 120); ctx.lineTo(hx + hw / 2, base); ctx.fill();
+  ctx.strokeStyle = 'rgba(40,20,10,.35)'; ctx.lineWidth = 3; for (let y = base - hh + 160; y < base; y += 36) { ctx.beginPath(); ctx.moveTo(hx - hw / 2, y); ctx.lineTo(hx + hw / 2, y); ctx.stroke(); }
+  crown(hx, base - hh + 230, 1.1);
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; const tg = ctx.createRadialGradient(hx, base - hh, 0, hx, base - hh, 300); tg.addColorStop(0, 'rgba(255,210,120,.6)'); tg.addColorStop(1, 'rgba(255,210,120,0)'); ctx.fillStyle = tg; ctx.fillRect(hx - 300, base - hh - 300, 600, 600); ctx.restore();
+  /* near balloons weaving between the towers */
+  balloon(W * .2, H * .53, 130, ['#ff5e3a', '#ffc23d'], { gores: 12, flame: true, flameScale: .55, light: 1, people: 3 });
+  balloon(W * .82, H * .47, 110, ['#14a39a', '#e8fff9'], { gores: 12, light: -1, people: 3 });
+  const gr = ctx.createLinearGradient(0, base, 0, H); gr.addColorStop(0, '#1c1020'); gr.addColorStop(1, '#07030c'); ctx.fillStyle = gr; ctx.fillRect(0, base, W, H - base);
+  cityTag(190, base + 70, T.signs[2][1]); cityTag(430, base + 140, T.signs[2][0]); cityTag(930, base + 70, T.signs[2][2]); cityTag(1170, base + 140, T.signs[2][3]);
+  card(90, 860, W - 180, 270, T.c4[0], T.c4.slice(1), '#c98a00', (x, y) => crown(x, y + 4, .75));
+  vignette(.45);
+  headline(250, T.k[7], T.s8.slice(0, 2), { size: 160 });
+  subline(690, T.s8[2], 46);
+  brand(H - 130);
+  grain(9, 17);
 }
 
 function slide6() {
@@ -542,7 +638,7 @@ function slide7() {
 }
 
 document.fonts.load('800 100px BC').then(() => Promise.all([document.fonts.load('700 40px BC'), document.fonts.load('600 40px B'), document.fonts.load('600 40px BC')])).then(() => {
-  [null, slide1, slide2, slide3, slide4, slide5, slide6, slide7][slide]();
+  [null, slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8][slide]();
   document.title = 'done';
 });
 </script>
