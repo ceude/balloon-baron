@@ -587,7 +587,10 @@ const repBonus = () => Math.round(repBonusRaw() * 1 / (1 + Math.exp((S.price - 2
 const CANCEL_COMP = 40;
 const LICENSE_DAYS = 15, RECERT = 15000, PRICE_MIN = 40, PRICE_MAX = 320;
 const MONO_RATE = .03;
-const FOUNDER = .3, ABSENT_GRACE = 5, ABSENT_LOSS = .008;
+const FOUNDER = .25, ABSENT_GRACE = 5, ABSENT_LOSS = .008;
+/* otel anlaşması ya da son 10 günde rehber uçuşu yoksa popülerlik 4,2★'da durur */
+const PR_CAP = 1.05, GUIDE_FRESH = 10;
+const prOk = () => myHotels().length > 0 || (S.lastGuide != null && S.day - S.lastGuide <= GUIDE_FRESH);
 const misReward = (k, size) => MISSIONS[k].reward * SIZES[size || (bal(S.flag) || { size: 'S' }).size].cap / 8;
 const SIM = 6;
 const LIFE = 120, RENEW = .35;
@@ -618,6 +621,9 @@ const HEZ = {
   goals: 'Her büyük şirketin bir yol haritası olur evlat. Sağdaki bayrağa dokun: orada bölüm hedeflerin yazıyor. Üç bölümü bitiren Kapadokya\'nın baronu olur, sonra da dünya seni bekler.',
   absent: 'Evlat, yolcular hep aynı şeyi soruyor: "Kurucu nerede?" Kaptanı uçmayan şirketin ruhu kaybolur. Sepete geri dön; uzak kaldığın her gün popülerliğin aşınıyor.',
   licenseHold: 'Lisansın düştü evlat, otorite balonlarını yere indirdi. İki yol var: bugün sepete geç ve amiral balonunu kendin uçur, bu yenileme uçuşu bedava. Ya da ücreti öde. Ben olsam hangisini seçerdim, biliyorsun.',
+  pr: 'Bir sır vereyim evlat: başlarda otel ve rehber anlaşmaları her şeydir. Popülerliğin arttıkça daha yüksek fiyattan daha çok müşteri bulursun. Lüks oteller de misafirlerini yüksek fiyata bile getirir. Otelsiz, rehbersiz bir şirketin adı 4,2 yıldızdan öteye duyulmaz.',
+  influ: 'Influencer anlaşmalarına dikkat evlat. Başlarda nadir yap, yoksa nakit akışın bozulur. Kasan rahatladıktan sonra çok daha verimli olurlar.',
+  prcap: 'Popülerliğin 4,2 yıldızda takıldı evlat. Ne kadar güzel uçarsan uç, otellerle anlaşmadan ya da rehberleri uçurmadan adın bu kadar yayılır. Pazar sayfasına bak.',
   aging: 'Bir balonunun zarfı yorulmuş. Eski kumaş sert rüzgârda kazaya davetiyedir. Filo sayfasından yenile.'
 };
 const HEZ_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Hezarfen Usta"><defs><linearGradient id="hzbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f2560"/><stop offset=".62" stop-color="#b9506a"/><stop offset="1" stop-color="#ffae6a"/></linearGradient><clipPath id="hzc"><circle cx="50" cy="50" r="48"/></clipPath></defs>
@@ -860,6 +866,8 @@ function unlockCheck() {
   for (const k in rules) if (rules[k] && !S.unl[k]) { S.unl[k] = 1; hezAdd(k); }
   hezAdd('welcome');
   if (S.day >= 2) hezAdd('goals');
+  if (S.day >= 6) hezAdd('pr');
+  if (S.day >= 9 && S.unl.market) hezAdd('influ');
   if (S.weather.flag === 'yellow') hezAdd('yellow');
   if (S.weather.flag === 'red') hezAdd('red');
   if (S.weather.mission) hezAdd('mission');
@@ -1003,6 +1011,7 @@ function finishDay(flight) {
   S.rep += fl.filter(b => b.size === 'XL').length * .005;
   const dRep = Math.min(.012, fl.reduce((a, b) => { const d = designOf(b); return a + (d ? .003 * d.score / 100 * freshness(d) : 0); }, 0));
   if (dRep) { S.rep += dRep; Lg.designRep = dRep; if (Math.random() < .25) { const d = designOf(pick(fl.filter(designOf))); addReview('design', { d: d.name }); } }
+  if (!prOk() && S.rep > PR_CAP) { S.rep = PR_CAP; hezAdd('prcap'); }
   if (licenseLeft() === 0) ev.push('Pilot lisansın bugün sona eriyor. Yarın kendin uçmazsan ya da ücreti ödemezsen diğer balonların yerde kalır.');
   for (const id in (S.regions || {})) { const A = S.regions[id].auto; if (A && A.issue) alert('red', `<b>${REGION_DEF[id].name}: ${ISSUES[A.issue.k].t}.</b> Karar verene kadar oradaki kazanç yarıda. Karar vermek için dokun.`, () => showIssue(id)); }
   if (S.fiesta) alert('mis', `<b>Balloon Fiesta, gün ${S.day - S.fiesta.start + 1}/4!</b> Turist neredeyse iki katı, gökyüzü yüzlerce balonla dolu. Bütün balonlarını kaldır.`);
@@ -2228,7 +2237,7 @@ function showRepChart() {
     S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); m.hidden = true; refresh();
   }, icd > 0 || S.cash < influCost());
   act('Rehberlere tanıtım uçuşu', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', eur(GUIDE_COST), () => {
-    S.cash -= GUIDE_COST; S.rep = Math.min(1.4, S.rep + .05); S.guideCd = S.day + 5; S.guideUntil = S.day + 3; S.guideCount = (S.guideCount || 0) + 1; addReview('guide'); m.hidden = true; refresh();
+    S.cash -= GUIDE_COST; S.rep = Math.min(1.4, S.rep + .05); S.guideCd = S.day + 5; S.guideUntil = S.day + 3; S.guideCount = (S.guideCount || 0) + 1; S.lastGuide = S.day; addReview('guide'); m.hidden = true; refresh();
   }, gcd > 0 || S.cash < GUIDE_COST);
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
@@ -2613,7 +2622,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist'];
+const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide'];
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'M', 'M', 'M'], price: 195, rep: 1.15, cash: 50000 },
   { name: 'Rio Grande Balloons', col: '#3c9a8f', col2: '#e6fff9', style: 'mid', balloons: ['M', 'M', 'M', 'S'], price: 165, rep: 1, cash: 20000 },

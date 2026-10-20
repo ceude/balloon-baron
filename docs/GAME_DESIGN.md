@@ -25,7 +25,7 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 
 ## Kurucu (sen)
 - **Lisans:** En az 15 günde bir kendin uçmalısın. Lisans düşerse amiral dışındaki tüm balonlar yerde kalır. Ya amirali kendin uçurursun (ücretsiz yenileme uçuşu) ya da €15.000 ödersin.
-- **Kurucu uçuşu primi:** Amiral balonunu sen uçurursan o balonun yolcuları %30 fazla öder.
+- **Kurucu uçuşu primi:** Amiral balonunu sen uçurursan o balonun yolcuları %25 fazla öder.
 - **Kurucu yokluğu:** 5 günden uzun süre kendin uçmazsan, balon uçan her gün popülerlik −0,008 (yaklaşık −0,03★) düşer. Hezarfen uyarır, yolcular yorumlarda kurucuyu sorar.
 
 ## Pilotlar
@@ -71,6 +71,7 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 - **Turist sayısı:** Günün turisti fiyattan bağımsızdır (pazar talebi + otel misafirleri + rehber 5 + influencer 8 + fiyatsız popülerlik bonusu). Fiyat sadece kaçının seni seçtiğini değiştirir. Fiyat algısı eşikleri: fiyat isteği ≥%85 uygun, ≥%60 biraz pahalı, ≥%35 pahalı, altı çok pahalı.
 - **Dağıtım sırası:** önce sözleşmeli kaynaklar (otel, rehber, influencer), sonra pazar, en son popülerlik bonusu. Boş koltuğu olanlara taşma havuzu dağıtılır.
 - **Yıldız:** `clamp(3 + (rep − 0,75) × 4, 1, 5)`. Popülerlik 0,4–1,4 arasında tutulur.
+- **PR tavanı:** Otel anlaşması ya da sahip olunan otel yoksa ve son 10 günde rehber uçuşu yapılmadıysa popülerlik 4,2★'ı geçemez.
 - **4,5★ üstü:**
   - Günde −0,006 popülerlik.
   - İyi iniş popülerlik getirmez.
