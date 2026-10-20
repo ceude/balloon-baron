@@ -514,7 +514,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
     <div class="est" id="est"></div>
     <button class="big" id="psOk">Tamam</button>
   </div></div>
-  <div id="town" hidden><canvas id="tcv"></canvas><div class="phead"><h1>Şirketim</h1><button class="pclose" id="tClose" aria-label="Kapat">✕</button></div><div class="thint">Bölge adına dokun ya da iki parmakla yakınlaştır. Binaya dokununca açılır.</div></div>
+  <div id="town" hidden><canvas id="tcv"></canvas><div class="phead"><h1>Şirketim</h1><button class="pclose" id="tClose" aria-label="Kapat">✕</button></div><div class="thint">Bölgeye dokun ya da yakınlaştır, binaya dokununca açılır.</div></div>
   <div id="page" hidden><div class="phead"><h1 id="pTitle"></h1><button class="pclose" id="pClose" aria-label="Kapat">✕</button></div><div id="tabBody"></div></div>
 
   <div id="collect" hidden></div>
@@ -3103,13 +3103,14 @@ function townBuildings() {
   add({ id: 'hangar', gx: 1, gy: 1, w: 3, d: 2, name: 'Hangar', look: 'hangar', lv: n >= 8 ? 2 : 1, sub: `Balon: ${n}`, tap: () => unlocked('fleet') ? openSection('fleet', 'Balonların') : lockedCard('Hangar', 'fleet') });
   add({ id: 'shop', gx: 5, gy: 1, w: 2, d: 2, name: 'Balon atölyesi', look: 'workshop', lv: S.workshop ? (ds >= 3 ? 2 : 1) : 0,
     sub: S.workshop ? `Tasarım: ${ds}` : `Kur: ${eur(WORKSHOP_COST)}`, tap: () => unlocked('fleet') ? openSection('fleet', 'Balon atölyesi') : lockedCard('Balon atölyesi', 'fleet') });
-  add({ id: 'office', gx: 9, gy: 1, w: 2, d: 2, name: 'Pilot ofisi', look: 'office', lv: unlocked('crew') ? (np >= 6 ? 2 : 1) : -1,
+  add({ id: 'office', gx: 9, gy: 5, w: 2, d: 2, name: 'Pilot ofisi', look: 'office', lv: unlocked('crew') ? (np >= 6 ? 2 : 1) : -1,
     sub: unlocked('crew') ? `Pilot: ${np}` : 'Yakında', tap: () => unlocked('crew') ? openSection('crew') : lockedCard('Pilot ofisi', 'crew') });
-  add({ id: 'school', gx: 12, gy: 1, w: 2, d: 2, name: 'Pilot okulu', look: 'school', lv: S.school ? (np >= 8 ? 2 : 1) : (unlocked('crew') ? 0 : -1),
+  add({ id: 'school', gx: 12, gy: 5, w: 2, d: 2, name: 'Pilot okulu', look: 'school', lv: S.school ? (np >= 8 ? 2 : 1) : (unlocked('crew') ? 0 : -1),
     sub: S.school ? 'Açık' : `Kur: ${eur(SCHOOL_COST)}`, tap: () => unlocked('crew') ? openSection('crew', 'Pilot okulu') : lockedCard('Pilot okulu', 'crew') });
-  add({ id: 'bank', gx: 9, gy: 5, w: 2, d: 2, name: 'Banka', look: 'bank', lv: unlocked('bank') ? (S.loans.length ? 2 : 1) : -1,
+  /* finance sits in the back row so the tall holding tower hides nothing behind it; the tower takes the inner plot so it stays on screen */
+  add({ id: 'bank', gx: 12, gy: 1, w: 2, d: 2, name: 'Banka', look: 'bank', lv: unlocked('bank') ? (S.loans.length ? 2 : 1) : -1,
     sub: unlocked('bank') ? (S.loans.length ? `Kredi: ${S.loans.length}` : 'Kredi yok') : 'Yakında', tap: () => unlocked('bank') ? openSection('bank') : lockedCard('Banka', 'bank') });
-  add({ id: 'holding', gx: 12, gy: 5, w: 2, d: 2, name: 'Holding', look: 'tower', lv: anyBaron() ? 2 : -1,
+  add({ id: 'holding', gx: 9, gy: 1, w: 2, d: 2, name: 'Holding', look: 'tower', lv: anyBaron() ? 2 : -1,
     sub: anyBaron() ? eurH(S.holding || 0) : 'Baron olunca', tap: () => anyBaron() ? openPage('holding') : showGoals() });
   HOTELS.forEach((x, i) => {
     const own = owns(x), deal = S.hotels.includes(x.id), lock = S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day;
@@ -3515,7 +3516,7 @@ function townScenery(t) {
   /* fairy chimneys stay on the edges and gaps so they never hide a building */
   const chims = [[0.3, 6.6, 150], [14.4, 2.6, 170], [15.2, 8, 140], [0.4, 12.6, 130], [7.7, 0.3, 120], [5.6, 15.2, 150], [0.5, 3.0, 160], [12.8, 0.2, 140]];
   for (const [gx, gy, hh] of chims) items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .16); }, draw: () => { const p = tiso(gx, gy); chimney(p[0], p[1], hh * .42, hh, '#efc79e', '#c69068', '#6a4430'); } });
-  const trees = [[7.1, 6.9], [7.1, 9.2], [8.9, 6.9], [3.4, 8.9], [6.6, 10.7], [12.6, 7.0], [10.8, 4.4], [4.3, 7.0], [8.4, 15]];
+  const trees = [[7.1, 6.9], [7.1, 9.2], [8.9, 6.9], [3.4, 8.9], [6.6, 10.7], [14.6, 7.3], [10.8, 4.4], [4.3, 7.0], [8.4, 15]];
   trees.forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); i % 3 ? roundTree(p[0], p[1], .9, i % 2 ? '#7aa04a' : '#8aa84e') : cypress(p[0], p[1], 1); } }));
   /* your fleet on the launch field, burners flickering */
   S.balloons.slice(0, 6).forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
@@ -3558,8 +3559,8 @@ const LABEL_Z = .55;
 /* Zones written in the sand: text, centre of the baseline, where a tap glides to. */
 const TOWN_ZONES = [
   { text: 'AMBAR', gx: 4, gy: 3.55, at: [4, 2] },
-  { text: 'EKİP', gx: 11.5, gy: 3.85, at: [11.5, 2] },
-  { text: 'FİNANS', gx: 11, gy: 7.5, at: [11, 6] },
+  { text: 'FİNANS', gx: 11.3, gy: 3.85, at: [11.3, 2] },
+  { text: 'EKİP', gx: 10.9, gy: 7.5, at: [11, 6] },
   { text: 'AJANS', gx: 15.05, gy: 10, at: [11, 10], side: true },
   { text: 'ŞİRKETLER', gx: 11.9, gy: 14.25, at: [11.9, 12.8] },
   { text: 'OTELLER', gx: 3.3, gy: 15.25, at: [3.3, 11.8] },
@@ -3738,8 +3739,8 @@ function openTown() {
   const el = $('town'); el.hidden = false; TOWN.open = true; el.style.paddingTop = $('hud').offsetHeight + 'px';
   const r = el.getBoundingClientRect();
   // Fit the town across the width, hotels on the left included; the valley fills the rest.
-  TOWN.z = clamp(r.width / 1400, .26, .9); TOWN.anim = null;
-  const [cx, cy] = tiso(6.7, 8.3); TOWN.ox = r.width / 2 - cx * TOWN.z; TOWN.oy = r.height * .58 - cy * TOWN.z;
+  TOWN.z = clamp(r.width / 1450, .26, .9); TOWN.anim = null;
+  const [cx, cy] = tiso(7, 8); TOWN.ox = r.width / 2 - cx * TOWN.z; TOWN.oy = r.height * .58 - cy * TOWN.z;
   cancelAnimationFrame(TOWN.raf); townLoop();
 }
 function closeTown() { TOWN.open = false; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh(); }
