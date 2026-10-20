@@ -110,6 +110,8 @@ public struct RegionState: Codable, Equatable, Sendable {
     /// Last 14 days of net profit, used to size the autopilot.
     public var netHistory: [Int] = []
     var rivalPlanDay = 0
+    /// Day of the last guide flight, for the popularity cap.
+    public var lastGuide: Int?
     var absentNoticeDay = 0
 
     init(rivals: [Rival]) { self.rivals = rivals }

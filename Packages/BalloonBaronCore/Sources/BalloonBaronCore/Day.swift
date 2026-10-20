@@ -176,6 +176,11 @@ extension Game {
             lg.designRep = designRep
             if rng.chance(0.25), let d = state.design(of: rng.pick(painted)) { addReview(.design, ["d": String(d.id)]) }
         }
+        // Popularity needs hotels or guides past 4.2★; an influencer campaign stretches it to 4.5★.
+        if !state.prOK && state.rep > state.prCap {
+            state.rep = state.prCap
+            queueTip(.prcap)
+        }
         if state.licenseDaysLeft == 0 { ev.append(.licenseExpiring) }
         // Passengers miss the founder: popularity erodes while the balloons fly without you.
         let absent = state.daysSinceSelfFly

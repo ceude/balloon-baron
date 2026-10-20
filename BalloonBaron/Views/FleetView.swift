@@ -5,6 +5,7 @@ import BalloonBaronCore
 enum FleetUI {
     /// Sky background, title bar with cash and close button, scrolling content.
     struct PageFrame<Content: View>: View {
+        @Environment(GameStore.self) private var store
         let title: String
         let cash: Int
         let close: () -> Void
@@ -22,9 +23,12 @@ enum FleetUI {
                 Theme.sky.ignoresSafeArea()
                 VStack(spacing: 0) {
                     header
-                    ScrollView {
-                        VStack(spacing: 14) { content }
-                            .padding(16)
+                    ScrollViewReader { proxy in
+                        ScrollView {
+                            VStack(spacing: 14) { content }
+                                .padding(16)
+                        }
+                        .onAppear { store.scrollToSection(proxy) }
                     }
                 }
             }
@@ -243,6 +247,7 @@ struct FleetView: View {
                 balloonsCard(game)
                 shopCard(game.state)
                 workshopCard(game)
+                    .id(PageSection.workshop)
             }
             .sheet(item: $adPick) { pick in
                 AdPicker(balloonID: pick.id).environment(store)

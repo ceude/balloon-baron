@@ -191,6 +191,7 @@ extension Game {
         state.influencerCooldown = state.day + 10
         state.influencerCount += 1
         addReview(.influencer)
+        queueTip(.influ)
         return true
     }
 
@@ -202,6 +203,7 @@ extension Game {
         state.guideCooldown = state.day + 5
         state.guideUntil = state.day + 3
         state.guideCount += 1
+        state.lastGuide = state.day
         addReview(.guide)
         return true
     }

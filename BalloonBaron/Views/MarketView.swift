@@ -20,7 +20,9 @@ struct MarketView: View {
                 todayCard(game)
                 shareCard(game.state)
                 companiesCard(game.state)
+                    .id(PageSection.rivals)
                 hotelsCard(game)
+                    .id(PageSection.hotels)
                 marketingCard(game.state)
             }
         }

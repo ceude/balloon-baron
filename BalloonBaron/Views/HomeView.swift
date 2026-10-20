@@ -26,6 +26,8 @@ struct HomeView: View {
     /// Top of the dock and bottom of the HUD on screen; the scene puts its ground and sky scale there.
     @State private var dockTop: CGFloat = 0
     @State private var hudBottom: CGFloat = 56
+    /// Bottom of the weather card; the town's back corner sits just under it.
+    @State private var weatherBottom: CGFloat = 0
 
     var body: some View {
         if let game = store.game {
@@ -53,7 +55,12 @@ struct HomeView: View {
     private func content(_ game: Game) -> some View {
         let s = game.state
         return ZStack(alignment: .top) {
-            OfficeSceneView(groundY: dockTop, topY: hudBottom + 40)
+            // The company town is the morning screen; gathering passengers moves to the launch field.
+            if store.collecting {
+                OfficeSceneView(groundY: dockTop, topY: hudBottom + 40)
+            } else {
+                HomeTownView(dockTop: dockTop, weatherBottom: weatherBottom, hudBottom: hudBottom)
+            }
             VStack(spacing: 10) {
                 hud(s)
                     .background {
@@ -64,7 +71,14 @@ struct HomeView: View {
                 HStack(alignment: .top, spacing: 10) {
                     // Passenger reviews pop up below the weather, left of the side buttons, so they never cover either.
                     VStack(alignment: .leading, spacing: 10) {
-                        if let w = s.weather { weatherWidget(w, winter: s.winter != nil) }
+                        if let w = s.weather {
+                            weatherWidget(w, winter: s.winter != nil)
+                                .background {
+                                    GeometryReader { g in
+                                        Color.clear.preference(key: WeatherBottomKey.self, value: g.frame(in: .global).maxY)
+                                    }
+                                }
+                        }
                         if !store.collecting { ReviewChirpView() }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -85,6 +99,9 @@ struct HomeView: View {
         }
         .onPreferenceChange(HudBottomKey.self) { v in
             if v >= 0 && abs(v - hudBottom) > 0.5 { hudBottom = v }
+        }
+        .onPreferenceChange(WeatherBottomKey.self) { v in
+            if v >= 0 && abs(v - weatherBottom) > 0.5 { weatherBottom = v }
         }
     }
 
@@ -227,30 +244,14 @@ struct HomeView: View {
 
     // MARK: Side buttons
 
+    /// Goals always; Holding joins below once you're a baron somewhere. The office pages live in the town,
+    /// whose zones carry the crew and market alerts.
     private func navColumn(_ s: GameState) -> some View {
-        let badge = goalsBadge(s)
-        let issue = s.parked.values.contains { $0.auto.issue != nil }
-        let crewDot = !s.licenseValid || s.local.balloons.contains { s.status($0) == .noPilot }
-        let marketDot = s.local.rivals.contains { r in
-            (r.alive && r.offer != nil && !r.offerDeclined) || (r.forSale != nil && !r.saleDeclined)
-        }
+        let issue = s.parked.values.contains { $0.auto.issue != nil } || (s.barons[.cap] != nil && !s.owns(.abq))
         return VStack(spacing: 10) {
+            navButton(.goals, loc("home.nav.goals"), .goals, badge: goalsBadge(s))
             if s.anyBaron {
-                navButton(.world, loc("home.nav.holding"), .holding, badge: badge, dot: issue)
-            } else {
-                navButton(.goals, loc("home.nav.goals"), .goals, badge: badge)
-            }
-            if s.unlocked.contains(.fleet) {
-                navButton(.fleet, loc("home.nav.fleet"), .fleet)
-            }
-            if s.unlocked.contains(.crew) {
-                navButton(.crew, loc("home.nav.crew"), .crew, dot: crewDot)
-            }
-            if s.unlocked.contains(.bank) {
-                navButton(.bank, loc("home.nav.bank"), .bank)
-            }
-            if s.unlocked.contains(.market) {
-                navButton(.market, loc("home.nav.market"), .market, dot: marketDot)
+                navButton(.world, loc("home.nav.holding"), .holding, dot: issue)
             }
         }
     }
@@ -639,6 +640,11 @@ struct WindBar: View {
 }
 
 private struct DockTopKey: PreferenceKey {
+    static var defaultValue: CGFloat = -1
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+private struct WeatherBottomKey: PreferenceKey {
     static var defaultValue: CGFloat = -1
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
 }

@@ -96,6 +96,7 @@ public struct Game: Sendable {
         }
         queueTip(.welcome)
         if s.day >= 2 { queueTip(.goals) }
+        if s.day >= 6 { queueTip(.pr) }
         if s.weather?.flag == .yellow { queueTip(.yellow) }
         if s.weather?.flag == .red { queueTip(.red) }
         if s.weather?.mission != nil { queueTip(.mission) }

@@ -1,10 +1,10 @@
-import Foundation
+import SwiftUI
 import Observation
 import BalloonBaronCore
 
 /// Office pages opened from the side buttons on the home screen.
 enum Page: String, Identifiable {
-    case fleet, crew, bank, market, goals, holding, map
+    case fleet, crew, bank, market, goals, holding, map, town
     var id: String { rawValue }
 }
 
@@ -34,6 +34,12 @@ final class GameStore {
     var showRepChart = false
     /// The office page on screen.
     var page: Page?
+    /// Section the page scrolls to when it opens from the town.
+    var pageSection: PageSection?
+    /// Zone the full-screen town glides to when it opens from the home screen.
+    var townFocus: TownFocus?
+    /// The town's card for the agencies and for buildings that open later.
+    var townCard: TownCard?
     /// A parked region whose problem the player is deciding.
     var issueRegion: RegionID?
     /// The dream-flight intro runs at every launch, like the prototype.
@@ -85,7 +91,7 @@ final class GameStore {
 
     /// Shows the next popup in the prototype's order: chapter ceremony, merger news, then Hezarfen.
     func showNextHezarfen() {
-        guard !showIntro, !collecting, hezarfen == nil, chapter == nil, merge == nil, poach == nil, deal == nil, !showMenu,
+        guard !showIntro, !collecting, hezarfen == nil, chapter == nil, merge == nil, poach == nil, deal == nil, !showMenu, townCard == nil,
               report == nil, flightPax == nil, page == nil, issueRegion == nil, let g = game else { return }
         let s = g.state
         if let c = s.chapterNews {
@@ -189,7 +195,41 @@ final class GameStore {
         showNextHezarfen()
     }
 
+    // MARK: Town
+
+    /// A tapped building: its office page (scrolled to its section), its card, or the goals.
+    func tapTown(_ tap: TownTap) {
+        switch tap {
+        case .page(let p, let section):
+            pageSection = section
+            page = p
+        case .card(let c):
+            townCard = c
+        case .goals:
+            page = .goals
+        }
+    }
+
+    /// Opens Şirketim full screen, gliding to a zone if one was tapped.
+    func openTown(_ focus: TownFocus?) {
+        townFocus = focus
+        page = .town
+    }
+
+    func closeTownCard() {
+        townCard = nil
+        showNextHezarfen()
+    }
+
+    /// Scrolls a page that opened from the town to the building's section.
+    func scrollToSection(_ proxy: ScrollViewProxy) {
+        guard let s = pageSection else { return }
+        pageSection = nil
+        DispatchQueue.main.async { proxy.scrollTo(s, anchor: .top) }
+    }
+
     func closePage() {
+        pageSection = nil
         page = nil
         issueRegion = nil
         showNextHezarfen()

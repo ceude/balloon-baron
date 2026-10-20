@@ -19,16 +19,20 @@ struct CrewView: View {
         VStack(spacing: 0) {
             header
             if let s = store.state {
-                ScrollView {
-                    VStack(alignment: .leading, spacing: 16) {
-                        licenseSection(s)
-                        needPilots(s)
-                        idleSection(s)
-                        dutySection(s)
-                        candidatesSection(s)
-                        schoolSection(s)
+                ScrollViewReader { proxy in
+                    ScrollView {
+                        VStack(alignment: .leading, spacing: 16) {
+                            licenseSection(s)
+                            needPilots(s)
+                            idleSection(s)
+                            dutySection(s)
+                            candidatesSection(s)
+                            schoolSection(s)
+                                .id(PageSection.school)
+                        }
+                        .padding(16)
                     }
-                    .padding(16)
+                    .onAppear { store.scrollToSection(proxy) }
                 }
             }
         }

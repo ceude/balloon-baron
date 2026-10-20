@@ -131,7 +131,12 @@ public enum Rules {
     public static let xlName = "Kapadokya Yıldızı"
     public static let xlRepPerFlight = 0.005
     /// Passengers pay this much extra to fly with the founder.
-    public static let founderPremium = 0.3
+    public static let founderPremium = 0.25
+    /// Without a hotel or a recent guide flight popularity stops at 4.2★ (4.5★ with a recent influencer campaign).
+    public static let prCap = 1.05
+    public static let prCapInfluencer = 1.125
+    /// A guide flight keeps counting for the cap this many days.
+    public static let guideFresh = 10
     /// After this many days without flying yourself, popularity erodes.
     public static let absentGraceDays = 5
     public static let absentRepLoss = 0.008

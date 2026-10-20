@@ -58,7 +58,7 @@ final class GameTests: XCTestCase {
         XCTAssertEqual(pax, 8, "a price cut fills the basket")
         let r = g.finishDay(flight: FlightResult(landing: .perfect, distance: 30))
         XCTAssertEqual(r.ledger.tickets, 8 * 150)
-        XCTAssertEqual(r.ledger.founderBonus, 8 * 150 * 3 / 10, "passengers pay extra to fly with the founder")
+        XCTAssertEqual(r.ledger.founderBonus, 8 * 150 / 4, "passengers pay extra to fly with the founder")
         XCTAssertEqual(r.ledger.tips, 8 * 15)
         XCTAssertEqual(g.state.cash, cash + r.net)
         XCTAssertEqual(g.state.day, 2)
@@ -200,6 +200,27 @@ final class GameTests: XCTestCase {
         }
     }
 
+    func testPopularityCap() {
+        var g = newGame()
+        g.state.rep = 1.3
+        g.launch(skip: true)
+        g.finishDay(flight: nil)
+        XCTAssertEqual(g.state.rep, Rules.prCap, accuracy: 1e-9, "no hotel or guide: popularity stops at 4.2★")
+        XCTAssertTrue(g.state.hezQueue.contains(.tip(.prcap)))
+        g.startDay()
+        g.state.rep = 1.3
+        g.state.influencerCooldown = g.state.day + 5
+        g.launch(skip: true)
+        g.finishDay(flight: nil)
+        XCTAssertEqual(g.state.rep, Rules.prCapInfluencer, accuracy: 1e-9, "a fresh influencer campaign stretches it to 4.5★")
+        g.startDay()
+        g.state.rep = 1.3
+        g.state.lastGuide = g.state.day - 3
+        g.launch(skip: true)
+        g.finishDay(flight: nil)
+        XCTAssertGreaterThan(g.state.rep, Rules.prCapInfluencer, "a recent guide flight lifts the cap")
+    }
+
     func testSaveRoundTrip() throws {
         var g = newGame()
         for _ in 0..<10 { play(&g) }
@@ -214,7 +235,7 @@ final class GameTests: XCTestCase {
         let trace = ProcessInfo.processInfo.environment["TRACE"] != nil
         for seed: UInt64 in [1, 2, 3, 4, 5] {
             var g = newGame(seed: seed)
-            var winterSeen = false
+            var winterSeen = false, couldWinter = false
             for _ in 0..<80 {
                 let before = g.state.cash
                 let r = play(&g, skipRed: true)
@@ -227,6 +248,7 @@ final class GameTests: XCTestCase {
                 XCTAssertLessThan(g.state.rep, 1.45)
                 for rv in g.state.rivals { XCTAssertTrue((40...320).contains(rv.price), "\(rv.name) price \(rv.price)") }
                 if g.state.winter != nil { winterSeen = true }
+                if g.state.day >= 40 && g.state.cash >= 50000 { couldWinter = true }
                 if g.state.winter == nil && g.state.balloons.count < 12 {
                     if g.state.cash > 60000 { g.buyBalloon(.M) } else if g.state.cash > 25000 { g.buyBalloon(.S) }
                 }
@@ -241,7 +263,8 @@ final class GameTests: XCTestCase {
             print("seed \(seed): day \(g.state.day) cash \(g.state.cash) balloons \(g.state.balloons.count) stars \(g.state.stars) rivals alive \(g.state.rivals.filter(\.alive).map(\.name))")
             XCTAssertFalse(g.state.over)
             XCTAssertGreaterThan(g.state.balloons.count, 3, "seed \(seed): the company should grow")
-            XCTAssertTrue(winterSeen, "seed \(seed): winter should arrive by day 80")
+            // Winter comes once a company has €50,000 after day 40; one that keeps reinvesting may never get there.
+            XCTAssertTrue(winterSeen || !couldWinter, "seed \(seed): winter should arrive by day 80")
         }
     }
 }

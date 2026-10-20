@@ -37,6 +37,10 @@ struct RootView: View {
                 page(p)
                     .transition(.move(edge: .trailing))
             }
+            if let c = store.townCard, store.game != nil {
+                TownCardView(card: c)
+                    .transition(.opacity)
+            }
             if let r = store.issueRegion, store.game != nil {
                 IssueView(region: r)
                     .transition(.opacity)
@@ -78,6 +82,7 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.hezarfen)
         .animation(.easeOut(duration: 0.25), value: store.page)
         .animation(.easeOut(duration: 0.25), value: store.issueRegion)
+        .animation(.easeOut(duration: 0.25), value: store.townCard)
         .animation(.easeOut(duration: 0.25), value: store.chapter)
         .animation(.easeOut(duration: 0.25), value: store.merge)
         .animation(.easeOut(duration: 0.25), value: store.collecting)
@@ -107,6 +112,7 @@ struct RootView: View {
         case .goals: GoalsView()
         case .holding: HoldingView()
         case .map: WorldMapView()
+        case .town: TownView()
         }
     }
 }
