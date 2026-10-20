@@ -1,140 +1,174 @@
 import SwiftUI
 import BalloonBaronCore
 
-/// A point on the town grid the full-screen town glides to when it opens.
-struct TownFocus: Equatable {
-    var gx: Double
-    var gy: Double
-}
-
-/// Frame-to-frame state of a town canvas. Not observed: the canvas and the gestures mutate it.
+/// Frame-to-frame state of the home town canvas. Not observed: the canvas and the gestures mutate it.
 final class TownCanvasModel {
+    enum Mode { case home, zoomed, leaving }
     let t0 = Date.timeIntervalSinceReferenceDate
+    var mode = Mode.home
     var view = TownViewport(z: 0.3, ox: 0, oy: 0)
+    /// What the home screen shows; zooming starts from it and returns to it.
+    var home = TownViewport(z: 0.3, ox: 0, oy: 0)
+    var size: CGSize = .zero
     var hits = TownHits()
-    var placed = false
-    /// Zone to glide to once the canvas knows its size.
-    var pendingFocus: TownFocus?
     /// Pan and pinch in progress.
     var lastDrag: CGSize = .zero
-    var pinchStart: (z: CGFloat, ox: CGFloat, oy: CGFloat)?
-    /// Glide toward a zone: start time, start view, target zoom and grid point.
-    var anim: (start: Double, from: TownViewport, z: CGFloat, at: TownFocus)?
+    var pinchStart: TownViewport?
+    /// A glide: start time, start view and target view.
+    var anim: (start: Double, from: TownViewport, to: TownViewport)?
 
     func time(_ date: Date) -> Double { date.timeIntervalSinceReferenceDate - t0 }
+    var now: Double { time(Date()) }
 
-    /// Fit the town across the width (hotels on the left included); the valley fills the rest.
-    func place(in size: CGSize) {
-        guard !placed, size.width > 0 else { return }
-        placed = true
-        let z = min(max(size.width / 1450, 0.26), 0.9), c = TownGeo.iso(7, 8)
-        view = TownViewport(z: z, ox: size.width / 2 - c.x * z, oy: size.height * 0.58 - c.y * z)
+    func glide(to target: TownViewport) {
+        anim = (start: now, from: view, to: target)
     }
 
-    func focus(_ at: TownFocus, now: Double) {
-        anim = (start: now, from: view, z: 0.65, at: at)
+    /// Glide in on a grid point, at a zoom that shows building names.
+    func focus(_ gx: Double, _ gy: Double) {
+        let z: CGFloat = 0.65, c = TownGeo.iso(gx, gy)
+        glide(to: TownViewport(z: z, ox: size.width / 2 - c.x * z, oy: size.height * 0.55 - c.y * z))
     }
 
-    func step(now: Double, size: CGSize) {
+    /// The grid point under a screen point, kept inside the walls.
+    func grid(_ p: CGPoint) -> (Double, Double) {
+        let wx = (p.x - view.ox) / view.z, wy = (p.y - view.oy) / view.z
+        let a = Double(wx / (TownGeo.TW / 2)), b = Double(wy / (TownGeo.TH / 2))
+        return (min(max((a + b) / 2, 0), 15), min(max((b - a) / 2, 0), 15))
+    }
+
+    func step(now: Double) {
         if let a = anim {
             let k = min(max((now - a.start) / 0.45, 0), 1), e = CGFloat(1 - pow(1 - k, 3))
-            let c = TownGeo.iso(a.at.gx, a.at.gy)
-            view.z = a.from.z + (a.z - a.from.z) * e
-            view.ox = a.from.ox + (size.width / 2 - c.x * a.z - a.from.ox) * e
-            view.oy = a.from.oy + (size.height * 0.55 - c.y * a.z - a.from.oy) * e
-            if k >= 1 { anim = nil }
+            view.z = a.from.z + (a.to.z - a.from.z) * e
+            view.ox = a.from.ox + (a.to.ox - a.from.ox) * e
+            view.oy = a.from.oy + (a.to.oy - a.from.oy) * e
+            if k >= 1 {
+                anim = nil
+                if mode == .leaving { mode = .home }
+            }
+        } else if mode == .zoomed {
+            clamp()
         }
-        clamp(size)
     }
 
     /// Keep the town on screen however far you drag.
-    func clamp(_ size: CGSize) {
+    func clamp() {
         let w = size.width, h = size.height, c = TownGeo.iso(7.5, 7.5)
         let sx = c.x * view.z + view.ox, sy = c.y * view.z + view.oy
         let mx = 8 * TownGeo.TW / 2 * view.z, my = 8 * TownGeo.TH / 2 * view.z
         view.ox += min(max(sx, min(w * 0.5, -mx + w * 0.2)), max(w * 0.5, w * 0.8 + mx)) - sx
         view.oy += min(max(sy, min(h * 0.5, h * 0.3 - my)), max(h * 0.55, h * 0.8 + my)) - sy
     }
-
-    func zoom(at p: CGPoint, to z: CGFloat, from start: (z: CGFloat, ox: CGFloat, oy: CGFloat)) {
-        let nz = min(max(z, 0.25), 1.6), k = nz / start.z
-        view = TownViewport(z: nz, ox: p.x - (p.x - start.ox) * k, oy: p.y - (p.y - start.oy) * k)
-    }
 }
 
-/// Şirketim: the company town full screen. Drag to look around, pinch to zoom, tap a building to open it.
-/// From afar the zones are written in the sand; tapping one glides in on it.
-struct TownView: View {
+/// The company town on the home screen, sitting on the dock with its back corner under the weather card.
+/// Tapping it zooms in right there: the home screen's controls slide away (`zoomed`), and you can drag and pinch.
+/// Pinching back out to the home view, or the round X, glides back and the controls return.
+/// A building opens itself; from afar a zone written in the sand glides in on that zone.
+struct HomeTownView: View {
     @Environment(GameStore.self) private var store
+    /// Top of the dock and bottom of the weather card, in screen coordinates.
+    let dockTop: CGFloat
+    let weatherBottom: CGFloat
+    let hudBottom: CGFloat
+    @Binding var zoomed: Bool
     @State private var model = TownCanvasModel()
 
     var body: some View {
-        ZStack(alignment: .top) {
-            if let s = store.state {
-                TimelineView(.animation) { tl in
+        if let s = store.state {
+            ZStack(alignment: .topTrailing) {
+                TimelineView(.animation(minimumInterval: zoomed ? nil : 1 / 30)) { tl in
                     Canvas { ctx, sz in
-                        let now = model.time(tl.date)
-                        model.place(in: sz)
-                        if let f = model.pendingFocus {
-                            model.focus(f, now: now)
-                            model.pendingFocus = nil
-                        }
-                        model.step(now: now, size: sz)
-                        model.hits = TownPainter.render(&ctx, state: s, time: now, viewport: model.view, size: sz)
+                        let h = dockTop > 0 ? min(dockTop, sz.height) : sz.height * 0.6
+                        model.size = sz
+                        model.home = homeViewport(width: sz.width, dockTop: h)
+                        if model.mode == .home { model.view = model.home } else { model.step(now: model.time(tl.date)) }
+                        // At home the town stops at the dock; zoomed in it fills the screen.
+                        let full = model.mode != .home
+                        var c = ctx
+                        if !full { c.clip(to: Path(CGRect(x: 0, y: 0, width: sz.width, height: h))) }
+                        model.hits = TownPainter.render(&c, state: s, time: model.time(tl.date), viewport: model.view,
+                                                        size: full ? sz : CGSize(width: sz.width, height: h))
                     }
                 }
                 .ignoresSafeArea()
-                .gesture(pan.simultaneously(with: pinch))
+                .gesture(pan.simultaneously(with: pinch), including: zoomed ? .all : .none)
                 .onTapGesture { p in tap(p) }
-                .accessibilityHidden(true)
+                .accessibilityElement()
+                .accessibilityLabel(loc("town.title"))
+                .accessibilityAddTraits(.isButton)
+                .accessibilityAction { zoomIn(at: (7, 8)) }
+                if zoomed {
+                    Button {
+                        SoundEngine.shared.play(.click)
+                        zoomOut()
+                    } label: {
+                        Image(systemName: "xmark")
+                            .font(.system(size: 18, weight: .heavy))
+                            .foregroundStyle(Theme.ink)
+                            .frame(width: 46, height: 46)
+                            .background(Color(red: 1, green: 250 / 255, blue: 243 / 255).opacity(0.95), in: Circle())
+                            .background(Circle().fill(Theme.ink.opacity(0.35)).offset(y: 4))
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.top, 6)
+                    .padding(.trailing, 14)
+                    .transition(.scale(scale: 0.6).combined(with: .opacity))
+                    .accessibilityLabel(loc("town.zoomOut"))
+                }
             }
-            header
-            VStack {
-                Spacer()
-                Text(loc("town.hint"))
-                    .font(Theme.font(13))
-                    .foregroundStyle(Color(red: 1, green: 240 / 255, blue: 225 / 255).opacity(0.85))
-                    .shadow(color: .black.opacity(0.4), radius: 3, y: 1)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 16)
-                    .padding(.bottom, 10)
-                    .allowsHitTesting(false)
-            }
-        }
-        .background(Color(hex: "#3a2a4a").ignoresSafeArea())
-        .onAppear {
-            model.pendingFocus = store.townFocus
-            store.townFocus = nil
         }
     }
 
-    private var header: some View {
-        HStack {
-            Text(loc("town.title"))
-                .font(Theme.font(34, .heavy, condensed: true))
-                .foregroundStyle(Color(hex: "#fff6ea"))
-                .shadow(color: Color(red: 20 / 255, green: 12 / 255, blue: 40 / 255).opacity(0.55), radius: 8, y: 2)
-            Spacer()
-            Button {
+    private func homeViewport(width w: CGFloat, dockTop: CGFloat) -> TownViewport {
+        let back = max(hudBottom + 20, weatherBottom - 16), front = dockTop - 6
+        let z = min(max((front - back) / 1024, 0.15), w / 1500)
+        let c = TownGeo.iso(7, 8)
+        return TownViewport(z: z, ox: w / 2 - c.x * z, oy: front - TownGeo.iso(15.5, 15.5).y * z)
+    }
+
+    private func zoomIn(at g: (Double, Double)) {
+        guard model.mode == .home else { return }
+        model.view = model.home
+        model.mode = .zoomed
+        model.focus(g.0, g.1)
+        withAnimation(.timingCurve(0.3, 0.7, 0.3, 1, duration: 0.38)) { zoomed = true }
+    }
+
+    private func zoomOut() {
+        guard model.mode == .zoomed else { return }
+        model.mode = .leaving
+        model.pinchStart = nil
+        model.glide(to: model.home)
+        withAnimation(.timingCurve(0.3, 0.7, 0.3, 1, duration: 0.38)) { zoomed = false }
+    }
+
+    private func tap(_ p: CGPoint) {
+        switch model.mode {
+        case .leaving:
+            return
+        case .home:
+            guard dockTop <= 0 || p.y < dockTop else { return }
+            SoundEngine.shared.play(.click)
+            let hit = model.hits.hit(p)
+            if let z = hit.zone { zoomIn(at: z.at) } else if let b = hit.building { store.tapTown(b.tap) } else { zoomIn(at: model.grid(p)) }
+        case .zoomed:
+            let hit = model.hits.hit(p)
+            if let z = hit.zone {
                 SoundEngine.shared.play(.click)
-                store.closePage()
-            } label: {
-                Image(systemName: "xmark")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(Theme.ink)
-                    .frame(width: 44, height: 44)
-                    .background(Color.white, in: RoundedRectangle(cornerRadius: 14))
+                model.focus(z.at.0, z.at.1)
+            } else if let b = hit.building {
+                SoundEngine.shared.play(.click)
+                store.tapTown(b.tap)
             }
-            .buttonStyle(.plain)
-            .accessibilityLabel(loc("fleetPage.close"))
         }
-        .padding(.horizontal, 16)
-        .padding(.top, 8)
     }
 
     private var pan: some Gesture {
         DragGesture(minimumDistance: 6)
             .onChanged { v in
+                guard model.mode == .zoomed else { return }
                 model.anim = nil
                 model.view.ox += v.translation.width - model.lastDrag.width
                 model.view.oy += v.translation.height - model.lastDrag.height
@@ -143,78 +177,19 @@ struct TownView: View {
             .onEnded { _ in model.lastDrag = .zero }
     }
 
+    /// Pinching out to the home screen's zoom returns home.
     private var pinch: some Gesture {
         MagnifyGesture()
             .onChanged { v in
+                guard model.mode == .zoomed else { return }
                 model.anim = nil
-                let start = model.pinchStart ?? (z: model.view.z, ox: model.view.ox, oy: model.view.oy)
+                let start = model.pinchStart ?? model.view
                 if model.pinchStart == nil { model.pinchStart = start }
-                model.zoom(at: v.startLocation, to: start.z * v.magnification, from: start)
+                let z = min(max(start.z * v.magnification, model.home.z), 1.6), k = z / start.z, p = v.startLocation
+                model.view = TownViewport(z: z, ox: p.x - (p.x - start.ox) * k, oy: p.y - (p.y - start.oy) * k)
+                if z <= model.home.z * 1.04 { zoomOut() }
             }
             .onEnded { _ in model.pinchStart = nil }
-    }
-
-    private func tap(_ p: CGPoint) {
-        let hit = model.hits.hit(p)
-        if let z = hit.zone {
-            SoundEngine.shared.play(.click)
-            model.focus(TownFocus(gx: z.at.0, gy: z.at.1), now: model.time(Date()))
-        } else if let b = hit.building {
-            SoundEngine.shared.play(.click)
-            store.tapTown(b.tap)
-        }
-    }
-}
-
-/// The town on the home screen, sitting on the dock with its back corner under the weather card.
-/// No panning here: a zone opens Şirketim zoomed on it, a building opens itself, open ground opens Şirketim.
-struct HomeTownView: View {
-    @Environment(GameStore.self) private var store
-    /// Top of the dock and bottom of the weather card, in screen coordinates.
-    let dockTop: CGFloat
-    let weatherBottom: CGFloat
-    let hudBottom: CGFloat
-    @State private var model = TownCanvasModel()
-
-    var body: some View {
-        if let s = store.state {
-            TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
-                Canvas { ctx, sz in
-                    let h = dockTop > 0 ? min(dockTop, sz.height) : sz.height * 0.6
-                    model.view = viewport(width: sz.width, dockTop: h)
-                    var clipped = ctx
-                    clipped.clip(to: Path(CGRect(x: 0, y: 0, width: sz.width, height: h)))
-                    model.hits = TownPainter.render(&clipped, state: s, time: model.time(tl.date), viewport: model.view,
-                                                    size: CGSize(width: sz.width, height: h))
-                }
-            }
-            .ignoresSafeArea()
-            .onTapGesture { p in tap(p) }
-            .accessibilityElement()
-            .accessibilityLabel(loc("town.title"))
-            .accessibilityAddTraits(.isButton)
-            .accessibilityAction { store.openTown(nil) }
-        }
-    }
-
-    private func viewport(width w: CGFloat, dockTop: CGFloat) -> TownViewport {
-        let back = max(hudBottom + 20, weatherBottom - 16), front = dockTop - 6
-        let z = min(max((front - back) / 1024, 0.15), w / 1500)
-        let c = TownGeo.iso(7, 8)
-        return TownViewport(z: z, ox: w / 2 - c.x * z, oy: front - TownGeo.iso(15.5, 15.5).y * z)
-    }
-
-    private func tap(_ p: CGPoint) {
-        guard dockTop <= 0 || p.y < dockTop else { return }
-        SoundEngine.shared.play(.click)
-        let hit = model.hits.hit(p)
-        if let z = hit.zone {
-            store.openTown(TownFocus(gx: z.at.0, gy: z.at.1))
-        } else if let b = hit.building {
-            store.tapTown(b.tap)
-        } else {
-            store.openTown(nil)
-        }
     }
 }
 

@@ -2,6 +2,9 @@ from s1_ui import add
 
 # Şirketim: the company town
 add("town.title", "My company", "Şirketim", "Meine Firma", "Mi empresa", "わが社", "내 회사")
+add("town.zoomOut", "Zoom out", "Uzaklaş", "Herauszoomen", "Alejar", "縮小", "축소")
+add("goals.finished", "Done", "Tamamlandı", "Erledigt", "Hecho", "達成", "완료")
+add("ceremony.start", "Start", "Başla", "Los geht's", "Empezar", "始める", "시작")
 add("town.hint", "Tap a zone or zoom in; tap a building to open it.", "Bölgeye dokun ya da yakınlaştır, binaya dokununca açılır.", "Tippe auf eine Zone oder zoome hinein; tippe auf ein Gebäude, um es zu öffnen.", "Toca una zona o amplía; toca un edificio para abrirlo.", "エリアをタップするか拡大。建物をタップすると開く。", "구역을 탭하거나 확대하세요. 건물을 탭하면 열립니다.")
 add("town.forSale", "FOR SALE", "SATILIK", "ZU VERKAUFEN", "SE VENDE", "売地", "매물")
 

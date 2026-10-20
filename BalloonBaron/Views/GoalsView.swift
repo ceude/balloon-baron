@@ -108,9 +108,12 @@ struct WorldPageHeader: View {
 struct ChapterGoalRow: View {
     let goal: Goal
     let state: GameState
+    /// In the ceremony every goal of the finished chapter shows done, whatever the numbers did since.
+    var finished = false
 
     var body: some View {
-        let done = state.done(goal)
+        let done = finished || state.done(goal)
+        let text = finished && !state.done(goal) ? loc("goals.finished") : state.progressText(goal)
         HStack(spacing: 12) {
             RoundedRectangle(cornerRadius: 9)
                 .fill(done ? Theme.green : Color.clear)
@@ -129,13 +132,13 @@ struct ChapterGoalRow: View {
                         .font(Theme.font(14, .bold))
                         .foregroundStyle(Theme.ink)
                     Spacer(minLength: 4)
-                    Text(state.progressText(goal))
+                    Text(text)
                         .font(Theme.font(14, .bold, condensed: true))
                         .foregroundStyle(Theme.ink2)
                         .lineLimit(1)
                         .fixedSize()
                 }
-                WorldProgressBar(value: state.progress(goal), color: done ? Theme.green : Theme.coral)
+                WorldProgressBar(value: finished ? 1 : state.progress(goal), color: done ? Theme.green : Theme.coral)
             }
         }
         .padding(.horizontal, 12)

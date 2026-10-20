@@ -112,7 +112,6 @@ struct RootView: View {
         case .goals: GoalsView()
         case .holding: HoldingView()
         case .map: WorldMapView()
-        case .town: TownView()
         }
     }
 }

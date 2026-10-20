@@ -4,7 +4,7 @@ import BalloonBaronCore
 
 /// Office pages opened from the side buttons on the home screen.
 enum Page: String, Identifiable {
-    case fleet, crew, bank, market, goals, holding, map, town
+    case fleet, crew, bank, market, goals, holding, map
     var id: String { rawValue }
 }
 
@@ -36,8 +36,6 @@ final class GameStore {
     var page: Page?
     /// Section the page scrolls to when it opens from the town.
     var pageSection: PageSection?
-    /// Zone the full-screen town glides to when it opens from the home screen.
-    var townFocus: TownFocus?
     /// The town's card for the agencies and for buildings that open later.
     var townCard: TownCard?
     /// A parked region whose problem the player is deciding.
@@ -208,12 +206,6 @@ final class GameStore {
         case .goals:
             page = .goals
         }
-    }
-
-    /// Opens Şirketim full screen, gliding to a zone if one was tapped.
-    func openTown(_ focus: TownFocus?) {
-        townFocus = focus
-        page = .town
     }
 
     func closeTownCard() {

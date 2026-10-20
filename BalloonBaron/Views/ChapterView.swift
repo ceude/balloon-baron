@@ -6,6 +6,8 @@ struct ChapterView: View {
     @Environment(GameStore.self) private var store
     let news: ChapterNews
     @State private var shown = false
+    /// After Devam: the chapter that starts now and its goals.
+    @State private var showNext = false
 
     var body: some View {
         let chapters = news.region.chapters
@@ -13,6 +15,8 @@ struct ChapterView: View {
             if let s = store.state, chapters.indices.contains(news.index) {
                 if news.index == chapters.count - 1 {
                     baron(chapters[news.index], s)
+                } else if showNext && chapters.indices.contains(news.index + 1) {
+                    upcoming(chapters, s)
                 } else {
                     finished(chapters, s)
                 }
@@ -57,9 +61,10 @@ struct ChapterView: View {
         }
     }
 
+    /// The chapter just finished, every goal ticked. Devam moves on to the next chapter's goals.
     private func finished(_ chapters: [Chapter], _ s: GameState) -> some View {
         let c = chapters[news.index]
-        let next: Chapter? = chapters.indices.contains(news.index + 1) ? chapters[news.index + 1] : nil
+        let hasNext = chapters.indices.contains(news.index + 1)
         return VStack(alignment: .leading, spacing: 12) {
             ChapterConfetti()
                 .frame(height: 60)
@@ -71,14 +76,31 @@ struct ChapterView: View {
             Text(loc("ceremony.award", c.award, eur(c.reward)))
                 .font(Theme.font(16, .medium))
                 .foregroundStyle(Theme.ink)
-            if let next {
-                tag(loc("ceremony.next", num(news.index + 2), next.title))
-                    .padding(.top, 4)
-                ForEach(next.goals.indices, id: \.self) { i in
-                    ChapterGoalRow(goal: next.goals[i], state: s)
+            ForEach(c.goals.indices, id: \.self) { i in
+                ChapterGoalRow(goal: c.goals[i], state: s, finished: true)
+            }
+            BigButton(title: loc("ceremony.continue")) {
+                if hasNext {
+                    withAnimation(.easeOut(duration: 0.2)) { showNext = true }
+                } else {
+                    store.dismissPopup()
                 }
             }
-            BigButton(title: loc("ceremony.continue")) { store.dismissPopup() }
+            .padding(.top, 4)
+        }
+    }
+
+    private func upcoming(_ chapters: [Chapter], _ s: GameState) -> some View {
+        let next = chapters[news.index + 1]
+        return VStack(alignment: .leading, spacing: 12) {
+            tag(loc("goals.chapterOf", news.region.title, num(news.index + 2), num(chapters.count)))
+            Text(next.title)
+                .font(Theme.font(32, .heavy, condensed: true))
+                .foregroundStyle(Theme.ink)
+            ForEach(next.goals.indices, id: \.self) { i in
+                ChapterGoalRow(goal: next.goals[i], state: s)
+            }
+            BigButton(title: loc("ceremony.start")) { store.dismissPopup() }
                 .padding(.top, 4)
         }
     }

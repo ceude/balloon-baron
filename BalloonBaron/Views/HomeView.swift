@@ -28,6 +28,9 @@ struct HomeView: View {
     @State private var hudBottom: CGFloat = 56
     /// Bottom of the weather card; the town's back corner sits just under it.
     @State private var weatherBottom: CGFloat = 0
+    /// Zoomed into the town: the controls slide off screen (top ones up, the dock down) and come back on zoom-out.
+    @State private var zoomed = false
+    @State private var dockBottom: CGFloat = 0
 
     var body: some View {
         if let game = store.game {
@@ -59,7 +62,7 @@ struct HomeView: View {
             if store.collecting {
                 OfficeSceneView(groundY: dockTop, topY: hudBottom + 40)
             } else {
-                HomeTownView(dockTop: dockTop, weatherBottom: weatherBottom, hudBottom: hudBottom)
+                HomeTownView(dockTop: dockTop, weatherBottom: weatherBottom, hudBottom: hudBottom, zoomed: $zoomed)
             }
             VStack(spacing: 10) {
                 hud(s)
@@ -68,6 +71,7 @@ struct HomeView: View {
                             Color.clear.preference(key: HudBottomKey.self, value: g.frame(in: .global).maxY)
                         }
                     }
+                    .offset(y: zoomed ? -(hudBottom + 30) : 0)
                 HStack(alignment: .top, spacing: 10) {
                     // Passenger reviews pop up below the weather, left of the side buttons, so they never cover either.
                     VStack(alignment: .leading, spacing: 10) {
@@ -84,24 +88,30 @@ struct HomeView: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     navColumn(s)
                 }
+                .offset(y: zoomed ? -(max(weatherBottom, hudBottom) + 60) : 0)
                 Spacer(minLength: 0)
                 if !store.collecting {
                     dockPanel(game)
                         .layoutPriority(1)
+                        .offset(y: zoomed ? dockBottom - dockTop + 40 : 0)
                 }
             }
             .padding(.horizontal, 12)
             .padding(.top, 10)
             .padding(.bottom, 6)
         }
+        // Measurements freeze while zoomed in: the town glides back to the home layout, not the slid-away one.
         .onPreferenceChange(DockTopKey.self) { v in
-            if v >= 0 && abs(v - dockTop) > 0.5 { dockTop = v }
+            if !zoomed && v >= 0 && abs(v - dockTop) > 0.5 { dockTop = v }
+        }
+        .onPreferenceChange(DockBottomKey.self) { v in
+            if !zoomed && v >= 0 && abs(v - dockBottom) > 0.5 { dockBottom = v }
         }
         .onPreferenceChange(HudBottomKey.self) { v in
-            if v >= 0 && abs(v - hudBottom) > 0.5 { hudBottom = v }
+            if !zoomed && v >= 0 && abs(v - hudBottom) > 0.5 { hudBottom = v }
         }
         .onPreferenceChange(WeatherBottomKey.self) { v in
-            if v >= 0 && abs(v - weatherBottom) > 0.5 { weatherBottom = v }
+            if !zoomed && v >= 0 && abs(v - weatherBottom) > 0.5 { weatherBottom = v }
         }
     }
 
@@ -114,7 +124,9 @@ struct HomeView: View {
         .frame(maxWidth: 560)
         .background {
             GeometryReader { g in
-                Color.clear.preference(key: DockTopKey.self, value: g.frame(in: .global).minY)
+                Color.clear
+                    .preference(key: DockTopKey.self, value: g.frame(in: .global).minY)
+                    .preference(key: DockBottomKey.self, value: g.frame(in: .global).maxY)
             }
         }
     }
@@ -640,6 +652,11 @@ struct WindBar: View {
 }
 
 private struct DockTopKey: PreferenceKey {
+    static var defaultValue: CGFloat = -1
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+private struct DockBottomKey: PreferenceKey {
     static var defaultValue: CGFloat = -1
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
 }
