@@ -173,9 +173,14 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .pclose{width:44px;height:44px;border-radius:14px;background:#fff;box-shadow:0 3px 0 var(--line);font-size:20px;font-weight:700}
 #tabBody{flex:1;overflow-y:auto;padding:8px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px));display:flex;flex-direction:column;gap:20px}
 #page .item{background:#fff;box-shadow:0 2px 0 var(--line)}
-/* the home screen's town, zoomed in: same picture, the rest of the screen fades away */
-#town{position:absolute;inset:0;z-index:8;background:#3a2a4a;opacity:0;transition:opacity .25s ease}
-#town.on{opacity:1}
+/* the home screen's town, zoomed in: same picture under the home screen's controls, which slide out of the way
+   (the top ones up, the dock down) and slide back in when you zoom out */
+#town{position:absolute;inset:0;z-index:4;background:#3a2a4a}
+#hud,.wxw,.side,.dock{transition:transform .38s cubic-bezier(.3,.7,.3,1)}
+body.zoomed #hud{transform:translateY(-130%)}
+body.zoomed .wxw,body.zoomed .side{transform:translateY(calc(-100% - 280px))}
+body.zoomed .dock{transform:translate(-50%,calc(100% + 40px))}
+body.zoomed .chirp{transform:translate(-50%,calc(-100% - 320px));opacity:0}
 #town canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
 #tClose{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));right:max(14px, env(safe-area-inset-right, 0px));width:46px;height:46px;border-radius:50%;background:rgba(255,250,243,.95);color:var(--ink);font-size:20px;font-weight:800;box-shadow:0 4px 0 rgba(43,35,80,.35);display:grid;place-items:center;transition:opacity .2s ease, transform .2s ease}
 #tClose.gone{opacity:0;transform:scale(.6);pointer-events:none}
@@ -1990,7 +1995,7 @@ function showReport() {
 /* ---------- intro & setup ---------- */
 const INTRO = { y: 0, vy: 0, hold: false, t: 0, out: false };
 let pickI = 0, setupName = '';
-function hideAll() { page = null; TOWN.open = false; ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
+function hideAll() { page = null; TOWN.open = false; TOWN.leaving = false; document.body.classList.remove('zoomed'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
 function startIntro() {
   if (!S.weather) S.weather = newWeather();
   buildWorld();
@@ -3820,16 +3825,16 @@ function openTown(at) {
   const el = $('town'); el.hidden = false; TOWN.open = true; TOWN.leaving = false;
   TOWN.z = HOME.z; TOWN.ox = HOME.ox; TOWN.oy = HOME.oy; TOWN.anim = null;
   $('tClose').classList.remove('gone');
-  requestAnimationFrame(() => el.classList.add('on'));
+  document.body.classList.add('zoomed');
   cancelAnimationFrame(TOWN.raf); townLoop();
   townFocus(at || [7, 8]);
 }
 function closeTown() {
   if (!TOWN.open || TOWN.leaving) return;
   TOWN.leaving = true; $('tClose').classList.add('gone');
+  document.body.classList.remove('zoomed');
   townGlide({ z: HOME.z, ox: HOME.ox, oy: HOME.oy }, () => {
-    $('town').classList.remove('on');
-    setTimeout(() => { TOWN.open = false; TOWN.leaving = false; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh(); }, 250);
+    TOWN.open = false; TOWN.leaving = false; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh();
   });
 }
 function inPoly(p, pts) { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; }
