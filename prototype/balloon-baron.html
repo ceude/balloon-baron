@@ -173,12 +173,12 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .pclose{width:44px;height:44px;border-radius:14px;background:#fff;box-shadow:0 3px 0 var(--line);font-size:20px;font-weight:700}
 #tabBody{flex:1;overflow-y:auto;padding:8px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px));display:flex;flex-direction:column;gap:20px}
 #page .item{background:#fff;box-shadow:0 2px 0 var(--line)}
-#town{position:absolute;inset:0;z-index:6;background:#e9c79b;animation:pgin .22s ease-out}
+#town{position:absolute;inset:0;z-index:6;background:#3a2a4a;animation:pgin .22s ease-out}
 #town canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
 #town .phead{position:relative;z-index:1;pointer-events:none}
-#town .phead h1{color:#2b2350;text-shadow:0 1px 0 rgba(255,255,255,.6)}
+#town .phead h1{color:#fff6ea;text-shadow:0 2px 8px rgba(20,12,40,.55)}
 #town .pclose{pointer-events:auto}
-#town .thint{position:absolute;left:0;right:0;bottom:max(14px, env(safe-area-inset-bottom, 0px));text-align:center;font-size:13px;color:#5a3a2a;pointer-events:none}
+#town .thint{position:absolute;left:0;right:0;bottom:max(14px, env(safe-area-inset-bottom, 0px));text-align:center;font-size:13px;color:rgba(255,240,225,.85);text-shadow:0 1px 3px rgba(0,0,0,.4);pointer-events:none}
 .sw8{width:66px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:13px;flex:none}
 .sw8.none{background:var(--haze);color:var(--ink2)}
 .adbtn{margin-top:8px;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:10px;background:var(--haze);box-shadow:0 2px 0 var(--line);font-size:13px;font-weight:600}
@@ -3521,6 +3521,36 @@ function townLabel(b, sx, sy, sc, full, taken) {
   if (full) { ctx.fillStyle = b.lv === 0 ? '#ff5e3a' : b.lv === -1 ? 'rgba(255,255,255,.75)' : '#6c6488'; ctx.font = `600 ${fs}px Barlow, sans-serif`; ctx.fillText(b.sub, sx, sy - 6); }
   ctx.textAlign = 'left';
 }
+/* Sunrise behind the town, in screen space: sky, sun, clouds, a far ridge of fairy chimneys and the valley floor. Pans a little with the map. */
+function townBackdrop(w, h, t) {
+  const hz = clamp(h * .4 + TOWN.oy * .06, h * .25, h * .55), px = TOWN.ox * .08, p = .32;
+  const g = ctx.createLinearGradient(0, 0, 0, hz); g.addColorStop(0, mix('#1b1840', '#5f8fc6', p)); g.addColorStop(.5, mix('#6b3e6e', '#f0b48c', p)); g.addColorStop(1, mix('#f08a4a', '#ffe2ac', p));
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, hz + 2);
+  /* faint stars still fading at the top */
+  const R = mulberry32(11); ctx.fillStyle = '#ffffff';
+  for (let i = 0; i < 26; i++) { const x = R() * w, y = R() * hz * .35; ctx.globalAlpha = (.15 + R() * .35) * (.7 + .3 * Math.sin(t * 1.5 + i)); ctx.fillRect(x, y, 1.6, 1.6); }
+  ctx.globalAlpha = 1;
+  const sx = w * .74 + px, sy = hz - h * .045, sr = Math.min(w, h) * .055;
+  const sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 7); sg.addColorStop(0, 'rgba(255,225,160,.65)'); sg.addColorStop(.35, 'rgba(255,170,110,.25)'); sg.addColorStop(1, 'rgba(255,160,110,0)');
+  ctx.fillStyle = sg; ctx.fillRect(sx - sr * 7, sy - sr * 7, sr * 14, sr * 14); ell(sx, sy, sr, sr, '#fff0c8');
+  /* thin pink clouds lit from below */
+  for (let i = 0; i < 4; i++) { const cw = w * (.28 + .1 * (i % 2)), cx = ((i * w * .37 + t * (4 + i * 2) + px * .5) % (w + cw)) - cw * .5, cy = hz * (.3 + i * .13);
+    ctx.save(); ctx.globalAlpha = .5; ell(cx, cy, cw * .5, h * .007 + 2, mix('#c77a9a', '#ffd0b0', .25 + i * .18)); ell(cx + cw * .12, cy - h * .006, cw * .3, h * .006 + 2, mix('#e89aa8', '#ffe2c4', .3 + i * .15)); ctx.restore(); }
+  /* far ridge with fairy chimney silhouettes, then a nearer one */
+  for (const [k, col, amp, par, seed] of [[.0, mix('#6b4a6e', '#d9a07a', .35), .05, .5, 3], [.025, mix('#5a3a50', '#c48a6e', .3), .035, 1, 7]]) {
+    const base = hz + h * k, off = px * par;
+    ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, h);
+    for (let x = -20; x <= w + 20; x += 16) ctx.lineTo(x, base - h * amp * (.5 + .5 * Math.sin((x - off) * .012 + seed) * .7 + .3 * Math.sin((x - off) * .031 + seed * 2)));
+    ctx.lineTo(w + 20, h); ctx.closePath(); ctx.fill();
+    const Rc = mulberry32(seed * 13);
+    for (let i = 0; i < 14; i++) { const x = ((Rc() * (w + 200) + off) % (w + 200)) - 100, hh = h * (.03 + Rc() * .035) * (k ? 1.2 : .8); chimney(x, base - h * amp * .35, hh * .42, hh, col, null, mix(col, '#000000', .25)); }
+  }
+  /* valley floor fading into haze */
+  const vg = ctx.createLinearGradient(0, hz, 0, h); vg.addColorStop(0, mix('#8a5a5a', '#e0a882', .4)); vg.addColorStop(1, mix('#4a2e30', '#a8705a', .45));
+  ctx.fillStyle = vg; ctx.fillRect(0, hz + h * .02, w, h);
+  const hg = ctx.createLinearGradient(0, hz - h * .03, 0, hz + h * .08); hg.addColorStop(0, 'rgba(255,200,160,0)'); hg.addColorStop(.5, 'rgba(255,200,160,.35)'); hg.addColorStop(1, 'rgba(255,200,160,0)');
+  ctx.fillStyle = hg; ctx.fillRect(0, hz - h * .03, w, h * .11);
+}
 function drawTown() {
   const cvs = $('tcv'); if (!cvs || !TOWN.open) return;
   const r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -3528,7 +3558,7 @@ function drawTown() {
   const keep = ctx; ctx = cvs.getContext('2d');
   try {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const g = ctx.createLinearGradient(0, 0, 0, r.height); g.addColorStop(0, '#f3c99a'); g.addColorStop(.6, '#e8a77a'); g.addColorStop(1, '#c98a62'); ctx.fillStyle = g; ctx.fillRect(0, 0, r.width, r.height);
+    townBackdrop(r.width, r.height, T);
     ctx.setTransform(dpr * TOWN.z, 0, 0, dpr * TOWN.z, dpr * TOWN.ox, dpr * TOWN.oy);
     /* the town sits on a raised plateau of tuff */
     const E = [tiso(-1, -1), tiso(16, -1), tiso(16, 16), tiso(-1, 16)];
