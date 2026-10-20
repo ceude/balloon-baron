@@ -3568,6 +3568,18 @@ function townBackdrop(w, h, t) {
   /* thin pink clouds lit from below */
   for (let i = 0; i < 4; i++) { const cw = w * (.28 + .1 * (i % 2)), cx = ((i * w * .37 + t * (4 + i * 2) + px * .5) % (w + cw)) - cw * .5, cy = hz * (.3 + i * .13);
     ctx.save(); ctx.globalAlpha = .5; ell(cx, cy, cw * .5, h * .007 + 2, mix('#c77a9a', '#ffd0b0', .25 + i * .18)); ell(cx + cw * .12, cy - h * .006, cw * .3, h * .006 + 2, mix('#e89aa8', '#ffe2c4', .3 + i * .15)); ctx.restore(); }
+  /* dozens of distant balloons drifting over the valley at sunrise; the far ones hazier */
+  const far = (layer) => {
+    const cols = [myCol()].concat(S.rivals.map(r => [r.col, r.col2]), [['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9'], ['#e0408a', '#ffd0e0'], ['#5aa9e6', '#eaf4fc']]);
+    const Rb = mulberry32(layer ? 41 : 23), n = layer ? 8 : 20;
+    for (let i = 0; i < n; i++) {
+      const sp = (layer ? 5 : 2.5) + Rb() * 3, x0 = Rb() * (w + 120), alt = hz * (layer ? .12 + Rb() * .4 : .04 + Rb() * .3), ph = Rb() * 7, c = cols[Math.floor(Rb() * cols.length)];
+      const x = ((x0 + t * sp + px * (layer ? .6 : .3)) % (w + 120)) - 60, y = hz - alt * (1 + .03 * Math.sin(t * .3 + ph)) + (layer ? 0 : h * .01);
+      const r = (layer ? 7 : 3.5) + Rb() * (layer ? 4 : 2.5);
+      balloon(x, y, r, c[0], c[1], layer && (t + ph) % 5 < .35, layer ? .8 : .5);
+    }
+  };
+  far(0);
   /* far ridge with fairy chimney silhouettes, then a nearer one */
   for (const [k, col, amp, par, seed] of [[.0, mix('#6b4a6e', '#d9a07a', .35), .05, .5, 3], [.025, mix('#5a3a50', '#c48a6e', .3), .035, 1, 7]]) {
     const base = hz + h * k, off = px * par;
@@ -3577,6 +3589,7 @@ function townBackdrop(w, h, t) {
     const Rc = mulberry32(seed * 13);
     for (let i = 0; i < 14; i++) { const x = ((Rc() * (w + 200) + off) % (w + 200)) - 100, hh = h * (.03 + Rc() * .035) * (k ? 1.2 : .8); chimney(x, base - h * amp * .35, hh * .42, hh, col, null, mix(col, '#000000', .25)); }
   }
+  far(1);
   /* valley floor fading into haze */
   const vg = ctx.createLinearGradient(0, hz, 0, h); vg.addColorStop(0, mix('#8a5a5a', '#e0a882', .4)); vg.addColorStop(1, mix('#4a2e30', '#a8705a', .45));
   ctx.fillStyle = vg; ctx.fillRect(0, hz + h * .02, w, h);
