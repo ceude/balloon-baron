@@ -173,12 +173,12 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .pclose{width:44px;height:44px;border-radius:14px;background:#fff;box-shadow:0 3px 0 var(--line);font-size:20px;font-weight:700}
 #tabBody{flex:1;overflow-y:auto;padding:8px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px));display:flex;flex-direction:column;gap:20px}
 #page .item{background:#fff;box-shadow:0 2px 0 var(--line)}
-#town{position:absolute;inset:0;z-index:6;background:#3a2a4a;animation:pgin .22s ease-out}
+/* the home screen's town, zoomed in: same picture, the rest of the screen fades away */
+#town{position:absolute;inset:0;z-index:8;background:#3a2a4a;opacity:0;transition:opacity .25s ease}
+#town.on{opacity:1}
 #town canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
-#town .phead{position:relative;z-index:1;pointer-events:none}
-#town .phead h1{color:#fff6ea;text-shadow:0 2px 8px rgba(20,12,40,.55)}
-#town .pclose{pointer-events:auto}
-#town .thint{position:absolute;left:0;right:0;bottom:max(14px, env(safe-area-inset-bottom, 0px));text-align:center;font-size:13px;color:rgba(255,240,225,.85);text-shadow:0 1px 3px rgba(0,0,0,.4);pointer-events:none}
+#tClose{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));right:max(14px, env(safe-area-inset-right, 0px));width:46px;height:46px;border-radius:50%;background:rgba(255,250,243,.95);color:var(--ink);font-size:20px;font-weight:800;box-shadow:0 4px 0 rgba(43,35,80,.35);display:grid;place-items:center;transition:opacity .2s ease, transform .2s ease}
+#tClose.gone{opacity:0;transform:scale(.6);pointer-events:none}
 .sw8{width:66px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:13px;flex:none}
 .sw8.none{background:var(--haze);color:var(--ink2)}
 .adbtn{margin-top:8px;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:10px;background:var(--haze);box-shadow:0 2px 0 var(--line);font-size:13px;font-weight:600}
@@ -514,7 +514,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
     <div class="est" id="est"></div>
     <button class="big" id="psOk">Tamam</button>
   </div></div>
-  <div id="town" hidden><canvas id="tcv"></canvas><div class="phead"><h1>Şirketim</h1><button class="pclose" id="tClose" aria-label="Kapat">✕</button></div><div class="thint">Bölgeye dokun ya da yakınlaştır, binaya dokununca açılır.</div></div>
+  <div id="town" hidden><canvas id="tcv"></canvas><button id="tClose" aria-label="Uzaklaş">✕</button></div>
   <div id="page" hidden><div class="phead"><h1 id="pTitle"></h1><button class="pclose" id="pClose" aria-label="Kapat">✕</button></div><div id="tabBody"></div></div>
 
   <div id="collect" hidden></div>
@@ -1191,6 +1191,21 @@ function showGoals() {
   const ok = h('button', isBaron() ? 'ghost' : 'big', 'Kapat'); ok.onclick = () => { m.hidden = true; }; if (isBaron()) ok.style.width = '100%'; c.appendChild(ok);
   m.appendChild(c); m.hidden = false;
 }
+/* One goal line with its bar. A finished chapter shows every goal done, whatever the numbers did since. */
+function goalRow(g, finished) {
+  const done = finished || goalDone(g), txt = finished && !goalDone(g) ? 'Tamamlandı' : goalText(g), pct = finished ? 1 : goalPct(g);
+  return h('div', 'goal' + (done ? ' done' : ''), `<span class="gk">${done ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${g[2]}</b><span>${txt}</span></div><div class="gb"><i style="width:${Math.round(pct * 100)}%"></i></div></div>`);
+}
+/* After the ceremony: the chapter that starts now and its goals. */
+function showNextChapter(n) {
+  const N = chap()[n], m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card goals');
+  c.appendChild(h('div', 'chap', `${RD().name} · Bölüm ${n + 1}/${chap().length}`));
+  c.appendChild(h('h1', null, N.name));
+  N.goals.forEach(g => c.appendChild(goalRow(g, false)));
+  const ok = h('button', 'big', 'Başla'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
+  m.appendChild(c); m.hidden = false; sfx('click');
+}
 function showChapter() {
   const i = S.chapterNews; S.chapterNews = null; save();
   const C = chap()[i], m = $('menu'); m.replaceChildren();
@@ -1207,10 +1222,9 @@ function showChapter() {
     c.appendChild(h('div', 'chap', `Bölüm ${i + 1} tamamlandı`));
     c.appendChild(h('h1', null, C.name));
     c.appendChild(h('p', 'lead', `${C.award}! Ödül: ${eur(C.reward)}.`));
-    const N = chap()[i + 1];
-    c.appendChild(h('div', 'chap', `Sıradaki: Bölüm ${i + 2}, ${N.name}`));
-    N.goals.forEach(g => { const done = goalDone(g); c.appendChild(h('div', 'goal' + (done ? ' done' : ''), `<span class="gk">${done ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${g[2]}</b><span>${goalText(g)}</span></div><div class="gb"><i style="width:${Math.round(goalPct(g) * 100)}%"></i></div></div>`)); });
-    const ok = h('button', 'big', 'Devam'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
+    /* the goals you just finished, all ticked; the next chapter's goals come after Devam */
+    C.goals.forEach(g => c.appendChild(goalRow(g, true)));
+    const ok = h('button', 'big', 'Devam'); ok.onclick = () => showNextChapter(i + 1); c.appendChild(ok);
     sfx('fanfare');
   }
   m.appendChild(c); m.hidden = false;
@@ -2383,6 +2397,12 @@ cv.addEventListener('pointerdown', e => {
   if (mode === 'office') { const r = cv.getBoundingClientRect(); HOME.down = { x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now() }; return; }
   setBurn(true);
 });
+/* scrolling up over the home town zooms into it, like a pinch */
+cv.addEventListener('wheel', e => {
+  if (mode !== 'office' || TOWN.open || e.deltaY >= 0) return;
+  const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  if (y < HOME.h) { e.preventDefault(); openTown(homeGrid(x, y)); }
+}, { passive: false });
 cv.addEventListener('pointerup', e => {
   const d = HOME.down; HOME.down = null;
   if (mode !== 'office' || !d) return;
@@ -3746,7 +3766,7 @@ function drawTown() {
   const r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
   if (cvs.width !== Math.round(r.width * dpr)) { cvs.width = Math.round(r.width * dpr); cvs.height = Math.round(r.height * dpr); }
   const keep = ctx; ctx = cvs.getContext('2d');
-  try { townClamp(r.width, r.height); renderTown(TOWN, r.width, r.height, dpr, 0); } finally { ctx = keep; }
+  try { if (!TOWN.anim) townClamp(r.width, r.height); renderTown(TOWN, r.width, r.height, dpr, 0); } finally { ctx = keep; }
 }
 /* The home screen shows the town above the day's cards: a fixed overview you tap into. */
 const HOME = { z: .3, ox: 0, oy: 0, hits: [], zoneHits: [], h: 0, down: null };
@@ -3761,35 +3781,57 @@ function drawHomeTown(w, dockTop, top) {
 function homeTap(x, y) {
   if (y > HOME.h) return;
   const zh = HOME.zoneHits.find(hh => inPoly([x, y], hh.pts));
-  if (zh) { sfx('click'); openTown(); townFocus(zh.zn.at); return; }
+  if (zh) { sfx('click'); openTown(zh.zn.at); return; }
   const hit = HOME.hits.slice().sort((a, b) => b.depth - a.depth).find(hh => inPoly([x, y], hh.pts) || (x > hh.box[0] && x < hh.box[2] && y > hh.box[1] && y < hh.box[3]));
   sfx('click');
-  if (hit) hit.b.tap(); else openTown();
+  if (hit) hit.b.tap(); else openTown(homeGrid(x, y));
+}
+/* The grid point under a tap on the home town, kept inside the walls. */
+function homeGrid(x, y) {
+  const wx = (x - HOME.ox) / HOME.z, wy = (y - HOME.oy) / HOME.z, a = wx / (TW / 2), b = wy / (TH / 2);
+  return [clamp((a + b) / 2, 0, 15), clamp((b - a) / 2, 0, 15)];
 }
 function townLoop() {
   if (!TOWN.open) return;
   const a = TOWN.anim;
-  if (a) { const k = clamp((performance.now() - a.t0) / 450, 0, 1), e = 1 - Math.pow(1 - k, 3); TOWN.z = lerp(a.z0, a.z1, e); const [cx, cy] = tiso(...a.at), r = $('tcv').getBoundingClientRect();
-    TOWN.ox = lerp(a.ox0, r.width / 2 - cx * a.z1, e) ; TOWN.oy = lerp(a.oy0, r.height * .55 - cy * a.z1, e); if (k >= 1) TOWN.anim = null; }
-  drawTown(); TOWN.raf = requestAnimationFrame(townLoop);
+  if (a) {
+    const k = clamp((performance.now() - a.t0) / 450, 0, 1), e = 1 - Math.pow(1 - k, 3);
+    TOWN.z = lerp(a.from.z, a.to.z, e); TOWN.ox = lerp(a.from.ox, a.to.ox, e); TOWN.oy = lerp(a.from.oy, a.to.oy, e);
+    if (k >= 1) { TOWN.anim = null; if (a.done) a.done(); }
+  }
+  drawTown(); if (TOWN.open) TOWN.raf = requestAnimationFrame(townLoop);
 }
-/* Glide in on a zone you tapped. */
-function townFocus(at) { TOWN.anim = { t0: performance.now(), z0: TOWN.z, z1: .65, ox0: TOWN.ox, oy0: TOWN.oy, at }; }
+/* Glide the view to a target (zoom and offset) and then run done. */
+function townGlide(to, done) { TOWN.anim = { t0: performance.now(), from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to, done }; }
+/* Glide in on a grid point. */
+function townFocus(at) {
+  const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...at), z = .65;
+  townGlide({ z, ox: r.width / 2 - cx * z, oy: r.height * .55 - cy * z });
+}
 /* Keep the town on screen however far you drag. */
 function townClamp(w, h) {
   const c = tiso(7.5, 7.5), sx = c[0] * TOWN.z + TOWN.ox, sy = c[1] * TOWN.z + TOWN.oy, mx = 8 * TW / 2 * TOWN.z, my = 8 * TH / 2 * TOWN.z;
   TOWN.ox += clamp(sx, Math.min(w * .5, -mx + w * .2), Math.max(w * .5, w * .8 + mx)) - sx;
   TOWN.oy += clamp(sy, Math.min(h * .5, h * .3 - my), Math.max(h * .55, h * .8 + my)) - sy;
 }
-function openTown() {
-  const el = $('town'); el.hidden = false; TOWN.open = true; el.style.paddingTop = $('hud').offsetHeight + 'px';
-  const r = el.getBoundingClientRect();
-  // Fit the town across the width, hotels on the left included; the valley fills the rest.
-  TOWN.z = clamp(r.width / 1450, .26, .9); TOWN.anim = null;
-  const [cx, cy] = tiso(7, 8); TOWN.ox = r.width / 2 - cx * TOWN.z; TOWN.oy = r.height * .58 - cy * TOWN.z;
+/* Zoom into the home screen's town: start from exactly what the home shows, fade the rest of the screen away
+   and glide in on the tapped spot. Zooming back out (pinch, wheel or the X) returns to the home screen. */
+function openTown(at) {
+  const el = $('town'); el.hidden = false; TOWN.open = true; TOWN.leaving = false;
+  TOWN.z = HOME.z; TOWN.ox = HOME.ox; TOWN.oy = HOME.oy; TOWN.anim = null;
+  $('tClose').classList.remove('gone');
+  requestAnimationFrame(() => el.classList.add('on'));
   cancelAnimationFrame(TOWN.raf); townLoop();
+  townFocus(at || [7, 8]);
 }
-function closeTown() { TOWN.open = false; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh(); }
+function closeTown() {
+  if (!TOWN.open || TOWN.leaving) return;
+  TOWN.leaving = true; $('tClose').classList.add('gone');
+  townGlide({ z: HOME.z, ox: HOME.ox, oy: HOME.oy }, () => {
+    $('town').classList.remove('on');
+    setTimeout(() => { TOWN.open = false; TOWN.leaving = false; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh(); }, 250);
+  });
+}
 function inPoly(p, pts) { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; }
 function townTap(x, y) {
   const zh = (TOWN.zoneHits || []).find(hh => inPoly([x, y], hh.pts));
@@ -3800,11 +3842,16 @@ function townTap(x, y) {
 (function townInput() {
   const cvs = $('tcv');
   const pos = e => { const r = cvs.getBoundingClientRect(); return [e.clientX - r.left, e.clientY - r.top]; };
-  const zoomAt = (px, py, k) => { TOWN.anim = null; const z = clamp(TOWN.z * k, .25, 1.6); k = z / TOWN.z; TOWN.ox = px - (px - TOWN.ox) * k; TOWN.oy = py - (py - TOWN.oy) * k; TOWN.z = z; };
+  const zoomAt = (px, py, k) => {
+    if (TOWN.leaving) return;
+    TOWN.anim = null; const z = clamp(TOWN.z * k, HOME.z, 1.6); k = z / TOWN.z; TOWN.ox = px - (px - TOWN.ox) * k; TOWN.oy = py - (py - TOWN.oy) * k; TOWN.z = z;
+    if (z <= HOME.z * 1.04) { TOWN.pinch = null; closeTown(); }
+  };
   cvs.addEventListener('pointerdown', e => { cvs.setPointerCapture(e.pointerId); TOWN.ptrs.set(e.pointerId, pos(e)); if (TOWN.ptrs.size === 1) TOWN.down = { p: pos(e), t: performance.now(), moved: 0 }; else TOWN.down = null; });
   cvs.addEventListener('pointermove', e => {
     if (!TOWN.ptrs.has(e.pointerId)) return;
     const prev = TOWN.ptrs.get(e.pointerId), cur = pos(e); TOWN.ptrs.set(e.pointerId, cur);
+    if (TOWN.leaving) return;
     if (TOWN.ptrs.size === 1) { TOWN.anim = null; TOWN.ox += cur[0] - prev[0]; TOWN.oy += cur[1] - prev[1]; if (TOWN.down) TOWN.down.moved += Math.hypot(cur[0] - prev[0], cur[1] - prev[1]); }
     else if (TOWN.ptrs.size === 2) {
       const [a, b] = [...TOWN.ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]);
