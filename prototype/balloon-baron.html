@@ -2380,7 +2380,14 @@ cv.addEventListener('pointerdown', e => {
     if (hit) pickI = hit.i;
     return;
   }
+  if (mode === 'office') { const r = cv.getBoundingClientRect(); HOME.down = { x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now() }; return; }
   setBurn(true);
+});
+cv.addEventListener('pointerup', e => {
+  const d = HOME.down; HOME.down = null;
+  if (mode !== 'office' || !d) return;
+  const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+  if (Math.hypot(x - d.x, y - d.y) < 10 && performance.now() - d.t < 500) homeTap(x, y);
 });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(e => cv.addEventListener(e, () => { INTRO.hold = false; }));
 $('introBurn').addEventListener('pointerdown', e => { e.preventDefault(); if (mode === 'intro') INTRO.hold = true; });
@@ -2480,6 +2487,11 @@ function draw(dt) {
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   if (!S || !S.weather) { ctx.fillStyle = '#1b1840'; ctx.fillRect(0, 0, W, H); return; }
   const f = FL && mode === 'flight' ? FL : null;
+  if (mode === 'office') {
+    if (TOWN.open || !$('page').hidden) return; /* covered by a full-screen page */
+    const dockTop = !$('sheet').hidden ? $('dock').offsetTop : H;
+    drawHomeTown(W, dockTop, $('hud').offsetHeight + 6); return;
+  }
   const p = f ? clamp(f.t / 420, 0, 1) * .85 + .1 : .12 + Math.sin(T * .05) * .02;
   const top = $('hud').offsetHeight + 6;
   const dockTop = !$('sheet').hidden ? $('dock').offsetTop : !$('collect').hidden ? $('collect').offsetTop : H;
@@ -3071,6 +3083,7 @@ function tabHolding(body) {
 
 /* ---------- Şirketim: isometric company town ---------- */
 /* Every office page becomes a place: tap a building to open it. Plots show what you can still build. */
+let TV = null; /* the view being drawn: TOWN (full screen) or HOME */
 const TOWN = { open: false, z: 1, ox: 0, oy: 0, ptrs: new Map(), pinch: null, down: null, raf: 0, hits: [] };
 const TW = 128, TH = 64; /* tile size in world units */
 const tiso = (gx, gy) => [(gx - gy) * TW / 2, (gx + gy) * TH / 2];
@@ -3525,10 +3538,13 @@ function townScenery(t) {
   return items;
 }
 /* Balloons drifting over the town, with their shadows on the ground. */
+/* Today's wind: sign and strength of a layer, so balloons over the town drift the way the flight will. */
+const pmod = (a, m) => ((a % m) + m) % m;
+function windK(i) { const v = S.weather && S.weather.layers ? S.weather.layers[i] : 3; return (Math.sign(v) || 1) * clamp(Math.abs(v) / 4, .5, 2); }
 function townSky(t) {
   const list = [[0, 2, 230, '#ff5e3a', '#ffc23d'], [5, 11, 300, '#14a39a', '#e8fff9'], [9, 4, 260, '#9b7be0', '#f2ebff'], [3, 7, 340, '#5aa9e6', '#eaf4fc']];
   const out = { shadows: [], balloons: [] };
-  list.forEach(([gx0, gy0, alt, c1, c2], i) => { const gx = ((gx0 + t * .12 + i * 3) % 18) - 2, gy = gy0 + Math.sin(t * .2 + i) * .5; const p = tiso(gx, gy); out.shadows.push(() => blobShadow(p[0], p[1], 22, 9, .14)); out.balloons.push(() => balloon(p[0], p[1] - alt, 30, c1, c2, (t + i) % 4 < .5, 1)); });
+  list.forEach(([gx0, gy0, alt, c1, c2], i) => { const gx = pmod(gx0 + t * .12 * windK(1) + i * 3, 18) - 2, gy = gy0 + Math.sin(t * .2 + i) * .5; const p = tiso(gx, gy); out.shadows.push(() => blobShadow(p[0], p[1], 22, 9, .14)); out.balloons.push(() => balloon(p[0], p[1] - alt, 30, c1, c2, (t + i) % 4 < .5, 1)); });
   return out;
 }
 /* Name tag above a building. Small when zoomed out (name only), full when zoomed in. Returns its rect. */
@@ -3577,7 +3593,7 @@ function zoneQuad(zn) {
   return [tiso(zn.gx - w / 2 - .2, zn.gy - h - .15), tiso(zn.gx + w / 2 + .2, zn.gy - h - .15), tiso(zn.gx + w / 2 + .2, zn.gy + .15), tiso(zn.gx - w / 2 - .2, zn.gy + .15)];
 }
 function townZoneText() {
-  const a = clamp(1.25 - TOWN.z, .35, .85);
+  const a = clamp(1.25 - TV.z, .35, .85);
   for (const zn of TOWN_ZONES) {
     ctx.save(); const [m0, m1, m2, m3] = zoneMatrix(zn), o = tiso(zn.gx, zn.gy); ctx.transform(m0, m1, m2, m3, o[0], o[1]);
     ctx.font = zoneFont(); ctx.textAlign = 'center';
@@ -3625,9 +3641,9 @@ function townWall() {
   for (let y = T0; y < T1; y += 1) { const d = Math.min(1, T1 - y); if (y + d > 7.55 && y < 8.45) continue; seg(T0 - th, y, th, d); seg(T1, y, th, d); }
   return items;
 }
-function townHorizon(h) { return Math.min(h * .6, TOWN.oy + tiso(-7, -7)[1] * TOWN.z); }
+function townHorizon(h) { return Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z); }
 function townBackdrop(w, h, t) {
-  const hz = townHorizon(h), px = TOWN.ox * .08, p = .32;
+  const hz = townHorizon(h), px = TV.ox * .08, p = .32;
   if (hz < 2) return; /* zoomed in: only ground in view */
   const g = ctx.createLinearGradient(0, 0, 0, hz); g.addColorStop(0, mix('#1b1840', '#5f8fc6', p)); g.addColorStop(.5, mix('#6b3e6e', '#f0b48c', p)); g.addColorStop(1, mix('#f08a4a', '#ffe2ac', p));
   ctx.fillStyle = g; ctx.fillRect(0, 0, w, hz + 2);
@@ -3647,7 +3663,7 @@ function townBackdrop(w, h, t) {
     const Rb = mulberry32(layer ? 41 : 23), n = layer ? 8 : 20;
     for (let i = 0; i < n; i++) {
       const sp = (layer ? 5 : 2.5) + Rb() * 3, x0 = Rb() * (w + 120), alt = hz * (layer ? .12 + Rb() * .4 : .04 + Rb() * .3), ph = Rb() * 7, c = cols[Math.floor(Rb() * cols.length)];
-      const x = ((x0 + t * sp + px * (layer ? .6 : .3)) % (w + 120)) - 60, y = hz - alt * (1 + .03 * Math.sin(t * .3 + ph)) + (layer ? 0 : h * .01);
+      const x = pmod(x0 + t * sp * windK(layer ? 2 : 3) + px * (layer ? .6 : .3), w + 120) - 60, y = hz - alt * (1 + .03 * Math.sin(t * .3 + ph)) + (layer ? 0 : h * .01);
       const r = (layer ? 7 : 3.5) + Rb() * (layer ? 4 : 2.5);
       balloon(x, y, r, c[0], c[1], layer && (t + ph) % 5 < .35, layer ? .8 : .5);
     }
@@ -3677,48 +3693,72 @@ function townHaze(w, h) {
   const g = ctx.createLinearGradient(0, hz - h * .05, 0, hz + h * .15); g.addColorStop(0, 'rgba(236,170,135,0)'); g.addColorStop(.25, 'rgba(236,172,136,.75)'); g.addColorStop(.45, 'rgba(232,180,140,.45)'); g.addColorStop(1, 'rgba(232,190,145,0)');
   ctx.fillStyle = g; ctx.fillRect(0, hz - h * .05, w, h * .2);
 }
-function drawTown() {
-  const cvs = $('tcv'); if (!cvs || !TOWN.open) return;
-  const r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
-  if (cvs.width !== Math.round(r.width * dpr)) { cvs.width = Math.round(r.width * dpr); cvs.height = Math.round(r.height * dpr); }
-  const keep = ctx; ctx = cvs.getContext('2d');
+/* Draw the town into a region of the current canvas: w×h starting at screen y = offY, through view V (zoom and offset, hit areas). */
+function renderTown(V, w, h, dpr, offY) {
+  const prevV = TV; TV = V;
+  const S0 = () => ctx.setTransform(dpr, 0, 0, dpr, 0, dpr * offY), W0 = () => ctx.setTransform(dpr * V.z, 0, 0, dpr * V.z, dpr * V.ox, dpr * (V.oy + offY));
+  ctx.save();
   try {
-    townClamp(r.width, r.height);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    townBackdrop(r.width, r.height, T);
-    const hz = townGround(r.width, r.height);
+    S0(); ctx.beginPath(); ctx.rect(0, 0, w, h); ctx.clip();
+    townBackdrop(w, h, T);
+    const hz = townGround(w, h);
     /* flat things on the ground, clipped at the horizon */
-    ctx.save(); ctx.beginPath(); ctx.rect(0, hz, r.width, r.height); ctx.clip();
-    ctx.setTransform(dpr * TOWN.z, 0, 0, dpr * TOWN.z, dpr * TOWN.ox, dpr * TOWN.oy);
+    ctx.save(); ctx.beginPath(); ctx.rect(0, hz, w, h); ctx.clip();
+    W0();
     outerDecor(T);
     const E = [tiso(-.5, -.5), tiso(15.5, -.5), tiso(15.5, 15.5), tiso(-.5, 15.5)];
     tpoly(E, 'rgba(240,210,165,.55)');
     tdecor(T);
     townZoneText();
     ctx.restore();
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); townHaze(r.width, r.height);
-    ctx.setTransform(dpr * TOWN.z, 0, 0, dpr * TOWN.z, dpr * TOWN.ox, dpr * TOWN.oy);
-    const fade = (it) => { if (!it.at) return it; const sy = tiso(...it.at)[1] * TOWN.z + TOWN.oy, a = clamp((sy - hz) / (r.height * .1), 0, 1); if (a <= 0) return null;
+    S0(); townHaze(w, h);
+    W0();
+    const fade = (it) => { if (!it.at) return it; const sy = tiso(...it.at)[1] * V.z + V.oy, a = clamp((sy - hz) / (h * .1), 0, 1); if (a <= 0) return null;
       return { depth: it.depth, shadow: it.shadow, draw: () => { ctx.globalAlpha = a; it.draw(); ctx.globalAlpha = 1; } }; };
     const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).map(fade).filter(Boolean), townWall()), sky = townSky(T);
     bs.forEach(buildingShadow); scen.forEach(it => it.shadow && it.shadow()); sky.shadows.forEach(f => f());
     const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => tbuilding(b, T) })).concat(scen);
     items.sort((a, b) => a.depth - b.depth).forEach(it => it.draw());
     sky.balloons.forEach(f => f());
-    /* labels in screen space, and hit boxes for taps */
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    TOWN.hits = [];
-    const sc = clamp(TOWN.z / .5, .75, 1.15), full = TOWN.z >= LABEL_Z, taken = [];
+    /* labels in screen space, and hit boxes for taps (in region coordinates) */
+    S0();
+    V.hits = [];
+    const sc = clamp(V.z / .5, .75, 1.15), full = V.z >= LABEL_Z, taken = [];
     /* names only once you zoom in; from afar the zones written in the sand do the talking. Front buildings label first so they win overlaps. */
     for (const b of bs.slice().sort((p, q) => (q.gx + q.gy) - (p.gx + p.gy))) {
       const [cx, cy] = tiso(b.gx + b.w / 2, b.gy + b.d / 2), top = townTop(b);
-      const sx = cx * TOWN.z + TOWN.ox, sy = (cy - top) * TOWN.z + TOWN.oy;
-      const pts = [tiso(b.gx, b.gy), tiso(b.gx + b.w, b.gy), tiso(b.gx + b.w, b.gy + b.d), tiso(b.gx, b.gy + b.d)].map(([x, y]) => [x * TOWN.z + TOWN.ox, y * TOWN.z + TOWN.oy]);
-      TOWN.hits.push({ b, pts, box: [sx - 50, sy - 30, sx + 50, Math.max(...pts.map(p => p[1]))], depth: b.gx + b.gy });
+      const sx = cx * V.z + V.ox, sy = (cy - top) * V.z + V.oy;
+      const pts = [tiso(b.gx, b.gy), tiso(b.gx + b.w, b.gy), tiso(b.gx + b.w, b.gy + b.d), tiso(b.gx, b.gy + b.d)].map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]);
+      V.hits.push({ b, pts, box: [sx - 50 * V.z / .5, sy - 30, sx + 50 * V.z / .5, Math.max(...pts.map(p => p[1]))], depth: b.gx + b.gy });
       if (full) townLabel(b, sx, sy, sc, full, taken);
     }
-    TOWN.zoneHits = TOWN.z < LABEL_Z ? TOWN_ZONES.map(zn => ({ zn, pts: zoneQuad(zn).map(([x, y]) => [x * TOWN.z + TOWN.ox, y * TOWN.z + TOWN.oy]) })) : [];
-  } finally { ctx = keep; }
+    V.zoneHits = V.z < LABEL_Z ? TOWN_ZONES.map(zn => ({ zn, pts: zoneQuad(zn).map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]) })) : [];
+  } finally { ctx.restore(); TV = prevV; }
+}
+function drawTown() {
+  const cvs = $('tcv'); if (!cvs || !TOWN.open) return;
+  const r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (cvs.width !== Math.round(r.width * dpr)) { cvs.width = Math.round(r.width * dpr); cvs.height = Math.round(r.height * dpr); }
+  const keep = ctx; ctx = cvs.getContext('2d');
+  try { townClamp(r.width, r.height); renderTown(TOWN, r.width, r.height, dpr, 0); } finally { ctx = keep; }
+}
+/* The home screen shows the town above the day's cards: a fixed overview you tap into. */
+const HOME = { z: .3, ox: 0, oy: 0, hits: [], zoneHits: [], h: 0, down: null };
+function drawHomeTown(w, dockTop, top) {
+  /* the town sits on the dock; its back corner stays below the weather card so the card covers only valley */
+  const wx = $('wx'), wxb = wx && !wx.hidden && wx.offsetHeight ? wx.offsetTop + wx.offsetHeight : top;
+  const back = Math.max(top + 20, wxb - 16), front = dockTop - 6;
+  HOME.h = dockTop; HOME.z = clamp((front - back) / 1024, .15, w / 1500);
+  const [cx] = tiso(7, 8); HOME.ox = w / 2 - cx * HOME.z; HOME.oy = front - tiso(15.5, 15.5)[1] * HOME.z;
+  renderTown(HOME, w, dockTop, DPR, 0);
+}
+function homeTap(x, y) {
+  if (y > HOME.h) return;
+  const zh = HOME.zoneHits.find(hh => inPoly([x, y], hh.pts));
+  if (zh) { sfx('click'); openTown(); townFocus(zh.zn.at); return; }
+  const hit = HOME.hits.slice().sort((a, b) => b.depth - a.depth).find(hh => inPoly([x, y], hh.pts) || (x > hh.box[0] && x < hh.box[2] && y > hh.box[1] && y < hh.box[3]));
+  sfx('click');
+  if (hit) hit.b.tap(); else openTown();
 }
 function townLoop() {
   if (!TOWN.open) return;
@@ -3744,8 +3784,8 @@ function openTown() {
   cancelAnimationFrame(TOWN.raf); townLoop();
 }
 function closeTown() { TOWN.open = false; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh(); }
+function inPoly(p, pts) { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; }
 function townTap(x, y) {
-  const inPoly = (p, pts) => { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; };
   const zh = (TOWN.zoneHits || []).find(hh => inPoly([x, y], hh.pts));
   if (zh) { sfx('click'); townFocus(zh.zn.at); return; }
   const hit = TOWN.hits.slice().sort((a, b) => b.depth - a.depth).find(hh => inPoly([x, y], hh.pts) || (x > hh.box[0] && x < hh.box[2] && y > hh.box[1] && y < hh.box[3]));
