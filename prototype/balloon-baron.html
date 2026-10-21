@@ -3772,6 +3772,26 @@ function tdecor(t) {
   const lf = [tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)];
   tpoly(lf, '#a3b066'); ctx.save(); ctx.globalAlpha = .25; for (let i = 0; i < 9; i++) tpoly([tiso(1 + i * .67, 4.4), tiso(1.33 + i * .67, 4.4), tiso(1.33 + i * .67, 7.2), tiso(1 + i * .67, 7.2)], i % 2 ? '#8a9a50' : '#b8c47a'); ctx.restore();
 }
+/* A tuff plinth, a tall striped mast with cup anemometer and a windsock that shows the ground wind. */
+function windMast(gx, gy, t) {
+  const f = block(gx - .17, gy - .17, .34, .34, 14, { courses: false }), q = lp(f.a, f.c, .5), H = 128;
+  const v = S.weather && S.weather.layers ? S.weather.layers[0] : 2, dir = Math.sign(v) || 1, k = clamp(Math.abs(v) / 6, .15, 1);
+  for (let i = 0; i < 8; i++) { ctx.fillStyle = i % 2 ? '#fffaf3' : '#ff5e3a'; ctx.fillRect(q[0] - 2.5, q[1] - H * (i + 1) / 8, 5, H / 8 + .5); }
+  ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fillRect(q[0] + .5, q[1] - H, 2, H);
+  /* cup anemometer on top, spinning with the wind */
+  const ty = q[1] - H - 6, sp = t * (2 + k * 10);
+  ctx.strokeStyle = '#3a2416'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(q[0], q[1] - H); ctx.lineTo(q[0], ty); ctx.stroke();
+  for (let i = 0; i < 3; i++) { const a = sp + i * 2.094, x = q[0] + Math.cos(a) * 11, y = ty + Math.sin(a) * 3.5; ctx.beginPath(); ctx.moveTo(q[0], ty); ctx.lineTo(x, y); ctx.stroke(); ctx.fillStyle = Math.sin(a) > 0 ? '#e8ecef' : '#aeb6bd'; ctx.beginPath(); ctx.arc(x, y, 3.2, 0, 7); ctx.fill(); }
+  /* the sock: five rings, stiff when it blows, drooping when calm, fluttering a little */
+  const sy = q[1] - H + 10, len = 46;
+  ctx.strokeStyle = '#3a2416'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(q[0], sy); ctx.lineTo(q[0] + dir * 6, sy); ctx.stroke();
+  for (let i = 0; i < 5; i++) {
+    const u0 = i / 5, u1 = (i + 1) / 5, droop = u => (1 - k) * Math.pow(u, 1.5) * 34 + Math.sin(t * (4 + k * 6) + u * 5) * 2.2 * u, rad = u => 8 - u * 3.5 - (1 - k) * u * 2;
+    const x0 = q[0] + dir * (6 + u0 * len * (.45 + k * .55)), x1 = q[0] + dir * (6 + u1 * len * (.45 + k * .55)), y0 = sy + droop(u0), y1 = sy + droop(u1);
+    ctx.fillStyle = i % 2 ? '#fffaf3' : '#ff5e3a'; ctx.beginPath(); ctx.moveTo(x0, y0 - rad(u0)); ctx.lineTo(x1, y1 - rad(u1)); ctx.lineTo(x1, y1 + rad(u1)); ctx.lineTo(x0, y0 + rad(u0)); ctx.closePath(); ctx.fill();
+  }
+  ctx.fillStyle = 'rgba(90,40,20,.18)'; ctx.beginPath(); ctx.moveTo(q[0] + dir * 6, sy + 2); ctx.lineTo(q[0] + dir * (6 + len * (.45 + k * .55)), sy + (1 - k) * 34 + 2); ctx.lineTo(q[0] + dir * (6 + len * (.45 + k * .55)), sy + (1 - k) * 34 + 5); ctx.lineTo(q[0] + dir * 6, sy + 8); ctx.fill();
+}
 function townScenery(t) {
   const items = [];
   /* fairy chimneys stay on the edges and gaps so they never hide a building */
@@ -3781,6 +3801,8 @@ function townScenery(t) {
   trees.forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); i % 3 ? roundTree(p[0], p[1], .9, i % 2 ? '#7aa04a' : '#8aa84e') : cypress(p[0], p[1], 1); } }));
   /* your fleet on the launch field, burners flickering */
   S.balloons.slice(0, 6).forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
+  /* the wind mast by the launch field: today's surface wind fills the sock and points it */
+  items.push({ depth: 7.15 + 4.15, shadow: () => { const q = tiso(7.15, 4.15); blobShadow(q[0] + 50, q[1] + 10, 46, 6, .14); }, draw: () => windMast(7.15, 4.15, t) });
   /* people strolling on the roads */
   for (let i = 0; i < 10; i++) { const along = ((t * .05 + i * .1) % 1) * 15, onX = i % 2; const gx = onX ? along : 7.8 + (i % 3) * .15, gy = onX ? 7.8 + (i % 3) * .15 : along; items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); person(p[0], p[1], ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0'][i % 5], t, i); } }); }
   return items;

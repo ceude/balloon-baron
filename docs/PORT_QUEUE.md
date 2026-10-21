@@ -3,6 +3,7 @@
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
 ## Telefon testinden sonra (v68, düzeltmeler v69)
+- **v75:** Kasabada fırlatma alanının köşesinde (7,15; 4,15) rüzgâr direği: tüf kaide, kırmızı-beyaz direk, tepede dönen kepçeli rüzgârölçer (hız rüzgârla artar), kırmızı-beyaz rüzgâr tulumu. Tulum günün yer rüzgârının (0–60 m katmanı) yönünü gösterir; sert rüzgârda dimdik, sakinde sarkık, hafifçe dalgalanır. Gölgesi var.
 - **v74:** Rüzgâr kartı sol üstte, üst çubuğun hemen altında. Yolcu yorumları rüzgâr kartının altında çıkar, sola dayalı; genişlik en fazla 400 pt ve sağdaki butonların altına girmez (ekran genişliği − buton sütunu − boşluk). Kasaba rüzgâr kartının altından başladığı için biraz büyüdü.
 - **v73:** Holding ofisinde birim sayfaları ekrana sığar: sayfa en fazla ekran yüksekliği − 70 pt, içerik sıkıştırılmaz, sayfa parmakla kayar (kaydırma arkadaki sahneye geçmez). (Swift'te ScrollView + `.presentationDetents([.large])` yeterli.)
 - **v72:** Bilet kartında yolcu ve tutar satırının altında, çubuktan sonra kimin uçuracağı yazar: "Sen uçuracaksın", "Sen ve pilotun uçuracak", "Sen ve pilotların uçuracak", "Pilot uçuracak", "Pilotlar uçuracak".
