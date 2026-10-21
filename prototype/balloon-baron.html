@@ -262,6 +262,8 @@ body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 .paper .pmore b{font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1f1b2e}
 .paper .pmore span{font-size:13px;color:#6c6488}
 .bossq .hzav{width:48px;height:48px;flex:none}
+.modal.evm{align-items:flex-end;background:rgba(27,24,64,.18);padding-bottom:max(12px, env(safe-area-inset-bottom, 0px))}
+.card.event{border-top:6px solid var(--sun)}
 .card.rescue{border-top:6px solid var(--red)}
 .regrow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
 .regrow b{font-family:var(--cond);font-weight:800;font-size:21px;color:var(--ink)}
@@ -956,6 +958,8 @@ function canFly(b) {
   if (b.dmgUntil > S.day) return 'dmg';
   if (cond(b) <= 0) return 'worn';
   if (!licenseOk() && b.id !== S.flag) return 'license';
+  if (S.charter && S.charter.day === S.day && S.charter.id === b.id) return 'charter';
+  if (S.strikeDay === S.day && !(b.id === S.flag && selfFlying())) return 'strike';
   if (!(b.id === S.flag && selfFlying()) && !b.pilot) return 'nopilot';
   return 'ok';
 }
@@ -1067,6 +1071,83 @@ function showPaper() {
   const ok = h('button', 'big', 'Gazeteyi katla'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
   m.appendChild(c); m.hidden = false; sfx('tick');
 }
+/* ---------- morning events ---------- */
+/* Every week or so something happens at one of your buildings: the camera goes there and you decide. */
+const EVENTS = {
+  strike: { at: [9.3, 13.6], ok: () => S.pilots.length >= 2 },
+  vip: { at: [5.5, 12.8], ok: () => S.balloons.filter(b => b.id !== S.flag && canFly(b) === 'ok').length >= 1 },
+  wedding: { at: [5, 10.2], ok: () => S.balloons.filter(b => b.id !== S.flag && canFly(b) === 'ok').length >= 1 },
+  doc: { at: [10, 10.4], ok: () => true },
+  fuel: { at: [2.5, 2.4], ok: () => S.balloons.length >= 2 },
+  press: { at: [9.3, 13.6], ok: () => true }
+};
+function showEvent() {
+  S.eventDue = false;
+  const keys = Object.keys(EVENTS).filter(k => EVENTS[k].ok() && k !== S.lastEvent);
+  if (!keys.length) { nextPopup(); return; }
+  const k = S.lastEvent = pick(keys), E = EVENTS[k]; save();
+  if (mode === 'office' && HOME.h) { openTown(E.at); townFocus([E.at[0], E.at[1] + 1.2], 1.15); TOWN.noLabels = true; TOWN.extra = k === 'strike' ? strikers : null; $('tClose').classList.add('gone'); }
+  setTimeout(() => eventCard(k), 650);
+}
+function eventCard(k) {
+  const m = $('menu'); m.replaceChildren(); m.classList.add('evm');
+  const c = h('div', 'card event');
+  const done = (msg) => { m.hidden = true; m.classList.remove('evm'); TOWN.extra = null; TOWN.noLabels = false; if (msg) S.hezQ.unshift('news:' + msg); if (TOWN.open) closeTown(); refresh(); setTimeout(nextPopup, 700); };
+  const btn = (cls, label, fn, dis) => { const b = h('button', cls, label); b.disabled = !!dis; b.onclick = () => { sfx(cls === 'big' ? 'coin' : 'click'); done(fn()); }; c.appendChild(b); };
+  const spare = S.balloons.filter(b => b.id !== S.flag && canFly(b) === 'ok').sort((a, b) => SIZES[b.size].cap - SIZES[a.size].cap)[0];
+  const wages = S.pilots.reduce((a, p) => a + pilotWage(p), 0);
+  if (k === 'strike') {
+    c.appendChild(h('div', 'chap', 'Sabah olayı'));
+    c.appendChild(h('h1', null, 'Pilotlar grevde!'));
+    c.appendChild(h('p', 'lead', `Pilotların ofisinin önünde pankartlarla bekliyor. Maaşlarına %15 zam istiyorlar. Şu an günde toplam ${eur(wages)} ödüyorsun.`));
+    btn('big', `Zam yap (+${eur(Math.round(wages * .15))}/gün)`, () => { S.pilots.forEach(p => { p.wage = Math.round(pilotWage(p) * 1.15 / 5) * 5; }); return 'Pilotlar mutlu evlat, bugün herkes sepetinde. Ama maaş bordrosu kabardı, fiyatları ona göre ayarla.'; });
+    btn('ghost', 'Bir gün dayan: bugün sadece sen uçarsın', () => { S.strikeDay = S.day; S.rep -= .02; assignPilots(); return 'Bugün balonların yerde, pilotlar pankart sallıyor. Yarın işe dönecekler ama turistler bunu konuşacak.'; });
+  } else if (k === 'vip' || k === 'wedding') {
+    const vip = k === 'vip', cap = SIZES[spare.size].cap, pay = Math.round(cap * S.price * (vip ? 2.2 : 1.4) / 50) * 50;
+    c.appendChild(h('div', 'chap', 'Sabah olayı'));
+    c.appendChild(h('h1', null, vip ? 'VIP özel uçuş' : 'Düğün grubu'));
+    c.appendChild(h('p', 'lead', vip ? `Saray Resort'tan bir iş insanı ailesiyle ${spare.name} balonunu bütünüyle kiralamak istiyor. Peşin ${eur(pay)} öderler, balon bugün başka yolcu almaz.` : `Peri Konak'ta kalan bir düğün grubu ${spare.name} balonunu toptan istiyor, kişi başı %40 fazla. Peşin ${eur(pay)}, balon bugün başka yolcu almaz.`));
+    btn('big', `Kabul et +${eur(pay)}`, () => { S.cash += pay; S.charter = { day: S.day, id: spare.id }; S.rep += vip ? .02 : .015; addReview(vip ? 'perfect' : 'good'); paperAdd(2, vip ? `${S.company} VIP ağırladı` : `Gökyüzünde düğün: ${S.company}`, ''); return vip ? 'Güzel iş evlat. Zenginler konuşur, konuştukları da duyulur.' : 'Gelin sepette ağlamış diyorlar, mutluluktan. Fotoğraflar bütün vadide dolaşacak.'; });
+    btn('ghost', 'Reddet', () => null);
+  } else if (k === 'doc') {
+    c.appendChild(h('div', 'chap', 'Sabah olayı'));
+    c.appendChild(h('h1', null, 'Belgesel ekibi'));
+    c.appendChild(h('p', 'lead', 'Bir yayın kuruluşu Kapadokya belgeseli çekiyor. Amiral balonunda 4 koltuğu kameralara ayırırsan seni belgeselde gösterecekler. O koltukların bilet parası bugün gelmez.'));
+    btn('big', `Kabul et (−${eur(4 * S.price)} bugün, +popülerlik)`, () => { S.cash -= 4 * S.price; S.rep += .06; paperAdd(3, `${S.company} belgeselde`, 'Gün doğumu çekimleri ekranlara geliyor.'); return 'Kameralar hazır evlat. Bugün güzel uç, bütün dünya izleyecek.'; });
+    btn('ghost', 'Reddet', () => null);
+  } else if (k === 'fuel') {
+    const per = S.balloons.reduce((a, b) => a + SIZES[b.size].fuel, 0), stock = Math.round(per * 5 * .25 / 50) * 50;
+    c.appendChild(h('div', 'chap', 'Sabah olayı'));
+    c.appendChild(h('h1', null, 'Propan zammı'));
+    c.appendChild(h('p', 'lead', `Tedarikçi gelecek 5 gün propana %50 zam yapacağını söyledi. Şimdi ${eur(stock)} verip eski fiyattan stok yaparsan zamdan etkilenmezsin.`));
+    btn('big', `Stok yap ${eur(stock)}`, () => { S.cash -= stock; return 'Tüpler hangarda, akıllıca evlat.'; }, S.cash < stock);
+    btn('ghost', 'Zammı öde (5 gün yakıt ×1,5)', () => { S.fuelUp = S.day + 4; return null; });
+  } else if (k === 'press') {
+    c.appendChild(h('div', 'chap', 'Sabah olayı'));
+    c.appendChild(h('h1', null, 'Gazeteci kapıda'));
+    c.appendChild(h('p', 'lead', `Kapadokya Postası'ndan bir muhabir ofisinin önünde. Balon turizmi hakkında röportaj istiyor. İyi geçerse adın duyulur, kötü geçerse manşet olursun.`));
+    btn('big', 'Röportaj ver', () => { if (Math.random() < .65) { S.rep += .05; paperAdd(3, `${S.company} kurucusu: "Gökyüzü herkesin"`, 'Röportaj okurlardan büyük ilgi gördü.'); return 'Röportaj harika geçti evlat, yarın gazetede.'; } S.rep -= .03; paperAdd(3, `${S.company} kurucusu fiyat sorusunda bocaladı`, 'Röportaj tartışma yarattı.'); return 'Hmm, fiyat sorusunda biraz bocaladın. Yarın gazete pek hoş yazmayacak.'; });
+    btn('ghost', 'Yorum yok', () => null);
+  }
+  m.appendChild(c); m.hidden = false;
+}
+/* Pilots on strike in front of your office, waving placards. */
+function strikers(t) {
+  const items = [], n = Math.min(8, Math.max(3, S.pilots.length)), signs = ['ZAM!', 'GREV', '%15', 'ADALET'];
+  for (let i = 0; i < n; i++) {
+    const gx = 8.4 + (i % 4) * .55, gy = 13.6 + Math.floor(i / 4) * .45;
+    items.push({ depth: gx + gy, draw: () => {
+      const q0 = tiso(gx, gy), bob = Math.abs(Math.sin(t * 4 + i)) * 4, q = [0, 0];
+      ctx.save(); ctx.translate(q0[0], q0[1]); ctx.scale(1.5, 1.5);
+      person(q[0], q[1], '#2b5ab8', t, i);
+      ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(q[0] + 4, q[1] - 10); ctx.lineTo(q[0] + 4, q[1] - 34 - bob); ctx.stroke();
+      ctx.fillStyle = '#fffaf3'; ctx.fillRect(q[0] - 10, q[1] - 50 - bob, 28, 17); ctx.strokeStyle = '#e5432f'; ctx.lineWidth = 1.5; ctx.strokeRect(q[0] - 10, q[1] - 50 - bob, 28, 17);
+      ctx.fillStyle = '#e5432f'; ctx.font = '800 9px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText(signs[i % 4], q[0] + 4, q[1] - 38 - bob); ctx.textAlign = 'left';
+      ctx.restore();
+    } });
+  }
+  return items;
+}
 /* When cash first goes below zero: Hezarfen's rescue plan, with the moves that help right now. */
 function showRescue() {
   S.rescueShown = true; save();
@@ -1092,6 +1173,7 @@ function nextPopup() {
   if (S.mergeNews) { showMerge(); return; }
   if (S.paper && S.paper.length) { showPaper(); return; }
   if (S.cash < 0 && !S.rescueShown) { showRescue(); return; }
+  if (S.eventDue) { showEvent(); return; }
   if (S.cash >= 0) S.rescueShown = false;
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
   if (S.poach) { showPoach(); return; }
@@ -1135,6 +1217,8 @@ function startDay() {
   if (!S.candidates.length) newCandidates();
   if (!S.rivals[0].fly) rivalFlyPlan();
   if (S.paperNext && S.paperNext.length) { S.paper = S.paperNext; S.paperNext = null; }
+  /* a morning event every 7-8 days once the town is open */
+  if (S.day >= 12 && S.unl.crew && !S.winter && S.day >= (S.nextEvent || 12)) { S.eventDue = true; S.nextEvent = S.day + 7 + Math.round(Math.random()); }
   unlockCheck(); assignPilots(); buildWorld(); save();
   setTimeout(nextPopup, 700);
   mode = 'office'; hideAll(); $('hud').hidden = false; $('sheet').hidden = false;
@@ -1164,7 +1248,7 @@ function finishDay(flight) {
       ev.push(`${b.name} uçuşunu iptal ettin. ${pax} yolcunun bilet parası iade edildi ve kişi başı ${eur(CANCEL_COMP)} tazminat ödendi.`);
       continue;
     }
-    Lg.rev += pax * S.price; Lg.fuel += z.fuel;
+    Lg.rev += pax * S.price; Lg.fuel += z.fuel * (S.fuelUp >= S.day ? 1.5 : 1);
     const sp = b.ad && SPONSORS.find(x => x.id === b.ad);
     if (sp) { Lg.ad += adPay(sp, b.size); Lg.adRep += sp.rep; S.rep -= sp.rep; adNames.push(sp.name); }
     const pr = premium(b.size, accP(b));
@@ -1880,7 +1964,7 @@ function renderHome() {
 const sortedFleet = () => S.balloons.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag) || SIZES[b.size].cap - SIZES[a.size].cap || a.name.localeCompare(b.name, 'tr'));
 function fleetSub(b) {
   const st = canFly(b), p = pilotOf(b);
-  return st === 'license' ? 'Lisans bekliyor' : st === 'worn' ? 'Zarf yenilenmeli' : st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : st === 'nopilot' ? 'Pilot gerekli' : isSelf(b) ? 'Pilot: sen' : `Pilot: ${p.name.split(' ')[0]} (${LEVELS[p.lvl].name})`;
+  return st === 'strike' ? 'Pilotu grevde' : st === 'charter' ? 'Bugün özel kirada' : st === 'license' ? 'Lisans bekliyor' : st === 'worn' ? 'Zarf yenilenmeli' : st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : st === 'nopilot' ? 'Pilot gerekli' : isSelf(b) ? 'Pilot: sen' : `Pilot: ${p.name.split(' ')[0]} (${LEVELS[p.lvl].name})`;
 }
 function riskDot(b) {
   const risk = canFly(b) === 'ok' && S.weather.flag !== 'red' ? accP(b) : null;
@@ -1893,7 +1977,7 @@ function blockedTap(b) {
 function fleetCounts() {
   const fl = flying(), why = {};
   S.balloons.forEach(b => { const st = canFly(b); if (st !== 'ok') why[st] = (why[st] || 0) + 1; });
-  const names = { dmg: 'onarımda', nopilot: 'pilot bekliyor', worn: 'zarf yenilenmeli', license: 'lisans bekliyor', ban: 'yasaklı' };
+  const names = { dmg: 'onarımda', nopilot: 'pilot bekliyor', worn: 'zarf yenilenmeli', license: 'lisans bekliyor', ban: 'yasaklı', strike: 'grevde', charter: 'özel kirada' };
   const ground = S.balloons.filter(b => canFly(b) === 'ok' && !b.fly).length;
   const parts = Object.keys(names).filter(k => why[k]).map(k => `${why[k]} ${names[k]}`);
   if (ground) parts.unshift(`${ground} yerde`);
@@ -3017,7 +3101,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax'];
+const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent'];
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'M', 'M', 'M'], price: 195, rep: 1.15, cash: 50000 },
   { name: 'Rio Grande Balloons', col: '#3c9a8f', col2: '#e6fff9', style: 'mid', balloons: ['M', 'M', 'M', 'S'], price: 165, rep: 1, cash: 20000 },
@@ -4230,8 +4314,8 @@ function townLoop() {
 /* Glide the view to a target (zoom and offset) and then run done. */
 function townGlide(to, done) { TOWN.anim = { t0: performance.now(), from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to, done }; }
 /* Glide in on a grid point. */
-function townFocus(at) {
-  const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...at), z = .65;
+function townFocus(at, z = .65) {
+  const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...at);
   townGlide({ z, ox: r.width / 2 - cx * z, oy: r.height * .55 - cy * z });
 }
 /* Keep the town on screen however far you drag. */
