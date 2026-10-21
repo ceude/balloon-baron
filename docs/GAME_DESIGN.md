@@ -149,7 +149,7 @@ Hedefler gün sonunda kontrol edilir. Bölüm bitince ödül kasaya girer, ertes
 
 Simülasyon (`tools/sim-chapters.js`, 8 tohum, yeni açılış günleriyle): Kuruluş 52–64. gün, Büyüme 94–113. gün, Baron 125–188. gün. Yükseltme hedefleri olmadan 48–59 / 85–108 / 103–189; yükseltmeler kendini ödediği için fark küçük.
 
-Bölüm ödülü kartında "Reklam izle, ödülü 2'ye katla" düğmesi: 30 saniyelik ödüllü reklam bitince ödül bir kez daha kasaya girer.
+Bölüm ödülü kartında "Reklam izle, ödülü 2'ye katla: €10.000" düğmesi (toplam ödülü yazar): 30 saniyelik ödüllü reklam bitince ödül bir kez daha kasaya girer.
 
 ## Bina yükseltmeleri
 Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükseltme görünür.
@@ -218,7 +218,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - Atölye €75.000, bir kez. Tasarım €5.000, balona giydirme €1.000.
 - Yaratıcılık (5–100): desen tabanı × 0,6 + ana/desen rengi parlaklık farkı × 30 + (farklı renk − 1) × 6 + 10. Aynı desen ve ana renk tekrarı −20, yaşayan bir rakibin ana rengi −10.
 - Desen tabanları: çizgili 35, zikzak 60, damalı 55, yıldızlı 70, kalpli 70, güneş 75, dalga 60, gökkuşağı 65, puantiyeli 50.
-- Etki: tasarımlı balon her uçuşta 0,003 × puan/100 × tazelik (+0,0015 şekilli zarf), günlük en fazla 0,015. Tazelik 40 günde %100'den %20'ye iner.
+- Etki: tasarımlı balon her uçuşta 0,003 × puan/100 × tazelik (+0,0015 şekilli zarf), günlük en fazla 0,015. Tazelik 40 günde %100'den %20'ye iner. Parayla alınan desen ya da şekil içeren tasarımlar hiç eskimez.
 
 ## Kış
 - En erken 40. gün, kasa ≥ €50.000 iken başlar ve 8 gün sürer.
