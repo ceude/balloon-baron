@@ -3,9 +3,13 @@ import Foundation
 /// What a chapter asks for. Labels: `goal.<rawValue>`.
 public enum GoalKind: String, Codable, Sendable {
     case balloons, stars, cash, hotelDeal, hotelOwn, influencer, guide, share, workshop, school, xl, fiesta
+    /// Upgrade the wind mast, the hangar, or any building to its top level.
+    case bldMast, bldHangar, bldTop
 
     /// Shown as done / not yet instead of a count.
-    public var yesNo: Bool { [.workshop, .school, .xl, .influencer, .guide, .fiesta].contains(self) }
+    public var yesNo: Bool { [.workshop, .school, .xl, .influencer, .guide, .fiesta, .bldMast, .bldHangar, .bldTop].contains(self) }
+    /// Building goals count from level 1.
+    public var isBuilding: Bool { [.bldMast, .bldHangar, .bldTop].contains(self) }
 }
 
 public struct Goal: Equatable, Sendable {
@@ -24,15 +28,15 @@ public struct Chapter: Equatable, Sendable {
         switch r {
         case .cap:
             return [
-                Chapter(id: "founding", reward: 5000, goals: [g(.balloons, 5), g(.stars, 4.0), g(.hotelDeal, 1), g(.cash, 20000)]),
-                Chapter(id: "growth", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.influencer, 1), g(.guide, 1), g(.share, 0.5), g(.workshop, 1)]),
-                Chapter(id: "baron", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1)])
+                Chapter(id: "founding", reward: 5000, goals: [g(.balloons, 5), g(.stars, 4.0), g(.hotelDeal, 1), g(.cash, 20000), g(.bldMast, 2)]),
+                Chapter(id: "growth", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.influencer, 1), g(.guide, 1), g(.share, 0.5), g(.workshop, 1), g(.bldHangar, 2)]),
+                Chapter(id: "baron", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldTop, 3)])
             ]
         case .abq:
             return [
-                Chapter(id: "newWorld", reward: 5000, goals: [g(.balloons, 5), g(.stars, 4.0), g(.hotelDeal, 1), g(.guide, 1)]),
-                Chapter(id: "fiesta", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.fiesta, 1), g(.influencer, 1), g(.share, 0.5)]),
-                Chapter(id: "baronAbq", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1)])
+                Chapter(id: "newWorld", reward: 5000, goals: [g(.balloons, 5), g(.stars, 4.0), g(.hotelDeal, 1), g(.guide, 1), g(.bldMast, 2)]),
+                Chapter(id: "fiesta", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.fiesta, 1), g(.influencer, 1), g(.share, 0.5), g(.bldHangar, 2)]),
+                Chapter(id: "baronAbq", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldTop, 3)])
             ]
         }
     }
@@ -60,11 +64,16 @@ extension GameState {
         case .school: return s.school ? 1 : 0
         case .xl: return s.balloons.contains { $0.size == .XL } ? 1 : 0
         case .fiesta: return Double(s.fiestaFlown)
+        case .bldMast: return Double(level(.mast))
+        case .bldHangar: return Double(level(.hangar))
+        case .bldTop: return Double(topBuildingLevel)
         }
     }
 
     public func done(_ g: Goal) -> Bool { value(g.kind) >= g.target - 1e-9 }
-    public func progress(_ g: Goal) -> Double { clamp(value(g.kind) / g.target, 0, 1) }
+    public func progress(_ g: Goal) -> Double {
+        g.kind.isBuilding ? clamp((value(g.kind) - 1) / (g.target - 1), 0, 1) : clamp(value(g.kind) / g.target, 0, 1)
+    }
 }
 
 extension Game {

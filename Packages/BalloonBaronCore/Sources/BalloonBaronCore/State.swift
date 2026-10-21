@@ -8,7 +8,8 @@ public struct Balloon: Codable, Identifiable, Equatable, Sendable {
     public var fly = true
     public var damagedUntil = 0
     public var pilot: Int?
-    public var flights = 0
+    /// Flights flown on this envelope; a level-3 hangar makes each one count for 0.85.
+    public var flights = 0.0
     public var ad: Sponsor?
     /// Id of a workshop design painted on the envelope.
     public var design: Int?
@@ -18,13 +19,20 @@ public struct Pilot: Codable, Identifiable, Equatable, Sendable {
     public let id: Int
     public var name: String
     public var level: PilotLevel
-    public var xp = 0
+    /// Flights flown; a level-3 pilot office counts each as 1.5.
+    public var xp = 0.0
     public var fromSchool = false
     /// Set after a raise; otherwise wage follows level.
     public var customWage: Int?
+    /// Most pilots have a character that changes how they fly.
+    public var trait: Trait?
 
     public var wage: Int {
-        customWage ?? jsRound(Double(level.wage) * (fromSchool ? Rules.schoolWageFactor : 1))
+        customWage ?? Pilot.baseWage(level, school: fromSchool, trait: trait)
+    }
+
+    static func baseWage(_ level: PilotLevel, school: Bool, trait: Trait?) -> Int {
+        jsRound(Double(level.wage) * (school ? Rules.schoolWageFactor : 1) * (trait == .nightowl ? 0.85 : 1))
     }
 }
 
@@ -125,7 +133,7 @@ public enum Feature: String, Codable, CaseIterable, Sendable { case insurance, f
 public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
     case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold, goals
-    case pr, influ, prcap
+    case pr, influ, prcap, bazaar
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {
@@ -141,6 +149,16 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case officeOpened(Office)
     case allOffices
     case celebritySigned(Int)
+    /// A rival boss speaks (once per line and region). Text: `boss.<region>.<line>`.
+    case boss(RegionID, BossLine)
+    case festivalStarted(Festival)
+    /// Cash is back above zero after the rescue plan.
+    case rescued
+    /// What came of a morning event decision.
+    case eventOutcome(MorningEvent, EventOutcome)
+    case worldBaron
+    /// A bought pattern or shape arrived as a ready design on this balloon.
+    case designGift(ShopItem, balloon: String)
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.
@@ -200,6 +218,34 @@ public struct GameState: Codable, Equatable, Sendable {
     public var chapterNews: ChapterNews?
     public var mergeNews: MergeNews?
 
+    // Added after v67, optional underneath so older saves still load.
+    var paperStore: [PaperItem]?, paperNextStore: [PaperItem]?
+    var rescueShownStore: Bool?
+    var bossSaidStore: Set<String>?
+    var achievementsStore: [Achievement: Int]?, newPostcardsStore: [Achievement]?
+    var statsStore: Stats?
+    var purchasesStore: [ShopItem: Int]?
+    var adClaimedStore: Set<String>?
+    var worldBaronStore: Int?
+
+    /// This morning's paper, and the stories that will be in tomorrow's.
+    public var paper: [PaperItem] { get { paperStore ?? [] } set { paperStore = newValue } }
+    public var paperNext: [PaperItem] { get { paperNextStore ?? [] } set { paperNextStore = newValue } }
+    /// The rescue plan was shown for this stretch below zero.
+    public var rescueShown: Bool { get { rescueShownStore ?? false } set { rescueShownStore = newValue } }
+    /// Boss lines already said, as "region.line".
+    public var bossSaid: Set<String> { get { bossSaidStore ?? [] } set { bossSaidStore = newValue } }
+    /// Day each achievement was earned, and postcards not shown yet.
+    public var achievements: [Achievement: Int] { get { achievementsStore ?? [:] } set { achievementsStore = newValue } }
+    public var newPostcards: [Achievement] { get { newPostcardsStore ?? [] } set { newPostcardsStore = newValue } }
+    public var stats: Stats { get { statsStore ?? Stats() } set { statsStore = newValue } }
+    /// Bazaar items you own, with the day they arrived. The app also keeps them outside the save.
+    public var purchases: [ShopItem: Int] { get { purchasesStore ?? [:] } set { purchasesStore = newValue } }
+    /// Chapter rewards already doubled by an ad, as "region.index".
+    public var adClaimed: Set<String> { get { adClaimedStore ?? [] } set { adClaimedStore = newValue } }
+    /// Day every holding goal was done.
+    public var worldBaron: Int? { get { worldBaronStore } set { worldBaronStore = newValue } }
+
     public subscript<T>(dynamicMember path: WritableKeyPath<RegionState, T>) -> T {
         get { local[keyPath: path] }
         set { local[keyPath: path] = newValue }
@@ -248,20 +294,27 @@ public struct GameState: Codable, Equatable, Sendable {
         jsRound(Double(h.roomIncome) * (stars < h.minStars ? 0.5 : 1) * (local.winter != nil ? 0.6 : 1))
     }
 
-    public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold }
+    public enum FlyStatus: Equatable, Hashable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold, charter, late, strike }
 
     public func status(_ b: Balloon) -> FlyStatus {
         if local.banUntil >= day { return .banned }
         if b.damagedUntil > day { return .damaged }
         if condition(b) <= 0 { return .worn }
         if !licenseValid && b.id != local.flagship { return .licenseHold }
+        if let c = local.charter, c.day == day, c.balloon == b.id { return .charter }
+        if let l = local.late, l.day == day, b.pilot == l.pilot, !isSelf(b) { return .late }
+        if local.strikeDay == day && !isSelf(b) { return .strike }
         if !isSelf(b) && b.pilot == nil { return .noPilot }
         return .ok
     }
 
     /// Balloons that will actually go up today.
     public var flyingToday: [Balloon] { local.balloons.filter { $0.fly && status($0) == .ok } }
-    public var capacityToday: Int { flyingToday.reduce(0) { $0 + $1.size.capacity } }
+    public var capacityToday: Int { flyingToday.reduce(0) { $0 + sellableSeats($1) } }
+    /// Seats you can sell in a balloon today: a documentary crew takes four in the flagship.
+    public func sellableSeats(_ b: Balloon) -> Int {
+        b.size.capacity - (local.docDay == day && b.id == local.flagship ? min(4, b.size.capacity - 1) : 0)
+    }
 
     public var influencerCost: Int { Rules.influencerCost(balloons: local.balloons.count) }
 

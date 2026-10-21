@@ -17,6 +17,7 @@ extension Game {
                 if r.forSale == nil && dead >= 6 && rng.chance(0.3) {
                     r = newEntrant(replacing: r)
                     rev.append(.newEntrant(rival: r.name))
+                    paperAdd(4, .newEntrant(rival: r.name))
                     if let e = r.entrant { state.hezQueue.append(.entrant(e)) }
                 }
                 continue
@@ -46,10 +47,15 @@ extension Game {
                     hits += 1
                 }
             }
-            if hits > 0 { rev.append(.rivalAccidents(rival: r.name, count: hits)) }
+            if hits > 0 {
+                rev.append(.rivalAccidents(rival: r.name, count: hits))
+                paperAdd(3, .rivalAccident(rival: r.name, count: hits))
+            }
+            let boss = r.name == state.region.bossCompany
             if red && !r.flyToday.isEmpty {
                 if rng.chance(Rules.redCatch) {
                     cost += Double(Rules.redFine)
+                    paperAdd(3, .rivalRedFine(rival: r.name, fine: Rules.redFine))
                     rev.append(.rivalRedFined(rival: r.name))
                 } else {
                     rev.append(.rivalRedSneaked(rival: r.name))
@@ -64,10 +70,13 @@ extension Game {
             r.lastPax = pax
             r.lastCap = cap
 
-            if !state.pilots.isEmpty && state.poach == nil && r.cash > 15000 && rng.chance(0.04) {
-                let best = state.pilots.sorted { ($0.level, $0.xp) > ($1.level, $1.xp) }[0]
+            // Loyal pilots ignore offers; a rest room in the pilot office halves the chance.
+            let poachable = state.pilots.filter { $0.trait != .loyal }
+            if !poachable.isEmpty && state.poach == nil && r.cash > 15000 && rng.chance(state.level(.office) >= 2 ? 0.02 : 0.04) {
+                let best = poachable.sorted { ($0.level, $0.xp) > ($1.level, $1.xp) }[0]
                 if best.level >= .experienced || rng.chance(0.3) {
                     state.poach = PoachOffer(rivalIndex: ri, pilotID: best.id, wage: jsRound(Double(best.wage) * 1.35 / 10) * 10)
+                    if boss { bossSay(.poach) }
                     rev.append(.poachAttempt(rival: r.name, pilot: best.name))
                 }
             }
@@ -85,6 +94,8 @@ extension Game {
                 let h = rng.pick(state.hotelDeals)
                 state.hotelDeals.removeAll { $0 == h }
                 state.hotelLocks[h] = HotelLock(rival: r.name, until: day + 12)
+                if boss { bossSay(.hotel) }
+                paperAdd(3, .hotelLost(h, rival: r.name))
                 rev.append(.rivalStoleHotel(rival: r.name, hotel: h))
             }
             if r.cash > 12000 && !(r.campaignUntil > day) && rng.chance(0.04) {
@@ -126,12 +137,15 @@ extension Game {
                 r.offer = nil
                 r.offerSeen = false; r.offerDeclined = false; r.saleSeen = false; r.saleDeclined = false
                 r.forSale = ForSale(sizes: r.balloons, price: jsRound(fleetValue * 0.45 / 100) * 100)
+                paperAdd(6, .rivalBankrupt(rival: r.name, balloons: r.balloons.count))
+                if boss { bossSay(.gone) }
                 rev.append(.rivalBankrupt(rival: r.name, balloons: r.balloons.count, price: r.forSale!.price))
             } else if day >= 5 && (r.lowDays >= 4 || r.cash < 5000) {
                 let was = r.offer != nil
                 r.offer = jsRound((fleetValue * 0.6 + max(0, r.cash)) / 100) * 100
                 if !was {
                     r.offerSeen = false; r.offerDeclined = false
+                    if boss { bossSay(.deal) }
                     rev.append(.rivalForSale(rival: r.name, price: r.offer!))
                 }
             } else {

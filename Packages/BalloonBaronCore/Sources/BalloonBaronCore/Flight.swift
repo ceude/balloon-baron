@@ -68,9 +68,32 @@ public enum FlightWorld {
     }
 }
 
+/// A small moment most flights bring: a thermal to ride, another balloon to greet, a sunrise photo spot.
+/// Text: `moment.<rawValue>.*`.
+public enum Moment: String, Codable, CaseIterable, Sendable {
+    case thermal, greet, photo
+}
+
+/// Where today's moment is and how long you've held it.
+public struct MomentState: Equatable, Sendable {
+    public let kind: Moment
+    /// Thermal column, greeting balloon or photo spot, in meters; the other balloon drifts with the wind.
+    public var x: Double
+    /// The other balloon's altitude (greet).
+    public var alt: Double
+    /// Photo band.
+    public static let photoBand: ClosedRange<Double> = 150...280
+    /// The other balloon's colors (greet), from `MomentState.colors`.
+    public let colorIndex: Int
+    public var held = 0.0
+    public var done = false
+    public static let colors = [["#14a39a", "#e8fff9"], ["#9b7be0", "#f2ebff"], ["#5aa9e6", "#eaf4fc"], ["#e0408a", "#ffd0e0"]]
+    public static let thermalHalfWidth = 65.0, thermalTop = 520.0
+}
+
 /// The player's own flight: hold the burner to heat and climb, let go to cool and sink.
 public struct FlightSim: Sendable {
-    public enum Event: Equatable, Sendable { case airborne, missionDone, fuelOut, landed }
+    public enum Event: Equatable, Sendable { case airborne, missionDone, fuelOut, landed, momentDone(Moment) }
 
     public let weather: Weather
     public let obstacles: [Obstacle]
@@ -85,11 +108,28 @@ public struct FlightSim: Sendable {
     public var missionProgress = 0.0
     public var missionDone = false
     public var result: FlightResult?
+    /// Seven flights in ten bring a moment.
+    public var moment: MomentState?
 
     public init(weather: Weather, pax: Int) {
         self.weather = weather
         self.pax = pax
         obstacles = FlightWorld.obstacles(for: weather)
+        var r = Mulberry32(seed: UInt32(truncatingIfNeeded: weather.seed &+ 31))
+        let dir: Double = weather.target >= FlightWorld.launchX ? 1 : -1
+        if r.next() < 0.7 {
+            let kind = Moment.allCases[min(2, Int(r.next() * 3))]
+            let lx = FlightWorld.launchX
+            switch kind {
+            case .thermal:
+                moment = MomentState(kind: kind, x: lx + dir * (350 + r.next() * 450), alt: 0, colorIndex: 0)
+            case .greet:
+                let x = lx + dir * (500 + r.next() * 400), a = 160 + r.next() * 160
+                moment = MomentState(kind: kind, x: x, alt: a, colorIndex: min(3, Int(r.next() * 4)))
+            case .photo:
+                moment = MomentState(kind: kind, x: lx + dir * (450 + r.next() * 550), alt: 0, colorIndex: 0)
+            }
+        }
     }
 
     public var distanceToTarget: Double { abs(x - weather.target) }
@@ -143,6 +183,33 @@ public struct FlightSim: Sendable {
                 break
             }
         }
+        if var m = moment {
+            if m.kind == .greet { m.x += FlightWorld.wind(at: m.alt, time: t, weather) * s * 0.9 }
+            if !m.done && airborne {
+                switch m.kind {
+                case .thermal:
+                    if abs(x - m.x) < MomentState.thermalHalfWidth && alt < MomentState.thermalTop {
+                        vy += 0.5 * s
+                        m.held += dt
+                        if m.held > 2 { m.done = true; fuel = min(100, fuel + 15) }
+                    }
+                case .greet:
+                    if abs(x - m.x) < 95 && abs(alt - m.alt) < 50 {
+                        m.held += dt
+                        if m.held > 2 { m.done = true }
+                    } else {
+                        m.held = 0
+                    }
+                case .photo:
+                    if abs(x - m.x) < 70 && MomentState.photoBand.contains(alt) {
+                        m.held += dt
+                        if m.held > 1.5 { m.done = true }
+                    }
+                }
+                if m.done { ev.append(.momentDone(m.kind)) }
+            }
+            moment = m
+        }
         if airborne && alt > 0 && fuel <= 0 && !fuelWarned { fuelWarned = true; ev.append(.fuelOut) }
         return ev
     }
@@ -153,7 +220,8 @@ public struct FlightSim: Sendable {
         let dist = distanceToTarget
         let landing = q ?? (dist < FlightWorld.landingZone ? .perfect : dist < 260 ? .good : .far)
         if mission == .precision && dist < 40 && landing != .hard && landing != .crash { missionDone = true }
-        result = FlightResult(landing: landing, distance: dist, mission: mission, missionDone: mission != nil && missionDone)
+        result = FlightResult(landing: landing, distance: dist, mission: mission, missionDone: mission != nil && missionDone,
+                              moment: moment?.done == true ? moment?.kind : nil)
     }
 
     /// Cancel before take-off: passengers get refunds and compensation.

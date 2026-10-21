@@ -42,6 +42,9 @@ public struct Holding: Codable, Equatable, Sendable {
     public var research = 0
     /// Day each office opened.
     public var offices: [Office: Int] = [:]
+    /// TV campaigns run so far (optional underneath for older saves).
+    var tvCountStore: Int?
+    public var tvCount: Int { get { tvCountStore ?? 0 } set { tvCountStore = newValue } }
 
     public func has(_ o: Office) -> Bool { offices[o] != nil }
     public var expenseRate: Double { offices.count == Office.allCases.count ? Self.allOfficesExpenseRate : Self.expenseRate }
@@ -99,6 +102,7 @@ extension Game {
         guard canRunTV, spendHolding(state.holding.tvCost) else { return false }
         state.holding.tvUntil = state.day + Holding.tvDays
         state.holding.tvCooldown = state.day + Holding.tvCooldown
+        state.holding.tvCount += 1
         state.rep = min(1.4, state.rep + 0.1)
         return true
     }

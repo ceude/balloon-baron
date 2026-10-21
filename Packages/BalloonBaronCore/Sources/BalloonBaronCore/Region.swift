@@ -114,7 +114,49 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var lastGuide: Int?
     var absentNoticeDay = 0
 
+    // Added after v67. Stored as optionals so older saves still load; read them through the properties below.
+    var festStore: Festival.Running?, festNextStore: Int?, festCountStore: Int?
+    var bestPaxStore: Int?
+    var strikeDayStore: Int?, charterStore: Charter?, fuelUpStore: Int?, docDayStore: Int?, lateStore: LatePilot?
+    var nextEventStore: Int?, lastEventStore: MorningEvent?, eventDueStore: Bool?
+    var buildingsStore: [Building: Int]?
+    var forecastStore: [Int: Flag]?
+    var winterNightStore: Int?
+
+    /// Cappadocia's festival running now, the day the next one may start, and how many there have been.
+    public var festival: Festival.Running? { get { festStore } set { festStore = newValue } }
+    public var festivalNext: Int { get { festNextStore ?? Festival.firstDay } set { festNextStore = newValue } }
+    public var festivalCount: Int { get { festCountStore ?? 0 } set { festCountStore = newValue } }
+    /// Most passengers you flew in one day, for the record headline.
+    public var bestPax: Int { get { bestPaxStore ?? 0 } set { bestPaxStore = newValue } }
+    /// Morning event effects: a strike day, a chartered balloon, the propane price rise, the documentary crew, a late pilot.
+    public var strikeDay: Int? { get { strikeDayStore } set { strikeDayStore = newValue } }
+    public var charter: Charter? { get { charterStore } set { charterStore = newValue } }
+    public var fuelUpUntil: Int? { get { fuelUpStore } set { fuelUpStore = newValue } }
+    public var docDay: Int? { get { docDayStore } set { docDayStore = newValue } }
+    public var late: LatePilot? { get { lateStore } set { lateStore = newValue } }
+    public var nextEvent: Int { get { nextEventStore ?? MorningEvent.firstDay } set { nextEventStore = newValue } }
+    public var lastEvent: MorningEvent? { get { lastEventStore } set { lastEventStore = newValue } }
+    /// A morning event waits to be shown.
+    public var eventDue: Bool { get { eventDueStore ?? false } set { eventDueStore = newValue } }
+    /// Building levels, 1 to 3.
+    public var buildings: [Building: Int] { get { buildingsStore ?? [:] } set { buildingsStore = newValue } }
+    /// Flags rolled ahead of time for the wind mast's forecast.
+    public var forecast: [Int: Flag] { get { forecastStore ?? [:] } set { forecastStore = newValue } }
+    /// The winter whose first night already had its lit-up-in-the-snow headline.
+    public var winterNight: Int? { get { winterNightStore } set { winterNightStore = newValue } }
+
     init(rivals: [Rival]) { self.rivals = rivals }
+}
+
+/// A balloon chartered whole by a VIP or a wedding party for the day.
+public struct Charter: Codable, Equatable, Sendable {
+    public var day: Int, balloon: Int
+}
+
+/// A night-owl pilot who overslept.
+public struct LatePilot: Codable, Equatable, Sendable {
+    public var day: Int, pilot: Int
 }
 
 /// A region the company left behind. Its manager keeps flying and sends profit to the holding.

@@ -3,9 +3,11 @@ import Foundation
 /// Envelope patterns of the design studio. Names: `pattern.<rawValue>`.
 public enum Pattern: String, Codable, CaseIterable, Sendable {
     case stripes, zigzag, checker, stars, hearts, sunburst, waves, rainbow, dots
+    /// Bought in the bazaar.
+    case gold, tile, sky, kilim
 
     /// How eye-catching the pattern is on its own.
-    public var flair: Int { [35, 60, 55, 70, 70, 75, 60, 65, 50][index] }
+    public var flair: Int { [35, 60, 55, 70, 70, 75, 60, 65, 50, 92, 90, 92, 90][index] }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
 }
 
@@ -20,6 +22,10 @@ public struct Design: Codable, Identifiable, Equatable, Sendable {
     public var day: Int
     /// Creativity, 5–100.
     public var score: Int
+    /// A shaped envelope from the bazaar.
+    public var shape: Shape?
+    /// Set when the design came ready-made with a bazaar item; the app names it after the item.
+    public var item: ShopItem?
 }
 
 public enum Studio {
@@ -29,7 +35,9 @@ public enum Studio {
     public static let swatches = ["#ff5e3a", "#ffc23d", "#2b2350", "#14a39a", "#ff6fa8", "#5aa9e6",
                                   "#9b7be0", "#22a45d", "#e5432f", "#ffffff", "#1f1b2e", "#f3e08a"]
     /// Daily cap on the popularity designs add.
-    public static let maxDailyRep = 0.012
+    public static let maxDailyRep = 0.015
+    /// Extra popularity per flight from a shaped envelope.
+    public static let shapeRep = 0.0015
 
     static func luminance(_ hex: String) -> Double {
         let h = hex.hasPrefix("#") ? String(hex.dropFirst()) : hex
@@ -43,17 +51,19 @@ extension Game {
     public var designCost: Int { state.holding.has(.tyo) ? 0 : Studio.designCost }
 
     /// New designs are the talk of the town; after 40 days (60 with a Tokyo office) only 20% of the buzz is left.
+    /// Paid patterns and shapes never fade.
     public func freshness(_ d: Design) -> Double {
-        clamp(1 - Double(state.day - d.day) / (state.holding.has(.tyo) ? 60 : 40), 0.2, 1)
+        state.isPaid(d) ? 1 : clamp(1 - Double(state.day - d.day) / (state.holding.has(.tyo) ? 60 : 40), 0.2, 1)
     }
 
     /// Contrast and variety score; repeating yourself or copying a rival's color costs points.
-    public func designScore(pattern: Pattern, colors: [String], excluding id: Int? = nil) -> Int {
+    public func designScore(pattern: Pattern, colors: [String], shape: Shape? = nil, excluding id: Int? = nil) -> Int {
         let contrast = abs(Studio.luminance(colors[0]) - Studio.luminance(colors[1]))
         var s = Double(pattern.flair) * 0.6 + contrast * 30 + Double(Set(colors).count - 1) * 6 + 10
         if state.designs.contains(where: { $0.id != id && $0.pattern == pattern && $0.colors.first == colors[0] }) { s -= 20 }
         if state.rivals.contains(where: { $0.alive && $0.colors.first == colors[0] }) { s -= 10 }
         if state.holding.has(.tyo) { s += 10 }
+        if shape != nil { s += 8 }
         return clamp(jsRound(s), 5, 100)
     }
 
@@ -67,24 +77,33 @@ extension Game {
 
     /// Paid from the region you're playing. Returns the new design's id.
     @discardableResult
-    public mutating func createDesign(name: String, pattern: Pattern, colors: [String]) -> Int? {
+    public mutating func createDesign(name: String, pattern: Pattern, colors: [String], shape: Shape? = nil) -> Int? {
         let cost = designCost
         guard state.workshopDay != nil, colors.count == 3, state.cash >= cost else { return nil }
+        if let item = pattern.shopItem, !state.owns(item) { return nil }
+        if let shape, let item = ShopItem(rawValue: shape.rawValue), !state.owns(item) { return nil }
         state.cash -= cost
-        let score = designScore(pattern: pattern, colors: colors)
+        let score = designScore(pattern: pattern, colors: colors, shape: shape)
         let d = Design(id: state.nextID, name: name.trimmingCharacters(in: .whitespacesAndNewlines), number: state.designs.count + 1,
-                       pattern: pattern, colors: colors, day: state.day, score: score)
+                       pattern: pattern, colors: colors, day: state.day, score: score, shape: shape)
         state.nextID += 1
         state.designs.append(d)
         return d.id
     }
 
+    /// Repainting costs `Studio.reskinCost`, nothing for a design you paid for.
+    public func paintCost(_ design: Int?) -> Int {
+        guard let id = design, let d = state.designs.first(where: { $0.id == id }) else { return Studio.reskinCost }
+        return state.isPaid(d) ? 0 : Studio.reskinCost
+    }
+
     /// Paint a balloon with a design, or nil for company colors.
     @discardableResult
     public mutating func paint(_ balloonID: Int, design: Int?) -> Bool {
+        let cost = paintCost(design)
         guard let i = state.balloons.firstIndex(where: { $0.id == balloonID }), state.balloons[i].design != design,
-              state.cash >= Studio.reskinCost else { return false }
-        state.cash -= Studio.reskinCost
+              state.cash >= cost else { return false }
+        state.cash -= cost
         state.balloons[i].design = design
         return true
     }

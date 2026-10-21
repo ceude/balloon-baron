@@ -88,6 +88,7 @@ final class WorldTests: XCTestCase {
         for _ in 0..<4 { g.buyBalloon(.S) }
         g.state.rep = 1.1
         g.signHotel(.stone)
+        XCTAssertTrue(g.upgrade(.mast), "the founding chapter asks for a weather station")
         let r = play(&g)
         XCTAssertEqual(g.state.chapter, 1)
         XCTAssertEqual(r.ledger.chapterReward, 5000)
@@ -104,6 +105,7 @@ final class WorldTests: XCTestCase {
         g.state.school = true
         g.state.ownHotels = [.stone, .mansion]
         g.state.shareNow = 0.8
+        g.state.buildings[.hangar] = 3
         g.buyBalloon(.XL)
         // Fly with almost the whole market so the share stays above 70%.
         for i in g.state.rivals.indices { g.state.rivals[i].alive = false; g.state.rivals[i].deadDay = 1 }
@@ -308,7 +310,11 @@ final class WorldTests: XCTestCase {
                 if s.chapter >= 2 {
                     if !s.school && s.cash > 90000 { g.buildSchool() }
                     if s.cash > 200000 { g.buyBalloon(.XL) }
+                    if s.cash > 120000 { g.upgrade(.hangar) }
                 }
+                // Each chapter asks for one upgrade: the mast first, then the hangar.
+                if s.chapter == 0 && s.cash > 26000 { g.upgrade(.mast) }
+                if s.chapter == 1 && s.cash > 60000 { g.upgrade(.hangar) }
                 if let o = g.state.poach { g.answerPoach(match: o.wage <= 400) }
                 for b in g.state.balloons where g.state.condition(b) <= 0 { g.renewEnvelope(b.id) }
                 g.setPrice(g.state.rep > 1.2 ? 200 : 175)
