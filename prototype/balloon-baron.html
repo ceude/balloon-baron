@@ -57,7 +57,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .lt i::after{content:"";position:absolute;top:-4px;border:6px solid transparent}
 .lt i.r::after{right:-8px;border-left-color:var(--sun)}
 .lt i.l::after{left:-8px;border-right-color:var(--sun)}
-.side{position:absolute;right:max(10px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:10px}
+.side{position:absolute;right:max(10px, env(safe-area-inset-right, 0px));display:flex;flex-direction:column;gap:6px}
+#nav button{width:52px;font-size:10.5px}
+#nav .ib{width:44px;height:44px;border-radius:14px}
+#nav svg{width:23px;height:23px}
 .side button{width:58px;display:flex;flex-direction:column;align-items:center;gap:4px;color:#fff;font-size:11.5px;font-weight:700;text-shadow:0 1px 4px rgba(0,0,0,.6);position:relative}
 .side .ib{width:50px;height:50px;border-radius:16px;background:#fff;display:grid;place-items:center;box-shadow:0 4px 0 rgba(43,35,80,.4)}
 .side button:active .ib{transform:translateY(3px);box-shadow:0 1px 0 rgba(43,35,80,.4)}
@@ -66,6 +69,27 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .dock{position:absolute;left:50%;transform:translateX(-50%);bottom:max(10px, env(safe-area-inset-bottom, 0px));width:min(560px,calc(100% - 16px));
   padding:12px;border-radius:24px;background:var(--glass);color:#fff;display:flex;flex-direction:column;gap:10px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(10,5,30,.4)}
 .alerts{display:flex;flex-direction:column;gap:6px}
+/* the dock is a slim strip until you pull it up (or tap it); open, it holds every card of the morning */
+.dock{max-height:calc(100% - 90px);overflow-y:auto;scrollbar-width:none;background:rgba(30,24,64,.72)}
+.dock::-webkit-scrollbar{display:none}
+.grab{align-self:center;width:46px;height:16px;margin:-8px 0 -4px;display:grid;place-items:center;flex:none}
+.grab::before{content:"";width:40px;height:5px;border-radius:3px;background:rgba(255,255,255,.38)}
+.dock:not(.open) .alerts,.dock:not(.open) #fleetChips,.dock:not(.open) #optChips{display:none}
+.dock.open .strip{display:none}
+.dock.open > *{animation:dkin .22s ease-out}
+@keyframes dkin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.strip{display:flex;gap:7px;align-items:stretch}
+.strip:empty{display:none}
+.spill{flex:none;display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:12px;background:rgba(255,255,255,.12);color:#fff;font-size:13px;font-weight:700;white-space:nowrap;box-shadow:0 3px 0 rgba(0,0,0,.25)}
+.spill svg{width:18px;height:18px;stroke:#fff;fill:none;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.spill.al{flex:1;min-width:0}
+.spill.al span{overflow:hidden;text-overflow:ellipsis}
+.spill.al i{flex:none;width:9px;height:9px;border-radius:50%;background:#fff}
+.spill.al.red{background:rgba(229,67,47,.92)}
+.spill.al.yel{background:rgba(255,194,61,.95);color:#2b1d00}.spill.al.yel i{background:#2b1d00}
+.spill.al.mis i{background:#3ad0c0}.spill.al.grn i{background:#50d28c}.spill.al.win i{background:#bfe0ff}
+.spill em{flex:none;font-style:normal;font-size:11.5px;padding:1px 6px;border-radius:8px;background:rgba(0,0,0,.22)}
+.spill.off{color:#ffb4a6}
 .alerts:empty{display:none}
 .alert{font-size:13px;line-height:1.35;padding:7px 10px;border-radius:10px;text-align:left;color:#fff}
 .alert.red{background:rgba(229,67,47,.92)}
@@ -182,6 +206,48 @@ body.zoomed .wxw,body.zoomed .side{transform:translateY(calc(-100% - 280px))}
 body.zoomed .dock{transform:translate(-50%,calc(100% + 40px))}
 body.zoomed .chirp{transform:translate(-50%,calc(-100% - 320px));opacity:0}
 #town canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
+/* Holding: an open-plan office floor in the tower; desks are the holding's departments */
+#hq{position:absolute;inset:0;z-index:8;background:#f3e2c6;opacity:0;transform:scale(1.08);transition:opacity .35s ease, transform .45s cubic-bezier(.3,.7,.3,1)}
+#hq.on{opacity:1;transform:none}
+#hq canvas{position:absolute;inset:0;width:100%;height:100%}
+.hqhead{position:absolute;left:0;right:0;top:0;display:flex;align-items:center;gap:10px;padding:max(14px, env(safe-area-inset-top, 0px)) 14px 10px}
+.hqt{flex:1;display:flex;flex-direction:column;padding:8px 14px;border-radius:16px;background:rgba(255,250,243,.94);box-shadow:0 4px 0 rgba(43,35,80,.18)}
+.hqt b{font-family:var(--cond);font-weight:800;font-size:22px;color:var(--ink);line-height:1.1}
+.hqt span{font-size:12.5px;color:var(--ink2)}
+.hqt em{font-style:normal;font-family:var(--cond);font-weight:800;font-size:16px;color:var(--coral)}
+.hqspot{position:absolute;transform:translate(-50%,-100%);display:flex;flex-direction:column;align-items:center;padding:6px 12px 7px;border-radius:13px;background:#fffaf3;color:var(--ink);box-shadow:0 4px 0 rgba(43,35,80,.25);white-space:nowrap;animation:spotin .35s ease-out both}
+.hqspot::after{content:"";position:absolute;bottom:-6px;left:50%;margin-left:-6px;border:6px solid transparent;border-bottom:0;border-top-color:#fffaf3}
+.hqspot b{font-family:var(--cond);font-weight:800;font-size:16px;line-height:1.1}
+.hqspot b::after{content:" ›";color:var(--coral)}
+.hqspot span{font-size:11.5px;color:var(--ink2)}
+.hqspot span.on{color:var(--green);font-weight:700}
+.hqspot i{position:absolute;top:-5px;right:-5px;width:13px;height:13px;border-radius:50%;background:var(--red);border:2px solid #fff}
+.hqspot:active{transform:translate(-50%,calc(-100% + 3px))}
+@keyframes spotin{from{opacity:0;transform:translate(-50%,-80%)}to{opacity:1}}
+#hqSheet{position:absolute;inset:0;background:rgba(43,35,80,.35);display:flex;align-items:flex-end;justify-content:center}
+.hqs{width:min(560px,100%);max-height:82%;overflow-y:auto;padding:16px 16px max(16px, env(safe-area-inset-bottom, 0px));border-radius:24px 24px 0 0;background:var(--paper);display:flex;flex-direction:column;gap:14px;animation:shin .25s ease-out}
+@keyframes shin{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+.hqsh{display:flex;align-items:center;justify-content:space-between}
+.hqsh b{font-family:var(--cond);font-weight:800;font-size:26px;color:var(--ink)}
+#hqBody{display:flex;flex-direction:column;gap:16px}
+#hqBody h2{color:var(--ink)}
+#hqBody .hbox{background:#fff;color:var(--ink);box-shadow:0 0 0 2px var(--line) inset}
+#hqBody .hbox .hk b{color:var(--coral)}
+#hqBody .cf3 div{background:var(--haze)}
+#hqBody .cf3 .g b{color:var(--green)}#hqBody .cf3 .r b{color:var(--red)}#hqBody .cf3 .n b{color:var(--ink)}
+#hqBody .cfchart line{stroke:#d9cfe6}#hqBody .cfchart text{fill:#8a82a6}#hqBody .cfchart path{stroke:#fff}
+#hqBody .deal,#hqBody .office{background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 4px 0 var(--line)}
+#hqBody .deal.on{box-shadow:0 0 0 2px var(--green) inset,0 4px 0 var(--line)}
+#hqBody .office.on{box-shadow:0 0 0 2px var(--coral) inset,0 4px 0 var(--line)}
+#hqBody .deal .dart{background:var(--haze)}
+#hqBody .deal .dk{color:var(--coral)}
+#hqBody .deal .dt,#hqBody .office .onm{color:var(--ink)}
+#hqBody .deal .dd,#hqBody .office .op,#hqBody .deal .dnote{color:var(--ink2)}
+#hqBody .deal .dchips span{background:rgba(34,164,93,.12);color:#1b7d47}
+#hqBody .deal .dfoot{border-top-color:var(--line)}
+#hqBody .deal .dprice{color:var(--ink)}
+#hqBody .deal .dstat,#hqBody .office .ostat{color:var(--green)}
+#hqBody .dcta{background:var(--coral);color:#fff;box-shadow:0 3px 0 #c7381a}
 #tClose{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));right:max(14px, env(safe-area-inset-right, 0px));width:46px;height:46px;border-radius:50%;background:rgba(255,250,243,.95);color:var(--ink);font-size:20px;font-weight:800;box-shadow:0 4px 0 rgba(43,35,80,.35);display:grid;place-items:center;transition:opacity .2s ease, transform .2s ease}
 #tClose.gone{opacity:0;transform:scale(.6);pointer-events:none}
 .sw8{width:66px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:13px;flex:none}
@@ -505,6 +571,8 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
     <div class="wxw" id="wx"></div>
     <div class="side" id="nav"></div>
     <div class="dock" id="dock">
+      <button class="grab" id="grab" aria-label="Bugünün kartları"></button>
+      <div class="strip" id="strip"></div>
       <div class="alerts" id="alerts"></div>
       <div class="chips" id="fleetChips"></div>
       <div class="chips" id="optChips"></div>
@@ -520,6 +588,11 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
     <button class="big" id="psOk">Tamam</button>
   </div></div>
   <div id="town" hidden><canvas id="tcv"></canvas><button id="tClose" aria-label="Uzaklaş">✕</button></div>
+  <div id="hq" hidden><canvas id="hqcv"></canvas>
+    <div class="hqhead"><div class="hqt"><b id="hqName"></b><span>Holding kasası <em id="hqCash"></em></span></div><button class="pclose" id="hqClose" aria-label="Kapat">✕</button></div>
+    <div id="hqSpots"></div>
+    <div id="hqSheet" hidden><div class="hqs"><div class="hqsh"><b id="hqTitle"></b><button class="pclose" id="hqSClose" aria-label="Kapat">✕</button></div><div id="hqBody"></div></div></div>
+  </div>
   <div id="page" hidden><div class="phead"><h1 id="pTitle"></h1><button class="pclose" id="pClose" aria-label="Kapat">✕</button></div><div id="tabBody"></div></div>
 
   <div id="collect" hidden></div>
@@ -930,7 +1003,7 @@ function showPoach() {
   c.append(yes, no); m.appendChild(c); m.hidden = false;
 }
 function startDay() {
-  alertsOpen = false; applyRegionTheme();
+  alertsOpen = false; $('dock').classList.remove('open'); applyRegionTheme();
   if (!S.company) { showSetup(1); return; }
   if (!S.weather) S.weather = newWeather();
   if (!S.demand) S.demand = dayDemand();
@@ -1540,7 +1613,7 @@ function balloonIcon(c1, c2) {
   return `<svg class="ic" viewBox="0 0 38 38"><path d="M19 3c-7 0-12 5-12 11.5 0 5.5 5 9.5 8 13.5h8c3-4 8-8 8-13.5C31 8 26 3 19 3z" fill="${c1}"/><path d="M19 3c-2.6 0-4.6 5-4.6 11.5 0 5.5 1.6 9.5 3 13.5h3.2c1.4-4 3-8 3-13.5C23.6 8 21.6 3 19 3z" fill="${c2}"/><path d="M15.5 28.5v3.5M22.5 28.5v3.5" stroke="#6b4426" stroke-width="1.2"/><rect x="15" y="31.5" width="8" height="4.5" rx="1" fill="#8a5a32"/></svg>`;
 }
 function riskTag(p) { const c = p < .01 ? 'g' : p < .04 ? 'y' : 'r'; return `<span class="tag ${c}">kaza riski ${pct(p)}</span>`; }
-function refresh() { renderHud(); renderNav(); renderHome(); renderTab(); renderAct(); save(); }
+function refresh() { renderHud(); renderNav(); renderHome(); renderTab(); renderAct(); if (HQ.open) hqRender(); save(); }
 
 function renderHud() {
   const multi = S.region !== 'cap' || Object.keys(S.regions || {}).length;
@@ -1563,8 +1636,8 @@ const TABS = [['fleet', 'Filo'], ['crew', 'Ekip'], ['bank', 'Banka'], ['market',
 const unlocked = k => !!(S.unl && S.unl[k]);
 const PAGES = { holding: ['Holding', () => tabHolding], fleet: ['Filo', () => tabFleet], crew: ['Ekip', () => tabCrew], bank: ['Banka', () => tabBank], market: ['Pazar', () => tabMarket] };
 let page = null;
-function openPage(k) { page = k; $('page').hidden = false; $('page').classList.toggle('lux', k === 'holding'); $('page').style.paddingTop = $('hud').offsetHeight + 'px'; $('pTitle').textContent = PAGES[k][0]; renderTab(); $('tabBody').scrollTop = 0; }
-function closePage() { page = null; $('page').hidden = true; refresh(); }
+function openPage(k) { if (k === 'holding') { openHQ(); return; } page = k; $('page').hidden = false; $('page').classList.toggle('lux', k === 'holding'); $('page').style.paddingTop = $('hud').offsetHeight + 'px'; $('pTitle').textContent = PAGES[k][0]; renderTab(); $('tabBody').scrollTop = 0; }
+function closePage() { page = null; $('page').hidden = true; hqShut(); refresh(); }
 function renderNav() {
   const el = $('nav'); el.replaceChildren();
   { /* Hedef always; Holding joins below it once you are a baron somewhere */
@@ -1578,7 +1651,14 @@ function renderNav() {
       w.onclick = () => openPage('holding'); el.appendChild(w);
     }
   }
-  /* no Şirketim button: the town is the home screen; its alerts sit on the zones */
+  /* the office pages, for players who'd rather not look for them on the map; the map keeps working too */
+  const dots = navDots();
+  for (const [k, label, dot] of [['fleet', 'Filo', false], ['crew', 'Ekip', dots.crew], ['bank', 'Banka', false], ['market', 'Pazar', dots.market]]) {
+    if (!unlocked(k)) continue;
+    const b = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS[k]}</svg></span>${label}`);
+    if (dot) b.appendChild(h('span', 'dot'));
+    b.onclick = () => openPage(k); el.appendChild(b);
+  }
 }
 /* Things that need you, shown as red dots on the town's zones. */
 function navDots() { return { crew: S.balloons.some(b => canFly(b) === 'nopilot') || !licenseOk(), market: S.rivals.some(r => (r.offer && r.alive && !r.offerNo) || (r.forSale && !r.saleNo)) }; }
@@ -1589,6 +1669,11 @@ function renderTab() {
   body.scrollTop = st;
 }
 let alertsOpen = false;
+/* Pull the dock up for every card of the morning, or back down to the strip. */
+function dockOpen(v) {
+  $('dock').classList.toggle('open', v); $('dock').scrollTop = 0;
+  sfx('tick'); renderHome();
+}
 function renderHome() {
   if (!S.weather) return;
   const Wx = S.weather, F = FLAGS[Wx.flag];
@@ -1617,7 +1702,16 @@ function renderHome() {
   if (fbm && isSelf(fbm) && canFly(fbm) === 'ok' && fbm.fly) alert('grn', `<b>Kurucuyla uçuş:</b> amiral balonundaki yolcular %${FOUNDER * 100} fazla öder.`);
   const rank = { red: 0, mis: 1, yel: 2, grn: 3, win: 4 }, pr = x => rank[[...x.classList].find(c => c in rank)] ?? 5;
   const all = [...al.children].sort((a, b) => pr(a) - pr(b)); al.replaceChildren(...all);
-  if (all.length > 1 && !alertsOpen) { all.slice(1).forEach(x => x.remove()); const more = h('button', 'alert more', `+${all.length - 1} uyarı daha`); more.onclick = () => { alertsOpen = true; renderHome(); }; al.appendChild(more); }
+  /* the slim strip: the most urgent alert in one line, the fleet and the insurance; any of them opens the dock */
+  const st = $('strip'); st.replaceChildren();
+  const pill = (cls, html) => { const b = h('button', 'spill ' + cls, html); b.onclick = () => dockOpen(true); st.appendChild(b); return b; };
+  if (all.length) {
+    const top = all[0], cls = ['red', 'mis', 'yel', 'grn', 'win'].find(c => top.classList.contains(c)) || 'grn', bt = top.querySelector('b');
+    pill('al ' + cls, `<i></i><span>${esc((bt ? bt.textContent : top.textContent).replace(/[:.]\s*$/, ''))}</span>${all.length > 1 ? `<em>+${all.length - 1}</em>` : ''}`);
+  }
+  const fl0 = flying();
+  pill('', `<svg viewBox="0 0 24 24">${ICONS.fleet}</svg>${fl0.length}/${S.balloons.length}`);
+  if (unlocked('ins')) { const n = (S.ins.hull ? 1 : 0) + (S.ins.pax ? 1 : 0); pill(n ? '' : 'off', n === 2 ? '✓ Sigorta' : n ? 'Sigorta 1/2' : 'Sigortasız'); }
   const fc = $('fleetChips'); fc.replaceChildren();
   fc.appendChild(fleetSummary());
   const oc = $('optChips'); oc.replaceChildren();
@@ -1995,7 +2089,7 @@ function showReport() {
 /* ---------- intro & setup ---------- */
 const INTRO = { y: 0, vy: 0, hold: false, t: 0, out: false };
 let pickI = 0, setupName = '';
-function hideAll() { page = null; TOWN.open = false; TOWN.leaving = false; document.body.classList.remove('zoomed'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
+function hideAll() { page = null; hqShut(); TOWN.open = false; TOWN.leaving = false; document.body.classList.remove('zoomed'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
 function startIntro() {
   if (!S.weather) S.weather = newWeather();
   buildWorld();
@@ -2161,7 +2255,7 @@ function startCollect() {
   const go = h('button', 'big', 'Atla'); go.id = 'cGo';
   go.onclick = () => {
     if (!COL.done) { COL.t = COL.dur; return; }
-    $('collect').hidden = true; COL = null; launch(false);
+    leaveCollect();
   };
   row.append(back, go); el.appendChild(row);
   el.hidden = false;
@@ -2183,6 +2277,88 @@ function updateCollect(dt) {
     $('cTitle').textContent = c.shown >= c.cap ? 'Balonlar doldu!' : 'Yolcular hazır';
     $('cGo').textContent = self ? 'Kalkışa geç' : 'Pilotlar kalksın';
   }
+}
+/* ---------- passengers at your booking office ---------- */
+/* While passengers gather, the town's camera sits on your kiosk: they walk up from the road and queue in front.
+   Taking off, safari jeeps pull up, everyone climbs in and the jeeps drive off to the launch field. */
+const COLV = { z: .85, ox: 0, oy: 0, hits: [], zoneHits: [] };
+const KIOSK = [9.3, 13.4]; /* front of your office in the kiosk row */
+const QUEUE_MAX = 30, JEEP_SEATS = 6, JEEP_ROW_Y = 14.95;
+function queueSpot(i) { return [8.85 + (i % 6) * .24, 13.72 + Math.floor(i / 6) * .19]; }
+function walkPath(pts, s) {
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], d = Math.hypot(b[0] - a[0], b[1] - a[1]);
+    if (s <= d || i === pts.length - 1) { const k = clamp(s / Math.max(d, 1e-6), 0, 1); return { p: [lerp(a[0], b[0], k), lerp(a[1], b[1], k)], dir: [b[0] - a[0], b[1] - a[1]] }; }
+    s -= d;
+  }
+  return { p: pts[pts.length - 1], dir: [1, 0] };
+}
+const easeIO = k => k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+/* Open-top safari jeep: khaki body, roll bar, spare wheel; heading along gx or gy. */
+function jeep(gx, gy, alongX, t, passengers) {
+  const w = alongX ? .78 : .4, d = alongX ? .4 : .78, x0 = gx - w / 2, y0 = gy - d / 2;
+  const { A, B, C, D } = corners(x0, y0, w, d), sh = 1 + Math.sin(t * 20) * .4;
+  blobShadow(lp(A, C, .5)[0] + 10, lp(A, C, .5)[1] + 6, 34, 9, .2);
+  for (const [u, v] of [[.18, 0], [.82, 0], [.18, 1], [.82, 1]]) { const p = alongX ? lp(lp(D, C, u), lp(A, B, u), v) : lp(lp(B, C, u), lp(A, D, u), v); ctx.fillStyle = '#2a1e18'; ctx.beginPath(); ctx.ellipse(p[0], p[1] - 4, 5, 4, 0, 0, 7); ctx.fill(); }
+  ctx.save(); ctx.translate(0, -sh);
+  const f = block(x0, y0, w, d, 16, { lit: '#c9b27a', shade: '#8f7a48', top: '#5a4a30', courses: false });
+  const stripe = (p, q) => tface(p, q, 16, () => { ctx.fillStyle = '#ff5e3a'; ctx.fillRect(0, .55, 1, .14); });
+  stripe(f.D, f.C); stripe(f.C, f.B);
+  for (let i = 0; i < passengers; i++) { const k = (i + .5) / JEEP_SEATS, p = alongX ? lp(lp(f.d, f.c, k), lp(f.a, f.b, k), .5) : lp(lp(f.b, f.c, k), lp(f.a, f.d, k), .5); ctx.fillStyle = '#3a2418'; ctx.beginPath(); ctx.arc(p[0], p[1] - 11, 3, 0, 7); ctx.fill(); ctx.fillStyle = ['#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0', '#5aa9e6', '#ff6fa8'][i % 6]; ctx.fillRect(p[0] - 3, p[1] - 8, 6, 7); }
+  ctx.strokeStyle = '#3a3028'; ctx.lineWidth = 2.5; const r0 = alongX ? lp(f.d, f.a, .5) : lp(f.b, f.a, .5), r1 = alongX ? lp(f.c, f.b, .5) : lp(f.c, f.d, .5);
+  ctx.beginPath(); ctx.moveTo(r0[0], r0[1]); ctx.lineTo(r0[0], r0[1] - 18); ctx.lineTo(r1[0], r1[1] - 18); ctx.lineTo(r1[0], r1[1]); ctx.stroke();
+  ctx.restore();
+}
+function collectView(w, h) {
+  const top = $('hud').offsetHeight, bottom = $('collect').hidden ? h : $('collect').offsetTop, z = clamp(w / 520, .7, 1.1);
+  const [cx, cy] = tiso(KIOSK[0] + .2, KIOSK[1] + .35);
+  return { z, ox: w / 2 - cx * z, oy: (top + bottom) / 2 + 30 - cy * z };
+}
+function drawCollectTown() {
+  const c = COL, now = T, to = c.leave ? c.lastView : collectView(W, H);
+  c.lastView = to;
+  if (c.from == null) c.from = { z: HOME.z || to.z * .4, ox: HOME.ox || to.ox, oy: HOME.oy || to.oy, t0: now };
+  const k = easeIO(clamp((now - c.from.t0) / .8, 0, 1));
+  COLV.z = lerp(c.from.z, to.z, k); COLV.ox = lerp(c.from.ox, to.ox, k); COLV.oy = lerp(c.from.oy, to.oy, k);
+  COLV.extra = collectItems; COLV.noLabels = true;
+  renderTown(COLV, W, H, DPR, 0);
+}
+/* The queue grows with the passengers (one figure stands for several in a big company), then the jeeps. */
+function collectItems(t) {
+  const c = COL, items = []; if (!c) return items;
+  const total = c.seq.length, want = total <= QUEUE_MAX ? c.shown : Math.round(c.shown / Math.max(1, total) * QUEUE_MAX);
+  c.people = c.people || [];
+  while (c.people.length < want) { const i = c.people.length; c.people.push({ i, t0: t, from: [8 + (Math.random() - .5) * .5, 9.5 + Math.random() * 2], col: ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0', '#5aa9e6', '#ff6fa8'][i % 7] }); }
+  const L = c.leave, P = c.people.length, J = clamp(Math.ceil(P / JEEP_SEATS), 1, 5);
+  const stop = j => [9.05 + j * .95, JEEP_ROW_Y], tl = L ? t - L : -1;
+  const jeepPath = j => [[8, 10.2], [8, JEEP_ROW_Y], stop(j)], outPath = j => [stop(j), [8, JEEP_ROW_Y], [8, 22]];
+  const boarded = j => c.people.filter(p => Math.min(J - 1, Math.floor(p.i * J / Math.max(1, P))) === j && tl > 1.15 + p.i * .025 + .55).length;
+  for (const p of c.people) {
+    const spot = queueSpot(p.i), j = Math.min(J - 1, Math.floor(p.i * J / Math.max(1, P)));
+    let pos, show = true;
+    const tb = tl - (1.15 + p.i * .025);
+    if (tb > 0) { const k = clamp(tb / .55, 0, 1); const st = stop(j); pos = [lerp(spot[0], st[0], k), lerp(spot[1], st[1] - .25, k)]; if (k >= 1) show = false; }
+    else { const k = clamp((t - p.t0) / 1.3, 0, 1); pos = walkPath([p.from, [8, spot[1]], spot], easeIO(k) * (Math.abs(p.from[1] - spot[1]) + Math.abs(8 - spot[0]))).p; }
+    if (show) items.push({ depth: pos[0] + pos[1], draw: () => { const q = tiso(...pos); person(q[0], q[1], p.col, t, p.i); } });
+  }
+  /* passenger count over the queue, so a big day still reads right when one figure stands for several */
+  if (c.shown) items.push({ depth: 99, draw: () => { const q = tiso(9.4, 13.9); ctx.font = '800 19px "Barlow Condensed", sans-serif'; const txt = `${L ? Math.max(0, c.shown - Math.round(c.shown * clamp((tl - 1.15) / 1.2, 0, 1))) : c.shown} yolcu`, w = ctx.measureText(txt).width + 22;
+    ctx.fillStyle = 'rgba(255,250,243,.95)'; rrect(q[0] - w / 2, q[1] - 70, w, 28, 14); ctx.fill(); ctx.fillStyle = '#2b2350'; ctx.textAlign = 'center'; ctx.fillText(txt, q[0], q[1] - 50); ctx.textAlign = 'left'; } });
+  if (L) for (let j = 0; j < J; j++) {
+    const tin = tl - j * .12, tout = tl - 2.0 - j * .12;
+    let r;
+    if (tout > 0) { const path = outPath(j); r = walkPath(path, Math.pow(tout, 1.6) * 7); }
+    else { const path = jeepPath(j), len = 4.75 + Math.abs(stop(j)[0] - 8); r = walkPath(path, easeIO(clamp(tin / 1.0, 0, 1)) * len); }
+    const alongX = Math.abs(r.dir[0]) > Math.abs(r.dir[1]), pos = r.p;
+    items.push({ depth: pos[0] + pos[1] + .3, draw: () => jeep(pos[0], pos[1], alongX, t, Math.min(JEEP_SEATS, boarded(j))) });
+  }
+  return items;
+}
+/* Take-off: hide the panel, the jeeps come and go (about 3.5 s), then the flight. */
+function leaveCollect() {
+  if (!COL || COL.leave) return;
+  COL.leave = T; $('collect').hidden = true; sfx('click');
+  setTimeout(() => { COL = null; launch(false); }, 3500);
 }
 function confirmRed() {
   const m = $('menu'); m.replaceChildren();
@@ -2406,7 +2582,7 @@ cv.addEventListener('pointerdown', e => {
 cv.addEventListener('wheel', e => {
   if (mode !== 'office' || TOWN.open || e.deltaY >= 0) return;
   const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-  if (y < HOME.h) { e.preventDefault(); openTown(homeGrid(x, y)); }
+  if (y < (HOME.front || HOME.h)) { e.preventDefault(); openTown(homeGrid(x, y)); }
 }, { passive: false });
 cv.addEventListener('pointerup', e => {
   const d = HOME.down; HOME.down = null;
@@ -2512,10 +2688,12 @@ function draw(dt) {
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   if (!S || !S.weather) { ctx.fillStyle = '#1b1840'; ctx.fillRect(0, 0, W, H); return; }
   const f = FL && mode === 'flight' ? FL : null;
+  if (mode === 'collect' && COL) { drawCollectTown(); return; }
   if (mode === 'office') {
     if (TOWN.open || !$('page').hidden) return; /* covered by a full-screen page */
-    const dockTop = !$('sheet').hidden ? $('dock').offsetTop : H;
-    drawHomeTown(W, dockTop, $('hud').offsetHeight + 6); return;
+    const d = $('dock');
+    if (!$('sheet').hidden && !d.classList.contains('open')) HOME.front = d.offsetTop;
+    drawHomeTown(W, H, HOME.front || H * .6, $('hud').offsetHeight + 6); return;
   }
   const p = f ? clamp(f.t / 420, 0, 1) * .85 + .1 : .12 + Math.sin(T * .05) * .02;
   const top = $('hud').offsetHeight + 6;
@@ -3017,11 +3195,14 @@ const INVEST_ART = {
   lab: '<svg viewBox="0 0 64 64"><path d="M24 8h16M27 8v16L12 50a5 5 0 0 0 4 7h32a5 5 0 0 0 4-7L37 24V8" fill="none" stroke="#ffc23d" stroke-width="3" stroke-linejoin="round"/><path d="M17 44h30l4 7a2 2 0 0 1-2 3H15a2 2 0 0 1-2-3z" fill="#3ad0c0"/><circle cx="28" cy="38" r="2.5" fill="#3ad0c0"/><circle cx="36" cy="33" r="1.8" fill="#3ad0c0"/></svg>'
 };
 function tabHolding(body) {
-  const H = S.hold || (S.hold = {});
   $('pTitle').textContent = `${S.company || 'Balon'} Holding`;
+  hqCash(body); hqTransfer(body); hqRegions(body); hqDeals(body, ['tv', 'celeb', 'bb', 'lab'], 'Kampanyalar ve anlaşmalar'); hqOffices(body);
+}
+/* The holding's parts: each is a desk in the office (hqOpen), and all of them make up the old page. */
+function hqCash(body) {
+  const H = S.hold || (S.hold = {});
   const hist = H.hist || [], last14 = hist.slice(-14);
   const inc = last14.reduce((a, e) => a + e.inc, 0), exp = last14.reduce((a, e) => a + e.exp, 0), net = inc - exp;
-
   const top = h('div', 'hbox');
   top.innerHTML = `<div class="hk"><span>Holding kasası</span><b>${eurH(S.holding || 0)}</b></div>
     <div class="cf3"><div class="g"><span>Gelir</span><b>+${eurH(inc)}</b></div><div class="r"><span>Gider</span><b>−${eurH(exp)}</b></div><div class="n"><span>Net kâr</span><b>${net >= 0 ? '+' : '−'}${eurH(Math.abs(net))}</b></div></div>
@@ -3033,13 +3214,15 @@ function tabHolding(body) {
     const C = chap()[S.chapter || 0], done = C.goals.filter(goalDone).length, g = h('div', 'callout yel', `<b>${RD().name}: ${C.name}</b>, ${done}/${C.goals.length} hedef tamam.`);
     const gb = pbtn('Hedefler', showGoals); gb.style.marginTop = '8px'; g.appendChild(gb); body.appendChild(g);
   }
-
+}
+function hqTransfer(body) {
   const w = h('div', 'sec'); w.appendChild(h('h2', null, `${RD().name} kasasından aktar`));
   w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Aktardığın para holdinge ${S.region === 'abq' ? '1,1\'e bölünerek euro olarak ' : ''}geçer; holding parası ülkelere geri dönmez.`));
   const row = h('div', 'btns');
   [[.25, '%25'], [.5, '%50'], [1, `Hepsi (${eur(10000)} kalsın)`]].forEach(([k, l]) => { const b = h('button', 'ghost', l); b.disabled = S.cash <= 10000; b.onclick = () => withdraw(k); row.appendChild(b); });
   w.appendChild(row); body.appendChild(w);
-
+}
+function hqRegions(body) {
   const r = h('div', 'sec'); r.appendChild(h('h2', null, 'Bölgeler'));
   for (const R of REGIONS) {
     if (!ownsRegion(R.id) && !(R.id === 'abq' && isBaron('cap'))) continue;
@@ -3055,9 +3238,11 @@ function tabHolding(body) {
   }
   const mb = pbtn('Dünya haritası', showWorldMap, false, true); mb.style.alignSelf = 'flex-start'; r.appendChild(mb);
   body.appendChild(r);
-
+}
+function hqDeals(body, which, title) {
+  const H = S.hold || (S.hold = {});
   /* kampanyalar: büyük, parlak anlaşma kartları */
-  const v = h('div', 'sec'); v.appendChild(h('h2', null, 'Kampanyalar ve anlaşmalar'));
+  const v = h('div', 'sec'); v.appendChild(h('h2', null, title));
   const deal = (art, kicker, title, desc, chips, cost, cta, fn, opt = {}) => {
     const c = h('div', 'deal' + (opt.active ? ' on' : ''));
     c.innerHTML = `<div class="dart">${INVEST_ART[art]}</div><div class="dmain"><div class="dk">${kicker}</div><div class="dt">${title}</div><div class="dd">${desc}</div><div class="dchips">${chips.map(x => `<span>${x}</span>`).join('')}</div></div>`;
@@ -3072,19 +3257,21 @@ function tabHolding(body) {
     c.appendChild(foot); v.appendChild(c);
   };
   const tvOn = H.tvUntil > S.day, tvCd = (H.tvCd || 0) > S.day;
-  deal('tv', 'Prime time', 'TV reklam kampanyası', 'Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların.', ['Bütün bölgelerde talep +%20', '14 gün', `${RD().name}: +0,4★`], tvCost(), 'Yayına al',
+  if (which.includes('tv')) deal('tv', 'Prime time', 'TV reklam kampanyası', 'Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların.', ['Bütün bölgelerde talep +%20', '14 gün', `${RD().name}: +0,4★`], tvCost(), 'Yayına al',
     () => { H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, { active: tvOn ? `Yayında · ${H.tvUntil - S.day} gün kaldı` : '', lock: tvCd && !tvOn ? `Yeni kampanya için ${H.tvCd - S.day} gün` : '' });
   const ce = H.celeb && H.celeb.until > S.day, days = hasOffice('sel') ? 180 : 90;
-  deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], celebCost(), 'Sözleşme imzala',
+  if (which.includes('celeb')) deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], celebCost(), 'Sözleşme imzala',
     () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
   const bbOn = H.bb && H.bb[S.region] > S.day;
-  deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
+  if (which.includes('bb')) deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
     () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; }, { active: bbOn ? `Asılı · ${H.bb[S.region] - S.day} gün` : '' });
   const lv = H.rnd || 0, next = RD_LEVELS[lv];
-  deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [`Zarf ömrü ${envLife()} → ${next ? next.life : envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
+  if (which.includes('lab')) deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [`Zarf ömrü ${envLife()} → ${next ? next.life : envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
     () => { H.rnd = lv + 1; }, { active: next ? '' : `Seviye ${lv} · tamamlandı` });
   body.appendChild(v);
-
+}
+function hqOffices(body) {
+  const H = S.hold || (S.hold = {});
   const q = h('div', 'sec'); q.appendChild(h('h2', null, `Ofisler ${officeCount()}/4`));
   q.appendChild(h('p', 'hint', officeCount() === 4 ? 'Dört kıtada ofisin var. Holding giderlerin %25 yerine %20.' : 'Dünyanın büyük şehirlerinde ofis aç; her ofisin kendi avantajı var. Dördünü birden açarsan holding giderleri %25 yerine %20 olur.'));
   const grid = h('div', 'offices');
@@ -3666,7 +3853,12 @@ function townWall() {
   for (let y = T0; y < T1; y += 1) { const d = Math.min(1, T1 - y); if (y + d > 7.55 && y < 8.45) continue; seg(T0 - th, y, th, d); seg(T1, y, th, d); }
   return items;
 }
-function townHorizon(h) { return Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z); }
+/* Horizon on screen: a little above the town's far corner. Zoomed in, it never drops below where the home screen
+   had it, so the sky doesn't grow as you zoom or drag; the valley simply reaches further back. */
+function townHorizon(h) {
+  const hz = Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z);
+  return TV === TOWN && TOWN.hz != null ? Math.min(hz, TOWN.hz) : hz;
+}
 function townBackdrop(w, h, t) {
   const hz = townHorizon(h), px = TV.ox * .08, p = .32;
   if (hz < 2) return; /* zoomed in: only ground in view */
@@ -3742,7 +3934,7 @@ function renderTown(V, w, h, dpr, offY) {
       return { depth: it.depth, shadow: it.shadow, draw: () => { ctx.globalAlpha = a; it.draw(); ctx.globalAlpha = 1; } }; };
     const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).map(fade).filter(Boolean), townWall()), sky = townSky(T);
     bs.forEach(buildingShadow); scen.forEach(it => it.shadow && it.shadow()); sky.shadows.forEach(f => f());
-    const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => tbuilding(b, T) })).concat(scen);
+    const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => tbuilding(b, T) })).concat(scen, V.extra ? V.extra(T) : []);
     items.sort((a, b) => a.depth - b.depth).forEach(it => it.draw());
     sky.balloons.forEach(f => f());
     /* labels in screen space, and hit boxes for taps (in region coordinates) */
@@ -3755,7 +3947,7 @@ function renderTown(V, w, h, dpr, offY) {
       const sx = cx * V.z + V.ox, sy = (cy - top) * V.z + V.oy;
       const pts = [tiso(b.gx, b.gy), tiso(b.gx + b.w, b.gy), tiso(b.gx + b.w, b.gy + b.d), tiso(b.gx, b.gy + b.d)].map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]);
       V.hits.push({ b, pts, box: [sx - 50 * V.z / .5, sy - 30, sx + 50 * V.z / .5, Math.max(...pts.map(p => p[1]))], depth: b.gx + b.gy });
-      if (full) townLabel(b, sx, sy, sc, full, taken);
+      if (full && !V.noLabels) townLabel(b, sx, sy, sc, full, taken);
     }
     /* red dots on zones that need you: pilots or licence (EKİP), offers and sales (ŞİRKETLER) */
     const dots = navDots();
@@ -3775,16 +3967,18 @@ function drawTown() {
 }
 /* The home screen shows the town above the day's cards: a fixed overview you tap into. */
 const HOME = { z: .3, ox: 0, oy: 0, hits: [], zoneHits: [], h: 0, down: null };
-function drawHomeTown(w, dockTop, top) {
-  /* the town sits on the dock; its back corner stays below the weather card so the card covers only valley */
+function drawHomeTown(w, h, dockTop, top) {
+  /* the town sits on the (collapsed) dock; its back corner stays below the weather card so the card covers only valley.
+     The valley runs on under the dock, so the map shows through its glass and between the cards. */
   const wx = $('wx'), wxb = wx && !wx.hidden && wx.offsetHeight ? wx.offsetTop + wx.offsetHeight : top;
   const back = Math.max(top + 20, wxb - 16), front = dockTop - 6;
-  HOME.h = dockTop; HOME.z = clamp((front - back) / 1024, .15, w / 1500);
-  const [cx] = tiso(7, 8); HOME.ox = w / 2 - cx * HOME.z; HOME.oy = front - tiso(15.5, 15.5)[1] * HOME.z;
-  renderTown(HOME, w, dockTop, DPR, 0);
+  HOME.h = h; HOME.z = clamp((front - back) / 1024, .15, w / 1500);
+  /* centred in the room left of the side buttons */
+  const [cx] = tiso(7, 8), right = $('nav').offsetWidth ? $('nav').offsetWidth + 14 : 0; HOME.ox = (w - right) / 2 - cx * HOME.z; HOME.oy = front - tiso(15.5, 15.5)[1] * HOME.z;
+  renderTown(HOME, w, h, DPR, 0);
 }
 function homeTap(x, y) {
-  if (y > HOME.h) return;
+  if (y > (HOME.front || HOME.h)) return;
   const zh = HOME.zoneHits.find(hh => inPoly([x, y], hh.pts));
   if (zh) { sfx('click'); openTown(zh.zn.at); return; }
   const hit = HOME.hits.slice().sort((a, b) => b.depth - a.depth).find(hh => inPoly([x, y], hh.pts) || (x > hh.box[0] && x < hh.box[2] && y > hh.box[1] && y < hh.box[3]));
@@ -3815,8 +4009,9 @@ function townFocus(at) {
 }
 /* Keep the town on screen however far you drag. */
 function townClamp(w, h) {
-  const c = tiso(7.5, 7.5), sx = c[0] * TOWN.z + TOWN.ox, sy = c[1] * TOWN.z + TOWN.oy, mx = 8 * TW / 2 * TOWN.z, my = 8 * TH / 2 * TOWN.z;
-  TOWN.ox += clamp(sx, Math.min(w * .5, -mx + w * .2), Math.max(w * .5, w * .8 + mx)) - sx;
+  /* sideways you can bring either corner of the walls well into the screen; up and down stays as it was */
+  const c = tiso(7.5, 7.5), sx = c[0] * TOWN.z + TOWN.ox, sy = c[1] * TOWN.z + TOWN.oy, mx = 16 * TW / 2 * TOWN.z, my = 8 * TH / 2 * TOWN.z;
+  TOWN.ox += clamp(sx, Math.min(w * .5, w * .85 - mx), Math.max(w * .5, w * .15 + mx)) - sx;
   TOWN.oy += clamp(sy, Math.min(h * .5, h * .3 - my), Math.max(h * .55, h * .8 + my)) - sy;
 }
 /* Zoom into the home screen's town: start from exactly what the home shows, fade the rest of the screen away
@@ -3824,6 +4019,7 @@ function townClamp(w, h) {
 function openTown(at) {
   const el = $('town'); el.hidden = false; TOWN.open = true; TOWN.leaving = false;
   TOWN.z = HOME.z; TOWN.ox = HOME.ox; TOWN.oy = HOME.oy; TOWN.anim = null;
+  TOWN.hz = Math.min(HOME.h * .6, HOME.oy + tiso(-7, -7)[1] * HOME.z); /* same horizon as the home screen */
   $('tClose').classList.remove('gone');
   document.body.classList.add('zoomed');
   cancelAnimationFrame(TOWN.raf); townLoop();
@@ -3873,12 +4069,184 @@ function townTap(x, y) {
   $('tClose').onclick = closeTown;
 })();
 
+/* ---------- Holding office ---------- */
+/* Tapping the holding tower zooms into it and you step onto an open-plan floor: a window over the town at sunrise,
+   the cash chart on a whiteboard, and a desk per department. A desk opens its part of the holding in a sheet. */
+const HQ = { open: false, sheet: null, raf: 0, t0: 0 };
+const HQ_TOWER = [10, 2];
+const HQ_UNITS = {
+  board: { name: 'Kasa ve aktarım', draw: b => { hqCash(b); hqTransfer(b); } },
+  window: { name: 'Bölgeler', draw: b => hqRegions(b) },
+  mkt: { name: 'Pazarlama birimi', draw: b => hqDeals(b, ['tv', 'bb'], 'Kampanyalar') },
+  deals: { name: 'Anlaşmalar birimi', draw: b => hqDeals(b, ['celeb'], 'Reklam yüzü') },
+  rnd: { name: 'Ar-Ge birimi', draw: b => hqDeals(b, ['lab'], 'Araştırma') },
+  offices: { name: 'Ofisler', draw: b => hqOffices(b) }
+};
+function openHQ() {
+  if (HQ.open) return;
+  const enter = () => {
+    HQ.open = true; HQ.t0 = T; const el = $('hq'); el.hidden = false; requestAnimationFrame(() => el.classList.add('on'));
+    sfx('click'); hqRender(); cancelAnimationFrame(HQ.raf); hqLoop();
+  };
+  const dive = () => { const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...HQ_TOWER), z = 1.5; townGlide({ z, ox: r.width / 2 - cx * z, oy: r.height * .62 - (cy - 160) * z }, enter); };
+  if (!TOWN.open) { if (mode !== 'office') return enter(); openTown(HQ_TOWER); setTimeout(dive, 480); } else dive();
+}
+function closeHQ() {
+  const el = $('hq'); el.classList.remove('on'); HQ.sheet = null; $('hqSheet').hidden = true;
+  setTimeout(() => { HQ.open = false; el.hidden = true; cancelAnimationFrame(HQ.raf); if (TOWN.open) townFocus(HQ_TOWER); }, 300);
+}
+/* Leave the office at once (moving region, a new day). */
+function hqShut() { if (!HQ.open) return; HQ.open = false; HQ.sheet = null; $('hq').hidden = true; $('hq').classList.remove('on'); cancelAnimationFrame(HQ.raf); }
+function hqOpenUnit(k) { HQ.sheet = k; sfx('click'); hqRender(); $('hqBody').parentElement.scrollTop = 0; }
+/* Hotspots and the open sheet; the canvas redraws itself every frame. */
+function hqRender() {
+  $('hqName').textContent = `${S.company || 'Balon'} Holding`; $('hqCash').textContent = eurH(S.holding || 0);
+  const H = S.hold || {}, L = hqLayout(), sp = $('hqSpots'); sp.replaceChildren();
+  const tvOn = H.tvUntil > S.day, bbOn = H.bb && H.bb[S.region] > S.day, ce = H.celeb && H.celeb.until > S.day, lv = H.rnd || 0;
+  const issue = Object.values(S.regions || {}).some(r => r.auto && r.auto.issue);
+  const status = {
+    board: [`${eurH(S.holding || 0)}`, false],
+    window: [issue ? 'Bir bölgede sorun var' : `Bölge: ${Object.keys(S.regions || {}).length + 1}`, false, issue],
+    mkt: [tvOn ? `TV yayında, ${H.tvUntil - S.day} gün` : bbOn ? 'Afişler asılı' : 'Kampanya yok', tvOn || bbOn],
+    deals: [ce ? H.celeb.name : 'Reklam yüzü yok', ce],
+    rnd: [RD_LEVELS[lv] ? `Seviye ${lv}` : 'Tamamlandı', !RD_LEVELS[lv]],
+    offices: [`Ofis: ${officeCount()}/4`, officeCount() === 4]
+  };
+  for (const k in HQ_UNITS) {
+    const b = h('button', 'hqspot', `<b>${HQ_UNITS[k].name}</b><span class="${status[k][1] ? 'on' : ''}">${esc(status[k][0])}</span>${status[k][2] ? '<i></i>' : ''}`);
+    b.style.left = L[k][0] + 'px'; b.style.top = L[k][1] + 'px'; b.style.animationDelay = (Object.keys(HQ_UNITS).indexOf(k) * .05 + .2) + 's';
+    b.onclick = () => hqOpenUnit(k); sp.appendChild(b);
+  }
+  const sh = $('hqSheet'); sh.hidden = !HQ.sheet;
+  if (HQ.sheet) { $('hqTitle').textContent = HQ_UNITS[HQ.sheet].name; const body = $('hqBody'), st = body.parentElement.scrollTop; body.replaceChildren(); HQ_UNITS[HQ.sheet].draw(body); body.parentElement.scrollTop = st; }
+}
+/* Where things stand on screen (also where the labels go). */
+function hqLayout() {
+  const r = $('hq').getBoundingClientRect(), w = r.width, h = r.height, top = 86;
+  const wall = top + (h - top) * .42, rowA = wall + (h - wall) * .3, rowB = wall + (h - wall) * .72;
+  return { w, h, top, wall, rowA, rowB,
+    board: [w * .2, top + (wall - top) * .14 + 50], window: [w * .7, top + (wall - top) * .06 + 6],
+    mkt: [w * .27, rowA - 92], deals: [w * .73, rowA - 92], rnd: [w * .27, rowB - 92], offices: [w * .73, rowB - 92] };
+}
+function hqLoop() { if (!HQ.open) return; drawHQ(); HQ.raf = requestAnimationFrame(hqLoop); }
+function drawHQ() {
+  const cvs = $('hqcv'), r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
+  if (cvs.width !== Math.round(r.width * dpr) || cvs.height !== Math.round(r.height * dpr)) { cvs.width = Math.round(r.width * dpr); cvs.height = Math.round(r.height * dpr); }
+  const keep = ctx; ctx = cvs.getContext('2d');
+  try { ctx.setTransform(dpr, 0, 0, dpr, 0, 0); hqScene(hqLayout(), T - HQ.t0); } finally { ctx = keep; }
+}
+function hqScene(L, t) {
+  const { w, h, top, wall } = L;
+  /* back wall: warm plaster with panels, a cornice and a skirting board */
+  const wg = ctx.createLinearGradient(0, 0, 0, wall); wg.addColorStop(0, '#f6e7cf'); wg.addColorStop(1, '#ecd4b0'); ctx.fillStyle = wg; ctx.fillRect(0, 0, w, wall);
+  ctx.strokeStyle = 'rgba(160,110,60,.12)'; ctx.lineWidth = 1; for (let x = 0; x < w; x += 46) { ctx.beginPath(); ctx.moveTo(x, top - 10); ctx.lineTo(x, wall); ctx.stroke(); }
+  ctx.fillStyle = '#d9b98e'; ctx.fillRect(0, top - 14, w, 6); ctx.fillStyle = '#8a5a3a'; ctx.fillRect(0, wall - 10, w, 10);
+  /* floor: wooden planks running back */
+  const fg = ctx.createLinearGradient(0, wall, 0, h); fg.addColorStop(0, '#b98455'); fg.addColorStop(1, '#d6a774'); ctx.fillStyle = fg; ctx.fillRect(0, wall, w, h - wall);
+  ctx.strokeStyle = 'rgba(90,50,25,.18)'; ctx.lineWidth = 1;
+  for (let i = -8; i <= 8; i++) { ctx.beginPath(); ctx.moveTo(w / 2 + i * w * .04, wall); ctx.lineTo(w / 2 + i * w * .16, h); ctx.stroke(); }
+  for (let k = 1; k < 7; k++) { const y = wall + (h - wall) * Math.pow(k / 7, 1.4); ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke(); }
+  /* window over the town, top right */
+  const wx0 = w * .42, wx1 = w - 12, wy0 = top + (wall - top) * .1, wy1 = wall - 22;
+  ctx.save(); rrect(wx0, wy0, wx1 - wx0, wy1 - wy0, 6); ctx.clip();
+  const sk = ctx.createLinearGradient(0, wy0, 0, wy1); sk.addColorStop(0, '#7fa8d8'); sk.addColorStop(.55, '#f6c08a'); sk.addColorStop(1, '#ffdfae'); ctx.fillStyle = sk; ctx.fillRect(wx0, wy0, wx1 - wx0, wy1 - wy0);
+  const sx = wx0 + (wx1 - wx0) * .72, sy = wy1 - (wy1 - wy0) * .3; ell(sx, sy, 16, 16, '#fff3d0');
+  const hz = wy1 - (wy1 - wy0) * .22;
+  ctx.fillStyle = '#d7a27e'; ctx.beginPath(); ctx.moveTo(wx0, wy1); for (let x = wx0; x <= wx1 + 10; x += 10) ctx.lineTo(x, hz - 6 - 5 * Math.sin(x * .05)); ctx.lineTo(wx1, wy1); ctx.fill();
+  const R = mulberry32(31);
+  for (let i = 0; i < 9; i++) { const x = wx0 + R() * (wx1 - wx0), hh = 16 + R() * 26; chimney(x, hz + 4, hh * .42, hh, '#e8b48e', '#c98d68', '#7a4e38'); }
+  for (let i = 0; i < 7; i++) { const x = wx0 + 6 + i * (wx1 - wx0) / 7, bw = 14 + R() * 12, bh = 10 + R() * 16; ctx.fillStyle = '#f1d6b0'; ctx.fillRect(x, wy1 - bh, bw, bh); ctx.fillStyle = '#c9925f'; ctx.fillRect(x + bw, wy1 - bh + 2, 5, bh - 2); ctx.fillStyle = '#ffd27a'; ctx.fillRect(x + 4, wy1 - bh + 5, 3, 4); }
+  const cols = [myCol()].concat(S.rivals.map(r => [r.col, r.col2]), [['#14a39a', '#e8fff9'], ['#e0408a', '#ffd0e0']]);
+  for (let i = 0; i < 7; i++) { const x = wx0 + ((R() * (wx1 - wx0) + t * (5 + i * 2)) % (wx1 - wx0 + 40)) - 20, y = wy0 + 20 + R() * (hz - wy0 - 40), c = cols[i % cols.length]; balloon(x, y + Math.sin(t * .5 + i) * 3, 5 + R() * 6, c[0], c[1], false, .95); }
+  ctx.restore();
+  ctx.strokeStyle = '#6a4a32'; ctx.lineWidth = 7; rrect(wx0, wy0, wx1 - wx0, wy1 - wy0, 6); ctx.stroke();
+  ctx.lineWidth = 4; for (const k of [1 / 3, 2 / 3]) { ctx.beginPath(); ctx.moveTo(wx0 + (wx1 - wx0) * k, wy0); ctx.lineTo(wx0 + (wx1 - wx0) * k, wy1); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(wx0, (wy0 + wy1) / 2); ctx.lineTo(wx1, (wy0 + wy1) / 2); ctx.stroke();
+  ctx.fillStyle = '#8a5a3a'; ctx.fillRect(wx0 - 8, wy1 + 2, wx1 - wx0 + 16, 8);
+  plant(wx0 + 22, wy1 + 2, .55);
+  /* whiteboard with the holding's cash, drawn in marker */
+  const bx0 = 12, bx1 = w * .39, by0 = top + (wall - top) * .14, by1 = wall - 34;
+  ctx.fillStyle = '#c9ccd2'; rrect(bx0 - 4, by0 - 4, bx1 - bx0 + 8, by1 - by0 + 8, 6); ctx.fill();
+  ctx.fillStyle = '#fbfcfd'; rrect(bx0, by0, bx1 - bx0, by1 - by0, 4); ctx.fill();
+  ctx.fillStyle = '#9aa0a8'; ctx.fillRect(bx0 + 10, by1 + 4, bx1 - bx0 - 20, 5);
+  for (const [i, c] of ['#e5432f', '#2b5ab8', '#22a45d'].entries()) { ctx.fillStyle = c; ctx.fillRect(bx0 + 20 + i * 16, by1 + 1, 11, 4); }
+  hqChart(bx0 + 10, by0 + 62, bx1 - bx0 - 20, by1 - by0 - 76, t); /* the label tag sits over the top of the board */
+  /* desks: one per department */
+  const desk = (cx, y, kind, k) => {
+    const dw = Math.min(w * .4, 170), dh = 14, x = cx - dw / 2;
+    /* chair and person behind */
+    ctx.fillStyle = '#3d3560'; rrect(cx - 22 + k * 8, y - 66, 34, 40, 8); ctx.fill();
+    const bob = Math.sin(t * 2 + k) * 1.2, px = cx - 6 + k * 8;
+    ctx.fillStyle = ['#ff5e3a', '#14a39a', '#9b7be0', '#ffc23d'][k]; rrect(px - 13, y - 44 + bob, 26, 30, 9); ctx.fill();
+    ctx.fillStyle = '#e0a47a'; ctx.beginPath(); ctx.arc(px, y - 54 + bob, 10, 0, 7); ctx.fill();
+    ctx.fillStyle = ['#3a2418', '#1f1b2e', '#7a4a24', '#2b2350'][k]; ctx.beginPath(); ctx.arc(px, y - 58 + bob, 10, Math.PI, 0); ctx.fill();
+    /* desk top and front */
+    ctx.fillStyle = '#e8c495'; rrect(x, y - dh, dw, dh, 5); ctx.fill();
+    ctx.fillStyle = '#b07a48'; ctx.fillRect(x + 6, y, dw - 12, 34); ctx.fillStyle = '#9a6a3c'; ctx.fillRect(x + 6, y + 30, dw - 12, 4);
+    /* monitor */
+    const mx = cx + dw * .18; ctx.fillStyle = '#2b2350'; rrect(mx - 26, y - dh - 42, 52, 34, 4); ctx.fill(); ctx.fillRect(mx - 3, y - dh - 9, 6, 9);
+    const scr = ctx.createLinearGradient(0, y - dh - 38, 0, y - dh - 12); scr.addColorStop(0, '#6aa5d8'); scr.addColorStop(1, '#bfe0ff'); ctx.fillStyle = scr; ctx.fillRect(mx - 22, y - dh - 38, 44, 26);
+    if (kind === 'mkt') { ctx.fillStyle = '#ff5e3a'; ctx.beginPath(); ctx.moveTo(mx - 6, y - dh - 32); ctx.lineTo(mx + 8, y - dh - 25); ctx.lineTo(mx - 6, y - dh - 18); ctx.fill();
+      /* megaphone */ const gx = x + 18; ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.moveTo(gx, y - dh - 8); ctx.lineTo(gx + 22, y - dh - 18); ctx.lineTo(gx + 22, y - dh); ctx.closePath(); ctx.fill(); }
+    if (kind === 'deals') { ctx.fillStyle = '#ffc23d'; ctx.beginPath(); for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? 5 : 11; ctx.lineTo(mx + Math.cos(a) * rr, y - dh - 25 + Math.sin(a) * rr); } ctx.fill();
+      /* contract and pen */ ctx.save(); ctx.translate(x + 30, y - dh - 2); ctx.rotate(-.12); ctx.fillStyle = '#fff'; ctx.fillRect(-14, -10, 28, 12); ctx.fillStyle = '#c9ccd2'; ctx.fillRect(-10, -7, 20, 2); ctx.fillRect(-10, -3, 14, 2); ctx.restore(); }
+    if (kind === 'rnd') { ctx.strokeStyle = '#22a45d'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(mx - 18, y - dh - 16); ctx.lineTo(mx - 6, y - dh - 26); ctx.lineTo(mx + 4, y - dh - 20); ctx.lineTo(mx + 18, y - dh - 34); ctx.stroke();
+      /* flask and fabric swatches */ const fx = x + 22; ctx.fillStyle = '#3ad0c0'; ctx.beginPath(); ctx.moveTo(fx - 3, y - dh - 22); ctx.lineTo(fx + 3, y - dh - 22); ctx.lineTo(fx + 10, y - dh); ctx.lineTo(fx - 10, y - dh); ctx.fill();
+      ['#ff5e3a', '#ffc23d', '#5aa9e6'].forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(x + 40 + i * 9, y - dh - 4 - i * 2, 12, 5); }); }
+    if (kind === 'offices') { ctx.fillStyle = '#2b5ab8'; ctx.beginPath(); ctx.arc(mx, y - dh - 25, 10, 0, 7); ctx.fill(); ctx.fillStyle = '#22a45d'; ctx.fillRect(mx - 6, y - dh - 30, 6, 5); ctx.fillRect(mx + 1, y - dh - 22, 5, 4);
+      /* desk globe */ const gx = x + 26; ctx.fillStyle = '#7a4a24'; ctx.fillRect(gx - 7, y - dh - 3, 14, 3); ctx.fillStyle = '#5aa9e6'; ctx.beginPath(); ctx.arc(gx, y - dh - 15, 11, 0, 7); ctx.fill(); ctx.fillStyle = '#7aa04a'; ctx.beginPath(); ctx.ellipse(gx - 2, y - dh - 17, 5, 4, .4, 0, 7); ctx.fill();
+      ctx.fillStyle = '#e5432f'; for (const [dx, dy] of [[-4, -19], [5, -12], [2, -22]]) { ctx.beginPath(); ctx.arc(gx + dx, y - dh + dy, 1.8, 0, 7); ctx.fill(); } }
+    /* coffee cup */ ctx.fillStyle = '#fff'; ctx.fillRect(cx + dw * .4 - 6, y - dh - 9, 9, 9); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(cx + dw * .4 - 2, y - dh - 12); ctx.quadraticCurveTo(cx + dw * .4 + 2 + Math.sin(t * 3) * 2, y - dh - 18, cx + dw * .4 - 2, y - dh - 24); ctx.stroke();
+  };
+  desk(w * .27, L.rowA, 'mkt', 0); desk(w * .73, L.rowA, 'deals', 1);
+  plant(w * .5, L.rowA + 30, .8);
+  desk(w * .27, L.rowB, 'rnd', 2); desk(w * .73, L.rowB, 'offices', 3);
+  plant(12, h - 10, 1.1); plant(w - 14, h - 6, 1);
+}
+function plant(x, y, k) {
+  ctx.fillStyle = '#c0583a'; ctx.beginPath(); ctx.moveTo(x - 12 * k, y - 22 * k); ctx.lineTo(x + 12 * k, y - 22 * k); ctx.lineTo(x + 9 * k, y); ctx.lineTo(x - 9 * k, y); ctx.fill();
+  for (let i = 0; i < 7; i++) { const a = -Math.PI / 2 + (i - 3) * .38; ctx.fillStyle = i % 2 ? '#4f8a3a' : '#6faa4a'; ctx.beginPath(); ctx.ellipse(x + Math.cos(a) * 16 * k, y - 22 * k + Math.sin(a) * 22 * k, 5 * k, 14 * k, a + Math.PI / 2, 0, 7); ctx.fill(); }
+}
+/* Holding cash over the last 14 days as a marker line, with today's figure in big handwriting. */
+function hqChart(x, y, w, h, t) {
+  const hist = ((S.hold || {}).hist || []).slice(-14);
+  ctx.strokeStyle = '#c9ccd2'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x + w, y + h); ctx.moveTo(x, y); ctx.lineTo(x, y + h); ctx.stroke();
+  if (hist.length < 2) { ctx.fillStyle = '#9aa0a8'; ctx.font = '600 12px Barlow, sans-serif'; ctx.fillText('Grafik ilk gelirle başlar', x + 8, y + h / 2); return; }
+  /* balance per day, worked back from today's cash */
+  const bal = []; let b = S.holding || 0; for (let i = hist.length - 1; i >= 0; i--) { bal.unshift(b); b -= hist[i].inc - hist[i].exp; }
+  const lo = Math.min(...bal), hi = Math.max(...bal), span = Math.max(1, hi - lo), draw = clamp(t / 1.2, 0, 1);
+  const P = i => [x + 6 + (w - 12) * i / (bal.length - 1), y + h - 6 - (bal[i] - lo) / span * (h - 14)];
+  ctx.strokeStyle = '#22a45d'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.beginPath();
+  const n = Math.max(1, Math.floor(draw * (bal.length - 1)));
+  for (let i = 0; i <= n; i++) { const [px, py] = P(i); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+  ctx.stroke(); ctx.lineCap = 'butt';
+  const [ex, ey] = P(n); ctx.fillStyle = '#22a45d'; ctx.beginPath(); ctx.arc(ex, ey, 4, 0, 7); ctx.fill();
+  ctx.fillStyle = '#9aa0a8'; ctx.font = '600 10px Barlow, sans-serif'; ctx.fillText(`Gün ${hist[0].d}`, x + 4, y + h + 11); ctx.textAlign = 'right'; ctx.fillText(`Gün ${hist[hist.length - 1].d}`, x + w, y + h + 11); ctx.textAlign = 'left';
+}
+$('hqClose').onclick = closeHQ;
+$('hqSClose').onclick = () => { HQ.sheet = null; hqRender(); };
+$('hqSheet').addEventListener('click', e => { if (e.target.id === 'hqSheet') { HQ.sheet = null; hqRender(); } });
+
 /* ---------- boot ---------- */
 $('go').onclick = () => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); };
 $('skip').onclick = () => launch(true);
 let psBase = null;
 function priceSheet(open) { $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; psBase = null; if (open) { renderAct(); psBase = estIncome(); renderAct(); } else { save(); refresh(); } }
 $('pcard').onclick = () => priceSheet(true);
+$('grab').onclick = () => dockOpen(!$('dock').classList.contains('open'));
+/* drag the dock up to open it, down to fold it back to the strip */
+(function dockDrag() {
+  const d = $('dock'); let y0 = null, moved = false;
+  d.addEventListener('pointerdown', e => { y0 = e.clientY; moved = false; });
+  d.addEventListener('pointermove', e => {
+    if (y0 == null) return;
+    const dy = e.clientY - y0, open = d.classList.contains('open');
+    if (!open && dy < -28) { y0 = null; moved = true; dockOpen(true); }
+    else if (open && dy > 40 && d.scrollTop <= 0) { y0 = null; moved = true; dockOpen(false); }
+  });
+  ['pointerup', 'pointercancel'].forEach(t => d.addEventListener(t, () => { y0 = null; }));
+  d.addEventListener('click', e => { if (moved) { e.stopPropagation(); e.preventDefault(); moved = false; } }, true);
+})();
 $('psOk').onclick = $('psClose').onclick = () => priceSheet(false);
 $('psheet').addEventListener('click', e => { if (e.target.id === 'psheet') priceSheet(false); });
 $('bMenu').onclick = showMenu;
