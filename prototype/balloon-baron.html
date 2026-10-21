@@ -610,10 +610,16 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .shopi b{font-family:'Barlow Condensed',sans-serif;font-size:14px;line-height:1.1;text-align:center}
 .shopi span{margin-top:3px;font-weight:800;font-size:13px;background:var(--ink);color:#fff;border-radius:10px;padding:2px 9px}
 .shopi.own{opacity:1}.shopi.own span{background:var(--green)}
+.shopi.gift{border-color:#ff9a7a;box-shadow:0 3px 0 #e8806a}.shopi.gift span{background:var(--coral)}
+.nightprev{width:100%;height:220px;border-radius:16px;display:block;background:#1b1840}
 .iapimg{display:flex;justify-content:center;background:linear-gradient(#bfe0f2,#ffe6c4);border-radius:16px;padding:8px}.iapimg img{width:96px;height:108px}
 .estn{font-size:12.5px;opacity:.75;margin:6px 0 0;line-height:1.35}
 .nightcap{position:fixed;left:50%;top:max(18px, env(safe-area-inset-top, 0px));transform:translate(-50%,-8px);opacity:0;transition:opacity .6s,transform .6s;z-index:40;display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff8e6;text-align:center;width:min(92vw,420px);pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.5)}
 .nightcap.on{opacity:1;transform:translate(-50%,0)}
+.nightgo{position:fixed;left:16px;right:16px;bottom:max(16px, env(safe-area-inset-bottom, 0px));z-index:41;opacity:0;transform:translateY(20px);transition:opacity .6s .8s,transform .6s .8s}
+.nightgo.on{opacity:1;transform:none}
+.nightgo{background-image:linear-gradient(90deg,rgba(255,255,255,.28) var(--p,0%),transparent var(--p,0%))}
+body.night #cv{touch-action:none}
 .nightcap b{font-family:'Barlow Condensed',sans-serif;font-size:26px;letter-spacing:.02em}
 .nightcap span{font-size:15px;font-weight:600;background:rgba(20,18,50,.55);border-radius:14px;padding:6px 12px;margin-top:4px}
 .nightcap small{font-size:12px;opacity:.7;margin-top:4px}
@@ -776,6 +782,7 @@ const HEZ = {
   goals: 'Her büyük şirketin bir yol haritası olur evlat. Sağdaki bayrağa dokun: orada bölüm hedeflerin yazıyor. Üç bölümü bitiren Kapadokya\'nın baronu olur, sonra da dünya seni bekler.',
   absent: 'Evlat, yolcular hep aynı şeyi soruyor: "Kurucu nerede?" Kaptanı uçmayan şirketin ruhu kaybolur. Sepete geri dön; uzak kaldığın her gün popülerliğin aşınıyor.',
   licenseHold: 'Lisansın düştü evlat, otorite balonlarını yere indirdi. İki yol var: bugün sepete geç ve amiral balonunu kendin uçur, bu yenileme uçuşu bedava. Ya da ücreti öde. Ben olsam hangisini seçerdim, biliyorsun.',
+  bazaar: 'Kasabanın doğusunda bir çarşı var evlat, gördün mü? Balonların için özel desenler, şekilli zarflar, kasaban için süsler satılıyor. Süsler turist çeker, gece de kasabanı ışıl ışıl yapar. Benden sana bir hediye var: çarşıda bir fener seti seni bekliyor.',
   pr: 'Bir sır vereyim evlat: başlarda otel ve rehber anlaşmaları her şeydir. Popülerliğin arttıkça daha yüksek fiyattan daha çok müşteri bulursun. Lüks oteller de misafirlerini yüksek fiyata bile getirir. Otelsiz, rehbersiz bir şirketin adı 4,2 yıldızdan öteye duyulmaz.',
   influ: 'Influencer anlaşmalarına dikkat evlat. Başlarda nadir yap, yoksa nakit akışın bozulur. Kasan rahatladıktan sonra çok daha verimli olurlar.',
   prcap: 'Popülerliğin tavana dayandı evlat. Ne kadar güzel uçarsan uç, otellerle anlaşmadan ya da rehberleri uçurmadan adın 4,2 yıldızdan öteye gitmez; bir influencer kampanyası seni en fazla 4,5 yıldıza taşır. Kasabadaki otellere ve ajanslara bak.',
@@ -1099,6 +1106,7 @@ function unlockCheck() {
   if (S.day >= 2) hezAdd('goals');
   if (S.day >= 3 && bossRival()) bossSay('hello');
   if (S.day >= 9) hezAdd('pr');
+  if (S.unl.market && S.day >= 11) hezAdd('bazaar');
   if (S.weather.flag === 'yellow') hezAdd('yellow');
   if (S.weather.flag === 'red') hezAdd('red');
   if (S.weather.mission) hezAdd('mission');
@@ -1262,7 +1270,8 @@ function showHez(k) {
   const finish = () => { clearInterval(hezTimer); p.textContent = text; i = text.length; };
   hezTimer = setInterval(() => { i += 2; p.textContent = text.slice(0, i); if (i % 8 === 0) sfx('blip'); if (i >= text.length) finish(); }, 22);
   bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
-  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : 'Anladım'); ok.onclick = () => { finish(); el.hidden = true; refresh(); setTimeout(nextPopup, 250); };
+  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : k === 'bazaar' ? 'Çarşıya git' : 'Anladım');
+  ok.onclick = () => { finish(); el.hidden = true; refresh(); if (k === 'bazaar') showBazaar(); else setTimeout(nextPopup, 250); };
   bub.appendChild(ok);
   el.hidden = false;
 }
@@ -3508,21 +3517,37 @@ const DESIGN_COST = 5000, RESKIN_COST = 1000;
 const SHOP = {
   gold: { n: 'Varak altın', kind: 'pat', price: '0,99 €' }, tile: { n: 'İznik çinisi', kind: 'pat', price: '0,99 €' }, sky: { n: 'Takımyıldız', kind: 'pat', price: '0,99 €' }, kilim: { n: 'Kapadokya kilimi', kind: 'pat', price: '0,99 €' },
   heart: { n: 'Kalp balon', kind: 'shape', price: '1,99 €' }, star: { n: 'Yıldız balon', kind: 'shape', price: '1,99 €' }, hezarfen: { n: 'Hezarfen balonu', kind: 'shape', price: '1,99 €' },
-  fountain: { n: 'Meydan çeşmesi', kind: 'decor', price: '0,99 €' }, statue: { n: 'Hezarfen heykeli', kind: 'decor', price: '0,99 €' }, lanterns: { n: 'Fener dizileri', kind: 'decor', price: '0,99 €' }, flags: { n: 'Şirket bayrakları', kind: 'decor', price: '0,99 €' }
+  fountain: { n: 'Meydan çeşmesi', kind: 'decor', price: '0,99 €' }, statue: { n: 'Hezarfen heykeli', kind: 'decor', price: '0,99 €' }, lanterns: { n: 'Fener dizileri', kind: 'decor', price: '🎁 Hediye', gift: true }, flags: { n: 'Şirket bayrakları', kind: 'decor', price: '0,99 €' }
 };
 const owned = k => !!(S.iap && S.iap[k]);
 const DECOR = ['fountain', 'statue', 'lanterns', 'flags'];
 const decorN = () => DECOR.filter(owned).length;
 /* Purchase sheet (prototype stand-in for the store's own payment sheet). */
+/* A live picture of the town at night with this decoration, for the shop card. Runs while the canvas is on screen. */
+const DECOR_AT = { fountain: [8, 8, .55], statue: [6.9, 8.9, .6], lanterns: [7.4, 7.6, .3], flags: [7.5, 9, .26] };
+function nightPreview(k, cv) {
+  const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1), w = r.width, hh = r.height; if (!w) return;
+  cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr);
+  const [gx, gy, z] = DECOR_AT[k], c = tiso(gx, gy), V = { z, ox: w / 2 - c[0] * z, oy: hh * .62 - c[1] * z, noLabels: true, hzFix: hh * .12 };
+  const frame = () => {
+    if (!cv.isConnected) return;
+    const keep = ctx, kN = NIGHT_K, kNi = NIGHT, iap = S.iap;
+    ctx = cv.getContext('2d'); NIGHT_K = 1; NIGHT = null; S.iap = Object.assign({}, iap, { [k]: 1 });
+    try { renderTown(V, w, hh, dpr, 0); } finally { ctx = keep; NIGHT_K = kN; NIGHT = kNi; S.iap = iap; }
+    requestAnimationFrame(frame);
+  };
+  frame();
+}
 function iapBuy(k, then) {
   const m = $('menu'), back = m.hidden ? null : [...m.childNodes]; m.replaceChildren();
   const c = h('div', 'card iap');
   c.appendChild(h('div', 'chap', 'Mağaza'));
   c.appendChild(h('h1', null, SHOP[k].n));
-  c.appendChild(h('div', 'iapimg', `<img src="${shopThumb(k)}" alt="">`));
+  if (SHOP[k].kind === 'decor') { const nv = h('canvas', 'nightprev'); c.appendChild(h('div', 'lbl', 'Kasaban gece böyle görünecek')); c.appendChild(nv); requestAnimationFrame(() => nightPreview(k, nv)); }
+  else c.appendChild(h('div', 'iapimg', `<img src="${shopThumb(k)}" alt="">`));
   c.appendChild(h('p', 'lead', { pat: 'Özel desen. Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yaratıcılık puanı yüksek, hiç eskimez.', shape: 'Özel şekilli balon zarfı. Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir; her uçuşta ekstra popülerlik getirir.', decor: 'Kasabana kalıcı bir süs. Çarşıdan alınır, şehirde görünür.' }[SHOP[k].kind]));
-  c.appendChild(h('p', 'hint', 'Prototip: gerçek ödeme yok. App Store yerel fiyatlandırması kullanılacak.'));
-  const b = h('button', 'big', `Satın al ${SHOP[k].price}`); b.onclick = () => { S.iap = Object.assign({}, S.iap, { [k]: S.day }); sfx('coin'); save(); if (back) m.replaceChildren(...back); else m.hidden = true; if (then) then(); refresh(); };
+  c.appendChild(h('p', 'hint', SHOP[k].gift ? 'Hezarfen Usta\'dan hediye, ücretsiz.' : 'Prototip: gerçek ödeme yok. App Store yerel fiyatlandırması kullanılacak.'));
+  const b = h('button', 'big', SHOP[k].gift ? 'Hediyeni al' : `Satın al ${SHOP[k].price}`); b.onclick = () => { S.iap = Object.assign({}, S.iap, { [k]: S.day }); sfx('coin'); save(); if (back) m.replaceChildren(...back); else m.hidden = true; if (then) then(); refresh(); };
   const x = h('button', 'ghost', 'Vazgeç'); x.style.width = '100%'; x.onclick = () => { if (back) m.replaceChildren(...back); else m.hidden = true; };
   c.append(b, x); m.appendChild(c); m.hidden = false;
 }
@@ -3949,7 +3974,7 @@ function showBazaar() {
     c.appendChild(h('p', 'hint', { decor: 'Kasabada kalıcı süs, her biri talebi %1 artırır.', shape: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Hiç eskimez, her uçuşta ekstra popülerlik.', pat: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yüksek yaratıcılık, hiç eskimez.' }[kind]));
     const g = h('div', 'shopg');
     for (const k in SHOP) if (SHOP[k].kind === kind) {
-      const own = owned(k), it = h('button', 'shopi' + (own ? ' own' : ''), `<img src="${shopThumb(k)}" alt=""><b>${SHOP[k].n}</b><span>${own ? '✓ Senin' : SHOP[k].price}</span>`);
+      const own = owned(k), it = h('button', 'shopi' + (own ? ' own' : '') + (SHOP[k].gift && !own ? ' gift' : ''), `<img src="${shopThumb(k)}" alt=""><b>${SHOP[k].n}</b><span>${own ? '✓ Senin' : SHOP[k].price}</span>`);
       it.disabled = own; it.onclick = () => iapBuy(k, () => { bazaarGift(k); showBazaar(); }); g.appendChild(it);
     }
     c.appendChild(g);
@@ -4746,35 +4771,63 @@ function pickNightEvent() {
 }
 /* The night camera: closer than the home screen, the town filling the lower part of the screen under the sky. */
 const NIGHTV = { z: .3, ox: 0, oy: 0 };
+function nightBase(w, h) { const c = tiso(7.5, 7.5), z = clamp(w / 820, .3, .7); return { z, ox: w / 2 - c[0] * z, oy: h * .7 - c[1] * z }; }
 function drawNightTown(w, h) {
-  const c = tiso(7.5, 7.5); NIGHTV.z = clamp(w / 820, .3, .7);
-  NIGHTV.ox = w / 2 - c[0] * NIGHTV.z; NIGHTV.oy = h * .7 - c[1] * NIGHTV.z; NIGHTV.noLabels = true; NIGHTV.hzFix = h * .34; /* a big night sky */
+  const B = nightBase(w, h), v = (NIGHT && NIGHT.v) || B;
+  /* keep the town on screen however far you drag */
+  const c = tiso(7.5, 7.5), sx = c[0] * v.z + v.ox, sy = c[1] * v.z + v.oy, mx = 8 * TW / 2 * v.z, my = 8 * TH / 2 * v.z;
+  v.ox += clamp(sx, Math.min(w * .5, w * .15 - mx * .2), Math.max(w * .5, w * .85 + mx * .2)) - sx;
+  v.oy += clamp(sy, Math.min(h * .5, h * .35 - my * .3), Math.max(h * .7, h * .75 + my * .3)) - sy;
+  Object.assign(NIGHTV, v); NIGHTV.noLabels = true;
+  /* a big night sky; the horizon follows the town as you drag */
+  NIGHTV.hzFix = clamp(h * .34 + (v.oy - B.oy) * .6 - (v.z / B.z - 1) * h * .25, -h * .5, h * .55);
   renderTown(NIGHTV, w, h, DPR, 0);
 }
+/* Night is yours to wander: drag to pan, pinch (or the wheel) to zoom; the big button at the bottom brings the morning. */
+(function nightGestures() {
+  const pts = new Map(); let last = null;
+  const view = () => { if (!NIGHT.v) NIGHT.v = nightBase(W, H); return NIGHT.v; };
+  const zoomAt = (mx, my, f) => { const v = view(), B = nightBase(W, H), z = clamp(v.z * f, B.z * .8, B.z * 2.8), k = z / v.z; v.ox = mx - (mx - v.ox) * k; v.oy = my - (my - v.oy) * k; v.z = z; };
+  const cv = $('cv');
+  cv.addEventListener('pointerdown', e => { if (mode !== 'night' || !NIGHT) return; cv.setPointerCapture(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]); last = null; });
+  cv.addEventListener('pointermove', e => {
+    if (mode !== 'night' || !NIGHT || !pts.has(e.pointerId)) return;
+    const prev = pts.get(e.pointerId); pts.set(e.pointerId, [e.clientX, e.clientY]);
+    NIGHT.idle = T;
+    if (pts.size === 1) { const v = view(); v.ox += e.clientX - prev[0]; v.oy += e.clientY - prev[1]; }
+    else if (pts.size === 2) { const [a, b] = [...pts.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]); if (last) zoomAt((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, d / last); last = d; }
+  });
+  const up = e => { pts.delete(e.pointerId); last = null; };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  cv.addEventListener('wheel', e => { if (mode !== 'night' || !NIGHT) return; e.preventDefault(); NIGHT.idle = T; zoomAt(e.clientX, e.clientY, e.deltaY < 0 ? 1.1 : 1 / 1.1); }, { passive: false });
+})();
 function startNight() {
   const ev = pickNightEvent();
   if (ev) paperAdd(ev.k === 'shooting' ? 1 : 2, ev.head, ev.sub);
-  NIGHT = { t0: T, dur: ev ? 7 : 4.6, ev, rnd: mulberry32(S.day * 7 + 3) };
+  NIGHT = { t0: T, ev, v: null, idle: T, wait: ev ? 5.5 : 3.5 };
   mode = 'night'; hideAll(); $('hud').hidden = true;
-  const cap = h('div', 'nightcap', `<b>Gün ${S.day - 1} gecesi</b>${ev ? `<span>${esc(ev.line)}</span>` : ''}<small>Dokun, sabaha geç</small>`); cap.id = 'nightcap';
+  const cap = h('div', 'nightcap', `<b>Gün ${S.day - 1} gecesi</b>${ev ? `<span>${esc(ev.line)}</span>` : ''}<small>Kasabayı gezebilirsin</small>`); cap.id = 'nightcap';
   document.body.appendChild(cap); requestAnimationFrame(() => cap.classList.add('on'));
+  const go = h('button', 'big nightgo', `Gün ${S.day} sabahına geç ☀`); go.id = 'nightgo'; go.onclick = () => { if (NIGHT && !NIGHT.dawn) { NIGHT.dawn = T; sfx('click'); } };
+  document.body.appendChild(go); requestAnimationFrame(() => go.classList.add('on')); document.body.classList.add('night');
   crickets(true); save();
 }
 function endNight() {
   if (mode !== 'night') return;
-  crickets(false); NIGHT = null; NIGHT_K = 0; const cap = $('nightcap'); if (cap) cap.remove();
+  crickets(false); NIGHT = null; NIGHT_K = 0; for (const id of ['nightcap', 'nightgo']) { const el = $(id); if (el) el.remove(); } document.body.classList.remove('night');
   startDay();
 }
 function updateNight() {
   if (!NIGHT) return;
-  const t = T - NIGHT.t0, d = NIGHT.dur;
-  /* dusk falls in 1.4 s, the night holds, and the last second brightens towards dawn */
-  NIGHT_K = t < 1.4 ? t / 1.4 : t > d - 1 ? Math.max(.3, (d - t)) : 1;
+  const t = T - NIGHT.t0, dn = NIGHT.dawn ? T - NIGHT.dawn : 0;
+  /* dusk falls in 1.4 s and the night holds until you ask for the morning; then it pales for a second */
+  NIGHT_K = NIGHT.dawn ? Math.max(.25, 1 - dn * .75) : Math.min(1, t / 1.4);
+  /* the night passes by itself after a few seconds; looking around restarts the wait, but never past 25 s */
+  if (!NIGHT.dawn) { const left = Math.min(NIGHT.wait - (T - NIGHT.idle), 25 - t), go = $('nightgo'); if (go) go.style.setProperty('--p', `${Math.round(clamp(1 - left / NIGHT.wait, 0, 1) * 100)}%`); if (left <= 0) NIGHT.dawn = T; }
   /* fireworks: a soft thump and a crackle for each burst */
   if (NIGHT.ev && NIGHT.ev.k === 'fireworks' && t > .8 && T - (NIGHT.pop || 0) > 1.1) { NIGHT.pop = T; tone(160, 55, .3, 'triangle', .07); for (let i = 0; i < 5; i++) tone(2400 + Math.random() * 900, 1500, .06, 'sine', .012, .2 + i * .05); }
-  if (t >= d) endNight();
+  if (NIGHT.dawn && dn >= 1) endNight();
 }
-document.addEventListener('pointerdown', e => { if (mode === 'night' && NIGHT && T - NIGHT.t0 > .5) { e.preventDefault(); endNight(); } }, true);
 /* Crickets: short trills from two singers at slightly different pitches; an owl now and then. */
 let cricketTimer = 0;
 function crickets(on) {
@@ -4804,8 +4857,10 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
   /* stars and the moon over the horizon */
   ctx.save(); ctx.globalAlpha = k; const RS = mulberry32(11);
   for (let i = 0; i < 90; i++) { const x = RS() * w, y = RS() * hz * .95, tw = .5 + .5 * Math.sin(t * (1 + RS() * 2) + i); ctx.fillStyle = `rgba(255,248,220,${.35 + .5 * tw})`; ctx.fillRect(x, y, 1.6, 1.6); }
+  if (hz > 110) { /* the moon, when there is sky enough for it */
   const mx = w * .78, my = Math.max(60, hz * .3); const mg = ctx.createRadialGradient(mx, my, 4, mx, my, 70); mg.addColorStop(0, 'rgba(255,250,225,.45)'); mg.addColorStop(1, 'rgba(255,250,225,0)'); ctx.fillStyle = mg; ctx.fillRect(mx - 70, my - 70, 140, 140);
   ctx.fillStyle = '#fff8dc'; ctx.beginPath(); ctx.arc(mx, my, 15, 0, 7); ctx.fill(); ctx.fillStyle = mix('#fff8dc', '#262a62', .85); ctx.beginPath(); ctx.arc(mx + 7, my - 4, 13, 0, 7); ctx.fill();
+  }
   if (N.ev && N.ev.k === 'shooting') { const p = ((t - N.t0) % 3.5) / .9; if (p < 1) { const x0 = w * .15 + p * w * .5, y0 = hz * .15 + p * hz * .25; const g = ctx.createLinearGradient(x0 - 60, y0 - 30, x0, y0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(255,255,255,.95)'); ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0 - 60, y0 - 30); ctx.lineTo(x0, y0); ctx.stroke(); } }
   ctx.restore();
   W0();

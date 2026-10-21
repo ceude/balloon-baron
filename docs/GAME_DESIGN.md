@@ -170,7 +170,7 @@ Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükse
 - **Basın röportajı:** %65 şansla popülerlik artar, yoksa düşer.
 
 ## Gece
-Uçuş defterinden sonra kasabada gece olur (birkaç saniye, dokununca geçer): ışıklar yanar, cırcır böcekleri öter, ateş böcekleri uçar. Bazen bir gece olayı olur ve ertesi sabah gazetede çıkar: festival gecesi fener alayı, Fiesta'da Balloon Glow, kışın ilk gecesi karlı ışıklı kasaba, bir otelde düğün havai fişekleri (%22), kayan yıldız (%10). Olaylar şimdilik yalnızca görsel ve haber.
+Uçuş defterinden sonra kasabada gece olur (3,5 sn, olay gecesi 5,5 sn; kasabayı gezerken bekler, en fazla 25 sn; alttaki düğmeyle hemen sabaha geçilir): ışıklar yanar, cırcır böcekleri öter, ateş böcekleri uçar. Bazen bir gece olayı olur ve ertesi sabah gazetede çıkar: festival gecesi fener alayı, Fiesta'da Balloon Glow, kışın ilk gecesi karlı ışıklı kasaba, bir otelde düğün havai fişekleri (%22), kayan yıldız (%10). Olaylar şimdilik yalnızca görsel ve haber.
 
 ## Festivaller (Kapadokya)
 24. günden başlayarak 35 günde bir, 3 gün: Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
@@ -191,7 +191,7 @@ Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen 
 Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Özel desenler** 0,99 €: Varak altın 92, İznik çinisi 90, Takımyıldız 92, Kapadokya kilimi 90 (desen tabanı).
 - **Balon şekilleri** 1,99 €: Kalp, Yıldız, Hezarfen (sarıklı, bıyıklı). Tasarıma eklenir: yaratıcılık +8 ve her uçuşta ek popülerlik +0,0015.
-- **Kasaba süsleri** 0,99 €: meydan çeşmesi, Hezarfen heykeli, fener dizileri, şirket bayrakları. Her biri kasabada görünür ve talebi %1 artırır. Gece her birinin kendi aydınlatması var (çeşmede su altı ışığı, heykelde spotlar, bayraklarda yukarı ışık, fener dizilerinde yollar boyunca ampul dizileri ve 8 lamba).
+- **Kasaba süsleri** 0,99 €: meydan çeşmesi, Hezarfen heykeli, şirket bayrakları. Fener dizileri bedava: 11. günde Hezarfen çarşıyı tanıtırken hediye eder. Her biri kasabada görünür ve talebi %1 artırır. Gece her birinin kendi aydınlatması var (çeşmede su altı ışığı, heykelde spotlar, bayraklarda yukarı ışık, fener dizilerinde yollar boyunca ampul dizileri ve 8 lamba).
 - Hepsi kasabadaki **Çarşı** binasından alınır (pazarla birlikte açılır). Desen ya da şekil şirket renklerinde hazır bir tasarımla gelir ve amiral balonuna hemen giydirilir; atölye gerekmez; bu tasarımlar her balona bedava giydirilir (normal tasarımda boya €1.000) (atölye yalnızca kendi tasarımını yapmak için). Atölyede bu desen ve şekiller kilitli görünür, oradan da alınabilir.
 
 
