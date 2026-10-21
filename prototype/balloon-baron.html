@@ -612,6 +612,11 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .shopi.own{opacity:1}.shopi.own span{background:var(--green)}
 .iapimg{display:flex;justify-content:center;background:linear-gradient(#bfe0f2,#ffe6c4);border-radius:16px;padding:8px}.iapimg img{width:96px;height:108px}
 .estn{font-size:12.5px;opacity:.75;margin:6px 0 0;line-height:1.35}
+.nightcap{position:fixed;left:50%;top:max(18px, env(safe-area-inset-top, 0px));transform:translate(-50%,-8px);opacity:0;transition:opacity .6s,transform .6s;z-index:40;display:flex;flex-direction:column;align-items:center;gap:3px;color:#fff8e6;text-align:center;width:min(92vw,420px);pointer-events:none;text-shadow:0 2px 8px rgba(0,0,0,.5)}
+.nightcap.on{opacity:1;transform:translate(-50%,0)}
+.nightcap b{font-family:'Barlow Condensed',sans-serif;font-size:26px;letter-spacing:.02em}
+.nightcap span{font-size:15px;font-weight:600;background:rgba(20,18,50,.55);border-radius:14px;padding:6px 12px;margin-top:4px}
+.nightcap small{font-size:12px;opacity:.7;margin-top:4px}
 </style>
 
 <div id="wrap">
@@ -1109,6 +1114,7 @@ function unlockCheck() {
 /* Morning paper: only when something worth a headline happened; the biggest story leads, up to two more below. */
 function paperAdd(p, head, sub) { (S.paperNext = S.paperNext || []).push({ p, head, sub }); }
 /* A halftone photo of balloons over the chimneys, in newspaper ink. */
+const paperName = () => S.region === 'abq' ? 'Albuquerque Herald' : 'Kapadokya Postası';
 function paperPhoto() {
   return `<svg class="pphoto" viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice"><defs>
     <pattern id="ht1" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".75" fill="#2a2620"/></pattern>
@@ -1125,7 +1131,7 @@ function showPaper() {
   const m = $('menu'); m.replaceChildren();
   /* a sheet of newsprint lying on old parchment */
   const c = h('div', 'card paper'), sh = h('div', 'sheet');
-  sh.appendChild(h('div', 'mast', `<b>${S.region === 'abq' ? 'Albuquerque Herald' : 'Kapadokya Postası'}</b><div class="dl"><span>Gün ${S.day}</span><span>Sabah baskısı</span><span>${S.region === 'abq' ? '25¢' : '5 kuruş'}</span></div>`));
+  sh.appendChild(h('div', 'mast', `<b>${paperName()}</b><div class="dl"><span>Gün ${S.day}</span><span>Sabah baskısı</span><span>${S.region === 'abq' ? '25¢' : '5 kuruş'}</span></div>`));
   sh.appendChild(h('h1', 'ph', esc(list[0].head)));
   sh.insertAdjacentHTML('beforeend', paperPhoto());
   if (list[0].sub) sh.appendChild(h('p', 'ps', esc(list[0].sub)));
@@ -1140,7 +1146,7 @@ const EVENTS = {
   strike: { at: [9.3, 13.6], ok: () => S.pilots.length >= 2 },
   vip: { at: [5.5, 12.8], ok: () => S.balloons.filter(b => b.id !== S.flag && canFly(b) === 'ok').length >= 1 },
   wedding: { at: [5, 10.2], ok: () => S.balloons.filter(b => b.id !== S.flag && canFly(b) === 'ok').length >= 1 },
-  doc: { at: [10, 10.4], ok: () => true },
+  doc: { at: [10, 10.4], ok: () => !!bal(S.flag) && canFly(bal(S.flag)) === 'ok' },
   fuel: { at: [2.5, 2.4], ok: () => S.balloons.length >= 2 },
   press: { at: [9.3, 13.6], ok: () => true }
 };
@@ -1163,13 +1169,14 @@ function eventCard(k) {
     c.appendChild(h('div', 'chap', 'Sabah olayı'));
     c.appendChild(h('h1', null, 'Pilotlar grevde!'));
     c.appendChild(h('p', 'lead', `Pilotların ofisinin önünde pankartlarla bekliyor. Maaşlarına %15 zam istiyorlar. Şu an günde toplam ${eur(wages)} ödüyorsun.`));
-    btn('big', `Zam yap (+${eur(Math.round(wages * .15))}/gün)`, () => { S.pilots.forEach(p => { p.wage = Math.round(pilotWage(p) * 1.15 / 5) * 5; }); return 'Pilotlar mutlu evlat, bugün herkes sepetinde. Ama maaş bordrosu kabardı, fiyatları ona göre ayarla.'; });
-    btn('ghost', 'Bir gün dayan: bugün sadece sen uçarsın', () => { S.strikeDay = S.day; S.rep -= .02; assignPilots(); return 'Bugün balonların yerde, pilotlar pankart sallıyor. Yarın işe dönecekler ama turistler bunu konuşacak.'; });
+    const raised = p => Math.round(pilotWage(p) * 1.15 / 5) * 5, extra = S.pilots.reduce((a, p) => a + raised(p) - pilotWage(p), 0);
+    btn('big', `Zam yap (+${eur(extra)}/gün)`, () => { S.pilots.forEach(p => { p.wage = raised(p); }); return 'Pilotlar mutlu evlat, bugün herkes sepetinde. Ama maaş bordrosu kabardı, fiyatları ona göre ayarla.'; });
+    btn('ghost', 'Bir gün dayan: bugün sadece sen uçarsın', () => { S.strikeDay = S.day; S.rep -= .02; S.selfFly = true; assignPilots(); return 'Bugün balonların yerde, pilotlar pankart sallıyor. Yarın işe dönecekler ama turistler bunu konuşacak.'; });
   } else if (k === 'vip' || k === 'wedding') {
     const vip = k === 'vip', cap = SIZES[spare.size].cap, pay = Math.round(cap * S.price * (vip ? 2.2 : 1.4) / 50) * 50;
     c.appendChild(h('div', 'chap', 'Sabah olayı'));
     c.appendChild(h('h1', null, vip ? 'VIP özel uçuş' : 'Düğün grubu'));
-    c.appendChild(h('p', 'lead', vip ? `Saray Resort'tan bir iş insanı ailesiyle ${spare.name} balonunu bütünüyle kiralamak istiyor. Peşin ${eur(pay)} öderler, balon bugün başka yolcu almaz.` : `Peri Konak'ta kalan bir düğün grubu ${spare.name} balonunu toptan istiyor, kişi başı %40 fazla. Peşin ${eur(pay)}, balon bugün başka yolcu almaz.`));
+    c.appendChild(h('p', 'lead', vip ? `${RD().hotels[3]} otelinden bir iş insanı ailesiyle ${spare.name} balonunu bütünüyle kiralamak istiyor. Peşin ${eur(pay)} öderler, balon bugün başka yolcu almaz.` : `${RD().hotels[1]} otelinde kalan bir düğün grubu ${spare.name} balonunu toptan istiyor, kişi başı %40 fazla. Peşin ${eur(pay)}, balon bugün başka yolcu almaz.`));
     btn('big', `Kabul et +${eur(pay)}`, () => { S.cash += pay; S.charter = { day: S.day, id: spare.id }; S.rep += vip ? .02 : .015; addReview(vip ? 'perfect' : 'good'); paperAdd(2, vip ? `${S.company} VIP ağırladı` : `Gökyüzünde düğün: ${S.company}`, ''); return vip ? 'Güzel iş evlat. Zenginler konuşur, konuştukları da duyulur.' : 'Gelin sepette ağlamış diyorlar, mutluluktan. Fotoğraflar bütün vadide dolaşacak.'; });
     btn('ghost', 'Reddet', () => null);
   } else if (k === 'doc') {
@@ -1188,7 +1195,7 @@ function eventCard(k) {
   } else if (k === 'press') {
     c.appendChild(h('div', 'chap', 'Sabah olayı'));
     c.appendChild(h('h1', null, 'Gazeteci kapıda'));
-    c.appendChild(h('p', 'lead', `Kapadokya Postası'ndan bir muhabir ofisinin önünde. Balon turizmi hakkında röportaj istiyor. İyi geçerse adın duyulur, kötü geçerse manşet olursun.`));
+    c.appendChild(h('p', 'lead', `${paperName()} gazetesinden bir muhabir ofisinin önünde. Balon turizmi hakkında röportaj istiyor. İyi geçerse adın duyulur, kötü geçerse manşet olursun.`));
     btn('big', 'Röportaj ver', () => { if (Math.random() < .65) { S.rep += .05; paperAdd(3, `${S.company} kurucusu: "Gökyüzü herkesin"`, 'Röportaj okurlardan büyük ilgi gördü.'); return 'Röportaj harika geçti evlat, yarın gazetede.'; } S.rep -= .03; paperAdd(3, `${S.company} kurucusu fiyat sorusunda bocaladı`, 'Röportaj tartışma yarattı.'); return 'Hmm, fiyat sorusunda biraz bocaladın. Yarın gazete pek hoş yazmayacak.'; });
     btn('ghost', 'Yorum yok', () => null);
   }
@@ -2409,7 +2416,7 @@ function showReport() {
   } else {
     if (allDead && !S.monopolyShown) { S.monopolyShown = true; save(); b.appendChild(h('div', 'callout grn', '<b>Kapadokya göğünde tek şirket sensin.</b> Fiyatı artık sen belirliyorsun.')); }
     b.appendChild(h('p', 'hint', `Yarın ${FLAGS[S.weather.flag].name.toLowerCase()}, yerde rüzgâr ${S.weather.surf} km/s.`));
-    const nb = h('button', 'big', `Gün ${S.day} sabahına geç`); nb.onclick = () => { tab = 'plan'; startDay(); }; b.appendChild(nb);
+    const nb = h('button', 'big', `Gün ${S.day} sabahına geç`); nb.onclick = () => { tab = 'plan'; startNight(); }; b.appendChild(nb);
   }
   tk.appendChild(b); m.appendChild(tk);
   m.hidden = false; $('sheet').hidden = true; $('tip').hidden = true; $('burn').hidden = true; $('abort').hidden = true; $('menu').hidden = true;
@@ -3194,6 +3201,7 @@ function draw(dt) {
   if (!S || !S.weather) { ctx.fillStyle = '#1b1840'; ctx.fillRect(0, 0, W, H); return; }
   const f = FL && mode === 'flight' ? FL : null;
   if (mode === 'collect' && COL) { drawCollectTown(); return; }
+  if (mode === 'night') { updateNight(); drawNightTown(W, H); return; }
   if (mode === 'office') {
     if (TOWN.open || !$('page').hidden) return; /* covered by a full-screen page */
     const d = $('dock');
@@ -3359,7 +3367,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay'];
+const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight'];
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'M', 'M', 'M'], price: 195, rep: 1.15, cash: 50000 },
   { name: 'Rio Grande Balloons', col: '#3c9a8f', col2: '#e6fff9', style: 'mid', balloons: ['M', 'M', 'M', 'S'], price: 165, rep: 1, cash: 20000 },
@@ -3522,7 +3530,9 @@ const PATTERNS = { stripes: ['Çizgili', 35], zigzag: ['Zikzak', 60], checker: [
 const SWATCHES = ['#ff5e3a', '#ffc23d', '#2b2350', '#14a39a', '#ff6fa8', '#5aa9e6', '#9b7be0', '#22a45d', '#e5432f', '#ffffff', '#1f1b2e', '#f3e08a'];
 const designOf = b => b && b.design && (S.designs || []).find(d => d.id === b.design);
 const designCost = () => hasOffice('tyo') ? 0 : DESIGN_COST;
-const freshness = d => d.shape || (PATTERNS[d.pat] || [])[2] ? 1 : clamp(1 - (S.day - d.day) / (hasOffice('tyo') ? 60 : 40), .2, 1);
+/* a design that uses something bought with real money: never fades, free to put on any balloon */
+const paidDesign = d => !!d && !!(d.shape || (PATTERNS[d.pat] || [])[2]);
+const freshness = d => paidDesign(d) ? 1 : clamp(1 - (S.day - d.day) / (hasOffice('tyo') ? 60 : 40), .2, 1);
 const lum = c => { const [r, g, b] = hex(c); return (.299 * r + .587 * g + .114 * b) / 255; };
 function designScore(d) {
   const contrast = Math.abs(lum(d.cols[0]) - lum(d.cols[1])), distinct = new Set(d.cols).size;
@@ -3639,13 +3649,14 @@ function openDesignPicker(b) {
   const m = $('menu'); m.replaceChildren();
   const c = h('div', 'card');
   c.appendChild(h('h1', null, `${esc(b.name)} deseni`));
-  c.appendChild(h('p', 'lead', `Balonu yeniden boyamak ${eur(RESKIN_COST)}.`));
+  c.appendChild(h('p', 'lead', `Balonu yeniden boyamak ${eur(RESKIN_COST)}. Çarşıdan alınan desen ve şekiller bedava giydirilir.`));
   const opts = [null].concat(S.designs || []);
   for (const d of opts) {
     const it = h('div', 'item'), cur = (b.design || null) === (d ? d.id : null);
     it.insertAdjacentHTML('beforeend', d ? `<img class="dthumb" src="${designThumb(d, 44, 56)}" alt="">` : balloonIcon(myCol()[0], myCol()[1]));
     it.appendChild(h('div', 'main', d ? `<div class="t">${esc(d.name)}</div><div class="s">Yaratıcılık ${d.score}, tazelik %${Math.round(freshness(d) * 100)}</div>` : '<div class="t">Şirket renkleri</div><div class="s">Desensiz, klasik çizgili.</div>'));
-    it.appendChild(pbtn(cur ? 'Seçili' : 'Giydir', () => { S.cash -= RESKIN_COST; b.design = d ? d.id : null; m.hidden = true; refresh(); }, cur || S.cash < RESKIN_COST));
+    const cost = paidDesign(d) ? 0 : RESKIN_COST;
+    it.appendChild(pbtn(cur ? 'Seçili' : cost ? 'Giydir' : 'Giydir (bedava)', () => { S.cash -= cost; b.design = d ? d.id : null; m.hidden = true; refresh(); }, cur || S.cash < cost));
     c.appendChild(it);
   }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
@@ -4465,8 +4476,8 @@ function townScenery(t) {
   for (const [gx, gy, hh] of chims) items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .16); }, draw: () => { const p = tiso(gx, gy); chimney(p[0], p[1], hh * .42, hh, '#efc79e', '#c69068', '#6a4430'); } });
   const trees = [[7.1, 6.9], [7.1, 9.2], [8.9, 6.9], [3.4, 8.9], [6.6, 10.7], [14.6, 7.3], [10.8, 4.4], [4.3, 7.0], [8.4, 15]];
   trees.forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); i % 3 ? roundTree(p[0], p[1], .9, i % 2 ? '#7aa04a' : '#8aa84e') : cypress(p[0], p[1], 1); } }));
-  /* your fleet on the launch field, burners flickering */
-  S.balloons.slice(0, 6).forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
+  /* your fleet on the launch field, burners flickering; at night the envelopes are packed away, except on a Fiesta balloon-glow night */
+  if (NIGHT_K <= 0 || (NIGHT && NIGHT.ev && NIGHT.ev.k === 'glow')) S.balloons.slice(0, 6).forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
   /* the wind mast by the launch field: today's surface wind fills the sock and points it */
   /* festival days: bunting strung along the main roads */
   if (S.fest) for (const along of [[7.5, 1], [7.5, 5], [7.5, 9.5], [1, 7.5], [4.5, 7.5], [10.5, 7.5]]) {
@@ -4494,6 +4505,7 @@ function windK(i) { const v = S.weather && S.weather.layers ? S.weather.layers[i
 function townSky(t) {
   const list = [[0, 2, 230, '#ff5e3a', '#ffc23d'], [5, 11, 300, '#14a39a', '#e8fff9'], [9, 4, 260, '#9b7be0', '#f2ebff'], [3, 7, 340, '#5aa9e6', '#eaf4fc']];
   const out = { shadows: [], balloons: [] };
+  if (NIGHT_K > 0) return out;
   list.forEach(([gx0, gy0, alt, c1, c2], i) => { const gx = pmod(gx0 + t * .12 * windK(1) + i * 3, 18) - 2, gy = gy0 + Math.sin(t * .2 + i) * .5; const p = tiso(gx, gy); out.shadows.push(() => blobShadow(p[0], p[1], 22, 9, .14)); out.balloons.push(() => balloon(p[0], p[1] - alt, 30, c1, c2, (t + i) % 4 < .5, 1)); });
   return out;
 }
@@ -4575,7 +4587,8 @@ function outerScenery(t) {
     items.push({ at: [gx, gy], depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .14); }, draw: () => { const p = tiso(gx, gy); chimney(p[0], p[1], hh * .42, hh, '#efc79e', '#c69068', '#6a4430'); } });
   }
   const cols = S.rivals.map(r => [r.col, r.col2]).concat([['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9']]);
-  OUTER_FIELDS.forEach((f, i) => {
+  /* nobody flies at night */
+  if (NIGHT_K <= 0) OUTER_FIELDS.forEach((f, i) => {
     for (let j = 0; j < 2; j++) {
       const ph = (t * .05 + i * .23 + j * .5) % 1, gx = f[0] + .9 + j * 1.3, gy = f[1] + 1.1, c = cols[(i + j) % cols.length];
       const inf = ph < .55, k = inf ? .35 + .65 * ph / .55 : 1, alt = inf ? 0 : Math.pow((ph - .55) / .45, 1.6) * 520;
@@ -4598,6 +4611,7 @@ function townHorizon(h) {
   const far = Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z);
   /* zoomed or collecting: the horizon never comes down onto the town (it stays behind the far valley) and never drops below
      where the home screen had it, so the sky never grows */
+  if (TV.hzFix != null) return TV.hzFix; /* the night camera sets its own horizon for a big sky */
   return TV.hz != null ? Math.min(far, TV.hz) : far;
 }
 function townBackdrop(w, h, t) {
@@ -4611,12 +4625,13 @@ function townBackdrop(w, h, t) {
   ctx.globalAlpha = 1;
   const sx = w * .74 + px, sy = hz - h * .045, sr = Math.min(w, h) * .055;
   const sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 7); sg.addColorStop(0, 'rgba(255,225,160,.65)'); sg.addColorStop(.35, 'rgba(255,170,110,.25)'); sg.addColorStop(1, 'rgba(255,160,110,0)');
-  ctx.fillStyle = sg; ctx.fillRect(sx - sr * 7, sy - sr * 7, sr * 14, sr * 14); ell(sx, sy, sr, sr, '#fff0c8');
+  if (NIGHT_K <= 0) { ctx.fillStyle = sg; ctx.fillRect(sx - sr * 7, sy - sr * 7, sr * 14, sr * 14); ell(sx, sy, sr, sr, '#fff0c8'); } /* no sun at night */
   /* thin pink clouds lit from below */
   for (let i = 0; i < 4; i++) { const cw = w * (.28 + .1 * (i % 2)), cx = ((i * w * .37 + t * (4 + i * 2) + px * .5) % (w + cw)) - cw * .5, cy = hz * (.3 + i * .13);
     ctx.save(); ctx.globalAlpha = .5; ell(cx, cy, cw * .5, h * .007 + 2, mix('#c77a9a', '#ffd0b0', .25 + i * .18)); ell(cx + cw * .12, cy - h * .006, cw * .3, h * .006 + 2, mix('#e89aa8', '#ffe2c4', .3 + i * .15)); ctx.restore(); }
   /* dozens of distant balloons drifting over the valley at sunrise; the far ones hazier */
   const far = (layer) => {
+    if (NIGHT_K > 0) return;
     const cols = [myCol()].concat(S.rivals.map(r => [r.col, r.col2]), [['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9'], ['#e0408a', '#ffd0e0'], ['#5aa9e6', '#eaf4fc']]);
     const Rb = mulberry32(layer ? 41 : 23), n = layer ? 8 : 20;
     for (let i = 0; i < n; i++) {
@@ -4679,6 +4694,7 @@ function renderTown(V, w, h, dpr, offY) {
     items.sort((a, b) => a.depth - b.depth).forEach(it => it.draw());
     sky.balloons.forEach(f => f());
     /* winter: snow falling over the town, in screen space */
+    if (NIGHT_K > 0) nightLayer(V, w, h, hz, S0, W0, bs);
     if (S.winter) { S0(); ctx.fillStyle = 'rgba(255,255,255,.9)'; for (let i = 0; i < 120; i++) { const x = (i * 97.3 + T * (10 + i % 4 * 6) + Math.sin(T + i) * 8) % (w + 20) - 10, y = (i * 53.7 + T * (22 + i % 5 * 8)) % h; ctx.beginPath(); ctx.arc(x, y, 1.1 + i % 3 * .6, 0, 7); ctx.fill(); } W0(); }
     /* labels in screen space, and hit boxes for taps (in region coordinates) */
     S0();
@@ -4711,6 +4727,110 @@ function drawTown() {
 }
 /* The home screen shows the town above the day's cards: a fixed overview you tap into. */
 const HOME = { z: .3, ox: 0, oy: 0, hits: [], zoneHits: [], h: 0, down: null };
+/* ---------- night ----------
+   "Gün N sabahına geç" on the flight log plays the night first: dusk falls on the town, windows and lanterns light up,
+   crickets sing, fireflies drift, and now and then something happens (a wedding's fireworks, the festival's lantern walk,
+   the Fiesta's balloon glow, a shooting star). The morning paper reports it. A tap skips to the morning. */
+let NIGHT = null, NIGHT_K = 0;
+function pickNightEvent() {
+  if (S.fest) return { k: 'lanterns', line: `${S.fest.name}: fener alayı vadiden geçiyor.`, head: 'Fener alayı vadiyi aydınlattı', sub: 'Binlerce fener peribacalarının arasından geçti.' };
+  if (S.fiesta) return { k: 'glow', line: 'Fiesta gecesi: Balloon Glow! Balonlar yerde brülörlerini yakıyor.', head: 'Fiesta gecesi ışıl ışıl', sub: 'Yerdeki balonlar brülörlerini yaktı, meydan bayram yeri gibiydi.' };
+  if (S.winter && S.winterNight !== S.winter.start) { S.winterNight = S.winter.start; return { k: 'snow', line: 'Kar altında kasabanın ışıkları yanıyor.', head: 'Kar altında ışıklı kasaba', sub: 'Vadi beyaza büründü, pencerelerde sıcak ışıklar.' }; }
+  const r = Math.random();
+  if (r < .22) { const i = Math.floor(Math.random() * 4), name = RD().hotels[i]; return { k: 'fireworks', hotel: i, line: `Düğün havai fişekleri: ${name}`, head: `Gece yarısı havai fişek: ${name}`, sub: 'Bir düğün gecesi bütün vadiyi renklendirdi.' }; }
+  if (r < .32) return { k: 'shooting', line: 'Bir kayan yıldız! Dilek tutmayı unutma evlat.', head: 'Gece bir kayan yıldız görüldü', sub: 'Erken kalkan balon yolcuları da gördüğünü söylüyor.' };
+  return null;
+}
+/* The night camera: closer than the home screen, the town filling the lower part of the screen under the sky. */
+const NIGHTV = { z: .3, ox: 0, oy: 0 };
+function drawNightTown(w, h) {
+  const c = tiso(7.5, 7.5); NIGHTV.z = clamp(w / 820, .3, .7);
+  NIGHTV.ox = w / 2 - c[0] * NIGHTV.z; NIGHTV.oy = h * .7 - c[1] * NIGHTV.z; NIGHTV.noLabels = true; NIGHTV.hzFix = h * .34; /* a big night sky */
+  renderTown(NIGHTV, w, h, DPR, 0);
+}
+function startNight() {
+  const ev = pickNightEvent();
+  if (ev) paperAdd(ev.k === 'shooting' ? 1 : 2, ev.head, ev.sub);
+  NIGHT = { t0: T, dur: ev ? 7 : 4.6, ev, rnd: mulberry32(S.day * 7 + 3) };
+  mode = 'night'; hideAll(); $('hud').hidden = true;
+  const cap = h('div', 'nightcap', `<b>Gün ${S.day - 1} gecesi</b>${ev ? `<span>${esc(ev.line)}</span>` : ''}<small>Dokun, sabaha geç</small>`); cap.id = 'nightcap';
+  document.body.appendChild(cap); requestAnimationFrame(() => cap.classList.add('on'));
+  crickets(true); save();
+}
+function endNight() {
+  if (mode !== 'night') return;
+  crickets(false); NIGHT = null; NIGHT_K = 0; const cap = $('nightcap'); if (cap) cap.remove();
+  startDay();
+}
+function updateNight() {
+  if (!NIGHT) return;
+  const t = T - NIGHT.t0, d = NIGHT.dur;
+  /* dusk falls in 1.4 s, the night holds, and the last second brightens towards dawn */
+  NIGHT_K = t < 1.4 ? t / 1.4 : t > d - 1 ? Math.max(.3, (d - t)) : 1;
+  /* fireworks: a soft thump and a crackle for each burst */
+  if (NIGHT.ev && NIGHT.ev.k === 'fireworks' && t > .8 && T - (NIGHT.pop || 0) > 1.1) { NIGHT.pop = T; tone(160, 55, .3, 'triangle', .07); for (let i = 0; i < 5; i++) tone(2400 + Math.random() * 900, 1500, .06, 'sine', .012, .2 + i * .05); }
+  if (t >= d) endNight();
+}
+document.addEventListener('pointerdown', e => { if (mode === 'night' && NIGHT && T - NIGHT.t0 > .5) { e.preventDefault(); endNight(); } }, true);
+/* Crickets: short trills from two singers at slightly different pitches; an owl now and then. */
+let cricketTimer = 0;
+function crickets(on) {
+  clearTimeout(cricketTimer); if (!on || !AC) return;
+  const sing = () => {
+    if (mode !== 'night') return;
+    for (const [f, dl] of [[4300 + Math.random() * 200, 0], [4700 + Math.random() * 200, .25 + Math.random() * .3]]) {
+      const n = 3 + Math.floor(Math.random() * 3);
+      for (let i = 0; i < n; i++) tone(f, f * .97, .035, 'sine', .018, dl + i * .055);
+    }
+    if (Math.random() < .12) { tone(420, 380, .32, 'sine', .03, .5); tone(400, 360, .45, 'sine', .03, .95); }
+    cricketTimer = setTimeout(sing, 380 + Math.random() * 520);
+  };
+  sing();
+}
+function nightLayer(V, w, h, hz, S0, W0, bs) {
+  const k = NIGHT_K, N = NIGHT || {}, t = T;
+  S0();
+  /* the whole scene goes dusky blue */
+  ctx.save(); ctx.globalCompositeOperation = 'multiply'; ctx.fillStyle = mix('#ffffff', '#262a62', k); ctx.fillRect(0, 0, w, h); ctx.restore();
+  /* stars and the moon over the horizon */
+  ctx.save(); ctx.globalAlpha = k; const RS = mulberry32(11);
+  for (let i = 0; i < 90; i++) { const x = RS() * w, y = RS() * hz * .95, tw = .5 + .5 * Math.sin(t * (1 + RS() * 2) + i); ctx.fillStyle = `rgba(255,248,220,${.35 + .5 * tw})`; ctx.fillRect(x, y, 1.6, 1.6); }
+  const mx = w * .78, my = Math.max(60, hz * .3); const mg = ctx.createRadialGradient(mx, my, 4, mx, my, 70); mg.addColorStop(0, 'rgba(255,250,225,.45)'); mg.addColorStop(1, 'rgba(255,250,225,0)'); ctx.fillStyle = mg; ctx.fillRect(mx - 70, my - 70, 140, 140);
+  ctx.fillStyle = '#fff8dc'; ctx.beginPath(); ctx.arc(mx, my, 15, 0, 7); ctx.fill(); ctx.fillStyle = mix('#fff8dc', '#262a62', .85); ctx.beginPath(); ctx.arc(mx + 7, my - 4, 13, 0, 7); ctx.fill();
+  if (N.ev && N.ev.k === 'shooting') { const p = ((t - N.t0) % 3.5) / .9; if (p < 1) { const x0 = w * .15 + p * w * .5, y0 = hz * .15 + p * hz * .25; const g = ctx.createLinearGradient(x0 - 60, y0 - 30, x0, y0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(1, 'rgba(255,255,255,.95)'); ctx.strokeStyle = g; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x0 - 60, y0 - 30); ctx.lineTo(x0, y0); ctx.stroke(); } }
+  ctx.restore();
+  W0();
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const glow = (x, y, r, col, a) => { const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${col},${a})`); g.addColorStop(1, `rgba(${col},0)`); ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); };
+  /* lit windows: a warm glow on the front walls of every standing building */
+  for (const b of bs) { if (b.lv <= 0 && b.look !== 'rival') continue; const hh = b.look === 'tower' ? 140 : b.small ? 18 : 34;
+    for (const u of b.small ? [.5] : [.3, .7]) { const p = tiso(b.gx + b.w * u, b.gy + b.d); glow(p[0] - 6, p[1] - hh, b.small ? 26 : 40, '255,190,100', .5 * k); } }
+  /* street lamps along the main roads, more when the lanterns are bought */
+  const lamps = owned('lanterns') ? [[2, 7.4], [5, 7.4], [10.5, 7.4], [13.5, 7.4], [7.4, 2], [7.4, 5.5], [7.4, 10.5], [7.4, 13.5]] : [[4, 7.4], [11, 7.4], [7.4, 4], [7.4, 11]];
+  for (const [gx, gy] of lamps) { const p = tiso(gx, gy); glow(p[0], p[1] - 44, 46, '255,200,110', .55 * k); }
+  /* fireflies over the launch field and the gardens */
+  const RF = mulberry32(5);
+  for (let i = 0; i < 26; i++) { const gx = 1 + RF() * 13, gy = 4.4 + RF() * 9, ph = RF() * 6, p = tiso(gx + Math.sin(t * .4 + ph) * .4, gy + Math.cos(t * .33 + ph) * .4), on = Math.max(0, Math.sin(t * 2.2 + ph * 3)); if (on > .2) { glow(p[0], p[1] - 18 - Math.sin(t + ph) * 8, 9, '200,255,120', on * .8 * k); } }
+  const E = N.ev;
+  if (E && E.k === 'fireworks') {
+    /* rockets rise from the hotel and burst in the sky above the town, in screen space */
+    ctx.restore(); S0(); ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const hw = tiso([2, 5, 2, 5][E.hotel], [10, 10, 12.6, 12.8][E.hotel]), hx = clamp(hw[0] * V.z + V.ox, w * .2, w * .8), hy = hw[1] * V.z + V.oy, tt = t - N.t0;
+    for (let j = 0; j < 5; j++) { const ph = (tt * .55 + j * .21) % 1, cx = w * (.18 + j * .16) + (hx - w / 2) * .2, cy = hz * (.45 + (j % 3) * .2), col = ['255,94,58', '255,194,61', '58,208,192', '255,111,168', '155,123,224'][j];
+      if (ph < .3) { const yy = hy - (hy - cy) * ph / .3; glow(cx, yy, 6, '255,230,180', .9); }
+      else { const r = (ph - .3) / .7, a = (1 - r) * k; for (let i = 0; i < 18; i++) { const an = i / 18 * Math.PI * 2, x = cx + Math.cos(an) * r * w * .14, y = cy + Math.sin(an) * r * w * .14 + r * r * 24; glow(x, y, 7, col, a); } glow(cx, cy, w * .2 * r, col, .12 * a); }
+    }
+    ctx.restore(); W0(); ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  }
+  if (E && E.k === 'lanterns') {
+    for (let i = 0; i < 40; i++) { const along = ((t - N.t0) * .9 + i * .38) % 17 - 1, onX = i % 2, gx = onX ? along : 7.75 + (i % 3) * .2, gy = onX ? 7.75 + (i % 3) * .2 : along, p = tiso(gx, gy);
+      glow(p[0], p[1] - 22, 16, '255,170,70', .8); ctx.fillStyle = '#ffcf7a'; ctx.fillRect(p[0] - 2, p[1] - 25, 4, 5); }
+  }
+  if (E && E.k === 'glow') {
+    S.balloons.slice(0, 6).forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4, p = tiso(gx, gy), f = Math.max(0, Math.sin(t * 3 + i * 1.7)); glow(p[0], p[1] - 70, 80, '255,150,60', .25 + .55 * f); });
+  }
+  ctx.restore();
+}
 function drawHomeTown(w, h, dockTop, top) {
   /* the town sits on the (collapsed) dock; its back corner stays below the weather card so the card covers only valley.
      The valley runs on under the dock, so the map shows through its glass and between the cards. */

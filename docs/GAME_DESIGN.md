@@ -163,11 +163,14 @@ Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükse
 
 ## Sabah olayları
 12. günden sonra (pilot ofisi açıksa, kış değilse) 7–8 günde bir. Kamera olayın yerine yakınlaşır, kart alttan çıkar. Aynı olay arka arkaya gelmez.
-- **Pilot grevi** (en az 2 pilot): ofisin önünde pankartlı pilotlar. Zam (%15 kalıcı) ya da bir gün dayan (pilotlu balonlar uçmaz, popülerlik −0,02).
+- **Pilot grevi** (en az 2 pilot): ofisin önünde pankartlı pilotlar. Zam (%15 kalıcı) ya da bir gün dayan (pilotlu balonlar uçmaz, amirali sen uçurursun, popülerlik −0,02).
 - **VIP / Düğün** (boşta uçabilen balon): en büyük boş balonu kirala, peşin kapasite × fiyat × 2,2 (VIP) / × 1,4 (düğün), popülerlik +0,02 / +0,015. Balon o gün yolcu almaz.
 - **Belgesel:** amiralde 4 koltuk o gün kameraya ayrılır (satılmaz), popülerlik +0,06.
 - **Propan zammı** (en az 2 balon): 5 gün yakıt ×1,5; günlük yakıtın 5 günlüğünün %25'i ödenirse etkilenmez.
 - **Basın röportajı:** %65 şansla popülerlik artar, yoksa düşer.
+
+## Gece
+Uçuş defterinden sonra kasabada gece olur (birkaç saniye, dokununca geçer): ışıklar yanar, cırcır böcekleri öter, ateş böcekleri uçar. Bazen bir gece olayı olur ve ertesi sabah gazetede çıkar: festival gecesi fener alayı, Fiesta'da Balloon Glow, kışın ilk gecesi karlı ışıklı kasaba, bir otelde düğün havai fişekleri (%22), kayan yıldız (%10). Olaylar şimdilik yalnızca görsel ve haber.
 
 ## Festivaller (Kapadokya)
 24. günden başlayarak 35 günde bir, 3 gün: Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
@@ -189,7 +192,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Özel desenler** 0,99 €: Varak altın 92, İznik çinisi 90, Takımyıldız 92, Kapadokya kilimi 90 (desen tabanı).
 - **Balon şekilleri** 1,99 €: Kalp, Yıldız, Hezarfen (sarıklı, bıyıklı). Tasarıma eklenir: yaratıcılık +8 ve her uçuşta ek popülerlik +0,0015.
 - **Kasaba süsleri** 0,99 €: meydan çeşmesi, Hezarfen heykeli, fener dizileri, şirket bayrakları. Her biri kasabada görünür ve talebi %1 artırır.
-- Hepsi kasabadaki **Çarşı** binasından alınır (pazarla birlikte açılır). Desen ya da şekil şirket renklerinde hazır bir tasarımla gelir ve amiral balonuna hemen giydirilir; atölye gerekmez (atölye yalnızca kendi tasarımını yapmak için). Atölyede bu desen ve şekiller kilitli görünür, oradan da alınabilir.
+- Hepsi kasabadaki **Çarşı** binasından alınır (pazarla birlikte açılır). Desen ya da şekil şirket renklerinde hazır bir tasarımla gelir ve amiral balonuna hemen giydirilir; atölye gerekmez; bu tasarımlar her balona bedava giydirilir (normal tasarımda boya €1.000) (atölye yalnızca kendi tasarımını yapmak için). Atölyede bu desen ve şekiller kilitli görünür, oradan da alınabilir.
 
 
 ## Bölgeler ve otomatik mod
