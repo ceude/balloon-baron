@@ -248,6 +248,9 @@ body.zoomed .chirp{transform:translate(-50%,calc(-100% - 320px));opacity:0}
 #hqBody .deal .dprice{color:var(--ink)}
 #hqBody .deal .dstat,#hqBody .office .ostat{color:var(--green)}
 #hqBody .dcta{background:var(--coral);color:#fff;box-shadow:0 3px 0 #c7381a}
+.card{position:relative}
+.cardx{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:12px;font-size:17px;z-index:1}
+.pdone{margin-top:8px}
 #tClose{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));right:max(14px, env(safe-area-inset-right, 0px));width:46px;height:46px;border-radius:50%;background:rgba(255,250,243,.95);color:var(--ink);font-size:20px;font-weight:800;box-shadow:0 4px 0 rgba(43,35,80,.35);display:grid;place-items:center;transition:opacity .2s ease, transform .2s ease}
 #tClose.gone{opacity:0;transform:scale(.6);pointer-events:none}
 .sw8{width:66px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:13px;flex:none}
@@ -1666,6 +1669,7 @@ function renderTab() {
   if (!page) return;
   const body = $('tabBody'), st = body.scrollTop; body.replaceChildren();
   PAGES[page][1]()(body);
+  const ok = h('button', 'big pdone', 'Tamam'); ok.onclick = closePage; body.appendChild(ok);
   body.scrollTop = st;
 }
 let alertsOpen = false;
@@ -2240,7 +2244,7 @@ function startCollect() {
   const seq = []; parts.forEach((p, i) => { for (let k = 0; k < p.n; k++) seq.push(i); });
   for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
   COL = { t: 0, dur: 3.2, cap, parts, seq, shown: 0, counts: parts.map(() => 0), done: false, n: fl.length };
-  mode = 'collect'; $('sheet').hidden = true; $('chirp').hidden = true;
+  mode = 'collect'; $('sheet').hidden = true; $('chirp').hidden = true; COLV.hz = null;
   const el = $('collect'); el.replaceChildren();
   el.appendChild(h('div', 'ctitle', `<div><h2 id="cTitle">Yolcular toplanıyor…</h2><div class="hint">Bilet ${eur(S.price)}, ${fl.length} balon</div></div><div class="ccount" id="cCount">0/${cap}</div>`));
   el.appendChild(h('div', 'ctime', '<i id="cBar"></i>'));
@@ -2320,7 +2324,7 @@ function drawCollectTown() {
   if (c.from == null) c.from = { z: HOME.z || to.z * .4, ox: HOME.ox || to.ox, oy: HOME.oy || to.oy, t0: now };
   const k = easeIO(clamp((now - c.from.t0) / .8, 0, 1));
   COLV.z = lerp(c.from.z, to.z, k); COLV.ox = lerp(c.from.ox, to.ox, k); COLV.oy = lerp(c.from.oy, to.oy, k);
-  COLV.extra = collectItems; COLV.noLabels = true;
+  COLV.extra = collectItems; COLV.noLabels = true; if (COLV.hz == null) COLV.hz = HOME.h ? homeHorizon() : H * .3;
   renderTown(COLV, W, H, DPR, 0);
 }
 /* The queue grows with the passengers (one figure stands for several in a big company), then the jeeps. */
@@ -3301,7 +3305,7 @@ const TW = 128, TH = 64; /* tile size in world units */
 const tiso = (gx, gy) => [(gx - gy) * TW / 2, (gx + gy) * TH / 2];
 function openSection(pageKey, heading) {
   openPage(pageKey);
-  if (heading) setTimeout(() => { const t = [...document.querySelectorAll('#tabBody h2')].find(x => x.textContent.startsWith(heading)); if (t) t.scrollIntoView(); }, 60);
+  if (heading) setTimeout(() => { const b = $('tabBody'), t = [...b.querySelectorAll('h2')].find(x => x.textContent.startsWith(heading)); if (t) b.scrollTop = t.getBoundingClientRect().top - b.getBoundingClientRect().top + b.scrollTop - 8; }, 60);
 }
 function doInfluencer() {
   S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); hezAdd('influ'); sfx('coin'); refresh(); setTimeout(nextPopup, 300);
@@ -3856,8 +3860,8 @@ function townWall() {
 /* Horizon on screen: a little above the town's far corner. Zoomed in, it never drops below where the home screen
    had it, so the sky doesn't grow as you zoom or drag; the valley simply reaches further back. */
 function townHorizon(h) {
-  const hz = Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z);
-  return TV === TOWN && TOWN.hz != null ? Math.min(hz, TOWN.hz) : hz;
+  if (TV.hz != null) return TV.hz; /* zoomed or collecting: the horizon stays where the home screen had it */
+  return Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z);
 }
 function townBackdrop(w, h, t) {
   const hz = townHorizon(h), px = TV.ox * .08, p = .32;
@@ -3977,6 +3981,7 @@ function drawHomeTown(w, h, dockTop, top) {
   const [cx] = tiso(7, 8), right = $('nav').offsetWidth ? $('nav').offsetWidth + 14 : 0; HOME.ox = (w - right) / 2 - cx * HOME.z; HOME.oy = front - tiso(15.5, 15.5)[1] * HOME.z;
   renderTown(HOME, w, h, DPR, 0);
 }
+function homeHorizon() { return Math.min(HOME.h * .6, HOME.oy + tiso(-7, -7)[1] * HOME.z); }
 function homeTap(x, y) {
   if (y > (HOME.front || HOME.h)) return;
   const zh = HOME.zoneHits.find(hh => inPoly([x, y], hh.pts));
@@ -4019,7 +4024,7 @@ function townClamp(w, h) {
 function openTown(at) {
   const el = $('town'); el.hidden = false; TOWN.open = true; TOWN.leaving = false;
   TOWN.z = HOME.z; TOWN.ox = HOME.ox; TOWN.oy = HOME.oy; TOWN.anim = null;
-  TOWN.hz = Math.min(HOME.h * .6, HOME.oy + tiso(-7, -7)[1] * HOME.z); /* same horizon as the home screen */
+  TOWN.hz = homeHorizon(); /* same horizon as the home screen */
   $('tClose').classList.remove('gone');
   document.body.classList.add('zoomed');
   cancelAnimationFrame(TOWN.raf); townLoop();
@@ -4224,6 +4229,13 @@ function hqChart(x, y, w, h, t) {
   ctx.fillStyle = '#9aa0a8'; ctx.font = '600 10px Barlow, sans-serif'; ctx.fillText(`Gün ${hist[0].d}`, x + 4, y + h + 11); ctx.textAlign = 'right'; ctx.fillText(`Gün ${hist[hist.length - 1].d}`, x + w, y + h + 11); ctx.textAlign = 'left';
 }
 $('hqClose').onclick = closeHQ;
+/* Every card that can be closed gets an X in its top right corner, doing what its bottom button does. */
+new MutationObserver(() => {
+  const m = $('menu'), c = m.querySelector('.card'); if (m.hidden || !c || c.querySelector('.cardx')) return;
+  const close = [...c.querySelectorAll('button')].reverse().find(b => ['Kapat', 'Tamam', 'Devam', 'Vazgeç', 'Başla', 'Sonra'].includes(b.textContent.trim()));
+  if (!close) return;
+  const x = h('button', 'pclose cardx', '✕'); x.setAttribute('aria-label', 'Kapat'); x.onclick = () => close.click(); c.prepend(x);
+}).observe($('menu'), { childList: true, subtree: true, attributes: true, attributeFilter: ['hidden'] });
 $('hqSClose').onclick = () => { HQ.sheet = null; hqRender(); };
 $('hqSheet').addEventListener('click', e => { if (e.target.id === 'hqSheet') { HQ.sheet = null; hqRender(); } });
 

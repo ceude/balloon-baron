@@ -2,7 +2,8 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-## Telefon testinden sonra (v68)
+## Telefon testinden sonra (v68, düzeltmeler v69)
+- **v69:** Ufuk çizgisi yakınken ve yolcu toplarken hiç oynamaz (ana ekrandaki yerinde sabit; kaydırınca da). Kasabadan bir binayı açınca sayfa doğru bölüme kayar ama sayfanın kendisi kaymaz (eskiden tüm ekran kayıp başlık ve ✕ ekrandan çıkıyor, alttaki panel sayfanın üstüne biniyordu). Her sayfanın sonunda "Tamam", sağ üstte ✕. Kapatılabilen her kartta (Hedefler, bina kartları, bölüm sonu vb.) sağ üstte ✕ var; alttaki Kapat/Tamam/Devam ne yapıyorsa onu yapar. Zorunlu seçim kartlarında (ör. pilot ayartma) ✕ yok.
 - **Ufuk sabit:** yakınlaşınca ufuk çizgisi ana ekrandaki yerinden aşağı inmez (gökyüzü büyümez); vadi geriye doğru uzar. `TOWN.hz` = ana ekranın ufku, `townHorizon` bunun altına düşmez.
 - **Yatay kaydırma:** yakınken sola/sağa duvarın iki köşesine kadar rahatça gidilir (sınır 16 karo genişliği, ekranın %15–85'i). Dikey sınır aynı.
 - **Alt panel şerit oldu:** kapalıyken yalnızca tutamaç, tek satır şerit (en acil uyarı + kalan sayı, filo "uçacak/toplam", sigorta durumu), bilet kartı ve Pas geç / Yolcu topla. Şeride ya da tutamaca dokununca veya yukarı çekince tüm kartlar açılır (uyarılar, filo, sigortalar); aşağı çekince kapanır. Panel yarı saydam; kasaba ekranın tamamına çizilir, panelin arkasında ve kenarlarında harita görünür. Kasaba kapalı şeridin üstüne oturur.
