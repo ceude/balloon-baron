@@ -206,7 +206,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 body.zoomed #hud{transform:translateY(-130%)}
 body.zoomed .wxw,body.zoomed .side{transform:translateY(calc(-100% - 280px))}
 body.zoomed .dock{transform:translate(-50%,calc(100% + 40px))}
-body.zoomed .chirp{transform:translate(-50%,calc(-100% - 320px));opacity:0}
+body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 #town canvas{position:absolute;inset:0;width:100%;height:100%;touch-action:none;cursor:grab}
 /* Holding: an open-plan office floor in the tower; desks are the holding's departments */
 #hq{position:absolute;inset:0;z-index:8;background:#f3e2c6;opacity:0;transform:scale(1.08);transition:opacity .35s ease, transform .45s cubic-bezier(.3,.7,.3,1)}
@@ -539,9 +539,9 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .hzb::before{content:"";position:absolute;left:-10px;bottom:10px;border-style:solid;border-width:8px 12px 8px 0;border-color:transparent #fff transparent transparent}
 .hzb p{margin:0;font-size:15px;line-height:1.45;color:var(--ink);min-height:2.9em}
 .hzb .pbtn{align-self:flex-end}
-.chirp{position:absolute;left:50%;transform:translateX(-50%);z-index:4;width:min(440px,calc(100% - 24px));display:flex;gap:10px;align-items:flex-start;
+.chirp{position:absolute;left:max(12px, env(safe-area-inset-left, 0px));z-index:4;width:min(400px,calc(100% - 92px));display:flex;gap:10px;align-items:flex-start;
   padding:10px 12px;border-radius:16px;background:rgba(255,255,255,.96);box-shadow:0 4px 14px rgba(20,10,40,.25);transition:opacity .35s, transform .35s}
-.chirp.out{opacity:0;transform:translate(-50%,-8px);pointer-events:none}
+.chirp.out{opacity:0;transform:translateY(-8px);pointer-events:none}
 .chirp .av,.rev .av{width:34px;height:34px;font-size:15px}
 .who{font-size:12.5px;color:var(--ink2)}
 .who b{color:var(--ink);font-size:14px;margin-right:4px}
@@ -1607,7 +1607,9 @@ function updateChirp(dt) {
   const el = $('chirp'), show = mode === 'office' && !$('sheet').hidden && $('page').hidden && $('hez').hidden && S && S.reviews && S.reviews.length;
   if (!show) { el.hidden = true; return; }
   el.hidden = false;
-  el.style.top = ($('hud').offsetHeight + 8) + 'px';
+  /* under the wind card, left aligned, stopping short of the side buttons */
+  const wx = $('wx'); el.style.top = (wx.offsetTop + wx.offsetHeight + 10) + 'px';
+  el.style.width = `min(400px, ${Math.max(200, innerWidth - ($('nav').offsetWidth || 0) - 34)}px)`;
   chirpT -= dt;
   if (chirpVis > 0) { chirpVis -= dt; if (chirpVis <= 0) el.classList.add('out'); }
   if (chirpT <= 0) {
@@ -1820,7 +1822,7 @@ function showFleetPlan() {
 }
 function placeWidgets() {
   const hud = $('hud').offsetHeight;
-  $('wx').style.top = (hud + 92) + 'px';
+  $('wx').style.top = (hud + 10) + 'px'; /* wind top left, reviews under it, side buttons on the right */
   $('nav').style.top = (hud + 12) + 'px';
 }
 function stepPrice(d) { S.price = clamp(S.price + d, PRICE_MIN, PRICE_MAX); $('pVal').textContent = eur(S.price); renderAct(); }
