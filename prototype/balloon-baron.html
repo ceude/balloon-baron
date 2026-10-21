@@ -271,6 +271,8 @@ body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 .fc span{font-size:12px;color:var(--ink2)}.fc i{width:22px;height:14px;border-radius:3px}.fc b{font-family:var(--cond);font-size:17px;color:var(--ink)}
 .tag.trait{font-weight:800}
 .trd{font-style:normal;font-size:12px;color:var(--ink2)}
+.card.post{align-items:center;text-align:center}.pwrap{transform:rotate(-2deg);filter:drop-shadow(0 8px 14px rgba(43,35,80,.25))}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pitem{padding:0}.pitem svg{width:100%;height:auto}.pcd.lock{filter:grayscale(1) opacity(.45)}
 .card.rescue{border-top:6px solid var(--red)}
 .regrow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
 .regrow b{font-family:var(--cond);font-weight:800;font-size:21px;color:var(--ink)}
@@ -1196,6 +1198,7 @@ function nextPopup() {
   if (S.paper && S.paper.length) { showPaper(); return; }
   if (S.cash < 0 && !S.rescueShown) { showRescue(); return; }
   if (S.eventDue) { showEvent(); return; }
+  if (S.newPost && S.newPost.length) { showPostcard(); return; }
   if (S.cash >= 0) S.rescueShown = false;
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
   if (S.poach) { showPoach(); return; }
@@ -1285,9 +1288,9 @@ function finishDay(flight) {
       S.lastSelfFly = S.day;
       Lg.founder += Math.round(pax * S.price * FOUNDER);
       const q = flight.q;
-      if (flight.mok) { const M = MISSIONS[flight.mis], rw = misReward(flight.mis, b.size); Lg.mission += rw; Lg.missionName = M.name; S.rep += .02; ev.push(`Görev tamamlandı: ${M.name}. Müşteri ${eur(rw)} ödül verdi.`); }
+      if (flight.mok) { (S.stat = S.stat || {}).mis = (S.stat.mis || 0) + 1; const M = MISSIONS[flight.mis], rw = misReward(flight.mis, b.size); Lg.mission += rw; Lg.missionName = M.name; S.rep += .02; ev.push(`Görev tamamlandı: ${M.name}. Müşteri ${eur(rw)} ödül verdi.`); }
       else if (flight.mis && q !== 'cancel') ev.push(`Görev tamamlanamadı: ${MISSIONS[flight.mis].name}.`);
-      if (q === 'perfect') { Lg.tips += pax * 15; S.rep += .03; ev.push(`${b.name}: kusursuz iniş. Yolcular ${eur(pax * 15)} bahşiş bıraktı.`); }
+      if (q === 'perfect') { (S.stat = S.stat || {}).perfect = (S.stat.perfect || 0) + 1; Lg.tips += pax * 15; S.rep += .03; ev.push(`${b.name}: kusursuz iniş. Yolcular ${eur(pax * 15)} bahşiş bıraktı.`); }
       else if (q === 'good') { Lg.tips += pax * 6; S.rep += starVal(S.rep) > 4.5 ? 0 : .01; ev.push(`${b.name}: düzgün iniş, yolcular memnun.`); }
       else if (q === 'far') { S.rep -= starVal(S.rep) > 4.5 ? .04 : .02; ev.push(`${b.name}: hedeften ${Math.round(flight.dist)} m uzağa indin, yer ekibi seni geç buldu.`); }
       else if (q === 'hard') sev = .3;
@@ -1387,8 +1390,9 @@ function finishDay(flight) {
   net += checkChapters(ev, Lg, rpTot > 0);
   if (paxTotal > (S.bestPax || 0) && S.day > 5) { if (S.bestPax && paxTotal >= S.bestPax + 8) paperAdd(2, `Rekor sabah: ${S.company} ${paxTotal} yolcu uçurdu`, 'Şirketin bugüne kadarki en kalabalık günü.'); S.bestPax = paxTotal; }
   { const B = bossRival(); if (B && B.alive && paxTotal > (B.lastPax || 0) && B.lastPax > 0 && S.day > 8) { if (!(S.bossSaid && S.bossSaid[S.region + ':passed'])) paperAdd(4, `${S.company}, ${B.name}'yi geçti`, 'Vadinin en çok yolcu uçuran şirketi değişti.'); bossSay('passed'); } }
+  (S.stat = S.stat || {}).pax = (S.stat.pax || 0) + paxTotal;
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
-  S.day++; S.plan = null;
+  S.day++; S.plan = null; achCheck(); if (anyBaron()) holdGoalsCheck();
   if (S.region === 'abq') {
     if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 30; }
     else if (!S.fiesta && S.day >= (S.fiestaNext || 0) && !S.winter) { S.fiesta = { start: S.day, end: S.day + 3 }; S.hezQ.push('news:Albuquerque Balloon Fiesta başladı evlat! Dört gün boyunca dünyanın dört bir yanından turist akın edecek, gökyüzü yüzlerce balonla dolacak. Bütün balonlarını havaya kaldır!'); }
@@ -2714,10 +2718,72 @@ function showRepChart() {
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
 }
+/* ---------- achievements and postcards ---------- */
+/* Each first is a postcard you keep: an album in the menu. Checked every evening (shared across regions). */
+const ACHS = [
+  ['first', 'İlk uçuş', 'Şirketinin ilk sabahı', '🎈', () => S.day >= 2],
+  ['mission', 'İlk özel istek', 'Bir görevi başardın', '⭐', () => (S.stat || {}).mis >= 1],
+  ['perfect10', 'Tüy gibi', '10 kusursuz iniş', '🪶', () => (S.stat || {}).perfect >= 10],
+  ['fleet5', 'Küçük filo', '5 balon', '5️⃣', () => S.balloons.length >= 5],
+  ['fleet10', 'Gökyüzü kalabalık', '10 balon', '🔟', () => S.balloons.length >= 10],
+  ['fleet20', 'Armada', '20 balon', '🛩️', () => S.balloons.length >= 20],
+  ['hotel', 'Otel ortağı', 'İlk otel anlaşması', '🏨', () => S.hotels.length + (S.ownHotels || []).length >= 1],
+  ['hotelOwn', 'Otel sahibi', 'Bir otel satın aldın', '🔑', () => (S.ownHotels || []).length >= 1],
+  ['star45', 'Vadinin gözdesi', '4,5★ popülerlik', '🌟', () => starVal(S.rep) >= 4.5],
+  ['pax1k', 'Bin yolcu', 'Toplam 1.000 yolcu uçurdun', '🧺', () => (S.stat || {}).pax >= 1000],
+  ['pax10k', 'On bin yolcu', 'Toplam 10.000 yolcu', '🏆', () => (S.stat || {}).pax >= 10000],
+  ['winter', 'Kışı atlattın', 'İlk kış bitti', '❄️', () => !!S.nextWinter],
+  ['fest', 'Festival havası', 'Bir festivalde uçtun', '🎉', () => !!S.festN || !!S.fiestaFlown],
+  ['rivalDown', 'Rakip düştü', 'Bir rakip iflas etti', '📉', () => S.rivals.some(r => !r.alive)],
+  ['boss', 'Eski usta', 'Vadinin eski sahibi çekildi', '🎩', () => Object.keys(S.bossSaid || {}).some(k => k.endsWith(':gone'))],
+  ['design', 'Kendi desenin', 'İlk balon tasarımın', '🎨', () => (S.designs || []).length >= 1],
+  ['upgrade3', 'Usta işi', 'Bir binayı 3. seviyeye çıkardın', '🏗️', () => Object.keys(UPGRADES).some(k => bl(k) >= 3)],
+  ['xl', 'İmza balonu', 'XL balonun gökyüzünde', '🎪', () => S.balloons.some(b => b.size === 'XL')],
+  ['baronCap', 'Kapadokya Baronu', 'Vadinin efendisi', '👑', () => !!(S.barons || {}).cap],
+  ['abq', 'Yeni Dünya', 'Albuquerque\'ye girdin', '🌵', () => ownsRegion('abq')],
+  ['baronAbq', 'Albuquerque Baronu', 'İki kıtanın göğü', '🦅', () => !!(S.barons || {}).abq],
+  ['world', 'Dünya Baronu', 'Holdingin bütün hedefleri', '🌍', () => !!(S.hold || {}).worldBaron]
+];
+function achCheck() {
+  S.ach = S.ach || {};
+  for (const [k, t] of ACHS.map(a => [a[0], a[4]])) if (!S.ach[k] && t()) { S.ach[k] = S.day; (S.newPost = S.newPost || []).push(k); }
+}
+/* A postcard: sunrise sky, chimneys, your balloon and the moment's stamp. */
+function postcard(k, big) {
+  const A = ACHS.find(a => a[0] === k), got = S.ach && S.ach[k], c = myCol(), w = big ? 300 : 150, hh = big ? 190 : 96;
+  return `<svg viewBox="0 0 150 96" width="${w}" height="${hh}" class="pcd${got ? '' : ' lock'}"><defs><linearGradient id="pg${k}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6b7fc4"/><stop offset=".6" stop-color="#f0b48c"/><stop offset="1" stop-color="#ffdca8"/></linearGradient></defs>
+    <rect x="1" y="1" width="148" height="94" rx="6" fill="#fffaf3" stroke="#e2dcef"/><rect x="6" y="6" width="138" height="66" rx="3" fill="url(#pg${k})"/>
+    <circle cx="112" cy="54" r="9" fill="#fff0c8"/><path d="M6 72 L6 60 Q30 52 52 60 T100 58 T144 60 L144 72Z" fill="#d7a27e"/>
+    <path d="M24 72 L28 52 L32 72Z M38 72 L41 56 L44 72Z M118 72 L122 50 L126 72Z" fill="#c98d68"/>
+    <g transform="translate(66 18)"><path d="M0 14 C0 4 7 0 12 0 C17 0 24 4 24 14 C24 22 16 26 14 30 L10 30 C8 26 0 22 0 14Z" fill="${c[0]}"/><path d="M8 3 C6 10 6 20 10 30 M16 3 C18 10 18 20 14 30" stroke="${c[1]}" stroke-width="3" fill="none"/><rect x="9" y="32" width="6" height="5" fill="#6b4426"/></g>
+    <text x="134" y="24" font-size="15" text-anchor="middle">${A[3]}</text>
+    <text x="8" y="85" font-family="Barlow Condensed,sans-serif" font-weight="800" font-size="10.5" fill="#2b2350">${A[1]}</text>
+    <text x="142" y="85" font-family="Barlow,sans-serif" font-size="7.5" text-anchor="end" fill="#6c6488">${got ? 'Gün ' + got : 'Kilitli'}</text></svg>`;
+}
+function showPostcard() {
+  const k = S.newPost.shift(), A = ACHS.find(a => a[0] === k); save();
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card post');
+  c.appendChild(h('div', 'chap', 'Yeni kartpostal'));
+  c.insertAdjacentHTML('beforeend', `<div class="pwrap">${postcard(k, true)}</div>`);
+  c.appendChild(h('h1', null, A[1])); c.appendChild(h('p', 'lead', A[2] + '.'));
+  const ok = h('button', 'big', 'Albüme koy'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
+  m.appendChild(c); m.hidden = false; sfx('fanfare');
+}
+function showAlbum() {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card album');
+  const n = ACHS.filter(a => S.ach && S.ach[a[0]]).length;
+  c.appendChild(h('h1', null, 'Başarımlar')); c.appendChild(h('p', 'hint', `Kartpostal albümün: ${n}/${ACHS.length}. Kilitli olanlara dokununca nasıl açılacağı yazar.`));
+  const g = h('div', 'pgrid');
+  for (const A of ACHS) { const it = h('button', 'pitem', postcard(A[0])); it.onclick = () => { it.title = A[2]; hint.textContent = `${A[1]}: ${A[2]}${S.ach && S.ach[A[0]] ? `, gün ${S.ach[A[0]]}` : ' (kilitli)'}.`; }; g.appendChild(it); }
+  c.appendChild(g); const hint = h('p', 'hint'); c.appendChild(hint);
+  const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
 function showMenu() {
   const m = $('menu'); m.replaceChildren();
   const c = h('div', 'card');
   c.appendChild(h('h1', null, 'Menü'));
+  { const n = ACHS.filter(a => S.ach && S.ach[a[0]]).length, ab = h('button', 'opt', `<b>🏆 Başarımlar</b><span>Kartpostal albümü: ${n}/${ACHS.length}</span>`); ab.onclick = showAlbum; c.appendChild(ab); }
   if (mode !== 'flight') save();
   c.appendChild(h('p', 'hint', savedOk ? `Oyunun bu tarayıcıya kaydedildi: gün ${S.day}, kasa ${eur(S.cash)}. Her sabah ve yaptığın her değişiklikte otomatik kaydedilir.` : 'Bu tarayıcı kayda izin vermiyor. İlerlemeni kaybetmemek için aşağıdaki kodu kopyala.'));
   c.appendChild(h('h2', null, 'Kayıt kodu'));
@@ -3559,7 +3625,7 @@ function hqDeals(body, which, title) {
   };
   const tvOn = H.tvUntil > S.day, tvCd = (H.tvCd || 0) > S.day;
   if (which.includes('tv')) deal('tv', 'Prime time', 'TV reklam kampanyası', 'Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların.', ['Bütün bölgelerde talep +%20', '14 gün', `${RD().name}: +0,4★`], tvCost(), 'Yayına al',
-    () => { H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, { active: tvOn ? `Yayında · ${H.tvUntil - S.day} gün kaldı` : '', lock: tvCd && !tvOn ? `Yeni kampanya için ${H.tvCd - S.day} gün` : '' });
+    () => { H.tvN = (H.tvN || 0) + 1; H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, { active: tvOn ? `Yayında · ${H.tvUntil - S.day} gün kaldı` : '', lock: tvCd && !tvOn ? `Yeni kampanya için ${H.tvCd - S.day} gün` : '' });
   const ce = H.celeb && H.celeb.until > S.day, days = hasOffice('sel') ? 180 : 90;
   if (which.includes('celeb')) deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], celebCost(), 'Sözleşme imzala',
     () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
@@ -4457,7 +4523,7 @@ function townTap(x, y) {
 const HQ = { open: false, sheet: null, raf: 0, t0: 0 };
 const HQ_TOWER = [10, 2];
 const HQ_UNITS = {
-  board: { name: 'Kasa ve aktarım', draw: b => { hqCash(b); hqTransfer(b); } },
+  board: { name: 'Kasa ve hedefler', draw: b => { hqCash(b); hqGoals(b); hqTransfer(b); } },
   window: { name: 'Bölgeler', draw: b => hqRegions(b) },
   mkt: { name: 'Pazarlama birimi', draw: b => hqDeals(b, ['tv', 'bb'], 'Kampanyalar') },
   deals: { name: 'Anlaşmalar birimi', draw: b => hqDeals(b, ['celeb'], 'Reklam yüzü') },
@@ -4590,7 +4656,30 @@ function plant(x, y, k) {
   for (let i = 0; i < 7; i++) { const a = -Math.PI / 2 + (i - 3) * .38; ctx.fillStyle = i % 2 ? '#4f8a3a' : '#6faa4a'; ctx.beginPath(); ctx.ellipse(x + Math.cos(a) * 16 * k, y - 22 * k + Math.sin(a) * 22 * k, 5 * k, 14 * k, a + Math.PI / 2, 0, 7); ctx.fill(); }
 }
 /* Holding cash over the last 14 days as a marker line, with today's figure in big handwriting. */
+/* The holding's own goals, written on the whiteboard under the chart. All six make you World Baron. */
+const HOLD_GOALS = [
+  ['Holding kasası €1 milyon', () => (S.holding || 0) >= 1e6],
+  ['Albuquerque Baronu', () => !!(S.barons || {}).abq],
+  ['Bir TV kampanyası', () => ((S.hold || {}).tvN || 0) >= 1],
+  ['Ünlü reklam yüzü', () => !!(S.hold || {}).celeb],
+  ['Zarf Ar-Ge\'si tamam', () => ((S.hold || {}).rnd || 0) >= 2],
+  ['Dört dünya ofisi', () => officeCount() >= 4]
+];
+function holdGoalsCheck() {
+  const done = HOLD_GOALS.every(g => g[1]()); if (!done || (S.hold || {}).worldBaron) return;
+  S.hold.worldBaron = S.day; S.hezQ.push('news:Dünya Baronu! Holdingin bütün hedeflerini bitirdin evlat. Galata\'dan Üsküdar\'a uçan bir adam olarak söylüyorum: senden büyüğünü görmedim.');
+  paperAdd(6, `${S.company} artık bir dünya devi`, 'Kapadokya\'dan Albuquerque\'ye, dört kıtada ofis.');
+}
+function hqGoals(body) {
+  const sec = h('div', 'sec'); sec.appendChild(h('h2', null, (S.hold || {}).worldBaron ? 'Dünya Baronu 👑' : 'Holding hedefleri'));
+  for (const [t, f] of HOLD_GOALS) { const d = f(); sec.appendChild(h('div', 'goal' + (d ? ' done' : ''), `<span class="gk">${d ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${t}</b><span>${d ? 'tamam' : ''}</span></div></div>`)); }
+  sec.appendChild(h('p', 'hint', 'Hepsi tamamlanınca Dünya Baronu olursun.')); body.appendChild(sec);
+}
 function hqChart(x, y, w, h, t) {
+  /* goals in marker at the bottom of the board; the chart takes the space above */
+  const gy = y + h - HOLD_GOALS.length * 13 + 4; h = Math.max(30, gy - y - 22);
+  ctx.font = '700 10.5px Barlow, sans-serif';
+  HOLD_GOALS.forEach(([txt, f], i) => { const d = f(), yy = gy + i * 13; ctx.strokeStyle = d ? '#22a45d' : '#2b5ab8'; ctx.lineWidth = 1.4; ctx.strokeRect(x + 2, yy - 8, 8, 8); if (d) { ctx.beginPath(); ctx.moveTo(x + 3, yy - 4); ctx.lineTo(x + 6, yy - 1); ctx.lineTo(x + 11, yy - 10); ctx.stroke(); } ctx.fillStyle = d ? '#22a45d' : '#2b5ab8'; ctx.fillText(txt, x + 15, yy); });
   const hist = ((S.hold || {}).hist || []).slice(-14);
   ctx.strokeStyle = '#c9ccd2'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x, y + h); ctx.lineTo(x + w, y + h); ctx.moveTo(x, y); ctx.lineTo(x, y + h); ctx.stroke();
   if (hist.length < 2) { ctx.fillStyle = '#9aa0a8'; ctx.font = '600 12px Barlow, sans-serif'; ctx.fillText('Grafik ilk gelirle başlar', x + 8, y + h / 2); return; }
