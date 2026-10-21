@@ -21,5 +21,5 @@ for k in sorted(S):
     out["strings"][k] = {"extractionState": "manual", "localizations": {
         l: {"stringUnit": {"state": "translated", "value": S[k][l]}} for l in LANGS}}
 target = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.path.dirname(__file__), '../../BalloonBaron/Localizable.xcstrings')
-json.dump(out, open(target, "w"), ensure_ascii=False, indent=2, sort_keys=True)
+json.dump(out, open(target, "w", encoding="utf-8", newline="\n"), ensure_ascii=False, indent=2, sort_keys=True)
 print(len(S), "keys,", bad, "problems")

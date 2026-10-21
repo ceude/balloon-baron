@@ -28,7 +28,7 @@ def scan(rel):
     for name in sorted(os.listdir(os.path.join(ROOT, rel)), key=str.lower):
         if name in SKIP:
             continue
-        path = os.path.join(rel, name)
+        path = rel + "/" + name  # always "/", so ids match whether this runs on a Mac or on Windows
         if os.path.isdir(os.path.join(ROOT, path)) and not name.endswith(BUNDLES):
             groups.append(path)
         else:
@@ -248,5 +248,5 @@ for isa in sorted(sections):
     out.append(f"/* End {isa} section */")
 out += ["\t};", f"\trootObject = {PROJECT} /* Project object */;", "}", ""]
 path = os.path.join(ROOT, "BalloonBaron.xcodeproj", "project.pbxproj")
-open(path, "w").write("\n".join(out))
+open(path, "w", encoding="utf-8", newline="\n").write("\n".join(out))
 print(f"{path}: {len(sources)} sources, {len(resources)} resources")
