@@ -4274,7 +4274,7 @@ $('grab').onclick = () => dockOpen(!$('dock').classList.contains('open'));
 /* drag the dock up to open it, down to fold it back to the strip */
 (function dockDrag() {
   const d = $('dock'); let y0 = null, moved = false;
-  d.addEventListener('pointerdown', e => { y0 = e.clientY; moved = false; if (!d.classList.contains('open')) try { d.setPointerCapture(e.pointerId); } catch (_) {} });
+  d.addEventListener('pointerdown', e => { y0 = e.clientY; moved = false; });
   d.addEventListener('pointermove', e => {
     if (y0 == null) return;
     const dy = e.clientY - y0, open = d.classList.contains('open');
