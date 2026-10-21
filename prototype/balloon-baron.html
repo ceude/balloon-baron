@@ -161,6 +161,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .pcard .pf{flex:1;display:flex;flex-direction:column;gap:4px;font-size:12px;opacity:.9}
 .pcard .bar{height:7px;border-radius:4px;background:rgba(255,255,255,.15);overflow:hidden}
 .pcard .bar i{display:block;height:100%;background:var(--green);border-radius:4px}
+.pcard .who{font-weight:700;color:#fff;opacity:.95}
 .pcard .pgo{font-family:var(--cond);font-weight:800;font-size:15px;color:var(--sun)}
 #psheet{position:absolute;inset:0;z-index:7;background:rgba(20,15,45,.45);display:flex;align-items:flex-end;justify-content:center}
 .psh{width:min(560px,calc(100% - 16px));margin-bottom:max(10px, env(safe-area-inset-bottom, 0px));padding:16px;border-radius:24px;background:var(--glass);color:#fff;display:flex;flex-direction:column;gap:14px;-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);animation:pgin .2s ease-out}
@@ -1836,6 +1837,11 @@ function touristsToday() {
   return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? 5 : 0) + (S.day <= S.influUntil ? 8 : 0) + repBonusRaw();
 }
 function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0); }
+/* Who's in the baskets today, for the ticket card. */
+function whoFlies(fl) {
+  const self = fl.some(isSelf), pilots = fl.length - (self ? 1 : 0);
+  return self ? (pilots ? `Sen ve pilot${pilots > 1 ? 'ların' : 'un'} uçuracak` : 'Sen uçuracaksın') : pilots > 1 ? 'Pilotlar uçuracak' : 'Pilot uçuracak';
+}
 function renderAct() {
   const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), n = fl.length;
   const m = market(S.price, cap), pax = m.pax[0], seats = m.caps.reduce((a, b) => a + b, 0);
@@ -1847,7 +1853,7 @@ function renderAct() {
     <p class="mood">Bugün <b>${tour}</b> turist var, rakiplerle birlikte gökyüzünde <b>${seats}</b> koltuk: ${crowded ? 'koltuk fazla, rekabet sert.' : 'turist fazla, balonlar kolay dolar.'}</p>`;
   const delta = psBase == null ? 0 : income - psBase;
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>` : `<span>Bugün uçacak balon yok</span>`;
-  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span>` : '<span>Bugün uçacak balon yok</span>'}</span><span class="pgo">Ayarla ›</span>`;
+  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : '<span>Bugün uçacak balon yok</span>'}</span><span class="pgo">Ayarla ›</span>`;
   const go = $('go'); go.disabled = !n;
   go.textContent = n ? `Yolcu topla (${n} balon)` : 'Uçacak balon yok';
 }
