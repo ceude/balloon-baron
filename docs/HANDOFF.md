@@ -9,7 +9,7 @@ Yeni bir Claude oturumu bu repoyu açınca önce bunu ve `CLAUDE.md`'yi okusun.
 - `docs/GAME_DESIGN.md` güncel sayıları içeriyor.
 
 ## Artifact
-Eski hesabın artifact'i (`claude.ai/artifact/1mBPBfaqsUMAMPLj5fzwdA`) yeni hesaptan güncellenemez. Yeni oturumda prototip dosyası yeni bir artifact olarak yayınlanmalı ve `CLAUDE.md`'deki adres yenisiyle değiştirilmeli.
+Prototip yeni hesapta `claude.ai/artifact/9LyVDNN1dngsGGydyFuNYt` adresinde (v85). Eski hesabın artifact'i (`claude.ai/artifact/1mBPBfaqsUMAMPLj5fzwdA`) artık güncellenmiyor.
 
 ## Test
 - Çekirdek: `tools/install-swift-linux.sh && export PATH=/opt/swift/usr/bin:$PATH && cd Packages/BalloonBaronCore && swift test`

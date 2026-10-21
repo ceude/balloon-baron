@@ -9,7 +9,7 @@ iOS hot-air-balloon company tycoon. Solo developer (Turkish speaker) + Claude. A
 - `docs/GAME_DESIGN.md`: mechanics and numbers. Keep it in sync when balance changes.
 
 ## Workflow
-- Design changes we discuss are made **only in the HTML prototype** (`prototype/balloon-baron.html`) and published to the artifact https://claude.ai/artifact/1mBPBfaqsUMAMPLj5fzwdA. Do not touch the Swift code for them.
+- Design changes we discuss are made **only in the HTML prototype** (`prototype/balloon-baron.html`) and published to the artifact https://claude.ai/artifact/9LyVDNN1dngsGGydyFuNYt. Do not touch the Swift code for them.
 - Every prototype change that the Swift app doesn't have yet goes into `docs/PORT_QUEUE.md`. When the user decides, port the queue to Swift in one batch and clear it.
 
 ## Rules
