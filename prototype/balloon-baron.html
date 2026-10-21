@@ -261,6 +261,7 @@ body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 .paper .pmore{display:flex;flex-direction:column;border-top:1px solid rgba(43,35,80,.2);padding-top:7px}
 .paper .pmore b{font-family:Georgia,'Times New Roman',serif;font-size:17px;color:#1f1b2e}
 .paper .pmore span{font-size:13px;color:#6c6488}
+.bossq .hzav{width:48px;height:48px;flex:none}
 .card.rescue{border-top:6px solid var(--red)}
 .regrow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
 .regrow b{font-family:var(--cond);font-weight:800;font-size:21px;color:var(--ink)}
@@ -544,6 +545,8 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 @keyframes hzin{from{transform:translate(-50%,-16px) scale(.96);opacity:0}}
 .hzcol{flex:none;display:flex;flex-direction:column;align-items:center;gap:0;position:relative;z-index:1}
 .hzav{width:84px;height:84px;filter:drop-shadow(0 8px 16px rgba(15,8,35,.5))}
+.hzname.boss{background:#1f2a44;border-color:#5aa9e6;color:#bfe0ff}
+.bosst{font-size:11.5px;font-weight:700;color:var(--ink2);margin-bottom:-4px}
 .hzname{margin-top:-10px;font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.02em;color:#ffd27a;background:var(--ink);padding:3px 9px;border-radius:8px;border:1.5px solid #e8b04a;white-space:nowrap}
 .hzb{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;margin-bottom:22px;background:#fff;border-radius:20px 20px 20px 6px;padding:13px 15px 12px;box-shadow:0 14px 36px rgba(15,8,35,.45)}
 .hzb::before{content:"";position:absolute;left:-10px;bottom:10px;border-style:solid;border-width:8px 12px 8px 0;border-color:transparent #fff transparent transparent}
@@ -739,6 +742,64 @@ const HEZ = {
   prcap: 'Popülerliğin tavana dayandı evlat. Ne kadar güzel uçarsan uç, otellerle anlaşmadan ya da rehberleri uçurmadan adın 4,2 yıldızdan öteye gitmez; bir influencer kampanyası seni en fazla 4,5 yıldıza taşır. Kasabadaki otellere ve ajanslara bak.',
   aging: 'Bir balonunun zarfı yorulmuş. Eski kumaş sert rüzgârda kazaya davetiyedir. Filo sayfasından yenile.'
 };
+/* The rival boss of each region: the old money you're up against. Portraits drawn in code like Hezarfen's. */
+const BOSS_AV = {
+  cap: `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Kenan Arslan"><defs><clipPath id="bkc"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="bkbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3d5a8c"/><stop offset="1" stop-color="#9fc0e0"/></linearGradient></defs>
+<circle cx="50" cy="50" r="50" fill="#5aa9e6"/><g clip-path="url(#bkc)"><rect width="100" height="100" fill="url(#bkbg)"/>
+<path d="M14 100 C16 78 30 70 50 70 C70 70 84 78 86 100Z" fill="#1f2a44"/><path d="M42 70 L50 86 L58 70Z" fill="#fff"/><path d="M48 72 L52 72 L54 92 L50 96 L46 92Z" fill="#c0283a"/>
+<path d="M30 74 L38 72 L44 90Z M70 74 L62 72 L56 90Z" fill="#2c3a5c"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#d9a07a"/>
+<ellipse cx="50" cy="44" rx="18" ry="21" fill="#e2ad86"/>
+<path d="M31 40 C31 22 42 18 52 18 C64 18 70 26 69 40 C66 31 58 28 50 29 C42 29 35 32 31 40Z" fill="#3a3a44"/><path d="M33 37 C33 30 37 26 40 25" stroke="#9aa0a8" stroke-width="3" fill="none"/>
+<path d="M38 40 Q43 37 47 40 M53 40 Q57 37 62 40" stroke="#2a2018" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="44" r="1.8" fill="#1f1b2e"/><circle cx="57" cy="44" r="1.8" fill="#1f1b2e"/>
+<path d="M38 53 C43 49 47 51 50 51 C53 51 57 49 62 53 C58 55 54 54 50 54 C46 54 42 55 38 53Z" fill="#3a3a44"/>
+<path d="M45 58 Q52 60 56 57" stroke="#8a4a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<circle cx="64" cy="82" r="3" fill="#ffc23d"/></g></svg>`,
+  abq: `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Dale Whitaker"><defs><clipPath id="bdc"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="bdbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#e08a4a"/><stop offset="1" stop-color="#f6d08a"/></linearGradient></defs>
+<circle cx="50" cy="50" r="50" fill="#5aa9e6"/><g clip-path="url(#bdc)"><rect width="100" height="100" fill="url(#bdbg)"/>
+<path d="M14 100 C16 78 30 70 50 70 C70 70 84 78 86 100Z" fill="#8a5a34"/><path d="M40 70 L50 82 L60 70Z" fill="#f3e8d0"/><path d="M46 74 L54 74 L50 80Z" fill="#14a39a"/><circle cx="50" cy="77" r="2.4" fill="#c0c6cc"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#c98a62"/>
+<ellipse cx="50" cy="46" rx="18" ry="20" fill="#e0a07a"/>
+<path d="M18 36 C26 33 74 33 82 36 C82 40 74 40 50 40 C26 40 18 40 18 36Z" fill="#f1ddb0"/><path d="M31 37 C31 20 40 14 50 14 C60 14 69 20 69 37Z" fill="#f6e6c0"/><path d="M31 33 L69 33 L69 37 L31 37Z" fill="#5a3418"/>
+<path d="M38 44 Q43 42 47 44 M53 44 Q57 42 62 44" stroke="#5a3a20" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="48" r="1.8" fill="#1f1b2e"/><circle cx="57" cy="48" r="1.8" fill="#1f1b2e"/>
+<path d="M41 57 Q50 63 59 56" stroke="#6a3a2a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M55 58 L64 56" stroke="#f3e8d0" stroke-width="2.2" stroke-linecap="round"/><circle cx="65" cy="56" r="1.4" fill="#ff8a3d"/></g></svg>`
+};
+const BOSS = {
+  cap: { name: 'Kenan Arslan', co: 'Göreme Sky', title: 'Göreme Sky sahibi' },
+  abq: { name: 'Dale Whitaker', co: 'Sandia Sky Rides', title: 'Sandia Sky Rides sahibi' }
+};
+/* What the boss says, once each. {c} is your company. */
+const BOSS_LINES = {
+  cap: {
+    hello: 'Demek balon işine girdin. Ben Kenan Arslan, Göreme Sky. Bu vadide yirmi yıldır uçuyorum. Tek sepetle, üç kuruşla mı? Hadi bakalım. Bir sezon dayanırsan konuşuruz.',
+    ch1: 'Beş balon mu? Benim hangarımda onun iki katı var. Oteller benimle çalışır, rehberler beni önerir. Kapadokya bir aile işidir genç, sen de aileden değilsin.',
+    ch2: 'Kulağıma bir şeyler geliyor. Otel anlaşmaları, influencer kampanyaları... Fena değil. Ama büyümek kolay, ayakta kalmak zor. Bakalım kışı nasıl geçireceksin.',
+    passed: 'Dün benden fazla yolcu uçurmuşsun. Bir günlük şans. Yarın fiyatlarımı indireceğim, turistler kimin vadinin efendisi olduğunu hatırlayacak.',
+    hotel: 'O otel artık benimle çalışıyor. Müdürüyle yirmi yıllık dostuz. İş sadece fiyatla dönmez, genç.',
+    poach: 'Pilotuna bir teklif yaptım. Kötü niyetim yok, iyi pilotu iyi şirket hak eder.',
+    accident: 'Sert iniş haberini duydum. Turistler unutmaz. Balonları ben uçururum, sen de... ne yapıyorsan onu yap.',
+    deal: 'Peki. Kabul ediyorum, bu sezon zor geçti. Şirketi sana devretmeye hazırım. Ama adı yaşasın, Göreme Sky yirmi yılın emeği.',
+    gone: 'Hangarı boşaltıyorum. Yirmi yıl... Sana kızgın değilim genç. Sadece daha hızlıydın.',
+    baron: 'Vadinin anahtarları senin. Yirmi yıl önce ben de senin gibi tek sepetle başladım. Bunu kimseye söyleme. Kapadokya artık senin, iyi bak ona.'
+  },
+  abq: {
+    hello: 'Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Kutu rüzgârını bilir misin evlat? Burada balon uçurmak Türkiye\'deki gibi değil. Fiesta\'da görüşürüz, tabii hâlâ buradaysan.',
+    ch1: 'Beş balonla Albuquerque\'de iş yapacağını mı sanıyorsun? Bu şehrin her oteli benim kartımı taşır. Kapadokya\'da kral olabilirsin, burada yabancısın.',
+    ch2: 'Fiesta yaklaşıyor ve senin balonların hâlâ gökyüzünde. Saygı duyuyorum. Ama Fiesta dört gün, yıl ise üç yüz altmış beş.',
+    passed: 'Dünkü yolcu sayılarını gördüm. Hmm. Sandia\'nın gölgesi geniştir, ama sen de bayağı bir yer kaplamaya başladın.',
+    hotel: 'O otelin sahibiyle aynı rodeo kulübündeyiz. Anlaşma artık benimle. No hard feelings.',
+    poach: 'Pilotunla bir kahve içtim, ona iyi bir teklif yaptım. Bu Amerika, evlat. Herkes en iyi teklife gider.',
+    accident: 'Kutu rüzgârına yenildin, değil mi? Herkes bir kere yenilir. Ben iki kere yenildim, sonra Sandia\'yı kurdum.',
+    deal: 'Tamam, kabul. Sezon kötü geçti. Sandia\'yı devralmak istersen konuşalım. Ama balonlarıma iyi bak, her biri bir hikâye.',
+    gone: 'Son balonumu da sattım. Albuquerque artık senin, evlat. Fiesta\'da bir bira ısmarlarsın.',
+    baron: 'Albuquerque Baronu ha? İki kıtada vadi. Şapkamı çıkarıyorum. Gerçekten çıkarıyorum, bak.'
+  }
+};
+const bossRival = () => S.rivals.find(r => r.name === BOSS[S.region].co);
+/* Queue a boss line once per region; it plays like Hezarfen's lessons, with the boss's face. */
+function bossSay(k) { S.bossSaid = S.bossSaid || {}; const id = S.region + ':' + k; if (S.bossSaid[id] || !BOSS_LINES[S.region][k]) return; S.bossSaid[id] = 1; S.hezQ.push('boss:' + k); }
 const HEZ_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Hezarfen Usta"><defs><linearGradient id="hzbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2f2560"/><stop offset=".62" stop-color="#b9506a"/><stop offset="1" stop-color="#ffae6a"/></linearGradient><clipPath id="hzc"><circle cx="50" cy="50" r="48"/></clipPath></defs>
 <circle cx="50" cy="50" r="50" fill="#e8b04a"/><g clip-path="url(#hzc)"><rect width="100" height="100" fill="url(#hzbg)"/>
 <g fill="#f6ead6"><path d="M28 76 C10 68 1 46 4 24 C12 38 20 45 33 49 Z"/><path d="M72 76 C90 68 99 46 96 24 C88 38 80 45 67 49 Z"/></g>
@@ -980,6 +1041,7 @@ function unlockCheck() {
   for (const k in rules) if (rules[k] && !S.unl[k]) { S.unl[k] = 1; hezAdd(k); }
   hezAdd('welcome');
   if (S.day >= 2) hezAdd('goals');
+  if (S.day >= 3 && bossRival()) bossSay('hello');
   if (S.day >= 9) hezAdd('pr');
   if (S.weather.flag === 'yellow') hezAdd('yellow');
   if (S.weather.flag === 'red') hezAdd('red');
@@ -1037,16 +1099,17 @@ function nextPopup() {
 }
 let hezTimer = 0;
 function showHez(k) {
-  const news = k.startsWith('news:'); if (!news) S.tips[k] = 1; save();
-  const el = $('hez'), text = news ? k.slice(5) : HEZ[k];
-  el.innerHTML = `<div class="hzcol">${HEZ_AV}<span class="hzname">Hezarfen Usta</span></div><div class="hzb"><p></p></div>`;
+  const news = k.startsWith('news:'), boss = k.startsWith('boss:'); if (!news && !boss) S.tips[k] = 1; save();
+  const el = $('hez'), text = news ? k.slice(5) : boss ? BOSS_LINES[S.region][k.slice(5)].replace(/\{c\}/g, S.company) : HEZ[k];
+  el.innerHTML = boss ? `<div class="hzcol">${BOSS_AV[S.region]}<span class="hzname boss">${BOSS[S.region].name}</span></div><div class="hzb"><span class="bosst">${BOSS[S.region].title}</span><p></p></div>`
+    : `<div class="hzcol">${HEZ_AV}<span class="hzname">Hezarfen Usta</span></div><div class="hzb"><p></p></div>`;
   const p = el.querySelector('p'), bub = el.querySelector('.hzb');
   let i = 0; clearInterval(hezTimer);
   el.hidden = false; p.textContent = text; p.style.minHeight = p.offsetHeight + 'px'; p.textContent = '';
   const finish = () => { clearInterval(hezTimer); p.textContent = text; i = text.length; };
   hezTimer = setInterval(() => { i += 2; p.textContent = text.slice(0, i); if (i % 8 === 0) sfx('blip'); if (i >= text.length) finish(); }, 22);
   bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
-  const ok = h('button', 'pbtn', 'Anladım'); ok.onclick = () => { finish(); el.hidden = true; refresh(); setTimeout(nextPopup, 250); };
+  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : 'Anladım'); ok.onclick = () => { finish(); el.hidden = true; refresh(); setTimeout(nextPopup, 250); };
   bub.appendChild(ok);
   el.hidden = false;
 }
@@ -1130,6 +1193,7 @@ function finishDay(flight) {
       if (!self) accNames.push(b.name);
       const who = self ? 'Sen' : (pilotOf(b) ? pilotOf(b).name : 'Pilot');
       const paid = hullPaid && paxPaid ? 'Sigorta tamamını ödedi.' : hullPaid ? 'Sigorta onarımı ödedi, tazminat kasadan çıktı.' : paxPaid ? 'Sigorta tazminatı ödedi, onarım kasadan çıktı.' : 'Sigorta yoktu, hepsi kasadan çıktı.';
+      if (bossRival() && bossRival().alive) bossSay('accident');
       paperAdd(sev > .6 ? 5 : 3, sev > .6 ? `${S.company} balonu ağır kaza yaptı` : `${S.company} balonu sert indi`, `${b.name} ${days} gün yerde kalacak. Yolcular tazminat aldı.`);
       ev.push(`${b.name} (${who}) ${sev > .6 ? 'ağır kaza yaptı' : 'sert iniş yaptı'} ve ${days} gün yerde kalacak. Onarım ${eur(repair)}, tazminat ${eur(comp)}. ${paid}`);
     }
@@ -1212,6 +1276,7 @@ function finishDay(flight) {
   if (rpTot) S.shareNow = paxTotal / rpTot;
   net += checkChapters(ev, Lg, rpTot > 0);
   if (paxTotal > (S.bestPax || 0) && S.day > 5) { if (S.bestPax && paxTotal >= S.bestPax + 8) paperAdd(2, `Rekor sabah: ${S.company} ${paxTotal} yolcu uçurdu`, 'Şirketin bugüne kadarki en kalabalık günü.'); S.bestPax = paxTotal; }
+  { const B = bossRival(); if (B && B.alive && paxTotal > (B.lastPax || 0) && B.lastPax > 0 && S.day > 8) { if (!(S.bossSaid && S.bossSaid[S.region + ':passed'])) paperAdd(4, `${S.company}, ${B.name}'yi geçti`, 'Vadinin en çok yolcu uçuran şirketi değişti.'); bossSay('passed'); } }
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
   S.day++; S.plan = null;
   if (S.region === 'abq') {
@@ -1354,7 +1419,7 @@ function showNextChapter(n) {
   c.appendChild(h('div', 'chap', `${RD().name} · Bölüm ${n + 1}/${chap().length}`));
   c.appendChild(h('h1', null, N.name));
   N.goals.forEach(g => c.appendChild(goalRow(g, false)));
-  const ok = h('button', 'big', 'Başla'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
+  const ok = h('button', 'big', 'Başla'); ok.onclick = () => { m.hidden = true; if (bossRival() && bossRival().alive) bossSay('ch' + n); refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
   m.appendChild(c); m.hidden = false; sfx('click');
 }
 function showChapter() {
@@ -1366,6 +1431,7 @@ function showChapter() {
     c.appendChild(h('div', 'chap', 'TÖREN'));
     c.appendChild(h('h1', null, C.name));
     c.appendChild(h('p', 'lead', `Gün ${S.day}. ${RD().name} göğündeki her üç balondan ikisi ${esc(S.company)} renklerinde. Hezarfen Usta gözleri dolu: "Galata'dan Üsküdar'a uçtuğum gün bile bu kadar gururlanmamıştım, evlat."`));
+    c.appendChild(h('div', 'hzline bossq', `${BOSS_AV[S.region]}<span><b>${BOSS[S.region].name}:</b> ${BOSS_LINES[S.region].baron}</span>`));
     c.appendChild(h('p', 'hint', S.region === 'cap' ? 'Kapadokya şirketin artık dünyaya açılabilir. Dünya haritasında ilk yeni bölgen seni bekliyor.' : 'İki kıtanın göğü senin. Sıradaki bölgeler çok yakında haritada belirecek.'));
     const w = h('button', 'big', 'Dünya haritasını aç'); w.onclick = showWorldMap; c.appendChild(w);
     sfx('fanfare'); setTimeout(() => sfx('applause'), 600);
@@ -1468,7 +1534,7 @@ function simRivals(rev) {
     r.lastPax = pax; r.lastCap = cap;
     if (S.pilots.length && !S.poach && r.cash > 15000 && Math.random() < .04) {
       const best = S.pilots.slice().sort((a, b) => b.lvl - a.lvl || (b.xp || 0) - (a.xp || 0))[0];
-      if (best.lvl >= 2 || Math.random() < .3) { S.poach = { ri, pid: best.id, wage: Math.round(pilotWage(best) * 1.35 / 10) * 10 }; rev.push(`${r.name}, pilotun ${best.name}'a iş teklif etti!`); }
+      if (best.lvl >= 2 || Math.random() < .3) { S.poach = { ri, pid: best.id, wage: Math.round(pilotWage(best) * 1.35 / 10) * 10 }; if (r.name === BOSS[S.region].co) bossSay('poach'); rev.push(`${r.name}, pilotun ${best.name}'a iş teklif etti!`); }
     }
     if (r.cash > 20000 && Math.random() < .03) {
       const hx = HOTELS.find(x => !S.hotels.includes(x.id) && !owns(x) && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && starVal(r.rep) >= x.min);
@@ -1476,7 +1542,7 @@ function simRivals(rev) {
     }
     if (S.hotels.length && r.rep > S.rep + .12 && Math.random() < .015) {
       const id = pick(S.hotels), hx = HOTELS.find(x => x.id === id);
-      S.hotels = S.hotels.filter(x => x !== id); S.hotelTaken[id] = { by: r.name, until: S.day + 12 };
+      S.hotels = S.hotels.filter(x => x !== id); S.hotelTaken[id] = { by: r.name, until: S.day + 12 }; if (r.name === BOSS[S.region].co) bossSay('hotel');
       paperAdd(3, `${hx.name} ${r.name} ile anlaştı`, 'Otel misafirleri artık rakibe gidiyor.');
       rev.push(`${hx.name}, ${r.name}'in daha iyi teklifini kabul etti ve seninle anlaşmayı bitirdi!`);
     }
@@ -1501,12 +1567,13 @@ function simRivals(rev) {
       r.alive = false; r.deadDay = S.day; r.offer = null; r.offerSeen = false; r.offerNo = false; r.saleSeen = false; r.saleNo = false;
       const v = r.balloons.reduce((a, s) => a + SIZES[s].cost, 0) * .45;
       r.forSale = { sizes: r.balloons.slice(), price: Math.round(v / 100) * 100 };
-      paperAdd(6, `${r.name} iflas etti!`, `${r.balloons.length} balonluk filo satışta.`);
+      paperAdd(6, `${r.name} iflas etti!`, `${r.balloons.length} balonluk filo satışta.`); if (r.name === BOSS[S.region].co) bossSay('gone');
       rev.push(`${r.name} iflas etti! Filosu satışta: ${r.balloons.length} balon, ${eur(r.forSale.price)}.`);
     } else if (S.day >= 5 && (r.lowDays >= 4 || r.cash < 5000)) {
       const v = r.balloons.reduce((a, s) => a + SIZES[s].cost, 0) * .6 + Math.max(0, r.cash);
       const was = !!r.offer; r.offer = Math.round(v / 100) * 100;
       if (!was) { r.offerSeen = false; r.offerNo = false; }
+      if (!was && r.name === BOSS[S.region].co) bossSay('deal');
       if (!was) rev.push(`${r.name} zor durumda. Şirketi devralma teklifi yapabilirsin: ${eur(r.offer)}.`);
     } else { r.offer = null; r.offerSeen = false; r.offerNo = false; }
   });
