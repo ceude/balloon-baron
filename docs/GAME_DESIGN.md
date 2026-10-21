@@ -191,7 +191,7 @@ Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen 
 Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Özel desenler** 0,99 €: Varak altın 92, İznik çinisi 90, Takımyıldız 92, Kapadokya kilimi 90 (desen tabanı).
 - **Balon şekilleri** 1,99 €: Kalp, Yıldız, Hezarfen (sarıklı, bıyıklı). Tasarıma eklenir: yaratıcılık +8 ve her uçuşta ek popülerlik +0,0015.
-- **Kasaba süsleri** 0,99 €: meydan çeşmesi, Hezarfen heykeli, fener dizileri, şirket bayrakları. Her biri kasabada görünür ve talebi %1 artırır.
+- **Kasaba süsleri** 0,99 €: meydan çeşmesi, Hezarfen heykeli, fener dizileri, şirket bayrakları. Her biri kasabada görünür ve talebi %1 artırır. Gece her birinin kendi aydınlatması var (çeşmede su altı ışığı, heykelde spotlar, bayraklarda yukarı ışık, fener dizilerinde yollar boyunca ampul dizileri ve 8 lamba).
 - Hepsi kasabadaki **Çarşı** binasından alınır (pazarla birlikte açılır). Desen ya da şekil şirket renklerinde hazır bir tasarımla gelir ve amiral balonuna hemen giydirilir; atölye gerekmez; bu tasarımlar her balona bedava giydirilir (normal tasarımda boya €1.000) (atölye yalnızca kendi tasarımını yapmak için). Atölyede bu desen ve şekiller kilitli görünür, oradan da alınabilir.
 
 
