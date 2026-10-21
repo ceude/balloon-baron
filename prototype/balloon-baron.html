@@ -611,6 +611,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .shopi span{margin-top:3px;font-weight:800;font-size:13px;background:var(--ink);color:#fff;border-radius:10px;padding:2px 9px}
 .shopi.own{opacity:1}.shopi.own span{background:var(--green)}
 .iapimg{display:flex;justify-content:center;background:linear-gradient(#bfe0f2,#ffe6c4);border-radius:16px;padding:8px}.iapimg img{width:96px;height:108px}
+.estn{font-size:12.5px;opacity:.75;margin:6px 0 0;line-height:1.35}
 </style>
 
 <div id="wrap">
@@ -723,7 +724,9 @@ const CRISIS_REP = .5; /* 2,0★ */
 const influCost = () => 2500 + 400 * S.balloons.length;
 const GUIDE_COST = 1500;
 const adPay = (sp, size) => Math.round(sp.pay * Math.pow(SIZES[size].cap / 8, .6) / 5) * 5;
-const repBonusRaw = () => Math.round(flying().reduce((a, b) => a + SIZES[b.size].cap, 0) * .5 * clamp((S.rep - .7) / .7, 0, 1));
+/* seats you can sell today: the documentary crew takes 4 in the flagship */
+const sellSeats = b => SIZES[b.size].cap - (S.docDay === S.day && b.id === S.flag ? Math.min(4, SIZES[b.size].cap - 1) : 0);
+const repBonusRaw = () => Math.round(flying().reduce((a, b) => a + sellSeats(b), 0) * .5 * clamp((S.rep - .7) / .7, 0, 1));
 const repBonus = () => Math.round(repBonusRaw() * 1 / (1 + Math.exp((S.price - 230) / 30)));
 const CANCEL_COMP = 40;
 const LICENSE_DAYS = 15, RECERT = 15000, PRICE_MIN = 40, PRICE_MAX = 320;
@@ -1172,8 +1175,8 @@ function eventCard(k) {
   } else if (k === 'doc') {
     c.appendChild(h('div', 'chap', 'Sabah olayı'));
     c.appendChild(h('h1', null, 'Belgesel ekibi'));
-    c.appendChild(h('p', 'lead', 'Bir yayın kuruluşu Kapadokya belgeseli çekiyor. Amiral balonunda 4 koltuğu kameralara ayırırsan seni belgeselde gösterecekler. O koltukların bilet parası bugün gelmez.'));
-    btn('big', `Kabul et (−${eur(4 * S.price)} bugün, +popülerlik)`, () => { S.cash -= 4 * S.price; S.rep += .06; paperAdd(3, `${S.company} belgeselde`, 'Gün doğumu çekimleri ekranlara geliyor.'); return 'Kameralar hazır evlat. Bugün güzel uç, bütün dünya izleyecek.'; });
+    c.appendChild(h('p', 'lead', `Bir yayın kuruluşu ${RD().name} belgeseli çekiyor. Amiral balonunda 4 koltuğu kameralara ayırırsan seni belgeselde gösterecekler. Bugün o 4 koltuğa bilet satamazsın.`));
+    btn('big', 'Kabul et (bugün 4 koltuk eksik, +popülerlik)', () => { S.docDay = S.day; S.rep += .06; paperAdd(3, `${S.company} belgeselde`, 'Gün doğumu çekimleri ekranlara geliyor.'); return 'Kameralar hazır evlat. Bugün güzel uç, bütün dünya izleyecek.'; });
     btn('ghost', 'Reddet', () => null);
   } else if (k === 'fuel') {
     const per = S.balloons.reduce((a, b) => a + SIZES[b.size].fuel, 0), stock = Math.round(per * 5 * .25 / 50) * 50;
@@ -1288,12 +1291,12 @@ function startDay() {
   refresh();
 }
 function launch(skip) {
-  const fl = skip ? [] : flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0);
+  const fl = skip ? [] : flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0);
   const m = market(S.price, cap);
   const plan = { skip: !!skip, fly: fl.map(b => b.id), pax: {}, rpax: m.pax.slice(1), rcap: m.caps.slice(1), extra: skip ? 0 : m.bonus };
   let left = m.pax[0];
   const order = fl.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag));
-  for (const b of order) { const n = Math.min(left, SIZES[b.size].cap); plan.pax[b.id] = n; left -= n; }
+  for (const b of order) { const n = Math.min(left, sellSeats(b)); plan.pax[b.id] = n; left -= n; }
   S.plan = plan;
   const fb = bal(S.flag);
   if (fb && isSelf(fb) && fl.includes(fb)) startFlight(plan.pax[fb.id] || 0);
@@ -1412,7 +1415,7 @@ function finishDay(flight) {
     if (!S.balloons.length) S.over = true;
   }
 
-  const capToday = fl.reduce((a, b) => a + SIZES[b.size].cap, 0);
+  const capToday = fl.reduce((a, b) => a + sellSeats(b), 0);
   genReviews({ xl: fl.some(b => b.size === 'XL'), mis: flight && flight.mok && flight.q !== 'hard' && flight.q !== 'crash' ? flight.mis : null, ads: adNames, q: flight ? flight.q : null, acc: accNames, red, flew: paxTotal > 0, skip: S.plan.skip, flag: S.weather.flag });
   chirpI = 0; chirpT = 1.5;
   myHotels().forEach(x => { if (!owns(x) && starVal(S.rep) < x.min - .3) { S.hotels = S.hotels.filter(id => id !== x.id); ev.push(`${x.name} anlaşmayı bitirdi. Popülerliğin ${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ seviyesinin çok altına düştü.`); } });
@@ -2064,7 +2067,7 @@ function fleetCounts() {
   const ground = S.balloons.filter(b => canFly(b) === 'ok' && !b.fly).length;
   const parts = Object.keys(names).filter(k => why[k]).map(k => `${why[k]} ${names[k]}`);
   if (ground) parts.unshift(`${ground} yerde`);
-  return { n: fl.length, total: S.balloons.length, seats: fl.reduce((a, b) => a + SIZES[b.size].cap, 0), parts, alarm: !!(why.nopilot || why.worn || why.license) };
+  return { n: fl.length, total: S.balloons.length, seats: fl.reduce((a, b) => a + sellSeats(b), 0), parts, alarm: !!(why.nopilot || why.worn || why.license) };
 }
 function fleetSummary() {
   const c = fleetCounts(), btn = h('button', 'fsum' + (c.alarm ? ' warn' : ''));
@@ -2142,23 +2145,27 @@ function touristsToday() {
   const hotels = myHotels().reduce((a, x) => a + Math.round(x.pax * (owns(x) ? 1.5 : 1) * (S.winter ? .6 : 1)), 0);
   return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? 5 : 0) + (S.day <= S.influUntil ? 8 : 0) + repBonusRaw();
 }
-function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0); }
+function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
 /* Who's in the baskets today, for the ticket card. */
 function whoFlies(fl) {
   const self = fl.some(isSelf), pilots = fl.length - (self ? 1 : 0);
   return self ? (pilots ? `Sen ve pilot${pilots > 1 ? 'ların' : 'un'} uçuracak` : 'Sen uçuracaksın') : pilots > 1 ? 'Pilotlar uçuracak' : 'Pilot uçuracak';
 }
 function renderAct() {
-  const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), n = fl.length;
+  const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), n = fl.length;
   const m = market(S.price, cap), pax = m.pax[0], seats = m.caps.reduce((a, b) => a + b, 0);
   const direct = extraSources().reduce((a, x) => a + x.n, 0);
-  const income = pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, SIZES[bal(S.flag).size].cap) * S.price * FOUNDER) : 0);
+  const income = pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0);
   const w = willing(S.price), feel = w >= .85 ? ['Uygun fiyat', 'g'] : w >= .6 ? ['Biraz pahalı', 'y'] : w >= .35 ? ['Pahalı', 'o'] : ['Çok pahalı', 'r'];
   const tour = touristsToday(), crowded = seats > tour;
   $('dem').innerHTML = `<div class="feel"><div class="fl"><span>Turistlere göre</span><b class="${feel[1]}">${feel[0]}</b></div><div class="meter"><i style="left:${feelPos(w)}%"></i></div><div class="fl sm"><span>ucuz</span><span>pahalı</span></div></div>
     <p class="mood">Bugün <b>${tour}</b> turist var, rakiplerle birlikte gökyüzünde <b>${seats}</b> koltuk: ${crowded ? 'koltuk fazla, rekabet sert.' : 'turist fazla, balonlar kolay dolar.'}</p>`;
   const delta = psBase == null ? 0 : income - psBase;
-  $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>` : `<span>Bugün uçacak balon yok</span>`;
+  /* why the sum is not simply seats × price */
+  const notes = [];
+  if (fl.some(isSelf) && pax) notes.push(`Amirali sen uçuruyorsun: yolcuları %${Math.round(FOUNDER * 100)} fazla öder (+${eur(income - pax * S.price)}).`);
+  if (S.docDay === S.day && fl.some(b => b.id === S.flag)) notes.push('Amiralde 4 koltuk belgesel ekibinde.');
+  $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
   $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : '<span>Bugün uçacak balon yok</span>'}</span><span class="pgo">Ayarla ›</span>`;
   const go = $('go'); go.disabled = !n;
   go.textContent = n ? `Yolcu topla (${n} balon)` : 'Uçacak balon yok';
@@ -2559,7 +2566,7 @@ function checkDeals() {
 }
 let COL = null;
 function startCollect() {
-  const fl = flying(), cap = fl.reduce((a, b) => a + SIZES[b.size].cap, 0), m = market(S.price, cap);
+  const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), m = market(S.price, cap);
   const parts = [{ label: 'Kapadokya\'daki turistler', n: m.base, col: '#ffffff' }].concat(m.parts);
   const seq = []; parts.forEach((p, i) => { for (let k = 0; k < p.n; k++) seq.push(i); });
   for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
@@ -3084,7 +3091,18 @@ function chimney(x, base, w, hgt, body, shade, cap) {
 function envShape(x, cy, R, k) {
   ctx.beginPath();
   if (k === 'heart') { ctx.moveTo(x, cy - R * .55); ctx.bezierCurveTo(x - R * .2, cy - R * 1.25, x - R * 1.35, cy - R * 1.05, x - R * 1.1, cy - R * .05); ctx.quadraticCurveTo(x - R * .8, cy + R * .8, x - R * .22, cy + R * 1.55); ctx.lineTo(x + R * .22, cy + R * 1.55); ctx.quadraticCurveTo(x + R * .8, cy + R * .8, x + R * 1.1, cy - R * .05); ctx.bezierCurveTo(x + R * 1.35, cy - R * 1.05, x + R * .2, cy - R * 1.25, x, cy - R * .55); }
-  else if (k === 'star') { for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? R * .55 : R * 1.15; const px = x + Math.cos(a) * r, py = cy + Math.sin(a) * r * .95; if (i === 5) { ctx.lineTo(x + R * .22, cy + R * 1.55); ctx.lineTo(x - R * .22, cy + R * 1.55); } i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } }
+  else if (k === 'star') {
+    /* a five-point star with softened tips; a narrow neck between the two lower points leads down to the burner */
+    const pts = [];
+    for (let n = 0; n < 10; n++) {
+      const a = -Math.PI / 2 + n * Math.PI / 5, r = n % 2 ? R * .55 : R * 1.2;
+      if (n === 5) { const ny = cy + R * .64; pts.push([x + R * .17, ny, R * .1], [x + R * .2, cy + R * 1.55, 0], [x - R * .2, cy + R * 1.55, 0], [x - R * .17, ny, R * .1]); continue; }
+      pts.push([x + Math.cos(a) * r, cy + R * .06 + Math.sin(a) * r, n % 2 ? R * .08 : R * .14]);
+    }
+    const L = pts.length, mid = (p, q) => [(p[0] + q[0]) / 2, (p[1] + q[1]) / 2], m0 = mid(pts[L - 1], pts[0]);
+    ctx.moveTo(m0[0], m0[1]);
+    for (let n = 0; n < L; n++) { const p = pts[n], q = pts[(n + 1) % L]; if (p[2]) ctx.arcTo(p[0], p[1], q[0], q[1], p[2]); else ctx.lineTo(p[0], p[1]); }
+  }
   else { ctx.arc(x, cy, R * 1.02, Math.PI * .8, Math.PI * .2, false); ctx.quadraticCurveTo(x + R * .7, cy + R * 1.2, x + R * .22, cy + R * 1.55); ctx.lineTo(x - R * .22, cy + R * 1.55); ctx.quadraticCurveTo(x - R * .7, cy + R * 1.2, x - R * Math.cos(Math.PI * .2), cy + R * Math.sin(Math.PI * .2)); }
   ctx.closePath();
 }
@@ -3341,7 +3359,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late'];
+const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay'];
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'M', 'M', 'M'], price: 195, rep: 1.15, cash: 50000 },
   { name: 'Rio Grande Balloons', col: '#3c9a8f', col2: '#e6fff9', style: 'mid', balloons: ['M', 'M', 'M', 'S'], price: 165, rep: 1, cash: 20000 },
@@ -4666,8 +4684,9 @@ function renderTown(V, w, h, dpr, offY) {
     S0();
     V.hits = [];
     const sc = clamp(V.z / .5, .75, 1.15), full = V.z >= LABEL_Z, taken = [];
-    /* names only once you zoom in; from afar the zones written in the sand do the talking. Front buildings label first so they win overlaps. */
-    for (const b of bs.slice().sort((p, q) => (q.gx + q.gy) - (p.gx + p.gy))) {
+    /* names only once you zoom in; from afar the zones written in the sand do the talking. Big buildings label before small ones
+       (the mast, kiosks, the bazaar), and front ones first, so a small sign never hides a building's name. */
+    for (const b of bs.slice().sort((p, q) => (!!p.small - !!q.small) || (q.gx + q.gy) - (p.gx + p.gy))) {
       const [cx, cy] = tiso(b.gx + b.w / 2, b.gy + b.d / 2), top = townTop(b);
       const sx = cx * V.z + V.ox, sy = (cy - top) * V.z + V.oy;
       const pts = [tiso(b.gx, b.gy), tiso(b.gx + b.w, b.gy), tiso(b.gx + b.w, b.gy + b.d), tiso(b.gx, b.gy + b.d)].map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]);
