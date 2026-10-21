@@ -19,7 +19,7 @@
   --cond:"Barlow Condensed", "Arial Narrow", system-ui, sans-serif;
   color-scheme:light;
 }
-html,body{height:100%}
+html,body{height:100%;margin:0}
 [hidden]{display:none!important}
 body{background:#1b1840;color:var(--ink);font-family:var(--body);font-size:15px;overflow:hidden;-webkit-tap-highlight-color:transparent}
 #wrap{position:relative;height:100%;overflow:hidden}
@@ -227,11 +227,12 @@ body.zoomed .chirp{transform:translate(-50%,calc(-100% - 320px));opacity:0}
 .hqspot:active{transform:translate(-50%,calc(-100% + 3px))}
 @keyframes spotin{from{opacity:0;transform:translate(-50%,-80%)}to{opacity:1}}
 #hqSheet{position:absolute;inset:0;background:rgba(43,35,80,.35);display:flex;align-items:flex-end;justify-content:center}
-.hqs{width:min(560px,100%);max-height:82%;overflow-y:auto;padding:16px 16px max(16px, env(safe-area-inset-bottom, 0px));border-radius:24px 24px 0 0;background:var(--paper);display:flex;flex-direction:column;gap:14px;animation:shin .25s ease-out}
+.hqs{width:min(560px,100%);max-height:calc(100% - 70px);overflow-y:auto;overscroll-behavior:contain;touch-action:pan-y;-webkit-overflow-scrolling:touch;padding:16px 16px max(16px, env(safe-area-inset-bottom, 0px));border-radius:24px 24px 0 0;background:var(--paper);display:flex;flex-direction:column;gap:14px;animation:shin .25s ease-out}
 @keyframes shin{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 .hqsh{display:flex;align-items:center;justify-content:space-between}
 .hqsh b{font-family:var(--cond);font-weight:800;font-size:26px;color:var(--ink)}
-#hqBody{display:flex;flex-direction:column;gap:16px}
+#hqBody{display:flex;flex-direction:column;gap:16px;flex:none}
+#hqBody > *,.hqsh{flex:none} /* never squeeze the content: the sheet scrolls instead */
 #hqBody h2{color:var(--ink)}
 #hqBody .hbox{background:#fff;color:var(--ink);box-shadow:0 0 0 2px var(--line) inset}
 #hqBody .hbox .hk b{color:var(--coral)}
