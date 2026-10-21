@@ -1290,6 +1290,7 @@ function finishDay(flight) {
       const q = flight.q;
       if (flight.mok) { (S.stat = S.stat || {}).mis = (S.stat.mis || 0) + 1; const M = MISSIONS[flight.mis], rw = misReward(flight.mis, b.size); Lg.mission += rw; Lg.missionName = M.name; S.rep += .02; ev.push(`Görev tamamlandı: ${M.name}. Müşteri ${eur(rw)} ödül verdi.`); }
       else if (flight.mis && q !== 'cancel') ev.push(`Görev tamamlanamadı: ${MISSIONS[flight.mis].name}.`);
+      if (flight.mom && q !== 'crash') { Lg.tips += pax * 5; S.rep += .008; ev.push({ thermal: 'Uçuşta bir termik yakaladın, yolcular süzülmeye bayıldı.', greet: 'Gökyüzünde komşu balonla selamlaştınız, yolcular el salladı.', photo: 'Yolcuların gün doğumu fotoğrafı bütün vadide paylaşıldı.' }[flight.mom] + ` Bahşiş ${eur(pax * 5)}.`); }
       if (q === 'perfect') { (S.stat = S.stat || {}).perfect = (S.stat.perfect || 0) + 1; Lg.tips += pax * 15; S.rep += .03; ev.push(`${b.name}: kusursuz iniş. Yolcular ${eur(pax * 15)} bahşiş bıraktı.`); }
       else if (q === 'good') { Lg.tips += pax * 6; S.rep += starVal(S.rep) > 4.5 ? 0 : .01; ev.push(`${b.name}: düzgün iniş, yolcular memnun.`); }
       else if (q === 'far') { S.rep -= starVal(S.rep) > 4.5 ? .04 : .02; ev.push(`${b.name}: hedeften ${Math.round(flight.dist)} m uzağa indin, yer ekibi seni geç buldu.`); }
@@ -2810,6 +2811,14 @@ function showMenu() {
 /* ---------- flight ---------- */
 function startFlight(pax) {
   FL = { x: 220, alt: 0, vx: 0, vy: 0, heat: .42, fuel: 100, t: 0, air: false, done: false, burning: false, pax, msg: 0, mis: S.weather.mission, mprog: 0, mdone: false };
+  /* most flights bring a small moment: a thermal to ride, another balloon to greet, a sunrise photo spot */
+  const dir = Math.sign(S.weather.target - 220) || 1;
+  if (Math.random() < .7) {
+    const k = pick(['thermal', 'greet', 'photo']);
+    FL.mom = k === 'thermal' ? { k, x: 220 + dir * rnd(350, 800), in: 0 }
+      : k === 'greet' ? { k, x: 220 + dir * rnd(500, 900), alt: rnd(160, 320), c: pick([['#14a39a', '#e8fff9'], ['#9b7be0', '#f2ebff'], ['#5aa9e6', '#eaf4fc'], ['#e0408a', '#ffd0e0']]), in: 0 }
+      : { k, x: 220 + dir * rnd(450, 1000), lo: 150, hi: 280, in: 0 };
+  }
   mode = 'flight'; $('sheet').hidden = true; $('burn').hidden = false;
   const ab = $('abort'); ab.hidden = false; ab.disabled = false; ab.textContent = 'Uçuştan vazgeç';
   const tip = $('tip'); tip.hidden = false; tip.className = 'up';
@@ -2839,8 +2848,15 @@ function updateFlight(dt) {
     if (f.mis === 'valley' && Math.abs(f.x - S.weather.valley) < 60 && f.alt < 150) missionDone();
     if (f.mis === 'panorama' && f.alt >= 550) missionDone();
   }
+  const M = f.mom;
+  if (M && !M.ok && f.air) {
+    if (M.k === 'thermal' && Math.abs(f.x - M.x) < 65 && f.alt < 520) { f.vy += .5 * s; M.in += dt; if (M.in > 2) momentDone('Termik yakaladın! Sıcak hava seni bedavaya taşıdı.', () => { f.fuel = Math.min(100, f.fuel + 15); }); }
+    if (M.k === 'greet') { M.x += windAt(M.alt, f.t) * s * .9; if (Math.abs(f.x - M.x) < 95 && Math.abs(f.alt - M.alt) < 50) { M.in += dt; if (M.in > 2) momentDone('Komşu balonla el salladınız! Yolcular çok sevindi.'); } else M.in = 0; }
+    if (M.k === 'photo' && Math.abs(f.x - M.x) < 70 && f.alt >= M.lo && f.alt <= M.hi) { M.in += dt; if (M.in > 1.5) { f.flashAt = T; momentDone('Gün doğumu karesi! Yolcuların fotoğrafı herkesi kıskandıracak.'); } }
+  } else if (M && M.k === 'greet') M.x += windAt(M.alt, f.t) * s * .9;
   if (f.air && f.alt > 0 && f.fuel <= 0 && !f.msg) { f.msg = 1; $('tip').hidden = false; $('tip').innerHTML = '<b>Yakıt bitti!</b> Balon soğuyarak iniyor.'; }
 }
+function momentDone(text, fn) { const M = FL.mom; M.ok = true; M.text = text; M.at = T; if (fn) fn(); sfx('coin'); }
 function missionDone() {
   const f = FL; if (f.mdone) return;
   f.mdone = true; f.mdoneAt = T; sfx('fanfare');
@@ -2899,7 +2915,7 @@ function land(q) {
   }[q];
   const tip = $('tip'); tip.hidden = false; tip.className = 'wide'; tip.replaceChildren(h('div', null, msg));
   if (f.mis) tip.appendChild(h('div', null, mok ? `<b style="color:var(--green)">Görev tamam: ${MISSIONS[f.mis].name}!</b> +${eur(misReward(f.mis))}` : `<span style="color:var(--ink2)">Görev tamamlanamadı: ${MISSIONS[f.mis].name}.</span>`));
-  const b = h('button', 'big', 'Gün sonu raporu'); b.style.cssText = 'width:100%;margin-top:12px'; b.onclick = () => finishDay({ q, dist: f.dist, mis: f.mis, mok }); tip.appendChild(b);
+  const b = h('button', 'big', 'Gün sonu raporu'); b.style.cssText = 'width:100%;margin-top:12px'; b.onclick = () => finishDay({ q, dist: f.dist, mis: f.mis, mok, mom: f.mom && f.mom.ok ? f.mom.k : null }); tip.appendChild(b);
 }
 $('burn').addEventListener('pointerdown', ev => { ev.preventDefault(); setBurn(true); });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(e => $('burn').addEventListener(e, () => setBurn(false)));
@@ -3136,6 +3152,16 @@ function draw(dt) {
       ctx.fillStyle = '#fff'; ctx.fillText('TEKLİF ALANI  250–350 m', W - 12, sy(350) + 18); ctx.textAlign = 'left';
       heart(W - 12 - ctx.measureText('TEKLİF ALANI  250–350 m').width - 12, sy(350) + 13, 6, '#ff6fa8');
     }
+    const MO = f.mom;
+    if (MO) {
+      if (MO.k === 'thermal') { const X = sx(MO.x), wv = sx(MO.x + 65) - X; ctx.save(); const g = ctx.createLinearGradient(X - wv, 0, X + wv, 0); g.addColorStop(0, 'rgba(255,220,160,0)'); g.addColorStop(.5, `rgba(255,220,160,${MO.ok ? .12 : .28})`); g.addColorStop(1, 'rgba(255,220,160,0)'); ctx.fillStyle = g; ctx.fillRect(X - wv, sy(520), wv * 2, groundY - sy(520));
+        ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.5; for (let i = 0; i < 7; i++) { const yy = groundY - ((T * 40 + i * 60) % (groundY - sy(520))), xx = X + Math.sin(T * 2 + i) * wv * .4; ctx.beginPath(); ctx.moveTo(xx, yy); ctx.quadraticCurveTo(xx + 5, yy - 8, xx, yy - 16); ctx.stroke(); }
+        if (!MO.ok) { ctx.font = '800 13px "Barlow Condensed", sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('TERMİK', X, sy(520) - 6); ctx.textAlign = 'left'; } ctx.restore(); }
+      if (MO.k === 'greet') { const X = sx(MO.x), Y = sy(MO.alt + Math.sin(T) * 5); balloon(X, Y, PR * .65, MO.c[0], MO.c[1], (T % 4) < .4, 1); if (MO.ok && T - MO.at < 3) { ctx.font = '22px sans-serif'; ctx.fillText('👋', X + PR * .5, Y - PR * 1.8); } }
+      if (MO.k === 'photo' && !MO.ok) { const X = sx(MO.x); ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = 2; ctx.setLineDash([6, 5]); ctx.strokeRect(X - sx(MO.x + 70) + X, sy(MO.hi), (sx(MO.x + 70) - X) * 2, sy(MO.lo) - sy(MO.hi)); ctx.setLineDash([]); ctx.font = '20px sans-serif'; ctx.textAlign = 'center'; ctx.fillText('📷', X, sy(MO.hi) - 8); ctx.restore(); }
+      if (MO.ok && T - MO.at < 3.2) { const a = Math.min(1, (3.2 - (T - MO.at)) / .5); ctx.save(); ctx.globalAlpha = a; ctx.font = '800 16px "Barlow Condensed", sans-serif'; const tw = ctx.measureText(MO.text).width + 28; ctx.fillStyle = 'rgba(20,120,90,.92)'; rrect(W / 2 - tw / 2, top + 150, tw, 32, 16); ctx.fill(); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(MO.text, W / 2, top + 171); ctx.restore(); ctx.textAlign = 'left'; }
+    }
+    if (f.flashAt && T - f.flashAt < .35) { ctx.fillStyle = `rgba(255,255,255,${.85 * (1 - (T - f.flashAt) / .35)})`; ctx.fillRect(0, 0, W, H); }
     if (f.mis === 'panorama' && !f.mdone) { ctx.strokeStyle = 'rgba(255,194,61,.9)'; ctx.lineWidth = 2; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.moveTo(0, sy(550)); ctx.lineTo(W, sy(550)); ctx.stroke(); ctx.setLineDash([]); }
     if (f.mis && !(f.mdoneAt && T - f.mdoneAt > 3.6)) {
       const M = MISSIONS[f.mis], done = f.mdone, k = done ? clamp((T - f.mdoneAt) / 3.6, 0, 1) : 0;
