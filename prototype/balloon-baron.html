@@ -70,6 +70,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
   padding:12px;border-radius:24px;background:var(--glass);color:#fff;display:flex;flex-direction:column;gap:10px;-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);box-shadow:0 10px 30px rgba(10,5,30,.4)}
 .alerts{display:flex;flex-direction:column;gap:6px}
 /* the dock is a slim strip until you pull it up (or tap it); open, it holds every card of the morning */
+.dock:not(.open){touch-action:none}
 .dock{max-height:calc(100% - 90px);overflow-y:auto;scrollbar-width:none;background:rgba(30,24,64,.72)}
 .dock::-webkit-scrollbar{display:none}
 .grab{align-self:center;width:46px;height:16px;margin:-8px 0 -4px;display:grid;place-items:center;flex:none}
@@ -249,8 +250,14 @@ body.zoomed .chirp{transform:translate(-50%,calc(-100% - 320px));opacity:0}
 #hqBody .deal .dstat,#hqBody .office .ostat{color:var(--green)}
 #hqBody .dcta{background:var(--coral);color:#fff;box-shadow:0 3px 0 #c7381a}
 .card{position:relative}
+.regrow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
+.regrow b{font-family:var(--cond);font-weight:800;font-size:21px;color:var(--ink)}
+.regrow span{grid-column:1;font-size:13px;color:var(--ink2)}
+.regrow i,.regrow em{grid-row:1/3;grid-column:2;font-style:normal;font-family:var(--cond);font-weight:800;font-size:17px;color:var(--coral)}
+.regrow.here{box-shadow:0 0 0 2px var(--green) inset,0 3px 0 var(--line)}.regrow.here i{color:var(--green)}
+#hName small{font-size:.7em;opacity:.8}
 .cardx{position:absolute;top:12px;right:12px;width:38px;height:38px;border-radius:12px;font-size:17px;z-index:1}
-.pdone{margin-top:8px}
+.pdone.pdone{flex:none;align-self:center;width:auto;min-width:140px;height:44px;padding:0 26px;font-size:18px;margin-top:6px}
 #tClose{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));right:max(14px, env(safe-area-inset-right, 0px));width:46px;height:46px;border-radius:50%;background:rgba(255,250,243,.95);color:var(--ink);font-size:20px;font-weight:800;box-shadow:0 4px 0 rgba(43,35,80,.35);display:grid;place-items:center;transition:opacity .2s ease, transform .2s ease}
 #tClose.gone{opacity:0;transform:scale(.6);pointer-events:none}
 .sw8{width:66px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:13px;flex:none}
@@ -1620,7 +1627,8 @@ function refresh() { renderHud(); renderNav(); renderHome(); renderTab(); render
 
 function renderHud() {
   const multi = S.region !== 'cap' || Object.keys(S.regions || {}).length;
-  $('hName').textContent = multi ? RD().name : (S.company || 'Balon şirketi'); $('hName').classList.toggle('reg', !!multi);
+  $('hName').innerHTML = multi ? `${esc(RD().name)} <small>▾</small>` : esc(S.company || 'Balon şirketi'); $('hName').classList.toggle('reg', !!multi);
+  $('hName').onclick = multi ? regionMenu : null; $('hName').style.cursor = multi ? 'pointer' : '';
   $('hDay').innerHTML = `<span class="fl" style="background:${FLAGS[S.weather ? S.weather.flag : 'green'].col}"></span><span class="n">Gün ${S.day}</span>`;
   $('hCash').textContent = eur(S.cash); $('hCash').classList.toggle('neg', S.cash < 0);
   $('hRep').textContent = stars(S.rep);
@@ -2892,6 +2900,21 @@ function makeAuto(rs, id) {
   }
   return { base: Math.max(0, base) / REGION_DEF[id].fx * AUTO_EFF, issue: null, mods: [], since: S.day, lastIssue: S.day };
 }
+/* The region you're in, tapped on the HUD: your other regions, one tap away, and the world map. */
+function regionMenu() {
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card regs'); c.appendChild(h('h1', null, 'Bölgelerin'));
+  for (const R of REGIONS) {
+    if (!ownsRegion(R.id)) continue;
+    const here = R.id === S.region, A = S.regions && S.regions[R.id] && S.regions[R.id].auto;
+    const b = h('button', 'regrow' + (here ? ' here' : ''), `<b>${R.name}</b><span>${R.land} · ${here ? 'Buradasın' : A && A.issue ? 'Sorun var, karar bekliyor' : 'Otomatik modda'}</span>${here ? '<i>✓</i>' : '<em>Geç ›</em>'}`);
+    b.onclick = () => { m.hidden = true; if (!here) { sfx('click'); switchRegion(R.id); } };
+    c.appendChild(b);
+  }
+  const wm = h('button', 'ghost', 'Dünya haritası'); wm.onclick = showWorldMap; c.appendChild(wm);
+  const x = h('button', 'ghost', 'Kapat'); x.onclick = () => { m.hidden = true; }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
 function switchRegion(id) {
   if (id === S.region) return;
   const cur = {};
@@ -3860,8 +3883,10 @@ function townWall() {
 /* Horizon on screen: a little above the town's far corner. Zoomed in, it never drops below where the home screen
    had it, so the sky doesn't grow as you zoom or drag; the valley simply reaches further back. */
 function townHorizon(h) {
-  if (TV.hz != null) return TV.hz; /* zoomed or collecting: the horizon stays where the home screen had it */
-  return Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z);
+  const far = Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z);
+  /* zoomed or collecting: the horizon never comes down onto the town (it stays behind the far valley) and never drops below
+     where the home screen had it, so the sky never grows */
+  return TV.hz != null ? Math.min(far, TV.hz) : far;
 }
 function townBackdrop(w, h, t) {
   const hz = townHorizon(h), px = TV.ox * .08, p = .32;
@@ -4249,11 +4274,11 @@ $('grab').onclick = () => dockOpen(!$('dock').classList.contains('open'));
 /* drag the dock up to open it, down to fold it back to the strip */
 (function dockDrag() {
   const d = $('dock'); let y0 = null, moved = false;
-  d.addEventListener('pointerdown', e => { y0 = e.clientY; moved = false; });
+  d.addEventListener('pointerdown', e => { y0 = e.clientY; moved = false; if (!d.classList.contains('open')) try { d.setPointerCapture(e.pointerId); } catch (_) {} });
   d.addEventListener('pointermove', e => {
     if (y0 == null) return;
     const dy = e.clientY - y0, open = d.classList.contains('open');
-    if (!open && dy < -28) { y0 = null; moved = true; dockOpen(true); }
+    if (!open && dy < -18) { y0 = null; moved = true; dockOpen(true); }
     else if (open && dy > 40 && d.scrollTop <= 0) { y0 = null; moved = true; dockOpen(false); }
   });
   ['pointerup', 'pointercancel'].forEach(t => d.addEventListener(t, () => { y0 = null; }));
