@@ -2,6 +2,21 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
+## Tasarım incelemesi (v77–v78)
+Ayrıntılı sayılar `docs/GAME_DESIGN.md`'de. Hepsi yeni metin ister (altı dil).
+- **Açılış aralıkları:** sigorta 2, hangar 4 (ya da €7.000), banka 6, pazar 8, pilot ofisi 10 (ya da 2 balon); `pr` dersi 9. gün, rakip ipuçları 10/13/16.
+- **Sabah gazetesi:** olay varsa sabah ilk kart; bölgeye göre "Kapadokya Postası" / "Albuquerque Herald". Çekirdek `PaperItem` (id + değerler) üretir.
+- **Kurtarma planı:** kasa eksiye düşünce adım adım kart (pilot çıkar, en küçük balonu %60'a sat, fiyatı rakibin altına çek, kredi).
+- **Kış karı:** kış günlerinde kasabaya kar yağar, çatı ve zemin beyazlar.
+- **Festivaller (Kapadokya):** 24. günden 35 günde bir, 3 gün, talep ×1,4, görev ödülü ×1,5, yollarda bayraklar.
+- **Rakip patronlar:** Kenan Arslan ve Dale Whitaker, SVG yüz, konuşma kartında patron stili; satır listesi `BOSS_LINES`.
+- **Sabah olayları:** grev (ofis önünde pankartlı pilotlar), VIP, düğün, belgesel, propan zammı, basın. Kamera olay yerine yakınlaşır, etiketler gizlenir, kart alttan çıkar.
+- **Bina yükseltmeleri:** direk, hangar, pilot ofisi, satış ofisi 3 seviye; bina kartı; direkte hava tahmini (yarın / öbür gün), direk çiziminde istasyon kutusu ve radar kubbesi. Bölüm hedeflerine yükseltme hedefleri.
+- **Pilot özellikleri:** yedi özellik, aday ve ekip listesinde etiket.
+- **Başarımlar:** ☰ menüsünde albüm, 22 kartpostal; holding hedefleri ve Dünya Baronu, tahtada marker yazısı.
+- **Uçuş anları:** termik, selam, fotoğraf; yeşil şerit, gün sonunda bahşiş ve popülerlik.
+- **Mağaza (v78):** özel desenler, şekilli zarflar (kalp, yıldız, Hezarfen; `envShape`), kasaba süsleri (çeşme, heykel, fenerler, bayraklar) ve Çarşı binası (12,15; 3,1). StoreKit 2 ürünleri: desenler ve süsler Tier 1, şekiller Tier 2; non-consumable. Bölüm ödülünde ödüllü reklamla 2 katı (reklam SDK'sı seçilecek).
+
 ## Telefon testinden sonra (v68, düzeltmeler v69)
 - **v76:** Yakınlaşınca üst çubuk (gün, para, popülerlik, menü) yerinde kalır; sadece rüzgâr kartı, yan butonlar, yorum ve alt panel kayarak çıkar. ✕ üst çubuğun altında. Ana ekranda önce dokunmaya gerek yok: iki parmakla açınca kasaba doğrudan o noktadan yakınlaşmaya başlar (ilk %4'lük açılmadan sonra), parmak kalkmadan yakınlaşma sürer. Ana ekran boyutuna kadar kapatınca geri döner.
 - **v75:** Kasabada fırlatma alanının köşesinde (7,15; 4,15) rüzgâr direği: tüf kaide, kırmızı-beyaz direk, tepede dönen kepçeli rüzgârölçer (hız rüzgârla artar), kırmızı-beyaz rüzgâr tulumu. Tulum günün yer rüzgârının (0–60 m katmanı) yönünü gösterir; sert rüzgârda dimdik, sakinde sarkık, hafifçe dalgalanır. Gölgesi var.

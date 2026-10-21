@@ -591,6 +591,13 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .lead{margin:0;font-size:16px;line-height:1.45;color:var(--ink2)}
 .card .btns .ghost{flex:1}
 @media (prefers-reduced-motion: reduce){.flagbig b,#introBurn::before{animation:none}*{transition:none!important}}
+.card.chapdone .big.adx { background: #2b2350; color: #fff; font-size: 15px; padding: 13px 10px; margin-top: 10px; }
+.adov { position: fixed; inset: 0; z-index: 99; background: rgba(10,8,24,.92); display: flex; align-items: center; justify-content: center; }
+.adbox { color: #fff; text-align: center; padding: 24px; max-width: 300px; }
+.adbox .adtag { display: inline-block; background: #ffc23d; color: #2b2350; font-weight: 800; border-radius: 6px; padding: 2px 8px; font-size: 12px; }
+.adbox .adbig { font-size: 72px; margin: 18px 0 6px; }
+.adbox .adn { display: block; font-size: 44px; margin: 8px 0 14px; }
+.adbox .adskip { color: #fff; border-color: rgba(255,255,255,.4); }
 </style>
 
 <div id="wrap">
@@ -1060,7 +1067,7 @@ function market(myPrice, myCap) {
 
 /* ---------- day flow ---------- */
 const demandGrowth = () => 1 + .6 * (1 - Math.exp(-(S.day - 1) / 50));
-const dayDemand = () => Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? 1.9 : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * holdBoost(S.region));
+const dayDemand = () => Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? 1.9 : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * (1 + .01 * decorN()) * holdBoost(S.region));
 let mode = 'office', tab = 'plan', FL = null, lastReport = null;
 function hezAdd(k) { if (!S.tips[k] && !S.hezQ.includes(k)) S.hezQ.push(k); }
 function unlockCheck() {
@@ -1337,7 +1344,7 @@ function finishDay(flight) {
   S.rep = clamp(lerp(S.rep, 1, .01), .4, 1.4);
   if (starVal(S.rep) > 4.5) S.rep -= .006;
   S.rep += fl.filter(b => b.size === 'XL').length * .005;
-  const dRep = Math.min(.012, fl.reduce((a, b) => { const d = designOf(b); return a + (d ? .003 * d.score / 100 * freshness(d) : 0); }, 0));
+  const dRep = Math.min(.015, fl.reduce((a, b) => { const d = designOf(b); return a + (d ? .003 * d.score / 100 * freshness(d) + (d.shape ? .0015 : 0) : 0); }, 0));
   if (dRep) { S.rep += dRep; Lg.designRep = dRep; if (Math.random() < .25) { const d = designOf(pick(fl.filter(designOf))); addReview('design', { d: d.name }); } }
   if (!prOk() && S.rep > prCap()) { S.rep = prCap(); hezAdd('prcap'); }
   if (licenseLeft() === 0) ev.push('Pilot lisansın bugün sona eriyor. Yarın kendin uçmazsan ya da ücreti ödemezsen diğer balonların yerde kalır.');
@@ -1540,6 +1547,15 @@ function showNextChapter(n) {
   const ok = h('button', 'big', 'Başla'); ok.onclick = () => { m.hidden = true; if (bossRival() && bossRival().alive) bossSay('ch' + n); refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
   m.appendChild(c); m.hidden = false; sfx('click');
 }
+/* Rewarded ad stand-in: a 30 second countdown over everything; the reward comes only when it runs out. */
+function watchAd(done) {
+  const o = h('div', 'adov'); let n = 30;
+  o.innerHTML = `<div class="adbox"><div class="adtag">Reklam</div><div class="adbig">🎈</div><p>Prototip: burada 30 saniyelik ödüllü reklam oynar.</p><b class="adn">${n}</b><button class="ghost adskip">Test: atla</button></div>`;
+  document.body.appendChild(o);
+  const end = () => { clearInterval(iv); o.remove(); done(); };
+  const iv = setInterval(() => { n--; o.querySelector('.adn').textContent = n; if (n <= 0) end(); }, 1000);
+  o.querySelector('.adskip').onclick = end;
+}
 function showChapter() {
   const i = S.chapterNews; S.chapterNews = null; save();
   const C = chap()[i], m = $('menu'); m.replaceChildren();
@@ -1559,6 +1575,10 @@ function showChapter() {
     c.appendChild(h('p', 'lead', `${C.award}! Ödül: ${eur(C.reward)}.`));
     /* the goals you just finished, all ticked; the next chapter's goals come after Devam */
     C.goals.forEach(g => c.appendChild(goalRow(g, true)));
+    /* rewarded ad: watch 30 seconds, get the reward a second time */
+    const ad = h('button', 'big adx', `▶ Reklam izle, ödülü 2'ye katla (+${eur(C.reward)})`);
+    ad.onclick = () => watchAd(() => { S.cash += C.reward; save(); ad.disabled = true; ad.textContent = `Ödül 2'ye katlandı: +${eur(C.reward)}`; sfx('coin'); refresh(); });
+    c.appendChild(ad);
     const ok = h('button', 'big', 'Devam'); ok.onclick = () => showNextChapter(i + 1); c.appendChild(ok);
     sfx('fanfare');
   }
@@ -2980,13 +3000,26 @@ function chimney(x, base, w, hgt, body, shade, cap) {
   if (shade) { ctx.fillStyle = shade; ctx.beginPath(); ctx.moveTo(x + w * .05, base - hgt); ctx.lineTo(x + w * .12, base - hgt); ctx.quadraticCurveTo(x + w * .32, base - hgt * .55, x + w / 2, base); ctx.lineTo(x + w * .1, base); ctx.closePath(); ctx.fill(); }
   ell(x, base - hgt, w * .25, w * .1, cap); ell(x, base - hgt - w * .07, w * .15, w * .09, cap);
 }
+/* Special shaped envelopes (shop items): a heart, a star, Hezarfen's head. All end in the same neck. */
+function envShape(x, cy, R, k) {
+  ctx.beginPath();
+  if (k === 'heart') { ctx.moveTo(x, cy - R * .55); ctx.bezierCurveTo(x - R * .2, cy - R * 1.25, x - R * 1.35, cy - R * 1.05, x - R * 1.1, cy - R * .05); ctx.quadraticCurveTo(x - R * .8, cy + R * .8, x - R * .22, cy + R * 1.55); ctx.lineTo(x + R * .22, cy + R * 1.55); ctx.quadraticCurveTo(x + R * .8, cy + R * .8, x + R * 1.1, cy - R * .05); ctx.bezierCurveTo(x + R * 1.35, cy - R * 1.05, x + R * .2, cy - R * 1.25, x, cy - R * .55); }
+  else if (k === 'star') { for (let i = 0; i < 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? R * .55 : R * 1.15; const px = x + Math.cos(a) * r, py = cy + Math.sin(a) * r * .95; if (i === 5) { ctx.lineTo(x + R * .22, cy + R * 1.55); ctx.lineTo(x - R * .22, cy + R * 1.55); } i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } }
+  else { ctx.arc(x, cy, R * 1.02, Math.PI * .8, Math.PI * .2, false); ctx.quadraticCurveTo(x + R * .7, cy + R * 1.2, x + R * .22, cy + R * 1.55); ctx.lineTo(x - R * .22, cy + R * 1.55); ctx.quadraticCurveTo(x - R * .7, cy + R * 1.2, x - R * Math.cos(Math.PI * .2), cy + R * Math.sin(Math.PI * .2)); }
+  ctx.closePath();
+}
 function balloon(x, y, R, c1, c2, burn, alpha, ad, design) {
   ctx.save(); ctx.globalAlpha = alpha ?? 1;
   const top = y - R * 2.55, cy = top + R;
-  ctx.beginPath(); ctx.arc(x, cy, R, Math.PI * .85, Math.PI * .15, false);
-  ctx.quadraticCurveTo(x + R * .75, cy + R * 1.15, x + R * .22, cy + R * 1.55); ctx.lineTo(x - R * .22, cy + R * 1.55);
-  ctx.quadraticCurveTo(x - R * .75, cy + R * 1.15, x - R * Math.cos(Math.PI * .15), cy + R * Math.sin(Math.PI * .15));
-  ctx.closePath(); ctx.fillStyle = c1; ctx.fill();
+  const shape = design && design.shape;
+  if (shape) envShape(x, cy, R, shape);
+  else {
+    ctx.beginPath(); ctx.arc(x, cy, R, Math.PI * .85, Math.PI * .15, false);
+    ctx.quadraticCurveTo(x + R * .75, cy + R * 1.15, x + R * .22, cy + R * 1.55); ctx.lineTo(x - R * .22, cy + R * 1.55);
+    ctx.quadraticCurveTo(x - R * .75, cy + R * 1.15, x - R * Math.cos(Math.PI * .15), cy + R * Math.sin(Math.PI * .15));
+    ctx.closePath();
+  }
+  ctx.fillStyle = c1; ctx.fill();
   ctx.save(); ctx.clip();
   if (design) paintDesign(x, cy, R, top, design);
   else { ctx.fillStyle = c2; for (let i = -3; i <= 3; i += 2) { ctx.beginPath(); ctx.ellipse(x + i * R * .18, cy + R * .1, R * .1, R * 1.6, 0, 0, 7); ctx.fill(); } }
@@ -2999,6 +3032,12 @@ function balloon(x, y, R, c1, c2, burn, alpha, ad, design) {
   const g = ctx.createLinearGradient(x - R, 0, x + R, 0); g.addColorStop(0, 'rgba(255,255,255,.18)'); g.addColorStop(.6, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(40,10,40,.35)');
   ctx.fillStyle = g; ctx.fillRect(x - R, top, R * 2, R * 3);
   ctx.restore();
+  if (shape === 'hezarfen') { /* turban on top and a moustache: Hezarfen himself in the sky */
+    ctx.fillStyle = '#fff6e6'; ctx.beginPath(); ctx.ellipse(x, cy - R * .78, R * .78, R * .42, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#e5432f'; ctx.beginPath(); ctx.arc(x, cy - R * .92, R * .16, 0, 7); ctx.fill();
+    ctx.fillStyle = '#2a1a14'; ctx.beginPath(); ctx.arc(x - R * .3, cy - R * .05, R * .08, 0, 7); ctx.arc(x + R * .3, cy - R * .05, R * .08, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.moveTo(x, cy + R * .25); ctx.quadraticCurveTo(x - R * .35, cy + R * .1, x - R * .55, cy + R * .35); ctx.quadraticCurveTo(x - R * .3, cy + R * .4, x, cy + R * .32); ctx.quadraticCurveTo(x + R * .3, cy + R * .4, x + R * .55, cy + R * .35); ctx.quadraticCurveTo(x + R * .35, cy + R * .1, x, cy + R * .25); ctx.fill();
+  }
   ctx.strokeStyle = 'rgba(60,35,30,.8)'; ctx.lineWidth = 1;
   const by = cy + R * 1.55, bb = y - R * .32;
   ctx.beginPath(); ctx.moveTo(x - R * .22, by); ctx.lineTo(x - R * .24, bb); ctx.moveTo(x + R * .22, by); ctx.lineTo(x + R * .24, bb); ctx.stroke();
@@ -3359,7 +3398,28 @@ function showIssue(id) {
 
 /* ---------- design studio ---------- */
 const DESIGN_COST = 5000, RESKIN_COST = 1000;
-const PATTERNS = { stripes: ['Çizgili', 35], zigzag: ['Zikzak', 60], checker: ['Damalı', 55], stars: ['Yıldızlı', 70], hearts: ['Kalpli', 70], sunburst: ['Güneş', 75], waves: ['Dalga', 60], rainbow: ['Gökkuşağı', 65], dots: ['Puantiyeli', 50] };
+/* Shop patterns (€0,99 each) score higher than the free ones, so they bring more popularity; shapes (€1,99) add a little on top. */
+const SHOP = {
+  gold: { n: 'Varak altın', kind: 'pat', price: '0,99 €' }, tile: { n: 'İznik çinisi', kind: 'pat', price: '0,99 €' }, sky: { n: 'Takımyıldız', kind: 'pat', price: '0,99 €' }, kilim: { n: 'Kapadokya kilimi', kind: 'pat', price: '0,99 €' },
+  heart: { n: 'Kalp balon', kind: 'shape', price: '1,99 €' }, star: { n: 'Yıldız balon', kind: 'shape', price: '1,99 €' }, hezarfen: { n: 'Hezarfen balonu', kind: 'shape', price: '1,99 €' },
+  fountain: { n: 'Meydan çeşmesi', kind: 'decor', price: '0,99 €' }, statue: { n: 'Hezarfen heykeli', kind: 'decor', price: '0,99 €' }, lanterns: { n: 'Fener dizileri', kind: 'decor', price: '0,99 €' }, flags: { n: 'Şirket bayrakları', kind: 'decor', price: '0,99 €' }
+};
+const owned = k => !!(S.iap && S.iap[k]);
+const DECOR = ['fountain', 'statue', 'lanterns', 'flags'];
+const decorN = () => DECOR.filter(owned).length;
+/* Purchase sheet (prototype stand-in for the store's own payment sheet). */
+function iapBuy(k, then) {
+  const m = $('menu'), back = m.hidden ? null : [...m.childNodes]; m.replaceChildren();
+  const c = h('div', 'card iap');
+  c.appendChild(h('div', 'chap', 'Mağaza'));
+  c.appendChild(h('h1', null, SHOP[k].n));
+  c.appendChild(h('p', 'lead', { pat: 'Atölyede kullanabileceğin özel desen. Yaratıcılık puanı yüksek, tasarım popülerliği daha fazla.', shape: 'Özel şekilli balon zarfı. Desenle birlikte giyilir; her uçuşta ekstra popülerlik getirir.', decor: 'Kasabana kalıcı bir süs. Çarşıdan alınır, şehirde görünür.' }[SHOP[k].kind]));
+  c.appendChild(h('p', 'hint', 'Prototip: gerçek ödeme yok. App Store yerel fiyatlandırması kullanılacak.'));
+  const b = h('button', 'big', `Satın al ${SHOP[k].price}`); b.onclick = () => { S.iap = Object.assign({}, S.iap, { [k]: S.day }); sfx('coin'); save(); if (back) m.replaceChildren(...back); else m.hidden = true; if (then) then(); refresh(); };
+  const x = h('button', 'ghost', 'Vazgeç'); x.style.width = '100%'; x.onclick = () => { if (back) m.replaceChildren(...back); else m.hidden = true; };
+  c.append(b, x); m.appendChild(c); m.hidden = false;
+}
+const PATTERNS = { stripes: ['Çizgili', 35], zigzag: ['Zikzak', 60], checker: ['Damalı', 55], stars: ['Yıldızlı', 70], hearts: ['Kalpli', 70], sunburst: ['Güneş', 75], waves: ['Dalga', 60], rainbow: ['Gökkuşağı', 65], dots: ['Puantiyeli', 50], gold: ['Varak altın', 92, 1], tile: ['İznik çinisi', 90, 1], sky: ['Takımyıldız', 92, 1], kilim: ['Kapadokya kilimi', 90, 1] };
 const SWATCHES = ['#ff5e3a', '#ffc23d', '#2b2350', '#14a39a', '#ff6fa8', '#5aa9e6', '#9b7be0', '#22a45d', '#e5432f', '#ffffff', '#1f1b2e', '#f3e08a'];
 const designOf = b => b && b.design && (S.designs || []).find(d => d.id === b.design);
 const designCost = () => hasOffice('tyo') ? 0 : DESIGN_COST;
@@ -3371,6 +3431,7 @@ function designScore(d) {
   if ((S.designs || []).some(o => o !== d && o.pat === d.pat && o.cols[0] === d.cols[0])) s -= 20; /* kendini tekrar etme */
   if (S.rivals.some(r => r.alive && r.col === d.cols[0])) s -= 10; /* rakibe benziyor */
   if (hasOffice('tyo')) s += 10;
+  if (d.shape) s += 8; /* shaped envelopes turn heads */
   return clamp(Math.round(s), 5, 100);
 }
 const iconCols = b => { const d = designOf(b); return d ? [d.cols[0], d.cols[1]] : myCol(); };
@@ -3409,6 +3470,21 @@ function paintDesign(x, cy, R, top, d) {
       for (let r = 0; r < 5; r++) { ctx.strokeStyle = r % 2 ? c2 : c3; ctx.beginPath(); const y0 = top + R * (.45 + r * .48); for (let k = 0; k <= 20; k++) { const xx = x - R + k * R / 10, yy = y0 + Math.sin(k * .9) * R * .09; if (k) ctx.lineTo(xx, yy); else ctx.moveTo(xx, yy); } ctx.stroke(); }
       break;
     case 'rainbow': { const cols = [c1, c2, c3, '#ffc23d', '#3ad0c0', '#9b7be0']; for (let k = 0; k < 6; k++) { ctx.fillStyle = cols[k]; ctx.fillRect(x - R + k * R / 3, top, R / 3 + .6, R * 3.2); } break; }
+    case 'gold': {
+      const g = ctx.createLinearGradient(x - R, top, x + R, top + R * 3); g.addColorStop(0, '#fff2b0'); g.addColorStop(.35, '#e8b23a'); g.addColorStop(.6, '#fff6c8'); g.addColorStop(1, '#b07a1a');
+      ctx.fillStyle = g; ctx.fillRect(x - R, top, R * 2, R * 3.2); ctx.fillStyle = c1; ctx.fillRect(x - R, cy + R * .05, R * 2, R * .5);
+      ctx.strokeStyle = 'rgba(120,80,10,.35)'; ctx.lineWidth = 1; for (let k = -2; k <= 2; k++) { ctx.beginPath(); ctx.ellipse(x + k * R * .3, cy, R * .12, R * 1.5, 0, 0, 7); ctx.stroke(); } break; }
+    case 'tile':
+      ctx.fillStyle = '#f6f2ea'; ctx.fillRect(x - R, top, R * 2, R * 3.2);
+      for (let i = 0; i < 4; i++) for (let j = 0; j < 5; j++) { const px = x - R * .9 + i * R * .6 + (j % 2) * R * .3, py = top + R * .35 + j * R * .55; ctx.fillStyle = c1; ctx.beginPath(); for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4, r = k % 2 ? R * .1 : R * .22; ctx.lineTo(px + Math.cos(a) * r, py + Math.sin(a) * r); } ctx.fill(); ctx.fillStyle = '#e5432f'; ctx.beginPath(); ctx.arc(px, py, R * .06, 0, 7); ctx.fill(); }
+      ctx.fillStyle = '#2b5ab8'; ctx.fillRect(x - R, cy + R * .9, R * 2, R * .12); break;
+    case 'sky':
+      { const g = ctx.createLinearGradient(0, top, 0, top + R * 3); g.addColorStop(0, '#141238'); g.addColorStop(1, c1); ctx.fillStyle = g; ctx.fillRect(x - R, top, R * 2, R * 3.2); }
+      for (let i = 0; i < 14; i++) star(x - R * .85 + ((i * 37) % 17) / 17 * R * 1.7, top + R * .2 + ((i * 53) % 23) / 23 * R * 2.2, R * (.04 + (i % 3) * .025), i % 4 ? '#fff6d0' : c2);
+      ctx.strokeStyle = 'rgba(255,246,208,.5)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(x - R * .5, cy - R * .4); ctx.lineTo(x - R * .1, cy - R * .6); ctx.lineTo(x + R * .3, cy - R * .3); ctx.lineTo(x + R * .55, cy - R * .55); ctx.stroke(); break;
+    case 'kilim':
+      for (let r = 0; r < 7; r++) { ctx.fillStyle = [c1, '#c0283a', c2, '#2b2350', c3, '#e8b23a', c1][r]; ctx.fillRect(x - R, top + r * R * .46, R * 2, R * .46);
+        ctx.fillStyle = r % 2 ? '#f6e6c0' : '#2b2350'; for (let k = 0; k < 5; k++) { const px = x - R * .8 + k * R * .4, py = top + r * R * .46 + R * .23; ctx.beginPath(); ctx.moveTo(px, py - R * .14); ctx.lineTo(px + R * .12, py); ctx.lineTo(px, py + R * .14); ctx.lineTo(px - R * .12, py); ctx.fill(); } } break;
     case 'dots':
       for (let i = 0; i < 5; i++) for (let j = 0; j < 7; j++) { ctx.fillStyle = (i + j) % 3 ? c2 : c3; ctx.beginPath(); ctx.arc(x - R + R * .2 + i * R * .42 + (j % 2) * R * .21, top + R * .25 + j * R * .42, R * .11, 0, 7); ctx.fill(); }
       break;
@@ -3434,8 +3510,12 @@ function showDesigner() {
     c.appendChild(pv);
     c.appendChild(h('div', 'lbl', 'Desen'));
     const pr = h('div', 'pats');
-    for (const k in PATTERNS) { const b = h('button', 'pat' + (dr.pat === k ? ' on' : ''), PATTERNS[k][0]); b.onclick = () => { dr.pat = k; draw(); }; pr.appendChild(b); }
+    for (const k in PATTERNS) { const prem = PATTERNS[k][2], lock = prem && !owned(k); const b = h('button', 'pat' + (dr.pat === k ? ' on' : '') + (prem ? ' prem' : ''), (lock ? '🔒 ' : prem ? '✦ ' : '') + PATTERNS[k][0] + (lock ? ` <small>${SHOP[k].price}</small>` : '')); b.onclick = () => { if (lock) return iapBuy(k, () => { dr.pat = k; draw(); }); dr.pat = k; draw(); }; pr.appendChild(b); }
     c.appendChild(pr);
+    c.appendChild(h('div', 'lbl', 'Zarf şekli'));
+    const sr = h('div', 'pats');
+    for (const k of [null, 'heart', 'star', 'hezarfen']) { const lock = k && !owned(k); const b = h('button', 'pat' + ((dr.shape || null) === k ? ' on' : '') + (k ? ' prem' : ''), k ? `${lock ? '🔒' : '✦'} ${SHOP[k].n}${lock ? ` <small>${SHOP[k].price}</small>` : ''}` : 'Klasik'); b.onclick = () => { if (lock) return iapBuy(k, () => { dr.shape = k; draw(); }); dr.shape = k; draw(); }; sr.appendChild(b); }
+    c.appendChild(sr);
     ['Ana renk', 'Desen rengi', 'Vurgu rengi'].forEach((lab, i) => {
       c.appendChild(h('div', 'lbl', lab));
       const row = h('div', 'sws');
@@ -3448,7 +3528,7 @@ function showDesigner() {
     const cost = designCost(), mk = h('button', 'big', cost ? `Üret ${eur(cost)}` : 'Üret (Tokyo ofisi karşılıyor)'); mk.disabled = S.cash < cost;
     mk.onclick = () => {
       S.cash -= cost; if (!S.designs) S.designs = [];
-      const d = { id: S.nextId++, name: (dr.name || '').trim() || `${PATTERNS[dr.pat][0]} ${S.designs.length + 1}`, pat: dr.pat, cols: dr.cols.slice(), day: S.day };
+      const d = { id: S.nextId++, name: (dr.name || '').trim() || `${PATTERNS[dr.pat][0]} ${S.designs.length + 1}`, pat: dr.pat, shape: dr.shape || null, cols: dr.cols.slice(), day: S.day };
       d.score = designScore(d); S.designs.push(d); sfx('coin'); m.hidden = true; refresh();
     };
     const no = h('button', 'ghost', 'Vazgeç'); no.style.width = '100%'; no.onclick = () => { m.hidden = true; };
@@ -3737,6 +3817,25 @@ function forecastBox(n) {
 function rollFlag() { const r = Math.random(), gq = S.winter ? .35 : .55, yq = S.winter ? .7 : .85; return r < gq ? 'green' : r < yq ? 'yellow' : 'red'; }
 function forecastFlag(day) { S.fc = S.fc || {}; for (const d in S.fc) if (+d < S.day) delete S.fc[d]; if (!S.fc[day]) { S.fc[day] = rollFlag(); save(); } return S.fc[day]; }
 const UNLOCK_DAY = { fleet: 4, bank: 6, market: 8, crew: 10 };
+/* The bazaar: everything sold for real money, in one place. Decorations show up in the town and draw a few more tourists. */
+function showBazaar() {
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card bazaar');
+  c.appendChild(h('h1', null, 'Çarşı'));
+  c.appendChild(h('p', 'lead', 'Kasabanı süsle, balonlarına özel desen ve şekil al. Her süs kasabada görünür ve talebi %1 artırır.'));
+  for (const [kind, lab] of [['decor', 'Kasaba süsleri'], ['shape', 'Balon şekilleri'], ['pat', 'Özel desenler']]) {
+    c.appendChild(h('div', 'lbl', lab));
+    for (const k in SHOP) if (SHOP[k].kind === kind) {
+      const it = h('div', 'item'), own = owned(k);
+      it.appendChild(h('div', 'main', `<div class="t">${SHOP[k].n}</div><div class="s">${{ decor: 'Kasabada kalıcı süs, talep +%1', shape: 'Atölyede tasarıma eklenir, her uçuşta ekstra popülerlik', pat: 'Atölyede kullanılır, yüksek yaratıcılık' }[kind]}</div>`));
+      it.appendChild(pbtn(own ? 'Senin' : SHOP[k].price, () => iapBuy(k, showBazaar), own));
+      c.appendChild(it);
+    }
+  }
+  c.appendChild(h('p', 'hint', 'Fiyatlar App Store\'da ülkene göre yerel para biriminde görünür.'));
+  const x = h('button', 'big', 'Kapat'); x.onclick = () => { m.hidden = true; }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false; sfx('click');
+}
 /* A small info card with one action, shown over the town. */
 function townCard(title, text, label, fn, dis) {
   const m = $('menu'); m.replaceChildren();
@@ -3781,6 +3880,8 @@ function townBuildings() {
   /* booking offices side by side: yours first, then the rivals; same kiosk, awning in each company's balloon colours */
   add({ id: 'mine', gx: 8.7, gy: 12.2, w: 1.2, d: 1.2, name: S.company || 'Senin ofisin', look: 'rival', lv: 1, col: myCol()[0], col2: myCol()[1],
     sub: `Balon: ${n} · Sv. ${bl('mine')}`, small: true, tap: () => unlocked('market') ? buildingCard('mine', () => openSection('market', 'Sen ve rakiplerin'), 'Pazara git') : lockedCard(S.company || 'Senin ofisin', 'market') });
+  add({ id: 'bazaar', gx: 12.15, gy: 3.1, w: 1.7, d: 1.5, name: 'Çarşı', look: 'bazaar', lv: unlocked('market') ? (decorN() ? 2 : 1) : -1, small: true,
+    sub: unlocked('market') ? `Süs: ${decorN()}/${DECOR.length}` : 'Yakında', tap: () => unlocked('market') ? showBazaar() : lockedCard('Çarşı', 'market') });
   add({ id: 'mast', gx: 6.95, gy: 3.95, w: .4, d: .4, name: 'Rüzgâr direği', look: 'mast', lv: 1, small: true, sub: bl('mast') >= 2 ? `Yarın: ${FLAGS[forecastFlag(S.day + 1)].name.split(' ')[0]}` : `Sv. ${bl('mast')}`, tap: () => buildingCard('mast') });
   S.rivals.forEach((r, i) => add({ id: 'rival' + i, gx: 10.55 + i * 1.85, gy: 12.2, w: 1.2, d: 1.2, name: r.name, look: 'rival', lv: r.alive ? 1 : 0, col: r.col, col2: r.col2,
     sub: r.alive ? `Balon: ${r.balloons.length}` : r.merged ? 'Birleşti' : r.forSale ? 'Satışta' : 'Kapandı', small: true,
@@ -4066,6 +4167,20 @@ function tbuilding(b, t) {
     }
     case 'hotel': hotel(b, t); break;
     case 'mast': windMast(b.gx + .2, b.gy + .2, t); break;
+    case 'bazaar': {
+      /* a covered bazaar: tuff walls, two small domes, striped awning over carpets and pots */
+      const x0 = g + .1, y0 = k + .1, w = b.w - .2, d = b.d - .2, hh = 40;
+      const f = block(x0, y0, w, d, hh, { parapet: true });
+      opening(f.D, f.C, hh, .3, 0, .22, .6, 'door'); opening(f.D, f.C, hh, .72, .35, .16, .35, 'win', true);
+      opening(f.C, f.B, hh, .5, .35, .2, .35, 'win', true);
+      const top = lp(f.a, f.c, .5); dome(top[0] - 14, top[1] + 2, 13, S.winter ? '#f2f5fa' : '#2b8ab0'); dome(top[0] + 14, top[1] - 2, 10, S.winter ? '#f2f5fa' : '#2b8ab0');
+      const a0 = upp(f.D, 28), a1 = upp(f.C, 28), a2 = [a1[0] - 14, a1[1] + 12], a3 = [a0[0] - 14, a0[1] + 12];
+      for (let i = 0; i < 6; i++) tpoly([lp(a0, a1, i / 6), lp(a0, a1, (i + 1) / 6), lp(a3, a2, (i + 1) / 6), lp(a3, a2, i / 6)], i % 2 ? '#fff4dc' : '#c0283a');
+      /* goods out front: a hanging kilim, pots and a crate */
+      const r = tiso(x0 + .25, y0 + d + .3); ctx.fillStyle = '#c0283a'; ctx.fillRect(r[0] - 8, r[1] - 16, 16, 14); ctx.fillStyle = '#ffc23d'; ctx.fillRect(r[0] - 8, r[1] - 11, 16, 3); ctx.fillStyle = '#2b2350'; ctx.fillRect(r[0] - 2, r[1] - 15, 4, 12);
+      for (let i = 0; i < 3; i++) { const p = tiso(x0 + .7 + i * .28, y0 + d + .25); ctx.fillStyle = ['#b8582e', '#2b8ab0', '#d08a3a'][i]; ctx.beginPath(); ctx.ellipse(p[0], p[1] - 6, 5, 6, 0, 0, 7); ctx.fill(); ctx.fillRect(p[0] - 2, p[1] - 14, 4, 4); }
+      break;
+    }
     case 'rival': {
       const x0 = g + .1, y0 = k + .1, w = b.w - .2, d = b.d - .2;
       if (!b.lv) { const f = block(x0, y0, w, d, 34, { lit: '#9a8a78', shade: '#6a5a48', top: '#8a7a68' }); tface(f.D, f.C, 34, () => { ctx.fillStyle = '#5a3a20'; for (let i = 0; i < 3; i++) { ctx.save(); ctx.translate(.5, .45); ctx.rotate((i - 1) * .3); ctx.fillRect(-.5, -.06, 1, .12); ctx.restore(); } }); break; }
@@ -4141,7 +4256,7 @@ function hotel(b, t) {
 /* Approximate shadow footprint per building, drawn in a pass before everything else. */
 function buildingShadow(b) {
   if (b.lv <= 0 && b.look !== 'rival') return;
-  const hh = { hangar: 80, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 48, agency: 100, tower: 270, rival: 44 }[b.look] || ({ 0: 60, 1: 120, 2: 140, 3: 120 })[b.star] || 60;
+  const hh = { bazaar: 60, hangar: 80, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 48, agency: 100, tower: 270, rival: 44 }[b.look] || ({ 0: 60, 1: 120, 2: 140, 3: 120 })[b.star] || 60;
   boxShadow(b.gx + .3, b.gy + .3, b.w - .6, b.d - .6, hh, .18);
 }
 
@@ -4151,7 +4266,7 @@ function tdecor(t) {
   /* dusty ground patches and tufts */
   for (let i = 0; i < 160; i++) { const p = tiso(R() * 15, R() * 15); ctx.fillStyle = R() < .5 ? 'rgba(160,120,70,.18)' : 'rgba(120,150,70,.22)'; ctx.beginPath(); ctx.ellipse(p[0], p[1], 6 + R() * 16, 3 + R() * 6, 0, 0, 7); ctx.fill(); }
   /* vineyard rows at the edges */
-  for (const [gx0, gy0, gw, gd] of [[13.2, 3.4, 1.6, 3.6], [-9, 2, 5, 4], [18, 10, 4, 5], [2, 18, 4, 3.5], [-12, 12, 4, 3]]) {
+  for (const [gx0, gy0, gw, gd] of [[-9, 2, 5, 4], [18, 10, 4, 5], [2, 18, 4, 3.5], [-12, 12, 4, 3]]) {
     for (let r = 0; r < 6; r++) { const a = tiso(gx0, gy0 + r * gd / 6), c = tiso(gx0 + gw, gy0 + r * gd / 6); ctx.strokeStyle = '#6f8a3a'; ctx.lineWidth = 4; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...c); ctx.stroke(); ctx.setLineDash([]); }
   }
   /* cobbled roads with kerbs */
@@ -4210,6 +4325,26 @@ function townScenery(t) {
       for (let i = 1; i < 10; i++) { const k = i / 10, x = lerp(p[0], q[0], k), y = lerp(p[1], q[1], k) - H + 14 * 4 * k * (1 - k) + Math.sin(t * 3 + i) * .8; ctx.fillStyle = ['#ff5e3a', '#ffc23d', '#14a39a', '#9b7be0', '#ff6fa8'][i % 5]; ctx.beginPath(); ctx.moveTo(x - 4, y); ctx.lineTo(x + 4, y); ctx.lineTo(x, y + 9); ctx.fill(); }
     } });
   }
+  /* bought decorations */
+  if (owned('fountain')) items.push({ depth: 16.2, draw: () => {
+    const p = tiso(8, 8); ctx.fillStyle = '#d9c2a0'; ctx.beginPath(); ctx.ellipse(p[0], p[1], 34, 17, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#b89a74'; ctx.fillRect(p[0] - 34, p[1] - 8, 68, 8);
+    ctx.fillStyle = '#e8d6b6'; ctx.beginPath(); ctx.ellipse(p[0], p[1] - 8, 34, 17, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#4ab8d0'; ctx.beginPath(); ctx.ellipse(p[0], p[1] - 9, 28, 13, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#d9c2a0'; ctx.fillRect(p[0] - 4, p[1] - 30, 8, 22); ctx.beginPath(); ctx.ellipse(p[0], p[1] - 30, 12, 5, 0, 0, 7); ctx.fill();
+    ctx.strokeStyle = 'rgba(200,240,255,.85)'; ctx.lineWidth = 1.5; for (let i = 0; i < 6; i++) { const a = i / 6 * Math.PI * 2 + t, ex = p[0] + Math.cos(a) * 22, ey = p[1] - 9 + Math.sin(a) * 9; ctx.beginPath(); ctx.moveTo(p[0], p[1] - 34); ctx.quadraticCurveTo((p[0] + ex) / 2, p[1] - 44, ex, ey); ctx.stroke(); } } });
+  if (owned('statue')) items.push({ depth: 15.8, shadow: () => { const p = tiso(6.9, 8.9); blobShadow(p[0] + 18, p[1] + 4, 18, 6, .16); }, draw: () => {
+    const p = tiso(6.9, 8.9); ctx.fillStyle = '#c8b090'; ctx.fillRect(p[0] - 10, p[1] - 22, 20, 22); ctx.fillStyle = '#a8906e'; ctx.fillRect(p[0] + 2, p[1] - 22, 8, 22);
+    /* Hezarfen with his wings spread, in bronze */
+    const q = [p[0], p[1] - 22]; ctx.fillStyle = '#8a6a3a'; ctx.fillRect(q[0] - 3, q[1] - 22, 6, 22); ctx.beginPath(); ctx.arc(q[0], q[1] - 26, 4.5, 0, 7); ctx.fill();
+    ctx.fillStyle = '#f2eee6'; ctx.beginPath(); ctx.ellipse(q[0], q[1] - 31, 5, 3, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#a07c44'; for (const sgn of [-1, 1]) { ctx.beginPath(); ctx.moveTo(q[0], q[1] - 18); ctx.lineTo(q[0] + sgn * 26, q[1] - 30); ctx.lineTo(q[0] + sgn * 22, q[1] - 14); ctx.closePath(); ctx.fill(); } } });
+  if (owned('lanterns')) for (const [gx, gy] of [[2, 7.4], [5, 7.4], [10.5, 7.4], [13.5, 7.4], [7.4, 2], [7.4, 5.5], [7.4, 10.5], [7.4, 13.5]]) items.push({ depth: gx + gy, draw: () => {
+    const p = tiso(gx, gy); ctx.fillStyle = '#3a2a20'; ctx.fillRect(p[0] - 1.5, p[1] - 40, 3, 40); ctx.fillRect(p[0] - 6, p[1] - 41, 12, 2);
+    const on = .7 + .3 * Math.sin(t * 2 + gx); ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(p[0], p[1] - 46, 0, p[0], p[1] - 46, 22); g.addColorStop(0, `rgba(255,190,90,${.35 * on})`); g.addColorStop(1, 'rgba(255,190,90,0)'); ctx.fillStyle = g; ctx.fillRect(p[0] - 22, p[1] - 68, 44, 44); ctx.restore();
+    ctx.fillStyle = '#ffcf6a'; ctx.beginPath(); ctx.ellipse(p[0], p[1] - 46, 4, 6, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#b8582e'; ctx.fillRect(p[0] - 4, p[1] - 53, 8, 2); } });
+  if (owned('flags')) { const c = myCol(); for (const [gx, gy] of [[0, 4], [0, 11], [4, 15.3], [11, 15.3], [15.3, 4], [15.3, 11]]) items.push({ depth: gx + gy + .6, draw: () => {
+    const p = tiso(gx, gy); ctx.strokeStyle = '#4a3a2a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(p[0], p[1] - 80); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(p[0], p[1] - 80); for (let i = 0; i <= 8; i++) ctx.lineTo(p[0] + i * 3.5, p[1] - 80 + Math.sin(t * 4 + i * .8 + gx) * 2); for (let i = 8; i >= 0; i--) ctx.lineTo(p[0] + i * 3.5, p[1] - 62 + Math.sin(t * 4 + i * .8 + gx) * 2); ctx.closePath(); ctx.fillStyle = c[0]; ctx.fill();
+    ctx.fillStyle = c[1]; ctx.fillRect(p[0] + 8, p[1] - 74 + Math.sin(t * 4 + 2.5 + gx) * 2, 12, 5); } }); }
   /* people strolling on the roads */
   for (let i = 0; i < 10; i++) { const along = ((t * .05 + i * .1) % 1) * 15, onX = i % 2; const gx = onX ? along : 7.8 + (i % 3) * .15, gy = onX ? 7.8 + (i % 3) * .15 : along; items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); person(p[0], p[1], ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0'][i % 5], t, i); } }); }
   return items;

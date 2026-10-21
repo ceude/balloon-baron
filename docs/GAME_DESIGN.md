@@ -12,6 +12,8 @@ Bu belge `prototype/balloon-baron.html` içindeki güncel mekanikleri ve sayıla
 ## Başlangıç
 Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigorta ilk günden açık. Kurulumda şirket adı ve balon rengi seçilir (10 palet).
 
+**Binaların açılışı** (her ders yerine otursun diye iki günde bir): sigorta 2. gün, hangar 4. gün (ya da kasa ≥ 7.000), banka 6. gün, pazar 8. gün, pilot ofisi 10. gün (ya da 2 balon). Hezarfen'in popülerlik dersi 9. gün, rakip ipuçları 10., 13. ve 16. gün.
+
 ## Balonlar
 | Boy | Kapasite | Fiyat | Yakıt/uçuş | Bakım | Risk |
 |---|---|---|---|---|---|
@@ -38,6 +40,7 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 - XP eşikleri 0 / 40 / 100.
 - Rakipler pilot ayartabilir (günlük %4 şans).
 - Pilot okulu €60.000'a kurulur.
+- **Özellikler:** adayların %75'inin bir özelliği vardır: Şovmen (bahşiş +€9/yolcu), Temkinli (risk ×0,75), Gözü kara (risk ×1,3, uçuş başına popülerlik +0,003), Tutumlu (yakıt ×0,85), Sadık (ayartılamaz), Hikâyeci (popülerlik +0,002, iyi yorum), Gece kuşu (maaş ×0,85, sabah %7 şansla geç kalır ve o gün balonu uçmaz).
 - **Atama:** Pilotlar önce uçabilecek balonlara, büyükten küçüğe atanır; onarımdaki veya zarfı bitmiş balonlar en sona kalır. Kıdemli ve tecrübesi (XP) yüksek olan önce gelir.
 
 ## Hava
@@ -137,14 +140,57 @@ Hedefler gün sonunda kontrol edilir. Bölüm bitince ödül kasaya girer, ertes
 
 | Bölge | Bölüm | Ödül | Hedefler |
 |---|---|---|---|
-| Kapadokya | Kuruluş | 5.000 | 5 balon, 4,0★, otel anlaşması, kasada 20.000 |
-| Kapadokya | Büyüme | 20.000 | 10 balon, otel satın al, influencer, rehber, pazarın %50'si, balon atölyesi |
-| Kapadokya | Kapadokya Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL |
-| Albuquerque | Yeni Dünya | 5.000 | 5 balon, 4,0★, otel anlaşması, rehber |
-| Albuquerque | Fiesta | 20.000 | 10 balon, otel satın al, Fiesta'da uç, influencer, pazarın %50'si |
-| Albuquerque | Albuquerque Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL |
+| Kapadokya | Kuruluş | 5.000 | 5 balon, 4,0★, otel anlaşması, kasada 20.000, rüzgâr direği Sv. 2 |
+| Kapadokya | Büyüme | 20.000 | 10 balon, otel satın al, influencer, rehber, pazarın %50'si, balon atölyesi, hangar Sv. 2 |
+| Kapadokya | Kapadokya Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, bir bina Sv. 3 |
+| Albuquerque | Yeni Dünya | 5.000 | 5 balon, 4,0★, otel anlaşması, rehber, rüzgâr direği Sv. 2 |
+| Albuquerque | Fiesta | 20.000 | 10 balon, otel satın al, Fiesta'da uç, influencer, pazarın %50'si, hangar Sv. 2 |
+| Albuquerque | Albuquerque Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, bir bina Sv. 3 |
 
-Simülasyon (hedef odaklı oyuncu): Kuruluş 28–35. gün, Büyüme 68–106. gün, Baron 99–172. gün.
+Simülasyon (`tools/sim-chapters.js`, 8 tohum, yeni açılış günleriyle): Kuruluş 52–64. gün, Büyüme 94–113. gün, Baron 125–188. gün. Yükseltme hedefleri olmadan 48–59 / 85–108 / 103–189; yükseltmeler kendini ödediği için fark küçük.
+
+Bölüm ödülü kartında "Reklam izle, ödülü 2'ye katla" düğmesi: 30 saniyelik ödüllü reklam bitince ödül bir kez daha kasaya girer.
+
+## Bina yükseltmeleri
+Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükseltme görünür.
+
+| Bina | Sv. 2 | Sv. 3 |
+|---|---|---|
+| Rüzgâr direği | €6.000: direğe dokununca yarının bayrağı | €25.000: iki gün sonrası da görünür, sarı bayrakta kaza riski ×0,8 |
+| Hangar | €12.000: bakım ×0,85 | €45.000: bakım ×0,7, zarf yıpranması ×0,85 |
+| Pilot ofisi | €10.000: pilot ayartma şansı %2 | €35.000: pilotlar ×1,5 XP kazanır |
+| Satış ofisi | €15.000: talep ×1,05 | €50.000: talep ×1,12 |
+
+## Sabah olayları
+12. günden sonra (pilot ofisi açıksa, kış değilse) 7–8 günde bir. Kamera olayın yerine yakınlaşır, kart alttan çıkar. Aynı olay arka arkaya gelmez.
+- **Pilot grevi** (en az 2 pilot): ofisin önünde pankartlı pilotlar. Zam (%15 kalıcı) ya da bir gün dayan (pilotlu balonlar uçmaz, popülerlik −0,02).
+- **VIP / Düğün** (boşta uçabilen balon): en büyük boş balonu kirala, peşin kapasite × fiyat × 2,2 (VIP) / × 1,4 (düğün), popülerlik +0,02 / +0,015. Balon o gün yolcu almaz.
+- **Belgesel:** amiralde 4 koltuk kameraya, bugün 4 × fiyat kaybı, popülerlik +0,06.
+- **Propan zammı** (en az 2 balon): 5 gün yakıt ×1,5; günlük yakıtın 5 günlüğünün %25'i ödenirse etkilenmez.
+- **Basın röportajı:** %65 şansla popülerlik artar, yoksa düşer.
+
+## Festivaller (Kapadokya)
+24. günden başlayarak 35 günde bir, 3 gün: Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
+
+## Uçuş anları
+Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen hava kolonu, 2 sn içinde kal: +15 yakıt), **selam** (başka bir balonun 95 m / 50 m yakınında 2 sn), **fotoğraf** (150–280 m arasında 1,5 sn, flaş). Başarılırsa yolcu başı bahşiş +€5 ve popülerlik +0,008.
+
+## Gazete, rakip patronlar, kurtarma planı
+- **Sabah gazetesi** (Kapadokya Postası / Albuquerque Herald) yalnızca bir şey olduysa gelir: kazalar, cezalar, rakip olayları, iflas, yeni rakip, rekor yolcu günü, festival, yükseltmeler.
+- **Rakip patronlar:** Kenan Arslan (Göreme Sky) ve Dale Whitaker (Sandia Sky Rides). Selam (3. gün), bölüm başları, geçilince, otel kapışması, pilot ayartma, kazan, anlaşma, batış ve Baron töreninde konuşurlar; her söz bölge başına bir kez.
+- **Kurtarma planı:** kasa eksiye düşünce adım adım seçenekler: boştaki pilotları çıkar, en küçük balonu %60'a sat, fiyatı en ucuz rakibin €10 altına çek, kredi al.
+
+## Başarımlar ve holding hedefleri
+- ☰ menüsünde "Başarımlar": 22 başarım, her biri bir kartpostal.
+- Holding hedefleri (ofisteki beyaz tahtada yazılı): holding kasası €1 milyon, Albuquerque Baronu, bir TV kampanyası, ünlü reklam yüzü, Ar-Ge tamam, dört ofis. Hepsi bitince Dünya Baronu.
+
+## Mağaza (uygulama içi satın alma)
+Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
+- **Özel desenler** 0,99 €: Varak altın 92, İznik çinisi 90, Takımyıldız 92, Kapadokya kilimi 90 (desen tabanı).
+- **Balon şekilleri** 1,99 €: Kalp, Yıldız, Hezarfen (sarıklı, bıyıklı). Tasarıma eklenir: yaratıcılık +8 ve her uçuşta ek popülerlik +0,0015.
+- **Kasaba süsleri** 0,99 €: meydan çeşmesi, Hezarfen heykeli, fener dizileri, şirket bayrakları. Her biri kasabada görünür ve talebi %1 artırır.
+- Hepsi kasabadaki **Çarşı** binasından alınır (pazarla birlikte açılır); desen ve şekiller atölyede kilitli görünür.
+
 
 ## Bölgeler ve otomatik mod
 - Kapadokya baronu olunca holding açılır. Albuquerque'ye giriş €100.000 (holdingden). Orada sıfırdan başlanır: $3.000 ve bir S balon.
@@ -172,13 +218,13 @@ Simülasyon (hedef odaklı oyuncu): Kuruluş 28–35. gün, Büyüme 68–106. g
 - Atölye €75.000, bir kez. Tasarım €5.000, balona giydirme €1.000.
 - Yaratıcılık (5–100): desen tabanı × 0,6 + ana/desen rengi parlaklık farkı × 30 + (farklı renk − 1) × 6 + 10. Aynı desen ve ana renk tekrarı −20, yaşayan bir rakibin ana rengi −10.
 - Desen tabanları: çizgili 35, zikzak 60, damalı 55, yıldızlı 70, kalpli 70, güneş 75, dalga 60, gökkuşağı 65, puantiyeli 50.
-- Etki: tasarımlı balon her uçuşta 0,003 × puan/100 × tazelik, günlük en fazla 0,012. Tazelik 40 günde %100'den %20'ye iner.
+- Etki: tasarımlı balon her uçuşta 0,003 × puan/100 × tazelik (+0,0015 şekilli zarf), günlük en fazla 0,015. Tazelik 40 günde %100'den %20'ye iner.
 
 ## Kış
 - En erken 40. gün, kasa ≥ €50.000 iken başlar ve 8 gün sürer.
 - Bir sonraki kış 45 gün sonra gelir.
 - Talep ×0,55. Bayrak olasılıkları: yeşil %35, sarı %35, kırmızı %30.
-- Kar görselleri gösterilir.
+- Kasabaya kar yağar, çatılar ve zemin beyazlar.
 
 ## Hezarfen Usta
 Yaşlı, karizmatik mentor. Daktilo efektli konuşma balonuyla konuşur. Konuları:
