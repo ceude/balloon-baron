@@ -2,7 +2,7 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-## Tasarım incelemesi (v77–v79)
+## Tasarım incelemesi (v77–v80)
 Ayrıntılı sayılar `docs/GAME_DESIGN.md`'de. Hepsi yeni metin ister (altı dil).
 - **Açılış aralıkları:** sigorta 2, hangar 4 (ya da €7.000), banka 6, pazar 8, pilot ofisi 10 (ya da 2 balon); `pr` dersi 9. gün, rakip ipuçları 10/13/16.
 - **Sabah gazetesi:** olay varsa sabah ilk kart; bölgeye göre "Kapadokya Postası" / "Albuquerque Herald". Çekirdek `PaperItem` (id + değerler) üretir.
@@ -15,6 +15,7 @@ Ayrıntılı sayılar `docs/GAME_DESIGN.md`'de. Hepsi yeni metin ister (altı di
 - **Pilot özellikleri:** yedi özellik, aday ve ekip listesinde etiket.
 - **Başarımlar:** ☰ menüsünde albüm, 22 kartpostal; holding hedefleri ve Dünya Baronu, tahtada marker yazısı.
 - **Uçuş anları:** termik, selam, fotoğraf; yeşil şerit, gün sonunda bahşiş ve popülerlik.
+- **v80:** Çarşıdan alınan desen ya da şekil, şirket renklerinde hazır bir tasarım olarak gelir ve amiral balonuna bedava giydirilir (Hezarfen haber verir); atölye gerekmez. Filo'daki "Desen" düğmesi atölye olmadan da, tasarım varsa görünür. Holding tahtası: yazılar tahta genişliğine sığacak kadar küçülür; kısa tahtada satır aralığı daralır, grafik sığmıyorsa çizilmez. Uçuş başlarken açılış ekranının brülör düğmesi de gizlenir (yalnızca test kısayolunda görülen çift düğme).
 - **v79:** Gazete: dışta papirüs (lifli, kenarları koyu), içte hafif eğik gazete kâğıdı; Playfair Display başlıklar, Old Standard TT metin, büyük ilk harf, tarama baskı fotoğraf, alt haberler iki sütun. Holding tahtası: hedefler lacivert tahta kalemiyle el yazısı (Caveat Brush), elle çizilmiş kutular, biten hedef tikli ve üstü çizili. Çarşı FİNANS yazısından doğu duvarının dibine taşındı (14,05; 2,75). Çarşıda ürünler resimli kutucuklar (süs çizimi, desen ya da şekil balon üstünde); satın alma kartında da resim. Uçuşta emoji yerine çizilmiş rozet ikonlar (el sallama, fotoğraf makinesi); selam balonu silik (%36 opak). Her başarımın kendi kartpostal sahnesi ve günlü posta damgası. Ücretli desen ya da şekilli tasarımlar eskimez. Reklam düğmesi toplam ödülü yazar (€10.000).
 - **Mağaza (v78):** özel desenler, şekilli zarflar (kalp, yıldız, Hezarfen; `envShape`), kasaba süsleri (çeşme, heykel, fenerler, bayraklar) ve Çarşı binası (12,15; 3,1). StoreKit 2 ürünleri: desenler ve süsler Tier 1, şekiller Tier 2; non-consumable. Bölüm ödülünde ödüllü reklamla 2 katı (reklam SDK'sı seçilecek).
 
