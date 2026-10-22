@@ -112,29 +112,31 @@ enum FleetUI {
         var note: String? = nil
         var ghost = false
         var disabled = false
+        /// The current choice: a clear green "✓ title" instead of a faded button.
+        var selected = false
         let action: () -> Void
 
         var body: some View {
             Button(action: action) {
                 VStack(spacing: 1) {
-                    Text(title)
+                    Text(selected ? "✓ " + title : title)
                         .font(Theme.font(15, .heavy, condensed: true))
                         .textCase(.uppercase)
                         .multilineTextAlignment(.center)
-                    if let note {
-                        Text(note).font(Theme.font(11, .semibold)).opacity(0.85)
+                    if let note, !selected {
+                        Text(note).font(Theme.font(12.5, .bold)).opacity(0.9)
                     }
                 }
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .frame(maxWidth: .infinity, minHeight: 40)
-                .foregroundStyle(ghost ? Theme.ink : Color.white)
-                .background(ghost ? Color.white : Theme.coral, in: RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(ghost ? Theme.line : Color.clear, lineWidth: 2))
+                .foregroundStyle(selected ? Color(hex: "#1b7d47") : ghost ? Theme.ink : Color.white)
+                .background(selected ? Theme.green.opacity(0.14) : ghost ? Color.white : Theme.coral, in: RoundedRectangle(cornerRadius: 12))
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(selected ? Theme.green.opacity(0.5) : ghost ? Theme.line : Color.clear, lineWidth: 2))
             }
             .buttonStyle(.plain)
-            .disabled(disabled)
-            .opacity(disabled ? 0.45 : 1)
+            .disabled(disabled || selected)
+            .opacity(disabled && !selected ? 0.45 : 1)
         }
     }
 
@@ -557,7 +559,7 @@ private struct AdPicker: View {
                     FleetUI.Detail(loc("fleetPage.adNoneDesc"))
                 }
                 Spacer(minLength: 4)
-                FleetUI.SmallButton(title: loc(current ? "fleetPage.selected" : "fleetPage.choose"), disabled: current) {
+                FleetUI.SmallButton(title: loc(current ? "fleetPage.selected" : "fleetPage.choose"), selected: current) {
                     choose(nil, b)
                 }
                 .frame(width: 104)
@@ -581,7 +583,7 @@ private struct AdPicker: View {
                     FleetUI.Detail(detail)
                 }
                 Spacer(minLength: 4)
-                FleetUI.SmallButton(title: loc(label), disabled: current || !ok) {
+                FleetUI.SmallButton(title: loc(label), disabled: !ok, selected: current) {
                     choose(sp, b)
                 }
                 .frame(width: 104)
@@ -656,8 +658,8 @@ private struct DesignPicker: View {
 
     private func paintButton(current: Bool, cash: Int, cost: Int = Studio.reskinCost, action: @escaping () -> Void) -> some View {
         // "Paint" and its price underneath, also when it costs nothing.
-        FleetUI.SmallButton(title: current ? loc("fleetPage.selected") : loc("fleetPage.paint") + "\n" + eur(cost),
-                            disabled: current || cash < cost, action: action)
+        FleetUI.SmallButton(title: loc(current ? "fleetPage.selected" : "fleetPage.paint"), note: current ? nil : eur(cost),
+                            disabled: cash < cost, selected: current, action: action)
             .frame(width: 104)
     }
 

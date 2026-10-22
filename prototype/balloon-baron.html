@@ -362,6 +362,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .pbtn.light{background:#fff;color:var(--ink);box-shadow:0 3px 0 var(--line)}
 .pbtn:active:not(:disabled){transform:translateY(2px);box-shadow:0 1px 0 #17122f}
 .pbtn:disabled{opacity:.35;cursor:not-allowed}
+.pbtn.sel,.pbtn.sel:disabled{opacity:1;background:rgba(34,164,93,.14);color:#1b7d47;box-shadow:0 0 0 2px rgba(34,164,93,.5) inset;cursor:default}
 .sharebar{display:flex;height:22px;border-radius:11px;overflow:hidden;background:var(--haze)}
 .sharebar span{height:100%}
 .legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:13px}
@@ -1948,7 +1949,7 @@ function updateChirp(dt) {
 
 /* ---------- UI helpers ---------- */
 function h(tag, cls, html) { const e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; }
-function pbtn(label, on, disabled, light) { const b = h('button', 'pbtn' + (light ? ' light' : '')); b.textContent = label; b.onclick = on; if (disabled) b.disabled = true; return b; }
+function pbtn(label, on, disabled, light) { const b = h('button', 'pbtn' + (light ? ' light' : '') + (label === 'Seçili' ? ' sel' : '')); b.textContent = label === 'Seçili' ? '✓ Seçili' : label; b.onclick = on; if (disabled) b.disabled = true; return b; }
 function sw(on, onToggle, label) { const b = h('button', 'sw'); b.setAttribute('aria-pressed', String(!!on)); b.setAttribute('aria-label', label); b.onclick = onToggle; return b; }
 function balloonIcon(c1, c2) {
   return `<svg class="ic" viewBox="0 0 38 38"><path d="M19 3c-7 0-12 5-12 11.5 0 5.5 5 9.5 8 13.5h8c3-4 8-8 8-13.5C31 8 26 3 19 3z" fill="${c1}"/><path d="M19 3c-2.6 0-4.6 5-4.6 11.5 0 5.5 1.6 9.5 3 13.5h3.2c1.4-4 3-8 3-13.5C23.6 8 21.6 3 19 3z" fill="${c2}"/><path d="M15.5 28.5v3.5M22.5 28.5v3.5" stroke="#6b4426" stroke-width="1.2"/><rect x="15" y="31.5" width="8" height="4.5" rx="1" fill="#8a5a32"/></svg>`;
@@ -2643,9 +2644,12 @@ function updateCollect(dt) {
     if (flyChoice()) {
       const row = $('cBtns'), back = row.firstChild, pick = on => () => { S.selfFly = on; assignPilots(); leaveCollect(); };
       const solo = flying().length === 1;
-      const me = h('button', S.selfFly ? 'big' : 'ghost', solo ? 'Kendin uç' : 'Sen ve pilotlar uçsun'); me.onclick = pick(true); me.style.width = '100%';
-      const pl = h('button', S.selfFly ? 'ghost' : 'big', solo ? 'Pilot uçursun' : 'Pilotlar uçsun'); pl.onclick = pick(false); pl.style.flex = '1';
-      row.replaceChildren(back, pl); row.after(me);
+      /* today's choice is the big button on top; cancel and the other choice sit under it, slimmer */
+      const selfT = solo ? 'Kendin uç' : 'Sen ve pilotlar uçsun', pilotsT = solo ? 'Pilot uçursun' : 'Sadece pilotlar uçsun';
+      const main = h('button', 'big', S.selfFly ? selfT : pilotsT); main.onclick = pick(S.selfFly); main.style.cssText = 'width:100%;height:58px;flex:none';
+      const other = h('button', 'ghost', S.selfFly ? pilotsT : selfT); other.onclick = pick(!S.selfFly); other.style.cssText = 'flex:1;height:46px';
+      back.style.height = '46px';
+      row.replaceChildren(back, other); row.before(main);
     }
   }
 }

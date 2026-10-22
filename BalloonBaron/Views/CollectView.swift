@@ -285,21 +285,24 @@ struct CollectView: View {
         if m.done && flyChoice { choiceButtons(m) } else { goButtons(m) }
     }
 
-    /// Who flies is decided here: you and your pilots, or the pilots alone. Today's choice is the bright one.
+    /// Who flies is decided here: you and your pilots, or only the pilots. Today's choice is the big bright button on
+    /// top; cancel and the other choice sit under it, slimmer.
     private func choiceButtons(_ m: CollectModel) -> some View {
         let me = store.state?.local.selfFly ?? true, solo = m.balloons == 1
-        return VStack(spacing: 10) {
+        let selfTitle = loc(solo ? "collect.selfGo" : "collect.selfAndPilots")
+        let pilotsTitle = loc(solo ? "collect.pilotGo" : "collect.onlyPilots")
+        return VStack(spacing: 8) {
+            Button(me ? selfTitle : pilotsTitle) { pick(selfFly: me) }
+                .buttonStyle(ChunkyButtonStyle(kind: .big, height: 58))
             HStack(spacing: 10) {
                 Button(loc("common.cancel")) {
                     SoundEngine.shared.play(.click)
                     store.cancelCollect()
                 }
-                .buttonStyle(ChunkyButtonStyle(kind: .glassGhost))
-                Button(loc(solo ? "collect.pilotGo" : "collect.pilotsGo")) { pick(selfFly: false) }
-                    .buttonStyle(ChunkyButtonStyle(kind: me ? .glassGhost : .big, wide: true))
+                .buttonStyle(ChunkyButtonStyle(kind: .glassGhost, height: 46))
+                Button(me ? pilotsTitle : selfTitle) { pick(selfFly: !me) }
+                    .buttonStyle(ChunkyButtonStyle(kind: .glassGhost, height: 46, wide: true))
             }
-            Button(loc(solo ? "collect.selfGo" : "collect.selfAndPilots")) { pick(selfFly: true) }
-                .buttonStyle(ChunkyButtonStyle(kind: me ? .big : .glassGhost, wide: true))
         }
     }
 

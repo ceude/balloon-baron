@@ -116,6 +116,7 @@ add("collect.skip", "Skip", "Atla", "Überspringen", "Saltar", "スキップ", "
 add("collect.takeOff", "Take off", "Kalkışa geç", "Abheben", "Despegar", "離陸へ", "이륙하기")
 add("collect.pilotsGo", "Pilots fly", "Pilotlar uçsun", "Die Piloten fliegen", "Que vuelen los pilotos", "パイロットが飛ぶ", "조종사들이 비행")
 add("collect.pilotGo", "Your pilot flies", "Pilot uçursun", "Dein Pilot fliegt", "Que vuele tu piloto", "パイロットが飛ぶ", "조종사가 비행")
+add("collect.onlyPilots", "Only the pilots fly", "Sadece pilotlar uçsun", "Nur die Piloten fliegen", "Solo vuelan los pilotos", "パイロットだけが飛ぶ", "조종사만 비행")
 add("collect.selfAndPilots", "You and your pilots fly", "Sen ve pilotlar uçsun", "Du und deine Piloten fliegen", "Tú y tus pilotos vuelan", "あなたとパイロットが飛ぶ", "당신과 조종사들이 비행")
 add("collect.selfGo", "Fly it yourself", "Kendin uç", "Flieg selbst", "Vuela tú", "自分で飛ぶ", "직접 비행")
 add("collect.src.tourists", "Tourists in %@", "%@ bölgesindeki turistler", "Touristen in %@", "Turistas en %@", "%@の観光客", "%@의 관광객")
