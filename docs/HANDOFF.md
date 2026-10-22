@@ -2,7 +2,7 @@
 
 Yeni bir Claude oturumu bu repoyu açınca önce bunu ve `CLAUDE.md`'yi okusun.
 
-## Durum (prototip v88, Swift v85)
+## Durum (prototip v88, Swift v88)
 - Prototip: `prototype/balloon-baron.html`, oynanabilir ve en güncel tasarım burada.
 - Swift uygulaması prototip v85'e kadar her şeyi içeriyor (Ekim 2026 aktarımı). Neyin bilerek sade bırakıldığı `docs/PORT_QUEUE.md` sonunda yazıyor (gerçek ödeme, reklam SDK'sı, kartpostal sahneleri vb.).
 - `docs/PORT_QUEUE.md` boş: yeni tasarım değişiklikleri prototipte yapılınca buraya yazılır.

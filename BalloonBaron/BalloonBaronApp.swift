@@ -98,7 +98,10 @@ struct RootView: View {
                     .transition(.opacity)
             }
             if let n = store.night {
-                NightView(night: n).transition(.opacity).zIndex(5)
+                // The last of the night fades slowly over the morning town (`dawnTick`).
+                NightView(night: n)
+                    .transition(.asymmetric(insertion: .opacity, removal: .opacity.animation(.easeOut(duration: 1.4))))
+                    .zIndex(5)
             }
             if store.showIntro {
                 IntroView()

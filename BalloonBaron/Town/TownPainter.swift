@@ -160,6 +160,7 @@ struct TownPainter {
         for it in items.sorted(by: { $0.depth < $1.depth }) { it.draw(&self) }
         for f in sky.balloons { f(&self) }
         if night != nil { nightLayer(screen: screen, world: world, hz: hz) }
+        if let n = night, n.sunrise > 0 { sunriseLayer(screen: screen, hz: hz, amount: n.sunrise) }
         c = screen
         if s.local.winter != nil { snowfall(w, h) }
         return labels(bs)

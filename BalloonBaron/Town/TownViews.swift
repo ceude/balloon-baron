@@ -16,6 +16,11 @@ final class TownCanvasModel {
     var pinchStart: TownViewport?
     /// A glide: start time, start view and target view.
     var anim: (start: Double, from: TownViewport, to: TownViewport)?
+    /// The view came from the night (the morning keeps the night's camera): it clamps and sets its horizon like the night.
+    var night = false
+    /// Gliding home from the night's camera: its horizon at the start, and how far the glide has come (0 … 1).
+    var hzFrom: CGFloat?
+    var glided: CGFloat = 0
 
     func time(_ date: Date) -> Double { date.timeIntervalSinceReferenceDate - t0 }
     var now: Double { time(Date()) }
@@ -43,12 +48,13 @@ final class TownCanvasModel {
             view.z = a.from.z + (a.to.z - a.from.z) * e
             view.ox = a.from.ox + (a.to.ox - a.from.ox) * e
             view.oy = a.from.oy + (a.to.oy - a.from.oy) * e
+            glided = e
             if k >= 1 {
                 anim = nil
-                if mode == .leaving { mode = .home }
+                if mode == .leaving { mode = .home; night = false; hzFrom = nil }
             }
         } else if mode == .zoomed {
-            clamp()
+            if night { NightCamera.clamp(&view, size) } else { clamp() }
         }
     }
 
@@ -74,6 +80,9 @@ struct HomeTownView: View {
     let hudBottom: CGFloat
     @Binding var zoomed: Bool
     @State private var model = TownCanvasModel()
+    /// The morning after the night: the town keeps the night's camera and the home screen's controls stay over it
+    /// (`zoomed` stays false) until you zoom in.
+    @State private var hold = false
     /// Where this view's own (safe-area) frame starts on screen. The canvas ignores the safe area and draws in
     /// screen coordinates, while tap and pinch locations arrive in the view's frame; adding this lines them up.
     @State private var origin: CGPoint = .zero
@@ -96,15 +105,21 @@ struct HomeTownView: View {
                             renderEvent(&c, s, sz, now, e)
                         } else {
                             store.collectScene.from = nil
-                            // Zoomed in, the horizon stays where the home screen had it.
+                            // Zoomed in, the horizon stays where the home screen had it; from the night it stays the night's,
+                            // and gliding home it slides down to the home screen's.
                             var v = model.view
-                            if model.mode != .home { v.hzCap = TownGeo.horizon(model.home, height: sz.height) }
+                            if model.mode != .home {
+                                let homeHz = TownGeo.horizon(model.home, height: sz.height)
+                                if let f = model.hzFrom { v.hzFix = f + (homeHz - f) * model.glided }
+                                else if model.night { v.hzFix = NightCamera.horizon(v, sz) }
+                                else { v.hzCap = homeHz }
+                            }
                             model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz)
                         }
                     }
                 }
                 .ignoresSafeArea()
-                .gesture(pan, including: zoomed ? .all : .none)
+                .gesture(pan, including: zoomed || hold ? .all : .none)
                 .simultaneousGesture(pinch, including: store.collecting ? .none : .all)
                 .onTapGesture { p in tap(CGPoint(x: p.x + origin.x, y: p.y + origin.y)) }
                 .background {
@@ -120,6 +135,8 @@ struct HomeTownView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { zoomIn(at: (7, 8)) }
                 .onChange(of: store.hqDive) { _, dive in if dive { diveIntoTower() } }
+                .onChange(of: store.night) { old, new in if old != nil, new == nil { startMorning() } }
+                .onChange(of: store.collecting) { _, on in if on { collectFromHere() } }
                 .onChange(of: store.page) { old, new in
                     // Leaving the office, the camera steps back out in front of the tower (`closeHQ`).
                     if old == .holding, new == nil, model.mode == .zoomed { model.focus(Self.tower.0, Self.tower.1) }
@@ -159,7 +176,7 @@ struct HomeTownView: View {
         var v = TownViewport(z: from.view.z + (to.z - from.view.z) * k, ox: from.view.ox + (to.ox - from.view.ox) * k,
                              oy: from.view.oy + (to.oy - from.view.oy) * k)
         v.noLabels = true
-        v.hzCap = TownGeo.horizon(model.home, height: sz.height)
+        if let f = sc.hzFix { v.hzFix = f } else { v.hzCap = TownGeo.horizon(model.home, height: sz.height) }
         _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, collect: sc)
     }
 
@@ -174,7 +191,7 @@ struct HomeTownView: View {
         var v = TownViewport(z: from.view.z + (to.z - from.view.z) * k, ox: from.view.ox + (to.ox - from.view.ox) * k,
                              oy: from.view.oy + (to.oy - from.view.oy) * k)
         v.noLabels = true
-        v.hzCap = TownGeo.horizon(model.home, height: sz.height)
+        if model.night { v.hzFix = NightCamera.horizon(v, sz) } else { v.hzCap = TownGeo.horizon(model.home, height: sz.height) }
         _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, strike: e == .strike)
     }
 
@@ -183,6 +200,49 @@ struct HomeTownView: View {
         let z = min(max((front - back) / 1024, 0.15), w / 1500)
         let c = TownGeo.iso(7, 8)
         return TownViewport(z: z, ox: w / 2 - c.x * z, oy: front - TownGeo.iso(15.5, 15.5).y * z)
+    }
+
+    /// `morningTown`: zoomed or not, dragged left or right, the town stays where the night's camera was and the
+    /// day's controls and cards come in over it. Dragging or zooming out keeps them; zooming in ends the hold.
+    private func startMorning() {
+        guard let v = store.morningCamera else { return }
+        store.morningCamera = nil
+        // A new day starts from the home screen (`hideAll`), or from the night's camera when it was closer.
+        model.anim = nil
+        model.hzFrom = nil
+        if zoomed { zoomed = false }
+        guard v.z > model.home.z * 1.04 else {
+            model.mode = .home
+            model.night = false
+            hold = false
+            return
+        }
+        model.view = v
+        model.mode = .zoomed
+        model.night = true
+        hold = true
+    }
+
+    /// `endHold`: from here on the controls slide away as usual.
+    private func endHold() {
+        guard hold else { return }
+        hold = false
+        withAnimation(.timingCurve(0.3, 0.7, 0.3, 1, duration: 0.38)) { zoomed = true }
+    }
+
+    /// Collecting passengers from a zoomed-in town: the camera glides on from where it is (with its horizon),
+    /// and afterwards the home screen's view is back.
+    private func collectFromHere() {
+        guard model.mode != .home else { return }
+        let sc = store.collectScene
+        sc.from = (model.now, model.view)
+        sc.hzFix = model.night ? NightCamera.horizon(model.view, model.size) : nil
+        model.mode = .home
+        model.anim = nil
+        model.night = false
+        model.hzFrom = nil
+        hold = false
+        if zoomed { zoomed = false }
     }
 
     /// The holding tower (`HQ_TOWER`).
@@ -194,7 +254,7 @@ struct HomeTownView: View {
         let wait: Double
         switch model.mode {
         case .home: zoomIn(at: Self.tower); wait = 0.48
-        case .zoomed: wait = 0
+        case .zoomed: endHold(); wait = 0
         case .leaving: store.page = .holding; return
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + wait) {
@@ -215,6 +275,8 @@ struct HomeTownView: View {
 
     private func zoomOut() {
         guard model.mode == .zoomed else { return }
+        hold = false
+        if model.night { model.hzFrom = NightCamera.horizon(model.view, model.size); model.glided = 0 }
         model.mode = .leaving
         model.pinchStart = nil
         model.glide(to: model.home)
@@ -235,6 +297,7 @@ struct HomeTownView: View {
             let hit = model.hits.hit(p)
             if let z = hit.zone {
                 SoundEngine.shared.play(.click)
+                endHold()
                 model.focus(z.at.0, z.at.1)
             } else if let b = hit.building {
                 SoundEngine.shared.play(.click)
@@ -269,6 +332,7 @@ struct HomeTownView: View {
                 let start = model.pinchStart ?? model.view
                 if model.pinchStart == nil { model.pinchStart = start }
                 let z = min(max(start.z * v.magnification, model.home.z), 1.6), k = z / start.z
+                if z > start.z * 1.001 { endHold() }
                 let p = CGPoint(x: v.startLocation.x + origin.x, y: v.startLocation.y + origin.y)
                 model.view = TownViewport(z: z, ox: p.x - (p.x - start.ox) * k, oy: p.y - (p.y - start.oy) * k)
                 if z <= model.home.z * 1.04 { zoomOut() }

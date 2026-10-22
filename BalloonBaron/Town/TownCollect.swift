@@ -21,11 +21,13 @@ final class CollectScene {
     /// The camera's glide from the home view: start time and start view; and the view it settles on.
     var from: (t: Double, view: TownViewport)?
     var target: TownViewport?
+    /// The horizon to keep when the glide starts from the morning's town (the night's camera).
+    var hzFix: CGFloat?
     /// Top of the collect card on screen, so the camera centres the office above it.
     var cardTop: CGFloat = 0
 
     func reset() {
-        shown = 0; total = 0; leaveAt = nil; leaveDate = nil; people = []; from = nil; target = nil
+        shown = 0; total = 0; leaveAt = nil; leaveDate = nil; people = []; from = nil; target = nil; hzFix = nil
     }
 
     static func queueSpot(_ i: Int) -> (Double, Double) { (8.85 + Double(i % 6) * 0.24, 13.72 + Double(i / 6) * 0.19) }

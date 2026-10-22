@@ -392,7 +392,11 @@ final class GameStore {
         report = nil
     }
 
-    func endNight() {
+    /// The night's camera, handed to the home town as the morning comes (`HomeTownView` takes it).
+    var morningCamera: TownViewport?
+
+    func endNight(camera: TownViewport? = nil) {
+        morningCamera = camera
         night = nil
         act { $0.startDay() }
         showNextHezarfen()

@@ -11,6 +11,31 @@ struct TownNight {
     var event: NightEvent?
     /// When the night started, in painter time, for the event's animation.
     var t0: Double
+    /// The sunrise glow at the dawn (0 … 1).
+    var sunrise: Double = 0
+}
+
+/// The night camera (`nightBase`, `nightClamp`, `nightHorizon`): closer than the home screen, with a big sky.
+/// The morning keeps it, so the home town uses it too until you zoom all the way out.
+enum NightCamera {
+    static func base(_ sz: CGSize) -> TownViewport {
+        let c = TownGeo.iso(7.5, 7.5), z = min(max(sz.width / 820, 0.3), 0.7)
+        return TownViewport(z: z, ox: sz.width / 2 - c.x * z, oy: sz.height * 0.7 - c.y * z)
+    }
+
+    /// Keep the town on screen however far you drag; sideways as far as the zoomed town (either corner of the walls).
+    static func clamp(_ v: inout TownViewport, _ sz: CGSize) {
+        let w = sz.width, h = sz.height, c = TownGeo.iso(7.5, 7.5)
+        let sx = c.x * v.z + v.ox, sy = c.y * v.z + v.oy, mx = 16 * TownGeo.TW / 2 * v.z, my = 8 * TownGeo.TH / 2 * v.z
+        v.ox += min(max(sx, min(w * 0.5, w * 0.85 - mx)), max(w * 0.5, w * 0.15 + mx)) - sx
+        v.oy += min(max(sy, min(h * 0.5, h * 0.35 - my * 0.3)), max(h * 0.7, h * 0.75 + my * 0.3)) - sy
+    }
+
+    /// A big night sky; the horizon follows the town as you drag.
+    static func horizon(_ v: TownViewport, _ sz: CGSize) -> CGFloat {
+        let B = base(sz), h = sz.height
+        return min(max(h * 0.34 + (v.oy - B.oy) * 0.6 - (v.z / B.z - 1) * h * 0.25, -h * 0.5), h * 0.55)
+    }
 }
 
 /// A window or door drawn this frame, relit over the dark.
@@ -20,6 +45,20 @@ struct NightWindow {
 }
 
 extension TownPainter {
+    /// The sunrise: warm light swelling up from the horizon on the left, over the town and the last of the night.
+    func sunriseLayer(screen: GraphicsContext, hz: CGFloat, amount: Double) {
+        let a = sin(amount * .pi / 2), w = size.width, h = size.height, y = min(max(hz, 0), h)
+        let all = Path(CGRect(x: 0, y: 0, width: w, height: h))
+        var g = screen
+        g.blendMode = .screen
+        g.fill(all, with: .radialGradient(Gradient(stops: [
+            .init(color: Color(red: 1, green: 178 / 255, blue: 92 / 255).opacity(0.55 * a), location: 0),
+            .init(color: Color(red: 1, green: 140 / 255, blue: 90 / 255).opacity(0.22 * a), location: 0.45),
+            .init(color: Color(red: 1, green: 140 / 255, blue: 90 / 255).opacity(0), location: 1)
+        ]), center: CGPoint(x: w * 0.22, y: y), startRadius: 0, endRadius: max(w, h) * 0.95))
+        g.fill(all, with: .color(Color(red: 1, green: 214 / 255, blue: 160 / 255).opacity(0.1 * a)))
+    }
+
     mutating func nightLayer(screen: GraphicsContext, world: GraphicsContext, hz: CGFloat) {
         guard let n = night else { return }
         let k = n.k, w = size.width, h = size.height
@@ -278,14 +317,14 @@ struct NightView: View {
                         let now = tl.date
                         let t = now.timeIntervalSince(start)
                         let k = dawn.map { max(0.25, 1 - now.timeIntervalSince($0) * 0.75) } ?? min(1, t / 1.4)
-                        var v = view ?? nightBase(sz)
-                        clampView(&v, sz)
-                        let B = nightBase(sz)
-                        v.hzFix = min(max(sz.height * 0.34 + (v.oy - B.oy) * 0.6 - (v.z / B.z - 1) * sz.height * 0.25, -sz.height * 0.5), sz.height * 0.55)
+                        var v = view ?? NightCamera.base(sz)
+                        NightCamera.clamp(&v, sz)
+                        v.hzFix = NightCamera.horizon(v, sz)
                         v.noLabels = true
                         var c = ctx
                         _ = TownPainter.render(&c, state: s, time: 1000 + t, viewport: v, size: sz,
-                                               night: TownNight(k: k, event: night.event, t0: 1000))
+                                               night: TownNight(k: k, event: night.event, t0: 1000,
+                                                                sunrise: dawn.map { min(1, now.timeIntervalSince($0)) } ?? 0))
                     }
                 }
                 .ignoresSafeArea()
@@ -363,32 +402,22 @@ struct NightView: View {
         }
     }
 
-    /// The sky pales for a second, then the morning starts.
+    /// The sky pales for a second, then the morning starts where the night's camera is.
     private func bringMorning() {
         guard dawn == nil else { return }
         dawn = Date()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { store.endNight() }
-    }
-
-    /// Closer than the home screen, the town filling the lower part of the screen under the sky.
-    private func nightBase(_ sz: CGSize) -> TownViewport {
-        let c = TownGeo.iso(7.5, 7.5), z = min(max(sz.width / 820, 0.3), 0.7)
-        return TownViewport(z: z, ox: sz.width / 2 - c.x * z, oy: sz.height * 0.7 - c.y * z)
-    }
-
-    /// Keep the town on screen however far you drag.
-    private func clampView(_ v: inout TownViewport, _ sz: CGSize) {
-        let w = sz.width, h = sz.height, c = TownGeo.iso(7.5, 7.5)
-        let sx = c.x * v.z + v.ox, sy = c.y * v.z + v.oy, mx = 8 * TownGeo.TW / 2 * v.z, my = 8 * TownGeo.TH / 2 * v.z
-        v.ox += min(max(sx, min(w * 0.5, w * 0.15 - mx * 0.2)), max(w * 0.5, w * 0.85 + mx * 0.2)) - sx
-        v.oy += min(max(sy, min(h * 0.5, h * 0.35 - my * 0.3)), max(h * 0.7, h * 0.75 + my * 0.3)) - sy
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+            var v = view ?? NightCamera.base(size)
+            NightCamera.clamp(&v, size)
+            store.endNight(camera: v)
+        }
     }
 
     private var pan: some Gesture {
         DragGesture(minimumDistance: 4)
             .onChanged { g in
                 idle = Date()
-                var v = view ?? nightBase(size)
+                var v = view ?? NightCamera.base(size)
                 v.ox += g.translation.width - lastDrag.width
                 v.oy += g.translation.height - lastDrag.height
                 lastDrag = g.translation
@@ -401,7 +430,7 @@ struct NightView: View {
         MagnifyGesture()
             .onChanged { g in
                 idle = Date()
-                let B = nightBase(size), st = pinchStart ?? view ?? B
+                let B = NightCamera.base(size), st = pinchStart ?? view ?? B
                 if pinchStart == nil { pinchStart = st }
                 let z = min(max(st.z * g.magnification, B.z * 0.8), B.z * 2.8), k = z / st.z, p = g.startLocation
                 view = TownViewport(z: z, ox: p.x - (p.x - st.ox) * k, oy: p.y - (p.y - st.oy) * k)
