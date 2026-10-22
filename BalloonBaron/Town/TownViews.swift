@@ -56,8 +56,8 @@ final class TownCanvasModel {
     func clamp() {
         let w = size.width, h = size.height, c = TownGeo.iso(7.5, 7.5)
         let sx = c.x * view.z + view.ox, sy = c.y * view.z + view.oy
-        let mx = 8 * TownGeo.TW / 2 * view.z, my = 8 * TownGeo.TH / 2 * view.z
-        view.ox += min(max(sx, min(w * 0.5, -mx + w * 0.2)), max(w * 0.5, w * 0.8 + mx)) - sx
+        let mx = 16 * TownGeo.TW / 2 * view.z, my = 8 * TownGeo.TH / 2 * view.z
+        view.ox += min(max(sx, min(w * 0.5, w * 0.85 - mx)), max(w * 0.5, w * 0.15 + mx)) - sx
         view.oy += min(max(sy, min(h * 0.5, h * 0.3 - my)), max(h * 0.55, h * 0.8 + my)) - sy
     }
 }
@@ -102,7 +102,8 @@ struct HomeTownView: View {
                     }
                 }
                 .ignoresSafeArea()
-                .gesture(pan.simultaneously(with: pinch), including: zoomed ? .all : .none)
+                .gesture(pan, including: zoomed ? .all : .none)
+                .simultaneousGesture(pinch, including: store.collecting ? .none : .all)
                 .onTapGesture { p in tap(CGPoint(x: p.x + origin.x, y: p.y + origin.y)) }
                 .background {
                     GeometryReader { g in
@@ -129,7 +130,7 @@ struct HomeTownView: View {
                             .background(Circle().fill(Theme.ink.opacity(0.35)).offset(y: 4))
                     }
                     .buttonStyle(.plain)
-                    .padding(.top, 6)
+                    .padding(.top, max(6, hudBottom - origin.y + 8))
                     .padding(.trailing, 14)
                     .transition(.scale(scale: 0.6).combined(with: .opacity))
                     .accessibilityLabel(loc("town.zoomOut"))
@@ -162,11 +163,12 @@ struct HomeTownView: View {
         return TownViewport(z: z, ox: w / 2 - c.x * z, oy: front - TownGeo.iso(15.5, 15.5).y * z)
     }
 
-    private func zoomIn(at g: (Double, Double)) {
+    /// `instant`: a pinch that started on the home screen carries on zooming by itself.
+    private func zoomIn(at g: (Double, Double), instant: Bool = false) {
         guard model.mode == .home else { return }
         model.view = model.home
         model.mode = .zoomed
-        model.focus(g.0, g.1)
+        if !instant { model.focus(g.0, g.1) }
         withAnimation(.timingCurve(0.3, 0.7, 0.3, 1, duration: 0.38)) { zoomed = true }
     }
 
@@ -216,6 +218,11 @@ struct HomeTownView: View {
     private var pinch: some Gesture {
         MagnifyGesture()
             .onChanged { v in
+                // Two fingers on the home town zoom in right away, once they have opened a little.
+                if model.mode == .home {
+                    guard v.magnification > 1.04 else { return }
+                    zoomIn(at: (7, 8), instant: true)
+                }
                 guard model.mode == .zoomed else { return }
                 model.anim = nil
                 let start = model.pinchStart ?? model.view

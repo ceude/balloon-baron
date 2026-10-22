@@ -31,6 +31,10 @@ struct HomeView: View {
     /// Zoomed into the town: the controls slide off screen (top ones up, the dock down) and come back on zoom-out.
     @State private var zoomed = false
     @State private var dockBottom: CGFloat = 0
+    /// The dock is a slim strip until you pull it up (or tap it); open, it holds every card of the morning.
+    @State private var dockOpen = false
+    /// The regions card from the region name in the top bar.
+    @State private var showRegions = false
 
     var body: some View {
         if let game = store.game {
@@ -46,6 +50,12 @@ struct HomeView: View {
                         .environment(store)
                         .presentationDragIndicator(.visible)
                 }
+                .overlay {
+                    if showRegions {
+                        RegionsCard(onClose: { showRegions = false }).transition(.opacity)
+                    }
+                }
+                .onChange(of: game.state.day) { _, _ in dockOpen = false }
                 .sheet(isPresented: $showPrice) {
                     PriceSheetView()
                         .environment(store)
@@ -68,7 +78,7 @@ struct HomeView: View {
                             Color.clear.preference(key: HudBottomKey.self, value: g.frame(in: .global).maxY)
                         }
                     }
-                    .offset(y: zoomed ? -(hudBottom + 30) : 0)
+
                 HStack(alignment: .top, spacing: 10) {
                     // Passenger reviews pop up below the weather, left of the side buttons, so they never cover either.
                     VStack(alignment: .leading, spacing: 10) {
@@ -98,8 +108,9 @@ struct HomeView: View {
             .padding(.bottom, 6)
         }
         // Measurements freeze while zoomed in: the town glides back to the home layout, not the slid-away one.
+        // The town sits on the closed strip, so opening the dock doesn't move it.
         .onPreferenceChange(DockTopKey.self) { v in
-            if !zoomed && v >= 0 && abs(v - dockTop) > 0.5 { dockTop = v }
+            if !zoomed && !dockOpen && v >= 0 && abs(v - dockTop) > 0.5 { dockTop = v }
         }
         .onPreferenceChange(DockBottomKey.self) { v in
             if !zoomed && v >= 0 && abs(v - dockBottom) > 0.5 { dockBottom = v }
@@ -130,6 +141,15 @@ struct HomeView: View {
 
     private func dockGlass(_ game: Game) -> some View {
         VStack(spacing: 10) {
+            Button {
+                SoundEngine.shared.play(.tick)
+                withAnimation(.easeOut(duration: 0.22)) { dockOpen.toggle() }
+            } label: {
+                Capsule().fill(Color.white.opacity(0.38)).frame(width: 40, height: 5).frame(width: 60, height: 16)
+            }
+            .buttonStyle(.plain)
+            .padding(.vertical, -6)
+            .accessibilityLabel(loc("home.dockCards"))
             dock(game)
             #if DEBUG
             Button(loc("debug.reset")) { store.resetForTesting() }
@@ -138,8 +158,13 @@ struct HomeView: View {
             #endif
         }
         .padding(12)
-        .background(Theme.glass, in: RoundedRectangle(cornerRadius: 24))
+        .background(Color(red: 30 / 255, green: 24 / 255, blue: 64 / 255).opacity(0.72), in: RoundedRectangle(cornerRadius: 24))
         .shadow(color: Color(red: 10 / 255, green: 5 / 255, blue: 30 / 255).opacity(0.4), radius: 15, y: 10)
+        // Pull it up to open, push it down to fold it back to the strip.
+        .simultaneousGesture(DragGesture(minimumDistance: 10).onEnded { v in
+            if !dockOpen && v.translation.height < -18 { withAnimation(.easeOut(duration: 0.22)) { dockOpen = true } }
+            if dockOpen && v.translation.height > 40 { withAnimation(.easeOut(duration: 0.22)) { dockOpen = false } }
+        })
     }
 
     private func openPendingPage() {
@@ -154,7 +179,10 @@ struct HomeView: View {
         let multi = !s.parked.isEmpty || s.anyBaron || s.region != .cap
         return HStack(spacing: 8) {
             chip(loc("hud.day", num(s.day)))
-            if multi { chip(s.region.title) }
+            if multi {
+                Button { showRegions = true } label: { chip(s.region.title + " ▾") }
+                    .buttonStyle(.plain)
+            }
             Spacer(minLength: 4)
             Button {
                 if s.unlocked.contains(.bank) { store.page = .bank }
@@ -253,15 +281,20 @@ struct HomeView: View {
 
     // MARK: Side buttons
 
-    /// Goals always; Holding joins below once you're a baron somewhere. The office pages live in the town,
-    /// whose zones carry the crew and market alerts.
+    /// Goals always, Holding once you're a baron somewhere, then the office pages as they open; the crew and the
+    /// market carry a red dot when they need you. The town's buildings open the same pages.
     private func navColumn(_ s: GameState) -> some View {
         let issue = s.parked.values.contains { $0.auto.issue != nil } || (s.barons[.cap] != nil && !s.owns(.abq))
-        return VStack(spacing: 10) {
+        let dots = Town.alerts(s)
+        return VStack(spacing: 8) {
             navButton(.goals, loc("home.nav.goals"), .goals, badge: goalsBadge(s))
             if s.anyBaron {
                 navButton(.world, loc("home.nav.holding"), .holding, dot: issue)
             }
+            if s.unlocked.contains(.fleet) { navButton(.fleet, loc("home.nav.fleet"), .fleet) }
+            if s.unlocked.contains(.crew) { navButton(.crew, loc("home.nav.crew"), .crew, dot: dots.contains(.crew)) }
+            if s.unlocked.contains(.bank) { navButton(.bank, loc("home.nav.bank"), .bank) }
+            if s.unlocked.contains(.market) { navButton(.market, loc("home.nav.market"), .market, dot: dots.contains(.market)) }
         }
     }
 
@@ -307,14 +340,65 @@ struct HomeView: View {
     // MARK: Dock
 
     private func dock(_ g: Game) -> some View {
-        let s = g.state
+        let s = g.state, list = alerts(s)
         return VStack(spacing: 10) {
-            alertsView(alerts(s), day: s.day, cash: s.cash)
-            fleetBar(s)
-            if s.unlocked.contains(.insurance) { insuranceChips(g) }
+            if dockOpen {
+                alertsView(list, day: s.day, cash: s.cash)
+                fleetBar(s)
+                if s.unlocked.contains(.insurance) { insuranceChips(g) }
+            } else {
+                strip(s, list)
+            }
             ticketCard(g)
             actionButtons(s)
         }
+    }
+
+    /// The slim strip: the most urgent alert on one line (and how many more), the fleet and the insurance.
+    /// Any of them opens the dock.
+    private func strip(_ s: GameState, _ list: [HomeAlert]) -> some View {
+        let c = s.planCounts
+        let ins = (s.insureHull ? 1 : 0) + (s.insurePax ? 1 : 0)
+        return HStack(spacing: 7) {
+            if let top = list.first {
+                pill(color: Self.color(top.level)) {
+                    Circle().fill(Color.white).frame(width: 9, height: 9)
+                    Text(top.title.trimmingCharacters(in: CharacterSet(charactersIn: ":. "))).lineLimit(1).truncationMode(.tail)
+                    if list.count > 1 {
+                        Text(verbatim: "+" + num(list.count - 1)).font(Theme.font(11.5, .bold))
+                            .padding(.horizontal, 6).padding(.vertical, 1)
+                            .background(Color.black.opacity(0.22), in: Capsule())
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            pill(color: Color.white.opacity(0.12)) {
+                ProtoIcon(kind: .fleet, color: .white).frame(width: 18, height: 18)
+                Text(verbatim: num(c.flying) + "/" + num(c.total))
+            }
+            if s.unlocked.contains(.insurance) {
+                pill(color: Color.white.opacity(0.12), fg: ins == 0 ? Color(hex: "#ffb4a6") : .white) {
+                    Text(loc(ins == 2 ? "home.strip.insured" : ins == 1 ? "home.strip.halfInsured" : "home.strip.uninsured"))
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func pill<C: View>(color: Color, fg: Color = .white, @ViewBuilder _ content: () -> C) -> some View {
+        Button {
+            SoundEngine.shared.play(.tick)
+            withAnimation(.easeOut(duration: 0.22)) { dockOpen = true }
+        } label: {
+            HStack(spacing: 6) { content() }
+                .font(Theme.font(13, .bold))
+                .foregroundStyle(fg)
+                .lineLimit(1)
+                .padding(.horizontal, 10).padding(.vertical, 7)
+                .background(color, in: RoundedRectangle(cornerRadius: 12))
+                .background(RoundedRectangle(cornerRadius: 12).fill(Color.black.opacity(0.25)).offset(y: 3))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: Alerts
@@ -341,7 +425,7 @@ struct HomeView: View {
         let fb = s.balloon(s.flagship)
         let fst: GameState.FlyStatus? = fb.map { s.status($0) }
         if let m = s.weather?.mission, let fb, fst != .damaged && fst != .worn {
-            let reward = eur(m.reward(for: fb.size))
+            let reward = eur(store.game?.missionReward(m, fb.size) ?? m.reward(for: fb.size))
             if s.isSelf(fb) {
                 out.append(HomeAlert(id: "mission", level: .mission, title: loc("home.alert.mission", m.title, reward), text: m.detail))
             } else {
@@ -370,6 +454,10 @@ struct HomeView: View {
         }
         if let fb, s.isSelf(fb), fst == .ok, fb.fly {
             out.append(HomeAlert(id: "founder", level: .green, title: loc("home.founderBonus")))
+        }
+        if let f = s.local.festival {
+            out.append(HomeAlert(id: "festival", level: .mission, title: loc("home.alert.festival", festivalName(f.index), num(s.day - f.start + 1)),
+                                 text: loc("home.alert.festival.body")))
         }
         if let f = s.fiesta {
             out.append(HomeAlert(id: "fiesta", level: .mission,
@@ -577,8 +665,15 @@ struct HomeView: View {
                         .monospacedDigit()
                         .lineLimit(1)
                 }
-                ticketForecast(est)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                VStack(alignment: .leading, spacing: 4) {
+                    ticketForecast(est)
+                    if est.seats > 0 {
+                        Text(whoFlies(s))
+                            .font(Theme.font(12.5, .bold))
+                            .foregroundStyle(Theme.ink)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 Text(loc("home.adjust"))
                     .font(Theme.font(16, .heavy, condensed: true))
                     .foregroundStyle(Theme.coral)
@@ -605,6 +700,13 @@ struct HomeView: View {
                 .font(Theme.font(13, .semibold))
                 .foregroundStyle(Theme.ink2)
         }
+    }
+
+    /// Who's in the baskets today, for the ticket card.
+    private func whoFlies(_ s: GameState) -> String {
+        let fl = s.flyingToday, me = fl.contains { s.isSelf($0) }, pilots = fl.count - (me ? 1 : 0)
+        if me { return loc(pilots == 0 ? "home.who.you" : pilots == 1 ? "home.who.youPilot" : "home.who.youPilots") }
+        return loc(pilots > 1 ? "home.who.pilots" : "home.who.pilot")
     }
 
     // MARK: Day buttons
@@ -678,9 +780,9 @@ private struct SideTileStyle<Badge: View>: ButtonStyle {
         let down = configuration.isPressed
         return VStack(spacing: 4) {
             ProtoIcon(kind: icon)
-                .frame(width: 26, height: 26)
-                .frame(width: 50, height: 50)
-                .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+                .frame(width: 23, height: 23)
+                .frame(width: 44, height: 44)
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 14))
                 .shadow(color: Theme.ink.opacity(0.4), radius: 0, x: 0, y: down ? 1 : 4)
                 .offset(y: down ? 3 : 0)
             Text(title)
@@ -690,7 +792,7 @@ private struct SideTileStyle<Badge: View>: ButtonStyle {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
         }
-        .frame(width: 58)
+        .frame(width: 52)
         .overlay(alignment: .topTrailing) { badge }
         .contentShape(Rectangle())
     }
