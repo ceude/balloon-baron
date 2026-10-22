@@ -377,10 +377,18 @@ struct NightView: View {
                 SoundEngine.shared.play(.click)
                 bringMorning()
             } label: {
+                // The night passing fills the whole face from the left (`.nightgo`'s --p), not just the text's line.
                 Text(loc("night.morning", num(day)))
-                    .frame(maxWidth: .infinity)
-                    .background(alignment: .leading) {
-                        GeometryReader { g in Color.white.opacity(0.28).frame(width: g.size.width * p).padding(.horizontal, -16) }
+                    .frame(maxWidth: .infinity, minHeight: 54)
+                    .background(alignment: .topLeading) {
+                        GeometryReader { g in
+                            let w = g.size.width + 32
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color.white.opacity(0.28))
+                                .frame(width: w, height: g.size.height)
+                                .mask(alignment: .leading) { Rectangle().frame(width: w * p) }
+                                .offset(x: -16)
+                        }
                     }
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))

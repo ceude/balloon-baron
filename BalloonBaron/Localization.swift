@@ -97,6 +97,8 @@ extension Goal {
         switch kind {
         case .balloons: loc("goal.balloons", num(Int(target)))
         case .pilots: loc("goal.pilots", num(Int(target)))
+        case .hotelDeal where target > 1: loc("goal.hotelDeals", num(Int(target)))
+        case .bldMast where target > 2: loc("goal.bldMastLevel", num(Int(target)))
         case .stars: loc("goal.stars", starsValue(target))
         case .cash: loc("goal.cash", eur(Int(target)))
         case .hotelOwn: loc("goal.hotelOwn", num(Int(target)))
