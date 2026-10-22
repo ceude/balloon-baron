@@ -205,11 +205,18 @@ struct CrewView: View {
                 HStack(spacing: 5) {
                     PlanTag(text: p.level.title, color: Theme.ink2)
                     if p.fromSchool { PlanTag(text: loc("crew.school"), color: Theme.green) }
+                    if let t = p.trait { PlanTag(text: t.title, color: Color(hex: t.color)) }
                 }
                 Text(detail)
                     .font(Theme.font(13))
                     .foregroundStyle(Theme.ink2)
                     .fixedSize(horizontal: false, vertical: true)
+                if let t = p.trait {
+                    Text(t.title + ": " + t.detail)
+                        .font(Theme.font(12.5).italic())
+                        .foregroundStyle(Theme.ink2)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             Spacer(minLength: 6)
             PlanSmallButton(title: button, light: light, action: action)

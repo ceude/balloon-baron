@@ -373,7 +373,7 @@ struct FleetView: View {
                      text: b.ad.map { loc("fleetPage.adOn", $0.title, eur($0.pay(for: b.size))) } ?? loc("fleetPage.adNone"))
             }
             .buttonStyle(.plain)
-            if s.workshopDay != nil && !s.designs.isEmpty {
+            if !s.designs.isEmpty { // bazaar designs work without the workshop
                 let d = s.design(of: b)
                 Button {
                     designPick = BalloonPick(id: b.id)
@@ -608,7 +608,7 @@ private struct DesignPicker: View {
 
     var body: some View {
         if let game = store.game, let b = game.state.balloon(balloonID) {
-            FleetUI.Sheet(title: loc("fleetPage.designPickTitle", b.name), lead: loc("fleetPage.designPickLead", eur(Studio.reskinCost)),
+            FleetUI.Sheet(title: loc("fleetPage.designPickTitle", b.name), lead: loc("fleetPage.designPickLead", eur(Studio.reskinCost)) + " " + loc("fleetPage.designPickFree"),
                           close: { dismiss() }) {
                 companyRow(b, game.state)
                 ForEach(game.state.designs) { d in
@@ -635,7 +635,7 @@ private struct DesignPicker: View {
     }
 
     private func designRow(_ d: Design, _ b: Balloon, _ game: Game) -> some View {
-        let current = b.design == d.id
+        let current = b.design == d.id, cost = game.paintCost(d.id)
         return FleetUI.Item {
             HStack(spacing: 12) {
                 DesignBalloon(colors: d.colors, design: d)
@@ -645,14 +645,14 @@ private struct DesignPicker: View {
                     FleetUI.Detail(loc("fleetPage.designStats", num(d.score), percent(game.freshness(d))))
                 }
                 Spacer(minLength: 4)
-                paintButton(current: current, cash: game.state.cash) { paint(d.id, b) }
+                paintButton(current: current, cash: game.state.cash, cost: cost) { paint(d.id, b) }
             }
         }
     }
 
-    private func paintButton(current: Bool, cash: Int, action: @escaping () -> Void) -> some View {
-        FleetUI.SmallButton(title: loc(current ? "fleetPage.selected" : "fleetPage.paint"),
-                            disabled: current || cash < Studio.reskinCost, action: action)
+    private func paintButton(current: Bool, cash: Int, cost: Int = Studio.reskinCost, action: @escaping () -> Void) -> some View {
+        FleetUI.SmallButton(title: loc(current ? "fleetPage.selected" : cost == 0 ? "fleetPage.paintFree" : "fleetPage.paint"),
+                            disabled: current || cash < cost, action: action)
             .frame(width: 104)
     }
 

@@ -76,6 +76,8 @@ final class FlightModel {
     var buttonHold = false
     var tip: Tip?
     var mdoneAt: Double?
+    /// When the flight's moment (thermal, greeting, photo) was caught.
+    var momentAt: Double?
     var celebAt: Double?
     var applauseAt: Double?
     fileprivate var fx: [Particle] = []
@@ -91,7 +93,8 @@ final class FlightModel {
         tip = s.tutorialDone ? .pax : .tutorial
         bg = ScenePainter.backgroundBalloons(s)
         let fb = s.balloon(s.flagship)
-        let reward = w.mission?.reward(for: fb?.size ?? .S) ?? 0
+        // Festivals pay half as much again for special requests.
+        let reward = Int((Double(w.mission?.reward(for: fb?.size ?? .S) ?? 0) * (s.festival != nil ? Rules.festivalReward : 1) + 0.5).rounded(.down))
         look = FlightLook(
             colors: s.colors, design: fb.flatMap { s.design(of: $0) }, ad: fb?.ad, xl: fb?.size == .XL,
             region: s.region, winter: s.winter != nil, layers: w.layers, target: w.target, valley: w.valley,
@@ -149,6 +152,7 @@ final class FlightModel {
         case .fuelOut:
             tip = .fuel
         case .moment:
+            momentAt = T
             SoundEngine.shared.play(.coin)
         case .landed:
             tip = nil
@@ -511,6 +515,7 @@ private enum FlightPainter {
         if let c = m.celebAt { celebration(&ctx, m: m, bx: bx, by: by, r: R, ct: m.T - c) }
         fieldPointer(&ctx, cam: cam, m: m)
         missionGuides(&ctx, cam: cam, m: m)
+        moment(&ctx, cam: cam, top: top, r: PR, m: m)
         missionBanner(&ctx, width: size.width, top: top, m: m)
         panel(&ctx, width: size.width, top: top, m: m)
     }
@@ -524,6 +529,73 @@ private enum FlightPainter {
         l.move(to: CGPoint(x: 0, y: y))
         l.addLine(to: CGPoint(x: width, y: y))
         ctx.stroke(l, with: .color(color), style: StrokeStyle(lineWidth: lineWidth, dash: dash))
+    }
+
+    /// The flight's small moment: a thermal column to ride, a neighbouring balloon to wave to, a photo spot.
+    static func moment(_ ctx: inout GraphicsContext, cam: SceneCamera, top: CGFloat, r PR: CGFloat, m: FlightModel) {
+        guard let mo = m.sim.moment else { return }
+        let T = m.T, gy = cam.groundY
+        switch mo.kind {
+        case .thermal:
+            let X = cam.sx(mo.x), wv = cam.sx(mo.x + 65) - X, y0 = cam.sy(520)
+            let g = Gradient(colors: [Color(red: 1, green: 220 / 255, blue: 160 / 255).opacity(0),
+                                      Color(red: 1, green: 220 / 255, blue: 160 / 255).opacity(mo.done ? 0.12 : 0.28),
+                                      Color(red: 1, green: 220 / 255, blue: 160 / 255).opacity(0)])
+            ctx.fill(Path(CGRect(x: X - wv, y: y0, width: wv * 2, height: gy - y0)),
+                     with: .linearGradient(g, startPoint: CGPoint(x: X - wv, y: 0), endPoint: CGPoint(x: X + wv, y: 0)))
+            var curls = Path()
+            for i in 0..<7 {
+                let yy = gy - CGFloat((T * 40 + Double(i) * 60).truncatingRemainder(dividingBy: Double(max(1, gy - y0))))
+                let xx = X + CGFloat(sin(T * 2 + Double(i))) * wv * 0.4
+                curls.move(to: CGPoint(x: xx, y: yy))
+                curls.addQuadCurve(to: CGPoint(x: xx, y: yy - 16), control: CGPoint(x: xx + 5, y: yy - 8))
+            }
+            ctx.stroke(curls, with: .color(.white.opacity(0.5)), lineWidth: 1.5)
+            if !mo.done {
+                ctx.draw(Text(loc("flight.thermal")).font(sceneFont(13, .heavy, condensed: true)).foregroundColor(.white),
+                         at: CGPoint(x: X, y: y0 - 6), anchor: .bottom)
+            }
+        case .greet:
+            let X = cam.sx(mo.x), Y = cam.sy(mo.alt + sin(T) * 5)
+            let cols = FlightMoment.greetColors[mo.colors % FlightMoment.greetColors.count]
+            ScenePainter.balloon(&ctx, x: X, y: Y, r: PR * 0.62, colors: cols, burn: T.truncatingRemainder(dividingBy: 4) < 0.4, alpha: 0.36, time: T)
+            if mo.done, let at = m.momentAt, T - at < 3 {
+                badge(&ctx, "hand.wave.fill", x: X + PR * 0.7, y: Y - PR * 1.9, a: min(1, (3 - (T - at)) / 0.5))
+            }
+        case .photo:
+            if !mo.done {
+                let X = cam.sx(mo.x), half = cam.sx(mo.x + 70) - X
+                let y0 = cam.sy(FlightMoment.photoBand.upperBound), y1 = cam.sy(FlightMoment.photoBand.lowerBound)
+                ctx.stroke(Path(CGRect(x: X - half, y: y0, width: half * 2, height: y1 - y0)), with: .color(.white.opacity(0.85)),
+                           style: StrokeStyle(lineWidth: 2, dash: [6, 5]))
+                badge(&ctx, "camera.fill", x: X, y: y0 - 20, a: 1)
+            }
+        }
+        guard mo.done, let at = m.momentAt else { return }
+        if mo.kind == .photo && T - at < 0.35 {
+            ctx.fill(Path(CGRect(origin: .zero, size: cam.size)), with: .color(.white.opacity(0.85 * (1 - (T - at) / 0.35))))
+        }
+        if T - at < 3.2 {
+            let a = min(1, (3.2 - (T - at)) / 0.5)
+            var c = ctx
+            c.opacity = a
+            let text = c.resolve(Text(loc("flight.moment.\(mo.kind.rawValue)")).font(sceneFont(16, .heavy, condensed: true)).foregroundColor(.white))
+            let sz = text.measure(in: CGSize(width: cam.size.width - 32, height: 60))
+            let w = sz.width + 28, x = cam.size.width / 2
+            c.fill(rrect(x - w / 2, top + 150, w, 32, 16), with: .color(Color(red: 20 / 255, green: 120 / 255, blue: 90 / 255).opacity(0.92)))
+            c.draw(text, at: CGPoint(x: x, y: top + 166), anchor: .center)
+        }
+    }
+
+    /// A small round badge with a drawn icon.
+    static func badge(_ ctx: inout GraphicsContext, _ symbol: String, x: CGFloat, y: CGFloat, a: Double) {
+        var c = ctx
+        c.opacity = a
+        c.fill(Path(ellipseIn: CGRect(x: x - 15, y: y - 15, width: 30, height: 30)), with: .color(Color(red: 1, green: 250 / 255, blue: 243 / 255).opacity(0.95)))
+        let img = c.resolve(Image(systemName: symbol))
+        var ic = c
+        ic.addFilter(.colorMultiply(Theme.ink))
+        ic.draw(img, in: CGRect(x: x - 9, y: y - 9, width: 18, height: 18))
     }
 
     /// Valley mission: shaded zone below 150 m with two flags.

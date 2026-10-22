@@ -23,3 +23,9 @@ add("store.giftNote", "A gift from Master Hezarfen, free.", "Hezarfen Usta'dan h
 add("store.takeGift", "Take your gift", "Hediyeni al", "Geschenk annehmen", "Recoge tu regalo", "贈り物を受け取る", "선물 받기")
 add("store.buy", "Buy %@", "Satın al %@", "Kaufen %@", "Comprar %@", "購入 %@", "구매 %@")
 add("store.cancel", "Not now", "Vazgeç", "Lieber nicht", "Ahora no", "やめる", "취소")
+
+# Bazaar designs in the fleet and the studio
+add("fleetPage.paintFree", "Paint (free)", "Giydir (bedava)", "Lackieren (gratis)", "Pintar (gratis)", "着せる（無料）", "입히기 (무료)")
+add("fleetPage.designPickFree", "Patterns and shapes from the bazaar go on for free.", "Çarşıdan alınan desen ve şekiller bedava giydirilir.", "Muster und Formen vom Basar sind kostenlos.", "Los diseños y formas del bazar se ponen gratis.", "バザールの柄と形は無料で着せられる。", "시장에서 산 무늬와 모양은 무료로 입힐 수 있습니다.")
+add("studio.shape", "Envelope shape", "Zarf şekli", "Hüllenform", "Forma de la envoltura", "球皮の形", "외피 모양")
+add("studio.classic", "Classic", "Klasik", "Klassisch", "Clásica", "クラシック", "클래식")

@@ -13736,6 +13736,47 @@
         }
       }
     },
+    "fleetPage.designPickFree": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muster und Formen vom Basar sind kostenlos."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patterns and shapes from the bazaar go on for free."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los diseños y formas del bazar se ponen gratis."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バザールの柄と形は無料で着せられる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시장에서 산 무늬와 모양은 무료로 입힐 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çarşıdan alınan desen ve şekiller bedava giydirilir."
+          }
+        }
+      }
+    },
     "fleetPage.designPickLead": {
       "extractionState": "manual",
       "localizations": {
@@ -14429,6 +14470,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Giydir"
+          }
+        }
+      }
+    },
+    "fleetPage.paintFree": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lackieren (gratis)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paint (free)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pintar (gratis)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着せる（無料）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "입히기 (무료)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giydir (bedava)"
           }
         }
       }
@@ -46905,6 +46987,47 @@
         }
       }
     },
+    "studio.classic": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klassisch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Classic"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clásica"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クラシック"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "클래식"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Klasik"
+          }
+        }
+      }
+    },
     "studio.create": {
       "extractionState": "manual",
       "localizations": {
@@ -47229,6 +47352,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tasarımın adı (ör. Gün Batımı)"
+          }
+        }
+      }
+    },
+    "studio.shape": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hüllenform"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envelope shape"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forma de la envoltura"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球皮の形"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "외피 모양"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zarf şekli"
           }
         }
       }

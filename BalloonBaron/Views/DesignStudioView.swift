@@ -6,6 +6,8 @@ struct DesignStudioView: View {
     @Environment(GameStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     @State private var pattern: Pattern = .zigzag
+    /// A shaped envelope from the bazaar, or nil for the classic one.
+    @State private var shape: EnvelopeShape?
     @State private var colors: [String] = ["#ff5e3a", "#ffc23d", "#ffffff"]
     @State private var name = ""
     @State private var ready = false
@@ -23,6 +25,7 @@ struct DesignStudioView: View {
                             .foregroundStyle(Theme.ink)
                         preview(game)
                         patternPicker
+                        shapePicker
                         colorRow(0, label: loc("studio.main"))
                         colorRow(1, label: loc("studio.patternColor"))
                         colorRow(2, label: loc("studio.accent"))
@@ -42,7 +45,7 @@ struct DesignStudioView: View {
         guard !ready, let s = store.state else { return }
         ready = true
         let used = Set(s.designs.map(\.pattern))
-        pattern = Pattern.allCases.first { !used.contains($0) } ?? .zigzag
+        pattern = Pattern.allCases.first { !used.contains($0) && !$0.premium } ?? .zigzag
         let main = s.colors.first ?? "#ff5e3a"
         let second = s.colors.count > 1 ? s.colors[1] : "#ffc23d"
         colors = [main, second, "#ffffff"]
@@ -54,9 +57,9 @@ struct DesignStudioView: View {
     }
 
     private func preview(_ game: Game) -> some View {
-        let score = game.designScore(pattern: pattern, colors: colors)
+        let score = game.designScore(pattern: pattern, colors: colors, shape: shape)
         return HStack(alignment: .center, spacing: 16) {
-            DesignBalloon(pattern: pattern, colors: colors)
+            DesignBalloon(pattern: pattern, colors: colors, shape: shape)
                 .frame(width: 140, height: 178)
             VStack(alignment: .leading, spacing: 6) {
                 Text(loc("studio.creativity"))
@@ -103,12 +106,47 @@ struct DesignStudioView: View {
         }
     }
 
+    /// Locked bazaar items open their purchase sheet.
+    private func locked(_ k: StoreItem?) -> Bool { k.map { !(store.state?.owned($0) ?? false) } ?? false }
+
+    private func openStore(_ k: StoreItem) {
+        dismiss()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { store.storeItem = k }
+    }
+
+    private var shapePicker: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            label(loc("studio.shape"))
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
+                ForEach([nil] + EnvelopeShape.allCases.map { Optional($0) }, id: \.self) { k in
+                    choice(k.map { (locked($0.storeItem) ? "🔒 " : "✦ ") + $0.title } ?? loc("studio.classic"), on: shape == k) {
+                        if let k, locked(k.storeItem) { openStore(k.storeItem) } else { shape = k }
+                    }
+                }
+            }
+        }
+    }
+
+    private func choice(_ title: String, on: Bool, action: @escaping () -> Void) -> some View {
+        Button(action: action) {
+            Text(title)
+                .font(Theme.font(15, .bold, condensed: true))
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .frame(maxWidth: .infinity, minHeight: 38)
+                .foregroundStyle(on ? Color.white : Theme.ink)
+                .background(on ? Theme.coral : Color.white, in: RoundedRectangle(cornerRadius: 10))
+                .overlay(RoundedRectangle(cornerRadius: 10).stroke(on ? Color.clear : Theme.line, lineWidth: 2))
+        }
+        .buttonStyle(.plain)
+    }
+
     private func patternButton(_ p: Pattern) -> some View {
         let on = p == pattern
         return Button {
-            pattern = p
+            if locked(p.storeItem), let k = p.storeItem { openStore(k) } else { pattern = p }
         } label: {
-            Text(p.title)
+            Text((p.premium ? (locked(p.storeItem) ? "🔒 " : "✦ ") : "") + p.title)
                 .font(Theme.font(15, .bold, condensed: true))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
@@ -165,8 +203,8 @@ struct DesignStudioView: View {
         let short = game.state.cash < cost
         return VStack(spacing: 10) {
             BigButton(title: cost > 0 ? loc("studio.create", eur(cost)) : loc("studio.createFree")) {
-                let n = name, p = pattern, c = colors
-                store.act { _ = $0.createDesign(name: n, pattern: p, colors: c) }
+                let n = name, p = pattern, c = colors, sh = shape
+                store.act { _ = $0.createDesign(name: n, pattern: p, colors: c, shape: sh) }
                 dismiss()
             }
             .disabled(short)
