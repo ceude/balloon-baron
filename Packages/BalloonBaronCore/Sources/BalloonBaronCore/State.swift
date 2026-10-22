@@ -8,7 +8,8 @@ public struct Balloon: Codable, Identifiable, Equatable, Sendable {
     public var fly = true
     public var damagedUntil = 0
     public var pilot: Int?
-    public var flights = 0
+    /// Flights flown on this envelope; a top-level hangar wears it more slowly, so it can be fractional.
+    public var flights = 0.0
     public var ad: Sponsor?
     /// Id of a workshop design painted on the envelope.
     public var design: Int?
@@ -18,13 +19,19 @@ public struct Pilot: Codable, Identifiable, Equatable, Sendable {
     public let id: Int
     public var name: String
     public var level: PilotLevel
-    public var xp = 0
+    /// Flights flown; the flight simulator counts each one as 1.5.
+    public var xp = 0.0
     public var fromSchool = false
     /// Set after a raise; otherwise wage follows level.
     public var customWage: Int?
+    public var trait: PilotTrait?
 
     public var wage: Int {
-        customWage ?? jsRound(Double(level.wage) * (fromSchool ? Rules.schoolWageFactor : 1))
+        customWage ?? Pilot.baseWage(level, school: fromSchool, trait: trait)
+    }
+
+    static func baseWage(_ level: PilotLevel, school: Bool, trait: PilotTrait?) -> Int {
+        jsRound(Double(level.wage) * (school ? Rules.schoolWageFactor : 1) * (trait == .nightOwl ? 0.85 : 1))
     }
 }
 
@@ -125,7 +132,7 @@ public enum Feature: String, Codable, CaseIterable, Sendable { case insurance, f
 public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
     case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold, goals
-    case pr, influ, prcap
+    case pr, influ, prcap, bazaar
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {
@@ -141,6 +148,17 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case officeOpened(Office)
     case allOffices
     case celebritySigned(Int)
+    /// The region's rival boss speaks (text `boss.<region>.<line>`), once per region and line.
+    case boss(RegionID, BossLine)
+    /// A Cappadocia festival starts; index into its three festivals.
+    case festivalStarted(Int)
+    /// How a morning event you answered turned out.
+    case eventOutcome(EventOutcome)
+    /// A bazaar pattern or shape arrived as a design on this balloon (nil: no balloon).
+    case bazaarGift(StoreItem, balloon: String?)
+    /// Cash is back above zero after the rescue plan.
+    case rescued
+    case worldBaron
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.
@@ -171,8 +189,9 @@ public struct DayPlan: Codable, Equatable, Sendable {
 
 @dynamicMemberLookup
 public struct GameState: Codable, Equatable, Sendable {
-    /// 2: per-region state and the holding.
-    public static let currentVersion = 2
+    /// 2: per-region state and the holding. 3: buildings, morning events, the paper, store, postcards.
+    /// Fields added in 3 are optional so a version 2 save still loads.
+    public static let currentVersion = 3
     public var version = GameState.currentVersion
 
     public var day = 1
@@ -199,6 +218,29 @@ public struct GameState: Codable, Equatable, Sendable {
     public var designs: [Design] = []
     public var chapterNews: ChapterNews?
     public var mergeNews: MergeNews?
+
+    // Added in version 3. Read them through the accessors below.
+    /// Headlines collected during the day for tomorrow's paper, and the paper waiting to be read.
+    public var paperNext: [PaperItem]?
+    public var paper: [PaperItem]?
+    /// A morning event is due when the day's popups reach it.
+    public var eventDue: Bool?
+    /// The rescue plan was shown while cash is below zero.
+    public var rescueShown: Bool?
+    /// Boss lines already spoken, as "region.line".
+    public var bossSaid: Set<String>?
+    /// Day each postcard was earned, and the ones still to be shown.
+    public var postcards: [Achievement: Int]?
+    public var newPostcards: [Achievement]?
+    public var stats: Stats?
+    /// Day each store item was bought.
+    public var store: [StoreItem: Int]?
+
+    public var achievements: [Achievement: Int] { postcards ?? [:] }
+    public var statistics: Stats { stats ?? Stats() }
+    public func owned(_ k: StoreItem) -> Bool { store?[k] != nil }
+    /// Town decorations draw a few more tourists: +1% each.
+    public var decorationCount: Int { StoreItem.allCases.filter { $0.kind == .decoration && owned($0) }.count }
 
     public subscript<T>(dynamicMember path: WritableKeyPath<RegionState, T>) -> T {
         get { local[keyPath: path] }
@@ -232,7 +274,7 @@ public struct GameState: Codable, Equatable, Sendable {
     /// Flights an envelope lasts; holding research stretches it.
     public var envelopeLife: Int { holding.research > 0 ? Holding.researchLevels[holding.research - 1].life : Rules.envelopeLife }
     /// Envelope condition, 1 = new, 0 = grounded.
-    public func condition(_ b: Balloon) -> Double { clamp(1 - Double(b.flights) / Double(envelopeLife), 0, 1) }
+    public func condition(_ b: Balloon) -> Double { clamp(1 - b.flights / Double(envelopeLife), 0, 1) }
 
     public func balloon(_ id: Int) -> Balloon? { local.balloons.first { $0.id == id } }
     public func pilot(of b: Balloon) -> Pilot? { local.pilots.first { $0.id == b.pilot } }
@@ -248,20 +290,30 @@ public struct GameState: Codable, Equatable, Sendable {
         jsRound(Double(h.roomIncome) * (stars < h.minStars ? 0.5 : 1) * (local.winter != nil ? 0.6 : 1))
     }
 
-    public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold }
+    /// `chartered`: hired out whole by a morning event; `late`: its pilot overslept; `strike`: its pilot is on strike.
+    public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold, chartered, late, strike }
 
     public func status(_ b: Balloon) -> FlyStatus {
         if local.banUntil >= day { return .banned }
         if b.damagedUntil > day { return .damaged }
         if condition(b) <= 0 { return .worn }
         if !licenseValid && b.id != local.flagship { return .licenseHold }
+        if let c = local.charter, c.day == day, c.balloon == b.id { return .chartered }
+        if let l = local.late, l.day == day, b.pilot == l.pilot, !isSelf(b) { return .late }
+        if local.strikeDay == day && !isSelf(b) { return .strike }
         if !isSelf(b) && b.pilot == nil { return .noPilot }
         return .ok
     }
 
+    /// Seats you can sell in a balloon today: the documentary crew takes four in the flagship.
+    public func sellSeats(_ b: Balloon) -> Int {
+        let cap = b.size.capacity
+        return cap - (local.docDay == day && b.id == local.flagship ? min(4, cap - 1) : 0)
+    }
+
     /// Balloons that will actually go up today.
     public var flyingToday: [Balloon] { local.balloons.filter { $0.fly && status($0) == .ok } }
-    public var capacityToday: Int { flyingToday.reduce(0) { $0 + $1.size.capacity } }
+    public var capacityToday: Int { flyingToday.reduce(0) { $0 + sellSeats($1) } }
 
     public var influencerCost: Int { Rules.influencerCost(balloons: local.balloons.count) }
 
@@ -282,4 +334,12 @@ public struct GameState: Codable, Equatable, Sendable {
     public var anyBaron: Bool { !barons.isEmpty }
     public func owns(_ r: RegionID) -> Bool { r == region || parked[r] != nil }
     public func design(of b: Balloon) -> Design? { b.design.flatMap { id in designs.first { $0.id == id } } }
+
+    /// The region's old-money rival, if still in the market under its name.
+    public var bossRival: Rival? { local.rivals.first { $0.name == region.bossCompany } }
+}
+
+/// Company-wide counters for postcards.
+public struct Stats: Codable, Equatable, Sendable {
+    public var missions = 0, perfectLandings = 0, passengers = 0
 }

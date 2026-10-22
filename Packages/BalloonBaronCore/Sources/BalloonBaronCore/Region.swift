@@ -33,6 +33,9 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
     /// Albuquerque's famous box: low winds one way, higher winds back, so you can land where you started.
     public var boxWinds: Bool { self == .abq }
     public var hasFiesta: Bool { self == .abq }
+    public var hasFestivals: Bool { self == .cap }
+    /// The rival owned by the region's boss (Kenan Arslan, Dale Whitaker).
+    public var bossCompany: String { self == .abq ? "Sandia Sky Rides" : "Göreme Sky" }
 
     func startingRivals() -> [Rival] {
         switch self {
@@ -114,8 +117,41 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var lastGuide: Int?
     var absentNoticeDay = 0
 
+    // Added in version 3 (optional so older saves load).
+    /// Building levels above 1.
+    public var buildings: [Building: Int]?
+    /// Flags already rolled for coming days, so the wind mast's forecast comes true.
+    public var forecast: [Int: Flag]?
+    public var festival: Festival?
+    public var festivalNext: Int?
+    public var festivalCount: Int?
+    /// Most passengers flown in a day, for the record headline.
+    public var bestPax: Int?
+    /// Morning events: pilots on strike today, a balloon chartered today, fuel price up until, documentary day.
+    public var strikeDay: Int?
+    public var charter: Charter?
+    public var fuelUpUntil: Int?
+    public var docDay: Int?
+    public var nextEvent: Int?
+    public var lastEvent: MorningEvent?
+    /// A night-owl pilot who overslept, and the day that was last checked.
+    public var late: LatePilot?
+    var lateChecked: Int?
+    /// Winter whose first night has been shown.
+    var winterNight: Int?
+
     init(rivals: [Rival]) { self.rivals = rivals }
+
+    public func level(_ b: Building) -> Int { buildings?[b] ?? 1 }
 }
+
+/// Cappadocia's festivals: three busy days about every five weeks. Name: `festival.<index>`.
+public struct Festival: Codable, Equatable, Sendable {
+    public var index: Int, start: Int, end: Int
+}
+
+public struct Charter: Codable, Equatable, Sendable { public var day: Int, balloon: Int }
+public struct LatePilot: Codable, Equatable, Sendable { public var day: Int, pilot: Int }
 
 /// A region the company left behind. Its manager keeps flying and sends profit to the holding.
 public struct Autopilot: Codable, Equatable, Sendable {

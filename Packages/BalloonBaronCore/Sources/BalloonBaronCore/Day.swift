@@ -7,20 +7,26 @@ extension Game {
     @discardableResult
     public mutating func launch(skip: Bool = false) -> Int? {
         let fl = skip ? [] : state.flyingToday
-        let cap = fl.reduce(0) { $0 + $1.size.capacity }
+        let cap = fl.reduce(0) { $0 + state.sellSeats($1) }
         let m = market(price: state.price, capacity: cap)
         var plan = DayPlan(skipped: skip, flying: fl.map(\.id), pax: [:], rivalPax: Array(m.pax.dropFirst()),
                            rivalCap: Array(m.caps.dropFirst()), referrals: skip ? 0 : m.referrals)
         var left = m.pax[0]
         let flagship = state.flagship
         for b in fl.sorted(by: { ($0.id == flagship ? 1 : 0) > ($1.id == flagship ? 1 : 0) }) {
-            let n = min(left, b.size.capacity)
+            let n = min(left, state.sellSeats(b))
             plan.pax[b.id] = n
             left -= n
         }
         state.plan = plan
         if let fb = state.balloon(flagship), state.isSelf(fb), plan.flying.contains(fb.id) { return plan.pax[fb.id] ?? 0 }
         return nil
+    }
+
+    /// What a special request pays: bigger baskets carry more guests, and festivals pay half as much again.
+    public func missionReward(_ m: Mission, _ size: BalloonSize? = nil) -> Int {
+        let z = size ?? state.balloon(state.flagship)?.size ?? .S
+        return jsRound(Double(m.reward(for: z)) * (state.festival != nil ? Rules.festivalReward : 1))
     }
 
     // MARK: Day end
@@ -46,8 +52,17 @@ extension Game {
                 ev.append(.cancelled(balloon: b.name, pax: pax, compensation: Rules.cancelCompensation))
                 continue
             }
+            let t = trait(of: b)
             lg.tickets += pax * state.price
-            lg.fuel += z.fuel
+            lg.fuel += jsRound(Double(z.fuel) * (state.fuelUpUntil.map { $0 >= state.day } == true ? 1.5 : 1) * (t == .thrifty ? 0.85 : 1))
+            switch t {
+            case .showman: lg.tips += pax * 9
+            case .daredevil: state.rep += 0.003
+            case .storyteller:
+                state.rep += 0.002
+                if rng.chance(0.15) { addReview(.perfect) }
+            default: break
+            }
             if let sp = b.ad {
                 lg.ads += sp.pay(for: z)
                 lg.adRepLoss += sp.repLoss
@@ -64,16 +79,23 @@ extension Game {
                 state.lastSelfFly = state.day
                 lg.founderBonus += jsRound(Double(pax * state.price) * Rules.founderPremium)
                 if f.missionDone, let m = f.mission {
-                    let reward = m.reward(for: z)
+                    let reward = missionReward(m, z)
                     lg.mission += reward
                     lg.missionDone = m
                     state.rep += 0.02
+                    state.stats = { var st = state.statistics; st.missions += 1; return st }()
                     ev.append(.missionDone(m, reward: reward))
                 } else if let m = f.mission {
                     ev.append(.missionFailed(m))
                 }
+                if let k = f.moment, f.landing != .crash {
+                    lg.tips += pax * 5
+                    state.rep += 0.008
+                    ev.append(.moment(k, tips: pax * 5))
+                }
                 switch f.landing {
                 case .perfect:
+                    state.stats = { var st = state.statistics; st.perfectLandings += 1; return st }()
                     lg.tips += pax * 15
                     state.rep += 0.03
                     ev.append(.perfectLanding(balloon: b.name, tips: pax * 15))
@@ -107,6 +129,8 @@ extension Game {
                 state.rep -= 0.08 + 0.15 * severity
                 if !isSelf { accidents.append(b.name) }
                 let who: DayEvent.Pilot = isSelf ? .you : state.pilot(of: b).map { .named($0.name) } ?? .unknown
+                if state.bossRival?.alive == true { bossSay(.accident) }
+                addPaper(.accident(balloon: b.name, days: days, severe: severity > 0.6))
                 let cover: DayEvent.Cover = hullPaid && paxPaid ? .all : hullPaid ? .hullOnly : paxPaid ? .paxOnly : .none
                 ev.append(.accident(balloon: b.name, pilot: who, severe: severity > 0.6, days: days, repair: repair, compensation: comp, cover: cover))
             }
@@ -116,6 +140,7 @@ extension Game {
             if rng.chance(Rules.redCatch) {
                 lg.fines += Rules.redFine
                 state.strikes += 1
+                addPaper(.redCaught(fine: Rules.redFine))
                 ev.append(.redCaught(strikes: state.strikes))
                 if state.strikes >= 3 {
                     state.banUntil = state.day + 3
@@ -132,20 +157,20 @@ extension Game {
             guard let i = state.balloons.firstIndex(where: { $0.id == id }) else { continue }
             let isSelf = state.isSelf(state.balloons[i])
             if cancelled && isSelf { continue }
-            state.balloons[i].flights += 1
+            state.balloons[i].flights += state.level(.hangar) >= 3 ? 0.85 : 1
             if !isSelf, let pid = state.balloons[i].pilot, let pi = state.pilots.firstIndex(where: { $0.id == pid }) {
                 var p = state.pilots[pi]
-                p.xp += 1
-                if let need = p.level.xpToNext, p.xp >= need, let up = PilotLevel(rawValue: p.level.rawValue + 1) {
+                p.xp += state.level(.office) >= 3 ? 1.5 : 1
+                if let need = p.level.xpToNext, p.xp >= Double(need), let up = PilotLevel(rawValue: p.level.rawValue + 1) {
                     p.level = up
-                    p.customWage = jsRound(Double(up.wage) * (p.fromSchool ? Rules.schoolWageFactor : 1))
+                    p.customWage = Pilot.baseWage(up, school: p.fromSchool, trait: p.trait)
                     ev.append(.pilotPromoted(name: p.name, level: up, wage: p.wage))
                 }
                 state.pilots[pi] = p
             }
             if state.condition(state.balloons[i]) <= 0 { ev.append(.envelopeWorn(balloon: state.balloons[i].name)) }
         }
-        lg.upkeep = state.balloons.reduce(0) { $0 + $1.size.upkeep }
+        lg.upkeep = jsRound(Double(state.balloons.reduce(0) { $0 + $1.size.upkeep }) * state.upkeepFactor)
         for h in state.activeHotels {
             if state.ownHotels.contains(h) {
                 lg.hotelIncome += state.hotelIncome(h)
@@ -169,7 +194,7 @@ extension Game {
         let painted = flyingIDs.compactMap(state.balloon).filter { state.design(of: $0) != nil }
         let designRep = min(Studio.maxDailyRep, painted.reduce(0) { acc, b in
             let d = state.design(of: b)!
-            return acc + 0.003 * Double(d.score) / 100 * freshness(d)
+            return acc + 0.003 * Double(d.score) / 100 * freshness(d) + (d.shape != nil ? 0.0015 : 0)
         })
         if designRep > 0 {
             state.rep += designRep
@@ -216,6 +241,7 @@ extension Game {
             lg.antitrust = fine
             state.cash -= fine
             state.monopolyDays = 0
+            addPaper(.antitrust(sharePercent: jsRound(share * 100), fine: fine))
             ev.append(.antitrustFine(sharePercent: jsRound(share * 100), fine: fine))
         }
 
@@ -226,6 +252,7 @@ extension Game {
                 state.cash += v
                 lg.seizure = v
                 state.balloons.removeAll { $0.id == take.id }
+                addPaper(.seized(balloon: take.name))
                 ev.append(.seized(balloon: take.name, value: v))
                 if take.id == state.flagship, let first = state.balloons.first { state.flagship = first.id }
             }
@@ -233,7 +260,7 @@ extension Game {
         }
 
         let flown = flyingIDs.compactMap(state.balloon)
-        let capToday = flown.reduce(0) { $0 + $1.size.capacity }
+        let capToday = flown.reduce(0) { $0 + state.sellSeats($1) }
         let landedOK = flight.map { $0.missionDone && $0.landing != .hard && $0.landing != .crash } ?? false
         if !flyingIDs.isEmpty && absent > Rules.absentGraceDays && rng.chance(0.3) { addReview(.absent) }
         generateReviews(ReviewContext(xl: flown.contains { $0.size == .XL }, mission: landedOK ? flight?.mission : nil, ads: ads,
@@ -256,11 +283,22 @@ extension Game {
         if state.fiesta != nil && !flyingIDs.isEmpty { state.fiestaFlown += 1 }
         if paxTotal + rivalPax > 0 { state.shareNow = Double(paxTotal) / Double(paxTotal + rivalPax) }
         lg.chapterReward = checkChapters(events: &ev)
+        if paxTotal > (state.bestPax ?? 0) && state.day > 5 {
+            if let best = state.bestPax, best > 0, paxTotal >= best + 8 { addPaper(.record(pax: paxTotal)) }
+            state.bestPax = paxTotal
+        }
+        if let boss = state.bossRival, boss.alive, boss.lastPax > 0, paxTotal > boss.lastPax, state.day > 8 {
+            if !bossSaid(.passed) { addPaper(.passedBoss(rival: boss.name)) }
+            bossSay(.passed)
+        }
+        state.stats = { var st = state.statistics; st.passengers += paxTotal; return st }()
         let report = DayReport(day: state.day, flag: weather.flag, ledger: lg, events: ev, rivalEvents: rev,
                                passengers: paxTotal, capacity: capToday, skipped: plan.skipped)
 
         state.day += 1
         state.plan = nil
+        checkAchievements()
+        if state.anyBaron { checkHoldingGoals() }
         if state.region.hasFiesta {
             if let f = state.fiesta, state.day > f.end {
                 state.fiesta = nil
@@ -268,6 +306,18 @@ extension Game {
             } else if state.fiesta == nil && state.day >= (state.fiestaNext ?? 0) && state.winter == nil {
                 state.fiesta = Fiesta(start: state.day, end: state.day + Rules.fiestaDays - 1)
                 state.hezQueue.append(.fiestaStarted)
+            }
+        }
+        if state.region.hasFestivals {
+            if let f = state.festival, state.day > f.end {
+                state.festival = nil
+            } else if state.festival == nil && state.winter == nil && state.day >= (state.festivalNext ?? Rules.festivalFirst) {
+                let n = state.festivalCount ?? 0
+                state.festival = Festival(index: n % Rules.festivalCount, start: state.day, end: state.day + Rules.festivalDays - 1)
+                state.festivalCount = n + 1
+                state.festivalNext = state.day + Rules.festivalEvery
+                state.hezQueue.append(.festivalStarted(n % Rules.festivalCount))
+                addPaper(.festival(n % Rules.festivalCount))
             }
         }
         if let w = state.winter, state.day > w.end {

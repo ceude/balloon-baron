@@ -146,7 +146,7 @@ struct CrewView: View {
     }
 
     private func xpText(_ p: Pilot) -> String {
-        if let next = p.level.xpToNext { return loc("crew.xp", num(p.xp), num(next)) }
+        if let next = p.level.xpToNext { return loc("crew.xp", num(Int(p.xp)), num(next)) }
         return loc("crew.topLevel")
     }
 

@@ -26,6 +26,8 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case hotelLeft(Hotel)
     case chapterDone(String, reward: Int)
     case baron(RegionID)
+    /// A small moment in your flight (a thermal, a greeting, a sunrise photo) and the tips it brought.
+    case moment(FlightMoment.Kind, tips: Int)
 
     // Rivals
     case rivalFleetSold(rival: String)
@@ -83,8 +85,10 @@ public struct FlightResult: Codable, Equatable, Sendable {
     public var distance: Double
     public var mission: Mission?
     public var missionDone: Bool
+    /// The flight moment you caught, if any.
+    public var moment: FlightMoment.Kind?
 
-    public init(landing: Landing, distance: Double = 0, mission: Mission? = nil, missionDone: Bool = false) {
-        self.landing = landing; self.distance = distance; self.mission = mission; self.missionDone = missionDone
+    public init(landing: Landing, distance: Double = 0, mission: Mission? = nil, missionDone: Bool = false, moment: FlightMoment.Kind? = nil) {
+        self.landing = landing; self.distance = distance; self.mission = mission; self.missionDone = missionDone; self.moment = moment
     }
 }

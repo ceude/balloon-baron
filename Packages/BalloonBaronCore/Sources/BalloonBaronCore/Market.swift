@@ -85,11 +85,11 @@ extension Game {
     public func estimatedIncome(price: Int? = nil) -> (pax: Int, seats: Int, income: Int) {
         var g = self
         if let price { g.state.price = price }
-        let fl = g.state.flyingToday, cap = fl.reduce(0) { $0 + $1.size.capacity }
+        let fl = g.state.flyingToday, cap = fl.reduce(0) { $0 + g.state.sellSeats($1) }
         let pax = g.market(price: g.state.price, capacity: cap).pax[0]
         var income = pax * g.state.price
         if let fb = fl.first(where: { g.state.isSelf($0) }) {
-            income += jsRound(Double(min(pax, fb.size.capacity) * g.state.price) * Rules.founderPremium)
+            income += jsRound(Double(min(pax, g.state.sellSeats(fb)) * g.state.price) * Rules.founderPremium)
         }
         return (pax, cap, income)
     }

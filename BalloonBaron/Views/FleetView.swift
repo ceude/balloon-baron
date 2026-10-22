@@ -328,6 +328,15 @@ struct FleetView: View {
         case .licenseHold:
             text = loc("fleetPage.status.licenseHold")
             color = Theme.yellow
+        case .chartered:
+            text = loc("fleetPage.status.chartered")
+            color = Theme.green
+        case .late:
+            text = loc("fleetPage.status.late")
+            color = Theme.yellow
+        case .strike:
+            text = loc("fleetPage.status.strike")
+            color = Theme.red
         }
         return Text(text)
             .font(Theme.font(13, .bold))
@@ -336,7 +345,7 @@ struct FleetView: View {
 
     private func conditionBar(_ b: Balloon, _ s: GameState) -> some View {
         let cond = s.condition(b)
-        let left = max(0, s.envelopeLife - b.flights)
+        let left = max(0, s.envelopeLife - Int(b.flights.rounded(.up)))
         let color: Color = cond < 0.3 ? Theme.red : cond < 0.6 ? Theme.yellow : Theme.green
         let label = loc(cond < 0.3 ? "fleetPage.envelopeWorn" : "fleetPage.envelope", percent(cond), num(left))
         return VStack(alignment: .leading, spacing: 3) {

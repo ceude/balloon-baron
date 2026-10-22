@@ -26,14 +26,15 @@ extension GameState {
             }
         }
         let order: [(FlyStatus, String)] = [(.damaged, "home.fleet.damaged"), (.noPilot, "home.fleet.noPilot"), (.worn, "home.fleet.worn"),
-                                           (.licenseHold, "home.fleet.license"), (.banned, "home.fleet.banned")]
+                                           (.licenseHold, "home.fleet.license"), (.banned, "home.fleet.banned"), (.late, "home.fleet.late"),
+                                           (.strike, "home.fleet.strike"), (.chartered, "home.fleet.chartered")]
         var parts: [String] = []
         if grounded > 0 { parts.append(loc("home.fleet.grounded", num(grounded))) }
         for (st, key) in order {
             if let n = why[st], n > 0 { parts.append(loc(key, num(n))) }
         }
         let alarm = why[.noPilot] != nil || why[.worn] != nil || why[.licenseHold] != nil
-        let seats = fl.reduce(0) { $0 + $1.size.capacity }
+        let seats = fl.reduce(0) { $0 + sellSeats($1) }
         return PlanCounts(flying: fl.count, total: local.balloons.count, seats: seats, parts: parts, alarm: alarm)
     }
 
@@ -219,6 +220,9 @@ struct FleetPlanView: View {
         case .damaged: return loc("fplan.why.damaged", num(max(0, b.damagedUntil - s.day)))
         case .banned: return loc("fplan.why.banned")
         case .noPilot: return loc("fplan.why.noPilot")
+        case .chartered: return loc("fplan.why.chartered")
+        case .late: return loc("fplan.why.late")
+        case .strike: return loc("fplan.why.strike")
         case .ok:
             if s.isSelf(b) { return loc("fplan.pilotYou") }
             guard let p = s.pilot(of: b) else { return loc("fplan.why.noPilot") }

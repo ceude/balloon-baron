@@ -148,6 +148,10 @@ public enum Rules {
     public static let monopolyRate = 0.03
     public static let fiestaDays = 4, fiestaEvery = 30, fiestaDemand = 1.9
     public static let fiestaBalloons = 46
+    /// Cappadocia's festivals: from day 24, every 35 days, three days of extra tourists and richer special requests.
+    public static let festivalFirst = 24, festivalEvery = 35, festivalDays = 3
+    public static let festivalDemand = 1.4, festivalReward = 1.5
+    public static let festivalCount = 3
 
     public static let loans = [
         LoanOffer(amount: 10000, days: 40, installment: 300, balloonsNeeded: 0),

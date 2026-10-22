@@ -56,8 +56,29 @@ extension Office {
     var icon: String { ["🕌", "🗽", "🏙️", "🗼"][Office.allCases.firstIndex(of: self)!] }
 }
 extension Design {
-    var title: String { name.isEmpty ? "\(pattern.title) \(number)" : name }
+    var title: String { gift?.title ?? (name.isEmpty ? "\(pattern.title) \(number)" : name) }
 }
+extension EnvelopeShape { var title: String { storeItem.title } }
+extension StoreItem { var title: String { loc("store.\(rawValue)") } }
+extension PilotTrait {
+    var title: String { loc("trait.\(rawValue)") }
+    var detail: String { loc("trait.\(rawValue).d") }
+}
+extension Building {
+    var title: String { loc("building.\(rawValue)") }
+    /// What level `n` (2 or 3) is called and does.
+    func levelTitle(_ n: Int) -> String { loc("building.\(rawValue).\(n)") }
+    func levelDetail(_ n: Int) -> String { loc("building.\(rawValue).\(n).d") }
+}
+extension Achievement {
+    var title: String { loc("ach.\(rawValue)") }
+    var detail: String { loc("ach.\(rawValue).d") }
+}
+extension HoldingGoal { var title: String { loc("hgoal.\(rawValue)") } }
+extension MorningEvent {
+    var title: String { loc("event.\(rawValue).title") }
+}
+func festivalName(_ i: Int) -> String { loc("festival.\(i)") }
 extension Chapter {
     var title: String { loc("chapter.\(id)") }
     var award: String { loc("chapter.\(id).award") }
@@ -120,6 +141,12 @@ extension HezMessage {
         case .officeOpened(let o): loc("hez.officeOpened", o.title) + " " + o.perk
         case .allOffices: loc("hez.allOffices")
         case .celebritySigned(let i): loc("hez.celebritySigned", celebrityName(i))
+        case let .boss(r, line): loc("boss.\(r.rawValue).\(line.rawValue)")
+        case .festivalStarted(let i): loc("hez.festival.\(i)")
+        case .eventOutcome(let o): loc("outcome.\(o.rawValue)")
+        case let .bazaarGift(k, b): b.map { loc("hez.bazaarGift", k.title, $0) } ?? loc("hez.bazaarGift.noBalloon", k.title)
+        case .rescued: loc("hez.rescued")
+        case .worldBaron: loc("hez.worldBaron")
         }
     }
 }
@@ -163,6 +190,7 @@ extension DayEvent {
         case let .hotelLeft(h): loc("event.hotelLeft", h.title)
         case let .chapterDone(id, reward): loc("event.chapterDone", loc("chapter.\(id)"), loc("chapter.\(id).award"), eur(reward))
         case let .baron(r): loc("event.baron", loc("chapter.\(r.chapters.last!.id)"))
+        case let .moment(k, tips): loc("event.moment.\(k.rawValue)", eur(tips))
         case let .rivalFleetSold(r): loc("event.rivalFleetSold", r)
         case let .newEntrant(r): loc("event.newEntrant", r, currentRegion.title)
         case let .rivalAccidents(r, n): loc("event.rivalAccidents", r, num(n))

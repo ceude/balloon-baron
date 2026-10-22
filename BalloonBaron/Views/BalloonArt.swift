@@ -205,6 +205,65 @@ enum BalloonPainter {
                              with: .color((i + j) % 3 != 0 ? c2 : c3))
                 }
             }
+        case .gold:
+            // Gold leaf with a band in the main color and faint gores.
+            let g = Gradient(stops: [.init(color: Color(hex: "#fff2b0"), location: 0), .init(color: Color(hex: "#e8b23a"), location: 0.35),
+                                     .init(color: Color(hex: "#fff6c8"), location: 0.6), .init(color: Color(hex: "#b07a1a"), location: 1)])
+            ctx.fill(Path(CGRect(x: x - r, y: top, width: r * 2, height: r * 3.2)),
+                     with: .linearGradient(g, startPoint: CGPoint(x: x - r, y: top), endPoint: CGPoint(x: x + r, y: top + r * 3)))
+            ctx.fill(Path(CGRect(x: x - r, y: cy + r * 0.05, width: r * 2, height: r * 0.5)), with: .color(c1))
+            for k in -2...2 {
+                ctx.stroke(ellipse(cx: x + CGFloat(k) * r * 0.3, cy: cy, rx: r * 0.12, ry: r * 1.5), with: .color(Color(hex: "#784f0a").opacity(0.35)), lineWidth: 1)
+            }
+        case .tile:
+            // Iznik tiles: eight-point stars on white, a cobalt band.
+            ctx.fill(Path(CGRect(x: x - r, y: top, width: r * 2, height: r * 3.2)), with: .color(Color(hex: "#f6f2ea")))
+            for i in 0..<4 {
+                for j in 0..<5 {
+                    let px = x - r * 0.9 + CGFloat(i) * r * 0.6 + CGFloat(j % 2) * r * 0.3, py = top + r * 0.35 + CGFloat(j) * r * 0.55
+                    var p = Path()
+                    for k in 0..<8 {
+                        let pt = point(px, py, angle: Double(k) * Double.pi / 4, radius: k % 2 == 1 ? r * 0.1 : r * 0.22)
+                        if k == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
+                    }
+                    p.closeSubpath()
+                    ctx.fill(p, with: .color(c1))
+                    ctx.fill(ellipse(cx: px, cy: py, rx: r * 0.06, ry: r * 0.06), with: .color(Color(hex: "#e5432f")))
+                }
+            }
+            ctx.fill(Path(CGRect(x: x - r, y: cy + r * 0.9, width: r * 2, height: r * 0.12)), with: .color(Color(hex: "#2b5ab8")))
+        case .sky:
+            // A constellation: night sky fading into the main color, stars and a faint line between them.
+            let g = Gradient(colors: [Color(hex: "#141238"), c1])
+            ctx.fill(Path(CGRect(x: x - r, y: top, width: r * 2, height: r * 3.2)),
+                     with: .linearGradient(g, startPoint: CGPoint(x: x, y: top), endPoint: CGPoint(x: x, y: top + r * 3)))
+            for i in 0..<14 {
+                let sx = x - r * 0.85 + CGFloat((i * 37) % 17) / 17 * r * 1.7, sy = top + r * 0.2 + CGFloat((i * 53) % 23) / 23 * r * 2.2
+                ctx.fill(star(sx, sy, r * (0.04 + CGFloat(i % 3) * 0.025)), with: .color(i % 4 != 0 ? Color(hex: "#fff6d0") : c2))
+            }
+            var line = Path()
+            line.move(to: CGPoint(x: x - r * 0.5, y: cy - r * 0.4))
+            line.addLine(to: CGPoint(x: x - r * 0.1, y: cy - r * 0.6))
+            line.addLine(to: CGPoint(x: x + r * 0.3, y: cy - r * 0.3))
+            line.addLine(to: CGPoint(x: x + r * 0.55, y: cy - r * 0.55))
+            ctx.stroke(line, with: .color(Color(hex: "#fff6d0").opacity(0.5)), lineWidth: 1)
+        case .kilim:
+            // Cappadocian kilim: woven bands with a row of diamonds in each.
+            let bands: [Color] = [c1, Color(hex: "#c0283a"), c2, Color(hex: "#2b2350"), c3, Color(hex: "#e8b23a"), c1]
+            for row in 0..<7 {
+                let y0 = top + CGFloat(row) * r * 0.46
+                ctx.fill(Path(CGRect(x: x - r, y: y0, width: r * 2, height: r * 0.46)), with: .color(bands[row]))
+                for k in 0..<5 {
+                    let px = x - r * 0.8 + CGFloat(k) * r * 0.4, py = y0 + r * 0.23
+                    var d = Path()
+                    d.move(to: CGPoint(x: px, y: py - r * 0.14))
+                    d.addLine(to: CGPoint(x: px + r * 0.12, y: py))
+                    d.addLine(to: CGPoint(x: px, y: py + r * 0.14))
+                    d.addLine(to: CGPoint(x: px - r * 0.12, y: py))
+                    d.closeSubpath()
+                    ctx.fill(d, with: .color(Color(hex: row % 2 == 1 ? "#f6e6c0" : "#2b2350")))
+                }
+            }
         }
     }
 }

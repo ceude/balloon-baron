@@ -23,8 +23,11 @@ public struct Game: Sendable {
         if state.demand == nil { state.demand = dayDemand() }
         if state.candidates.isEmpty { newCandidates() }
         if state.rivalPlanDay != state.day { planRivalFlights() }
+        printPaper()
+        scheduleEvent()
         unlockCheck()
         assignPilots()
+        rollLatePilot()
     }
 
     func demandGrowth() -> Double { 1 + 0.6 * (1 - exp(-Double(state.day - 1) / 50)) }
@@ -32,13 +35,13 @@ public struct Game: Sendable {
     mutating func dayDemand() -> Int {
         let flag = state.weather?.flag ?? .green
         return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? 0.55 : 1)
-                       * (state.fiesta != nil ? Rules.fiestaDemand : 1) * holdingBoost(state.region))
+                       * (state.fiesta != nil ? Rules.fiestaDemand : 1) * (state.festival != nil ? Rules.festivalDemand : 1)
+                       * state.salesFactor * (1 + 0.01 * Double(state.decorationCount)) * holdingBoost(state.region))
     }
 
     mutating func newWeather() -> Weather {
-        let r = rng.unit(), winter = state.winter != nil
-        let gq = winter ? 0.35 : 0.55, yq = winter ? 0.7 : 0.85
-        let flag: Flag = state.day == 1 ? .green : r < gq ? .green : r < yq ? .yellow : .red
+        // The wind mast's forecast, once made, comes true.
+        let flag: Flag = state.day == 1 ? .green : state.forecast?[state.day] ?? rollFlag()
         let surf = flag == .green ? rng.range(3, 10) : flag == .yellow ? rng.range(11, 18) : rng.range(19, 30)
         var l = [(rng.chance(0.5) ? -1.0 : 1.0) * surf / 3.6 * 0.45,
                  rng.range(-4, 4) * flag.wind, rng.range(-6, 6) * flag.wind, rng.range(-8, 8) * flag.wind]
@@ -53,7 +56,8 @@ public struct Game: Sendable {
             l[m] = -rng.range(1, 4) * flag.wind
         }
         let target = 220 + (state.region.boxWinds ? rng.range(1000, 1700) : rng.range(1300, 2100))
-        var mission: Mission? = state.day <= 2 || rng.chance(0.4) ? nil
+        // Festivals always bring a special request.
+        var mission: Mission? = state.day <= 2 || (rng.chance(0.4) && !(state.festival != nil && flag != .red)) ? nil
             : (flag == .yellow && rng.chance(0.5) ? .precision : rng.pick(Mission.allCases))
         if !state.firstMissionGiven && state.day >= 3 && flag != .red {
             mission = .proposal
@@ -69,7 +73,7 @@ public struct Game: Sendable {
         func make(_ level: PilotLevel, school: Bool = false) -> Pilot {
             let initial = Character(UnicodeScalar(65 + rng.int(26))!)
             defer { state.nextID += 1 }
-            return Pilot(id: state.nextID, name: "\(rng.pick(state.region.pilotNames)) \(initial).", level: level, fromSchool: school)
+            return Pilot(id: state.nextID, name: "\(rng.pick(state.region.pilotNames)) \(initial).", level: level, fromSchool: school, trait: rollTrait())
         }
         state.candidates = []
         for _ in 0..<3 {
@@ -85,9 +89,10 @@ public struct Game: Sendable {
 
     mutating func unlockCheck() {
         let s = state
+        // One new building every two days, so each lesson lands before the next.
         let rules: [Feature: Bool] = [
-            .insurance: s.day >= 2, .fleet: s.day >= 3 || s.cash >= 7000, .bank: s.day >= 4,
-            .market: s.day >= 5, .crew: s.balloons.count >= 2 || s.day >= 6
+            .insurance: s.day >= 2, .fleet: s.day >= 4 || s.cash >= 7000, .bank: s.day >= 6,
+            .market: s.day >= 8, .crew: s.balloons.count >= 2 || s.day >= 10
         ]
         let tipFor: [Feature: Tip] = [.insurance: .insurance, .fleet: .fleet, .bank: .bank, .market: .market, .crew: .crew]
         for f in Feature.allCases where rules[f]! && !state.unlocked.contains(f) {
@@ -96,7 +101,9 @@ public struct Game: Sendable {
         }
         queueTip(.welcome)
         if s.day >= 2 { queueTip(.goals) }
-        if s.day >= 6 { queueTip(.pr) }
+        if s.day >= 3 { bossSay(.hello) }
+        if s.day >= 9 { queueTip(.pr) }
+        if s.unlocked.contains(.market) && s.day >= 11 { queueTip(.bazaar) }
         if s.weather?.flag == .yellow { queueTip(.yellow) }
         if s.weather?.flag == .red { queueTip(.red) }
         if s.weather?.mission != nil { queueTip(.mission) }
@@ -104,9 +111,9 @@ public struct Game: Sendable {
         if s.balloons.contains(where: { s.condition($0) < 0.3 }) { queueTip(.aging) }
         if s.stars > 4.5 { queueTip(.expect) }
         if s.unlocked.contains(.market) {
-            if s.day >= 7 { queueTip(.rivals) }
-            if s.day >= 10 { queueTip(.rivals2) }
-            if s.day >= 13 { queueTip(.rivals3) }
+            if s.day >= 10 { queueTip(.rivals) }
+            if s.day >= 13 { queueTip(.rivals2) }
+            if s.day >= 16 { queueTip(.rivals3) }
         }
         if s.balloons.contains(where: { $0.damagedUntil > s.day }) { queueTip(.accident) }
         if !s.licenseValid { queueTip(.licenseHold) }
@@ -134,7 +141,7 @@ public struct Game: Sendable {
         let need = bs.indices
             .filter { !(bs[$0].id == s.flagship && s.flyingSelf) }
             .sorted { (down(bs[$0]), -bs[$0].size.capacity) < (down(bs[$1]), -bs[$1].size.capacity) }
-        let ps = s.pilots.sorted { ($0.level, $0.xp) > ($1.level, $1.xp) }
+        let ps = s.pilots.sorted { ($0.level.rawValue, $0.xp) > ($1.level.rawValue, $1.xp) }
         for (k, i) in need.enumerated() where k < ps.count { bs[i].pilot = ps[k].id }
         state.balloons = bs
     }
@@ -160,7 +167,9 @@ public struct Game: Sendable {
     public func accidentChance(_ b: Balloon) -> Double {
         let flag = state.weather?.flag ?? .green
         let pilotRisk = state.isSelf(b) ? 1 : state.pilot(of: b)?.level.risk ?? 1
-        return flag.accident * pilotRisk * b.size.risk * (state.condition(b) < 0.3 ? 1.5 : 1)
+        let t = trait(of: b), traitRisk = t == .careful ? 0.75 : t == .daredevil ? 1.3 : 1
+        let radar = flag == .yellow && state.level(.mast) >= 3 ? 0.8 : 1
+        return flag.accident * traitRisk * radar * pilotRisk * b.size.risk * (state.condition(b) < 0.3 ? 1.5 : 1)
     }
 
     /// Daily premiums for one balloon given its accident chance. Nothing is insurable on a red day.
