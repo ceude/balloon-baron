@@ -74,13 +74,17 @@ final class WorldTests: XCTestCase {
         g.state.flagship = 100
         g.state.monopolyDays = 50
         g.state.festivalNext = 999 // no festival crowds: the cash box stays empty
-        var fine = 0
+        var fine = 0, cashAtFine = 0
         for _ in 0..<40 where fine == 0 {
             g.state.monopolyDays = 50
             g.state.cash = -1000
-            fine = play(&g).ledger.antitrust
+            let r = play(&g)
+            fine = r.ledger.antitrust
+            cashAtFine = -1000 + r.net + fine // the day's takings were in the box when the fine came
         }
-        XCTAssertEqual(fine, jsRound(Double(20 * 60000) * Rules.monopolyRate / 100) * 100, "3% of balloons even with an empty cash box")
+        XCTAssertGreaterThan(fine, 0)
+        XCTAssertEqual(fine, jsRound(Double(max(0, cashAtFine) + 20 * 60000) * Rules.monopolyRate / 100) * 100,
+                       "3% of company worth: the balloons count even when the cash box is empty")
     }
 
     func testFoundingChapterPaysTheAward() {
