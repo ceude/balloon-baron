@@ -148,6 +148,8 @@ final class FlightModel {
             }
         case .fuelOut:
             tip = .fuel
+        case .moment:
+            SoundEngine.shared.play(.coin)
         case .landed:
             tip = nil
             if let q = sim.result?.landing, q == .hard || q == .crash { SoundEngine.shared.play(.thud) }
