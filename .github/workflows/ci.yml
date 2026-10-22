@@ -1,0 +1,38 @@
+name: CI
+
+# Every push checks what the developer's Mac will see: the core's tests on Swift 5.9,
+# and the whole iOS app built with Xcode 15.2 (no signing).
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    container: swift:5.9
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test BalloonBaronCore
+        working-directory: Packages/BalloonBaronCore
+        run: swift test
+
+  app:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Xcode 15.2
+        run: |
+          ls -d /Applications/Xcode*.app
+          sudo xcode-select -s /Applications/Xcode_15.2.app
+          xcodebuild -version
+      - name: Build the app for the simulator
+        run: |
+          set +e
+          xcodebuild -list -project BalloonBaron.xcodeproj
+          xcodebuild build -project BalloonBaron.xcodeproj -scheme BalloonBaron \
+            -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO > build.log 2>&1
+          status=$?
+          grep -E "error:|warning: .*deprecated" build.log | sort -u | head -n 150
+          tail -n 40 build.log
+          exit $status
