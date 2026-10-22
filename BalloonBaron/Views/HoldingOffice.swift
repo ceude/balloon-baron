@@ -20,8 +20,7 @@ struct HoldingOfficeView: View {
                 Color(hex: "#f3e2c6").ignoresSafeArea()
                 if let s = store.state {
                     TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
-                        Canvas { ctx, sz in
-                            ctx.fill(Path(CGRect(origin: .zero, size: sz)), with: .color(Color(hex: "#f6e7cf")))
+                        Canvas { ctx, _ in
                             var c = ctx
                             c.translateBy(x: 0, y: ins.top)
                             OfficePainter.draw(&c, L, s, t: tl.date.timeIntervalSince(start))
@@ -161,20 +160,26 @@ private enum OfficePainter {
     static func draw(_ c: inout GraphicsContext, _ L: HoldingOfficeView.Layout, _ s: GameState, t: Double) {
         let w = L.w, h = L.h, top = L.top, wall = L.wall
         func rect(_ x: CGFloat, _ y: CGFloat, _ ww: CGFloat, _ hh: CGFloat, _ col: Color) { c.fill(Path(CGRect(x: x, y: y, width: ww, height: hh)), with: .color(col)) }
-        // Back wall: warm plaster with panels, a cornice and a skirting board.
-        c.fill(Path(CGRect(x: 0, y: 0, width: w, height: wall)),
-               with: .linearGradient(Gradient(colors: [Color(hex: "#f6e7cf"), Color(hex: "#ecd4b0")]), startPoint: .zero, endPoint: CGPoint(x: 0, y: wall)))
+        // Back wall: warm plaster with panels, a cornice and a skirting board. The wall runs on up behind the status
+        // bar and the floor down past the home indicator (`over`), so the office fills the whole screen.
+        let over: CGFloat = 400
+        c.fill(Path(CGRect(x: 0, y: -over, width: w, height: wall + over)),
+               with: .linearGradient(Gradient(colors: [Color(hex: "#f6e7cf"), Color(hex: "#ecd4b0")]), startPoint: CGPoint(x: 0, y: -60), endPoint: CGPoint(x: 0, y: wall)))
         var panels = Path()
         var x: CGFloat = 0
-        while x < w { panels.move(to: CGPoint(x: x, y: top - 10)); panels.addLine(to: CGPoint(x: x, y: wall)); x += 46 }
+        while x < w { panels.move(to: CGPoint(x: x, y: -over)); panels.addLine(to: CGPoint(x: x, y: wall)); x += 46 }
         c.stroke(panels, with: .color(Color(red: 160 / 255, green: 110 / 255, blue: 60 / 255).opacity(0.12)), lineWidth: 1)
         rect(0, top - 14, w, 6, Color(hex: "#d9b98e"))
         rect(0, wall - 10, w, 10, Color(hex: "#8a5a3a"))
         // Floor: wooden planks running back.
-        c.fill(Path(CGRect(x: 0, y: wall, width: w, height: h - wall)),
+        c.fill(Path(CGRect(x: 0, y: wall, width: w, height: h - wall + over)),
                with: .linearGradient(Gradient(colors: [Color(hex: "#b98455"), Color(hex: "#d6a774")]), startPoint: CGPoint(x: 0, y: wall), endPoint: CGPoint(x: 0, y: h)))
         var planks = Path()
-        for i in -8...8 { planks.move(to: CGPoint(x: w / 2 + CGFloat(i) * w * 0.04, y: wall)); planks.addLine(to: CGPoint(x: w / 2 + CGFloat(i) * w * 0.16, y: h)) }
+        let run = (h + over - wall) / (h - wall)
+        for i in -8...8 {
+            let x0 = w / 2 + CGFloat(i) * w * 0.04, x1 = w / 2 + CGFloat(i) * w * 0.16
+            planks.move(to: CGPoint(x: x0, y: wall)); planks.addLine(to: CGPoint(x: x0 + (x1 - x0) * run, y: h + over))
+        }
         for k in 1..<7 { let y = wall + (h - wall) * pow(CGFloat(k) / 7, 1.4); planks.move(to: CGPoint(x: 0, y: y)); planks.addLine(to: CGPoint(x: w, y: y)) }
         c.stroke(planks, with: .color(Color(red: 90 / 255, green: 50 / 255, blue: 25 / 255).opacity(0.18)), lineWidth: 1)
         window(&c, L, s, t: t)
