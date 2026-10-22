@@ -151,7 +151,7 @@ extension TownPainter {
 extension TownPainter {
     /// Pilots on strike in front of your office, waving placards.
     func strikers() -> [TownItem] {
-        let n = min(8, max(3, s.local.pilots.count)), signs = ["ZAM!", "GREV", "%15", "!!!"], tt = t
+        let n = min(8, max(3, s.local.pilots.count)), signs = (0..<4).map { loc("strike.sign.\($0)") }, tt = t
         return (0..<n).map { i in
             let gx = 8.4 + Double(i % 4) * 0.55, gy = 13.6 + Double(i / 4) * 0.45
             return TownItem(depth: gx + gy, draw: { p in

@@ -24,4 +24,6 @@ iOS hot-air-balloon company tycoon. Solo developer (Turkish speaker) + Claude. A
 tools/install-swift-linux.sh && export PATH=/opt/swift/usr/bin:$PATH
 cd Packages/BalloonBaronCore && swift test
 ```
-The app target itself (SwiftUI, SpriteKit) only builds on a Mac with Xcode.
+The app target itself (SwiftUI, SpriteKit) only builds on a Mac with Xcode. GitHub Actions (`.github/workflows/ci.yml`) does both on every push to `main`: core tests on Swift 5.9 and the app built with Xcode 15.2, the developer's version. Errors and the result are on the run's summary page.
+
+New fields in saved state (`GameState`, `RegionState`, `Holding`, `Design`, …) must be optional or have a type old JSON still decodes into, because saves use the synthesized `Codable` and a missing key would make an existing save fail to load.
