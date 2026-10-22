@@ -6,15 +6,18 @@ struct ChunkyButtonStyle: ButtonStyle {
     enum Kind { case big, ghost, glassGhost }
     var kind: Kind = .big
     var height: CGFloat = 54
+    /// Fill the width whatever the kind (big buttons always do).
+    var wide = false
 
     func makeBody(configuration: Configuration) -> some View {
-        ChunkyBody(configuration: configuration, kind: kind, height: height)
+        ChunkyBody(configuration: configuration, kind: kind, height: height, wide: wide)
     }
 
     private struct ChunkyBody: View {
         let configuration: ButtonStyleConfiguration
         let kind: Kind
         let height: CGFloat
+        let wide: Bool
         @Environment(\.isEnabled) private var enabled
 
         var body: some View {
@@ -26,7 +29,7 @@ struct ChunkyButtonStyle: ButtonStyle {
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .padding(.horizontal, 16)
-                .frame(maxWidth: kind == .big ? .infinity : nil, minHeight: height)
+                .frame(maxWidth: kind == .big || wide ? .infinity : nil, minHeight: height)
                 .background(RoundedRectangle(cornerRadius: 16).fill(bg))
                 .background(DepthBand(radius: 16, drop: drop).fill(shadow))
                 .offset(y: pressed ? 4 : 0)
@@ -267,7 +270,46 @@ struct CollectView: View {
         }
     }
 
+    /// `flyChoice`: whether who flies the flagship can still change today without changing which balloons take off.
+    private var flyChoice: Bool {
+        guard var g = store.game, let fb = g.state.balloon(g.state.flagship), g.state.licenseValid,
+              g.state.local.strikeDay != g.state.day else { return false }
+        let before = g.state.flyingToday.map(\.id)
+        guard before.contains(fb.id) else { return false }
+        g.setSelfFly(!g.state.local.selfFly)
+        return g.state.flyingToday.map(\.id) == before
+    }
+
+    @ViewBuilder
     private func buttons(_ m: CollectModel) -> some View {
+        if m.done && flyChoice { choiceButtons(m) } else { goButtons(m) }
+    }
+
+    /// Who flies is decided here: you and your pilots, or the pilots alone. Today's choice is the bright one.
+    private func choiceButtons(_ m: CollectModel) -> some View {
+        let me = store.state?.local.selfFly ?? true, solo = m.balloons == 1
+        return VStack(spacing: 10) {
+            HStack(spacing: 10) {
+                Button(loc("common.cancel")) {
+                    SoundEngine.shared.play(.click)
+                    store.cancelCollect()
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .glassGhost))
+                Button(loc(solo ? "collect.pilotGo" : "collect.pilotsGo")) { pick(selfFly: false) }
+                    .buttonStyle(ChunkyButtonStyle(kind: me ? .glassGhost : .big, wide: true))
+            }
+            Button(loc(solo ? "collect.selfGo" : "collect.selfAndPilots")) { pick(selfFly: true) }
+                .buttonStyle(ChunkyButtonStyle(kind: me ? .big : .glassGhost, wide: true))
+        }
+    }
+
+    private func pick(selfFly on: Bool) {
+        SoundEngine.shared.play(.click)
+        store.act { $0.setSelfFly(on) }
+        store.leaveCollect()
+    }
+
+    private func goButtons(_ m: CollectModel) -> some View {
         let go = !m.done ? loc("collect.skip") : selfFlight ? loc("collect.takeOff") : loc("collect.pilotsGo")
         return HStack(spacing: 10) {
             Button(loc("common.cancel")) {

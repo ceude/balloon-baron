@@ -655,7 +655,8 @@ private struct DesignPicker: View {
     }
 
     private func paintButton(current: Bool, cash: Int, cost: Int = Studio.reskinCost, action: @escaping () -> Void) -> some View {
-        FleetUI.SmallButton(title: loc(current ? "fleetPage.selected" : cost == 0 ? "fleetPage.paintFree" : "fleetPage.paint"),
+        // "Paint" and its price underneath, also when it costs nothing.
+        FleetUI.SmallButton(title: current ? loc("fleetPage.selected") : loc("fleetPage.paint") + "\n" + eur(cost),
                             disabled: current || cash < cost, action: action)
             .frame(width: 104)
     }

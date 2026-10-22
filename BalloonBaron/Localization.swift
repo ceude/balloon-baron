@@ -49,7 +49,8 @@ extension MapPin {
     var title: String { mystery ? loc("map.soon") : loc("pin.\(rawValue)") }
     var land: String { loc("pin.\(rawValue).land") }
 }
-extension Pattern { var title: String { loc("pattern.\(rawValue)") } }
+/// Bazaar patterns are named like their bazaar item (`store.<id>`), the others `pattern.<id>`.
+extension Pattern { var title: String { storeItem.map { loc("store.\($0.rawValue)") } ?? loc("pattern.\(rawValue)") } }
 extension Office {
     var title: String { loc("office.\(rawValue)") }
     var perk: String { loc("office.\(rawValue).perk") }

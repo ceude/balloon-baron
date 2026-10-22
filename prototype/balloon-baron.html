@@ -2638,8 +2638,25 @@ function updateCollect(dt) {
     c.done = true;
     const fb = bal(S.flag), self = fb && isSelf(fb) && flying().includes(fb);
     $('cTitle').textContent = c.shown >= c.cap ? 'Balonlar doldu!' : 'Yolcular hazır';
-    $('cGo').textContent = self ? 'Kalkışa geç' : 'Pilotlar kalksın';
+    $('cGo').textContent = self ? 'Kalkışa geç' : 'Pilotlar uçsun';
+    /* who flies the flagship is decided here, when it can still change without grounding a balloon */
+    if (flyChoice()) {
+      const row = $('cBtns'), back = row.firstChild, pick = on => () => { S.selfFly = on; assignPilots(); leaveCollect(); };
+      const solo = flying().length === 1;
+      const me = h('button', S.selfFly ? 'big' : 'ghost', solo ? 'Kendin uç' : 'Sen ve pilotlar uçsun'); me.onclick = pick(true); me.style.width = '100%';
+      const pl = h('button', S.selfFly ? 'ghost' : 'big', solo ? 'Pilot uçursun' : 'Pilotlar uçsun'); pl.onclick = pick(false); pl.style.flex = '1';
+      row.replaceChildren(back, pl); row.after(me);
+    }
   }
+}
+/* Whether you can still choose who flies the flagship today without changing which balloons take off. */
+function flyChoice() {
+  const fb = bal(S.flag);
+  if (!fb || !licenseOk() || S.strikeDay === S.day || !flying().includes(fb)) return false;
+  const before = flying().map(b => b.id).join(), keep = S.selfFly;
+  S.selfFly = !keep; assignPilots(); const after = flying().map(b => b.id).join();
+  S.selfFly = keep; assignPilots();
+  return before === after;
 }
 /* ---------- passengers at your booking office ---------- */
 /* While passengers gather, the town's camera sits on your kiosk: they walk up from the road and queue in front.
@@ -3700,14 +3717,14 @@ function openDesignPicker(b) {
   const m = $('menu'); m.replaceChildren();
   const c = h('div', 'card');
   c.appendChild(h('h1', null, `${esc(b.name)} deseni`));
-  c.appendChild(h('p', 'lead', `Balonu yeniden boyamak ${eur(RESKIN_COST)}. Çarşıdan alınan desen ve şekiller bedava giydirilir.`));
+  c.appendChild(h('p', 'lead', `Balonu yeniden boyamak ${eur(RESKIN_COST)}. Çarşıdan alınan desen ve şekiller ücretsiz giydirilir.`));
   const opts = [null].concat(S.designs || []);
   for (const d of opts) {
     const it = h('div', 'item'), cur = (b.design || null) === (d ? d.id : null);
     it.insertAdjacentHTML('beforeend', d ? `<img class="dthumb" src="${designThumb(d, 44, 56)}" alt="">` : balloonIcon(myCol()[0], myCol()[1]));
     it.appendChild(h('div', 'main', d ? `<div class="t">${esc(d.name)}</div><div class="s">Yaratıcılık ${d.score}, tazelik %${Math.round(freshness(d) * 100)}</div>` : '<div class="t">Şirket renkleri</div><div class="s">Desensiz, klasik çizgili.</div>'));
     const cost = paidDesign(d) ? 0 : RESKIN_COST;
-    it.appendChild(pbtn(cur ? 'Seçili' : cost ? 'Giydir' : 'Giydir (bedava)', () => { S.cash -= cost; b.design = d ? d.id : null; m.hidden = true; refresh(); }, cur || S.cash < cost));
+    it.appendChild(((x) => { if (!cur) { x.classList.add('two'); x.innerHTML = `Giydir<small>${eur(cost)}</small>`; } return x; })(pbtn(cur ? 'Seçili' : 'Giydir', () => { S.cash -= cost; b.design = d ? d.id : null; m.hidden = true; refresh(); }, cur || S.cash < cost)));
     c.appendChild(it);
   }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);

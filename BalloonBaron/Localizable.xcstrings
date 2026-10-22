@@ -7012,43 +7012,84 @@
         }
       }
     },
+    "collect.pilotGo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Pilot fliegt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your pilot flies"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Que vuele tu piloto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロットが飛ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사가 비행"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot uçursun"
+          }
+        }
+      }
+    },
     "collect.pilotsGo": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Piloten, abheben"
+            "value": "Die Piloten fliegen"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilots, take off"
+            "value": "Pilots fly"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilotos, ¡a despegar!"
+            "value": "Que vuelen los pilotos"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パイロット、離陸"
+            "value": "パイロットが飛ぶ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "조종사들, 이륙"
+            "value": "조종사들이 비행"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilotlar kalksın"
+            "value": "Pilotlar uçsun"
           }
         }
       }
@@ -7131,6 +7172,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yolcular hazır"
+          }
+        }
+      }
+    },
+    "collect.selfAndPilots": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du und deine Piloten fliegen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You and your pilots fly"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tú y tus pilotos vuelan"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたとパイロットが飛ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신과 조종사들이 비행"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen ve pilotlar uçsun"
+          }
+        }
+      }
+    },
+    "collect.selfGo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flieg selbst"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fly it yourself"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuela tú"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自分で飛ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "직접 비행"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kendin uç"
           }
         }
       }
@@ -13895,7 +14018,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Çarşıdan alınan desen ve şekiller bedava giydirilir."
+            "value": "Çarşıdan alınan desen ve şekiller ücretsiz giydirilir."
           }
         }
       }
@@ -14593,47 +14716,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Giydir"
-          }
-        }
-      }
-    },
-    "fleetPage.paintFree": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Lackieren (gratis)"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Paint (free)"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Pintar (gratis)"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "着せる（無料）"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "입히기 (무료)"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Giydir (bedava)"
           }
         }
       }
