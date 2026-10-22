@@ -30,6 +30,8 @@ public struct EventOffer: Equatable, Sendable {
     public var pay = 0
     /// Propane stock that beats the coming price rise.
     public var stock = 0
+
+    public init() {}
 }
 
 /// A headline for the morning paper. The biggest story leads. Text: `paper.<kind>` (+ `.sub`).
