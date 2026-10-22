@@ -2589,7 +2589,14 @@ function startCollect() {
   const seq = []; parts.forEach((p, i) => { for (let k = 0; k < p.n; k++) seq.push(i); });
   for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
   COL = { t: 0, dur: 3.2, cap, parts, seq, shown: 0, counts: parts.map(() => 0), done: false, n: fl.length };
-  mode = 'collect'; $('sheet').hidden = true; $('chirp').hidden = true; COLV.hz = null;
+  /* from the morning's town (still at the night's camera) the scene glides on from where the town was */
+  let hz = null;
+  if (TOWN.open) {
+    COL.from = { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy, t0: T }; hz = TOWN.hzFix != null ? TOWN.hzFix : null;
+    cancelAnimationFrame(TOWN.raf); TOWN.open = false; TOWN.leaving = false; TOWN.anim = null; TOWN.hold = false; TOWN.night = false; TOWN.hzFix = null;
+    $('town').hidden = true; document.body.classList.remove('zoomed', 'mhold');
+  }
+  mode = 'collect'; $('sheet').hidden = true; $('chirp').hidden = true; COLV.hz = hz;
   const el = $('collect'); el.replaceChildren();
   el.appendChild(h('div', 'ctitle', `<div><h2 id="cTitle">Yolcular toplanıyor…</h2><div class="hint">Bilet ${eur(S.price)}, ${fl.length} balon</div></div><div class="ccount" id="cCount">0/${cap}</div>`));
   el.appendChild(h('div', 'ctime', '<i id="cBar"></i>'));
