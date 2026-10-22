@@ -139,6 +139,17 @@ struct HoldingOfficeView: View {
 /// The office floor, drawn in code like the town.
 private enum OfficePainter {
     static let marker = Color(hex: "#1d2a6e")
+    /// The prototype's "Caveat Brush" (bundled, OFL); Japanese and Korean fall back to the system font.
+    static let markerFont = "CaveatBrush-Regular"
+
+    /// `markerFit`: the largest marker size up to `px` that fits in `maxW`.
+    static func markerFit(_ c: GraphicsContext, _ s: String, maxW: CGFloat, px: CGFloat) -> (GraphicsContext.ResolvedText, CGFloat) {
+        let at = { (p: CGFloat) in c.resolve(Text(s).font(.custom(markerFont, size: p)).foregroundColor(marker)) }
+        let first = at(px), tw = first.measure(in: CGSize(width: 2000, height: 100)).width
+        guard tw > maxW else { return (first, px) }
+        let p = max(7, floor(px * maxW / tw))
+        return (at(p), p)
+    }
 
     static func draw(_ c: inout GraphicsContext, _ L: HoldingOfficeView.Layout, _ s: GameState, t: Double) {
         let w = L.w, h = L.h, top = L.top, wall = L.wall
@@ -239,9 +250,9 @@ private enum OfficePainter {
                 tick.move(to: CGPoint(x: x + 3, y: yy - bs * 0.5)); tick.addLine(to: CGPoint(x: x + 2 + bs * 0.5, y: yy - 1)); tick.addLine(to: CGPoint(x: x + 2 + bs * 1.3, y: yy - bs * 1.3))
                 c.stroke(tick, with: .color(Color(hex: "#1f8a4c")), lineWidth: 2)
             }
-            let text = c.resolve(Text(g.title).font(.custom("Noteworthy-Bold", size: fs)).foregroundColor(marker))
-            let tw = min(text.measure(in: CGSize(width: w - 18, height: 40)).width, w - 18)
-            c.draw(text, in: CGRect(x: x + 15, y: yy - fs, width: w - 18, height: fs + 4))
+            let (text, px) = markerFit(c, g.title, maxW: w - 18, px: fs)
+            let tw = text.measure(in: CGSize(width: 2000, height: 40)).width
+            c.draw(text, at: CGPoint(x: x + 15, y: yy - px * 0.2), anchor: .bottomLeading)
             if d {
                 var strike = Path()
                 strike.move(to: CGPoint(x: x + 14, y: yy - fs * 0.35)); strike.addLine(to: CGPoint(x: x + 16 + tw, y: yy - fs * 0.35 - 1))
@@ -255,7 +266,7 @@ private enum OfficePainter {
         c.stroke(axes, with: .color(Color(hex: "#c9ccd2")), lineWidth: 1)
         let hist = Array(s.holding.history.suffix(14))
         guard hist.count >= 2 else {
-            c.draw(Text(loc("hq.chartEmpty")).font(.custom("Noteworthy-Bold", size: 14)).foregroundColor(marker), at: CGPoint(x: x + 8, y: y + ch / 2), anchor: .leading)
+            c.draw(Text(loc("hq.chartEmpty")).font(.custom(markerFont, size: 14)).foregroundColor(marker), at: CGPoint(x: x + 8, y: y + ch / 2), anchor: .leading)
             return
         }
         // Balance per day, worked back from today's cash.
@@ -269,8 +280,8 @@ private enum OfficePainter {
         c.stroke(line, with: .color(Theme.green), style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
         let e = P(n)
         c.fill(Path(ellipseIn: CGRect(x: e.x - 4, y: e.y - 4, width: 8, height: 8)), with: .color(Theme.green))
-        c.draw(Text(loc("paper.day", num(hist[0].day))).font(.custom("Noteworthy-Bold", size: 12)).foregroundColor(marker), at: CGPoint(x: x + 4, y: y + ch + 11), anchor: .leading)
-        c.draw(Text(loc("paper.day", num(hist[hist.count - 1].day))).font(.custom("Noteworthy-Bold", size: 12)).foregroundColor(marker), at: CGPoint(x: x + w, y: y + ch + 11), anchor: .trailing)
+        c.draw(Text(loc("paper.day", num(hist[0].day))).font(.custom(markerFont, size: 12)).foregroundColor(marker), at: CGPoint(x: x + 4, y: y + ch + 11), anchor: .leading)
+        c.draw(Text(loc("paper.day", num(hist[hist.count - 1].day))).font(.custom(markerFont, size: 12)).foregroundColor(marker), at: CGPoint(x: x + w, y: y + ch + 11), anchor: .trailing)
     }
 
     /// A desk with a person behind it, a monitor and the department's things on top.

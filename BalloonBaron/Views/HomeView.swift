@@ -309,7 +309,7 @@ struct HomeView: View {
     private func navButton(_ icon: ProtoIcon.Kind, _ title: String, _ page: Page, badge: String? = nil, dot: Bool = false) -> some View {
         Button {
             SoundEngine.shared.play(.click)
-            store.page = page
+            if page == .holding { store.openHolding() } else { store.page = page }
         } label: {
             EmptyView()
         }

@@ -101,7 +101,7 @@ struct HezarfenAvatar: View {
              stroke: Color(hex: "#e8b04a"), width: 1.5)
     ]
 
-    /// Absolute M/L/C/Q/Z path data, as used by the avatar.
+    /// Absolute M/L/C/Q/T/Z path data, as used by the avatar and the postcards.
     static func svgPath(_ d: String) -> Path {
         var tokens: [String] = []
         var cur = ""
@@ -120,6 +120,8 @@ struct HezarfenAvatar: View {
         var p = Path()
         var cmd = "M"
         var i = 0
+        /// The last quadratic control point, which a following T reflects.
+        var lastQ: CGPoint?
         func num() -> CGFloat {
             guard i < tokens.count, let v = Double(tokens[i]) else { i += 1; return 0 }
             i += 1
@@ -128,6 +130,8 @@ struct HezarfenAvatar: View {
         func pt() -> CGPoint { let x = num(); return CGPoint(x: x, y: num()) }
         while i < tokens.count {
             if let c = tokens[i].first, c.isLetter { cmd = String(c); i += 1 }
+            let q = lastQ
+            lastQ = nil
             switch cmd {
             case "M": p.move(to: pt()); cmd = "L"
             case "L": p.addLine(to: pt())
@@ -137,6 +141,12 @@ struct HezarfenAvatar: View {
             case "Q":
                 let c1 = pt()
                 p.addQuadCurve(to: pt(), control: c1)
+                lastQ = c1
+            case "T":
+                let at = p.currentPoint ?? .zero
+                let c1 = q.map { CGPoint(x: 2 * at.x - $0.x, y: 2 * at.y - $0.y) } ?? at
+                p.addQuadCurve(to: pt(), control: c1)
+                lastQ = c1
             case "Z", "z": p.closeSubpath(); cmd = ""
             default: i += 1
             }

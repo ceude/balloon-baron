@@ -19,7 +19,7 @@ struct HoldingView: View {
             HoldingLux.background.ignoresSafeArea()
             if let game = store.game {
                 VStack(spacing: 0) {
-                    WorldPageHeader(title: unit.map { loc("hq.\($0.rawValue)") } ?? loc("holding.title", game.state.company), dark: true) {
+                    WorldPageHeader(title: unit.map { loc("hq.\($0.rawValue)") } ?? loc("holding.title", game.state.company)) {
                         if let onClose { onClose() } else { store.closePage() }
                     }
                     ScrollView {
@@ -149,7 +149,7 @@ struct HoldingView: View {
                 HStack(spacing: 6) {
                     Text(r.title)
                         .font(Theme.font(19, .heavy, condensed: true))
-                        .foregroundStyle(.white)
+                        .foregroundStyle(HoldingLux.title)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                     regionTag(here: here, auto: auto)
@@ -167,6 +167,8 @@ struct HoldingView: View {
         }
         .padding(12)
         .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(HoldingLux.border, lineWidth: 2))
+        .shadow(color: HoldingLux.border, radius: 0, y: 3)
     }
 
     private func regionTag(here: Bool, auto: Autopilot?) -> WorldTag {
@@ -302,7 +304,7 @@ struct HoldingView: View {
                 .font(.system(size: 30))
             Text(o.title)
                 .font(Theme.font(19, .heavy, condensed: true))
-                .foregroundStyle(.white)
+                .foregroundStyle(HoldingLux.title)
             Text(o.perk)
                 .font(Theme.font(12))
                 .foregroundStyle(HoldingLux.sub)
@@ -311,7 +313,7 @@ struct HoldingView: View {
             if open {
                 Text(loc("holding.officeIsOpen"))
                     .font(Theme.font(15, .heavy, condensed: true))
-                    .foregroundStyle(Theme.sun)
+                    .foregroundStyle(HoldingLux.income)
             } else {
                 HoldingPill(title: loc("holding.openOffice", eurH(o.cost)), style: .gold, enabled: h.cash >= o.cost) {
                     store.act { g in _ = g.openOffice(o) }
@@ -320,29 +322,31 @@ struct HoldingView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(HoldingLux.cardGradient, in: RoundedRectangle(cornerRadius: 18))
-        .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(open ? Theme.sun : Theme.sun.opacity(0.25), lineWidth: open ? 2 : 1))
+        .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 18))
+        .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(open ? Theme.coral : HoldingLux.border, lineWidth: 2))
+        .shadow(color: HoldingLux.border, radius: 0, y: 4)
     }
 }
 
-/// Colors of the dark boardroom theme.
+/// Colors of the holding's sheets: the prototype's light `#hqBody` (cream sheet, white cards, ink text).
 enum HoldingLux {
-    static let background = LinearGradient(colors: [Color(hex: "#17122f"), Color(hex: "#221a45"), Color(hex: "#17122f")],
-                                           startPoint: .top, endPoint: .bottom)
-    static let cardGradient = LinearGradient(colors: [Color(hex: "#2e2460"), Color(hex: "#1d1740")],
-                                             startPoint: .topLeading, endPoint: .bottomTrailing)
-    static let text = Color(hex: "#f4efff")
-    static let heading = Color(hex: "#ffe08a")
-    static let sub = Color(hex: "#f4efff").opacity(0.7)
-    static let card = Color.white.opacity(0.07)
-    static let income = Color(hex: "#5ee08f")
-    static let expense = Color(hex: "#ff8a78")
+    static let background = Theme.paper
+    static let text = Theme.ink
+    static let heading = Theme.ink
+    static let title = Theme.ink
+    static let sub = Theme.ink2
+    static let card = Color.white
+    static let cell = Color(hex: "#f1edf8")
+    static let border = Theme.line
+    static let accent = Theme.coral
+    static let income = Theme.green
+    static let expense = Theme.red
     static let incomeBar = Color(hex: "#3ad07a")
     static let expenseBar = Color(hex: "#ff6b55")
-    static let chip = Color(hex: "#7ff0ae")
+    static let chip = Color(hex: "#1b7d47")
 }
 
-/// Button on the boardroom page: glass, coral, ink or the gold deal button.
+/// Button on the holding sheets: light (`glass`), coral, ink, or the deal button (`gold`, coral like the prototype's `.dcta`).
 struct HoldingPill: View {
     enum Style { case glass, coral, ink, gold }
     let title: String
@@ -358,9 +362,9 @@ struct HoldingPill: View {
                 .minimumScaleFactor(0.7)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 40)
-                .foregroundStyle(style == .gold ? Color(hex: "#2b1d00") : Color.white)
+                .foregroundStyle(style == .glass ? Theme.ink : Color.white)
                 .background(background, in: RoundedRectangle(cornerRadius: 13))
-                .shadow(color: style == .gold ? Color(hex: "#b07800") : Color.black.opacity(0.35), radius: 0, y: 3)
+                .shadow(color: shadow, radius: 0, y: 3)
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
@@ -369,10 +373,17 @@ struct HoldingPill: View {
 
     private var background: AnyShapeStyle {
         switch style {
-        case .glass: AnyShapeStyle(Color.white.opacity(0.12))
-        case .coral: AnyShapeStyle(Theme.coral)
+        case .glass: AnyShapeStyle(HoldingLux.cell)
+        case .coral, .gold: AnyShapeStyle(Theme.coral)
         case .ink: AnyShapeStyle(Theme.ink)
-        case .gold: AnyShapeStyle(LinearGradient(colors: [Color(hex: "#ffd25e"), Color(hex: "#ffb21d")], startPoint: .top, endPoint: .bottom))
+        }
+    }
+
+    private var shadow: Color {
+        switch style {
+        case .glass: HoldingLux.border
+        case .coral, .gold: Color(hex: "#c7381a")
+        case .ink: Color(hex: "#17122f")
         }
     }
 }
@@ -395,14 +406,14 @@ struct HoldingCashBox: View {
                     .opacity(0.75)
                 Text(eurH(holding.cash))
                     .font(Theme.font(36, .heavy, condensed: true))
-                    .foregroundStyle(Theme.sun)
+                    .foregroundStyle(HoldingLux.accent)
                     .lineLimit(1)
                     .minimumScaleFactor(0.6)
             }
             HStack(spacing: 6) {
                 total(loc("holding.income"), "+" + eurH(income), HoldingLux.income)
                 total(loc("holding.expenses"), "−" + eurH(expense), HoldingLux.expense)
-                total(loc("holding.net"), (net >= 0 ? "+" : "−") + eurH(abs(net)), Theme.sun)
+                total(loc("holding.net"), (net >= 0 ? "+" : "−") + eurH(abs(net)), HoldingLux.text)
             }
             legend
             if days.isEmpty {
@@ -416,9 +427,8 @@ struct HoldingCashBox: View {
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(LinearGradient(colors: [Color(hex: "#231c48"), Color(hex: "#3d2f6e")], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    in: RoundedRectangle(cornerRadius: 20))
-        .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(Theme.sun.opacity(0.35), lineWidth: 1))
+        .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 20))
+        .overlay(RoundedRectangle(cornerRadius: 20).strokeBorder(HoldingLux.border, lineWidth: 2))
     }
 
     private func total(_ label: String, _ value: String, _ color: Color) -> some View {
@@ -436,7 +446,7 @@ struct HoldingCashBox: View {
         .padding(.horizontal, 8)
         .padding(.vertical, 7)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.07), in: RoundedRectangle(cornerRadius: 12))
+        .background(HoldingLux.cell, in: RoundedRectangle(cornerRadius: 12))
     }
 
     private var legend: some View {
@@ -518,7 +528,7 @@ struct HoldingCashChart: View {
         var axis = Path()
         axis.move(to: CGPoint(x: pad, y: mid))
         axis.addLine(to: CGPoint(x: size.width - pad, y: mid))
-        ctx.stroke(axis, with: .color(Color.white.opacity(0.35)), lineWidth: 1)
+        ctx.stroke(axis, with: .color(Color(hex: "#d9cfe6")), lineWidth: 1)
 
         for (i, d) in days.enumerated() {
             let x = pad + CGFloat(slots - days.count + i) * bw + 3
@@ -528,7 +538,7 @@ struct HoldingCashChart: View {
             let he = CGFloat(min(1, Double(d.expense) / maxValue)) * bottom
             if i == picked {
                 ctx.fill(Path(roundedRect: CGRect(x: x - 2, y: 0, width: w + 4, height: height - 12), cornerRadius: 4),
-                         with: .color(Color.white.opacity(0.08)))
+                         with: .color(Theme.ink.opacity(0.06)))
             }
             if hi > 0.5 {
                 ctx.fill(Path(roundedRect: CGRect(x: x, y: mid - 1 - hi, width: w, height: hi), cornerRadius: corner),
@@ -543,7 +553,7 @@ struct HoldingCashChart: View {
         }
 
         if let first = days.first, let last = days.last {
-            let color = Color.white.opacity(0.55)
+            let color = Color(hex: "#8a82a6")
             ctx.draw(Text(loc("hud.day", num(first.day))).font(Theme.font(10)).foregroundColor(color),
                      at: CGPoint(x: pad, y: height - 1), anchor: .bottomLeading)
             ctx.draw(Text(loc("hud.day", num(last.day))).font(Theme.font(10)).foregroundColor(color),
@@ -558,7 +568,7 @@ struct HoldingCashChart: View {
         p.addLine(to: CGPoint(x: x + w + 1, y: y - 2))
         p.move(to: CGPoint(x: x - 1, y: y + 6))
         p.addLine(to: CGPoint(x: x + w + 1, y: y + 2))
-        ctx.stroke(p, with: .color(Color(hex: "#231c48")), lineWidth: 2)
+        ctx.stroke(p, with: .color(Color.white), lineWidth: 2)
     }
 }
 
@@ -584,16 +594,16 @@ struct HoldingDealCard: View {
                 HoldingArt(kind: art)
                     .frame(width: 48, height: 48)
                     .frame(width: 64, height: 64)
-                    .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 16))
+                    .background(HoldingLux.cell, in: RoundedRectangle(cornerRadius: 16))
                 info
             }
             footer
         }
         .padding(14)
-        .background(HoldingLux.cardGradient, in: RoundedRectangle(cornerRadius: 20))
+        .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 20))
         .overlay(RoundedRectangle(cornerRadius: 20)
-            .strokeBorder(active != nil ? HoldingLux.incomeBar : Theme.sun.opacity(0.28), lineWidth: active != nil ? 2 : 1))
-        .shadow(color: Color.black.opacity(0.35), radius: 9, y: 6)
+            .strokeBorder(active != nil ? Theme.green : HoldingLux.border, lineWidth: 2))
+        .shadow(color: HoldingLux.border, radius: 0, y: 4)
     }
 
     private var info: some View {
@@ -602,10 +612,10 @@ struct HoldingDealCard: View {
                 .font(Theme.font(12, .heavy, condensed: true))
                 .tracking(1.2)
                 .textCase(.uppercase)
-                .foregroundStyle(Theme.sun)
+                .foregroundStyle(HoldingLux.accent)
             Text(title)
                 .font(Theme.font(21, .heavy, condensed: true))
-                .foregroundStyle(.white)
+                .foregroundStyle(HoldingLux.title)
                 .fixedSize(horizontal: false, vertical: true)
             Text(detail)
                 .font(Theme.font(13))
@@ -618,7 +628,7 @@ struct HoldingDealCard: View {
                         .foregroundStyle(HoldingLux.chip)
                         .padding(.horizontal, 8)
                         .padding(.vertical, 3)
-                        .background(HoldingLux.incomeBar.opacity(0.16), in: RoundedRectangle(cornerRadius: 8))
+                        .background(Theme.green.opacity(0.12), in: RoundedRectangle(cornerRadius: 8))
                 }
             }
             .padding(.top, 4)
@@ -630,17 +640,17 @@ struct HoldingDealCard: View {
     private var footer: some View {
         VStack(alignment: .leading, spacing: 6) {
             HoldingDash()
-                .stroke(Color.white.opacity(0.15), style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
+                .stroke(HoldingLux.border, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
                 .frame(height: 1)
             if let active {
                 Text(active)
                     .font(Theme.font(14, .heavy))
-                    .foregroundStyle(HoldingLux.chip)
+                    .foregroundStyle(Theme.green)
             } else if let price {
                 HStack(spacing: 10) {
                     Text(eurH(price))
                         .font(Theme.font(24, .heavy, condensed: true))
-                        .foregroundStyle(Theme.sun)
+                        .foregroundStyle(HoldingLux.text)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
                     Spacer(minLength: 4)
@@ -649,7 +659,7 @@ struct HoldingDealCard: View {
                 if let lockNote {
                     Text(lockNote)
                         .font(Theme.font(12))
-                        .foregroundStyle(Color.white.opacity(0.6))
+                        .foregroundStyle(HoldingLux.sub)
                 }
             }
         }

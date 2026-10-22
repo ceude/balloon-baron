@@ -48299,6 +48299,47 @@
         }
       }
     },
+    "store.nightPreview": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So sieht deine Stadt nachts aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your town will look like this at night"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Así se verá tu pueblo de noche"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "夜の町はこう見えます"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "밤에는 마을이 이렇게 보여요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasaban gece böyle görünecek"
+          }
+        }
+      }
+    },
     "store.note": {
       "extractionState": "manual",
       "localizations": {

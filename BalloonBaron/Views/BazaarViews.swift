@@ -231,12 +231,17 @@ struct StoreItemView: View {
         return ModalCard(onClose: { store.storeItem = nil }) {
             Text(loc("store.tag")).font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
             CardText.title(item.title)
-            StoreThumb(item: item, colors: s?.colors ?? [])
-                .frame(width: 96, height: 108)
-                .frame(maxWidth: .infinity)
-                .padding(8)
-                .background(LinearGradient(colors: [Color(hex: "#bfe0f2"), Color(hex: "#ffe6c4")], startPoint: .top, endPoint: .bottom),
-                            in: RoundedRectangle(cornerRadius: 16))
+            if item.kind == .decoration, let s {
+                Text(loc("store.nightPreview")).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
+                DecorNightPreview(item: item, state: s)
+            } else {
+                StoreThumb(item: item, colors: s?.colors ?? [])
+                    .frame(width: 96, height: 108)
+                    .frame(maxWidth: .infinity)
+                    .padding(8)
+                    .background(LinearGradient(colors: [Color(hex: "#bfe0f2"), Color(hex: "#ffe6c4")], startPoint: .top, endPoint: .bottom),
+                                in: RoundedRectangle(cornerRadius: 16))
+            }
             CardText.lead(loc(item.kind == .decoration ? "store.lead.decor" : item.kind == .shape ? "store.lead.shape" : "store.lead.pattern"))
             CardText.hint(loc(item.gift ? "store.giftNote" : "store.note"))
             Button(item.gift ? loc("store.takeGift") : loc("store.buy", StoreItem.price(item))) {
@@ -251,5 +256,42 @@ struct StoreItemView: View {
             }
             .buttonStyle(ChunkyButtonStyle(kind: .ghost))
         }
+    }
+}
+
+/// `nightPreview`: a live picture of your town at night with this decoration, for the purchase card.
+struct DecorNightPreview: View {
+    let item: StoreItem
+    let state: GameState
+    private let start = Date()
+
+    /// Where the camera looks for each decoration, and how close (`DECOR_AT`).
+    private var spot: (Double, Double, CGFloat) {
+        switch item {
+        case .statue: (6.9, 8.9, 0.6)
+        case .lanterns: (7.4, 7.6, 0.3)
+        case .flags: (7.5, 9, 0.26)
+        default: (8, 8, 0.55)
+        }
+    }
+
+    var body: some View {
+        var s = state
+        s.store = (s.store ?? [:]).merging([item: s.day]) { old, _ in old }
+        return TimelineView(.animation) { tl in
+            Canvas { ctx, sz in
+                let (gx, gy, z) = spot, c = TownGeo.iso(gx, gy)
+                var v = TownViewport(z: z, ox: sz.width / 2 - c.x * z, oy: sz.height * 0.62 - c.y * z)
+                v.noLabels = true
+                v.hzFix = sz.height * 0.12
+                var g = ctx
+                _ = TownPainter.render(&g, state: s, time: 1000 + tl.date.timeIntervalSince(start), viewport: v, size: sz,
+                                       night: TownNight(k: 1, event: nil, t0: 1000))
+            }
+        }
+        .frame(height: 220)
+        .background(Color(hex: "#1b1840"))
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .accessibilityHidden(true)
     }
 }

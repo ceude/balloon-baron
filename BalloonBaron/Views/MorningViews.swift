@@ -500,49 +500,6 @@ extension Achievement {
         default: ["#6b7fc4", "#f0b48c", "#ffdca8"]
         }
     }
-
-    /// The scene's emblem, drawn big in the middle of the card.
-    var emblem: String {
-        ["🎈", "⭐", "🪶", "5️⃣", "🔟", "🛩️", "🏨", "🔑", "🌟", "🧺", "🏆", "❄️", "🎉", "📉", "🎩", "🎨", "🏗️", "🎪", "👑", "🌵", "🦅", "🌍"][Achievement.allCases.firstIndex(of: self)!]
-    }
-
-    /// Hills, fairy chimneys (or mesas in the desert), a few balloons and the emblem.
-    func scene(_ ctx: inout GraphicsContext, colors: [String]) {
-        let desert = self == .abq || self == .baronAbq, night = sky[0] == "#0f0e2e", snow = self == .winter
-        if night {
-            for i in 0..<24 {
-                let x = 6 + Double((i * 53) % 138), y = 6 + Double((i * 29) % 46)
-                ctx.fill(Path(ellipseIn: CGRect(x: x, y: y, width: 1.2, height: 1.2)), with: .color(Color(hex: "#fff6d0")))
-            }
-        }
-        if desert {
-            ctx.fill(HezarfenAvatar.svgPath("M6 72 L6 54 L18 54 L22 46 L52 46 L58 56 L80 56 L84 50 L104 50 L110 60 L144 60 L144 72Z"), with: .color(Color(hex: "#c8704a")))
-        } else {
-            let hill = snow ? "#eef4fa" : night ? "#3a2f5a" : sky[0] == "#3a2a6a" ? "#b07a5a" : "#d7a27e"
-            ctx.fill(HezarfenAvatar.svgPath("M6 72 L6 60 Q30 52 52 60 Q76 68 100 58 Q122 50 144 60 L144 72Z"), with: .color(Color(hex: hill)))
-            for (x, h) in [(24.0, 20.0), (41, 16), (122, 22)] {
-                ctx.fill(HezarfenAvatar.svgPath("M\(x - 4) 72 L\(x) \(72 - h) L\(x + 4) 72Z"), with: .color(Color(hex: snow ? "#d9c0a8" : "#c98d68")))
-                ctx.fill(Path(ellipseIn: CGRect(x: x - 3.4, y: 72 - h - 1.6, width: 6.8, height: 3.2)), with: .color(Color(hex: snow ? "#ffffff" : "#7a4a30")))
-            }
-        }
-        let main = colors.first ?? "#ff5e3a", second = colors.count > 1 ? colors[1] : "#ffc23d"
-        for (x, y, k, c1, c2) in [(32.0, 22.0, 0.5, "#14a39a", "#ffffff"), (112, 28, 0.45, "#9b7be0", "#ffffff"), (75, 14, 0.7, main, second)] {
-            postcardBalloon(&ctx, x: x, y: y, k: k, c1, c2)
-        }
-        ctx.draw(Text(emblem).font(.system(size: 22)), at: CGPoint(x: 75, y: 52))
-        if snow {
-            for i in 0..<26 { ctx.fill(Path(ellipseIn: CGRect(x: 6 + Double((i * 41) % 138), y: 6 + Double((i * 23) % 62), width: 1.6, height: 1.6)), with: .color(.white)) }
-        }
-    }
-
-    private func postcardBalloon(_ ctx: inout GraphicsContext, x: Double, y: Double, k: Double, _ c1: String, _ c2: String) {
-        var g = ctx
-        g.translateBy(x: x - 12 * k, y: y)
-        g.scaleBy(x: k, y: k)
-        g.fill(HezarfenAvatar.svgPath("M0 14 C0 4 7 0 12 0 C17 0 24 4 24 14 C24 22 16 26 14 30 L10 30 C8 26 0 22 0 14Z"), with: .color(Color(hex: c1)))
-        g.stroke(HezarfenAvatar.svgPath("M8 3 C6 10 6 20 10 30 M16 3 C18 10 18 20 14 30"), with: .color(Color(hex: c2)), lineWidth: 3)
-        g.fill(Path(CGRect(x: 9, y: 32, width: 6, height: 5)), with: .color(Color(hex: "#6b4426")))
-    }
 }
 
 /// A new postcard for the album. Port of `showPostcard`.

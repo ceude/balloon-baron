@@ -119,6 +119,11 @@ struct HomeTownView: View {
                 .accessibilityLabel(loc("town.title"))
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { zoomIn(at: (7, 8)) }
+                .onChange(of: store.hqDive) { _, dive in if dive { diveIntoTower() } }
+                .onChange(of: store.page) { old, new in
+                    // Leaving the office, the camera steps back out in front of the tower (`closeHQ`).
+                    if old == .holding, new == nil, model.mode == .zoomed { model.focus(Self.tower.0, Self.tower.1) }
+                }
                 if zoomed {
                     Button {
                         SoundEngine.shared.play(.click)
@@ -178,6 +183,25 @@ struct HomeTownView: View {
         let z = min(max((front - back) / 1024, 0.15), w / 1500)
         let c = TownGeo.iso(7, 8)
         return TownViewport(z: z, ox: w / 2 - c.x * z, oy: front - TownGeo.iso(15.5, 15.5).y * z)
+    }
+
+    /// The holding tower (`HQ_TOWER`).
+    private static let tower = (10.0, 2.0)
+
+    /// `openHQ`: glide to the tower (from the home screen), dive into it, then open the office floor.
+    private func diveIntoTower() {
+        store.hqDive = false
+        let wait: Double
+        switch model.mode {
+        case .home: zoomIn(at: Self.tower); wait = 0.48
+        case .zoomed: wait = 0
+        case .leaving: store.page = .holding; return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + wait) {
+            let z: CGFloat = 1.5, c = TownGeo.iso(Self.tower.0, Self.tower.1), sz = model.size
+            model.glide(to: TownViewport(z: z, ox: sz.width / 2 - c.x * z, oy: sz.height * 0.62 - (c.y - 160) * z))
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { store.page = .holding }
+        }
     }
 
     /// `instant`: a pinch that started on the home screen carries on zooming by itself.

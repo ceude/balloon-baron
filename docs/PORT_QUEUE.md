@@ -11,6 +11,5 @@ Ondan önceki aktarım (prototip v67'ye kadar): bölüm sonu ekranında biten he
 Aktarımda bilerek eksik ya da sade kalanlar (ileride):
 - **Gerçek ödeme:** Çarşının satın alma kartı şimdilik test kartı, ürünü ödeme almadan verir (kartta "Test sürümü" yazar). StoreKit 2 için App Store Connect'te ürünler açılmalı: kimlikler `balloonbaron.<ürün>` (`StoreItem.productID`), desenler ve süsler Tier 1, şekiller Tier 2, hepsi non-consumable.
 - **Ödüllü reklam:** Bölüm sonundaki reklam düğmesi 30 saniyelik geri sayımla ödülü verir, gerçek reklam SDK'sı seçilip bağlanmadı.
-- **Kartpostallar:** 22 başarımın her biri kendi gökyüzü, tepeler, balonlar ve ikonla çiziliyor; prototipteki 22 ayrı el çizimi sahne birebir aktarılmadı.
-- **Süs kartında canlı gece önizlemesi:** Satın alma kartında süsün resmi var, kasabanın o süsle gece görüntüsü (prototipte `nightPreview`) yok.
-- **Holding ofisine giriş:** Ofis doğrudan açılıyor (solarak ve hafif ölçekle); prototipteki kasabada kuleye yakınlaşma geçişi yok. Masaların açtığı sayfalar holdingin eski lacivert-altın renklerini koruyor, prototipteki krem renkler uygulanmadı.
+
+Sonradan tamamlananlar (Ekim 2026): 22 başarımın her biri prototipteki kendi kartpostal sahnesiyle (`pcScene`) çiziliyor; süs satın alma kartında kasabanın o süsle canlı gece önizlemesi var; holding ofisine kasabada kuleye süzülüp dalarak giriliyor, çıkınca kamera kulenin önüne döner; masaların açtığı sayfalar prototipteki gibi açık renk (krem sayfa, beyaz kartlar); beyaz tahta Caveat Brush el yazısıyla (uygulamaya gömülü, OFL lisansı `docs/licenses`), uzun hedefler tahtaya sığacak kadar küçülür. Her ofis sayfasının sonunda ortada küçük bir Tamam düğmesi, kapatılabilen her kartta sağ üstte ✕ var (v69/v70).

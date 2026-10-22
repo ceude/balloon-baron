@@ -34,6 +34,8 @@ final class GameStore {
     var showRepChart = false
     /// The office page on screen.
     var page: Page?
+    /// Asks the home town to glide into the holding tower before the office opens.
+    var hqDive = false
     /// Section the page scrolls to when it opens from the town.
     var pageSection: PageSection?
     /// The town's card for the agencies and for buildings that open later.
@@ -283,8 +285,16 @@ final class GameStore {
     // MARK: Town
 
     /// A tapped building: its office page (scrolled to its section), its card, or the goals.
+    /// The holding opens like the prototype's `openHQ`: from the home screen the town first glides to the tower
+    /// and dives into it (`HomeTownView` watches `hqDive`), then the office floor opens.
+    func openHolding() {
+        if page == nil, morningEvent == nil, !collecting { hqDive = true } else { page = .holding }
+    }
+
     func tapTown(_ tap: TownTap) {
         switch tap {
+        case .page(.holding, _):
+            openHolding()
         case .page(let p, let section):
             pageSection = section
             page = p
