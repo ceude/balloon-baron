@@ -97,6 +97,8 @@ struct TownPainter {
     var windows: [NightWindow] = []
     /// Passengers queueing at your office and the jeeps, while they gather.
     var collect: CollectScene? = nil
+    /// Pilots on strike outside your office (a morning event).
+    var strike = false
 
     static let tuffLit = "#f1d6b0", tuffShade = "#b9825c", tuffTop = "#f8e4c4"
     static let sunShadow = CGSize(width: 0.55, height: 0.2)
@@ -105,8 +107,8 @@ struct TownPainter {
 
     /// Draws everything and returns the tap targets.
     static func render(_ ctx: inout GraphicsContext, state: GameState, time: Double, viewport: TownViewport, size: CGSize,
-                       night: TownNight? = nil, collect: CollectScene? = nil) -> TownHits {
-        var p = TownPainter(c: ctx, s: state, t: time, v: viewport, size: size, night: night, collect: collect)
+                       night: TownNight? = nil, collect: CollectScene? = nil, strike: Bool = false) -> TownHits {
+        var p = TownPainter(c: ctx, s: state, t: time, v: viewport, size: size, night: night, collect: collect, strike: strike)
         return p.renderAll()
     }
 
@@ -154,6 +156,7 @@ struct TownPainter {
         var items = bs.map { b in TownItem(depth: b.gx + b.w + b.gy + b.d - 0.5, draw: { p in p.building(b) }) }
         items += scen
         if let sc = collect { items += collectItems(sc) }
+        if strike { items += strikers() }
         for it in items.sorted(by: { $0.depth < $1.depth }) { it.draw(&self) }
         for f in sky.balloons { f(&self) }
         if night != nil { nightLayer(screen: screen, world: world, hz: hz) }

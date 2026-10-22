@@ -92,6 +92,8 @@ struct HomeTownView: View {
                         var c = ctx
                         if store.collecting {
                             renderCollect(&c, s, sz, now)
+                        } else if let e = store.morningEvent {
+                            renderEvent(&c, s, sz, now, e)
                         } else {
                             store.collectScene.from = nil
                             // Zoomed in, the horizon stays where the home screen had it.
@@ -154,6 +156,21 @@ struct HomeTownView: View {
         v.noLabels = true
         v.hzCap = TownGeo.horizon(model.home, height: sz.height)
         _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, collect: sc)
+    }
+
+    /// A morning event: the camera goes to where it happens, the names hide, and the card comes up from below.
+    private func renderEvent(_ c: inout GraphicsContext, _ s: GameState, _ sz: CGSize, _ now: Double, _ e: MorningEvent) {
+        let sc = store.collectScene
+        if sc.from == nil { sc.from = (now, model.view) }
+        guard let from = sc.from else { return }
+        let spot = e.townSpot, z: CGFloat = 1.15, p = TownGeo.iso(spot.0, spot.1 + 1.2)
+        let to = TownViewport(z: z, ox: sz.width / 2 - p.x * z, oy: sz.height * 0.55 - p.y * z)
+        let k = CGFloat(CollectScene.easeIO(min(max((now - from.t) / 0.65, 0), 1)))
+        var v = TownViewport(z: from.view.z + (to.z - from.view.z) * k, ox: from.view.ox + (to.ox - from.view.ox) * k,
+                             oy: from.view.oy + (to.oy - from.view.oy) * k)
+        v.noLabels = true
+        v.hzCap = TownGeo.horizon(model.home, height: sz.height)
+        _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, strike: e == .strike)
     }
 
     private func homeViewport(width w: CGFloat, dockTop: CGFloat) -> TownViewport {

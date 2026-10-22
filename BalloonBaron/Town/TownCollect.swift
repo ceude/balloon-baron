@@ -147,3 +147,27 @@ extension TownPainter {
         c = keep
     }
 }
+
+extension TownPainter {
+    /// Pilots on strike in front of your office, waving placards.
+    func strikers() -> [TownItem] {
+        let n = min(8, max(3, s.local.pilots.count)), signs = ["ZAM!", "GREV", "%15", "!!!"], tt = t
+        return (0..<n).map { i in
+            let gx = 8.4 + Double(i % 4) * 0.55, gy = 13.6 + Double(i / 4) * 0.45
+            return TownItem(depth: gx + gy, draw: { p in
+                let q0 = TownGeo.iso(gx, gy), bob = CGFloat(abs(sin(tt * 4 + Double(i)))) * 4
+                let keep = p.c
+                p.c.translateBy(x: q0.x, y: q0.y)
+                p.c.scaleBy(x: 1.5, y: 1.5)
+                p.person(0, 0, "#2b5ab8", tt, Double(i))
+                p.line(p.pt(4, -10), p.pt(4, -34 - bob), p.hex("#5a3a20"), 1.5)
+                let card = CGRect(x: -10, y: -50 - bob, width: 28, height: 17)
+                p.c.fill(Path(card), with: .color(p.hex("#fffaf3")))
+                p.c.stroke(Path(card), with: .color(p.hex("#e5432f")), lineWidth: 1.5)
+                p.c.draw(Text(signs[i % 4]).font(.custom("BarlowCondensed-ExtraBold", size: 9)).foregroundColor(p.hex("#e5432f")),
+                         at: CGPoint(x: 4, y: -41.5 - bob), anchor: .center)
+                p.c = keep
+            })
+        }
+    }
+}
