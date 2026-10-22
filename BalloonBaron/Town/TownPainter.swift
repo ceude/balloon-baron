@@ -10,6 +10,8 @@ struct TownViewport {
     var hzFix: CGFloat? = nil
     /// Draw no building names (tap targets still come back).
     var noLabels = false
+    /// Zoomed in, the horizon never comes down past where the home screen had it, so the sky doesn't grow.
+    var hzCap: CGFloat? = nil
 
     func screen(_ p: CGPoint) -> CGPoint { CGPoint(x: p.x * z + ox, y: p.y * z + oy) }
 }
@@ -61,7 +63,7 @@ enum TownGeo {
     /// Horizon on screen: a little above the town's far corner, never below 60 % of the height.
     static func horizon(_ v: TownViewport, height h: CGFloat) -> CGFloat {
         if let f = v.hzFix { return f }
-        return min(h * 0.6, v.oy + iso(-7, -7).y * v.z)
+        return min(h * 0.6, v.oy + iso(-7, -7).y * v.z, v.hzCap ?? .infinity)
     }
 }
 
@@ -93,6 +95,8 @@ struct TownPainter {
     var night: TownNight? = nil
     /// Windows and doors drawn this frame, lit again over the dark.
     var windows: [NightWindow] = []
+    /// Passengers queueing at your office and the jeeps, while they gather.
+    var collect: CollectScene? = nil
 
     static let tuffLit = "#f1d6b0", tuffShade = "#b9825c", tuffTop = "#f8e4c4"
     static let sunShadow = CGSize(width: 0.55, height: 0.2)
@@ -101,8 +105,8 @@ struct TownPainter {
 
     /// Draws everything and returns the tap targets.
     static func render(_ ctx: inout GraphicsContext, state: GameState, time: Double, viewport: TownViewport, size: CGSize,
-                       night: TownNight? = nil) -> TownHits {
-        var p = TownPainter(c: ctx, s: state, t: time, v: viewport, size: size, night: night)
+                       night: TownNight? = nil, collect: CollectScene? = nil) -> TownHits {
+        var p = TownPainter(c: ctx, s: state, t: time, v: viewport, size: size, night: night, collect: collect)
         return p.renderAll()
     }
 
@@ -149,6 +153,7 @@ struct TownPainter {
         for f in sky.shadows { f(&self) }
         var items = bs.map { b in TownItem(depth: b.gx + b.w + b.gy + b.d - 0.5, draw: { p in p.building(b) }) }
         items += scen
+        if let sc = collect { items += collectItems(sc) }
         for it in items.sorted(by: { $0.depth < $1.depth }) { it.draw(&self) }
         for f in sky.balloons { f(&self) }
         if night != nil { nightLayer(screen: screen, world: world, hz: hz) }

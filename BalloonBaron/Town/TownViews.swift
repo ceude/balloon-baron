@@ -88,11 +88,17 @@ struct HomeTownView: View {
                         model.home = homeViewport(width: sz.width, dockTop: h)
                         if model.mode == .home { model.view = model.home } else { model.step(now: model.time(tl.date)) }
                         // At home the town stops at the dock; zoomed in it fills the screen.
-                        let full = model.mode != .home
+                        let now = model.time(tl.date)
                         var c = ctx
-                        if !full { c.clip(to: Path(CGRect(x: 0, y: 0, width: sz.width, height: h))) }
-                        model.hits = TownPainter.render(&c, state: s, time: model.time(tl.date), viewport: model.view,
-                                                        size: full ? sz : CGSize(width: sz.width, height: h))
+                        if store.collecting {
+                            renderCollect(&c, s, sz, now)
+                        } else {
+                            store.collectScene.from = nil
+                            // Zoomed in, the horizon stays where the home screen had it.
+                            var v = model.view
+                            if model.mode != .home { v.hzCap = TownGeo.horizon(model.home, height: sz.height) }
+                            model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz)
+                        }
                     }
                 }
                 .ignoresSafeArea()
@@ -132,6 +138,23 @@ struct HomeTownView: View {
         }
     }
 
+    /// The camera glides from what the home showed to your office in 0.8 s and stays there while the jeeps leave.
+    private func renderCollect(_ c: inout GraphicsContext, _ s: GameState, _ sz: CGSize, _ now: Double) {
+        let sc = store.collectScene
+        if sc.leaveAt == nil, let d = sc.leaveDate { sc.leaveAt = model.time(d) }
+        if sc.leaveDate == nil || sc.target == nil {
+            sc.target = CollectScene.view(size: sz, top: hudBottom, bottom: sc.cardTop > 0 ? sc.cardTop : sz.height)
+        }
+        if sc.from == nil { sc.from = (now, model.view) }
+        guard let to = sc.target, let from = sc.from else { return }
+        let k = CGFloat(CollectScene.easeIO(min(max((now - from.t) / 0.8, 0), 1)))
+        var v = TownViewport(z: from.view.z + (to.z - from.view.z) * k, ox: from.view.ox + (to.ox - from.view.ox) * k,
+                             oy: from.view.oy + (to.oy - from.view.oy) * k)
+        v.noLabels = true
+        v.hzCap = TownGeo.horizon(model.home, height: sz.height)
+        _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, collect: sc)
+    }
+
     private func homeViewport(width w: CGFloat, dockTop: CGFloat) -> TownViewport {
         let back = max(hudBottom + 20, weatherBottom - 16), front = dockTop - 6
         let z = min(max((front - back) / 1024, 0.15), w / 1500)
@@ -156,6 +179,7 @@ struct HomeTownView: View {
     }
 
     private func tap(_ p: CGPoint) {
+        guard !store.collecting else { return }
         switch model.mode {
         case .leaving:
             return

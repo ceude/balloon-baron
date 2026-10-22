@@ -127,9 +127,13 @@ struct CollectView: View {
             if let model {
                 TimelineView(.animation) { tl in
                     let _ = model.advance(to: tl.date)
+                    let _ = share(model)
                     card(model)
                 }
                 .frame(maxWidth: 560)
+                .background { GeometryReader { g in Color.clear.onAppear { store.collectScene.cardTop = g.frame(in: .global).minY } } }
+                .opacity(store.collectScene.leaveDate == nil ? 1 : 0)
+                .allowsHitTesting(store.collectScene.leaveDate == nil)
             }
         }
         .padding(.horizontal, 8)
@@ -139,6 +143,12 @@ struct CollectView: View {
             SoundEngine.shared.crowd(true)
         }
         .onDisappear { SoundEngine.shared.crowd(false) }
+    }
+
+    /// The town's queue follows the seats as they fill.
+    private func share(_ m: CollectModel) {
+        store.collectScene.shown = m.shown
+        store.collectScene.total = m.seq.count
     }
 
     private func makeModel() -> CollectModel? {
@@ -267,7 +277,7 @@ struct CollectView: View {
             .buttonStyle(ChunkyButtonStyle(kind: .glassGhost))
             Button(go) {
                 SoundEngine.shared.play(.click)
-                if !m.done { m.skip() } else { store.fly() }
+                if !m.done { m.skip() } else { store.leaveCollect() }
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
         }

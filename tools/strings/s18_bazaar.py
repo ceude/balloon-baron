@@ -29,3 +29,6 @@ add("fleetPage.paintFree", "Paint (free)", "Giydir (bedava)", "Lackieren (gratis
 add("fleetPage.designPickFree", "Patterns and shapes from the bazaar go on for free.", "Çarşıdan alınan desen ve şekiller bedava giydirilir.", "Muster und Formen vom Basar sind kostenlos.", "Los diseños y formas del bazar se ponen gratis.", "バザールの柄と形は無料で着せられる。", "시장에서 산 무늬와 모양은 무료로 입힐 수 있습니다.")
 add("studio.shape", "Envelope shape", "Zarf şekli", "Hüllenform", "Forma de la envoltura", "球皮の形", "외피 모양")
 add("studio.classic", "Classic", "Klasik", "Klassisch", "Clásica", "クラシック", "클래식")
+
+# Passengers queueing at your office
+add("collect.queue", "Passengers: %@", "Yolcu: %@", "Fahrgäste: %@", "Pasajeros: %@", "乗客：%@", "승객: %@")

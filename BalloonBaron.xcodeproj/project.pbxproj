@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		03B50818350CB24EFC0CFCAA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDB158A34F42484C541CFE0 /* HomeView.swift */; };
 		07C4DCFC0699ED567F7D68F4 /* IssueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2070C4DCB9F9DE7745FEBC0 /* IssueView.swift */; };
+		102B4A4B20A2D62462977EDF /* TownCollect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CD61C9B79F78E77AE45096 /* TownCollect.swift */; };
 		14AD9C93BE90A398F1F2752B /* BarlowCondensed-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6858154E303E2FAC806C1D22 /* BarlowCondensed-ExtraBold.ttf */; };
 		17524A7AE43E278B72BA3450 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 21BA8159F9A68439627ADACE /* Localizable.xcstrings */; };
 		195F108E685D8DDDF7933829 /* DesignStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87581606A4966EC52B22837 /* DesignStudioView.swift */; };
@@ -68,6 +69,7 @@
 		028E3000896415942F6E8508 /* TownPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownPainter.swift"; sourceTree = "<group>"; };
 		03D4B6CAC1ADC8096C50F9DB /* Barlow-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-SemiBold.ttf"; sourceTree = "<group>"; };
 		1418AC5FE4F57A03C0EF1766 /* GameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameStore.swift"; sourceTree = "<group>"; };
+		14CD61C9B79F78E77AE45096 /* TownCollect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownCollect.swift"; sourceTree = "<group>"; };
 		151A0BC3B17C01FBFECAA493 /* TownViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownViews.swift"; sourceTree = "<group>"; };
 		158AFE69FAF9C43034FBC847 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Theme.swift"; sourceTree = "<group>"; };
 		21BA8159F9A68439627ADACE /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 		3DFABEB6ABD2B12C2B105E1D /* Town */ = {
 			isa = PBXGroup;
 			children = (
+				14CD61C9B79F78E77AE45096 /* TownCollect.swift */,
 				BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */,
 				DA747D61B806F541F6AB8DF8 /* TownModel.swift */,
 				FBF39B153C032C3B1F8AFDEF /* TownNight.swift */,
@@ -351,6 +354,7 @@
 				B5EA4D949BD133F8B876E74F /* SoundSettingsButton.swift in Sources */,
 				CDE747CAF5B1BDD693D6FB79 /* OfficeSceneView.swift in Sources */,
 				43D34FF299E13570C04FCAA5 /* ScenePainter.swift in Sources */,
+				102B4A4B20A2D62462977EDF /* TownCollect.swift in Sources */,
 				89387608271733A9FA3C605B /* TownExtras.swift in Sources */,
 				9A10F15161315C7C8ACF36B5 /* TownModel.swift in Sources */,
 				32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */,

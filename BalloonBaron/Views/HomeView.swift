@@ -59,11 +59,8 @@ struct HomeView: View {
         let s = game.state
         return ZStack(alignment: .top) {
             // The company town is the morning screen; gathering passengers moves to the launch field.
-            if store.collecting {
-                OfficeSceneView(groundY: dockTop, topY: hudBottom + 40)
-            } else {
-                HomeTownView(dockTop: dockTop, weatherBottom: weatherBottom, hudBottom: hudBottom, zoomed: $zoomed)
-            }
+            // While passengers gather, the town's camera goes to your booking office.
+            HomeTownView(dockTop: dockTop, weatherBottom: weatherBottom, hudBottom: hudBottom, zoomed: $zoomed)
             VStack(spacing: 10) {
                 hud(s)
                     .background {

@@ -59,6 +59,8 @@ final class GameStore {
     var buildingCard: Building?
     var showBazaar = false
     var storeItem: StoreItem?
+    /// Passengers queueing in the town while they gather (shared by the card and the town canvas).
+    let collectScene = CollectScene()
     /// The night between two days, with what lights it up.
     struct Night: Equatable { var event: NightEvent? }
     var night: Night?
@@ -337,7 +339,15 @@ final class GameStore {
     }
 
     func startCollect() {
+        collectScene.reset()
         collecting = true
+    }
+
+    /// Take-off: the card goes, the jeeps come and go (about 3.5 s), then the flight.
+    func leaveCollect() {
+        guard collectScene.leaveDate == nil else { return }
+        collectScene.leaveDate = Date()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [weak self] in self?.fly() }
     }
 
     /// The intro balloon has left the screen.
