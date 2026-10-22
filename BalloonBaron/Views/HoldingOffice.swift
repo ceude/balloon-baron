@@ -12,13 +12,19 @@ struct HoldingOfficeView: View {
 
     var body: some View {
         GeometryReader { geo in
-            let L = Layout(size: geo.size)
+            // One layout for the drawing and the labels, in the safe area's coordinates; the floor runs on under
+            // the home indicator.
+            let ins = geo.safeAreaInsets
+            let L = Layout(size: CGSize(width: geo.size.width, height: geo.size.height + ins.bottom))
             ZStack(alignment: .topLeading) {
                 Color(hex: "#f3e2c6").ignoresSafeArea()
                 if let s = store.state {
                     TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
-                        Canvas { ctx, _ in
-                            OfficePainter.draw(&ctx, L, s, t: tl.date.timeIntervalSince(start))
+                        Canvas { ctx, sz in
+                            ctx.fill(Path(CGRect(origin: .zero, size: sz)), with: .color(Color(hex: "#f6e7cf")))
+                            var c = ctx
+                            c.translateBy(x: 0, y: ins.top)
+                            OfficePainter.draw(&c, L, s, t: tl.date.timeIntervalSince(start))
                         }
                     }
                     .ignoresSafeArea()
@@ -125,7 +131,8 @@ struct HoldingOfficeView: View {
 
         func spot(_ u: HoldingUnit) -> CGPoint {
             switch u {
-            case .board: CGPoint(x: w * 0.2, y: top + (wall - top) * 0.14 + 50)
+            // Under the whiteboard, so the chart and the goals have the whole board.
+            case .board: CGPoint(x: w * 0.2, y: wall - 10)
             case .window: CGPoint(x: w * 0.7, y: top + (wall - top) * 0.06 + 6)
             case .marketing: CGPoint(x: w * 0.27, y: rowA - 92)
             case .deals: CGPoint(x: w * 0.73, y: rowA - 92)
@@ -230,14 +237,14 @@ private enum OfficePainter {
 
     /// The whiteboard: the holding's cash over 14 days as a marker line, and its six goals in handwriting.
     static func board(_ c: inout GraphicsContext, _ L: HoldingOfficeView.Layout, _ s: GameState, t: Double) {
-        let top = L.top, wall = L.wall, bx0: CGFloat = 12, bx1 = L.w * 0.39, by0 = top + (wall - top) * 0.14, by1 = wall - 34
+        let top = L.top, wall = L.wall, bx0: CGFloat = 12, bx1 = L.w * 0.39, by0 = top + (wall - top) * 0.14, by1 = wall - 70
         c.fill(Path(roundedRect: CGRect(x: bx0 - 4, y: by0 - 4, width: bx1 - bx0 + 8, height: by1 - by0 + 8), cornerRadius: 6), with: .color(Color(hex: "#c9ccd2")))
         c.fill(Path(roundedRect: CGRect(x: bx0, y: by0, width: bx1 - bx0, height: by1 - by0), cornerRadius: 4), with: .color(Color(hex: "#fbfcfd")))
         c.fill(Path(CGRect(x: bx0 + 10, y: by1 + 4, width: bx1 - bx0 - 20, height: 5)), with: .color(Color(hex: "#9aa0a8")))
         for (i, col) in ["#e5432f", "#2b5ab8", "#22a45d"].enumerated() {
             c.fill(Path(CGRect(x: bx0 + 20 + CGFloat(i) * 16, y: by1 + 1, width: 11, height: 4)), with: .color(Color(hex: col)))
         }
-        let x = bx0 + 10, y = by0 + 62, w = bx1 - bx0 - 20, hh = by1 - by0 - 76
+        let x = bx0 + 10, y = by0 + 14, w = bx1 - bx0 - 20, hh = by1 - by0 - 28
         // Goals in marker at the bottom; rows shrink on a short board, and the chart only draws when it still has room.
         let goals = HoldingGoal.allCases
         let row = min(max(floor((hh - 50) / CGFloat(goals.count)), 9), 15), fs = min(14, row - 1)

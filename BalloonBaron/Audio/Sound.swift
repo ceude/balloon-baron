@@ -423,8 +423,9 @@ private final class Synth {
         case .birds(let on): birds = on
         case .burner(let on):
             if on {
-                burnTarget = 0.32
-                burnStep = 0.32 / (0.08 * sr)
+                // A broadband roar is loud on a phone speaker; a third of the prototype's first level sits under the music.
+                burnTarget = 0.12
+                burnStep = 0.12 / (0.08 * sr)
             } else {
                 burnTarget = 0
                 burnStep = max(burnGain, 0.0001) / (0.18 * sr)

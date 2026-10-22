@@ -1791,7 +1791,7 @@ function burner(on) {
   if (on && !burnNode) {
     const src = AC.createBufferSource(); src.buffer = noiseBuf(2); src.loop = true;
     const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 420; f.Q.value = .6;
-    const g = AC.createGain(); g.gain.setValueAtTime(0, AC.currentTime); g.gain.linearRampToValueAtTime(.32, AC.currentTime + .08);
+    const g = AC.createGain(); g.gain.setValueAtTime(0, AC.currentTime); g.gain.linearRampToValueAtTime(.12, AC.currentTime + .08);
     src.connect(f).connect(g).connect(out()); src.start(); burnNode = { src, g };
   } else if (!on && burnNode) {
     const { src, g } = burnNode, t = AC.currentTime;
@@ -3070,6 +3070,7 @@ cv.addEventListener('pointerdown', e => {
     const r = cv.getBoundingClientRect(), p = [e.clientX - r.left, e.clientY - r.top];
     HOME.ptrs = HOME.ptrs || new Map(); HOME.ptrs.set(e.pointerId, p); HOME.pinch = null;
     HOME.down = HOME.ptrs.size === 1 ? { x: p[0], y: p[1], t: performance.now() } : null;
+    HOME.pan = null; cv.setPointerCapture(e.pointerId);
     return;
   }
   setBurn(true);
@@ -3077,7 +3078,15 @@ cv.addEventListener('pointerdown', e => {
 /* two fingers on the home town: zoom in right away, no tap needed first */
 cv.addEventListener('pointermove', e => {
   if (mode !== 'office' || !HOME.ptrs || !HOME.ptrs.has(e.pointerId)) return;
-  const r = cv.getBoundingClientRect(); HOME.ptrs.set(e.pointerId, [e.clientX - r.left, e.clientY - r.top]);
+  const r = cv.getBoundingClientRect(), prev = HOME.ptrs.get(e.pointerId), cur = [e.clientX - r.left, e.clientY - r.top]; HOME.ptrs.set(e.pointerId, cur);
+  /* one finger drags the town at the home screen's size, the controls staying over it (zoom out to come back) */
+  if (HOME.ptrs.size === 1) {
+    if (!HOME.pan && HOME.down && Math.hypot(cur[0] - HOME.down.x, cur[1] - HOME.down.y) > 10 && !TOWN.open && !COL) {
+      HOME.pan = true; HOME.down = null; holdTown({ z: HOME.z, ox: HOME.ox, oy: HOME.oy }, false);
+    }
+    if (HOME.pan && TOWN.open && !TOWN.leaving) { TOWN.anim = null; TOWN.ox += cur[0] - prev[0]; TOWN.oy += cur[1] - prev[1]; }
+    return;
+  }
   if (HOME.ptrs.size !== 2) return;
   const [a, b] = [...HOME.ptrs.values()], d = Math.hypot(a[0] - b[0], a[1] - b[1]), mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2;
   if (HOME.pinch == null) { HOME.pinch = d; return; }
@@ -3409,7 +3418,7 @@ const regionEntrants = () => S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
 const CHAPTERS_ABQ = [
   { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['balloons', 4, '4 balonluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3']] },
   { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['influ', 1, 'Bir influencer kampanyası yap'], ['share', .5, 'Pazarın %50\'si'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'İmza balonun gökyüzünde: Fiesta Yıldızı'], ['bldTop', 3, 'Bir binayı 3. seviyeye çıkar']] }
+  { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'İmza balonun gökyüzünde: Fiesta Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 const chap = () => S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;
 const isBaron = id => !!(S.barons && S.barons[id || S.region]);
@@ -4860,8 +4869,12 @@ function dawnTick() {
 }
 function morningTown(v) {
   if (mode !== 'office' || !HOME.h || v.z <= HOME.z * 1.04) return; /* already the home screen's view */
+  holdTown(v, true);
+}
+/* The town under the day's controls at view v: the morning (the night's camera) or a drag on the home screen. */
+function holdTown(v, night) {
   $('town').hidden = false; TOWN.open = true; TOWN.leaving = false; TOWN.anim = null; TOWN.extra = null; TOWN.noLabels = false;
-  TOWN.z = v.z; TOWN.ox = v.ox; TOWN.oy = v.oy; TOWN.hz = null; TOWN.night = true; TOWN.hold = true;
+  TOWN.z = v.z; TOWN.ox = v.ox; TOWN.oy = v.oy; TOWN.hz = night ? null : homeHorizon(); TOWN.night = night; TOWN.hold = true;
   $('tClose').classList.add('gone'); document.body.classList.add('mhold');
   cancelAnimationFrame(TOWN.raf); townLoop();
 }
@@ -5070,8 +5083,10 @@ function townFocus(at, z = .65) {
 function townClamp(w, h) {
   /* sideways you can bring either corner of the walls well into the screen; up and down stays as it was */
   const c = tiso(7.5, 7.5), sx = c[0] * TOWN.z + TOWN.ox, sy = c[1] * TOWN.z + TOWN.oy, mx = 16 * TW / 2 * TOWN.z, my = 8 * TH / 2 * TOWN.z;
-  TOWN.ox += clamp(sx, Math.min(w * .5, w * .85 - mx), Math.max(w * .5, w * .15 + mx)) - sx;
-  TOWN.oy += clamp(sy, Math.min(h * .5, h * .3 - my), Math.max(h * .55, h * .8 + my)) - sy;
+  /* the home screen's own framing is always allowed, so dragging from it never jumps */
+  const hx = c[0] * HOME.z + HOME.ox, hy = c[1] * HOME.z + HOME.oy;
+  TOWN.ox += clamp(sx, Math.min(w * .5, w * .85 - mx, hx), Math.max(w * .5, w * .15 + mx, hx)) - sx;
+  TOWN.oy += clamp(sy, Math.min(h * .5, h * .3 - my, hy), Math.max(h * .55, h * .8 + my, hy)) - sy;
 }
 /* Zoom into the home screen's town: start from exactly what the home shows, fade the rest of the screen away
    and glide in on the tapped spot. Zooming back out (pinch, wheel or the X) returns to the home screen. */
@@ -5091,9 +5106,11 @@ function openTown(at, instant) {
 /* Zoom the town about a screen point; back at the home screen's size it returns home. */
 function townZoomAt(px, py, k) {
   if (TOWN.leaving) return;
+  /* closing in on the home screen's size (even already there, after a drag) returns home */
+  const out = k < 1;
   TOWN.anim = null; const z = clamp(TOWN.z * k, HOME.z, 1.6); k = z / TOWN.z; TOWN.ox = px - (px - TOWN.ox) * k; TOWN.oy = py - (py - TOWN.oy) * k; TOWN.z = z;
   if (k > 1.001) endHold();
-  if (z <= HOME.z * 1.04 && k < 1) { TOWN.pinch = null; closeTown(); }
+  if (z <= HOME.z * 1.04 && out) { TOWN.pinch = null; closeTown(); }
 }
 function closeTown() {
   if (!TOWN.open || TOWN.leaving) return;

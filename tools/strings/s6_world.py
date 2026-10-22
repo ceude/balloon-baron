@@ -95,6 +95,7 @@ add("goal.balloons", "Balloons in the fleet: %@", "Filoda balon: %@", "Ballone i
 add("goal.pilots", "Pilots on the team: %@", "Ekipteki pilot: %@", "Piloten im Team: %@", "Pilotos en el equipo: %@", "チームのパイロット：%@", "팀의 조종사: %@")
 add("goal.hotelDeals", "Hotel deals: %@", "Otel anlaşması: %@", "Hotelverträge: %@", "Acuerdos con hoteles: %@", "ホテル契約：%@", "호텔 계약: %@")
 add("goal.bldMastLevel", "Wind mast level: %@", "Rüzgâr direği seviyesi: %@", "Windmast-Stufe: %@", "Nivel del mástil de viento: %@", "風向きマストのレベル：%@", "풍향 마스트 레벨: %@")
+add("goal.bldHangarLevel", "Hangar level: %@", "Hangar seviyesi: %@", "Hangar-Stufe: %@", "Nivel del hangar: %@", "格納庫のレベル：%@", "격납고 레벨: %@")
 add("goal.stars", "Popularity %@", "Popülerlik %@", "Beliebtheit %@", "Popularidad %@", "人気 %@", "인기 %@")
 add("goal.cash", "Cash: %@", "Kasada: %@", "Kasse: %@", "Caja: %@", "所持金：%@", "보유 현금: %@")
 add("goal.hotelDeal", "Sign a deal with a hotel", "Bir otelle anlaşma yap", "Schließe einen Hotelvertrag", "Firma un acuerdo con un hotel", "ホテルと契約する", "호텔과 계약하기")

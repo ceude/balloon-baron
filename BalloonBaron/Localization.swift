@@ -99,6 +99,7 @@ extension Goal {
         case .pilots: loc("goal.pilots", num(Int(target)))
         case .hotelDeal where target > 1: loc("goal.hotelDeals", num(Int(target)))
         case .bldMast where target > 2: loc("goal.bldMastLevel", num(Int(target)))
+        case .bldHangar where target > 2: loc("goal.bldHangarLevel", num(Int(target)))
         case .stars: loc("goal.stars", starsValue(target))
         case .cash: loc("goal.cash", eur(Int(target)))
         case .hotelOwn: loc("goal.hotelOwn", num(Int(target)))

@@ -67,8 +67,10 @@ final class TownCanvasModel {
         let w = size.width, h = size.height, c = TownGeo.iso(7.5, 7.5)
         let sx = c.x * view.z + view.ox, sy = c.y * view.z + view.oy
         let mx = 16 * TownGeo.TW / 2 * view.z, my = 8 * TownGeo.TH / 2 * view.z
-        view.ox += min(max(sx, min(w * 0.5, w * 0.85 - mx)), max(w * 0.5, w * 0.15 + mx)) - sx
-        view.oy += min(max(sy, min(h * 0.5, h * 0.3 - my)), max(h * 0.55, h * 0.8 + my)) - sy
+        // The home screen's own framing is always allowed, so dragging from it never jumps.
+        let hx = c.x * home.z + home.ox, hy = c.y * home.z + home.oy
+        view.ox += min(max(sx, min(w * 0.5, w * 0.85 - mx, hx)), max(w * 0.5, w * 0.15 + mx, hx)) - sx
+        view.oy += min(max(sy, min(h * 0.5, h * 0.3 - my, hy)), max(h * 0.55, h * 0.8 + my, hy)) - sy
     }
 }
 
@@ -130,7 +132,7 @@ struct HomeTownView: View {
                     }
                 }
                 .ignoresSafeArea()
-                .gesture(pan, including: zoomed || hold ? .all : .none)
+                .gesture(pan)
                 .simultaneousGesture(pinch, including: store.collecting ? .none : .all)
                 .onTapGesture { p in tap(CGPoint(x: p.x + origin.x, y: p.y + origin.y)) }
                 .background {
@@ -341,7 +343,18 @@ struct HomeTownView: View {
     private var pan: some Gesture {
         DragGesture(minimumDistance: 6)
             .onChanged { v in
-                guard model.mode == .zoomed, !diving else { return }
+                guard !diving, !store.collecting, store.morningEvent == nil else { return }
+                // One finger on the home town drags it at the home screen's size, the controls staying over it
+                // (like the morning's hold); zooming out comes back home, zooming in zooms as usual.
+                if model.mode == .home {
+                    model.anim = nil
+                    model.view = model.home
+                    model.mode = .zoomed
+                    model.night = false
+                    model.hzFrom = nil
+                    hold = true
+                }
+                guard model.mode == .zoomed else { return }
                 model.anim = nil
                 model.view.ox += v.translation.width - model.lastDrag.width
                 model.view.oy += v.translation.height - model.lastDrag.height
@@ -368,7 +381,8 @@ struct HomeTownView: View {
                 if z > start.z * 1.001 { endHold() }
                 let p = CGPoint(x: v.startLocation.x + origin.x, y: v.startLocation.y + origin.y)
                 model.view = TownViewport(z: z, ox: p.x - (p.x - start.ox) * k, oy: p.y - (p.y - start.oy) * k)
-                if z <= model.home.z * 1.04 { zoomOut() }
+                // Closing in on the home screen's size returns home (even already there, after a drag).
+                if z <= model.home.z * 1.04 && v.magnification < 1 { zoomOut() }
             }
             .onEnded { _ in model.pinchStart = nil }
     }
