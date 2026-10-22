@@ -1016,7 +1016,13 @@ const isSelf = b => b.id === S.flag && selfFlying();
 const cond = b => clamp(1 - (b.flights || 0) / envLife(), 0, 1);
 const SCHOOL_COST = 60000, WORKSHOP_COST = 75000;
 const pilotWage = p => p.wage || Math.round(LEVELS[p.lvl].wage * (p.school ? .7 : 1) * (p.trait === 'nightowl' ? .85 : 1));
-function accP(b) { const p = pilotOf(b), tr = !isSelf(b) && p ? p.trait : null; return FLAGS[S.weather.flag].acc * (tr === 'careful' ? .75 : tr === 'daredevil' ? 1.3 : 1) * (S.weather.flag === 'yellow' && bl('mast') >= 3 ? .8 : 1) * (isSelf(b) ? 1 : p ? LEVELS[p.lvl].risk : 1) * SIZES[b.size].risk * (cond(b) < .3 ? 1.5 : 1); }
+/* A pilot's own share of the accident risk: level times trait, as accP uses it; the trait's part is named when there is one. */
+const traitRisk = p => p.trait === 'careful' ? .75 : p.trait === 'daredevil' ? 1.3 : 1;
+function pilotRiskText(p) {
+  const f = x => x.toLocaleString('tr-TR', { maximumFractionDigits: 2 }), lv = LEVELS[p.lvl].risk, tr = traitRisk(p);
+  return tr === 1 ? `×${f(lv)}` : `×${f(lv * tr)} (${LEVELS[p.lvl].name} ×${f(lv)}, ${TRAITS[p.trait].n} ×${f(tr)})`;
+}
+function accP(b) { const p = pilotOf(b), tr = !isSelf(b) && p ? p.trait : null; return FLAGS[S.weather.flag].acc * (tr ? traitRisk(p) : 1) * (S.weather.flag === 'yellow' && bl('mast') >= 3 ? .8 : 1) * (isSelf(b) ? 1 : p ? LEVELS[p.lvl].risk : 1) * SIZES[b.size].risk * (cond(b) < .3 ? 1.5 : 1); }
 function premium(size, p) {
   if (S.weather.flag === 'red') return { hull: 0, pax: 0 };
   const z = SIZES[size];
@@ -2248,7 +2254,7 @@ function tabCrew(body) {
     for (const p of idle.sort((a, b) => pilotWage(b) - pilotWage(a))) {
       const it = h('div', 'item');
       it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
-      it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, risk ×${LEVELS[p.lvl].risk.toLocaleString('tr-TR')}. Boşta.${traitLine(p)}</div>`));
+      it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, risk ${pilotRiskText(p)}. Boşta.${traitLine(p)}</div>`));
       it.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); refresh(); }, false, true));
       is.appendChild(it);
     }
@@ -2261,7 +2267,7 @@ function tabCrew(body) {
   for (const p of working) {
     const it = h('div', 'item'), b = balOf(p), bst = canFly(b);
     it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
-    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, risk ×${LEVELS[p.lvl].risk.toLocaleString('tr-TR')}. ${b.name} balonunda${bst === 'dmg' ? ' (onarımda)' : bst === 'worn' ? ' (zarf yenilenmeli)' : bst === 'license' ? ' (lisans bekliyor)' : ''}.${p.lvl < 3 ? ` Tecrübe ${p.xp || 0}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}${traitLine(p)}</div>`));
+    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, risk ${pilotRiskText(p)}. ${b.name} balonunda${bst === 'dmg' ? ' (onarımda)' : bst === 'worn' ? ' (zarf yenilenmeli)' : bst === 'license' ? ' (lisans bekliyor)' : ''}.${p.lvl < 3 ? ` Tecrübe ${p.xp || 0}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}${traitLine(p)}</div>`));
     it.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); refresh(); }, false, true));
     s.appendChild(it);
   }
@@ -2279,7 +2285,7 @@ function tabCrew(body) {
   for (const p of S.candidates) {
     const it = h('div', 'item');
     it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
-    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, kaza riski ×${LEVELS[p.lvl].risk.toLocaleString('tr-TR')}${traitLine(p)}</div>`));
+    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, kaza riski ${pilotRiskText(p)}${traitLine(p)}</div>`));
     it.appendChild(pbtn('İşe al', () => { S.pilots.push(p); S.candidates = S.candidates.filter(x => x !== p); assignPilots(); refresh(); }));
     c.appendChild(it);
   }
