@@ -3,7 +3,7 @@ import BalloonBaronCore
 
 /// What a building in the company town looks like.
 enum TownLook {
-    case hangar, workshop, office, school, bank, tower, hotel, agency, guide, kiosk
+    case hangar, workshop, office, school, bank, tower, hotel, agency, guide, kiosk, mast, bazaar
 }
 
 /// What tapping a building does.
@@ -12,6 +12,9 @@ enum TownTap: Equatable {
     case page(Page, section: PageSection?)
     case card(TownCard)
     case goals
+    /// A building's upgrade card (with the way into its page).
+    case building(Building)
+    case bazaar
 }
 
 /// A section an office page can scroll to when it opens from the town.
@@ -65,7 +68,7 @@ struct TownZone {
 
 /// The town's layout and what each building says about the company. Port of the prototype's `townBuildings()`.
 enum Town {
-    static let unlockDay: [Feature: Int] = [.fleet: 3, .bank: 4, .market: 5, .crew: 6]
+    static let unlockDay: [Feature: Int] = [.fleet: 4, .bank: 6, .market: 8, .crew: 10]
 
     static let zones: [TownZone] = [
         TownZone(key: "town.zone.depot", gx: 4, gy: 3.55, at: (4, 2)),
@@ -96,8 +99,8 @@ enum Town {
 
         let hangar = loc("town.b.hangar")
         L.append(TownBuilding(id: "hangar", gx: 1, gy: 1, w: 3, d: 2, name: hangar, look: .hangar, lv: n >= 8 ? 2 : 1,
-                              sub: loc("town.sub.balloons", num(n)),
-                              tap: open.contains(.fleet) ? .page(.fleet, section: nil) : locked(hangar, .fleet)))
+                              sub: loc("town.sub.balloons", num(n)) + " · " + loc("building.sub.level", num(s.level(.hangar))),
+                              tap: open.contains(.fleet) ? .building(.hangar) : locked(hangar, .fleet)))
         let shop = loc("town.b.workshop")
         L.append(TownBuilding(id: "shop", gx: 5, gy: 1, w: 2, d: 2, name: shop, look: .workshop,
                               lv: s.workshopDay != nil ? (ds >= 3 ? 2 : 1) : 0,
@@ -106,8 +109,8 @@ enum Town {
         let office = loc("town.b.office")
         L.append(TownBuilding(id: "office", gx: 9, gy: 5, w: 2, d: 2, name: office, look: .office,
                               lv: open.contains(.crew) ? (np >= 6 ? 2 : 1) : -1,
-                              sub: open.contains(.crew) ? loc("town.sub.pilots", num(np)) : soon,
-                              tap: open.contains(.crew) ? .page(.crew, section: nil) : locked(office, .crew)))
+                              sub: open.contains(.crew) ? loc("town.sub.pilots", num(np)) + " · " + loc("building.sub.level", num(s.level(.office))) : soon,
+                              tap: open.contains(.crew) ? .building(.office) : locked(office, .crew)))
         let school = loc("town.b.school")
         L.append(TownBuilding(id: "school", gx: 12, gy: 5, w: 2, d: 2, name: school, look: .school,
                               lv: s.local.school ? (np >= 8 ? 2 : 1) : (open.contains(.crew) ? 0 : -1),
@@ -153,9 +156,20 @@ enum Town {
         // Booking offices side by side: yours first, then the rivals'. Same kiosk, awning in each company's colors.
         let mine = s.company.isEmpty ? loc("town.b.mine") : s.company
         L.append(TownBuilding(id: "mine", gx: 8.7, gy: 12.2, w: 1.2, d: 1.2, name: mine, look: .kiosk, lv: 1,
-                              sub: loc("town.sub.balloons", num(n)),
-                              tap: market ? .page(.market, section: .rivals) : locked(mine, .market),
+                              sub: loc("town.sub.balloons", num(n)) + " · " + loc("building.sub.level", num(s.level(.sales))),
+                              tap: market ? .building(.sales) : locked(mine, .market),
                               colors: s.colors, small: true))
+        // The bazaar against the east wall, and the wind mast by the launch field.
+        let bazaar = loc("town.b.bazaar")
+        let decor = StoreItem.allCases.filter { $0.kind == .decoration }
+        L.append(TownBuilding(id: "bazaar", gx: 14.05, gy: 2.75, w: 1.35, d: 1.7, name: bazaar, look: .bazaar,
+                              lv: market ? (s.decorationCount > 0 ? 2 : 1) : -1,
+                              sub: market ? loc("town.sub.decor", num(s.decorationCount), num(decor.count)) : soon,
+                              tap: market ? .bazaar : locked(bazaar, .market), small: true))
+        let mastSub = s.level(.mast) >= 2 ? loc("building.sub.tomorrow", (s.local.forecast?[s.day + 1]).map { $0.title } ?? "?")
+            : loc("building.sub.level", num(s.level(.mast)))
+        L.append(TownBuilding(id: "mast", gx: 6.95, gy: 3.95, w: 0.4, d: 0.4, name: Building.mast.title, look: .mast, lv: 1,
+                              sub: mastSub, tap: .building(.mast), small: true))
         for (i, r) in s.local.rivals.enumerated() {
             let sub = r.alive ? loc("town.sub.balloons", num(r.balloons.count))
                 : r.mergedInto != nil ? loc("town.sub.merged") : r.forSale != nil ? loc("town.sub.forSale") : loc("town.sub.closed")
@@ -181,6 +195,8 @@ enum Town {
         case .guide: return 90
         case .agency: return 150
         case .tower: return 300
+        case .mast: return 175
+        case .bazaar: return 135
         }
     }
 }

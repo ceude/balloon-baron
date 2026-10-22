@@ -61,7 +61,7 @@ enum TownGeo {
 }
 
 /// One thing standing on the ground, drawn back to front.
-private struct TownItem {
+struct TownItem {
     var depth: Double
     /// Ground point, for things outside the town that fade into the haze.
     var at: (Double, Double)?
@@ -70,7 +70,7 @@ private struct TownItem {
 }
 
 /// A stone box's corners at the ground (A–D) and at the top (a–d).
-private struct Box {
+struct Box {
     var A: CGPoint, B: CGPoint, C: CGPoint, D: CGPoint
     var a: CGPoint, b: CGPoint, c: CGPoint, d: CGPoint
 }
@@ -85,8 +85,8 @@ struct TownPainter {
     let v: TownViewport
     let size: CGSize
 
-    private static let tuffLit = "#f1d6b0", tuffShade = "#b9825c", tuffTop = "#f8e4c4"
-    private static let sunShadow = CGSize(width: 0.55, height: 0.2)
+    static let tuffLit = "#f1d6b0", tuffShade = "#b9825c", tuffTop = "#f8e4c4"
+    static let sunShadow = CGSize(width: 0.55, height: 0.2)
 
     // MARK: Entry point
 
@@ -96,7 +96,7 @@ struct TownPainter {
         return p.renderAll()
     }
 
-    private mutating func renderAll() -> TownHits {
+    mutating func renderAll() -> TownHits {
         let w = size.width, h = size.height
         let screen = c
         backdrop(w, h)
@@ -142,6 +142,7 @@ struct TownPainter {
         for it in items.sorted(by: { $0.depth < $1.depth }) { it.draw(&self) }
         for f in sky.balloons { f(&self) }
         c = screen
+        if s.local.winter != nil { snowfall(w, h) }
         return labels(bs)
     }
 
@@ -151,17 +152,17 @@ struct TownPainter {
 
     // MARK: Helpers
 
-    private func iso(_ gx: Double, _ gy: Double) -> CGPoint { TownGeo.iso(gx, gy) }
-    private func lp(_ p: CGPoint, _ q: CGPoint, _ k: CGFloat) -> CGPoint { CGPoint(x: p.x + (q.x - p.x) * k, y: p.y + (q.y - p.y) * k) }
-    private func upp(_ p: CGPoint, _ h: CGFloat) -> CGPoint { CGPoint(x: p.x, y: p.y - h) }
-    private func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
-    private func hex(_ h: String) -> Color { Color(hex: h) }
-    private func mix(_ a: String, _ b: String, _ k: Double) -> Color { ScenePainter.mix(a, b, k) }
-    private func rgba(_ r: Double, _ g: Double, _ b: Double, _ a: Double) -> Color {
+    func iso(_ gx: Double, _ gy: Double) -> CGPoint { TownGeo.iso(gx, gy) }
+    func lp(_ p: CGPoint, _ q: CGPoint, _ k: CGFloat) -> CGPoint { CGPoint(x: p.x + (q.x - p.x) * k, y: p.y + (q.y - p.y) * k) }
+    func upp(_ p: CGPoint, _ h: CGFloat) -> CGPoint { CGPoint(x: p.x, y: p.y - h) }
+    func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
+    func hex(_ h: String) -> Color { Color(hex: h) }
+    func mix(_ a: String, _ b: String, _ k: Double) -> Color { ScenePainter.mix(a, b, k) }
+    func rgba(_ r: Double, _ g: Double, _ b: Double, _ a: Double) -> Color {
         Color(red: r / 255, green: g / 255, blue: b / 255).opacity(a)
     }
 
-    private func path(_ pts: [CGPoint]) -> Path {
+    func path(_ pts: [CGPoint]) -> Path {
         var p = Path()
         guard let f = pts.first else { return p }
         p.move(to: f)
@@ -170,42 +171,42 @@ struct TownPainter {
         return p
     }
 
-    private mutating func poly(_ pts: [CGPoint], _ col: Color) { c.fill(path(pts), with: .color(col)) }
-    private mutating func polyShade(_ pts: [CGPoint], _ sh: GraphicsContext.Shading) { c.fill(path(pts), with: sh) }
-    private mutating func outline(_ pts: [CGPoint], _ col: Color, _ lw: CGFloat) {
+    mutating func poly(_ pts: [CGPoint], _ col: Color) { c.fill(path(pts), with: .color(col)) }
+    mutating func polyShade(_ pts: [CGPoint], _ sh: GraphicsContext.Shading) { c.fill(path(pts), with: sh) }
+    mutating func outline(_ pts: [CGPoint], _ col: Color, _ lw: CGFloat) {
         c.stroke(path(pts), with: .color(col), lineWidth: lw)
     }
-    private mutating func line(_ a: CGPoint, _ b: CGPoint, _ col: Color, _ lw: CGFloat) {
+    mutating func line(_ a: CGPoint, _ b: CGPoint, _ col: Color, _ lw: CGFloat) {
         var p = Path()
         p.move(to: a)
         p.addLine(to: b)
         c.stroke(p, with: .color(col), lineWidth: lw)
     }
-    private mutating func rect(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ col: Color) {
+    mutating func rect(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ col: Color) {
         c.fill(Path(CGRect(x: x, y: y, width: w, height: h)), with: .color(col))
     }
-    private mutating func ellipse(_ x: CGFloat, _ y: CGFloat, _ rx: CGFloat, _ ry: CGFloat, _ col: Color) {
+    mutating func ellipse(_ x: CGFloat, _ y: CGFloat, _ rx: CGFloat, _ ry: CGFloat, _ col: Color) {
         c.fill(Path(ellipseIn: CGRect(x: x - rx, y: y - ry, width: rx * 2, height: ry * 2)), with: .color(col))
     }
-    private func grad(_ stops: [(Color, CGFloat)]) -> Gradient {
+    func grad(_ stops: [(Color, CGFloat)]) -> Gradient {
         Gradient(stops: stops.map { Gradient.Stop(color: $0.0, location: $0.1) })
     }
     /// Additive glow, like canvas 'lighter'.
-    private mutating func glow(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ col: Color, _ a: Double) {
+    mutating func glow(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ col: Color, _ a: Double) {
         var g = c
         g.blendMode = .plusLighter
         let gr = grad([(col.opacity(a), 0), (col.opacity(0), 1)])
         g.fill(Path(CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)),
                with: .radialGradient(gr, center: pt(x, y), startRadius: 0, endRadius: r))
     }
-    private mutating func text(_ s: String, _ x: CGFloat, _ y: CGFloat, size: CGFloat, color: Color, font: String = "BarlowCondensed-ExtraBold") {
+    mutating func text(_ s: String, _ x: CGFloat, _ y: CGFloat, size: CGFloat, color: Color, font: String = "BarlowCondensed-ExtraBold") {
         c.draw(Text(s).font(.custom(font, fixedSize: size)).foregroundColor(color), at: pt(x, y), anchor: .center)
     }
 
-    private func rng(_ seed: Double) -> Mulberry32 { Mulberry32(seed: UInt32(truncatingIfNeeded: Int(seed.rounded()))) }
+    func rng(_ seed: Double) -> Mulberry32 { Mulberry32(seed: UInt32(truncatingIfNeeded: Int(seed.rounded()))) }
 
     /// Draw on a face: unit square mapped onto the parallelogram p→q (bottom edge) raised by h.
-    private func face(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat) -> GraphicsContext {
+    func face(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat) -> GraphicsContext {
         var f = c
         f.concatenate(CGAffineTransform(a: q.x - p.x, b: q.y - p.y, c: 0, d: -h, tx: p.x, ty: p.y))
         return f
@@ -214,7 +215,7 @@ struct TownPainter {
     // MARK: Stone
 
     /// A textured stone wall: base color, stone courses, specks and darkening near the ground.
-    private mutating func stoneWall(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ col: String, seed: Double, courses: Bool) {
+    mutating func stoneWall(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ col: String, seed: Double, courses: Bool) {
         let wall = path([p, q, upp(q, h), upp(p, h)])
         c.fill(wall, with: .color(hex(col)))
         var w = c
@@ -252,13 +253,13 @@ struct TownPainter {
                with: .linearGradient(g, startPoint: pt(0, top), endPoint: pt(0, bottom)))
     }
 
-    private func corners(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double) -> (CGPoint, CGPoint, CGPoint, CGPoint) {
+    func corners(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double) -> (CGPoint, CGPoint, CGPoint, CGPoint) {
         (iso(gx, gy), iso(gx + w, gy), iso(gx + w, gy + d), iso(gx, gy + d))
     }
 
     /// A stone block: lit left wall, shaded right wall, top, optional parapet.
     @discardableResult
-    private mutating func block(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat,
+    mutating func block(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat,
                                 lit: String = TownPainter.tuffLit, shade: String = TownPainter.tuffShade, top: String = TownPainter.tuffTop,
                                 courses: Bool = true, parapet: Bool = false, roofIn: String = "#e8cba3", seed: Double? = nil) -> Box {
         let (A, B, C, D) = corners(gx, gy, w, d)
@@ -266,7 +267,7 @@ struct TownPainter {
         stoneWall(D, C, h, lit, seed: sd, courses: courses)
         stoneWall(C, B, h, shade, seed: sd + 1, courses: courses)
         let a = upp(A, h), b = upp(B, h), cc = upp(C, h), dd = upp(D, h)
-        poly([a, b, cc, dd], hex(top))
+        poly([a, b, cc, dd], hex(s.local.winter != nil ? "#f6f9fc" : top))
         if parapet {
             let k: CGFloat = 0.06
             poly([lp(a, cc, k), lp(b, dd, k), lp(a, cc, 1 - k), lp(b, dd, 1 - k)], hex(roofIn))
@@ -275,7 +276,7 @@ struct TownPainter {
     }
 
     /// Arched window or door on a face, in face units (u along the wall, v up). Lit windows glow.
-    private mutating func opening(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ u: CGFloat, _ v: CGFloat, _ w: CGFloat, _ hh: CGFloat,
+    mutating func opening(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ u: CGFloat, _ v: CGFloat, _ w: CGFloat, _ hh: CGFloat,
                                   door: Bool = false, lit: Bool = false) {
         var f = face(p, q, h)
         let x0 = u - w / 2
@@ -297,7 +298,7 @@ struct TownPainter {
     }
 
     /// A glass panel in a face, in face units, with wooden mullions.
-    private mutating func glass(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ u0: CGFloat, _ u1: CGFloat, _ v0: CGFloat, _ v1: CGFloat, lit: Bool) {
+    mutating func glass(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ u0: CGFloat, _ u1: CGFloat, _ v0: CGFloat, _ v1: CGFloat, lit: Bool) {
         var f = face(p, q, h)
         let g = grad([(hex(lit ? "#ffcf7a" : "#6a8aa8"), 0), (hex(lit ? "#ffe8b0" : "#a9c6dc"), 1)])
         f.fill(Path(CGRect(x: u0, y: v0, width: u1 - u0, height: v1 - v0)), with: .linearGradient(g, startPoint: pt(0, v0), endPoint: pt(0, v1)))
@@ -312,7 +313,8 @@ struct TownPainter {
     // MARK: Roofs
 
     /// Gable roof with the ridge along gx, tiles drawn as lines.
-    private mutating func gableRoof(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ rise: CGFloat, _ col: String, eave: Double = 0.08) {
+    mutating func gableRoof(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ rise: CGFloat, _ colIn: String, eave: Double = 0.08) {
+        let col = snowy(colIn)
         let x0 = gx - eave, x1 = gx + w + eave, y0 = gy - eave, y1 = gy + d + eave, ym = gy + d / 2
         let P = { (x: Double, y: Double, z: CGFloat) -> CGPoint in CGPoint(x: TownGeo.iso(x, y).x, y: TownGeo.iso(x, y).y - z) }
         poly([P(x0, y0, h), P(x1, y0, h), P(x1, ym, h + rise), P(x0, ym, h + rise)], mix(col, "#000000", 0.3))
@@ -333,7 +335,8 @@ struct TownPainter {
     }
 
     /// Hip roof (four slopes) for the konak.
-    private mutating func hipRoof(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ rise: CGFloat, _ col: String) {
+    mutating func hipRoof(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ rise: CGFloat, _ colIn: String) {
+        let col = snowy(colIn)
         let e = 0.1
         let P = { (x: Double, y: Double, z: CGFloat) -> CGPoint in CGPoint(x: TownGeo.iso(x, y).x, y: TownGeo.iso(x, y).y - z) }
         let A = P(gx - e, gy - e, h), B = P(gx + w + e, gy - e, h), C = P(gx + w + e, gy + d + e, h), D = P(gx - e, gy + d + e, h)
@@ -350,7 +353,7 @@ struct TownPainter {
         c.stroke(tiles, with: .color(rgba(80, 25, 10, 0.3)), lineWidth: 1.1)
     }
 
-    private mutating func dome(_ cx: CGFloat, _ cy: CGFloat, _ r: CGFloat, _ col: String) {
+    mutating func dome(_ cx: CGFloat, _ cy: CGFloat, _ r: CGFloat, _ col: String) {
         var p = Path()
         let n = 16
         for i in 0...n {
@@ -371,20 +374,20 @@ struct TownPainter {
 
     // MARK: Props
 
-    private mutating func cypress(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat = 1) {
+    mutating func cypress(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat = 1) {
         let g = grad([(hex("#4f7a3a"), 0), (hex("#22401e"), 1)])
         c.fill(Path(ellipseIn: CGRect(x: x - 9 * k, y: y - 68 * k, width: 18 * k, height: 68 * k)),
                with: .linearGradient(g, startPoint: pt(x - 8 * k, 0), endPoint: pt(x + 8 * k, 0)))
     }
 
-    private mutating func roundTree(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat = 1, _ col: String = "#6f9a48") {
+    mutating func roundTree(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat = 1, _ col: String = "#6f9a48") {
         rect(x - 2 * k, y - 16 * k, 4 * k, 16 * k, hex("#5a3a20"))
         let g = grad([(mix(col, "#ffffff", 0.25), 0), (mix(col, "#000000", 0.3), 1)])
         c.fill(Path(ellipseIn: CGRect(x: x - 16 * k, y: y - 42 * k, width: 32 * k, height: 32 * k)),
                with: .radialGradient(g, center: pt(x - 6 * k, y - 30 * k), startRadius: 2, endRadius: 22 * k))
     }
 
-    private mutating func palm(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat = 1) {
+    mutating func palm(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat = 1) {
         var trunk = Path()
         trunk.move(to: pt(x, y))
         trunk.addQuadCurve(to: pt(x + 2 * k, y - 56 * k), control: pt(x + 6 * k, y - 30 * k))
@@ -400,12 +403,12 @@ struct TownPainter {
         c.stroke(fronds, with: .color(hex("#3f7a3a")), style: StrokeStyle(lineWidth: 3.5 * k, lineCap: .round))
     }
 
-    private mutating func lantern(_ x: CGFloat, _ y: CGFloat) {
+    mutating func lantern(_ x: CGFloat, _ y: CGFloat) {
         ellipse(x, y, 3.5, 3.5, hex("#ffd890"))
         glow(x, y, 22, Color(red: 1, green: 200 / 255, blue: 110 / 255), 0.55)
     }
 
-    private mutating func flag(_ x: CGFloat, _ y: CGFloat, _ col: String, hgt: CGFloat = 60) {
+    mutating func flag(_ x: CGFloat, _ y: CGFloat, _ col: String, hgt: CGFloat = 60) {
         line(pt(x, y), pt(x, y - hgt), hex("#3a2416"), 2.5)
         let wv = CGFloat(sin(t * 3 + Double(x))) * 4
         var p = Path()
@@ -417,7 +420,7 @@ struct TownPainter {
         c.fill(p, with: .color(hex(col)))
     }
 
-    private mutating func person(_ x: CGFloat, _ y: CGFloat, _ col: String, _ tt: Double, _ ph: Double) {
+    mutating func person(_ x: CGFloat, _ y: CGFloat, _ col: String, _ tt: Double, _ ph: Double) {
         let b = CGFloat(abs(sin(tt * 6 + ph))) * 1.5
         ellipse(x, y - 15 - b, 3.2, 3.2, hex("#3a2418"))
         rect(x - 3, y - 12 - b, 6, 9, hex(col))
@@ -425,20 +428,20 @@ struct TownPainter {
         rect(x + 1, y - 3, 2, 3, hex("#2a1a14"))
     }
 
-    private mutating func propane(_ x: CGFloat, _ y: CGFloat) {
+    mutating func propane(_ x: CGFloat, _ y: CGFloat) {
         rect(x - 5, y - 18, 10, 18, hex("#d8d4cc"))
         ellipse(x, y - 18, 5, 2.5, hex("#d8d4cc"))
         rect(x + 2, y - 18, 3, 18, hex("#9a948a"))
     }
 
-    private mutating func crate(_ x: CGFloat, _ y: CGFloat) {
+    mutating func crate(_ x: CGFloat, _ y: CGFloat) {
         rect(x - 8, y - 12, 16, 12, hex("#b07a44"))
         var p = Path(CGRect(x: x - 8, y: y - 12, width: 16, height: 12))
         p.move(to: pt(x - 8, y - 12)); p.addLine(to: pt(x + 8, y))
         c.stroke(p, with: .color(hex("#6a4424")), lineWidth: 1)
     }
 
-    private mutating func windsock(_ x: CGFloat, _ y: CGFloat, pole: CGFloat, speed: Double) {
+    mutating func windsock(_ x: CGFloat, _ y: CGFloat, pole: CGFloat, speed: Double) {
         line(pt(x, y), pt(x, y - pole), hex("#3a2416"), 2)
         var p = Path()
         p.move(to: pt(x, y - pole))
@@ -448,7 +451,7 @@ struct TownPainter {
         c.fill(p, with: .color(hex("#ff8a3d")))
     }
 
-    private mutating func balloon(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ colors: [String], burn: Bool = false, alpha: Double = 1,
+    mutating func balloon(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ colors: [String], burn: Bool = false, alpha: Double = 1,
                                   ad: Sponsor? = nil, design: Design? = nil) {
         ScenePainter.balloon(&c, x: x, y: y, r: r, colors: colors, burn: burn, alpha: alpha, ad: ad, design: design,
                              region: s.region, time: t)
@@ -457,17 +460,17 @@ struct TownPainter {
     // MARK: Shadows
 
     /// Soft cast shadow of a box footprint with height h.
-    private mutating func boxShadow(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ a: Double = 0.22) {
+    mutating func boxShadow(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ a: Double = 0.22) {
         let (A, B, C, D) = corners(gx, gy, w, d)
         let sh = { (p: CGPoint) -> CGPoint in CGPoint(x: p.x + h * Self.sunShadow.width, y: p.y + h * Self.sunShadow.height) }
         poly([A, sh(A), sh(B), sh(C), sh(D), D, C, B], rgba(90, 45, 20, a))
     }
 
-    private mutating func blobShadow(_ x: CGFloat, _ y: CGFloat, _ rx: CGFloat, _ ry: CGFloat, _ a: Double = 0.22) {
+    mutating func blobShadow(_ x: CGFloat, _ y: CGFloat, _ rx: CGFloat, _ ry: CGFloat, _ a: Double = 0.22) {
         ellipse(x, y, rx, ry, rgba(90, 45, 20, a))
     }
 
-    private mutating func buildingShadow(_ b: TownBuilding) {
+    mutating func buildingShadow(_ b: TownBuilding) {
         if b.lv <= 0 && b.look != .kiosk { return }
         let h: CGFloat
         switch b.look {
@@ -481,13 +484,15 @@ struct TownPainter {
         case .tower: h = 270
         case .kiosk: h = 44
         case .hotel: h = [60, 120, 140, 120][b.star]
+        case .bazaar: h = 60
+        case .mast: return
         }
         boxShadow(b.gx + 0.3, b.gy + 0.3, b.w - 0.6, b.d - 0.6, h, 0.18)
     }
 
     // MARK: Plots
 
-    private mutating func plot(_ b: TownBuilding) {
+    mutating func plot(_ b: TownBuilding) {
         let (A, B, C, D) = corners(b.gx + 0.1, b.gy + 0.1, b.w - 0.2, b.d - 0.2)
         poly([A, B, C, D], hex("#c99b6a"))
         poly([lp(A, C, 0.08), lp(B, D, 0.08), lp(A, C, 0.92), lp(B, D, 0.92)], hex("#d6ac7a"))
@@ -529,7 +534,7 @@ struct TownPainter {
 
     // MARK: Buildings
 
-    private mutating func building(_ b: TownBuilding) {
+    mutating func building(_ b: TownBuilding) {
         if b.lv <= 0 && b.look != .kiosk { plot(b); return }
         let big = b.lv == 2, g = b.gx, k = b.gy
         switch b.look {
@@ -543,11 +548,13 @@ struct TownPainter {
         case .tower: tower(b)
         case .kiosk: kiosk(b)
         case .hotel: hotel(b)
+        case .mast: windMast(b.gx + 0.2, b.gy + 0.2)
+        case .bazaar: bazaar(b)
         }
     }
 
     /// Barrel vault in company colors, big open doors, propane and crates.
-    private mutating func hangar(_ b: TownBuilding, _ big: Bool) {
+    mutating func hangar(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.25, y0 = b.gy + 0.2, w = b.w - 0.5, d = b.d - 0.4
         let wallH: CGFloat = big ? 46 : 36, rise: CGFloat = 52, col = s.colors
         let f = block(x0, y0, w, d, wallH, lit: "#ead2b0", shade: "#b48a64", top: "#e9d2b0")
@@ -581,7 +588,7 @@ struct TownPainter {
     }
 
     /// Sawtooth glass roof and the latest design's fabric drying on lines.
-    private mutating func workshop(_ b: TownBuilding, _ big: Bool) {
+    mutating func workshop(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.2, y0 = b.gy + 0.25, w = b.w - 0.4, d = b.d - 0.6
         let h: CGFloat = big ? 64 : 52
         let f = block(x0, y0, w, d, h)
@@ -607,7 +614,7 @@ struct TownPainter {
     }
 
     /// Pilot office: parapet, wooden balcony, windsock and a bench.
-    private mutating func office(_ b: TownBuilding, _ big: Bool) {
+    mutating func office(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.3, y0 = b.gy + 0.3, w = b.w - 0.6, d = b.d - 0.6
         let h: CGFloat = big ? 104 : 74
         let f = block(x0, y0, w, d, h, parapet: true)
@@ -631,7 +638,7 @@ struct TownPainter {
     }
 
     /// Pilot school: gable roof, bell tower, a tethered training balloon and students.
-    private mutating func school(_ b: TownBuilding, _ big: Bool) {
+    mutating func school(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.25, y0 = b.gy + 0.35, w = b.w - 0.9, d = b.d - 0.7
         let h: CGFloat = 66
         let f = block(x0, y0, w, d, h)
@@ -654,7 +661,7 @@ struct TownPainter {
     }
 
     /// Bank: marble steps, colonnade, pediment with the currency sign, an armored van while you owe money.
-    private mutating func bank(_ b: TownBuilding, _ big: Bool) {
+    mutating func bank(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.3, y0 = b.gy + 0.35, w = b.w - 0.6, d = b.d - 0.7
         let h: CGFloat = 70
         block(x0 - 0.15, y0 - 0.05, w + 0.3, d + 0.3, 10, lit: "#efe8dc", shade: "#b8ad9c", top: "#f6f1e8", courses: false)
@@ -675,7 +682,7 @@ struct TownPainter {
     }
 
     /// Guide office: striped teal awning, map board, the tour minibus.
-    private mutating func guideOffice(_ b: TownBuilding, _ big: Bool) {
+    mutating func guideOffice(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.35, y0 = b.gy + 0.4, w = b.w - 1, d = b.d - 1
         let h: CGFloat = 48
         let f = block(x0, y0, w, d, h)
@@ -704,7 +711,7 @@ struct TownPainter {
     }
 
     /// Influencer agency: a modern cave-stone villa with big lit glass, a roof terrace and a pool.
-    private mutating func agency(_ g: Double, _ k: Double, _ big: Bool) {
+    mutating func agency(_ g: Double, _ k: Double, _ big: Bool) {
         let x0 = g + 0.25, y0 = k + 0.25, w = 1.5, d = 1.15
         let h1: CGFloat = 54, h2: CGFloat = 46
         let lit = "#f6e2c8", shade = "#c4936c", top = "#efd9b8"
@@ -763,7 +770,7 @@ struct TownPainter {
         cypress(cp.x, cp.y)
     }
 
-    private mutating func ripples(_ A: CGPoint, _ B: CGPoint, _ C: CGPoint, _ D: CGPoint, rows: Int) {
+    mutating func ripples(_ A: CGPoint, _ B: CGPoint, _ C: CGPoint, _ D: CGPoint, rows: Int) {
         var p = Path()
         for i in 0..<rows {
             let k = 0.3 + CGFloat(i) * (rows > 3 ? 0.18 : 0.2)
@@ -775,7 +782,7 @@ struct TownPainter {
     }
 
     /// Holding tower: gold glass with a crown and a glow.
-    private mutating func tower(_ b: TownBuilding) {
+    mutating func tower(_ b: TownBuilding) {
         let x0 = b.gx + 0.45, y0 = b.gy + 0.45, w = b.w - 0.9, d = b.d - 0.9
         let h: CGFloat = 270
         let (A, B, C, D) = corners(x0, y0, w, d)
@@ -798,7 +805,7 @@ struct TownPainter {
     }
 
     /// Booking office kiosk: awning and mini balloon in the company's colors; boarded up once it's gone.
-    private mutating func kiosk(_ b: TownBuilding) {
+    mutating func kiosk(_ b: TownBuilding) {
         let x0 = b.gx + 0.1, y0 = b.gy + 0.1, w = b.w - 0.2, d = b.d - 0.2
         let c1 = b.colors.first ?? "#ff5e3a", c2 = b.colors.count > 1 ? b.colors[1] : "#ffffff"
         if b.lv == 0 {
@@ -826,7 +833,7 @@ struct TownPainter {
     // MARK: Hotels
 
     /// Four hotels, each clearly grander than the last.
-    private mutating func hotel(_ b: TownBuilding) {
+    mutating func hotel(_ b: TownBuilding) {
         let g = b.gx, k = b.gy, own = b.lv == 2
         switch b.star {
         case 0: pension(g, k)
@@ -846,7 +853,7 @@ struct TownPainter {
     }
 
     /// Göreme stone pension: one humble storey, laundry and geraniums.
-    private mutating func pension(_ g: Double, _ k: Double) {
+    mutating func pension(_ g: Double, _ k: Double) {
         let f = block(g + 0.45, k + 0.55, 1.1, 0.9, 46)
         gableRoof(g + 0.45, k + 0.55, 1.1, 0.9, 46, 18, "#b0583a")
         opening(f.D, f.C, 46, 0.3, 0, 0.22, 0.6, door: true)
@@ -865,7 +872,7 @@ struct TownPainter {
     }
 
     /// Ürgüp konak: two storeys, wooden bay window, hip roof, courtyard wall.
-    private mutating func konak(_ g: Double, _ k: Double) {
+    mutating func konak(_ g: Double, _ k: Double) {
         block(g + 0.1, k + 1.55, 1.6, 0.12, 18, courses: false)
         let f = block(g + 0.35, k + 0.3, 1.3, 1.1, 92)
         hipRoof(g + 0.35, k + 0.3, 1.3, 1.1, 92, 30, "#c0583a")
@@ -888,7 +895,7 @@ struct TownPainter {
     }
 
     /// Cave hotel: suites carved into fairy chimneys, a terrace with cushions and lanterns.
-    private mutating func caveHotel(_ g: Double, _ k: Double) {
+    mutating func caveHotel(_ g: Double, _ k: Double) {
         let terrace = block(g + 0.15, k + 1.05, 1.7, 0.8, 10, lit: "#c8955c", shade: "#8a5a34", top: "#b07a44", courses: false)
         let cones: [(Double, Double, CGFloat)] = [(g + 0.5, k + 0.5, 150), (g + 1.2, k + 0.45, 120), (g + 1.55, k + 0.9, 95)]
         for (x, y, hh) in cones.sorted(by: { $0.0 + $0.1 < $1.0 + $1.1 }) {
@@ -921,7 +928,7 @@ struct TownPainter {
 
     /// Palace resort: a tall main block stepping forward between two wings, gilded domes, arcades,
     /// red carpet, infinity pool, palms and cypresses.
-    private mutating func palace(_ g: Double, _ k: Double, own: Bool) {
+    mutating func palace(_ g: Double, _ k: Double, own: Bool) {
         let (oA, oB, oC, oD) = corners(g + 0.2, k + 2.1, 2.6, 0.72)
         poly([oA, oB, oC, oD], hex("#e8dcc6"))
         let (iA, iB, iC, iD) = corners(g + 0.3, k + 2.17, 2.4, 0.56)
@@ -951,17 +958,17 @@ struct TownPainter {
 
     // MARK: Ground
 
-    private func pmod(_ a: Double, _ m: Double) -> Double { (a.truncatingRemainder(dividingBy: m) + m).truncatingRemainder(dividingBy: m) }
+    func pmod(_ a: Double, _ m: Double) -> Double { (a.truncatingRemainder(dividingBy: m) + m).truncatingRemainder(dividingBy: m) }
 
     /// Today's wind in a layer: direction and strength, so balloons drift the way the flight will.
-    private func windK(_ i: Int) -> Double {
+    func windK(_ i: Int) -> Double {
         let v = (s.weather?.layers.indices.contains(i) ?? false) ? s.weather!.layers[i] : 3
         let sign: Double = v < 0 ? -1 : 1
         return sign * min(max(abs(v) / 4, 0.5), 2)
     }
 
     /// Ground inside the walls: patches, vineyards, cobbled roads and the striped launch field.
-    private mutating func townDecor() {
+    mutating func townDecor() {
         var R = Mulberry32(seed: 5)
         var green = Path(), brown = Path()
         for _ in 0..<160 {
@@ -985,7 +992,7 @@ struct TownPainter {
         }
     }
 
-    private mutating func vineyards(_ fields: [(Double, Double, Double, Double)]) {
+    mutating func vineyards(_ fields: [(Double, Double, Double, Double)]) {
         var rows = Path()
         for (gx0, gy0, gw, gd) in fields {
             for r in 0..<6 {
@@ -997,7 +1004,7 @@ struct TownPainter {
     }
 
     /// Cobbled road with kerbs.
-    private mutating func road(_ gx0: Double, _ gy0: Double, _ gx1: Double, _ gy1: Double) {
+    mutating func road(_ gx0: Double, _ gy0: Double, _ gx1: Double, _ gy1: Double) {
         let pts = [iso(gx0, gy0), iso(gx1, gy0), iso(gx1, gy1), iso(gx0, gy1)]
         let shape = path(pts)
         c.fill(shape, with: .color(hex("#c9a47a")))
@@ -1018,7 +1025,7 @@ struct TownPainter {
     private static let outerFields: [(Double, Double)] = [(-6, 9.5), (18, 2), (10, 18), (-4, -6), (20, 15)]
 
     /// Land around the town: patches, dirt roads running off, other companies' launch fields.
-    private mutating func outerDecor() {
+    mutating func outerDecor() {
         var R = Mulberry32(seed: 9)
         var green = Path(), brown = Path()
         for _ in 0..<420 {
@@ -1046,9 +1053,9 @@ struct TownPainter {
     }
 
     /// Fairy chimneys, trees, your fleet on the launch field and people walking the roads.
-    private func scenery() -> [TownItem] {
+    func scenery() -> [TownItem] {
         var items: [TownItem] = []
-        let chims: [(Double, Double, CGFloat)] = [(0.3, 6.6, 150), (14.4, 2.6, 170), (15.2, 8, 140), (0.4, 12.6, 130), (7.7, 0.3, 120),
+        let chims: [(Double, Double, CGFloat)] = [(0.3, 6.6, 150), (15.2, 8, 140), (0.4, 12.6, 130), (7.7, 0.3, 120),
                                                    (5.6, 15.2, 150), (0.5, 3.0, 160), (12.8, 0.2, 140)]
         for (gx, gy, hh) in chims {
             items.append(TownItem(depth: gx + gy, shadow: { p in
@@ -1080,6 +1087,7 @@ struct TownPainter {
                 p.balloon(q.x, q.y, r, colors, burn: (tt * 1.3 + Double(i)).truncatingRemainder(dividingBy: 3) < 0.4, ad: ad, design: design)
             }))
         }
+        items += decorations() + bunting()
         // People strolling on the roads.
         let shirts = ["#2b2350", "#ff5e3a", "#14a39a", "#ffc23d", "#9b7be0"]
         for i in 0..<10 {
@@ -1094,7 +1102,7 @@ struct TownPainter {
     }
 
     /// Fairy chimney clusters out in the valley, and balloons inflating and lifting off the other fields.
-    private func outerScenery() -> [TownItem] {
+    func outerScenery() -> [TownItem] {
         var items: [TownItem] = []
         var R = Mulberry32(seed: 21)
         for _ in 0..<46 {
@@ -1131,7 +1139,7 @@ struct TownPainter {
     }
 
     /// A low tuff wall round the town with gaps where the roads leave.
-    private func townWall() -> [TownItem] {
+    func townWall() -> [TownItem] {
         var items: [TownItem] = []
         let t0 = -0.5, t1 = 15.5, th = 0.14
         let seg = { (gx: Double, gy: Double, w: Double, d: Double) -> TownItem in
@@ -1153,7 +1161,7 @@ struct TownPainter {
     }
 
     /// Balloons drifting over the town with the day's wind, and their shadows on the ground.
-    private func skyBalloons() -> (shadows: [(inout TownPainter) -> Void], balloons: [(inout TownPainter) -> Void]) {
+    func skyBalloons() -> (shadows: [(inout TownPainter) -> Void], balloons: [(inout TownPainter) -> Void]) {
         let list: [(Double, Double, CGFloat, String, String)] = [(0, 2, 230, "#ff5e3a", "#ffc23d"), (5, 11, 300, "#14a39a", "#e8fff9"),
                                                                  (9, 4, 260, "#9b7be0", "#f2ebff"), (3, 7, 340, "#5aa9e6", "#eaf4fc")]
         var shadows: [(inout TownPainter) -> Void] = [], balloons: [(inout TownPainter) -> Void] = []
@@ -1170,7 +1178,7 @@ struct TownPainter {
     // MARK: Sky
 
     /// Sunrise behind the town, in screen space: sky, sun, clouds, distant balloons and ridges of fairy chimneys.
-    private mutating func backdrop(_ w: CGFloat, _ h: CGFloat) {
+    mutating func backdrop(_ w: CGFloat, _ h: CGFloat) {
         let hz = TownGeo.horizon(v, height: h), px = v.ox * 0.08, p = 0.32
         if hz < 2 { return }
         let sky = grad([(mix("#1b1840", "#5f8fc6", p), 0), (mix("#6b3e6e", "#f0b48c", p), 0.5), (mix("#f08a4a", "#ffe2ac", p), 1)])
@@ -1230,7 +1238,7 @@ struct TownPainter {
     }
 
     /// Dozens of distant balloons drifting over the valley with the wind; the far ones hazier.
-    private mutating func farBalloons(_ w: CGFloat, _ h: CGFloat, _ hz: CGFloat, _ px: CGFloat, layer: Int) {
+    mutating func farBalloons(_ w: CGFloat, _ h: CGFloat, _ hz: CGFloat, _ px: CGFloat, layer: Int) {
         let cols: [[String]] = [s.colors] + s.local.rivals.map { $0.colors } + [["#ff5e3a", "#ffc23d"], ["#14a39a", "#e8fff9"], ["#e0408a", "#ffd0e0"], ["#5aa9e6", "#eaf4fc"]]
         var R = Mulberry32(seed: layer == 1 ? 41 : 23)
         let n = layer == 1 ? 8 : 20, wk = windK(layer == 1 ? 2 : 3)
@@ -1246,16 +1254,17 @@ struct TownPainter {
     }
 
     /// The valley floor from the horizon down; returns where the ground starts.
-    private mutating func ground(_ w: CGFloat, _ h: CGFloat) -> CGFloat {
+    mutating func ground(_ w: CGFloat, _ h: CGFloat) -> CGFloat {
         let hz = max(0, TownGeo.horizon(v, height: h) + h * 0.015)
-        let g = grad([(hex("#d9a88a"), 0), (hex("#e2b98e"), 0.25), (hex("#e6c294"), 1)])
+        let g = s.local.winter != nil ? grad([(hex("#c9d2e0"), 0), (hex("#dfe6ef"), 0.25), (hex("#eef2f8"), 1)])
+            : grad([(hex("#d9a88a"), 0), (hex("#e2b98e"), 0.25), (hex("#e6c294"), 1)])
         c.fill(Path(CGRect(x: 0, y: hz, width: w, height: max(0, h - hz))),
                with: .linearGradient(g, startPoint: pt(0, hz), endPoint: pt(0, max(hz + 1, h))))
         return hz
     }
 
     /// Haze where the ground meets the sky.
-    private mutating func haze(_ w: CGFloat, _ h: CGFloat) {
+    mutating func haze(_ w: CGFloat, _ h: CGFloat) {
         let hz = TownGeo.horizon(v, height: h)
         if hz < -h * 0.2 { return }
         let g = grad([(rgba(236, 170, 135, 0), 0), (rgba(236, 172, 136, 0.75), 0.25), (rgba(232, 180, 140, 0.45), 0.45), (rgba(232, 190, 145, 0), 1)])
@@ -1268,18 +1277,18 @@ struct TownPainter {
     private static let zoneFontSize: CGFloat = 95
 
     /// Text runs along +gx with "up" toward -gy; side zones run along -gy instead (up and to the right on screen).
-    private func zoneMatrix(_ z: TownZone) -> CGAffineTransform {
+    func zoneMatrix(_ z: TownZone) -> CGAffineTransform {
         let o = TownGeo.iso(z.gx, z.gy), a = TownGeo.TW / 200, b = TownGeo.TH / 200
         return z.side ? CGAffineTransform(a: a, b: -b, c: a, d: b, tx: o.x, ty: o.y)
             : CGAffineTransform(a: a, b: b, c: -a, d: b, tx: o.x, ty: o.y)
     }
 
-    private func zoneText(_ z: TownZone) -> Text {
+    func zoneText(_ z: TownZone) -> Text {
         Text(loc(z.key)).font(.custom("BarlowCondensed-ExtraBold", fixedSize: Self.zoneFontSize))
     }
 
     /// The zone's text box on the ground, in world coordinates.
-    private func zoneQuad(_ z: TownZone) -> [CGPoint] {
+    func zoneQuad(_ z: TownZone) -> [CGPoint] {
         let w = Double(c.resolve(zoneText(z)).measure(in: CGSize(width: 4000, height: 400)).width) / 100
         let h = Double(Self.zoneFontSize) * 0.75 / 100
         if z.side {
@@ -1291,7 +1300,7 @@ struct TownPainter {
     }
 
     /// Zone names written in the sand: a groove with a shadowed upper lip and a lit lower lip.
-    private mutating func zoneText() {
+    mutating func zoneText() {
         let a = Double(min(max(1.25 - v.z, 0.35), 0.85))
         for z in Town.zones {
             var g = c
@@ -1305,7 +1314,7 @@ struct TownPainter {
     }
 
     /// Building labels once zoomed in, red dots on zones that need you, and the tap targets.
-    private mutating func labels(_ bs: [TownBuilding]) -> TownHits {
+    mutating func labels(_ bs: [TownBuilding]) -> TownHits {
         var hits = TownHits()
         let z = v.z, full = z >= TownGeo.labelZoom, sc = min(max(z / 0.5, 0.75), 1.15)
         var taken: [CGRect] = []
@@ -1333,7 +1342,7 @@ struct TownPainter {
     }
 
     /// Name tag above a building, with its state below the name. Skipped when it would cover another.
-    private mutating func label(_ b: TownBuilding, _ sx: CGFloat, _ sy: CGFloat, _ sc: CGFloat, _ taken: inout [CGRect]) {
+    mutating func label(_ b: TownBuilding, _ sx: CGFloat, _ sy: CGFloat, _ sc: CGFloat, _ taken: inout [CGRect]) {
         let fn = ((b.small ? 13 : 16) * sc).rounded(), fs = ((b.small ? 11 : 13) * sc).rounded()
         let locked = b.lv == -1, plot = b.lv == 0 && b.look != .kiosk
         let name = c.resolve(Text(b.name).font(.custom("BarlowCondensed-ExtraBold", fixedSize: fn))

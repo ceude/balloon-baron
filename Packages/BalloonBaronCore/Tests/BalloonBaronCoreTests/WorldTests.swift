@@ -80,7 +80,8 @@ final class WorldTests: XCTestCase {
             g.state.cash = -1000
             let r = play(&g)
             fine = r.ledger.antitrust
-            cashAtFine = -1000 + r.net + fine // the day's takings were in the box when the fine came
+            // The day's takings were in the box when the fine came; a seizure after it doesn't count.
+            cashAtFine = -1000 + r.net + fine - r.ledger.seizure
         }
         XCTAssertGreaterThan(fine, 0)
         XCTAssertEqual(fine, jsRound(Double(max(0, cashAtFine) + 20 * 60000) * Rules.monopolyRate / 100) * 100,

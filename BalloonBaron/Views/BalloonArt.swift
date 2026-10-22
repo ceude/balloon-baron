@@ -9,23 +9,26 @@ struct DesignBalloon: View {
     let pattern: Pattern?
     /// Main, pattern and accent colour of the design.
     let patternColors: [String]
+    var shape: EnvelopeShape?
 
     init(colors: [String], design: Design? = nil) {
         self.colors = colors
         pattern = design?.pattern
         patternColors = design?.colors ?? []
+        shape = design?.shape
     }
 
-    /// A design that isn't saved yet, for the studio preview.
-    init(pattern: Pattern, colors: [String]) {
+    /// A design that isn't saved yet, for the studio preview and the bazaar.
+    init(pattern: Pattern, colors: [String], shape: EnvelopeShape? = nil) {
         self.colors = colors
         self.pattern = pattern
         patternColors = colors
+        self.shape = shape
     }
 
     var body: some View {
         Canvas { ctx, size in
-            BalloonPainter.draw(&ctx, size: size, colors: colors, pattern: pattern, patternColors: patternColors)
+            BalloonPainter.draw(&ctx, size: size, colors: colors, pattern: pattern, patternColors: patternColors, shape: shape)
         }
         .accessibilityHidden(true)
     }
@@ -33,7 +36,7 @@ struct DesignBalloon: View {
 
 /// Port of the prototype's canvas code (`balloon`, `paintDesign`, `star`, `heart`).
 enum BalloonPainter {
-    static func draw(_ ctx: inout GraphicsContext, size: CGSize, colors: [String], pattern: Pattern?, patternColors: [String]) {
+    static func draw(_ ctx: inout GraphicsContext, size: CGSize, colors: [String], pattern: Pattern?, patternColors: [String], shape: EnvelopeShape? = nil) {
         // The prototype's balloon is 2R wide and 2.55R tall, from envelope top to basket bottom.
         let r = min(size.width / 2, size.height / 2.55) * 0.96
         guard r > 0 else { return }
@@ -44,7 +47,7 @@ enum BalloonPainter {
         let design: [String]? = pattern != nil && patternColors.count >= 3 ? patternColors : nil
         let main = hex(design ?? colors, 0, "#ff5e3a")
 
-        let env = envelope(x: x, cy: cy, r: r)
+        let env = shape.map { envelope($0, x: x, cy: cy, r: r) } ?? envelope(x: x, cy: cy, r: r)
         ctx.fill(env, with: .color(main))
         var inner = ctx
         inner.clip(to: env)
@@ -60,6 +63,7 @@ enum BalloonPainter {
         ])
         inner.fill(Path(CGRect(x: x - r, y: top, width: r * 2, height: r * 3)),
                    with: .linearGradient(shade, startPoint: CGPoint(x: x - r, y: 0), endPoint: CGPoint(x: x + r, y: 0)))
+        if shape == .hezarfen { hezarfenFace(&ctx, x: x, cy: cy, r: r) }
 
         // Ropes and basket.
         let by = cy + r * 1.55, bb = bottom - r * 0.32
@@ -94,6 +98,66 @@ enum BalloonPainter {
         p.addQuadCurve(to: point(x, cy, angle: Double.pi * 0.85, radius: r), control: CGPoint(x: x - r * 0.75, y: cy + r * 1.15))
         p.closeSubpath()
         return p
+    }
+
+    /// Shaped envelopes from the bazaar (`envShape`): a heart, a star, Hezarfen's head. All end in the same neck.
+    static func envelope(_ shape: EnvelopeShape, x: CGFloat, cy: CGFloat, r R: CGFloat) -> Path {
+        var p = Path()
+        func P(_ dx: CGFloat, _ dy: CGFloat) -> CGPoint { CGPoint(x: x + dx * R, y: cy + dy * R) }
+        switch shape {
+        case .heart:
+            p.move(to: P(0, -0.55))
+            p.addCurve(to: P(-1.1, -0.05), control1: P(-0.2, -1.25), control2: P(-1.35, -1.05))
+            p.addQuadCurve(to: P(-0.22, 1.55), control: P(-0.8, 0.8))
+            p.addLine(to: P(0.22, 1.55))
+            p.addQuadCurve(to: P(1.1, -0.05), control: P(0.8, 0.8))
+            p.addCurve(to: P(0, -0.55), control1: P(1.35, -1.05), control2: P(0.2, -1.25))
+        case .star:
+            // A five-point star with softened tips; a narrow neck between the two lower points leads to the burner.
+            var pts: [(CGPoint, CGFloat)] = []
+            for n in 0..<10 {
+                let a = -Double.pi / 2 + Double(n) * Double.pi / 5, rr: CGFloat = n % 2 == 1 ? 0.55 : 1.2
+                if n == 5 {
+                    pts += [(P(0.17, 0.64), R * 0.1), (P(0.2, 1.55), 0), (P(-0.2, 1.55), 0), (P(-0.17, 0.64), R * 0.1)]
+                    continue
+                }
+                pts.append((P(CGFloat(cos(a)) * rr, 0.06 + CGFloat(sin(a)) * rr), n % 2 == 1 ? R * 0.08 : R * 0.14))
+            }
+            let first = pts[pts.count - 1].0, second = pts[0].0
+            p.move(to: CGPoint(x: (first.x + second.x) / 2, y: (first.y + second.y) / 2))
+            for n in pts.indices {
+                let (q, rad) = pts[n], next = pts[(n + 1) % pts.count].0
+                if rad > 0 { p.addArc(tangent1End: q, tangent2End: next, radius: rad) } else { p.addLine(to: q) }
+            }
+        case .hezarfen:
+            let steps = 36, a0 = Double.pi * 0.8, a1 = Double.pi * 2.2
+            for i in 0...steps {
+                let pt = point(x, cy, angle: a0 + (a1 - a0) * Double(i) / Double(steps), radius: R * 1.02)
+                if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
+            }
+            p.addQuadCurve(to: P(0.22, 1.55), control: P(0.7, 1.2))
+            p.addLine(to: P(-0.22, 1.55))
+            p.addQuadCurve(to: point(x, cy, angle: Double.pi * 0.8, radius: R * 1.02), control: P(-0.7, 1.2))
+        }
+        p.closeSubpath()
+        return p
+    }
+
+    /// Hezarfen's turban and moustache on his balloon.
+    static func hezarfenFace(_ ctx: inout GraphicsContext, x: CGFloat, cy: CGFloat, r R: CGFloat) {
+        func P(_ dx: CGFloat, _ dy: CGFloat) -> CGPoint { CGPoint(x: x + dx * R, y: cy + dy * R) }
+        ctx.fill(ellipse(cx: x, cy: cy - R * 0.78, rx: R * 0.78, ry: R * 0.42), with: .color(Color(hex: "#fff6e6")))
+        ctx.fill(ellipse(cx: x, cy: cy - R * 0.92, rx: R * 0.16, ry: R * 0.16), with: .color(Color(hex: "#e5432f")))
+        let ink = Color(hex: "#2a1a14")
+        ctx.fill(ellipse(cx: x - R * 0.3, cy: cy - R * 0.05, rx: R * 0.08, ry: R * 0.08), with: .color(ink))
+        ctx.fill(ellipse(cx: x + R * 0.3, cy: cy - R * 0.05, rx: R * 0.08, ry: R * 0.08), with: .color(ink))
+        var m = Path()
+        m.move(to: P(0, 0.25))
+        m.addQuadCurve(to: P(-0.55, 0.35), control: P(-0.35, 0.1))
+        m.addQuadCurve(to: P(0, 0.32), control: P(-0.3, 0.4))
+        m.addQuadCurve(to: P(0.55, 0.35), control: P(0.3, 0.4))
+        m.addQuadCurve(to: P(0, 0.25), control: P(0.35, 0.1))
+        ctx.fill(m, with: .color(ink))
     }
 
     static func ellipse(cx: CGFloat, cy: CGFloat, rx: CGFloat, ry: CGFloat) -> Path {

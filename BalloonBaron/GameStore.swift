@@ -286,7 +286,21 @@ final class GameStore {
             townCard = c
         case .goals:
             page = .goals
+        case .building(let b):
+            buildingCard = b
+        case .bazaar:
+            showBazaar = true
         }
+    }
+
+    func closeBuildingCard() {
+        buildingCard = nil
+        showNextHezarfen()
+    }
+
+    func closeBazaar() {
+        showBazaar = false
+        showNextHezarfen()
     }
 
     func closeTownCard() {

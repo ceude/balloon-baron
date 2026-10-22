@@ -28,6 +28,8 @@ public struct Game: Sendable {
         unlockCheck()
         assignPilots()
         rollLatePilot()
+        // The wind mast's forecast is made in the morning, so the town can show it.
+        if state.level(.mast) >= 2 { _ = forecast() }
     }
 
     func demandGrowth() -> Double { 1 + 0.6 * (1 - exp(-Double(state.day - 1) / 50)) }

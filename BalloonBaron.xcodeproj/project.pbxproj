@@ -28,6 +28,7 @@
 		830D0F939F4AAC7708ACF61A /* CrewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EF8C34E905788B88E5C1BE /* CrewView.swift */; };
 		85AF43A366075059ABDDD599 /* ProtoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */; };
 		86F9815AF00AF54BD422516A /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */; };
+		89387608271733A9FA3C605B /* TownExtras.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */; };
 		89A5610C4F91854923A845D3 /* MarketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0BD7F812F90140ACBE8488 /* MarketView.swift */; };
 		8BD37C376F8E07FC1122C02F /* Barlow-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03D4B6CAC1ADC8096C50F9DB /* Barlow-SemiBold.ttf */; };
 		8C32AAD571E1BBB5AAC70233 /* BankView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3141C729AE6B19C61AE6F2A /* BankView.swift */; };
@@ -53,6 +54,7 @@
 		D8A8F36DCC2528347D214C6F /* PoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF94474E4B1A4F2261794B11 /* PoachView.swift */; };
 		D94B9EE2BB63306E4E84C569 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A7F9E6E220C47610C3B3C41 /* Assets.xcassets */; };
 		DEEAB119EDBF9CB14089F610 /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B31687098E5783CD57B19E0E /* BarlowCondensed-SemiBold.ttf */; };
+		E69B4CB75937456ED93981A4 /* BazaarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73920F4A7D747582F67B5D94 /* BazaarViews.swift */; };
 		E97DB4A97AA58EE10F7572BE /* HezarfenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258193DAFB836A70F64C8C53 /* HezarfenView.swift */; };
 		EF3F4E97DEC19EE3C40076E6 /* FlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662F101C27DC417A5D0A108 /* FlightView.swift */; };
 		F6619D4C8ABDAD92780F1168 /* MergeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55E8C0DF1F0146F2DEF826B2 /* MergeView.swift */; };
@@ -85,6 +87,7 @@
 		690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Localization.swift"; sourceTree = "<group>"; };
 		6DE9EE32EE3407FBCBBC395A /* Barlow-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Bold.ttf"; sourceTree = "<group>"; };
 		716D53AF05BF7F135AC3340E /* BalloonBaronApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BalloonBaronApp.swift"; sourceTree = "<group>"; };
+		73920F4A7D747582F67B5D94 /* BazaarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BazaarViews.swift"; sourceTree = "<group>"; };
 		73CE86E1131A0D2F69D02D15 /* ReviewChirpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReviewChirpView.swift"; sourceTree = "<group>"; };
 		74743D6DF14E3F20528EAA46 /* PriceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PriceSheetView.swift"; sourceTree = "<group>"; };
 		7979FE3F575B19E31E0B24FD /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MenuView.swift"; sourceTree = "<group>"; };
@@ -101,6 +104,7 @@
 		B3141C729AE6B19C61AE6F2A /* BankView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BankView.swift"; sourceTree = "<group>"; };
 		B31687098E5783CD57B19E0E /* BarlowCondensed-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-SemiBold.ttf"; sourceTree = "<group>"; };
 		BA0BD7F812F90140ACBE8488 /* MarketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MarketView.swift"; sourceTree = "<group>"; };
+		BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownExtras.swift"; sourceTree = "<group>"; };
 		BA6CB771A7741DFE9025EA00 /* GoalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoalsView.swift"; sourceTree = "<group>"; };
 		BC2D92AE9D2D2735F75E90DE /* Barlow-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-ExtraBold.ttf"; sourceTree = "<group>"; };
 		C2070C4DCB9F9DE7745FEBC0 /* IssueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IssueView.swift"; sourceTree = "<group>"; };
@@ -173,6 +177,7 @@
 		3DFABEB6ABD2B12C2B105E1D /* Town */ = {
 			isa = PBXGroup;
 			children = (
+				BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */,
 				DA747D61B806F541F6AB8DF8 /* TownModel.swift */,
 				028E3000896415942F6E8508 /* TownPainter.swift */,
 				151A0BC3B17C01FBFECAA493 /* TownViews.swift */,
@@ -202,6 +207,7 @@
 			children = (
 				8480E19BC8DE8F1B439520EE /* BalloonArt.swift */,
 				B3141C729AE6B19C61AE6F2A /* BankView.swift */,
+				73920F4A7D747582F67B5D94 /* BazaarViews.swift */,
 				3E80660872C36D7349FC2CB0 /* ChapterView.swift */,
 				E41E0E443CD82E29A38F212D /* CollectView.swift */,
 				57EF8C34E905788B88E5C1BE /* CrewView.swift */,
@@ -342,11 +348,13 @@
 				B5EA4D949BD133F8B876E74F /* SoundSettingsButton.swift in Sources */,
 				CDE747CAF5B1BDD693D6FB79 /* OfficeSceneView.swift in Sources */,
 				43D34FF299E13570C04FCAA5 /* ScenePainter.swift in Sources */,
+				89387608271733A9FA3C605B /* TownExtras.swift in Sources */,
 				9A10F15161315C7C8ACF36B5 /* TownModel.swift in Sources */,
 				202A37F855488615D2088520 /* TownPainter.swift in Sources */,
 				BBB4A8150F49C505DE1C2F67 /* TownViews.swift in Sources */,
 				AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */,
 				8C32AAD571E1BBB5AAC70233 /* BankView.swift in Sources */,
+				E69B4CB75937456ED93981A4 /* BazaarViews.swift in Sources */,
 				C9DAAF451BF565688EC4D187 /* ChapterView.swift in Sources */,
 				24592D13E014015B25BA3DF6 /* CollectView.swift in Sources */,
 				830D0F939F4AAC7708ACF61A /* CrewView.swift in Sources */,
