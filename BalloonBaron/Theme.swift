@@ -105,3 +105,20 @@ struct PageDoneButton: View {
         .padding(.top, 6)
     }
 }
+
+/// The band of a chunky button's depth that shows below it, like the prototype's `box-shadow: 0 Npx 0`: only the part
+/// outside the button, so it never darkens the face (which matters for the see-through glass buttons).
+struct DepthBand: Shape {
+    var radius: CGFloat
+    var drop: CGFloat
+
+    var animatableData: CGFloat {
+        get { drop }
+        set { drop = newValue }
+    }
+
+    func path(in r: CGRect) -> Path {
+        Path(roundedRect: r.offsetBy(dx: 0, dy: drop), cornerRadius: radius)
+            .subtracting(Path(roundedRect: r, cornerRadius: radius))
+    }
+}

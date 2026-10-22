@@ -77,10 +77,10 @@ struct ReportView: View {
                 ProtoCallout(tone: .green, title: loc("report.holdTitle", eurH(lg.holdingNet)),
                              text: loc("report.holdBody", names, percent(s.holding.expenseRate), eurH(s.holding.cash)))
             }
-            if lg.designRep > 0 {
+            if Self.shows(lg.designRep * 4) {
                 ProtoCallout(tone: .green, title: loc("report.designTitle"), text: loc("report.designBody", Self.starDelta(lg.designRep * 4)))
             }
-            if lg.adRepLoss > 0 {
+            if Self.shows(lg.adRepLoss * 4) {
                 ProtoCallout(tone: .yellow, title: loc("report.adTitle"), text: loc("report.adBody", Self.starDelta(lg.adRepLoss * 4)))
             }
             if !report.events.isEmpty || !report.rivalEvents.isEmpty {
@@ -210,6 +210,9 @@ struct ReportView: View {
     }
 
     /// Star change with up to two decimals, e.g. "0.12★".
+    /// A popularity note only appears when its change shows as at least 0.01★ (never "+0★").
+    static func shows(_ x: Double) -> Bool { (x * 100).rounded() >= 1 }
+
     static func starDelta(_ x: Double) -> String {
         x.formatted(.number.precision(.fractionLength(0...2))) + "★"
     }

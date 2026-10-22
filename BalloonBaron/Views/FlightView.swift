@@ -481,8 +481,8 @@ private struct AbortButtonStyle: ButtonStyle {
                 .lineLimit(1)
                 .padding(.horizontal, 18)
                 .frame(height: 54)
-                .background(RoundedRectangle(cornerRadius: 16).fill(Color.black.opacity(enabled ? 0.3 : 0)).offset(y: pressed ? 1 : 5))
                 .background(RoundedRectangle(cornerRadius: 16).fill(Color.white))
+                .background(DepthBand(radius: 16, drop: pressed ? 1 : 5).fill(Color.black.opacity(enabled ? 0.3 : 0)))
                 .offset(y: pressed ? 4 : 0)
                 .opacity(enabled ? 1 : 0.5)
         }

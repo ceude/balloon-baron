@@ -131,10 +131,7 @@ struct HomeView: View {
 
     /// The prototype's glass dock over the ground. Scrolls only when it doesn't fit.
     private func dockPanel(_ game: Game) -> some View {
-        ViewThatFits(in: .vertical) {
-            dockGlass(game)
-            ScrollView(showsIndicators: false) { dockGlass(game) }
-        }
+        dockGlass(game)
         .frame(maxWidth: 560)
         .background {
             GeometryReader { g in
@@ -156,7 +153,12 @@ struct HomeView: View {
             .buttonStyle(.plain)
             .padding(.vertical, -6)
             .accessibilityLabel(loc("home.dockCards"))
-            dock(game)
+            // The cards scroll when the open dock is taller than the screen; the day's buttons stay at the bottom.
+            ViewThatFits(in: .vertical) {
+                dock(game)
+                ScrollView(showsIndicators: false) { dock(game) }
+            }
+            actionButtons(game.state)
             #if DEBUG
             Button(loc("debug.reset")) { store.resetForTesting() }
                 .font(Theme.font(13))
@@ -356,7 +358,6 @@ struct HomeView: View {
                 strip(s, list)
             }
             ticketCard(g)
-            actionButtons(s)
         }
     }
 

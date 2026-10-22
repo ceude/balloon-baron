@@ -2419,8 +2419,8 @@ function showReport() {
   led.appendChild(h('div', null, `<span>Kasa</span><span class="v">${eur(S.cash)}</span>`));
   b.appendChild(led);
   if (L.hold) b.appendChild(h('div', 'callout grn', `<b>Holding kasasına +${eurH(L.hold)}.</b> ${Object.keys(S.regions || {}).map(id => REGION_DEF[id].name).join(', ')} otomatik modda kazandı, holding giderleri (%${Math.round(holdCostRate() * 100)}) düşüldü. Holding kasası: ${eurH(S.holding || 0)}.`));
-  if (L.designRep) b.appendChild(h('div', 'callout grn', `<b>Tasarımların konuşuluyor.</b> Desenli balonların bugün popülerliğine +${(L.designRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ ekledi.`));
-  if (L.adRep) b.appendChild(h('div', 'callout yel', `<b>Puanını aldığın reklamlar da etkiliyor.</b> Bugün balonlarındaki reklamlar popülerliğini ${(L.adRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ düşürdü.`));
+  if (Math.round(L.designRep * 400) >= 1) b.appendChild(h('div', 'callout grn', `<b>Tasarımların konuşuluyor.</b> Desenli balonların bugün popülerliğine +${(L.designRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ ekledi.`));
+  if (Math.round(L.adRep * 400) >= 1) b.appendChild(h('div', 'callout yel', `<b>Puanını aldığın reklamlar da etkiliyor.</b> Bugün balonlarındaki reklamlar popülerliğini ${(L.adRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ düşürdü.`));
   if (R.ev.length || R.rev.length) {
     const ul = h('ul', 'ev');
     R.ev.forEach(e => ul.appendChild(h('li', null, esc(e))));
@@ -3407,7 +3407,7 @@ const ENTRANTS_ABQ = [
 ];
 const regionEntrants = () => S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
 const CHAPTERS_ABQ = [
-  { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['balloons', 5, '5 balonluk filo'], ['stars', 4.0, '4,0★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
+  { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['balloons', 3, '3 balonluk filo'], ['pilots', 1, 'İlk pilotunu işe al'], ['stars', 4.5, '4,5★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
   { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['influ', 1, 'Bir influencer kampanyası yap'], ['share', .5, 'Pazarın %50\'si'], ['bldHangar', 2, 'Hangarı yükselt']] },
   { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'İmza balonun gökyüzünde: Fiesta Yıldızı'], ['bldTop', 3, 'Bir binayı 3. seviyeye çıkar']] }
 ];
