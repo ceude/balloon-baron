@@ -98,7 +98,7 @@ struct CrewView: View {
                 sectionTitle(loc("crew.idle", num(idle.count)))
                 callout(loc("crew.idle.callout", eur(wasted)), loc("crew.idle.body"), color: Theme.yellow)
                 ForEach(idle) { p in
-                    pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), loc("crew.idleTag"), xpText(p)].joined(separator: " · "),
+                    pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), riskText(p), loc("crew.idleTag"), xpText(p)].joined(separator: " · "),
                              button: loc("crew.fire"), light: true) {
                         store.act { $0.fire(p.id) }
                     }
@@ -143,7 +143,15 @@ struct CrewView: View {
         case .licenseHold: on += " " + loc("crew.waitLicense")
         default: break
         }
-        return [loc("crew.wage", eur(p.wage)), on, xpText(p)].joined(separator: " · ")
+        return [loc("crew.wage", eur(p.wage)), riskText(p), on, xpText(p)].joined(separator: " · ")
+    }
+
+    /// `pilotRiskText`: the accident multiplier of level and trait together, with the parts when a trait changes it.
+    private func riskText(_ p: Pilot) -> String {
+        func f(_ x: Double) -> String { x.formatted(.number.precision(.fractionLength(0...2))) }
+        let total = Game.pilotRisk(p)
+        guard let t = p.trait, t.accidentFactor != 1 else { return loc("crew.risk", f(total)) }
+        return loc("crew.riskTrait", f(total), p.level.title, f(p.level.risk), t.title, f(t.accidentFactor))
     }
 
     private func xpText(_ p: Pilot) -> String {
@@ -157,7 +165,7 @@ struct CrewView: View {
         VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("crew.candidates"))
             ForEach(s.local.candidates) { p in
-                pilotRow(p, detail: loc("crew.wage", eur(p.wage)), button: loc("crew.hire"), light: false) {
+                pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), riskText(p)].joined(separator: " · "), button: loc("crew.hire"), light: false) {
                     store.act { $0.hire(p.id) }
                 }
             }

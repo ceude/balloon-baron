@@ -140,14 +140,14 @@ Hedefler gün sonunda kontrol edilir. Bölüm bitince ödül kasaya girer, ertes
 
 | Bölge | Bölüm | Ödül | Hedefler |
 |---|---|---|---|
-| Kapadokya | Kuruluş | 5.000 | 5 balon, 4,0★, otel anlaşması, kasada 20.000, rüzgâr direği Sv. 2 |
+| Kapadokya | Kuruluş | 5.000 | 2 balon, ilk pilot, 4,3★, otel anlaşması, rüzgâr direği Sv. 2 |
 | Kapadokya | Büyüme | 20.000 | 10 balon, otel satın al, influencer, rehber, pazarın %50'si, balon atölyesi, hangar Sv. 2 |
 | Kapadokya | Kapadokya Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, bir bina Sv. 3 |
 | Albuquerque | Yeni Dünya | 5.000 | 5 balon, 4,0★, otel anlaşması, rehber, rüzgâr direği Sv. 2 |
 | Albuquerque | Fiesta | 20.000 | 10 balon, otel satın al, Fiesta'da uç, influencer, pazarın %50'si, hangar Sv. 2 |
 | Albuquerque | Albuquerque Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, bir bina Sv. 3 |
 
-Simülasyon (`tools/sim-chapters.js`, 8 tohum, yeni açılış günleriyle): Kuruluş 52–64. gün, Büyüme 94–113. gün, Baron 125–188. gün. Yükseltme hedefleri olmadan 48–59 / 85–108 / 103–189; yükseltmeler kendini ödediği için fark küçük.
+Kuruluş Ekim 2026'da (prototip v90) "5 balon, 4,0★, kasada 20.000" yerine "2 balon, ilk pilot, 4,3★" oldu: 4,0★ ilk gün kendiliğinden tamamlanıyordu, 5 balon da bölümü 52–66. güne uzatıyordu. Aynı botla Kuruluş artık 17–33. günde (çoğunlukla 18–20) biter, 4,3★ 8. gün civarında gelir. Eski simülasyon (`tools/sim-chapters.js`, 8 tohum, yeni açılış günleriyle): Kuruluş 52–64. gün, Büyüme 94–113. gün, Baron 125–188. gün. Yükseltme hedefleri olmadan 48–59 / 85–108 / 103–189; yükseltmeler kendini ödediği için fark küçük.
 
 Bölüm ödülü kartında "Reklam izle, ödülü 2'ye katla: €10.000" düğmesi (toplam ödülü yazar): 30 saniyelik ödüllü reklam bitince ödül bir kez daha kasaya girer.
 

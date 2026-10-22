@@ -91,8 +91,9 @@ final class WorldTests: XCTestCase {
     func testFoundingChapterPaysTheAward() {
         var g = newGame()
         g.state.cash = 200000
-        for _ in 0..<4 { g.buyBalloon(.S) }
-        g.state.rep = 1.1
+        g.buyBalloon(.S)
+        XCTAssertTrue(g.hire(g.state.candidates[0].id))
+        g.state.rep = 1.15
         g.signHotel(.stone)
         g.upgrade(.mast)
         let r = play(&g)

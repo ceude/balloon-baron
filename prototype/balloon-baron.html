@@ -1519,7 +1519,7 @@ function showMerge() {
 }
 /* ---------- chapters ---------- */
 const CHAPTERS = [
-  { name: 'Kuruluş', reward: 5000, award: 'Kapadokya Turizm Derneği seni yılın genç girişimcisi seçti', awardShort: 'Kapadokya Turizm Derneği ödülü', goals: [['balloons', 5, '5 balonluk filo'], ['stars', 4.0, '4,0★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['cash', 20000, 'Kasada €20.000'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
+  { name: 'Kuruluş', reward: 5000, award: 'Kapadokya Turizm Derneği seni yılın genç girişimcisi seçti', awardShort: 'Kapadokya Turizm Derneği ödülü', goals: [['balloons', 2, 'İkinci balonunu al'], ['pilots', 1, 'İlk pilotunu işe al'], ['stars', 4.3, '4,3★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
   { name: 'Büyüme', reward: 20000, award: 'Türkiye Turizm Ödülleri\'nde Yılın Balon Şirketi seçildin', awardShort: 'Türkiye Turizm Ödülleri', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['influ', 1, 'Bir influencer kampanyası yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['share', .5, 'Pazarın %50\'si'], ['workshop', 1, 'Balon atölyesi kur'], ['bldHangar', 2, 'Hangarı yükselt']] },
   { name: 'Kapadokya Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'İmza balonun gökyüzünde: Kapadokya Yıldızı'], ['bldTop', 3, 'Bir binayı 3. seviyeye çıkar']] }
 ];
@@ -1527,6 +1527,7 @@ const BARON_SHARE = .7, BARON_STARS = 4.8;
 function goalVal(k) {
   switch (k) {
     case 'balloons': return S.balloons.length;
+    case 'pilots': return S.pilots.length;
     case 'stars': return starVal(S.rep);
     case 'cash': return S.cash;
     case 'hotelDeal': return S.hotels.length;

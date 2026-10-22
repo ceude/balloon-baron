@@ -92,6 +92,7 @@ add("chapter.baronAbq.award", "", "", "", "", "", "")
 
 # Goals
 add("goal.balloons", "Balloons in the fleet: %@", "Filoda balon: %@", "Ballone in der Flotte: %@", "Globos en la flota: %@", "保有気球：%@機", "보유 열기구: %@대")
+add("goal.pilots", "Pilots on the team: %@", "Ekipteki pilot: %@", "Piloten im Team: %@", "Pilotos en el equipo: %@", "チームのパイロット：%@", "팀의 조종사: %@")
 add("goal.stars", "Popularity %@", "Popülerlik %@", "Beliebtheit %@", "Popularidad %@", "人気 %@", "인기 %@")
 add("goal.cash", "Cash: %@", "Kasada: %@", "Kasse: %@", "Caja: %@", "所持金：%@", "보유 현금: %@")
 add("goal.hotelDeal", "Sign a deal with a hotel", "Bir otelle anlaşma yap", "Schließe einen Hotelvertrag", "Firma un acuerdo con un hotel", "ホテルと契約する", "호텔과 계약하기")

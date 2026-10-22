@@ -17,6 +17,9 @@ public enum PilotTrait: String, Codable, CaseIterable, Sendable {
     /// 15% lower wage, but sometimes oversleeps.
     case nightOwl
 
+    /// How the trait scales the pilot's accident risk.
+    public var accidentFactor: Double { self == .careful ? 0.75 : self == .daredevil ? 1.3 : 1 }
+
     public var color: String {
         ["#ff6fa8", "#22a45d", "#e5432f", "#14a39a", "#2b5ab8", "#9b7be0", "#6c6488"][Self.allCases.firstIndex(of: self)!]
     }
@@ -25,6 +28,9 @@ public enum PilotTrait: String, Codable, CaseIterable, Sendable {
 extension Game {
     /// A quarter of candidates have no particular trait.
     mutating func rollTrait() -> PilotTrait? { rng.chance(0.25) ? nil : rng.pick(PilotTrait.allCases) }
+
+    /// The pilot's own accident multiplier: level times trait, as `accidentChance` uses it.
+    public static func pilotRisk(_ p: Pilot) -> Double { p.level.risk * (p.trait?.accidentFactor ?? 1) }
 
     /// The trait of whoever flies this balloon, unless that's you.
     func trait(of b: Balloon) -> PilotTrait? { state.isSelf(b) ? nil : state.pilot(of: b)?.trait }

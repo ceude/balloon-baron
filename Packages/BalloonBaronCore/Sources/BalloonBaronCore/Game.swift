@@ -169,7 +169,7 @@ public struct Game: Sendable {
     public func accidentChance(_ b: Balloon) -> Double {
         let flag = state.weather?.flag ?? .green
         let pilotRisk = state.isSelf(b) ? 1 : state.pilot(of: b)?.level.risk ?? 1
-        let t = trait(of: b), traitRisk = t == .careful ? 0.75 : t == .daredevil ? 1.3 : 1
+        let traitRisk = trait(of: b)?.accidentFactor ?? 1
         let radar = flag == .yellow && state.level(.mast) >= 3 ? 0.8 : 1
         return flag.accident * traitRisk * radar * pilotRisk * b.size.risk * (state.condition(b) < 0.3 ? 1.5 : 1)
     }

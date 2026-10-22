@@ -9185,6 +9185,88 @@
         }
       }
     },
+    "crew.risk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unfallrisiko ×%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "accident risk ×%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "riesgo de accidente ×%@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事故リスク ×%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사고 위험 ×%@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kaza riski ×%@"
+          }
+        }
+      }
+    },
+    "crew.riskTrait": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unfallrisiko ×%1$@ (%2$@ ×%3$@, %4$@ ×%5$@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "accident risk ×%1$@ (%2$@ ×%3$@, %4$@ ×%5$@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "riesgo de accidente ×%1$@ (%2$@ ×%3$@, %4$@ ×%5$@)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事故リスク ×%1$@（%2$@ ×%3$@、%4$@ ×%5$@）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사고 위험 ×%1$@ (%2$@ ×%3$@, %4$@ ×%5$@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kaza riski ×%1$@ (%2$@ ×%3$@, %4$@ ×%5$@)"
+          }
+        }
+      }
+    },
     "crew.rule": {
       "extractionState": "manual",
       "localizations": {
@@ -18980,6 +19062,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "yok"
+          }
+        }
+      }
+    },
+    "goal.pilots": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piloten im Team: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilots on the team: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilotos en el equipo: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チームのパイロット：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "팀의 조종사: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ekipteki pilot: %@"
           }
         }
       }

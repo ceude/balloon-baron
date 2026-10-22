@@ -2,7 +2,7 @@ import Foundation
 
 /// What a chapter asks for. Labels: `goal.<rawValue>`.
 public enum GoalKind: String, Codable, Sendable {
-    case balloons, stars, cash, hotelDeal, hotelOwn, influencer, guide, share, workshop, school, xl, fiesta
+    case balloons, pilots, stars, cash, hotelDeal, hotelOwn, influencer, guide, share, workshop, school, xl, fiesta
     /// Building levels: the wind mast, the hangar, or any building.
     case bldMast, bldHangar, bldTop
 
@@ -27,7 +27,7 @@ public struct Chapter: Equatable, Sendable {
         switch r {
         case .cap:
             return [
-                Chapter(id: "founding", reward: 5000, goals: [g(.balloons, 5), g(.stars, 4.0), g(.hotelDeal, 1), g(.cash, 20000), g(.bldMast, 2)]),
+                Chapter(id: "founding", reward: 5000, goals: [g(.balloons, 2), g(.pilots, 1), g(.stars, 4.3), g(.hotelDeal, 1), g(.bldMast, 2)]),
                 Chapter(id: "growth", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.influencer, 1), g(.guide, 1), g(.share, 0.5), g(.workshop, 1),
                                                              g(.bldHangar, 2)]),
                 Chapter(id: "baron", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldTop, 3)])
@@ -53,6 +53,7 @@ extension GameState {
         let s = local
         switch k {
         case .balloons: return Double(s.balloons.count)
+        case .pilots: return Double(s.pilots.count)
         case .stars: return stars
         case .cash: return Double(s.cash)
         case .hotelDeal: return Double(s.hotelDeals.count)
