@@ -289,6 +289,8 @@ body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 .pdone.pdone{flex:none;align-self:center;width:auto;min-width:140px;height:44px;padding:0 26px;font-size:18px;margin-top:6px}
 #tClose{position:absolute;top:max(14px, env(safe-area-inset-top, 0px));right:max(14px, env(safe-area-inset-right, 0px));width:46px;height:46px;border-radius:50%;background:rgba(255,250,243,.95);color:var(--ink);font-size:20px;font-weight:800;box-shadow:0 4px 0 rgba(43,35,80,.35);display:grid;place-items:center;transition:opacity .2s ease, transform .2s ease}
 #tClose.gone{opacity:0;transform:scale(.6);pointer-events:none}
+/* the morning after the night: the town stays where the night's camera was, the day's controls come in over it */
+body.mhold #town{z-index:3;background:transparent}
 .sw8{width:66px;height:38px;border-radius:10px;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:13px;flex:none}
 .sw8.none{background:var(--haze);color:var(--ink2)}
 .adbtn{margin-top:8px;display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 12px;border-radius:10px;background:var(--haze);box-shadow:0 2px 0 var(--line);font-size:13px;font-weight:600}
@@ -2436,7 +2438,7 @@ function showReport() {
 /* ---------- intro & setup ---------- */
 const INTRO = { y: 0, vy: 0, hold: false, t: 0, out: false };
 let pickI = 0, setupName = '';
-function hideAll() { page = null; hqShut(); TOWN.open = false; TOWN.leaving = false; document.body.classList.remove('zoomed'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
+function hideAll() { page = null; hqShut(); TOWN.open = false; TOWN.leaving = false; TOWN.hold = false; TOWN.night = false; TOWN.hzFix = null; document.body.classList.remove('zoomed', 'mhold'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
 function startIntro() {
   if (!S.weather) S.weather = newWeather();
   buildWorld();
@@ -3206,6 +3208,7 @@ function scenery(p, groundY, topY, camX, kx, dt, showBg, f) {
   return vh;
 }
 function draw(dt) {
+  dawnTick();
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   if (!S || !S.weather) { ctx.fillStyle = '#1b1840'; ctx.fillRect(0, 0, W, H); return; }
   const f = FL && mode === 'flight' ? FL : null;
@@ -4722,6 +4725,7 @@ function renderTown(V, w, h, dpr, offY) {
     sky.balloons.forEach(f => f());
     /* winter: snow falling over the town, in screen space */
     if (NIGHT_K > 0) nightLayer(V, w, h, hz, S0, W0, bs);
+    if (SUNRISE > 0) sunriseLayer(w, h, hz, S0);
     if (S.winter) { S0(); ctx.fillStyle = 'rgba(255,255,255,.9)'; for (let i = 0; i < 120; i++) { const x = (i * 97.3 + T * (10 + i % 4 * 6) + Math.sin(T + i) * 8) % (w + 20) - 10, y = (i * 53.7 + T * (22 + i % 5 * 8)) % h; ctx.beginPath(); ctx.arc(x, y, 1.1 + i % 3 * .6, 0, 7); ctx.fill(); } W0(); }
     /* labels in screen space, and hit boxes for taps (in region coordinates) */
     S0();
@@ -4750,7 +4754,11 @@ function drawTown() {
   const r = cvs.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1);
   if (cvs.width !== Math.round(r.width * dpr)) { cvs.width = Math.round(r.width * dpr); cvs.height = Math.round(r.height * dpr); }
   const keep = ctx; ctx = cvs.getContext('2d');
-  try { if (!TOWN.anim) townClamp(r.width, r.height); renderTown(TOWN, r.width, r.height, dpr, 0); } finally { ctx = keep; }
+  try {
+    if (TOWN.night && !TOWN.leaving) { if (!TOWN.anim) nightClamp(TOWN, r.width, r.height); TOWN.hzFix = nightHorizon(TOWN, r.width, r.height); }
+    else if (!TOWN.anim) townClamp(r.width, r.height);
+    renderTown(TOWN, r.width, r.height, dpr, 0);
+  } finally { ctx = keep; }
 }
 /* The home screen shows the town above the day's cards: a fixed overview you tap into. */
 const HOME = { z: .3, ox: 0, oy: 0, hits: [], zoneHits: [], h: 0, down: null };
@@ -4772,15 +4780,19 @@ function pickNightEvent() {
 /* The night camera: closer than the home screen, the town filling the lower part of the screen under the sky. */
 const NIGHTV = { z: .3, ox: 0, oy: 0 };
 function nightBase(w, h) { const c = tiso(7.5, 7.5), z = clamp(w / 820, .3, .7); return { z, ox: w / 2 - c[0] * z, oy: h * .7 - c[1] * z }; }
-function drawNightTown(w, h) {
-  const B = nightBase(w, h), v = (NIGHT && NIGHT.v) || B;
-  /* keep the town on screen however far you drag */
+/* keep the town on screen however far you drag */
+function nightClamp(v, w, h) {
   const c = tiso(7.5, 7.5), sx = c[0] * v.z + v.ox, sy = c[1] * v.z + v.oy, mx = 8 * TW / 2 * v.z, my = 8 * TH / 2 * v.z;
   v.ox += clamp(sx, Math.min(w * .5, w * .15 - mx * .2), Math.max(w * .5, w * .85 + mx * .2)) - sx;
   v.oy += clamp(sy, Math.min(h * .5, h * .35 - my * .3), Math.max(h * .7, h * .75 + my * .3)) - sy;
+}
+/* a big night sky; the horizon follows the town as you drag */
+function nightHorizon(v, w, h) { const B = nightBase(w, h); return clamp(h * .34 + (v.oy - B.oy) * .6 - (v.z / B.z - 1) * h * .25, -h * .5, h * .55); }
+function drawNightTown(w, h) {
+  const v = (NIGHT && NIGHT.v) || nightBase(w, h);
+  nightClamp(v, w, h);
   Object.assign(NIGHTV, v); NIGHTV.noLabels = true;
-  /* a big night sky; the horizon follows the town as you drag */
-  NIGHTV.hzFix = clamp(h * .34 + (v.oy - B.oy) * .6 - (v.z / B.z - 1) * h * .25, -h * .5, h * .55);
+  NIGHTV.hzFix = nightHorizon(v, w, h);
   renderTown(NIGHTV, w, h, DPR, 0);
 }
 /* Night is yours to wander: drag to pan, pinch (or the wheel) to zoom; the big button at the bottom brings the morning. */
@@ -4814,14 +4826,43 @@ function startNight() {
 }
 function endNight() {
   if (mode !== 'night') return;
-  crickets(false); NIGHT = null; NIGHT_K = 0; for (const id of ['nightcap', 'nightgo']) { const el = $(id); if (el) el.remove(); } document.body.classList.remove('night');
+  const v = Object.assign({}, (NIGHT && NIGHT.v) || nightBase(W, H));
+  crickets(false); NIGHT = null; for (const id of ['nightcap', 'nightgo']) { const el = $(id); if (el) el.remove(); } document.body.classList.remove('night');
+  /* the dawn goes on over the morning: the last of the night fades and the sunrise glow sinks away */
+  DAWN = { t0: T, k: NIGHT_K };
   startDay();
+  morningTown(v);
+}
+/* ---------- morning ----------
+   The morning keeps the night's camera: zoomed or not, dragged left or right, the town stays exactly where it was and
+   the day's controls and cards come in over it. Dragging or zooming out keeps them; zooming in hands the view back to
+   the usual zoomed town, whose controls slide out of the way. Zooming all the way out glides back to the home screen. */
+let DAWN = null, SUNRISE = 0;
+function dawnTick() {
+  if (!DAWN) return;
+  const e = clamp((T - DAWN.t0) / 1.8, 0, 1);
+  NIGHT_K = DAWN.k * (1 - e) * (1 - e); SUNRISE = 1 - e;
+  if (e >= 1) { DAWN = null; NIGHT_K = 0; SUNRISE = 0; }
+}
+function morningTown(v) {
+  if (mode !== 'office' || !HOME.h || v.z <= HOME.z * 1.04) return; /* already the home screen's view */
+  $('town').hidden = false; TOWN.open = true; TOWN.leaving = false; TOWN.anim = null; TOWN.extra = null; TOWN.noLabels = false;
+  TOWN.z = v.z; TOWN.ox = v.ox; TOWN.oy = v.oy; TOWN.hz = null; TOWN.night = true; TOWN.hold = true;
+  $('tClose').classList.add('gone'); document.body.classList.add('mhold');
+  cancelAnimationFrame(TOWN.raf); townLoop();
+}
+/* zooming in ends the morning's hold: from here on the controls slide away as usual */
+function endHold() {
+  if (!TOWN.hold) return;
+  TOWN.hold = false; document.body.classList.remove('mhold'); document.body.classList.add('zoomed');
+  $('tClose').classList.remove('gone'); $('tClose').style.top = ($('hud').offsetHeight + 10) + 'px';
 }
 function updateNight() {
   if (!NIGHT) return;
   const t = T - NIGHT.t0, dn = NIGHT.dawn ? T - NIGHT.dawn : 0;
   /* dusk falls in 1.4 s and the night holds until you ask for the morning; then it pales for a second */
   NIGHT_K = NIGHT.dawn ? Math.max(.25, 1 - dn * .75) : Math.min(1, t / 1.4);
+  SUNRISE = NIGHT.dawn ? Math.min(1, dn) : 0;
   /* the night passes by itself after a few seconds; looking around restarts the wait, but never past 25 s */
   if (!NIGHT.dawn) { const left = Math.min(NIGHT.wait - (T - NIGHT.idle), 25 - t), go = $('nightgo'); if (go) go.style.setProperty('--p', `${Math.round(clamp(1 - left / NIGHT.wait, 0, 1) * 100)}%`); if (left <= 0) NIGHT.dawn = T; }
   /* fireworks: a soft thump and a crackle for each burst */
@@ -4842,6 +4883,16 @@ function crickets(on) {
     cricketTimer = setTimeout(sing, 380 + Math.random() * 520);
   };
   sing();
+}
+/* the sunrise: warm light swelling up from the horizon on the left, over the town and the last of the night */
+function sunriseLayer(w, h, hz, S0) {
+  const a = Math.sin(SUNRISE * Math.PI / 2), y = clamp(hz, 0, h);
+  S0(); ctx.save(); ctx.globalCompositeOperation = 'screen';
+  const g = ctx.createRadialGradient(w * .22, y, 0, w * .22, y, Math.max(w, h) * .95);
+  g.addColorStop(0, `rgba(255,178,92,${.55 * a})`); g.addColorStop(.45, `rgba(255,140,90,${.22 * a})`); g.addColorStop(1, 'rgba(255,140,90,0)');
+  ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
+  ctx.fillStyle = `rgba(255,214,160,${.1 * a})`; ctx.fillRect(0, 0, w, h);
+  ctx.restore();
 }
 function nightLayer(V, w, h, hz, S0, W0, bs) {
   const k = NIGHT_K, N = NIGHT || {}, t = T;
@@ -4989,6 +5040,7 @@ function townLoop() {
   if (a) {
     const k = clamp((performance.now() - a.t0) / 450, 0, 1), e = 1 - Math.pow(1 - k, 3);
     TOWN.z = lerp(a.from.z, a.to.z, e); TOWN.ox = lerp(a.from.ox, a.to.ox, e); TOWN.oy = lerp(a.from.oy, a.to.oy, e);
+    if (a.hz) TOWN.hzFix = lerp(a.hz[0], a.hz[1], e);
     if (k >= 1) { TOWN.anim = null; if (a.done) a.done(); }
   }
   drawTown(); if (TOWN.open) TOWN.raf = requestAnimationFrame(townLoop);
@@ -5011,8 +5063,11 @@ function townClamp(w, h) {
    and glide in on the tapped spot. Zooming back out (pinch, wheel or the X) returns to the home screen. */
 /* at: grid point to glide to; instant: a pinch that started on the home screen carries on zooming by itself */
 function openTown(at, instant) {
-  const el = $('town'); el.hidden = false; TOWN.open = true; TOWN.leaving = false;
-  TOWN.z = HOME.z; TOWN.ox = HOME.ox; TOWN.oy = HOME.oy; TOWN.anim = null;
+  const el = $('town'), was = TOWN.open && !TOWN.leaving; el.hidden = false; TOWN.open = true; TOWN.leaving = false;
+  if (TOWN.hold) { TOWN.hold = false; document.body.classList.remove('mhold'); }
+  /* the morning's town is already open: glide on from where it is */
+  if (!was) { TOWN.z = HOME.z; TOWN.ox = HOME.ox; TOWN.oy = HOME.oy; TOWN.night = false; TOWN.hzFix = null; }
+  TOWN.anim = null;
   TOWN.hz = homeHorizon(); /* same horizon as the home screen */
   $('tClose').classList.remove('gone'); $('tClose').style.top = ($('hud').offsetHeight + 10) + 'px'; /* the money bar stays */
   document.body.classList.add('zoomed');
@@ -5023,20 +5078,23 @@ function openTown(at, instant) {
 function townZoomAt(px, py, k) {
   if (TOWN.leaving) return;
   TOWN.anim = null; const z = clamp(TOWN.z * k, HOME.z, 1.6); k = z / TOWN.z; TOWN.ox = px - (px - TOWN.ox) * k; TOWN.oy = py - (py - TOWN.oy) * k; TOWN.z = z;
+  if (k > 1.001) endHold();
   if (z <= HOME.z * 1.04 && k < 1) { TOWN.pinch = null; closeTown(); }
 }
 function closeTown() {
   if (!TOWN.open || TOWN.leaving) return;
   TOWN.leaving = true; $('tClose').classList.add('gone');
-  document.body.classList.remove('zoomed');
+  document.body.classList.remove('zoomed', 'mhold'); TOWN.hold = false;
+  const night = TOWN.night;
   townGlide({ z: HOME.z, ox: HOME.ox, oy: HOME.oy }, () => {
-    TOWN.open = false; TOWN.leaving = false; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh();
+    TOWN.open = false; TOWN.leaving = false; TOWN.night = false; TOWN.hzFix = null; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh();
   });
+  if (night) TOWN.anim.hz = [TOWN.hzFix, homeHorizon()];
 }
 function inPoly(p, pts) { let c = false; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) { const [xi, yi] = pts[i], [xj, yj] = pts[j]; if ((yi > p[1]) !== (yj > p[1]) && p[0] < (xj - xi) * (p[1] - yi) / (yj - yi) + xi) c = !c; } return c; }
 function townTap(x, y) {
   const zh = (TOWN.zoneHits || []).find(hh => inPoly([x, y], hh.pts));
-  if (zh) { sfx('click'); townFocus(zh.zn.at); return; }
+  if (zh) { sfx('click'); endHold(); townFocus(zh.zn.at); return; }
   const hit = TOWN.hits.slice().sort((a, b) => b.depth - a.depth).find(hh => inPoly([x, y], hh.pts) || (x > hh.box[0] && x < hh.box[2] && y > hh.box[1] && y < hh.box[3]));
   if (hit) { sfx('click'); hit.b.tap(); }
 }
