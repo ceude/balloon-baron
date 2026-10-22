@@ -89,6 +89,8 @@ struct HomeTownView: View {
     @State private var hold = false
     /// Gliding into the holding tower: the X hides and the town ignores touches until the office opens.
     @State private var diving = false
+    /// The town has been fully covered for a moment (after the page, night or cover finished coming in).
+    @State private var asleep = false
     /// Where this view's own (safe-area) frame starts on screen. The canvas ignores the safe area and draws in
     /// screen coordinates, while tap and pinch locations arrive in the view's frame; adding this lines them up.
     @State private var origin: CGPoint = .zero
@@ -96,9 +98,10 @@ struct HomeTownView: View {
     var body: some View {
         if let s = store.state {
             ZStack(alignment: .topTrailing) {
-                // Full frame rate whenever the camera moves; nothing at all while something opaque covers the town
-                // (its last frame stays on screen, so the picture doesn't change).
-                TimelineView(.animation(minimumInterval: moving ? nil : 1 / 30, paused: covered)) { tl in
+                // Full frame rate whenever the camera moves. While something opaque covers the town it isn't drawn
+                // at all; that starts only once the cover has fully come in, and ends the moment it starts to go.
+                // Everything in the town runs on the clock, so it carries on from the right moment.
+                TimelineView(.animation(minimumInterval: moving ? nil : 1 / 30, paused: asleep)) { tl in
                     Canvas { ctx, sz in
                         let h = dockTop > 0 ? min(dockTop, sz.height) : sz.height * 0.6
                         model.size = sz
@@ -143,6 +146,9 @@ struct HomeTownView: View {
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { zoomIn(at: (7, 8)) }
                 .onChange(of: store.hqDive) { _, dive in if dive { diveIntoTower() } }
+                .onChange(of: covered) { _, c in
+                    if c { DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { if covered { asleep = true } } } else { asleep = false }
+                }
                 .onChange(of: store.night) { old, new in if old != nil, new == nil { startMorning() } }
                 .onChange(of: store.collecting) { _, on in if on { collectFromHere() } }
                 .onChange(of: store.page) { old, new in
