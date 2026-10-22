@@ -23,6 +23,7 @@
 		4A2B88542C10DAAFDBF3D110 /* BarlowCondensed-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A429A91A72084FD301F9A3E5 /* BarlowCondensed-Bold.ttf */; };
 		51EA18F07C7C4E78551CC5A9 /* RedFlagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D319BFA50E962451010EB785 /* RedFlagView.swift */; };
 		593654C519329CF20E4DD5BF /* RepChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCD169363A678C776CEF029 /* RepChartView.swift */; };
+		6AE93E02F2C06440AEC0B209 /* MorningViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C131F9B2830128FA15F1DB /* MorningViews.swift */; };
 		79B8CE209311039EBF6C306B /* DealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3655D7D3B1C7B70D724F89A0 /* DealView.swift */; };
 		830D0F939F4AAC7708ACF61A /* CrewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EF8C34E905788B88E5C1BE /* CrewView.swift */; };
 		85AF43A366075059ABDDD599 /* ProtoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */; };
@@ -74,6 +75,7 @@
 		3655D7D3B1C7B70D724F89A0 /* DealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DealView.swift"; sourceTree = "<group>"; };
 		3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorldMapView.swift"; sourceTree = "<group>"; };
 		3E80660872C36D7349FC2CB0 /* ChapterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterView.swift"; sourceTree = "<group>"; };
+		46C131F9B2830128FA15F1DB /* MorningViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MorningViews.swift"; sourceTree = "<group>"; };
 		55E8C0DF1F0146F2DEF826B2 /* MergeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MergeView.swift"; sourceTree = "<group>"; };
 		57EF8C34E905788B88E5C1BE /* CrewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CrewView.swift"; sourceTree = "<group>"; };
 		5A7F9E6E220C47610C3B3C41 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
@@ -218,6 +220,7 @@
 				BA0BD7F812F90140ACBE8488 /* MarketView.swift */,
 				7979FE3F575B19E31E0B24FD /* MenuView.swift */,
 				55E8C0DF1F0146F2DEF826B2 /* MergeView.swift */,
+				46C131F9B2830128FA15F1DB /* MorningViews.swift */,
 				CF94474E4B1A4F2261794B11 /* PoachView.swift */,
 				74743D6DF14E3F20528EAA46 /* PriceSheetView.swift */,
 				7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */,
@@ -362,6 +365,7 @@
 				89A5610C4F91854923A845D3 /* MarketView.swift in Sources */,
 				FF70251CCE745BA9ED65D4BF /* MenuView.swift in Sources */,
 				F6619D4C8ABDAD92780F1168 /* MergeView.swift in Sources */,
+				6AE93E02F2C06440AEC0B209 /* MorningViews.swift in Sources */,
 				D8A8F36DCC2528347D214C6F /* PoachView.swift in Sources */,
 				FBB1577947D1181702411204 /* PriceSheetView.swift in Sources */,
 				85AF43A366075059ABDDD599 /* ProtoIcon.swift in Sources */,

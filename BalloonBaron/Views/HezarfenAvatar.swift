@@ -102,7 +102,7 @@ struct HezarfenAvatar: View {
     ]
 
     /// Absolute M/L/C/Q/Z path data, as used by the avatar.
-    private static func svgPath(_ d: String) -> Path {
+    static func svgPath(_ d: String) -> Path {
         var tokens: [String] = []
         var cur = ""
         for ch in d {

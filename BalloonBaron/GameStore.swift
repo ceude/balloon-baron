@@ -46,6 +46,26 @@ final class GameStore {
     var collecting = false
     /// Passengers riding with you while the flight scene runs.
     var flightPax: Int?
+    /// The morning paper on screen (biggest story first).
+    var paper: [PaperItem]?
+    /// A morning event waiting for your answer.
+    var morningEvent: MorningEvent?
+    /// Hezarfen's rescue plan, shown when cash first goes below zero.
+    var showRescue = false
+    /// A new postcard, and the album from the menu.
+    var postcard: Achievement?
+    var showAlbum = false
+    /// A building's upgrade card, the bazaar, and the purchase sheet for one of its items.
+    var buildingCard: Building?
+    var showBazaar = false
+    var storeItem: StoreItem?
+
+    /// Anything already covering the home screen; the next popup waits for it.
+    private var busy: Bool {
+        showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
+            || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
+            || morningEvent != nil || showRescue || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+    }
 
     private static var saveURL: URL {
         let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
@@ -87,10 +107,10 @@ final class GameStore {
         save()
     }
 
-    /// Shows the next popup in the prototype's order: chapter ceremony, merger news, then Hezarfen.
+    /// Shows the next popup in the prototype's order (`nextPopup`): chapter ceremony, merger news, the morning
+    /// paper, the rescue plan, a morning event, a new postcard, then Hezarfen, a poaching rival and deals.
     func showNextHezarfen() {
-        guard !showIntro, !collecting, hezarfen == nil, chapter == nil, merge == nil, poach == nil, deal == nil, !showMenu, townCard == nil,
-              report == nil, flightPax == nil, page == nil, issueRegion == nil, let g = game else { return }
+        guard !busy, let g = game else { return }
         let s = g.state
         if let c = s.chapterNews {
             chapter = c
@@ -98,7 +118,21 @@ final class GameStore {
         } else if let m = s.mergeNews {
             merge = m
             act { $0.state.mergeNews = nil }
+        } else if let p = s.paper, !p.isEmpty {
+            act { paper = $0.readPaper() }
+            SoundEngine.shared.play(.tick)
+        } else if g.rescueDue {
+            act { $0.markRescueShown() }
+            showRescue = true
+        } else if s.eventDue == true {
+            var e: MorningEvent?
+            act { e = $0.drawMorningEvent() }
+            if let e { morningEvent = e } else { showNextHezarfen() }
+        } else if s.newPostcards?.isEmpty == false {
+            act { postcard = $0.nextPostcard() }
+            SoundEngine.shared.play(.fanfare)
         } else if !s.hezQueue.isEmpty {
+            act { $0.clearRescue() }
             act { hezarfen = $0.nextHezarfen() }
         } else if let p = s.poach {
             // The offer is shown once; it leaves the state so rivals can try again later.
@@ -187,7 +221,54 @@ final class GameStore {
         showNextHezarfen()
     }
 
+    func closePaper() {
+        paper = nil
+        showNextHezarfen()
+    }
+
+    func answerEvent(_ e: MorningEvent, accept: Bool) {
+        act { g in
+            if let o = g.answerEvent(e, accept: accept) { g.state.hezQueue.insert(.eventOutcome(o), at: 0) }
+        }
+        morningEvent = nil
+        showNextHezarfen()
+    }
+
+    /// A move on the rescue card; the card closes once cash is back above zero.
+    func rescueMove(_ f: (inout Game) -> Void) {
+        var done = false
+        act { g in
+            f(&g)
+            done = g.rescueStepDone()
+        }
+        if done { closeRescue() }
+    }
+
+    func closeRescue() {
+        showRescue = false
+        showNextHezarfen()
+    }
+
+    func closePostcard() {
+        postcard = nil
+        showNextHezarfen()
+    }
+
+    /// A store item was bought (or the free gift taken).
+    func buy(_ k: StoreItem) {
+        act { $0.grantStoreItem(k) }
+        SoundEngine.shared.play(.coin)
+        storeItem = nil
+    }
+
+    /// Hezarfen's bazaar lesson ends at the bazaar.
+    func dismissHezarfen(openBazaar: Bool) {
+        hezarfen = nil
+        if openBazaar { showBazaar = true } else { showNextHezarfen() }
+    }
+
     func dismissPopup() {
+        if let c = chapter, c.region == state?.region { act { $0.chapterStarted(c.index + 1) } }
         chapter = nil
         merge = nil
         showNextHezarfen()

@@ -16,6 +16,22 @@ struct MenuView: View {
         return ModalCard {
             CardText.title(loc("menu.title"))
             if let s {
+                Button {
+                    SoundEngine.shared.play(.click)
+                    store.showMenu = false
+                    store.showAlbum = true
+                } label: {
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(loc("menu.album")).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
+                        Text(loc("album.count", num(s.achievements.count), num(Achievement.allCases.count)))
+                            .font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 14).padding(.vertical, 12)
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.line, lineWidth: 2))
+                }
+                .buttonStyle(.plain)
                 CardText.hint(loc("menu.saved", num(s.day), eur(s.cash)))
             }
             Text(loc("menu.code"))

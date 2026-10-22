@@ -69,8 +69,23 @@ struct RootView: View {
                 MenuView()
                     .transition(.opacity)
             }
+            if let p = store.paper {
+                PaperView(items: p).transition(.opacity)
+            }
+            if let e = store.morningEvent {
+                MorningEventView(event: e).transition(.move(edge: .bottom))
+            }
+            if store.showRescue {
+                RescueView().transition(.opacity)
+            }
+            if let a = store.postcard {
+                PostcardView(achievement: a).transition(.opacity)
+            }
+            if store.showAlbum {
+                AlbumView().transition(.opacity)
+            }
             if let m = store.hezarfen {
-                HezarfenView(message: m) { store.dismissHezarfen() }
+                HezarfenView(message: m, day: store.state?.day ?? 1) { store.dismissHezarfen(openBazaar: m == .tip(.bazaar)) }
                     .transition(.opacity)
             }
             if store.showIntro {
@@ -90,6 +105,11 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.deal)
         .animation(.easeOut(duration: 0.25), value: store.showMenu)
         .animation(.easeOut(duration: 0.25), value: store.showRepChart)
+        .animation(.easeOut(duration: 0.25), value: store.paper)
+        .animation(.easeOut(duration: 0.25), value: store.morningEvent)
+        .animation(.easeOut(duration: 0.25), value: store.showRescue)
+        .animation(.easeOut(duration: 0.25), value: store.postcard)
+        .animation(.easeOut(duration: 0.25), value: store.showAlbum)
         .fullScreenCover(isPresented: Binding(get: { store.flightPax != nil }, set: { _ in })) {
             FlightView()
                 .environment(store)
