@@ -1,7 +1,7 @@
 name: CI
 
 # Every push checks what the developer's Mac will see: the core's tests on Swift 5.9,
-# and the whole iOS app built with Xcode 15.2 (no signing).
+# and the whole iOS app built with Xcode 15.2 (no signing). Errors go to the run's summary page.
 on:
   push:
     branches: [main]
@@ -15,24 +15,39 @@ jobs:
       - uses: actions/checkout@v4
       - name: Test BalloonBaronCore
         working-directory: Packages/BalloonBaronCore
-        run: swift test
+        shell: bash
+        run: |
+          set +e
+          swift test > test.log 2>&1
+          status=$?
+          {
+            echo "## Core tests (Swift 5.9): $([ $status = 0 ] && echo passed || echo FAILED)"
+            echo '```'
+            grep -E "error:|failed|Executed [0-9]+ tests" test.log | sort -u | head -n 120
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          tail -n 60 test.log
+          exit $status
 
   app:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      - name: Select Xcode 15.2
-        run: |
-          ls -d /Applications/Xcode*.app
-          sudo xcode-select -s /Applications/Xcode_15.2.app
-          xcodebuild -version
-      - name: Build the app for the simulator
+      - name: Build the app with Xcode 15.2 for the simulator
+        shell: bash
         run: |
           set +e
-          xcodebuild -list -project BalloonBaron.xcodeproj
+          sudo xcode-select -s /Applications/Xcode_15.2.app
           xcodebuild build -project BalloonBaron.xcodeproj -scheme BalloonBaron \
             -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO > build.log 2>&1
           status=$?
-          grep -E "error:|warning: .*deprecated" build.log | sort -u | head -n 150
+          {
+            echo "## App build: $([ $status = 0 ] && echo passed || echo FAILED)"
+            echo '```'
+            xcodebuild -version
+            grep -E "^/.*(error|warning): " build.log | sed 's|.*/BalloonBaron/||' | sort -u | grep -v "warning: .*is deprecated" | head -n 150
+            grep -E "BUILD (SUCCEEDED|FAILED)" build.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
           tail -n 40 build.log
           exit $status
