@@ -16,6 +16,7 @@
 		24592D13E014015B25BA3DF6 /* CollectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41E0E443CD82E29A38F212D /* CollectView.swift */; };
 		247D71012621FEDAFD91686F /* FleetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B20ABBDA63F2F318C03DED /* FleetView.swift */; };
 		2AE29E79EC58294FF2CF023D /* BalloonBaronApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716D53AF05BF7F135AC3340E /* BalloonBaronApp.swift */; };
+		32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF39B153C032C3B1F8AFDEF /* TownNight.swift */; };
 		37A512CC536FFCC07E95ABE3 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32555776BC90AFB75C336EF3 /* SetupView.swift */; };
 		3AAB38726CD2EDBCEB8BD584 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64334C9F947BE9EF2E1B63A6 /* Sound.swift */; };
 		3F0B240D7BF72C3BE57BA5F9 /* HoldingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3ED97BD630A253467C06E76 /* HoldingView.swift */; };
@@ -119,6 +120,7 @@
 		E41E0E443CD82E29A38F212D /* CollectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollectView.swift"; sourceTree = "<group>"; };
 		F4DC99A8B37B92CB3C497642 /* OfficeSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OfficeSceneView.swift"; sourceTree = "<group>"; };
 		F5BF48AA40CAD7891EB709FC /* BalloonBaron.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BalloonBaron.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBF39B153C032C3B1F8AFDEF /* TownNight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownNight.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -179,6 +181,7 @@
 			children = (
 				BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */,
 				DA747D61B806F541F6AB8DF8 /* TownModel.swift */,
+				FBF39B153C032C3B1F8AFDEF /* TownNight.swift */,
 				028E3000896415942F6E8508 /* TownPainter.swift */,
 				151A0BC3B17C01FBFECAA493 /* TownViews.swift */,
 			);
@@ -350,6 +353,7 @@
 				43D34FF299E13570C04FCAA5 /* ScenePainter.swift in Sources */,
 				89387608271733A9FA3C605B /* TownExtras.swift in Sources */,
 				9A10F15161315C7C8ACF36B5 /* TownModel.swift in Sources */,
+				32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */,
 				202A37F855488615D2088520 /* TownPainter.swift in Sources */,
 				BBB4A8150F49C505DE1C2F67 /* TownViews.swift in Sources */,
 				AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */,

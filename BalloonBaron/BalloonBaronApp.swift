@@ -97,6 +97,9 @@ struct RootView: View {
                 HezarfenView(message: m, day: store.state?.day ?? 1) { store.dismissHezarfen(openBazaar: m == .tip(.bazaar)) }
                     .transition(.opacity)
             }
+            if let n = store.night {
+                NightView(night: n).transition(.opacity).zIndex(5)
+            }
             if store.showIntro {
                 IntroView()
                     .transition(.opacity)
@@ -122,6 +125,7 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.buildingCard)
         .animation(.easeOut(duration: 0.25), value: store.showBazaar)
         .animation(.easeOut(duration: 0.25), value: store.storeItem)
+        .animation(.easeInOut(duration: 0.6), value: store.night)
         .fullScreenCover(isPresented: Binding(get: { store.flightPax != nil }, set: { _ in })) {
             FlightView()
                 .environment(store)

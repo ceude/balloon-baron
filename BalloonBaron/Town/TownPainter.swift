@@ -6,6 +6,10 @@ struct TownViewport {
     var z: CGFloat
     var ox: CGFloat
     var oy: CGFloat
+    /// A horizon set by the camera (the night's big sky) instead of the one the town's position gives.
+    var hzFix: CGFloat? = nil
+    /// Draw no building names (tap targets still come back).
+    var noLabels = false
 
     func screen(_ p: CGPoint) -> CGPoint { CGPoint(x: p.x * z + ox, y: p.y * z + oy) }
 }
@@ -56,7 +60,8 @@ enum TownGeo {
 
     /// Horizon on screen: a little above the town's far corner, never below 60 % of the height.
     static func horizon(_ v: TownViewport, height h: CGFloat) -> CGFloat {
-        min(h * 0.6, v.oy + iso(-7, -7).y * v.z)
+        if let f = v.hzFix { return f }
+        return min(h * 0.6, v.oy + iso(-7, -7).y * v.z)
     }
 }
 
@@ -84,6 +89,10 @@ struct TownPainter {
     let t: Double
     let v: TownViewport
     let size: CGSize
+    /// Set while the night falls between two days.
+    var night: TownNight? = nil
+    /// Windows and doors drawn this frame, lit again over the dark.
+    var windows: [NightWindow] = []
 
     static let tuffLit = "#f1d6b0", tuffShade = "#b9825c", tuffTop = "#f8e4c4"
     static let sunShadow = CGSize(width: 0.55, height: 0.2)
@@ -91,8 +100,9 @@ struct TownPainter {
     // MARK: Entry point
 
     /// Draws everything and returns the tap targets.
-    static func render(_ ctx: inout GraphicsContext, state: GameState, time: Double, viewport: TownViewport, size: CGSize) -> TownHits {
-        var p = TownPainter(c: ctx, s: state, t: time, v: viewport, size: size)
+    static func render(_ ctx: inout GraphicsContext, state: GameState, time: Double, viewport: TownViewport, size: CGSize,
+                       night: TownNight? = nil) -> TownHits {
+        var p = TownPainter(c: ctx, s: state, t: time, v: viewport, size: size, night: night)
         return p.renderAll()
     }
 
@@ -141,6 +151,7 @@ struct TownPainter {
         items += scen
         for it in items.sorted(by: { $0.depth < $1.depth }) { it.draw(&self) }
         for f in sky.balloons { f(&self) }
+        if night != nil { nightLayer(screen: screen, world: world, hz: hz) }
         c = screen
         if s.local.winter != nil { snowfall(w, h) }
         return labels(bs)
@@ -287,6 +298,7 @@ struct TownPainter {
         arch.addLine(to: pt(x0 + w, v))
         arch.closeSubpath()
         f.fill(arch, with: .color(hex(door ? "#5a3418" : lit ? "#ffd27a" : "#3a2018")))
+        if night != nil { windows.append(NightWindow(p: p, q: q, h: h, u: u, v: v, w: w, hh: hh, door: door)) }
         if door {
             f.fill(Path(CGRect(x: x0 + w * 0.1, y: v, width: w * 0.35, height: hh * 0.8)), with: .color(hex("#7a4a24")))
             f.fill(Path(CGRect(x: x0 + w * 0.55, y: v, width: w * 0.35, height: hh * 0.8)), with: .color(hex("#7a4a24")))
@@ -1074,9 +1086,10 @@ struct TownPainter {
                 if i % 3 == 0 { p.cypress(q.x, q.y) } else { p.roundTree(q.x, q.y, 0.9, i % 2 == 1 ? "#7aa04a" : "#8aa84e") }
             }))
         }
-        // Your fleet on the launch field, burners flickering.
+        // Your fleet on the launch field, burners flickering. At night the envelopes are packed away, except for a Fiesta balloon glow.
         let colors = s.colors, tt = t
-        for (i, b) in s.local.balloons.prefix(6).enumerated() {
+        let packed = night != nil && night?.event != .balloonGlow
+        for (i, b) in s.local.balloons.prefix(packed ? 0 : 6).enumerated() {
             let gx = 1.8 + Double(i % 3) * 1.9, gy = 5 + Double(i / 3) * 1.4
             let r: CGFloat = b.size == .XL ? 44 : b.size == .L ? 38 : b.size == .M ? 33 : 28
             let design = s.design(of: b), ad = b.ad
@@ -1119,7 +1132,8 @@ struct TownPainter {
         }
         let cols: [[String]] = s.local.rivals.map { $0.colors } + [["#ff5e3a", "#ffc23d"], ["#14a39a", "#e8fff9"]]
         let tt = t
-        for (i, f) in Self.outerFields.enumerated() {
+        // Nobody flies at night.
+        for (i, f) in Self.outerFields.enumerated() where night == nil {
             for j in 0..<2 {
                 let ph = (tt * 0.05 + Double(i) * 0.23 + Double(j) * 0.5).truncatingRemainder(dividingBy: 1)
                 let gx = f.0 + 0.9 + Double(j) * 1.3, gy = f.1 + 1.1, col = cols[(i + j) % cols.count]
@@ -1166,7 +1180,7 @@ struct TownPainter {
                                                                  (9, 4, 260, "#9b7be0", "#f2ebff"), (3, 7, 340, "#5aa9e6", "#eaf4fc")]
         var shadows: [(inout TownPainter) -> Void] = [], balloons: [(inout TownPainter) -> Void] = []
         let tt = t, wk = windK(1)
-        for (i, (gx0, gy0, alt, c1, c2)) in list.enumerated() {
+        for (i, (gx0, gy0, alt, c1, c2)) in list.enumerated() where night == nil {
             let gx = pmod(gx0 + tt * 0.12 * wk + Double(i) * 3, 18) - 2, gy = gy0 + sin(tt * 0.2 + Double(i)) * 0.5
             let q = TownGeo.iso(gx, gy)
             shadows.append { p in p.blobShadow(q.x, q.y, 22, 9, 0.14) }
@@ -1192,9 +1206,11 @@ struct TownPainter {
         }
         let sx = w * 0.74 + px, sy = hz - h * 0.045, sr = min(w, h) * 0.055
         let sun = grad([(rgba(255, 225, 160, 0.65), 0), (rgba(255, 170, 110, 0.25), 0.35), (rgba(255, 160, 110, 0), 1)])
-        c.fill(Path(CGRect(x: sx - sr * 7, y: sy - sr * 7, width: sr * 14, height: sr * 14)),
-               with: .radialGradient(sun, center: pt(sx, sy), startRadius: 0, endRadius: sr * 7))
-        ellipse(sx, sy, sr, sr, hex("#fff0c8"))
+        if night == nil { // no sun at night
+            c.fill(Path(CGRect(x: sx - sr * 7, y: sy - sr * 7, width: sr * 14, height: sr * 14)),
+                   with: .radialGradient(sun, center: pt(sx, sy), startRadius: 0, endRadius: sr * 7))
+            ellipse(sx, sy, sr, sr, hex("#fff0c8"))
+        }
         // Thin pink clouds lit from below.
         for i in 0..<4 {
             let cw = w * (0.28 + 0.1 * CGFloat(i % 2))
@@ -1239,6 +1255,7 @@ struct TownPainter {
 
     /// Dozens of distant balloons drifting over the valley with the wind; the far ones hazier.
     mutating func farBalloons(_ w: CGFloat, _ h: CGFloat, _ hz: CGFloat, _ px: CGFloat, layer: Int) {
+        if night != nil { return }
         let cols: [[String]] = [s.colors] + s.local.rivals.map { $0.colors } + [["#ff5e3a", "#ffc23d"], ["#14a39a", "#e8fff9"], ["#e0408a", "#ffd0e0"], ["#5aa9e6", "#eaf4fc"]]
         var R = Mulberry32(seed: layer == 1 ? 41 : 23)
         let n = layer == 1 ? 8 : 20, wk = windK(layer == 1 ? 2 : 3)
@@ -1326,7 +1343,7 @@ struct TownPainter {
             let half = 50 * z / 0.5
             hits.buildings.append(.init(b: b, pts: pts, box: CGRect(x: sx - half, y: sy - 30, width: half * 2, height: max(0, bottom - sy + 30)),
                                         depth: b.gx + b.gy))
-            if full { label(b, sx, sy, sc, &taken) }
+            if full && !v.noLabels && night == nil { label(b, sx, sy, sc, &taken) }
         }
         let alerts = Town.alerts(s)
         for zn in Town.zones {

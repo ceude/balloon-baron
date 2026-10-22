@@ -59,12 +59,16 @@ final class GameStore {
     var buildingCard: Building?
     var showBazaar = false
     var storeItem: StoreItem?
+    /// The night between two days, with what lights it up.
+    struct Night: Equatable { var event: NightEvent? }
+    var night: Night?
 
     /// Anything already covering the home screen; the next popup waits for it.
     private var busy: Bool {
         showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+            || night != nil
     }
 
     private static var saveURL: URL {
@@ -360,8 +364,16 @@ final class GameStore {
         report = r
     }
 
+    /// "Go to the morning" on the report plays the night first.
     func closeReport() {
+        var ev: NightEvent?
+        act { ev = $0.startNight() }
+        night = Night(event: ev)
         report = nil
+    }
+
+    func endNight() {
+        night = nil
         act { $0.startDay() }
         showNextHezarfen()
     }

@@ -35,6 +35,8 @@ final class SoundEngine {
     private var node: AVAudioSourceNode?
     private var observers: [NSObjectProtocol] = []
     private var lastTick: TimeInterval = 0
+    private var cricketTask: Task<Void, Never>?
+    private var lastPop = -10.0
     private var started = false
 
     private init() {}
@@ -62,6 +64,34 @@ final class SoundEngine {
     func crowd(_ on: Bool) {
         guard started else { return }
         synth.send(.crowd(on))
+    }
+
+    /// Night: short trills from two crickets at slightly different pitches, an owl now and then.
+    func crickets(_ on: Bool) {
+        cricketTask?.cancel()
+        cricketTask = nil
+        guard on, started else { return }
+        cricketTask = Task { @MainActor [weak self] in
+            while !Task.isCancelled {
+                guard let self else { return }
+                for (f, dl) in [(4300 + Double.random(in: 0..<200), 0.0), (4700 + Double.random(in: 0..<200), 0.25 + Double.random(in: 0..<0.3))] {
+                    for i in 0..<(3 + Int.random(in: 0..<3)) { self.tone(f, f * 0.97, 0.035, .sine, 0.018, dl + Double(i) * 0.055) }
+                }
+                if Double.random(in: 0..<1) < 0.12 {
+                    self.tone(420, 380, 0.32, .sine, 0.03, 0.5)
+                    self.tone(400, 360, 0.45, .sine, 0.03, 0.95)
+                }
+                try? await Task.sleep(for: .milliseconds(380 + Int.random(in: 0..<520)))
+            }
+        }
+    }
+
+    /// Wedding fireworks: a soft thump and a crackle for each burst, about one a second (call it often).
+    func firework(_ t: Double) {
+        guard started, t > 0.8, t - lastPop > 1.1 else { return }
+        lastPop = t
+        tone(160, 55, 0.3, .triangle, 0.07)
+        for i in 0..<5 { tone(2400 + Double.random(in: 0..<900), 1500, 0.06, .sine, 0.012, 0.2 + Double(i) * 0.05) }
     }
 
     func play(_ s: Sfx) {
