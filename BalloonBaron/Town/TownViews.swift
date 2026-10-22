@@ -260,7 +260,7 @@ struct TownCardView: View {
 
     var body: some View {
         if let s = store.state {
-            ModalCard {
+            ModalCard(onClose: { store.closeTownCard() }) {
                 switch card {
                 case .influencer:
                     let wait = s.local.influencerCooldown - s.day

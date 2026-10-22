@@ -14,7 +14,7 @@ struct ChapterView: View {
 
     var body: some View {
         let chapters = news.region.chapters
-        WorldPopup(topBar: Theme.sun) {
+        WorldPopup(topBar: Theme.sun, onClose: { close(chapters) }) {
             if let s = store.state, chapters.indices.contains(news.index) {
                 if news.index == chapters.count - 1 {
                     baron(chapters[news.index], s)
@@ -31,6 +31,16 @@ struct ChapterView: View {
             withAnimation(.spring(duration: 0.6, bounce: 0.4)) { shown = true }
             SoundEngine.shared.play(.fanfare)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { SoundEngine.shared.play(.applause) }
+        }
+    }
+
+    /// The ✕ does what the card's bottom button does: Devam goes on to the next chapter's goals, otherwise it closes.
+    private func close(_ chapters: [Chapter]) {
+        let finishedCard = news.index < chapters.count - 1 && !showNext
+        if finishedCard && chapters.indices.contains(news.index + 1) {
+            withAnimation(.easeOut(duration: 0.2)) { showNext = true }
+        } else {
+            store.dismissPopup()
         }
     }
 

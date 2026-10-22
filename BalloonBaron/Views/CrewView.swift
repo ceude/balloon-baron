@@ -29,6 +29,7 @@ struct CrewView: View {
                             candidatesSection(s)
                             schoolSection(s)
                                 .id(PageSection.school)
+                            PageDoneButton { store.closePage() }
                         }
                         .padding(16)
                     }

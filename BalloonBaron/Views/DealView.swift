@@ -13,7 +13,7 @@ struct DealView: View {
         let price: Int = offer.bankrupt ? (rival?.forSale?.price ?? 0) : (rival?.offer ?? 0)
         let count: Int = offer.bankrupt ? (rival?.forSale?.sizes.count ?? 0) : (rival?.balloons.count ?? 0)
         let name: String = rival?.name ?? ""
-        return ModalCard {
+        return ModalCard(onClose: later) {
             BalloonShape(colors: rivalColors(rival))
                 .frame(width: 46, height: 58)
             CardText.title(loc(offer.bankrupt ? "deal.bankrupt.title" : "deal.sale.title", name))
@@ -42,15 +42,19 @@ struct DealView: View {
             }
             .buttonStyle(ChunkyButtonStyle(kind: .ghost))
             Button {
-                // Later: the offer stays seen and waits on the Market page.
                 SoundEngine.shared.play(.click)
-                store.deal = nil
-                store.showNextHezarfen()
+                later()
             } label: {
                 Text(loc("deal.later")).frame(maxWidth: .infinity)
             }
             .buttonStyle(ChunkyButtonStyle(kind: .ghost))
         }
+    }
+
+    /// Later: the offer stays seen and waits on the Market page.
+    private func later() {
+        store.deal = nil
+        store.showNextHezarfen()
     }
 
     private func rivalColors(_ r: Rival?) -> [String] {

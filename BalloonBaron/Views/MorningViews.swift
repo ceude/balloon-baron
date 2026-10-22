@@ -580,7 +580,7 @@ struct AlbumView: View {
     var body: some View {
         let s = store.state
         let got = s?.achievements ?? [:]
-        return ModalCard {
+        return ModalCard(onClose: { store.showAlbum = false }) {
             CardText.title(loc("album.title"))
             CardText.hint(loc("album.count", num(got.count), num(Achievement.allCases.count)))
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {

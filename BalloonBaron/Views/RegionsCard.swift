@@ -8,7 +8,7 @@ struct RegionsCard: View {
 
     var body: some View {
         let s = store.state
-        return ModalCard {
+        return ModalCard(onClose: onClose) {
             CardText.title(loc("regions.title"))
             if let s {
                 ForEach(RegionID.allCases.filter { s.owns($0) }, id: \.self) { r in

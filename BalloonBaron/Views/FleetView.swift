@@ -25,8 +25,11 @@ enum FleetUI {
                     header
                     ScrollViewReader { proxy in
                         ScrollView {
-                            VStack(spacing: 14) { content }
-                                .padding(16)
+                            VStack(spacing: 14) {
+                                content
+                                PageDoneButton(action: close)
+                            }
+                            .padding(16)
                         }
                         .onAppear { store.scrollToSection(proxy) }
                     }
@@ -224,6 +227,7 @@ enum FleetUI {
                             .padding(.top, 6)
                     }
                     .padding(20)
+                    .overlay(alignment: .topTrailing) { CardCloseX(action: close) }
                 }
             }
         }

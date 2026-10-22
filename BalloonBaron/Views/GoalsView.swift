@@ -235,12 +235,15 @@ struct WorldPillButton: View {
 }
 
 /// Dimmed backdrop with a centered paper card, used by the ceremony, merger and problem popups.
+/// Like `ModalCard`, `onClose` puts a ✕ in the top right corner.
 struct WorldPopup<Content: View>: View {
     let topBar: Color?
+    let onClose: (() -> Void)?
     let content: Content
 
-    init(topBar: Color? = nil, @ViewBuilder content: () -> Content) {
+    init(topBar: Color? = nil, onClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
         self.topBar = topBar
+        self.onClose = onClose
         self.content = content()
     }
 
@@ -272,6 +275,9 @@ struct WorldPopup<Content: View>: View {
             }
         }
         .clipShape(RoundedRectangle(cornerRadius: 24))
+        .overlay(alignment: .topTrailing) {
+            if let onClose { CardCloseX(action: onClose) }
+        }
         .shadow(color: Color.black.opacity(0.35), radius: 20, y: 10)
     }
 }

@@ -82,3 +82,26 @@ struct BigButton: View {
         .buttonStyle(.plain)
     }
 }
+
+/// The prototype's `.pdone`: a small centered "Done" at the end of every office page.
+struct PageDoneButton: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            SoundEngine.shared.play(.click)
+            action()
+        } label: {
+            Text(loc("home.done"))
+                .font(Theme.font(18, .heavy, condensed: true))
+                .textCase(.uppercase)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 26)
+                .frame(minWidth: 140, minHeight: 44)
+                .background(Theme.coral, in: RoundedRectangle(cornerRadius: 16))
+        }
+        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
+        .padding(.top, 6)
+    }
+}

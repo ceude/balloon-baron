@@ -70,6 +70,7 @@ struct FleetPlanView: View {
                         .padding(.top, 6)
                 }
                 .padding(18)
+                .overlay(alignment: .topTrailing) { CardCloseX { dismiss() } }
             }
             .background(Theme.paper.ignoresSafeArea())
             .sensoryFeedback(.selection, trigger: tick)

@@ -34,6 +34,7 @@ struct DesignStudioView: View {
                         buttons(game)
                     }
                     .padding(20)
+                    .overlay(alignment: .topTrailing) { CardCloseX { dismiss() } }
                 }
             }
         }

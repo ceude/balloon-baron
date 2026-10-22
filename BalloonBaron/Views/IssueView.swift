@@ -7,7 +7,7 @@ struct IssueView: View {
     let region: RegionID
 
     var body: some View {
-        WorldPopup(topBar: Theme.red) {
+        WorldPopup(topBar: Theme.red, onClose: later) {
             if let auto = store.state?.parked[region]?.auto, let open = auto.issue {
                 content(open.kind, auto)
             }

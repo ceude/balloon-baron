@@ -7,7 +7,7 @@ struct RepChartView: View {
     @Environment(GameStore.self) private var store
 
     var body: some View {
-        ModalCard {
+        ModalCard(onClose: close) {
             if let s = store.state {
                 content(s)
             }

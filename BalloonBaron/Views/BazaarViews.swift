@@ -12,7 +12,7 @@ struct BuildingCardView: View {
         let s = store.state
         let n = s?.level(building) ?? 1
         let cost = building.upgradeCost(from: n)
-        return ModalCard {
+        return ModalCard(onClose: { store.closeBuildingCard() }) {
             Text(loc("building.level", num(n), num(Building.maxLevel)))
                 .font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
             CardText.title(building.title)
@@ -162,7 +162,7 @@ struct BazaarView: View {
 
     var body: some View {
         let s = store.state
-        return ModalCard {
+        return ModalCard(onClose: { store.closeBazaar() }) {
             CardText.title(loc("bazaar.title"))
             CardText.lead(loc("bazaar.lead"))
             if let s {
@@ -228,7 +228,7 @@ struct StoreItemView: View {
 
     var body: some View {
         let s = store.state
-        return ModalCard {
+        return ModalCard(onClose: { store.storeItem = nil }) {
             Text(loc("store.tag")).font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
             CardText.title(item.title)
             StoreThumb(item: item, colors: s?.colors ?? [])

@@ -2,7 +2,9 @@ import SwiftUI
 import BalloonBaronCore
 
 /// The prototype's `.modal` + `.card`: dimmed backdrop with a white rounded card in the middle.
+/// A card that can be closed passes `onClose` (what its bottom close button does) and gets a ✕.
 struct ModalCard<Content: View>: View {
+    var onClose: (() -> Void)? = nil
     @ViewBuilder let content: () -> Content
 
     var body: some View {
@@ -24,9 +26,34 @@ struct ModalCard<Content: View>: View {
             .padding(.vertical, 22)
             .frame(maxWidth: 420, alignment: .leading)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 24))
+            .overlay(alignment: .topTrailing) {
+                if let onClose { CardCloseX(action: onClose) }
+            }
             .shadow(color: .black.opacity(0.35), radius: 25, y: 20)
             .padding(16)
             .frame(maxWidth: .infinity)
+    }
+}
+
+/// The prototype's `.cardx`: a ✕ in a closable card's top right corner, doing what its bottom button does.
+struct CardCloseX: View {
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            SoundEngine.shared.play(.click)
+            action()
+        } label: {
+            Text("✕")
+                .font(.system(size: 17, weight: .bold))
+                .foregroundStyle(Theme.ink)
+                .frame(width: 38, height: 38)
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 12))
+                .shadow(color: Theme.line, radius: 0, y: 3)
+        }
+        .buttonStyle(.plain)
+        .padding(12)
+        .accessibilityLabel(loc("world.close"))
     }
 }
 
