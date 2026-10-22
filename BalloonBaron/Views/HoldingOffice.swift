@@ -8,7 +8,7 @@ struct HoldingOfficeView: View {
     @Environment(GameStore.self) private var store
     @State private var unit: HoldingUnit?
     @State private var shown = false
-    private let start = Date()
+    @State private var start = Date()
 
     var body: some View {
         GeometryReader { geo in

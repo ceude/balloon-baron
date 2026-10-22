@@ -132,8 +132,8 @@ struct CollectView: View {
                 }
                 .frame(maxWidth: 560)
                 .background { GeometryReader { g in Color.clear.onAppear { store.collectScene.cardTop = g.frame(in: .global).minY } } }
-                .opacity(store.collectScene.leaveDate == nil ? 1 : 0)
-                .allowsHitTesting(store.collectScene.leaveDate == nil)
+                .opacity(store.leaving ? 0 : 1)
+                .allowsHitTesting(!store.leaving)
             }
         }
         .padding(.horizontal, 8)

@@ -30,6 +30,8 @@ struct HomeView: View {
     @State private var weatherBottom: CGFloat = 0
     /// Zoomed into the town: the controls slide off screen (top ones up, the dock down) and come back on zoom-out.
     @State private var zoomed = false
+    /// The controls are still sliding back after a zoom-out; measurements stay frozen until they've landed.
+    @State private var settling = false
     @State private var dockBottom: CGFloat = 0
     /// The dock is a slim strip until you pull it up (or tap it); open, it holds every card of the morning.
     @State private var dockOpen = false
@@ -107,19 +109,23 @@ struct HomeView: View {
             .padding(.top, 10)
             .padding(.bottom, 6)
         }
-        // Measurements freeze while zoomed in: the town glides back to the home layout, not the slid-away one.
+        // Measurements freeze while zoomed in and while the controls slide back: the town glides back to the home
+        // layout, not the slid-away one, and nothing re-measures on every frame of the slide.
         // The town sits on the closed strip, so opening the dock doesn't move it.
+        .onChange(of: zoomed) { _, z in
+            if z { settling = true } else { DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { if !zoomed { settling = false } } }
+        }
         .onPreferenceChange(DockTopKey.self) { v in
-            if !zoomed && !dockOpen && v >= 0 && abs(v - dockTop) > 0.5 { dockTop = v }
+            if !zoomed && !settling && !dockOpen && v >= 0 && abs(v - dockTop) > 0.5 { dockTop = v }
         }
         .onPreferenceChange(DockBottomKey.self) { v in
-            if !zoomed && v >= 0 && abs(v - dockBottom) > 0.5 { dockBottom = v }
+            if !zoomed && !settling && v >= 0 && abs(v - dockBottom) > 0.5 { dockBottom = v }
         }
         .onPreferenceChange(HudBottomKey.self) { v in
-            if !zoomed && v >= 0 && abs(v - hudBottom) > 0.5 { hudBottom = v }
+            if !zoomed && !settling && v >= 0 && abs(v - hudBottom) > 0.5 { hudBottom = v }
         }
         .onPreferenceChange(WeatherBottomKey.self) { v in
-            if !zoomed && v >= 0 && abs(v - weatherBottom) > 0.5 { weatherBottom = v }
+            if !zoomed && !settling && v >= 0 && abs(v - weatherBottom) > 0.5 { weatherBottom = v }
         }
     }
 

@@ -263,7 +263,7 @@ struct StoreItemView: View {
 struct DecorNightPreview: View {
     let item: StoreItem
     let state: GameState
-    private let start = Date()
+    @State private var start = Date()
 
     /// Where the camera looks for each decoration, and how close (`DECOR_AT`).
     private var spot: (Double, Double, CGFloat) {

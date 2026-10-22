@@ -3,6 +3,7 @@ import SwiftUI
 @main
 struct BalloonBaronApp: App {
     @State private var store = GameStore()
+    @Environment(\.scenePhase) private var scenePhase
 
     init() {
         Theme.registerFonts()
@@ -14,6 +15,7 @@ struct BalloonBaronApp: App {
             RootView()
                 .environment(store)
                 .preferredColorScheme(.light)
+                .onChange(of: scenePhase) { _, phase in if phase != .active { store.flushSave() } }
         }
     }
 }
@@ -98,9 +100,10 @@ struct RootView: View {
                     .transition(.opacity)
             }
             if let n = store.night {
-                // The last of the night fades slowly over the morning town (`dawnTick`).
+                // It is already there when the report slides away (its own dusk falls inside it); the last of the
+                // night fades slowly over the morning town (`dawnTick`).
                 NightView(night: n)
-                    .transition(.asymmetric(insertion: .opacity, removal: .opacity.animation(.easeOut(duration: 1.4))))
+                    .transition(.asymmetric(insertion: .identity, removal: .opacity.animation(.easeOut(duration: 1.4))))
                     .zIndex(5)
             }
             if store.showIntro {
@@ -129,15 +132,11 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.showBazaar)
         .animation(.easeOut(duration: 0.25), value: store.storeItem)
         .animation(.easeInOut(duration: 0.6), value: store.night)
-        .fullScreenCover(isPresented: Binding(get: { store.flightPax != nil }, set: { _ in })) {
-            FlightView()
+        // One cover for the flight and its report: the report slides up over the flight inside it, so the home
+        // screen never flashes between two presentations.
+        .fullScreenCover(isPresented: Binding(get: { store.flightPax != nil || store.report != nil }, set: { _ in })) {
+            DayCover()
                 .environment(store)
-        }
-        .fullScreenCover(isPresented: Binding(get: { store.report != nil }, set: { _ in })) {
-            if let r = store.report {
-                ReportView(report: r)
-                    .environment(store)
-            }
         }
     }
 
@@ -151,6 +150,31 @@ struct RootView: View {
         case .goals: GoalsView()
         case .holding: HoldingOfficeView()
         case .map: WorldMapView()
+        }
+    }
+}
+
+/// The flight and then the day's report, in one full-screen cover.
+private struct DayCover: View {
+    @Environment(GameStore.self) private var store
+    /// The flight stays under the report while it slides up, then goes.
+    @State private var flightShown = false
+
+    var body: some View {
+        ZStack {
+            if store.flightPax != nil || flightShown {
+                FlightView()
+                    .onAppear { flightShown = true }
+            }
+            if let r = store.report {
+                ReportView(report: r)
+                    .transition(.move(edge: .bottom))
+                    .zIndex(1)
+            }
+        }
+        .animation(.easeOut(duration: 0.35), value: store.report == nil)
+        .onChange(of: store.report == nil) { _, none in
+            if !none { DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { flightShown = false } }
         }
     }
 }

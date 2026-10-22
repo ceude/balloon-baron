@@ -63,6 +63,8 @@ final class GameStore {
     var storeItem: StoreItem?
     /// Passengers queueing in the town while they gather (shared by the card and the town canvas).
     let collectScene = CollectScene()
+    /// Take-off was pressed: the collect card fades while the jeeps come (observed, unlike `collectScene`).
+    var leaving = false
     /// The night between two days, with what lights it up.
     struct Night: Equatable { var event: NightEvent? }
     var night: Night?
@@ -101,9 +103,29 @@ final class GameStore {
         showNextHezarfen()
     }
 
+    /// Writes happen in order on a background queue, so encoding never stalls a transition.
+    private let saveQueue = DispatchQueue(label: "balloonbaron.save", qos: .utility)
+    @ObservationIgnored private var pendingSave: DispatchWorkItem?
+
+    /// Saves half a second later: quick changes (a held price button) make one write. The game itself lives in
+    /// memory, so nothing waits for the disk; `flushSave` writes at once when it matters.
     func save() {
-        guard let state = game?.state, let data = try? JSONEncoder().encode(state) else { return }
-        try? data.write(to: Self.saveURL, options: .atomic)
+        pendingSave?.cancel()
+        let item = DispatchWorkItem { [weak self] in self?.flushSave() }
+        pendingSave = item
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: item)
+    }
+
+    /// Writes now (taking off, at the end of a day, leaving the app).
+    func flushSave() {
+        pendingSave?.cancel()
+        pendingSave = nil
+        guard let state = game?.state else { return }
+        let url = Self.saveURL
+        saveQueue.async {
+            guard let data = try? JSONEncoder().encode(state) else { return }
+            try? data.write(to: url, options: .atomic)
+        }
     }
 
     /// Runs an action on the game and saves.
@@ -186,7 +208,10 @@ final class GameStore {
 
     /// Wipes the save and starts over from the intro.
     func startOver() {
-        try? FileManager.default.removeItem(at: Self.saveURL)
+        pendingSave?.cancel()
+        pendingSave = nil
+        let url = Self.saveURL
+        saveQueue.async { try? FileManager.default.removeItem(at: url) }
         game = nil
         currentRegion = .cap
         report = nil
@@ -350,6 +375,7 @@ final class GameStore {
 
     func startCollect() {
         collectScene.reset()
+        leaving = false
         collecting = true
     }
 
@@ -357,6 +383,7 @@ final class GameStore {
     func leaveCollect() {
         guard collectScene.leaveDate == nil else { return }
         collectScene.leaveDate = Date()
+        withAnimation(.easeOut(duration: 0.3)) { leaving = true }
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [weak self] in self?.fly() }
     }
 
@@ -368,12 +395,15 @@ final class GameStore {
 
     func cancelCollect() {
         collecting = false
+        leaving = false
     }
 
     func fly(skip: Bool = false) {
         collecting = false
+        leaving = false
         var selfPax: Int?
         act { selfPax = $0.launch(skip: skip) }
+        flushSave()
         if let selfPax { flightPax = selfPax } else { endDay(nil) }
     }
 
@@ -381,6 +411,7 @@ final class GameStore {
         flightPax = nil
         var r: DayReport?
         act { r = $0.finishDay(flight: result) }
+        flushSave()
         report = r
     }
 

@@ -14,8 +14,8 @@ final class TownCanvasModel {
     /// Pan and pinch in progress.
     var lastDrag: CGSize = .zero
     var pinchStart: TownViewport?
-    /// A glide: start time, start view and target view.
-    var anim: (start: Double, from: TownViewport, to: TownViewport)?
+    /// A glide: start time, start view, target view, length, easing, and what runs when it arrives.
+    var anim: (start: Double, from: TownViewport, to: TownViewport, dur: Double, inOut: Bool, done: (() -> Void)?)?
     /// The view came from the night (the morning keeps the night's camera): it clamps and sets its horizon like the night.
     var night = false
     /// Gliding home from the night's camera: its horizon at the start, and how far the glide has come (0 … 1).
@@ -25,14 +25,16 @@ final class TownCanvasModel {
     func time(_ date: Date) -> Double { date.timeIntervalSinceReferenceDate - t0 }
     var now: Double { time(Date()) }
 
-    func glide(to target: TownViewport) {
-        anim = (start: now, from: view, to: target)
+    /// `inOut` eases in as well as out (a glide that starts from rest and leads into another); `done` runs on the
+    /// main queue once the view arrives.
+    func glide(to target: TownViewport, dur: Double = 0.45, inOut: Bool = false, done: (() -> Void)? = nil) {
+        anim = (start: now, from: view, to: target, dur: dur, inOut: inOut, done: done)
     }
 
     /// Glide in on a grid point, at a zoom that shows building names.
-    func focus(_ gx: Double, _ gy: Double) {
+    func focus(_ gx: Double, _ gy: Double, dur: Double = 0.45, inOut: Bool = false, done: (() -> Void)? = nil) {
         let z: CGFloat = 0.65, c = TownGeo.iso(gx, gy)
-        glide(to: TownViewport(z: z, ox: size.width / 2 - c.x * z, oy: size.height * 0.55 - c.y * z))
+        glide(to: TownViewport(z: z, ox: size.width / 2 - c.x * z, oy: size.height * 0.55 - c.y * z), dur: dur, inOut: inOut, done: done)
     }
 
     /// The grid point under a screen point, kept inside the walls.
@@ -44,7 +46,8 @@ final class TownCanvasModel {
 
     func step(now: Double) {
         if let a = anim {
-            let k = min(max((now - a.start) / 0.45, 0), 1), e = CGFloat(1 - pow(1 - k, 3))
+            let k = min(max((now - a.start) / a.dur, 0), 1)
+            let e = CGFloat(a.inOut ? (k < 0.5 ? 4 * k * k * k : 1 - pow(-2 * k + 2, 3) / 2) : 1 - pow(1 - k, 3))
             view.z = a.from.z + (a.to.z - a.from.z) * e
             view.ox = a.from.ox + (a.to.ox - a.from.ox) * e
             view.oy = a.from.oy + (a.to.oy - a.from.oy) * e
@@ -52,6 +55,7 @@ final class TownCanvasModel {
             if k >= 1 {
                 anim = nil
                 if mode == .leaving { mode = .home; night = false; hzFrom = nil }
+                if let done = a.done { DispatchQueue.main.async(execute: done) }
             }
         } else if mode == .zoomed {
             if night { NightCamera.clamp(&view, size) } else { clamp() }
@@ -83,6 +87,8 @@ struct HomeTownView: View {
     /// The morning after the night: the town keeps the night's camera and the home screen's controls stay over it
     /// (`zoomed` stays false) until you zoom in.
     @State private var hold = false
+    /// Gliding into the holding tower: the X hides and the town ignores touches until the office opens.
+    @State private var diving = false
     /// Where this view's own (safe-area) frame starts on screen. The canvas ignores the safe area and draws in
     /// screen coordinates, while tap and pinch locations arrive in the view's frame; adding this lines them up.
     @State private var origin: CGPoint = .zero
@@ -90,7 +96,9 @@ struct HomeTownView: View {
     var body: some View {
         if let s = store.state {
             ZStack(alignment: .topTrailing) {
-                TimelineView(.animation(minimumInterval: zoomed ? nil : 1 / 30)) { tl in
+                // Full frame rate whenever the camera moves; nothing at all while something opaque covers the town
+                // (its last frame stays on screen, so the picture doesn't change).
+                TimelineView(.animation(minimumInterval: moving ? nil : 1 / 30, paused: covered)) { tl in
                     Canvas { ctx, sz in
                         let h = dockTop > 0 ? min(dockTop, sz.height) : sz.height * 0.6
                         model.size = sz
@@ -141,7 +149,7 @@ struct HomeTownView: View {
                     // Leaving the office, the camera steps back out in front of the tower (`closeHQ`).
                     if old == .holding, new == nil, model.mode == .zoomed { model.focus(Self.tower.0, Self.tower.1) }
                 }
-                if zoomed {
+                if zoomed && !diving {
                     Button {
                         SoundEngine.shared.play(.click)
                         zoomOut()
@@ -249,19 +257,37 @@ struct HomeTownView: View {
     private static let tower = (10.0, 2.0)
 
     /// `openHQ`: glide to the tower (from the home screen), dive into it, then open the office floor.
+    /// Two smooth stages, one after the other: glide to the tower, then dive into it; the office opens on arrival.
     private func diveIntoTower() {
         store.hqDive = false
-        let wait: Double
-        switch model.mode {
-        case .home: zoomIn(at: Self.tower); wait = 0.48
-        case .zoomed: endHold(); wait = 0
-        case .leaving: store.page = .holding; return
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + wait) {
+        guard model.mode != .leaving else { store.page = .holding; return }
+        diving = true
+        let dive = {
             let z: CGFloat = 1.5, c = TownGeo.iso(Self.tower.0, Self.tower.1), sz = model.size
-            model.glide(to: TownViewport(z: z, ox: sz.width / 2 - c.x * z, oy: sz.height * 0.62 - (c.y - 160) * z))
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { store.page = .holding }
+            model.glide(to: TownViewport(z: z, ox: sz.width / 2 - c.x * z, oy: sz.height * 0.62 - (c.y - 160) * z), dur: 0.5, inOut: true) {
+                diving = false
+                store.page = .holding
+            }
         }
+        if model.mode == .home {
+            model.view = model.home
+            model.mode = .zoomed
+            withAnimation(.timingCurve(0.3, 0.7, 0.3, 1, duration: 0.38)) { zoomed = true }
+            model.focus(Self.tower.0, Self.tower.1, dur: 0.5, inOut: true, done: dive)
+        } else {
+            endHold()
+            dive()
+        }
+    }
+
+    /// Something opaque is over the town: a page, the night, the flight or the day's report.
+    private var covered: Bool {
+        store.page != nil || store.night != nil || store.flightPax != nil || store.report != nil
+    }
+
+    /// The camera is (or may be) moving: zoomed in, gliding, collecting, a morning event, the morning's hold.
+    private var moving: Bool {
+        zoomed || hold || diving || model.mode != .home || store.collecting || store.morningEvent != nil
     }
 
     /// `instant`: a pinch that started on the home screen carries on zooming by itself.
@@ -284,7 +310,7 @@ struct HomeTownView: View {
     }
 
     private func tap(_ p: CGPoint) {
-        guard !store.collecting else { return }
+        guard !store.collecting, !diving else { return }
         switch model.mode {
         case .leaving:
             return
@@ -309,7 +335,7 @@ struct HomeTownView: View {
     private var pan: some Gesture {
         DragGesture(minimumDistance: 6)
             .onChanged { v in
-                guard model.mode == .zoomed else { return }
+                guard model.mode == .zoomed, !diving else { return }
                 model.anim = nil
                 model.view.ox += v.translation.width - model.lastDrag.width
                 model.view.oy += v.translation.height - model.lastDrag.height
@@ -322,6 +348,7 @@ struct HomeTownView: View {
     private var pinch: some Gesture {
         MagnifyGesture()
             .onChanged { v in
+                guard !diving else { return }
                 // Two fingers on the home town zoom in right away, once they have opened a little.
                 if model.mode == .home {
                     guard v.magnification > 1.04 else { return }

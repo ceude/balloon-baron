@@ -303,7 +303,7 @@ struct NightView: View {
     @State private var idle = Date()
     @State private var dawn: Date?
     @State private var shown = false
-    private let start = Date()
+    @State private var start = Date()
 
     /// Seconds the night waits before passing by itself; an event night waits longer. Never past 25 s.
     private var wait: Double { night.event == nil ? 3.5 : 5.5 }
