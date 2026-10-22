@@ -146,7 +146,7 @@ struct RootView: View {
         case .bank: BankView()
         case .market: MarketView()
         case .goals: GoalsView()
-        case .holding: HoldingView()
+        case .holding: HoldingOfficeView()
         case .map: WorldMapView()
         }
     }

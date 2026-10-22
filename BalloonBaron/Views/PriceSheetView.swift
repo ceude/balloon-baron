@@ -185,8 +185,27 @@ struct PriceSheetView: View {
                     }
                 }
                 TicketFillBar(fraction: Double(est.pax) / Double(max(1, est.seats)), height: 12)
+                // Why the sum is not simply seats × price.
+                let notes = notes(g, est)
+                if !notes.isEmpty {
+                    Text(notes.joined(separator: " "))
+                        .font(Theme.font(12.5))
+                        .foregroundStyle(Theme.ink2)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
+    }
+
+    private func notes(_ g: Game, _ est: (pax: Int, seats: Int, income: Int)) -> [String] {
+        let s = g.state, fl = s.flyingToday
+        var out: [String] = []
+        if fl.contains(where: { s.isSelf($0) }) && est.pax > 0 {
+            out.append(loc("psheet.founderNote", percent(Rules.founderPremium), eur(est.income - est.pax * s.price)))
+        }
+        if s.local.docDay == s.day && fl.contains(where: { $0.id == s.flagship }) { out.append(loc("psheet.docNote")) }
+        return out
     }
 
     @ViewBuilder

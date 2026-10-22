@@ -56,6 +56,7 @@
 		CDE747CAF5B1BDD693D6FB79 /* OfficeSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DC99A8B37B92CB3C497642 /* OfficeSceneView.swift */; };
 		D8A8F36DCC2528347D214C6F /* PoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF94474E4B1A4F2261794B11 /* PoachView.swift */; };
 		D94B9EE2BB63306E4E84C569 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A7F9E6E220C47610C3B3C41 /* Assets.xcassets */; };
+		DD35D40BDE2365FF1F2D8551 /* HoldingOffice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35623869A60618088C41AF72 /* HoldingOffice.swift */; };
 		DEEAB119EDBF9CB14089F610 /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B31687098E5783CD57B19E0E /* BarlowCondensed-SemiBold.ttf */; };
 		E69B4CB75937456ED93981A4 /* BazaarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73920F4A7D747582F67B5D94 /* BazaarViews.swift */; };
 		E97DB4A97AA58EE10F7572BE /* HezarfenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258193DAFB836A70F64C8C53 /* HezarfenView.swift */; };
@@ -79,6 +80,7 @@
 		258193DAFB836A70F64C8C53 /* HezarfenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HezarfenView.swift"; sourceTree = "<group>"; };
 		32555776BC90AFB75C336EF3 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SetupView.swift"; sourceTree = "<group>"; };
 		344C57C234A4658DBD789843 /* Barlow-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Medium.ttf"; sourceTree = "<group>"; };
+		35623869A60618088C41AF72 /* HoldingOffice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HoldingOffice.swift"; sourceTree = "<group>"; };
 		3655D7D3B1C7B70D724F89A0 /* DealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DealView.swift"; sourceTree = "<group>"; };
 		3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorldMapView.swift"; sourceTree = "<group>"; };
 		3E80660872C36D7349FC2CB0 /* ChapterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterView.swift"; sourceTree = "<group>"; };
@@ -227,6 +229,7 @@
 				BA6CB771A7741DFE9025EA00 /* GoalsView.swift */,
 				C75F9CDDED31E1B1E782B22C /* HezarfenAvatar.swift */,
 				258193DAFB836A70F64C8C53 /* HezarfenView.swift */,
+				35623869A60618088C41AF72 /* HoldingOffice.swift */,
 				D3ED97BD630A253467C06E76 /* HoldingView.swift */,
 				7EDB158A34F42484C541CFE0 /* HomeView.swift */,
 				C804C45BE5B7FBFE970EB00E /* IntroView.swift */,
@@ -377,6 +380,7 @@
 				8FFFF3B3D192A53D1D07FB92 /* GoalsView.swift in Sources */,
 				A818B3A8939636A60B498B62 /* HezarfenAvatar.swift in Sources */,
 				E97DB4A97AA58EE10F7572BE /* HezarfenView.swift in Sources */,
+				DD35D40BDE2365FF1F2D8551 /* HoldingOffice.swift in Sources */,
 				3F0B240D7BF72C3BE57BA5F9 /* HoldingView.swift in Sources */,
 				03B50818350CB24EFC0CFCAA /* HomeView.swift in Sources */,
 				F81E8DEC76F22207B34A4722 /* IntroView.swift in Sources */,

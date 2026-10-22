@@ -2,25 +2,29 @@ import SwiftUI
 import BalloonBaronCore
 
 /// The holding's boardroom: cash flow, money from the region, regions, campaigns and city offices.
+/// A desk of the holding office and the part of the holding it opens. Names: `hq.<rawValue>`.
+enum HoldingUnit: String, CaseIterable, Identifiable {
+    case board, window, marketing, deals, research, offices
+    var id: String { rawValue }
+}
+
 struct HoldingView: View {
     @Environment(GameStore.self) private var store
+    /// One desk's part of the holding (in the office), or nil for all of it.
+    var unit: HoldingUnit?
+    var onClose: (() -> Void)?
 
     var body: some View {
         ZStack {
             HoldingLux.background.ignoresSafeArea()
             if let game = store.game {
                 VStack(spacing: 0) {
-                    WorldPageHeader(title: loc("holding.title", game.state.company), dark: true) { store.closePage() }
+                    WorldPageHeader(title: unit.map { loc("hq.\($0.rawValue)") } ?? loc("holding.title", game.state.company), dark: true) {
+                        if let onClose { onClose() } else { store.closePage() }
+                    }
                     ScrollView {
                         VStack(alignment: .leading, spacing: 24) {
-                            HoldingCashBox(holding: game.state.holding)
-                            if !game.state.isBaron(), let c = game.state.currentChapter {
-                                goalsCallout(c, game.state)
-                            }
-                            withdrawSection(game.state)
-                            regionsSection(game)
-                            dealsSection(game)
-                            officesSection(game.state)
+                            sections(game)
                         }
                         .padding(16)
                     }
@@ -28,6 +32,50 @@ struct HoldingView: View {
             }
         }
         .foregroundStyle(HoldingLux.text)
+    }
+
+    @ViewBuilder
+    private func sections(_ game: Game) -> some View {
+        let s = game.state
+        if unit == nil || unit == .board {
+            HoldingCashBox(holding: s.holding)
+            if !s.isBaron(), let c = s.currentChapter { goalsCallout(c, s) }
+            holdingGoals(s)
+            withdrawSection(s)
+        }
+        if unit == nil || unit == .window { regionsSection(game) }
+        if unit == nil { dealsSection(game) }
+        if unit == .marketing {
+            sectionTitle(loc("hq.campaigns"))
+            tvCard(game)
+            billboardCard(s)
+        }
+        if unit == .deals {
+            sectionTitle(loc("hq.face"))
+            celebrityCard(s)
+        }
+        if unit == .research {
+            sectionTitle(loc("hq.lab"))
+            researchCard(s)
+        }
+        if unit == nil || unit == .offices { officesSection(s) }
+    }
+
+    /// The holding's own goals; all six make you World Baron.
+    private func holdingGoals(_ s: GameState) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            sectionTitle(loc(s.holding.worldBaron != nil ? "hgoal.worldTitle" : "hgoal.title"))
+            ForEach(HoldingGoal.allCases, id: \.self) { g in
+                let d = s.done(g)
+                HStack(spacing: 10) {
+                    Image(systemName: d ? "checkmark.square.fill" : "square")
+                        .foregroundStyle(d ? HoldingLux.income : HoldingLux.sub)
+                    Text(g.title).font(Theme.font(15, .semibold)).strikethrough(d)
+                    Spacer()
+                }
+            }
+            hint(loc("hgoal.hint"))
+        }
     }
 
     private func sectionTitle(_ text: String) -> some View {
