@@ -4780,10 +4780,10 @@ function pickNightEvent() {
 /* The night camera: closer than the home screen, the town filling the lower part of the screen under the sky. */
 const NIGHTV = { z: .3, ox: 0, oy: 0 };
 function nightBase(w, h) { const c = tiso(7.5, 7.5), z = clamp(w / 820, .3, .7); return { z, ox: w / 2 - c[0] * z, oy: h * .7 - c[1] * z }; }
-/* keep the town on screen however far you drag */
+/* keep the town on screen however far you drag; sideways as far as the zoomed town (either corner of the walls) */
 function nightClamp(v, w, h) {
-  const c = tiso(7.5, 7.5), sx = c[0] * v.z + v.ox, sy = c[1] * v.z + v.oy, mx = 8 * TW / 2 * v.z, my = 8 * TH / 2 * v.z;
-  v.ox += clamp(sx, Math.min(w * .5, w * .15 - mx * .2), Math.max(w * .5, w * .85 + mx * .2)) - sx;
+  const c = tiso(7.5, 7.5), sx = c[0] * v.z + v.ox, sy = c[1] * v.z + v.oy, mx = 16 * TW / 2 * v.z, my = 8 * TH / 2 * v.z;
+  v.ox += clamp(sx, Math.min(w * .5, w * .85 - mx), Math.max(w * .5, w * .15 + mx)) - sx;
   v.oy += clamp(sy, Math.min(h * .5, h * .35 - my * .3), Math.max(h * .7, h * .75 + my * .3)) - sy;
 }
 /* a big night sky; the horizon follows the town as you drag */
