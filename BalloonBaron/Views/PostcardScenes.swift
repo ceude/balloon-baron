@@ -176,7 +176,7 @@ private struct PostcardPainter {
             chimney(30, 18); chimney(120, 20)
             let spots: [(CGFloat, CGFloat, CGFloat)] = [(30, 30, 0.7), (52, 12, 0.85), (76, 26, 1.05), (100, 10, 0.8), (120, 30, 0.65)]
             for (i, s) in spots.enumerated() {
-                balloon(s.0, s.1, s.2, i == 2 ? c0 : Self.cols[i * 2], i == 2 ? c1 : "#ffffff")
+                balloon(s.0, s.1, s.2, i == 2 ? c0 : Self.cols[(i * 2) % 8], i == 2 ? c1 : "#ffffff")
             }
         case .fleet10:
             circle(40, 56, 10, "#fff0c8")

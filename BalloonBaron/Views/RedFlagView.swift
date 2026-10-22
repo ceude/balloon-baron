@@ -29,6 +29,7 @@ struct ModalCard<Content: View>: View {
             .overlay(alignment: .topTrailing) {
                 if let onClose { CardCloseX(action: onClose) }
             }
+            .compositingGroup()
             .shadow(color: .black.opacity(0.35), radius: 25, y: 20)
             .padding(16)
             .frame(maxWidth: .infinity)
@@ -49,6 +50,7 @@ struct CardCloseX: View {
                 .foregroundStyle(Theme.ink)
                 .frame(width: 38, height: 38)
                 .background(Color.white, in: RoundedRectangle(cornerRadius: 12))
+                .compositingGroup()
                 .shadow(color: Theme.line, radius: 0, y: 3)
         }
         .buttonStyle(.plain)

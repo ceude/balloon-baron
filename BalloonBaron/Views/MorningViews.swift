@@ -113,6 +113,7 @@ struct PaperView: View {
             }
             .padding(16)
             .background(parchment, in: RoundedRectangle(cornerRadius: 24))
+            .compositingGroup()
             .shadow(color: .black.opacity(0.35), radius: 25, y: 10)
             .padding(16)
             .frame(maxWidth: 440)
@@ -336,6 +337,7 @@ struct MorningEventView: View {
             .frame(maxWidth: 420, alignment: .leading)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 24))
             .overlay(alignment: .top) { UnevenRoundedRectangle(topLeadingRadius: 24, topTrailingRadius: 24).fill(Theme.sun).frame(height: 6) }
+            .compositingGroup()
             .shadow(color: .black.opacity(0.35), radius: 25, y: 10)
             .padding(.horizontal, 16).padding(.bottom, 12)
         }

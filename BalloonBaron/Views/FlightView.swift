@@ -373,6 +373,7 @@ private struct FlightStage: View {
             .background(Circle().fill(Theme.coral))
             .background(Circle().fill(Color(hex: "#d9411f")).offset(y: on ? 2 : 7))
             .background(Circle().fill(Color(red: 1, green: 194 / 255, blue: 61 / 255).opacity(on ? 0.45 : 0)).padding(-8))
+            .compositingGroup()
             .shadow(color: .black.opacity(on ? 0 : 0.3), radius: 12, y: 10)
             .offset(y: on ? 5 : 0)
             .contentShape(Circle())
@@ -400,6 +401,7 @@ private struct FlightStage: View {
                 .padding(.vertical, 12)
                 .frame(width: max(180, min(420, size.width - 140)), alignment: .leading)
                 .background(Color.white, in: RoundedRectangle(cornerRadius: 18))
+                .compositingGroup()
                 .shadow(color: .black.opacity(0.25), radius: 10, y: 6)
                 .allowsHitTesting(false)
                 .padding(.leading, max(16, insets.leading))
@@ -445,6 +447,7 @@ private struct FlightStage: View {
         .padding(.bottom, 8)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Color.white, in: RoundedRectangle(cornerRadius: 18))
+        .compositingGroup()
         .shadow(color: .black.opacity(0.25), radius: 10, y: 6)
     }
 

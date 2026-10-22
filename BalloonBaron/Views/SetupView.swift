@@ -137,6 +137,7 @@ struct SetupView: View {
         .padding(.horizontal, 20)
         .frame(maxWidth: 420, alignment: .leading)
         .background(Theme.paper, in: RoundedRectangle(cornerRadius: 24))
+        .compositingGroup()
         .shadow(color: Color(red: 20 / 255, green: 10 / 255, blue: 40 / 255).opacity(0.4), radius: 20, y: 10)
         .transition(.opacity)
     }

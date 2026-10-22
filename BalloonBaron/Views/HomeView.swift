@@ -788,8 +788,12 @@ private struct SideTileStyle<Badge: View>: ButtonStyle {
             ProtoIcon(kind: icon)
                 .frame(width: 23, height: 23)
                 .frame(width: 44, height: 44)
-                .background(Color.white, in: RoundedRectangle(cornerRadius: 14))
-                .shadow(color: Theme.ink.opacity(0.4), radius: 0, x: 0, y: down ? 1 : 4)
+                // Only the tile casts the hard shadow under it; on the whole view it doubled the icon.
+                .background {
+                    RoundedRectangle(cornerRadius: 14)
+                        .fill(Color.white)
+                        .shadow(color: Theme.ink.opacity(0.4), radius: 0, x: 0, y: down ? 1 : 4)
+                }
                 .offset(y: down ? 3 : 0)
             Text(title)
                 .font(Theme.font(11.5, .bold))

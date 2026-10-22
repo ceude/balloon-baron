@@ -278,6 +278,7 @@ struct WorldPopup<Content: View>: View {
         .overlay(alignment: .topTrailing) {
             if let onClose { CardCloseX(action: onClose) }
         }
+        .compositingGroup()
         .shadow(color: Color.black.opacity(0.35), radius: 20, y: 10)
     }
 }

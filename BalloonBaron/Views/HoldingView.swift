@@ -168,6 +168,7 @@ struct HoldingView: View {
         .padding(12)
         .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 14))
         .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(HoldingLux.border, lineWidth: 2))
+        .compositingGroup()
         .shadow(color: HoldingLux.border, radius: 0, y: 3)
     }
 
@@ -324,6 +325,7 @@ struct HoldingView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 18))
         .overlay(RoundedRectangle(cornerRadius: 18).strokeBorder(open ? Theme.coral : HoldingLux.border, lineWidth: 2))
+        .compositingGroup()
         .shadow(color: HoldingLux.border, radius: 0, y: 4)
     }
 }
@@ -364,6 +366,7 @@ struct HoldingPill: View {
                 .frame(minHeight: 40)
                 .foregroundStyle(style == .glass ? Theme.ink : Color.white)
                 .background(background, in: RoundedRectangle(cornerRadius: 13))
+                .compositingGroup()
                 .shadow(color: shadow, radius: 0, y: 3)
         }
         .buttonStyle(.plain)
@@ -603,6 +606,7 @@ struct HoldingDealCard: View {
         .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 20))
         .overlay(RoundedRectangle(cornerRadius: 20)
             .strokeBorder(active != nil ? Theme.green : HoldingLux.border, lineWidth: 2))
+        .compositingGroup()
         .shadow(color: HoldingLux.border, radius: 0, y: 4)
     }
 
