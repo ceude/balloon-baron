@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<title>App Store panorama</title>
+<style>
+@font-face { font-family: BC; src: url(../../BalloonBaron/Fonts/BarlowCondensed-ExtraBold.ttf); font-weight: 800; }
+@font-face { font-family: BC; src: url(../../BalloonBaron/Fonts/BarlowCondensed-Bold.ttf); font-weight: 700; }
+@font-face { font-family: BC; src: url(../../BalloonBaron/Fonts/BarlowCondensed-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: B; src: url(../../BalloonBaron/Fonts/Barlow-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: B; src: url(../../BalloonBaron/Fonts/Barlow-Bold.ttf); font-weight: 700; }
+html, body { margin: 0; background: #000; overflow: hidden; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c" width="10320" height="2796"></canvas>
+<script src="art.js"></script>
+<script>
+/* The eight App Store screens drawn as one wide picture, so the big balloons between them carry on from one
+   screen to the next while you swipe. Each screen: caption on top, the real game screen in a phone below.
+   panorama.js opens this page with ?lang=tr&raw=<folder of raw-<scene>.png> and cuts it into eight. */
+const P = 1290, N = 8;
+W = P * N; H = 2796;
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const q = new URLSearchParams(location.search), lang = q.get('lang') || 'tr', raw = q.get('raw');
+
+const T = {
+  tr: [
+    ['home', 'SICAK HAVA BALONU İMPARATORLUĞU', ['KAPADOKYA’DA BALON', 'ŞİRKETİNİ KUR'], 'Kasabanı büyüt, gökyüzünü balonlarınla doldur'],
+    ['flight', 'GERÇEK UÇUŞ, GERÇEK RİSK', ['BRÜLÖRÜ YAK,', 'RÜZGÂRI OKU'], 'Doğru rüzgâr katmanını bul, kusursuz in'],
+    ['night', 'GECE OLUNCA', ['KASABAN', 'IŞIL IŞIL'], 'Havai fişekler, fener alayı, ateş böcekleri'],
+    ['collect', 'SABAH TELAŞI', ['YOLCULARINI', 'TOPLA'], 'Ofisinin önünde sıra, safari cipleri yolda'],
+    ['design', 'TASARIM STÜDYOSU', ['BALONUNU', 'TASARLA'], 'Desenler, renkler, kalp ve yıldız balonlar'],
+    ['crew', 'EKİBİNİ KUR', ['HER PİLOTUN BİR', 'KARAKTERİ VAR'], 'Temkinli mi, gözü kara mı? Seçim senin'],
+    ['album', 'BAŞARIMLAR', ['22 KARTPOSTAL', 'TOPLA'], 'Her başarı Kapadokya’dan bir anı'],
+    ['holding', 'HOLDİNG PATRONU', ['BİR SEPETTEN', 'HOLDİNGE'], 'Kapadokya’dan Albuquerque’ye, dünyaya açıl'],
+  ]
+}[lang];
+
+/* The phone: 74% of the screen, bottom-centred in each panel, like compose.py. */
+const S = .74, SW = Math.round(P * S), SH = Math.round(H * S), PY = H - SH - 78;
+const phoneX = i => i * P + (P - SW) / 2;
+
+/* Big balloons. x is on the whole strip: the ones on a seam (a multiple of P) show half here, half on the next
+   screen. `front` ones sit over the phone's edge for depth; the rest float behind. */
+const BIG = [
+  { x: 60, y: 1950, R: 250, c: ['#14a39a', '#e8fff9'], flame: true },
+  { x: P, y: 1180, R: 310, c: ['#ff5e3a', '#ffc23d'], flame: true, band: '#2b2350', text: 'ŞAFAK', people: 5 },
+  { x: P * 2, y: 2080, R: 250, c: ['#5aa9e6', '#eaf4fc'] },
+  { x: P * 2, y: 1040, R: 215, c: ['#ffc23d', '#e5432f'], flame: true, front: true },
+  { x: P * 3, y: 1380, R: 330, c: ['#9b7be0', '#f2ebff'], pattern: 'stars', pc: ['#ffc23d', '#ffffff'], flame: true },
+  { x: P * 4, y: 2230, R: 270, c: ['#ff6fa8', '#fff0f6'], pattern: 'hearts', pc: ['#e5432f', '#ffffff'] },
+  { x: P * 4, y: 1480, R: 225, c: ['#22a45d', '#fff3b0'], flame: true, front: true },
+  { x: P * 5, y: 1120, R: 290, c: ['#2b2350', '#ffc23d'], pattern: 'sunburst', pc: ['#ffc23d', '#ff5e3a'], flame: true },
+  { x: P * 6, y: 1950, R: 310, c: ['#3ad0c0', '#1f6f8b'], pattern: 'zigzag', pc: ['#ffffff', '#ffc23d'] },
+  { x: P * 6, y: 1040, R: 210, c: ['#e5432f', '#ffffff'], flame: true, front: true },
+  { x: P * 7, y: 1320, R: 280, c: ['#ff8a3d', '#ffe0b0'], pattern: 'rainbow', flame: true },
+  { x: W - 60, y: 2200, R: 250, c: ['#ffc23d', '#2b2350'], pattern: 'checker', pc: ['#2b2350', '#ffc23d'] },
+];
+function big(b) {
+  balloon(b.x, b.y, b.R, b.c, { gores: 14, light: -1, flame: !!b.flame, flameScale: .6, band: b.band, text: b.text, people: b.people,
+    pattern: b.pattern, pc: b.pc, detail: true });
+}
+
+function phone(i, img) {
+  const x = phoneX(i), bez = 20, rad = 118;
+  ctx.save(); ctx.shadowColor = 'rgba(10,4,24,.6)'; ctx.shadowBlur = 80; ctx.shadowOffsetY = 34;
+  ctx.fillStyle = '#100d22'; rrect(x - bez, PY - bez, SW + bez * 2, SH + bez * 2, rad + bez); ctx.fill(); ctx.restore();
+  ctx.strokeStyle = '#463e6e'; ctx.lineWidth = 3; rrect(x - bez + 3, PY - bez + 3, SW + bez * 2 - 6, SH + bez * 2 - 6, rad + bez - 3); ctx.stroke();
+  ctx.save(); rrect(x, PY, SW, SH, rad); ctx.clip(); ctx.drawImage(img, x, PY, SW, SH); ctx.restore();
+}
+
+function caption(i) {
+  const [, kicker, lines, sub] = T[i];
+  ctx.save(); ctx.translate(i * P, 0);
+  const keep = W; W = P;
+  // the headline's own scrim fades each screen's top; a soft one, so the sky still runs across the seams
+  headline(176, kicker, lines, { size: 128, scrim: 1 });
+  subline(560, sub, 46);
+  W = keep; ctx.restore();
+}
+
+function load(src) { return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; }); }
+
+Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px BC'), document.fonts.load('600 40px B')])
+  .then(() => Promise.all(T.map(t => load(`${raw}/raw-${t[0]}.png`))))
+  .then(imgs => {
+    /* one sky over all eight screens: dawn on the left, the sun climbing to the right */
+    sky([[0, '#140b2e'], [.22, '#3a1d52'], [.42, '#8a3a62'], [.58, '#e0704e'], [.7, '#ffb36b'], [.78, '#ffd59a'], [1, '#ffd59a']]);
+    const top = ctx.createLinearGradient(0, 0, 0, 900); top.addColorStop(0, 'rgba(8,3,18,.7)'); top.addColorStop(1, 'rgba(8,3,18,0)');
+    ctx.fillStyle = top; ctx.fillRect(0, 0, W, 900);
+    for (const [sx, sy] of [[P * .7, H * .66], [P * 4.4, H * .62], [P * 7.3, H * .58]]) { sun(sx, sy, 70); rays(sx, sy, 18, H * .8, '#ffc98a', .1, Math.round(sx)); }
+    clouds(H * .48, 2, '#ffb489', .35, 70);
+    ridge(H * .74, 220, '#b56a6a', 5); ridge(H * .78, 160, '#8e4a58', 6);
+    balloonSky(220, 11, H * .16, H * .66, 10, 80, '#f0a07a');
+    chimneyField(H * .86, 120, 160, 420, 21, { lit: '#f0b88c', dark: '#6a3a44', haze: .25, hazeColor: '#e89a78' });
+    haze(H * .7, H * .86, '#ffb07a', 0, .35);
+    chimneyField(H * 1.0, 40, 620, 1150, 31, { lit: '#d9966e', dark: '#2e1620', windows: 3, rim: '#ffcf8a' });
+    haze(H * .9, H, '#120814', 0, .9);
+    BIG.filter(b => !b.front).forEach(big);
+    grain(8); // before the game screens go on (they taint the canvas for reading)
+    imgs.forEach((im, i) => phone(i, im));
+    BIG.filter(b => b.front).forEach(big);
+    T.forEach((_, i) => caption(i));
+    document.title = 'done';
+  }).catch(e => { document.title = 'error ' + e; });
+</script>
+</body>
+</html>
