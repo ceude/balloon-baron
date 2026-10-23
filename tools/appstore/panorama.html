@@ -26,14 +26,13 @@ const cv = document.getElementById('c'), ctx = cv.getContext('2d');
 const q = new URLSearchParams(location.search), lang = q.get('lang') || 'tr', raw = q.get('raw');
 
 /* In App Store order: the first three show in search results, so they carry the hook (build an empire, fly it
-   yourself, grow it into a holding); then going global, the night, and the rest. A 'poster' screen is
-   render.html's own picture instead of a phone. */
+   yourself, grow it into a holding); then going global, the night, and the rest. */
 const T = {
   tr: [
     ['home', 'SICAK HAVA BALONU İMPARATORLUĞU', ['KAPADOKYA’DA BALON', 'İMPARATORLUĞU KUR'], 'Kasabanı büyüt, gökyüzünü balonlarınla doldur'],
     ['flight', 'GERÇEK UÇUŞ, GERÇEK RİSK', ['BRÜLÖRÜ YAK,', 'RÜZGÂRI OKU'], 'Doğru rüzgâr katmanını bul, kusursuz in'],
     ['holding', 'HOLDİNG PATRONU', ['BİR SEPETTEN', 'HOLDİNGE'], 'New York, İstanbul, Tokyo, Seul: ofislerini aç'],
-    ['poster-abq'],
+    ['abq', 'GLOBAL OL', ['AMERİKA’DA UÇ,', 'GLOBALE AÇIL'], 'Kapadokya’dan Albuquerque’ye, Balloon Fiesta seni bekliyor'],
     ['night', 'GECE OLUNCA', ['KASABAN', 'IŞIL IŞIL'], 'Havai fişekler, fener alayı, ateş böcekleri'],
     ['design', 'TASARIM STÜDYOSU', ['BALONUNU', 'TASARLA'], 'Desenler, renkler, kalp ve yıldız balonlar'],
     ['collect', 'SABAH TELAŞI', ['YOLCULARINI', 'TOPLA'], 'Ofisinin önünde sıra, safari cipleri yolda'],
@@ -41,7 +40,6 @@ const T = {
     ['album', 'BAŞARIMLAR', ['22 KARTPOSTAL', 'TOPLA'], 'Her başarı Kapadokya’dan bir anı'],
   ]
 }[lang];
-const poster = i => T[i][0].startsWith('poster');
 
 /* The phone: 74% of the screen, bottom-centred in each panel, like compose.py. */
 const S = .74, SW = Math.round(P * S), SH = Math.round(H * S), PY = H - SH - 78;
@@ -78,18 +76,7 @@ function phone(i, img) {
   ctx.save(); rrect(x, PY, SW, SH, rad); ctx.clip(); ctx.drawImage(img, x, PY, SW, SH); ctx.restore();
 }
 
-/* A poster screen keeps its own picture; its sides fade into the shared sky so the strip stays one piece. */
-function posterPanel(i, img) {
-  const off = document.createElement('canvas'); off.width = P; off.height = H;
-  const o = off.getContext('2d'); o.drawImage(img, 0, 0, P, H);
-  const m = o.createLinearGradient(0, 0, P, 0);
-  m.addColorStop(0, 'rgba(0,0,0,0)'); m.addColorStop(.12, 'rgba(0,0,0,1)'); m.addColorStop(.88, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)');
-  o.globalCompositeOperation = 'destination-in'; o.fillStyle = m; o.fillRect(0, 0, P, H);
-  ctx.drawImage(off, i * P, 0);
-}
-
 function caption(i) {
-  if (poster(i)) return;
   const [, kicker, lines, sub] = T[i];
   ctx.save(); ctx.translate(i * P, 0);
   const keep = W; W = P;
@@ -102,7 +89,7 @@ function caption(i) {
 function load(src) { return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; }); }
 
 Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px BC'), document.fonts.load('600 40px B')])
-  .then(() => Promise.all(T.map(t => load(`${raw}/${t[0].startsWith('poster') ? t[0] : 'raw-' + t[0]}.png`))))
+  .then(() => Promise.all(T.map(t => load(`${raw}/raw-${t[0]}.png`))))
   .then(imgs => {
     /* one sky over all eight screens: dawn on the left, the sun climbing to the right */
     sky([[0, '#140b2e'], [.22, '#3a1d52'], [.42, '#8a3a62'], [.58, '#e0704e'], [.7, '#ffb36b'], [.78, '#ffd59a'], [1, '#ffd59a']]);
@@ -116,10 +103,9 @@ Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px 
     haze(H * .7, H * .86, '#ffb07a', 0, .35);
     chimneyField(H * 1.0, 40, 620, 1150, 31, { lit: '#d9966e', dark: '#2e1620', windows: 3, rim: '#ffcf8a' });
     haze(H * .9, H, '#120814', 0, .9);
-    grain(8); // before any picture goes on (they taint the canvas for reading)
-    imgs.forEach((im, i) => { if (poster(i)) posterPanel(i, im); });
     BIG.filter(b => !b.front).forEach(big);
-    imgs.forEach((im, i) => { if (!poster(i)) phone(i, im); });
+    grain(8); // before the game screens go on (they taint the canvas for reading)
+    imgs.forEach((im, i) => phone(i, im));
     BIG.filter(b => b.front).forEach(big);
     T.forEach((_, i) => caption(i));
     document.title = 'done';
