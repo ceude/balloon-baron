@@ -59,12 +59,26 @@ struct TravelView: View {
         return CGPoint(x: CGFloat(((pin?.lon ?? 0) + 130) / 260) * size.width, y: CGFloat((70 - (pin?.lat ?? 0)) / 110) * size.height)
     }
 
+    private func control(_ a: CGPoint, _ b: CGPoint, height: CGFloat) -> CGPoint {
+        let x: CGFloat = (a.x + b.x) / 2
+        let y: CGFloat = min(a.y, b.y) - height * 0.21
+        return CGPoint(x: x, y: y)
+    }
+
+    /// The point at `k` (0…1) on the quadratic arc from `a` over `c` to `b`.
+    private func bezier(_ a: CGPoint, _ c: CGPoint, _ b: CGPoint, _ k: CGFloat) -> CGPoint {
+        let u: CGFloat = 1 - k
+        let wa: CGFloat = u * u, wc: CGFloat = 2 * u * k, wb: CGFloat = k * k
+        let x: CGFloat = wa * a.x + wc * c.x + wb * b.x
+        let y: CGFloat = wa * a.y + wc * c.y + wb * b.y
+        return CGPoint(x: x, y: y)
+    }
+
     private func map(progress e: Double, colors: [String]) -> some View {
         GeometryReader { geo in
             let a = point(travel.from, geo.size), b = point(travel.to, geo.size)
-            let mid = CGPoint(x: (a.x + b.x) / 2, y: min(a.y, b.y) - geo.size.height * 0.21)
-            let u = CGFloat(1 - e), k = CGFloat(e)
-            let pos = CGPoint(x: u * u * a.x + 2 * u * k * mid.x + k * k * b.x, y: u * u * a.y + 2 * u * k * mid.y + k * k * b.y)
+            let mid = control(a, b, height: geo.size.height)
+            let pos = bezier(a, mid, b, CGFloat(e))
             ZStack(alignment: .topLeading) {
                 Canvas { ctx, size in
                     let land = WorldOutline.path.applying(CGAffineTransform(scaleX: size.width / 100, y: size.height / 42.3))
