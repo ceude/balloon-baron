@@ -1,7 +1,8 @@
 name: Screens
 
-# Runs the app on an iPhone and an iPad simulator (Xcode 15.2) and saves screenshots of a few screens as the
-# run's "screens" artifact, so layouts can be checked without a Mac. The app sets itself up from launch
+# Runs the app on an iPhone and an iPad simulator (Xcode 15.2) and saves screenshots of a few screens, both as
+# the run's "screens" artifact and on the `ci-screens` branch (replaced each run), so layouts can be checked
+# without a Mac. The app sets itself up from launch
 # arguments (BalloonBaron/DemoSetup.swift, debug builds only). Run it from the Actions tab, or it runs when
 # the app changes.
 on:
@@ -9,6 +10,9 @@ on:
   push:
     branches: [main]
     paths: ['BalloonBaron/**', 'Packages/**', '.github/workflows/screens.yml']
+
+permissions:
+  contents: write
 
 jobs:
   screens:
@@ -40,11 +44,12 @@ jobs:
             TAG=$(echo "$DEV" | tr -cd '[:alnum:]')
             while IFS='|' read -r NAME ARGS WAIT; do
               [ -z "$NAME" ] && continue
-              xcrun simctl launch "$UDID" com.ceude.balloonbaron $ARGS > /dev/null
+              # simctl reads stdin; keep it away from the scene list
+              xcrun simctl launch "$UDID" com.ceude.balloonbaron $ARGS < /dev/null > /dev/null
               sleep "$WAIT"
-              xcrun simctl io "$UDID" screenshot "shots/$TAG-$NAME.png" > /dev/null
-              if ! xcrun simctl spawn "$UDID" launchctl list | grep -q com.ceude.balloonbaron; then echo "::warning::$TAG $NAME: the app is not running (crash?)"; fi
-              xcrun simctl terminate "$UDID" com.ceude.balloonbaron || true
+              xcrun simctl io "$UDID" screenshot "shots/$TAG-$NAME.png" < /dev/null > /dev/null
+              if ! xcrun simctl spawn "$UDID" launchctl list < /dev/null | grep -q com.ceude.balloonbaron; then echo "::warning::$TAG $NAME: the app is not running (crash?)"; fi
+              xcrun simctl terminate "$UDID" com.ceude.balloonbaron < /dev/null || true
             done <<'LIST'
           intro|-demoDays 30 -demoIntro|6
           home|-demoDays 60|9
@@ -61,3 +66,14 @@ jobs:
         with:
           name: screens
           path: shots
+      - name: Put the pictures on the ci-screens branch
+        if: always()
+        shell: bash
+        run: |
+          cd shots
+          git init -q -b ci-screens
+          git config user.name "screens-bot"
+          git config user.email "screens-bot@users.noreply.github.com"
+          git add -A
+          git commit -qm "Screens for ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" ci-screens
