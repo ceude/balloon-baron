@@ -149,7 +149,7 @@ enum ScenePainter {
         ])
         inner.fill(Path(CGRect(x: x - R, y: top, width: R * 2, height: R * 3)),
                    with: .linearGradient(shade, startPoint: CGPoint(x: x - R, y: 0), endPoint: CGPoint(x: x + R, y: 0)))
-        if design?.shape == .hezarfen { BalloonPainter.hezarfenFace(&c, x: x, cy: cy, r: R) }
+        if design?.shape == .skull { BalloonPainter.skullFace(&c, x: x, cy: cy, r: R) }
         let by = cy + R * 1.55, bb = y - R * 0.32
         var ropes = Path()
         ropes.move(to: CGPoint(x: x - R * 0.22, y: by)); ropes.addLine(to: CGPoint(x: x - R * 0.24, y: bb))

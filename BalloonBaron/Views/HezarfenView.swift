@@ -16,6 +16,7 @@ struct HezarfenView: View {
 
     private var button: String {
         if let (_, l) = boss { return loc(["boss.ok.0", "boss.ok.1", "boss.ok.2"][(day + l.rawValue.count) % 3]) }
+        if case .praise = message { return loc("hez.thanks") }
         return loc(message == .tip(.bazaar) ? "hez.toBazaar" : "hez.ok")
     }
 

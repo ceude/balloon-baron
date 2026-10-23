@@ -177,6 +177,45 @@ final class PrototypeV85Tests: XCTestCase {
         XCTAssertEqual(g.state.decorationCount, 1)
     }
 
+    /// The Hezarfen balloon left the bazaar for the skull: a save that bought it owns the skull, and its design flies it.
+    func testHezarfenBalloonSavesBecomeTheSkull() throws {
+        var g = newGame()
+        g.grantStoreItem(.skull)
+        var json = String(decoding: try JSONEncoder().encode(g.state), as: UTF8.self)
+        json = json.replacingOccurrences(of: "\"skull\"", with: "\"hezarfen\"")
+        XCTAssertTrue(json.contains("hezarfen"))
+        let old = try JSONDecoder().decode(GameState.self, from: Data(json.utf8))
+        XCTAssertNotNil(old.store?[.skull])
+        XCTAssertEqual(old.design(of: old.balloon(old.flagship)!)?.shape, .skull)
+        XCTAssertEqual(StoreItem.skull.rawValue, "skull")
+        XCTAssertEqual(StoreItem.allCases.count, 11)
+    }
+
+    /// Hezarfen praises good early moves: each once, at most every other day, never after day 40.
+    func testPraiseComesEarlyOnceEachEveryOtherDay() {
+        var g = newGame()
+        var given: [(Int, Praise)] = []
+        for _ in 0..<60 {
+            g.startDay()
+            while let m = g.nextHezarfen() { if case .praise(let p) = m { given.append((g.state.day, p)) } }
+            if g.launch(skip: g.state.weather?.flag == .red) != nil { g.finishDay(flight: FlightResult(landing: .perfect, distance: 60)) } else { g.finishDay(flight: nil) }
+        }
+        XCTAssertTrue(given.contains { $0.1 == .perfect }, "a perfect landing is praised")
+        XCTAssertEqual(Set(given.map(\.1)).count, given.count, "each praise once")
+        XCTAssertTrue(given.allSatisfy { $0.0 <= 41 })
+        for (a, b) in zip(given, given.dropFirst()) { XCTAssertGreaterThanOrEqual(b.0 - a.0, 2) }
+    }
+
+    func testNoRedFlagInTheFirstThreeDays() {
+        for seed in 1...40 {
+            var g = newGame(seed: UInt64(seed))
+            for _ in 0..<3 {
+                XCTAssertNotEqual(g.state.weather?.flag, .red)
+                play(&g)
+            }
+        }
+    }
+
     func testBossSaysHelloOnce() {
         var g = newGame()
         for _ in 0..<4 { play(&g) }

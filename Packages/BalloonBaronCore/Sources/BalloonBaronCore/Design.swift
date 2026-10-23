@@ -15,7 +15,16 @@ public enum Pattern: String, Codable, CaseIterable, Sendable {
 
 /// Shaped envelopes from the bazaar; they turn heads (+8 creativity, a little popularity every flight).
 public enum EnvelopeShape: String, Codable, CaseIterable, Sendable {
-    case heart, star, hezarfen
+    case heart, star, skull
+    /// The skull replaced the Hezarfen balloon; saves that had it read as the skull.
+    public init?(rawValue: String) {
+        switch rawValue {
+        case "heart": self = .heart
+        case "star": self = .star
+        case "skull", "hezarfen": self = .skull
+        default: return nil
+        }
+    }
     public var storeItem: StoreItem { StoreItem(rawValue: rawValue)! }
 }
 
@@ -23,14 +32,20 @@ public enum EnvelopeShape: String, Codable, CaseIterable, Sendable {
 /// patterns and decorations tier 1, shapes tier 2. The lantern strings are Hezarfen's free gift.
 public enum StoreItem: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     case gold, tile, sky, kilim
-    case heart, star, hezarfen
+    case heart, star, skull
     case fountain, statue, lanterns, flags
+
+    /// The skull replaced the Hezarfen balloon: whoever bought that one owns the skull.
+    public init?(rawValue: String) {
+        guard let k = Self.allCases.first(where: { "\($0)" == (rawValue == "hezarfen" ? "skull" : rawValue) }) else { return nil }
+        self = k
+    }
 
     public enum Kind: Sendable { case pattern, shape, decoration }
     public var kind: Kind {
         switch self {
         case .gold, .tile, .sky, .kilim: .pattern
-        case .heart, .star, .hezarfen: .shape
+        case .heart, .star, .skull: .shape
         case .fountain, .statue, .lanterns, .flags: .decoration
         }
     }

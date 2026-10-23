@@ -10,9 +10,6 @@ struct ChapterView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// After Devam: the chapter that starts now and its goals.
     @State private var showNext = false
-    /// The rewarded ad was watched: the reward came twice. `adLeft` counts the ad down.
-    @State private var adDone = false
-    @State private var adLeft: Int?
 
     var body: some View {
         let chapters = news.region.chapters
@@ -95,22 +92,12 @@ struct ChapterView: View {
             Text(c.title)
                 .font(Theme.font(32, .heavy, condensed: true))
                 .foregroundStyle(Theme.ink)
-            Text(loc("ceremony.award", c.award, eur(c.reward * (adDone ? 2 : 1))))
+            Text(loc("ceremony.award", c.award, eur(c.reward)))
                 .font(Theme.font(16, .medium))
                 .foregroundStyle(Theme.ink)
             ForEach(c.goals.indices, id: \.self) { i in
                 ChapterGoalRow(goal: c.goals[i], state: s, finished: true)
             }
-            // Rewarded ad: watch 30 seconds, get the reward a second time.
-            Button {
-                SoundEngine.shared.play(.click)
-                watchAd(c)
-            } label: {
-                Text(adDone ? loc("ceremony.adDone", eur(c.reward * 2)) : adLeft.map { loc("ceremony.adPlaying", num($0)) } ?? loc("ceremony.ad", eur(c.reward * 2)))
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(ChunkyButtonStyle(kind: .ghost))
-            .disabled(adDone || adLeft != nil)
             BigButton(title: loc("ceremony.continue")) {
                 if hasNext {
                     withAnimation(.easeOut(duration: 0.2)) { showNext = true }
@@ -134,22 +121,6 @@ struct ChapterView: View {
             }
             BigButton(title: loc("ceremony.start")) { store.dismissPopup() }
                 .padding(.top, 4)
-        }
-    }
-
-    /// Stand-in for the ad SDK: a 30 second countdown, then the reward.
-    private func watchAd(_ c: Chapter) {
-        guard !adDone, adLeft == nil else { return }
-        adLeft = 30
-        Task { @MainActor in
-            while let n = adLeft, n > 0 {
-                try? await Task.sleep(for: .seconds(1))
-                adLeft = n - 1
-            }
-            adLeft = nil
-            adDone = true
-            store.act { $0.doubleChapterReward(news) }
-            SoundEngine.shared.play(.coin)
         }
     }
 

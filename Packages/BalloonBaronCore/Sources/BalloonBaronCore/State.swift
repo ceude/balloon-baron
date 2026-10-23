@@ -159,6 +159,8 @@ public enum HezMessage: Codable, Equatable, Sendable {
     /// Cash is back above zero after the rescue plan.
     case rescued
     case worldBaron
+    /// Hezarfen praises a good move in the first weeks.
+    case praise(Praise)
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.
@@ -235,6 +237,10 @@ public struct GameState: Codable, Equatable, Sendable {
     public var stats: Stats?
     /// Day each store item was bought.
     public var store: [StoreItem: Int]?
+    /// Hezarfen's praise: the ones given, the day of the last, and the current run of good landings.
+    public var praised: Set<Praise>?
+    public var praiseDay: Int?
+    public var goodRun: Int?
 
     public var achievements: [Achievement: Int] { postcards ?? [:] }
     public var statistics: Stats { stats ?? Stats() }

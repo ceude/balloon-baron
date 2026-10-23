@@ -292,6 +292,7 @@ extension Game {
             bossSay(.passed)
         }
         state.stats = { var st = state.statistics; st.passengers += paxTotal; return st }()
+        praiseCheck(flight: cancelled ? nil : flight, waitedOutRed: red && flyingIDs.isEmpty)
         let report = DayReport(day: state.day, flag: weather.flag, ledger: lg, events: ev, rivalEvents: rev,
                                passengers: paxTotal, capacity: capToday, skipped: plan.skipped)
 

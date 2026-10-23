@@ -534,6 +534,7 @@ struct PostcardView: View {
                 store.closePostcard()
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
+            ShareCardButton(achievement: achievement)
         }
     }
 }
@@ -542,6 +543,8 @@ struct PostcardView: View {
 struct AlbumView: View {
     @Environment(GameStore.self) private var store
     @State private var hint = ""
+    /// The earned postcard tapped last, which can be shared.
+    @State private var picked: Achievement?
 
     var body: some View {
         let s = store.state
@@ -553,6 +556,7 @@ struct AlbumView: View {
                 ForEach(Achievement.allCases, id: \.self) { a in
                     Button {
                         hint = got[a].map { loc("album.earned", a.title, a.detail, num($0)) } ?? loc("album.lockedHint", a.title, a.detail)
+                        picked = got[a] != nil ? a : nil
                     } label: {
                         PostcardArt(achievement: a, day: got[a], colors: s?.colors ?? [])
                     }
@@ -560,6 +564,7 @@ struct AlbumView: View {
                 }
             }
             if !hint.isEmpty { CardText.hint(hint) }
+            if let picked { ShareCardButton(achievement: picked, big: true) }
             Button {
                 SoundEngine.shared.play(.click)
                 store.showAlbum = false

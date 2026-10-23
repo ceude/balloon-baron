@@ -44,7 +44,9 @@ public struct Game: Sendable {
 
     mutating func newWeather() -> Weather {
         // The wind mast's forecast, once made, comes true.
-        let flag: Flag = state.day == 1 ? .green : state.forecast?[state.day] ?? rollFlag()
+        var flag: Flag = state.day == 1 ? .green : state.forecast?[state.day] ?? rollFlag()
+        // The first days never ground a beginner.
+        if flag == .red && state.day <= 3 { flag = .yellow }
         let surf = flag == .green ? rng.range(3, 10) : flag == .yellow ? rng.range(11, 18) : rng.range(19, 30)
         var l = [(rng.chance(0.5) ? -1.0 : 1.0) * surf / 3.6 * 0.45,
                  rng.range(-4, 4) * flag.wind, rng.range(-6, 6) * flag.wind, rng.range(-8, 8) * flag.wind]

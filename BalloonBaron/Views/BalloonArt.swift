@@ -63,7 +63,7 @@ enum BalloonPainter {
         ])
         inner.fill(Path(CGRect(x: x - r, y: top, width: r * 2, height: r * 3)),
                    with: .linearGradient(shade, startPoint: CGPoint(x: x - r, y: 0), endPoint: CGPoint(x: x + r, y: 0)))
-        if shape == .hezarfen { hezarfenFace(&ctx, x: x, cy: cy, r: r) }
+        if shape == .skull { skullFace(&ctx, x: x, cy: cy, r: r) }
 
         // Ropes and basket.
         let by = cy + r * 1.55, bb = bottom - r * 0.32
@@ -100,7 +100,7 @@ enum BalloonPainter {
         return p
     }
 
-    /// Shaped envelopes from the bazaar (`envShape`): a heart, a star, Hezarfen's head. All end in the same neck.
+    /// Shaped envelopes from the bazaar (`envShape`): a heart, a star, a skull. All end in the same neck.
     static func envelope(_ shape: EnvelopeShape, x: CGFloat, cy: CGFloat, r R: CGFloat) -> Path {
         var p = Path()
         func P(_ dx: CGFloat, _ dy: CGFloat) -> CGPoint { CGPoint(x: x + dx * R, y: cy + dy * R) }
@@ -129,35 +129,47 @@ enum BalloonPainter {
                 let (q, rad) = pts[n], next = pts[(n + 1) % pts.count].0
                 if rad > 0 { p.addArc(tangent1End: q, tangent2End: next, radius: rad) } else { p.addLine(to: q) }
             }
-        case .hezarfen:
-            let steps = 36, a0 = Double.pi * 0.8, a1 = Double.pi * 2.2
+        case .skull:
+            // A round cranium over the top, cheekbones narrowing to the jaw, then the neck.
+            let cc = cy - R * 0.06, rr = R * 1.05, a0 = Double.pi * 0.78, a1 = Double.pi * 2.22, steps = 36
             for i in 0...steps {
-                let pt = point(x, cy, angle: a0 + (a1 - a0) * Double(i) / Double(steps), radius: R * 1.02)
+                let pt = point(x, cc, angle: a0 + (a1 - a0) * Double(i) / Double(steps), radius: rr)
                 if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
             }
-            p.addQuadCurve(to: P(0.22, 1.55), control: P(0.7, 1.2))
+            p.addQuadCurve(to: P(0.52, 1.14), control: P(0.8, 0.98))
+            p.addQuadCurve(to: P(0.22, 1.55), control: P(0.3, 1.28))
             p.addLine(to: P(-0.22, 1.55))
-            p.addQuadCurve(to: point(x, cy, angle: Double.pi * 0.8, radius: R * 1.02), control: P(-0.7, 1.2))
+            p.addQuadCurve(to: P(-0.52, 1.14), control: P(-0.3, 1.28))
+            p.addQuadCurve(to: point(x, cc, angle: a0, radius: rr), control: P(-0.8, 0.98))
         }
         p.closeSubpath()
         return p
     }
 
-    /// Hezarfen's turban and moustache on his balloon.
-    static func hezarfenFace(_ ctx: inout GraphicsContext, x: CGFloat, cy: CGFloat, r R: CGFloat) {
+    /// The skull's face: hollow eyes with a glint, a heart-shaped nose, a grin of teeth.
+    static func skullFace(_ ctx: inout GraphicsContext, x: CGFloat, cy: CGFloat, r R: CGFloat) {
         func P(_ dx: CGFloat, _ dy: CGFloat) -> CGPoint { CGPoint(x: x + dx * R, y: cy + dy * R) }
-        ctx.fill(ellipse(cx: x, cy: cy - R * 0.78, rx: R * 0.78, ry: R * 0.42), with: .color(Color(hex: "#fff6e6")))
-        ctx.fill(ellipse(cx: x, cy: cy - R * 0.92, rx: R * 0.16, ry: R * 0.16), with: .color(Color(hex: "#e5432f")))
-        let ink = Color(hex: "#2a1a14")
-        ctx.fill(ellipse(cx: x - R * 0.3, cy: cy - R * 0.05, rx: R * 0.08, ry: R * 0.08), with: .color(ink))
-        ctx.fill(ellipse(cx: x + R * 0.3, cy: cy - R * 0.05, rx: R * 0.08, ry: R * 0.08), with: .color(ink))
-        var m = Path()
-        m.move(to: P(0, 0.25))
-        m.addQuadCurve(to: P(-0.55, 0.35), control: P(-0.35, 0.1))
-        m.addQuadCurve(to: P(0, 0.32), control: P(-0.3, 0.4))
-        m.addQuadCurve(to: P(0.55, 0.35), control: P(0.3, 0.4))
-        m.addQuadCurve(to: P(0, 0.25), control: P(0.35, 0.1))
-        ctx.fill(m, with: .color(ink))
+        let ink = Color(red: 28 / 255, green: 16 / 255, blue: 32 / 255).opacity(0.88)
+        for side: CGFloat in [-1, 1] {
+            var eye = ctx
+            eye.translateBy(x: x + side * R * 0.37, y: cy + R * 0.2)
+            eye.rotate(by: .radians(Double(side) * 0.18))
+            eye.fill(ellipse(cx: 0, cy: 0, rx: R * 0.25, ry: R * 0.29), with: .color(ink))
+            ctx.fill(ellipse(cx: x + side * R * 0.37 - R * 0.08, cy: cy + R * 0.1, rx: R * 0.06, ry: R * 0.06), with: .color(.white.opacity(0.75)))
+        }
+        var nose = Path()
+        nose.move(to: P(0, 0.7))
+        nose.addQuadCurve(to: P(-0.1, 0.48), control: P(-0.16, 0.58))
+        nose.addQuadCurve(to: P(0, 0.5), control: P(-0.04, 0.43))
+        nose.addQuadCurve(to: P(0.1, 0.48), control: P(0.04, 0.43))
+        nose.addQuadCurve(to: P(0, 0.7), control: P(0.16, 0.58))
+        ctx.fill(nose, with: .color(ink))
+        let teeth = Path(roundedRect: CGRect(x: x - R * 0.34, y: cy + R * 0.82, width: R * 0.68, height: R * 0.22), cornerRadius: R * 0.06)
+        ctx.fill(teeth, with: .color(Color(hex: "#fff8ec")))
+        var lines = teeth
+        lines.move(to: P(-0.34, 0.93)); lines.addLine(to: P(0.34, 0.93))
+        for t in -2...2 { lines.move(to: P(CGFloat(t) * 0.12, 0.82)); lines.addLine(to: P(CGFloat(t) * 0.12, 1.04)) }
+        ctx.stroke(lines, with: .color(ink), lineWidth: max(0.6, R * 0.035))
     }
 
     static func ellipse(cx: CGFloat, cy: CGFloat, rx: CGFloat, ry: CGFloat) -> Path {

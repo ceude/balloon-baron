@@ -152,6 +152,7 @@ extension HezMessage {
         case let .bazaarGift(k, b): b.map { loc("hez.bazaarGift", k.title, $0) } ?? loc("hez.bazaarGift.noBalloon", k.title)
         case .rescued: loc("hez.rescued")
         case .worldBaron: loc("hez.worldBaron")
+        case .praise(let p): loc("hez.praise.\(p.rawValue)")
         }
     }
 }

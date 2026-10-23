@@ -154,23 +154,28 @@ final class GameTests: XCTestCase {
     }
 
     func testPopularityErodesWithoutTheFounder() {
-        var g = newGame()
-        g.state.cash = 100_000
-        g.buyBalloon(.S)
-        for c in g.state.candidates.prefix(2) { g.hire(c.id) }
-        g.setSelfFly(false)
-        var absentEvent = false
-        var reps: [Double] = []
-        for _ in 0..<9 {
-            g.startDay()
-            g.launch(skip: g.state.weather?.flag == .red)
-            let r = g.finishDay(flight: nil)
-            if r.events.contains(where: { if case .founderAbsent = $0 { true } else { false } }) { absentEvent = true }
-            reps.append(g.state.rep)
+        // Two identical companies run by pilots; in one the founder is counted as flying recently.
+        func run(present: Bool) -> (rep: Double, absentEvent: Bool, tip: Bool) {
+            var g = newGame()
+            g.state.cash = 100_000
+            g.buyBalloon(.S)
+            for c in g.state.candidates.prefix(2) { g.hire(c.id) }
+            g.setSelfFly(false)
+            var absentEvent = false
+            for _ in 0..<9 {
+                g.startDay()
+                if present { g.state.lastSelfFly = g.state.day }
+                g.launch(skip: g.state.weather?.flag == .red)
+                let r = g.finishDay(flight: nil)
+                if r.events.contains(where: { if case .founderAbsent = $0 { true } else { false } }) { absentEvent = true }
+            }
+            return (g.state.rep, absentEvent, g.state.tipsSeen.contains(.absent) || g.state.hezQueue.contains(.tip(.absent)))
         }
-        XCTAssertTrue(absentEvent)
-        XCTAssertTrue(g.state.tipsSeen.contains(.absent) || g.state.hezQueue.contains(.tip(.absent)))
-        XCTAssertLessThan(reps.last!, reps[4], "popularity falls once the founder stays away")
+        let away = run(present: false), here = run(present: true)
+        XCTAssertTrue(away.absentEvent)
+        XCTAssertTrue(away.tip)
+        XCTAssertFalse(here.absentEvent)
+        XCTAssertLessThan(away.rep, here.rep, "popularity falls once the founder stays away")
     }
 
     /// Someone who never flies unless forced should end up far behind someone who flies daily.

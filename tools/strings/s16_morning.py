@@ -149,9 +149,6 @@ add("album.lockedHint", "%1$@: %2$@ (locked).", "%1$@: %2$@ (kilitli).", "%1$@: 
 add("menu.album", "🏆 Achievements", "🏆 Başarımlar", "🏆 Erfolge", "🏆 Logros", "🏆 実績", "🏆 업적")
 
 # Chapter ceremony: the rewarded ad
-add("ceremony.ad", "▶ Watch an ad, double the reward: %@", "▶ Reklam izle, ödülü 2'ye katla: %@", "▶ Werbung ansehen, Belohnung verdoppeln: %@", "▶ Mira un anuncio y duplica el premio: %@", "▶ 広告を見て報酬2倍：%@", "▶ 광고 보고 보상 두 배: %@")
-add("ceremony.adPlaying", "Ad playing… %@", "Reklam oynuyor… %@", "Werbung läuft … %@", "Anuncio en curso… %@", "広告再生中… %@", "광고 재생 중… %@")
-add("ceremony.adDone", "Total reward: %@", "Toplam ödül: %@", "Gesamtbelohnung: %@", "Premio total: %@", "報酬合計：%@", "총 보상: %@")
 
 # The night
 add("night.title", "Night of day %@", "Gün %@ gecesi", "Nacht von Tag %@", "Noche del día %@", "%@日目の夜", "%@일차의 밤")

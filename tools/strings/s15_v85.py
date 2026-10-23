@@ -71,7 +71,7 @@ add("store.sky", "Constellation", "Takımyıldız", "Sternbild", "Constelación"
 add("store.kilim", "Cappadocia kilim", "Kapadokya kilimi", "Kappadokien-Kelim", "Kilim de Capadocia", "カッパドキアのキリム", "카파도키아 킬림")
 add("store.heart", "Heart balloon", "Kalp balon", "Herzballon", "Globo corazón", "ハート気球", "하트 열기구")
 add("store.star", "Star balloon", "Yıldız balon", "Sternballon", "Globo estrella", "星の気球", "별 열기구")
-add("store.hezarfen", "Hezarfen balloon", "Hezarfen balonu", "Hezarfen-Ballon", "Globo Hezarfen", "ヘザルフェン気球", "헤자르펜 열기구")
+add("store.skull", "Skull balloon", "Kurukafa balon", "Totenkopf-Ballon", "Globo calavera", "ドクロ気球", "해골 열기구")
 add("store.fountain", "Square fountain", "Meydan çeşmesi", "Brunnen am Platz", "Fuente de la plaza", "広場の噴水", "광장 분수")
 add("store.statue", "Hezarfen statue", "Hezarfen heykeli", "Hezarfen-Statue", "Estatua de Hezarfen", "ヘザルフェン像", "헤자르펜 동상")
 add("store.lanterns", "Lantern strings", "Fener dizileri", "Laternenketten", "Guirnaldas de farolillos", "ランタンの列", "등불 줄")

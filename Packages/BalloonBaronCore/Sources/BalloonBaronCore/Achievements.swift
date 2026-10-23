@@ -102,11 +102,4 @@ extension Game {
         guard state.bossRival?.alive == true else { return }
         if index == 1 { bossSay(.ch1) } else if index == 2 { bossSay(.ch2) }
     }
-
-    /// The rewarded ad on the chapter ceremony pays the chapter's reward a second time.
-    public mutating func doubleChapterReward(_ news: ChapterNews) {
-        let cs = news.region.chapters
-        guard news.region == state.region, cs.indices.contains(news.index) else { return }
-        state.cash += cs[news.index].reward
-    }
 }

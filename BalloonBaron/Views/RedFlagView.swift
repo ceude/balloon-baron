@@ -94,8 +94,39 @@ enum CardText {
 struct RedFlagView: View {
     @Environment(GameStore.self) private var store
     let onClose: () -> Void
+    /// In the first 20 days Hezarfen asks once more before a red-flag take-off (`redSure`).
+    @State private var sure = false
 
     var body: some View {
+        if sure { secondThoughts } else { warning }
+    }
+
+    private var secondThoughts: some View {
+        ModalCard {
+            CardText.title(loc("red.sureTitle"))
+            HStack(alignment: .top, spacing: 10) {
+                HezarfenAvatar(size: 44)
+                (Text(loc("hez.name") + ": ").bold() + Text(loc("red.sureHez")))
+                    .font(Theme.font(14)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(10)
+            .background(Color(hex: "#f1edf8"), in: RoundedRectangle(cornerRadius: 14))
+            Button(loc("red.sureSkip")) {
+                SoundEngine.shared.play(.click)
+                onClose()
+                store.fly(skip: true)
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+            Button {
+                SoundEngine.shared.play(.click)
+                onClose()
+                store.startCollect()
+            } label: { Text(loc("red.sureFly")).frame(maxWidth: .infinity) }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+        }
+    }
+
+    private var warning: some View {
         let fl = store.state?.flyingToday ?? []
         let strikes = store.state?.strikes ?? 0
         let worst = fl.compactMap { b in store.game?.accidentChance(b) }.max() ?? 0
@@ -123,8 +154,12 @@ struct RedFlagView: View {
             .buttonStyle(ChunkyButtonStyle(kind: .ghost))
             Button(loc("red.fly")) {
                 SoundEngine.shared.play(.click)
-                onClose()
-                store.startCollect()
+                if (store.state?.day ?? 99) <= 20 {
+                    withAnimation(.easeOut(duration: 0.2)) { sure = true }
+                } else {
+                    onClose()
+                    store.startCollect()
+                }
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
         }

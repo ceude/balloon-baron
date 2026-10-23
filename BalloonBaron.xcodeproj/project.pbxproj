@@ -13,6 +13,7 @@
 		1421D95F62AFE6F52A424C1A /* SaveVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF3B0C99D9EE5597D3FDD37 /* SaveVault.swift */; };
 		14AD9C93BE90A398F1F2752B /* BarlowCondensed-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6858154E303E2FAC806C1D22 /* BarlowCondensed-ExtraBold.ttf */; };
 		17524A7AE43E278B72BA3450 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = 21BA8159F9A68439627ADACE /* Localizable.xcstrings */; };
+		187F26A420BE9FAF166CED97 /* ShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 99A21C41BCDC5DB2BD7E3B4C /* ShareCard.swift */; };
 		195F108E685D8DDDF7933829 /* DesignStudioView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A87581606A4966EC52B22837 /* DesignStudioView.swift */; };
 		202A37F855488615D2088520 /* TownPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028E3000896415942F6E8508 /* TownPainter.swift */; };
 		24592D13E014015B25BA3DF6 /* CollectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E41E0E443CD82E29A38F212D /* CollectView.swift */; };
@@ -111,6 +112,7 @@
 		8DF3B0C99D9EE5597D3FDD37 /* SaveVault.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SaveVault.swift"; sourceTree = "<group>"; };
 		91B03A718CB585C5CECBF617 /* SoundSettingsButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SoundSettingsButton.swift"; sourceTree = "<group>"; };
 		9662F101C27DC417A5D0A108 /* FlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FlightView.swift"; sourceTree = "<group>"; };
+		99A21C41BCDC5DB2BD7E3B4C /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareCard.swift"; sourceTree = "<group>"; };
 		9F81A32D63C6E3949B8B2AA2 /* FleetPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FleetPlanView.swift"; sourceTree = "<group>"; };
 		A429A91A72084FD301F9A3E5 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-Bold.ttf"; sourceTree = "<group>"; };
 		A87581606A4966EC52B22837 /* DesignStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DesignStudioView.swift"; sourceTree = "<group>"; };
@@ -262,6 +264,7 @@
 				23D4D33454C06481C5DCFCD1 /* ReportView.swift */,
 				73CE86E1131A0D2F69D02D15 /* ReviewChirpView.swift */,
 				32555776BC90AFB75C336EF3 /* SetupView.swift */,
+				99A21C41BCDC5DB2BD7E3B4C /* ShareCard.swift */,
 				3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */,
 			);
 			path = "Views";
@@ -415,6 +418,7 @@
 				967FF1B2FEFAF78ACD025DDE /* ReportView.swift in Sources */,
 				9ABD9AECC5F7FEA59A74E812 /* ReviewChirpView.swift in Sources */,
 				37A512CC536FFCC07E95ABE3 /* SetupView.swift in Sources */,
+				187F26A420BE9FAF166CED97 /* ShareCard.swift in Sources */,
 				9315CE7EC5ADB45D6D749CD4 /* WorldMapView.swift in Sources */,
 				2AE29E79EC58294FF2CF023D /* BalloonBaronApp.swift in Sources */,
 				A45C762AC183EBD9476AA61A /* GameStore.swift in Sources */,
