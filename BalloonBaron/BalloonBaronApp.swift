@@ -15,7 +15,10 @@ struct BalloonBaronApp: App {
             RootView()
                 .environment(store)
                 .preferredColorScheme(.light)
-                .onChange(of: scenePhase) { _, phase in if phase != .active { store.flushSave() } }
+                .onChange(of: scenePhase) { _, phase in
+                    if phase != .active { store.flushSave() }
+                    if phase == .background { LaunchGuard.settled() }
+                }
         }
     }
 }

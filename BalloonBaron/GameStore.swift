@@ -77,20 +77,27 @@ final class GameStore {
             || night != nil
     }
 
-    private static var saveURL: URL {
-        let dir = FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask)[0]
-        try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
-        return dir.appendingPathComponent("save.json")
-    }
-
     init() {
-        if let data = try? Data(contentsOf: Self.saveURL),
-           let state = try? JSONDecoder().decode(GameState.self, from: data) {
+        // After launches that crashed before settling, open quietly: no intro and none of the waiting popups;
+        // after one more, from yesterday's save. Anything that ran for 15 seconds counts as settled.
+        let crashes = LaunchGuard.begin()
+        if var state = SaveVault.load(preferPrevious: crashes >= 3) {
+            if crashes >= 2 {
+                showIntro = false
+                state.chapterNews = nil
+                state.mergeNews = nil
+                state.paper = nil
+                state.eventDue = false
+                state.newPostcards = []
+                state.hezQueue = []
+                state.local.poach = nil
+            }
             var g = Game(state: state)
             g.startDay()
             game = g
             currentRegion = state.region
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 15) { LaunchGuard.settled() }
     }
 
     var state: GameState? { game?.state }
@@ -121,11 +128,7 @@ final class GameStore {
         pendingSave?.cancel()
         pendingSave = nil
         guard let state = game?.state else { return }
-        let url = Self.saveURL
-        saveQueue.async {
-            guard let data = try? JSONEncoder().encode(state) else { return }
-            try? data.write(to: url, options: .atomic)
-        }
+        saveQueue.async { SaveVault.write(state) }
     }
 
     /// Runs an action on the game and saves.
@@ -210,8 +213,7 @@ final class GameStore {
     func startOver() {
         pendingSave?.cancel()
         pendingSave = nil
-        let url = Self.saveURL
-        saveQueue.async { try? FileManager.default.removeItem(at: url) }
+        saveQueue.async { SaveVault.wipe() }
         game = nil
         currentRegion = .cap
         report = nil
