@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		03B50818350CB24EFC0CFCAA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDB158A34F42484C541CFE0 /* HomeView.swift */; };
 		07C4DCFC0699ED567F7D68F4 /* IssueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2070C4DCB9F9DE7745FEBC0 /* IssueView.swift */; };
+		08F7B0D73C66145A446F6067 /* Shop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C148975EC28ECA71CB3536 /* Shop.swift */; };
 		102B4A4B20A2D62462977EDF /* TownCollect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CD61C9B79F78E77AE45096 /* TownCollect.swift */; };
 		1421D95F62AFE6F52A424C1A /* SaveVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF3B0C99D9EE5597D3FDD37 /* SaveVault.swift */; };
 		14AD9C93BE90A398F1F2752B /* BarlowCondensed-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6858154E303E2FAC806C1D22 /* BarlowCondensed-ExtraBold.ttf */; };
@@ -76,6 +77,7 @@
 /* Begin PBXFileReference section */
 		028E3000896415942F6E8508 /* TownPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownPainter.swift"; sourceTree = "<group>"; };
 		03D4B6CAC1ADC8096C50F9DB /* Barlow-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-SemiBold.ttf"; sourceTree = "<group>"; };
+		13C148975EC28ECA71CB3536 /* Shop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shop.swift"; sourceTree = "<group>"; };
 		1418AC5FE4F57A03C0EF1766 /* GameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameStore.swift"; sourceTree = "<group>"; };
 		14CD61C9B79F78E77AE45096 /* TownCollect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownCollect.swift"; sourceTree = "<group>"; };
 		151A0BC3B17C01FBFECAA493 /* TownViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownViews.swift"; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 				690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */,
 				45339BBAA04927D7F285CA21 /* Platform.swift */,
 				8DF3B0C99D9EE5597D3FDD37 /* SaveVault.swift */,
+				13C148975EC28ECA71CB3536 /* Shop.swift */,
 				B1F376872405998A225098DA /* Telemetry.swift */,
 				158AFE69FAF9C43034FBC847 /* Theme.swift */,
 			);
@@ -425,6 +428,7 @@
 				86F9815AF00AF54BD422516A /* Localization.swift in Sources */,
 				2EC0AA89BE01211B35404B76 /* Platform.swift in Sources */,
 				1421D95F62AFE6F52A424C1A /* SaveVault.swift in Sources */,
+				08F7B0D73C66145A446F6067 /* Shop.swift in Sources */,
 				3745C3DBD6BB8317AC2AF5CB /* Telemetry.swift in Sources */,
 				C2B154218D66DBAE24868DA9 /* Theme.swift in Sources */,
 			);

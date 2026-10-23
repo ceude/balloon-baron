@@ -88,3 +88,10 @@ add("red.sureFly", "I'm flying anyway", "Yine de uçuyorum", "Ich fliege trotzde
 # Sharing a postcard (prototype v100, `shareCard`)
 add("share.button", "Share", "Paylaş", "Teilen", "Compartir", "シェア", "공유")
 add("share.kicker", "POSTCARD · DAY %@", "KARTPOSTAL · GÜN %@", "POSTKARTE · TAG %@", "POSTAL · DÍA %@", "ポストカード・%@日目", "엽서 · %@일차")
+
+# StoreKit 2
+add("store.buying", "Opening the App Store…", "App Store açılıyor…", "App Store wird geöffnet …", "Abriendo la App Store…", "App Storeを開いています…", "App Store를 여는 중…")
+add("store.restore", "Restore purchases", "Satın alımları geri yükle", "Käufe wiederherstellen", "Restaurar compras", "購入を復元", "구매 복원")
+add("store.unavailable", "The store can't be reached right now. Please try again later.", "Mağazaya şu an ulaşılamıyor. Biraz sonra yeniden dene.", "Der Store ist gerade nicht erreichbar. Bitte versuche es später noch einmal.", "No se puede acceder a la tienda ahora. Inténtalo más tarde.", "現在ストアに接続できません。しばらくしてからもう一度お試しください。", "지금은 상점에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
+add("store.failed", "The purchase didn't go through. Nothing was charged.", "Satın alma tamamlanmadı. Ücret alınmadı.", "Der Kauf hat nicht geklappt. Es wurde nichts berechnet.", "La compra no se completó. No se ha cobrado nada.", "購入が完了しませんでした。請求はありません。", "구매가 완료되지 않았습니다. 요금은 청구되지 않았습니다.")
+add("store.pending", "Waiting for approval. The item arrives as soon as the purchase is approved.", "Onay bekleniyor. Satın alma onaylanınca ürün gelecek.", "Warte auf Freigabe. Der Artikel kommt, sobald der Kauf genehmigt ist.", "Esperando aprobación. El artículo llegará en cuanto se apruebe la compra.", "承認待ちです。購入が承認されるとアイテムが届きます。", "승인 대기 중입니다. 구매가 승인되면 아이템이 도착합니다.")

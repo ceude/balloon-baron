@@ -98,6 +98,7 @@ final class GameStore {
             currentRegion = state.region
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 15) { LaunchGuard.settled() }
+        Task { @MainActor [weak self] in Shop.shared.start { k, bought in self?.purchased(k, bought: bought) } }
     }
 
     var state: GameState? { game?.state }
@@ -107,6 +108,8 @@ final class GameStore {
         g.startDay()
         game = g
         save()
+        // Items bought in an earlier game belong to the Apple ID: they come back.
+        Task { await Shop.shared.restoreEntitlements() }
         showNextHezarfen()
     }
 
@@ -289,12 +292,22 @@ final class GameStore {
         showNextHezarfen()
     }
 
-    /// A store item was bought (or the free gift taken).
-    func buy(_ k: StoreItem) {
+    /// The free gift taken from the bazaar.
+    func takeGift(_ k: StoreItem) {
         act { $0.grantStoreItem(k) }
-        Telemetry.bought(k, day: state?.day ?? 0)
         SoundEngine.shared.play(.coin)
         storeItem = nil
+    }
+
+    /// The App Store says an item is the player's: a fresh purchase (`bought`), or one restored to this game.
+    func purchased(_ k: StoreItem, bought: Bool) {
+        guard let s = state, !s.owned(k) else { return }
+        act { $0.grantStoreItem(k) }
+        if bought {
+            Telemetry.bought(k, day: s.day)
+            SoundEngine.shared.play(.coin)
+            if storeItem == k { storeItem = nil }
+        }
     }
 
     /// Hezarfen's bazaar lesson ends at the bazaar.

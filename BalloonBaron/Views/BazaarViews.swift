@@ -171,6 +171,13 @@ struct BazaarView: View {
                 section(.pattern, "bazaar.patterns", s)
             }
             CardText.hint(loc("bazaar.localPrices"))
+            Button {
+                SoundEngine.shared.play(.click)
+                Task { await Shop.shared.restore() }
+            } label: {
+                Text(loc("store.restore")).frame(maxWidth: .infinity)
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost))
             Button(loc("world.close")) {
                 SoundEngine.shared.play(.click)
                 store.closeBazaar()
@@ -179,7 +186,7 @@ struct BazaarView: View {
         }
     }
 
-    private func section(_ kind: StoreItem.Kind, _ key: String, _ s: GameState) -> some View {
+    @MainActor private func section(_ kind: StoreItem.Kind, _ key: String, _ s: GameState) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(loc(key)).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
             CardText.hint(loc(key + ".hint"))
@@ -194,7 +201,7 @@ struct BazaarView: View {
                             StoreThumb(item: k, colors: s.colors).frame(width: 60, height: 68).accessibilityHidden(true)
                             Text(k.title).font(Theme.font(14, .bold, condensed: true)).foregroundStyle(Theme.ink)
                                 .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
-                            Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : StoreItem.price(k))
+                            Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : Shop.shared.price(k))
                                 .font(Theme.font(13, .heavy)).foregroundStyle(.white)
                                 .padding(.horizontal, 9).padding(.vertical, 2)
                                 .background(own ? Theme.green : k.gift ? Theme.coral : Theme.ink, in: Capsule())
@@ -221,10 +228,11 @@ extension StoreItem {
     }
 }
 
-/// The purchase sheet for one item. Stand-in for the store's own payment sheet until StoreKit products are set up.
+/// The purchase card for one item; Buy opens the App Store's own sheet (`Shop`).
 struct StoreItemView: View {
     @Environment(GameStore.self) private var store
     let item: StoreItem
+    @MainActor private var shop: Shop { Shop.shared }
 
     var body: some View {
         let s = store.state
@@ -244,11 +252,18 @@ struct StoreItemView: View {
                                 in: RoundedRectangle(cornerRadius: 16))
             }
             CardText.lead(loc(item.kind == .decoration ? "store.lead.decor" : item.kind == .shape ? "store.lead.shape" : "store.lead.pattern"))
-            CardText.hint(loc(item.gift ? "store.giftNote" : "store.note"))
-            Button(item.gift ? loc("store.takeGift") : loc("store.buy", StoreItem.price(item))) {
-                store.buy(item)
+            if item.gift { CardText.hint(loc("store.giftNote")) }
+            if let note = shop.note { CardText.hint(note) }
+            Button(item.gift ? loc("store.takeGift") : shop.buying == item ? loc("store.buying") : loc("store.buy", shop.price(item))) {
+                if item.gift {
+                    store.takeGift(item)
+                } else {
+                    SoundEngine.shared.play(.click)
+                    Task { _ = await shop.buy(item) }
+                }
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
+            .disabled(shop.buying != nil)
             Button {
                 SoundEngine.shared.play(.click)
                 store.storeItem = nil
@@ -257,6 +272,7 @@ struct StoreItemView: View {
             }
             .buttonStyle(ChunkyButtonStyle(kind: .ghost))
         }
+        .onAppear { shop.note = nil }
     }
 }
 
