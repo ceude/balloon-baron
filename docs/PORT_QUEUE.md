@@ -2,7 +2,11 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v106.1 ile aynı.)
+## Bekleyenler (prototip v106.2)
+
+- **Titreyen brülör alevi** (`flame3d`): dört katmanın her biri kendi hızında nefes alır (asla aynı anda hizalanmayan birkaç sinüs: 27–97 Hz arası), dış katman en çok uzayıp sallanır, uç hafifçe yana yatar; ışıltı alevle birlikte atar ve uçtan arada küçük kıvılcımlar kalkar. Düz balonun basit alevi de aynı şekilde titrer.
+
+Önceki durum: Swift uygulaması prototip v106.1 ile aynıydı.
 
 v106–v106.1 aktarımı (Ekim 2026): bölge geçişi (`TravelView`, `GameStore.travel`; bölge her değiştiğinde `act` açar, açılır pencereler iniş sonrasına kalır), pilot eksik uyarısı (`GroundedView`), ayarlar ekranı (`MenuView`, `SettingsIcon`; titreşim anahtarı `Haptics.on` / `haptics`), üç boyutlu şirket balonu (`ScenePainter.balloon3d`, giriş ekranında ve tasarımsız amiral balonunda). Ayrıca doğrudan Swift'te: yakınlaşınca sağdaki ikonlar tamamen kayar, holding ofisinde masalar arası en az 175 pt ve kısa ekranda kaydırma.
 
