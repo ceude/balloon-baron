@@ -74,7 +74,7 @@ struct TravelView: View {
                     arc.move(to: a)
                     arc.addQuadCurve(to: b, control: mid)
                     ctx.stroke(arc, with: .color(.white.opacity(0.35)), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [4, 5]))
-                    ctx.stroke(arc.trimmedPath(from: 0, to: e), with: .color(Color(hex: "#ffd27a")), style: StrokeStyle(lineWidth: 3, lineCap: .round))
+                    ctx.stroke(arc.trimmedPath(from: 0, to: CGFloat(e)), with: .color(Color(hex: "#ffd27a")), style: StrokeStyle(lineWidth: 3, lineCap: .round))
                     for p in [a, b] {
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - 9, y: p.y - 9, width: 18, height: 18)), with: .color(Theme.sun.opacity(0.35)))
                         ctx.fill(Path(ellipseIn: CGRect(x: p.x - 6, y: p.y - 6, width: 12, height: 12)), with: .color(Theme.sun))
