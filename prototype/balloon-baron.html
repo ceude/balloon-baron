@@ -444,21 +444,36 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .issue .chap{color:var(--red)}
 .hzline{display:flex;gap:10px;align-items:center;font-size:13.5px;line-height:1.4;color:var(--ink2);background:var(--haze);border-radius:14px;padding:8px 10px}
 .hzline .hzav{width:40px;height:40px;flex:none}
-.settings .sg-t{font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:14px 4px 6px}
-.sgroup{background:#fff;border-radius:16px;box-shadow:0 0 0 2px var(--line) inset;overflow:hidden;flex-shrink:0}
+.settings{gap:0}
 .settings > *{flex-shrink:0}
-.srow{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;text-align:left;border-bottom:1.5px solid var(--line);background:none;color:var(--ink);font-size:15.5px}
-.srow:last-child{border-bottom:none}
-.srow i{font-style:normal;width:26px;text-align:center}
-.srow b{flex:1;font-weight:700}
-.srow span{color:var(--ink2);font-size:14px;font-weight:600}
-.srow.info b{font-weight:600}
+.set-top{display:flex;align-items:center;gap:12px;margin-bottom:4px}
+.set-top h1{margin:0;line-height:1}
+.set-top p{margin:3px 0 0;color:var(--ink2);font-size:13.5px;font-weight:600}
+.set-top > div:nth-child(2){flex:1;min-width:0}
+.set-av{width:48px;height:48px;border-radius:16px;background:linear-gradient(#2f2560,#ff8a5a);display:grid;place-items:center;box-shadow:0 3px 0 rgba(43,35,80,.35)}
+.set-av svg{width:34px;height:34px}
+.set-x{width:42px;height:42px;border-radius:14px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line);display:grid;place-items:center}
+.set-x svg{width:20px;height:20px;stroke:var(--ink);stroke-width:2.6;stroke-linecap:round;fill:none}
+.settings .sg-t{font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin:16px 6px 7px;min-height:4px}
+.sgroup{background:#fff;border-radius:18px;box-shadow:0 0 0 2px var(--line) inset,0 4px 0 var(--line);overflow:hidden}
+.srow{box-sizing:border-box;display:flex;align-items:center;gap:12px;width:100%;min-height:56px;padding:9px 14px;text-align:left;background:none;color:var(--ink);position:relative}
+.srow + .srow::before{content:'';position:absolute;top:0;left:62px;right:0;height:2px;background:var(--line)}
+button.srow:active{background:#f6f3fb}
+.srow .si{width:36px;height:36px;border-radius:12px;display:grid;place-items:center;flex-shrink:0;background:color-mix(in srgb, var(--tint) 15%, #fff);box-shadow:0 2px 0 color-mix(in srgb, var(--tint) 28%, #fff)}
+.srow .si svg{width:21px;height:21px;fill:none;stroke:var(--tint);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.srow b{flex:1;font-family:var(--cond);font-weight:700;font-size:18px;letter-spacing:.01em}
+.srow .sv{display:flex;align-items:center;gap:4px;color:var(--ink2);font-size:14px;font-weight:700}
+.srow .sc{width:18px;height:18px;fill:none;stroke:#b9b1cc;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.srow.open .sc{stroke:var(--tint)}
+.srow.info b{font-weight:600;color:var(--ink2)}
 .srow.danger b{color:var(--red)}
-.tg{display:inline-block;width:46px;height:28px;border-radius:14px;background:#d6d0e4;position:relative;transition:background .2s}
-.tg::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
+.tg{display:block;width:52px;height:32px;border-radius:16px;background:#e6e0f0;box-shadow:inset 0 2px 0 rgba(43,35,80,.12);position:relative;transition:background .2s}
+.tg i{position:absolute;top:3px;left:3px;width:26px;height:26px;border-radius:50%;background:#fff;box-shadow:0 2px 0 rgba(43,35,80,.25);transition:left .2s}
 .tg.on{background:var(--green)}
-.tg.on::after{left:21px}
-.sbox{margin-top:8px;display:flex;flex-direction:column;gap:6px}
+.tg.on i{left:23px}
+.sbox{margin-top:10px;padding:12px;border-radius:16px;background:#f6f3fb;display:flex;flex-direction:column;gap:8px}
+.sbox textarea{border-radius:12px}
+.settings > .big{margin-top:18px}
 .opt{display:flex;flex-direction:column;gap:3px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
 .opt.a{box-shadow:0 0 0 2px var(--coral) inset,0 3px 0 #c7381a}
 .opt b{font-size:15.5px;color:var(--ink)}.opt span{font-size:13px;color:var(--ink2)}
@@ -3306,36 +3321,62 @@ function showAlbum() {
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
 }
-/* The menu behind the top-right button: a settings screen in groups, like a phone's own settings. The save code
-   hides behind its own rows: one shows your code to copy, the other takes a pasted code and loads it. */
+/* Line icons for the settings rows, drawn like the side buttons' (24×24, round strokes). */
+const SET_IC = {
+  trophy: '<path d="M8 4h8v5a4 4 0 0 1-8 0z"/><path d="M8 6H5v1.5A3 3 0 0 0 8 10.5M16 6h3v1.5a3 3 0 0 1-3 3M12 13v3.5M8.5 20h7M9.5 16.5h5V20h-5z"/>',
+  game: '<path d="M7.5 8.5h9a4 4 0 0 1 3.9 4.8l-.8 4a2 2 0 0 1-3.4 1L14.5 16h-5l-1.7 2.3a2 2 0 0 1-3.4-1l-.8-4A4 4 0 0 1 7.5 8.5z"/><path d="M8.5 11v3M7 12.5h3M15.5 12h.01M17.5 13.5h.01"/>',
+  sound: '<path d="M4 9.5h3l4.5-4v13L7 14.5H4z"/><path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11"/>',
+  haptic: '<rect x="8" y="3.5" width="8" height="17" rx="2"/><path d="M11 17.5h2M4.5 9v6M2.5 10.5v3M19.5 9v6M21.5 10.5v3"/>',
+  bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0M12 3v2"/>',
+  cloud: '<path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4 1.6A3.8 3.8 0 0 1 17.5 18.5z"/><path d="M9.5 13.5l2 2 3.5-3.5"/>',
+  copy: '<rect x="8.5" y="8.5" width="11" height="12" rx="2"/><path d="M15.5 8.5V5.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/>',
+  paste: '<path d="M9 4.5h6v2.5H9z"/><path d="M15 5.5h2.5a1.5 1.5 0 0 1 1.5 1.5v12.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5V7a1.5 1.5 0 0 1 1.5-1.5H9"/><path d="M12 10.5v6.5M9.5 14.5 12 17l2.5-2.5"/>',
+  bag: '<path d="M5 8h14l-1 12.5H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8M9.5 14a2.5 2.5 0 1 0 2.5-2.5h-1.5M11.5 10l-1.2 1.5 1.2 1.3"/>',
+  shield: '<path d="M12 3.5 19 6v5.5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9.5 12l2 2 3.5-3.5"/>',
+  mail: '<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/>',
+  info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5.5M12 7.8h.01"/>',
+  trash: '<path d="M4.5 7h15M9.5 7V4.5h5V7M6.5 7l1 13h9l1-13M10.5 11v5.5M13.5 11v5.5"/>',
+  chev: '<path d="m9.5 6 6 6-6 6"/>',
+  down: '<path d="m6 9.5 6 6 6-6"/>'
+};
+const setIcon = (k, cls) => `<svg viewBox="0 0 24 24" class="${cls || ''}">${SET_IC[k]}</svg>`;
+/* The menu behind the top-right button: a settings screen in the game's own look. Rows sit on white cards with the
+   game's hard shadow; each group has its own icon tint. The save code hides behind its own rows. */
 let hapticsOn = (() => { try { return localStorage.getItem('safak-haptics') !== 'off'; } catch (e) { return true; } })();
 let reminderOn = (() => { try { return localStorage.getItem('safak-reminder') === 'on'; } catch (e) { return false; } })();
 function showMenu(open) {
   const m = $('menu'); m.replaceChildren();
   if (mode !== 'flight') save();
   const c = h('div', 'card settings');
-  c.appendChild(h('h1', null, 'Ayarlar'));
-  c.appendChild(h('p', 'hint', `${esc(S.company || '')} · Gün ${S.day} · ${RD().name}`));
-  const group = (title, rows) => { c.appendChild(h('div', 'sg-t', title)); const g = h('div', 'sgroup'); rows.forEach(r => g.appendChild(r)); c.appendChild(g); };
-  const row = (icon, label, right, fn, cls) => { const r = h(fn ? 'button' : 'div', 'srow' + (cls ? ' ' + cls : ''), `<i>${icon}</i><b>${label}</b><span>${right || ''}</span>`); if (fn) r.onclick = fn; return r; };
-  const toggle = (icon, label, on, set) => { const r = row(icon, label, `<em class="tg${on ? ' on' : ''}"></em>`, () => { set(); showMenu(open); }); r.setAttribute('role', 'switch'); r.setAttribute('aria-checked', on); return r; };
+  const top = h('div', 'set-top');
+  top.innerHTML = `<div class="set-av">${balloonIcon(myCol()[0], myCol()[1])}</div><div><h1>Ayarlar</h1><p>${esc(S.company || '')} · Gün ${S.day} · ${RD().name}</p></div>`;
+  const x = h('button', 'set-x', '<svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>'); x.setAttribute('aria-label', 'Kapat'); x.onclick = () => { m.hidden = true; };
+  top.appendChild(x); c.appendChild(top);
+  const group = (title, tint, rows) => { c.appendChild(h('div', 'sg-t', title)); const g = h('div', 'sgroup'); g.style.setProperty('--tint', tint); rows.forEach(r => g.appendChild(r)); c.appendChild(g); };
+  const row = (icon, label, right, fn, cls) => {
+    const r = h(fn ? 'button' : 'div', 'srow' + (cls ? ' ' + cls : ''), `<span class="si">${setIcon(icon)}</span><b>${label}</b><span class="sv">${right || ''}</span>`);
+    if (fn) r.onclick = () => { sfx('click'); fn(); }; return r;
+  };
+  const chev = setIcon('chev', 'sc'), down = setIcon('down', 'sc');
+  const toggle = (icon, label, on, set) => { const r = row(icon, label, `<em class="tg${on ? ' on' : ''}"><i></i></em>`, () => { set(); showMenu(open); }); r.setAttribute('role', 'switch'); r.setAttribute('aria-checked', on); return r; };
   const n = ACHS.filter(a => S.ach && S.ach[a[0]]).length;
-  group('Oyun', [
-    row('🏆', 'Başarımlar', `${n}/${ACHS.length} ›`, showAlbum),
-    row('🎮', 'Game Center', '›', () => {})
+  group('Oyun', 'var(--coral)', [
+    row('trophy', 'Başarımlar', `${n}/${ACHS.length}${chev}`, showAlbum),
+    row('game', 'Game Center', chev, () => {})
   ]);
-  group('Ses ve titreşim', [
-    toggle('🔊', 'Ses', soundOn, () => setSound(!soundOn)),
-    toggle('📳', 'Titreşim', hapticsOn, () => { hapticsOn = !hapticsOn; try { localStorage.setItem('safak-haptics', hapticsOn ? 'on' : 'off'); } catch (e) {} })
+  group('Ses ve titreşim', '#14a39a', [
+    toggle('sound', 'Ses', soundOn, () => setSound(!soundOn)),
+    toggle('haptic', 'Titreşim', hapticsOn, () => { hapticsOn = !hapticsOn; try { localStorage.setItem('safak-haptics', hapticsOn ? 'on' : 'off'); } catch (e) {} })
   ]);
-  group('Bildirim', [
-    toggle('⏰', 'Sabah hatırlatıcısı', reminderOn, () => { reminderOn = !reminderOn; try { localStorage.setItem('safak-reminder', reminderOn ? 'on' : 'off'); } catch (e) {} })
+  group('Bildirim', '#e0a400', [
+    toggle('bell', 'Sabah hatırlatıcısı', reminderOn, () => { reminderOn = !reminderOn; try { localStorage.setItem('safak-reminder', reminderOn ? 'on' : 'off'); } catch (e) {} })
   ]);
   const code = (() => { try { return btoa(unescape(encodeURIComponent(JSON.stringify(S)))); } catch (e) { return ''; } })();
-  const rows = [row('💾', savedOk ? 'Otomatik kaydedildi' : 'Kayıt kapalı', savedOk ? `Gün ${S.day}` : '', null, 'info'),
-    row('📤', 'Kayıt kodunu kopyala', open === 'copy' ? '⌄' : '›', () => showMenu(open === 'copy' ? null : 'copy')),
-    row('📥', 'Kayıt kodu yükle', open === 'load' ? '⌄' : '›', () => showMenu(open === 'load' ? null : 'load'))];
-  group('Kayıt', rows);
+  group('Kayıt', '#3d7fd0', [
+    row('cloud', savedOk ? 'Otomatik kaydedildi' : 'Kayıt kapalı', savedOk ? `Gün ${S.day}` : '', null, 'info'),
+    row('copy', 'Kayıt kodunu kopyala', open === 'copy' ? down : chev, () => showMenu(open === 'copy' ? null : 'copy'), open === 'copy' ? 'open' : ''),
+    row('paste', 'Kayıt kodu yükle', open === 'load' ? down : chev, () => showMenu(open === 'load' ? null : 'load'), open === 'load' ? 'open' : '')
+  ]);
   if (open) {
     const box = h('div', 'sbox');
     box.appendChild(h('p', 'hint', open === 'copy' ? 'Başka bir cihazda devam etmek için bu kodu kopyala, orada "Kayıt kodu yükle"ye yapıştır.' : 'Başka cihazdan kopyaladığın kodu buraya yapıştır ve Yükle\'ye bas. Buradaki oyunun yerini alır.'));
@@ -3350,11 +3391,12 @@ function showMenu(open) {
     box.append(ta, btns, msg);
     c.appendChild(box);
   }
-  group('Satın alımlar', [row('🛍️', 'Satın alımları geri yükle', '›', () => {})]);
-  group('Hakkında', [row('🔒', 'Gizlilik politikası', '›', () => {}), row('✉️', 'Destek', '›', () => {}), row('ℹ️', 'Sürüm', '1.0', null, 'info')]);
-  const nb = h('button', 'srow danger', '<i>🗑️</i><b>Yeni oyun başlat</b><span></span>');
+  group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
+  group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
+  const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
   nb.onclick = () => { if (!nb.dataset.arm) { nb.dataset.arm = '1'; nb.querySelector('b').textContent = 'Emin misin? Bütün ilerleme silinir. Tekrar dokun'; return; } S = newState(); setupName = ''; m.hidden = true; startIntro(); };
-  const g = h('div', 'sgroup'); g.appendChild(nb); c.appendChild(g);
+  c.appendChild(h('div', 'sg-t', ''));
+  const g = h('div', 'sgroup'); g.style.setProperty('--tint', 'var(--red)'); g.appendChild(nb); c.appendChild(g);
   const close = h('button', 'big', 'Devam et'); close.onclick = () => { m.hidden = true; };
   c.appendChild(close); m.appendChild(c); m.hidden = false;
 }
