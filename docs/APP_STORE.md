@@ -22,7 +22,7 @@ Burada yazanlar senin hesabında yapılacaklar.
    - SKU: `balloonbaron`.
 3. **Xcode → proje → Signing & Capabilities**:
    - Team: ücretli hesabın.
-   - **+ Capability**: *Game Center* ve *iCloud → Key-value storage*. (Söyle, ben de projeye ekleyebilirim; `gen_xcodeproj.py` her çalıştığında korunsun diye entitlements dosyası olarak ekleriz.)
+   - Game Center ve iCloud (Key-value storage) projede hazır: `BalloonBaron/BalloonBaron.entitlements`, `gen_xcodeproj.py` her çalıştığında korunur. Otomatik imzalama bu yetkileri App ID'ye kendisi ekler.
 4. **Uygulama içi satın almalar** (aşağıdaki tablo):
    - Her biri *Non-Consumable* olarak açılır.
    - Her ürün için incelemeye bir ekran görüntüsü yüklenir: Çarşı'daki satın alma kartı yeterli.

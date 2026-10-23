@@ -19,7 +19,7 @@ def oid(*parts):
 def kind(name):
     ext = os.path.splitext(name)[1]
     return {".swift": "sourcecode.swift", ".xcassets": "folder.assetcatalog", ".xcstrings": "text.json.xcstrings",
-            ".ttf": "file", ".json": "text.json", ".plist": "text.plist.xml", ".xcprivacy": "text.xml"}.get(ext, "file")
+            ".ttf": "file", ".json": "text.json", ".plist": "text.plist.xml", ".xcprivacy": "text.xml", ".entitlements": "text.plist.entitlements"}.get(ext, "file")
 
 
 def scan(rel):
@@ -53,6 +53,8 @@ def add_group(rel):
         bid = oid("build", f)
         if name.endswith(".swift"):
             sources.append((bid, fid, name))
+        elif name.endswith(".entitlements"):
+            pass  # read by code signing (CODE_SIGN_ENTITLEMENTS), never copied into the app
         else:
             resources.append((bid, fid, name))
         children.append((fid, name))
@@ -117,6 +119,7 @@ SWIFT_COMPILATION_MODE = wholemodule;
 VALIDATE_PRODUCT = YES;"""
 TARGET_SETTINGS = """ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+CODE_SIGN_ENTITLEMENTS = BalloonBaron/BalloonBaron.entitlements;
 CODE_SIGN_STYLE = Automatic;
 CURRENT_PROJECT_VERSION = 1;
 ENABLE_PREVIEWS = YES;

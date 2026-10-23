@@ -85,6 +85,7 @@
 		03D4B6CAC1ADC8096C50F9DB /* Barlow-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-SemiBold.ttf"; sourceTree = "<group>"; };
 		09FF7E1D4602B78743229CA2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
 		10593BC07FB07F631AE32CD5 /* DemoSetup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DemoSetup.swift"; sourceTree = "<group>"; };
+		10BC488D49FD051C95821B55 /* BalloonBaron.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "BalloonBaron.entitlements"; sourceTree = "<group>"; };
 		13C148975EC28ECA71CB3536 /* Shop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shop.swift"; sourceTree = "<group>"; };
 		1418AC5FE4F57A03C0EF1766 /* GameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameStore.swift"; sourceTree = "<group>"; };
 		14CD61C9B79F78E77AE45096 /* TownCollect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownCollect.swift"; sourceTree = "<group>"; };
@@ -176,6 +177,7 @@
 				3DFABEB6ABD2B12C2B105E1D /* Town */,
 				A1D1091F4EB95F42FF311FAE /* Views */,
 				5A7F9E6E220C47610C3B3C41 /* Assets.xcassets */,
+				10BC488D49FD051C95821B55 /* BalloonBaron.entitlements */,
 				716D53AF05BF7F135AC3340E /* BalloonBaronApp.swift */,
 				10593BC07FB07F631AE32CD5 /* DemoSetup.swift */,
 				1418AC5FE4F57A03C0EF1766 /* GameStore.swift */,
@@ -503,6 +505,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BalloonBaron/BalloonBaron.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
@@ -580,6 +583,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = BalloonBaron/BalloonBaron.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				ENABLE_PREVIEWS = YES;
