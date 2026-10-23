@@ -599,13 +599,6 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .lead{margin:0;font-size:16px;line-height:1.45;color:var(--ink2)}
 .card .btns .ghost{flex:1}
 @media (prefers-reduced-motion: reduce){.flagbig b,#introBurn::before{animation:none}*{transition:none!important}}
-.card.chapdone .big.adx { background: #2b2350; color: #fff; font-size: 15px; padding: 13px 10px; margin-top: 10px; }
-.adov { position: fixed; inset: 0; z-index: 99; background: rgba(10,8,24,.92); display: flex; align-items: center; justify-content: center; }
-.adbox { color: #fff; text-align: center; padding: 24px; max-width: 300px; }
-.adbox .adtag { display: inline-block; background: #ffc23d; color: #2b2350; font-weight: 800; border-radius: 6px; padding: 2px 8px; font-size: 12px; }
-.adbox .adbig { font-size: 72px; margin: 18px 0 6px; }
-.adbox .adn { display: block; font-size: 44px; margin: 8px 0 14px; }
-.adbox .adskip { color: #fff; border-color: rgba(255,255,255,.4); }
 /* the bazaar's shelves */
 .shopg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-bottom:6px}
 .shopi{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 9px;border-radius:16px;background:linear-gradient(#fff6e6,#f3e2c4);border:1.5px solid #e6cfa6;box-shadow:0 3px 0 #d9bd8c;color:var(--ink)}
@@ -1613,15 +1606,6 @@ function showNextChapter(n) {
   const ok = h('button', 'big', 'Başla'); ok.onclick = () => { m.hidden = true; if (bossRival() && bossRival().alive) bossSay('ch' + n); refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
   m.appendChild(c); m.hidden = false; sfx('click');
 }
-/* Rewarded ad stand-in: a 30 second countdown over everything; the reward comes only when it runs out. */
-function watchAd(done) {
-  const o = h('div', 'adov'); let n = 30;
-  o.innerHTML = `<div class="adbox"><div class="adtag">Reklam</div><div class="adbig">🎈</div><p>Prototip: burada 30 saniyelik ödüllü reklam oynar.</p><b class="adn">${n}</b><button class="ghost adskip">Test: atla</button></div>`;
-  document.body.appendChild(o);
-  const end = () => { clearInterval(iv); o.remove(); done(); };
-  const iv = setInterval(() => { n--; o.querySelector('.adn').textContent = n; if (n <= 0) end(); }, 1000);
-  o.querySelector('.adskip').onclick = end;
-}
 function showChapter() {
   const i = S.chapterNews; S.chapterNews = null; save();
   const C = chap()[i], m = $('menu'); m.replaceChildren();
@@ -1638,13 +1622,9 @@ function showChapter() {
   } else {
     c.appendChild(h('div', 'chap', `Bölüm ${i + 1} tamamlandı`));
     c.appendChild(h('h1', null, C.name));
-    const lead = h('p', 'lead', `${C.award}! Ödül: ${eur(C.reward)}.`); c.appendChild(lead);
+    c.appendChild(h('p', 'lead', `${C.award}! Ödül: ${eur(C.reward)}.`));
     /* the goals you just finished, all ticked; the next chapter's goals come after Devam */
     C.goals.forEach(g => c.appendChild(goalRow(g, true)));
-    /* rewarded ad: watch 30 seconds, get the reward a second time */
-    const ad = h('button', 'big adx', `▶ Reklam izle, ödülü 2'ye katla: ${eur(C.reward * 2)}`);
-    ad.onclick = () => watchAd(() => { S.cash += C.reward; save(); ad.disabled = true; ad.textContent = `Toplam ödül: ${eur(C.reward * 2)}`; lead.textContent = `${C.award}! Ödül: ${eur(C.reward * 2)}.`; sfx('coin'); refresh(); });
-    c.appendChild(ad);
     const ok = h('button', 'big', 'Devam'); ok.onclick = () => showNextChapter(i + 1); c.appendChild(ok);
     sfx('fanfare');
   }
