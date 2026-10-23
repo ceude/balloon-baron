@@ -735,7 +735,8 @@ struct HomeView: View {
             BigButton(title: loc("home.skip"), style: .ghost) { store.fly(skip: true) }
                 .frame(width: 140)
             BigButton(title: loc(none ? "home.noneFlying" : "home.collect")) {
-                if s.weather?.flag == .red { confirmRed = true } else { store.startCollect() }
+                Haptics.press()
+                if s.weather?.flag == .red { confirmRed = true; Haptics.warning() } else { store.startCollect() }
             }
             .disabled(none)
             .opacity(none ? 0.5 : 1)

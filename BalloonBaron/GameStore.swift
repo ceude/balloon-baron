@@ -160,6 +160,7 @@ final class GameStore {
         } else if g.rescueDue {
             act { $0.markRescueShown() }
             showRescue = true
+            Haptics.warning()
         } else if s.eventDue == true {
             var e: MorningEvent?
             act { e = $0.drawMorningEvent() }
@@ -167,6 +168,7 @@ final class GameStore {
         } else if s.newPostcards?.isEmpty == false {
             act { postcard = $0.nextPostcard() }
             SoundEngine.shared.play(.fanfare)
+            Haptics.success()
         } else if !s.hezQueue.isEmpty {
             act { $0.clearRescue() }
             act { hezarfen = $0.nextHezarfen() }
@@ -306,6 +308,7 @@ final class GameStore {
         if bought {
             Telemetry.bought(k, day: s.day)
             SoundEngine.shared.play(.coin)
+            Haptics.success()
             if storeItem == k { storeItem = nil }
         }
     }

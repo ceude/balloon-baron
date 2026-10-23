@@ -29,6 +29,7 @@ struct ChapterView: View {
         .onAppear {
             withAnimation(.spring(duration: 0.6, bounce: 0.4)) { shown = true }
             SoundEngine.shared.play(.fanfare)
+            Haptics.success()
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { SoundEngine.shared.play(.applause) }
         }
     }

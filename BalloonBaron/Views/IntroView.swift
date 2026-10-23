@@ -64,7 +64,7 @@ final class IntroModel {
 
     func step(_ dt: Double) {
         t += dt
-        if hold { vy = min(vy + 240 * dt, 230) } else { vy = max(vy - 160 * dt, y > 0 ? -35 : 0) }
+        if hold { vy = min(vy + 240 * dt, 230); Haptics.burner(at: t) } else { vy = max(vy - 160 * dt, y > 0 ? -35 : 0) }
         y = max(0, y + vy * dt)
     }
 }
@@ -169,6 +169,7 @@ struct IntroView: View {
         holding = on
         intro.hold = on
         SoundEngine.shared.burner(on)
+        Haptics.burnerToggled(on: on)
     }
 
     // MARK: Drawing

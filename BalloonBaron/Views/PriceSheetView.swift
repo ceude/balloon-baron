@@ -227,7 +227,9 @@ struct PriceSheetView: View {
     }
 
     private func step(_ d: Int) {
+        let before = store.state?.price
         store.act { g in g.setPrice(g.state.price + d) }
+        if store.state?.price != before { Haptics.tick() }
     }
 }
 

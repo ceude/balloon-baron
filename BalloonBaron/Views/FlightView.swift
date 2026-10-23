@@ -134,7 +134,9 @@ final class FlightModel {
         if want != burnerOn {
             burnerOn = want
             SoundEngine.shared.burner(want)
+            Haptics.burnerToggled(on: want)
         }
+        if want { Haptics.burner(at: T) }
     }
 
     private func handle(_ e: FlightSim.Event) {
@@ -144,6 +146,7 @@ final class FlightModel {
         case .missionDone:
             mdoneAt = T
             SoundEngine.shared.play(.fanfare)
+            Haptics.success()
             if look.mission == .proposal && !sim.done {
                 celebAt = T
                 spawnFx()
@@ -154,9 +157,11 @@ final class FlightModel {
         case .moment:
             momentAt = T
             SoundEngine.shared.play(.coin)
+            Haptics.coin()
         case .landed:
             tip = nil
             if let q = sim.result?.landing, q == .hard || q == .crash { SoundEngine.shared.play(.thud) }
+            if let q = sim.result?.landing { Haptics.landed(q) }
             if !landedHandled {
                 landedHandled = true
                 if let cb = onLanded { DispatchQueue.main.async(execute: cb) }

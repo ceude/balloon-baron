@@ -311,6 +311,7 @@ struct CollectView: View {
 
     private func pick(selfFly on: Bool) {
         SoundEngine.shared.play(.click)
+        Haptics.press()
         store.act { $0.setSelfFly(on) }
         store.leaveCollect()
     }
