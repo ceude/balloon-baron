@@ -116,9 +116,15 @@ enum IntroScene {
             Gradient(stops: [.init(color: mistC.opacity(0), location: 0), .init(color: mistC.opacity(0.28), location: 0.5), .init(color: mistC.opacity(0), location: 1)]),
             startPoint: CGPoint(x: 0, y: gy - u * 0.06), endPoint: CGPoint(x: 0, y: gy + u * 0.05)))
         // The game's name in the sky. It stays put; the hero balloon, drawn after the scene, rises past it in front.
+        // As the balloon comes closer the title falls back: a little smaller, softer and fainter, as if far behind.
         do {
             var title = ctx
-            let ty = max(70, H * 0.14), fs = min(W * 0.13, 64)
+            let ty = max(70, H * 0.14), fs = min(W * 0.13, 64), back = CGFloat(min(1, lift * 1.4))
+            title.translateBy(x: W / 2, y: ty)
+            title.scaleBy(x: 1 - back * 0.06, y: 1 - back * 0.06)
+            title.translateBy(x: -W / 2, y: -ty)
+            title.opacity = Double(1 - back * 0.25)
+            if back > 0.01 { title.addFilter(.blur(radius: back * 1.6)) }
             title.addFilter(.shadow(color: Color(red: 10 / 255, green: 4 / 255, blue: 24 / 255).opacity(0.6), radius: 12))
             let gold = LinearGradient(stops: [.init(color: .white, location: 0), .init(color: hex("#fff1d0"), location: 0.6), .init(color: hex("#ffc23d"), location: 1)],
                                       startPoint: .top, endPoint: .bottom)
