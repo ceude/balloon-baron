@@ -43,7 +43,7 @@ struct RootView: View {
                     .transition(.move(edge: .bottom))
             }
             if let p = store.page, store.game != nil {
-                page(p)
+                PageFrame(fullBleed: p == .holding || p == .map) { page(p) }
                     .transition(.move(edge: .trailing))
             }
             if let c = store.townCard, store.game != nil {
@@ -182,6 +182,33 @@ private struct DayCover: View {
         .animation(.easeOut(duration: 0.35), value: store.report == nil)
         .onChange(of: store.report == nil) { _, none in
             if !none { DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { flightShown = false } }
+        }
+    }
+}
+
+/// On an iPad the office pages open as a wide card over the dimmed town, so lines keep a readable length;
+/// the holding office and the world map stay full screen. On an iPhone the page is the screen.
+struct PageFrame<Content: View>: View {
+    var fullBleed = false
+    @ViewBuilder let content: () -> Content
+    @Environment(\.horizontalSizeClass) private var width
+
+    var body: some View {
+        if width == .regular && !fullBleed {
+            ZStack {
+                Color(red: 27 / 255, green: 24 / 255, blue: 64 / 255).opacity(0.45)
+                    .ignoresSafeArea()
+                    .contentShape(Rectangle())
+                    .onTapGesture {}
+                content()
+                    .frame(maxWidth: 720)
+                    .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+                    .shadow(color: .black.opacity(0.3), radius: 30, y: 12)
+                    .padding(.vertical, 28)
+                    .padding(.horizontal, 24)
+            }
+        } else {
+            content()
         }
     }
 }
