@@ -124,7 +124,7 @@ add("level.3", "Senior", "Kıdemli", "Erfahrener Kapitän", "Veterano", "ベテ�
 add("size.S", "Small basket", "Küçük sepet", "Kleiner Korb", "Cesta pequeña", "小型バスケット", "소형 바스켓")
 add("size.M", "Medium basket", "Orta sepet", "Mittlerer Korb", "Cesta mediana", "中型バスケット", "중형 바스켓")
 add("size.L", "Large basket", "Büyük sepet", "Großer Korb", "Cesta grande", "大型バスケット", "대형 바스켓")
-add("size.XL", "Custom giant balloon", "Özel tasarım dev balon", "Maßgefertigter Riesenballon", "Globo gigante a medida", "特注の巨大気球", "맞춤 제작 거대 열기구")
+add("size.XL", "Giant balloon", "Dev balon", "Riesenballon", "Globo gigante", "巨大気球", "거대 열기구")
 for k, v in {
  "gb": ("United Kingdom", "Birleşik Krallık", "Großbritannien", "Reino Unido", "イギリス", "영국"),
  "jp": ("Japan", "Japonya", "Japan", "Japón", "日本", "일본"),

@@ -121,7 +121,7 @@ add("goal.guide", "Fly a promo flight for tour guides", "Rehberlere tanıtım u�
 add("goal.share", "Market share: %@", "Pazar payı: %@", "Marktanteil: %@", "Cuota de mercado: %@", "市場シェア：%@", "시장 점유율: %@")
 add("goal.workshop", "Build a balloon workshop", "Balon atölyesi kur", "Baue eine Ballonwerkstatt", "Construye un taller de globos", "気球工房を建てる", "열기구 공방 세우기")
 add("goal.school", "Found a pilot school", "Pilot okulu kur", "Gründe eine Pilotenschule", "Funda una escuela de pilotos", "パイロット学校を設立する", "조종사 학교 세우기")
-add("goal.xl", "Your signature balloon in the sky: %@", "İmza balonun gökyüzünde: %@", "Dein Signaturballon am Himmel: %@", "Tu globo insignia en el cielo: %@", "看板気球を空へ：%@", "시그니처 열기구를 하늘로: %@")
+add("goal.xl", "Your giant balloon in the sky: %@", "Dev balonun gökyüzünde: %@", "Dein Riesenballon am Himmel: %@", "Tu globo gigante en el cielo: %@", "巨大気球を空へ：%@", "거대 열기구를 하늘로: %@")
 add("goal.fiesta", "Fly at a Balloon Fiesta", "Bir Balloon Fiesta'da uç", "Flieg bei einer Balloon Fiesta", "Vuela en una Balloon Fiesta", "バルーン・フィエスタで飛ぶ", "벌룬 피에스타에서 비행하기")
 add("goal.done", "done", "tamam", "erledigt", "hecho", "達成", "완료")
 add("goal.notYet", "not yet", "yok", "noch nicht", "aún no", "未達成", "아직")

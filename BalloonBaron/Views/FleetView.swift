@@ -474,10 +474,7 @@ struct FleetView: View {
                 DesignBalloon(colors: [s.colors.first ?? "#ff5e3a", "#ffd27a"])
                     .frame(width: 38, height: 48)
                 VStack(alignment: .leading, spacing: 3) {
-                    HStack(spacing: 6) {
-                        FleetUI.Title(s.region.xlName)
-                        FleetUI.Tag(text: loc("fleetPage.signature"), color: Theme.yellow)
-                    }
+                    FleetUI.Title(s.region.xlName)
                     FleetUI.Detail(z.title + " · " + specs(z))
                     FleetUI.Detail(loc("fleetPage.xlDesc"))
                 }

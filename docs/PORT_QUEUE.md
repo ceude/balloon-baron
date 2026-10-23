@@ -2,7 +2,7 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v100 ile aynı.)
+(Şu an kuyruk boş: Swift uygulaması prototip v101 ile aynı. v101: XL balonun adı "Dev balon", "İmza balon" etiketi kalktı.)
 
 v98–v100 aktarımı (Ekim 2026): reklam yok (bölüm kartındaki reklam düğmesi ve `doubleChapterReward` kalktı); Hezarfen balonu yerine Kurukafa balon (`StoreItem.skull`, `EnvelopeShape.skull`; eski kayıtlardaki "hezarfen" kurukafa olarak okunur); Hezarfen övgüleri (`Praise`, `Game.praiseCheck`, `HezMessage.praise`, düğme "Sağ ol usta"); ilk 3 günde kırmızı bayrak yok, ilk 20 günde kırmızı bayrakta ikinci onay (`RedFlagView`); kartpostal paylaşımı (`ShareCardArt`, `ShareCardButton`, iOS paylaşım sayfası). Altı dilde metinler.
 

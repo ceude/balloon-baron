@@ -30,7 +30,6 @@ add("fleetPage.hintPilots", "You fly the flagship yourself. Other balloons need 
 # Shop
 add("fleetPage.shop", "Buy a new balloon", "Yeni balon al", "Neuen Ballon kaufen", "Comprar un globo nuevo", "新しい気球を買う", "새 열기구 구매")
 add("fleetPage.shopSpecs", "Seats: %1$@ · Wind risk: ×%2$@ · Upkeep: %3$@/day · Fuel: %4$@/flight", "Koltuk: %1$@ · Rüzgârda risk: ×%2$@ · Bakım: %3$@/gün · Yakıt: %4$@/uçuş", "Plätze: %1$@ · Windrisiko: ×%2$@ · Wartung: %3$@/Tag · Treibstoff: %4$@/Flug", "Plazas: %1$@ · Riesgo con viento: ×%2$@ · Mantenimiento: %3$@/día · Combustible: %4$@/vuelo", "座席：%1$@ · 風のリスク：×%2$@ · 整備費：%3$@/日 · 燃料：%4$@/回", "좌석: %1$@ · 바람 위험: ×%2$@ · 정비비: %3$@/일 · 연료: %4$@/비행")
-add("fleetPage.signature", "Signature balloon", "İmza balon", "Signaturballon", "Globo insignia de autor", "シグネチャー気球", "시그니처 열기구")
 add("fleetPage.xlDesc", "In your colours, the biggest balloon in the sky. Every flight brings +0.02★ popularity and passenger reviews. You can only have one built.", "Senin renklerinde, gökyüzünün en büyük balonu. Her uçuşta +0,02★ popülerlik ve yolcu yorumları getirir. Sadece bir tane yaptırabilirsin.", "In deinen Farben, der größte Ballon am Himmel. Jeder Flug bringt +0,02★ Beliebtheit und Passagierbewertungen. Du kannst nur einen bauen lassen.", "Con tus colores, el globo más grande del cielo. Cada vuelo aporta +0,02★ de popularidad y reseñas de pasajeros. Solo puedes encargar uno.", "あなたのカラーで作る、空でいちばん大きな気球。フライトごとに人気+0.02★と乗客のレビューをもたらす。作れるのは1機だけ。", "당신의 색으로 만든 하늘에서 가장 큰 열기구. 비행할 때마다 인기 +0.02★와 승객 후기를 가져옵니다. 단 한 대만 만들 수 있습니다.")
 
 # Ad picker

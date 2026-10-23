@@ -2303,37 +2303,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Markenzeichen"
+            "value": "Riesenballon"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Signature balloon"
+            "value": "Giant balloon"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Globo insignia"
+            "value": "Globo gigante"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "看板気球"
+            "value": "巨大気球"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "시그니처 열기구"
+            "value": "거대 열기구"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "İmza balonu"
+            "value": "Dev balon"
           }
         }
       }
@@ -2344,37 +2344,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dein XL-Ballon ist am Himmel"
+            "value": "Dein Riesenballon ist am Himmel"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your XL balloon is in the sky"
+            "value": "Your giant balloon is in the sky"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu globo XL está en el cielo"
+            "value": "Tu globo gigante está en el cielo"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "XL気球が空に"
+            "value": "巨大気球が空に"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "XL 열기구가 하늘에"
+            "value": "거대 열기구가 하늘에"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "XL balonun gökyüzünde"
+            "value": "Dev balonun gökyüzünde"
           }
         }
       }
@@ -15253,47 +15253,6 @@
         }
       }
     },
-    "fleetPage.signature": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signaturballon"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Signature balloon"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Globo insignia de autor"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "シグネチャー気球"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "시그니처 열기구"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "İmza balon"
-          }
-        }
-      }
-    },
     "fleetPage.specs": {
       "extractionState": "manual",
       "localizations": {
@@ -19728,37 +19687,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dein Signaturballon am Himmel: %@"
+            "value": "Dein Riesenballon am Himmel: %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your signature balloon in the sky: %@"
+            "value": "Your giant balloon in the sky: %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu globo insignia en el cielo: %@"
+            "value": "Tu globo gigante en el cielo: %@"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "看板気球を空へ：%@"
+            "value": "巨大気球を空へ：%@"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "시그니처 열기구를 하늘로: %@"
+            "value": "거대 열기구를 하늘로: %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "İmza balonun gökyüzünde: %@"
+            "value": "Dev balonun gökyüzünde: %@"
           }
         }
       }
@@ -49166,37 +49125,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maßgefertigter Riesenballon"
+            "value": "Riesenballon"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Custom giant balloon"
+            "value": "Giant balloon"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Globo gigante a medida"
+            "value": "Globo gigante"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "特注の巨大気球"
+            "value": "巨大気球"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "맞춤 제작 거대 열기구"
+            "value": "거대 열기구"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Özel tasarım dev balon"
+            "value": "Dev balon"
           }
         }
       }
