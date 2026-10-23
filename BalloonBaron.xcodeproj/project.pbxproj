@@ -38,6 +38,7 @@
 		830D0F939F4AAC7708ACF61A /* CrewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EF8C34E905788B88E5C1BE /* CrewView.swift */; };
 		85AF43A366075059ABDDD599 /* ProtoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */; };
 		86F9815AF00AF54BD422516A /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */; };
+		88A32D55CBEBF17C3D652F2A /* IntroScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0065FA7F524A063D270336 /* IntroScene.swift */; };
 		89387608271733A9FA3C605B /* TownExtras.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */; };
 		89A5610C4F91854923A845D3 /* MarketView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA0BD7F812F90140ACBE8488 /* MarketView.swift */; };
 		8BD37C376F8E07FC1122C02F /* Barlow-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03D4B6CAC1ADC8096C50F9DB /* Barlow-SemiBold.ttf */; };
@@ -88,6 +89,7 @@
 		151A0BC3B17C01FBFECAA493 /* TownViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownViews.swift"; sourceTree = "<group>"; };
 		158AFE69FAF9C43034FBC847 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Theme.swift"; sourceTree = "<group>"; };
 		1906EB4B98B7016B3A39536D /* RegionsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RegionsCard.swift"; sourceTree = "<group>"; };
+		1A0065FA7F524A063D270336 /* IntroScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IntroScene.swift"; sourceTree = "<group>"; };
 		21BA8159F9A68439627ADACE /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
 		23D4D33454C06481C5DCFCD1 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReportView.swift"; sourceTree = "<group>"; };
 		258193DAFB836A70F64C8C53 /* HezarfenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HezarfenView.swift"; sourceTree = "<group>"; };
@@ -260,6 +262,7 @@
 				35623869A60618088C41AF72 /* HoldingOffice.swift */,
 				D3ED97BD630A253467C06E76 /* HoldingView.swift */,
 				7EDB158A34F42484C541CFE0 /* HomeView.swift */,
+				1A0065FA7F524A063D270336 /* IntroScene.swift */,
 				C804C45BE5B7FBFE970EB00E /* IntroView.swift */,
 				C2070C4DCB9F9DE7745FEBC0 /* IssueView.swift */,
 				BA0BD7F812F90140ACBE8488 /* MarketView.swift */,
@@ -415,6 +418,7 @@
 				DD35D40BDE2365FF1F2D8551 /* HoldingOffice.swift in Sources */,
 				3F0B240D7BF72C3BE57BA5F9 /* HoldingView.swift in Sources */,
 				03B50818350CB24EFC0CFCAA /* HomeView.swift in Sources */,
+				88A32D55CBEBF17C3D652F2A /* IntroScene.swift in Sources */,
 				F81E8DEC76F22207B34A4722 /* IntroView.swift in Sources */,
 				07C4DCFC0699ED567F7D68F4 /* IssueView.swift in Sources */,
 				89A5610C4F91854923A845D3 /* MarketView.swift in Sources */,

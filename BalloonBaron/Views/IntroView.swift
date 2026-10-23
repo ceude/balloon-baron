@@ -78,6 +78,7 @@ struct IntroView: View {
     @State private var holding = false
     @State private var out = false
     @State private var fade = false
+    @State private var pressed = false
     /// Reduce Motion: the ring around the burner stays still instead of pulsing.
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
@@ -93,8 +94,12 @@ struct IntroView: View {
                 .ignoresSafeArea()
                 .accessibilityHidden(true)
                 if !out {
-                    burnButton
-                        .padding(.bottom, max(28, g.safeAreaInsets.bottom + 16) - g.safeAreaInsets.bottom)
+                    VStack(spacing: 18) {
+                        // The very first time: where to press, until the balloon starts to rise.
+                        if s == nil && !pressed { hint }
+                        burnButton
+                    }
+                    .padding(.bottom, max(28, g.safeAreaInsets.bottom + 16) - g.safeAreaInsets.bottom)
                 }
                 Color(hex: "#fff6ea")
                     .opacity(fade ? 1 : 0)
@@ -135,12 +140,21 @@ struct IntroView: View {
             Circle()
                 .fill(Theme.coral)
                 .frame(width: 104, height: 104)
-            Text(loc("intro.burn"))
-                .font(Theme.font(19, .heavy, condensed: true))
-                .foregroundStyle(.white)
-                .lineLimit(1)
-                .minimumScaleFactor(0.6)
-                .frame(width: 92)
+            Circle()
+                .fill(RadialGradient(colors: [Color(hex: "#ff8a5a"), .clear], center: UnitPoint(x: 0.5, y: 0.35), startRadius: 0, endRadius: 40))
+                .frame(width: 104, height: 104)
+            VStack(spacing: 0) {
+                FlameIcon()
+                    .frame(width: 34, height: 34)
+                    .shadow(color: Color(hex: "#ffc85a").opacity(0.8), radius: 6)
+                Text(loc("intro.burn"))
+                    .font(Theme.font(19, .heavy, condensed: true))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                    .frame(width: 92)
+            }
+            .offset(y: -3)
         }
         .offset(y: holding ? 5 : 0)
         .animation(.easeOut(duration: 0.08), value: holding)
@@ -149,6 +163,22 @@ struct IntroView: View {
         .accessibilityAddTraits(.isButton)
         // VoiceOver can't press and hold: activating keeps the burner on until the balloon is away.
         .accessibilityAction { setHold(true) }
+    }
+
+    /// "Hold the burner" with a bobbing arrow (`#introHint`).
+    private var hint: some View {
+        TimelineView(.animation) { tl in
+            let k = reduceMotion ? 0 : (1 - cos(tl.date.timeIntervalSinceReferenceDate * 2 * Double.pi / 1.4)) / 2
+            VStack(spacing: 2) {
+                Text(loc("intro.hint")).font(Theme.font(21, .bold, condensed: true)).tracking(0.8)
+                Image(systemName: "chevron.compact.down").font(.system(size: 26, weight: .bold))
+            }
+            .foregroundStyle(Color(hex: "#fff6e6"))
+            .shadow(color: Color(red: 20 / 255, green: 8 / 255, blue: 30 / 255).opacity(0.7), radius: 6)
+            .offset(y: CGFloat(7 * k))
+        }
+        .accessibilityHidden(true)
+        .transition(.opacity)
     }
 
     /// CSS `ring` keyframes: 1.5 s ease-in-out, scale 0.94 to 1.1, opacity 0.9 to 0.35.
@@ -168,6 +198,7 @@ struct IntroView: View {
         guard !out, holding != on else { return }
         holding = on
         intro.hold = on
+        if on { withAnimation(.easeOut(duration: 0.3)) { pressed = true } }
         SoundEngine.shared.burner(on)
         Haptics.burnerToggled(on: on)
     }
@@ -179,20 +210,27 @@ struct IntroView: View {
         let T = scene.time(date)
         let dt = scene.step(T)
         intro.step(dt)
-        let cam = DawnSceneModel.camera(size)
-        let gy = cam.groundY
-        let R = min(size.width, size.height) * 0.085
+        let gy = size.height * 0.74
+        let R = min(size.width, size.height) * 0.1
         let y = CGFloat(intro.y)
         if !intro.out && gy - y - R * 2.7 < -8 {
             intro.out = true
             DispatchQueue.main.async { leave() }
         }
-        scene.backdrop(&ctx, cam: cam, p: 0.2 + min(0.1, intro.y / 3000), showBackground: false, T: T, dt: dt)
+        IntroScene.draw(&ctx, size: size, region: scene.region.rawValue, gy: gy, t: T, lift: min(1, intro.y / Double(size.height * 0.45)))
         let sway: CGFloat = intro.y > 2 ? CGFloat(sin(intro.t * 2.1)) * R * 0.1 : 0
-        ScenePainter.ell(&ctx, size.width / 2, gy + 3, R * 0.5 / (1 + y / 120), R * 0.1,
-                         Color(red: 40 / 255, green: 20 / 255, blue: 30 / 255).opacity(0.25))
-        ScenePainter.balloon(&ctx, x: size.width / 2 + sway, y: gy - y, r: R, colors: scene.colors,
-                             burn: intro.hold, region: scene.region, time: T)
+        let bx = size.width / 2 + sway, by = gy + R * 0.1 - y
+        ScenePainter.ell(&ctx, size.width / 2, gy + R * 0.12, R * 0.6 / (1 + y / 120), R * 0.12,
+                         Color(red: 40 / 255, green: 20 / 255, blue: 30 / 255).opacity(0.3))
+        if intro.hold {
+            // The burner lights the envelope and the grass.
+            var glow = ctx
+            glow.blendMode = .plusLighter
+            glow.fill(Path(ellipseIn: CGRect(x: bx - R * 2.4, y: by - R * 3.6, width: R * 4.8, height: R * 4.8)), with: .radialGradient(
+                Gradient(colors: [Color(red: 1, green: 170 / 255, blue: 70 / 255).opacity(0.35), .clear]),
+                center: CGPoint(x: bx, y: by - R * 1.2), startRadius: 0, endRadius: R * 2.4))
+        }
+        ScenePainter.balloon(&ctx, x: bx, y: by, r: R, colors: scene.colors, burn: intro.hold, region: scene.region, time: T)
     }
 
     /// The balloon is gone: fade to cream, then hand over (setup or office). RootView fades this
@@ -205,6 +243,30 @@ struct IntroView: View {
         withAnimation(.easeInOut(duration: 0.45)) { fade = true }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.48) {
             withAnimation(.easeOut(duration: 0.45)) { store.finishIntro() }
+        }
+    }
+}
+
+/// The burner's flame, for the intro button.
+struct FlameIcon: View {
+    var body: some View {
+        Canvas { ctx, size in
+            let k = size.width / 24
+            func P(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x * k, y: y * k) }
+            var outer = Path()
+            outer.move(to: P(12, 2))
+            outer.addCurve(to: P(17, 12.2), control1: P(13, 5.5), control2: P(17, 7.6))
+            outer.addArc(center: P(12, 12.2), radius: 5 * k, startAngle: .degrees(0), endAngle: .degrees(180), clockwise: false)
+            outer.addCurve(to: P(9, 7.8), control1: P(7, 10.2), control2: P(8, 8.8))
+            outer.addCurve(to: P(11.2, 11), control1: P(9.2, 9.4), control2: P(10, 10.5))
+            outer.addCurve(to: P(12, 2), control1: P(10.6, 8), control2: P(11, 4.6))
+            ctx.fill(outer, with: .color(Color(hex: "#ffe08a")))
+            var inner = Path()
+            inner.move(to: P(12, 11))
+            inner.addCurve(to: P(14.6, 15.6), control1: P(12.8, 12.7), control2: P(14.6, 13.6))
+            inner.addArc(center: P(12, 15.6), radius: 2.6 * k, startAngle: .degrees(0), endAngle: .degrees(180), clockwise: false)
+            inner.addCurve(to: P(12, 11), control1: P(9.4, 14.1), control2: P(11.6, 12.2))
+            ctx.fill(inner, with: .color(Color(hex: "#fff6d8")))
         }
     }
 }

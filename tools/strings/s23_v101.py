@@ -95,3 +95,6 @@ add("store.restore", "Restore purchases", "Satın alımları geri yükle", "Käu
 add("store.unavailable", "The store can't be reached right now. Please try again later.", "Mağazaya şu an ulaşılamıyor. Biraz sonra yeniden dene.", "Der Store ist gerade nicht erreichbar. Bitte versuche es später noch einmal.", "No se puede acceder a la tienda ahora. Inténtalo más tarde.", "現在ストアに接続できません。しばらくしてからもう一度お試しください。", "지금은 상점에 연결할 수 없습니다. 잠시 후 다시 시도해 주세요.")
 add("store.failed", "The purchase didn't go through. Nothing was charged.", "Satın alma tamamlanmadı. Ücret alınmadı.", "Der Kauf hat nicht geklappt. Es wurde nichts berechnet.", "La compra no se completó. No se ha cobrado nada.", "購入が完了しませんでした。請求はありません。", "구매가 완료되지 않았습니다. 요금은 청구되지 않았습니다.")
 add("store.pending", "Waiting for approval. The item arrives as soon as the purchase is approved.", "Onay bekleniyor. Satın alma onaylanınca ürün gelecek.", "Warte auf Freigabe. Der Artikel kommt, sobald der Kauf genehmigt ist.", "Esperando aprobación. El artículo llegará en cuanto se apruebe la compra.", "承認待ちです。購入が承認されるとアイテムが届きます。", "승인 대기 중입니다. 구매가 승인되면 아이템이 도착합니다.")
+
+# The opening screen (prototype v102): the first time ever, where to press
+add("intro.hint", "Hold the burner", "Brülöre basılı tut", "Brenner gedrückt halten", "Mantén pulsado el quemador", "バーナーを長押し", "버너를 길게 누르세요")
