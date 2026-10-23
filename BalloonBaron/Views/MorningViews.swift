@@ -155,13 +155,16 @@ struct PaperView: View {
             if items.count > 1 {
                 HStack(alignment: .top, spacing: 10) {
                     ForEach(Array(items.dropFirst().enumerated()), id: \.offset) { i, x in
-                        if i > 0 { Rectangle().fill(ink.opacity(0.4)).frame(width: 1) }
                         VStack(alignment: .leading, spacing: 2) {
                             Text(x.headline(company)).font(serif(15, .bold)).foregroundStyle(ink)
                             if let sub = x.subline(company) { Text(sub).font(serif(13)).foregroundStyle(ink2) }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .fixedSize(horizontal: false, vertical: true)
+                        // The column rule rides on the column: a bare Rectangle in the HStack would stretch the paper to the full screen.
+                        .overlay(alignment: .leading) {
+                            if i > 0 { Rectangle().fill(ink.opacity(0.4)).frame(width: 1).offset(x: -5) }
+                        }
                     }
                 }
                 .padding(.top, 6)
