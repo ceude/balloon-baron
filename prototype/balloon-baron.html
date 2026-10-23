@@ -4345,7 +4345,7 @@ function hqDeals(body, which, title) {
    every region for good; a failed attempt can be tried again. */
 const RECORDS = {
   alt: { n: 'İrtifa rekoru', d: 'Basınçlı kabinli özel bir balonla stratosfere: dünya rekoru 21.027 metre. Pilot oksijen maskesiyle uçar, kabin donmasın diye ısıtılır.', cost: 400000, days: 25, ok: .65, boost: .05 },
-  world: { n: 'Durmadan dünya turu', d: 'Breitling Orbiter 3 gibi: İsviçre Alpleri\'nden kalkış, 20 gün jet akımlarında, iniş Mısır çölünde. 1999\'da ilk kez başarılmıştı.', cost: 900000, days: 40, ok: .5, boost: .1 }
+  world: { n: 'Durmadan dünya turu', d: 'İsviçre Alpleri\'nden kalkış, 20 gün jet akımlarında, iniş Mısır çölünde. İlk kez 1999\'da başarılmıştı.', cost: 900000, days: 40, ok: .5, boost: .1 }
 };
 function hqRecords(body) {
   const H = S.hold || (S.hold = {}), v = h('div', 'sec'); v.appendChild(h('h2', null, 'Rekor denemeleri'));
@@ -4357,11 +4357,10 @@ function hqRecords(body) {
     const c = h('div', 'deal' + (did || now ? ' on' : ''));
     c.innerHTML = `<div class="dart">${INVEST_ART.rec}</div><div class="dmain"><div class="dk">Rekor denemesi</div><div class="dt">${R.n}</div><div class="dd">${R.d}</div><div class="dchips"><span>Hazırlık ${R.days} gün</span><span>Başarı şansı %${Math.round(R.ok * 100)}</span><span>Talep kalıcı +%${Math.round(R.boost * 100)}</span></div></div>`;
     const foot = h('div', 'dfoot');
-    if (did) foot.innerHTML = `<span class="dstat">Rekor senin · gün ${did}</span>`;
-    else if (now) foot.innerHTML = `<span class="dstat">Hazırlanıyor · ${H.rec.done - S.day} gün</span>`;
+    if (now) foot.innerHTML = `<span class="dstat">Hazırlanıyor · ${H.rec.done - S.day} gün</span>`;
     else {
-      foot.innerHTML = `<span class="dprice">${eurH(R.cost)}</span>`;
-      const b = h('button', 'dcta', 'Denemeyi başlat'); b.disabled = !open || !!H.rec || (S.holding || 0) < R.cost;
+      foot.innerHTML = did ? `<span class="dstat">Rekor senin</span><span class="dprice">${eurH(R.cost)}</span>` : `<span class="dprice">${eurH(R.cost)}</span>`;
+      const b = h('button', 'dcta', did ? 'Rekoru geliştir' : 'Denemeyi başlat'); b.disabled = !open || !!H.rec || (S.holding || 0) < R.cost;
       b.onclick = () => holdBuy(R.cost, () => { H.rec = { k, done: S.day + R.days }; hqRender(); }); foot.appendChild(b);
       if (!open) foot.appendChild(h('span', 'dnote', 'Önce Luksor\'u açmalısın'));
       else if (H.rec) foot.appendChild(h('span', 'dnote', 'Aynı anda bir deneme'));
@@ -4371,9 +4370,10 @@ function hqRecords(body) {
 }
 function recordDay() {
   const H = S.hold, r = H && H.rec; if (!r || S.day < r.done) return;
-  const R = RECORDS[r.k]; H.rec = null;
-  if (Math.random() < R.ok) {
-    (H.records = H.records || {})[r.k] = S.day; H.recBoost = (H.recBoost || 0) + R.boost; S.rep = Math.min(1.4, S.rep + .1);
+  const R = RECORDS[r.k], first = !(H.records && H.records[r.k]); H.rec = null;
+  /* the first attempt at each record always succeeds; beating your own record is where the odds come in */
+  if (first || Math.random() < R.ok) {
+    (H.records = H.records || {})[r.k] = S.day; H.recBoost = Math.min(.25, (H.recBoost || 0) + (first ? R.boost : .02)); S.rep = Math.min(1.4, S.rep + .1);
     S.hezQ.push(`news:${R.n} senin! ${S.company} adı bütün dünya gazetelerinde. Turistler artık her bölgede seni soruyor.`);
     paperAdd(5, `${S.company} dünya rekoru kırdı`, `${R.n}: bütün dünya bu balonu konuşuyor.`);
   } else S.hezQ.push(`news:${R.n} denemesi yarıda kaldı. Pilot sağ salim indi, balon da kurtarıldı ama rekor bu sefer olmadı. İstersen yeniden deneriz.`);
@@ -4381,9 +4381,9 @@ function recordDay() {
 /* Sponsored special shapes (desk 6): a brand pays the holding every day to fly its product-shaped balloon over your
    region. Tourists dislike the ad, so popularity slips a little each day of the contract. */
 const AD_SHAPES = [
-  { k: 'bottle', n: 'Fizz Cola şişesi', days: 30, pay: 4000, rep: .004 },
-  { k: 'rocket', n: 'Orbit Telekom roketi', days: 45, pay: 6500, rep: .006 },
-  { k: 'shoe', n: 'Stride spor ayakkabısı', days: 60, pay: 9000, rep: .008 }
+  { k: 'bottle', n: 'Fizz Cola şişesi', days: 30, pay: 4000, rep: .001 },
+  { k: 'rocket', n: 'Yıldız Telekom roketi', days: 45, pay: 6500, rep: .0015 },
+  { k: 'shoe', n: 'Kanat spor ayakkabısı', days: 60, pay: 9000, rep: .002 }
 ];
 function hqShapes(body) {
   const H = S.hold || (S.hold = {}), v = h('div', 'sec'); v.appendChild(h('h2', null, 'Sponsorlu özel şekiller'));
@@ -4392,7 +4392,7 @@ function hqShapes(body) {
   body.appendChild(v);
   for (const A of AD_SHAPES) {
     const now = on && H.adShape.k === A.k, c = h('div', 'deal' + (now ? ' on' : ''));
-    c.innerHTML = `<div class="dart"><svg viewBox="0 0 64 64">${adShapeSvg(A.k)}</svg></div><div class="dmain"><div class="dk">Reklam balonu</div><div class="dt">${A.n}</div><div class="dd">Cameron ve Lindstrand'ın dikimi özel şekilli zarf, markanın renklerinde.</div><div class="dchips"><span>Holdinge ${eurH(A.pay)}/gün</span><span>${A.days} gün</span><span>Popülerlik: ${A.rep < .005 ? 'az düşer' : A.rep < .007 ? 'düşer' : 'çok düşer'}</span></div></div>`;
+    c.innerHTML = `<div class="dart"><svg viewBox="0 0 64 64">${adShapeSvg(A.k)}</svg></div><div class="dmain"><div class="dk">Reklam balonu</div><div class="dt">${A.n}</div><div class="dd">Ustalarca dikilmiş özel şekilli zarf, markanın renklerinde.</div><div class="dchips"><span>Holdinge ${eurH(A.pay)}/gün</span><span>${A.days} gün</span><span>Popülerlik günde −${(A.rep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 3 })}★</span></div></div>`;
     const foot = h('div', 'dfoot');
     if (now) foot.innerHTML = `<span class="dstat">Uçuyor · ${H.adShape.until - S.day} gün kaldı</span>`;
     else {

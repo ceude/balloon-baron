@@ -265,8 +265,8 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Ünlü reklam yüzü:** €600.000, 90 gün talep +%10, +0,15 popülerlik.
 - **Billboard:** €120.000, bulunulan bölgede 20 gün talep +%10.
 - **Zarf Ar-Ge'si:** €400.000 ile ömür 160, €900.000 ile 200 uçuş.
-- **Rekor projesi (5. masa):** Luksor'a girince açılır. İrtifa rekoru €400.000 / 25 gün / %65 / talep kalıcı +%5; dünya turu €900.000 / 40 gün / %50 / +%10.
-- **Sponsorlu özel şekiller (6. masa):** şişe 30 gün €4.000/gün, roket 45 gün €6.500/gün, ayakkabı 60 gün €9.000/gün; imzalanan bölgede popülerlik her gün 0,004 / 0,006 / 0,008 düşer.
+- **Rekor projesi (5. masa):** Luksor'a girince açılır. İrtifa rekoru €400.000 / 25 gün / %65 / talep kalıcı +%5; dünya turu €900.000 / 40 gün / %50 / +%10. İlk deneme hep başarılı (gizli); geliştirme denemelerinde oranlar geçerli, başarı +%2 (toplam en fazla +%25).
+- **Sponsorlu özel şekiller (6. masa):** şişe 30 gün €4.000/gün, roket 45 gün €6.500/gün, ayakkabı 60 gün €9.000/gün; imzalanan bölgede popülerlik her gün 0,001 / 0,0015 / 0,002 düşer (yıldız olarak 0,004 / 0,006 / 0,008).
 - **Ofisler:** İstanbul €350.000 (Kapadokya otomatik +%25), New York €450.000 (TV %25 ucuz, Albuquerque otomatik +%20), Seul €400.000 (ünlü sözleşmesi 180 gün ve €420.000), Tokyo €400.000 (tasarım bedava, yaratıcılık +10, tazelik 60 gün, ileride Asya girişi yarı fiyatına).
 
 ## Balon atölyesi ve tasarımlar
