@@ -209,9 +209,13 @@ enum ScenePainter {
         c.stroke(ropes, with: .color(Color(red: 60 / 255, green: 35 / 255, blue: 30 / 255).opacity(0.8)), lineWidth: 1)
         rect(&c, x - R * 0.3, bb, R * 0.6, R * 0.32, Color(hex: "#6b4426"))
         if burn {
-            let f = 1 + sin(T * 40) * 0.2
-            ell(&c, x, by + R * 0.02, R * 0.1, R * 0.28 * f, Color(red: 1, green: 200 / 255, blue: 90 / 255).opacity(0.95))
-            ell(&c, x, by + R * 0.06, R * 0.05, R * 0.14 * f, Color(hex: "#fff4cc"))
+            // A small flickering flame under the mouth; the part above it burns inside the envelope.
+            let f = CGFloat(1 + sin(T * 31) * 0.12 + sin(T * 53 + 1.7) * 0.08), g = CGFloat(1 + sin(T * 47 + 0.6) * 0.1)
+            let sw = CGFloat(sin(T * 11)) * R * 0.015
+            var fc = c
+            fc.clip(to: Path(CGRect(x: x - R, y: by, width: R * 2, height: R * 2)))
+            ell(&fc, x + sw, by + R * 0.02, R * 0.1, R * 0.28 * f, Color(red: 1, green: 200 / 255, blue: 90 / 255).opacity(0.95))
+            ell(&fc, x + sw * 0.6, by + R * 0.06, R * 0.05, R * 0.14 * g, Color(hex: "#fff4cc"))
         }
     }
 

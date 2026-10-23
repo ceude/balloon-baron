@@ -156,7 +156,12 @@ extension ScenePainter {
             c.stroke(p, with: .color(rope), lineWidth: ropeW)
         }
         rect(&c, -R * 0.09, by - R * 0.2, R * 0.18, R * 0.08, Color(hex: "#2a2a30"))
-        if flame { flame3d(&c, x: 0, y: by - R * 0.2, s: R * flameScale) }
+        // The flame rises into the mouth: only the part below the skirt shows, the rest burns inside the envelope.
+        if flame {
+            var f = c
+            f.clip(to: Path(CGRect(x: -R, y: mouth + R * 0.11, width: R * 2, height: R * 2)))
+            flame3d(&f, x: 0, y: by - R * 0.2, s: R * flameScale)
+        }
         var basket = Path()
         basket.move(to: CGPoint(x: -bw / 2, y: by))
         basket.addLine(to: CGPoint(x: bw / 2, y: by))
@@ -180,36 +185,59 @@ extension ScenePainter {
         rect(&c, -bw / 2 - 2, by - R * 0.02, bw + 4, R * 0.035, Color(hex: "#2a160c"))
     }
 
-    /// `flame3d(x, y, s)`: an additive glow and four soft, blurred tongues of flame.
-    static func flame3d(_ ctx: inout GraphicsContext, x: CGFloat, y: CGFloat, s: CGFloat) {
+    /// `flame3d(x, y, s)`: the burner's flame, soft layered tongues that flicker. Each layer breathes at its own
+    /// pace (a few sines that never line up, so it never looks like a loop), its tip leans with a little sway, the
+    /// glow pulses with it and a few sparks lift off. `t` defaults to the clock, so a redrawing canvas animates it.
+    static func flame3d(_ ctx: inout GraphicsContext, x: CGFloat, y: CGFloat, s: CGFloat, t: Double = Date.timeIntervalSinceReferenceDate) {
         guard s > 0.1 else { return }
+        func n(_ f: Double, _ ph: Double) -> CGFloat { CGFloat(sin(t * f + ph)) }
+        let pulse: CGFloat = 1 + 0.1 * n(31, 0) + 0.06 * n(47, 1.7) + 0.04 * n(83, 4.1)
         do {
             var glow = ctx
             glow.blendMode = .plusLighter
+            let gy = y - s * 0.6, gr = s * 2.2 * (0.92 + 0.1 * pulse)
             let g = Gradient(stops: [
-                .init(color: rgba(255, 190, 80, 0.7), location: 0),
+                .init(color: rgba(255, 190, 80, Double(0.62 + 0.12 * n(29, 0.4))), location: 0),
                 .init(color: rgba(255, 120, 40, 0.22), location: 0.35),
                 .init(color: rgba(255, 90, 30, 0), location: 1)
             ])
-            glow.fill(Path(CGRect(x: x - s * 2.2, y: y - s * 2.8, width: s * 4.4, height: s * 4.4)),
-                      with: .radialGradient(g, center: CGPoint(x: x, y: y - s * 0.6), startRadius: 0, endRadius: s * 2.2))
+            glow.fill(Path(CGRect(x: x - gr, y: gy - gr, width: gr * 2, height: gr * 2)),
+                      with: .radialGradient(g, center: CGPoint(x: x, y: gy), startRadius: 0, endRadius: gr))
         }
-        let layers: [(String, CGFloat, CGFloat)] = [("#ff5a1f", 1, 14), ("#ffa531", 0.74, 9), ("#ffe08a", 0.5, 6), ("#fffbe8", 0.26, 3)]
-        for (col, k, blur) in layers {
-            let w = s * 0.3 * k, h = s * 1.25 * k
+        let layers: [(String, CGFloat, CGFloat, Double)] = [("#ff5a1f", 1, 14, 0), ("#ffa531", 0.74, 9, 1.3), ("#ffe08a", 0.5, 6, 2.6), ("#fffbe8", 0.26, 3, 3.9)]
+        for (col, k, blur, ph) in layers {
+            // Inner layers flicker faster and less; the outer one stretches and sways the most.
+            let wobble: CGFloat = 0.14 * n(27 + ph * 3, ph) + 0.08 * n(61 + ph * 5, ph * 2.3) + 0.05 * n(97, ph * 4)
+            let fl: CGFloat = 1 + wobble * (1.2 - k * 0.5)
+            let w: CGFloat = s * 0.3 * k * (1 + 0.05 * n(41, ph))
+            let h: CGFloat = s * 1.25 * k * fl
+            let sway: CGFloat = s * 0.07 * k * (n(9 + ph, ph) + 0.6 * n(17, ph * 1.7))
+            let tip = x + sway, mid = x + sway * 0.5
+            let shoulderL: CGFloat = 0.78 + 0.05 * n(53, ph), shoulderR: CGFloat = 0.86 + 0.05 * n(71, ph + 1)
             var p = Path()
             p.move(to: CGPoint(x: x - w, y: y))
-            p.addCurve(to: CGPoint(x: x - w * 0.35, y: y - h * 0.78),
-                       control1: CGPoint(x: x - w * 1.25, y: y - h * 0.35), control2: CGPoint(x: x - w * 0.55, y: y - h * 0.55))
-            p.addQuadCurve(to: CGPoint(x: x - w * 0.05, y: y - h), control: CGPoint(x: x - w * 0.15, y: y - h * 0.62))
-            p.addQuadCurve(to: CGPoint(x: x + w * 0.4, y: y - h * 0.86), control: CGPoint(x: x + w * 0.2, y: y - h * 0.7))
+            p.addCurve(to: CGPoint(x: mid - w * 0.35, y: y - h * shoulderL),
+                       control1: CGPoint(x: x - w * 1.25, y: y - h * 0.35), control2: CGPoint(x: mid - w * 0.55, y: y - h * 0.55))
+            p.addQuadCurve(to: CGPoint(x: tip - w * 0.05, y: y - h), control: CGPoint(x: tip - w * 0.15, y: y - h * 0.62))
+            p.addQuadCurve(to: CGPoint(x: mid + w * 0.4, y: y - h * shoulderR), control: CGPoint(x: tip + w * 0.2, y: y - h * 0.7))
             p.addCurve(to: CGPoint(x: x + w, y: y),
-                       control1: CGPoint(x: x + w * 0.55, y: y - h * 0.55), control2: CGPoint(x: x + w * 1.25, y: y - h * 0.35))
+                       control1: CGPoint(x: mid + w * 0.55, y: y - h * 0.55), control2: CGPoint(x: x + w * 1.25, y: y - h * 0.35))
             p.addQuadCurve(to: CGPoint(x: x - w, y: y), control: CGPoint(x: x, y: y + w * 0.5))
             p.closeSubpath()
             var layer = ctx
             layer.addFilter(.blur(radius: max(1, s * blur / 120)))
             layer.fill(p, with: .color(Color(hex: col)))
+        }
+        var sparks = ctx
+        sparks.blendMode = .plusLighter
+        for i in 0..<3 {
+            let life = (t * (1.4 + Double(i) * 0.3) + Double(i) * 0.37).truncatingRemainder(dividingBy: 1)
+            let a = (1 - life) * 0.7
+            guard a > 0 else { continue }
+            let sx: CGFloat = x + s * 0.12 * CGFloat(sin(Double(i) * 2.1 + t * 3))
+            let sy: CGFloat = y - s * 1.1 - CGFloat(life) * s * 0.9
+            let r: CGFloat = max(0.6, s * 0.025 * CGFloat(1 - life))
+            sparks.fill(Path(ellipseIn: CGRect(x: sx - r, y: sy - r, width: r * 2, height: r * 2)), with: .color(rgba(255, 220, 140, a)))
         }
     }
 }

@@ -2,9 +2,9 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-## Bekleyenler (prototip v106.2)
+(Şu an kuyruk boş: Swift uygulaması prototip v106.3 ile aynı.)
 
-- **Titreyen brülör alevi** (`flame3d`): dört katmanın her biri kendi hızında nefes alır (asla aynı anda hizalanmayan birkaç sinüs: 27–97 Hz arası), dış katman en çok uzayıp sallanır, uç hafifçe yana yatar; ışıltı alevle birlikte atar ve uçtan arada küçük kıvılcımlar kalkar. Düz balonun basit alevi de aynı şekilde titrer. Alev zarfın ağzının altından kesilir (`mouth + 0.11R`, düz balonda zarfın alt kenarı): ucu ve kıvılcımlar balonun içinde kalır, dışarıdan görünmez.
+v106.2–v106.3 aktarımı (Ekim 2026): titreyen brülör alevi (`ScenePainter.flame3d`, katmanlar ayrı hızlarda nefes alır, uç sallanır, ışıltı atar, kıvılcımlar kalkar) ve alevin zarfın ağzının altından kesilmesi; düz balonun alevi de titrer ve kesilir.
 
 Önceki durum: Swift uygulaması prototip v106.1 ile aynıydı.
 
