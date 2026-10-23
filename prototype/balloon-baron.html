@@ -600,6 +600,38 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .alert.win{background:rgba(190,220,255,.22);border:1px solid rgba(200,230,255,.7)}
 .alert.mis{background:rgba(58,208,192,.18);border:1px solid rgba(58,208,192,.6)}
 .alert.grn{background:rgba(34,164,93,.22);border:1px solid rgba(80,210,140,.65)}
+.flsum{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:10px}
+.flsum div{background:#fff;border-radius:14px;padding:8px 6px;text-align:center;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
+.flsum b{display:block;font-family:var(--cond);font-weight:800;font-size:20px;color:var(--ink);line-height:1.1}
+.flsum span{font-size:11px;font-weight:600;color:var(--ink2)}
+.flchips{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:2px 2px 8px;scrollbar-width:none}
+.flchip{flex:none;min-width:0;height:32px;padding:0 12px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset;font-weight:700;font-size:13px;color:var(--ink);white-space:nowrap}
+.flchip em{font-style:normal;color:var(--ink2);margin-left:3px}
+.flchip.on{background:var(--ink);color:#fff;box-shadow:none}
+.flchip.on em{color:#cfc8ff}
+.flchip.warn:not(.on) em{color:var(--red)}
+.fllist{background:#fff;border-radius:18px;box-shadow:0 0 0 2px var(--line) inset,0 4px 0 var(--line);overflow:hidden;margin-top:8px}
+.flrow{box-sizing:border-box;display:flex;align-items:center;gap:10px;width:100%;padding:6px 10px;text-align:left;position:relative;background:none}
+.flrow + .flrow::before{content:'';position:absolute;top:0;left:52px;right:0;height:1.5px;background:var(--line)}
+.flrow:active{background:#f6f3fb}
+.flrow .fi{width:30px;height:38px;flex-shrink:0;display:grid;place-items:center}
+.flrow .fi svg,.flrow .fi img{width:30px;height:38px}
+.flrow .fm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.flrow .fm b{font-family:var(--cond);font-weight:800;font-size:17px;color:var(--ink);display:flex;align-items:center;gap:6px;white-space:nowrap;overflow:hidden}
+.flrow .star{font-style:normal;color:var(--sun);font-size:14px}
+.flrow .sz{font-style:normal;font-family:var(--body);font-size:11px;font-weight:700;color:var(--ink2);background:var(--haze);border-radius:6px;padding:1px 6px}
+.flrow .ad{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.flrow .bx{font-style:normal;font-family:var(--body);font-size:11px;font-weight:800;color:#d9641f}
+.flrow .st{font-size:12.5px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.flrow .st i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.flrow .st.g i{background:var(--green)} .flrow .st.y i{background:var(--yellow)} .flrow .st.o i{background:#ff8a3d} .flrow .st.r i{background:var(--red)}
+.flrow .st.r,.flrow .st.o{color:var(--ink)}
+.flrow .ring{--p:100;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p) * 1%), var(--haze) 0)}
+.flrow .ring em{width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:10.5px;font-weight:800;color:var(--ink)}
+.flrow .chev{width:16px;height:16px;fill:none;stroke:#b9b1cc;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.bcard .btns{flex-wrap:wrap}
+.bcard > .item{padding-right:52px}
+.bcard .btns > *{flex:1 1 auto}
 .condbar{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--ink2)}
 .condbar .ct{flex:1;height:6px;border-radius:3px;background:var(--haze);overflow:hidden}
 .condbar .ct i{display:block;height:100%}
@@ -2414,27 +2446,87 @@ function renderAct() {
 }
 
 /* ---------- tabs ---------- */
+/* The fleet page stays readable with twenty balloons: a summary with tappable status filters, then one compact
+   line per balloon (flagship first, then the ones that need you, then by size). A line opens the balloon's card with
+   everything else: sponsor, design, equipment, envelope, flagship, sell. */
+let FLEET_F = 'all';
+const FLEET_FILTERS = {
+  all: ['Hepsi', () => true],
+  ready: ['Uçmaya hazır', b => canFly(b) === 'ok'],
+  issue: ['Dikkat', b => canFly(b) !== 'ok' || cond(b) < .3],
+  worn: ['Zarf yıpranıyor', b => cond(b) < .6],
+  S: ['Küçük', b => b.size === 'S'], M: ['Orta', b => b.size === 'M'], L: ['Büyük', b => b.size === 'L'], XL: ['Dev', b => b.size === 'XL']
+};
+function fleetState(b) {
+  const st = canFly(b), cd = cond(b);
+  if (st === 'dmg') return ['r', `Onarımda · ${b.dmgUntil - S.day} gün`];
+  if (st === 'worn') return ['r', 'Zarf bitti'];
+  if (st === 'nopilot') return ['o', 'Pilot yok'];
+  if (st !== 'ok') return ['o', fleetSub(b)];
+  if (cd < .3) return ['y', 'Hazır · zarf yıpranmış'];
+  return ['g', isSelf(b) ? 'Hazır · pilot: sen' : `Hazır · ${pilotOf(b).name.split(' ')[0]}`];
+}
+/* A balloon's card: what the old fleet row showed, with its buttons. */
+function balloonCard(b) {
+  const m = $('menu'); m.replaceChildren();
+  const z = SIZES[b.size], st = canFly(b), bd = designOf(b), c = h('div', 'card bcard');
+  const head = h('div', 'item');
+  head.insertAdjacentHTML('beforeend', bd ? `<img class="dthumb" src="${designThumb(bd, 44, 56)}" alt="">` : balloonIcon(myCol()[0], myCol()[1]));
+  const mainEl = h('div', 'main', `<div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş. ${esc(fleetSub(b))}.</div>`);
+  head.appendChild(mainEl); c.appendChild(head);
+  const csp = b.ad && SPONSORS.find(x => x.id === b.ad);
+  const ab = h('button', 'adbtn', csp ? `<i style="background:${csp.col}"></i>${csp.name}: +${eur(adPay(csp, b.size))}/uçuş` : 'Reklam yok. Sponsor bul');
+  ab.onclick = () => openAdPicker(b); c.appendChild(ab);
+  const eb = h('button', 'adbtn', `<i style="background:#ff8a3d"></i>${BURNERS[burnerLv(b)].n}${b.tvent ? ' · dönüş valfi' : ''}`); eb.onclick = () => equipCard(b); c.appendChild(eb);
+  if ((S.designs || []).length) { const db = h('button', 'adbtn', `<i style="background:${iconCols(b)[0]}"></i>Desen: ${bd ? esc(bd.name) : 'şirket renkleri'}`); db.onclick = () => openDesignPicker(b); c.appendChild(db); }
+  const cd = cond(b), cpct = Math.round(cd * 100);
+  c.appendChild(h('div', 'condbar', `<span class="cl">Zarf ${cpct}%${cd < .3 ? ', yıpranmış' : ''}</span><span class="ct"><i style="width:${cpct}%;background:${cd < .3 ? 'var(--red)' : cd < .6 ? 'var(--yellow)' : 'var(--green)'}"></i></span>`));
+  const acts = h('div', 'btns');
+  if (cd < .6) acts.appendChild(pbtn(`Zarf yenile ${eur(z.cost * RENEW)}`, () => { S.cash -= z.cost * RENEW; b.flights = 0; refresh(); balloonCard(b); }, S.cash < z.cost * RENEW));
+  if (b.id !== S.flag) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); balloonCard(b); }, false, true));
+  if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(z.cost * .6)}`, () => { S.cash += z.cost * .6; S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); m.hidden = true; refresh(); }, false, true));
+  c.appendChild(acts);
+  const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
 function tabFleet(body) {
-  const s = h('div', 'sec'); s.appendChild(h('h2', null, 'Balonların'));
-  for (const b of S.balloons) {
-    const z = SIZES[b.size], it = h('div', 'item'), st = canFly(b), bd = designOf(b);
-    it.insertAdjacentHTML('beforeend', bd ? `<img class="dthumb" src="${designThumb(bd, 44, 56)}" alt="">` : balloonIcon(myCol()[0], myCol()[1]));
-    const mainEl = h('div', 'main', `<div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş.</div>`);
-    const csp = b.ad && SPONSORS.find(x => x.id === b.ad);
-    const ab = h('button', 'adbtn', csp ? `<i style="background:${csp.col}"></i>${csp.name}: +${eur(adPay(csp, b.size))}/uçuş` : 'Reklam yok. Sponsor bul');
-    ab.onclick = () => openAdPicker(b); mainEl.appendChild(ab);
-    const eb = h('button', 'adbtn', `<i style="background:#ff8a3d"></i>${BURNERS[burnerLv(b)].n}${b.tvent ? ' · dönüş valfi' : ''}`); eb.onclick = () => equipCard(b); mainEl.appendChild(eb);
-    if ((S.designs || []).length) { const db = h('button', 'adbtn', `<i style="background:${iconCols(b)[0]}"></i>Desen: ${bd ? esc(bd.name) : 'şirket renkleri'}`); db.onclick = () => openDesignPicker(b); mainEl.appendChild(db); }
-    const cd = cond(b), cpct = Math.round(cd * 100);
-    mainEl.appendChild(h('div', 'condbar', `<span class="cl">Zarf ${cpct}%${cd < .3 ? ', yıpranmış' : ''}</span><span class="ct"><i style="width:${cpct}%;background:${cd < .3 ? 'var(--red)' : cd < .6 ? 'var(--yellow)' : 'var(--green)'}"></i></span>`));
-    it.appendChild(mainEl);
-    const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
-    if (cd < .6) acts.appendChild(pbtn(`Zarf yenile ${eur(z.cost * RENEW)}`, () => { S.cash -= z.cost * RENEW; b.flights = 0; refresh(); }, S.cash < z.cost * RENEW));
-    if (b.id !== S.flag) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); }, false, true));
-    if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(z.cost * .6)}`, () => { S.cash += z.cost * .6; S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); refresh(); }, false, true));
-    it.appendChild(acts);
-    s.appendChild(it);
+  const s = h('div', 'sec');
+  const all = S.balloons, ready = all.filter(b => canFly(b) === 'ok'), worn = all.filter(b => cond(b) < .6);
+  const seats = all.reduce((a, b) => a + SIZES[b.size].cap, 0), up = all.reduce((a, b) => a + SIZES[b.size].up, 0);
+  /* summary */
+  const sum = h('div', 'flsum');
+  sum.innerHTML = `<div><b>${all.length}</b><span>balon</span></div><div><b>${seats}</b><span>koltuk</span></div><div><b>${ready.length}</b><span>uçmaya hazır</span></div><div><b>${eur(up)}</b><span>bakım/gün</span></div>`;
+  s.appendChild(sum);
+  /* filters with counts; empty ones stay hidden */
+  const chips = h('div', 'flchips');
+  for (const k in FLEET_FILTERS) {
+    const [label, f] = FLEET_FILTERS[k], n = all.filter(f).length;
+    if (k !== 'all' && !n) continue;
+    const c = h('button', 'flchip' + (FLEET_F === k ? ' on' : '') + (k === 'issue' ? ' warn' : ''), `${label} <em>${n}</em>`);
+    c.onclick = () => { FLEET_F = k; refresh(); }; chips.appendChild(c);
   }
+  s.appendChild(chips);
+  /* one tap renews every tired envelope you can pay for */
+  const renew = worn, cost = renew.reduce((a, b) => a + SIZES[b.size].cost * RENEW, 0);
+  if (renew.length > 1) s.appendChild(pbtn(`Yıpranan zarfları yenile (${renew.length}) · ${eur(cost)}`, () => { S.cash -= cost; renew.forEach(b => { b.flights = 0; }); refresh(); }, S.cash < cost, true));
+  /* the list */
+  const rank = b => (b.id === S.flag ? 0 : 1) * 10 + ({ r: 0, o: 1, y: 2, g: 3 })[fleetState(b)[0]];
+  const list = all.filter(FLEET_FILTERS[FLEET_F] ? FLEET_FILTERS[FLEET_F][1] : () => true)
+    .sort((a, b) => rank(a) - rank(b) || SIZES[b.size].cap - SIZES[a.size].cap || a.name.localeCompare(b.name, 'tr'));
+  const box = h('div', 'fllist');
+  for (const b of list) {
+    const bd = designOf(b), [lv, txt] = fleetState(b), cd = cond(b), cp = Math.round(cd * 100), sp = b.ad && SPONSORS.find(x => x.id === b.ad);
+    const r = h('button', 'flrow');
+    r.innerHTML = `<span class="fi">${bd ? `<img src="${designThumb(bd, 28, 36)}" alt="">` : balloonIcon(myCol()[0], myCol()[1])}</span>
+      <span class="fm"><b>${esc(b.name)}${b.id === S.flag ? '<i class="star">★</i>' : ''}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em>${sp ? `<i class="ad" style="background:${sp.col}" title="${sp.name}"></i>` : ''}${burnerLv(b) > 1 ? `<i class="bx">×${burnerLv(b)}</i>` : ''}</b>
+      <span class="st ${lv}"><i></i>${txt}</span></span>
+      <span class="fe"><span class="ring" style="--p:${cp};--c:${cd < .3 ? 'var(--red)' : cd < .6 ? 'var(--yellow)' : 'var(--green)'}"><em>${cp}</em></span></span>
+      <svg class="chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></svg>`;
+    r.onclick = () => balloonCard(b);
+    box.appendChild(r);
+  }
+  if (!list.length) box.appendChild(h('p', 'hint', 'Bu filtrede balon yok.'));
+  s.appendChild(box);
   s.appendChild(h('p', 'hint', `Balon zarfı yaklaşık ${envLife()} uçuşta yıpranır. %30 altında kaza riski artar, %0'da balon uçamaz. Yenilemek balon fiyatının %35'i.`));
   s.appendChild(h('p', 'hint', 'Amiral balonunu sen uçurursun. Diğer balonlara pilot gerekir. Balonuna reklam alırsan sponsor her uçuşta öder, ama yolcular reklamlı balonu sevmez ve popülerliğin her uçuşta biraz düşer.'));
   body.appendChild(s);

@@ -2,7 +2,7 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v106.3 ile aynı.)
+- **v107 Kompakt filo sayfası** (`tabFleet`, `balloonCard`, `fleetState`, `FLEET_FILTERS`): üstte 4 özet kutusu (balon, koltuk, uçmaya hazır, günlük bakım); sayılı filtre çipleri (Hepsi, Uçmaya hazır, Dikkat, Zarf yıpranıyor, Küçük/Orta/Büyük/Dev; boş olanlar gizli); birden fazla zarf %60 altındaysa tek düğmeyle hepsini yenile; her balon tek satır: ikon/desen, ad, amiral yıldızı, boy çipi "M · 16", sponsor rengi noktası, brülör "×2", renkli durum noktası ve kısa durum ("Onarımda · 4 gün", "Pilot yok", "Hazır · Ali"), zarf yüzdesi halkası. Sıralama: amiral, sonra sorunlular (kırmızı < turuncu < sarı < yeşil), sonra büyükten küçüğe, sonra ad. Satıra basınca balon kartı açılır: sponsor, donanım, desen, zarf çubuğu, yenile / amiral yap / sat, Kapat. Yeni metinler gerekecek.
 
 v106.2–v106.3 aktarımı (Ekim 2026): titreyen brülör alevi (`ScenePainter.flame3d`, katmanlar ayrı hızlarda nefes alır, uç sallanır, ışıltı atar, kıvılcımlar kalkar) ve alevin zarfın ağzının altından kesilmesi; düz balonun alevi de titrer ve kesilir.
 
