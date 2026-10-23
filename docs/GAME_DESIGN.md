@@ -190,6 +190,13 @@ Kuruluş Ekim 2026'da (prototip v90) "5 balon, 4,0★, kasada 20.000" yerine "2 
 
 Oyunda reklam yok (v98). Bölüm ödülü tek sefer verilir; eskiden bölüm kartında ödülü reklamla 2'ye katlama düğmesi vardı.
 
+## Balon donanımı (v105)
+- **Brülör:** tek (standart), çift (balon fiyatının %10'u, kaza riski ×0,85, ısınma ×1,3), üçlü (%12, ×0,72, ×1,6). Yedek brülör güvenlik olarak pazarlanır.
+- **Dönüş valfi:** %6. Sarı ve kırmızı bayrakta kaza riski ×0,85; kurucu uçuşunda sert iniş eşiği 2,6 yerine 3,1 m/s.
+- **Paraşüt valfi:** uçuşta VALF düğmesi, basılı tutunca hızlı alçalış.
+- **Elektrik hatları:** uçuşta engel, altına inilmez.
+- **Müfettiş:** zarf %30 altındayken 5 günde bir denetim. İki uyarı, sonra her ziyarette yıpranmış balon başına 2.500 ceza.
+
 ## Bina yükseltmeleri
 Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükseltme görünür.
 
@@ -258,6 +265,8 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Ünlü reklam yüzü:** €600.000, 90 gün talep +%10, +0,15 popülerlik.
 - **Billboard:** €120.000, bulunulan bölgede 20 gün talep +%10.
 - **Zarf Ar-Ge'si:** €400.000 ile ömür 160, €900.000 ile 200 uçuş.
+- **Rekor projesi (5. masa):** Luksor'a girince açılır. İrtifa rekoru €400.000 / 25 gün / %65 / talep kalıcı +%5; dünya turu €900.000 / 40 gün / %50 / +%10.
+- **Sponsorlu özel şekiller (6. masa):** şişe 30 gün €4.000/gün, roket 45 gün €6.500/gün, ayakkabı 60 gün €9.000/gün; imzalanan bölgede popülerlik her gün 0,004 / 0,006 / 0,008 düşer.
 - **Ofisler:** İstanbul €350.000 (Kapadokya otomatik +%25), New York €450.000 (TV %25 ucuz, Albuquerque otomatik +%20), Seul €400.000 (ünlü sözleşmesi 180 gün ve €420.000), Tokyo €400.000 (tasarım bedava, yaratıcılık +10, tazelik 60 gün, ileride Asya girişi yarı fiyatına).
 
 ## Balon atölyesi ve tasarımlar
@@ -273,6 +282,8 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - Kasabaya kar yağar, çatılar ve zemin beyazlar.
 
 ## Hezarfen Usta
+Hezarfen Kapadokya'nın rehberi. Albuquerque'de Ben Franklin (1783'te Paris'te ilk balonları izlemişti), Luksor'da İmhotep rehberlik eder. Dünya haritasında Bristol ve Maasai Mara isim olarak var, henüz açılmaz.
+
 Yaşlı, karizmatik mentor. Daktilo efektli konuşma balonuyla konuşur. Konuları:
 - karşılama, sigorta, filo, banka, pazar, ekip
 - sarı ve kırmızı bayrak

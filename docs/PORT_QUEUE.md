@@ -13,6 +13,22 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
   - Uçuş manzarası: Teb tepeleri ve el-Kurn, tapınak, hurmalar, yeşil Nil vadisi, feluka; engeller hurma ağacı.
   - Giriş ekranı (`IntroScene`) Luksor teması. Dünya haritasında Luksor artık "yakında" değil.
 - **Bölgeye göre kasaba:** Albuquerque ve Luksor'da duvar renkleri (`TUFF_BY`), düz çatılar (`flatRoof`: vigalar / kubbe), kenarda peri bacası yerine mesa ya da dikilitaş ve hurma kümesi, ağaçlar (kaktüs, yucca, kavak / hurma), çevre arazi renkleri ve tarlalar, Luksor'da Nil şeridi, uzak sırtlar (mesalar / Teb tepeleri ve hurma siluetleri), zemin renkleri, mağara otel yerine kayaya oyulmuş oda (Albuquerque) ya da Nubya evi (Luksor), otel bahçesinde servi yerine kavak / hurma, holding ofisinin penceresindeki manzara. Süsler her bölgede.
+## Bekleyenler (prototip v105)
+
+- **Çarşı etiketi:** etiket yüksekliği 82 (önceden varsayılan 135'ti ve bankanın üstüne çıkıyordu). Dokunmada önce binanın kendi zemini, sonra etiket kutusu sayılır (`townHit`).
+- **Albuquerque kasabası:** kenardaki mesalar kalktı. Mağara otel yerine basamaklı kerpiç (pueblo) bina.
+- **Brülör ve dönüş valfi** (balon başına, `Balloon.burner` 1–3, `Balloon.tvent`; ikisi de isteğe bağlı alan). Filo sayfasında "Donanım" kartı.
+  - Çift brülör: balon fiyatının %10'u, kaza riski ×0,85, uçuşta ısınma ×1,3.
+  - Üçlü brülör: %12 daha, risk ×0,72, ısınma ×1,6.
+  - Dönüş valfi: %6, sarı ve kırmızı bayrakta risk ×0,85, uçuşta sert iniş eşiği 2,6 yerine 3,1.
+- **Paraşüt valfi:** uçuşta havalanınca "Uçuştan vazgeç" yerine VALF düğmesi çıkar. Basılı tutunca ısı saniyede ekstra 0,07 düşer. İlk kullanımda ipucu çıkar.
+- **Elektrik hatları:** uçuşta en fazla 3 hat (190–280 birim, 42–58 m). Altında alçak uçmak ya da altına inmek kaza demek, kaza metni "Elektrik hattına takıldın!".
+- **Müfettiş:** bir zarf %30'un altındaysa 5 günde bir denetim. 1. ve 2. ziyarette uyarı, 3. ziyaretten itibaren yıpranmış balon başına 2.500 ceza ve gazete haberi. Bölgeye göre: SHGM / FAA / Mısır Sivil Havacılık. Kendi portresi var (`inspDay`, `inspN` bölge alanları).
+- **Bölgesel rehberler:** Hezarfen Kapadokya'da kalır. Albuquerque'de Ben Franklin, Luksor'da İmhotep, kendi portreleriyle. Bölgeye girerken Hezarfen'in sözü, ardından yeni rehberin tanışma konuşması. Baron metni, otomatik mod sorunları ve rakip taktikleri düğmesi o bölgenin rehberiyle.
+- **Holding 5. masa, Rekor projesi:** Luksor'a girmeden kilitli. İrtifa rekoru €400.000, 25 gün, %65 şans, talep kalıcı +%5. Durmadan dünya turu €900.000, 40 gün, %50 şans, +%10. Aynı anda bir deneme, başarısızsa tekrar denenebilir.
+- **Holding 6. masa, Sponsorlu özel şekiller:** Fizz Cola şişesi (30 gün, €4.000/gün), Orbit Telekom roketi (45 gün, €6.500/gün), Stride spor ayakkabısı (60 gün, €9.000/gün). Sözleşme imzalanan bölgede popülerlik her gün 0,004 / 0,006 / 0,008 düşer. Balon kasabanın üstünde uçar.
+- **Dünya haritası:** Bristol (İngiltere) ve Maasai Mara (Kenya) yalnızca isim olarak var, açılmazlar. Asya "???" kaldı.
+
 - **Metinler** (altı dil): Luksor adı, ülke, bölüm adları ve hedefleri, rakip ve patron replikleri, Nil sezonu uyarıları, Hezarfen uyarısı, gazete adı, başarım adları.
 
 Önceki durum: Swift uygulaması prototip v103 ile aynıydı. v101: XL balonun adı "Dev balon", "İmza balon" etiketi kalktı.
