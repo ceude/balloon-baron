@@ -10,6 +10,7 @@ struct MenuView: View {
     @State private var message = ""
     /// New game needs a second tap to confirm.
     @State private var armed = false
+    @State private var reminderOn = Reminder.on
 
     var body: some View {
         let s: GameState? = store.state
@@ -44,6 +45,8 @@ struct MenuView: View {
                 CardText.hint(message)
             }
             settingButton(loc(soundOn ? "menu.soundOn" : "menu.soundOff")) { toggleSound() }
+            settingButton(loc(reminderOn ? "menu.reminderOn" : "menu.reminderOff")) { toggleReminder() }
+            settingButton(loc("menu.gameCenter")) { GameCenter.openDashboard() }
             settingButton(loc(armed ? "menu.sure" : "menu.newGame")) { newGame() }
             Button(loc("menu.continue")) {
                 SoundEngine.shared.play(.click)
@@ -98,6 +101,18 @@ struct MenuView: View {
         let new: Bool = !soundOn
         SoundEngine.shared.enabled = new
         soundOn = new
+    }
+
+    private func toggleReminder() {
+        if reminderOn {
+            Reminder.turnOff()
+            reminderOn = false
+        } else {
+            Reminder.turnOn { granted in
+                reminderOn = granted
+                message = granted ? "" : loc("menu.reminderDenied")
+            }
+        }
     }
 
     private func newGame() {

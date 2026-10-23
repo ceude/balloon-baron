@@ -36409,6 +36409,47 @@
         }
       }
     },
+    "menu.gameCenter": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Center"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Center"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Center"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Center"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Center"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Game Center"
+          }
+        }
+      }
+    },
     "menu.load": {
       "extractionState": "manual",
       "localizations": {
@@ -36528,6 +36569,129 @@
           "stringUnit": {
             "state": "translated",
             "value": "Menüyü aç"
+          }
+        }
+      }
+    },
+    "menu.reminderDenied": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitteilungen für Balloon Baron sind aus. Du kannst sie in den Einstellungen einschalten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notifications are off for Balloon Baron. You can turn them on in Settings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las notificaciones de Balloon Baron están desactivadas. Puedes activarlas en Ajustes."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon Baronの通知がオフです。設定でオンにできます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon Baron 알림이 꺼져 있습니다. 설정에서 켤 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon Baron için bildirimler kapalı. Ayarlar'dan açabilirsin."
+          }
+        }
+      }
+    },
+    "menu.reminderOff": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morgen-Erinnerung: aus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morning reminder: off"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorio matinal: desactivado"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "朝のお知らせ：オフ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아침 알림: 꺼짐"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sabah hatırlatması: kapalı"
+          }
+        }
+      }
+    },
+    "menu.reminderOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morgen-Erinnerung: an"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morning reminder: on"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorio matinal: activado"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "朝のお知らせ：オン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아침 알림: 켜짐"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sabah hatırlatması: açık"
           }
         }
       }
@@ -43047,6 +43211,170 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bölgelerin"
+          }
+        }
+      }
+    },
+    "reminder.body1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Dämmerung bricht an. Deine Fahrgäste warten an den Körben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dawn is breaking. Your passengers are waiting by the baskets."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Está amaneciendo. Tus pasajeros esperan junto a las cestas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "夜明けだ。乗客がバスケットのそばで待っているぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "동이 트고 있네. 승객들이 바구니 옆에서 기다리고 있어."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şafak söküyor evlat, yolcuların sepet başında bekliyor."
+          }
+        }
+      }
+    },
+    "reminder.body2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wie ist der Wind heute? Schau auf die Flagge, bevor du startest."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "How is the wind today? Check the flag before you take off."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Qué tal el viento hoy? Mira la bandera antes de despegar."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日の風はどうだ？離陸の前に旗を確かめるんだぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 바람은 어떤가? 이륙 전에 깃발을 확인하게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugün rüzgâr nasıl? Bayrağa bakmadan kalkma evlat."
+          }
+        }
+      }
+    },
+    "reminder.body3": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Konkurrenz ist schon in der Luft. Kommst du?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your rivals are already in the air. Are you coming?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus rivales ya están en el aire. ¿Vienes?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライバルはもう空の上だ。君も来ないのか？"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "경쟁자들은 벌써 하늘에 있네. 자네도 오지 않겠나?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rakipler erkenden havalandı. Sen de gelmiyor musun?"
+          }
+        }
+      }
+    },
+    "reminder.body4": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In deinem Städtchen beginnt ein neuer Tag. Deine Ballone sind bereit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A new day is starting in your town. Your balloons are ready."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza un nuevo día en tu pueblo. Tus globos están listos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "君の町で新しい一日が始まる。気球の準備はできているぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자네 마을에 새날이 밝았네. 열기구가 준비됐어."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasabanda yeni bir gün başlıyor. Balonların hazır."
           }
         }
       }

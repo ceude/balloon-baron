@@ -17,8 +17,12 @@ struct BalloonBaronApp: App {
                 .preferredColorScheme(.light)
                 .onChange(of: scenePhase) { _, phase in
                     if phase != .active { store.flushSave() }
-                    if phase == .background { LaunchGuard.settled() }
+                    if phase == .background {
+                        LaunchGuard.settled()
+                        Reminder.schedule(day: store.state?.day ?? 1)
+                    }
                 }
+                .task { GameCenter.signIn { if let s = store.state { GameCenter.report(s) } } }
         }
     }
 }

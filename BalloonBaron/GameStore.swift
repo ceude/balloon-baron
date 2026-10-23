@@ -414,6 +414,7 @@ final class GameStore {
         var r: DayReport?
         act { r = $0.finishDay(flight: result) }
         flushSave()
+        if let s = state { GameCenter.report(s) }
         report = r
     }
 
