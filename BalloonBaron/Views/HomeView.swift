@@ -28,6 +28,8 @@ struct HomeView: View {
     @State private var hudBottom: CGFloat = 56
     /// Bottom of the weather card; the town's back corner sits just under it.
     @State private var weatherBottom: CGFloat = 0
+    /// Bottom of the side buttons: the column is taller than the weather card, so zooming slides it off by this.
+    @State private var navBottom: CGFloat = 0
     /// Zoomed into the town: the controls slide off screen (top ones up, the dock down) and come back on zoom-out.
     @State private var zoomed = false
     /// The controls are still sliding back after a zoom-out; measurements stay frozen until they've landed.
@@ -96,8 +98,13 @@ struct HomeView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     navColumn(s)
+                        .background {
+                            GeometryReader { g in
+                                Color.clear.preference(key: NavBottomKey.self, value: g.frame(in: .global).maxY)
+                            }
+                        }
                 }
-                .offset(y: zoomed ? -(max(weatherBottom, hudBottom) + 60) : 0)
+                .offset(y: zoomed ? -(max(weatherBottom, hudBottom, navBottom) + 60) : 0)
                 Spacer(minLength: 0)
                 if !store.collecting {
                     dockPanel(game)
@@ -126,6 +133,9 @@ struct HomeView: View {
         }
         .onPreferenceChange(WeatherBottomKey.self) { v in
             if !zoomed && !settling && v >= 0 && abs(v - weatherBottom) > 0.5 { weatherBottom = v }
+        }
+        .onPreferenceChange(NavBottomKey.self) { v in
+            if !zoomed && !settling && v >= 0 && abs(v - navBottom) > 0.5 { navBottom = v }
         }
     }
 
@@ -777,6 +787,11 @@ private struct DockTopKey: PreferenceKey {
 }
 
 private struct DockBottomKey: PreferenceKey {
+    static var defaultValue: CGFloat = -1
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+private struct NavBottomKey: PreferenceKey {
     static var defaultValue: CGFloat = -1
     static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
 }

@@ -444,6 +444,21 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .issue .chap{color:var(--red)}
 .hzline{display:flex;gap:10px;align-items:center;font-size:13.5px;line-height:1.4;color:var(--ink2);background:var(--haze);border-radius:14px;padding:8px 10px}
 .hzline .hzav{width:40px;height:40px;flex:none}
+.settings .sg-t{font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin:14px 4px 6px}
+.sgroup{background:#fff;border-radius:16px;box-shadow:0 0 0 2px var(--line) inset;overflow:hidden;flex-shrink:0}
+.settings > *{flex-shrink:0}
+.srow{display:flex;align-items:center;gap:10px;width:100%;padding:12px 14px;text-align:left;border-bottom:1.5px solid var(--line);background:none;color:var(--ink);font-size:15.5px}
+.srow:last-child{border-bottom:none}
+.srow i{font-style:normal;width:26px;text-align:center}
+.srow b{flex:1;font-weight:700}
+.srow span{color:var(--ink2);font-size:14px;font-weight:600}
+.srow.info b{font-weight:600}
+.srow.danger b{color:var(--red)}
+.tg{display:inline-block;width:46px;height:28px;border-radius:14px;background:#d6d0e4;position:relative;transition:background .2s}
+.tg::after{content:'';position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:left .2s}
+.tg.on{background:var(--green)}
+.tg.on::after{left:21px}
+.sbox{margin-top:8px;display:flex;flex-direction:column;gap:6px}
 .opt{display:flex;flex-direction:column;gap:3px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
 .opt.a{box-shadow:0 0 0 2px var(--coral) inset,0 3px 0 #c7381a}
 .opt b{font-size:15.5px;color:var(--ink)}.opt span{font-size:13px;color:var(--ink2)}
@@ -463,6 +478,18 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .sw2.on{box-shadow:0 0 0 3px var(--ink);transform:scale(1.08)}
 .studio .nm{box-sizing:border-box;width:100%;padding:11px 12px;border-radius:12px;border:2px solid var(--line);font:inherit;font-size:15px;background:#fff;color:var(--ink)}
 .dthumb{width:38px;height:48px;flex:none}
+.travel{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;justify-content:center;gap:18px;padding:24px 16px;background:linear-gradient(#1b1840,#5a3a6e 60%,#f0a070);opacity:0;transition:opacity .4s}
+.travel.on{opacity:1}
+.tv-t{font-family:var(--cond);font-weight:800;font-size:30px;color:#fff;text-align:center}
+.tv-t span{color:var(--sun)}
+.tv-s{color:rgba(255,255,255,.8);text-align:center;font-size:15px}
+.tv-map{width:100%;max-width:640px;margin:0 auto;box-shadow:0 10px 30px rgba(0,0,0,.35)}
+.tv-arc{position:absolute;inset:0;width:100%;height:100%}
+.tv-arc path{fill:none;stroke-width:.45;vector-effect:non-scaling-stroke}
+.tv-arc .bg{stroke:rgba(255,255,255,.35);stroke-width:2;stroke-dasharray:4 5}
+.tv-arc .fg{stroke:#ffd27a;stroke-width:3;stroke-dasharray:100;stroke-dashoffset:100}
+.tv-b{position:absolute;width:40px;height:40px;filter:drop-shadow(0 4px 6px rgba(0,0,0,.4))}
+.tv-b svg{width:100%;height:100%}
 .wmap{position:relative;aspect-ratio:100/42.3;border-radius:16px;background:linear-gradient(#2a2156,#3d3070);overflow:hidden}
 .wmap .wbg{position:absolute;inset:0;width:100%;height:100%}
 .wpin{position:absolute;width:0;height:0}
@@ -1394,6 +1421,7 @@ function showRescue() {
 }
 function showRescueStep() { if (S.cash >= 0) { $('menu').hidden = true; S.hezQ.unshift('news:Aferin evlat, kasa yeniden artıda. Şimdi masrafları sıkı tutalım.'); setTimeout(nextPopup, 250); } else showRescue(); }
 function nextPopup() {
+  if (TRAVEL) return;
   if (mode !== 'office' || !$('menu').hidden || !$('report').hidden || !$('page').hidden || !$('hez').hidden) return;
   if (S.chapterNews != null) { showChapter(); return; }
   if (S.mergeNews) { showMerge(); return; }
@@ -1791,12 +1819,39 @@ const REGIONS = [
   { id: 'mara', name: 'Maasai Mara', land: 'Kenya', lon: 35.1, lat: -1.5, side: 'r', soon: true, about: 'Savananın üstünde gün doğumu safarisi: aslanlar, filler ve büyük göç. İnişte çalı altında kahvaltı. Çok yakında.' },
   { id: 'q1', name: '???', land: 'Asya', lon: 95, lat: 21, side: 'b', soon: true, mystery: true }
 ];
+const WORLD_SVG = `<svg viewBox="0 0 100 42.3" preserveAspectRatio="none" class="wbg"><path d="M-14.7 1.5 L-12.3 -0.0 L-4.3 -0.0 L0.7 -0.0 L5.8 -1.1 L13.4 -0.7 L19.3 -1.1 L21.2 2.6 L25.4 3.9 L28.8 7.0 L24.7 9.6 L23.1 10.7 L20.8 13.4 L18.8 14.9 L19.3 17.3 L18.4 15.8 L15.8 15.4 L12.8 16.5 L12.8 18.4 L14.6 20.0 L16.2 18.8 L16.5 20.8 L18.0 23.0 L19.7 23.5 L17.3 22.3 L14.6 21.1 L9.6 19.3 L7.6 18.0 L6.9 15.8 L5.0 14.2 L2.4 11.6 L2.4 8.5 L-0.4 5.7 L-3.9 3.9 L-8.4 4.2 L-10.8 5.0 L-13.4 3.5 Z M19.7 23.5 L22.3 22.3 L26.2 22.8 L30.1 25.0 L33.1 27.6 L36.6 29.2 L35.0 32.3 L34.2 35.3 L31.6 36.9 L29.6 39.9 L27.7 41.5 L25.8 43.0 L24.7 45.4 L23.4 46.9 L22.3 47.6 L21.5 46.1 L21.9 42.3 L22.7 38.4 L23.1 33.8 L20.8 32.3 L18.8 28.9 L19.3 26.9 L20.4 24.3 Z M28.8 3.9 L33.1 3.9 L41.6 -0.0 L42.2 -3.1 L36.6 -5.0 L26.9 -4.6 L23.1 -2.7 L28.8 -0.0 Z M46.1 13.1 L46.5 10.3 L49.2 10.0 L48.1 8.5 L50.8 7.3 L53.0 6.1 L53.5 5.0 L51.9 4.6 L53.9 2.6 L56.1 0.4 L59.6 -0.4 L61.9 -0.0 L65.4 1.1 L66.9 0.8 L73.1 0.4 L73.1 5.7 L69.2 8.8 L68.4 10.7 L65.4 11.2 L63.8 11.2 L61.2 11.2 L60.0 11.6 L58.9 12.7 L58.4 11.6 L57.3 10.7 L56.1 12.3 L56.1 11.2 L54.6 10.0 L53.0 10.0 L51.1 10.3 L50.0 11.9 L48.1 13.1 Z M73.1 0.4 L76.9 -1.1 L80.7 -1.1 L88.5 -2.7 L93.5 -1.5 L100.0 -0.4 L107.7 -0.4 L115.4 -0.0 L119.2 1.5 L118.4 3.1 L112.7 3.9 L110.4 7.3 L111.5 3.9 L104.6 4.2 L101.9 5.7 L104.3 7.7 L103.9 9.2 L100.8 10.3 L99.6 13.4 L98.5 12.7 L96.9 11.6 L96.5 14.9 L95.8 17.3 L92.4 18.8 L91.5 20.8 L92.0 22.8 L90.4 23.5 L89.6 26.5 L88.5 24.6 L87.7 23.5 L87.7 20.8 L86.1 20.4 L85.4 18.4 L83.8 18.4 L80.7 21.1 L79.6 23.9 L78.1 20.4 L77.7 18.8 L75.8 17.7 L73.8 17.3 L71.9 16.9 L71.6 17.7 L72.7 18.4 L69.9 20.4 L67.3 21.9 L66.5 21.1 L65.0 18.4 L63.4 16.2 L63.0 14.7 L63.8 13.1 L61.5 12.7 L60.4 12.3 L60.0 11.6 L61.2 11.2 L63.8 11.2 L65.4 11.2 L68.4 10.7 L69.2 8.8 L73.1 5.7 Z M43.5 18.8 L43.5 21.1 L45.4 23.9 L47.0 25.4 L49.2 25.0 L51.9 24.6 L53.5 25.4 L53.9 27.4 L54.6 29.2 L55.0 31.6 L54.6 33.8 L55.8 37.3 L56.9 39.9 L57.8 40.4 L60.0 39.9 L62.3 37.7 L63.4 35.3 L65.8 32.7 L65.4 30.7 L65.0 28.9 L66.5 26.9 L68.4 25.0 L69.7 22.8 L66.5 22.3 L65.0 20.8 L63.8 18.4 L62.7 15.8 L61.2 14.9 L57.8 14.7 L55.8 14.7 L53.9 12.7 L51.1 12.7 L47.6 13.1 L46.1 15.4 L44.2 16.5 Z M93.9 35.3 L93.9 39.9 L95.4 40.4 L97.6 39.7 L100.8 38.8 L103.0 40.4 L104.3 41.5 L106.5 41.5 L107.7 41.2 L108.8 37.7 L108.8 36.6 L106.2 34.2 L104.6 31.1 L104.3 33.5 L102.3 31.6 L100.0 31.6 L98.0 32.7 L96.9 33.8 Z M47.6 7.7 L50.4 7.3 L50.8 6.6 L49.2 5.4 L48.9 4.5 L47.6 4.6 L48.1 5.7 L48.9 6.1 L48.1 7.0 Z M100.0 14.9 L101.1 13.8 L103.9 13.4 L104.6 11.6 L104.3 9.6 L105.4 10.0 L103.9 12.3 L102.3 13.1 L100.4 13.8 Z M86.6 25.0 L87.7 25.4 L90.7 29.2 L89.2 28.5 Z M92.0 26.1 L95.0 24.3 L95.8 26.5 L94.6 28.5 L92.4 28.1 Z M100.4 27.4 L104.3 28.1 L107.7 30.7 L104.3 30.4 L101.5 28.5 Z M66.9 36.6 L68.1 36.6 L69.2 32.7 L68.8 31.6 L66.9 33.5 Z M116.2 40.4 L118.4 41.5 L116.9 42.7 L114.7 44.5 L115.8 43.8 Z" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.28)" stroke-width=".15" stroke-linejoin="round"/></svg>`;
+/* Moving to another region: a short flight across the world map, the company balloon gliding from one city to the
+   other on a dotted arc (about 3 s). The region has already switched underneath; popups wait until it lands. */
+let TRAVEL = null;
+function showTravel(from, to) {
+  const A = REGIONS.find(r => r.id === from), B = REGIONS.find(r => r.id === to); if (!A || !B) return;
+  const P = R => [(R.lon + 130) / 260 * 100, (70 - R.lat) / 110 * 42.3];
+  const a = P(A), b = P(B), mid = [(a[0] + b[0]) / 2, Math.min(a[1], b[1]) - 9];
+  const el = h('div', 'travel');
+  el.innerHTML = `<div class="tv-t">${REGION_DEF[from].name} <span>→</span> ${REGION_DEF[to].name}</div>
+    <div class="wmap tv-map">${WORLD_SVG}<svg class="tv-arc" viewBox="0 0 100 42.3" preserveAspectRatio="none"><path class="bg" d="M${a[0]} ${a[1]} Q${mid[0]} ${mid[1]} ${b[0]} ${b[1]}"/><path class="fg" d="M${a[0]} ${a[1]} Q${mid[0]} ${mid[1]} ${b[0]} ${b[1]}" pathLength="100"/></svg>
+    ${[[A, a], [B, b]].map(([R, q]) => `<div class="wpin own" style="left:${q[0]}%;top:${q[1] / 42.3 * 100}%"><span class="pd"></span><span class="pl s${R.side}"><b>${R.name}</b></span></div>`).join('')}
+    <div class="tv-b">${balloonIcon(myCol()[0], myCol()[1])}</div></div>
+    <div class="tv-s">Rüzgâr seni ${REGION_DEF[to].name} göğüne taşıyor…</div>`;
+  document.body.appendChild(el);
+  const arc = el.querySelector('.tv-arc .fg'), bal = el.querySelector('.tv-b'), t0 = performance.now(), D = 3000;
+  TRAVEL = el; requestAnimationFrame(() => el.classList.add('on'));
+  const step = now => {
+    const k = Math.min(1, (now - t0) / D), e = k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2, u = 1 - e;
+    const x = u * u * a[0] + 2 * u * e * mid[0] + e * e * b[0], y = u * u * a[1] + 2 * u * e * mid[1] + e * e * b[1];
+    bal.style.left = x + '%'; bal.style.top = (y / 42.3 * 100) + '%'; bal.style.transform = `translate(-50%, -100%) rotate(${Math.sin(now / 300) * 4}deg)`;
+    arc.style.strokeDashoffset = 100 - e * 100;
+    if (k < 1) requestAnimationFrame(step);
+    else setTimeout(() => { el.classList.remove('on'); setTimeout(() => { el.remove(); TRAVEL = null; nextPopup(); }, 450); }, 350);
+  };
+  requestAnimationFrame(step);
+}
 function showWorldMap() {
   const m = $('menu'); m.replaceChildren();
   const c = h('div', 'card world');
   c.appendChild(h('h1', null, 'Dünya haritası'));
   const map = h('div', 'wmap');
-  map.innerHTML = `<svg viewBox="0 0 100 42.3" preserveAspectRatio="none" class="wbg"><path d="M-14.7 1.5 L-12.3 -0.0 L-4.3 -0.0 L0.7 -0.0 L5.8 -1.1 L13.4 -0.7 L19.3 -1.1 L21.2 2.6 L25.4 3.9 L28.8 7.0 L24.7 9.6 L23.1 10.7 L20.8 13.4 L18.8 14.9 L19.3 17.3 L18.4 15.8 L15.8 15.4 L12.8 16.5 L12.8 18.4 L14.6 20.0 L16.2 18.8 L16.5 20.8 L18.0 23.0 L19.7 23.5 L17.3 22.3 L14.6 21.1 L9.6 19.3 L7.6 18.0 L6.9 15.8 L5.0 14.2 L2.4 11.6 L2.4 8.5 L-0.4 5.7 L-3.9 3.9 L-8.4 4.2 L-10.8 5.0 L-13.4 3.5 Z M19.7 23.5 L22.3 22.3 L26.2 22.8 L30.1 25.0 L33.1 27.6 L36.6 29.2 L35.0 32.3 L34.2 35.3 L31.6 36.9 L29.6 39.9 L27.7 41.5 L25.8 43.0 L24.7 45.4 L23.4 46.9 L22.3 47.6 L21.5 46.1 L21.9 42.3 L22.7 38.4 L23.1 33.8 L20.8 32.3 L18.8 28.9 L19.3 26.9 L20.4 24.3 Z M28.8 3.9 L33.1 3.9 L41.6 -0.0 L42.2 -3.1 L36.6 -5.0 L26.9 -4.6 L23.1 -2.7 L28.8 -0.0 Z M46.1 13.1 L46.5 10.3 L49.2 10.0 L48.1 8.5 L50.8 7.3 L53.0 6.1 L53.5 5.0 L51.9 4.6 L53.9 2.6 L56.1 0.4 L59.6 -0.4 L61.9 -0.0 L65.4 1.1 L66.9 0.8 L73.1 0.4 L73.1 5.7 L69.2 8.8 L68.4 10.7 L65.4 11.2 L63.8 11.2 L61.2 11.2 L60.0 11.6 L58.9 12.7 L58.4 11.6 L57.3 10.7 L56.1 12.3 L56.1 11.2 L54.6 10.0 L53.0 10.0 L51.1 10.3 L50.0 11.9 L48.1 13.1 Z M73.1 0.4 L76.9 -1.1 L80.7 -1.1 L88.5 -2.7 L93.5 -1.5 L100.0 -0.4 L107.7 -0.4 L115.4 -0.0 L119.2 1.5 L118.4 3.1 L112.7 3.9 L110.4 7.3 L111.5 3.9 L104.6 4.2 L101.9 5.7 L104.3 7.7 L103.9 9.2 L100.8 10.3 L99.6 13.4 L98.5 12.7 L96.9 11.6 L96.5 14.9 L95.8 17.3 L92.4 18.8 L91.5 20.8 L92.0 22.8 L90.4 23.5 L89.6 26.5 L88.5 24.6 L87.7 23.5 L87.7 20.8 L86.1 20.4 L85.4 18.4 L83.8 18.4 L80.7 21.1 L79.6 23.9 L78.1 20.4 L77.7 18.8 L75.8 17.7 L73.8 17.3 L71.9 16.9 L71.6 17.7 L72.7 18.4 L69.9 20.4 L67.3 21.9 L66.5 21.1 L65.0 18.4 L63.4 16.2 L63.0 14.7 L63.8 13.1 L61.5 12.7 L60.4 12.3 L60.0 11.6 L61.2 11.2 L63.8 11.2 L65.4 11.2 L68.4 10.7 L69.2 8.8 L73.1 5.7 Z M43.5 18.8 L43.5 21.1 L45.4 23.9 L47.0 25.4 L49.2 25.0 L51.9 24.6 L53.5 25.4 L53.9 27.4 L54.6 29.2 L55.0 31.6 L54.6 33.8 L55.8 37.3 L56.9 39.9 L57.8 40.4 L60.0 39.9 L62.3 37.7 L63.4 35.3 L65.8 32.7 L65.4 30.7 L65.0 28.9 L66.5 26.9 L68.4 25.0 L69.7 22.8 L66.5 22.3 L65.0 20.8 L63.8 18.4 L62.7 15.8 L61.2 14.9 L57.8 14.7 L55.8 14.7 L53.9 12.7 L51.1 12.7 L47.6 13.1 L46.1 15.4 L44.2 16.5 Z M93.9 35.3 L93.9 39.9 L95.4 40.4 L97.6 39.7 L100.8 38.8 L103.0 40.4 L104.3 41.5 L106.5 41.5 L107.7 41.2 L108.8 37.7 L108.8 36.6 L106.2 34.2 L104.6 31.1 L104.3 33.5 L102.3 31.6 L100.0 31.6 L98.0 32.7 L96.9 33.8 Z M47.6 7.7 L50.4 7.3 L50.8 6.6 L49.2 5.4 L48.9 4.5 L47.6 4.6 L48.1 5.7 L48.9 6.1 L48.1 7.0 Z M100.0 14.9 L101.1 13.8 L103.9 13.4 L104.6 11.6 L104.3 9.6 L105.4 10.0 L103.9 12.3 L102.3 13.1 L100.4 13.8 Z M86.6 25.0 L87.7 25.4 L90.7 29.2 L89.2 28.5 Z M92.0 26.1 L95.0 24.3 L95.8 26.5 L94.6 28.5 L92.4 28.1 Z M100.4 27.4 L104.3 28.1 L107.7 30.7 L104.3 30.4 L101.5 28.5 Z M66.9 36.6 L68.1 36.6 L69.2 32.7 L68.8 31.6 L66.9 33.5 Z M116.2 40.4 L118.4 41.5 L116.9 42.7 L114.7 44.5 L115.8 43.8 Z" fill="rgba(255,255,255,.16)" stroke="rgba(255,255,255,.28)" stroke-width=".15" stroke-linejoin="round"/></svg>`;
+  map.innerHTML = WORLD_SVG;
   for (const R of REGIONS) {
     const own = ownsRegion(R.id), open = regionOpen(R.id) && !own;
     const pin = h('div', 'wpin' + (own ? ' own' : open ? ' open' : ' soon'));
@@ -2729,7 +2784,7 @@ function drawIntro(dt) {
     if (near > .2) { ctx.save(); ctx.filter = `blur(${(R * .35).toFixed(1)}px)`; ctx.fillStyle = `rgba(20,8,30,${(.38 * Math.min(1, (near - .2) * 2)).toFixed(3)})`; ctx.beginPath(); ctx.ellipse(bx + R * .5, by - R * 1.3, R * .95, R * 1.15, 0, 0, 7); ctx.fill(); ctx.restore(); }
     ctx.fillStyle = 'rgba(40,20,30,.3)'; ctx.beginPath(); ctx.ellipse(W / 2, groundY + R * .12, R * .6 / (1 + INTRO.y / 120), R * .12, 0, 0, 7); ctx.fill();
     if (INTRO.hold) { /* the burner lights the envelope and the grass */ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const gl = ctx.createRadialGradient(bx, by - R * 1.2, 0, bx, by - R * 1.2, R * 2.4); gl.addColorStop(0, 'rgba(255,170,70,.35)'); gl.addColorStop(1, 'rgba(255,170,70,0)'); ctx.fillStyle = gl; ctx.fillRect(bx - R * 2.4, by - R * 3.6, R * 4.8, R * 4.8); ctx.restore(); }
-    balloon(bx, by, R, myCol()[0], myCol()[1], INTRO.hold);
+    balloon3d(bx, by, R, myCol()[0], myCol()[1], INTRO.hold);
   }
   if (mode === 'pick') {
     PICK.forEach((p, i) => { pickScale[i] = lerp(pickScale[i], i === pickI ? 1.5 : p.s, Math.min(1, dt * 8)); });
@@ -2991,6 +3046,20 @@ function confirmRed() {
   row.append(no, yes); c.appendChild(row);
   m.appendChild(c); m.hidden = false;
 }
+/* Before collecting passengers: balloons you meant to fly that have no pilot stay on the ground. Say so, with the way to the crew page. */
+function pilotCheck(go) {
+  const left = S.balloons.filter(b => b.fly !== false && canFly(b) === 'nopilot');
+  if (!left.length) return go();
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card');
+  c.appendChild(h('h1', null, left.length === 1 ? 'Bir balon yerde kalacak' : `Yerde kalacak balon: ${left.length}`));
+  c.appendChild(h('p', 'lead', `${left.map(b => esc(b.name)).join(', ')} için pilot yok. Bugün yalnızca pilotu olan balonlar kalkar, yolcuları da onlar alır.`));
+  const row = h('div', 'btns');
+  const crew = h('button', 'ghost', 'Ekip sayfası'); crew.onclick = () => { m.hidden = true; openPage('crew'); };
+  const fly = h('button', 'big', 'Yine de uç'); fly.onclick = () => { m.hidden = true; go(); };
+  row.append(crew, fly); c.appendChild(row);
+  m.appendChild(c); m.hidden = false;
+}
 /* In the first 20 days Hezarfen asks once more before a red-flag take-off. */
 function redSure() {
   const m = $('menu'); m.replaceChildren();
@@ -3237,32 +3306,57 @@ function showAlbum() {
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
 }
-function showMenu() {
+/* The menu behind the top-right button: a settings screen in groups, like a phone's own settings. The save code
+   hides behind its own rows: one shows your code to copy, the other takes a pasted code and loads it. */
+let hapticsOn = (() => { try { return localStorage.getItem('safak-haptics') !== 'off'; } catch (e) { return true; } })();
+let reminderOn = (() => { try { return localStorage.getItem('safak-reminder') === 'on'; } catch (e) { return false; } })();
+function showMenu(open) {
   const m = $('menu'); m.replaceChildren();
-  const c = h('div', 'card');
-  c.appendChild(h('h1', null, 'Menü'));
-  { const n = ACHS.filter(a => S.ach && S.ach[a[0]]).length, ab = h('button', 'opt', `<b>🏆 Başarımlar</b><span>Kartpostal albümü: ${n}/${ACHS.length}</span>`); ab.onclick = showAlbum; c.appendChild(ab); }
   if (mode !== 'flight') save();
-  c.appendChild(h('p', 'hint', savedOk ? `Oyunun bu tarayıcıya kaydedildi: gün ${S.day}, kasa ${eur(S.cash)}. Her sabah ve yaptığın her değişiklikte otomatik kaydedilir.` : 'Bu tarayıcı kayda izin vermiyor. İlerlemeni kaybetmemek için aşağıdaki kodu kopyala.'));
-  c.appendChild(h('h2', null, 'Kayıt kodu'));
-  c.appendChild(h('p', 'hint', 'Başka bir cihazda devam etmek için kodu kopyala, orada bu kutuya yapıştırıp Yükle\'ye bas.'));
-  const ta = document.createElement('textarea'); ta.rows = 3; ta.id = 'saveCode';
-  try { ta.value = btoa(unescape(encodeURIComponent(JSON.stringify(S)))); } catch (e) {}
-  const msg = h('p', 'hint');
-  const row = h('div', 'btns');
-  row.append(pbtn('Kopyala', () => { navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = 'Kopyalandı.'; }).catch(() => { ta.focus(); ta.select(); msg.textContent = 'Kod seçildi, kopyalamak için Ctrl+C ya da Kopyala.'; }); }, false, true),
-    pbtn('Yükle', () => {
-      try { const s = JSON.parse(decodeURIComponent(escape(atob(ta.value.trim())))); if (!s || !s.balloons || !s.rivals) throw 0; S = migrate(s); m.hidden = true; tab = 'plan'; startDay(); }
-      catch (e) { msg.textContent = 'Bu kod okunamadı. Kodun tamamını yapıştırdığından emin ol.'; }
-    }, false, true));
-  c.append(ta, row, msg);
-  const nb = pbtn('Yeni oyun başlat', () => {
-    if (!nb.dataset.arm) { nb.dataset.arm = '1'; nb.textContent = 'Emin misin? Tekrar dokun'; return; }
-    S = newState(); setupName = ''; m.hidden = true; startIntro();
-  }, false, true);
-  const snd = pbtn(soundOn ? 'Ses: açık' : 'Ses: kapalı', () => { setSound(!soundOn); snd.textContent = soundOn ? 'Ses: açık' : 'Ses: kapalı'; }, false, true);
+  const c = h('div', 'card settings');
+  c.appendChild(h('h1', null, 'Ayarlar'));
+  c.appendChild(h('p', 'hint', `${esc(S.company || '')} · Gün ${S.day} · ${RD().name}`));
+  const group = (title, rows) => { c.appendChild(h('div', 'sg-t', title)); const g = h('div', 'sgroup'); rows.forEach(r => g.appendChild(r)); c.appendChild(g); };
+  const row = (icon, label, right, fn, cls) => { const r = h(fn ? 'button' : 'div', 'srow' + (cls ? ' ' + cls : ''), `<i>${icon}</i><b>${label}</b><span>${right || ''}</span>`); if (fn) r.onclick = fn; return r; };
+  const toggle = (icon, label, on, set) => { const r = row(icon, label, `<em class="tg${on ? ' on' : ''}"></em>`, () => { set(); showMenu(open); }); r.setAttribute('role', 'switch'); r.setAttribute('aria-checked', on); return r; };
+  const n = ACHS.filter(a => S.ach && S.ach[a[0]]).length;
+  group('Oyun', [
+    row('🏆', 'Başarımlar', `${n}/${ACHS.length} ›`, showAlbum),
+    row('🎮', 'Game Center', '›', () => {})
+  ]);
+  group('Ses ve titreşim', [
+    toggle('🔊', 'Ses', soundOn, () => setSound(!soundOn)),
+    toggle('📳', 'Titreşim', hapticsOn, () => { hapticsOn = !hapticsOn; try { localStorage.setItem('safak-haptics', hapticsOn ? 'on' : 'off'); } catch (e) {} })
+  ]);
+  group('Bildirim', [
+    toggle('⏰', 'Sabah hatırlatıcısı', reminderOn, () => { reminderOn = !reminderOn; try { localStorage.setItem('safak-reminder', reminderOn ? 'on' : 'off'); } catch (e) {} })
+  ]);
+  const code = (() => { try { return btoa(unescape(encodeURIComponent(JSON.stringify(S)))); } catch (e) { return ''; } })();
+  const rows = [row('💾', savedOk ? 'Otomatik kaydedildi' : 'Kayıt kapalı', savedOk ? `Gün ${S.day}` : '', null, 'info'),
+    row('📤', 'Kayıt kodunu kopyala', open === 'copy' ? '⌄' : '›', () => showMenu(open === 'copy' ? null : 'copy')),
+    row('📥', 'Kayıt kodu yükle', open === 'load' ? '⌄' : '›', () => showMenu(open === 'load' ? null : 'load'))];
+  group('Kayıt', rows);
+  if (open) {
+    const box = h('div', 'sbox');
+    box.appendChild(h('p', 'hint', open === 'copy' ? 'Başka bir cihazda devam etmek için bu kodu kopyala, orada "Kayıt kodu yükle"ye yapıştır.' : 'Başka cihazdan kopyaladığın kodu buraya yapıştır ve Yükle\'ye bas. Buradaki oyunun yerini alır.'));
+    const ta = document.createElement('textarea'); ta.rows = 3; ta.id = 'saveCode'; ta.value = open === 'copy' ? code : ''; if (open === 'copy') ta.readOnly = true; else ta.placeholder = 'Kodu buraya yapıştır';
+    const msg = h('p', 'hint'), btns = h('div', 'btns');
+    if (open === 'copy') btns.append(pbtn('Kopyala', () => { navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = 'Kopyalandı.'; }).catch(() => { ta.focus(); ta.select(); msg.textContent = 'Kod seçildi, kopyalamak için Ctrl+C.'; }); }));
+    else btns.append(pbtn('Yapıştır', () => { navigator.clipboard.readText().then(t => { ta.value = t; }).catch(() => { ta.focus(); msg.textContent = 'Kutuya uzun basıp Yapıştır de.'; }); }, false, true),
+      pbtn('Yükle', () => {
+        try { const s = JSON.parse(decodeURIComponent(escape(atob(ta.value.trim())))); if (!s || !s.balloons || !s.rivals) throw 0; S = migrate(s); m.hidden = true; tab = 'plan'; startDay(); }
+        catch (e) { msg.textContent = 'Bu kod okunamadı. Kodun tamamını yapıştırdığından emin ol.'; }
+      }));
+    box.append(ta, btns, msg);
+    c.appendChild(box);
+  }
+  group('Satın alımlar', [row('🛍️', 'Satın alımları geri yükle', '›', () => {})]);
+  group('Hakkında', [row('🔒', 'Gizlilik politikası', '›', () => {}), row('✉️', 'Destek', '›', () => {}), row('ℹ️', 'Sürüm', '1.0', null, 'info')]);
+  const nb = h('button', 'srow danger', '<i>🗑️</i><b>Yeni oyun başlat</b><span></span>');
+  nb.onclick = () => { if (!nb.dataset.arm) { nb.dataset.arm = '1'; nb.querySelector('b').textContent = 'Emin misin? Bütün ilerleme silinir. Tekrar dokun'; return; } S = newState(); setupName = ''; m.hidden = true; startIntro(); };
+  const g = h('div', 'sgroup'); g.appendChild(nb); c.appendChild(g);
   const close = h('button', 'big', 'Devam et'); close.onclick = () => { m.hidden = true; };
-  c.append(snd, nb, close); m.appendChild(c); m.hidden = false;
+  c.appendChild(close); m.appendChild(c); m.hidden = false;
 }
 
 /* ---------- flight ---------- */
@@ -3511,6 +3605,95 @@ function envShape(x, cy, R, k) {
   else { ctx.arc(x, cy, R * 1.02, Math.PI * .8, Math.PI * .2, false); ctx.quadraticCurveTo(x + R * .7, cy + R * 1.2, x + R * .22, cy + R * 1.55); ctx.lineTo(x - R * .22, cy + R * 1.55); ctx.quadraticCurveTo(x - R * .7, cy + R * 1.2, x - R * Math.cos(Math.PI * .2), cy + R * Math.sin(Math.PI * .2)); }
   ctx.closePath();
 }
+/* The company balloon in full volume, like the app icon: thirteen gores in the company colors, key light, core
+   shadow and the burner's glow. (x, y) is the bottom of the basket like `balloon()`; same overall height. */
+function balloon3d(x, y, R, c1, c2, burn, alpha, ad) {
+  const r = R * .86, cols = [];
+  for (let i = 0; i < 13; i++) cols.push(i % 4 === 2 ? c2 : i === 0 || i === 12 ? mix(c1, '#000000', .1) : c1);
+  const sp = ad && SPONSORS.find(q => q.id === ad);
+  balloon3dCore(x, y - r * 2.23, r, cols, { gores: 13, light: -1, flame: burn, flameScale: .5, alpha, band: sp && sp.col, text: sp && sp.txt, textColor: sp && sp.fg });
+}
+function balloon3dCore(x, y, R, cols, o = {}) {
+  const nG = o.gores || 12, light = o.light ?? -1, tilt = o.tilt || 0;
+  ctx.save(); ctx.translate(x, y); ctx.rotate(tilt); ctx.globalAlpha = o.alpha ?? 1;
+  const topY = -R * 1.05, eq = 0, mouth = R * 1.42, mouthW = R * .26;
+  const half = yy => {
+    if (yy <= eq) { const t = (yy - topY) / (eq - topY); return R * Math.sin(Math.PI / 2 * Math.pow(clamp(t, 0, 1), .62)); }
+    const t = (yy - eq) / (mouth - eq); return lerp(R, mouthW, Math.pow(t, 1.25)) * (1 - .08 * Math.sin(Math.PI * t));
+  };
+  const env = new Path2D(); const steps = 40;
+  for (let i = 0; i <= steps; i++) { const yy = lerp(topY, mouth, i / steps); const xx = half(yy); i ? env.lineTo(xx, yy) : env.moveTo(xx, yy); }
+  for (let i = steps; i >= 0; i--) { const yy = lerp(topY, mouth, i / steps); env.lineTo(-half(yy), yy); }
+  env.closePath();
+  ctx.save(); ctx.clip(env);
+  /* gores between meridians */
+  for (let k = 0; k < nG; k++) {
+    const a0 = -Math.PI / 2 + Math.PI * k / nG, a1 = -Math.PI / 2 + Math.PI * (k + 1) / nG;
+    const p = new Path2D();
+    for (let i = 0; i <= steps; i++) { const yy = lerp(topY - 4, mouth + 4, i / steps), xx = half(yy) * Math.sin(a0) * 1.002; i ? p.lineTo(xx, yy) : p.moveTo(xx, yy); }
+    for (let i = steps; i >= 0; i--) { const yy = lerp(topY - 4, mouth + 4, i / steps); p.lineTo(half(yy) * Math.sin(a1) * 1.002, yy); }
+    p.closePath(); ctx.fillStyle = cols[k % cols.length]; ctx.fill(p);
+  }
+  if (o.band) { ctx.fillStyle = o.band; ctx.fillRect(-R, R * .38, R * 2, R * .2); ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.fillRect(-R, R * .38, R * 2, R * .025); ctx.fillRect(-R, R * .555, R * 2, R * .025); }
+  if (o.text) { ctx.fillStyle = o.textColor || '#fff'; ctx.font = `800 ${R * .2}px "Barlow Condensed", sans-serif`; ctx.textAlign = 'center'; ctx.fillText(o.text, 0, R * .53); }
+  /* volume: key light, core shadow, bounce, and a glow from the flame */
+  const kl = ctx.createRadialGradient(light * R * .45, -R * .45, R * .05, light * R * .3, -R * .3, R * 1.3);
+  kl.addColorStop(0, 'rgba(255,248,230,.55)'); kl.addColorStop(.35, 'rgba(255,235,210,.12)'); kl.addColorStop(1, 'rgba(255,235,210,0)');
+  ctx.fillStyle = kl; ctx.fillRect(-R * 1.2, topY, R * 2.4, mouth - topY);
+  const sh = ctx.createLinearGradient(light * R, 0, -light * R, 0);
+  sh.addColorStop(0, 'rgba(20,6,30,0)'); sh.addColorStop(.55, 'rgba(20,6,30,.12)'); sh.addColorStop(.85, 'rgba(20,6,30,.48)'); sh.addColorStop(1, 'rgba(20,6,30,.6)');
+  ctx.fillStyle = sh; ctx.fillRect(-R * 1.2, topY, R * 2.4, mouth - topY);
+  const bot = ctx.createLinearGradient(0, R * .2, 0, mouth); bot.addColorStop(0, 'rgba(20,6,30,0)'); bot.addColorStop(1, 'rgba(20,6,30,.45)');
+  ctx.fillStyle = bot; ctx.fillRect(-R * 1.2, R * .2, R * 2.4, mouth);
+  if (o.flame) {
+    ctx.globalCompositeOperation = 'lighter';
+    const fg = ctx.createRadialGradient(0, mouth, 0, 0, mouth, R * 1.3); fg.addColorStop(0, 'rgba(255,170,60,.45)'); fg.addColorStop(.4, 'rgba(255,120,40,.12)'); fg.addColorStop(1, 'rgba(255,120,40,0)');
+    ctx.fillStyle = fg; ctx.fillRect(-R * 1.3, -R * .2, R * 2.6, R * 2);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  /* gore seams */
+  ctx.strokeStyle = 'rgba(40,15,30,.22)'; ctx.lineWidth = Math.max(1, R * .006);
+  for (let k = 1; k < nG; k++) { const a = -Math.PI / 2 + Math.PI * k / nG; ctx.beginPath(); for (let i = 0; i <= steps; i++) { const yy = lerp(topY, mouth, i / steps), xx = half(yy) * Math.sin(a); i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); }
+  ctx.restore();
+  /* rim light along the lit edge */
+  ctx.save(); ctx.strokeStyle = 'rgba(255,225,180,.45)'; ctx.lineWidth = Math.max(1.5, R * .018); ctx.clip(env);
+  ctx.beginPath(); for (let i = 0; i <= steps; i++) { const yy = lerp(topY, mouth * .7, i / steps), xx = half(yy) * light; i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); ctx.restore();
+  if (o.alpha !== undefined && o.alpha < .6 && !o.detail) { ctx.restore(); return; }
+  /* skirt, ropes, burner, basket */
+  const by = mouth + R * .55, bw = R * .34, bh = R * .26;
+  ctx.fillStyle = mix(cols[0], '#1a0a14', .45); ctx.beginPath(); ctx.moveTo(-mouthW, mouth - 2); ctx.lineTo(mouthW, mouth - 2); ctx.lineTo(mouthW * .8, mouth + R * .12); ctx.lineTo(-mouthW * .8, mouth + R * .12); ctx.fill();
+  ctx.strokeStyle = 'rgba(50,30,25,.9)'; ctx.lineWidth = Math.max(1, R * .008);
+  for (const s of [-1, -.35, .35, 1]) { ctx.beginPath(); ctx.moveTo(s * mouthW * .8, mouth + R * .1); ctx.lineTo(s * bw * .45, by); ctx.stroke(); }
+  ctx.fillStyle = '#2a2a30'; ctx.fillRect(-R * .09, by - R * .2, R * .18, R * .08);
+  if (o.flame) flame3d(0, by - R * .2, R * (o.flameScale || .55));
+  const bg = ctx.createLinearGradient(-bw / 2, 0, bw / 2, 0); bg.addColorStop(0, '#4a2c18'); bg.addColorStop(.5, '#8a5a32'); bg.addColorStop(1, '#3a2010');
+  ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(-bw / 2, by); ctx.lineTo(bw / 2, by); ctx.lineTo(bw * .44, by + bh); ctx.lineTo(-bw * .44, by + bh); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(30,15,8,.35)'; ctx.lineWidth = Math.max(1, R * .005);
+  for (let i = 1; i < 6; i++) { ctx.beginPath(); ctx.moveTo(-bw / 2, by + bh * i / 6); ctx.lineTo(bw / 2, by + bh * i / 6); ctx.stroke(); }
+  ctx.fillStyle = '#2a160c'; ctx.fillRect(-bw / 2 - 2, by - R * .02, bw + 4, R * .035);
+  if (o.people) { ctx.fillStyle = '#1d1418'; for (let i = 0; i < o.people; i++) { const px = -bw * .35 + i * bw * .7 / Math.max(1, o.people - 1); ctx.beginPath(); ctx.arc(px, by - R * .05, R * .028, 0, 7); ctx.fill(); ctx.fillRect(px - R * .025, by - R * .03, R * .05, R * .05); } }
+  ctx.restore();
+}
+function flame3d(x, y, s) {
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const glow = ctx.createRadialGradient(x, y - s * .6, 0, x, y - s * .6, s * 2.2); glow.addColorStop(0, 'rgba(255,190,80,.7)'); glow.addColorStop(.35, 'rgba(255,120,40,.22)'); glow.addColorStop(1, 'rgba(255,90,30,0)');
+  ctx.fillStyle = glow; ctx.fillRect(x - s * 2.2, y - s * 2.8, s * 4.4, s * 4.4);
+  /* soft, flickering tongues instead of hard cones */
+  const layers = [['#ff5a1f', 1, 14], ['#ffa531', .74, 9], ['#ffe08a', .5, 6], ['#fffbe8', .26, 3]];
+  ctx.globalCompositeOperation = 'source-over';
+  for (const [c, k, blur] of layers) {
+    const w = s * .3 * k, h = s * 1.25 * k;
+    ctx.filter = `blur(${Math.max(1, s * blur / 120)}px)`;
+    ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(x - w, y);
+    ctx.bezierCurveTo(x - w * 1.25, y - h * .35, x - w * .55, y - h * .55, x - w * .35, y - h * .78);
+    ctx.quadraticCurveTo(x - w * .15, y - h * .62, x - w * .05, y - h);
+    ctx.quadraticCurveTo(x + w * .2, y - h * .7, x + w * .4, y - h * .86);
+    ctx.bezierCurveTo(x + w * .55, y - h * .55, x + w * 1.25, y - h * .35, x + w, y);
+    ctx.quadraticCurveTo(x, y + w * .5, x - w, y); ctx.closePath(); ctx.fill();
+  }
+  ctx.filter = 'none';
+  ctx.restore();
+}
 function balloon(x, y, R, c1, c2, burn, alpha, ad, design) {
   ctx.save(); ctx.globalAlpha = alpha ?? 1;
   const top = y - R * 2.55, cy = top + R;
@@ -3682,7 +3865,8 @@ function draw(dt) {
       ctx.beginPath(); ctx.moveTo(ax1 + dir * 2, y); ctx.lineTo(ax1 - dir * 5, y - 5); ctx.lineTo(ax1 - dir * 5, y + 5); ctx.fill();
       ctx.fillStyle = '#2b2350'; ctx.fillText(`${Math.round(Math.abs(v) * 3.6)} km/s`, 70, y + 5);
     }
-    balloon(sx(f.x), sy(f.alt), PR * .75 * ((bal(S.flag) || {}).size === 'XL' ? 1.3 : 1), myc[0], myc[1], f.burning && f.fuel > 0, 1, (bal(S.flag) || {}).ad, designOf(bal(S.flag)));
+    { const fb = bal(S.flag) || {}, d = designOf(bal(S.flag)), R = PR * .75 * (fb.size === 'XL' ? 1.3 : 1);
+      if (d) balloon(sx(f.x), sy(f.alt), R, myc[0], myc[1], f.burning && f.fuel > 0, 1, fb.ad, d); else balloon3d(sx(f.x), sy(f.alt), R, myc[0], myc[1], f.burning && f.fuel > 0, 1, fb.ad); }
     if (f.celebAt) {
       const R0 = PR * .75, bx = sx(f.x), by = sy(f.alt), ct = T - f.celebAt;
       if (ct < 14) couple(bx, by - R0 * .32, R0, ct);
@@ -3906,7 +4090,9 @@ function switchRegion(id) {
   S.weather = null; S.demand = null; S.plan = null; S.rivals.forEach(r => { r.fly = null; });
   S.candidates = [];
   applyRegionTheme();
+  const from = Object.keys(S.regions).find(k => S.regions[k] === cur);
   $('menu').hidden = true; tab = 'plan'; startDay();
+  showTravel(from, id);
 }
 function enterRegion(id) {
   const fee = entryFee(id);
@@ -6020,7 +6206,7 @@ $('hqSClose').onclick = () => { HQ.sheet = null; hqRender(); };
 $('hqSheet').addEventListener('click', e => { if (e.target.id === 'hqSheet') { HQ.sheet = null; hqRender(); } });
 
 /* ---------- boot ---------- */
-$('go').onclick = () => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); };
+$('go').onclick = () => pilotCheck(() => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); });
 $('skip').onclick = () => launch(true);
 let psBase = null;
 function priceSheet(open) { $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; psBase = null; if (open) { renderAct(); psBase = estIncome(); renderAct(); } else { save(); refresh(); } }
@@ -6041,7 +6227,7 @@ $('grab').onclick = () => dockOpen(!$('dock').classList.contains('open'));
 })();
 $('psOk').onclick = $('psClose').onclick = () => priceSheet(false);
 $('psheet').addEventListener('click', e => { if (e.target.id === 'psheet') priceSheet(false); });
-$('bMenu').onclick = showMenu;
+$('bMenu').onclick = () => showMenu();
 $('pClose').onclick = closePage;
 $('abort').onclick = confirmAbort;
 $('hRep').onclick = () => { if (mode === 'office' && $('report').hidden) showRepChart(); };

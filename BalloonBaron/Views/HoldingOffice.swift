@@ -14,25 +14,32 @@ struct HoldingOfficeView: View {
     var body: some View {
         GeometryReader { geo in
             // One layout for the drawing and the labels, in the safe area's coordinates; the floor runs on under
-            // the home indicator.
-            let ins = geo.safeAreaInsets
-            let L = Layout(size: CGSize(width: geo.size.width, height: geo.size.height + ins.bottom))
+            // the home indicator. On a short screen the floor is taller than the screen and scrolls, so desks and
+            // their labels never overlap.
+            let screen = geo.size.height + geo.safeAreaInsets.bottom
+            let L = Layout(size: CGSize(width: geo.size.width, height: screen))
             ZStack(alignment: .topLeading) {
                 Color(hex: "#f3e2c6").ignoresSafeArea()
                 if let s = store.state {
-                    TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
-                        Canvas { ctx, _ in
-                            var c = ctx
-                            c.translateBy(x: 0, y: ins.top)
-                            OfficePainter.draw(&c, L, s, t: tl.date.timeIntervalSince(start))
+                    ScrollView(.vertical, showsIndicators: false) {
+                        ZStack(alignment: .topLeading) {
+                            TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
+                                Canvas { ctx, _ in
+                                    var c = ctx
+                                    OfficePainter.draw(&c, L, s, t: tl.date.timeIntervalSince(start))
+                                }
+                            }
+                            .frame(width: L.w, height: L.h)
+                            .accessibilityHidden(true)
+                            ForEach(Array(HoldingUnit.allCases.enumerated()), id: \.element) { i, u in
+                                spot(u, s, at: L.spot(u), delay: Double(i) * 0.05 + 0.2)
+                            }
                         }
+                        .frame(width: L.w, height: L.h, alignment: .topLeading)
                     }
-                    .ignoresSafeArea()
-                    .accessibilityHidden(true)
+                    .scrollDisabled(L.h <= screen + 1)
+                    .ignoresSafeArea(edges: .bottom)
                     header(s)
-                    ForEach(Array(HoldingUnit.allCases.enumerated()), id: \.element) { i, u in
-                        spot(u, s, at: L.spot(u), delay: Double(i) * 0.05 + 0.2)
-                    }
                 }
             }
         }
@@ -133,14 +140,21 @@ struct HoldingOfficeView: View {
     }
 
     /// Where things stand on screen (also where the labels go).
+    /// Three rows of desks (v105: record attempts and shaped balloons joined). A desk with its label is about 175 pt
+    /// tall and the first label needs 140 pt under the wall, so the floor is never shorter than 540 pt; `h` is the
+    /// whole drawing, taller than the screen on small phones.
     struct Layout {
         let w: CGFloat, h: CGFloat, top: CGFloat = 86
-        // Three rows of desks (v105: record attempts and shaped balloons joined).
-        var wall: CGFloat { top + (h - top) * 0.36 }
-        var rowA: CGFloat { wall + (h - wall) * 0.24 }
-        var rowB: CGFloat { wall + (h - wall) * 0.56 }
-        var rowC: CGFloat { wall + (h - wall) * 0.88 }
-        init(size: CGSize) { w = size.width; h = size.height }
+        let wall: CGFloat, rowA: CGFloat, rowB: CGFloat, rowC: CGFloat
+        init(size: CGSize) {
+            w = size.width
+            wall = top + max(230, (size.height - top) * 0.36)
+            let floor = max(size.height - wall, 540)
+            h = wall + floor
+            rowA = wall + floor * 0.26
+            rowB = wall + floor * 0.585
+            rowC = wall + floor * 0.91
+        }
 
         func spot(_ u: HoldingUnit) -> CGPoint {
             switch u {
