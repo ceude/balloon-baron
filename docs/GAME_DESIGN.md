@@ -214,7 +214,7 @@ Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen 
 ## Mağaza (uygulama içi satın alma)
 Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Özel desenler** 0,99 €: Varak altın 92, İznik çinisi 90, Takımyıldız 92, Kapadokya kilimi 90 (desen tabanı).
-- **Balon şekilleri** 1,99 €: Kalp, Yıldız, Hezarfen (sarıklı, bıyıklı). Tasarıma eklenir: yaratıcılık +8 ve her uçuşta ek popülerlik +0,0015.
+- **Balon şekilleri** 1,99 €: Kalp, Yıldız, Kurukafa (oyuk gözler, kalp burun, sırıtan dişler; v99'da Hezarfen balonunun yerine geldi, onu alanlara kurukafa verilir). Tasarıma eklenir: yaratıcılık +8 ve her uçuşta ek popülerlik +0,0015.
 - **Kasaba süsleri** 0,99 €: meydan çeşmesi, Hezarfen heykeli, şirket bayrakları. Fener dizileri bedava: 11. günde Hezarfen çarşıyı tanıtırken hediye eder. Her biri kasabada görünür ve talebi %1 artırır. Gece her birinin kendi aydınlatması var (çeşmede su altı ışığı, heykelde spotlar, bayraklarda yukarı ışık, fener dizilerinde yollar boyunca ampul dizileri ve 8 lamba).
 - Hepsi kasabadaki **Çarşı** binasından alınır (pazarla birlikte açılır). Desen ya da şekil şirket renklerinde hazır bir tasarımla gelir ve amiral balonuna hemen giydirilir; atölye gerekmez; bu tasarımlar her balona bedava giydirilir (normal tasarımda boya €1.000) (atölye yalnızca kendi tasarımını yapmak için). Atölyede bu desen ve şekiller kilitli görünür, oradan da alınabilir.
 
@@ -262,6 +262,9 @@ Yaşlı, karizmatik mentor. Daktilo efektli konuşma balonuyla konuşur. Konular
 - beklenti (4,5★), tekel, eskime
 - hedefler, holding, Albuquerque, Fiesta, bölge sorunları, ofisler, ünlü anlaşması
 - dinamik haberler (kış, yeni rakip)
+- **övgü** (v99): Kapadokya'daki ilk 40 günde doğru hamleleri över, her biri bir kez, en fazla iki günde bir: kırmızı bayrakta yerde kalmak, ilk kusursuz iniş, ilk özel istek, üst üste 3 iyi iniş, ikinci balon, ilk pilot, ilk otel anlaşması, ilk bina yükseltmesi, 5 gün üst üste kâr, 4,3★. Düğmesi "Sağ ol usta".
+
+**Acemiyi koruma** (v99): ilk 3 günde kırmızı bayrak çıkmaz (çıkarsa sarı olur). İlk 20 günde kırmızı bayrakta "Yine de uç"tan sonra Hezarfen bir kez daha sorar ("Uçarsan batabilirsin"); öne çıkan düğme "Haklısın, pas geç".
 
 ## Görsel ve ses
 - **Renkler:** mürekkep #2b2350, mercan #ff5e3a, güneş #ffc23d, cam rgba(30,24,64,.84).
