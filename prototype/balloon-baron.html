@@ -276,7 +276,7 @@ body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 .fc span{font-size:12px;color:var(--ink2)}.fc i{width:22px;height:14px;border-radius:3px}.fc b{font-family:var(--cond);font-size:17px;color:var(--ink)}
 .tag.trait{font-weight:800}
 .trd{font-style:normal;font-size:12px;color:var(--ink2)}
-.card.post{align-items:center;text-align:center}.pwrap{transform:rotate(-2deg);filter:drop-shadow(0 8px 14px rgba(43,35,80,.25))}
+.card.post{align-items:center;text-align:center}.shimg{width:100%;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:#eee8f6;box-shadow:0 8px 20px rgba(43,35,80,.2)}.shimg img{width:100%;height:100%;display:block}.pwrap{transform:rotate(-2deg);filter:drop-shadow(0 8px 14px rgba(43,35,80,.25))}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pitem{padding:0}.pitem svg{width:100%;height:auto}.pcd.lock{filter:grayscale(1) opacity(.45)}
 .card.rescue{border-top:6px solid var(--red)}
 .regrow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
@@ -2936,6 +2936,73 @@ function postcard(k, big) {
     <text x="8" y="82" font-family="Barlow Condensed,sans-serif" font-weight="800" font-size="10" fill="#2b2350">${A[1]}</text>
     <text x="8" y="91" font-family="Barlow,sans-serif" font-size="6.6" fill="#6c6488">${got ? A[2] : 'Kilitli: ' + A[2]}</text></svg>`;
 }
+/* ---------- sharing ---------- */
+/* A postcard to post: 1080×1350 (4:5, Instagram's tallest), the card tilted on its own sky, company and day above,
+   the game's name below. The scene is the postcard's own SVG; every word is set on the canvas in the game's fonts. */
+function shareCard(k) {
+  const A = ACHS.find(a => a[0] === k), day = (S.ach && S.ach[k]) || S.day, c = myCol(), [sky, art] = pcScene(k, c), sc = PC_SKY[sky];
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="6 6 138 66" width="828" height="396"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${sc[0]}"/><stop offset=".6" stop-color="${sc[1]}"/><stop offset="1" stop-color="${sc[2]}"/></linearGradient></defs><rect x="6" y="6" width="138" height="66" fill="url(#sg)"/>${art}</svg>`;
+  return new Promise(res => {
+    const img = new Image();
+    img.onload = () => {
+      const W = 1080, H = 1350, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
+      const x = cv.getContext('2d');
+      /* the sky of the postcard's own hour, fading into warm paper */
+      const dark = sky === 'night' || sky === 'dusk', ink = '#2b2350', light = '#fff6e6', top = dark ? light : ink;
+      /* a night card stays a night card all the way down; day cards fade into paper */
+      const g = x.createLinearGradient(0, 0, 0, H); g.addColorStop(0, sc[0]); g.addColorStop(.5, sc[1]); g.addColorStop(1, dark ? sc[2] : '#fff1dc'); x.fillStyle = g; x.fillRect(0, 0, W, H);
+      const glow = x.createRadialGradient(W * .78, 250, 0, W * .78, 250, 420); glow.addColorStop(0, dark ? 'rgba(255,240,200,.16)' : 'rgba(255,240,200,.45)'); glow.addColorStop(1, 'rgba(255,240,200,0)'); x.fillStyle = glow; x.fillRect(0, 0, W, H);
+      /* far balloons drifting behind, in the company's colours and the valley's */
+      [[150, 330, 34, c[0]], [930, 520, 26, PC_COLS[2]], [110, 1020, 22, PC_COLS[1]], [990, 1110, 30, c[0]]].forEach(([bx, by, r, col]) => {
+        x.globalAlpha = .28; x.fillStyle = col; x.beginPath(); x.arc(bx, by, r, Math.PI * .85, Math.PI * .15); x.quadraticCurveTo(bx + r * .75, by + r * 1.15, bx + r * .22, by + r * 1.55); x.lineTo(bx - r * .22, by + r * 1.55); x.quadraticCurveTo(bx - r * .75, by + r * 1.15, bx - r * .85, by + r * .5); x.fill();
+        x.fillRect(bx - r * .25, by + r * 1.75, r * .5, r * .32); x.globalAlpha = 1;
+      });
+      x.textAlign = 'center'; x.fillStyle = top;
+      x.font = '600 30px Barlow, sans-serif'; x.globalAlpha = .8; x.fillText(`KARTPOSTAL  ·  GÜN ${day}`.split('').join(' '), W / 2, 128); x.globalAlpha = 1;
+      x.font = '800 86px "Barlow Condensed", sans-serif'; x.fillText(S.company || 'Balon Şirketi', W / 2, 212, W - 120);
+      /* the card */
+      x.save(); x.translate(W / 2, 668); x.rotate(-.045);
+      x.shadowColor = 'rgba(43,35,80,.35)'; x.shadowBlur = 50; x.shadowOffsetY = 24;
+      x.fillStyle = '#fffaf3'; x.beginPath(); x.roundRect(-450, -288, 900, 576, 34); x.fill();
+      x.shadowColor = 'transparent'; x.strokeStyle = '#e2dcef'; x.lineWidth = 3; x.stroke();
+      x.save(); x.beginPath(); x.roundRect(-414, -252, 828, 396, 18); x.clip(); x.drawImage(img, -414, -252, 828, 396); x.restore();
+      /* postmark */
+      const pmInk = dark ? light : ink; x.globalAlpha = dark ? .7 : .55; x.strokeStyle = pmInk; x.lineWidth = 4; x.beginPath(); x.arc(318, -168, 60, 0, 7); x.stroke();
+      x.lineWidth = 3; for (let i = 0; i < 3; i++) { x.beginPath(); x.moveTo(140, -198 + i * 30); for (let t = 0; t <= 4; t++) x.quadraticCurveTo(140 + t * 24 + 12, -212 + i * 30, 140 + t * 24 + 24, -198 + i * 30); x.stroke(); }
+      x.fillStyle = pmInk; x.font = '800 26px "Barlow Condensed", sans-serif'; x.fillText('GÜN', 318, -176); x.font = '800 40px "Barlow Condensed", sans-serif'; x.fillText(day, 318, -136); x.globalAlpha = 1;
+      x.textAlign = 'left'; x.fillStyle = ink; x.font = '800 62px "Barlow Condensed", sans-serif'; x.fillText(A[1], -402, 214, 804);
+      x.fillStyle = '#6c6488'; x.font = '500 34px Barlow, sans-serif'; x.fillText(A[2], -402, 262, 804);
+      x.restore();
+      /* the game's name, with a small balloon */
+      x.textAlign = 'center';
+      const by = 1196, bx = W / 2 - 230;
+      x.fillStyle = c[0]; x.beginPath(); x.arc(bx, by - 30, 26, Math.PI * .85, Math.PI * .15); x.quadraticCurveTo(bx + 19.5, by - .1, bx + 5.7, by + 10.3); x.lineTo(bx - 5.7, by + 10.3); x.quadraticCurveTo(bx - 19.5, by - .1, bx - 22.1, by - 17); x.fill();
+      x.strokeStyle = c[1]; x.lineWidth = 4; x.beginPath(); x.moveTo(bx - 8, by - 52); x.quadraticCurveTo(bx - 12, by - 20, bx - 3, by + 9); x.moveTo(bx + 8, by - 52); x.quadraticCurveTo(bx + 12, by - 20, bx + 3, by + 9); x.stroke();
+      x.fillStyle = '#6b4426'; x.fillRect(bx - 8, by + 16, 16, 10);
+      x.fillStyle = top; x.font = '800 64px "Barlow Condensed", sans-serif'; x.fillText('BALLOON BARON', W / 2 + 26, 1206);
+      x.font = 'italic 700 36px "Playfair Display", serif'; x.fillStyle = dark ? '#ffc23d' : '#c0582c'; x.fillText('Cappadocia', W / 2, 1262);
+      res(cv);
+    };
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+  });
+}
+/* The share sheet: the picture, then the system share sheet where it exists, a download where it doesn't. */
+function showShare(k, back) {
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card post share'); c.appendChild(h('div', 'chap', 'Paylaş'));
+  const holder = h('div', 'shimg'); c.appendChild(holder);
+  const go = h('button', 'big', 'Paylaş'), x = h('button', 'ghost', 'Kapat'); x.style.width = go.style.width = '100%';
+  x.onclick = () => { if (back) back(); else m.hidden = true; };
+  c.append(go, x); m.appendChild(c); m.hidden = false;
+  shareCard(k).then(cv => {
+    const url = cv.toDataURL('image/png'); holder.appendChild(h('img', null)).src = url;
+    go.onclick = () => cv.toBlob(b => {
+      const f = new File([b], `balloon-baron-${k}.png`, { type: 'image/png' });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) navigator.share({ files: [f], text: 'Balloon Baron' }).catch(() => {});
+      else { const a = document.createElement('a'); a.href = url; a.download = f.name; a.click(); }
+    });
+  });
+}
 function showPostcard() {
   const k = S.newPost.shift(), A = ACHS.find(a => a[0] === k); save();
   const m = $('menu'); m.replaceChildren(); const c = h('div', 'card post');
@@ -2943,6 +3010,7 @@ function showPostcard() {
   c.insertAdjacentHTML('beforeend', `<div class="pwrap">${postcard(k, true)}</div>`);
   c.appendChild(h('h1', null, A[1])); c.appendChild(h('p', 'lead', A[2] + '.'));
   const ok = h('button', 'big', 'Albüme koy'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
+  const sh = h('button', 'ghost', 'Paylaş'); sh.style.width = '100%'; sh.onclick = () => showShare(k, () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }); c.appendChild(sh);
   m.appendChild(c); m.hidden = false; sfx('fanfare');
 }
 function showAlbum() {
@@ -2950,8 +3018,9 @@ function showAlbum() {
   const n = ACHS.filter(a => S.ach && S.ach[a[0]]).length;
   c.appendChild(h('h1', null, 'Başarımlar')); c.appendChild(h('p', 'hint', `Kartpostal albümün: ${n}/${ACHS.length}. Kilitli olanlara dokununca nasıl açılacağı yazar.`));
   const g = h('div', 'pgrid');
-  for (const A of ACHS) { const it = h('button', 'pitem', postcard(A[0])); it.onclick = () => { it.title = A[2]; hint.textContent = `${A[1]}: ${A[2]}${S.ach && S.ach[A[0]] ? `, gün ${S.ach[A[0]]}` : ' (kilitli)'}.`; }; g.appendChild(it); }
+  for (const A of ACHS) { const it = h('button', 'pitem', postcard(A[0])); it.onclick = () => { it.title = A[2]; hint.textContent = `${A[1]}: ${A[2]}${S.ach && S.ach[A[0]] ? `, gün ${S.ach[A[0]]}` : ' (kilitli)'}.`; sh.hidden = !(S.ach && S.ach[A[0]]); sh.onclick = () => showShare(A[0], showAlbum); }; g.appendChild(it); }
   c.appendChild(g); const hint = h('p', 'hint'); c.appendChild(hint);
+  const sh = h('button', 'big', 'Bu kartpostalı paylaş'); sh.hidden = true; c.appendChild(sh);
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
 }
