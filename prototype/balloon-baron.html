@@ -3703,6 +3703,7 @@ const ENTRY_FEE = 100000, AUTO_EFF = .85;
 const entryFee = id => id === 'lux' ? 150000 : ENTRY_FEE;
 function applyRegionTheme() {
   const d = RD();
+  TUFF = TUFF_BY[(S && S.region) || 'cap'] || TUFF_BY.cap;
   B_NAMES.splice(0, B_NAMES.length, ...d.bnames); P_NAMES.splice(0, P_NAMES.length, ...d.pnames);
   HOTELS.forEach((x, i) => { x.name = d.hotels[i]; });
   SPONSORS.forEach((x, i) => { x.name = d.sponsors[i][0]; x.txt = d.sponsors[i][1]; });
@@ -4397,7 +4398,13 @@ function townBuildings() {
 /* ---------- isometric drawing ---------- */
 /* Light comes from the left: faces toward +gy (screen left) are lit, faces toward +gx are in shade,
    and every object casts a soft shadow to the right on the ground. */
-const TUFF = { lit: '#f1d6b0', shade: '#b9825c', top: '#f8e4c4', line: 'rgba(110,60,30,.16)' };
+/* Wall stone of the town, per region: Cappadocia's tuff, Albuquerque's smooth adobe, Luxor's mudbrick and limewash. */
+const TUFF_BY = {
+  cap: { lit: '#f1d6b0', shade: '#b9825c', top: '#f8e4c4', line: 'rgba(110,60,30,.16)' },
+  abq: { lit: '#dfa676', shade: '#a6653e', top: '#d79a68', line: 'rgba(120,60,25,.10)', smooth: true },
+  lux: { lit: '#f3e8d2', shade: '#c4ab80', top: '#ece0c4', line: 'rgba(130,100,60,.14)' }
+};
+let TUFF = TUFF_BY.cap;
 const SUN_SH = [0.55, 0.2]; /* screen offset of a shadow per world px of height */
 function tpoly(pts, fill, stroke, lw = 1.5) { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); } }
 const lp = (p, q, k) => [lerp(p[0], q[0], k), lerp(p[1], q[1], k)];
@@ -4406,6 +4413,7 @@ const upp = (p, h) => [p[0], p[1] - h];
 function tface(p, q, h, fn) { ctx.save(); ctx.transform(q[0] - p[0], q[1] - p[1], 0, -h, p[0], p[1]); fn(); ctx.restore(); }
 /* A textured stone wall: base colour, stone courses, specks and darkening near the ground. */
 function stoneWall(p, q, h, col, seed, courses = true) {
+  if (TUFF.smooth) courses = false; /* adobe is plastered smooth */
   const poly = [p, q, upp(q, h), upp(p, h)];
   tpoly(poly, col);
   ctx.save(); ctx.beginPath(); poly.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.clip();
@@ -4447,8 +4455,20 @@ function opening(p, q, h, u, v, w, hh, kind = 'win', lit = false) {
     ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(m[0], cy, 0, m[0], cy, 24); g.addColorStop(0, 'rgba(255,190,90,.16)'); g.addColorStop(1, 'rgba(255,190,90,0)'); ctx.fillStyle = g; ctx.fillRect(m[0] - 34, cy - 34, 68, 68); ctx.restore();
   }
 }
+/* Outside Cappadocia roofs are flat: a parapet round the top; Albuquerque's adobe shows its vigas (round roof beams)
+   under the parapet, Luxor's houses get a small limewashed dome. */
+function flatRoof(gx, gy, w, d, h, dome) {
+  const { A, B, C, D } = corners(gx, gy, w, d), ph = 8, T = TUFF;
+  tpoly([upp(D, h), upp(C, h), upp(C, h + ph), upp(D, h + ph)], T.lit);
+  tpoly([upp(C, h), upp(B, h), upp(B, h + ph), upp(C, h + ph)], T.shade);
+  const top = [upp(A, h + ph), upp(B, h + ph), upp(C, h + ph), upp(D, h + ph)]; tpoly(top, T.top);
+  const k = .1; tpoly([lp(top[0], top[2], k), lp(top[1], top[3], k), lp(top[0], top[2], 1 - k), lp(top[1], top[3], 1 - k)], mix(T.top, '#5a3a20', .14));
+  if (S.region === 'abq') for (const [p, q] of [[D, C], [C, B]]) for (let i = 1; i < 6; i++) { const m = lp(p, q, i / 6); ell(m[0] + 1.5, m[1] - h + 3, 2.6, 2, '#5a3418'); ell(m[0] + .8, m[1] - h + 2.6, 1.4, 1, '#8a5a34'); }
+  if (S.region === 'lux' && dome) { const c = lp(lp(top[0], top[2], .5), lp(top[1], top[3], .5), .5), r = Math.min(w, d) * TW * .16; ctx.fillStyle = '#f8f2e4'; ctx.beginPath(); ctx.ellipse(c[0], c[1], r, r * .45, 0, 0, Math.PI); ctx.arc(c[0], c[1], r, Math.PI, 0); ctx.fill(); ctx.fillStyle = 'rgba(160,130,90,.35)'; ctx.beginPath(); ctx.ellipse(c[0] + r * .3, c[1] - r * .1, r * .55, r * .9, 0, -Math.PI / 2, Math.PI / 2); ctx.fill(); }
+}
 /* Gable roof with the ridge along gx. Tiles drawn as lines. */
 function gableRoof(gx, gy, w, d, h, rise, col, eave = .08) {
+  if (S.region !== 'cap') return flatRoof(gx, gy, w, d, h, false);
   if (S.winter) col = mix(col, '#f4f7fb', .7); /* snow on the tiles */
   const x0 = gx - eave, x1 = gx + w + eave, y0 = gy - eave, y1 = gy + d + eave, ym = gy + d / 2;
   const P = (x, y, z) => upp(tiso(x, y), z);
@@ -4463,6 +4483,7 @@ function gableRoof(gx, gy, w, d, h, rise, col, eave = .08) {
 }
 /* Hip roof (four slopes) for the konak. */
 function hipRoof(gx, gy, w, d, h, rise, col) {
+  if (S.region !== 'cap') return flatRoof(gx, gy, w, d, h, true);
   if (S.winter) col = mix(col, '#f4f7fb', .7);
   const e = .1, P = (x, y, z) => upp(tiso(x, y), z), r0 = [gx + w * .35, gy + d / 2], r1 = [gx + w * .65, gy + d / 2];
   const A = P(gx - e, gy - e, h), B = P(gx + w + e, gy - e, h), C = P(gx + w + e, gy + d + e, h), D = P(gx - e, gy + d + e, h), R0 = P(r0[0], r0[1], h + rise), R1 = P(r1[0], r1[1], h + rise);
@@ -4659,7 +4680,7 @@ function tbuilding(b, t) {
       const pl = corners(x0 + .05, y0 + d + .12, 1.3, .4); tpoly([pl.A, pl.B, pl.C, pl.D], '#efe2cc');
       const pi = corners(x0 + .12, y0 + d + .17, 1.16, .3), pg = ctx.createLinearGradient(pi.A[0], pi.A[1], pi.C[0], pi.C[1]); pg.addColorStop(0, '#8ae6ec'); pg.addColorStop(1, '#2aa6c4'); tpoly([pi.A, pi.B, pi.C, pi.D], pg);
       ctx.save(); ctx.globalAlpha = .5; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; for (let i = 0; i < 3; i++) { const a = lp(pi.A, pi.D, .3 + i * .2), c = lp(pi.B, pi.C, .3 + i * .2); ctx.beginPath(); ctx.moveTo(a[0] + Math.sin(t + i) * 3, a[1]); ctx.lineTo(c[0] + Math.sin(t + i + 1) * 3, c[1]); ctx.stroke(); } ctx.restore();
-      const cp = tiso(g + 1.9, k + .35); cypress(cp[0], cp[1], 1);
+      const cp = tiso(g + 1.9, k + .35); hotelTree(cp[0], cp[1], 1);
       break;
     }
     case 'tower': {
@@ -4729,7 +4750,10 @@ function hotel(b, t) {
     const cones = [[g + .5, k + .5, 150], [g + 1.2, k + .45, 120], [g + 1.55, k + .9, 95]];
     cones.sort((a, c) => (a[0] + a[1]) - (c[0] + c[1]));
     for (const [x, y, hh] of cones) {
-      const p = tiso(x, y); chimney(p[0], p[1], hh * .55, hh, '#efc79e', '#c69068', '#6a4430');
+      const p = tiso(x, y);
+      if (S.region === 'abq') butte(p[0], p[1], hh * .75, hh * .78, '#d98e5e', '#a65e38'); /* rooms cut into a red cliff */
+      else if (S.region === 'lux') { ctx.fillStyle = '#c9ab7e'; ctx.fillRect(p[0] - hh * .2, p[1] - hh * .7, hh * .4, hh * .7); ctx.fillStyle = '#efe0c2'; ctx.fillRect(p[0] - hh * .24, p[1] - hh * .7, hh * .26, hh * .7); dome(p[0] - hh * .02, p[1] - hh * .7, hh * .17, '#f3e8d2'); } /* Nubian mud-brick house */
+      else chimney(p[0], p[1], hh * .55, hh, '#efc79e', '#c69068', '#6a4430');
       for (let i = 0; i < 3; i++) { const wy = p[1] - hh * (.18 + i * .22), wx = p[0] - hh * .08 + (i % 2) * hh * .1; ctx.fillStyle = '#ffd27a'; ctx.beginPath(); ctx.moveTo(wx - 5, wy + 8); ctx.lineTo(wx - 5, wy); ctx.arc(wx, wy, 5, Math.PI, 0); ctx.lineTo(wx + 5, wy + 8); ctx.fill(); lantern(wx, wy + 2); }
     }
     const tp = terrace.c; for (let i = 0; i < 4; i++) { const p = lp(lp(terrace.d, terrace.c, .2 + i * .2), lp(terrace.a, terrace.b, .2 + i * .2), .4); ctx.fillStyle = ['#c0392b', '#e08a1e', '#7a2a4a', '#2b5a7a'][i]; ctx.fillRect(p[0] - 7, p[1] - 4, 14, 5); }
@@ -4752,7 +4776,7 @@ function hotel(b, t) {
     for (const f of [wingL, main, wingR]) tflag(f.b[0] - 4, f.b[1], own ? myCol()[0] : '#ffc23d', t, 40);
     const rc = lp(main.D, main.C, .5); tpoly([rc, [rc[0] + 10, rc[1] + 5], [rc[0] - 18, rc[1] + 40], [rc[0] - 28, rc[1] + 35]], '#c0283a'); /* red carpet */
     for (const [x, y] of [[g + .1, k + 2.7], [g + 1, k + 2.85], [g + 2, k + 2.85], [g + 2.95, k + 2.7]]) { const p = tiso(x, y); palm(p[0], p[1], .9, t); }
-    for (const [x, y] of [[g + .05, k + .2], [g + 3, k + .25]]) { const p = tiso(x, y); cypress(p[0], p[1], 1.2); }
+    for (const [x, y] of [[g + .05, k + .2], [g + 3, k + .25]]) { const p = tiso(x, y); hotelTree(p[0], p[1], 1.2); }
   }
   /* your flag, or a rival's, and a golden glow when it's yours */
   const top = tiso(b.gx + b.w * .5, b.gy + .3);
@@ -4857,9 +4881,9 @@ function townScenery(t) {
   const items = [];
   /* fairy chimneys stay on the edges and gaps so they never hide a building */
   const chims = [[0.3, 6.6, 150], [15.2, 8, 140], [0.4, 12.6, 130], [7.7, 0.3, 120], [5.6, 15.2, 150], [0.5, 3.0, 160], [12.8, 0.2, 140]];
-  for (const [gx, gy, hh] of chims) items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .16); }, draw: () => { const p = tiso(gx, gy); chimney(p[0], p[1], hh * .42, hh, '#efc79e', '#c69068', '#6a4430'); } });
+  for (const [gx, gy, hh] of chims) items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .16); }, draw: () => { const p = tiso(gx, gy); edgeLandmark(p[0], p[1], hh, gx + gy); } });
   const trees = [[7.1, 6.9], [7.1, 9.2], [8.9, 6.9], [3.4, 8.9], [6.6, 10.7], [14.6, 7.3], [10.8, 4.4], [4.3, 7.0], [8.4, 15]];
-  trees.forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); i % 3 ? roundTree(p[0], p[1], .9, i % 2 ? '#7aa04a' : '#8aa84e') : cypress(p[0], p[1], 1); } }));
+  trees.forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); if (S.region !== 'cap') return regionTree(p[0], p[1], i, t); i % 3 ? roundTree(p[0], p[1], .9, i % 2 ? '#7aa04a' : '#8aa84e') : cypress(p[0], p[1], 1); } }));
   /* your fleet on the launch field, burners flickering; at night the envelopes are packed away, except on a Fiesta balloon-glow night */
   if (NIGHT_K <= 0 || (NIGHT && NIGHT.ev && NIGHT.ev.k === 'glow')) S.balloons.slice(0, 6).forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
   /* the wind mast by the launch field: today's surface wind fills the sock and points it */
@@ -4881,6 +4905,54 @@ function townScenery(t) {
   /* people strolling on the roads */
   for (let i = 0; i < 10; i++) { const along = ((t * .05 + i * .1) % 1) * 15, onX = i % 2; const gx = onX ? along : 7.8 + (i % 3) * .15, gy = onX ? 7.8 + (i % 3) * .15 : along; items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); person(p[0], p[1], ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0'][i % 5], t, i); } }); }
   return items;
+}
+/* What stands on the town's edges: Cappadocia's fairy chimneys, Albuquerque's red buttes, Luxor's palm clumps and an obelisk. */
+function edgeLandmark(x, y, hh, seed) {
+  if (S.region === 'abq') return butte(x, y, hh * .9, hh * .55, '#c8744a', '#8e4a2c');
+  if (S.region === 'lux') {
+    if (Math.round(seed) % 3 === 0) return obelisk(x, y, hh * .9);
+    for (const [dx, k] of [[-16, .85], [10, 1], [26, .75]]) palm(x + dx, y + (dx > 0 ? 4 : 0), k * hh / 90, T);
+    return;
+  }
+  chimney(x, y, hh * .42, hh, '#efc79e', '#c69068', '#6a4430');
+}
+/* A garden tree by a hotel: cypress in Cappadocia, cottonwood in Albuquerque, date palm in Luxor. */
+function hotelTree(x, y, s) {
+  if (S.region === 'abq') return roundTree(x, y, s * .9, '#9aa84a');
+  if (S.region === 'lux') return palm(x, y, s * .9, T);
+  cypress(x, y, s);
+}
+/* A red sandstone butte: flat top, banded sides. */
+function butte(x, y, w, h, lit, shade) {
+  ctx.fillStyle = shade; ctx.beginPath(); ctx.moveTo(x - w * .55, y); ctx.lineTo(x - w * .42, y - h); ctx.lineTo(x + w * .42, y - h); ctx.lineTo(x + w * .55, y); ctx.fill();
+  ctx.fillStyle = lit; ctx.beginPath(); ctx.moveTo(x - w * .55, y); ctx.lineTo(x - w * .42, y - h); ctx.lineTo(x + w * .05, y - h); ctx.lineTo(x + w * .1, y); ctx.fill();
+  ctx.fillStyle = 'rgba(255,230,190,.25)'; for (let i = 1; i < 4; i++) ctx.fillRect(x - w * .5 + i * 2, y - h * i / 4, w - i * 4, 2);
+  ctx.fillStyle = mix(lit, '#ffffff', .2); ctx.fillRect(x - w * .42, y - h - 3, w * .84, 4);
+}
+/* A granite obelisk on a small base. */
+function obelisk(x, y, h) {
+  ctx.fillStyle = '#d8b48a'; ctx.fillRect(x - 10, y - 8, 20, 8);
+  ctx.fillStyle = '#e8c89c'; ctx.beginPath(); ctx.moveTo(x - 6, y - 8); ctx.lineTo(x - 4, y - h); ctx.lineTo(x, y - h - 8); ctx.lineTo(x + 4, y - h); ctx.lineTo(x + 6, y - 8); ctx.fill();
+  ctx.fillStyle = '#c09a6c'; ctx.beginPath(); ctx.moveTo(x, y - h - 8); ctx.lineTo(x + 4, y - h); ctx.lineTo(x + 6, y - 8); ctx.lineTo(x + 1, y - 8); ctx.fill();
+  ctx.fillStyle = '#ffd27a'; ctx.beginPath(); ctx.moveTo(x - 4, y - h); ctx.lineTo(x, y - h - 8); ctx.lineTo(x + 4, y - h); ctx.fill();
+}
+/* Town trees outside Cappadocia: cottonwoods, cholla and yucca in Albuquerque; date palms in Luxor. */
+function regionTree(x, y, i, t) {
+  if (S.region === 'lux') return palm(x, y, .9 + (i % 3) * .12, t + i);
+  if (i % 3 === 0) return cholla(x, y, .9);
+  if (i % 3 === 1) return yucca(x, y, .9);
+  roundTree(x, y, 1.05, i % 2 ? '#a8b050' : '#9aa84a');
+}
+function cholla(x, y, s) {
+  ctx.strokeStyle = '#5a7a3a'; ctx.lineCap = 'round';
+  for (const [a, l, w] of [[0, 30, 5], [-.6, 16, 3.5], [.7, 18, 3.5], [-.2, 10, 3]]) { ctx.lineWidth = w * s; const bx = x + a * 4 * s, by = y - (a ? 16 : 0) * s; ctx.beginPath(); ctx.moveTo(bx, by); ctx.lineTo(bx + Math.sin(a) * l * s, by - Math.cos(a) * l * s); ctx.stroke(); }
+  ctx.lineCap = 'butt'; ctx.fillStyle = '#ff6fa8'; ctx.beginPath(); ctx.arc(x, y - 30 * s, 2.5 * s, 0, 7); ctx.fill();
+}
+function yucca(x, y, s) {
+  ctx.fillStyle = '#6a8a4a';
+  for (let i = 0; i < 9; i++) { const a = -Math.PI / 2 + (i - 4) * .3; ctx.beginPath(); ctx.moveTo(x - 1.5 * s, y); ctx.lineTo(x + Math.cos(a) * 18 * s, y + Math.sin(a) * 18 * s); ctx.lineTo(x + 1.5 * s, y); ctx.fill(); }
+  ctx.strokeStyle = '#8a7a50'; ctx.lineWidth = 1.5 * s; ctx.beginPath(); ctx.moveTo(x, y - 14 * s); ctx.lineTo(x, y - 34 * s); ctx.stroke();
+  ctx.fillStyle = '#f6f0d8'; for (let k = 0; k < 4; k++) { ctx.beginPath(); ctx.arc(x + (k % 2 ? 2 : -2) * s, y - (26 + k * 2.5) * s, 2 * s, 0, 7); ctx.fill(); }
 }
 /* Balloons drifting over the town, with their shadows on the ground. */
 /* Today's wind: sign and strength of a layer, so balloons over the town drift the way the flight will. */
@@ -4954,11 +5026,24 @@ function townZoneText() {
 /* Land around the town: dirt roads running off, vineyards, other companies' launch fields. */
 function outerDecor(t) {
   const R = mulberry32(9);
-  for (let i = 0; i < 420; i++) { const gx = -22 + R() * 60, gy = -22 + R() * 60; if (gx > -1 && gx < 16 && gy > -1 && gy < 16) continue; const p = tiso(gx, gy); ctx.fillStyle = R() < .55 ? 'rgba(160,120,70,.16)' : 'rgba(120,150,70,.2)'; ctx.beginPath(); ctx.ellipse(p[0], p[1], 8 + R() * 22, 4 + R() * 8, 0, 0, 7); ctx.fill(); }
-  const dirt = (x0, y0, x1, y1) => { tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], '#d8b085'); };
+  const L = OUTER_LOOK[S.region] || OUTER_LOOK.cap;
+  for (let i = 0; i < 420; i++) { const gx = -22 + R() * 60, gy = -22 + R() * 60; if (gx > -1 && gx < 16 && gy > -1 && gy < 16) continue; const p = tiso(gx, gy); ctx.fillStyle = R() < L.split ? L.patch[0] : L.patch[1]; ctx.beginPath(); ctx.ellipse(p[0], p[1], 8 + R() * 22, 4 + R() * 8, 0, 0, 7); ctx.fill(); }
+  /* Luxor: the Nile runs past behind the town, green banks on both sides */
+  if (S.region === 'lux') {
+    const band = (y0, y1, c) => tpoly([tiso(-60, y0), tiso(70, y0), tiso(70, y1), tiso(-60, y1)], c);
+    band(-15.5, -9.5, '#8fb85a'); band(-13.6, -11.2, '#3f8fa8'); band(-13.1, -12.7, 'rgba(255,255,255,.18)');
+  }
+  const dirt = (x0, y0, x1, y1) => { tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], L.road); };
   dirt(-40, 7.65, 0, 8.35); dirt(15, 7.65, 55, 8.35); dirt(7.65, -40, 8.35, 0); dirt(7.65, 15, 8.35, 55);
-  for (const f of OUTER_FIELDS) { const q = [tiso(f[0], f[1]), tiso(f[0] + 3, f[1]), tiso(f[0] + 3, f[1] + 2.2), tiso(f[0], f[1] + 2.2)]; tpoly(q, '#b3b86e'); tpoly(q, null, 'rgba(110,90,40,.3)', 2); }
+  for (const f of OUTER_FIELDS) { const q = [tiso(f[0], f[1]), tiso(f[0] + 3, f[1]), tiso(f[0] + 3, f[1] + 2.2), tiso(f[0], f[1] + 2.2)]; tpoly(q, L.field); tpoly(q, null, 'rgba(110,90,40,.3)', 2);
+    if (S.region === 'lux') for (let k = 1; k < 8; k++) tpoly([tiso(f[0] + k * .37, f[1]), tiso(f[0] + k * .37, f[1] + 2.2)], null, 'rgba(60,100,40,.35)', 1.5); }
 }
+/* Colours of the land round the town: patches, dirt roads, fields (vineyards, alfalfa, sugar cane). */
+const OUTER_LOOK = {
+  cap: { patch: ['rgba(160,120,70,.16)', 'rgba(120,150,70,.2)'], split: .55, road: '#d8b085', field: '#b3b86e' },
+  abq: { patch: ['rgba(170,90,50,.16)', 'rgba(130,140,90,.22)'], split: .6, road: '#d49a6e', field: '#a9b46a' },
+  lux: { patch: ['rgba(110,160,70,.24)', 'rgba(200,170,110,.18)'], split: .6, road: '#dcc28e', field: '#8db05a' }
+};
 const OUTER_FIELDS = [[-6, 9.5], [18, 2], [10, 18], [-4, -6], [20, 15]];
 /* Fairy chimney clusters out in the valley, and balloons inflating and lifting off the other fields. */
 function outerScenery(t) {
@@ -4968,7 +5053,7 @@ function outerScenery(t) {
     if (gx > -2 && gx < 17 && gy > -2 && gy < 17) continue;
     if (Math.abs(gx - 8) < 1.6 || Math.abs(gy - 8) < 1.6) continue;
     if (OUTER_FIELDS.some(f => gx > f[0] - 1 && gx < f[0] + 4 && gy > f[1] - 1 && gy < f[1] + 3.5)) continue;
-    items.push({ at: [gx, gy], depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .14); }, draw: () => { const p = tiso(gx, gy); chimney(p[0], p[1], hh * .42, hh, '#efc79e', '#c69068', '#6a4430'); } });
+    items.push({ at: [gx, gy], depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .14); }, draw: () => { const p = tiso(gx, gy); outerLandmark(p[0], p[1], hh, i); } });
   }
   const cols = S.rivals.map(r => [r.col, r.col2]).concat([['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9']]);
   /* nobody flies at night */
@@ -4980,6 +5065,19 @@ function outerScenery(t) {
     }
   });
   return items;
+}
+/* Out in the land: fairy chimneys in Cappadocia; red buttes and junipers in Albuquerque; palm groves and temple ruins in Luxor. */
+function outerLandmark(x, y, hh, i) {
+  if (S.region === 'abq') {
+    if (i % 3 === 0) { roundTree(x, y, .7, '#4f6e3a'); return roundTree(x + 18, y + 6, .55, '#5a7a40'); }
+    return butte(x, y, hh * (i % 2 ? 1.3 : .8), hh * (i % 2 ? .45 : .7), '#c8744a', '#8e4a2c');
+  }
+  if (S.region === 'lux') {
+    if (i % 7 === 0) { temple(x, y, hh * .9, hh * .42, '#c9a878'); return temple(x - 3, y, hh * .9, hh * .4, '#e2c79a'); }
+    for (const [dx, dy, k] of [[-20, 0, .9], [0, 6, 1.1], [18, -2, .8], [34, 5, 1]]) palm(x + dx, y + dy, k * hh / 150, T + i);
+    return;
+  }
+  chimney(x, y, hh * .42, hh, '#efc79e', '#c69068', '#6a4430');
 }
 /* A low tuff wall round the town with gaps where the roads leave. */
 function townWall() {
@@ -5027,20 +5125,31 @@ function townBackdrop(w, h, t) {
   };
   far(0);
   /* far ridge with fairy chimney silhouettes, then a nearer one */
-  for (const [k, col, amp, par, seed] of [[.0, mix('#6b4a6e', '#d9a07a', .35), .05, .5, 3], [.025, mix('#5a3a50', '#c48a6e', .3), .035, 1, 7]]) {
+  const RG = { abq: [['#8a4a6e', '#e09a8a', .4, .07], ['#6a3a50', '#c47a6e', .3, .03]], lux: [['#9a7a5e', '#e8c49a', .45, .06], ['#7a6a48', '#b8a070', .3, .02]] }[S.region];
+  for (const [k, col, amp, par, seed] of [[.0, RG ? mix(RG[0][0], RG[0][1], RG[0][2]) : mix('#6b4a6e', '#d9a07a', .35), RG ? RG[0][3] : .05, .5, 3], [.025, RG ? mix(RG[1][0], RG[1][1], RG[1][2]) : mix('#5a3a50', '#c48a6e', .3), RG ? RG[1][3] : .035, 1, 7]]) {
     const base = hz + h * k, off = px * par;
     ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, h);
     for (let x = -20; x <= w + 20; x += 16) ctx.lineTo(x, base - h * amp * (.5 + .5 * Math.sin((x - off) * .012 + seed) * .7 + .3 * Math.sin((x - off) * .031 + seed * 2)));
     ctx.lineTo(w + 20, h); ctx.closePath(); ctx.fill();
     const Rc = mulberry32(seed * 13);
-    for (let i = 0; i < 14; i++) { const x = ((Rc() * (w + 200) + off) % (w + 200)) - 100, hh = h * (.03 + Rc() * .035) * (k ? 1.2 : .8); chimney(x, base - h * amp * .35, hh * .42, hh, col, null, mix(col, '#000000', .25)); }
+    for (let i = 0; i < 14; i++) { const x = ((Rc() * (w + 200) + off) % (w + 200)) - 100, hh = h * (.03 + Rc() * .035) * (k ? 1.2 : .8), by = base - h * amp * .35;
+      if (S.region === 'abq') { if (i % 2) { ctx.fillStyle = col; ctx.fillRect(x - hh * .7, by - hh * .5, hh * 1.4, hh * .5 + 4); ctx.beginPath(); ctx.moveTo(x - hh * .9, by + 4); ctx.lineTo(x - hh * .7, by - hh * .5); ctx.lineTo(x + hh * .7, by - hh * .5); ctx.lineTo(x + hh * .9, by + 4); ctx.fill(); } }
+      else if (S.region === 'lux') { if (k) palmSil(x, by + h * .02, hh * .9, col); else if (i === 3) { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x - hh * 1.2, by + 4); ctx.lineTo(x, by - hh * 1.3); ctx.lineTo(x + hh * 1.2, by + 4); ctx.fill(); } }
+      else chimney(x, by, hh * .42, hh, col, null, mix(col, '#000000', .25)); }
   }
   far(1);
+}
+/* A palm in silhouette for Luxor's far bank. */
+function palmSil(x, y, h, col) {
+  ctx.strokeStyle = col; ctx.lineWidth = Math.max(1.5, h * .06); ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(x + h * .1, y - h * .5, x + h * .04, y - h); ctx.stroke();
+  ctx.lineWidth = Math.max(1.2, h * .05); ctx.lineCap = 'round';
+  for (let i = 0; i < 6; i++) { const a = -Math.PI / 2 + (i - 2.5) * .6; ctx.beginPath(); ctx.moveTo(x + h * .04, y - h); ctx.quadraticCurveTo(x + h * .04 + Math.cos(a) * h * .25, y - h * 1.1 + Math.sin(a) * h * .15, x + h * .04 + Math.cos(a) * h * .45, y - h * .85 + Math.sin(a) * h * .25); ctx.stroke(); }
+  ctx.lineCap = 'butt';
 }
 /* The valley floor runs from the horizon to the bottom of the screen; the town sits in it. */
 function townGround(w, h) {
   const hz = Math.max(0, townHorizon(h) + h * .015);
-  const g = ctx.createLinearGradient(0, hz, 0, Math.max(hz + 1, h)); if (S.winter) { g.addColorStop(0, '#c9d2e0'); g.addColorStop(.25, '#dfe6ef'); g.addColorStop(1, '#eef2f8'); } else { g.addColorStop(0, '#d9a88a'); g.addColorStop(.25, '#e2b98e'); g.addColorStop(1, '#e6c294'); }
+  const g = ctx.createLinearGradient(0, hz, 0, Math.max(hz + 1, h)); if (S.winter) { g.addColorStop(0, '#c9d2e0'); g.addColorStop(.25, '#dfe6ef'); g.addColorStop(1, '#eef2f8'); } else { const G = { abq: ['#d4987a', '#dca67e', '#e2b384'], lux: ['#c9b48a', '#c8be8a', '#cfc490'] }[S.region] || ['#d9a88a', '#e2b98e', '#e6c294']; g.addColorStop(0, G[0]); g.addColorStop(.25, G[1]); g.addColorStop(1, G[2]); }
   ctx.fillStyle = g; ctx.fillRect(0, hz, w, h - hz);
   return hz;
 }
@@ -5572,7 +5681,10 @@ function hqScene(L, t) {
   const hz = wy1 - (wy1 - wy0) * .22;
   ctx.fillStyle = '#d7a27e'; ctx.beginPath(); ctx.moveTo(wx0, wy1); for (let x = wx0; x <= wx1 + 10; x += 10) ctx.lineTo(x, hz - 6 - 5 * Math.sin(x * .05)); ctx.lineTo(wx1, wy1); ctx.fill();
   const R = mulberry32(31);
-  for (let i = 0; i < 9; i++) { const x = wx0 + R() * (wx1 - wx0), hh = 16 + R() * 26; chimney(x, hz + 4, hh * .42, hh, '#e8b48e', '#c98d68', '#7a4e38'); }
+  for (let i = 0; i < 9; i++) { const x = wx0 + R() * (wx1 - wx0), hh = 16 + R() * 26;
+    if (S.region === 'abq') butte(x, hz + 4, hh * 1.2, hh * .6, '#d98e5e', '#a65e38');
+    else if (S.region === 'lux') palmSil(x, hz + 6, hh, '#7a8a4a');
+    else chimney(x, hz + 4, hh * .42, hh, '#e8b48e', '#c98d68', '#7a4e38'); }
   for (let i = 0; i < 7; i++) { const x = wx0 + 6 + i * (wx1 - wx0) / 7, bw = 14 + R() * 12, bh = 10 + R() * 16; ctx.fillStyle = '#f1d6b0'; ctx.fillRect(x, wy1 - bh, bw, bh); ctx.fillStyle = '#c9925f'; ctx.fillRect(x + bw, wy1 - bh + 2, 5, bh - 2); ctx.fillStyle = '#ffd27a'; ctx.fillRect(x + 4, wy1 - bh + 5, 3, 4); }
   const cols = [myCol()].concat(S.rivals.map(r => [r.col, r.col2]), [['#14a39a', '#e8fff9'], ['#e0408a', '#ffd0e0']]);
   for (let i = 0; i < 7; i++) { const x = wx0 + ((R() * (wx1 - wx0) + t * (5 + i * 2)) % (wx1 - wx0 + 40)) - 20, y = wy0 + 20 + R() * (hz - wy0 - 40), c = cols[i % cols.length]; balloon(x, y + Math.sin(t * .5 + i) * 3, 5 + R() * 6, c[0], c[1], false, .95); }

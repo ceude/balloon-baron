@@ -131,7 +131,17 @@ Albuquerque'nin şirketleri Kapadokya'dakilerden güçlü (v96):
 | Rio Grande Balloons | orta | L M M M M S | 170 | 1,05 | 40.000 |
 | Route 66 Air | riskli | M S S S S | 140 | 0,9 | 20.000 |
 
-Ayrıca daha sert oynarlar (`RIVAL_EDGE`, Swift'te `RegionID.rivalEdge`): kampanya olasılığı günde %6 (Kapadokya %4), otel anlaşmanı kapma %2,5 (%1,5), 3 günde bir balon alabilirler (4) ve filo üst sınırları 5 fazla (30/23/17). Bot üç bölümü 65–79 / 107–126 / 141–230. günlerde bitirir (önce 57–66 / 99–108 / 136–210).
+Luksor en çetin pazar (v104). Patron Nabil Haddad'ın Theban Skies'ı en büyük filoya sahip:
+
+| Rakip | Tarz | Filo | Fiyat | İtibar | Kasa |
+|---|---|---|---|---|---|
+| Theban Skies | temkinli | L L L L L M M M M M | 215 | 1,28 | 130.000 |
+| Pharaoh Balloons | orta | L L M M M M S | 175 | 1,1 | 60.000 |
+| Nile Dawn Air | riskli | M M S S S S | 130 | 0,95 | 30.000 |
+
+Luksor'un yeni girenleri: Red Sea Balloon Co. (zengin zincir), Felucca Flights, Hatshepsut Air, Karnak Wings.
+
+Albuquerque ve Luksor rakipleri daha sert oynar (`RIVAL_EDGE`, Swift'te `RegionID.rivalEdge`): kampanya olasılığı günde %6 (Kapadokya %4), otel anlaşmanı kapma %2,5 (%1,5), 3 günde bir balon alabilirler (4) ve filo üst sınırları 5 fazla (30/23/17). Bot üç bölümü 65–79 / 107–126 / 141–230. günlerde bitirir (önce 57–66 / 99–108 / 136–210).
 
 - Fiyat tabanı maliyetten hesaplanır (en fazla 220). Tavanlar: riskli 190, orta 260.
 - 5. günden sonra zor durumdaki rakip satışa çıkar (filo satın alma veya devralma).
@@ -140,6 +150,7 @@ Ayrıca daha sert oynarlar (`RIVAL_EDGE`, Swift'te `RegionID.rivalEdge`): kampan
   - Zengin zincir (Bosphorus / Mesa Gold) oyuncunun balon sayısı + 3 balonla ve en az 60.000 + 9.000 × balon kasayla gelir.
   - Diğerleri 50. günden sonra oyuncunun yarısı kadar balonla gelir (ek balon başına +6.000 kasa).
   - Yeni gelenlerin kasasından 20 gün para çekilmez (savaş sandığı).
+- **Birleşme (Luksor):** rakipler daha sık birleşir. 20. günden sonra oyuncunun payı %38'i aştığı her gün de sayılır, 2 gün yeter, şans günlük %50, birleşmeler arası en az 15 gün.
 - **Birleşme:** 30. günden sonra oyuncunun payı %50'yi 4+ gün aşarsa günlük %35, ya da bir rakibin kasası −€4.000'in altındayken oyuncunun payı %40'ı aşarsa günlük %60 şansla en küçük iki rakip "A & B Balloons" olarak birleşir. Filolar toplanır, kasa (iki kasa) × 1,3 + 40.000, popülerlik yüksek olanınki, fiyat ortalama, 20 gün savaş sandığı. En fazla 25 günde bir.
 - **Tekel cezası:** 20. günden sonra pazar payı > %60 olan her gün sayılır.
   - 3. günde Hezarfen uyarır (oran yazmaz).
@@ -157,6 +168,10 @@ Hedefler gün sonunda kontrol edilir. Bölüm bitince ödül kasaya girer, ertes
 | Albuquerque | Yeni Dünya | 5.000 | 3 balon, 2 pilot, 4,6★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
 | Albuquerque | Kutu Rüzgârı | 10.000 | 7 balon, influencer, 4,7★, rüzgâr direği Sv. 3, hangar Sv. 2 |
 | Albuquerque | Fiesta | 20.000 | 12 balon, otel satın al, Fiesta'da uç, pazarın %50'si |
+| Luksor | Batı Yakası | 5.000 | 4 balon, 3 pilot, 4,7★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
+| Luksor | Nil Rüzgârı | 10.000 | 8 balon, influencer, 4,75★, pazarın %30'u, rüzgâr direği Sv. 3, hangar Sv. 2 |
+| Luksor | Firavunlar Vadisi | 20.000 | 14 balon, otel satın al, Nil gemisi sezonunda uç, pazarın %50'si |
+| Luksor | Luksor Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL (Teb Yıldızı), hangar Sv. 3 |
 | Albuquerque | Albuquerque Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, hangar Sv. 3 |
 
 İki bölgede de 4 bölüm var (prototip v97). Albuquerque her bölümde Kapadokya'dan bir kademe zor. Araya giren ikinci bölüm, eskiden 1. ile 2. bölüm arasındaki yaklaşık 80 günlük boşluğu böler. Balon atölyesi holdinge ait olduğu için Albuquerque'de hedef olamaz; yerine Fiesta ve hangar Sv. 3 var. Üç bölümlü plandan gelen kayıtlar yüklenirken bölüm numarası kaydırılır (2. bölümü geçmiş olan 3.'ye geçer), kimse geriye düşmez.
@@ -222,6 +237,10 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 ## Bölgeler ve otomatik mod
 - Kapadokya baronu olunca holding açılır. Albuquerque'ye giriş €100.000 (holdingden). Orada sıfırdan başlanır: $3.000 ve bir S balon.
 - Her bölgenin kendi kasası, bankası, filosu, pilotları, rakipleri, otelleri, popülerliği, bölümü vardır. Kurucu lisansı, atölye, tasarımlar ve gün sayacı ortaktır.
+- **Luksor** Albuquerque baronu olunca açılır. Giriş €150.000 (holdingden), başlangıç €5.000 ve bir S balon. Girerken Hezarfen burasının en çetin pazar olduğunu söyler.
+- **Nil rüzgârı (Luksor):** katmanlar +, −, +, − yönünde, Albuquerque'den biraz daha sert.
+- **Nil gemisi sezonu (Luksor):** her 21 günde bir, 3 gün, talep ×1,6. Gece olayı "Nil gecesi". Gazete: Nil Postası.
+- **Kasabalar bölgeye göre:** Kapadokya peri bacaları ve tüf evler; Albuquerque kızıl mesalar, kerpiç (adobe) evler, düz çatılar ve vigalar, kaktüs, yucca ve kavak; Luksor kireç badanalı kerpiç evler ve kubbeler, hurma bahçeleri, şeker kamışı tarlaları, Nil, dikilitaş, tapınak kalıntıları ve Teb tepeleri. Satın alınan süsler her bölgede görünür.
 - **Kutu rüzgârı (Albuquerque):** katmanlar −, +, −, + yönünde. Hedef 1.000–1.700 m.
 - **Balloon Fiesta:** her 30 günde bir, 4 gün, talep ×1,9 (ilki girişten 12 gün sonra).
 - **Otomatik mod:** Ayrılınan bölge son 14 günün ortanca net kârının %85'ini (euroya çevrilmiş) her gün ±%15 oynayarak holdinge getirir.

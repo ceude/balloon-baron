@@ -2,7 +2,20 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v101 ile aynı. v101: XL balonun adı "Dev balon", "İmza balon" etiketi kalktı.)
+## Bekleyenler (prototip v104)
+
+- **Luksor bölgesi** (`RegionID.lux`): Albuquerque baronu olunca açılır, giriş €150.000, başlangıç €5.000. Rakipler Theban Skies / Pharaoh Balloons / Nile Dawn Air, yeni girenler Red Sea Balloon Co. / Felucca Flights / Hatshepsut Air / Karnak Wings (sayılar `docs/GAME_DESIGN.md`). Patron Nabil Haddad (avatar ve `BOSS_LINES.lux` repliklerinin hepsi). `rivalEdge` Luksor'u da kapsar.
+  - Dört bölüm: Batı Yakası, Nil Rüzgârı, Firavunlar Vadisi, Luksor Baronu.
+  - Birleşme kuralı Luksor'da daha sık (15 gün ara, %38 pay sayılır, 2 gün, %50).
+  - Nil gemisi sezonu: `fiesta` alanını kullanır, 21 günde bir, 3 gün, talep ×1,6; uyarılar, "Nil gecesi" gece olayı.
+  - Hava katmanları +, −, +, −. Gazete "Nil Postası". Otel, sponsor, balon ve pilot adları `REGION_DEF.lux`.
+  - Hezarfen'in giriş uyarısı ("en çetin pazar"), başarımlar `lux` ve `baronLux` (kartpostal sahneleriyle).
+  - Uçuş manzarası: Teb tepeleri ve el-Kurn, tapınak, hurmalar, yeşil Nil vadisi, feluka; engeller hurma ağacı.
+  - Giriş ekranı (`IntroScene`) Luksor teması. Dünya haritasında Luksor artık "yakında" değil.
+- **Bölgeye göre kasaba:** Albuquerque ve Luksor'da duvar renkleri (`TUFF_BY`), düz çatılar (`flatRoof`: vigalar / kubbe), kenarda peri bacası yerine mesa ya da dikilitaş ve hurma kümesi, ağaçlar (kaktüs, yucca, kavak / hurma), çevre arazi renkleri ve tarlalar, Luksor'da Nil şeridi, uzak sırtlar (mesalar / Teb tepeleri ve hurma siluetleri), zemin renkleri, mağara otel yerine kayaya oyulmuş oda (Albuquerque) ya da Nubya evi (Luksor), otel bahçesinde servi yerine kavak / hurma, holding ofisinin penceresindeki manzara. Süsler her bölgede.
+- **Metinler** (altı dil): Luksor adı, ülke, bölüm adları ve hedefleri, rakip ve patron replikleri, Nil sezonu uyarıları, Hezarfen uyarısı, gazete adı, başarım adları.
+
+Önceki durum: Swift uygulaması prototip v103 ile aynıydı. v101: XL balonun adı "Dev balon", "İmza balon" etiketi kalktı.
 
 v98–v100 aktarımı (Ekim 2026): reklam yok (bölüm kartındaki reklam düğmesi ve `doubleChapterReward` kalktı); Hezarfen balonu yerine Kurukafa balon (`StoreItem.skull`, `EnvelopeShape.skull`; eski kayıtlardaki "hezarfen" kurukafa olarak okunur); Hezarfen övgüleri (`Praise`, `Game.praiseCheck`, `HezMessage.praise`, düğme "Sağ ol usta"); ilk 3 günde kırmızı bayrak yok, ilk 20 günde kırmızı bayrakta ikinci onay (`RedFlagView`); kartpostal paylaşımı (`ShareCardArt`, `ShareCardButton`, iOS paylaşım sayfası). Altı dilde metinler.
 
