@@ -3707,7 +3707,8 @@ function balloon3dCore(x, y, R, cols, o = {}) {
   ctx.strokeStyle = 'rgba(50,30,25,.9)'; ctx.lineWidth = Math.max(1, R * .008);
   for (const s of [-1, -.35, .35, 1]) { ctx.beginPath(); ctx.moveTo(s * mouthW * .8, mouth + R * .1); ctx.lineTo(s * bw * .45, by); ctx.stroke(); }
   ctx.fillStyle = '#2a2a30'; ctx.fillRect(-R * .09, by - R * .2, R * .18, R * .08);
-  if (o.flame) flame3d(0, by - R * .2, R * (o.flameScale || .55));
+  /* the flame rises into the mouth: only the part below the skirt shows, the rest burns inside the envelope */
+  if (o.flame) { ctx.save(); ctx.beginPath(); ctx.rect(-R, mouth + R * .11, R * 2, R * 2); ctx.clip(); flame3d(0, by - R * .2, R * (o.flameScale || .55)); ctx.restore(); }
   const bg = ctx.createLinearGradient(-bw / 2, 0, bw / 2, 0); bg.addColorStop(0, '#4a2c18'); bg.addColorStop(.5, '#8a5a32'); bg.addColorStop(1, '#3a2010');
   ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(-bw / 2, by); ctx.lineTo(bw / 2, by); ctx.lineTo(bw * .44, by + bh); ctx.lineTo(-bw * .44, by + bh); ctx.closePath(); ctx.fill();
   ctx.strokeStyle = 'rgba(30,15,8,.35)'; ctx.lineWidth = Math.max(1, R * .005);
@@ -3795,7 +3796,7 @@ function balloon(x, y, R, c1, c2, burn, alpha, ad, design) {
   const by = cy + R * 1.55, bb = y - R * .32;
   ctx.beginPath(); ctx.moveTo(x - R * .22, by); ctx.lineTo(x - R * .24, bb); ctx.moveTo(x + R * .22, by); ctx.lineTo(x + R * .24, bb); ctx.stroke();
   ctx.fillStyle = '#6b4426'; ctx.fillRect(x - R * .3, bb, R * .6, R * .32);
-  if (burn) { const f = 1 + Math.sin(T * 31) * .12 + Math.sin(T * 53 + 1.7) * .08, g = 1 + Math.sin(T * 47 + .6) * .1, sw = Math.sin(T * 11) * R * .015; ell(x + sw, by + R * .02, R * .1, R * .28 * f, 'rgba(255,200,90,.95)'); ell(x + sw * .6, by + R * .06, R * .05, R * .14 * g, '#fff4cc'); }
+  if (burn) { const f = 1 + Math.sin(T * 31) * .12 + Math.sin(T * 53 + 1.7) * .08, g = 1 + Math.sin(T * 47 + .6) * .1, sw = Math.sin(T * 11) * R * .015; ctx.save(); ctx.beginPath(); ctx.rect(x - R, by, R * 2, R * 2); ctx.clip(); ell(x + sw, by + R * .02, R * .1, R * .28 * f, 'rgba(255,200,90,.95)'); ell(x + sw * .6, by + R * .06, R * .05, R * .14 * g, '#fff4cc'); ctx.restore(); }
   ctx.restore();
 }
 function scenery(p, groundY, topY, camX, kx, dt, showBg, f) {
