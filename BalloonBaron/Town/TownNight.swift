@@ -328,6 +328,7 @@ struct NightView: View {
                     }
                 }
                 .ignoresSafeArea()
+                .accessibilityHidden(true)
                 .background { GeometryReader { g in Color.clear.onAppear { size = g.size } } }
                 .gesture(pan.simultaneously(with: pinch))
                 caption(day: s.day)

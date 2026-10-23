@@ -147,7 +147,7 @@ struct PaperView: View {
                     .font(serif(25, .black)).foregroundStyle(ink)
                     .multilineTextAlignment(.center).frame(maxWidth: .infinity)
                     .fixedSize(horizontal: false, vertical: true)
-                PaperPhoto().frame(height: 96).overlay(Rectangle().stroke(ink, lineWidth: 1))
+                PaperPhoto().frame(height: 96).overlay(Rectangle().stroke(ink, lineWidth: 1)).accessibilityHidden(true)
                 if let sub = lead.subline(company) {
                     Text(sub).font(serif(15)).foregroundStyle(ink2).fixedSize(horizontal: false, vertical: true)
                 }
@@ -490,6 +490,9 @@ struct PostcardArt: View {
         .aspectRatio(150 / 96, contentMode: .fit)
         .saturation(day == nil ? 0 : 1)
         .opacity(day == nil ? 0.45 : 1)
+        .accessibilityElement()
+        .accessibilityLabel(day.map { loc("album.earned", achievement.title, achievement.detail, num($0)) }
+                            ?? loc("album.lockedHint", achievement.title, achievement.detail))
     }
 }
 
@@ -523,6 +526,7 @@ struct PostcardView: View {
                 .rotationEffect(.degrees(-2))
                 .shadow(color: Theme.ink.opacity(0.25), radius: 14, y: 8)
                 .frame(maxWidth: .infinity)
+                .accessibilityHidden(true)
             CardText.title(achievement.title).frame(maxWidth: .infinity)
             CardText.lead(achievement.detail + ".").frame(maxWidth: .infinity)
             Button(loc("postcard.keep")) {

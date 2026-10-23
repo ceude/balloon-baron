@@ -245,6 +245,8 @@ struct CollectView: View {
         }
         .frame(maxHeight: 180, alignment: .top)
         .clipped()
+        // The seats are a picture of the count in the header.
+        .accessibilityHidden(true)
     }
 
     private func seat(_ m: CollectModel, _ i: Int, side: CGFloat, radius: CGFloat) -> some View {
@@ -266,6 +268,7 @@ struct CollectView: View {
                     Spacer(minLength: 4)
                     Text(num(m.counts[i])).font(Theme.font(18, .bold, condensed: true)).foregroundStyle(.white)
                 }
+                .accessibilityElement(children: .combine)
             }
         }
     }

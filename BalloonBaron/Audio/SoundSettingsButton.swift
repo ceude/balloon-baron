@@ -20,6 +20,7 @@ struct SoundSettingsButton: View {
                 .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(loc(on ? "menu.soundOn" : "menu.soundOff"))
     }
 }
 

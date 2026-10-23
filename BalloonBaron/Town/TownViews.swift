@@ -21,6 +21,8 @@ final class TownCanvasModel {
     /// Gliding home from the night's camera: its horizon at the start, and how far the glide has come (0 … 1).
     var hzFrom: CGFloat?
     var glided: CGFloat = 0
+    /// Reduce Motion: glides cut straight to where they're going.
+    var instant = false
 
     func time(_ date: Date) -> Double { date.timeIntervalSinceReferenceDate - t0 }
     var now: Double { time(Date()) }
@@ -28,7 +30,7 @@ final class TownCanvasModel {
     /// `inOut` eases in as well as out (a glide that starts from rest and leads into another); `done` runs on the
     /// main queue once the view arrives.
     func glide(to target: TownViewport, dur: Double = 0.45, inOut: Bool = false, done: (() -> Void)? = nil) {
-        anim = (start: now, from: view, to: target, dur: dur, inOut: inOut, done: done)
+        anim = (start: now, from: view, to: target, dur: instant ? 0.001 : dur, inOut: inOut, done: done)
     }
 
     /// Glide in on a grid point, at a zoom that shows building names.
@@ -96,6 +98,7 @@ struct HomeTownView: View {
     /// Where this view's own (safe-area) frame starts on screen. The canvas ignores the safe area and draws in
     /// screen coordinates, while tap and pinch locations arrive in the view's frame; adding this lines them up.
     @State private var origin: CGPoint = .zero
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         if let s = store.state {
@@ -107,6 +110,7 @@ struct HomeTownView: View {
                     Canvas { ctx, sz in
                         let h = dockTop > 0 ? min(dockTop, sz.height) : sz.height * 0.6
                         model.size = sz
+                        model.instant = reduceMotion
                         model.home = homeViewport(width: sz.width, dockTop: h)
                         if model.mode == .home { model.view = model.home } else { model.step(now: model.time(tl.date)) }
                         // At home the town stops at the dock; zoomed in it fills the screen.
@@ -147,6 +151,14 @@ struct HomeTownView: View {
                 .accessibilityLabel(loc("town.title"))
                 .accessibilityAddTraits(.isButton)
                 .accessibilityAction { zoomIn(at: (7, 8)) }
+                // The buildings are only drawn; VoiceOver lists them as actions that open what a tap opens.
+                .accessibilityActions {
+                    if !store.collecting && store.morningEvent == nil {
+                        ForEach(Town.buildings(s), id: \.id) { b in
+                            Button(b.name) { store.tapTown(b.tap) }
+                        }
+                    }
+                }
                 .onChange(of: store.hqDive) { _, dive in if dive { diveIntoTower() } }
                 .onChange(of: covered) { _, c in
                     if c { DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { if covered { asleep = true } } } else { asleep = false }
@@ -188,7 +200,7 @@ struct HomeTownView: View {
         }
         if sc.from == nil { sc.from = (now, model.view) }
         guard let to = sc.target, let from = sc.from else { return }
-        let k = CGFloat(CollectScene.easeIO(min(max((now - from.t) / 0.8, 0), 1)))
+        let k = reduceMotion ? 1 : CGFloat(CollectScene.easeIO(min(max((now - from.t) / 0.8, 0), 1)))
         var v = TownViewport(z: from.view.z + (to.z - from.view.z) * k, ox: from.view.ox + (to.ox - from.view.ox) * k,
                              oy: from.view.oy + (to.oy - from.view.oy) * k)
         v.noLabels = true
@@ -203,7 +215,7 @@ struct HomeTownView: View {
         guard let from = sc.from else { return }
         let spot = e.townSpot, z: CGFloat = 1.15, p = TownGeo.iso(spot.0, spot.1 + 1.2)
         let to = TownViewport(z: z, ox: sz.width / 2 - p.x * z, oy: sz.height * 0.55 - p.y * z)
-        let k = CGFloat(CollectScene.easeIO(min(max((now - from.t) / 0.65, 0), 1)))
+        let k = reduceMotion ? 1 : CGFloat(CollectScene.easeIO(min(max((now - from.t) / 0.65, 0), 1)))
         var v = TownViewport(z: from.view.z + (to.z - from.view.z) * k, ox: from.view.ox + (to.ox - from.view.ox) * k,
                              oy: from.view.oy + (to.oy - from.view.oy) * k)
         v.noLabels = true
@@ -268,7 +280,8 @@ struct HomeTownView: View {
     /// Two smooth stages, one after the other: glide to the tower, then dive into it; the office opens on arrival.
     private func diveIntoTower() {
         store.hqDive = false
-        guard model.mode != .leaving else { store.page = .holding; return }
+        // Reduce Motion: no flight into the tower, the office just opens.
+        guard model.mode != .leaving, !reduceMotion else { store.page = .holding; return }
         diving = true
         let dive = {
             let z: CGFloat = 1.5, c = TownGeo.iso(Self.tower.0, Self.tower.1), sz = model.size

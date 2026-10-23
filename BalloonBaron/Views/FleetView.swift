@@ -137,6 +137,7 @@ enum FleetUI {
             .buttonStyle(.plain)
             .disabled(disabled || selected)
             .opacity(disabled && !selected ? 0.45 : 1)
+            .accessibilityAddTraits(selected ? .isSelected : [])
         }
     }
 

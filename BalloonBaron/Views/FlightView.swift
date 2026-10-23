@@ -332,6 +332,8 @@ private struct FlightStage: View {
                 .onChanged { _ in if !m.skyHold { m.setHold(sky: true) } }
                 .onEnded { _ in m.setHold(sky: false) }
         )
+        // The burner button carries the altitude and fuel for VoiceOver.
+        .accessibilityHidden(true)
     }
 
     // MARK: Buttons
@@ -387,6 +389,14 @@ private struct FlightStage: View {
                     }
                     .onEnded { _ in m.setHold(button: false) }
             )
+            // VoiceOver can't press and hold: double-tapping switches the burner on and off, and the value reads
+            // the panel's altitude (to 10 m, so it doesn't change every frame) and fuel.
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(loc("intro.burn.a11y"))
+            .accessibilityValue(loc("a11y.flight.status", num(Int((m.sim.alt / 10).rounded()) * 10), percent(max(0, m.sim.fuel) / 100)))
+            .accessibilityHint(loc("a11y.flight.burnHint"))
+            .accessibilityAddTraits(on ? [.isButton, .isSelected] : [.isButton])
+            .accessibilityAction { m.setHold(button: !m.buttonHold) }
     }
 
     // MARK: Tips

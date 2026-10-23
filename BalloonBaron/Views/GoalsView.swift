@@ -144,6 +144,10 @@ struct ChapterGoalRow: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(Color(hex: "#f1edf8"), in: RoundedRectangle(cornerRadius: 14))
+        // One element: the goal, then its progress ("3/5") and whether it's done.
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(goal.label(region: state.region))
+        .accessibilityValue(done && text != loc("goals.finished") ? text + ", " + loc("goals.finished") : text)
     }
 }
 
@@ -306,5 +310,6 @@ struct CrownIcon: View {
             ctx.fill(dot(16, 28, 3), with: .color(Color(hex: "#3ad0c0")))
             ctx.fill(dot(48, 28, 3), with: .color(Color(hex: "#3ad0c0")))
         }
+        .accessibilityHidden(true)
     }
 }

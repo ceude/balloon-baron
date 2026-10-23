@@ -33,6 +33,7 @@ struct WorldMapView: View {
                     ctx.fill(land, with: .color(Color.white.opacity(0.16)))
                     ctx.stroke(land, with: .color(Color.white.opacity(0.28)), style: StrokeStyle(lineWidth: 0.6, lineJoin: .round))
                 }
+                .accessibilityHidden(true)
                 ForEach(MapPin.allCases, id: \.self) { pin in
                     pinView(pin, s, size: geo.size)
                 }
@@ -59,6 +60,7 @@ struct WorldMapView: View {
                     .fixedSize()
                     .offset(side.offset)
             }
+            .accessibilityElement(children: .combine)
             .position(x: CGFloat(x), y: CGFloat(y))
             .opacity(status == .soon ? 0.6 : 1)
     }

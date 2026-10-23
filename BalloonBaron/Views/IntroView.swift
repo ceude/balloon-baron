@@ -78,6 +78,8 @@ struct IntroView: View {
     @State private var holding = false
     @State private var out = false
     @State private var fade = false
+    /// Reduce Motion: the ring around the burner stays still instead of pulsing.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         let s = store.state
@@ -89,6 +91,7 @@ struct IntroView: View {
                     }
                 }
                 .ignoresSafeArea()
+                .accessibilityHidden(true)
                 if !out {
                     burnButton
                         .padding(.bottom, max(28, g.safeAreaInsets.bottom + 16) - g.safeAreaInsets.bottom)
@@ -151,7 +154,7 @@ struct IntroView: View {
     /// CSS `ring` keyframes: 1.5 s ease-in-out, scale 0.94 to 1.1, opacity 0.9 to 0.35.
     private var pulseRing: some View {
         TimelineView(.animation) { tl in
-            let k = (1 - cos(tl.date.timeIntervalSinceReferenceDate * 2 * Double.pi / 1.5)) / 2
+            let k = reduceMotion ? 0 : (1 - cos(tl.date.timeIntervalSinceReferenceDate * 2 * Double.pi / 1.5)) / 2
             Circle()
                 .stroke(Color.white.opacity(0.85), lineWidth: 3)
                 .frame(width: 124, height: 124)

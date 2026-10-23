@@ -190,6 +190,7 @@ struct HomeView: View {
             if multi {
                 Button { showRegions = true } label: { chip(s.region.title + " ▾") }
                     .buttonStyle(.plain)
+                    .accessibilityLabel(s.region.title)
             }
             Spacer(minLength: 4)
             Button {
@@ -198,10 +199,14 @@ struct HomeView: View {
                 chip(eur(s.cash), color: s.cash < 0 ? Theme.red : .white)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(loc("merge.cash"))
+            .accessibilityValue(eur(s.cash))
             Button { store.showRepChart = true } label: {
                 chip(starsText(s.rep), color: Theme.sun)
             }
             .buttonStyle(.plain)
+            .accessibilityLabel(loc("merge.popularity"))
+            .accessibilityValue(starsText(s.rep))
             Button { store.showMenu = true } label: {
                 Image(systemName: "line.3.horizontal")
                     .font(.system(size: 17, weight: .bold))
@@ -322,6 +327,9 @@ struct HomeView: View {
             EmptyView()
         }
         .buttonStyle(SideTileStyle(icon: icon, title: title, badge: navMark(badge: badge, dot: dot)))
+        // VoiceOver reads the badge ("2/4") and the red dot, which are only drawn.
+        .accessibilityLabel(title)
+        .accessibilityValue([badge, dot ? loc("a11y.attention") : nil].compactMap { $0 }.joined(separator: ", "))
     }
 
     @ViewBuilder
@@ -378,11 +386,14 @@ struct HomeView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
+                .accessibilityLabel(top.title)
+                .accessibilityValue(list.count > 1 ? loc("home.moreAlerts", num(list.count - 1)) : "")
             }
             pill(color: Color.white.opacity(0.12)) {
                 ProtoIcon(kind: .fleet, color: .white).frame(width: 18, height: 18)
                 Text(verbatim: num(c.flying) + "/" + num(c.total))
             }
+            .accessibilityLabel(loc("home.fleet.count", num(c.flying), num(c.total)))
             if s.unlocked.contains(.insurance) {
                 pill(color: Color.white.opacity(0.12), fg: ins == 0 ? Color(hex: "#ffb4a6") : .white) {
                     Text(loc(ins == 2 ? "home.strip.insured" : ins == 1 ? "home.strip.halfInsured" : "home.strip.uninsured"))

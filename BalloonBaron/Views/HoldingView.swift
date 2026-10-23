@@ -73,6 +73,9 @@ struct HoldingView: View {
                     Text(g.title).font(Theme.font(15, .semibold)).strikethrough(d)
                     Spacer()
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(g.title)
+                .accessibilityValue(d ? loc("goals.finished") : "")
             }
             hint(loc("hgoal.hint"))
         }
@@ -496,14 +499,33 @@ struct HoldingCashChart: View {
                 })
             }
             .frame(height: 150)
-            if let i = picked, days.indices.contains(i) {
-                let d = days[i]
-                let net = d.income - d.expense
-                Text(loc("holding.chartTip", num(d.day), eurH(d.income), eurH(d.expense), (net >= 0 ? "+" : "−") + eurH(abs(net))))
+            // VoiceOver swipes up and down through the days; the value reads the picked (or latest) day.
+            .accessibilityElement()
+            .accessibilityLabel(loc("a11y.holding.chart"))
+            .accessibilityValue(tip(picked ?? days.count - 1) ?? "")
+            .accessibilityAdjustableAction { dir in
+                guard !days.isEmpty else { return }
+                let i = picked ?? days.count - 1
+                switch dir {
+                case .increment: picked = min(i + 1, days.count - 1)
+                case .decrement: picked = max(i - 1, 0)
+                @unknown default: break
+                }
+            }
+            if let i = picked, let t = tip(i) {
+                Text(t)
                     .font(Theme.font(12, .semibold))
                     .opacity(0.85)
+                    .accessibilityHidden(true)
             }
         }
+    }
+
+    /// "Day 12 · income … · expenses … · net …" for one bar.
+    private func tip(_ i: Int) -> String? {
+        guard days.indices.contains(i) else { return nil }
+        let d = days[i], net = d.income - d.expense
+        return loc("holding.chartTip", num(d.day), eurH(d.income), eurH(d.expense), (net >= 0 ? "+" : "−") + eurH(abs(net)))
     }
 
     /// The largest amount a bar shows in full.
@@ -731,6 +753,7 @@ struct HoldingArt: View {
             case .lab: drawLab(&ctx, k)
             }
         }
+        .accessibilityHidden(true)
     }
 
     private static let gold = Color(hex: "#ffc23d")

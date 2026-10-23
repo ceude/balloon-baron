@@ -191,7 +191,7 @@ struct BazaarView: View {
                         store.storeItem = k
                     } label: {
                         VStack(spacing: 2) {
-                            StoreThumb(item: k, colors: s.colors).frame(width: 60, height: 68)
+                            StoreThumb(item: k, colors: s.colors).frame(width: 60, height: 68).accessibilityHidden(true)
                             Text(k.title).font(Theme.font(14, .bold, condensed: true)).foregroundStyle(Theme.ink)
                                 .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
                             Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : StoreItem.price(k))
@@ -236,6 +236,7 @@ struct StoreItemView: View {
                 DecorNightPreview(item: item, state: s)
             } else {
                 StoreThumb(item: item, colors: s?.colors ?? [])
+                    .accessibilityHidden(true)
                     .frame(width: 96, height: 108)
                     .frame(maxWidth: .infinity)
                     .padding(8)

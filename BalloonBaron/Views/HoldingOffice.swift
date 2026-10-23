@@ -9,6 +9,7 @@ struct HoldingOfficeView: View {
     @State private var unit: HoldingUnit?
     @State private var shown = false
     @State private var start = Date()
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         GeometryReader { geo in
@@ -27,6 +28,7 @@ struct HoldingOfficeView: View {
                         }
                     }
                     .ignoresSafeArea()
+                    .accessibilityHidden(true)
                     header(s)
                     ForEach(Array(HoldingUnit.allCases.enumerated()), id: \.element) { i, u in
                         spot(u, s, at: L.spot(u), delay: Double(i) * 0.05 + 0.2)
@@ -35,7 +37,8 @@ struct HoldingOfficeView: View {
             }
         }
         .opacity(shown ? 1 : 0)
-        .scaleEffect(shown ? 1 : 1.08)
+        // Reduce Motion: a plain fade, without the zoom.
+        .scaleEffect(shown || reduceMotion ? 1 : 1.08)
         .onAppear { withAnimation(.timingCurve(0.3, 0.7, 0.3, 1, duration: 0.45)) { shown = true } }
         .sheet(item: $unit) { u in
             HoldingView(unit: u, onClose: { unit = nil })
@@ -94,6 +97,8 @@ struct HoldingOfficeView: View {
             .fixedSize()
         }
         .buttonStyle(.plain)
+        .accessibilityLabel(loc("hq.\(u.rawValue)"))
+        .accessibilityValue(st.alert ? st.text + ", " + loc("a11y.attention") : st.text)
         .position(x: p.x, y: p.y - 22)
         .opacity(shown ? 1 : 0)
         .animation(.easeOut(duration: 0.35).delay(delay), value: shown)

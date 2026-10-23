@@ -1,7 +1,7 @@
 """Builds BalloonBaron/Localizable.xcstrings from these sources. Edit the .py files, then run: python3 tools/strings/build.py"""
 import json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import s1_ui, s2_hez, s3_events, s4_reviews, s5_v2, s6_world, s7_home, s8_world, s9_fleet, s10_flight, s11_intro, s12_extra, s13_report, s14_town, s15_v85, s16_morning, s17_boss, s18_bazaar, s19_home, s20_office, s21_platform
+import s1_ui, s2_hez, s3_events, s4_reviews, s5_v2, s6_world, s7_home, s8_world, s9_fleet, s10_flight, s11_intro, s12_extra, s13_report, s14_town, s15_v85, s16_morning, s17_boss, s18_bazaar, s19_home, s20_office, s21_platform, s22_a11y
 S = s1_ui.S
 LANGS = ["en", "tr", "de", "es", "ja", "ko"]
 def specs(t):

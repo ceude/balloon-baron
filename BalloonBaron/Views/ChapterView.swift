@@ -6,6 +6,8 @@ struct ChapterView: View {
     @Environment(GameStore.self) private var store
     let news: ChapterNews
     @State private var shown = false
+    /// Reduce Motion: the crown fades in without the bouncy zoom.
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// After Devam: the chapter that starts now and its goals.
     @State private var showNext = false
     /// The rewarded ad was watched: the reward came twice. `adLeft` counts the ad down.
@@ -51,7 +53,7 @@ struct ChapterView: View {
                     .frame(height: 110)
                 CrownIcon()
                     .frame(width: 112, height: 84)
-                    .scaleEffect(shown ? 1 : 0.4)
+                    .scaleEffect(shown || reduceMotion ? 1 : 0.4)
                     .opacity(shown ? 1 : 0)
             }
             .frame(maxWidth: .infinity)
@@ -179,5 +181,6 @@ struct ChapterConfetti: View {
             }
         }
         .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
