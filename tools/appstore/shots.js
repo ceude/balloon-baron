@@ -23,7 +23,7 @@ const only = process.argv[2];
       Object.assign(window, keep); sfx = keep.sfx; save = keep.save; showReport = keep.showReport; refresh = keep.refresh; startFlight = keep.startFlight;
       Math.random = R0;
       S.company = 'Şafak Balon';
-      S.iap = Object.assign({}, S.iap, { lanterns: 1, fountain: 1, flags: 1 });
+      S.iap = Object.fromEntries(Object.keys(SHOP).map(k => [k, 1])); /* every paid item owned: nothing in the shots looks locked or priced */
       S.hezQ = []; S.paper = null; S.paperNext = null; S.eventDue = false; S.nextEvent = 99999; S.chapterNews = null; S.late = null; S.newPost = []; S.tutorialDone = true; S.tips = new Proxy({}, { get: () => 1 });
       startDay();
     })()`);
@@ -60,7 +60,7 @@ const only = process.argv[2];
     await p.waitForTimeout(3200); await shot('night');
   }
   if (!only || only === 'design') {
-    await load("S.workshop = { day: 5 }; S.iap = Object.assign({}, S.iap, { heart: 1, star: 1, hezarfen: 1, gold: 1, tile: 1 });");
+    await load("S.workshop = { day: 5 };");
     await p.evaluate(() => showDesigner()); await p.waitForTimeout(800); await shot('design');
   }
   if (!only || only === 'crew') { await load(); await p.evaluate(() => openPage('crew')); await p.waitForTimeout(600); await shot('crew'); }

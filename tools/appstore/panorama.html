@@ -14,29 +14,34 @@ canvas { display: block; }
 </style>
 </head>
 <body>
-<canvas id="c" width="10320" height="2796"></canvas>
+<canvas id="c" width="11610" height="2796"></canvas>
 <script src="art.js"></script>
 <script>
-/* The eight App Store screens drawn as one wide picture, so the big balloons between them carry on from one
+/* The App Store screens drawn as one wide picture, so the big balloons between them carry on from one
    screen to the next while you swipe. Each screen: caption on top, the real game screen in a phone below.
-   panorama.js opens this page with ?lang=tr&raw=<folder of raw-<scene>.png> and cuts it into eight. */
-const P = 1290, N = 8;
+   panorama.js opens this page with ?lang=tr&raw=<folder of raw-<scene>.png> and cuts it into screens. */
+const P = 1290, N = 9;
 W = P * N; H = 2796;
 const cv = document.getElementById('c'), ctx = cv.getContext('2d');
 const q = new URLSearchParams(location.search), lang = q.get('lang') || 'tr', raw = q.get('raw');
 
+/* In App Store order: the first three show in search results, so they carry the hook (build an empire, fly it
+   yourself, grow it into a holding); then going global, the night, and the rest. A 'poster' screen is
+   render.html's own picture instead of a phone. */
 const T = {
   tr: [
-    ['home', 'SICAK HAVA BALONU İMPARATORLUĞU', ['KAPADOKYA’DA BALON', 'ŞİRKETİNİ KUR'], 'Kasabanı büyüt, gökyüzünü balonlarınla doldur'],
+    ['home', 'SICAK HAVA BALONU İMPARATORLUĞU', ['KAPADOKYA’DA BALON', 'İMPARATORLUĞU KUR'], 'Kasabanı büyüt, gökyüzünü balonlarınla doldur'],
     ['flight', 'GERÇEK UÇUŞ, GERÇEK RİSK', ['BRÜLÖRÜ YAK,', 'RÜZGÂRI OKU'], 'Doğru rüzgâr katmanını bul, kusursuz in'],
+    ['holding', 'HOLDİNG PATRONU', ['BİR SEPETTEN', 'HOLDİNGE'], 'New York, İstanbul, Tokyo, Seul: ofislerini aç'],
+    ['poster-abq'],
     ['night', 'GECE OLUNCA', ['KASABAN', 'IŞIL IŞIL'], 'Havai fişekler, fener alayı, ateş böcekleri'],
-    ['collect', 'SABAH TELAŞI', ['YOLCULARINI', 'TOPLA'], 'Ofisinin önünde sıra, safari cipleri yolda'],
     ['design', 'TASARIM STÜDYOSU', ['BALONUNU', 'TASARLA'], 'Desenler, renkler, kalp ve yıldız balonlar'],
+    ['collect', 'SABAH TELAŞI', ['YOLCULARINI', 'TOPLA'], 'Ofisinin önünde sıra, safari cipleri yolda'],
     ['crew', 'EKİBİNİ KUR', ['HER PİLOTUN BİR', 'KARAKTERİ VAR'], 'Temkinli mi, gözü kara mı? Seçim senin'],
     ['album', 'BAŞARIMLAR', ['22 KARTPOSTAL', 'TOPLA'], 'Her başarı Kapadokya’dan bir anı'],
-    ['holding', 'HOLDİNG PATRONU', ['BİR SEPETTEN', 'HOLDİNGE'], 'Kapadokya’dan Albuquerque’ye, dünyaya açıl'],
   ]
 }[lang];
+const poster = i => T[i][0].startsWith('poster');
 
 /* The phone: 74% of the screen, bottom-centred in each panel, like compose.py. */
 const S = .74, SW = Math.round(P * S), SH = Math.round(H * S), PY = H - SH - 78;
@@ -46,7 +51,7 @@ const phoneX = i => i * P + (P - SW) / 2;
    screen. `front` ones sit over the phone's edge for depth; the rest float behind. */
 const BIG = [
   { x: 60, y: 1950, R: 250, c: ['#14a39a', '#e8fff9'], flame: true },
-  { x: P, y: 1180, R: 310, c: ['#ff5e3a', '#ffc23d'], flame: true, band: '#2b2350', text: 'ŞAFAK', people: 5 },
+  { x: P, y: 1180, R: 310, c: ['#ff5e3a', '#ffc23d'], flame: true, people: 5 },
   { x: P * 2, y: 2080, R: 250, c: ['#5aa9e6', '#eaf4fc'] },
   { x: P * 2, y: 1040, R: 215, c: ['#ffc23d', '#e5432f'], flame: true, front: true },
   { x: P * 3, y: 1380, R: 330, c: ['#9b7be0', '#f2ebff'], pattern: 'stars', pc: ['#ffc23d', '#ffffff'], flame: true },
@@ -56,7 +61,9 @@ const BIG = [
   { x: P * 6, y: 1950, R: 310, c: ['#3ad0c0', '#1f6f8b'], pattern: 'zigzag', pc: ['#ffffff', '#ffc23d'] },
   { x: P * 6, y: 1040, R: 210, c: ['#e5432f', '#ffffff'], flame: true, front: true },
   { x: P * 7, y: 1320, R: 280, c: ['#ff8a3d', '#ffe0b0'], pattern: 'rainbow', flame: true },
-  { x: W - 60, y: 2200, R: 250, c: ['#ffc23d', '#2b2350'], pattern: 'checker', pc: ['#2b2350', '#ffc23d'] },
+  { x: P * 8, y: 2150, R: 270, c: ['#14a39a', '#ffc23d'], pattern: 'dots', pc: ['#ffc23d', '#ffffff'] },
+  { x: P * 8, y: 1040, R: 210, c: ['#9b7be0', '#ffffff'], flame: true, front: true },
+  { x: W - 60, y: 1500, R: 250, c: ['#ffc23d', '#2b2350'], pattern: 'checker', pc: ['#2b2350', '#ffc23d'] },
 ];
 function big(b) {
   balloon(b.x, b.y, b.R, b.c, { gores: 14, light: -1, flame: !!b.flame, flameScale: .6, band: b.band, text: b.text, people: b.people,
@@ -71,7 +78,18 @@ function phone(i, img) {
   ctx.save(); rrect(x, PY, SW, SH, rad); ctx.clip(); ctx.drawImage(img, x, PY, SW, SH); ctx.restore();
 }
 
+/* A poster screen keeps its own picture; its sides fade into the shared sky so the strip stays one piece. */
+function posterPanel(i, img) {
+  const off = document.createElement('canvas'); off.width = P; off.height = H;
+  const o = off.getContext('2d'); o.drawImage(img, 0, 0, P, H);
+  const m = o.createLinearGradient(0, 0, P, 0);
+  m.addColorStop(0, 'rgba(0,0,0,0)'); m.addColorStop(.12, 'rgba(0,0,0,1)'); m.addColorStop(.88, 'rgba(0,0,0,1)'); m.addColorStop(1, 'rgba(0,0,0,0)');
+  o.globalCompositeOperation = 'destination-in'; o.fillStyle = m; o.fillRect(0, 0, P, H);
+  ctx.drawImage(off, i * P, 0);
+}
+
 function caption(i) {
+  if (poster(i)) return;
   const [, kicker, lines, sub] = T[i];
   ctx.save(); ctx.translate(i * P, 0);
   const keep = W; W = P;
@@ -84,7 +102,7 @@ function caption(i) {
 function load(src) { return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = src; }); }
 
 Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px BC'), document.fonts.load('600 40px B')])
-  .then(() => Promise.all(T.map(t => load(`${raw}/raw-${t[0]}.png`))))
+  .then(() => Promise.all(T.map(t => load(`${raw}/${t[0].startsWith('poster') ? t[0] : 'raw-' + t[0]}.png`))))
   .then(imgs => {
     /* one sky over all eight screens: dawn on the left, the sun climbing to the right */
     sky([[0, '#140b2e'], [.22, '#3a1d52'], [.42, '#8a3a62'], [.58, '#e0704e'], [.7, '#ffb36b'], [.78, '#ffd59a'], [1, '#ffd59a']]);
@@ -98,9 +116,10 @@ Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px 
     haze(H * .7, H * .86, '#ffb07a', 0, .35);
     chimneyField(H * 1.0, 40, 620, 1150, 31, { lit: '#d9966e', dark: '#2e1620', windows: 3, rim: '#ffcf8a' });
     haze(H * .9, H, '#120814', 0, .9);
+    grain(8); // before any picture goes on (they taint the canvas for reading)
+    imgs.forEach((im, i) => { if (poster(i)) posterPanel(i, im); });
     BIG.filter(b => !b.front).forEach(big);
-    grain(8); // before the game screens go on (they taint the canvas for reading)
-    imgs.forEach((im, i) => phone(i, im));
+    imgs.forEach((im, i) => { if (!poster(i)) phone(i, im); });
     BIG.filter(b => b.front).forEach(big);
     T.forEach((_, i) => caption(i));
     document.title = 'done';
