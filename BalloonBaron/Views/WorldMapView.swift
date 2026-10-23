@@ -107,8 +107,8 @@ struct WorldMapView: View {
 
     private func labelSide(_ pin: MapPin) -> LabelSide {
         switch pin {
-        case .cap, .abq: .right
-        case .luxor, .europe: .left
+        case .cap, .abq, .mara: .right
+        case .lux, .bri: .left
         case .asia: .below
         }
     }
@@ -151,7 +151,7 @@ struct WorldMapView: View {
     private func subtitle(_ pin: MapPin, _ status: MapPinStatus, _ s: GameState) -> String {
         switch status {
         case .here:
-            return loc(pin == .abq ? "map.here.abq" : "map.here.cap")
+            return loc("map.here.\(pin.rawValue)")
         case .auto, .problem:
             guard let r = pin.region, let auto = s.parked[r]?.auto else { return "" }
             let daily = auto.today != 0 ? auto.today : Int(auto.base.rounded())
@@ -159,11 +159,11 @@ struct WorldMapView: View {
             if let open = auto.issue { text += " " + loc("map.problemSub", open.kind.title) }
             return text
         case .open:
-            return loc("map.openSub", eurH(Holding.entryFee))
+            return loc(pin == .lux ? "map.openSub.lux" : "map.openSub", eurH(pin.region?.entryFee ?? Holding.entryFee))
         case .locked:
-            return loc("map.lockedSub")
+            return loc(pin == .lux ? "map.lockedSub.lux" : "map.lockedSub")
         case .soon:
-            return pin.mystery ? loc("map.mysterySub", pin.land) : loc("map.luxorSub")
+            return pin.mystery ? loc("map.mysterySub", pin.land) : loc("map.soonSub.\(pin.rawValue)")
         }
     }
 
@@ -179,7 +179,7 @@ struct WorldMapView: View {
             }
             .fixedSize()
         case .open:
-            WorldPillButton(title: loc("map.enter", eurH(Holding.entryFee)), enabled: game.canEnterRegion) { store.goTo(r) }
+            WorldPillButton(title: loc("map.enter", eurH(r.entryFee)), enabled: game.canEnterRegion(r)) { store.goTo(r) }
                 .fixedSize()
         default:
             EmptyView()
@@ -197,7 +197,7 @@ private enum MapPinStatus: Equatable {
             self = .here
         } else if let p = s.parked[r] {
             self = p.auto.issue != nil ? .problem : .auto
-        } else if r != .cap && s.isBaron(.cap) {
+        } else if r != .cap && s.regionOpen(r) {
             self = .open
         } else {
             self = .locked

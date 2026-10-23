@@ -60,7 +60,10 @@ private struct FlightLook {
 
 /// The running flight (`FL` in the prototype). A plain class: the TimelineView redraws every frame.
 final class FlightModel {
-    enum Tip { case tutorial, pax, fuel }
+    enum Tip { case tutorial, pax, fuel, vent }
+
+    /// Shown once ever, the first time a flight leaves the ground.
+    static let ventTipKey = "ventTip"
 
     var sim: FlightSim
     fileprivate let look: FlightLook
@@ -74,6 +77,9 @@ final class FlightModel {
     var driftDt = 0.0
     var skyHold = false
     var buttonHold = false
+    /// Holding the parachute vent button.
+    var ventHold = false
+    private var ventOn = false
     var tip: Tip?
     var mdoneAt: Double?
     /// When the flight's moment (thermal, greeting, photo) was caught.
@@ -87,12 +93,12 @@ final class FlightModel {
     var onLanded: (() -> Void)?
 
     init(state s: GameState, weather w: Weather, pax: Int) {
-        sim = FlightSim(weather: w, pax: pax)
+        let fb = s.balloon(s.flagship)
+        sim = FlightSim(weather: w, pax: pax, burners: fb?.burners ?? 1, turningVent: fb?.hasTurningVent ?? false)
         self.pax = pax
         tutorial = !s.tutorialDone
         tip = s.tutorialDone ? .pax : .tutorial
         bg = ScenePainter.backgroundBalloons(s)
-        let fb = s.balloon(s.flagship)
         // Festivals pay half as much again for special requests.
         let reward = Int((Double(w.mission?.reward(for: fb?.size ?? .S) ?? 0) * (s.festival != nil ? Rules.festivalReward : 1) + 0.5).rounded(.down))
         look = FlightLook(
@@ -111,6 +117,13 @@ final class FlightModel {
         if let sky { skyHold = sky }
         if let button { buttonHold = button }
         if burning && !sim.done && sim.t > 1 && !sim.fuelWarned { tip = nil }
+    }
+
+    /// `setVent(on)`: hold the parachute vent open, once airborne.
+    func setVent(_ on: Bool) {
+        guard !sim.done else { return }
+        ventHold = on
+        sim.venting = on
     }
 
     /// One frame: `updateFlight(dt)` plus effects and sound.
@@ -137,12 +150,23 @@ final class FlightModel {
             Haptics.burnerToggled(on: want)
         }
         if want { Haptics.burner(at: T) }
+        let venting = !sim.done && sim.venting && sim.airborne
+        if venting != ventOn {
+            ventOn = venting
+            if venting { Haptics.ventOpened() }
+        }
+        if venting && !want { Haptics.vent(at: T) }
     }
 
     private func handle(_ e: FlightSim.Event) {
         switch e {
         case .airborne:
             if tutorial { tip = nil }
+            let d = UserDefaults.standard
+            if !d.bool(forKey: Self.ventTipKey) {
+                d.set(true, forKey: Self.ventTipKey)
+                tip = .vent
+            }
         case .missionDone:
             mdoneAt = T
             SoundEngine.shared.play(.fanfare)
@@ -160,6 +184,7 @@ final class FlightModel {
             Haptics.coin()
         case .landed:
             tip = nil
+            ventHold = false
             if let q = sim.result?.landing, q == .hard || q == .crash { SoundEngine.shared.play(.thud) }
             if let q = sim.result?.landing { Haptics.landed(q) }
             if !landedHandled {
@@ -209,7 +234,13 @@ final class FlightModel {
         case .good: return loc("flight.land.good")
         case .far: return loc("flight.land.far", num(Int(r.distance.rounded())))
         case .hard: return loc("flight.land.hard")
-        case .crash: return loc(look.region == .abq ? "flight.land.crash.abq" : "flight.land.crash")
+        case .crash:
+            if sim.hitWire { return loc("flight.land.crash.wire") }
+            switch look.region {
+            case .cap: return loc("flight.land.crash")
+            case .abq: return loc("flight.land.crash.abq")
+            case .lux: return loc("flight.land.crash.lux")
+            }
         case .cancel: return ""
         }
     }
@@ -346,7 +377,8 @@ private struct FlightStage: View {
     @ViewBuilder private var controls: some View {
         if !model.sim.done {
             HStack(alignment: .bottom) {
-                abortButton
+                // Once airborne the cancel button gives way to the parachute vent (`#vent`).
+                if model.sim.airborne { ventButton } else { abortButton }
                 Spacer(minLength: 8)
                 burnButton
             }
@@ -365,6 +397,40 @@ private struct FlightStage: View {
         }
         .buttonStyle(AbortButtonStyle())
         .disabled(air)
+    }
+
+    /// `#vent`: a round white button bottom-left; hold to open the parachute vent and sink fast.
+    private var ventButton: some View {
+        let on = model.ventHold
+        let m = model
+        return Text(loc("flight.vent"))
+            .font(Theme.font(17, .heavy, condensed: true))
+            .foregroundStyle(Theme.ink)
+            .lineLimit(1)
+            .minimumScaleFactor(0.6)
+            .padding(6)
+            .frame(width: 76, height: 76)
+            .background(Circle().fill(Color.white))
+            .background(Circle().fill(Color.black.opacity(0.3)).offset(y: on ? 1 : 6))
+            .background(Circle().fill(Color(red: 90 / 255, green: 169 / 255, blue: 230 / 255).opacity(on ? 0.45 : 0)).padding(-7))
+            .compositingGroup()
+            .offset(y: on ? 5 : 0)
+            .contentShape(Circle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { v in
+                        // pointerleave: sliding off the button lets go.
+                        let dx = v.location.x - 38, dy = v.location.y - 38
+                        let inside = dx * dx + dy * dy < 52 * 52
+                        if inside != m.ventHold { m.setVent(inside) }
+                    }
+                    .onEnded { _ in m.setVent(false) }
+            )
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(loc("flight.vent.a11y"))
+            .accessibilityHint(loc("a11y.flight.ventHint"))
+            .accessibilityAddTraits(on ? [.isButton, .isSelected] : [.isButton])
+            .accessibilityAction { m.setVent(!m.ventHold) }
     }
 
     private var burnButton: some View {
@@ -430,6 +496,7 @@ private struct FlightStage: View {
         case .tutorial: return loc("flight.tip.tutorial")
         case .pax: return loc("flight.tip.pax", num(model.pax))
         case .fuel: return loc("flight.tip.fuel")
+        case .vent: return loc("flight.tip.vent")
         }
     }
 
@@ -524,6 +591,7 @@ private enum FlightPainter {
         let lx = cam.sx(FlightWorld.launchX)
         ScenePainter.rect(&ctx, lx - 40, groundY - 1, 80, 4, ScenePainter.mix("#5c4a3a", "#b9996e", p))
         ScenePainter.obstacles(&ctx, cam: cam, f.obstacles, region: look.region, p: p)
+        ScenePainter.powerLines(&ctx, cam: cam, f.lines, p: p)
         let PR = max(12, vh * 0.065)
         windPills(&ctx, cam: cam, m: m)
         let R = PR * 0.75 * (look.xl ? 1.3 : 1)

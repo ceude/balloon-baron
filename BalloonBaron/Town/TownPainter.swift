@@ -34,7 +34,9 @@ struct TownHits {
     /// The zone written under the finger (only while zoomed out), else the front-most building.
     func hit(_ p: CGPoint) -> (zone: TownZone?, building: TownBuilding?) {
         if let z = zones.first(where: { TownGeo.inPoly(p, $0.pts) }) { return (z.zone, nil) }
-        let b = buildings.sorted { $0.depth > $1.depth }.first { TownGeo.inPoly(p, $0.pts) || $0.box.contains(p) }
+        // A footprint under the finger wins first (front-most first); only then the boxes round the name tags.
+        let list = buildings.sorted { $0.depth > $1.depth }
+        let b = list.first(where: { TownGeo.inPoly(p, $0.pts) }) ?? list.first(where: { $0.box.contains(p) })
         return (nil, b?.b)
     }
 }
@@ -102,6 +104,24 @@ struct TownPainter {
 
     static let tuffLit = "#f1d6b0", tuffShade = "#b9825c", tuffTop = "#f8e4c4"
     static let sunShadow = CGSize(width: 0.55, height: 0.2)
+
+    /// Wall stone of the town, per region: Cappadocia's tuff, Albuquerque's smooth adobe, Luxor's mudbrick and limewash.
+    struct Tuff {
+        var lit: String, shade: String, top: String
+        var line: Color
+        /// Plastered smooth: no stone courses.
+        var smooth = false
+    }
+
+    static func tuff(_ r: RegionID) -> Tuff {
+        switch r {
+        case .cap: return Tuff(lit: tuffLit, shade: tuffShade, top: tuffTop, line: Color(red: 110 / 255, green: 60 / 255, blue: 30 / 255).opacity(0.16))
+        case .abq: return Tuff(lit: "#dfa676", shade: "#a6653e", top: "#d79a68", line: Color(red: 120 / 255, green: 60 / 255, blue: 25 / 255).opacity(0.10), smooth: true)
+        case .lux: return Tuff(lit: "#f3e8d2", shade: "#c4ab80", top: "#ece0c4", line: Color(red: 130 / 255, green: 100 / 255, blue: 60 / 255).opacity(0.14))
+        }
+    }
+
+    var tuff: Tuff { Self.tuff(s.region) }
 
     // MARK: Entry point
 
@@ -235,7 +255,9 @@ struct TownPainter {
     // MARK: Stone
 
     /// A textured stone wall: base color, stone courses, specks and darkening near the ground.
-    mutating func stoneWall(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ col: String, seed: Double, courses: Bool) {
+    mutating func stoneWall(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ col: String, seed: Double, courses coursesIn: Bool) {
+        let T = tuff
+        let courses = coursesIn && !T.smooth // adobe is plastered smooth
         let wall = path([p, q, upp(q, h), upp(p, h)])
         c.fill(wall, with: .color(hex(col)))
         var w = c
@@ -255,7 +277,7 @@ struct TownPainter {
                 }
                 y += 14; row += 1
             }
-            w.stroke(lines, with: .color(rgba(110, 60, 30, 0.16)), lineWidth: 1)
+            w.stroke(lines, with: .color(T.line), lineWidth: 1)
         }
         var light = Path(), dark = Path()
         let n = Int(len * h / 260)
@@ -280,8 +302,10 @@ struct TownPainter {
     /// A stone block: lit left wall, shaded right wall, top, optional parapet.
     @discardableResult
     mutating func block(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat,
-                                lit: String = TownPainter.tuffLit, shade: String = TownPainter.tuffShade, top: String = TownPainter.tuffTop,
+                                lit litIn: String? = nil, shade shadeIn: String? = nil, top topIn: String? = nil,
                                 courses: Bool = true, parapet: Bool = false, roofIn: String = "#e8cba3", seed: Double? = nil) -> Box {
+        let T = tuff
+        let lit = litIn ?? T.lit, shade = shadeIn ?? T.shade, top = topIn ?? T.top
         let (A, B, C, D) = corners(gx, gy, w, d)
         let sd = seed ?? (gx * 31 + gy * 17).rounded()
         stoneWall(D, C, h, lit, seed: sd, courses: courses)
@@ -333,8 +357,54 @@ struct TownPainter {
 
     // MARK: Roofs
 
+    /// Outside Cappadocia roofs are flat: a parapet round the top. Albuquerque's adobe shows its vigas (round roof beams)
+    /// under the parapet; Luxor's houses get a small limewashed dome.
+    mutating func flatRoof(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, dome withDome: Bool) {
+        let (A, B, C, D) = corners(gx, gy, w, d), ph: CGFloat = 8, T = tuff
+        poly([upp(D, h), upp(C, h), upp(C, h + ph), upp(D, h + ph)], hex(T.lit))
+        poly([upp(C, h), upp(B, h), upp(B, h + ph), upp(C, h + ph)], hex(T.shade))
+        let top = [upp(A, h + ph), upp(B, h + ph), upp(C, h + ph), upp(D, h + ph)]
+        poly(top, hex(T.top))
+        let k: CGFloat = 0.1
+        poly([lp(top[0], top[2], k), lp(top[1], top[3], k), lp(top[0], top[2], 1 - k), lp(top[1], top[3], 1 - k)], mix(T.top, "#5a3a20", 0.14))
+        if s.region == .abq {
+            for (p, q) in [(D, C), (C, B)] {
+                for i in 1..<6 {
+                    let m = lp(p, q, CGFloat(i) / 6)
+                    ellipse(m.x + 1.5, m.y - h + 3, 2.6, 2, hex("#5a3418"))
+                    ellipse(m.x + 0.8, m.y - h + 2.6, 1.4, 1, hex("#8a5a34"))
+                }
+            }
+        }
+        if s.region == .lux && withDome {
+            let cc = lp(lp(top[0], top[2], 0.5), lp(top[1], top[3], 0.5), 0.5), r = CGFloat(min(w, d)) * TownGeo.TW * 0.16
+            let n = 14
+            var dm = Path()
+            for i in 0...n { // the rim (lower half of a flat ellipse), then the half sphere over it
+                let a = Double.pi * Double(i) / Double(n)
+                let q = pt(cc.x + r * CGFloat(cos(a)), cc.y + r * 0.45 * CGFloat(sin(a)))
+                if i == 0 { dm.move(to: q) } else { dm.addLine(to: q) }
+            }
+            for i in 0...n {
+                let a = Double.pi + Double.pi * Double(i) / Double(n)
+                dm.addLine(to: pt(cc.x + r * CGFloat(cos(a)), cc.y + r * CGFloat(sin(a))))
+            }
+            dm.closeSubpath()
+            c.fill(dm, with: .color(hex("#f8f2e4")))
+            var sh = Path()
+            for i in 0...n {
+                let a = -Double.pi / 2 + Double.pi * Double(i) / Double(n)
+                let q = pt(cc.x + r * 0.3 + r * 0.55 * CGFloat(cos(a)), cc.y - r * 0.1 + r * 0.9 * CGFloat(sin(a)))
+                if i == 0 { sh.move(to: q) } else { sh.addLine(to: q) }
+            }
+            sh.closeSubpath()
+            c.fill(sh, with: .color(rgba(160, 130, 90, 0.35)))
+        }
+    }
+
     /// Gable roof with the ridge along gx, tiles drawn as lines.
     mutating func gableRoof(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ rise: CGFloat, _ colIn: String, eave: Double = 0.08) {
+        if s.region != .cap { flatRoof(gx, gy, w, d, h, dome: false); return }
         let col = snowy(colIn)
         let x0 = gx - eave, x1 = gx + w + eave, y0 = gy - eave, y1 = gy + d + eave, ym = gy + d / 2
         let P = { (x: Double, y: Double, z: CGFloat) -> CGPoint in CGPoint(x: TownGeo.iso(x, y).x, y: TownGeo.iso(x, y).y - z) }
@@ -357,6 +427,7 @@ struct TownPainter {
 
     /// Hip roof (four slopes) for the konak.
     mutating func hipRoof(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ rise: CGFloat, _ colIn: String) {
+        if s.region != .cap { flatRoof(gx, gy, w, d, h, dome: true); return }
         let col = snowy(colIn)
         let e = 0.1
         let P = { (x: Double, y: Double, z: CGFloat) -> CGPoint in CGPoint(x: TownGeo.iso(x, y).x, y: TownGeo.iso(x, y).y - z) }
@@ -408,20 +479,148 @@ struct TownPainter {
                with: .radialGradient(g, center: pt(x - 6 * k, y - 30 * k), startRadius: 2, endRadius: 22 * k))
     }
 
-    mutating func palm(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat = 1) {
+    mutating func palm(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat = 1, tt ttIn: Double? = nil) {
+        let tt = ttIn ?? t
         var trunk = Path()
         trunk.move(to: pt(x, y))
         trunk.addQuadCurve(to: pt(x + 2 * k, y - 56 * k), control: pt(x + 6 * k, y - 30 * k))
         c.stroke(trunk, with: .color(hex("#8a6a40")), lineWidth: 4 * k)
         var fronds = Path()
         for i in 0..<7 {
-            let a = -Double.pi / 2 + Double(i - 3) * 0.55 + sin(t * 1.5 + Double(i)) * 0.04
+            let a = -Double.pi / 2 + Double(i - 3) * 0.55 + sin(tt * 1.5 + Double(i)) * 0.04
             let ca = CGFloat(cos(a)), sa = CGFloat(sin(a))
             fronds.move(to: pt(x + 2 * k, y - 56 * k))
             fronds.addQuadCurve(to: pt(x + 2 * k + ca * 30 * k, y - 50 * k + sa * 18 * k + 10 * k),
                                 control: pt(x + 2 * k + ca * 16 * k, y - 64 * k + sa * 10 * k))
         }
         c.stroke(fronds, with: .color(hex("#3f7a3a")), style: StrokeStyle(lineWidth: 3.5 * k, lineCap: .round))
+    }
+
+    /// A garden tree by a hotel: cypress in Cappadocia, cottonwood in Albuquerque, date palm in Luxor.
+    mutating func hotelTree(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat) {
+        switch s.region {
+        case .abq: roundTree(x, y, k * 0.9, "#9aa84a")
+        case .lux: palm(x, y, k * 0.9)
+        case .cap: cypress(x, y, k)
+        }
+    }
+
+    /// Town trees outside Cappadocia: cottonwoods, cholla and yucca in Albuquerque; date palms in Luxor.
+    mutating func regionTree(_ x: CGFloat, _ y: CGFloat, _ i: Int) {
+        if s.region == .lux { palm(x, y, 0.9 + CGFloat(i % 3) * 0.12, tt: t + Double(i)); return }
+        if i % 3 == 0 { cholla(x, y, 0.9); return }
+        if i % 3 == 1 { yucca(x, y, 0.9); return }
+        roundTree(x, y, 1.05, i % 2 == 1 ? "#a8b050" : "#9aa84a")
+    }
+
+    mutating func cholla(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat) {
+        let arms: [(Double, Double, CGFloat)] = [(0, 30, 5), (-0.6, 16, 3.5), (0.7, 18, 3.5), (-0.2, 10, 3)]
+        for (a, l, w) in arms {
+            let bx = x + CGFloat(a) * 4 * k, by = y - (a != 0 ? 16 : 0) * k
+            var p = Path()
+            p.move(to: pt(bx, by))
+            p.addLine(to: pt(bx + CGFloat(sin(a) * l) * k, by - CGFloat(cos(a) * l) * k))
+            c.stroke(p, with: .color(hex("#5a7a3a")), style: StrokeStyle(lineWidth: w * k, lineCap: .round))
+        }
+        ellipse(x, y - 30 * k, 2.5 * k, 2.5 * k, hex("#ff6fa8"))
+    }
+
+    mutating func yucca(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat) {
+        var leaves = Path()
+        for i in 0..<9 {
+            let a = -Double.pi / 2 + Double(i - 4) * 0.3
+            leaves.move(to: pt(x - 1.5 * k, y))
+            leaves.addLine(to: pt(x + CGFloat(cos(a)) * 18 * k, y + CGFloat(sin(a)) * 18 * k))
+            leaves.addLine(to: pt(x + 1.5 * k, y))
+            leaves.closeSubpath()
+        }
+        c.fill(leaves, with: .color(hex("#6a8a4a")))
+        line(pt(x, y - 14 * k), pt(x, y - 34 * k), hex("#8a7a50"), 1.5 * k)
+        for j in 0..<4 {
+            ellipse(x + (j % 2 == 1 ? 2 : -2) * k, y - (26 + CGFloat(j) * 2.5) * k, 2 * k, 2 * k, hex("#f6f0d8"))
+        }
+    }
+
+    /// A granite obelisk on a small base.
+    mutating func obelisk(_ x: CGFloat, _ y: CGFloat, _ h: CGFloat) {
+        rect(x - 10, y - 8, 20, 8, hex("#d8b48a"))
+        poly([pt(x - 6, y - 8), pt(x - 4, y - h), pt(x, y - h - 8), pt(x + 4, y - h), pt(x + 6, y - 8)], hex("#e8c89c"))
+        poly([pt(x, y - h - 8), pt(x + 4, y - h), pt(x + 6, y - 8), pt(x + 1, y - 8)], hex("#c09a6c"))
+        poly([pt(x - 4, y - h), pt(x, y - h - 8), pt(x + 4, y - h)], hex("#ffd27a"))
+    }
+
+    /// A red sandstone butte: flat top, banded sides.
+    mutating func butte(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ lit: String, _ shade: String) {
+        poly([pt(x - w * 0.55, y), pt(x - w * 0.42, y - h), pt(x + w * 0.42, y - h), pt(x + w * 0.55, y)], hex(shade))
+        poly([pt(x - w * 0.55, y), pt(x - w * 0.42, y - h), pt(x + w * 0.05, y - h), pt(x + w * 0.1, y)], hex(lit))
+        for i in 1..<4 {
+            let fi = CGFloat(i)
+            rect(x - w * 0.5 + fi * 2, y - h * fi / 4, w - fi * 4, 2, rgba(255, 230, 190, 0.25))
+        }
+        rect(x - w * 0.42, y - h - 3, w * 0.84, 4, mix(lit, "#ffffff", 0.2))
+    }
+
+    /// A temple front: two pylons and a row of columns under a lintel (Luxor).
+    mutating func temple(_ x: CGFloat, _ base: CGFloat, _ w: CGFloat, _ hgt: CGFloat, _ colHex: String) {
+        let col = hex(colHex)
+        poly([pt(x - w / 2, base), pt(x - w * 0.44, base - hgt), pt(x - w * 0.2, base - hgt), pt(x - w * 0.16, base)], col)
+        poly([pt(x + w / 2, base), pt(x + w * 0.44, base - hgt), pt(x + w * 0.2, base - hgt), pt(x + w * 0.16, base)], col)
+        for i in 0..<3 { rect(x - w * 0.12 + CGFloat(i) * w * 0.1 - w * 0.02, base - hgt * 0.7, w * 0.04, hgt * 0.7, col) }
+        rect(x - w * 0.16, base - hgt * 0.76, w * 0.32, hgt * 0.08, col)
+    }
+
+    /// A palm in silhouette for Luxor's far bank.
+    mutating func palmSil(_ x: CGFloat, _ y: CGFloat, _ h: CGFloat, _ col: Color) {
+        var trunk = Path()
+        trunk.move(to: pt(x, y))
+        trunk.addQuadCurve(to: pt(x + h * 0.04, y - h), control: pt(x + h * 0.1, y - h * 0.5))
+        c.stroke(trunk, with: .color(col), lineWidth: max(1.5, h * 0.06))
+        var fronds = Path()
+        for i in 0..<6 {
+            let a = -Double.pi / 2 + (Double(i) - 2.5) * 0.6, ca = CGFloat(cos(a)), sa = CGFloat(sin(a))
+            fronds.move(to: pt(x + h * 0.04, y - h))
+            fronds.addQuadCurve(to: pt(x + h * 0.04 + ca * h * 0.45, y - h * 0.85 + sa * h * 0.25),
+                                control: pt(x + h * 0.04 + ca * h * 0.25, y - h * 1.1 + sa * h * 0.15))
+        }
+        c.stroke(fronds, with: .color(col), style: StrokeStyle(lineWidth: max(1.2, h * 0.05), lineCap: .round))
+    }
+
+    /// What stands on the town's edges: Cappadocia's fairy chimneys, Luxor's palm clumps and an obelisk.
+    /// Albuquerque leaves those spots empty.
+    mutating func edgeLandmark(_ x: CGFloat, _ y: CGFloat, _ hh: CGFloat, _ seed: Double) {
+        switch s.region {
+        case .abq:
+            return
+        case .lux:
+            if Int(seed.rounded()) % 3 == 0 { obelisk(x, y, hh * 0.9); return }
+            let clump: [(CGFloat, CGFloat)] = [(-16, 0.85), (10, 1), (26, 0.75)]
+            for (dx, k) in clump { palm(x + dx, y + (dx > 0 ? 4 : 0), k * hh / 90) }
+        case .cap:
+            ScenePainter.chimney(&c, x, y, hh * 0.42, hh, body: hex("#efc79e"), shade: hex("#c69068"), cap: hex("#6a4430"))
+        }
+    }
+
+    /// Out in the land: fairy chimneys in Cappadocia; red buttes and junipers in Albuquerque; palm groves and temple ruins in Luxor.
+    mutating func outerLandmark(_ x: CGFloat, _ y: CGFloat, _ hh: CGFloat, _ i: Int) {
+        switch s.region {
+        case .abq:
+            if i % 3 == 0 {
+                roundTree(x, y, 0.7, "#4f6e3a")
+                roundTree(x + 18, y + 6, 0.55, "#5a7a40")
+                return
+            }
+            butte(x, y, hh * (i % 2 == 1 ? 1.3 : 0.8), hh * (i % 2 == 1 ? 0.45 : 0.7), "#c8744a", "#8e4a2c")
+        case .lux:
+            if i % 7 == 0 {
+                temple(x, y, hh * 0.9, hh * 0.42, "#c9a878")
+                temple(x - 3, y, hh * 0.9, hh * 0.4, "#e2c79a")
+                return
+            }
+            let grove: [(CGFloat, CGFloat, CGFloat)] = [(-20, 0, 0.9), (0, 6, 1.1), (18, -2, 0.8), (34, 5, 1)]
+            for (dx, dy, k) in grove { palm(x + dx, y + dy, k * hh / 150, tt: t + Double(i)) }
+        case .cap:
+            ScenePainter.chimney(&c, x, y, hh * 0.42, hh, body: hex("#efc79e"), shade: hex("#c69068"), cap: hex("#6a4430"))
+        }
     }
 
     mutating func lantern(_ x: CGFloat, _ y: CGFloat) {
@@ -788,7 +987,7 @@ struct TownPainter {
         polyShade([iA, iB, iC, iD], .linearGradient(grad([(hex("#8ae6ec"), 0), (hex("#2aa6c4"), 1)]), startPoint: iA, endPoint: iC))
         ripples(iA, iB, iC, iD, rows: 3)
         let cp = iso(g + 1.9, k + 0.35)
-        cypress(cp.x, cp.y)
+        hotelTree(cp.x, cp.y, 1)
     }
 
     mutating func ripples(_ A: CGPoint, _ B: CGPoint, _ C: CGPoint, _ D: CGPoint, rows: Int) {
@@ -921,7 +1120,23 @@ struct TownPainter {
         let cones: [(Double, Double, CGFloat)] = [(g + 0.5, k + 0.5, 150), (g + 1.2, k + 0.45, 120), (g + 1.55, k + 0.9, 95)]
         for (x, y, hh) in cones.sorted(by: { $0.0 + $0.1 < $1.0 + $1.1 }) {
             let p = iso(x, y)
-            ScenePainter.chimney(&c, p.x, p.y, hh * 0.55, hh, body: hex("#efc79e"), shade: hex("#c69068"), cap: hex("#6a4430"))
+            switch s.region {
+            case .abq: // stepped adobe pueblo with viga ends
+                let steps: [(CGFloat, CGFloat)] = [(0, 0.5), (0.38, 0.36)]
+                for (kk, w0) in steps {
+                    let y0 = p.y - hh * kk, ht = hh * 0.36, x0 = p.x - hh * w0 / 2
+                    rect(x0, y0 - ht, hh * w0, ht, hex("#b8724a"))
+                    rect(x0, y0 - ht, hh * w0 * 0.6, ht, hex("#d99a6c"))
+                    rect(x0 - 2, y0 - ht - 3, hh * w0 + 4, 4, hex("#e6b088"))
+                    for vi in 0..<4 { rect(x0 + 4 + CGFloat(vi) * hh * w0 / 4, y0 - ht + 3, 3, 3, hex("#6a4028")) }
+                }
+            case .lux: // Nubian mud-brick house with a dome
+                rect(p.x - hh * 0.2, p.y - hh * 0.7, hh * 0.4, hh * 0.7, hex("#c9ab7e"))
+                rect(p.x - hh * 0.24, p.y - hh * 0.7, hh * 0.26, hh * 0.7, hex("#efe0c2"))
+                dome(p.x - hh * 0.02, p.y - hh * 0.7, hh * 0.17, "#f3e8d2")
+            case .cap:
+                ScenePainter.chimney(&c, p.x, p.y, hh * 0.55, hh, body: hex("#efc79e"), shade: hex("#c69068"), cap: hex("#6a4430"))
+            }
             for i in 0..<3 {
                 let wy = p.y - hh * (0.18 + CGFloat(i) * 0.22), wx = p.x - hh * 0.08 + CGFloat(i % 2) * hh * 0.1
                 var win = Path()
@@ -974,7 +1189,7 @@ struct TownPainter {
         let rc = lp(main.D, main.C, 0.5)
         poly([rc, pt(rc.x + 10, rc.y + 5), pt(rc.x - 18, rc.y + 40), pt(rc.x - 28, rc.y + 35)], hex("#c0283a")) // red carpet
         for (x, y) in [(g + 0.1, k + 2.7), (g + 1, k + 2.85), (g + 2, k + 2.85), (g + 2.95, k + 2.7)] { let p = iso(x, y); palm(p.x, p.y, 0.9) }
-        for (x, y) in [(g + 0.05, k + 0.2), (g + 3, k + 0.25)] { let p = iso(x, y); cypress(p.x, p.y, 1.2) }
+        for (x, y) in [(g + 0.05, k + 0.2), (g + 3, k + 0.25)] { let p = iso(x, y); hotelTree(p.x, p.y, 1.2) }
     }
 
     // MARK: Ground
@@ -1046,30 +1261,63 @@ struct TownPainter {
     private static let outerFields: [(Double, Double)] = [(-6, 9.5), (18, 2), (10, 18), (-4, -6), (20, 15)]
 
     /// Land around the town: patches, dirt roads running off, other companies' launch fields.
+    /// Colors of the land round the town: patches, dirt roads, fields (vineyards, alfalfa, sugar cane).
+    struct OuterLook {
+        var patch: (Color, Color)
+        var split: Double
+        var road: String, field: String
+    }
+
+    var outerLook: OuterLook {
+        switch s.region {
+        case .cap: return OuterLook(patch: (rgba(160, 120, 70, 0.16), rgba(120, 150, 70, 0.2)), split: 0.55, road: "#d8b085", field: "#b3b86e")
+        case .abq: return OuterLook(patch: (rgba(170, 90, 50, 0.16), rgba(130, 140, 90, 0.22)), split: 0.6, road: "#d49a6e", field: "#a9b46a")
+        case .lux: return OuterLook(patch: (rgba(110, 160, 70, 0.24), rgba(200, 170, 110, 0.18)), split: 0.6, road: "#dcc28e", field: "#8db05a")
+        }
+    }
+
     mutating func outerDecor() {
+        let L = outerLook
         var R = Mulberry32(seed: 9)
-        var green = Path(), brown = Path()
+        var first = Path(), second = Path()
         for _ in 0..<420 {
             let gx = -22 + R.next() * 60, gy = -22 + R.next() * 60
             if gx > -1 && gx < 16 && gy > -1 && gy < 16 { continue }
             let p = iso(gx, gy)
-            let isBrown = R.next() < 0.55
+            let isFirst = R.next() < L.split
             let rx = 8 + CGFloat(R.next()) * 22, ry = 4 + CGFloat(R.next()) * 8
             let e = CGRect(x: p.x - rx, y: p.y - ry, width: rx * 2, height: ry * 2)
-            if isBrown { brown.addEllipse(in: e) } else { green.addEllipse(in: e) }
+            if isFirst { first.addEllipse(in: e) } else { second.addEllipse(in: e) }
         }
-        c.fill(brown, with: .color(rgba(160, 120, 70, 0.16)))
-        c.fill(green, with: .color(rgba(120, 150, 70, 0.2)))
+        c.fill(first, with: .color(L.patch.0))
+        c.fill(second, with: .color(L.patch.1))
+        // Luxor: the Nile runs past behind the town, green banks on both sides.
+        if s.region == .lux {
+            let band = { (y0: Double, y1: Double) -> [CGPoint] in
+                [TownGeo.iso(-60, y0), TownGeo.iso(70, y0), TownGeo.iso(70, y1), TownGeo.iso(-60, y1)]
+            }
+            poly(band(-15.5, -9.5), hex("#8fb85a"))
+            poly(band(-13.6, -11.2), hex("#3f8fa8"))
+            poly(band(-13.1, -12.7), Color.white.opacity(0.18))
+        }
         let dirt = { (x0: Double, y0: Double, x1: Double, y1: Double) -> [CGPoint] in
             [TownGeo.iso(x0, y0), TownGeo.iso(x1, y0), TownGeo.iso(x1, y1), TownGeo.iso(x0, y1)]
         }
         for r in [dirt(-40, 7.65, 0, 8.35), dirt(15, 7.65, 55, 8.35), dirt(7.65, -40, 8.35, 0), dirt(7.65, 15, 8.35, 55)] {
-            poly(r, hex("#d8b085"))
+            poly(r, hex(L.road))
         }
         for f in Self.outerFields {
             let q = [iso(f.0, f.1), iso(f.0 + 3, f.1), iso(f.0 + 3, f.1 + 2.2), iso(f.0, f.1 + 2.2)]
-            poly(q, hex("#b3b86e"))
+            poly(q, hex(L.field))
             outline(q, rgba(110, 90, 40, 0.3), 2)
+            if s.region == .lux { // sugar cane rows
+                var rows = Path()
+                for k in 1..<8 {
+                    let x = f.0 + Double(k) * 0.37
+                    rows.move(to: iso(x, f.1)); rows.addLine(to: iso(x, f.1 + 2.2))
+                }
+                c.stroke(rows, with: .color(rgba(60, 100, 40, 0.35)), lineWidth: 1.5)
+            }
         }
     }
 
@@ -1078,21 +1326,23 @@ struct TownPainter {
         var items: [TownItem] = []
         let chims: [(Double, Double, CGFloat)] = [(0.3, 6.6, 150), (15.2, 8, 140), (0.4, 12.6, 130), (7.7, 0.3, 120),
                                                    (5.6, 15.2, 150), (0.5, 3.0, 160), (12.8, 0.2, 140)]
-        for (gx, gy, hh) in chims {
+        // Albuquerque leaves the edge spots empty; Luxor puts palms and obelisks there, Cappadocia fairy chimneys.
+        for (gx, gy, hh) in chims where s.region != .abq {
             items.append(TownItem(depth: gx + gy, shadow: { p in
                 let q = TownGeo.iso(gx, gy); p.blobShadow(q.x + hh * 0.3, q.y + 8, hh * 0.3, hh * 0.08, 0.16)
             }, draw: { p in
                 let q = TownGeo.iso(gx, gy)
-                ScenePainter.chimney(&p.c, q.x, q.y, hh * 0.42, hh, body: Color(hex: "#efc79e"), shade: Color(hex: "#c69068"), cap: Color(hex: "#6a4430"))
+                p.edgeLandmark(q.x, q.y, hh, gx + gy)
             }))
         }
+        let cap = s.region == .cap
         let trees: [(Double, Double)] = [(7.1, 6.9), (7.1, 9.2), (8.9, 6.9), (3.4, 8.9), (6.6, 10.7), (14.6, 7.3), (10.8, 4.4), (4.3, 7.0), (8.4, 15)]
         for (i, (gx, gy)) in trees.enumerated() {
             items.append(TownItem(depth: gx + gy, shadow: { p in
                 let q = TownGeo.iso(gx, gy); p.blobShadow(q.x + 12, q.y + 4, 14, 5, 0.16)
             }, draw: { p in
                 let q = TownGeo.iso(gx, gy)
-                if i % 3 == 0 { p.cypress(q.x, q.y) } else { p.roundTree(q.x, q.y, 0.9, i % 2 == 1 ? "#7aa04a" : "#8aa84e") }
+                if !cap { p.regionTree(q.x, q.y, i) } else if i % 3 == 0 { p.cypress(q.x, q.y) } else { p.roundTree(q.x, q.y, 0.9, i % 2 == 1 ? "#7aa04a" : "#8aa84e") }
             }))
         }
         // Your fleet on the launch field, burners flickering. At night the envelopes are packed away, except for a Fiesta balloon glow.
@@ -1127,7 +1377,7 @@ struct TownPainter {
     func outerScenery() -> [TownItem] {
         var items: [TownItem] = []
         var R = Mulberry32(seed: 21)
-        for _ in 0..<46 {
+        for i in 0..<46 {
             let gx = -18 + R.next() * 50, gy = -18 + R.next() * 50, hh = CGFloat(110 + R.next() * 120)
             if gx > -2 && gx < 17 && gy > -2 && gy < 17 { continue }
             if abs(gx - 8) < 1.6 || abs(gy - 8) < 1.6 { continue }
@@ -1136,7 +1386,7 @@ struct TownPainter {
                 let q = TownGeo.iso(gx, gy); p.blobShadow(q.x + hh * 0.3, q.y + 8, hh * 0.3, hh * 0.08, 0.14)
             }, draw: { p in
                 let q = TownGeo.iso(gx, gy)
-                ScenePainter.chimney(&p.c, q.x, q.y, hh * 0.42, hh, body: Color(hex: "#efc79e"), shade: Color(hex: "#c69068"), cap: Color(hex: "#6a4430"))
+                p.outerLandmark(q.x, q.y, hh, i)
             }))
         }
         let cols: [[String]] = s.local.rivals.map { $0.colors } + [["#ff5e3a", "#ffc23d"], ["#14a39a", "#e8fff9"]]
@@ -1189,6 +1439,13 @@ struct TownPainter {
                                                                  (9, 4, 260, "#9b7be0", "#f2ebff"), (3, 7, 340, "#5aa9e6", "#eaf4fc")]
         var shadows: [(inout TownPainter) -> Void] = [], balloons: [(inout TownPainter) -> Void] = []
         let tt = t, wk = windK(1)
+        // A brand's shaped balloon, flying over the region that signed the deal.
+        if night == nil, let shape = s.adShape(over: s.region) {
+            let gx = pmod(6 + tt * 0.1 * windK(2), 18) - 2, gy = 6 + sin(tt * 0.15) * 0.6
+            let q = TownGeo.iso(gx, gy)
+            shadows.append { p in p.blobShadow(q.x, q.y, 26, 10, 0.14) }
+            balloons.append { p in AdShapeArt.draw(&p.c, shape, center: CGPoint(x: q.x, y: q.y - 380), size: 70 * 3.2) }
+        }
         for (i, (gx0, gy0, alt, c1, c2)) in list.enumerated() where night == nil {
             let gx = pmod(gx0 + tt * 0.12 * wk + Double(i) * 3, 18) - 2, gy = gy0 + sin(tt * 0.2 + Double(i)) * 0.5
             let q = TownGeo.iso(gx, gy)
@@ -1235,8 +1492,19 @@ struct TownPainter {
         }
         farBalloons(w, h, hz, px, layer: 0)
         // A far ridge with fairy chimney silhouettes, then a nearer one.
-        let ridges: [(CGFloat, String, CGFloat, CGFloat, Double)] = [(0, ScenePainter.mixHex("#6b4a6e", "#d9a07a", 0.35), 0.05, 0.5, 3),
-                                                                     (0.025, ScenePainter.mixHex("#5a3a50", "#c48a6e", 0.3), 0.035, 1, 7)]
+        // Albuquerque: mesa silhouettes; Luxor: palms on the far bank and the al-Qurn peak.
+        let ridges: [(CGFloat, String, CGFloat, CGFloat, Double)]
+        switch s.region {
+        case .cap:
+            ridges = [(0, ScenePainter.mixHex("#6b4a6e", "#d9a07a", 0.35), 0.05, 0.5, 3),
+                      (0.025, ScenePainter.mixHex("#5a3a50", "#c48a6e", 0.3), 0.035, 1, 7)]
+        case .abq:
+            ridges = [(0, ScenePainter.mixHex("#8a4a6e", "#e09a8a", 0.4), 0.07, 0.5, 3),
+                      (0.025, ScenePainter.mixHex("#6a3a50", "#c47a6e", 0.3), 0.03, 1, 7)]
+        case .lux:
+            ridges = [(0, ScenePainter.mixHex("#9a7a5e", "#e8c49a", 0.45), 0.06, 0.5, 3),
+                      (0.025, ScenePainter.mixHex("#7a6a48", "#b8a070", 0.3), 0.02, 1, 7)]
+        }
         for (k, colHex, amp, par, seed) in ridges {
             let col = hex(colHex), cap = mix(colHex, "#000000", 0.25)
             let base = hz + h * k, off = px * par
@@ -1253,10 +1521,22 @@ struct TownPainter {
             ridge.closeSubpath()
             c.fill(ridge, with: .color(col))
             var Rc = rng(seed * 13)
-            for _ in 0..<14 {
+            for i in 0..<14 {
                 let cx = CGFloat(pmod(Double(CGFloat(Rc.next()) * (w + 200) + off), Double(w + 200))) - 100
                 let hh = h * (0.03 + CGFloat(Rc.next()) * 0.035) * (k > 0 ? 1.2 : 0.8)
-                ScenePainter.chimney(&c, cx, base - h * amp * 0.35, hh * 0.42, hh, body: col, shade: nil, cap: cap)
+                let by = base - h * amp * 0.35
+                switch s.region {
+                case .abq:
+                    if i % 2 == 1 {
+                        rect(cx - hh * 0.7, by - hh * 0.5, hh * 1.4, hh * 0.5 + 4, col)
+                        poly([pt(cx - hh * 0.9, by + 4), pt(cx - hh * 0.7, by - hh * 0.5), pt(cx + hh * 0.7, by - hh * 0.5), pt(cx + hh * 0.9, by + 4)], col)
+                    }
+                case .lux:
+                    if k > 0 { palmSil(cx, by + h * 0.02, hh * 0.9, col) }
+                    else if i == 3 { poly([pt(cx - hh * 1.2, by + 4), pt(cx, by - hh * 1.3), pt(cx + hh * 1.2, by + 4)], col) }
+                case .cap:
+                    ScenePainter.chimney(&c, cx, by, hh * 0.42, hh, body: col, shade: nil, cap: cap)
+                }
             }
         }
         farBalloons(w, h, hz, px, layer: 1)
@@ -1279,11 +1559,20 @@ struct TownPainter {
         }
     }
 
+    /// The valley floor's colors from the horizon down, per region.
+    var groundColors: [String] {
+        switch s.region {
+        case .cap: return ["#d9a88a", "#e2b98e", "#e6c294"]
+        case .abq: return ["#d4987a", "#dca67e", "#e2b384"]
+        case .lux: return ["#c9b48a", "#c8be8a", "#cfc490"]
+        }
+    }
+
     /// The valley floor from the horizon down; returns where the ground starts.
     mutating func ground(_ w: CGFloat, _ h: CGFloat) -> CGFloat {
         let hz = max(0, TownGeo.horizon(v, height: h) + h * 0.015)
         let g = s.local.winter != nil ? grad([(hex("#c9d2e0"), 0), (hex("#dfe6ef"), 0.25), (hex("#eef2f8"), 1)])
-            : grad([(hex("#d9a88a"), 0), (hex("#e2b98e"), 0.25), (hex("#e6c294"), 1)])
+            : grad([(hex(groundColors[0]), 0), (hex(groundColors[1]), 0.25), (hex(groundColors[2]), 1)])
         c.fill(Path(CGRect(x: 0, y: hz, width: w, height: max(0, h - hz))),
                with: .linearGradient(g, startPoint: pt(0, hz), endPoint: pt(0, max(hz + 1, h))))
         return hz

@@ -4,7 +4,7 @@ import BalloonBaronCore
 /// The holding's boardroom: cash flow, money from the region, regions, campaigns and city offices.
 /// A desk of the holding office and the part of the holding it opens. Names: `hq.<rawValue>`.
 enum HoldingUnit: String, CaseIterable, Identifiable {
-    case board, window, marketing, deals, research, offices
+    case board, window, marketing, deals, research, offices, records, shapes
     var id: String { rawValue }
 }
 
@@ -59,6 +59,40 @@ struct HoldingView: View {
             researchCard(s)
         }
         if unit == nil || unit == .offices { officesSection(s) }
+        if unit == .records {
+            sectionTitle(loc("hq.recordsTitle"))
+            hint(loc(s.recordsOpen ? "holding.rec.hint" : "holding.rec.locked"))
+            ForEach(RecordAttempt.allCases, id: \.self) { recordCard($0, s) }
+        }
+        if unit == .shapes {
+            sectionTitle(loc("hq.shapesTitle"))
+            hint(loc("holding.shape.hint"))
+            ForEach(AdShape.allCases, id: \.self) { shapeCard($0, s) }
+        }
+    }
+
+    /// Desk 5: a sponsored world record. The first attempt at each always works; the odds shown apply to beating your own.
+    private func recordCard(_ k: RecordAttempt, _ s: GameState) -> some View {
+        let h = s.holding, run = h.record, now = run?.kind == k, set = s.recordSet(k)
+        let chips = [loc("holding.chip.prep", num(k.days)), loc("holding.chip.odds", percent(k.odds)), loc("holding.chip.allDemandLasting", percent(k.boost))]
+        let lock: String? = !s.recordsOpen ? loc("holding.rec.lockNote") : run != nil && !now ? loc("holding.rec.oneAtATime") : nil
+        return HoldingDealCard(art: .record, kicker: loc("holding.rec.kicker"), title: k.title, detail: k.detail, chips: chips,
+                               price: k.cost, cta: loc(set ? "holding.rec.again" : "holding.rec.cta"),
+                               enabled: lock == nil && h.cash >= k.cost, lockNote: lock ?? (set ? loc("holding.rec.yours") : nil),
+                               active: now ? loc("holding.rec.active", num((run?.done ?? s.day) - s.day)) : nil,
+                               action: { store.act { g in _ = g.startRecord(k) } })
+    }
+
+    /// Desk 6: a brand pays the holding to fly its product-shaped balloon over this region; tourists like you a little less.
+    private func shapeCard(_ k: AdShape, _ s: GameState) -> some View {
+        let a = s.holding.adShape, running = a.map { $0.until >= s.day } ?? false, now = running && a?.shape == k
+        let chips = [loc("holding.chip.perDay", eurH(k.pay)), loc("holding.chip.days", num(k.days)),
+                     loc("holding.chip.repDay", (k.repLoss * 4).formatted(.number.precision(.fractionLength(3))) + "★")]
+        return HoldingDealCard(art: .shape(k), kicker: loc("holding.shape.kicker"), title: k.title, detail: loc("holding.shape.desc"),
+                               chips: chips, price: k.pay * k.days, cta: loc("holding.shape.cta"),
+                               enabled: !running, lockNote: running && !now ? loc("holding.shape.oneAtATime") : nil,
+                               active: now ? loc("holding.shape.active", (a?.region ?? s.region).title, num((a?.until ?? s.day) - s.day)) : nil,
+                               action: { store.act { g in _ = g.signAdShape(k) } })
     }
 
     /// The holding's own goals; all six make you World Baron.
@@ -132,7 +166,7 @@ struct HoldingView: View {
 
     private func regionsSection(_ game: Game) -> some View {
         let s = game.state
-        let list = RegionID.allCases.filter { s.owns($0) || ($0 != .cap && s.isBaron(.cap)) }
+        let list = RegionID.allCases.filter { s.owns($0) || ($0 != .cap && s.regionOpen($0)) }
         return VStack(alignment: .leading, spacing: 8) {
             sectionTitle(loc("holding.regions"))
             ForEach(list, id: \.self) { r in
@@ -204,7 +238,7 @@ struct HoldingView: View {
                 if auto != nil {
                     HoldingPill(title: loc("map.go")) { store.goTo(r) }
                 } else {
-                    HoldingPill(title: loc("map.enter", eurH(Holding.entryFee)), style: .gold, enabled: game.canEnterRegion) { store.goTo(r) }
+                    HoldingPill(title: loc("map.enter", eurH(r.entryFee)), style: .gold, enabled: game.canEnterRegion(r)) { store.goTo(r) }
                 }
             }
             .fixedSize()
@@ -740,7 +774,7 @@ struct HoldingChipFlow: Layout {
 
 /// Code-drawn art for the deal cards (64×64 artboard, after the prototype's SVGs).
 struct HoldingArt: View {
-    enum Kind { case tv, star, billboard, lab }
+    enum Kind { case tv, star, billboard, lab, record, shape(AdShape) }
     let kind: Kind
 
     var body: some View {
@@ -751,6 +785,8 @@ struct HoldingArt: View {
             case .star: drawStar(&ctx, k)
             case .billboard: drawBillboard(&ctx, k)
             case .lab: drawLab(&ctx, k)
+            case .record: drawRecord(&ctx, k)
+            case .shape(let s): AdShapeArt.draw(&ctx, s, center: CGPoint(x: 32 * k, y: 32 * k), size: 56 * k)
             }
         }
         .accessibilityHidden(true)
@@ -760,6 +796,17 @@ struct HoldingArt: View {
     private static let teal = Color(hex: "#3ad0c0")
 
     private func pt(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat) -> CGPoint { CGPoint(x: x * k, y: y * k) }
+
+    /// A record balloon with a pressurised capsule and a climbing red line (`INVEST_ART.rec`).
+    private func drawRecord(_ ctx: inout GraphicsContext, _ k: CGFloat) {
+        ctx.fill(HezarfenAvatar.svgPath("M32 6 C41 6 47 13 47 22 C47 30 41 36 37 40 L27 40 C23 36 17 30 17 22 C17 13 23 6 32 6 Z").applying(CGAffineTransform(scaleX: k, y: k)), with: .color(Self.gold))
+        ctx.fill(polygon([(27, 40), (37, 40), (36, 46), (28, 46)], k), with: .color(Color(hex: "#c9ccd2")))
+        ctx.fill(Path(roundedRect: rect(25, 47, 14, 10, k), cornerRadius: 5 * k), with: .color(Color(hex: "#c9ccd2")))
+        ctx.fill(Path(ellipseIn: rect(32.4, 49.4, 5.2, 5.2, k)), with: .color(Color(hex: "#2b5ab8")))
+        var line = Path()
+        line.move(to: pt(8, 58, k)); line.addLine(to: pt(16, 48, k)); line.addLine(to: pt(22, 53, k)); line.addLine(to: pt(30, 41, k))
+        ctx.stroke(line, with: .color(Color(hex: "#e5432f")), style: StrokeStyle(lineWidth: 3 * k, lineCap: .round, lineJoin: .round))
+    }
 
     private func rect(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ k: CGFloat) -> CGRect {
         CGRect(x: x * k, y: y * k, width: w * k, height: h * k)

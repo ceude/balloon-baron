@@ -12,6 +12,7 @@ enum Haptics {
     private static let selection = UISelectionFeedbackGenerator()
     private static let notice = UINotificationFeedbackGenerator()
     private static var lastBurn = 0.0
+    private static var lastVent = 0.0
 
     /// While the burner fires: a low rumble, about eight pulses a second.
     static func burner(at t: Double) {
@@ -22,6 +23,16 @@ enum Haptics {
 
     /// Burner lit or put out.
     static func burnerToggled(on: Bool) { (on ? medium : light).impactOccurred(intensity: on ? 0.7 : 0.4) }
+
+    /// The parachute vent pulled open: a light tug.
+    static func ventOpened() { light.impactOccurred(intensity: 0.6) }
+
+    /// While the vent is held open (and the burner is off): a faint flutter as the air escapes, five pulses a second.
+    static func vent(at t: Double) {
+        guard t - lastVent >= 0.2 else { return }
+        lastVent = t
+        light.impactOccurred(intensity: 0.25)
+    }
 
     /// A price step, or any small dial: barely there.
     static func tick() { selection.selectionChanged() }

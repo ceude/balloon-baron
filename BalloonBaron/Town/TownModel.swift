@@ -196,7 +196,7 @@ enum Town {
         case .agency: return 150
         case .tower: return 300
         case .mast: return 175
-        case .bazaar: return 135
+        case .bazaar: return 82
         }
     }
 }

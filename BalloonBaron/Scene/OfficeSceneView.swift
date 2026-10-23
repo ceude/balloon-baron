@@ -7,6 +7,7 @@ final class OfficeSceneModel {
     var last: Double?
     var bg: [BackgroundBalloon] = []
     var obstacles: [Obstacle] = []
+    var lines: [PowerLine] = []
     private var key = ""
 
     /// Rebuilds the world (like `buildWorld()`) when the day, region or fleet changes.
@@ -17,6 +18,7 @@ final class OfficeSceneModel {
         key = k
         bg = ScenePainter.backgroundBalloons(s)
         obstacles = s.weather.map { FlightWorld.obstacles(for: $0) } ?? []
+        lines = s.weather.map { FlightWorld.powerLines(for: $0) } ?? []
     }
 
     /// Seconds since the last frame, capped so a paused app doesn't jump.
@@ -70,6 +72,7 @@ struct OfficeSceneView: View {
         let lx = cam.sx(FlightWorld.launchX)
         ScenePainter.rect(&ctx, lx - 40, gy - 1, 80, 4, ScenePainter.mix("#5c4a3a", "#b9996e", p))
         ScenePainter.obstacles(&ctx, cam: cam, model.obstacles, region: s.region, p: p)
+        ScenePainter.powerLines(&ctx, cam: cam, model.lines, p: p)
         fleet(&ctx, s, lx: lx, gy: gy, pr: max(12, vh * 0.065), T: T)
     }
 

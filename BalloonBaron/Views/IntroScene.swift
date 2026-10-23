@@ -3,7 +3,7 @@ import BalloonBaronCore
 
 /// The opening screen's world: a dawn launch field in the region you're playing, with its own skyline, the last
 /// stars, a rising sun, balloons already up, and the game's name in the sky.
-/// Luxor's look is ready for when Egypt opens. Port of the prototype's `introScene`.
+/// Cappadocia, Albuquerque or Luxor (temples, palms and the al-Qurn pyramids). Port of the prototype's `introScene`.
 enum IntroScene {
     struct Look {
         let sky: [String], far: String, mid: String, midShade: String, cap: String, ground: [String], name: String

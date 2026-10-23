@@ -5,14 +5,12 @@ add("region.cap", "Cappadocia", "Kapadokya", "Kappadokien", "Capadocia", "カッ
 add("region.abq", "Albuquerque", "Albuquerque", "Albuquerque", "Albuquerque", "アルバカーキ", "앨버커키")
 add("pin.cap", "Cappadocia", "Kapadokya", "Kappadokien", "Capadocia", "カッパドキア", "카파도키아")
 add("pin.abq", "Albuquerque", "Albuquerque", "Albuquerque", "Albuquerque", "アルバカーキ", "앨버커키")
-add("pin.luxor", "Luxor", "Luksor", "Luxor", "Luxor", "ルクソール", "룩소르")
+add("pin.lux", "Luxor", "Luksor", "Luxor", "Luxor", "ルクソール", "룩소르")
 add("pin.asia", "Asia", "Asya", "Asien", "Asia", "アジア", "아시아")
-add("pin.europe", "Europe", "Avrupa", "Europa", "Europa", "ヨーロッパ", "유럽")
 add("pin.cap.land", "Türkiye", "Türkiye", "Türkei", "Turquía", "トルコ", "튀르키예")
 add("pin.abq.land", "USA", "ABD", "USA", "EE. UU.", "アメリカ", "미국")
-add("pin.luxor.land", "Egypt", "Mısır", "Ägypten", "Egipto", "エジプト", "이집트")
+add("pin.lux.land", "Egypt", "Mısır", "Ägypten", "Egipto", "エジプト", "이집트")
 add("pin.asia.land", "Asia", "Asya", "Asien", "Asia", "アジア", "아시아")
-add("pin.europe.land", "Europe", "Avrupa", "Europa", "Europa", "ヨーロッパ", "유럽")
 add("map.soon", "Coming soon", "Yakında", "Demnächst", "Próximamente", "近日公開", "곧 공개")
 
 # Albuquerque's own names

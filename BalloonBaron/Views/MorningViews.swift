@@ -31,7 +31,8 @@ struct ArtItem {
     }
 }
 
-/// The region's rival boss: Kenan Arslan (Göreme Sky) or Dale Whitaker (Sandia Sky Rides). Port of `BOSS_AV`.
+/// The region's rival boss: Kenan Arslan (Göreme Sky), Dale Whitaker (Sandia Sky Rides) or Nabil Haddad (Theban Skies).
+/// Port of `BOSS_AV`.
 struct BossAvatar: View {
     let region: RegionID
     let size: CGFloat
@@ -40,18 +41,27 @@ struct BossAvatar: View {
         Canvas { ctx, sz in
             let k = sz.width / 100
             ctx.scaleBy(x: k, y: k)
-            ctx.fill(Path(ellipseIn: CGRect(x: 0, y: 0, width: 100, height: 100)), with: .color(Color(hex: "#5aa9e6")))
+            let (ring, bg, art) = Self.look(region)
+            ctx.fill(Path(ellipseIn: CGRect(x: 0, y: 0, width: 100, height: 100)), with: .color(Color(hex: ring)))
             var g = ctx
             g.clip(to: Path(ellipseIn: CGRect(x: 2, y: 2, width: 96, height: 96)))
-            let bg = region == .abq ? ["#e08a4a", "#f6d08a"] : ["#3d5a8c", "#9fc0e0"]
             g.fill(Path(CGRect(x: 0, y: 0, width: 100, height: 100)),
                    with: .linearGradient(Gradient(colors: bg.map(Color.init(hex:))), startPoint: CGPoint(x: 50, y: 0), endPoint: CGPoint(x: 50, y: 100)))
-            for item in region == .abq ? Self.dale : Self.kenan { item.draw(in: &g) }
+            for item in art { item.draw(in: &g) }
         }
         .frame(width: size, height: size)
         .shadow(color: Color(red: 15 / 255, green: 8 / 255, blue: 35 / 255).opacity(0.5), radius: size * 0.1, y: size * 0.095)
         .accessibilityElement()
         .accessibilityLabel(loc("boss.\(region.rawValue).name"))
+    }
+
+    /// Outer ring, background gradient and the portrait.
+    private static func look(_ r: RegionID) -> (String, [String], [ArtItem]) {
+        switch r {
+        case .cap: ("#5aa9e6", ["#3d5a8c", "#9fc0e0"], kenan)
+        case .abq: ("#5aa9e6", ["#e08a4a", "#f6d08a"], dale)
+        case .lux: ("#1f6f8b", ["#1f6f8b", "#e8c47a"], nabil)
+        }
     }
 
     private static let kenan: [ArtItem] = [
@@ -85,6 +95,21 @@ struct BossAvatar: View {
         .line("M41 57 Q50 63 59 56", "#6a3a2a", 2),
         .line("M55 58 L64 56", "#f3e8d0", 2.2),
         .dot(65, 56, 1.4, "#ff8a3d")
+    ]
+
+    private static let nabil: [ArtItem] = [
+        .fill("M14 100 C16 78 30 70 50 70 C70 70 84 78 86 100Z", "#f4efe4"),
+        .fill("M38 72 L50 90 L62 72Z", "#e2d8c4"),
+        .fill("M26 80 C30 76 36 74 40 74 L44 100 L22 100Z M74 80 C70 76 64 74 60 74 L56 100 L78 100Z", "#2a3a5a"),
+        .box(43, 58, 14, 14, 4, "#a8704a"),
+        .oval(50, 44, 18, 21, "#b97a50"),
+        .fill("M31 40 C30 22 41 17 51 17 C63 17 70 25 69 40 C67 30 58 26 50 27 C42 27 34 31 31 40Z", "#1f1a1a"),
+        .line("M64 26 C67 29 68 33 68 37", "#8a8a90", 2.5),
+        .fill("M37 42 L48 42 L47 47 L38 47Z M52 42 L63 42 L62 47 L53 47Z", "#2a2018"),
+        .line("M48 43.5 L52 43.5", "#c9a040", 1.6),
+        .fill("M39 53 C44 50 47 51.5 50 51.5 C53 51.5 56 50 61 53 C57 55 53 54.5 50 54.5 C47 54.5 43 55 39 53Z", "#1f1a1a"),
+        .line("M45 58 Q50 60.5 55 58", "#6a3a2a", 1.8),
+        .dot(32, 88, 3, "#c9a040")
     ]
 }
 
@@ -127,14 +152,14 @@ struct PaperView: View {
     private func sheet(company: String, day: Int, region: RegionID) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             VStack(spacing: 4) {
-                Text(loc(region == .abq ? "paper.mast.abq" : "paper.mast.cap"))
+                Text(loc("paper.mast.\(region.rawValue)"))
                     .font(serif(29, .black)).foregroundStyle(ink)
                 HStack {
                     Text(loc("paper.day", num(day)))
                     Spacer()
                     Text(loc("paper.edition"))
                     Spacer()
-                    Text(loc(region == .abq ? "paper.price.abq" : "paper.price.cap"))
+                    Text(loc("paper.price.\(region.rawValue)"))
                 }
                 .font(serif(11.5).italic()).foregroundStyle(ink2)
                 .padding(.top, 3)
@@ -236,6 +261,8 @@ extension PaperItem {
         case .upgrade: "upgrade"
         case .worldBaron: "worldBaron"
         case .night(let n): "night.\(n.key)"
+        case .inspectorFine: "inspectorFine"
+        case .worldRecord(let r): "worldRecord.\(r.rawValue)"
         }
     }
 
@@ -256,6 +283,8 @@ extension PaperItem {
         case .passedBoss(let r): loc("paper.passedBoss", company, r)
         case .upgrade(let b, _): loc("paper.upgrade", company, b.title)
         case .night(let n): n.headline
+        case .inspectorFine: loc("paper.inspectorFine", company)
+        case .worldRecord: loc("paper.worldRecord", company)
         }
     }
 
@@ -271,6 +300,7 @@ extension PaperItem {
         case let .rivalBankrupt(_, n): loc("paper.rivalBankrupt.sub", num(n))
         case let .upgrade(b, lv): b.levelTitle(lv)
         case .night(let n): n.subline
+        case .inspectorFine(let fine): loc("paper.inspectorFine.sub", eur(fine))
         default: loc("paper.\(key).sub")
         }
     }
@@ -287,21 +317,24 @@ extension NightEvent {
         }
     }
 
+    /// Text key: in Luxor the glow night is the Nile night, the cruise ships lit up.
+    private var textKey: String { self == .balloonGlow && currentRegion == .lux ? "glow.lux" : key }
+
     /// The line under "Night of day N".
     var line: String {
         switch self {
         case .lanterns(let f): loc("night.lanterns", festivalName(f))
         case .fireworks(let h): loc("night.fireworks", h.title)
-        default: loc("night.\(key)")
+        default: loc("night.\(textKey)")
         }
     }
 
     var headline: String {
         if case .fireworks(let h) = self { return loc("paper.night.fireworks", h.title) }
-        return loc("paper.night.\(key)")
+        return loc("paper.night.\(textKey)")
     }
 
-    var subline: String { loc("paper.night.\(key).sub") }
+    var subline: String { loc("paper.night.\(textKey).sub") }
 }
 
 // MARK: Morning events
@@ -354,7 +387,7 @@ struct MorningEventView: View {
         case .wedding: return loc("event.wedding.lead", regionalHotel(.mansion, region), o.balloon ?? "", eur(o.pay))
         case .doc: return loc("event.doc.lead", region.title)
         case .fuel: return loc("event.fuel.lead", eur(o.stock))
-        case .press: return loc("event.press.lead", loc(region == .abq ? "paper.mast.abq" : "paper.mast.cap"))
+        case .press: return loc("event.press.lead", loc("paper.mast.\(region.rawValue)"))
         }
     }
 

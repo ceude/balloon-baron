@@ -297,7 +297,7 @@ struct HomeView: View {
     /// Goals always, Holding once you're a baron somewhere, then the office pages as they open; the crew and the
     /// market carry a red dot when they need you. The town's buildings open the same pages.
     private func navColumn(_ s: GameState) -> some View {
-        let issue = s.parked.values.contains { $0.auto.issue != nil } || (s.barons[.cap] != nil && !s.owns(.abq))
+        let issue = s.parked.values.contains { $0.auto.issue != nil } || RegionID.allCases.contains { $0 != .cap && s.regionOpen($0) && !s.owns($0) }
         let dots = Town.alerts(s)
         return VStack(spacing: 8) {
             navButton(.goals, loc("home.nav.goals"), .goals, badge: goalsBadge(s))
@@ -477,13 +477,15 @@ struct HomeView: View {
             out.append(HomeAlert(id: "festival", level: .mission, title: loc("home.alert.festival", festivalName(f.index), num(s.day - f.start + 1)),
                                  text: loc("home.alert.festival.body")))
         }
+        // Luxor's Nile cruise season uses the Fiesta's days with its own words.
+        let cruise = s.region == .lux ? ".lux" : ""
         if let f = s.fiesta {
             out.append(HomeAlert(id: "fiesta", level: .mission,
-                                 title: loc("home.alert.fiesta", num(s.day - f.start + 1), num(f.end - f.start + 1)),
-                                 text: loc("home.alert.fiesta.body")))
+                                 title: loc("home.alert.fiesta" + cruise, num(s.day - f.start + 1), num(f.end - f.start + 1)),
+                                 text: loc("home.alert.fiesta.body" + cruise)))
         } else if s.region.hasFiesta, let next = s.fiestaNext, next - s.day >= 1, next - s.day <= 3 {
-            out.append(HomeAlert(id: "fiestaSoon", level: .green, title: loc("home.alert.fiestaSoon", num(next - s.day)),
-                                 text: loc("home.alert.fiestaSoon.body")))
+            out.append(HomeAlert(id: "fiestaSoon", level: .green, title: loc("home.alert.fiestaSoon" + cruise, num(next - s.day)),
+                                 text: loc("home.alert.fiestaSoon.body" + cruise)))
         }
         for r in RegionID.allCases {
             guard let issue = s.parked[r]?.auto.issue else { continue }

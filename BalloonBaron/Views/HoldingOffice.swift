@@ -122,15 +122,24 @@ struct HoldingOfficeView: View {
             return (top ? loc("hq.s.done") : loc("hq.s.level", num(h.research)), top, false)
         case .offices:
             return (loc("hq.s.offices", num(h.offices.count), num(Office.allCases.count)), h.offices.count == Office.allCases.count, false)
+        case .records:
+            if !s.recordsOpen { return (loc("hq.s.luxFirst"), false, false) }
+            if let r = h.record { return (loc("hq.s.recordRun", r.kind.title, num(r.done - d)), true, false) }
+            return (loc("hq.s.records", num(h.records?.count ?? 0), num(RecordAttempt.allCases.count)), false, false)
+        case .shapes:
+            if let a = h.adShape, a.until >= d { return (loc("hq.s.shapeRun", a.shape.title, num(a.until - d)), true, false) }
+            return (loc("hq.s.noShape"), false, false)
         }
     }
 
     /// Where things stand on screen (also where the labels go).
     struct Layout {
         let w: CGFloat, h: CGFloat, top: CGFloat = 86
-        var wall: CGFloat { top + (h - top) * 0.42 }
-        var rowA: CGFloat { wall + (h - wall) * 0.3 }
-        var rowB: CGFloat { wall + (h - wall) * 0.72 }
+        // Three rows of desks (v105: record attempts and shaped balloons joined).
+        var wall: CGFloat { top + (h - top) * 0.36 }
+        var rowA: CGFloat { wall + (h - wall) * 0.24 }
+        var rowB: CGFloat { wall + (h - wall) * 0.56 }
+        var rowC: CGFloat { wall + (h - wall) * 0.88 }
         init(size: CGSize) { w = size.width; h = size.height }
 
         func spot(_ u: HoldingUnit) -> CGPoint {
@@ -142,6 +151,8 @@ struct HoldingOfficeView: View {
             case .deals: CGPoint(x: w * 0.73, y: rowA - 92)
             case .research: CGPoint(x: w * 0.27, y: rowB - 92)
             case .offices: CGPoint(x: w * 0.73, y: rowB - 92)
+            case .records: CGPoint(x: w * 0.27, y: rowC - 92)
+            case .shapes: CGPoint(x: w * 0.73, y: rowC - 92)
             }
         }
     }
@@ -194,6 +205,8 @@ private enum OfficePainter {
         plant(&c, w * 0.5, L.rowA + 30, 0.8)
         desk(&c, cx: w * 0.27, y: L.rowB, kind: .research, k: 2, w: w, t: t)
         desk(&c, cx: w * 0.73, y: L.rowB, kind: .offices, k: 3, w: w, t: t)
+        desk(&c, cx: w * 0.27, y: L.rowC, kind: .records, k: 4, w: w, t: t)
+        desk(&c, cx: w * 0.73, y: L.rowC, kind: .shapes, k: 5, w: w, t: t)
         plant(&c, 12, h - 10, 1.1)
         plant(&c, w - 14, h - 6, 1)
     }
@@ -221,7 +234,11 @@ private enum OfficePainter {
         var R = Mulberry32(seed: 31)
         for _ in 0..<9 {
             let cx = x0 + CGFloat(R.next()) * (x1 - x0), hh = 16 + CGFloat(R.next()) * 26
-            ScenePainter.chimney(&g, cx, hz + 4, hh * 0.42, hh, body: Color(hex: "#e8b48e"), shade: Color(hex: "#c98d68"), cap: Color(hex: "#7a4e38"))
+            switch s.region {
+            case .abq: windowButte(&g, cx, hz + 4, hh * 1.2, hh * 0.6)
+            case .lux: windowPalm(&g, cx, hz + 6, hh)
+            case .cap: ScenePainter.chimney(&g, cx, hz + 4, hh * 0.42, hh, body: Color(hex: "#e8b48e"), shade: Color(hex: "#c98d68"), cap: Color(hex: "#7a4e38"))
+            }
         }
         for i in 0..<7 {
             let bx = x0 + 6 + CGFloat(i) * (x1 - x0) / 7, bw = 14 + CGFloat(R.next()) * 12, bh = 10 + CGFloat(R.next()) * 16
@@ -243,6 +260,32 @@ private enum OfficePainter {
         c.stroke(bars, with: .color(Color(hex: "#6a4a32")), lineWidth: 4)
         c.fill(Path(CGRect(x: x0 - 8, y: y1 + 2, width: x1 - x0 + 16, height: 8)), with: .color(Color(hex: "#8a5a3a")))
         plant(&c, x0 + 22, y1 + 2, 0.55)
+    }
+
+    /// Albuquerque out of the window: a red sandstone butte (`butte`).
+    static func windowButte(_ c: inout GraphicsContext, _ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat) {
+        func poly(_ pts: [CGPoint], _ hex: String) {
+            var p = Path(); p.move(to: pts[0]); for q in pts.dropFirst() { p.addLine(to: q) }; p.closeSubpath()
+            c.fill(p, with: .color(Color(hex: hex)))
+        }
+        poly([CGPoint(x: x - w * 0.55, y: y), CGPoint(x: x - w * 0.42, y: y - h), CGPoint(x: x + w * 0.42, y: y - h), CGPoint(x: x + w * 0.55, y: y)], "#a65e38")
+        poly([CGPoint(x: x - w * 0.55, y: y), CGPoint(x: x - w * 0.42, y: y - h), CGPoint(x: x + w * 0.05, y: y - h), CGPoint(x: x + w * 0.1, y: y)], "#d98e5e")
+    }
+
+    /// Luxor out of the window: a date palm in silhouette (`palmSil`).
+    static func windowPalm(_ c: inout GraphicsContext, _ x: CGFloat, _ y: CGFloat, _ h: CGFloat) {
+        let col = Color(hex: "#7a8a4a")
+        var trunk = Path()
+        trunk.move(to: CGPoint(x: x, y: y)); trunk.addQuadCurve(to: CGPoint(x: x + h * 0.04, y: y - h), control: CGPoint(x: x + h * 0.1, y: y - h * 0.5))
+        c.stroke(trunk, with: .color(col), lineWidth: max(1.5, h * 0.06))
+        var fronds = Path()
+        for i in 0..<6 {
+            let a = -Double.pi / 2 + (Double(i) - 2.5) * 0.6, ca = CGFloat(cos(a)), sa = CGFloat(sin(a))
+            fronds.move(to: CGPoint(x: x + h * 0.04, y: y - h))
+            fronds.addQuadCurve(to: CGPoint(x: x + h * 0.04 + ca * h * 0.45, y: y - h * 0.85 + sa * h * 0.25),
+                                control: CGPoint(x: x + h * 0.04 + ca * h * 0.25, y: y - h * 1.1 + sa * h * 0.15))
+        }
+        c.stroke(fronds, with: .color(col), style: StrokeStyle(lineWidth: max(1.2, h * 0.05), lineCap: .round))
     }
 
     /// The whiteboard: the holding's cash over 14 days as a marker line, and its six goals in handwriting.
@@ -308,11 +351,11 @@ private enum OfficePainter {
         let dw = min(w * 0.4, 170), dh: CGFloat = 14, x = cx - dw / 2
         fill(rr(cx - 22 + CGFloat(k) * 8, y - 66, 34, 40, 8), "#3d3560")
         let bob = CGFloat(sin(t * 2 + Double(k))) * 1.2, px = cx - 6 + CGFloat(k) * 8
-        fill(rr(px - 13, y - 44 + bob, 26, 30, 9), ["#ff5e3a", "#14a39a", "#9b7be0", "#ffc23d"][k])
+        fill(rr(px - 13, y - 44 + bob, 26, 30, 9), ["#ff5e3a", "#14a39a", "#9b7be0", "#ffc23d", "#5aa9e6", "#e0408a"][k])
         fill(Path(ellipseIn: CGRect(x: px - 10, y: y - 64 + bob, width: 20, height: 20)), "#e0a47a")
         var hair = Path()
         hair.addArc(center: CGPoint(x: px, y: y - 58 + bob), radius: 10, startAngle: .degrees(180), endAngle: .degrees(0), clockwise: false)
-        fill(hair, ["#3a2418", "#1f1b2e", "#7a4a24", "#2b2350"][k])
+        fill(hair, ["#3a2418", "#1f1b2e", "#7a4a24", "#2b2350", "#c9a040", "#1f1b2e"][k])
         fill(rr(x, y - dh, dw, dh, 5), "#e8c495")
         fill(Path(CGRect(x: x + 6, y: y, width: dw - 12, height: 34)), "#b07a48")
         fill(Path(CGRect(x: x + 6, y: y + 30, width: dw - 12, height: 4)), "#9a6a3c")
@@ -350,6 +393,19 @@ private enum OfficePainter {
             fill(Path(CGRect(x: gx - 7, y: y - dh - 3, width: 14, height: 3)), "#7a4a24")
             fill(Path(ellipseIn: CGRect(x: gx - 11, y: y - dh - 26, width: 22, height: 22)), "#5aa9e6")
             fill(Path(ellipseIn: CGRect(x: gx - 7, y: y - dh - 21, width: 10, height: 8)), "#7aa04a")
+        case .records:
+            var climb = Path(); climb.move(to: CGPoint(x: mx - 18, y: y - dh - 14)); climb.addQuadCurve(to: CGPoint(x: mx + 16, y: y - dh - 36), control: CGPoint(x: mx, y: y - dh - 16))
+            c.stroke(climb, with: .color(Color(hex: "#e5432f")), lineWidth: 2)
+            // A model of the pressurised capsule under its balloon.
+            let gx = x + 26
+            fill(Path(ellipseIn: CGRect(x: gx - 10, y: y - dh - 22, width: 20, height: 20)), "#c9ccd2")
+            fill(Path(ellipseIn: CGRect(x: gx - 0.5, y: y - dh - 17.5, width: 7, height: 7)), "#2b5ab8")
+            var rope = Path(); rope.move(to: CGPoint(x: gx, y: y - dh - 22)); rope.addLine(to: CGPoint(x: gx, y: y - dh - 34))
+            c.stroke(rope, with: .color(Color(hex: "#7a4a24")), lineWidth: 1.2)
+            fill(Path(ellipseIn: CGRect(x: gx - 7, y: y - dh - 47, width: 14, height: 14)), "#ffc23d")
+        case .shapes:
+            AdShapeArt.draw(&c, .bottle, center: CGPoint(x: mx, y: y - dh - 25), size: 30)
+            AdShapeArt.draw(&c, .rocket, center: CGPoint(x: x + 26, y: y - dh - 14), size: 26)
         default: break
         }
         // A coffee cup with a curl of steam.

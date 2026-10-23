@@ -132,6 +132,24 @@ private struct PostcardPainter {
         rect(1, -11, 8, 3, col, in: g)
     }
 
+    /// Luxor: the Theban hills and the Nile.
+    func nile() {
+        fill("M6 60 L40 52 L58 56 L76 48 L144 58 L144 72 L6 72Z", "#c98a6a")
+        rect(6, 64, 138, 5, "#3a8ab0")
+    }
+
+    /// A date palm standing on the ground line, five fronds around its top at (x, 52).
+    func palm(_ x: CGFloat) {
+        stroke("M\(x) 72 Q\(x + 1) 60 \(x) 52", "#5a3a20", 1.6)
+        for f in 0..<5 {
+            var g = c
+            g.translateBy(x: x, y: 52)
+            g.rotate(by: .degrees(Double(f) * 72))
+            g.translateBy(x: -x, y: -52)
+            ellipse(x + CGFloat(cos(Double(f) * 1.26)) * 4, 52 + CGFloat(sin(Double(f) * 1.26)) * 1.4, 5, 1.4, "#2e6a2a", in: g)
+        }
+    }
+
     /// `many`: n balloons scattered between y0 and y1; the first one in your colors.
     mutating func many(_ n: Int, _ sz: Double, _ y0: Double, _ y1: Double) {
         for i in 0..<n {
@@ -341,6 +359,16 @@ private struct PostcardPainter {
             mesa()
             cactus(132, 0.7)
             many(8, 0.5, 26, 44)
+            crown(75, 18, 1.2)
+        case .lux:
+            circle(112, 44, 9, "#fff0c8")
+            nile()
+            fill("M84 58 L98 38 L112 58Z", "#b07858")
+            for x: CGFloat in [20, 34, 128] { palm(x) }
+            balloon(70, 14, 0.9, c0, c1)
+        case .baronLux:
+            nile()
+            many(8, 0.5, 24, 44)
             crown(75, 18, 1.2)
         case .world:
             for _ in 0..<20 {

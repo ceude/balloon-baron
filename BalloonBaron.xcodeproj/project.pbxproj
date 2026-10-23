@@ -28,6 +28,7 @@
 		3F0B240D7BF72C3BE57BA5F9 /* HoldingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3ED97BD630A253467C06E76 /* HoldingView.swift */; };
 		4187BA67C12CC08B33B52612 /* PostcardScenes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4C8C51BD9123B333EB42CF /* PostcardScenes.swift */; };
 		43D34FF299E13570C04FCAA5 /* ScenePainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC0AFDF1E7A3A9121D93DD8E /* ScenePainter.swift */; };
+		47FB6CACD2AB59B070A4E164 /* GuideAvatars.swift in Sources */ = {isa = PBXBuildFile; fileRef = 763B98D1DA188953D28B6370 /* GuideAvatars.swift */; };
 		4A2B88542C10DAAFDBF3D110 /* BarlowCondensed-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A429A91A72084FD301F9A3E5 /* BarlowCondensed-Bold.ttf */; };
 		51EA18F07C7C4E78551CC5A9 /* RedFlagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D319BFA50E962451010EB785 /* RedFlagView.swift */; };
 		593654C519329CF20E4DD5BF /* RepChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCD169363A678C776CEF029 /* RepChartView.swift */; };
@@ -69,6 +70,7 @@
 		D94B9EE2BB63306E4E84C569 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A7F9E6E220C47610C3B3C41 /* Assets.xcassets */; };
 		DD35D40BDE2365FF1F2D8551 /* HoldingOffice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35623869A60618088C41AF72 /* HoldingOffice.swift */; };
 		DEEAB119EDBF9CB14089F610 /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B31687098E5783CD57B19E0E /* BarlowCondensed-SemiBold.ttf */; };
+		E4784A24C39AC33337B15154 /* AdShapeArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB9359E7A5D91DE3E717B69 /* AdShapeArt.swift */; };
 		E69B4CB75937456ED93981A4 /* BazaarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73920F4A7D747582F67B5D94 /* BazaarViews.swift */; };
 		E97DB4A97AA58EE10F7572BE /* HezarfenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258193DAFB836A70F64C8C53 /* HezarfenView.swift */; };
 		EF3F4E97DEC19EE3C40076E6 /* FlightView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9662F101C27DC417A5D0A108 /* FlightView.swift */; };
@@ -90,6 +92,7 @@
 		158AFE69FAF9C43034FBC847 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Theme.swift"; sourceTree = "<group>"; };
 		1906EB4B98B7016B3A39536D /* RegionsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RegionsCard.swift"; sourceTree = "<group>"; };
 		1A0065FA7F524A063D270336 /* IntroScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "IntroScene.swift"; sourceTree = "<group>"; };
+		1DB9359E7A5D91DE3E717B69 /* AdShapeArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AdShapeArt.swift"; sourceTree = "<group>"; };
 		21BA8159F9A68439627ADACE /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = "Localizable.xcstrings"; sourceTree = "<group>"; };
 		23D4D33454C06481C5DCFCD1 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReportView.swift"; sourceTree = "<group>"; };
 		258193DAFB836A70F64C8C53 /* HezarfenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HezarfenView.swift"; sourceTree = "<group>"; };
@@ -113,6 +116,7 @@
 		73920F4A7D747582F67B5D94 /* BazaarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BazaarViews.swift"; sourceTree = "<group>"; };
 		73CE86E1131A0D2F69D02D15 /* ReviewChirpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReviewChirpView.swift"; sourceTree = "<group>"; };
 		74743D6DF14E3F20528EAA46 /* PriceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PriceSheetView.swift"; sourceTree = "<group>"; };
+		763B98D1DA188953D28B6370 /* GuideAvatars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GuideAvatars.swift"; sourceTree = "<group>"; };
 		7979FE3F575B19E31E0B24FD /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MenuView.swift"; sourceTree = "<group>"; };
 		7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProtoIcon.swift"; sourceTree = "<group>"; };
 		7EDB158A34F42484C541CFE0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeView.swift"; sourceTree = "<group>"; };
@@ -245,6 +249,7 @@
 		A1D1091F4EB95F42FF311FAE /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				1DB9359E7A5D91DE3E717B69 /* AdShapeArt.swift */,
 				8480E19BC8DE8F1B439520EE /* BalloonArt.swift */,
 				B3141C729AE6B19C61AE6F2A /* BankView.swift */,
 				73920F4A7D747582F67B5D94 /* BazaarViews.swift */,
@@ -257,6 +262,7 @@
 				D5B20ABBDA63F2F318C03DED /* FleetView.swift */,
 				9662F101C27DC417A5D0A108 /* FlightView.swift */,
 				BA6CB771A7741DFE9025EA00 /* GoalsView.swift */,
+				763B98D1DA188953D28B6370 /* GuideAvatars.swift */,
 				C75F9CDDED31E1B1E782B22C /* HezarfenAvatar.swift */,
 				258193DAFB836A70F64C8C53 /* HezarfenView.swift */,
 				35623869A60618088C41AF72 /* HoldingOffice.swift */,
@@ -401,6 +407,7 @@
 				32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */,
 				202A37F855488615D2088520 /* TownPainter.swift in Sources */,
 				BBB4A8150F49C505DE1C2F67 /* TownViews.swift in Sources */,
+				E4784A24C39AC33337B15154 /* AdShapeArt.swift in Sources */,
 				AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */,
 				8C32AAD571E1BBB5AAC70233 /* BankView.swift in Sources */,
 				E69B4CB75937456ED93981A4 /* BazaarViews.swift in Sources */,
@@ -413,6 +420,7 @@
 				247D71012621FEDAFD91686F /* FleetView.swift in Sources */,
 				EF3F4E97DEC19EE3C40076E6 /* FlightView.swift in Sources */,
 				8FFFF3B3D192A53D1D07FB92 /* GoalsView.swift in Sources */,
+				47FB6CACD2AB59B070A4E164 /* GuideAvatars.swift in Sources */,
 				A818B3A8939636A60B498B62 /* HezarfenAvatar.swift in Sources */,
 				E97DB4A97AA58EE10F7572BE /* HezarfenView.swift in Sources */,
 				DD35D40BDE2365FF1F2D8551 /* HoldingOffice.swift in Sources */,

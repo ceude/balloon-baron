@@ -4,7 +4,7 @@ import BalloonBaronCore
 
 /// Screenshot runs on the simulator (.github/workflows/screens.yml), debug builds only. Launch arguments:
 /// `-demoDays N` plays N days with a simple bot and opens on the home screen; `-demoIntro` keeps the intro;
-/// `-demoPage fleet` opens an office page; `-demoRegion abq` plays on in Albuquerque after Cappadocia.
+/// `-demoPage fleet` opens an office page; `-demoRegion abq` plays on in Albuquerque after Cappadocia, `-demoRegion lux` then on in Luxor.
 extension GameStore {
     func applyDemoArguments() {
         let args = ProcessInfo.processInfo.arguments
@@ -14,12 +14,18 @@ extension GameStore {
         var g = Game(company: "Şafak Balon", colors: Rules.palettes[0], seed: 7)
         g.state.cash = 30000
         for _ in 0..<days { Self.demoDay(&g) }
-        if value("-demoRegion") == "abq" {
+        if let r = value("-demoRegion"), r == "abq" || r == "lux" {
             g.state.barons[.cap] = g.state.day
-            g.state.holding.cash = 200_000
+            g.state.holding.cash = 400_000
             _ = g.enterRegion(.abq)
             g.state.cash = 120_000
             for _ in 0..<20 { Self.demoDay(&g) }
+            if r == "lux" {
+                g.state.barons[.abq] = g.state.day
+                _ = g.enterRegion(.lux)
+                g.state.cash = 120_000
+                for _ in 0..<20 { Self.demoDay(&g) }
+            }
         }
         g.startDay()
         g.state.hezQueue = []

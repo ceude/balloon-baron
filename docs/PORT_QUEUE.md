@@ -2,34 +2,9 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-## Bekleyenler (prototip v104)
+(Şu an kuyruk boş: Swift uygulaması prototip v105.1 ile aynı.)
 
-- **Luksor bölgesi** (`RegionID.lux`): Albuquerque baronu olunca açılır, giriş €150.000, başlangıç €5.000. Rakipler Theban Skies / Pharaoh Balloons / Nile Dawn Air, yeni girenler Red Sea Balloon Co. / Felucca Flights / Hatshepsut Air / Karnak Wings (sayılar `docs/GAME_DESIGN.md`). Patron Nabil Haddad (avatar ve `BOSS_LINES.lux` repliklerinin hepsi). `rivalEdge` Luksor'u da kapsar.
-  - Dört bölüm: Batı Yakası, Nil Rüzgârı, Firavunlar Vadisi, Luksor Baronu.
-  - Birleşme kuralı Luksor'da daha sık (15 gün ara, %38 pay sayılır, 2 gün, %50).
-  - Nil gemisi sezonu: `fiesta` alanını kullanır, 21 günde bir, 3 gün, talep ×1,6; uyarılar, "Nil gecesi" gece olayı.
-  - Hava katmanları +, −, +, −. Gazete "Nil Postası". Otel, sponsor, balon ve pilot adları `REGION_DEF.lux`.
-  - Hezarfen'in giriş uyarısı ("en çetin pazar"), başarımlar `lux` ve `baronLux` (kartpostal sahneleriyle).
-  - Uçuş manzarası: Teb tepeleri ve el-Kurn, tapınak, hurmalar, yeşil Nil vadisi, feluka; engeller hurma ağacı.
-  - Giriş ekranı (`IntroScene`) Luksor teması. Dünya haritasında Luksor artık "yakında" değil.
-- **Bölgeye göre kasaba:** Albuquerque ve Luksor'da duvar renkleri (`TUFF_BY`), düz çatılar (`flatRoof`: vigalar / kubbe), kenarda peri bacası yerine mesa ya da dikilitaş ve hurma kümesi, ağaçlar (kaktüs, yucca, kavak / hurma), çevre arazi renkleri ve tarlalar, Luksor'da Nil şeridi, uzak sırtlar (mesalar / Teb tepeleri ve hurma siluetleri), zemin renkleri, mağara otel yerine kayaya oyulmuş oda (Albuquerque) ya da Nubya evi (Luksor), otel bahçesinde servi yerine kavak / hurma, holding ofisinin penceresindeki manzara. Süsler her bölgede.
-## Bekleyenler (prototip v105)
-
-- **Çarşı etiketi:** etiket yüksekliği 82 (önceden varsayılan 135'ti ve bankanın üstüne çıkıyordu). Dokunmada önce binanın kendi zemini, sonra etiket kutusu sayılır (`townHit`).
-- **Albuquerque kasabası:** kenardaki mesalar kalktı. Mağara otel yerine basamaklı kerpiç (pueblo) bina.
-- **Brülör ve dönüş valfi** (balon başına, `Balloon.burner` 1–3, `Balloon.tvent`; ikisi de isteğe bağlı alan). Filo sayfasında "Donanım" kartı.
-  - Çift brülör: balon fiyatının %10'u, kaza riski ×0,85, uçuşta ısınma ×1,3.
-  - Üçlü brülör: %12 daha, risk ×0,72, ısınma ×1,6.
-  - Dönüş valfi: %6, sarı ve kırmızı bayrakta risk ×0,85, uçuşta sert iniş eşiği 2,6 yerine 3,1.
-- **Paraşüt valfi:** uçuşta havalanınca "Uçuştan vazgeç" yerine VALF düğmesi çıkar. Basılı tutunca ısı saniyede ekstra 0,07 düşer. İlk kullanımda ipucu çıkar.
-- **Elektrik hatları:** uçuşta en fazla 3 hat (190–280 birim, 42–58 m). Altında alçak uçmak ya da altına inmek kaza demek, kaza metni "Elektrik hattına takıldın!".
-- **Müfettiş:** bir zarf %30'un altındaysa 5 günde bir denetim. 1. ve 2. ziyarette uyarı, 3. ziyaretten itibaren yıpranmış balon başına 2.500 ceza ve gazete haberi. Bölgeye göre: SHGM / FAA / Mısır Sivil Havacılık. Kendi portresi var (`inspDay`, `inspN` bölge alanları).
-- **Bölgesel rehberler:** Hezarfen Kapadokya'da kalır. Albuquerque'de Ben Franklin, Luksor'da İmhotep, kendi portreleriyle. Bölgeye girerken Hezarfen'in sözü, ardından yeni rehberin tanışma konuşması. Baron metni, otomatik mod sorunları ve rakip taktikleri düğmesi o bölgenin rehberiyle.
-- **Holding 5. masa, Rekor projesi:** Luksor'a girmeden kilitli. İrtifa rekoru €400.000, 25 gün, %65 şans, talep kalıcı +%5. Durmadan dünya turu €900.000, 40 gün, %50 şans, +%10. Her rekorun ilk denemesi hep başarılı (oyuncuya gösterilmez); sonra "Rekoru geliştir" denemelerinde oranlar geçerli, başarı talebe +%2 ekler (toplam en fazla +%25). Aynı anda bir deneme.
-- **Holding 6. masa, Sponsorlu özel şekiller:** Fizz Cola şişesi (30 gün, €4.000/gün), Yıldız Telekom roketi (45 gün, €6.500/gün), Kanat spor ayakkabısı (60 gün, €9.000/gün). Sözleşme imzalanan bölgede popülerlik her gün 0,001 / 0,0015 / 0,002 düşer (yıldız olarak 0,004 / 0,006 / 0,008). Balon kasabanın üstünde uçar.
-- **Dünya haritası:** Bristol (İngiltere) ve Maasai Mara (Kenya) yalnızca isim olarak var, açılmazlar. Asya "???" kaldı.
-
-- **Metinler** (altı dil): Luksor adı, ülke, bölüm adları ve hedefleri, rakip ve patron replikleri, Nil sezonu uyarıları, Hezarfen uyarısı, gazete adı, başarım adları.
+v104–v105.1 aktarımı (Ekim 2026): Luksor bölgesi (rakipler, yeni girenler, dört bölüm, Nil rüzgârı, Nil gemisi sezonu ve Nil gecesi, erken birleşmeler, 150.000 giriş, 5.000 başlangıç, Nabil Haddad, Nil Postası, başarımlar `lux` / `baronLux`, uçuş manzarası); bölgeye göre kasabalar ve holding penceresi; çarşı etiketi ve dokunma önceliği; balon donanımı (çift/üçlü brülör, dönüş valfi, `Burners`), uçuşta VALF düğmesi ve elektrik hatları (`PowerLine`); zarf müfettişi (`HezMessage.inspector`); bölgesel rehberler Ben Franklin ve İmhotep (`HezMessage.guideHello`, `GuideAvatar`); holding 5. masa rekor denemeleri (ilk deneme hep başarılı) ve 6. masa sponsorlu şekiller (`AdShapeArt`); dünya haritasında Bristol ve Maasai Mara. Altı dilde metinler. Yeni kayıt alanlarının hepsi isteğe bağlı. App Store Connect'te iki yeni Game Center başarımı açılmalı (`docs/APP_STORE.md`).
 
 Önceki durum: Swift uygulaması prototip v103 ile aynıydı. v101: XL balonun adı "Dev balon", "İmza balon" etiketi kalktı.
 

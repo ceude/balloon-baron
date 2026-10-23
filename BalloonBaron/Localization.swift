@@ -45,6 +45,11 @@ extension Mission {
 extension Hotel { var title: String { regional("hotel.\(rawValue)") } }
 extension Sponsor { var title: String { regional("sponsor.\(rawValue)") } }
 extension RegionID { var title: String { loc("region.\(rawValue)") } }
+extension RecordAttempt {
+    var title: String { loc("record.\(rawValue)") }
+    var detail: String { loc("record.\(rawValue).d") }
+}
+extension AdShape { var title: String { loc("adshape.\(rawValue)") } }
 extension MapPin {
     var title: String { mystery ? loc("map.soon") : loc("pin.\(rawValue)") }
     var land: String { loc("pin.\(rawValue).land") }
@@ -106,6 +111,7 @@ extension Goal {
         case .hotelOwn: loc("goal.hotelOwn", num(Int(target)))
         case .share: loc("goal.share", percent(target))
         case .xl: loc("goal.xl", region.xlName)
+        case .fiesta where region == .lux: loc("goal.fiesta.lux")
         default: loc("goal.\(kind.rawValue)")
         }
     }
@@ -140,8 +146,8 @@ extension HezMessage {
         case .spring: loc("hez.spring")
         case .entrant(let e): loc("hez.entrant.\(e.rawValue)")
         case .holdingOpened: loc("hez.holdingOpened")
-        case .enteredRegion(let r): loc("hez.entered.\(r.rawValue)", eur(Rules.startCash))
-        case .fiestaStarted: loc("hez.fiestaStarted")
+        case .enteredRegion(let r): loc("hez.entered.\(r.rawValue)", eur(r.startCash))
+        case .fiestaStarted: loc(currentRegion == .lux ? "hez.fiestaStarted.lux" : "hez.fiestaStarted")
         case let .regionIssue(r, i): loc("hez.regionIssue", r.title, i.body)
         case .officeOpened(let o): loc("hez.officeOpened", o.title) + " " + o.perk
         case .allOffices: loc("hez.allOffices")
@@ -153,6 +159,10 @@ extension HezMessage {
         case .rescued: loc("hez.rescued")
         case .worldBaron: loc("hez.worldBaron")
         case .praise(let p): loc("hez.praise.\(p.rawValue)")
+        case .guideHello(let r): loc("guide.\(r.rawValue).hello")
+        case let .inspector(visit, names, fine):
+            loc("insp.\(visit).\(names.count == 1 ? "one" : "many")", names.joined(separator: ", "), eur(fine))
+        case let .record(k, success): loc(success ? "record.success" : "record.fail", k.title)
         }
     }
 }

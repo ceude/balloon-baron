@@ -26,7 +26,7 @@ Burada yazanlar senin hesabında yapılacaklar.
 4. **Uygulama içi satın almalar** (aşağıdaki tablo):
    - Her biri *Non-Consumable* olarak açılır.
    - Her ürün için incelemeye bir ekran görüntüsü yüklenir: Çarşı'daki satın alma kartı yeterli.
-5. **Game Center**: 22 başarım ve 2 lider tablosu (aşağıdaki tablolar).
+5. **Game Center**: 24 başarım ve 2 lider tablosu (aşağıdaki tablolar).
 6. **App Privacy** (Uygulama Gizliliği) soruları: aşağıdaki cevaplar.
 7. **Gizlilik politikası adresi**: `docs/privacy-policy.html` herkese açık bir adreste olmalı. En kolayı: repo ayarları → *Pages* → `main` dalı, `/docs` klasörü. Adres `https://ceude.github.io/balloon-baron/privacy-policy.html` olur. Pages, özel repoda yalnızca ücretli GitHub planında çalışır; olmazsa dosyayı herhangi bir siteye koyabiliriz.
 8. **Xcode → Product → Archive → Distribute App → App Store Connect → Upload.** Birkaç dakika sonra yapı TestFlight sekmesinde görünür.
@@ -144,6 +144,8 @@ Bu dosya App Store Connect olmadan da çalışır. TestFlight'ta Apple'ın test 
 | `balloonbaron.ach.baronCap` | Baron of Cappadocia | Kapadokya Baronu | Master of the valley | 80 |
 | `balloonbaron.ach.abq` | New World | Yeni Dünya | You entered Albuquerque | 40 |
 | `balloonbaron.ach.baronAbq` | Baron of Albuquerque | Albuquerque Baronu | The sky of two continents | 80 |
+| `balloonbaron.ach.lux` | Sky of the Nile | Nil'in göğü | You entered Luxor | 40 |
+| `balloonbaron.ach.baronLux` | Baron of Luxor | Luksor Baronu | The valley of the pharaohs is yours | 100 |
 | `balloonbaron.ach.world` | World Baron | Dünya Baronu | Every goal of the holding | 100 |
 
 Başarımlar oyunda kartpostal olarak kutlanıyor, bu yüzden Game Center afişi kapalı (`showsCompletionBanner = false`).

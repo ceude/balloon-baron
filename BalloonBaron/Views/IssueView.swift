@@ -1,7 +1,7 @@
 import SwiftUI
 import BalloonBaronCore
 
-/// A parked region's problem: two choices with Hezarfen's advice, or decide later.
+/// A parked region's problem: two choices with the region guide's advice, or decide later.
 struct IssueView: View {
     @Environment(GameStore.self) private var store
     let region: RegionID
@@ -35,11 +35,8 @@ struct IssueView: View {
 
     private func hezarfenLine(_ issue: Issue) -> some View {
         HStack(alignment: .top, spacing: 10) {
-            Circle()
-                .fill(Theme.sky)
-                .frame(width: 34, height: 34)
-                .overlay(Text("H").font(Theme.font(17, .heavy, condensed: true)).foregroundStyle(Theme.sun))
-            (Text(loc("hez.name") + ": ").font(Theme.font(14, .bold)) + Text(issue.hezarfen).font(Theme.font(14)))
+            GuideAvatar(region: region, size: 34)
+            (Text(guideName(region) + ": ").font(Theme.font(14, .bold)) + Text(issue.hezarfen).font(Theme.font(14)))
                 .foregroundStyle(Theme.ink)
         }
         .padding(10)

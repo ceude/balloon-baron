@@ -61,6 +61,9 @@ jobs:
           market|-demoDays 60 -demoPage market|8
           goals|-demoDays 60 -demoPage goals|8
           abq|-demoDays 60 -demoRegion abq|10
+          lux|-demoDays 60 -demoRegion lux|12
+          luxintro|-demoDays 60 -demoRegion lux -demoIntro|8
+          holding|-demoDays 60 -demoRegion lux -demoPage holding|9
           LIST
             xcrun simctl shutdown "$UDID"
           done

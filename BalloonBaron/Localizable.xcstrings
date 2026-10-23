@@ -124,6 +124,47 @@
         }
       }
     },
+    "a11y.flight.ventHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doppeltippen, um das Ventil zu öffnen oder zu schließen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Double-tap to open or close the vent."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca dos veces para abrir o cerrar la válvula."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ダブルタップでバルブを開閉。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "두 번 탭하면 밸브가 열리거나 닫힙니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valfi açıp kapatmak için iki kez dokun."
+          }
+        }
+      }
+    },
     "a11y.holding.chart": {
       "extractionState": "manual",
       "localizations": {
@@ -817,6 +858,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vadinin efendisi"
+          }
+        }
+      }
+    },
+    "ach.baronLux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron von Luxor"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron of Luxor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barón de Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールの男爵"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르의 남작"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor Baronu"
+          }
+        }
+      }
+    },
+    "ach.baronLux.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Tal der Pharaonen gehört dir"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The valley of the pharaohs is yours"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El valle de los faraones es tuyo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "王家の谷は君のもの"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파라오의 계곡이 당신의 것"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firavunların vadisi senin"
           }
         }
       }
@@ -1555,6 +1678,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bir otel satın aldın"
+          }
+        }
+      }
+    },
+    "ach.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Himmel des Nils"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sky of the Nile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cielo del Nilo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルの空"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일의 하늘"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil'in göğü"
+          }
+        }
+      }
+    },
+    "ach.lux.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist in Luxor eingestiegen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You entered Luxor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entraste en Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールに進出した"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르에 진출했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor'a girdin"
           }
         }
       }
@@ -2375,6 +2580,129 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dev balonun gökyüzünde"
+          }
+        }
+      }
+    },
+    "adshape.bottle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fizz-Cola-Flasche"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fizz Cola bottle"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Botella de Fizz Cola"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フィズコーラのボトル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "피즈 콜라 병"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fizz Cola şişesi"
+          }
+        }
+      }
+    },
+    "adshape.rocket": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yıldız-Telekom-Rakete"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yıldız Telekom rocket"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cohete de Yıldız Telekom"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユルドゥズ・テレコムのロケット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이을드즈 텔레콤 로켓"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yıldız Telekom roketi"
+          }
+        }
+      }
+    },
+    "adshape.shoe": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kanat-Sneaker"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kanat sneaker"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zapatilla Kanat"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カナットのスニーカー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "카나트 운동화"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kanat spor ayakkabısı"
           }
         }
       }
@@ -4593,6 +4921,498 @@
         }
       }
     },
+    "boss.lux.accident": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich habe gehört, du bist hart in einem Zuckerrohrfeld gelandet. Der Nil verzeiht nicht. Ich auch nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I hear you came down hard in a sugar-cane field. The Nile doesn't forgive. Neither do I."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Me dicen que aterrizaste fuerte en un cañaveral. El Nilo no perdona. Yo tampoco."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サトウキビ畑に強く降りたそうだな。ナイルは許さない。私もだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사탕수수밭에 거칠게 내렸다고 들었네. 나일은 용서하지 않아. 나도 마찬가지고."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şeker kamışı tarlasına sert indin, duydum. Nil affetmez. Ben de affetmem."
+          }
+        }
+      }
+    },
+    "boss.lux.baron": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron von Luxor. Ich weiß nicht, was mein Vater sagen würde. Ich sage: Der Nil hat dich angenommen. Das ist nicht leicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron of Luxor. I don't know what my father would say. I say this: the Nile has accepted you. That is not easy."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barón de Luxor. No sé qué diría mi padre. Yo digo esto: el Nilo te ha aceptado. Eso no es fácil."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールの男爵か。父なら何と言ったかわからん。私はこう言おう。ナイルは君を受け入れた。容易なことではない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르의 남작이라. 우리 아버지라면 뭐라고 했을지 모르겠군. 나는 이렇게 말하겠네. 나일이 자네를 받아들였어. 쉬운 일이 아니지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor Baronu. Babam görse ne derdi bilmiyorum. Ben şunu diyorum: Nil seni kabul etti. Bu kolay değildir."
+          }
+        }
+      }
+    },
+    "boss.lux.ch1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acht Ballone? Meine Flotte wirft ihren Schatten über das Tal der Pharaonen. Du zählst noch Kunden, ich zähle Schiffe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eight balloons? My fleet casts a shadow over the valley of the pharaohs. You still count customers; I count ships."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Ocho globos? Mi flota hace sombra sobre el valle de los faraones. Tú aún cuentas clientes; yo cuento barcos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "8機だと？私の船団は王家の谷に影を落とす。君はまだ客を数えているが、私は船を数える。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "여덟 대라고? 내 기단은 파라오의 계곡에 그늘을 드리우지. 자네는 아직 손님을 세지만 나는 배를 센다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sekiz balon mu? Benim filom firavunların vadisini gölgeler. Sen hâlâ müşteri sayıyorsun, ben gemileri sayarım."
+          }
+        }
+      }
+    },
+    "boss.lux.ch2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn die Nilschiffe anlegen, in wessen Ballone steigen die Touristen? Hast du je hingesehen? In meine. Aber du machst dich nicht schlecht, zugegeben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When the Nile ships dock, whose balloons do the tourists ride? Have you ever looked? Mine. But you're not doing badly, I admit."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando atracan los barcos del Nilo, ¿en qué globos suben los turistas? ¿Te has fijado? En los míos. Pero no lo haces mal, lo admito."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルの船が着いた時、観光客は誰の気球に乗る？見たことがあるか？私のだ。だが、悪くはやっていない。認めよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일 배가 들어오면 관광객이 누구 열기구를 타는지 본 적 있나? 내 것이지. 그래도 자네, 나쁘지 않군. 인정하지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil gemileri yanaştığında turistler kimin balonuna biniyor, hiç baktın mı? Benimkine. Ama fena gitmiyorsun, kabul."
+          }
+        }
+      }
+    },
+    "boss.lux.deal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nun gut. Der Wind hat gedreht. Wenn du Theban Skies übernehmen willst, reden wir. Aber ändere den Namen nicht, es war der meines Vaters."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Very well. The wind has turned. If you want to take over Theban Skies, let's talk. But don't change the name; it was my father's."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muy bien. El viento ha cambiado. Si quieres quedarte con Theban Skies, hablemos. Pero no le cambies el nombre; era el de mi padre."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "いいだろう。風向きが変わった。テーベ・スカイズを引き継ぎたいなら話そう。だが名前は変えるな。父の名だ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "좋네. 바람이 바뀌었군. 테베 스카이스를 인수하고 싶다면 이야기하세. 하지만 이름은 바꾸지 말게. 우리 아버지 이름이야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peki. Rüzgâr döndü. Theban Skies'ı devralmak istersen konuşalım. Ama ismini değiştirme, babamın ismi."
+          }
+        }
+      }
+    },
+    "boss.lux.gone": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich habe meinen letzten Ballon verkauft. Das Westufer gehört jetzt dir. Flieg eines Morgens auch für mich eine Runde über Deir el-Bahari."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I sold my last balloon. The West Bank is yours now. Some morning, fly a round over Deir el-Bahari for me too."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vendí mi último globo. La Ribera Oeste es tuya. Alguna mañana, da también una vuelta por mí sobre Deir el-Bahari."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最後の気球も売った。西岸はもう君のものだ。いつかの朝、私のためにもデイル・エル・バハリの上を一周してくれ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마지막 열기구도 팔았네. 이제 서안은 자네 것이야. 어느 아침, 날 위해서도 데이르 엘 바하리 위를 한 바퀴 돌아 주게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son balonumu da sattım. Batı Yakası artık senin. Bir sabah Deir el-Bahari'nin üstünde benim için de bir tur at."
+          }
+        }
+      }
+    },
+    "boss.lux.hello": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen, Fremder. Nabil Haddad, Theban Skies. Als mein Vater an diesem Westufer den ersten Ballon aufblies, warst du noch nicht geboren. Hier kennt jedes Hotel, jeder Reiseführer, jede Feluke meinen Namen. Du hast in Kappadokien und in Amerika gewonnen, hört man. Der Nil ist anders. Der Nil liebt die Geduldigen und verschlingt die Hochmütigen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome, stranger. Nabil Haddad, Theban Skies. When my father inflated the first balloon on this West Bank, you weren't even born. Here every hotel, every guide, every felucca knows my name. I hear you won in Cappadocia and in America. The Nile is different. The Nile loves the patient and swallows the proud."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenido, forastero. Nabil Haddad, Theban Skies. Cuando mi padre infló el primer globo en esta Ribera Oeste, tú ni habías nacido. Aquí cada hotel, cada guía, cada faluca conoce mi nombre. Dicen que ganaste en Capadocia y en América. El Nilo es distinto. El Nilo ama al paciente y se traga al soberbio."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ようこそ、よそ者。ナビル・ハッダード、テーベ・スカイズだ。父がこの西岸で最初の気球を膨らませた時、君はまだ生まれてもいなかった。ここではどのホテルも、どのガイドも、どのファルーカも私の名を知っている。カッパドキアでもアメリカでも勝ったそうだな。ナイルは違う。ナイルは辛抱強い者を愛し、傲慢な者を呑み込む。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어서 오게, 이방인. 나빌 하다드, 테베 스카이스일세. 우리 아버지가 이 서안에서 첫 열기구를 부풀렸을 때 자네는 태어나지도 않았지. 여기선 모든 호텔, 모든 가이드, 모든 펠루카가 내 이름을 알아. 카파도키아에서도, 미국에서도 이겼다고 들었네. 나일은 다르다네. 나일은 인내하는 자를 사랑하고 오만한 자를 삼키지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoş geldin, yabancı. Nabil Haddad, Theban Skies. Babam bu Batı Yakası'nda ilk balonu şişirdiğinde sen daha doğmamıştın. Burada her otel, her rehber, her feluka benim adımı bilir. Kapadokya'da, Amerika'da kazanmışsın, duydum. Nil başkadır. Nil sabırlı olanı sever, kibirliyi yutar."
+          }
+        }
+      }
+    },
+    "boss.lux.hotel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Manager dieses Hotels ist der Schwager meines Cousins. Hier werden Verträge beim Tee gemacht, nicht auf Papier, Fremder."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That hotel's manager is my cousin's brother-in-law. Here deals are made over tea, not on paper, stranger."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El gerente de ese hotel es el cuñado de mi primo. Aquí los tratos se hacen con té, no con papel, forastero."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あのホテルの支配人は私のいとこの義兄弟だ。ここでは契約は紙ではなく茶で結ぶものだ、よそ者。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그 호텔 지배인은 내 사촌의 처남이라네. 여기선 계약을 종이가 아니라 차로 맺지, 이방인."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O otelin müdürü benim kuzenimin kayınbiraderi. Burada anlaşmalar kağıtla değil, çayla yapılır, yabancı."
+          }
+        }
+      }
+    },
+    "boss.lux.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nabil Haddad"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nabil Haddad"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nabil Haddad"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナビル・ハッダード"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나빌 하다드"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nabil Haddad"
+          }
+        }
+      }
+    },
+    "boss.lux.passed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestern hast du mehr Passagiere geflogen als ich. Das ist in der Geschichte von Theban Skies zweimal passiert. Beide Male habe ich zuletzt gelacht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yesterday you flew more passengers than me. That has happened twice in the history of Theban Skies. Both times I laughed last."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayer volaste más pasajeros que yo. Eso ha pasado dos veces en la historia de Theban Skies. Las dos veces reí el último."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "昨日は私より多くの客を乗せたそうだな。テーベ・スカイズの歴史で二度あったことだ。二度とも最後に笑ったのは私だ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어제 나보다 승객을 더 태웠더군. 테베 스카이스 역사에 두 번 있었던 일이야. 두 번 모두 마지막에 웃은 건 나였지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dün benden fazla yolcu uçurmuşsun. Theban Skies'ın tarihinde bu iki kez oldu. İkisinde de ben güldüm en son."
+          }
+        }
+      }
+    },
+    "boss.lux.poach": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich habe deinem Piloten ein Haus mit Nilblick angeboten. Hier misst man Treue in Brot."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I offered your pilot a house with a view of the Nile. Here loyalty is measured in bread."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le ofrecí a tu piloto una casa con vistas al Nilo. Aquí la lealtad se mide en pan."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "君のパイロットにナイルの見える家を提案した。ここでは忠誠はパンで量られる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자네 조종사에게 나일이 보이는 집을 제안했네. 여기선 충성심을 빵으로 잰다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilotuna Nil manzaralı bir ev teklif ettim. Burada sadakat ekmekle ölçülür."
+          }
+        }
+      }
+    },
+    "boss.lux.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhaber von Theban Skies"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owner of Theban Skies"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dueño de Theban Skies"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テーベ・スカイズのオーナー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테베 스카이스 대표"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theban Skies sahibi"
+          }
+        }
+      }
+    },
     "boss.ok.0": {
       "extractionState": "manual",
       "localizations": {
@@ -6157,37 +6977,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Der Himmel zweier Kontinente gehört dir. Die nächsten Regionen erscheinen bald auf der Karte."
+            "value": "Der Himmel zweier Kontinente gehört dir. Auf der Weltkarte wartet Luxor: der härteste Ballonmarkt der Welt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The skies of two continents are yours. The next regions will appear on the map very soon."
+            "value": "The skies of two continents are yours. Luxor is waiting on the world map: the toughest balloon market there is."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El cielo de dos continentes es tuyo. Las próximas regiones aparecerán pronto en el mapa."
+            "value": "El cielo de dos continentes es tuyo. Luxor te espera en el mapa del mundo: el mercado de globos más duro que existe."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "二つの大陸の空は君のものだ。次の地域はまもなく地図に現れる。"
+            "value": "二つの大陸の空は君のものだ。世界地図でルクソールが待っている。世界一厳しい気球市場だ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "두 대륙의 하늘이 당신의 것입니다. 다음 지역들이 곧 지도에 나타납니다."
+            "value": "두 대륙의 하늘이 당신의 것입니다. 세계 지도에서 룩소르가 기다립니다. 세상에서 가장 험한 열기구 시장이죠."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "İki kıtanın göğü senin. Sıradaki bölgeler çok yakında haritada belirecek."
+            "value": "İki kıtanın göğü senin. Dünya haritasında Luksor seni bekliyor: dünyanın en çetin balon pazarı."
           }
         }
       }
@@ -6233,6 +7053,47 @@
         }
       }
     },
+    "ceremony.baronHint.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Himmel dreier Kontinente gehört dir. Bristol und die Maasai Mara öffnen sich bald auf der Karte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The skies of three continents are yours. Bristol and the Maasai Mara will open on the map very soon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cielo de tres continentes es tuyo. Bristol y el Maasai Mara se abrirán muy pronto en el mapa."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "三つの大陸の空は君のものだ。ブリストルとマサイマラがまもなく地図に開く。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세 대륙의 하늘이 당신의 것입니다. 브리스톨과 마사이마라가 곧 지도에 열립니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç kıtanın göğü senin. Bristol ve Maasai Mara çok yakında haritada açılacak."
+          }
+        }
+      }
+    },
     "ceremony.baronLead": {
       "extractionState": "manual",
       "localizations": {
@@ -6270,6 +7131,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gün %1$@. %2$@ göğündeki her üç balondan ikisi %3$@ renklerinde. Hezarfen Usta'nın gözleri dolu: “Galata'dan Üsküdar'a uçtuğum gün bile bu kadar gururlanmamıştım, evlat.”"
+          }
+        }
+      }
+    },
+    "ceremony.baronLead.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag %1$@. Zwei von drei Ballonen am Himmel über %2$@ tragen die Farben von %3$@. Ben Franklin putzt seine Brille: „1783 in Paris sah ich den ersten Ballon und sagte, dieses Baby wird groß. Nun ist es groß geworden, mein Freund.“"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day %1$@. Two of every three balloons in the sky over %2$@ fly the colors of %3$@. Ben Franklin wipes his spectacles: “In Paris in 1783 I watched the first balloon and said this baby would grow up. Well, it has grown up, my friend.”"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día %1$@. Dos de cada tres globos en el cielo de %2$@ llevan los colores de %3$@. Ben Franklin limpia sus gafas: «En París, en 1783, vi el primer globo y dije que ese bebé crecería. Pues ha crecido, amigo mío»."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@日目。%2$@の空を飛ぶ気球の3機に2機が%3$@の色だ。ベン・フランクリンが眼鏡を拭く。「1783年のパリで最初の気球を見て、この赤ん坊は育つと言った。ほら、育ったよ、友よ」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@일차. %2$@ 하늘의 열기구 세 대 중 두 대가 %3$@의 색을 달고 있습니다. 벤 프랭클린이 안경을 닦습니다. “1783년 파리에서 첫 열기구를 보며 이 아기는 자랄 거라 했지. 보게, 자랐네, 친구.”"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gün %1$@. %2$@ göğündeki her üç balondan ikisi %3$@ renklerinde. Ben Franklin gözlüğünü siliyor: “1783'te Paris'te ilk balonu izlerken 'bu bebek büyüyecek' demiştim. İşte büyüdü, evlat.”"
+          }
+        }
+      }
+    },
+    "ceremony.baronLead.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag %1$@. Zwei von drei Ballonen am Himmel über %2$@ tragen die Farben von %3$@. Imhotep lächelt: „Vor viertausend Jahren habe ich Stein zum Himmel gehoben. Du hast Menschen gehoben, mein Freund. Die Pharaonen wären neidisch.“"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day %1$@. Two of every three balloons in the sky over %2$@ fly the colors of %3$@. Imhotep smiles: “Four thousand years ago I raised stone toward the sky. You have raised people, my friend. The pharaohs would be jealous.”"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día %1$@. Dos de cada tres globos en el cielo de %2$@ llevan los colores de %3$@. Imhotep sonríe: «Hace cuatro mil años elevé la piedra hacia el cielo. Tú has elevado personas, amigo mío. Los faraones sentirían envidia»."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@日目。%2$@の空を飛ぶ気球の3機に2機が%3$@の色だ。イムホテプが微笑む。「四千年前、私は石を天へと積み上げた。君は人を空へ上げたのだ、友よ。ファラオたちも羨むだろう」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@일차. %2$@ 하늘의 열기구 세 대 중 두 대가 %3$@의 색을 달고 있습니다. 임호테프가 미소 짓습니다. “사천 년 전 나는 돌을 하늘로 쌓아 올렸지. 자네는 사람을 하늘로 올렸네, 친구. 파라오들도 부러워할 걸세.”"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gün %1$@. %2$@ göğündeki her üç balondan ikisi %3$@ renklerinde. İmhotep gülümsüyor: “Dört bin yıl önce taşı göğe doğru yükselttim. Sen insanları yükselttin, evlat. Firavunlar kıskanırdı.”"
           }
         }
       }
@@ -6644,6 +7587,88 @@
       }
     },
     "chapter.baronAbq.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        }
+      }
+    },
+    "chapter.baronLux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron von Luxor"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron of Luxor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barón de Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールの男爵"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르의 남작"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor Baronu"
+          }
+        }
+      }
+    },
+    "chapter.baronLux.award": {
       "extractionState": "manual",
       "localizations": {
         "de": {
@@ -7094,6 +8119,170 @@
         }
       }
     },
+    "chapter.nileWind": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nilwind"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile Wind"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viento del Nilo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルの風"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일의 바람"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil Rüzgârı"
+          }
+        }
+      }
+    },
+    "chapter.nileWind.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ägyptens Zivilluftfahrtbehörde kürte dich zum sichersten Betreiber des Jahres"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Egypt's Civil Aviation Authority named you the safest operator of the year"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La Autoridad de Aviación Civil de Egipto te nombró el operador más seguro del año"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エジプト民間航空局が君を年間最も安全な事業者に選んだ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이집트 민간항공청이 당신을 올해 가장 안전한 운영사로 선정했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mısır Sivil Havacılık Otoritesi seni yılın en güvenli işletmesi seçti"
+          }
+        }
+      }
+    },
+    "chapter.pharaohs": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tal der Pharaonen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valley of the Pharaohs"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valle de los Faraones"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "王家の谷"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파라오의 계곡"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firavunlar Vadisi"
+          }
+        }
+      }
+    },
+    "chapter.pharaohs.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ägyptens Tourismusministerium kürte dich zur Ballonfirma des Jahres"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Egypt's Ministry of Tourism named you Balloon Company of the Year"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Ministerio de Turismo de Egipto te nombró Empresa de Globos del Año"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エジプト観光省が君を年間最優秀気球会社に選んだ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이집트 관광부가 당신을 올해의 열기구 회사로 선정했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mısır Turizm Bakanlığı seni yılın balon şirketi seçti"
+          }
+        }
+      }
+    },
     "chapter.rising": {
       "extractionState": "manual",
       "localizations": {
@@ -7172,6 +8361,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Göreme Belediyesi seni vadinin en hızlı büyüyen şirketi seçti"
+          }
+        }
+      }
+    },
+    "chapter.westBank": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Westufer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "West Bank"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ribera Oeste"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "西岸"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "서안"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batı Yakası"
+          }
+        }
+      }
+    },
+    "chapter.westBank.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Gouvernement Luxor kürte dich zum neuen Gesicht des Westufers"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Governorate of Luxor named you the new face of the West Bank"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La Gobernación de Luxor te nombró la nueva cara de la Ribera Oeste"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソール県が君を西岸の新しい顔に選んだ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르 주정부가 당신을 서안의 새 얼굴로 선정했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor Valiliği seni Batı Yakası'nın yeni yüzü seçti"
           }
         }
       }
@@ -10616,6 +11887,457 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kaydı sil (test)"
+          }
+        }
+      }
+    },
+    "equip.burners.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einzelbrenner"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Single burner"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quemador simple"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "シングルバーナー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "싱글 버너"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tek brülör"
+          }
+        }
+      }
+    },
+    "equip.burners.2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doppelbrenner"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Double burner"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quemador doble"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ダブルバーナー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "더블 버너"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çift brülör"
+          }
+        }
+      }
+    },
+    "equip.burners.3": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dreifachbrenner"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Triple burner"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quemador triple"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "トリプルバーナー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "트리플 버너"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üçlü brülör"
+          }
+        }
+      }
+    },
+    "equip.double.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verstopft oder erlischt ein Brenner, landest du sicher mit dem anderen. Unfallrisiko %1$@ %% niedriger, der Ballon heizt und steigt %2$@ %% schneller. Fahrgäste lieben einen sicheren Ballon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If one burner clogs or goes out, you land safely on the other. Accident risk %1$@%% lower, the balloon heats and climbs %2$@%% faster. Passengers love a safe balloon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si un quemador se atasca o se apaga, aterrizas seguro con el otro. Riesgo de accidente un %1$@ %% menor; el globo se calienta y sube un %2$@ %% más rápido. A los pasajeros les encanta un globo seguro."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "片方のバーナーが詰まったり消えたりしても、もう片方で安全に着陸できる。事故リスクは%1$@%%低下、気球は%2$@%%速く温まり上昇する。乗客は安全な気球が大好きだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "버너 하나가 막히거나 꺼져도 다른 하나로 안전하게 내릴 수 있습니다. 사고 위험 %1$@%% 감소, 열기구가 %2$@%% 더 빨리 데워지고 상승합니다. 승객은 안전한 열기구를 좋아하죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir brülör tıkansa ya da sönse diğeriyle güvenle inersin. Kaza riski %%%1$@ daha düşük, balon %%%2$@ daha hızlı ısınır ve tırmanır. Yolcular güvenli balonu sever."
+          }
+        }
+      }
+    },
+    "equip.fit": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einbauen %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fit %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instalar %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "取り付け %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "장착 %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tak %@"
+          }
+        }
+      }
+    },
+    "equip.single.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standardbrenner."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standard burner."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quemador estándar."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "標準のバーナー。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기본 버너."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Standart brülör."
+          }
+        }
+      }
+    },
+    "equip.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ausrüstung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equipment"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Equipo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "装備"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "장비"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Donanım"
+          }
+        }
+      }
+    },
+    "equip.triple.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Wahl großer Körbe. Unfallrisiko %1$@ %% niedriger als mit einem Brenner, der Ballon heizt und steigt %2$@ %% schneller."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The choice of big baskets. Accident risk %1$@%% lower than a single burner, the balloon heats and climbs %2$@%% faster."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La elección de las cestas grandes. Riesgo de accidente un %1$@ %% menor que con un quemador; el globo se calienta y sube un %2$@ %% más rápido."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "大きなバスケットの定番。事故リスクはシングルより%1$@%%低く、気球は%2$@%%速く温まり上昇する。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "큰 바구니의 선택. 싱글 버너보다 사고 위험이 %1$@%% 낮고, 열기구가 %2$@%% 더 빨리 데워지고 상승합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Büyük sepetlerin tercihi. Kaza riski tek brülöre göre %%%1$@ daha düşük, balon %%%2$@ daha hızlı ısınır ve tırmanır."
+          }
+        }
+      }
+    },
+    "equip.vent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drehventil"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turning vent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Válvula de giro"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回転ベント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회전 밸브"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dönüş valfi"
+          }
+        }
+      }
+    },
+    "equip.vent.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Ventil in der Seite der Hülle dreht den Ballon um seine Achse. Bei windiger Landung kommt die breite Seite des Korbs nach vorn: eine harte Landung wird unwahrscheinlicher, und bei gelber und roter Flagge sinkt das Unfallrisiko um %@ %%."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A vent in the side of the envelope turns the balloon on its axis. On a windy landing the wide side of the basket comes to the front: a hard landing is less likely, and on yellow and red days the accident risk is %@%% lower."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una válvula en el costado de la envoltura hace girar el globo sobre su eje. En un aterrizaje con viento, el lado ancho de la cesta va delante: un aterrizaje duro es menos probable y con bandera amarilla y roja el riesgo de accidente baja un %@ %%."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球皮の側面にあるベントで気球をその場で回転させる。風のある着陸ではバスケットの広い面が前に来る。ハードランディングしにくくなり、黄旗と赤旗の日の事故リスクが%@%%下がる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기낭 옆의 밸브가 열기구를 제자리에서 돌립니다. 바람 부는 착륙에서 바구니의 넓은 면이 앞으로 옵니다. 거친 착륙이 줄고, 노란 깃발과 빨간 깃발 날의 사고 위험이 %@%% 낮아집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zarfın yanındaki valf balonu kendi ekseninde döndürür. Rüzgârlı inişte sepetin geniş yüzü öne gelir: sert iniş daha zor, sarı ve kırmızı bayrakta kaza riski %%%@ daha düşük."
+          }
+        }
+      }
+    },
+    "equip.ventShort": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drehventil"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "turning vent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "válvula de giro"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "回転ベント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회전 밸브"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dönüş valfi"
           }
         }
       }
@@ -16688,6 +18410,88 @@
         }
       }
     },
+    "flight.land.crash.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist in die Dattelpalmen gekracht!** Der Ballon ist schwer beschädigt, die Passagiere sind verletzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You hit the date palms!** The balloon is badly damaged and passengers are injured."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Chocaste con las palmeras datileras!** El globo está muy dañado y los pasajeros, heridos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**ナツメヤシに激突**！気球は大破し、乗客がけがをした。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**대추야자나무에 부딪혔습니다!** 열기구가 크게 부서지고 승객들이 다쳤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Hurma ağaçlarına çarptın!** Balon ağır hasarlı, yolcular yaralı."
+          }
+        }
+      }
+    },
+    "flight.land.crash.wire": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du hast dich in einer Stromleitung verfangen!** Der Ballon ist schwer beschädigt, die Passagiere sind verletzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You got caught in a power line!** The balloon is badly damaged and passengers are injured."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Te enredaste en un tendido eléctrico!** El globo está muy dañado y los pasajeros, heridos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**送電線に引っかかった**！気球は大破し、乗客がけがをした。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**전깃줄에 걸렸습니다!** 열기구가 크게 부서지고 승객들이 다쳤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Elektrik hattına takıldın!** Balon ağır hasarlı, yolcular yaralı."
+          }
+        }
+      }
+    },
     "flight.land.far": {
       "extractionState": "manual",
       "localizations": {
@@ -17508,6 +19312,47 @@
         }
       }
     },
+    "flight.tip.vent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**VENTIL:** Gedrückt halten öffnet das Parachute-Ventil oben im Ballon. Heiße Luft entweicht und du sinkst schnell. Vorsicht in Bodennähe: Du landest hart."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**VENT:** hold it to open the parachute vent at the top of the balloon. Hot air escapes and you sink fast. Careful near the ground: you'll land hard."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**VÁLVULA:** mantenla pulsada para abrir la válvula de paracaídas en lo alto del globo. El aire caliente escapa y bajas rápido. Cuidado cerca del suelo: aterrizarás de golpe."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**排気弁**：長押しすると気球のてっぺんのパラシュートバルブが開き、熱い空気が抜けて一気に下降する。地面の近くでは注意：ハードランディングになる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**밸브:** 길게 누르면 열기구 꼭대기의 낙하산 밸브가 열려 뜨거운 공기가 빠지고 빠르게 내려갑니다. 땅 가까이에서는 조심하세요: 거칠게 착륙합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**VALF:** basılı tutunca balonun tepesindeki paraşüt valfi açılır, sıcak hava kaçar ve hızla alçalırsın. Yere yakın dikkat: sert inersin."
+          }
+        }
+      }
+    },
     "flight.title": {
       "extractionState": "manual",
       "localizations": {
@@ -17586,6 +19431,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "İniş alanı %@ km"
+          }
+        }
+      }
+    },
+    "flight.vent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VENTIL"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VENT"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VÁLVULA"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "排気弁"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "밸브"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VALF"
+          }
+        }
+      }
+    },
+    "flight.vent.a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parachute-Ventil"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parachute vent"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Válvula de paracaídas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パラシュートバルブ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "낙하산 밸브"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paraşüt valfi"
           }
         }
       }
@@ -19230,6 +21157,47 @@
         }
       }
     },
+    "goal.fiesta.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flieg in einer Nilkreuzfahrt-Saison"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fly in a Nile cruise season"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuela en una temporada de cruceros del Nilo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルクルーズの季節に飛ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일 크루즈 시즌에 비행하기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir Nil gemisi sezonunda uç"
+          }
+        }
+      }
+    },
     "goal.guide": {
       "extractionState": "manual",
       "localizations": {
@@ -20009,6 +21977,170 @@
         }
       }
     },
+    "guide.abq.hello": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hallo, mein junger Freund, ich bin Ben Franklin. 1783 war ich in Paris, als der Ballon der Montgolfiers aufstieg. Jemand fragte mich: „Wozu ist ein Ballon gut?“ und ich antwortete: „Wozu ist ein neugeborenes Kind gut?“ Meister Hezarfen hat dich mir anvertraut; in Albuquerque zeige ich dir den Weg. Denk daran: Zeit ist Geld!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hello, my young friend, I'm Ben Franklin. In 1783 I was in Paris when the Montgolfiers' balloon went up. Someone asked me, \"What good is a balloon?\" and I answered, \"What good is a newborn baby?\" Master Hezarfen has left you in my care; in Albuquerque I'll show you the way. Remember: time is money!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hola, joven amigo, soy Ben Franklin. En 1783 estaba en París cuando subió el globo de los Montgolfier. Alguien me preguntó: «¿Para qué sirve un globo?», y respondí: «¿Para qué sirve un recién nacido?». El maestro Hezarfen te ha dejado a mi cargo; en Albuquerque te mostraré el camino. Recuerda: ¡el tiempo es oro!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "やあ、若い友よ、ベン・フランクリンだ。1783年、モンゴルフィエ兄弟の気球が上がった時、私はパリにいた。ある人に「気球が何の役に立つのか」と聞かれ、「生まれたばかりの赤ん坊が何の役に立つのか」と答えたものだ。ヘザルフェン師匠が君を私に託した。アルバカーキでは私が道を示そう。覚えておけ、時は金なりだ！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안녕하신가, 젊은 친구. 나는 벤 프랭클린일세. 1783년 몽골피에 형제의 열기구가 떠오를 때 나는 파리에 있었지. 누군가 \"열기구가 무슨 쓸모가 있소?\" 하고 묻길래 \"갓난아기는 무슨 쓸모가 있소?\" 하고 답했다네. 헤자르펜 장인께서 자네를 내게 맡기셨으니, 앨버커키에선 내가 길을 안내하겠네. 기억하게, 시간은 돈이야!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merhaba evlat, ben Ben Franklin. 1783'te Paris'te Montgolfier'lerin balonu havalandığında oradaydım. Biri \"Bu balonun ne faydası var?\" diye sordu, ben de \"Yeni doğmuş bir bebeğin ne faydası var?\" dedim. Hezarfen Usta seni bana emanet etti, Albuquerque'de sana ben yol göstereceğim. Unutma: vakit nakittir!"
+          }
+        }
+      }
+    },
+    "guide.abq.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ben Franklin"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ben Franklin"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ben Franklin"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ベン・フランクリン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "벤 프랭클린"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ben Franklin"
+          }
+        }
+      }
+    },
+    "guide.lux.hello": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen, mein junger Freund, ich bin Imhotep. Vor viertausend Jahren habe ich auf diesem Land die erste Stufenpyramide entworfen und die Kranken geheilt. Hezarfen nennt man „Meister der tausend Wissenschaften“; so nannte man auch mich. Fliegen habe ich nie versucht, aber den Himmel kenne ich gut: Der Nilwind hilft den Geduldigen. In Luxor zeige ich dir den Weg."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome, my young friend, I'm Imhotep. Four thousand years ago I drew the first step pyramid on this land and healed the sick. They call Hezarfen \"master of a thousand sciences\"; they used to call me that too. I never tried flying, but I know the sky well: the Nile wind helps the patient. In Luxor I'll show you the way."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenido, joven amigo, soy Imhotep. Hace cuatro mil años dibujé en esta tierra la primera pirámide escalonada y curé a los enfermos. A Hezarfen lo llaman «maestro de mil ciencias»; a mí también me llamaban así. Nunca intenté volar, pero conozco bien el cielo: el viento del Nilo ayuda al paciente. En Luxor te mostraré el camino."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ようこそ、若い友よ、イムホテプだ。四千年前、この地で最初の階段ピラミッドを設計し、病人を癒やした。ヘザルフェンは「千の学問の師」と呼ばれるが、私もかつてそう呼ばれた。空を飛ぼうとしたことはないが、空のことはよく知っている。ナイルの風は辛抱強い者を助ける。ルクソールでは私が道を示そう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어서 오게, 젊은 친구. 나는 임호테프일세. 사천 년 전 이 땅에 첫 계단식 피라미드를 설계하고 병자를 고쳤지. 헤자르펜을 '천 가지 학문의 대가'라 부르는데, 나도 그렇게 불렸다네. 하늘을 날아 본 적은 없지만 하늘은 잘 알지. 나일의 바람은 인내하는 자를 돕는다네. 룩소르에선 내가 길을 안내하겠네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoş geldin evlat, ben İmhotep. Dört bin yıl önce bu topraklarda ilk basamaklı piramidi ben çizdim, hastaları ben iyileştirdim. Hezarfen'e \"bin ilmin ustası\" derler, bana da öyle derlerdi. Uçmayı hiç denemedim ama gökyüzünü iyi bilirim: Nil'in rüzgârı sabırlıya yardım eder. Luksor'da sana ben yol göstereceğim."
+          }
+        }
+      }
+    },
+    "guide.lux.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imhotep"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imhotep"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imhotep"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "イムホテプ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "임호테프"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İmhotep"
+          }
+        }
+      }
+    },
     "hez.absent": {
       "extractionState": "manual",
       "localizations": {
@@ -20542,6 +22674,47 @@
         }
       }
     },
+    "hez.entered.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ägypten, Lehrling, Luxor! Das ist der härteste Ballonmarkt der Welt. Jeden Morgen warten Hunderte Touristen am Westufer über dem Tal der Pharaonen, aber Nabil Haddads Theban Skies und seine Freunde teilen sie alle unter sich auf. Hier verbünden sich die Rivalen sehr schnell gegen dich, Hotels schließen ihre Verträge beim Tee, und die Zivilluftfahrt lässt dich nie aus den Augen. Du startest mit %@ und einem kleinen Ballon; die Holding kann kein Geld hierher schicken. Der Nilwind weht unten nach Norden und weiter oben nach Süden. Ab und zu legen die Nilkreuzfahrtschiffe an, und die Stadt füllt sich mit Touristen. Sei geduldig, Lehrling: Der Nil liebt die Geduldigen. Von hier an zeigt dir mein alter Freund Imhotep den Weg."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Egypt, kid, Luxor! This is the toughest balloon market in the world. Every morning hundreds of tourists wait on the West Bank above the valley of the pharaohs, but Nabil Haddad's Theban Skies and his friends share them all. Here the rivals join forces against you very quickly, hotels sign their deals over tea, and Civil Aviation never takes its eyes off you. You start with %@ and one small balloon; the holding can't send money here. The Nile wind blows north down low and south higher up. Now and then the Nile cruise ships dock and the town fills with tourists. Be patient, kid: the Nile loves the patient. From here on my old friend Imhotep will show you the way."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Egipto, aprendiz, Luxor! Este es el mercado de globos más duro del mundo. Cada mañana cientos de turistas esperan en la Ribera Oeste, sobre el valle de los faraones, pero Theban Skies de Nabil Haddad y sus amigos se los reparten todos. Aquí los rivales se unen contra ti muy rápido, los hoteles cierran sus tratos con té y Aviación Civil no te quita el ojo de encima. Empiezas con %@ y un globo pequeño; el holding no puede enviar dinero aquí. El viento del Nilo sopla hacia el norte abajo y hacia el sur más arriba. De vez en cuando atracan los cruceros del Nilo y el pueblo se llena de turistas. Ten paciencia, aprendiz: el Nilo ama a los pacientes. Desde aquí te guiará mi viejo amigo Imhotep."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エジプトだ、弟子よ、ルクソールだ！ここは世界一厳しい気球市場だ。毎朝、王家の谷の上の西岸で何百人もの観光客が待っているが、ナビル・ハッダードのテーベ・スカイズとその仲間が全部分け合っている。ここではライバルがすぐに手を組んで君に対抗し、ホテルは茶を飲みながら契約し、民間航空局は君から目を離さん。%@と小さな気球ひとつで始まる。ホールディングスからここへは送金できん。ナイルの風は低空では北へ、上空では南へ吹く。時々ナイルのクルーズ船が着いて、町は観光客でいっぱいになる。辛抱するのだ、弟子よ。ナイルは辛抱強い者を愛する。ここから先は、わしの古い友人イムホテプが道を示してくれる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이집트라네, 제자여, 룩소르야! 이곳은 세상에서 가장 험한 열기구 시장이지. 매일 아침 파라오의 계곡 위 서안에서 수백 명의 관광객이 기다리지만, 나빌 하다드의 테베 스카이스와 그 친구들이 모두 나눠 가진다네. 여기선 경쟁사들이 아주 빨리 손잡고 자네에게 맞서고, 호텔은 차를 마시며 계약하고, 민간항공청은 자네에게서 눈을 떼지 않아. %@와 작은 열기구 하나로 시작하네. 지주회사는 여기로 돈을 보낼 수 없어. 나일의 바람은 낮은 곳에선 북쪽으로, 높은 곳에선 남쪽으로 분다네. 가끔 나일 크루즈선이 들어오면 마을이 관광객으로 가득 차지. 인내하게, 제자여. 나일은 인내하는 자를 사랑한다네. 여기서부터는 내 오랜 친구 임호테프가 길을 안내할 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mısır evlat, Luksor! Burası dünyanın en çetin balon pazarı. Batı Yakası'nda, firavunların vadisinin üstünde her sabah yüzlerce turist bekler ama hepsini Nabil Haddad'ın Theban Skies'ı ve onun dostları paylaşır. Burada rakipler sana karşı çok çabuk birleşir, oteller çayla anlaşır, Sivil Havacılık da gözünü senden ayırmaz. %@ ve bir küçük balonla başlıyorsun; holding buraya para gönderemez. Nil'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Sabırlı ol evlat, Nil sabırlıyı sever. Buradan sonra sana eski dostum İmhotep yol gösterecek."
+          }
+        }
+      }
+    },
     "hez.entrant.aegean": {
       "extractionState": "manual",
       "localizations": {
@@ -20747,6 +22920,129 @@
         }
       }
     },
+    "hez.entrant.felucca": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Billiganbieter namens Felucca Flights hat eröffnet. Sie verkaufen den Kreuzfahrttouristen Tickets zum halben Preis und nehmen es mit den Regeln nicht so genau."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A discount outfit called Felucca Flights has opened. They'll sell tickets to the cruise tourists at half price, and they won't care much for the rules."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha abierto una empresa barata llamada Felucca Flights. Venderán billetes a mitad de precio a los turistas de los cruceros y no harán mucho caso de las normas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フェルーカ・フライツという格安業者が開業した。クルーズ客に半額で切符を売り、規則などあまり気にせんだろう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "펠루카 플라이츠라는 저가 업체가 문을 열었네. 크루즈 관광객에게 반값에 표를 팔고 규칙은 별로 신경 쓰지 않을 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Felucca Flights diye bir ucuzcu açıldı. Gemi turistlerine yarı fiyata bilet satacaklar, kuralları da pek takmayacaklar."
+          }
+        }
+      }
+    },
+    "hez.entrant.hatshepsut": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Luxus-Boutiquefirma namens Hatshepsut Air hat eröffnet. Wenige Ballone, sehr hohe Preise, sehr beliebt. Die reichen Touristen werden zu ihnen gehen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A luxury boutique company called Hatshepsut Air has opened. Few balloons, very high prices, very popular. The rich tourists will go to them."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha abierto una empresa boutique de lujo llamada Hatshepsut Air. Pocos globos, precios muy altos, muy popular. Los turistas ricos irán con ellos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハトシェプスト・エアという高級ブティック会社が開業した。気球は少なく、値段はとても高く、大人気だ。裕福な観光客はそちらへ行くだろう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하트셉수트 에어라는 고급 부티크 회사가 문을 열었네. 열기구는 적고 가격은 아주 비싸며 인기가 많지. 부유한 관광객은 그쪽으로 갈 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hatshepsut Air adında lüks bir butik şirket açıldı. Az balon, çok yüksek fiyat, çok popüler. Zengin turistler onlara gidecek."
+          }
+        }
+      }
+    },
+    "hez.entrant.karnak": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Investoren aus Kairo haben Karnak Wings gegründet. Ein ausgewogener, solider, geduldiger Rivale."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Investors from Cairo have founded Karnak Wings. A balanced, solid, patient rival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inversores de El Cairo han fundado Karnak Wings. Un rival equilibrado, sólido y paciente."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カイロの投資家たちがカルナック・ウィングスを設立した。バランスのとれた、堅実で辛抱強いライバルだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "카이로 투자자들이 카르나크 윙스를 세웠네. 균형 잡히고 단단하며 끈기 있는 경쟁자야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kahireli yatırımcılar Karnak Wings'i kurdu. Dengeli, sağlam, sabırlı bir rakip."
+          }
+        }
+      }
+    },
     "hez.entrant.mesaGold": {
       "extractionState": "manual",
       "localizations": {
@@ -20825,6 +23121,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Peri Luxe Flights adında lüks bir butik şirket açıldı. Az balon, yüksek fiyat, çok popüler. Zengin turistlerini kapmaya gelecekler."
+          }
+        }
+      }
+    },
+    "hez.entrant.redSea": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red Sea Balloon Co. ist mit dem Geld der Hotelketten von Hurghada nach Luxor gekommen! Große Flotte, tiefe Taschen. Nach Theban Skies vielleicht die gefährlichste von allen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red Sea Balloon Co. has come to Luxor with the money of Hurghada's hotel chains! A big fleet and deep pockets. After Theban Skies this may be the most dangerous of them all."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Red Sea Balloon Co. ha llegado a Luxor con el dinero de las cadenas hoteleras de Hurghada! Flota grande y bolsillos hondos. Después de Theban Skies, quizá la más peligrosa."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "レッドシー・バルーン社がフルガダのホテルチェーンの資金でルクソールに来た！大きな船団に潤沢な資金。テーベ・スカイズの次に最も危険かもしれん。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "레드시 벌룬이 후르가다 호텔 체인의 돈으로 룩소르에 왔네! 기단이 크고 자금도 두둑하지. 테베 스카이스 다음으로 가장 위험할지도 몰라."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red Sea Balloon Co., Hurghada'nın otel zincirlerinin parasıyla Luksor'a geldi! Filosu büyük, kesesi derin. Theban Skies'tan sonra en tehlikelisi bu olabilir."
           }
         }
       }
@@ -21071,6 +23408,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Albuquerque Balloon Fiesta başladı evlat! Dört gün boyunca dünyanın dört bir yanından turist akın edecek, gökyüzü yüzlerce balonla dolacak. Bütün balonlarını havaya kaldır!"
+          }
+        }
+      }
+    },
+    "hez.fiestaStarted.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Nilkreuzfahrtschiffe haben angelegt! Drei Tage lang ist das Ufer voller Touristen, und alle wollen eine Ballonfahrt bei Sonnenaufgang. Schick alle deine Ballone hoch, aber Theban Skies wird dasselbe tun."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Nile cruise ships have docked! For three days the riverbank is full of tourists, and everyone wants a sunrise balloon ride. Get all your balloons up, but Theban Skies will do the same."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Han atracado los cruceros del Nilo! Durante tres días la orilla está llena de turistas y todos quieren un vuelo en globo al amanecer. Sube todos tus globos, pero Theban Skies hará lo mismo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルのクルーズ船が着いたぞ！3日間、川岸は観光客でいっぱいで、誰もが日の出の気球に乗りたがる。気球を全部飛ばせ。だがテーベ・スカイズも同じことをするだろう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일 크루즈선이 들어왔네! 사흘 동안 강변은 관광객으로 가득하고 모두가 일출 열기구를 타고 싶어 하지. 열기구를 전부 띄우게. 하지만 테베 스카이스도 똑같이 할 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil gemileri yanaştı evlat! Üç gün boyunca kıyı turistle dolu, herkes sabah balonuna binmek istiyor. Bütün balonlarını havaya kaldır, ama Theban Skies da aynı şeyi yapacak."
           }
         }
       }
@@ -23576,6 +25954,47 @@
         }
       }
     },
+    "holding.chip.allDemandLasting": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nachfrage dauerhaft +%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demand +%@ for good"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demanda +%@ para siempre"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "需要が永続的に+%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "수요 영구 +%@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talep kalıcı +%@"
+          }
+        }
+      }
+    },
     "holding.chip.days": {
       "extractionState": "manual",
       "localizations": {
@@ -23658,6 +26077,88 @@
         }
       }
     },
+    "holding.chip.odds": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erfolgschance %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Success chance %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Probabilidad de éxito %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "成功率%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "성공 확률 %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başarı şansı %@"
+          }
+        }
+      }
+    },
+    "holding.chip.perDay": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An die Holding: %@/Tag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To the holding: %@/day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al holding: %@/día"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホールディングスへ%@/日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지주회사에 %@/일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Holdinge %@/gün"
+          }
+        }
+      }
+    },
     "holding.chip.permanent": {
       "extractionState": "manual",
       "localizations": {
@@ -23699,6 +26200,47 @@
         }
       }
     },
+    "holding.chip.prep": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorbereitung: %@ Tage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparation: %@ days"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación: %@ días"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "準備：%@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "준비: %@일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hazırlık: %@ gün"
+          }
+        }
+      }
+    },
     "holding.chip.regionDemand": {
       "extractionState": "manual",
       "localizations": {
@@ -23736,6 +26278,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@: talep +%2$@"
+          }
+        }
+      }
+    },
+    "holding.chip.repDay": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beliebtheit pro Tag −%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularity per day −%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularidad por día −%@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "人気 1日−%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인기 하루 −%@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popülerlik günde −%@"
           }
         }
       }
@@ -24683,6 +27266,375 @@
         }
       }
     },
+    "holding.rec.active": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Vorbereitung · noch Tage: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Getting ready · days left: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparándose · días restantes: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "準備中・残り%@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "준비 중 · 남은 일: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hazırlanıyor · kalan gün: %@"
+          }
+        }
+      }
+    },
+    "holding.rec.again": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekord verbessern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beat your record"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Superar tu récord"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録を更新する"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록 경신"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekoru geliştir"
+          }
+        }
+      }
+    },
+    "holding.rec.cta": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Versuch starten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start the attempt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar el intento"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑戦を始める"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "도전 시작"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denemeyi başlat"
+          }
+        }
+      }
+    },
+    "holding.rec.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesponserte Weltrekordversuche. Ein Erfolg steigert die Nachfrage in allen Regionen dauerhaft. Scheitert er, ist das Geld weg, aber du kannst es noch einmal versuchen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsored world record attempts. Success raises demand in every region for good. If it fails the money is gone, but you can try again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intentos de récord mundial patrocinados. El éxito sube la demanda en todas las regiones para siempre. Si falla, el dinero se pierde, pero puedes volver a intentarlo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スポンサー付きの世界記録への挑戦。成功すればすべての地域で需要が永続的に増える。失敗すれば資金は失うが、再挑戦できる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스폰서가 붙은 세계 기록 도전. 성공하면 모든 지역의 수요가 영구히 늘어납니다. 실패하면 돈은 사라지지만 다시 도전할 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsorlu dünya rekoru denemeleri. Başarı bütün bölgelerde talebi kalıcı olarak artırır. Başarısız olursa para gider ama tekrar denenebilir."
+          }
+        }
+      }
+    },
+    "holding.rec.kicker": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekordversuch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record attempt"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intento de récord"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録挑戦"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록 도전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekor denemesi"
+          }
+        }
+      }
+    },
+    "holding.rec.lockNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erst Luxor eröffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Luxor first"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primero abre Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まずルクソールを開こう"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "먼저 룩소르를 여세요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Önce Luksor'u açmalısın"
+          }
+        }
+      }
+    },
+    "holding.rec.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekordprojekte öffnen sich, sobald du in Luxor eingestiegen bist. Eröffne erst Luxor."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record projects open once you have entered Luxor. Open Luxor first."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los proyectos de récord se abren cuando entras en Luxor. Primero abre Luxor."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録プロジェクトはルクソールに進出すると開く。まずルクソールを開こう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록 프로젝트는 룩소르에 진출하면 열립니다. 먼저 룩소르를 여세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekor projeleri Luksor'a girdikten sonra açılır. Önce Luksor'u açmalısın."
+          }
+        }
+      }
+    },
+    "holding.rec.oneAtATime": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Immer nur ein Versuch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One attempt at a time"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un intento a la vez"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑戦は一度にひとつ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 번에 하나의 도전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aynı anda bir deneme"
+          }
+        }
+      }
+    },
+    "holding.rec.yours": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Rekord gehört dir"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The record is yours"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El récord es tuyo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録は君のもの"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록은 당신의 것"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekor senin"
+          }
+        }
+      }
+    },
     "holding.regions": {
       "extractionState": "manual",
       "localizations": {
@@ -24720,6 +27672,252 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bölgeler"
+          }
+        }
+      }
+    },
+    "holding.shape.active": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fliegt über %1$@ · noch Tage: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flying over %1$@ · days left: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volando sobre %1$@ · días restantes: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@の上空を飛行中・残り%2$@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ 상공 비행 중 · 남은 일: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ üstünde uçuyor · kalan gün: %2$@"
+          }
+        }
+      }
+    },
+    "holding.shape.cta": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unterschreiben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sign"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Firmar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "署名する"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "서명"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İmzala"
+          }
+        }
+      }
+    },
+    "holding.shape.desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine eigens genähte Sonderform in den Farben der Marke."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A specially sewn shaped envelope in the brand's colors."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una envoltura de forma especial cosida a medida con los colores de la marca."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブランドカラーで特別に縫製された特殊形状の球皮。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브랜드 색으로 특별히 재봉한 특수 형태 기낭."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ustalarca dikilmiş özel şekilli zarf, markanın renklerinde."
+          }
+        }
+      }
+    },
+    "holding.shape.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Marke zahlt der Holding jeden Tag dafür, dass du einen Riesenballon in Form ihres Produkts über deiner Region fliegst. Touristen mögen die Werbung nicht: Solange der Vertrag läuft, sinkt die Beliebtheit dort jeden Tag ein wenig. Immer nur ein Vertrag."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A brand pays the holding every day to fly a giant balloon shaped like its product over your region. Tourists don't like the ad: while the contract runs, popularity in that region drops a little every day. One contract at a time."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una marca paga al holding cada día para que vueles sobre tu región un globo gigante con la forma de su producto. A los turistas no les gusta el anuncio: mientras dure el contrato, la popularidad en esa región baja un poco cada día. Un contrato a la vez."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブランドが自社製品の形をした巨大気球を君の地域で飛ばす代わりに、毎日ホールディングスに支払う。観光客は広告を好まない。契約中はその地域の人気が毎日少し下がる。契約は一度にひとつ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브랜드가 자사 제품 모양의 거대 열기구를 당신 지역에 띄우는 대가로 매일 지주회사에 돈을 냅니다. 관광객은 광고를 싫어해서, 계약 기간 동안 그 지역 인기가 매일 조금씩 떨어집니다. 한 번에 하나의 계약."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir marka kendi ürünü biçiminde dev bir balonu senin bölgende uçurman için holdinge her gün para öder. Turistler reklamı sevmez: sözleşme sürdükçe o bölgede popülerlik her gün biraz düşer. Aynı anda bir sözleşme."
+          }
+        }
+      }
+    },
+    "holding.shape.kicker": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Werbeballon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ad balloon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Globo publicitario"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "広告気球"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "광고 열기구"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reklam balonu"
+          }
+        }
+      }
+    },
+    "holding.shape.oneAtATime": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Immer nur ein Vertrag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One contract at a time"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un contrato a la vez"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "契約は一度にひとつ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 번에 하나의 계약"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aynı anda bir sözleşme"
           }
         }
       }
@@ -25995,6 +29193,88 @@
         }
       }
     },
+    "home.alert.fiesta.body.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Ufer ist voller Touristen. Schick alle deine Ballone hoch."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The riverbank is full of tourists. Get all your balloons up."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La orilla está llena de turistas. Sube todos tus globos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "川岸は観光客でいっぱい。全部の気球を上げよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강변이 관광객으로 가득합니다. 모든 열기구를 띄우세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kıyı turist dolu. Bütün balonlarını kaldır."
+          }
+        }
+      }
+    },
+    "home.alert.fiesta.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nilschiffe im Hafen, Tag %1$@/%2$@!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile cruise ships in port, day %1$@/%2$@!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Cruceros del Nilo en el puerto, día %1$@/%2$@!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルのクルーズ船が入港中、%1$@/%2$@日目！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일 크루즈선 정박 중, %1$@/%2$@일차!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil gemileri limanda, gün %1$@/%2$@!"
+          }
+        }
+      }
+    },
     "home.alert.fiestaSoon": {
       "extractionState": "manual",
       "localizations": {
@@ -26073,6 +29353,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filonu hazırla, otellerle anlaş."
+          }
+        }
+      }
+    },
+    "home.alert.fiestaSoon.body.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mach deine Flotte bereit und schließ Hotelverträge."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get your fleet ready and sign hotel deals."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prepara tu flota y cierra acuerdos con hoteles."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フリートを整え、ホテルと契約しよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기단을 준비하고 호텔과 제휴하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filonu hazırla, otellerle anlaş."
+          }
+        }
+      }
+    },
+    "home.alert.fiestaSoon.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tage bis die Nilschiffe anlegen: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days until the Nile ships dock: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días para que atraquen los cruceros del Nilo: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルの船が着くまで：%@日。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일 크루즈선 입항까지: %@일."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil gemilerinin yanaşmasına kalan gün: %@."
           }
         }
       }
@@ -29562,6 +32924,88 @@
         }
       }
     },
+    "hq.records": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekordversuche"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record attempts"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récords"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録挑戦"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록 도전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekor projesi"
+          }
+        }
+      }
+    },
+    "hq.recordsTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekordversuche"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Record attempts"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intentos de récord"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録への挑戦"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록 도전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekor denemeleri"
+          }
+        }
+      }
+    },
     "hq.research": {
       "extractionState": "manual",
       "localizations": {
@@ -29767,6 +33211,47 @@
         }
       }
     },
+    "hq.s.luxFirst": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erst Luxor eröffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Luxor first"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primero abre Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まずルクソールを開こう"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "먼저 룩소르를 여세요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Önce Luksor'u açmalısın"
+          }
+        }
+      }
+    },
     "hq.s.noCampaign": {
       "extractionState": "manual",
       "localizations": {
@@ -29849,6 +33334,47 @@
         }
       }
     },
+    "hq.s.noShape": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Vertrag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No contract"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin contrato"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "契約なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계약 없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sözleşme yok"
+          }
+        }
+      }
+    },
     "hq.s.offices": {
       "extractionState": "manual",
       "localizations": {
@@ -29886,6 +33412,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ofis: %1$@/%2$@"
+          }
+        }
+      }
+    },
+    "hq.s.recordRun": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, Tage: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, days: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, días: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@、残り%2$@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, 남은 일: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, gün: %2$@"
+          }
+        }
+      }
+    },
+    "hq.s.records": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekorde: %1$@/%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Records: %1$@/%2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récords: %1$@/%2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録：%1$@/%2$@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록: %1$@/%2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekor: %1$@/%2$@"
           }
         }
       }
@@ -29931,6 +33539,47 @@
         }
       }
     },
+    "hq.s.shapeRun": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, Tage: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, days: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, días: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@、残り%2$@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, 남은 일: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, gün: %2$@"
+          }
+        }
+      }
+    },
     "hq.s.tv": {
       "extractionState": "manual",
       "localizations": {
@@ -29968,6 +33617,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "TV yayında, %@ gün"
+          }
+        }
+      }
+    },
+    "hq.shapes": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsorformen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsored shapes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formas patrocinadas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スポンサー気球"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스폰서 열기구"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsorlu şekiller"
+          }
+        }
+      }
+    },
+    "hq.shapesTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesponserte Sonderformen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsored special shapes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formas especiales patrocinadas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スポンサーの特殊形状気球"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스폰서 특수 형태 열기구"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsorlu özel şekiller"
           }
         }
       }
@@ -30050,6 +33781,498 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gün %@"
+          }
+        }
+      }
+    },
+    "insp.1.many": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routinekontrolle. Die Hüllen deiner Ballone %1$@ liegen unter 30 %%. Passagiere mit abgenutztem Stoff zu fliegen erhöht das Unfallrisiko. Bitte erneuere sie. In fünf Tagen sehe ich wieder nach."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routine inspection. The envelopes of your balloons %1$@ are below 30%%. Carrying passengers on worn fabric raises the accident risk. Please renew them. I'll check again in five days."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspección rutinaria. Las envolturas de tus globos %1$@ están por debajo del 30 %%. Llevar pasajeros con tela gastada aumenta el riesgo de accidente. Te ruego que las renueves. Volveré a revisarlas en cinco días."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "定期検査です。気球%1$@の球皮が30%%を下回っています。傷んだ生地で乗客を運ぶと事故の危険が高まります。交換をお願いします。5日後にもう一度確認します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정기 점검입니다. 열기구 %1$@의 기낭이 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rutin denetim. %1$@ balonlarınızın zarfları %%30'un altına düşmüş. Yıpranmış kumaşla yolcu taşımak kaza riskini artırır. Zarfları yenilemenizi rica ederim. Beş gün sonra tekrar bakacağım."
+          }
+        }
+      }
+    },
+    "insp.1.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routinekontrolle. Die Hülle deines Ballons %1$@ liegt unter 30 %%. Passagiere mit abgenutztem Stoff zu fliegen erhöht das Unfallrisiko. Bitte erneuere sie. In fünf Tagen sehe ich wieder nach."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Routine inspection. The envelope of your balloon %1$@ is below 30%%. Carrying passengers on worn fabric raises the accident risk. Please renew it. I'll check again in five days."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspección rutinaria. La envoltura de tu globo %1$@ está por debajo del 30 %%. Llevar pasajeros con tela gastada aumenta el riesgo de accidente. Te ruego que la renueves. Volveré a revisarla en cinco días."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "定期検査です。気球%1$@の球皮が30%%を下回っています。傷んだ生地で乗客を運ぶと事故の危険が高まります。交換をお願いします。5日後にもう一度確認します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정기 점검입니다. 열기구 %1$@의 기낭이 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rutin denetim. %1$@ balonunuzun zarfı %%30'un altına düşmüş. Yıpranmış kumaşla yolcu taşımak kaza riskini artırır. Zarfı yenilemenizi rica ederim. Beş gün sonra tekrar bakacağım."
+          }
+        }
+      }
+    },
+    "insp.2.many": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meine zweite Warnung. Die Hüllen von %1$@ wurden immer noch nicht erneuert. Ist es bei der nächsten Kontrolle genauso, muss ich ein Bußgeld verhängen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My second warning. The envelopes of %1$@ still haven't been renewed. If it's the same at the next inspection, I'll have to write a fine."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi segundo aviso. Las envolturas de %1$@ siguen sin renovarse. Si sigue igual en la próxima inspección, tendré que multarte."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2度目の警告です。%1$@の球皮はまだ交換されていません。次の検査でも同じなら罰金を科さざるを得ません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "두 번째 경고입니다. %1$@의 기낭이 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İkinci uyarım. %1$@ balonlarının zarfları hâlâ yenilenmemiş. Bir dahaki denetimde aynı durumdaysa ceza yazmak zorundayım."
+          }
+        }
+      }
+    },
+    "insp.2.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meine zweite Warnung. Die Hülle von %1$@ wurde immer noch nicht erneuert. Ist es bei der nächsten Kontrolle genauso, muss ich ein Bußgeld verhängen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My second warning. The envelope of %1$@ still hasn't been renewed. If it's the same at the next inspection, I'll have to write a fine."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi segundo aviso. La envoltura de %1$@ sigue sin renovarse. Si sigue igual en la próxima inspección, tendré que multarte."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "2度目の警告です。%1$@の球皮はまだ交換されていません。次の検査でも同じなら罰金を科さざるを得ません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "두 번째 경고입니다. %1$@의 기낭이 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İkinci uyarım. %1$@ balonunun zarfı hâlâ yenilenmemiş. Bir dahaki denetimde aynı durumdaysa ceza yazmak zorundayım."
+          }
+        }
+      }
+    },
+    "insp.3.many": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bei dieser Kontrolle waren die Hüllen von %1$@ wieder abgenutzt. Bußgeld: %2$@. Bis sie erneuert sind, verhänge ich bei jeder Kontrolle eins."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At this inspection I found the envelopes of %1$@ worn again. Fine: %2$@. I'll write a fine at every inspection until they're renewed."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En esta inspección encontré otra vez gastadas las envolturas de %1$@. Multa: %2$@. Multaré en cada inspección hasta que se renueven."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今回の検査でも%1$@の球皮が傷んでいました。罰金：%2$@。交換されるまで検査のたびに罰金を科します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 점검에서도 %1$@의 기낭이 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denetimde %1$@ balonlarının zarflarını yine yıpranmış buldum. Ceza: %2$@. Yenilenene kadar her denetimde ceza yazacağım."
+          }
+        }
+      }
+    },
+    "insp.3.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bei dieser Kontrolle war die Hülle von %1$@ wieder abgenutzt. Bußgeld: %2$@. Bis sie erneuert ist, verhänge ich bei jeder Kontrolle eins."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At this inspection I found the envelope of %1$@ worn again. Fine: %2$@. I'll write a fine at every inspection until it's renewed."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En esta inspección encontré otra vez gastada la envoltura de %1$@. Multa: %2$@. Multaré en cada inspección hasta que se renueve."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今回の検査でも%1$@の球皮が傷んでいました。罰金：%2$@。交換されるまで検査のたびに罰金を科します。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 점검에서도 %1$@의 기낭이 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Denetimde %1$@ balonunun zarfını yine yıpranmış buldum. Ceza: %2$@. Yenilenene kadar her denetimde ceza yazacağım."
+          }
+        }
+      }
+    },
+    "insp.name.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspektorin Karen Diaz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspector Karen Diaz"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspectora Karen Diaz"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カレン・ディアス検査官"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "캐런 디아스 감독관"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Müfettiş Karen Diaz"
+          }
+        }
+      }
+    },
+    "insp.name.cap": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspektorin Selin Aydın"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspector Selin Aydın"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspectora Selin Aydın"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "セリン・アイドゥン検査官"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "셀린 아이든 감독관"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Müfettiş Selin Aydın"
+          }
+        }
+      }
+    },
+    "insp.name.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspektor Omar Fathy"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspector Omar Fathy"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspector Omar Fathy"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オマル・ファトヒ検査官"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오마르 파트히 감독관"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Müfettiş Omar Fathy"
+          }
+        }
+      }
+    },
+    "insp.title.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FAA, US-Bundesluftfahrtbehörde"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FAA, Federal Aviation Administration"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FAA, Administración Federal de Aviación"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FAA（米連邦航空局）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FAA, 미국 연방항공청"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FAA, Federal Havacılık İdaresi"
+          }
+        }
+      }
+    },
+    "insp.title.cap": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Generaldirektion für Zivilluftfahrt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Directorate General of Civil Aviation"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dirección General de Aviación Civil"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "民間航空総局"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "민간항공총국"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sivil Havacılık Genel Müdürlüğü"
+          }
+        }
+      }
+    },
+    "insp.title.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ägyptische Zivilluftfahrtbehörde"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Egyptian Civil Aviation Authority"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autoridad de Aviación Civil de Egipto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エジプト民間航空局"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이집트 민간항공청"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mısır Sivil Havacılık Otoritesi"
           }
         }
       }
@@ -33580,6 +37803,416 @@
         }
       }
     },
+    "lux.hotel.cave": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karnak Nile Lodge"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karnak Nile Lodge"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karnak Nile Lodge"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karnak Nile Lodge"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karnak Nile Lodge"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karnak Nile Lodge"
+          }
+        }
+      }
+    },
+    "lux.hotel.mansion": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theban Garden Hotel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theban Garden Hotel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theban Garden Hotel"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theban Garden Hotel"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theban Garden Hotel"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Theban Garden Hotel"
+          }
+        }
+      }
+    },
+    "lux.hotel.palace": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nefertari Palace Resort"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nefertari Palace Resort"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nefertari Palace Resort"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nefertari Palace Resort"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nefertari Palace Resort"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nefertari Palace Resort"
+          }
+        }
+      }
+    },
+    "lux.hotel.stone": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memnon View Inn"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memnon View Inn"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memnon View Inn"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memnon View Inn"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memnon View Inn"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Memnon View Inn"
+          }
+        }
+      }
+    },
+    "lux.mission.desc.valley": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sinke über dem Nil unter 150 m und grüße die Feluken."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drop below 150 m over the Nile and salute the feluccas."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baja de 150 m sobre el Nilo y saluda a las falucas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルの上で高度150m以下に下り、ファルーカに挨拶しよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일강 위에서 150m 아래로 내려가 펠루카에 인사하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil'in üstünde 150 m altına alçal, felukaları selamla."
+          }
+        }
+      }
+    },
+    "lux.mission.valley": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berührung des Nils"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch of the Nile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque del Nilo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイル・タッチ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일 터치"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil dokunuşu"
+          }
+        }
+      }
+    },
+    "lux.sponsor.bank": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile Cruise Line"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile Cruise Line"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile Cruise Line"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile Cruise Line"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile Cruise Line"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile Cruise Line"
+          }
+        }
+      }
+    },
+    "lux.sponsor.carpet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karkade Co."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karkade Co."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karkade Co."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karkade Co."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karkade Co."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karkade Co."
+          }
+        }
+      }
+    },
+    "lux.sponsor.energy": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarab Mobile"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarab Mobile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarab Mobile"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarab Mobile"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarab Mobile"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scarab Mobile"
+          }
+        }
+      }
+    },
+    "lux.sponsor.wine": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papyrus Bank"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papyrus Bank"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papyrus Bank"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papyrus Bank"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papyrus Bank"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Papyrus Bank"
+          }
+        }
+      }
+    },
     "map.auto": {
       "extractionState": "manual",
       "localizations": {
@@ -33949,6 +38582,47 @@
         }
       }
     },
+    "map.here.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Nil, das Tal der Pharaonen und der härteste Ballonmarkt der Welt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Nile, the valley of the pharaohs and the toughest balloon market in the world."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Nilo, el valle de los faraones y el mercado de globos más duro del mundo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイル、王家の谷、そして世界一厳しい気球市場。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일강, 파라오의 계곡, 그리고 세상에서 가장 험한 열기구 시장."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil, firavunların vadisi ve dünyanın en çetin balon pazarı."
+          }
+        }
+      }
+    },
     "map.locked": {
       "extractionState": "manual",
       "localizations": {
@@ -34031,43 +38705,43 @@
         }
       }
     },
-    "map.luxorSub": {
+    "map.lockedSub.lux": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Am Ufer des Nils, über dem Tal der Pharaonen. Schon sehr bald."
+            "value": "Wird freigeschaltet, wenn du Baron von Albuquerque bist. Am Ufer des Nils, über dem Tal der Pharaonen."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "On the banks of the Nile, above the valley of the pharaohs. Coming very soon."
+            "value": "Unlocks when you become baron of Albuquerque. On the banks of the Nile, above the valley of the pharaohs."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "A orillas del Nilo, sobre el valle de los faraones. Muy pronto."
+            "value": "Se desbloquea cuando seas barón de Albuquerque. A orillas del Nilo, sobre el valle de los faraones."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ナイルのほとり、王家の谷の上空。まもなく登場。"
+            "value": "アルバカーキの男爵になると解放される。ナイルのほとり、王家の谷の上空。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "나일강 기슭, 파라오의 계곡 위. 곧 공개됩니다."
+            "value": "앨버커키의 남작이 되면 열립니다. 나일강 기슭, 파라오의 계곡 위."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nil kıyısında, firavunların vadisi üstünde. Çok yakında."
+            "value": "Albuquerque baronu olunca açılır. Nil kıyısında, firavunların vadisi üstünde."
           }
         }
       }
@@ -34191,6 +38865,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dünyanın en büyük balon festivalinin şehri. Meşhur “kutu” rüzgârları seni kalktığın yere geri getirir. Giriş bedeli %@ holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın."
+          }
+        }
+      }
+    },
+    "map.openSub.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Nilufer, das Tal der Könige, der Tempel der Hatschepsut. Der härteste Ballonmarkt der Welt: starke Rivalen, die sich schnell verbünden. Du startest mit 5.000 €. Eintritt %@ aus der Holding."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Nile, the Valley of the Kings, Hatshepsut's temple. The toughest balloon market in the world: strong rivals who join forces quickly. You start with €5,000. Entry fee %@ from the holding."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Empiezas con 5.000 €. Entrada de %@ del holding."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイル河畔、王家の谷、ハトシェプスト女王葬祭殿。世界一厳しい気球市場だ。ライバルは強く、すぐに手を組む。5,000ユーロからのスタート。参入費%@はホールディングスから。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일강변, 왕가의 계곡, 하트셉수트 신전. 세상에서 가장 험한 열기구 시장으로, 경쟁사가 강하고 금세 손을 잡습니다. 5,000유로로 시작합니다. 진입 비용 %@은(는) 지주회사에서 지급."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli %@ holding kasasından."
           }
         }
       }
@@ -34355,6 +39070,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yakında"
+          }
+        }
+      }
+    },
+    "map.soonSub.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heimat der größten Ballonbauer der Welt und von Europas größtem Ballonfestival, der Bristol International Balloon Fiesta. Schon sehr bald."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Home of the world's biggest balloon makers and Europe's biggest balloon festival, the Bristol International Balloon Fiesta. Coming very soon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La ciudad de los mayores fabricantes de globos del mundo y del mayor festival de globos de Europa, la Bristol International Balloon Fiesta. Muy pronto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界最大級の気球メーカーの街で、ヨーロッパ最大の気球祭り、ブリストル国際バルーン・フィエスタの地。まもなく登場。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 최대 열기구 제조사들의 도시이자 유럽 최대 열기구 축제, 브리스톨 인터내셔널 벌룬 피에스타의 고향. 곧 공개됩니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünyanın en büyük balon üreticilerinin şehri ve Avrupa'nın en büyük balon festivali, Bristol International Balloon Fiesta. Çok yakında."
+          }
+        }
+      }
+    },
+    "map.soonSub.mara": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Safari bei Sonnenaufgang über der Savanne: Löwen, Elefanten und die große Wanderung. Nach der Landung Frühstück unter einer Akazie. Schon sehr bald."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A sunrise safari over the savanna: lions, elephants and the great migration. Breakfast under an acacia after landing. Coming very soon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un safari al amanecer sobre la sabana: leones, elefantes y la gran migración. Desayuno bajo una acacia tras aterrizar. Muy pronto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サバンナの上を飛ぶ日の出のサファリ。ライオン、ゾウ、そして大移動。着陸後はアカシアの木の下で朝食。まもなく登場。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사바나 위를 나는 일출 사파리. 사자, 코끼리, 그리고 대이동. 착륙 후엔 아카시아 아래에서 아침 식사. 곧 공개됩니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Savananın üstünde gün doğumu safarisi: aslanlar, filler ve büyük göç. İnişte akasya altında kahvaltı. Çok yakında."
           }
         }
       }
@@ -38131,6 +42928,47 @@
         }
       }
     },
+    "night.glow.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nilnacht: Die Schiffe leuchten, und am Ufer zünden die Ballone ihre Brenner."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile night: the ships are all lit up, and on the bank the balloons fire their burners."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche del Nilo: los barcos iluminados y, en la orilla, los globos encienden sus quemadores."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルの夜。船は光り輝き、岸辺では気球がバーナーを焚いている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일의 밤. 배들은 환히 빛나고, 강변에선 열기구가 버너를 켭니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil gecesi: gemiler ışıl ışıl, kıyıda balonlar brülör yakıyor."
+          }
+        }
+      }
+    },
     "night.lanterns": {
       "extractionState": "manual",
       "localizations": {
@@ -39607,6 +44445,88 @@
         }
       }
     },
+    "paper.inspectorFine": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bußgeld für %@ wegen einer verschlissenen Hülle"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ fined over a worn envelope"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Multa a %@ por una envoltura gastada"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@、気球の球皮で罰金"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, 낡은 기구 외피로 벌금"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ balon zarfı cezası aldı"
+          }
+        }
+      }
+    },
+    "paper.inspectorFine.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Prüfer der Luftfahrtbehörde verhängte ein Bußgeld von %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The civil aviation inspector wrote a fine of %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El inspector de aviación civil puso una multa de %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "航空局の検査官が%@の罰金を科した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "민간항공 감독관이 %@의 벌금을 매겼습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sivil havacılık müfettişi %@ ceza yazdı."
+          }
+        }
+      }
+    },
     "paper.mast.abq": {
       "extractionState": "manual",
       "localizations": {
@@ -39685,6 +44605,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kapadokya Postası"
+          }
+        }
+      }
+    },
+    "paper.mast.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil-Post"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nile Post"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correo del Nilo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイル・ポスト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일 포스트"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil Postası"
           }
         }
       }
@@ -39890,6 +44851,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fiesta gecesi ışıl ışıl"
+          }
+        }
+      }
+    },
+    "paper.night.glow.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Nacht des Lichts am Nil"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A night of light on the Nile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una noche de luz en el Nilo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイル河畔の光の夜"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일강변 빛의 밤"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil kıyısında ışık gecesi"
+          }
+        }
+      }
+    },
+    "paper.night.glow.lux.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Lichter der Schiffe und die Ballone am Boden erhellten den Nil."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The ships' lights and the balloons on the ground lit up the Nile."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las luces de los barcos y los globos en tierra iluminaron el Nilo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "船の灯りと地上の気球がナイルを照らした。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "배들의 불빛과 땅 위의 열기구가 나일을 밝혔습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gemilerin ışıkları ve yerdeki balonlar Nil'i aydınlattı."
           }
         }
       }
@@ -40505,6 +45548,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "5 kuruş"
+          }
+        }
+      }
+    },
+    "paper.price.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50 Piaster"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50 piastres"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50 piastras"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50ピアストル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50피아스터"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "50 piastre"
           }
         }
       }
@@ -41206,6 +46290,129 @@
         }
       }
     },
+    "paper.worldRecord": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ stellt einen Weltrekord auf"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ sets a world record"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ bate un récord mundial"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@が世界記録を樹立"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, 세계 기록 수립"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ dünya rekoru kırdı"
+          }
+        }
+      }
+    },
+    "paper.worldRecord.altitude.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Höhenrekord: Die ganze Welt spricht über diesen Ballon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitude record: the whole world is talking about this balloon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récord de altitud: todo el mundo habla de este globo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高度記録：世界中がこの気球の話題で持ちきりだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "고도 기록: 전 세계가 이 열기구 이야기를 하고 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İrtifa rekoru: bütün dünya bu balonu konuşuyor."
+          }
+        }
+      }
+    },
+    "paper.worldRecord.world.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nonstop um die Welt: Die ganze Welt spricht über diesen Ballon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nonstop round-the-world flight: the whole world is talking about this balloon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuelta al mundo sin escalas: todo el mundo habla de este globo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無着陸世界一周：世界中がこの気球の話題で持ちきりだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "논스톱 세계 일주: 전 세계가 이 열기구 이야기를 하고 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durmadan dünya turu: bütün dünya bu balonu konuşuyor."
+          }
+        }
+      }
+    },
     "pattern.checker": {
       "extractionState": "manual",
       "localizations": {
@@ -41821,6 +47028,88 @@
         }
       }
     },
+    "pin.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol"
+          }
+        }
+      }
+    },
+    "pin.bri.land": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "England"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "England"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inglaterra"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "イングランド"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "잉글랜드"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İngiltere"
+          }
+        }
+      }
+    },
     "pin.cap": {
       "extractionState": "manual",
       "localizations": {
@@ -41903,89 +47192,7 @@
         }
       }
     },
-    "pin.europe": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Europa"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Europe"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Europa"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ヨーロッパ"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "유럽"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avrupa"
-          }
-        }
-      }
-    },
-    "pin.europe.land": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Europa"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Europe"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Europa"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ヨーロッパ"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "유럽"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Avrupa"
-          }
-        }
-      }
-    },
-    "pin.luxor": {
+    "pin.lux": {
       "extractionState": "manual",
       "localizations": {
         "de": {
@@ -42026,7 +47233,7 @@
         }
       }
     },
-    "pin.luxor.land": {
+    "pin.lux.land": {
       "extractionState": "manual",
       "localizations": {
         "de": {
@@ -42063,6 +47270,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mısır"
+          }
+        }
+      }
+    },
+    "pin.mara": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maasai Mara"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maasai Mara"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maasai Mara"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マサイマラ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마사이마라"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maasai Mara"
+          }
+        }
+      }
+    },
+    "pin.mara.land": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kenia"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kenya"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kenia"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ケニア"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "케냐"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kenya"
           }
         }
       }
@@ -43010,6 +48299,252 @@
         }
       }
     },
+    "record.altitude": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Höhenrekord"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitude record"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récord de altitud"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高度記録"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "고도 기록"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İrtifa rekoru"
+          }
+        }
+      }
+    },
+    "record.altitude.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit einem Spezialballon und Druckkabine in die Stratosphäre: Der Weltrekord liegt bei 21.027 Metern. Der Pilot fliegt mit Sauerstoffmaske, die Kabine wird beheizt, damit sie nicht einfriert."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Into the stratosphere with a special balloon and a pressurised cabin: the world record is 21,027 metres. The pilot flies with an oxygen mask, and the cabin is heated so it doesn't freeze."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A la estratosfera con un globo especial y cabina presurizada: el récord mundial es de 21.027 metros. El piloto vuela con máscara de oxígeno y la cabina se calienta para que no se congele."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "与圧キャビン付きの特別な気球で成層圏へ。世界記録は21,027メートル。パイロットは酸素マスクを着け、キャビンは凍らないよう暖められる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "여압 캐빈을 단 특수 열기구로 성층권까지. 세계 기록은 21,027미터. 조종사는 산소마스크를 쓰고 비행하며, 캐빈은 얼지 않게 데웁니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basınçlı kabinli özel bir balonla stratosfere: dünya rekoru 21.027 metre. Pilot oksijen maskesiyle uçar, kabin donmasın diye ısıtılır."
+          }
+        }
+      }
+    },
+    "record.fail": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Versuch ist gescheitert: %@. Der Pilot ist heil gelandet und der Ballon gerettet, aber diesmal fiel der Rekord nicht. Wenn du willst, versuchen wir es noch einmal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The attempt fell short: %@. The pilot came down safe and sound and the balloon was saved, but the record didn't fall this time. We can try again if you like."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El intento se quedó corto: %@. El piloto bajó sano y salvo y el globo se salvó, pero esta vez no cayó el récord. Si quieres, lo intentamos de nuevo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "挑戦は届かなかった：%@。パイロットは無事に降り、気球も回収できたが、今回は記録にならなかった。よければもう一度挑もう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "도전이 아쉽게 끝났네: %@. 조종사는 무사히 내렸고 열기구도 건졌지만 이번엔 기록을 깨지 못했어. 원한다면 다시 도전하세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deneme yarıda kaldı: %@. Pilot sağ salim indi, balon da kurtarıldı ama rekor bu sefer olmadı. İstersen yeniden deneriz."
+          }
+        }
+      }
+    },
+    "record.success": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Rekord gehört dir: %@! Der Name deiner Firma steht in Zeitungen auf der ganzen Welt. Touristen in jeder Region fragen jetzt nach dir."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The record is yours: %@! Your company's name is in newspapers all over the world. Tourists in every region are asking for you now."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡El récord es tuyo: %@! El nombre de tu empresa está en periódicos de todo el mundo. Ahora los turistas de todas las regiones preguntan por ti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録は君のものだ：%@！会社の名前が世界中の新聞に載っている。今やどの地域の観光客も君を指名する。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록은 자네 것일세: %@! 회사 이름이 전 세계 신문에 실렸어. 이제 모든 지역의 관광객이 자네를 찾는다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rekor senin: %@! Şirketinin adı bütün dünya gazetelerinde. Turistler artık her bölgede seni soruyor."
+          }
+        }
+      }
+    },
+    "record.world": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nonstop um die Welt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Non-stop around the world"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuelta al mundo sin escalas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無着陸世界一周"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "무착륙 세계 일주"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durmadan dünya turu"
+          }
+        }
+      }
+    },
+    "record.world.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Start in den Schweizer Alpen, 20 Tage in den Jetstreams, Landung in der ägyptischen Wüste. Zum ersten Mal gelang es 1999."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take-off in the Swiss Alps, 20 days in the jet streams, landing in the Egyptian desert. It was first done in 1999."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Despegue en los Alpes suizos, 20 días en las corrientes en chorro, aterrizaje en el desierto egipcio. Se logró por primera vez en 1999."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スイス・アルプスから離陸し、ジェット気流に乗って20日、エジプトの砂漠に着陸。1999年に初めて達成された。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스위스 알프스에서 이륙해 제트기류 속에서 20일, 이집트 사막에 착륙. 1999년에 처음 성공했습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İsviçre Alpleri'nden kalkış, 20 gün jet akımlarında, iniş Mısır çölünde. İlk kez 1999'da başarılmıştı."
+          }
+        }
+      }
+    },
     "red.fine": {
       "extractionState": "manual",
       "localizations": {
@@ -43621,6 +49156,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kapadokya"
+          }
+        }
+      }
+    },
+    "region.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luxor"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luxor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソール"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor"
           }
         }
       }

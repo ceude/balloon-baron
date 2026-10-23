@@ -2,7 +2,8 @@ import SwiftUI
 import BalloonBaronCore
 
 /// Master Hezarfen's speech bubble with a typewriter effect. Tap the bubble to finish typing.
-/// A rival boss speaks through the same bubble, with his own face and a curt button.
+/// A rival boss and the aviation inspector speak through the same bubble with their own faces, and outside
+/// Cappadocia the region's own guide does the talking (Hezarfen still says goodbye when you enter a region).
 struct HezarfenView: View {
     let message: HezMessage
     var day = 1
@@ -12,6 +13,20 @@ struct HezarfenView: View {
     private var boss: (RegionID, BossLine)? {
         if case let .boss(r, l) = message { return (r, l) }
         return nil
+    }
+
+    private var inspector: Bool {
+        if case .inspector = message { return true }
+        return false
+    }
+
+    /// Whose face and name: Hezarfen when you enter a region, the new guide when they introduce themselves, else the region's guide.
+    private var guide: RegionID {
+        switch message {
+        case .enteredRegion: .cap
+        case .guideHello(let r): r
+        default: currentRegion
+        }
     }
 
     private var button: String {
@@ -32,9 +47,15 @@ struct HezarfenView: View {
                             .font(Theme.font(12, .bold, condensed: true))
                             .foregroundStyle(Color(hex: "#bfe0ff"))
                             .fixedSize()
+                    } else if inspector {
+                        InspectorAvatar(size: 64)
+                        Text(loc("insp.name.\(currentRegion.rawValue)"))
+                            .font(Theme.font(12, .bold, condensed: true))
+                            .foregroundStyle(Color(hex: "#bfe0ff"))
+                            .fixedSize()
                     } else {
-                        HezarfenAvatar(size: 64)
-                        Text(loc("hez.name"))
+                        GuideAvatar(region: guide, size: 64)
+                        Text(guideName(guide))
                             .font(Theme.font(12, .bold, condensed: true))
                             .foregroundStyle(.white)
                             .fixedSize()
@@ -43,6 +64,9 @@ struct HezarfenView: View {
                 VStack(alignment: .leading, spacing: 12) {
                     if let (r, _) = boss {
                         Text(loc("boss.\(r.rawValue).title"))
+                            .font(Theme.font(11.5, .bold)).foregroundStyle(Theme.ink2)
+                    } else if inspector {
+                        Text(loc("insp.title.\(currentRegion.rawValue)"))
                             .font(Theme.font(11.5, .bold)).foregroundStyle(Theme.ink2)
                     }
                     // The full text reserves the bubble's height so it doesn't grow while typing.

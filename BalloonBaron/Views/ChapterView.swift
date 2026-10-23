@@ -59,7 +59,7 @@ struct ChapterView: View {
             Text(c.title)
                 .font(Theme.font(32, .heavy, condensed: true))
                 .foregroundStyle(Theme.ink)
-            Text(loc("ceremony.baronLead", num(s.day), news.region.title, s.company))
+            Text(loc(news.region == .cap ? "ceremony.baronLead" : "ceremony.baronLead.\(news.region.rawValue)", num(s.day), news.region.title, s.company))
                 .font(Theme.font(16, .medium))
                 .foregroundStyle(Theme.ink)
             HStack(alignment: .top, spacing: 10) {
@@ -69,7 +69,7 @@ struct ChapterView: View {
             }
             .padding(10)
             .background(Color(hex: "#f1edf8"), in: RoundedRectangle(cornerRadius: 14))
-            Text(loc(news.region == .cap ? "ceremony.baronHint.cap" : "ceremony.baronHint.abq"))
+            Text(loc("ceremony.baronHint.\(news.region.rawValue)"))
                 .font(Theme.font(14))
                 .foregroundStyle(Theme.ink2)
             BigButton(title: loc("ceremony.openMap")) {

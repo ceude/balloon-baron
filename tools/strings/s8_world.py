@@ -44,12 +44,12 @@ add("ceremony.baronHint.cap",
  "これで会社は世界へ進出できる。最初の新しい地域が世界地図で待っている。",
  "이제 회사가 세계로 나아갈 수 있습니다. 첫 새 지역이 세계 지도에서 기다립니다.")
 add("ceremony.baronHint.abq",
- "The skies of two continents are yours. The next regions will appear on the map very soon.",
- "İki kıtanın göğü senin. Sıradaki bölgeler çok yakında haritada belirecek.",
- "Der Himmel zweier Kontinente gehört dir. Die nächsten Regionen erscheinen bald auf der Karte.",
- "El cielo de dos continentes es tuyo. Las próximas regiones aparecerán pronto en el mapa.",
- "二つの大陸の空は君のものだ。次の地域はまもなく地図に現れる。",
- "두 대륙의 하늘이 당신의 것입니다. 다음 지역들이 곧 지도에 나타납니다.")
+ "The skies of two continents are yours. Luxor is waiting on the world map: the toughest balloon market there is.",
+ "İki kıtanın göğü senin. Dünya haritasında Luksor seni bekliyor: dünyanın en çetin balon pazarı.",
+ "Der Himmel zweier Kontinente gehört dir. Auf der Weltkarte wartet Luxor: der härteste Ballonmarkt der Welt.",
+ "El cielo de dos continentes es tuyo. Luxor te espera en el mapa del mundo: el mercado de globos más duro que existe.",
+ "二つの大陸の空は君のものだ。世界地図でルクソールが待っている。世界一厳しい気球市場だ。",
+ "두 대륙의 하늘이 당신의 것입니다. 세계 지도에서 룩소르가 기다립니다. 세상에서 가장 험한 열기구 시장이죠.")
 add("ceremony.openMap", "Open the world map", "Dünya haritasını aç", "Weltkarte öffnen", "Abrir el mapa del mundo", "世界地図を開く", "세계 지도 열기")
 
 # Merger news
@@ -126,13 +126,6 @@ add("map.lockedSub",
  "Se desbloquea cuando seas barón de Capadocia.",
  "カッパドキアの男爵になると解放される。",
  "카파도키아의 남작이 되면 열립니다.")
-add("map.luxorSub",
- "On the banks of the Nile, above the valley of the pharaohs. Coming very soon.",
- "Nil kıyısında, firavunların vadisi üstünde. Çok yakında.",
- "Am Ufer des Nils, über dem Tal der Pharaonen. Schon sehr bald.",
- "A orillas del Nilo, sobre el valle de los faraones. Muy pronto.",
- "ナイルのほとり、王家の谷の上空。まもなく登場。",
- "나일강 기슭, 파라오의 계곡 위. 곧 공개됩니다.")
 add("map.mysterySub",
  "A new adventure in the skies of %@. Not even Hezarfen knows where.",
  "%@ göğünde yeni bir macera. Nerede olduğunu Hezarfen bile bilmiyor.",

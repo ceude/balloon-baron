@@ -246,6 +246,7 @@ struct FleetView: View {
     @Environment(GameStore.self) private var store
     @State private var adPick: BalloonPick?
     @State private var designPick: BalloonPick?
+    @State private var equipPick: BalloonPick?
     @State private var studioOpen = false
 
     var body: some View {
@@ -261,6 +262,9 @@ struct FleetView: View {
             }
             .sheet(item: $designPick) { pick in
                 DesignPicker(balloonID: pick.id).environment(store)
+            }
+            .sheet(item: $equipPick) { pick in
+                EquipmentPicker(balloonID: pick.id).environment(store)
             }
             .sheet(isPresented: $studioOpen) {
                 DesignStudioView().environment(store)
@@ -378,6 +382,13 @@ struct FleetView: View {
             } label: {
                 chip(dot: b.ad.map { Color(hex: $0.colors.bg) } ?? Theme.line,
                      text: b.ad.map { loc("fleetPage.adOn", $0.title, eur($0.pay(for: b.size))) } ?? loc("fleetPage.adNone"))
+            }
+            .buttonStyle(.plain)
+            Button {
+                equipPick = BalloonPick(id: b.id)
+            } label: {
+                chip(dot: Color(hex: "#ff8a3d"),
+                     text: loc("equip.burners.\(b.burners)") + (b.hasTurningVent ? " · " + loc("equip.ventShort") : ""))
             }
             .buttonStyle(.plain)
             if !s.designs.isEmpty { // bazaar designs work without the workshop
@@ -601,6 +612,56 @@ private struct AdPicker: View {
     private func choose(_ sp: Sponsor?, _ b: Balloon) {
         store.act { _ = $0.setAd(b.id, sp) }
         dismiss()
+    }
+}
+
+/// A balloon's equipment: one, two or three burners, and the turning vent. Sold on safety (`equipCard`).
+private struct EquipmentPicker: View {
+    @Environment(GameStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
+    let balloonID: Int
+
+    var body: some View {
+        if let game = store.game, let b = game.state.balloon(balloonID) {
+            FleetUI.Sheet(title: loc("equip.title"), lead: b.name, close: { dismiss() }) {
+                ForEach(1...3, id: \.self) { n in
+                    burnerRow(n, b, game)
+                }
+                ventRow(b, game)
+            }
+        }
+    }
+
+    private func percentOff(_ k: Double) -> String { num(Int(((1 - k) * 100).rounded())) }
+    private func percentUp(_ k: Double) -> String { num(Int(((k - 1) * 100).rounded())) }
+
+    private func burnerRow(_ n: Int, _ b: Balloon, _ game: Game) -> some View {
+        let have = b.burners >= n, next = b.burners + 1 == n
+        let detail = n == 1 ? loc("equip.single.d")
+            : loc(n == 2 ? "equip.double.d" : "equip.triple.d", percentOff(Burners.risk[n - 1]), percentUp(Burners.heat[n - 1]))
+        return FleetUI.Item(highlight: next) {
+            FleetUI.Title((have ? "✓ " : "") + loc("equip.burners.\(n)"))
+            FleetUI.Detail(detail)
+            if next, let cost = game.burnerCost(b) {
+                FleetUI.SmallButton(title: loc("equip.fit", eur(cost)), disabled: game.state.cash < cost) {
+                    store.act { _ = $0.addBurner(b.id) }
+                }
+            }
+        }
+        .opacity(have || next ? 1 : 0.55)
+    }
+
+    private func ventRow(_ b: Balloon, _ game: Game) -> some View {
+        let cost = game.turningVentCost(b)
+        return FleetUI.Item(highlight: !b.hasTurningVent) {
+            FleetUI.Title((b.hasTurningVent ? "✓ " : "") + loc("equip.vent"))
+            FleetUI.Detail(loc("equip.vent.d", percentOff(Burners.turningVentRisk)))
+            if !b.hasTurningVent {
+                FleetUI.SmallButton(title: loc("equip.fit", eur(cost)), disabled: game.state.cash < cost) {
+                    store.act { _ = $0.fitTurningVent(b.id) }
+                }
+            }
+        }
     }
 }
 
