@@ -99,6 +99,9 @@ final class GameStore {
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 15) { LaunchGuard.settled() }
         Task { @MainActor [weak self] in Shop.shared.start { k, bought in self?.purchased(k, bought: bought) } }
+        #if DEBUG
+        applyDemoArguments()
+        #endif
     }
 
     var state: GameState? { game?.state }
