@@ -19,7 +19,7 @@ def oid(*parts):
 def kind(name):
     ext = os.path.splitext(name)[1]
     return {".swift": "sourcecode.swift", ".xcassets": "folder.assetcatalog", ".xcstrings": "text.json.xcstrings",
-            ".ttf": "file", ".json": "text.json", ".plist": "text.plist.xml"}.get(ext, "file")
+            ".ttf": "file", ".json": "text.json", ".plist": "text.plist.xml", ".xcprivacy": "text.xml"}.get(ext, "file")
 
 
 def scan(rel):
@@ -122,6 +122,7 @@ CURRENT_PROJECT_VERSION = 1;
 ENABLE_PREVIEWS = YES;
 GENERATE_INFOPLIST_FILE = YES;
 INFOPLIST_KEY_CFBundleDisplayName = "Balloon Baron";
+INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.simulation-games";
 INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -133,7 +134,7 @@ LD_RUNPATH_SEARCH_PATHS = (
 \t"$(inherited)",
 \t"@executable_path/Frameworks",
 );
-MARKETING_VERSION = 0.1;
+MARKETING_VERSION = 1.0;
 PRODUCT_BUNDLE_IDENTIFIER = com.ceude.balloonbaron;
 PRODUCT_NAME = "$(TARGET_NAME)";
 SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";

@@ -50,6 +50,7 @@
 		9C89BB07475A66B06DEB00FA /* Barlow-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 610DCA796EFEF22379BB71FD /* Barlow-Regular.ttf */; };
 		A45C762AC183EBD9476AA61A /* GameStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1418AC5FE4F57A03C0EF1766 /* GameStore.swift */; };
 		A818B3A8939636A60B498B62 /* HezarfenAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75F9CDDED31E1B1E782B22C /* HezarfenAvatar.swift */; };
+		AAF1439F71038DA8DB030CBA /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 09FF7E1D4602B78743229CA2 /* PrivacyInfo.xcprivacy */; };
 		AAFC7A02A4CFD7A85E5D0966 /* Barlow-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DE9EE32EE3407FBCBBC395A /* Barlow-Bold.ttf */; };
 		AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8480E19BC8DE8F1B439520EE /* BalloonArt.swift */; };
 		B029C9E05045367DA00E324C /* Barlow-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC2D92AE9D2D2735F75E90DE /* Barlow-ExtraBold.ttf */; };
@@ -77,6 +78,7 @@
 /* Begin PBXFileReference section */
 		028E3000896415942F6E8508 /* TownPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownPainter.swift"; sourceTree = "<group>"; };
 		03D4B6CAC1ADC8096C50F9DB /* Barlow-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-SemiBold.ttf"; sourceTree = "<group>"; };
+		09FF7E1D4602B78743229CA2 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = "PrivacyInfo.xcprivacy"; sourceTree = "<group>"; };
 		13C148975EC28ECA71CB3536 /* Shop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Shop.swift"; sourceTree = "<group>"; };
 		1418AC5FE4F57A03C0EF1766 /* GameStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GameStore.swift"; sourceTree = "<group>"; };
 		14CD61C9B79F78E77AE45096 /* TownCollect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownCollect.swift"; sourceTree = "<group>"; };
@@ -169,6 +171,7 @@
 				21BA8159F9A68439627ADACE /* Localizable.xcstrings */,
 				690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */,
 				45339BBAA04927D7F285CA21 /* Platform.swift */,
+				09FF7E1D4602B78743229CA2 /* PrivacyInfo.xcprivacy */,
 				8DF3B0C99D9EE5597D3FDD37 /* SaveVault.swift */,
 				13C148975EC28ECA71CB3536 /* Shop.swift */,
 				B1F376872405998A225098DA /* Telemetry.swift */,
@@ -368,6 +371,7 @@
 				B7C6BA3568CD712BE7C7918D /* CaveatBrush-Regular.ttf in Resources */,
 				D94B9EE2BB63306E4E84C569 /* Assets.xcassets in Resources */,
 				17524A7AE43E278B72BA3450 /* Localizable.xcstrings in Resources */,
+				AAF1439F71038DA8DB030CBA /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -484,6 +488,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Balloon Baron";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.simulation-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -495,7 +500,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ceude.balloonbaron;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -560,6 +565,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "Balloon Baron";
+				INFOPLIST_KEY_ITSAppUsesNonExemptEncryption = NO;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.simulation-games";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -571,7 +577,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 0.1;
+				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.ceude.balloonbaron;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
