@@ -22,7 +22,7 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 | L Büyük | 24 | 60.000 | 120 | 80 | ×1,3 |
 | XL Kapadokya Yıldızı | 32 | 150.000 | 170 | 140 | ×1,15 |
 
-- XL özel tasarım dev balondur. Her uçuş +0,005 popülerlik verir.
+- XL, Dev balondur (v101'e kadar adı "Özel tasarım dev balon / İmza balon" idi). Her uçuş +0,005 popülerlik verir.
 - Ömür 120 uçuş (holding Ar-Ge'siyle 160 / 200). Yenileme fiyatın %35'i.
 
 ## Kurucu (sen)
