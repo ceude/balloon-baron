@@ -317,12 +317,12 @@ struct PlanSmallButton: View {
                 .lineLimit(1)
                 .padding(.horizontal, 12)
                 .frame(minHeight: 34)
-                .foregroundStyle(light ? Theme.ink : Color.white)
-                .background(light ? Theme.line : Theme.coral, in: RoundedRectangle(cornerRadius: 11))
+                .foregroundStyle(light ? Theme.ink : disabled ? Theme.offText : Color.white)
+                .background(light ? Theme.line : disabled ? Theme.offFill : Theme.coral, in: RoundedRectangle(cornerRadius: 11))
         }
         .buttonStyle(.plain)
         .disabled(disabled)
-        .opacity(disabled ? 0.45 : 1)
+        .opacity(disabled && light ? 0.55 : 1)
     }
 }
 

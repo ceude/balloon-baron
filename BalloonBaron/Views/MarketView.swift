@@ -130,7 +130,8 @@ struct MarketView: View {
                 rivalCard(i, s)
             }
             FleetUI.Hint(loc("marketPage.rivalsHint"))
-            FleetUI.SmallButton(title: loc("marketPage.rivalTips"), ghost: true) {
+            // The region's own guide gives the tips, as in the prototype ("Franklin: rakip taktikleri").
+            FleetUI.SmallButton(title: loc("marketPage.rivalTips", loc("guide.short.\(s.region.rawValue)")), ghost: true) {
                 store.act { $0.replayRivalTips() }
                 store.closePage()
             }

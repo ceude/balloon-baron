@@ -111,3 +111,8 @@ add("holding.shape.breakNo", "Keep the deal", "Sözleşme sürsün", "Vertrag be
 
 # The chapter's number as a big heading
 add("goals.chapterBig", "Chapter %1$@/%2$@", "Bölüm %1$@/%2$@", "Kapitel %1$@/%2$@", "Capítulo %1$@/%2$@", "第%1$@章 / %2$@", "챕터 %1$@/%2$@")
+
+# The guides' short names, for buttons
+add("guide.short.cap", "Hezarfen", "Hezarfen", "Hezarfen", "Hezarfen", "ヘザルフェン", "헤자르펜")
+add("guide.short.abq", "Franklin", "Franklin", "Franklin", "Franklin", "フランクリン", "프랭클린")
+add("guide.short.lux", "Imhotep", "İmhotep", "Imhotep", "Imhotep", "イムホテプ", "임호테프")

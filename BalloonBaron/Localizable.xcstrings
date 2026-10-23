@@ -23412,6 +23412,129 @@
         }
       }
     },
+    "guide.short.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Franklin"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Franklin"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Franklin"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フランクリン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "프랭클린"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Franklin"
+          }
+        }
+      }
+    },
+    "guide.short.cap": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hezarfen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hezarfen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hezarfen"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ヘザルフェン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "헤자르펜"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hezarfen"
+          }
+        }
+      }
+    },
+    "guide.short.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imhotep"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imhotep"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imhotep"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "イムホテプ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "임호테프"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İmhotep"
+          }
+        }
+      }
+    },
     "hez.absent": {
       "extractionState": "manual",
       "localizations": {
@@ -42442,37 +42565,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hezarfens Tipps zur Konkurrenz anhören"
+            "value": "%@: Taktiken gegen die Konkurrenz"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hear Hezarfen's rival tactics"
+            "value": "%@: rival tactics"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Escuchar las tácticas de Hezarfen sobre rivales"
+            "value": "%@: tácticas contra rivales"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ヘザルフェンのライバル対策を聞く"
+            "value": "%@：ライバル対策"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "헤자르펜의 경쟁 전략 듣기"
+            "value": "%@: 경쟁 전략"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hezarfen'in rakip taktiklerini dinle"
+            "value": "%@: rakip taktikleri"
           }
         }
       }

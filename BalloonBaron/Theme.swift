@@ -14,6 +14,9 @@ enum Theme {
     static let yellow = Color(hex: "#e0a400")
     static let red = Color(hex: "#e5432f")
     static let line = Color(hex: "#e2dcef")
+    /// A button you can't press yet: grey with readable grey text, never a faded coral that hides its price.
+    static let offFill = Color(hex: "#e6e1ef")
+    static let offText = Color(hex: "#857d9f")
 
     static let sky = LinearGradient(colors: [Color(hex: "#2f2560"), Color(hex: "#b9506a"), Color(hex: "#ffae6a")],
                                     startPoint: .top, endPoint: .bottom)

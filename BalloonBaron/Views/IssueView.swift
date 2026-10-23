@@ -63,16 +63,16 @@ struct IssueView: View {
                     .opacity(0.85)
                     .multilineTextAlignment(.leading)
             }
-            .foregroundStyle(isA ? Color.white : Theme.ink)
+            .foregroundStyle(isA && affordable ? Color.white : isA ? Theme.offText : Theme.ink)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 14)
             .padding(.vertical, 11)
-            .background(isA ? Theme.coral : Color.white, in: RoundedRectangle(cornerRadius: 16))
+            .background(isA && affordable ? Theme.coral : isA ? Theme.offFill : Color.white, in: RoundedRectangle(cornerRadius: 16))
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(isA ? Color.clear : Theme.line, lineWidth: 2))
         }
         .buttonStyle(.plain)
         .disabled(!affordable)
-        .opacity(affordable ? 1 : 0.45)
+        .opacity(affordable || isA ? 1 : 0.55)
     }
 
     private func decide(_ choice: Issue.Choice) {

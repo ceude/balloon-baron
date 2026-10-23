@@ -130,13 +130,13 @@ enum FleetUI {
                 .padding(.horizontal, 12)
                 .padding(.vertical, 8)
                 .frame(maxWidth: .infinity, minHeight: 40)
-                .foregroundStyle(selected ? Color(hex: "#1b7d47") : ghost ? Theme.ink : Color.white)
-                .background(selected ? Theme.green.opacity(0.14) : ghost ? Color.white : Theme.coral, in: RoundedRectangle(cornerRadius: 12))
+                .foregroundStyle(selected ? Color(hex: "#1b7d47") : ghost ? Theme.ink : disabled ? Theme.offText : Color.white)
+                .background(selected ? Theme.green.opacity(0.14) : ghost ? Color.white : disabled ? Theme.offFill : Theme.coral, in: RoundedRectangle(cornerRadius: 12))
                 .overlay(RoundedRectangle(cornerRadius: 12).stroke(selected ? Theme.green.opacity(0.5) : ghost ? Theme.line : Color.clear, lineWidth: 2))
             }
             .buttonStyle(.plain)
             .disabled(disabled || selected)
-            .opacity(disabled && !selected ? 0.45 : 1)
+            .opacity(disabled && !selected && ghost ? 0.55 : 1)
             .accessibilityAddTraits(selected ? .isSelected : [])
         }
     }

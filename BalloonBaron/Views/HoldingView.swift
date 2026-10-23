@@ -407,14 +407,14 @@ struct HoldingPill: View {
                 .minimumScaleFactor(0.7)
                 .padding(.horizontal, 14)
                 .frame(minHeight: 40)
-                .foregroundStyle(style == .glass ? Theme.ink : Color.white)
-                .background(background, in: RoundedRectangle(cornerRadius: 13))
+                .foregroundStyle(style == .glass ? Theme.ink : enabled ? Color.white : Theme.offText)
+                .background(enabled || style == .glass ? background : AnyShapeStyle(Theme.offFill), in: RoundedRectangle(cornerRadius: 13))
                 .compositingGroup()
-                .shadow(color: shadow, radius: 0, y: 3)
+                .shadow(color: enabled ? shadow : Color(hex: "#c9c1da"), radius: 0, y: 3)
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
-        .opacity(enabled ? 1 : 0.45)
+        .opacity(enabled || style != .glass ? 1 : 0.55)
     }
 
     private var background: AnyShapeStyle {
