@@ -52,16 +52,18 @@ public enum PaperItem: Codable, Equatable, Sendable {
     case upgrade(Building, level: Int)
     case worldBaron
     case night(NightEvent)
+    case inspectorFine(fine: Int)
+    case worldRecord(RecordAttempt)
 
     public var priority: Int {
         switch self {
         case .upgrade, .night(.shootingStar): 1
         case .vip, .wedding, .record, .night: 2
-        case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost: 3
+        case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine: 3
         case .accident(_, _, let severe): severe ? 5 : 3
         case .redCaught, .festival, .newEntrant, .passedBoss: 4
         case .antitrust, .seized: 5
-        case .rivalBankrupt, .worldBaron: 6
+        case .rivalBankrupt, .worldBaron, .worldRecord: 6
         }
     }
 }

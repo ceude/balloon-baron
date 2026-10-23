@@ -51,6 +51,28 @@ extension Game {
 
     public func renewCost(_ b: Balloon) -> Int { jsRound(Double(b.size.cost) * Rules.renewShare) }
 
+    /// Price of the next burner for a balloon, nil at three.
+    public func burnerCost(_ b: Balloon) -> Int? { b.burners < 3 ? jsRound(Double(b.size.cost) * Burners.cost[b.burners]) : nil }
+    public func turningVentCost(_ b: Balloon) -> Int { jsRound(Double(b.size.cost) * Burners.turningVentCost) }
+
+    @discardableResult
+    public mutating func addBurner(_ id: Int) -> Bool {
+        guard let i = state.balloons.firstIndex(where: { $0.id == id }), let cost = burnerCost(state.balloons[i]), state.cash >= cost else { return false }
+        state.cash -= cost
+        state.balloons[i].burner = state.balloons[i].burners + 1
+        return true
+    }
+
+    @discardableResult
+    public mutating func fitTurningVent(_ id: Int) -> Bool {
+        guard let i = state.balloons.firstIndex(where: { $0.id == id }), !state.balloons[i].hasTurningVent else { return false }
+        let cost = turningVentCost(state.balloons[i])
+        guard state.cash >= cost else { return false }
+        state.cash -= cost
+        state.balloons[i].turningVent = true
+        return true
+    }
+
     @discardableResult
     public mutating func renewEnvelope(_ id: Int) -> Bool {
         guard let i = state.balloons.firstIndex(where: { $0.id == id }) else { return false }

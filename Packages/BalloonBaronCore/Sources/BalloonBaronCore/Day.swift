@@ -230,8 +230,12 @@ extension Game {
         if state.monopolyDays >= 3 { queueTip(.antitrust) }
         // Rivals merge against a player who holds the market, or when one of them is sinking.
         state.dominanceDays = state.day >= 30 && share > 0.5 ? state.dominanceDays + 1 : max(0, state.dominanceDays - 1)
+        // Luxor's rivals join forces sooner, more often, and at a smaller share.
+        let early = state.region.mergesEarly
+        if early && state.day >= 20 && share > 0.38 { state.dominanceDays += 1 }
         let sinking = state.rivals.contains { $0.alive && $0.cash < -4000 } && share > 0.4
-        if state.day - (state.lastMerge ?? -99) >= 25 && ((state.dominanceDays >= 4 && rng.chance(0.35)) || (sinking && rng.chance(0.6))) {
+        if state.day - (state.lastMerge ?? -99) >= (early ? 15 : 25)
+            && ((state.dominanceDays >= (early ? 2 : 4) && rng.chance(early ? 0.5 : 0.35)) || (sinking && rng.chance(0.6))) {
             mergeRivals(share: share, events: &rev)
         }
         if state.monopolyDays >= 5 && rng.chance(0.25) {
@@ -303,9 +307,9 @@ extension Game {
         if state.region.hasFiesta {
             if let f = state.fiesta, state.day > f.end {
                 state.fiesta = nil
-                state.fiestaNext = state.day + Rules.fiestaEvery
-            } else if state.fiesta == nil && state.day >= (state.fiestaNext ?? 0) && state.winter == nil {
-                state.fiesta = Fiesta(start: state.day, end: state.day + Rules.fiestaDays - 1)
+                state.fiestaNext = state.day + state.region.fiestaEvery
+            } else if state.fiesta == nil && state.day >= (state.fiestaNext ?? 0) && (state.winter == nil || state.region == .lux) {
+                state.fiesta = Fiesta(start: state.day, end: state.day + state.region.fiestaDays - 1)
                 state.hezQueue.append(.fiestaStarted)
             }
         }

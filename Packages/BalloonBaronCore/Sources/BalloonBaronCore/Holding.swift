@@ -46,6 +46,13 @@ public struct Holding: Codable, Equatable, Sendable {
     public var tvCount: Int?
     /// Day the holding's six goals were all met.
     public var worldBaron: Int?
+    // Added with Luxor.
+    /// A record attempt being prepared, the day each record was set, and the lasting demand boost they earned.
+    public var record: RecordRun?
+    public var records: [RecordAttempt: Int]?
+    public var recordBoost: Double?
+    /// A brand's shaped balloon flying over a region for money.
+    public var adShape: AdContract?
 
     public func has(_ o: Office) -> Bool { offices[o] != nil }
     public var expenseRate: Double { offices.count == Office.allCases.count ? Self.allOfficesExpenseRate : Self.expenseRate }
@@ -71,7 +78,7 @@ extension Game {
     /// Demand multiplier from holding campaigns in a region.
     public func holdingBoost(_ r: RegionID) -> Double {
         let h = state.holding, d = state.day
-        return (h.tvUntil > d ? 1.2 : 1) * ((h.celebrity?.until ?? 0) > d ? 1.1 : 1) * ((h.billboards[r] ?? 0) > d ? 1.1 : 1)
+        return (1 + (h.recordBoost ?? 0)) * (h.tvUntil > d ? 1.2 : 1) * ((h.celebrity?.until ?? 0) > d ? 1.1 : 1) * ((h.billboards[r] ?? 0) > d ? 1.1 : 1)
     }
 
     /// Takes money out of the region you're playing into the holding, converted to euros.
@@ -161,6 +168,7 @@ extension Game {
 
     func newRegionState(_ r: RegionID) -> RegionState {
         var st = RegionState(rivals: r.startingRivals())
+        st.cash = r.startCash
         st.nextWinter = state.day + 40
         st.firstMissionGiven = true
         if r.hasFiesta { st.fiestaNext = state.day + 12 }
@@ -192,13 +200,15 @@ extension Game {
         startDay()
     }
 
-    public var canEnterRegion: Bool { state.holding.cash >= Holding.entryFee }
+    public func canEnterRegion(_ r: RegionID) -> Bool { state.holding.cash >= r.entryFee }
 
     /// Opens a new region with the holding's money. You start over there with a small balloon.
+    /// Hezarfen says his piece, then the region's own guide introduces themselves.
     @discardableResult
     public mutating func enterRegion(_ r: RegionID) -> Bool {
-        guard !state.owns(r), state.isBaron(.cap), spendHolding(Holding.entryFee) else { return false }
+        guard !state.owns(r), state.regionOpen(r), spendHolding(r.entryFee) else { return false }
         state.hezQueue.append(.enteredRegion(r))
+        state.hezQueue.append(.guideHello(r))
         switchRegion(r)
         return true
     }
@@ -233,7 +243,8 @@ extension Game {
         if g != 0 { state.holding.log(day: state.day, income: g, expense: cost) }
         state.holding.todayGross = g
         state.holding.todayCost = cost
-        return g - cost
+        let extra = recordDay() + adShapeDay()
+        return g - cost + extra
     }
 
     /// Answer a parked region's problem. Paying comes out of the holding.

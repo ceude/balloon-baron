@@ -39,6 +39,13 @@ public struct Chapter: Equatable, Sendable {
                 Chapter(id: "fiesta", reward: 20000, goals: [g(.balloons, 12), g(.hotelOwn, 1), g(.fiesta, 1), g(.share, 0.5)]),
                 Chapter(id: "baronAbq", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
             ]
+        case .lux:
+            return [
+                Chapter(id: "westBank", reward: 5000, goals: [g(.balloons, 4), g(.pilots, 3), g(.stars, 4.7), g(.hotelDeal, 2), g(.guide, 1), g(.bldMast, 2)]),
+                Chapter(id: "nileWind", reward: 10000, goals: [g(.balloons, 8), g(.influencer, 1), g(.stars, 4.75), g(.share, 0.3), g(.bldMast, 3), g(.bldHangar, 2)]),
+                Chapter(id: "pharaohs", reward: 20000, goals: [g(.balloons, 14), g(.hotelOwn, 1), g(.fiesta, 1), g(.share, 0.5)]),
+                Chapter(id: "baronLux", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
+            ]
         }
     }
 }

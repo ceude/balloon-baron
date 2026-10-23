@@ -38,7 +38,7 @@ public struct Game: Sendable {
     mutating func dayDemand() -> Int {
         let flag = state.weather?.flag ?? .green
         return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? 0.55 : 1)
-                       * (state.fiesta != nil ? Rules.fiestaDemand : 1) * (state.festival != nil ? Rules.festivalDemand : 1)
+                       * (state.fiesta != nil ? state.region.fiestaDemand : 1) * (state.festival != nil ? Rules.festivalDemand : 1)
                        * state.salesFactor * (1 + 0.01 * Double(state.decorationCount)) * holdingBoost(state.region))
     }
 
@@ -52,6 +52,8 @@ public struct Game: Sendable {
                  rng.range(-4, 4) * flag.wind, rng.range(-6, 6) * flag.wind, rng.range(-8, 8) * flag.wind]
         if state.region.boxWinds {
             l = [-rng.range(2, 4) * flag.wind, rng.range(3, 5.5) * flag.wind, -rng.range(1, 3.5) * flag.wind, rng.range(4, 7) * flag.wind]
+        } else if state.region.nileWinds {
+            l = [rng.range(1.5, 3.5) * flag.wind, -rng.range(2, 4.5) * flag.wind, rng.range(2.5, 5) * flag.wind, -rng.range(3, 6) * flag.wind]
         }
         // Always leave one layer that carries you east and one that brings you back.
         if !l.contains(where: { $0 > 3 }) { l[1 + rng.int(3)] = rng.range(3.5, 6) * flag.wind }
@@ -114,6 +116,7 @@ public struct Game: Sendable {
         if s.weather?.mission != nil { queueTip(.mission) }
         if s.rep < Rules.crisisRep { queueTip(.crisis) }
         if s.balloons.contains(where: { s.condition($0) < 0.3 }) { queueTip(.aging) }
+        inspect()
         if s.stars > 4.5 { queueTip(.expect) }
         if s.unlocked.contains(.market) {
             if s.day >= 10 { queueTip(.rivals) }
@@ -122,6 +125,24 @@ public struct Game: Sendable {
         }
         if s.balloons.contains(where: { $0.damagedUntil > s.day }) { queueTip(.accident) }
         if !s.licenseValid { queueTip(.licenseHold) }
+    }
+
+    /// The inspector comes by when an envelope is below 30%: two warnings five days apart, then a fine each visit.
+    mutating func inspect() {
+        let worn = state.balloons.filter { state.condition($0) < 0.3 && state.condition($0) > 0 }
+        guard !worn.isEmpty else { state.inspectCount = 0; return }
+        if state.day - (state.inspectDay ?? -99) < 5 { return }
+        if state.hezQueue.contains(where: { if case .inspector = $0 { return true }; return false }) { return }
+        let n = (state.inspectCount ?? 0) + 1
+        state.inspectDay = state.day
+        state.inspectCount = n
+        var fine = 0
+        if n >= 3 {
+            fine = 2500 * worn.count
+            state.cash -= fine
+            addPaper(.inspectorFine(fine: fine))
+        }
+        state.hezQueue.append(.inspector(visit: min(n, 3), balloons: worn.map(\.name), fine: fine))
     }
 
     /// Pops the next Hezarfen message and marks lessons as seen.
@@ -174,7 +195,8 @@ public struct Game: Sendable {
         let pilotRisk = state.isSelf(b) ? 1 : state.pilot(of: b)?.level.risk ?? 1
         let traitRisk = trait(of: b)?.accidentFactor ?? 1
         let radar = flag == .yellow && state.level(.mast) >= 3 ? 0.8 : 1
-        return flag.accident * traitRisk * radar * pilotRisk * b.size.risk * (state.condition(b) < 0.3 ? 1.5 : 1)
+        let equipment = Burners.risk[b.burners - 1] * (b.hasTurningVent && flag != .green ? Burners.turningVentRisk : 1)
+        return equipment * flag.accident * traitRisk * radar * pilotRisk * b.size.risk * (state.condition(b) < 0.3 ? 1.5 : 1)
     }
 
     /// Daily premiums for one balloon given its accident chance. Nothing is insurable on a red day.

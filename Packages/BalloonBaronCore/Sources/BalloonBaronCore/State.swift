@@ -13,6 +13,25 @@ public struct Balloon: Codable, Identifiable, Equatable, Sendable {
     public var ad: Sponsor?
     /// Id of a workshop design painted on the envelope.
     public var design: Int?
+    /// Burners on the frame: 1 (nil), 2 or 3. A spare burner lowers the accident risk and climbs faster.
+    public var burner: Int?
+    /// A turning vent lines the basket up for a windy landing.
+    public var turningVent: Bool?
+
+    public var burners: Int { burner ?? 1 }
+    public var hasTurningVent: Bool { turningVent ?? false }
+}
+
+/// Burner setups: one, two or three. `cost` is the share of the balloon's price to fit the next one.
+public enum Burners {
+    public static let risk: [Double] = [1, 0.85, 0.72]
+    public static let heat: [Double] = [1, 1.3, 1.6]
+    public static let cost: [Double] = [0, 0.1, 0.12]
+    public static let turningVentCost = 0.06
+    /// Accident factor of a turning vent on a yellow or red day.
+    public static let turningVentRisk = 0.85
+    /// Sink speed (m/s) that still lands softly with a turning vent; 2.6 without.
+    public static let turningVentHardLanding = 3.1
 }
 
 public struct Pilot: Codable, Identifiable, Equatable, Sendable {
@@ -161,6 +180,12 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case worldBaron
     /// Hezarfen praises a good move in the first weeks.
     case praise(Praise)
+    /// The new region's guide introduces themselves (Ben Franklin, Imhotep).
+    case guideHello(RegionID)
+    /// The civil aviation inspector about worn envelopes: `visit` 1 and 2 warn, from 3 a fine.
+    case inspector(visit: Int, balloons: [String], fine: Int)
+    /// A record attempt came to an end.
+    case record(RecordAttempt, success: Bool)
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.
@@ -343,6 +368,9 @@ public struct GameState: Codable, Equatable, Sendable {
 
     /// The region's old-money rival, if still in the market under its name.
     public var bossRival: Rival? { local.rivals.first { $0.name == region.bossCompany } }
+
+    /// A region opens when you're the baron of the one before it.
+    public func regionOpen(_ r: RegionID) -> Bool { r.unlockedBy.map { barons[$0] != nil } ?? true }
 }
 
 /// Company-wide counters for postcards.

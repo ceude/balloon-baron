@@ -17,6 +17,18 @@ public struct Obstacle: Equatable, Sendable {
     public let x: Double, h: Double, w: Double, tone: Double
 }
 
+/// Power lines across the fields: two poles and the wire between, sagging 12 m in the middle. Never fly low under one.
+public struct PowerLine: Equatable, Sendable {
+    public let x0: Double, x1: Double, h: Double
+    public static let sag = 12.0
+    /// Height of the wire at x, nil outside the span.
+    public func wire(at x: Double) -> Double? {
+        guard x > x0 && x < x1 else { return nil }
+        let k = (x - x0) / (x1 - x0)
+        return h - Self.sag * 4 * k * (1 - k)
+    }
+}
+
 public enum FlightWorld {
     /// Wind band edges and centers in meters.
     public static let bands: [ClosedRange<Double>] = [0...60, 60...180, 180...350, 350...650]
@@ -40,12 +52,28 @@ public enum FlightWorld {
         return out
     }
 
-    public static func terrainHeight(at x: Double, _ obs: [Obstacle]) -> Double {
+    /// Up to three power lines, clear of the launch field, the landing zone, the valley and each other.
+    public static func powerLines(for w: Weather) -> [PowerLine] {
+        var r = Mulberry32(seed: UInt32(truncatingIfNeeded: w.seed &+ 21))
+        var out: [PowerLine] = []
+        for _ in 0..<3 {
+            let x0 = -300 + r.next() * 3600, x1 = x0 + 190 + r.next() * 90, h = 42 + r.next() * 16
+            if x1 > launchX - 170 && x0 < launchX + 170 { continue }
+            if x1 > w.target - 180 && x0 < w.target + 180 { continue }
+            if w.mission == .valley && x1 > w.valley - 120 && x0 < w.valley + 120 { continue }
+            if out.contains(where: { x1 > $0.x0 - 80 && x0 < $0.x1 + 80 }) { continue }
+            out.append(PowerLine(x0: x0, x1: x1, h: h))
+        }
+        return out
+    }
+
+    public static func terrainHeight(at x: Double, _ obs: [Obstacle], lines: [PowerLine] = []) -> Double {
         var h = 0.0
         for c in obs {
             let d = abs(x - c.x)
             if d < c.w / 2 { h = max(h, c.h * pow(1 - d / (c.w / 2), 0.6)) }
         }
+        for l in lines { if let y = l.wire(at: x) { h = max(h, y) } }
         return h
     }
 
@@ -107,7 +135,15 @@ public struct FlightSim: Sendable {
 
     public let weather: Weather
     public let obstacles: [Obstacle]
+    public let lines: [PowerLine]
     public let pax: Int
+    /// Burner power from the flagship's burners (1, 1.3, 1.6), and its turning vent.
+    public let burnerPower: Double
+    public let turningVent: Bool
+    /// Holding the parachute vent open: hot air leaves through the crown and you sink fast.
+    public var venting = false
+    /// The crash was into a power line.
+    public var hitWire = false
     public var x = FlightWorld.launchX, alt = 0.0, vx = 0.0, vy = 0.0
     public var heat = 0.42, fuel = 100.0
     /// Flight time in simulated seconds.
@@ -120,10 +156,13 @@ public struct FlightSim: Sendable {
     public var moment: FlightMoment?
     public var result: FlightResult?
 
-    public init(weather: Weather, pax: Int) {
+    public init(weather: Weather, pax: Int, burners: Int = 1, turningVent: Bool = false) {
         self.weather = weather
         self.pax = pax
+        burnerPower = Burners.heat[clamp(burners, 1, 3) - 1]
+        self.turningVent = turningVent
         obstacles = FlightWorld.obstacles(for: weather)
+        lines = FlightWorld.powerLines(for: weather)
         moment = FlightMoment.roll(weather)
     }
 
@@ -134,8 +173,9 @@ public struct FlightSim: Sendable {
         guard !done else { return [] }
         var ev: [Event] = []
         let s = dt * FlightWorld.timeScale
+        if venting && airborne { heat -= 0.07 * s }
         if burning && fuel > 0 {
-            heat += 0.05 * s
+            heat += 0.05 * burnerPower * s
             fuel = max(0, fuel - 2 * dt)
         }
         heat = clamp(heat - 0.012 * s, 0, 1)
@@ -151,12 +191,16 @@ public struct FlightSim: Sendable {
         t += s
         if alt > 15 && !airborne { airborne = true; ev.append(.airborne) }
         if airborne {
-            let th = FlightWorld.terrainHeight(at: x, obstacles)
-            if th > 4 && alt < th { land(.crash); return ev + [.landed] }
+            let th = FlightWorld.terrainHeight(at: x, obstacles, lines: lines)
+            if th > 4 && alt < th {
+                hitWire = lines.contains { $0.wire(at: x) != nil }
+                land(.crash)
+                return ev + [.landed]
+            }
             if alt <= 0 {
                 alt = 0
                 let before = missionDone
-                land(-vy > 2.6 ? .hard : nil)
+                land(-vy > (turningVent ? Burners.turningVentHardLanding : 2.6) ? .hard : nil)
                 if missionDone && !before { ev.append(.missionDone) }
                 return ev + [.landed]
             }
@@ -204,6 +248,7 @@ public struct FlightSim: Sendable {
     mutating func land(_ q: FlightResult.Landing?) {
         done = true
         burning = false
+        venting = false
         let dist = distanceToTarget
         let landing = q ?? (dist < FlightWorld.landingZone ? .perfect : dist < 260 ? .good : .far)
         if mission == .precision && dist < 40 && landing != .hard && landing != .crash { missionDone = true }

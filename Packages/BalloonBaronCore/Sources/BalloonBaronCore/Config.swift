@@ -92,19 +92,25 @@ public enum RivalStyle: String, Codable, Sendable { case safe, mid, risky }
 public enum Entrant: String, Codable, CaseIterable, Sendable {
     case bosphorus, anatolian, periLuxe, aegean
     case mesaGold, turquoise, desertBloom, bigSky
+    case redSea, felucca, hatshepsut, karnak
 
     public var name: String {
         ["Bosphorus Balloons", "Anatolian Sky", "Peri Luxe Flights", "Aegean Air Tours",
-         "Mesa Gold Balloons", "Turquoise Trail Air", "Desert Bloom Flights", "Big Sky Fiesta Co."][index]
+         "Mesa Gold Balloons", "Turquoise Trail Air", "Desert Bloom Flights", "Big Sky Fiesta Co.",
+         "Red Sea Balloon Co.", "Felucca Flights", "Hatshepsut Air", "Karnak Wings"][index]
     }
-    public var region: RegionID { index < 4 ? .cap : .abq }
+    public var region: RegionID { [RegionID.cap, .abq, .lux][index / 4] }
     /// A rich chain: it always arrives with more balloons than you.
-    var rich: Bool { self == .bosphorus || self == .mesaGold }
+    var rich: Bool { index % 4 == 0 }
     var style: RivalStyle { [.safe, .risky, .mid, .mid][index % 4] }
-    var balloons: [BalloonSize] { [[.L, .L, .M, .M], [.M, .M, .S, .S, .S], [.M, .M], [.L, .M, .M]][index % 4] }
-    var price: Int { [190, 125, 250, 175][index % 4] }
-    var rep: Double { [1.1, 0.9, 1.25, 1][index % 4] }
-    var cash: Double { [70000, 30000, 50000, 40000][index % 4] }
+    /// Luxor's newcomers are a size up from the others.
+    var balloons: [BalloonSize] {
+        region == .lux ? [[.L, .L, .L, .M, .M], [.M, .M, .S, .S, .S, .S], [.L, .M, .M], [.L, .M, .M, .M]][index % 4]
+            : [[.L, .L, .M, .M], [.M, .M, .S, .S, .S], [.M, .M], [.L, .M, .M]][index % 4]
+    }
+    var price: Int { region == .lux ? [200, 120, 255, 180][index % 4] : [190, 125, 250, 175][index % 4] }
+    var rep: Double { region == .lux ? [1.15, 0.9, 1.3, 1.05][index % 4] : [1.1, 0.9, 1.25, 1][index % 4] }
+    var cash: Double { region == .lux ? [90000, 35000, 60000, 50000][index % 4] : [70000, 30000, 50000, 40000][index % 4] }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
 }
 
