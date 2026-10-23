@@ -151,11 +151,25 @@ Hedefler gün sonunda kontrol edilir. Bölüm bitince ödül kasaya girer, ertes
 | Bölge | Bölüm | Ödül | Hedefler |
 |---|---|---|---|
 | Kapadokya | Kuruluş | 5.000 | 2 balon, ilk pilot, 4,3★, otel anlaşması, rüzgâr direği Sv. 2 |
-| Kapadokya | Büyüme | 20.000 | 10 balon, otel satın al, influencer, rehber, pazarın %50'si, balon atölyesi, hangar Sv. 2 |
+| Kapadokya | Yükseliş | 10.000 | 5 balon, influencer, rehber, hangar Sv. 2 |
+| Kapadokya | Büyüme | 20.000 | 10 balon, otel satın al, pazarın %50'si, balon atölyesi |
 | Kapadokya | Kapadokya Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, bir bina Sv. 3 |
-| Albuquerque | Yeni Dünya | 5.000 | 4 balon, 3 pilot, 4,6★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 3 |
-| Albuquerque | Fiesta | 20.000 | 10 balon, otel satın al, Fiesta'da uç, influencer, pazarın %50'si, hangar Sv. 2 |
+| Albuquerque | Yeni Dünya | 5.000 | 3 balon, 2 pilot, 4,6★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
+| Albuquerque | Kutu Rüzgârı | 10.000 | 7 balon, influencer, 4,7★, rüzgâr direği Sv. 3, hangar Sv. 2 |
+| Albuquerque | Fiesta | 20.000 | 12 balon, otel satın al, Fiesta'da uç, pazarın %50'si |
 | Albuquerque | Albuquerque Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, hangar Sv. 3 |
+
+İki bölgede de 4 bölüm var (prototip v97). Albuquerque her bölümde Kapadokya'dan bir kademe zor. Araya giren ikinci bölüm, eskiden 1. ile 2. bölüm arasındaki yaklaşık 80 günlük boşluğu böler. Balon atölyesi holdinge ait olduğu için Albuquerque'de hedef olamaz; yerine Fiesta ve hangar Sv. 3 var. Üç bölümlü plandan gelen kayıtlar yüklenirken bölüm numarası kaydırılır (2. bölümü geçmiş olan 3.'ye geçer), kimse geriye düşmez.
+
+Bütün oyunu (Kapadokya → holding → Albuquerque → holding hedefleri → Dünya Baronu) oynayan botla ortanca bitiş günleri (60 oyun):
+
+| Oyuncu | Kap. B1 | B2 | B3 | Baron | Abq B1 | B2 | B3 | Baron | Dünya Baronu |
+|---|---|---|---|---|---|---|---|---|---|
+| Usta (tycoon meraklısı) | 8 | 46 | 88 | 123 | 152 | 194 | 219 | 306 | 315 |
+| Pek oyun bilmeyen yetişkin | 29 | 86 | 141 | 173 | 229 | 300 | 328 | 369 | 404 |
+| Çocuk | 54 | 107 | 196 | 250 | 319 | 414 | 440 | 498 | 517 |
+
+Üç bölümlü planda aynı oyuncular 8 / 89 / 124 (usta) ve 29 / 142 / 171 (pek oyun bilmeyen) günlerinde bitiriyordu.
 
 Kuruluş Ekim 2026'da (prototip v90) "5 balon, 4,0★, kasada 20.000" yerine "2 balon, ilk pilot, 4,3★" oldu: 4,0★ ilk gün kendiliğinden tamamlanıyordu, 5 balon da bölümü 52–66. güne uzatıyordu. Aynı botla Kuruluş artık 17–33. günde (çoğunlukla 18–20) biter, 4,3★ 8. gün civarında gelir. Albuquerque'de bölge 4,0★ ile sıfırdan başladığı için Yeni Dünya da aynı sorunu taşıyordu (4,0★ ilk gün, 5 balon 54–65. gün); v92'de, oyuncu buraya tecrübeli geldiği için Kapadokya'dan daha zorlu oldu: "4 balon, 3 pilot, 4,6★, 2 otel anlaşması, rehber, direk Sv. 3". Bot onu 57–66. günde bitirir; hedefler zamana yayılır: oteller ve rehber 8. gün, 4,6★ 10–13., direk Sv. 3 34–44., balonlar ve pilotlar 57–66. gün. Baron bölümündeki "bir binayı 3. seviyeye çıkar" hedefi, Yeni Dünya'daki direk Sv. 3 ile kendiliğinden tamamlanmasın diye "hangar Sv. 3" oldu. Bot üç bölümü 57–66 / 99–108 / 136–210. günlerde bitirir. Eski simülasyon (`tools/sim-chapters.js`, 8 tohum, yeni açılış günleriyle): Kuruluş 52–64. gün, Büyüme 94–113. gün, Baron 125–188. gün. Yükseltme hedefleri olmadan 48–59 / 85–108 / 103–189; yükseltmeler kendini ödediği için fark küçük.
 

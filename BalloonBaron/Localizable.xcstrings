@@ -6643,6 +6643,88 @@
         }
       }
     },
+    "chapter.boxWind": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Box"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Box"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La Caja"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ボックスの風"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "박스 바람"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kutu Rüzgârı"
+          }
+        }
+      }
+    },
+    "chapter.boxWind.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Pilotenclub Albuquerque ernannte dich zum Meister der Box"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Albuquerque Pilots' Club named you master of the box"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Club de Pilotos de Albuquerque te nombró maestro de la caja"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アルバカーキ・パイロットクラブが君をボックスの達人と認めた"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앨버커키 조종사 클럽이 당신을 박스의 달인으로 인정했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti"
+          }
+        }
+      }
+    },
     "chapter.fiesta": {
       "extractionState": "manual",
       "localizations": {
@@ -6967,6 +7049,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti"
+          }
+        }
+      }
+    },
+    "chapter.rising": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aufstieg"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rising"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ascenso"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "躍進"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "도약"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yükseliş"
+          }
+        }
+      }
+    },
+    "chapter.rising.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Gemeinde Göreme kürte dich zur am schnellsten wachsenden Firma im Tal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Göreme Municipality named you the fastest-growing company in the valley"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Ayuntamiento de Göreme te nombró la empresa de más rápido crecimiento del valle"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ギョレメ市が君を谷で最も急成長した会社に選んだ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "괴레메 시가 당신을 계곡에서 가장 빠르게 성장한 회사로 선정했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Göreme Belediyesi seni vadinin en hızlı büyüyen şirketi seçti"
           }
         }
       }

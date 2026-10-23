@@ -891,7 +891,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 let S = null;
 function newState() {
   const s = {
-    day: 1, cash: 3000, rep: 1, price: 170, strikes: 0, banUntil: 0, selfFly: true, nextId: 1, lastSelfFly: 1,
+    day: 1, ch4: 1, cash: 3000, rep: 1, price: 170, strikes: 0, banUntil: 0, selfFly: true, nextId: 1, lastSelfFly: 1,
     company: '', colors: PALETTES[0],
     ins: { hull: true, pax: true }, balloons: [], pilots: [], candidates: [], loans: [], demandBase: 165,
     rivals: [
@@ -929,6 +929,13 @@ function migrate(s) {
   if (!s.barons) s.barons = s.baron ? { cap: s.baron.cap } : {};
   if (!s.designs) s.designs = [];
   if (s.holding == null) s.holding = 0;
+  /* four chapters per region: saves from the three-chapter plan skip ahead past the new second chapter's slot */
+  if (!s.ch4) {
+    const shift = c => c != null && c >= 2 ? c + 1 : c;
+    s.chapter = shift(s.chapter); for (const id in s.regions) s.regions[id].chapter = shift(s.regions[id].chapter);
+    if (s.chapterNews != null && s.chapterNews >= 1) s.chapterNews++;
+    s.ch4 = 1;
+  }
   if (s.hold && s.hold.hq) { s.hold.offices = { [s.hold.hq]: s.day }; delete s.hold.hq; }
   for (const id in s.regions) { if (s.regions[id].cash == null) { s.regions[id].cash = 0; s.regions[id].loans = []; } }
   return s;
@@ -1521,7 +1528,8 @@ function showMerge() {
 /* ---------- chapters ---------- */
 const CHAPTERS = [
   { name: 'Kuruluş', reward: 5000, award: 'Kapadokya Turizm Derneği seni yılın genç girişimcisi seçti', awardShort: 'Kapadokya Turizm Derneği ödülü', goals: [['balloons', 2, 'İkinci balonunu al'], ['pilots', 1, 'İlk pilotunu işe al'], ['stars', 4.3, '4,3★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Büyüme', reward: 20000, award: 'Türkiye Turizm Ödülleri\'nde Yılın Balon Şirketi seçildin', awardShort: 'Türkiye Turizm Ödülleri', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['influ', 1, 'Bir influencer kampanyası yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['share', .5, 'Pazarın %50\'si'], ['workshop', 1, 'Balon atölyesi kur'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Yükseliş', reward: 10000, award: 'Göreme Belediyesi seni vadinin en hızlı büyüyen şirketi seçti', awardShort: 'Göreme Belediyesi ödülü', goals: [['balloons', 5, '5 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Büyüme', reward: 20000, award: 'Türkiye Turizm Ödülleri\'nde Yılın Balon Şirketi seçildin', awardShort: 'Türkiye Turizm Ödülleri', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['share', .5, 'Pazarın %50\'si'], ['workshop', 1, 'Balon atölyesi kur']] },
   { name: 'Kapadokya Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'İmza balonun gökyüzünde: Kapadokya Yıldızı'], ['bldTop', 3, 'Bir binayı 3. seviyeye çıkar']] }
 ];
 const BARON_SHARE = .7, BARON_STARS = 4.8;
@@ -3440,8 +3448,9 @@ const ENTRANTS_ABQ = [
 ];
 const regionEntrants = () => S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
 const CHAPTERS_ABQ = [
-  { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['balloons', 4, '4 balonluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3']] },
-  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['influ', 1, 'Bir influencer kampanyası yap'], ['share', .5, 'Pazarın %50\'si'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['balloons', 3, '3 balonluk filo'], ['pilots', 2, '2 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
+  { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['balloons', 7, '7 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['balloons', 12, '12 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'İmza balonun gökyüzünde: Fiesta Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 const chap = () => S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;

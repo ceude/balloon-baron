@@ -28,14 +28,15 @@ public struct Chapter: Equatable, Sendable {
         case .cap:
             return [
                 Chapter(id: "founding", reward: 5000, goals: [g(.balloons, 2), g(.pilots, 1), g(.stars, 4.3), g(.hotelDeal, 1), g(.bldMast, 2)]),
-                Chapter(id: "growth", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.influencer, 1), g(.guide, 1), g(.share, 0.5), g(.workshop, 1),
-                                                             g(.bldHangar, 2)]),
+                Chapter(id: "rising", reward: 10000, goals: [g(.balloons, 5), g(.influencer, 1), g(.guide, 1), g(.bldHangar, 2)]),
+                Chapter(id: "growth", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.share, 0.5), g(.workshop, 1)]),
                 Chapter(id: "baron", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldTop, 3)])
             ]
         case .abq:
             return [
-                Chapter(id: "newWorld", reward: 5000, goals: [g(.balloons, 4), g(.pilots, 3), g(.stars, 4.6), g(.hotelDeal, 2), g(.guide, 1), g(.bldMast, 3)]),
-                Chapter(id: "fiesta", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.fiesta, 1), g(.influencer, 1), g(.share, 0.5), g(.bldHangar, 2)]),
+                Chapter(id: "newWorld", reward: 5000, goals: [g(.balloons, 3), g(.pilots, 2), g(.stars, 4.6), g(.hotelDeal, 2), g(.guide, 1), g(.bldMast, 2)]),
+                Chapter(id: "boxWind", reward: 10000, goals: [g(.balloons, 7), g(.influencer, 1), g(.stars, 4.7), g(.bldMast, 3), g(.bldHangar, 2)]),
+                Chapter(id: "fiesta", reward: 20000, goals: [g(.balloons, 12), g(.hotelOwn, 1), g(.fiesta, 1), g(.share, 0.5)]),
                 Chapter(id: "baronAbq", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
             ]
         }
@@ -94,5 +95,18 @@ extension Game {
         }
         state.cash += c.reward
         return c.reward
+    }
+}
+
+extension GameState {
+    /// Brings an older save up to date. Version 3 had three chapters per region; a new second chapter was added,
+    /// so anyone past it skips ahead and nobody falls back.
+    mutating func migrate() {
+        guard version < 4 else { return }
+        func shift(_ c: Int) -> Int { c >= 2 ? c + 1 : c }
+        local.chapter = shift(local.chapter)
+        for id in parked.keys { if let c = parked[id]?.state.chapter { parked[id]?.state.chapter = shift(c) } }
+        if let n = chapterNews, n.index >= 1 { chapterNews?.index = n.index + 1 }
+        version = 4
     }
 }

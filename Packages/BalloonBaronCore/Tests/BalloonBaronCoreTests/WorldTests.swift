@@ -22,7 +22,7 @@ final class WorldTests: XCTestCase {
     /// A game that has just become Cappadocia's baron.
     func baronGame() -> Game {
         var g = newGame()
-        g.state.chapter = 3
+        g.state.chapter = 4
         g.state.barons[.cap] = 1
         g.state.local.netHistory = [2000, 2200, 2400]
         return g
@@ -101,12 +101,12 @@ final class WorldTests: XCTestCase {
         XCTAssertEqual(r.ledger.chapterReward, 5000)
         XCTAssertTrue(r.events.contains(.chapterDone("founding", reward: 5000)))
         XCTAssertEqual(g.state.chapterNews, ChapterNews(region: .cap, index: 0))
-        XCTAssertEqual(g.state.currentChapter?.id, "growth")
+        XCTAssertEqual(g.state.currentChapter?.id, "rising")
     }
 
     func testBaronOpensTheHolding() {
         var g = newGame()
-        g.state.chapter = 2
+        g.state.chapter = 3
         g.state.cash = 900000
         g.state.rep = 1.4
         g.state.school = true
@@ -294,6 +294,25 @@ final class WorldTests: XCTestCase {
         XCTAssertEqual(back, g.state)
     }
 
+    /// A save from the three-chapter plan keeps its place: past the founding chapter it skips the new second one.
+    func testThreeChapterSavesShiftAhead() throws {
+        var g = baronGame()
+        g.state.holding.cash = 150000
+        XCTAssertTrue(g.enterRegion(.abq))
+        g.state.local.chapter = 2
+        g.state.parked[.cap]?.state.chapter = 3
+        g.state.chapterNews = ChapterNews(region: .abq, index: 1)
+        g.state.version = 3
+        let old = try JSONDecoder().decode(GameState.self, from: JSONEncoder().encode(g.state))
+        let s = Game(state: old).state
+        XCTAssertEqual(s.version, 4)
+        XCTAssertEqual(s.local.chapter, 3)
+        XCTAssertEqual(s.currentChapter?.id, "baronAbq")
+        XCTAssertEqual(s.parked[.cap]?.state.chapter, 4)
+        XCTAssertEqual(s.chapterNews, ChapterNews(region: .abq, index: 2))
+        XCTAssertEqual(Game(state: s).state, s, "a current save is left alone")
+    }
+
     /// A goal-driven player becomes Cappadocia's baron within a reasonable time.
     func testChaptersAreReachable() {
         var reached = 0
@@ -305,7 +324,7 @@ final class WorldTests: XCTestCase {
                 g.state.mergeNews = nil
                 let s = g.state
                 if s.winter == nil {
-                    if s.balloons.count < (s.chapter >= 2 && s.shareNow < 0.7 ? 22 : 14) && s.cash > 70000 { g.buyBalloon(.M) } else if s.balloons.count < 5 && s.cash > 22000 { g.buyBalloon(.S) }
+                    if s.balloons.count < (s.chapter >= 3 && s.shareNow < 0.7 ? 22 : 14) && s.cash > 70000 { g.buyBalloon(.M) } else if s.balloons.count < 5 && s.cash > 22000 { g.buyBalloon(.S) }
                 }
                 while g.state.balloons.contains(where: { g.state.status($0) == .noPilot }), let c = g.state.candidates.first { g.hire(c.id) }
                 if s.balloons.count >= 4 { for h in Hotel.allCases where !g.state.hotelActive(h) { g.signHotel(h) } }
@@ -314,13 +333,13 @@ final class WorldTests: XCTestCase {
                     if s.cash > 150000 { g.buildWorkshop() }
                     for h in Hotel.allCases where g.state.cash > h.buyPrice + 30000 { g.buyHotel(h) }
                 }
-                if s.chapter >= 2 {
+                if s.chapter >= 3 {
                     if !s.school && s.cash > 90000 { g.buildSchool() }
                     if s.cash > 200000 { g.buyBalloon(.XL) }
                 }
-                // Each chapter asks for a building: the mast, then the hangar, then one at the top level.
+                // The chapters ask for buildings: the mast, then the hangar, then one at the top level.
                 let want: Building? = g.state.level(.mast) < 2 ? .mast : s.chapter >= 1 && g.state.level(.hangar) < 2 ? .hangar
-                    : s.chapter >= 2 && g.state.topBuildingLevel < 3 ? .hangar : nil
+                    : s.chapter >= 3 && g.state.topBuildingLevel < 3 ? .hangar : nil
                 if let b = want, let c = b.upgradeCost(from: g.state.level(b)), g.state.cash > c + 20000 { g.upgrade(b) }
                 if let o = g.state.poach { g.answerPoach(match: o.wage <= 400) }
                 for b in g.state.balloons where g.state.condition(b) <= 0 { g.renewEnvelope(b.id) }

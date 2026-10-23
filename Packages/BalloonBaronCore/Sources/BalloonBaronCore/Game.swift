@@ -13,6 +13,7 @@ public struct Game: Sendable {
     public init(state: GameState, seed: UInt64 = .random(in: 0...UInt64.max)) {
         self.state = state
         rng = SplitMix64(seed: seed)
+        self.state.migrate()
     }
 
     // MARK: Day start

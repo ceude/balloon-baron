@@ -190,8 +190,8 @@ public struct DayPlan: Codable, Equatable, Sendable {
 @dynamicMemberLookup
 public struct GameState: Codable, Equatable, Sendable {
     /// 2: per-region state and the holding. 3: buildings, morning events, the paper, store, postcards.
-    /// Fields added in 3 are optional so a version 2 save still loads.
-    public static let currentVersion = 3
+    /// Fields added in 3 are optional so a version 2 save still loads. 4: four chapters per region (`migrate`).
+    public static let currentVersion = 4
     public var version = GameState.currentVersion
 
     public var day = 1

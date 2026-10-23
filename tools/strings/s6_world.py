@@ -54,9 +54,11 @@ add("event.rivalsMerged",
 
 # Chapters
 add("chapter.founding", "Founding", "Kuruluş", "Gründung", "Fundación", "創業", "창업")
+add("chapter.rising", "Rising", "Yükseliş", "Aufstieg", "Ascenso", "躍進", "도약")
 add("chapter.growth", "Growth", "Büyüme", "Wachstum", "Crecimiento", "成長", "성장")
 add("chapter.baron", "Baron of Cappadocia", "Kapadokya Baronu", "Baron von Kappadokien", "Barón de Capadocia", "カッパドキアの男爵", "카파도키아의 남작")
 add("chapter.newWorld", "New World", "Yeni Dünya", "Neue Welt", "Nuevo Mundo", "新世界", "신세계")
+add("chapter.boxWind", "The Box", "Kutu Rüzgârı", "Die Box", "La Caja", "ボックスの風", "박스 바람")
 add("chapter.fiesta", "Fiesta", "Fiesta", "Fiesta", "Fiesta", "フィエスタ", "피에스타")
 add("chapter.baronAbq", "Baron of Albuquerque", "Albuquerque Baronu", "Baron von Albuquerque", "Barón de Albuquerque", "アルバカーキの男爵", "앨버커키의 남작")
 add("chapter.founding.award",
@@ -66,6 +68,13 @@ add("chapter.founding.award",
  "La Asociación de Turismo de Capadocia te nombró joven emprendedor del año",
  "カッパドキア観光協会が君を年間最優秀若手起業家に選んだ",
  "카파도키아 관광협회가 당신을 올해의 청년 기업가로 선정했습니다")
+add("chapter.rising.award",
+ "The Göreme Municipality named you the fastest-growing company in the valley",
+ "Göreme Belediyesi seni vadinin en hızlı büyüyen şirketi seçti",
+ "Die Gemeinde Göreme kürte dich zur am schnellsten wachsenden Firma im Tal",
+ "El Ayuntamiento de Göreme te nombró la empresa de más rápido crecimiento del valle",
+ "ギョレメ市が君を谷で最も急成長した会社に選んだ",
+ "괴레메 시가 당신을 계곡에서 가장 빠르게 성장한 회사로 선정했습니다")
 add("chapter.growth.award",
  "You were named Balloon Company of the Year at the Türkiye Tourism Awards",
  "Türkiye Turizm Ödülleri'nde Yılın Balon Şirketi seçildin",
@@ -80,6 +89,13 @@ add("chapter.newWorld.award",
  "La Cámara de Comercio de Albuquerque te nombró Nueva Empresa del Año",
  "アルバカーキ商工会議所が君を年間最優秀新企業に選んだ",
  "앨버커키 상공회의소가 당신을 올해의 신생 기업으로 선정했습니다")
+add("chapter.boxWind.award",
+ "The Albuquerque Pilots' Club named you master of the box",
+ "Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti",
+ "Der Pilotenclub Albuquerque ernannte dich zum Meister der Box",
+ "El Club de Pilotos de Albuquerque te nombró maestro de la caja",
+ "アルバカーキ・パイロットクラブが君をボックスの達人と認めた",
+ "앨버커키 조종사 클럽이 당신을 박스의 달인으로 인정했습니다")
 add("chapter.fiesta.award",
  "The Balloon Fiesta jury named you Star of the Fiesta",
  "Balloon Fiesta jürisi seni Fiesta'nın Yıldızı seçti",
