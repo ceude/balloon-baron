@@ -49,5 +49,7 @@ jobs:
             grep -E "BUILD (SUCCEEDED|FAILED)" build.log
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
+          # Errors also as annotations, readable through the API when logs can't be downloaded.
+          grep -E "^/.*error: " build.log | sed 's|.*/BalloonBaron/||' | sort -u | head -n 40 | while IFS= read -r l; do echo "::error::$l"; done
           tail -n 40 build.log
           exit $status
