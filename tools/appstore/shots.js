@@ -72,11 +72,6 @@ const only = process.argv[2];
     await load("S.barons = { cap: 160 }; S.holding = 486000; S.chapter = 4; S.hold = Object.assign({}, S.hold || {}, { hist: Array.from({ length: 14 }, (_, i) => ({ d: 88 + i, inc: 9000 + i * 900 + (i % 3) * 1500, exp: 4000 + (i % 4) * 700 })) });");
     await p.evaluate(() => openHQ()); await p.waitForTimeout(2600); await shot('holding');
   }
-  if (!only || only === 'abq') {
-    // Albuquerque during the Fiesta, a few weeks in: a desert town with a fleet of its own.
-    await load("S.barons = { cap: 160 }; S.chapter = 4; S.holding = 600000; enterRegion('abq'); S.cash = 250000; ['M','M','L','M','L','S','M'].forEach(z => addBalloon(z)); for (let i = 0; i < 7; i++) if (S.candidates.length) { S.pilots.push(S.candidates.shift()); } S.rep = 1.25; S.chapter = 1; S.bld = Object.assign({}, S.bld, { mast: 2, hangar: 2 }); S.fiesta = { start: S.day, end: S.day + 3 }; S.hezQ = []; S.nextEvent = 99999; S.eventDue = false; S.paper = null; assignPilots();");
-    await p.waitForTimeout(1500); await shot('abq');
-  }
   console.log('errors', errs);
   await br.close();
 })();

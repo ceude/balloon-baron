@@ -26,13 +26,14 @@ const cv = document.getElementById('c'), ctx = cv.getContext('2d');
 const q = new URLSearchParams(location.search), lang = q.get('lang') || 'tr', raw = q.get('raw');
 
 /* In App Store order: the first three show in search results, so they carry the hook (build an empire, fly it
-   yourself, grow it into a holding); then going global, the night, and the rest. */
+   yourself, grow it into a holding); then going global, the night, and the rest. The going-global phone shows
+   render.html's Cappadocia-to-America picture, a dream of the journey rather than a game screen. */
 const T = {
   tr: [
     ['home', 'SICAK HAVA BALONU İMPARATORLUĞU', ['KAPADOKYA’DA BALON', 'İMPARATORLUĞU KUR'], 'Kasabanı büyüt, gökyüzünü balonlarınla doldur'],
     ['flight', 'GERÇEK UÇUŞ, GERÇEK RİSK', ['BRÜLÖRÜ YAK,', 'RÜZGÂRI OKU'], 'Doğru rüzgâr katmanını bul, kusursuz in'],
     ['holding', 'HOLDİNG PATRONU', ['BİR SEPETTEN', 'HOLDİNGE'], 'New York, İstanbul, Tokyo, Seul: ofislerini aç'],
-    ['abq', 'GLOBAL OL', ['AMERİKA’DA UÇ,', 'GLOBALE AÇIL'], 'Kapadokya’dan Albuquerque’ye, Balloon Fiesta seni bekliyor'],
+    ['abq-flight', 'GLOBAL OL', ['AMERİKA’DA UÇ,', 'GLOBALE AÇIL'], 'Kapadokya’dan Albuquerque’ye, Balloon Fiesta seni bekliyor', 520],
     ['night', 'GECE OLUNCA', ['KASABAN', 'IŞIL IŞIL'], 'Havai fişekler, fener alayı, ateş böcekleri'],
     ['design', 'TASARIM STÜDYOSU', ['BALONUNU', 'TASARLA'], 'Desenler, renkler, kalp ve yıldız balonlar'],
     ['collect', 'SABAH TELAŞI', ['YOLCULARINI', 'TOPLA'], 'Ofisinin önünde sıra, safari cipleri yolda'],
@@ -68,12 +69,14 @@ function big(b) {
     pattern: b.pattern, pc: b.pc, detail: true });
 }
 
-function phone(i, img) {
+/* `cut` (the fifth caption field) drops that much empty sky off the picture's top, filling the screen from there. */
+function phone(i, img, cut = 0) {
   const x = phoneX(i), bez = 20, rad = 118;
   ctx.save(); ctx.shadowColor = 'rgba(10,4,24,.6)'; ctx.shadowBlur = 80; ctx.shadowOffsetY = 34;
   ctx.fillStyle = '#100d22'; rrect(x - bez, PY - bez, SW + bez * 2, SH + bez * 2, rad + bez); ctx.fill(); ctx.restore();
   ctx.strokeStyle = '#463e6e'; ctx.lineWidth = 3; rrect(x - bez + 3, PY - bez + 3, SW + bez * 2 - 6, SH + bez * 2 - 6, rad + bez - 3); ctx.stroke();
-  ctx.save(); rrect(x, PY, SW, SH, rad); ctx.clip(); ctx.drawImage(img, x, PY, SW, SH); ctx.restore();
+  const sh = img.height - cut, sw = Math.min(img.width, sh * SW / SH);
+  ctx.save(); rrect(x, PY, SW, SH, rad); ctx.clip(); ctx.drawImage(img, (img.width - sw) / 2, cut, sw, sh, x, PY, SW, SH); ctx.restore();
 }
 
 function caption(i) {
@@ -105,7 +108,7 @@ Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px 
     haze(H * .9, H, '#120814', 0, .9);
     BIG.filter(b => !b.front).forEach(big);
     grain(8); // before the game screens go on (they taint the canvas for reading)
-    imgs.forEach((im, i) => phone(i, im));
+    imgs.forEach((im, i) => phone(i, im, T[i][4]));
     BIG.filter(b => b.front).forEach(big);
     T.forEach((_, i) => caption(i));
     document.title = 'done';

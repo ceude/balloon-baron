@@ -12,6 +12,10 @@ const fs = require('fs');
   const p = await b.newPage({ viewport: { width: 1290, height: 2796 } });
   const errs = [];
   p.on('pageerror', e => errs.push(e.message));
+  // The going-global phone: render.html's Cappadocia-to-Albuquerque picture without its text.
+  await p.goto('file://' + path.join(__dirname, 'render.html') + `?s=5&lang=${lang}&bare`);
+  await p.waitForFunction(() => document.title === 'done', null, { timeout: 60000 });
+  await p.locator('#c').screenshot({ path: path.join(raw, 'raw-abq-flight.png') });
   await p.goto('file://' + path.join(__dirname, 'panorama.html') + `?lang=${lang}&raw=${encodeURIComponent('file://' + raw)}`);
   await p.waitForFunction(() => document.title === 'done' || document.title.startsWith('error'), null, { timeout: 180000 });
   const title = await p.title();
