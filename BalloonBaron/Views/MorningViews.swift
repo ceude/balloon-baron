@@ -572,39 +572,91 @@ struct PostcardView: View {
     }
 }
 
-/// The album of postcards, from the menu. Port of `showAlbum`.
+/// The album of postcards, from the menu. Port of `showAlbum`. A tapped postcard grows into its own card, with the
+/// share button right under it.
 struct AlbumView: View {
     @Environment(GameStore.self) private var store
-    @State private var hint = ""
-    /// The earned postcard tapped last, which can be shared.
-    @State private var picked: Achievement?
+    /// The postcard opened large.
+    @State private var zoom: Achievement?
 
     var body: some View {
         let s = store.state
         let got = s?.achievements ?? [:]
-        return ModalCard(onClose: { store.showAlbum = false }) {
-            CardText.title(loc("album.title"))
-            CardText.hint(loc("album.count", num(got.count), num(Achievement.allCases.count)))
-            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                ForEach(Achievement.allCases, id: \.self) { a in
-                    Button {
-                        hint = got[a].map { loc("album.earned", a.title, a.detail, num($0)) } ?? loc("album.lockedHint", a.title, a.detail)
-                        picked = got[a] != nil ? a : nil
-                    } label: {
-                        PostcardArt(achievement: a, day: got[a], colors: s?.colors ?? [])
+        return ZStack {
+            ModalCard(onClose: { store.showAlbum = false }) {
+                CardText.title(loc("album.title"))
+                CardText.hint(loc("album.count", num(got.count), num(Achievement.allCases.count)))
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                    ForEach(Achievement.allCases, id: \.self) { a in
+                        Button {
+                            SoundEngine.shared.play(.click)
+                            withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { zoom = a }
+                        } label: {
+                            PostcardArt(achievement: a, day: got[a], colors: s?.colors ?? [])
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
+                Button {
+                    SoundEngine.shared.play(.click)
+                    store.showAlbum = false
+                } label: {
+                    Text(loc("world.close")).frame(maxWidth: .infinity)
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .ghost))
             }
-            if !hint.isEmpty { CardText.hint(hint) }
-            if let picked { ShareCardButton(achievement: picked, big: true) }
-            Button {
-                SoundEngine.shared.play(.click)
-                store.showAlbum = false
-            } label: {
-                Text(loc("world.close")).frame(maxWidth: .infinity)
+            if let a = zoom {
+                PostcardZoom(achievement: a, day: got[a], colors: s?.colors ?? []) {
+                    withAnimation(.easeOut(duration: 0.2)) { zoom = nil }
+                }
+                .transition(.scale(scale: 0.5).combined(with: .opacity))
+                .zIndex(1)
             }
-            .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+        }
+    }
+}
+
+/// One postcard, large: the picture, what it's for, and for an earned one the share button.
+private struct PostcardZoom: View {
+    let achievement: Achievement
+    let day: Int?
+    let colors: [String]
+    let close: () -> Void
+
+    var body: some View {
+        ZStack {
+            Color(red: 27 / 255, green: 24 / 255, blue: 64 / 255).opacity(0.6)
+                .ignoresSafeArea()
+                .contentShape(Rectangle())
+                .onTapGesture(perform: close)
+            VStack(spacing: 14) {
+                PostcardArt(achievement: achievement, day: day, colors: colors)
+                    .frame(maxWidth: 360)
+                    .rotationEffect(.degrees(day == nil ? 0 : -1.5))
+                    .shadow(color: .black.opacity(0.3), radius: 16, y: 10)
+                    .accessibilityHidden(true)
+                CardText.title(achievement.title).frame(maxWidth: .infinity)
+                CardText.lead(day.map { loc("album.earned", achievement.title, achievement.detail, num($0)) }
+                              ?? loc("album.lockedHint", achievement.title, achievement.detail))
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+                if day != nil { ShareCardButton(achievement: achievement, big: true) }
+                Button {
+                    SoundEngine.shared.play(.click)
+                    close()
+                } label: {
+                    Text(loc("world.close")).frame(maxWidth: .infinity)
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+            }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 22)
+            .frame(maxWidth: 440)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 24))
+            .overlay(alignment: .topTrailing) { CardCloseX(action: close) }
+            .compositingGroup()
+            .shadow(color: .black.opacity(0.35), radius: 25, y: 20)
+            .padding(16)
         }
     }
 }

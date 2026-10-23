@@ -180,11 +180,18 @@ extension Game {
     /// Parks the current region on autopilot and takes over `r`.
     public mutating func switchRegion(_ r: RegionID) {
         guard r != state.region else { return }
-        let cur = state.local, from = state.region
-        state.parked[from] = ParkedRegion(state: cur, auto: makeAutopilot(cur, region: from))
+        var cur = state.local
+        let from = state.region
+        var auto = makeAutopilot(cur, region: from)
+        // An undecided problem stays with its region: it waits on autopilot and comes back when you do.
+        auto.issue = cur.openIssue
+        cur.openIssue = nil
+        state.parked[from] = ParkedRegion(state: cur, auto: auto)
         var next: RegionState
         if let p = state.parked.removeValue(forKey: r) {
             next = p.state
+            next.openIssue = p.auto.issue
+            next.issueSeen = nil
         } else {
             next = newRegionState(r)
             state.nextID += 1
@@ -247,9 +254,31 @@ extension Game {
         return g - cost + extra
     }
 
-    /// Answer a parked region's problem. Paying comes out of the holding.
+    /// What a choice costs the holding up front, for a parked region or the one you're in.
+    public func issueCost(in r: RegionID, choice: Issue.Choice) -> Int {
+        if r == state.region {
+            guard let open = state.local.openIssue else { return 0 }
+            return open.kind.cost(choice, base: makeAutopilot(state.local, region: r).base)
+        }
+        guard let p = state.parked[r], let open = p.auto.issue else { return 0 }
+        return open.kind.cost(choice, base: p.auto.base)
+    }
+
+    /// The problem waiting in the region you're in, if any.
+    public var liveIssue: Issue? { state.local.openIssue?.kind }
+
+    /// True once a day while a problem waits in the region you're in: its card opens by itself.
+    public mutating func liveIssueCardDue() -> Bool {
+        guard state.local.openIssue != nil, state.local.issueSeen != state.day else { return false }
+        state.local.issueSeen = state.day
+        return true
+    }
+
+    /// Answer a parked region's problem. Paying comes out of the holding. In the region you're in, the choice
+    /// plays out on the spot: wages, a three-day strike, ticket price, popularity, a hotel or the envelopes.
     @discardableResult
     public mutating func resolveIssue(in r: RegionID, choice: Issue.Choice) -> Bool {
+        if r == state.region { return resolveLiveIssue(choice) }
         guard var p = state.parked[r], let open = p.auto.issue else { return false }
         let cost = open.kind.cost(choice, base: p.auto.base)
         if cost > 0 && !spendHolding(cost) { return false }
@@ -270,6 +299,34 @@ extension Game {
         p.auto.issue = nil
         state.parked[r] = p
         if goThere { switchRegion(r) }
+        return true
+    }
+
+    mutating func resolveLiveIssue(_ choice: Issue.Choice) -> Bool {
+        guard let open = state.local.openIssue else { return false }
+        let cost = issueCost(in: state.region, choice: choice)
+        if cost > 0 && !spendHolding(cost) { return false }
+        let d = state.day
+        switch (open.kind, choice) {
+        case (.raise, .a):
+            for i in state.pilots.indices { state.pilots[i].customWage = raisedWage(state.pilots[i]) }
+        case (.raise, .b):
+            state.strikeUntil = d + 2
+            state.selfFly = true
+            assignPilots()
+        case (.war, .a):
+            if let low = state.rivals.filter(\.alive).map(\.price).min() { state.price = min(state.price, low) }
+        case (.war, .b):
+            if rng.chance(0.5) { state.rep = max(0.4, state.rep - 0.08) }
+        case (.accident, .a): state.rep = max(0.4, state.rep - 0.05)
+        case (.accident, .b): state.rep = max(0.4, state.rep - 0.1)
+        case (.hotel, .a): break
+        case (.hotel, .b): if !state.hotelDeals.isEmpty { state.hotelDeals.removeLast() }
+        case (.envelope, .a):
+            for i in state.balloons.indices where state.condition(state.balloons[i]) < 0.3 { state.balloons[i].flights = 0 }
+        case (.envelope, .b): break
+        }
+        state.local.openIssue = nil
         return true
     }
 }

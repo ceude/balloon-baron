@@ -86,12 +86,18 @@ struct HoldingView: View {
     /// Desk 6: a brand pays the holding to fly its product-shaped balloon over this region; tourists like you a little less.
     private func shapeCard(_ k: AdShape, _ s: GameState) -> some View {
         let a = s.holding.adShape, running = a.map { $0.until >= s.day } ?? false, now = running && a?.shape == k
+        let fee = store.game?.adBreakFee ?? 0
         let chips = [loc("holding.chip.perDay", eurH(k.pay)), loc("holding.chip.days", num(k.days)),
                      loc("holding.chip.repDay", (k.repLoss * 4).formatted(.number.precision(.fractionLength(3))) + "★")]
         return HoldingDealCard(art: .shape(k), kicker: loc("holding.shape.kicker"), title: k.title, detail: loc("holding.shape.desc"),
                                chips: chips, price: k.pay * k.days, cta: loc("holding.shape.cta"),
                                enabled: !running, lockNote: running && !now ? loc("holding.shape.oneAtATime") : nil,
+                               priceNote: loc("holding.shape.terms", eurH(k.pay), num(k.days)),
                                active: now ? loc("holding.shape.active", (a?.region ?? s.region).title, num((a?.until ?? s.day) - s.day)) : nil,
+                               breakTitle: now ? loc("holding.shape.break", eurH(fee)) : nil,
+                               breakNote: now ? loc("holding.shape.breakNote") : nil,
+                               breakEnabled: s.holding.cash >= fee,
+                               breakAction: now ? { store.act { g in _ = g.breakAdShape() } } : nil,
                                action: { store.act { g in _ = g.signAdShape(k) } })
     }
 
@@ -643,9 +649,17 @@ struct HoldingDealCard: View {
     var cta = ""
     var enabled = true
     var lockNote: String?
+    /// How the price adds up ("€4,000 a day × 30 days"), under the price.
+    var priceNote: String?
     /// Status line of a running deal; replaces the price and button.
     var active: String?
+    /// A running deal you can break: the button's title, its explanation, and what it costs.
+    var breakTitle: String?
+    var breakNote: String?
+    var breakEnabled = true
+    var breakAction: (() -> Void)?
     let action: () -> Void
+    @State private var confirmBreak = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -706,13 +720,47 @@ struct HoldingDealCard: View {
                 Text(active)
                     .font(Theme.font(14, .heavy))
                     .foregroundStyle(Theme.green)
+                if let breakTitle, let breakAction {
+                    Button { confirmBreak = true } label: {
+                        Text(breakTitle)
+                            .font(Theme.font(14, .heavy))
+                            .foregroundStyle(Theme.red)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .overlay(RoundedRectangle(cornerRadius: 12).stroke(Theme.red.opacity(0.5), lineWidth: 1.5))
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(!breakEnabled)
+                    .opacity(breakEnabled ? 1 : 0.45)
+                    .confirmationDialog(breakTitle, isPresented: $confirmBreak, titleVisibility: .visible) {
+                        Button(loc("holding.shape.breakYes"), role: .destructive, action: breakAction)
+                        Button(loc("holding.shape.breakNo"), role: .cancel) {}
+                    } message: {
+                        Text(breakNote ?? "")
+                    }
+                    if let breakNote {
+                        Text(breakNote)
+                            .font(Theme.font(12))
+                            .foregroundStyle(HoldingLux.sub)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
             } else if let price {
                 HStack(spacing: 10) {
-                    Text(eurH(price))
-                        .font(Theme.font(24, .heavy, condensed: true))
-                        .foregroundStyle(HoldingLux.text)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.6)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text(eurH(price))
+                            .font(Theme.font(24, .heavy, condensed: true))
+                            .foregroundStyle(HoldingLux.text)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+                        if let priceNote {
+                            Text(priceNote)
+                                .font(Theme.font(12.5, .semibold))
+                                .foregroundStyle(HoldingLux.sub)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.7)
+                        }
+                    }
                     Spacer(minLength: 4)
                     HoldingPill(title: cta, style: .gold, enabled: enabled, action: action)
                 }

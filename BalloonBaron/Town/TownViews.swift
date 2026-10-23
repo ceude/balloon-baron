@@ -131,7 +131,9 @@ struct HomeTownView: View {
                                 else if model.night { v.hzFix = NightCamera.horizon(v, sz) }
                                 else { v.hzCap = homeHz }
                             }
-                            model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz)
+                            // Pilots asking for a raise wait outside the office until you answer.
+                            model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz,
+                                                            strike: s.local.openIssue?.kind == .raise)
                         }
                     }
                 }

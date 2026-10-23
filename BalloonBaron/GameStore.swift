@@ -145,10 +145,23 @@ final class GameStore {
         guard var g = game else { return }
         let from = g.state.region
         f(&g)
+        let chapterDone = g.finishChapterNow()
         game = g
         if g.state.region != from { travel = Travel(from: from, to: g.state.region) }
         currentRegion = g.state.region
         save()
+        if chapterDone { celebrateChapterSoon() }
+    }
+
+    /// The chapter's goals were just met: the ceremony comes up right away, over an open office page too,
+    /// unless a flight, the report, the night or another card is on screen; then it waits its turn.
+    private func celebrateChapterSoon() {
+        DispatchQueue.main.async { [self] in
+            guard let c = game?.state.chapterNews, chapter == nil, !showIntro, !collecting, flightPax == nil, report == nil,
+                  night == nil, travel == nil, hezarfen == nil, morningEvent == nil, deal == nil, merge == nil, paper == nil else { return }
+            chapter = c
+            act { $0.state.chapterNews = nil }
+        }
     }
 
     /// Shows the next popup in the prototype's order (`nextPopup`): chapter ceremony, merger news, the morning
@@ -180,6 +193,10 @@ final class GameStore {
         } else if !s.hezQueue.isEmpty {
             act { $0.clearRescue() }
             act { hezarfen = $0.nextHezarfen() }
+        } else if g.liveIssue != nil && s.local.issueSeen != s.day {
+            // A problem that waited for you here opens by itself once a day.
+            act { _ = $0.liveIssueCardDue() }
+            issueRegion = s.region
         } else if let p = s.poach {
             // The offer is shown once; it leaves the state so rivals can try again later.
             act { $0.state.poach = nil }

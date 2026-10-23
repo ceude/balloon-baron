@@ -243,6 +243,8 @@ struct CollectView: View {
                 seat(m, i, side: side, radius: small ? 3 : 5)
             }
         }
+        // As tall as its rows (no empty band under a small fleet), at most 180 pt.
+        .fixedSize(horizontal: false, vertical: true)
         .frame(maxHeight: 180, alignment: .top)
         .clipped()
         // The seats are a picture of the count in the header.

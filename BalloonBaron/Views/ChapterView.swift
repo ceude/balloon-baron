@@ -1,7 +1,7 @@
 import SwiftUI
 import BalloonBaronCore
 
-/// Ceremony for a finished chapter, shown the morning after. The last chapter crowns you baron.
+/// Ceremony for a finished chapter, shown as soon as its goals are met. The last chapter crowns you baron.
 struct ChapterView: View {
     @Environment(GameStore.self) private var store
     let news: ChapterNews
@@ -113,10 +113,7 @@ struct ChapterView: View {
     private func upcoming(_ chapters: [Chapter], _ s: GameState) -> some View {
         let next = chapters[news.index + 1]
         return VStack(alignment: .leading, spacing: 12) {
-            tag(loc("goals.chapterOf", news.region.title, num(news.index + 2), num(chapters.count)))
-            Text(next.title)
-                .font(Theme.font(32, .heavy, condensed: true))
-                .foregroundStyle(Theme.ink)
+            ChapterHeading(region: news.region, number: news.index + 2, total: chapters.count, title: next.title)
             ForEach(next.goals.indices, id: \.self) { i in
                 ChapterGoalRow(goal: next.goals[i], state: s)
             }

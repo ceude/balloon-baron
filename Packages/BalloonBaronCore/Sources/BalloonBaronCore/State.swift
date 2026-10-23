@@ -331,7 +331,7 @@ public struct GameState: Codable, Equatable, Sendable {
         if !licenseValid && b.id != local.flagship { return .licenseHold }
         if let c = local.charter, c.day == day, c.balloon == b.id { return .chartered }
         if let l = local.late, l.day == day, b.pilot == l.pilot, !isSelf(b) { return .late }
-        if local.strikeDay == day && !isSelf(b) { return .strike }
+        if (local.strikeDay == day || (local.strikeUntil ?? -1) >= day) && !isSelf(b) { return .strike }
         if !isSelf(b) && b.pilot == nil { return .noPilot }
         return .ok
     }

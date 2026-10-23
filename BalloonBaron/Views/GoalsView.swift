@@ -52,14 +52,7 @@ struct GoalsView: View {
             if s.anyBaron {
                 WorldPillButton(title: loc("goals.mapLink"), style: .light) { store.page = .map }
             }
-            Text(loc("goals.chapterOf", s.region.title, num(s.chapter + 1), num(total)))
-                .font(Theme.font(14, .heavy, condensed: true))
-                .tracking(0.8)
-                .textCase(.uppercase)
-                .foregroundStyle(Theme.coral)
-            Text(c.title)
-                .font(Theme.font(30, .heavy, condensed: true))
-                .foregroundStyle(Theme.ink)
+            ChapterHeading(region: s.region, number: s.chapter + 1, total: total, title: c.title)
             ForEach(c.goals.indices, id: \.self) { i in
                 ChapterGoalRow(goal: c.goals[i], state: s)
             }
@@ -311,5 +304,31 @@ struct CrownIcon: View {
             ctx.fill(dot(48, 28, 3), with: .color(Color(hex: "#3ad0c0")))
         }
         .accessibilityHidden(true)
+    }
+}
+
+/// A chapter's heading, readable at a glance: the region, a big "Chapter 2/4", then the chapter's name.
+struct ChapterHeading: View {
+    let region: RegionID
+    let number: Int
+    let total: Int
+    let title: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(region.title)
+                .font(Theme.font(14, .heavy, condensed: true))
+                .tracking(0.8)
+                .textCase(.uppercase)
+                .foregroundStyle(Theme.ink2)
+            Text(loc("goals.chapterBig", num(number), num(total)))
+                .font(Theme.font(44, .heavy, condensed: true))
+                .foregroundStyle(Theme.coral)
+            Text(title)
+                .font(Theme.font(28, .heavy, condensed: true))
+                .foregroundStyle(Theme.ink)
+        }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isHeader)
     }
 }

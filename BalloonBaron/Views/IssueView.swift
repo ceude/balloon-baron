@@ -1,14 +1,19 @@
 import SwiftUI
 import BalloonBaronCore
 
-/// A parked region's problem: two choices with the region guide's advice, or decide later.
+/// A region's problem: two choices with the region guide's advice, or decide later. A parked region's problem
+/// halves its income until you decide; in the region you're in, the choice plays out on the spot.
 struct IssueView: View {
     @Environment(GameStore.self) private var store
     let region: RegionID
 
+    private var live: Bool { store.state?.region == region }
+
     var body: some View {
         WorldPopup(topBar: Theme.red, onClose: later) {
-            if let auto = store.state?.parked[region]?.auto, let open = auto.issue {
+            if live, let kind = store.game?.liveIssue {
+                content(kind, nil)
+            } else if let auto = store.state?.parked[region]?.auto, let open = auto.issue {
                 content(open.kind, auto)
             }
             BigButton(title: loc("issueSheet.later"), style: .ghost) { later() }
@@ -16,8 +21,8 @@ struct IssueView: View {
     }
 
     @ViewBuilder
-    private func content(_ issue: Issue, _ auto: Autopilot) -> some View {
-        Text(loc("issueSheet.region", region.title))
+    private func content(_ issue: Issue, _ auto: Autopilot?) -> some View {
+        Text(loc(auto == nil ? "issueSheet.here" : "issueSheet.region", region.title))
             .font(Theme.font(14, .heavy, condensed: true))
             .tracking(0.8)
             .textCase(.uppercase)
@@ -25,7 +30,7 @@ struct IssueView: View {
         Text(issue.title)
             .font(Theme.font(28, .heavy, condensed: true))
             .foregroundStyle(Theme.ink)
-        Text(issue.body + " " + loc("issueSheet.halved", eurH(auto.today)))
+        Text(issue.body + " " + (auto.map { loc("issueSheet.halved", eurH($0.today)) } ?? loc("issueSheet.yourCall")))
             .font(Theme.font(16, .medium))
             .foregroundStyle(Theme.ink)
         hezarfenLine(issue)
@@ -44,8 +49,8 @@ struct IssueView: View {
         .background(Color(hex: "#f1edf8"), in: RoundedRectangle(cornerRadius: 14))
     }
 
-    private func option(_ issue: Issue, _ choice: Issue.Choice, _ auto: Autopilot) -> some View {
-        let cost = issue.cost(choice, base: auto.base)
+    private func option(_ issue: Issue, _ choice: Issue.Choice, _ auto: Autopilot?) -> some View {
+        let cost = store.game?.issueCost(in: region, choice: choice) ?? 0
         let affordable = cost == 0 || (store.state?.holding.cash ?? 0) >= cost
         let title = cost > 0 ? "\(issue.option(choice)) (\(eurH(cost)))" : issue.option(choice)
         let isA = choice == .a
@@ -53,7 +58,7 @@ struct IssueView: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(Theme.font(18, .heavy, condensed: true))
-                Text(issue.note(choice))
+                Text(auto == nil ? issue.liveNote(choice) : issue.note(choice))
                     .font(Theme.font(13, .medium))
                     .opacity(0.85)
                     .multilineTextAlignment(.leading)
@@ -72,8 +77,11 @@ struct IssueView: View {
 
     private func decide(_ choice: Issue.Choice) {
         let r = region
+        let wasHere = live
         store.act { g in _ = g.resolveIssue(in: r, choice: choice) }
-        if store.state?.region == r {
+        if wasHere {
+            later()
+        } else if store.state?.region == r {
             // "Go and handle it" moved you into the region: close the pages too.
             store.closePage()
         } else {

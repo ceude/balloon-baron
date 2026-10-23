@@ -43,7 +43,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 /* home: world full screen, glass widgets on top */
 #sheet{position:absolute;inset:0;z-index:5;pointer-events:none}
 #sheet > *{pointer-events:auto}
-.wxw{position:absolute;left:max(12px, env(safe-area-inset-left, 0px));width:204px;padding:10px 12px;border-radius:18px;background:var(--glass);color:#fff;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.wxw{transition:opacity .25s;position:absolute;left:max(12px, env(safe-area-inset-left, 0px));width:204px;padding:10px 12px;border-radius:18px;background:var(--glass);color:#fff;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
 .wxh{display:flex;gap:10px;align-items:center;margin-bottom:6px}
 .flagmini{width:14px;height:22px;border-radius:2px 5px 5px 2px;box-shadow:-3px 0 0 #fff;margin-left:3px}
 .wxt{font-family:var(--cond);font-weight:800;font-size:19px;line-height:1}
@@ -377,6 +377,10 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .merge .stats{grid-template-columns:repeat(3,1fr)}
 .merge .stats div{background:var(--haze)}
 .side .gbadge{position:absolute;top:34px;right:-6px;min-width:26px;height:18px;padding:0 5px;border-radius:9px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:12px;line-height:18px;border:2px solid #fff;text-shadow:none}
+.goals .chead{display:flex;flex-direction:column;gap:2px}
+.goals .chead span{font-family:var(--cond);font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--ink2);text-transform:uppercase}
+.goals .chead b{font-family:var(--cond);font-weight:800;font-size:44px;line-height:1;color:var(--coral)}
+.goals .chead h1{margin:2px 0 0;font-size:28px}
 .goals .chap{font-family:var(--cond);font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--coral);text-transform:uppercase}
 .goal{display:flex;gap:12px;align-items:center;padding:10px 12px;border-radius:14px;background:var(--haze)}
 .goal .gk{width:28px;height:28px;flex:none;border-radius:9px;border:2px solid #cfc6e0;display:grid;place-items:center;font-weight:800;color:#fff}
@@ -426,6 +430,11 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .dcta{padding:10px 16px;border-radius:13px;background:linear-gradient(#ffd25e,#ffb21d);color:#2b1d00;font-family:var(--cond);font-weight:800;font-size:16px;box-shadow:0 3px 0 #b07800}
 .dcta:disabled{opacity:.45}
 .dcta:active{transform:translateY(3px);box-shadow:none}
+.deal .dprice small{display:block;font-family:var(--body);font-size:12.5px;font-weight:600;color:rgba(244,239,255,.7)}
+.deal .dbreak{margin-left:auto;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.08);color:#ffb4a8;font-weight:800;font-size:13px;border:1.5px solid rgba(255,120,100,.4)}
+.deal .dbreak.sure{background:var(--red);color:#fff;border-color:transparent}
+.deal .dbreak:disabled{opacity:.45}
+.deal .dterms{flex-basis:100%;font-size:12px;color:rgba(244,239,255,.6)}
 .deal .dstat{font-weight:800;color:#7ff0ae;font-size:14px}
 .deal .dnote{width:100%;font-size:12px;color:rgba(244,239,255,.6)}
 .offices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
@@ -632,6 +641,18 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .bcard .btns{flex-wrap:wrap}
 .bcard > .item{padding-right:52px}
 .bcard .btns > *{flex:1 1 auto}
+.fmix{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;background:rgba(108,100,136,.09);margin:10px 0}
+.fmix div{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink)}
+.fmix .ic{width:18px;height:23px;flex:none}
+.fmix span{flex:1}
+.fmix b{font-family:var(--cond);font-weight:800;font-size:17px}
+.pzoom{position:fixed;inset:0;z-index:80;display:grid;place-items:center;padding:16px;background:rgba(27,24,64,0);transition:background .22s}
+.pzoom.on{background:rgba(27,24,64,.6)}
+.pzoom .pzc{width:min(440px,100%);box-sizing:border-box;background:#fff;border-radius:24px;padding:22px 20px;display:flex;flex-direction:column;gap:12px;text-align:center;box-shadow:0 20px 50px rgba(0,0,0,.35);transform:scale(.4);opacity:0;transition:transform .25s cubic-bezier(.2,.9,.3,1.2),opacity .2s}
+.pzoom.on .pzc{transform:none;opacity:1}
+.pzoom .pzpic{transform:rotate(-1.5deg);filter:drop-shadow(0 10px 16px rgba(0,0,0,.3))}
+.pzoom .pzpic svg,.pzoom .pzpic canvas,.pzoom .pzpic img{width:100%;height:auto;display:block}
+.pzoom h1{margin:4px 0 0}
 .condbar{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--ink2)}
 .condbar .ct{flex:1;height:6px;border-radius:3px;background:var(--haze);overflow:hidden}
 .condbar .ct i{display:block;height:100%}
@@ -1185,7 +1206,7 @@ function canFly(b) {
   if (!licenseOk() && b.id !== S.flag) return 'license';
   if (S.charter && S.charter.day === S.day && S.charter.id === b.id) return 'charter';
   if (S.late && S.late.day === S.day && b.pilot === S.late.pid && !(b.id === S.flag && selfFlying())) return 'late';
-  if (S.strikeDay === S.day && !(b.id === S.flag && selfFlying())) return 'strike';
+  if ((S.strikeDay === S.day || (S.strikeUntil || 0) >= S.day) && !(b.id === S.flag && selfFlying())) return 'strike';
   if (!(b.id === S.flag && selfFlying()) && !b.pilot) return 'nopilot';
   return 'ok';
 }
@@ -1478,6 +1499,7 @@ function nextPopup() {
   if (S.newPost && S.newPost.length) { showPostcard(); return; }
   if (S.cash >= 0) S.rescueShown = false;
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
+  if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; showIssue(S.region); return; }
   if (S.poach) { showPoach(); return; }
   checkDeals();
 }
@@ -1529,7 +1551,7 @@ function startDay() {
   { const owls = S.pilots.filter(p => p.trait === 'nightowl' && S.balloons.some(b => b.pilot === p.id)); if (owls.length && Math.random() < .07) S.late = { day: S.day, pid: pick(owls).id }; }
   buildWorld(); save();
   setTimeout(nextPopup, 700);
-  mode = 'office'; hideAll(); $('hud').hidden = false; $('sheet').hidden = false;
+  mode = 'office'; hideAll(); $('hud').hidden = false; $('sheet').hidden = false; $('wx').style.opacity = '';
   refresh();
 }
 function launch(skip) {
@@ -1805,8 +1827,7 @@ function showGoals() {
   } else {
     const C = chap()[S.chapter || 0];
     if (anyBaron()) { const wb = h('button', 'ghost', 'Dünya haritası ›'); wb.style.alignSelf = 'flex-start'; wb.onclick = showWorldMap; c.appendChild(wb); }
-    c.appendChild(h('div', 'chap', `${RD().name} · Bölüm ${(S.chapter || 0) + 1}/${chap().length}`));
-    c.appendChild(h('h1', null, C.name));
+    c.appendChild(chapHead((S.chapter || 0) + 1, C.name));
     for (const g of C.goals) {
       const done = goalDone(g), it = h('div', 'goal' + (done ? ' done' : ''));
       it.innerHTML = `<span class="gk">${done ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${g[2]}</b><span>${goalText(g)}</span></div><div class="gb"><i style="width:${Math.round(goalPct(g) * 100)}%"></i></div></div>`;
@@ -1822,12 +1843,15 @@ function goalRow(g, finished) {
   const done = finished || goalDone(g), txt = finished && !goalDone(g) ? 'Tamamlandı' : goalText(g), pct = finished ? 1 : goalPct(g);
   return h('div', 'goal' + (done ? ' done' : ''), `<span class="gk">${done ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${g[2]}</b><span>${txt}</span></div><div class="gb"><i style="width:${Math.round(pct * 100)}%"></i></div></div>`);
 }
+/* A chapter's heading, readable at a glance: the region, a big "Bölüm 2/4", then the chapter's name. */
+function chapHead(n, name) {
+  return h('div', 'chead', `<span>${RD().name}</span><b>Bölüm ${n}/${chap().length}</b><h1>${name}</h1>`);
+}
 /* After the ceremony: the chapter that starts now and its goals. */
 function showNextChapter(n) {
   const N = chap()[n], m = $('menu'); m.replaceChildren();
   const c = h('div', 'card goals');
-  c.appendChild(h('div', 'chap', `${RD().name} · Bölüm ${n + 1}/${chap().length}`));
-  c.appendChild(h('h1', null, N.name));
+  c.appendChild(chapHead(n + 1, N.name));
   N.goals.forEach(g => c.appendChild(goalRow(g, false)));
   const ok = h('button', 'big', 'Başla'); ok.onclick = () => { m.hidden = true; if (bossRival() && bossRival().alive) bossSay('ch' + n); refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
   m.appendChild(c); m.hidden = false; sfx('click');
@@ -2150,9 +2174,23 @@ const REV = {
   design: [[5, '"{d}" desenli balonu görünce rezervasyon yaptık, fotoğraflar efsane oldu!'], [5, 'Gökyüzündeki en güzel balon "{d}" idi, içinde olmak ayrıcalıktı.'], [4, '"{d}" deseni çok yaratıcı, çocuklar bayıldı.']],
   rival: [[5, 'Önce {r} ile uçacaktık, iyi ki fikrimizi değiştirmişiz. {c} harikaydı.'], [4, '{r} doluydu, {c} ile uçtuk. Hiç pişman değiliz.']]
 };
+/* Lines that name a place have their own version in Albuquerque and Luxor (same stars, same slot). */
+const REV_AT = {
+  abq: { perfect: { 1: 'Sandia Dağları\'nda gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Kavak ağacına çarptık! Herkes iyi ama bu kabul edilemez.' },
+    cheap: { 1: '{p} ödedim, Albuquerque\'nin en iyi fiyatı bu olabilir.' }, general: { 0: 'Albuquerque\'ye gelip balona binmemek olmaz. Bu ekip çok profesyonel.' },
+    m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Bütün Rio Grande vadisi ayaklarımızın altındaydı.' },
+    m_valley: { 0: 'Rio Grande\'nin üstünden süzüldük, suya dokunacak gibiydik!', 1: 'Nehrin üstünde alçak uçuş inanılmazdı, balıkçıllar hemen yanımızdan havalandı.' },
+    xl: { 2: 'Fiesta Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' } },
+  lux: { perfect: { 1: 'Krallar Vadisi\'nde gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Hurma ağaçlarına çarptık! Herkes iyi ama bu kabul edilemez.' },
+    cheap: { 1: '{p} ödedim, Luksor\'un en iyi fiyatı bu olabilir.' }, general: { 0: 'Luksor\'a gelip balona binmemek olmaz. Bu ekip çok profesyonel.' },
+    m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Tapınaklar ve Nil ayaklarımızın altındaydı.' },
+    m_valley: { 0: 'Nil\'in üstünden süzüldük, feluka yelkenlerine dokunacak gibiydik!', 1: 'Nil\'in üstünde alçak uçuş inanılmazdı, balıkçılar bize el salladı.' },
+    xl: { 2: 'Teb Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' } }
+};
 function addReview(kind, vars) {
-  const [stars, text] = pick(REV[kind]), [n, c] = pick(REVIEWERS);
-  let t = text; for (const k in vars || {}) t = t.split('{' + k + '}').join(vars[k]);
+  const i = Math.floor(Math.random() * REV[kind].length), [stars, text0] = REV[kind][i], [n, c] = pick(REVIEWERS);
+  const loc = REV_AT[S.region] && REV_AT[S.region][kind];
+  let t = loc && loc[i] || text0; for (const k in vars || {}) t = t.split('{' + k + '}').join(vars[k]);
   t = t.split('{c}').join(S.company);
   S.reviews.unshift({ n, c, stars, t, day: S.day });
   if (S.reviews.length > 40) S.reviews.length = 40;
@@ -2201,7 +2239,14 @@ function balloonIcon(c1, c2) {
   return `<svg class="ic" viewBox="0 0 38 38"><path d="M19 3c-7 0-12 5-12 11.5 0 5.5 5 9.5 8 13.5h8c3-4 8-8 8-13.5C31 8 26 3 19 3z" fill="${c1}"/><path d="M19 3c-2.6 0-4.6 5-4.6 11.5 0 5.5 1.6 9.5 3 13.5h3.2c1.4-4 3-8 3-13.5C23.6 8 21.6 3 19 3z" fill="${c2}"/><path d="M15.5 28.5v3.5M22.5 28.5v3.5" stroke="#6b4426" stroke-width="1.2"/><rect x="15" y="31.5" width="8" height="4.5" rx="1" fill="#8a5a32"/></svg>`;
 }
 function riskTag(p) { const c = p < .01 ? 'g' : p < .04 ? 'y' : 'r'; return `<span class="tag ${c}">kaza riski ${pct(p)}</span>`; }
-function refresh() { renderHud(); renderNav(); renderHome(); renderTab(); renderAct(); if (HQ.open) hqRender(); save(); }
+function refresh() { chapterNow(); renderHud(); renderNav(); renderHome(); renderTab(); renderAct(); if (HQ.open) hqRender(); save(); }
+/* A chapter is finished the moment its goals are met, not only at the end of the day; the ceremony comes up right
+   away. The baron's chapter still waits for the evening: all of its goals must hold on the same day. */
+function chapterNow() {
+  if (mode !== 'office' || !S || S.chapterNews != null || (S.chapter || 0) >= chap().length - 1) return;
+  if (!checkChapters([], {}, false)) return;
+  setTimeout(() => { if (mode === 'office' && S.chapterNews != null && $('hez').hidden && !TRAVEL) showChapter(); }, 350);
+}
 
 function renderHud() {
   const multi = S.region !== 'cap' || Object.keys(S.regions || {}).length;
@@ -2281,6 +2326,7 @@ function renderHome() {
   }
   if (S.banUntil >= S.day) alert('red', `<b>Uçuş yasağın var.</b> ${S.banUntil - S.day + 1} gün daha kalkamazsın.`);
   if (Wx.flag === 'red' && flying().length) alert('red', `<b>Bugün uçuş yasak.</b> Kalkarsan %35 ihtimalle ${eur(5000)} ceza, sigorta geçersiz.`);
+  if (S.issue) alert('red', `<b>${ISSUES[S.issue.k].t}.</b> ${S.issue.k === 'raise' ? 'Pilotların ofisin önünde bekliyor. ' : ''}Karar vermek için dokun.`, () => showIssue(S.region));
   for (const id in (S.regions || {})) { const A = S.regions[id].auto; if (A && A.issue) alert('red', `<b>${REGION_DEF[id].name}: ${ISSUES[A.issue.k].t}.</b> Karar verene kadar oradaki kazanç yarıda. Karar vermek için dokun.`, () => showIssue(id)); }
   if (S.fest) alert('mis', `<b>${S.fest.name}, gün ${S.day - S.fest.start + 1}/3!</b> Turist bol, özel isteklerin ödülü %50 fazla.`);
   if (S.fiesta && S.region === 'lux') alert('mis', `<b>Nil gemileri limanda, gün ${S.day - S.fiesta.start + 1}/3!</b> Kıyı turist dolu. Bütün balonlarını kaldır.`);
@@ -2659,13 +2705,15 @@ function tabMarket(body) {
     it.appendChild(m); t.appendChild(it);
     if (r.alive && r.offer) {
       const c = h('div', 'callout yel', `<b>${r.name} satılık.</b> Doluluğu düştü ya da parası azaldı. Şirketi ve ${r.balloons.length} balonunu ${eur(r.offer)}'ya devralabilirsin.`);
+      c.appendChild(fleetMix(r.balloons));
       const b = pbtn(`Devral ${eur(r.offer)}`, () => takeOver(r), S.cash < r.offer);
-      b.style.marginTop = '10px'; c.appendChild(b); t.appendChild(c);
+      c.appendChild(b); t.appendChild(c);
     }
     if (r.forSale) {
       const c = h('div', 'callout grn', `<b>${r.name} filosu satışta:</b> ${r.forSale.sizes.map(z => SIZES[z].label.toLowerCase()).join(', ')}.`);
+      c.appendChild(fleetMix(r.forSale.sizes));
       const b = pbtn(`Satın al ${eur(r.forSale.price)}`, () => buyFleet(r), S.cash < r.forSale.price);
-      b.style.marginTop = '10px'; c.appendChild(b); t.appendChild(c);
+      c.appendChild(b); t.appendChild(c);
     }
   });
   t.appendChild(h('p', 'hint', 'Rakipler doluluğu %50\'nin altında kalınca para kaybeder. Dört gün üst üste yarı boş uçan ya da parası azalan rakip satılığa çıkar. Parası tamamen biterse iflas eder.'));
@@ -2748,7 +2796,7 @@ function showReport() {
   }
   tk.appendChild(b); m.appendChild(tk);
   m.hidden = false; $('sheet').hidden = true; $('tip').hidden = true; $('burn').hidden = true; $('abort').hidden = true; $('menu').hidden = true;
-  mode = 'office'; renderHud();
+  mode = 'office'; $('wx').style.opacity = ''; renderHud();
   sfx(R.net >= 0 ? 'coin' : 'low');
 }
 
@@ -2959,6 +3007,15 @@ function openAdPicker(b) {
 }
 function takeOver(r) { setTimeout(nextPopup, 300); S.cash -= r.offer; r.balloons.forEach(addBalloon); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; assignPilots(); $('menu').hidden = true; refresh(); }
 function buyFleet(r) { S.cash -= r.forSale.price; r.forSale.sizes.forEach(addBalloon); r.forSale = null; assignPilots(); $('menu').hidden = true; refresh(); }
+/* What a rival's fleet is made of, one line per basket size, biggest first. */
+function fleetMix(sizes) {
+  const box = h('div', 'fmix');
+  for (const k of ['XL', 'L', 'M', 'S']) {
+    const n = sizes.filter(z => z === k).length; if (!n) continue;
+    box.insertAdjacentHTML('beforeend', `<div>${balloonIcon('#cfc8dd', '#ffffff')}<span>${SIZES[k].label} · koltuk: ${SIZES[k].cap}</span><b>× ${n}</b></div>`);
+  }
+  return box;
+}
 function checkDeals() {
   if (mode !== 'office' || !$('menu').hidden || !$('report').hidden || !$('page').hidden || !$('hez').hidden) return;
   const r = S.rivals.find(x => (x.alive && x.offer && !x.offerSeen && !x.offerNo) || (x.forSale && !x.saleSeen && !x.saleNo));
@@ -2970,6 +3027,7 @@ function checkDeals() {
   c.insertAdjacentHTML('beforeend', balloonIcon(r.col, r.col2).replace('class="ic"', 'class="ic" style="width:56px;height:56px"'));
   c.appendChild(h('h1', null, sale ? `${r.name} iflas etti!` : `${r.name} satılık!`));
   c.appendChild(h('p', 'lead', sale ? `Şirket kapandı, ${n} balonluk filosu ${eur(price)}'ya satışta.` : `Doluluğu düştü ya da parası azaldı. Şirketi ve ${n} balonunu ${eur(price)}'ya devralabilirsin. Rakibin pazardan çekilir, yolcuları sana kalır.`));
+  c.appendChild(fleetMix(sale ? r.forSale.sizes : r.balloons));
   if (S.cash < price) c.appendChild(h('p', 'hint', `Kasanda ${eur(S.cash)} var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin.`));
   const yes = h('button', 'big', sale ? `Satın al ${eur(price)}` : `Devral ${eur(price)}`); yes.disabled = S.cash < price;
   yes.onclick = () => sale ? buyFleet(r) : takeOver(r);
@@ -2983,7 +3041,7 @@ function checkDeals() {
 let COL = null;
 function startCollect() {
   const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), m = market(S.price, cap);
-  const parts = [{ label: 'Kapadokya\'daki turistler', n: m.base, col: '#ffffff' }].concat(m.parts);
+  const parts = [{ label: `${RD().name} bölgesindeki turistler`, n: m.base, col: '#ffffff' }].concat(m.parts);
   const seq = []; parts.forEach((p, i) => { for (let k = 0; k < p.n; k++) seq.push(i); });
   for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
   COL = { t: 0, dur: 3.2, cap, parts, seq, shown: 0, counts: parts.map(() => 0), done: false, n: fl.length };
@@ -2994,7 +3052,8 @@ function startCollect() {
     cancelAnimationFrame(TOWN.raf); TOWN.open = false; TOWN.leaving = false; TOWN.anim = null; TOWN.hold = false; TOWN.night = false; TOWN.hzFix = null;
     $('town').hidden = true; document.body.classList.remove('zoomed', 'mhold');
   }
-  mode = 'collect'; $('sheet').hidden = true; $('chirp').hidden = true; COLV.hz = hz;
+  /* while passengers board, the town is the show: the wind card steps aside */
+  mode = 'collect'; $('sheet').hidden = true; $('chirp').hidden = true; $('wx').style.opacity = 0; COLV.hz = hz;
   const el = $('collect'); el.replaceChildren();
   el.appendChild(h('div', 'ctitle', `<div><h2 id="cTitle">Yolcular toplanıyor…</h2><div class="hint">Bilet ${eur(S.price)}, ${fl.length} balon</div></div><div class="ccount" id="cCount">0/${cap}</div>`));
   el.appendChild(h('div', 'ctime', '<i id="cBar"></i>'));
@@ -3005,7 +3064,7 @@ function startCollect() {
   parts.forEach((p, i) => srcs.appendChild(h('div', 'src', `<i style="background:${p.col}"></i>${esc(p.label)}<b id="cS${i}">0</b>`)));
   el.appendChild(srcs);
   const row = h('div', 'btns'); row.id = 'cBtns';
-  const back = h('button', 'ghost', 'Vazgeç'); back.onclick = () => { $('collect').hidden = true; COL = null; mode = 'office'; $('sheet').hidden = false; refresh(); };
+  const back = h('button', 'ghost', 'Vazgeç'); back.onclick = () => { $('collect').hidden = true; COL = null; mode = 'office'; $('wx').style.opacity = ''; $('sheet').hidden = false; refresh(); };
   const go = h('button', 'big', 'Atla'); go.id = 'cGo';
   go.onclick = () => {
     if (!COL.done) { COL.t = COL.dur; return; }
@@ -3402,16 +3461,25 @@ function showPostcard() {
   const sh = h('button', 'ghost', 'Paylaş'); sh.style.width = '100%'; sh.onclick = () => showShare(k, () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }); c.appendChild(sh);
   m.appendChild(c); m.hidden = false; sfx('fanfare');
 }
+/* The postcard album. A tapped postcard grows into its own card, with the share button right under it. */
 function showAlbum() {
   const m = $('menu'); m.replaceChildren(); const c = h('div', 'card album');
   const n = ACHS.filter(a => S.ach && S.ach[a[0]]).length;
-  c.appendChild(h('h1', null, 'Başarımlar')); c.appendChild(h('p', 'hint', `Kartpostal albümün: ${n}/${ACHS.length}. Kilitli olanlara dokununca nasıl açılacağı yazar.`));
+  c.appendChild(h('h1', null, 'Başarımlar')); c.appendChild(h('p', 'hint', `Kartpostal albümün: ${n}/${ACHS.length}. Bir kartpostala dokun, büyüsün.`));
   const g = h('div', 'pgrid');
-  for (const A of ACHS) { const it = h('button', 'pitem', postcard(A[0])); it.onclick = () => { it.title = A[2]; hint.textContent = `${A[1]}: ${A[2]}${S.ach && S.ach[A[0]] ? `, gün ${S.ach[A[0]]}` : ' (kilitli)'}.`; sh.hidden = !(S.ach && S.ach[A[0]]); sh.onclick = () => showShare(A[0], showAlbum); }; g.appendChild(it); }
-  c.appendChild(g); const hint = h('p', 'hint'); c.appendChild(hint);
-  const sh = h('button', 'big', 'Bu kartpostalı paylaş'); sh.hidden = true; c.appendChild(sh);
+  for (const A of ACHS) { const it = h('button', 'pitem', postcard(A[0])); it.onclick = () => postcardZoom(A); g.appendChild(it); }
+  c.appendChild(g);
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
+}
+function postcardZoom(A) {
+  const got = S.ach && S.ach[A[0]], z = h('div', 'pzoom');
+  z.innerHTML = `<div class="pzc"><div class="pzpic">${postcard(A[0], true)}</div><h1>${A[1]}</h1><p class="lead">${A[2]}${got ? `. Gün ${got}.` : '. Henüz kilitli.'}</p></div>`;
+  const card = z.querySelector('.pzc');
+  if (got) { const sh = h('button', 'big', 'Bu kartpostalı paylaş'); sh.onclick = () => { z.remove(); showShare(A[0], showAlbum); }; card.appendChild(sh); }
+  const x = h('button', 'ghost', 'Kapat'); x.onclick = () => { z.classList.remove('on'); setTimeout(() => z.remove(), 220); }; card.appendChild(x);
+  z.onclick = e => { if (e.target === z) x.onclick(); };
+  document.body.appendChild(z); sfx('click'); requestAnimationFrame(() => z.classList.add('on'));
 }
 /* Line icons for the settings rows, drawn like the side buttons' (24×24, round strokes). */
 const SET_IC = {
@@ -4218,7 +4286,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -4305,10 +4373,13 @@ function switchRegion(id) {
   const cur = {};
   RKEYS.forEach(k => { cur[k] = S[k]; });
   cur.auto = makeAuto(cur, S.region);
+  /* an undecided problem stays with its region: it waits on autopilot and comes back when you do */
+  if (cur.issue) { cur.auto.issue = cur.issue; cur.issue = null; }
   if (!S.regions) S.regions = {};
   S.regions[S.region] = cur;
   const next = S.regions[id] || newRegionState(id);
   delete S.regions[id];
+  next.issue = next.auto && next.auto.issue ? { ...next.auto.issue, seen: null } : null;
   RKEYS.forEach(k => { S[k] = next[k]; });
   S.region = id;
   S.weather = null; S.demand = null; S.plan = null; S.rivals.forEach(r => { r.fly = null; });
@@ -4332,19 +4403,30 @@ function enterRegion(id) {
 const ISSUES = {
   raise: { t: 'Pilotlar zam istiyor', d: 'Pilotlar maaşlarına zam istiyor, yoksa üç gün uçmayacaklarmış.', hz: 'Pilotsuz balon uçmaz evlat. Zam çoğu zaman greve göre ucuzdur.',
     a: ['Zam ver', 'Bölgenin günlük kazancı kalıcı olarak %6 düşer.'], b: ['Reddet', 'Üç gün hiç kazanç gelmez.'],
-    A: A => { A.base *= .94; }, B: A => { A.mods.push({ mult: 0, until: S.day + 3 }); } },
+    A: A => { A.base *= .94; }, B: A => { A.mods.push({ mult: 0, until: S.day + 3 }); },
+    la: 'Pilot maaşları %15 artar.', lb: 'Pilotlar üç gün uçmaz, sadece amiral balonunu sen uçurursun.',
+    LA: () => { S.pilots.forEach(p => { p.wage = Math.round(pilotWage(p) * 1.15 / 5) * 5; }); },
+    LB: () => { S.strikeUntil = S.day + 2; S.selfFly = true; assignPilots(); } },
   war: { t: 'Fiyat savaşı', d: 'Bir rakip biletleri ucuzlattı, balonların yarı boş uçuyor.', hz: 'Popülerliğin yüksekse beklemek işe yarayabilir. Ama emin değilsen pazarını koru.',
     a: ['Fiyatı eşitle', 'Kazanç kalıcı olarak %10 düşer ama pazarını korursun.'], b: ['Popülerliğine güven', 'Yarı yarıya: ya bir şey olmaz ya da 10 gün kazanç %25 düşer.'],
-    A: A => { A.base *= .9; }, B: A => { if (Math.random() < .5) A.mods.push({ mult: .75, until: S.day + 10 }); } },
+    A: A => { A.base *= .9; }, B: A => { if (Math.random() < .5) A.mods.push({ mult: .75, until: S.day + 10 }); },
+    la: 'Bilet fiyatın en ucuz rakibinkine iner.', lb: 'Yarı yarıya: ya bir şey olmaz ya da popülerliğin düşer.',
+    LA: () => { const r = S.rivals.filter(x => x.alive); if (r.length) S.price = Math.min(S.price, ...r.map(x => x.price)); },
+    LB: () => { if (Math.random() < .5) S.rep = Math.max(.4, S.rep - .08); } },
   accident: { t: 'Sert iniş', d: 'Bir balon sert iniş yaptı. Yolcular şikâyetçi, yerel basın kapıda.', hz: 'Böyle günlerde patronun orada olması her şeyi değiştirir.',
     a: ['Gidip kendin ilgilen', 'Bölgeye geçersin, popülerlik biraz düşer ama hikâye kapanır.'], b: ['Müdür halletsin', '7 gün kazanç %15 düşer.'],
-    A: (A, id, rs) => { rs.rep = Math.max(.4, rs.rep - .05); return 'go'; }, B: A => { A.mods.push({ mult: .85, until: S.day + 7 }); } },
+    A: (A, id, rs) => { rs.rep = Math.max(.4, rs.rep - .05); return 'go'; }, B: A => { A.mods.push({ mult: .85, until: S.day + 7 }); },
+    la: 'Popülerlik biraz düşer ama hikâye kapanır.', lb: 'Basın üstüne gider, popülerlik daha çok düşer.',
+    LA: () => { S.rep = Math.max(.4, S.rep - .05); }, LB: () => { S.rep = Math.max(.4, S.rep - .1); } },
   hotel: { t: 'Otel kapışması', d: 'Bir rakip, anlaşmalı otelini kendine çekmeye çalışıyor.', hz: 'Oteller sadık değildir evlat, ama küçük bir jest çoğu zaman yeter.',
     a: ['Ek ödeme yap', 'cost5'], b: ['Bırak gitsin', 'Kazanç kalıcı olarak %5 düşer.'],
-    A: () => {}, B: A => { A.base *= .95; } },
+    A: () => {}, B: A => { A.base *= .95; },
+    lb: 'Anlaşmalı otellerinden biri rakibe geçer.', LA: () => {}, LB: () => { S.hotels.pop(); } },
   envelope: { t: 'Yıpranan zarflar', d: 'Balonların zarfları yıpranıyor, müdür yenileme bütçesi istiyor.', hz: 'Eski kumaş sert rüzgârda kazaya davetiyedir, unutma.',
     a: ['Bütçeyi onayla', 'cost8'], b: ['Ertele', '10 gün kazanç %12 düşer.'],
-    A: () => {}, B: A => { A.mods.push({ mult: .88, until: S.day + 10 }); } }
+    A: () => {}, B: A => { A.mods.push({ mult: .88, until: S.day + 10 }); },
+    la: 'Holding kasasından ödenir, %30 altındaki zarfların yenilenir.', lb: 'Yıpranmış zarflar uçmaya devam eder.',
+    LA: () => { S.balloons.forEach(b => { if (cond(b) < .3) b.flights = 0; }); }, LB: () => {} }
 };
 const issueCost = (A, k) => k === 'cost5' ? Math.round(A.base * 5 / 100) * 100 : k === 'cost8' ? Math.round(A.base * 8 / 100) * 100 : 0;
 function autoRegions() {
@@ -4363,20 +4445,25 @@ function autoRegions() {
   return Math.round(total * FX());
 }
 function showIssue(id) {
-  const rs = S.regions[id], A = rs && rs.auto; if (!A || !A.issue) return;
+  const live = id === S.region, rs = live ? null : S.regions[id], A = live ? (S.issue && { ...makeAuto(S, id), issue: S.issue }) : rs && rs.auto;
+  if (!A || !A.issue) return;
   const I = ISSUES[A.issue.k], m = $('menu'); m.replaceChildren();
   const c = h('div', 'card issue');
-  c.appendChild(h('div', 'chap', `${REGION_DEF[id].name} · otomatik mod`));
+  c.appendChild(h('div', 'chap', `${REGION_DEF[id].name} · ${live ? 'buradasın' : 'otomatik mod'}`));
   c.appendChild(h('h1', null, I.t));
-  c.appendChild(h('p', 'lead', `${I.d} Karar verene kadar bölgenin kazancı yarıya düştü (bugün ${eurH(A.today || 0)}).`));
+  c.appendChild(h('p', 'lead', live ? `${I.d} Buradasın, karar senin.` : `${I.d} Karar verene kadar bölgenin kazancı yarıya düştü (bugün ${eurH(A.today || 0)}).`));
   c.appendChild(h('div', 'hzline', `${guide(id).av()}<span><b>${guide(id).name.replace(' Usta', '')}:</b> ${I.hz}</span>`));
-  const opt = (o, fn, cls) => {
-    const cost = issueCost(A, o[1]), b = h('button', 'opt ' + cls, `<b>${o[0]}${cost ? ` (${eurH(cost)})` : ''}</b><span>${cost ? 'Holding kasasından ödenir, sorun kapanır.' : o[1]}</span>`);
+  const opt = (o, fn, cls, note) => {
+    const cost = issueCost(A, o[1]), b = h('button', 'opt ' + cls, `<b>${o[0]}${cost ? ` (${eurH(cost)})` : ''}</b><span>${live && note ? note : cost ? 'Holding kasasından ödenir, sorun kapanır.' : o[1]}</span>`);
     if (cost && (S.holding || 0) < cost) b.disabled = true;
-    b.onclick = () => { if (cost) { S.holding -= cost; holdLog('exp', cost); } const r = fn(A, id, rs); A.issue = null; m.hidden = true; if (r === 'go') switchRegion(id); else { refresh(); setTimeout(nextPopup, 250); } };
+    b.onclick = () => {
+      if (cost) { S.holding -= cost; holdLog('exp', cost); }
+      if (live) { fn(); S.issue = null; m.hidden = true; refresh(); setTimeout(nextPopup, 250); return; }
+      const r = fn(A, id, rs); A.issue = null; m.hidden = true; if (r === 'go') switchRegion(id); else { refresh(); setTimeout(nextPopup, 250); }
+    };
     c.appendChild(b);
   };
-  opt(I.a, I.A, 'a'); opt(I.b, I.B, 'b');
+  opt(I.a, live ? I.LA : I.A, 'a', I.la); opt(I.b, live ? I.LB : I.B, 'b', I.lb);
   const later = h('button', 'ghost', 'Sonra'); later.style.width = '100%'; later.onclick = () => { m.hidden = true; }; c.appendChild(later);
   m.appendChild(c); m.hidden = false;
 }
@@ -4804,13 +4891,27 @@ function hqShapes(body) {
     const now = on && H.adShape.k === A.k, c = h('div', 'deal' + (now ? ' on' : ''));
     c.innerHTML = `<div class="dart"><svg viewBox="0 0 64 64">${adShapeSvg(A.k)}</svg></div><div class="dmain"><div class="dk">Reklam balonu</div><div class="dt">${A.n}</div><div class="dd">Ustalarca dikilmiş özel şekilli zarf, markanın renklerinde.</div><div class="dchips"><span>Holdinge ${eurH(A.pay)}/gün</span><span>${A.days} gün</span><span>Popülerlik günde −${(A.rep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 3 })}★</span></div></div>`;
     const foot = h('div', 'dfoot');
-    if (now) foot.innerHTML = `<span class="dstat">Uçuyor · ${H.adShape.until - S.day} gün kaldı</span>`;
-    else {
-      foot.innerHTML = `<span class="dprice">+${eurH(A.pay * A.days)}</span>`;
+    if (now) {
+      /* breaking the deal costs what the brand has paid so far plus half of what's left: always a loss */
+      const fee = adBreakFee(H.adShape, A);
+      foot.innerHTML = `<span class="dstat">Uçuyor · ${H.adShape.until - S.day} gün kaldı</span>`;
+      const b = h('button', 'dbreak', `Sözleşmeyi boz · ceza ${eurH(fee)}`); b.disabled = (S.holding || 0) < fee;
+      b.onclick = () => {
+        if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Eminim, boz (${eurH(fee)})`; b.classList.add('sure'); return; }
+        S.holding -= fee; holdLog('exp', fee); H.adShape = null; sfx('coin'); hqRender(); refresh();
+      };
+      foot.appendChild(b);
+      foot.appendChild(h('span', 'dterms', 'Ceza: şimdiye kadar aldığın para ve kalan sürenin yarısı. Bozmak hep zarar ettirir.'));
+    } else {
+      foot.innerHTML = `<span class="dprice">+${eurH(A.pay * A.days)}<small>${eurH(A.pay)} × ${A.days} gün</small></span>`;
       const b = h('button', 'dcta', 'İmzala'); b.disabled = on; b.onclick = () => { H.adShape = { k: A.k, until: S.day + A.days, region: S.region }; sfx('coin'); hqRender(); refresh(); }; foot.appendChild(b);
     }
     c.appendChild(foot); body.appendChild(c);
   }
+}
+function adBreakFee(a, A) {
+  const left = clamp(a.until - S.day, 0, A.days), paid = A.days - left;
+  return Math.round((paid * A.pay + left * A.pay * .5) / 100) * 100;
 }
 function adShapeDay() {
   const H = S.hold, a = H && H.adShape; if (!a || S.day > a.until) return;
@@ -5801,7 +5902,7 @@ function renderTown(V, w, h, dpr, offY) {
       return { depth: it.depth, shadow: it.shadow, draw: () => { ctx.globalAlpha = a; it.draw(); ctx.globalAlpha = 1; } }; };
     const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).map(fade).filter(Boolean), townWall()), sky = townSky(T);
     bs.forEach(buildingShadow); scen.forEach(it => it.shadow && it.shadow()); sky.shadows.forEach(f => f());
-    const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => tbuilding(b, T) })).concat(scen, V.extra ? V.extra(T) : []);
+    const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => tbuilding(b, T) })).concat(scen, V.extra ? V.extra(T) : S.issue && S.issue.k === 'raise' ? strikers(T) : []);
     items.sort((a, b) => a.depth - b.depth).forEach(it => it.draw());
     sky.balloons.forEach(f => f());
     /* winter: snow falling over the town, in screen space */

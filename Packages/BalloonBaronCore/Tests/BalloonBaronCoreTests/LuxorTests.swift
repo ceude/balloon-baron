@@ -195,6 +195,23 @@ final class LuxorTests: XCTestCase {
         XCTAssertEqual(g.state.holding.cash, cash + 4000)
         XCTAssertEqual(g.state.rep, rep - 0.001, accuracy: 1e-12)
     }
+
+    func testBreakingAShapeDealAlwaysCosts() {
+        var g = luxorReady()
+        g.enterRegion(.lux)
+        XCTAssertNil(g.adBreakFee)
+        XCTAssertTrue(g.signAdShape(.bottle))
+        XCTAssertEqual(g.adBreakFee, 15 * 4000 * 2 / 2, "on the first day: half of the whole deal")
+        g.state.day += 10
+        // Paid so far 10 × 4000, plus half of the 20 days left.
+        XCTAssertEqual(g.adBreakFee, 10 * 4000 + 20 * 2000)
+        XCTAssertGreaterThan(g.adBreakFee!, 10 * 4000, "more than the brand has paid")
+        let cash = g.state.holding.cash
+        XCTAssertTrue(g.breakAdShape())
+        XCTAssertEqual(g.state.holding.cash, cash - 80000)
+        XCTAssertNil(g.state.adShape(over: .lux))
+        XCTAssertTrue(g.signAdShape(.rocket), "free to sign a new one")
+    }
 }
 
 /// Prototype v107: the fleet page renews every envelope below 30% in one go.
@@ -219,5 +236,54 @@ final class FleetRenewTests: XCTestCase {
         g.state.balloons[1].flights = life
         g.state.cash = 10
         XCTAssertFalse(g.renewWornEnvelopes(), "can't pay")
+    }
+}
+
+/// A parked region's open problem doesn't vanish when you fly there: it waits for you, and the choice plays out live.
+final class LiveIssueTests: XCTestCase {
+    func twoRegions() -> Game {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 11)
+        g.startDay()
+        g.state.barons[.cap] = 1
+        g.state.holding.cash = 1_000_000
+        g.addBalloon(.M)
+        g.state.pilots.append(Pilot(id: 900, name: "Ali Kaya", level: .rookie))
+        g.state.pilots.append(Pilot(id: 901, name: "Veli Ak", level: .rookie))
+        g.assignPilots()
+        XCTAssertTrue(g.enterRegion(.abq))
+        g.state.parked[.cap]!.auto.issue = Autopilot.OpenIssue(kind: .raise, day: g.state.day)
+        return g
+    }
+
+    func testIssueTravelsWithItsRegion() {
+        var g = twoRegions()
+        g.switchRegion(.cap)
+        XCTAssertEqual(g.liveIssue, .raise)
+        XCTAssertTrue(g.liveIssueCardDue())
+        XCTAssertFalse(g.liveIssueCardDue(), "once a day")
+        g.switchRegion(.abq)
+        XCTAssertEqual(g.state.parked[.cap]?.auto.issue?.kind, .raise, "still waiting back on autopilot")
+        XCTAssertNil(g.liveIssue)
+    }
+
+    func testRefusingTheRaiseLiveMeansThreeDaysOfStrike() {
+        var g = twoRegions()
+        g.switchRegion(.cap)
+        XCTAssertTrue(g.resolveIssue(in: .cap, choice: .b))
+        XCTAssertNil(g.liveIssue)
+        let other = g.state.balloons.first { !g.state.isSelf($0) }!
+        XCTAssertEqual(g.state.status(other), .strike)
+        g.state.day += 2
+        XCTAssertEqual(g.state.status(other), .strike)
+        g.state.day += 1
+        XCTAssertNotEqual(g.state.status(other), .strike)
+    }
+
+    func testGivingTheRaiseLive() {
+        var g = twoRegions()
+        g.switchRegion(.cap)
+        let before = g.state.pilots.map(\.wage)
+        XCTAssertTrue(g.resolveIssue(in: .cap, choice: .a))
+        XCTAssertEqual(g.state.pilots.map(\.wage), before.map { jsRound(Double($0) * 1.15 / 5) * 5 })
     }
 }

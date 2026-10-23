@@ -11686,6 +11686,47 @@
         }
       }
     },
+    "deal.fleetRow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Plätze: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · seats: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · plazas: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@・座席：%2$@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · 좌석: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · koltuk: %2$@"
+          }
+        }
+      }
+    },
     "deal.hint": {
       "extractionState": "manual",
       "localizations": {
@@ -22756,6 +22797,47 @@
         }
       }
     },
+    "goals.chapterBig": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapitel %1$@/%2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chapter %1$@/%2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capítulo %1$@/%2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第%1$@章 / %2$@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "챕터 %1$@/%2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bölüm %1$@/%2$@"
+          }
+        }
+      }
+    },
     "goals.chapterOf": {
       "extractionState": "manual",
       "localizations": {
@@ -28906,6 +28988,170 @@
         }
       }
     },
+    "holding.shape.break": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vertrag brechen · Strafe %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Break the deal · penalty %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Romper el contrato · multa %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "契約を破棄・違約金 %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계약 파기 · 위약금 %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sözleşmeyi boz · ceza %@"
+          }
+        }
+      }
+    },
+    "holding.shape.breakNo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vertrag behalten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep the deal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantener el contrato"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "契約を続ける"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계약 유지"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sözleşme sürsün"
+          }
+        }
+      }
+    },
+    "holding.shape.breakNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Strafe ist alles, was die Marke bisher gezahlt hat, plus die Hälfte der Restlaufzeit. Ein Vertragsbruch kostet dich immer."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The penalty is what the brand has paid you so far plus half of the time left. Breaking always costs you."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La multa es lo que la marca te ha pagado hasta ahora más la mitad del tiempo restante. Romper siempre te cuesta."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "違約金は、これまでブランドから受け取った額と残り期間の半分。破棄すれば必ず損をする。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "위약금은 지금까지 브랜드에게 받은 돈과 남은 기간의 절반입니다. 파기하면 언제나 손해입니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ceza: şimdiye kadar aldığın para ve kalan sürenin yarısı. Bozmak hep zarar ettirir."
+          }
+        }
+      }
+    },
+    "holding.shape.breakYes": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Brechen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Break it"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Romper"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "破棄する"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "파기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boz"
+          }
+        }
+      }
+    },
     "holding.shape.cta": {
       "extractionState": "manual",
       "localizations": {
@@ -29107,6 +29353,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aynı anda bir sözleşme"
+          }
+        }
+      }
+    },
+    "holding.shape.terms": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ pro Tag × %2$@ Tage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ a day × %2$@ days"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ al día × %2$@ días"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1日%1$@ × %2$@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하루 %1$@ × %2$@일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ × %2$@ gün"
           }
         }
       }
@@ -30706,6 +30993,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Karar verene kadar oradaki kazanç yarıda. Karar vermek için dokun."
+          }
+        }
+      }
+    },
+    "home.alert.issueHere": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tippen, um zu entscheiden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap to decide."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca para decidir."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "タップして決める。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "탭해서 결정하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karar vermek için dokun."
+          }
+        }
+      }
+    },
+    "home.alert.issueHere.raise": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Piloten warten vor dem Büro. Tippen, um zu entscheiden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your pilots are waiting outside the office. Tap to decide."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus pilotos esperan frente a la oficina. Toca para decidir."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロットたちがオフィスの前で待っている。タップして決める。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사들이 사무실 앞에서 기다립니다. 탭해서 결정하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilotların ofisin önünde bekliyor. Karar vermek için dokun."
           }
         }
       }
@@ -36286,6 +36655,47 @@
         }
       }
     },
+    "issue.accident.a.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Beliebtheit sinkt etwas, aber die Geschichte ist vorbei."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularity drops a little, but the story is over."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La popularidad baja un poco, pero la historia se cierra."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "人気は少し下がるが、話はそこで終わる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인기가 조금 떨어지지만 이야기는 끝납니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popülerlik biraz düşer ama hikâye kapanır."
+          }
+        }
+      }
+    },
     "issue.accident.a.note": {
       "extractionState": "manual",
       "localizations": {
@@ -36364,6 +36774,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Müdür halletsin"
+          }
+        }
+      }
+    },
+    "issue.accident.b.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Presse bleibt dran, die Beliebtheit sinkt stärker."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The press keeps at it; popularity drops more."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La prensa insiste y la popularidad baja más."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マスコミが追及を続け、人気がさらに下がる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "언론이 계속 파고들어 인기가 더 떨어집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basın üstüne gider, popülerlik daha çok düşer."
           }
         }
       }
@@ -36573,6 +37024,47 @@
         }
       }
     },
+    "issue.envelope.a.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus der Holding bezahlt; Hüllen unter 30 % werden erneuert."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paid from the holding; envelopes below 30% are renewed."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo paga el holding; se renuevan las envolturas por debajo del 30 %."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホールディングスが支払い、30%未満の球皮が交換される。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지주회사가 내고, 30% 미만인 외피가 교체됩니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Holding kasasından ödenir, %30 altındaki zarfların yenilenir."
+          }
+        }
+      }
+    },
     "issue.envelope.a.note": {
       "extractionState": "manual",
       "localizations": {
@@ -36651,6 +37143,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ertele"
+          }
+        }
+      }
+    },
+    "issue.envelope.b.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die abgenutzten Hüllen fliegen weiter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The worn envelopes keep flying."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las envolturas gastadas siguen volando."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "劣化した球皮のまま飛び続ける。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마모된 외피로 계속 비행합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yıpranmış zarflar uçmaya devam eder."
           }
         }
       }
@@ -36942,6 +37475,47 @@
         }
       }
     },
+    "issue.hotel.b.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eines deiner Partnerhotels wechselt zur Konkurrenz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One of your partner hotels goes to the rival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uno de tus hoteles asociados se va con el rival."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "提携ホテルの一つがライバルに移る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "제휴 호텔 하나가 경쟁사로 넘어갑니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anlaşmalı otellerinden biri rakibe geçer."
+          }
+        }
+      }
+    },
     "issue.hotel.b.note": {
       "extractionState": "manual",
       "localizations": {
@@ -37147,6 +37721,47 @@
         }
       }
     },
+    "issue.raise.a.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Pilotengehälter steigen um 15 %."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot wages go up 15%."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los sueldos de los pilotos suben un 15 %."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロットの給料が15%上がる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사 급여가 15% 오릅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot maaşları %15 artar."
+          }
+        }
+      }
+    },
     "issue.raise.a.note": {
       "extractionState": "manual",
       "localizations": {
@@ -37225,6 +37840,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reddet"
+          }
+        }
+      }
+    },
+    "issue.raise.b.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Piloten bleiben drei Tage weg, nur du fliegst, im Flaggschiff."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your pilots stay off for three days; only you fly, in the flagship."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus pilotos no vuelan durante tres días; solo vuelas tú, en el buque insignia."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロットは3日間飛ばない。飛ぶのは旗艦の君だけ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사들이 사흘간 비행하지 않고, 기함은 당신만 띄웁니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilotlar üç gün uçmaz, sadece amiral balonunu sen uçurursun."
           }
         }
       }
@@ -37434,6 +38090,47 @@
         }
       }
     },
+    "issue.war.a.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Ticketpreis sinkt auf den des günstigsten Konkurrenten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your ticket price drops to your cheapest rival's."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El precio de tu billete baja al de tu rival más barato."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チケット価格が最も安いライバルと同じになる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "티켓 가격이 가장 싼 경쟁사 수준으로 내려갑니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bilet fiyatın en ucuz rakibinkine iner."
+          }
+        }
+      }
+    },
     "issue.war.a.note": {
       "extractionState": "manual",
       "localizations": {
@@ -37512,6 +38209,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Popülerliğine güven"
+          }
+        }
+      }
+    },
+    "issue.war.b.live": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fifty-fifty: Entweder passiert nichts, oder deine Beliebtheit sinkt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fifty-fifty: nothing happens, or your popularity drops."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitad y mitad: o no pasa nada o baja tu popularidad."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "五分五分：何も起きないか、人気が下がるか。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "반반입니다: 아무 일도 없거나 인기가 떨어집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yarı yarıya: ya bir şey olmaz ya da popülerliğin düşer."
           }
         }
       }
@@ -37680,6 +38418,47 @@
         }
       }
     },
+    "issueSheet.here": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · du bist hier"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · you're here"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · estás aquí"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@・現地にいる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 현재 위치"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · buradasın"
+          }
+        }
+      }
+    },
     "issueSheet.later": {
       "extractionState": "manual",
       "localizations": {
@@ -37758,6 +38537,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ · otomatik mod"
+          }
+        }
+      }
+    },
+    "issueSheet.yourCall": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist vor Ort, du entscheidest."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're here, so it's your call."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estás aquí, tú decides."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "君は現地にいる。決めるのは君だ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자네가 여기 있으니 결정은 자네 몫이네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buradasın, karar senin."
           }
         }
       }
@@ -53588,6 +54408,88 @@
         }
       }
     },
+    "review.cheap.1.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich habe {p} bezahlt. Vielleicht der beste Preis in Albuquerque."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I paid {p}. Maybe the best price in Albuquerque."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagué {p}. Quizás el mejor precio de Albuquerque."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p}払った。アルバカーキでいちばん安いかも。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p} 냈어요. 앨버커키 최저가일지도."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p} ödedim, Albuquerque'nin en iyi fiyatı bu olabilir."
+          }
+        }
+      }
+    },
+    "review.cheap.1.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich habe {p} bezahlt. Vielleicht der beste Preis in Luxor."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I paid {p}. Maybe the best price in Luxor."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagué {p}. Quizás el mejor precio de Luxor."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p}払った。ルクソールでいちばん安いかも。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p} 냈어요. 룩소르 최저가일지도."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p} ödedim, Luksor'un en iyi fiyatı bu olabilir."
+          }
+        }
+      }
+    },
     "review.crash.0": {
       "extractionState": "manual",
       "localizations": {
@@ -53625,6 +54527,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Peribacasına çarptık! Herkes iyi ama bu kabul edilemez."
+          }
+        }
+      }
+    },
+    "review.crash.0.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir sind in eine Pappel gekracht! Allen geht's gut, aber das ist inakzeptabel."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We hit a cottonwood! Everyone's okay, but this is unacceptable."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Chocamos con un álamo! Todos están bien, pero esto es inaceptable."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハコヤナギに激突！全員無事だけど、ありえない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "미루나무에 부딪혔어요! 다들 괜찮지만 이건 용납할 수 없어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kavak ağacına çarptık! Herkes iyi ama bu kabul edilemez."
+          }
+        }
+      }
+    },
+    "review.crash.0.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir sind in die Dattelpalmen gekracht! Allen geht's gut, aber das ist inakzeptabel."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We hit the date palms! Everyone's okay, but this is unacceptable."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Chocamos con las palmeras! Todos están bien, pero esto es inaceptable."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナツメヤシに激突！全員無事だけど、ありえない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대추야자나무에 부딪혔어요! 다들 괜찮지만 이건 용납할 수 없어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hurma ağaçlarına çarptık! Herkes iyi ama bu kabul edilemez."
           }
         }
       }
@@ -53953,6 +54937,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kapadokya'ya gelip balona binmemek olmaz. Bu ekip çok profesyonel."
+          }
+        }
+      }
+    },
+    "review.general.0.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Man kann nicht nach Albuquerque kommen und keinen Ballon fahren. Sehr professionelles Team."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can't come to Albuquerque and skip the balloon. This team is very professional."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No puedes venir a Albuquerque y no subir en globo. Este equipo es muy profesional."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アルバカーキに来て気球に乗らないなんてありえない。とてもプロのチーム。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앨버커키에 와서 열기구를 안 탈 순 없죠. 정말 프로페셔널한 팀이에요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Albuquerque'ye gelip balona binmemek olmaz. Bu ekip çok profesyonel."
+          }
+        }
+      }
+    },
+    "review.general.0.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Man kann nicht nach Luxor kommen und keinen Ballon fahren. Sehr professionelles Team."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can't come to Luxor and skip the balloon. This team is very professional."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No puedes venir a Luxor y no subir en globo. Este equipo es muy profesional."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールに来て気球に乗らないなんてありえない。とてもプロのチーム。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르에 와서 열기구를 안 탈 순 없죠. 정말 프로페셔널한 팀이에요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor'a gelip balona binmemek olmaz. Bu ekip çok profesyonel."
           }
         }
       }
@@ -54613,6 +55679,88 @@
         }
       }
     },
+    "review.panorama.0.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unser Fotograf liebte das Bild aus 550 Metern. Das ganze Rio-Grande-Tal lag uns zu Füßen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Our photographer loved the shot from 550 meters. The whole Rio Grande valley was at our feet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A nuestro fotógrafo le encantó la foto desde 550 metros. Todo el valle del Río Grande a nuestros pies."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カメラマンは550メートルからの一枚に大満足。リオグランデの谷がまるごと足元に。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진작가가 550미터에서 찍은 사진을 정말 좋아했어요. 리오그란데 계곡 전체가 발아래 있었죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Bütün Rio Grande vadisi ayaklarımızın altındaydı."
+          }
+        }
+      }
+    },
+    "review.panorama.0.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unser Fotograf liebte das Bild aus 550 Metern. Die Tempel und der Nil lagen uns zu Füßen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Our photographer loved the shot from 550 meters. The temples and the Nile were at our feet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A nuestro fotógrafo le encantó la foto desde 550 metros. Los templos y el Nilo a nuestros pies."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カメラマンは550メートルからの一枚に大満足。神殿とナイルが足元に。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진작가가 550미터에서 찍은 사진을 정말 좋아했어요. 신전과 나일강이 발아래 있었죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Tapınaklar ve Nil ayaklarımızın altındaydı."
+          }
+        }
+      }
+    },
     "review.panorama.1": {
       "extractionState": "manual",
       "localizations": {
@@ -54732,6 +55880,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gün doğumu, peribacaları ve kusursuz bir iniş. Hayatımın sabahıydı."
+          }
+        }
+      }
+    },
+    "review.perfect.1.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonnenaufgang über den Sandia Mountains und eine makellose Landung. Der Morgen meines Lebens."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunrise over the Sandia Mountains and a flawless landing. The morning of my life."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amanecer sobre las montañas Sandia y un aterrizaje perfecto. La mañana de mi vida."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サンディア山脈の日の出と完璧な着陸。人生最高の朝。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "샌디아 산맥 위의 일출과 완벽한 착륙. 인생 최고의 아침이었어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sandia Dağları'nda gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı."
+          }
+        }
+      }
+    },
+    "review.perfect.1.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonnenaufgang über dem Tal der Könige und eine makellose Landung. Der Morgen meines Lebens."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunrise over the Valley of the Kings and a flawless landing. The morning of my life."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amanecer sobre el Valle de los Reyes y un aterrizaje perfecto. La mañana de mi vida."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "王家の谷の日の出と完璧な着陸。人生最高の朝。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "왕가의 계곡 위 일출과 완벽한 착륙. 인생 최고의 아침이었어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krallar Vadisi'nde gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı."
           }
         }
       }
@@ -55310,6 +56540,88 @@
         }
       }
     },
+    "review.valley.0.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir glitten über den Rio Grande, als könnten wir das Wasser berühren!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We skimmed the Rio Grande; it felt like we could touch the water!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Rozamos el Río Grande, parecía que podíamos tocar el agua!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リオグランデの水面すれすれを飛んだ。水に触れそうだった！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "리오그란데 위를 스치듯 날았어요, 물에 손이 닿을 것 같았죠!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rio Grande'nin üstünden süzüldük, suya dokunacak gibiydik!"
+          }
+        }
+      }
+    },
+    "review.valley.0.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir glitten über den Nil, als könnten wir die Segel der Feluken berühren!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We skimmed the Nile; it felt like we could touch the feluccas' sails!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Rozamos el Nilo, parecía que podíamos tocar las velas de las falúas!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルの水面すれすれを飛んだ。ファルーカの帆に触れそうだった！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일강 위를 스치듯 날았어요, 펠루카 돛에 손이 닿을 것 같았죠!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil'in üstünden süzüldük, feluka yelkenlerine dokunacak gibiydik!"
+          }
+        }
+      }
+    },
     "review.valley.1": {
       "extractionState": "manual",
       "localizations": {
@@ -55347,6 +56659,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vadide alçak uçuş inanılmazdı, güvercinlerle yan yana uçtuk."
+          }
+        }
+      }
+    },
+    "review.valley.1.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Tiefflug über den Fluss war unglaublich, Reiher flogen direkt neben uns auf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The low flight over the river was incredible; herons took off right beside us."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El vuelo bajo sobre el río fue increíble; las garzas despegaban a nuestro lado."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "川の上の低空飛行は最高。すぐ横からサギが飛び立った。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강 위 저공비행은 정말 대단했어요. 바로 옆에서 왜가리가 날아올랐죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nehrin üstünde alçak uçuş inanılmazdı, balıkçıllar hemen yanımızdan havalandı."
+          }
+        }
+      }
+    },
+    "review.valley.1.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Tiefflug über den Nil war unglaublich, die Fischer winkten uns zu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The low flight over the Nile was incredible; the fishermen waved at us."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El vuelo bajo sobre el Nilo fue increíble; los pescadores nos saludaban."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイルの上の低空飛行は最高。漁師たちが手を振ってくれた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일강 위 저공비행은 정말 대단했어요. 어부들이 손을 흔들어 줬죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil'in üstünde alçak uçuş inanılmazdı, balıkçılar bize el salladı."
           }
         }
       }
@@ -55511,6 +56905,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kapadokya Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz."
+          }
+        }
+      }
+    },
+    "review.xl.2.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir sahen den Fiesta-Stern von Weitem und buchten. Keine Reue."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We saw the Fiesta Star from afar and booked. No regrets."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vimos la Estrella de la Fiesta de lejos y reservamos. Sin arrepentimientos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遠くからフィエスタ・スターを見て予約した。後悔なし。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "멀리서 피에스타 스타를 보고 예약했어요. 후회 없어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiesta Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz."
+          }
+        }
+      }
+    },
+    "review.xl.2.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir sahen den Theben-Stern von Weitem und buchten. Keine Reue."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We saw the Theban Star from afar and booked. No regrets."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vimos la Estrella de Tebas de lejos y reservamos. Sin arrepentimientos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遠くからテーベ・スターを見て予約した。後悔なし。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "멀리서 테베 스타를 보고 예약했어요. 후회 없어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teb Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz."
           }
         }
       }

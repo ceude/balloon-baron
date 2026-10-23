@@ -96,7 +96,10 @@ struct HomeView: View {
                     // Passenger reviews pop up below the weather, left of the side buttons, so they never cover either.
                     VStack(alignment: .leading, spacing: 10) {
                         if let w = s.weather {
+                            // While passengers board, the town under it is the show: the wind card steps aside.
                             weatherWidget(w, winter: s.winter != nil)
+                                .opacity(store.collecting ? 0 : 1)
+                                .animation(.easeOut(duration: 0.25), value: store.collecting)
                                 .background {
                                     GeometryReader { g in
                                         Color.clear.preference(key: WeatherBottomKey.self, value: g.frame(in: .global).maxY)
@@ -505,6 +508,11 @@ struct HomeView: View {
         } else if s.region.hasFiesta, let next = s.fiestaNext, next - s.day >= 1, next - s.day <= 3 {
             out.append(HomeAlert(id: "fiestaSoon", level: .green, title: loc("home.alert.fiestaSoon" + cruise, num(next - s.day)),
                                  text: loc("home.alert.fiestaSoon.body" + cruise)))
+        }
+        if let open = s.local.openIssue {
+            let r = s.region
+            out.append(HomeAlert(id: "issue.here", level: .red, title: open.kind.title,
+                                 text: loc(open.kind == .raise ? "home.alert.issueHere.raise" : "home.alert.issueHere"), tap: { store.issueRegion = r }))
         }
         for r in RegionID.allCases {
             guard let issue = s.parked[r]?.auto.issue else { continue }

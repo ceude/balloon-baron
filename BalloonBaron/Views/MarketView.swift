@@ -213,6 +213,7 @@ struct MarketView: View {
             }
             if r.alive, let offer = r.offer {
                 callout(loc("marketPage.offerBody", r.name, eur(offer), num(r.balloons.count)), color: Theme.yellow) {
+                    FleetMixList(r.balloons)
                     FleetUI.SmallButton(title: loc("marketPage.takeOver", eur(offer)), disabled: s.cash < offer) {
                         store.act { _ = $0.takeOver(i) }
                     }
@@ -221,6 +222,7 @@ struct MarketView: View {
             if let sale = r.forSale {
                 let sizes = sale.sizes.map(\.title).joined(separator: ", ")
                 callout(loc("marketPage.saleBody", r.name, sizes), color: Theme.green) {
+                    FleetMixList(sale.sizes)
                     FleetUI.SmallButton(title: loc("marketPage.buy", eur(sale.price)), disabled: s.cash < sale.price) {
                         store.act { _ = $0.buyBankruptFleet(i) }
                     }

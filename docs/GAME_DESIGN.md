@@ -158,7 +158,7 @@ Albuquerque ve Luksor rakipleri daha sert oynar (`RIVAL_EDGE`, Swift'te `RegionI
   - 5 ve üstünde her gün %25 şansla max(€5.000, şirket değerinin %3'ü) ceza. Şirket değeri: pozitif kasa + balonların alış fiyatı + sahip olunan oteller.
 
 ## Bölümler ve Baron
-Hedefler gün sonunda kontrol edilir. Bölüm bitince ödül kasaya girer, ertesi sabah tören açılır.
+Hedefler her işlemden sonra kontrol edilir: bir bölümün bütün hedefleri tuttuğu anda ödül kasaya girer ve tören hemen açılır (v108). Baron bölümü bunun dışında: bütün hedefleri aynı gün tutmalı, gün sonunda kontrol edilir. Bölüm kartlarında "Bölüm 2/4" büyük başlıkla yazar.
 
 | Bölge | Bölüm | Ödül | Hedefler |
 |---|---|---|---|
@@ -253,6 +253,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Balloon Fiesta:** her 30 günde bir, 4 gün, talep ×1,9 (ilki girişten 12 gün sonra).
 - **Otomatik mod:** Ayrılınan bölge son 14 günün ortanca net kârının %85'ini (euroya çevrilmiş) her gün ±%15 oynayarak holdinge getirir.
 - **Sorunlar:** son sorundan 6 gün sonra her gün %7. Karar verilene kadar kazanç yarıda.
+- **Sorunlu bölgeye gitmek (v108):** karar bekleyen sorun bölgeyle birlikte durur; oraya geçince kaybolmaz. Varınca karar kartı açılır, ana ekranda kırmızı uyarı olur; zam isteyen pilotlar ofisin önünde pankartla bekler. Geri dönersen sorun otomatik modda beklemeye devam eder. Bölgedeyken seçimlerin sonucu yerinde olur: zam ver = pilot maaşları %15 artar; reddet = pilotlar 3 gün uçmaz (sadece amiral, sen); fiyatı eşitle = bilet fiyatın en ucuz rakibe iner; popülerliğine güven = %50 popülerlik −0,08; sert iniş: kendin ilgilen −0,05, müdür halletsin −0,1 popülerlik; otel: ödersen kalır, bırakırsan bir otel anlaşman gider; zarflar: bütçeyi onaylarsan %30 altındaki zarflar yenilenir.
   - Zam: kalıcı −%6 ya da 3 gün sıfır.
   - Fiyat savaşı: kalıcı −%10 ya da %50 şansla 10 gün −%25.
   - Sert iniş: bölgeye git (popülerlik −0,05) ya da 7 gün −%15.
@@ -267,7 +268,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Billboard:** €120.000, bulunulan bölgede 20 gün talep +%10.
 - **Zarf Ar-Ge'si:** €400.000 ile ömür 160, €900.000 ile 200 uçuş.
 - **Rekor projesi (5. masa):** Luksor'a girince açılır. İrtifa rekoru €400.000 / 25 gün / %65 / talep kalıcı +%5; dünya turu €900.000 / 40 gün / %50 / +%10. İlk deneme hep başarılı (gizli); geliştirme denemelerinde oranlar geçerli, başarı +%2 (toplam en fazla +%25).
-- **Sponsorlu özel şekiller (6. masa):** şişe 30 gün €4.000/gün, roket 45 gün €6.500/gün, ayakkabı 60 gün €9.000/gün; imzalanan bölgede popülerlik her gün 0,001 / 0,0015 / 0,002 düşer (yıldız olarak 0,004 / 0,006 / 0,008).
+- **Sponsorlu özel şekiller (6. masa):** şişe 30 gün €4.000/gün, roket 45 gün €6.500/gün, ayakkabı 60 gün €9.000/gün; imzalanan bölgede popülerlik her gün 0,001 / 0,0015 / 0,002 düşer (yıldız olarak 0,004 / 0,006 / 0,008). Fiyatın altında "€4.000 × 30 gün" yazar. Sözleşme bozulabilir (v108): ceza = şimdiye kadar alınan para + kalan günlerin ödemesinin yarısı, yani bozmak her zaman kalan sürenin yarısı kadar zarar ettirir.
 - **Ofisler:** İstanbul €350.000 (Kapadokya otomatik +%25), New York €450.000 (TV %25 ucuz, Albuquerque otomatik +%20), Seul €400.000 (ünlü sözleşmesi 180 gün ve €420.000), Tokyo €400.000 (tasarım bedava, yaratıcılık +10, tazelik 60 gün, ileride Asya girişi yarı fiyatına).
 
 ## Balon atölyesi ve tasarımlar

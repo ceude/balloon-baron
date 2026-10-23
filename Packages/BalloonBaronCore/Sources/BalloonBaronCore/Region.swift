@@ -178,6 +178,11 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var bestPax: Int?
     /// Morning events: pilots on strike today, a balloon chartered today, fuel price up until, documentary day.
     public var strikeDay: Int?
+    /// Pilots who were refused a raise stay off work through this day.
+    public var strikeUntil: Int?
+    /// A problem raised while the region was on autopilot, still undecided now that you're here, and the day its card last showed.
+    public var openIssue: Autopilot.OpenIssue?
+    public var issueSeen: Int?
     public var charter: Charter?
     public var fuelUpUntil: Int?
     public var docDay: Int?

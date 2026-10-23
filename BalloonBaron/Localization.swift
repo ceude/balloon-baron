@@ -95,6 +95,8 @@ extension Issue {
     var hezarfen: String { loc("issue.\(rawValue).hez") }
     func option(_ c: Choice) -> String { loc("issue.\(rawValue).\(c == .a ? "a" : "b")") }
     func note(_ c: Choice) -> String { loc("issue.\(rawValue).\(c == .a ? "a" : "b").note") }
+    /// What the choice does in the region you're in (the hotel payment reads the same either way).
+    func liveNote(_ c: Choice) -> String { self == .hotel && c == .a ? note(c) : loc("issue.\(rawValue).\(c == .a ? "a" : "b").live") }
 }
 func celebrityName(_ i: Int) -> String { loc("celebrity.\(i)") }
 
@@ -169,7 +171,10 @@ extension HezMessage {
 
 extension Review {
     func text(company: String, designs: [Design] = []) -> String {
-        var t = loc("review.\(kind.rawValue).\(variant)")
+        // Reviews live with their region; lines that name a place have their own version outside Cappadocia.
+        let key = "review.\(kind.rawValue).\(variant)", local = key + "." + currentRegion.rawValue
+        let localText = currentRegion == .cap ? local : loc(local)
+        var t = localText != local ? localText : loc(key)
         var values = args
         values["c"] = company
         if let d = values["d"], let id = Int(d) { values["d"] = designs.first { $0.id == id }?.title ?? "" }

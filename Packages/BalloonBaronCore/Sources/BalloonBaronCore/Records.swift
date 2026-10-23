@@ -62,6 +62,21 @@ extension Game {
         return true
     }
 
+    /// Breaking a running shape deal costs what the brand has paid so far plus half of what's left, so it
+    /// is always a loss. Nil when no deal is running.
+    public var adBreakFee: Int? {
+        guard let a = state.holding.adShape, a.until >= state.day else { return nil }
+        let left = min(max(a.until - state.day, 0), a.shape.days), paid = a.shape.days - left
+        return jsRound(Double(paid * a.shape.pay + left * a.shape.pay / 2) / 100) * 100
+    }
+
+    @discardableResult
+    public mutating func breakAdShape() -> Bool {
+        guard let fee = adBreakFee, spendHolding(fee) else { return false }
+        state.holding.adShape = nil
+        return true
+    }
+
     /// The attempt ends on its day. Returns nothing for the ledger; the news says how it went.
     mutating func recordDay() -> Int {
         guard let r = state.holding.record, state.day >= r.done else { return 0 }
