@@ -84,6 +84,20 @@ extension Game {
         return true
     }
 
+    /// Balloons whose envelope is below 30%: the fleet page renews them all with one tap.
+    public var wornBalloons: [Balloon] { state.balloons.filter { state.condition($0) < 0.3 } }
+    public var renewWornCost: Int { wornBalloons.reduce(0) { $0 + renewCost($1) } }
+
+    @discardableResult
+    public mutating func renewWornEnvelopes() -> Bool {
+        let worn = wornBalloons, cost = renewWornCost
+        guard !worn.isEmpty, state.cash >= cost else { return false }
+        state.cash -= cost
+        for b in worn { if let i = state.balloons.firstIndex(where: { $0.id == b.id }) { state.balloons[i].flights = 0 } }
+        assignPilots()
+        return true
+    }
+
     public mutating func makeFlagship(_ id: Int) {
         guard state.balloon(id) != nil else { return }
         state.flagship = id

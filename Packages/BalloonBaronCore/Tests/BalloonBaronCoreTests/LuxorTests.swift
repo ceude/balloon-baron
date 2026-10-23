@@ -196,3 +196,28 @@ final class LuxorTests: XCTestCase {
         XCTAssertEqual(g.state.rep, rep - 0.001, accuracy: 1e-12)
     }
 }
+
+/// Prototype v107: the fleet page renews every envelope below 30% in one go.
+final class FleetRenewTests: XCTestCase {
+    func testRenewWornEnvelopesOnlyBelowThirtyPercent() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 7)
+        g.startDay()
+        g.addBalloon(.M)
+        g.addBalloon(.S)
+        let life = Double(g.state.envelopeLife)
+        g.state.balloons[0].flights = life * 0.8   // 20%: renewed
+        g.state.balloons[1].flights = life * 0.5   // 50%: left alone
+        g.state.balloons[2].flights = life         // 0%: renewed
+        g.state.cash = 1_000_000
+        let expected = g.renewCost(g.state.balloons[0]) + g.renewCost(g.state.balloons[2])
+        XCTAssertEqual(g.wornBalloons.map(\.id), [g.state.balloons[0].id, g.state.balloons[2].id])
+        XCTAssertEqual(g.renewWornCost, expected)
+        XCTAssertTrue(g.renewWornEnvelopes())
+        XCTAssertEqual(g.state.cash, 1_000_000 - expected)
+        XCTAssertEqual(g.state.balloons.map(\.flights), [0, life * 0.5, 0])
+        XCTAssertFalse(g.renewWornEnvelopes(), "nothing left to renew")
+        g.state.balloons[1].flights = life
+        g.state.cash = 10
+        XCTAssertFalse(g.renewWornEnvelopes(), "can't pay")
+    }
+}

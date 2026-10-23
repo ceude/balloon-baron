@@ -242,11 +242,31 @@ private struct BalloonPick: Identifiable {
     let id: Int
 }
 
+/// The fleet page's balloon filters (`FLEET_FILTERS`). Size filters and empty ones are hidden when nothing matches.
+private enum FleetFilter: String, CaseIterable {
+    case all, ready, issue, worn, S, M, L, XL
+
+    func includes(_ b: Balloon, _ s: GameState) -> Bool {
+        switch self {
+        case .all: return true
+        case .ready: return s.status(b) == .ok
+        case .issue: return s.status(b) != .ok || s.condition(b) < 0.3
+        case .worn: return s.condition(b) < 0.6
+        case .S: return b.size == .S
+        case .M: return b.size == .M
+        case .L: return b.size == .L
+        case .XL: return b.size == .XL
+        }
+    }
+}
+
+/// The fleet page stays readable with twenty balloons: a summary, status filters with counts, then one compact line
+/// per balloon (flagship first, then the ones that need you, then by size). A line opens the balloon's card with
+/// everything else: sponsor, design, equipment, envelope, flagship, sell. Port of prototype v107 `tabFleet`.
 struct FleetView: View {
     @Environment(GameStore.self) private var store
-    @State private var adPick: BalloonPick?
-    @State private var designPick: BalloonPick?
-    @State private var equipPick: BalloonPick?
+    @State private var filter: FleetFilter = .all
+    @State private var cardPick: BalloonPick?
     @State private var studioOpen = false
 
     var body: some View {
@@ -257,14 +277,8 @@ struct FleetView: View {
                 workshopCard(game)
                     .id(PageSection.workshop)
             }
-            .sheet(item: $adPick) { pick in
-                AdPicker(balloonID: pick.id).environment(store)
-            }
-            .sheet(item: $designPick) { pick in
-                DesignPicker(balloonID: pick.id).environment(store)
-            }
-            .sheet(item: $equipPick) { pick in
-                EquipmentPicker(balloonID: pick.id).environment(store)
+            .sheet(item: $cardPick) { pick in
+                BalloonCardSheet(balloonID: pick.id).environment(store)
             }
             .sheet(isPresented: $studioOpen) {
                 DesignStudioView().environment(store)
@@ -276,12 +290,306 @@ struct FleetView: View {
 
     private func balloonsCard(_ game: Game) -> some View {
         let s = game.state
+        // A filter that no longer matches anything (the last worn envelope was renewed) falls back to all.
+        let current = filter == .all || s.balloons.contains(where: { filter.includes($0, s) }) ? filter : .all
+        let list = s.balloons.filter { current.includes($0, s) }.sorted { a, b in
+            let ra = rank(a, s), rb = rank(b, s)
+            if ra != rb { return ra < rb }
+            if a.size.capacity != b.size.capacity { return a.size.capacity > b.size.capacity }
+            return a.name.localizedCompare(b.name) == .orderedAscending
+        }
+        let worn = game.wornBalloons.count, cost = game.renewWornCost
         return FleetUI.Card(loc("fleetPage.yours")) {
-            ForEach(s.sortedFleet) { b in
-                balloonRow(b, game)
+            summary(s)
+            chips(s, current)
+            if worn > 0 {
+                FleetUI.SmallButton(title: loc("fleet.renewAll", num(worn), eur(cost)), ghost: true, disabled: s.cash < cost) {
+                    store.act { _ = $0.renewWornEnvelopes() }
+                }
             }
+            VStack(spacing: 0) {
+                ForEach(Array(list.enumerated()), id: \.element.id) { i, b in
+                    if i > 0 { Rectangle().fill(Theme.line).frame(height: 1.5).padding(.leading, 52) }
+                    row(b, s)
+                }
+                if list.isEmpty {
+                    FleetUI.Hint(loc("fleet.empty")).frame(maxWidth: .infinity).padding(14)
+                }
+            }
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 18))
+            .overlay(RoundedRectangle(cornerRadius: 18).stroke(Theme.line, lineWidth: 2))
             FleetUI.Hint(loc("fleetPage.hintEnvelope", num(s.envelopeLife)))
             FleetUI.Hint(loc("fleetPage.hintPilots"))
+        }
+    }
+
+    private func summary(_ s: GameState) -> some View {
+        let seats = s.balloons.reduce(0) { $0 + $1.size.capacity }, up = s.balloons.reduce(0) { $0 + $1.size.upkeep }
+        let ready = s.balloons.filter { s.status($0) == .ok }.count
+        return HStack(spacing: 6) {
+            tile(num(s.balloons.count), loc("fleet.sum.balloons"))
+            tile(num(seats), loc("fleet.sum.seats"))
+            tile(num(ready), loc("fleet.sum.ready"))
+            tile(eur(up), loc("fleet.sum.upkeep"))
+        }
+    }
+
+    private func tile(_ value: String, _ label: String) -> some View {
+        VStack(spacing: 1) {
+            Text(value)
+                .font(Theme.font(20, .heavy, condensed: true))
+                .foregroundStyle(Theme.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+            Text(label)
+                .font(Theme.font(11, .semibold))
+                .foregroundStyle(Theme.ink2)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 4)
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.line, lineWidth: 2))
+        .accessibilityElement(children: .combine)
+    }
+
+    private func chips(_ s: GameState, _ current: FleetFilter) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(FleetFilter.allCases, id: \.self) { f in
+                    let n = s.balloons.filter { f.includes($0, s) }.count
+                    if f == .all || n > 0 {
+                        let on = f == current
+                        Button { filter = f } label: {
+                            HStack(spacing: 4) {
+                                Text(loc("fleet.f.\(f.rawValue)")).foregroundStyle(on ? Color.white : Theme.ink)
+                                Text(num(n)).foregroundStyle(on ? Color(hex: "#cfc8ff") : f == .issue ? Theme.red : Theme.ink2)
+                            }
+                            .font(Theme.font(13, .bold))
+                            .padding(.horizontal, 12)
+                            .frame(height: 32)
+                            .background(on ? Theme.ink : Color.white, in: Capsule())
+                            .overlay(Capsule().stroke(on ? Color.clear : Theme.line, lineWidth: 2))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(on ? .isSelected : [])
+                    }
+                }
+            }
+            .padding(.vertical, 2)
+        }
+    }
+
+    /// Flagship first, then red, orange, yellow and green.
+    private func rank(_ b: Balloon, _ s: GameState) -> Int { (b.id == s.flagship ? 0 : 10) + rowState(b, s).level }
+
+    /// `fleetState(b)`: how urgent the balloon is (0 red … 3 green), its dot color and a short status.
+    private func rowState(_ b: Balloon, _ s: GameState) -> (level: Int, color: Color, text: String) {
+        let orange = Color(hex: "#ff8a3d")
+        switch s.status(b) {
+        case .damaged: return (0, Theme.red, loc("fleetPage.status.damaged", num(b.damagedUntil - s.day)))
+        case .worn: return (0, Theme.red, loc("fleet.row.worn"))
+        case .banned: return (0, Theme.red, loc("fleet.row.banned"))
+        case .strike: return (1, orange, loc("fleetPage.status.strike"))
+        case .noPilot: return (1, orange, loc("fleet.row.noPilot"))
+        case .licenseHold: return (1, orange, loc("fleet.row.licenseHold"))
+        case .late: return (1, orange, loc("fleetPage.status.late"))
+        case .chartered: return (3, Theme.green, loc("fleetPage.status.chartered"))
+        case .ok:
+            if s.condition(b) < 0.3 { return (2, Theme.yellow, loc("fleet.row.readyWorn")) }
+            if !b.fly { return (3, Theme.ink2, loc("fleetPage.status.resting")) }
+            if s.isSelf(b) { return (3, Theme.green, loc("fleet.row.readyYou")) }
+            let first = s.pilot(of: b).map { String($0.name.split(separator: " ").first ?? Substring($0.name)) } ?? ""
+            return (3, Theme.green, loc("fleet.row.ready", first))
+        }
+    }
+
+    private func row(_ b: Balloon, _ s: GameState) -> some View {
+        let st = rowState(b, s), cond = s.condition(b)
+        let ring: Color = cond < 0.3 ? Theme.red : cond < 0.6 ? Theme.yellow : Theme.green
+        return Button { cardPick = BalloonPick(id: b.id) } label: {
+            HStack(spacing: 10) {
+                DesignBalloon(colors: s.colors, design: s.design(of: b))
+                    .frame(width: 30, height: 38)
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(b.name)
+                            .font(Theme.font(17, .heavy, condensed: true))
+                            .foregroundStyle(Theme.ink)
+                            .lineLimit(1)
+                        if b.id == s.flagship {
+                            Text("★").font(Theme.font(14, .bold)).foregroundStyle(Theme.sun)
+                        }
+                        Text(b.size.rawValue + " · " + num(b.size.capacity))
+                            .font(Theme.font(11, .bold))
+                            .foregroundStyle(Theme.ink2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 1)
+                            .background(Theme.line.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
+                            .fixedSize()
+                        if let ad = b.ad {
+                            Circle().fill(Color(hex: ad.colors.bg)).frame(width: 9, height: 9)
+                        }
+                        if b.burners > 1 {
+                            Text("×" + num(b.burners)).font(Theme.font(11, .heavy)).foregroundStyle(Color(hex: "#d9641f")).fixedSize()
+                        }
+                    }
+                    HStack(spacing: 5) {
+                        Circle().fill(st.color).frame(width: 8, height: 8)
+                        Text(st.text)
+                            .font(Theme.font(12.5, .semibold))
+                            .foregroundStyle(st.level < 2 ? Theme.ink : Theme.ink2)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                    }
+                }
+                Spacer(minLength: 4)
+                ZStack {
+                    Circle().stroke(Theme.line, lineWidth: 4)
+                    Circle().trim(from: 0, to: CGFloat(cond))
+                        .stroke(ring, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                    Text(num(Int((cond * 100).rounded())))
+                        .font(Theme.font(10.5, .heavy))
+                        .foregroundStyle(Theme.ink)
+                }
+                .frame(width: 32, height: 32)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Theme.ink2)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(loc("fleet.row.a11y", b.name, st.text, percent(cond)))
+        .accessibilityAddTraits(.isButton)
+    }
+
+    // MARK: Shop
+
+    private func shopCard(_ s: GameState) -> some View {
+        FleetUI.Card(loc("fleetPage.shop")) {
+            ForEach(BalloonSize.shop, id: \.self) { z in
+                shopRow(z, s)
+            }
+            if !s.balloons.contains(where: { $0.size == .XL }) {
+                xlRow(s)
+            }
+        }
+    }
+
+    private func specs(_ z: BalloonSize) -> String {
+        loc("fleetPage.shopSpecs", num(z.capacity), z.risk.formatted(.number.precision(.fractionLength(0...2))), eur(z.upkeep), eur(z.fuel))
+    }
+
+    private func shopRow(_ z: BalloonSize, _ s: GameState) -> some View {
+        FleetUI.Item {
+            HStack(alignment: .center, spacing: 12) {
+                DesignBalloon(colors: ["#cfc8dd", "#ffffff"])
+                    .frame(width: 38, height: 48)
+                VStack(alignment: .leading, spacing: 3) {
+                    FleetUI.Title(z.title)
+                    FleetUI.Detail(specs(z))
+                }
+                Spacer(minLength: 4)
+                FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
+                    store.act { _ = $0.buyBalloon(z) }
+                }
+                .frame(width: 110)
+            }
+        }
+    }
+
+    private func xlRow(_ s: GameState) -> some View {
+        let z = BalloonSize.XL
+        return FleetUI.Item {
+            HStack(alignment: .top, spacing: 12) {
+                DesignBalloon(colors: [s.colors.first ?? "#ff5e3a", "#ffd27a"])
+                    .frame(width: 38, height: 48)
+                VStack(alignment: .leading, spacing: 3) {
+                    FleetUI.Title(s.region.xlName)
+                    FleetUI.Detail(z.title + " · " + specs(z))
+                    FleetUI.Detail(loc("fleetPage.xlDesc"))
+                }
+            }
+            FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
+                store.act { _ = $0.buyBalloon(z) }
+            }
+        }
+    }
+
+    // MARK: Workshop
+
+    private func workshopCard(_ game: Game) -> some View {
+        let s = game.state
+        return FleetUI.Card(loc("fleetPage.workshop")) {
+            if s.workshopDay == nil {
+                FleetUI.Item {
+                    FleetUI.Title(loc("fleetPage.workshopBuild"))
+                    FleetUI.Detail(loc("fleetPage.workshopDesc"))
+                    FleetUI.SmallButton(title: eur(Studio.workshopCost), disabled: s.cash < Studio.workshopCost) {
+                        store.act { _ = $0.buildWorkshop() }
+                    }
+                }
+            } else {
+                if s.designs.isEmpty {
+                    FleetUI.Hint(loc("fleetPage.noDesigns"))
+                }
+                ForEach(s.designs) { d in
+                    designRow(d, game)
+                }
+                BigButton(title: loc("fleetPage.newDesign")) { studioOpen = true }
+            }
+        }
+    }
+
+    private func designRow(_ d: Design, _ game: Game) -> some View {
+        let s = game.state
+        let fresh = game.freshness(d)
+        let faded = Int((fresh * 100).rounded()) <= 20
+        let count = s.balloons.filter { $0.design == d.id }.count
+        return FleetUI.Item {
+            HStack(spacing: 12) {
+                DesignBalloon(colors: d.colors, design: d)
+                    .frame(width: 44, height: 56)
+                VStack(alignment: .leading, spacing: 3) {
+                    FleetUI.Title(d.title)
+                    FleetUI.Detail(loc(faded ? "fleetPage.designLineFaded" : "fleetPage.designLine", num(d.score), percent(fresh), num(count)))
+                }
+            }
+        }
+    }
+}
+
+/// A balloon's card (`balloonCard`): what the old fleet row showed, with its buttons and pickers.
+private struct BalloonCardSheet: View {
+    @Environment(GameStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
+    let balloonID: Int
+    @State private var adPick: BalloonPick?
+    @State private var designPick: BalloonPick?
+    @State private var equipPick: BalloonPick?
+
+    var body: some View {
+        if let game = store.game, let b = game.state.balloon(balloonID) {
+            FleetUI.Sheet(title: b.name, lead: b.size.title + " · " + loc("fleetPage.specs", num(b.size.capacity), eur(b.size.upkeep), eur(b.size.fuel)),
+                          close: { dismiss() }) {
+                balloonRow(b, game)
+            }
+            .sheet(item: $adPick) { pick in
+                AdPicker(balloonID: pick.id).environment(store)
+            }
+            .sheet(item: $designPick) { pick in
+                DesignPicker(balloonID: pick.id).environment(store)
+            }
+            .sheet(item: $equipPick) { pick in
+                EquipmentPicker(balloonID: pick.id).environment(store)
+            }
         }
     }
 
@@ -292,13 +600,9 @@ struct FleetView: View {
                 DesignBalloon(colors: s.colors, design: s.design(of: b))
                     .frame(width: 44, height: 56)
                 VStack(alignment: .leading, spacing: 4) {
-                    HStack(spacing: 6) {
-                        FleetUI.Title(b.name)
-                        if b.id == s.flagship {
-                            FleetUI.Tag(text: "★ " + loc("fleetPage.flagship"), color: Theme.green)
-                        }
+                    if b.id == s.flagship {
+                        FleetUI.Tag(text: "★ " + loc("fleetPage.flagship"), color: Theme.green)
                     }
-                    FleetUI.Detail(b.size.title + " · " + loc("fleetPage.specs", num(b.size.capacity), eur(b.size.upkeep), eur(b.size.fuel)))
                     if let p = pilotText(b, s) {
                         FleetUI.Detail(p, color: Theme.ink)
                     }
@@ -438,105 +742,12 @@ struct FleetView: View {
             if s.balloons.count > 1 {
                 FleetUI.SmallButton(title: loc("fleetPage.sell", eur(sale)), ghost: true) {
                     store.act { _ = $0.sellBalloon(b.id) }
+                    dismiss()
                 }
             }
         }
     }
 
-    // MARK: Shop
-
-    private func shopCard(_ s: GameState) -> some View {
-        FleetUI.Card(loc("fleetPage.shop")) {
-            ForEach(BalloonSize.shop, id: \.self) { z in
-                shopRow(z, s)
-            }
-            if !s.balloons.contains(where: { $0.size == .XL }) {
-                xlRow(s)
-            }
-        }
-    }
-
-    private func specs(_ z: BalloonSize) -> String {
-        loc("fleetPage.shopSpecs", num(z.capacity), z.risk.formatted(.number.precision(.fractionLength(0...2))), eur(z.upkeep), eur(z.fuel))
-    }
-
-    private func shopRow(_ z: BalloonSize, _ s: GameState) -> some View {
-        FleetUI.Item {
-            HStack(alignment: .center, spacing: 12) {
-                DesignBalloon(colors: ["#cfc8dd", "#ffffff"])
-                    .frame(width: 38, height: 48)
-                VStack(alignment: .leading, spacing: 3) {
-                    FleetUI.Title(z.title)
-                    FleetUI.Detail(specs(z))
-                }
-                Spacer(minLength: 4)
-                FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
-                    store.act { _ = $0.buyBalloon(z) }
-                }
-                .frame(width: 110)
-            }
-        }
-    }
-
-    private func xlRow(_ s: GameState) -> some View {
-        let z = BalloonSize.XL
-        return FleetUI.Item {
-            HStack(alignment: .top, spacing: 12) {
-                DesignBalloon(colors: [s.colors.first ?? "#ff5e3a", "#ffd27a"])
-                    .frame(width: 38, height: 48)
-                VStack(alignment: .leading, spacing: 3) {
-                    FleetUI.Title(s.region.xlName)
-                    FleetUI.Detail(z.title + " · " + specs(z))
-                    FleetUI.Detail(loc("fleetPage.xlDesc"))
-                }
-            }
-            FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
-                store.act { _ = $0.buyBalloon(z) }
-            }
-        }
-    }
-
-    // MARK: Workshop
-
-    private func workshopCard(_ game: Game) -> some View {
-        let s = game.state
-        return FleetUI.Card(loc("fleetPage.workshop")) {
-            if s.workshopDay == nil {
-                FleetUI.Item {
-                    FleetUI.Title(loc("fleetPage.workshopBuild"))
-                    FleetUI.Detail(loc("fleetPage.workshopDesc"))
-                    FleetUI.SmallButton(title: eur(Studio.workshopCost), disabled: s.cash < Studio.workshopCost) {
-                        store.act { _ = $0.buildWorkshop() }
-                    }
-                }
-            } else {
-                if s.designs.isEmpty {
-                    FleetUI.Hint(loc("fleetPage.noDesigns"))
-                }
-                ForEach(s.designs) { d in
-                    designRow(d, game)
-                }
-                BigButton(title: loc("fleetPage.newDesign")) { studioOpen = true }
-            }
-        }
-    }
-
-    private func designRow(_ d: Design, _ game: Game) -> some View {
-        let s = game.state
-        let fresh = game.freshness(d)
-        let faded = Int((fresh * 100).rounded()) <= 20
-        let count = s.balloons.filter { $0.design == d.id }.count
-        return FleetUI.Item {
-            HStack(spacing: 12) {
-                DesignBalloon(colors: d.colors, design: d)
-                    .frame(width: 44, height: 56)
-                VStack(alignment: .leading, spacing: 3) {
-                    FleetUI.Title(d.title)
-                    FleetUI.Detail(loc(faded ? "fleetPage.designLineFaded" : "fleetPage.designLine", num(d.score), percent(fresh), num(count)))
-                }
-            }
-        }
-    }
 }
 
 // MARK: - Pickers

@@ -2506,9 +2506,9 @@ function tabFleet(body) {
     c.onclick = () => { FLEET_F = k; refresh(); }; chips.appendChild(c);
   }
   s.appendChild(chips);
-  /* one tap renews every tired envelope you can pay for */
-  const renew = worn, cost = renew.reduce((a, b) => a + SIZES[b.size].cost * RENEW, 0);
-  if (renew.length > 1) s.appendChild(pbtn(`Yıpranan zarfları yenile (${renew.length}) · ${eur(cost)}`, () => { S.cash -= cost; renew.forEach(b => { b.flights = 0; }); refresh(); }, S.cash < cost, true));
+  /* one tap renews every envelope below 30% */
+  const renew = all.filter(b => cond(b) < .3), cost = renew.reduce((a, b) => a + SIZES[b.size].cost * RENEW, 0);
+  if (renew.length) s.appendChild(pbtn(`Yıpranan zarfları yenile (${renew.length}) · ${eur(cost)}`, () => { S.cash -= cost; renew.forEach(b => { b.flights = 0; }); refresh(); }, S.cash < cost, true));
   /* the list */
   const rank = b => (b.id === S.flag ? 0 : 1) * 10 + ({ r: 0, o: 1, y: 2, g: 3 })[fleetState(b)[0]];
   const list = all.filter(FLEET_FILTERS[FLEET_F] ? FLEET_FILTERS[FLEET_F][1] : () => true)
