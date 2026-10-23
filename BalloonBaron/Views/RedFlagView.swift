@@ -90,6 +90,37 @@ enum CardText {
     }
 }
 
+/// `pilotCheck()`: before collecting passengers, balloons you meant to fly that have no pilot stay on the ground.
+/// Says which, with the way to the crew page or flying anyway.
+struct GroundedView: View {
+    @Environment(GameStore.self) private var store
+    let onClose: () -> Void
+    let onFly: () -> Void
+
+    static func grounded(_ s: GameState) -> [Balloon] { s.sortedFleet.filter { $0.fly && s.status($0) == .noPilot } }
+
+    var body: some View {
+        let left = store.state.map(Self.grounded) ?? []
+        ModalCard {
+            CardText.title(left.count == 1 ? loc("grounded.one") : loc("grounded.many", num(left.count)))
+            CardText.lead(loc("grounded.lead", left.map(\.name).joined(separator: ", ")))
+            HStack(spacing: 10) {
+                Button(loc("grounded.crew")) {
+                    SoundEngine.shared.play(.click)
+                    onClose()
+                    store.page = .crew
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+                Button(loc("grounded.fly")) {
+                    SoundEngine.shared.play(.click)
+                    onFly()
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .big))
+            }
+        }
+    }
+}
+
 /// `confirmRed()`: warns before launching on a red-flag day. Overlay it; `onClose` hides it.
 struct RedFlagView: View {
     @Environment(GameStore.self) private var store

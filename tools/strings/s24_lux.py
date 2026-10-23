@@ -439,3 +439,60 @@ add("paper.night.glow.lux.sub",
  "Las luces de los barcos y los globos en tierra iluminaron el Nilo.",
  "船の灯りと地上の気球がナイルを照らした。",
  "배들의 불빛과 땅 위의 열기구가 나일을 밝혔습니다.")
+
+# Grounded balloons before collecting passengers (prototype v106, `pilotCheck`)
+add("grounded.one", "One balloon will stay on the ground", "Bir balon yerde kalacak", "Ein Ballon bleibt am Boden", "Un globo se quedará en tierra", "1機が地上に残る", "열기구 한 대가 땅에 남습니다")
+add("grounded.many", "Balloons staying on the ground: %@", "Yerde kalacak balon: %@", "Ballone am Boden: %@", "Globos que se quedan en tierra: %@", "地上に残る気球：%@機", "땅에 남을 열기구: %@대")
+add("grounded.lead",
+ "No pilot for: %@. Today only the balloons with a pilot take off, and they take the passengers.",
+ "Pilotu olmayan balonlar: %@. Bugün yalnızca pilotu olan balonlar kalkar, yolcuları da onlar alır.",
+ "Kein Pilot für: %@. Heute starten nur die Ballone mit Pilot, und sie nehmen die Fahrgäste.",
+ "Sin piloto: %@. Hoy solo despegan los globos con piloto, y ellos llevan a los pasajeros.",
+ "パイロットがいない気球：%@。今日はパイロットのいる気球だけが飛び、乗客もそちらに乗る。",
+ "조종사가 없는 열기구: %@. 오늘은 조종사가 있는 열기구만 이륙하고 승객도 그쪽에 탑니다.")
+add("grounded.crew", "Crew page", "Ekip sayfası", "Crew-Seite", "Página del equipo", "クルーのページ", "승무원 페이지")
+add("grounded.fly", "Fly anyway", "Yine de uç", "Trotzdem fliegen", "Volar igualmente", "それでも飛ぶ", "그래도 비행")
+
+# Region travel (prototype v106, `showTravel`)
+add("travel.sub", "The wind is carrying you to the skies of %@…", "Rüzgâr seni %@ göğüne taşıyor…", "Der Wind trägt dich in den Himmel über %@…", "El viento te lleva al cielo de %@…", "風が君を%@の空へ運んでいく…", "바람이 당신을 %@의 하늘로 데려갑니다…")
+
+# Settings screen (prototype v106.1, `showMenu`)
+add("settings.title", "Settings", "Ayarlar", "Einstellungen", "Ajustes", "設定", "설정")
+add("settings.sub", "%1$@ · Day %2$@ · %3$@", "%1$@ · Gün %2$@ · %3$@", "%1$@ · Tag %2$@ · %3$@", "%1$@ · Día %2$@ · %3$@", "%1$@・%2$@日目・%3$@", "%1$@ · %2$@일차 · %3$@")
+add("settings.game", "Game", "Oyun", "Spiel", "Juego", "ゲーム", "게임")
+add("settings.album", "Achievements", "Başarımlar", "Erfolge", "Logros", "実績", "업적")
+add("settings.soundHaptics", "Sound and haptics", "Ses ve titreşim", "Ton und Haptik", "Sonido y vibración", "サウンドと振動", "소리와 진동")
+add("settings.sound", "Sound", "Ses", "Ton", "Sonido", "サウンド", "소리")
+add("settings.haptics", "Haptics", "Titreşim", "Haptik", "Vibración", "振動", "진동")
+add("settings.notice", "Notifications", "Bildirim", "Mitteilungen", "Notificaciones", "通知", "알림")
+add("settings.reminder", "Morning reminder", "Sabah hatırlatıcısı", "Morgenerinnerung", "Recordatorio matutino", "朝のリマインダー", "아침 알림")
+add("settings.save", "Save", "Kayıt", "Spielstand", "Partida", "セーブ", "저장")
+add("settings.autosaved", "Saved automatically", "Otomatik kaydedildi", "Automatisch gespeichert", "Guardado automáticamente", "自動保存済み", "자동 저장됨")
+add("settings.copyCode", "Copy save code", "Kayıt kodunu kopyala", "Speichercode kopieren", "Copiar código de partida", "セーブコードをコピー", "저장 코드 복사")
+add("settings.loadCode", "Load a save code", "Kayıt kodu yükle", "Speichercode laden", "Cargar un código de partida", "セーブコードを読み込む", "저장 코드 불러오기")
+add("settings.copyHint",
+ "To continue on another device, copy this code and paste it there under \"Load a save code\".",
+ "Başka bir cihazda devam etmek için bu kodu kopyala, orada \"Kayıt kodu yükle\"ye yapıştır.",
+ "Um auf einem anderen Gerät weiterzuspielen, kopiere diesen Code und füge ihn dort unter „Speichercode laden“ ein.",
+ "Para seguir en otro dispositivo, copia este código y pégalo allí en «Cargar un código de partida».",
+ "別の端末で続けるには、このコードをコピーして、そちらの「セーブコードを読み込む」に貼り付けよう。",
+ "다른 기기에서 이어 하려면 이 코드를 복사해 그쪽의 '저장 코드 불러오기'에 붙여 넣으세요.")
+add("settings.loadHint",
+ "Paste the code you copied on another device and tap Load. It replaces the game on this device.",
+ "Başka cihazdan kopyaladığın kodu buraya yapıştır ve Yükle'ye bas. Buradaki oyunun yerini alır.",
+ "Füge den Code ein, den du auf einem anderen Gerät kopiert hast, und tippe auf Laden. Er ersetzt das Spiel auf diesem Gerät.",
+ "Pega el código que copiaste en otro dispositivo y toca Cargar. Sustituye la partida de este dispositivo.",
+ "別の端末でコピーしたコードを貼り付けて「読み込む」を押そう。この端末のゲームと置き換わる。",
+ "다른 기기에서 복사한 코드를 붙여 넣고 불러오기를 누르세요. 이 기기의 게임을 대체합니다.")
+add("settings.pastePlaceholder", "Paste the code here", "Kodu buraya yapıştır", "Code hier einfügen", "Pega el código aquí", "ここにコードを貼り付け", "여기에 코드를 붙여 넣으세요")
+add("settings.paste", "Paste", "Yapıştır", "Einfügen", "Pegar", "貼り付け", "붙여넣기")
+add("settings.purchases", "Purchases", "Satın alımlar", "Käufe", "Compras", "購入", "구매")
+add("settings.restore", "Restore purchases", "Satın alımları geri yükle", "Käufe wiederherstellen", "Restaurar compras", "購入を復元", "구매 복원")
+add("settings.restoring", "Checking your purchases with the App Store…", "Satın alımların App Store'dan kontrol ediliyor…", "Deine Käufe werden beim App Store geprüft…", "Comprobando tus compras con la App Store…", "App Storeで購入を確認しています…", "App Store에서 구매 내역을 확인하는 중…")
+add("settings.about", "About", "Hakkında", "Info", "Acerca de", "このアプリについて", "정보")
+add("settings.privacy", "Privacy policy", "Gizlilik politikası", "Datenschutz", "Política de privacidad", "プライバシーポリシー", "개인정보 처리방침")
+add("settings.support", "Support", "Destek", "Support", "Soporte", "サポート", "지원")
+add("settings.version", "Version", "Sürüm", "Version", "Versión", "バージョン", "버전")
+add("settings.sure", "Sure? All progress is deleted. Tap again", "Emin misin? Bütün ilerleme silinir. Tekrar dokun", "Sicher? Der gesamte Fortschritt wird gelöscht. Nochmal tippen", "¿Seguro? Se borra todo el progreso. Toca otra vez", "本当に？すべての進行が消える。もう一度タップ", "정말요? 모든 진행이 삭제됩니다. 다시 누르세요")
+add("a11y.on", "On", "Açık", "Ein", "Activado", "オン", "켬")
+add("a11y.off", "Off", "Kapalı", "Aus", "Desactivado", "オフ", "끔")

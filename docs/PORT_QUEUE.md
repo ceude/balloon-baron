@@ -2,18 +2,9 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-## Bekleyenler (prototip v106)
+(Şu an kuyruk boş: Swift uygulaması prototip v106.1 ile aynı.)
 
-- **Bölge geçişi** (`showTravel`): bölge değişince yaklaşık 3,4 saniyelik bir ekran açılır. Dünya haritasında şirket balonu eski şehirden yenisine noktalı bir yay boyunca süzülür. Başlık "Kapadokya → Albuquerque", alt yazı "Rüzgâr seni … göğüne taşıyor…". Bölge arkada hemen değişir; açılır pencereler balon inince gelir.
-- **Pilot eksik uyarısı** (`pilotCheck`): "Yolcu topla"ya basınca uçması seçili ama pilotu olmayan balon varsa kart açılır: "Bir balon yerde kalacak" ya da "Yerde kalacak balon: N", balon adları, "Ekip sayfası" ve "Yine de uç" düğmeleri. Kırmızı bayrak sorusu ondan sonra gelir.
-- **Ayarlar menüsü** (`showMenu`): sağ üstteki menü bir ayarlar ekranı oldu.
-  - Gruplar: Oyun (Başarımlar, Game Center), Ses ve titreşim (Ses ve Titreşim anahtarları; titreşim kapanınca Haptics susar), Bildirim (Sabah hatırlatıcısı anahtarı), Kayıt, Satın alımlar (geri yükle), Hakkında (Gizlilik politikası, Destek, Sürüm).
-  - Kayıt grubu: otomatik kayıt satırı, "Kayıt kodunu kopyala" (açılınca kod ve Kopyala) ve "Kayıt kodu yükle" (boş kutu, Yapıştır, Yükle).
-  - Sonda kırmızı "Yeni oyun başlat" (iki dokunuşla) ve "Devam et".
-  - Görünüm (v106.1): emoji yok. Her satırda oyunun yan butonlarıyla aynı çizgi stilinde ikon (`SET_IC`: kupa, oyun kolu, hoparlör, titreşim, zil, bulut, kopyala, yapıştır, çanta, kalkan, zarf, bilgi, çöp), 36 pt yuvarlak karede; her grubun kendi rengi var (oyun mercan, ses turkuaz, bildirim sarı, kayıt mavi, satın alım mor, hakkında gri, yeni oyun kırmızı). Satırlar oyunun beyaz kartlarında, sert alt gölgeli; başlıkta şirket balonu, şirket adı · gün · bölge ve kapatma düğmesi. Anahtarlar yeşil, kendi gölgeli topuzlu.
-- **Üç boyutlu şirket balonu** (`balloon3d`): uygulama ikonundaki gibi 13 dilimli, ışık ve gölgeli, alevli balon; renkler şirket renkleri (her dördüncü dilim ikinci renk). Giriş ekranının balonunda ve uçuşta amiral balonunda kullanılır. Atölye tasarımı giydirilmiş balon eski çizimde kalır. Kaynağı `tools/appstore/art.js` içindeki `balloon` ve `flame`.
-
-(Swift'te doğrudan düzeltilenler, prototipte karşılığı yok: yakınlaşınca sağdaki ikon sütunu da tamamen ekrandan çıkıyor; holding ofisinde masalar arası en az 175 pt, kısa ekranda ofis aşağı kayıyor.)
+v106–v106.1 aktarımı (Ekim 2026): bölge geçişi (`TravelView`, `GameStore.travel`; bölge her değiştiğinde `act` açar, açılır pencereler iniş sonrasına kalır), pilot eksik uyarısı (`GroundedView`), ayarlar ekranı (`MenuView`, `SettingsIcon`; titreşim anahtarı `Haptics.on` / `haptics`), üç boyutlu şirket balonu (`ScenePainter.balloon3d`, giriş ekranında ve tasarımsız amiral balonunda). Ayrıca doğrudan Swift'te: yakınlaşınca sağdaki ikonlar tamamen kayar, holding ofisinde masalar arası en az 175 pt ve kısa ekranda kaydırma.
 
 Önceki durum: Swift uygulaması prototip v105.1 ile aynıydı.
 

@@ -596,8 +596,14 @@ private enum FlightPainter {
         windPills(&ctx, cam: cam, m: m)
         let R = PR * 0.75 * (look.xl ? 1.3 : 1)
         let bx = cam.sx(f.x), by = cam.sy(f.alt)
-        ScenePainter.balloon(&ctx, x: bx, y: by, r: R, colors: look.colors, burn: f.burning && f.fuel > 0,
-                             ad: look.ad, design: look.design, region: look.region, time: m.T)
+        if let design = look.design {
+            ScenePainter.balloon(&ctx, x: bx, y: by, r: R, colors: look.colors, burn: f.burning && f.fuel > 0,
+                                 ad: look.ad, design: design, region: look.region, time: m.T)
+        } else {
+            // Without a workshop design the flagship is drawn in full volume, like the app icon.
+            ScenePainter.balloon3d(&ctx, x: bx, y: by, r: R, colors: look.colors, burn: f.burning && f.fuel > 0,
+                                   ad: look.ad, region: look.region)
+        }
         if let c = m.celebAt { celebration(&ctx, m: m, bx: bx, by: by, r: R, ct: m.T - c) }
         fieldPointer(&ctx, cam: cam, m: m)
         missionGuides(&ctx, cam: cam, m: m)

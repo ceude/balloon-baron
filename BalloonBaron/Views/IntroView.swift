@@ -239,7 +239,7 @@ struct IntroView: View {
                 Gradient(colors: [Color(red: 1, green: 170 / 255, blue: 70 / 255).opacity(0.35), .clear]),
                 center: CGPoint(x: bx, y: by - R * 1.2), startRadius: 0, endRadius: R * 2.4))
         }
-        ScenePainter.balloon(&ctx, x: bx, y: by, r: R, colors: scene.colors, burn: intro.hold, region: scene.region, time: T)
+        ScenePainter.balloon3d(&ctx, x: bx, y: by, r: R, colors: scene.colors, burn: intro.hold, region: scene.region)
     }
 
     /// The balloon is gone: fade to cream, then hand over (setup or office). RootView fades this

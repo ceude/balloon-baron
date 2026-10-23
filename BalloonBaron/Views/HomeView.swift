@@ -17,6 +17,8 @@ struct HomeAlert: Identifiable {
 struct HomeView: View {
     @Environment(GameStore.self) private var store
     @State private var confirmRed = false
+    /// Balloons meant to fly that have no pilot: a card before collecting passengers (`pilotCheck`).
+    @State private var groundedWarning = false
     /// Day on which the player expanded the alerts; they collapse again the next morning.
     @State private var alertsOpenDay: Int?
     @State private var showPlan = false
@@ -47,6 +49,13 @@ struct HomeView: View {
                     if confirmRed {
                         RedFlagView(onClose: { confirmRed = false })
                             .transition(.opacity)
+                    }
+                    if groundedWarning {
+                        GroundedView(onClose: { groundedWarning = false }, onFly: {
+                            groundedWarning = false
+                            launchOrConfirmRed(game.state)
+                        })
+                        .transition(.opacity)
                     }
                 }
                 .sheet(isPresented: $showPlan, onDismiss: openPendingPage) {
@@ -741,6 +750,10 @@ struct HomeView: View {
 
     // MARK: Day buttons
 
+    private func launchOrConfirmRed(_ s: GameState) {
+        if s.weather?.flag == .red { confirmRed = true; Haptics.warning() } else { store.startCollect() }
+    }
+
     private func actionButtons(_ s: GameState) -> some View {
         let none = s.flyingToday.isEmpty
         return HStack(spacing: 10) {
@@ -748,7 +761,7 @@ struct HomeView: View {
                 .frame(width: 140)
             BigButton(title: loc(none ? "home.noneFlying" : "home.collect")) {
                 Haptics.press()
-                if s.weather?.flag == .red { confirmRed = true; Haptics.warning() } else { store.startCollect() }
+                if !GroundedView.grounded(s).isEmpty { groundedWarning = true; Haptics.warning() } else { launchOrConfirmRed(s) }
             }
             .disabled(none)
             .opacity(none ? 0.5 : 1)

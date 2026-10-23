@@ -68,13 +68,16 @@ final class GameStore {
     /// The night between two days, with what lights it up.
     struct Night: Equatable { var event: NightEvent? }
     var night: Night?
+    /// The short flight across the world map when the region changes (`showTravel`).
+    struct Travel: Equatable { let from: RegionID, to: RegionID }
+    var travel: Travel?
 
     /// Anything already covering the home screen; the next popup waits for it.
     private var busy: Bool {
         showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
-            || night != nil
+            || night != nil || travel != nil
     }
 
     init() {
@@ -140,8 +143,10 @@ final class GameStore {
     /// Runs an action on the game and saves.
     func act(_ f: (inout Game) -> Void) {
         guard var g = game else { return }
+        let from = g.state.region
         f(&g)
         game = g
+        if g.state.region != from { travel = Travel(from: from, to: g.state.region) }
         currentRegion = g.state.region
         save()
     }

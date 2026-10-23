@@ -11,37 +11,42 @@ enum Haptics {
     private static let rigid = UIImpactFeedbackGenerator(style: .rigid)
     private static let selection = UISelectionFeedbackGenerator()
     private static let notice = UINotificationFeedbackGenerator()
+    /// The player can turn them off in the settings (`haptics`, on by default).
+    static var on: Bool { UserDefaults.standard.object(forKey: "haptics") as? Bool ?? true }
     private static var lastBurn = 0.0
     private static var lastVent = 0.0
 
     /// While the burner fires: a low rumble, about eight pulses a second.
     static func burner(at t: Double) {
+        guard Self.on else { return }
         guard t - lastBurn >= 0.12 else { return }
         lastBurn = t
         soft.impactOccurred(intensity: 0.45)
     }
 
     /// Burner lit or put out.
-    static func burnerToggled(on: Bool) { (on ? medium : light).impactOccurred(intensity: on ? 0.7 : 0.4) }
+    static func burnerToggled(on: Bool) { guard Self.on else { return }; (on ? medium : light).impactOccurred(intensity: on ? 0.7 : 0.4) }
 
     /// The parachute vent pulled open: a light tug.
-    static func ventOpened() { light.impactOccurred(intensity: 0.6) }
+    static func ventOpened() { guard Self.on else { return }; light.impactOccurred(intensity: 0.6) }
 
     /// While the vent is held open (and the burner is off): a faint flutter as the air escapes, five pulses a second.
     static func vent(at t: Double) {
+        guard Self.on else { return }
         guard t - lastVent >= 0.2 else { return }
         lastVent = t
         light.impactOccurred(intensity: 0.25)
     }
 
     /// A price step, or any small dial: barely there.
-    static func tick() { selection.selectionChanged() }
+    static func tick() { guard Self.on else { return }; selection.selectionChanged() }
 
     /// A button that starts something (take off, collect passengers).
-    static func press() { medium.impactOccurred(intensity: 0.6) }
+    static func press() { guard Self.on else { return }; medium.impactOccurred(intensity: 0.6) }
 
     /// Touchdown, by how it went.
     static func landed(_ q: FlightResult.Landing) {
+        guard Self.on else { return }
         switch q {
         case .perfect: notice.notificationOccurred(.success)
         case .good: medium.impactOccurred()
@@ -56,11 +61,11 @@ enum Haptics {
     }
 
     /// Something good happened: a special request done, a chapter finished, a purchase arrived.
-    static func success() { notice.notificationOccurred(.success) }
+    static func success() { guard Self.on else { return }; notice.notificationOccurred(.success) }
 
     /// A warning: red flag, cash below zero.
-    static func warning() { notice.notificationOccurred(.warning) }
+    static func warning() { guard Self.on else { return }; notice.notificationOccurred(.warning) }
 
     /// Coins: a small bright tap.
-    static func coin() { rigid.impactOccurred(intensity: 0.5) }
+    static func coin() { guard Self.on else { return }; rigid.impactOccurred(intensity: 0.5) }
 }
