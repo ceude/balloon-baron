@@ -2581,15 +2581,10 @@ function introScene(gy) {
   /* the launch field and the morning mist over it */
   const gd = ctx.createLinearGradient(0, gy, 0, H); gd.addColorStop(0, L.ground[0]); gd.addColorStop(1, L.ground[1]); ctx.fillStyle = gd; ctx.fillRect(0, gy, W, H - gy);
   const mist = ctx.createLinearGradient(0, gy - u * .06, 0, gy + u * .05); mist.addColorStop(0, 'rgba(255,215,190,0)'); mist.addColorStop(.5, 'rgba(255,215,190,.28)'); mist.addColorStop(1, 'rgba(255,215,190,0)'); ctx.fillStyle = mist; ctx.fillRect(0, gy - u * .06, W, u * .11);
-  /* the crew and the chase jeep beside the basket */
-  ctx.fillStyle = 'rgba(30,16,26,.85)';
-  for (const [dx, hh] of [[-.2, .07], [-.15, .065], [.17, .068]]) { const px = W / 2 + dx * u * 1.2, py = gy + u * .01; ctx.beginPath(); ctx.arc(px, py - u * hh, u * .011, 0, 7); ctx.fill(); rrect(px - u * .012, py - u * hh + u * .012, u * .024, u * (hh - .012), u * .006); ctx.fill(); }
-  const jx = W / 2 + u * .33, jy = gy + u * .02; rrect(jx - u * .07, jy - u * .045, u * .14, u * .035, u * .008); ctx.fill(); rrect(jx - u * .04, jy - u * .07, u * .07, u * .03, u * .006); ctx.fill(); ell(jx - u * .045, jy - u * .008, u * .015, u * .015, 'rgba(30,16,26,.95)'); ell(jx + u * .045, jy - u * .008, u * .015, u * .015, 'rgba(30,16,26,.95)');
-  /* the game's name in the sky, leaving as you climb */
-  const a = Math.max(0, 1 - lift * 1.6);
-  if (a > 0) {
-    ctx.save(); ctx.globalAlpha = a; ctx.textAlign = 'center';
-    const ty = Math.max(70, H * .14) - lift * 40, fs = Math.min(W * .13, 64);
+  /* the game's name in the sky; it stays put and the balloon rises past it, in front */
+  {
+    ctx.save(); ctx.textAlign = 'center';
+    const ty = Math.max(70, H * .14), fs = Math.min(W * .13, 64);
     ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; ctx.shadowColor = 'rgba(10,4,24,.6)'; ctx.shadowBlur = 24;
     const tg = ctx.createLinearGradient(0, ty - fs, 0, ty); tg.addColorStop(0, '#ffffff'); tg.addColorStop(.6, '#fff1d0'); tg.addColorStop(1, '#ffc23d');
     ctx.fillStyle = tg; ctx.fillText('BALLOON BARON', W / 2, ty);

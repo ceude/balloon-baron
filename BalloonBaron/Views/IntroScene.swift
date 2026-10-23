@@ -2,7 +2,7 @@ import SwiftUI
 import BalloonBaronCore
 
 /// The opening screen's world: a dawn launch field in the region you're playing, with its own skyline, the last
-/// stars, a rising sun, balloons already up, the crew and the chase jeep, and the game's name in the sky.
+/// stars, a rising sun, balloons already up, and the game's name in the sky.
 /// Luxor's look is ready for when Egypt opens. Port of the prototype's `introScene`.
 enum IntroScene {
     struct Look {
@@ -22,7 +22,7 @@ enum IntroScene {
 
     private static let cols = ["#ff5e3a", "#ffc23d", "#14a39a", "#9b7be0", "#5aa9e6", "#ff6fa8", "#22a45d", "#e5432f"]
 
-    /// Everything but the hero balloon. `lift` is 0 on the ground and 1 high up; the title leaves as it grows.
+    /// Everything but the hero balloon. `lift` is 0 on the ground and 1 high up.
     static func draw(_ ctx: inout GraphicsContext, size: CGSize, region key: String, gy: CGFloat, t: Double, lift: Double) {
         let L = look(key), W = size.width, H = size.height, u = min(W, H)
         func hex(_ s: String) -> Color { Color(hex: s) }
@@ -115,23 +115,10 @@ enum IntroScene {
         ctx.fill(Path(CGRect(x: 0, y: gy - u * 0.06, width: W, height: u * 0.11)), with: .linearGradient(
             Gradient(stops: [.init(color: mistC.opacity(0), location: 0), .init(color: mistC.opacity(0.28), location: 0.5), .init(color: mistC.opacity(0), location: 1)]),
             startPoint: CGPoint(x: 0, y: gy - u * 0.06), endPoint: CGPoint(x: 0, y: gy + u * 0.05)))
-        // The crew and the chase jeep beside the basket.
-        let crew = Color(red: 30 / 255, green: 16 / 255, blue: 26 / 255).opacity(0.85)
-        for (dx, hh) in [(-0.2, 0.07), (-0.15, 0.065), (0.17, 0.068)] as [(CGFloat, CGFloat)] {
-            let px = W / 2 + dx * u * 1.2, py = gy + u * 0.01
-            ScenePainter.ell(&ctx, px, py - u * hh, u * 0.011, u * 0.011, crew)
-            ctx.fill(Path(roundedRect: CGRect(x: px - u * 0.012, y: py - u * hh + u * 0.012, width: u * 0.024, height: u * (hh - 0.012)), cornerRadius: u * 0.006), with: .color(crew))
-        }
-        let jx = W / 2 + u * 0.33, jy = gy + u * 0.02
-        ctx.fill(Path(roundedRect: CGRect(x: jx - u * 0.07, y: jy - u * 0.045, width: u * 0.14, height: u * 0.035), cornerRadius: u * 0.008), with: .color(crew))
-        ctx.fill(Path(roundedRect: CGRect(x: jx - u * 0.04, y: jy - u * 0.07, width: u * 0.07, height: u * 0.03), cornerRadius: u * 0.006), with: .color(crew))
-        for wx in [jx - u * 0.045, jx + u * 0.045] { ScenePainter.ell(&ctx, wx, jy - u * 0.008, u * 0.015, u * 0.015, crew.opacity(1)) }
-        // The game's name in the sky, leaving as you climb.
-        let a = max(0, 1 - lift * 1.6)
-        if a > 0 {
+        // The game's name in the sky. It stays put; the hero balloon, drawn after the scene, rises past it in front.
+        do {
             var title = ctx
-            title.opacity = a
-            let ty = max(70, H * 0.14) - CGFloat(lift) * 40, fs = min(W * 0.13, 64)
+            let ty = max(70, H * 0.14), fs = min(W * 0.13, 64)
             title.addFilter(.shadow(color: Color(red: 10 / 255, green: 4 / 255, blue: 24 / 255).opacity(0.6), radius: 12))
             let gold = LinearGradient(stops: [.init(color: .white, location: 0), .init(color: hex("#fff1d0"), location: 0.6), .init(color: hex("#ffc23d"), location: 1)],
                                       startPoint: .top, endPoint: .bottom)
