@@ -3793,31 +3793,102 @@ function balloon3dCore(x, y, R, cols, o = {}) {
   ctx.save(); ctx.strokeStyle = 'rgba(255,225,180,.45)'; ctx.lineWidth = Math.max(1.5, R * .018); ctx.clip(env);
   ctx.beginPath(); for (let i = 0; i <= steps; i++) { const yy = lerp(topY, mouth * .7, i / steps), xx = half(yy) * light; i ? ctx.lineTo(xx, yy) : ctx.moveTo(xx, yy); } ctx.stroke(); ctx.restore();
   if (o.alpha !== undefined && o.alpha < .6 && !o.detail) { ctx.restore(); return; }
-  /* skirt, ropes, burner, basket */
+  const by = rig3d(R, mouth, mouthW, cols[0], o.flame, o.flameScale || .55);
+  const bw = R * .34;
+  if (o.people) { ctx.fillStyle = '#1d1418'; for (let i = 0; i < o.people; i++) { const px = -bw * .35 + i * bw * .7 / Math.max(1, o.people - 1); ctx.beginPath(); ctx.arc(px, by - R * .05, R * .028, 0, 7); ctx.fill(); ctx.fillRect(px - R * .025, by - R * .03, R * .05, R * .05); } }
+  ctx.restore();
+}
+/* Skirt, ropes, burner, flame and wicker basket under a 3D envelope whose mouth is at `mouth` (ctx at the balloon's
+   axis). The flame rises into the mouth: only the part below the skirt shows, the rest burns inside the envelope. Its
+   light spills softly round the burner, not cut off at the skirt. Returns the top of the basket. */
+function rig3d(R, mouth, mouthW, col, flame, flameScale) {
   const by = mouth + R * .55, bw = R * .34, bh = R * .26;
-  ctx.fillStyle = mix(cols[0], '#1a0a14', .45); ctx.beginPath(); ctx.moveTo(-mouthW, mouth - 2); ctx.lineTo(mouthW, mouth - 2); ctx.lineTo(mouthW * .8, mouth + R * .12); ctx.lineTo(-mouthW * .8, mouth + R * .12); ctx.fill();
+  ctx.fillStyle = mix(col, '#1a0a14', .45); ctx.beginPath(); ctx.moveTo(-mouthW, mouth - 2); ctx.lineTo(mouthW, mouth - 2); ctx.lineTo(mouthW * .8, mouth + R * .12); ctx.lineTo(-mouthW * .8, mouth + R * .12); ctx.fill();
   ctx.strokeStyle = 'rgba(50,30,25,.9)'; ctx.lineWidth = Math.max(1, R * .008);
   for (const s of [-1, -.35, .35, 1]) { ctx.beginPath(); ctx.moveTo(s * mouthW * .8, mouth + R * .1); ctx.lineTo(s * bw * .45, by); ctx.stroke(); }
+  if (flame) {
+    const fy = by - R * .2, k = 1 + .08 * Math.sin(T * 29) + .05 * Math.sin(T * 53 + 1.1);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const gl = ctx.createRadialGradient(0, fy - R * .05, 0, 0, fy - R * .05, R * .55 * k);
+    gl.addColorStop(0, 'rgba(255,180,80,.38)'); gl.addColorStop(.45, 'rgba(255,130,50,.12)'); gl.addColorStop(1, 'rgba(255,110,40,0)');
+    ctx.fillStyle = gl; ctx.fillRect(-R * .6 * k, fy - R * .6 * k, R * 1.2 * k, R * 1.2 * k); ctx.restore();
+  }
   ctx.fillStyle = '#2a2a30'; ctx.fillRect(-R * .09, by - R * .2, R * .18, R * .08);
-  /* the flame rises into the mouth: only the part below the skirt shows, the rest burns inside the envelope */
-  if (o.flame) { ctx.save(); ctx.beginPath(); ctx.rect(-R, mouth + R * .11, R * 2, R * 2); ctx.clip(); flame3d(0, by - R * .2, R * (o.flameScale || .55)); ctx.restore(); }
+  if (flame) { ctx.save(); ctx.beginPath(); ctx.rect(-R, mouth + R * .11, R * 2, R * 2); ctx.clip(); flame3d(0, by - R * .2, R * flameScale, false); ctx.restore(); }
   const bg = ctx.createLinearGradient(-bw / 2, 0, bw / 2, 0); bg.addColorStop(0, '#4a2c18'); bg.addColorStop(.5, '#8a5a32'); bg.addColorStop(1, '#3a2010');
   ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(-bw / 2, by); ctx.lineTo(bw / 2, by); ctx.lineTo(bw * .44, by + bh); ctx.lineTo(-bw * .44, by + bh); ctx.closePath(); ctx.fill();
   ctx.strokeStyle = 'rgba(30,15,8,.35)'; ctx.lineWidth = Math.max(1, R * .005);
   for (let i = 1; i < 6; i++) { ctx.beginPath(); ctx.moveTo(-bw / 2, by + bh * i / 6); ctx.lineTo(bw / 2, by + bh * i / 6); ctx.stroke(); }
   ctx.fillStyle = '#2a160c'; ctx.fillRect(-bw / 2 - 2, by - R * .02, bw + 4, R * .035);
-  if (o.people) { ctx.fillStyle = '#1d1418'; for (let i = 0; i < o.people; i++) { const px = -bw * .35 + i * bw * .7 / Math.max(1, o.people - 1); ctx.beginPath(); ctx.arc(px, by - R * .05, R * .028, 0, 7); ctx.fill(); ctx.fillRect(px - R * .025, by - R * .03, R * .05, R * .05); } }
+  return by;
+}
+/* A workshop design (pattern or special shape) in the same volume as the company balloon: the design painted on the
+   envelope, then key light, core shadow, darker bottom, the flame's glow inside, seams and a rim light, and the 3D rig
+   underneath. Same overall height as balloon3d(); (x, y) is the bottom of the basket. */
+function designBalloon3d(x, y, R, c1, c2, burn, alpha, ad, design) {
+  const r = R * .86, mouth = y - r * .81, shape = design.shape, cy = mouth - r * (shape ? 1.55 : 1.42), top = cy - r * (shape ? 1 : 1.05);
+  /* the round envelope uses the company balloon's profile, so its gores curve with the volume */
+  const half = yy => {
+    if (yy <= cy) return r * Math.sin(Math.PI / 2 * Math.pow(clamp((yy - top) / (cy - top), 0, 1), .62));
+    const t = (yy - cy) / (mouth - cy); return lerp(r, r * .26, Math.pow(t, 1.25)) * (1 - .08 * Math.sin(Math.PI * t));
+  };
+  const meridian = (sd, y1 = mouth) => { for (let i = 0; i <= 40; i++) { const yy = lerp(top, y1, i / 40); i ? ctx.lineTo(x + half(yy) * sd, yy) : ctx.moveTo(x + half(yy) * sd, yy); } };
+  ctx.save(); ctx.globalAlpha = alpha ?? 1;
+  const outline = () => {
+    if (shape) { envShape(x, cy, r, shape); return; }
+    ctx.beginPath(); meridian(1);
+    for (let i = 40; i >= 0; i--) { const yy = lerp(top, mouth, i / 40); ctx.lineTo(x - half(yy), yy); }
+    ctx.closePath();
+  };
+  outline();
+  ctx.fillStyle = design.cols ? design.cols[0] : c1; ctx.fill();
+  ctx.save(); ctx.clip();
+  paintDesign(x, cy, r, top, design);
+  const sp = ad && SPONSORS.find(q => q.id === ad);
+  if (sp) {
+    ctx.fillStyle = sp.col; ctx.fillRect(x - r * 1.4, cy + r * .12, r * 2.8, r * .52);
+    ctx.fillStyle = sp.fg; ctx.font = `800 ${Math.max(7, Math.round(r * .36))}px "Barlow Condensed", sans-serif`; ctx.textAlign = 'center';
+    ctx.fillText(sp.txt, x, cy + r * .52); ctx.textAlign = 'left';
+  }
+  /* seams on the round envelope; a special shape keeps its outline clean */
+  if (!shape) {
+    ctx.strokeStyle = 'rgba(40,15,30,.2)'; ctx.lineWidth = Math.max(1, r * .006);
+    for (let k = 1; k < 12; k++) { ctx.beginPath(); meridian(Math.sin(-Math.PI / 2 + Math.PI * k / 12)); ctx.stroke(); }
+  }
+  const W = r * 1.5, kl = ctx.createRadialGradient(x - r * .45, cy - r * .45, r * .05, x - r * .3, cy - r * .3, r * 1.3);
+  kl.addColorStop(0, 'rgba(255,248,230,.5)'); kl.addColorStop(.35, 'rgba(255,235,210,.12)'); kl.addColorStop(1, 'rgba(255,235,210,0)');
+  ctx.fillStyle = kl; ctx.fillRect(x - W, top - r * .3, W * 2, r * 3);
+  const sh = ctx.createLinearGradient(x - r * 1.1, 0, x + r * 1.1, 0);
+  sh.addColorStop(0, 'rgba(20,6,30,0)'); sh.addColorStop(.55, 'rgba(20,6,30,.12)'); sh.addColorStop(.85, 'rgba(20,6,30,.45)'); sh.addColorStop(1, 'rgba(20,6,30,.58)');
+  ctx.fillStyle = sh; ctx.fillRect(x - W, top - r * .3, W * 2, r * 3);
+  const bot = ctx.createLinearGradient(0, cy + r * .2, 0, mouth); bot.addColorStop(0, 'rgba(20,6,30,0)'); bot.addColorStop(1, 'rgba(20,6,30,.42)');
+  ctx.fillStyle = bot; ctx.fillRect(x - W, cy + r * .2, W * 2, r * 1.5);
+  if (burn) {
+    ctx.globalCompositeOperation = 'lighter';
+    const fg = ctx.createRadialGradient(x, mouth, 0, x, mouth, r * 1.3); fg.addColorStop(0, 'rgba(255,170,60,.45)'); fg.addColorStop(.4, 'rgba(255,120,40,.12)'); fg.addColorStop(1, 'rgba(255,120,40,0)');
+    ctx.fillStyle = fg; ctx.fillRect(x - W, cy - r * .2, W * 2, r * 2);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+  /* rim light: the lit (left) edge of the outline */
+  const rl = ctx.createLinearGradient(x - r * 1.1, 0, x - r * .2, 0); rl.addColorStop(0, 'rgba(255,225,180,.55)'); rl.addColorStop(1, 'rgba(255,225,180,0)');
+  outline(); ctx.strokeStyle = rl; ctx.lineWidth = Math.max(2, r * .05); ctx.stroke();
+  ctx.restore();
+  if (shape === 'skull') skullFace(x, cy, r);
+  ctx.translate(x, 0);
+  rig3d(r, mouth, r * (shape ? .22 : .26), design.cols ? design.cols[0] : c1, burn, .5);
   ctx.restore();
 }
 /* The burner's flame: soft layered tongues that flicker. Each layer breathes at its own pace (a few sines that never
    line up, so it never looks like a loop), its tip leans with a little sway, and the glow pulses with the flame. */
-function flame3d(x, y, s) {
+function flame3d(x, y, s, glow = true) {
   const t = T, n = (f, p) => Math.sin(t * f + p);
   const pulse = 1 + .1 * n(31, 0) + .06 * n(47, 1.7) + .04 * n(83, 4.1);
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
-  const gy = y - s * .6, gr = s * 2.2 * (.92 + .1 * pulse);
-  const glow = ctx.createRadialGradient(x, gy, 0, x, gy, gr); glow.addColorStop(0, `rgba(255,190,80,${.62 + .12 * n(29, .4)})`); glow.addColorStop(.35, 'rgba(255,120,40,.22)'); glow.addColorStop(1, 'rgba(255,90,30,0)');
-  ctx.fillStyle = glow; ctx.fillRect(x - gr, gy - gr, gr * 2, gr * 2);
+  if (glow) {
+    const gy = y - s * .6, gr = s * 2.2 * (.92 + .1 * pulse);
+    const g = ctx.createRadialGradient(x, gy, 0, x, gy, gr); g.addColorStop(0, `rgba(255,190,80,${.62 + .12 * n(29, .4)})`); g.addColorStop(.35, 'rgba(255,120,40,.22)'); g.addColorStop(1, 'rgba(255,90,30,0)');
+    ctx.fillStyle = g; ctx.fillRect(x - gr, gy - gr, gr * 2, gr * 2);
+  }
   const layers = [['#ff5a1f', 1, 14, 0], ['#ffa531', .74, 9, 1.3], ['#ffe08a', .5, 6, 2.6], ['#fffbe8', .26, 3, 3.9]];
   ctx.globalCompositeOperation = 'source-over';
   for (const [c, k, blur, ph] of layers) {
@@ -3845,6 +3916,22 @@ function flame3d(x, y, s) {
   }
   ctx.restore();
 }
+/* hollow eyes with a glint, a heart-shaped nose, a grin of teeth */
+function skullFace(x, cy, R) {
+  const ink = 'rgba(28,16,32,.88)';
+  for (const sx of [-1, 1]) {
+    ctx.fillStyle = ink; ctx.beginPath(); ctx.ellipse(x + sx * R * .37, cy + R * .2, R * .25, R * .29, sx * .18, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.beginPath(); ctx.arc(x + sx * R * .37 - R * .08, cy + R * .1, R * .06, 0, 7); ctx.fill();
+  }
+  ctx.fillStyle = ink; ctx.beginPath(); ctx.moveTo(x, cy + R * .7);
+  ctx.quadraticCurveTo(x - R * .16, cy + R * .58, x - R * .1, cy + R * .48); ctx.quadraticCurveTo(x - R * .04, cy + R * .43, x, cy + R * .5);
+  ctx.quadraticCurveTo(x + R * .04, cy + R * .43, x + R * .1, cy + R * .48); ctx.quadraticCurveTo(x + R * .16, cy + R * .58, x, cy + R * .7); ctx.fill();
+  ctx.fillStyle = '#fff8ec'; rrect(x - R * .34, cy + R * .82, R * .68, R * .22, R * .06); ctx.fill();
+  ctx.strokeStyle = ink; ctx.lineWidth = Math.max(.6, R * .035); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(x - R * .34, cy + R * .93); ctx.lineTo(x + R * .34, cy + R * .93);
+  for (let t = -2; t <= 2; t++) { ctx.moveTo(x + t * R * .12, cy + R * .82); ctx.lineTo(x + t * R * .12, cy + R * 1.04); }
+  ctx.stroke();
+}
 function balloon(x, y, R, c1, c2, burn, alpha, ad, design) {
   ctx.save(); ctx.globalAlpha = alpha ?? 1;
   const top = y - R * 2.55, cy = top + R;
@@ -3869,21 +3956,7 @@ function balloon(x, y, R, c1, c2, burn, alpha, ad, design) {
   const g = ctx.createLinearGradient(x - R, 0, x + R, 0); g.addColorStop(0, 'rgba(255,255,255,.18)'); g.addColorStop(.6, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(40,10,40,.35)');
   ctx.fillStyle = g; ctx.fillRect(x - R, top, R * 2, R * 3);
   ctx.restore();
-  if (shape === 'skull') { /* hollow eyes with a glint, a heart-shaped nose, a grin of teeth */
-    const ink = 'rgba(28,16,32,.88)';
-    for (const sx of [-1, 1]) {
-      ctx.fillStyle = ink; ctx.beginPath(); ctx.ellipse(x + sx * R * .37, cy + R * .2, R * .25, R * .29, sx * .18, 0, 7); ctx.fill();
-      ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.beginPath(); ctx.arc(x + sx * R * .37 - R * .08, cy + R * .1, R * .06, 0, 7); ctx.fill();
-    }
-    ctx.fillStyle = ink; ctx.beginPath(); ctx.moveTo(x, cy + R * .7);
-    ctx.quadraticCurveTo(x - R * .16, cy + R * .58, x - R * .1, cy + R * .48); ctx.quadraticCurveTo(x - R * .04, cy + R * .43, x, cy + R * .5);
-    ctx.quadraticCurveTo(x + R * .04, cy + R * .43, x + R * .1, cy + R * .48); ctx.quadraticCurveTo(x + R * .16, cy + R * .58, x, cy + R * .7); ctx.fill();
-    ctx.fillStyle = '#fff8ec'; rrect(x - R * .34, cy + R * .82, R * .68, R * .22, R * .06); ctx.fill();
-    ctx.strokeStyle = ink; ctx.lineWidth = Math.max(.6, R * .035); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(x - R * .34, cy + R * .93); ctx.lineTo(x + R * .34, cy + R * .93);
-    for (let t = -2; t <= 2; t++) { ctx.moveTo(x + t * R * .12, cy + R * .82); ctx.lineTo(x + t * R * .12, cy + R * 1.04); }
-    ctx.stroke();
-  }
+  if (shape === 'skull') skullFace(x, cy, R);
   ctx.strokeStyle = 'rgba(60,35,30,.8)'; ctx.lineWidth = 1;
   const by = cy + R * 1.55, bb = y - R * .32;
   ctx.beginPath(); ctx.moveTo(x - R * .22, by); ctx.lineTo(x - R * .24, bb); ctx.moveTo(x + R * .22, by); ctx.lineTo(x + R * .24, bb); ctx.stroke();
@@ -4017,7 +4090,7 @@ function draw(dt) {
       ctx.fillStyle = '#2b2350'; ctx.fillText(`${Math.round(Math.abs(v) * 3.6)} km/s`, 70, y + 5);
     }
     { const fb = bal(S.flag) || {}, d = designOf(bal(S.flag)), R = PR * .75 * (fb.size === 'XL' ? 1.3 : 1);
-      if (d) balloon(sx(f.x), sy(f.alt), R, myc[0], myc[1], f.burning && f.fuel > 0, 1, fb.ad, d); else balloon3d(sx(f.x), sy(f.alt), R, myc[0], myc[1], f.burning && f.fuel > 0, 1, fb.ad); }
+      if (d) designBalloon3d(sx(f.x), sy(f.alt), R, myc[0], myc[1], f.burning && f.fuel > 0, 1, fb.ad, d); else balloon3d(sx(f.x), sy(f.alt), R, myc[0], myc[1], f.burning && f.fuel > 0, 1, fb.ad); }
     if (f.celebAt) {
       const R0 = PR * .75, bx = sx(f.x), by = sy(f.alt), ct = T - f.celebAt;
       if (ct < 14) couple(bx, by - R0 * .32, R0, ct);

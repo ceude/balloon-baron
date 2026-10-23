@@ -139,7 +139,16 @@ extension ScenePainter {
         }
         if alpha < 0.6 { return }
 
-        // Skirt, ropes, burner, flame, basket.
+        rig3d(&c, r: R, mouth: mouth, mouthW: mouthW, color: cols[0], flame: flame, flameScale: flameScale)
+    }
+
+    /// `rig3d(R, mouth, mouthW, col, flame, flameScale)`: skirt, ropes, burner, flame and wicker basket under a 3D envelope
+    /// whose mouth is at `mouth` (the context's x = 0 is the balloon's axis). The flame rises into the mouth: only the part
+    /// below the skirt shows, the rest burns inside the envelope. Its light spills softly round the burner instead of being
+    /// cut off at the skirt. Returns the top of the basket.
+    @discardableResult
+    static func rig3d(_ c: inout GraphicsContext, r R: CGFloat, mouth: CGFloat, mouthW: CGFloat, color: String, flame: Bool,
+                      flameScale: CGFloat, t: Double = Date.timeIntervalSinceReferenceDate) -> CGFloat {
         let by = mouth + R * 0.55, bw = R * 0.34, bh = R * 0.26
         var skirt = Path()
         skirt.move(to: CGPoint(x: -mouthW, y: mouth - 2))
@@ -147,7 +156,7 @@ extension ScenePainter {
         skirt.addLine(to: CGPoint(x: mouthW * 0.8, y: mouth + R * 0.12))
         skirt.addLine(to: CGPoint(x: -mouthW * 0.8, y: mouth + R * 0.12))
         skirt.closeSubpath()
-        c.fill(skirt, with: .color(mix(cols[0], "#1a0a14", 0.45)))
+        c.fill(skirt, with: .color(mix(color, "#1a0a14", 0.45)))
         let rope = rgba(50, 30, 25, 0.9), ropeW = max(1, R * 0.008)
         for s: CGFloat in [-1, -0.35, 0.35, 1] {
             var p = Path()
@@ -155,12 +164,24 @@ extension ScenePainter {
             p.addLine(to: CGPoint(x: s * bw * 0.45, y: by))
             c.stroke(p, with: .color(rope), lineWidth: ropeW)
         }
+        if flame {
+            let fy = by - R * 0.2, k = R * 0.55 * CGFloat(1 + 0.08 * sin(t * 29) + 0.05 * sin(t * 53 + 1.1))
+            var glow = c
+            glow.blendMode = .plusLighter
+            let g = Gradient(stops: [
+                .init(color: rgba(255, 180, 80, 0.38), location: 0),
+                .init(color: rgba(255, 130, 50, 0.12), location: 0.45),
+                .init(color: rgba(255, 110, 40, 0), location: 1)
+            ])
+            let gc = CGPoint(x: 0, y: fy - R * 0.05)
+            glow.fill(Path(CGRect(x: -k, y: gc.y - k, width: k * 2, height: k * 2)),
+                      with: .radialGradient(g, center: gc, startRadius: 0, endRadius: k))
+        }
         rect(&c, -R * 0.09, by - R * 0.2, R * 0.18, R * 0.08, Color(hex: "#2a2a30"))
-        // The flame rises into the mouth: only the part below the skirt shows, the rest burns inside the envelope.
         if flame {
             var f = c
             f.clip(to: Path(CGRect(x: -R, y: mouth + R * 0.11, width: R * 2, height: R * 2)))
-            flame3d(&f, x: 0, y: by - R * 0.2, s: R * flameScale)
+            flame3d(&f, x: 0, y: by - R * 0.2, s: R * flameScale, glow: false, t: t)
         }
         var basket = Path()
         basket.move(to: CGPoint(x: -bw / 2, y: by))
@@ -183,16 +204,119 @@ extension ScenePainter {
             c.stroke(p, with: .color(bandC), lineWidth: bandW)
         }
         rect(&c, -bw / 2 - 2, by - R * 0.02, bw + 4, R * 0.035, Color(hex: "#2a160c"))
+        return by
+    }
+
+    /// `designBalloon3d(...)`: a workshop design (pattern or special shape) in the same volume as the company balloon:
+    /// the design painted on the envelope, then key light, core shadow, darker bottom, the flame's glow inside, seams and
+    /// a rim light, and the 3D rig underneath. Same overall height as `balloon3d`; (x, y) is the bottom of the basket.
+    static func designBalloon3d(_ ctx: inout GraphicsContext, x: CGFloat, y: CGFloat, r R: CGFloat, colors: [String], burn: Bool = false,
+                                alpha: Double = 1, ad: Sponsor? = nil, design d: Design, region: RegionID = .cap) {
+        guard R > 0.5 else { return }
+        var c = ctx
+        c.opacity = alpha
+        let r = R * 0.86, mouth = y - r * 0.81, shape = d.shape
+        let cy = mouth - r * (shape == nil ? 1.42 : 1.55), top = cy - r * (shape == nil ? 1.05 : 1)
+        // The round envelope uses the company balloon's profile, so its gores curve with the volume.
+        func half(_ yy: CGFloat) -> CGFloat {
+            if yy <= cy {
+                let t = min(max(Double((yy - top) / (cy - top)), 0), 1)
+                return r * CGFloat(sin(Double.pi / 2 * pow(t, 0.62)))
+            }
+            let t = Double((yy - cy) / (mouth - cy))
+            return (r + (r * 0.26 - r) * CGFloat(pow(t, 1.25))) * CGFloat(1 - 0.08 * sin(Double.pi * t))
+        }
+        func meridian(_ side: CGFloat) -> Path {
+            var p = Path()
+            for i in 0...40 {
+                let yy = top + (mouth - top) * CGFloat(i) / 40, pt = CGPoint(x: x + half(yy) * side, y: yy)
+                if i == 0 { p.move(to: pt) } else { p.addLine(to: pt) }
+            }
+            return p
+        }
+        let env: Path
+        if let shape {
+            env = BalloonPainter.envelope(shape, x: x, cy: cy, r: r)
+        } else {
+            var p = meridian(1)
+            for i in stride(from: 40, through: 0, by: -1) {
+                let yy = top + (mouth - top) * CGFloat(i) / 40
+                p.addLine(to: CGPoint(x: x - half(yy), y: yy))
+            }
+            p.closeSubpath()
+            env = p
+        }
+        let main = d.colors.first ?? colors.first ?? "#ff5e3a"
+        c.fill(env, with: .color(Color(hex: main)))
+        do {
+            var inner = c
+            inner.clip(to: env)
+            if d.colors.count >= 3 {
+                BalloonPainter.paint(&inner, pattern: d.pattern, colors: d.colors, x: x, cy: cy, r: r, top: top)
+            } else {
+                BalloonPainter.stripes(&inner, color: Color(hex: colors.count > 1 ? colors[1] : "#ffc23d"), x: x, cy: cy, r: r)
+            }
+            if let ad {
+                rect(&inner, x - r * 1.4, cy + r * 0.12, r * 2.8, r * 0.52, Color(hex: ad.colors.bg))
+                let text = Text(banner(ad, region: region))
+                    .font(.custom("BarlowCondensed-ExtraBold", size: max(7, (r * 0.36).rounded())))
+                    .foregroundColor(Color(hex: ad.colors.fg))
+                inner.draw(text, at: CGPoint(x: x, y: cy + r * 0.38), anchor: .center)
+            }
+            // Seams on the round envelope; a special shape keeps its outline clean.
+            if shape == nil {
+                for k in 1..<12 {
+                    inner.stroke(meridian(CGFloat(sin(-Double.pi / 2 + Double.pi * Double(k) / 12))),
+                                 with: .color(rgba(40, 15, 30, 0.2)), lineWidth: max(1, r * 0.006))
+                }
+            }
+            let W = r * 1.5, box = Path(CGRect(x: x - W, y: top - r * 0.3, width: W * 2, height: r * 3))
+            let key = Gradient(stops: [
+                .init(color: rgba(255, 248, 230, 0.5), location: 0),
+                .init(color: rgba(255, 235, 210, 0.12), location: 0.35),
+                .init(color: rgba(255, 235, 210, 0), location: 1)
+            ])
+            inner.fill(box, with: .radialGradient(key, center: CGPoint(x: x - r * 0.42, y: cy - r * 0.42), startRadius: r * 0.05, endRadius: r * 1.3))
+            let core = Gradient(stops: [
+                .init(color: rgba(20, 6, 30, 0), location: 0),
+                .init(color: rgba(20, 6, 30, 0.12), location: 0.55),
+                .init(color: rgba(20, 6, 30, 0.45), location: 0.85),
+                .init(color: rgba(20, 6, 30, 0.58), location: 1)
+            ])
+            inner.fill(box, with: .linearGradient(core, startPoint: CGPoint(x: x - r * 1.1, y: 0), endPoint: CGPoint(x: x + r * 1.1, y: 0)))
+            let bottom = Gradient(colors: [rgba(20, 6, 30, 0), rgba(20, 6, 30, 0.42)])
+            inner.fill(Path(CGRect(x: x - W, y: cy + r * 0.2, width: W * 2, height: r * 1.5)),
+                       with: .linearGradient(bottom, startPoint: CGPoint(x: 0, y: cy + r * 0.2), endPoint: CGPoint(x: 0, y: mouth)))
+            if burn {
+                var glow = inner
+                glow.blendMode = .plusLighter
+                let fg = Gradient(stops: [
+                    .init(color: rgba(255, 170, 60, 0.45), location: 0),
+                    .init(color: rgba(255, 120, 40, 0.12), location: 0.4),
+                    .init(color: rgba(255, 120, 40, 0), location: 1)
+                ])
+                glow.fill(Path(CGRect(x: x - W, y: cy - r * 0.2, width: W * 2, height: r * 2)),
+                          with: .radialGradient(fg, center: CGPoint(x: x, y: mouth), startRadius: 0, endRadius: r * 1.3))
+            }
+            // Rim light: the lit (left) edge of the outline.
+            let rim = Gradient(colors: [rgba(255, 225, 180, 0.55), rgba(255, 225, 180, 0)])
+            inner.stroke(env, with: .linearGradient(rim, startPoint: CGPoint(x: x - r * 1.1, y: 0), endPoint: CGPoint(x: x - r * 0.2, y: 0)),
+                         lineWidth: max(2, r * 0.05))
+        }
+        if shape == .skull { BalloonPainter.skullFace(&c, x: x, cy: cy, r: r) }
+        c.translateBy(x: x, y: 0)
+        rig3d(&c, r: r, mouth: mouth, mouthW: r * (shape == nil ? 0.26 : 0.22), color: main, flame: burn, flameScale: 0.5)
     }
 
     /// `flame3d(x, y, s)`: the burner's flame, soft layered tongues that flicker. Each layer breathes at its own
     /// pace (a few sines that never line up, so it never looks like a loop), its tip leans with a little sway, the
     /// glow pulses with it and a few sparks lift off. `t` defaults to the clock, so a redrawing canvas animates it.
-    static func flame3d(_ ctx: inout GraphicsContext, x: CGFloat, y: CGFloat, s: CGFloat, t: Double = Date.timeIntervalSinceReferenceDate) {
+    static func flame3d(_ ctx: inout GraphicsContext, x: CGFloat, y: CGFloat, s: CGFloat, glow drawGlow: Bool = true,
+                        t: Double = Date.timeIntervalSinceReferenceDate) {
         guard s > 0.1 else { return }
         func n(_ f: Double, _ ph: Double) -> CGFloat { CGFloat(sin(t * f + ph)) }
         let pulse: CGFloat = 1 + 0.1 * n(31, 0) + 0.06 * n(47, 1.7) + 0.04 * n(83, 4.1)
-        do {
+        if drawGlow {
             var glow = ctx
             glow.blendMode = .plusLighter
             let gy = y - s * 0.6, gr = s * 2.2 * (0.92 + 0.1 * pulse)

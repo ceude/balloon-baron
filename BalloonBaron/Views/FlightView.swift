@@ -597,10 +597,10 @@ private enum FlightPainter {
         let R = PR * 0.75 * (look.xl ? 1.3 : 1)
         let bx = cam.sx(f.x), by = cam.sy(f.alt)
         if let design = look.design {
-            ScenePainter.balloon(&ctx, x: bx, y: by, r: R, colors: look.colors, burn: f.burning && f.fuel > 0,
-                                 ad: look.ad, design: design, region: look.region, time: m.T)
+            ScenePainter.designBalloon3d(&ctx, x: bx, y: by, r: R, colors: look.colors, burn: f.burning && f.fuel > 0,
+                                         ad: look.ad, design: design, region: look.region)
         } else {
-            // Without a workshop design the flagship is drawn in full volume, like the app icon.
+            // The flagship is drawn in full volume, like the app icon; a workshop design gets the same volume.
             ScenePainter.balloon3d(&ctx, x: bx, y: by, r: R, colors: look.colors, burn: f.burning && f.fuel > 0,
                                    ad: look.ad, region: look.region)
         }
