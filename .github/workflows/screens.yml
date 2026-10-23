@@ -30,18 +30,22 @@ jobs:
       - name: Screenshots
         shell: bash
         run: |
+          set +e
           APP=dd/Build/Products/Debug-iphonesimulator/BalloonBaron.app
           RUNTIME=$(xcrun simctl list runtimes | grep -o 'com.apple.CoreSimulator.SimRuntime.iOS-[0-9-]*' | tail -n 1)
           echo "runtime $RUNTIME"
-          IPAD=$(xcrun simctl list devicetypes | grep -o 'iPad Pro (12.9-inch)[^(]*([0-9a-z]* generation)' | tail -n 1)
+          PHONE=$(xcrun simctl list devicetypes | grep -o 'com.apple.CoreSimulator.SimDeviceType.iPhone-15-Pro-Max' | head -n 1)
+          IPAD=$(xcrun simctl list devicetypes | grep -o 'com.apple.CoreSimulator.SimDeviceType.iPad-Pro-12-9-inch-6th-generation[^)]*' | head -n 1)
+          [ -z "$IPAD" ] && IPAD=$(xcrun simctl list devicetypes | grep -o 'com.apple.CoreSimulator.SimDeviceType.iPad-Pro[^)]*' | tail -n 1)
+          echo "phone $PHONE / ipad $IPAD"
           mkdir -p shots
-          for DEV in "iPhone 15 Pro Max" "$IPAD"; do
+          for DEV in "$PHONE" "$IPAD"; do
             UDID=$(xcrun simctl create shots "$DEV" "$RUNTIME")
             xcrun simctl boot "$UDID"
             xcrun simctl bootstatus "$UDID" -b > /dev/null
             xcrun simctl status_bar "$UDID" override --time 9:41 --batteryState charged --batteryLevel 100 || true
             xcrun simctl install "$UDID" "$APP"
-            TAG=$(echo "$DEV" | tr -cd '[:alnum:]')
+            TAG=$(echo "$DEV" | sed 's/.*SimDeviceType\.//' | tr -cd '[:alnum:]-')
             while IFS='|' read -r NAME ARGS WAIT; do
               [ -z "$NAME" ] && continue
               # simctl reads stdin; keep it away from the scene list
@@ -61,6 +65,7 @@ jobs:
             xcrun simctl shutdown "$UDID"
           done
           ls -la shots
+          exit 0
       - uses: actions/upload-artifact@v4
         if: always()
         with:
