@@ -1736,13 +1736,13 @@ function simRivals(rev) {
       const hx = HOTELS.find(x => !S.hotels.includes(x.id) && !owns(x) && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && starVal(r.rep) >= x.min);
       if (hx) { S.hotelTaken[hx.id] = { by: r.name, until: S.day + 12 }; r.rep = Math.min(1.4, r.rep + .03); rev.push(`${r.name}, ${hx.name} ile anlaştı. Otel 12 gün boyunca başka şirketle çalışmayacak.`); }
     }
-    if (S.hotels.length && r.rep > S.rep + .12 && Math.random() < .015) {
+    if (S.hotels.length && r.rep > S.rep + .12 && Math.random() < (RIVAL_EDGE() ? .025 : .015)) {
       const id = pick(S.hotels), hx = HOTELS.find(x => x.id === id);
       S.hotels = S.hotels.filter(x => x !== id); S.hotelTaken[id] = { by: r.name, until: S.day + 12 }; if (r.name === BOSS[S.region].co) bossSay('hotel');
       paperAdd(3, `${hx.name} ${r.name} ile anlaştı`, 'Otel misafirleri artık rakibe gidiyor.');
       rev.push(`${hx.name}, ${r.name}'in daha iyi teklifini kabul etti ve seninle anlaşmayı bitirdi!`);
     }
-    if (r.cash > 12000 && !(r.campUntil > S.day) && Math.random() < .04) {
+    if (r.cash > 12000 && !(r.campUntil > S.day) && Math.random() < (RIVAL_EDGE() ? .06 : .04)) {
       r.campUntil = S.day + 3; r.cash -= 4000; r.rep = Math.min(1.4, r.rep + .1); r.price = Math.round(r.price * .95);
       rev.push(`${r.name} influencer kampanyası başlattı, popülerliği arttı.`);
     }
@@ -1756,8 +1756,8 @@ function simRivals(rev) {
       if (Math.abs(r.price - old) >= 8) rev.push(`${r.name} fiyatını ${eur(old)} → ${eur(r.price)} yaptı.`);
       r.lowDays = load < .5 ? r.lowDays + 1 : 0;
       r.highDays = load > .7 ? (r.highDays || 0) + 1 : 0;
-      const next = nextB, maxB = r.style === 'safe' ? 25 : r.style === 'mid' ? 18 : 12;
-      if (r.cash > SIZES[next].cost * .6 && r.highDays >= 3 && r.balloons.length < maxB && S.day - (r.lastBuy || 0) >= 4) { r.lastBuy = S.day; r.cash -= SIZES[next].cost * .5; r.balloons.push(next); r.dmg.push(0); rev.push(`${r.name} filosuna yeni bir balon ekledi.`); }
+      const next = nextB, maxB = (r.style === 'safe' ? 25 : r.style === 'mid' ? 18 : 12) + (RIVAL_EDGE() ? 5 : 0);
+      if (r.cash > SIZES[next].cost * .6 && r.highDays >= 3 && r.balloons.length < maxB && S.day - (r.lastBuy || 0) >= (RIVAL_EDGE() ? 3 : 4)) { r.lastBuy = S.day; r.cash -= SIZES[next].cost * .5; r.balloons.push(next); r.dmg.push(0); rev.push(`${r.name} filosuna yeni bir balon ekledi.`); }
     }
     if (r.cash < -10000 && S.day >= 5) {
       r.alive = false; r.deadDay = S.day; r.offer = null; r.offerSeen = false; r.offerNo = false; r.saleSeen = false; r.saleNo = false;
@@ -3424,11 +3424,14 @@ function applyRegionTheme() {
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
 const RKEYS = ['cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight'];
+/* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
-  { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'M', 'M', 'M'], price: 195, rep: 1.15, cash: 50000 },
-  { name: 'Rio Grande Balloons', col: '#3c9a8f', col2: '#e6fff9', style: 'mid', balloons: ['M', 'M', 'M', 'S'], price: 165, rep: 1, cash: 20000 },
-  { name: 'Route 66 Air', col: '#e08a1e', col2: '#fff1d6', style: 'risky', balloons: ['S', 'S', 'S'], price: 135, rep: .85, cash: 12000 }
+  { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
+  { name: 'Rio Grande Balloons', col: '#3c9a8f', col2: '#e6fff9', style: 'mid', balloons: ['L', 'M', 'M', 'M', 'M', 'S'], price: 170, rep: 1.05, cash: 40000 },
+  { name: 'Route 66 Air', col: '#e08a1e', col2: '#fff1d6', style: 'risky', balloons: ['M', 'S', 'S', 'S', 'S'], price: 140, rep: .9, cash: 20000 }
 ];
+/* ...and fight harder: more campaigns, more hotel poaching, faster and bigger fleet growth */
+const RIVAL_EDGE = () => S.region === 'abq';
 const ENTRANTS_ABQ = [
   { name: 'Mesa Gold Balloons', style: 'safe', rich: true, balloons: ['L', 'L', 'M', 'M'], price: 190, rep: 1.1, cash: 70000, intro: 'Mesa Gold Balloons, Teksas petrol parasıyla Albuquerque\'ye geldi! Kesesi derin, filosu büyük. Dikkatli ol evlat.' },
   { name: 'Turquoise Trail Air', style: 'risky', balloons: ['M', 'M', 'S', 'S', 'S'], price: 125, rep: .9, cash: 30000, intro: 'Turquoise Trail Air diye agresif bir ucuzcu açıldı. Fiyat kıracaklar, kuralları da pek takmazlar.' },

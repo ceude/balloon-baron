@@ -89,7 +89,7 @@ extension Game {
                     rev.append(.rivalHotelDeal(rival: r.name, hotel: h))
                 }
             }
-            if !state.hotelDeals.isEmpty && r.rep > state.rep + 0.12 && rng.chance(0.015) {
+            if !state.hotelDeals.isEmpty && r.rep > state.rep + 0.12 && rng.chance(state.region.rivalEdge ? 0.025 : 0.015) {
                 let h = rng.pick(state.hotelDeals)
                 state.hotelDeals.removeAll { $0 == h }
                 state.hotelLocks[h] = HotelLock(rival: r.name, until: day + 12)
@@ -97,7 +97,7 @@ extension Game {
                 addPaper(.hotelLost(h, rival: r.name))
                 rev.append(.rivalStoleHotel(rival: r.name, hotel: h))
             }
-            if r.cash > 12000 && !(r.campaignUntil > day) && rng.chance(0.04) {
+            if r.cash > 12000 && !(r.campaignUntil > day) && rng.chance(state.region.rivalEdge ? 0.06 : 0.04) {
                 r.campaignUntil = day + 3
                 r.cash -= 4000
                 r.rep = min(1.4, r.rep + 0.1)
@@ -119,8 +119,9 @@ extension Game {
                 if abs(r.price - old) >= 8 { rev.append(.rivalPrice(rival: r.name, from: old, to: r.price)) }
                 r.lowDays = load < 0.5 ? r.lowDays + 1 : 0
                 r.highDays = load > 0.7 ? r.highDays + 1 : 0
-                let maxBalloons = r.style == .safe ? 25 : r.style == .mid ? 18 : 12
-                if r.cash > Double(next.cost) * 0.6 && r.highDays >= 3 && r.balloons.count < maxBalloons && day - r.lastBuy >= 4 {
+                let edge = state.region.rivalEdge
+                let maxBalloons = (r.style == .safe ? 25 : r.style == .mid ? 18 : 12) + (edge ? 5 : 0)
+                if r.cash > Double(next.cost) * 0.6 && r.highDays >= 3 && r.balloons.count < maxBalloons && day - r.lastBuy >= (edge ? 3 : 4) {
                     r.lastBuy = day
                     r.cash -= Double(next.cost) * 0.5
                     r.balloons.append(next)

@@ -123,6 +123,16 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 | Peribaca Balloons | orta | M M M S | 165 | 1,0 | 20.000 |
 | Kızıl Vadi Air | riskli | S S S | 135 | 0,85 | 12.000 |
 
+Albuquerque'nin şirketleri Kapadokya'dakilerden güçlü (v96):
+
+| Rakip | Tarz | Filo | Fiyat | İtibar | Kasa |
+|---|---|---|---|---|---|
+| Sandia Sky Rides | temkinli | L L L L M M M M | 205 | 1,2 | 90.000 |
+| Rio Grande Balloons | orta | L M M M M S | 170 | 1,05 | 40.000 |
+| Route 66 Air | riskli | M S S S S | 140 | 0,9 | 20.000 |
+
+Ayrıca daha sert oynarlar (`RIVAL_EDGE`, Swift'te `RegionID.rivalEdge`): kampanya olasılığı günde %6 (Kapadokya %4), otel anlaşmanı kapma %2,5 (%1,5), 3 günde bir balon alabilirler (4) ve filo üst sınırları 5 fazla (30/23/17). Bot üç bölümü 65–79 / 107–126 / 141–230. günlerde bitirir (önce 57–66 / 99–108 / 136–210).
+
 - Fiyat tabanı maliyetten hesaplanır (en fazla 220). Tavanlar: riskli 190, orta 260.
 - 5. günden sonra zor durumdaki rakip satışa çıkar (filo satın alma veya devralma).
 - **Büyüme:** 3 gün üst üste %70 üstü dolulukla uçan ve kasası balon fiyatının %60'ına yeten rakip 4 günde bir balon alır (temkinli L, diğerleri M). Tavanlar: temkinli 25, orta 18, riskli 12 balon. Sahipler kasadan para çeker ama bir sonraki balonun %60'ı kadar birikim bırakırlar.

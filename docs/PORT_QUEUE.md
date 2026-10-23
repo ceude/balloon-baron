@@ -2,7 +2,7 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v95 ile aynı.)
+(Şu an kuyruk boş: Swift uygulaması prototip v96 ile aynı.)
 
 Son toplu aktarım (prototip v68–v85, Ekim 2026): telefon testi düzeltmeleri (alt panel şeridi ve yukarı çekme, sağ butonların hepsi, bölgeler kartı, bilet kartında kimin uçuracağı, ana ekrandan iki parmakla yakınlaşma, yakınlaşınca sabit ufuk ve üst çubuk, geniş yatay kaydırma, rüzgâr direği, yolcu toplama sahnesinde ofis önünde kuyruk ve safari cipleri, holding ofisi katı ve masalar), açılış aralıkları, sabah gazetesi, kurtarma planı, kış karı, Kapadokya festivalleri, rakip patronlar, sabah olayları (kamera olay yerine gider, grevde pankartlı pilotlar), bina yükseltmeleri ve direkte hava tahmini, pilot özellikleri, başarımlar ve kartpostal albümü, holding hedefleri ve Dünya Baronu, uçuş anları (termik, selam, fotoğraf), Çarşı (özel desenler, şekilli balonlar, süsler) ve atölyesiz bedava giydirme, ödüllü reklamla bölüm ödülü 2 katı, gece (ışıklar, süslerin gece aydınlatması, ateş böcekleri, cırcır böcekleri, gece olayları, kendiliğinden geçen gece ve büyük sabah düğmesi), fiyat sayfasında kurucu primi ve belgesel notu. Altı dilde metinler. Eski (v67) kayıtlar açılmaya devam eder: yeni alanların hepsi isteğe bağlı.
 

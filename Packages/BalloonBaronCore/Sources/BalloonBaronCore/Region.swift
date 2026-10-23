@@ -35,6 +35,8 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
     public var hasFiesta: Bool { self == .abq }
     public var hasFestivals: Bool { self == .cap }
     /// The rival owned by the region's boss (Kenan Arslan, Dale Whitaker).
+    /// Rivals here fight harder: more campaigns, more hotel poaching, faster and bigger fleet growth.
+    public var rivalEdge: Bool { self == .abq }
     public var bossCompany: String { self == .abq ? "Sandia Sky Rides" : "Göreme Sky" }
 
     func startingRivals() -> [Rival] {
@@ -43,10 +45,11 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
             [Rival(id: 0, name: "Göreme Sky", colors: ["#5aa9e6", "#eaf4fc"], style: .safe, balloons: [.L, .L, .L, .M, .M, .M], price: 195, rep: 1.15, cash: 50000),
              Rival(id: 1, name: "Peribaca Balloons", colors: ["#9b7be0", "#f2ebff"], style: .mid, balloons: [.M, .M, .M, .S], price: 165, rep: 1, cash: 20000),
              Rival(id: 2, name: "Kızıl Vadi Air", colors: ["#c73a2a", "#ffd9a8"], style: .risky, balloons: [.S, .S, .S], price: 135, rep: 0.85, cash: 12000)]
+        // Stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and `rivalEdge`).
         case .abq:
-            [Rival(id: 0, name: "Sandia Sky Rides", colors: ["#5aa9e6", "#eaf4fc"], style: .safe, balloons: [.L, .L, .L, .M, .M, .M], price: 195, rep: 1.15, cash: 50000),
-             Rival(id: 1, name: "Rio Grande Balloons", colors: ["#3c9a8f", "#e6fff9"], style: .mid, balloons: [.M, .M, .M, .S], price: 165, rep: 1, cash: 20000),
-             Rival(id: 2, name: "Route 66 Air", colors: ["#e08a1e", "#fff1d6"], style: .risky, balloons: [.S, .S, .S], price: 135, rep: 0.85, cash: 12000)]
+            [Rival(id: 0, name: "Sandia Sky Rides", colors: ["#5aa9e6", "#eaf4fc"], style: .safe, balloons: [.L, .L, .L, .L, .M, .M, .M, .M], price: 205, rep: 1.2, cash: 90000),
+             Rival(id: 1, name: "Rio Grande Balloons", colors: ["#3c9a8f", "#e6fff9"], style: .mid, balloons: [.L, .M, .M, .M, .M, .S], price: 170, rep: 1.05, cash: 40000),
+             Rival(id: 2, name: "Route 66 Air", colors: ["#e08a1e", "#fff1d6"], style: .risky, balloons: [.M, .S, .S, .S, .S], price: 140, rep: 0.9, cash: 20000)]
         }
     }
 }
