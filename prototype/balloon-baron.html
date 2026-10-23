@@ -583,13 +583,18 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .rev .tx{font-size:14px;line-height:1.4;margin-top:2px}
 .avg{display:flex;align-items:center;gap:12px}
 .avg .big2{font-family:var(--cond);font-weight:800;font-size:44px;line-height:1}
-#intro{position:absolute;inset:0;z-index:6;display:flex;align-items:flex-end;justify-content:center;pointer-events:none;
+#intro{position:absolute;inset:0;z-index:6;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:18px;pointer-events:none;
   padding-bottom:max(28px, calc(env(safe-area-inset-bottom, 0px) + 16px))}
 #introBurn{pointer-events:auto;position:relative;width:104px;height:104px;border-radius:50%;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:19px;
   box-shadow:0 7px 0 var(--coral-d),0 12px 28px rgba(40,10,30,.35);touch-action:none;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 #introBurn::before{content:"";position:absolute;inset:-10px;border-radius:50%;border:3px solid rgba(255,255,255,.85);animation:ring 1.5s ease-in-out infinite}
 #introBurn.on{transform:translateY(5px);box-shadow:0 2px 0 var(--coral-d),0 0 0 10px rgba(255,194,61,.45)}
 #introBurn.on::before{animation:none;opacity:0}
+#introBurn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:radial-gradient(circle at 50% 35%,#ff8a5a,var(--coral) 60%)}
+#introBurn svg{width:34px;height:34px;margin-top:-6px;filter:drop-shadow(0 0 6px rgba(255,200,90,.8))}
+#introHint{display:flex;flex-direction:column;align-items:center;color:#fff6e6;font-family:var(--cond);font-weight:700;font-size:21px;letter-spacing:.04em;text-shadow:0 2px 10px rgba(20,8,30,.7);animation:hint 1.4s ease-in-out infinite}
+#introHint i{font-style:normal;font-size:30px;line-height:.6;margin-top:4px}
+@keyframes hint{0%,100%{transform:translateY(0)}50%{transform:translateY(7px)}}
 @keyframes ring{0%,100%{transform:scale(.94);opacity:.9}50%{transform:scale(1.1);opacity:.35}}
 #fade{position:absolute;inset:0;z-index:9;background:#fff6ea;opacity:0;pointer-events:none;transition:opacity .45s}
 #fade.on{opacity:1}
@@ -598,7 +603,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 #setup .card{box-shadow:0 10px 40px rgba(20,10,40,.4)}
 .lead{margin:0;font-size:16px;line-height:1.45;color:var(--ink2)}
 .card .btns .ghost{flex:1}
-@media (prefers-reduced-motion: reduce){.flagbig b,#introBurn::before{animation:none}*{transition:none!important}}
+@media (prefers-reduced-motion: reduce){.flagbig b,#introBurn::before,#introHint{animation:none}*{transition:none!important}}
 /* the bazaar's shelves */
 .shopg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-bottom:6px}
 .shopi{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 9px;border-radius:16px;background:linear-gradient(#fff6e6,#f3e2c4);border:1.5px solid #e6cfa6;box-shadow:0 3px 0 #d9bd8c;color:var(--ink)}
@@ -669,7 +674,7 @@ body.night #cv{touch-action:none}
   <div class="modal" id="menu" hidden></div>
   <div class="modal" id="setup" hidden></div>
   <div class="chirp out" id="chirp" hidden></div>
-  <div id="intro" hidden><button id="introBurn" aria-label="Brülörü yak">BRÜLÖR</button></div>
+  <div id="intro" hidden><div id="introHint" hidden><span>Brülöre basılı tut</span><i>⌄</i></div><button id="introBurn" aria-label="Brülörü yak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 3.5 5 5.6 5 10.2A5 5 0 0 1 7 12.2c0-2 1-3.4 2-4.4.2 1.6 1 2.7 2.2 3.2C10.6 8 11 4.6 12 2z" fill="#ffe08a"/><path d="M12 11c.8 1.7 2.6 2.6 2.6 4.6a2.6 2.6 0 0 1-5.2 0c0-1.5.9-2.3 1.6-3 .1.8.5 1.3 1 1.5-.3-1.1-.2-2.2 0-3.1z" fill="#fff6d8"/></svg>BRÜLÖR</button></div>
   <div id="fade"></div>
 </div>
 
@@ -2469,7 +2474,7 @@ function hideAll() { page = null; hqShut(); TOWN.open = false; TOWN.leaving = fa
 function startIntro() {
   if (!S.weather) S.weather = newWeather();
   buildWorld();
-  Object.assign(INTRO, { y: 0, vy: 0, hold: false, t: 0, out: false });
+  Object.assign(INTRO, { y: 0, vy: 0, hold: false, t: 0, out: false, pressed: false });
   mode = 'intro'; hideAll(); $('hud').hidden = true; $('intro').hidden = false;
 }
 function updateIntro(dt) {
@@ -2478,6 +2483,9 @@ function updateIntro(dt) {
   I.y = Math.max(0, I.y + I.vy * dt);
   $('intro').hidden = I.out;
   $('introBurn').classList.toggle('on', I.hold);
+  /* the first time ever: show where to press, until the balloon starts to rise */
+  if (I.hold) I.pressed = true;
+  $('introHint').hidden = !!S.company || !!I.pressed;
   const R = Math.min(W, H) * .085;
   if (!I.out && H * .74 - I.y - R * 2.7 < -8) {
     I.out = true; $('fade').classList.add('on');
@@ -2512,15 +2520,93 @@ function pickSpots() {
   return PICK.map((p, i) => ({ i, x: W * p.x + Math.sin(T * .3 + i) * 8, y: H * p.y + Math.sin(T * 1.1 + i * 1.7) * 6, R: base * pickScale[i] }))
     .sort((a, b) => a.R - b.R);
 }
+/* The opening screen: a dawn launch field in the region you're playing, with its own skyline, distant balloons
+   already up, the company balloon waiting on the grass and the game's name in the sky. Luxor is ready for when
+   Egypt opens. */
+const INTRO_LOOK = {
+  cap: { sky: ['#120d33', '#3a2460', '#a24e7a', '#f0875a', '#ffd59a'], far: '#4e3460', mid: '#c8866a', midShade: '#8a5060', cap: '#4a2a2a', ground: ['#6e4a3a', '#2a1822'], name: 'CAPPADOCIA' },
+  abq: { sky: ['#0f1534', '#31275c', '#bc4e6a', '#ff8f4e', '#ffcf80'], far: '#5e345a', mid: '#a8503a', midShade: '#6a3022', cap: '#3f7a3a', ground: ['#8a4e2c', '#28120a'], name: 'ALBUQUERQUE' },
+  lux: { sky: ['#0d1836', '#2a3664', '#b0605a', '#f2a656', '#ffe2a0'], far: '#6a5260', mid: '#c89a62', midShade: '#8a6440', cap: '#2e5a2a', ground: ['#a07a4a', '#30200e'], name: 'LUXOR' }
+};
+function introScene(gy) {
+  const L = INTRO_LOOK[S.region] || INTRO_LOOK.cap, t = INTRO.t, lift = Math.min(1, INTRO.y / (H * .45)), u = Math.min(W, H);
+  const sky = ctx.createLinearGradient(0, 0, 0, gy); [0, .32, .62, .85, 1].forEach((k, i) => sky.addColorStop(k, L.sky[i])); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, gy);
+  /* the last stars, fading towards the horizon */
+  const R = mulberry32(7);
+  for (let i = 0; i < 80; i++) { const x = R() * W, y = R() * gy * .55, a = (1 - y / (gy * .55)) * (.3 + .3 * Math.sin(t * 1.3 + i * 2.1)); ctx.fillStyle = `rgba(255,246,220,${Math.max(0, a).toFixed(3)})`; ctx.fillRect(x, y, 1.6, 1.6); }
+  /* the sun on the horizon, its glow and slow rays */
+  const sx = W * .66, sy = gy - u * .05;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (const [rr, a] of [[u * 1.1, .12], [u * .55, .2], [u * .22, .35]]) { const gl = ctx.createRadialGradient(sx, sy, 0, sx, sy, rr); gl.addColorStop(0, `rgba(255,205,140,${a})`); gl.addColorStop(1, 'rgba(255,205,140,0)'); ctx.fillStyle = gl; ctx.fillRect(sx - rr, sy - rr, rr * 2, rr * 2); }
+  for (let i = 0; i < 11; i++) { const a0 = -Math.PI * (.1 + i * .074) + Math.sin(t * .15 + i) * .02, w = .012 + (i % 3) * .008, len = u * (1.2 + (i % 4) * .25); const gr = ctx.createRadialGradient(sx, sy, 0, sx, sy, len); gr.addColorStop(0, 'rgba(255,215,160,.09)'); gr.addColorStop(1, 'rgba(255,215,160,0)'); ctx.fillStyle = gr; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + Math.cos(a0 - w) * len, sy + Math.sin(a0 - w) * len); ctx.lineTo(sx + Math.cos(a0 + w) * len, sy + Math.sin(a0 + w) * len); ctx.fill(); }
+  ctx.restore();
+  ell(sx, sy, u * .055, u * .055, '#fff2cc');
+  /* soft cloud bands */
+  for (let i = 0; i < 6; i++) { const R2 = mulberry32(40 + i), cx = ((R2() * W * 1.3 + t * (3 + R2() * 4)) % (W * 1.3)) - W * .15, cy = gy * (.42 + R2() * .3), w = u * (.5 + R2() * .5); const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, w / 2); g.addColorStop(0, 'rgba(255,190,150,.28)'); g.addColorStop(1, 'rgba(255,190,150,0)'); ctx.save(); ctx.translate(cx, cy); ctx.scale(1, .12); ctx.translate(-cx, -cy); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, w / 2, 0, 7); ctx.fill(); ctx.restore(); }
+  /* balloons already up, drifting, hazier the further they are */
+  for (let i = 0; i < 11; i++) {
+    const R2 = mulberry32(100 + i), d = R2(), x = ((R2() * W * 1.4 + t * (3 + d * 9)) % (W * 1.4)) - W * .2;
+    const y = Math.max(H * .24, gy * (.24 + (1 - d) * .45)) + Math.sin(t * .6 + i) * 4 + lift * u * .25 * d, r = u * (.014 + d * .03), c = PC_COLS[(i * 3) % 8];
+    balloon(x, y, r, mix(c, L.sky[3], (1 - d) * .55), mix('#ffffff', L.sky[3], (1 - d) * .55), d > .7 && Math.sin(t * 2 + i) > .6, .55 + d * .4);
+  }
+  /* the far skyline */
+  ctx.fillStyle = L.far; ctx.beginPath(); ctx.moveTo(0, gy);
+  for (let x = 0; x <= W + 20; x += 16) {
+    let y = gy - u * (.07 + .03 * Math.sin(x * .011 + 1) + .015 * Math.sin(x * .037));
+    if (S.region === 'cap') y -= Math.max(0, u * .2 - Math.abs(x - W * .3) * .55); /* Erciyes */
+    if (S.region === 'abq') y -= u * .1 * (.6 + .4 * Math.sin(x * .006 + 2)) * Math.min(1, x / (W * .4)); /* the Sandias */
+    ctx.lineTo(x, y);
+  }
+  ctx.lineTo(W, gy); ctx.fill();
+  if (S.region === 'cap') { ctx.fillStyle = 'rgba(255,240,235,.55)'; ctx.beginPath(); ctx.moveTo(W * .3 - u * .07, gy - u * .19); ctx.lineTo(W * .3, gy - u * .27); ctx.lineTo(W * .3 + u * .07, gy - u * .19); ctx.quadraticCurveTo(W * .3, gy - u * .2, W * .3 - u * .07, gy - u * .19); ctx.fill(); }
+  if (S.region === 'lux') for (const [px, ps] of [[W * .22, 1], [W * .34, .7], [W * .8, .55]]) { ctx.fillStyle = mix(L.far, '#000', .1); ctx.beginPath(); ctx.moveTo(px - u * .16 * ps, gy - u * .04); ctx.lineTo(px, gy - u * .2 * ps); ctx.lineTo(px + u * .16 * ps, gy - u * .04); ctx.fill(); }
+  /* the region's landmarks, in two rows */
+  const row = (base, n, hMin, hMax, seed, k) => {
+    const R3 = mulberry32(seed), items = [];
+    for (let i = 0; i < n; i++) items.push({ x: (i + .2 + R3() * .6) * W / n, h: u * (hMin + R3() * (hMax - hMin)), s: R3() });
+    for (const it of items) {
+      const body = mix(L.mid, L.far, k), shade = mix(L.midShade, L.far, k);
+      if (S.region === 'cap') chimney(it.x, base, it.h * .36, it.h, body, shade, mix(L.cap, L.far, k));
+      else if (S.region === 'abq') {
+        if (it.s < .55) { ctx.fillStyle = body; ctx.beginPath(); ctx.moveTo(it.x - it.h * .9, base); ctx.lineTo(it.x - it.h * .6, base - it.h * .55); ctx.lineTo(it.x + it.h * .6, base - it.h * .55); ctx.lineTo(it.x + it.h * .9, base); ctx.fill(); ctx.fillStyle = shade; ctx.fillRect(it.x - it.h * .6, base - it.h * .55, it.h * 1.2, it.h * .07); }
+        else { ctx.fillStyle = mix(L.cap, L.far, k); const w = it.h * .09; rrect(it.x - w / 2, base - it.h * .6, w, it.h * .6, w / 2); ctx.fill(); rrect(it.x - w * 2.2, base - it.h * .45, w * .8, it.h * .25, w * .4); ctx.fill(); ctx.fillRect(it.x - w * 2.2, base - it.h * .24, w * 2, w * .7); rrect(it.x + w * 1.4, base - it.h * .52, w * .8, it.h * .22, w * .4); ctx.fill(); ctx.fillRect(it.x + w * .4, base - it.h * .32, w * 1.6, w * .7); }
+      } else {
+        if (it.s < .5) { ctx.fillStyle = body; for (let c = 0; c < 3; c++) ctx.fillRect(it.x + (c - 1) * it.h * .22 - it.h * .06, base - it.h * .7, it.h * .12, it.h * .7); ctx.fillRect(it.x - it.h * .36, base - it.h * .78, it.h * .72, it.h * .1); }
+        else { ctx.strokeStyle = mix(L.cap, L.far, k); ctx.lineWidth = it.h * .05; ctx.beginPath(); ctx.moveTo(it.x, base); ctx.quadraticCurveTo(it.x + it.h * .1, base - it.h * .5, it.x + it.h * .05, base - it.h); ctx.stroke(); ctx.fillStyle = ctx.strokeStyle; for (let f = 0; f < 6; f++) { const a = f / 6 * Math.PI * 2; ctx.beginPath(); ctx.ellipse(it.x + it.h * .05 + Math.cos(a) * it.h * .2, base - it.h + Math.sin(a) * it.h * .06 + it.h * .04, it.h * .22, it.h * .05, a, 0, 7); ctx.fill(); } }
+      }
+    }
+  };
+  row(gy - u * .005, 9, .1, .2, 11, .55);
+  row(gy + u * .02, 6, .18, .34, 23, .12);
+  /* the launch field and the morning mist over it */
+  const gd = ctx.createLinearGradient(0, gy, 0, H); gd.addColorStop(0, L.ground[0]); gd.addColorStop(1, L.ground[1]); ctx.fillStyle = gd; ctx.fillRect(0, gy, W, H - gy);
+  const mist = ctx.createLinearGradient(0, gy - u * .06, 0, gy + u * .05); mist.addColorStop(0, 'rgba(255,215,190,0)'); mist.addColorStop(.5, 'rgba(255,215,190,.28)'); mist.addColorStop(1, 'rgba(255,215,190,0)'); ctx.fillStyle = mist; ctx.fillRect(0, gy - u * .06, W, u * .11);
+  /* the crew and the chase jeep beside the basket */
+  ctx.fillStyle = 'rgba(30,16,26,.85)';
+  for (const [dx, hh] of [[-.2, .07], [-.15, .065], [.17, .068]]) { const px = W / 2 + dx * u * 1.2, py = gy + u * .01; ctx.beginPath(); ctx.arc(px, py - u * hh, u * .011, 0, 7); ctx.fill(); rrect(px - u * .012, py - u * hh + u * .012, u * .024, u * (hh - .012), u * .006); ctx.fill(); }
+  const jx = W / 2 + u * .33, jy = gy + u * .02; rrect(jx - u * .07, jy - u * .045, u * .14, u * .035, u * .008); ctx.fill(); rrect(jx - u * .04, jy - u * .07, u * .07, u * .03, u * .006); ctx.fill(); ell(jx - u * .045, jy - u * .008, u * .015, u * .015, 'rgba(30,16,26,.95)'); ell(jx + u * .045, jy - u * .008, u * .015, u * .015, 'rgba(30,16,26,.95)');
+  /* the game's name in the sky, leaving as you climb */
+  const a = Math.max(0, 1 - lift * 1.6);
+  if (a > 0) {
+    ctx.save(); ctx.globalAlpha = a; ctx.textAlign = 'center';
+    const ty = Math.max(70, H * .14) - lift * 40, fs = Math.min(W * .13, 64);
+    ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; ctx.shadowColor = 'rgba(10,4,24,.6)'; ctx.shadowBlur = 24;
+    const tg = ctx.createLinearGradient(0, ty - fs, 0, ty); tg.addColorStop(0, '#ffffff'); tg.addColorStop(.6, '#fff1d0'); tg.addColorStop(1, '#ffc23d');
+    ctx.fillStyle = tg; ctx.fillText('BALLOON BARON', W / 2, ty);
+    ctx.font = `700 ${fs * .32}px "Barlow Condensed", sans-serif`; ctx.letterSpacing = `${fs * .12}px`; ctx.fillStyle = '#ffcf7a'; ctx.fillText(L.name, W / 2 + fs * .06, ty + fs * .52); ctx.letterSpacing = '0px';
+    ctx.restore();
+  }
+}
 function drawIntro(dt) {
   ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
   const groundY = H * .74, kx = clamp(W / 900, .4, 1.4), camX = 220 - (W * .5) / kx;
-  scenery(mode === 'intro' ? .2 + Math.min(.1, INTRO.y / 3000) : .3, groundY, 40, camX, kx, dt, mode === 'setup', false);
-  const R = Math.min(W, H) * .085;
+  if (mode === 'intro') introScene(groundY); else scenery(.3, groundY, 40, camX, kx, dt, mode === 'setup', false);
+  const R = Math.min(W, H) * .1;
   if (mode === 'intro') {
-    const sway = INTRO.y > 2 ? Math.sin(INTRO.t * 2.1) * R * .1 : 0;
-    ctx.fillStyle = 'rgba(40,20,30,.25)'; ctx.beginPath(); ctx.ellipse(W / 2, groundY + 3, R * .5 / (1 + INTRO.y / 120), R * .1, 0, 0, 7); ctx.fill();
-    balloon(W / 2 + sway, groundY - INTRO.y, R, myCol()[0], myCol()[1], INTRO.hold);
+    const sway = INTRO.y > 2 ? Math.sin(INTRO.t * 2.1) * R * .1 : 0, bx = W / 2 + sway, by = groundY + R * .1 - INTRO.y;
+    ctx.fillStyle = 'rgba(40,20,30,.3)'; ctx.beginPath(); ctx.ellipse(W / 2, groundY + R * .12, R * .6 / (1 + INTRO.y / 120), R * .12, 0, 0, 7); ctx.fill();
+    if (INTRO.hold) { /* the burner lights the envelope and the grass */ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const gl = ctx.createRadialGradient(bx, by - R * 1.2, 0, bx, by - R * 1.2, R * 2.4); gl.addColorStop(0, 'rgba(255,170,70,.35)'); gl.addColorStop(1, 'rgba(255,170,70,0)'); ctx.fillStyle = gl; ctx.fillRect(bx - R * 2.4, by - R * 3.6, R * 4.8, R * 4.8); ctx.restore(); }
+    balloon(bx, by, R, myCol()[0], myCol()[1], INTRO.hold);
   }
   if (mode === 'pick') {
     PICK.forEach((p, i) => { pickScale[i] = lerp(pickScale[i], i === pickI ? 1.5 : p.s, Math.min(1, dt * 8)); });
