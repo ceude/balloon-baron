@@ -292,6 +292,7 @@ final class GameStore {
     /// A store item was bought (or the free gift taken).
     func buy(_ k: StoreItem) {
         act { $0.grantStoreItem(k) }
+        Telemetry.bought(k, day: state?.day ?? 0)
         SoundEngine.shared.play(.coin)
         storeItem = nil
     }
@@ -414,7 +415,10 @@ final class GameStore {
         var r: DayReport?
         act { r = $0.finishDay(flight: result) }
         flushSave()
-        if let s = state { GameCenter.report(s) }
+        if let s = state {
+            GameCenter.report(s)
+            if let r { Telemetry.dayEnded(s, r) }
+        }
         report = r
     }
 

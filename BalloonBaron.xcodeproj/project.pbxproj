@@ -20,6 +20,7 @@
 		2AE29E79EC58294FF2CF023D /* BalloonBaronApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716D53AF05BF7F135AC3340E /* BalloonBaronApp.swift */; };
 		2EC0AA89BE01211B35404B76 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45339BBAA04927D7F285CA21 /* Platform.swift */; };
 		32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF39B153C032C3B1F8AFDEF /* TownNight.swift */; };
+		3745C3DBD6BB8317AC2AF5CB /* Telemetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F376872405998A225098DA /* Telemetry.swift */; };
 		37A512CC536FFCC07E95ABE3 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32555776BC90AFB75C336EF3 /* SetupView.swift */; };
 		3AAB38726CD2EDBCEB8BD584 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64334C9F947BE9EF2E1B63A6 /* Sound.swift */; };
 		3F0B240D7BF72C3BE57BA5F9 /* HoldingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3ED97BD630A253467C06E76 /* HoldingView.swift */; };
@@ -114,6 +115,7 @@
 		A429A91A72084FD301F9A3E5 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-Bold.ttf"; sourceTree = "<group>"; };
 		A87581606A4966EC52B22837 /* DesignStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DesignStudioView.swift"; sourceTree = "<group>"; };
 		AC0AFDF1E7A3A9121D93DD8E /* ScenePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScenePainter.swift"; sourceTree = "<group>"; };
+		B1F376872405998A225098DA /* Telemetry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Telemetry.swift"; sourceTree = "<group>"; };
 		B3141C729AE6B19C61AE6F2A /* BankView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BankView.swift"; sourceTree = "<group>"; };
 		B31687098E5783CD57B19E0E /* BarlowCondensed-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-SemiBold.ttf"; sourceTree = "<group>"; };
 		BA0BD7F812F90140ACBE8488 /* MarketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MarketView.swift"; sourceTree = "<group>"; };
@@ -164,6 +166,7 @@
 				690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */,
 				45339BBAA04927D7F285CA21 /* Platform.swift */,
 				8DF3B0C99D9EE5597D3FDD37 /* SaveVault.swift */,
+				B1F376872405998A225098DA /* Telemetry.swift */,
 				158AFE69FAF9C43034FBC847 /* Theme.swift */,
 			);
 			path = "BalloonBaron";
@@ -418,6 +421,7 @@
 				86F9815AF00AF54BD422516A /* Localization.swift in Sources */,
 				2EC0AA89BE01211B35404B76 /* Platform.swift in Sources */,
 				1421D95F62AFE6F52A424C1A /* SaveVault.swift in Sources */,
+				3745C3DBD6BB8317AC2AF5CB /* Telemetry.swift in Sources */,
 				C2B154218D66DBAE24868DA9 /* Theme.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
