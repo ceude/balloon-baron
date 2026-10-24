@@ -236,24 +236,29 @@ struct WorldPillButton: View {
 struct WorldPopup<Content: View>: View {
     let topBar: Color?
     let onClose: (() -> Void)?
+    /// Sits low with a light veil, so what happens in the town stays in view above it.
+    let bottom: Bool
     let content: Content
 
-    init(topBar: Color? = nil, onClose: (() -> Void)? = nil, @ViewBuilder content: () -> Content) {
+    init(topBar: Color? = nil, onClose: (() -> Void)? = nil, bottom: Bool = false, @ViewBuilder content: () -> Content) {
         self.topBar = topBar
         self.onClose = onClose
+        self.bottom = bottom
         self.content = content()
     }
 
     var body: some View {
         ZStack {
-            Color.black.opacity(0.45).ignoresSafeArea()
+            Color.black.opacity(bottom ? 0.12 : 0.45).ignoresSafeArea()
             GeometryReader { geo in
                 ScrollView {
                     card
                         .frame(maxWidth: 420)
-                        .padding(16)
-                        .frame(maxWidth: .infinity, minHeight: geo.size.height)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, bottom ? 8 : 16)
+                        .frame(maxWidth: .infinity, minHeight: geo.size.height, alignment: bottom ? .bottom : .center)
                 }
+                .defaultScrollAnchor(bottom ? .bottom : .top)
             }
         }
     }

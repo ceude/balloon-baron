@@ -11,7 +11,7 @@ struct IssueView: View {
 
     var body: some View {
         // No "later": here you decide; from elsewhere you decide or fly over to see it for yourself.
-        WorldPopup(topBar: Theme.red) {
+        WorldPopup(topBar: Theme.red, bottom: live) {
             if live, let kind = store.game?.liveIssue {
                 content(kind, nil)
             } else if let auto = store.state?.parked[region]?.auto, let open = auto.issue {

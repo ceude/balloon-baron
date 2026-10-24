@@ -4451,7 +4451,8 @@ function autoRegions() {
 function issueScene() {
   if (!S.issue) return;
   const at = [9.3, 13.6];
-  if (mode === 'office' && HOME.h) { openTown(at); townFocus([at[0], at[1] + 1.2], 1.15); TOWN.noLabels = true; TOWN.extra = S.issue.k === 'raise' ? strikers : null; $('tClose').classList.add('gone'); }
+  /* the office sits in the top third, so it stays in view above the card that comes up from the bottom */
+  if (mode === 'office' && HOME.h) { openTown(at); townFocus([at[0], at[1] + 1.2], 1.15, .3); TOWN.noLabels = true; TOWN.extra = S.issue.k === 'raise' ? strikers : null; $('tClose').classList.add('gone'); }
   setTimeout(() => { if (S.issue && mode === 'office') showIssue(S.region); }, 3500);
 }
 function showIssue(id) {
@@ -4468,7 +4469,7 @@ function showIssue(id) {
     if (cost && (S.holding || 0) < cost) b.disabled = true;
     b.onclick = () => {
       if (cost) { S.holding -= cost; holdLog('exp', cost); }
-      if (live) { fn(); S.issue = null; m.hidden = true; TOWN.extra = null; TOWN.noLabels = false; if (TOWN.open) closeTown(); refresh(); setTimeout(nextPopup, 700); return; }
+      if (live) { fn(); S.issue = null; m.hidden = true; m.classList.remove('evm'); TOWN.extra = null; TOWN.noLabels = false; if (TOWN.open) closeTown(); refresh(); setTimeout(nextPopup, 700); return; }
       const r = fn(A, id, rs); A.issue = null; m.hidden = true; if (r === 'go') switchRegion(id); else { refresh(); setTimeout(nextPopup, 250); }
     };
     c.appendChild(b);
@@ -4476,6 +4477,8 @@ function showIssue(id) {
   opt(I.a, live ? I.LA : I.A, 'a', I.la); opt(I.b, live ? I.LB : I.B, 'b', I.lb);
   /* there is no "later": here you decide; from elsewhere you decide or fly over to see for yourself */
   if (!live) { const go = h('button', 'ghost', `${REGION_DEF[id].name} bölgesine git`); go.style.width = '100%'; go.onclick = () => { m.hidden = true; switchRegion(id); }; c.appendChild(go); }
+  /* here the card sits low, so the protest outside the office stays in view above it */
+  m.classList.toggle('evm', live);
   m.appendChild(c); m.hidden = false;
 }
 
@@ -6246,9 +6249,9 @@ function townLoop() {
 /* Glide the view to a target (zoom and offset) and then run done. */
 function townGlide(to, done) { TOWN.anim = { t0: performance.now(), from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to, done }; }
 /* Glide in on a grid point. */
-function townFocus(at, z = .65) {
+function townFocus(at, z = .65, fy = .55) {
   const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...at);
-  townGlide({ z, ox: r.width / 2 - cx * z, oy: r.height * .55 - cy * z });
+  townGlide({ z, ox: r.width / 2 - cx * z, oy: r.height * fy - cy * z });
 }
 /* Keep the town on screen however far you drag. */
 function townClamp(w, h) {
