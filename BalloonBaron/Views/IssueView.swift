@@ -1,7 +1,7 @@
 import SwiftUI
 import BalloonBaronCore
 
-/// A region's problem: two choices with the region guide's advice, or decide later. A parked region's problem
+/// A region's problem: two choices with the region guide's advice. From elsewhere you can also fly over. A parked region's problem
 /// halves its income until you decide; in the region you're in, the choice plays out on the spot.
 struct IssueView: View {
     @Environment(GameStore.self) private var store
@@ -10,13 +10,17 @@ struct IssueView: View {
     private var live: Bool { store.state?.region == region }
 
     var body: some View {
-        WorldPopup(topBar: Theme.red, onClose: later) {
+        // No "later": here you decide; from elsewhere you decide or fly over to see it for yourself.
+        WorldPopup(topBar: Theme.red) {
             if live, let kind = store.game?.liveIssue {
                 content(kind, nil)
             } else if let auto = store.state?.parked[region]?.auto, let open = auto.issue {
                 content(open.kind, auto)
+                BigButton(title: loc("issueSheet.goThere", region.title), style: .ghost) {
+                    store.issueScene = false
+                    store.goTo(region)
+                }
             }
-            BigButton(title: loc("issueSheet.later"), style: .ghost) { later() }
         }
     }
 
@@ -91,6 +95,7 @@ struct IssueView: View {
 
     private func later() {
         store.issueRegion = nil
+        store.issueScene = false
         store.showNextHezarfen()
     }
 }

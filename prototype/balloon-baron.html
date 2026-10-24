@@ -1501,7 +1501,7 @@ function nextPopup() {
   if (S.newPost && S.newPost.length) { showPostcard(); return; }
   if (S.cash >= 0) S.rescueShown = false;
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
-  if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; showIssue(S.region); return; }
+  if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; issueScene(); return; }
   if (S.poach) { showPoach(); return; }
   checkDeals();
 }
@@ -2328,7 +2328,7 @@ function renderHome() {
   }
   if (S.banUntil >= S.day) alert('red', `<b>Uçuş yasağın var.</b> ${S.banUntil - S.day + 1} gün daha kalkamazsın.`);
   if (Wx.flag === 'red' && flying().length) alert('red', `<b>Bugün uçuş yasak.</b> Kalkarsan %35 ihtimalle ${eur(5000)} ceza, sigorta geçersiz.`);
-  if (S.issue) alert('red', `<b>${ISSUES[S.issue.k].t}.</b> ${S.issue.k === 'raise' ? 'Pilotların ofisin önünde bekliyor. ' : ''}Karar vermek için dokun.`, () => showIssue(S.region));
+  if (S.issue) alert('red', `<b>${ISSUES[S.issue.k].t}.</b> ${S.issue.k === 'raise' ? 'Pilotların ofisin önünde bekliyor. ' : ''}Karar vermek için dokun.`, issueScene);
   for (const id in (S.regions || {})) { const A = S.regions[id].auto; if (A && A.issue) alert('red', `<b>${REGION_DEF[id].name}: ${ISSUES[A.issue.k].t}.</b> Karar verene kadar oradaki kazanç yarıda. Karar vermek için dokun.`, () => showIssue(id)); }
   if (S.fest) alert('mis', `<b>${S.fest.name}, gün ${S.day - S.fest.start + 1}/3!</b> Turist bol, özel isteklerin ödülü %50 fazla.`);
   if (S.fiesta && S.region === 'lux') alert('mis', `<b>Nil gemileri limanda, gün ${S.day - S.fiesta.start + 1}/3!</b> Kıyı turist dolu. Bütün balonlarını kaldır.`);
@@ -4446,6 +4446,14 @@ function autoRegions() {
   }
   return Math.round(total * FX());
 }
+/* In the region you're in, the camera first goes to your office: pilots asking for a raise wave placards there.
+   The card comes up after a few seconds, once you've seen it. */
+function issueScene() {
+  if (!S.issue) return;
+  const at = [9.3, 13.6];
+  if (mode === 'office' && HOME.h) { openTown(at); townFocus([at[0], at[1] + 1.2], 1.15); TOWN.noLabels = true; TOWN.extra = S.issue.k === 'raise' ? strikers : null; $('tClose').classList.add('gone'); }
+  setTimeout(() => { if (S.issue && mode === 'office') showIssue(S.region); }, 3500);
+}
 function showIssue(id) {
   const live = id === S.region, rs = live ? null : S.regions[id], A = live ? (S.issue && { ...makeAuto(S, id), issue: S.issue }) : rs && rs.auto;
   if (!A || !A.issue) return;
@@ -4460,13 +4468,14 @@ function showIssue(id) {
     if (cost && (S.holding || 0) < cost) b.disabled = true;
     b.onclick = () => {
       if (cost) { S.holding -= cost; holdLog('exp', cost); }
-      if (live) { fn(); S.issue = null; m.hidden = true; refresh(); setTimeout(nextPopup, 250); return; }
+      if (live) { fn(); S.issue = null; m.hidden = true; TOWN.extra = null; TOWN.noLabels = false; if (TOWN.open) closeTown(); refresh(); setTimeout(nextPopup, 700); return; }
       const r = fn(A, id, rs); A.issue = null; m.hidden = true; if (r === 'go') switchRegion(id); else { refresh(); setTimeout(nextPopup, 250); }
     };
     c.appendChild(b);
   };
   opt(I.a, live ? I.LA : I.A, 'a', I.la); opt(I.b, live ? I.LB : I.B, 'b', I.lb);
-  const later = h('button', 'ghost', 'Sonra'); later.style.width = '100%'; later.onclick = () => { m.hidden = true; }; c.appendChild(later);
+  /* there is no "later": here you decide; from elsewhere you decide or fly over to see for yourself */
+  if (!live) { const go = h('button', 'ghost', `${REGION_DEF[id].name} bölgesine git`); go.style.width = '100%'; go.onclick = () => { m.hidden = true; switchRegion(id); }; c.appendChild(go); }
   m.appendChild(c); m.hidden = false;
 }
 

@@ -116,3 +116,6 @@ add("goals.chapterBig", "Chapter %1$@/%2$@", "Bölüm %1$@/%2$@", "Kapitel %1$@/
 add("guide.short.cap", "Hezarfen", "Hezarfen", "Hezarfen", "Hezarfen", "ヘザルフェン", "헤자르펜")
 add("guide.short.abq", "Franklin", "Franklin", "Franklin", "Franklin", "フランクリン", "프랭클린")
 add("guide.short.lux", "Imhotep", "İmhotep", "Imhotep", "Imhotep", "イムホテプ", "임호테프")
+
+# A parked region's problem card: no "later", but you can fly over and see it
+add("issueSheet.goThere", "Go to %@", "%@ bölgesine git", "Nach %@ reisen", "Ir a %@", "%@へ行く", "%@(으)로 가기")

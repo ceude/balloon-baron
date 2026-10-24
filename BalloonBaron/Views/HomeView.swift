@@ -510,9 +510,8 @@ struct HomeView: View {
                                  text: loc("home.alert.fiestaSoon.body" + cruise)))
         }
         if let open = s.local.openIssue {
-            let r = s.region
             out.append(HomeAlert(id: "issue.here", level: .red, title: open.kind.title,
-                                 text: loc(open.kind == .raise ? "home.alert.issueHere.raise" : "home.alert.issueHere"), tap: { store.issueRegion = r }))
+                                 text: loc(open.kind == .raise ? "home.alert.issueHere.raise" : "home.alert.issueHere"), tap: { store.showLiveIssue() }))
         }
         for r in RegionID.allCases {
             guard let issue = s.parked[r]?.auto.issue else { continue }

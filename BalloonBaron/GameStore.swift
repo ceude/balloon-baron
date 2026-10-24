@@ -42,6 +42,8 @@ final class GameStore {
     var townCard: TownCard?
     /// A parked region whose problem the player is deciding.
     var issueRegion: RegionID?
+    /// A problem waiting in the region you're in: the camera goes to your office first, the card follows.
+    var issueScene = false
     /// The dream-flight intro runs at every launch, like the prototype.
     var showIntro = true
     /// Passengers are being gathered (the seat-filling screen before take-off).
@@ -77,7 +79,7 @@ final class GameStore {
         showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
-            || night != nil || travel != nil
+            || night != nil || travel != nil || issueScene
     }
 
     init() {
@@ -196,7 +198,7 @@ final class GameStore {
         } else if g.liveIssue != nil && s.local.issueSeen != s.day {
             // A problem that waited for you here opens by itself once a day.
             act { _ = $0.liveIssueCardDue() }
-            issueRegion = s.region
+            showLiveIssue()
         } else if let p = s.poach {
             // The offer is shown once; it leaves the state so rivals can try again later.
             act { $0.state.poach = nil }
@@ -398,6 +400,20 @@ final class GameStore {
         guard let s = pageSection else { return }
         pageSection = nil
         DispatchQueue.main.async { proxy.scrollTo(s, anchor: .top) }
+    }
+
+    /// `issueScene`: the camera flies to your office (pilots asking for a raise wave placards there) and the
+    /// decision card comes up three and a half seconds later.
+    func showLiveIssue() {
+        guard let g = game, g.liveIssue != nil else { return }
+        let r = g.state.region
+        page = nil
+        collectScene.from = nil
+        issueScene = true
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [self] in
+            guard issueScene, game?.liveIssue != nil, game?.state.region == r else { issueScene = false; return }
+            issueRegion = r
+        }
     }
 
     func closePage() {

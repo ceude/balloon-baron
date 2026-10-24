@@ -119,7 +119,9 @@ struct HomeTownView: View {
                         if store.collecting {
                             renderCollect(&c, s, sz, now)
                         } else if let e = store.morningEvent {
-                            renderEvent(&c, s, sz, now, e)
+                            renderEvent(&c, s, sz, now, spot: e.townSpot, strike: e == .strike)
+                        } else if store.issueScene {
+                            renderEvent(&c, s, sz, now, spot: MorningEvent.strike.townSpot, strike: s.local.openIssue?.kind == .raise)
                         } else {
                             store.collectScene.from = nil
                             // Zoomed in, the horizon stays where the home screen had it; from the night it stays the night's,
@@ -211,18 +213,18 @@ struct HomeTownView: View {
     }
 
     /// A morning event: the camera goes to where it happens, the names hide, and the card comes up from below.
-    private func renderEvent(_ c: inout GraphicsContext, _ s: GameState, _ sz: CGSize, _ now: Double, _ e: MorningEvent) {
+    private func renderEvent(_ c: inout GraphicsContext, _ s: GameState, _ sz: CGSize, _ now: Double, spot: (Double, Double), strike: Bool) {
         let sc = store.collectScene
         if sc.from == nil { sc.from = (now, model.view) }
         guard let from = sc.from else { return }
-        let spot = e.townSpot, z: CGFloat = 1.15, p = TownGeo.iso(spot.0, spot.1 + 1.2)
+        let z: CGFloat = 1.15, p = TownGeo.iso(spot.0, spot.1 + 1.2)
         let to = TownViewport(z: z, ox: sz.width / 2 - p.x * z, oy: sz.height * 0.55 - p.y * z)
         let k = reduceMotion ? 1 : CGFloat(CollectScene.easeIO(min(max((now - from.t) / 0.65, 0), 1)))
         var v = TownViewport(z: from.view.z + (to.z - from.view.z) * k, ox: from.view.ox + (to.ox - from.view.ox) * k,
                              oy: from.view.oy + (to.oy - from.view.oy) * k)
         v.noLabels = true
         if model.night { v.hzFix = NightCamera.horizon(v, sz) } else { v.hzCap = TownGeo.horizon(model.home, height: sz.height) }
-        _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, strike: e == .strike)
+        _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, strike: strike)
     }
 
     private func homeViewport(width w: CGFloat, dockTop: CGFloat) -> TownViewport {
