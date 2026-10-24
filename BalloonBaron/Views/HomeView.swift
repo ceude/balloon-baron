@@ -29,6 +29,8 @@ struct HomeView: View {
     @State private var dockTop: CGFloat = 0
     @State private var hudBottom: CGFloat = 56
     /// Bottom of the weather card; the town's back corner sits just under it.
+    /// A morning event or a region's problem: the camera is at the office and the side controls step aside.
+    private var townScene: Bool { store.issueScene || store.morningEvent != nil }
     @State private var weatherBottom: CGFloat = 0
     /// Bottom of the side buttons: the column is taller than the weather card, so zooming slides it off by this.
     @State private var navBottom: CGFloat = 0
@@ -96,10 +98,11 @@ struct HomeView: View {
                     // Passenger reviews pop up below the weather, left of the side buttons, so they never cover either.
                     VStack(alignment: .leading, spacing: 10) {
                         if let w = s.weather {
-                            // While passengers board, the town under it is the show: the wind card steps aside.
+                            // While passengers board, or the camera shows what happens at the office, the town is the
+                            // show: the wind card steps aside.
                             weatherWidget(w, winter: s.winter != nil)
-                                .opacity(store.collecting ? 0 : 1)
-                                .animation(.easeOut(duration: 0.25), value: store.collecting)
+                                .opacity(store.collecting || townScene ? 0 : 1)
+                                .animation(.easeOut(duration: 0.25), value: store.collecting || townScene)
                                 .background {
                                     GeometryReader { g in
                                         Color.clear.preference(key: WeatherBottomKey.self, value: g.frame(in: .global).maxY)
@@ -110,6 +113,9 @@ struct HomeView: View {
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     navColumn(s)
+                        .opacity(townScene ? 0 : 1)
+                        .allowsHitTesting(!townScene)
+                        .animation(.easeOut(duration: 0.25), value: townScene)
                         .background {
                             GeometryReader { g in
                                 Color.clear.preference(key: NavBottomKey.self, value: g.frame(in: .global).maxY)
