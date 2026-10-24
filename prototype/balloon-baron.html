@@ -1441,8 +1441,8 @@ function eventCard(k) {
   } else if (k === 'fuel') {
     const per = S.balloons.reduce((a, b) => a + SIZES[b.size].fuel, 0), stock = Math.round(per * 5 * .25 / 50) * 50;
     c.appendChild(h('div', 'chap', 'Sabah olayı'));
-    c.appendChild(h('h1', null, 'Propan zammı'));
-    c.appendChild(h('p', 'lead', `Tedarikçi gelecek 5 gün propana %50 zam yapacağını söyledi. Şimdi ${eur(stock)} verip eski fiyattan stok yaparsan zamdan etkilenmezsin.`));
+    c.appendChild(h('h1', null, 'Yakıt zammı'));
+    c.appendChild(h('p', 'lead', `Tedarikçi gelecek 5 gün yakıta %50 zam yapacağını söyledi. Şimdi ${eur(stock)} verip eski fiyattan stok yaparsan zamdan etkilenmezsin.`));
     btn('big', `Stok yap ${eur(stock)}`, () => { S.cash -= stock; return 'Tüpler hangarda, akıllıca evlat.'; }, S.cash < stock);
     btn('ghost', 'Zammı öde (5 gün yakıt ×1,5)', () => { S.fuelUp = S.day + 4; return null; });
   } else if (k === 'press') {

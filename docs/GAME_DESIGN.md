@@ -213,7 +213,7 @@ Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükse
 - **Pilot grevi** (en az 2 pilot): ofisin önünde pankartlı pilotlar. Zam (%15 kalıcı) ya da bir gün dayan (pilotlu balonlar uçmaz, amirali sen uçurursun, popülerlik −0,02).
 - **VIP / Düğün** (boşta uçabilen balon): en büyük boş balonu kirala, peşin kapasite × fiyat × 2,2 (VIP) / × 1,4 (düğün), popülerlik +0,02 / +0,015. Balon o gün yolcu almaz.
 - **Belgesel:** amiralde 4 koltuk o gün kameraya ayrılır (satılmaz), popülerlik +0,06.
-- **Propan zammı** (en az 2 balon): 5 gün yakıt ×1,5; günlük yakıtın 5 günlüğünün %25'i ödenirse etkilenmez.
+- **Yakıt zammı** (en az 2 balon): 5 gün yakıt ×1,5; günlük yakıtın 5 günlüğünün %25'i ödenirse etkilenmez.
 - **Basın röportajı:** %65 şansla popülerlik artar, yoksa düşer.
 
 ## Gece

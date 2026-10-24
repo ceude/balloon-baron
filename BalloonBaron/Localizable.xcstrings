@@ -13004,37 +13004,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Der Lieferant erhöht den Propanpreis in den nächsten 5 Tagen um 50 %%. Zahl jetzt %@ und leg einen Vorrat zum alten Preis an, dann trifft dich die Erhöhung nicht."
+            "value": "Der Lieferant erhöht den Treibstoffpreis in den nächsten 5 Tagen um 50 %%. Zahl jetzt %@ und leg einen Vorrat zum alten Preis an, dann trifft dich die Erhöhung nicht."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The supplier says propane goes up 50%% for the next 5 days. Pay %@ now to stock up at the old price and the rise won't touch you."
+            "value": "The supplier says fuel goes up 50%% for the next 5 days. Pay %@ now to stock up at the old price and the rise won't touch you."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El proveedor subirá el propano un 50 %% los próximos 5 días. Si pagas %@ ahora y haces acopio al precio antiguo, la subida no te afectará."
+            "value": "El proveedor subirá el combustible un 50 %% los próximos 5 días. Si pagas %@ ahora y haces acopio al precio antiguo, la subida no te afectará."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "業者によると今後5日間プロパンが50%%値上がりする。今%@払って旧価格で備蓄すれば値上げの影響はない。"
+            "value": "業者によると今後5日間燃料が50%%値上がりする。今%@払って旧価格で備蓄すれば値上げの影響はない。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "공급업체가 앞으로 5일간 프로판 가격을 50%% 올린다고 합니다. 지금 %@를 내고 옛 가격으로 비축하면 인상의 영향을 받지 않습니다."
+            "value": "공급업체가 앞으로 5일간 연료 가격을 50%% 올린다고 합니다. 지금 %@를 내고 옛 가격으로 비축하면 인상의 영향을 받지 않습니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tedarikçi gelecek 5 gün propana %%50 zam yapacağını söyledi. Şimdi %@ verip eski fiyattan stok yaparsan zamdan etkilenmezsin."
+            "value": "Tedarikçi gelecek 5 gün yakıta %%50 zam yapacağını söyledi. Şimdi %@ verip eski fiyattan stok yaparsan zamdan etkilenmezsin."
           }
         }
       }
@@ -13086,37 +13086,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Propan wird teurer"
+            "value": "Treibstoff wird teurer"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Propane price rise"
+            "value": "Fuel price rise"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sube el propano"
+            "value": "Sube el combustible"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "プロパン値上げ"
+            "value": "燃料値上げ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "프로판 가격 인상"
+            "value": "연료 가격 인상"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Propan zammı"
+            "value": "Yakıt zammı"
           }
         }
       }
