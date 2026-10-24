@@ -213,7 +213,10 @@ public struct LatePilot: Codable, Equatable, Sendable { public var day: Int, pil
 /// A region the company left behind. Its manager keeps flying and sends profit to the holding.
 public struct Autopilot: Codable, Equatable, Sendable {
     public struct Modifier: Codable, Equatable, Sendable { public var mult: Double, until: Int }
-    public struct OpenIssue: Codable, Equatable, Sendable { public var kind: Issue, day: Int }
+    public struct OpenIssue: Codable, Equatable, Sendable {
+        public var kind: Issue, day: Int
+        public init(kind: Issue, day: Int) { self.kind = kind; self.day = day }
+    }
 
     /// Expected daily profit in euros before boosts.
     public var base: Double

@@ -352,7 +352,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .item .s{font-size:13px;color:var(--ink2);margin-top:1px;line-height:1.35}
 .ic{width:38px;height:38px;flex:none}
 .av{width:38px;height:38px;flex:none;border-radius:50%;display:grid;place-items:center;font-family:var(--cond);font-weight:800;font-size:17px;color:#fff}
-.tag{display:inline-block;font-size:12px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:4px;vertical-align:1px}
+.tag{display:inline-block;white-space:nowrap;font-size:12px;font-weight:700;padding:2px 8px;border-radius:8px;margin-left:4px;vertical-align:1px}
 .tag.g{background:#dcf3e5;color:#145c34}.tag.y{background:#fff3cf;color:#6b4c00}.tag.r{background:#fde6e2;color:#8c2414}.tag.n{background:#fff;color:var(--ink2)}
 .sw{width:50px;height:30px;border-radius:15px;background:#d4cde2;position:relative;flex:none;transition:background .15s}
 .sw::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s}
@@ -370,7 +370,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .legend span{display:flex;align-items:center;gap:6px}
 .legend i{width:10px;height:10px;border-radius:3px}
 .legend b{font-family:var(--cond)}
-.rv .t{display:flex;align-items:center;gap:6px}
+.rv .t{display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px}
 .merge{border-top:6px solid var(--red)}
 .merge .mico{display:flex;align-items:center;gap:6px;font-family:var(--cond);font-weight:800;font-size:28px;color:var(--ink2)}
 .merge .mico .ic{width:56px;height:56px}
@@ -1667,7 +1667,7 @@ function finishDay(flight) {
     /* ceza şirketin toplam değerinden: kasayı boşaltmak kurtarmaz */
     const worth = Math.max(0, S.cash) + S.balloons.reduce((a, b) => a + SIZES[b.size].cost, 0) + (S.ownHotels || []).reduce((a, id) => a + HOTELS.find(x => x.id === id).buy, 0);
     const fine = Math.max(5000, Math.round(worth * MONO_RATE / 100) * 100); Lg.mono = fine; S.cash -= fine; net -= fine; S.monoDays = 0;
-    paperAdd(5, `Rekabet Kurumu'ndan tekel cezası: ${S.company}`, `Pazarın %${Math.round(shr * 100)}'i tek elde, ceza ${eur(fine)}.`);
+    paperAdd(5, `Rekabet Kurumu'ndan tekel cezası: ${S.company}`, `Tek elde toplanan pazar payı: %${Math.round(shr * 100)}. Ceza: ${eur(fine)}.`);
     ev.push(`Rekabet Kurumu pazarın %${Math.round(shr * 100)}'ini elinde tuttuğun için ${eur(fine)} tekel cezası kesti.`);
   }
 
@@ -1824,7 +1824,7 @@ function showGoals() {
   if (isBaron()) {
     c.insertAdjacentHTML('beforeend', CROWN);
     c.appendChild(h('h1', null, `${RD().name} Baronu`));
-    c.appendChild(h('p', 'lead', 'Kapadokya göğü senin. Yeni ufuklar dünya haritasında seni bekliyor.'));
+    c.appendChild(h('p', 'lead', `${RD().name} göğü senin. Yeni ufuklar dünya haritasında seni bekliyor.`));
     const w = h('button', 'big', 'Dünya haritası'); w.onclick = showWorldMap; c.appendChild(w);
   } else {
     const C = chap()[S.chapter || 0];
@@ -2319,7 +2319,7 @@ function renderHome() {
   const al = $('alerts'); al.replaceChildren();
   const alert = (cls, html, on) => { const a = h(on ? 'button' : 'div', 'alert ' + cls, html); if (on) a.onclick = on; al.appendChild(a); };
   if (S.winter) alert('win', `<b>Kış, ${S.day - S.winter.start + 1}/8. gün.</b> Turist yarı yarıya az, kırmızı bayrak sık. Gereksiz balonları yerde tut.`);
-  const ls0 = S.lastShare; if (ls0 && S.day > 20) { const tot0 = ls0.me + ls0.rivals.reduce((a, b) => a + b, 0); if (tot0 && ls0.me / tot0 > .6 && S.rivals.some(r => r.alive)) alert('yel', `<b>Pazarın %${Math.round(ls0.me / tot0 * 100)}'i senin.</b> Rekabet Kurumu seni izliyor.`); }
+  const ls0 = S.lastShare; if (ls0 && S.day > 20) { const tot0 = ls0.me + ls0.rivals.reduce((a, b) => a + b, 0); if (tot0 && ls0.me / tot0 > .6 && S.rivals.some(r => r.alive)) alert('yel', `<b>Pazar payın: %${Math.round(ls0.me / tot0 * 100)}.</b> Rekabet Kurumu seni izliyor.`); }
   const fbm = bal(S.flag);
   if (Wx.mission && fbm && canFly(fbm) !== 'dmg' && canFly(fbm) !== 'worn') {
     const M = MISSIONS[Wx.mission];
@@ -2680,7 +2680,7 @@ function tabMarket(body) {
     const seg = (n, col, name) => { const sp = document.createElement('span'); sp.style.width = (n / tot * 100) + '%'; sp.style.background = col; bar.appendChild(sp); lg.appendChild(h('span', null, `<i style="background:${col}"></i>${esc(name)} <b>%${Math.round(n / tot * 100)}</b>`)); };
     seg(ls.me, myCol()[0], S.company);
     S.rivals.forEach((r, i) => { if (r.alive || ls.rivals[i]) seg(ls.rivals[i] || 0, r.col, r.name); });
-    s.append(bar, lg, h('p', 'hint', ls.extra ? `Dün ${ls.demand + ls.extra} turist balona binmek istedi, ${ls.extra}'i tavsiyeyle doğrudan sana geldi. ${tot} kişi uçtu.` : `Dün ${ls.demand} turist balona binmek istedi, ${tot} kişi uçtu.`));
+    s.append(bar, lg, h('p', 'hint', ls.extra ? `Dün balona binmek isteyen turist: ${ls.demand + ls.extra}. Tavsiyeyle doğrudan sana gelen: ${ls.extra}. Uçan: ${tot}.` : `Dün ${ls.demand} turist balona binmek istedi, ${tot} kişi uçtu.`));
   } else s.appendChild(h('p', 'hint', 'İlk günün sonunda pazar payını burada göreceksin.'));
   body.appendChild(s);
   const t = h('div', 'sec'); t.appendChild(h('h2', null, 'Sen ve rakiplerin'));
