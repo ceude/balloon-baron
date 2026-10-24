@@ -5,6 +5,7 @@ import BalloonBaronCore
 /// Screenshot runs on the simulator (.github/workflows/screens.yml), debug builds only. Launch arguments:
 /// `-demoDays N` plays N days with a simple bot and opens on the home screen; `-demoIntro` keeps the intro;
 /// `-demoPage fleet` opens an office page; `-demoRegion abq` plays on in Albuquerque after Cappadocia, `-demoRegion lux` then on in Luxor.
+/// One scene on top: `-demoScene issue` (pilots asking for a raise outside the office, then the card), `collect`, `album`, `deal`.
 extension GameStore {
     func applyDemoArguments() {
         let args = ProcessInfo.processInfo.arguments
@@ -38,6 +39,26 @@ extension GameStore {
         currentRegion = g.state.region
         showIntro = args.contains("-demoIntro")
         page = value("-demoPage").flatMap(Page.init(rawValue:))
+        switch value("-demoScene") {
+        case "issue":
+            game?.state.local.openIssue = Autopilot.OpenIssue(kind: .raise, day: g.state.day)
+            game?.state.local.issueSeen = g.state.day
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.showLiveIssue() }
+        case "collect":
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.startCollect() }
+        case "album":
+            var got = game?.state.postcards ?? [:]
+            for a in Achievement.allCases.prefix(6) { got[a] = got[a] ?? 5 }
+            game?.state.postcards = got
+            showAlbum = true
+        case "deal":
+            if var gg = game, !gg.state.rivals.isEmpty {
+                gg.state.rivals[0].offer = 60000
+                game = gg
+                deal = DealOffer(rival: 0, bankrupt: false)
+            }
+        default: break
+        }
     }
 
     /// One day of a steady player: grows the fleet, staffs it, signs hotels, flies unless the flag is red.
