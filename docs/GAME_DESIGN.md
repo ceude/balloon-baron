@@ -328,7 +328,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - Kasabaya kar yağar, çatılar ve zemin beyazlar.
 
 ## Görünüm ayarları (v110)
-- **Uçuş:** gökyüzünde üç katman bulut var; uzaktakiler kameranın %18'i, ortadakiler %35'i, yakındakiler %60'ı hızında kayar ve zamanla da hafifçe sürüklenir. Sepet zarfın altında hafifçe salınır (±~2°), brülör yanarken biraz daha; yerde durur. TestFlight'ta "uçtuğumu hissetmiyorum, sadece yer gidiyor" geri bildirimiyle eklendi.
+- **Uçuş:** gökyüzünde üç katman bulut var; sadece balonun yatay hareketiyle kayar (balon sağa giderken sola), uzaktakiler kameranın %25'i, ortadakiler %45'i, yakındakiler %70'i hızında; balon yatayda durunca bulutlar da durur. Sepet zarfın altında hafifçe salınır (±~2°), brülör yanarken biraz daha; yerde durur. TestFlight'ta "uçtuğumu hissetmiyorum, sadece yer gidiyor" geri bildirimiyle eklendi.
 - **Gece sahnesi:** ayarlardan kapatılabilir. Kapalıyken gece yine hesaplanır (olayı gazeteye girer), sadece kasabanın gece görüntüsü atlanıp sabaha geçilir.
 
 ## Hezarfen Usta

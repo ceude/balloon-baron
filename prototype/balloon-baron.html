@@ -4158,16 +4158,16 @@ function balloon(x, y, R, c1, c2, burn, alpha, ad, design) {
   if (burn) { const f = 1 + Math.sin(T * 31) * .12 + Math.sin(T * 53 + 1.7) * .08, g = 1 + Math.sin(T * 47 + .6) * .1, sw = Math.sin(T * 11) * R * .015; ctx.save(); ctx.beginPath(); ctx.rect(x - R, by, R * 2, R * 2); ctx.clip(); ell(x + sw, by + R * .02, R * .1, R * .28 * f, 'rgba(255,200,90,.95)'); ell(x + sw * .6, by + R * .06, R * .05, R * .14 * g, '#fff4cc'); ctx.restore(); }
   ctx.restore();
 }
-/* v110: clouds in three layers so a flight feels like flying: far ones slide slowly, near ones faster and bigger,
-   and all of them drift a little with time even while the balloon hangs still */
+/* v110: clouds in three layers so a flight feels like flying: they move only with the balloon (it drifts right,
+   they slide left), far ones slowly, near ones faster and bigger; a balloon hanging still sees still clouds */
 function clouds(p, groundY, topY, camX, kx) {
   const vh = groundY - topY, R = mulberry32(11), col = mix('#c49ab4', '#ffffff', p), span = W + 400;
   ctx.fillStyle = col;
   for (let L = 0; L < 3; L++) {
-    const par = [.18, .35, .6][L], a = [.22, .32, .45][L] * (.6 + .4 * p), sc = [.6, .85, 1.1][L];
+    const par = [.25, .45, .7][L], a = [.22, .32, .45][L] * (.6 + .4 * p), sc = [.6, .85, 1.1][L];
     for (let i = 0; i < 3; i++) {
       const w = vh * (.16 + R() * .1) * sc, alt = 260 + R() * 360 - L * 40, x0 = R() * span;
-      const x = ((x0 - camX * kx * par - T * (4 + L * 3)) % span + span) % span - 200, y = groundY - alt * vh / 650;
+      const x = ((x0 - camX * kx * par) % span + span) % span - 200, y = groundY - alt * vh / 650;
       /* one path per cloud, filled once, so the puffs don't darken where they overlap */
       ctx.globalAlpha = a; ctx.beginPath();
       for (const [dx, dy, rx, ry] of [[0, 0, .5, .15], [-.22, -.03, .22, .14], [.04, -.12, .24, .2], [.27, -.05, .18, .13]]) {

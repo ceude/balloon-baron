@@ -224,17 +224,17 @@ enum ScenePainter {
     /// `scenery()`: sky, sun, distant ridges and chimneys, background balloons, ground, river and snow.
     /// `p` is time of day, 0 = dawn, 1 = bright morning. Returns the view height above the ground.
     @discardableResult
-    /// Clouds in three layers so a flight feels like flying (v110): far ones slide slowly, near ones faster and
-    /// bigger, and all of them drift a little with time even while the balloon hangs still.
-    static func clouds(_ ctx: inout GraphicsContext, cam: SceneCamera, p: Double, time T: Double) {
+    /// Clouds in three layers so a flight feels like flying (v110). They move only with the balloon (it drifts
+    /// right, they slide left), far ones slowly, near ones faster and bigger; a balloon hanging still sees still clouds.
+    static func clouds(_ ctx: inout GraphicsContext, cam: SceneCamera, p: Double) {
         let W = cam.size.width, vh = cam.viewHeight, span = Double(W) + 400
         let col = mix("#c49ab4", "#ffffff", p)
         var r = Mulberry32(seed: 11)
         for L in 0..<3 {
-            let par = [0.18, 0.35, 0.6][L], a = [0.22, 0.32, 0.45][L] * (0.6 + 0.4 * p), sc = [0.6, 0.85, 1.1][L]
+            let par = [0.25, 0.45, 0.7][L], a = [0.22, 0.32, 0.45][L] * (0.6 + 0.4 * p), sc = [0.6, 0.85, 1.1][L]
             for _ in 0..<3 {
                 let w = vh * CGFloat((0.16 + r.next() * 0.1) * sc), alt = 260 + r.next() * 360 - Double(L) * 40, x0 = r.next() * span
-                let x = CGFloat(pmod(x0 - cam.camX * Double(cam.kx) * par - T * Double(4 + L * 3), span)) - 200
+                let x = CGFloat(pmod(x0 - cam.camX * Double(cam.kx) * par, span)) - 200
                 let y = cam.sy(alt)
                 // One path per cloud, filled once, so the puffs don't darken where they overlap.
                 var cloud = Path()
@@ -266,7 +266,7 @@ enum ScenePainter {
         ctx.fill(Path(CGRect(x: sunX - sr * 6, y: sunY - sr * 6, width: sr * 12, height: sr * 12)),
                  with: .radialGradient(glow, center: CGPoint(x: sunX, y: sunY), startRadius: 0, endRadius: sr * 6))
         ell(&ctx, sunX, sunY, sr, sr, Color(hex: "#fff0c8"))
-        if inFlight { clouds(&ctx, cam: cam, p: p, time: T) }
+        if inFlight { clouds(&ctx, cam: cam, p: p) }
 
         let vh = groundY - topY
         if desert {
