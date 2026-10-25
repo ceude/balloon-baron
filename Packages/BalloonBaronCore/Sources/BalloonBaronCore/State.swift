@@ -58,6 +58,8 @@ public struct Loan: Codable, Equatable, Sendable {
     public var amount: Int
     public var installment: Int
     public var daysLeft: Int
+    /// Taken to buy a rival (the purchase loan).
+    public var purchase: Bool?
     public var payoff: Int { jsRound(Double(installment * daysLeft) * 0.9) }
 }
 

@@ -2953,47 +2953,6 @@
         }
       }
     },
-    "bank.bigTip": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tipp: Viele Ballone auf einmal für einen vollen Markt kosten dich im Winter Geld. Eine neue Region oder Investitionen in die Holding sind sicherer."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tip: buying a lot of balloons at once for a full market costs you in winter. Opening a new region or investing in the holding is safer."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Consejo: comprar muchos globos de golpe para un mercado lleno te hará perder en invierno. Abrir una nueva región o invertir en el holding es más seguro."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "ヒント：飽和した市場に気球をまとめて買うと冬に赤字になる。新しい地域への進出やホールディングスへの投資のほうが安全。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "팁: 포화된 시장에 열기구를 한꺼번에 사면 겨울에 손해를 봅니다. 새 지역 진출이나 지주회사 투자가 더 안전합니다."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tavsiye: doymuş pazara toplu balon almak kışın zarar ettirir. Bu parayla yeni bir bölgeye açılmak ya da holdinge yatırım yapmak daha güvenli."
-          }
-        }
-      }
-    },
     "bank.hint": {
       "extractionState": "manual",
       "localizations": {
@@ -3195,47 +3154,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gereken balon: en az %@."
-          }
-        }
-      }
-    },
-    "bank.needFirst": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Zuerst muss der Kredit über %@ freigeschaltet sein."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "The %@ loan has to open first."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Primero debe abrirse el préstamo de %@."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "先に%@のローンが利用可能になる必要がある。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "먼저 %@ 대출이 열려야 합니다."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Önce %@ kredisi açılmalı."
           }
         }
       }
@@ -6926,6 +6844,621 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yükselt %@"
+          }
+        }
+      }
+    },
+    "buyLoan.bank": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bank zahlt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bank pays"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paga el banco"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "銀行負担"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "은행 부담"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banka öder"
+          }
+        }
+      }
+    },
+    "buyLoan.bankBody": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Steht ein Konkurrent oder eine Konkursflotte zum Verkauf, zahlt die Bank dem Verkäufer, was dir fehlt; in deine Kasse fließt nichts. Mindestens %3$@ des Preises zahlst du selbst. Tage: %1$@, Zins %2$@. Immer nur einer, sobald der 100.000er-Kredit freigeschaltet ist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; nothing goes into your till. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando un rival o una flota en quiebra está en venta, el banco paga al vendedor lo que te falta; a tu caja no entra nada. Tú pones al menos el %3$@ del precio. Días: %1$@, interés %2$@. Uno a la vez, cuando se abra el préstamo de 100.000."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライバル企業や倒産した機体が売りに出たとき、不足分を銀行が売り手に支払う。金庫にお金は入らない。価格の少なくとも%3$@は自己負担。日数：%1$@、利息%2$@。同時に1件まで、10万のローンが利用可能になってから。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "경쟁사나 파산한 열기구가 매물로 나오면 부족분을 은행이 판매자에게 지불하며 금고에는 돈이 들어오지 않습니다. 가격의 최소 %3$@는 직접 냅니다. 일수: %1$@, 이자 %2$@. 한 번에 하나, 10만 대출이 열린 뒤부터."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane; 100.000 kredisi açıldıktan sonra."
+          }
+        }
+      }
+    },
+    "buyLoan.bankTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaufkredit: bis zu %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchase loan: up to %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Préstamo de compra: hasta %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "買収ローン：最大%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인수 대출: 최대 %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satın alma kredisi: en fazla %@"
+          }
+        }
+      }
+    },
+    "buyLoan.button": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit Kredit kaufen (Bank zahlt %@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy with a loan (bank pays %@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprar con préstamo (el banco paga %@)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ローンで買う（銀行が%@）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대출로 사기 (은행 %@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krediyle al (banka %@)"
+          }
+        }
+      }
+    },
+    "buyLoan.cancel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lieber nicht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not now"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora no"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "やめておく"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그만두기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vazgeç"
+          }
+        }
+      }
+    },
+    "buyLoan.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mit Kredit übernehmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take over with the loan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adquirir con el préstamo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ローンで買収する"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대출로 인수"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krediyle devral"
+          }
+        }
+      }
+    },
+    "buyLoan.confirmFleet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flotte mit Kredit kaufen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buy the fleet with the loan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprar la flota con el préstamo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ローンで機体を買う"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대출로 열기구 구매"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Krediyle satın al"
+          }
+        }
+      }
+    },
+    "buyLoan.installment": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rate, Tage: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Installment, days: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuota, días: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返済、日数：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할부, 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taksit, gün: %@"
+          }
+        }
+      }
+    },
+    "buyLoan.kicker": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaufkredit"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Purchase loan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Préstamo de compra"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "買収ローン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인수 대출"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satın alma kredisi"
+          }
+        }
+      }
+    },
+    "buyLoan.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Bank zahlt dem Verkäufer die fehlenden %1$@; in deine Kasse fließt nichts. %2$@ gehen aus deiner Kasse, %3$@ bleiben drin."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bank pays the seller the %1$@ you're short; nothing goes into your till. %2$@ comes out of your cash and %3$@ stays in it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El banco paga al vendedor los %1$@ que te faltan; a tu caja no entra nada. Salen %2$@ de tu caja y quedan %3$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不足分の%1$@は銀行が売り手に直接支払う。金庫にお金は入らない。金庫から%2$@が出て、%3$@が残る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "부족한 %1$@는 은행이 판매자에게 직접 지불하며 금고에는 돈이 들어오지 않습니다. 금고에서 %2$@가 나가고 %3$@가 남습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banka eksik %1$@ tutarını doğrudan satıcıya öder, kasana para girmez. Kasandan %2$@ gider, %3$@ kasada kalır."
+          }
+        }
+      }
+    },
+    "buyLoan.loan": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaufkredit: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ purchase loan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Préstamo de compra de %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@の買収ローン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 인수 대출"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ satın alma kredisi"
+          }
+        }
+      }
+    },
+    "buyLoan.own": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Anteil"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your share"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu parte"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自己負担"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내 부담"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senin payın"
+          }
+        }
+      }
+    },
+    "buyLoan.price": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preis"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Price"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Precio"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "価格"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가격"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiyat"
+          }
+        }
+      }
+    },
+    "buyLoan.total": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Insgesamt zurück (Zins %@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total repaid (interest %@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total a devolver (interés %@)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "返済総額（利息%@）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "총 상환액 (이자 %@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toplam geri ödeme (faiz %@)"
+          }
+        }
+      }
+    },
+    "buyLoan.warning": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorsicht: Im Winter kommen weniger Touristen, die Rate läuft aber weiter. Die neuen Ballone kosten täglich %1$@ Wartung, dazu die Pilotengehälter. Fällt deine Kasse unter %2$@, pfändet die Bank deine Ballone."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Careful: in winter fewer tourists come, but the installment goes on. The new balloons add %1$@ a day in upkeep, pilots' wages on top. If your cash falls below %2$@, the bank seizes your balloons."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuidado: en invierno llegan menos turistas, pero la cuota sigue. Los globos nuevos suman %1$@ al día de mantenimiento, más los sueldos de los pilotos. Si tu caja baja de %2$@, el banco embarga tus globos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "注意：冬は観光客が減るが返済は続く。新しい気球の整備費が1日%1$@増え、パイロットの給料も別にかかる。金庫が%2$@を下回ると銀行が気球を差し押さえる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "주의: 겨울에는 관광객이 줄지만 할부는 계속됩니다. 새 열기구 정비비가 하루 %1$@ 늘고, 조종사 급여는 별도입니다. 금고가 %2$@ 아래로 떨어지면 은행이 열기구를 압류합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dikkat: kışın yolcu azalır ama taksit sürer. Yeni balonların bakımı günde %1$@ ekler, pilot maaşları ayrıca. Kasa %2$@ altına düşerse banka balonlarına el koyar."
           }
         }
       }
@@ -12625,6 +13158,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kasanda %@ var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin."
+          }
+        }
+      }
+    },
+    "deal.shortLoan": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasse: %@. Der Kaufkredit kann den Rest an den Verkäufer zahlen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cash: %@. The purchase loan can pay the rest to the seller."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caja: %@. El préstamo de compra puede pagar el resto al vendedor."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "金庫：%@。不足分は買収ローンで売り手に支払える。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "금고: %@. 부족분은 인수 대출로 판매자에게 지불할 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasanda %@ var. Eksiği satın alma kredisiyle bankaya ödetebilirsin."
           }
         }
       }

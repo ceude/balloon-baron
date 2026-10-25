@@ -20,15 +20,24 @@ struct DealView: View {
             CardText.title(loc(offer.bankrupt ? "deal.bankrupt.title" : "deal.sale.title", name))
             CardText.lead(loc(offer.bankrupt ? "deal.bankrupt.lead" : "deal.sale.lead", num(count), eur(price)))
             FleetMixList(sizes)
+            let terms = cash < price ? store.game?.buyLoanTerms(price: price) : nil
             if cash < price {
-                CardText.hint(loc("deal.short", eur(cash)))
+                CardText.hint(loc(terms == nil ? "deal.short" : "deal.shortLoan", eur(cash)))
             }
-            Button(loc(offer.bankrupt ? "deal.buy" : "deal.takeOver", eur(price))) {
-                SoundEngine.shared.play(.coin)
-                store.answerDeal(offer, accept: true)
+            if let terms {
+                Button(loc("buyLoan.button", eur(terms.financed))) {
+                    SoundEngine.shared.play(.click)
+                    store.buyLoan = offer
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .big))
+            } else {
+                Button(loc(offer.bankrupt ? "deal.buy" : "deal.takeOver", eur(price))) {
+                    SoundEngine.shared.play(.coin)
+                    store.answerDeal(offer, accept: true)
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .big))
+                .disabled(cash < price || rival == nil)
             }
-            .buttonStyle(ChunkyButtonStyle(kind: .big))
-            .disabled(cash < price || rival == nil)
             buttons
             CardText.hint(loc("deal.hint"))
         }
@@ -97,5 +106,67 @@ func fleetMix(_ sizes: [BalloonSize]) -> [(size: BalloonSize, count: Int)] {
     BalloonSize.allCases.reversed().compactMap { z in
         let n = sizes.filter { $0 == z }.count
         return n > 0 ? (z, n) : nil
+    }
+}
+
+/// The purchase loan's terms, like a mortgage: the bank pays the seller what you're short and nothing goes into your
+/// till. Warns about winter and the new fleet's running costs before you sign.
+struct BuyLoanView: View {
+    @Environment(GameStore.self) private var store
+    let offer: DealOffer
+
+    var body: some View {
+        let s = store.state, g = store.game
+        let rival: Rival? = s.flatMap { st in st.rivals.indices.contains(offer.rival) ? st.rivals[offer.rival] : nil }
+        let price = g?.dealPrice(offer.rival, bankrupt: offer.bankrupt) ?? 0
+        let sizes: [BalloonSize] = offer.bankrupt ? (rival?.forSale?.sizes ?? []) : (rival?.balloons ?? [])
+        let upkeep = sizes.reduce(0) { $0 + $1.upkeep }
+        return ModalCard(onClose: { store.buyLoan = nil }) {
+            Text(loc("buyLoan.kicker"))
+                .font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
+            CardText.title(rival?.name ?? "")
+            if let t = g?.buyLoanTerms(price: price) {
+                CardText.lead(loc("buyLoan.lead", eur(t.financed), eur(t.own), eur((s?.cash ?? 0) - t.own)))
+                VStack(spacing: 6) {
+                    row(loc("buyLoan.price"), eur(price))
+                    row(loc("buyLoan.own"), eur(t.own))
+                    row(loc("buyLoan.bank"), eur(t.financed))
+                    row(loc("buyLoan.installment", num(t.days)), loc("crew.wage", eur(t.installment)))
+                    row(loc("buyLoan.total", percent(Rules.buyLoanRate)), eur(t.total))
+                }
+                .padding(12)
+                .background(Theme.ink2.opacity(0.09), in: RoundedRectangle(cornerRadius: 14))
+                HStack(alignment: .top, spacing: 10) {
+                    RoundedRectangle(cornerRadius: 3).fill(Theme.yellow).frame(width: 6)
+                    Text(loc("buyLoan.warning", eur(upkeep), eur(Rules.seizeBelow)))
+                        .font(Theme.font(14))
+                        .foregroundStyle(Theme.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(12)
+                .background(Theme.yellow.opacity(0.14), in: RoundedRectangle(cornerRadius: 14))
+                Button(loc(offer.bankrupt ? "buyLoan.confirmFleet" : "buyLoan.confirm")) {
+                    SoundEngine.shared.play(.coin)
+                    store.buyWithLoan(offer)
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .big))
+            }
+            Button {
+                SoundEngine.shared.play(.click)
+                store.buyLoan = nil
+            } label: {
+                Text(loc("buyLoan.cancel")).frame(maxWidth: .infinity)
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+        }
+    }
+
+    private func row(_ label: String, _ value: String) -> some View {
+        HStack {
+            Text(label).font(Theme.font(15)).foregroundStyle(Theme.ink2)
+            Spacer(minLength: 8)
+            Text(value).font(Theme.font(17, .heavy, condensed: true)).foregroundStyle(Theme.ink)
+        }
+        .accessibilityElement(children: .combine)
     }
 }

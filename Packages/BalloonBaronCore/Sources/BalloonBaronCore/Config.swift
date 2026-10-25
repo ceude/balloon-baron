@@ -83,11 +83,9 @@ public enum Mission: String, Codable, CaseIterable, Sendable {
 
 public struct LoanOffer: Sendable {
     public let amount: Int, days: Int, installment: Int, balloonsNeeded: Int
-    /// The big loans open one after the other when the region earns well: the median daily net of the last two weeks,
-    /// in its own currency. Once open they stay open (v109.1).
+    /// The big loan opens when the region earns well: the median daily net of the last two weeks, in its own currency.
+    /// Once open it stays open (v109.1).
     public var minDailyNet = 0
-    /// The loan (by amount) that has to be open first.
-    public var after: Int? = nil
     public var total: Int { installment * days }
     public var interest: Double { Double(total - amount) / Double(amount) }
 }
@@ -168,9 +166,14 @@ public enum Rules {
         LoanOffer(amount: 10000, days: 40, installment: 300, balloonsNeeded: 0),
         LoanOffer(amount: 25000, days: 45, installment: 650, balloonsNeeded: 2),
         LoanOffer(amount: 50000, days: 50, installment: 1250, balloonsNeeded: 3),
-        LoanOffer(amount: 100_000, days: 80, installment: 1500, balloonsNeeded: 8, minDailyNet: 10000),
-        LoanOffer(amount: 500_000, days: 150, installment: 4000, balloonsNeeded: 20, minDailyNet: 50000, after: 100_000)
+        LoanOffer(amount: 100_000, days: 80, installment: 1500, balloonsNeeded: 8, minDailyNet: 10000)
     ]
+
+    /// The purchase loan (v109.2), a mortgage for a rival up for sale: the bank pays the seller what you're short, up
+    /// to `max`; nothing goes into your till. You put down at least a fifth of the price yourself and keep `reserve`.
+    /// One at a time, and only once the 100,000 loan has opened. Simulated in `tools/sim-buyloan.js`.
+    public static let buyLoanMax = 500_000, buyLoanReserve = 10000, buyLoanDays = 150
+    public static let buyLoanRate = 0.2, buyLoanDown = 0.2
 
     public static let balloonNames = ["Şafak", "Güvercin", "Zelve", "Uçhisar", "Avanos", "Ihlara", "Ortahisar", "Kızılçukur",
                                       "Paşabağ", "Erciyes", "Soğanlı", "Mustafapaşa", "Göreme", "Çavuşin", "Ürgüp", "Sinasos"]

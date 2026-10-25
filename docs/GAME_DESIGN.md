@@ -64,15 +64,19 @@ Burada p, balonun kaza olasılığıdır (hava × boy × pilot).
 | 25.000 | 45 gün | 650 | 2 |
 | 50.000 | 50 gün | 1.250 | 3 |
 | 100.000 | 80 gün | 1.500 | 8 + günlük net ≥ 10.000 |
-| 500.000 | 150 gün | 4.000 | 20 + 100.000 açılmış + günlük net ≥ 50.000 |
 
 Kasa −€5.000'in altına düşerse banka balona el koyar.
 
-Büyük krediler (v109.1) sırayla açılır: bölgenin son 14 günlük ortanca net kazancı barajı ilk aştığı akşam kredi açılır ve bir daha kapanmaz (kışın kazanç düşse de). Para birimi bölgenin kendi parası. 500.000'in kartında tavsiye yazar: doymuş pazara toplu balon almak kışın zarar ettirir.
+100.000 kredisi (v109.1) bölgenin son 14 günlük ortanca net kazancı 10.000'i ilk geçtiği akşam açılır ve bir daha kapanmaz. Simülasyon (`tools/sim-loans.js`; bot krediyi açıldığı gün çekip hepsini balona harcıyor): 10 tohumda 94–122. günde açıldı, hiç el koyma yok.
 
-Simülasyon (`tools/sim-loans.js`; bot krediyi açıldığı gün çekip hepsini birden orta balona harcıyor, sonra borç bitene kadar balon almıyor):
-- 100.000 / 10.000 barajı: 10 tohumda 94–122. günde açıldı, hiçbirinde el koyma yok.
-- 500.000 / 50.000 barajı: Kapadokya'da 500 günde 10 tohumun sadece 3'ünde açıldı (167, 176, 388. gün); o noktada filo zaten 40 balon ve pazar doymuş. Paranın tamamı 14 yeni balona gidince kışın sabit giderler gelirden büyük oldu, banka balonlara el koydu, iki tohumda şirket battı. Vadeyi 200 güne uzatmak işe yaramadı. Sorun kredinin kendisi değil, doymuş pazara aşırı balon eklemek; bu yüzden kartta tavsiye var.
+**Satın alma kredisi (v109.2):** bankanın kredi listesinde değil; satılık bir rakip ya da iflas etmiş bir filo olunca teklif kartında ve Pazar'da "Krediyle al" düğmesi çıkar. Konut kredisi gibi: banka eksik tutarı doğrudan satıcıya öder, kasaya para girmez. Oyuncu kasasından ödeyebildiğini öder, kasada €10.000 kalır; bu pay fiyatın en az %20'si olmalı. Banka en fazla 500.000 öder; 150 gün, faiz %20 (taksit = ödenen × 1,2 / 150, 10'a yuvarlanmış). Aynı anda tek satın alma kredisi; sadece 100.000 kredisi açıldıktan sonra. Onay kartı fiyatı, senin payını, bankanın payını, taksiti, toplamı ve kış/bakım/el koyma uyarısını gösterir.
+
+Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse her seferinde krediyle alıyor, mevsime bakmadan):
+- Hiç sınır yokken: 6–30. günde, tek balonla rakip alıyor; 12 tohumun yarısından fazlası battı.
+- 100.000 açılmış olsun: batan yok ama üst üste 4 şirket alınca 12'nin 9'unda banka balona el koydu.
+- + %20 peşinat + aynı anda tek kredi (son hâli): 12 tohumun 10'unda el koyma yok, 2'sinde 1–2 balon; batan yok.
+
+Önceki tasarım (v109.1, kaldırıldı): bankada günlük net 50.000 ile açılan 500.000 kredisi; parası toplu balona harcanınca doymuş pazarda kışın iki tohumda şirketi batırıyordu.
 
 ## Pazar ve popülerlik
 - **Fiyat:** €40–320 arası.

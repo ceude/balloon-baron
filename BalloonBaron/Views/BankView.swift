@@ -50,7 +50,7 @@ struct BankView: View {
         FleetUI.Item {
             HStack(alignment: .center, spacing: 10) {
                 VStack(alignment: .leading, spacing: 2) {
-                    FleetUI.Title(loc("bank.loan", eur(l.amount)))
+                    FleetUI.Title(loc(l.purchase == true ? "buyLoan.loan" : "bank.loan", eur(l.amount)))
                     FleetUI.Detail(loc("bank.loanDetail", eur(l.installment), num(l.daysLeft)))
                 }
                 Spacer(minLength: 0)
@@ -67,6 +67,10 @@ struct BankView: View {
         FleetUI.Card(loc("bank.offers")) {
             ForEach(Array(Rules.loans.enumerated()), id: \.offset) { i, o in
                 offerRow(i, o)
+            }
+            FleetUI.Item {
+                FleetUI.Title(loc("buyLoan.bankTitle", eur(Rules.buyLoanMax)))
+                FleetUI.Detail(loc("buyLoan.bankBody", num(Rules.buyLoanDays), percent(Rules.buyLoanRate), percent(Rules.buyLoanDown)))
             }
             FleetUI.Hint(loc("bank.hint", eur(Rules.seizeBelow)))
         }
@@ -99,11 +103,9 @@ struct BankView: View {
             if g.loanOpen(o) {
                 t += " " + loc("bank.opened")
             } else {
-                if let a = o.after, !(g.state.local.loansOpen ?? []).contains(a) { t += " " + loc("bank.needFirst", eur(a)) }
                 t += " " + loc("bank.needNet", eur(o.minDailyNet), eur(g.dailyNet))
             }
         }
-        if o.amount >= 500_000 { t += "\n" + loc("bank.bigTip") }
         return t
     }
 }

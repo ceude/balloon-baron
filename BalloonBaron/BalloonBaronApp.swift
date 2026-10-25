@@ -75,6 +75,10 @@ struct RootView: View {
                 DealView(offer: d)
                     .transition(.opacity)
             }
+            if let d = store.buyLoan, store.game != nil {
+                BuyLoanView(offer: d)
+                    .transition(.opacity)
+            }
             if store.showRepChart {
                 RepChartView()
                     .transition(.opacity)

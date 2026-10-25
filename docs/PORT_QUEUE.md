@@ -2,7 +2,9 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v109.1 ile aynı.)
+(Şu an kuyruk boş: Swift uygulaması prototip v109.2 ile aynı.)
+
+v109.2 (prototip ve Swift birlikte): 500.000 kredisi bankadan kalktı, yerine satın alma kredisi geldi (`Game.buyLoanTerms`, `buyWithLoan`, `BuyLoanView`, `Loan.purchase`): satılık rakip ya da iflas filosu için banka eksiği satıcıya öder, %20 peşinat, €10.000 kasada kalır, 150 gün %20, aynı anda tek, 100.000 açıldıktan sonra.
 
 v109.1 (prototip ve Swift birlikte): büyük krediler sırayla (100.000 günlük net ≥ 10.000, sonra 500.000 günlük net ≥ 50.000) açılır ve açık kalır (`RegionState.loansOpen`, `Game.loanUnlock`, `LoanOffer.after`); 500.000 kartında tavsiye.
 

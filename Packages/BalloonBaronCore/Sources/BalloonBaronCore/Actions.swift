@@ -174,14 +174,47 @@ extension Game {
         offer.minDailyNet == 0 || (state.local.loansOpen ?? []).contains(offer.amount)
     }
 
-    /// Each evening: a big loan opens for good the first time the region earns enough, after the one before it.
+    /// Each evening: a big loan opens for good the first time the region earns enough.
     mutating func loanUnlock() {
         var open = state.local.loansOpen ?? []
         for o in Rules.loans where o.minDailyNet > 0 && !open.contains(o.amount) && dailyNet >= o.minDailyNet {
-            if let a = o.after, !open.contains(a) { continue }
             open.append(o.amount)
         }
         if !open.isEmpty { state.local.loansOpen = open }
+    }
+
+    // MARK: Purchase loan
+
+    public struct BuyLoanTerms: Equatable, Sendable {
+        public let price: Int, own: Int, financed: Int, installment: Int, days: Int
+        public var total: Int { installment * days }
+    }
+
+    /// What the bank would lend to buy something at `price`, or nil when the purchase loan can't be used.
+    public func buyLoanTerms(price: Int) -> BuyLoanTerms? {
+        guard state.unlocked.contains(.bank), state.loans.count < Rules.maxLoans, !state.loans.contains(where: { $0.purchase == true }),
+              (state.local.loansOpen ?? []).contains(100_000) else { return nil }
+        let own = max(0, min(price, state.cash - Rules.buyLoanReserve)), fin = price - own
+        guard fin > 0, fin <= Rules.buyLoanMax, Double(own) >= Double(price) * Rules.buyLoanDown else { return nil }
+        let inst = Int((Double(fin) * (1 + Rules.buyLoanRate) / Double(Rules.buyLoanDays) / 10).rounded(.up)) * 10
+        return BuyLoanTerms(price: price, own: own, financed: fin, installment: inst, days: Rules.buyLoanDays)
+    }
+
+    /// Price of rival `i`: its take-over offer, or its bankrupt fleet.
+    public func dealPrice(_ i: Int, bankrupt: Bool) -> Int? {
+        guard state.rivals.indices.contains(i) else { return nil }
+        return bankrupt ? state.rivals[i].forSale?.price : (state.rivals[i].alive ? state.rivals[i].offer : nil)
+    }
+
+    /// Buy rival `i` (or its bankrupt fleet) with the purchase loan: the bank pays the seller the financed part.
+    @discardableResult
+    public mutating func buyWithLoan(_ i: Int, bankrupt: Bool) -> Bool {
+        guard let price = dealPrice(i, bankrupt: bankrupt), let t = buyLoanTerms(price: price) else { return false }
+        state.cash += t.financed
+        let ok = bankrupt ? buyBankruptFleet(i) : takeOver(i)
+        guard ok else { state.cash -= t.financed; return false }
+        state.loans.append(Loan(amount: t.financed, installment: t.installment, daysLeft: t.days, purchase: true))
+        return true
     }
 
     /// The region's typical day lately: the median net of the last 14 days (0 with less than a week of history).

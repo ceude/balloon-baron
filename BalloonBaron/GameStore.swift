@@ -29,6 +29,8 @@ final class GameStore {
     var poach: PoachOffer?
     /// A struggling rival offers its company, or a bankrupt one its fleet.
     var deal: DealOffer?
+    /// The purchase loan's terms card for a rival up for sale.
+    var buyLoan: DealOffer?
     /// The menu (save code, new game, sound) and the popularity chart.
     var showMenu = false
     var showRepChart = false
@@ -79,7 +81,7 @@ final class GameStore {
         showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
-            || night != nil || travel != nil || issueScene
+            || night != nil || travel != nil || issueScene || buyLoan != nil
     }
 
     init() {
@@ -235,6 +237,14 @@ final class GameStore {
                 g.declineDeal(d.rival, bankrupt: d.bankrupt)
             }
         }
+        deal = nil
+        showNextHezarfen()
+    }
+
+    /// Buy with the purchase loan, from its terms card.
+    func buyWithLoan(_ d: DealOffer) {
+        act { _ = $0.buyWithLoan(d.rival, bankrupt: d.bankrupt) }
+        buyLoan = nil
         deal = nil
         showNextHezarfen()
     }

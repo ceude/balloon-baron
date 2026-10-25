@@ -644,7 +644,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .bcard > .item{padding-right:52px}
 .bcard .btns > *{flex:1 1 auto}
 .fmix{display:flex;flex-direction:column;gap:6px;padding:10px 12px;border-radius:14px;background:rgba(108,100,136,.09);margin:10px 0}
-.fmix div{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--ink)}
+.fmix div{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:15px;font-weight:600;color:var(--ink)}
 .fmix .ic{width:18px;height:23px;flex:none}
 .fmix span{flex:1}
 .fmix b{font-family:var(--cond);font-weight:800;font-size:17px}
@@ -807,15 +807,40 @@ const LOANS = [
   { amt: 10000, days: 40, inst: 300, need: 0 },
   { amt: 25000, days: 45, inst: 650, need: 2 },
   { amt: 50000, days: 50, inst: 1250, need: 3 },
-  /* the big loans open one after the other when the region earns well (median daily net of the last two weeks), and
-     once open they stay open (v109.1, simulated: docs/GAME_DESIGN.md "Krediler") */
-  { amt: 100000, days: 80, inst: 1500, need: 8, net: 10000 },
-  { amt: 500000, days: 150, inst: 4000, need: 20, net: 50000, after: 100000 }
+  /* the big loan opens when the region earns well (median daily net of the last two weeks) and stays open
+     (v109.1, simulated: docs/GAME_DESIGN.md "Krediler") */
+  { amt: 100000, days: 80, inst: 1500, need: 8, net: 10000 }
 ];
+/* The purchase loan (v109.2), a mortgage for a rival up for sale: the bank pays the seller what you're short, up to
+   500,000; nothing goes into your till. You pay in what you have, keeping a small reserve. */
+const BUYLOAN = { max: 500000, reserve: 10000, days: 150, rate: .2, down: .2 };
+function buyLoanTerms(price) {
+  /* only for a company that already earns well (the bank opens it with the 100,000 loan, daily net ≥ 10,000), one at a
+     time, and like a mortgage you put down at least a fifth of the price yourself */
+  if (!S.unl.bank || S.loans.length >= 2 || S.loans.some(l => l.buy) || !(S.loanOpen || {})[100000]) return null;
+  const own = Math.round(Math.max(0, Math.min(price, S.cash - BUYLOAN.reserve))), fin = price - own;
+  if (fin <= 0 || fin > BUYLOAN.max || own < price * BUYLOAN.down) return null;
+  const inst = Math.ceil(fin * (1 + BUYLOAN.rate) / BUYLOAN.days / 10) * 10;
+  return { price, own, fin, inst, days: BUYLOAN.days, total: inst * BUYLOAN.days };
+}
+function buyLoanCard(r, sale) {
+  const price = sale ? r.forSale.price : r.offer, T = buyLoanTerms(price); if (!T) return;
+  const up = (sale ? r.forSale.sizes : r.balloons).reduce((a, k) => a + SIZES[k].up, 0);
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('div', 'chap', 'Satın alma kredisi')).style.cssText = 'font-family:var(--cond);font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--coral);text-transform:uppercase';
+  c.appendChild(h('h1', null, sale ? `${r.name} filosu` : r.name));
+  c.appendChild(h('p', 'lead', `Banka eksik ${eur(T.fin)} tutarını doğrudan satıcıya öder; kasana para girmez. Kasandan ${eur(T.own)} gider, ${eur(S.cash - T.own)} kasada kalır.`));
+  c.appendChild(h('div', 'fmix', `<div><span>Fiyat</span><b>${eur(price)}</b></div><div><span>Senin payın</span><b>${eur(T.own)}</b></div><div><span>Banka öder</span><b>${eur(T.fin)}</b></div><div><span>Taksit, ${T.days} gün</span><b>${eur(T.inst)}/gün</b></div><div><span>Toplam geri ödeme (faiz %${Math.round(BUYLOAN.rate * 100)})</span><b>${eur(T.total)}</b></div>`));
+  c.appendChild(h('div', 'callout yel', `<b>Dikkat.</b> Kışın yolcu azalır ama taksit sürer. Yeni balonların bakımı da günde ${eur(up)} ekler, pilot maaşları ayrıca. Kasa ${eur(-5000)} altına düşerse banka balonlarına el koyar.`));
+  const yes = h('button', 'big', sale ? 'Krediyle satın al' : 'Krediyle devral');
+  yes.onclick = () => { S.loans.push({ amt: T.fin, inst: T.inst, left: T.days, buy: 1 }); S.cash += T.fin; sale ? buyFleet(r) : takeOver(r); };
+  const x = h('button', 'ghost', 'Vazgeç'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; };
+  c.append(yes, x); m.appendChild(c); m.hidden = false;
+}
 /* Called each evening: a big loan opens for good the first time the region earns enough. */
 function loanUnlock() {
   const open = S.loanOpen || (S.loanOpen = {});
-  for (const L of LOANS) if (L.net && !open[L.amt] && (!L.after || open[L.after]) && dailyNet() >= L.net) open[L.amt] = S.day;
+  for (const L of LOANS) if (L.net && !open[L.amt] && dailyNet() >= L.net) open[L.amt] = S.day;
 }
 const dailyNet = () => { const h = (S.netHist || []).slice(-14).sort((a, b) => a - b); return h.length >= 7 ? h[h.length >> 1] : 0; };
 const PALETTES = [['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9'], ['#2b2350', '#ffc23d'], ['#ff6fa8', '#fff0f6']];
@@ -2708,7 +2733,7 @@ function tabBank(body) {
   if (!S.loans.length) s.appendChild(h('p', 'hint', 'Borcun yok.'));
   for (const l of S.loans) {
     const it = h('div', 'item'), payoff = Math.round(l.inst * l.left * .9);
-    it.appendChild(h('div', 'main', `<div class="t">${eur(l.amt)} kredi</div><div class="s">Günlük ${eur(l.inst)}, ${l.left} gün kaldı.</div>`));
+    it.appendChild(h('div', 'main', `<div class="t">${eur(l.amt)} ${l.buy ? 'satın alma kredisi' : 'kredi'}</div><div class="s">Günlük ${eur(l.inst)}, ${l.left} gün kaldı.</div>`));
     it.appendChild(pbtn(`Kapat ${eur(payoff)}`, () => { S.cash -= payoff; S.loans = S.loans.filter(x => x !== l); refresh(); }, S.cash < payoff, true));
     s.appendChild(it);
   }
@@ -2717,10 +2742,11 @@ function tabBank(body) {
   LOANS.forEach(L => {
     const total = L.inst * L.days, rate = (total - L.amt) / L.amt, it = h('div', 'item');
     const opened = !L.net || (S.loanOpen || {})[L.amt], locked = S.balloons.length < L.need || !opened, full = S.loans.length >= 2;
-    it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}${L.net ? (opened ? ' <b>Açıldı.</b>' : ` ${L.after && !(S.loanOpen || {})[L.after] ? `Önce ${eur(L.after)} kredisi açılmalı. ` : ''}Buradaki günlük net kazancın en az ${eur(L.net)} olunca açılır ve açık kalır (son iki hafta: ${eur(dailyNet())}).`) : ''}${L.amt >= 500000 ? '<br><i>Tavsiye: doymuş pazara toplu balon almak kışın zarar ettirir. Bu parayla yeni bir bölgeye açılmak ya da holdinge yatırım yapmak daha güvenli.</i>' : ''}</div>`));
+    it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}${L.net ? (opened ? ' <b>Açıldı.</b>' : ` Buradaki günlük net kazancın en az ${eur(L.net)} olunca açılır ve açık kalır (son iki hafta: ${eur(dailyNet())}).`) : ''}</div>`));
     it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
     o.appendChild(it);
   });
+  o.appendChild(h('div', 'callout grn', `<b>Satın alma kredisi: ${eur(BUYLOAN.max)}'e kadar.</b> Pazar'da satılık bir şirket ya da filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. ${BUYLOAN.days} gün, faiz %${Math.round(BUYLOAN.rate * 100)}. Teklif çıkınca "Krediyle al" düğmesi görünür.`));
   o.appendChild(h('p', 'hint', `Aynı anda en fazla iki kredi. Kasa ${eur(-5000)} altına düşerse banka bir balonuna el koyar ve yarı fiyatına satar.`));
   body.appendChild(o);
 }
@@ -2759,14 +2785,16 @@ function tabMarket(body) {
     if (r.alive && r.offer) {
       const c = h('div', 'callout yel', `<b>${r.name} satılık.</b> Doluluğu düştü ya da parası azaldı. Şirketi ve ${r.balloons.length} balonunu ${eur(r.offer)}'ya devralabilirsin.`);
       c.appendChild(fleetMix(r.balloons));
-      const b = pbtn(`Devral ${eur(r.offer)}`, () => takeOver(r), S.cash < r.offer);
-      c.appendChild(b); t.appendChild(c);
+      const T = S.cash < r.offer && buyLoanTerms(r.offer);
+      c.appendChild(T ? pbtn(`Krediyle devral (banka ${eur(T.fin)})`, () => buyLoanCard(r, false)) : pbtn(`Devral ${eur(r.offer)}`, () => takeOver(r), S.cash < r.offer));
+      t.appendChild(c);
     }
     if (r.forSale) {
       const c = h('div', 'callout grn', `<b>${r.name} filosu satışta:</b> ${r.forSale.sizes.map(z => SIZES[z].label.toLowerCase()).join(', ')}.`);
       c.appendChild(fleetMix(r.forSale.sizes));
-      const b = pbtn(`Satın al ${eur(r.forSale.price)}`, () => buyFleet(r), S.cash < r.forSale.price);
-      c.appendChild(b); t.appendChild(c);
+      const T = S.cash < r.forSale.price && buyLoanTerms(r.forSale.price);
+      c.appendChild(T ? pbtn(`Krediyle satın al (banka ${eur(T.fin)})`, () => buyLoanCard(r, true)) : pbtn(`Satın al ${eur(r.forSale.price)}`, () => buyFleet(r), S.cash < r.forSale.price));
+      t.appendChild(c);
     }
   });
   t.appendChild(h('p', 'hint', 'Rakipler doluluğu %50\'nin altında kalınca para kaybeder. Dört gün üst üste yarı boş uçan ya da parası azalan rakip satılığa çıkar. Parası tamamen biterse iflas eder.'));
@@ -3081,9 +3109,10 @@ function checkDeals() {
   c.appendChild(h('h1', null, sale ? `${r.name} iflas etti!` : `${r.name} satılık!`));
   c.appendChild(h('p', 'lead', sale ? `Şirket kapandı, ${n} balonluk filosu ${eur(price)}'ya satışta.` : `Doluluğu düştü ya da parası azaldı. Şirketi ve ${n} balonunu ${eur(price)}'ya devralabilirsin. Rakibin pazardan çekilir, yolcuları sana kalır.`));
   c.appendChild(fleetMix(sale ? r.forSale.sizes : r.balloons));
-  if (S.cash < price) c.appendChild(h('p', 'hint', `Kasanda ${eur(S.cash)} var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin.`));
-  const yes = h('button', 'big', sale ? `Satın al ${eur(price)}` : `Devral ${eur(price)}`); yes.disabled = S.cash < price;
-  yes.onclick = () => sale ? buyFleet(r) : takeOver(r);
+  const T = S.cash < price && buyLoanTerms(price);
+  if (S.cash < price) c.appendChild(h('p', 'hint', T ? `Kasanda ${eur(S.cash)} var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.` : `Kasanda ${eur(S.cash)} var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin.`));
+  const yes = h('button', 'big', T ? `Krediyle al (banka ${eur(T.fin)})` : sale ? `Satın al ${eur(price)}` : `Devral ${eur(price)}`); yes.disabled = S.cash < price && !T;
+  yes.onclick = () => T ? buyLoanCard(r, sale) : sale ? buyFleet(r) : takeOver(r);
   const row = h('div', 'btns');
   const no = h('button', 'ghost', 'Reddet'); no.onclick = () => { if (sale) r.saleNo = true; else r.offerNo = true; m.hidden = true; refresh(); setTimeout(nextPopup, 250); };
   const later = h('button', 'ghost', 'Sonra'); later.onclick = () => { m.hidden = true; };

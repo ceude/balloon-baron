@@ -339,27 +339,44 @@ final class V109Tests: XCTestCase {
         XCTAssertTrue((g.state.paperNext ?? []).contains(.deed(.office)))
     }
 
-    func testBigLoansOpenInTurnAndStayOpen() {
+    func testBigLoanOpensAndStaysOpen() {
         var g = newGame()
         g.state.cash = 0
-        for _ in 0..<20 { g.addBalloon(.M) }
-        let big = Rules.loans.firstIndex { $0.amount == 100_000 }!, huge = Rules.loans.firstIndex { $0.amount == 500_000 }!
+        for _ in 0..<10 { g.addBalloon(.M) }
+        let big = Rules.loans.firstIndex { $0.amount == 100_000 }!
+        XCTAssertFalse(Rules.loans.contains { $0.amount == 500_000 }, "the 500,000 is a purchase loan now")
         XCTAssertFalse(g.canTakeLoan(Rules.loans[big]), "no history yet")
-        // A rich fortnight straight away: the 500,000 still waits for the 100,000 to open first.
-        g.state.local.netHistory = Array(repeating: 60000, count: 14)
-        XCTAssertFalse(g.loanOpen(Rules.loans[huge]))
         g.state.local.netHistory = Array(repeating: 11000, count: 14)
         g.loanUnlock()
         XCTAssertTrue(g.canTakeLoan(Rules.loans[big]))
-        XCTAssertFalse(g.canTakeLoan(Rules.loans[huge]))
-        g.state.local.netHistory = Array(repeating: 52000, count: 14)
-        g.loanUnlock()
-        XCTAssertTrue(g.canTakeLoan(Rules.loans[huge]))
-        // A bad winter doesn't close them again.
+        // A bad winter doesn't close it again.
         g.state.local.netHistory = Array(repeating: -2000, count: 14)
         g.loanUnlock()
         XCTAssertTrue(g.canTakeLoan(Rules.loans[big]))
-        XCTAssertTrue(g.takeLoan(huge))
-        XCTAssertEqual(g.state.cash, 500_000)
+    }
+
+    func testPurchaseLoanPaysTheSellerNotTheTill() {
+        var g = newGame()
+        g.state.unlocked.insert(.bank)
+        g.state.rivals[0].offer = 300_000
+        g.state.cash = 100_000
+        XCTAssertNil(g.buyLoanTerms(price: 300_000), "only once the 100,000 loan has opened")
+        g.state.local.loansOpen = [100_000]
+        let t = g.buyLoanTerms(price: 300_000)!
+        XCTAssertEqual(t.own, 90_000, "you keep the reserve")
+        XCTAssertEqual(t.financed, 210_000)
+        XCTAssertEqual(t.installment, Int((210_000.0 * 1.2 / 150 / 10).rounded(.up)) * 10)
+        g.state.cash = 50_000
+        XCTAssertNil(g.buyLoanTerms(price: 300_000), "at least a fifth down")
+        g.state.cash = 100_000
+        let n = g.state.balloons.count, rivalBalloons = g.state.rivals[0].balloons.count
+        XCTAssertTrue(g.buyWithLoan(0, bankrupt: false))
+        XCTAssertEqual(g.state.cash, 10_000)
+        XCTAssertEqual(g.state.balloons.count, n + rivalBalloons)
+        XCTAssertFalse(g.state.rivals[0].alive)
+        XCTAssertEqual(g.state.loans.last?.purchase, true)
+        XCTAssertEqual(g.state.loans.last?.amount, 210_000)
+        XCTAssertNil(g.buyLoanTerms(price: 100_000), "one purchase loan at a time")
+        XCTAssertNil(g.buyLoanTerms(price: 700_000))
     }
 }
