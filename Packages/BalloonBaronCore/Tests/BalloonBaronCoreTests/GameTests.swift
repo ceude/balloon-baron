@@ -151,6 +151,14 @@ final class GameTests: XCTestCase {
         XCTAssertTrue(g.renewLicense())
         XCTAssertTrue(g.state.licenseValid)
         XCTAssertEqual(g.state.cash, 5000)
+        XCTAssertTrue(g.state.selfFly, "no pilot for the flagship: you still fly it")
+        var h = newGame()
+        h.state.pilots.append(Pilot(id: 900, name: "Ali Kaya", level: .rookie))
+        h.state.lastSelfFly = h.state.day - 16
+        h.state.cash = 20000
+        XCTAssertTrue(h.renewLicense())
+        XCTAssertFalse(h.state.selfFly, "who pays rather than flies is offered pilots-only")
+        XCTAssertEqual(h.state.flyingToday.count, 1, "and the flagship still flies, with the pilot")
     }
 
     func testPopularityErodesWithoutTheFounder() {

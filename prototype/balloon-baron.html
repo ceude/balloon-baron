@@ -2694,7 +2694,8 @@ function pilotCard(p) {
 function tabCrew(body) {
   if (!licenseOk()) {
     const c = h('div', 'callout red', `<b>Lisansın doldu, diğer balonların yerde.</b> Bugün amiral balonunu kendin uçurursan lisansın ücretsiz yenilenir. Uçmak istemiyorsan ${eur(RECERT)} ödeyip yenileyebilirsin.`);
-    const b = pbtn(`Lisansı yenile ${eur(RECERT)}`, () => { S.cash -= RECERT; S.lastSelfFly = S.day; S.selfFly = true; assignPilots(); refresh(); }, S.cash < RECERT);
+    /* who pays rather than flies wants the pilots to fly (v110), unless no pilot is free for the flagship */
+    const b = pbtn(`Lisansı yenile ${eur(RECERT)}`, () => { S.cash -= RECERT; S.lastSelfFly = S.day; S.selfFly = false; assignPilots(); if (canFly(bal(S.flag)) === 'nopilot') { S.selfFly = true; assignPilots(); } refresh(); }, S.cash < RECERT);
     b.style.marginTop = '10px'; c.appendChild(b); body.appendChild(c);
   } else body.appendChild(h('div', 'callout grn', `<b>Pilot lisansın geçerli.</b> Lisansın düşmemesi için en az ${LICENSE_DAYS} günde bir kendin uçmalısın. Kalan süre: ${licenseLeft()} gün. Düşerse diğer balonların yerde kalır.`));
   const need = S.balloons.filter(b => canFly(b) === 'nopilot').length;

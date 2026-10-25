@@ -149,8 +149,14 @@ extension Game {
         guard state.cash >= Rules.recertCost else { return false }
         state.cash -= Rules.recertCost
         state.lastSelfFly = state.day
-        state.selfFly = true
+        // Who pays rather than flies wants the pilots to fly (v110): the pilots-only choice is the one offered,
+        // unless no pilot is free for the flagship.
+        state.selfFly = false
         assignPilots()
+        if let fb = state.balloon(state.flagship), state.status(fb) == .noPilot {
+            state.selfFly = true
+            assignPilots()
+        }
         return true
     }
 

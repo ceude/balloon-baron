@@ -69,7 +69,7 @@ function farBalloon(x, y, r, haze, a = .75) {
 }
 function hero(x, y, R, o = {}) {
   /* soft contact shadow / halo separation from the sky */
-  balloon(x, y, R, o.cols || STRIPES, Object.assign({ gores: (o.cols || STRIPES).length, light: -1, flame: true, flameScale: .5, flameTall: 2 }, o));
+  balloon(x, y, R, o.cols || STRIPES, Object.assign({ gores: (o.cols || STRIPES).length, light: -1, flame: true, flameScale: .5, flameTall: 1.8, flameSharp: 4 }, o));
 }
 
 /* Cappadocia valley: a hazy far row, then dark near spires framing a dip where the sun sits. */
