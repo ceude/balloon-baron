@@ -32,3 +32,6 @@ Balon desenleri, reklamsız paket, ödüllü reklam. Parayla güç satın alma y
 4. ✅ **Holding** (prototipte): ayrı kasalar, holding giderleri, TV reklamı, ünlü reklam yüzü, billboard, zarf Ar-Ge'si, ofisler (New York, İstanbul, Tokyo, Seul; dördü birden açılabilir).
 
 Simülasyonla ölçülen bölüm süreleri (hedef odaklı oynayan oyuncu, 8 deneme): Kuruluş 28–35. gün, Büyüme 68–106. gün, Baron 99–172. gün (çoğunlukla 110–120).
+
+## Kenarda bekleyen fikirler
+- **Ekin'e mektup** (beklemede): oyuncu bağlandığında (Kapadokya Baronu ya da 100. gün) bir kez, geliştiricilerden el yazısı bir mektup/kartpostal: "Bu oyunu kızımız Ekin için yaptık…". Altında "Teşekkürler" düğmesi Apple'ın kendi değerlendirme penceresini (`requestReview`) çağırır; kendi yıldız penceremizi yapmak ya da ödül vermek yasak (App Store kuralı 5.6.1). Karar bekleyen: imza, zamanlama.
