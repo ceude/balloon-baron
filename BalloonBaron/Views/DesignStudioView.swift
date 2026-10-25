@@ -60,8 +60,13 @@ struct DesignStudioView: View {
     private func preview(_ game: Game) -> some View {
         let score = game.designScore(pattern: pattern, colors: colors, shape: shape)
         return HStack(alignment: .center, spacing: 16) {
-            DesignBalloon(pattern: pattern, colors: colors, shape: shape)
-                .frame(width: 140, height: 178)
+            // In full volume (v110), as it will fly.
+            Canvas { ctx, size in
+                ScenePainter.designBalloon3d(&ctx, x: size.width / 2, y: size.height - 4, r: size.height * 0.28 / 0.86, colors: colors,
+                                             design: Design(preview: pattern, colors: colors, shape: shape))
+            }
+            .frame(width: 140, height: 178)
+            .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 6) {
                 Text(loc("studio.creativity"))
                     .font(Theme.font(14, .bold))

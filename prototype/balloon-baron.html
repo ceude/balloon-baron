@@ -4751,10 +4751,11 @@ function paintDesign(x, cy, R, top, d) {
   }
 }
 /* tasarımı küçük bir resme çizer (listeler için) */
-function designThumb(d, w, hh) {
+function designThumb(d, w, hh, vol) {
   const c = document.createElement('canvas'); c.width = w * 2; c.height = hh * 2;
   const keep = ctx; ctx = c.getContext('2d'); ctx.scale(2, 2);
-  try { balloon(w / 2, hh - 4, hh * .32, d.cols[0], d.cols[1], false, 1, null, d); } finally { ctx = keep; }
+  /* vol (v110): the studio preview draws the design in full volume, as it will fly */
+  try { if (vol) designBalloon3d(w / 2, hh - 4, hh * .28 / .86, d.cols[0], d.cols[1], false, 1, null, d); else balloon(w / 2, hh - 4, hh * .32, d.cols[0], d.cols[1], false, 1, null, d); } finally { ctx = keep; }
   return c.toDataURL();
 }
 function showDesigner() {
@@ -4766,7 +4767,7 @@ function showDesigner() {
     const c = h('div', 'card studio');
     c.appendChild(h('h1', null, 'Tasarım stüdyosu'));
     const pv = h('div', 'pv'), sc = designScore(dr);
-    pv.innerHTML = `<img src="${designThumb(dr, 150, 190)}" alt="Tasarım önizlemesi"><div class="sc"><span>Yaratıcılık</span><b>${sc}</b><div class="gb"><i style="width:${sc}%"></i></div><small>${sc >= 80 ? 'Göz alıcı! Herkes fotoğrafını çekecek.' : sc >= 60 ? 'Güzel, dikkat çeker.' : sc >= 40 ? 'Fena değil, biraz sıradan.' : 'Pek akılda kalmaz.'}</small></div>`;
+    pv.innerHTML = `<img src="${designThumb(dr, 150, 190, true)}" alt="Tasarım önizlemesi"><div class="sc"><span>Yaratıcılık</span><b>${sc}</b><div class="gb"><i style="width:${sc}%"></i></div><small>${sc >= 80 ? 'Göz alıcı! Herkes fotoğrafını çekecek.' : sc >= 60 ? 'Güzel, dikkat çeker.' : sc >= 40 ? 'Fena değil, biraz sıradan.' : 'Pek akılda kalmaz.'}</small></div>`;
     c.appendChild(pv);
     c.appendChild(h('div', 'lbl', 'Desen'));
     const pr = h('div', 'pats');

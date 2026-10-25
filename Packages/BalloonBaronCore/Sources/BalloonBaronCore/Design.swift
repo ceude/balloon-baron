@@ -75,6 +75,16 @@ public struct Design: Codable, Identifiable, Equatable, Sendable {
 
     /// Uses something bought with real money: it never fades and goes on any balloon for free.
     public var paid: Bool { shape != nil || pattern.premium }
+
+    /// A design that isn't saved, for drawing a preview (the studio's 3D balloon).
+    public init(preview pattern: Pattern, colors: [String], shape: EnvelopeShape? = nil) {
+        self.init(id: 0, name: "", number: 0, pattern: pattern, colors: colors, day: 0, score: 0, shape: shape, gift: nil)
+    }
+
+    init(id: Int, name: String, number: Int, pattern: Pattern, colors: [String], day: Int, score: Int, shape: EnvelopeShape? = nil, gift: StoreItem? = nil) {
+        self.id = id; self.name = name; self.number = number; self.pattern = pattern; self.colors = colors
+        self.day = day; self.score = score; self.shape = shape; self.gift = gift
+    }
 }
 
 public enum Studio {
