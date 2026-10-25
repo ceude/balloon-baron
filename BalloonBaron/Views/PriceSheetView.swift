@@ -32,9 +32,17 @@ struct PriceSheetView: View {
                     feelMeter(g.state.price)
                     mood(g)
                     result(g)
-                    BigButton(title: loc("home.done")) { dismiss() }
                 }
                 .padding(20)
+            }
+            // The button stays pinned at the bottom of the sheet: at the half-height detent it used to sit
+            // half under the edge, where taps didn't reach it.
+            .safeAreaInset(edge: .bottom) {
+                BigButton(title: loc("home.done")) { dismiss() }
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)
+                    .padding(.bottom, 6)
+                    .background(Theme.paper.shadow(.drop(color: .black.opacity(0.08), radius: 6, y: -3)))
             }
             .background(Theme.paper.ignoresSafeArea())
             .onAppear {

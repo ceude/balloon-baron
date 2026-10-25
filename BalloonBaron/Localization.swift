@@ -162,6 +162,8 @@ extension HezMessage {
         case .worldBaron: loc("hez.worldBaron")
         case .praise(let p): loc("hez.praise.\(p.rawValue)")
         case .guideHello(let r): loc("guide.\(r.rawValue).hello")
+        case .deed(let d): loc("hez.deed.\(d.rawValue)")
+        case .milestone(let d): Game.milestones.contains(d) ? loc("hez.milestone.\(d)") : loc("hez.milestone.more", num(d))
         case let .inspector(visit, names, fine):
             loc("insp.\(visit).\(names.count == 1 ? "one" : "many")", names.joined(separator: ", "), eur(fine))
         case let .record(k, success): loc(success ? "record.success" : "record.fail", k.title)

@@ -119,3 +119,135 @@ add("guide.short.lux", "Imhotep", "İmhotep", "Imhotep", "Imhotep", "イムホ�
 
 # A parked region's problem card: no "later", but you can fly over and see it
 add("issueSheet.goThere", "Go to %@", "%@ bölgesine git", "Nach %@ reisen", "Ir a %@", "%@へ行く", "%@(으)로 가기")
+
+# Holding goal: Luxor's baron (was Albuquerque's)
+add("hgoal.baronLux", "Baron of Luxor", "Luksor Baronu", "Baron von Luxor", "Barón de Luxor", "ルクソールの男爵", "룩소르의 남작")
+
+# Compact crew page (prototype v109)
+add("crew.sum.pilots", "pilots", "pilot", "Piloten", "pilotos", "パイロット", "조종사")
+add("crew.sum.wages", "wages/day", "maaş/gün", "Gehalt/Tag", "sueldos/día", "給料/日", "급여/일")
+add("crew.sum.idle", "idle", "boşta", "untätig", "sin trabajo", "待機中", "대기 중")
+add("crew.sum.senior", "senior", "kıdemli", "erfahren", "veteranos", "ベテラン", "베테랑")
+add("crew.f.all", "All", "Hepsi", "Alle", "Todos", "すべて", "전체")
+add("crew.f.idle", "Idle", "Boşta", "Untätig", "Sin trabajo", "待機中", "대기 중")
+add("crew.f.school", "School graduates", "Okul mezunu", "Schulabsolventen", "Graduados", "養成校出身", "학교 출신")
+add("crew.fireIdle", "Let the idle ones go (%@)", "Boştakileri kov (%@)", "Untätige entlassen (%@)", "Despedir a los inactivos (%@)", "待機中を解雇（%@）", "대기 조종사 해고 (%@)")
+add("crew.row.repair", "%@ · in repair", "%@ · onarımda", "%@ · in Reparatur", "%@ · en reparación", "%@・修理中", "%@ · 수리 중")
+add("crew.row.worn", "%@ · envelope worn out", "%@ · zarf bitti", "%@ · Hülle verschlissen", "%@ · envoltura agotada", "%@・球皮が寿命", "%@ · 외피 수명 다함")
+add("crew.empty", "No pilots in this filter.", "Bu filtrede pilot yok.", "Keine Piloten in diesem Filter.", "No hay pilotos con este filtro.", "この条件のパイロットはいません。", "이 필터에 해당하는 조종사가 없습니다.")
+add("crew.ringHint", "The ring shows experience up to the next level.", "Halka, bir sonraki seviyeye kadar tecrübeyi gösterir.", "Der Ring zeigt die Erfahrung bis zur nächsten Stufe.", "El anillo muestra la experiencia hasta el siguiente nivel.", "リングは次のレベルまでの経験を示す。", "고리는 다음 레벨까지의 경험치를 보여줍니다.")
+add("crew.row.a11y", "%1$@, %2$@, %3$@", "%1$@, %2$@, %3$@", "%1$@, %2$@, %3$@", "%1$@, %2$@, %3$@", "%1$@、%2$@、%3$@", "%1$@, %2$@, %3$@")
+
+# Holding investments: the region's guide praises them, the next paper reports them (v109)
+D = {
+ "tv": (
+  "Your TV ad is on the air, kid! People all over the world are talking about your balloons. You'll see this investment in the till.",
+  "TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin.",
+  "Dein TV-Spot läuft, Lehrling! Überall auf der Welt reden die Leute über deine Ballone. Diese Investition wirst du in der Kasse sehen.",
+  "¡Tu anuncio ya está en la tele, aprendiz! En todo el mundo se habla de tus globos. Verás esta inversión en la caja.",
+  "テレビCMが流れ始めたぞ、弟子よ！世界中で君の気球が話題だ。この投資の見返りは金庫に表れる。",
+  "TV 광고가 방송을 탔네, 제자여! 전 세계 사람들이 자네 열기구 이야기를 하고 있어. 이 투자의 보답은 금고에서 보게 될 걸세."),
+ "billboards": (
+  "Billboards all over town, kid! Every tourist who walks past them will remember your name tomorrow morning.",
+  "Bütün şehirde ilan panoların asıldı evlat! Önünden geçen her turist yarın sabah adını hatırlayacak.",
+  "Plakate in der ganzen Stadt, Lehrling! Jeder Tourist, der daran vorbeigeht, erinnert sich morgen früh an deinen Namen.",
+  "¡Vallas por toda la ciudad, aprendiz! Cada turista que pase por delante recordará tu nombre mañana por la mañana.",
+  "街じゅうに看板が立ったぞ、弟子よ！前を通る観光客はみな、明日の朝君の名を思い出す。",
+  "온 도시에 광고판이 걸렸네, 제자여! 그 앞을 지나는 관광객은 모두 내일 아침 자네 이름을 기억할 걸세."),
+ "research": (
+  "Good news from the lab, kid: the new envelope fabric lasts longer. Fewer renewals, more flights. That's how a real company grows.",
+  "Laboratuvardan iyi haber evlat: yeni zarf kumaşı daha uzun dayanıyor. Daha az yenileme, daha çok uçuş. Gerçek şirket böyle büyür.",
+  "Gute Nachrichten aus dem Labor, Lehrling: Der neue Hüllenstoff hält länger. Weniger Erneuerungen, mehr Flüge. So wächst eine echte Firma.",
+  "Buenas noticias del laboratorio, aprendiz: la nueva tela dura más. Menos renovaciones, más vuelos. Así crece una empresa de verdad.",
+  "研究所から朗報だ、弟子よ。新しい球皮の生地は長持ちする。交換が減り、飛行が増える。本物の会社はこうして育つ。",
+  "연구소에서 좋은 소식이네, 제자여. 새 외피 원단이 더 오래 간다네. 교체는 줄고 비행은 늘지. 진짜 회사는 이렇게 크는 걸세."),
+ "record": (
+  "A world record attempt! The whole world will be watching your balloon, kid. Whatever happens, your name will be in every paper.",
+  "Dünya rekoru denemesi! Bütün dünya senin balonunu izleyecek evlat. Ne olursa olsun adın her gazetede olacak.",
+  "Ein Weltrekordversuch! Die ganze Welt wird deinen Ballon beobachten, Lehrling. Was auch passiert, dein Name steht in jeder Zeitung.",
+  "¡Un intento de récord mundial! El mundo entero mirará tu globo, aprendiz. Pase lo que pase, tu nombre saldrá en todos los periódicos.",
+  "世界記録への挑戦だ！世界中が君の気球を見守るぞ、弟子よ。どうなろうと、君の名はあらゆる新聞に載る。",
+  "세계 기록 도전이라니! 온 세상이 자네 열기구를 지켜볼 걸세, 제자여. 무슨 일이 있어도 자네 이름은 모든 신문에 실릴 거야."),
+ "shape": (
+  "A brand wants its own giant balloon in your sky, kid! Tourists will grumble a little, but the holding gets paid every single day.",
+  "Bir marka kendi dev balonunu senin göğünde uçurmak istiyor evlat! Turistler biraz söylenir ama holding her gün parasını alır.",
+  "Eine Marke will ihren eigenen Riesenballon an deinem Himmel, Lehrling! Die Touristen murren ein wenig, aber die Holding wird jeden Tag bezahlt.",
+  "¡Una marca quiere su propio globo gigante en tu cielo, aprendiz! Los turistas refunfuñarán un poco, pero el holding cobra cada día.",
+  "あるブランドが君の空に自社の巨大気球を飛ばしたいそうだ、弟子よ！観光客は少しぼやくが、ホールディングスには毎日お金が入る。",
+  "한 브랜드가 자네 하늘에 자기 거대 열기구를 띄우고 싶어 하네, 제자여! 관광객은 조금 투덜대겠지만 지주회사는 매일 돈을 받지."),
+}
+for k, t in D.items():
+    add(f"hez.deed.{k}", *t)
+P = {
+ "tv": (("%@ ad on every TV", "Her televizyonda reklamı var: %@", "%@-Werbung auf jedem Fernseher", "El anuncio de %@ en todas las teles", "%@のCM、どのテレビにも", "모든 TV에 %@ 광고"),
+        ("The holding's TV campaign brings tourists to every region.", "Holdingin TV kampanyası bütün bölgelere turist getiriyor.", "Die TV-Kampagne der Holding bringt Touristen in jede Region.", "La campaña de TV del holding atrae turistas a todas las regiones.", "ホールディングスのテレビキャンペーンで、どの地域にも観光客が来る。", "지주회사의 TV 캠페인이 모든 지역에 관광객을 부른다.")),
+ "billboards": (("Billboards everywhere: %@", "Her köşede ilan panosu: %@", "Plakate an jeder Ecke: %@", "Vallas en cada esquina: %@", "街の至る所に看板：%@", "곳곳에 광고판: %@"),
+        ("Tourists can't miss the name on their way to the hotel.", "Turistler otele giderken bu adı görmeden geçemiyor.", "Auf dem Weg zum Hotel kommen Touristen an dem Namen nicht vorbei.", "Los turistas no pueden pasar por alto el nombre camino del hotel.", "観光客はホテルへ向かう途中、その名を見ずにはいられない。", "관광객은 호텔 가는 길에 그 이름을 지나칠 수 없다.")),
+ "celebrity": (("A famous face for %@", "Ünlü bir yüz: %@", "Ein berühmtes Gesicht für %@", "Una cara famosa para %@", "%@に有名人の顔", "%@의 새 얼굴은 유명인"),
+        ("The posters went up overnight; the phones haven't stopped since.", "Afişler bir gecede asıldı, telefonlar o günden beri susmuyor.", "Die Plakate hingen über Nacht, seitdem klingeln die Telefone ununterbrochen.", "Los carteles aparecieron de la noche a la mañana; los teléfonos no paran desde entonces.", "ポスターは一晩で貼られ、それ以来電話が鳴りやまない。", "포스터가 하룻밤 새 붙었고, 그 뒤로 전화가 끊이지 않는다.")),
+ "research": (("New envelope fabric from %@", "Yeni zarf kumaşı: %@", "Neuer Hüllenstoff von %@", "Nueva tela de envoltura de %@", "%@の新しい球皮生地", "%@의 새 외피 원단"),
+        ("Tougher envelopes mean fewer renewals and more safe flights.", "Daha dayanıklı zarflar: daha az yenileme, daha çok güvenli uçuş.", "Robustere Hüllen: weniger Erneuerungen, mehr sichere Flüge.", "Envolturas más resistentes: menos renovaciones y más vuelos seguros.", "丈夫な球皮で交換は減り、安全な飛行が増える。", "더 튼튼한 외피로 교체는 줄고 안전한 비행은 늘어난다.")),
+ "office": (("%@ opens a new office abroad", "Yurt dışında yeni ofis: %@", "%@ eröffnet ein neues Büro im Ausland", "%@ abre una nueva oficina en el extranjero", "%@、海外に新オフィス", "%@, 해외에 새 사무소"),
+        ("Travel agencies there now sell its balloon flights.", "Oradaki seyahat acenteleri artık onun balon uçuşlarını satıyor.", "Reisebüros dort verkaufen jetzt seine Ballonflüge.", "Las agencias de viajes de allí ya venden sus vuelos en globo.", "現地の旅行代理店が、その気球フライトを売り始めた。", "그곳 여행사들이 이제 이 회사의 열기구 비행을 판다.")),
+ "record": (("%@ goes for a world record", "Dünya rekoru denemesi: %@", "%@ will einen Weltrekord", "%@ va a por un récord mundial", "%@、世界記録に挑む", "%@, 세계 기록에 도전"),
+        ("The whole ballooning world is watching the attempt.", "Bütün balon dünyası denemeyi izliyor.", "Die ganze Ballonwelt verfolgt den Versuch.", "Todo el mundo del globo sigue el intento.", "気球界全体がこの挑戦を見守っている。", "열기구 업계 전체가 이 도전을 지켜보고 있다.")),
+ "shape": (("A giant brand balloon in the sky: %@", "Gökyüzünde dev marka balonu: %@", "Ein riesiger Markenballon am Himmel: %@", "Un globo gigante de marca en el cielo: %@", "空に巨大なブランド気球：%@", "하늘에 거대한 브랜드 열기구: %@"),
+        ("Children point at it; the brand pays the holding every day.", "Çocuklar parmakla gösteriyor, marka her gün holdinge ödüyor.", "Kinder zeigen darauf, die Marke zahlt der Holding jeden Tag.", "Los niños lo señalan; la marca paga al holding cada día.", "子どもたちが指さし、ブランドは毎日ホールディングスに支払う。", "아이들이 손가락으로 가리키고, 브랜드는 매일 지주회사에 돈을 낸다.")),
+}
+for k, (head, sub) in P.items():
+    add(f"paper.deed.{k}", *head)
+    add(f"paper.deed.{k}.sub", *sub)
+
+# Round days (v109)
+M = {
+ "100": ("A hundred days, kid! Remember that single balloon on the first morning? Look at the sky now.",
+         "Yüzüncü günün kutlu olsun evlat! İlk sabahki o tek balonu hatırlıyor musun? Şimdi bir bak gökyüzüne.",
+         "Hundert Tage, Lehrling! Weißt du noch, der eine Ballon am ersten Morgen? Schau dir jetzt den Himmel an.",
+         "¡Cien días, aprendiz! ¿Recuerdas aquel único globo la primera mañana? Mira ahora el cielo.",
+         "100日目おめでとう、弟子よ！最初の朝のたった一機の気球を覚えているか？今の空を見てみろ。",
+         "100일째를 축하하네, 제자여! 첫날 아침 그 열기구 한 대를 기억하나? 이제 하늘을 보게."),
+ "200": ("Two hundred days! Everyone can see now that you run this on hard work, not luck, kid.",
+         "İki yüz gün! Bu işi şansla değil emekle yürüttüğünü artık herkes görüyor evlat.",
+         "Zweihundert Tage! Jetzt sieht jeder, dass du das mit harter Arbeit schaffst, nicht mit Glück, Lehrling.",
+         "¡Doscientos días! Ya todos ven que esto lo sacas adelante con esfuerzo, no con suerte, aprendiz.",
+         "200日だ！君が運ではなく努力でやっていることを、今では誰もが知っている。",
+         "200일이라니! 이제 모두가 자네가 운이 아니라 노력으로 해낸다는 걸 안다네, 제자여."),
+ "300": ("Day three hundred, kid! You've learned to read the wind; now it's time to read the world.",
+         "Üç yüzüncü gün evlat! Rüzgârı okumayı öğrendin, şimdi sıra dünyayı okumakta.",
+         "Tag dreihundert, Lehrling! Du hast gelernt, den Wind zu lesen; jetzt ist die Welt dran.",
+         "¡Día trescientos, aprendiz! Has aprendido a leer el viento; ahora toca leer el mundo.",
+         "300日目だ、弟子よ！風を読むことは覚えた。次は世界を読む番だ。",
+         "300일째일세, 제자여! 바람 읽는 법을 배웠으니, 이제 세상을 읽을 차례야."),
+ "365": ("A whole year, kid! A year ago today you lit your first burner. Happy birthday: your company is one year old!",
+         "Tam bir yıl oldu evlat! Bir yıl önce bugün ilk brülörünü yaktın. Doğum günün kutlu olsun, şirketin bir yaşında!",
+         "Ein ganzes Jahr, Lehrling! Heute vor einem Jahr hast du deinen ersten Brenner gezündet. Alles Gute: Deine Firma wird ein Jahr alt!",
+         "¡Un año entero, aprendiz! Hoy hace un año encendiste tu primer quemador. ¡Feliz cumpleaños: tu empresa cumple un año!",
+         "まる一年だ、弟子よ！一年前の今日、君は初めてバーナーに火を入れた。誕生日おめでとう、君の会社は一歳だ！",
+         "꼬박 1년일세, 제자여! 1년 전 오늘 자네는 첫 버너에 불을 붙였지. 생일 축하하네, 자네 회사가 한 살이 됐어!"),
+ "400": ("Four hundred days! I've seen few companies last as long as you in the sky, kid.",
+         "Dört yüz gün! Gökyüzünde senin kadar uzun dayanan az şirket gördüm evlat.",
+         "Vierhundert Tage! Ich habe wenige Firmen gesehen, die sich so lange am Himmel halten wie du, Lehrling.",
+         "¡Cuatrocientos días! He visto pocas empresas aguantar tanto en el cielo como tú, aprendiz.",
+         "400日！君ほど長く空で生き残った会社はそう多くない。",
+         "400일이라니! 자네만큼 오래 하늘에서 버틴 회사는 많지 않았네, 제자여."),
+ "500": ("Day five hundred! You're a legend now, kid. Young pilots tell your story on their first flight.",
+         "Beş yüzüncü gün! Artık bir efsanesin evlat. Genç pilotlar ilk uçuşlarında senin hikâyeni anlatıyor.",
+         "Tag fünfhundert! Du bist jetzt eine Legende, Lehrling. Junge Piloten erzählen auf ihrem ersten Flug deine Geschichte.",
+         "¡Día quinientos! Ya eres una leyenda, aprendiz. Los pilotos jóvenes cuentan tu historia en su primer vuelo.",
+         "500日目！君はもう伝説だ。若いパイロットたちは初飛行で君の物語を語る。",
+         "500일째! 자네는 이제 전설일세, 제자여. 젊은 조종사들이 첫 비행에서 자네 이야기를 한다네."),
+}
+for d, t in M.items():
+    add(f"hez.milestone.{d}", *t)
+add("hez.milestone.more", "Day: %@! One more milestone, kid. The sky is still yours.", "Gün: %@! Bir kilometre taşı daha evlat. Gökyüzü hâlâ senin.",
+    "Tag: %@! Wieder ein Meilenstein, Lehrling. Der Himmel gehört immer noch dir.", "Día: %@. ¡Otro hito, aprendiz! El cielo sigue siendo tuyo.",
+    "%@日目！また一つ節目だ。空はまだ君のものだ。", "%@일째! 또 하나의 이정표일세, 제자여. 하늘은 여전히 자네 것이야.")
+add("paper.milestone", "Day %2$@ in the sky: %1$@", "Gökyüzünde gün %2$@: %1$@", "Tag %2$@ am Himmel: %1$@", "Día %2$@ en el cielo: %1$@", "空で%2$@日目：%1$@", "하늘에서 %2$@일째: %1$@")
+add("paper.milestone.sub", "The company hasn't stopped flying since its first morning.", "Şirket ilk sabahından beri gökyüzünden hiç inmedi.", "Die Firma fliegt ohne Pause seit ihrem ersten Morgen.", "La empresa no ha dejado de volar desde su primera mañana.", "会社は最初の朝から一度も空を離れていない。", "회사는 첫날 아침부터 한 번도 하늘을 떠나지 않았다.")
+add("paper.year", "One year old: %@", "Bir yaşında: %@", "Ein Jahr alt: %@", "Un año: %@", "創業1周年：%@", "창업 1주년: %@")
+add("paper.year.sub", "The town celebrates the balloon company's first birthday.", "Kasaba, balon şirketinin ilk doğum gününü kutluyor.", "Die Stadt feiert den ersten Geburtstag der Ballonfirma.", "El pueblo celebra el primer cumpleaños de la empresa de globos.", "町は気球会社の1歳の誕生日を祝っている。", "마을이 열기구 회사의 첫 생일을 축하한다.")
+
+# Big loans (v109)
+add("bank.needNet", "Opens when your typical day here nets at least %1$@ (lately: %2$@).", "Buradaki günlük net kazancın en az %1$@ olunca açılır (son iki hafta: %2$@).",
+    "Öffnet sich, wenn dein typischer Tag hier mindestens %1$@ netto bringt (zuletzt: %2$@).", "Se abre cuando tu día típico aquí deje al menos %1$@ netos (últimamente: %2$@).",
+    "ここでの1日の純利益が%1$@以上になると利用可能（最近：%2$@）。", "이곳의 하루 순이익이 %1$@ 이상이면 열립니다 (최근: %2$@).")

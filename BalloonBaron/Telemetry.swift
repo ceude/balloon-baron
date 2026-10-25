@@ -69,6 +69,17 @@ enum Telemetry {
         if s.over { send("game.over", value: Double(r.day), progress(s)) }
     }
 
+    /// A chapter finished during the day, the moment its goals were met.
+    static func chapterNow(_ s: GameState, _ news: ChapterNews) {
+        let chapters = news.region.chapters
+        guard chapters.indices.contains(news.index) else { return }
+        if news.index == chapters.count - 1 {
+            send("baron", value: Double(s.day), ["region": news.region.rawValue])
+        } else {
+            send("chapter.done", value: Double(s.day), ["chapter": chapters[news.index].id, "region": news.region.rawValue])
+        }
+    }
+
     static func bought(_ k: StoreItem, day: Int) {
         send("store.bought", value: Double(day), ["item": k.rawValue])
     }

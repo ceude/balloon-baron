@@ -287,3 +287,72 @@ final class LiveIssueTests: XCTestCase {
         XCTAssertEqual(g.state.pilots.map(\.wage), before.map { jsRound(Double($0) * 1.15 / 5) * 5 })
     }
 }
+
+/// v109: holding goals, milestones, holding deeds and the big loans.
+final class V109Tests: XCTestCase {
+    func newGame() -> Game {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 5)
+        g.startDay()
+        return g
+    }
+
+    func testHoldingGoalNeedsLuxorAndStaysTickedAfterWorldBaron() {
+        var g = newGame()
+        g.state.barons[.cap] = 1
+        g.state.barons[.abq] = 2
+        XCTAssertFalse(g.state.done(.baronLux), "Albuquerque is no longer enough")
+        g.state.barons[.lux] = 3
+        XCTAssertTrue(g.state.done(.baronLux))
+        g.state.holding.cash = 2_000_000
+        XCTAssertTrue(g.state.done(.million))
+        g.state.holding.worldBaron = 10
+        g.state.holding.cash = 5
+        XCTAssertTrue(g.state.done(.million), "a World Baron's goals stay ticked")
+    }
+
+    func testRoundDaysAreCelebrated() {
+        var g = newGame()
+        g.state.day = 99
+        g.state.hezQueue = []
+        g.state.day += 1
+        g.milestoneCheck()
+        XCTAssertEqual(g.state.hezQueue, [.milestone(100)])
+        XCTAssertEqual(g.state.paperNext ?? [], [.milestone(100)])
+        g.state.day = 365; g.state.hezQueue = []; g.milestoneCheck()
+        XCTAssertEqual(g.state.hezQueue, [.milestone(365)])
+        g.state.day = 550; g.state.hezQueue = []; g.milestoneCheck()
+        XCTAssertTrue(g.state.hezQueue.isEmpty)
+        g.state.day = 600; g.milestoneCheck()
+        XCTAssertEqual(g.state.hezQueue, [.milestone(600)])
+    }
+
+    func testHoldingInvestmentsArePraisedAndReported() {
+        var g = newGame()
+        g.state.barons[.cap] = 1
+        g.state.holding.cash = 10_000_000
+        g.state.hezQueue = []
+        XCTAssertTrue(g.runTVCampaign())
+        XCTAssertTrue(g.state.hezQueue.contains(.deed(.tv)))
+        XCTAssertTrue((g.state.paperNext ?? []).contains(.deed(.tv)))
+        XCTAssertTrue(g.openOffice(Office.allCases[0]))
+        XCTAssertFalse(g.state.hezQueue.contains(.deed(.office)), "offices keep their own line")
+        XCTAssertTrue((g.state.paperNext ?? []).contains(.deed(.office)))
+    }
+
+    func testBigLoansNeedASteadyIncome() {
+        var g = newGame()
+        g.state.cash = 0
+        for _ in 0..<20 { g.addBalloon(.M) }
+        let big = Rules.loans.firstIndex { $0.amount == 100_000 }!
+        XCTAssertFalse(g.canTakeLoan(Rules.loans[big]), "no history yet")
+        g.state.local.netHistory = Array(repeating: 7000, count: 14)
+        XCTAssertEqual(g.dailyNet, 7000)
+        XCTAssertTrue(g.canTakeLoan(Rules.loans[big]))
+        let huge = Rules.loans.firstIndex { $0.amount == 500_000 }!
+        XCTAssertFalse(g.canTakeLoan(Rules.loans[huge]))
+        g.state.local.netHistory = Array(repeating: 25000, count: 14)
+        XCTAssertTrue(g.canTakeLoan(Rules.loans[huge]))
+        XCTAssertTrue(g.takeLoan(huge))
+        XCTAssertEqual(g.state.cash, 500_000)
+    }
+}

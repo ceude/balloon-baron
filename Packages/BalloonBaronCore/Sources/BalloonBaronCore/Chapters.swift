@@ -106,11 +106,11 @@ extension Game {
 }
 
 extension Game {
-    /// A chapter is finished the moment its goals are met, not only at the end of the day. The baron's
-    /// ceremony still waits for the evening: all of its goals must hold on the same day.
+    /// A chapter is finished the moment its goals are met, not only at the end of the day; the baron's
+    /// chapter too (v109): all its goals holding at once is enough.
     @discardableResult
     public mutating func finishChapterNow() -> Bool {
-        guard state.chapterNews == nil, state.chapter < state.region.chapters.count - 1 else { return false }
+        guard state.chapterNews == nil, state.chapter < state.region.chapters.count else { return false }
         var ev: [DayEvent] = []
         _ = checkChapters(events: &ev)
         return state.chapterNews != nil

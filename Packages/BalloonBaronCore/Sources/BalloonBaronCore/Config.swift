@@ -83,6 +83,9 @@ public enum Mission: String, Codable, CaseIterable, Sendable {
 
 public struct LoanOffer: Sendable {
     public let amount: Int, days: Int, installment: Int, balloonsNeeded: Int
+    /// The big loans (v109) open only when the region earns well: the median daily net of the last two weeks, in its
+    /// own currency. Set at four to six times the installment, so a player who spends it all at once doesn't go under.
+    public var minDailyNet = 0
     public var total: Int { installment * days }
     public var interest: Double { Double(total - amount) / Double(amount) }
 }
@@ -162,7 +165,9 @@ public enum Rules {
     public static let loans = [
         LoanOffer(amount: 10000, days: 40, installment: 300, balloonsNeeded: 0),
         LoanOffer(amount: 25000, days: 45, installment: 650, balloonsNeeded: 2),
-        LoanOffer(amount: 50000, days: 50, installment: 1250, balloonsNeeded: 3)
+        LoanOffer(amount: 50000, days: 50, installment: 1250, balloonsNeeded: 3),
+        LoanOffer(amount: 100_000, days: 80, installment: 1500, balloonsNeeded: 8, minDailyNet: 6000),
+        LoanOffer(amount: 500_000, days: 150, installment: 4000, balloonsNeeded: 20, minDailyNet: 24000)
     ]
 
     public static let balloonNames = ["Şafak", "Güvercin", "Zelve", "Uçhisar", "Avanos", "Ihlara", "Ortahisar", "Kızılçukur",

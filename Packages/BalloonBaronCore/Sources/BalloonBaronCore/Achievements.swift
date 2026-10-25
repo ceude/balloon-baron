@@ -8,7 +8,7 @@ public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, 
 
 /// The holding's own goals, written on the office whiteboard. All six make you World Baron. Text: `hgoal.<rawValue>`.
 public enum HoldingGoal: String, CaseIterable, Sendable {
-    case million, baronAbq, tv, celebrity, research, offices
+    case million, baronLux, tv, celebrity, research, offices
 }
 
 /// What a region's rival boss says, once each. Text: `boss.<region>.<rawValue>`.
@@ -47,10 +47,12 @@ extension GameState {
         }
     }
 
+    /// Once you're World Baron the goals stay ticked, whatever the holding's cash does later.
     public func done(_ g: HoldingGoal) -> Bool {
+        if holding.worldBaron != nil { return true }
         switch g {
         case .million: return holding.cash >= 1_000_000
-        case .baronAbq: return barons[.abq] != nil
+        case .baronLux: return barons[.lux] != nil
         case .tv: return (holding.tvCount ?? 0) >= 1
         case .celebrity: return holding.celebrity != nil
         case .research: return holding.research >= Holding.researchLevels.count
@@ -77,6 +79,15 @@ extension Game {
         let a = fresh.removeFirst()
         state.newPostcards = fresh
         return a
+    }
+
+    /// The company's round days get a word from the guide and a story in the morning paper.
+    public static let milestones = [100, 200, 300, 365, 400, 500]
+    mutating func milestoneCheck() {
+        let d = state.day
+        guard Self.milestones.contains(d) || (d > 500 && d % 100 == 0) else { return }
+        state.hezQueue.append(.milestone(d))
+        addPaper(.milestone(d))
     }
 
     mutating func checkHoldingGoals() {

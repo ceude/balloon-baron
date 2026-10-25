@@ -655,6 +655,8 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .pzoom .pzpic{transform:rotate(-1.5deg);filter:drop-shadow(0 10px 16px rgba(0,0,0,.3))}
 .pzoom .pzpic svg,.pzoom .pzpic canvas,.pzoom .pzpic img{width:100%;height:auto;display:block}
 .pzoom h1{margin:4px 0 0}
+.flrow.crow .av{width:34px;height:34px;flex-shrink:0;border-radius:50%;display:grid;place-items:center;color:#fff;font-family:var(--cond);font-weight:800;font-size:17px}
+.flrow .trt{font-style:normal;font-family:var(--body);font-size:11px;font-weight:700;white-space:nowrap}
 .condbar{display:flex;align-items:center;gap:8px;margin-top:6px;font-size:12px;color:var(--ink2)}
 .condbar .ct{flex:1;height:6px;border-radius:3px;background:var(--haze);overflow:hidden}
 .condbar .ct i{display:block;height:100%}
@@ -804,8 +806,13 @@ const P_NAMES = ['Mert', 'Elif', 'Kerem', 'Zeynep', 'Hakan', 'Selin', 'Burak', '
 const LOANS = [
   { amt: 10000, days: 40, inst: 300, need: 0 },
   { amt: 25000, days: 45, inst: 650, need: 2 },
-  { amt: 50000, days: 50, inst: 1250, need: 3 }
+  { amt: 50000, days: 50, inst: 1250, need: 3 },
+  /* the big loans open only when the region earns well: the median daily net of the last two weeks at four to six
+     times the installment, so a player who spends it all at once doesn't go under (simulated, v109) */
+  { amt: 100000, days: 80, inst: 1500, need: 8, net: 6000 },
+  { amt: 500000, days: 150, inst: 4000, need: 20, net: 24000 }
 ];
+const dailyNet = () => { const h = (S.netHist || []).slice(-14).sort((a, b) => a - b); return h.length >= 7 ? h[h.length >> 1] : 0; };
 const PALETTES = [['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9'], ['#2b2350', '#ffc23d'], ['#ff6fa8', '#fff0f6']];
 const SPONSORS = [
   { id: 'hali',   name: 'Göreme Halı Evi',      min: 'S', pay: 30,  rep: .002, hit: 'az',        col: '#8c2f39', fg: '#ffe9c7', txt: 'HALI EVİ' },
@@ -1702,7 +1709,7 @@ function finishDay(flight) {
   (S.stat = S.stat || {}).pax = (S.stat.pax || 0) + paxTotal;
   praiseCheck(flight, red && !fl.length);
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
-  S.day++; S.plan = null; achCheck(); if (anyBaron()) holdGoalsCheck();
+  S.day++; S.plan = null; milestoneCheck(); achCheck(); if (anyBaron()) holdGoalsCheck();
   if (S.region === 'abq') {
     if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 30; }
     else if (!S.fiesta && S.day >= (S.fiestaNext || 0) && !S.winter) { S.fiesta = { start: S.day, end: S.day + 3 }; S.hezQ.push('news:Albuquerque Balloon Fiesta başladı evlat! Dört gün boyunca dünyanın dört bir yanından turist akın edecek, gökyüzü yüzlerce balonla dolacak. Bütün balonlarını havaya kaldır!'); }
@@ -2243,9 +2250,9 @@ function balloonIcon(c1, c2) {
 function riskTag(p) { const c = p < .01 ? 'g' : p < .04 ? 'y' : 'r'; return `<span class="tag ${c}">kaza riski ${pct(p)}</span>`; }
 function refresh() { chapterNow(); renderHud(); renderNav(); renderHome(); renderTab(); renderAct(); if (HQ.open) hqRender(); save(); }
 /* A chapter is finished the moment its goals are met, not only at the end of the day; the ceremony comes up right
-   away. The baron's chapter still waits for the evening: all of its goals must hold on the same day. */
+   away. The baron's chapter too: all its goals holding at once is enough. */
 function chapterNow() {
-  if (mode !== 'office' || !S || S.chapterNews != null || (S.chapter || 0) >= chap().length - 1) return;
+  if (mode !== 'office' || !S || S.chapterNews != null || (S.chapter || 0) >= chap().length) return;
   if (!checkChapters([], {}, false)) return;
   setTimeout(() => { if (mode === 'office' && S.chapterNews != null && $('hez').hidden && !TRAVEL) showChapter(); }, 350);
 }
@@ -2596,6 +2603,26 @@ function tabFleet(body) {
   body.appendChild(b2);
   studioSection(body);
 }
+let CREW_F = 'all';
+const CREW_COL = ['#9a8fb8', '#14a39a', '#ff5e3a'];
+const CREW_FILTERS = {
+  all: ['Hepsi', () => true], idle: ['Boşta', (p, b) => !b],
+  senior: ['Kıdemli', p => p.lvl === 3], mid: ['Deneyimli', p => p.lvl === 2], rookie: ['Çaylak', p => p.lvl === 1], school: ['Okul mezunu', p => !!p.school]
+};
+/* A pilot's card: what the old crew row showed, and Kov. */
+function pilotCard(p) {
+  const m = $('menu'); m.replaceChildren();
+  const b = S.balloons.find(x => x.pilot === p.id), c = h('div', 'card');
+  const it = h('div', 'item');
+  it.appendChild(h('div', 'av', esc(p.name[0]))).style.background = CREW_COL[p.lvl - 1];
+  it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, kaza riski ${pilotRiskText(p)}. ${b ? `${esc(b.name)} balonunda.` : 'Boşta.'}${p.lvl < 3 ? ` Tecrübe ${Math.round(p.xp || 0)}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}${traitLine(p)}</div>`));
+  c.appendChild(it);
+  const acts = h('div', 'btns');
+  acts.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); m.hidden = true; refresh(); }, false, true));
+  c.appendChild(acts);
+  const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
 function tabCrew(body) {
   if (!licenseOk()) {
     const c = h('div', 'callout red', `<b>Lisansın doldu, diğer balonların yerde.</b> Bugün amiral balonunu kendin uçurursan lisansın ücretsiz yenilenir. Uçmak istemiyorsan ${eur(RECERT)} ödeyip yenileyebilirsin.`);
@@ -2604,31 +2631,50 @@ function tabCrew(body) {
   } else body.appendChild(h('div', 'callout grn', `<b>Pilot lisansın geçerli.</b> Lisansın düşmemesi için en az ${LICENSE_DAYS} günde bir kendin uçmalısın. Kalan süre: ${licenseLeft()} gün. Düşerse diğer balonların yerde kalır.`));
   const need = S.balloons.filter(b => canFly(b) === 'nopilot').length;
   if (need) body.appendChild(h('div', 'callout yel', `<b>${need} balonun pilotsuz bekliyor.</b> Aşağıdan bir pilot işe al.`));
-  const avCol = ['#9a8fb8', '#14a39a', '#ff5e3a'];
+  /* Readable with thirty pilots: a summary, filters with counts, one line per pilot (the idle ones first, then by
+     the size of their balloon). A line opens the pilot's card with the details and Kov. */
   const balOf = p => S.balloons.find(x => x.pilot === p.id);
-  const idle = S.pilots.filter(p => !balOf(p));
-  if (idle.length) {
-    const is = h('div', 'sec'); is.appendChild(h('h2', null, `Boştaki pilotlar (${idle.length})`));
-    is.appendChild(h('div', 'callout yel', `<b>${idle.length} pilot boşta bekliyor.</b> Her gün toplam ${eur(idle.reduce((a, p) => a + pilotWage(p), 0))} maaş alıyorlar ama uçmuyorlar. Yeni balon al ya da kov.`));
-    for (const p of idle.sort((a, b) => pilotWage(b) - pilotWage(a))) {
-      const it = h('div', 'item');
-      it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
-      it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, risk ${pilotRiskText(p)}. Boşta.${traitLine(p)}</div>`));
-      it.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); refresh(); }, false, true));
-      is.appendChild(it);
-    }
-    body.appendChild(is);
+  const idle = S.pilots.filter(p => !balOf(p)), wages = S.pilots.reduce((a, p) => a + pilotWage(p), 0);
+  if (S.pilots.length) {
+    const sum = h('div', 'flsum');
+    sum.innerHTML = `<div><b>${S.pilots.length}</b><span>pilot</span></div><div><b>${eur(wages)}</b><span>maaş/gün</span></div><div><b>${idle.length}</b><span>boşta</span></div><div><b>${S.pilots.filter(p => p.lvl === 3).length}</b><span>kıdemli</span></div>`;
+    body.appendChild(sum);
   }
-  const s = h('div', 'sec'); s.appendChild(h('h2', null, idle.length ? 'Görevdeki pilotlar' : 'Pilotların'));
-  if (S.pilots.length > 1) s.appendChild(h('p', 'hint', 'Pilotlar her sabah otomatik dağıtılır: en kıdemli pilot en büyük balona, çaylaklar küçüklere. Pilot yetmezse önce küçük balonlar yerde kalır.'));
+  if (idle.length) {
+    const iw = idle.reduce((a, p) => a + pilotWage(p), 0), c = h('div', 'callout yel', `<b>${idle.length} pilot boşta bekliyor.</b> Uçmadan günde toplam ${eur(iw)} maaş alıyorlar. Yeni balon al ya da kov.`);
+    const b = pbtn(`Boştakileri kov (${idle.length})`, () => { S.pilots = S.pilots.filter(x => !idle.includes(x)); assignPilots(); refresh(); }, false, true);
+    b.style.marginTop = '10px'; c.appendChild(b); body.appendChild(c);
+  }
+  const s = h('div', 'sec'); s.appendChild(h('h2', null, 'Pilotların'));
   if (!S.pilots.length) s.appendChild(h('p', 'hint', 'Henüz pilotun yok. Tek balonu kendin uçuruyorsun.'));
-  const working = S.pilots.filter(p => balOf(p)).sort((a, b) => SIZES[balOf(b).size].cap - SIZES[balOf(a).size].cap);
-  for (const p of working) {
-    const it = h('div', 'item'), b = balOf(p), bst = canFly(b);
-    it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
-    it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, risk ${pilotRiskText(p)}. ${b.name} balonunda${bst === 'dmg' ? ' (onarımda)' : bst === 'worn' ? ' (zarf yenilenmeli)' : bst === 'license' ? ' (lisans bekliyor)' : ''}.${p.lvl < 3 ? ` Tecrübe ${p.xp || 0}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}${traitLine(p)}</div>`));
-    it.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); refresh(); }, false, true));
-    s.appendChild(it);
+  else {
+    const chips = h('div', 'flchips');
+    for (const k in CREW_FILTERS) {
+      const [label, f] = CREW_FILTERS[k], n = S.pilots.filter(p => f(p, balOf(p))).length;
+      if (k !== 'all' && !n) continue;
+      const c = h('button', 'flchip' + (CREW_F === k ? ' on' : '') + (k === 'idle' ? ' warn' : ''), `${label} <em>${n}</em>`);
+      c.onclick = () => { CREW_F = k; refresh(); }; chips.appendChild(c);
+    }
+    s.appendChild(chips);
+    const cap = p => balOf(p) ? SIZES[balOf(p).size].cap : -1;
+    const list = S.pilots.filter(p => (CREW_FILTERS[CREW_F] || CREW_FILTERS.all)[1](p, balOf(p)))
+      .sort((a, b) => (balOf(a) ? 1 : 0) - (balOf(b) ? 1 : 0) || cap(b) - cap(a) || b.lvl - a.lvl || a.name.localeCompare(b.name, 'tr'));
+    const box = h('div', 'fllist');
+    for (const p of list) {
+      const b = balOf(p), bst = b && canFly(b), xp = p.lvl < 3 ? clamp((p.xp || 0) / XP_UP[p.lvl], 0, 1) : 1;
+      const [lv, txt] = !b ? ['o', 'Boşta'] : bst === 'dmg' ? ['r', `${b.name} · onarımda`] : bst === 'worn' ? ['r', `${b.name} · zarf bitti`] : ['g', b.name];
+      const r = h('button', 'flrow crow');
+      r.innerHTML = `<span class="av" style="background:${CREW_COL[p.lvl - 1]}">${esc(p.name[0])}</span>
+        <span class="fm"><b>${esc(p.name)}<em class="sz">${LEVELS[p.lvl].name}</em>${trait(p) ? `<i class="trt" style="color:${TRAITS[p.trait].col}">${TRAITS[p.trait].n}</i>` : ''}</b>
+        <span class="st ${lv}"><i></i>${esc(txt)} · ${eur(pilotWage(p))}/gün</span></span>
+        <span class="ring" style="--p:${Math.round(xp * 100)};--c:${p.lvl < 3 ? 'var(--sun)' : 'var(--green)'}"><em>${p.lvl < 3 ? Math.round(p.xp || 0) : '★'}</em></span>
+        <svg class="chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></svg>`;
+      r.onclick = () => pilotCard(p);
+      box.appendChild(r);
+    }
+    if (!list.length) box.appendChild(h('p', 'hint', 'Bu filtrede pilot yok.'));
+    s.appendChild(box);
+    if (S.pilots.length > 1) s.appendChild(h('p', 'hint', 'Pilotlar her sabah otomatik dağıtılır: en kıdemli pilot en büyük balona, çaylaklar küçüklere. Pilot yetmezse önce küçük balonlar yerde kalır. Halka, bir sonraki seviyeye kadar tecrübeyi gösterir.'));
   }
   body.appendChild(s);
   const sc = h('div', 'sec'); sc.appendChild(h('h2', null, 'Pilot okulu'));
@@ -2643,7 +2689,7 @@ function tabCrew(body) {
   const c = h('div', 'sec'); c.appendChild(h('h2', null, 'Başvuranlar'));
   for (const p of S.candidates) {
     const it = h('div', 'item');
-    it.appendChild(h('div', 'av', p.name[0])).style.background = avCol[p.lvl - 1];
+    it.appendChild(h('div', 'av', p.name[0])).style.background = CREW_COL[p.lvl - 1];
     it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, kaza riski ${pilotRiskText(p)}${traitLine(p)}</div>`));
     it.appendChild(pbtn('İşe al', () => { S.pilots.push(p); S.candidates = S.candidates.filter(x => x !== p); assignPilots(); refresh(); }));
     c.appendChild(it);
@@ -2665,8 +2711,8 @@ function tabBank(body) {
   const o = h('div', 'sec'); o.appendChild(h('h2', null, 'Kredi teklifleri'));
   LOANS.forEach(L => {
     const total = L.inst * L.days, rate = (total - L.amt) / L.amt, it = h('div', 'item');
-    const locked = S.balloons.length < L.need, full = S.loans.length >= 2;
-    it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}</div>`));
+    const locked = S.balloons.length < L.need || (L.net && dailyNet() < L.net), full = S.loans.length >= 2;
+    it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}${L.net ? ` Buradaki günlük net kazancın en az ${eur(L.net)} olunca açılır (son iki hafta: ${eur(dailyNet())}).` : ''}</div>`));
     it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
     o.appendChild(it);
   });
@@ -4840,16 +4886,16 @@ function hqDeals(body, which, title) {
   };
   const tvOn = H.tvUntil > S.day, tvCd = (H.tvCd || 0) > S.day;
   if (which.includes('tv')) deal('tv', 'Prime time', 'TV reklam kampanyası', 'Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların.', ['Bütün bölgelerde talep +%20', '14 gün', `${RD().name}: +0,4★`], tvCost(), 'Yayına al',
-    () => { H.tvN = (H.tvN || 0) + 1; H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); }, { active: tvOn ? `Yayında · ${H.tvUntil - S.day} gün kaldı` : '', lock: tvCd && !tvOn ? `Yeni kampanya için ${H.tvCd - S.day} gün` : '' });
+    () => { H.tvN = (H.tvN || 0) + 1; H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); holdDeed('tv'); }, { active: tvOn ? `Yayında · ${H.tvUntil - S.day} gün kaldı` : '', lock: tvCd && !tvOn ? `Yeni kampanya için ${H.tvCd - S.day} gün` : '' });
   const ce = H.celeb && H.celeb.until > S.day, days = hasOffice('sel') ? 180 : 90;
   if (which.includes('celeb')) deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], celebCost(), 'Sözleşme imzala',
-    () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
+    () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); holdDeed('celebrity'); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
   const bbOn = H.bb && H.bb[S.region] > S.day;
   if (which.includes('bb')) deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
-    () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; }, { active: bbOn ? `Asılı · ${H.bb[S.region] - S.day} gün` : '' });
+    () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; holdDeed('billboards'); }, { active: bbOn ? `Asılı · ${H.bb[S.region] - S.day} gün` : '' });
   const lv = H.rnd || 0, next = RD_LEVELS[lv];
   if (which.includes('lab')) deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [`Zarf ömrü ${envLife()} → ${next ? next.life : envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
-    () => { H.rnd = lv + 1; }, { active: next ? '' : `Seviye ${lv} · tamamlandı` });
+    () => { H.rnd = lv + 1; holdDeed('research'); }, { active: next ? '' : `Seviye ${lv} · tamamlandı` });
   body.appendChild(v);
 }
 /* Record attempts (desk 5): sponsored world records. Open once you have entered Luxor. A success lifts demand in
@@ -4872,7 +4918,7 @@ function hqRecords(body) {
     else {
       foot.innerHTML = did ? `<span class="dstat">Rekor senin</span><span class="dprice">${eurH(R.cost)}</span>` : `<span class="dprice">${eurH(R.cost)}</span>`;
       const b = h('button', 'dcta', did ? 'Rekoru geliştir' : 'Denemeyi başlat'); b.disabled = !open || !!H.rec || (S.holding || 0) < R.cost;
-      b.onclick = () => holdBuy(R.cost, () => { H.rec = { k, done: S.day + R.days }; hqRender(); }); foot.appendChild(b);
+      b.onclick = () => holdBuy(R.cost, () => { H.rec = { k, done: S.day + R.days }; holdDeed('record'); hqRender(); }); foot.appendChild(b);
       if (!open) foot.appendChild(h('span', 'dnote', 'Önce Luksor\'u açmalısın'));
       else if (H.rec) foot.appendChild(h('span', 'dnote', 'Aynı anda bir deneme'));
     }
@@ -4918,7 +4964,7 @@ function hqShapes(body) {
       foot.appendChild(h('span', 'dterms', 'Ceza: şimdiye kadar aldığın para ve kalan sürenin yarısı. Bozmak hep zarar ettirir.'));
     } else {
       foot.innerHTML = `<span class="dprice">+${eurH(A.pay * A.days)}<small>${eurH(A.pay)} × ${A.days} gün</small></span>`;
-      const b = h('button', 'dcta', 'İmzala'); b.disabled = on; b.onclick = () => { H.adShape = { k: A.k, until: S.day + A.days, region: S.region }; sfx('coin'); hqRender(); refresh(); }; foot.appendChild(b);
+      const b = h('button', 'dcta', 'İmzala'); b.disabled = on; b.onclick = () => { H.adShape = { k: A.k, until: S.day + A.days, region: S.region }; holdDeed('shape'); sfx('coin'); hqRender(); refresh(); }; foot.appendChild(b);
     }
     c.appendChild(foot); body.appendChild(c);
   }
@@ -4956,7 +5002,7 @@ function hqOffices(body) {
     else {
       const b = h('button', 'dcta', `Aç ${eurH(c.cost)}`); b.disabled = (S.holding || 0) < c.cost;
       b.onclick = () => holdBuy(c.cost, () => {
-        if (!H.offices) H.offices = {}; H.offices[k] = S.day;
+        if (!H.offices) H.offices = {}; H.offices[k] = S.day; holdDeed('office');
         S.hezQ.push(officeCount() === 4 ? 'news:Dört ofisin de açık evlat! New York, İstanbul, Tokyo, Seul... Artık gerçek bir dünya şirketisin. Ortak giderler azaldı, holding giderlerin %20\'ye indi.' : `news:Yeni ofisin açıldı evlat: ${c.name}! ${c.perk}`);
       });
       it.appendChild(b);
@@ -6487,20 +6533,53 @@ function plant(x, y, k) {
 /* The holding's own goals, written on the whiteboard under the chart. All six make you World Baron. */
 const HOLD_GOALS = [
   ['Holding kasası €1 milyon', () => (S.holding || 0) >= 1e6],
-  ['Albuquerque Baronu', () => !!(S.barons || {}).abq],
+  ['Luksor Baronu', () => !!(S.barons || {}).lux],
   ['Bir TV kampanyası', () => ((S.hold || {}).tvN || 0) >= 1],
   ['Ünlü reklam yüzü', () => !!(S.hold || {}).celeb],
   ['Zarf Ar-Ge\'si tamam', () => ((S.hold || {}).rnd || 0) >= 2],
   ['Dört dünya ofisi', () => officeCount() >= 4]
 ];
+/* Once you're World Baron, the goals stay ticked whatever the holding's cash does later. */
+const holdGoalDone = f => !!(S.hold || {}).worldBaron || f();
+/* A holding investment gets its due: the guide of the region you're in praises it (celebrities and offices have
+   their own lines) and the next morning's paper reports it. */
+const HOLD_DEEDS = {
+  tv: ['TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin.', c => `Her televizyonda reklamı var: ${c}`, 'Holdingin TV kampanyası bütün bölgelere turist getiriyor.'],
+  billboards: ['Bütün şehirde ilan panoların asıldı evlat! Önünden geçen her turist yarın sabah adını hatırlayacak.', c => `Her köşede ilan panosu: ${c}`, 'Turistler otele giderken bu adı görmeden geçemiyor.'],
+  celebrity: [null, c => `Ünlü bir yüz: ${c}`, 'Afişler bir gecede asıldı, telefonlar o günden beri susmuyor.'],
+  research: ['Laboratuvardan iyi haber evlat: yeni zarf kumaşı daha uzun dayanıyor. Daha az yenileme, daha çok uçuş. Gerçek şirket böyle büyür.', c => `Yeni zarf kumaşı: ${c}`, 'Daha dayanıklı zarflar: daha az yenileme, daha çok güvenli uçuş.'],
+  office: [null, c => `Yurt dışında yeni ofis: ${c}`, 'Oradaki seyahat acenteleri artık onun balon uçuşlarını satıyor.'],
+  record: ['Dünya rekoru denemesi! Bütün dünya senin balonunu izleyecek evlat. Ne olursa olsun adın her gazetede olacak.', c => `Dünya rekoru denemesi: ${c}`, 'Bütün balon dünyası denemeyi izliyor.'],
+  shape: ['Bir marka kendi dev balonunu senin göğünde uçurmak istiyor evlat! Turistler biraz söylenir ama holding her gün parasını alır.', c => `Gökyüzünde dev marka balonu: ${c}`, 'Çocuklar parmakla gösteriyor, marka her gün holdinge ödüyor.']
+};
+function holdDeed(k) {
+  const [hz, head, sub] = HOLD_DEEDS[k];
+  if (hz) S.hezQ.push('news:' + hz);
+  paperAdd(3, head(S.company), sub);
+}
+/* The company's round days get a word from the guide and a story in the morning paper. */
+const MILESTONES = {
+  100: 'Yüzüncü günün kutlu olsun evlat! İlk sabahki o tek balonu hatırlıyor musun? Şimdi bir bak gökyüzüne.',
+  200: 'İki yüz gün! Bu işi şansla değil emekle yürüttüğünü artık herkes görüyor evlat.',
+  300: 'Üç yüzüncü gün evlat! Rüzgârı okumayı öğrendin, şimdi sıra dünyayı okumakta.',
+  365: 'Tam bir yıl oldu evlat! Bir yıl önce bugün ilk brülörünü yaktın. Doğum günün kutlu olsun, şirketin bir yaşında!',
+  400: 'Dört yüz gün! Gökyüzünde senin kadar uzun dayanan az şirket gördüm evlat.',
+  500: 'Beş yüzüncü gün! Artık bir efsanesin evlat. Genç pilotlar ilk uçuşlarında senin hikâyeni anlatıyor.'
+};
+function milestoneCheck() {
+  const d = S.day; if (!MILESTONES[d] && !(d > 500 && d % 100 === 0)) return;
+  S.hezQ.push('news:' + (MILESTONES[d] || `Gün: ${d}! Bir kilometre taşı daha evlat. Gökyüzü hâlâ senin.`));
+  if (d === 365) paperAdd(2, `Bir yaşında: ${S.company}`, 'Kasaba, balon şirketinin ilk doğum gününü kutluyor.');
+  else paperAdd(2, `Gökyüzünde gün ${d}: ${S.company}`, 'Şirket ilk sabahından beri gökyüzünden hiç inmedi.');
+}
 function holdGoalsCheck() {
   const done = HOLD_GOALS.every(g => g[1]()); if (!done || (S.hold || {}).worldBaron) return;
   S.hold.worldBaron = S.day; S.hezQ.push('news:Dünya Baronu! Holdingin bütün hedeflerini bitirdin evlat. Galata\'dan Üsküdar\'a uçan bir adam olarak söylüyorum: senden büyüğünü görmedim.');
-  paperAdd(6, `${S.company} artık bir dünya devi`, 'Kapadokya\'dan Albuquerque\'ye, dört kıtada ofis.');
+  paperAdd(6, `${S.company} artık bir dünya devi`, 'Kapadokya\'dan Albuquerque\'ye ve Luksor\'a, dört kıtada ofis.');
 }
 function hqGoals(body) {
   const sec = h('div', 'sec'); sec.appendChild(h('h2', null, (S.hold || {}).worldBaron ? 'Dünya Baronu 👑' : 'Holding hedefleri'));
-  for (const [t, f] of HOLD_GOALS) { const d = f(); sec.appendChild(h('div', 'goal' + (d ? ' done' : ''), `<span class="gk">${d ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${t}</b><span>${d ? 'tamam' : ''}</span></div></div>`)); }
+  for (const [t, f] of HOLD_GOALS) { const d = holdGoalDone(f); sec.appendChild(h('div', 'goal' + (d ? ' done' : ''), `<span class="gk">${d ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${t}</b><span>${d ? 'tamam' : ''}</span></div></div>`)); }
   sec.appendChild(h('p', 'hint', 'Hepsi tamamlanınca Dünya Baronu olursun.')); body.appendChild(sec);
 }
 const INK_MARKER = '#1d2a6e', MARKER = px => `${px}px "Caveat Brush", "Comic Sans MS", cursive`;
@@ -6510,9 +6589,9 @@ document.fonts && document.fonts.load(MARKER(14)).catch(() => {});
 function hqChart(x, y, w, h, t) {
   /* goals in marker at the bottom of the board; the chart takes the space above */
   /* rows shrink on a short board; the chart only draws when it still has room */
-  const row = clamp(Math.floor((h - 50) / HOLD_GOALS.length), 9, 15), fs = Math.min(14, row - 1), gy = y + h - HOLD_GOALS.length * row + 6; h = gy - y - fs - 16;
+  const row = clamp(Math.floor((h - 50) / HOLD_GOALS.length), 9, 15), fs = Math.min(14, row - 1), gy = y + h - HOLD_GOALS.length * row + 6; h = gy - y - fs * 1.25 - 24; /* room for the day labels under the chart */
   ctx.font = MARKER(14); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  HOLD_GOALS.forEach(([txt, f], i) => { const d = f(), yy = gy + i * row, j = Math.sin(i * 2.3) * .6;
+  HOLD_GOALS.forEach(([txt, f], i) => { const d = holdGoalDone(f), yy = gy + i * row, j = Math.sin(i * 2.3) * .6;
     /* a hand-drawn box, a tick when done, and the goal crossed through */
     const bx = Math.min(8, fs * .6); ctx.strokeStyle = INK_MARKER; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x + 2, yy - bx + j); ctx.lineTo(x + 2.5 + bx, yy - bx - .4); ctx.lineTo(x + 2 + bx, yy + .2); ctx.lineTo(x + 2.3, yy - j); ctx.closePath(); ctx.stroke();
     if (d) { ctx.strokeStyle = '#1f8a4c'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + 3, yy - bx * .5); ctx.lineTo(x + 2 + bx * .5, yy - 1); ctx.lineTo(x + 2 + bx * 1.3, yy - bx * 1.3); ctx.stroke(); }

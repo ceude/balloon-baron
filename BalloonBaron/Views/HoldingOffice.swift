@@ -53,6 +53,10 @@ struct HoldingOfficeView: View {
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }
+        // A region's decision card and the flight to another region are drawn over the app, under any sheet:
+        // the sheet steps aside so "Decide" and "Go" are seen to work.
+        .onChange(of: store.issueRegion) { _, r in if r != nil { unit = nil } }
+        .onChange(of: store.travel) { _, t in if t != nil { unit = nil } }
     }
 
     private func header(_ s: GameState) -> some View {
@@ -333,7 +337,8 @@ private enum OfficePainter {
                 c.stroke(strike, with: .color(marker), lineWidth: 1.3)
             }
         }
-        let ch = gy - y - fs - 16
+        // Room under the chart for its day labels, clear of the first goal.
+        let ch = gy - y - fs * 1.25 - 24
         guard ch >= 22 else { return }
         var axes = Path()
         axes.move(to: CGPoint(x: x, y: y + ch)); axes.addLine(to: CGPoint(x: x + w, y: y + ch)); axes.move(to: CGPoint(x: x, y: y)); axes.addLine(to: CGPoint(x: x, y: y + ch))

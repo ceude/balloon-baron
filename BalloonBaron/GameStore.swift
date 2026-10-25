@@ -152,7 +152,10 @@ final class GameStore {
         if g.state.region != from { travel = Travel(from: from, to: g.state.region) }
         currentRegion = g.state.region
         save()
-        if chapterDone { celebrateChapterSoon() }
+        if chapterDone {
+            if let n = g.state.chapterNews { Telemetry.chapterNow(g.state, n) }
+            celebrateChapterSoon()
+        }
     }
 
     /// The chapter's goals were just met: the ceremony comes up right away, over an open office page too,

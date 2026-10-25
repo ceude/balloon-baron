@@ -167,7 +167,13 @@ extension Game {
     // MARK: Bank
 
     public func canTakeLoan(_ offer: LoanOffer) -> Bool {
-        state.balloons.count >= offer.balloonsNeeded && state.loans.count < Rules.maxLoans
+        state.balloons.count >= offer.balloonsNeeded && state.loans.count < Rules.maxLoans && dailyNet >= offer.minDailyNet
+    }
+
+    /// The region's typical day lately: the median net of the last 14 days (0 with less than a week of history).
+    public var dailyNet: Int {
+        let h = state.local.netHistory.suffix(14).sorted()
+        return h.count >= 7 ? h[h.count / 2] : 0
     }
 
     @discardableResult

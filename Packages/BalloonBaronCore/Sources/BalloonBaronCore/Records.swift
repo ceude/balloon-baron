@@ -22,6 +22,11 @@ public struct RecordRun: Codable, Equatable, Sendable {
 
 /// A brand's product-shaped balloon, the holding's sixth desk. It pays the holding every day and costs a little
 /// popularity in the region where it flies. Text: `adshape.<rawValue>`.
+/// A holding investment worth a word from the guide and a story in the paper. Text: `hez.deed.<rawValue>`, `paper.deed.<rawValue>`.
+public enum HoldingDeed: String, Codable, Sendable {
+    case tv, billboards, celebrity, research, office, record, shape
+}
+
 public enum AdShape: String, Codable, CaseIterable, Sendable {
     case bottle, rocket, shoe
 
@@ -52,6 +57,7 @@ extension Game {
     public mutating func startRecord(_ k: RecordAttempt) -> Bool {
         guard state.recordsOpen, state.holding.record == nil, spendHolding(k.cost) else { return false }
         state.holding.record = RecordRun(kind: k, done: state.day + k.days)
+        celebrate(.record)
         return true
     }
 
@@ -59,6 +65,7 @@ extension Game {
     public mutating func signAdShape(_ k: AdShape) -> Bool {
         if let a = state.holding.adShape, a.until >= state.day { return false }
         state.holding.adShape = AdContract(shape: k, until: state.day + k.days, region: state.region)
+        celebrate(.shape)
         return true
     }
 

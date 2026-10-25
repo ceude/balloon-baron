@@ -302,6 +302,7 @@ extension Game {
 
         state.day += 1
         state.plan = nil
+        milestoneCheck()
         checkAchievements()
         if state.anyBaron { checkHoldingGoals() }
         if state.region.hasFiesta {

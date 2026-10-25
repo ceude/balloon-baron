@@ -63,8 +63,12 @@ Burada p, balonun kaza olasılığıdır (hava × boy × pilot).
 | 10.000 | 40 gün | 300 | 0 |
 | 25.000 | 45 gün | 650 | 2 |
 | 50.000 | 50 gün | 1.250 | 3 |
+| 100.000 | 80 gün | 1.500 | 8 + günlük net ≥ 6.000 |
+| 500.000 | 150 gün | 4.000 | 20 + günlük net ≥ 24.000 |
 
 Kasa −€5.000'in altına düşerse banka balona el koyar.
+
+Büyük krediler (v109) bölgenin son 14 günlük ortanca net kazancı yeterince yüksekse açılır (bölgenin para biriminde). Simülasyon (`loansim`, bot, krediyi açıldığı gün çekip hepsini birden orta balona harcıyor, sonra borç bitene kadar balon almıyor): 100.000 8 tohumda ~86–116. günde açıldı, hiç el koyma olmadı; 500.000 12 tohumda ~117–156. günde açıldı, 10'unda sorun yok, 2'sinde kışın birkaç balona el konuldu, hiçbiri batmadı. Daha gevşek koşullar (500.000 / 90 gün / 6.300, net ≥ 13.000) 8 tohumun 6'sında el koymaya yol açtı.
 
 ## Pazar ve popülerlik
 - **Fiyat:** €40–320 arası.
@@ -158,7 +162,7 @@ Albuquerque ve Luksor rakipleri daha sert oynar (`RIVAL_EDGE`, Swift'te `RegionI
   - 5 ve üstünde her gün %25 şansla max(€5.000, şirket değerinin %3'ü) ceza. Şirket değeri: pozitif kasa + balonların alış fiyatı + sahip olunan oteller.
 
 ## Bölümler ve Baron
-Hedefler her işlemden sonra kontrol edilir: bir bölümün bütün hedefleri tuttuğu anda ödül kasaya girer ve tören hemen açılır (v108). Baron bölümü bunun dışında: bütün hedefleri aynı gün tutmalı, gün sonunda kontrol edilir. Bölüm kartlarında "Bölüm 2/4" büyük başlıkla yazar.
+Hedefler her işlemden sonra kontrol edilir: bir bölümün bütün hedefleri tuttuğu anda ödül kasaya girer ve tören hemen açılır (v108). Baron bölümü de öyle (v109): bütün hedefleri aynı anda tuttuğu an baron olursun. Bölüm kartlarında "Bölüm 2/4" büyük başlıkla yazar.
 
 | Bölge | Bölüm | Ödül | Hedefler |
 |---|---|---|---|
@@ -228,11 +232,13 @@ Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen 
 ## Gazete, rakip patronlar, kurtarma planı
 - **Sabah gazetesi** (Kapadokya Postası / Albuquerque Herald) yalnızca bir şey olduysa gelir: kazalar, cezalar, rakip olayları, iflas, yeni rakip, rekor yolcu günü, festival, yükseltmeler.
 - **Rakip patronlar:** Kenan Arslan (Göreme Sky) ve Dale Whitaker (Sandia Sky Rides). Selam (3. gün), bölüm başları, geçilince, otel kapışması, pilot ayartma, kazan, anlaşma, batış ve Baron töreninde konuşurlar; her söz bölge başına bir kez.
+- **Gün kutlamaları (v109):** 100, 200, 300, 365 (şirketin bir yaşı), 400, 500. günler ve sonra her 100 günde bir, bölgenin rehberi kutlar ve ertesi sabah gazeteye çıkar.
+- **Holding yatırımları (v109):** TV kampanyası, ilan panoları, Ar-Ge, rekor denemesi ve sponsorlu şekil sözleşmesini bulunduğun bölgenin rehberi över; ünlü yüz ve ofisler kendi mesajlarıyla gelir. Hepsi ertesi sabah gazetede.
 - **Kurtarma planı:** kasa eksiye düşünce adım adım seçenekler: boştaki pilotları çıkar, en küçük balonu %60'a sat, fiyatı en ucuz rakibin €10 altına çek, kredi al.
 
 ## Başarımlar ve holding hedefleri
 - ☰ menüsünde "Başarımlar": 22 başarım, her biri bir kartpostal.
-- Holding hedefleri (ofisteki beyaz tahtada yazılı): holding kasası €1 milyon, Albuquerque Baronu, bir TV kampanyası, ünlü reklam yüzü, Ar-Ge tamam, dört ofis. Hepsi bitince Dünya Baronu.
+- Holding hedefleri (ofisteki beyaz tahtada yazılı): holding kasası €1 milyon, Luksor Baronu (v109, önceden Albuquerque), bir TV kampanyası, ünlü reklam yüzü, Ar-Ge tamam, dört ofis. Hepsi bitince Dünya Baronu; ondan sonra hedefler işaretli kalır (kasa 1 milyonun altına düşse de).
 
 ## Mağaza (uygulama içi satın alma)
 Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):

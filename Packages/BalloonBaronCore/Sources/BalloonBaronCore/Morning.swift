@@ -54,12 +54,16 @@ public enum PaperItem: Codable, Equatable, Sendable {
     case night(NightEvent)
     case inspectorFine(fine: Int)
     case worldRecord(RecordAttempt)
+    /// A holding investment makes the next morning's paper.
+    case deed(HoldingDeed)
+    /// The company's round day.
+    case milestone(Int)
 
     public var priority: Int {
         switch self {
         case .upgrade, .night(.shootingStar): 1
-        case .vip, .wedding, .record, .night: 2
-        case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine: 3
+        case .vip, .wedding, .record, .night, .milestone: 2
+        case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine, .deed: 3
         case .accident(_, _, let severe): severe ? 5 : 3
         case .redCaught, .festival, .newEntrant, .passedBoss: 4
         case .antitrust, .seized: 5

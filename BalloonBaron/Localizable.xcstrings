@@ -3158,6 +3158,47 @@
         }
       }
     },
+    "bank.needNet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet sich, wenn dein typischer Tag hier mindestens %1$@ netto bringt (zuletzt: %2$@)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens when your typical day here nets at least %1$@ (lately: %2$@)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se abre cuando tu día típico aquí deje al menos %1$@ netos (últimamente: %2$@)."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ここでの1日の純利益が%1$@以上になると利用可能（最近：%2$@）。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이곳의 하루 순이익이 %1$@ 이상이면 열립니다 (최근: %2$@)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buradaki günlük net kazancın en az %1$@ olunca açılır (son iki hafta: %2$@)."
+          }
+        }
+      }
+    },
     "bank.noDebt": {
       "extractionState": "manual",
       "localizations": {
@@ -10169,6 +10210,170 @@
         }
       }
     },
+    "crew.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Piloten in diesem Filter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No pilots in this filter."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay pilotos con este filtro."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この条件のパイロットはいません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 필터에 해당하는 조종사가 없습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu filtrede pilot yok."
+          }
+        }
+      }
+    },
+    "crew.f.all": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すべて"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전체"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hepsi"
+          }
+        }
+      }
+    },
+    "crew.f.idle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Untätig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Idle"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin trabajo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待機中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대기 중"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boşta"
+          }
+        }
+      }
+    },
+    "crew.f.school": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schulabsolventen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "School graduates"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Graduados"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "養成校出身"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학교 출신"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okul mezunu"
+          }
+        }
+      }
+    },
     "crew.fire": {
       "extractionState": "manual",
       "localizations": {
@@ -10206,6 +10411,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kov"
+          }
+        }
+      }
+    },
+    "crew.fireIdle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Untätige entlassen (%@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Let the idle ones go (%@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Despedir a los inactivos (%@)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待機中を解雇（%@）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대기 조종사 해고 (%@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Boştakileri kov (%@)"
           }
         }
       }
@@ -10907,6 +11153,47 @@
         }
       }
     },
+    "crew.ringHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Ring zeigt die Erfahrung bis zur nächsten Stufe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The ring shows experience up to the next level."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El anillo muestra la experiencia hasta el siguiente nivel."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リングは次のレベルまでの経験を示す。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "고리는 다음 레벨까지의 경험치를 보여줍니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Halka, bir sonraki seviyeye kadar tecrübeyi gösterir."
+          }
+        }
+      }
+    },
     "crew.risk": {
       "extractionState": "manual",
       "localizations": {
@@ -10985,6 +11272,129 @@
           "stringUnit": {
             "state": "translated",
             "value": "kaza riski ×%1$@ (%2$@ ×%3$@, %4$@ ×%5$@)"
+          }
+        }
+      }
+    },
+    "crew.row.a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@、%2$@、%3$@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, %2$@, %3$@"
+          }
+        }
+      }
+    },
+    "crew.row.repair": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · in Reparatur"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · in repair"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · en reparación"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@・修理中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 수리 중"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · onarımda"
+          }
+        }
+      }
+    },
+    "crew.row.worn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · Hülle verschlissen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · envelope worn out"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · envoltura agotada"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@・球皮が寿命"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 외피 수명 다함"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · zarf bitti"
           }
         }
       }
@@ -11272,6 +11682,170 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pilot okulu"
+          }
+        }
+      }
+    },
+    "crew.sum.idle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "untätig"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "idle"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sin trabajo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "待機中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대기 중"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "boşta"
+          }
+        }
+      }
+    },
+    "crew.sum.pilots": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piloten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pilots"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pilotos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pilot"
+          }
+        }
+      }
+    },
+    "crew.sum.senior": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "erfahren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "senior"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "veteranos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ベテラン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "베테랑"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kıdemli"
+          }
+        }
+      }
+    },
+    "crew.sum.wages": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gehalt/Tag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "wages/day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sueldos/día"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "給料/日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "급여/일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "maaş/gün"
           }
         }
       }
@@ -24027,6 +24601,211 @@
         }
       }
     },
+    "hez.deed.billboards": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plakate in der ganzen Stadt, Lehrling! Jeder Tourist, der daran vorbeigeht, erinnert sich morgen früh an deinen Namen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Billboards all over town, kid! Every tourist who walks past them will remember your name tomorrow morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Vallas por toda la ciudad, aprendiz! Cada turista que pase por delante recordará tu nombre mañana por la mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "街じゅうに看板が立ったぞ、弟子よ！前を通る観光客はみな、明日の朝君の名を思い出す。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "온 도시에 광고판이 걸렸네, 제자여! 그 앞을 지나는 관광객은 모두 내일 아침 자네 이름을 기억할 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bütün şehirde ilan panoların asıldı evlat! Önünden geçen her turist yarın sabah adını hatırlayacak."
+          }
+        }
+      }
+    },
+    "hez.deed.record": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Weltrekordversuch! Die ganze Welt wird deinen Ballon beobachten, Lehrling. Was auch passiert, dein Name steht in jeder Zeitung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A world record attempt! The whole world will be watching your balloon, kid. Whatever happens, your name will be in every paper."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Un intento de récord mundial! El mundo entero mirará tu globo, aprendiz. Pase lo que pase, tu nombre saldrá en todos los periódicos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界記録への挑戦だ！世界中が君の気球を見守るぞ、弟子よ。どうなろうと、君の名はあらゆる新聞に載る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 기록 도전이라니! 온 세상이 자네 열기구를 지켜볼 걸세, 제자여. 무슨 일이 있어도 자네 이름은 모든 신문에 실릴 거야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya rekoru denemesi! Bütün dünya senin balonunu izleyecek evlat. Ne olursa olsun adın her gazetede olacak."
+          }
+        }
+      }
+    },
+    "hez.deed.research": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gute Nachrichten aus dem Labor, Lehrling: Der neue Hüllenstoff hält länger. Weniger Erneuerungen, mehr Flüge. So wächst eine echte Firma."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good news from the lab, kid: the new envelope fabric lasts longer. Fewer renewals, more flights. That's how a real company grows."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buenas noticias del laboratorio, aprendiz: la nueva tela dura más. Menos renovaciones, más vuelos. Así crece una empresa de verdad."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "研究所から朗報だ、弟子よ。新しい球皮の生地は長持ちする。交換が減り、飛行が増える。本物の会社はこうして育つ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "연구소에서 좋은 소식이네, 제자여. 새 외피 원단이 더 오래 간다네. 교체는 줄고 비행은 늘지. 진짜 회사는 이렇게 크는 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Laboratuvardan iyi haber evlat: yeni zarf kumaşı daha uzun dayanıyor. Daha az yenileme, daha çok uçuş. Gerçek şirket böyle büyür."
+          }
+        }
+      }
+    },
+    "hez.deed.shape": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Marke will ihren eigenen Riesenballon an deinem Himmel, Lehrling! Die Touristen murren ein wenig, aber die Holding wird jeden Tag bezahlt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A brand wants its own giant balloon in your sky, kid! Tourists will grumble a little, but the holding gets paid every single day."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Una marca quiere su propio globo gigante en tu cielo, aprendiz! Los turistas refunfuñarán un poco, pero el holding cobra cada día."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あるブランドが君の空に自社の巨大気球を飛ばしたいそうだ、弟子よ！観光客は少しぼやくが、ホールディングスには毎日お金が入る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한 브랜드가 자네 하늘에 자기 거대 열기구를 띄우고 싶어 하네, 제자여! 관광객은 조금 투덜대겠지만 지주회사는 매일 돈을 받지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir marka kendi dev balonunu senin göğünde uçurmak istiyor evlat! Turistler biraz söylenir ama holding her gün parasını alır."
+          }
+        }
+      }
+    },
+    "hez.deed.tv": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein TV-Spot läuft, Lehrling! Überall auf der Welt reden die Leute über deine Ballone. Diese Investition wirst du in der Kasse sehen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your TV ad is on the air, kid! People all over the world are talking about your balloons. You'll see this investment in the till."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Tu anuncio ya está en la tele, aprendiz! En todo el mundo se habla de tus globos. Verás esta inversión en la caja."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テレビCMが流れ始めたぞ、弟子よ！世界中で君の気球が話題だ。この投資の見返りは金庫に表れる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV 광고가 방송을 탔네, 제자여! 전 세계 사람들이 자네 열기구 이야기를 하고 있어. 이 투자의 보답은 금고에서 보게 될 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin."
+          }
+        }
+      }
+    },
     "hez.entered.abq": {
       "extractionState": "manual",
       "localizations": {
@@ -25130,6 +25909,293 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pazar sayfası açıldı. Rakiplerini tanı: Göreme Sky ağır abidir, Kızıl Vadi kural tanımaz. Otellerle anlaşmalar da orada."
+          }
+        }
+      }
+    },
+    "hez.milestone.100": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hundert Tage, Lehrling! Weißt du noch, der eine Ballon am ersten Morgen? Schau dir jetzt den Himmel an."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A hundred days, kid! Remember that single balloon on the first morning? Look at the sky now."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Cien días, aprendiz! ¿Recuerdas aquel único globo la primera mañana? Mira ahora el cielo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100日目おめでとう、弟子よ！最初の朝のたった一機の気球を覚えているか？今の空を見てみろ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "100일째를 축하하네, 제자여! 첫날 아침 그 열기구 한 대를 기억하나? 이제 하늘을 보게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yüzüncü günün kutlu olsun evlat! İlk sabahki o tek balonu hatırlıyor musun? Şimdi bir bak gökyüzüne."
+          }
+        }
+      }
+    },
+    "hez.milestone.200": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zweihundert Tage! Jetzt sieht jeder, dass du das mit harter Arbeit schaffst, nicht mit Glück, Lehrling."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Two hundred days! Everyone can see now that you run this on hard work, not luck, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Doscientos días! Ya todos ven que esto lo sacas adelante con esfuerzo, no con suerte, aprendiz."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200日だ！君が運ではなく努力でやっていることを、今では誰もが知っている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "200일이라니! 이제 모두가 자네가 운이 아니라 노력으로 해낸다는 걸 안다네, 제자여."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İki yüz gün! Bu işi şansla değil emekle yürüttüğünü artık herkes görüyor evlat."
+          }
+        }
+      }
+    },
+    "hez.milestone.300": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag dreihundert, Lehrling! Du hast gelernt, den Wind zu lesen; jetzt ist die Welt dran."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day three hundred, kid! You've learned to read the wind; now it's time to read the world."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Día trescientos, aprendiz! Has aprendido a leer el viento; ahora toca leer el mundo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "300日目だ、弟子よ！風を読むことは覚えた。次は世界を読む番だ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "300일째일세, 제자여! 바람 읽는 법을 배웠으니, 이제 세상을 읽을 차례야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç yüzüncü gün evlat! Rüzgârı okumayı öğrendin, şimdi sıra dünyayı okumakta."
+          }
+        }
+      }
+    },
+    "hez.milestone.365": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein ganzes Jahr, Lehrling! Heute vor einem Jahr hast du deinen ersten Brenner gezündet. Alles Gute: Deine Firma wird ein Jahr alt!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A whole year, kid! A year ago today you lit your first burner. Happy birthday: your company is one year old!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Un año entero, aprendiz! Hoy hace un año encendiste tu primer quemador. ¡Feliz cumpleaños: tu empresa cumple un año!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まる一年だ、弟子よ！一年前の今日、君は初めてバーナーに火を入れた。誕生日おめでとう、君の会社は一歳だ！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "꼬박 1년일세, 제자여! 1년 전 오늘 자네는 첫 버너에 불을 붙였지. 생일 축하하네, 자네 회사가 한 살이 됐어!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tam bir yıl oldu evlat! Bir yıl önce bugün ilk brülörünü yaktın. Doğum günün kutlu olsun, şirketin bir yaşında!"
+          }
+        }
+      }
+    },
+    "hez.milestone.400": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vierhundert Tage! Ich habe wenige Firmen gesehen, die sich so lange am Himmel halten wie du, Lehrling."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Four hundred days! I've seen few companies last as long as you in the sky, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Cuatrocientos días! He visto pocas empresas aguantar tanto en el cielo como tú, aprendiz."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "400日！君ほど長く空で生き残った会社はそう多くない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "400일이라니! 자네만큼 오래 하늘에서 버틴 회사는 많지 않았네, 제자여."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dört yüz gün! Gökyüzünde senin kadar uzun dayanan az şirket gördüm evlat."
+          }
+        }
+      }
+    },
+    "hez.milestone.500": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag fünfhundert! Du bist jetzt eine Legende, Lehrling. Junge Piloten erzählen auf ihrem ersten Flug deine Geschichte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day five hundred! You're a legend now, kid. Young pilots tell your story on their first flight."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Día quinientos! Ya eres una leyenda, aprendiz. Los pilotos jóvenes cuentan tu historia en su primer vuelo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500日目！君はもう伝説だ。若いパイロットたちは初飛行で君の物語を語る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "500일째! 자네는 이제 전설일세, 제자여. 젊은 조종사들이 첫 비행에서 자네 이야기를 한다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beş yüzüncü gün! Artık bir efsanesin evlat. Genç pilotlar ilk uçuşlarında senin hikâyeni anlatıyor."
+          }
+        }
+      }
+    },
+    "hez.milestone.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag: %@! Wieder ein Meilenstein, Lehrling. Der Himmel gehört immer noch dir."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day: %@! One more milestone, kid. The sky is still yours."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día: %@. ¡Otro hito, aprendiz! El cielo sigue siendo tuyo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@日目！また一つ節目だ。空はまだ君のものだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@일째! 또 하나의 이정표일세, 제자여. 하늘은 여전히 자네 것이야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gün: %@! Bir kilometre taşı daha evlat. Gökyüzü hâlâ senin."
           }
         }
       }
@@ -26360,6 +27426,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Albuquerque Baronu"
+          }
+        }
+      }
+    },
+    "hgoal.baronLux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron von Luxor"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron of Luxor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barón de Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールの男爵"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르의 남작"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor Baronu"
           }
         }
       }
@@ -46290,6 +47397,580 @@
         }
       }
     },
+    "paper.deed.billboards": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plakate an jeder Ecke: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Billboards everywhere: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vallas en cada esquina: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "街の至る所に看板：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "곳곳에 광고판: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her köşede ilan panosu: %@"
+          }
+        }
+      }
+    },
+    "paper.deed.billboards.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf dem Weg zum Hotel kommen Touristen an dem Namen nicht vorbei."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tourists can't miss the name on their way to the hotel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los turistas no pueden pasar por alto el nombre camino del hotel."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "観光客はホテルへ向かう途中、その名を見ずにはいられない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "관광객은 호텔 가는 길에 그 이름을 지나칠 수 없다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turistler otele giderken bu adı görmeden geçemiyor."
+          }
+        }
+      }
+    },
+    "paper.deed.celebrity": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein berühmtes Gesicht für %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A famous face for %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una cara famosa para %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@に有名人の顔"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@의 새 얼굴은 유명인"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ünlü bir yüz: %@"
+          }
+        }
+      }
+    },
+    "paper.deed.celebrity.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Plakate hingen über Nacht, seitdem klingeln die Telefone ununterbrochen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The posters went up overnight; the phones haven't stopped since."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los carteles aparecieron de la noche a la mañana; los teléfonos no paran desde entonces."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ポスターは一晩で貼られ、それ以来電話が鳴りやまない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "포스터가 하룻밤 새 붙었고, 그 뒤로 전화가 끊이지 않는다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Afişler bir gecede asıldı, telefonlar o günden beri susmuyor."
+          }
+        }
+      }
+    },
+    "paper.deed.office": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ eröffnet ein neues Büro im Ausland"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ opens a new office abroad"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ abre una nueva oficina en el extranjero"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@、海外に新オフィス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, 해외에 새 사무소"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yurt dışında yeni ofis: %@"
+          }
+        }
+      }
+    },
+    "paper.deed.office.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reisebüros dort verkaufen jetzt seine Ballonflüge."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Travel agencies there now sell its balloon flights."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las agencias de viajes de allí ya venden sus vuelos en globo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現地の旅行代理店が、その気球フライトを売り始めた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그곳 여행사들이 이제 이 회사의 열기구 비행을 판다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oradaki seyahat acenteleri artık onun balon uçuşlarını satıyor."
+          }
+        }
+      }
+    },
+    "paper.deed.record": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ will einen Weltrekord"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ goes for a world record"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ va a por un récord mundial"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@、世界記録に挑む"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, 세계 기록에 도전"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya rekoru denemesi: %@"
+          }
+        }
+      }
+    },
+    "paper.deed.record.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die ganze Ballonwelt verfolgt den Versuch."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The whole ballooning world is watching the attempt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo el mundo del globo sigue el intento."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球界全体がこの挑戦を見守っている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 업계 전체가 이 도전을 지켜보고 있다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bütün balon dünyası denemeyi izliyor."
+          }
+        }
+      }
+    },
+    "paper.deed.research": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neuer Hüllenstoff von %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New envelope fabric from %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nueva tela de envoltura de %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@の新しい球皮生地"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@의 새 외피 원단"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni zarf kumaşı: %@"
+          }
+        }
+      }
+    },
+    "paper.deed.research.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Robustere Hüllen: weniger Erneuerungen, mehr sichere Flüge."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tougher envelopes mean fewer renewals and more safe flights."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envolturas más resistentes: menos renovaciones y más vuelos seguros."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "丈夫な球皮で交換は減り、安全な飛行が増える。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "더 튼튼한 외피로 교체는 줄고 안전한 비행은 늘어난다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daha dayanıklı zarflar: daha az yenileme, daha çok güvenli uçuş."
+          }
+        }
+      }
+    },
+    "paper.deed.shape": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein riesiger Markenballon am Himmel: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A giant brand balloon in the sky: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un globo gigante de marca en el cielo: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空に巨大なブランド気球：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하늘에 거대한 브랜드 열기구: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gökyüzünde dev marka balonu: %@"
+          }
+        }
+      }
+    },
+    "paper.deed.shape.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kinder zeigen darauf, die Marke zahlt der Holding jeden Tag."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Children point at it; the brand pays the holding every day."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los niños lo señalan; la marca paga al holding cada día."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "子どもたちが指さし、ブランドは毎日ホールディングスに支払う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아이들이 손가락으로 가리키고, 브랜드는 매일 지주회사에 돈을 낸다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çocuklar parmakla gösteriyor, marka her gün holdinge ödüyor."
+          }
+        }
+      }
+    },
+    "paper.deed.tv": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@-Werbung auf jedem Fernseher"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ad on every TV"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El anuncio de %@ en todas las teles"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@のCM、どのテレビにも"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "모든 TV에 %@ 광고"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her televizyonda reklamı var: %@"
+          }
+        }
+      }
+    },
+    "paper.deed.tv.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die TV-Kampagne der Holding bringt Touristen in jede Region."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The holding's TV campaign brings tourists to every region."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La campaña de TV del holding atrae turistas a todas las regiones."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホールディングスのテレビキャンペーンで、どの地域にも観光客が来る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지주회사의 TV 캠페인이 모든 지역에 관광객을 부른다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Holdingin TV kampanyası bütün bölgelere turist getiriyor."
+          }
+        }
+      }
+    },
     "paper.documentary": {
       "extractionState": "manual",
       "localizations": {
@@ -46819,6 +48500,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nil Postası"
+          }
+        }
+      }
+    },
+    "paper.milestone": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag %2$@ am Himmel: %1$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day %2$@ in the sky: %1$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día %2$@ en el cielo: %1$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空で%2$@日目：%1$@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하늘에서 %2$@일째: %1$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gökyüzünde gün %2$@: %1$@"
+          }
+        }
+      }
+    },
+    "paper.milestone.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Firma fliegt ohne Pause seit ihrem ersten Morgen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The company hasn't stopped flying since its first morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La empresa no ha dejado de volar desde su primera mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "会社は最初の朝から一度も空を離れていない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "회사는 첫날 아침부터 한 번도 하늘을 떠나지 않았다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şirket ilk sabahından beri gökyüzünden hiç inmedi."
           }
         }
       }
@@ -48428,37 +50191,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Von Kappadokien bis Albuquerque, Büros auf vier Kontinenten."
+            "value": "Von Kappadokien über Albuquerque bis Luxor, Büros auf vier Kontinenten."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "From Cappadocia to Albuquerque, offices on four continents."
+            "value": "From Cappadocia to Albuquerque and Luxor, offices on four continents."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "De Capadocia a Albuquerque, oficinas en cuatro continentes."
+            "value": "De Capadocia a Albuquerque y Luxor, oficinas en cuatro continentes."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "カッパドキアからアルバカーキまで、4大陸に事務所。"
+            "value": "カッパドキアからアルバカーキ、ルクソールまで、4大陸にオフィス。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "카파도키아에서 앨버커키까지, 4개 대륙에 사무소."
+            "value": "카파도키아에서 앨버커키, 룩소르까지, 네 대륙에 사무소."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kapadokya'dan Albuquerque'ye, dört kıtada ofis."
+            "value": "Kapadokya'dan Albuquerque'ye ve Luksor'a, dört kıtada ofis."
           }
         }
       }
@@ -48582,6 +50345,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Durmadan dünya turu: bütün dünya bu balonu konuşuyor."
+          }
+        }
+      }
+    },
+    "paper.year": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Jahr alt: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One year old: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un año: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "創業1周年：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "창업 1주년: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir yaşında: %@"
+          }
+        }
+      }
+    },
+    "paper.year.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Stadt feiert den ersten Geburtstag der Ballonfirma."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The town celebrates the balloon company's first birthday."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El pueblo celebra el primer cumpleaños de la empresa de globos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "町は気球会社の1歳の誕生日を祝っている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마을이 열기구 회사의 첫 생일을 축하한다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasaba, balon şirketinin ilk doğum gününü kutluyor."
           }
         }
       }

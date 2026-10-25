@@ -182,6 +182,10 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case praise(Praise)
     /// The new region's guide introduces themselves (Ben Franklin, Imhotep).
     case guideHello(RegionID)
+    /// The guide of the region you're in praises a holding investment. Text: `hez.deed.<rawValue>`.
+    case deed(HoldingDeed)
+    /// A round day: 100, 200, 300, the first year, 400, 500, then every hundred. Text: `hez.milestone.<day>`.
+    case milestone(Int)
     /// The civil aviation inspector about worn envelopes: `visit` 1 and 2 warn, from 3 a fine.
     case inspector(visit: Int, balloons: [String], fine: Int)
     /// A record attempt came to an end.

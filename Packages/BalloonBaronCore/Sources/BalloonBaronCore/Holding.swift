@@ -105,6 +105,13 @@ extension Game {
 
     public var canRunTV: Bool { state.holding.tvCooldown <= state.day }
 
+    /// A holding investment gets its due: the guide of the region you're in praises it (celebrities and offices
+    /// have their own lines) and the next morning's paper reports it.
+    mutating func celebrate(_ d: HoldingDeed) {
+        if d != .celebrity && d != .office { state.hezQueue.append(.deed(d)) }
+        addPaper(.deed(d))
+    }
+
     @discardableResult
     public mutating func runTVCampaign() -> Bool {
         guard canRunTV, spendHolding(state.holding.tvCost) else { return false }
@@ -112,6 +119,7 @@ extension Game {
         state.holding.tvCooldown = state.day + Holding.tvCooldown
         state.holding.tvCount = (state.holding.tvCount ?? 0) + 1
         state.rep = min(1.4, state.rep + 0.1)
+        celebrate(.tv)
         return true
     }
 
@@ -122,6 +130,7 @@ extension Game {
         state.holding.celebrity = c
         state.rep = min(1.4, state.rep + 0.15)
         state.hezQueue.append(.celebritySigned(c.index))
+        celebrate(.celebrity)
         return true
     }
 
@@ -130,6 +139,7 @@ extension Game {
         let r = state.region
         guard (state.holding.billboards[r] ?? 0) <= state.day, spendHolding(Holding.billboardCost) else { return false }
         state.holding.billboards[r] = state.day + Holding.billboardDays
+        celebrate(.billboards)
         return true
     }
 
@@ -138,6 +148,7 @@ extension Game {
         let lv = state.holding.research
         guard lv < Holding.researchLevels.count, spendHolding(Holding.researchLevels[lv].cost) else { return false }
         state.holding.research = lv + 1
+        celebrate(.research)
         return true
     }
 
@@ -146,6 +157,7 @@ extension Game {
         guard !state.holding.has(o), spendHolding(o.cost) else { return false }
         state.holding.offices[o] = state.day
         state.hezQueue.append(state.holding.offices.count == Office.allCases.count ? .allOffices : .officeOpened(o))
+        celebrate(.office)
         return true
     }
 

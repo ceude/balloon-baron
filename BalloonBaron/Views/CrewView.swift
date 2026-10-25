@@ -4,12 +4,8 @@ import BalloonBaronCore
 /// Crew page: license, idle and assigned pilots, applicants and the pilot school.
 struct CrewView: View {
     @Environment(GameStore.self) private var store
-
-    private struct Assignment: Identifiable {
-        let pilot: Pilot
-        let balloon: Balloon
-        var id: Int { pilot.id }
-    }
+    @State private var filter: CrewFilter = .all
+    @State private var card: PilotPick?
 
     private static let levelColors: [PilotLevel: Color] = [
         .rookie: Color(hex: "#9a8fb8"), .experienced: Color(hex: "#14a39a"), .senior: Color(hex: "#ff5e3a")
@@ -24,6 +20,7 @@ struct CrewView: View {
                         VStack(alignment: .leading, spacing: 16) {
                             licenseSection(s)
                             needPilots(s)
+                            crewSummary(s)
                             idleSection(s)
                             dutySection(s)
                             candidatesSection(s)
@@ -38,6 +35,11 @@ struct CrewView: View {
             }
         }
         .background(Theme.sky.ignoresSafeArea())
+        .sheet(item: $card) { pick in
+            PilotCardSheet(pilotID: pick.id).environment(store)
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
     }
 
     private var header: some View {
@@ -89,72 +91,212 @@ struct CrewView: View {
 
     // MARK: Pilots
 
+    /// Readable with thirty pilots (prototype v109 `tabCrew`): a summary, an idle callout with one-tap firing,
+    /// filters with counts and one line per pilot. A line opens the pilot's card with the details and Fire.
+    @ViewBuilder
+    private func crewSummary(_ s: GameState) -> some View {
+        let pilots = s.local.pilots
+        if !pilots.isEmpty {
+            HStack(spacing: 6) {
+                tile(num(pilots.count), loc("crew.sum.pilots"))
+                tile(eur(pilots.reduce(0) { $0 + $1.wage }), loc("crew.sum.wages"))
+                tile(num(s.idlePilots.count), loc("crew.sum.idle"))
+                tile(num(pilots.filter { $0.level == .senior }.count), loc("crew.sum.senior"))
+            }
+        }
+    }
+
+    private func tile(_ value: String, _ label: String) -> some View {
+        VStack(spacing: 1) {
+            Text(value)
+                .font(Theme.font(20, .heavy, condensed: true))
+                .foregroundStyle(Theme.ink)
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+            Text(label)
+                .font(Theme.font(11, .semibold))
+                .foregroundStyle(Theme.ink2)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .padding(.horizontal, 4)
+        .background(Theme.paper, in: RoundedRectangle(cornerRadius: 14))
+        .accessibilityElement(children: .combine)
+    }
+
     @ViewBuilder
     private func idleSection(_ s: GameState) -> some View {
-        let idle = s.idlePilots.sorted { $0.wage > $1.wage }
+        let idle = s.idlePilots
         if !idle.isEmpty {
-            let wasted = idle.reduce(0) { $0 + $1.wage }
-            VStack(alignment: .leading, spacing: 10) {
-                sectionTitle(loc("crew.idle", num(idle.count)))
-                callout(loc("crew.idle.callout", eur(wasted)), loc("crew.idle.body"), color: Theme.yellow)
-                ForEach(idle) { p in
-                    pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), riskText(p), loc("crew.idleTag"), xpText(p)].joined(separator: " · "),
-                             button: loc("crew.fire"), light: true) {
-                        store.act { $0.fire(p.id) }
-                    }
+            callout(loc("crew.idle", num(idle.count)) + " " + loc("crew.idle.callout", eur(idle.reduce(0) { $0 + $1.wage })),
+                    loc("crew.idle.body"), color: Theme.yellow) {
+                PlanSmallButton(title: loc("crew.fireIdle", num(idle.count)), light: true) {
+                    store.act { $0.fireIdlePilots() }
                 }
+                .padding(.top, 4)
             }
         }
     }
 
     private func dutySection(_ s: GameState) -> some View {
-        let idleCount = s.idlePilots.count
-        let working = assigned(s)
+        let pilots = s.local.pilots
+        let current = filter == .all || pilots.contains(where: { filter.includes($0, s) }) ? filter : .all
+        func cap(_ p: Pilot) -> Int { s.local.balloons.first { $0.pilot == p.id }?.size.capacity ?? -1 }
+        // Idle first (they need you), then by the size of their balloon, then the most senior, then by name.
+        let list = pilots.filter { current.includes($0, s) }.sorted { a, b in
+            let ia = cap(a) < 0 ? 0 : 1, ib = cap(b) < 0 ? 0 : 1
+            if ia != ib { return ia < ib }
+            if cap(a) != cap(b) { return cap(a) > cap(b) }
+            if a.level != b.level { return a.level > b.level }
+            return a.name.localizedCompare(b.name) == .orderedAscending
+        }
         return VStack(alignment: .leading, spacing: 10) {
-            sectionTitle(loc(idleCount > 0 ? "crew.onDuty" : "crew.pilots"))
-            if s.local.pilots.count > 1 {
-                hint(loc("crew.rule"))
-            }
-            if s.local.pilots.isEmpty {
+            sectionTitle(loc("crew.pilots"))
+            if pilots.isEmpty {
                 hint(loc("crew.noPilots"))
+            } else {
+                chips(s, current)
+                VStack(spacing: 0) {
+                    ForEach(Array(list.enumerated()), id: \.element.id) { i, p in
+                        if i > 0 { Rectangle().fill(Theme.line).frame(height: 1.5).padding(.leading, 56) }
+                        row(p, s)
+                    }
+                    if list.isEmpty {
+                        Text(loc("crew.empty")).font(Theme.font(13)).foregroundStyle(Theme.ink2).padding(14)
+                    }
+                }
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 18))
+                if pilots.count > 1 { hint(loc("crew.rule") + " " + loc("crew.ringHint")) }
             }
-            ForEach(working) { pair in
-                pilotRow(pair.pilot, detail: dutyDetail(pair.pilot, pair.balloon, s), button: loc("crew.fire"), light: true) {
-                    store.act { $0.fire(pair.pilot.id) }
+        }
+    }
+
+    private func chips(_ s: GameState, _ current: CrewFilter) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(CrewFilter.allCases, id: \.self) { f in
+                    let n = s.local.pilots.filter { f.includes($0, s) }.count
+                    if f == .all || n > 0 {
+                        let on = f == current
+                        Button { filter = f } label: {
+                            HStack(spacing: 4) {
+                                Text(f.title).foregroundStyle(on ? Color.white : Theme.ink)
+                                Text(num(n)).foregroundStyle(on ? Color(hex: "#cfc8ff") : f == .idle ? Theme.red : Theme.ink2)
+                            }
+                            .font(Theme.font(13, .bold))
+                            .padding(.horizontal, 12)
+                            .frame(height: 32)
+                            .background(on ? Theme.ink : Color.white, in: Capsule())
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(on ? .isSelected : [])
+                    }
                 }
             }
+            .padding(.vertical, 2)
         }
     }
 
-    /// Pilots with a balloon, biggest balloon first.
-    private func assigned(_ s: GameState) -> [Assignment] {
-        var out: [Assignment] = []
-        for p in s.local.pilots {
-            if let b = s.local.balloons.first(where: { $0.pilot == p.id }) { out.append(Assignment(pilot: p, balloon: b)) }
+    private func row(_ p: Pilot, _ s: GameState) -> some View {
+        let b = s.local.balloons.first { $0.pilot == p.id }
+        let st: (Color, String)
+        if let b {
+            switch s.status(b) {
+            case .damaged: st = (Theme.red, loc("crew.row.repair", b.name))
+            case .worn: st = (Theme.red, loc("crew.row.worn", b.name))
+            default: st = (Theme.green, b.name)
+            }
+        } else {
+            st = (Color(hex: "#ff8a3d"), loc("crew.idleTag"))
         }
-        return out.sorted { $0.balloon.size.capacity > $1.balloon.size.capacity }
+        let next = p.level.xpToNext
+        let k = next.map { min(max(p.xp / Double($0), 0), 1) } ?? 1
+        let line = st.1 + " · " + loc("crew.wage", eur(p.wage))
+        return Button { card = PilotPick(id: p.id) } label: {
+            HStack(spacing: 10) {
+                Text(String(p.name.prefix(1)))
+                    .font(Theme.font(17, .heavy, condensed: true))
+                    .foregroundStyle(.white)
+                    .frame(width: 34, height: 34)
+                    .background(Self.levelColors[p.level] ?? Theme.ink2, in: Circle())
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(p.name)
+                            .font(Theme.font(17, .heavy, condensed: true))
+                            .foregroundStyle(Theme.ink)
+                            .lineLimit(1)
+                        Text(p.level.title)
+                            .font(Theme.font(11, .bold))
+                            .foregroundStyle(Theme.ink2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 1)
+                            .background(Theme.line.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
+                            .fixedSize()
+                        if let t = p.trait {
+                            Text(t.title).font(Theme.font(11, .bold)).foregroundStyle(Color(hex: t.color)).lineLimit(1)
+                        }
+                    }
+                    HStack(spacing: 5) {
+                        Circle().fill(st.0).frame(width: 8, height: 8)
+                        Text(line)
+                            .font(Theme.font(12.5, .semibold))
+                            .foregroundStyle(Theme.ink2)
+                            .lineLimit(1)
+                    }
+                }
+                Spacer(minLength: 4)
+                ZStack {
+                    Circle().stroke(Theme.line, lineWidth: 4)
+                    Circle().trim(from: 0, to: CGFloat(k))
+                        .stroke(next == nil ? Theme.green : Theme.sun, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                    Text(next == nil ? "★" : num(Int(p.xp)))
+                        .font(Theme.font(10.5, .heavy))
+                        .foregroundStyle(Theme.ink)
+                }
+                .frame(width: 32, height: 32)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Theme.ink2)
+            }
+            .padding(.horizontal, 10)
+            .padding(.vertical, 7)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(loc("crew.row.a11y", p.name, p.level.title, line))
+        .accessibilityAddTraits(.isButton)
     }
 
-    private func dutyDetail(_ p: Pilot, _ b: Balloon, _ s: GameState) -> String {
-        var on = loc("crew.on", b.name)
-        switch s.status(b) {
-        case .damaged: on += " " + loc("crew.inRepair")
-        case .worn: on += " " + loc("crew.worn")
-        case .licenseHold: on += " " + loc("crew.waitLicense")
-        default: break
+    /// The pilot card's line: wage, accident risk, balloon (or idle) and experience.
+    static func detail(_ p: Pilot, _ b: Balloon?, _ s: GameState) -> String {
+        var on = loc("crew.idleTag")
+        if let b {
+            on = loc("crew.on", b.name)
+            switch s.status(b) {
+            case .damaged: on += " " + loc("crew.inRepair")
+            case .worn: on += " " + loc("crew.worn")
+            case .licenseHold: on += " " + loc("crew.waitLicense")
+            default: break
+            }
         }
         return [loc("crew.wage", eur(p.wage)), riskText(p), on, xpText(p)].joined(separator: " · ")
     }
 
+    static func levelColor(_ l: PilotLevel) -> Color { levelColors[l] ?? Theme.ink2 }
+
     /// `pilotRiskText`: the accident multiplier of level and trait together, with the parts when a trait changes it.
-    private func riskText(_ p: Pilot) -> String {
+    static func riskText(_ p: Pilot) -> String {
         func f(_ x: Double) -> String { x.formatted(.number.precision(.fractionLength(0...2))) }
         let total = Game.pilotRisk(p)
         guard let t = p.trait, t.accidentFactor != 1 else { return loc("crew.risk", f(total)) }
         return loc("crew.riskTrait", f(total), p.level.title, f(p.level.risk), t.title, f(t.accidentFactor))
     }
 
-    private func xpText(_ p: Pilot) -> String {
+    static func xpText(_ p: Pilot) -> String {
         if let next = p.level.xpToNext { return loc("crew.xp", num(Int(p.xp)), num(next)) }
         return loc("crew.topLevel")
     }
@@ -165,7 +307,7 @@ struct CrewView: View {
         VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("crew.candidates"))
             ForEach(s.local.candidates) { p in
-                pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), riskText(p)].joined(separator: " · "), button: loc("crew.hire"), light: false) {
+                pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), Self.riskText(p)].joined(separator: " · "), button: loc("crew.hire"), light: false) {
                     store.act { $0.hire(p.id) }
                 }
             }
@@ -280,5 +422,87 @@ struct CrewView: View {
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(Theme.paper, in: RoundedRectangle(cornerRadius: 16))
+    }
+}
+
+/// Wraps a pilot id for `.sheet(item:)`.
+private struct PilotPick: Identifiable { let id: Int }
+
+/// The crew page's pilot filters (`CREW_FILTERS`); empty ones are hidden.
+private enum CrewFilter: CaseIterable {
+    case all, idle, senior, experienced, rookie, school
+
+    var title: String {
+        switch self {
+        case .all: loc("crew.f.all")
+        case .idle: loc("crew.f.idle")
+        case .senior: PilotLevel.senior.title
+        case .experienced: PilotLevel.experienced.title
+        case .rookie: PilotLevel.rookie.title
+        case .school: loc("crew.f.school")
+        }
+    }
+
+    func includes(_ p: Pilot, _ s: GameState) -> Bool {
+        switch self {
+        case .all: true
+        case .idle: !s.local.balloons.contains { $0.pilot == p.id }
+        case .senior: p.level == .senior
+        case .experienced: p.level == .experienced
+        case .rookie: p.level == .rookie
+        case .school: p.fromSchool
+        }
+    }
+}
+
+/// A pilot's card (`pilotCard`): what the old crew row showed, and Fire.
+private struct PilotCardSheet: View {
+    @Environment(GameStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
+    let pilotID: Int
+
+    var body: some View {
+        if let s = store.state, let p = s.local.pilots.first(where: { $0.id == pilotID }) {
+            let b = s.local.balloons.first { $0.pilot == p.id }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack(spacing: 12) {
+                        Text(String(p.name.prefix(1)))
+                            .font(Theme.font(22, .heavy, condensed: true))
+                            .foregroundStyle(.white)
+                            .frame(width: 48, height: 48)
+                            .background(CrewView.levelColor(p.level), in: Circle())
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(p.name).font(Theme.font(26, .heavy, condensed: true)).foregroundStyle(Theme.ink)
+                            HStack(spacing: 5) {
+                                PlanTag(text: p.level.title, color: Theme.ink2)
+                                if p.fromSchool { PlanTag(text: loc("crew.school"), color: Theme.green) }
+                                if let t = p.trait { PlanTag(text: t.title, color: Color(hex: t.color)) }
+                            }
+                        }
+                    }
+                    Text(CrewView.detail(p, b, s))
+                        .font(Theme.font(15))
+                        .foregroundStyle(Theme.ink2)
+                        .fixedSize(horizontal: false, vertical: true)
+                    if let t = p.trait {
+                        Text(t.title + ": " + t.detail)
+                            .font(Theme.font(14).italic())
+                            .foregroundStyle(Theme.ink2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    HStack(spacing: 10) {
+                        PlanSmallButton(title: loc("crew.fire"), light: true) {
+                            store.act { $0.fire(p.id) }
+                            dismiss()
+                        }
+                        Spacer()
+                    }
+                    BigButton(title: loc("fleetPage.close"), style: .ghost) { dismiss() }
+                }
+                .padding(20)
+            }
+            .background(Theme.paper.ignoresSafeArea())
+        }
     }
 }

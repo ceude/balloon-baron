@@ -237,7 +237,7 @@ final class PrototypeV85Tests: XCTestCase {
 
     func testHoldingGoalsMakeWorldBaron() {
         var g = newGame()
-        g.state.barons = [.cap: 1, .abq: 2]
+        g.state.barons = [.cap: 1, .abq: 2, .lux: 3]
         g.state.holding.cash = 2_000_000
         g.state.holding.tvCount = 1
         g.state.holding.celebrity = Celebrity(index: 0, until: 100)

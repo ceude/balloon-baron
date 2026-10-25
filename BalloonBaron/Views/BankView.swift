@@ -93,7 +93,9 @@ struct BankView: View {
     }
 
     private func offerDetail(_ o: LoanOffer) -> String {
-        let base = loc("bank.offerDetail", eur(o.installment), eur(o.total))
-        return o.balloonsNeeded > 0 ? base + " " + loc("bank.need", num(o.balloonsNeeded)) : base
+        var t = loc("bank.offerDetail", eur(o.installment), eur(o.total))
+        if o.balloonsNeeded > 0 { t += " " + loc("bank.need", num(o.balloonsNeeded)) }
+        if o.minDailyNet > 0 { t += " " + loc("bank.needNet", eur(o.minDailyNet), eur(store.game?.dailyNet ?? 0)) }
+        return t
     }
 }

@@ -263,12 +263,14 @@ extension PaperItem {
         case .night(let n): "night.\(n.key)"
         case .inspectorFine: "inspectorFine"
         case .worldRecord(let r): "worldRecord.\(r.rawValue)"
+        case .deed(let d): "deed.\(d.rawValue)"
+        case .milestone(let d): d == 365 ? "year" : "milestone"
         }
     }
 
     func headline(_ company: String) -> String {
         switch self {
-        case .vip, .wedding, .documentary, .pressGood, .pressBad, .worldBaron: loc("paper.\(key)", company)
+        case .vip, .wedding, .documentary, .pressGood, .pressBad, .worldBaron, .deed: loc("paper.\(key)", company)
         case .accident: loc("paper.\(key)", company)
         case .redCaught: loc("paper.redCaught", company)
         case .antitrust: loc("paper.antitrust", company)
@@ -285,6 +287,7 @@ extension PaperItem {
         case .night(let n): n.headline
         case .inspectorFine: loc("paper.inspectorFine", company)
         case .worldRecord: loc("paper.worldRecord", company)
+        case .milestone(let d): d == 365 ? loc("paper.year", company) : loc("paper.milestone", company, num(d))
         }
     }
 
@@ -440,7 +443,7 @@ struct RescueView: View {
         let cheap = (s.local.rivals.filter(\.alive).map(\.price) + [s.price]).min() ?? s.price
         let target = max(Rules.priceRange.lowerBound, cheap - 10)
         let loanIndex = s.unlocked.contains(.bank) && s.local.loans.count < Rules.maxLoans
-            ? Rules.loans.indices.reversed().first { s.local.balloons.count >= Rules.loans[$0].balloonsNeeded } : nil
+            ? Rules.loans.indices.reversed().first { s.local.balloons.count >= Rules.loans[$0].balloonsNeeded && Rules.loans[$0].minDailyNet == 0 } : nil
         if !idle.isEmpty {
             option(loc("rescue.fire", num(idle.count)), loc("rescue.fire.sub", eur(idle.reduce(0) { $0 + $1.wage }))) { $0.fireIdlePilots() }
         }
