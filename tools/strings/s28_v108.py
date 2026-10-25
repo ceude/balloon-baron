@@ -326,3 +326,4 @@ add("hez.noRivals",
 
 # v110: the night scene can be switched off
 add("settings.night", "Night scene", "Gece sahnesi", "Nachtszene", "Escena nocturna", "夜のシーン", "밤 장면")
+add("settings.collect", "Boarding animation", "Yolcu toplama animasyonu", "Einstiegsanimation", "Animación de embarque", "搭乗アニメーション", "탑승 애니메이션")

@@ -11,6 +11,7 @@ struct MenuView: View {
     @AppStorage("sound") private var soundOn = true
     @AppStorage("haptics") private var hapticsOn = true
     @AppStorage(GameStore.nightSceneKey) private var nightOn = true
+    @AppStorage(GameStore.collectSceneKey) private var collectOn = true
     @State private var reminderOn = Reminder.on
     @State private var code = ""
     @State private var pasted = ""
@@ -109,6 +110,8 @@ struct MenuView: View {
             row(.game, loc("menu.gameCenter")) { GameCenter.openDashboard() }
             divider
             toggleRow(.moon, loc("settings.night"), on: nightOn) { nightOn.toggle() }
+            divider
+            toggleRow(.people, loc("settings.collect"), on: collectOn) { collectOn.toggle() }
         }
         group(loc("settings.soundHaptics"), Tint.sound) {
             toggleRow(.sound, loc("settings.sound"), on: soundOn) {

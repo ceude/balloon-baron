@@ -116,7 +116,7 @@ struct HomeTownView: View {
                         // At home the town stops at the dock; zoomed in it fills the screen.
                         let now = model.time(tl.date)
                         var c = ctx
-                        if store.collecting {
+                        if store.collecting && store.collectAnimation {
                             renderCollect(&c, s, sz, now)
                         } else if let e = store.morningEvent {
                             renderEvent(&c, s, sz, now, spot: e.townSpot, strike: e == .strike)

@@ -3195,6 +3195,7 @@ function startCollect() {
   };
   row.append(back, go); el.appendChild(row);
   el.hidden = false;
+  if (!collectAnimOn) COL.t = COL.dur;
 }
 function updateCollect(dt) {
   const c = COL; if (!c) return;
@@ -3314,7 +3315,7 @@ function collectItems(t) {
 function leaveCollect() {
   if (!COL || COL.leave) return;
   COL.leave = T; $('collect').hidden = true; sfx('click');
-  setTimeout(() => { COL = null; launch(false); }, 3500);
+  setTimeout(() => { COL = null; launch(false); }, collectAnimOn ? 3500 : 0);
 }
 function confirmRed() {
   const m = $('menu'); m.replaceChildren();
@@ -3611,6 +3612,7 @@ const SET_IC = {
   sound: '<path d="M4 9.5h3l4.5-4v13L7 14.5H4z"/><path d="M15 9a4 4 0 0 1 0 6M17.5 6.5a7.5 7.5 0 0 1 0 11"/>',
   haptic: '<rect x="8" y="3.5" width="8" height="17" rx="2"/><path d="M11 17.5h2M4.5 9v6M2.5 10.5v3M19.5 9v6M21.5 10.5v3"/>',
   moon: '<path d="M19.5 14.5A8 8 0 0 1 9.5 4.5a8 8 0 1 0 10 10z"/>',
+  people: '<circle cx="9" cy="8" r="3"/><path d="M3.5 19c.5-3.5 2.8-5.5 5.5-5.5s5 2 5.5 5.5"/><circle cx="16.5" cy="9" r="2.5"/><path d="M15 13.8c2.6-.4 5 1.3 5.5 5.2"/>',
   bell: '<path d="M6 16.5V11a6 6 0 0 1 12 0v5.5l1.5 2h-15z"/><path d="M10 20.5a2 2 0 0 0 4 0M12 3v2"/>',
   cloud: '<path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4 1.6A3.8 3.8 0 0 1 17.5 18.5z"/><path d="M9.5 13.5l2 2 3.5-3.5"/>',
   copy: '<rect x="8.5" y="8.5" width="11" height="12" rx="2"/><path d="M15.5 8.5V5.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/>',
@@ -3629,6 +3631,9 @@ const setIcon = (k, cls) => `<svg viewBox="0 0 24 24" class="${cls || ''}">${SET
 let hapticsOn = (() => { try { return localStorage.getItem('safak-haptics') !== 'off'; } catch (e) { return true; } })();
 /* v110: the night between the report and the morning can be switched off in the settings */
 let nightOn = (() => { try { return localStorage.getItem('safak-night') !== 'off'; } catch (e) { return true; } })();
+/* v110: the boarding scene (passengers walking up, jeeps driving off) can be switched off too; the card with where
+   the passengers came from and who flies stays, filled at once */
+let collectAnimOn = (() => { try { return localStorage.getItem('safak-collect') !== 'off'; } catch (e) { return true; } })();
 let reminderOn = (() => { try { return localStorage.getItem('safak-reminder') === 'on'; } catch (e) { return false; } })();
 function showMenu(open) {
   const m = $('menu'); m.replaceChildren();
@@ -3649,7 +3654,8 @@ function showMenu(open) {
   group('Oyun', 'var(--coral)', [
     row('trophy', 'Başarımlar', `${n}/${ACHS.length}${chev}`, showAlbum),
     row('game', 'Game Center', chev, () => {}),
-    toggle('moon', 'Gece sahnesi', nightOn, () => { nightOn = !nightOn; try { localStorage.setItem('safak-night', nightOn ? 'on' : 'off'); } catch (e) {} })
+    toggle('moon', 'Gece sahnesi', nightOn, () => { nightOn = !nightOn; try { localStorage.setItem('safak-night', nightOn ? 'on' : 'off'); } catch (e) {} }),
+    toggle('people', 'Yolcu toplama animasyonu', collectAnimOn, () => { collectAnimOn = !collectAnimOn; try { localStorage.setItem('safak-collect', collectAnimOn ? 'on' : 'off'); } catch (e) {} })
   ]);
   group('Ses ve titreşim', '#14a39a', [
     toggle('sound', 'Ses', soundOn, () => setSound(!soundOn)),

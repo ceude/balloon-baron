@@ -455,6 +455,7 @@ final class GameStore {
     /// Take-off: the card goes, the jeeps come and go (about 3.5 s), then the flight.
     func leaveCollect() {
         guard collectScene.leaveDate == nil else { return }
+        guard collectAnimation else { fly(); return }
         collectScene.leaveDate = Date()
         withAnimation(.easeOut(duration: 0.3)) { leaving = true }
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [weak self] in self?.fly() }
@@ -494,6 +495,10 @@ final class GameStore {
 
     /// Settings switch for the night scene (v110); off, the night still passes (its event makes the paper).
     static let nightSceneKey = "nightScene"
+    /// Settings switch for the boarding scene (v110): passengers walking up and the jeeps. Off, the card still shows
+    /// where the passengers came from and who flies, filled at once, and take-off follows without the jeeps.
+    static let collectSceneKey = "collectScene"
+    var collectAnimation: Bool { UserDefaults.standard.object(forKey: Self.collectSceneKey) as? Bool ?? true }
 
     /// "Go to the morning" on the report plays the night first, unless the player switched the night scene off.
     func closeReport() {

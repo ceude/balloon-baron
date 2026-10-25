@@ -143,14 +143,15 @@ struct CollectView: View {
         .padding(.bottom, 10)
         .onAppear {
             if model == nil { model = makeModel() }
-            SoundEngine.shared.crowd(true)
+            // Boarding scene off in the settings: the card fills at once, without the crowd.
+            if store.collectAnimation { SoundEngine.shared.crowd(true) } else { model?.skip() }
         }
         .onDisappear { SoundEngine.shared.crowd(false) }
     }
 
     /// The town's queue follows the seats as they fill.
     private func share(_ m: CollectModel) {
-        store.collectScene.shown = m.shown
+        store.collectScene.shown = store.collectAnimation ? m.shown : 0
         store.collectScene.total = m.seq.count
     }
 
