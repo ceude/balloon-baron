@@ -215,6 +215,7 @@ extension DayEvent {
         case let .baron(r): loc("event.baron", loc("chapter.\(r.chapters.last!.id)"))
         case let .moment(k, tips): loc("event.moment.\(k.rawValue)", eur(tips))
         case let .rivalFleetSold(r): loc("event.rivalFleetSold", r)
+        case let .rivalShrank(r): loc("event.rivalShrank", r)
         case let .newEntrant(r): loc("event.newEntrant", r, currentRegion.title)
         case let .rivalAccidents(r, n): loc("event.rivalAccidents", r, num(n))
         case let .rivalRedFined(r): loc("event.rivalRedFined", r, eur(Rules.redFine))

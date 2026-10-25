@@ -94,6 +94,19 @@ extension Game {
         return (pax, cap, income)
     }
 
+    /// The rescue card's price move: the highest ticket price that still fills as many seats as the lowest price would,
+    /// only when it beats today's estimate (so choosing it makes the option go away).
+    public var rescuePrice: (price: Int, pax: Int, seats: Int, income: Int, now: Int)? {
+        let now = estimatedIncome()
+        guard now.seats > 0 else { return nil }
+        let r = Rules.priceRange, best = estimatedIncome(price: r.lowerBound).pax
+        var target = r.lowerBound
+        for p in stride(from: r.lowerBound, through: r.upperBound, by: 5) where estimatedIncome(price: p).pax >= best { target = p }
+        let t = estimatedIncome(price: target)
+        guard target != state.price, t.income > now.income else { return nil }
+        return (target, t.pax, now.seats, t.income, now.income)
+    }
+
     /// Where `price` sits on the tourists' scale: 0 = good value … 100 = far too expensive.
     /// Bands: ≥85% willing, ≥60%, ≥35%, below.
     public static func feel(price: Int) -> Int {

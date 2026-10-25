@@ -440,8 +440,6 @@ struct RescueView: View {
     private func options(_ s: GameState) -> some View {
         let idle = s.idlePilots
         let sellable = s.local.balloons.filter { $0.id != s.local.flagship }.sorted { $0.size.cost < $1.size.cost }
-        let cheap = (s.local.rivals.filter(\.alive).map(\.price) + [s.price]).min() ?? s.price
-        let target = max(Rules.priceRange.lowerBound, cheap - 10)
         let loanIndex = s.unlocked.contains(.bank) && s.local.loans.count < Rules.maxLoans
             ? Rules.loans.indices.reversed().first { s.local.balloons.count >= Rules.loans[$0].balloonsNeeded && Rules.loans[$0].minDailyNet == 0 } : nil
         if let g = store.game, g.rescueGuideOK {
@@ -454,11 +452,12 @@ struct RescueView: View {
             option(loc("rescue.fire", num(idle.count)), loc("rescue.fire.sub", eur(idle.reduce(0) { $0 + $1.wage }))) { $0.fireIdlePilots() }
         }
         if let b = sellable.first {
-            let v = jsRoundUI(Double(b.size.cost) * Rules.sellShare)
+            let v = store.game?.sellValue(b) ?? 0
             option(loc("rescue.sell", b.name), loc("rescue.sell.sub", eur(v))) { _ = $0.sellBalloon(b.id) }
         }
-        if s.price > cheap - 5 {
-            option(loc("rescue.price", eur(target)), loc("rescue.price.sub")) { $0.setPrice(target) }
+        if let rp = store.game?.rescuePrice {
+            option(loc(rp.price < s.price ? "rescue.priceDown" : "rescue.priceUp", eur(rp.price)),
+                   loc("rescue.price.sub", num(rp.pax), num(rp.seats), eur(rp.income), eur(rp.now))) { $0.setPrice(rp.price) }
         }
         if let i = loanIndex {
             let l = Rules.loans[i]
@@ -484,8 +483,6 @@ struct RescueView: View {
     }
 }
 
-/// JavaScript-style rounding for figures shown before the core does the sum.
-func jsRoundUI(_ v: Double) -> Int { Int((v + 0.5).rounded(.down)) }
 
 // MARK: Postcards
 

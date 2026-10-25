@@ -13285,6 +13285,47 @@
         }
       }
     },
+    "deal.used": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Von einem Konkurrenten gekaufte Ballone sind gebraucht: Verkauft bringen sie %1$@ des Neupreises (ein neuer Ballon: %2$@)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloons bought from a rival are second-hand: if you sell one, it fetches %1$@ of the new price (a new balloon: %2$@)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los globos comprados a un rival son de segunda mano: si vendes uno, recibes el %1$@ del precio nuevo (uno nuevo: %2$@)."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライバルから買った気球は中古扱い。売ると新品価格の%1$@になる（新品は%2$@）。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "경쟁사에서 산 열기구는 중고입니다. 팔면 새 가격의 %1$@를 받습니다 (새 열기구: %2$@)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rakipten alınan balonlar ikinci el sayılır: satarsan yeni fiyatının %1$@ kadarını eder (yeni balonda %2$@)."
+          }
+        }
+      }
+    },
     "debug.reset": {
       "extractionState": "manual",
       "localizations": {
@@ -15700,6 +15741,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ kırmızı bayrakta gizlice uçtu."
+          }
+        }
+      }
+    },
+    "event.rivalShrank": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ steckt in Schwierigkeiten und hat einen Ballon verkauft."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is in trouble and sold a balloon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ está en apuros y vendió un globo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@は経営難で気球を1機売った。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@가 어려움에 처해 열기구 하나를 팔았습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ zor durumda, bir balonunu sattı."
           }
         }
       }
@@ -19800,6 +19882,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filo"
+          }
+        }
+      }
+    },
+    "fleetPage.used": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gebraucht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Second-hand"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De segunda mano"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "中古"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "중고"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İkinci el"
           }
         }
       }
@@ -56663,84 +56786,125 @@
         }
       }
     },
-    "rescue.price": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Preis auf %@ setzen"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Set the price to %@"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Poner el precio a %@"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "料金を%@にする"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "가격을 %@로"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Fiyatı %@ yap"
-          }
-        }
-      }
-    },
     "rescue.price.sub": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unterbiete den billigsten Konkurrenten und fülle die Plätze."
+            "value": "Der höchste Preis, bei dem die Plätze noch voll werden. Belegt: %1$@/%2$@, geschätzte Einnahmen %3$@ (jetzt %4$@)."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Go below your cheapest rival and fill the seats."
+            "value": "The highest price that still fills the seats. Seats filled: %1$@/%2$@, estimated income %3$@ (now %4$@)."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ponte por debajo del rival más barato y llena los asientos."
+            "value": "El precio más alto que aún llena las plazas. Plazas llenas: %1$@/%2$@, ingreso estimado %3$@ (ahora %4$@)."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "最安のライバルより安くして席を埋める。"
+            "value": "席が埋まる最高の料金。埋まる席：%1$@/%2$@、予想収入%3$@（現在%4$@）。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "가장 싼 경쟁사보다 낮춰 좌석을 채웁니다."
+            "value": "좌석이 다 차는 가장 높은 가격. 채워지는 좌석: %1$@/%2$@, 예상 수입 %3$@ (현재 %4$@)."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "En ucuz rakibin altına in, koltukları doldur."
+            "value": "Koltukların dolduğu en yüksek fiyat. Dolan koltuk: %1$@/%2$@, tahmini gelir %3$@ (şimdi %4$@)."
+          }
+        }
+      }
+    },
+    "rescue.priceDown": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preis senken: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lower the price: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bajar el precio: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "料金を下げる：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가격 내리기: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiyatı düşür: %@"
+          }
+        }
+      }
+    },
+    "rescue.priceUp": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preis erhöhen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Raise the price: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Subir el precio: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "料金を上げる：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가격 올리기: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiyatı artır: %@"
           }
         }
       }

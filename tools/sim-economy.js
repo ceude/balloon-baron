@@ -9,12 +9,13 @@ const { chromium } = require('playwright');
   const SEEDS = +(process.env.SEEDS || 12), DAYS = 400, out = [];
   for (const style of (process.env.STYLES || 'none,smart,reckOld,reckless,flipper').split(',')) for (let seed = 1; seed <= SEEDS; seed++) {
     await p.goto('file:///home/user/balloon-baron/prototype/balloon-baron.html'); await p.waitForTimeout(300);
+    if (process.env.EXTRA) await p.evaluate(process.env.EXTRA);
     out.push(await p.evaluate(([seed, style, DAYS]) => {
       let a = seed * 9301 + 49297; Math.random = () => { a = (a * 9301 + 49297) % 233280; return a / 233280; };
       sfx = () => {}; save = () => {}; showReport = () => {}; refresh = () => {};
       startFlight = () => finishDay({ q: Math.random() < .3 ? 'perfect' : Math.random() < .85 ? 'good' : 'far', dist: 60, mis: S.weather.mission, mok: !!S.weather.mission && Math.random() < .6 });
       const L = { seizeDays: [], seized: 0, fines: 0, ch: [], buys: [], loans: [], cashMin: 0, bust: false, maxN: 0 };
-      const pa = paperAdd; paperAdd = (pr, hd, sub) => { if (/^Banka .*el koydu/.test(hd) && hd.includes(S.company)) { L.seized++; L.seizeDays.push(S.day + (S.loans.some(l => l.buy) ? 'b' : S.loans.length ? 'l' : '') + (L.lastFine === S.day ? 'f' : '')); } if (/tekel/.test(hd)) { L.fines++; L.lastFine = S.day; } return pa(pr, hd, sub); };
+      const pa = paperAdd; paperAdd = (pr, hd, sub) => { if (/^Banka .*el koydu/.test(hd) && hd.includes(S.company)) { L.seized++; L.seizeDays.push(S.day + (S.loans.some(l => l.buy) ? 'b' : S.loans.length ? 'l' : '') + (L.lastFine === S.day ? 'f' : '')); } if (/iflas etti/.test(hd)) { L.busts = (L.busts || 0) + 1; if (S.day > 150) L.lateBusts = (L.lateBusts || 0) + 1; } if (/tekel/.test(hd)) { L.fines++; L.lastFine = S.day; } return pa(pr, hd, sub); };
       S = newState(); S.company = 'Bot'; S.weather = newWeather(); S.demand = dayDemand(); rivalFlyPlan();
       const net = () => { const h = (S.netHist || []).slice(-14).sort((x, y) => x - y); return h.length >= 7 ? h[h.length >> 1] : 0; };
       const take = (o, why) => { S.cash += o.amt; S.loans.push({ amt: o.amt, inst: o.inst, left: o.days }); L.loans.push(`${o.amt / 1000}k@${S.day}${why || ''}`); };
@@ -55,7 +56,7 @@ const { chromium } = require('playwright');
           if (style === 'flipper' && !sale) continue;
           if (style === 'flipper' && !how) { const T = buyLoanTerms(price); if (T) { how = 'loan'; S.loans.push({ amt: T.fin, inst: T.inst, left: T.days, buy: 1 }); S.cash += T.fin; L.loans.push(`buy${Math.round(T.fin / 1000)}k@${S.day}`); } }
           if (!how) continue;
-          if (style === 'flipper') { const v = r.forSale.sizes.reduce((x, z) => x + SIZES[z].cost * .6, 0); S.cash += v - price; L.flip = (L.flip || 0) + v - price; L.buys.push(`flip+${Math.round((v - price) / 1000)}k@${S.day}`); r.forSale = null; continue; }
+          if (style === 'flipper') { const v = r.forSale.sizes.reduce((x, z) => x + SIZES[z].cost * (typeof sellValue === 'function' ? .4 : .6), 0); S.cash += v - price; L.flip = (L.flip || 0) + v - price; L.buys.push(`flip+${Math.round((v - price) / 1000)}k@${S.day}`); r.forSale = null; continue; }
           L.buys.push(`${how}${Math.round(price / 1000)}k@${S.day}`);
           if (sale) { S.cash -= r.forSale.price; r.forSale.sizes.forEach(addBalloon); r.forSale = null; } else { S.cash -= r.offer; r.balloons.forEach(addBalloon); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; }
           assignPilots();
@@ -64,19 +65,19 @@ const { chromium } = require('playwright');
         const was = S.chapter || 0;
         launch(S.weather.flag === 'red');
         if ((S.chapter || 0) > was) L.ch.push(S.day - 1);
-        L.cashMin = Math.min(L.cashMin, S.cash); L.maxN = Math.max(L.maxN, S.balloons.length);
+        L.alive = (L.alive || 0) + S.rivals.filter(r => r.alive).length; L.rivSeats = (L.rivSeats || 0) + S.rivals.filter(r => r.alive).reduce((x, r) => x + r.balloons.length, 0); L.cashMin = Math.min(L.cashMin, S.cash); L.maxN = Math.max(L.maxN, S.balloons.length);
         if (S.over || !S.balloons.length) { L.bust = true; break; }
         if (!S.weather) S.weather = newWeather();
         if (!S.rivals[0].fly) rivalFlyPlan();
       }
-      return { style, seed, ch: L.ch.join(','), baron: (S.barons || {}).cap || null, bust: L.bust, seized: L.seized, seizeDays: L.seizeDays.join(' '), fines: L.fines, cashMin: Math.round(L.cashMin), end: Math.round(S.cash), n: S.balloons.length, maxN: L.maxN, rivals: S.rivals.filter(r => r.alive).length, flip: Math.round(L.flip || 0), buys: L.buys.join(' '), loans: L.loans.join(' ') };
+      return { style, seed, ch: L.ch.join(','), baron: (S.barons || {}).cap || null, bust: L.bust, seized: L.seized, seizeDays: L.seizeDays.join(' '), fines: L.fines, cashMin: Math.round(L.cashMin), end: Math.round(S.cash), n: S.balloons.length, maxN: L.maxN, rivals: S.rivals.filter(r => r.alive).length, busts: L.busts || 0, aliveAvg: +(L.alive / DAYS).toFixed(2), rivBalloons: Math.round(L.rivSeats / DAYS), lateBusts: L.lateBusts || 0, flip: Math.round(L.flip || 0), buys: L.buys.join(' '), loans: L.loans.join(' ') };
     }, [seed, style, DAYS]));
   }
   out.forEach(o => console.log(JSON.stringify(o)));
   const avg = (xs) => xs.length ? Math.round(xs.reduce((x, y) => x + y, 0) / xs.length) : '-';
   for (const st of [...new Set(out.map(o => o.style))]) {
     const R = out.filter(o => o.style === st), ch = i => avg(R.map(o => +(o.ch.split(',')[i])).filter(x => x > 0));
-    console.log(`${st.padEnd(9)} bust ${R.filter(o => o.bust).length}/${R.length}  seized-runs ${R.filter(o => o.seized).length} (balloons ${R.reduce((x, o) => x + o.seized, 0)})  chapters avg day ${[0, 1, 2, 3, 4].map(ch).join('/')}  baron ${R.filter(o => o.baron).length} avg ${avg(R.filter(o => o.baron).map(o => o.baron))}  end cash ${avg(R.map(o => o.end))}  fleet ${avg(R.map(o => o.n))}  rivals left ${avg(R.map(o => o.rivals))}  fines ${R.reduce((x, o) => x + o.fines, 0)}`);
+    console.log(`${st.padEnd(9)} bust ${R.filter(o => o.bust).length}/${R.length}  seized-runs ${R.filter(o => o.seized).length} (balloons ${R.reduce((x, o) => x + o.seized, 0)})  chapters avg day ${[0, 1, 2, 3, 4].map(ch).join('/')}  baron ${R.filter(o => o.baron).length} avg ${avg(R.filter(o => o.baron).map(o => o.baron))}  end cash ${avg(R.map(o => o.end))}  fleet ${avg(R.map(o => o.n))}  rivals alive ${(R.reduce((x, o) => x + o.aliveAvg, 0) / R.length).toFixed(2)} (balloons ${avg(R.map(o => o.rivBalloons))})  fines ${R.reduce((x, o) => x + o.fines, 0)}  rival busts ${avg(R.map(o => o.busts))} (after day 150: ${avg(R.map(o => o.lateBusts))})`);
   }
   await b.close();
 })();

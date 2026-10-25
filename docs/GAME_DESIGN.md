@@ -89,7 +89,19 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
 
 - Yeni krediler (100k, satın alma) oyunu kısaltmıyor: pervasız bot ile eski kredili pervasız bot aynı günde baron oluyor. Hızlanmayı eski küçük krediler yapıyor (ilk bölüm 28 yerine 8. gün).
 - Dikkatli botun el koymalarının çoğu satın alma kredisi sürerken ve tekel cezasıyla aynı gün: rakibi alınca pazar payı sıçrıyor, Rekabet Kurumu cezası taksitle üst üste geliyor.
-- Açık: iflas filosu filo değerinin %45'ine satılıyor, oyuncu her balonu %60'a satabiliyor. Alıp hemen satan bot 400 günde 3,7–5,6 milyon fazladan kazanıyor (kredisiz de çalışıyor, kredi sadece erken başlatıyor). Henüz düzeltilmedi, karar bekliyor.
+- Açık (v109.3'te bulundu): iflas filosu filo değerinin %45'ine satılıyor, oyuncu her balonu %60'a satabiliyordu; alıp hemen satan bot 400 günde 3,7–5,6 milyon fazladan kazanıyordu. v110'da rakipten alınan balonlar ikinci el (%40) oldu: aynı bot şimdi 0,7–1,1 milyon zarar ediyor.
+- Rakip iflası oyun sonunda çok sıktı (150. günden sonra 24). v110 denemeleri (bot "none", 12 tohum):
+
+| Kural | 150. gün sonrası iflas | Sahadaki rakip (ort.) | Baron (gün) | 400. gün kasası |
+|---|---|---|---|---|
+| Eski | 24 | 2,01 | 171 | 2,57 M |
+| Yeni gelen 14–60 gün bekler | 7 | 1,15 | 147 | 6,04 M |
+| Daha zengin yeni gelen (40 günlük gider) | 21 | – | 166 | 2,52 M |
+| Rakip önce küçülür | 17 | 2,23 | 161 | 2,64 M |
+| Küçülme + iflastan sonra 14 gün (seçilen) | 14 | 1,98 | 157 | 2,93 M |
+
+  Uzun bekleme iflası en çok azaltıyor ama pazarı boşaltıp oyuncuyu çok zenginleştiriyor; seçilen kural rakip sayısını korur.
+- v110 sonrası bütün botlar (12 tohum): batan yok. Pervasız botlarda (her krediyi çekip kışa giren) el koyma arttı (7–11 oyunda), çünkü rakipler batmak yerine küçülüp sahada kalıyor.
 - Prototipte kurtarma planı kazanç şartlı 100.000 kredisini açılmamışken de öneriyordu; Swift'teki gibi sadece şartsız krediler önerilecek şekilde düzeltildi (v109.3).
 
 Önceki tasarım (v109.1, kaldırıldı): bankada günlük net 50.000 ile açılan 500.000 kredisi; parası toplu balona harcanınca doymuş pazarda kışın iki tohumda şirketi batırıyordu.
@@ -174,8 +186,10 @@ Albuquerque ve Luksor rakipleri daha sert oynar (`RIVAL_EDGE`, Swift'te `RegionI
 
 - Fiyat tabanı maliyetten hesaplanır (en fazla 220). Tavanlar: riskli 190, orta 260.
 - 5. günden sonra zor durumdaki rakip satışa çıkar (filo satın alma veya devralma).
+- **Küçülme (v110):** kasası −€5.000'in altına düşen rakip, 3 balonun üstündeyse her gün bir balonunu yarı fiyatına satar. İflas (kasa −€10.000 altı) ancak küçülecek balon kalmayınca gelir. İflas filosu filo değerinin %45'ine satılır.
+- **İkinci el (v110):** devralınan ya da iflas filosundan alınan balonlar ikinci eldir: satış %40 (yeni balon %60), bankanın el koyması %30 (yeni %50). Filo kartında "İkinci el" etiketi, teklif kartında açıklama var.
 - **Büyüme:** 3 gün üst üste %70 üstü dolulukla uçan ve kasası balon fiyatının %60'ına yeten rakip 4 günde bir balon alır (temkinli L, diğerleri M). Tavanlar: temkinli 25, orta 18, riskli 12 balon. Sahipler kasadan para çeker ama bir sonraki balonun %60'ı kadar birikim bırakırlar.
-- **Yeni girenler:** Bosphorus Balloons, Anatolian Sky, Peri Luxe Flights, Aegean Air Tours (Albuquerque'de Mesa Gold, Turquoise Trail, Desert Bloom, Big Sky Fiesta). Batan rakibin yerine 6+ gün sonra, günlük %30 şansla gelirler.
+- **Yeni girenler:** Bosphorus Balloons, Anatolian Sky, Peri Luxe Flights, Aegean Air Tours (Albuquerque'de Mesa Gold, Turquoise Trail, Desert Bloom, Big Sky Fiesta). Batan rakibin yerine 6+ gün sonra (bölgede bir rakip iflas ettikten sonra 14+ gün, v110), günlük %30 şansla gelirler.
   - Zengin zincir (Bosphorus / Mesa Gold) oyuncunun balon sayısı + 3 balonla ve en az 60.000 + 9.000 × balon kasayla gelir.
   - Diğerleri 50. günden sonra oyuncunun yarısı kadar balonla gelir (ek balon başına +6.000 kasa).
   - Yeni gelenlerin kasasından 20 gün para çekilmez (savaş sandığı).
@@ -258,7 +272,7 @@ Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen 
 - **Rakip patronlar:** Kenan Arslan (Göreme Sky) ve Dale Whitaker (Sandia Sky Rides). Selam (3. gün), bölüm başları, geçilince, otel kapışması, pilot ayartma, kazan, anlaşma, batış ve Baron töreninde konuşurlar; her söz bölge başına bir kez.
 - **Gün kutlamaları (v109):** 100, 200, 300, 365 (şirketin bir yaşı), 400, 500. günler ve sonra her 100 günde bir, bölgenin rehberi kutlar ve ertesi sabah gazeteye çıkar.
 - **Holding yatırımları (v109):** TV kampanyası, ilan panoları, Ar-Ge, rekor denemesi ve sponsorlu şekil sözleşmesini bulunduğun bölgenin rehberi över; ünlü yüz ve ofisler kendi mesajlarıyla gelir. Hepsi ertesi sabah gazetede.
-- **Kurtarma planı:** kasa eksiye düşünce adım adım seçenekler: rehberlere tanıtım uçuşu (€1.500, bekleme süresi bittiyse), otel anlaşması (hiç anlaşma yoksa, yıldızın yettiği en iyi otel, 3 günlük peşin), boştaki pilotları çıkar, en küçük balonu %60'a sat, fiyatı en ucuz rakibin €10 altına çek, kredi al (sadece kazanç şartı olmayanlar). Rehber ve otel bu kartta kasayı eksiye indirebilir ama €-5.000 el koyma sınırının altına asla (v109.4).
+- **Kurtarma planı:** kasa eksiye düşünce adım adım seçenekler: rehberlere tanıtım uçuşu (€1.500, bekleme süresi bittiyse), otel anlaşması (hiç anlaşma yoksa, yıldızın yettiği en iyi otel, 3 günlük peşin), boştaki pilotları çıkar, en küçük balonu sat (%60, ikinci else %40), fiyatı koltukları dolduran en yüksek fiyata getir (aşağı ya da yukarı; sadece bugünkü tahmini geliri artırıyorsa görünür, seçilince kaybolur, v110), kredi al (sadece kazanç şartı olmayanlar). Rehber ve otel bu kartta kasayı eksiye indirebilir ama €-5.000 el koyma sınırının altına asla (v109.4).
 
 ## Başarımlar ve holding hedefleri
 - ☰ menüsünde "Başarımlar": 22 başarım, her biri bir kartpostal.

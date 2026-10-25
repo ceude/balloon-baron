@@ -128,6 +128,8 @@ public enum Rules {
     public static let envelopeLife = 120
     public static let renewShare = 0.35
     public static let sellShare = 0.6
+    /// Second-hand balloons (bought from a rival) resell for 40%; the bank gets 50% of a new one and 30% of a used one.
+    public static let usedSellShare = 0.4, seizeShare = 0.5, usedSeizeShare = 0.3
     public static let schoolCost = 60000
     public static let schoolWageFactor = 0.7
     public static let guideCost = 1500

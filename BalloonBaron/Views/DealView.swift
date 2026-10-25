@@ -20,6 +20,7 @@ struct DealView: View {
             CardText.title(loc(offer.bankrupt ? "deal.bankrupt.title" : "deal.sale.title", name))
             CardText.lead(loc(offer.bankrupt ? "deal.bankrupt.lead" : "deal.sale.lead", num(count), eur(price)))
             FleetMixList(sizes)
+            CardText.hint(loc("deal.used", percent(Rules.usedSellShare), percent(Rules.sellShare)))
             let terms = cash < price ? store.game?.buyLoanTerms(price: price) : nil
             if cash < price {
                 let fleet = store.game?.state.balloons.count ?? 0

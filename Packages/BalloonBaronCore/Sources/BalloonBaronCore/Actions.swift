@@ -32,17 +32,29 @@ extension Game {
         return true
     }
 
-    mutating func addBalloon(_ size: BalloonSize) {
+    mutating func addBalloon(_ size: BalloonSize, secondHand: Bool = false) {
         let used = Set(state.balloons.map(\.name))
         let name = size == .XL ? state.region.xlName : state.region.balloonNames.first { !used.contains($0) } ?? "Balloon \(state.nextID)"
-        state.balloons.append(Balloon(id: state.nextID, size: size, name: name))
+        var b = Balloon(id: state.nextID, size: size, name: name)
+        if secondHand { b.used = true }
+        state.balloons.append(b)
         state.nextID += 1
+    }
+
+    /// What a balloon fetches when you sell it: 60% of the price new, 40% if it came from a rival.
+    public func sellValue(_ b: Balloon) -> Int {
+        jsRound(Double(b.size.cost) * (b.used == true ? Rules.usedSellShare : Rules.sellShare))
+    }
+
+    /// What the bank gets for a seized balloon: half the price new, 30% if second-hand.
+    public func seizeValue(_ b: Balloon) -> Int {
+        jsRound(Double(b.size.cost) * (b.used == true ? Rules.usedSeizeShare : Rules.seizeShare))
     }
 
     @discardableResult
     public mutating func sellBalloon(_ id: Int) -> Bool {
         guard state.balloons.count > 1, let b = state.balloon(id) else { return false }
-        state.cash += jsRound(Double(b.size.cost) * Rules.sellShare)
+        state.cash += sellValue(b)
         state.balloons.removeAll { $0.id == id }
         if state.flagship == id { state.flagship = state.balloons[0].id }
         assignPilots()
@@ -337,7 +349,7 @@ extension Game {
     public mutating func takeOver(_ i: Int) -> Bool {
         guard state.rivals.indices.contains(i), let price = state.rivals[i].offer, state.rivals[i].alive, state.cash >= price else { return false }
         state.cash -= price
-        state.rivals[i].balloons.forEach { addBalloon($0) }
+        state.rivals[i].balloons.forEach { addBalloon($0, secondHand: true) }
         state.rivals[i].alive = false
         state.rivals[i].deadDay = state.day
         state.rivals[i].forSale = nil
@@ -350,7 +362,7 @@ extension Game {
     public mutating func buyBankruptFleet(_ i: Int) -> Bool {
         guard state.rivals.indices.contains(i), let sale = state.rivals[i].forSale, state.cash >= sale.price else { return false }
         state.cash -= sale.price
-        sale.sizes.forEach { addBalloon($0) }
+        sale.sizes.forEach { addBalloon($0, secondHand: true) }
         state.rivals[i].forSale = nil
         assignPilots()
         return true

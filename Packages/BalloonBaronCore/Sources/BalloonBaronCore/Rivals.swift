@@ -14,7 +14,7 @@ extension Game {
                     r.forSale = nil
                     rev.append(.rivalFleetSold(rival: r.name))
                 }
-                if r.forSale == nil && dead >= 6 && rng.chance(0.3) {
+                if r.forSale == nil && dead >= ((state.local.rivalBusts ?? 0) > 0 ? 14 : 6) && rng.chance(0.3) {
                     r = newEntrant(replacing: r)
                     rev.append(.newEntrant(rival: r.name))
                     addPaper(.newEntrant(rival: r.name))
@@ -130,6 +130,13 @@ extension Game {
                 }
             }
 
+            // a rival in trouble first sells balloons (at half price) to stay alive; bankrupt only once down to three
+            if r.cash < -5000 && r.balloons.count > 3 && day >= 5 {
+                r.cash += Double(r.balloons.removeLast().cost) * 0.5
+                r.damagedUntil.removeLast()
+                r.flyToday = r.flyToday.filter { $0 < r.balloons.count }
+                rev.append(.rivalShrank(rival: r.name))
+            }
             let fleetValue = Double(r.balloons.reduce(0) { $0 + $1.cost })
             if r.cash < -10000 && day >= 5 {
                 r.alive = false
@@ -137,6 +144,7 @@ extension Game {
                 r.offer = nil
                 r.offerSeen = false; r.offerDeclined = false; r.saleSeen = false; r.saleDeclined = false
                 r.forSale = ForSale(sizes: r.balloons, price: jsRound(fleetValue * 0.45 / 100) * 100)
+                state.local.rivalBusts = (state.local.rivalBusts ?? 0) + 1
                 addPaper(.rivalBankrupt(rival: r.name, balloons: r.balloons.count))
                 if r.name == state.region.bossCompany { bossSay(.gone) }
                 rev.append(.rivalBankrupt(rival: r.name, balloons: r.balloons.count, price: r.forSale!.price))

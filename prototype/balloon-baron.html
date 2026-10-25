@@ -1298,6 +1298,11 @@ function addBalloon(size) {
   const used = new Set(S.balloons.map(x => x.name)); const name = size === 'XL' ? RD().xl : B_NAMES.find(n => !used.has(n)) || ('Balon ' + S.nextId);
   S.balloons.push({ id: S.nextId++, size, name, fly: true, dmgUntil: 0, pilot: null, flights: 0 });
 }
+/* Balloons bought from a rival (take-over or bankrupt fleet) are second-hand: they resell for 40% instead of 60%, and
+   the bank gets 30% instead of 50% when it seizes one (v110). */
+function addUsedBalloon(size) { addBalloon(size); S.balloons[S.balloons.length - 1].used = 1; }
+const sellValue = b => Math.round(SIZES[b.size].cost * (b.used ? .4 : .6));
+const seizeValue = b => Math.round(SIZES[b.size].cost * (b.used ? .3 : .5));
 
 /* ---------- market ---------- */
 const willing = p => 1 / (1 + Math.exp((p - 230) / 30));
@@ -1508,6 +1513,16 @@ function strikers(t) {
   }
   return items;
 }
+/* The rescue card's price move (v110): the highest ticket price that still fills as many seats as the lowest price
+   would, offered only when it beats today's estimate, so choosing it makes the option go away. */
+function rescuePrice() {
+  const cap = flying().reduce((a, b) => a + sellSeats(b), 0); if (!cap) return null;
+  const at = p => { const o = S.price; S.price = p; const v = { pax: market(p, cap).pax[0], inc: estIncome() }; S.price = o; return v; };
+  const best = at(PRICE_MIN).pax; let p = PRICE_MIN;
+  for (let q = PRICE_MIN; q <= PRICE_MAX; q += 5) if (at(q).pax >= best) p = q;
+  const t = at(p), now = estIncome();
+  return p !== S.price && t.inc > now ? { p, pax: t.pax, cap, inc: t.inc, now } : null;
+}
 /* When cash first goes below zero: Hezarfen's rescue plan, with the moves that help right now. */
 function showRescue() {
   S.rescueShown = true; save();
@@ -1517,15 +1532,15 @@ function showRescue() {
   c.appendChild(h('h1', null, 'Kurtarma planı'));
   const opt = (title, sub, fn, dis) => { const b = h('button', 'opt', `<b>${title}</b><span>${sub}</span>`); b.disabled = !!dis; b.onclick = () => { fn(); sfx('coin'); refresh(); showRescueStep(); }; c.appendChild(b); };
   const idle = S.pilots.filter(p => !S.balloons.some(b => b.pilot === p.id)), sellable = S.balloons.filter(b => b.id !== S.flag).sort((a, b) => SIZES[a.size].cost - SIZES[b.size].cost);
-  const cheap = Math.min(...S.rivals.filter(r => r.alive).map(r => r.price), S.price);
   /* the guides' flight and a hotel deal (only when there's none yet) bring customers fastest; on this card they may take
      cash below zero, never past the seizure line */
   if (unlocked('market') && S.guideCd <= S.day && S.cash - GUIDE_COST >= -5000) opt(`Rehberlere tanıtım uçuşu: ${eur(GUIDE_COST)}`, `Hemen +0,2★ ve 3 gün rehberlerin gönderdiği turistler. Sonra kasa: ${eur(S.cash - GUIDE_COST)}.`, doGuide);
   const hot = unlocked('market') && !S.hotels.length && [...HOTELS].reverse().find(x => !S.hotels.includes(x.id) && !owns(x) && starVal(S.rep) >= x.min && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && S.cash - x.fee * 3 >= -5000);
   if (hot) opt(`Otel anlaşması: ${hot.name} (peşin ${eur(hot.fee * 3)})`, `Günlük misafir: yaklaşık ${hot.pax}, popülerliğin de artar. Sonra kasa: ${eur(S.cash - hot.fee * 3)}.`, () => { S.cash -= hot.fee * 3; S.hotels.push(hot.id); });
   if (idle.length) opt(`Boştaki pilotları çıkar (${idle.length})`, `Günde ${eur(idle.reduce((a, p) => a + pilotWage(p), 0))} maaştan kurtulursun.`, () => { S.pilots = S.pilots.filter(p => !idle.includes(p)); });
-  if (sellable.length) { const b = sellable[0], v = Math.round(SIZES[b.size].cost * .6); opt(`${b.name} balonunu sat`, `${eur(v)} hemen kasaya girer (banka el koyarsa yarısı).`, () => { if (b.pilot) b.pilot = null; S.balloons = S.balloons.filter(x => x !== b); S.cash += v; assignPilots(); }); }
-  if (S.price > cheap - 5) opt(`Fiyatı ${eur(Math.max(PRICE_MIN, cheap - 10))} yap`, 'En ucuz rakibin altına in, koltukları doldur.', () => { S.price = Math.max(PRICE_MIN, cheap - 10); });
+  if (sellable.length) { const b = sellable[0], v = sellValue(b); opt(`${b.name} balonunu sat`, `${eur(v)} hemen kasaya girer (banka el koyarsa yarısı).`, () => { if (b.pilot) b.pilot = null; S.balloons = S.balloons.filter(x => x !== b); S.cash += v; assignPilots(); }); }
+  const rp = rescuePrice();
+  if (rp) opt(`Fiyatı ${rp.p < S.price ? 'düşür' : 'artır'}: ${eur(rp.p)}`, `Koltukların dolduğu en yüksek fiyat. Dolan koltuk: ${rp.pax}/${rp.cap}, tahmini gelir ${eur(rp.inc)} (şimdi ${eur(rp.now)}).`, () => { S.price = rp.p; });
   const ln = unlocked('bank') && S.loans.length < 2 && [...LOANS].reverse().find(l => !l.net && S.balloons.length >= l.need);
   if (ln) opt(`${eur(ln.amt)} kredi çek`, `Günde ${eur(ln.inst)} taksit, ${ln.days} gün.`, () => { S.cash += ln.amt; S.loans.push({ amt: ln.amt, inst: ln.inst, left: ln.days }); });
   const ok = h('button', 'ghost', 'Kendim hallederim'); ok.style.width = '100%'; ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
@@ -1717,7 +1732,7 @@ function finishDay(flight) {
     const sellable = S.balloons.filter(b => b.id !== S.flag).sort((a, b) => SIZES[b.size].cost - SIZES[a.size].cost);
     const take = sellable[0] || S.balloons[0];
     if (take) {
-      const v = SIZES[take.size].cost * .5; S.cash += v; Lg.seize = v; net += v;
+      const v = seizeValue(take); S.cash += v; Lg.seize = v; net += v;
       S.balloons = S.balloons.filter(b => b !== take);
       paperAdd(5, `Banka ${S.company} balonuna el koydu`, `${take.name} borç karşılığı satıldı.`);
       ev.push(`Banka borcun için ${take.name} balonuna el koydu ve ${eur(v)}'ya sattı.`);
@@ -2003,13 +2018,16 @@ function showWorldMap() {
   const ok = h('button', 'big', 'Kapat'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
   m.appendChild(c); m.hidden = false;
 }
+/* Days before a new company takes a dead rival's slot: 6, or 14 once a rival has gone bankrupt in this region (v110,
+   simulated in tools/sim-economy.js), so late in the game bankruptcies stay news instead of a weekly routine. */
+const entrantWait = () => S.rivalBusts ? 14 : 6;
 function simRivals(rev) {
   const F = FLAGS[S.weather.flag], red = S.weather.flag === 'red';
   S.rivals.forEach((r, ri) => {
     if (!r.alive) {
       if (r.deadDay == null) r.deadDay = S.day;
       if (r.forSale && S.day - r.deadDay > 8) { r.forSale = null; rev.push(`${r.name} filosu başka bir alıcıya satıldı.`); }
-      if (!r.forSale && S.day - r.deadDay >= 6 && Math.random() < .3) {
+      if (!r.forSale && S.day - r.deadDay >= entrantWait() && Math.random() < .3) {
         const used = S.rivals.filter(x => x.alive || x.forSale).map(x => x.name).join(' '), pool = regionEntrants().filter(e => !used.includes(e.name.split(' ')[0])), e = pick(pool.length ? pool : regionEntrants());
         const cols = RIVAL_ALT.filter(c => c[0] !== myCol()[0] && !S.rivals.some(o => o.alive && o.col === c[0]));
         const c = cols.length ? pick(cols) : RIVAL_ALT[0];
@@ -2073,10 +2091,17 @@ function simRivals(rev) {
       const next = nextB, maxB = (r.style === 'safe' ? 25 : r.style === 'mid' ? 18 : 12) + (RIVAL_EDGE() ? 5 : 0);
       if (r.cash > SIZES[next].cost * .6 && r.highDays >= 3 && r.balloons.length < maxB && S.day - (r.lastBuy || 0) >= (RIVAL_EDGE() ? 3 : 4)) { r.lastBuy = S.day; r.cash -= SIZES[next].cost * .5; r.balloons.push(next); r.dmg.push(0); rev.push(`${r.name} filosuna yeni bir balon ekledi.`); }
     }
+    /* a rival in trouble first sells balloons (at half price) to stay alive; it goes bankrupt only once it's down to
+       three (v110) */
+    if (r.cash < -5000 && r.balloons.length > 3 && S.day >= 5) {
+      r.cash += SIZES[r.balloons[r.balloons.length - 1]].cost * .5; r.balloons.pop(); r.dmg.pop(); r.fly = (r.fly || []).filter(i => i < r.balloons.length);
+      rev.push(`${r.name} zor durumda, bir balonunu sattı.`);
+    }
     if (r.cash < -10000 && S.day >= 5) {
       r.alive = false; r.deadDay = S.day; r.offer = null; r.offerSeen = false; r.offerNo = false; r.saleSeen = false; r.saleNo = false;
       const v = r.balloons.reduce((a, s) => a + SIZES[s].cost, 0) * .45;
       r.forSale = { sizes: r.balloons.slice(), price: Math.round(v / 100) * 100 };
+      S.rivalBusts = (S.rivalBusts || 0) + 1;
       paperAdd(6, `${r.name} iflas etti!`, `${r.balloons.length} balonluk filo satışta.`); if (r.name === BOSS[S.region].co) bossSay('gone');
       rev.push(`${r.name} iflas etti! Filosu satışta: ${r.balloons.length} balon, ${eur(r.forSale.price)}.`);
     } else if (S.day >= 5 && (r.lowDays >= 4 || r.cash < 5000)) {
@@ -2562,7 +2587,7 @@ function balloonCard(b) {
   const z = SIZES[b.size], st = canFly(b), bd = designOf(b), c = h('div', 'card bcard');
   const head = h('div', 'item');
   head.insertAdjacentHTML('beforeend', bd ? `<img class="dthumb" src="${designThumb(bd, 44, 56)}" alt="">` : balloonIcon(myCol()[0], myCol()[1]));
-  const mainEl = h('div', 'main', `<div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş. ${esc(fleetSub(b))}.</div>`);
+  const mainEl = h('div', 'main', `<div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${b.used ? ' <span class="tag y">İkinci el</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş. ${esc(fleetSub(b))}.</div>`);
   head.appendChild(mainEl); c.appendChild(head);
   const csp = b.ad && SPONSORS.find(x => x.id === b.ad);
   const ab = h('button', 'adbtn', csp ? `<i style="background:${csp.col}"></i>${csp.name}: +${eur(adPay(csp, b.size))}/uçuş` : 'Reklam yok. Sponsor bul');
@@ -2574,7 +2599,7 @@ function balloonCard(b) {
   const acts = h('div', 'btns');
   if (cd < .6) acts.appendChild(pbtn(`Zarf yenile ${eur(z.cost * RENEW)}`, () => { S.cash -= z.cost * RENEW; b.flights = 0; refresh(); balloonCard(b); }, S.cash < z.cost * RENEW));
   if (b.id !== S.flag) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); balloonCard(b); }, false, true));
-  if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(z.cost * .6)}`, () => { S.cash += z.cost * .6; S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); m.hidden = true; refresh(); }, false, true));
+  if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(sellValue(b))}`, () => { S.cash += sellValue(b); S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); m.hidden = true; refresh(); }, false, true));
   c.appendChild(acts);
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
@@ -3091,8 +3116,8 @@ function openAdPicker(b) {
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
 }
-function takeOver(r) { setTimeout(nextPopup, 300); S.cash -= r.offer; r.balloons.forEach(addBalloon); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; assignPilots(); $('menu').hidden = true; refresh(); }
-function buyFleet(r) { S.cash -= r.forSale.price; r.forSale.sizes.forEach(addBalloon); r.forSale = null; assignPilots(); $('menu').hidden = true; refresh(); }
+function takeOver(r) { setTimeout(nextPopup, 300); S.cash -= r.offer; r.balloons.forEach(z => addUsedBalloon(z)); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; assignPilots(); $('menu').hidden = true; refresh(); }
+function buyFleet(r) { S.cash -= r.forSale.price; r.forSale.sizes.forEach(z => addUsedBalloon(z)); r.forSale = null; assignPilots(); $('menu').hidden = true; refresh(); }
 /* What a rival's fleet is made of, one line per basket size, biggest first. */
 function fleetMix(sizes) {
   const box = h('div', 'fmix');
@@ -3114,6 +3139,7 @@ function checkDeals() {
   c.appendChild(h('h1', null, sale ? `${r.name} iflas etti!` : `${r.name} satılık!`));
   c.appendChild(h('p', 'lead', sale ? `Şirket kapandı, ${n} balonluk filosu ${eur(price)}'ya satışta.` : `Doluluğu düştü ya da parası azaldı. Şirketi ve ${n} balonunu ${eur(price)}'ya devralabilirsin. Rakibin pazardan çekilir, yolcuları sana kalır.`));
   c.appendChild(fleetMix(sale ? r.forSale.sizes : r.balloons));
+  c.appendChild(h('p', 'hint', 'Rakipten alınan balonlar ikinci el sayılır: satarsan yeni fiyatının %40\'ı eder (yeni balonda %60).'));
   const T = S.cash < price && buyLoanTerms(price);
   if (S.cash < price) c.appendChild(h('p', 'hint', T ? `Kasanda ${eur(S.cash)} var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.` : S.unl.bank && S.balloons.length < BUYLOAN.need ? `Kasanda ${eur(S.cash)} var. Satın alma kredisi için daha büyük bir filo gerekir. Gereken balon: ${BUYLOAN.need}, sende: ${S.balloons.length}.` : `Kasanda ${eur(S.cash)} var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin.`));
   const yes = h('button', 'big', T ? `Krediyle al (banka ${eur(T.fin)})` : sale ? `Satın al ${eur(price)}` : `Devral ${eur(price)}`); yes.disabled = S.cash < price && !T;
@@ -4373,7 +4399,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },

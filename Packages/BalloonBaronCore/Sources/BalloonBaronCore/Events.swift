@@ -31,6 +31,7 @@ public enum DayEvent: Codable, Equatable, Sendable {
 
     // Rivals
     case rivalFleetSold(rival: String)
+    case rivalShrank(rival: String)
     case newEntrant(rival: String)
     case rivalAccidents(rival: String, count: Int)
     case rivalRedFined(rival: String)

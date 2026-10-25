@@ -17,6 +17,8 @@ public struct Balloon: Codable, Identifiable, Equatable, Sendable {
     public var burner: Int?
     /// A turning vent lines the basket up for a windy landing.
     public var turningVent: Bool?
+    /// Bought from a rival (take-over or bankrupt fleet): second-hand, it resells for less.
+    public var used: Bool?
 
     public var burners: Int { burner ?? 1 }
     public var hasTurningVent: Bool { turningVent ?? false }

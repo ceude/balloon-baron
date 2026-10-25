@@ -184,6 +184,8 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var openIssue: Autopilot.OpenIssue?
     /// Big loans (by amount) this region's bank has opened; they stay open.
     public var loansOpen: [Int]?
+    /// Rivals that went bankrupt here; after the first, a new company takes 14 days instead of 6 to fill the slot.
+    public var rivalBusts: Int?
     public var issueSeen: Int?
     public var charter: Charter?
     public var fuelUpUntil: Int?

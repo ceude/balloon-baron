@@ -2,7 +2,9 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v109.4 ile aynı.)
+(Şu an kuyruk boş: Swift uygulaması prototip v110 ile aynı.)
+
+v110 (prototip ve Swift birlikte): rakipten alınan balonlar ikinci el (`Balloon.used`, `Game.sellValue`, `seizeValue`; satış %40, el koyma %30); zor durumdaki rakip önce balon satıp küçülür (`DayEvent.rivalShrank`); bölgede ilk iflastan sonra yeni rakip 14 günde gelir (`RegionState.rivalBusts`); kurtarma planında fiyat seçeneği koltukları dolduran en yüksek fiyatı önerir, seçilince kaybolur (`Game.rescuePrice`).
 
 v109.4 (prototip ve Swift birlikte): kurtarma planında rehber uçuşu ve otel anlaşması (`Game.rescueGuideOK`, `rescueHotel`, `runGuideFlight(inRescue:)`, `signHotel(_:inRescue:)`); kasa eksiye inebilir, el koyma sınırının altına inmez.
 

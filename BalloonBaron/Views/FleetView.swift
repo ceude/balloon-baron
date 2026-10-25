@@ -603,6 +603,9 @@ private struct BalloonCardSheet: View {
                     if b.id == s.flagship {
                         FleetUI.Tag(text: "★ " + loc("fleetPage.flagship"), color: Theme.green)
                     }
+                    if b.used == true {
+                        FleetUI.Tag(text: loc("fleetPage.used"), color: Theme.yellow)
+                    }
                     if let p = pilotText(b, s) {
                         FleetUI.Detail(p, color: Theme.ink)
                     }
@@ -727,7 +730,7 @@ private struct BalloonCardSheet: View {
     private func actionsRow(_ b: Balloon, _ game: Game) -> some View {
         let s = game.state
         let renew = game.renewCost(b)
-        let sale = Int((Double(b.size.cost) * Rules.sellShare).rounded())
+        let sale = game.sellValue(b)
         return FleetUI.ButtonGrid {
             if s.condition(b) < 0.6 {
                 FleetUI.SmallButton(title: loc("fleetPage.renew", eur(renew)), disabled: s.cash < renew) {

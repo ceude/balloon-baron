@@ -402,4 +402,31 @@ final class V109Tests: XCTestCase {
         g.state.cash = -4900
         XCTAssertNil(g.rescueHotel, "never past the seizure line")
     }
+
+    func testRivalBalloonsAreSecondHand() {
+        var g = newGame()
+        g.state.rivals[0].offer = 50_000
+        g.state.cash = 200_000
+        let n = g.state.balloons.count
+        XCTAssertTrue(g.takeOver(0))
+        let bought = g.state.balloons[n...]
+        XCTAssertTrue(bought.allSatisfy { $0.used == true })
+        XCTAssertNil(g.state.balloons[0].used)
+        let b = bought.first!
+        XCTAssertEqual(g.sellValue(b), jsRound(Double(b.size.cost) * 0.4))
+        XCTAssertEqual(g.sellValue(g.state.balloons[0]), jsRound(Double(g.state.balloons[0].size.cost) * 0.6))
+        XCTAssertEqual(g.seizeValue(b), jsRound(Double(b.size.cost) * 0.3))
+        let cash = g.state.cash
+        XCTAssertTrue(g.sellBalloon(b.id))
+        XCTAssertEqual(g.state.cash, cash + jsRound(Double(b.size.cost) * 0.4))
+    }
+
+    func testRescuePriceGoesAwayOnceChosen() {
+        var g = newGame()
+        g.state.price = 300
+        guard let rp = g.rescuePrice else { return XCTFail("a price that fills the seats should beat 300") }
+        XCTAssertGreaterThan(rp.income, rp.now)
+        g.setPrice(rp.price)
+        XCTAssertNil(g.rescuePrice, "once chosen, the option goes away instead of lowering again")
+    }
 }

@@ -123,8 +123,6 @@ add("rescue.fire", "Let the idle pilots go: %@", "Boştaki pilotları çıkar: %
 add("rescue.fire.sub", "You save %@ a day in wages.", "Günde %@ maaştan kurtulursun.", "Du sparst %@ Lohn pro Tag.", "Ahorras %@ al día en sueldos.", "1日%@の人件費が浮く。", "하루 인건비 %@를 아낍니다.")
 add("rescue.sell", "Sell %@", "Sat: %@", "Verkaufen: %@", "Vender %@", "売却：%@", "판매: %@")
 add("rescue.sell.sub", "%@ in the cash box at once (half if the bank seizes it).", "%@ hemen kasaya girer (banka el koyarsa yarısı).", "Sofort %@ in der Kasse (bei einer Pfändung nur die Hälfte).", "%@ en caja al instante (la mitad si lo embarga el banco).", "すぐに%@が入る（差し押さえなら半額）。", "즉시 %@가 들어옵니다 (압류되면 절반).")
-add("rescue.price", "Set the price to %@", "Fiyatı %@ yap", "Preis auf %@ setzen", "Poner el precio a %@", "料金を%@にする", "가격을 %@로")
-add("rescue.price.sub", "Go below your cheapest rival and fill the seats.", "En ucuz rakibin altına in, koltukları doldur.", "Unterbiete den billigsten Konkurrenten und fülle die Plätze.", "Ponte por debajo del rival más barato y llena los asientos.", "最安のライバルより安くして席を埋める。", "가장 싼 경쟁사보다 낮춰 좌석을 채웁니다.")
 add("rescue.loan", "Take a %@ loan", "%@ kredi çek", "%@ Kredit aufnehmen", "Pedir un préstamo de %@", "%@を借りる", "%@ 대출받기")
 add("rescue.loan.sub", "%1$@ a day for %2$@ days.", "Günde %1$@ taksit, %2$@ gün.", "%1$@ pro Tag, %2$@ Tage.", "%1$@ al día durante %2$@ días.", "1日%1$@、%2$@日間。", "하루 %1$@, %2$@일.")
 add("rescue.guide", "Guides' flight: %@", "Rehberlere tanıtım uçuşu: %@", "Rundflug für Reiseführer: %@", "Vuelo para guías: %@", "ガイド招待フライト：%@", "가이드 홍보 비행: %@")

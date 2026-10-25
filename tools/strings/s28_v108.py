@@ -288,3 +288,22 @@ add("buyLoan.bankBody", "When a rival or a bankrupt fleet is up for sale, the ba
     "ライバル企業や倒産した機体が売りに出たとき、不足分を銀行が売り手に支払う。金庫にお金は入らない。価格の少なくとも%3$@は自己負担。日数：%1$@、利息%2$@。同時に1件まで、10万のローンが利用可能になってから。必要な気球：%4$@。",
     "경쟁사나 파산한 열기구가 매물로 나오면 부족분을 은행이 판매자에게 지불하며 금고에는 돈이 들어오지 않습니다. 가격의 최소 %3$@는 직접 냅니다. 일수: %1$@, 이자 %2$@. 한 번에 하나, 10만 대출이 열린 뒤부터. 필요한 열기구: %4$@.")
 add("buyLoan.loan", "%@ purchase loan", "%@ satın alma kredisi", "Kaufkredit: %@", "Préstamo de compra de %@", "%@の買収ローン", "%@ 인수 대출")
+
+# v110: second-hand balloons, rivals shrink before going bankrupt, the rescue card's price move
+add("fleetPage.used", "Second-hand", "İkinci el", "Gebraucht", "De segunda mano", "中古", "중고")
+add("deal.used", "Balloons bought from a rival are second-hand: if you sell one, it fetches %1$@ of the new price (a new balloon: %2$@).",
+    "Rakipten alınan balonlar ikinci el sayılır: satarsan yeni fiyatının %1$@ kadarını eder (yeni balonda %2$@).",
+    "Von einem Konkurrenten gekaufte Ballone sind gebraucht: Verkauft bringen sie %1$@ des Neupreises (ein neuer Ballon: %2$@).",
+    "Los globos comprados a un rival son de segunda mano: si vendes uno, recibes el %1$@ del precio nuevo (uno nuevo: %2$@).",
+    "ライバルから買った気球は中古扱い。売ると新品価格の%1$@になる（新品は%2$@）。",
+    "경쟁사에서 산 열기구는 중고입니다. 팔면 새 가격의 %1$@를 받습니다 (새 열기구: %2$@).")
+add("event.rivalShrank", "%@ is in trouble and sold a balloon.", "%@ zor durumda, bir balonunu sattı.", "%@ steckt in Schwierigkeiten und hat einen Ballon verkauft.",
+    "%@ está en apuros y vendió un globo.", "%@は経営難で気球を1機売った。", "%@가 어려움에 처해 열기구 하나를 팔았습니다.")
+add("rescue.priceDown", "Lower the price: %@", "Fiyatı düşür: %@", "Preis senken: %@", "Bajar el precio: %@", "料金を下げる：%@", "가격 내리기: %@")
+add("rescue.priceUp", "Raise the price: %@", "Fiyatı artır: %@", "Preis erhöhen: %@", "Subir el precio: %@", "料金を上げる：%@", "가격 올리기: %@")
+add("rescue.price.sub", "The highest price that still fills the seats. Seats filled: %1$@/%2$@, estimated income %3$@ (now %4$@).",
+    "Koltukların dolduğu en yüksek fiyat. Dolan koltuk: %1$@/%2$@, tahmini gelir %3$@ (şimdi %4$@).",
+    "Der höchste Preis, bei dem die Plätze noch voll werden. Belegt: %1$@/%2$@, geschätzte Einnahmen %3$@ (jetzt %4$@).",
+    "El precio más alto que aún llena las plazas. Plazas llenas: %1$@/%2$@, ingreso estimado %3$@ (ahora %4$@).",
+    "席が埋まる最高の料金。埋まる席：%1$@/%2$@、予想収入%3$@（現在%4$@）。",
+    "좌석이 다 차는 가장 높은 가격. 채워지는 좌석: %1$@/%2$@, 예상 수입 %3$@ (현재 %4$@).")

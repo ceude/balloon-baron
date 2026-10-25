@@ -252,7 +252,7 @@ extension Game {
         if state.cash < Rules.seizeBelow {
             let sellable = state.balloons.filter { $0.id != state.flagship }.sorted { $0.size.cost > $1.size.cost }
             if let take = sellable.first ?? state.balloons.first {
-                let v = take.size.cost / 2
+                let v = seizeValue(take)
                 state.cash += v
                 lg.seizure = v
                 state.balloons.removeAll { $0.id == take.id }
