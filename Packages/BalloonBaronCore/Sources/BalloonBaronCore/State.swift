@@ -155,7 +155,7 @@ public enum Feature: String, Codable, CaseIterable, Sendable { case insurance, f
 public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
     case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold, goals
-    case pr, influ, prcap, bazaar
+    case pr, influ, prcap, bazaar, delegate, noRivals
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {

@@ -125,6 +125,11 @@ public struct Game: Sendable {
         }
         if s.balloons.contains(where: { $0.damagedUntil > s.day }) { queueTip(.accident) }
         if !s.licenseValid { queueTip(.licenseHold) }
+        // Once the fleet has grown: you may hand the flagship to a pilot (but keep the license and the passengers in mind).
+        if s.day >= 7 && s.tipsSeen.contains(.crew) && s.balloons.count >= 2 && s.local.selfFly && s.licenseValid { queueTip(.delegate) }
+        // No rival flew, yet seats stayed empty because the price was high: tourists still weigh the price.
+        if !s.rivals.contains(where: \.alive), let ls = s.local.lastShare, ls.cap > 0, ls.me < ls.cap,
+           Rules.willing(Double(s.price)) < 0.85 { queueTip(.noRivals) }
     }
 
     /// The inspector comes by when an envelope is below 30%: two warnings five days apart, then a fine each visit.

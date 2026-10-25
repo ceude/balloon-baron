@@ -931,6 +931,8 @@ const HEZ = {
   antitrust: 'Dikkat evlat! Pazarın çoğu senin elinde ve Rekabet Kurumu kapıda. Tekel olmaya devam edersen şirketinin büyüklüğüne göre ağır bir ceza kesebilirler. Ya bunu göze al ya da fiyatını biraz yükseltip rakiplere nefes aldır.',
   goals: 'Her büyük şirketin bir yol haritası olur evlat. Sağdaki bayrağa dokun: orada bölüm hedeflerin yazıyor. Üç bölümü bitiren Kapadokya\'nın baronu olur, sonra da dünya seni bekler.',
   absent: 'Evlat, yolcular hep aynı şeyi soruyor: "Kurucu nerede?" Kaptanı uçmayan şirketin ruhu kaybolur. Sepete geri dön; uzak kaldığın her gün popülerliğin aşınıyor.',
+  delegate: 'Filon büyüdü evlat. Artık her sabah sepete binmek zorunda değilsin: uçuş planında amiral balonu için Pilot seçeneğini seç, sen yönetime geç. Yalnız iki şeyi unutma: lisansın için 15 günde en az bir kez kendin uçmalısın, yoksa diğer balonların yere iner. Bir de 5 günden uzun uçmazsan yolcular kurucuyu arar, popülerliğin aşınır.',
+  noRivals: 'Dün gökyüzünde tek başınaydın evlat, rakibin yoktu. Ama koltukların yine de dolmadı, çünkü turist rakip olmasa da cebine bakar: fiyat çok yükselince bir kısmı balondan vazgeçip vadide yürümeyi seçer. Fiyat kartındaki ibreye bak; pahalıya kaydıkça vazgeçen artar. Dolu sepet çoğu zaman en pahalı biletten çok kazandırır.',
   licenseHold: 'Lisansın düştü evlat, otorite balonlarını yere indirdi. İki yol var: bugün sepete geç ve amiral balonunu kendin uçur, bu yenileme uçuşu bedava. Ya da ücreti öde. Ben olsam hangisini seçerdim, biliyorsun.',
   bazaar: 'Kasabanın doğusunda bir çarşı var evlat, gördün mü? Balonların için özel desenler, şekilli zarflar, kasaban için süsler satılıyor. Süsler turist çeker, gece de kasabanı ışıl ışıl yapar. Benden sana bir hediye var: çarşıda bir fener seti seni bekliyor.',
   pr: 'Bir sır vereyim evlat: başlarda otel ve rehber anlaşmaları her şeydir. Popülerliğin arttıkça daha yüksek fiyattan daha çok müşteri bulursun. Lüks oteller de misafirlerini yüksek fiyata bile getirir. Otelsiz, rehbersiz bir şirketin adı 4,2 yıldızdan öteye duyulmaz.',
@@ -1405,6 +1407,11 @@ function unlockCheck() {
   if (S.unl.market && S.day >= 16) hezAdd('rivals3');
   if (S.balloons.some(b => b.dmgUntil > S.day)) hezAdd('accident');
   if (!licenseOk()) hezAdd('licenseHold');
+  /* v110: once the fleet has grown, tell the player they may hand the flagship to a pilot (license and absence rules) */
+  if (S.day >= 7 && S.tips.crew && S.balloons.length >= 2 && S.selfFly && licenseOk()) hezAdd('delegate');
+  /* v110: no rival flew, yet seats stayed empty because the price was high: tourists still weigh the price */
+  const ls = S.lastShare;
+  if (!S.rivals.some(r => r.alive) && ls && ls.cap && ls.me < ls.cap && willing(S.price) < .85) hezAdd('noRivals');
 }
 /* Morning paper: only when something worth a headline happened; the biggest story leads, up to two more below. */
 function paperAdd(p, head, sub) { (S.paperNext = S.paperNext || []).push({ p, head, sub }); }

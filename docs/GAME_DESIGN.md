@@ -338,6 +338,8 @@ Yaşlı, karizmatik mentor. Daktilo efektli konuşma balonuyla konuşur. Konular
 - beklenti (4,5★), tekel, eskime
 - hedefler, holding, Albuquerque, Fiesta, bölge sorunları, ofisler, ünlü anlaşması
 - dinamik haberler (kış, yeni rakip)
+- **yönetime geçiş** (v110): 7. günden sonra, ekip dersini görmüş ve en az 2 balonu olan, hâlâ kendi uçan oyuncuya: amirali pilota verip yönetime geçebilirsin, ama lisans için 15 günde bir uç, 5 günden uzun uçmazsan popülerlik aşınır
+- **rakipsiz gün** (v110): hiç rakip yaşamıyorken koltuklar dolmadıysa ve fiyat "uygun" bandın üstündeyse: rakip olmasa da turist pahalı bilette vazgeçer, dolu sepet çoğu zaman daha çok kazandırır
 - **övgü** (v99): Kapadokya'daki ilk 40 günde doğru hamleleri över, her biri bir kez, en fazla iki günde bir: kırmızı bayrakta yerde kalmak, ilk kusursuz iniş, ilk özel istek, üst üste 3 iyi iniş, ikinci balon, ilk pilot, ilk otel anlaşması, ilk bina yükseltmesi, 5 gün üst üste kâr, 4,3★. Düğmesi "Sağ ol usta".
 
 **Acemiyi koruma** (v99): ilk 3 günde kırmızı bayrak çıkmaz (çıkarsa sarı olur). İlk 20 günde kırmızı bayrakta "Yine de uç"tan sonra Hezarfen bir kez daha sorar ("Uçarsan batabilirsin"); öne çıkan düğme "Haklısın, pas geç".
