@@ -5858,7 +5858,7 @@ function townTop(b) {
   if (b.look === 'hotel') return [95, 165, 190, 200][b.star];
   if (b.look === 'rival') return 80;
   if (b.look === 'mast') return 175; /* the kiosk row steps down to the right, so neighbouring labels clear each other */
-  return { bazaar: 82, hangar: 120, workshop: 110, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 90, agency: 150, tower: 300, rival: 85 }[b.look] || 135;
+  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 90, agency: 150, tower: 300, rival: 85 }[b.look] || 135;
 }
 function townLabel(b, sx, sy, sc, full, taken) {
   const fn = Math.round((b.small ? 13 : 16) * sc), fs = Math.round((b.small ? 11 : 13) * sc);
@@ -6461,7 +6461,10 @@ function townTap(x, y) {
   const zh = (TOWN.zoneHits || []).find(hh => inPoly([x, y], hh.pts));
   if (zh) { sfx('click'); endHold(); townFocus(zh.zn.at); return; }
   const hit = townHit(TOWN.hits, x, y);
-  if (hit) { sfx('click'); hit.b.tap(); }
+  if (hit) { sfx('click'); hit.b.tap(); return; }
+  /* v110: the launch field, or a balloon standing on it, opens your balloons */
+  const V = TOWN, f = [tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)];
+  if ([0, 90].some(up => inPoly([x, y], f.map(([fx, fy]) => [fx * V.z + V.ox, (fy - up) * V.z + V.oy]))) && unlocked('fleet')) { sfx('click'); openSection('fleet', 'Balonların'); }
 }
 (function townInput() {
   const cvs = $('tcv');

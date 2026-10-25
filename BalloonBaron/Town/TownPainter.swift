@@ -30,6 +30,10 @@ struct TownHits {
     }
     var buildings: [Building] = []
     var zones: [Zone] = []
+    /// The launch field and the balloons standing on it (v110): a tap there opens your balloons.
+    var field: [[CGPoint]] = []
+
+    func onField(_ p: CGPoint) -> Bool { field.contains { TownGeo.inPoly(p, $0) } }
 
     /// The zone written under the finger (only while zoomed out), else the front-most building.
     func hit(_ p: CGPoint) -> (zone: TownZone?, building: TownBuilding?) {
@@ -1633,7 +1637,9 @@ struct TownPainter {
         var hits = TownHits()
         let z = v.z, full = z >= TownGeo.labelZoom, sc = min(max(z / 0.5, 0.75), 1.15)
         var taken: [CGRect] = []
-        for b in bs.sorted(by: { ($0.gx + $0.gy) > ($1.gx + $1.gy) }) {
+        // Big buildings label before small ones (the mast, kiosks, the bazaar), and front ones first, so a small
+        // sign never hides a building's name (as in the prototype).
+        for b in bs.sorted(by: { $0.small != $1.small ? !$0.small : ($0.gx + $0.gy) > ($1.gx + $1.gy) }) {
             let m = iso(b.gx + b.w / 2, b.gy + b.d / 2)
             let sx = m.x * z + v.ox, sy = (m.y - CGFloat(Town.labelTop(b))) * z + v.oy
             let pts = [iso(b.gx, b.gy), iso(b.gx + b.w, b.gy), iso(b.gx + b.w, b.gy + b.d), iso(b.gx, b.gy + b.d)].map { v.screen($0) }
@@ -1653,6 +1659,8 @@ struct TownPainter {
         if !full {
             hits.zones = Town.zones.map { .init(zone: $0, pts: zoneQuad($0).map { v.screen($0) }) }
         }
+        let field = [iso(1, 4.4), iso(7, 4.4), iso(7, 7.2), iso(1, 7.2)]
+        hits.field = [field.map { v.screen($0) }, field.map { v.screen(CGPoint(x: $0.x, y: $0.y - 90)) }]
         return hits
     }
 

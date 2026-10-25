@@ -188,7 +188,8 @@ enum Town {
         case .hotel: return [95, 165, 190, 200][b.star]
         case .kiosk: return 80
         case .hangar: return 120
-        case .workshop: return 110
+        // Higher than the roof needs (v110), so the wind mast's tag in front no longer hides it.
+        case .workshop: return 145
         case .office: return b.lv == 2 ? 150 : 120
         case .school: return 160
         case .bank: return 130

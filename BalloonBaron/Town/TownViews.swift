@@ -355,6 +355,9 @@ struct HomeTownView: View {
             } else if let b = hit.building {
                 SoundEngine.shared.play(.click)
                 store.tapTown(b.tap)
+            } else if model.hits.onField(p), store.state?.unlocked.contains(.fleet) == true {
+                SoundEngine.shared.play(.click)
+                store.tapTown(.page(.fleet, section: nil))
             }
         }
     }
