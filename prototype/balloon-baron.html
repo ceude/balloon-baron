@@ -813,11 +813,11 @@ const LOANS = [
 ];
 /* The purchase loan (v109.2), a mortgage for a rival up for sale: the bank pays the seller what you're short, up to
    500,000; nothing goes into your till. You pay in what you have, keeping a small reserve. */
-const BUYLOAN = { max: 500000, reserve: 10000, days: 150, rate: .2, down: .2 };
+const BUYLOAN = { max: 500000, reserve: 10000, days: 150, rate: .2, down: .2, need: 10 };
 function buyLoanTerms(price) {
-  /* only for a company that already earns well (the bank opens it with the 100,000 loan, daily net ≥ 10,000), one at a
-     time, and like a mortgage you put down at least a fifth of the price yourself */
-  if (!S.unl.bank || S.loans.length >= 2 || S.loans.some(l => l.buy) || !(S.loanOpen || {})[100000]) return null;
+  /* only for a company that already earns well (the bank opens it with the 100,000 loan, daily net ≥ 10,000) and flies
+     at least 10 balloons, one at a time, and like a mortgage you put down at least a fifth of the price yourself */
+  if (!S.unl.bank || S.balloons.length < BUYLOAN.need || S.loans.length >= 2 || S.loans.some(l => l.buy) || !(S.loanOpen || {})[100000]) return null;
   const own = Math.round(Math.max(0, Math.min(price, S.cash - BUYLOAN.reserve))), fin = price - own;
   if (fin <= 0 || fin > BUYLOAN.max || own < price * BUYLOAN.down) return null;
   const inst = Math.ceil(fin * (1 + BUYLOAN.rate) / BUYLOAN.days / 10) * 10;
@@ -2746,7 +2746,7 @@ function tabBank(body) {
     it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
     o.appendChild(it);
   });
-  o.appendChild(h('div', 'callout grn', `<b>Satın alma kredisi: ${eur(BUYLOAN.max)}'e kadar.</b> Pazar'da satılık bir şirket ya da filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. ${BUYLOAN.days} gün, faiz %${Math.round(BUYLOAN.rate * 100)}. Teklif çıkınca "Krediyle al" düğmesi görünür.`));
+  o.appendChild(h('div', 'callout grn', `<b>Satın alma kredisi: ${eur(BUYLOAN.max)}'e kadar.</b> Pazar'da satılık bir şirket ya da filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. ${BUYLOAN.days} gün, faiz %${Math.round(BUYLOAN.rate * 100)}. En az ${BUYLOAN.need} balon ve açılmış 100.000 kredisi gerekir. Teklif çıkınca "Krediyle al" düğmesi görünür.`));
   o.appendChild(h('p', 'hint', `Aynı anda en fazla iki kredi. Kasa ${eur(-5000)} altına düşerse banka bir balonuna el koyar ve yarı fiyatına satar.`));
   body.appendChild(o);
 }
@@ -3110,7 +3110,7 @@ function checkDeals() {
   c.appendChild(h('p', 'lead', sale ? `Şirket kapandı, ${n} balonluk filosu ${eur(price)}'ya satışta.` : `Doluluğu düştü ya da parası azaldı. Şirketi ve ${n} balonunu ${eur(price)}'ya devralabilirsin. Rakibin pazardan çekilir, yolcuları sana kalır.`));
   c.appendChild(fleetMix(sale ? r.forSale.sizes : r.balloons));
   const T = S.cash < price && buyLoanTerms(price);
-  if (S.cash < price) c.appendChild(h('p', 'hint', T ? `Kasanda ${eur(S.cash)} var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.` : `Kasanda ${eur(S.cash)} var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin.`));
+  if (S.cash < price) c.appendChild(h('p', 'hint', T ? `Kasanda ${eur(S.cash)} var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.` : S.unl.bank && S.balloons.length < BUYLOAN.need ? `Kasanda ${eur(S.cash)} var. Satın alma kredisi için daha büyük bir filo gerekir. Gereken balon: ${BUYLOAN.need}, sende: ${S.balloons.length}.` : `Kasanda ${eur(S.cash)} var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin.`));
   const yes = h('button', 'big', T ? `Krediyle al (banka ${eur(T.fin)})` : sale ? `Satın al ${eur(price)}` : `Devral ${eur(price)}`); yes.disabled = S.cash < price && !T;
   yes.onclick = () => T ? buyLoanCard(r, sale) : sale ? buyFleet(r) : takeOver(r);
   const row = h('div', 'btns');

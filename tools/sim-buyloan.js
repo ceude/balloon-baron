@@ -1,5 +1,6 @@
 // Usage: NODE_PATH=$(npm root -g) node tools/sim-buyloan.js   (the purchase-loan check behind docs/GAME_DESIGN.md "Krediler")
 // A careless player: every rival up for sale they can't pay for, they buy with the purchase loan, whatever the season.
+const { chromium } = require('playwright');
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage();
   const res = [];

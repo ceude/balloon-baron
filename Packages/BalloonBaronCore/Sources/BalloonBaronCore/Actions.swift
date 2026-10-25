@@ -192,7 +192,7 @@ extension Game {
 
     /// What the bank would lend to buy something at `price`, or nil when the purchase loan can't be used.
     public func buyLoanTerms(price: Int) -> BuyLoanTerms? {
-        guard state.unlocked.contains(.bank), state.loans.count < Rules.maxLoans, !state.loans.contains(where: { $0.purchase == true }),
+        guard state.unlocked.contains(.bank), state.balloons.count >= Rules.buyLoanBalloons, state.loans.count < Rules.maxLoans, !state.loans.contains(where: { $0.purchase == true }),
               (state.local.loansOpen ?? []).contains(100_000) else { return nil }
         let own = max(0, min(price, state.cash - Rules.buyLoanReserve)), fin = price - own
         guard fin > 0, fin <= Rules.buyLoanMax, Double(own) >= Double(price) * Rules.buyLoanDown else { return nil }

@@ -69,12 +69,13 @@ Kasa −€5.000'in altına düşerse banka balona el koyar.
 
 100.000 kredisi (v109.1) bölgenin son 14 günlük ortanca net kazancı 10.000'i ilk geçtiği akşam açılır ve bir daha kapanmaz. Simülasyon (`tools/sim-loans.js`; bot krediyi açıldığı gün çekip hepsini balona harcıyor): 10 tohumda 94–122. günde açıldı, hiç el koyma yok.
 
-**Satın alma kredisi (v109.2):** bankanın kredi listesinde değil; satılık bir rakip ya da iflas etmiş bir filo olunca teklif kartında ve Pazar'da "Krediyle al" düğmesi çıkar. Konut kredisi gibi: banka eksik tutarı doğrudan satıcıya öder, kasaya para girmez. Oyuncu kasasından ödeyebildiğini öder, kasada €10.000 kalır; bu pay fiyatın en az %20'si olmalı. Banka en fazla 500.000 öder; 150 gün, faiz %20 (taksit = ödenen × 1,2 / 150, 10'a yuvarlanmış). Aynı anda tek satın alma kredisi; sadece 100.000 kredisi açıldıktan sonra. Onay kartı fiyatı, senin payını, bankanın payını, taksiti, toplamı ve kış/bakım/el koyma uyarısını gösterir.
+**Satın alma kredisi (v109.2):** bankanın kredi listesinde değil; satılık bir rakip ya da iflas etmiş bir filo olunca teklif kartında ve Pazar'da "Krediyle al" düğmesi çıkar. Konut kredisi gibi: banka eksik tutarı doğrudan satıcıya öder, kasaya para girmez. Oyuncu kasasından ödeyebildiğini öder, kasada €10.000 kalır; bu pay fiyatın en az %20'si olmalı. Banka en fazla 500.000 öder; 150 gün, faiz %20 (taksit = ödenen × 1,2 / 150, 10'a yuvarlanmış). Aynı anda tek satın alma kredisi; sadece 100.000 kredisi açıldıktan sonra ve filoda en az 10 balon varken (v109.3; azsa teklif kartı gereken ve mevcut balon sayısını yazar). Kasa fiyata yetiyorsa sadece nakit seçeneği çıkar, kredi sunulmaz. Onay kartı fiyatı, senin payını, bankanın payını, taksiti, toplamı ve kış/bakım/el koyma uyarısını gösterir.
 
 Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse her seferinde krediyle alıyor, mevsime bakmadan):
 - Hiç sınır yokken: 6–30. günde, tek balonla rakip alıyor; 12 tohumun yarısından fazlası battı.
 - 100.000 açılmış olsun: batan yok ama üst üste 4 şirket alınca 12'nin 9'unda banka balona el koydu.
-- + %20 peşinat + aynı anda tek kredi (son hâli): 12 tohumun 10'unda el koyma yok, 2'sinde 1–2 balon; batan yok.
+- + %20 peşinat + aynı anda tek kredi: 12 tohumun 10'unda el koyma yok, 2'sinde 1–2 balon; batan yok.
+- + en az 10 balon (v109.3, son hâli): 7–9 balonla erken alım yapan 3 tohum bekledi; 12 tohumun 9'unda el koyma yok, 3'ünde 1–2 balon; batan yok. Kural küçük şirketin kasayı 6–8 bine kadar düşürmesini engelliyor, ama geç ve pahalı alımı engellemiyor.
 
 Önceki tasarım (v109.1, kaldırıldı): bankada günlük net 50.000 ile açılan 500.000 kredisi; parası toplu balona harcanınca doymuş pazarda kışın iki tohumda şirketi batırıyordu.
 

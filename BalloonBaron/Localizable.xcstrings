@@ -6895,37 +6895,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steht ein Konkurrent oder eine Konkursflotte zum Verkauf, zahlt die Bank dem Verkäufer, was dir fehlt; in deine Kasse fließt nichts. Mindestens %3$@ des Preises zahlst du selbst. Tage: %1$@, Zins %2$@. Immer nur einer, sobald der 100.000er-Kredit freigeschaltet ist."
+            "value": "Steht ein Konkurrent oder eine Konkursflotte zum Verkauf, zahlt die Bank dem Verkäufer, was dir fehlt; in deine Kasse fließt nichts. Mindestens %3$@ des Preises zahlst du selbst. Tage: %1$@, Zins %2$@. Immer nur einer, sobald der 100.000er-Kredit freigeschaltet ist. Nötige Ballone: %4$@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; nothing goes into your till. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened."
+            "value": "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; nothing goes into your till. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened. Balloons needed: %4$@."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cuando un rival o una flota en quiebra está en venta, el banco paga al vendedor lo que te falta; a tu caja no entra nada. Tú pones al menos el %3$@ del precio. Días: %1$@, interés %2$@. Uno a la vez, cuando se abra el préstamo de 100.000."
+            "value": "Cuando un rival o una flota en quiebra está en venta, el banco paga al vendedor lo que te falta; a tu caja no entra nada. Tú pones al menos el %3$@ del precio. Días: %1$@, interés %2$@. Uno a la vez, cuando se abra el préstamo de 100.000. Globos necesarios: %4$@."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ライバル企業や倒産した機体が売りに出たとき、不足分を銀行が売り手に支払う。金庫にお金は入らない。価格の少なくとも%3$@は自己負担。日数：%1$@、利息%2$@。同時に1件まで、10万のローンが利用可能になってから。"
+            "value": "ライバル企業や倒産した機体が売りに出たとき、不足分を銀行が売り手に支払う。金庫にお金は入らない。価格の少なくとも%3$@は自己負担。日数：%1$@、利息%2$@。同時に1件まで、10万のローンが利用可能になってから。必要な気球：%4$@。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "경쟁사나 파산한 열기구가 매물로 나오면 부족분을 은행이 판매자에게 지불하며 금고에는 돈이 들어오지 않습니다. 가격의 최소 %3$@는 직접 냅니다. 일수: %1$@, 이자 %2$@. 한 번에 하나, 10만 대출이 열린 뒤부터."
+            "value": "경쟁사나 파산한 열기구가 매물로 나오면 부족분을 은행이 판매자에게 지불하며 금고에는 돈이 들어오지 않습니다. 가격의 최소 %3$@는 직접 냅니다. 일수: %1$@, 이자 %2$@. 한 번에 하나, 10만 대출이 열린 뒤부터. 필요한 열기구: %4$@."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane; 100.000 kredisi açıldıktan sonra."
+            "value": "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane; 100.000 kredisi açıldıktan sonra. Gereken balon: %4$@."
           }
         }
       }
@@ -13158,6 +13158,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kasanda %@ var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin."
+          }
+        }
+      }
+    },
+    "deal.shortFew": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasse: %1$@. Für den Kaufkredit brauchst du eine größere Flotte. Nötige Ballone: %2$@, du hast: %3$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cash: %1$@. The purchase loan needs a bigger fleet. Balloons needed: %2$@, you have: %3$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caja: %1$@. El préstamo de compra pide una flota mayor. Globos necesarios: %2$@, tienes: %3$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所持金：%1$@。買収ローンにはもっと大きな機体数が必要。必要な気球：%2$@、保有：%3$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "보유 현금: %1$@. 인수 대출에는 더 큰 기단이 필요합니다. 필요한 열기구: %2$@, 보유: %3$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasanda %1$@ var. Satın alma kredisi için daha büyük bir filo gerekir. Gereken balon: %2$@, sende: %3$@."
           }
         }
       }

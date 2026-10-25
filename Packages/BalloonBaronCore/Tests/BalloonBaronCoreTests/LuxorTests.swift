@@ -362,6 +362,10 @@ final class V109Tests: XCTestCase {
         g.state.cash = 100_000
         XCTAssertNil(g.buyLoanTerms(price: 300_000), "only once the 100,000 loan has opened")
         g.state.local.loansOpen = [100_000]
+        while g.state.balloons.count > Rules.buyLoanBalloons - 1 { g.state.balloons.removeLast() }
+        while g.state.balloons.count < Rules.buyLoanBalloons - 1 { g.state.balloons.append(g.state.balloons[0]) }
+        XCTAssertNil(g.buyLoanTerms(price: 300_000), "only with at least 10 balloons")
+        g.state.balloons.append(g.state.balloons[0])
         let t = g.buyLoanTerms(price: 300_000)!
         XCTAssertEqual(t.own, 90_000, "you keep the reserve")
         XCTAssertEqual(t.financed, 210_000)

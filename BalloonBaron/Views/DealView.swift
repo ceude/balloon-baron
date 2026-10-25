@@ -22,7 +22,12 @@ struct DealView: View {
             FleetMixList(sizes)
             let terms = cash < price ? store.game?.buyLoanTerms(price: price) : nil
             if cash < price {
-                CardText.hint(loc(terms == nil ? "deal.short" : "deal.shortLoan", eur(cash)))
+                let fleet = store.game?.state.balloons.count ?? 0
+                if terms == nil, store.game?.state.unlocked.contains(.bank) == true, fleet < Rules.buyLoanBalloons {
+                    CardText.hint(loc("deal.shortFew", eur(cash), num(Rules.buyLoanBalloons), num(fleet)))
+                } else {
+                    CardText.hint(loc(terms == nil ? "deal.short" : "deal.shortLoan", eur(cash)))
+                }
             }
             if let terms {
                 Button(loc("buyLoan.button", eur(terms.financed))) {

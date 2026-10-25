@@ -173,7 +173,7 @@ public enum Rules {
     /// to `max`; nothing goes into your till. You put down at least a fifth of the price yourself and keep `reserve`.
     /// One at a time, and only once the 100,000 loan has opened. Simulated in `tools/sim-buyloan.js`.
     public static let buyLoanMax = 500_000, buyLoanReserve = 10000, buyLoanDays = 150
-    public static let buyLoanRate = 0.2, buyLoanDown = 0.2
+    public static let buyLoanRate = 0.2, buyLoanDown = 0.2, buyLoanBalloons = 10
 
     public static let balloonNames = ["Şafak", "Güvercin", "Zelve", "Uçhisar", "Avanos", "Ihlara", "Ortahisar", "Kızılçukur",
                                       "Paşabağ", "Erciyes", "Soğanlı", "Mustafapaşa", "Göreme", "Çavuşin", "Ürgüp", "Sinasos"]

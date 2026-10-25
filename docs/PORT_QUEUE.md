@@ -2,7 +2,9 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v109.2 ile aynı.)
+(Şu an kuyruk boş: Swift uygulaması prototip v109.3 ile aynı.)
+
+v109.3 (prototip ve Swift birlikte): satın alma kredisi için en az 10 balon (`Rules.buyLoanBalloons`); azsa teklif kartı `deal.shortFew` notunu gösterir.
 
 v109.2 (prototip ve Swift birlikte): 500.000 kredisi bankadan kalktı, yerine satın alma kredisi geldi (`Game.buyLoanTerms`, `buyWithLoan`, `BuyLoanView`, `Loan.purchase`): satılık rakip ya da iflas filosu için banka eksiği satıcıya öder, %20 peşinat, €10.000 kasada kalır, 150 gün %20, aynı anda tek, 100.000 açıldıktan sonra.
 
