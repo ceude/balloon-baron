@@ -197,7 +197,7 @@ Albuquerque ve Luksor rakipleri daha sert oynar (`RIVAL_EDGE`, Swift'te `RegionI
 - **Birleşme:** 30. günden sonra oyuncunun payı %50'yi 4+ gün aşarsa günlük %35, ya da bir rakibin kasası −€4.000'in altındayken oyuncunun payı %40'ı aşarsa günlük %60 şansla en küçük iki rakip "A & B Balloons" olarak birleşir. Filolar toplanır, kasa (iki kasa) × 1,3 + 40.000, popülerlik yüksek olanınki, fiyat ortalama, 20 gün savaş sandığı. En fazla 25 günde bir.
 - **Tekel cezası:** 20. günden sonra pazar payı > %60 olan her gün sayılır.
   - 3. günde Hezarfen uyarır (oran yazmaz).
-  - 5 ve üstünde her gün %25 şansla max(€5.000, şirket değerinin %3'ü) ceza. Şirket değeri: pozitif kasa + balonların alış fiyatı + sahip olunan oteller.
+  - 5 ve üstünde, payın o gün de %60'ın üstünde olduğu her gün %25 şansla max(€5.000, şirket değerinin %3'ü) ceza (v110: önceden kırmızı bayrakta yerde kalınan gün de gelebiliyor, gazete %0 yazıyordu). Şirket değeri: pozitif kasa + balonların alış fiyatı + sahip olunan oteller.
 
 ## Bölümler ve Baron
 Hedefler her işlemden sonra kontrol edilir: bir bölümün bütün hedefleri tuttuğu anda ödül kasaya girer ve tören hemen açılır (v108). Baron bölümü de öyle (v109): bütün hedefleri aynı anda tuttuğu an baron olursun. Bölüm kartlarında "Bölüm 2/4" büyük başlıkla yazar.

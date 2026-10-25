@@ -1727,7 +1727,8 @@ function finishDay(flight) {
   const lux = S.region === 'lux', mergeGap = lux ? 15 : 25, domNeed = lux ? 2 : 4;
   if (lux && S.day >= 20 && shr > .38) S.domDays = (S.domDays || 0) + 1;
   if (S.day - (S.lastMerge || -99) >= mergeGap && ((S.domDays >= domNeed && Math.random() < (lux ? .5 : .35)) || (sinking && Math.random() < .6))) mergeRivals(shr, rev);
-  if (S.monoDays >= 5 && Math.random() < .25) {
+  /* only on a day the share really was over 60%: a grounded red-flag day must not bring a fine reading 0% (v110) */
+  if (S.monoDays >= 5 && shr > .6 && Math.random() < .25) {
     /* ceza şirketin toplam değerinden: kasayı boşaltmak kurtarmaz */
     const worth = Math.max(0, S.cash) + S.balloons.reduce((a, b) => a + SIZES[b.size].cost, 0) + (S.ownHotels || []).reduce((a, id) => a + HOTELS.find(x => x.id === id).buy, 0);
     const fine = Math.max(5000, Math.round(worth * MONO_RATE / 100) * 100); Lg.mono = fine; S.cash -= fine; net -= fine; S.monoDays = 0;

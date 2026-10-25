@@ -238,7 +238,8 @@ extension Game {
             && ((state.dominanceDays >= (early ? 2 : 4) && rng.chance(early ? 0.5 : 0.35)) || (sinking && rng.chance(0.6))) {
             mergeRivals(share: share, events: &rev)
         }
-        if state.monopolyDays >= 5 && rng.chance(0.25) {
+        // Only on a day the share really was over 60%: a grounded red-flag day must not bring a fine reading 0%.
+        if state.monopolyDays >= 5 && share > 0.6 && rng.chance(0.25) {
             // The fine follows company worth, so emptying the cash box doesn't help.
             let worth = max(0, state.cash) + state.balloons.reduce(0) { $0 + $1.size.cost } + state.ownHotels.reduce(0) { $0 + $1.buyPrice }
             let fine = max(Rules.redFine, jsRound(Double(worth) * Rules.monopolyRate / 100) * 100)

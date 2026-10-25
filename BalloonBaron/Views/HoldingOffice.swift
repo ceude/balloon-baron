@@ -162,9 +162,9 @@ struct HoldingOfficeView: View {
 
         func spot(_ u: HoldingUnit) -> CGPoint {
             switch u {
-            // Under the whiteboard, so the chart and the goals have the whole board.
+            // Under the whiteboard and the window, so the board has room and the header never covers the label.
             case .board: CGPoint(x: w * 0.2, y: wall - 10)
-            case .window: CGPoint(x: w * 0.7, y: top + (wall - top) * 0.06 + 6)
+            case .window: CGPoint(x: w * 0.7, y: wall - 10)
             case .marketing: CGPoint(x: w * 0.27, y: rowA - 92)
             case .deals: CGPoint(x: w * 0.73, y: rowA - 92)
             case .research: CGPoint(x: w * 0.27, y: rowB - 92)
@@ -316,29 +316,30 @@ private enum OfficePainter {
             c.fill(Path(CGRect(x: bx0 + 20 + CGFloat(i) * 16, y: by1 + 1, width: 11, height: 4)), with: .color(Color(hex: col)))
         }
         let x = bx0 + 10, y = by0 + 14, w = bx1 - bx0 - 20, hh = by1 - by0 - 28
-        // Goals in marker at the bottom; rows shrink on a short board, and the chart only draws when it still has room.
+        // Goals in marker at the bottom. Rows shrink on a short board so the chart above always keeps at least 36 pt.
         let goals = HoldingGoal.allCases
-        let row = min(max(floor((hh - 50) / CGFloat(goals.count)), 9), 15), fs = min(14, row - 1)
+        let row = min(max(floor((hh - 36 - 24) / CGFloat(goals.count)), 9), 15), fs = min(14, row - 1)
         let gy = y + hh - CGFloat(goals.count) * row + 6
         for (i, g) in goals.enumerated() {
-            let d = s.done(g), yy = gy + CGFloat(i) * row, bs = min(8, fs * 0.6)
-            c.stroke(Path(CGRect(x: x + 2, y: yy - bs, width: bs, height: bs)), with: .color(marker), lineWidth: 1.5)
+            // Box, tick, text and strike all share the row's middle line.
+            let d = s.done(g), mid = gy + CGFloat(i) * row - row / 2, bs = min(8, fs * 0.6)
+            c.stroke(Path(CGRect(x: x + 2, y: mid - bs / 2, width: bs, height: bs)), with: .color(marker), lineWidth: 1.5)
             if d {
                 var tick = Path()
-                tick.move(to: CGPoint(x: x + 3, y: yy - bs * 0.5)); tick.addLine(to: CGPoint(x: x + 2 + bs * 0.5, y: yy - 1)); tick.addLine(to: CGPoint(x: x + 2 + bs * 1.3, y: yy - bs * 1.3))
+                tick.move(to: CGPoint(x: x + 3, y: mid)); tick.addLine(to: CGPoint(x: x + 2 + bs * 0.5, y: mid + bs / 2 - 1)); tick.addLine(to: CGPoint(x: x + 2 + bs * 1.3, y: mid - bs * 0.8))
                 c.stroke(tick, with: .color(Color(hex: "#1f8a4c")), lineWidth: 2)
             }
-            let (text, px) = markerFit(c, g.title, maxW: w - 18, px: fs)
+            let (text, _) = markerFit(c, g.title, maxW: w - 18, px: fs)
             let tw = text.measure(in: CGSize(width: 2000, height: 40)).width
-            c.draw(text, at: CGPoint(x: x + 15, y: yy - px * 0.2), anchor: .bottomLeading)
+            c.draw(text, at: CGPoint(x: x + 15, y: mid), anchor: .leading)
             if d {
                 var strike = Path()
-                strike.move(to: CGPoint(x: x + 14, y: yy - fs * 0.35)); strike.addLine(to: CGPoint(x: x + 16 + tw, y: yy - fs * 0.35 - 1))
+                strike.move(to: CGPoint(x: x + 14, y: mid)); strike.addLine(to: CGPoint(x: x + 16 + tw, y: mid - 1))
                 c.stroke(strike, with: .color(marker), lineWidth: 1.3)
             }
         }
         // Room under the chart for its day labels, clear of the first goal.
-        let ch = gy - y - fs * 1.25 - 24
+        let ch = gy - row - y - 20
         guard ch >= 22 else { return }
         var axes = Path()
         axes.move(to: CGPoint(x: x, y: y + ch)); axes.addLine(to: CGPoint(x: x + w, y: y + ch)); axes.move(to: CGPoint(x: x, y: y)); axes.addLine(to: CGPoint(x: x, y: y + ch))

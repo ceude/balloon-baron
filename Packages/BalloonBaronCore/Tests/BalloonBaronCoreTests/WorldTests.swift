@@ -72,10 +72,12 @@ final class WorldTests: XCTestCase {
         g.state.cash = -1000
         g.state.balloons = (0..<20).map { Balloon(id: 100 + $0, size: .L, name: "B\($0)") }
         g.state.flagship = 100
+        // Pilots for the whole fleet, so the share really is over 60% on a day the fine can come.
+        g.state.pilots = (0..<20).map { Pilot(id: 900 + $0, name: "P\($0)", level: .rookie) }
         g.state.monopolyDays = 50
         g.state.festivalNext = 999 // no festival crowds: the cash box stays empty
         var fine = 0, cashAtFine = 0
-        for _ in 0..<40 where fine == 0 {
+        for _ in 0..<80 where fine == 0 {
             g.state.monopolyDays = 50
             g.state.cash = -1000
             let r = play(&g)
