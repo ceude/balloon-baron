@@ -3069,7 +3069,8 @@ function drawIntro(dt) {
         g.addColorStop(0, 'rgba(255,240,200,.75)'); g.addColorStop(1, 'rgba(255,240,200,0)');
         ctx.fillStyle = g; ctx.fillRect(b.x - b.R * 3, b.y - b.R * 4.2, b.R * 6, b.R * 5.5);
       }
-      balloon(b.x, b.y, b.R, PICK[b.i].c[0], PICK[b.i].c[1], sel && Math.sin(T * 6) > 0, sel ? 1 : .85);
+      /* v110: in full volume, like the balloon you fly; same envelope size as the flat one was */
+      balloon3d(b.x, b.y, b.R / .86, PICK[b.i].c[0], PICK[b.i].c[1], sel && Math.sin(T * 6) > 0, sel ? 1 : .85);
     });
   }
 }
@@ -3822,7 +3823,7 @@ cv.addEventListener('pointerdown', e => {
   if (mode === 'intro') { INTRO.hold = true; return; }
   if (mode === 'pick') {
     const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
-    const hit = pickSpots().reverse().find(b => Math.hypot(x - b.x, y - (b.y - b.R * 1.55)) < b.R * 1.5);
+    const hit = pickSpots().reverse().find(b => Math.hypot(x - b.x, y - (b.y - b.R * 2)) < b.R * 1.5);
     if (hit) pickI = hit.i;
     return;
   }

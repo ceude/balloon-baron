@@ -54,7 +54,7 @@ final class PickModel {
 
     /// The balloon under a tap, biggest first.
     func hit(_ pt: CGPoint) -> Int? {
-        spots().reversed().first { b in hypot(pt.x - b.x, pt.y - (b.y - b.r * 1.55)) < b.r * 1.5 }?.i
+        spots().reversed().first { b in hypot(pt.x - b.x, pt.y - (b.y - b.r * 2)) < b.r * 1.5 }?.i
     }
 }
 
@@ -114,8 +114,9 @@ struct SetupView: View {
         for b in picker.spots() {
             let sel = b.i == selected
             if sel { glow(&ctx, b) }
-            ScenePainter.balloon(&ctx, x: b.x, y: b.y, r: b.r, colors: PickBalloon.all[b.i].colors,
-                                 burn: sel && sin(T * 6) > 0, alpha: sel ? 1 : 0.85, region: scene.region, time: T)
+            // In full volume (v110), like the balloon you fly; the envelope keeps the flat one's size.
+            ScenePainter.balloon3d(&ctx, x: b.x, y: b.y, r: b.r / 0.86, colors: PickBalloon.all[b.i].colors,
+                                   burn: sel && sin(T * 6) > 0, alpha: sel ? 1 : 0.85, region: scene.region)
         }
     }
 
