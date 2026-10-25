@@ -77,6 +77,21 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
 - + %20 peşinat + aynı anda tek kredi: 12 tohumun 10'unda el koyma yok, 2'sinde 1–2 balon; batan yok.
 - + en az 10 balon (v109.3, son hâli): 7–9 balonla erken alım yapan 3 tohum bekledi; 12 tohumun 9'unda el koyma yok, 3'ünde 1–2 balon; batan yok. Kural küçük şirketin kasayı 6–8 bine kadar düşürmesini engelliyor, ama geç ve pahalı alımı engellemiyor.
 
+**Bütün oyun simülasyonu (`tools/sim-economy.js`, v109.3):** 400 gün, 12 tohum, aynı şansla beş bot.
+
+| Bot | Batan | Balon kaybeden oyun (balon) | Bölüm günleri (ort.) | Baron (ort. gün) |
+|---|---|---|---|---|
+| Hiç borç almayan | 0 | 3 (9) | 28 / 62 / 141 / 171 | 171 |
+| Dikkatli (kışın almaz, taksit < günlük netin 1/3'ü) | 0 | 10 (21) | 25 / 60 / 142 / 162 | 162 |
+| Pervasız, sadece eski krediler (10–50k) | 0 | 6 (15) | 8 / 36 / 121 / 140 | 140 |
+| Pervasız, bütün krediler | 0 | 9 (17) | 8 / 36 / 114 / 139 | 139 |
+| İflas filosunu alıp hemen satan | 0 | 3 (3) | 28 / 65 / 115 / 153 | 153 |
+
+- Yeni krediler (100k, satın alma) oyunu kısaltmıyor: pervasız bot ile eski kredili pervasız bot aynı günde baron oluyor. Hızlanmayı eski küçük krediler yapıyor (ilk bölüm 28 yerine 8. gün).
+- Dikkatli botun el koymalarının çoğu satın alma kredisi sürerken ve tekel cezasıyla aynı gün: rakibi alınca pazar payı sıçrıyor, Rekabet Kurumu cezası taksitle üst üste geliyor.
+- Açık: iflas filosu filo değerinin %45'ine satılıyor, oyuncu her balonu %60'a satabiliyor. Alıp hemen satan bot 400 günde 3,7–5,6 milyon fazladan kazanıyor (kredisiz de çalışıyor, kredi sadece erken başlatıyor). Henüz düzeltilmedi, karar bekliyor.
+- Prototipte kurtarma planı kazanç şartlı 100.000 kredisini açılmamışken de öneriyordu; Swift'teki gibi sadece şartsız krediler önerilecek şekilde düzeltildi (v109.3).
+
 Önceki tasarım (v109.1, kaldırıldı): bankada günlük net 50.000 ile açılan 500.000 kredisi; parası toplu balona harcanınca doymuş pazarda kışın iki tohumda şirketi batırıyordu.
 
 ## Pazar ve popülerlik

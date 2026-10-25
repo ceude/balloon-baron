@@ -1521,7 +1521,7 @@ function showRescue() {
   if (idle.length) opt(`Boştaki pilotları çıkar (${idle.length})`, `Günde ${eur(idle.reduce((a, p) => a + pilotWage(p), 0))} maaştan kurtulursun.`, () => { S.pilots = S.pilots.filter(p => !idle.includes(p)); });
   if (sellable.length) { const b = sellable[0], v = Math.round(SIZES[b.size].cost * .6); opt(`${b.name} balonunu sat`, `${eur(v)} hemen kasaya girer (banka el koyarsa yarısı).`, () => { if (b.pilot) b.pilot = null; S.balloons = S.balloons.filter(x => x !== b); S.cash += v; assignPilots(); }); }
   if (S.price > cheap - 5) opt(`Fiyatı ${eur(Math.max(PRICE_MIN, cheap - 10))} yap`, 'En ucuz rakibin altına in, koltukları doldur.', () => { S.price = Math.max(PRICE_MIN, cheap - 10); });
-  const ln = unlocked('bank') && S.loans.length < 2 && [...LOANS].reverse().find(l => S.balloons.length >= l.need);
+  const ln = unlocked('bank') && S.loans.length < 2 && [...LOANS].reverse().find(l => !l.net && S.balloons.length >= l.need);
   if (ln) opt(`${eur(ln.amt)} kredi çek`, `Günde ${eur(ln.inst)} taksit, ${ln.days} gün.`, () => { S.cash += ln.amt; S.loans.push({ amt: ln.amt, inst: ln.inst, left: ln.days }); });
   const ok = h('button', 'ghost', 'Kendim hallederim'); ok.style.width = '100%'; ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
   m.appendChild(c); m.hidden = false;
