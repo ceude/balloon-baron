@@ -4674,6 +4674,11 @@ function iapBuy(k, then) {
 const PATTERNS = { stripes: ['Çizgili', 35], zigzag: ['Zikzak', 60], checker: ['Damalı', 55], stars: ['Yıldızlı', 70], hearts: ['Kalpli', 70], sunburst: ['Güneş', 75], waves: ['Dalga', 60], rainbow: ['Gökkuşağı', 65], dots: ['Puantiyeli', 50], gold: ['Varak altın', 92, 1], tile: ['İznik çinisi', 90, 1], sky: ['Takımyıldız', 92, 1], kilim: ['Kapadokya kilimi', 90, 1] };
 const SWATCHES = ['#ff5e3a', '#ffc23d', '#2b2350', '#14a39a', '#ff6fa8', '#5aa9e6', '#9b7be0', '#22a45d', '#e5432f', '#ffffff', '#1f1b2e', '#f3e08a'];
 const designOf = b => b && b.design && (S.designs || []).find(d => d.id === b.design);
+/* v110: the town's launch field shows six balloons: shaped envelopes first, then other designs, then the flagship */
+function fieldBalloons() {
+  const rank = b => { const d = designOf(b); return d && d.shape ? 0 : d ? 1 : b.id === S.flag ? 2 : 3; };
+  return S.balloons.map((b, i) => [b, i]).sort((x, y) => rank(x[0]) - rank(y[0]) || x[1] - y[1]).slice(0, 6).map(x => x[0]);
+}
 const designCost = () => hasOffice('tyo') ? 0 : DESIGN_COST;
 /* a design that uses something bought with real money: never fades, free to put on any balloon */
 const paidDesign = d => !!d && !!(d.shape || (PATTERNS[d.pat] || [])[2]);
@@ -5764,7 +5769,7 @@ function townScenery(t) {
   const trees = [[7.1, 6.9], [7.1, 9.2], [8.9, 6.9], [3.4, 8.9], [6.6, 10.7], [14.6, 7.3], [10.8, 4.4], [4.3, 7.0], [8.4, 15]];
   trees.forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); if (S.region !== 'cap') return regionTree(p[0], p[1], i, t); i % 3 ? roundTree(p[0], p[1], .9, i % 2 ? '#7aa04a' : '#8aa84e') : cypress(p[0], p[1], 1); } }));
   /* your fleet on the launch field, burners flickering; at night the envelopes are packed away, except on a Fiesta balloon-glow night */
-  if (NIGHT_K <= 0 || (NIGHT && NIGHT.ev && NIGHT.ev.k === 'glow')) S.balloons.slice(0, 6).forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
+  if (NIGHT_K <= 0 || (NIGHT && NIGHT.ev && NIGHT.ev.k === 'glow')) fieldBalloons().forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
   /* the wind mast by the launch field: today's surface wind fills the sock and points it */
   /* festival days: bunting strung along the main roads */
   if (S.fest) for (const along of [[7.5, 1], [7.5, 5], [7.5, 9.5], [1, 7.5], [4.5, 7.5], [10.5, 7.5]]) {
@@ -6357,7 +6362,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
       glow(p[0], p[1] - 22, 16, '255,170,70', .8); ctx.fillStyle = '#ffcf7a'; ctx.fillRect(p[0] - 2, p[1] - 25, 4, 5); }
   }
   if (E && E.k === 'glow') {
-    S.balloons.slice(0, 6).forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4, p = tiso(gx, gy), f = Math.max(0, Math.sin(t * 3 + i * 1.7)); glow(p[0], p[1] - 70, 80, '255,150,60', .25 + .55 * f); });
+    fieldBalloons().forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4, p = tiso(gx, gy), f = Math.max(0, Math.sin(t * 3 + i * 1.7)); glow(p[0], p[1] - 70, 80, '255,150,60', .25 + .55 * f); });
   }
   ctx.restore();
 }

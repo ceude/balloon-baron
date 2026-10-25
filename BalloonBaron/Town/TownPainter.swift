@@ -1348,7 +1348,7 @@ struct TownPainter {
         // Your fleet on the launch field, burners flickering. At night the envelopes are packed away, except for a Fiesta balloon glow.
         let colors = s.colors, tt = t
         let packed = night != nil && night?.event != .balloonGlow
-        for (i, b) in s.local.balloons.prefix(packed ? 0 : 6).enumerated() {
+        for (i, b) in s.fieldBalloons.prefix(packed ? 0 : 6).enumerated() {
             let gx = 1.8 + Double(i % 3) * 1.9, gy = 5 + Double(i / 3) * 1.4
             let r: CGFloat = b.size == .XL ? 44 : b.size == .L ? 38 : b.size == .M ? 33 : 28
             let design = s.design(of: b), ad = b.ad
@@ -1674,5 +1674,17 @@ struct TownPainter {
         if plot { c.stroke(shape, with: .color(hex("#ff5e3a")), lineWidth: 1.5) }
         c.draw(name, at: pt(sx, r.minY + 4), anchor: .top)
         c.draw(sub, at: pt(sx, sy - 5), anchor: .bottom)
+    }
+}
+
+extension GameState {
+    /// The launch field's balloons (v110): shaped envelopes first, then other designs, then the flagship, then the
+    /// rest in fleet order. The field shows the first six.
+    var fieldBalloons: [Balloon] {
+        func rank(_ b: Balloon) -> Int {
+            if let d = design(of: b) { return d.shape != nil ? 0 : 1 }
+            return b.id == local.flagship ? 2 : 3
+        }
+        return local.balloons.enumerated().sorted { (rank($0.element), $0.offset) < (rank($1.element), $1.offset) }.map(\.element)
     }
 }
