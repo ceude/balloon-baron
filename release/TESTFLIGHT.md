@@ -6,3 +6,4 @@ hand in Xcode (Report navigator → Cloud → Start Build). Bump `CURRENT_PROJEC
 only for a manual Archive from Xcode; Xcode Cloud numbers its builds itself.
 
 - 2026-10-25: first TestFlight build (v110)
+- 2026-10-25: second TestFlight build: clouds and basket swing in flight, night scene switch, holding board fixes, antitrust fine fix
