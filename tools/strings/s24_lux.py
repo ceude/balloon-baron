@@ -255,7 +255,7 @@ add("ceremony.baronHint.lux",
  "세 대륙의 하늘이 당신의 것입니다. 브리스톨과 마사이마라가 곧 지도에 열립니다.")
 
 # The civil aviation inspector (worn envelopes)
-add("insp.name.cap", "Inspector Selin Aydın", "Müfettiş Selin Aydın", "Inspektorin Selin Aydın", "Inspectora Selin Aydın", "セリン・アイドゥン検査官", "셀린 아이든 감독관")
+add("insp.name.cap", "Inspector Ekin Demir", "Müfettiş Ekin Demir", "Inspektorin Ekin Demir", "Inspectora Ekin Demir", "エキン・デミル検査官", "에킨 데미르 감독관")
 add("insp.name.abq", "Inspector Karen Diaz", "Müfettiş Karen Diaz", "Inspektorin Karen Diaz", "Inspectora Karen Diaz", "カレン・ディアス検査官", "캐런 디아스 감독관")
 add("insp.name.lux", "Inspector Omar Fathy", "Müfettiş Omar Fathy", "Inspektor Omar Fathy", "Inspector Omar Fathy", "オマル・ファトヒ検査官", "오마르 파트히 감독관")
 add("insp.title.cap", "Directorate General of Civil Aviation", "Sivil Havacılık Genel Müdürlüğü", "Generaldirektion für Zivilluftfahrt", "Dirección General de Aviación Civil", "民間航空総局", "민간항공총국")
