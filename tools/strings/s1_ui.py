@@ -17,25 +17,25 @@ add("flag.yellow", "Yellow flag", "Sarı bayrak", "Gelbe Flagge", "Bandera amari
 add("flag.red", "Red flag", "Kırmızı bayrak", "Rote Flagge", "Bandera roja", "赤い旗", "빨간 깃발")
 add("flag.note.green", "Good to fly, light winds.", "Uçuşa uygun, rüzgâr hafif.", "Gutes Flugwetter, leichter Wind.", "Buen día para volar, viento suave.", "飛行に適した日。風は穏やか。", "비행하기 좋은 날, 바람이 약합니다.")
 add("flag.note.yellow", "You may fly, but accident risk and insurance premiums are high.", "Uçabilirsin ama kaza riski ve sigorta primleri yüksek.", "Du darfst fliegen, aber Unfallrisiko und Versicherungsprämien sind hoch.", "Puedes volar, pero el riesgo de accidente y las primas del seguro son altos.", "飛べるが、事故リスクと保険料が高い。", "비행은 가능하지만 사고 위험과 보험료가 높습니다.")
-add("flag.note.red", "Flying is banned. You might get caught, and insurance pays nothing.", "Uçuş yasak. Kalkarsan yakalanabilirsin ve sigorta hiçbir şeyi ödemez.", "Fliegen verboten. Du könntest erwischt werden, und die Versicherung zahlt nichts.", "Volar está prohibido. Te pueden pillar y el seguro no paga nada.", "飛行禁止。見つかる可能性があり、保険は一切払われない。", "비행 금지. 적발될 수 있고 보험은 아무것도 보상하지 않습니다.")
+add("flag.note.red", "Flying is banned. You might get caught, and insurance pays nothing.", "Uçuş yasak. Kalkarsan yakalanabilirsin ve sigorta hiçbir şeyi ödemez.", "Fliegen verboten. Du könntest erwischt werden, und die Versicherung zahlt nichts.", "Volar está prohibido. Te pueden descubrir y el seguro no paga nada.", "飛行禁止。見つかる可能性があり、保険は一切払われない。", "비행 금지. 적발될 수 있고 보험은 아무것도 보상하지 않습니다.")
 add("home.wind", "Surface wind: %@ km/h", "Yer rüzgârı: %@ km/sa", "Bodenwind: %@ km/h", "Viento en superficie: %@ km/h", "地上風速：%@ km/h", "지상 풍속: %@ km/h")
 add("home.winter", "Winter: fewer tourists", "Kış: turist az", "Winter: weniger Touristen", "Invierno: menos turistas", "冬：観光客が少ない", "겨울: 관광객 감소")
 add("home.price", "Ticket price", "Bilet fiyatı", "Ticketpreis", "Precio del billete", "チケット価格", "티켓 가격")
 add("home.tourists", "Tourists today", "Bugünkü turist", "Touristen heute", "Turistas hoy", "今日の観光客", "오늘의 관광객")
-add("home.seats", "Your seats", "Koltukların", "Deine Plätze", "Tus plazas", "あなたの座席", "내 좌석")
+add("home.seats", "Your seats", "Koltukların", "Deine Plätze", "Tus plazas", "自社の座席", "내 좌석")
 add("home.rivalSeats", "Rival seats", "Rakip koltukları", "Plätze der Konkurrenz", "Plazas rivales", "ライバルの座席", "경쟁사 좌석")
-add("home.mission", "Special request: %1$@ (%2$@)", "Özel istek: %1$@ (%2$@)", "Sonderwunsch: %1$@ (%2$@)", "Petición especial: %1$@ (%2$@)", "特別な依頼：%1$@（%2$@）", "특별 요청: %1$@ (%2$@)")
+add("home.mission", "Special request: %1$@ (%2$@)", "Özel istek: %1$@ (%2$@)", "Sonderwunsch: %1$@ (%2$@)", "Petición especial: %1$@ (%2$@)", "特別依頼：%1$@（%2$@）", "특별 요청: %1$@ (%2$@)")
 add("home.missionSelf", "Only you can take this one: fly the flagship yourself.", "Bu görevi sadece sen yapabilirsin: amiral balonunu kendin uçur.", "Das kannst nur du übernehmen: Flieg das Flaggschiff selbst.", "Solo tú puedes encargarte: pilota tú el globo insignia.", "この依頼はあなたにしかできない。旗艦を自分で飛ばそう。", "이 임무는 당신만 할 수 있습니다. 기함을 직접 조종하세요.")
 add("home.fly", "Fly", "Uç", "Fliegen", "Volar", "飛ぶ", "비행")
 add("home.send", "Send balloons", "Balonları gönder", "Ballone starten", "Enviar globos", "気球を出す", "열기구 보내기")
 add("home.skip", "Skip today", "Bugünü pas geç", "Heute aussetzen", "Saltar hoy", "今日は休む", "오늘은 쉬기")
 add("home.license", "Pilot license: %@ days left", "Pilot lisansı: %@ gün kaldı", "Pilotenlizenz: noch %@ Tage", "Licencia de piloto: quedan %@ días", "操縦免許：残り%@日", "조종 면허: %@일 남음")
-add("home.licenseExpired", "Your license has expired: your other balloons are grounded. Fly the flagship yourself today (free renewal flight) or pay %@ to renew.", "Lisansın doldu: diğer balonların yerde. Bugün amiral balonunu kendin uçur (ücretsiz yenileme uçuşu) ya da %@ ödeyip yenile.", "Deine Lizenz ist abgelaufen: Deine anderen Ballone bleiben am Boden. Flieg heute selbst das Flaggschiff (kostenloser Erneuerungsflug) oder zahle %@.", "Tu licencia ha caducado: tus otros globos están en tierra. Pilota hoy tú mismo el globo insignia (vuelo de renovación gratuito) o paga %@ para renovarla.", "免許が切れた：ほかの気球は飛べない。今日、旗艦を自分で飛ばす（無料の更新フライト）か、%@を払って更新しよう。", "면허가 만료되어 다른 열기구는 운항할 수 없습니다. 오늘 기함을 직접 조종하거나(무료 갱신 비행) %@를 내고 갱신하세요.")
-add("home.renew", "Pay to renew", "Ücret öde ve yenile", "Gegen Gebühr erneuern", "Pagar y renovar", "支払って更新", "비용 내고 갱신")
-add("home.founderBonus", "Flying with the founder: passengers pay +30%.", "Kurucuyla uçuş: yolcular %30 fazla öder.", "Flug mit dem Gründer: Passagiere zahlen 30 % mehr.", "Volar con el fundador: los pasajeros pagan un 30 % más.", "創業者と飛ぶフライト：乗客は30%多く払う。", "창업자와 함께하는 비행: 승객이 30% 더 냅니다.")
+add("home.licenseExpired", "Your license has expired: your other balloons are grounded. Fly the flagship yourself today (free renewal flight) or pay %@ to renew.", "Lisansın doldu: diğer balonların yerde. Bugün amiral balonunu kendin uçur (ücretsiz yenileme uçuşu) ya da %@ ödeyip yenile.", "Deine Lizenz ist abgelaufen: Deine anderen Ballone bleiben am Boden. Flieg heute selbst das Flaggschiff (kostenloser Erneuerungsflug) oder zahle %@.", "Tu licencia ha caducado: tus otros globos están en tierra. Pilota hoy tú mismo el globo insignia (vuelo de renovación gratuito) o paga %@ para renovarla.", "免許が切れたため、ほかの気球は飛べない。今日、旗艦を自分で飛ばす（無料の更新フライト）か、%@を払って更新しよう。", "면허가 만료되어 다른 열기구는 운항할 수 없습니다. 오늘 기함을 직접 조종하거나(무료 갱신 비행) %@를 내고 갱신하세요.")
+add("home.renew", "Pay to renew", "Ödeyip yenile", "Gegen Gebühr erneuern", "Pagar y renovar", "支払って更新", "비용 내고 갱신")
+add("home.founderBonus", "Flying with the founder: passengers pay +30%.", "Kurucuyla uçuş: yolcular %30 fazla öder.", "Flug mit dem Gründer: Passagiere zahlen 30 % mehr.", "Volar con el fundador: los pasajeros pagan un 30 % más.", "創業者のフライト：乗客は30%増しで払う。", "창업자와 함께하는 비행: 승객이 30% 더 냅니다.")
 add("home.absent", "Days since you last flew: %@. Passengers miss the founder; popularity is falling.", "Son uçuşundan bu yana geçen gün: %@. Yolcular kurucuyu arıyor, popülerlik düşüyor.", "Tage seit deinem letzten Flug: %@. Die Passagiere vermissen den Gründer, die Beliebtheit sinkt.", "Días desde tu último vuelo: %@. Los pasajeros echan de menos al fundador y la popularidad baja.", "最後に飛んでからの日数：%@。乗客は創業者を恋しがり、人気が下がっている。", "마지막 비행 후 지난 날: %@. 승객들이 창업자를 찾고 있어 인기가 떨어지고 있습니다.")
 add("home.redConfirm", "Fly on a red flag?", "Kırmızı bayrakta uçulsun mu?", "Bei roter Flagge fliegen?", "¿Volar con bandera roja?", "赤い旗の日に飛ぶ？", "빨간 깃발인데 비행할까요?")
-add("home.redConfirmBody", "35%% chance of a %@ fine and a strike. Insurance won't pay for anything.", "%%35 ihtimalle %@ ceza ve uyarı. Sigorta hiçbir şeyi ödemez.", "35 %% Risiko für %@ Strafe und eine Verwarnung. Die Versicherung zahlt nichts.", "35 %% de probabilidad de una multa de %@ y un aviso. El seguro no paga nada.", "35%%の確率で%@の罰金と警告。保険は一切払われない。", "35%% 확률로 %@ 벌금과 경고. 보험은 아무것도 보상하지 않습니다.")
+add("home.redConfirmBody", "35%% chance of a %@ fine and a strike. Insurance won't pay for anything.", "%%35 ihtimalle %@ ceza ve uyarı. Sigorta hiçbir şeyi ödemez.", "35 %% Risiko einer Strafe von %@ und einer Verwarnung. Die Versicherung zahlt nichts.", "35 %% de probabilidad de una multa de %@ y un aviso. El seguro no paga nada.", "35%%の確率で%@の罰金と警告。保険は一切払われない。", "35%% 확률로 %@ 벌금과 경고. 보험은 아무것도 보상하지 않습니다.")
 add("home.redFly", "Fly anyway", "Yine de uç", "Trotzdem fliegen", "Volar igualmente", "それでも飛ぶ", "그래도 비행")
 add("common.cancel", "Cancel", "Vazgeç", "Abbrechen", "Cancelar", "キャンセル", "취소")
 
@@ -70,16 +70,16 @@ for k, v in {
  "ads": ("Balloon ads", "Balon reklamı", "Ballonwerbung", "Publicidad en globos", "気球広告", "열기구 광고"),
  "tips": ("Tips", "Bahşiş", "Trinkgeld", "Propinas", "チップ", "팁"),
  "insurancePaid": ("Insurance payout", "Sigorta ödemesi", "Versicherungsleistung", "Pago del seguro", "保険金", "보험금"),
- "seizure": ("Bank sale of a balloon", "Bankanın balon satışı", "Ballonverkauf durch die Bank", "Venta del globo por el banco", "銀行による気球売却", "은행의 열기구 매각"),
+ "seizure": ("Bank sale of a balloon", "Bankanın balon satışı", "Ballonverkauf durch die Bank", "Venta del globo por el banco", "銀行による気球売却", "은행 압류 매각"),
  "fuel": ("Fuel", "Yakıt", "Treibstoff", "Combustible", "燃料", "연료"),
  "wages": ("Pilot wages", "Pilot maaşları", "Pilotengehälter", "Sueldos de pilotos", "パイロット給与", "조종사 급여"),
- "upkeep": ("Maintenance", "Bakım", "Wartung", "Mantenimiento", "整備費", "정비비"),
+ "upkeep": ("Maintenance", "Bakım", "Wartung", "Mantenimiento", "整備費", "유지비"),
  "insurance": ("Insurance premiums", "Sigorta primi", "Versicherungsprämien", "Primas de seguro", "保険料", "보험료"),
  "loans": ("Loan installments", "Kredi taksiti", "Kreditraten", "Cuotas del préstamo", "ローン返済", "대출 상환"),
  "repairs": ("Repairs", "Onarım", "Reparaturen", "Reparaciones", "修理費", "수리비"),
  "compensation": ("Passenger compensation", "Yolcu tazminatı", "Entschädigungen", "Indemnizaciones", "乗客への補償", "승객 보상금"),
  "fines": ("Fines", "Ceza", "Bußgelder", "Multas", "罰金", "벌금"),
- "cancellations": ("Cancellation refunds", "İptal tazminatı", "Stornoerstattungen", "Reembolsos por cancelación", "キャンセル補償", "취소 보상"),
+ "cancellations": ("Cancellation refunds", "İptal iadesi", "Stornoerstattungen", "Reembolsos por cancelación", "キャンセル返金", "취소 보상"),
  "hotelFees": ("Hotel deals", "Otel anlaşmaları", "Hotelverträge", "Acuerdos con hoteles", "ホテル契約", "호텔 제휴"),
  "antitrust": ("Antitrust fine", "Tekel cezası", "Kartellstrafe", "Multa antimonopolio", "独占禁止法の罰金", "독점 벌금"),
 }.items():
@@ -87,7 +87,7 @@ for k, v in {
 
 # Hezarfen UI
 add("hez.name", "Master Hezarfen", "Hezarfen Usta", "Meister Hezarfen", "Maestro Hezarfen", "ヘザルフェン師匠", "헤자르펜 장인")
-add("hez.ok", "Got it", "Anladım", "Verstanden", "Entendido", "わかった", "알겠어요")
+add("hez.ok", "Got it", "Anladım", "Verstanden", "Entendido", "わかりました", "알겠어요")
 
 # Names
 for k, v in {
@@ -98,10 +98,10 @@ for k, v in {
 }.items():
     add("mission." + k, *v)
 for k, v in {
- "proposal": ("Stay between 250 and 350 m for 8 seconds without a break. There's a ring in the basket!", "250–350 m arasında kesintisiz 8 saniye kal. Sepette yüzük var!", "Bleib 8 Sekunden am Stück zwischen 250 und 350 m. Im Korb liegt ein Ring!", "Mantente entre 250 y 350 m durante 8 segundos seguidos. ¡Hay un anillo en la cesta!", "高度250〜350 mを8秒間キープ。バスケットには指輪が！", "250~350 m 사이에서 8초간 머무르세요. 바스켓에 반지가 있어요!"),
- "valley": ("Pass low over the marked valley, under 150 m.", "İşaretli vadinin üstünden 150 m altında alçak geç.", "Überfliege das markierte Tal tiefer als 150 m.", "Pasa por encima del valle marcado a menos de 150 m.", "印の谷の上を150 m以下で低く通過。", "표시된 계곡 위를 150 m 아래로 낮게 지나가세요."),
+ "proposal": ("Stay between 250 and 350 m for 8 seconds without a break. There's a ring in the basket!", "250–350 m arasında kesintisiz 8 saniye kal. Sepette yüzük var!", "Bleib 8 Sekunden am Stück zwischen 250 und 350 m. Im Korb liegt ein Ring!", "Mantente entre 250 y 350 m durante 8 segundos seguidos. ¡Hay un anillo en la cesta!", "高度250〜350 mを8秒間キープ。バスケットには指輪が！", "250~350 m 사이에서 8초간 연속으로 머무르세요. 바스켓에 반지가 있어요!"),
+ "valley": ("Pass low over the marked valley, under 150 m.", "İşaretli vadinin üzerinden alçaktan geç: 150 m'nin altında.", "Überfliege das markierte Tal tiefer als 150 m.", "Sobrevuela el valle marcado a baja altura, por debajo de 150 m.", "印の谷の上を150 m以下で低く通過。", "표시된 계곡 위를 150 m 이하로 낮게 지나가세요."),
  "panorama": ("Climb above 550 m for the photographer, then come down.", "Fotoğrafçı için 550 m üstüne çık, sonra in.", "Steig für den Fotografen über 550 m und komm dann runter.", "Sube por encima de 550 m para el fotógrafo y luego baja.", "カメラマンのために550 m以上へ上昇し、その後降下。", "사진가를 위해 550 m 이상 올라갔다가 내려오세요."),
- "precision": ("Land within 40 m of the ground crew.", "Yer ekibinin tam yanına, 40 m içine in.", "Lande höchstens 40 m von der Bodencrew entfernt.", "Aterriza a menos de 40 m del equipo de tierra.", "地上クルーから40 m以内に着陸。", "지상 요원 40 m 이내에 착륙하세요."),
+ "precision": ("Land within 40 m of the ground crew.", "Yer ekibine 40 m'den yakın in.", "Lande höchstens 40 m von der Bodencrew entfernt.", "Aterriza a menos de 40 m del equipo de tierra.", "地上クルーから40 m以内に着陸。", "지상 요원 40 m 이내에 착륙하세요."),
 }.items():
     add("mission.desc." + k, *v)
 for k, v in {
@@ -120,7 +120,7 @@ for k, v in {
     add("sponsor." + k, *v)
 add("level.1", "Rookie", "Çaylak", "Anfänger", "Novato", "新人", "신입")
 add("level.2", "Experienced", "Deneyimli", "Erfahren", "Experimentado", "中堅", "숙련")
-add("level.3", "Senior", "Kıdemli", "Erfahrener Kapitän", "Veterano", "ベテラン", "베테랑")
+add("level.3", "Senior", "Kıdemli", "Routinier", "Veterano", "ベテラン", "베테랑")
 add("size.S", "Small basket", "Küçük sepet", "Kleiner Korb", "Cesta pequeña", "小型バスケット", "소형 바스켓")
 add("size.M", "Medium basket", "Orta sepet", "Mittlerer Korb", "Cesta mediana", "中型バスケット", "중형 바스켓")
 add("size.L", "Large basket", "Büyük sepet", "Großer Korb", "Cesta grande", "大型バスケット", "대형 바스켓")
