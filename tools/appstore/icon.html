@@ -1,0 +1,168 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>icons</title>
+<style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
+<body><canvas id="c" width="1024" height="1024"></canvas>
+<script src="art.js"></script>
+<script>
+W = 1024; H = 1024;
+const cv = document.getElementById('c'), ctx = cv.getContext('2d');
+const I = +(new URLSearchParams(location.search).get('i') || 1);
+
+const RED = '#f5462a', RED2 = '#e83b26', YEL = '#ffc23d';
+/* 11 gores: yellow centre gore and two thin yellow gores near the limbs, like the current icon */
+const STRIPES = [RED2, RED, YEL, RED, RED, RED, YEL, RED, RED, RED, YEL, RED, RED2];
+const ALT = [RED, YEL];
+
+function softDisc(x, y, r, stops) {
+  const g = ctx.createRadialGradient(x, y, 0, x, y, r); stops.forEach(([k, c]) => g.addColorStop(k, c));
+  ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2);
+}
+function glowAdd(x, y, r, color, a) {
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  softDisc(x, y, r, [[0, rgba(color, a)], [1, rgba(color, 0)]]); ctx.restore();
+}
+/* Flat-ish dark silhouette of fairy chimneys + low hills, with a warm rim on the sun side. */
+function hills(y, color) {
+  ctx.fillStyle = color; ctx.beginPath(); ctx.moveTo(0, H);
+  for (let x = 0; x <= W; x += 8) ctx.lineTo(x, y + 40 * Math.sin(x * .006 + 1) + 18 * Math.sin(x * .021));
+  ctx.lineTo(W, H); ctx.closePath(); ctx.fill();
+}
+/* A fairy-chimney silhouette: rounded cone with an optional basalt cap and a warm rim on the sun side (light −1 left, 1 right). */
+function spirePath(x, base, w, h, lean = 0) {
+  const p = new Path2D(), tw = w * .12, tx = x + lean;
+  p.moveTo(x - w / 2, base);
+  p.bezierCurveTo(x - w * .3, base - h * .16, tx - tw * 1.9, base - h * .62, tx - tw, base - h + tw * 1.2);
+  p.quadraticCurveTo(tx, base - h - tw * .5, tx + tw, base - h + tw * 1.2);
+  p.bezierCurveTo(tx + tw * 1.9, base - h * .62, x + w * .3, base - h * .16, x + w / 2, base);
+  p.closePath(); return p;
+}
+function chim(x, base, w, h, light, o = {}) {
+  const body = o.body || '#291d46', lit = o.lit || '#5a3a64', rim = o.rim || '#ffb27a', lean = o.lean || 0;
+  const p = spirePath(x, base, w, h, lean);
+  ctx.save(); ctx.clip(p);
+  const rg = ctx.createLinearGradient(0, base - h, 0, base); rg.addColorStop(0, rgba(rim, o.rimA ?? .7)); rg.addColorStop(.75, rgba(rim, (o.rimA ?? .7) * .35)); rg.addColorStop(1, rgba(rim, 0));
+  ctx.fillStyle = body; ctx.fillRect(x - w, base - h - w, w * 2, h + w * 2);
+  ctx.fillStyle = rg; ctx.fillRect(x - w, base - h - w, w * 2, h + w * 2);
+  ctx.translate(-light * w * .03, h * .008);
+  const g = ctx.createLinearGradient(x - w / 2, 0, x + w / 2, 0);
+  g.addColorStop(0, light > 0 ? body : lit); g.addColorStop(.6, mix(body, lit, .35)); g.addColorStop(1, light > 0 ? lit : body);
+  ctx.fillStyle = g; ctx.fill(p);
+  const v = ctx.createLinearGradient(0, base - h, 0, base); v.addColorStop(0, 'rgba(0,0,0,0)'); v.addColorStop(1, rgba(body, .9));
+  ctx.fillStyle = v; ctx.fill(p);
+  ctx.restore();
+  if (o.cap !== false) {
+    const tx = x + lean, ty = base - h + w * .1, cw = w * .2, ch = w * .085;
+    const cg = ctx.createLinearGradient(tx - cw, 0, tx + cw, 0); const cd = mix(body, '#000000', .3), cl = mix(body, rim, .3);
+    cg.addColorStop(0, light > 0 ? cd : cl); cg.addColorStop(.7, cd); cg.addColorStop(1, light > 0 ? cl : cd);
+    ctx.fillStyle = cg; ctx.beginPath(); ctx.ellipse(tx, ty, cw, ch, 0, 0, 7); ctx.fill();
+    ctx.beginPath(); ctx.ellipse(tx, ty - ch * .2, cw * .78, ch * 1.3, 0, Math.PI, 0); ctx.fill();
+  }
+}
+function moundL(cx, cy, rx, ry, color) { ctx.fillStyle = color; ctx.beginPath(); ctx.ellipse(cx, cy, rx, ry, 0, Math.PI, 0); ctx.lineTo(cx + rx, H); ctx.lineTo(cx - rx, H); ctx.fill(); }
+
+function farBalloon(x, y, r, haze, a = .75) {
+  balloon(x, y, r, ALT.map(c => mix(c, haze, .45)), { gores: 7, alpha: a, light: -1 });
+  /* tiny basket so they read as balloons */
+  ctx.fillStyle = rgba(mix('#4a2c18', haze, .4), a); ctx.fillRect(x - r * .17, y + r * 1.9, r * .34, r * .26);
+  ctx.strokeStyle = rgba(mix('#4a2c18', haze, .4), a * .8); ctx.lineWidth = 1.5;
+  ctx.beginPath(); ctx.moveTo(x - r * .21, y + r * 1.5); ctx.lineTo(x - r * .14, y + r * 1.9); ctx.moveTo(x + r * .21, y + r * 1.5); ctx.lineTo(x + r * .14, y + r * 1.9); ctx.stroke();
+}
+function hero(x, y, R, o = {}) {
+  /* soft contact shadow / halo separation from the sky */
+  balloon(x, y, R, o.cols || STRIPES, Object.assign({ gores: (o.cols || STRIPES).length, light: -1, flame: true, flameScale: .5, flameTall: 2 }, o));
+}
+
+/* Cappadocia valley: a hazy far row, then dark near spires framing a dip where the sun sits. */
+function valley(P, o = {}) {
+  const far = { body: P.far, lit: mix(P.far, P.rim, .25), rim: P.rim, rimA: .5 };
+  for (const [x, h, w, l] of [[60, 200, 110, 1], [330, 160, 82, 1], [700, 170, 86, -1], [985, 220, 115, -1]]) chim(x, 1012, w, h, l, far);
+  /* near: soft mounds + spires */
+  const near = { body: P.near, lit: P.nearLit, rim: P.rim };
+  ctx.fillStyle = P.near; ctx.beginPath(); ctx.moveTo(0, H);
+  ctx.lineTo(0, 905); ctx.bezierCurveTo(90, 860, 200, 880, 260, 930); ctx.bezierCurveTo(330, 975, 420, 1010, 512, 1000);
+  ctx.bezierCurveTo(604, 1010, 694, 975, 764, 930); ctx.bezierCurveTo(824, 880, 934, 860, 1024, 905); ctx.lineTo(1024, H); ctx.fill();
+  /* rim on the mound crests */
+  ctx.save(); ctx.strokeStyle = rgba(P.rim, .35); ctx.lineWidth = 3; ctx.beginPath();
+  ctx.moveTo(150, 872); ctx.bezierCurveTo(200, 880, 240, 905, 300, 955); ctx.moveTo(874, 872); ctx.bezierCurveTo(824, 880, 784, 905, 724, 955); ctx.stroke(); ctx.restore();
+  const L = o.left || [[170, 340, 180, 1, 8]], Rt = o.right || [[862, 300, 165, -1, -8]];
+  for (const [x, h, w, l, lean] of [...L, ...Rt]) chim(x, 1000, w, h, l, Object.assign({ lean }, near));
+}
+const DUSK = { far: '#7b3c66', near: '#261a42', nearLit: '#553760', rim: '#ffb27a' };
+const GOLD = { far: '#b45a52', near: '#47202f', nearLit: '#8a4548', rim: '#ffd88a' };
+
+const draw = {
+  /* 1: the current composition, redrawn with the 3D balloon and a real sunrise */
+  1(P = DUSK, skyStops) {
+    sky(skyStops || [[0, '#251c54'], [.3, '#4a2a68'], [.55, '#984470'], [.75, '#de6e5e'], [.9, '#ffa060'], [1, '#ffbf72']]);
+    sun(512, 960, 120, '#fff4d6', '#ffb35c');
+    rays(512, 960, 16, 900, '#ffd08a', .06, 7);
+    farBalloon(165, 330, 38, mix(P.far, '#7a3a70', .3), .7);
+    farBalloon(862, 236, 28, '#5a2d6c', .6);
+    valley(P);
+    hero(512, 385, 240);
+    vignette(.3);
+  },
+  /* 2: the balloon fills the frame, lit from below by its burner */
+  2() {
+    sky([[0, '#241b52'], [.35, '#53296a'], [.65, '#b24f6c'], [.88, '#f48a5c'], [1, '#ffb46c']]);
+    sun(512, 990, 110, '#fff4d6', '#ffb35c');
+    rays(512, 990, 14, 900, '#ffd08a', .05, 3);
+    valley(DUSK, { left: [[90, 250, 150, 1, 6]], right: [[935, 230, 140, -1, -6]] });
+    hero(512, 350, 284, { flameScale: .62 });
+    vignette(.3);
+  },
+  /* 3: like 1, with a small gold crown on the envelope's crown */
+  3() {
+    sky([[0, '#251c54'], [.3, '#4a2a68'], [.55, '#984470'], [.75, '#de6e5e'], [.9, '#ffa060'], [1, '#ffbf72']]);
+    sun(512, 960, 120, '#fff4d6', '#ffb35c');
+    rays(512, 960, 16, 900, '#ffd08a', .06, 7);
+    farBalloon(165, 360, 36, '#7a3a70', .7);
+    farBalloon(862, 286, 26, '#5a2d6c', .6);
+    valley(DUSK);
+    const y = 420, R = 215;
+    hero(512, y, R);
+    crown(512, y - R * 1.05 - 30, 1.05);
+    vignette(.3);
+  },
+  /* 4: rising between two tall fairy chimneys, sun rays behind */
+  4() {
+    sky([[0, '#2a1f5c'], [.35, '#5a2d6c'], [.62, '#c25668'], [.85, '#f88e58'], [1, '#ffc070']]);
+    sun(512, 800, 110, '#fff4d6', '#ffb35c');
+    rays(512, 800, 22, 1000, '#ffd08a', .1, 11);
+    farBalloon(790, 175, 24, '#5a2d6c', .55);
+    const far = { body: '#8a4466', lit: '#b4606a', rim: '#ffc58a', rimA: .5 };
+    for (const [x, h, w, l] of [[330, 190, 90, 1], [410, 140, 70, 1], [620, 150, 74, -1], [700, 200, 92, -1]]) chim(x, 1000, w, h, l, far);
+    hills(985, '#3a2550');
+    hero(512, 380, 200);
+    const near = { body: '#21173c', lit: '#5a3a64', rim: '#ffb27a' };
+    chim(125, 1080, 290, 860, 1, Object.assign({ lean: 14 }, near));
+    chim(905, 1080, 270, 740, -1, Object.assign({ lean: -12 }, near));
+    hills(1015, '#1c1434');
+    vignette(.35);
+  },
+  /* 5: warmer golden-hour palette */
+  5() {
+    sky([[0, '#4e2560'], [.3, '#a3445e'], [.58, '#ec7e48'], [.82, '#ffbc5e'], [1, '#ffe2a0']]);
+    sun(512, 930, 150, '#fffbe8', '#ffd27a');
+    rays(512, 930, 18, 950, '#ffe6b0', .08, 5);
+    farBalloon(165, 330, 38, '#c86a5a', .7);
+    farBalloon(862, 236, 28, '#a8505e', .6);
+    valley(GOLD);
+    hero(512, 385, 240);
+    vignette(.25);
+  },
+  /* 6: bold minimal: balloon over a big sun disc */
+  6() {
+    sky([[0, '#2a1f5c'], [.45, '#6e3170'], [.8, '#dc6a5e'], [1, '#ff9e62']]);
+    glowAdd(512, 500, 560, '#ffb35c', .3);
+    const g = ctx.createLinearGradient(0, 170, 0, 830); g.addColorStop(0, '#fff0c0'); g.addColorStop(.6, '#ffc46a'); g.addColorStop(1, '#ff8f48');
+    ctx.fillStyle = g; ctx.beginPath(); ctx.arc(512, 500, 330, 0, 7); ctx.fill();
+    hero(512, 395, 225, { flameScale: .45 });
+    ctx.fillStyle = '#241a40'; ctx.beginPath(); ctx.moveTo(0, H); ctx.lineTo(0, 930);
+    ctx.bezierCurveTo(260, 890, 380, 975, 512, 970); ctx.bezierCurveTo(644, 975, 764, 890, 1024, 930); ctx.lineTo(1024, H); ctx.fill();
+    vignette(.22);
+  },
+};
+draw[I]();
+document.title = 'done';
+</script></body></html>

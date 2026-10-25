@@ -170,7 +170,7 @@ function balloon(x, y, R, cols, o = {}) {
   ctx.strokeStyle = 'rgba(50,30,25,.9)'; ctx.lineWidth = Math.max(1, R * .008);
   for (const s of [-1, -.35, .35, 1]) { ctx.beginPath(); ctx.moveTo(s * mouthW * .8, mouth + R * .1); ctx.lineTo(s * bw * .45, by); ctx.stroke(); }
   ctx.fillStyle = '#2a2a30'; ctx.fillRect(-R * .09, by - R * .2, R * .18, R * .08);
-  if (o.flame) flame(0, by - R * .2, R * (o.flameScale || .55));
+  if (o.flame) flame(0, by - R * .2, R * (o.flameScale || .55), o.flameTall || 1);
   const bg = ctx.createLinearGradient(-bw / 2, 0, bw / 2, 0); bg.addColorStop(0, '#4a2c18'); bg.addColorStop(.5, '#8a5a32'); bg.addColorStop(1, '#3a2010');
   ctx.fillStyle = bg; ctx.beginPath(); ctx.moveTo(-bw / 2, by); ctx.lineTo(bw / 2, by); ctx.lineTo(bw * .44, by + bh); ctx.lineTo(-bw * .44, by + bh); ctx.closePath(); ctx.fill();
   ctx.strokeStyle = 'rgba(30,15,8,.35)'; ctx.lineWidth = Math.max(1, R * .005);
@@ -194,7 +194,8 @@ function pattern(kind, R, top, mouth, [c2, c3]) {
     case 'checker': { const s = R * .4; for (let i = 0; i < 6; i++) for (let j = 0; j < 8; j++) if ((i + j) % 2) { ctx.fillStyle = (i + j) % 4 === 1 ? c2 : c3; ctx.fillRect(-R + i * s, top + j * s, s, s); } break; }
   }
 }
-function flame(x, y, s) {
+/* tall stretches the tongues only (the glow stays), so the tip can reach up into the envelope's mouth */
+function flame(x, y, s, tall = 1) {
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
   const glow = ctx.createRadialGradient(x, y - s * .6, 0, x, y - s * .6, s * 2.2); glow.addColorStop(0, 'rgba(255,190,80,.7)'); glow.addColorStop(.35, 'rgba(255,120,40,.22)'); glow.addColorStop(1, 'rgba(255,90,30,0)');
   ctx.fillStyle = glow; ctx.fillRect(x - s * 2.2, y - s * 2.8, s * 4.4, s * 4.4);
@@ -202,7 +203,7 @@ function flame(x, y, s) {
   const layers = [['#ff5a1f', 1, 14], ['#ffa531', .74, 9], ['#ffe08a', .5, 6], ['#fffbe8', .26, 3]];
   ctx.globalCompositeOperation = 'source-over';
   for (const [c, k, blur] of layers) {
-    const w = s * .3 * k, h = s * 1.25 * k;
+    const w = s * .3 * k, h = s * 1.25 * k * tall;
     ctx.filter = `blur(${Math.max(1, s * blur / 120)}px)`;
     ctx.fillStyle = c; ctx.beginPath(); ctx.moveTo(x - w, y);
     ctx.bezierCurveTo(x - w * 1.25, y - h * .35, x - w * .55, y - h * .55, x - w * .35, y - h * .78);
