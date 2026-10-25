@@ -4,7 +4,7 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 
 (Şu an kuyruk boş: Swift uygulaması prototip v110 ile aynı.)
 
-v110 (prototip ve Swift birlikte): Hezarfen'in iki yeni dersi `Tip.delegate` ve `Tip.noRivals`; hedefler dersi 3. güne kaydı; tekel cezası sadece payın %60'ı aştığı gün; rakipten alınan balonlar ikinci el (`Balloon.used`, `Game.sellValue`, `seizeValue`; satış %40, el koyma %30); zor durumdaki rakip önce balon satıp küçülür (`DayEvent.rivalShrank`); bölgede ilk iflastan sonra yeni rakip 14 günde gelir (`RegionState.rivalBusts`); kurtarma planında fiyat seçeneği koltukları dolduran en yüksek fiyatı önerir, seçilince kaybolur (`Game.rescuePrice`).
+v110 (prototip ve Swift birlikte): Hezarfen'in iki yeni dersi `Tip.delegate` ve `Tip.noRivals`; hedefler dersi 3. güne kaydı; tekel cezası sadece payın %60'ı aştığı gün; uçuşta üç katman bulut ve sepet sallantısı (`ScenePainter.clouds`, FlightPainter); ayarlarda "Gece sahnesi" anahtarı (`GameStore.nightSceneKey`); rakipten alınan balonlar ikinci el (`Balloon.used`, `Game.sellValue`, `seizeValue`; satış %40, el koyma %30); zor durumdaki rakip önce balon satıp küçülür (`DayEvent.rivalShrank`); bölgede ilk iflastan sonra yeni rakip 14 günde gelir (`RegionState.rivalBusts`); kurtarma planında fiyat seçeneği koltukları dolduran en yüksek fiyatı önerir, seçilince kaybolur (`Game.rescuePrice`).
 
 v109.4 (prototip ve Swift birlikte): kurtarma planında rehber uçuşu ve otel anlaşması (`Game.rescueGuideOK`, `rescueHotel`, `runGuideFlight(inRescue:)`, `signHotel(_:inRescue:)`); kasa eksiye inebilir, el koyma sınırının altına inmez.
 

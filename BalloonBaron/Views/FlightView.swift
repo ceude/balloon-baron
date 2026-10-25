@@ -595,13 +595,20 @@ private enum FlightPainter {
         let PR = max(12, vh * 0.065)
         windPills(&ctx, cam: cam, m: m)
         let R = PR * 0.75 * (look.xl ? 1.3 : 1)
-        let bx = cam.sx(f.x), by = cam.sy(f.alt)
+        let bx = cam.sx(f.x), by = cam.sy(f.alt), burn = f.burning && f.fuel > 0
+        // The basket swings a little under the envelope (v110), more while the burner roars; still on the ground.
+        let pivot = by - R * 1.9
+        let sway = (sin(m.T * 1.1) * 0.6 + sin(m.T * 0.43 + 1) * 0.4) * (0.03 + (burn ? 0.015 : 0)) * fclamp(f.alt / 20, 0, 1)
+        var bc = ctx
+        bc.translateBy(x: bx, y: pivot)
+        bc.rotate(by: .radians(sway))
+        bc.translateBy(x: -bx, y: -pivot)
         if let design = look.design {
-            ScenePainter.designBalloon3d(&ctx, x: bx, y: by, r: R, colors: look.colors, burn: f.burning && f.fuel > 0,
+            ScenePainter.designBalloon3d(&bc, x: bx, y: by, r: R, colors: look.colors, burn: burn,
                                          ad: look.ad, design: design, region: look.region)
         } else {
             // The flagship is drawn in full volume, like the app icon; a workshop design gets the same volume.
-            ScenePainter.balloon3d(&ctx, x: bx, y: by, r: R, colors: look.colors, burn: f.burning && f.fuel > 0,
+            ScenePainter.balloon3d(&bc, x: bx, y: by, r: R, colors: look.colors, burn: burn,
                                    ad: look.ad, region: look.region)
         }
         if let c = m.celebAt { celebration(&ctx, m: m, bx: bx, by: by, r: R, ct: m.T - c) }

@@ -323,3 +323,6 @@ add("hez.noRivals",
     "Ayer tuviste el cielo para ti solo, chaval, no voló ningún rival. Aun así quedaron plazas vacías, porque el turista mira su bolsillo aunque no haya rivales: si el precio sube demasiado, algunos dejan el globo y prefieren caminar por el valle. Mira la aguja de la tarjeta de precio; cuanto más se acerca a caro, más dicen que no. Una cesta llena suele ganar más que el billete más caro.",
     "昨日はライバルが一機も飛ばず、空は独り占めだった。それでも席は埋まらなかった。ライバルがいなくても観光客は財布を気にする。料金が高すぎると、気球をやめて谷を歩く人が出るのだ。料金カードの針を見なさい。高い方へ寄るほど断る人が増える。満席のバスケットは、たいてい一番高いチケットより稼ぐ。",
     "어제는 경쟁사가 하나도 날지 않아 하늘이 네 것이었다. 그래도 좌석이 다 차지 않았지. 경쟁사가 없어도 관광객은 지갑을 본다. 가격이 너무 오르면 일부는 열기구 대신 계곡을 걷는다. 가격 카드의 바늘을 봐라. 비싼 쪽으로 갈수록 거절하는 사람이 늘어난다. 꽉 찬 바구니가 대개 가장 비싼 표보다 더 번다.")
+
+# v110: the night scene can be switched off
+add("settings.night", "Night scene", "Gece sahnesi", "Nachtszene", "Escena nocturna", "夜のシーン", "밤 장면")

@@ -492,10 +492,18 @@ final class GameStore {
         report = r
     }
 
-    /// "Go to the morning" on the report plays the night first.
+    /// Settings switch for the night scene (v110); off, the night still passes (its event makes the paper).
+    static let nightSceneKey = "nightScene"
+
+    /// "Go to the morning" on the report plays the night first, unless the player switched the night scene off.
     func closeReport() {
         var ev: NightEvent?
         act { ev = $0.startNight() }
+        if UserDefaults.standard.object(forKey: Self.nightSceneKey) as? Bool == false {
+            report = nil
+            endNight()
+            return
+        }
         night = Night(event: ev)
         report = nil
     }

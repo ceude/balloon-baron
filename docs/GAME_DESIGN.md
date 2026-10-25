@@ -327,6 +327,10 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - Talep ×0,55. Bayrak olasılıkları: yeşil %35, sarı %35, kırmızı %30.
 - Kasabaya kar yağar, çatılar ve zemin beyazlar.
 
+## Görünüm ayarları (v110)
+- **Uçuş:** gökyüzünde üç katman bulut var; uzaktakiler kameranın %18'i, ortadakiler %35'i, yakındakiler %60'ı hızında kayar ve zamanla da hafifçe sürüklenir. Sepet zarfın altında hafifçe salınır (±~2°), brülör yanarken biraz daha; yerde durur. TestFlight'ta "uçtuğumu hissetmiyorum, sadece yer gidiyor" geri bildirimiyle eklendi.
+- **Gece sahnesi:** ayarlardan kapatılabilir. Kapalıyken gece yine hesaplanır (olayı gazeteye girer), sadece kasabanın gece görüntüsü atlanıp sabaha geçilir.
+
 ## Hezarfen Usta
 Hezarfen Kapadokya'nın rehberi. Albuquerque'de Ben Franklin (1783'te Paris'te ilk balonları izlemişti), Luksor'da İmhotep rehberlik eder. Dünya haritasında Bristol ve Maasai Mara isim olarak var, henüz açılmaz.
 

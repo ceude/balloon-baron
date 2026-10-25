@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Line icons for the settings rows (`SET_IC`), drawn like the side buttons' `ProtoIcon`: 24×24, round strokes.
 struct SettingsIcon: View {
-    enum Kind { case trophy, game, sound, haptic, bell, cloud, copy, paste, bag, shield, mail, info, trash, chevron, down, close }
+    enum Kind { case trophy, game, moon, sound, haptic, bell, cloud, copy, paste, bag, shield, mail, info, trash, chevron, down, close }
     let kind: Kind
     var color: Color = Theme.ink
     var width: CGFloat = 2
@@ -58,6 +58,12 @@ struct SettingsIcon: View {
             for (x, a, b) in [(4.5, 9.0, 15.0), (2.5, 10.5, 13.5), (19.5, 9.0, 15.0), (21.5, 10.5, 13.5)] as [(CGFloat, CGFloat, CGFloat)] {
                 line(&path, [p(x, a), p(x, b)])
             }
+        case .moon:
+            // A crescent: two arcs of radius 8 meeting at (19.5, 14.5) and (9.5, 4.5).
+            path.move(to: p(19.5, 14.5))
+            path.addArc(center: p(17.15, 6.85), radius: 8, startAngle: .degrees(73), endAngle: .degrees(197), clockwise: false)
+            path.addArc(center: p(11.85, 12.15), radius: 8, startAngle: .degrees(253), endAngle: .degrees(17), clockwise: true)
+            path.closeSubpath()
         case .bell:
             path.move(to: p(6, 16.5)); path.addLine(to: p(6, 11))
             path.addArc(center: p(12, 11), radius: 6, startAngle: .degrees(180), endAngle: .degrees(360), clockwise: false)

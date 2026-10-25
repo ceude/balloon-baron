@@ -10,6 +10,7 @@ struct MenuView: View {
     @Environment(\.openURL) private var openURL
     @AppStorage("sound") private var soundOn = true
     @AppStorage("haptics") private var hapticsOn = true
+    @AppStorage(GameStore.nightSceneKey) private var nightOn = true
     @State private var reminderOn = Reminder.on
     @State private var code = ""
     @State private var pasted = ""
@@ -106,6 +107,8 @@ struct MenuView: View {
             }
             divider
             row(.game, loc("menu.gameCenter")) { GameCenter.openDashboard() }
+            divider
+            toggleRow(.moon, loc("settings.night"), on: nightOn) { nightOn.toggle() }
         }
         group(loc("settings.soundHaptics"), Tint.sound) {
             toggleRow(.sound, loc("settings.sound"), on: soundOn) {
