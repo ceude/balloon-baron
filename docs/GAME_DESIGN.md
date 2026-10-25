@@ -331,7 +331,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 Hezarfen Kapadokya'nın rehberi. Albuquerque'de Ben Franklin (1783'te Paris'te ilk balonları izlemişti), Luksor'da İmhotep rehberlik eder. Dünya haritasında Bristol ve Maasai Mara isim olarak var, henüz açılmaz.
 
 Yaşlı, karizmatik mentor. Daktilo efektli konuşma balonuyla konuşur. Konuları:
-- karşılama, sigorta, filo, banka, pazar, ekip
+- karşılama (1. gün), sigorta (2. gün), hedefler (3. gün, v110; önceden 2. gün), filo, banka, pazar, ekip
 - sarı ve kırmızı bayrak
 - görev, kaza, kriz
 - rakipleri batırma ipuçları

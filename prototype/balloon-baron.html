@@ -1391,7 +1391,7 @@ function unlockCheck() {
   const rules = { ins: S.day >= 2, fleet: S.day >= 4 || S.cash >= 7000, bank: S.day >= 6, market: S.day >= 8, crew: S.balloons.length >= 2 || S.day >= 10 };
   for (const k in rules) if (rules[k] && !S.unl[k]) { S.unl[k] = 1; hezAdd(k); }
   hezAdd('welcome');
-  if (S.day >= 2) hezAdd('goals');
+  if (S.day >= 3) hezAdd('goals'); /* day 3 (v110): day 2 already teaches insurance and often the yellow flag */
   if (S.day >= 3 && bossRival()) bossSay('hello');
   if (S.day >= 9) hezAdd('pr');
   if (S.unl.market && S.day >= 11) hezAdd('bazaar');

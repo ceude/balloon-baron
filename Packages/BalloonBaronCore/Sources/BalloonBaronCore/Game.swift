@@ -107,7 +107,7 @@ public struct Game: Sendable {
             queueTip(tipFor[f]!)
         }
         queueTip(.welcome)
-        if s.day >= 2 { queueTip(.goals) }
+        if s.day >= 3 { queueTip(.goals) } // day 3: day 2 already teaches insurance and often the yellow flag
         if s.day >= 3 { bossSay(.hello) }
         if s.day >= 9 { queueTip(.pr) }
         if s.unlocked.contains(.market) && s.day >= 11 { queueTip(.bazaar) }
