@@ -44779,37 +44779,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Flotte von %1$@ zu verkaufen: %2$@."
+            "value": "Die Flotte von %1$@ steht zum Verkauf. Ballone: %2$@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fleet of %1$@ for sale: %2$@."
+            "value": "The fleet of %1$@ is for sale. Balloons: %2$@."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Flota de %1$@ a la venta: %2$@."
+            "value": "La flota de %1$@ está a la venta. Globos: %2$@."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@の気球が売りに出ている：%2$@。"
+            "value": "%1$@の機材が売りに出ている。気球：%2$@。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@의 열기구 매물: %2$@."
+            "value": "%1$@의 열기구가 매물로 나왔습니다. 열기구: %2$@."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Satıştaki filo (%1$@): %2$@."
+            "value": "%1$@ filosu satışta. Balon: %2$@."
           }
         }
       }

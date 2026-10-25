@@ -225,8 +225,7 @@ struct MarketView: View {
                 }
             }
             if let sale = r.forSale {
-                let sizes = sale.sizes.map(\.title).joined(separator: ", ")
-                callout(loc("marketPage.saleBody", r.name, sizes), color: Theme.green) {
+                callout(loc("marketPage.saleBody", r.name, num(sale.sizes.count)), color: Theme.green) {
                     FleetMixList(sale.sizes)
                     if s.cash < sale.price, let t = store.game?.buyLoanTerms(price: sale.price) {
                         FleetUI.SmallButton(title: loc("buyLoan.button", eur(t.financed))) { store.buyLoan = DealOffer(rival: i, bankrupt: true) }

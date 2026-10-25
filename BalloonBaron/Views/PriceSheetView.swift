@@ -31,18 +31,21 @@ struct PriceSheetView: View {
                     rivals(g.state)
                     feelMeter(g.state.price)
                     mood(g)
-                    result(g)
+                    resultNotes(g)
                 }
                 .padding(20)
             }
-            // The button stays pinned at the bottom of the sheet: at the half-height detent it used to sit
-            // half under the edge, where taps didn't reach it.
+            // The result and the button stay pinned at the bottom of the sheet: at the half-height detent the
+            // result used to sit under the button (v110), and the button half under the edge before that.
             .safeAreaInset(edge: .bottom) {
-                BigButton(title: loc("home.done")) { dismiss() }
-                    .padding(.horizontal, 20)
-                    .padding(.top, 10)
-                    .padding(.bottom, 6)
-                    .background(Theme.paper.shadow(.drop(color: .black.opacity(0.08), radius: 6, y: -3)))
+                VStack(spacing: 10) {
+                    result(g)
+                    BigButton(title: loc("home.done")) { dismiss() }
+                }
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+                .padding(.bottom, 6)
+                .background(Theme.paper.shadow(.drop(color: .black.opacity(0.08), radius: 6, y: -3)))
             }
             .background(Theme.paper.ignoresSafeArea())
             .onAppear {
@@ -172,11 +175,12 @@ struct PriceSheetView: View {
                 .font(Theme.font(16, .bold))
                 .foregroundStyle(Theme.ink2)
         } else {
-            VStack(spacing: 8) {
+            VStack(spacing: 6) {
                 HStack(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 0) {
                         Text("\(num(est.pax))/\(num(est.seats))")
-                            .font(Theme.font(38, .heavy, condensed: true))
+                            .font(Theme.font(28, .heavy, condensed: true))
+                            .lineLimit(1).minimumScaleFactor(0.6)
                             .foregroundStyle(Theme.ink)
                             .monospacedDigit()
                         Text(loc("psheet.filled"))
@@ -186,23 +190,29 @@ struct PriceSheetView: View {
                     Spacer()
                     VStack(alignment: .trailing, spacing: 0) {
                         Text(eur(est.income))
-                            .font(Theme.font(30, .heavy, condensed: true))
+                            .font(Theme.font(26, .heavy, condensed: true))
+                            .lineLimit(1).minimumScaleFactor(0.6)
                             .foregroundStyle(Theme.ink)
                             .monospacedDigit()
                         delta(est.income)
                     }
                 }
-                TicketFillBar(fraction: Double(est.pax) / Double(max(1, est.seats)), height: 12)
-                // Why the sum is not simply seats × price.
-                let notes = notes(g, est)
-                if !notes.isEmpty {
-                    Text(notes.joined(separator: " "))
-                        .font(Theme.font(12.5))
-                        .foregroundStyle(Theme.ink2)
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
+                TicketFillBar(fraction: Double(est.pax) / Double(max(1, est.seats)), height: 10)
             }
+        }
+    }
+
+    /// Why the sum is not simply seats × price; scrolls with the page, under the pinned result.
+    @ViewBuilder
+    private func resultNotes(_ g: Game) -> some View {
+        let est = g.estimatedIncome()
+        let notes = est.seats > 0 ? notes(g, est) : []
+        if !notes.isEmpty {
+            Text(notes.joined(separator: " "))
+                .font(Theme.font(12.5))
+                .foregroundStyle(Theme.ink2)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 

@@ -2828,7 +2828,7 @@ function tabMarket(body) {
       t.appendChild(c);
     }
     if (r.forSale) {
-      const c = h('div', 'callout grn', `<b>${r.name} filosu satışta:</b> ${r.forSale.sizes.map(z => SIZES[z].label.toLowerCase()).join(', ')}.`);
+      const c = h('div', 'callout grn', `<b>${r.name} filosu satışta.</b> Balon: ${r.forSale.sizes.length}.`);
       c.appendChild(fleetMix(r.forSale.sizes));
       const T = S.cash < r.forSale.price && buyLoanTerms(r.forSale.price);
       c.appendChild(T ? pbtn(`Krediyle satın al (banka ${eur(T.fin)})`, () => buyLoanCard(r, true)) : pbtn(`Satın al ${eur(r.forSale.price)}`, () => buyFleet(r), S.cash < r.forSale.price));
