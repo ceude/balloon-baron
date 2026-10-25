@@ -2917,7 +2917,7 @@ function showReport() {
     const nb = h('button', 'big', `Gün ${S.day} sabahına geç`); nb.onclick = () => { tab = 'plan'; startNight(); }; b.appendChild(nb);
   }
   tk.appendChild(b); m.appendChild(tk);
-  m.hidden = false; $('sheet').hidden = true; $('tip').hidden = true; $('burn').hidden = true; $('abort').hidden = true; $('menu').hidden = true;
+  m.hidden = false; $('sheet').hidden = true; $('tip').hidden = true; $('burn').hidden = true; $('vent').hidden = true; $('abort').hidden = true; $('menu').hidden = true;
   mode = 'office'; $('wx').style.opacity = ''; renderHud();
   sfx(R.net >= 0 ? 'coin' : 'low');
 }
@@ -2925,7 +2925,7 @@ function showReport() {
 /* ---------- intro & setup ---------- */
 const INTRO = { y: 0, vy: 0, hold: false, t: 0, out: false };
 let pickI = 0, setupName = '';
-function hideAll() { page = null; hqShut(); TOWN.open = false; TOWN.leaving = false; TOWN.hold = false; TOWN.night = false; TOWN.hzFix = null; document.body.classList.remove('zoomed', 'mhold'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); }
+function hideAll() { page = null; hqShut(); TOWN.open = false; TOWN.leaving = false; TOWN.hold = false; TOWN.night = false; TOWN.hzFix = null; document.body.classList.remove('zoomed', 'mhold'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'vent', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); $('vent').classList.remove('on'); }
 function startIntro() {
   if (!S.weather) S.weather = newWeather();
   buildWorld();
@@ -3806,7 +3806,7 @@ function couple(x, rim, R, t, noBasket) {
 }
 
 function land(q) {
-  const f = FL; f.done = true; f.burning = false; $('burn').classList.remove('on'); $('burn').hidden = true; $('abort').hidden = true;
+  const f = FL; f.done = true; f.burning = false; f.venting = false; $('burn').classList.remove('on'); $('burn').hidden = true; $('abort').hidden = true; $('vent').hidden = true; $('vent').classList.remove('on');
   f.dist = Math.abs(f.x - S.weather.target);
   if (!q) q = f.dist < 70 ? 'perfect' : f.dist < 260 ? 'good' : 'far';
   if (f.mis === 'precision' && f.dist < 40 && q !== 'hard' && q !== 'crash') missionDone();
