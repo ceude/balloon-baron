@@ -3,6 +3,7 @@
 <style>html,body{margin:0;background:#000}canvas{display:block}</style></head>
 <body><canvas id="c" width="1024" height="1024"></canvas>
 <script src="art.js"></script>
+<script src="game3d.js"></script>
 <script>
 W = 1024; H = 1024;
 const cv = document.getElementById('c'), ctx = cv.getContext('2d');
@@ -68,8 +69,8 @@ function farBalloon(x, y, r, haze, a = .75) {
   ctx.beginPath(); ctx.moveTo(x - r * .21, y + r * 1.5); ctx.lineTo(x - r * .14, y + r * 1.9); ctx.moveTo(x + r * .21, y + r * 1.5); ctx.lineTo(x + r * .14, y + r * 1.9); ctx.stroke();
 }
 function hero(x, y, R, o = {}) {
-  /* soft contact shadow / halo separation from the sky */
-  balloon(x, y, R, o.cols || STRIPES, Object.assign({ gores: (o.cols || STRIPES).length, light: -1, flame: true, flameScale: .5, flameTall: 1.8, flameSharp: 4 }, o));
+  /* the in-game balloon (game3d.js, from the prototype): its flame rises into the mouth and burns inside the envelope */
+  balloon3dCore(x, y, R, o.cols || STRIPES, Object.assign({ gores: (o.cols || STRIPES).length, light: -1, flame: true, flameScale: .5 }, o));
 }
 
 /* Cappadocia valley: a hazy far row, then dark near spires framing a dip where the sun sits. */
