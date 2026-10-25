@@ -807,11 +807,16 @@ const LOANS = [
   { amt: 10000, days: 40, inst: 300, need: 0 },
   { amt: 25000, days: 45, inst: 650, need: 2 },
   { amt: 50000, days: 50, inst: 1250, need: 3 },
-  /* the big loans open only when the region earns well: the median daily net of the last two weeks at four to six
-     times the installment, so a player who spends it all at once doesn't go under (simulated, v109) */
-  { amt: 100000, days: 80, inst: 1500, need: 8, net: 6000 },
-  { amt: 500000, days: 150, inst: 4000, need: 20, net: 24000 }
+  /* the big loans open one after the other when the region earns well (median daily net of the last two weeks), and
+     once open they stay open (v109.1, simulated: docs/GAME_DESIGN.md "Krediler") */
+  { amt: 100000, days: 80, inst: 1500, need: 8, net: 10000 },
+  { amt: 500000, days: 150, inst: 4000, need: 20, net: 50000, after: 100000 }
 ];
+/* Called each evening: a big loan opens for good the first time the region earns enough. */
+function loanUnlock() {
+  const open = S.loanOpen || (S.loanOpen = {});
+  for (const L of LOANS) if (L.net && !open[L.amt] && (!L.after || open[L.after]) && dailyNet() >= L.net) open[L.amt] = S.day;
+}
 const dailyNet = () => { const h = (S.netHist || []).slice(-14).sort((a, b) => a - b); return h.length >= 7 ? h[h.length >> 1] : 0; };
 const PALETTES = [['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9'], ['#2b2350', '#ffc23d'], ['#ff6fa8', '#fff0f6']];
 const SPONSORS = [
@@ -1698,7 +1703,7 @@ function finishDay(flight) {
   if (S.day <= S.influUntil) { S.rep = Math.min(1.4, S.rep + .03); if (Math.random() < .6) addReview('influ'); }
   S.repHist.push({ d: S.day, r: S.rep }); if (S.repHist.length > 120) S.repHist.shift();
   S.lastShare = { me: paxTotal, cap: capToday, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
-  S.netHist = (S.netHist || []).concat([net]).slice(-14);
+  S.netHist = (S.netHist || []).concat([net]).slice(-14); loanUnlock();
   autoRegions(); const hn = holdingDay(); if (hn) Lg.hold = hn;
   if (S.fiesta && fl.length) S.fiestaFlown = (S.fiestaFlown || 0) + 1;
   const rpTot = paxTotal + S.plan.rpax.reduce((a, b) => a + b, 0);
@@ -2711,8 +2716,8 @@ function tabBank(body) {
   const o = h('div', 'sec'); o.appendChild(h('h2', null, 'Kredi teklifleri'));
   LOANS.forEach(L => {
     const total = L.inst * L.days, rate = (total - L.amt) / L.amt, it = h('div', 'item');
-    const locked = S.balloons.length < L.need || (L.net && dailyNet() < L.net), full = S.loans.length >= 2;
-    it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}${L.net ? ` Buradaki günlük net kazancın en az ${eur(L.net)} olunca açılır (son iki hafta: ${eur(dailyNet())}).` : ''}</div>`));
+    const opened = !L.net || (S.loanOpen || {})[L.amt], locked = S.balloons.length < L.need || !opened, full = S.loans.length >= 2;
+    it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}${L.net ? (opened ? ' <b>Açıldı.</b>' : ` ${L.after && !(S.loanOpen || {})[L.after] ? `Önce ${eur(L.after)} kredisi açılmalı. ` : ''}Buradaki günlük net kazancın en az ${eur(L.net)} olunca açılır ve açık kalır (son iki hafta: ${eur(dailyNet())}).`) : ''}${L.amt >= 500000 ? '<br><i>Tavsiye: doymuş pazara toplu balon almak kışın zarar ettirir. Bu parayla yeni bir bölgeye açılmak ya da holdinge yatırım yapmak daha güvenli.</i>' : ''}</div>`));
     it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
     o.appendChild(it);
   });
@@ -4334,7 +4339,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },

@@ -282,6 +282,7 @@ extension Game {
         if state.repHistory.count > 120 { state.repHistory.removeFirst() }
         state.lastShare = MarketShare(me: paxTotal, cap: capToday, rivals: plan.rivalPax, demand: state.demand ?? 0, extra: min(plan.referrals, paxTotal))
         state.netHistory = Array((state.netHistory + [lg.net]).suffix(14))
+        loanUnlock()
         runAutopilots()
         lg.holdingNet = holdingDay()
         if state.fiesta != nil && !flyingIDs.isEmpty { state.fiestaFlown += 1 }

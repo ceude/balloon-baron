@@ -63,12 +63,16 @@ Burada p, balonun kaza olasılığıdır (hava × boy × pilot).
 | 10.000 | 40 gün | 300 | 0 |
 | 25.000 | 45 gün | 650 | 2 |
 | 50.000 | 50 gün | 1.250 | 3 |
-| 100.000 | 80 gün | 1.500 | 8 + günlük net ≥ 6.000 |
-| 500.000 | 150 gün | 4.000 | 20 + günlük net ≥ 24.000 |
+| 100.000 | 80 gün | 1.500 | 8 + günlük net ≥ 10.000 |
+| 500.000 | 150 gün | 4.000 | 20 + 100.000 açılmış + günlük net ≥ 50.000 |
 
 Kasa −€5.000'in altına düşerse banka balona el koyar.
 
-Büyük krediler (v109) bölgenin son 14 günlük ortanca net kazancı yeterince yüksekse açılır (bölgenin para biriminde). Simülasyon (`loansim`, bot, krediyi açıldığı gün çekip hepsini birden orta balona harcıyor, sonra borç bitene kadar balon almıyor): 100.000 8 tohumda ~86–116. günde açıldı, hiç el koyma olmadı; 500.000 12 tohumda ~117–156. günde açıldı, 10'unda sorun yok, 2'sinde kışın birkaç balona el konuldu, hiçbiri batmadı. Daha gevşek koşullar (500.000 / 90 gün / 6.300, net ≥ 13.000) 8 tohumun 6'sında el koymaya yol açtı.
+Büyük krediler (v109.1) sırayla açılır: bölgenin son 14 günlük ortanca net kazancı barajı ilk aştığı akşam kredi açılır ve bir daha kapanmaz (kışın kazanç düşse de). Para birimi bölgenin kendi parası. 500.000'in kartında tavsiye yazar: doymuş pazara toplu balon almak kışın zarar ettirir.
+
+Simülasyon (`tools/sim-loans.js`; bot krediyi açıldığı gün çekip hepsini birden orta balona harcıyor, sonra borç bitene kadar balon almıyor):
+- 100.000 / 10.000 barajı: 10 tohumda 94–122. günde açıldı, hiçbirinde el koyma yok.
+- 500.000 / 50.000 barajı: Kapadokya'da 500 günde 10 tohumun sadece 3'ünde açıldı (167, 176, 388. gün); o noktada filo zaten 40 balon ve pazar doymuş. Paranın tamamı 14 yeni balona gidince kışın sabit giderler gelirden büyük oldu, banka balonlara el koydu, iki tohumda şirket battı. Vadeyi 200 güne uzatmak işe yaramadı. Sorun kredinin kendisi değil, doymuş pazara aşırı balon eklemek; bu yüzden kartta tavsiye var.
 
 ## Pazar ve popülerlik
 - **Fiyat:** €40–320 arası.

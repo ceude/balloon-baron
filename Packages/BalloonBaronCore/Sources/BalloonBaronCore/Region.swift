@@ -182,6 +182,8 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var strikeUntil: Int?
     /// A problem raised while the region was on autopilot, still undecided now that you're here, and the day its card last showed.
     public var openIssue: Autopilot.OpenIssue?
+    /// Big loans (by amount) this region's bank has opened; they stay open.
+    public var loansOpen: [Int]?
     public var issueSeen: Int?
     public var charter: Charter?
     public var fuelUpUntil: Int?

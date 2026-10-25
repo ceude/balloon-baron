@@ -248,6 +248,11 @@ add("paper.year", "One year old: %@", "Bir yaşında: %@", "Ein Jahr alt: %@", "
 add("paper.year.sub", "The town celebrates the balloon company's first birthday.", "Kasaba, balon şirketinin ilk doğum gününü kutluyor.", "Die Stadt feiert den ersten Geburtstag der Ballonfirma.", "El pueblo celebra el primer cumpleaños de la empresa de globos.", "町は気球会社の1歳の誕生日を祝っている。", "마을이 열기구 회사의 첫 생일을 축하한다.")
 
 # Big loans (v109)
-add("bank.needNet", "Opens when your typical day here nets at least %1$@ (lately: %2$@).", "Buradaki günlük net kazancın en az %1$@ olunca açılır (son iki hafta: %2$@).",
-    "Öffnet sich, wenn dein typischer Tag hier mindestens %1$@ netto bringt (zuletzt: %2$@).", "Se abre cuando tu día típico aquí deje al menos %1$@ netos (últimamente: %2$@).",
-    "ここでの1日の純利益が%1$@以上になると利用可能（最近：%2$@）。", "이곳의 하루 순이익이 %1$@ 이상이면 열립니다 (최근: %2$@).")
+add("bank.needNet", "Opens for good when your typical day here nets at least %1$@ (lately: %2$@).", "Buradaki günlük net kazancın en az %1$@ olunca açılır ve açık kalır (son iki hafta: %2$@).",
+    "Öffnet sich dauerhaft, wenn dein typischer Tag hier mindestens %1$@ netto bringt (zuletzt: %2$@).", "Se abre para siempre cuando tu día típico aquí deje al menos %1$@ netos (últimamente: %2$@).",
+    "ここでの1日の純利益が%1$@以上になると利用可能になり、その後も使える（最近：%2$@）。", "이곳의 하루 순이익이 %1$@ 이상이 되면 열리고 계속 열려 있습니다 (최근: %2$@).")
+add("bank.opened", "Open.", "Açıldı.", "Freigeschaltet.", "Disponible.", "利用可能。", "열림.")
+add("bank.needFirst", "The %@ loan has to open first.", "Önce %@ kredisi açılmalı.", "Zuerst muss der Kredit über %@ freigeschaltet sein.", "Primero debe abrirse el préstamo de %@.", "先に%@のローンが利用可能になる必要がある。", "먼저 %@ 대출이 열려야 합니다.")
+add("bank.bigTip", "Tip: buying a lot of balloons at once for a full market costs you in winter. Opening a new region or investing in the holding is safer.", "Tavsiye: doymuş pazara toplu balon almak kışın zarar ettirir. Bu parayla yeni bir bölgeye açılmak ya da holdinge yatırım yapmak daha güvenli.",
+    "Tipp: Viele Ballone auf einmal für einen vollen Markt kosten dich im Winter Geld. Eine neue Region oder Investitionen in die Holding sind sicherer.", "Consejo: comprar muchos globos de golpe para un mercado lleno te hará perder en invierno. Abrir una nueva región o invertir en el holding es más seguro.",
+    "ヒント：飽和した市場に気球をまとめて買うと冬に赤字になる。新しい地域への進出やホールディングスへの投資のほうが安全。", "팁: 포화된 시장에 열기구를 한꺼번에 사면 겨울에 손해를 봅니다. 새 지역 진출이나 지주회사 투자가 더 안전합니다.")

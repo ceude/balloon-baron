@@ -95,7 +95,15 @@ struct BankView: View {
     private func offerDetail(_ o: LoanOffer) -> String {
         var t = loc("bank.offerDetail", eur(o.installment), eur(o.total))
         if o.balloonsNeeded > 0 { t += " " + loc("bank.need", num(o.balloonsNeeded)) }
-        if o.minDailyNet > 0 { t += " " + loc("bank.needNet", eur(o.minDailyNet), eur(store.game?.dailyNet ?? 0)) }
+        if o.minDailyNet > 0, let g = store.game {
+            if g.loanOpen(o) {
+                t += " " + loc("bank.opened")
+            } else {
+                if let a = o.after, !(g.state.local.loansOpen ?? []).contains(a) { t += " " + loc("bank.needFirst", eur(a)) }
+                t += " " + loc("bank.needNet", eur(o.minDailyNet), eur(g.dailyNet))
+            }
+        }
+        if o.amount >= 500_000 { t += "\n" + loc("bank.bigTip") }
         return t
     }
 }

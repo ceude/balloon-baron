@@ -339,19 +339,26 @@ final class V109Tests: XCTestCase {
         XCTAssertTrue((g.state.paperNext ?? []).contains(.deed(.office)))
     }
 
-    func testBigLoansNeedASteadyIncome() {
+    func testBigLoansOpenInTurnAndStayOpen() {
         var g = newGame()
         g.state.cash = 0
         for _ in 0..<20 { g.addBalloon(.M) }
-        let big = Rules.loans.firstIndex { $0.amount == 100_000 }!
+        let big = Rules.loans.firstIndex { $0.amount == 100_000 }!, huge = Rules.loans.firstIndex { $0.amount == 500_000 }!
         XCTAssertFalse(g.canTakeLoan(Rules.loans[big]), "no history yet")
-        g.state.local.netHistory = Array(repeating: 7000, count: 14)
-        XCTAssertEqual(g.dailyNet, 7000)
+        // A rich fortnight straight away: the 500,000 still waits for the 100,000 to open first.
+        g.state.local.netHistory = Array(repeating: 60000, count: 14)
+        XCTAssertFalse(g.loanOpen(Rules.loans[huge]))
+        g.state.local.netHistory = Array(repeating: 11000, count: 14)
+        g.loanUnlock()
         XCTAssertTrue(g.canTakeLoan(Rules.loans[big]))
-        let huge = Rules.loans.firstIndex { $0.amount == 500_000 }!
         XCTAssertFalse(g.canTakeLoan(Rules.loans[huge]))
-        g.state.local.netHistory = Array(repeating: 25000, count: 14)
+        g.state.local.netHistory = Array(repeating: 52000, count: 14)
+        g.loanUnlock()
         XCTAssertTrue(g.canTakeLoan(Rules.loans[huge]))
+        // A bad winter doesn't close them again.
+        g.state.local.netHistory = Array(repeating: -2000, count: 14)
+        g.loanUnlock()
+        XCTAssertTrue(g.canTakeLoan(Rules.loans[big]))
         XCTAssertTrue(g.takeLoan(huge))
         XCTAssertEqual(g.state.cash, 500_000)
     }

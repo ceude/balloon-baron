@@ -2,7 +2,9 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v109 ile aynı.)
+(Şu an kuyruk boş: Swift uygulaması prototip v109.1 ile aynı.)
+
+v109.1 (prototip ve Swift birlikte): büyük krediler sırayla (100.000 günlük net ≥ 10.000, sonra 500.000 günlük net ≥ 50.000) açılır ve açık kalır (`RegionState.loansOpen`, `Game.loanUnlock`, `LoanOffer.after`); 500.000 kartında tavsiye.
 
 v109 (Ekim 2026, telefon testinden, prototip ve Swift birlikte): holding tahtasında grafik yazıları hedeflere binmiyor; holding hedefi "Albuquerque Baronu" yerine "Luksor Baronu" (`HoldingGoal.baronLux`); Dünya Baronu olunca holding hedefleri hep işaretli kalır; baron bölümü de hedefler tuttuğu an tamamlanır (`finishChapterNow`, Telemetry `chapterNow`); kompakt ekip sayfası (özet, filtreler, tek satır pilotlar, pilot kartı, boştakileri kov; `CrewFilter`, `PilotCardSheet`); fiyat sayfasında Tamam düğmesi altta sabit; holding ofisindeki Bölgeler sayfasından "Karar ver" / "Git" basınca sayfa kapanır, kart görünür; holding yatırımlarını rehber över, gazeteye çıkar (`HoldingDeed`, `HezMessage.deed`, `PaperItem.deed`); gün 100/200/300/365/400/500 ve sonra her 100 günde kutlama (`HezMessage.milestone`, `PaperItem.milestone`); büyük krediler 100.000 ve 500.000 (`LoanOffer.minDailyNet`, `Game.dailyNet`).
 

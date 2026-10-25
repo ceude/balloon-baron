@@ -167,7 +167,21 @@ extension Game {
     // MARK: Bank
 
     public func canTakeLoan(_ offer: LoanOffer) -> Bool {
-        state.balloons.count >= offer.balloonsNeeded && state.loans.count < Rules.maxLoans && dailyNet >= offer.minDailyNet
+        state.balloons.count >= offer.balloonsNeeded && state.loans.count < Rules.maxLoans && loanOpen(offer)
+    }
+
+    public func loanOpen(_ offer: LoanOffer) -> Bool {
+        offer.minDailyNet == 0 || (state.local.loansOpen ?? []).contains(offer.amount)
+    }
+
+    /// Each evening: a big loan opens for good the first time the region earns enough, after the one before it.
+    mutating func loanUnlock() {
+        var open = state.local.loansOpen ?? []
+        for o in Rules.loans where o.minDailyNet > 0 && !open.contains(o.amount) && dailyNet >= o.minDailyNet {
+            if let a = o.after, !open.contains(a) { continue }
+            open.append(o.amount)
+        }
+        if !open.isEmpty { state.local.loansOpen = open }
     }
 
     /// The region's typical day lately: the median net of the last 14 days (0 with less than a week of history).
