@@ -335,20 +335,25 @@ private struct SettingsRow: View {
 }
 
 /// The game's switch: a green pill with a white knob that has a hard little shadow.
+/// The game's own switch (v110), in the chunky buttons' style: a pill with a hard drop shadow, coral when on, with a
+/// white knob that carries a small coral dot when on.
 private struct SettingsSwitch: View {
     let on: Bool
 
     var body: some View {
         ZStack(alignment: on ? .trailing : .leading) {
-            Capsule().fill(on ? Theme.green : Color(hex: "#e6e0f0"))
-                .overlay(Capsule().stroke(Theme.ink.opacity(on ? 0 : 0.08), lineWidth: 1))
+            Capsule().fill(on ? Theme.coral : Color(hex: "#ebe6f4"))
+                .background(Capsule().fill(on ? Color(hex: "#d9411f") : Theme.line).offset(y: 3))
+                .overlay(Capsule().stroke(Theme.ink.opacity(on ? 0 : 0.06), lineWidth: 1))
             Circle().fill(Color.white)
-                .frame(width: 26, height: 26)
-                .background(Circle().fill(Theme.ink.opacity(0.25)).offset(y: 2))
-                .padding(3)
+                .frame(width: 24, height: 24)
+                .background(Circle().fill(Theme.ink.opacity(0.22)).offset(y: 2))
+                .overlay(Circle().fill(Theme.coral).frame(width: 8, height: 8).opacity(on ? 1 : 0))
+                .padding(4)
         }
-        .frame(width: 52, height: 32)
-        .animation(.easeOut(duration: 0.18), value: on)
+        .frame(width: 54, height: 32)
+        .padding(.bottom, 3)
+        .animation(.spring(response: 0.25, dampingFraction: 0.7), value: on)
         .accessibilityHidden(true)
     }
 }
