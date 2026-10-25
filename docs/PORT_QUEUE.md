@@ -2,7 +2,9 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-(Şu an kuyruk boş: Swift uygulaması prototip v109.3 ile aynı.)
+(Şu an kuyruk boş: Swift uygulaması prototip v109.4 ile aynı.)
+
+v109.4 (prototip ve Swift birlikte): kurtarma planında rehber uçuşu ve otel anlaşması (`Game.rescueGuideOK`, `rescueHotel`, `runGuideFlight(inRescue:)`, `signHotel(_:inRescue:)`); kasa eksiye inebilir, el koyma sınırının altına inmez.
 
 v109.3 (prototip ve Swift birlikte): satın alma kredisi için en az 10 balon (`Rules.buyLoanBalloons`); azsa teklif kartı `deal.shortFew` notunu gösterir.
 

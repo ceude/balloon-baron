@@ -1518,6 +1518,11 @@ function showRescue() {
   const opt = (title, sub, fn, dis) => { const b = h('button', 'opt', `<b>${title}</b><span>${sub}</span>`); b.disabled = !!dis; b.onclick = () => { fn(); sfx('coin'); refresh(); showRescueStep(); }; c.appendChild(b); };
   const idle = S.pilots.filter(p => !S.balloons.some(b => b.pilot === p.id)), sellable = S.balloons.filter(b => b.id !== S.flag).sort((a, b) => SIZES[a.size].cost - SIZES[b.size].cost);
   const cheap = Math.min(...S.rivals.filter(r => r.alive).map(r => r.price), S.price);
+  /* the guides' flight and a hotel deal (only when there's none yet) bring customers fastest; on this card they may take
+     cash below zero, never past the seizure line */
+  if (unlocked('market') && S.guideCd <= S.day && S.cash - GUIDE_COST >= -5000) opt(`Rehberlere tanıtım uçuşu: ${eur(GUIDE_COST)}`, `Hemen +0,2★ ve 3 gün rehberlerin gönderdiği turistler. Sonra kasa: ${eur(S.cash - GUIDE_COST)}.`, doGuide);
+  const hot = unlocked('market') && !S.hotels.length && [...HOTELS].reverse().find(x => !S.hotels.includes(x.id) && !owns(x) && starVal(S.rep) >= x.min && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && S.cash - x.fee * 3 >= -5000);
+  if (hot) opt(`Otel anlaşması: ${hot.name} (peşin ${eur(hot.fee * 3)})`, `Günlük misafir: yaklaşık ${hot.pax}, popülerliğin de artar. Sonra kasa: ${eur(S.cash - hot.fee * 3)}.`, () => { S.cash -= hot.fee * 3; S.hotels.push(hot.id); });
   if (idle.length) opt(`Boştaki pilotları çıkar (${idle.length})`, `Günde ${eur(idle.reduce((a, p) => a + pilotWage(p), 0))} maaştan kurtulursun.`, () => { S.pilots = S.pilots.filter(p => !idle.includes(p)); });
   if (sellable.length) { const b = sellable[0], v = Math.round(SIZES[b.size].cost * .6); opt(`${b.name} balonunu sat`, `${eur(v)} hemen kasaya girer (banka el koyarsa yarısı).`, () => { if (b.pilot) b.pilot = null; S.balloons = S.balloons.filter(x => x !== b); S.cash += v; assignPilots(); }); }
   if (S.price > cheap - 5) opt(`Fiyatı ${eur(Math.max(PRICE_MIN, cheap - 10))} yap`, 'En ucuz rakibin altına in, koltukları doldur.', () => { S.price = Math.max(PRICE_MIN, cheap - 10); });

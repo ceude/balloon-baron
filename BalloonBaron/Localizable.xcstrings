@@ -56335,6 +56335,88 @@
         }
       }
     },
+    "rescue.guide": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rundflug für Reiseführer: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides' flight: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuelo para guías: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ガイド招待フライト：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가이드 홍보 비행: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rehberlere tanıtım uçuşu: %@"
+          }
+        }
+      }
+    },
+    "rescue.guide.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sofort +0,2★ und 3 Tage lang schicken dir Reiseführer Touristen. Kasse danach: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+0.2★ now and guides send you tourists for 3 days. Cash after: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+0,2★ al momento y 3 días de turistas enviados por guías. Caja después: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すぐに+0.2★、3日間ガイドが観光客を紹介。支払い後の所持金：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즉시 +0.2★, 3일 동안 가이드가 관광객을 보냅니다. 이후 현금: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hemen +0,2★ ve 3 gün rehberlerin gönderdiği turistler. Sonra kasa: %@."
+          }
+        }
+      }
+    },
     "rescue.hez": {
       "extractionState": "manual",
       "localizations": {
@@ -56372,6 +56454,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kasan eksiye düştü evlat. Panik yok, ama bugün bir şeyler yapmalıyız. %@ altına inersen banka balonuna el koyar."
+          }
+        }
+      }
+    },
+    "rescue.hotel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotelvertrag: %1$@ (%2$@ vorab)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotel deal: %1$@ (%2$@ up front)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acuerdo con hotel: %1$@ (%2$@ por adelantado)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホテル契約：%1$@（前払い%2$@）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "호텔 계약: %1$@ (선불 %2$@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otel anlaşması: %1$@ (peşin %2$@)"
+          }
+        }
+      }
+    },
+    "rescue.hotel.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gäste pro Tag: etwa %1$@, und deine Sterne steigen. Kasse danach: %2$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guests a day: about %1$@, and your stars rise. Cash after: %2$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Huéspedes al día: unos %1$@, y suben tus estrellas. Caja después: %2$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1日の宿泊客：約%1$@、評価も上がる。支払い後の所持金：%2$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하루 손님: 약 %1$@, 인기도 오릅니다. 이후 현금: %2$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Günlük misafir: yaklaşık %1$@, popülerliğin de artar. Sonra kasa: %2$@."
           }
         }
       }

@@ -383,4 +383,23 @@ final class V109Tests: XCTestCase {
         XCTAssertNil(g.buyLoanTerms(price: 100_000), "one purchase loan at a time")
         XCTAssertNil(g.buyLoanTerms(price: 700_000))
     }
+
+    func testRescueGuideAndHotelMayDipBelowZeroButNotPastSeizure() {
+        var g = newGame()
+        g.state.unlocked.insert(.market)
+        g.state.cash = -2000
+        XCTAssertFalse(g.runGuideFlight(), "normally you need the cash")
+        XCTAssertTrue(g.rescueGuideOK)
+        XCTAssertTrue(g.runGuideFlight(inRescue: true))
+        XCTAssertEqual(g.state.cash, -3500)
+        XCTAssertFalse(g.rescueGuideOK, "cooldown")
+        let h = g.rescueHotel
+        XCTAssertNotNil(h)
+        XCTAssertTrue(g.signHotel(h!, inRescue: true))
+        XCTAssertGreaterThanOrEqual(g.state.cash, Rules.seizeBelow)
+        XCTAssertNil(g.rescueHotel, "one hotel deal is enough on the rescue card")
+        g.state.hotelDeals = []
+        g.state.cash = -4900
+        XCTAssertNil(g.rescueHotel, "never past the seizure line")
+    }
 }

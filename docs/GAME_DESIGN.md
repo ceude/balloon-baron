@@ -258,7 +258,7 @@ Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen 
 - **Rakip patronlar:** Kenan Arslan (Göreme Sky) ve Dale Whitaker (Sandia Sky Rides). Selam (3. gün), bölüm başları, geçilince, otel kapışması, pilot ayartma, kazan, anlaşma, batış ve Baron töreninde konuşurlar; her söz bölge başına bir kez.
 - **Gün kutlamaları (v109):** 100, 200, 300, 365 (şirketin bir yaşı), 400, 500. günler ve sonra her 100 günde bir, bölgenin rehberi kutlar ve ertesi sabah gazeteye çıkar.
 - **Holding yatırımları (v109):** TV kampanyası, ilan panoları, Ar-Ge, rekor denemesi ve sponsorlu şekil sözleşmesini bulunduğun bölgenin rehberi över; ünlü yüz ve ofisler kendi mesajlarıyla gelir. Hepsi ertesi sabah gazetede.
-- **Kurtarma planı:** kasa eksiye düşünce adım adım seçenekler: boştaki pilotları çıkar, en küçük balonu %60'a sat, fiyatı en ucuz rakibin €10 altına çek, kredi al.
+- **Kurtarma planı:** kasa eksiye düşünce adım adım seçenekler: rehberlere tanıtım uçuşu (€1.500, bekleme süresi bittiyse), otel anlaşması (hiç anlaşma yoksa, yıldızın yettiği en iyi otel, 3 günlük peşin), boştaki pilotları çıkar, en küçük balonu %60'a sat, fiyatı en ucuz rakibin €10 altına çek, kredi al (sadece kazanç şartı olmayanlar). Rehber ve otel bu kartta kasayı eksiye indirebilir ama €-5.000 el koyma sınırının altına asla (v109.4).
 
 ## Başarımlar ve holding hedefleri
 - ☰ menüsünde "Başarımlar": 22 başarım, her biri bir kartpostal.

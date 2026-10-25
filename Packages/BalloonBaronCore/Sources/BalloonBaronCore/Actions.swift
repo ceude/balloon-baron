@@ -248,11 +248,13 @@ extension Game {
         return l
     }
 
-    /// Signing pays three days up front.
+    /// Signing pays three days up front. On the rescue card (`inRescue`) cash may go below zero, as long as it stays
+    /// above the bank's seizure line.
     @discardableResult
-    public mutating func signHotel(_ h: Hotel) -> Bool {
+    public mutating func signHotel(_ h: Hotel, inRescue: Bool = false) -> Bool {
         let fee = h.dailyFee * 3
-        guard !state.hotelActive(h), state.stars >= h.minStars, hotelLockedByRival(h) == nil, state.cash >= fee else { return false }
+        guard !state.hotelActive(h), state.stars >= h.minStars, hotelLockedByRival(h) == nil,
+              state.cash - fee >= (inRescue ? Rules.seizeBelow : 0) else { return false }
         state.cash -= fee
         state.hotelDeals.append(h)
         return true
@@ -285,8 +287,8 @@ extension Game {
     }
 
     @discardableResult
-    public mutating func runGuideFlight() -> Bool {
-        guard state.guideCooldown <= state.day, state.cash >= Rules.guideCost else { return false }
+    public mutating func runGuideFlight(inRescue: Bool = false) -> Bool {
+        guard state.guideCooldown <= state.day, state.cash - Rules.guideCost >= (inRescue ? Rules.seizeBelow : 0) else { return false }
         state.cash -= Rules.guideCost
         state.rep = min(1.4, state.rep + 0.05)
         state.guideCooldown = state.day + 5
@@ -295,6 +297,20 @@ extension Game {
         state.lastGuide = state.day
         addReview(.guide)
         return true
+    }
+
+    /// Rescue card: the guides' flight, when the market is open, it's off cooldown and paying keeps cash above seizure.
+    public var rescueGuideOK: Bool {
+        state.unlocked.contains(.market) && state.guideCooldown <= state.day && state.cash - Rules.guideCost >= Rules.seizeBelow
+    }
+
+    /// Rescue card: the best hotel deal the player can sign right now, only when there's no deal yet; paying keeps cash
+    /// above seizure.
+    public var rescueHotel: Hotel? {
+        guard state.unlocked.contains(.market), state.hotelDeals.isEmpty else { return nil }
+        return Hotel.allCases.reversed().first {
+            !state.hotelActive($0) && state.stars >= $0.minStars && hotelLockedByRival($0) == nil && state.cash - $0.dailyFee * 3 >= Rules.seizeBelow
+        }
     }
 
     // MARK: Rival deals

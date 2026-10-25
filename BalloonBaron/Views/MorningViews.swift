@@ -444,6 +444,12 @@ struct RescueView: View {
         let target = max(Rules.priceRange.lowerBound, cheap - 10)
         let loanIndex = s.unlocked.contains(.bank) && s.local.loans.count < Rules.maxLoans
             ? Rules.loans.indices.reversed().first { s.local.balloons.count >= Rules.loans[$0].balloonsNeeded && Rules.loans[$0].minDailyNet == 0 } : nil
+        if let g = store.game, g.rescueGuideOK {
+            option(loc("rescue.guide", eur(Rules.guideCost)), loc("rescue.guide.sub", eur(s.cash - Rules.guideCost))) { _ = $0.runGuideFlight(inRescue: true) }
+        }
+        if let h = store.game?.rescueHotel {
+            option(loc("rescue.hotel", h.title, eur(h.dailyFee * 3)), loc("rescue.hotel.sub", num(h.guests), eur(s.cash - h.dailyFee * 3))) { _ = $0.signHotel(h, inRescue: true) }
+        }
         if !idle.isEmpty {
             option(loc("rescue.fire", num(idle.count)), loc("rescue.fire.sub", eur(idle.reduce(0) { $0 + $1.wage }))) { $0.fireIdlePilots() }
         }
