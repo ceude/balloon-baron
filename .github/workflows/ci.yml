@@ -53,3 +53,31 @@ jobs:
           grep -E "^/.*error: " build.log | sed 's|.*/BalloonBaron/||' | sort -u | head -n 40 | while IFS= read -r l; do echo "::error::$l"; done
           tail -n 40 build.log
           exit $status
+
+  # App Store Connect only takes uploads built with Xcode 26 (iOS 26 SDK), so Xcode Cloud archives with the newest
+  # Xcode. This builds the app the same way here (device, Release, no signing) to catch what the newer compiler rejects.
+  app-xcode26:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the app with the newest Xcode for a device (Release)
+        shell: bash
+        run: |
+          set +e
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1)
+          [ -z "$X" ] && X=$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)
+          sudo xcode-select -s "$X"
+          xcodebuild build -project BalloonBaron.xcodeproj -scheme BalloonBaron -configuration Release \
+            -destination 'generic/platform=iOS' CODE_SIGNING_ALLOWED=NO > build.log 2>&1
+          status=$?
+          {
+            echo "## App build, newest Xcode: $([ $status = 0 ] && echo passed || echo FAILED)"
+            echo '```'
+            xcodebuild -version
+            grep -E "^/.*(error|warning): " build.log | sed 's|.*/BalloonBaron/||' | sort -u | grep -v "warning: .*is deprecated" | head -n 150
+            grep -E "BUILD (SUCCEEDED|FAILED)" build.log
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          grep -E "^/.*error: " build.log | sed 's|.*/BalloonBaron/||' | sort -u | head -n 40 | while IFS= read -r l; do echo "::error::$l"; done
+          tail -n 40 build.log
+          exit $status
