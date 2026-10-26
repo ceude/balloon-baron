@@ -178,6 +178,11 @@ public enum Rules {
     public static let buyLoanRate = 0.2, buyLoanDown = 0.2, buyLoanBalloons = 10
 
     public static let balloonNameMax = 18
+    /// v111 Balloon Show: paid per balloon that can fly (all of them or none), once every `showCooldown` days from
+    /// `showMinBalloons`; popularity at once, then `showPax` extra tourists per balloon a day for `showDays` days.
+    /// tools/sim-show.js: about 1.4× back in show tickets while seats are free, nothing when they're already full.
+    public static let showPerBalloon = 1000, showCooldown = 15, showMinBalloons = 5, showDays = 3
+    public static let showRep = 0.05, showPax = 4.0
     public static let balloonNames = ["Şafak", "Güvercin", "Zelve", "Uçhisar", "Avanos", "Ihlara", "Ortahisar", "Kızılçukur",
                                       "Paşabağ", "Erciyes", "Soğanlı", "Mustafapaşa", "Göreme", "Çavuşin", "Ürgüp", "Sinasos"]
     public static let pilotNames = ["Mert", "Elif", "Kerem", "Zeynep", "Hakan", "Selin", "Burak", "Derya",

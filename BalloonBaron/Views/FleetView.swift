@@ -302,6 +302,25 @@ struct FleetView: View {
         return FleetUI.Card(loc("fleetPage.yours")) {
             summary(s)
             chips(s, current)
+            // v111: the Balloon Show, once the market is open and the fleet is big enough.
+            if ShowCardView.offered(game) {
+                let st = game.showState
+                Button {
+                    SoundEngine.shared.play(.click)
+                    store.showShowCard = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Circle().fill(Theme.sun).frame(width: 12, height: 12)
+                        Text(loc("show.cardTitle") + " · " + (st == .ok ? loc("show.short", num(game.showFleet.count), eur(game.showCost)) : ShowCardView.why(st, game)))
+                            .font(Theme.font(13, .bold)).foregroundStyle(Theme.ink).lineLimit(1).minimumScaleFactor(0.8)
+                        Spacer(minLength: 4)
+                        Image(systemName: "chevron.right").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.ink2)
+                    }
+                    .padding(.horizontal, 12).padding(.vertical, 9)
+                    .background(Theme.sun.opacity(0.18), in: RoundedRectangle(cornerRadius: 12))
+                }
+                .buttonStyle(.plain)
+            }
             if worn > 0 {
                 FleetUI.SmallButton(title: loc("fleet.renewAll", num(worn), eur(cost)), ghost: true, disabled: s.cash < cost) {
                     store.act { _ = $0.renewWornEnvelopes() }

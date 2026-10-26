@@ -131,6 +131,9 @@ public struct Game: Sendable {
         // No rival flew, yet seats stayed empty because the price was high: tourists still weigh the price.
         if !s.rivals.contains(where: \.alive), let ls = s.local.lastShare, ls.cap > 0, ls.me < ls.cap,
            Rules.willing(Double(s.price)) < 0.85 { queueTip(.noRivals) }
+        // v111: on a quiet morning, with seats to spare and cash for three, Hezarfen suggests a Balloon Show.
+        if showState == .ok, s.cash >= showCost * 3, state.hezQueue.isEmpty, s.eventDue != true, s.winter == nil, s.day >= 14,
+           let ls = s.local.lastShare, ls.cap > 0, Double(ls.me) < Double(ls.cap) * 0.9 { queueTip(.show) }
     }
 
     /// The inspector comes by when an envelope is below 30%: two warnings five days apart, then a fine each visit.

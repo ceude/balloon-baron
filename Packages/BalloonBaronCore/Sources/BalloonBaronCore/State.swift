@@ -155,7 +155,7 @@ public enum Feature: String, Codable, CaseIterable, Sendable { case insurance, f
 public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
     case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold, goals
-    case pr, influ, prcap, bazaar, delegate, noRivals
+    case pr, influ, prcap, bazaar, delegate, noRivals, show
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {
@@ -323,7 +323,9 @@ public struct GameState: Codable, Equatable, Sendable {
     public func hotelActive(_ h: Hotel) -> Bool { local.hotelDeals.contains(h) || local.ownHotels.contains(h) }
     public var activeHotels: [Hotel] { Hotel.allCases.filter(hotelActive) }
     /// A hotel or a guide flight in the last ten days lifts the popularity cap.
-    public var prOK: Bool { !activeHotels.isEmpty || (local.lastGuide.map { day - $0 <= Rules.guideFresh } ?? false) }
+    public var prOK: Bool {
+        !activeHotels.isEmpty || (local.lastGuide.map { day - $0 <= Rules.guideFresh } ?? false) || (local.lastShow.map { day - $0 <= Rules.guideFresh } ?? false)
+    }
     /// Highest popularity without hotels or guides: 4.2★, or 4.5★ while an influencer campaign is fresh.
     public var prCap: Double { local.influencerCooldown > day ? Rules.prCapInfluencer : Rules.prCap }
 

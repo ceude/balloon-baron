@@ -34,6 +34,7 @@ struct HezarfenView: View {
         if case .praise = message { return loc("hez.thanks") }
         if case .deed = message { return loc("hez.thanks") }
         if case .milestone = message { return loc("hez.thanks") }
+        if message == .tip(.show) { return loc("hez.toShow") }
         return loc(message == .tip(.bazaar) ? "hez.toBazaar" : "hez.ok")
     }
 

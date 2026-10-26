@@ -99,6 +99,9 @@ struct RootView: View {
             if store.showTempFlag {
                 TempFlagView().transition(.opacity)
             }
+            if store.showShowCard {
+                ShowCardView().transition(.opacity)
+            }
             if let a = store.postcard {
                 PostcardView(achievement: a).transition(.opacity)
             }
@@ -115,7 +118,7 @@ struct RootView: View {
                 StoreItemView(item: k).transition(.opacity)
             }
             if let m = store.hezarfen {
-                HezarfenView(message: m, day: store.state?.day ?? 1) { store.dismissHezarfen(openBazaar: m == .tip(.bazaar)) }
+                HezarfenView(message: m, day: store.state?.day ?? 1) { store.dismissHezarfen(openBazaar: m == .tip(.bazaar), openShow: m == .tip(.show)) }
                     .transition(.opacity)
             }
             if let n = store.night {
@@ -146,6 +149,7 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.morningEvent)
         .animation(.easeOut(duration: 0.25), value: store.showRescue)
         .animation(.easeOut(duration: 0.25), value: store.showTempFlag)
+        .animation(.easeOut(duration: 0.25), value: store.showShowCard)
         .animation(.easeOut(duration: 0.25), value: store.postcard)
         .animation(.easeOut(duration: 0.25), value: store.showAlbum)
         .animation(.easeOut(duration: 0.25), value: store.buildingCard)

@@ -731,6 +731,10 @@ body.night #cv{touch-action:none}
 .tfl{max-height:162px;overflow-y:auto;margin:-4px 0 12px;border:2px solid #e3dff0;border-radius:14px;background:#fff}
 .tfl button{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 14px;border:0;border-bottom:1px solid #eeeaf6;background:none;font:inherit;text-align:left;cursor:pointer;color:#2a2340}
 .tfl button:last-child{border-bottom:0}.tfl button span{font-size:13px;color:#6b6385}
+.flrow .fm b i.you{font-style:normal;font-size:10.5px;font-weight:800;color:#fff;background:#ff5e3a;border-radius:8px;padding:1px 6px;margin-left:6px;vertical-align:2px}
+.tag.o{background:#ffe1d6;color:#c2401f}
+.nameinp{width:100%;box-sizing:border-box;font:inherit;font-size:18px;font-weight:700;padding:12px 14px;border:2px solid #e3dff0;border-radius:14px;margin:6px 0 2px;color:#2a2340}
+.showbtn{margin:0 0 10px}
 </style>
 
 <div id="wrap">
@@ -872,12 +876,27 @@ function extraSources() {
   const out = myHotels().map(x => ({ label: x.name, n: Math.round(x.pax * (owns(x) ? 1.5 : 1) * (S.winter ? .6 : 1) * willingAt(S.price, x.c)), col: x.col }));
   if (S.day <= (S.guideUntil || 0)) out.push({ label: 'Rehber tavsiyesi', n: Math.round(5 * willing(S.price)), col: '#3ad0c0' });
   if (S.day <= S.influUntil) out.push({ label: 'Influencer paylaşımı', n: Math.round(8 * willing(S.price)), col: '#ff6fa8' });
+  if (S.day <= (S.showUntil || 0)) out.push({ label: 'Balon şöleni', n: showPax(), col: '#ffc23d' });
   out.push({ label: 'Popülerliğin', n: repBonus(), col: '#b79cff' });
   return out.filter(x => x.n > 0);
 }
 const CRISIS_REP = .5; /* 2,0★ */
 const influCost = () => 2500 + 400 * S.balloons.length;
 const GUIDE_COST = 1500;
+/* v111: the Balloon Show. Every balloon that can fly lights up over the town one night: paid per balloon, all of them or
+   none, once every SHOW.cd days from SHOW.min balloons. Popularity at once (and it counts as PR like a guide flight),
+   then extra tourists for three days in proportion to the fleet. */
+const SHOW = { per: 1000, cd: 15, min: 5, rep: .05, pax: 4, days: 3 }; /* tools/sim-show.js: ~1.4× back in show tickets when seats are free */
+const showFleet = () => S.balloons.filter(b => !(b.dmgUntil > S.day) && cond(b) > 0);
+const showCost = () => SHOW.per * showFleet().length;
+const showPax = () => Math.round(SHOW.pax * (S.showN || 0) * willing(S.price));
+function showState() {
+  if (!unlocked('market')) return 'locked';
+  if (S.showTonight === S.day) return 'booked';
+  if ((S.showNext || 0) > S.day) return 'wait';
+  if (showFleet().length < SHOW.min) return 'few';
+  return S.cash < showCost() ? 'cash' : 'ok';
+}
 const adPay = (sp, size) => Math.round(sp.pay * Math.pow(SIZES[size].cap / 8, .6) / 5) * 5;
 /* seats you can sell today: the documentary crew takes 4 in the flagship */
 const sellSeats = b => SIZES[b.size].cap - (S.docDay === S.day && b.id === S.flag ? Math.min(4, SIZES[b.size].cap - 1) : 0);
@@ -890,7 +909,7 @@ const FOUNDER = .25, ABSENT_GRACE = 5, ABSENT_LOSS = .008;
 /* otel anlaşması ya da son 10 günde rehber uçuşu yoksa popülerlik 4,2★'da durur */
 const PR_CAP = 1.05, PR_CAP_INFLU = 1.125, GUIDE_FRESH = 10; /* 4,2★; son 10 günde influencer varsa 4,5★ */
 const prCap = () => S.influCd > S.day ? PR_CAP_INFLU : PR_CAP;
-const prOk = () => myHotels().length > 0 || (S.lastGuide != null && S.day - S.lastGuide <= GUIDE_FRESH);
+const prOk = () => myHotels().length > 0 || (S.lastGuide != null && S.day - S.lastGuide <= GUIDE_FRESH) || (S.lastShow != null && S.day - S.lastShow <= GUIDE_FRESH);
 const FESTS = [
   ['Bağ Bozumu Festivali', 'Bağ Bozumu Festivali başladı evlat! Üç gün boyunca vadi turist dolacak. Her gün özel bir istek gelecek, ödülleri de %50 fazla. Bütün balonlarını kaldır.'],
   ['Bayram tatili', 'Bayram tatili geldi evlat, şehirliler akın akın Kapadokya\'ya! Üç gün talep yüksek, özel istekler bol ödüllü.'],
@@ -941,6 +960,7 @@ const HEZ = {
   licenseHold: 'Lisansın düştü evlat, otorite balonlarını yere indirdi. İki yol var: bugün sepete geç ve amiral balonunu kendin uçur, bu yenileme uçuşu bedava. Ya da ücreti öde. Ben olsam hangisini seçerdim, biliyorsun.',
   bazaar: 'Kasabanın doğusunda bir çarşı var evlat, gördün mü? Balonların için özel desenler, şekilli zarflar, kasaban için süsler satılıyor. Süsler turist çeker, gece de kasabanı ışıl ışıl yapar. Benden sana bir hediye var: çarşıda bir fener seti seni bekliyor.',
   pr: 'Bir sır vereyim evlat: başlarda otel ve rehber anlaşmaları her şeydir. Popülerliğin arttıkça daha yüksek fiyattan daha çok müşteri bulursun. Lüks oteller de misafirlerini yüksek fiyata bile getirir. Otelsiz, rehbersiz bir şirketin adı 4,2 yıldızdan öteye duyulmaz.',
+  show: 'Filon kalabalıklaştı evlat. Bir gece bütün balonlarını kasabanın üstünde yakıp bir Balon Şöleni düzenlesene! Balon başına para ödersin ama vadide adın konuşulur, önümüzdeki üç gün şölene gelen turistler boş koltuklarını doldurur. On beş günde bir yapabilirsin.',
   influ: 'Influencer anlaşmalarına dikkat evlat. Başlarda nadir yap, yoksa nakit akışın bozulur. Kasan rahatladıktan sonra çok daha verimli olurlar.',
   prcap: 'Popülerliğin tavana dayandı evlat. Ne kadar güzel uçarsan uç, otellerle anlaşmadan ya da rehberleri uçurmadan adın 4,2 yıldızdan öteye gitmez; bir influencer kampanyası seni en fazla 4,5 yıldıza taşır. Kasabadaki otellere ve ajanslara bak.',
   aging: 'Bir balonunun zarfı yorulmuş. Eski kumaş sert rüzgârda kazaya davetiyedir. Filo sayfasından yenile.'
@@ -1417,6 +1437,8 @@ function unlockCheck() {
   /* v110: no rival flew, yet seats stayed empty because the price was high: tourists still weigh the price */
   const ls = S.lastShare;
   if (!S.rivals.some(r => r.alive) && ls && ls.cap && ls.me < ls.cap && willing(S.price) < .85) hezAdd('noRivals');
+  /* v111: on a quiet morning, once the fleet is big enough and the cash is there, Hezarfen suggests a Balloon Show */
+  if (showState() === 'ok' && S.cash >= showCost() * 3 && !S.hezQ.length && !S.eventDue && !S.winter && S.day >= 14 && ls && ls.cap && ls.me < ls.cap * .9) hezAdd('show');
 }
 /* Morning paper: only when something worth a headline happened; the biggest story leads, up to two more below. */
 function paperAdd(p, head, sub) { (S.paperNext = S.paperNext || []).push({ p, head, sub }); }
@@ -1590,8 +1612,8 @@ function showHez(k) {
   const finish = () => { clearInterval(hezTimer); p.textContent = text; i = text.length; };
   hezTimer = setInterval(() => { i += 2; p.textContent = text.slice(0, i); if (i % 8 === 0) sfx('blip'); if (i >= text.length) finish(); }, 22);
   bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
-  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : k === 'bazaar' ? 'Çarşıya git' : k.startsWith('p_') ? 'Sağ ol usta' : 'Anladım');
-  ok.onclick = () => { finish(); el.hidden = true; refresh(); if (k === 'bazaar') showBazaar(); else setTimeout(nextPopup, 250); };
+  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : k === 'bazaar' ? 'Çarşıya git' : k === 'show' ? 'Şöleni gör' : k.startsWith('p_') ? 'Sağ ol usta' : 'Anladım');
+  ok.onclick = () => { finish(); el.hidden = true; refresh(); if (k === 'bazaar') showBazaar(); else if (k === 'show') showCard(); else setTimeout(nextPopup, 250); };
   bub.appendChild(ok);
   el.hidden = false;
 }
@@ -1748,6 +1770,11 @@ function finishDay(flight) {
   S.rep += fl.filter(b => b.size === 'XL').length * .005;
   const dRep = Math.min(.015, fl.reduce((a, b) => { const d = designOf(b); return a + (d ? .003 * d.score / 100 * freshness(d) + (d.shape ? .0015 : 0) : 0); }, 0));
   if (dRep) { S.rep += dRep; Lg.designRep = dRep; if (Math.random() < .25) { const d = designOf(pick(fl.filter(designOf))); addReview('design', { d: d.name }); } }
+  if (S.showTonight === S.day) {
+    S.rep += SHOW.rep; S.showUntil = S.day + SHOW.days; S.lastShow = S.day;
+    paperAdd(4, `${S.company} gökyüzünü aydınlattı`, `${S.showN} balonluk Balon Şöleni bütün vadiyi meydana topladı.`);
+    ev.push(`Bu gece Balon Şöleni var: ${S.showN} balonun kasabanın üstünde yanacak. Önümüzdeki 3 gün şölene gelen turistler seni arayacak.`);
+  }
   if (!prOk() && S.rep > prCap()) { S.rep = prCap(); hezAdd('prcap'); }
   if (licenseLeft() === 0) ev.push('Pilot lisansın bugün sona eriyor. Yarın kendin uçmazsan ya da ücreti ödemezsen diğer balonların yerde kalır.');
   const away = S.day - S.lastSelfFly;
@@ -2580,7 +2607,7 @@ function feelPos(w) { const cuts = [1, .85, .6, .35, 0]; for (let i = 0; i < 4; 
 /* günün turist sayısı fiyattan bağımsız: fiyat sadece kaçının seni seçtiğini değiştirir */
 function touristsToday() {
   const hotels = myHotels().reduce((a, x) => a + Math.round(x.pax * (owns(x) ? 1.5 : 1) * (S.winter ? .6 : 1)), 0);
-  return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? 5 : 0) + (S.day <= S.influUntil ? 8 : 0) + repBonusRaw();
+  return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? 5 : 0) + (S.day <= S.influUntil ? 8 : 0) + (S.day <= (S.showUntil || 0) ? Math.round(SHOW.pax * (S.showN || 0)) : 0) + repBonusRaw();
 }
 function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
 /* Who's in the baskets today, for the ticket card. */
@@ -2635,8 +2662,11 @@ function balloonCard(b) {
   const z = SIZES[b.size], st = canFly(b), bd = designOf(b), c = h('div', 'card bcard');
   const head = h('div', 'item');
   head.insertAdjacentHTML('beforeend', bd ? `<img class="dthumb" src="${designThumb(bd, 44, 56)}" alt="">` : balloonIcon(myCol()[0], myCol()[1]));
-  const mainEl = h('div', 'main', `<div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${b.used ? ' <span class="tag y">İkinci el</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş. ${esc(fleetSub(b))}.</div>`);
+  const mainEl = h('div', 'main', `<div class="t">${esc(b.name)}${isSelf(b) ? ' <span class="tag o">Sen uçuruyorsun</span>' : b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${b.used ? ' <span class="tag y">İkinci el</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş. ${esc(fleetSub(b))}.</div>`);
   head.appendChild(mainEl); c.appendChild(head);
+  /* v111: name your balloons; the default name stays until you change it */
+  const nb = h('button', 'adbtn', `<i style="background:#9b7be0"></i>İsim: ${esc(b.name)} · değiştir`);
+  nb.onclick = () => renameCard(b); c.appendChild(nb);
   const csp = b.ad && SPONSORS.find(x => x.id === b.ad);
   const ab = h('button', 'adbtn', csp ? `<i style="background:${csp.col}"></i>${csp.name}: +${eur(adPay(csp, b.size))}/uçuş` : 'Reklam yok. Sponsor bul');
   ab.onclick = () => openAdPicker(b); c.appendChild(ab);
@@ -2646,11 +2676,27 @@ function balloonCard(b) {
   c.appendChild(h('div', 'condbar', `<span class="cl">Zarf ${cpct}%${cd < .3 ? ', yıpranmış' : ''}</span><span class="ct"><i style="width:${cpct}%;background:${cd < .3 ? 'var(--red)' : cd < .6 ? 'var(--yellow)' : 'var(--green)'}"></i></span>`));
   const acts = h('div', 'btns');
   if (cd < .6) acts.appendChild(pbtn(`Zarf yenile ${eur(z.cost * RENEW)}`, () => { S.cash -= z.cost * RENEW; b.flights = 0; refresh(); balloonCard(b); }, S.cash < z.cost * RENEW));
-  if (b.id !== S.flag) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); balloonCard(b); }, false, true));
+  /* v111: pick the balloon you fly yourself right here (it becomes the flagship) */
+  if (!isSelf(b)) acts.appendChild(pbtn('Bu balonu ben uçurayım', () => { S.flag = b.id; S.selfFly = true; assignPilots(); refresh(); balloonCard(b); }, st === 'dmg' || st === 'worn'));
+  if (b.id !== S.flag && !selfFlying()) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); balloonCard(b); }, false, true));
   if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(sellValue(b))}`, () => { S.cash += sellValue(b); S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); m.hidden = true; refresh(); }, false, true));
   c.appendChild(acts);
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
+}
+function renameCard(b) {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Balona isim ver'));
+  const inp = h('input', 'nameinp'); inp.value = b.name; inp.maxLength = 18; inp.setAttribute('aria-label', 'Balonun adı'); c.appendChild(inp);
+  const err = h('p', 'hint', 'En fazla 18 harf.'); c.appendChild(err);
+  const ok = h('button', 'big', 'Kaydet'); ok.onclick = () => {
+    const v = inp.value.trim().replace(/\s+/g, ' ');
+    if (!v) { err.textContent = 'İsim boş olamaz.'; return; }
+    if (S.balloons.some(x => x !== b && x.name.toLocaleLowerCase('tr') === v.toLocaleLowerCase('tr'))) { err.textContent = 'Bu isimde bir balonun zaten var.'; return; }
+    b.name = v; save(); refresh(); balloonCard(b);
+  };
+  const back = h('button', 'ghost', 'Vazgeç'); back.style.width = '100%'; back.onclick = () => balloonCard(b);
+  c.append(ok, back); m.appendChild(c); m.hidden = false; setTimeout(() => { inp.focus(); inp.select(); }, 50);
 }
 function tabFleet(body) {
   const s = h('div', 'sec');
@@ -2669,6 +2715,11 @@ function tabFleet(body) {
     c.onclick = () => { FLEET_F = k; refresh(); }; chips.appendChild(c);
   }
   s.appendChild(chips);
+  /* v111: the Balloon Show, once the market is open and the fleet is big enough */
+  if (unlocked('market') && S.balloons.length >= SHOW.min) {
+    const ss = showState(), sb = h('button', 'adbtn showbtn', `<i style="background:#ffc23d"></i>Balon Şöleni · ${ss === 'ok' ? `${showFleet().length} balon, ${eur(showCost())}` : ss === 'booked' ? 'bu gece' : ss === 'wait' ? `${S.showNext - S.day} gün sonra` : ss === 'few' ? `en az ${SHOW.min} uçabilen balon` : `${eur(showCost())} gerekli`}`);
+    sb.onclick = showCard; s.appendChild(sb);
+  }
   /* one tap renews every envelope below 30% */
   const renew = all.filter(b => cond(b) < .3), cost = renew.reduce((a, b) => a + SIZES[b.size].cost * RENEW, 0);
   if (renew.length) s.appendChild(pbtn(`Yıpranan zarfları yenile (${renew.length}) · ${eur(cost)}`, () => { S.cash -= cost; renew.forEach(b => { b.flights = 0; }); refresh(); }, S.cash < cost, true));
@@ -2681,7 +2732,7 @@ function tabFleet(body) {
     const bd = designOf(b), [lv, txt] = fleetState(b), cd = cond(b), cp = Math.round(cd * 100), sp = b.ad && SPONSORS.find(x => x.id === b.ad);
     const r = h('button', 'flrow');
     r.innerHTML = `<span class="fi">${bd ? `<img src="${designThumb(bd, 28, 36)}" alt="">` : balloonIcon(myCol()[0], myCol()[1])}</span>
-      <span class="fm"><b>${esc(b.name)}${b.id === S.flag ? '<i class="star">★</i>' : ''}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em>${sp ? `<i class="ad" style="background:${sp.col}" title="${sp.name}"></i>` : ''}${burnerLv(b) > 1 ? `<i class="bx">×${burnerLv(b)}</i>` : ''}</b>
+      <span class="fm"><b>${esc(b.name)}${b.id === S.flag ? '<i class="star">★</i>' : ''}${isSelf(b) ? '<i class="you">Sen uçuruyorsun</i>' : ''}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em>${sp ? `<i class="ad" style="background:${sp.col}" title="${sp.name}"></i>` : ''}${burnerLv(b) > 1 ? `<i class="bx">×${burnerLv(b)}</i>` : ''}</b>
       <span class="st ${lv}"><i></i>${txt}</span></span>
       <span class="fe"><span class="ring" style="--p:${cp};--c:${cd < .3 ? 'var(--red)' : cd < .6 ? 'var(--yellow)' : 'var(--green)'}"><em>${cp}</em></span></span>
       <svg class="chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></svg>`;
@@ -2691,7 +2742,7 @@ function tabFleet(body) {
   if (!list.length) box.appendChild(h('p', 'hint', 'Bu filtrede balon yok.'));
   s.appendChild(box);
   s.appendChild(h('p', 'hint', `Balon zarfı yaklaşık ${envLife()} uçuşta yıpranır. %30 altında kaza riski artar, %0'da balon uçamaz. Yenilemek balon fiyatının %35'i.`));
-  s.appendChild(h('p', 'hint', 'Amiral balonunu sen uçurursun. Diğer balonlara pilot gerekir. Balonuna reklam alırsan sponsor her uçuşta öder, ama yolcular reklamlı balonu sevmez ve popülerliğin her uçuşta biraz düşer.'));
+  s.appendChild(h('p', 'hint', 'Hangi balonu kendin uçuracağını balona dokunup "Bu balonu ben uçurayım" diyerek seçersin; o balon amiralin olur. Diğer balonlara pilot gerekir. Balonuna reklam alırsan sponsor her uçuşta öder, ama yolcular reklamlı balonu sevmez ve popülerliğin her uçuşta biraz düşer.'));
   body.appendChild(s);
   const b2 = h('div', 'sec'); b2.appendChild(h('h2', null, 'Yeni balon al'));
   for (const k of ['S', 'M', 'L']) {
@@ -3463,6 +3514,7 @@ function showRepChart() {
   act('Rehberlere tanıtım uçuşu', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', eur(GUIDE_COST), () => {
     m.hidden = true; doGuide();
   }, gcd > 0 || S.cash < GUIDE_COST);
+  if (unlocked('market') && S.balloons.length >= SHOW.min) { const ss = showState(); act('Balon Şöleni', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
 }
@@ -4485,7 +4537,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -5182,6 +5234,23 @@ function openSection(pageKey, heading) {
 }
 function doInfluencer() {
   S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); hezAdd('influ'); sfx('coin'); refresh(); setTimeout(nextPopup, 300);
+}
+/* The show's card: what it costs (every balloon that can fly), what it brings, and the wait until the next one. */
+function showCard() {
+  const st = showState(), n = showFleet().length, m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Balon Şöleni'));
+  c.appendChild(h('p', 'lead', `Bir gece bütün balonların kasabanın üstünde brülörlerini yakar, gökyüzünde gösteri yapar. Uçabilen bütün balonların katılır: balon başına ${eur(SHOW.per)}. Popülerliğin hemen +0,2★ artar, önümüzdeki 3 gün her gün balon başına yaklaşık 4 turist daha seni arar. En çok koltukların boş kaldığı günlerde kazandırır.`));
+  const why = { locked: 'Pazar açılınca düzenleyebilirsin.', booked: 'Şölen bu gece. Gün bitince kasabanın üstünde başlayacak.', wait: `Yeni şölen için ${(S.showNext || 0) - S.day} gün beklemelisin.`, few: `Şölen için en az ${SHOW.min} uçabilen balon gerekiyor. Şu an: ${n}.`, cash: `Kasada ${eur(showCost())} olmalı.` }[st];
+  const co = h('div', 'callout' + (st === 'ok' ? '' : ' red'), st === 'ok' ? `<b>Katılacak balon: ${n}</b> · Toplam ${eur(showCost())}` : why); if (st === 'ok') co.style.background = '#fff3cf'; c.appendChild(co);
+  if (st === 'ok') { const go = h('button', 'big', `Şöleni düzenle ${eur(showCost())}`); go.onclick = () => { bookShow(); m.hidden = true; refresh(); setTimeout(nextPopup, 300); }; c.appendChild(go); }
+  const close = h('button', st === 'ok' ? 'ghost' : 'big', 'Kapat'); close.style.width = '100%'; close.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(close);
+  m.appendChild(c); m.hidden = false;
+}
+function bookShow() {
+  const n = showFleet().length; S.showIds = showFleet().map(b => b.id);
+  S.cash -= SHOW.per * n; S.showTonight = S.day; S.showN = n; S.showNext = S.day + SHOW.cd; S.showCount = (S.showCount || 0) + 1;
+  S.tips.show = 1; sfx('coin');
 }
 function doGuide() {
   S.cash -= GUIDE_COST; S.rep = Math.min(1.4, S.rep + .05); S.guideCd = S.day + 5; S.guideUntil = S.day + 3; S.guideCount = (S.guideCount || 0) + 1; S.lastGuide = S.day; addReview('guide'); sfx('coin'); refresh();
@@ -6168,6 +6237,7 @@ const HOME = { z: .3, ox: 0, oy: 0, hits: [], zoneHits: [], h: 0, down: null };
 let NIGHT = null, NIGHT_K = 0;
 const NIGHT_WIN = []; /* windows and doors drawn this frame, lit again over the dark */
 function pickNightEvent() {
+  if (S.showTonight === S.day - 1) return { k: 'show', ids: S.showIds || [], line: `Balon Şöleni · ${S.showN} balon` };
   if (S.fest) return { k: 'lanterns', line: `${S.fest.name}: fener alayı vadiden geçiyor.`, head: 'Fener alayı vadiyi aydınlattı', sub: 'Binlerce fener peribacalarının arasından geçti.' };
   if (S.fiesta && S.region === 'lux') return { k: 'glow', line: 'Nil gecesi: gemiler ışıl ışıl, kıyıda balonlar brülör yakıyor.', head: 'Nil kıyısında ışık gecesi', sub: 'Gemilerin ışıkları ve yerdeki balonlar Nil\'i aydınlattı.' };
   if (S.fiesta) return { k: 'glow', line: 'Fiesta gecesi: Balloon Glow! Balonlar yerde brülörlerini yakıyor.', head: 'Fiesta gecesi ışıl ışıl', sub: 'Yerdeki balonlar brülörlerini yaktı, meydan bayram yeri gibiydi.' };
@@ -6188,6 +6258,146 @@ function nightClamp(v, w, h) {
 }
 /* a big night sky; the horizon follows the town as you drag */
 function nightHorizon(v, w, h) { const B = nightBase(w, h); return clamp(h * .34 + (v.oy - B.oy) * .6 - (v.z / B.z - 1) * h * .25, -h * .5, h * .55); }
+/* ---------- the Balloon Show (v111) ----------
+   A 26-second night show over the town, made only from your own balloons: their number, sizes, designs and shapes.
+   They rise from the launch field in waves into a grid over the town, burners lighting their envelopes from inside;
+   the glows pulse to the music, sweep across in a wave and flash in a checker; then the balloons glide into a heart
+   (a V for a small fleet), a light chases round it, fireworks burst behind and every burner blazes for the finale. */
+const SHOW_LEN = 27;
+function showView(w, h) { const B = nightBase(w, h); return { z: B.z * .85, ox: w / 2 - tiso(7.5, 7.5)[0] * B.z * .85, oy: B.oy + h * .2 }; }
+const ease3 = k => 1 - Math.pow(1 - clamp(k, 0, 1), 3), easeIO3 = k => { k = clamp(k, 0, 1); return k < .5 ? 4 * k * k * k : 1 - Math.pow(-2 * k + 2, 3) / 2; };
+function showGrid(n, w, top, bot) {
+  const H1 = bot - top, cols = clamp(Math.round(Math.sqrt(n * w / H1 * .55)), Math.min(n, 3), n), rows = Math.ceil(n / cols), out = [];
+  const cw = w * .9 / cols, ch = H1 / rows, R = Math.min(cw / 2.3, ch / 3.1, w * .09);
+  for (let i = 0; i < n; i++) {
+    const row = Math.floor(i / cols), inRow = row === rows - 1 ? n - row * cols : cols, c = i % cols, depth = rows > 1 ? row / (rows - 1) : 1;
+    out.push({ x: w / 2 + (c - (inRow - 1) / 2) * cw + (row % 2 ? cw * .22 : -cw * .22) * (rows > 1 ? 1 : 0), y: top + ch * (row + .92), R: R * (.82 + .18 * depth), row, col: c, depth });
+  }
+  return out;
+}
+/* The figure the balloons glide into: a V of geese for a small fleet, a ring for a middling one, a heart from 16 up. */
+function showHeart(n, w, top, bot, R0) {
+  const out = [], cx = w / 2, H1 = bot - top;
+  if (n < 8) {
+    for (let i = 0; i < n; i++) { const k = Math.ceil(i / 2) * (i % 2 ? -1 : 1), m = n > 1 ? Math.ceil((n - 1) / 2) : 1; out.push({ x: cx + k / m * w * .36, y: top + R0 * 2.8 + (H1 - R0 * 3) * .55 * Math.abs(k) / m, R: R0 }); }
+    return out;
+  }
+  if (n < 16) {
+    const R = Math.min(R0 * 1.1, w * .9 * Math.PI / n / 2.3), rx = w * .5 - R * 1.3, ry = (H1 - R * 3) / 2, cy = top + R * 2.8 + ry;
+    for (let i = 0; i < n; i++) { const a = -Math.PI / 2 + i / n * Math.PI * 2; out.push({ x: cx + Math.cos(a) * rx, y: cy + Math.sin(a) * ry, R }); }
+    return out;
+  }
+  /* even spacing along the heart's outline */
+  const P = [], sx = (w * .5 - R0 * 1.2) / 16, sy = Math.max(1, (H1 - R0 * 3) / 29), cy = top + R0 * 2.8 + 12 * sy;
+  for (let j = 0; j <= 400; j++) { const t = j / 400 * Math.PI * 2; P.push([cx + 16 * Math.pow(Math.sin(t), 3) * sx, cy - (13 * Math.cos(t) - 5 * Math.cos(2 * t) - 2 * Math.cos(3 * t) - Math.cos(4 * t)) * sy]); }
+  const L = [0]; for (let j = 1; j < P.length; j++) L.push(L[j - 1] + Math.hypot(P[j][0] - P[j - 1][0], P[j][1] - P[j - 1][1]));
+  const tot = L[L.length - 1], R = Math.min(R0, tot / n / 2.3);
+  for (let i = 0; i < n; i++) { const d = (i + .5) / n * tot; let j = 1; while (L[j] < d) j++; out.push({ x: P[j][0], y: P[j][1], R }); }
+  return out;
+}
+/* One sprite set per look (design, sponsor band, flame on or off), drawn once at a reference size: the balloon, its
+   night silhouette and its burner-lit glow. Each frame then only stacks three images, so a 50-balloon show stays smooth. */
+let SHOWSPR = {};
+function showSprite(b, flame) {
+  const d = designOf(b), key = `${d ? d.id : 'c'}:${b.ad || ''}:${flame ? 1 : 0}`;
+  if (SHOWSPR[key]) return SHOWSPR[key];
+  const R = 44, k = 2, cw = Math.ceil(R * 3.2), ch = Math.ceil(R * 3.6), ax = cw / 2, ay = ch - R * .3;
+  const mk = () => { const c = document.createElement('canvas'); c.width = cw * k; c.height = ch * k; const o = c.getContext('2d'); o.setTransform(k, 0, 0, k, 0, 0); return [c, o]; };
+  const [base, bo] = mk(), keep = ctx;
+  ctx = bo;
+  try { if (d) designBalloon3d(ax, ay, R, myCol()[0], myCol()[1], flame, 1, b.ad, d); else balloon3d(ax, ay, R, myCol()[0], myCol()[1], flame, 1, b.ad); } finally { ctx = keep; }
+  const [dark, dc] = mk(); dc.drawImage(base, 0, 0, cw, ch); dc.globalCompositeOperation = 'source-atop'; dc.fillStyle = 'rgb(16,18,54)'; dc.fillRect(0, 0, cw, ch);
+  const [warm, wc] = mk(); wc.drawImage(base, 0, 0, cw, ch); wc.globalCompositeOperation = 'source-atop';
+  const g = wc.createRadialGradient(ax, ay - R * 1.1, R * .1, ax, ay - R * 1.7, R * 1.7); g.addColorStop(0, 'rgba(255,190,90,.8)'); g.addColorStop(.6, 'rgba(255,130,50,.35)'); g.addColorStop(1, 'rgba(255,110,40,0)');
+  wc.fillStyle = 'rgba(0,0,0,0)'; wc.fillRect(0, 0, cw, ch); wc.globalCompositeOperation = 'source-in'; wc.fillStyle = g; wc.fillRect(0, 0, cw, ch);
+  return (SHOWSPR[key] = { base, dark, warm, R, cw, ch, ay });
+}
+/* one balloon of the show: the balloon, darkened by the night, lit from inside by its burner */
+function showBalloon(i, b, x, y, R, burn, alpha) {
+  const sp = showSprite(b, burn > .45), k = R / sp.R, cw = sp.cw * k, ch = sp.ch * k, X = x - cw / 2, Y = y - sp.ay * k;
+  ctx.save();
+  if (burn > .05) { ctx.globalAlpha = alpha; ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(x, y - R * 1.9, 0, x, y - R * 1.9, R * 2.6); g.addColorStop(0, `rgba(255,150,60,${.32 * burn})`); g.addColorStop(1, 'rgba(255,150,60,0)'); ctx.fillStyle = g; ctx.fillRect(x - R * 2.6, y - R * 4.5, R * 5.2, R * 5.2); ctx.globalCompositeOperation = 'source-over'; }
+  ctx.globalAlpha = alpha; ctx.drawImage(sp.base, X, Y, cw, ch);
+  ctx.globalAlpha = alpha * .74 * (1 - burn * .8); ctx.drawImage(sp.dark, X, Y, cw, ch);
+  if (burn > .02) { ctx.globalAlpha = alpha * burn; ctx.drawImage(sp.warm, X, Y, cw, ch); }
+  ctx.restore();
+}
+function drawShow(V, w, h, hz, S0, N) {
+  S0(); ctx.save();
+  const E = N.ev, st = T - N.t0 - 1.2, bs = E.ids.map(bal).filter(Boolean), n = bs.length;
+  if (!n) { ctx.restore(); return; }
+  const top = Math.max(150, hz * .1), bot = Math.max(top + 200, hz + (h - hz) * .14);
+  const G = showGrid(n, w, top, bot), Hh = showHeart(n, w, top, bot, G[0].R);
+  const f = tiso(3, 6.2), fx = f[0] * V.z + V.ox, fy = f[1] * V.z + V.oy, beat = st * 2, bp = beat - Math.floor(beat);
+  /* fireworks behind the balloons for the finale */
+  if (st > 16.5 && st < 25) {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const glow = (x, y, r, col, a) => { const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${col},${a})`); g.addColorStop(1, `rgba(${col},0)`); ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); };
+    const many = st > 21 ? 7 : 4;
+    for (let j = 0; j < many; j++) { const ph = ((st - 16.5) * .5 + j * .37) % 1, cx = w * (.1 + (j * .29) % .8), cy = top + (hz - top) * (.15 + (j * .23) % .5), col = ['255,94,58', '255,194,61', '58,208,192', '255,111,168', '155,123,224', '255,255,255', '120,200,255'][j];
+      if (ph < .25) glow(cx, hz - (hz - cy) * ph / .25, 5, '255,230,180', .9);
+      else { const r = (ph - .25) / .75, a = 1 - r; for (let i = 0; i < 22; i++) { const an = i / 22 * Math.PI * 2, x = cx + Math.cos(an) * r * w * .16, y = cy + Math.sin(an) * r * w * .16 + r * r * 26; glow(x, y, 6, col, a); } glow(cx, cy, w * .22 * r, col, .1 * a); }
+    }
+    ctx.restore();
+  }
+  /* two searchlights from the square sweep the sky while the balloons dance */
+  if (st > 6 && st < 24) {
+    const c = tiso(7.5, 7.5), bx = c[0] * V.z + V.ox, by = c[1] * V.z + V.oy, a0 = clamp((st - 6) / 1.2, 0, 1) * clamp((24 - st) / 1.2, 0, 1);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    for (const sgn of [-1, 1]) {
+      const an = -Math.PI / 2 + sgn * (.35 + .3 * Math.sin(st * .9 + (sgn > 0 ? 1.4 : 0))), len = h, ex = bx + Math.cos(an) * len, ey = by + Math.sin(an) * len, px = -Math.sin(an) * len * .09, py = Math.cos(an) * len * .09;
+      const g = ctx.createLinearGradient(bx, by, ex, ey); g.addColorStop(0, `rgba(255,236,190,${.28 * a0})`); g.addColorStop(1, 'rgba(255,236,190,0)');
+      ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(bx - 3, by); ctx.lineTo(ex - px, ey - py); ctx.lineTo(ex + px, ey + py); ctx.lineTo(bx + 3, by); ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+  /* balloons, back rows first */
+  const order = G.map((g, i) => i).sort((a, b) => G[a].depth - G[b].depth);
+  for (const i of order) {
+    const b = bs[i], g = G[i], hs = Hh[i], t0 = .3 + (n > 1 ? i / (n - 1) : 0) * Math.min(4, 1 + n * .12), k = ease3((st - t0) / 2.6);
+    if (st < t0) continue;
+    const m = easeIO3((st - 13) / 2.6) * (1 - easeIO3((st - 23) / 2));
+    let x = lerp(fx, g.x, k), y = lerp(fy, g.y, k), R = lerp(g.R * .35, g.R, k);
+    x = lerp(x, hs.x, m); y = lerp(y, hs.y, m); R = lerp(R, hs.R, m);
+    x += Math.sin(T * .6 + i * 1.7) * R * .12; y += Math.sin(T * .8 + i * 1.3) * R * .1 - Math.max(0, st - 23.5) * Math.max(0, st - 23.5) * 9;
+    /* the burners: the rise, then the light patterns of the dance */
+    let burn;
+    if (st < t0 + 2.4) burn = .9 + .1 * Math.sin(T * 30 + i);
+    else if (st < 9.5) burn = bp < .22 ? 1 : .12;                                             /* all together on the beat */
+    else if (st < 11.5) burn = Math.max(.1, Math.pow(Math.max(0, Math.cos((x / w - (st - 9.5) * .9 + .2) * Math.PI * 2.2)), 6)); /* a wave sweeping across */
+    else if (st < 13) burn = ((g.row + g.col + Math.floor(beat)) % 2) ? 1 : .1;                 /* checker on the beat */
+    else if (st < 16) burn = .25 + .2 * Math.sin(T * 9 + i);
+    else if (st < 20.5) { const c = ((st - 16) * n * .45) % n, dd = Math.min(Math.abs(i - c), n - Math.abs(i - c)); burn = Math.max(.15, 1 - dd / Math.max(2, n * .12)); } /* a light chasing round */
+    else burn = .85 + .15 * Math.sin(T * 25 + i * 2);                                           /* the finale: every burner */
+    const alpha = clamp(1 - (st - 24.5) / 1.8, 0, 1) * clamp((st - t0) * 3, 0, 1);
+    showBalloon(i, b, x, y, R, burn, alpha);
+  }
+  /* title at the start and the tally at the end */
+  const txt = (a, s1, s2) => { if (a <= 0) return; ctx.save(); ctx.globalAlpha = a; ctx.textAlign = 'center'; ctx.shadowColor = 'rgba(0,0,0,.6)'; ctx.shadowBlur = 12;
+    ctx.fillStyle = '#ffd27a'; ctx.font = `800 ${Math.round(Math.min(46, w * .11))}px "Barlow Condensed", sans-serif`; ctx.fillText(s1, w / 2, h * .3);
+    ctx.fillStyle = '#fff8e6'; ctx.font = `600 ${Math.round(Math.min(20, w * .048))}px "Barlow", sans-serif`; ctx.fillText(s2, w / 2, h * .3 + Math.min(30, w * .075)); ctx.restore(); };
+  txt(Math.min(1, st * 1.5) * clamp(1 - (st - 2.6) / .8, 0, 1), 'BALON ŞÖLENİ', S.company);
+  txt(clamp((st - 21) * 1.5, 0, 1) * clamp(1 - (st - 25) / 1, 0, 1), `${n} balon`, 'Vadi ayakta alkışlıyor');
+  ctx.restore();
+}
+/* The show's music: a steady beat with a rising pentatonic tune, burner roars as the balloons rise, applause at the end. */
+let showAudio = null;
+function showMusic(on) {
+  if (!AC) return;
+  if (!on) { if (showAudio) { const g = showAudio, t = AC.currentTime; g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + .4); setTimeout(() => g.disconnect(), 600); showAudio = null; } crowd(false); return; }
+  const g = AC.createGain(); g.gain.value = .9; g.connect(out()); showAudio = g;
+  const t0 = AC.currentTime + 1.2;
+  const note = (f, at, dur, type, vol) => { const o = AC.createOscillator(), e = AC.createGain(); o.type = type; o.frequency.value = f; e.gain.setValueAtTime(0, t0 + at); e.gain.linearRampToValueAtTime(vol, t0 + at + .015); e.gain.exponentialRampToValueAtTime(.0001, t0 + at + dur); o.connect(e).connect(g); o.start(t0 + at); o.stop(t0 + at + dur + .05); };
+  const kick = at => { const o = AC.createOscillator(), e = AC.createGain(); o.frequency.setValueAtTime(130, t0 + at); o.frequency.exponentialRampToValueAtTime(45, t0 + at + .18); e.gain.setValueAtTime(.16, t0 + at); e.gain.exponentialRampToValueAtTime(.0001, t0 + at + .22); o.connect(e).connect(g); o.start(t0 + at); o.stop(t0 + at + .25); };
+  const roar = (at, dur, vol) => { const src = AC.createBufferSource(); src.buffer = noiseBuf(dur); const bp = AC.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 420; bp.Q.value = .7; const e = AC.createGain(); e.gain.setValueAtTime(0, t0 + at); e.gain.linearRampToValueAtTime(vol, t0 + at + .08); e.gain.linearRampToValueAtTime(0, t0 + at + dur); src.connect(bp).connect(e).connect(g); src.start(t0 + at); };
+  const PENT = [262, 294, 330, 392, 440, 523, 587, 659, 784, 880];
+  for (let i = 0; i < 6; i++) roar(.3 + i * .7, .9, .05);
+  for (let b = 0; b < 50; b++) { const at = 1 + b * .5; if (at > 25) break; if (at >= 3) kick(at); const step = [0, 2, 4, 3, 5, 4, 6, 7][b % 8] + (at > 13 ? 2 : 0); note(PENT[Math.min(9, step)], at, .32, 'triangle', .05); if (at > 7 && b % 2 === 0) note(PENT[Math.min(9, step)] / 2, at, .5, 'sine', .05); if (at > 15 && b % 4 === 0) note(PENT[Math.min(9, step + 2)] * 2, at + .25, .25, 'sine', .03); }
+  for (let i = 0; i < 5; i++) roar(8.7 + i * 1, .25, .06); /* burners on the beat */
+  [523, 659, 784, 1047].forEach((f, i) => note(f, 22.2 + i * .12, .6, 'triangle', .07)); roar(21.8, 2.4, .08);
+  setTimeout(() => { if (showAudio === g) crowd(true); }, 1500);
+  setTimeout(() => { if (showAudio === g) { crowd(false); sfx('applause'); } }, 23500);
+}
 function drawNightTown(w, h) {
   const v = (NIGHT && NIGHT.v) || nightBase(w, h);
   nightClamp(v, w, h);
@@ -6215,20 +6425,22 @@ function drawNightTown(w, h) {
 })();
 function startNight() {
   const ev = pickNightEvent();
-  if (ev) paperAdd(ev.k === 'shooting' ? 1 : 2, ev.head, ev.sub);
-  NIGHT = { t0: T, ev, v: null, idle: T, wait: ev ? 5.5 : 3.5 };
+  if (ev && ev.head) paperAdd(ev.k === 'shooting' ? 1 : 2, ev.head, ev.sub);
+  const show = ev && ev.k === 'show'; if (show) SHOWSPR = {};
+  NIGHT = { t0: T, ev, v: show ? showView(W, H) : null, idle: T, wait: show ? SHOW_LEN : ev ? 5.5 : 3.5 };
   mode = 'night'; hideAll(); $('hud').hidden = true;
   const cap = h('div', 'nightcap', `<b>Gün ${S.day - 1} gecesi</b>${ev ? `<span>${esc(ev.line)}</span>` : ''}<small>Kasabayı gezebilirsin</small>`); cap.id = 'nightcap';
   document.body.appendChild(cap); requestAnimationFrame(() => cap.classList.add('on'));
   const go = h('button', 'big nightgo', `Gün ${S.day} sabahına geç ☀`); go.id = 'nightgo'; go.onclick = () => { if (NIGHT && !NIGHT.dawn) { NIGHT.dawn = T; sfx('click'); } };
   document.body.appendChild(go); requestAnimationFrame(() => go.classList.add('on')); document.body.classList.add('night');
   crickets(true); save();
-  if (!nightOn) endNight(); /* the night is still counted (its event makes the paper), only the scene is skipped */
+  if (show) showMusic(true);
+  else if (!nightOn) endNight(); /* the night is still counted (its event makes the paper), only the scene is skipped; a paid show always plays */
 }
 function endNight() {
   if (mode !== 'night') return;
   const v = Object.assign({}, (NIGHT && NIGHT.v) || nightBase(W, H));
-  crickets(false); NIGHT = null; for (const id of ['nightcap', 'nightgo']) { const el = $(id); if (el) el.remove(); } document.body.classList.remove('night');
+  crickets(false); showMusic(false); NIGHT = null; for (const id of ['nightcap', 'nightgo']) { const el = $(id); if (el) el.remove(); } document.body.classList.remove('night');
   /* the dawn goes on over the morning: the last of the night fades and the sunrise glow sinks away */
   DAWN = { t0: T, k: NIGHT_K };
   startDay();
@@ -6269,7 +6481,7 @@ function updateNight() {
   NIGHT_K = NIGHT.dawn ? Math.max(.25, 1 - dn * .75) : Math.min(1, t / 1.4);
   SUNRISE = NIGHT.dawn ? Math.min(1, dn) : 0;
   /* the night passes by itself after a few seconds; looking around restarts the wait, but never past 25 s */
-  if (!NIGHT.dawn) { const left = Math.min(NIGHT.wait - (T - NIGHT.idle), 25 - t), go = $('nightgo'); if (go) go.style.setProperty('--p', `${Math.round(clamp(1 - left / NIGHT.wait, 0, 1) * 100)}%`); if (left <= 0) NIGHT.dawn = T; }
+  if (!NIGHT.dawn) { const show = NIGHT.ev && NIGHT.ev.k === 'show', left = show ? SHOW_LEN - t : Math.min(NIGHT.wait - (T - NIGHT.idle), 25 - t), go = $('nightgo'); if (go) go.style.setProperty('--p', `${Math.round(clamp(1 - left / NIGHT.wait, 0, 1) * 100)}%`); if (left <= 0) NIGHT.dawn = T; }
   /* fireworks: a soft thump and a crackle for each burst */
   if (NIGHT.ev && NIGHT.ev.k === 'fireworks' && t > .8 && T - (NIGHT.pop || 0) > 1.1) { NIGHT.pop = T; tone(160, 55, .3, 'triangle', .07); for (let i = 0; i < 5; i++) tone(2400 + Math.random() * 900, 1500, .06, 'sine', .012, .2 + i * .05); }
   if (NIGHT.dawn && dn >= 1) endNight();
@@ -6410,6 +6622,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
     for (let i = 0; i < 40; i++) { const along = ((t - N.t0) * .9 + i * .38) % 17 - 1, onX = i % 2, gx = onX ? along : 7.75 + (i % 3) * .2, gy = onX ? 7.75 + (i % 3) * .2 : along, p = tiso(gx, gy);
       glow(p[0], p[1] - 22, 16, '255,170,70', .8); ctx.fillStyle = '#ffcf7a'; ctx.fillRect(p[0] - 2, p[1] - 25, 4, 5); }
   }
+  if (E && E.k === 'show') { ctx.restore(); drawShow(V, w, h, hz, S0, N); W0(); ctx.save(); ctx.globalCompositeOperation = 'lighter'; }
   if (E && E.k === 'glow') {
     fieldBalloons().forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4, p = tiso(gx, gy), f = Math.max(0, Math.sin(t * 3 + i * 1.7)); glow(p[0], p[1] - 70, 80, '255,150,60', .25 + .55 * f); });
   }

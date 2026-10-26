@@ -33,6 +33,7 @@
 		51EA18F07C7C4E78551CC5A9 /* RedFlagView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D319BFA50E962451010EB785 /* RedFlagView.swift */; };
 		593654C519329CF20E4DD5BF /* RepChartView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8BCD169363A678C776CEF029 /* RepChartView.swift */; };
 		641877355BB58C4B22BE6635 /* DemoSetup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 10593BC07FB07F631AE32CD5 /* DemoSetup.swift */; };
+		6A5552AB7B779F4B6E638218 /* ShowViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = F98CDA199A25FEB255AFEB7D /* ShowViews.swift */; };
 		6AE93E02F2C06440AEC0B209 /* MorningViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C131F9B2830128FA15F1DB /* MorningViews.swift */; };
 		6BF97F9ABE79515BD389A972 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5A711E98261C68FB98A0B0 /* Haptics.swift */; };
 		79B8CE209311039EBF6C306B /* DealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3655D7D3B1C7B70D724F89A0 /* DealView.swift */; };
@@ -58,6 +59,7 @@
 		A818B3A8939636A60B498B62 /* HezarfenAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = C75F9CDDED31E1B1E782B22C /* HezarfenAvatar.swift */; };
 		AAF1439F71038DA8DB030CBA /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 09FF7E1D4602B78743229CA2 /* PrivacyInfo.xcprivacy */; };
 		AAFC7A02A4CFD7A85E5D0966 /* Barlow-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6DE9EE32EE3407FBCBBC395A /* Barlow-Bold.ttf */; };
+		AB73A244A1F086C3E12B9E43 /* TownShow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A3337359B8711905BE6CC88 /* TownShow.swift */; };
 		AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8480E19BC8DE8F1B439520EE /* BalloonArt.swift */; };
 		B029C9E05045367DA00E324C /* Barlow-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BC2D92AE9D2D2735F75E90DE /* Barlow-ExtraBold.ttf */; };
 		B4A22707D30CFDF9F41A012B /* BalloonBaronCore in Frameworks */ = {isa = PBXBuildFile; productRef = 8AEE5594E690F60982F7CB66 /* BalloonBaronCore */; };
@@ -117,6 +119,7 @@
 		6858154E303E2FAC806C1D22 /* BarlowCondensed-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-ExtraBold.ttf"; sourceTree = "<group>"; };
 		690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Localization.swift"; sourceTree = "<group>"; };
 		6A1530CCE3E7DC76FA3B9FB3 /* TravelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TravelView.swift"; sourceTree = "<group>"; };
+		6A3337359B8711905BE6CC88 /* TownShow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownShow.swift"; sourceTree = "<group>"; };
 		6DE9EE32EE3407FBCBBC395A /* Barlow-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Bold.ttf"; sourceTree = "<group>"; };
 		716D53AF05BF7F135AC3340E /* BalloonBaronApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BalloonBaronApp.swift"; sourceTree = "<group>"; };
 		73920F4A7D747582F67B5D94 /* BazaarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BazaarViews.swift"; sourceTree = "<group>"; };
@@ -158,6 +161,7 @@
 		F0EE31F8DAF600D7425FE3FE /* CaveatBrush-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "CaveatBrush-Regular.ttf"; sourceTree = "<group>"; };
 		F4DC99A8B37B92CB3C497642 /* OfficeSceneView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OfficeSceneView.swift"; sourceTree = "<group>"; };
 		F5BF48AA40CAD7891EB709FC /* BalloonBaron.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BalloonBaron.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F98CDA199A25FEB255AFEB7D /* ShowViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShowViews.swift"; sourceTree = "<group>"; };
 		FBF39B153C032C3B1F8AFDEF /* TownNight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownNight.swift"; sourceTree = "<group>"; };
 		FE4C8C51BD9123B333EB42CF /* PostcardScenes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PostcardScenes.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -232,6 +236,7 @@
 				DA747D61B806F541F6AB8DF8 /* TownModel.swift */,
 				FBF39B153C032C3B1F8AFDEF /* TownNight.swift */,
 				028E3000896415942F6E8508 /* TownPainter.swift */,
+				6A3337359B8711905BE6CC88 /* TownShow.swift */,
 				151A0BC3B17C01FBFECAA493 /* TownViews.swift */,
 			);
 			path = "Town";
@@ -295,6 +300,7 @@
 				B5C0F39AF215684082C179ED /* SettingsIcon.swift */,
 				32555776BC90AFB75C336EF3 /* SetupView.swift */,
 				99A21C41BCDC5DB2BD7E3B4C /* ShareCard.swift */,
+				F98CDA199A25FEB255AFEB7D /* ShowViews.swift */,
 				6A1530CCE3E7DC76FA3B9FB3 /* TravelView.swift */,
 				3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */,
 			);
@@ -418,6 +424,7 @@
 				9A10F15161315C7C8ACF36B5 /* TownModel.swift in Sources */,
 				32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */,
 				202A37F855488615D2088520 /* TownPainter.swift in Sources */,
+				AB73A244A1F086C3E12B9E43 /* TownShow.swift in Sources */,
 				BBB4A8150F49C505DE1C2F67 /* TownViews.swift in Sources */,
 				E4784A24C39AC33337B15154 /* AdShapeArt.swift in Sources */,
 				AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */,
@@ -457,6 +464,7 @@
 				A6E2F5DC504E6F47EC3886DB /* SettingsIcon.swift in Sources */,
 				37A512CC536FFCC07E95ABE3 /* SetupView.swift in Sources */,
 				187F26A420BE9FAF166CED97 /* ShareCard.swift in Sources */,
+				6A5552AB7B779F4B6E638218 /* ShowViews.swift in Sources */,
 				F1CA4068815D57F906401D61 /* TravelView.swift in Sources */,
 				9315CE7EC5ADB45D6D749CD4 /* WorldMapView.swift in Sources */,
 				2AE29E79EC58294FF2CF023D /* BalloonBaronApp.swift in Sources */,

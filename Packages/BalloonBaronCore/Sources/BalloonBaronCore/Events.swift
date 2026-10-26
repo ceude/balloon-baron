@@ -19,6 +19,8 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case pilotPromoted(name: String, level: PilotLevel, wage: Int)
     case envelopeWorn(balloon: String)
     case licenseExpiring
+    /// v111: the Balloon Show is tonight, with this many balloons.
+    case showTonight(balloons: Int)
     case licenseRenewedByFlight
     case founderAbsent(days: Int)
     case antitrustFine(sharePercent: Int, fine: Int)

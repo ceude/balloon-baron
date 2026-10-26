@@ -29,6 +29,7 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 - **Toplu zarf yenileme:** Filo sayfasındaki düğme %30'un altındaki bütün zarfları birden yeniler; tutar her balonun yenileme bedelinin (balon fiyatının %35'i) toplamıdır.
 - **Lisans:** En az 15 günde bir kendin uçmalısın. Lisans düşerse amiral dışındaki tüm balonlar yerde kalır. Ya amirali kendin uçurursun (ücretsiz yenileme uçuşu) ya da €15.000 ödersin.
 - **Geçici amiral:** Kendi uçurduğun amiral balon tamirdeyse sabah sorulur: tamir bitene kadar başka bir balonu sen uçurmak ister misin? En büyük uçabilen balon önerilir, listeden değiştirilebilir. Evet dersen o balon tamir süresince amiral olur ve tamir bittiği sabah gerçek amiral kendiliğinden geri döner. Hayır dersen diğer balonları pilotlar uçurur. Her tamir için bir kez sorulur, uçuş yasağında sorulmaz.
+- **Kendi balonun (v111):** Filo'da bir balona dokunup "Bu balonu ben uçurayım" dersen o balon amiralin olur ve onu sen uçurursun; filo listesinde yanında "Sen uçuruyorsun" yazar. Balonlara isim verilebilir (en fazla 18 harf, iki balon aynı adı taşıyamaz); varsayılan isim değiştirilene kadar kalır. Varsayılan isimlerden kelime olanlar (Şafak, Güvercin, Dev balon adları) ve Mısır yer adları her dilde o dilin yazımıyla gösterilir.
 - **Kurucu uçuşu primi:** Amiral balonunu sen uçurursan o balonun yolcuları %25 fazla öder.
 - **Kurucu yokluğu:** 5 günden uzun süre kendin uçmazsan, balon uçan her gün popülerlik −0,008 (yaklaşık −0,03★) düşer. Hezarfen uyarır, yolcular yorumlarda kurucuyu sorar.
 
@@ -261,6 +262,11 @@ Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükse
 
 ## Gece
 Uçuş defterinden sonra kasabada gece olur (3,5 sn, olay gecesi 5,5 sn; kasabayı gezerken bekler, en fazla 25 sn; alttaki düğmeyle hemen sabaha geçilir): ışıklar yanar, cırcır böcekleri öter, ateş böcekleri uçar. Bazen bir gece olayı olur ve ertesi sabah gazetede çıkar: festival gecesi fener alayı, Fiesta'da Balloon Glow, kışın ilk gecesi karlı ışıklı kasaba, bir otelde düğün havai fişekleri (%22), kayan yıldız (%10). Olaylar şimdilik yalnızca görsel ve haber.
+
+## Balon Şöleni (v111)
+Pazar açıldıktan sonra, en az 5 uçabilen balonla, 15 günde bir düzenlenebilir. Uçabilen bütün balonlar katılır (seçim yok: hepsi ya da hiçbiri), balon başına €1.000 ödenir (50 balon = €50.000). Şölen o gece oynar: balonlar kalkış alanından dalga dalga yükselip kasabanın üstünde sıralanır, brülörler müziğe göre yanıp söner, ışık soldan sağa dalga gibi geçer, sonra balonlar bir figüre geçer (8 balondan azsa V, 16'dan azsa halka, daha çoksa kalp), havai fişek ve alkışla biter (27 sn; gece sahnesi ayarı kapalı olsa da oynar, düğmeyle geçilebilir). Gösteri yalnızca oyuncunun kendi balonlarından oluşur: sayıları, boyları, desenleri ve özel şekilleri. Etkisi: popülerlik hemen +0,05 (+0,2★) ve 10 gün boyunca popülerlik tavanını otel ya da rehber gibi açar; sonraki 3 gün her gün balon başına 4 turist (fiyat isteğiyle çarpılır) koltuklara önce yerleşir; ertesi sabah gazete manşeti. Hezarfen, sakin bir sabah, koltuklar dolmuyorken (dünkü doluluk %90 altı) ve kasada maliyetin üç katı varken bir kez önerir. Girişler: Filo sayfası, Pazar'daki tanıtım kartı, popülerlik sayfası, Hezarfen'in "Şöleni gör" düğmesi.
+
+Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistlerinin bileti / şölen maliyeti) €1.000 ve balon başı günde 1,5 / 2 / 2,5 / 3,5 / 4 turistte 0,5 / 0,65 / 0,85 / 1,1 / 1,4; €1.500'de zarar. 10/15/20 gün aralığı sonucu az değiştirdi. Koltukları zaten dolu olan şirkette şölen kazandırmaz (turistler sığmaz), boş koltuğu olan şirkette yaklaşık 1,4 kat geri döner; bu yüzden Hezarfen yalnızca koltuklar boş kalırken önerir.
 
 ## Festivaller (Kapadokya)
 24. günden başlayarak 35 günde bir, 3 gün: Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.

@@ -13,6 +13,8 @@ struct TownNight {
     var t0: Double
     /// The sunrise glow at the dawn (0 … 1).
     var sunrise: Double = 0
+    /// The Balloon Show's sprites, resolved from the night canvas's symbols.
+    var sprite: ((BalloonShow.Look) -> GraphicsContext.ResolvedSymbol?)? = nil
 }
 
 /// The night camera (`nightBase`, `nightClamp`, `nightHorizon`): closer than the home screen, with a big sky.
@@ -246,6 +248,8 @@ extension TownPainter {
                     spark(cx, cy, w * 0.2 * r, col, 0.12 * a)
                 }
             }
+        case .show(let ids):
+            showLayer(screen: screen, hz: hz, ids: ids, t0: n.t0)
         default: break
         }
     }
@@ -306,26 +310,39 @@ struct NightView: View {
     @State private var start = Date()
 
     /// Seconds the night waits before passing by itself; an event night waits longer. Never past 25 s.
-    private var wait: Double { night.event == nil ? 3.5 : 5.5 }
+    /// The Balloon Show plays to its end whatever you do (the button skips it).
+    private var wait: Double { isShow ? BalloonShow.length : night.event == nil ? 3.5 : 5.5 }
+    private var isShow: Bool { if case .show? = night.event { return true }; return false }
+    private var limit: Double { isShow ? BalloonShow.length : 25 }
+    private var showLooks: [BalloonShow.Look] {
+        guard case .show(let ids)? = night.event, let s = store.state else { return [] }
+        return BalloonShow.looks(s, ids: ids)
+    }
+    private func camera(_ sz: CGSize) -> TownViewport { isShow ? BalloonShow.camera(sz) : NightCamera.base(sz) }
 
     var body: some View {
         ZStack(alignment: .bottom) {
             Color(hex: "#1b1840").ignoresSafeArea()
             if let s = store.state {
                 TimelineView(.animation) { tl in
-                    Canvas { ctx, sz in
+                    Canvas(renderer: { ctx, sz in
                         let now = tl.date
                         let t = now.timeIntervalSince(start)
                         let k = dawn.map { max(0.25, 1 - now.timeIntervalSince($0) * 0.75) } ?? min(1, t / 1.4)
-                        var v = view ?? NightCamera.base(sz)
+                        var v = view ?? camera(sz)
                         NightCamera.clamp(&v, sz)
                         v.hzFix = NightCamera.horizon(v, sz)
                         v.noLabels = true
+                        let rc = ctx
+                        let sprite: ((BalloonShow.Look) -> GraphicsContext.ResolvedSymbol?)? = isShow ? { look in rc.resolveSymbol(id: look) } : nil
                         var c = ctx
                         _ = TownPainter.render(&c, state: s, time: 1000 + t, viewport: v, size: sz,
                                                night: TownNight(k: k, event: night.event, t0: 1000,
-                                                                sunrise: dawn.map { min(1, now.timeIntervalSince($0)) } ?? 0))
-                    }
+                                                                sunrise: dawn.map { min(1, now.timeIntervalSince($0)) } ?? 0,
+                                                                sprite: sprite))
+                    }, symbols: {
+                        ForEach(showLooks, id: \.self) { look in BalloonShow.Sprite(state: s, look: look).tag(look) }
+                    })
                 }
                 .ignoresSafeArea()
                 .accessibilityHidden(true)
@@ -339,8 +356,10 @@ struct NightView: View {
             withAnimation(.easeOut(duration: 0.6)) { shown = true }
             SoundEngine.shared.ambienceBirds = false
             SoundEngine.shared.crickets(true)
+            if isShow { SoundEngine.shared.showMusic(true) }
         }
         .onDisappear {
+            SoundEngine.shared.showMusic(false)
             SoundEngine.shared.crickets(false)
             SoundEngine.shared.ambienceBirds = true
         }
@@ -372,7 +391,7 @@ struct NightView: View {
 
     private func morningButton(day: Int) -> some View {
         TimelineView(.animation(minimumInterval: 1 / 15)) { tl in
-            let left = min(wait - tl.date.timeIntervalSince(idle), 25 - tl.date.timeIntervalSince(start))
+            let left = isShow ? limit - tl.date.timeIntervalSince(start) : min(wait - tl.date.timeIntervalSince(idle), 25 - tl.date.timeIntervalSince(start))
             let p = dawn != nil ? 1 : min(max(1 - left / wait, 0), 1)
             Button {
                 SoundEngine.shared.play(.click)
@@ -406,7 +425,7 @@ struct NightView: View {
         while dawn == nil {
             try? await Task.sleep(for: .milliseconds(200))
             let now = Date()
-            if now.timeIntervalSince(idle) >= wait || now.timeIntervalSince(start) >= 25 { bringMorning() }
+            if (!isShow && now.timeIntervalSince(idle) >= wait) || now.timeIntervalSince(start) >= limit { bringMorning() }
             if case .fireworks = night.event { SoundEngine.shared.firework(now.timeIntervalSince(start)) }
         }
     }
@@ -415,8 +434,9 @@ struct NightView: View {
     private func bringMorning() {
         guard dawn == nil else { return }
         dawn = Date()
+        SoundEngine.shared.showMusic(false)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            var v = view ?? NightCamera.base(size)
+            var v = view ?? camera(size)
             NightCamera.clamp(&v, size)
             store.endNight(camera: v)
         }
@@ -426,7 +446,7 @@ struct NightView: View {
         DragGesture(minimumDistance: 4)
             .onChanged { g in
                 idle = Date()
-                var v = view ?? NightCamera.base(size)
+                var v = view ?? camera(size)
                 v.ox += g.translation.width - lastDrag.width
                 v.oy += g.translation.height - lastDrag.height
                 lastDrag = g.translation
@@ -439,7 +459,7 @@ struct NightView: View {
         MagnifyGesture()
             .onChanged { g in
                 idle = Date()
-                let B = NightCamera.base(size), st = pinchStart ?? view ?? B
+                let B = NightCamera.base(size), st = pinchStart ?? view ?? camera(size)
                 if pinchStart == nil { pinchStart = st }
                 let z = min(max(st.z * g.magnification, B.z * 0.8), B.z * 2.8), k = z / st.z, p = g.startLocation
                 view = TownViewport(z: z, ox: p.x - (p.x - st.ox) * k, oy: p.y - (p.y - st.oy) * k)

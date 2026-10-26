@@ -265,6 +265,7 @@ extension PaperItem {
         case .worldRecord(let r): "worldRecord.\(r.rawValue)"
         case .deed(let d): "deed.\(d.rawValue)"
         case .milestone(let d): d == 365 ? "year" : "milestone"
+        case .show: "show"
         }
     }
 
@@ -288,6 +289,7 @@ extension PaperItem {
         case .inspectorFine: loc("paper.inspectorFine", company)
         case .worldRecord: loc("paper.worldRecord", company)
         case .milestone(let d): d == 365 ? loc("paper.year", company) : loc("paper.milestone", company, num(d))
+        case .show: loc("paper.show", company)
         }
     }
 
@@ -304,6 +306,7 @@ extension PaperItem {
         case let .upgrade(b, lv): b.levelTitle(lv)
         case .night(let n): n.subline
         case .inspectorFine(let fine): loc("paper.inspectorFine.sub", eur(fine))
+        case .show(let n): loc("paper.show.sub", num(n))
         default: loc("paper.\(key).sub")
         }
     }
@@ -317,6 +320,7 @@ extension NightEvent {
         case .snow: "snow"
         case .fireworks: "fireworks"
         case .shootingStar: "shooting"
+        case .show: "show"
         }
     }
 
@@ -328,6 +332,7 @@ extension NightEvent {
         switch self {
         case .lanterns(let f): loc("night.lanterns", festivalName(f))
         case .fireworks(let h): loc("night.fireworks", h.title)
+        case .show(let ids): loc("night.show", num(ids.count))
         default: loc("night.\(textKey)")
         }
     }

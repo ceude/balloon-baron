@@ -60,6 +60,8 @@ final class GameStore {
     var showRescue = false
     /// The flagship you fly is in repair: the offer to fly another balloon meanwhile (v110).
     var showTempFlag = false
+    /// The Balloon Show's card (v111).
+    var showShowCard = false
     /// A new postcard, and the album from the menu.
     var postcard: Achievement?
     var showAlbum = false
@@ -82,7 +84,7 @@ final class GameStore {
     private var busy: Bool {
         showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
-            || morningEvent != nil || showRescue || showTempFlag || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+            || morningEvent != nil || showRescue || showTempFlag || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
     }
 
@@ -369,9 +371,14 @@ final class GameStore {
     }
 
     /// Hezarfen's bazaar lesson ends at the bazaar.
-    func dismissHezarfen(openBazaar: Bool) {
+    func dismissHezarfen(openBazaar: Bool, openShow: Bool = false) {
         hezarfen = nil
-        if openBazaar { showBazaar = true } else { showNextHezarfen() }
+        if openBazaar { showBazaar = true } else if openShow { showShowCard = true } else { showNextHezarfen() }
+    }
+
+    func closeShowCard() {
+        showShowCard = false
+        showNextHezarfen()
     }
 
     func dismissPopup() {
@@ -519,7 +526,9 @@ final class GameStore {
     func closeReport() {
         var ev: NightEvent?
         act { ev = $0.startNight() }
-        if UserDefaults.standard.object(forKey: Self.nightSceneKey) as? Bool == false {
+        // A paid Balloon Show always plays; other nights follow the setting.
+        let show: Bool = { if case .show? = ev { return true }; return false }()
+        if !show && UserDefaults.standard.object(forKey: Self.nightSceneKey) as? Bool == false {
             report = nil
             endNight()
             return

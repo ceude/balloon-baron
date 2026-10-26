@@ -201,6 +201,15 @@ extension Game {
             lg.designRep = designRep
             if rng.chance(0.25), let d = state.design(of: rng.pick(painted)) { addReview(.design, ["d": String(d.id)]) }
         }
+        // v111: the Balloon Show is tonight.
+        if state.local.showTonight == state.day {
+            let n = state.local.showIDs?.count ?? 0
+            state.rep += Rules.showRep
+            state.local.showUntil = state.day + Rules.showDays
+            state.local.lastShow = state.day
+            ev.append(.showTonight(balloons: n))
+            addPaper(.show(balloons: n))
+        }
         // Popularity needs hotels or guides past 4.2★; an influencer campaign stretches it to 4.5★.
         if !state.prOK && state.rep > state.prCap {
             state.rep = state.prCap

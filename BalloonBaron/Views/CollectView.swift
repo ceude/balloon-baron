@@ -172,6 +172,7 @@ struct CollectView: View {
         case .guide: loc("collect.src.guide")
         case .influencer: loc("collect.src.influencer")
         case .popularity: loc("collect.src.popularity")
+        case .show: loc("collect.src.show")
         }
     }
 
@@ -182,6 +183,7 @@ struct CollectView: View {
         case .guide: Color(hex: "#3ad0c0")
         case .influencer: Color(hex: "#ff6fa8")
         case .popularity: Color(hex: "#b79cff")
+        case .show: Color(hex: "#ffc23d")
         }
     }
 

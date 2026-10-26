@@ -2,7 +2,7 @@ import Foundation
 
 /// Where today's passengers come from, for the collection screen.
 public enum PaxSource: Equatable, Hashable, Sendable {
-    case tourists, hotel(Hotel), guide, influencer, popularity
+    case tourists, hotel(Hotel), guide, influencer, popularity, show
 }
 
 public struct MarketResult: Equatable, Sendable {
@@ -78,7 +78,8 @@ extension Game {
         let hotels = s.activeHotels.reduce(0) { acc, h in
             acc + jsRound(Double(h.guests) * (s.ownHotels.contains(h) ? 1.5 : 1) * (winter ? 0.6 : 1))
         }
-        return (s.demand ?? 0) + hotels + (s.day <= s.guideUntil ? 5 : 0) + (s.day <= s.influencerUntil ? 8 : 0) + popularityBonusRaw()
+        return (s.demand ?? 0) + hotels + (s.day <= s.guideUntil ? 5 : 0) + (s.day <= s.influencerUntil ? 8 : 0)
+            + (s.day <= (s.local.showUntil ?? 0) ? jsRound(showTourists) : 0) + popularityBonusRaw()
     }
 
     /// Ticket money (plus the founder premium) you'd make at `price` with today's fleet.
@@ -126,6 +127,7 @@ extension Game {
         }
         if s.day <= s.guideUntil { out.append((.guide, jsRound(5 * Rules.willing(p)))) }
         if s.day <= s.influencerUntil { out.append((.influencer, jsRound(8 * Rules.willing(p)))) }
+        if s.day <= (s.local.showUntil ?? 0) { out.append((.show, jsRound(showTourists * Rules.willing(p)))) }
         out.append((.popularity, popularityBonus()))
         return out.filter { $0.1 > 0 }
     }

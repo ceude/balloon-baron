@@ -58,6 +58,8 @@ public enum PaperItem: Codable, Equatable, Sendable {
     case deed(HoldingDeed)
     /// The company's round day.
     case milestone(Int)
+    /// v111: last night's Balloon Show, with this many balloons.
+    case show(balloons: Int)
 
     public var priority: Int {
         switch self {
@@ -65,7 +67,7 @@ public enum PaperItem: Codable, Equatable, Sendable {
         case .vip, .wedding, .record, .night, .milestone: 2
         case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine, .deed: 3
         case .accident(_, _, let severe): severe ? 5 : 3
-        case .redCaught, .festival, .newEntrant, .passedBoss: 4
+        case .redCaught, .festival, .newEntrant, .passedBoss, .show: 4
         case .antitrust, .seized: 5
         case .rivalBankrupt, .worldBaron, .worldRecord: 6
         }
@@ -83,6 +85,8 @@ public enum NightEvent: Codable, Equatable, Sendable {
     /// A wedding's fireworks over one of the hotels.
     case fireworks(Hotel)
     case shootingStar
+    /// v111: your Balloon Show over the town, with these balloons.
+    case show(balloons: [Int])
 }
 
 extension Game {
@@ -234,7 +238,10 @@ extension Game {
     /// The night between two days. Picks what lights it up (if anything) and puts it in tomorrow's paper.
     public mutating func startNight() -> NightEvent? {
         let ev: NightEvent?
-        if let f = state.festival {
+        if state.local.showTonight == state.day - 1, let ids = state.local.showIDs {
+            // The Balloon Show has its own headline (made in finishDay).
+            return .show(balloons: ids)
+        } else if let f = state.festival {
             ev = .lanterns(festival: f.index)
         } else if state.fiesta != nil {
             ev = .balloonGlow

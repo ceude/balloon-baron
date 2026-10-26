@@ -216,6 +216,7 @@ extension DayEvent {
         case let .pilotPromoted(name, level, wage): loc("event.pilotPromoted", name, level.title, eur(wage))
         case let .envelopeWorn(b): loc("event.envelopeWorn", bname(b))
         case .licenseExpiring: loc("event.licenseExpiring")
+        case .showTonight(let n): loc("event.showTonight", num(n))
         case .licenseRenewedByFlight: loc("event.licenseRenewedByFlight")
         case let .founderAbsent(days): loc("event.founderAbsent", num(days))
         case let .antitrustFine(share, fine): loc("event.antitrustFine", num(share), eur(fine))

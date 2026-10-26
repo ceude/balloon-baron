@@ -204,6 +204,14 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var flagReturn: FlagReturn?
     /// The flagship repair (its `damagedUntil`) already asked about, so the offer comes once per repair.
     public var flagAskedUntil: Int?
+    /// v111 Balloon Show: the day it's booked for (tonight), the balloons in it, the next day one can be booked,
+    /// the last day its tourists come, the day it was held, and how many so far.
+    public var showTonight: Int?
+    public var showIDs: [Int]?
+    public var showNext: Int?
+    public var showUntil: Int?
+    public var lastShow: Int?
+    public var showCount: Int?
 
     init(rivals: [Rival]) { self.rivals = rivals }
 

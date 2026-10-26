@@ -37,6 +37,7 @@ final class SoundEngine {
     private var lastTick: TimeInterval = 0
     private var cricketTask: Task<Void, Never>?
     private var lastPop = -10.0
+    private var showTask: Task<Void, Never>?
     private var started = false
 
     private init() {}
@@ -82,6 +83,40 @@ final class SoundEngine {
                     self.tone(400, 360, 0.45, .sine, 0.03, 0.95)
                 }
                 try? await Task.sleep(for: .milliseconds(380 + Int.random(in: 0..<520)))
+            }
+        }
+    }
+
+    /// The Balloon Show's music (`showMusic`): a steady beat with a rising pentatonic tune, burner roars as the balloons
+    /// rise and dance, a fanfare and applause at the end. Sent beat by beat, so skipping the show stops it at once.
+    func showMusic(_ on: Bool) {
+        showTask?.cancel()
+        showTask = nil
+        guard on else { synth.send(.crowd(false)); return }
+        guard started else { return }
+        showTask = Task { @MainActor [weak self] in
+            let pent = [262.0, 294, 330, 392, 440, 523, 587, 659, 784, 880], steps = [0, 2, 4, 3, 5, 4, 6, 7]
+            func roar(_ at: Double, _ dur: Double, _ vol: Double) {
+                self?.synth.send(.voice(VoiceSpec(noise: true, filter: .bandpass, filterFreq: 420, vol: vol, attack: 0.08,
+                                                  decayEnd: dur, floor: 0.001, length: dur, delay: at)))
+            }
+            try? await Task.sleep(for: .milliseconds(1200))
+            for i in 0..<6 { roar(0.3 + Double(i) * 0.7, 0.9, 0.05) }
+            for b in 0..<50 {
+                guard let self, !Task.isCancelled else { return }
+                let at = 1 + Double(b) * 0.5
+                if at > 25 { break }
+                if b == 1 { self.synth.send(.crowd(true)) }
+                if at >= 3 { self.tone(130, 45, 0.22, .sine, 0.16) }
+                let step = min(9, steps[b % 8] + (at > 13 ? 2 : 0))
+                self.tone(pent[step], pent[step], 0.32, .triangle, 0.05)
+                if at > 7 && b % 2 == 0 { self.tone(pent[step] / 2, pent[step] / 2, 0.5, .sine, 0.05) }
+                if at > 15 && b % 4 == 0 { self.tone(pent[min(9, step + 2)] * 2, pent[min(9, step + 2)] * 2, 0.25, .sine, 0.03, 0.25) }
+                if at >= 8.5 && at < 13.5 && b % 2 == 1 { roar(0.2, 0.25, 0.06) } // burners on the beat
+                if at == 21.5 { roar(0.3, 2.4, 0.08) }
+                if at == 22 { for (i, f) in [523.0, 659, 784, 1047].enumerated() { self.tone(f, f, 0.6, .triangle, 0.07, 0.2 + Double(i) * 0.12) } }
+                if at == 23.5 { self.synth.send(.crowd(false)); self.play(.applause) }
+                try? await Task.sleep(for: .milliseconds(500))
             }
         }
     }
