@@ -588,7 +588,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 #vent{position:absolute;left:max(16px, env(safe-area-inset-left, 0px));bottom:max(22px, env(safe-area-inset-bottom, 0px));z-index:4;width:76px;height:76px;border-radius:50%;
   background:#fff;color:var(--ink);font-family:var(--cond);font-weight:800;font-size:17px;box-shadow:0 6px 0 rgba(0,0,0,.3);touch-action:none;-webkit-user-select:none;user-select:none}
 #vent.on{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.3),0 0 0 7px rgba(90,169,230,.45)}
-#tip.up{bottom:max(96px, calc(env(safe-area-inset-bottom, 0px) + 86px))}
+#tip.up{bottom:auto;top:var(--tipTop, 66px);box-sizing:border-box;width:min(320px,calc(100% - 180px));font-size:13px;line-height:1.35;padding:9px 12px;border-radius:14px} /* v111.1: over the sky, under the flight panel, not over the field */
 .dem{font-size:13px;line-height:1.35;color:rgba(255,255,255,.8);text-align:center}
 .dem b{color:#fff;font-family:var(--cond);font-size:16px}
 #hCash,#hRep{cursor:pointer}
@@ -1210,8 +1210,9 @@ function newWeather() {
   else if (!S.firstMis) mission = null;
   return { flag, surf: Math.round(surf), layers: L, target, seed: Math.floor(Math.random() * 1e9), mission, valley: 220 + (target - 220) * rnd(.35, .6) };
 }
-function windAt(alt, t) {
-  const Wx = S.weather, Ls = Wx.layers, g = FLAGS[Wx.flag].gust;
+/* the layer wind at a height, without gusts: what the arrows on the left and the tag under the basket show */
+function windBase(alt) {
+  const Ls = S.weather.layers;
   let v;
   if (alt <= CENTERS[0]) v = Ls[0];
   else if (alt >= CENTERS[3]) v = Ls[3];
@@ -1222,8 +1223,9 @@ function windAt(alt, t) {
     const b = BANDS[i + 1][0], s = clamp((alt - (b - WIND_BLEND / 2)) / WIND_BLEND, 0, 1), sm = s * s * (3 - 2 * s);
     v = lerp(Ls[i], Ls[i + 1], sm);
   }
-  return v + g * .6 * (Math.sin(t * .11 + alt * .013) + .6 * Math.sin(t * .37 + alt * .031));
+  return v;
 }
+function windAt(alt, t) { return windBase(alt) + FLAGS[S.weather.flag].gust * .6 * (Math.sin(t * .11 + alt * .013) + .6 * Math.sin(t * .37 + alt * .031)); }
 let terrain = [], bgBalloons = [], wires = [];
 function buildWorld() {
   const R = mulberry32(S.weather.seed), tx = S.weather.target;
@@ -3826,7 +3828,7 @@ function startFlight(pax) {
   }
   mode = 'flight'; $('sheet').hidden = true; $('intro').hidden = true; $('burn').hidden = false; $('vent').hidden = true;
   const ab = $('abort'); ab.hidden = false; ab.disabled = false; ab.textContent = 'Uçuştan vazgeç';
-  const tip = $('tip'); tip.hidden = false; tip.className = 'up';
+  const tip = $('tip'); tip.hidden = false; tip.className = 'up'; tip.style.setProperty('--tipTop', ($('hud').offsetHeight + 10) + 'px');
   tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> Hedef: ${S.weather.target > 220 ? 'sağdaki' : 'soldaki'} iniş alanı.` : '<b>Hedefin sağdaki iniş alanı.</b> Brülöre basılı tut: balon ısınır ve yükselir. Bırak: soğur ve alçalır. Her yükseklikte rüzgâr farklı eser; seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
 }
 /* v111: the flying coach. A TestFlight player didn't see that the landing field was the goal, lost track of the wind
@@ -4421,6 +4423,10 @@ function draw(dt) {
   const tx = S.weather.target, lzx0 = sx(tx - 70), lzx1 = sx(tx + 70);
   ctx.fillStyle = mix('#4b5a34', '#a7b46a', p); ctx.fillRect(lzx0, groundY - 2, lzx1 - lzx0, 7);
   for (const fx of [tx - 70, tx + 70]) { const X = sx(fx); ctx.strokeStyle = '#2a1a14'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X, groundY); ctx.lineTo(X, groundY - 22); ctx.stroke(); ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.moveTo(X, groundY - 22); ctx.lineTo(X + 11, groundY - 18); ctx.lineTo(X, groundY - 14); ctx.fill(); }
+  /* v111.1: the landing field glows as a soft column up the sky, like the thermal, so the goal is easy to spot */
+  if (f) { const X = sx(tx), wv = sx(tx + 70) - X;
+    for (const [k, a] of [[1, .13], [.55, .16]]) { const g = ctx.createLinearGradient(0, groundY, 0, topY); g.addColorStop(0, `rgba(255,200,80,${a})`); g.addColorStop(.75, `rgba(255,200,80,${a * .35})`); g.addColorStop(1, 'rgba(255,200,80,0)'); ctx.fillStyle = g; ctx.fillRect(X - wv * k, topY, wv * 2 * k, groundY - topY); }
+    ctx.font = '800 13px "Barlow Condensed", sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('İNİŞ ALANI', X, sy(560)); ctx.textAlign = 'left'; }
   const trx = sx(tx + 35); ctx.fillStyle = '#f2eee6'; ctx.fillRect(trx, groundY - 13, 22, 9); ctx.fillRect(trx + 14, groundY - 18, 9, 6); ctx.fillStyle = '#7b5a3c'; ctx.fillRect(trx - 18, groundY - 10, 16, 6);
   ell(trx + 4, groundY - 3, 3, 3, '#1d1418'); ell(trx + 18, groundY - 3, 3, 3, '#1d1418'); ell(trx - 10, groundY - 3, 3, 3, '#1d1418');
   const lx = sx(220); ctx.fillStyle = mix('#5c4a3a', '#b9996e', p); ctx.fillRect(lx - 40, groundY - 1, 80, 4);
@@ -4464,7 +4470,7 @@ function draw(dt) {
       ctx.restore();
       /* v111: the wind where the balloon is, right under the basket: green when it carries you toward the landing field */
       if (f.alt > 3 && !f.done) {
-        const wv = windAt(f.alt, f.t), wd = Math.sign(wv) || 1, good = wv * Math.sign(S.weather.target - f.x) > .3, lbl = `${Math.round(Math.abs(wv) * 3.6)} km/s`;
+        const wv = windBase(f.alt), wd = Math.sign(wv) || 1, good = wv * Math.sign(S.weather.target - f.x) > .3, lbl = `${Math.round(Math.abs(wv) * 3.6)} km/s`;
         ctx.font = '800 13px "Barlow Condensed", system-ui, sans-serif'; const tw = ctx.measureText(lbl).width, pw = tw + 30, py = by + 16;
         ctx.fillStyle = good ? 'rgba(34,164,93,.92)' : 'rgba(229,67,47,.88)'; rrect(bx - pw / 2, py - 11, pw, 22, 11); ctx.fill();
         ctx.strokeStyle = ctx.fillStyle = '#fff'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; const a0 = bx - pw / 2 + 8, a1 = a0 + 12, ax0 = wd > 0 ? a0 : a1, ax1 = wd > 0 ? a1 : a0;

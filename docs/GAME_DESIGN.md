@@ -266,7 +266,9 @@ Uçuş defterinden sonra kasabada gece olur (3,5 sn, olay gecesi 5,5 sn; kasabay
 ## İlk uçuşlar (v111.1)
 TestFlight gözleminden: oyuncu hedefin iniş alanı olduğunu anlamadı, rüzgâr katmanlarının kesik çizgilerini görmedi, çizginin hemen üstünde rüzgârın değişmediğini fark etti ve yakıtı bitirip ilk uçuşta kaza yaptı. Bu yüzden:
 - Rüzgâr artık katmanlar arasındaki kesik çizgide değişir (24 m'lik yumuşak geçiş), çizgiler daha belirgin ve yanlarında yüksekliği yazar.
-- Sepetin altında anlık rüzgâr etiketi: hedefe taşıyorsa yeşil, uzaklaştırıyorsa kırmızı.
+- Sepetin altında anlık rüzgâr etiketi: hedefe taşıyorsa yeşil, uzaklaştırıyorsa kırmızı. Esintisiz katman rüzgârını gösterir, böylece soldaki katman etiketiyle aynı sayıdır.
+- İniş alanı, termik gibi gökyüzüne uzanan yumuşak bir ışık sütunuyla işaretlidir.
+- Uçuştaki ipuçları ve uyarılar sol üstte, uçuş panelinin yanında çıkar; balonu ve iniş alanını kapatmaz.
 - İlk üç kendi uçuşunda (Hezarfen koçluğu): kalkışta hedef hatırlatması, hedeften uzaklaşırken, dururken ve iniş alanının üstündeyken kısa ipuçları; iniş alanı oku balonun hizasında ve sallanır. Yakıt %30'un altına inince her uçuşta uyarı.
 - Acemi koruması: ilk üç kendi uçuşunda kaza ya da sert iniş tamirde 1 gün tutar.
 - Fiyat dersi: 2.–12. günlerde dün koltuk boş kaldıysa Hezarfen fiyatı anlatır, "Fiyatı ayarla" düğmesi fiyat sayfasını açar.

@@ -79,6 +79,11 @@ public enum FlightWorld {
 
     /// Wind speed (m/s, + is east) at an altitude: each band's wind, changing at the band edges, with gusts.
     public static func wind(at alt: Double, time t: Double, _ w: Weather) -> Double {
+        baseWind(at: alt, w) + w.flag.gust * 0.6 * (sin(t * 0.11 + alt * 0.013) + 0.6 * sin(t * 0.37 + alt * 0.031))
+    }
+
+    /// The layer wind at a height without gusts: what the arrows on the left and the tag under the basket show.
+    public static func baseWind(at alt: Double, _ w: Weather) -> Double {
         let ls = w.layers, c = Rules.windCenters
         var v: Double
         if alt <= c[0] {
@@ -94,7 +99,7 @@ public enum FlightWorld {
             let s = clamp((alt - (b - Rules.windBlend / 2)) / Rules.windBlend, 0, 1), sm = s * s * (3 - 2 * s)
             v = lerp(ls[i], ls[i + 1], sm)
         }
-        return v + w.flag.gust * 0.6 * (sin(t * 0.11 + alt * 0.013) + 0.6 * sin(t * 0.37 + alt * 0.031))
+        return v
     }
 }
 

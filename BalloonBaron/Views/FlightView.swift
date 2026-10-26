@@ -519,20 +519,21 @@ private struct FlightStage: View {
 
     @ViewBuilder private var tipLayer: some View {
         if let t = model.tip, !model.sim.done {
-            richText(tipText(t), size: 14.5)
+            // v111.1: up in the sky left of the flight panel, so it never covers the balloon or the landing field.
+            richText(tipText(t), size: 13)
                 .foregroundColor(Theme.ink)
-                .lineSpacing(3)
+                .lineSpacing(2)
                 .fixedSize(horizontal: false, vertical: true)
-                .padding(.horizontal, 16)
-                .padding(.vertical, 12)
-                .frame(width: max(180, min(420, size.width - 140)), alignment: .leading)
-                .background(Color.white, in: RoundedRectangle(cornerRadius: 18))
+                .padding(.horizontal, 12)
+                .padding(.vertical, 9)
+                .frame(width: max(170, min(320, size.width - 180)), alignment: .leading)
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 14))
                 .compositingGroup()
                 .shadow(color: .black.opacity(0.25), radius: 10, y: 6)
                 .allowsHitTesting(false)
                 .padding(.leading, max(16, insets.leading))
-                .padding(.bottom, max(96, insets.bottom + 86))
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomLeading)
+                .padding(.top, insets.top + 10)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
         }
     }
 
@@ -638,6 +639,7 @@ private enum FlightPainter {
                                       background: m.bg, inFlight: true)
         if look.mission == .valley { valleyZone(&ctx, cam: cam, vx: look.valley) }
         ScenePainter.landingField(&ctx, cam: cam, target: look.target, p: p)
+        fieldColumn(&ctx, cam: cam, target: look.target)
         let lx = cam.sx(FlightWorld.launchX)
         ScenePainter.rect(&ctx, lx - 40, groundY - 1, 80, 4, ScenePainter.mix("#5c4a3a", "#b9996e", p))
         ScenePainter.obstacles(&ctx, cam: cam, f.obstacles, region: look.region, p: p)
@@ -859,11 +861,25 @@ private enum FlightPainter {
 
     // MARK: Overlays drawn in the scene
 
+    /// v111.1: the landing field glows as a soft column up the sky, like the thermal, so the goal is easy to spot.
+    static func fieldColumn(_ ctx: inout GraphicsContext, cam: SceneCamera, target tx: Double) {
+        let X = cam.sx(tx), wv = cam.sx(tx + FlightWorld.landingZone) - X, top = cam.topY, gy = cam.groundY
+        for (k, a) in [(1.0 as CGFloat, 0.13), (0.55, 0.16)] {
+            let warm = Color(red: 1, green: 200 / 255, blue: 80 / 255)
+            ctx.fill(Path(CGRect(x: X - wv * k, y: top, width: wv * 2 * k, height: gy - top)),
+                     with: .linearGradient(Gradient(stops: [.init(color: warm.opacity(a), location: 0), .init(color: warm.opacity(a * 0.35), location: 0.75),
+                                                             .init(color: warm.opacity(0), location: 1)]),
+                                           startPoint: CGPoint(x: X, y: gy), endPoint: CGPoint(x: X, y: top)))
+        }
+        ctx.draw(Text(verbatim: loc("flight.fieldColumn")).font(sceneFont(13, .heavy, condensed: true)).foregroundColor(.white),
+                 at: CGPoint(x: X, y: cam.sy(560)))
+    }
+
     /// v111: the wind where the balloon is, right under the basket: green when it carries you toward the field.
     static func liveWind(_ ctx: inout GraphicsContext, m: FlightModel, bx: CGFloat, by: CGFloat) {
         let f = m.sim
         guard f.alt > 3, !f.done else { return }
-        let wv = FlightWorld.wind(at: f.alt, time: f.t, f.weather), wd: CGFloat = wv < 0 ? -1 : 1
+        let wv = FlightWorld.baseWind(at: f.alt, f.weather), wd: CGFloat = wv < 0 ? -1 : 1
         let good = wv * (f.weather.target - f.x >= 0 ? 1 : -1) > 0.3
         let label = ctx.resolve(Text(verbatim: loc("flight.kmh", num(Int((abs(wv) * 3.6).rounded()))))
             .font(sceneFont(13, .heavy, condensed: true)).foregroundColor(.white))
