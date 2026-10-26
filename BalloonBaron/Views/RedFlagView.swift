@@ -121,6 +121,30 @@ struct GroundedView: View {
     }
 }
 
+/// `confirmSkip()` (v110): skipping a flyable green or yellow day asks once, since wages and upkeep are paid anyway.
+struct SkipDayView: View {
+    @Environment(GameStore.self) private var store
+    let onClose: () -> Void
+
+    var body: some View {
+        ModalCard {
+            CardText.title(loc("skip.title"))
+            CardText.lead(loc("skip.lead"))
+            Button(loc("skip.fly")) {
+                SoundEngine.shared.play(.click)
+                onClose()
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+            Button {
+                SoundEngine.shared.play(.click)
+                onClose()
+                store.fly(skip: true)
+            } label: { Text(loc("home.skip")).frame(maxWidth: .infinity) }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+        }
+    }
+}
+
 /// `confirmRed()`: warns before launching on a red-flag day. Overlay it; `onClose` hides it.
 struct RedFlagView: View {
     @Environment(GameStore.self) private var store

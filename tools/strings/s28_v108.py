@@ -327,3 +327,13 @@ add("hez.noRivals",
 # v110: the night scene can be switched off
 add("settings.night", "Night scene", "Gece sahnesi", "Nachtszene", "Escena nocturna", "夜のシーン", "밤 장면")
 add("settings.collect", "Boarding animation", "Yolcu toplama animasyonu", "Einstiegsanimation", "Animación de embarque", "搭乗アニメーション", "탑승 애니메이션")
+
+# v110: skipping a flyable day asks first
+add("skip.title", "Skip today?", "Bugünü pas geç?", "Heute aussetzen?", "¿Saltar hoy?", "今日は休む？", "오늘은 쉴까요?")
+add("skip.lead", "The weather is fine for flying. If you skip, there's no ticket money today, but wages and upkeep are paid anyway.",
+    "Hava uçuşa uygun. Pas geçersen bugün bilet geliri olmaz ama maaşlar ve bakım yine ödenir.",
+    "Das Wetter passt zum Fliegen. Setzt du aus, gibt es heute keine Ticketeinnahmen, Löhne und Wartung zahlst du trotzdem.",
+    "El tiempo es bueno para volar. Si saltas el día, hoy no habrá ingresos por billetes, pero los sueldos y el mantenimiento se pagan igual.",
+    "飛ぶのに良い天気だ。休むと今日のチケット収入はないが、給料と維持費はかかる。",
+    "비행하기 좋은 날씨입니다. 쉬면 오늘 티켓 수입은 없지만 급여와 유지비는 그대로 나갑니다.")
+add("skip.fly", "No, let's fly", "Vazgeç, uçalım", "Nein, wir fliegen", "No, vamos a volar", "やめて、飛ぼう", "아니요, 비행할게요")

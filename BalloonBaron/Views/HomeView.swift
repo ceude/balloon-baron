@@ -17,6 +17,8 @@ struct HomeAlert: Identifiable {
 struct HomeView: View {
     @Environment(GameStore.self) private var store
     @State private var confirmRed = false
+    /// Skipping a flyable day asks once (v110): wages and upkeep are paid anyway.
+    @State private var confirmSkip = false
     /// Balloons meant to fly that have no pilot: a card before collecting passengers (`pilotCheck`).
     @State private var groundedWarning = false
     /// Day on which the player expanded the alerts; they collapse again the next morning.
@@ -48,6 +50,9 @@ struct HomeView: View {
         if let game = store.game {
             content(game)
                 .overlay {
+                    if confirmSkip {
+                        SkipDayView(onClose: { confirmSkip = false })
+                    }
                     if confirmRed {
                         RedFlagView(onClose: { confirmRed = false })
                             .transition(.opacity)
@@ -770,7 +775,10 @@ struct HomeView: View {
     private func actionButtons(_ s: GameState) -> some View {
         let none = s.flyingToday.isEmpty
         return HStack(spacing: 10) {
-            BigButton(title: loc("home.skip"), style: .ghost) { store.fly(skip: true) }
+            BigButton(title: loc("home.skip"), style: .ghost) {
+                // A flyable green or yellow day asks first; on a red flag, or with nothing to fly, it just passes.
+                if s.weather?.flag != .red && !none { confirmSkip = true } else { store.fly(skip: true) }
+            }
                 .frame(width: 140)
             BigButton(title: loc(none ? "home.noneFlying" : "home.collect")) {
                 Haptics.press()

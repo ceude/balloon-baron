@@ -6748,7 +6748,16 @@ $('hqSheet').addEventListener('click', e => { if (e.target.id === 'hqSheet') { H
 
 /* ---------- boot ---------- */
 $('go').onclick = () => pilotCheck(() => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); });
-$('skip').onclick = () => launch(true);
+/* v110: skipping a flyable green or yellow day asks once, since wages and upkeep are paid anyway */
+$('skip').onclick = () => {
+  if (S.weather.flag === 'red' || !flying().length) { launch(true); return; }
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Bugünü pas geç?'));
+  c.appendChild(h('p', 'lead', 'Hava uçuşa uygun. Pas geçersen bugün bilet geliri olmaz ama maaşlar ve bakım yine ödenir.'));
+  const fly = h('button', 'big', 'Vazgeç, uçalım'); fly.onclick = () => { sfx('click'); m.hidden = true; };
+  const skip = h('button', 'ghost', 'Pas geç'); skip.style.width = '100%'; skip.onclick = () => { sfx('click'); m.hidden = true; launch(true); };
+  c.append(fly, skip); m.appendChild(c); m.hidden = false;
+};
 let psBase = null;
 function priceSheet(open) { $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; psBase = null; if (open) { renderAct(); psBase = estIncome(); renderAct(); } else { save(); refresh(); } }
 $('pcard').onclick = () => priceSheet(true);

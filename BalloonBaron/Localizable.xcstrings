@@ -61706,6 +61706,129 @@
         }
       }
     },
+    "skip.fly": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nein, wir fliegen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No, let's fly"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No, vamos a volar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "やめて、飛ぼう"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아니요, 비행할게요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vazgeç, uçalım"
+          }
+        }
+      }
+    },
+    "skip.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Wetter passt zum Fliegen. Setzt du aus, gibt es heute keine Ticketeinnahmen, Löhne und Wartung zahlst du trotzdem."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The weather is fine for flying. If you skip, there's no ticket money today, but wages and upkeep are paid anyway."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El tiempo es bueno para volar. Si saltas el día, hoy no habrá ingresos por billetes, pero los sueldos y el mantenimiento se pagan igual."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛ぶのに良い天気だ。休むと今日のチケット収入はないが、給料と維持費はかかる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행하기 좋은 날씨입니다. 쉬면 오늘 티켓 수입은 없지만 급여와 유지비는 그대로 나갑니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hava uçuşa uygun. Pas geçersen bugün bilet geliri olmaz ama maaşlar ve bakım yine ödenir."
+          }
+        }
+      }
+    },
+    "skip.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute aussetzen?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip today?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Saltar hoy?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日は休む？"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘은 쉴까요?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugünü pas geç?"
+          }
+        }
+      }
+    },
     "sponsor.bank": {
       "extractionState": "manual",
       "localizations": {
