@@ -4363,14 +4363,18 @@ function scenery(p, groundY, topY, camX, kx, dt, showBg, f) {
   ctx.beginPath(); ctx.moveTo(0, groundY);
   for (let x = -20; x <= W + 40; x += 40) { const wx = (x / kx + camX * .15) * .01; ctx.lineTo(x, groundY - vh * (.11 + .06 * Math.sin(wx * 1.7) + .035 * Math.sin(wx * 4.3))); }
   ctx.lineTo(W, groundY); ctx.closePath(); ctx.fill();
+  /* v111.3: the far row sinks into the haze of the horizon (paler, a little smaller, a mist over its feet) so it never
+     reads as the chimneys you can hit */
+  const hzc = nile ? mix('#f2a050', '#fff0c0', p) : desert ? mix('#f39a5a', '#ffe6b0', p) : mix('#f08a4a', '#ffe2ac', p), far = c => mix(c, hzc, .45);
   const R = mulberry32(5);
   for (let i = 0; i < 40; i++) {
-    const wx = i * 130 + R() * 60 - 600, x = (wx - camX * .45) * kx, hh = vh * (.07 + R() * .1), ww = hh * (.4 + R() * .2);
+    const wx = i * 130 + R() * 60 - 600, x = (wx - camX * .45) * kx, hh = vh * (.07 + R() * .1) * .85, ww = hh * (.4 + R() * .2);
     if (x < -60 || x > W + 60) continue;
-    if (nile) { if (i % 5 === 2) temple(x, groundY + 2, ww * 3, hh * .55, mix('#6a5040', '#e2c08a', p)); else datePalm(x, groundY + 2, hh * .9, mix('#1e3a22', '#4a7a3a', p), mix('#3a2a1e', '#8a6a44', p)); }
-    else if (desert) mesa(x, groundY + 2, ww * 2.6, hh * .6, mix('#5e3a3a', '#c98a5e', p), S.winter ? '#eef2f8' : mix('#4a2c2c', '#a86a44', p));
-    else chimney(x, groundY + 2, ww, hh, mix('#5c3a4a', '#d9a07a', p), null, S.winter ? '#eef2f8' : mix('#3e2836', '#9a6448', p));
+    if (nile) { if (i % 5 === 2) temple(x, groundY + 2, ww * 3, hh * .55, far(mix('#6a5040', '#e2c08a', p))); else datePalm(x, groundY + 2, hh * .9, far(mix('#1e3a22', '#4a7a3a', p)), far(mix('#3a2a1e', '#8a6a44', p))); }
+    else if (desert) mesa(x, groundY + 2, ww * 2.6, hh * .6, far(mix('#5e3a3a', '#c98a5e', p)), S.winter ? '#eef2f8' : far(mix('#4a2c2c', '#a86a44', p)));
+    else chimney(x, groundY + 2, ww, hh, far(mix('#5c3a4a', '#d9a07a', p)), null, S.winter ? '#eef2f8' : far(mix('#3e2836', '#9a6448', p)));
   }
+  { const mg = ctx.createLinearGradient(0, groundY - vh * .16, 0, groundY); mg.addColorStop(0, 'rgba(0,0,0,0)'); mg.addColorStop(1, hzc); ctx.save(); ctx.globalAlpha = .45; ctx.fillStyle = mg; ctx.fillRect(0, groundY - vh * .16, W, vh * .16 + 3); ctx.restore(); }
   if (showBg) for (const b of bgBalloons) {
     b.x += windAt(b.alt, T * 6) * dt * (f ? SIM : 2);
     const par = f ? .7 : 1, cx = camX * par;
@@ -4437,6 +4441,7 @@ function draw(dt) {
   const lx = sx(220); ctx.fillStyle = mix('#5c4a3a', '#b9996e', p); ctx.fillRect(lx - 40, groundY - 1, 80, 4);
   for (const c of terrain) {
     const x = sx(c.x); if (x < -80 || x > W + 80) continue;
+    ell(x, groundY + 2, c.w * kx * .62, 3.5, 'rgba(30,15,15,.38)'); /* a contact shadow: these stand on your ground */
     if (S.region === 'abq') tree(x, groundY + 1, c.w * kx * 1.4, c.h * ky, mix(mix('#2e4a2a', '#7a9a52', p), '#9ab060', c.tone * .3), mix('#3a2a1e', '#6a4a30', p)); /* kavak ağaçları */
     else if (S.region === 'lux') datePalm(x, groundY + 1, c.h * ky, mix(mix('#1e3a22', '#4a7a3a', p), '#6a9a4a', c.tone * .3), mix('#3a2a1e', '#8a6a44', p)); /* hurma ağaçları */
     else chimney(x, groundY + 1, c.w * kx, c.h * ky, mix(mix('#6a4038', '#e2b48a', p), '#d6a27a', c.tone * .3), mix('#4a2c2a', '#b07a58', p), mix('#3a2420', '#7e5038', p));

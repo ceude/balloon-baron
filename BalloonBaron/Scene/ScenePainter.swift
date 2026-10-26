@@ -312,25 +312,34 @@ enum ScenePainter {
         ridge.closeSubpath()
         ctx.fill(ridge, with: .color(nile ? mix("#4a4038", "#c8a070", p) : desert ? mix("#5a3a40", "#c99a74", p) : mix("#4a3050", "#c9967e", p)))
 
+        // v111.3: the far row sinks into the haze of the horizon (paler, a little smaller, a mist over its feet), so it
+        // never reads as the chimneys you can hit.
+        let hz = nile ? mixHex("#f2a050", "#fff0c0", p) : desert ? mixHex("#f39a5a", "#ffe6b0", p) : mixHex("#f08a4a", "#ffe2ac", p)
+        func far(_ a: String, _ b: String) -> Color { mix(mixHex(a, b, p), hz, 0.45) }
         var r = Mulberry32(seed: 5)
         for i in 0..<40 {
             let wx = Double(i) * 130 + r.next() * 60 - 600
             let x = CGFloat(wx - camX * 0.45) * kx
-            let hh = vh * CGFloat(0.07 + r.next() * 0.1), ww = hh * CGFloat(0.4 + r.next() * 0.2)
+            let hh = vh * CGFloat(0.07 + r.next() * 0.1) * 0.85, ww = hh * CGFloat(0.4 + r.next() * 0.2)
             if x < -60 || x > W + 60 { continue }
             let snow = Color(hex: "#eef2f8")
             if nile {
                 if i % 5 == 2 {
-                    temple(&ctx, x, groundY + 2, ww * 3, hh * 0.55, mix("#6a5040", "#e2c08a", p))
+                    temple(&ctx, x, groundY + 2, ww * 3, hh * 0.55, far("#6a5040", "#e2c08a"))
                 } else {
-                    datePalm(&ctx, x, groundY + 2, hh * 0.9, leaf: mix("#1e3a22", "#4a7a3a", p), trunk: mix("#3a2a1e", "#8a6a44", p))
+                    datePalm(&ctx, x, groundY + 2, hh * 0.9, leaf: far("#1e3a22", "#4a7a3a"), trunk: far("#3a2a1e", "#8a6a44"))
                 }
             } else if desert {
-                mesa(&ctx, x, groundY + 2, ww * 2.6, hh * 0.6, body: mix("#5e3a3a", "#c98a5e", p), cap: winter ? snow : mix("#4a2c2c", "#a86a44", p))
+                mesa(&ctx, x, groundY + 2, ww * 2.6, hh * 0.6, body: far("#5e3a3a", "#c98a5e"), cap: winter ? snow : far("#4a2c2c", "#a86a44"))
             } else {
-                chimney(&ctx, x, groundY + 2, ww, hh, body: mix("#5c3a4a", "#d9a07a", p), shade: nil, cap: winter ? snow : mix("#3e2836", "#9a6448", p))
+                chimney(&ctx, x, groundY + 2, ww, hh, body: far("#5c3a4a", "#d9a07a"), shade: nil, cap: winter ? snow : far("#3e2836", "#9a6448"))
             }
         }
+        var mist = ctx
+        mist.opacity = 0.45
+        mist.fill(Path(CGRect(x: 0, y: groundY - vh * 0.16, width: W, height: vh * 0.16 + 3)),
+                  with: .linearGradient(Gradient(colors: [Color(hex: hz).opacity(0), Color(hex: hz)]),
+                                        startPoint: CGPoint(x: 0, y: groundY - vh * 0.16), endPoint: CGPoint(x: 0, y: groundY)))
 
         let par = inFlight ? 0.7 : 1.0
         for b in background {
@@ -475,6 +484,8 @@ enum ScenePainter {
         for c in obs {
             let x = cam.sx(c.x)
             if x < -80 || x > W + 80 { continue }
+            // A contact shadow: these stand on your ground.
+            ell(&ctx, x, cam.groundY + 2, CGFloat(c.w) * cam.kx * 0.62, 3.5, Color(red: 30 / 255, green: 15 / 255, blue: 15 / 255).opacity(0.38))
             switch region {
             case .abq:
                 tree(&ctx, x, cam.groundY + 1, CGFloat(c.w) * cam.kx * 1.4, CGFloat(c.h) * cam.ky,
