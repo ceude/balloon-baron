@@ -1314,8 +1314,8 @@ const SCHOOL_COST = 60000, WORKSHOP_COST = 75000;
 /* v114: the balloon workshop grows into a factory. Level 1 designs; level 2 builds small balloons, 3 medium, 4 large, at a
    discount and one at a time. Rivals sometimes order a balloon from you instead of buying elsewhere. Tuned in
    tools/sim-factory.js (docs/GAME_DESIGN.md "Balon fabrikası"). */
-const FAB = { lv: [null, { t: 'Tasarım atölyesi' }, { cost: 40000, size: 'S', t: 'Üretim hattı' }, { cost: 120000, size: 'M', t: 'Orta balon hattı' }, { cost: 250000, size: 'L', t: 'Büyük balon hattı' }],
-  disc: .4, days: { S: 3, M: 5, L: 7 }, orderK: .8, orderP: .08 };
+const FAB = { lv: [null, { t: 'Tasarım atölyesi' }, { cost: 30000, size: 'S', t: 'Üretim hattı' }, { cost: 90000, size: 'M', t: 'Orta balon hattı' }, { cost: 180000, size: 'L', t: 'Büyük balon hattı' }],
+  disc: .5, days: { S: 3, M: 5, L: 7 }, orderK: .8, orderP: .08 };
 const fabLv = () => S.workshop ? (S.workshop.lv || 1) : 0;
 const fabSizes = () => ['S', 'M', 'L'].slice(0, Math.max(0, fabLv() - 1));
 const fabCan = z => fabSizes().includes(z);

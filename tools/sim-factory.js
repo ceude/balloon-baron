@@ -55,6 +55,9 @@ const { chromium } = require('playwright');
         }
         if (need('school') && S.cash > SCHOOL_COST + 20000) { S.cash -= SCHOOL_COST; S.school = true; }
         if (need('xl') && S.cash > 170000) { S.cash -= 150000; addBalloon('XL'); }
+        // chapter 3 asks for a balloon built in your own workshop: every bot founds it, adds the first line and builds a small one
+        if (need('fabBuilt') && !S.workshop && S.cash > WORKSHOP_COST + 20000) { S.cash -= WORKSHOP_COST; S.workshop = { day: S.day }; }
+        if (need('fabBuilt') && S.workshop && fabLv() < 2 && S.cash > FAB.lv[2].cost + 20000) { L.spent += FAB.lv[2].cost; fabUpgrade(); }
         if (need('fab2') && S.workshop && fabLv() < 2 && S.cash > FAB.lv[2].cost + 20000) { L.spent += FAB.lv[2].cost; fabUpgrade(); L.upDays.push('g2@' + S.day); }
         if (need('fab2') && !S.workshop && S.cash > WORKSHOP_COST + 20000) { S.cash -= WORKSHOP_COST; S.workshop = { day: S.day }; }
         if (need('fabBuilt') && fabCan('S') && !fabBusy() && S.cash > fabCost('S') + 10000) { fabBuild('S'); L.own++; }
