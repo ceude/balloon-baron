@@ -333,6 +333,9 @@ final class WorldTests: XCTestCase {
                 if s.chapter >= 1 {
                     g.runGuideFlight(); g.runInfluencer()
                     if s.cash > 150000 { g.buildWorkshop() }
+                    // v114: chapter 3 wants a balloon from your own workshop: the first line and a small balloon
+                    if g.state.workshopDay != nil && g.state.factoryLevel < 2 && g.state.cash > 60000 { g.upgradeFactory() }
+                    if g.state.factoryCan(.S) && !g.state.factoryBusy && (g.state.factory?.made ?? 0) == 0 { g.buildBalloon(.S) }
                     for h in Hotel.allCases where g.state.cash > h.buyPrice + 30000 { g.buyHotel(h) }
                 }
                 if s.chapter >= 3 {

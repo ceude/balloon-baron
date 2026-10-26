@@ -134,6 +134,10 @@ extension GameState {
 }
 extension PilotLevel { var title: String { loc("level.\(rawValue)") } }
 extension BalloonSize { var title: String { loc("size.\(rawValue)") } }
+extension Factory {
+    /// The workshop's level names: design, then the small, medium and large lines.
+    static func levelTitle(_ lv: Int) -> String { loc("factory.level\(min(max(lv, 1), 4))") }
+}
 
 /// Balloon names are saved as the core's lists have them; the few that are words or Turkish spellings are
 /// shown per language (older saves keep working, and a language switch renames them too).
@@ -176,6 +180,7 @@ extension HezMessage {
         case let .founderPack(n, b, k):
             founderPackText(n, b, k)
         case .rescued: loc("hez.rescued")
+        case .factoryOpened: loc("hez.factoryOpened", percent(Rules.factoryDiscount))
         case .worldBaron: loc("hez.worldBaron")
         case .praise(let p): loc("hez.praise.\(p.rawValue)")
         case .guideHello(let r): loc("guide.\(r.rawValue).hello")
@@ -228,6 +233,10 @@ extension DayEvent {
         case .showDropped(let r): loc("event.showDropped", eur(r))
         case .showCancelled(let r): loc("event.showCancelled", eur(r))
         case .rookieRepair: loc("event.rookieRepair")
+        case let .factoryReady(b, z): loc("event.factoryReady", bname(b), z.title)
+        case let .factoryDelivered(r, z, p): loc("event.factoryDelivered", r, z.title, eur(p))
+        case let .factoryKept(r, p): loc("event.factoryKept", r, eur(p))
+        case let .factoryOrderAsk(r, z): loc("event.factoryOrderAsk", r, z.title)
         case .licenseRenewedByFlight: loc("event.licenseRenewedByFlight")
         case let .founderAbsent(days): loc("event.founderAbsent", num(days))
         case let .antitrustFine(share, fine): loc("event.antitrustFine", num(share), eur(fine))

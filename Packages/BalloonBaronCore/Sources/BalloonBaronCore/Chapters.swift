@@ -3,11 +3,13 @@ import Foundation
 /// What a chapter asks for. Labels: `goal.<rawValue>`.
 public enum GoalKind: String, Codable, Sendable {
     case balloons, pilots, stars, cash, hotelDeal, hotelOwn, influencer, guide, share, workshop, school, xl, fiesta
+    /// v114: a balloon built in your own workshop (level 2).
+    case factoryBuilt
     /// Building levels: the wind mast, the hangar, or any building.
     case bldMast, bldHangar, bldTop
 
     /// Shown as done / not yet instead of a count.
-    public var yesNo: Bool { [.workshop, .school, .xl, .influencer, .guide, .fiesta, .bldMast, .bldHangar, .bldTop].contains(self) }
+    public var yesNo: Bool { [.workshop, .factoryBuilt, .school, .xl, .influencer, .guide, .fiesta, .bldMast, .bldHangar, .bldTop].contains(self) }
     var building: Bool { [.bldMast, .bldHangar, .bldTop].contains(self) }
 }
 
@@ -29,7 +31,7 @@ public struct Chapter: Equatable, Sendable {
             return [
                 Chapter(id: "founding", reward: 5000, goals: [g(.balloons, 2), g(.pilots, 1), g(.stars, 4.3), g(.hotelDeal, 1), g(.bldMast, 2)]),
                 Chapter(id: "rising", reward: 10000, goals: [g(.balloons, 5), g(.influencer, 1), g(.guide, 1), g(.bldHangar, 2)]),
-                Chapter(id: "growth", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.share, 0.5), g(.workshop, 1)]),
+                Chapter(id: "growth", reward: 20000, goals: [g(.balloons, 10), g(.hotelOwn, 1), g(.share, 0.5), g(.factoryBuilt, 1)]),
                 Chapter(id: "baron", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldTop, 3)])
             ]
         case .abq:
@@ -70,6 +72,7 @@ extension GameState {
         case .guide: return Double(s.guideCount)
         case .share: return s.shareNow
         case .workshop: return workshopDay != nil ? 1 : 0
+        case .factoryBuilt: return Double(factory?.made ?? 0)
         case .school: return s.school ? 1 : 0
         case .xl: return s.balloons.contains { $0.size == .XL } ? 1 : 0
         case .fiesta: return Double(s.fiestaFlown)

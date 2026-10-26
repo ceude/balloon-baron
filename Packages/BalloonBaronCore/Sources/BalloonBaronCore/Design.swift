@@ -171,6 +171,7 @@ extension Game {
         guard state.workshopDay == nil, state.cash >= Studio.workshopCost else { return false }
         state.cash -= Studio.workshopCost
         state.workshopDay = state.day
+        state.hezQueue.append(.factoryOpened)
         return true
     }
 

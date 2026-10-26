@@ -60,10 +60,12 @@ public enum PaperItem: Codable, Equatable, Sendable {
     case milestone(Int)
     /// v111: last night's Balloon Show, with this many balloons.
     case show(balloons: Int)
+    /// v114: the workshop grew a level.
+    case factoryGrew(company: String, level: Int)
 
     public var priority: Int {
         switch self {
-        case .upgrade, .night(.shootingStar): 1
+        case .upgrade, .night(.shootingStar), .factoryGrew: 1
         case .vip, .wedding, .record, .night, .milestone: 2
         case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine, .deed: 3
         case .accident(_, _, let severe): severe ? 5 : 3

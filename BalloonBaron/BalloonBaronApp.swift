@@ -102,6 +102,9 @@ struct RootView: View {
             if store.showShowCard {
                 ShowCardView().transition(.opacity)
             }
+            if store.showFactoryOrder {
+                FactoryOrderView().transition(.opacity)
+            }
             if let a = store.postcard {
                 PostcardView(achievement: a).transition(.opacity)
             }
@@ -174,6 +177,7 @@ struct RootView: View {
         case .goals: GoalsView()
         case .holding: HoldingOfficeView()
         case .map: WorldMapView()
+        case .workshop: WorkshopView()
         }
     }
 }

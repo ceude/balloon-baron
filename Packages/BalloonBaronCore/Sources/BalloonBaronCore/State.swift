@@ -181,6 +181,8 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case bazaarGift(StoreItem, balloon: String?)
     /// v113: the Founder Pack arrived: how many items, and the balloon that got the first shape.
     case founderPack(count: Int, balloon: String?, shape: StoreItem?)
+    /// v114: the workshop is founded: Hezarfen explains how it grows into a factory.
+    case factoryOpened
     /// Cash is back above zero after the rescue plan.
     case rescued
     case worldBaron
@@ -256,6 +258,8 @@ public struct GameState: Codable, Equatable, Sendable {
     public var barons: [RegionID: Int] = [:]
     public var holding = Holding()
     public var workshopDay: Int?
+    /// v114: the workshop grown into a factory: its level, the balloon on the line, a rival's order waiting.
+    public var factory: Factory?
     public var designs: [Design] = []
     public var chapterNews: ChapterNews?
     public var mergeNews: MergeNews?

@@ -835,6 +835,25 @@ struct TownPainter {
             poly([pt(p.x - 8, p.y - 38), pt(p.x + 8, p.y - 37), pt(p.x + 7 + sway, p.y - 12), pt(p.x - 7 + sway, p.y - 13)],
                  hex(cols.isEmpty ? "#ff5e3a" : cols[i % cols.count]))
         }
+        // v114: the factory: a brick chimney from level 2, smoking while the line runs; the new envelope rises on its rack.
+        guard s.factoryLevel >= 2 else { return }
+        let cb = upp(iso(x0 + w * 0.85, y0 + 0.15), h + 10), cw: CGFloat = 9
+        rect(cb.x - cw / 2, cb.y - 38, cw, 40, hex("#9a4a32"))
+        rect(cb.x, cb.y - 38, cw / 2, 40, hex("#7a3624"))
+        rect(cb.x - cw / 2 - 1.5, cb.y - 41, cw + 3, 4, hex("#5a2a1c"))
+        guard let j = s.factory?.job else { return }
+        for i in 0..<5 {
+            let u = (t * 0.35 + Double(i) / 5).truncatingRemainder(dividingBy: 1), r = 5 + CGFloat(u) * 12
+            ellipse(cb.x + CGFloat(u) * 26 + CGFloat(sin(t + Double(i))) * 3, cb.y - 44 - CGFloat(u) * 60, r, r, rgba(235, 230, 225, 0.55 * (1 - u)))
+        }
+        let k = min(max(1 - Double(j.done - s.day) / Double(Rules.factoryDays(j.size)) + 0.15, 0.15), 1)
+        let rp = iso(x0 + w + 0.55, y0 + d * 0.5), R: CGFloat = 15 + (j.size == .L ? 6 : j.size == .M ? 3 : 0)
+        var rack = Path()
+        rack.move(to: pt(rp.x - R, rp.y)); rack.addLine(to: pt(rp.x - R, rp.y - R * 3.4)); rack.addLine(to: pt(rp.x + R, rp.y - R * 3.4)); rack.addLine(to: pt(rp.x + R, rp.y))
+        c.stroke(rack, with: .color(hex("#5a3a20")), lineWidth: 2.5)
+        var g = c
+        g.clip(to: Path(CGRect(x: rp.x - R * 1.2, y: rp.y - R * 3.3 + R * 3 * CGFloat(1 - k), width: R * 2.4, height: R * 3.3)))
+        ScenePainter.balloon3d(&g, x: rp.x, y: rp.y - R * 0.1, r: R * 0.8, colors: j.rival == nil ? s.colors : ["#cfc8dd", "#ffffff"], burn: false, ad: nil, region: s.region)
     }
 
     /// Pilot office: parapet, wooden balcony, windsock and a bench.

@@ -267,21 +267,16 @@ struct FleetView: View {
     @Environment(GameStore.self) private var store
     @State private var filter: FleetFilter = .all
     @State private var cardPick: BalloonPick?
-    @State private var studioOpen = false
 
     var body: some View {
         if let game = store.game {
             FleetUI.PageFrame(title: loc("fleetPage.title"), cash: game.state.cash, close: { store.closePage() }) {
                 balloonsCard(game)
                 shopCard(game.state)
-                workshopCard(game)
                     .id(PageSection.workshop)
             }
             .sheet(item: $cardPick) { pick in
                 BalloonCardSheet(balloonID: pick.id).environment(store)
-            }
-            .sheet(isPresented: $studioOpen) {
-                DesignStudioView().environment(store)
             }
         }
     }
@@ -507,6 +502,13 @@ struct FleetView: View {
             if !s.balloons.contains(where: { $0.size == .XL }) {
                 xlRow(s)
             }
+            Button {
+                SoundEngine.shared.play(.click)
+                store.page = .workshop
+            } label: {
+                Text(loc(s.factoryLevel >= 2 ? "factory.openLine" : "factory.openDesigns")).frame(maxWidth: .infinity)
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost, wide: true))
         }
     }
 
@@ -524,8 +526,18 @@ struct FleetView: View {
                     FleetUI.Detail(specs(z))
                 }
                 Spacer(minLength: 4)
-                FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
-                    store.act { _ = $0.buyBalloon(z) }
+                VStack(spacing: 6) {
+                    FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
+                        store.act { _ = $0.buyBalloon(z) }
+                    }
+                    // v114: the same balloon from your own workshop, cheaper but not today
+                    if s.factoryCan(z) {
+                        FleetUI.SmallButton(title: loc("factory.inWorkshop"), note: loc("factory.priceDays", eur(s.factoryCost(z)), num(Rules.factoryDays(z))),
+                                            ghost: true, disabled: s.factoryBusy || s.cash < s.factoryCost(z)) {
+                            SoundEngine.shared.play(.coin)
+                            store.act { _ = $0.buildBalloon(z) }
+                        }
+                    }
                 }
                 .frame(width: 110)
             }
@@ -546,48 +558,6 @@ struct FleetView: View {
             }
             FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
                 store.act { _ = $0.buyBalloon(z) }
-            }
-        }
-    }
-
-    // MARK: Workshop
-
-    private func workshopCard(_ game: Game) -> some View {
-        let s = game.state
-        return FleetUI.Card(loc("fleetPage.workshop")) {
-            if s.workshopDay == nil {
-                FleetUI.Item {
-                    FleetUI.Title(loc("fleetPage.workshopBuild"))
-                    FleetUI.Detail(loc("fleetPage.workshopDesc"))
-                    FleetUI.SmallButton(title: eur(Studio.workshopCost), disabled: s.cash < Studio.workshopCost) {
-                        store.act { _ = $0.buildWorkshop() }
-                    }
-                }
-            } else {
-                if s.designs.isEmpty {
-                    FleetUI.Hint(loc("fleetPage.noDesigns"))
-                }
-                ForEach(s.designs) { d in
-                    designRow(d, game)
-                }
-                BigButton(title: loc("fleetPage.newDesign")) { studioOpen = true }
-            }
-        }
-    }
-
-    private func designRow(_ d: Design, _ game: Game) -> some View {
-        let s = game.state
-        let fresh = game.freshness(d)
-        let faded = Int((fresh * 100).rounded()) <= 20
-        let count = s.balloons.filter { $0.design == d.id }.count
-        return FleetUI.Item {
-            HStack(spacing: 12) {
-                DesignBalloon(colors: d.colors, design: d)
-                    .frame(width: 44, height: 56)
-                VStack(alignment: .leading, spacing: 3) {
-                    FleetUI.Title(d.title)
-                    FleetUI.Detail(loc(faded ? "fleetPage.designLineFaded" : "fleetPage.designLine", num(d.score), percent(fresh), num(count)))
-                }
             }
         }
     }

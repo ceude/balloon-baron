@@ -21,6 +21,14 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case licenseExpiring
     /// v111: the Balloon Show is tonight, with this many balloons.
     case showTonight(balloons: Int)
+    /// v114: your own balloon is ready from the workshop and has joined the fleet.
+    case factoryReady(balloon: String, size: BalloonSize)
+    /// v114: the workshop delivered a rival's order; the price came in.
+    case factoryDelivered(rival: String, size: BalloonSize, price: Int)
+    /// v114: the rival that ordered is gone: it had paid, the balloon stays with you.
+    case factoryKept(rival: String, price: Int)
+    /// v114 (rivals' column): a rival asks the workshop for a balloon.
+    case factoryOrderAsk(rival: String, size: BalloonSize)
     /// v111: balloons that crashed today drop out of tonight's show; their fee comes back.
     case showDropped(refund: Int)
     /// v111: too few balloons left after today's crashes: tonight's show is called off, the rest of the fees come back.

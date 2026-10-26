@@ -103,9 +103,11 @@ enum Town {
                               tap: open.contains(.fleet) ? .building(.hangar) : locked(hangar, .fleet)))
         let shop = loc("town.b.workshop")
         L.append(TownBuilding(id: "shop", gx: 5, gy: 1, w: 2, d: 2, name: shop, look: .workshop,
-                              lv: s.workshopDay != nil ? (ds >= 3 ? 2 : 1) : 0,
-                              sub: s.workshopDay != nil ? loc("town.sub.designs", num(ds)) : loc("town.sub.build", eur(Studio.workshopCost)),
-                              tap: open.contains(.fleet) ? .page(.fleet, section: .workshop) : locked(shop, .fleet)))
+                              lv: s.workshopDay != nil ? (ds >= 3 || s.factoryLevel >= 3 ? 2 : 1) : 0,
+                              sub: s.workshopDay == nil ? loc("town.sub.build", eur(Studio.workshopCost))
+                                : s.factory?.job.map { loc("town.sub.making", $0.size.rawValue, num(max(0, $0.done - s.day))) }
+                                ?? loc("town.sub.workshopLevel", num(s.factoryLevel), num(ds)),
+                              tap: open.contains(.fleet) ? .page(.workshop, section: nil) : locked(shop, .fleet)))
         let office = loc("town.b.office")
         L.append(TownBuilding(id: "office", gx: 9, gy: 5, w: 2, d: 2, name: office, look: .office,
                               lv: open.contains(.crew) ? (np >= 6 ? 2 : 1) : -1,

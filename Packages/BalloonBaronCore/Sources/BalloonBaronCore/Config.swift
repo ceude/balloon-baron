@@ -204,6 +204,15 @@ public enum Rules {
     /// v111: your first own flights: the flying coach speaks, and a crash costs one day in repair.
     public static let coachFlights = 3
 
+    // v114: the balloon factory (tools/sim-factory.js). The workshop's levels 2–4 cost these and build S, M, L balloons at
+    // `factoryDiscount` off, one at a time, in `factoryDays`. With the line free, a rival asks for a balloon with
+    // `factoryOrderChance` a day and pays `factoryOrderShare` of the list price on delivery.
+    public static let factoryLevelCost = [30000, 90000, 180000]
+    public static let factoryDiscount = 0.5
+    public static let factoryOrderShare = 0.8
+    public static let factoryOrderChance = 0.08
+    public static func factoryDays(_ z: BalloonSize) -> Int { z == .S ? 3 : z == .M ? 5 : 7 }
+
     public static func influencerCost(balloons: Int) -> Int { 2500 + 400 * balloons }
 
     /// Share of tourists happy to pay `price`.

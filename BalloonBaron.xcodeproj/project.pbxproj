@@ -47,6 +47,7 @@
 		8BD37C376F8E07FC1122C02F /* Barlow-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03D4B6CAC1ADC8096C50F9DB /* Barlow-SemiBold.ttf */; };
 		8C32AAD571E1BBB5AAC70233 /* BankView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3141C729AE6B19C61AE6F2A /* BankView.swift */; };
 		8FFFF3B3D192A53D1D07FB92 /* GoalsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6CB771A7741DFE9025EA00 /* GoalsView.swift */; };
+		90BA8075016BCAB1610D19B8 /* WorkshopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A258F2D4FE78330C3E2FFE72 /* WorkshopView.swift */; };
 		9315CE7EC5ADB45D6D749CD4 /* WorldMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */; };
 		967FF1B2FEFAF78ACD025DDE /* ReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23D4D33454C06481C5DCFCD1 /* ReportView.swift */; };
 		96D085A373064DE08FC6CA2F /* TownDecor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18984496BC160B829AD4E3E8 /* TownDecor.swift */; };
@@ -140,6 +141,7 @@
 		9662F101C27DC417A5D0A108 /* FlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FlightView.swift"; sourceTree = "<group>"; };
 		99A21C41BCDC5DB2BD7E3B4C /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareCard.swift"; sourceTree = "<group>"; };
 		9F81A32D63C6E3949B8B2AA2 /* FleetPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FleetPlanView.swift"; sourceTree = "<group>"; };
+		A258F2D4FE78330C3E2FFE72 /* WorkshopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorkshopView.swift"; sourceTree = "<group>"; };
 		A429A91A72084FD301F9A3E5 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-Bold.ttf"; sourceTree = "<group>"; };
 		A87581606A4966EC52B22837 /* DesignStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DesignStudioView.swift"; sourceTree = "<group>"; };
 		AC0AFDF1E7A3A9121D93DD8E /* ScenePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScenePainter.swift"; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 				99A21C41BCDC5DB2BD7E3B4C /* ShareCard.swift */,
 				F98CDA199A25FEB255AFEB7D /* ShowViews.swift */,
 				6A1530CCE3E7DC76FA3B9FB3 /* TravelView.swift */,
+				A258F2D4FE78330C3E2FFE72 /* WorkshopView.swift */,
 				3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */,
 			);
 			path = "Views";
@@ -474,6 +477,7 @@
 				187F26A420BE9FAF166CED97 /* ShareCard.swift in Sources */,
 				6A5552AB7B779F4B6E638218 /* ShowViews.swift in Sources */,
 				F1CA4068815D57F906401D61 /* TravelView.swift in Sources */,
+				90BA8075016BCAB1610D19B8 /* WorkshopView.swift in Sources */,
 				9315CE7EC5ADB45D6D749CD4 /* WorldMapView.swift in Sources */,
 				2AE29E79EC58294FF2CF023D /* BalloonBaronApp.swift in Sources */,
 				641877355BB58C4B22BE6635 /* DemoSetup.swift in Sources */,

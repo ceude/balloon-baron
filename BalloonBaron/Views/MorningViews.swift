@@ -266,6 +266,7 @@ extension PaperItem {
         case .deed(let d): "deed.\(d.rawValue)"
         case .milestone(let d): d == 365 ? "year" : "milestone"
         case .show: "show"
+        case .factoryGrew: "factoryGrew"
         }
     }
 
@@ -290,6 +291,7 @@ extension PaperItem {
         case .worldRecord: loc("paper.worldRecord", company)
         case .milestone(let d): d == 365 ? loc("paper.year", company) : loc("paper.milestone", company, num(d))
         case .show: loc("paper.show", company)
+        case .factoryGrew: loc("paper.factoryGrew", company)
         }
     }
 
@@ -307,6 +309,7 @@ extension PaperItem {
         case .night(let n): n.subline
         case .inspectorFine(let fine): loc("paper.inspectorFine.sub", eur(fine))
         case .show(let n): loc("paper.show.sub", num(n))
+        case .factoryGrew(_, let lv): Factory.levelTitle(lv)
         default: loc("paper.\(key).sub")
         }
     }

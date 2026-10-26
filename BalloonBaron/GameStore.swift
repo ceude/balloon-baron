@@ -4,7 +4,7 @@ import BalloonBaronCore
 
 /// Office pages opened from the side buttons on the home screen.
 enum Page: String, Identifiable {
-    case fleet, crew, bank, market, goals, holding, map
+    case fleet, crew, bank, market, goals, holding, map, workshop
     var id: String { rawValue }
 }
 
@@ -60,6 +60,8 @@ final class GameStore {
     var showRescue = false
     /// The flagship you fly is in repair: the offer to fly another balloon meanwhile (v110).
     var showTempFlag = false
+    /// v114: a rival's order for the workshop, shown in the morning.
+    var showFactoryOrder = false
     /// The Balloon Show's card (v111).
     var showShowCard = false
     /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
@@ -86,7 +88,7 @@ final class GameStore {
     private var busy: Bool {
         showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
-            || morningEvent != nil || showRescue || showTempFlag || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
     }
 
@@ -205,6 +207,9 @@ final class GameStore {
             act { postcard = $0.nextPostcard() }
             SoundEngine.shared.play(.fanfare)
             Haptics.success()
+        } else if s.factoryOrderDue {
+            act { $0.markFactoryOrderSeen() }
+            showFactoryOrder = true
         } else if !s.hezQueue.isEmpty {
             act { $0.clearRescue() }
             act { hezarfen = $0.nextHezarfen() }
@@ -334,6 +339,13 @@ final class GameStore {
 
     func closeRescue() {
         showRescue = false
+        showNextHezarfen()
+    }
+
+    /// The morning's order card: take it (the line is the rival's for a few days) or leave it.
+    func answerFactoryOrder(_ yes: Bool) {
+        act { g in if yes { _ = g.acceptFactoryOrder() } else { g.declineFactoryOrder() } }
+        showFactoryOrder = false
         showNextHezarfen()
     }
 
