@@ -248,7 +248,7 @@ struct BazaarView: View {
                             StoreThumb(item: k, colors: s.colors, company: s.company).frame(width: 60, height: 68).accessibilityHidden(true)
                             Text(k.title).font(Theme.font(14, .bold, condensed: true)).foregroundStyle(Theme.ink)
                                 .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
-                            Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : Shop.shared.price(k))
+                            Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : storePrice(k))
                                 .font(Theme.font(13, .heavy)).foregroundStyle(.white)
                                 .padding(.horizontal, 9).padding(.vertical, 2)
                                 .background(own ? Theme.green : k.gift ? Theme.coral : locked ? Color(hex: "#8a8398") : Theme.ink, in: Capsule())
@@ -302,7 +302,7 @@ struct BazaarView: View {
                     Text(loc("bazaar.founderLeft", num(left.count))).font(Theme.font(13)).foregroundStyle(.white.opacity(0.85))
                     Spacer()
                     Text(StoreItem.price(of: s.bundleWas)).font(Theme.font(13)).strikethrough().foregroundStyle(.white.opacity(0.6))
-                    Text(Shop.shared.price(.founder)).font(Theme.font(20, .heavy, condensed: true)).foregroundStyle(.white)
+                    Text(storePrice(.founder)).font(Theme.font(20, .heavy, condensed: true)).foregroundStyle(.white)
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 12)

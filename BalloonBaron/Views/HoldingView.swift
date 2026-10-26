@@ -244,7 +244,7 @@ struct HoldingView: View {
                 if auto != nil {
                     HoldingPill(title: loc("map.go")) { store.goTo(r) }
                 } else if game.state.needsPack(r) {
-                    HoldingPill(title: loc("map.openEgypt", Shop.shared.price(.egypt)), style: .gold) { store.storeItem = .egypt }
+                    HoldingPill(title: loc("map.openEgypt", storePrice(.egypt)), style: .gold) { store.storeItem = .egypt }
                 } else {
                     HoldingPill(title: loc("map.enter", eurH(r.entryFee)), style: .gold, enabled: game.canEnterRegion(r)) { store.goTo(r) }
                 }

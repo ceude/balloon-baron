@@ -80,3 +80,6 @@ final class Shop {
 
     private func item(_ id: String) -> StoreItem? { StoreItem.allCases.first { $0.productID == id } }
 }
+
+/// The App Store price for views that aren't on the main actor by type (all SwiftUI drawing runs there).
+func storePrice(_ k: StoreItem) -> String { MainActor.assumeIsolated { Shop.shared.price(k) } }

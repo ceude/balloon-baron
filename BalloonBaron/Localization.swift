@@ -149,6 +149,12 @@ extension Flag {
     var note: String { loc("flag.note.\(rawValue)") }
 }
 
+/// v113: Hezarfen on the Founder Pack, naming the flagship's new shape when it got one.
+private func founderPackText(_ n: Int, _ b: String?, _ k: StoreItem?) -> String {
+    guard let b, let k else { return loc("hez.founderPack", num(n)) }
+    return loc("hez.founderPack.balloon", num(n), k.title, bname(b))
+}
+
 extension HezMessage {
     var text: String {
         switch self {
@@ -168,7 +174,7 @@ extension HezMessage {
         case .eventOutcome(let o): loc("outcome.\(o.rawValue)")
         case let .bazaarGift(k, b): b.map { loc("hez.bazaarGift", k.title, bname($0)) } ?? loc("hez.bazaarGift.noBalloon", k.title)
         case let .founderPack(n, b, k):
-            zip([b].compactMap { $0 }, [k].compactMap { $0 }).first.map { loc("hez.founderPack.balloon", num(n), $0.1.title, bname($0.0)) } ?? loc("hez.founderPack", num(n))
+            founderPackText(n, b, k)
         case .rescued: loc("hez.rescued")
         case .worldBaron: loc("hez.worldBaron")
         case .praise(let p): loc("hez.praise.\(p.rawValue)")
