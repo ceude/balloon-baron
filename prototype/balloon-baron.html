@@ -2746,7 +2746,7 @@ function tabFleet(body) {
   /* v111: the Balloon Show, once the market is open and the fleet is big enough */
   if (unlocked('market') && S.balloons.length >= SHOW.min) {
     const ss = showState(), sb = h('button', 'adbtn showbtn', `<i style="background:#ffc23d"></i>Balon Şöleni Düzenle · ${ss === 'ok' ? `${showFleet().length} balon, ${eur(showCost())}` : ss === 'booked' ? 'bu gece' : ss === 'wait' ? `${S.showNext - S.day} gün sonra` : ss === 'few' ? `en az ${SHOW.min} uçabilen balon` : `${eur(showCost())} gerekli`}`);
-    sb.onclick = showCard; s.appendChild(sb);
+    sb.onclick = () => showCard(); s.appendChild(sb);
   }
   /* one tap renews every envelope below 30% */
   const renew = all.filter(b => cond(b) < .3), cost = renew.reduce((a, b) => a + SIZES[b.size].cost * RENEW, 0);
@@ -5341,6 +5341,7 @@ function doInfluencer() {
    show starts. */
 function showCard(done) {
   const st = showState(), n = showFleet().length, m = $('menu'); m.replaceChildren();
+  done = done === true || st === 'booked'; /* booked already: the card says when it starts */
   const c = h('div', 'card');
   c.appendChild(h('h1', null, done ? 'Şölen bu gece!' : 'Balon Şöleni Düzenle'));
   const close = (label, big) => { const x = h('button', big ? 'big' : 'ghost', label); x.style.width = '100%'; x.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(x); };

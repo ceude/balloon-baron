@@ -11,7 +11,7 @@ struct ShowCardView: View {
     var body: some View {
         ModalCard {
             if let g = store.game {
-                if booked { done(g) } else { offer(g) }
+                if booked || g.showState == .booked { done(g) } else { offer(g) }
             }
         }
     }
