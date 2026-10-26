@@ -3806,6 +3806,8 @@ function showMenu(open) {
   }
   group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
+  /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
+  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
   nb.onclick = () => { if (!nb.dataset.arm) { nb.dataset.arm = '1'; nb.querySelector('b').textContent = 'Emin misin? Bütün ilerleme silinir. Tekrar dokun'; return; } S = newState(); setupName = ''; m.hidden = true; startIntro(); };
   c.appendChild(h('div', 'sg-t', ''));
@@ -3814,6 +3816,25 @@ function showMenu(open) {
   c.appendChild(close); m.appendChild(c); m.hidden = false;
 }
 
+/* Prototype test: day 30 in Cappadocia, 20 balloons (some with shapes and patterns), pilots for all, €50,000. */
+function testShowGame() {
+  S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 30; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1;
+  S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1 };
+  Object.keys(HEZ).forEach(k => { if (k !== 'show') S.tips[k] = 1; });
+  const sizes = ['M', 'L', 'M', 'S', 'L', 'M', 'M', 'S', 'L', 'M', 'M', 'L', 'S', 'M', 'L', 'M', 'S', 'M', 'L', 'M'];
+  S.balloons = []; S.nextId = 1;
+  sizes.forEach(z => addBalloon(z));
+  S.designs = [];
+  ['heart', 'star', 'skull'].forEach((k, i) => { bazaarGift(k); S.balloons[i * 4 + 1].design = S.designs[S.designs.length - 1].id; });
+  [['zigzag', '#3ad0c0', '#ffc23d'], ['stars', '#2b2350', '#ffd27a'], ['rainbow', '#ff5e3a', '#ffffff']].forEach(([pat, a, b], i) => {
+    const d = { id: S.nextId++, name: PATTERNS[pat][0], pat, shape: null, cols: [a, b, '#ffffff'], day: 20 }; d.score = designScore(d); S.designs.push(d); S.balloons[i * 4 + 3].design = d.id; });
+  S.pilots = []; for (let i = 0; i < 19; i++) S.pilots.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + String.fromCharCode(65 + i) + '.', lvl: 2, xp: 0, wage: LEVELS[2].wage, trait: null });
+  S.flag = S.balloons[1].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 50000; S.rep = 1.12; S.hezQ = []; S.paper = null; S.eventDue = false;
+  S.lastShare = { me: 250, cap: 320, rivals: [], demand: 300, extra: 0 };
+  S.bossSaid = { 'cap:hello': 1 }; S.weather = null; S.demand = null; S.nextEvent = S.day + 30; S.festNext = S.day + 60; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
+  if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
+  startDay();
+}
 /* ---------- flight ---------- */
 function startFlight(pax) {
   const own = S.balloons.find(isSelf) || S.balloons.find(b => b.id === S.flag);
