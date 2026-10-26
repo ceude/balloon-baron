@@ -3050,8 +3050,12 @@ function showReport() {
    pay flies to your savings in coins and paints your dream a little further. Day 3: you buy his old small basket
    (Hezarfen covers any gap, for nothing), and inflate it yourself with the burner, the way the game began; the colour
    climbs with the hot air, it lifts, your sign drops in, the village cheers, Kenan calls you a rival, day 1 starts. */
-const STORY = { pocket: 2500, wage: 1500, bonus: { perfect: 1000, good: 750, far: 250, hard: 0, crash: 0 }, balloon: 4000, safe: 3000 };
+/* v112.1: Kenan pays what a pilot earns in this game (the senior wage) and the passengers' tips by the game's own rules,
+   so the story never makes your own pilots' wages look silly. You've saved €6,200 over the years; the last €800 is what
+   you earn with him, and that is what paints your dream balloon. */
+const STORY = { pocket: 6200, wage: LEVELS[3].wage, tip: { perfect: 15, good: 6, far: 0, hard: 0, crash: 0 }, pax: 16, balloon: 4000, safe: 3000 };
 const storyGoal = () => STORY.balloon + STORY.safe;
+const storyFill = saved => clamp((saved - STORY.pocket) / (storyGoal() - STORY.pocket), 0, 1);
 const SC = { kind: 'brief', fill: 0, fillTo: 0, fillT0: 0, inflate: 0, ownT0: 0, signT0: 0, conf: [], coins: [], t0: 0, title: null };
 /* A dialogue line from Hezarfen ('hez') or Kenan ('boss') in the speech bubble, typed out, with its own buttons. */
 function storySay(who, text, buttons) {
@@ -3078,44 +3082,44 @@ function storyScene(kind) {
 /* "Hayalim bu!": the dream sails up with your name, then the paint drains to what you can afford: €2,500 of €7,000. */
 function storyBegin() {
   S.balloons = []; S.cash = 0; S.story.saved = STORY.pocket; S.story.pDay = 1; save();
-  storyScene('reveal'); SC.fill = 1; SC.fillTo = S.story.saved / storyGoal(); SC.fillT0 = T + 3.4; SC.conf = [];
+  storyScene('reveal'); SC.fill = 1; SC.fillTo = storyFill(S.story.saved); SC.fillT0 = T + 3.4; SC.conf = [];
   sfx('fanfare');
-  setTimeout(() => storySay('hez', `İşte hayalin: ${S.company}! Ama balon pahalıdır evlat. Kenan Arslan'ın eski küçük sepeti satılık: ${eur(STORY.balloon)}. Bir de ilk günlerin masrafı için kasada ${eur(STORY.safe)} lazım. Cebinde ${eur(STORY.pocket)} var. Göreme Sky'ın pilotu hastalanmış, Kenan pilot arıyor. Git bir konuş.`,
+  setTimeout(() => storySay('hez', `İşte hayalin: ${S.company}! Ama balon pahalıdır evlat. Yıllardır başka şirketlerde pilotluk yapıp ${eur(STORY.pocket)} biriktirdin. Kenan Arslan'ın eski küçük sepeti satılık: ${eur(STORY.balloon)}. Bir de ilk günlerin masrafı için kasada ${eur(STORY.safe)} lazım. Eksik kalan: ${eur(storyGoal() - STORY.pocket)}. Göreme Sky'ın pilotu hastalanmış, Kenan pilot arıyor. Git bir konuş.`,
     [['Kenan\'a git', storyOffer, 'big']]), 5200);
 }
 function storyOffer() {
-  storyScene('brief'); SC.fill = SC.fillTo = Math.min(1, S.story.saved / storyGoal());
-  storySay('boss', `Pilot sen misin? İki sabah benim balonumu uçur. Günlük ${eur(STORY.wage)} maaş, iyi inişe prim: düzgün iniş ${eur(STORY.bonus.good)}, kusursuz iniş ${eur(STORY.bonus.perfect)}. Yolcularımı hedefe, iniş alanına indir; gerisini konuşuruz.`,
+  storyScene('brief'); SC.fill = SC.fillTo = storyFill(S.story.saved);
+  storySay('boss', `Pilotum hastalandı, acil biri lazım. İki sabah benim balonumu uçur: günlük ${eur(STORY.wage)}, kıdemli pilot ücreti. Yolcuların bahşişi de senin: kusursuz inişte kişi başı ${eur(STORY.tip.perfect)}, iyi inişte ${eur(STORY.tip.good)}. Yolcularımı hedefe, iniş alanına indir.`,
     [['İşi kabul et', storyMorning, 'big']]);
 }
 /* Where a saved game picks the story up again. */
 function storyResume() {
-  const st = S.story; SC.fill = SC.fillTo = Math.min(1, st.saved / storyGoal());
+  const st = S.story; SC.fill = SC.fillTo = storyFill(st.saved);
   if (st.pDay >= 3) storyShop(); else if (!st.hired) storyOffer(); else storyMorning();
 }
 function storyMorning() {
   const st = S.story; st.hired = 1; S.weather = newWeather(); S.weather.flag = 'green'; S.weather.mission = null; save();
-  storyScene('brief'); SC.fill = SC.fillTo = Math.min(1, st.saved / storyGoal());
+  storyScene('brief'); SC.fill = SC.fillTo = storyFill(st.saved);
   storyChapter(`GÜN ${st.pDay}`, 'Göreme Sky\'ın pilotu', () => storySay('boss', st.pDay === 1 ? 'Sabah oldu pilot. 16 yolcu sepette bekliyor. Hedef sağdaki iniş alanı; her yükseklikte rüzgâr başka eser, seni oraya taşıyanı bul.'
     : st.pays[0] && st.pays[0].q !== 'crash' && st.pays[0].q !== 'hard' ? 'Dünkü iniş fena değildi. Bugün de aynı titizlik, yolcularım sana emanet.' : 'Dün balonumu hırpaladın ama tamir edildi. Bugün dikkatli ol, yolcularım sana emanet.',
     [['Kalkışa hazırım', () => { $('hud').hidden = true; startFlight(16); }, 'big']]));
 }
 /* After landing: Kenan pays, the coins fly to your savings and the dream balloon fills with colour. */
 function storyPay(q) {
-  const st = S.story, pay = STORY.wage + (STORY.bonus[q] || 0);
+  const st = S.story, tips = STORY.pax * (STORY.tip[q] || 0), pay = STORY.wage + tips;
   st.pays.push({ q, pay }); S.selfFlights = (S.selfFlights || 0) + 1;
   const from = st.saved; st.saved += pay; st.pDay++; save();
   storyScene('pay'); $('tip').hidden = true; $('burn').hidden = true; $('vent').hidden = true; $('abort').hidden = true;
-  SC.fill = Math.min(1, from / storyGoal()); SC.fillTo = Math.min(1, st.saved / storyGoal()); SC.fillT0 = T + 1.6; SC.from = from;
+  SC.fill = storyFill(from); SC.fillTo = storyFill(st.saved); SC.fillT0 = T + 1.6; SC.from = from;
   SC.coins = []; for (let i = 0; i < 14; i++) SC.coins.push({ t0: T + .25 + i * .09, d: .75 + Math.random() * .2, j: Math.random() });
   for (let i = 0; i < 14; i++) setTimeout(() => tone(1500 + i * 40, 1500 + i * 40, .06, 'triangle', .035), (250 + i * 90 + 800));
-  const line = { perfect: 'Kusursuz iniş! Yolcular alkışladı. İşte maaşın ve primin.', good: 'İyi iniş, yolcular memnun. Maaşın ve primin burada.', far: 'Yolcular iniş alanından uzakta epey bekledi. Maaşın burada, prim küçük.', hard: 'Sert indin, sepet devrildi! Maaşını veriyorum ama prim yok.', crash: 'Balonum hasar gördü! Maaşını veriyorum ama prim yok, bir dahakine dikkat.' }[q];
-  setTimeout(() => storySay('boss', `${line} Maaş ${eur(STORY.wage)}${STORY.bonus[q] ? ` + prim ${eur(STORY.bonus[q])}` : ''} = ${eur(pay)}.`,
+  const line = { perfect: 'Kusursuz iniş! Yolcular alkışladı, bahşişler de cömert.', good: 'İyi iniş, yolcular memnun, bahşiş de bıraktılar.', far: 'Yolcular iniş alanından uzakta epey bekledi, bahşiş bırakan olmadı.', hard: 'Sert indin, sepet devrildi! Bahşiş yok tabii.', crash: 'Balonum hasar gördü! Bahşiş yok, bir dahakine dikkat.' }[q];
+  setTimeout(() => storySay('boss', `${line} Maaşın ${eur(STORY.wage)}${tips ? ` + bahşiş ${eur(tips)}` : ''} = ${eur(pay)}.`,
     [[st.pDay <= 2 ? 'Ertesi sabaha geç' : 'Ertesi sabah', () => { if (st.pDay <= 2) storyMorning(); else storyShop(); }, 'big']]), 3400);
 }
 /* Third morning: Kenan's old small basket lies unpainted on the field, with a sale tag. */
 function storyShop() {
-  const st = S.story; storyScene('shop'); SC.fill = SC.fillTo = Math.min(1, st.saved / storyGoal()); SC.inflate = 0; SC.conf = []; SC.burst = 0;
+  const st = S.story; storyScene('shop'); SC.fill = SC.fillTo = storyFill(st.saved); SC.inflate = 0; SC.conf = []; SC.burst = 0;
   const gift = Math.max(0, storyGoal() - st.saved);
   storyChapter('GÜN 3', 'Kendi balonun', () => storySay('boss', `Eski küçük sepetim bu. Yıllarca beni taşıdı; seninki olsun istersen: ${eur(STORY.balloon)}.`,
     [['Hezarfen ne der?', () => storySay('hez', gift ? `Birikimin ${eur(st.saved)}. Eksik kalanı ben veriyorum evlat, karşılıksız: ${eur(gift)}. Hayaline yatırım bu.` : `Birikimin ${eur(st.saved)}: hem balona hem kasaya yetiyor evlat! Alnının teriyle kazandın.`,
@@ -3206,13 +3210,12 @@ function drawStory(dt) {
     ctx.restore();
   };
   const barW = Math.min(W * .8, R0 * 5.5), barY = groundY + R0 * .55;
-  const bar = f => { /* savings toward the goal, with the balloon and the safe marked */
+  const bar = f => { /* the last stretch: from your savings to what the balloon and the safe need */
     const x = W / 2, y = barY, w = barW;
     ctx.save(); ctx.fillStyle = 'rgba(43,35,80,.72)'; rrect(x - w / 2, y - 7, w, 14, 7); ctx.fill();
     if (f > 0) { ctx.fillStyle = col[0]; rrect(x - w / 2 + 2, y - 5, Math.max(10, (w - 4) * Math.min(1, f)), 10, 5); ctx.fill(); }
-    const mk = STORY.balloon / storyGoal(); ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillRect(x - w / 2 + (w - 4) * mk + 2, y - 9, 2, 18);
-    ctx.font = `700 ${Math.round(R0 * .19)}px Barlow, sans-serif`; ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
-    ctx.fillText(`balon ${eur(STORY.balloon)}`, x - w / 2 + (w - 4) * mk / 2, y + 22); ctx.fillText(`kasa ${eur(STORY.safe)}`, x - w / 2 + (w - 4) * (mk + 1) / 2, y + 22);
+    ctx.font = `700 ${Math.round(R0 * .19)}px Barlow, sans-serif`; ctx.fillStyle = '#fff';
+    ctx.textAlign = 'left'; ctx.fillText(`birikimin ${eur(STORY.pocket)}`, x - w / 2, y + 22); ctx.textAlign = 'right'; ctx.fillText(`hedef ${eur(storyGoal())}`, x + w / 2, y + 22);
     ctx.restore();
   };
   const halo = (x, y, R) => {
@@ -3243,7 +3246,7 @@ function drawStory(dt) {
     let fs = Math.round(bh * .55); ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; while (ctx.measureText(S.company).width > bw - bh && fs > 10) { fs--; ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; }
     ctx.textAlign = 'center'; ctx.fillStyle = col[1]; ctx.fillText(S.company, 0, fs * .35); ctx.textAlign = 'left'; ctx.restore();
     if (rise > .2 && rise < 1 && Math.random() < .6) SC.conf.push({ x: x + (Math.random() - .5) * R * 1.6, y: y - R * Math.random() * 2.6, vx: (Math.random() - .5) * 30, vy: 20 + Math.random() * 30, c: Math.random() < .5 ? '#fff4d6' : '#ffd27a', l: 1.2, sp: 1 });
-    if (dr > 0 && st) pill(W / 2, H * .18 + R0 * 2, `${eur(st.saved)} / ${eur(storyGoal())}`, 'cebinde olan, hayalin için gereken');
+    if (dr > 0 && st) pill(W / 2, H * .18 + R0 * 2, `${eur(st.saved)} / ${eur(storyGoal())}`, `son ${eur(storyGoal() - st.saved)} senin emeğin olacak`);
   }
   if (k === 'brief' || k === 'dream') {
     /* Kenan's blue fleet on his field, his own balloon in front with the burner breathing; your dream on the right */
@@ -3256,7 +3259,7 @@ function drawStory(dt) {
     const dR = R0 * .95, dx = W * .76, dy = groundY - R0 * 1.4 + Math.sin(T * 1.2) * R0 * .1;
     halo(dx, dy, dR); dream(dx, dy, dR, SC.fill, false);
     pill(dx, dy - dR * 3.75, 'HAYALİN', S.company, 'rgba(194,64,31,.85)');
-    bar(st ? st.saved / storyGoal() : SC.fill);
+    bar(st ? storyFill(st.saved) : SC.fill);
   }
   if (k === 'pay') {
     const e = clamp((T - SC.fillT0) / 1.6, 0, 1), ee = 1 - Math.pow(1 - e, 3), f = lerp(SC.fill, SC.fillTo, ee), R = R0 * 1.7, x = W / 2, y = groundY - R0 * 1.1 + Math.sin(T * 1.2) * R0 * .08;
@@ -3291,7 +3294,7 @@ function drawStory(dt) {
       ctx.strokeStyle = '#5a3a2a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + R * .1, groundY - R * .2); ctx.lineTo(tx + 6, ty - th * .45); ctx.stroke();
       ctx.save(); ctx.translate(tx, ty); ctx.rotate(Math.sin(T * 1.8) * .07); ctx.fillStyle = '#fff6dc'; rrect(0, -th / 2, tw, th, 8); ctx.fill(); ctx.strokeStyle = '#c99a4a'; ctx.lineWidth = 2; ctx.stroke();
       ctx.fillStyle = '#c2401f'; ctx.font = `800 ${Math.round(th * .32)}px "Barlow Condensed", sans-serif`; ctx.fillText('SATILIK', th * .2, -th * .04); ctx.fillStyle = '#2b2350'; ctx.font = `800 ${Math.round(th * .36)}px "Barlow Condensed", sans-serif`; ctx.fillText(eur(STORY.balloon), th * .2, th * .34); ctx.restore();
-      bar(st ? st.saved / storyGoal() : 0);
+      bar(st ? storyFill(st.saved) : 0);
     }
     if (k === 'inflate') { /* how full of hot air: a ring over the balloon */
       const cx = x, cy = groundY - R * 2.3; ctx.save(); ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.arc(cx, cy, R0 * .5, 0, 7); ctx.stroke(); ctx.strokeStyle = '#ffd27a'; ctx.beginPath(); ctx.arc(cx, cy, R0 * .5, -Math.PI / 2, -Math.PI / 2 + q * Math.PI * 2); ctx.stroke();
