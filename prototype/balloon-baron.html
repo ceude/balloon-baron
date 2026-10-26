@@ -3888,6 +3888,11 @@ function updateFlight(dt) {
     if (M.k === 'photo' && Math.abs(f.x - M.x) < 70 && f.alt >= M.lo && f.alt <= M.hi) { M.in += dt; if (M.in > 1.5) { f.flashAt = T; momentDone('Gün doğumu karesi! Yolcuların fotoğrafı herkesi kıskandıracak.'); } }
   } else if (M && M.k === 'greet') M.x += windAt(M.alt, f.t) * s * .9;
   if (f.ventTipAt && T - f.ventTipAt < .1 && !f.msg) { $('tip').hidden = false; $('tip').innerHTML = '<b>VALF:</b> basılı tutunca balonun tepesindeki paraşüt valfi açılır, sıcak hava kaçar ve hızla alçalırsın. Yere yakın dikkat: sert inersin.'; }
+  /* v111.2: crossing into a layer whose wind differs from the balloon's drift, the envelope (higher up, in the new air
+     first) is pushed ahead and the basket lags: a lean toward the relative wind on a soft spring, one swing and it
+     settles as the balloon takes up the new wind. Only the picture leans; the flight itself is unchanged. */
+  { const rel = f.alt > 3 ? windBase(f.alt + 20) - f.vx : 0, goal = clamp(rel * .028, -.1, .1);
+    f.tiltV = (f.tiltV || 0) + ((goal - (f.tilt || 0)) * 14 - (f.tiltV || 0) * 3.2) * dt; f.tilt = (f.tilt || 0) + f.tiltV * dt; }
   coachTick(f, dt);
   if (f.air && f.alt > 0 && f.fuel <= 0 && !f.msg) { f.msg = 1; $('tip').hidden = false; $('tip').innerHTML = '<b>Yakıt bitti!</b> Balon soğuyarak iniyor.'; }
 }
@@ -4465,7 +4470,7 @@ function draw(dt) {
       /* v110: the basket swings a little under the envelope, more while the burner roars; still on the ground */
       const bx = sx(f.x), by = sy(f.alt), pv = by - R * 1.9, burn = f.burning && f.fuel > 0;
       const sw = (Math.sin(T * 1.1) * .6 + Math.sin(T * .43 + 1) * .4) * (.03 + (burn ? .015 : 0)) * clamp(f.alt / 20, 0, 1);
-      ctx.save(); ctx.translate(bx, pv); ctx.rotate(sw); ctx.translate(-bx, -pv);
+      ctx.save(); ctx.translate(bx, pv); ctx.rotate(sw + (f.tilt || 0)); ctx.translate(-bx, -pv);
       if (d) designBalloon3d(bx, by, R, myc[0], myc[1], burn, 1, fb.ad, d); else balloon3d(bx, by, R, myc[0], myc[1], burn, 1, fb.ad);
       ctx.restore();
       /* v111: the wind where the balloon is, right under the basket: green when it carries you toward the landing field */

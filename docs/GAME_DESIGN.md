@@ -268,6 +268,7 @@ TestFlight gözleminden: oyuncu hedefin iniş alanı olduğunu anlamadı, rüzg�
 - Rüzgâr artık katmanlar arasındaki kesik çizgide değişir (24 m'lik yumuşak geçiş), çizgiler daha belirgin ve yanlarında yüksekliği yazar.
 - Sepetin altında anlık rüzgâr etiketi: hedefe taşıyorsa yeşil, uzaklaştırıyorsa kırmızı. Esintisiz katman rüzgârını gösterir, böylece soldaki katman etiketiyle aynı sayıdır.
 - İniş alanı, termik gibi gökyüzüne uzanan yumuşak bir ışık sütunuyla işaretlidir.
+- Katman sınırını geçerken balon, yeni rüzgârla kendi sürüklenmesi arasındaki farka doğru en fazla ~6° eğilir (zarf yeni havaya önce girer, sepet geride kalır), bir kez salınıp durulur. Yalnızca görüntü; uçuş fiziği değişmez.
 - Uçuştaki ipuçları ve uyarılar sol üstte, uçuş panelinin yanında çıkar; balonu ve iniş alanını kapatmaz.
 - İlk üç kendi uçuşunda (Hezarfen koçluğu): kalkışta hedef hatırlatması, hedeften uzaklaşırken, dururken ve iniş alanının üstündeyken kısa ipuçları; iniş alanı oku balonun hizasında ve sallanır. Yakıt %30'un altına inince her uçuşta uyarı.
 - Acemi koruması: ilk üç kendi uçuşunda kaza ya da sert iniş tamirde 1 gün tutar.

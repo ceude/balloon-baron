@@ -77,6 +77,9 @@ final class FlightModel {
     private var coachTip: Tip?
     private var said: [Tip: Int] = [:]
     private var wrongT = 0.0, stillT = 0.0, lowFuel = false
+    /// v111.2: the lean when crossing into a different wind (radians) and its speed; only the picture leans.
+    private(set) var tilt = 0.0
+    private var tiltV = 0.0
     /// Real seconds since the scene opened (`T`).
     var T = 0.0
     var last: Double?
@@ -144,6 +147,12 @@ final class FlightModel {
         if !sim.done {
             sim.burning = burning
             for e in sim.step(dt) { handle(e) }
+            // Crossing into a layer whose wind differs from the balloon's drift, the envelope (higher up, in the new
+            // air first) is pushed ahead and the basket lags: a lean toward the relative wind on a soft spring.
+            let rel = sim.alt > 3 ? FlightWorld.baseWind(at: sim.alt + 20, sim.weather) - sim.vx : 0
+            let goal = min(max(rel * 0.028, -0.1), 0.1)
+            tiltV += ((goal - tilt) * 14 - tiltV * 3.2) * dt
+            tilt += tiltV * dt
             coachTick(dt)
         }
         stepFx(dt)
@@ -653,7 +662,7 @@ private enum FlightPainter {
         let sway = (sin(m.T * 1.1) * 0.6 + sin(m.T * 0.43 + 1) * 0.4) * (0.03 + (burn ? 0.015 : 0)) * fclamp(f.alt / 20, 0, 1)
         var bc = ctx
         bc.translateBy(x: bx, y: pivot)
-        bc.rotate(by: .radians(sway))
+        bc.rotate(by: .radians(sway + m.tilt))
         bc.translateBy(x: -bx, y: -pivot)
         if let design = look.design {
             ScenePainter.designBalloon3d(&bc, x: bx, y: by, r: R, colors: look.colors, burn: burn,
