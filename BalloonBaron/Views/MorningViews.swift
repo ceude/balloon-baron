@@ -294,10 +294,10 @@ extension PaperItem {
     func subline(_ company: String) -> String? {
         switch self {
         case .vip, .wedding: nil
-        case let .accident(b, days, _): loc("paper.accident.sub", b, num(days))
+        case let .accident(b, days, _): loc("paper.accident.sub", bname(b), num(days))
         case .redCaught(let fine): loc("paper.redCaught.sub", eur(fine))
         case let .antitrust(share, fine): loc("paper.antitrust.sub", num(share), eur(fine))
-        case .seized(let b): loc("paper.seized.sub", b)
+        case .seized(let b): loc("paper.seized.sub", bname(b))
         case let .rivalAccident(_, n): loc("paper.rivalAccident.sub", num(n))
         case let .rivalRedCaught(_, fine): loc("paper.rivalRedCaught.sub", eur(fine))
         case let .rivalBankrupt(_, n): loc("paper.rivalBankrupt.sub", num(n))
@@ -386,8 +386,8 @@ struct MorningEventView: View {
         let region = s?.region ?? .cap
         switch event {
         case .strike: return loc("event.strike.lead", eur(o.wages))
-        case .vip: return loc("event.vip.lead", regionalHotel(.palace, region), o.balloon ?? "", eur(o.pay))
-        case .wedding: return loc("event.wedding.lead", regionalHotel(.mansion, region), o.balloon ?? "", eur(o.pay))
+        case .vip: return loc("event.vip.lead", regionalHotel(.palace, region), o.balloon.map(bname) ?? "", eur(o.pay))
+        case .wedding: return loc("event.wedding.lead", regionalHotel(.mansion, region), o.balloon.map(bname) ?? "", eur(o.pay))
         case .doc: return loc("event.doc.lead", region.title)
         case .fuel: return loc("event.fuel.lead", eur(o.stock))
         case .press: return loc("event.press.lead", loc("paper.mast.\(region.rawValue)"))
@@ -453,7 +453,7 @@ struct RescueView: View {
         }
         if let b = sellable.first {
             let v = store.game?.sellValue(b) ?? 0
-            option(loc("rescue.sell", b.name), loc("rescue.sell.sub", eur(v))) { _ = $0.sellBalloon(b.id) }
+            option(loc("rescue.sell", b.title), loc("rescue.sell.sub", eur(v))) { _ = $0.sellBalloon(b.id) }
         }
         if let rp = store.game?.rescuePrice {
             option(loc(rp.price < s.price ? "rescue.priceDown" : "rescue.priceUp", eur(rp.price)),
@@ -501,14 +501,14 @@ struct TempFlagView: View {
         return ModalCard {
             if let fb, let chosen, let day = g?.state.day {
                 CardText.title(loc("tempFlag.title"))
-                CardText.lead(loc("tempFlag.lead", fb.name, num(fb.damagedUntil - day)))
+                CardText.lead(loc("tempFlag.lead", fb.title, num(fb.damagedUntil - day)))
                 Button {
                     SoundEngine.shared.play(.click)
                     withAnimation(.easeOut(duration: 0.15)) { open.toggle() }
                 } label: {
                     HStack {
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(chosen.name).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
+                            Text(chosen.title).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
                             Text(loc("tempFlag.seats", chosen.size.title, num(chosen.size.capacity)))
                                 .font(Theme.font(13)).foregroundStyle(Theme.ink2)
                         }
@@ -538,7 +538,7 @@ struct TempFlagView: View {
                                     withAnimation(.easeOut(duration: 0.15)) { open = false }
                                 } label: {
                                     HStack {
-                                        Text(b.name).font(Theme.font(15, .bold)).foregroundStyle(Theme.ink)
+                                        Text(b.title).font(Theme.font(15, .bold)).foregroundStyle(Theme.ink)
                                         Spacer(minLength: 8)
                                         Text(loc("tempFlag.seats", b.size.title, num(b.size.capacity)))
                                             .font(Theme.font(13)).foregroundStyle(Theme.ink2)

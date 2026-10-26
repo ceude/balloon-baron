@@ -135,6 +135,15 @@ extension GameState {
 extension PilotLevel { var title: String { loc("level.\(rawValue)") } }
 extension BalloonSize { var title: String { loc("size.\(rawValue)") } }
 
+/// Balloon names are saved as the core's lists have them; the few that are words or Turkish spellings are
+/// shown per language (older saves keep working, and a language switch renames them too).
+private let balloonNameKeys: [String: String] = [
+    "Şafak": "dawn", "Güvercin": "dove", "Kapadokya Yıldızı": "capStar", "Fiesta Yıldızı": "fiestaStar", "Teb Yıldızı": "thebesStar",
+    "Hatşepsut": "hatshepsut", "İsis": "isis", "File": "philae", "Teb": "thebes", "Abidos": "abydos", "Amon": "amun", "Kurna": "qurna"
+]
+func bname(_ raw: String) -> String { balloonNameKeys[raw].map { loc("bname.\($0)") } ?? raw }
+extension Balloon { var title: String { bname(name) } }
+
 extension Flag {
     var title: String { loc("flag.\(rawValue)") }
     var note: String { loc("flag.note.\(rawValue)") }
@@ -157,7 +166,7 @@ extension HezMessage {
         case let .boss(r, line): loc("boss.\(r.rawValue).\(line.rawValue)")
         case .festivalStarted(let i): loc("hez.festival.\(i)")
         case .eventOutcome(let o): loc("outcome.\(o.rawValue)")
-        case let .bazaarGift(k, b): b.map { loc("hez.bazaarGift", k.title, $0) } ?? loc("hez.bazaarGift.noBalloon", k.title)
+        case let .bazaarGift(k, b): b.map { loc("hez.bazaarGift", k.title, bname($0)) } ?? loc("hez.bazaarGift.noBalloon", k.title)
         case .rescued: loc("hez.rescued")
         case .worldBaron: loc("hez.worldBaron")
         case .praise(let p): loc("hez.praise.\(p.rawValue)")
@@ -165,9 +174,9 @@ extension HezMessage {
         case .deed(let d): loc("hez.deed.\(d.rawValue)")
         case .milestone(let d): Game.milestones.contains(d) ? loc("hez.milestone.\(d)") : loc("hez.milestone.more", num(d))
         case let .inspector(visit, names, fine):
-            loc("insp.\(visit).\(names.count == 1 ? "one" : "many")", names.joined(separator: ", "), eur(fine))
+            loc("insp.\(visit).\(names.count == 1 ? "one" : "many")", names.map(bname).joined(separator: ", "), eur(fine))
         case let .record(k, success): loc(success ? "record.success" : "record.fail", k.title)
-        case .flagshipBack(let name): loc("hez.flagshipBack", name)
+        case .flagshipBack(let name): loc("hez.flagshipBack", bname(name))
         }
     }
 }
@@ -192,25 +201,25 @@ extension Review {
 extension DayEvent {
     var text: String {
         switch self {
-        case let .cancelled(b, pax, comp): loc("event.cancelled", b, num(pax), eur(comp))
+        case let .cancelled(b, pax, comp): loc("event.cancelled", bname(b), num(pax), eur(comp))
         case let .missionDone(m, reward): loc("event.missionDone", m.title, eur(reward))
         case let .missionFailed(m): loc("event.missionFailed", m.title)
-        case let .perfectLanding(b, tips): loc("event.perfectLanding", b, eur(tips))
-        case let .goodLanding(b): loc("event.goodLanding", b)
-        case let .farLanding(b, m): loc("event.farLanding", b, num(m))
+        case let .perfectLanding(b, tips): loc("event.perfectLanding", bname(b), eur(tips))
+        case let .goodLanding(b): loc("event.goodLanding", bname(b))
+        case let .farLanding(b, m): loc("event.farLanding", bname(b), num(m))
         case let .accident(b, pilot, severe, days, repair, comp, cover):
-            loc(severe ? "event.accident.severe" : "event.accident.light", b, pilot.title, num(days), eur(repair), eur(comp))
+            loc(severe ? "event.accident.severe" : "event.accident.light", bname(b), pilot.title, num(days), eur(repair), eur(comp))
                 + " " + loc("cover.\(cover.key)")
         case let .redCaught(s): loc("event.redCaught", num(s), eur(Rules.redFine))
         case .redBan: loc("event.redBan")
         case .redUnseen: loc("event.redUnseen")
         case let .pilotPromoted(name, level, wage): loc("event.pilotPromoted", name, level.title, eur(wage))
-        case let .envelopeWorn(b): loc("event.envelopeWorn", b)
+        case let .envelopeWorn(b): loc("event.envelopeWorn", bname(b))
         case .licenseExpiring: loc("event.licenseExpiring")
         case .licenseRenewedByFlight: loc("event.licenseRenewedByFlight")
         case let .founderAbsent(days): loc("event.founderAbsent", num(days))
         case let .antitrustFine(share, fine): loc("event.antitrustFine", num(share), eur(fine))
-        case let .seized(b, v): loc("event.seized", b, eur(v))
+        case let .seized(b, v): loc("event.seized", bname(b), eur(v))
         case let .hotelLeft(h): loc("event.hotelLeft", h.title)
         case let .chapterDone(id, reward): loc("event.chapterDone", loc("chapter.\(id)"), loc("chapter.\(id).award"), eur(reward))
         case let .baron(r): loc("event.baron", loc("chapter.\(r.chapters.last!.id)"))

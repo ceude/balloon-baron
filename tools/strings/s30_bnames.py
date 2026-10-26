@@ -1,0 +1,15 @@
+from s1_ui import add
+
+# Balloon names that are words or Turkish spellings; saves keep the Turkish name, the app shows these (v110)
+add("bname.dawn", "Dawn", "Şafak", "Morgenröte", "Alba", "夜明け", "새벽")
+add("bname.dove", "Dove", "Güvercin", "Taube", "Paloma", "ハト", "비둘기")
+add("bname.capStar", "Star of Cappadocia", "Kapadokya Yıldızı", "Stern von Kappadokien", "Estrella de Capadocia", "カッパドキアの星", "카파도키아의 별")
+add("bname.fiestaStar", "Fiesta Star", "Fiesta Yıldızı", "Fiesta-Stern", "Estrella de la Fiesta", "フィエスタの星", "피에스타의 별")
+add("bname.thebesStar", "Star of Thebes", "Teb Yıldızı", "Stern von Theben", "Estrella de Tebas", "テーベの星", "테베의 별")
+add("bname.hatshepsut", "Hatshepsut", "Hatşepsut", "Hatschepsut", "Hatshepsut", "ハトシェプスト", "하트셉수트")
+add("bname.isis", "Isis", "İsis", "Isis", "Isis", "イシス", "이시스")
+add("bname.philae", "Philae", "File", "Philae", "Filé", "フィラエ", "필레")
+add("bname.thebes", "Thebes", "Teb", "Theben", "Tebas", "テーベ", "테베")
+add("bname.abydos", "Abydos", "Abidos", "Abydos", "Abidos", "アビドス", "아비도스")
+add("bname.amun", "Amun", "Amon", "Amun", "Amón", "アメン", "아문")
+add("bname.qurna", "Qurna", "Kurna", "Qurna", "Qurna", "クルナ", "쿠르나")

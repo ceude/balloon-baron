@@ -204,9 +204,9 @@ struct CrewView: View {
         let st: (Color, String)
         if let b {
             switch s.status(b) {
-            case .damaged: st = (Theme.red, loc("crew.row.repair", b.name))
-            case .worn: st = (Theme.red, loc("crew.row.worn", b.name))
-            default: st = (Theme.green, b.name)
+            case .damaged: st = (Theme.red, loc("crew.row.repair", b.title))
+            case .worn: st = (Theme.red, loc("crew.row.worn", b.title))
+            default: st = (Theme.green, b.title)
             }
         } else {
             st = (Color(hex: "#ff8a3d"), loc("crew.idleTag"))
@@ -275,7 +275,7 @@ struct CrewView: View {
     static func detail(_ p: Pilot, _ b: Balloon?, _ s: GameState) -> String {
         var on = loc("crew.idleTag")
         if let b {
-            on = loc("crew.on", b.name)
+            on = loc("crew.on", b.title)
             switch s.status(b) {
             case .damaged: on += " " + loc("crew.inRepair")
             case .worn: on += " " + loc("crew.worn")

@@ -415,7 +415,7 @@ struct FleetView: View {
                     .frame(width: 30, height: 38)
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
-                        Text(b.name)
+                        Text(b.title)
                             .font(Theme.font(17, .heavy, condensed: true))
                             .foregroundStyle(Theme.ink)
                             .lineLimit(1)
@@ -466,7 +466,7 @@ struct FleetView: View {
         }
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(loc("fleet.row.a11y", b.name, st.text, percent(cond)))
+        .accessibilityLabel(loc("fleet.row.a11y", b.title, st.text, percent(cond)))
         .accessibilityAddTraits(.isButton)
     }
 
@@ -577,7 +577,7 @@ private struct BalloonCardSheet: View {
 
     var body: some View {
         if let game = store.game, let b = game.state.balloon(balloonID) {
-            FleetUI.Sheet(title: b.name, lead: b.size.title + " · " + loc("fleetPage.specs", num(b.size.capacity), eur(b.size.upkeep), eur(b.size.fuel)),
+            FleetUI.Sheet(title: b.title, lead: b.size.title + " · " + loc("fleetPage.specs", num(b.size.capacity), eur(b.size.upkeep), eur(b.size.fuel)),
                           close: { dismiss() }) {
                 balloonRow(b, game)
             }
@@ -763,7 +763,7 @@ private struct AdPicker: View {
 
     var body: some View {
         if let s = store.state, let b = s.balloon(balloonID) {
-            FleetUI.Sheet(title: loc("fleetPage.adTitle", b.name), lead: loc("fleetPage.adLead"), close: { dismiss() }) {
+            FleetUI.Sheet(title: loc("fleetPage.adTitle", b.title), lead: loc("fleetPage.adLead"), close: { dismiss() }) {
                 noneRow(b)
                 ForEach(Sponsor.allCases, id: \.self) { sp in
                     sponsorRow(sp, b)
@@ -837,7 +837,7 @@ private struct EquipmentPicker: View {
 
     var body: some View {
         if let game = store.game, let b = game.state.balloon(balloonID) {
-            FleetUI.Sheet(title: loc("equip.title"), lead: b.name, close: { dismiss() }) {
+            FleetUI.Sheet(title: loc("equip.title"), lead: b.title, close: { dismiss() }) {
                 ForEach(1...3, id: \.self) { n in
                     burnerRow(n, b, game)
                 }

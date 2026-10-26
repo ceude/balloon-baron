@@ -103,7 +103,7 @@ struct GroundedView: View {
         let left = store.state.map(Self.grounded) ?? []
         ModalCard {
             CardText.title(left.count == 1 ? loc("grounded.one") : loc("grounded.many", num(left.count)))
-            CardText.lead(loc("grounded.lead", left.map(\.name).joined(separator: ", ")))
+            CardText.lead(loc("grounded.lead", left.map(\.title).joined(separator: ", ")))
             HStack(spacing: 10) {
                 Button(loc("grounded.crew")) {
                     SoundEngine.shared.play(.click)

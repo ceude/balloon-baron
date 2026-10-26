@@ -113,7 +113,7 @@ struct FleetPlanView: View {
                         .font(Theme.font(14))
                         .foregroundStyle(Theme.ink2)
                 } else {
-                    Text(loc("fplan.who", fb.name))
+                    Text(loc("fplan.who", fb.title))
                         .font(Theme.font(16, .bold))
                         .foregroundStyle(Theme.ink)
                     Text(loc("fplan.whoNote"))
@@ -179,7 +179,7 @@ struct FleetPlanView: View {
                 .opacity(active ? 1 : 0.45)
             VStack(alignment: .leading, spacing: 2) {
                 HStack(spacing: 6) {
-                    Text(b.name)
+                    Text(b.title)
                         .font(Theme.font(16, .bold))
                         .foregroundStyle(Theme.ink)
                         .lineLimit(1)
