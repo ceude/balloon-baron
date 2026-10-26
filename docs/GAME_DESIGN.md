@@ -263,6 +263,13 @@ Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükse
 ## Gece
 Uçuş defterinden sonra kasabada gece olur (3,5 sn, olay gecesi 5,5 sn; kasabayı gezerken bekler, en fazla 25 sn; alttaki düğmeyle hemen sabaha geçilir): ışıklar yanar, cırcır böcekleri öter, ateş böcekleri uçar. Bazen bir gece olayı olur ve ertesi sabah gazetede çıkar: festival gecesi fener alayı, Fiesta'da Balloon Glow, kışın ilk gecesi karlı ışıklı kasaba, bir otelde düğün havai fişekleri (%22), kayan yıldız (%10). Olaylar şimdilik yalnızca görsel ve haber.
 
+## Başlangıç hikâyesi (v112)
+Yeni oyun Hezarfen'le açılır: kendini tanıtır, "her büyük balon şirketi bir hayalle başlar" der. Oyuncu hikâyeyi seçerse (ya da "Hikâyeyi atla" ile eski akışa geçer):
+- **Gün 0, hayal:** şirketin adı ("Hayalindeki şirket") ve renkleri ("Hayalindeki balon", "Hayalim bu!") en başta seçilir; sahiplenme ilk dakikada başlar. Hezarfen: Kenan Arslan'ın eski küçük sepeti €4.000, ilk günler için kasada €3.000 lazım; cebinde €2.500 var; Göreme Sky pilot arıyor.
+- **Gün 1–2, Kenan'ın pilotu:** bölge patronu Kenan Arslan (Göreme Sky, sonraki rakibin) işe alır. Her sabah kısa brifing, sonra Göreme Sky renklerinde 16 yolculu balonla uçuş (uçuş koçu açık). Maaş €1.500, iniş primi: kusursuz €1.000, iyi €750, uzak €250, sert/kaza €0. Uçuş sonrası "Maaşını al": hayal balonun boyanmamış kremden senin renklerine, birikim kadar alttan yukarı boyanır; birikim çubuğu ve süzülen "+€" görünür. Fiyat, sigorta, filo yok.
+- **Gün 3, ilk balon:** Kenan'ın eski küçük sepeti "SATILIK €4.000" etiketiyle. Birikim hedefe (€7.000) yetmezse Hezarfen eksiği karşılıksız verir. "Balonu satın al": boya alttan tepeye yükselir, brülör yanar, balon hafifçe kalkar, tabela düşüp sallanır, konfeti ve alkış. Kenan: "Artık rakibiz; gökyüzünde görüşürüz." Hezarfen: "İlk günüme başla".
+- Ardından oyun eskisi gibi 1. günden başlar: kasada €3.000 (iki kusursuz inişte birkaç yüz euro fazlası), küçük balon "Şafak". İki hikâye uçuşu kendi uçuşu sayılır (koç bir uçuş daha konuşur). Kenan'ın tanışma sözü atlanır.
+
 ## İlk uçuşlar (v111.1)
 TestFlight gözleminden: oyuncu hedefin iniş alanı olduğunu anlamadı, rüzgâr katmanlarının kesik çizgilerini görmedi, çizginin hemen üstünde rüzgârın değişmediğini fark etti ve yakıtı bitirip ilk uçuşta kaza yaptı. Bu yüzden:
 - Rüzgâr artık katmanlar arasındaki kesik çizgide değişir (24 m'lik yumuşak geçiş), çizgiler daha belirgin ve yanlarında yüksekliği yazar.

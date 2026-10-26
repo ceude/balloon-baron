@@ -737,6 +737,8 @@ body.night #cv{touch-action:none}
 .showbtn{margin:0 0 10px}
 .showgain{background:#f4f0fb;border-radius:14px;padding:10px 14px;margin:6px 0 10px;font-size:14px;color:#2a2340}.showgain ul{margin:6px 0 6px 18px;padding:0}.showgain li{margin:2px 0}.showgain span{font-size:12.5px;color:#6b6385}
 .showcalc{display:grid;grid-template-columns:1fr auto;gap:4px 12px;background:#fff3cf;border-radius:14px;padding:10px 14px;margin:0 0 12px;font-size:14px;color:#2a2340}.showcalc .tot{border-top:1px solid rgba(0,0,0,.12);padding-top:6px;font-weight:800}
+.storybtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.storybtns .ghost{flex:none;padding:0 14px;height:40px;font-size:15px}
+#hez.story::before{background:rgba(20,14,40,.18)}
 </style>
 
 <div id="wrap">
@@ -1610,6 +1612,7 @@ function showHez(k) {
   const news = k.startsWith('news:'), boss = k.startsWith('boss:'), hz = k.startsWith('hz:'), insp = k.startsWith('insp:'), gh = k === 'guide:hello';
   if (!news && !boss && !hz && !insp && !gh) S.tips[k] = 1; save();
   const G = hz ? GUIDES.cap : guide(), I = INSPECTOR[S.region] || INSPECTOR.cap;
+  $('hez').classList.remove('story');
   const el = $('hez'), text = news ? k.slice(5) : hz ? k.slice(3) : insp ? k.slice(5) : gh ? G.hello : boss ? BOSS_LINES[S.region][k.slice(5)].replace(/\{c\}/g, S.company) : HEZ[k];
   el.innerHTML = boss ? `<div class="hzcol">${BOSS_AV[S.region]}<span class="hzname boss">${BOSS[S.region].name}</span></div><div class="hzb"><span class="bosst">${BOSS[S.region].title}</span><p></p></div>`
     : insp ? `<div class="hzcol">${INSP_AV}<span class="hzname boss">${I.name}</span></div><div class="hzb"><span class="bosst">${I.title}</span><p></p></div>`
@@ -1675,6 +1678,7 @@ function showPoach() {
 function startDay() {
   alertsOpen = false; $('dock').classList.remove('open'); applyRegionTheme();
   if (!S.company) { showSetup(1); return; }
+  if (S.story) { storyResume(); return; } /* v112: the opening story isn't over yet */
   if (!S.weather) S.weather = newWeather();
   if (!S.demand) S.demand = dayDemand();
   if (!S.candidates.length) newCandidates();
@@ -3039,6 +3043,201 @@ function showReport() {
   sfx(R.net >= 0 ? 'coin' : 'low');
 }
 
+/* ---------- the opening story (v112) ----------
+   Day 0 you name the company of your dreams and pick its colours. Then you fly two mornings for Kenan Arslan of
+   Göreme Sky (the region's boss, your rival to be) for a wage and a landing bonus, while your dream balloon fills with
+   colour as the savings grow. On the third morning you buy Kenan's old small basket; Hezarfen covers what's missing,
+   for nothing. The balloon is painted in your colours, your sign goes up, Kenan says you're rivals now, and the game
+   starts on day 1 as before (€3,000 in the safe, a small balloon). */
+const STORY = { pocket: 2500, wage: 1500, bonus: { perfect: 1000, good: 750, far: 250, hard: 0, crash: 0 }, balloon: 4000, safe: 3000 };
+const storyGoal = () => STORY.balloon + STORY.safe;
+const SC = { kind: 'brief', fill: 0, fillTo: 0, fillT0: 0, paint: 0, paintT0: 0, signT0: 0, conf: [], t0: 0 };
+/* A dialogue line from Hezarfen ('hez') or Kenan ('boss') in the speech bubble, typed out, with its own buttons. */
+function storySay(who, text, buttons) {
+  const el = $('hez'), boss = who === 'boss', G = GUIDES.cap; el.classList.add('story');
+  el.innerHTML = boss ? `<div class="hzcol">${BOSS_AV.cap}<span class="hzname boss">${BOSS.cap.name}</span></div><div class="hzb"><span class="bosst">${BOSS.cap.title}</span><p></p></div>`
+    : `<div class="hzcol">${G.av()}<span class="hzname">${G.name}</span></div><div class="hzb"><p></p></div>`;
+  const p = el.querySelector('p'), bub = el.querySelector('.hzb');
+  let i = 0; clearInterval(hezTimer);
+  el.hidden = false; p.textContent = text; p.style.minHeight = p.offsetHeight + 'px'; p.textContent = '';
+  const finish = () => { clearInterval(hezTimer); p.textContent = text; i = text.length; };
+  hezTimer = setInterval(() => { i += 2; p.textContent = text.slice(0, i); if (i % 8 === 0) sfx('blip'); if (i >= text.length) finish(); }, 22);
+  bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
+  const row = h('div', 'storybtns');
+  buttons.forEach(([label, fn, cls]) => { const b = h('button', cls === 'ghost' ? 'ghost' : 'pbtn', label); b.onclick = () => { finish(); el.hidden = true; fn(); }; row.appendChild(b); });
+  bub.appendChild(row);
+}
+function storyScene(kind) {
+  if (!S.weather) S.weather = newWeather();
+  mode = 'story'; hideAll(); $('hud').hidden = true; $('setup').hidden = true;
+  SC.kind = kind; SC.t0 = T;
+}
+/* After the dream is chosen: Hezarfen on the price of a dream, then Kenan's job offer. */
+function storyBegin() {
+  S.balloons = []; S.cash = 0; S.story.saved = STORY.pocket; S.story.pDay = 1;
+  SC.fill = SC.fillTo = S.story.saved / storyGoal(); storyScene('dream'); save();
+  storySay('hez', `Güzel hayal evlat! Ama balon pahalıdır. Kenan Arslan'ın eski küçük sepeti satılık: ${eur(STORY.balloon)}. Bir de ilk günlerin masrafı için kasada ${eur(STORY.safe)} lazım. Cebinde ${eur(STORY.pocket)} var. Göreme Sky'ın pilotu hastalanmış, Kenan pilot arıyor. Git bir konuş.`,
+    [['Kenan\'a git', storyOffer, 'big']]);
+}
+function storyOffer() {
+  storyScene('brief');
+  storySay('boss', `Pilot sen misin? İki sabah benim balonumu uçur. Günlük ${eur(STORY.wage)} maaş, iyi inişe prim: düzgün iniş ${eur(STORY.bonus.good)}, kusursuz iniş ${eur(STORY.bonus.perfect)}. Yolcularımı hedefe, iniş alanına indir; gerisini konuşuruz.`,
+    [['İşi kabul et', storyMorning, 'big']]);
+}
+/* Where a saved game picks the story up again. */
+function storyResume() {
+  const st = S.story; SC.fill = SC.fillTo = Math.min(1, st.saved / storyGoal());
+  if (st.pDay >= 3) storyShop(); else if (!st.pays.length && st.pDay === 1 && !st.hired) storyOffer(); else storyMorning();
+}
+function storyMorning() {
+  const st = S.story; st.hired = 1; S.weather = newWeather(); S.weather.flag = 'green'; S.weather.mission = null; save();
+  storyScene('brief');
+  storySay('boss', st.pDay === 1 ? 'Sabah oldu pilot. 16 yolcu sepette bekliyor. Hedef sağdaki iniş alanı; her yükseklikte rüzgâr başka eser, seni oraya taşıyanı bul.'
+    : st.pays[0] && st.pays[0].q !== 'crash' && st.pays[0].q !== 'hard' ? 'Dünkü iniş fena değildi. Bugün de aynı titizlik, yolcularım sana emanet.' : 'Dün balonumu hırpaladın ama tamir edildi. Bugün dikkatli ol, yolcularım sana emanet.',
+    [['Kalkışa hazırım', () => { $('hud').hidden = true; startFlight(16); }, 'big']]);
+}
+/* After landing: Kenan pays, the dream balloon fills with colour. */
+function storyPay(q) {
+  const st = S.story, pay = STORY.wage + (STORY.bonus[q] || 0);
+  st.pays.push({ q, pay }); S.selfFlights = (S.selfFlights || 0) + 1;
+  const from = st.saved; st.saved += pay; st.pDay++; save();
+  storyScene('pay'); $('tip').hidden = true; $('burn').hidden = true; $('vent').hidden = true; $('abort').hidden = true;
+  SC.fill = Math.min(1, from / storyGoal()); SC.fillTo = Math.min(1, st.saved / storyGoal()); SC.fillT0 = T + .9; SC.from = from;
+  const line = { perfect: 'Kusursuz iniş! Yolcular alkışladı. İşte maaşın ve primin.', good: 'İyi iniş, yolcular memnun. Maaşın ve primin burada.', far: 'Yolcular iniş alanından uzakta epey bekledi. Maaşın burada, prim küçük.', hard: 'Sert indin, sepet devrildi! Maaşını veriyorum ama prim yok.', crash: 'Balonum hasar gördü! Maaşını veriyorum ama prim yok, bir dahakine dikkat.' }[q];
+  setTimeout(() => { sfx('coin'); }, 900);
+  storySay('boss', `${line} Maaş ${eur(STORY.wage)}${STORY.bonus[q] ? ` + prim ${eur(STORY.bonus[q])}` : ''} = ${eur(pay)}.`,
+    [[st.pDay <= 2 ? 'Ertesi sabaha geç' : 'Satılık balona git', () => { if (st.pDay <= 2) storyMorning(); else storyShop(); }, 'big']]);
+}
+/* Third morning: Kenan's old small basket, still grey, with a sale tag. */
+function storyShop() {
+  const st = S.story; storyScene('shop'); SC.fill = SC.fillTo = Math.min(1, st.saved / storyGoal()); SC.paint = 0; SC.paintT0 = 0; SC.signT0 = 0; SC.conf = [];
+  const gift = Math.max(0, storyGoal() - st.saved);
+  storySay('boss', `Eski küçük sepetim bu. Yıllarca beni taşıdı; seninki olsun istersen: ${eur(STORY.balloon)}.`,
+    [['Hezarfen ne der?', () => storySay('hez', gift ? `Birikimin ${eur(st.saved)}. Eksik kalanı ben veriyorum evlat, karşılıksız: ${eur(gift)}. Hayaline yatırım bu.` : `Birikimin ${eur(st.saved)}: hem balona hem kasaya yetiyor evlat! Alnının teriyle kazandın.`,
+      [['Balonu satın al', () => storyBuy(gift), 'big']]), 'big']]);
+}
+function storyBuy(gift) {
+  const st = S.story; st.gift = gift; save();
+  SC.kind = 'own'; SC.paintT0 = T + .3; SC.signT0 = T + 2.6; SC.conf = [];
+  sfx('coin'); setTimeout(() => sfx('fanfare'), 2300); setTimeout(() => sfx('applause'), 2900);
+  setTimeout(() => {
+    storySay('boss', `Demek kendi şirketini kurdun, ${S.company}. İyi pilotsun, kabul. Ama artık rakibiz; gökyüzünde görüşürüz.`,
+      [['Gökyüzünde görüşürüz', () => storySay('hez', 'İşte şirketin evlat! Tabelan asıldı, balonun senin renklerinde. Yarın sabah ilk uçuşun kendi balonunla; ben yanındayım.', [['İlk günüme başla', storyFinish, 'big']]), 'big']]);
+  }, 5200);
+}
+function storyFinish() {
+  const st = S.story;
+  S.cash = STORY.safe + Math.max(0, st.saved - storyGoal());
+  S.balloons = [{ id: S.nextId++, size: 'S', name: 'Şafak', fly: true, dmgUntil: 0, pilot: null, flights: 0 }]; S.flag = S.balloons[0].id;
+  S.bossSaid = Object.assign(S.bossSaid || {}, { 'cap:hello': 1 });
+  if (!S.reviews.length) S.reviews.unshift({ n: 'Mehmet', c: 'Göreme', stars: 5, t: `${S.company} turlara başlıyormuş. Kenan Arslan'ın pilotuymuş, şimdi kendi balonu var. Sonunda galiba düzgün bir şirket geldi!`, day: S.day });
+  S.tips.welcome = 1; S.hezQ.push('news:İşte ilk sabahın evlat, artık patron sensin! Bugün yeni bir işin var: bilet fiyatını belirle, yolcu topla ve kendi balonunla uç.');
+  S.storyDone = { saved: st.saved, gift: st.gift || 0 }; delete S.story; S.weather = null; S.demand = null;
+  $('hud').hidden = false; tab = 'plan'; mode = 'office'; startDay();
+}
+/* The story's scene: the valley in the early morning and, depending on the moment, Kenan's balloon, your dream
+   balloon filling with colour as you save (a glowing line where the paint has got to), the old unpainted basket with
+   its sale tag, then the paint sweeping up it, the burner roaring it up a little, your sign dropping in and confetti. */
+function drawStory(dt) {
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const k = SC.kind, groundY = H * .78, kx = clamp(W / 900, .4, 1.4), camX = 220 - (W * .5) / kx;
+  const pe = k === 'own' ? clamp((T - SC.paintT0) / 2.2, 0, 1) : 0, paint = pe * pe * (3 - 2 * pe);
+  scenery(.68 + .2 * paint, groundY, 40, camX, kx, dt, true, false);
+  const col = myCol(), raw = ['#f6e9cc', '#e3cfa6'], R0 = Math.min(W * .11, H * .075), st = S.story;
+  const glow = (x, y, r, rgb, a) => { const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${rgb},${a})`); g.addColorStop(1, `rgba(${rgb},0)`); ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); };
+  /* a dream balloon: unpainted cream, its colour rising from the mouth to the crown as far as fill goes */
+  const dream = (x, y, R, fill, burn) => {
+    balloon3d(x, y, R, raw[0], raw[1], burn && fill < .02, 1);
+    if (fill > .001) {
+      const top = y - R * 2.86, mouth = y - R * .68, cut = mouth - (mouth - top) * fill;
+      ctx.save(); ctx.beginPath(); ctx.rect(x - R * 2, cut, R * 4, y - cut + 4); ctx.clip(); balloon3d(x, y, R, col[0], col[1], burn, 1); ctx.restore();
+      if (fill < .999) { /* the paint line: a thin glow across the envelope, with a few glints running along it */
+        const yy = cut, hw = R * .86 * Math.sin(Math.PI * clamp((mouth - yy) / (mouth - top), .05, .95)) + R * .1;
+        ctx.save(); ctx.globalCompositeOperation = 'lighter';
+        const lg = ctx.createLinearGradient(x - hw, 0, x + hw, 0); lg.addColorStop(0, 'rgba(255,230,160,0)'); lg.addColorStop(.5, 'rgba(255,240,190,.9)'); lg.addColorStop(1, 'rgba(255,230,160,0)');
+        ctx.fillStyle = lg; ctx.fillRect(x - hw, yy - 1.5, hw * 2, 3);
+        for (let i = 0; i < 3; i++) glow(x - hw + ((T * .7 + i / 3) % 1) * hw * 2, yy, R * .055, '255,245,210', .75);
+        ctx.restore();
+      }
+    }
+  };
+  const pill = (x, y, big, small, tone) => {
+    ctx.save(); ctx.font = `800 ${Math.round(R0 * .38)}px "Barlow Condensed", sans-serif`; const w1 = ctx.measureText(big).width;
+    ctx.font = `600 ${Math.round(R0 * .2)}px Barlow, sans-serif`; const w2 = small ? ctx.measureText(small).width : 0, w = Math.max(w1, w2) + R0 * .6, hh = small ? R0 * .86 : R0 * .56;
+    ctx.fillStyle = tone || 'rgba(43,35,80,.82)'; rrect(x - w / 2, y - hh / 2, w, hh, hh / 2.4); ctx.fill();
+    ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.font = `800 ${Math.round(R0 * .38)}px "Barlow Condensed", sans-serif`; ctx.fillText(big, x, small ? y - R0 * .02 : y + R0 * .13);
+    if (small) { ctx.font = `600 ${Math.round(R0 * .2)}px Barlow, sans-serif`; ctx.fillStyle = 'rgba(255,255,255,.85)'; ctx.fillText(small, x, y + R0 * .27); }
+    ctx.restore();
+  };
+  /* savings toward the goal: a bar with the balloon and the safe marked */
+  const bar = (x, y, w, f) => {
+    ctx.save(); ctx.fillStyle = 'rgba(43,35,80,.7)'; rrect(x - w / 2, y - 7, w, 14, 7); ctx.fill();
+    if (f > 0) { ctx.fillStyle = col[0]; rrect(x - w / 2 + 2, y - 5, Math.max(10, (w - 4) * Math.min(1, f)), 10, 5); ctx.fill(); }
+    const mk = STORY.balloon / storyGoal(); ctx.fillStyle = 'rgba(255,255,255,.8)'; ctx.fillRect(x - w / 2 + (w - 4) * mk + 2, y - 9, 2, 18);
+    ctx.font = `700 ${Math.round(R0 * .19)}px Barlow, sans-serif`; ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+    ctx.fillText(`balon ${eur(STORY.balloon)}`, x - w / 2 + (w - 4) * mk / 2, y + 22); ctx.fillText(`kasa ${eur(STORY.safe)}`, x - w / 2 + (w - 4) * (mk + 1) / 2, y + 22);
+    ctx.restore();
+  };
+  const halo = (x, y, R) => { /* the dream's halo: a soft ring of light that breathes */
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; glow(x, y - R * 1.75, R * 2.2, '255,236,190', .2 + .06 * Math.sin(T * 1.6)); ctx.restore();
+    ctx.save(); ctx.setLineDash([4, 7]); ctx.lineDashOffset = -T * 10; ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.ellipse(x, y - R * 1.75, R * 1.5, R * 1.75, 0, 0, 7); ctx.stroke(); ctx.restore();
+  };
+  if (k === 'dream' || k === 'brief') {
+    const kc = [S.rivals[0].col, S.rivals[0].col2], dR = k === 'brief' ? R0 * .95 : R0 * 1.55, dx = k === 'brief' ? W * .74 : W * .5, bob = Math.sin(T * 1.2) * R0 * .1, dy = groundY - R0 * (k === 'brief' ? 1.4 : .9) + bob;
+    if (k === 'brief') {
+      const KR = R0 * 1.35, kx0 = W * .3, burn = Math.sin(T * 2.3) > .5;
+      ctx.fillStyle = 'rgba(40,20,30,.32)'; ctx.beginPath(); ctx.ellipse(kx0, groundY + 4, KR * .7, KR * .13, 0, 0, 7); ctx.fill();
+      if (burn) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; glow(kx0, groundY - KR * 1.3, KR * 2, '255,170,70', .22); ctx.restore(); }
+      balloon3d(kx0, groundY, KR, kc[0], kc[1], burn);
+      pill(kx0, groundY - KR * 3.25, 'GÖREME SKY', 'Kenan Arslan · patronun');
+    }
+    halo(dx, dy, dR); dream(dx, dy, dR, SC.fill, false);
+    pill(dx, dy - dR * 3.75, 'HAYALİN', S.company, 'rgba(194,64,31,.85)');
+    bar(W / 2, groundY + R0 * .55, Math.min(W * .8, R0 * 5.5), st ? st.saved / storyGoal() : 0);
+    if (k === 'dream') pill(W / 2, groundY + R0 * 1.8, `${eur(st ? st.saved : 0)} / ${eur(storyGoal())}`);
+  }
+  if (k === 'pay') {
+    const e = clamp((T - SC.fillT0) / 1.6, 0, 1), ee = 1 - Math.pow(1 - e, 3), f = lerp(SC.fill, SC.fillTo, ee), R = R0 * 1.7, x = W / 2, y = groundY - R0 * 1.1 + Math.sin(T * 1.2) * R0 * .08;
+    halo(x, y, R); dream(x, y, R, f, e > 0 && e < 1);
+    const shown = Math.round(lerp(SC.from || 0, st ? st.saved : 0, ee));
+    pill(x, y - R * 3.6, eur(shown), `hedef ${eur(storyGoal())}`);
+    bar(x, groundY + R0 * .4, Math.min(W * .8, R0 * 5.5), lerp(SC.fill, SC.fillTo, ee));
+    const up = clamp((T - SC.fillT0 + .6) / 1.8, 0, 1); /* the day's pay floats up from the bar */
+    if (up > 0 && up < 1) { ctx.save(); ctx.globalAlpha = Math.sin(up * Math.PI); ctx.font = `800 ${Math.round(R0 * .5)}px "Barlow Condensed", sans-serif`; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd27a'; ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.fillText(`+${eur(st.saved - (SC.from || 0))}`, x + R * 1.4, groundY - up * R0 * 2.4); ctx.restore(); }
+  }
+  if (k === 'shop' || k === 'own') {
+    const lift = k === 'own' ? clamp((T - SC.paintT0 - 1.4) / 2.5, 0, 1) : 0, l2 = lift * lift * (3 - 2 * lift);
+    const x = W * .42, R = R0 * 1.7, y = groundY - l2 * R0 * 1.2 + (lift > 0 ? Math.sin(T * 1.3) * R0 * .06 : 0), burn = k === 'own' && T > SC.paintT0 + 1.2 && Math.sin(T * 5) > -.2;
+    ctx.fillStyle = `rgba(40,20,30,${.3 - .15 * l2})`; ctx.beginPath(); ctx.ellipse(x, groundY + 4, R * .72 * (1 - .3 * l2), R * .13, 0, 0, 7); ctx.fill();
+    if (burn) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; glow(x, y - R * 1.3, R * 2.2, '255,170,70', .25); ctx.restore(); }
+    dream(x, y, R, paint, burn);
+    if (paint < .05) { /* the sale tag hanging off the basket */
+      const tx = x + R * .62, ty = y - R * .55, tw = R * 1.35, th = R * .8;
+      ctx.strokeStyle = '#5a3a2a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + R * .16, y - R * .4); ctx.lineTo(tx + 6, ty - th * .45); ctx.stroke();
+      ctx.save(); ctx.translate(tx, ty); ctx.rotate(Math.sin(T * 1.8) * .07); ctx.fillStyle = '#fff6dc'; rrect(0, -th / 2, tw, th, 8); ctx.fill(); ctx.strokeStyle = '#c99a4a'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#c2401f'; ctx.font = `800 ${Math.round(th * .32)}px "Barlow Condensed", sans-serif`; ctx.fillText('SATILIK', th * .2, -th * .04); ctx.fillStyle = '#2b2350'; ctx.font = `800 ${Math.round(th * .36)}px "Barlow Condensed", sans-serif`; ctx.fillText(eur(STORY.balloon), th * .2, th * .34); ctx.restore();
+      bar(W / 2, groundY + R0 * .5, Math.min(W * .8, R0 * 5.5), st ? st.saved / storyGoal() : 0);
+    }
+    if (k === 'own') {
+      /* the sign drops in on its posts, swings and settles, a shine runs across it; confetti in your colours */
+      const se = clamp((T - SC.signT0) / .9, 0, 1), drop = 1 - Math.pow(1 - se, 3), after = T - SC.signT0 - .9, sw = se < 1 ? 0 : Math.sin(after * 6) * Math.exp(-after * 2) * .06;
+      if (T > SC.signT0) {
+        const bw = Math.min(W * .5, R * 2.4), bh = R * .6, sxp = Math.min(W - bw / 2 - 12, x + R * 1.5), sy0 = groundY - R * .95, syp = lerp(-bh * 2, sy0, drop);
+        ctx.fillStyle = '#5a3a2a'; ctx.fillRect(sxp - bw * .34, syp, 7, groundY - syp + 2); ctx.fillRect(sxp + bw * .34 - 7, syp, 7, groundY - syp + 2);
+        ctx.save(); ctx.translate(sxp, syp); ctx.rotate(sw); ctx.fillStyle = '#7a4e33'; rrect(-bw / 2, -bh / 2, bw, bh, 9); ctx.fill(); ctx.fillStyle = col[0]; rrect(-bw / 2 + 5, -bh / 2 + 5, bw - 10, bh - 10, 7); ctx.fill();
+        let fs = Math.round(bh * .5); ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; while (ctx.measureText(S.company).width > bw - 28 && fs > 10) { fs--; ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; }
+        ctx.textAlign = 'center'; ctx.fillStyle = col[1]; ctx.fillText(S.company, 0, fs * .35); ctx.textAlign = 'left';
+        if (se >= 1) { const sh = (after % 2.6) / 1.2; if (sh < 1) { ctx.save(); rrect(-bw / 2 + 5, -bh / 2 + 5, bw - 10, bh - 10, 7); ctx.clip(); const gx = -bw / 2 + sh * bw * 1.4 - bw * .2, g = ctx.createLinearGradient(gx - 30, 0, gx + 30, 0); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.5, 'rgba(255,255,255,.55)'); g.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = g; ctx.fillRect(-bw, -bh, bw * 2, bh * 2); ctx.restore(); } }
+        ctx.restore();
+        if (se >= 1 && !SC.burst) { SC.burst = 1; for (let i = 0; i < 110; i++) SC.conf.push({ x: x + (Math.random() - .5) * R, y: y - R * 3, vx: (Math.random() - .5) * 360, vy: -140 - Math.random() * 260, c: [col[0], col[1], '#ffd27a', '#fff'][i % 4], l: 2.4 + Math.random() }); }
+      } else SC.burst = 0;
+      if (pe >= 1) pill(x, y - R * 3.45, S.company, 'kendi balonun, kendi renklerin', 'rgba(194,64,31,.88)');
+    }
+  }
+  SC.conf = SC.conf.filter(c => (c.l -= dt) > 0);
+  for (const c of SC.conf) { c.vy += 260 * dt; c.x += c.vx * dt; c.y += c.vy * dt; c.vx *= .99; ctx.save(); ctx.globalAlpha = Math.min(1, c.l); ctx.fillStyle = c.c; ctx.translate(c.x, c.y); ctx.rotate(c.x * .05 + T * 4); ctx.fillRect(-3.5, -1.8, 7, 3.6); ctx.restore(); }
+}
+
 /* ---------- intro & setup ---------- */
 const INTRO = { y: 0, vy: 0, hold: false, t: 0, out: false };
 let pickI = 0, setupName = '';
@@ -3063,7 +3262,7 @@ function updateIntro(dt) {
     I.out = true; $('fade').classList.add('on');
     setTimeout(() => {
       $('fade').classList.remove('on');
-      if (S.company) { $('hud').hidden = false; startDay(); } else showSetup(1);
+      if (S.company) { $('hud').hidden = !!S.story; startDay(); } else showSetup(0);
     }, 480);
   }
 }
@@ -3197,10 +3396,16 @@ function drawIntro(dt) {
 function showSetup(step) {
   const m = $('setup'); m.replaceChildren(); hideAll(); m.hidden = false; $('hud').hidden = true;
   const c = h('div', 'card');
+  if (step === 0) { /* v112: a new game opens on the dream; the story can be skipped */
+    mode = 'setup'; m.hidden = true;
+    storySay('hez', 'Merhaba evlat, ben Hezarfen. Bir zamanlar Galata Kulesi\'nden kanat takıp uçtum, derler. Her büyük balon şirketi bir hayalle başlar. Senin cebinde biraz para, kafanda kocaman bir hayal var. Önce hayalini koyalım ortaya: şirketinin adı ne olacak, balonların hangi renkte uçacak?',
+      [['Hayalimi kuralım', () => { S.story = { pDay: 0, saved: STORY.pocket, pays: [] }; showSetup(1); }, 'big'], ['Hikâyeyi atla, şirketimi kur', () => { delete S.story; showSetup(1); }, 'ghost']]);
+    return;
+  }
   if (step === 1) {
     mode = 'setup';
-    c.appendChild(h('h1', null, 'Gökyüzü seni bekliyor'));
-    c.appendChild(h('p', 'lead', 'Balon imparatorluğunu kurmaya başlamak için afilli bir isme ihtiyacımız var.'));
+    c.appendChild(h('h1', null, S.story ? 'Hayalindeki şirket' : 'Gökyüzü seni bekliyor'));
+    c.appendChild(h('p', 'lead', S.story ? 'Bir gün kapında, tabelanda bu isim yazacak. Ne olsun?' : 'Balon imparatorluğunu kurmaya başlamak için afilli bir isme ihtiyacımız var.'));
     const inp = document.createElement('input'); inp.className = 'field'; inp.id = 'coName'; inp.maxLength = 24; inp.placeholder = 'Şirketinin adı'; inp.value = setupName || S.company || '';
     c.appendChild(inp);
     const sg = h('div', 'sugg');
@@ -3215,13 +3420,14 @@ function showSetup(step) {
   } else {
     mode = 'pick';
     pickI = Math.max(0, PICK.findIndex(p => p.c[0] === myCol()[0]));
-    c.appendChild(h('h1', null, 'Balonunu seç'));
-    c.appendChild(h('p', 'lead', `${esc(setupName)} filosu bu renklerle uçacak. Gökyüzündeki balonlardan birine dokun.`));
+    c.appendChild(h('h1', null, S.story ? 'Hayalindeki balon' : 'Balonunu seç'));
+    c.appendChild(h('p', 'lead', S.story ? `${esc(setupName)} balonları hangi renklerle uçsun? Gökyüzündeki balonlardan birine dokun.` : `${esc(setupName)} filosu bu renklerle uçacak. Gökyüzündeki balonlardan birine dokun.`));
     const row = h('div', 'btns');
     const back = h('button', 'ghost', 'Geri'); back.onclick = () => showSetup(1);
-    const go = h('button', 'big', 'Bu balonla uç');
+    const go = h('button', 'big', S.story ? 'Hayalim bu!' : 'Bu balonla uç');
     go.onclick = () => {
       S.company = setupName; S.colors = PICK[pickI].c;
+      if (S.story) { S.rivals.forEach(r => { if (r.col.toLowerCase() === S.colors[0].toLowerCase()) { const f = RIVAL_ALT.find(a => a[0] !== S.colors[0] && !S.rivals.some(o => o.col === a[0])); if (f) { r.col = f[0]; r.col2 = f[1]; } } }); storyBegin(); return; }
       if (!S.reviews.length) S.reviews.unshift({ n: 'Mehmet', c: 'Göreme', stars: 5, t: `${S.company} turlara başlıyormuş. Sonunda galiba düzgün bir şirket geldi!`, day: S.day });
       S.rivals.forEach(r => { if (r.col.toLowerCase() === S.colors[0].toLowerCase()) { const f = RIVAL_ALT.find(a => a[0] !== S.colors[0] && !S.rivals.some(o => o.col === a[0])); if (f) { r.col = f[0]; r.col2 = f[1]; } } }); $('hud').hidden = false; tab = 'plan'; startDay(); };
     row.append(back, go); c.appendChild(row);
@@ -3848,7 +4054,8 @@ function startFlight(pax) {
       : { k, x: 220 + dir * rnd(450, 1000), lo: 150, hi: 280, in: 0 };
   }
   mode = 'flight'; $('sheet').hidden = true; $('intro').hidden = true; $('burn').hidden = false; $('vent').hidden = true;
-  const ab = $('abort'); ab.hidden = false; ab.disabled = false; ab.textContent = 'Uçuştan vazgeç';
+  const ab = $('abort'); ab.hidden = !!S.story; ab.disabled = false; ab.textContent = 'Uçuştan vazgeç';
+  if (S.story) FL.borrow = { c: [S.rivals[0].col, S.rivals[0].col2] }; /* v112: Kenan's balloon, in Göreme Sky's colours */
   const tip = $('tip'); tip.hidden = false; tip.className = 'up'; tip.style.setProperty('--tipTop', ($('hud').offsetHeight + 10) + 'px');
   tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> Hedef: ${S.weather.target > 220 ? 'sağdaki' : 'soldaki'} iniş alanı.` : '<b>Hedefin sağdaki iniş alanı.</b> Brülöre basılı tut: balon ısınır ve yükselir. Bırak: soğur ve alçalır. Her yükseklikte rüzgâr farklı eser; seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
 }
@@ -3991,6 +4198,7 @@ function land(q) {
   }[q];
   const tip = $('tip'); tip.hidden = false; tip.className = 'wide'; tip.replaceChildren(h('div', null, msg));
   if (f.mis) tip.appendChild(h('div', null, mok ? `<b style="color:var(--green)">Görev tamam: ${MISSIONS[f.mis].name}!</b> +${eur(misReward(f.mis))}` : `<span style="color:var(--ink2)">Görev tamamlanamadı: ${MISSIONS[f.mis].name}.</span>`));
+  if (S.story) { const sb = h('button', 'big', 'Maaşını al'); sb.style.cssText = 'width:100%;margin-top:12px'; sb.onclick = () => storyPay(q); tip.appendChild(sb); return; }
   const b = h('button', 'big', 'Gün sonu raporu'); b.style.cssText = 'width:100%;margin-top:12px'; b.onclick = () => finishDay({ q, dist: f.dist, mis: f.mis, mok, mom: f.mom && f.mom.ok ? f.mom.k : null }); tip.appendChild(b);
 }
 $('burn').addEventListener('pointerdown', ev => { ev.preventDefault(); setBurn(true); });
@@ -4492,7 +4700,7 @@ function draw(dt) {
       ctx.beginPath(); ctx.moveTo(ax1 + dir * 2, y); ctx.lineTo(ax1 - dir * 5, y - 5); ctx.lineTo(ax1 - dir * 5, y + 5); ctx.fill();
       ctx.fillStyle = '#2b2350'; ctx.fillText(`${Math.round(Math.abs(v) * 3.6)} km/s`, 70, y + 5);
     }
-    { const fb = bal(S.flag) || {}, d = designOf(bal(S.flag)), R = PR * .75 * (fb.size === 'XL' ? 1.3 : 1);
+    { const BR = f.borrow, fb = BR ? {} : bal(S.flag) || {}, d = BR ? null : designOf(bal(S.flag)), R = PR * .75 * (fb.size === 'XL' ? 1.3 : 1), myc = BR ? BR.c : myCol();
       /* v110: the basket swings a little under the envelope, more while the burner roars; still on the ground */
       const bx = sx(f.x), by = sy(f.alt), pv = by - R * 1.9, burn = f.burning && f.fuel > 0;
       const sw = (Math.sin(T * 1.1) * .6 + Math.sin(T * .43 + 1) * .4) * (.03 + (burn ? .015 : 0)) * clamp(f.alt / 20, 0, 1);
@@ -7168,14 +7376,14 @@ function frame(now) {
   if (mode !== 'collect' && crowdNode) crowd(false);
   const wantBurn = (mode === 'intro' && INTRO.hold && !INTRO.out) || (mode === 'flight' && FL && FL.burning && FL.fuel > 0 && !FL.done);
   if (wantBurn !== burnState) { burnState = wantBurn; burner(wantBurn); }
-  if (mode === 'intro' || mode === 'setup' || mode === 'pick') drawIntro(dt); else draw(dt);
+  if (mode === 'intro' || mode === 'setup' || mode === 'pick') drawIntro(dt); else if (mode === 'story') drawStory(dt); else draw(dt);
   if (S) updateChirp(dt);
   requestAnimationFrame(frame);
 }
 window.addEventListener('resize', resize);
 resize();
 S = load();
-if (!S || !S.balloons || !S.balloons.length || S.over) S = newState(); else S = migrate(S);
+if (!S || (!S.story && (!S.balloons || !S.balloons.length)) || S.over) S = newState(); else S = migrate(S);
 applyRegionTheme();
 startIntro();
 requestAnimationFrame(frame);
