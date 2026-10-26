@@ -3098,7 +3098,9 @@ function storyResume() {
   if (st.pDay >= 3) storyShop(); else if (!st.hired) storyOffer(); else storyMorning();
 }
 function storyMorning() {
-  const st = S.story; st.hired = 1; S.weather = newWeather(); S.weather.flag = 'green'; S.weather.mission = null; save();
+  const st = S.story; st.hired = 1; S.weather = newWeather(); S.weather.flag = 'green'; S.weather.mission = null;
+  /* v112.2: the story's flights are short: the landing field about 800 m away, so the first lesson is quick */
+  S.weather.target = 220 + rnd(760, 860); S.weather.valley = 220 + (S.weather.target - 220) * .5; buildWorld(); save();
   storyScene('brief'); SC.fill = SC.fillTo = storyFill(st.saved);
   storyChapter(`GÜN ${st.pDay}`, 'Göreme Sky\'ın pilotu', () => storySay('boss', st.pDay === 1 ? 'Sabah oldu pilot. 16 yolcu sepette bekliyor. Hedef sağdaki iniş alanı; her yükseklikte rüzgâr başka eser, seni oraya taşıyanı bul.'
     : st.pays[0] && st.pays[0].q !== 'crash' && st.pays[0].q !== 'hard' ? 'Dünkü iniş fena değildi. Bugün de aynı titizlik, yolcularım sana emanet.' : 'Dün balonumu hırpaladın ama tamir edildi. Bugün dikkatli ol, yolcularım sana emanet.',
