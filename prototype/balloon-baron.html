@@ -727,6 +727,9 @@ button.founder{display:block;width:100%;text-align:left;margin:4px 0 12px;paddin
 .founder .fthumbs{display:flex;gap:5px;margin:8px 0;align-items:center}.founder .fthumbs img{width:36px;height:40px;background:rgba(255,255,255,.14);border-radius:9px;flex:0 0 auto}.founder .fthumbs i{font-style:normal;font-weight:800;font-size:12px;color:#2b2350;background:#ffd27a;border-radius:9px;padding:3px 7px;margin-left:2px;white-space:nowrap}
 .founder .fp{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:rgba(255,255,255,.85)}.founder .fp b{font-size:20px;color:#fff;font-family:'Barlow Condensed',sans-serif}
 .founder s,.dealrow s,.upsell s{opacity:.65}
+.fabsteps{display:flex;gap:6px;margin:4px 0 10px}.fst{flex:1;text-align:center;padding:7px 4px;border-radius:12px;background:#efe9f6;color:var(--ink2);font-size:12px}.fst b{display:block;font-family:var(--cond);font-size:20px}.fst.on{background:var(--ink);color:#fff}
+.fabbar{height:8px;border-radius:5px;background:#eadff2;margin-top:6px;overflow:hidden}.fabbar i{display:block;height:100%;background:var(--coral);border-radius:5px}
+.item.fabord{box-shadow:0 0 0 2px var(--coral) inset}
 .dealrow{display:flex;gap:10px;align-items:baseline;justify-content:center;margin:4px 0 2px}.dealrow s{font-size:16px}.dealrow b{font-family:'Barlow Condensed',sans-serif;font-size:28px;color:var(--ink)}
 .bundleg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;background:linear-gradient(#bfe0f2,#ffe6c4);border-radius:16px;padding:8px}.bundleg img{width:100%;height:auto;aspect-ratio:64/72;background:rgba(255,255,255,.55);border-radius:10px}
 
@@ -1308,6 +1311,54 @@ const pilotOf = b => S.pilots.find(p => p.id === b.pilot);
 const isSelf = b => b.id === S.flag && selfFlying();
 const cond = b => clamp(1 - (b.flights || 0) / envLife(), 0, 1);
 const SCHOOL_COST = 60000, WORKSHOP_COST = 75000;
+/* v114: the balloon workshop grows into a factory. Level 1 designs; level 2 builds small balloons, 3 medium, 4 large, at a
+   discount and one at a time. Rivals sometimes order a balloon from you instead of buying elsewhere. Tuned in
+   tools/sim-factory.js (docs/GAME_DESIGN.md "Balon fabrikası"). */
+const FAB = { lv: [null, { t: 'Tasarım atölyesi' }, { cost: 40000, size: 'S', t: 'Üretim hattı' }, { cost: 120000, size: 'M', t: 'Orta balon hattı' }, { cost: 250000, size: 'L', t: 'Büyük balon hattı' }],
+  disc: .4, days: { S: 3, M: 5, L: 7 }, orderK: .8, orderP: .08 };
+const fabLv = () => S.workshop ? (S.workshop.lv || 1) : 0;
+const fabSizes = () => ['S', 'M', 'L'].slice(0, Math.max(0, fabLv() - 1));
+const fabCan = z => fabSizes().includes(z);
+const fabCost = z => Math.round(SIZES[z].cost * (1 - FAB.disc) / 100) * 100;
+const fabPrice = z => Math.round(SIZES[z].cost * FAB.orderK / 100) * 100;
+const fabBusy = () => !!(S.workshop && S.workshop.job);
+function fabUpgrade() { const L = FAB.lv[fabLv() + 1]; if (!L || S.cash < L.cost) return false; S.cash -= L.cost; S.workshop.lv = fabLv() + 1; sfx('coin'); paperAdd(1, `${S.company} atölyesi büyüdü`, `${L.t} açıldı.`); return true; }
+/* your own balloon: paid now, ready in a few days */
+function fabBuild(z) { if (!fabCan(z) || fabBusy() || S.cash < fabCost(z)) return false; S.cash -= fabCost(z); S.workshop.job = { size: z, done: S.day + FAB.days[z], region: S.region }; S.workshop.built = (S.workshop.built || 0) + 1; sfx('coin'); return true; }
+/* v114: now and then, while the line is free, a rival asks you for a balloon it wouldn't buy otherwise: money for you, a
+   bigger rival. The size is what it flies (large for the safe ones, else medium), or the biggest you can make. */
+function fabOrderRoll(rev) {
+  if (fabLv() < 2 || fabBusy() || S.workshop.order || Math.random() >= FAB.orderP) return;
+  const rs = S.rivals.filter(r => r.alive && r.balloons.length < 30 && r.cash > 5000); if (!rs.length) return;
+  const r = pick(rs), pref = r.style === 'safe' ? 'L' : 'M', z = fabCan(pref) ? pref : fabCan('M') ? 'M' : 'S';
+  S.workshop.order = { rname: r.name, size: z, price: fabPrice(z), until: S.day + 1 };
+  rev.push(`${r.name} atölyenden bir ${SIZES[z].label.toLocaleLowerCase('tr')} sipariş etmek istiyor.`);
+}
+/* a rival's order: they pay on delivery; until then the line is theirs */
+function fabAccept() {
+  const o = S.workshop.order; if (!o || fabBusy()) return false;
+  const r = S.rivals.find(x => x.name === o.rname); if (r) r.cash -= SIZES[o.size].cost * .5;
+  S.workshop.job = { size: o.size, done: S.day + FAB.days[o.size], region: S.region, rname: o.rname, price: o.price }; S.workshop.order = null; S.workshop.orders = (S.workshop.orders || 0) + 1; return true;
+}
+/* turned down (or let lapse): no deal, the rival stays as it is */
+function fabDecline() { if (S.workshop) S.workshop.order = null; }
+/* after the day: a finished balloon goes to its owner; an unanswered order lapses */
+function fabDay(ev) {
+  const W = S.workshop; if (!W) return;
+  if (W.order && W.order.until < S.day) fabDecline();
+  const j = W.job; if (!j || S.day < j.done) return;
+  W.job = null;
+  if (j.rname) {
+    const r = S.rivals.find(x => x.name === j.rname && x.alive);
+    S.cash += j.price; W.earned = (W.earned || 0) + j.price - fabCost(j.size);
+    if (r) { r.balloons.push(j.size); r.dmg.push(0); ev.push(`Atölyen ${r.name} için ${SIZES[j.size].label.toLocaleLowerCase('tr')} teslim etti: ${eur(j.price)} kasana girdi.`); }
+    else { ev.push(`${j.rname} siparişi teslim alamadı; ${eur(j.price)} ödendi, balon sende kaldı.`); addBalloon(j.size); }
+    return;
+  }
+  if (j.region === S.region) { addBalloon(j.size); ev.push(`Atölyende yeni balonun hazır: ${S.balloons[S.balloons.length - 1].name} (${SIZES[j.size].label.toLocaleLowerCase('tr')}). Filoya katıldı.`); }
+  else if (S.regions && S.regions[j.region]) S.regions[j.region].balloons.push({ id: S.nextId++, size: j.size, name: 'Balon ' + S.nextId, fly: true, dmgUntil: 0, pilot: null, flights: 0 });
+  W.saved = (W.saved || 0) + SIZES[j.size].cost - fabCost(j.size); W.made = (W.made || 0) + 1;
+}
 const pilotWage = p => p.wage || Math.round(LEVELS[p.lvl].wage * (p.school ? .7 : 1) * (p.trait === 'nightowl' ? .85 : 1));
 /* A pilot's own share of the accident risk: level times trait, as accP uses it; the trait's part is named when there is one. */
 const traitRisk = p => p.trait === 'careful' ? .75 : p.trait === 'daredevil' ? 1.3 : 1;
@@ -1621,6 +1672,7 @@ function nextPopup() {
   if (S.eventDue) { showEvent(); return; }
   if (S.newPost && S.newPost.length) { showPostcard(); return; }
   if (S.cash >= 0) S.rescueShown = false;
+  if (S.workshop && S.workshop.order && S.workshop.order.seen !== S.day && !fabBusy()) { showOrder(); return; }
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
   if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; issueScene(); return; }
   if (S.poach) { showPoach(); return; }
@@ -1834,7 +1886,7 @@ function finishDay(flight) {
     if (Math.random() < .3) addReview('absent');
   }
 
-  simRivals(rev);
+  simRivals(rev); fabOrderRoll(rev);
   const rp = S.plan.rpax.reduce((a, b) => a + b, 0), shr = paxTotal + rp ? paxTotal / (paxTotal + rp) : 0;
   if (S.day >= 20 && shr > .6 && S.rivals.some(r => r.alive)) S.monoDays = (S.monoDays || 0) + 1; else S.monoDays = Math.max(0, (S.monoDays || 0) - 1);
   if (S.monoDays >= 3) hezAdd('antitrust');
@@ -1885,7 +1937,7 @@ function finishDay(flight) {
   (S.stat = S.stat || {}).pax = (S.stat.pax || 0) + paxTotal;
   praiseCheck(flight, red && !fl.length);
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
-  S.day++; S.plan = null; milestoneCheck(); achCheck(); if (anyBaron()) holdGoalsCheck();
+  S.day++; S.plan = null; fabDay(ev); milestoneCheck(); achCheck(); if (anyBaron()) holdGoalsCheck();
   if (S.region === 'abq') {
     if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 30; }
     else if (!S.fiesta && S.day >= (S.fiestaNext || 0) && !S.winter) { S.fiesta = { start: S.day, end: S.day + 3 }; S.hezQ.push('news:Albuquerque Balloon Fiesta başladı evlat! Dört gün boyunca dünyanın dört bir yanından turist akın edecek, gökyüzü yüzlerce balonla dolacak. Bütün balonlarını havaya kaldır!'); }
@@ -1955,7 +2007,7 @@ function showMerge() {
 const CHAPTERS = [
   { name: 'Kuruluş', reward: 5000, award: 'Kapadokya Turizm Derneği seni yılın genç girişimcisi seçti', awardShort: 'Kapadokya Turizm Derneği ödülü', goals: [['balloons', 2, 'İkinci balonunu al'], ['pilots', 1, 'İlk pilotunu işe al'], ['stars', 4.3, '4,3★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
   { name: 'Yükseliş', reward: 10000, award: 'Göreme Belediyesi seni vadinin en hızlı büyüyen şirketi seçti', awardShort: 'Göreme Belediyesi ödülü', goals: [['balloons', 5, '5 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Büyüme', reward: 20000, award: 'Türkiye Turizm Ödülleri\'nde Yılın Balon Şirketi seçildin', awardShort: 'Türkiye Turizm Ödülleri', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['share', .5, 'Pazarın %50\'si'], ['workshop', 1, 'Balon atölyesi kur']] },
+  { name: 'Büyüme', reward: 20000, award: 'Türkiye Turizm Ödülleri\'nde Yılın Balon Şirketi seçildin', awardShort: 'Türkiye Turizm Ödülleri', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['share', .5, 'Pazarın %50\'si'], ['fabBuilt', 1, 'Atölyende ilk balonunu üret']] },
   { name: 'Kapadokya Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Kapadokya Yıldızı'], ['bldTop', 3, 'Bir binayı 3. seviyeye çıkar']] }
 ];
 const BARON_SHARE = .7, BARON_STARS = 4.8;
@@ -1971,6 +2023,7 @@ function goalVal(k) {
     case 'guide': return S.guideCount || (S.guideCd > 0 ? 1 : 0);
     case 'share': return S.shareNow || 0;
     case 'workshop': return S.workshop ? 1 : 0;
+    case 'fabBuilt': return S.workshop ? (S.workshop.made || 0) : 0;
     case 'school': return S.school ? 1 : 0;
     case 'xl': return S.balloons.some(b => b.size === 'XL') ? 1 : 0;
     case 'fiesta': return S.fiestaFlown || 0;
@@ -1981,7 +2034,7 @@ function goalVal(k) {
   return 0;
 }
 const goalDone = g => goalVal(g[0]) >= g[1] - 1e-9;
-const YESNO = ['workshop', 'school', 'xl', 'influ', 'guide', 'fiesta', 'bldMast', 'bldHangar', 'bldTop'];
+const YESNO = ['workshop', 'fabBuilt', 'school', 'xl', 'influ', 'guide', 'fiesta', 'bldMast', 'bldHangar', 'bldTop'];
 function goalText(g) {
   const v = goalVal(g[0]), f1 = x => x.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   return g[0] === 'stars' ? `${f1(v)}★ / ${f1(g[1])}★` : g[0] === 'cash' ? `${eur(v)} / ${eur(g[1])}` : g[0] === 'share' ? `%${Math.round(v * 100)} / %${Math.round(g[1] * 100)}` : YESNO.includes(g[0]) ? (v >= g[1] ? 'tamam' : 'yok') : `${v}/${g[1]}`;
@@ -2218,7 +2271,8 @@ function simRivals(rev) {
       r.lowDays = load < .5 ? r.lowDays + 1 : 0;
       r.highDays = load > .7 ? (r.highDays || 0) + 1 : 0;
       const next = nextB, maxB = (r.style === 'safe' ? 25 : r.style === 'mid' ? 18 : 12) + (RIVAL_EDGE() ? 5 : 0);
-      if (r.cash > SIZES[next].cost * .6 && r.highDays >= 3 && r.balloons.length < maxB && S.day - (r.lastBuy || 0) >= (RIVAL_EDGE() ? 3 : 4)) { r.lastBuy = S.day; r.cash -= SIZES[next].cost * .5; r.balloons.push(next); r.dmg.push(0); rev.push(`${r.name} filosuna yeni bir balon ekledi.`); }
+      const buy = r.cash > SIZES[next].cost * .6 && r.highDays >= 3 && r.balloons.length < maxB && S.day - (r.lastBuy || 0) >= (RIVAL_EDGE() ? 3 : 4);
+      if (buy) { r.lastBuy = S.day; r.cash -= SIZES[next].cost * .5; r.balloons.push(next); r.dmg.push(0); rev.push(`${r.name} filosuna yeni bir balon ekledi.`); }
     }
     /* a rival in trouble first sells balloons (at half price) to stay alive; it goes bankrupt only once it's down to
        three (v110) */
@@ -2477,7 +2531,7 @@ const ICONS = {
 };
 const TABS = [['fleet', 'Filo'], ['crew', 'Ekip'], ['bank', 'Banka'], ['market', 'Pazar']];
 const unlocked = k => !!(S.unl && S.unl[k]);
-const PAGES = { holding: ['Holding', () => tabHolding], fleet: ['Filo', () => tabFleet], crew: ['Ekip', () => tabCrew], bank: ['Banka', () => tabBank], market: ['Pazar', () => tabMarket] };
+const PAGES = { holding: ['Holding', () => tabHolding], fleet: ['Filo', () => tabFleet], crew: ['Ekip', () => tabCrew], bank: ['Banka', () => tabBank], market: ['Pazar', () => tabMarket], workshop: ['Balon atölyesi', () => tabWorkshop] };
 let page = null;
 function openPage(k) { if (k === 'holding') { openHQ(); return; } page = k; $('page').hidden = false; $('page').classList.toggle('lux', k === 'holding'); $('page').style.paddingTop = $('hud').offsetHeight + 'px'; $('pTitle').textContent = PAGES[k][0]; renderTab(); $('tabBody').scrollTop = 0; }
 function closePage() { page = null; $('page').hidden = true; hqShut(); refresh(); }
@@ -2815,6 +2869,8 @@ function tabFleet(body) {
     it.insertAdjacentHTML('beforeend', balloonIcon('#cfc8dd', '#ffffff'));
     it.appendChild(h('div', 'main', `<div class="t">${z.label}, ${z.cap} kişi</div><div class="s">Rüzgârda risk ×${z.risk.toLocaleString('tr-TR')}. Bakım ${eur(z.up)}/gün.</div>`));
     it.appendChild(pbtn(eur(z.cost), () => { S.cash -= z.cost; addBalloon(k); assignPilots(); refresh(); }, S.cash < z.cost));
+    /* v114: the same balloon from your own workshop, cheaper but not today */
+    if (fabCan(k)) { const fb = pbtn(`Atölyede ${eur(fabCost(k))}`, () => { fabBuild(k); refresh(); }, fabBusy() || S.cash < fabCost(k)); fb.classList.add('two'); fb.innerHTML = `Atölyede<small>${eur(fabCost(k))} · ${FAB.days[k]} gün</small>`; it.appendChild(fb); }
     b2.appendChild(it);
   }
   if (!S.balloons.some(b => b.size === 'XL')) {
@@ -2824,8 +2880,10 @@ function tabFleet(body) {
     it.appendChild(pbtn(eur(z.cost), () => { S.cash -= z.cost; addBalloon('XL'); assignPilots(); refresh(); }, S.cash < z.cost));
     b2.appendChild(it);
   }
+  if (S.workshop) {
+    const go = h('button', 'ghost', fabLv() >= 2 ? 'Balon atölyesi: üretim ve tasarım ›' : 'Balon atölyesi: tasarımların ›'); go.style.width = '100%'; go.onclick = () => openPage('workshop'); b2.appendChild(go);
+  }
   body.appendChild(b2);
-  studioSection(body);
 }
 let CREW_F = 'all';
 const CREW_COL = ['#9a8fb8', '#14a39a', '#ff5e3a'];
@@ -5451,12 +5509,66 @@ function openDesignPicker(b) {
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
 }
+/* v114: the workshop's own page: its level and the next one, the production line, a rival's order, and your designs. */
+function tabWorkshop(body) {
+  if (!S.workshop) { studioSection(body); return; }
+  const W = S.workshop, lv = fabLv(), nx = FAB.lv[lv + 1];
+  const top = h('div', 'sec'); top.appendChild(h('h2', null, `Seviye ${lv}: ${FAB.lv[lv].t}`));
+  const steps = h('div', 'fabsteps');
+  for (let i = 1; i < FAB.lv.length; i++) steps.appendChild(h('div', 'fst' + (i <= lv ? ' on' : ''), `<b>${i}</b><span>${i === 1 ? 'Tasarım' : SIZES[FAB.lv[i].size].label}</span>`));
+  top.appendChild(steps);
+  if (nx) {
+    const it = h('div', 'item');
+    it.appendChild(h('div', 'main', `<div class="t">Seviye ${lv + 1}: ${nx.t}</div><div class="s">${lv === 1 ? 'Atölyende kendi küçük balonlarını üretirsin' : `Atölyende ${SIZES[nx.size].label.toLocaleLowerCase('tr')} de üretirsin`}: piyasa fiyatının %${Math.round(FAB.disc * 100)} altına, ${FAB.days[nx.size]} günde. Rakipler de bu boydaki balonları senden sipariş edebilir.</div>`));
+    it.appendChild(pbtn(eur(nx.cost), () => { fabUpgrade(); refresh(); }, S.cash < nx.cost));
+    top.appendChild(it);
+  } else top.appendChild(h('p', 'hint', 'Atölyen en üst seviyede: küçük, orta ve büyük balon üretebilirsin.'));
+  body.appendChild(top);
+  if (lv >= 2) {
+    const pr = h('div', 'sec'); pr.appendChild(h('h2', null, 'Üretim'));
+    if (W.job) {
+      const z = W.job.size, left = Math.max(0, W.job.done - S.day), all = FAB.days[z], it = h('div', 'item fabjob');
+      it.insertAdjacentHTML('beforeend', balloonIcon(W.job.rname ? '#cfc8dd' : myCol()[0], W.job.rname ? '#ffffff' : myCol()[1]));
+      it.appendChild(h('div', 'main', `<div class="t">${SIZES[z].label}${W.job.rname ? ` · ${esc(W.job.rname)} siparişi` : ''}</div><div class="s">${left ? `Hazır olmasına kalan gün: ${left}` : 'Gün sonunda hazır'}${W.job.rname ? `. Teslimde ${eur(W.job.price)} kasana girer.` : '. Hazır olunca filona katılır.'}</div><div class="fabbar"><i style="width:${Math.round((1 - left / all) * 100)}%"></i></div>`));
+      pr.appendChild(it);
+    } else pr.appendChild(h('p', 'hint', 'Hat boş. Bir balon üret ya da rakiplerden gelecek siparişi bekle; hat aynı anda tek balon üretir.'));
+    for (const z of fabSizes()) {
+      const it = h('div', 'item'); it.insertAdjacentHTML('beforeend', balloonIcon(myCol()[0], myCol()[1]));
+      it.appendChild(h('div', 'main', `<div class="t">${SIZES[z].label}, ${SIZES[z].cap} kişi</div><div class="s"><s>${eur(SIZES[z].cost)}</s> → <b>${eur(fabCost(z))}</b> · ${FAB.days[z]} gün</div>`));
+      it.appendChild(pbtn('Üret', () => { fabBuild(z); refresh(); }, fabBusy() || S.cash < fabCost(z)));
+      pr.appendChild(it);
+    }
+    if (W.order) {
+      const o = W.order, it = h('div', 'item fabord');
+      it.appendChild(h('div', 'main', `<div class="t">${esc(o.rname)} sipariş istiyor: ${SIZES[o.size].label.toLocaleLowerCase('tr')}</div><div class="s">Teslimde ${eur(o.price)} öder; sana maliyeti ${eur(fabCost(o.size))}, kârın ${eur(o.price - fabCost(o.size))}. Hat ${FAB.days[o.size]} gün meşgul olur ve ${esc(o.rname)} bir balonla büyür.</div>`));
+      const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
+      acts.appendChild(pbtn('Kabul et', () => { fabAccept(); refresh(); }, fabBusy())); acts.appendChild(pbtn('Reddet', () => { fabDecline(); refresh(); }, false, true));
+      it.appendChild(acts); pr.appendChild(it);
+    }
+    if (W.built || W.orders) pr.appendChild(h('p', 'hint', `Bu atölyede üretilen: kendine ${W.built || 0}, rakiplere ${W.orders || 0}. Tasarruf ${eur(W.saved || 0)}, sipariş kârı ${eur(W.earned || 0)}.`));
+    body.appendChild(pr);
+  }
+  studioSection(body);
+}
+/* a rival's order comes in the morning: take it or leave it today */
+function showOrder() {
+  const W = S.workshop, o = W.order; o.seen = S.day;
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('div', 'chap', 'Balon atölyesi'));
+  c.appendChild(h('h1', null, `${esc(o.rname)} sipariş vermek istiyor`));
+  c.appendChild(h('p', 'lead', `${esc(o.rname)} filosuna bir ${SIZES[o.size].label.toLocaleLowerCase('tr')} katmak istiyor ve senin atölyenden almayı teklif ediyor. Para senin, ama rakibin bir balonla büyür.`));
+  c.appendChild(h('div', 'showcalc', `<span>Teslimde ödeyecekleri</span><b>${eur(o.price)}</b><span>Sana maliyeti</span><b>${eur(fabCost(o.size))}</b><span class="tot">Kârın</span><b class="tot">${eur(o.price - fabCost(o.size))}</b>`));
+  c.appendChild(h('p', 'hint', `Üretim ${FAB.days[o.size]} gün sürer, bu sürede hat kendi balonun için boş olmaz. Reddedersen anlaşma olmaz, ${esc(o.rname)} olduğu gibi kalır. Teklif bugün geçerli.`));
+  const yes = h('button', 'big', 'Siparişi kabul et'); yes.onclick = () => { fabAccept(); sfx('coin'); m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(yes);
+  const no = h('button', 'ghost', 'Reddet'); no.style.width = '100%'; no.onclick = () => { fabDecline(); m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(no);
+  m.appendChild(c); m.hidden = false;
+}
 function studioSection(body) {
-  const ws = h('div', 'sec'); ws.appendChild(h('h2', null, 'Balon atölyesi'));
+  const ws = h('div', 'sec'); ws.appendChild(h('h2', null, S.workshop ? 'Tasarımlar' : 'Balon atölyesi'));
   if (!S.workshop) {
     const it = h('div', 'item');
     it.appendChild(h('div', 'main', `<div class="t">Kendi balon atölyeni kur</div><div class="s">Balonlarının desenlerini kendin tasarlarsın. Yaratıcı tasarımlar yolcuların ilgisini çeker ve popülerlik getirir. Atölye bir kez kurulur, tasarımların bütün bölgelerde kullanılır.</div>`));
-    it.appendChild(pbtn(eur(WORKSHOP_COST), () => { S.cash -= WORKSHOP_COST; S.workshop = { day: S.day }; refresh(); }, S.cash < WORKSHOP_COST));
+    it.appendChild(pbtn(eur(WORKSHOP_COST), () => { S.cash -= WORKSHOP_COST; S.workshop = { day: S.day, lv: 1 }; S.hezQ.push(`news:Atölyen açıldı evlat! Şimdilik tasarım yaparsın. Binayı büyüttükçe kendi balonlarını üretirsin: önce küçük, sonra orta, sonra büyük, hem de piyasanın %${Math.round(FAB.disc * 100)} altına. Rakipler de senden balon sipariş etmeye başlar; kabul edersen kârı sen alırsın.`); refresh(); setTimeout(nextPopup, 300); }, S.cash < WORKSHOP_COST));
     ws.appendChild(it); body.appendChild(ws); return;
   }
   const ds = S.designs || [];
@@ -5931,8 +6043,8 @@ function townBuildings() {
   const add = (o) => L.push(o);
   const n = S.balloons.length, np = S.pilots.length, ds = (S.designs || []).length;
   add({ id: 'hangar', gx: 1, gy: 1, w: 3, d: 2, name: 'Hangar', look: 'hangar', lv: n >= 8 ? 2 : 1, sub: `Balon: ${n} · Sv. ${bl('hangar')}`, tap: () => unlocked('fleet') ? buildingCard('hangar', () => openSection('fleet', 'Balonların'), 'Balonlarına git') : lockedCard('Hangar', 'fleet') });
-  add({ id: 'shop', gx: 5, gy: 1, w: 2, d: 2, name: 'Balon atölyesi', look: 'workshop', lv: S.workshop ? (ds >= 3 ? 2 : 1) : 0,
-    sub: S.workshop ? `Tasarım: ${ds}` : `Kur: ${eur(WORKSHOP_COST)}`, tap: () => unlocked('fleet') ? openSection('fleet', 'Balon atölyesi') : lockedCard('Balon atölyesi', 'fleet') });
+  add({ id: 'shop', gx: 5, gy: 1, w: 2, d: 2, name: 'Balon atölyesi', look: 'workshop', lv: S.workshop ? (ds >= 3 || fabLv() >= 3 ? 2 : 1) : 0,
+    sub: S.workshop ? (fabBusy() ? `Üretimde: ${S.workshop.job.size} · ${Math.max(0, S.workshop.job.done - S.day)} gün` : `Sv. ${fabLv()} · Tasarım: ${ds}`) : `Kur: ${eur(WORKSHOP_COST)}`, tap: () => unlocked('fleet') ? openPage('workshop') : lockedCard('Balon atölyesi', 'fleet') });
   add({ id: 'office', gx: 9, gy: 5, w: 2, d: 2, name: 'Pilot ofisi', look: 'office', lv: unlocked('crew') ? (np >= 6 ? 2 : 1) : -1,
     sub: unlocked('crew') ? `Pilot: ${np} · Sv. ${bl('office')}` : 'Yakında', tap: () => unlocked('crew') ? buildingCard('office', () => openSection('crew'), 'Ekibe git') : lockedCard('Pilot ofisi', 'crew') });
   add({ id: 'school', gx: 12, gy: 5, w: 2, d: 2, name: 'Pilot okulu', look: 'school', lv: S.school ? (np >= 8 ? 2 : 1) : (unlocked('crew') ? 0 : -1),
@@ -6153,6 +6265,19 @@ function tbuilding(b, t) {
       ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 2; for (const p of [l0, l1]) { ctx.beginPath(); ctx.moveTo(p[0], p[1]); ctx.lineTo(p[0], p[1] - 40); ctx.stroke(); }
       ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(l0[0], l0[1] - 38); ctx.lineTo(l1[0], l1[1] - 38); ctx.stroke();
       for (let i = 0; i < (big ? 5 : 3); i++) { const p = lp(l0, l1, (i + .6) / (big ? 5.4 : 3.6)); const sway = Math.sin(t * 2 + i) * 2; ctx.fillStyle = cols[i % cols.length]; ctx.beginPath(); ctx.moveTo(p[0] - 8, p[1] - 38); ctx.lineTo(p[0] + 8, p[1] - 37); ctx.lineTo(p[0] + 7 + sway, p[1] - 12); ctx.lineTo(p[0] - 7 + sway, p[1] - 13); ctx.fill(); }
+      /* v114: the factory: a brick chimney from level 2, smoking while the line runs; a new envelope rises on its rack beside it */
+      if (fabLv() >= 2) {
+        const cb = upp(tiso(x0 + w * .85, y0 + .15), h + 10), cw = 9;
+        ctx.fillStyle = '#9a4a32'; ctx.fillRect(cb[0] - cw / 2, cb[1] - 38, cw, 40); ctx.fillStyle = '#7a3624'; ctx.fillRect(cb[0], cb[1] - 38, cw / 2, 40); ctx.fillStyle = '#5a2a1c'; ctx.fillRect(cb[0] - cw / 2 - 1.5, cb[1] - 41, cw + 3, 4);
+        if (fabBusy()) for (let i = 0; i < 5; i++) { const u = (t * .35 + i / 5) % 1; ctx.fillStyle = `rgba(235,230,225,${.55 * (1 - u)})`; ctx.beginPath(); ctx.arc(cb[0] + u * 26 + Math.sin(t + i) * 3, cb[1] - 44 - u * 60, 5 + u * 12, 0, 7); ctx.fill(); }
+        if (fabBusy()) {
+          const J = S.workshop.job, k2 = clamp(1 - (J.done - S.day) / FAB.days[J.size] + .15, .15, 1), rp = tiso(x0 + w + .55, y0 + d * .5), R = 15 + (J.size === 'L' ? 6 : J.size === 'M' ? 3 : 0);
+          ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(rp[0] - R, rp[1]); ctx.lineTo(rp[0] - R, rp[1] - R * 3.4); ctx.lineTo(rp[0] + R, rp[1] - R * 3.4); ctx.lineTo(rp[0] + R, rp[1]); ctx.stroke();
+          const c2 = J.rname ? ['#cfc8dd', '#ffffff'] : myCol();
+          ctx.save(); ctx.beginPath(); ctx.rect(rp[0] - R * 1.2, rp[1] - R * 3.3 + R * 3 * (1 - k2), R * 2.4, R * 3.3); ctx.clip();
+          balloon3d(rp[0], rp[1] - R * .1, R * .8, c2[0], c2[1], false, 1); ctx.restore();
+        }
+      }
       break;
     }
     case 'office': {
