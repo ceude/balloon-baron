@@ -3,6 +3,7 @@
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
 Kuyrukta:
+- v114 balon fabrikası (prototipte `FAB`, `fabLv`, `fabSizes`, `fabCan`, `fabCost`, `fabPrice`, `fabUpgrade`, `fabBuild`, `fabOrderRoll`, `fabAccept`, `fabDecline`, `fabDay`; `S.workshop.lv/job/order/built/made/saved/earned/orders`; atölye sayfası `tabWorkshop`, sipariş kartı `showOrder`, filoda "Atölyede" seçeneği, tasarım bölümü filodan atölyeye taşındı; kasabada baca, duman ve raf; bölüm 3 hedefi `fabBuilt`). Swift'te: `Workshop` durumu (opsiyonel alanlar), kurallar `Rules`, sipariş olayı, yeni atölye ekranı, altı dilde metinler.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 - v112 başlangıç hikâyesi (**Swift'e alınmayacak: kullanıcı hikâyeden henüz memnun değil, prototipte gelişmeye devam ediyor**; prototipte `STORY`, `SC`, `storySay`, `storyChapter`, `storyTitle`, `storyBegin` (hayal gösterisi), `updateStory` / `storyInflated` (brülörle şişirme), `storyOffer`, `storyMorning`, `storyPay`, `storyShop`, `storyBuy`, `storyFinish`, `drawStory`; `S.story`, `S.storyDone`; uçuşta `FL.borrow`; hikâye uçuşlarında iniş alanı ~800 m (`storyMorning`); fan + brülörle yatarak şişirme (`SC.cold`, `fanSound`); menüde "Hikâyeyi atla"). Swift'te: `GameState.story`, kurulum akışına Gün 0 kartı, hikâye sahnesi (Canvas), Göreme Sky renklerinde uçuş, "Maaşını al", tören; altı dilde metinler. Ayrıca prototipteki "Şölen testi" menü satırı yalnızca prototipte kalır.
 
