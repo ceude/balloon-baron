@@ -179,6 +179,8 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case eventOutcome(EventOutcome)
     /// A bazaar pattern or shape arrived as a design on this balloon (nil: no balloon).
     case bazaarGift(StoreItem, balloon: String?)
+    /// v113: the Founder Pack arrived: how many items, and the balloon that got the first shape.
+    case founderPack(count: Int, balloon: String?, shape: StoreItem?)
     /// Cash is back above zero after the rescue plan.
     case rescued
     case worldBaron
@@ -274,6 +276,8 @@ public struct GameState: Codable, Equatable, Sendable {
     public var stats: Stats?
     /// Day each store item was bought.
     public var store: [StoreItem: Int]?
+    /// v113: the Balloon Show's bought figure the player picked (nil: the free one, by fleet size).
+    public var showFig: StoreItem?
     /// Hezarfen's praise: the ones given, the day of the last, and the current run of good landings.
     public var praised: Set<Praise>?
     public var praiseDay: Int?

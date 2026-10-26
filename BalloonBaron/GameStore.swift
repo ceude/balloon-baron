@@ -462,6 +462,7 @@ final class GameStore {
 
     /// Moves to another region (or into a new one) and closes the office pages.
     func goTo(_ r: RegionID) {
+        if let s = state, !s.owns(r), s.needsPack(r) { storeItem = .egypt; return }
         page = nil
         issueRegion = nil
         act { g in

@@ -36,6 +36,7 @@ struct ShowCardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(12)
         .background(Color(hex: "#f4f0fb"), in: RoundedRectangle(cornerRadius: 14))
+        figurePicker(g.state)
         if st == .ok {
             Grid(alignment: .leading, verticalSpacing: 4) {
                 GridRow { Text(loc("show.calcBalloons")); Text(num(n)).bold().gridColumnAlignment(.trailing) }
@@ -83,11 +84,63 @@ struct ShowCardView: View {
             .font(Theme.font(12.5)).foregroundStyle(Theme.ink2)
             .frame(maxWidth: .infinity, alignment: .leading)
             .fixedSize(horizontal: false, vertical: true)
+        figurePicker(g.state)
         Button(loc("show.ok")) {
             SoundEngine.shared.play(.click)
             store.closeShowCard()
         }
         .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+    }
+
+    /// v113: the finale's figure. The free one follows the fleet (a V, a ring, a heart); bought figures are yours to pick,
+    /// a locked one opens its purchase card.
+    private func figurePicker(_ s: GameState) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(loc("show.figure")).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 6) {
+                    figureChip(nil, s)
+                    ForEach(StoreItem.allCases.filter { $0.kind == .figure }, id: \.self) { k in figureChip(k, s) }
+                }
+                .padding(.vertical, 2)
+            }
+        }
+    }
+
+    private func figureChip(_ k: StoreItem?, _ s: GameState) -> some View {
+        let lock = k.map { !s.owned($0) } ?? false, on = s.showFigure == k
+        return Button {
+            SoundEngine.shared.play(.click)
+            if let k, lock { store.storeItem = k } else { store.act { $0.state.showFig = k } }
+        } label: {
+            VStack(spacing: 2) {
+                Group {
+                    if let k {
+                        FigureThumb(item: k, colors: s.colors, company: s.company)
+                    } else {
+                        Text("V · ◯ · ♥").font(Theme.font(10, .heavy)).foregroundStyle(Color(hex: "#ffd27a"))
+                            .frame(maxWidth: .infinity, maxHeight: .infinity).background(Color(hex: "#141838"))
+                    }
+                }
+                .frame(width: 48, height: 54)
+                .clipShape(RoundedRectangle(cornerRadius: 10))
+                .accessibilityHidden(true)
+                Text(k.map { $0 == .figInitial ? "\($0.title): \(ShowCardView.initial(s.company))" : $0.title } ?? loc("show.figAuto"))
+                    .font(Theme.font(12, .bold)).foregroundStyle(Theme.ink).lineLimit(2).multilineTextAlignment(.center).minimumScaleFactor(0.8)
+                if let k, lock {
+                    Text("🔒 " + Shop.shared.price(k)).font(Theme.font(11, .heavy)).foregroundStyle(Theme.coral)
+                }
+            }
+            .frame(width: 78)
+            .padding(.vertical, 6).padding(.horizontal, 4)
+            .background(on ? Color.white : Color(hex: "#fff8ea"), in: RoundedRectangle(cornerRadius: 14))
+            .overlay(RoundedRectangle(cornerRadius: 14).stroke(on ? Theme.coral : Color(hex: "#e6cfa6"), lineWidth: on ? 2.5 : 1.5))
+        }
+        .buttonStyle(.plain)
+    }
+
+    static func initial(_ company: String) -> String {
+        String(company.trimmingCharacters(in: .whitespaces).first ?? "B").uppercased(with: Locale(identifier: "tr"))
     }
 
     /// Why the show can't be booked now; also the short status on the entry rows.

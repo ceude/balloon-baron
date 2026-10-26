@@ -220,7 +220,8 @@ struct HomeView: View {
     // MARK: HUD
 
     private func hud(_ s: GameState) -> some View {
-        let multi = !s.parked.isEmpty || s.anyBaron || s.region != .cap
+        // v113: always there, so from day one you see the game goes on beyond Cappadocia
+        let multi = true
         return HStack(spacing: 8) {
             chip(loc("hud.day", num(s.day)))
             if multi {

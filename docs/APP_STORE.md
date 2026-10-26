@@ -115,7 +115,7 @@ Burada yazanlar senin hesabında yapılacaklar.
 
 - Fener dizileri (`lanterns`) Hezarfen'in hediyesi. Ürün değil, App Store'a girilmez.
 - Kimlikler `StoreItem.productID` ile aynı olmalı.
-- v113 ürünleri şimdilik yalnızca prototipte; Swift'e aktarılınca App Store Connect'e girilecek (kuyrukta). Kurucu Paketi bir Non-Consumable üründür; alınınca uygulama paketteki bütün kozmetikleri açar (geri yüklemede de).
+- v113 ürünleri uygulamada ve `StoreKit/BalloonBaron.storekit` dosyasında var; App Store Connect'e de aynı kimliklerle girilmeli. Kurucu Paketi bir Non-Consumable üründür; alınınca uygulama paketteki bütün kozmetikleri açar (geri yüklemede de).
 
 Xcode'da ödeme denemek için:
 
@@ -175,7 +175,7 @@ Başarımlar oyunda kartpostal olarak kutlanıyor, bu yüzden Game Center afişi
 
 ## 6. İnceleme notu (App Review)
 
-> No login needed. The game saves on the device. Purchases are cosmetic (balloon patterns, shaped envelopes, town decorations) and can be restored from the bazaar ("Restore purchases"). The bazaar opens on game day 11; to reach it quickly, play a few days (each day: tap "Collect passengers", take off, land).
+> No login needed. The game saves on the device. All purchases are non-consumable and can be restored from the bazaar ("Restore purchases"). Balloon patterns, shaped envelopes, town decorations and Balloon Show figures change the look of the game; town decorations also bring slightly more tourists (+1% each), and shop patterns and shapes never fade and can be applied to any balloon for free. "Egypt: Luxor" unlocks an additional late-game region (Luxor) once the player has completed Albuquerque. The "Founder Pack" unlocks every pattern, shape, decoration and show figure at once. The bazaar opens on game day 11; to reach it quickly, play a few days (each day: tap "Collect passengers", take off, land).
 
 ## 7. Sürüm numaraları
 

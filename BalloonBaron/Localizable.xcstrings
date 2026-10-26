@@ -3732,6 +3732,129 @@
         }
       }
     },
+    "bazaar.figures": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show-Figuren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show figures"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Figuras del espectáculo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショーの図形"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쇼 도형"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şölen figürleri"
+          }
+        }
+      }
+    },
+    "bazaar.figures.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Finale der Ballon-Show zeichnen deine Ballone diese Figur. Gehört dir für immer; wähle sie auf der Show-Karte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the Balloon Show's finale your balloons draw this figure. Yours for good; pick it on the show card."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el final del Espectáculo de globos tus globos dibujan esta figura. Es tuya para siempre; elígela en la tarjeta del espectáculo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バルーンショーのフィナーレで気球がこの図形を描く。ずっと使え、ショーのカードで選べる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 쇼 피날레에서 열기구들이 이 도형을 그립니다. 영구 소장, 쇼 카드에서 고릅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon Şöleni'nin finalinde balonların bu figürü çizer. Kalıcıdır, şölen kartından seçilir."
+          }
+        }
+      }
+    },
+    "bazaar.founderLeft": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artikel im Basar: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bazaar items: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Artículos del bazar: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バザールの品：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "바자르 상품: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çarşıdaki ürün: %@"
+          }
+        }
+      }
+    },
     "bazaar.gift": {
       "extractionState": "manual",
       "localizations": {
@@ -3855,6 +3978,47 @@
         }
       }
     },
+    "bazaar.locked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔒 Gesperrt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔒 Locked"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔒 Bloqueado"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔒 未解放"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔒 잠김"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "🔒 Kilitli"
+          }
+        }
+      }
+    },
     "bazaar.patterns": {
       "extractionState": "manual",
       "localizations": {
@@ -3933,6 +4097,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yüksek yaratıcılık, hiç eskimez."
+          }
+        }
+      }
+    },
+    "bazaar.regions": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regionen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regions"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regiones"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "地域"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지역"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bölgeler"
+          }
+        }
+      }
+    },
+    "bazaar.regions.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffne Ägypten, dann kannst du auch in Luxor eine Firma gründen. Es öffnet sich, sobald du Baron von Albuquerque bist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Egypt and you can found a company in Luxor too. It opens once you're Baron of Albuquerque."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Egipto y podrás fundar una empresa también en Luxor. Se abre cuando seas Barón de Albuquerque."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エジプトを開けばルクソールでも会社を作れる。アルバカーキの男爵になると開く。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이집트를 열면 룩소르에도 회사를 세울 수 있습니다. 앨버커키 남작이 되면 열립니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mısır'ı açınca Luksor'da da şirket kurabilirsin. Albuquerque baronu olunca açılır."
           }
         }
       }
@@ -27717,6 +27963,88 @@
         }
       }
     },
+    "hez.founderPack": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Gründerpaket ist da, Lehrling! Artikel: %@. Muster und Formballone warten im Designstudio, der Schmuck steht in der Stadt, die Figuren sind auf der Show-Karte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Founder Pack is here, kid! Items: %@. Patterns and shaped balloons wait in the Design Studio, the decorations are up in town, the figures are on the show card."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Ya tienes el Pack Fundador, aprendiz! Artículos: %@. Los estampados y globos con forma están en el Estudio de diseño, los adornos en el pueblo y las figuras en la tarjeta del espectáculo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "創業者パックが届いたぞ、弟子よ！品数：%@。柄と変わり形の気球はデザイン工房に、飾りは町に、図形はショーのカードにある。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "창업자 팩이 도착했네, 제자여! 상품: %@. 무늬와 모양 열기구는 디자인 공방에, 장식은 마을에, 도형은 쇼 카드에 있다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kurucu Paketi hazır evlat! Ürün: %@. Desenler ve şekilli balonlar Tasarım Atölyesi'nde, süsler kasabada, figürler şölen kartında."
+          }
+        }
+      }
+    },
+    "hez.founderPack.balloon": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Gründerpaket ist da, Lehrling! Artikel: %1$@. Muster und Formballone warten im Designstudio, der Schmuck steht in der Stadt, die Figuren sind auf der Show-Karte. Dein Flaggschiff trägt die erste Form: %2$@ (%3$@)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Founder Pack is here, kid! Items: %1$@. Patterns and shaped balloons wait in the Design Studio, the decorations are up in town, the figures are on the show card. I dressed your flagship in the first shape: %2$@ (%3$@)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Ya tienes el Pack Fundador, aprendiz! Artículos: %1$@. Los estampados y globos con forma están en el Estudio de diseño, los adornos en el pueblo y las figuras en la tarjeta del espectáculo. Le puse la primera forma a tu globo insignia: %2$@ (%3$@)."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "創業者パックが届いたぞ、弟子よ！品数：%1$@。柄と変わり形の気球はデザイン工房に、飾りは町に、図形はショーのカードにある。旗艦に最初の形を着せておいた：%2$@（%3$@）。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "창업자 팩이 도착했네, 제자여! 상품: %1$@. 무늬와 모양 열기구는 디자인 공방에, 장식은 마을에, 도형은 쇼 카드에 있다네. 기함에 첫 모양을 입혔네: %2$@ (%3$@)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kurucu Paketi hazır evlat! Ürün: %1$@. Desenler ve şekilli balonlar Tasarım Atölyesi'nde, süsler kasabada, figürler şölen kartında. Amiral balonuna ilk şekli giydirdim: %2$@ (%3$@)."
+          }
+        }
+      }
+    },
     "hez.goals": {
       "extractionState": "manual",
       "localizations": {
@@ -43912,6 +44240,47 @@
         }
       }
     },
+    "map.egyptNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuerst öffnest du einmalig Ägyptens Tor: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First you open Egypt's gate, once: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primero abres la puerta de Egipto, una sola vez: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まずエジプトの扉を一度だけ開く：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "먼저 이집트의 문을 한 번 엽니다: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Önce Mısır'ın kapısını açarsın, bir kez: %@."
+          }
+        }
+      }
+    },
     "map.enter": {
       "extractionState": "manual",
       "localizations": {
@@ -44359,6 +44728,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yeni bölge: %@"
+          }
+        }
+      }
+    },
+    "map.openEgypt": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ägypten öffnen %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Egypt %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir Egipto %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エジプトを開く %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이집트 열기 %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mısır'ı aç %@"
           }
         }
       }
@@ -55638,6 +56048,47 @@
         }
       }
     },
+    "regions.enter": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Betreten ›"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enter ›"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrar ›"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "参入 ›"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "진입 ›"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gir ›"
+          }
+        }
+      }
+    },
     "regions.go": {
       "extractionState": "manual",
       "localizations": {
@@ -55761,6 +56212,88 @@
         }
       }
     },
+    "regions.lockedAbq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet, wenn du Baron von Kappadokien bist"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens when you're Baron of Cappadocia"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se abre cuando seas Barón de Capadocia"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カッパドキアの男爵になると開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "카파도키아 남작이 되면 열립니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapadokya baronu olunca açılır"
+          }
+        }
+      }
+    },
+    "regions.lockedLux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet, wenn du Baron von Albuquerque bist"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens when you're Baron of Albuquerque"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se abre cuando seas Barón de Albuquerque"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アルバカーキの男爵になると開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앨버커키 남작이 되면 열립니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Albuquerque baronu olunca açılır"
+          }
+        }
+      }
+    },
     "regions.map": {
       "extractionState": "manual",
       "localizations": {
@@ -55798,6 +56331,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dünya haritası"
+          }
+        }
+      }
+    },
+    "regions.newRegion": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Region"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New region"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nueva región"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しい地域"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새 지역"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni bölge"
+          }
+        }
+      }
+    },
+    "regions.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offen, bereit zum Eintritt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open, ready to enter"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abierta, lista para entrar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "解放済み、参入できる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열림, 진입 가능"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açıldı, girmeye hazır"
           }
         }
       }
@@ -63797,6 +64412,88 @@
         }
       }
     },
+    "show.figAuto": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nach Flotte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "By fleet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Según la flota"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "船団に合わせる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "선단에 맞춤"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filona göre"
+          }
+        }
+      }
+    },
+    "show.figure": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Figur im Finale"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Finale figure"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Figura final"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フィナーレの図形"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "피날레 도형"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Final figürü"
+          }
+        }
+      }
+    },
     "show.gainCap": {
       "extractionState": "manual",
       "localizations": {
@@ -64945,6 +65642,47 @@
         }
       }
     },
+    "store.arch": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommensbogen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome arch"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arco de bienvenida"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "歓迎のアーチ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "환영 아치"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Karşılama kemeri"
+          }
+        }
+      }
+    },
     "store.buy": {
       "extractionState": "manual",
       "localizations": {
@@ -65027,6 +65765,47 @@
         }
       }
     },
+    "store.cafe": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gartencafé"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garden café"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Café con terraza"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ガーデンカフェ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "정원 카페"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bahçe kafe"
+          }
+        }
+      }
+    },
     "store.cancel": {
       "extractionState": "manual",
       "localizations": {
@@ -65064,6 +65843,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vazgeç"
+          }
+        }
+      }
+    },
+    "store.dayPreview": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So wird deine Stadt aussehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your town will look like this"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Así se verá tu pueblo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "町はこう見えます"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마을이 이렇게 보여요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasaban böyle görünecek"
+          }
+        }
+      }
+    },
+    "store.egypt": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ägypten: Luxor"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Egypt: Luxor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Egipto: Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エジプト：ルクソール"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이집트: 룩소르"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mısır: Luksor"
           }
         }
       }
@@ -65109,6 +65970,211 @@
         }
       }
     },
+    "store.figButterfly": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schmetterling"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Butterfly"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mariposa"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "蝶"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나비"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kelebek"
+          }
+        }
+      }
+    },
+    "store.figInitial": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Anfangsbuchstabe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your initial"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu inicial"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "頭文字"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이니셜"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baş harfin"
+          }
+        }
+      }
+    },
+    "store.figSpiral": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spirale"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Spiral"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espiral"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "渦巻き"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "소용돌이"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Girdap"
+          }
+        }
+      }
+    },
+    "store.figStar": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Star"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estrella"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "星"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "별"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yıldız"
+          }
+        }
+      }
+    },
+    "store.figTulip": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tulpe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tulip"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tulipán"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チューリップ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "튤립"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lale"
+          }
+        }
+      }
+    },
     "store.flags": {
       "extractionState": "manual",
       "localizations": {
@@ -65146,6 +66212,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Şirket bayrakları"
+          }
+        }
+      }
+    },
+    "store.founder": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gründerpaket"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Founder Pack"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pack Fundador"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "創業者パック"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "창업자 팩"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kurucu Paketi"
           }
         }
       }
@@ -65396,6 +66503,47 @@
         }
       }
     },
+    "store.lead.bundle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alles aus dem Basar auf einmal: Muster, Formballone, Stadtschmuck und Show-Figuren. Artikel, die du noch nicht hast: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Everything in the bazaar at once: patterns, shaped balloons, town decorations and show figures. Items you don't own yet: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo el bazar de una vez: estampados, globos con forma, adornos del pueblo y figuras del espectáculo. Artículos que aún no tienes: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バザールの品をまとめて：柄、変わり形の気球、町の飾り、ショーの図形。まだ持っていない品：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "바자르의 모든 것을 한 번에: 무늬, 모양 열기구, 마을 장식, 쇼 도형. 아직 없는 상품: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çarşıdaki her şey tek seferde: desenler, şekilli balonlar, kasaba süsleri ve şölen figürleri. Henüz sahip olmadığın ürün: %@."
+          }
+        }
+      }
+    },
     "store.lead.decor": {
       "extractionState": "manual",
       "localizations": {
@@ -65433,6 +66581,129 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kasabana kalıcı bir süs. Çarşıdan alınır, kasabada görünür, gece de ışıl ışıl yanar."
+          }
+        }
+      }
+    },
+    "store.lead.egypt": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet Ägyptens Tor für immer: der Nil, das Tal der Könige und der härteste Ballonmarkt der Welt. Die Eintrittsgebühr im Spiel zahlt weiterhin die Holding."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens Egypt's gate for good: the Nile, the Valley of the Kings and the toughest balloon market in the world. The region's in-game entry fee is still paid from the holding."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre para siempre la puerta de Egipto: el Nilo, el Valle de los Reyes y el mercado de globos más duro del mundo. La cuota de entrada del juego se sigue pagando desde el holding."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エジプトへの扉を永久に開く。ナイル川、王家の谷、そして世界一厳しい気球市場。ゲーム内の参入費はこれまで通りホールディングから支払う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이집트의 문을 영구히 엽니다. 나일강, 왕가의 계곡, 그리고 세계에서 가장 험한 열기구 시장. 게임 내 진입 비용은 여전히 지주회사가 냅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mısır'ın kapısını kalıcı olarak açar: Nil kıyısı, Krallar Vadisi ve dünyanın en çetin balon pazarı. Bölgeye girişin oyun içi bedeli yine holding kasasından ödenir."
+          }
+        }
+      }
+    },
+    "store.lead.figInitial": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Finale der Ballon-Show zeichnen deine Ballone den Anfangsbuchstaben deiner Firma in den Himmel. Buchstabe: %@. Gehört dir für immer; wähle ihn auf der Show-Karte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the Balloon Show's finale your balloons draw your company's first letter in the sky. Letter: %@. It's yours for good; pick it on the show card."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el final del Espectáculo de globos tus globos dibujan en el cielo la inicial de tu empresa. Letra: %@. Es tuya para siempre; elígela en la tarjeta del espectáculo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バルーンショーのフィナーレで、気球が空に会社の頭文字を描く。文字：%@。ずっと使え、ショーのカードで選べる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 쇼 피날레에서 열기구들이 하늘에 회사 이니셜을 그립니다. 글자: %@. 영구 소장이며 쇼 카드에서 고릅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon Şöleni'nin finalinde balonların gökyüzünde şirketinin baş harfini çizer. Harf: %@. Kalıcıdır; şölen kartından seçersin."
+          }
+        }
+      }
+    },
+    "store.lead.figure": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Finale der Ballon-Show zeichnen deine Ballone diese Figur in den Himmel. Sie gehört dir für immer; wähle die gewünschte Figur auf der Show-Karte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the Balloon Show's finale your balloons draw this figure in the sky. It's yours for good; pick the figure you want on the show card."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el final del Espectáculo de globos tus globos dibujan esta figura en el cielo. Es tuya para siempre; elige la figura que quieras en la tarjeta del espectáculo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バルーンショーのフィナーレで、気球が空にこの図形を描く。ずっと使え、ショーのカードで好きな図形を選べる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 쇼 피날레에서 열기구들이 하늘에 이 도형을 그립니다. 영구 소장이며, 쇼 카드에서 원하는 도형을 고릅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon Şöleni'nin finalinde balonların gökyüzünde bu figürü çizer. Kalıcıdır; şölen kartından istediğin figürü seçersin."
           }
         }
       }
@@ -65560,6 +66831,88 @@
         }
       }
     },
+    "store.off": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ Rabatt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ off"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ de descuento"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@オフ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 할인"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ indirim"
+          }
+        }
+      }
+    },
+    "store.orAll": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oder alles in einem: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Or all in one: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O todo en uno: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まとめて買うなら：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "또는 한 번에 모두: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya da hepsi bir arada: %@"
+          }
+        }
+      }
+    },
     "store.pending": {
       "extractionState": "manual",
       "localizations": {
@@ -65601,6 +66954,47 @@
         }
       }
     },
+    "store.pigeons": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Taubenschwarm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pigeon flock"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bandada de palomas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハトの群れ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비둘기 떼"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Güvercin sürüsü"
+          }
+        }
+      }
+    },
     "store.restore": {
       "extractionState": "manual",
       "localizations": {
@@ -65638,6 +67032,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Satın alımları geri yükle"
+          }
+        }
+      }
+    },
+    "store.rugs": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kelim-Auslage"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilim display"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exposición de kilims"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キリムの展示"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "킬림 전시"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilim sergisi"
           }
         }
       }

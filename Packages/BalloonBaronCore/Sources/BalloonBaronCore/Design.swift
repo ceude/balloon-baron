@@ -28,12 +28,17 @@ public enum EnvelopeShape: String, Codable, CaseIterable, Sendable {
     public var storeItem: StoreItem { StoreItem(rawValue: rawValue)! }
 }
 
-/// Everything sold for real money, in the bazaar. Names: `store.<rawValue>`. StoreKit 2 non-consumables:
-/// patterns and decorations tier 1, shapes tier 2. The lantern strings are Hezarfen's free gift.
+/// Everything sold for real money, in the bazaar. Names: `store.<rawValue>`. StoreKit 2 non-consumables.
+/// The lantern strings are Hezarfen's free gift. v113 added small decorations and Balloon Show figures (€0,49),
+/// Egypt (€2,99: Luxor sits behind it, America is free) and the Founder Pack (€6,99: every cosmetic).
 public enum StoreItem: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     case gold, tile, sky, kilim
     case heart, star, skull
     case fountain, statue, lanterns, flags
+    case pigeons, arch, cafe, rugs
+    case figStar, figTulip, figButterfly, figSpiral, figInitial
+    case egypt
+    case founder
 
     /// The skull replaced the Hezarfen balloon: whoever bought that one owns the skull.
     public init?(rawValue: String) {
@@ -41,20 +46,57 @@ public enum StoreItem: String, Codable, CaseIterable, CodingKeyRepresentable, Se
         self = k
     }
 
-    public enum Kind: Sendable { case pattern, shape, decoration }
+    public enum Kind: Sendable { case pattern, shape, decoration, figure, region, bundle }
     public var kind: Kind {
         switch self {
         case .gold, .tile, .sky, .kilim: .pattern
         case .heart, .star, .skull: .shape
-        case .fountain, .statue, .lanterns, .flags: .decoration
+        case .fountain, .statue, .lanterns, .flags, .pigeons, .arch, .cafe, .rugs: .decoration
+        case .figStar, .figTulip, .figButterfly, .figSpiral, .figInitial: .figure
+        case .egypt: .region
+        case .founder: .bundle
         }
     }
     public var gift: Bool { self == .lanterns }
-    /// App Store price tier.
-    public var tier: Int { kind == .shape ? 2 : 1 }
-    public var productID: String { "balloonbaron.\(rawValue)" }
+    /// The price in euros (the App Store shows its own local price once loaded).
+    public var euro: Double {
+        switch self {
+        case .heart, .star, .skull: 1.99
+        case .pigeons, .arch, .cafe, .rugs, .figStar, .figTulip, .figButterfly, .figSpiral, .figInitial: 0.49
+        case .egypt: 2.99
+        case .founder: 6.99
+        case .lanterns: 0
+        default: 0.99
+        }
+    }
+    public var productID: String {
+        switch self {
+        case .figStar: "balloonbaron.fig.star"
+        case .figTulip: "balloonbaron.fig.tulip"
+        case .figButterfly: "balloonbaron.fig.butterfly"
+        case .figSpiral: "balloonbaron.fig.spiral"
+        case .figInitial: "balloonbaron.fig.initial"
+        default: "balloonbaron.\(rawValue)"
+        }
+    }
     public var pattern: Pattern? { kind == .pattern ? Pattern(rawValue: rawValue) : nil }
     public var shape: EnvelopeShape? { kind == .shape ? EnvelopeShape(rawValue: rawValue) : nil }
+
+    /// What the Founder Pack holds: every pattern, shape, decoration and show figure (not Egypt, not the gift).
+    public static let bundle: [StoreItem] = allCases.filter { [.pattern, .shape, .decoration, .figure].contains($0.kind) && !$0.gift }
+}
+
+extension GameState {
+    /// The pack items not owned yet, what they'd cost one by one, and how much the pack saves on that.
+    public var bundleLeft: [StoreItem] { StoreItem.bundle.filter { !owned($0) } }
+    public var bundleWas: Double { (bundleLeft.reduce(0) { $0 + $1.euro } * 100).rounded() / 100 }
+    public var bundleOff: Int { bundleWas > 0 ? Int(((1 - StoreItem.founder.euro / bundleWas) * 100).rounded()) : 0 }
+    /// The pack is offered while it saves at least a fifth.
+    public var bundleWorth: Bool { !owned(.founder) && bundleOff >= 20 }
+    /// Luxor needs the Egypt unlock before you can go in.
+    public func needsPack(_ r: RegionID) -> Bool { r == .lux && !owned(.egypt) }
+    /// The Balloon Show's figure, when one is bought and picked.
+    public var showFigure: StoreItem? { showFig.flatMap { owned($0) ? $0 : nil } }
 }
 
 public struct Design: Codable, Identifiable, Equatable, Sendable {
@@ -169,10 +211,19 @@ extension Game {
     /// design in company colors and goes straight onto the flagship, so it works without the workshop.
     public mutating func grantStoreItem(_ k: StoreItem) {
         guard !state.owned(k) else { return }
+        if k == .founder { grantBundle(); return }
         var st = state.store ?? [:]
         st[k] = state.day
         state.store = st
-        guard k.kind != .decoration else { return }
+        if k.kind == .figure { state.showFig = k }
+        guard k.kind == .pattern || k.kind == .shape else { return }
+        let d = addGiftDesign(k)
+        let fb = state.balloon(state.flagship) ?? state.balloons.first
+        if let fb, let i = state.balloons.firstIndex(where: { $0.id == fb.id }) { state.balloons[i].design = d.id }
+        state.hezQueue.insert(.bazaarGift(k, balloon: fb?.name), at: 0)
+    }
+
+    private mutating func addGiftDesign(_ k: StoreItem) -> Design {
         let c = state.colors
         let pattern = k.pattern ?? .stripes, colors = [c[0], c.count > 1 ? c[1] : "#ffffff", "#ffffff"]
         var d = Design(id: state.nextID, name: "", number: state.designs.count + 1, pattern: pattern, colors: colors,
@@ -180,8 +231,27 @@ extension Game {
         d.score = designScore(pattern: pattern, colors: colors, shape: k.shape)
         state.nextID += 1
         state.designs.append(d)
+        return d
+    }
+
+    /// The Founder Pack: everything not owned yet. Patterns and shapes arrive as ready designs; the first shape goes
+    /// on the flagship; Hezarfen tells you once.
+    private mutating func grantBundle() {
+        let ks = state.bundleLeft
+        var st = state.store ?? [:]
+        st[.founder] = state.day
+        var firstShape: Design?
+        for k in ks {
+            st[k] = state.day
+            if k.kind == .pattern || k.kind == .shape {
+                state.store = st
+                let d = addGiftDesign(k)
+                if k.kind == .shape && firstShape == nil { firstShape = d }
+            }
+        }
+        state.store = st
         let fb = state.balloon(state.flagship) ?? state.balloons.first
-        if let fb, let i = state.balloons.firstIndex(where: { $0.id == fb.id }) { state.balloons[i].design = d.id }
-        state.hezQueue.insert(.bazaarGift(k, balloon: fb?.name), at: 0)
+        if let d = firstShape, let fb, let i = state.balloons.firstIndex(where: { $0.id == fb.id }) { state.balloons[i].design = d.id }
+        state.hezQueue.insert(.founderPack(count: ks.count, balloon: firstShape == nil ? nil : fb?.name, shape: firstShape?.gift), at: 0)
     }
 }

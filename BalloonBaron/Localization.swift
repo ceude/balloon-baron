@@ -167,6 +167,8 @@ extension HezMessage {
         case .festivalStarted(let i): loc("hez.festival.\(i)")
         case .eventOutcome(let o): loc("outcome.\(o.rawValue)")
         case let .bazaarGift(k, b): b.map { loc("hez.bazaarGift", k.title, bname($0)) } ?? loc("hez.bazaarGift.noBalloon", k.title)
+        case let .founderPack(n, b, k):
+            zip([b].compactMap { $0 }, [k].compactMap { $0 }).first.map { loc("hez.founderPack.balloon", num(n), $0.1.title, bname($0.0)) } ?? loc("hez.founderPack", num(n))
         case .rescued: loc("hez.rescued")
         case .worldBaron: loc("hez.worldBaron")
         case .praise(let p): loc("hez.praise.\(p.rawValue)")

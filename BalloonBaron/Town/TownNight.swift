@@ -192,6 +192,34 @@ extension TownPainter {
                 glow(p.x, p.y, 10, (255, 235, 200), 0.7 * k)
             }
         }
+        // v113: bulbs along the welcome arches, the café's string lights, a warm wash over the rugs.
+        if s.owned(.arch) {
+            for (P0, Q0, _) in DecorPainter.arches {
+                let p = iso(P0.0, P0.1), q = iso(Q0.0, Q0.1), H: CGFloat = 66, mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2 - H
+                for i in 0...12 {
+                    let f = CGFloat(i) / 12
+                    let x = (1 - f) * (1 - f) * p.x + 2 * (1 - f) * f * mx + f * f * q.x
+                    let y = (1 - f) * (1 - f) * (p.y - H) + 2 * (1 - f) * f * (my - 30) + f * f * (q.y - H)
+                    glow(x, y, 7, i % 2 == 1 ? (255, 210, 140) : (255, 170, 120), (0.7 + 0.3 * sin(t * 3 + Double(i))) * k)
+                }
+                glow(mx, my - 13, 26, (255, 220, 160), 0.45 * k)
+            }
+        }
+        if s.owned(.cafe) {
+            let a = DecorPainter.cafeAt, p = iso(a.0, a.1), d = DecorPainter(c: world)
+            let A = d.iu(p, -0.75, -0.75), B = d.iu(p, 0.75, -0.75), C = d.iu(p, 0.75, 0.75)
+            glow(p.x, p.y, 80, (255, 190, 110), 0.3 * k, sy: 0.5)
+            for (P1, Q1) in [(A, B), (B, C)] {
+                for i in 0...8 {
+                    let f = CGFloat(i) / 8
+                    glow(P1.x + (Q1.x - P1.x) * f, P1.y + (Q1.y - P1.y) * f - 44 + 40 * f * (1 - f), 6, (255, 215, 150), (0.75 + 0.25 * sin(t * 2.4 + Double(i))) * k)
+                }
+            }
+        }
+        if s.owned(.rugs) {
+            let a = DecorPainter.rugsAt, p = iso(a.0, a.1)
+            glow(p.x, p.y - 30, 50, (255, 180, 100), 0.32 * k)
+        }
         if s.unlocked.contains(.market) {
             // The bazaar keeps a string of bulbs along its awning and a warm glow over the goods.
             let a0 = upp(iso(14.15, 4.35), 28), a1 = upp(iso(15.3, 4.35), 28)

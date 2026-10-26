@@ -173,7 +173,9 @@ extension TownPainter {
         guard n > 0 else { return }
         let w = size.width, h = size.height, st = t - t0 - 1.2
         let top = max(150, hz * 0.1), bot = max(top + 200, hz + (h - hz) * 0.14)
-        let G = BalloonShow.grid(n, w: w, top: top, bot: bot), Hh = BalloonShow.figure(n, w: w, top: top, bot: bot, r: G[0].r)
+        let G = BalloonShow.grid(n, w: w, top: top, bot: bot), fig = s.showFigure
+        let custom = fig.map { BalloonShow.custom($0, n, w: w, top: top, bot: bot, r: G[0].r, company: s.company) }
+        let Hh = custom?.spots ?? BalloonShow.figure(n, w: w, top: top, bot: bot, r: G[0].r)
         let field = v.screen(TownGeo.iso(3, 6.2)), beat = st * 2, bp = beat - floor(beat)
         var lit = screen
         lit.blendMode = .plusLighter
@@ -218,6 +220,9 @@ extension TownPainter {
                                                      startPoint: b0, endPoint: e))
             }
         }
+        // v113: a bought figure is traced in light behind the balloons while they hold it.
+        let mf = BalloonShow.easeIO((st - 13) / 2.6) * (1 - BalloonShow.easeIO((st - 23) / 2))
+        if let custom, mf > 0.01 { BalloonShow.drawTrace(screen, custom.trace, alpha: mf, phase: st) }
         // The balloons, back rows first.
         for i in (0..<n).sorted(by: { G[$0].depth < G[$1].depth }) {
             let g = G[i], f = Hh[i]

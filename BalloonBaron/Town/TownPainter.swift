@@ -1363,7 +1363,7 @@ struct TownPainter {
                 p.balloon(q.x, q.y, r, colors, burn: (tt * 1.3 + Double(i)).truncatingRemainder(dividingBy: 3) < 0.4, ad: ad, design: design)
             }))
         }
-        items += decorations() + bunting()
+        items += decorations() + newDecorations() + bunting()
         // People strolling on the roads.
         let shirts = ["#2b2350", "#ff5e3a", "#14a39a", "#ffc23d", "#9b7be0"]
         for i in 0..<10 {

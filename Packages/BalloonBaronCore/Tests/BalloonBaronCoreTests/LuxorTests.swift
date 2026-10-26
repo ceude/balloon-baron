@@ -22,6 +22,7 @@ final class LuxorTests: XCTestCase {
         g.state.holding.cash = 1_000_000
         XCTAssertTrue(g.enterRegion(.abq))
         g.state.barons[.abq] = g.state.day
+        g.grantStoreItem(.egypt)
         return g
     }
 

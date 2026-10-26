@@ -188,7 +188,7 @@ final class PrototypeV85Tests: XCTestCase {
         XCTAssertNotNil(old.store?[.skull])
         XCTAssertEqual(old.design(of: old.balloon(old.flagship)!)?.shape, .skull)
         XCTAssertEqual(StoreItem.skull.rawValue, "skull")
-        XCTAssertEqual(StoreItem.allCases.count, 11)
+        XCTAssertEqual(StoreItem.allCases.count, 22)
     }
 
     /// Hezarfen praises good early moves: each once, at most every other day, never after day 40.

@@ -14,6 +14,10 @@ struct RegionsCard: View {
                 ForEach(RegionID.allCases.filter { s.owns($0) }, id: \.self) { r in
                     row(r, s)
                 }
+                // v113: the regions still ahead, locked or open, so you see where the game goes
+                ForEach(MapPin.allCases.filter { $0.region.map { !s.owns($0) } ?? true }, id: \.self) { pin in
+                    ahead(pin, s)
+                }
             }
             ghost(loc("regions.map")) {
                 onClose()
@@ -45,6 +49,33 @@ struct RegionsCard: View {
             .padding(.horizontal, 14).padding(.vertical, 12)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(here ? Theme.green : Theme.line, lineWidth: 2))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func ahead(_ pin: MapPin, _ s: GameState) -> some View {
+        let open = pin.region.map { $0 != .cap && s.regionOpen($0) } ?? false
+        let why: String = open ? loc("regions.open")
+            : pin.region == .abq ? loc("regions.lockedAbq") : pin.region == .lux ? loc("regions.lockedLux") : loc("map.soon")
+        return Button {
+            SoundEngine.shared.play(.click)
+            onClose()
+            store.page = .map
+        } label: {
+            HStack {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(pin.mystery ? loc("regions.newRegion") : pin.title).font(Theme.font(21, .heavy, condensed: true)).foregroundStyle(Theme.ink)
+                    Text("\(pin.land) · \(why)").font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                }
+                Spacer()
+                Text(open ? loc("regions.enter") : "🔒")
+                    .font(Theme.font(open ? 17 : 15, .heavy, condensed: true))
+                    .foregroundStyle(Theme.coral)
+            }
+            .padding(.horizontal, 14).padding(.vertical, 12)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(open ? Theme.coral : Theme.line, lineWidth: 2))
+            .opacity(open ? 1 : 0.62)
         }
         .buttonStyle(.plain)
     }

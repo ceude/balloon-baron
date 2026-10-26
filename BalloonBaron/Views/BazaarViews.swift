@@ -97,13 +97,42 @@ struct BuildingCardView: View {
 struct StoreThumb: View {
     let item: StoreItem
     let colors: [String]
+    var company = ""
 
     var body: some View {
         switch item.kind {
+        case .figure:
+            FigureThumb(item: item, colors: colors, company: company).clipShape(RoundedRectangle(cornerRadius: 10))
+        case .region:
+            Canvas { ctx, size in
+                let k = min(size.width / 64, size.height / 72)
+                var c = ctx
+                c.translateBy(x: (size.width - 64 * k) / 2, y: (size.height - 72 * k) / 2)
+                c.scaleBy(x: k, y: k)
+                StoreThumb.egypt(&c, colors: colors)
+            }
+            .clipShape(RoundedRectangle(cornerRadius: 10))
+        case .bundle:
+            StoreThumb(item: .heart, colors: colors)
         case .pattern:
             DesignBalloon(pattern: item.pattern ?? .stripes, colors: [colors.first ?? "#ff5e3a", colors.count > 1 ? colors[1] : "#ffc23d", "#ffffff"])
         case .shape:
             DesignBalloon(pattern: .stripes, colors: [colors.first ?? "#ff5e3a", colors.count > 1 ? colors[1] : "#ffc23d", "#ffffff"], shape: item.shape)
+        case .decoration where [.pigeons, .arch, .cafe, .rugs].contains(item):
+            Canvas { ctx, size in
+                let k = min(size.width / 64, size.height / 72)
+                var c = ctx
+                c.translateBy(x: (size.width - 64 * k) / 2, y: (size.height - 72 * k) / 2)
+                c.scaleBy(x: k, y: k)
+                if item != .pigeons { c.fill(Path(ellipseIn: CGRect(x: 2, y: 47, width: 60, height: 22)), with: .color(Color(hex: "#ecd6b0"))) }
+                var g = c, d = DecorPainter(c: c)
+                switch item {
+                case .pigeons: d.dovecote()
+                case .arch: g.translateBy(x: 32, y: 62); g.scaleBy(x: 0.62, y: 0.62); d = DecorPainter(c: g); d.arch(CGPoint(x: -40, y: -10), CGPoint(x: 40, y: 10), 1, colors, company.isEmpty ? "Balon" : company)
+                case .cafe: g.translateBy(x: 32, y: 56); g.scaleBy(x: 0.32, y: 0.32); d = DecorPainter(c: g); d.cafe(.zero, 1)
+                default: g.translateBy(x: 32, y: 60); g.scaleBy(x: 0.36, y: 0.36); d = DecorPainter(c: g); d.rugs(.zero, 1)
+                }
+            }
         case .decoration:
             Canvas { ctx, size in
                 let k = min(size.width / 64, size.height / 72)
@@ -113,6 +142,21 @@ struct StoreThumb: View {
                 StoreThumb.decoration(item, &ctx, colors: colors)
             }
         }
+    }
+
+    /// Egypt: the Nile at dawn, a pyramid, an obelisk and a balloon in your colours over them (64 × 72 units).
+    static func egypt(_ c: inout GraphicsContext, colors: [String]) {
+        func fill(_ pts: [CGPoint], _ hex: String) { var p = Path(); p.move(to: pts[0]); for q in pts.dropFirst() { p.addLine(to: q) }; p.closeSubpath(); c.fill(p, with: .color(Color(hex: hex))) }
+        func box(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ hex: String) { c.fill(Path(CGRect(x: x, y: y, width: w, height: h)), with: .color(Color(hex: hex))) }
+        c.fill(Path(CGRect(x: 0, y: 0, width: 64, height: 72)), with: .linearGradient(Gradient(stops: [.init(color: Color(hex: "#f6c98a"), location: 0), .init(color: Color(hex: "#f3a96a"), location: 0.6), .init(color: Color(hex: "#e8c08a"), location: 1)]),
+                                                                                    startPoint: .zero, endPoint: CGPoint(x: 0, y: 72)))
+        c.fill(Path(ellipseIn: CGRect(x: 39, y: 23, width: 14, height: 14)), with: .color(Color(hex: "#fff4d0")))
+        fill([CGPoint(x: 4, y: 52), CGPoint(x: 24, y: 30), CGPoint(x: 44, y: 52)], "#c98a4a")
+        fill([CGPoint(x: 24, y: 30), CGPoint(x: 44, y: 52), CGPoint(x: 30, y: 52)], "#a86a34")
+        fill([CGPoint(x: 50, y: 52), CGPoint(x: 52, y: 30), CGPoint(x: 53.5, y: 27), CGPoint(x: 55, y: 30), CGPoint(x: 57, y: 52)], "#b07840")
+        box(0, 52, 64, 9, "#4aa0c0"); box(8, 55, 10, 1, "#a5d0e0"); box(36, 57, 12, 1, "#a5d0e0"); box(0, 61, 64, 11, "#d9b47a")
+        c.fill(Path(ellipseIn: CGRect(x: 11, y: 5.5, width: 14, height: 17)), with: .color(Color(hex: colors.first ?? "#ff5e3a")))
+        box(16.5, 5.5, 3, 17, colors.count > 1 ? colors[1] : "#ffc23d"); box(16, 24, 4, 3.5, "#6a4020")
     }
 
     /// Small pictures of the four decorations (the town draws the big ones).
@@ -166,9 +210,12 @@ struct BazaarView: View {
             CardText.title(loc("bazaar.title"))
             CardText.lead(loc("bazaar.lead"))
             if let s {
+                if s.bundleWorth { founderCard(s) }
                 section(.decoration, "bazaar.decor", s)
+                section(.figure, "bazaar.figures", s)
                 section(.shape, "bazaar.shapes", s)
                 section(.pattern, "bazaar.patterns", s)
+                section(.region, "bazaar.regions", s)
             }
             CardText.hint(loc("bazaar.localPrices"))
             Button {
@@ -192,19 +239,19 @@ struct BazaarView: View {
             CardText.hint(loc(key + ".hint"))
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 8)], spacing: 8) {
                 ForEach(StoreItem.allCases.filter { $0.kind == kind }, id: \.self) { k in
-                    let own = s.owned(k)
+                    let own = s.owned(k), locked = k == .egypt && !own && !s.regionOpen(.lux)
                     Button {
                         SoundEngine.shared.play(.click)
                         store.storeItem = k
                     } label: {
                         VStack(spacing: 2) {
-                            StoreThumb(item: k, colors: s.colors).frame(width: 60, height: 68).accessibilityHidden(true)
+                            StoreThumb(item: k, colors: s.colors, company: s.company).frame(width: 60, height: 68).accessibilityHidden(true)
                             Text(k.title).font(Theme.font(14, .bold, condensed: true)).foregroundStyle(Theme.ink)
                                 .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
-                            Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : Shop.shared.price(k))
+                            Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : Shop.shared.price(k))
                                 .font(Theme.font(13, .heavy)).foregroundStyle(.white)
                                 .padding(.horizontal, 9).padding(.vertical, 2)
-                                .background(own ? Theme.green : k.gift ? Theme.coral : Theme.ink, in: Capsule())
+                                .background(own ? Theme.green : k.gift ? Theme.coral : locked ? Color(hex: "#8a8398") : Theme.ink, in: Capsule())
                                 .padding(.top, 3)
                         }
                         .frame(maxWidth: .infinity)
@@ -214,18 +261,64 @@ struct BazaarView: View {
                         .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color(hex: k.gift && !own ? "#ff9a7a" : "#e6cfa6"), lineWidth: 1.5))
                     }
                     .buttonStyle(.plain)
-                    .disabled(own)
+                    .disabled(own || locked)
+                    .opacity(locked ? 0.6 : 1)
                 }
             }
         }
+    }
+
+    /// v113: the Founder Pack on top of the bazaar: a few of what's in it, how many, the price struck through and the pack's.
+    private func founderCard(_ s: GameState) -> some View {
+        let left = s.bundleLeft
+        var peek: [StoreItem] = []
+        for kind in [StoreItem.Kind.shape, .figure, .decoration, .pattern, .shape, .figure] {
+            if let q = left.first(where: { $0.kind == kind && !peek.contains($0) }) { peek.append(q) }
+        }
+        for q in left where peek.count < 6 && !peek.contains(q) { peek.append(q) }
+        return Button {
+            SoundEngine.shared.play(.click)
+            store.storeItem = .founder
+        } label: {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text(StoreItem.founder.title).font(Theme.font(22, .heavy, condensed: true)).foregroundStyle(Color(hex: "#ffd27a"))
+                    Spacer()
+                    Text(loc("store.off", StoreItem.percent(s.bundleOff))).font(Theme.font(13, .heavy)).foregroundStyle(.white)
+                        .padding(.horizontal, 9).padding(.vertical, 3).background(Theme.coral, in: Capsule())
+                }
+                HStack(spacing: 5) {
+                    ForEach(peek.prefix(6), id: \.self) { q in
+                        StoreThumb(item: q, colors: s.colors, company: s.company).frame(width: 36, height: 40)
+                            .background(Color.white.opacity(0.14), in: RoundedRectangle(cornerRadius: 9))
+                    }
+                    if left.count > 6 {
+                        Text("+\(left.count - 6)").font(Theme.font(12, .heavy)).foregroundStyle(Theme.ink)
+                            .padding(.horizontal, 7).padding(.vertical, 3).background(Color(hex: "#ffd27a"), in: Capsule())
+                    }
+                }
+                .accessibilityHidden(true)
+                HStack(alignment: .firstTextBaseline) {
+                    Text(loc("bazaar.founderLeft", num(left.count))).font(Theme.font(13)).foregroundStyle(.white.opacity(0.85))
+                    Spacer()
+                    Text(StoreItem.price(of: s.bundleWas)).font(Theme.font(13)).strikethrough().foregroundStyle(.white.opacity(0.6))
+                    Text(Shop.shared.price(.founder)).font(Theme.font(20, .heavy, condensed: true)).foregroundStyle(.white)
+                }
+            }
+            .padding(.horizontal, 14).padding(.vertical, 12)
+            .background(LinearGradient(colors: [Color(hex: "#2b2350"), Color(hex: "#4a2f6a")], startPoint: .topLeading, endPoint: .bottomTrailing), in: RoundedRectangle(cornerRadius: 18))
+            .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color(hex: "#e8b04a"), lineWidth: 2))
+        }
+        .buttonStyle(.plain)
     }
 }
 
 extension StoreItem {
     /// Shown until the App Store's localized price is loaded: tier 1 €0,99, tier 2 €1,99.
-    static func price(_ k: StoreItem) -> String {
-        (k.tier == 2 ? 1.99 : 0.99).formatted(.currency(code: "EUR"))
-    }
+    static func price(_ k: StoreItem) -> String { price(of: k.euro) }
+    static func price(of euro: Double) -> String { euro.formatted(.currency(code: "EUR")) }
+    /// The pack's discount, "60%" written the local way ("%60" in Turkish).
+    static func percent(_ v: Int) -> String { (Double(v) / 100).formatted(.percent.precision(.fractionLength(0))) }
 }
 
 /// The purchase card for one item; Buy opens the App Store's own sheet (`Shop`).
@@ -240,10 +333,21 @@ struct StoreItemView: View {
             Text(loc("store.tag")).font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
             CardText.title(item.title)
             if item.kind == .decoration, let s {
-                Text(loc("store.nightPreview")).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
+                Text(loc(item == .pigeons ? "store.dayPreview" : "store.nightPreview")).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
                 DecorNightPreview(item: item, state: s)
+            } else if item == .founder, let s {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 5), spacing: 6) {
+                    ForEach(s.bundleLeft, id: \.self) { q in
+                        StoreThumb(item: q, colors: s.colors, company: s.company).aspectRatio(64 / 72, contentMode: .fit)
+                            .background(Color.white.opacity(0.55), in: RoundedRectangle(cornerRadius: 10))
+                    }
+                }
+                .accessibilityHidden(true)
+                .padding(8)
+                .background(LinearGradient(colors: [Color(hex: "#bfe0f2"), Color(hex: "#ffe6c4")], startPoint: .top, endPoint: .bottom),
+                            in: RoundedRectangle(cornerRadius: 16))
             } else {
-                StoreThumb(item: item, colors: s?.colors ?? [])
+                StoreThumb(item: item, colors: s?.colors ?? [], company: s?.company ?? "")
                     .accessibilityHidden(true)
                     .frame(width: 96, height: 108)
                     .frame(maxWidth: .infinity)
@@ -251,7 +355,16 @@ struct StoreItemView: View {
                     .background(LinearGradient(colors: [Color(hex: "#bfe0f2"), Color(hex: "#ffe6c4")], startPoint: .top, endPoint: .bottom),
                                 in: RoundedRectangle(cornerRadius: 16))
             }
-            CardText.lead(loc(item.kind == .decoration ? "store.lead.decor" : item.kind == .shape ? "store.lead.shape" : "store.lead.pattern"))
+            CardText.lead(lead(s))
+            if item == .founder, let s {
+                HStack(alignment: .firstTextBaseline, spacing: 10) {
+                    Text(StoreItem.price(of: s.bundleWas)).font(Theme.font(16)).strikethrough().foregroundStyle(Theme.ink2)
+                    Text(shop.price(.founder)).font(Theme.font(28, .heavy, condensed: true)).foregroundStyle(Theme.ink)
+                    Text(loc("store.off", StoreItem.percent(s.bundleOff))).font(Theme.font(13, .heavy)).foregroundStyle(.white)
+                        .padding(.horizontal, 9).padding(.vertical, 3).background(Theme.coral, in: Capsule())
+                }
+                .frame(maxWidth: .infinity)
+            }
             if item.gift { CardText.hint(loc("store.giftNote")) }
             if let note = shop.note { CardText.hint(note) }
             Button(item.gift ? loc("store.takeGift") : shop.buying == item ? loc("store.buying") : loc("store.buy", shop.price(item))) {
@@ -264,6 +377,28 @@ struct StoreItemView: View {
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
             .disabled(shop.buying != nil)
+            // every single cosmetic also points at the pack while the pack saves money
+            if let s, [.pattern, .shape, .decoration, .figure].contains(item.kind), !item.gift, s.bundleWorth {
+                Button {
+                    SoundEngine.shared.play(.click)
+                    store.storeItem = .founder
+                } label: {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(loc("store.orAll", StoreItem.founder.title)).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink)
+                        HStack(spacing: 4) {
+                            Text(StoreItem.price(of: s.bundleWas)).strikethrough().foregroundStyle(Theme.ink2)
+                            Text(shop.price(.founder)).bold()
+                            Text("· " + loc("store.off", StoreItem.percent(s.bundleOff)))
+                        }
+                        .font(Theme.font(13)).foregroundStyle(Theme.ink)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 12).padding(.vertical, 9)
+                    .background(Color(hex: "#fff8ea"), in: RoundedRectangle(cornerRadius: 14))
+                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color(hex: "#c99a4a"), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3])))
+                }
+                .buttonStyle(.plain)
+            }
             Button {
                 SoundEngine.shared.play(.click)
                 store.storeItem = nil
@@ -273,6 +408,17 @@ struct StoreItemView: View {
             .buttonStyle(ChunkyButtonStyle(kind: .ghost))
         }
         .onAppear { shop.note = nil }
+    }
+
+    private func lead(_ s: GameState?) -> String {
+        switch item.kind {
+        case .decoration: loc("store.lead.decor")
+        case .shape: loc("store.lead.shape")
+        case .pattern: loc("store.lead.pattern")
+        case .figure: item == .figInitial ? loc("store.lead.figInitial", ShowCardView.initial(s?.company ?? "")) : loc("store.lead.figure")
+        case .region: loc("store.lead.egypt")
+        case .bundle: loc("store.lead.bundle", num(s?.bundleLeft.count ?? 0))
+        }
     }
 }
 
@@ -285,6 +431,10 @@ struct DecorNightPreview: View {
     /// Where the camera looks for each decoration, and how close (`DECOR_AT`).
     private var spot: (Double, Double, CGFloat) {
         switch item {
+        case .pigeons: (7.5, 3.5, 0.3)
+        case .arch: (7.45, 15.35, 0.75)
+        case .cafe: (DecorPainter.cafeAt.0, DecorPainter.cafeAt.1, 0.7)
+        case .rugs: (DecorPainter.rugsAt.0, DecorPainter.rugsAt.1, 0.75)
         case .statue: (6.9, 8.9, 0.6)
         case .lanterns: (7.4, 7.6, 0.3)
         case .flags: (7.5, 9, 0.26)
@@ -303,7 +453,7 @@ struct DecorNightPreview: View {
                 v.hzFix = sz.height * 0.12
                 var g = ctx
                 _ = TownPainter.render(&g, state: s, time: 1000 + tl.date.timeIntervalSince(start), viewport: v, size: sz,
-                                       night: TownNight(k: 1, event: nil, t0: 1000))
+                                       night: item == .pigeons ? nil : TownNight(k: 1, event: nil, t0: 1000))
             }
         }
         .frame(height: 220)

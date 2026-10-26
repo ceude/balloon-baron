@@ -225,7 +225,7 @@ extension Game {
     /// Hezarfen says his piece, then the region's own guide introduces themselves.
     @discardableResult
     public mutating func enterRegion(_ r: RegionID) -> Bool {
-        guard !state.owns(r), state.regionOpen(r), spendHolding(r.entryFee) else { return false }
+        guard !state.owns(r), state.regionOpen(r), !state.needsPack(r), spendHolding(r.entryFee) else { return false }
         state.hezQueue.append(.enteredRegion(r))
         state.hezQueue.append(.guideHello(r))
         switchRegion(r)
