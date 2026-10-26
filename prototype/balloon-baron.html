@@ -2245,6 +2245,16 @@ function burner(on) {
     g.gain.cancelScheduledValues(t); g.gain.setValueAtTime(g.gain.value, t); g.gain.linearRampToValueAtTime(0, t + .18); src.stop(t + .25); burnNode = null;
   }
 }
+/* v112.3: the inflation fan: a low motor hum and rushing air, swelling in and fading out over `sec` */
+function fanSound(sec) {
+  if (!AC) return;
+  const t = AC.currentTime, src = AC.createBufferSource(); src.buffer = noiseBuf(2); src.loop = true;
+  const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 900;
+  const g = AC.createGain(); g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(.09, t + .5); g.gain.setValueAtTime(.09, t + sec - .6); g.gain.linearRampToValueAtTime(0, t + sec);
+  const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.setValueAtTime(48, t); o.frequency.linearRampToValueAtTime(96, t + .8);
+  const of = AC.createBiquadFilter(); of.type = 'lowpass'; of.frequency.value = 220; const og = AC.createGain(); og.gain.setValueAtTime(0, t); og.gain.linearRampToValueAtTime(.05, t + .5); og.gain.setValueAtTime(.05, t + sec - .6); og.gain.linearRampToValueAtTime(0, t + sec);
+  src.connect(f).connect(g).connect(out()); o.connect(of).connect(og).connect(out()); src.start(t); o.start(t); src.stop(t + sec + .1); o.stop(t + sec + .1);
+}
 function tone(f1, f2, dur, type, vol, delay) {
   if (!AC) return;
   const t = AC.currentTime + (delay || 0), o = AC.createOscillator(), g = AC.createGain();
@@ -3094,7 +3104,10 @@ function storyOffer() {
 }
 /* Where a saved game picks the story up again. */
 function storyResume() {
-  const st = S.story; SC.fill = SC.fillTo = storyFill(st.saved);
+  const st = S.story;
+  /* a story begun before v112.1 saved from a smaller pocket with bigger wages: recount it with today's numbers */
+  if (st.saved < STORY.pocket) { st.pays = (st.pays || []).map(p => ({ q: p.q, pay: STORY.wage + STORY.pax * (STORY.tip[p.q] || 0) })); st.saved = STORY.pocket + st.pays.reduce((a, p) => a + p.pay, 0); save(); }
+  SC.fill = SC.fillTo = storyFill(st.saved);
   if (st.pDay >= 3) storyShop(); else if (!st.hired) storyOffer(); else storyMorning();
 }
 function storyMorning() {
@@ -3130,8 +3143,8 @@ function storyShop() {
 /* Bought: now you inflate it yourself, holding the burner like the very first time; the colour climbs with the hot air. */
 function storyBuy(gift) {
   const st = S.story; st.gift = gift; save(); sfx('coin');
-  SC.kind = 'inflate'; SC.inflate = 0; INTRO.hold = false; INTRO.pressed = false;
-  $('intro').hidden = false; $('introHint').hidden = false; $('introHint').querySelector('span').textContent = 'Brülöre basılı tut, balonunu ilk kez sen şişir!';
+  SC.kind = 'inflate'; SC.inflate = 0; SC.cold = 0; SC.coldT0 = T + .8; INTRO.hold = false; INTRO.pressed = false;
+  setTimeout(() => fanSound(3.6), 800);
 }
 function storyInflated() {
   $('intro').hidden = true; INTRO.hold = false; $('introHint').querySelector('span').textContent = 'Brülöre basılı tut';
@@ -3155,6 +3168,12 @@ function storyFinish() {
 }
 function updateStory(dt) {
   if (SC.kind !== 'inflate') return;
+  /* first the fan opens the envelope with cold air (on its own), then the burner is yours */
+  if (SC.cold < 1) {
+    SC.cold = clamp((T - SC.coldT0) / 3.2, 0, 1);
+    if (SC.cold >= 1) { $('intro').hidden = false; $('introHint').hidden = false; $('introHint').querySelector('span').textContent = 'Şimdi brülöre basılı tut, balonunu kaldır!'; }
+    return;
+  }
   $('introBurn').classList.toggle('on', INTRO.hold);
   if (INTRO.hold) { INTRO.pressed = true; $('introHint').hidden = true; }
   SC.inflate = clamp(SC.inflate + (INTRO.hold ? dt * .32 : -dt * .04), 0, 1);
@@ -3212,12 +3231,12 @@ function drawStory(dt) {
     ctx.restore();
   };
   const barW = Math.min(W * .8, R0 * 5.5), barY = groundY + R0 * .55;
-  const bar = f => { /* the last stretch: from your savings to what the balloon and the safe need */
+  const bar = (f, amt) => { /* the last stretch: from your savings to what the balloon and the safe need */
     const x = W / 2, y = barY, w = barW;
     ctx.save(); ctx.fillStyle = 'rgba(43,35,80,.72)'; rrect(x - w / 2, y - 7, w, 14, 7); ctx.fill();
     if (f > 0) { ctx.fillStyle = col[0]; rrect(x - w / 2 + 2, y - 5, Math.max(10, (w - 4) * Math.min(1, f)), 10, 5); ctx.fill(); }
     ctx.font = `700 ${Math.round(R0 * .19)}px Barlow, sans-serif`; ctx.fillStyle = '#fff';
-    ctx.textAlign = 'left'; ctx.fillText(`birikimin ${eur(STORY.pocket)}`, x - w / 2, y + 22); ctx.textAlign = 'right'; ctx.fillText(`hedef ${eur(storyGoal())}`, x + w / 2, y + 22);
+    ctx.textAlign = 'left'; ctx.fillText(`birikimin ${eur(amt ?? (st ? st.saved : STORY.pocket))}`, x - w / 2, y + 22); ctx.textAlign = 'right'; ctx.fillText(`hedef ${eur(storyGoal())}`, x + w / 2, y + 22);
     ctx.restore();
   };
   const halo = (x, y, R) => {
@@ -3268,7 +3287,7 @@ function drawStory(dt) {
     halo(x, y, R); dream(x, y, R, f, e > 0 && e < 1);
     const shown = Math.round(lerp(SC.from || 0, st ? st.saved : 0, ee));
     pill(x, y - R * 3.6, eur(shown), `hedef ${eur(storyGoal())}`);
-    bar(lerp(SC.fill, SC.fillTo, ee));
+    bar(lerp(SC.fill, SC.fillTo, ee), shown);
     /* Kenan's coins arc from the left into the savings bar */
     for (const c of SC.coins) {
       const u = (T - c.t0) / c.d; if (u < 0 || u > 1) continue;
@@ -3281,32 +3300,73 @@ function drawStory(dt) {
     if (up > 0 && up < 1 && st) { ctx.save(); ctx.globalAlpha = Math.sin(up * Math.PI); ctx.font = `800 ${Math.round(R0 * .55)}px "Barlow Condensed", sans-serif`; ctx.textAlign = 'center'; ctx.fillStyle = '#ffd27a'; ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 8; ctx.fillText(`+${eur(st.saved - (SC.from || 0))}`, x + R * 1.4, barY - R0 * .4 - up * R0 * 2.2); ctx.restore(); }
   }
   if (k === 'shop' || k === 'inflate' || k === 'own') {
-    /* the old basket: lying flat and cream with a sale tag; held burner stands it up and paints it; then it lifts */
-    const q = k === 'shop' ? 0 : k === 'inflate' ? SC.inflate : 1, qe = q * q * (3 - 2 * q);
-    const lift = k === 'own' ? clamp((T - SC.ownT0 - .2) / 2.6, 0, 1) : 0, l2 = lift * lift * (3 - 2 * lift);
-    const x = W * .42, R = R0 * 1.7, y = groundY - l2 * R0 * 1.3 + (lift > 0 ? Math.sin(T * 1.3) * R0 * .06 : 0);
+    /* v112.3: inflated the way it's really done. The envelope lies on the field, mouth at the basket tipped on its side,
+       a crewman holding the crown line. A fan opens it with cold air into a long billowing body; then the burner fires
+       sideways into the mouth, the hot air paints it and slowly stands it up around the basket, which rights itself. */
+    const cold = k === 'shop' ? 0 : k === 'inflate' ? SC.cold : 1, hot = k === 'inflate' ? SC.inflate : k === 'own' ? 1 : 0;
+    const sm = v => v * v * (3 - 2 * v), ce = sm(cold), stand = sm(clamp((hot - .12) / .8, 0, 1));
+    const lift = k === 'own' ? clamp((T - SC.ownT0 - .2) / 2.6, 0, 1) : 0, l2 = sm(lift);
+    const R = R0 * 1.7, r = R * .86, x0 = W * .22, x = lerp(x0, W * .42, l2), y = groundY - l2 * R0 * 1.3 + (lift > 0 ? Math.sin(T * 1.3) * R0 * .06 : 0);
     const burn = (k === 'inflate' && INTRO.hold) || (k === 'own' && Math.sin(T * 5) > -.3);
-    ctx.fillStyle = `rgba(40,20,30,${.3 - .15 * l2})`; ctx.beginPath(); ctx.ellipse(x, groundY + 4, R * (.9 - .2 * qe) * (1 - .3 * l2), R * .13, 0, 0, 7); ctx.fill();
-    if (burn) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; glow(x, y - R * 1.3 * (.3 + .7 * qe), R * 2.2, '255,170,70', .28); ctx.restore(); }
-    ctx.save(); ctx.translate(x, y); ctx.rotate(-(1 - qe) * 1.35); ctx.scale(.9 + .1 * qe, .32 + .68 * qe); ctx.translate(-x, -y);
-    dream(x, y, R, k === 'shop' ? 0 : qe, burn);
+    /* thickness across the axis: a flat sheet, billowing open with the fan, full once the hot air is in */
+    const flap = (1 - ce) * ce * 4, sx = clamp(.1 + .62 * ce + .28 * sm(clamp(hot / .35, 0, 1)) + (1 - stand) * (.035 * Math.sin(T * 6.3) + .025 * Math.sin(T * 9.7 + 1)) * (cold > 0 ? 1 : 0) + flap * .05 * Math.sin(T * 11), .08, 1.02);
+    /* lying, the axis tilts so the bulge rests on the ground; standing up turns it round the basket */
+    const alpha = Math.atan(Math.max(0, r * sx - r * .17) / (r * 2.23)), th = (Math.PI / 2 - alpha) * (1 - stand) + (k === 'inflate' ? Math.sin(T * 1.4) * .025 * stand : 0);
+    const py = y - r * .17 * Math.sin(th), ax = Math.sin(th), ay = -Math.cos(th), crown = [x + ax * r * 3.28, py + ay * r * 3.28];
+    /* shadow: long while it lies, round once it stands */
+    const shc = x + ax * r * 1.8 * (1 - l2), shw = lerp(R * .7, r * 1.7 * Math.max(.3, sx), 1 - stand) * (1 - .3 * l2);
+    ctx.fillStyle = `rgba(40,20,30,${.3 - .15 * l2})`; ctx.beginPath(); ctx.ellipse(shc, groundY + 4, shw, R * .12, 0, 0, 7); ctx.fill();
+    if (burn) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; glow(x + ax * r * 1.2, py + ay * r * 1.2, R * 2.2, '255,170,70', .28); ctx.restore(); }
+    /* the inflation fan beside the mouth, blowing while the envelope opens */
+    if (k !== 'own' || l2 < 1) {
+      const fx = x - R * .5, fr = R * .3, fy = groundY - fr - R * .04, spin = SC.fanA = (SC.fanA || 0) + (k === 'inflate' && cold < 1 ? .55 : k === 'inflate' ? .08 * Math.max(0, 1 - (T - SC.coldT0 - 3.2)) : 0);
+      ctx.save(); ctx.globalAlpha = 1 - l2;
+      ctx.fillStyle = '#3a3440'; ctx.fillRect(fx - fr * .55, groundY - fr * .25, fr * 1.1, fr * .25); ctx.fillRect(fx - fr * .08, fy, fr * .16, groundY - fy);
+      ctx.fillStyle = '#d8d2c4'; ctx.beginPath(); ctx.ellipse(fx, fy, fr * .32, fr, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#4a4450'; ctx.beginPath(); ctx.ellipse(fx, fy, fr * .24, fr * .86, 0, 0, 7); ctx.fill();
+      ctx.fillStyle = 'rgba(230,226,215,.8)'; for (let i = 0; i < 4; i++) { const a = spin + i * Math.PI / 2; ctx.beginPath(); ctx.ellipse(fx, fy + Math.sin(a) * fr * .42, fr * .12, fr * .4 * Math.abs(Math.cos(a)) + 1, 0, 0, 7); ctx.fill(); }
+      if (k === 'inflate' && cold < 1) { /* rushing air */
+        ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+        for (let i = 0; i < 5; i++) { const u = (T * 1.6 + i / 5) % 1, lx = fx + fr * .4 + u * R * 1.1, ly = fy + (i - 2) * fr * .3 * (1 - u * .5); ctx.globalAlpha = Math.sin(u * Math.PI) * .8; ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(lx + R * .22, ly); ctx.stroke(); }
+      }
+      ctx.restore();
+    }
+    /* the crown line: a crewman leaning back on it, walking in as the balloon stands, letting go when it lifts */
+    if (k !== 'own') {
+      const cx = lerp(crown[0] + R * .5, x + R * 1.45, stand), hgt = R0 * .78, lean = .35 * (1 - stand * .6), hy = groundY - hgt * .78;
+      const hx = cx - Math.sin(lean) * hgt * .5;
+      ctx.strokeStyle = 'rgba(70,45,30,.9)'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(crown[0], crown[1]); ctx.quadraticCurveTo((crown[0] + hx) / 2, Math.max(crown[1], hy) + R * .1 * (1 - stand), hx, hy); ctx.stroke();
+      ctx.save(); ctx.translate(cx, groundY); ctx.rotate(lean);
+      ctx.fillStyle = '#c2401f'; rrect(-hgt * .17, -hgt * .78, hgt * .34, hgt * .5, hgt * .1); ctx.fill();
+      ctx.fillStyle = '#3a2418'; ctx.beginPath(); ctx.arc(0, -hgt * .9, hgt * .14, 0, 7); ctx.fill(); ctx.fillRect(-hgt * .14, -hgt * .3, hgt * .09, hgt * .3); ctx.fillRect(hgt * .05, -hgt * .3, hgt * .09, hgt * .3);
+      ctx.strokeStyle = '#3a2418'; ctx.lineWidth = Math.max(1.5, hgt * .08); ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(-hgt * .1, -hgt * .7); ctx.lineTo(-hgt * .38, -hgt * .72); ctx.stroke();
+      ctx.restore();
+    }
+    /* envelope (squashed across its axis) and rig (never squashed), both turned round the basket */
+    const paint = k === 'shop' ? 0 : sm(hot), mouthY = -r * .81;
+    ctx.save(); ctx.translate(x, py); ctx.rotate(th);
+    ctx.save(); ctx.beginPath(); ctx.rect(-R * 3, -R * 4, R * 6, R * 4 + mouthY + 1); ctx.clip(); ctx.scale(sx, 1 + (1 - ce) * .04 * Math.sin(T * 5)); dream(0, 0, R, paint, burn); ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.rect(-R * 3, mouthY, R * 6, R * 2); ctx.clip(); dream(0, 0, R, paint, burn); ctx.restore();
+    if (burn && stand < .9) { /* the burner's jet, roaring into the open mouth */
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.beginPath(); ctx.rect(-R, -r * 1.3, R * 2, r * 1.3 - r * .2); ctx.clip(); flame3d(0, -r * .2, R * .62 * (1 + .1 * Math.sin(T * 31)), false); ctx.restore();
+    }
     ctx.restore();
     if (k === 'shop') {
-      const tx = x + R * .5, ty = groundY - R * .55, tw = R * 1.35, th = R * .8;
-      ctx.strokeStyle = '#5a3a2a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + R * .1, groundY - R * .2); ctx.lineTo(tx + 6, ty - th * .45); ctx.stroke();
-      ctx.save(); ctx.translate(tx, ty); ctx.rotate(Math.sin(T * 1.8) * .07); ctx.fillStyle = '#fff6dc'; rrect(0, -th / 2, tw, th, 8); ctx.fill(); ctx.strokeStyle = '#c99a4a'; ctx.lineWidth = 2; ctx.stroke();
-      ctx.fillStyle = '#c2401f'; ctx.font = `800 ${Math.round(th * .32)}px "Barlow Condensed", sans-serif`; ctx.fillText('SATILIK', th * .2, -th * .04); ctx.fillStyle = '#2b2350'; ctx.font = `800 ${Math.round(th * .36)}px "Barlow Condensed", sans-serif`; ctx.fillText(eur(STORY.balloon), th * .2, th * .34); ctx.restore();
+      const tw = R * 1.35, tg = R * .8, tx = x + R * .9, ty = groundY - R * 1.15;
+      ctx.strokeStyle = '#5a3a2a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + R * .55, groundY - R * .12); ctx.lineTo(tx + 6, ty + tg * .2); ctx.stroke();
+      ctx.save(); ctx.translate(tx, ty); ctx.rotate(Math.sin(T * 1.8) * .07); ctx.fillStyle = '#fff6dc'; rrect(0, -tg / 2, tw, tg, 8); ctx.fill(); ctx.strokeStyle = '#c99a4a'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.fillStyle = '#c2401f'; ctx.font = `800 ${Math.round(tg * .32)}px "Barlow Condensed", sans-serif`; ctx.fillText('SATILIK', tg * .2, -tg * .04); ctx.fillStyle = '#2b2350'; ctx.font = `800 ${Math.round(tg * .36)}px "Barlow Condensed", sans-serif`; ctx.fillText(eur(STORY.balloon), tg * .2, tg * .34); ctx.restore();
       bar(st ? storyFill(st.saved) : 0);
     }
-    if (k === 'inflate') { /* how full of hot air: a ring over the balloon */
-      const cx = x, cy = groundY - R * 2.3; ctx.save(); ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.arc(cx, cy, R0 * .5, 0, 7); ctx.stroke(); ctx.strokeStyle = '#ffd27a'; ctx.beginPath(); ctx.arc(cx, cy, R0 * .5, -Math.PI / 2, -Math.PI / 2 + q * Math.PI * 2); ctx.stroke();
-      ctx.font = `800 ${Math.round(R0 * .3)}px "Barlow Condensed", sans-serif`; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(`%${Math.round(q * 100)}`, cx, cy + R0 * .11); ctx.restore();
+    if (k === 'inflate' && cold < 1) pill(W / 2, H * .2, 'Fan çalışıyor', 'soğuk hava zarfı açıyor');
+    if (k === 'inflate' && cold >= 1) { /* how full of hot air: a ring beside the balloon */
+      const cx = x + R * 1.7, cy = groundY - R * 2.7; ctx.save(); ctx.lineWidth = 6; ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.arc(cx, cy, R0 * .5, 0, 7); ctx.stroke(); ctx.strokeStyle = '#ffd27a'; ctx.beginPath(); ctx.arc(cx, cy, R0 * .5, -Math.PI / 2, -Math.PI / 2 + hot * Math.PI * 2); ctx.stroke();
+      ctx.font = `800 ${Math.round(R0 * .3)}px "Barlow Condensed", sans-serif`; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(`%${Math.round(hot * 100)}`, cx, cy + R0 * .11); ctx.restore();
     }
     if (k === 'own') crowd(W * .04, W * .26, true);
     if (k === 'own') {
       const se = clamp((T - SC.signT0) / .9, 0, 1), drop = 1 - Math.pow(1 - se, 3), after = T - SC.signT0 - .9, sw = se < 1 ? 0 : Math.sin(after * 6) * Math.exp(-after * 2) * .06;
       if (T > SC.signT0) {
-        const bw = Math.min(W * .5, R * 2.4), bh = R * .6, sxp = Math.min(W - bw / 2 - 12, x + R * 1.5), sy0 = groundY - R * .95, syp = lerp(-bh * 2, sy0, drop);
+        const bw = Math.min(W * .5, R * 2.4), bh = R * .6, sxp = Math.min(W - bw / 2 - 12, W * .42 + R * 1.5), sy0 = groundY - R * .95, syp = lerp(-bh * 2, sy0, drop);
         ctx.fillStyle = '#5a3a2a'; ctx.fillRect(sxp - bw * .34, syp, 7, groundY - syp + 2); ctx.fillRect(sxp + bw * .34 - 7, syp, 7, groundY - syp + 2);
         ctx.save(); ctx.translate(sxp, syp); ctx.rotate(sw); ctx.fillStyle = '#7a4e33'; rrect(-bw / 2, -bh / 2, bw, bh, 9); ctx.fill(); ctx.fillStyle = col[0]; rrect(-bw / 2 + 5, -bh / 2 + 5, bw - 10, bh - 10, 7); ctx.fill();
         let fs = Math.round(bh * .5); ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; while (ctx.measureText(S.company).width > bw - 28 && fs > 10) { fs--; ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; }
