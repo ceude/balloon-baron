@@ -77,7 +77,7 @@ public enum FlightWorld {
         return h
     }
 
-    /// Wind speed (m/s, + is east) at an altitude, blended smoothly between band centers, with gusts.
+    /// Wind speed (m/s, + is east) at an altitude: each band's wind, changing at the band edges, with gusts.
     public static func wind(at alt: Double, time t: Double, _ w: Weather) -> Double {
         let ls = w.layers, c = Rules.windCenters
         var v: Double
@@ -86,10 +86,12 @@ public enum FlightWorld {
         } else if alt >= c[3] {
             v = ls[3]
         } else {
+            // v111: the change happens at the dashed line between the layers (the band edge), so just over the line
+            // you're already in the next layer's wind.
             var i = 0
             while alt > c[i + 1] { i += 1 }
-            let k = (alt - c[i]) / (c[i + 1] - c[i])
-            let s = clamp((k - 0.5) / 0.35 + 0.5, 0, 1), sm = s * s * (3 - 2 * s)
+            let b = FlightWorld.bands[i + 1].lowerBound
+            let s = clamp((alt - (b - Rules.windBlend / 2)) / Rules.windBlend, 0, 1), sm = s * s * (3 - 2 * s)
             v = lerp(ls[i], ls[i + 1], sm)
         }
         return v + w.flag.gust * 0.6 * (sin(t * 0.11 + alt * 0.013) + 0.6 * sin(t * 0.37 + alt * 0.031))

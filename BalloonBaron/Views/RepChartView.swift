@@ -90,7 +90,7 @@ struct RepChartView: View {
         }
         if let g = store.game, ShowCardView.offered(g) {
             let st = g.showState
-            row(loc("show.cardTitle"), st == .ok ? loc("show.rowBody", num(g.showFleet.count)) : ShowCardView.why(st, g),
+            row(loc("show.openTitle"), st == .ok ? loc("show.rowBody", num(g.showFleet.count)) : ShowCardView.why(st, g),
                 button: eur(g.showCost), disabled: st != .ok) {
                 close()
                 store.showShowCard = true

@@ -10,6 +10,20 @@ import BalloonBaronCore
 enum BalloonShow {
     /// Seconds from dusk to dawn.
     static let length = 27.0
+    /// A big fleet doesn't all fit a good show: at most this many balloons take the sky.
+    static let maxShown = 30
+
+    /// Who takes the sky (`showPick`): special shapes first, then designs, then the flagship, the biggest balloons,
+    /// and plain company balloons last.
+    static func pick(_ bs: [Balloon], _ s: GameState) -> [Balloon] {
+        func rank(_ b: Balloon) -> Int {
+            let d = s.design(of: b)
+            let kind = d?.shape != nil ? 0 : d != nil ? 10 : b.id == s.flagship ? 20 : 30
+            return kind + (4 - (BalloonSize.allCases.firstIndex(of: b.size) ?? 0))
+        }
+        return Array(bs.enumerated().sorted { (rank($0.element), $0.offset) < (rank($1.element), $1.offset) }.map(\.element).prefix(maxShown))
+    }
+
     /// Reference radius the sprites are drawn at.
     static let spriteR: CGFloat = 44
 
@@ -32,7 +46,7 @@ enum BalloonShow {
 
     static func looks(_ s: GameState, ids: [Int]) -> [Look] {
         var seen = Set<Look>(), out: [Look] = []
-        for b in ids.compactMap({ s.balloon($0) }) {
+        for b in pick(ids.compactMap { s.balloon($0) }, s) {
             for flame in [false, true] {
                 for layer in 0..<3 {
                     let l = Look(design: s.design(of: b)?.id, ad: b.ad, flame: flame, layer: layer)
@@ -155,7 +169,7 @@ enum BalloonShow {
 extension TownPainter {
     /// The show itself, in screen space over the night town. `st` counts from when the dusk has fallen.
     func showLayer(screen: GraphicsContext, hz: CGFloat, ids: [Int], t0: Double) {
-        let bs = ids.compactMap { s.balloon($0) }, n = bs.count
+        let bs = BalloonShow.pick(ids.compactMap { s.balloon($0) }, s), n = bs.count, total = ids.count
         guard n > 0 else { return }
         let w = size.width, h = size.height, st = t - t0 - 1.2
         let top = max(150, hz * 0.1), bot = max(top + 200, hz + (h - hz) * 0.14)
@@ -242,7 +256,7 @@ extension TownPainter {
             c.draw(Text(small).font(Theme.font(min(20, w * 0.048), .semibold)).foregroundColor(hex("#fff8e6")), at: CGPoint(x: w / 2, y: y + min(34, w * 0.08)))
         }
         caption(min(1, st * 1.5) * min(max(1 - (st - 2.6) / 0.8, 0), 1), loc("show.title"), s.company)
-        caption(min(max((st - 21) * 1.5, 0), 1) * min(max(1 - (st - 25), 0), 1), loc("show.tally", num(n)), loc("show.cheer"))
+        caption(min(max((st - 21) * 1.5, 0), 1) * min(max(1 - (st - 25), 0), 1), loc("show.tally", num(total)), loc("show.cheer"))
     }
 
     /// One balloon of the show: the balloon, darkened by the night and lit from inside by its burner, with a soft glow

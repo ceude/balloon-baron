@@ -62,6 +62,8 @@ final class GameStore {
     var showTempFlag = false
     /// The Balloon Show's card (v111).
     var showShowCard = false
+    /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
+    var showPriceSheet = false
     /// A new postcard, and the album from the menu.
     var postcard: Achievement?
     var showAlbum = false
@@ -371,9 +373,9 @@ final class GameStore {
     }
 
     /// Hezarfen's bazaar lesson ends at the bazaar.
-    func dismissHezarfen(openBazaar: Bool, openShow: Bool = false) {
+    func dismissHezarfen(openBazaar: Bool, openShow: Bool = false, openPrice: Bool = false) {
         hezarfen = nil
-        if openBazaar { showBazaar = true } else if openShow { showShowCard = true } else { showNextHezarfen() }
+        if openBazaar { showBazaar = true } else if openShow { showShowCard = true } else if openPrice { showPriceSheet = true } else { showNextHezarfen() }
     }
 
     func closeShowCard() {

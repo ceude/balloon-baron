@@ -403,7 +403,7 @@ struct MarketView: View {
             }
             if let g = store.game, ShowCardView.offered(g) {
                 let st = g.showState
-                marketingRow(loc("show.cardTitle"), st == .ok ? loc("show.rowBody", num(g.showFleet.count)) : ShowCardView.why(st, g),
+                marketingRow(loc("show.openTitle"), st == .ok ? loc("show.rowBody", num(g.showFleet.count)) : ShowCardView.why(st, g),
                              button: eur(g.showCost), disabled: st != .ok) {
                     store.showShowCard = true
                 }

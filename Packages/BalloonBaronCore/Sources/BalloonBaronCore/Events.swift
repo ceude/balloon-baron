@@ -21,6 +21,12 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case licenseExpiring
     /// v111: the Balloon Show is tonight, with this many balloons.
     case showTonight(balloons: Int)
+    /// v111: balloons that crashed today drop out of tonight's show; their fee comes back.
+    case showDropped(refund: Int)
+    /// v111: too few balloons left after today's crashes: tonight's show is called off, the rest of the fees come back.
+    case showCancelled(refund: Int)
+    /// v111: in your first own flights a crash costs one day in repair.
+    case rookieRepair
     case licenseRenewedByFlight
     case founderAbsent(days: Int)
     case antitrustFine(sharePercent: Int, fine: Int)

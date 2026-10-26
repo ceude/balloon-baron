@@ -5,19 +5,19 @@ add("flight.burn", "BURNER", "BRÜLÖR", "BRENNER", "QUEMADOR", "バーナー", 
 add("flight.abort", "Cancel flight", "Uçuştan vazgeç", "Flug absagen", "Cancelar vuelo", "フライト中止", "비행 취소")
 add("flight.inAir", "In the air", "Havadasın", "In der Luft", "En el aire", "飛行中", "비행 중")
 add("flight.tip.tutorial",
-    "**Hold the burner:** the balloon heats up and climbs. **Let go:** it cools and sinks. The wind blows differently at every height. Find the layer that carries you right and come down gently on the landing field.",
-    "**Brülöre basılı tut:** balon ısınır ve yükselir. **Bırak:** soğur ve alçalır. Her yükseklikte rüzgâr farklı eser. Seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.",
-    "**Halte den Brenner gedrückt:** Der Ballon heizt sich auf und steigt. **Loslassen:** Er kühlt ab und sinkt. In jeder Höhe weht der Wind anders. Finde die Schicht, die dich nach rechts trägt, und setz sanft auf dem Landefeld auf.",
-    "**Mantén pulsado el quemador:** el globo se calienta y sube. **Suéltalo:** se enfría y baja. El viento sopla distinto a cada altura. Encuentra la capa que te lleva a la derecha y baja suavemente en el campo de aterrizaje.",
-    "**バーナーを長押し**：気球が温まって上昇する。**離す**：冷えて下降する。風は高度ごとに違う。右へ運んでくれる層を見つけて、着陸場にそっと降りよう。",
-    "**버너를 길게 누르세요:** 열기구가 데워져 올라갑니다. **손을 떼면:** 식으면서 내려갑니다. 바람은 고도마다 다르게 붑니다. 오른쪽으로 데려다주는 층을 찾아 착륙장에 살며시 내리세요.")
+    "**Your goal is the landing field on the right.** **Hold the burner:** the balloon heats up and climbs. **Let go:** it cools and sinks. The wind blows differently at every height. Find the layer that carries you right and come down gently on the landing field.",
+    "**Hedefin sağdaki iniş alanı.** **Brülöre basılı tut:** balon ısınır ve yükselir. **Bırak:** soğur ve alçalır. Her yükseklikte rüzgâr farklı eser. Seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.",
+    "**Dein Ziel ist das Landefeld rechts.** **Halte den Brenner gedrückt:** Der Ballon heizt sich auf und steigt. **Loslassen:** Er kühlt ab und sinkt. In jeder Höhe weht der Wind anders. Finde die Schicht, die dich nach rechts trägt, und setz sanft auf dem Landefeld auf.",
+    "**Tu objetivo es el campo de aterrizaje de la derecha.** **Mantén pulsado el quemador:** el globo se calienta y sube. **Suéltalo:** se enfría y baja. El viento sopla distinto a cada altura. Encuentra la capa que te lleva a la derecha y baja suavemente en el campo de aterrizaje.",
+    "**目標は右の着陸場。** **バーナーを長押し**：気球が温まって上昇する。**離す**：冷えて下降する。風は高度ごとに違う。右へ運んでくれる層を見つけて、着陸場にそっと降りよう。",
+    "**목표는 오른쪽 착륙장입니다.** **버너를 길게 누르세요:** 열기구가 데워져 올라갑니다. **손을 떼면:** 식으면서 내려갑니다. 바람은 고도마다 다르게 붑니다. 오른쪽으로 데려다주는 층을 찾아 착륙장에 살며시 내리세요.")
 add("flight.tip.pax",
-    "**Passengers in the basket: %@.** The landing field is to the east.",
-    "**Sepetteki yolcu: %@.** İniş alanı doğuda.",
-    "**Passagiere im Korb: %@.** Das Landefeld liegt im Osten.",
-    "**Pasajeros en la cesta: %@.** El campo de aterrizaje está al este.",
-    "**バスケットの乗客：%@**。着陸場は東にある。",
-    "**바스켓의 승객: %@.** 착륙장은 동쪽에 있습니다.")
+    "**Passengers in the basket: %@.** Your goal: the landing field on the right.",
+    "**Sepetteki yolcu: %@.** Hedef: sağdaki iniş alanı.",
+    "**Passagiere im Korb: %@.** Dein Ziel: das Landefeld rechts.",
+    "**Pasajeros en la cesta: %@.** Tu objetivo: el campo de aterrizaje de la derecha.",
+    "**バスケットの乗客：%@**。目標：右の着陸場。",
+    "**바스켓의 승객: %@.** 목표: 오른쪽 착륙장.")
 add("flight.tip.fuel",
     "**Out of fuel!** The balloon is cooling and coming down.",
     "**Yakıt bitti!** Balon soğuyarak iniyor.",

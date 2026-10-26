@@ -60,7 +60,7 @@ private struct FlightLook {
 
 /// The running flight (`FL` in the prototype). A plain class: the TimelineView redraws every frame.
 final class FlightModel {
-    enum Tip { case tutorial, pax, fuel, vent }
+    enum Tip { case tutorial, pax, fuel, vent, goal, wrong, still, near, lowFuel }
 
     /// Shown once ever, the first time a flight leaves the ground.
     static let ventTipKey = "ventTip"
@@ -71,6 +71,12 @@ final class FlightModel {
     let pax: Int
     /// First flight: the tutorial tip disappears at take-off.
     let tutorial: Bool
+    /// v111: your first own flights get the flying coach (`coachTick`).
+    let coached: Bool
+    private var coachAt: Double?
+    private var coachTip: Tip?
+    private var said: [Tip: Int] = [:]
+    private var wrongT = 0.0, stillT = 0.0, lowFuel = false
     /// Real seconds since the scene opened (`T`).
     var T = 0.0
     var last: Double?
@@ -97,6 +103,7 @@ final class FlightModel {
         sim = FlightSim(weather: w, pax: pax, burners: fb?.burners ?? 1, turningVent: fb?.hasTurningVent ?? false)
         self.pax = pax
         tutorial = !s.tutorialDone
+        coached = (s.selfFlights ?? 0) < Rules.coachFlights
         tip = s.tutorialDone ? .pax : .tutorial
         bg = ScenePainter.backgroundBalloons(s)
         // Festivals pay half as much again for special requests.
@@ -116,7 +123,7 @@ final class FlightModel {
     func setHold(sky: Bool? = nil, button: Bool? = nil) {
         if let sky { skyHold = sky }
         if let button { buttonHold = button }
-        if burning && !sim.done && sim.t > 1 && !sim.fuelWarned { tip = nil }
+        if burning && !sim.done && sim.t > 1 && !sim.fuelWarned && !(coachTip != nil && T - (coachAt ?? -99) < 5) { tip = nil }
     }
 
     /// `setVent(on)`: hold the parachute vent open, once airborne.
@@ -137,6 +144,7 @@ final class FlightModel {
         if !sim.done {
             sim.burning = burning
             for e in sim.step(dt) { handle(e) }
+            coachTick(dt)
         }
         stepFx(dt)
         if let a = applauseAt, T >= a {
@@ -166,6 +174,8 @@ final class FlightModel {
             if !d.bool(forKey: Self.ventTipKey) {
                 d.set(true, forKey: Self.ventTipKey)
                 tip = .vent
+            } else if coached {
+                say(.goal)
             }
         case .missionDone:
             mdoneAt = T
@@ -193,6 +203,41 @@ final class FlightModel {
             }
         }
     }
+
+    /// v111: the flying coach (`coachSay` / `coachTick`). A TestFlight player didn't see that the landing field was the
+    /// goal, lost track of the wind layers and ran out of fuel; in your first flights Hezarfen says a word when it
+    /// helps: drifting away, standing still, over the field. Low fuel is said on every flight.
+    private func say(_ t: Tip) {
+        guard !sim.done, coachTip != t, (said[t] ?? 0) < 2, T - (coachAt ?? -99) >= 5 else { return }
+        said[t, default: 0] += 1
+        coachTip = t
+        coachAt = T
+        tip = t
+    }
+
+    private func coachTick(_ dt: Double) {
+        guard sim.airborne, !sim.done else { return }
+        if sim.fuel < 30 && !lowFuel {
+            lowFuel = true
+            coachAt = nil
+            coachTip = nil
+            say(.lowFuel)
+        }
+        if let a = coachAt, T - a > 6, coachTip != nil, tip == coachTip {
+            tip = nil
+            coachTip = nil
+        }
+        guard coached else { return }
+        let dx = sim.weather.target - sim.x, toward = sim.vx * (dx < 0 ? -1 : 1)
+        wrongT = toward < -0.3 && abs(dx) > 150 ? wrongT + dt : 0
+        stillT = abs(toward) <= 0.3 && abs(dx) > 150 ? stillT + dt : 0
+        if abs(dx) < 260 && sim.alt > 40 { say(.near) }
+        else if wrongT > 2.5 { say(.wrong) }
+        else if stillT > 4 { say(.still) }
+    }
+
+    /// Kilometers to the landing field, for the goal tip.
+    var fieldKm: String { (abs(sim.weather.target - sim.x) / 1000).formatted(.number.precision(.fractionLength(0...1))) }
 
     private func spawnFx() {
         func rnd(_ a: Double, _ b: Double) -> Double { Double.random(in: a...b) }
@@ -497,6 +542,11 @@ private struct FlightStage: View {
         case .pax: return loc("flight.tip.pax", num(model.pax))
         case .fuel: return loc("flight.tip.fuel")
         case .vent: return loc("flight.tip.vent")
+        case .goal: return loc("flight.coach.goal", model.fieldKm)
+        case .wrong: return loc("flight.coach.wrong")
+        case .still: return loc("flight.coach.still")
+        case .near: return loc("flight.coach.near")
+        case .lowFuel: return loc("flight.coach.lowFuel")
         }
     }
 
@@ -612,7 +662,8 @@ private enum FlightPainter {
                                    ad: look.ad, region: look.region)
         }
         if let c = m.celebAt { celebration(&ctx, m: m, bx: bx, by: by, r: R, ct: m.T - c) }
-        fieldPointer(&ctx, cam: cam, m: m)
+        liveWind(&ctx, m: m, bx: bx, by: by)
+        fieldPointer(&ctx, cam: cam, m: m, top: top, pr: PR)
         missionGuides(&ctx, cam: cam, m: m)
         moment(&ctx, cam: cam, top: top, r: PR, m: m)
         missionBanner(&ctx, width: size.width, top: top, m: m)
@@ -724,7 +775,10 @@ private enum FlightPainter {
             let y = cam.sy(Rules.windCenters[i])
             let active = alt >= band.lowerBound && alt < band.upperBound
             if i > 0 {
-                hline(&ctx, y: cam.sy(band.lowerBound), width: cam.size.width, color: .white.opacity(0.14), lineWidth: 1, dash: [4, 6])
+                let ly = cam.sy(band.lowerBound)
+                hline(&ctx, y: ly, width: cam.size.width, color: .white.opacity(0.42), lineWidth: 1.5, dash: [8, 6])
+                ctx.draw(Text(verbatim: loc("flight.lineAlt", num(Int(band.lowerBound)))).font(sceneFont(11, .bold, condensed: true))
+                            .foregroundColor(.white.opacity(0.75)), at: CGPoint(x: cam.size.width - 10, y: ly - 4), anchor: .bottomTrailing)
             }
             let len = CGFloat(12 + abs(v) * 5), x0: CGFloat = 14, dir: CGFloat = v < 0 ? -1 : 1
             let ax0 = dir > 0 ? x0 : x0 + len, ax1 = dir > 0 ? x0 + len : x0
@@ -805,14 +859,42 @@ private enum FlightPainter {
 
     // MARK: Overlays drawn in the scene
 
-    /// "Landing zone 1.2 km" pointer when the field is off-screen.
-    static func fieldPointer(_ ctx: inout GraphicsContext, cam: SceneCamera, m: FlightModel) {
+    /// v111: the wind where the balloon is, right under the basket: green when it carries you toward the field.
+    static func liveWind(_ ctx: inout GraphicsContext, m: FlightModel, bx: CGFloat, by: CGFloat) {
+        let f = m.sim
+        guard f.alt > 3, !f.done else { return }
+        let wv = FlightWorld.wind(at: f.alt, time: f.t, f.weather), wd: CGFloat = wv < 0 ? -1 : 1
+        let good = wv * (f.weather.target - f.x >= 0 ? 1 : -1) > 0.3
+        let label = ctx.resolve(Text(verbatim: loc("flight.kmh", num(Int((abs(wv) * 3.6).rounded()))))
+            .font(sceneFont(13, .heavy, condensed: true)).foregroundColor(.white))
+        let tw = label.measure(in: CGSize(width: 200, height: 40)).width, pw = tw + 30, py = by + 16
+        ctx.fill(rrect(bx - pw / 2, py - 11, pw, 22, 11), with: .color(good ? Color(red: 34 / 255, green: 164 / 255, blue: 93 / 255).opacity(0.92)
+                                                                          : Color(red: 229 / 255, green: 67 / 255, blue: 47 / 255).opacity(0.88)))
+        let a0 = bx - pw / 2 + 8, a1 = a0 + 12, ax0 = wd > 0 ? a0 : a1, ax1 = wd > 0 ? a1 : a0
+        var shaft = Path()
+        shaft.move(to: CGPoint(x: ax0, y: py))
+        shaft.addLine(to: CGPoint(x: ax1, y: py))
+        ctx.stroke(shaft, with: .color(.white), style: StrokeStyle(lineWidth: 2.2, lineCap: .round))
+        var head = Path()
+        head.move(to: CGPoint(x: ax1 + wd * 2, y: py))
+        head.addLine(to: CGPoint(x: ax1 - wd * 3, y: py - 4))
+        head.addLine(to: CGPoint(x: ax1 - wd * 3, y: py + 4))
+        head.closeSubpath()
+        ctx.fill(head, with: .color(.white))
+        ctx.draw(label, at: CGPoint(x: a1 + 6, y: py), anchor: .leading)
+    }
+
+    /// "Landing zone 1.2 km" pointer when the field is off-screen. In your first flights it rides at the balloon's
+    /// height and nudges toward the field, so the goal can't be missed.
+    static func fieldPointer(_ ctx: inout GraphicsContext, cam: SceneCamera, m: FlightModel, top: CGFloat, pr: CGFloat) {
         let W = cam.size.width, tx = m.look.target, dx = tx - m.sim.x, tsx = cam.sx(tx)
         guard tsx > W - 20 || tsx < 20 else { return }
         let d: CGFloat = tsx > W / 2 ? 1 : -1
-        let ax = d > 0 ? W - 18 : 18, ay = cam.groundY - 44
+        let co = m.coached
+        let ax = (d > 0 ? W - 18 : 18) + (co ? CGFloat(sin(m.T * 5)) * 3 * d : 0)
+        let ay = co ? min(max(cam.sy(m.sim.alt) - pr * 1.4, top + 150), cam.groundY - 44) : cam.groundY - 44
         let km = (abs(dx) / 1000).formatted(.number.precision(.fractionLength(0...1)))
-        let label = ctx.resolve(Text(verbatim: loc("flight.toField", km)).font(sceneFont(15, .bold, condensed: true)).foregroundColor(Theme.ink))
+        let label = ctx.resolve(Text(verbatim: loc("flight.toField", km)).font(sceneFont(co ? 17 : 15, co ? .heavy : .bold, condensed: true)).foregroundColor(Theme.ink))
         let tw = label.measure(in: CGSize(width: W, height: 100)).width
         ctx.fill(rrect(d > 0 ? ax - tw - 34 : ax - 6, ay - 15, tw + 40, 30, 15), with: .color(.white))
         var tri = Path()

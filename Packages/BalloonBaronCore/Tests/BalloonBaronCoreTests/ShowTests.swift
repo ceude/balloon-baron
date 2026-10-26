@@ -69,4 +69,30 @@ final class ShowTests: XCTestCase {
         let back = try JSONDecoder().decode(RegionState.self, from: JSONSerialization.data(withJSONObject: json))
         XCTAssertNil(back.showTonight)
     }
+
+    /// v111.1: a balloon that crashes on show day drops out and its fee comes back; below the minimum the show is off.
+    func testCrashesOnShowDay() {
+        var g = showGame(balloons: 7)
+        XCTAssertTrue(g.bookShow())
+        g.launch(skip: true)
+        g.state.balloons[1].damagedUntil = g.state.day + 3
+        let r = g.finishDay(flight: nil)
+        XCTAssertTrue(r.events.contains(.showDropped(refund: Rules.showPerBalloon)))
+        XCTAssertTrue(r.events.contains(.showTonight(balloons: 6)))
+
+        var h = showGame(balloons: 5)
+        XCTAssertTrue(h.bookShow())
+        let paid = h.state.cash
+        h.launch(skip: true)
+        h.state.balloons[2].damagedUntil = h.state.day + 3
+        let r2 = h.finishDay(flight: nil)
+        XCTAssertTrue(r2.events.contains(.showCancelled(refund: 4 * Rules.showPerBalloon)))
+        XCTAssertFalse(r2.events.contains(where: { if case .showTonight = $0 { true } else { false } }))
+        XCTAssertNil(h.startNight().flatMap { if case .show = $0 { $0 } else { nil } }, "no show tonight")
+        XCTAssertGreaterThan(h.state.cash, paid, "every fee came back")
+        h.startDay()
+        XCTAssertEqual(h.showState, .few, "four can fly until the repair is done; then it can be booked again at once")
+        h.state.balloons[2].damagedUntil = 0
+        XCTAssertEqual(h.showState, .ok)
+    }
 }

@@ -38,6 +38,7 @@ extension Game {
         var lg = Ledger()
         var accidents: [String] = [], ads: [Sponsor] = []
         var paxTotal = 0
+        var flewSelf = false
         let cancelled = flight?.landing == .cancel
         let flyingIDs = plan.flying.filter { state.balloon($0) != nil }
 
@@ -74,7 +75,9 @@ extension Game {
             if state.insurePax { lg.insurance += q.pax }
 
             var severity = 0.0
+            let rookie = isSelf && flight != nil && (state.selfFlights ?? 0) < Rules.coachFlights
             if isSelf, let f = flight {
+                flewSelf = true
                 if !state.licenseValid { ev.append(.licenseRenewedByFlight) }
                 state.lastSelfFly = state.day
                 lg.founderBonus += jsRound(Double(pax * state.price) * Rules.founderPremium)
@@ -119,7 +122,8 @@ extension Game {
             if severity > 0 {
                 let repair = jsRound(Double(z.cost) * 0.35 * severity)
                 let comp = jsRound(Double(pax) * 2500 * severity)
-                let days = 1 + Int((4 * severity).rounded(.up))
+                let days = rookie ? 1 : 1 + Int((4 * severity).rounded(.up))
+                if rookie { ev.append(.rookieRepair) }
                 let hullPaid = state.insureHull && !red, paxPaid = state.insurePax && !red
                 lg.repairs += repair
                 lg.compensation += comp
@@ -201,7 +205,28 @@ extension Game {
             lg.designRep = designRep
             if rng.chance(0.25), let d = state.design(of: rng.pick(painted)) { addReview(.design, ["d": String(d.id)]) }
         }
-        // v111: the Balloon Show is tonight.
+        if flewSelf { state.selfFlights = (state.selfFlights ?? 0) + 1 }
+        // v111: the Balloon Show is tonight. A balloon that crashed today (or was sold) drops out; its fee comes back.
+        if state.local.showTonight == state.day {
+            let ids = state.local.showIDs ?? []
+            let keep = ids.filter { id in state.balloon(id).map { $0.damagedUntil <= state.day } ?? false }
+            if keep.count < ids.count {
+                let refund = ids.filter { id in state.balloon(id) != nil && !keep.contains(id) }.count * Rules.showPerBalloon
+                state.local.showIDs = keep
+                state.cash += refund
+                if refund > 0 { ev.append(.showDropped(refund: refund)) }
+            }
+            // Too few left for a show: it's called off, every fee comes back and a new one can be booked at once.
+            if keep.count < Rules.showMinBalloons {
+                let refund = keep.count * Rules.showPerBalloon
+                state.cash += refund
+                state.local.showTonight = nil
+                state.local.showIDs = nil
+                state.local.showNext = nil
+                state.local.showCount = max(0, (state.local.showCount ?? 1) - 1)
+                ev.append(.showCancelled(refund: refund))
+            }
+        }
         if state.local.showTonight == state.day {
             let n = state.local.showIDs?.count ?? 0
             state.rep += Rules.showRep

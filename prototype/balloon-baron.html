@@ -735,6 +735,8 @@ body.night #cv{touch-action:none}
 .tag.o{background:#ffe1d6;color:#c2401f}
 .nameinp{width:100%;box-sizing:border-box;font:inherit;font-size:18px;font-weight:700;padding:12px 14px;border:2px solid #e3dff0;border-radius:14px;margin:6px 0 2px;color:#2a2340}
 .showbtn{margin:0 0 10px}
+.showgain{background:#f4f0fb;border-radius:14px;padding:10px 14px;margin:6px 0 10px;font-size:14px;color:#2a2340}.showgain ul{margin:6px 0 6px 18px;padding:0}.showgain li{margin:2px 0}.showgain span{font-size:12.5px;color:#6b6385}
+.showcalc{display:grid;grid-template-columns:1fr auto;gap:4px 12px;background:#fff3cf;border-radius:14px;padding:10px 14px;margin:0 0 12px;font-size:14px;color:#2a2340}.showcalc .tot{border-top:1px solid rgba(0,0,0,.12);padding-top:6px;font-weight:800}
 </style>
 
 <div id="wrap">
@@ -809,7 +811,7 @@ const FLAGS = {
   yellow: { name: 'Sarı bayrak',    acc: .03,  dem: .9, wind: 1.45, gust: .9,  col: '#e0a400', note: 'Uçabilirsin ama kaza riski ve sigorta primleri yüksek.' },
   red:    { name: 'Kırmızı bayrak', acc: .14,  dem: 1,  wind: 2,    gust: 1.7, col: '#e5432f', note: 'Uçuş yasak. Kalkarsan yakalanabilirsin ve sigorta hiçbir şeyi ödemez.' }
 };
-const BANDS = [[0, 60], [60, 180], [180, 350], [350, 650]], CENTERS = [30, 120, 265, 500];
+const BANDS = [[0, 60], [60, 180], [180, 350], [350, 650]], CENTERS = [30, 120, 265, 500], WIND_BLEND = 24;
 const B_NAMES = ['Şafak', 'Güvercin', 'Zelve', 'Uçhisar', 'Avanos', 'Ihlara', 'Ortahisar', 'Kızılçukur', 'Paşabağ', 'Erciyes', 'Soğanlı', 'Mustafapaşa', 'Göreme', 'Çavuşin', 'Ürgüp', 'Sinasos'];
 const P_NAMES = ['Mert', 'Elif', 'Kerem', 'Zeynep', 'Hakan', 'Selin', 'Burak', 'Derya', 'Emre', 'Aslı', 'Onur', 'Ceren', 'Tolga', 'Melis', 'Cem', 'İpek'];
 const LOANS = [
@@ -939,7 +941,8 @@ const HEZ = {
   p_stars: '4,3 yıldız! Vadide adın duyulmaya başladı evlat. Turistler artık seni soruyor.',
   welcome: 'Hoş geldin evlat! Ben Hezarfen. Bir zamanlar Galata Kulesi\'nden kanat takıp Üsküdar\'a süzüldüm, derler. Sen işi daha sağlam yapacaksın: sıcak havayla! Bugün tek işin var: fiyatı belirle, yolcu topla ve uç.',
   ins: 'Gökyüzü her zaman dost değildir. İlk günden beri balonun ve yolcuların sigortalı uçuyor. Artık sigortayı kendin açıp kapatabilirsin, ama bir kazanın kasanı bir sabahta boşaltabileceğini unutma.',
-  fleet: 'Kasada para birikiyor, aferin! Filo sayfası açıldı. İkinci balonu düşünebilirsin, ama her balona bir pilot lazım.',
+  fleet: 'Filo sayfası açıldı evlat. Kasa dolunca ikinci balonu düşünebilirsin, ama her balona bir pilot lazım.',
+  price: 'Dün koltukların hepsi dolmadı evlat. Bilet fiyatı turistin kararını değiştirir: biraz düşürürsen boş koltuk kalmaz. Koltuklar hep doluysa da fiyatı artırıp daha çok kazanırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.',
   bank: 'Banka kapısı açıldı. Kredi seni hızlandırır ama faiz sabırlı bir düşmandır, unutma.',
   market: 'Pazar sayfası açıldı. Rakiplerini tanı: Göreme Sky ağır abidir, Kızıl Vadi kural tanımaz. Otellerle anlaşmalar da orada.',
   crew: 'Ekip sayfası açıldı. Çaylak pilot ucuzdur ama rüzgârda titrer. Uçtukça tecrübe kazanırlar, tabii maaş da isterler.',
@@ -1213,9 +1216,10 @@ function windAt(alt, t) {
   if (alt <= CENTERS[0]) v = Ls[0];
   else if (alt >= CENTERS[3]) v = Ls[3];
   else {
+    /* v111: the wind changes right at the dashed line between two layers (a short 24 m blend), so what you see is
+       what you get: just over the line you're already in the next layer */
     let i = 0; while (alt > CENTERS[i + 1]) i++;
-    const k = (alt - CENTERS[i]) / (CENTERS[i + 1] - CENTERS[i]);
-    const s = clamp((k - .5) / .35 + .5, 0, 1), sm = s * s * (3 - 2 * s);
+    const b = BANDS[i + 1][0], s = clamp((alt - (b - WIND_BLEND / 2)) / WIND_BLEND, 0, 1), sm = s * s * (3 - 2 * s);
     v = lerp(Ls[i], Ls[i + 1], sm);
   }
   return v + g * .6 * (Math.sin(t * .11 + alt * .013) + .6 * Math.sin(t * .37 + alt * .031));
@@ -1419,6 +1423,8 @@ function unlockCheck() {
   if (S.day >= 3) hezAdd('goals'); /* day 3 (v110): day 2 already teaches insurance and often the yellow flag */
   if (S.day >= 3 && bossRival()) bossSay('hello');
   if (S.day >= 9) hezAdd('pr');
+  /* v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows where it is */
+  { const l = S.lastShare; if (S.day >= 2 && S.day <= 12 && l && l.cap && l.me < l.cap) hezAdd('price'); }
   if (S.unl.market && S.day >= 11) hezAdd('bazaar');
   if (S.weather.flag === 'yellow') hezAdd('yellow');
   if (S.weather.flag === 'red') hezAdd('red');
@@ -1612,8 +1618,8 @@ function showHez(k) {
   const finish = () => { clearInterval(hezTimer); p.textContent = text; i = text.length; };
   hezTimer = setInterval(() => { i += 2; p.textContent = text.slice(0, i); if (i % 8 === 0) sfx('blip'); if (i >= text.length) finish(); }, 22);
   bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
-  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : k === 'bazaar' ? 'Çarşıya git' : k === 'show' ? 'Şöleni gör' : k.startsWith('p_') ? 'Sağ ol usta' : 'Anladım');
-  ok.onclick = () => { finish(); el.hidden = true; refresh(); if (k === 'bazaar') showBazaar(); else if (k === 'show') showCard(); else setTimeout(nextPopup, 250); };
+  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : k === 'bazaar' ? 'Çarşıya git' : k === 'show' ? 'Şöleni gör' : k === 'price' ? 'Fiyatı ayarla' : k.startsWith('p_') ? 'Sağ ol usta' : 'Anladım');
+  ok.onclick = () => { finish(); el.hidden = true; refresh(); if (k === 'bazaar') showBazaar(); else if (k === 'show') showCard(); else if (k === 'price') priceSheet(true); else setTimeout(nextPopup, 250); };
   bub.appendChild(ok);
   el.hidden = false;
 }
@@ -1717,6 +1723,7 @@ function finishDay(flight) {
     if (self && flight) {
       if (!licenseOk()) ev.push('Yenileme uçuşunu kendin yaptın. Lisansın yenilendi, balonların yeniden kalkabilir.');
       S.lastSelfFly = S.day;
+      if (flight.q !== 'cancel') S.selfFlightsNext = (S.selfFlights || 0) + 1;
       Lg.founder += Math.round(pax * S.price * FOUNDER);
       const q = flight.q;
       if (flight.mok) { (S.stat = S.stat || {}).mis = (S.stat.mis || 0) + 1; const M = MISSIONS[flight.mis], rw = misReward(flight.mis, b.size); Lg.mission += rw; Lg.missionName = M.name; S.rep += .02; ev.push(`Görev tamamlandı: ${M.name}. Müşteri ${eur(rw)} ödül verdi.`); }
@@ -1730,7 +1737,10 @@ function finishDay(flight) {
     } else if (Math.random() < accP(b)) sev = rnd(.2, 1);
     else S.rep += .004;
     if (sev) {
-      const repair = Math.round(z.cost * .35 * sev), comp = Math.round(pax * 2500 * sev), days = 1 + Math.ceil(4 * sev);
+      /* v111: in your first three own flights a crash costs one day in repair (Hezarfen knows a mechanic) */
+      const rookie = self && (S.selfFlights || 0) < COACH_FLIGHTS;
+      const repair = Math.round(z.cost * .35 * sev), comp = Math.round(pax * 2500 * sev), days = rookie ? 1 : 1 + Math.ceil(4 * sev);
+      if (rookie) ev.push('Acemi koruması: Hezarfen\'in tanıdığı tamirci balonunu bir günde onaracak.');
       const hullPaid = S.ins.hull && !red, paxPaid = S.ins.pax && !red;
       Lg.repair += repair; Lg.comp += comp;
       if (hullPaid) Lg.insPay += repair; if (paxPaid) Lg.insPay += comp;
@@ -1770,6 +1780,21 @@ function finishDay(flight) {
   S.rep += fl.filter(b => b.size === 'XL').length * .005;
   const dRep = Math.min(.015, fl.reduce((a, b) => { const d = designOf(b); return a + (d ? .003 * d.score / 100 * freshness(d) + (d.shape ? .0015 : 0) : 0); }, 0));
   if (dRep) { S.rep += dRep; Lg.designRep = dRep; if (Math.random() < .25) { const d = designOf(pick(fl.filter(designOf))); addReview('design', { d: d.name }); } }
+  if (S.showTonight === S.day) {
+    /* a balloon that crashed today can't go up tonight: it drops out and its fee comes back */
+    const out = (S.showIds || []).filter(id => { const b = bal(id); return !b || b.dmgUntil > S.day; });
+    if (out.length) {
+      const back = out.filter(id => bal(id)).length * SHOW.per;
+      S.showIds = S.showIds.filter(id => !out.includes(id)); S.showN = S.showIds.length; S.cash += back;
+      if (back) ev.push(`Kaza yapan balon bu gece şölene çıkamayacak. Ücreti kasana geri döndü: ${eur(back)}.`);
+    }
+    /* too few left for a show: it's called off, every fee comes back and a new one can be booked at once */
+    if (S.showIds.length < SHOW.min) {
+      const back = S.showIds.length * SHOW.per; S.cash += back;
+      S.showTonight = null; S.showIds = null; S.showNext = 0; S.showCount = Math.max(0, (S.showCount || 1) - 1);
+      ev.push(`Kazalar yüzünden şölene yeterli balon kalmadı (en az ${SHOW.min}), bu geceki şölen iptal. Kalan ücretler de kasana döndü: ${eur(back)}. Balonlar onarılınca yeniden düzenleyebilirsin.`);
+    }
+  }
   if (S.showTonight === S.day) {
     S.rep += SHOW.rep; S.showUntil = S.day + SHOW.days; S.lastShow = S.day;
     paperAdd(4, `${S.company} gökyüzünü aydınlattı`, `${S.showN} balonluk Balon Şöleni bütün vadiyi meydana topladı.`);
@@ -1821,6 +1846,7 @@ function finishDay(flight) {
   chirpI = 0; chirpT = 1.5;
   myHotels().forEach(x => { if (!owns(x) && starVal(S.rep) < x.min - .3) { S.hotels = S.hotels.filter(id => id !== x.id); ev.push(`${x.name} anlaşmayı bitirdi. Popülerliğin ${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ seviyesinin çok altına düştü.`); } });
   if (S.day <= S.influUntil) { S.rep = Math.min(1.4, S.rep + .03); if (Math.random() < .6) addReview('influ'); }
+  if (S.selfFlightsNext) { S.selfFlights = S.selfFlightsNext; delete S.selfFlightsNext; }
   S.repHist.push({ d: S.day, r: S.rep }); if (S.repHist.length > 120) S.repHist.shift();
   S.lastShare = { me: paxTotal, cap: capToday, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
   S.netHist = (S.netHist || []).concat([net]).slice(-14); loanUnlock();
@@ -2717,7 +2743,7 @@ function tabFleet(body) {
   s.appendChild(chips);
   /* v111: the Balloon Show, once the market is open and the fleet is big enough */
   if (unlocked('market') && S.balloons.length >= SHOW.min) {
-    const ss = showState(), sb = h('button', 'adbtn showbtn', `<i style="background:#ffc23d"></i>Balon Şöleni · ${ss === 'ok' ? `${showFleet().length} balon, ${eur(showCost())}` : ss === 'booked' ? 'bu gece' : ss === 'wait' ? `${S.showNext - S.day} gün sonra` : ss === 'few' ? `en az ${SHOW.min} uçabilen balon` : `${eur(showCost())} gerekli`}`);
+    const ss = showState(), sb = h('button', 'adbtn showbtn', `<i style="background:#ffc23d"></i>Balon Şöleni Düzenle · ${ss === 'ok' ? `${showFleet().length} balon, ${eur(showCost())}` : ss === 'booked' ? 'bu gece' : ss === 'wait' ? `${S.showNext - S.day} gün sonra` : ss === 'few' ? `en az ${SHOW.min} uçabilen balon` : `${eur(showCost())} gerekli`}`);
     sb.onclick = showCard; s.appendChild(sb);
   }
   /* one tap renews every envelope below 30% */
@@ -2732,7 +2758,7 @@ function tabFleet(body) {
     const bd = designOf(b), [lv, txt] = fleetState(b), cd = cond(b), cp = Math.round(cd * 100), sp = b.ad && SPONSORS.find(x => x.id === b.ad);
     const r = h('button', 'flrow');
     r.innerHTML = `<span class="fi">${bd ? `<img src="${designThumb(bd, 28, 36)}" alt="">` : balloonIcon(myCol()[0], myCol()[1])}</span>
-      <span class="fm"><b>${esc(b.name)}${b.id === S.flag ? '<i class="star">★</i>' : ''}${isSelf(b) ? '<i class="you">Sen uçuruyorsun</i>' : ''}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em>${sp ? `<i class="ad" style="background:${sp.col}" title="${sp.name}"></i>` : ''}${burnerLv(b) > 1 ? `<i class="bx">×${burnerLv(b)}</i>` : ''}</b>
+      <span class="fm"><b>${esc(b.name)}${b.id === S.flag ? '<i class="star">★</i>' : ''}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em>${isSelf(b) ? '<i class="you">Sen uçuruyorsun</i>' : ''}${sp ? `<i class="ad" style="background:${sp.col}" title="${sp.name}"></i>` : ''}${burnerLv(b) > 1 ? `<i class="bx">×${burnerLv(b)}</i>` : ''}</b>
       <span class="st ${lv}"><i></i>${txt}</span></span>
       <span class="fe"><span class="ring" style="--p:${cp};--c:${cd < .3 ? 'var(--red)' : cd < .6 ? 'var(--yellow)' : 'var(--green)'}"><em>${cp}</em></span></span>
       <svg class="chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></svg>`;
@@ -3514,7 +3540,7 @@ function showRepChart() {
   act('Rehberlere tanıtım uçuşu', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', eur(GUIDE_COST), () => {
     m.hidden = true; doGuide();
   }, gcd > 0 || S.cash < GUIDE_COST);
-  if (unlocked('market') && S.balloons.length >= SHOW.min) { const ss = showState(); act('Balon Şöleni', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
+  if (unlocked('market') && S.balloons.length >= SHOW.min) { const ss = showState(); act('Balon Şöleni Düzenle', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
 }
@@ -3801,10 +3827,34 @@ function startFlight(pax) {
   mode = 'flight'; $('sheet').hidden = true; $('intro').hidden = true; $('burn').hidden = false; $('vent').hidden = true;
   const ab = $('abort'); ab.hidden = false; ab.disabled = false; ab.textContent = 'Uçuştan vazgeç';
   const tip = $('tip'); tip.hidden = false; tip.className = 'up';
-  tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> İniş alanı doğuda.` : '<b>Brülöre basılı tut:</b> balon ısınır ve yükselir. <b>Bırak:</b> soğur ve alçalır. Her yükseklikte rüzgâr farklı eser. Seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
+  tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> Hedef: ${S.weather.target > 220 ? 'sağdaki' : 'soldaki'} iniş alanı.` : '<b>Hedefin sağdaki iniş alanı.</b> Brülöre basılı tut: balon ısınır ve yükselir. Bırak: soğur ve alçalır. Her yükseklikte rüzgâr farklı eser; seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
+}
+/* v111: the flying coach. A TestFlight player didn't see that the landing field was the goal, lost track of the wind
+   layers and ran out of fuel, so for your first three flights Hezarfen says a word when it helps: drifting away from
+   the field, standing still, over the field, low on fuel (that one on every flight). */
+const COACH_FLIGHTS = 3;
+const coached = () => (S.selfFlights || 0) < COACH_FLIGHTS;
+function coachSay(k, html) {
+  const f = FL; if (!f || f.done) return;
+  f.said = f.said || {};
+  if (f.coachK === k || (f.said[k] || 0) >= 2 || (f.coachAt && T - f.coachAt < 5)) return;
+  f.said[k] = (f.said[k] || 0) + 1; f.coachK = k; f.coachAt = T;
+  const tip = $('tip'); tip.hidden = false; tip.className = 'up'; tip.innerHTML = html;
+}
+function coachTick(f, dt) {
+  if (!f.air || f.done) return;
+  if (f.fuel < 30 && !f.lowFuel) { f.lowFuel = 1; f.coachK = null; f.coachAt = 0; coachSay('fuel', '<b>Yakıt azalıyor.</b> Brülöre kısa kısa bas, yakıtı inişe sakla. Hedefe doğru esen katmanda kal.'); }
+  if (f.coachAt && T - f.coachAt > 6 && f.coachK && !f.msg) { $('tip').hidden = true; f.coachK = null; }
+  if (!coached()) return;
+  const dx = S.weather.target - f.x, toward = f.vx * Math.sign(dx);
+  f.wrongT = toward < -.3 && Math.abs(dx) > 150 ? (f.wrongT || 0) + dt : 0;
+  f.stillT = Math.abs(toward) <= .3 && Math.abs(dx) > 150 ? (f.stillT || 0) + dt : 0;
+  if (Math.abs(dx) < 260 && f.alt > 40) coachSay('near', '<b>İniş alanının üstündesin!</b> Brülörü bırak, yavaşça alçal. Yere yaklaşınca kısa basışlarla yumuşak in.');
+  else if (f.wrongT > 2.5) coachSay('wrong', '<b>Bu rüzgâr seni hedeften uzaklaştırıyor.</b> Soldaki oklara bak: hedefe doğru esen katmana çık ya da in. Kesik çizgiyi geçince rüzgâr değişir.');
+  else if (f.stillT > 4) coachSay('still', '<b>Neredeyse duruyorsun.</b> Başka bir yüksekliğe geç: her katmanın rüzgârı solda, balonunun altındaki etiket şu anki rüzgârı gösterir.');
 }
 function setVent(on) { if (mode !== 'flight' || !FL || FL.done) return; FL.venting = on; $('vent').classList.toggle('on', on); }
-function setBurn(on) { if (mode !== 'flight' || !FL || FL.done) return; FL.burning = on; $('burn').classList.toggle('on', on); if (on && FL.t > 1 && !FL.msg) $('tip').hidden = true; }
+function setBurn(on) { if (mode !== 'flight' || !FL || FL.done) return; FL.burning = on; $('burn').classList.toggle('on', on); if (on && FL.t > 1 && !FL.msg && !(FL.coachK && T - FL.coachAt < 5)) $('tip').hidden = true; }
 function updateFlight(dt) {
   const f = FL; if (!f || f.done) return;
   const s = dt * SIM;
@@ -3818,7 +3868,7 @@ function updateFlight(dt) {
   const w = windAt(f.alt, f.t);
   if (f.alt > 1) { f.vx += (w - f.vx) * (1 - Math.exp(-s / 6)); f.x += f.vx * s; }
   f.t += s;
-  if (f.alt > 15 && !f.air) { f.air = true; $('abort').hidden = true; $('vent').hidden = false; if (!S.ventTip) { S.ventTip = 1; f.ventTipAt = T; } if (!S.tutorialDone) $('tip').hidden = true; }
+  if (f.alt > 15 && !f.air) { f.air = true; $('abort').hidden = true; $('vent').hidden = false; if (!S.ventTip) { S.ventTip = 1; f.ventTipAt = T; } else if (coached()) coachSay('goal', `<b>Hedefin iniş alanı:</b> ${S.weather.target > 220 ? 'sağda' : 'solda'}, ${(Math.abs(S.weather.target - f.x) / 1000).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} km. Soldaki oklar her yükseklikteki rüzgârı gösterir; hedefe doğru esen katmanı bul.`); else if (!S.tutorialDone) $('tip').hidden = true; }
   if (f.air) {
     const th = terrainH(f.x);
     if (th > 4 && f.alt < th) { f.wire = wires.some(w => f.x > w.x0 && f.x < w.x1); return land('crash'); }
@@ -3836,6 +3886,7 @@ function updateFlight(dt) {
     if (M.k === 'photo' && Math.abs(f.x - M.x) < 70 && f.alt >= M.lo && f.alt <= M.hi) { M.in += dt; if (M.in > 1.5) { f.flashAt = T; momentDone('Gün doğumu karesi! Yolcuların fotoğrafı herkesi kıskandıracak.'); } }
   } else if (M && M.k === 'greet') M.x += windAt(M.alt, f.t) * s * .9;
   if (f.ventTipAt && T - f.ventTipAt < .1 && !f.msg) { $('tip').hidden = false; $('tip').innerHTML = '<b>VALF:</b> basılı tutunca balonun tepesindeki paraşüt valfi açılır, sıcak hava kaçar ve hızla alçalırsın. Yere yakın dikkat: sert inersin.'; }
+  coachTick(f, dt);
   if (f.air && f.alt > 0 && f.fuel <= 0 && !f.msg) { f.msg = 1; $('tip').hidden = false; $('tip').innerHTML = '<b>Yakıt bitti!</b> Balon soğuyarak iniyor.'; }
 }
 /* Small round badges over the flight: a waving hand, a camera. */
@@ -4394,7 +4445,8 @@ function draw(dt) {
     ctx.font = '700 13px "Barlow Condensed", system-ui, sans-serif';
     for (let i = 0; i < 4; i++) {
       const v = S.weather.layers[i], y = sy(CENTERS[i]), active = curAlt >= BANDS[i][0] && curAlt < BANDS[i][1];
-      if (i > 0) { ctx.strokeStyle = 'rgba(255,255,255,.14)'; ctx.setLineDash([4, 6]); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(0, sy(BANDS[i][0])); ctx.lineTo(W, sy(BANDS[i][0])); ctx.stroke(); ctx.setLineDash([]); }
+      if (i > 0) { const ly = sy(BANDS[i][0]); ctx.strokeStyle = 'rgba(255,255,255,.42)'; ctx.setLineDash([8, 6]); ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(0, ly); ctx.lineTo(W, ly); ctx.stroke(); ctx.setLineDash([]);
+        ctx.font = '700 11px "Barlow Condensed", system-ui, sans-serif'; ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.textAlign = 'right'; ctx.fillText(`${BANDS[i][0]} m`, W - 10, ly - 4); ctx.textAlign = 'left'; ctx.font = '700 13px "Barlow Condensed", system-ui, sans-serif'; }
       const len = 12 + Math.abs(v) * 5, x0 = 14, dir = Math.sign(v) || 1, ax0 = dir > 0 ? x0 : x0 + len, ax1 = dir > 0 ? x0 + len : x0;
       ctx.fillStyle = active ? 'rgba(255,255,255,.95)' : 'rgba(255,255,255,.35)';
       rrect(6, y - 13, 112, 26, 13); ctx.fill();
@@ -4409,7 +4461,17 @@ function draw(dt) {
       const sw = (Math.sin(T * 1.1) * .6 + Math.sin(T * .43 + 1) * .4) * (.03 + (burn ? .015 : 0)) * clamp(f.alt / 20, 0, 1);
       ctx.save(); ctx.translate(bx, pv); ctx.rotate(sw); ctx.translate(-bx, -pv);
       if (d) designBalloon3d(bx, by, R, myc[0], myc[1], burn, 1, fb.ad, d); else balloon3d(bx, by, R, myc[0], myc[1], burn, 1, fb.ad);
-      ctx.restore(); }
+      ctx.restore();
+      /* v111: the wind where the balloon is, right under the basket: green when it carries you toward the landing field */
+      if (f.alt > 3 && !f.done) {
+        const wv = windAt(f.alt, f.t), wd = Math.sign(wv) || 1, good = wv * Math.sign(S.weather.target - f.x) > .3, lbl = `${Math.round(Math.abs(wv) * 3.6)} km/s`;
+        ctx.font = '800 13px "Barlow Condensed", system-ui, sans-serif'; const tw = ctx.measureText(lbl).width, pw = tw + 30, py = by + 16;
+        ctx.fillStyle = good ? 'rgba(34,164,93,.92)' : 'rgba(229,67,47,.88)'; rrect(bx - pw / 2, py - 11, pw, 22, 11); ctx.fill();
+        ctx.strokeStyle = ctx.fillStyle = '#fff'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; const a0 = bx - pw / 2 + 8, a1 = a0 + 12, ax0 = wd > 0 ? a0 : a1, ax1 = wd > 0 ? a1 : a0;
+        ctx.beginPath(); ctx.moveTo(ax0, py); ctx.lineTo(ax1, py); ctx.stroke(); ctx.beginPath(); ctx.moveTo(ax1 + wd * 2, py); ctx.lineTo(ax1 - wd * 3, py - 4); ctx.lineTo(ax1 - wd * 3, py + 4); ctx.fill();
+        ctx.fillText(lbl, a1 + 6, py + 5);
+      }
+    }
     if (f.celebAt) {
       const R0 = PR * .75, bx = sx(f.x), by = sy(f.alt), ct = T - f.celebAt;
       if (ct < 14) couple(bx, by - R0 * .32, R0, ct);
@@ -4440,12 +4502,14 @@ function draw(dt) {
     }
     const dx = tx - f.x, tsx = sx(tx);
     if (tsx > W - 20 || tsx < 20) {
-      const ax = tsx > W ? W - 18 : 18, ay = groundY - 44, d = Math.sign(dx);
-      ctx.font = '700 15px "Barlow Condensed", system-ui, sans-serif';
+      const co = coached(), ax = tsx > W ? W - 18 : 18, ay = co ? clamp(sy(f.alt) - PR * 1.4, top + 150, groundY - 44) : groundY - 44, d = Math.sign(dx);
+      ctx.font = co ? '800 17px "Barlow Condensed", system-ui, sans-serif' : '700 15px "Barlow Condensed", system-ui, sans-serif';
+      if (co) { ctx.save(); ctx.translate(Math.sin(T * 5) * 3 * d, 0); }
       const label = `İniş alanı ${(Math.abs(dx) / 1000).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} km`, tw = ctx.measureText(label).width;
       ctx.fillStyle = '#fff'; rrect(d > 0 ? ax - tw - 34 : ax - 6, ay - 15, tw + 40, 30, 15); ctx.fill();
       ctx.fillStyle = '#ff5e3a'; ctx.beginPath(); ctx.moveTo(ax + d * 8, ay); ctx.lineTo(ax - d * 4, ay - 7); ctx.lineTo(ax - d * 4, ay + 7); ctx.fill();
       ctx.fillStyle = '#2b2350'; ctx.textAlign = d > 0 ? 'right' : 'left'; ctx.fillText(label, ax - d * 12, ay + 5); ctx.textAlign = 'left';
+      if (co) ctx.restore();
     }
     if (f.mis === 'proposal' && !f.mdone) {
       const inBand = f.alt >= 250 && f.alt <= 350, pulse = .5 + .5 * Math.sin(T * 4);
@@ -5236,15 +5300,29 @@ function doInfluencer() {
   S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); hezAdd('influ'); sfx('coin'); refresh(); setTimeout(nextPopup, 300);
 }
 /* The show's card: what it costs (every balloon that can fly), what it brings, and the wait until the next one. */
-function showCard() {
+/* The show's card (v111.1): what it brings, how the price is made up, and a clear confirm; booked, it says when the
+   show starts. */
+function showCard(done) {
   const st = showState(), n = showFleet().length, m = $('menu'); m.replaceChildren();
   const c = h('div', 'card');
-  c.appendChild(h('h1', null, 'Balon Şöleni'));
-  c.appendChild(h('p', 'lead', `Bir gece bütün balonların kasabanın üstünde brülörlerini yakar, gökyüzünde gösteri yapar. Uçabilen bütün balonların katılır: balon başına ${eur(SHOW.per)}. Popülerliğin hemen +0,2★ artar, önümüzdeki 3 gün her gün balon başına yaklaşık 4 turist daha seni arar. En çok koltukların boş kaldığı günlerde kazandırır.`));
-  const why = { locked: 'Pazar açılınca düzenleyebilirsin.', booked: 'Şölen bu gece. Gün bitince kasabanın üstünde başlayacak.', wait: `Yeni şölen için ${(S.showNext || 0) - S.day} gün beklemelisin.`, few: `Şölen için en az ${SHOW.min} uçabilen balon gerekiyor. Şu an: ${n}.`, cash: `Kasada ${eur(showCost())} olmalı.` }[st];
-  const co = h('div', 'callout' + (st === 'ok' ? '' : ' red'), st === 'ok' ? `<b>Katılacak balon: ${n}</b> · Toplam ${eur(showCost())}` : why); if (st === 'ok') co.style.background = '#fff3cf'; c.appendChild(co);
-  if (st === 'ok') { const go = h('button', 'big', `Şöleni düzenle ${eur(showCost())}`); go.onclick = () => { bookShow(); m.hidden = true; refresh(); setTimeout(nextPopup, 300); }; c.appendChild(go); }
-  const close = h('button', st === 'ok' ? 'ghost' : 'big', 'Kapat'); close.style.width = '100%'; close.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(close);
+  c.appendChild(h('h1', null, done ? 'Şölen bu gece!' : 'Balon Şöleni Düzenle'));
+  const close = (label, big) => { const x = h('button', big ? 'big' : 'ghost', label); x.style.width = '100%'; x.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(x); };
+  if (done) {
+    c.appendChild(h('p', 'lead', `Bugünü tamamladığında bu gece kasabanın üstünde Balon Şöleni düzenlenecek: ${S.showN} balonun gökyüzünde gösteri yapacak. Gece animasyonunu kapatmış olsan da şöleni göreceksin.`));
+    c.appendChild(h('p', 'hint', `Bugün kaza yapan balon olursa o gece şölene çıkamaz; onun ücreti kasana geri döner. ${SHOW.min} balonun altına düşersen şölen iptal olur ve bütün ücretler geri döner.`));
+    close('Tamam', true); m.appendChild(c); m.hidden = false; return;
+  }
+  c.appendChild(h('p', 'lead', 'Bir gece bütün balonların kasabanın üstünde brülörlerini yakar, müzikle gökyüzünde gösteri yapar.'));
+  c.appendChild(h('div', 'showgain', `<b>Ne kazandırır?</b><ul><li>Popülerlik hemen <b>+0,2★</b></li><li>Sonraki <b>3 gün</b> her gün balon başına yaklaşık <b>${SHOW.pax} turist</b> daha${n ? ` (şimdi günde ~${SHOW.pax * n})` : ''}</li><li>10 gün boyunca otel ya da rehber gibi popülerlik tavanını açar</li><li>Ertesi sabah gazete manşeti</li></ul><span>En çok koltukların boş kaldığı günlerde kazandırır. ${SHOW.cd} günde bir düzenlenebilir.</span>`));
+  if (st === 'ok') {
+    c.appendChild(h('div', 'showcalc', `<span>Uçabilen balon</span><b>${n}</b><span>Balon başına</span><b>${eur(SHOW.per)}</b><span class="tot">Toplam: ${n} × ${eur(SHOW.per)}</span><b class="tot">${eur(showCost())}</b>`));
+    const go = h('button', 'big', `Onayla ve düzenle: ${eur(showCost())}`); go.onclick = () => { bookShow(); refresh(); showCard(true); }; c.appendChild(go);
+    close('Vazgeç');
+  } else {
+    const why = { locked: 'Pazar açılınca düzenleyebilirsin.', booked: 'Şölen bu gece. Gün bitince kasabanın üstünde başlayacak.', wait: `Yeni şölene kalan gün: ${(S.showNext || 0) - S.day}.`, few: `Şölen için en az ${SHOW.min} uçabilen balon gerekiyor. Şu an: ${n}.`, cash: `Kasada ${eur(showCost())} olmalı (${n} × ${eur(SHOW.per)}).` }[st];
+    c.appendChild(h('div', 'callout red', why));
+    close('Kapat', true);
+  }
   m.appendChild(c); m.hidden = false;
 }
 function bookShow() {
@@ -6322,9 +6400,16 @@ function showBalloon(i, b, x, y, R, burn, alpha) {
   if (burn > .02) { ctx.globalAlpha = alpha * burn; ctx.drawImage(sp.warm, X, Y, cw, ch); }
   ctx.restore();
 }
+/* A big fleet doesn't all fit a good show: at most SHOW_MAX balloons take the sky, special shapes first, then designs,
+   then the flagship, the biggest balloons, and plain company balloons last. */
+const SHOW_MAX = 30;
+function showPick(bs) {
+  const rank = b => { const d = designOf(b); return (d && d.shape ? 0 : d ? 10 : b.id === S.flag ? 20 : 30) + (4 - 'SMLX'.indexOf(b.size[0])); };
+  return bs.map((b, i) => [b, i]).sort((x, y) => rank(x[0]) - rank(y[0]) || x[1] - y[1]).slice(0, SHOW_MAX).map(x => x[0]);
+}
 function drawShow(V, w, h, hz, S0, N) {
   S0(); ctx.save();
-  const E = N.ev, st = T - N.t0 - 1.2, bs = E.ids.map(bal).filter(Boolean), n = bs.length;
+  const E = N.ev, st = T - N.t0 - 1.2, bs = showPick(E.ids.map(bal).filter(Boolean)), n = bs.length, total = E.ids.length;
   if (!n) { ctx.restore(); return; }
   const top = Math.max(150, hz * .1), bot = Math.max(top + 200, hz + (h - hz) * .14);
   const G = showGrid(n, w, top, bot), Hh = showHeart(n, w, top, bot, G[0].R);
@@ -6377,7 +6462,7 @@ function drawShow(V, w, h, hz, S0, N) {
     ctx.fillStyle = '#ffd27a'; ctx.font = `800 ${Math.round(Math.min(46, w * .11))}px "Barlow Condensed", sans-serif`; ctx.fillText(s1, w / 2, h * .3);
     ctx.fillStyle = '#fff8e6'; ctx.font = `600 ${Math.round(Math.min(20, w * .048))}px "Barlow", sans-serif`; ctx.fillText(s2, w / 2, h * .3 + Math.min(30, w * .075)); ctx.restore(); };
   txt(Math.min(1, st * 1.5) * clamp(1 - (st - 2.6) / .8, 0, 1), 'BALON ŞÖLENİ', S.company);
-  txt(clamp((st - 21) * 1.5, 0, 1) * clamp(1 - (st - 25) / 1, 0, 1), `${n} balon`, 'Vadi ayakta alkışlıyor');
+  txt(clamp((st - 21) * 1.5, 0, 1) * clamp(1 - (st - 25) / 1, 0, 1), `${total} balon`, 'Vadi ayakta alkışlıyor');
   ctx.restore();
 }
 /* The show's music: a steady beat with a rising pentatonic tune, burner roars as the balloons rise, applause at the end. */

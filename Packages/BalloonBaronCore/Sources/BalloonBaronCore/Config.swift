@@ -199,6 +199,10 @@ public enum Rules {
 
     /// Wind band centers in meters (bands 0–60, 60–180, 180–350, 350–650).
     public static let windCenters: [Double] = [30, 120, 265, 500]
+    /// v111: the wind changes right at the dashed line between two layers, blended over this many meters.
+    public static let windBlend = 24.0
+    /// v111: your first own flights: the flying coach speaks, and a crash costs one day in repair.
+    public static let coachFlights = 3
 
     public static func influencerCost(balloons: Int) -> Int { 2500 + 400 * balloons }
 

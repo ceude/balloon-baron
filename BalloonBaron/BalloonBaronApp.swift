@@ -118,7 +118,7 @@ struct RootView: View {
                 StoreItemView(item: k).transition(.opacity)
             }
             if let m = store.hezarfen {
-                HezarfenView(message: m, day: store.state?.day ?? 1) { store.dismissHezarfen(openBazaar: m == .tip(.bazaar), openShow: m == .tip(.show)) }
+                HezarfenView(message: m, day: store.state?.day ?? 1) { store.dismissHezarfen(openBazaar: m == .tip(.bazaar), openShow: m == .tip(.show), openPrice: m == .tip(.price)) }
                     .transition(.opacity)
             }
             if let n = store.night {

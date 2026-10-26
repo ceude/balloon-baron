@@ -155,7 +155,7 @@ public enum Feature: String, Codable, CaseIterable, Sendable { case insurance, f
 public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
     case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold, goals
-    case pr, influ, prcap, bazaar, delegate, noRivals, show
+    case pr, influ, prcap, bazaar, delegate, noRivals, show, price
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {
@@ -239,6 +239,8 @@ public struct GameState: Codable, Equatable, Sendable {
     public var insureHull = true
     public var insurePax = true
     public var tutorialDone = false
+    /// v111: flights you flew yourself (cancelled ones not counted); the first few get the flying coach.
+    public var selfFlights: Int?
     public var unlocked: Set<Feature> = []
     public var tipsSeen: Set<Tip> = []
     public var hezQueue: [HezMessage] = []

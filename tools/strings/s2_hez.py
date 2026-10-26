@@ -15,12 +15,12 @@ add("hez.insurance",
  "空はいつも味方とは限らん。初日から気球も乗客も保険付きで飛んでおる。これからは保険を自分で切り替えられるが、忘れるな。たった一度の事故で、ひと朝のうちに金庫が空になることもある。",
  "하늘이 늘 친구는 아니라네. 첫날부터 자네 열기구와 승객은 보험에 들어 있었지. 이제 보험을 직접 켜고 끌 수 있지만, 사고 한 번이면 하루아침에 금고가 텅 빌 수 있다는 걸 잊지 말게.")
 add("hez.fleet",
- "Money is piling up in the safe, well done! The fleet page is open. You could think about a second balloon, but every balloon needs a pilot.",
- "Kasada para birikiyor, aferin! Filo sayfası açıldı. İkinci balonu düşünebilirsin, ama her balona bir pilot lazım.",
- "In der Kasse sammelt sich Geld, gut gemacht! Die Flottenseite ist offen. Denk über einen zweiten Ballon nach, aber jeder Ballon braucht einen Piloten.",
- "¡El dinero se acumula en la caja, bien hecho! La página de la flota está abierta. Puedes pensar en un segundo globo, pero cada globo necesita un piloto.",
- "金庫に金が貯まってきたな、見事だ！フリート画面が開いたぞ。二機目の気球を考えてもよいが、気球ごとにパイロットが要るぞ。",
- "금고에 돈이 쌓이고 있군, 잘했네! 기단 페이지가 열렸네. 두 번째 열기구를 생각해 봐도 좋지만, 열기구마다 조종사가 필요하다네.")
+ "The fleet page is open, kid. Once the safe fills up you could think about a second balloon, but every balloon needs a pilot.",
+ "Filo sayfası açıldı evlat. Kasa dolunca ikinci balonu düşünebilirsin, ama her balona bir pilot lazım.",
+ "Die Flottenseite ist offen, Lehrling. Wenn sich die Kasse füllt, denk über einen zweiten Ballon nach, aber jeder Ballon braucht einen Piloten.",
+ "La página de la flota está abierta, aprendiz. Cuando se llene la caja puedes pensar en un segundo globo, pero cada globo necesita un piloto.",
+ "弟子よ、フリート画面が開いたぞ。金庫が潤ったら二機目の気球を考えてもよいが、気球ごとにパイロットが要るぞ。",
+ "제자여, 기단 페이지가 열렸네. 금고가 넉넉해지면 두 번째 열기구를 생각해 봐도 좋지만, 열기구마다 조종사가 필요하다네.")
 add("hez.bank",
  "The bank's door is open. A loan speeds you up, but interest is a patient enemy. Don't forget it.",
  "Banka kapısı açıldı. Kredi seni hızlandırır ama faiz sabırlı bir düşmandır, unutma.",

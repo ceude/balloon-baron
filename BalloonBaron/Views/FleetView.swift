@@ -311,7 +311,7 @@ struct FleetView: View {
                 } label: {
                     HStack(spacing: 8) {
                         Circle().fill(Theme.sun).frame(width: 12, height: 12)
-                        Text(loc("show.cardTitle") + " · " + (st == .ok ? loc("show.short", num(game.showFleet.count), eur(game.showCost)) : ShowCardView.why(st, game)))
+                        Text(loc("show.openTitle") + " · " + (st == .ok ? loc("show.short", num(game.showFleet.count), eur(game.showCost)) : ShowCardView.why(st, game)))
                             .font(Theme.font(13, .bold)).foregroundStyle(Theme.ink).lineLimit(1).minimumScaleFactor(0.8)
                         Spacer(minLength: 4)
                         Image(systemName: "chevron.right").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.ink2)
@@ -441,6 +441,13 @@ struct FleetView: View {
                         if b.id == s.flagship {
                             Text("★").font(Theme.font(14, .bold)).foregroundStyle(Theme.sun)
                         }
+                        Text(b.size.rawValue + " · " + num(b.size.capacity))
+                            .font(Theme.font(11, .bold))
+                            .foregroundStyle(Theme.ink2)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 1)
+                            .background(Theme.line.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
+                            .fixedSize()
                         if s.isSelf(b) {
                             Text(loc("fleet.row.youFly"))
                                 .font(Theme.font(10.5, .heavy))
@@ -449,13 +456,6 @@ struct FleetView: View {
                                 .background(Theme.coral, in: RoundedRectangle(cornerRadius: 8))
                                 .fixedSize()
                         }
-                        Text(b.size.rawValue + " · " + num(b.size.capacity))
-                            .font(Theme.font(11, .bold))
-                            .foregroundStyle(Theme.ink2)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 1)
-                            .background(Theme.line.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
-                            .fixedSize()
                         if let ad = b.ad {
                             Circle().fill(Color(hex: ad.colors.bg)).frame(width: 9, height: 9)
                         }

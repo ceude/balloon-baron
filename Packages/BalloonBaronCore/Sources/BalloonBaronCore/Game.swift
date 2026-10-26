@@ -111,6 +111,8 @@ public struct Game: Sendable {
         if s.day >= 3 { queueTip(.goals) } // day 3: day 2 already teaches insurance and often the yellow flag
         if s.day >= 3 { bossSay(.hello) }
         if s.day >= 9 { queueTip(.pr) }
+        // v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows it.
+        if s.day >= 2 && s.day <= 12, let l = s.local.lastShare, l.cap > 0, l.me < l.cap { queueTip(.price) }
         if s.unlocked.contains(.market) && s.day >= 11 { queueTip(.bazaar) }
         if s.weather?.flag == .yellow { queueTip(.yellow) }
         if s.weather?.flag == .red { queueTip(.red) }

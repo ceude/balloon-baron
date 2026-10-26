@@ -76,6 +76,9 @@ struct HomeView: View {
                     }
                 }
                 .onChange(of: game.state.day) { _, _ in dockOpen = false }
+                .onChange(of: store.showPriceSheet) { _, open in
+                    if open { showPrice = true; store.showPriceSheet = false }
+                }
                 .sheet(isPresented: $showPrice) {
                     PriceSheetView()
                         .environment(store)
