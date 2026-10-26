@@ -167,6 +167,7 @@ extension HezMessage {
         case let .inspector(visit, names, fine):
             loc("insp.\(visit).\(names.count == 1 ? "one" : "many")", names.joined(separator: ", "), eur(fine))
         case let .record(k, success): loc(success ? "record.success" : "record.fail", k.title)
+        case .flagshipBack(let name): loc("hez.flagshipBack", name)
         }
     }
 }

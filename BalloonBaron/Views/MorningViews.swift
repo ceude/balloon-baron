@@ -484,6 +484,94 @@ struct RescueView: View {
 }
 
 
+// MARK: Temporary flagship
+
+/// The flagship you fly is in repair: fly another balloon until it's back? The biggest that can fly is
+/// picked; a dropdown (three rows tall, scrolling for the rest) changes it. Port of `showTempFlag` (v110).
+struct TempFlagView: View {
+    @Environment(GameStore.self) private var store
+    @State private var pick: Int?
+    @State private var open = false
+
+    var body: some View {
+        let g = store.game
+        let list = g?.tempFlagshipCandidates ?? []
+        let fb = g.flatMap { $0.state.balloon($0.state.flagship) }
+        let chosen = list.first { $0.id == pick } ?? list.first
+        return ModalCard {
+            if let fb, let chosen, let day = g?.state.day {
+                CardText.title(loc("tempFlag.title"))
+                CardText.lead(loc("tempFlag.lead", fb.name, num(fb.damagedUntil - day)))
+                Button {
+                    SoundEngine.shared.play(.click)
+                    withAnimation(.easeOut(duration: 0.15)) { open.toggle() }
+                } label: {
+                    HStack {
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text(chosen.name).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
+                            Text(loc("tempFlag.seats", chosen.size.title, num(chosen.size.capacity)))
+                                .font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                        }
+                        Spacer(minLength: 8)
+                        if list.count > 1 {
+                            HStack(spacing: 4) {
+                                if !open { Text(loc("tempFlag.change")).font(Theme.font(13, .bold)) }
+                                Image(systemName: open ? "chevron.up" : "chevron.down").font(.system(size: 12, weight: .bold))
+                            }
+                            .foregroundStyle(Theme.ink2)
+                        }
+                    }
+                    .padding(.horizontal, 14).padding(.vertical, 12)
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.line, lineWidth: 2))
+                }
+                .buttonStyle(.plain)
+                .disabled(list.count < 2)
+                if open {
+                    let others = list.filter { $0.id != chosen.id }
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            ForEach(others) { b in
+                                Button {
+                                    SoundEngine.shared.play(.click)
+                                    pick = b.id
+                                    withAnimation(.easeOut(duration: 0.15)) { open = false }
+                                } label: {
+                                    HStack {
+                                        Text(b.name).font(Theme.font(15, .bold)).foregroundStyle(Theme.ink)
+                                        Spacer(minLength: 8)
+                                        Text(loc("tempFlag.seats", b.size.title, num(b.size.capacity)))
+                                            .font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                                    }
+                                    .padding(.horizontal, 14).frame(height: 44)
+                                    .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                                if b.id != others.last?.id { Divider() }
+                            }
+                        }
+                    }
+                    .frame(height: min(CGFloat(others.count), 3.4) * 44)
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 14))
+                    .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.line, lineWidth: 2))
+                }
+                HStack(spacing: 10) {
+                    Button {
+                        SoundEngine.shared.play(.click)
+                        store.answerTempFlag(nil)
+                    } label: { Text(loc("tempFlag.no")).frame(maxWidth: .infinity) }
+                    .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+                    Button(loc("tempFlag.yes")) {
+                        SoundEngine.shared.play(.click)
+                        store.answerTempFlag(chosen.id)
+                    }
+                    .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+                }
+            }
+        }
+    }
+}
+
 // MARK: Postcards
 
 /// A postcard: a small painted scene, the title, and a postmark with the day it was earned.

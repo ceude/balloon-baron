@@ -200,6 +200,10 @@ public struct RegionState: Codable, Equatable, Sendable {
     /// The inspector's last visit about worn envelopes, and visits in a row while any is still worn.
     public var inspectDay: Int?
     public var inspectCount: Int?
+    /// You fly another balloon while the flagship is in repair; the flagship comes back once it's repaired.
+    public var flagReturn: FlagReturn?
+    /// The flagship repair (its `damagedUntil`) already asked about, so the offer comes once per repair.
+    public var flagAskedUntil: Int?
 
     init(rivals: [Rival]) { self.rivals = rivals }
 
@@ -210,6 +214,9 @@ public struct RegionState: Codable, Equatable, Sendable {
 public struct Festival: Codable, Equatable, Sendable {
     public var index: Int, start: Int, end: Int
 }
+
+/// The real flagship (`original`) and the balloon you fly until it's out of repair (`temp`).
+public struct FlagReturn: Codable, Equatable, Sendable { public var original: Int, temp: Int }
 
 public struct Charter: Codable, Equatable, Sendable { public var day: Int, balloon: Int }
 public struct LatePilot: Codable, Equatable, Sendable { public var day: Int, pilot: Int }

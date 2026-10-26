@@ -25,6 +25,7 @@ public struct Game: Sendable {
         if state.candidates.isEmpty { newCandidates() }
         if state.rivalPlanDay != state.day { planRivalFlights() }
         printPaper()
+        flagReturnCheck()
         scheduleEvent()
         unlockCheck()
         assignPilots()

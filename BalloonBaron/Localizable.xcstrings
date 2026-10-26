@@ -26528,6 +26528,47 @@
         }
       }
     },
+    "hez.flagshipBack": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Flaggschiff %@ ist aus der Reparatur, Lehrling. Es ist wieder dein Flaggschiff, ab heute fliegst du es."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your flagship %@ is out of repair, kid. It's your flagship again, and from today you fly it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu globo insignia %@ ya salió de reparación, aprendiz. Vuelve a ser tu insignia y desde hoy lo pilotas tú."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "弟子よ、旗艦%@の修理が終わった。また旗艦に戻ったから、今日からはそれを操縦するんだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "제자여, 기함 %@의 수리가 끝났네. 다시 기함이 되었으니 오늘부터 자네가 몰게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amiral balonun tamirden çıktı evlat: %@. Yeniden amiral o, bugünden itibaren onu uçuruyorsun."
+          }
+        }
+      }
+    },
     "hez.fleet": {
       "extractionState": "manual",
       "localizations": {
@@ -63834,6 +63875,252 @@
           "stringUnit": {
             "state": "translated",
             "value": "Göz alıcı! Herkes fotoğrafını çekecek."
+          }
+        }
+      }
+    },
+    "tempFlag.change": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ändern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "change"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "cambiar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "変更"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "변경"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "değiştir"
+          }
+        }
+      }
+    },
+    "tempFlag.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ bleibt am Boden. Tage in Reparatur: %2$@. Möchtest du so lange einen anderen Ballon fliegen? Bei Ja fliegst du ihn, bis die Reparatur fertig ist, dann kehrt dein Flaggschiff von selbst zurück. Bei Nein fliegen Piloten deine übrigen Ballone."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ is grounded. Days in repair: %2$@. Would you like to pilot another balloon meanwhile? Say yes and you fly it until the repair is done, then your flagship comes back by itself. Say no and pilots fly your other balloons."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ está en tierra. Días en reparación: %2$@. ¿Quieres pilotar otro globo mientras tanto? Si dices que sí, lo pilotas hasta que termine la reparación y luego tu globo insignia vuelve solo. Si dices que no, los pilotos vuelan tus otros globos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@は地上待機。修理の日数：%2$@。その間、別の気球を操縦しますか？はいなら修理が終わるまでその気球をあなたが飛ばし、その後旗艦は自動で戻ります。いいえなら他の気球はパイロットが飛ばします。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ 기구는 지상에 묶였습니다. 수리 기간(일): %2$@. 그동안 다른 기구를 조종하시겠어요? 예를 누르면 수리가 끝날 때까지 그 기구를 직접 몰고, 이후 기함은 자동으로 돌아옵니다. 아니요를 누르면 다른 기구는 조종사들이 띄웁니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ balonu yerde. Tamirde kalacağı gün: %2$@. Bu sürede başka bir balonda pilotluk yapmak ister misin? Evet dersen tamir bitene kadar onu sen uçurursun, sonra amiralin kendiliğinden geri döner. Hayır dersen diğer balonlarını pilotlar uçurur."
+          }
+        }
+      }
+    },
+    "tempFlag.no": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nein"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "いいえ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아니요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hayır"
+          }
+        }
+      }
+    },
+    "tempFlag.seats": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · Plätze: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · seats: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · plazas: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@・座席：%2$@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · 좌석: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ · koltuk: %2$@"
+          }
+        }
+      }
+    },
+    "tempFlag.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Flaggschiff ist in Reparatur"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your flagship is in repair"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu globo insignia está en reparación"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "旗艦が修理中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기함이 수리 중입니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amiral balonun tamirde"
+          }
+        }
+      }
+    },
+    "tempFlag.yes": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ja"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yes"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sí"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "はい"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evet"
           }
         }
       }

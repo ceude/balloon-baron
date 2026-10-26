@@ -194,6 +194,8 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case inspector(visit: Int, balloons: [String], fine: Int)
     /// A record attempt came to an end.
     case record(RecordAttempt, success: Bool)
+    /// The flagship is out of repair and is yours to fly again (its name).
+    case flagshipBack(String)
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.

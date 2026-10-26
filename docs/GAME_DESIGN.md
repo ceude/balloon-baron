@@ -28,6 +28,7 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 ## Kurucu (sen)
 - **Toplu zarf yenileme:** Filo sayfasındaki düğme %30'un altındaki bütün zarfları birden yeniler; tutar her balonun yenileme bedelinin (balon fiyatının %35'i) toplamıdır.
 - **Lisans:** En az 15 günde bir kendin uçmalısın. Lisans düşerse amiral dışındaki tüm balonlar yerde kalır. Ya amirali kendin uçurursun (ücretsiz yenileme uçuşu) ya da €15.000 ödersin.
+- **Geçici amiral:** Kendi uçurduğun amiral balon tamirdeyse sabah sorulur: tamir bitene kadar başka bir balonu sen uçurmak ister misin? En büyük uçabilen balon önerilir, listeden değiştirilebilir. Evet dersen o balon tamir süresince amiral olur ve tamir bittiği sabah gerçek amiral kendiliğinden geri döner. Hayır dersen diğer balonları pilotlar uçurur. Her tamir için bir kez sorulur, uçuş yasağında sorulmaz.
 - **Kurucu uçuşu primi:** Amiral balonunu sen uçurursan o balonun yolcuları %25 fazla öder.
 - **Kurucu yokluğu:** 5 günden uzun süre kendin uçmazsan, balon uçan her gün popülerlik −0,008 (yaklaşık −0,03★) düşer. Hezarfen uyarır, yolcular yorumlarda kurucuyu sorar.
 

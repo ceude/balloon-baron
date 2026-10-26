@@ -58,6 +58,8 @@ final class GameStore {
     var morningEvent: MorningEvent?
     /// Hezarfen's rescue plan, shown when cash first goes below zero.
     var showRescue = false
+    /// The flagship you fly is in repair: the offer to fly another balloon meanwhile (v110).
+    var showTempFlag = false
     /// A new postcard, and the album from the menu.
     var postcard: Achievement?
     var showAlbum = false
@@ -80,7 +82,7 @@ final class GameStore {
     private var busy: Bool {
         showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
-            || morningEvent != nil || showRescue || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+            || morningEvent != nil || showRescue || showTempFlag || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
     }
 
@@ -189,6 +191,8 @@ final class GameStore {
             act { $0.markRescueShown() }
             showRescue = true
             Haptics.warning()
+        } else if !g.tempFlagshipCandidates.isEmpty {
+            showTempFlag = true
         } else if s.eventDue == true {
             var e: MorningEvent?
             act { e = $0.drawMorningEvent() }
@@ -326,6 +330,17 @@ final class GameStore {
 
     func closeRescue() {
         showRescue = false
+        showNextHezarfen()
+    }
+
+    /// Yes flies `id` until the flagship is repaired; no (nil) leaves the flagship and lets pilots fly the rest.
+    /// Either way the offer is made once per repair.
+    func answerTempFlag(_ id: Int?) {
+        act { g in
+            g.markTempFlagshipAsked()
+            if let id { g.flyTempFlagship(id) }
+        }
+        showTempFlag = false
         showNextHezarfen()
     }
 

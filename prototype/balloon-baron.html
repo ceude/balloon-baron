@@ -728,6 +728,9 @@ body.night #cv{touch-action:none}
 .nightcap b{font-family:'Barlow Condensed',sans-serif;font-size:26px;letter-spacing:.02em}
 .nightcap span{font-size:15px;font-weight:600;background:rgba(20,18,50,.55);border-radius:14px;padding:6px 12px;margin-top:4px}
 .nightcap small{font-size:12px;opacity:.7;margin-top:4px}
+.tfl{max-height:162px;overflow-y:auto;margin:-4px 0 12px;border:2px solid #e3dff0;border-radius:14px;background:#fff}
+.tfl button{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 14px;border:0;border-bottom:1px solid #eeeaf6;background:none;font:inherit;text-align:left;cursor:pointer;color:#2a2340}
+.tfl button:last-child{border-bottom:0}.tfl button span{font-size:13px;color:#6b6385}
 </style>
 
 <div id="wrap">
@@ -1563,6 +1566,7 @@ function nextPopup() {
   if (S.mergeNews) { showMerge(); return; }
   if (S.paper && S.paper.length) { showPaper(); return; }
   if (S.cash < 0 && !S.rescueShown) { showRescue(); return; }
+  if (tempFlagCands().length) { showTempFlag(); return; }
   if (S.eventDue) { showEvent(); return; }
   if (S.newPost && S.newPost.length) { showPostcard(); return; }
   if (S.cash >= 0) S.rescueShown = false;
@@ -1591,6 +1595,39 @@ function showHez(k) {
   bub.appendChild(ok);
   el.hidden = false;
 }
+/* v110: the flagship you fly is in repair. Offer another balloon to fly until it's back (the biggest that can fly,
+   changeable from a small list); the flagship comes back by itself once repaired. */
+function tempFlagCands() {
+  const fb = bal(S.flag);
+  if (!fb || !(fb.dmgUntil > S.day) || !selfFlying() || S.banUntil >= S.day || S.flagBack || S.flagAsk === fb.dmgUntil) return [];
+  return S.balloons.filter(b => b !== fb && !(b.dmgUntil > S.day) && cond(b) > 0).sort((a, b) => SIZES[b.size].cap - SIZES[a.size].cap);
+}
+function showTempFlag() {
+  const fb = bal(S.flag), list = tempFlagCands(); let pick = list[0], open = false;
+  S.flagAsk = fb.dmgUntil; save();
+  const m = $('menu');
+  const draw = () => {
+    m.replaceChildren(); const c = h('div', 'card');
+    c.appendChild(h('h1', null, 'Amiral balonun tamirde'));
+    c.appendChild(h('p', 'lead', `${esc(fb.name)} balonu ${fb.dmgUntil - S.day} gün yerde kalacak. Bu sürede başka bir balonda pilotluk yapmak ister misin? Evet dersen tamir bitene kadar onu sen uçurursun, sonra amiralin kendiliğinden geri döner. Hayır dersen diğer balonlarını pilotlar uçurur.`));
+    const sel = h('button', 'opt', `<b>${esc(pick.name)}</b><span>${SIZES[pick.size].label} · koltuk: ${SIZES[pick.size].cap} · ${open ? '▴' : 'değiştir ▾'}</span>`);
+    sel.onclick = () => { open = !open; draw(); }; c.appendChild(sel);
+    /* a dropdown that shows three rows at most and scrolls for the rest, so a big fleet still fits */
+    if (open) { const box = h('div', 'tfl'); list.filter(b => b !== pick).forEach(b => { const o = h('button', null, `<b>${esc(b.name)}</b><span>${SIZES[b.size].label} · koltuk: ${SIZES[b.size].cap}</span>`); o.onclick = () => { pick = b; open = false; draw(); }; box.appendChild(o); }); c.appendChild(box); }
+    const row = h('div', 'btns');
+    const no = h('button', 'ghost', 'Hayır'); no.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); };
+    const yes = h('button', 'big', 'Evet'); yes.onclick = () => { S.flagBack = { id: fb.id, temp: pick.id }; S.flag = pick.id; S.selfFly = true; assignPilots(); m.hidden = true; save(); refresh(); setTimeout(nextPopup, 250); };
+    row.append(no, yes); c.appendChild(row); m.appendChild(c); m.hidden = false;
+  };
+  draw();
+}
+/* Each morning: once the real flagship is out of repair, it is the flagship again (unless you changed it meanwhile). */
+function flagBackCheck() {
+  const B = S.flagBack; if (!B) return;
+  const orig = bal(B.id);
+  if (!orig || S.flag !== B.temp) { S.flagBack = null; return; }
+  if (!(orig.dmgUntil > S.day)) { S.flag = orig.id; S.flagBack = null; S.hezQ.push(`news:${orig.name} tamirden çıktı evlat. Amiral balonun yeniden o, bugünden itibaren onu uçuruyorsun.`); }
+}
 function showPoach() {
   const P = S.poach, r = S.rivals[P.ri], p = S.pilots.find(x => x.id === P.pid);
   S.poach = null; save();
@@ -1613,6 +1650,7 @@ function startDay() {
   if (!S.candidates.length) newCandidates();
   if (!S.rivals[0].fly) rivalFlyPlan();
   if (S.paperNext && S.paperNext.length) { S.paper = S.paperNext; S.paperNext = null; }
+  flagBackCheck();
   /* a morning event every 7-8 days once the town is open */
   if (S.day >= 12 && S.unl.crew && !S.winter && S.day >= (S.nextEvent || 12)) { S.eventDue = true; S.nextEvent = S.day + 7 + Math.round(Math.random()); }
   unlockCheck(); assignPilots();
@@ -4447,7 +4485,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },

@@ -96,6 +96,9 @@ struct RootView: View {
             if store.showRescue {
                 RescueView().transition(.opacity)
             }
+            if store.showTempFlag {
+                TempFlagView().transition(.opacity)
+            }
             if let a = store.postcard {
                 PostcardView(achievement: a).transition(.opacity)
             }
@@ -142,6 +145,7 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.paper)
         .animation(.easeOut(duration: 0.25), value: store.morningEvent)
         .animation(.easeOut(duration: 0.25), value: store.showRescue)
+        .animation(.easeOut(duration: 0.25), value: store.showTempFlag)
         .animation(.easeOut(duration: 0.25), value: store.postcard)
         .animation(.easeOut(duration: 0.25), value: store.showAlbum)
         .animation(.easeOut(duration: 0.25), value: store.buildingCard)

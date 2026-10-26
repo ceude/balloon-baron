@@ -116,6 +116,50 @@ extension Game {
         assignPilots()
     }
 
+    // MARK: Temporary flagship (v110)
+
+    /// While the flagship you fly is in repair: the balloons you could fly instead, biggest first.
+    /// Empty once you've been asked about this repair, or while you already fly another one.
+    public var tempFlagshipCandidates: [Balloon] {
+        let s = state
+        guard let fb = s.balloon(s.flagship), fb.damagedUntil > s.day, s.flyingSelf, s.local.banUntil < s.day, s.local.flagReturn == nil,
+              s.local.flagAskedUntil != fb.damagedUntil else { return [] }
+        return s.balloons.enumerated()
+            .filter { $0.element.id != fb.id && $0.element.damagedUntil <= s.day && s.condition($0.element) > 0 }
+            .sorted { ($1.element.size.capacity, $0.offset) < ($0.element.size.capacity, $1.offset) }
+            .map(\.element)
+    }
+
+    /// The offer is made once per repair, whatever the answer.
+    public mutating func markTempFlagshipAsked() {
+        if let fb = state.balloon(state.flagship) { state.local.flagAskedUntil = fb.damagedUntil }
+    }
+
+    /// Yes: you fly `id` until the flagship is out of repair; then it's the flagship again by itself.
+    @discardableResult
+    public mutating func flyTempFlagship(_ id: Int) -> Bool {
+        guard state.local.flagReturn == nil, let fb = state.balloon(state.flagship), fb.damagedUntil > state.day,
+              let b = state.balloon(id), b.id != fb.id, b.damagedUntil <= state.day, state.condition(b) > 0 else { return false }
+        markTempFlagshipAsked()
+        state.local.flagReturn = FlagReturn(original: fb.id, temp: id)
+        state.flagship = id
+        state.selfFly = true
+        assignPilots()
+        return true
+    }
+
+    /// Each morning: once the real flagship is repaired it's the flagship again, unless you changed the flagship meanwhile.
+    mutating func flagReturnCheck() {
+        guard let r = state.local.flagReturn else { return }
+        guard let orig = state.balloon(r.original), state.flagship == r.temp else { state.local.flagReturn = nil; return }
+        if orig.damagedUntil <= state.day {
+            state.flagship = orig.id
+            state.local.flagReturn = nil
+            state.hezQueue.append(.flagshipBack(orig.name))
+            assignPilots()
+        }
+    }
+
     @discardableResult
     public mutating func setAd(_ id: Int, _ sponsor: Sponsor?) -> Bool {
         guard let i = state.balloons.firstIndex(where: { $0.id == id }) else { return false }
