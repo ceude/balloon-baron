@@ -16,7 +16,19 @@ enum BalloonShow {
     /// One sprite per look (design, sponsor band, flame on or off) and layer: 0 the balloon, 1 its night silhouette,
     /// 2 its burner-lit glow. Drawn once as Canvas symbols, then each frame only stacks three images, so a
     /// 50-balloon show stays smooth.
-    struct Look: Hashable { var design: Int?, ad: Sponsor?, flame: Bool, layer: Int }
+    struct Look: Hashable {
+        let design: Int?
+        let ad: Sponsor?
+        let flame: Bool
+        let layer: Int
+
+        init(design: Int?, ad: Sponsor?, flame: Bool, layer: Int) {
+            self.design = design
+            self.ad = ad
+            self.flame = flame
+            self.layer = layer
+        }
+    }
 
     static func looks(_ s: GameState, ids: [Int]) -> [Look] {
         var seen = Set<Look>(), out: [Look] = []
@@ -73,7 +85,14 @@ enum BalloonShow {
         return TownViewport(z: z, ox: sz.width / 2 - TownGeo.iso(7.5, 7.5).x * z, oy: B.oy + sz.height * 0.2)
     }
 
-    struct Spot { var x: CGFloat, y: CGFloat, r: CGFloat, row = 0, col = 0, depth: CGFloat = 1 }
+    struct Spot {
+        var x: CGFloat
+        var y: CGFloat
+        var r: CGFloat
+        var row = 0
+        var col = 0
+        var depth: CGFloat = 1
+    }
 
     static func ease3(_ k: Double) -> Double { 1 - pow(1 - min(max(k, 0), 1), 3) }
     static func easeIO(_ k: Double) -> Double {
