@@ -101,9 +101,21 @@ Burada yazanlar senin hesabında yapılacaklar.
 | `balloonbaron.fountain` | Meydan çeşmesi | Square fountain | Süs | 0,99 € |
 | `balloonbaron.statue` | Hezarfen heykeli | Hezarfen statue | Süs | 0,99 € |
 | `balloonbaron.flags` | Şirket bayrakları | Company flags | Süs | 0,99 € |
+| `balloonbaron.pigeons` | Güvercin sürüsü | Pigeon flock | Süs (v113) | 0,49 € |
+| `balloonbaron.arch` | Karşılama kemeri | Welcome arch | Süs (v113) | 0,49 € |
+| `balloonbaron.cafe` | Bahçe kafe | Garden café | Süs (v113) | 0,49 € |
+| `balloonbaron.rugs` | Kilim sergisi | Kilim display | Süs (v113) | 0,49 € |
+| `balloonbaron.fig.star` | Şölen figürü: Yıldız | Show figure: Star | Figür (v113) | 0,49 € |
+| `balloonbaron.fig.tulip` | Şölen figürü: Lale | Show figure: Tulip | Figür (v113) | 0,49 € |
+| `balloonbaron.fig.butterfly` | Şölen figürü: Kelebek | Show figure: Butterfly | Figür (v113) | 0,49 € |
+| `balloonbaron.fig.spiral` | Şölen figürü: Girdap | Show figure: Spiral | Figür (v113) | 0,49 € |
+| `balloonbaron.fig.initial` | Şölen figürü: Baş harfin | Show figure: Your initial | Figür (v113) | 0,49 € |
+| `balloonbaron.egypt` | Mısır: Luksor | Egypt: Luxor | Bölge (v113) | 2,99 € |
+| `balloonbaron.founder` | Kurucu Paketi | Founder Pack | Paket (v113) | 6,99 € |
 
 - Fener dizileri (`lanterns`) Hezarfen'in hediyesi. Ürün değil, App Store'a girilmez.
 - Kimlikler `StoreItem.productID` ile aynı olmalı.
+- v113 ürünleri şimdilik yalnızca prototipte; Swift'e aktarılınca App Store Connect'e girilecek (kuyrukta). Kurucu Paketi bir Non-Consumable üründür; alınınca uygulama paketteki bütün kozmetikleri açar (geri yüklemede de).
 
 Xcode'da ödeme denemek için:
 

@@ -584,6 +584,8 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 #abort{position:absolute;left:max(16px, env(safe-area-inset-left, 0px));bottom:max(22px, env(safe-area-inset-bottom, 0px));z-index:4;height:54px;padding:0 18px;border-radius:16px;
   background:#fff;color:var(--ink);font-family:var(--cond);font-weight:700;font-size:18px;box-shadow:0 5px 0 rgba(0,0,0,.3)}
 #abort:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 rgba(0,0,0,.3)}
+#testEnd{position:absolute;left:max(12px, env(safe-area-inset-left, 0px));bottom:max(18px, env(safe-area-inset-bottom, 0px));z-index:4;background:rgba(43,35,80,.82);border:2px dashed #ffd27a;border-radius:14px;padding:6px 8px;color:#ffd27a;font:700 11px var(--cond, sans-serif);letter-spacing:.04em}
+#testEnd div{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}#testEnd button{border:0;border-radius:9px;padding:7px 9px;font:700 13px Barlow, sans-serif;background:#fff;color:#2b2350}
 #abort:disabled{opacity:.5;box-shadow:none;cursor:not-allowed}
 #vent{position:absolute;left:max(16px, env(safe-area-inset-left, 0px));bottom:max(22px, env(safe-area-inset-bottom, 0px));z-index:4;width:76px;height:76px;border-radius:50%;
   background:#fff;color:var(--ink);font-family:var(--cond);font-weight:800;font-size:17px;box-shadow:0 6px 0 rgba(0,0,0,.3);touch-action:none;-webkit-user-select:none;user-select:none}
@@ -716,6 +718,21 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .shopi span{margin-top:3px;font-weight:800;font-size:13px;background:var(--ink);color:#fff;border-radius:10px;padding:2px 9px}
 .shopi.own{opacity:1}.shopi.own span{background:var(--green)}
 .shopi.gift{border-color:#ff9a7a;box-shadow:0 3px 0 #e8806a}.shopi.gift span{background:var(--coral)}
+.shopi.fig img{background:#141838;border-radius:12px}.shopi.region img{border-radius:12px}
+.iapimg.fig{background:linear-gradient(#0d1030,#2a2350)}
+button.founder{display:block;width:100%;text-align:left;margin:4px 0 12px;padding:12px 14px;border-radius:18px;border:2px solid #e8b04a;background:linear-gradient(135deg,#2b2350,#4a2f6a);color:#fff;box-shadow:0 4px 0 #1a1438}
+.founder .fh{display:flex;justify-content:space-between;align-items:center}.founder .fh b{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#ffd27a}
+.founder .off,.dealrow span{background:var(--coral);color:#fff;font-weight:800;font-size:13px;border-radius:10px;padding:3px 9px}
+.founder .fthumbs{display:flex;gap:4px;margin:8px 0;align-items:center}.founder .fthumbs img{width:32px;height:36px;background:rgba(255,255,255,.12);border-radius:8px}.founder .fthumbs i{font-style:normal;font-weight:800;font-size:13px;color:#ffd27a;margin-left:4px}
+.founder .fp{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:rgba(255,255,255,.85)}.founder .fp b{font-size:20px;color:#fff;font-family:'Barlow Condensed',sans-serif}
+.founder s,.dealrow s,.upsell s{opacity:.65}
+.dealrow{display:flex;gap:10px;align-items:baseline;justify-content:center;margin:4px 0 2px}.dealrow s{font-size:16px}.dealrow b{font-family:'Barlow Condensed',sans-serif;font-size:28px;color:var(--ink)}
+.bundleg{display:grid;grid-template-columns:repeat(6,1fr);gap:4px;background:linear-gradient(#bfe0f2,#ffe6c4);border-radius:16px;padding:8px}.bundleg img{width:100%;height:auto}
+
+.figrow{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;margin-bottom:4px}.figc{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;width:78px;padding:6px 4px;border-radius:14px;border:1.5px solid #e6cfa6;background:#fff8ea;color:var(--ink)}
+.figc img{width:48px;height:54px;background:#141838;border-radius:10px}.figc .auto{display:flex;align-items:center;justify-content:center;width:48px;height:54px;background:#141838;border-radius:10px;color:#ffd27a;font-size:10px;font-weight:800}
+.figc b{font-size:12px;line-height:1.1;text-align:center}.figc small{font-size:11px;font-weight:800;color:var(--coral)}.figc.on{border:2.5px solid var(--coral);background:#fff}
+button.upsell{display:flex;flex-direction:column;gap:2px;width:100%;margin-top:8px;padding:9px 12px;border-radius:14px;border:1.5px dashed #c99a4a;background:#fff8ea;color:var(--ink);font-size:13px;text-align:left}
 .nightprev{width:100%;height:220px;border-radius:16px;display:block;background:#1b1840}
 .iapimg{display:flex;justify-content:center;background:linear-gradient(#bfe0f2,#ffe6c4);border-radius:16px;padding:8px}.iapimg img{width:96px;height:108px}
 .estn{font-size:12.5px;opacity:.75;margin:6px 0 0;line-height:1.35}
@@ -784,6 +801,7 @@ body.night #cv{touch-action:none}
   <div id="tip" hidden></div>
   <button id="burn" hidden>BRÜLÖR</button>
   <button id="abort" hidden>Uçuştan vazgeç</button>
+  <div id="testEnd" hidden><span>TEST · uçuşu bitir</span><div><button data-q="perfect">Kusursuz</button><button data-q="good">İyi</button><button data-q="far">Uzak</button><button data-q="crash">Kaza</button></div></div>
   <button id="vent" hidden aria-label="Paraşüt valfi">VALF</button>
 
   <div class="modal" id="report" hidden></div>
@@ -2048,6 +2066,8 @@ function showChapter() {
 }
 /* Each region opens when you're baron of the one before it. */
 const regionOpen = id => id === 'abq' ? isBaron('cap') : id === 'lux' ? isBaron('abq') : false;
+/* v113: Luxor sits behind the €2,99 Egypt unlock (America stays free) */
+const needsPack = id => id === 'lux' && !owned('lux');
 const REGIONS = [
   { id: 'cap', name: 'Kapadokya', land: 'Türkiye', lon: 34.8, lat: 38.6, side: 'r' },
   { id: 'abq', name: 'Albuquerque', land: 'ABD', lon: -106.6, lat: 35.1, side: 'r' },
@@ -2105,10 +2125,10 @@ function showWorldMap() {
     let tag = '', sub = '';
     if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = { cap: 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.', abq: 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.', lux: 'Nil, firavunların vadisi ve dünyanın en çetin balon pazarı.' }[R.id]; }
     else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
-    else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.`; }
+    else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Mısır'ın kapısını açarsın: ${SHOP.lux.price}, bir kez.` : ''}`; }
     else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.`; }
     else if (R.id === 'abq') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Kapadokya baronu olunca açılır.'; }
-    else if (R.id === 'lux') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Albuquerque baronu olunca açılır. Nil kıyısında, firavunların vadisi üstünde.'; }
+    else if (R.id === 'lux') { tag = '<span class="tag n">Kilitli</span>'; sub = `Albuquerque baronu olunca açılır. Nil kıyısında, firavunların vadisi üstünde.${needsPack('lux') ? ` Mısır paketi ${SHOP.lux.price}; Dünya Baronu için şart.` : ''}`; }
     else { tag = '<span class="tag n">Yakında</span>'; sub = R.mystery ? `${R.land} göğünde yeni bir macera. Nerede olduğunu Hezarfen bile bilmiyor.` : R.about || ''; }
     if (isBaron(R.id)) tag += ' <span class="tag g">Baron</span>';
     const main = h('div', 'main', `<div class="t">${R.mystery ? `Yeni bölge: ${R.land}` : `${R.name}, ${R.land}`} ${tag}</div><div class="s">${sub}</div>`);
@@ -2117,7 +2137,8 @@ function showWorldMap() {
     if (owned && !here) {
       if (A && A.issue) acts.appendChild(pbtn('Karar ver', () => showIssue(R.id)));
       acts.appendChild(pbtn('Bölgeye git', () => switchRegion(R.id), false, true));
-    } else if (open && !owned) acts.appendChild(pbtn(`Gir ${eurH(entryFee(R.id))}`, () => enterRegion(R.id), (S.holding || 0) < entryFee(R.id)));
+    } else if (open && !owned && needsPack(R.id)) acts.appendChild(pbtn(`Mısır'ı aç ${SHOP.lux.price}`, () => iapBuy('lux', showWorldMap)));
+    else if (open && !owned) acts.appendChild(pbtn(`Gir ${eurH(entryFee(R.id))}`, () => enterRegion(R.id), (S.holding || 0) < entryFee(R.id)));
     if (acts.children.length) it.appendChild(acts);
     list.appendChild(it);
   }
@@ -3386,7 +3407,7 @@ function drawStory(dt) {
 /* ---------- intro & setup ---------- */
 const INTRO = { y: 0, vy: 0, hold: false, t: 0, out: false };
 let pickI = 0, setupName = '';
-function hideAll() { page = null; hqShut(); TOWN.open = false; TOWN.leaving = false; TOWN.hold = false; TOWN.night = false; TOWN.hzFix = null; document.body.classList.remove('zoomed', 'mhold'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'vent', 'abort', 'chirp', 'intro'].forEach(id => $(id).hidden = true); $('vent').classList.remove('on'); }
+function hideAll() { page = null; hqShut(); TOWN.open = false; TOWN.leaving = false; TOWN.hold = false; TOWN.night = false; TOWN.hzFix = null; document.body.classList.remove('zoomed', 'mhold'); ['hez', 'sheet', 'collect', 'page', 'town', 'report', 'menu', 'setup', 'tip', 'burn', 'vent', 'abort', 'testEnd', 'chirp', 'intro'].forEach(id => $(id).hidden = true); $('vent').classList.remove('on'); }
 function startIntro() {
   if (!S.weather) S.weather = newWeather();
   buildWorld();
@@ -4201,6 +4222,7 @@ function startFlight(pax) {
   }
   mode = 'flight'; $('sheet').hidden = true; $('intro').hidden = true; $('burn').hidden = false; $('vent').hidden = true;
   const ab = $('abort'); ab.hidden = !!S.story; ab.disabled = false; ab.textContent = 'Uçuştan vazgeç';
+  $('testEnd').hidden = !S.story; /* prototype only: end a story flight without flying it */
   if (S.story) FL.borrow = { c: [S.rivals[0].col, S.rivals[0].col2] }; /* v112: Kenan's balloon, in Göreme Sky's colours */
   const tip = $('tip'); tip.hidden = false; tip.className = 'up'; tip.style.setProperty('--tipTop', ($('hud').offsetHeight + 10) + 'px');
   tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> Hedef: ${S.weather.target > 220 ? 'sağdaki' : 'soldaki'} iniş alanı.` : '<b>Hedefin sağdaki iniş alanı.</b> Brülöre basılı tut: balon ısınır ve yükselir. Bırak: soğur ve alçalır. Her yükseklikte rüzgâr farklı eser; seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
@@ -4328,7 +4350,7 @@ function couple(x, rim, R, t, noBasket) {
 }
 
 function land(q) {
-  const f = FL; f.done = true; f.burning = false; f.venting = false; $('burn').classList.remove('on'); $('burn').hidden = true; $('abort').hidden = true; $('vent').hidden = true; $('vent').classList.remove('on');
+  const f = FL; f.done = true; f.burning = false; f.venting = false; $('burn').classList.remove('on'); $('burn').hidden = true; $('abort').hidden = true; $('testEnd').hidden = true; $('vent').hidden = true; $('vent').classList.remove('on');
   f.dist = Math.abs(f.x - S.weather.target);
   if (!q) q = f.dist < 70 ? 'perfect' : f.dist < 260 ? 'good' : 'far';
   if (f.mis === 'precision' && f.dist < 40 && q !== 'hard' && q !== 'crash') missionDone();
@@ -4347,6 +4369,10 @@ function land(q) {
   if (S.story) { const sb = h('button', 'big', 'Maaşını al'); sb.style.cssText = 'width:100%;margin-top:12px'; sb.onclick = () => storyPay(q); tip.appendChild(sb); return; }
   const b = h('button', 'big', 'Gün sonu raporu'); b.style.cssText = 'width:100%;margin-top:12px'; b.onclick = () => finishDay({ q, dist: f.dist, mis: f.mis, mok, mom: f.mom && f.mom.ok ? f.mom.k : null }); tip.appendChild(b);
 }
+$('testEnd').addEventListener('click', e => {
+  const q = e.target.dataset && e.target.dataset.q; if (!q || !FL || FL.done) return;
+  FL.air = true; FL.alt = 0; FL.x = S.weather.target + { perfect: 0, good: 120, far: 420, crash: 0 }[q]; land(q === 'crash' ? 'crash' : null);
+});
 $('burn').addEventListener('pointerdown', ev => { ev.preventDefault(); setBurn(true); });
 ['pointerup', 'pointercancel', 'pointerleave'].forEach(e => $('burn').addEventListener(e, () => setBurn(false)));
 $('vent').addEventListener('pointerdown', ev => { ev.preventDefault(); setVent(true); });
@@ -5096,6 +5122,7 @@ function switchRegion(id) {
   showTravel(from, id);
 }
 function enterRegion(id) {
+  if (needsPack(id)) return iapBuy(id, showWorldMap);
   const fee = entryFee(id);
   if ((S.holding || 0) < fee) return;
   S.holding -= fee; holdLog('exp', fee);
@@ -5190,16 +5217,32 @@ function showIssue(id) {
 const DESIGN_COST = 5000, RESKIN_COST = 1000;
 /* Shop patterns (€0,99 each) score higher than the free ones, so they bring more popularity; shapes (€1,99) add a little on top. */
 const SHOP = {
-  gold: { n: 'Varak altın', kind: 'pat', price: '0,99 €' }, tile: { n: 'İznik çinisi', kind: 'pat', price: '0,99 €' }, sky: { n: 'Takımyıldız', kind: 'pat', price: '0,99 €' }, kilim: { n: 'Kapadokya kilimi', kind: 'pat', price: '0,99 €' },
-  heart: { n: 'Kalp balon', kind: 'shape', price: '1,99 €' }, star: { n: 'Yıldız balon', kind: 'shape', price: '1,99 €' }, skull: { n: 'Kurukafa balon', kind: 'shape', price: '1,99 €' },
-  fountain: { n: 'Meydan çeşmesi', kind: 'decor', price: '0,99 €' }, statue: { n: 'Hezarfen heykeli', kind: 'decor', price: '0,99 €' }, lanterns: { n: 'Fener dizileri', kind: 'decor', price: '🎁 Hediye', gift: true }, flags: { n: 'Şirket bayrakları', kind: 'decor', price: '0,99 €' }
+  gold: { n: 'Varak altın', kind: 'pat', p: .99 }, tile: { n: 'İznik çinisi', kind: 'pat', p: .99 }, sky: { n: 'Takımyıldız', kind: 'pat', p: .99 }, kilim: { n: 'Kapadokya kilimi', kind: 'pat', p: .99 },
+  heart: { n: 'Kalp balon', kind: 'shape', p: 1.99 }, star: { n: 'Yıldız balon', kind: 'shape', p: 1.99 }, skull: { n: 'Kurukafa balon', kind: 'shape', p: 1.99 },
+  fountain: { n: 'Meydan çeşmesi', kind: 'decor', p: .99 }, statue: { n: 'Hezarfen heykeli', kind: 'decor', p: .99 }, lanterns: { n: 'Fener dizileri', kind: 'decor', p: 0, gift: true }, flags: { n: 'Şirket bayrakları', kind: 'decor', p: .99 },
+  /* v113: small town decorations and Balloon Show figures, €0,49 each, yours for good */
+  pigeons: { n: 'Güvercin sürüsü', kind: 'decor', p: .49 }, arch: { n: 'Karşılama kemeri', kind: 'decor', p: .49 }, cafe: { n: 'Bahçe kafe', kind: 'decor', p: .49 }, rugs: { n: 'Kilim sergisi', kind: 'decor', p: .49 },
+  fstar: { n: 'Yıldız', kind: 'fig', p: .49 }, ftulip: { n: 'Lale', kind: 'fig', p: .49 }, fbutterfly: { n: 'Kelebek', kind: 'fig', p: .49 }, fspiral: { n: 'Girdap', kind: 'fig', p: .49 }, finitial: { n: 'Baş harfin', kind: 'fig', p: .49 },
+  /* v113: America is free; Egypt (Luxor) is a €2,99 unlock, and the World Baron needs Luxor */
+  lux: { n: 'Mısır: Luksor', kind: 'region', p: 2.99 },
+  /* v113: every cosmetic in one purchase */
+  founder: { n: 'Kurucu Paketi', kind: 'bundle', p: 6.99 }
 };
+const priceTxt = p => p.toFixed(2).replace('.', ',') + ' €';
+for (const k in SHOP) SHOP[k].price = SHOP[k].gift ? '🎁 Hediye' : priceTxt(SHOP[k].p);
 const owned = k => !!(S.iap && S.iap[k]);
-const DECOR = ['fountain', 'statue', 'lanterns', 'flags'];
+const DECOR = ['fountain', 'statue', 'lanterns', 'flags', 'pigeons', 'arch', 'cafe', 'rugs'];
+/* The Founder pack: every pattern, shape, decoration and show figure. Its "was" price is what the ones you don't own yet
+   would cost one by one; it's offered only while it saves at least a fifth. */
+const BUNDLE = Object.keys(SHOP).filter(k => ['pat', 'shape', 'decor', 'fig'].includes(SHOP[k].kind) && !SHOP[k].gift);
+const bundleLeft = () => BUNDLE.filter(k => !owned(k));
+const bundleWas = () => Math.round(bundleLeft().reduce((a, k) => a + SHOP[k].p, 0) * 100) / 100;
+const bundleOff = () => { const w = bundleWas(); return w > 0 ? Math.round((1 - SHOP.founder.p / w) * 100) : 0; };
+const bundleWorth = () => !owned('founder') && bundleOff() >= 20;
 const decorN = () => DECOR.filter(owned).length;
 /* Purchase sheet (prototype stand-in for the store's own payment sheet). */
 /* A live picture of the town at night with this decoration, for the shop card. Runs while the canvas is on screen. */
-const DECOR_AT = { fountain: [8, 8, .55], statue: [6.9, 8.9, .6], lanterns: [7.4, 7.6, .3], flags: [7.5, 9, .26] };
+const DECOR_AT = { fountain: [8, 8, .55], statue: [6.9, 8.9, .6], lanterns: [7.4, 7.6, .3], flags: [7.5, 9, .26], pigeons: [7.5, 3.5, .3, 1], arch: [7.45, 15.35, .75], cafe: [14.9, 1.1, .7], rugs: [9.8, 0.9, .75] };
 function nightPreview(k, cv) {
   const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1), w = r.width, hh = r.height; if (!w) return;
   cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr);
@@ -5207,7 +5250,7 @@ function nightPreview(k, cv) {
   const frame = () => {
     if (!cv.isConnected) return;
     const keep = ctx, kN = NIGHT_K, kNi = NIGHT, iap = S.iap;
-    ctx = cv.getContext('2d'); NIGHT_K = 1; NIGHT = null; S.iap = Object.assign({}, iap, { [k]: 1 });
+    ctx = cv.getContext('2d'); NIGHT_K = DECOR_AT[k][3] ? 0 : 1; NIGHT = null; S.iap = Object.assign({}, iap, { [k]: 1 });
     try { renderTown(V, w, hh, dpr, 0); } finally { ctx = keep; NIGHT_K = kN; NIGHT = kNi; S.iap = iap; }
     requestAnimationFrame(frame);
   };
@@ -5215,16 +5258,45 @@ function nightPreview(k, cv) {
 }
 function iapBuy(k, then) {
   const m = $('menu'), back = m.hidden ? null : [...m.childNodes]; m.replaceChildren();
-  const c = h('div', 'card iap');
+  const K = SHOP[k], c = h('div', 'card iap');
   c.appendChild(h('div', 'chap', 'Mağaza'));
-  c.appendChild(h('h1', null, SHOP[k].n));
-  if (SHOP[k].kind === 'decor') { const nv = h('canvas', 'nightprev'); c.appendChild(h('div', 'lbl', 'Kasaban gece böyle görünecek')); c.appendChild(nv); requestAnimationFrame(() => nightPreview(k, nv)); }
-  else c.appendChild(h('div', 'iapimg', `<img src="${shopThumb(k)}" alt="">`));
-  c.appendChild(h('p', 'lead', { pat: 'Özel desen. Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yaratıcılık puanı yüksek, hiç eskimez.', shape: 'Özel şekilli balon zarfı. Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir; her uçuşta ekstra popülerlik getirir.', decor: 'Kasabana kalıcı bir süs. Çarşıdan alınır, şehirde görünür.' }[SHOP[k].kind]));
-  c.appendChild(h('p', 'hint', SHOP[k].gift ? 'Hezarfen Usta\'dan hediye, ücretsiz.' : 'Prototip: gerçek ödeme yok. App Store yerel fiyatlandırması kullanılacak.'));
-  const b = h('button', 'big', SHOP[k].gift ? 'Hediyeni al' : `Satın al ${SHOP[k].price}`); b.onclick = () => { S.iap = Object.assign({}, S.iap, { [k]: S.day }); sfx('coin'); save(); if (back) m.replaceChildren(...back); else m.hidden = true; if (then) then(); refresh(); };
+  c.appendChild(h('h1', null, K.n));
+  if (K.kind === 'decor') { const nv = h('canvas', 'nightprev'); c.appendChild(h('div', 'lbl', DECOR_AT[k][3] ? 'Kasaban böyle görünecek' : 'Kasaban gece böyle görünecek')); c.appendChild(nv); requestAnimationFrame(() => nightPreview(k, nv)); }
+  else if (K.kind === 'bundle') { const g = h('div', 'bundleg'); for (const q of bundleLeft()) g.appendChild(h('img', null)).src = shopThumb(q); c.appendChild(g); }
+  else c.appendChild(h('div', 'iapimg' + (K.kind === 'fig' ? ' fig' : ''), `<img src="${shopThumb(k)}" alt="">`));
+  const left = bundleLeft().length;
+  c.appendChild(h('p', 'lead', {
+    pat: 'Özel desen. Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yaratıcılık puanı yüksek, hiç eskimez.',
+    shape: 'Özel şekilli balon zarfı. Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir; her uçuşta ekstra popülerlik getirir.',
+    decor: 'Kasabana kalıcı bir süs. Çarşıdan alınır, şehirde görünür.',
+    fig: `Balon Şöleni'nin finalinde balonların gökyüzünde bu figürü çizer${k === 'finitial' ? `: şirketinin baş harfi, ${esc((S.company || 'B').trim()[0].toLocaleUpperCase('tr'))}` : ''}. Kalıcıdır; şölen kartından istediğin figürü seçersin.`,
+    region: 'Mısır\'ın kapısını kalıcı olarak açar: Nil kıyısı, Krallar Vadisi ve dünyanın en çetin balon pazarı. Dünya Baronu olmak için Luksor baronu olmak şart. Bölgeye girişin oyun içi bedeli yine holding kasasından ödenir.',
+    bundle: `Çarşıdaki her şey tek seferde: desenler, şekilli balonlar, kasaba süsleri ve şölen figürleri. Henüz sahip olmadığın ${left} ürünün hepsi.`
+  }[K.kind]));
+  if (K.kind === 'bundle') c.appendChild(h('div', 'dealrow', `<s>${priceTxt(bundleWas())}</s><b>${K.price}</b><span>%${bundleOff()} indirim</span>`));
+  c.appendChild(h('p', 'hint', K.gift ? 'Hezarfen Usta\'dan hediye, ücretsiz.' : 'Prototip: gerçek ödeme yok. App Store yerel fiyatlandırması kullanılacak.'));
+  const b = h('button', 'big', K.gift ? 'Hediyeni al' : `Satın al ${K.price}`); b.onclick = () => {
+    if (K.kind === 'bundle') grantBundle(); else S.iap = Object.assign({}, S.iap, { [k]: S.day });
+    sfx('coin'); save(); if (back) m.replaceChildren(...back); else m.hidden = true; if (then) then(); refresh();
+  };
+  c.appendChild(b);
+  /* every single cosmetic also points at the pack while the pack saves money */
+  if (['pat', 'shape', 'decor', 'fig'].includes(K.kind) && !K.gift && bundleWorth()) {
+    const u = h('button', 'upsell', `<span>Ya da hepsi bir arada: <b>${SHOP.founder.n}</b></span><span><s>${priceTxt(bundleWas())}</s> <b>${SHOP.founder.price}</b> · %${bundleOff()} indirim</span>`);
+    u.onclick = () => { if (back) m.replaceChildren(...back); else m.hidden = true; iapBuy('founder', then); };
+    c.appendChild(u);
+  }
   const x = h('button', 'ghost', 'Vazgeç'); x.style.width = '100%'; x.onclick = () => { if (back) m.replaceChildren(...back); else m.hidden = true; };
-  c.append(b, x); m.appendChild(c); m.hidden = false;
+  c.appendChild(x); m.appendChild(c); m.hidden = false;
+}
+/* The pack: everything not owned yet; patterns and shapes arrive as ready designs (the first shape goes on the flagship). */
+function grantBundle() {
+  const ks = bundleLeft(), iap = Object.assign({}, S.iap, { founder: S.day });
+  for (const q of ks) { iap[q] = S.day; if (SHOP[q].kind === 'pat' || SHOP[q].kind === 'shape') bazaarGift(q, true); }
+  S.iap = iap;
+  const sh = (S.designs || []).filter(d => d.shape && ks.includes(d.shape)), fb = bal(S.flag) || S.balloons[0];
+  if (sh.length && fb) fb.design = sh[0].id;
+  S.hezQ.unshift(`news:${SHOP.founder.n} hazır evlat! ${ks.length} ürünün hepsi senin: desenler ve şekilli balonlar Tasarım Atölyesi'nde hazır, süsler kasabada, figürler şölen kartında.${sh.length && fb ? ` ${esc(fb.name)} balonuna ${SHOP[sh[0].shape].n.toLocaleLowerCase('tr')} giydirdim.` : ''}`);
 }
 const PATTERNS = { stripes: ['Çizgili', 35], zigzag: ['Zikzak', 60], checker: ['Damalı', 55], stars: ['Yıldızlı', 70], hearts: ['Kalpli', 70], sunburst: ['Güneş', 75], waves: ['Dalga', 60], rainbow: ['Gökkuşağı', 65], dots: ['Puantiyeli', 50], gold: ['Varak altın', 92, 1], tile: ['İznik çinisi', 90, 1], sky: ['Takımyıldız', 92, 1], kilim: ['Kapadokya kilimi', 90, 1] };
 const SWATCHES = ['#ff5e3a', '#ffc23d', '#2b2350', '#14a39a', '#ff6fa8', '#5aa9e6', '#9b7be0', '#22a45d', '#e5432f', '#ffffff', '#1f1b2e', '#f3e08a'];
@@ -5524,7 +5596,8 @@ function hqRegions(body) {
     const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
     if (A && A.issue) acts.appendChild(pbtn('Karar ver', () => showIssue(R.id)));
     if (!here && ownsRegion(R.id)) acts.appendChild(pbtn('Bölgeye git', () => { closePage(); switchRegion(R.id); }, false, true));
-    if (!ownsRegion(R.id)) acts.appendChild(pbtn(`Gir ${eurH(ENTRY_FEE)}`, () => { closePage(); enterRegion(R.id); }, (S.holding || 0) < ENTRY_FEE));
+    if (!ownsRegion(R.id) && needsPack(R.id)) acts.appendChild(pbtn(`Mısır'ı aç ${SHOP.lux.price}`, () => { closePage(); iapBuy('lux', showWorldMap); }));
+    else if (!ownsRegion(R.id)) acts.appendChild(pbtn(`Gir ${eurH(entryFee(R.id))}`, () => { closePage(); enterRegion(R.id); }, (S.holding || 0) < entryFee(R.id)));
     if (acts.children.length) it.appendChild(acts);
     r.appendChild(it);
   }
@@ -5702,10 +5775,11 @@ function showCard(done) {
   if (done) {
     c.appendChild(h('p', 'lead', `Bugünü tamamladığında bu gece kasabanın üstünde Balon Şöleni düzenlenecek: ${S.showN} balonun gökyüzünde gösteri yapacak. Gece animasyonunu kapatmış olsan da şöleni göreceksin.`));
     c.appendChild(h('p', 'hint', `Bugün kaza yapan balon olursa o gece şölene çıkamaz; onun ücreti kasana geri döner. ${SHOW.min} balonun altına düşersen şölen iptal olur ve bütün ücretler geri döner.`));
-    close('Tamam', true); m.appendChild(c); m.hidden = false; return;
+    figPicker(c, true); close('Tamam', true); m.appendChild(c); m.hidden = false; return;
   }
   c.appendChild(h('p', 'lead', 'Bir gece bütün balonların kasabanın üstünde brülörlerini yakar, müzikle gökyüzünde gösteri yapar.'));
   c.appendChild(h('div', 'showgain', `<b>Ne kazandırır?</b><ul><li>Popülerlik hemen <b>+0,2★</b></li><li>Sonraki <b>3 gün</b> her gün balon başına yaklaşık <b>${SHOW.pax} turist</b> daha${n ? ` (şimdi günde ~${SHOW.pax * n})` : ''}</li><li>10 gün boyunca otel ya da rehber gibi popülerlik tavanını açar</li><li>Ertesi sabah gazete manşeti</li></ul><span>En çok koltukların boş kaldığı günlerde kazandırır. ${SHOW.cd} günde bir düzenlenebilir.</span>`));
+  figPicker(c, false);
   if (st === 'ok') {
     c.appendChild(h('div', 'showcalc', `<span>Uçabilen balon</span><b>${n}</b><span>Balon başına</span><b>${eur(SHOW.per)}</b><span class="tot">Toplam: ${n} × ${eur(SHOW.per)}</span><b class="tot">${eur(showCost())}</b>`));
     const go = h('button', 'big', `Onayla ve düzenle: ${eur(showCost())}`); go.onclick = () => { bookShow(); refresh(); showCard(true); }; c.appendChild(go);
@@ -5716,6 +5790,16 @@ function showCard(done) {
     close('Kapat', true);
   }
   m.appendChild(c); m.hidden = false;
+}
+/* v113: the finale's figure. The free one follows the fleet (a V, a ring, a heart); bought figures are yours to pick. */
+function figPicker(c, done) {
+  c.appendChild(h('div', 'lbl', 'Final figürü'));
+  const row = h('div', 'figrow'), cur = showFigOn();
+  const chip = (k, label, img) => { const lock = k && !owned(k), b = h('button', 'figc' + ((cur || null) === k ? ' on' : '') + (lock ? ' lock' : ''), `${img ? `<img src="${img}" alt="">` : '<span class="auto">V · ◯ · ♥</span>'}<b>${label}</b>${lock ? `<small>🔒 ${SHOP[k].price}</small>` : ''}`);
+    b.onclick = () => { if (lock) return iapBuy(k, () => { S.showFig = k; save(); showCard(done); }); S.showFig = k; save(); showCard(done); }; row.appendChild(b); };
+  chip(null, 'Filona göre');
+  for (const k of Object.keys(SHOP).filter(q => SHOP[q].kind === 'fig')) chip(k, k === 'finitial' ? `${SHOP[k].n}: ${esc(figLetter())}` : SHOP[k].n, shopThumb(k));
+  c.appendChild(row);
 }
 function bookShow() {
   const n = showFleet().length; S.showIds = showFleet().map(b => b.id);
@@ -5784,11 +5868,12 @@ const UNLOCK_DAY = { fleet: 4, bank: 6, market: 8, crew: 10 };
 /* The bazaar: everything sold for real money, in one place. Decorations show up in the town and draw a few more tourists. */
 /* A pattern or shape bought here arrives as a ready design in your colours and goes straight onto the flagship,
    so it works without the workshop; the workshop only adds designing your own. */
-function bazaarGift(k) {
-  const K = SHOP[k]; if (K.kind === 'decor') return;
+function bazaarGift(k, quiet) {
+  const K = SHOP[k]; if (K.kind !== 'pat' && K.kind !== 'shape') { if (K.kind === 'fig') S.showFig = k; return; }
   const c = myCol(); if (!S.designs) S.designs = [];
   const d = { id: S.nextId++, name: K.n, pat: K.kind === 'pat' ? k : 'stripes', shape: K.kind === 'shape' ? k : null, cols: [c[0], c[1], '#ffffff'], day: S.day };
   d.score = designScore(d); S.designs.push(d);
+  if (quiet) return;
   const fb = bal(S.flag) || S.balloons[0]; if (fb) fb.design = d.id;
   S.hezQ.unshift(`news:${K.n} hazır evlat! ${fb ? esc(fb.name) + ' balonuna giydirdim. ' : ''}Başka balona giydirmek için Filo'da balonun "Desen" düğmesine bas.`);
   save();
@@ -5798,13 +5883,18 @@ function showBazaar() {
   const c = h('div', 'card bazaar');
   c.appendChild(h('h1', null, 'Çarşı'));
   c.appendChild(h('p', 'lead', 'Kasabanı süsle, balonlarına özel desen ve şekil al.'));
-  for (const [kind, lab] of [['decor', 'Kasaba süsleri'], ['shape', 'Balon şekilleri'], ['pat', 'Özel desenler']]) {
+  if (bundleWorth()) {
+    const left = bundleLeft(), d = h('button', 'founder', `<div class="fh"><b>${SHOP.founder.n}</b><span class="off">%${bundleOff()} indirim</span></div><div class="fthumbs">${left.slice(0, 8).map(q => `<img src="${shopThumb(q)}" alt="">`).join('')}${left.length > 8 ? `<i>+${left.length - 8}</i>` : ''}</div><div class="fp"><span>Çarşıdaki ${left.length} ürünün hepsi</span><span><s>${priceTxt(bundleWas())}</s> <b>${SHOP.founder.price}</b></span></div>`);
+    d.onclick = () => iapBuy('founder', showBazaar); c.appendChild(d);
+  }
+  for (const [kind, lab] of [['decor', 'Kasaba süsleri'], ['fig', 'Şölen figürleri'], ['shape', 'Balon şekilleri'], ['pat', 'Özel desenler'], ['region', 'Bölgeler']]) {
     c.appendChild(h('div', 'lbl', lab));
-    c.appendChild(h('p', 'hint', { decor: 'Kasabada kalıcı süs, her biri talebi %1 artırır.', shape: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Hiç eskimez, her uçuşta ekstra popülerlik.', pat: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yüksek yaratıcılık, hiç eskimez.' }[kind]));
+    c.appendChild(h('p', 'hint', { decor: 'Kasabada kalıcı süs, her biri talebi %1 artırır.', fig: 'Balon Şöleni\'nin finalinde balonların bu figürü çizer. Kalıcıdır, şölen kartından seçilir.', shape: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Hiç eskimez, her uçuşta ekstra popülerlik.', pat: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yüksek yaratıcılık, hiç eskimez.', region: 'Amerika ücretsiz. Mısır\'ı açınca Luksor\'da da şirket kurabilirsin; Dünya Baronu için şart.' }[kind]));
     const g = h('div', 'shopg');
     for (const k in SHOP) if (SHOP[k].kind === kind) {
       const own = owned(k), it = h('button', 'shopi' + (own ? ' own' : '') + (SHOP[k].gift && !own ? ' gift' : ''), `<img src="${shopThumb(k)}" alt=""><b>${SHOP[k].n}</b><span>${own ? '✓ Senin' : SHOP[k].price}</span>`);
       it.disabled = own; it.onclick = () => iapBuy(k, () => { bazaarGift(k); showBazaar(); }); g.appendChild(it);
+      if (SHOP[k].kind === 'fig' || SHOP[k].kind === 'region') it.classList.add(SHOP[k].kind);
     }
     c.appendChild(g);
   }
@@ -6331,9 +6421,99 @@ function decoFlag(p, t, c, ph) {
   ctx.beginPath(); ctx.moveTo(p[0], p[1] - 80); for (let i = 0; i <= 8; i++) ctx.lineTo(p[0] + i * 3.5, p[1] - 80 + Math.sin(t * 4 + i * .8 + ph) * 2); for (let i = 8; i >= 0; i--) ctx.lineTo(p[0] + i * 3.5, p[1] - 62 + Math.sin(t * 4 + i * .8 + ph) * 2); ctx.closePath(); ctx.fillStyle = c[0]; ctx.fill();
   ctx.fillStyle = c[1]; ctx.fillRect(p[0] + 8, p[1] - 74 + Math.sin(t * 4 + 2.5 + ph) * 2, 12, 5);
 }
+/* where they stand: arches over the two roads into town you can see, the café by the bazaar, the rugs by the workshop */
+const ARCHES = [[[6.75, 15.35], [8.15, 15.35], 23.2], [[15.35, 6.75], [15.35, 8.15], 23.2]], CAFE_AT = [14.9, 1.1], RUGS_AT = [9.8, 0.9];
+/* v113 decorations. Each draws round a ground point p (screen units); iu/iv step one tile along the two grid axes. */
+const iu = (p, u, v) => [p[0] + (u - v) * TW / 2, p[1] + (u + v) * TH / 2];
+/* a flock of pigeons wheeling over the town, the way they circle Cappadocia's dovecotes */
+function decoPigeons(c, t, sc = 1) {
+  for (let i = 0; i < 16; i++) {
+    const ph = i * 2.399, a = t * .42 + i * .19, rx = (210 + (i % 4) * 18) * sc, ry = (60 + (i % 3) * 12) * sc;
+    const x = c[0] + Math.cos(a) * rx + Math.sin(ph) * 16 * sc, y = c[1] + Math.sin(a) * ry + Math.cos(ph * 1.3) * 10 * sc + Math.sin(t * 1.7 + i) * 4 * sc;
+    const f = Math.sin(t * 13 + ph), w = 13 * sc, dir = Math.sin(a) > 0 ? -1 : 1;
+    ctx.strokeStyle = i % 5 === 0 ? '#f4f1ea' : i % 2 ? '#5d6480' : '#7a819b'; ctx.lineWidth = 3.6 * sc; ctx.lineCap = 'round';
+    ctx.beginPath(); ctx.moveTo(x - w, y - 3 * f * sc); ctx.quadraticCurveTo(x - w * .4, y - 2 * sc - 2 * f * sc, x, y); ctx.quadraticCurveTo(x + w * .4, y - 2 * sc - 2 * f * sc, x + w, y - 3 * f * sc); ctx.stroke();
+    ctx.fillStyle = ctx.strokeStyle; ctx.beginPath(); ctx.ellipse(x + dir * 1.5 * sc, y + .5 * sc, 3.4 * sc, 2.1 * sc, 0, 0, 7); ctx.fill();
+  }
+}
+/* a welcome arch over the road into town, in the company colours, the name on a sign at the top */
+function decoArch(p, q, t, c, name) {
+  const H = 66, mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2 - H;
+  for (const r of [p, q]) { ctx.fillStyle = '#c8a67a'; ctx.fillRect(r[0] - 4.5, r[1] - H, 9, H); ctx.fillStyle = '#a07e52'; ctx.fillRect(r[0] + 1.5, r[1] - H, 3, H); ctx.fillStyle = '#ead6ae'; ctx.fillRect(r[0] - 6.5, r[1] - H - 4, 13, 5); ctx.fillRect(r[0] - 6.5, r[1] - 6, 13, 6); }
+  const arc = () => { ctx.beginPath(); ctx.moveTo(p[0], p[1] - H); ctx.quadraticCurveTo(mx, my - 30, q[0], q[1] - H); };
+  ctx.lineCap = 'round'; ctx.strokeStyle = c[0]; ctx.lineWidth = 8; arc(); ctx.stroke();
+  ctx.strokeStyle = c[1]; ctx.lineWidth = 3; ctx.setLineDash([7, 7]); ctx.lineDashOffset = -t * 6; arc(); ctx.stroke(); ctx.setLineDash([]);
+  let an = Math.atan2(q[1] - p[1], q[0] - p[0]); if (an > Math.PI / 2) an -= Math.PI; if (an < -Math.PI / 2) an += Math.PI;
+  ctx.save(); ctx.translate(mx, my - 13); ctx.rotate(an * .6);
+  ctx.font = '800 11px "Barlow Condensed", sans-serif'; let fs = 11; const sw = Math.min(70, ctx.measureText(name).width + 14); while (ctx.measureText(name).width > sw - 10 && fs > 6) { fs--; ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; }
+  ctx.fillStyle = '#5a3a24'; ctx.fillRect(-1, -24, 2, 10); ctx.fillStyle = c[0]; rrect(-sw / 2, -8, sw, 16, 4); ctx.fill(); ctx.strokeStyle = 'rgba(255,255,255,.7)'; ctx.lineWidth = 1; ctx.stroke();
+  ctx.fillStyle = c[1]; ctx.textAlign = 'center'; ctx.fillText(name, 0, fs * .36); ctx.textAlign = 'left';
+  /* a little balloon on top of the sign */
+  const by = -30 + Math.sin(t * 1.5) * 1.5; ctx.fillStyle = c[0]; ctx.beginPath(); ctx.ellipse(0, by - 6, 6, 7, 0, 0, 7); ctx.fill(); ctx.fillStyle = c[1]; ctx.fillRect(-1.2, by - 13, 2.4, 13); ctx.fillStyle = '#7a4e2a'; ctx.fillRect(-2, by + 1, 4, 3);
+  ctx.restore();
+}
+/* a garden café: a timber deck, round tables under striped parasols, tea glasses steaming */
+function decoCafe(p, t) {
+  const d = [iu(p, -.75, -.75), iu(p, .75, -.75), iu(p, .75, .75), iu(p, -.75, .75)];
+  ctx.fillStyle = '#b98656'; ctx.beginPath(); d.forEach((q, i) => i ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); ctx.closePath(); ctx.fill();
+  ctx.strokeStyle = 'rgba(80,45,20,.3)'; ctx.lineWidth = 1; for (let i = 1; i < 6; i++) { const a = iu(p, -.75 + i * .25, -.75), b = iu(p, -.75 + i * .25, .75); ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); ctx.stroke(); }
+  ctx.fillStyle = '#8a5a32'; ctx.beginPath(); ctx.moveTo(d[2][0], d[2][1]); ctx.lineTo(d[3][0], d[3][1]); ctx.lineTo(d[3][0], d[3][1] + 4); ctx.lineTo(d[2][0], d[2][1] + 4); ctx.closePath(); ctx.fill();
+  ctx.beginPath(); ctx.moveTo(d[1][0], d[1][1]); ctx.lineTo(d[2][0], d[2][1]); ctx.lineTo(d[2][0], d[2][1] + 4); ctx.lineTo(d[1][0], d[1][1] + 4); ctx.closePath(); ctx.fillStyle = '#6e4626'; ctx.fill();
+  const cols = [['#c2401f', '#fff3dc'], ['#14a39a', '#fff3dc'], ['#e0a020', '#fff3dc'], ['#2b4a8a', '#fff3dc']];
+  [[-.38, -.36], [.36, -.3], [-.3, .38], [.4, .4]].forEach(([u, v], i) => {
+    const q = iu(p, u, v);
+    ctx.fillStyle = '#6a4024'; for (const s2 of [-1, 1]) { ctx.fillRect(q[0] + s2 * 9 - 2, q[1] - 7, 4, 7); ctx.fillRect(q[0] + s2 * 9 - 3, q[1] - 12, 2, 6); }
+    ctx.fillStyle = '#3a2a20'; ctx.fillRect(q[0] - 1, q[1] - 10, 2, 10); ctx.fillStyle = '#f6eedd'; ctx.beginPath(); ctx.ellipse(q[0], q[1] - 10, 8, 3.5, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#c0392b'; ctx.fillRect(q[0] - 3, q[1] - 14, 2, 4); ctx.fillRect(q[0] + 2, q[1] - 14, 2, 4);
+    ctx.save(); ctx.globalAlpha = .5; ctx.strokeStyle = '#fff'; ctx.lineWidth = .8; ctx.beginPath(); const sy = q[1] - 16; ctx.moveTo(q[0] - 2, sy); ctx.quadraticCurveTo(q[0] - 4 + Math.sin(t * 3 + i) * 2, sy - 5, q[0] - 2, sy - 9); ctx.stroke(); ctx.restore();
+    ctx.fillStyle = '#4a3a2a'; ctx.fillRect(q[0] - .8, q[1] - 38, 1.6, 28);
+    const top = q[1] - 40, R = 17;
+    for (let k = 0; k < 8; k++) { const a0 = Math.PI + k * Math.PI / 8, a1 = a0 + Math.PI / 8; ctx.fillStyle = cols[i][k % 2]; ctx.beginPath(); ctx.moveTo(q[0], top - 6); ctx.lineTo(q[0] + Math.cos(a0) * R, top + 4 + Math.sin(a0) * -2); ctx.lineTo(q[0] + Math.cos(a1) * R, top + 4 + Math.sin(a1) * -2); ctx.closePath(); ctx.fill(); }
+  });
+}
+/* a carpet seller's display: kilims hanging on a line between two posts, swaying, a pile of cushions below */
+function decoRugs(p, t) {
+  const P = iu(p, -.85, 0), Q = iu(p, .85, 0), H = 48;
+  ctx.fillStyle = '#5a3a24'; for (const r of [P, Q]) ctx.fillRect(r[0] - 2, r[1] - H - 4, 4, H + 4);
+  ctx.strokeStyle = '#3a2418'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(P[0], P[1] - H); ctx.lineTo(Q[0], Q[1] - H); ctx.stroke();
+  const rugs = [['#b8322a', '#e6b04a', '#2b2350'], ['#2b4a8a', '#ead8b0', '#c2401f'], ['#c96a2a', '#3a2a5a', '#f2e2b8']];
+  rugs.forEach((c, i) => {
+    const f0 = .06 + i * .31, f1 = f0 + .27, A = [lerp(P[0], Q[0], f0), lerp(P[1], Q[1], f0) - H], B = [lerp(P[0], Q[0], f1), lerp(P[1], Q[1], f1) - H], rh = 34, sw = Math.sin(t * 1.4 + i * 1.7) * 2.2;
+    const quad = (k, col) => { const a = [lerp(A[0], B[0], k), lerp(A[1], B[1], k) + k * 0], b2 = [lerp(B[0], A[0], k), lerp(B[1], A[1], k)];
+      ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(a[0], a[1] + rh * k * .5); ctx.lineTo(b2[0], b2[1] + rh * k * .5); ctx.lineTo(b2[0] + sw, b2[1] + rh - rh * k * .5); ctx.lineTo(a[0] + sw, a[1] + rh - rh * k * .5); ctx.closePath(); ctx.fill(); };
+    quad(0, c[0]); quad(.12, c[1]); quad(.2, c[0]);
+    const cx = (A[0] + B[0]) / 2 + sw / 2, cy = (A[1] + B[1]) / 2 + rh / 2; ctx.fillStyle = c[2]; ctx.beginPath(); ctx.moveTo(cx, cy - 9); ctx.lineTo(cx + 6, cy); ctx.lineTo(cx, cy + 9); ctx.lineTo(cx - 6, cy); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = c[1]; ctx.beginPath(); ctx.moveTo(cx, cy - 4); ctx.lineTo(cx + 2.6, cy); ctx.lineTo(cx, cy + 4); ctx.lineTo(cx - 2.6, cy); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = c[1]; ctx.lineWidth = 1; for (let k = 0; k < 6; k++) { const x = lerp(A[0], B[0], (k + .5) / 6) + sw, y = lerp(A[1], B[1], (k + .5) / 6) + rh; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y + 3); ctx.stroke(); }
+  });
+  [['#c2401f', 0], ['#e0a020', 1], ['#14a39a', 2], ['#9b5ab0', 3]].forEach(([col, i]) => { const q = iu(p, -.3 + i * .22, .35); ctx.fillStyle = col; rrect(q[0] - 7, q[1] - 6 - (i % 2) * 4, 14, 7, 3); ctx.fill(); });
+}
 /* A shop picture: the decoration on a patch of sand, a pattern or a shape on a balloon. */
 function shopThumb(k) {
   const K = SHOP[k];
+  if (K.kind === 'fig' || K.kind === 'region') {
+    const cv = document.createElement('canvas'); cv.width = 128; cv.height = 144;
+    const keep = ctx; ctx = cv.getContext('2d'); ctx.scale(2, 2);
+    try {
+      if (K.kind === 'fig') {
+        /* the figure in tiny glowing balloons against the night */
+        const g = ctx.createLinearGradient(0, 0, 0, 72); g.addColorStop(0, '#0d1030'); g.addColorStop(1, '#2a2350'); ctx.fillStyle = g; ctx.fillRect(0, 0, 64, 72);
+        const pts = showFigure(k, k === 'finitial' ? 18 : 16, 64, 2, 70, 4.2), c = myCol();
+        for (const q of pts) { const y = q.y - q.R * 1.7; const gl = ctx.createRadialGradient(q.x, y, 0, q.x, y, q.R * 2.4); gl.addColorStop(0, 'rgba(255,170,80,.55)'); gl.addColorStop(1, 'rgba(255,170,80,0)'); ctx.fillStyle = gl; ctx.fillRect(q.x - q.R * 2.4, y - q.R * 2.4, q.R * 4.8, q.R * 4.8);
+          ctx.fillStyle = c[0]; ctx.beginPath(); ctx.ellipse(q.x, y, q.R * .8, q.R, 0, 0, 7); ctx.fill(); ctx.fillStyle = 'rgba(255,220,150,.6)'; ctx.beginPath(); ctx.ellipse(q.x, y + q.R * .2, q.R * .45, q.R * .6, 0, 0, 7); ctx.fill(); }
+      } else {
+        /* Egypt: the Nile at dawn, a pyramid, an obelisk and a balloon over them */
+        const g = ctx.createLinearGradient(0, 0, 0, 72); g.addColorStop(0, '#f6c98a'); g.addColorStop(.6, '#f3a96a'); g.addColorStop(1, '#e8c08a'); ctx.fillStyle = g; ctx.fillRect(0, 0, 64, 72);
+        ctx.fillStyle = '#fff4d0'; ctx.beginPath(); ctx.arc(46, 30, 7, 0, 7); ctx.fill();
+        ctx.fillStyle = '#c98a4a'; ctx.beginPath(); ctx.moveTo(4, 52); ctx.lineTo(24, 30); ctx.lineTo(44, 52); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#a86a34'; ctx.beginPath(); ctx.moveTo(24, 30); ctx.lineTo(44, 52); ctx.lineTo(30, 52); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#b07840'; ctx.beginPath(); ctx.moveTo(50, 52); ctx.lineTo(52, 30); ctx.lineTo(53.5, 27); ctx.lineTo(55, 30); ctx.lineTo(57, 52); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#4aa0c0'; ctx.fillRect(0, 52, 64, 9); ctx.fillStyle = 'rgba(255,255,255,.5)'; ctx.fillRect(8, 55, 10, 1); ctx.fillRect(36, 57, 12, 1);
+        ctx.fillStyle = '#d9b47a'; ctx.fillRect(0, 61, 64, 11);
+        const c = myCol(); ctx.fillStyle = c[0]; ctx.beginPath(); ctx.ellipse(18, 14, 7, 8.5, 0, 0, 7); ctx.fill(); ctx.fillStyle = c[1]; ctx.fillRect(16.5, 5.5, 3, 17); ctx.fillStyle = '#6a4020'; ctx.fillRect(16, 24, 4, 3.5);
+      }
+    } finally { ctx = keep; }
+    return cv.toDataURL();
+  }
   if (K.kind !== 'decor') {
     const c = myCol(), d = K.kind === 'pat' ? { pat: k, cols: [c[0], c[1], '#ffffff'] } : { pat: 'stripes', shape: k, cols: [c[0], c[1], '#ffffff'] };
     return designThumb(d, 64, 72);
@@ -6346,6 +6526,14 @@ function shopThumb(k) {
     if (k === 'statue') { ctx.save(); ctx.translate(32, 60); ctx.scale(1.15, 1.15); decoStatue([0, 0]); ctx.restore(); }
     if (k === 'lanterns') { ctx.save(); ctx.translate(0, 14); ctx.scale(.85, .85); decoLantern([24, 62], 1, 0); decoLantern([50, 56], 1, 2); ctx.restore(); }
     if (k === 'flags') { ctx.save(); ctx.translate(4, 20); ctx.scale(.7, .7); decoFlag([18, 66], 1, myCol(), 0); decoFlag([46, 58], 1, myCol(), 2); ctx.restore(); }
+    if (k === 'pigeons') { /* a dovecote on a pole and pigeons flying round it */
+      ctx.fillStyle = '#6a4a30'; ctx.fillRect(31, 34, 2.5, 24); ctx.fillStyle = '#e8d2ac'; ctx.fillRect(24, 26, 16, 10); ctx.fillStyle = '#b8582e'; ctx.beginPath(); ctx.moveTo(22, 27); ctx.lineTo(32, 19); ctx.lineTo(42, 27); ctx.fill();
+      ctx.fillStyle = '#3a2418'; for (const x of [27, 32, 37]) { ctx.beginPath(); ctx.arc(x, 31.5, 1.6, 0, 7); ctx.fill(); }
+      [[12, 14, 0], [22, 8, 1], [46, 10, 2], [53, 20, 3], [10, 28, 4], [50, 34, 5], [40, 4, 6]].forEach(([x, y, i]) => { const f = [1, -.5, .7, -1, .3, -.8, .9][i], w = 5; ctx.strokeStyle = i % 3 ? '#5d6480' : '#f4f1ea'; ctx.lineWidth = 1.8; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(x - w, y - 2 * f); ctx.quadraticCurveTo(x - w * .4, y - 1.5 - f, x, y); ctx.quadraticCurveTo(x + w * .4, y - 1.5 - f, x + w, y - 2 * f); ctx.stroke(); });
+    }
+    if (k === 'arch') { ctx.save(); ctx.translate(32, 62); ctx.scale(.62, .62); decoArch([-40, -10], [40, 10], 1, myCol(), S.company || 'Balon'); ctx.restore(); }
+    if (k === 'cafe') { ctx.save(); ctx.translate(32, 56); ctx.scale(.32, .32); decoCafe([0, 0], 1); ctx.restore(); }
+    if (k === 'rugs') { ctx.save(); ctx.translate(32, 60); ctx.scale(.36, .36); decoRugs([0, 0], 1); ctx.restore(); }
   } finally { ctx = keep; }
   return cv.toDataURL();
 }
@@ -6374,6 +6562,11 @@ function townScenery(t) {
   if (owned('statue')) items.push({ depth: 15.8, shadow: () => { const p = tiso(6.9, 8.9); blobShadow(p[0] + 18, p[1] + 4, 18, 6, .16); }, draw: () => decoStatue(tiso(6.9, 8.9)) });
   if (owned('lanterns')) for (const [gx, gy] of [[2, 7.4], [5, 7.4], [10.5, 7.4], [13.5, 7.4], [7.4, 2], [7.4, 5.5], [7.4, 10.5], [7.4, 13.5]]) items.push({ depth: gx + gy, draw: () => decoLantern(tiso(gx, gy), t, gx) });
   if (owned('flags')) for (const [gx, gy] of [[0, 4], [0, 11], [4, 15.3], [11, 15.3], [15.3, 6.6], [15.3, 11]]) items.push({ depth: gx + gy + .6, draw: () => decoFlag(tiso(gx, gy), t, myCol(), gx) });
+  /* v113 decorations */
+  if (owned('arch')) for (const [P, Q, dp] of ARCHES) items.push({ depth: dp, draw: () => decoArch(tiso(...P), tiso(...Q), t, myCol(), S.company || '') });
+  if (owned('cafe')) items.push({ depth: CAFE_AT[0] + CAFE_AT[1], shadow: () => { const p = tiso(...CAFE_AT); blobShadow(p[0], p[1] + 4, 70, 22, .1); }, draw: () => decoCafe(tiso(...CAFE_AT), t) });
+  if (owned('rugs')) items.push({ depth: RUGS_AT[0] + RUGS_AT[1], draw: () => decoRugs(tiso(...RUGS_AT), t) });
+  if (owned('pigeons') && NIGHT_K < .3) items.push({ depth: 99, draw: () => { const c = tiso(7.5, 5.5); ctx.save(); ctx.globalAlpha = 1 - NIGHT_K / .3; decoPigeons([c[0], c[1] - 250], t); ctx.restore(); } });
   /* people strolling on the roads */
   for (let i = 0; i < 10; i++) { const along = ((t * .05 + i * .1) % 1) * 15, onX = i % 2; const gx = onX ? along : 7.8 + (i % 3) * .15, gy = onX ? 7.8 + (i % 3) * .15 : along; items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); person(p[0], p[1], ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0'][i % 5], t, i); } }); }
   return items;
@@ -6765,6 +6958,50 @@ function showHeart(n, w, top, bot, R0) {
   for (let i = 0; i < n; i++) { const d = (i + .5) / n * tot; let j = 1; while (L[j] < d) j++; out.push({ x: P[j][0], y: P[j][1], R }); }
   return out;
 }
+/* v113: the show figures you can buy. Each is an outline the balloons spread evenly along; the initial is your
+   company's first letter, its balloons spread evenly over the letter's shape. */
+function figPath(k) {
+  const P = [];
+  if (k === 'fstar') for (let i = 0; i <= 10; i++) { const a = -Math.PI / 2 + i * Math.PI / 5, r = i % 2 ? .42 : 1; P.push([Math.cos(a) * r, Math.sin(a) * r]); }
+  if (k === 'ftulip') P.push([0, .35], [-.38, .28], [-.62, -.05], [-.66, -.8], [-.33, -.38], [0, -.92], [.33, -.38], [.66, -.8], [.62, -.05], [.38, .28], [0, .35], [0, 1.1]);
+  if (k === 'fbutterfly') for (let j = 0; j <= 300; j++) { const t = j / 300 * Math.PI * 2, r = Math.exp(Math.cos(t)) - 2 * Math.cos(4 * t) - Math.pow(Math.sin(t / 12), 5); P.push([Math.sin(t) * r, -Math.cos(t) * r]); }
+  if (k === 'fspiral') for (let j = 0; j <= 240; j++) { const a = j / 240 * Math.PI * 4.4, r = .1 + .9 * j / 240; P.push([Math.cos(a) * r, Math.sin(a) * r]); }
+  return P;
+}
+const figLetter = () => ((S.company || 'B').trim()[0] || 'B').toLocaleUpperCase('tr');
+function initialPts(n) {
+  const c = document.createElement('canvas'); c.width = c.height = 96; const g = c.getContext('2d');
+  g.fillStyle = '#000'; g.font = '900 84px "Barlow Condensed", sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(figLetter(), 48, 52);
+  const d = g.getImageData(0, 0, 96, 96).data, cand = [];
+  for (let y = 0; y < 96; y += 2) for (let x = 0; x < 96; x += 2) if (d[(y * 96 + x) * 4 + 3] > 140) cand.push([x, y]);
+  if (!cand.length) return [[0, 0]];
+  /* farthest-point sampling: each next balloon goes where the letter is emptiest */
+  const out = [cand.reduce((a, q) => q[1] < a[1] || (q[1] === a[1] && q[0] < a[0]) ? q : a)], dm = cand.map(q => Math.hypot(q[0] - out[0][0], q[1] - out[0][1]));
+  while (out.length < Math.min(n, cand.length)) { let bi = 0; for (let i = 1; i < cand.length; i++) if (dm[i] > dm[bi]) bi = i; const q = cand[bi]; out.push(q); for (let i = 0; i < cand.length; i++) dm[i] = Math.min(dm[i], Math.hypot(cand[i][0] - q[0], cand[i][1] - q[1])); }
+  return out.sort((a, b) => a[1] - b[1] || a[0] - b[0]);
+}
+const FIGMEMO = {};
+function showFigure(k, n, w, top, bot, R0) {
+  const key = [k, n, Math.round(w), Math.round(top), Math.round(bot), Math.round(R0), k === 'finitial' ? figLetter() : ''].join(':');
+  if (FIGMEMO[key]) return FIGMEMO[key];
+  const raw = k === 'finitial' ? initialPts(n) : figPath(k), H1 = bot - top;
+  let x0 = 1e9, x1 = -1e9, y0 = 1e9, y1 = -1e9; for (const [x, y] of raw) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  const bw = w * .9 - R0 * 1.2, bh = Math.max(40, H1 - R0 * 3), sc = Math.min(bw / Math.max(1e-3, x1 - x0), bh / Math.max(1e-3, y1 - y0)), cx = w / 2, cy = top + R0 * 2.8 + bh / 2;
+  const P = raw.map(([x, y]) => [cx + (x - (x0 + x1) / 2) * sc, cy + (y - (y0 + y1) / 2) * sc]), out = [];
+  /* the figure's line of light, so even a small fleet's figure reads */
+  out.path = k === 'finitial' ? null : P; if (k === 'finitial') out.letter = { x: cx + (48 - (x0 + x1) / 2) * sc, y: cy + (52 - (y0 + y1) / 2) * sc, fs: 84 * sc };
+  if (k === 'finitial') {
+    let dm = 1e9; for (let i = 0; i < P.length; i++) for (let j = i + 1; j < P.length; j++) dm = Math.min(dm, Math.hypot(P[i][0] - P[j][0], P[i][1] - P[j][1]));
+    const R = Math.min(R0, (P.length > 1 ? dm : R0 * 3) / 2.1);
+    for (let i = 0; i < n; i++) { const q = P[i % P.length]; out.push({ x: q[0], y: q[1] + R * 1.6, R }); }
+  } else {
+    const L = [0]; for (let j = 1; j < P.length; j++) L.push(L[j - 1] + Math.hypot(P[j][0] - P[j - 1][0], P[j][1] - P[j - 1][1]));
+    const tot = L[L.length - 1], open = k === 'ftulip' || k === 'fspiral', R = Math.min(R0, tot / n / 2.3);
+    for (let i = 0; i < n; i++) { const d = open ? (n > 1 ? i / (n - 1) : .5) * tot : (i + .5) / n * tot; let j = 1; while (j < L.length - 1 && L[j] < d) j++; const f = (d - L[j - 1]) / Math.max(1e-6, L[j] - L[j - 1]); out.push({ x: lerp(P[j - 1][0], P[j][0], f), y: lerp(P[j - 1][1], P[j][1], f) + R * 1.6, R }); }
+  }
+  return (FIGMEMO[key] = out);
+}
+const showFigOn = () => S.showFig && owned(S.showFig) ? S.showFig : null;
 /* One sprite set per look (design, sponsor band, flame on or off), drawn once at a reference size: the balloon, its
    night silhouette and its burner-lit glow. Each frame then only stacks three images, so a 50-balloon show stays smooth. */
 let SHOWSPR = {};
@@ -6804,7 +7041,7 @@ function drawShow(V, w, h, hz, S0, N) {
   const E = N.ev, st = T - N.t0 - 1.2, bs = showPick(E.ids.map(bal).filter(Boolean)), n = bs.length, total = E.ids.length;
   if (!n) { ctx.restore(); return; }
   const top = Math.max(150, hz * .1), bot = Math.max(top + 200, hz + (h - hz) * .14);
-  const G = showGrid(n, w, top, bot), Hh = showHeart(n, w, top, bot, G[0].R);
+  const G = showGrid(n, w, top, bot), fig = showFigOn(), Hh = fig ? showFigure(fig, n, w, top, bot, G[0].R) : showHeart(n, w, top, bot, G[0].R);
   const f = tiso(3, 6.2), fx = f[0] * V.z + V.ox, fy = f[1] * V.z + V.oy, beat = st * 2, bp = beat - Math.floor(beat);
   /* fireworks behind the balloons for the finale */
   if (st > 16.5 && st < 25) {
@@ -6826,6 +7063,16 @@ function drawShow(V, w, h, hz, S0, N) {
       const g = ctx.createLinearGradient(bx, by, ex, ey); g.addColorStop(0, `rgba(255,236,190,${.28 * a0})`); g.addColorStop(1, 'rgba(255,236,190,0)');
       ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(bx - 3, by); ctx.lineTo(ex - px, ey - py); ctx.lineTo(ex + px, ey + py); ctx.lineTo(bx + 3, by); ctx.closePath(); ctx.fill();
     }
+    ctx.restore();
+  }
+  /* a bought figure is traced in light behind the balloons while they hold it */
+  const mf = easeIO3((st - 13) / 2.6) * (1 - easeIO3((st - 23) / 2));
+  if (fig && mf > .01) {
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; ctx.lineJoin = ctx.lineCap = 'round';
+    const trace = (lw, a) => { ctx.lineWidth = lw; ctx.strokeStyle = `rgba(255,205,130,${a * mf})`;
+      if (Hh.path) { ctx.beginPath(); Hh.path.forEach((q, j) => j ? ctx.lineTo(q[0], q[1]) : ctx.moveTo(q[0], q[1])); if (fig !== 'ftulip' && fig !== 'fspiral') ctx.closePath(); ctx.stroke(); }
+      else { const L = Hh.letter; ctx.font = `900 ${L.fs}px "Barlow Condensed", sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.strokeText(figLetter(), L.x, L.y); ctx.textBaseline = 'alphabetic'; } };
+    trace(14, .08); trace(6, .16); ctx.setLineDash([2, 12]); ctx.lineDashOffset = -st * 40; trace(3, .9); ctx.setLineDash([]);
     ctx.restore();
   }
   /* balloons, back rows first */
@@ -7075,6 +7322,18 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
     ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = .65 * k; decoFlag(p, t, myCol(), gx); ctx.restore();
     glow(p[0], p[1], 10, '255,235,200', .7 * k);
   }
+  /* v113: bulbs along the welcome arches, the café's string lights, a lamp over the rugs */
+  if (owned('arch')) for (const [P0, Q0] of ARCHES) {
+    const p = tiso(...P0), q = tiso(...Q0), H = 66, mx = (p[0] + q[0]) / 2, my = (p[1] + q[1]) / 2 - H;
+    for (let i = 0; i <= 12; i++) { const f = i / 12, x = (1 - f) * (1 - f) * p[0] + 2 * (1 - f) * f * mx + f * f * q[0], y = (1 - f) * (1 - f) * (p[1] - H) + 2 * (1 - f) * f * (my - 30) + f * f * (q[1] - H); glow(x, y, 7, i % 2 ? '255,210,140' : '255,170,120', (.7 + .3 * Math.sin(t * 3 + i)) * k); }
+    glow(mx, my - 13, 26, '255,220,160', .45 * k);
+  }
+  if (owned('cafe')) {
+    const p = tiso(...CAFE_AT), A = iu(p, -.75, -.75), B = iu(p, .75, -.75), C = iu(p, .75, .75);
+    ctx.save(); ctx.translate(p[0], p[1]); ctx.scale(1, .5); glow(0, 0, 80, '255,190,110', .3 * k); ctx.restore();
+    for (const [P1, Q1] of [[A, B], [B, C]]) for (let i = 0; i <= 8; i++) { const f = i / 8, x = lerp(P1[0], Q1[0], f), y = lerp(P1[1], Q1[1], f) - 44 + 10 * 4 * f * (1 - f); glow(x, y, 6, '255,215,150', (.75 + .25 * Math.sin(t * 2.4 + i)) * k); }
+  }
+  if (owned('rugs')) { const p = tiso(...RUGS_AT); glow(p[0], p[1] - 30, 50, '255,180,100', .32 * k); }
   if (unlocked('market')) {
     /* the bazaar keeps a string of bulbs along its awning and a warm glow over the goods */
     const a0 = upp(tiso(14.15, 4.35), 28), a1 = upp(tiso(15.3, 4.35), 28);
