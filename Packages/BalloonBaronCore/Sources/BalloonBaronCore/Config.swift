@@ -177,6 +177,7 @@ public enum Rules {
     public static let buyLoanMax = 500_000, buyLoanReserve = 10000, buyLoanDays = 150
     public static let buyLoanRate = 0.2, buyLoanDown = 0.2, buyLoanBalloons = 10
 
+    public static let balloonNameMax = 18
     public static let balloonNames = ["Şafak", "Güvercin", "Zelve", "Uçhisar", "Avanos", "Ihlara", "Ortahisar", "Kızılçukur",
                                       "Paşabağ", "Erciyes", "Soğanlı", "Mustafapaşa", "Göreme", "Çavuşin", "Ürgüp", "Sinasos"]
     public static let pilotNames = ["Mert", "Elif", "Kerem", "Zeynep", "Hakan", "Selin", "Burak", "Derya",

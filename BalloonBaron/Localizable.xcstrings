@@ -18041,6 +18041,47 @@
         }
       }
     },
+    "fleet.row.youFly": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fliegst du"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You fly it"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo pilotas tú"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたが操縦"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "직접 조종"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sen uçuruyorsun"
+          }
+        }
+      }
+    },
     "fleet.sum.balloons": {
       "extractionState": "manual",
       "localizations": {
@@ -19148,6 +19189,47 @@
         }
       }
     },
+    "fleetPage.flyMyself": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den fliege ich selbst"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'll fly this one"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Este lo piloto yo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この気球は自分で飛ばす"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 기구는 내가 몬다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu balonu ben uçurayım"
+          }
+        }
+      }
+    },
     "fleetPage.hintEnvelope": {
       "extractionState": "manual",
       "localizations": {
@@ -19195,37 +19277,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Flaggschiff fliegst du selbst. Die anderen Ballone brauchen einen Piloten. Mit Werbung auf einem Ballon zahlt der Sponsor jeden Flug, aber Passagiere mögen keine Werbeballone und deine Beliebtheit sinkt mit jedem Flug ein wenig."
+            "value": "Tippe einen Ballon an und wähle \"Den fliege ich selbst\", um deinen eigenen Ballon zu bestimmen; er wird dein Flaggschiff. Die anderen Ballone brauchen einen Piloten. Mit Werbung auf einem Ballon zahlt der Sponsor jeden Flug, aber Passagiere mögen keine Werbeballone und deine Beliebtheit sinkt mit jedem Flug ein wenig."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You fly the flagship yourself. Other balloons need a pilot. If you put an ad on a balloon, the sponsor pays every flight, but passengers dislike ad-covered balloons and your popularity drops a little each flight."
+            "value": "Tap a balloon and choose \"I'll fly this one\" to pick the balloon you fly yourself; it becomes your flagship. Other balloons need a pilot. If you put an ad on a balloon, the sponsor pays every flight, but passengers dislike ad-covered balloons and your popularity drops a little each flight."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El globo insignia lo pilotas tú. Los demás globos necesitan un piloto. Si pones un anuncio en un globo, el patrocinador paga cada vuelo, pero a los pasajeros no les gustan los globos con publicidad y tu popularidad baja un poco en cada vuelo."
+            "value": "Toca un globo y elige \"Este lo piloto yo\" para escoger el globo que pilotas tú; pasa a ser tu globo insignia. Los demás globos necesitan un piloto. Si pones un anuncio en un globo, el patrocinador paga cada vuelo, pero a los pasajeros no les gustan los globos con publicidad y tu popularidad baja un poco en cada vuelo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "旗艦はあなたが自分で飛ばす。ほかの気球にはパイロットが必要。気球に広告を載せるとスポンサーが毎回払ってくれるが、乗客は広告付きの気球を好まず、フライトごとに人気が少し下がる。"
+            "value": "気球をタップして「この気球は自分で飛ばす」を選ぶと、自分で操縦する気球を決められる。その気球が旗艦になる。ほかの気球にはパイロットが必要。気球に広告を載せるとスポンサーが毎回払ってくれるが、乗客は広告付きの気球を好まず、フライトごとに人気が少し下がる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기함은 직접 조종합니다. 다른 열기구에는 조종사가 필요합니다. 열기구에 광고를 달면 스폰서가 비행마다 돈을 내지만, 승객은 광고 열기구를 싫어해서 비행할 때마다 인기가 조금씩 떨어집니다."
+            "value": "열기구를 누르고 \"이 기구는 내가 몬다\"를 고르면 직접 조종할 기구를 정할 수 있습니다. 그 기구가 기함이 됩니다. 다른 열기구에는 조종사가 필요합니다. 열기구에 광고를 달면 스폰서가 비행마다 돈을 내지만, 승객은 광고 열기구를 싫어해서 비행할 때마다 인기가 조금씩 떨어집니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Amiral balonunu sen uçurursun. Diğer balonlara pilot gerekir. Balonuna reklam alırsan sponsor her uçuşta öder, ama yolcular reklamlı balonu sevmez ve popülerliğin her uçuşta biraz düşer."
+            "value": "Hangi balonu kendin uçuracağını balona dokunup \"Bu balonu ben uçurayım\" diyerek seçersin; o balon amiralin olur. Diğer balonlara pilot gerekir. Balonuna reklam alırsan sponsor her uçuşta öder, ama yolcular reklamlı balonu sevmez ve popülerliğin her uçuşta biraz düşer."
           }
         }
       }
@@ -19472,6 +19554,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Amiral yap"
+          }
+        }
+      }
+    },
+    "fleetPage.nameBtn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name: %@ · ändern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name: %@ · change"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre: %@ · cambiar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "名前：%@・変更"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이름: %@ · 변경"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İsim: %@ · değiştir"
           }
         }
       }
@@ -55101,6 +55224,252 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kasabanda yeni bir gün başlıyor. Balonların hazır."
+          }
+        }
+      }
+    },
+    "rename.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Name darf nicht leer sein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The name can't be empty."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El nombre no puede estar vacío."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "名前を空にはできない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이름을 비울 수 없습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İsim boş olamaz."
+          }
+        }
+      }
+    },
+    "rename.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bis zu %@ Zeichen. Jeder Ballon braucht einen eigenen Namen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Up to %@ letters. Every balloon needs its own name."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hasta %@ letras. Cada globo necesita su propio nombre."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最大%@文字。気球ごとに別の名前が必要。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "최대 %@자. 열기구마다 이름이 달라야 합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En fazla %@ harf. Her balonun adı farklı olmalı."
+          }
+        }
+      }
+    },
+    "rename.placeholder": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name des Ballons"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon name"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nombre del globo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球の名前"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 이름"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balonun adı"
+          }
+        }
+      }
+    },
+    "rename.save": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Speichern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Save"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "保存"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저장"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaydet"
+          }
+        }
+      }
+    },
+    "rename.taken": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Einer deiner Ballone heißt schon so."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One of your balloons already has this name."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya tienes un globo con ese nombre."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "同じ名前の気球がすでにある。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이미 같은 이름의 열기구가 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu isimde bir balonun zaten var."
+          }
+        }
+      }
+    },
+    "rename.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gib deinem Ballon einen Namen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Name your balloon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ponle nombre a tu globo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球に名前をつける"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 이름 짓기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balona isim ver"
           }
         }
       }

@@ -125,4 +125,21 @@ final class TempFlagshipTests: XCTestCase {
         let back = try JSONDecoder().decode(RegionState.self, from: JSONSerialization.data(withJSONObject: json))
         XCTAssertNil(back.flagReturn)
     }
+
+    /// v111: name your balloons; pick the one you fly from its card.
+    func testRenameAndFlyMyself() {
+        var g = fleetGame()
+        XCTAssertEqual(g.renameBalloon(502, "  Ekin   Yıldızı  "), .ok)
+        XCTAssertEqual(g.state.balloon(502)?.name, "Ekin Yıldızı")
+        XCTAssertEqual(g.renameBalloon(503, "rüzgar"), .taken, "names are unique, whatever the case")
+        XCTAssertEqual(g.renameBalloon(503, "   "), .empty)
+        XCTAssertEqual(g.renameBalloon(503, String(repeating: "a", count: 40)), .ok)
+        XCTAssertEqual(g.state.balloon(503)?.name.count, Rules.balloonNameMax)
+        g.setSelfFly(false)
+        XCTAssertTrue(g.flyMyself(502))
+        XCTAssertEqual(g.state.flagship, 502)
+        XCTAssertTrue(g.state.isSelf(g.state.balloon(502)!))
+        g.state.balloons[1].damagedUntil = g.state.day + 2
+        XCTAssertFalse(g.flyMyself(501), "not a balloon in repair")
+    }
 }

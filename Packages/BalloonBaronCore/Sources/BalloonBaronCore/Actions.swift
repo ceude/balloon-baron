@@ -110,6 +110,30 @@ extension Game {
         return true
     }
 
+    /// v111: your own name for a balloon (the default one stays until you change it). Spaces are tidied,
+    /// at most `Rules.balloonNameMax` characters, and no two of your balloons share a name.
+    public enum RenameResult: Sendable { case ok, empty, taken }
+
+    @discardableResult
+    public mutating func renameBalloon(_ id: Int, _ raw: String) -> RenameResult {
+        let name = String(raw.split(whereSeparator: \.isWhitespace).joined(separator: " ").prefix(Rules.balloonNameMax))
+        guard !name.isEmpty else { return .empty }
+        guard let i = state.balloons.firstIndex(where: { $0.id == id }) else { return .empty }
+        if state.balloons.contains(where: { $0.id != id && $0.name.compare(name, options: .caseInsensitive) == .orderedSame }) { return .taken }
+        state.balloons[i].name = name
+        return .ok
+    }
+
+    /// v111: "I'll fly this balloon": it becomes the flagship and you fly it yourself.
+    @discardableResult
+    public mutating func flyMyself(_ id: Int) -> Bool {
+        guard let b = state.balloon(id), b.damagedUntil <= state.day, state.condition(b) > 0 else { return false }
+        state.flagship = id
+        state.selfFly = true
+        assignPilots()
+        return true
+    }
+
     public mutating func makeFlagship(_ id: Int) {
         guard state.balloon(id) != nil else { return }
         state.flagship = id

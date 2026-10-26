@@ -422,6 +422,14 @@ struct FleetView: View {
                         if b.id == s.flagship {
                             Text("★").font(Theme.font(14, .bold)).foregroundStyle(Theme.sun)
                         }
+                        if s.isSelf(b) {
+                            Text(loc("fleet.row.youFly"))
+                                .font(Theme.font(10.5, .heavy))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 6).padding(.vertical, 1)
+                                .background(Theme.coral, in: RoundedRectangle(cornerRadius: 8))
+                                .fixedSize()
+                        }
                         Text(b.size.rawValue + " · " + num(b.size.capacity))
                             .font(Theme.font(11, .bold))
                             .foregroundStyle(Theme.ink2)
@@ -574,6 +582,7 @@ private struct BalloonCardSheet: View {
     @State private var adPick: BalloonPick?
     @State private var designPick: BalloonPick?
     @State private var equipPick: BalloonPick?
+    @State private var renamePick: BalloonPick?
 
     var body: some View {
         if let game = store.game, let b = game.state.balloon(balloonID) {
@@ -590,6 +599,9 @@ private struct BalloonCardSheet: View {
             .sheet(item: $equipPick) { pick in
                 EquipmentPicker(balloonID: pick.id).environment(store)
             }
+            .sheet(item: $renamePick) { pick in
+                RenameSheet(balloonID: pick.id).environment(store)
+            }
         }
     }
 
@@ -600,7 +612,9 @@ private struct BalloonCardSheet: View {
                 DesignBalloon(colors: s.colors, design: s.design(of: b))
                     .frame(width: 44, height: 56)
                 VStack(alignment: .leading, spacing: 4) {
-                    if b.id == s.flagship {
+                    if s.isSelf(b) {
+                        FleetUI.Tag(text: loc("fleet.row.youFly"), color: Theme.coral)
+                    } else if b.id == s.flagship {
                         FleetUI.Tag(text: "★ " + loc("fleetPage.flagship"), color: Theme.green)
                     }
                     if b.used == true {
@@ -685,6 +699,12 @@ private struct BalloonCardSheet: View {
     private func extrasRow(_ b: Balloon, _ s: GameState) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Button {
+                renamePick = BalloonPick(id: b.id)
+            } label: {
+                chip(dot: Color(hex: "#9b7be0"), text: loc("fleetPage.nameBtn", b.title))
+            }
+            .buttonStyle(.plain)
+            Button {
                 adPick = BalloonPick(id: b.id)
             } label: {
                 chip(dot: b.ad.map { Color(hex: $0.colors.bg) } ?? Theme.line,
@@ -737,7 +757,14 @@ private struct BalloonCardSheet: View {
                     store.act { _ = $0.renewEnvelope(b.id) }
                 }
             }
-            if b.id != s.flagship {
+            // v111: pick the balloon you fly yourself right here; it becomes the flagship.
+            if !s.isSelf(b) {
+                let down = s.status(b) == .damaged || s.status(b) == .worn
+                FleetUI.SmallButton(title: loc("fleetPage.flyMyself"), disabled: down) {
+                    store.act { _ = $0.flyMyself(b.id) }
+                }
+            }
+            if b.id != s.flagship && !s.flyingSelf {
                 FleetUI.SmallButton(title: loc("fleetPage.makeFlagship"), ghost: true) {
                     store.act { $0.makeFlagship(b.id) }
                 }
@@ -754,6 +781,51 @@ private struct BalloonCardSheet: View {
 }
 
 // MARK: - Pickers
+
+/// Your own name for a balloon (`renameCard`).
+private struct RenameSheet: View {
+    @Environment(GameStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
+    let balloonID: Int
+    @State private var text = ""
+    @State private var error: String?
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        FleetUI.Sheet(title: loc("rename.title"), lead: loc("rename.lead", num(Rules.balloonNameMax)), close: { dismiss() }) {
+            TextField(loc("rename.placeholder"), text: $text)
+                .font(Theme.font(18, .bold))
+                .foregroundStyle(Theme.ink)
+                .padding(.horizontal, 14).padding(.vertical, 12)
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 14))
+                .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.line, lineWidth: 2))
+                .focused($focused)
+                .submitLabel(.done)
+                .onSubmit(save)
+                .onChange(of: text) { _, v in if v.count > Rules.balloonNameMax { text = String(v.prefix(Rules.balloonNameMax)) } }
+            if let error {
+                Text(error).font(Theme.font(13, .bold)).foregroundStyle(Theme.red)
+            }
+            Button(loc("rename.save"), action: save)
+                .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+        }
+        .onAppear {
+            text = store.state?.balloon(balloonID)?.title ?? ""
+            focused = true
+        }
+    }
+
+    private func save() {
+        if text.trimmingCharacters(in: .whitespaces) == store.state?.balloon(balloonID)?.title { dismiss(); return }
+        var r = Game.RenameResult.empty
+        store.act { r = $0.renameBalloon(balloonID, text) }
+        switch r {
+        case .ok: SoundEngine.shared.play(.coin); dismiss()
+        case .empty: error = loc("rename.empty")
+        case .taken: error = loc("rename.taken")
+        }
+    }
+}
 
 /// Sponsor choice for one balloon (`openAdPicker`).
 private struct AdPicker: View {
