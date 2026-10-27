@@ -75037,37 +75037,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "DEPOT"
+            "value": "HANGAR"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "DEPOT"
+            "value": "HANGAR"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "DEPÓSITO"
+            "value": "HANGAR"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "倉庫"
+            "value": "格納庫"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "창고"
+            "value": "격납고"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "AMBAR"
+            "value": "HANGAR"
           }
         }
       }

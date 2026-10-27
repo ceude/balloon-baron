@@ -9,7 +9,7 @@ add("town.hint", "Tap a zone or zoom in; tap a building to open it.", "Bölgeye 
 add("town.forSale", "FOR SALE", "SATILIK", "ZU VERKAUFEN", "SE VENDE", "売地", "매물")
 
 # Zones written in the sand
-add("town.zone.depot", "DEPOT", "AMBAR", "DEPOT", "DEPÓSITO", "倉庫", "창고")
+add("town.zone.depot", "HANGAR", "HANGAR", "HANGAR", "HANGAR", "格納庫", "격납고")
 add("town.zone.finance", "FINANCE", "FİNANS", "FINANZEN", "FINANZAS", "金融", "금융")
 add("town.zone.crew", "CREW", "EKİP", "CREW", "EQUIPO", "クルー", "크루")
 add("town.zone.agency", "AGENCIES", "AJANS", "AGENTUREN", "AGENCIAS", "代理店", "에이전시")

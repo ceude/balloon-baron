@@ -1799,7 +1799,7 @@ function startDay() {
   unlockCheck(); assignPilots();
   { const owls = S.pilots.filter(p => p.trait === 'nightowl' && S.balloons.some(b => b.pilot === p.id)); if (owls.length && Math.random() < .07) S.late = { day: S.day, pid: pick(owls).id }; }
   buildWorld(); save();
-  setTimeout(nextPopup, 700);
+  setTimeout(nextPopup, HOMEI ? 700 + (HOMEI.dur + 1.2) * 1000 : 700); /* after the opening's pull-back */
   mode = 'office'; hideAll(); $('hud').hidden = false; $('sheet').hidden = false; $('wx').style.opacity = '';
   refresh();
 }
@@ -3685,6 +3685,8 @@ function drawIntro(dt) {
    and pick its colours. Then the envelope fills on the field, the balloon lifts and the camera follows it up until the
    whole town lies below: the company's name, Day 1, and the game. Letterboxed, few words; "Geç" skips. */
 let OPEN = null;
+/* v121.5: the pull-back from the film's landing to day one's view of the town (drawHomeTown) */
+let HOMEI = null;
 /* camera keys: [second, gx, gy (what the camera looks at), zoom, where that point sits on screen (x, y), horizon] */
 const OPEN_IN = [[0, 7.5, 7.5, .15, .5, .84, .6], [6, 6.6, 7.2, .3, .54, .72, .34], [12, 3.1, 5.4, .8, .44, .6, .08]];
 const OPEN_FIELD = [3.4, 5.8]; /* the old basket */
@@ -3750,8 +3752,12 @@ function filmMusic(part) {
     phrase(19.7, [['A4', 1], ['D5', 1], ['Eb5', .5], ['Fs5', .5], ['G5', 2], ['Fs5', .5], ['Eb5', .5], ['D5', 2]], B);
     boom(24.5, false); ney(N.D4, 27.5, 3, .05);
   } else {
-    riser(1.6, 2); boom(3.6, true); maqsum(3.6, 11, .08); strings([N.D3, N.A3, N.D4, N.Fs4], 3.6, 7, .03);
+    riser(1.6, 2); boom(3.6, true); maqsum(3.6, 18.6, .08); strings([N.D3, N.A3, N.D4, N.Fs4], 3.6, 7, .03);
     phrase(4.2, [['D5', 1], ['Eb5', .5], ['Fs5', .5], ['G5', 1], ['A4', .5], ['Bb4', .5], ['A4', 1], ['G4', .5], ['Fs4', .5], ['D5', 2]], B); boom(5.5, false); boom(10.8, true);
+    /* v121.5: the flight to our town and the landing: the drive thins out, a falling phrase on the way down, and the
+       touchdown resolves on D with a soft hit, strings and a long ney note */
+    strings([N.G4 / 2, N.Bb4 / 2, N.D4], 11, 7, .026); phrase(13, [['A4', 1], ['G4', .5], ['Fs4', .5], ['G4', 1], ['Eb4', 1], ['D4', 2]], B);
+    riser(18.8, 2.2); boom(21, false); strings([N.D3, N.Fs4 / 2, N.A3, N.D4], 21, 5, .032); ney(N.D5, 21.3, 3.2, .06);
   }
 }
 /* captions and the letterbox over the 3D film (crisp HTML over the canvas) */
@@ -3761,14 +3767,14 @@ function openCaps() {
   w.appendChild(Object.assign(h('div', 'openbar top'), { id: 'openBarT' })); w.appendChild(Object.assign(h('div', 'openbar bot'), { id: 'openBarB' }));
   const c = h('div', 'opencap', '<b></b><i></i>'); c.id = 'openCap'; w.appendChild(c);
 }
-const OPEN3D_CAPS = { A: [[1, 5.5, 'KAPADOKYA', 'Şafaktan hemen önce'], [9, 13.5, 'UÇHİSAR', 'Kalede ilk ışıklar'], [19.5, 24.5, 'GÖREME', 'Güneş balonlarla doğar']], B: [[5.5, 12.2, null, 'Gün 1']] };
+const OPEN3D_CAPS = { A: [[1, 5.5, 'KAPADOKYA', 'Şafaktan hemen önce'], [9, 13.5, 'UÇHİSAR', 'Kalede ilk ışıklar'], [19.5, 24.5, 'GÖREME', 'Güneş balonlarla doğar']], B: [[8, 13.5, null, 'Gün 1']] };
 function open3dPhase(p, t) {
   if (!OPEN) return;
   const cap = $('openCap'), list = OPEN3D_CAPS[p], c = list.find(x => t > x[0] - .6 && t < x[1] + .6);
   if (cap) { if (c) { cap.querySelector('b').textContent = c[2] || S.company.toLocaleUpperCase('tr'); cap.querySelector('i').textContent = c[3]; } cap.style.opacity = c ? clamp(Math.min(t - c[0], c[1] - t) * 1.2 + .5, 0, 1) : 0; }
-  const bars = p === 'B' && t > 11 ? 0 : 1; for (const id of ['openBarT', 'openBarB']) { const b = $(id); if (b) b.style.transform = `scaleY(${bars})`; }
+  const bars = p === 'B' && t > 19.5 ? 0 : 1; for (const id of ['openBarT', 'openBarB']) { const b = $(id); if (b) b.style.transform = `scaleY(${bars})`; }
   if (p === 'A' && t > 28.5 && !OPEN.talk) openTalk();
-  if (p === 'B') { OPEN3D.fade(clamp((t - 11.6) / .8, 0, 1)); if (t > 12.5) openBegin(); }
+  if (p === 'B' && t > 23.8) openBegin(true); /* v121.5: landed on our field; the game's town takes over */
 }
 function openSkip(fn) {
   let b = $('openSkip'); if (!b) { b = h('button', 'openskip', 'Geç ›'); b.id = 'openSkip'; document.body.appendChild(b); }
@@ -3800,14 +3806,27 @@ function openLiftOff() {
   filmMusic('B');
   openSkip(openBegin);
 }
-function openBegin() {
+function openBegin(landed) {
   if (!OPEN) return;
-  if (OPEN.three && OPEN3D) { OPEN3D.stop(); OPEN3D = null; }
-  filmMusic(null);
+  const hand = landed && OPEN.three && OPEN3D ? OPEN3D.handoff() : null;
   OPEN = null; openEnd(); NIGHT_K = 0; SUNRISE = 0; burner(false);
+  if (hand) {
+    /* v121.5: the film dissolves into the game's own town at the same spot and scale, which then pulls back to day one's
+       view; the HUD and the cards come in after, then Hezarfen */
+    const api = OPEN3D, cv3 = $('open3d'); OPEN3D = null; api.pause(true); cv3.style.display = 'block';
+    cv3.style.transition = 'opacity 1.1s ease'; requestAnimationFrame(() => { cv3.style.opacity = '0'; }); setTimeout(() => api.stop(), 1300);
+    const c = tiso(hand.gx, hand.gy); HOMEI = { t0: T + .7, dur: 3.4, z0: hand.z, px: c[0], py: c[1] - hand.up };
+    for (const id of ['hud', 'sheet', 'wx', 'nav']) { const e = $(id); e.style.transition = 'none'; e.style.opacity = '0'; e.style.pointerEvents = 'none'; }
+    $('hud').hidden = false; tab = 'plan'; startDay();
+    setTimeout(() => filmMusic(null), 3800);
+    return;
+  }
+  if (OPEN3D) { OPEN3D.stop(); OPEN3D = null; }
+  filmMusic(null);
   $('fade').classList.add('on');
   setTimeout(() => { $('fade').classList.remove('on'); $('hud').hidden = false; tab = 'plan'; startDay(); }, 480);
 }
+
 /* what the film adds to the town: the old basket and envelope on the field; then our balloon filling and rising */
 function openItems() {
   const O = OPEN, out = [];
@@ -5722,8 +5741,12 @@ const designOf = b => b && b.design && (S.designs || []).find(d => d.id === b.de
 /* v110: the town's launch field shows six balloons: shaped envelopes first, then other designs, then the flagship */
 function fieldBalloons() {
   if (OPEN) return [];
+  return fieldSlots().map(x => x.b);
+}
+/* where each of those stands on the field (the film lands the flagship on its spot) */
+function fieldSlots() {
   const rank = b => { const d = designOf(b); return d && d.shape ? 0 : d ? 1 : b.id === S.flag ? 2 : 3; };
-  return S.balloons.map((b, i) => [b, i]).sort((x, y) => rank(x[0]) - rank(y[0]) || x[1] - y[1]).slice(0, 6).map(x => x[0]);
+  return S.balloons.map((b, i) => [b, i]).sort((x, y) => rank(x[0]) - rank(y[0]) || x[1] - y[1]).slice(0, 6).map((x, i) => ({ b: x[0], gx: 1.8 + (i % 3) * 1.9, gy: 5 + Math.floor(i / 3) * 1.4 }));
 }
 const designCost = () => hasOffice('tyo') ? 0 : DESIGN_COST;
 /* a design that uses something bought with real money: never fades, free to put on any balloon */
@@ -7108,7 +7131,7 @@ function townScenery(t) {
   const trees = [[7.1, 6.9], [7.1, 9.2], [8.9, 6.9], [3.4, 8.9], [6.6, 10.7], [14.6, 7.3], [10.8, 4.4], [4.3, 7.0], [8.4, 15]];
   trees.forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); if (S.region !== 'cap') return regionTree(p[0], p[1], i, t); i % 3 ? roundTree(p[0], p[1], .9, i % 2 ? '#7aa04a' : '#8aa84e') : cypress(p[0], p[1], 1); } }));
   /* your fleet on the launch field, burners flickering; at night the envelopes are packed away, except on a Fiesta balloon-glow night */
-  if (NIGHT_K <= 0 || (NIGHT && NIGHT.ev && NIGHT.ev.k === 'glow')) fieldBalloons().forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
+  if (NIGHT_K <= 0 || HOMEI || (NIGHT && NIGHT.ev && NIGHT.ev.k === 'glow')) fieldBalloons().forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4; items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy); balloon(p[0], p[1], b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }); });
   /* the wind mast by the launch field: today's surface wind fills the sock and points it */
   /* festival days: bunting strung along the main roads */
   if (S.fest) for (const along of [[7.5, 1], [7.5, 5], [7.5, 9.5], [1, 7.5], [4.5, 7.5], [10.5, 7.5]]) {
@@ -7224,7 +7247,7 @@ function townLabel(b, sx, sy, sc, full, taken) {
 const LABEL_Z = .55;
 /* Zones written in the sand: text, centre of the baseline, where a tap glides to. */
 const TOWN_ZONES = [
-  { text: 'AMBAR', gx: 4, gy: 3.55, at: [4, 2] },
+  { text: 'HANGAR', gx: 4, gy: 3.55, at: [4, 2] },
   { text: 'FİNANS', gx: 11.3, gy: 3.85, at: [11.3, 2] },
   { text: 'EKİP', gx: 10.9, gy: 7.5, at: [11, 6], alert: 'crew' },
   { text: 'AJANS', gx: 15.05, gy: 10, at: [11, 10], side: true },
@@ -8016,10 +8039,20 @@ function drawHomeTown(w, h, dockTop, top) {
   HOME.h = h; HOME.z = clamp((front - back) / 1024, .15, w / 1500);
   /* centred in the room left of the side buttons */
   const [cx] = tiso(7, 8), right = $('nav').offsetWidth ? $('nav').offsetWidth + 14 : 0; HOME.ox = (w - right) / 2 - cx * HOME.z; HOME.oy = front - tiso(15.5, 15.5)[1] * HOME.z;
+  if (HOMEI) { /* the opening's pull-back: from the film's last frame to this view, the landed balloon moving in a straight line */
+    const I = HOMEI, k = easeIO3((T - I.t0) / I.dur), z = Math.exp(lerp(Math.log(I.z0), Math.log(HOME.z), k));
+    /* the film hands over in the dark; the night lifts and the sun comes up on day one as we pull back */
+    NIGHT_K = .85 * (1 - easeIO3(clamp((T - I.t0) / I.dur * 1.25, 0, 1))); SUNRISE = .75 * Math.sin(Math.PI * clamp((T - I.t0) / I.dur, 0, 1));
+    const sx = lerp(w / 2, I.px * HOME.z + HOME.ox, k), sy = lerp(h / 2, I.py * HOME.z + HOME.oy, k);
+    renderTown({ ...HOME, z, ox: sx - I.px * z, oy: sy - I.py * z, noLabels: true }, w, h, DPR, 0);
+    if (T - I.t0 >= I.dur) { HOMEI = null; NIGHT_K = 0; SUNRISE = 0; for (const id of ['hud', 'sheet', 'wx', 'nav']) { const e = $(id); e.style.transition = 'opacity .6s ease'; e.style.opacity = ''; e.style.pointerEvents = ''; } setTimeout(() => { for (const id of ['hud', 'sheet', 'wx', 'nav']) $(id).style.transition = ''; }, 700); }
+    return;
+  }
   renderTown(HOME, w, h, DPR, 0);
 }
 function homeHorizon() { return Math.min(HOME.h * .6, HOME.oy + tiso(-7, -7)[1] * HOME.z); }
 function homeTap(x, y) {
+  if (HOMEI) return;
   if (y > (HOME.front || HOME.h)) return;
   const zh = HOME.zoneHits.find(hh => inPoly([x, y], hh.pts));
   if (zh) { sfx('click'); openTown(zh.zn.at); return; }
@@ -8535,13 +8568,19 @@ async function open3dLoad() {
   const fbm = (x, y, o = 5) => { let s = 0, a = .5, f = 1; for (let i = 0; i < o; i++) { s += a * noise(x * f, y * f); a *= .5; f *= 2.03; } return s; };
   /* places (metres): Göreme round the origin, its launch field, the Three Beauties to the south-east, Uçhisar on its hill to the south-west */
   const FIELD = V3(-40, 0, 30), BASKET = V3(-44, 0, 31), UG = V3(270, 0, 560), UCH = V3(-390, 0, 400), TERR = V3(14, 0, 92);
+  /* v121.5: our own town east of Göreme, the game's grid one to one: tile (gx, gy) is 12 m, gx runs east, gy south */
+  const TL = 12, TO = V3(110, 0, -150), tw = (gx, gy) => V3(TO.x + gx * TL, 0, TO.z + gy * TL), TC = tw(7.5, 7.5);
+  /* distance from the line the balloon flies from the field to the town (kept clear of the big cave rocks) */
+  const toTown = (x, z) => { const ax = -44, az = 31, bx = TO.x + 2 * TL, bz = TO.z + 5 * TL, k = clamp(((x - ax) * (bx - ax) + (z - az) * (bz - az)) / ((bx - ax) ** 2 + (bz - az) ** 2), 0, 1); return Math.hypot(x - ax - k * (bx - ax), z - az - k * (bz - az)); };
+  const inTown = (x, z, m) => Math.abs(x - TC.x) < 8 * TL + m && Math.abs(z - TC.z) < 8 * TL + m;
   const height = (x, z) => {
     const d = Math.hypot(x, z), flat = clamp((d - 80) / 240, 0, 1);
     let y = fbm(x * .004, z * .004) * 80 * flat + Math.max(0, fbm(x * .0016 + 7, z * .0016) * 220 - 20) * flat * flat;
     y += Math.abs(fbm(x * .01 + 3, z * .01 + 9, 3)) * 12 * flat;
     const du = Math.hypot(x - UCH.x, z - UCH.z); y += 75 * Math.exp(-du * du / (2 * 150 * 150)); /* Uçhisar's hill */
     const dg = Math.hypot(x - UG.x, z - UG.z); y *= clamp(dg / 60, .35, 1); /* the Beauties stand on a gentle rise */
-    return y + fbm(x * .05, z * .05, 2) * 1.2;
+    const tb = Math.max(Math.abs(x - TC.x) - 100, Math.abs(z - TC.z) - 100, 0); /* the town stands on level ground */
+    return (y + fbm(x * .05, z * .05, 2) * 1.2) * clamp(tb / 70, 0, 1);
   };
   UG.y = height(UG.x, UG.z); UCH.y = height(UCH.x, UCH.z); TERR.y = height(TERR.x, TERR.z);
   const W3 = () => W, H3 = () => H;
@@ -8629,7 +8668,7 @@ async function open3dLoad() {
   const vcurve = new THREE.CatmullRomCurve3(VALLEY), vpts = vcurve.getSpacedPoints(60);
   const nearValley = (x, z) => vpts.reduce((m, p) => Math.min(m, Math.hypot(p.x - x, p.z - z)), 1e9);
   const spots = [], free = (x, z, r) => !spots.some(s => Math.hypot(s[0] - x, s[1] - z) < r + s[2] * .7);
-  const keepOut = (x, z) => Math.hypot(x - FIELD.x, z - FIELD.z) < 40 || Math.hypot(x, z) < 70 || Math.hypot(x - UCH.x, z - UCH.z) < 170 || Math.hypot(x - UG.x, z - UG.z) < 50 || nearValley(x, z) < 14 || Math.hypot(x - TERR.x, z - TERR.z) < 24;
+  const keepOut = (x, z) => Math.hypot(x - FIELD.x, z - FIELD.z) < 40 || Math.hypot(x, z) < 70 || Math.hypot(x - UCH.x, z - UCH.z) < 170 || Math.hypot(x - UG.x, z - UG.z) < 50 || nearValley(x, z) < 14 || Math.hypot(x - TERR.x, z - TERR.z) < 24 || inTown(x, z, 30);
   for (let n = 0; n < 3000 && spots.length < 300; n++) { const a = rnd() * Math.PI * 2, d = 60 + Math.pow(rnd(), .8) * 1000, x = Math.cos(a) * d, z = Math.sin(a) * d, s = 8 + rnd() * 16 + (d < 400 ? 6 : 0); if (!keepOut(x, z) && free(x, z, s * .9)) spots.push([x, z, s]); }
   vpts.forEach((p, i) => { for (const side of [-1, 1]) { const t = vcurve.getTangentAt(i / 60), nx = -t.z * side, nz = t.x * side, off = 15 + rnd() * 14, x = p.x + nx * off, z = p.z + nz * off, s = 11 + rnd() * 12; if (free(x, z, s * .6)) spots.push([x, z, s]); } });
   /* six shapes, instanced each; a basalt hat on about a third */
@@ -8654,7 +8693,7 @@ async function open3dLoad() {
     for (let i = 0; i < sp2.count; i++) { const k = 1 + n3(sp2.getX(i) * 3, sp2.getY(i) * 3, sp2.getZ(i) * 3) * .45; sp2.setXYZ(i, sp2.getX(i) * k, sp2.getY(i) * k * .7, sp2.getZ(i) * k); } shrubG.computeVertexNormals();
     const rocks = [], shrubs = [];
     for (let n = 0; n < 6000 && (rocks.length < 700 || shrubs.length < 420); n++) { const x = (rnd() - .5) * 900, z = (rnd() - .35) * 900, nv = nearValley(x, z), nvil = Math.hypot(x, z);
-      if (!(nv < 70 || (nvil > 40 && nvil < 260))) continue; if (Math.hypot(x - FIELD.x, z - FIELD.z) < 30 || Math.hypot(x, z) < 60 || nv < 6) continue;
+      if (!(nv < 70 || (nvil > 40 && nvil < 260))) continue; if (Math.hypot(x - FIELD.x, z - FIELD.z) < 30 || Math.hypot(x, z) < 60 || nv < 6 || inTown(x, z, 8)) continue;
       (rnd() < .6 ? rocks : shrubs).push([x, z]); }
     const rk = new THREE.InstancedMesh(rockG, tuffMat, rocks.length), sb = new THREE.InstancedMesh(shrubG, new THREE.MeshStandardMaterial({ color: 0x6a6a3a, roughness: 1, map: mottle }), shrubs.length);
     rocks.forEach(([x, z], i) => { const s = .4 + Math.pow(rnd(), 2) * 2.4; m4.compose(V3(x, height(x, z) + s * .2, z), q.setFromEuler(e.set(rnd(), rnd() * 6, rnd())), V3(s * 1.3, s, s)); rk.setMatrixAt(i, m4); rk.setColorAt(i, C('#ffffff').multiplyScalar(.85 + rnd() * .2)); });
@@ -8718,7 +8757,7 @@ async function open3dLoad() {
   parapets.forEach(([x, y, z, w, d, a], i) => { m4.compose(V3(x, y + .18, z), q.setFromEuler(e.set(0, a, 0)), V3(w + .4, .4, d + .4)); parM.setMatrixAt(i, m4); });
   vaultM.castShadow = parM.castShadow = vaultM.receiveShadow = parM.receiveShadow = true; scene.add(vaultM, parM);
   /* cave houses: tuff outcrops at the village edge with homes cut into them, doors and lit windows */
-  for (let k = 0; k < 18; k++) { const a = -Math.PI * (.1 + rnd() * .8), d = 70 + rnd() * 50, x = Math.cos(a) * d + 8, z = Math.sin(a) * d - 6; if (Math.hypot(x - FIELD.x, z - FIELD.z) < 36 || Math.hypot(x - TERR.x, z - TERR.z) < 20 || x < -10) continue; /* north-east of the village: off the camera's way in and out of the field's view */
+  for (let k = 0; k < 18; k++) { const a = -Math.PI * (.1 + rnd() * .8), d = 70 + rnd() * 50, x = Math.cos(a) * d + 8, z = Math.sin(a) * d - 6; if (Math.hypot(x - FIELD.x, z - FIELD.z) < 36 || Math.hypot(x - TERR.x, z - TERR.z) < 20 || x < -10 || inTown(x, z, 25) || toTown(x, z) < 110) continue; /* north-east of the village: off the camera's way in and out of the field's view */
     const rock = new THREE.Mesh(boulder(40 + k, .8), tuffMat); rock.geometry.setAttribute('color', new THREE.Float32BufferAttribute(new Array(rock.geometry.attributes.position.count * 3).fill(0).map((_, i) => [.94, .82, .7][i % 3]), 3));
     const s = 10 + rnd() * 10; rock.scale.set(s * 1.3, s, s); rock.position.set(x, height(x, z) + s * .3, z); rock.rotation.y = rnd() * 6; rock.castShadow = rock.receiveShadow = true; scene.add(rock); rock.updateMatrixWorld();
     carve(rock.geometry, rock.matrixWorld, 5 + (rnd() * 5 | 0), .6, -.4, .5, 1.2); }
@@ -8727,6 +8766,75 @@ async function open3dLoad() {
     const top = new THREE.Mesh(new THREE.ConeGeometry(1.15, 6, 16), new THREE.MeshStandardMaterial({ color: 0x7a7f8a, roughness: .5, metalness: .3 })); top.position.y = hh + 3;
     g.add(sh, bal, top); g.position.set(x, y, z); g.traverse(o => { o.castShadow = true; }); scene.add(g); };
   minaret(UCH.x + 110, UCH.z - 60, 30); minaret(26, -30, 26);
+  /* v121.5: our town, built from the game's own layout (townBuildings) on its 16×16 grid, with no writing anywhere: the
+     ground with its cobbled roads and the green launch field, the low wall with its gates, the buildings of day one
+     (empty plots in scaffolding), the edge chimneys and the trees. Heights follow the town's drawing: 2D px / 6.53 = m. */
+  {
+    const PXM = 6.53, TB = townBuildings();
+    const gtex = tex(1024, 1024, (x, w, hh) => { const k = w / 16, R = (gx0, gy0, gx1, gy1, c) => { x.fillStyle = c; x.fillRect((gx0 + .5) * k, (gy0 + .5) * k, (gx1 - gx0) * k, (gy1 - gy0) * k); };
+      R(-.5, -.5, 15.5, 15.5, '#ecd2a8');
+      for (let i = 0; i < 9000; i++) { const v = rnd(); x.fillStyle = v < .5 ? `rgba(255,240,215,${.15 + rnd() * .2})` : `rgba(120,80,50,${.06 + rnd() * .12})`; x.fillRect(rnd() * w, rnd() * hh, 1 + rnd() * 2, 1 + rnd() * 2); }
+      for (const b of TB) if (b.lv <= 0 && b.look !== 'rival') R(b.gx + .12, b.gy + .12, b.gx + b.w - .12, b.gy + b.d - .12, 'rgba(150,108,70,.35)');
+      const road = (a, b2, c, d) => { R(a, b2, c, d, '#c9a47a'); x.save(); x.beginPath(); x.rect((a + .5) * k, (b2 + .5) * k, (c - a) * k, (d - b2) * k); x.clip();
+        for (let i = 0; i < 2600; i++) { x.fillStyle = rnd() < .5 ? 'rgba(255,240,215,.35)' : 'rgba(110,70,40,.22)'; x.beginPath(); x.ellipse((a + .5 + rnd() * (c - a)) * k, (b2 + .5 + rnd() * (d - b2)) * k, 3, 2, rnd() * 3, 0, 7); x.fill(); } x.restore(); };
+      road(0, 7.55, 15, 8.45); road(7.55, 0, 8.45, 15); road(.6, 3.6, 7.55, 4.1);
+      R(1, 4.4, 7, 7.2, '#a3b066'); for (let i = 0; i < 9; i++) R(1 + i * .67, 4.4, 1.33 + i * .67, 7.2, i % 2 ? 'rgba(120,140,70,.3)' : 'rgba(190,200,125,.3)');
+      for (let i = 0; i < 1500; i++) { x.fillStyle = `rgba(${rnd() < .5 ? '90,120,50' : '200,210,140'},.25)`; x.fillRect((1.5 + rnd() * 6) * k, (4.9 + rnd() * 2.8) * k, 2, 3); } });
+    const ground = new THREE.Mesh(new THREE.PlaneGeometry(16 * TL, 16 * TL), new THREE.MeshStandardMaterial({ map: gtex, roughness: .95, polygonOffset: true, polygonOffsetFactor: -2 }));
+    ground.rotation.x = -Math.PI / 2; ground.position.set(TC.x, .05, TC.z); ground.receiveShadow = true; scene.add(ground);
+    const at = (gx, gy, y = 0) => tw(gx, gy).setY(y), stone = new THREE.MeshStandardMaterial({ color: 0xf0d8b2, roughness: .95, map: mottle });
+    const box = (gx, gy, w, d, hgt, mat, y = 0, geo = hgeo) => { const m = new THREE.Mesh(geo, mat); m.scale.set(w * TL, hgt, d * TL); m.position.copy(at(gx + w / 2, gy + d / 2, y)); m.castShadow = m.receiveShadow = true; scene.add(m); return m; };
+    /* the wall, a little higher than a man, open where the two main roads leave */
+    const wallG = new RoundedBoxGeometry(1, 1, 1, 2, .12); wallG.translate(0, .5, 0); const th = .14, WH = 16 / PXM;
+    for (let v = -.5; v < 15.5; v += 1) { const w = Math.min(1, 15.5 - v); if (v + w > 7.55 && v < 8.45) continue;
+      box(v, -.5 - th, w, th, WH, stone, 0, wallG); box(v, 15.5, w, th, WH, stone, 0, wallG); box(-.5 - th, v, th, w, WH, stone, 0, wallG); box(15.5, v, th, w, WH, stone, 0, wallG); }
+    const wood = new THREE.MeshStandardMaterial({ color: 0x8a6a4a, roughness: .9 });
+    const stripes = (cols, n, vert) => { const t = tex(vert ? 64 : 256, vert ? 256 : 64, (x, w, hh) => { for (let i = 0; i < n; i++) { x.fillStyle = cols[i % cols.length]; if (vert) x.fillRect(0, i * hh / n, w, hh / n + 1); else x.fillRect(i * w / n, 0, w / n + 1, hh); } }); return t; };
+    const kindOf = { workshop: 1, office: 0, school: 2, bank: 1, guide: 0, agency: 3, tower: 1, bazaar: 4 };
+    for (const b of TB) {
+      const inset = .14, gx = b.gx + inset, gy = b.gy + inset, w = b.w - inset * 2, d = b.d - inset * 2;
+      if (b.lv <= 0 && b.look !== 'rival' && b.look !== 'mast') { /* an empty plot: scaffolding */
+        const hgt = 7.5; for (const [u, v] of [[0, 0], [1, 0], [0, 1], [1, 1]]) box(gx + u * w - .02, gy + v * d - .02, .04, .04, hgt, wood);
+        for (const y of [3.4, 7.2]) { box(gx, gy - .02, w, .03, .25, wood, y); box(gx, gy + d - .01, w, .03, .25, wood, y); box(gx - .02, gy, .03, d, .25, wood, y); }
+        continue; }
+      if (b.look === 'hangar') { /* a long barrel roof in red stripes on a low stone body */
+        box(gx, gy, w, d, 4.6, KIND[1].mat);
+        const roofG = new THREE.CylinderGeometry(1, 1, 1, 28, 1, false, 0, Math.PI); roofG.rotateZ(Math.PI / 2);
+        const roof = new THREE.Mesh(roofG, new THREE.MeshStandardMaterial({ map: stripes(['#b5532c', '#8e3b22'], 14, false), roughness: .8, side: THREE.DoubleSide }));
+        roof.scale.set(w * TL * 1.02, 7.6, d * TL * .52); roof.position.copy(at(gx + w / 2, gy + d / 2, 4.5)); roof.castShadow = roof.receiveShadow = true; scene.add(roof);
+        continue; }
+      if (b.look === 'rival') { /* a booking kiosk under an awning in its company's colours */
+        box(gx + .12, gy + .12, w - .24, d - .24, 44 / PXM * .8, KIND[0].mat);
+        const aw = new THREE.Mesh(new THREE.BoxGeometry(1, 1, 1), new THREE.MeshStandardMaterial({ map: stripes([b.col || '#ff5e3a', b.col2 || '#ffffff'], 8, false), roughness: .8 }));
+        aw.scale.set(w * TL, .35, 3.2); aw.position.copy(at(gx + w / 2, gy + d - .05, 44 / PXM * .62)); aw.rotation.x = .35; aw.castShadow = true; scene.add(aw);
+        continue; }
+      if (b.look === 'mast') { /* the wind mast: a striped pole on a tuff plinth, the sock out */
+        box(b.gx - .17, b.gy - .17, .34, .34, 14 / PXM, stone);
+        const pole = new THREE.Mesh(new THREE.CylinderGeometry(.32, .38, 128 / PXM, 10), new THREE.MeshStandardMaterial({ map: stripes(['#ff5e3a', '#fffaf3'], 8, true), roughness: .6 }));
+        pole.position.copy(at(b.gx, b.gy, 14 / PXM + 64 / PXM)); pole.castShadow = true; scene.add(pole);
+        const sock = new THREE.Mesh(new THREE.ConeGeometry(.9, 5, 12, 1, true), new THREE.MeshStandardMaterial({ color: 0xff7a4a, roughness: .7, side: THREE.DoubleSide }));
+        sock.rotation.z = Math.PI / 2; sock.position.copy(at(b.gx, b.gy, 14 / PXM + 120 / PXM)).add(V3(2.6, 0, 0)); scene.add(sock);
+        continue; }
+      const hpx = b.look === 'hotel' ? [60, 120, 140, 120][b.star] : { bazaar: 60, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 48, agency: 100, tower: 270 }[b.look] || 60;
+      const K = b.look === 'hotel' ? [0, 1, 3, 4][b.star] : kindOf[b.look] ?? 0, hgt = hpx / PXM;
+      box(gx, gy, w, d, hgt, KIND[K].mat);
+      /* windows that light up when night falls after the landing, on the two faces the camera sees */
+      for (let fl = 2.2; fl < hgt - 1.5; fl += 3.4) for (const [face, n] of [[0, w], [1, d]]) for (let k = 0; k < Math.max(1, Math.round(n * 1.6)); k++) if (rnd() < .55) {
+        const u = (k + .5) / Math.max(1, Math.round(n * 1.6)), pt = face ? at(gx + w + .01, gy + u * d, fl) : at(gx + u * w, gy + d + .01, fl);
+        lights.push([pt.x, pt.y, pt.z, face ? 0 : Math.PI / 2, 1.1]); }
+      const par = new THREE.Mesh(parG, new THREE.MeshStandardMaterial({ color: 0xdcc4a2, roughness: .95, map: mottle })); par.scale.set(w * TL + .5, .5, d * TL + .5); par.position.copy(at(gx + w / 2, gy + d / 2, hgt + .2)); par.castShadow = true; scene.add(par);
+      if (b.look === 'hotel' && b.star >= 1) box(gx + w * .2, gy + d * .2, w * .55, d * .55, hgt * .28, KIND[(K + 2) % 5].mat, hgt); /* a storey set back on the bigger hotels */
+    }
+    /* the fairy chimneys round the edge and the trees, where the town has them */
+    [[0.3, 6.6, 150], [16.4, 11.2, 140], [0.4, 12.6, 130], [7.7, 0.3, 120], [5.6, 15.2, 150], [0.5, 3.0, 160], [12.8, 0.2, 140]].forEach(([gx, gy, hpx], i) => {
+      const hgt = hpx / PXM, r = hgt * .19, c = new THREE.Mesh(VAR[i % VAR.length], tuffMat); c.scale.set(r, hgt, r); c.position.copy(at(gx, gy, -.4)); c.rotation.y = i * 1.7; c.castShadow = c.receiveShadow = true; scene.add(c);
+      if (i % 2 === 0) { const cp = new THREE.Mesh(capGeo, basaltMat); cp.scale.set(r * .55, r * .38, r * .5); cp.position.copy(at(gx, gy, hgt * .985 - .4)); cp.castShadow = true; scene.add(cp); } });
+    const leaf = [new THREE.MeshStandardMaterial({ color: 0x4f6a3a, roughness: .9 }), new THREE.MeshStandardMaterial({ color: 0x7aa04a, roughness: .9, map: mottle }), new THREE.MeshStandardMaterial({ color: 0x8aa84e, roughness: .9, map: mottle })];
+    [[7.1, 6.9], [7.1, 9.2], [8.9, 6.9], [3.4, 8.9], [6.6, 10.7], [14.6, 7.3], [10.8, 4.4], [4.3, 7.0], [8.4, 15]].forEach(([gx, gy], i) => {
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(.25, .35, 2.4, 8), wood); trunk.position.copy(at(gx, gy, 1.2)); trunk.castShadow = true; scene.add(trunk);
+      const crown = i % 3 ? new THREE.Mesh(new THREE.IcosahedronGeometry(2.8, 1), leaf[1 + i % 2]) : new THREE.Mesh(new THREE.ConeGeometry(1.5, 9, 10), leaf[0]);
+      crown.position.copy(at(gx, gy, i % 3 ? 4.6 : 6.4)); crown.castShadow = true; scene.add(crown); });
+  }
   /* windows: carved holes dark, lit ones warm before dawn and going out with the sun (a few stay on) */
   const archG = new THREE.PlaneGeometry(1, 1.5); archG.translate(0, .75, 0);
   const holeMat = new THREE.MeshBasicMaterial({ color: 0x2a1812 }), litMat = new THREE.MeshBasicMaterial({ color: 0xffb35a, transparent: true });
@@ -8778,6 +8886,7 @@ async function open3dLoad() {
   /* the morning's balloons: standing on the fields north of the village, burners lighting them in the dark; up at dawn */
   const crowd = [];
   for (let i = 0; i < 52; i++) { const a = -Math.PI / 2 + (rnd() - .5) * 2.6, d = 160 + rnd() * 1100, x = Math.cos(a) * d, z = Math.sin(a) * d;
+    if (inTown(x, z, 20)) continue;
     const b = makeBalloon(palMat[i % palMat.length], 17 + rnd() * 6); b.position.set(x, height(x, z), z); Object.assign(b.userData, { gy: height(x, z), go: 9 + rnd() * 13, v: 2.4 + rnd() * 2.2, ph: rnd() * 9, x, z }); scene.add(b); crowd.push(b); }
   let hero = null;
   const heroTex = () => tex(1024, 512, (x, w, hh) => { const c = myCol(); for (let i = 0; i < 16; i++) { x.fillStyle = i % 2 ? c[1] : c[0]; x.fillRect(i * w / 16, 0, w / 16 + 1, hh); }
@@ -8831,13 +8940,33 @@ async function open3dLoad() {
   })();
   const smax = (a, b, k) => (a + b + Math.sqrt((a - b) * (a - b) + k * k)) / 2;
   const heroAlt = t => t < 3.6 ? 0 : easeIO3((t - 3.6) / 8) * 90;
+  /* v121.5: after the lift-off the balloon drifts north-east to our town and comes down on the launch field in front of the
+     hangar (gx 1.8, gy 5: where the game stands the flagship); far from the camera it shrinks to the game's scale */
+  const SLOT = fieldSlots().find(x => x.b.id === S.flag) || { gx: 1.8, gy: 5 }, LAND = tw(SLOT.gx, SLOT.gy), HAND = LAND.clone().setY(3.5);
+  const heroS = t => lerp(15, 7.6, easeIO3((t - 9) / 7));
+  const heroPos = t => { const u = easeIO3((t - 6) / 15), alt = t < 14 ? heroAlt(t) : 90 * (1 - easeIO3((t - 14) / 7));
+    return V3(lerp(BASKET.x, LAND.x, u), BASKET.y + alt, lerp(BASKET.z, LAND.z, u)); };
+  /* the camera rides with it: pulls away and climbs faster to look down from high, then swings round to the game's own
+     angle (from the south-east, 30° down) and closes in on a long lens as the balloon lands */
+  const ISO = V3(1, 0, 1).normalize().multiplyScalar(Math.cos(Math.PI / 6)).setY(Math.sin(Math.PI / 6)).multiplyScalar(285);
+  const CR0 = V3(BASKET.x + 3, 1.2, BASKET.z + 9).sub(heroPos(7.2));
+  const CRANE = pc([[CR0.x, CR0.y, CR0.z], [-22, 32, 34], [-52, 96, 42], [-58, 140, 48], [10, 160, 110], [110, 155, 150], [ISO.x, ISO.y, ISO.z]]); /* behind the drift (south-west), then round */
+  const CRANE_FOV = [66, 55, 48, 45, 40, 26, 14];
+  let lastLook = null;
   const LIFT = { eye: pc([[BASKET.x + 20, 3.2, BASKET.z + 30], [BASKET.x + 4, 2.6, BASKET.z + 32], [BASKET.x + 3, 1.2, BASKET.z + 9]]), up: pc([[BASKET.x + 3, 1.2, BASKET.z + 9], [BASKET.x + 20, 26, BASKET.z + 40], [BASKET.x + 80, 70, BASKET.z + 140], [110, 95, 230]]) };
   const place = (part, t) => {
     if (part === 'A') { const u = warp(t); camera.position.copy(FLIGHT.eye.getPoint(u)); camera.position.y = smax(camera.position.y, FLOOR(u), lerp(6, .3, clamp((u - .955) / .03, 0, 1))); camera.lookAt(FLIGHT.at.getPoint(u)); camera.fov = FLIGHT.fov(t); }
     else if (t < 3.6) { camera.position.copy(LIFT.eye.getPoint(easeIO3(t / 3.6) * .5)); camera.lookAt(V3(BASKET.x + 7, BASKET.y + 6, BASKET.z)); camera.fov = 46; }
     else if (t < 7.2) { camera.position.copy(LIFT.eye.getPoint(.5 + easeIO3((t - 3.6) / 3.6) * .5)); camera.lookAt(V3(BASKET.x, BASKET.y + 10 + heroAlt(t) * .9, BASKET.z - 12)); camera.fov = 66; }
-    else { const k = easeIO3((t - 7.2) / 5); camera.position.copy(LIFT.up.getPoint(k)); camera.lookAt(V3(BASKET.x, BASKET.y + 8 + heroAlt(t), BASKET.z).lerp(V3(-60, 40, -220), k * k * k)); /* the balloon stays in frame, then the view opens */ camera.fov = lerp(56, 42, k); }
+    else {
+      const k = clamp((t - 7.2) / 14.8, 0, 1), p = 1 - Math.pow(1 - k, 2.4) * (1 - .5 * Math.pow(1 - k, 6)), hp = heroPos(t) /* away quickly, settling slowly */, fi = p * (CRANE_FOV.length - 1), f0 = Math.floor(Math.min(fi, CRANE_FOV.length - 2));
+      camera.position.copy(hp).add(CRANE.getPoint(p));
+      const center = hp.clone().setY(hp.y + heroS(t) * .92), old = V3(BASKET.x, BASKET.y + 10 + heroAlt(t) * .9, BASKET.z - 12);
+      const look = old.lerp(center, easeIO3((t - 7.2) / 1.3)).lerp(HAND, easeIO3((t - 19) / 3));
+      camera.lookAt(look); lastLook = look; camera.fov = lerp(CRANE_FOV[f0], CRANE_FOV[f0 + 1], fi - f0);
+    }
     if (part !== 'A') { const floor = height(camera.position.x, camera.position.z) + 2; if (camera.position.y < floor) camera.position.y = floor; } /* never into the ground */
+    if (part === 'A' || t < 7.2) lastLook = null;
     camera.updateProjectionMatrix();
   };
   /* dawn: 0 night ... 1 morning */
@@ -8902,13 +9031,14 @@ async function open3dLoad() {
       U.glow.material.opacity = burn * (part === 'A' ? 1 - clamp((t - 20) / 6, 0, 1) * .6 : .4); U.glow.scale.setScalar(.9 + Math.sin(time * 30 + U.ph) * .1); });
     if (part === 'A') { setDawn(clamp((t - 5) / 17, 0, 1)); cloth.visible = basket.visible = true; if (hero) hero.visible = false; }
     else {
-      setDawn(1); cloth.visible = false; basket.visible = false;
+      const dusk = easeIO3((t - 21.4) / 2.2); setDawn(1 - dusk * .97); grade.uniforms.fade.value = dusk * .25; cloth.visible = false; basket.visible = false; /* v121.5: night falls on the town after the landing */
+      PK.list.forEach(b => { b.visible = false; }); if (PK.halo) PK.halo.visible = false; /* the colour choices stay behind in the sky */
       const h = heroFor(), fill = easeIO3(t / 3.4); h.visible = true;
       h.userData.env.scale.set(lerp(.55, 1, fill), lerp(.25, 1, fill), lerp(.55, 1, fill)); h.userData.env.rotation.z = lerp(-1.25, 0, ease3(fill * 1.2)); h.userData.env.position.x = lerp(.5, 0, fill);
-      h.position.set(BASKET.x, BASKET.y + heroAlt(t), BASKET.z); h.rotation.y = time * .05;
-      const burn = t < 9.5 && (t < 3.4 || Math.sin(t * 4.1) > -.1); if (OPEN) OPEN.burn = burn; h.userData.glow.material.opacity = burn ? 1 : 0; h.userData.glow.scale.setScalar(1.2 + Math.sin(time * 40) * .2); flameLight.intensity = burn ? 300 + Math.sin(time * 33) * 70 : 0;
+      h.position.copy(heroPos(t)); h.scale.setScalar(heroS(t)); h.rotation.y = time * .05;
+      const burn = (t < 9.5 && (t < 3.4 || Math.sin(t * 4.1) > -.1)) || (t > 13.5 && t < 14.6) || (t > 18.4 && t < 19.8); /* bursts to hold the height and to soften the landing */ if (OPEN) OPEN.burn = burn; h.userData.glow.material.opacity = burn ? 1 : 0; h.userData.glow.scale.setScalar(1.2 + Math.sin(time * 40) * .2); flameLight.intensity = burn ? 300 + Math.sin(time * 33) * 70 : 0;
     }
-    const tgt = camera.position.clone(); tgt.y = 0; sun.target.position.copy(tgt); sun.position.add(tgt);
+    const tgt = (lastLook || camera.position).clone(); tgt.y = 0; sun.target.position.copy(tgt); sun.position.add(tgt); /* shadows where we look */
     grade.uniforms.t.value = time; place(part, t); if (part === 'A') pickFrame(time);
     mists.forEach(m => { const dx = Math.hypot(m.position.x - camera.position.x, m.position.z - camera.position.z) - m.scale.x * .5, dy = Math.abs(m.position.y - camera.position.y);
       m.material.opacity = .3 * clamp(Math.max(dx / 120, (dy - 4) / 30), 0, 1) * (part === 'A' ? 1 : .6); }); /* no hard edge when the drone flies through */
@@ -8920,6 +9050,9 @@ async function open3dLoad() {
     pause(on) { paused = on; canvas.style.display = on ? 'none' : 'block'; },
     pick(choices, sel, cb) { if (choices) { if (!PK.list.length) pickBuild(choices); PK.sel = sel; PK.cb = cb; } PK.on = !!choices; paused = false; canvas.style.display = 'block'; },
     fade(k) { grade.uniforms.fade.value = k; },
+    /* v121.5: the 2D town's zoom that matches this frame (12 m tiles seen at the game's angle), and the grid point under the screen's centre */
+    handoff() { const d = camera.position.distanceTo(lastLook || HAND), ppm = H3() / (2 * d * Math.tan(THREE.MathUtils.degToRad(camera.fov) / 2));
+      return { z: ppm * TL * Math.SQRT2 / 128, gx: SLOT.gx, gy: SLOT.gy, up: (lastLook || HAND).y * 6.53 }; },
     seek(t) { t0 = performance.now() - t * 1000; },
     at(p, t) { paused = true; part = p; frameAt(p, t, 1000 + t * 1000); composer.render(); canvas.style.display = 'block'; },
     stop() { cancelAnimationFrame(raf); raf = 0; window.removeEventListener('resize', resize); renderer.dispose(); canvas.remove(); }
