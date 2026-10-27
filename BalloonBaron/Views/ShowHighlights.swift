@@ -138,7 +138,7 @@ struct ShowHighlightsView: View {
         }
     }
 
-    private var grid: some View {
+    @MainActor private var grid: some View {
         VStack(spacing: 12) {
             Text(loc("show.title")).font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).foregroundStyle(Theme.coral)
             CardText.title(loc("show.hl.title"))
@@ -176,7 +176,7 @@ struct ShowHighlightsView: View {
         }
     }
 
-    private func sharePage(_ i: Int) -> some View {
+    @MainActor private func sharePage(_ i: Int) -> some View {
         VStack(spacing: 12) {
             Text(loc("share.button")).font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).foregroundStyle(Theme.coral)
             Group {
@@ -202,7 +202,7 @@ struct ShowHighlightsView: View {
             } label: { Text(loc("show.hl.back")).frame(maxWidth: .infinity) }
             .buttonStyle(ChunkyButtonStyle(kind: .ghost, wide: true))
         }
-        .task(id: i) {
+        .task(id: i) { @MainActor in
             guard let p = pictures[i] ?? ShowMomentPicture.image(shots, i) else { return }
             shareImage = ShowShareArt.image(shots, i, picture: p)
         }
