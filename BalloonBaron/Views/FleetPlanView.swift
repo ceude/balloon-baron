@@ -63,6 +63,7 @@ struct FleetPlanView: View {
                     header(g.state)
                     whoFlies(g.state)
                     topButtons(g.state)
+                    if let mine = myBalloon(g.state) { row(mine, g) }
                     ForEach(groups(g.state)) { grp in
                         groupView(grp, g)
                     }
@@ -77,8 +78,14 @@ struct FleetPlanView: View {
         }
     }
 
+    /// The balloon you fly today, pinned on top of the list.
+    private func myBalloon(_ s: GameState) -> Balloon? {
+        s.balloon(s.flagship).flatMap { s.isSelf($0) ? $0 : nil }
+    }
+
     private func groups(_ s: GameState) -> [SizeGroup] {
-        let fleet = s.sortedFleet
+        let mine = myBalloon(s)?.id
+        let fleet = s.sortedFleet.filter { $0.id != mine }
         return [BalloonSize.XL, .L, .M, .S].compactMap { z -> SizeGroup? in
             let list = fleet.filter { $0.size == z }
             return list.isEmpty ? nil : SizeGroup(size: z, list: list)
@@ -113,27 +120,24 @@ struct FleetPlanView: View {
                         .font(Theme.font(14))
                         .foregroundStyle(Theme.ink2)
                 } else {
-                    Text(loc("fplan.who", fb.title))
+                    // v121.2 (TestFlight): no "who flies?" question; you pick your balloon in the list, like in the fleet
+                    let premium = Rules.founderPremium.formatted(.percent.precision(.fractionLength(0)))
+                    Text(s.selfFly ? loc("fplan.selfTitle", fb.title) : loc("fplan.pilotsTitle"))
                         .font(Theme.font(16, .bold))
                         .foregroundStyle(Theme.ink)
-                    Text(loc("fplan.whoNote"))
+                    Text(loc(s.selfFly ? "fplan.selfNote" : "fplan.pilotsNote", premium))
                         .font(Theme.font(14))
                         .foregroundStyle(Theme.ink2)
                     if let m = s.weather?.mission {
-                        Text(loc("fplan.missionNote", m.title, eur(m.reward(for: fb.size))))
+                        Text(loc(s.selfFly ? "fplan.missionYours" : "fplan.missionNote", m.title, eur(m.reward(for: fb.size))))
                             .font(Theme.font(14, .semibold))
-                            .foregroundStyle(Theme.coral)
+                            .foregroundStyle(s.selfFly ? Theme.ink2 : Theme.coral)
                     }
-                    HStack(spacing: 10) {
-                        PlanFlyButton(title: loc("fplan.you"), on: s.selfFly, wide: true) { setSelf(true) }
-                        PlanFlyButton(title: loc("fplan.pilot"), on: !s.selfFly, wide: true) { setSelf(false) }
-                    }
-                    .padding(.top, 4)
                 }
             }
             .padding(14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+            .background(Color(hex: "#fff3e8"), in: RoundedRectangle(cornerRadius: 16))
         }
     }
 
@@ -173,6 +177,7 @@ struct FleetPlanView: View {
         let s = g.state
         let st = s.status(b)
         let active = st == .ok && b.fly
+        let you = s.isSelf(b)
         return HStack(spacing: 10) {
             BalloonShape(colors: s.planIconColors)
                 .frame(width: 28, height: 36)
@@ -183,7 +188,9 @@ struct FleetPlanView: View {
                         .font(Theme.font(16, .bold))
                         .foregroundStyle(Theme.ink)
                         .lineLimit(1)
-                    if b.id == s.flagship {
+                    if you {
+                        PlanTag(text: loc("fleet.row.youFly"), color: Color(hex: "#c2401f"))
+                    } else if b.id == s.flagship {
                         PlanTag(text: loc("fplan.flagship"), color: Theme.green)
                     }
                 }
@@ -193,12 +200,17 @@ struct FleetPlanView: View {
                 Text(detail(b, g))
                     .font(Theme.font(12))
                     .foregroundStyle(Theme.ink2)
+                if s.licenseValid && (you || ([.ok, .noPilot, .late, .strike] as [GameState.FlyStatus]).contains(st)) {
+                    PlanChipButton(title: loc(you ? "fplan.toPilot" : "fleetPage.flyMyself")) { you ? setSelf(false) : flyMyself(b.id) }
+                        .padding(.top, 3)
+                }
             }
             Spacer(minLength: 6)
             trailing(b, st)
         }
         .padding(12)
-        .background(Color.white.opacity(st == .ok ? 1 : 0.6), in: RoundedRectangle(cornerRadius: 14))
+        .background(you ? Color(hex: "#fff3e8") : Color.white.opacity(st == .ok ? 1 : 0.6), in: RoundedRectangle(cornerRadius: 14))
+        .overlay { if you { RoundedRectangle(cornerRadius: 14).strokeBorder(Color(hex: "#ffcbb5"), lineWidth: 2) } }
     }
 
     @ViewBuilder
@@ -253,6 +265,14 @@ struct FleetPlanView: View {
 
     // MARK: Actions
 
+    /// "I'll fly this one": it becomes the flagship, flying today.
+    private func flyMyself(_ id: Int) {
+        store.act { g in
+            if g.flyMyself(id), let b = g.state.balloon(id), g.state.status(b) == .ok { g.setFlying(id, true) }
+        }
+        tick += 1
+    }
+
     private func setSelf(_ on: Bool) {
         store.act { $0.setSelfFly(on) }
         tick += 1
@@ -300,6 +320,26 @@ struct PlanFlyButton: View {
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(on ? .isSelected : [])
+    }
+}
+
+/// v121.2: a small outlined chip under a balloon's name ("I'll fly this one", "Give to a pilot").
+struct PlanChipButton: View {
+    let title: String
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(Theme.font(13, .heavy, condensed: true))
+                .lineLimit(1)
+                .foregroundStyle(Theme.ink)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 3)
+                .background(Color.white, in: RoundedRectangle(cornerRadius: 10))
+                .overlay(RoundedRectangle(cornerRadius: 10).strokeBorder(Theme.line, lineWidth: 1.5))
+        }
+        .buttonStyle(.plain)
     }
 }
 

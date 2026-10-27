@@ -25298,6 +25298,170 @@
         }
       }
     },
+    "flight.pause.a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flug pausieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause the flight"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausar el vuelo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フライトを一時停止"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행 일시정지"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçuşu duraklat"
+          }
+        }
+      }
+    },
+    "flight.pause.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Höhe: %1$@ · Brennstoff: %2$@. Dein Ballon wartet in der Luft, bis du zurück bist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitude: %1$@ · Fuel: %2$@. Your balloon waits in the air until you're back."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Altitud: %1$@ · Combustible: %2$@. Tu globo te espera en el aire hasta que vuelvas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "高度：%1$@ · 燃料：%2$@。戻るまで気球は空で待っている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "고도: %1$@ · 연료: %2$@. 돌아올 때까지 열기구는 하늘에서 기다립니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İrtifa: %1$@ · Yakıt: %2$@. Balonun sen dönene kadar havada bekler."
+          }
+        }
+      }
+    },
+    "flight.pause.resume": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weiter"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resume"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Continuar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "再開"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계속"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devam et"
+          }
+        }
+      }
+    },
+    "flight.pause.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausiert"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paused"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En pausa"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一時停止中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일시정지됨"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duraklatıldı"
+          }
+        }
+      }
+    },
     "flight.pax": {
       "extractionState": "manual",
       "localizations": {
@@ -26323,6 +26487,47 @@
         }
       }
     },
+    "fplan.missionYours": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der heutige Auftrag gehört dir: %1$@ (+%2$@)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today's mission is yours: %1$@ (+%2$@)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La misión de hoy es tuya: %1$@ (+%2$@)."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日の依頼はあなたのもの：%1$@（+%2$@）。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘의 임무는 당신 몫: %1$@ (+%2$@)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugünkü görev senin: %1$@ (+%2$@)."
+          }
+        }
+      }
+    },
     "fplan.mustSelf": {
       "extractionState": "manual",
       "localizations": {
@@ -26569,6 +26774,88 @@
         }
       }
     },
+    "fplan.pilotsNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn du selbst fliegst, zahlen die Passagiere %@ mehr und du kannst Aufträge annehmen. Tippe in der Liste bei einem Ballon auf \"Den fliege ich selbst\"."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If you fly, passengers pay %@ more and you can take missions. Tap \"I'll fly this one\" on a balloon in the list."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si pilotas tú, los pasajeros pagan un %@ más y puedes aceptar misiones. Toca \"Este lo piloto yo\" en un globo de la lista."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自分で飛ばせば乗客は%@多く払い、依頼も受けられる。リストの気球で「この気球は自分で飛ばす」をタップ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "직접 조종하면 승객이 %@ 더 내고 임무도 받을 수 있습니다. 목록의 기구에서 \"이 기구는 내가 몬다\"를 누르세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kendin uçarsan yolcular %@ fazla öder ve görevleri alabilirsin. Listede bir balonda \"Bu balonu ben uçurayım\" düğmesine dokun."
+          }
+        }
+      }
+    },
+    "fplan.pilotsTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute fliegen deine Piloten alle Ballone."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today your pilots fly every balloon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy tus pilotos vuelan todos los globos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日はパイロットが全機を飛ばす。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘은 조종사들이 모든 기구를 조종합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugün bütün balonları pilotlar uçuruyor."
+          }
+        }
+      }
+    },
     "fplan.risk": {
       "extractionState": "manual",
       "localizations": {
@@ -26610,6 +26897,88 @@
         }
       }
     },
+    "fplan.selfNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Passagiere zahlen %@ mehr, und die Aufträge gehören dir. Um einen anderen Ballon zu fliegen, tippe in der Liste auf \"Den fliege ich selbst\"."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your passengers pay %@ more and the missions are yours. To fly another balloon, tap \"I'll fly this one\" in the list."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus pasajeros pagan un %@ más y las misiones son tuyas. Para pilotar otro globo, toca \"Este lo piloto yo\" en la lista."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "乗客は%@多く払い、依頼はあなたが受ける。別の気球を飛ばすには、リストで「この気球は自分で飛ばす」をタップ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "승객이 %@ 더 내고 임무는 당신 몫입니다. 다른 기구를 조종하려면 목록에서 \"이 기구는 내가 몬다\"를 누르세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolcular %@ fazla öder ve görevleri sen alırsın. Başka bir balonu uçurmak için listede \"Bu balonu ben uçurayım\" düğmesine dokun."
+          }
+        }
+      }
+    },
+    "fplan.selfTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute fliegst du %@ selbst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today you fly %@ yourself."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy pilotas tú %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日は%@を自分で飛ばす。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘은 %@ 기구를 직접 조종합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugün %@ balonunu sen uçuruyorsun."
+          }
+        }
+      }
+    },
     "fplan.title": {
       "extractionState": "manual",
       "localizations": {
@@ -26647,6 +27016,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bugünün uçuş planı"
+          }
+        }
+      }
+    },
+    "fplan.toPilot": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An einen Piloten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Give to a pilot"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dárselo a un piloto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロットに任せる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사에게 맡기기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilota ver"
           }
         }
       }

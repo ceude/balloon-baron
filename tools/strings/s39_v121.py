@@ -27,3 +27,17 @@ add("ceremony.basket",
  "할아버지의 바스켓은 이제 지주회사 입구의 유리 진열장 안에 있다.")
 add("ceremony.basketPlate", "HASAN", "HASAN", "HASAN", "HASAN", "HASAN", "HASAN")
 add("ceremony.bossNote", "%@ left a note", "Not bırakan: %@", "%@ hat eine Nachricht hinterlassen", "%@ dejó una nota", "%@からの置き手紙", "%@의 쪽지")
+
+# v121.2 (TestFlight): pause in flight
+add("flight.pause.a11y", "Pause the flight", "Uçuşu duraklat", "Flug pausieren", "Pausar el vuelo", "フライトを一時停止", "비행 일시정지")
+add("flight.pause.title", "Paused", "Duraklatıldı", "Pausiert", "En pausa", "一時停止中", "일시정지됨")
+add("flight.pause.lead", "Altitude: %1$@ · Fuel: %2$@. Your balloon waits in the air until you're back.", "İrtifa: %1$@ · Yakıt: %2$@. Balonun sen dönene kadar havada bekler.", "Höhe: %1$@ · Brennstoff: %2$@. Dein Ballon wartet in der Luft, bis du zurück bist.", "Altitud: %1$@ · Combustible: %2$@. Tu globo te espera en el aire hasta que vuelvas.", "高度：%1$@ · 燃料：%2$@。戻るまで気球は空で待っている。", "고도: %1$@ · 연료: %2$@. 돌아올 때까지 열기구는 하늘에서 기다립니다.")
+add("flight.pause.resume", "Resume", "Devam et", "Weiter", "Continuar", "再開", "계속")
+
+# v121.2 (TestFlight): the flight plan without the "who flies?" question; you pick your balloon in the list
+add("fplan.selfTitle", "Today you fly %@ yourself.", "Bugün %@ balonunu sen uçuruyorsun.", "Heute fliegst du %@ selbst.", "Hoy pilotas tú %@.", "今日は%@を自分で飛ばす。", "오늘은 %@ 기구를 직접 조종합니다.")
+add("fplan.pilotsTitle", "Today your pilots fly every balloon.", "Bugün bütün balonları pilotlar uçuruyor.", "Heute fliegen deine Piloten alle Ballone.", "Hoy tus pilotos vuelan todos los globos.", "今日はパイロットが全機を飛ばす。", "오늘은 조종사들이 모든 기구를 조종합니다.")
+add("fplan.selfNote", "Your passengers pay %@ more and the missions are yours. To fly another balloon, tap \"I'll fly this one\" in the list.", "Yolcular %@ fazla öder ve görevleri sen alırsın. Başka bir balonu uçurmak için listede \"Bu balonu ben uçurayım\" düğmesine dokun.", "Deine Passagiere zahlen %@ mehr, und die Aufträge gehören dir. Um einen anderen Ballon zu fliegen, tippe in der Liste auf \"Den fliege ich selbst\".", "Tus pasajeros pagan un %@ más y las misiones son tuyas. Para pilotar otro globo, toca \"Este lo piloto yo\" en la lista.", "乗客は%@多く払い、依頼はあなたが受ける。別の気球を飛ばすには、リストで「この気球は自分で飛ばす」をタップ。", "승객이 %@ 더 내고 임무는 당신 몫입니다. 다른 기구를 조종하려면 목록에서 \"이 기구는 내가 몬다\"를 누르세요.")
+add("fplan.pilotsNote", "If you fly, passengers pay %@ more and you can take missions. Tap \"I'll fly this one\" on a balloon in the list.", "Kendin uçarsan yolcular %@ fazla öder ve görevleri alabilirsin. Listede bir balonda \"Bu balonu ben uçurayım\" düğmesine dokun.", "Wenn du selbst fliegst, zahlen die Passagiere %@ mehr und du kannst Aufträge annehmen. Tippe in der Liste bei einem Ballon auf \"Den fliege ich selbst\".", "Si pilotas tú, los pasajeros pagan un %@ más y puedes aceptar misiones. Toca \"Este lo piloto yo\" en un globo de la lista.", "自分で飛ばせば乗客は%@多く払い、依頼も受けられる。リストの気球で「この気球は自分で飛ばす」をタップ。", "직접 조종하면 승객이 %@ 더 내고 임무도 받을 수 있습니다. 목록의 기구에서 \"이 기구는 내가 몬다\"를 누르세요.")
+add("fplan.missionYours", "Today's mission is yours: %1$@ (+%2$@).", "Bugünkü görev senin: %1$@ (+%2$@).", "Der heutige Auftrag gehört dir: %1$@ (+%2$@).", "La misión de hoy es tuya: %1$@ (+%2$@).", "今日の依頼はあなたのもの：%1$@（+%2$@）。", "오늘의 임무는 당신 몫: %1$@ (+%2$@).")
+add("fplan.toPilot", "Give to a pilot", "Pilota ver", "An einen Piloten", "Dárselo a un piloto", "パイロットに任せる", "조종사에게 맡기기")

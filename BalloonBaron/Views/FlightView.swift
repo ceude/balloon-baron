@@ -100,6 +100,15 @@ final class FlightModel {
     var landedHandled = false
     var reported = false
     var onLanded: (() -> Void)?
+    /// v121.2 (TestFlight): the flight stands still under the pause card.
+    var paused = false
+
+    func pause() {
+        guard !sim.done, !paused else { return }
+        setHold(sky: false, button: false)
+        setVent(false)
+        paused = true
+    }
 
     init(state s: GameState, weather w: Weather, pax: Int) {
         let fb = s.balloon(s.flagship)
@@ -141,7 +150,10 @@ final class FlightModel {
         let now = date.timeIntervalSinceReferenceDate
         let dt = last.map { min(0.05, max(0, now - $0)) } ?? 0
         last = now
-        guard dt > 0 else { return }
+        guard dt > 0, !paused else {
+            if paused && burnerOn { burnerOn = false; SoundEngine.shared.burner(false) }
+            return
+        }
         T += dt
         driftDt += dt
         if !sim.done {
@@ -308,6 +320,7 @@ final class FlightModel {
 /// The player's own flight: full-screen scene, hold to burn, land on the field, then the day report.
 struct FlightView: View {
     @Environment(GameStore.self) private var store
+    @Environment(\.scenePhase) private var phase
     @State private var model: FlightModel?
     @State private var confirmAbort = false
 
@@ -329,6 +342,7 @@ struct FlightView: View {
         }
         .onAppear(perform: setup)
         .onDisappear { SoundEngine.shared.burner(false) }
+        .onChange(of: phase) { _, p in if p != .active { model?.pause() } } // leaving the app pauses the flight
     }
 
     private func setup() {
@@ -406,6 +420,7 @@ private struct FlightStage: View {
                 controls
                 tipLayer
                 resultLayer
+                pauseLayer
             }
         }
     }
@@ -424,6 +439,42 @@ private struct FlightStage: View {
         )
         // The burner button carries the altitude and fuel for VoiceOver.
         .accessibilityHidden(true)
+    }
+
+    // MARK: Pause (v121.2)
+
+    /// A round glass button under the flight panel, and the "Paused" card over the frozen flight.
+    @ViewBuilder private var pauseLayer: some View {
+        let m = model
+        if m.paused && !m.sim.done {
+            ModalCard {
+                CardText.title(loc("flight.pause.title"))
+                CardText.lead(loc("flight.pause.lead", loc("flight.meters", num(Int(m.sim.alt.rounded()))),
+                                  (m.sim.fuel / 100).formatted(.percent.precision(.fractionLength(0)))))
+                HStack(spacing: 10) {
+                    SoundSettingsButton()
+                        .background(Color(hex: "#f1edf8"), in: RoundedRectangle(cornerRadius: 14))
+                    Button(loc("flight.pause.resume")) { m.paused = false }
+                        .buttonStyle(ChunkyButtonStyle(kind: .big))
+                }
+            }
+        } else if !m.sim.done {
+            Button {
+                SoundEngine.shared.play(.click)
+                m.pause()
+            } label: {
+                Image(systemName: "pause.fill")
+                    .font(.system(size: 15, weight: .bold))
+                    .foregroundStyle(.white)
+                    .frame(width: 38, height: 38)
+                    .background(Theme.glass, in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(loc("flight.pause.a11y"))
+            .padding(.top, insets.top + 6 + 4 + 92 + 8)
+            .padding(.trailing, max(12, insets.trailing))
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+        }
     }
 
     // MARK: Buttons
@@ -673,7 +724,7 @@ private enum FlightPainter {
                                    ad: look.ad, region: look.region)
         }
         if let c = m.celebAt { celebration(&ctx, m: m, bx: bx, by: by, r: R, ct: m.T - c) }
-        liveWind(&ctx, m: m, bx: bx, by: by)
+        liveWind(&ctx, m: m, bx: bx, y: max(top + 11, pivot - R * 1.2 - 12))
         fieldPointer(&ctx, cam: cam, m: m, top: top, pr: PR)
         missionGuides(&ctx, cam: cam, m: m)
         moment(&ctx, cam: cam, top: top, r: PR, m: m)
@@ -884,29 +935,32 @@ private enum FlightPainter {
                  at: CGPoint(x: X, y: cam.sy(560)))
     }
 
-    /// v111: the wind where the balloon is, right under the basket: green when it carries you toward the field.
-    static func liveWind(_ ctx: inout GraphicsContext, m: FlightModel, bx: CGFloat, by: CGFloat) {
+    /// v111: the wind where the balloon is, green when it carries you toward the field. v121.2 (TestFlight): a small
+    /// dark-glass tag like the wind card, above the envelope, so the ground, the landing field and the chimneys below
+    /// stay clear while you come down; a coloured disc holds the arrow.
+    static func liveWind(_ ctx: inout GraphicsContext, m: FlightModel, bx: CGFloat, y py: CGFloat) {
         let f = m.sim
         guard f.alt > 3, !f.done else { return }
         let wv = FlightWorld.baseWind(at: f.alt, f.weather), wd: CGFloat = wv < 0 ? -1 : 1
         let good = wv * (f.weather.target - f.x >= 0 ? 1 : -1) > 0.3
         let label = ctx.resolve(Text(verbatim: loc("flight.kmh", num(Int((abs(wv) * 3.6).rounded()))))
-            .font(sceneFont(13, .heavy, condensed: true)).foregroundColor(.white))
-        let tw = label.measure(in: CGSize(width: 200, height: 40)).width, pw = tw + 30, py = by + 16
-        ctx.fill(rrect(bx - pw / 2, py - 11, pw, 22, 11), with: .color(good ? Color(red: 34 / 255, green: 164 / 255, blue: 93 / 255).opacity(0.92)
-                                                                          : Color(red: 229 / 255, green: 67 / 255, blue: 47 / 255).opacity(0.88)))
-        let a0 = bx - pw / 2 + 8, a1 = a0 + 12, ax0 = wd > 0 ? a0 : a1, ax1 = wd > 0 ? a1 : a0
+            .font(sceneFont(13, .bold, condensed: true)).foregroundColor(.white.opacity(0.95)))
+        let tw = label.measure(in: CGSize(width: 200, height: 40)).width, pw = tw + 34, ph: CGFloat = 22, px = bx - pw / 2
+        ctx.fill(rrect(px, py - ph / 2, pw, ph, ph / 2), with: .color(Color(red: 30 / 255, green: 24 / 255, blue: 64 / 255).opacity(0.62)))
+        let cx = px + 12, cr: CGFloat = 7.5
+        ctx.fill(Path(ellipseIn: CGRect(x: cx - cr, y: py - cr, width: cr * 2, height: cr * 2)),
+                 with: .color(good ? Color(hex: "#22a45d") : Color(hex: "#ff5e3a")))
         var shaft = Path()
-        shaft.move(to: CGPoint(x: ax0, y: py))
-        shaft.addLine(to: CGPoint(x: ax1, y: py))
-        ctx.stroke(shaft, with: .color(.white), style: StrokeStyle(lineWidth: 2.2, lineCap: .round))
+        shaft.move(to: CGPoint(x: cx - wd * 3.8, y: py))
+        shaft.addLine(to: CGPoint(x: cx + wd * 1.6, y: py))
+        ctx.stroke(shaft, with: .color(.white), style: StrokeStyle(lineWidth: 1.8, lineCap: .round))
         var head = Path()
-        head.move(to: CGPoint(x: ax1 + wd * 2, y: py))
-        head.addLine(to: CGPoint(x: ax1 - wd * 3, y: py - 4))
-        head.addLine(to: CGPoint(x: ax1 - wd * 3, y: py + 4))
+        head.move(to: CGPoint(x: cx + wd * 4.2, y: py))
+        head.addLine(to: CGPoint(x: cx + wd * 0.4, y: py - 3.2))
+        head.addLine(to: CGPoint(x: cx + wd * 0.4, y: py + 3.2))
         head.closeSubpath()
         ctx.fill(head, with: .color(.white))
-        ctx.draw(label, at: CGPoint(x: a1 + 6, y: py), anchor: .leading)
+        ctx.draw(label, at: CGPoint(x: cx + cr + 5, y: py + 0.5), anchor: .leading)
     }
 
     /// "Landing zone 1.2 km" pointer when the field is off-screen. In your first flights it rides at the balloon's

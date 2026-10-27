@@ -2715,7 +2715,7 @@ function showFleetPlan() {
       else {
         /* v121.2 (TestFlight): no SEN/PİLOT question; you pick your balloon in the list below, like in the fleet */
         const M = S.weather && S.weather.mission && MISSIONS[S.weather.mission];
-        box.innerHTML = (S.selfFly ? `<b>Bugün ${esc(fb.name)} balonunu sen uçuruyorsun.</b><span>Yolcuların %${FOUNDER * 100} fazla öder ve görevleri sen alırsın. Başka bir balonu uçurmak için listede "Ben uçurayım"a dokun.</span>`
+        box.innerHTML = (S.selfFly ? `<b>Bugün ${esc(fb.name)} balonunu sen uçuruyorsun.</b><span>Yolcular %${FOUNDER * 100} fazla öder ve görevleri sen alırsın. Başka bir balonu uçurmak için listede "Ben uçurayım"a dokun.</span>`
           : `<b>Bugün bütün balonları pilotlar uçuruyor.</b><span>Kendin uçarsan yolcular %${FOUNDER * 100} fazla öder ve görevleri alabilirsin. Listede bir balonda "Ben uçurayım"a dokun.</span>`)
           + (M ? `<span class="${S.selfFly ? '' : 'warn'}">${S.selfFly ? 'Bugünkü görev senin' : 'Bugünkü görev için sepette sen olmalısın'}: ${M.name} (+${eur(M.reward)}).</span>` : '');
       }
