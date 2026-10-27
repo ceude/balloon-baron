@@ -112,6 +112,8 @@ struct IntroView: View {
         }
         .onAppear {
             SoundEngine.shared.start()
+            // A new company: the opening film's set builds in the background while the balloon rises.
+            if store.state == nil && !reduceMotion { OpeningLoader.shared.preload() }
         }
         .onDisappear { SoundEngine.shared.burner(false) }
     }
@@ -165,18 +167,35 @@ struct IntroView: View {
         .accessibilityAction { setHold(true) }
     }
 
-    /// "Hold the burner" with a bobbing arrow (`#introHint`).
+    /// "Hold the burner" in a white speech bubble whose notch points at the button, bobbing gently (`#introHint`).
     private var hint: some View {
         TimelineView(.animation) { tl in
-            let k = reduceMotion ? 0 : (1 - cos(tl.date.timeIntervalSinceReferenceDate * 2 * Double.pi / 1.4)) / 2
-            VStack(spacing: 2) {
-                Text(loc("intro.hint")).font(Theme.font(21, .bold, condensed: true)).tracking(0.8)
-                Image(systemName: "chevron.compact.down").font(.system(size: 26, weight: .bold))
-            }
-            .foregroundStyle(Color(hex: "#fff6e6"))
-            .shadow(color: Color(red: 20 / 255, green: 8 / 255, blue: 30 / 255).opacity(0.7), radius: 6)
-            .offset(y: CGFloat(7 * k))
+            // CSS `hint` keyframes: 1.6 s ease-in-out, down 4 pt and back.
+            let k = reduceMotion ? 0 : (1 - cos(tl.date.timeIntervalSinceReferenceDate * 2 * Double.pi / 1.6)) / 2
+            Text(loc("intro.hint"))
+                .font(Theme.font(18, .heavy, condensed: true))
+                .tracking(0.36)
+                .foregroundStyle(Theme.ink)
+                .multilineTextAlignment(.center)
+                .padding(.vertical, 10)
+                .padding(.horizontal, 18)
+                .background(alignment: .bottom) {
+                    ZStack(alignment: .bottom) {
+                        RoundedRectangle(cornerRadius: 16).fill(Color.white)
+                        // the notch: a square turned 45°, half below the bubble, its rounded corner at the tip
+                        UnevenRoundedRectangle(bottomTrailingRadius: 3)
+                            .fill(Color.white)
+                            .frame(width: 14, height: 14)
+                            .rotationEffect(.degrees(45))
+                            .offset(y: 7)
+                    }
+                    .compositingGroup()
+                    .shadow(color: Color(red: 20 / 255, green: 10 / 255, blue: 40 / 255).opacity(0.35), radius: 12, y: 8)
+                }
+                .offset(y: CGFloat(4 * k))
         }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 4)
         .accessibilityHidden(true)
         .transition(.opacity)
     }

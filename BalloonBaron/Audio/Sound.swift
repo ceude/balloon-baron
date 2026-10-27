@@ -40,6 +40,7 @@ final class SoundEngine {
     private var cricketTask: Task<Void, Never>?
     private var lastPop = -10.0
     private var showTask: Task<Void, Never>?
+    private var filmID: Int32 = 0
     private var started = false
     private var inBackground = false
 
@@ -122,6 +123,17 @@ final class SoundEngine {
                 try? await Task.sleep(for: .milliseconds(500))
             }
         }
+    }
+
+    /// The opening film's score (`filmMusic(part)`): wind under everything, a low drone on D whose low-pass opens at the
+    /// sunrise, deep hits with risers, a ney in the Hicaz makam, darbuka in maqsum and strings once the flight gets going.
+    /// `.bed` is the wind and drone alone (under the cards); nil fades everything out. A new part crossfades over 0.8 s.
+    func filmMusic(_ part: FilmPart?) {
+        guard started else { return }
+        filmID &+= 1
+        guard let part else { synth.send(.filmStop); return }
+        synth.send(.filmStart(filmID, part))
+        for n in FilmScore.notes(part) { synth.send(.filmNote(filmID, n)) }
     }
 
     /// Wedding fireworks: a soft thump and a crackle for each burst, about one a second (call it often).
@@ -272,12 +284,146 @@ struct VoiceSpec {
     }
 }
 
+/// The parts of the opening film's score: the flight (A), the lift-off (B), and the bed of wind and drone under the cards.
+enum FilmPart { case a, b, bed }
+
+/// One note of the film score, timed from the part's start: an oscillator (or filtered noise) with an exponential pitch
+/// glide, a vibrato that fades in, a filter sweep and the prototype's `env()` (linear attack, hold, exponential release).
+/// `swell` is the riser's envelope instead: an exponential rise over `attack`, then a 50 ms linear fade.
+struct FilmNote {
+    var noise = false
+    var wave = Wave.sine
+    var f = 440.0, fEnd = 440.0, glide = 0.0
+    var vibRate = 0.0, vibDepth = 0.0, vibRamp = 0.0
+    var filtered = false
+    var filter = FilterKind.lowpass
+    var cutoff = 1000.0, cutoffEnd = 1000.0, sweep = 0.0, q = 1.0
+    var at = 0.0
+    var attack = 0.01, peak = 0.1, hold = 0.0, release = 0.1
+    var swell = false
+    /// When the source stops (seconds after `at`); 0: at the end of its envelope.
+    var stop = 0.0
+}
+
+/// The prototype's `filmMusic` score, note for note.
+private enum FilmScore {
+    /// Hicaz on D: D Eb F# G A Bb C D.
+    static let N: [String: Double] = ["D3": 146.83, "A3": 220, "D4": 293.66, "Eb4": 311.13, "Fs4": 369.99, "G4": 392, "A4": 440, "Bb4": 466.16,
+                                      "C5": 523.25, "D5": 587.33, "Eb5": 622.25, "Fs5": 739.99, "G5": 783.99]
+    /// 84 bpm.
+    static let B = 0.714
+
+    static func notes(_ part: FilmPart) -> [FilmNote] {
+        guard part != .bed else { return [] }
+        var out: [FilmNote] = []
+        func boom(_ at: Double, _ big: Bool) {
+            var o = FilmNote()
+            o.f = big ? 95 : 80; o.fEnd = 30; o.glide = big ? 1.4 : 0.8
+            o.at = at; o.attack = 0.005; o.peak = big ? 0.55 : 0.35; o.hold = 0.05; o.release = big ? 1.8 : 1; o.stop = 2.2
+            out.append(o)
+            var n = FilmNote()
+            n.noise = true; n.filtered = true; n.filter = .lowpass; n.cutoff = 900; n.cutoffEnd = 900
+            n.at = at; n.attack = 0.003; n.peak = big ? 0.25 : 0.15; n.hold = 0.02; n.release = big ? 1.2 : 0.6; n.stop = 1.5
+            out.append(n)
+        }
+        func riser(_ at: Double, _ dur: Double) {
+            var n = FilmNote()
+            n.noise = true; n.filtered = true; n.filter = .bandpass; n.q = 2; n.cutoff = 300; n.cutoffEnd = 4200; n.sweep = dur
+            n.at = at; n.swell = true; n.attack = dur; n.peak = 0.12
+            out.append(n)
+        }
+        func doum(_ at: Double) {
+            var o = FilmNote()
+            o.f = 140; o.fEnd = 62; o.glide = 0.22
+            o.at = at; o.attack = 0.003; o.peak = 0.28; o.hold = 0.01; o.release = 0.3; o.stop = 0.4
+            out.append(o)
+        }
+        func tek(_ at: Double, _ v: Double) {
+            var n = FilmNote()
+            n.noise = true; n.filtered = true; n.filter = .highpass; n.cutoff = 2600; n.cutoffEnd = 2600
+            n.at = at; n.attack = 0.001; n.peak = v; n.hold = 0.005; n.release = 0.07; n.stop = 0.12
+            out.append(n)
+        }
+        /// A ney: breathy, with a vibrato that comes in late.
+        func ney(_ f: Double, _ at: Double, _ dur: Double, _ v: Double = 0.07) {
+            let hold = max(0.05, dur - 0.4)
+            for (wave, mul, gain) in [(Wave.triangle, 1.0, 1.0), (Wave.sine, 2.0, 0.25)] {
+                var o = FilmNote()
+                o.wave = wave; o.f = f * mul; o.fEnd = f * mul
+                o.vibRate = 5.2; o.vibDepth = f * 0.012; o.vibRamp = min(0.6, dur * 0.6)
+                o.at = at; o.attack = 0.12; o.peak = v * gain; o.hold = hold; o.release = 0.35; o.stop = dur + 0.5
+                out.append(o)
+            }
+            var br = FilmNote()
+            br.noise = true; br.filtered = true; br.filter = .bandpass; br.cutoff = f * 2; br.cutoffEnd = f * 2; br.q = 6
+            br.at = at; br.attack = 0.08; br.peak = v * 0.5; br.hold = hold; br.release = 0.3; br.stop = dur + 0.5
+            out.append(br)
+        }
+        func strings(_ fs: [Double], _ at: Double, _ dur: Double, _ v: Double = 0.035) {
+            for fr in fs {
+                for d in [-7.0, 7.0] {
+                    var o = FilmNote()
+                    o.wave = .sawtooth; o.f = fr * pow(2, d / 1200); o.fEnd = o.f
+                    o.filtered = true; o.filter = .lowpass; o.cutoff = 1600; o.cutoffEnd = 1600
+                    o.at = at; o.attack = dur * 0.4; o.peak = v; o.hold = dur * 0.3; o.release = dur * 0.4; o.stop = dur + 0.2
+                    out.append(o)
+                }
+            }
+        }
+        func phrase(_ at: Double, _ notes: [(String, Double)]) {
+            var x = at
+            for (k, l) in notes {
+                if let f = N[k] { ney(f, x, l * B * 0.95) }
+                x += l * B
+            }
+        }
+        /// Darbuka in maqsum: dum, tek, tek, dum, tek over four beats.
+        func maqsum(_ from: Double, _ to: Double, _ v: Double) {
+            var x = from
+            while x < to {
+                for (o, dum) in [(0.0, true), (0.5, false), (1.5, false), (2.0, true), (3.0, false)] {
+                    let at = x + o * B
+                    if at < to { if dum { doum(at) } else { tek(at, v) } }
+                }
+                x += B * 4
+            }
+        }
+        func n(_ k: String) -> Double { N[k] ?? 0 }
+        if part == .a {
+            boom(1, false)
+            phrase(2.6, [("A4", 2), ("Bb4", 1), ("A4", 1), ("G4", 1), ("Fs4", 1), ("G4", 2)])
+            boom(9, false)
+            maqsum(9, 26, 0.07)
+            phrase(10.4, [("D5", 1), ("C5", 0.5), ("Bb4", 0.5), ("A4", 1), ("Bb4", 1), ("A4", 0.5), ("G4", 0.5), ("Fs4", 1), ("Eb4", 1), ("D4", 2)])
+            riser(16.6, 2.9)
+            boom(19.5, true)
+            strings([n("D3"), n("Fs4"), n("A3"), n("D4")], 19.5, 5)
+            strings([146.83 * 1.335, n("Bb4") / 2, n("D4")], 24.2, 4)
+            phrase(19.7, [("A4", 1), ("D5", 1), ("Eb5", 0.5), ("Fs5", 0.5), ("G5", 2), ("Fs5", 0.5), ("Eb5", 0.5), ("D5", 2)])
+            boom(24.5, false)
+            ney(n("D4"), 27.5, 3, 0.05)
+        } else {
+            riser(1.6, 2)
+            boom(3.6, true)
+            maqsum(3.6, 11, 0.08)
+            strings([n("D3"), n("A3"), n("D4"), n("Fs4")], 3.6, 7, 0.03)
+            phrase(4.2, [("D5", 1), ("Eb5", 0.5), ("Fs5", 0.5), ("G5", 1), ("A4", 0.5), ("Bb4", 0.5), ("A4", 1), ("G4", 0.5), ("Fs4", 0.5), ("D5", 2)])
+            boom(5.5, false)
+            boom(10.8, true)
+        }
+        return out
+    }
+}
+
 private enum Command {
     case voice(VoiceSpec)
     case burner(Bool)
     case crowd(Bool)
     case birds(Bool)
     case master(Bool)
+    case filmStart(Int32, FilmPart)
+    case filmNote(Int32, FilmNote)
+    case filmStop
 }
 
 /// RBJ cookbook biquad, transposed direct form II. Q follows Web Audio
@@ -346,6 +492,38 @@ private struct Voice {
     var filter = Biquad()
 }
 
+/// A playing note of the film score (`FilmNote` in samples).
+private struct FilmVoice {
+    var layer: Int32 = 0
+    var noise = false
+    var wave = Wave.sine
+    var start: Int64 = 0
+    var t = 0, end = 1
+    var freq = 440.0, fRatio = 1.0, glide = 0
+    var vibRate = 0.0, vibDepth = 0.0, vibRamp = 1, vibPhase = 0.0
+    var phase = 0.0
+    var filtered = false
+    var kind = FilterKind.lowpass
+    var filter = Biquad()
+    var cutoff = 1000.0, cutoffEnd = 1000.0, sweep = 0, q = 1.0
+    var swell = false
+    var attack = 1, holdEnd = 1, peak = 0.1, gain = 0.0, ratio = 1.0, fadeStep = 0.0
+}
+
+/// One part of the film score while it plays or fades: the wind (noise through a band that wanders), the drone on D and A
+/// behind its low-pass, and the gain its notes play through.
+private struct FilmLayer {
+    var id: Int32 = 0
+    var live = false
+    var t0: Int64 = 0
+    var gain = 0.0, target = 0.0, step = 0.0
+    var endAt = Int64.max
+    var wind = 0.08
+    var opens = false
+    var windBP = Biquad(), droneLP = Biquad()
+    var ph0 = 0.0, ph1 = 0.0, ph2 = 0.0, ph3 = 0.0
+}
+
 /// One crowd "voice": a sawtooth through two moving formant bandpasses.
 private struct CrowdVoice {
     var f0 = 120.0
@@ -402,6 +580,17 @@ private final class Synth {
     private var ctrlCount = 0
     private var cFreq = 0.0, cFormant = 0.0, cEnvOn = 0.0, cEnvOff = 0.0, mSmooth = 0.0
 
+    // the opening film's score: up to three parts at once (one playing, the others fading out) and their notes
+    private let filmCap = 384
+    private let filmVoices: UnsafeMutablePointer<FilmVoice>
+    private var filmCount = 0
+    private let layerCap = 3
+    private let layers: UnsafeMutablePointer<FilmLayer>
+    private var filmActive = false
+    private var filmCtrl = 0
+    /// The prototype's score peaks near full scale; a little headroom on a phone speaker, like the burner.
+    private let filmLevel = 0.8
+
     init() {
         pending = .allocate(capacity: cmdCap)
         pending.initialize(repeating: .master(true), count: cmdCap)
@@ -409,6 +598,10 @@ private final class Synth {
         local.initialize(repeating: .master(true), count: cmdCap)
         voices = .allocate(capacity: voiceCap)
         voices.initialize(repeating: Voice(), count: voiceCap)
+        filmVoices = .allocate(capacity: filmCap)
+        filmVoices.initialize(repeating: FilmVoice(), count: filmCap)
+        layers = .allocate(capacity: layerCap)
+        layers.initialize(repeating: FilmLayer(), count: layerCap)
         setSampleRate(44100)
     }
 
@@ -416,6 +609,8 @@ private final class Synth {
         pending.deallocate()
         local.deallocate()
         voices.deallocate()
+        filmVoices.deallocate()
+        layers.deallocate()
     }
 
     func send(_ c: Command) {
@@ -439,6 +634,9 @@ private final class Synth {
         cEnvOff = 1 - exp(-1 / (0.025 * sr))
         mSmooth = 1 - exp(-1 / (0.005 * sr))
         voiceCount = 0
+        filmCount = 0
+        for i in 0..<layerCap { layers[i].live = false }
+        filmActive = false
         nextBird = frame + Int64(1.5 * sr)
     }
 
@@ -483,7 +681,180 @@ private final class Synth {
             } else {
                 crowdStep = max(crowdGain, 0.0001) / (0.6 * sr)
             }
+        case .filmStart(let id, let part): startFilm(id, part)
+        case .filmNote(let id, let n): addFilm(id, n)
+        case .filmStop: fadeFilm()
         }
+    }
+
+    // MARK: film score
+
+    /// Every part still playing fades out over 0.8 s and stops a little later (`filmMusic`'s cross-fade).
+    private func fadeFilm() {
+        for i in 0..<layerCap where layers[i].live && layers[i].target > 0 {
+            layers[i].target = 0
+            layers[i].step = max(layers[i].gain, 0.0001) / (0.8 * sr)
+            layers[i].endAt = frame + Int64(1.0 * sr)
+        }
+    }
+
+    private func startFilm(_ id: Int32, _ part: FilmPart) {
+        fadeFilm()
+        // A free slot, or else the part closest to the end of its fade.
+        var slot = -1
+        for i in 0..<layerCap where !layers[i].live { slot = i; break }
+        if slot < 0 {
+            slot = 0
+            for i in 1..<layerCap where layers[i].endAt < layers[slot].endAt { slot = i }
+        }
+        var L = FilmLayer()
+        L.id = id
+        L.live = true
+        L.t0 = frame + Int64(0.15 * sr)
+        L.target = 0.95 * filmLevel
+        L.step = L.target / (1.2 * sr)
+        L.wind = part == .b ? 0.05 : 0.08
+        L.opens = part == .a
+        L.windBP.set(.bandpass, 520, 0.45, sr)
+        L.droneLP.set(.lowpass, 380, 1, sr)
+        layers[slot] = L
+        filmActive = true
+    }
+
+    private func addFilm(_ id: Int32, _ n: FilmNote) {
+        guard filmCount < filmCap else { return }
+        var layer: FilmLayer?
+        for i in 0..<layerCap where layers[i].live && layers[i].id == id { layer = layers[i] }
+        guard let layer else { return }
+        var v = FilmVoice()
+        v.layer = id
+        v.noise = n.noise
+        v.wave = n.wave
+        v.start = layer.t0 + Int64(n.at * sr)
+        let envEnd = n.swell ? n.attack + 0.05 : n.attack + n.hold + n.release
+        v.end = max(1, Int((n.stop > 0 ? min(envEnd, n.stop) : envEnd) * sr))
+        v.freq = n.f
+        v.glide = Int(n.glide * sr)
+        v.fRatio = v.glide > 0 ? pow(n.fEnd / n.f, 1 / Double(v.glide)) : 1
+        v.vibRate = n.vibRate
+        v.vibDepth = n.vibDepth
+        v.vibRamp = max(1, Int(n.vibRamp * sr))
+        v.filtered = n.filtered
+        v.kind = n.filter
+        v.cutoff = n.cutoff
+        v.cutoffEnd = n.cutoffEnd
+        v.sweep = Int(n.sweep * sr)
+        v.q = n.q
+        if n.filtered { v.filter.set(n.filter, n.cutoff, n.q, sr) }
+        v.swell = n.swell
+        v.attack = max(1, Int(n.attack * sr))
+        v.holdEnd = v.attack + Int(n.hold * sr)
+        v.peak = n.peak
+        if n.swell {
+            v.gain = 0.0001
+            v.ratio = pow(n.peak / 0.0001, 1 / Double(v.attack))
+        } else {
+            v.gain = n.peak
+            v.ratio = pow(0.0001 / max(n.peak, 0.0002), 1 / Double(max(1, Int(n.release * sr))))
+        }
+        filmVoices[filmCount] = v
+        filmCount += 1
+    }
+
+    /// Drone pitches: D2 a little sharp and flat, A2, and D1 underneath.
+    private static let droneF = (73.42 * pow(2, -6.0 / 1200), 73.42 * pow(2, 6.0 / 1200), 110 * pow(2, 3.0 / 1200), 36.71)
+
+    /// One sample of the film score: the parts' wind and drone, then their notes.
+    private func filmSample() -> Double {
+        var out = 0.0
+        var live = false
+        let ctrl = filmCtrl == 0
+        filmCtrl = (filmCtrl + 1) & 31
+        for li in 0..<layerCap where layers[li].live {
+            var L = layers[li]
+            if frame >= L.endAt { layers[li].live = false; continue }
+            live = true
+            if L.gain < L.target { L.gain = min(L.target, L.gain + L.step) } else if L.gain > L.target { L.gain = max(L.target, L.gain - L.step) }
+            if frame >= L.t0 {
+                let ts = Double(frame - L.t0) / sr
+                if ctrl {
+                    L.windBP.set(.bandpass, 520 + 260 * sin(2 * Double.pi * 0.09 * ts), 0.45, sr)
+                    if L.opens && ts > 17 && ts < 20.5 { L.droneLP.set(.lowpass, 380 + 720 * min(1, (ts - 17) / 3), 1, sr) }
+                }
+                let w = L.windBP.process(noise()) * L.wind
+                let f = Synth.droneF
+                var d = Synth.osc(.sawtooth, L.ph0, f.0 / sr) + Synth.osc(.sawtooth, L.ph1, f.1 / sr) + Synth.osc(.sawtooth, L.ph2, f.2 / sr)
+                d += sin(2 * Double.pi * L.ph3)
+                L.ph0 += f.0 / sr; if L.ph0 >= 1 { L.ph0 -= 1 }
+                L.ph1 += f.1 / sr; if L.ph1 >= 1 { L.ph1 -= 1 }
+                L.ph2 += f.2 / sr; if L.ph2 >= 1 { L.ph2 -= 1 }
+                L.ph3 += f.3 / sr; if L.ph3 >= 1 { L.ph3 -= 1 }
+                out += (w + L.droneLP.process(d) * 0.045 * min(1, ts / 4)) * L.gain
+            }
+            layers[li] = L
+        }
+        var k = 0
+        while k < filmCount {
+            if frame < filmVoices[k].start { k += 1; continue }
+            var v = filmVoices[k]
+            var lg = -1.0
+            for li in 0..<layerCap where layers[li].live && layers[li].id == v.layer { lg = layers[li].gain }
+            if lg < 0 {
+                filmCount -= 1
+                filmVoices[k] = filmVoices[filmCount]
+                continue
+            }
+            var y: Double
+            if v.noise {
+                y = noise()
+            } else {
+                var f = v.freq
+                if v.vibDepth > 0 {
+                    f += v.vibDepth * min(1, Double(v.t) / Double(v.vibRamp)) * sin(2 * Double.pi * v.vibPhase)
+                    v.vibPhase += v.vibRate / sr
+                    if v.vibPhase >= 1 { v.vibPhase -= 1 }
+                }
+                let dt = f / sr
+                y = Synth.osc(v.wave, v.phase, dt)
+                v.phase += dt
+                if v.phase >= 1 { v.phase -= floor(v.phase) }
+                if v.t < v.glide { v.freq *= v.fRatio }
+            }
+            if v.filtered {
+                if v.sweep > 0 && v.t & 31 == 0 {
+                    v.filter.set(v.kind, v.cutoff * pow(v.cutoffEnd / v.cutoff, min(1, Double(v.t) / Double(v.sweep))), v.q, sr)
+                }
+                y = v.filter.process(y)
+            }
+            let g: Double
+            if v.swell {
+                if v.t < v.attack {
+                    v.gain *= v.ratio
+                } else {
+                    if v.fadeStep == 0 { v.fadeStep = max(v.gain, 0.0001) / (0.05 * sr) }
+                    v.gain = max(0, v.gain - v.fadeStep)
+                }
+                g = v.gain
+            } else if v.t < v.attack {
+                g = v.peak * Double(v.t) / Double(v.attack)
+            } else if v.t < v.holdEnd {
+                g = v.peak
+            } else {
+                v.gain *= v.ratio
+                g = v.gain
+            }
+            out += y * g * lg
+            v.t += 1
+            if v.t >= v.end {
+                filmCount -= 1
+                filmVoices[k] = filmVoices[filmCount]
+            } else {
+                filmVoices[k] = v
+                k += 1
+            }
+        }
+        if !live { filmActive = false; filmCount = 0 }
+        return out
     }
 
     private func add(_ s: VoiceSpec) {
@@ -571,6 +942,9 @@ private final class Synth {
                     else { burnGain = max(burnTarget, burnGain - burnStep) }
                 }
                 if burnGain > 0 { mono += burnBP.process(noise()) * burnGain }
+
+                // the opening film's score
+                if filmActive { mono += filmSample() }
 
                 // one-shot voices
                 var k = 0

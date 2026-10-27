@@ -34,8 +34,9 @@ struct RootView: View {
     var body: some View {
         ZStack {
             Theme.sky.ignoresSafeArea()
-            if store.game == nil {
-                if !store.showIntro { SetupView() }
+            if store.game == nil || store.openingFilm {
+                // A new company: the opening film (or the 2D setup without it), until its lift-off hands over to the town.
+                if !store.showIntro { OpeningGate() }
             } else {
                 HomeView()
             }
