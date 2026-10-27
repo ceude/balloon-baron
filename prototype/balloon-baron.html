@@ -301,7 +301,9 @@ body.mhold #town{z-index:3;background:transparent}
 .est b{color:var(--ink);font-family:var(--cond);font-size:17px}
 .btns{display:flex;gap:10px}#auto{flex:0 0 auto;padding:4px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1}#auto .ffw svg{width:20px;height:15px;display:block;margin-bottom:2px}.autobar .ffw svg{width:16px;height:11px;display:inline-block}#auto small{font:800 12px 'Barlow Condensed',sans-serif;letter-spacing:.3px}
 .autobar{position:absolute;left:50%;top:50%;transform:translate(-50%,-12px);opacity:0;z-index:7;display:flex;align-items:baseline;gap:8px;padding:9px 16px;border-radius:999px;background:rgba(27,24,64,.86);color:#fff8e6;font:600 14px Barlow,sans-serif;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.25);transition:opacity .3s,transform .3s;pointer-events:none}.autobar.on{opacity:1;transform:translate(-50%,0)}.autobar b{font:800 16px 'Barlow Condensed',sans-serif}.autobar small{opacity:.65;font-size:11.5px}.autobar .pos{color:#7be0a0;font-style:normal}.autobar .neg{color:#ff9a86;font-style:normal}
-.autoshield{position:absolute;inset:0;z-index:6}body.night .autobar{opacity:0}
+.autoshield{position:absolute;inset:0;z-index:6}
+.openskip{position:fixed;top:calc(env(safe-area-inset-top) + 14px);right:14px;z-index:40;padding:7px 14px;border-radius:999px;background:rgba(11,8,24,.55);color:#fff6e6;border:1px solid rgba(255,246,230,.35);font:700 14px Barlow,sans-serif}
+.opentalk{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 9%);transform:translate(-50%,16px);opacity:0;z-index:40;width:min(92vw,440px);display:flex;flex-direction:column;gap:10px;transition:opacity .5s,transform .5s}.opentalk.on{opacity:1;transform:translate(-50%,0)}.opentalk .hzline{background:rgba(255,250,243,.96);box-shadow:0 10px 26px rgba(0,0,0,.3)}.opentalk .big{width:100%}body.night .autobar{opacity:0}
 .big{flex:1;height:54px;border-radius:16px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:22px;letter-spacing:.01em;
   box-shadow:0 5px 0 var(--coral-d);transition:transform .06s, box-shadow .06s}
 .big:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--coral-d)}
@@ -3642,17 +3644,121 @@ function drawIntro(dt) {
   }
   if (SC.title) storyTitle();
 }
+/* ---------- the opening (v119) ----------
+   A new game opens like a film, in the game's own town: after the title's balloon rises out of frame, a drone shot comes
+   in high over the valley before dawn, the windows still lit, and sweeps down over the town as the sun comes up, low over
+   the empty launch field, where an old basket and a folded envelope wait. Hezarfen says one line; you name the company
+   and pick its colours. Then the envelope fills on the field, the balloon lifts and the camera follows it up until the
+   whole town lies below: the company's name, Day 1, and the game. Letterboxed, few words; "Geç" skips. */
+let OPEN = null;
+/* camera keys: [second, gx, gy (what the camera looks at), zoom, where that point sits on screen (x, y), horizon] */
+const OPEN_IN = [[0, 7.5, 7.5, .15, .5, .84, .6], [6, 6.6, 7.2, .3, .54, .72, .34], [12, 3.1, 5.4, .8, .44, .6, .08]];
+const OPEN_FIELD = [3.4, 5.8]; /* the old basket */
+function startOpen() {
+  OPEN = { t0: T, out: false, talk: false, burn: false };
+  mode = 'open'; hideAll(); $('hud').hidden = true; $('setup').hidden = true;
+  NIGHT_K = .6; SUNRISE = 0;
+  openSkip(() => openTalk());
+}
+function openSkip(fn) {
+  let b = $('openSkip'); if (!b) { b = h('button', 'openskip', 'Geç ›'); b.id = 'openSkip'; document.body.appendChild(b); }
+  b.hidden = false; b.onclick = () => { sfx('click'); fn(); };
+}
+function openEnd() { for (const id of ['openSkip', 'openTalk']) { const e = $(id); if (e) e.remove(); } }
+function openCam(keys, t, w, hh) {
+  let i = 0; while (i < keys.length - 2 && t > keys[i + 1][0]) i++;
+  const a = keys[i], b = keys[i + 1], k = easeIO3((t - a[0]) / (b[0] - a[0])), L = j => lerp(a[j], b[j], k);
+  const z = L(3), c = tiso(L(1), L(2));
+  return { z, ox: w * L(4) - c[0] * z, oy: hh * L(5) - c[1] * z, hzFix: hh * L(6), noLabels: true };
+}
+/* Hezarfen's one line, low on the screen, then the name card over the town */
+function openTalk() {
+  if (!OPEN || OPEN.talk) return;
+  OPEN.talk = true; OPEN.t0 = Math.min(OPEN.t0, T - 12); NIGHT_K = 0; SUNRISE = .3;
+  const d = h('div', 'opentalk'); d.id = 'openTalk';
+  d.innerHTML = `<div class="hzline">${HEZ_AV}<span><b>Hezarfen Usta:</b> Bu tarla yıllardır bir balon bekliyor evlat. Sepet hazır, kumaş hazır. Bir tek adı eksik.</span></div>`;
+  const go = h('button', 'big', 'Adını koyalım'); go.onclick = () => { sfx('click'); d.remove(); const s = $('openSkip'); if (s) s.hidden = true; showSetup(1); };
+  d.appendChild(go); document.body.appendChild(d); requestAnimationFrame(() => d.classList.add('on'));
+  const s = $('openSkip'); if (s) s.hidden = true;
+}
+function openLiftOff() {
+  $('setup').hidden = true; mode = 'open';
+  Object.assign(OPEN, { out: true, t0: T, burn: false }); SUNRISE = .3;
+  openSkip(openBegin);
+}
+function openBegin() {
+  if (!OPEN) return;
+  OPEN = null; openEnd(); NIGHT_K = 0; SUNRISE = 0; burner(false);
+  $('fade').classList.add('on');
+  setTimeout(() => { $('fade').classList.remove('on'); $('hud').hidden = false; tab = 'plan'; startDay(); }, 480);
+}
+/* what the film adds to the town: the old basket and envelope on the field; then our balloon filling and rising */
+function openItems() {
+  const O = OPEN, out = [];
+  if (!O.out) {
+    out.push({ depth: OPEN_FIELD[0] + OPEN_FIELD[1], draw: () => {
+      const p = tiso(...OPEN_FIELD);
+      blobShadow(p[0] + 10, p[1] + 4, 40, 10, .18);
+      /* the envelope laid out on the grass, in faded old colours */
+      ctx.fillStyle = '#b7834f'; ctx.beginPath(); ctx.ellipse(p[0] + 34, p[1] - 4, 44, 11, -.2, 0, 7); ctx.fill();
+      ctx.strokeStyle = 'rgba(90,50,30,.35)'; ctx.lineWidth = 2; for (let i = -2; i <= 2; i++) { ctx.beginPath(); ctx.moveTo(p[0] + 4, p[1] - 2 + i * 2); ctx.quadraticCurveTo(p[0] + 34, p[1] - 6 + i * 4, p[0] + 74, p[1] - 12 + i * 3); ctx.stroke(); }
+      /* the wicker basket on its side */
+      ctx.fillStyle = '#7a4e2a'; rrect(p[0] - 16, p[1] - 22, 26, 20, 3); ctx.fill();
+      ctx.strokeStyle = '#5a3418'; ctx.lineWidth = 1.2; for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(p[0] - 16, p[1] - 22 + i * 5); ctx.lineTo(p[0] + 10, p[1] - 22 + i * 5); ctx.stroke(); }
+      ctx.fillStyle = '#3a2a22'; ctx.fillRect(p[0] - 13, p[1] - 30, 2, 8); ctx.fillRect(p[0] + 5, p[1] - 30, 2, 8);
+    } });
+    return out;
+  }
+  const t = T - O.t0, fill = clamp(t / 3, 0, 1), lift = easeIO3((t - 3) / 7) * 640, p = tiso(...OPEN_FIELD), R = 8 + 26 * ease3(fill);
+  O.burn = t < 9.5 && (t < 3 || Math.sin(t * 3) > -.2);
+  out.push({ depth: lift > 30 ? 99 : OPEN_FIELD[0] + OPEN_FIELD[1],
+    draw: () => {
+      blobShadow(p[0] + 8 + lift * .1, p[1] + 4, 28 * (1 - lift / 900), 8, .18 * (1 - lift / 800));
+      if (O.burn) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(p[0], p[1] - lift - R, 0, p[0], p[1] - lift - R, R * 2.6); g.addColorStop(0, 'rgba(255,170,70,.45)'); g.addColorStop(1, 'rgba(255,170,70,0)'); ctx.fillStyle = g; ctx.fillRect(p[0] - R * 3, p[1] - lift - R * 4, R * 6, R * 6); ctx.restore(); }
+      balloon(p[0], p[1] - lift + (1 - fill) * R * .6, R, myCol()[0], myCol()[1], O.burn, 1);
+    } });
+  return out;
+}
+function drawOpen() {
+  const O = OPEN; if (!O) { ctx.fillStyle = '#1b1840'; ctx.fillRect(0, 0, W, H); return; }
+  const t = T - O.t0;
+  let V;
+  if (!O.out) {
+    V = openCam(OPEN_IN, t, W, H); V.ox += Math.sin(T * .22) * 10 * Math.min(1, t / 12);
+    /* before dawn the windows are lit; the sun comes up as the camera comes down */
+    if (!O.talk) { NIGHT_K = .6 * clamp(1 - (t - 2) / 6, 0, 1); SUNRISE = .6 * clamp((t - 3) / 5, 0, 1) * (1 - .5 * clamp((t - 9) / 3, 0, 1)); }
+    if (t > 12.5 && !O.talk) openTalk();
+  } else {
+    /* the lift-off: the camera holds on the field while it fills, then follows the balloon up and pulls back over the town */
+    const k = easeIO3((t - 2.5) / 7.5), lift = easeIO3((t - 3) / 7) * 640, z = lerp(.85, .3, k), P = tiso(...OPEN_FIELD);
+    V = { z, ox: W * .5 - P[0] * z, oy: H * lerp(.66, .36, k) - (P[1] - lift * .85) * z, hzFix: H * lerp(.08, .44, k), noLabels: true };
+  }
+  V.extra = openItems;
+  renderTown(V, W, H, DPR, 0);
+  /* letterbox and the few words, in screen space */
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+  const bar = H * .07 * clamp(O.out ? 1 - (t - 10) : t * 1.5, 0, 1);
+  ctx.fillStyle = '#0b0818'; ctx.fillRect(0, 0, W, bar); ctx.fillRect(0, H - bar, W, bar);
+  const card = (a, big, small, y) => { if (a <= 0) return; ctx.save(); ctx.globalAlpha = Math.min(1, a); ctx.textAlign = 'center'; ctx.shadowColor = 'rgba(0,0,0,.55)'; ctx.shadowBlur = 14;
+    ctx.fillStyle = '#fff6e6'; ctx.font = `800 ${Math.round(Math.min(48, W * .11))}px "Barlow Condensed", sans-serif`; ctx.letterSpacing = `${Math.round(Math.min(10, W * .02))}px`; ctx.fillText(big, W / 2, y);
+    ctx.letterSpacing = '0px'; ctx.fillStyle = '#ffd27a'; ctx.font = `italic 600 ${Math.round(Math.min(20, W * .048))}px "Playfair Display", serif`; ctx.fillText(small, W / 2, y + Math.min(32, W * .075)); ctx.restore(); };
+  const win = (t0, t1) => clamp(Math.min((t - t0) * 1.2, (t1 - t) * 1.2), 0, 1);
+  if (O.out && t > 11.5) openBegin(); /* after this frame: the film hands over to the game */
+  if (!O.out) {
+    card(win(1, 5), 'KAPADOKYA', 'Şafaktan hemen önce', H * .3);
+    card(win(6.5, 10.5), 'GÖREME', 'Kasabanın kenarında boş bir tarla', H * .26);
+  } else {
+    card(win(3.5, 11.5), S.company.toLocaleUpperCase('tr'), 'Gün 1', H * .24);
+  }
+}
 function showSetup(step) {
   const m = $('setup'); m.replaceChildren(); hideAll(); m.hidden = false; $('hud').hidden = true;
   const c = h('div', 'card');
-  if (step === 0) { /* v112: a new game opens on the dream; the story can be skipped */
-    mode = 'setup'; m.hidden = true;
-    SC.title = { big: 'BİR HAYAL', small: 'Gün 0', t0: T }; setTimeout(() => { if (mode === 'setup' && !S.company) storySay('hez', 'Merhaba evlat, ben Hezarfen. Bir zamanlar Galata Kulesi\'nden kanat takıp uçtum, derler. Her büyük balon şirketi bir hayalle başlar. Senin cebinde biraz para, kafanda kocaman bir hayal var. Önce hayalini koyalım ortaya: şirketinin adı ne olacak, balonların hangi renkte uçacak?',
-      [['Hayalimi kuralım', () => { S.story = { pDay: 0, saved: STORY.pocket, pays: [] }; showSetup(1); }, 'big'], ['Hikâyeyi atla, şirketimi kur', () => { delete S.story; showSetup(1); }, 'ghost']]); }, 2300);
-    return;
+  if (step === 0) { /* v119: a new game opens on the film (startOpen); the old story stays out */
+    startOpen(); return;
   }
   if (step === 1) {
-    mode = 'setup';
+    mode = OPEN ? 'open' : 'setup'; /* during the opening the town stays on screen behind the card */
     c.appendChild(h('h1', null, S.story ? 'Hayalindeki şirket' : 'Gökyüzü seni bekliyor'));
     c.appendChild(h('p', 'lead', S.story ? 'Bir gün kapında, tabelanda bu isim yazacak. Ne olsun?' : 'Balon imparatorluğunu kurmaya başlamak için afilli bir isme ihtiyacımız var.'));
     const inp = document.createElement('input'); inp.className = 'field'; inp.id = 'coName'; inp.maxLength = 24; inp.placeholder = 'Şirketinin adı'; inp.value = setupName || S.company || '';
@@ -3678,7 +3784,9 @@ function showSetup(step) {
       S.company = setupName; S.colors = PICK[pickI].c;
       if (S.story) { S.rivals.forEach(r => { if (r.col.toLowerCase() === S.colors[0].toLowerCase()) { const f = RIVAL_ALT.find(a => a[0] !== S.colors[0] && !S.rivals.some(o => o.col === a[0])); if (f) { r.col = f[0]; r.col2 = f[1]; } } }); storyBegin(); return; }
       if (!S.reviews.length) S.reviews.unshift({ n: 'Mehmet', c: 'Göreme', stars: 5, t: `${S.company} turlara başlıyormuş. Sonunda galiba düzgün bir şirket geldi!`, day: S.day });
-      S.rivals.forEach(r => { if (r.col.toLowerCase() === S.colors[0].toLowerCase()) { const f = RIVAL_ALT.find(a => a[0] !== S.colors[0] && !S.rivals.some(o => o.col === a[0])); if (f) { r.col = f[0]; r.col2 = f[1]; } } }); $('hud').hidden = false; tab = 'plan'; startDay(); };
+      S.rivals.forEach(r => { if (r.col.toLowerCase() === S.colors[0].toLowerCase()) { const f = RIVAL_ALT.find(a => a[0] !== S.colors[0] && !S.rivals.some(o => o.col === a[0])); if (f) { r.col = f[0]; r.col2 = f[1]; } } });
+      if (OPEN) { openLiftOff(); return; }
+      $('hud').hidden = false; tab = 'plan'; startDay(); };
     row.append(back, go); c.appendChild(row);
   }
   m.appendChild(c);
@@ -5478,6 +5586,7 @@ const SWATCHES = ['#ff5e3a', '#ffc23d', '#2b2350', '#14a39a', '#ff6fa8', '#5aa9e
 const designOf = b => b && b.design && (S.designs || []).find(d => d.id === b.design);
 /* v110: the town's launch field shows six balloons: shaped envelopes first, then other designs, then the flagship */
 function fieldBalloons() {
+  if (OPEN) return [];
   const rank = b => { const d = designOf(b); return d && d.shape ? 0 : d ? 1 : b.id === S.flag ? 2 : 3; };
   return S.balloons.map((b, i) => [b, i]).sort((x, y) => rank(x[0]) - rank(y[0]) || x[1] - y[1]).slice(0, 6).map(x => x[0]);
 }
@@ -8241,9 +8350,10 @@ function frame(now) {
   if (mode === 'collect') updateCollect(dt);
   if (mode === 'collect' && !crowdNode) crowd(true);
   if (mode !== 'collect' && crowdNode) crowd(false);
-  const wantBurn = (mode === 'intro' && INTRO.hold && !INTRO.out) || (mode === 'story' && SC.kind === 'inflate' && INTRO.hold) || (mode === 'flight' && FL && FL.burning && FL.fuel > 0 && !FL.done);
+  const wantBurn = (mode === 'open' && OPEN && OPEN.burn)
+    || (mode === 'intro' && INTRO.hold && !INTRO.out) || (mode === 'story' && SC.kind === 'inflate' && INTRO.hold) || (mode === 'flight' && FL && FL.burning && FL.fuel > 0 && !FL.done);
   if (wantBurn !== burnState) { burnState = wantBurn; burner(wantBurn); }
-  if (mode === 'intro' || mode === 'setup' || mode === 'pick') drawIntro(dt); else if (mode === 'story') drawStory(dt); else draw(dt);
+  if (mode === 'intro' || mode === 'setup' || mode === 'pick') drawIntro(dt); else if (mode === 'story') drawStory(dt); else if (mode === 'open') drawOpen(); else draw(dt);
   if (S) updateChirp(dt);
   requestAnimationFrame(frame);
 }
