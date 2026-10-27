@@ -163,7 +163,7 @@ Başarımlar oyunda kartpostal olarak kutlanıyor, bu yüzden Game Center afişi
   - Kullanıcıya bağlı değil.
   - İzleme için kullanılmıyor.
   - Amaç: *Analiz*.
-  - Bu sadece TelemetryDeck App ID girilince geçerli. Girilmezse "Veri toplanmıyor" seçilir.
+  - TelemetryDeck App ID girildi (Ekim 2026), bu yüzden bu seçenek işaretlenir.
 - **Satın almalar:** Apple yönetir, uygulama bu veriyi toplamaz.
 - **Game Center:** Apple'ın kendi hizmeti. Uygulama oyuncu kimliğini sunucuya göndermez.
 

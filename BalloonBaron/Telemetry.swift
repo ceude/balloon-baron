@@ -8,8 +8,9 @@ import BalloonBaronCore
 /// leaves the phone. Off while `appID` is empty.
 enum Telemetry {
     /// The TelemetryDeck app id (dashboard → app settings). Empty: nothing is sent.
-    static let appID = ""
-    private static let endpoint = URL(string: "https://nom.telemetrydeck.com/v2/")!
+    static let appID = "DDCDA4AF-F981-44C6-854E-F92166114D47"
+    /// The organisation's namespace on TelemetryDeck (dashboard → setup); signals go to its own ingest path.
+    private static let endpoint = URL(string: "https://nom.telemetrydeck.com/v2/namespace/com.cud/")!
     private static let session = UUID().uuidString
 
     private static let user: String = {
