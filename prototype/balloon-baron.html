@@ -5358,7 +5358,7 @@ function iapBuy(k, then) {
     fig: `Balon Şöleni'nin finalinde balonların gökyüzünde bu figürü çizer${k === 'finitial' ? `: şirketinin baş harfi, ${esc((S.company || 'B').trim()[0].toLocaleUpperCase('tr'))}` : ''}. Kalıcıdır; şölen kartından istediğin figürü seçersin.`,
     pack: k === 'figPack' ? 'Balon Şöleni\'nin finali için beş figür: Yıldız, Lale, Kelebek, Girdap ve şirketinin baş harfi. Kalıcıdır; şölen kartından istediğini seçersin.' : 'Kasabana dört kalıcı süs: güvercin sürüsü, karşılama kemeri, bahçe kafe ve kilim sergisi. Hepsi kasabada görünür, gece kendi ışıkları yanar.',
     unlock: 'Kapadokya\'nın ötesi: Amerika\'da Albuquerque, ardından Mısır\'da Luksor ve gelecek bütün bölgeler. Bölgelere girişin oyun içi bedeli yine holding kasasından ödenir.',
-    supporter: 'Dünya Turu, Kurucu Paketi\'ndeki her şey ve kasabanda bir destekçi plaketi. Bu oyunu tek başına yapan geliştiriciye en büyük destek.',
+    supporter: 'Dünya Turu, Kurucu Paketi\'ndeki her şey ve kasabanda bir destekçi plaketi. Oyunu geliştirenlere en büyük destek.',
     bundle: `Çarşıdaki her şey tek seferde: desenler, şekilli balonlar, kasaba süsleri ve şölen figürleri. Henüz sahip olmadığın ${left} ürünün hepsi.`
   }[K.kind]));
   if (K.kind === 'bundle') c.appendChild(h('div', 'dealrow', `<s>${priceTxt(bundleWas())}</s><b>${K.price}</b><span>%${bundleOff()} indirim</span>`));
