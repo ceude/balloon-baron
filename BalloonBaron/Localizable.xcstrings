@@ -43795,37 +43795,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eines deiner Partnerhotels wechselt zur Konkurrenz."
+            "value": "Eines deiner Partnerhotels wechselt zur Konkurrenz und arbeitet 30 Tage nicht mit dir."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "One of your partner hotels goes to the rival."
+            "value": "One of your partner hotels goes to the rival and won't work with you for 30 days."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uno de tus hoteles asociados se va con el rival."
+            "value": "Uno de tus hoteles asociados se va con el rival y no trabajará contigo durante 30 días."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "提携ホテルの一つがライバルに移る。"
+            "value": "提携ホテルの一つがライバルに移り、30日間は取引できない。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "제휴 호텔 하나가 경쟁사로 넘어갑니다."
+            "value": "제휴 호텔 하나가 경쟁사로 넘어가 30일 동안 거래하지 않습니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Anlaşmalı otellerinden biri rakibe geçer."
+            "value": "Anlaşmalı otellerinden biri rakibe geçer, 30 gün seninle çalışmaz."
           }
         }
       }

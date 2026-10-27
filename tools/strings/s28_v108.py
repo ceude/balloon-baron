@@ -25,9 +25,9 @@ add("issue.accident.a.live", "Popularity drops a little, but the story is over."
 add("issue.accident.b.live", "The press keeps at it; popularity drops more.", "Basın üstüne gider, popülerlik daha çok düşer.",
     "Die Presse bleibt dran, die Beliebtheit sinkt stärker.", "La prensa insiste y la popularidad baja más.",
     "マスコミが追及を続け、人気がさらに下がる。", "언론이 계속 파고들어 인기가 더 떨어집니다.")
-add("issue.hotel.b.live", "One of your partner hotels goes to the rival.", "Anlaşmalı otellerinden biri rakibe geçer.",
-    "Eines deiner Partnerhotels wechselt zur Konkurrenz.", "Uno de tus hoteles asociados se va con el rival.",
-    "提携ホテルの一つがライバルに移る。", "제휴 호텔 하나가 경쟁사로 넘어갑니다.")
+add("issue.hotel.b.live", "One of your partner hotels goes to the rival and won't work with you for 30 days.", "Anlaşmalı otellerinden biri rakibe geçer, 30 gün seninle çalışmaz.",
+    "Eines deiner Partnerhotels wechselt zur Konkurrenz und arbeitet 30 Tage nicht mit dir.", "Uno de tus hoteles asociados se va con el rival y no trabajará contigo durante 30 días.",
+    "提携ホテルの一つがライバルに移り、30日間は取引できない。", "제휴 호텔 하나가 경쟁사로 넘어가 30일 동안 거래하지 않습니다.")
 add("issue.envelope.a.live", "Paid from the holding; envelopes below 30% are renewed.", "Holding kasasından ödenir, %30 altındaki zarfların yenilenir.",
     "Aus der Holding bezahlt; Hüllen unter 30 % werden erneuert.", "Lo paga el holding; se renuevan las envolturas por debajo del 30 %.",
     "ホールディングスが支払い、30%未満の球皮が交換される。", "지주회사가 내고, 30% 미만인 외피가 교체됩니다.")

@@ -5235,13 +5235,17 @@ const ISSUES = {
   hotel: { t: 'Otel kapışması', d: 'Bir rakip, anlaşmalı otelini kendine çekmeye çalışıyor.', hz: 'Oteller sadık değildir evlat, ama küçük bir jest çoğu zaman yeter.',
     a: ['Ek ödeme yap', 'cost5'], b: ['Bırak gitsin', 'Kazanç kalıcı olarak %5 düşer.'],
     A: () => {}, B: A => { A.base *= .95; },
-    lb: 'Anlaşmalı otellerinden biri rakibe geçer.', LA: () => {}, LB: () => { S.hotels.pop(); } },
+    lb: 'Anlaşmalı otellerinden biri rakibe geçer, 30 gün seninle çalışmaz.', LA: () => {},
+    /* the hotel goes to the most popular rival and stays with them a month, so letting it go and signing it again
+       the same day (3 days' fee instead of the payment) is no way out */
+    LB: () => { const id = S.hotels.pop(); if (id == null) return; const r = S.rivals.filter(x => x.alive).sort((a, b) => b.rep - a.rep)[0]; S.hotelTaken[id] = { by: r ? r.name : '', until: S.day + HOTEL_LOST_DAYS }; } },
   envelope: { t: 'Yıpranan zarflar', d: 'Balonların zarfları yıpranıyor, müdür yenileme bütçesi istiyor.', hz: 'Eski kumaş sert rüzgârda kazaya davetiyedir, unutma.',
     a: ['Bütçeyi onayla', 'cost8'], b: ['Ertele', '10 gün kazanç %12 düşer.'],
     A: () => {}, B: A => { A.mods.push({ mult: .88, until: S.day + 10 }); },
     la: 'Holding kasasından ödenir, %30 altındaki zarfların yenilenir.', lb: 'Yıpranmış zarflar uçmaya devam eder.',
     LA: () => { S.balloons.forEach(b => { if (cond(b) < .3) b.flights = 0; }); }, LB: () => {} }
 };
+const HOTEL_LOST_DAYS = 30;
 const issueCost = (A, k) => k === 'cost5' ? Math.round(A.base * 5 / 100) * 100 : k === 'cost8' ? Math.round(A.base * 8 / 100) * 100 : 0;
 function autoRegions() {
   let total = 0;

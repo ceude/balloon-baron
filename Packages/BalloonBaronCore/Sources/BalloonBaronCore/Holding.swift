@@ -333,7 +333,13 @@ extension Game {
         case (.accident, .a): state.rep = max(0.4, state.rep - 0.05)
         case (.accident, .b): state.rep = max(0.4, state.rep - 0.1)
         case (.hotel, .a): break
-        case (.hotel, .b): if !state.hotelDeals.isEmpty { state.hotelDeals.removeLast() }
+        case (.hotel, .b):
+            // The hotel goes to the most popular rival for a month, so letting it go and signing it again the same
+            // day (three days' fee instead of the payment) is no way out.
+            if let h = state.hotelDeals.popLast() {
+                let r = state.rivals.filter(\.alive).max { $0.rep < $1.rep }
+                state.hotelLocks[h] = HotelLock(rival: r?.name ?? "", until: d + Rules.hotelLostDays)
+            }
         case (.envelope, .a):
             for i in state.balloons.indices where state.condition(state.balloons[i]) < 0.3 { state.balloons[i].flights = 0 }
         case (.envelope, .b): break
