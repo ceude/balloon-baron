@@ -54,6 +54,31 @@ final class HotelSaleTests: XCTestCase {
         XCTAssertNil(g.hotelRivalOwner(h), "yours again")
     }
 
+    func testBankruptOwnerOffersTheHotelCheap() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 4)
+        let h = Hotel.allCases[1]
+        g.state.ownHotels = [h]
+        XCTAssertTrue(g.sellHotel(h))
+        let owner = g.hotelRivalOwner(h)!
+        g.rivalGone(owner, takenOver: false)
+        XCTAssertNil(g.hotelRivalOwner(h))
+        XCTAssertEqual(g.pendingHotelBargain?.price, jsRound(Double(h.buyPrice) * 0.7 / 100) * 100)
+        g.state.cash = 1_000_000
+        XCTAssertTrue(g.answerHotelBargain(buy: true))
+        XCTAssertEqual(g.state.ownHotels, [h])
+        XCTAssertNil(g.pendingHotelBargain)
+    }
+
+    func testTakingOverTheOwnerBringsTheHotelBack() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 4)
+        let h = Hotel.allCases[0]
+        g.state.ownHotels = [h]
+        XCTAssertTrue(g.sellHotel(h))
+        g.rivalGone(g.hotelRivalOwner(h)!, takenOver: true)
+        XCTAssertEqual(g.state.ownHotels, [h])
+        XCTAssertNil(g.pendingHotelBargain)
+    }
+
     func testOldSavesWithoutHotelOwnersStillLoad() throws {
         let g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 4)
         var json = String(data: try JSONEncoder().encode(g.state), encoding: .utf8)!

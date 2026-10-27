@@ -366,6 +366,37 @@ extension Game {
         hotelRivalOwner(h) == nil ? h.buyPrice : jsRound(Double(h.buyPrice) * Rules.hotelRivalMarkup / 100) * 100
     }
 
+    /// A rival left the market: the hotels it bought from you come to you if you bought the company (`takenOver`),
+    /// otherwise each is offered to you once, cheap (`pendingHotelBargain`); declined, it's free on the market again.
+    mutating func rivalGone(_ name: String, takenOver: Bool) {
+        guard let owners = state.hotelOwners else { return }
+        for (h, n) in owners where n == name {
+            state.hotelOwners?[h] = nil
+            if takenOver {
+                if !state.ownHotels.contains(h) { state.ownHotels.append(h) }
+            } else {
+                let price = jsRound(Double(h.buyPrice) * Rules.hotelBargainShare / 100) * 100
+                state.hotelBargains = (state.hotelBargains ?? []) + [HotelBargain(hotel: h, rival: name, price: price)]
+            }
+        }
+    }
+
+    /// The bankrupt rival's hotel waiting for an answer.
+    public var pendingHotelBargain: HotelBargain? { state.hotelBargains?.first }
+
+    /// Buy the bargain hotel (if the cash is there) or pass; either way the offer goes.
+    @discardableResult
+    public mutating func answerHotelBargain(buy: Bool) -> Bool {
+        guard let b = state.hotelBargains?.first else { return false }
+        state.hotelBargains?.removeFirst()
+        guard buy, state.cash >= b.price, !state.ownHotels.contains(b.hotel) else { return false }
+        state.cash -= b.price
+        state.ownHotels.append(b.hotel)
+        state.hotelDeals.removeAll { $0 == b.hotel }
+        state.hotelLocks[b.hotel] = nil
+        return true
+    }
+
     /// Sells an owned hotel to the strongest rival: the money comes at once, its room income and guests stop, and
     /// from then on it can only be bought back from that rival.
     @discardableResult
@@ -464,6 +495,7 @@ extension Game {
         guard state.rivals.indices.contains(i), let price = state.rivals[i].offer, state.rivals[i].alive, state.cash >= price else { return false }
         state.cash -= price
         state.rivals[i].balloons.forEach { addBalloon($0, secondHand: true) }
+        rivalGone(state.rivals[i].name, takenOver: true)
         state.rivals[i].alive = false
         state.rivals[i].deadDay = state.day
         state.rivals[i].forSale = nil

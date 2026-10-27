@@ -124,6 +124,13 @@ public struct Winter: Codable, Equatable, Sendable {
     public var start: Int, end: Int
 }
 
+/// A bankrupt rival's hotel, offered to you at `Rules.hotelBargainShare` of its price.
+public struct HotelBargain: Codable, Equatable, Sendable {
+    public var hotel: Hotel
+    public var rival: String
+    public var price: Int
+}
+
 public struct HotelLock: Codable, Equatable, Sendable {
     public var rival: String
     public var until: Int

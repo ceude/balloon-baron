@@ -1687,6 +1687,7 @@ function nextPopup() {
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
   if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; issueScene(); return; }
   if (S.poach) { showPoach(); return; }
+  if (S.hotelBargains && S.hotelBargains.length) { showHotelBargain(); return; }
   checkDeals();
 }
 let hezTimer = 0;
@@ -1995,6 +1996,7 @@ function mergeRivals(shr, rev) {
   const name = `${a.name.split(' ')[0]} & ${b.name.split(' ')[0]} Balloons`;
   const big = size(a) >= size(b) ? a : b, other = big === a ? b : a;
   const cash = Math.round((Math.max(0, a.cash) + Math.max(0, b.cash)) * 1.3 + 40000); /* yatırımcılar da para koyar */
+  for (const id in (S.hotelOwner || {})) if (S.hotelOwner[id] === a.name || S.hotelOwner[id] === b.name) S.hotelOwner[id] = name;
   S.mergeNews = { a: a.name, b: b.name, name, n: a.balloons.length + b.balloons.length, cash, share: Math.round(shr * 100), rep: Math.max(a.rep, b.rep), col: big.col, col2: big.col2, col3: other.col };
   Object.assign(big, { name, style: a.style === 'safe' || b.style === 'safe' ? 'safe' : 'mid', balloons: a.balloons.concat(b.balloons), dmg: a.dmg.concat(b.dmg), cash, rep: Math.max(a.rep, b.rep), price: Math.round((a.price + b.price) / 2), lowDays: 0, highDays: 0, offer: null, offerSeen: false, offerNo: false, warChestUntil: S.day + 20, merged: null, fly: [] });
   Object.assign(other, { alive: false, deadDay: S.day, forSale: null, offer: null, merged: name, fly: [] });
@@ -2293,7 +2295,7 @@ function simRivals(rev) {
       rev.push(`${r.name} zor durumda, bir balonunu sattı.`);
     }
     if (r.cash < -10000 && S.day >= 5) {
-      r.alive = false; r.deadDay = S.day; r.offer = null; r.offerSeen = false; r.offerNo = false; r.saleSeen = false; r.saleNo = false;
+      rivalGone(r.name, false); r.alive = false; r.deadDay = S.day; r.offer = null; r.offerSeen = false; r.offerNo = false; r.saleSeen = false; r.saleNo = false;
       const v = r.balloons.reduce((a, s) => a + SIZES[s].cost, 0) * .45;
       r.forSale = { sizes: r.balloons.slice(), price: Math.round(v / 100) * 100 };
       S.rivalBusts = (S.rivalBusts || 0) + 1;
@@ -3698,7 +3700,7 @@ function openAdPicker(b) {
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
 }
-function takeOver(r) { setTimeout(nextPopup, 300); S.cash -= r.offer; r.balloons.forEach(z => addUsedBalloon(z)); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; assignPilots(); $('menu').hidden = true; refresh(); }
+function takeOver(r) { setTimeout(nextPopup, 300); S.cash -= r.offer; r.balloons.forEach(z => addUsedBalloon(z)); rivalGone(r.name, true); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; assignPilots(); $('menu').hidden = true; refresh(); }
 function buyFleet(r) { S.cash -= r.forSale.price; r.forSale.sizes.forEach(z => addUsedBalloon(z)); r.forSale = null; assignPilots(); $('menu').hidden = true; refresh(); }
 /* What a rival's fleet is made of, one line per basket size, biggest first. */
 function fleetMix(sizes) {
@@ -5101,7 +5103,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -5265,6 +5267,28 @@ const hotelBuyPrice = x => hotelOwner(x) ? Math.round(x.buy * 1.1 / 100) * 100 :
 function sellHotel(x) {
   S.ownHotels = S.ownHotels.filter(id => id !== x.id); S.cash += hotelSellValue(x); delete S.hotelTaken[x.id];
   const b = hotelBuyer(); if (b) (S.hotelOwner = S.hotelOwner || {})[x.id] = b;
+}
+/* a rival leaves the market: the hotels it bought from you come to you if you bought the company, otherwise each is
+   offered to you once at 70% (declined, it's free on the market again); a merger hands them to the new company */
+function rivalGone(name, mine) {
+  for (const id in (S.hotelOwner || {})) {
+    if (S.hotelOwner[id] !== name) continue;
+    delete S.hotelOwner[id]; const x = HOTELS.find(q => q.id === id);
+    if (mine) { if (!S.ownHotels.includes(id)) S.ownHotels.push(id); }
+    else (S.hotelBargains = S.hotelBargains || []).push({ id, by: name, price: Math.round(x.buy * .7 / 100) * 100 });
+  }
+}
+function showHotelBargain() {
+  const B = S.hotelBargains[0], x = HOTELS.find(q => q.id === B.id), m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Satılık otel'));
+  c.appendChild(h('p', 'lead', `${esc(B.by)} battı; senden aldığı ${esc(x.name)} oteli satışta.`));
+  c.appendChild(h('p', null, `<b>Fiyat: ${eur(B.price)}</b> (normalde ${eur(x.buy)})`));
+  const done = () => { S.hotelBargains.shift(); m.hidden = true; save(); refresh(); setTimeout(nextPopup, 250); };
+  const ok = h('button', 'big', `Satın al ${eur(B.price)}`), no = h('button', 'ghost', 'Geç: otel yeniden piyasaya döner'); ok.style.width = no.style.width = '100%';
+  ok.disabled = S.cash < B.price;
+  ok.onclick = () => { sfx('coin'); S.cash -= B.price; if (!S.ownHotels.includes(B.id)) S.ownHotels.push(B.id); S.hotels = S.hotels.filter(id => id !== B.id); delete S.hotelTaken[B.id]; done(); };
+  no.onclick = () => { sfx('click'); done(); };
+  c.append(ok, no); m.appendChild(c); m.hidden = false;
 }
 /* selling asks first: who buys it, and what that means */
 function hotelSaleCard(x, back) {

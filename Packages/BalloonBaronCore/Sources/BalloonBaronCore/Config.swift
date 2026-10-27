@@ -132,6 +132,8 @@ public enum Rules {
     public static let hotelSellShare = 0.6
     /// A rival that bought one of your hotels sells it back for this much of its price (not shown as such).
     public static let hotelRivalMarkup = 1.1
+    /// When that rival goes bankrupt, its hotel is offered to you for this much of its price.
+    public static let hotelBargainShare = 0.7
     /// v117: the autopilot opens from this many balloons in the region (and Baron of Cappadocia), and plays at most
     /// this many days in a row.
     public static let autopilotBalloons = 35

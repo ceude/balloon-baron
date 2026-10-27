@@ -463,3 +463,31 @@ struct HotelSaleView: View {
         }
     }
 }
+
+/// v118: a rival that bought one of your hotels went bankrupt: the hotel is offered to you once, cheap.
+struct HotelBargainView: View {
+    @Environment(GameStore.self) private var store
+    let bargain: HotelBargain
+
+    var body: some View {
+        let cash = store.state?.cash ?? 0
+        ModalCard(onClose: { store.answerHotelBargain(buy: false) }) {
+            CardText.title(loc("hotelBargain.title"))
+            CardText.lead(loc("hotelBargain.lead", bargain.rival, bargain.hotel.title))
+            Text(loc("hotelBargain.price", eur(bargain.price), eur(bargain.hotel.buyPrice)))
+                .font(Theme.font(16, .bold)).foregroundStyle(Theme.ink)
+            Button {
+                SoundEngine.shared.play(.coin)
+                store.answerHotelBargain(buy: true)
+            } label: { Text(loc("marketPage.buy", eur(bargain.price))).frame(maxWidth: .infinity) }
+            .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+            .disabled(cash < bargain.price)
+            .opacity(cash < bargain.price ? 0.5 : 1)
+            Button {
+                SoundEngine.shared.play(.click)
+                store.answerHotelBargain(buy: false)
+            } label: { Text(loc("hotelBargain.pass")).frame(maxWidth: .infinity) }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost, wide: true))
+        }
+    }
+}

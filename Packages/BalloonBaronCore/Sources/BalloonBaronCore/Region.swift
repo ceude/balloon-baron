@@ -141,6 +141,8 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var hotelLocks: [Hotel: HotelLock] = [:]
     /// v118: hotels you sold, with the rival that bought them (optional: older saves have none).
     public var hotelOwners: [Hotel: String]? = nil
+    /// v118: hotels of a rival that went bankrupt, offered to you once, cheap (optional, like `hotelOwners`).
+    public var hotelBargains: [HotelBargain]? = nil
     public var reviews: [Review] = []
     public var repHistory: [RepPoint] = []
     public var influencerUntil = 0, influencerCooldown = 0, influencerCount = 0

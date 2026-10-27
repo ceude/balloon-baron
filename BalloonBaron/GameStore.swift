@@ -66,6 +66,8 @@ final class GameStore {
     var showTourOffer = false
     /// v118: the hotel whose sale waits for a yes (market card or rescue plan).
     var hotelSale: Hotel?
+    /// v118: a bankrupt rival's hotel offered to you (`HotelBargainView`).
+    var hotelBargain: HotelBargain?
     /// The Balloon Show's card (v111).
     var showShowCard = false
     /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
@@ -100,7 +102,7 @@ final class GameStore {
 
     /// Anything already covering the home screen; the next popup waits for it.
     private var busy: Bool {
-        showIntro || collecting || showShots != nil || hotelSale != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
+        showIntro || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
@@ -250,6 +252,8 @@ final class GameStore {
             } else {
                 showNextHezarfen()
             }
+        } else if let b = g.pendingHotelBargain {
+            hotelBargain = b
         } else if let d = g.pendingDeal {
             act { $0.markDealSeen(d.rival, bankrupt: d.bankrupt) }
             deal = DealOffer(rival: d.rival, bankrupt: d.bankrupt)
@@ -349,6 +353,12 @@ final class GameStore {
             if let o = g.answerEvent(e, accept: accept) { g.state.hezQueue.insert(.eventOutcome(o), at: 0) }
         }
         morningEvent = nil
+        showNextHezarfen()
+    }
+
+    func answerHotelBargain(buy: Bool) {
+        act { _ = $0.answerHotelBargain(buy: buy) }
+        hotelBargain = nil
         showNextHezarfen()
     }
 

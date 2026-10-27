@@ -145,6 +145,7 @@ extension Game {
                 r.offerSeen = false; r.offerDeclined = false; r.saleSeen = false; r.saleDeclined = false
                 r.forSale = ForSale(sizes: r.balloons, price: jsRound(fleetValue * 0.45 / 100) * 100)
                 state.local.rivalBusts = (state.local.rivalBusts ?? 0) + 1
+                rivalGone(r.name, takenOver: false)
                 addPaper(.rivalBankrupt(rival: r.name, balloons: r.balloons.count))
                 if r.name == state.region.bossCompany { bossSay(.gone) }
                 rev.append(.rivalBankrupt(rival: r.name, balloons: r.balloons.count, price: r.forSale!.price))
@@ -230,6 +231,10 @@ extension Game {
         o.flyToday = []
         state.rivals[bi] = m
         state.rivals[oi] = o
+        // hotels either of them bought from you belong to the merged company now
+        if let owners = state.hotelOwners {
+            for (h, n) in owners where n == a.name || n == b.name { state.hotelOwners?[h] = name }
+        }
         state.lastMerge = state.day
         rev.append(.rivalsMerged(a: a.name, b: b.name, name: name, balloons: m.balloons.count))
     }

@@ -123,6 +123,9 @@ struct RootView: View {
             if store.showTourOffer {
                 TourOfferView().transition(.opacity)
             }
+            if let b = store.hotelBargain {
+                HotelBargainView(bargain: b).transition(.opacity)
+            }
             if let h = store.hotelSale {
                 HotelSaleView(hotel: h).transition(.opacity)
             }
