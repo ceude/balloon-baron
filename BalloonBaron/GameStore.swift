@@ -601,7 +601,7 @@ final class GameStore {
     /// the license needs your flight, after `Rules.autopilotDays` days, or on a tap. The paper and Hezarfen's news
     /// don't stop it (with 35 balloons there is a story nearly every morning): they wait and come up at the stop, and
     /// accidents are only counted.
-    struct Autopilot {
+    struct AutoRun {
         var left = Rules.autopilotDays
         var days = 0, net = 0, accidents = 0
         var paper: [PaperItem] = []
@@ -617,12 +617,12 @@ final class GameStore {
         var days = 0
         var accidents = 0
     }
-    var auto: Autopilot?
+    var auto: AutoRun?
     var autoNote: AutoNote?
 
     func startAuto() {
         guard auto == nil, let s = state, s.autopilotOK, !busy else { return }
-        auto = Autopilot()
+        auto = AutoRun()
         Telemetry.send("auto.started", value: Double(s.day))
         autoStep()
     }
