@@ -17,6 +17,7 @@ struct BalloonBaronApp: App {
                 .preferredColorScheme(.light)
                 .onChange(of: scenePhase) { _, phase in
                     if phase != .active { store.flushSave() } else { Telemetry.opened(store.state) }
+                    Telemetry.became(active: phase == .active)
                     if phase == .background {
                         LaunchGuard.settled()
                         Reminder.schedule(day: store.state?.day ?? 1)

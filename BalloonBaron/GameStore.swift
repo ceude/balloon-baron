@@ -128,6 +128,7 @@ final class GameStore {
         g.startDay()
         game = g
         save()
+        Telemetry.started(company: company)
         // Items bought in an earlier game belong to the Apple ID: they come back.
         Task { await Shop.shared.restoreEntitlements() }
         showNextHezarfen()
@@ -503,6 +504,7 @@ final class GameStore {
     /// The intro balloon has left the screen.
     func finishIntro() {
         showIntro = false
+        Telemetry.introDone(state)
         showNextHezarfen()
     }
 
@@ -527,6 +529,7 @@ final class GameStore {
         flushSave()
         if let s = state {
             GameCenter.report(s)
+            if let result, result.landing != .cancel { Telemetry.flight(result, s) }
             if let r { Telemetry.dayEnded(s, r) }
         }
         report = r

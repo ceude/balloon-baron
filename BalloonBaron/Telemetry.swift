@@ -84,6 +84,39 @@ enum Telemetry {
         send("store.bought", value: Double(day), ["item": k.rawValue])
     }
 
+    /// The funnel's first steps: a company founded, the intro balloon gone.
+    static func started(company: String) { send("game.started") }
+    static func introDone(_ s: GameState?) { send("intro.done", value: s.map { Double($0.day) }) }
+
+    /// How the day's own flight ended (perfect … crash), to see where flying gets too hard.
+    static func flight(_ r: FlightResult, _ s: GameState) {
+        var p = progress(s)
+        p["landing"] = r.landing.rawValue
+        p["mission"] = r.mission == nil ? "none" : (r.missionDone ? "done" : "missed")
+        send("flight.result", value: Double(s.day), p)
+    }
+
+    /// A store screen opened: "bazaar", or an item's card.
+    static func storeViewed(_ screen: String, _ s: GameState?) {
+        send("store.viewed", value: s.map { Double($0.day) }, ["screen": screen])
+    }
+
+    /// An offer (the Grand Tour after the ceremony) was shown, and what the player did with it.
+    static func offer(_ name: String, _ answer: String, _ s: GameState?) {
+        send("offer.\(answer)", value: s.map { Double($0.day) }, ["offer": name])
+    }
+
+    /// Session length: the app came to the front, and how many seconds later it left.
+    private static var activeSince: Date?
+    static func became(active: Bool) {
+        if active {
+            activeSince = Date()
+        } else if let since = activeSince {
+            activeSince = nil
+            send("session.ended", value: Date().timeIntervalSince(since).rounded())
+        }
+    }
+
     private static func progress(_ s: GameState) -> [String: String] {
         ["day": String(s.day), "region": s.region.rawValue, "chapter": String(s.chapter), "balloons": String(s.balloons.count)]
     }

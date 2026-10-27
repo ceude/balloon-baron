@@ -267,6 +267,10 @@ struct BazaarView: View {
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
         }
+        .onAppear {
+            Telemetry.storeViewed("bazaar", s)
+            if s?.bundleWorth == true { Telemetry.offer("founder", "shown", s) }
+        }
     }
 
     @MainActor private func section(_ kind: StoreItem.Kind, _ key: String, _ s: GameState) -> some View {
@@ -447,7 +451,10 @@ struct StoreItemView: View {
             }
             .buttonStyle(ChunkyButtonStyle(kind: .ghost))
         }
-        .onAppear { shop.note = nil }
+        .onAppear {
+            shop.note = nil
+            Telemetry.storeViewed(item.rawValue, store.state)
+        }
     }
 
     private func lead(_ s: GameState?) -> String {
@@ -528,10 +535,12 @@ struct TourOfferView: View {
             }
             Button {
                 SoundEngine.shared.play(.click)
+                Telemetry.offer("grandTour", "declined", store.state)
                 close()
             } label: { Text(loc("tour.later")).frame(maxWidth: .infinity) }
             .buttonStyle(ChunkyButtonStyle(kind: .ghost, wide: true))
         }
+        .onAppear { Telemetry.offer("grandTour", "shown", store.state) }
     }
 
     private func option(_ k: StoreItem, sub: String, was: String?, main: Bool) -> some View {
@@ -539,6 +548,7 @@ struct TourOfferView: View {
             SoundEngine.shared.play(.click)
             store.showTourOffer = false
             store.storeItem = k
+            Telemetry.offer("grandTour", "chose." + k.rawValue, store.state)
         } label: {
             HStack(alignment: .center, spacing: 10) {
                 VStack(alignment: .leading, spacing: 2) {
