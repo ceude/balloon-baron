@@ -149,7 +149,26 @@ struct WorkshopView: View {
     private func designsCard(_ game: Game) -> some View {
         let s = game.state
         return FleetUI.Card(loc("factory.designs")) {
-            if s.designs.isEmpty { FleetUI.Hint(loc("fleetPage.noDesigns")) }
+            if s.designs.isEmpty {
+                FleetUI.Hint(loc("fleetPage.noDesigns"))
+                // v114.1: three grey samples above the button, so it's clear what a design is before the first one
+                HStack(spacing: 8) {
+                    ForEach([Pattern.stars, .zigzag, .sunburst], id: \.self) { p in
+                        VStack(spacing: 4) {
+                            DesignBalloon(pattern: p, colors: [s.colors.first ?? "#ff5e3a", s.colors.count > 1 ? s.colors[1] : "#ffc23d", "#ffffff"])
+                                .frame(width: 44, height: 56)
+                                .saturation(0)
+                                .opacity(0.55)
+                            Text(loc("factory.sample", p.title)).font(Theme.font(11)).foregroundStyle(Theme.ink2).lineLimit(1).minimumScaleFactor(0.7)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .aspectRatio(1, contentMode: .fit)
+                        .background(Color(hex: "#efecf3"), in: RoundedRectangle(cornerRadius: 14))
+                        .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color(hex: "#cfc8dd"), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3])))
+                    }
+                }
+                .accessibilityHidden(true)
+            }
             ForEach(s.designs) { d in
                 let fresh = game.freshness(d), faded = Int((fresh * 100).rounded()) <= 20
                 let count = s.balloons.filter { $0.design == d.id }.count

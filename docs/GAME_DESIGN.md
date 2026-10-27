@@ -290,6 +290,7 @@ Balon atölyesi binası artık seviye seviye büyüyen bir fabrika. Binaya dokun
 - **Üretim:** piyasa fiyatının %50 altına (küçük €7.500, orta €17.500, büyük €30.000), parası hemen ödenir, balon küçükte 3, ortada 5, büyükte 7 gün sonra filoya katılır. Hat aynı anda tek balon üretir. Filo'nun "Yeni balon al" listesinde her boyun yanında "Atölyede" seçeneği de çıkar.
 - **Siparişler:** hat boşken her gün %8 olasılıkla bir rakip senden balon ister (güvenli rakipler büyük, diğerleri orta; yapamıyorsan yapabildiğin en büyük boy). Fiyat liste fiyatının %80'i, teslimde ödenir (orta: €28.000, sana maliyeti €17.500, kâr €10.500). Kabul edersen hat o kadar gün meşgul olur ve rakibin bir balonla büyür; reddedersen hiçbir şey olmaz. Teklif sabah kart olarak gelir, o gün geçerlidir.
 - **Bölüm 3 (Büyüme) hedefi:** "Balon atölyesi kur" yerine "Atölyende ilk balonunu üret" (seviye 2 gerekir).
+- **Tasarım yokken:** "Yeni tasarım" düğmesinin hemen üstünde üç gri, kesik çerçeveli örnek kare (Yıldızlı, Zikzak, Güneş; şirket renklerinde ama soluk) durur, oyuncu basmadan ne yapacağını anlar. İlk tasarımdan sonra yerlerini kendi tasarımları alır (v114.1, prototip ve Swift).
 - **Kasabada:** seviye 2'den itibaren tuğla baca; üretim varken tüter ve yanında yeni zarf rafta alttan yukarı dikilir (rakip siparişi gri).
 - **Simülasyon (tools/sim-factory.js, 12 oyun × 400 gün):**
   - Fabrikasız oyuncu (yalnızca bölüm hedefi için seviye 2): 3. bölüm 134. gün, baron 160. gün, 400. günde kasa €2,81 milyon.

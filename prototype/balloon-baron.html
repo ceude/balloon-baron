@@ -727,6 +727,7 @@ button.founder{display:block;width:100%;text-align:left;margin:4px 0 12px;paddin
 .founder .fthumbs{display:flex;gap:5px;margin:8px 0;align-items:center}.founder .fthumbs img{width:36px;height:40px;background:rgba(255,255,255,.14);border-radius:9px;flex:0 0 auto}.founder .fthumbs i{font-style:normal;font-weight:800;font-size:12px;color:#2b2350;background:#ffd27a;border-radius:9px;padding:3px 7px;margin-left:2px;white-space:nowrap}
 .founder .fp{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;color:rgba(255,255,255,.85)}.founder .fp b{font-size:20px;color:#fff;font-family:'Barlow Condensed',sans-serif}
 .founder s,.dealrow s,.upsell s{opacity:.65}
+.dsamples{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:2px 0 10px}.dsample{display:flex;flex-direction:column;align-items:center;gap:4px;aspect-ratio:1;justify-content:center;border-radius:14px;background:#efecf3;border:1.5px dashed #cfc8dd}.dsample img{width:44px;height:56px;filter:grayscale(1);opacity:.55}.dsample span{font-size:11px;color:var(--ink2)}
 .fabsteps{display:flex;gap:6px;margin:4px 0 10px}.fst{flex:1;text-align:center;padding:7px 4px;border-radius:12px;background:#efe9f6;color:var(--ink2);font-size:12px}.fst b{display:block;font-family:var(--cond);font-size:20px}.fst.on{background:var(--ink);color:#fff}
 .fabbar{height:8px;border-radius:5px;background:#eadff2;margin-top:6px;overflow:hidden}.fabbar i{display:block;height:100%;background:var(--coral);border-radius:5px}
 .item.fabord{box-shadow:0 0 0 2px var(--coral) inset}
@@ -5572,7 +5573,13 @@ function studioSection(body) {
     ws.appendChild(it); body.appendChild(ws); return;
   }
   const ds = S.designs || [];
-  if (!ds.length) ws.appendChild(h('p', 'hint', 'Henüz tasarımın yok. İlk desenini çiz, balonlarına giydir.'));
+  if (!ds.length) {
+    ws.appendChild(h('p', 'hint', 'Henüz tasarımın yok. İlk desenini çiz, balonlarına giydir.'));
+    /* v114.1: three grey samples above the button, so it's clear what a design is before the first one */
+    const c = myCol(), ex = h('div', 'dsamples');
+    for (const [pat, n] of [['stars', 'Yıldızlı'], ['zigzag', 'Zikzak'], ['sunburst', 'Güneş']]) ex.appendChild(h('div', 'dsample', `<img src="${designThumb({ pat, cols: [c[0], c[1], '#ffffff'] }, 44, 56)}" alt=""><span>Örnek: ${n}</span>`));
+    ws.appendChild(ex);
+  }
   for (const d of ds) {
     const n = S.balloons.filter(b => b.design === d.id).length, fr = Math.round(freshness(d) * 100), it = h('div', 'item');
     it.insertAdjacentHTML('beforeend', `<img class="dthumb" src="${designThumb(d, 44, 56)}" alt="">`);
