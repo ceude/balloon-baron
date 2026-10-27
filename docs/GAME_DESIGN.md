@@ -265,14 +265,17 @@ Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükse
 ## Gece
 Uçuş defterinden sonra kasabada gece olur (3,5 sn, olay gecesi 5,5 sn; kasabayı gezerken bekler, en fazla 25 sn; alttaki düğmeyle hemen sabaha geçilir): ışıklar yanar, cırcır böcekleri öter, ateş böcekleri uçar. Bazen bir gece olayı olur ve ertesi sabah gazetede çıkar: festival gecesi fener alayı, Fiesta'da Balloon Glow, kışın ilk gecesi karlı ışıklı kasaba, bir otelde düğün havai fişekleri (%22), kayan yıldız (%10). Olaylar şimdilik yalnızca görsel ve haber.
 
-## Açılış (v119, yalnız prototipte)
-Eski başlangıç hikâyesinin (v112: Gün 0 hayali, Kenan Arslan'ın pilotluğu, ilk balon töreni) yerine kısa, sinematik bir açılış. Hikâye kodu prototipte duruyor ama yeni oyun artık ona girmiyor.
-- **Başlık:** her zamanki gibi brülöre basılı tutup balonu yükseltirsin.
-- **Drone çekimi (~12 sn):** şafaktan önce karanlık vadi, pencereler yanık. Kamera yüksekten kasabaya süzülür, güneş doğarken pencereler söner, kamera boş kalkış tarlasının üstüne alçalır. Ekran sinema şeritli; yalnızca iki yazı: "KAPADOKYA · Şafaktan hemen önce", "GÖREME · Kasabanın kenarında boş bir tarla".
-- **Tarlada:** eski bir sepet ve yere serili soluk bir kumaş. Hezarfen tek cümle söyler: "Bu tarla yıllardır bir balon bekliyor evlat. Sepet hazır, kumaş hazır. Bir tek adı eksik." → "Adını koyalım". İsim kartı kasabanın önünde açılır, sonra balon rengi seçilir.
-- **Kalkış (~11 sn):** balon tarlada brülörle şişer, yükselir; kamera onu takip edip geri çekilir, bütün kasaba aşağıda kalır. Ekranda şirketin adı ve "Gün 1", sonra ana ekran.
+## Açılış (v120, yalnız prototipte)
+Eski başlangıç hikâyesinin yerine sinematik bir açılış. 3B, kodla üretilmiş bir Kapadokya (three.js); WebGL yoksa ya da yüklenemezse v119'un 2B açılışı oynar.
+- **Tek parça drone çekimi (~30 sn), karanlıktan gün doğumuna:**
+  1. Üç Güzeller: yıldızların altında üç kapaklı peri bacasının etrafında alçak dönüş, "KAPADOKYA · Şafaktan hemen önce".
+  2. Uçhisar Kalesi: pencereleri yanık kaya kütlesi, yamaçta evler ve minare, "UÇHİSAR · Kalede ilk ışıklar".
+  3. Peri bacası vadisi: bacaların arasından alçak geçiş; yerde brülörleri yanan balonlar.
+  4. Göreme'de bir otelin çatı terası (kilim, fener, minder, sehpa): güneş doğarken peribacalarının üstünden yükselen balonlar, "GÖREME · Güneş balonlarla doğar".
+  5. Köyün kenarındaki tarla: eski sepet ve yere serili kumaş. Hezarfen tek cümle söyler; isim ve renk seçilir.
+- **Kalkış (~12 sn):** kumaş şirketin renkleriyle (adı da üstünde) brülörle şişer, alttan yukarı bakan kameranın yanından yükselir, kamera vinçle yukarı çıkıp köyün ve balonlarla dolu gökyüzünün üstünde durur; şirketin adı ve "Gün 1", karartma, ana ekran.
+- **Görüntü:** peri bacaları gürültüyle oyulmuş altı ayrı biçim (yumrular, katmanlar, oyuklar, bazılarında bazalt kapak), oyma kapı ve pencereler (bir kısmı ışıklı); evler yuvarlak köşeli beş tip (sıvalı, kesme taş, tonozlu, kademeli, revaklı) ve kendi cephe dokularıyla; mağara evli kayalar; yerde kayalar ve çalılar; vadide sis, ışıkta toz; parlama (bloom), vinyet, ince film greni; sinema şeritleri ve HTML yazılar.
 - Sağ üstte "Geç ›" her iki çekimi de atlar.
-- Sahne oyunun kendi kasaba çizimiyle yapılır (ayrı hikâye çizimi yok).
 
 ## İlk uçuşlar (v111.1)
 TestFlight gözleminden: oyuncu hedefin iniş alanı olduğunu anlamadı, rüzgâr katmanlarının kesik çizgilerini görmedi, çizginin hemen üstünde rüzgârın değişmediğini fark etti ve yakıtı bitirip ilk uçuşta kaza yaptı. Bu yüzden:
