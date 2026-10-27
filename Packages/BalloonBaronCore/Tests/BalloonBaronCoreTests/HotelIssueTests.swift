@@ -13,6 +13,7 @@ final class HotelIssueTests: XCTestCase {
         let h = Hotel.allCases.first { g.state.stars >= $0.minStars }!
         XCTAssertTrue(g.signHotel(h))
         g.state.local.openIssue = Autopilot.OpenIssue(kind: .hotel, day: g.state.day)
+        XCTAssertEqual(g.issueCost(in: g.state.region, choice: .a), jsRound(Double(h.dailyFee * Rules.hotelKeepDays) / 100) * 100, "a month of that hotel's fee")
         XCTAssertTrue(g.resolveLiveIssue(.b))
         XCTAssertFalse(g.state.hotelDeals.contains(h))
         XCTAssertNotNil(g.hotelLockedByRival(h))

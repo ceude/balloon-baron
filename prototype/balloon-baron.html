@@ -5245,7 +5245,10 @@ const ISSUES = {
     la: 'Holding kasasından ödenir, %30 altındaki zarfların yenilenir.', lb: 'Yıpranmış zarflar uçmaya devam eder.',
     LA: () => { S.balloons.forEach(b => { if (cond(b) < .3) b.flights = 0; }); }, LB: () => {} }
 };
-const HOTEL_LOST_DAYS = 30;
+const HOTEL_LOST_DAYS = 30, HOTEL_KEEP_DAYS = 30;
+/* On the spot, keeping the hotel costs a month of that hotel's own fee (in the holding's euros), not the region's
+   five days of autopilot earnings, which made paying pointless next to a three-day re-signing. */
+const hotelKeepCost = () => { const H = HOTELS.find(x => x.id === S.hotels[S.hotels.length - 1]); return H ? Math.round(H.fee * HOTEL_KEEP_DAYS / FX() / 100) * 100 : 0; };
 const issueCost = (A, k) => k === 'cost5' ? Math.round(A.base * 5 / 100) * 100 : k === 'cost8' ? Math.round(A.base * 8 / 100) * 100 : 0;
 function autoRegions() {
   let total = 0;
@@ -5281,7 +5284,7 @@ function showIssue(id) {
   c.appendChild(h('p', 'lead', live ? `${I.d} Buradasın, karar senin.` : `${I.d} Karar verene kadar bölgenin kazancı yarıya düştü (bugün ${eurH(A.today || 0)}).`));
   c.appendChild(h('div', 'hzline', `${guide(id).av()}<span><b>${guide(id).name.replace(' Usta', '')}:</b> ${I.hz}</span>`));
   const opt = (o, fn, cls, note) => {
-    const cost = issueCost(A, o[1]), b = h('button', 'opt ' + cls, `<b>${o[0]}${cost ? ` (${eurH(cost)})` : ''}</b><span>${live && note ? note : cost ? 'Holding kasasından ödenir, sorun kapanır.' : o[1]}</span>`);
+    const cost = live && A.issue.k === 'hotel' && o[1] === 'cost5' ? hotelKeepCost() : issueCost(A, o[1]), b = h('button', 'opt ' + cls, `<b>${o[0]}${cost ? ` (${eurH(cost)})` : ''}</b><span>${live && note ? note : cost ? 'Holding kasasından ödenir, sorun kapanır.' : o[1]}</span>`);
     if (cost && (S.holding || 0) < cost) b.disabled = true;
     b.onclick = () => {
       if (cost) { S.holding -= cost; holdLog('exp', cost); }

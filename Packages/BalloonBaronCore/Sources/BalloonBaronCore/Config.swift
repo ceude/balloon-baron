@@ -125,6 +125,8 @@ public enum Rules {
     public static let licenseDays = 15
     /// A partner hotel let go in a hotel tug-of-war stays with the rival this many days.
     public static let hotelLostDays = 30
+    /// Keeping a hotel in a tug-of-war you're there for costs this many days of its fee.
+    public static let hotelKeepDays = 30
     /// v117: the autopilot opens from this many balloons in the region (and Baron of Cappadocia), and plays at most
     /// this many days in a row.
     public static let autopilotBalloons = 35
