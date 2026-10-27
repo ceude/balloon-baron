@@ -82,7 +82,7 @@ extension Game {
             if r.cash > 20000 && rng.chance(0.03) {
                 let rivalStars = Rules.stars(r.rep)
                 if let h = Hotel.allCases.first(where: { h in
-                    !state.hotelActive(h) && !((state.hotelLocks[h]?.until ?? 0) > day) && rivalStars >= h.minStars
+                    !state.hotelActive(h) && !((state.hotelLocks[h]?.until ?? 0) > day) && state.hotelOwners?[h] == nil && rivalStars >= h.minStars
                 }) {
                     state.hotelLocks[h] = HotelLock(rival: r.name, until: day + 12)
                     r.rep = min(1.4, r.rep + 0.03)

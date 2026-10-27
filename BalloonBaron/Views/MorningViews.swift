@@ -460,7 +460,11 @@ struct RescueView: View {
             option(loc("rescue.fire", num(idle.count)), loc("rescue.fire.sub", eur(idle.reduce(0) { $0 + $1.wage }))) { $0.fireIdlePilots() }
         }
         if let h = store.game?.rescueSellHotel, let v = store.game?.hotelSellValue(h) {
-            option(loc("rescue.sellHotel", h.title), loc("rescue.sellHotel.sub", eur(v))) { _ = $0.sellHotel(h) }
+            Button {
+                SoundEngine.shared.play(.click)
+                store.hotelSale = h
+            } label: { optionLabel(loc("rescue.sellHotel", h.title), loc("rescue.sellHotel.sub", eur(v))) }
+            .buttonStyle(.plain)
         }
         if let b = sellable.first {
             let v = store.game?.sellValue(b) ?? 0
@@ -480,17 +484,19 @@ struct RescueView: View {
         Button {
             SoundEngine.shared.play(.coin)
             store.rescueMove(f)
-        } label: {
-            VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
-                Text(sub).font(Theme.font(13)).foregroundStyle(Theme.ink2)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 14).padding(.vertical, 12)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.line, lineWidth: 2))
-        }
+        } label: { optionLabel(title, sub) }
         .buttonStyle(.plain)
+    }
+
+    private func optionLabel(_ title: String, _ sub: String) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
+            Text(sub).font(Theme.font(13)).foregroundStyle(Theme.ink2)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 14).padding(.vertical, 12)
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+        .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.line, lineWidth: 2))
     }
 }
 

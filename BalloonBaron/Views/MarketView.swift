@@ -327,7 +327,8 @@ struct MarketView: View {
         let own = s.ownHotels.contains(h)
         let has = s.hotelDeals.contains(h)
         let lock = game.hotelLockedByRival(h)
-        let ok = s.stars >= h.minStars && lock == nil
+        let owner = game.hotelRivalOwner(h)
+        let ok = s.stars >= h.minStars && lock == nil && owner == nil
         return FleetUI.Item {
             HStack(alignment: .top, spacing: 12) {
                 hotelIcon(h)
@@ -340,7 +341,11 @@ struct MarketView: View {
                             FleetUI.Tag(text: loc("marketPage.hotelDealTag"), color: Theme.green)
                         }
                     }
-                    if let lock {
+                    if let owner {
+                        Text(loc("marketPage.hotelOwnedBy", owner))
+                            .font(Theme.font(14, .bold))
+                            .foregroundStyle(Theme.red)
+                    } else if let lock {
                         Text(loc("marketPage.hotelLocked", lock.rival, num(lock.until - s.day)))
                             .font(Theme.font(14, .bold))
                             .foregroundStyle(Theme.red)
@@ -352,17 +357,17 @@ struct MarketView: View {
                 // v118: an owned hotel sells back for 60% of its price.
                 FleetUI.ButtonGrid {
                     FleetUI.SmallButton(title: loc("marketPage.sellHotel", eur(game.hotelSellValue(h))), note: loc("marketPage.sellHotelNote"), ghost: true) {
-                        store.act { _ = $0.sellHotel(h) }
+                        store.hotelSale = h
                     }
                 }
             } else {
-                hotelActions(h, has: has, ok: ok, s)
+                hotelActions(h, has: has, ok: ok, price: game.hotelBuyPrice(h), s)
             }
         }
         .opacity(!ok && !has && !own ? 0.7 : 1)
     }
 
-    private func hotelActions(_ h: Hotel, has: Bool, ok: Bool, _ s: GameState) -> some View {
+    private func hotelActions(_ h: Hotel, has: Bool, ok: Bool, price: Int, _ s: GameState) -> some View {
         let fee = h.dailyFee * 3
         return FleetUI.ButtonGrid {
             if has {
@@ -377,8 +382,8 @@ struct MarketView: View {
             } else {
                 FleetUI.SmallButton(title: loc("fleetPage.locked"), ghost: true, disabled: true) {}
             }
-            FleetUI.SmallButton(title: loc("marketPage.buy", eur(h.buyPrice)), note: loc("marketPage.buyNote", eur(h.roomIncome)),
-                                disabled: s.stars < h.minStars || s.cash < h.buyPrice) {
+            FleetUI.SmallButton(title: loc("marketPage.buy", eur(price)), note: loc("marketPage.buyNote", eur(h.roomIncome)),
+                                disabled: s.stars < h.minStars || s.cash < price) {
                 store.act { _ = $0.buyHotel(h) }
             }
         }
@@ -430,6 +435,31 @@ struct MarketView: View {
                 FleetUI.SmallButton(title: button, disabled: disabled, action: action)
                     .frame(width: 110)
             }
+        }
+    }
+}
+
+/// v118: selling a hotel asks first: the strongest rival buys it, and from then on it can only be bought back from
+/// them (prototype `hotelSaleCard`).
+struct HotelSaleView: View {
+    @Environment(GameStore.self) private var store
+    let hotel: Hotel
+
+    var body: some View {
+        let buyer = store.game?.hotelBuyer, value = store.game?.hotelSellValue(hotel) ?? 0
+        ModalCard(onClose: { store.hotelSale = nil }) {
+            CardText.title(loc("hotelSale.title"))
+            CardText.lead(buyer.map { loc("hotelSale.lead", $0, hotel.title) } ?? loc("hotelSale.leadLocal", hotel.title))
+            Button {
+                SoundEngine.shared.play(.coin)
+                store.confirmHotelSale()
+            } label: { Text(loc("marketPage.sellHotel", eur(value))).frame(maxWidth: .infinity) }
+            .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+            Button {
+                SoundEngine.shared.play(.click)
+                store.hotelSale = nil
+            } label: { Text(loc("store.cancel")).frame(maxWidth: .infinity) }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost, wide: true))
         }
     }
 }

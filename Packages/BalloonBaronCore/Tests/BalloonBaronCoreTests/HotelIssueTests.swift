@@ -36,4 +36,28 @@ final class HotelSaleTests: XCTestCase {
         XCTAssertFalse(g.sellHotel(h), "only once")
         XCTAssertNil(g.rescueSellHotel)
     }
+
+    func testSoldHotelBelongsToTheStrongestRival() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 4)
+        g.state.rep = 1.4
+        let h = Hotel.allCases[1]
+        g.state.ownHotels = [h]
+        let top = g.state.rivals.filter(\.alive).max { $0.rep < $1.rep }!.name
+        XCTAssertTrue(g.sellHotel(h))
+        XCTAssertEqual(g.hotelRivalOwner(h), top)
+        g.state.cash = 1_000_000
+        XCTAssertFalse(g.signHotel(h), "no more deals with that hotel")
+        XCTAssertEqual(g.hotelBuyPrice(h), jsRound(Double(h.buyPrice) * 1.1 / 100) * 100)
+        let cash = g.state.cash, price = g.hotelBuyPrice(h)
+        XCTAssertTrue(g.buyHotel(h))
+        XCTAssertEqual(cash - g.state.cash, price)
+        XCTAssertNil(g.hotelRivalOwner(h), "yours again")
+    }
+
+    func testOldSavesWithoutHotelOwnersStillLoad() throws {
+        let g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 4)
+        var json = String(data: try JSONEncoder().encode(g.state), encoding: .utf8)!
+        json = json.replacingOccurrences(of: "\"hotelOwners\":null,", with: "")
+        XCTAssertNoThrow(try JSONDecoder().decode(GameState.self, from: Data(json.utf8)))
+    }
 }

@@ -40427,6 +40427,129 @@
         }
       }
     },
+    "hotelSale.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ kauft %2$@. Mit diesem Hotel kannst du keinen Vertrag mehr schließen; zurückkaufen kannst du es nur von dieser Firma."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ buys %2$@. You can't make a deal with this hotel again; you can only buy it back from that company."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ compra %2$@. Ya no podrás cerrar acuerdos con este hotel; solo podrás comprárselo a esa empresa."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%2$@は%1$@が買い取る。このホテルとは二度と契約できず、買い戻せるのはその会社からだけだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%2$@은(는) %1$@이(가) 사들입니다. 이 호텔과는 다시 계약할 수 없고, 그 회사에서 되사는 수밖에 없습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%2$@ otelini %1$@ satın alıyor. Bu otelle bir daha anlaşma yapamazsın; oteli ancak bu firmadan satın alabilirsin."
+          }
+        }
+      }
+    },
+    "hotelSale.leadLocal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein örtlicher Investor kauft %@. Später kannst du wieder einen Vertrag schließen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A local investor buys %@. You can make a deal with it again later."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un inversor local compra %@. Más adelante podrás volver a cerrar un acuerdo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@は地元の投資家が買い取る。あとでまた契約できる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@은(는) 지역 투자자가 사들입니다. 나중에 다시 계약할 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ otelini yerel bir yatırımcı satın alıyor. İleride yeniden anlaşabilirsin."
+          }
+        }
+      }
+    },
+    "hotelSale.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotel verkaufen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sell the hotel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vender el hotel"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホテルを売却"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "호텔 판매"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oteli sat"
+          }
+        }
+      }
+    },
     "hq.board": {
       "extractionState": "manual",
       "localizations": {
@@ -48377,6 +48500,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Senin otelin"
+          }
+        }
+      }
+    },
+    "marketPage.hotelOwnedBy": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Besitzer: %@. Kein Vertrag mit diesem Hotel."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owner: %@. No deals with this hotel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Propietario: %@. Sin acuerdos con este hotel."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所有者：%@。このホテルとは契約できない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "소유: %@. 이 호텔과는 계약할 수 없습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sahibi: %@. Bu otelle anlaşma yapılamaz."
           }
         }
       }

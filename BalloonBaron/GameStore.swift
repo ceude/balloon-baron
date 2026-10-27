@@ -64,6 +64,8 @@ final class GameStore {
     var showFactoryOrder = false
     /// v115: the Grand Tour offer (after the Baron of Cappadocia ceremony, or when a new region is out of reach).
     var showTourOffer = false
+    /// v118: the hotel whose sale waits for a yes (market card or rescue plan).
+    var hotelSale: Hotel?
     /// The Balloon Show's card (v111).
     var showShowCard = false
     /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
@@ -98,7 +100,7 @@ final class GameStore {
 
     /// Anything already covering the home screen; the next popup waits for it.
     private var busy: Bool {
-        showIntro || collecting || showShots != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
+        showIntro || collecting || showShots != nil || hotelSale != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
@@ -348,6 +350,13 @@ final class GameStore {
         }
         morningEvent = nil
         showNextHezarfen()
+    }
+
+    /// The hotel sale's yes: on the rescue card it counts as one of its moves.
+    func confirmHotelSale() {
+        guard let h = hotelSale else { return }
+        hotelSale = nil
+        if showRescue { rescueMove { _ = $0.sellHotel(h) } } else { act { _ = $0.sellHotel(h) } }
     }
 
     /// A move on the rescue card; the card closes once cash is back above zero.

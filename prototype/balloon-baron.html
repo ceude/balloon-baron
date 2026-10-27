@@ -1656,11 +1656,11 @@ function showRescue() {
   /* the guides' flight and a hotel deal (only when there's none yet) bring customers fastest; on this card they may take
      cash below zero, never past the seizure line */
   if (unlocked('market') && S.guideCd <= S.day && S.cash - GUIDE_COST >= -5000) opt(`Rehberlere tanıtım uçuşu: ${eur(GUIDE_COST)}`, `Hemen +0,2★ ve 3 gün rehberlerin gönderdiği turistler. Sonra kasa: ${eur(S.cash - GUIDE_COST)}.`, doGuide);
-  const hot = unlocked('market') && !S.hotels.length && [...HOTELS].reverse().find(x => !S.hotels.includes(x.id) && !owns(x) && starVal(S.rep) >= x.min && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && S.cash - x.fee * 3 >= -5000);
+  const hot = unlocked('market') && !S.hotels.length && [...HOTELS].reverse().find(x => !S.hotels.includes(x.id) && !owns(x) && !hotelOwner(x) && starVal(S.rep) >= x.min && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && S.cash - x.fee * 3 >= -5000);
   if (hot) opt(`Otel anlaşması: ${hot.name} (peşin ${eur(hot.fee * 3)})`, `Günlük misafir: yaklaşık ${hot.pax}, popülerliğin de artar. Sonra kasa: ${eur(S.cash - hot.fee * 3)}.`, () => { S.cash -= hot.fee * 3; S.hotels.push(hot.id); });
   if (idle.length) opt(`Boştaki pilotları çıkar (${idle.length})`, `Günde ${eur(idle.reduce((a, p) => a + pilotWage(p), 0))} maaştan kurtulursun.`, () => { S.pilots = S.pilots.filter(p => !idle.includes(p)); });
   const sh = HOTELS.filter(x => (S.ownHotels || []).includes(x.id)).sort((a, b) => a.buy - b.buy)[0];
-  if (sh) opt(`Oteli sat: ${sh.name}`, `${eur(hotelSellValue(sh))} hemen kasaya girer; oda geliri ve misafirleri biter.`, () => sellHotel(sh));
+  if (sh) { const b = h('button', 'opt', `<b>Oteli sat: ${sh.name}</b><span>${eur(hotelSellValue(sh))} hemen kasaya girer; oda geliri ve misafirleri biter.</span>`); b.onclick = () => hotelSaleCard(sh, sold => sold === false ? showRescue() : showRescueStep()); c.appendChild(b); }
   if (sellable.length) { const b = sellable[0], v = sellValue(b); opt(`${b.name} balonunu sat`, `${eur(v)} hemen kasaya girer (banka el koyarsa yarısı).`, () => { if (b.pilot) b.pilot = null; S.balloons = S.balloons.filter(x => x !== b); S.cash += v; assignPilots(); }); }
   const rp = rescuePrice();
   if (rp) opt(`Fiyatı ${rp.p < S.price ? 'düşür' : 'artır'}: ${eur(rp.p)}`, `Koltukların dolduğu en yüksek fiyat. Dolan koltuk: ${rp.pax}/${rp.cap}, tahmini gelir ${eur(rp.inc)} (şimdi ${eur(rp.now)}).`, () => { S.price = rp.p; });
@@ -2259,7 +2259,7 @@ function simRivals(rev) {
       if (best.lvl >= 2 || Math.random() < .3) { S.poach = { ri, pid: best.id, wage: Math.round(pilotWage(best) * 1.35 / 10) * 10 }; if (r.name === BOSS[S.region].co) bossSay('poach'); rev.push(`${r.name}, pilotun ${best.name}'a iş teklif etti!`); }
     }
     if (r.cash > 20000 && Math.random() < .03) {
-      const hx = HOTELS.find(x => !S.hotels.includes(x.id) && !owns(x) && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && starVal(r.rep) >= x.min);
+      const hx = HOTELS.find(x => !S.hotels.includes(x.id) && !owns(x) && !hotelOwner(x) && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && starVal(r.rep) >= x.min);
       if (hx) { S.hotelTaken[hx.id] = { by: r.name, until: S.day + 12 }; r.rep = Math.min(1.4, r.rep + .03); rev.push(`${r.name}, ${hx.name} ile anlaştı. Otel 12 gün boyunca başka şirketle çalışmayacak.`); }
     }
     if (S.hotels.length && r.rep > S.rep + .12 && Math.random() < (RIVAL_EDGE() ? .025 : .015)) {
@@ -3069,16 +3069,17 @@ function tabMarket(body) {
   hs.appendChild(h('p', 'hint', 'Anlaştığın oteller misafirlerine seni önerir: her gün ekstra turist ve popülerlik getirir. Lüks otelin misafiri pahalı bilete daha kolay razı olur. Lüks oteller sadece popüler şirketlerle çalışır, popülerliğin çok düşerse anlaşmayı bozarlar.'));
   const sv0 = starVal(S.rep);
   HOTELS.forEach(x => {
-    const own = owns(x), has = S.hotels.includes(x.id), tk = S.hotelTaken[x.id], taken = !has && !own && tk && tk.until > S.day, ok = sv0 >= x.min && !taken, it = h('div', 'item');
+    const own = owns(x), has = S.hotels.includes(x.id), tk = S.hotelTaken[x.id], owner = !own && hotelOwner(x), taken = !has && !own && tk && tk.until > S.day, ok = sv0 >= x.min && !taken && !owner, it = h('div', 'item');
     it.insertAdjacentHTML('beforeend', `<span class="sw8" style="background:#2b2350;color:#ffc23d">${'★'.repeat(Math.round(x.min) - 1) || '★'}</span>`);
     const fmt = v => v.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const body2 = own
       ? `Senin otelin: ücret yok, ~${eur(hotelInc(x))}/gün oda geliri, ~${Math.round(x.pax * 1.5)} misafir, +${fmt(x.rep * 6)}★/gün.${starVal(S.rep) < x.min ? ' Popülerliğin otelin seviyesinin altında, doluluk yarıya düştü.' : ''}${S.winter ? ' Kışın doluluk düşük.' : ''}`
       : `${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ ister. Anlaşma ${eur(x.fee)}/gün: ~${x.pax} misafir, +${fmt(x.rep * 4)}★/gün. Misafirleri ${eur(x.c)}'ya kadar bilete razı. Satın alırsan ücret biter, oda geliri gelir.`;
     it.appendChild(h('div', 'main', `<div class="t">${x.name}${own ? ' <span class="tag g">Senin oteli</span>' : has ? ' <span class="tag g">Anlaşmalı</span>' : ''}</div><div class="s">${body2}</div>`));
-    if (taken) it.querySelector('.s').insertAdjacentHTML('afterbegin', `<b style="color:var(--red)">${tk.by} ile anlaşmalı, ${tk.until - S.day} gün.</b> `);
+    if (owner) it.querySelector('.s').insertAdjacentHTML('afterbegin', `<b style="color:var(--red)">Sahibi: ${esc(owner)}. Bu otelle anlaşma yapılamaz.</b> `);
+    else if (taken) it.querySelector('.s').insertAdjacentHTML('afterbegin', `<b style="color:var(--red)">${tk.by} ile anlaşmalı, ${tk.until - S.day} gün.</b> `);
     if (own) {
-      const sb = pbtn('Sat', () => { sellHotel(x); sfx('coin'); refresh(); }, false, true);
+      const sb = pbtn('Sat', () => hotelSaleCard(x, () => {}), false, true);
       sb.classList.add('two'); sb.innerHTML = `Sat ${eur(hotelSellValue(x))}<small>Alış fiyatının %60'ı</small>`;
       it.appendChild(sb);
     }
@@ -3091,8 +3092,9 @@ function tabMarket(body) {
         acts.appendChild(hb);
       }
       const canBuy = sv0 >= x.min;
-      const bb = pbtn('Satın al', () => { S.cash -= x.buy; S.ownHotels.push(x.id); S.hotels = S.hotels.filter(id => id !== x.id); delete S.hotelTaken[x.id]; refresh(); }, !canBuy || S.cash < x.buy);
-      bb.classList.add('two'); bb.innerHTML = `Satın al ${eur(x.buy)}<small>~${eur(x.inc)}/gün gelir</small>`;
+      const price = hotelBuyPrice(x);
+      const bb = pbtn('Satın al', () => { S.cash -= price; S.ownHotels.push(x.id); S.hotels = S.hotels.filter(id => id !== x.id); delete S.hotelTaken[x.id]; if (S.hotelOwner) delete S.hotelOwner[x.id]; refresh(); }, !canBuy || S.cash < price);
+      bb.classList.add('two'); bb.innerHTML = `Satın al ${eur(price)}<small>~${eur(x.inc)}/gün gelir</small>`;
       acts.appendChild(bb);
       it.appendChild(acts);
     }
@@ -5099,7 +5101,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -5255,7 +5257,25 @@ const ISSUES = {
 const HOTEL_LOST_DAYS = 30, HOTEL_KEEP_DAYS = 60, HOTEL_SELL = .6;
 /* v118: an owned hotel sells back for 60% of its price (market card, and the rescue card's smallest one) */
 const hotelSellValue = x => Math.round(x.buy * HOTEL_SELL / 100) * 100;
-function sellHotel(x) { S.ownHotels = S.ownHotels.filter(id => id !== x.id); S.cash += hotelSellValue(x); } /* two months: the holding pays, and the rival goes without */
+/* the strongest rival buys a hotel you sell; while it's in business there are no deals with that hotel, only buying
+   it back, for 10% more (never said) */
+const hotelBuyer = () => { const r = S.rivals.filter(x => x.alive).sort((a, b) => b.rep - a.rep)[0]; return r ? r.name : null; };
+const hotelOwner = x => { const n = (S.hotelOwner || {})[x.id]; return n && S.rivals.some(r => r.alive && r.name === n) ? n : null; };
+const hotelBuyPrice = x => hotelOwner(x) ? Math.round(x.buy * 1.1 / 100) * 100 : x.buy;
+function sellHotel(x) {
+  S.ownHotels = S.ownHotels.filter(id => id !== x.id); S.cash += hotelSellValue(x); delete S.hotelTaken[x.id];
+  const b = hotelBuyer(); if (b) (S.hotelOwner = S.hotelOwner || {})[x.id] = b;
+}
+/* selling asks first: who buys it, and what that means */
+function hotelSaleCard(x, back) {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card'), b = hotelBuyer();
+  c.appendChild(h('h1', null, 'Oteli sat'));
+  c.appendChild(h('p', 'lead', b ? `${esc(x.name)} otelini ${esc(b)} satın alıyor. Bu otelle bir daha anlaşma yapamazsın; oteli ancak bu firmadan satın alabilirsin.` : `${esc(x.name)} otelini yerel bir yatırımcı satın alıyor. İleride yeniden anlaşabilirsin.`));
+  const ok = h('button', 'big', `Sat ${eur(hotelSellValue(x))}`), no = h('button', 'ghost', 'Vazgeç'); ok.style.width = no.style.width = '100%';
+  ok.onclick = () => { sellHotel(x); sfx('coin'); m.hidden = true; refresh(); back(); };
+  no.onclick = () => { sfx('click'); m.hidden = true; back(false); };
+  c.append(ok, no); m.appendChild(c); m.hidden = false;
+} /* two months: the holding pays, and the rival goes without */
 /* On the spot, keeping the hotel costs two months of that hotel's own fee (in the holding's euros), not the region's
    five days of autopilot earnings, which made paying pointless next to a three-day re-signing. */
 const hotelKeepCost = () => { const H = HOTELS.find(x => x.id === S.hotels[S.hotels.length - 1]); return H ? Math.round(H.fee * HOTEL_KEEP_DAYS / FX() / 100) * 100 : 0; };

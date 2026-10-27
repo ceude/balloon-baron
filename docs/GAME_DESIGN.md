@@ -147,7 +147,7 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
 - Popülerlik eşiğin altındaysa gelirin %50'si gelir.
 - Kışın gelir ×0,6.
 
-- **Otel satışı (v118):** sahip olunan otel alış fiyatının %60'ına satılır (Pazar'daki otel kartında "Sat"). Kurtarma planında, otelin varsa en küçüğünü satma seçeneği çıkar.
+- **Otel satışı (v118):** sahip olunan otel alış fiyatının %60'ına satılır (Pazar'daki otel kartında "Sat"). Kurtarma planında, otelin varsa en küçüğünü satma seçeneği çıkar. Satmadan önce bir kart sorar: oteli en popüler rakip satın alır; o rakip ayakta olduğu sürece bu otelle anlaşma yapılamaz (kartta "Sahibi: X"), otel ancak ondan geri alınır ve fiyatı %10 fazladır (oyunda yazmaz, sadece fiyat görünür). Rakip yoksa ya da batarsa otel serbest kalır.
 
 ## Görevler
 Ödül amiral balonunun boyuyla çarpılır: S ×1, M ×2, L ×3, XL ×4.

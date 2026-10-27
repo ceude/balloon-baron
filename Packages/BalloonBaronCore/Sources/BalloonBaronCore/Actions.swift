@@ -339,7 +339,7 @@ extension Game {
     @discardableResult
     public mutating func signHotel(_ h: Hotel, inRescue: Bool = false) -> Bool {
         let fee = h.dailyFee * 3
-        guard !state.hotelActive(h), state.stars >= h.minStars, hotelLockedByRival(h) == nil,
+        guard !state.hotelActive(h), state.stars >= h.minStars, hotelLockedByRival(h) == nil, hotelRivalOwner(h) == nil,
               state.cash - fee >= (inRescue ? Rules.seizeBelow : 0) else { return false }
         state.cash -= fee
         state.hotelDeals.append(h)
@@ -351,22 +351,46 @@ extension Game {
     /// What an owned hotel sells for: `Rules.hotelSellShare` of its price.
     public func hotelSellValue(_ h: Hotel) -> Int { jsRound(Double(h.buyPrice) * Rules.hotelSellShare / 100) * 100 }
 
-    /// Sells an owned hotel: the money comes at once, its room income and guests stop.
+    /// Who buys a hotel you sell: the strongest rival still flying (nil: none, the hotel goes back on the market).
+    public var hotelBuyer: String? { state.rivals.filter(\.alive).max { $0.rep < $1.rep }?.name }
+
+    /// The rival that owns a hotel you sold, while it's still in business: no deals with that hotel any more, only
+    /// buying it back (`hotelBuyPrice`).
+    public func hotelRivalOwner(_ h: Hotel) -> String? {
+        guard let n = state.hotelOwners?[h], state.rivals.contains(where: { $0.alive && $0.name == n }) else { return nil }
+        return n
+    }
+
+    /// What a hotel costs to buy: from its rival owner, `Rules.hotelRivalMarkup` more.
+    public func hotelBuyPrice(_ h: Hotel) -> Int {
+        hotelRivalOwner(h) == nil ? h.buyPrice : jsRound(Double(h.buyPrice) * Rules.hotelRivalMarkup / 100) * 100
+    }
+
+    /// Sells an owned hotel to the strongest rival: the money comes at once, its room income and guests stop, and
+    /// from then on it can only be bought back from that rival.
     @discardableResult
     public mutating func sellHotel(_ h: Hotel) -> Bool {
         guard state.ownHotels.contains(h) else { return false }
         state.ownHotels.removeAll { $0 == h }
         state.cash += hotelSellValue(h)
+        state.hotelLocks[h] = nil
+        if let b = hotelBuyer {
+            var o = state.hotelOwners ?? [:]
+            o[h] = b
+            state.hotelOwners = o
+        }
         return true
     }
 
     @discardableResult
     public mutating func buyHotel(_ h: Hotel) -> Bool {
-        guard !state.ownHotels.contains(h), state.stars >= h.minStars, state.cash >= h.buyPrice else { return false }
-        state.cash -= h.buyPrice
+        let price = hotelBuyPrice(h)
+        guard !state.ownHotels.contains(h), state.stars >= h.minStars, state.cash >= price else { return false }
+        state.cash -= price
         state.ownHotels.append(h)
         state.hotelDeals.removeAll { $0 == h }
         state.hotelLocks[h] = nil
+        state.hotelOwners?[h] = nil
         return true
     }
 
@@ -407,7 +431,8 @@ extension Game {
     public var rescueHotel: Hotel? {
         guard state.unlocked.contains(.market), state.hotelDeals.isEmpty else { return nil }
         return Hotel.allCases.reversed().first {
-            !state.hotelActive($0) && state.stars >= $0.minStars && hotelLockedByRival($0) == nil && state.cash - $0.dailyFee * 3 >= Rules.seizeBelow
+            !state.hotelActive($0) && state.stars >= $0.minStars && hotelLockedByRival($0) == nil && hotelRivalOwner($0) == nil
+                && state.cash - $0.dailyFee * 3 >= Rules.seizeBelow
         }
     }
 
