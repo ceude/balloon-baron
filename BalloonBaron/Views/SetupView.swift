@@ -15,7 +15,7 @@ struct PickBalloon {
         PickBalloon(colors: ["#9b7be0", "#f2ebff"], x: 0.1, y: 0.48, scale: 0.55),
         PickBalloon(colors: ["#22a45d", "#fff3b0"], x: 0.9, y: 0.5, scale: 0.5),
         PickBalloon(colors: ["#e5432f", "#ffffff"], x: 0.4, y: 0.17, scale: 0.6),
-        PickBalloon(colors: ["#ffc23d", "#2b2350"], x: 0.66, y: 0.13, scale: 0.5),
+        PickBalloon(colors: ["#b5532c", "#fbe6c8"], x: 0.66, y: 0.13, scale: 0.5), // v121.4: was yellow/navy, the navy/yellow one again
         PickBalloon(colors: ["#1f1b2e", "#ffffff"], x: 0.08, y: 0.16, scale: 0.45)
     ]
 }
@@ -58,29 +58,44 @@ final class PickModel {
     }
 }
 
-/// New company: name it, then pick your balloon from the ones floating in the dawn sky.
+/// New company: name it, then pick your balloon from the ones floating in the dawn sky. Inside the opening film
+/// (`opening`) the cards float over the 3D scene instead, which shows the pick in its own sky and plays the lift-off.
 struct SetupView: View {
     @Environment(GameStore.self) private var store
     @State private var step = 1
     @State private var name = ""
     @State private var error = false
-    @State private var pick = 0
+    @State private var localPick = 0
     @State private var scene = DawnSceneModel()
     @State private var picker = PickModel()
     @FocusState private var focused: Bool
+    private let opening: OpeningFlow?
+
+    init(opening: OpeningFlow? = nil) {
+        self.opening = opening
+    }
 
     private static let maxName = 24
     private var trimmed: String { name.trimmingCharacters(in: .whitespacesAndNewlines) }
 
+    /// The chosen balloon: the film's when it shows the pick.
+    private var pick: Int {
+        get { opening?.pick ?? localPick }
+        nonmutating set {
+            if let opening { opening.choose(newValue) } else { localPick = newValue }
+        }
+    }
+
     var body: some View {
         ZStack(alignment: .bottom) {
-            sky
+            if opening == nil { sky } else { Color.clear.allowsHitTesting(false) }
             card
                 .padding(16)
                 .frame(maxWidth: .infinity)
         }
         .animation(.easeOut(duration: 0.25), value: step)
         .onAppear { SoundEngine.shared.start() }
+        .onChange(of: step) { _, s in opening?.setPicking(s == 2) }
     }
 
     // MARK: Scene
@@ -228,7 +243,15 @@ struct SetupView: View {
                 }
                 BigButton(title: loc("intro.pick.fly")) {
                     SoundEngine.shared.play(.click)
-                    store.newGame(company: trimmed, colors: PickBalloon.all[pick].colors)
+                    let colors = PickBalloon.all[pick].colors
+                    if let opening {
+                        // The game is made now (and saved); the lift-off plays over it before the town comes up.
+                        store.openingFilm = true
+                        store.newGame(company: trimmed, colors: colors)
+                        opening.liftOff(company: trimmed, colors: colors)
+                    } else {
+                        store.newGame(company: trimmed, colors: colors)
+                    }
                 }
             }
         }

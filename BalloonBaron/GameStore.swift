@@ -48,6 +48,8 @@ final class GameStore {
     var issueScene = false
     /// The dream-flight intro runs at every launch, like the prototype.
     var showIntro = true
+    /// The opening film's lift-off is still playing over the game it has just created: the town and its popups wait.
+    var openingFilm = false
     /// Passengers are being gathered (the seat-filling screen before take-off).
     var collecting = false
     /// Passengers riding with you while the flight scene runs.
@@ -102,7 +104,7 @@ final class GameStore {
 
     /// Anything already covering the home screen; the next popup waits for it.
     private var busy: Bool {
-        showIntro || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
+        showIntro || openingFilm || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
@@ -315,6 +317,7 @@ final class GameStore {
         flightPax = nil
         showMenu = false
         showRepChart = false
+        openingFilm = false
         showIntro = true
     }
 
@@ -541,6 +544,12 @@ final class GameStore {
     }
 
     /// The intro balloon has left the screen.
+    /// The opening film is over: the town comes up, and what waits for the new company with it.
+    func finishOpening() {
+        openingFilm = false
+        showNextHezarfen()
+    }
+
     func finishIntro() {
         showIntro = false
         Telemetry.introDone(state)
