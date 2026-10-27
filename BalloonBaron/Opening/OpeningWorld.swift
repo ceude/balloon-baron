@@ -82,7 +82,7 @@ final class OpeningWorld {
 
     // swiftlint:disable:next function_body_length
     init(lite: Bool) {
-        var rnd = Mulberry32(1907)
+        var rnd = FilmRandom(1907)
         let land = OpeningLand(perlin: Perlin2(&rnd))
         self.land = land
         func height(_ x: Double, _ z: Double) -> Double { land.height(x, z) }

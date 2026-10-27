@@ -20,7 +20,7 @@ func oEaseIO3(_ k: Double) -> Double {
 }
 
 /// The prototype's `mulberry32`: the same seed gives the same town.
-struct Mulberry32 {
+struct FilmRandom {
     private var a: UInt32
     init(_ seed: UInt32) { a = seed }
 
@@ -79,7 +79,7 @@ enum ImprovedNoise {
 struct Perlin2 {
     private let P: [Int]
 
-    init(_ rnd: inout Mulberry32) {
+    init(_ rnd: inout FilmRandom) {
         var p = Array(0..<256)
         for i in stride(from: 255, to: 0, by: -1) {
             let j = Int(floor(rnd.next() * Double(i + 1)))
@@ -130,8 +130,6 @@ struct CRCurve {
         }
         lengths = acc
     }
-
-    init(_ pts: [[Double]]) { self.init(pts.map { D3($0[0], $0[1], $0[2]) }) }
 
     private static func cubic(_ x0: Double, _ x1: Double, _ x2: Double, _ x3: Double, _ dt0: Double, _ dt1: Double, _ dt2: Double,
                               _ t: Double) -> Double {

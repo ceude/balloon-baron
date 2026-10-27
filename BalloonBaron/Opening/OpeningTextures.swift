@@ -77,7 +77,7 @@ enum OpeningTextures {
     }
 
     /// Tuff mottled with pocks and faint drip stains.
-    static func mottle(_ rnd: inout Mulberry32) -> CGImage? {
+    static func mottle(_ rnd: inout FilmRandom) -> CGImage? {
         let w = 512, h = 512
         var r = rnd
         let img = canvas(w, h, pixels: { d in
@@ -106,7 +106,7 @@ enum OpeningTextures {
     }
 
     /// The ground: grit and small stones on white (the terrain's vertex colors tint it).
-    static func grit(_ rnd: inout Mulberry32) -> CGImage? {
+    static func grit(_ rnd: inout FilmRandom) -> CGImage? {
         var r = rnd
         let img = canvas(256, 256) { c, w, hh in
             fillRect(c, rgba(255, 255, 255), 0, 0, Double(w), Double(hh))
@@ -126,7 +126,7 @@ enum OpeningTextures {
     }
 
     /// A house front: plaster (mottled, patched, cracked) or cut stone, windows with sills and shutters, a door or an arcade.
-    static func facade(_ kind: Int, _ rnd: inout Mulberry32) -> CGImage? {
+    static func facade(_ kind: Int, _ rnd: inout FilmRandom) -> CGImage? {
         var r = rnd
         let img = canvas(512, 512) { c, wf, hf in
             let w = Double(wf), hh = Double(hf)
@@ -258,7 +258,7 @@ enum OpeningTextures {
     }
 
     /// The old envelope on the field, faded stripes.
-    static func oldCloth(_ rnd: inout Mulberry32) -> CGImage? {
+    static func oldCloth(_ rnd: inout FilmRandom) -> CGImage? {
         var r = rnd
         let img = canvas(512, 128) { c, wf, hf in
             let w = Double(wf), hh = Double(hf)
