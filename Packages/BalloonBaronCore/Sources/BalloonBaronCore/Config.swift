@@ -206,7 +206,7 @@ public enum Rules {
     /// Company colors offered at setup (primary, secondary).
     public static let palettes: [[String]] = [
         ["#ff5e3a", "#ffc23d"], ["#14a39a", "#e8fff9"], ["#2b2350", "#ffc23d"], ["#ff6fa8", "#fff0f6"], ["#5aa9e6", "#eaf4fc"],
-        ["#9b7be0", "#f2ebff"], ["#22a45d", "#fff3b0"], ["#e5432f", "#ffffff"], ["#ffc23d", "#2b2350"], ["#1f1b2e", "#ffffff"]
+        ["#9b7be0", "#f2ebff"], ["#22a45d", "#fff3b0"], ["#e5432f", "#ffffff"], ["#b5532c", "#fbe6c8"], ["#1f1b2e", "#ffffff"]
     ]
     static let rivalColors: [[String]] = [
         ["#5aa9e6", "#eaf4fc"], ["#9b7be0", "#f2ebff"], ["#c73a2a", "#ffd9a8"], ["#e08a1e", "#fff1d6"], ["#3c9a8f", "#e6fff9"], ["#7a7f8c", "#f4f4f4"]

@@ -173,7 +173,7 @@ struct PaperView: View {
                     .multilineTextAlignment(.center).frame(maxWidth: .infinity)
                     .fixedSize(horizontal: false, vertical: true)
                 PaperPhoto().frame(height: 96).overlay(Rectangle().stroke(ink, lineWidth: 1)).accessibilityHidden(true)
-                if let sub = lead.subline(company) {
+                if let sub = lead.subline(company, region: region) {
                     Text(sub).font(serif(15)).foregroundStyle(ink2).fixedSize(horizontal: false, vertical: true)
                 }
             }
@@ -182,7 +182,7 @@ struct PaperView: View {
                     ForEach(Array(items.dropFirst().enumerated()), id: \.offset) { i, x in
                         VStack(alignment: .leading, spacing: 2) {
                             Text(x.headline(company)).font(serif(15, .bold)).foregroundStyle(ink)
-                            if let sub = x.subline(company) { Text(sub).font(serif(13)).foregroundStyle(ink2) }
+                            if let sub = x.subline(company, region: region) { Text(sub).font(serif(13)).foregroundStyle(ink2) }
                         }
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .fixedSize(horizontal: false, vertical: true)
@@ -295,7 +295,7 @@ extension PaperItem {
         }
     }
 
-    func subline(_ company: String) -> String? {
+    func subline(_ company: String, region: RegionID) -> String? {
         switch self {
         case .vip, .wedding: nil
         case let .accident(b, days, _): loc("paper.accident.sub", bname(b), num(days))
@@ -310,6 +310,7 @@ extension PaperItem {
         case .inspectorFine(let fine): loc("paper.inspectorFine.sub", eur(fine))
         case .show(let n): loc("paper.show.sub", num(n))
         case .factoryGrew(_, let lv): Factory.levelTitle(lv)
+        case .passedBoss: loc(region == .cap ? "paper.passedBoss.sub.cap" : "paper.passedBoss.sub") // v121: Hasan's grandchild
         default: loc("paper.\(key).sub")
         }
     }

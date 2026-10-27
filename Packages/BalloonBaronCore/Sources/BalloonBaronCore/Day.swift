@@ -334,6 +334,8 @@ extension Game {
         }
         state.stats = { var st = state.statistics; st.passengers += paxTotal; return st }()
         praiseCheck(flight: cancelled ? nil : flight, waitedOutRed: red && flyingIDs.isEmpty)
+        // v121: after the first flight in Cappadocia, Hezarfen tells the grandfather's story
+        if state.region == .cap && !flyingIDs.isEmpty && state.day <= 3 { queueTip(.hasan) }
         factoryDay(&ev, tomorrow: state.day + 1)
         let report = DayReport(day: state.day, flag: weather.flag, ledger: lg, events: ev, rivalEvents: rev,
                                passengers: paxTotal, capacity: capToday, skipped: plan.skipped)

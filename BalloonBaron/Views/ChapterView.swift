@@ -62,9 +62,20 @@ struct ChapterView: View {
             Text(loc(news.region == .cap ? "ceremony.baronLead" : "ceremony.baronLead.\(news.region.rawValue)", num(s.day), news.region.title, s.company))
                 .font(Theme.font(16, .medium))
                 .foregroundStyle(Theme.ink)
+            if news.region == .cap {
+                // v121: Hasan's basket in its glass case, and Kenan's note under it
+                VStack(spacing: 4) {
+                    HasanBasketCase().frame(width: 150, height: 140)
+                    Text(loc("ceremony.basket"))
+                        .font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                        .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity)
+            }
             HStack(alignment: .top, spacing: 10) {
                 BossAvatar(region: news.region, size: 44)
-                (Text(loc("boss.\(news.region.rawValue).name") + ": ").bold() + Text(loc("boss.\(news.region.rawValue).baron")))
+                (Text((news.region == .cap ? loc("ceremony.bossNote", loc("boss.cap.name")) : loc("boss.\(news.region.rawValue).name")) + ": ").bold()
+                 + Text(loc("boss.\(news.region.rawValue).baron")))
                     .font(Theme.font(13.5)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
             }
             .padding(10)
@@ -158,6 +169,54 @@ struct ChapterConfetti: View {
             }
         }
         .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
+/// v121: Hasan's old basket on a plinth behind glass, with a brass plate (the prototype's `VITRIN`, drawn in a 150×140 box).
+struct HasanBasketCase: View {
+    var body: some View {
+        Canvas { ctx, size in
+            let k = min(size.width / 150, size.height / 140)
+            func p(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x * k, y: y * k) }
+            func r(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ c: CGFloat) -> Path {
+                Path(roundedRect: CGRect(x: x * k, y: y * k, width: w * k, height: h * k), cornerRadius: c * k)
+            }
+            let lamp = Color(hex: "#ffe7a8")
+            ctx.fill(r(22, 8, 106, 98, 4), with: .radialGradient(Gradient(colors: [lamp.opacity(0.55), lamp.opacity(0)]),
+                                                                center: p(75, 8), startRadius: 0, endRadius: 95 * k))
+            var basket = Path()
+            basket.move(to: p(50, 96)); basket.addLine(to: p(56, 50))
+            basket.addQuadCurve(to: p(94, 50), control: p(75, 44)); basket.addLine(to: p(100, 96))
+            basket.addQuadCurve(to: p(50, 96), control: p(75, 102)); basket.closeSubpath()
+            ctx.fill(basket, with: .linearGradient(Gradient(colors: [Color(hex: "#c98c4a"), Color(hex: "#7a4a22")]),
+                                                   startPoint: p(75, 44), endPoint: p(75, 100)))
+            var weave = Path()
+            for (y, d) in [(62.0, 57.0), (72, 67), (82, 77), (91, 87)] as [(CGFloat, CGFloat)] {
+                weave.move(to: p(52 - (y - 62) / 15, y)); weave.addQuadCurve(to: p(98 + (y - 62) / 15, y), control: p(75, d))
+            }
+            for (x0, y0, x1, y1) in [(62.0, 49.0, 59.0, 98.0), (72, 47, 71, 100), (82, 47, 83, 100), (91, 49, 94, 98)] as [(CGFloat, CGFloat, CGFloat, CGFloat)] {
+                weave.move(to: p(x0, y0)); weave.addLine(to: p(x1, y1))
+            }
+            ctx.stroke(weave, with: .color(Color(hex: "#5a3214").opacity(0.75)), lineWidth: 1.1 * k)
+            var rim = Path(); rim.move(to: p(54, 50)); rim.addQuadCurve(to: p(96, 50), control: p(75, 41))
+            ctx.stroke(rim, with: .color(Color(hex: "#e3b27a")), lineWidth: 3 * k)
+            var frame = Path(); frame.move(to: p(58, 49)); frame.addLine(to: p(60, 30)); frame.move(to: p(92, 49)); frame.addLine(to: p(90, 30))
+            ctx.stroke(frame, with: .color(Color(hex: "#9a9a9a")), lineWidth: 1.6 * k)
+            ctx.fill(r(58, 24, 34, 7, 2), with: .color(Color(hex: "#6d6d6d")))
+            let glass = Color(hex: "#bfe3ff")
+            ctx.fill(r(22, 8, 106, 98, 4), with: .linearGradient(Gradient(colors: [glass.opacity(0.28), .white.opacity(0.08), glass.opacity(0.22)]),
+                                                                startPoint: p(22, 50), endPoint: p(128, 50)))
+            ctx.stroke(r(22, 8, 106, 98, 4), with: .color(Color(hex: "#d8eeff").opacity(0.6)), lineWidth: 1.5 * k)
+            var shine = Path(); shine.move(to: p(32, 14)); shine.addLine(to: p(44, 14)); shine.addLine(to: p(30, 70)); shine.addLine(to: p(26, 70)); shine.closeSubpath()
+            ctx.fill(shine, with: .color(.white.opacity(0.18)))
+            ctx.fill(r(14, 104, 122, 22, 3), with: .linearGradient(Gradient(colors: [Color(hex: "#6b3b22"), Color(hex: "#3e2112")]),
+                                                                  startPoint: p(75, 104), endPoint: p(75, 126)))
+            ctx.fill(r(10, 102, 130, 5, 2), with: .color(Color(hex: "#8a5232")))
+            ctx.fill(r(52, 110, 46, 11, 2), with: .color(Color(hex: "#d9b25a")))
+            ctx.draw(Text(verbatim: loc("ceremony.basketPlate")).font(.system(size: 7.5 * k, design: .serif)).foregroundColor(Color(hex: "#4a3210")),
+                     at: p(75, 115.5))
+        }
         .accessibilityHidden(true)
     }
 }

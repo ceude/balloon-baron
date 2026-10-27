@@ -109,7 +109,7 @@ public struct Game: Sendable {
         }
         queueTip(.welcome)
         if s.day >= 3 { queueTip(.goals) } // day 3: day 2 already teaches insurance and often the yellow flag
-        if s.day >= 3 { bossSay(.hello) }
+        if s.day >= (s.region == .cap ? 1 : 3) { bossSay(.hello) } // v121: Kenan greets Hasan's grandchild on the first morning
         if s.day >= 9 { queueTip(.pr) }
         // v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows it.
         if s.day >= 2 && s.day <= 12, let l = s.local.lastShare, l.cap > 0, l.me < l.cap { queueTip(.price) }

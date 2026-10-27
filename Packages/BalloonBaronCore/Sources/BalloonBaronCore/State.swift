@@ -165,6 +165,8 @@ public enum Tip: String, Codable, CaseIterable, Sendable {
     case pr, influ, prcap, bazaar, delegate, noRivals, show, price
     /// v117: "⏩ Advance" is open (`GameState.autopilotOK`).
     case autopilot
+    /// v121: Hezarfen tells Hasan's story after the first flight in Cappadocia.
+    case hasan
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {

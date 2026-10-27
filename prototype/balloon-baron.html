@@ -1974,7 +1974,7 @@ function finishDay(flight) {
   { const B = bossRival(); if (B && B.alive && paxTotal > (B.lastPax || 0) && B.lastPax > 0 && S.day > 8) { if (!(S.bossSaid && S.bossSaid[S.region + ':passed'])) paperAdd(4, `${S.company}, ${B.name}'yi geçti`, S.region === 'cap' && !S.storyDone ? 'Yıllar önce Hasan Usta\'nın şirketini Göreme Sky almıştı. Şimdi vadinin en çok yolcu uçuran şirketi torununun.' : 'Vadinin en çok yolcu uçuran şirketi değişti.'); bossSay('passed'); } }
   (S.stat = S.stat || {}).pax = (S.stat.pax || 0) + paxTotal;
   praiseCheck(flight, red && !fl.length);
-  if (S.region === 'cap' && fl.length && !S.storyDone) hezAdd('hasan'); /* v121: after the first flight, the grandfather's story */
+  if (S.region === 'cap' && fl.length && !S.storyDone && S.day <= 3) hezAdd('hasan'); /* v121: after the first flight, the grandfather's story */
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
   S.day++; S.plan = null; fabDay(ev); milestoneCheck(); achCheck(); if (anyBaron()) holdGoalsCheck();
   if (S.region === 'abq') {
