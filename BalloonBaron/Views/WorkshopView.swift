@@ -154,6 +154,11 @@ struct WorkshopView: View {
                 // v114.1: three grey samples above the button, so it's clear what a design is before the first one
                 HStack(spacing: 8) {
                     ForEach([Pattern.stars, .zigzag, .sunburst], id: \.self) { p in
+                        // a sample opens the studio, like the New design button below
+                        Button {
+                            SoundEngine.shared.play(.click)
+                            studioOpen = true
+                        } label: {
                         VStack(spacing: 4) {
                             DesignBalloon(pattern: p, colors: [s.colors.first ?? "#ff5e3a", s.colors.count > 1 ? s.colors[1] : "#ffc23d", "#ffffff"])
                                 .frame(width: 44, height: 56)
@@ -165,9 +170,11 @@ struct WorkshopView: View {
                         .aspectRatio(1, contentMode: .fit)
                         .background(Color(hex: "#efecf3"), in: RoundedRectangle(cornerRadius: 14))
                         .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Color(hex: "#cfc8dd"), style: StrokeStyle(lineWidth: 1.5, dash: [4, 3])))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(loc("fleetPage.newDesign"))
                     }
                 }
-                .accessibilityHidden(true)
             }
             ForEach(s.designs) { d in
                 let fresh = game.freshness(d), faded = Int((fresh * 100).rounded()) <= 20
