@@ -41,3 +41,6 @@ add("fplan.selfNote", "Your passengers pay %@ more and the missions are yours. T
 add("fplan.pilotsNote", "If you fly, passengers pay %@ more and you can take missions. Tap \"I'll fly this one\" on a balloon in the list.", "Kendin uçarsan yolcular %@ fazla öder ve görevleri alabilirsin. Listede bir balonda \"Bu balonu ben uçurayım\" düğmesine dokun.", "Wenn du selbst fliegst, zahlen die Passagiere %@ mehr und du kannst Aufträge annehmen. Tippe in der Liste bei einem Ballon auf \"Den fliege ich selbst\".", "Si pilotas tú, los pasajeros pagan un %@ más y puedes aceptar misiones. Toca \"Este lo piloto yo\" en un globo de la lista.", "自分で飛ばせば乗客は%@多く払い、依頼も受けられる。リストの気球で「この気球は自分で飛ばす」をタップ。", "직접 조종하면 승객이 %@ 더 내고 임무도 받을 수 있습니다. 목록의 기구에서 \"이 기구는 내가 몬다\"를 누르세요.")
 add("fplan.missionYours", "Today's mission is yours: %1$@ (+%2$@).", "Bugünkü görev senin: %1$@ (+%2$@).", "Der heutige Auftrag gehört dir: %1$@ (+%2$@).", "La misión de hoy es tuya: %1$@ (+%2$@).", "今日の依頼はあなたのもの：%1$@（+%2$@）。", "오늘의 임무는 당신 몫: %1$@ (+%2$@).")
 add("fplan.toPilot", "Give to a pilot", "Pilota ver", "An einen Piloten", "Dárselo a un piloto", "パイロットに任せる", "조종사에게 맡기기")
+
+# v121.6: the pilots-only button at the end of boarding, when no pilot is spare
+add("collect.downCount", "Grounded: %@", "Yerde: %@", "Am Boden: %@", "En tierra: %@", "地上：%@", "지상: %@")

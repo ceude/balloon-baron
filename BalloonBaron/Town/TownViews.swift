@@ -232,7 +232,7 @@ struct HomeTownView: View {
     private func homeViewport(width w: CGFloat, dockTop: CGFloat) -> TownViewport {
         let back = max(hudBottom + 20, weatherBottom - 16), front = dockTop - 6
         let z = min(max((front - back) / 1024, 0.15), w / 1500)
-        let c = TownGeo.iso(7, 8)
+        let c = TownGeo.iso(7.5, 7.5) // v121.6: the town's middle on the screen's middle
         return TownViewport(z: z, ox: w / 2 - c.x * z, oy: front - TownGeo.iso(15.5, 15.5).y * z)
     }
 

@@ -278,27 +278,31 @@ struct CollectView: View {
         }
     }
 
-    /// `flyChoice`: whether who flies the flagship can still change today without changing which balloons take off.
-    private var flyChoice: Bool {
-        guard var g = store.game, let fb = g.state.balloon(g.state.flagship), g.state.licenseValid,
-              g.state.local.strikeDay != g.state.day else { return false }
-        let before = g.state.flyingToday.map(\.id)
-        guard before.contains(fb.id) else { return false }
-        g.setSelfFly(!g.state.local.selfFly)
-        return g.state.flyingToday.map(\.id) == before
+    /// `flyChoice` (v121.6): who flies the flagship can always be chosen at the end of boarding (a TestFlight player
+    /// missed the two buttons when no pilot was spare). How many balloons go up either way; nil when there's no choice.
+    private var flyChoice: (me: Int, pilots: Int)? {
+        guard let g0 = store.game, let fb = g0.state.balloon(g0.state.flagship), g0.state.licenseValid,
+              g0.state.local.strikeDay != g0.state.day else { return nil }
+        var a = g0, b = g0
+        a.setSelfFly(true)
+        b.setSelfFly(false)
+        let me = a.state.flyingToday, pilots = b.state.flyingToday.count
+        guard me.contains(where: { $0.id == fb.id }), pilots > 0 else { return nil }
+        return (me.count, pilots)
     }
 
     @ViewBuilder
     private func buttons(_ m: CollectModel) -> some View {
-        if m.done && flyChoice { choiceButtons(m) } else { goButtons(m) }
+        if m.done, let c = flyChoice { choiceButtons(m, down: c.me - c.pilots) } else { goButtons(m) }
     }
 
     /// Who flies is decided here: you and your pilots, or only the pilots. Today's choice is the big bright button on
     /// top; cancel and the other choice sit under it, slimmer.
-    private func choiceButtons(_ m: CollectModel) -> some View {
+    private func choiceButtons(_ m: CollectModel, down: Int) -> some View {
         let me = store.state?.local.selfFly ?? true, solo = m.balloons == 1
         let selfTitle = loc(solo ? "collect.selfGo" : "collect.selfAndPilots")
-        let pilotsTitle = loc(solo ? "collect.pilotGo" : "collect.onlyPilots")
+        // With no spare pilot, letting the pilots fly leaves a balloon on the ground; the button says so.
+        let pilotsTitle = loc(solo ? "collect.pilotGo" : "collect.onlyPilots") + (down > 0 ? " · " + loc("collect.downCount", num(down)) : "")
         return VStack(spacing: 8) {
             Button(me ? selfTitle : pilotsTitle) { pick(selfFly: me) }
                 .buttonStyle(ChunkyButtonStyle(kind: .big, height: 58))
