@@ -21,6 +21,8 @@ final class SoundEngine {
         set {
             UserDefaults.standard.set(newValue, forKey: "sound")
             synth.send(.master(newValue))
+            // with sound off the engine sleeps instead of rendering silence (battery)
+            if newValue { resume() } else { engine?.pause() }
         }
     }
 
@@ -39,6 +41,7 @@ final class SoundEngine {
     private var lastPop = -10.0
     private var showTask: Task<Void, Never>?
     private var started = false
+    private var inBackground = false
 
     private init() {}
 
@@ -198,7 +201,7 @@ final class SoundEngine {
 
     /// Restarts the engine if something (route change, interruption) stopped it.
     private func resume() {
-        guard let engine, !engine.isRunning else { return }
+        guard let engine, !engine.isRunning, enabled, !inBackground else { return }
         try? AVAudioSession.sharedInstance().setActive(true)
         engine.prepare()
         try? engine.start()
@@ -206,6 +209,11 @@ final class SoundEngine {
 
     private func observe() {
         let nc = NotificationCenter.default
+        // In the background nothing plays: the engine pauses until the app comes back (battery).
+        observers.append(nc.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.inBackground = true
+            self?.engine?.pause()
+        })
         observers.append(nc.addObserver(forName: AVAudioSession.interruptionNotification, object: nil, queue: .main) { [weak self] note in
             guard let raw = note.userInfo?[AVAudioSessionInterruptionTypeKey] as? UInt,
                   AVAudioSession.InterruptionType(rawValue: raw) == .ended else { return }
@@ -223,6 +231,7 @@ final class SoundEngine {
             self.resume()
         })
         observers.append(nc.addObserver(forName: UIApplication.willEnterForegroundNotification, object: nil, queue: .main) { [weak self] _ in
+            self?.inBackground = false
             self?.resume()
         })
     }

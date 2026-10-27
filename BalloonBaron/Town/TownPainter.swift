@@ -1228,15 +1228,7 @@ struct TownPainter {
 
     /// Ground inside the walls: patches, vineyards, cobbled roads and the striped launch field.
     mutating func townDecor() {
-        var R = Mulberry32(seed: 5)
-        var green = Path(), brown = Path()
-        for _ in 0..<160 {
-            let p = iso(R.next() * 15, R.next() * 15)
-            let isBrown = R.next() < 0.5
-            let rx = 6 + CGFloat(R.next()) * 16, ry = 3 + CGFloat(R.next()) * 6
-            let e = CGRect(x: p.x - rx, y: p.y - ry, width: rx * 2, height: ry * 2)
-            if isBrown { brown.addEllipse(in: e) } else { green.addEllipse(in: e) }
-        }
+        let (brown, green) = TownStatic.townPatches
         c.fill(brown, with: .color(rgba(160, 120, 70, 0.18)))
         c.fill(green, with: .color(rgba(120, 150, 70, 0.22)))
         vineyards([(13.2, 3.4, 1.6, 3.6), (-9, 2, 5, 4), (18, 10, 4, 5), (2, 18, 4, 3.5), (-12, 12, 4, 3)])
@@ -1269,13 +1261,7 @@ struct TownPainter {
         c.fill(shape, with: .color(hex("#c9a47a")))
         var inner = c
         inner.clip(to: shape)
-        var R = rng(gx0 * 13 + gy0 * 7 + 1)
-        var light = Path(), dark = Path()
-        for _ in 0..<260 {
-            let p = iso(gx0 + (gx1 - gx0) * R.next(), gy0 + (gy1 - gy0) * R.next())
-            let e = CGRect(x: p.x - 4, y: p.y - 2, width: 8, height: 4)
-            if R.next() < 0.5 { light.addEllipse(in: e) } else { dark.addEllipse(in: e) }
-        }
+        let (light, dark) = TownStatic.cobbles(gx0, gy0, gx1, gy1, seed: rng(gx0 * 13 + gy0 * 7 + 1))
         inner.fill(light, with: .color(rgba(255, 240, 215, 0.35)))
         inner.fill(dark, with: .color(rgba(110, 70, 40, 0.22)))
         c.stroke(shape, with: .color(rgba(110, 70, 40, 0.35)), lineWidth: 2)
@@ -1301,17 +1287,7 @@ struct TownPainter {
 
     mutating func outerDecor() {
         let L = outerLook
-        var R = Mulberry32(seed: 9)
-        var first = Path(), second = Path()
-        for _ in 0..<420 {
-            let gx = -22 + R.next() * 60, gy = -22 + R.next() * 60
-            if gx > -1 && gx < 16 && gy > -1 && gy < 16 { continue }
-            let p = iso(gx, gy)
-            let isFirst = R.next() < L.split
-            let rx = 8 + CGFloat(R.next()) * 22, ry = 4 + CGFloat(R.next()) * 8
-            let e = CGRect(x: p.x - rx, y: p.y - ry, width: rx * 2, height: ry * 2)
-            if isFirst { first.addEllipse(in: e) } else { second.addEllipse(in: e) }
-        }
+        let (first, second) = TownStatic.outerPatches(split: L.split)
         c.fill(first, with: .color(L.patch.0))
         c.fill(second, with: .color(L.patch.1))
         // Luxor: the Nile runs past behind the town, green banks on both sides.
@@ -1627,7 +1603,7 @@ struct TownPainter {
 
     /// The zone's text box on the ground, in world coordinates.
     func zoneQuad(_ z: TownZone) -> [CGPoint] {
-        let w = Double(c.resolve(zoneText(z)).measure(in: CGSize(width: 4000, height: 400)).width) / 100
+        let w = TownStatic.zoneWidth(z.key) { Double(c.resolve(zoneText(z)).measure(in: CGSize(width: 4000, height: 400)).width) / 100 }
         let h = Double(Self.zoneFontSize) * 0.75 / 100
         if z.side {
             return [TownGeo.iso(z.gx - h - 0.15, z.gy + w / 2 + 0.2), TownGeo.iso(z.gx - h - 0.15, z.gy - w / 2 - 0.2),
@@ -1644,9 +1620,11 @@ struct TownPainter {
             var g = c
             g.concatenate(zoneMatrix(z))
             g.opacity = a
-            let base = zoneText(z)
+            // laid out once, drawn three times in different colours
+            var text = g.resolve(zoneText(z))
             for (dy, col) in [(CGFloat(6), rgba(255, 248, 232, 0.9)), (0, rgba(96, 56, 30, 0.85)), (3, rgba(150, 98, 60, 0.75))] {
-                g.draw(base.foregroundColor(col), at: pt(0, dy), anchor: .bottom)
+                text.shading = .color(col)
+                g.draw(text, at: pt(0, dy), anchor: .bottom)
             }
         }
     }
@@ -1713,5 +1691,68 @@ extension GameState {
             return b.id == local.flagship ? 2 : 3
         }
         return local.balloons.enumerated().sorted { (rank($0.element), $0.offset) < (rank($1.element), $1.offset) }.map(\.element)
+    }
+}
+
+/// The town's ground never changes once drawn: the patches in and around it and the road cobbles come from fixed seeds,
+/// so they are built once (in world coordinates, so they stay sharp at every zoom) and only filled each frame. The
+/// zone names' widths are measured once per language. Everything runs on the main thread with the Canvas.
+enum TownStatic {
+    static let townPatches: (Path, Path) = {
+        var R = Mulberry32(seed: 5)
+        var green = Path(), brown = Path()
+        for _ in 0..<160 {
+            let p = TownGeo.iso(R.next() * 15, R.next() * 15)
+            let isBrown = R.next() < 0.5
+            let rx = 6 + CGFloat(R.next()) * 16, ry = 3 + CGFloat(R.next()) * 6
+            let e = CGRect(x: p.x - rx, y: p.y - ry, width: rx * 2, height: ry * 2)
+            if isBrown { brown.addEllipse(in: e) } else { green.addEllipse(in: e) }
+        }
+        return (brown, green)
+    }()
+
+    private static var outer: [Double: (Path, Path)] = [:]
+    private static var roads: [String: (Path, Path)] = [:]
+    private static var zoneWidths: [String: Double] = [:]
+    private static var zoneLanguage = ""
+
+    static func outerPatches(split: Double) -> (Path, Path) {
+        if let o = outer[split] { return o }
+        var R = Mulberry32(seed: 9)
+        var first = Path(), second = Path()
+        for _ in 0..<420 {
+            let gx = -22 + R.next() * 60, gy = -22 + R.next() * 60
+            if gx > -1 && gx < 16 && gy > -1 && gy < 16 { continue }
+            let p = TownGeo.iso(gx, gy)
+            let isFirst = R.next() < split
+            let rx = 8 + CGFloat(R.next()) * 22, ry = 4 + CGFloat(R.next()) * 8
+            let e = CGRect(x: p.x - rx, y: p.y - ry, width: rx * 2, height: ry * 2)
+            if isFirst { first.addEllipse(in: e) } else { second.addEllipse(in: e) }
+        }
+        outer[split] = (first, second)
+        return (first, second)
+    }
+
+    static func cobbles(_ gx0: Double, _ gy0: Double, _ gx1: Double, _ gy1: Double, seed: Mulberry32) -> (Path, Path) {
+        let key = "\(gx0),\(gy0),\(gx1),\(gy1)"
+        if let r = roads[key] { return r }
+        var R = seed
+        var light = Path(), dark = Path()
+        for _ in 0..<260 {
+            let p = TownGeo.iso(gx0 + (gx1 - gx0) * R.next(), gy0 + (gy1 - gy0) * R.next())
+            let e = CGRect(x: p.x - 4, y: p.y - 2, width: 8, height: 4)
+            if R.next() < 0.5 { light.addEllipse(in: e) } else { dark.addEllipse(in: e) }
+        }
+        roads[key] = (light, dark)
+        return (light, dark)
+    }
+
+    static func zoneWidth(_ key: String, measure: () -> Double) -> Double {
+        let lang = Locale.preferredLanguages.first ?? ""
+        if lang != zoneLanguage { zoneWidths = [:]; zoneLanguage = lang }
+        if let w = zoneWidths[key] { return w }
+        let w = measure()
+        zoneWidths[key] = w
+        return w
     }
 }
