@@ -2745,7 +2745,8 @@ function showFleetPlan() {
       const st = canFly(b), you = b === mine, row = h('div', 'frow' + (you ? ' you' : '') + (st !== 'ok' ? ' blocked' : b.fly ? '' : ' off'));
       row.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<div class="main"><div class="t">${esc(b.name)}${you ? ' <span class="tag o">Sen uçuruyorsun</span>' : b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}</div><div class="s">${fleetSub(b)}${riskDot(b)}</div></div>`;
       const main = row.querySelector('.main');
-      if (you && licenseOk()) { const g = h('button', 'mefly', 'Pilota ver'); g.onclick = () => { S.selfFly = false; assignPilots(); sfx('tick'); refresh(); draw(); }; main.appendChild(g); }
+      const pilotFree = () => { S.selfFly = false; assignPilots(); const ok = canFly(fb) === 'ok'; S.selfFly = true; assignPilots(); return ok; };
+      if (you && licenseOk() && pilotFree()) { const g = h('button', 'mefly', 'Pilota ver'); /* only when a pilot is free for it */ g.onclick = () => { S.selfFly = false; assignPilots(); sfx('tick'); refresh(); draw(); }; main.appendChild(g); }
       else if (!you && licenseOk() && meOk(b)) { const g = h('button', 'mefly', 'Ben uçurayım'); g.onclick = () => flyMe(b); main.appendChild(g); }
       if (st === 'ok') { const fb = h('button', 'flybtn' + (b.fly ? ' on' : ''), b.fly ? 'UÇACAK' : 'YERDE'); fb.setAttribute('aria-pressed', String(!!b.fly)); fb.onclick = () => { b.fly = !b.fly; sfx('tick'); refresh(); draw(); }; row.appendChild(fb); }
       else { const t = blockedTap(b); if (t) { const go = h('button', 'pbtn light', st === 'worn' ? 'Filo' : 'Ekip'); go.onclick = () => { m.hidden = true; t(); }; row.appendChild(go); } }
@@ -2811,8 +2812,8 @@ function renderAct() {
   if (S.docDay === S.day && fl.some(b => b.id === S.flag)) notes.push('Amiralde 4 koltuk belgesel ekibinde.');
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
   $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : '<span>Bugün uçacak balon yok</span>'}</span><span class="pgo">Ayarla ›</span>`;
-  const go = $('go'); go.disabled = !n;
-  go.textContent = n ? `Yolcu topla (${n} balon)` : 'Uçacak balon yok';
+  const go = $('go'); go.disabled = false;
+  go.textContent = n ? `Yolcu topla (${n} balon)` : 'Uçuş planını aç'; /* TestFlight: nothing to fly opens the plan, where the reason is */
   $('auto').hidden = !autoOk();
 }
 
@@ -8500,7 +8501,7 @@ function autoStop(why) {
 $('auto').onclick = autoStart;
 
 /* ---------- boot ---------- */
-$('go').onclick = () => pilotCheck(() => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); });
+$('go').onclick = () => !flying().length ? showFleetPlan() : pilotCheck(() => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); });
 /* v110: skipping a flyable green or yellow day asks once, since wages and upkeep are paid anyway */
 $('skip').onclick = () => {
   if (S.weather.flag === 'red' || !flying().length) { launch(true); return; }

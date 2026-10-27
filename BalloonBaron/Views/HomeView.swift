@@ -404,6 +404,8 @@ struct HomeView: View {
                 if s.unlocked.contains(.insurance) { insuranceChips(g) }
             } else {
                 strip(s, list)
+                // TestFlight: with nothing able to fly the reason is on the fleet card, so it shows even folded
+                if s.flyingToday.isEmpty { fleetBar(s) }
             }
             ticketCard(g)
         }
@@ -637,6 +639,8 @@ struct HomeView: View {
     private func fleetBar(_ s: GameState) -> some View {
         let c = s.planCounts
         let selfFlies = s.balloon(s.flagship).map { s.isSelf($0) } ?? false
+        // TestFlight: "the pilot flies the flagship" when it has none; say what to do instead
+        let flagNoPilot = s.balloon(s.flagship).map { !selfFlies && s.status($0) == .noPilot } ?? false
         let line = ([loc("home.fleet.seats", num(c.seats))] + c.parts).joined(separator: " · ")
         return Button { showPlan = true } label: {
             HStack(spacing: 10) {
@@ -650,9 +654,10 @@ struct HomeView: View {
                         .font(Theme.font(13))
                         .foregroundStyle(Theme.ink2)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text(loc(selfFlies ? "home.fleet.you" : "home.fleet.pilot"))
+                    Text(loc(selfFlies ? "home.fleet.you" : flagNoPilot ? "home.fleet.flagNoPilot" : "home.fleet.pilot"))
                         .font(Theme.font(13, .semibold))
-                        .foregroundStyle(selfFlies ? Theme.green : Theme.ink2)
+                        .foregroundStyle(selfFlies ? Theme.green : flagNoPilot ? Theme.red : Theme.ink2)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 4)
                 Text(loc("home.fleet.plan"))
@@ -805,12 +810,13 @@ struct HomeView: View {
                 .fixedSize(horizontal: false, vertical: true) // TestFlight: it stretched to the dock's full height
                 .accessibilityLabel(loc("auto.a11y"))
             }
-            BigButton(title: loc(none ? "home.noneFlying" : "home.collect")) {
+            // TestFlight: a new player met a dead "No balloon flies today" button; it now opens the flight plan,
+            // where the reason (no pilot, repair…) and the fix are.
+            BigButton(title: loc(none ? "home.openPlan" : "home.collect")) {
                 Haptics.press()
-                if !GroundedView.grounded(s).isEmpty { groundedWarning = true; Haptics.warning() } else { launchOrConfirmRed(s) }
+                if none { showPlan = true }
+                else if !GroundedView.grounded(s).isEmpty { groundedWarning = true; Haptics.warning() } else { launchOrConfirmRed(s) }
             }
-            .disabled(none)
-            .opacity(none ? 0.5 : 1)
         }
     }
 }

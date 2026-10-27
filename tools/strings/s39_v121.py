@@ -44,3 +44,7 @@ add("fplan.toPilot", "Give to a pilot", "Pilota ver", "An einen Piloten", "Dárs
 
 # v121.6: the pilots-only button at the end of boarding, when no pilot is spare
 add("collect.downCount", "Grounded: %@", "Yerde: %@", "Am Boden: %@", "En tierra: %@", "地上：%@", "지상: %@")
+
+# TestFlight: with nothing able to fly, the main button opens the flight plan
+add("home.openPlan", "Open the flight plan", "Uçuş planını aç", "Flugplan öffnen", "Abrir el plan de vuelo", "飛行計画を開く", "비행 계획 열기")
+add("home.fleet.flagNoPilot", "Your flagship has no pilot: fly it yourself in the plan", "Amiral balonunun pilotu yok: Plan'dan kendin uçur", "Dein Flaggschiff hat keinen Piloten: flieg es im Plan selbst", "Tu globo insignia no tiene piloto: pilótalo tú en el plan", "旗艦にパイロットがいない：計画で自分で飛ばそう", "기함에 조종사가 없습니다: 계획에서 직접 조종하세요")

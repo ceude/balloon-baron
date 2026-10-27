@@ -193,7 +193,8 @@ struct FleetPlanView: View {
                 Text(detail(b, g))
                     .font(Theme.font(12))
                     .foregroundStyle(Theme.ink2)
-                if s.licenseValid && (you || ([.ok, .noPilot, .late, .strike] as [GameState.FlyStatus]).contains(st)) {
+                // "Give to a pilot" only when a pilot is free for it (TestFlight: it grounded the flagship)
+                if s.licenseValid && (you ? pilotFree(g) : ([.ok, .noPilot, .late, .strike] as [GameState.FlyStatus]).contains(st)) {
                     PlanChipButton(title: loc(you ? "fplan.toPilot" : "fleetPage.flyMyself")) { you ? setSelf(false) : flyMyself(b.id) }
                         .padding(.top, 3)
                 }
@@ -257,6 +258,13 @@ struct FleetPlanView: View {
     }
 
     // MARK: Actions
+
+    /// Whether a pilot could take the flagship if you stepped out.
+    private func pilotFree(_ g: Game) -> Bool {
+        var t = g
+        t.setSelfFly(false)
+        return t.state.balloon(t.state.flagship).map { t.state.status($0) == .ok } ?? false
+    }
 
     /// "I'll fly this one": it becomes the flagship, flying today.
     private func flyMyself(_ id: Int) {

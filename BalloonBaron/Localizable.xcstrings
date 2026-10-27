@@ -38828,6 +38828,47 @@
         }
       }
     },
+    "home.fleet.flagNoPilot": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Flaggschiff hat keinen Piloten: flieg es im Plan selbst"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your flagship has no pilot: fly it yourself in the plan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu globo insignia no tiene piloto: pilótalo tú en el plan"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "旗艦にパイロットがいない：計画で自分で飛ばそう"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기함에 조종사가 없습니다: 계획에서 직접 조종하세요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amiral balonunun pilotu yok: Plan'dan kendin uçur"
+          }
+        }
+      }
+    },
     "home.fleet.grounded": {
       "extractionState": "manual",
       "localizations": {
@@ -39931,6 +39972,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bugün uçacak balon yok"
+          }
+        }
+      }
+    },
+    "home.openPlan": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flugplan öffnen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open the flight plan"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir el plan de vuelo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行計画を開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행 계획 열기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçuş planını aç"
           }
         }
       }
