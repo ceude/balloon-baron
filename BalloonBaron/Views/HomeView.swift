@@ -625,6 +625,7 @@ struct HomeView: View {
         }
         .padding(12)
         .frame(maxWidth: .infinity, alignment: .leading)
+        .fixedSize(horizontal: false, vertical: true) // TestFlight: a short note grew to fill the dock (the colour bar stretched)
         .background(Theme.paper, in: RoundedRectangle(cornerRadius: 16))
         .contentShape(RoundedRectangle(cornerRadius: 16))
         .onTapGesture { a.tap?() }
@@ -797,10 +798,11 @@ struct HomeView: View {
                         FastForwardGlyph(size: 15)
                         Text(loc("auto.button")).font(Theme.font(12, .heavy, condensed: true))
                     }
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(ChunkyButtonStyle(kind: .ghost))
                 .frame(width: 64)
+                .fixedSize(horizontal: false, vertical: true) // TestFlight: it stretched to the dock's full height
                 .accessibilityLabel(loc("auto.a11y"))
             }
             BigButton(title: loc(none ? "home.noneFlying" : "home.collect")) {

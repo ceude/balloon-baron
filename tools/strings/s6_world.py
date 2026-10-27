@@ -242,12 +242,12 @@ for k, (t, body, hez, a, an, b, bn) in ISSUES.items():
 
 # Hezarfen
 add("hez.goals",
- "Every great company has a road map, kid. Tap Goals: your chapter goals are there. Finish all three chapters and you become the baron of Cappadocia, and then the world awaits.",
- "Her büyük şirketin bir yol haritası olur evlat. Hedef butonuna dokun: bölüm hedeflerin orada yazıyor. Üç bölümü bitiren Kapadokya'nın baronu olur, sonra da dünya seni bekler.",
- "Jede große Firma hat einen Fahrplan, Lehrling. Tippe auf Ziele: Dort stehen deine Kapitelziele. Wer alle drei Kapitel schafft, wird Baron von Kappadokien, und dann wartet die Welt.",
- "Toda gran empresa tiene una hoja de ruta, aprendiz. Toca Objetivos: ahí están los de cada capítulo. Completa los tres capítulos y serás el barón de Capadocia; después, el mundo te espera.",
- "大きな会社には道しるべがあるものだ。「目標」を押してみよ。章ごとの目標が書いてある。三章すべてを終えればカッパドキアの男爵、その先は世界が待っておる。",
- "큰 회사엔 로드맵이 있는 법이지. '목표'를 눌러 보게. 챕터 목표가 적혀 있다네. 세 챕터를 모두 끝내면 카파도키아의 남작이 되고, 그다음엔 세계가 기다리지.")
+ "Every great company has a road map, kid. Tap Goals: your chapter goals are there. Finish all four chapters and you become the baron of Cappadocia, and then the world awaits.",
+ "Her büyük şirketin bir yol haritası olur evlat. Hedef butonuna dokun: bölüm hedeflerin orada yazıyor. Dört bölümü bitiren Kapadokya'nın baronu olur, sonra da dünya seni bekler.",
+ "Jede große Firma hat einen Fahrplan, Lehrling. Tippe auf Ziele: Dort stehen deine Kapitelziele. Wer alle vier Kapitel schafft, wird Baron von Kappadokien, und dann wartet die Welt.",
+ "Toda gran empresa tiene una hoja de ruta, aprendiz. Toca Objetivos: ahí están los de cada capítulo. Completa los cuatro capítulos y serás el barón de Capadocia; después, el mundo te espera.",
+ "大きな会社には道しるべがあるものだ。「目標」を押してみよ。章ごとの目標が書いてある。四章すべてを終えればカッパドキアの男爵、その先は世界が待っておる。",
+ "큰 회사엔 로드맵이 있는 법이지. '목표'를 눌러 보게. 챕터 목표가 적혀 있다네. 네 챕터를 모두 끝내면 카파도키아의 남작이 되고, 그다음엔 세계가 기다리지.")
 add("hez.holdingOpened",
  "You have a holding now, kid! Tap Holding. You can move money from the Cappadocia cash box into the holding, and Albuquerque's entry fee is paid from the holding. One warning: holding money never goes back to a country. Each country grows on its own cash.",
  "Artık bir holdingin var evlat! Holding butonuna dokun. Kapadokya kasasından holdinge para çekebilirsin; Albuquerque'nin giriş bedeli holdingden ödenir. Bir uyarı: holding parası ülkelere geri dönmez, her ülke kendi kasasıyla büyür.",

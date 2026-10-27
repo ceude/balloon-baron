@@ -1000,7 +1000,7 @@ const HEZ = {
   rivals3: 'Üçüncü sır sabırdır. Dört gün yarı boş uçan ya da kasası azalan rakip satılığa çıkar, fırsatı kaçırma. Kızıl Vadi kırmızı bayrakta uçar, ceza yer, sigortası yoktur. İlk o düşer.',
   expect: 'Tebrikler evlat, 4,5 yıldızı geçtin! Ama dikkat: artık beklentiler çok daha yüksek. Yolcular mükemmellik istiyor; düzgün bir iniş artık puan kazandırmaz, uzak iniş iki kat kaybettirir ve popülerliğin her gün biraz aşınır. Zirvede kalmak için kusursuz inişler, görevler ve iyi oteller lazım.',
   antitrust: 'Dikkat evlat! Pazarın çoğu senin elinde ve Rekabet Kurumu kapıda. Tekel olmaya devam edersen şirketinin büyüklüğüne göre ağır bir ceza kesebilirler. Ya bunu göze al ya da fiyatını biraz yükseltip rakiplere nefes aldır.',
-  goals: 'Her büyük şirketin bir yol haritası olur evlat. Sağdaki bayrağa dokun: orada bölüm hedeflerin yazıyor. Üç bölümü bitiren Kapadokya\'nın baronu olur, sonra da dünya seni bekler.',
+  goals: 'Her büyük şirketin bir yol haritası olur evlat. Sağdaki bayrağa dokun: orada bölüm hedeflerin yazıyor. Dört bölümü bitiren Kapadokya\'nın baronu olur, sonra da dünya seni bekler.',
   absent: 'Evlat, yolcular hep aynı şeyi soruyor: "Kurucu nerede?" Kaptanı uçmayan şirketin ruhu kaybolur. Sepete geri dön; uzak kaldığın her gün popülerliğin aşınıyor.',
   autopilot: 'Filon 35 balonu geçti evlat, artık her sabahı tek tek yönetmene gerek yok. Alttaki "İlerlet" günleri kendi kendine oynatır: amirali de ekip uçurur. Bir karar, hedef ya da para sıkıntısı çıkınca, en geç 7 günde durur; gazeteyi ve haberleri biriktirip durunca gösterir. Şölen gecesi gelirse gösteriyi baştan sona izletir, sonra durur.',
   delegate: 'Filon büyüdü evlat. Artık her sabah sepete binmek zorunda değilsin: uçuş planında amiral balonu için Pilot seçeneğini seç, sen yönetime geç. Yalnız iki şeyi unutma: lisansın için 15 günde en az bir kez kendin uçmalısın, yoksa diğer balonların yere iner. Bir de 5 günden uzun uçmazsan yolcular kurucuyu arar, popülerliğin aşınır.',
@@ -1915,7 +1915,7 @@ function finishDay(flight) {
     paperAdd(4, `${S.company} gökyüzünü aydınlattı`, `${S.showN} balonluk Balon Şöleni bütün vadiyi meydana topladı.`);
     ev.push(`Bu gece Balon Şöleni var: ${S.showN} balonun kasabanın üstünde yanacak. Önümüzdeki 3 gün şölene gelen turistler seni arayacak.`);
   }
-  if (!prOk() && S.rep > prCap()) { S.rep = prCap(); hezAdd('prcap'); }
+  if (S.unl.market && !prOk() && S.rep > prCap()) { S.rep = prCap(); hezAdd('prcap'); } /* only once hotels and guides are open */
   if (licenseLeft() === 0) ev.push('Pilot lisansın bugün sona eriyor. Yarın kendin uçmazsan ya da ücreti ödemezsen diğer balonların yerde kalır.');
   const away = S.day - S.lastSelfFly;
   if (fl.length && away > ABSENT_GRACE) {
@@ -4473,6 +4473,18 @@ let nightOn = (() => { try { return localStorage.getItem('safak-night') !== 'off
    the passengers came from and who flies stays, filled at once */
 let collectAnimOn = (() => { try { return localStorage.getItem('safak-collect') !== 'off'; } catch (e) { return true; } })();
 let reminderOn = (() => { try { return localStorage.getItem('safak-reminder') === 'on'; } catch (e) { return false; } })();
+/* v121.8: the save code is the state's JSON, deflated, in base64, marked "BB1:" (a late game's plain code passed 65,000
+   characters); plain base64 codes from before still load */
+async function packCode(txt) {
+  const buf = await new Response(new Blob([txt]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer();
+  let bin = ''; new Uint8Array(buf).forEach(b => { bin += String.fromCharCode(b); }); return 'BB1:' + btoa(bin);
+}
+async function unpackCode(code) {
+  const c = code.replace(/\s+/g, '');
+  if (!c.startsWith('BB1:')) return decodeURIComponent(escape(atob(c)));
+  const bin = atob(c.slice(4)), u = Uint8Array.from(bin, ch => ch.charCodeAt(0));
+  return await new Response(new Blob([u]).stream().pipeThrough(new DecompressionStream('deflate-raw'))).text();
+}
 function showMenu(open) {
   const m = $('menu'); m.replaceChildren();
   if (mode !== 'flight') save();
@@ -4512,12 +4524,13 @@ function showMenu(open) {
     const box = h('div', 'sbox');
     box.appendChild(h('p', 'hint', open === 'copy' ? 'Başka bir cihazda devam etmek için bu kodu kopyala, orada "Kayıt kodu yükle"ye yapıştır.' : 'Başka cihazdan kopyaladığın kodu buraya yapıştır ve Yükle\'ye bas. Buradaki oyunun yerini alır.'));
     const ta = document.createElement('textarea'); ta.rows = 3; ta.id = 'saveCode'; ta.value = open === 'copy' ? code : ''; if (open === 'copy') ta.readOnly = true; else ta.placeholder = 'Kodu buraya yapıştır';
+    if (open === 'copy') packCode(JSON.stringify(S)).then(c => { ta.value = c; }).catch(() => {}); /* v121.8: compressed, about a tenth as long */
     const msg = h('p', 'hint'), btns = h('div', 'btns');
     if (open === 'copy') btns.append(pbtn('Kopyala', () => { navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = 'Kopyalandı.'; }).catch(() => { ta.focus(); ta.select(); msg.textContent = 'Kod seçildi, kopyalamak için Ctrl+C.'; }); }));
     else btns.append(pbtn('Yapıştır', () => { navigator.clipboard.readText().then(t => { ta.value = t; }).catch(() => { ta.focus(); msg.textContent = 'Kutuya uzun basıp Yapıştır de.'; }); }, false, true),
       pbtn('Yükle', () => {
-        try { const s = JSON.parse(decodeURIComponent(escape(atob(ta.value.trim())))); if (!s || !s.balloons || !s.rivals) throw 0; S = migrate(s); m.hidden = true; tab = 'plan'; startDay(); }
-        catch (e) { msg.textContent = 'Bu kod okunamadı. Kodun tamamını yapıştırdığından emin ol.'; }
+        unpackCode(ta.value).then(txt => { const s = JSON.parse(txt); if (!s || !s.balloons || !s.rivals) throw 0; S = migrate(s); m.hidden = true; tab = 'plan'; startDay(); })
+          .catch(() => { msg.textContent = 'Bu kod okunamadı. Kodun tamamını yapıştırdığından emin ol.'; });
       }));
     box.append(ta, btns, msg);
     c.appendChild(box);

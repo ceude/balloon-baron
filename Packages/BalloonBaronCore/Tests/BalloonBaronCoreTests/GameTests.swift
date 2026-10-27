@@ -215,6 +215,7 @@ final class GameTests: XCTestCase {
 
     func testPopularityCap() {
         var g = newGame()
+        g.state.unlocked.insert(.market) // the cap starts with the market (hotels, guides)
         g.state.rep = 1.3
         g.launch(skip: true)
         g.finishDay(flight: nil)

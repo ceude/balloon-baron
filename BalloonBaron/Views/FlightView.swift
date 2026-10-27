@@ -1030,7 +1030,7 @@ private enum FlightPainter {
         let fade = done && k > 0.7 ? (k - 0.7) / 0.3 : 0
         var c = ctx
         c.opacity = 1 - fade
-        c.translateBy(x: W / 2, y: top + 118 - CGFloat(fade * 24))
+        c.translateBy(x: W / 2, y: top + 142 - CGFloat(fade * 24)) // TestFlight: clear of the tip box at the top left
         c.scaleBy(x: CGFloat(sc), y: CGFloat(sc))
         let box = rrect(-pw / 2, -ph / 2, pw, ph, 16)
         c.fill(box, with: .color(done ? Theme.green : Color(red: 43 / 255, green: 35 / 255, blue: 80 / 255).opacity(0.92)))

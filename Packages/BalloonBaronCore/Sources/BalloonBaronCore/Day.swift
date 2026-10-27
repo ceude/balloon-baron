@@ -235,8 +235,9 @@ extension Game {
             ev.append(.showTonight(balloons: n))
             addPaper(.show(balloons: n))
         }
-        // Popularity needs hotels or guides past 4.2★; an influencer campaign stretches it to 4.5★.
-        if !state.prOK && state.rep > state.prCap {
+        // Popularity needs hotels or guides past 4.2★; an influencer campaign stretches it to 4.5★. Only once the
+        // market (hotels, guides) is open: before that there is nothing the tip could send you to (TestFlight).
+        if state.unlocked.contains(.market) && !state.prOK && state.rep > state.prCap {
             state.rep = state.prCap
             queueTip(.prcap)
         }

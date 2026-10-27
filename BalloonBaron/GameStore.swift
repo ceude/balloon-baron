@@ -324,16 +324,28 @@ final class GameStore {
         showIntro = true
     }
 
-    /// A save code to continue on another device (base64 JSON), and loading one.
+    /// A save code to continue on another device, and loading one. v121.8 (TestFlight: a late game's code passed 65,000
+    /// characters): the JSON is zlib-compressed before base64 and marked "BB1:", about a tenth of the length. Old codes
+    /// (plain base64 JSON) still load.
+    static let codePrefix = "BB1:"
+
     var saveCode: String? {
-        guard let state = game?.state, let data = try? JSONEncoder().encode(state) else { return nil }
-        return data.base64EncodedString()
+        guard let state = game?.state, let data = try? JSONEncoder().encode(state),
+              let packed = try? (data as NSData).compressed(using: .zlib) else { return nil }
+        return Self.codePrefix + (packed as Data).base64EncodedString()
     }
 
     @discardableResult
     func load(code: String) -> Bool {
-        guard let data = Data(base64Encoded: code.trimmingCharacters(in: .whitespacesAndNewlines)),
-              let state = try? JSONDecoder().decode(GameState.self, from: data) else { return false }
+        let text = code.filter { !$0.isWhitespace }
+        let raw: Data?
+        if text.hasPrefix(Self.codePrefix) {
+            raw = Data(base64Encoded: String(text.dropFirst(Self.codePrefix.count)))
+                .flatMap { try? ($0 as NSData).decompressed(using: .zlib) as Data }
+        } else {
+            raw = Data(base64Encoded: text)
+        }
+        guard let data = raw, let state = try? JSONDecoder().decode(GameState.self, from: data) else { return false }
         var g = Game(state: state)
         g.startDay()
         game = g

@@ -26,3 +26,16 @@ final class StoryTests: XCTestCase {
         XCTAssertFalse(g.state.hezQueue.contains(.tip(.hasan)))
     }
 }
+
+/// TestFlight: before hotels and guides open, popularity isn't capped and Hezarfen doesn't send you to them.
+final class EarlyCapTests: XCTestCase {
+    func testNoCapBeforeTheMarket() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 5)
+        g.startDay()
+        g.state.rep = 1.3
+        g.launch(skip: true)
+        g.finishDay(flight: nil)
+        XCTAssertGreaterThan(g.state.rep, Rules.prCap)
+        XCTAssertFalse(g.state.hezQueue.contains(.tip(.prcap)))
+    }
+}
