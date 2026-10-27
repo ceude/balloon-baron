@@ -211,7 +211,7 @@ public enum Rules {
     // v114: the balloon factory (tools/sim-factory.js). The workshop's levels 2–4 cost these and build S, M, L balloons at
     // `factoryDiscount` off, one at a time, in `factoryDays`. With the line free, a rival asks for a balloon with
     // `factoryOrderChance` a day and pays `factoryOrderShare` of the list price on delivery.
-    public static let factoryLevelCost = [30000, 90000, 180000]
+    public static let factoryLevelCost = [30000, 60000, 120000]
     public static let factoryDiscount = 0.5
     public static let factoryOrderShare = 0.8
     public static let factoryOrderChance = 0.08
