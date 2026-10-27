@@ -268,6 +268,7 @@ body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 .paper .pmore b{font-family:'Playfair Display',Georgia,serif;font-weight:700;font-size:15.5px;line-height:1.15;color:#1f1c18}
 .paper .pmore span{font-family:'Old Standard TT',Georgia,serif;font-size:13px;color:#3a352c;line-height:1.3}
 .bossq .hzav{width:48px;height:48px;flex:none}
+.vitrin{margin:10px auto 4px;text-align:center}.vitrin svg{width:150px;height:auto;display:block;margin:0 auto}.vitrin p{font-size:13px;opacity:.8;margin:4px 0 0}
 .modal.evm{align-items:flex-end;background:rgba(27,24,64,.18);padding-bottom:max(12px, env(safe-area-inset-bottom, 0px))}
 .card.event{border-top:6px solid var(--sun)}
 .blv{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:14px;background:var(--haze)}
@@ -963,6 +964,8 @@ const MISSIONS = {
   precision: { name: 'Hassas iniş', desc: 'Yer ekibinin tam yanına, 40 m içine in.', reward: 400 }
 };
 const HEZ = {
+  /* v121: told after the first flight in Cappadocia */
+  hasan: 'Sana dedenin hikâyesini hiç anlatmadım evlat. Hasan, Kapadokya\'nın ilk balonlarından birini tam bu tarladan kaldırdı. Şirketi büyüdü, sonra kötü bir sezonda borca girdi. Kenan Arslan borçlarını ucuza toplayıp şirketi elinden aldı. Hasan bir daha uçmadı. Sepetini ben sakladım. Bugün o sepet yeniden havalandı.',
   /* praise for a good move, early on (praiseCheck) */
   p_red: 'Kırmızı bayrakta yerde kaldın, aferin evlat. Cesaret kolaydır, sabır zor. Gökyüzü yarın da orada olacak.',
   p_perfect: 'Ne iniş ama! Sepet tüy gibi kondu. Yolcular bunu yıllarca anlatacak evlat, böyle devam.',
@@ -1044,18 +1047,29 @@ const BOSS = {
   lux: { name: 'Nabil Haddad', co: 'Theban Skies', title: 'Theban Skies sahibi' }
 };
 /* What the boss says, once each. {c} is your company. */
+/* v121: Hasan's basket in a glass case, for the Cappadocia ceremony */
+const VITRIN = `<svg viewBox="0 0 150 140" aria-hidden="true"><defs><linearGradient id="vtG" x1="0" x2="1"><stop offset="0" stop-color="#bfe3ff" stop-opacity=".28"/><stop offset=".5" stop-color="#fff" stop-opacity=".08"/><stop offset="1" stop-color="#bfe3ff" stop-opacity=".22"/></linearGradient><linearGradient id="vtW" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#c98c4a"/><stop offset="1" stop-color="#7a4a22"/></linearGradient><linearGradient id="vtP" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#6b3b22"/><stop offset="1" stop-color="#3e2112"/></linearGradient><radialGradient id="vtL" cx=".5" cy="0" r=".9"><stop offset="0" stop-color="#ffe7a8" stop-opacity=".55"/><stop offset="1" stop-color="#ffe7a8" stop-opacity="0"/></radialGradient></defs>
+<rect x="22" y="8" width="106" height="98" rx="4" fill="url(#vtL)"/>
+<path d="M50 96 L56 50 Q75 44 94 50 L100 96 Q75 102 50 96Z" fill="url(#vtW)"/>
+<g stroke="#5a3214" stroke-width="1.1" fill="none" opacity=".75"><path d="M52 62 Q75 57 98 62M51 72 Q75 67 99 72M50 82 Q75 77 100 82M50 91 Q75 87 100 91"/><path d="M62 49 L59 98M72 47 L71 100M82 47 L83 100M91 49 L94 98"/></g>
+<path d="M54 50 Q75 41 96 50" stroke="#e3b27a" stroke-width="3" fill="none"/>
+<path d="M58 49 L60 30M92 49 L90 30" stroke="#9a9a9a" stroke-width="1.6"/><rect x="58" y="24" width="34" height="7" rx="2" fill="#6d6d6d"/>
+<rect x="22" y="8" width="106" height="98" rx="4" fill="url(#vtG)" stroke="#d8eeff" stroke-opacity=".6" stroke-width="1.5"/>
+<path d="M32 14 L44 14 L30 70 L26 70Z" fill="#fff" opacity=".18"/>
+<rect x="14" y="104" width="122" height="22" rx="3" fill="url(#vtP)"/><rect x="10" y="102" width="130" height="5" rx="2" fill="#8a5232"/>
+<rect x="52" y="110" width="46" height="11" rx="2" fill="#d9b25a"/><text x="75" y="118.5" font-size="7.5" text-anchor="middle" fill="#4a3210" font-family="Georgia,serif">HASAN</text></svg>`;
 const BOSS_LINES = {
   cap: {
-    hello: 'Demek balon işine girdin. Ben Kenan Arslan, Göreme Sky. Bu vadide yirmi yıldır uçuyorum. Tek sepetle, üç kuruşla mı? Hadi bakalım. Bir sezon dayanırsan konuşuruz.',
-    ch1: 'Beş balon mu? Benim hangarımda onun iki katı var. Oteller benimle çalışır, rehberler beni önerir. Kapadokya bir aile işidir genç, sen de aileden değilsin.',
+    hello: 'Hasan\'ın torunu ha? Ben Kenan Arslan, Göreme Sky. Deden de böyle başlamıştı: tek sepet, üç kuruş, koca hayaller. Nasıl bittiğini sana anlatan oldu mu? Hadi bakalım. Bir sezon dayanırsan konuşuruz.',
+    ch1: 'Beş balon mu? Benim hangarımda onun iki katı var. Oteller benimle çalışır, rehberler beni önerir. Bu vadide büyümek için hayal yetmez genç. Deden de bunu anlamamıştı.',
     ch2: 'Kulağıma bir şeyler geliyor. Otel anlaşmaları, influencer kampanyaları... Fena değil. Ama büyümek kolay, ayakta kalmak zor. Bakalım kışı nasıl geçireceksin.',
-    passed: 'Dün benden fazla yolcu uçurmuşsun. Bir günlük şans. Yarın fiyatlarımı indireceğim, turistler kimin vadinin efendisi olduğunu hatırlayacak.',
+    passed: 'Dün benden fazla yolcu uçurmuşsun. Deden bunu hiç başaramamıştı. Tamam genç, artık seni ciddiye alıyorum. Bundan sonra kolay olmayacak.',
     hotel: 'O otel artık benimle çalışıyor. Müdürüyle yirmi yıllık dostuz. İş sadece fiyatla dönmez, genç.',
     poach: 'Pilotuna bir teklif yaptım. Kötü niyetim yok, iyi pilotu iyi şirket hak eder.',
     accident: 'Sert iniş haberini duydum. Turistler unutmaz. Balonları ben uçururum, sen de... ne yapıyorsan onu yap.',
     deal: 'Peki. Kabul ediyorum, bu sezon zor geçti. Şirketi sana devretmeye hazırım. Ama adı yaşasın, Göreme Sky yirmi yılın emeği.',
     gone: 'Hangarı boşaltıyorum. Yirmi yıl... Sana kızgın değilim genç. Sadece daha hızlıydın.',
-    baron: 'Vadinin anahtarları senin. Yirmi yıl önce ben de senin gibi tek sepetle başladım. Bunu kimseye söyleme. Kapadokya artık senin, iyi bak ona.'
+    baron: 'Tebrikler. Bu vadide ilk balonlardan birinin Hasan\'a ait olduğunu herkes unuttu, ben unutmadım. Şirketini ondan ben aldım, vadiyi sen geri aldın. Hasan gurur duyardı. Kapadokya artık senin, iyi bak ona.'
   },
   abq: {
     hello: 'Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Kutu rüzgârını bilir misin evlat? Burada balon uçurmak Türkiye\'deki gibi değil. Fiesta\'da görüşürüz, tabii hâlâ buradaysan.',
@@ -1507,7 +1521,7 @@ function unlockCheck() {
   for (const k in rules) if (rules[k] && !S.unl[k]) { S.unl[k] = 1; hezAdd(k); }
   hezAdd('welcome');
   if (S.day >= 3) hezAdd('goals'); /* day 3 (v110): day 2 already teaches insurance and often the yellow flag */
-  if (S.day >= 3 && bossRival()) bossSay('hello');
+  if (S.day >= (S.region === 'cap' ? 1 : 3) && bossRival()) bossSay('hello'); /* v121: Kenan greets Hasan's grandson on the first morning */
   if (S.day >= 9) hezAdd('pr');
   /* v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows where it is */
   { const l = S.lastShare; if (S.day >= 2 && S.day <= 12 && l && l.cap && l.me < l.cap) hezAdd('price'); }
@@ -1951,9 +1965,10 @@ function finishDay(flight) {
   if (rpTot) S.shareNow = paxTotal / rpTot;
   net += checkChapters(ev, Lg, rpTot > 0);
   if (paxTotal > (S.bestPax || 0) && S.day > 5) { if (S.bestPax && paxTotal >= S.bestPax + 8) paperAdd(2, `Rekor sabah: ${S.company} ${paxTotal} yolcu uçurdu`, 'Şirketin bugüne kadarki en kalabalık günü.'); S.bestPax = paxTotal; }
-  { const B = bossRival(); if (B && B.alive && paxTotal > (B.lastPax || 0) && B.lastPax > 0 && S.day > 8) { if (!(S.bossSaid && S.bossSaid[S.region + ':passed'])) paperAdd(4, `${S.company}, ${B.name}'yi geçti`, 'Vadinin en çok yolcu uçuran şirketi değişti.'); bossSay('passed'); } }
+  { const B = bossRival(); if (B && B.alive && paxTotal > (B.lastPax || 0) && B.lastPax > 0 && S.day > 8) { if (!(S.bossSaid && S.bossSaid[S.region + ':passed'])) paperAdd(4, `${S.company}, ${B.name}'yi geçti`, S.region === 'cap' && !S.storyDone ? 'Yıllar önce Hasan Usta\'nın şirketini Göreme Sky almıştı. Şimdi vadinin en çok yolcu uçuran şirketi torununun.' : 'Vadinin en çok yolcu uçuran şirketi değişti.'); bossSay('passed'); } }
   (S.stat = S.stat || {}).pax = (S.stat.pax || 0) + paxTotal;
   praiseCheck(flight, red && !fl.length);
+  if (S.region === 'cap' && fl.length && !S.storyDone) hezAdd('hasan'); /* v121: after the first flight, the grandfather's story */
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
   S.day++; S.plan = null; fabDay(ev); milestoneCheck(); achCheck(); if (anyBaron()) holdGoalsCheck();
   if (S.region === 'abq') {
@@ -2122,7 +2137,8 @@ function showChapter() {
     c.appendChild(h('div', 'chap', 'TÖREN'));
     c.appendChild(h('h1', null, C.name));
     c.appendChild(h('p', 'lead', `Gün ${S.day}. ${RD().name} göğündeki her üç balondan ikisi ${esc(S.company)} renklerinde. ${guide().baron}`));
-    c.appendChild(h('div', 'hzline bossq', `${BOSS_AV[S.region]}<span><b>${BOSS[S.region].name}:</b> ${BOSS_LINES[S.region].baron}</span>`));
+    if (S.region === 'cap' && !S.storyDone) c.appendChild(h('div', 'vitrin', `${VITRIN}<p>Dedenin sepeti artık holdingin girişinde, camın ardında.</p>`));
+    c.appendChild(h('div', 'hzline bossq', `${BOSS_AV[S.region]}<span><b>${BOSS[S.region].name}${S.region === 'cap' ? ' bir not bıraktı' : ''}:</b> ${BOSS_LINES[S.region].baron}</span>`));
     c.appendChild(h('p', 'hint', S.region === 'cap' ? 'Kapadokya şirketin artık dünyaya açılabilir. Dünya haritasında ilk yeni bölgen seni bekliyor.' : 'İki kıtanın göğü senin. Sıradaki bölgeler çok yakında haritada belirecek.'));
     /* v115: the free game ends here; the Grand Tour is offered right after the ceremony */
     const w = h('button', 'big', S.region === 'cap' && !owned('worldTour') ? 'Devam' : 'Dünya haritasını aç'); w.onclick = S.region === 'cap' && !owned('worldTour') ? showTourOffer : showWorldMap; c.appendChild(w);
@@ -3665,13 +3681,64 @@ function startOpen() {
   openSkip(() => openTalk());
   if (!OPEN.loading) return;
   /* v120: the film in 3D; if it can't load (no WebGL, offline) within a few seconds, the 2D one plays */
-  const fallback = () => { if (OPEN && OPEN.loading) { OPEN.loading = false; OPEN.t0 = T; } };
+  const fallback = () => { if (OPEN && OPEN.loading) { OPEN.loading = false; OPEN.t0 = T; filmMusic('A'); } };
   const timer = setTimeout(fallback, 6000);
   (OPEN3D ? Promise.resolve(OPEN3D) : open3dLoad()).then(api => {
     OPEN3D = api; clearTimeout(timer);
     if (!OPEN || !OPEN.loading) return;
-    OPEN.loading = false; OPEN.three = true; openCaps(); api.start('A', open3dPhase);
+    OPEN.loading = false; OPEN.three = true; openCaps(); api.start('A', open3dPhase); filmMusic('A');
   }).catch(() => { clearTimeout(timer); fallback(); });
+}
+/* The film's score, made in code: wind under everything, a low drone on D, a ney-like flute in the Hicaz makam
+   (D Eb F# G A Bb C D), darbuka in maqsum once the flight gets going, deep hits on the titles, a riser into the sunrise
+   and a climax with strings; the lift-off gets its own riser, hit and drive. 'bed' is the wind and drone alone (under
+   the cards), null fades everything out. */
+let FILM = null;
+function filmMusic(part) {
+  if (!AC) audioInit(); if (!AC) return;
+  const now = AC.currentTime;
+  if (FILM) { const F = FILM; F.g.gain.cancelScheduledValues(now); F.g.gain.setValueAtTime(F.g.gain.value, now); F.g.gain.linearRampToValueAtTime(0, now + .8); setTimeout(() => { F.stop.forEach(s => { try { s.stop(); } catch (e) {} }); F.g.disconnect(); }, 1000); FILM = null; }
+  if (!part) return;
+  const g = AC.createGain(); g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(.95, now + 1.2); g.connect(out());
+  const F = FILM = { g, stop: [] }, t0 = now + .15;
+  /* wind: noise through a band that wanders */
+  const wsrc = AC.createBufferSource(); wsrc.buffer = noiseBuf(4); wsrc.loop = true; const wf = AC.createBiquadFilter(); wf.type = 'bandpass'; wf.frequency.value = 520; wf.Q.value = .45;
+  const lfo = AC.createOscillator(), lg = AC.createGain(); lfo.frequency.value = .09; lg.gain.value = 260; lfo.connect(lg).connect(wf.frequency);
+  const wg = AC.createGain(); wg.gain.value = part === 'B' ? .05 : .08; wsrc.connect(wf).connect(wg).connect(g); wsrc.start(t0); lfo.start(t0); F.stop.push(wsrc, lfo);
+  /* drone: D and A, detuned saws behind a low-pass that opens at the sunrise */
+  const df = AC.createBiquadFilter(); df.type = 'lowpass'; df.frequency.value = 380; const dg = AC.createGain(); dg.gain.setValueAtTime(0, t0); dg.gain.linearRampToValueAtTime(.045, t0 + 4); df.connect(dg).connect(g);
+  for (const [f, d] of [[73.42, -6], [73.42, 6], [110, 3], [36.71, 0]]) { const o = AC.createOscillator(); o.type = f < 40 ? 'sine' : 'sawtooth'; o.frequency.value = f; o.detune.value = d; o.connect(df); o.start(t0); F.stop.push(o); }
+  if (part === 'bed') return;
+  const env = (node, at, a, peak, hold, rel) => { node.gain.setValueAtTime(0, t0 + at); node.gain.linearRampToValueAtTime(peak, t0 + at + a); node.gain.setValueAtTime(peak, t0 + at + a + hold); node.gain.exponentialRampToValueAtTime(.0001, t0 + at + a + hold + rel); };
+  const boom = (at, big) => { const o = AC.createOscillator(), e = AC.createGain(); o.frequency.setValueAtTime(big ? 95 : 80, t0 + at); o.frequency.exponentialRampToValueAtTime(30, t0 + at + (big ? 1.4 : .8)); env(e, at, .005, big ? .55 : .35, .05, big ? 1.8 : 1); o.connect(e).connect(g); o.start(t0 + at); o.stop(t0 + at + 2.2);
+    const n = AC.createBufferSource(); n.buffer = noiseBuf(1.5); const nf = AC.createBiquadFilter(); nf.type = 'lowpass'; nf.frequency.value = 900; const ne = AC.createGain(); env(ne, at, .003, big ? .25 : .15, .02, big ? 1.2 : .6); n.connect(nf).connect(ne).connect(g); n.start(t0 + at); };
+  const riser = (at, dur) => { const n = AC.createBufferSource(); n.buffer = noiseBuf(dur + .2); const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 2; f.frequency.setValueAtTime(300, t0 + at); f.frequency.exponentialRampToValueAtTime(4200, t0 + at + dur);
+    const e = AC.createGain(); e.gain.setValueAtTime(.0001, t0 + at); e.gain.exponentialRampToValueAtTime(.12, t0 + at + dur); e.gain.linearRampToValueAtTime(0, t0 + at + dur + .05); n.connect(f).connect(e).connect(g); n.start(t0 + at); };
+  const doum = at => { const o = AC.createOscillator(), e = AC.createGain(); o.frequency.setValueAtTime(140, t0 + at); o.frequency.exponentialRampToValueAtTime(62, t0 + at + .22); env(e, at, .003, .28, .01, .3); o.connect(e).connect(g); o.start(t0 + at); o.stop(t0 + at + .4); };
+  const tek = (at, v) => { const n = AC.createBufferSource(); n.buffer = noiseBuf(.12); const f = AC.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2600; const e = AC.createGain(); env(e, at, .001, v, .005, .07); n.connect(f).connect(e).connect(g); n.start(t0 + at); };
+  /* a ney: breathy, with a vibrato that comes in late */
+  const ney = (f, at, dur, v = .07) => { const o = AC.createOscillator(), o2 = AC.createOscillator(), e = AC.createGain(), vib = AC.createOscillator(), vg = AC.createGain();
+    o.type = 'triangle'; o2.type = 'sine'; o.frequency.value = f; o2.frequency.value = f * 2; vib.frequency.value = 5.2; vg.gain.setValueAtTime(0, t0 + at); vg.gain.linearRampToValueAtTime(f * .012, t0 + at + Math.min(.6, dur * .6)); vib.connect(vg); vg.connect(o.frequency); vg.connect(o2.frequency);
+    const g2 = AC.createGain(); g2.gain.value = .25; o2.connect(g2).connect(e); o.connect(e); env(e, at, .12, v, Math.max(.05, dur - .4), .35); e.connect(g);
+    const br = AC.createBufferSource(); br.buffer = noiseBuf(dur + .5); const bf = AC.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = f * 2; bf.Q.value = 6; const be = AC.createGain(); env(be, at, .08, v * .5, Math.max(.05, dur - .4), .3); br.connect(bf).connect(be).connect(g);
+    for (const s of [o, o2, vib]) { s.start(t0 + at); s.stop(t0 + at + dur + .5); } br.start(t0 + at); };
+  const strings = (fs, at, dur, v = .035) => { const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1600; const e = AC.createGain(); env(e, at, dur * .4, v, dur * .3, dur * .4); f.connect(e).connect(g);
+    fs.forEach(fr => [-7, 7].forEach(d => { const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = fr; o.detune.value = d; o.connect(f); o.start(t0 + at); o.stop(t0 + at + dur + .2); })); };
+  const N = { D3: 146.83, A3: 220, D4: 293.66, Eb4: 311.13, Fs4: 369.99, G4: 392, A4: 440, Bb4: 466.16, C5: 523.25, D5: 587.33, Eb5: 622.25, Fs5: 739.99, G5: 783.99 };
+  const phrase = (at, notes, beat) => { let x = at; for (const [n, l] of notes) { if (n) ney(N[n], x, l * beat * .95); x += l * beat; } };
+  const B = .714; /* 84 bpm */
+  const maqsum = (from, to, v) => { for (let x = from; x < to; x += B * 4) [[0, 'd'], [.5, 't'], [1.5, 't'], [2, 'd'], [3, 't']].forEach(([o, k]) => { const at = x + o * B; if (at < to) k === 'd' ? doum(at) : tek(at, v); }); };
+  if (part === 'A') {
+    df.frequency.setValueAtTime(380, t0 + 17); df.frequency.linearRampToValueAtTime(1100, t0 + 20);
+    boom(1, false); phrase(2.6, [['A4', 2], ['Bb4', 1], ['A4', 1], ['G4', 1], ['Fs4', 1], ['G4', 2]], B);
+    boom(9, false); maqsum(9, 26, .07); phrase(10.4, [['D5', 1], ['C5', .5], ['Bb4', .5], ['A4', 1], ['Bb4', 1], ['A4', .5], ['G4', .5], ['Fs4', 1], ['Eb4', 1], ['D4', 2]], B);
+    riser(16.6, 2.9); boom(19.5, true); strings([N.D3, N.Fs4, N.A3, N.D4], 19.5, 5); strings([146.83 * 1.335, N.Bb4 / 2, N.D4], 24.2, 4);
+    phrase(19.7, [['A4', 1], ['D5', 1], ['Eb5', .5], ['Fs5', .5], ['G5', 2], ['Fs5', .5], ['Eb5', .5], ['D5', 2]], B);
+    boom(24.5, false); ney(N.D4, 27.5, 3, .05);
+  } else {
+    riser(1.6, 2); boom(3.6, true); maqsum(3.6, 11, .08); strings([N.D3, N.A3, N.D4, N.Fs4], 3.6, 7, .03);
+    phrase(4.2, [['D5', 1], ['Eb5', .5], ['Fs5', .5], ['G5', 1], ['A4', .5], ['Bb4', .5], ['A4', 1], ['G4', .5], ['Fs4', .5], ['D5', 2]], B); boom(5.5, false); boom(10.8, true);
+  }
 }
 /* captions and the letterbox over the 3D film (crisp HTML over the canvas) */
 function openCaps() {
@@ -3705,8 +3772,9 @@ function openTalk() {
   if (!OPEN || OPEN.talk) return;
   OPEN.talk = true; OPEN.t0 = Math.min(OPEN.t0, T - 12); NIGHT_K = 0; SUNRISE = .3;
   if (OPEN.three) OPEN3D.seek(29); /* the flight's last frame, held */
+  filmMusic('bed');
   const d = h('div', 'opentalk'); d.id = 'openTalk';
-  d.innerHTML = `<div class="hzline">${HEZ_AV}<span><b>Hezarfen Usta:</b> Bu tarla yıllardır bir balon bekliyor evlat. Sepet hazır, kumaş hazır. Bir tek adı eksik.</span></div>`;
+  d.innerHTML = `<div class="hzline">${HEZ_AV}<span><b>Hezarfen Usta:</b> Bu sepet deden Hasan'ındı evlat. Kapadokya'nın ilk balonlarından biriydi. Kumaş hazır, sepet hazır. Bir tek adı eksik.</span></div>`;
   const go = h('button', 'big', 'Adını koyalım'); go.onclick = () => { sfx('click'); d.remove(); const s = $('openSkip'); if (s) s.hidden = true; showSetup(1); };
   d.appendChild(go); document.body.appendChild(d); requestAnimationFrame(() => d.classList.add('on'));
   const s = $('openSkip'); if (s) s.hidden = true;
@@ -3715,11 +3783,13 @@ function openLiftOff() {
   $('setup').hidden = true; mode = 'open';
   Object.assign(OPEN, { out: true, t0: T, burn: false }); SUNRISE = .3;
   if (OPEN.three) OPEN3D.start('B', open3dPhase);
+  filmMusic('B');
   openSkip(openBegin);
 }
 function openBegin() {
   if (!OPEN) return;
   if (OPEN.three && OPEN3D) { OPEN3D.stop(); OPEN3D = null; }
+  filmMusic(null);
   OPEN = null; openEnd(); NIGHT_K = 0; SUNRISE = 0; burner(false);
   $('fade').classList.add('on');
   setTimeout(() => { $('fade').classList.remove('on'); $('hud').hidden = false; tab = 'plan'; startDay(); }, 480);
@@ -8418,7 +8488,9 @@ async function open3dLoad() {
     import('three/addons/postprocessing/EffectComposer.js'), import('three/addons/postprocessing/RenderPass.js'),
     import('three/addons/postprocessing/UnrealBloomPass.js'), import('three/addons/postprocessing/ShaderPass.js'),
     import('three/addons/postprocessing/OutputPass.js')]);
-  const [{ ImprovedNoise }, { RoundedBoxGeometry }] = await Promise.all([import('three/addons/math/ImprovedNoise.js'), import('three/addons/geometries/RoundedBoxGeometry.js')]);
+  const [{ ImprovedNoise }, { RoundedBoxGeometry }, { mergeVertices }] = await Promise.all([import('three/addons/math/ImprovedNoise.js'), import('three/addons/geometries/RoundedBoxGeometry.js'), import('three/addons/utils/BufferGeometryUtils.js')]);
+  /* an icosphere with shared vertices, so displaced rock shades smoothly instead of in facets */
+  const sphere = detail => { const g = new THREE.IcosahedronGeometry(1, detail); g.deleteAttribute('normal'); g.deleteAttribute('uv'); return mergeVertices(g); };
   const PN = new ImprovedNoise(), n3 = (x, y, z) => PN.noise(x, y, z);
   const V3 = (x, y, z) => new THREE.Vector3(x, y, z), C = c => new THREE.Color(c);
   /* gradient noise and fbm, seeded */
@@ -8499,7 +8571,7 @@ async function open3dLoad() {
     }
     g.setAttribute('color', new THREE.Float32BufferAttribute(c, 3)); g.computeVertexNormals(); return g;
   };
-  const boulder = (seed, flat) => { const g = new THREE.IcosahedronGeometry(1, 4), p = g.attributes.position;
+  const boulder = (seed, flat) => { const g = sphere(5), p = g.attributes.position;
     for (let i = 0; i < p.count; i++) { const v = V3(p.getX(i), p.getY(i), p.getZ(i)), k = 1 + n3(v.x * 1.6 + seed, v.y * 1.6, v.z * 1.6) * .45 + n3(v.x * 5, v.y * 5 + seed, v.z * 5) * .1; p.setXYZ(i, v.x * k, v.y * k * flat, v.z * k); } g.computeVertexNormals(); return g; };
   /* tuff mottled with pocks and faint drip stains; the ground with grit and small stones */
   const mottle = tex(512, 512, (x, w, hh) => { const id = x.createImageData(w, hh);
@@ -8560,11 +8632,11 @@ async function open3dLoad() {
     const cap = new THREE.Mesh(boulder(i * 3, .42), basaltMat); cap.scale.set(3.3 * k, 2.2 * k, 2.9 * k); cap.position.set(x + .6, y + hh * .965 + 1.2 * k, z); cap.rotation.set(.12, i, -.1); cap.castShadow = true; scene.add(cap);
   });
   /* Uçhisar Castle: a craggy tuff mass riddled with windows; houses on its slopes, a minaret */
-  const ug = new THREE.IcosahedronGeometry(1, 5), up = ug.attributes.position, uc = [];
+  const ug = sphere(6), up = ug.attributes.position, uc = [];
   for (let i = 0; i < up.count; i++) { const v = V3(up.getX(i), up.getY(i), up.getZ(i)), k = 1 + fbm(v.x * 2.2, v.z * 2.2 + v.y * 1.5, 5) * .45 + Math.abs(fbm(v.x * 6, v.y * 6, 2)) * .12;
-    const y = v.y < -.2 ? -.2 - (v.y + .2) * .2 : v.y; up.setXYZ(i, v.x * k * (1 + Math.max(0, -y) * .6), y * k * (y > 0 ? 1.15 : 1), v.z * k * (1 + Math.max(0, -y) * .6)); const c = tuff[Math.floor((y + 1) * 9 + fbm(v.x * 3, v.z * 3, 2) * 3 + 9) % 5].clone().multiplyScalar(.92 + fbm(v.x * 9, v.y * 9, 2) * .2); uc.push(c.r, c.g, c.b); }
+    const y = v.y < 0 ? v.y * 1.5 : v.y; up.setXYZ(i, v.x * k * (1 + Math.max(0, -y) * .7), y * k * (y > 0 ? 1.15 : 1), v.z * k * (1 + Math.max(0, -y) * .7)); /* the foot flares and goes down into the hill */ const c = tuff[Math.floor((y + 1) * 9 + fbm(v.x * 3, v.z * 3, 2) * 3 + 9) % 5].clone().multiplyScalar(.92 + fbm(v.x * 9, v.y * 9, 2) * .2); uc.push(c.r, c.g, c.b); }
   ug.setAttribute('color', new THREE.Float32BufferAttribute(uc, 3)); ug.computeVertexNormals();
-  const castle = new THREE.Mesh(ug, tuffMat); castle.scale.set(62, 58, 54); castle.position.set(UCH.x, UCH.y + 30, UCH.z); castle.castShadow = castle.receiveShadow = true; scene.add(castle); castle.updateMatrixWorld();
+  const castle = new THREE.Mesh(ug, tuffMat); castle.scale.set(62, 58, 54); castle.position.set(UCH.x, UCH.y + 22, UCH.z); castle.castShadow = castle.receiveShadow = true; scene.add(castle); castle.updateMatrixWorld();
   { const nrm = ug.attributes.normal, pos = ug.attributes.position;
     for (let n = 0; n < 160; n++) { const i = rnd() * pos.count | 0, v = V3(pos.getX(i), pos.getY(i), pos.getZ(i)); if (v.y < -.1) continue; const w = v.clone().applyMatrix4(castle.matrixWorld), nn = V3(nrm.getX(i), nrm.getY(i), nrm.getZ(i)).transformDirection(castle.matrixWorld);
       if (nn.y > .6) continue; const a = Math.atan2(nn.z, nn.x); (rnd() < .3 ? lights : holes).push([w.x + nn.x * .3, w.y, w.z + nn.z * .3, a, 1.1 + rnd() * .9]); } }
@@ -8656,7 +8728,10 @@ async function open3dLoad() {
   clothG.computeVertexNormals();
   const cloth = new THREE.Mesh(clothG, new THREE.MeshStandardMaterial({ map: oldCloth, roughness: .9, side: THREE.DoubleSide })); cloth.position.set(BASKET.x + 9, BASKET.y, BASKET.z - 1); cloth.rotation.y = -.25; cloth.receiveShadow = cloth.castShadow = true; scene.add(cloth);
   /* balloons: a lathed envelope in gores, the basket below */
-  const envProf = []; for (let i = 0; i <= 28; i++) { const k = i / 28, y = k * 1.25, r = k < .14 ? .14 + k * 1.5 : Math.sin(Math.min(1, (k - .04) / .96) * Math.PI * .93) * .62; envProf.push(new THREE.Vector2(Math.max(.001, r), y)); }
+  /* the game's own envelope (`balloon`): a round dome of radius R over a long taper to the mouth, 2.55 R tall */
+  const envProf = [], ER = 1.25 / 2.55;
+  for (let i = 0; i <= 16; i++) { const k = i / 16, a = (1 - k) * (1 - k), b = 2 * k * (1 - k), c = k * k; envProf.push(new THREE.Vector2((a * .22 + b * .75 + c * .891) * ER, (b * .40 + c * 1.096) * ER)); }
+  for (let i = 1; i <= 24; i++) { const an = -Math.PI * .15 + (Math.PI * .65) * i / 24; envProf.push(new THREE.Vector2(Math.max(.001, Math.cos(an)) * ER, (1.55 + Math.sin(an)) * ER)); }
   const envG = new THREE.LatheGeometry(envProf, 40);
   const goreTex = cols => tex(512, 256, (x, w, hh) => { for (let i = 0; i < 16; i++) { x.fillStyle = cols[i % cols.length]; x.fillRect(i * w / 16, 0, w / 16 + 1, hh); } const g = x.createLinearGradient(0, 0, 0, hh); g.addColorStop(0, 'rgba(0,0,0,.28)'); g.addColorStop(.22, 'rgba(0,0,0,0)'); x.fillStyle = g; x.fillRect(0, 0, w, hh); });
   const PAL = [['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9'], ['#9b7be0', '#f2ebff'], ['#5aa9e6', '#eaf4fc'], ['#e5432f', '#ffffff'], ['#ff6fa8', '#fff0f6'], ['#22a45d', '#fff3b0'], ['#ffc23d', '#2b2350', '#ff5e3a']];
@@ -8717,6 +8792,7 @@ async function open3dLoad() {
     else if (t < 3.6) { camera.position.copy(LIFT.eye.getPoint(easeIO3(t / 3.6) * .5)); camera.lookAt(V3(BASKET.x + 7, BASKET.y + 6, BASKET.z)); camera.fov = 46; }
     else if (t < 7.2) { camera.position.copy(LIFT.eye.getPoint(.5 + easeIO3((t - 3.6) / 3.6) * .5)); camera.lookAt(V3(BASKET.x, BASKET.y + 10 + heroAlt(t) * .9, BASKET.z - 12)); camera.fov = 66; }
     else { const k = easeIO3((t - 7.2) / 5); camera.position.copy(LIFT.up.getPoint(k)); camera.lookAt(V3(BASKET.x, BASKET.y + 8 + heroAlt(t), BASKET.z).lerp(V3(-60, 40, -220), k * k * k)); /* the balloon stays in frame, then the view opens */ camera.fov = lerp(56, 42, k); }
+    const floor = height(camera.position.x, camera.position.z) + 3.5; if (camera.position.y < floor) camera.position.y = floor; /* never into the ground */
     camera.updateProjectionMatrix();
   };
   /* dawn: 0 night ... 1 morning */
@@ -8746,7 +8822,7 @@ async function open3dLoad() {
       const h = heroFor(), fill = easeIO3(t / 3.4); h.visible = true;
       h.userData.env.scale.set(lerp(.55, 1, fill), lerp(.25, 1, fill), lerp(.55, 1, fill)); h.userData.env.rotation.z = lerp(-1.25, 0, ease3(fill * 1.2)); h.userData.env.position.x = lerp(.5, 0, fill);
       h.position.set(BASKET.x, BASKET.y + heroAlt(t), BASKET.z); h.rotation.y = time * .05;
-      const burn = t < 9.5 && (t < 3.4 || Math.sin(t * 4.1) > -.1); h.userData.glow.material.opacity = burn ? 1 : 0; h.userData.glow.scale.setScalar(1.2 + Math.sin(time * 40) * .2); flameLight.intensity = burn ? 300 + Math.sin(time * 33) * 70 : 0;
+      const burn = t < 9.5 && (t < 3.4 || Math.sin(t * 4.1) > -.1); if (OPEN) OPEN.burn = burn; h.userData.glow.material.opacity = burn ? 1 : 0; h.userData.glow.scale.setScalar(1.2 + Math.sin(time * 40) * .2); flameLight.intensity = burn ? 300 + Math.sin(time * 33) * 70 : 0;
     }
     const tgt = camera.position.clone(); tgt.y = 0; sun.target.position.copy(tgt); sun.position.add(tgt);
     grade.uniforms.t.value = time; place(part, t);

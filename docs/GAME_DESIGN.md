@@ -276,6 +276,15 @@ Eski başlangıç hikâyesinin yerine sinematik bir açılış. 3B, kodla üreti
 - **Kalkış (~12 sn):** kumaş şirketin renkleriyle (adı da üstünde) brülörle şişer, alttan yukarı bakan kameranın yanından yükselir, kamera vinçle yukarı çıkıp köyün ve balonlarla dolu gökyüzünün üstünde durur; şirketin adı ve "Gün 1", karartma, ana ekran.
 - **Görüntü:** peri bacaları gürültüyle oyulmuş altı ayrı biçim (yumrular, katmanlar, oyuklar, bazılarında bazalt kapak), oyma kapı ve pencereler (bir kısmı ışıklı); evler yuvarlak köşeli beş tip (sıvalı, kesme taş, tonozlu, kademeli, revaklı) ve kendi cephe dokularıyla; mağara evli kayalar; yerde kayalar ve çalılar; vadide sis, ışıkta toz; parlama (bloom), vinyet, ince film greni; sinema şeritleri ve HTML yazılar.
 - Sağ üstte "Geç ›" her iki çekimi de atlar.
+- **Müzik (v121):** WebAudio ile kodla: rüzgâr, sabit bas (gün doğarken açılan filtre), doğru anlarda bas vuruşları ve yükselen geçişler, Hicaz makamında ney cümleleri, kalkışta darbuka (maksum) ve yaylılar; balon şişerken brülör sesi.
+
+## Hikâye (v121, yalnız prototipte)
+Film yalnızca tohumu atar; hikâye ilk günlerde oyunun içinde akar. Eski v112 hikâyesini oynayan kayıtlarda (`storyDone`) bu satırlar çıkmaz.
+- **Film:** Hezarfen tarlada: "Bu sepet deden Hasan'ındı evlat. Kapadokya'nın ilk balonlarından biriydi. Kumaş hazır, sepet hazır. Bir tek adı eksik."
+- **Gün 1 sabahı:** Kenan Arslan (Göreme Sky) küçümser: "Hasan'ın torunu ha? … Deden de böyle başlamıştı." (Kapadokya'da selam artık 1. gün; diğer bölgelerde 3. gün.)
+- **İlk uçuştan sonra:** Hezarfen dedeyi anlatır: Hasan ilk balonculardandı, şirketi borca girince Kenan ucuza toplayıp aldı, Hasan bir daha uçmadı, sepeti Hezarfen sakladı.
+- **Kenan'ı ilk geçtiğin gün:** gazete manşeti ("Yıllar önce Hasan Usta'nın şirketini Göreme Sky almıştı. Şimdi … torununun.") ve Kenan'ın tonu değişir: artık seni ciddiye alır.
+- **Kapadokya Baronu töreni:** kartta camın ardında dedenin sepeti (HASAN plaketli vitrin) ve Kenan'dan kısa bir tebrik notu.
 
 ## İlk uçuşlar (v111.1)
 TestFlight gözleminden: oyuncu hedefin iniş alanı olduğunu anlamadı, rüzgâr katmanlarının kesik çizgilerini görmedi, çizginin hemen üstünde rüzgârın değişmediğini fark etti ve yakıtı bitirip ilk uçuşta kaza yaptı. Bu yüzden:
