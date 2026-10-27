@@ -336,6 +336,12 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - Hepsi kasabadaki **Çarşı** binasından alınır (pazarla birlikte açılır). Desen ya da şekil şirket renklerinde hazır bir tasarımla gelir ve amiral balonuna hemen giydirilir; atölye gerekmez; bu tasarımlar her balona bedava giydirilir (normal tasarımda boya €1.000) (atölye yalnızca kendi tasarımını yapmak için). Atölyede bu desen ve şekiller kilitli görünür, oradan da alınabilir.
 
 
+## Otomatik ilerletme (v117)
+- **Ne zaman:** bulunulan bölgede en az 35 balon ve Kapadokya Baronu olunca, alttaki düğmelerde "⏩ İlerlet" çıkar. Hezarfen ilk açıldığında bir kez anlatır.
+- **Ne yapar:** günleri kendi kendine oynatır. Amirali de ekip uçurur (kurucu primi ve görev yok). Kırmızı bayrakta pas geçer. Gecelerin sahnesi atlanır, ama **Balon Şöleni gecesi atlanmaz**: gösteri baştan sona oynar, sonra durur ("Şölen bitti") ve en güzel anlar kartı gelir. Her gün düğmelerin üstünde kısa bir şerit: "⏩ Gün N +€X".
+- **Ne zaman durur:** karar ya da kart isteyen her şey (sabah olayı, hedef/bölüm, birleşme, satılık rakip, transfer teklifi, sipariş, sorun, kartpostal, Hezarfen dersi, şölen anları), kasa 3 günlük giderin altına inince, lisans yenileme uçuşu gerekince, 7 gün dolunca ya da ekrana dokununca.
+- **Durmayanlar:** gazete ve Hezarfen'in haberleri biriktirilir, durunca gösterilir (haberlerin son üçü). 35 balonla neredeyse her sabah bir manşet, çoğu gün bir sert iniş olur; kazalar sadece sayılır ("kaza: N"). Durunca şerit: sebep, gün sayısı, toplam net, kaza sayısı.
+
 ## Bölgeler ve otomatik mod
 - **Bölge düğmesi (v113):** üst çubukta ilk günden itibaren bulunulan bölgenin adı ("Kapadokya ▾") durur. Dokununca "Bölgeler" kartı açılır: sahip olunan bölgeler (geçiş), ardından kilitli ve açılmış bölgeler ("Kapadokya baronu olunca açılır", "Yakında" vb., kilitliler soluk ve 🔒) ve Dünya haritası. Böylece oyuncu oyunun Kapadokya'dan öteye ilerlediğini baştan görür.
 - Kapadokya baronu olunca holding açılır. Albuquerque'ye giriş €100.000 (holdingden). Orada sıfırdan başlanır: $3.000 ve bir S balon.
