@@ -104,7 +104,7 @@ Burada yazanlar senin hesabında yapılacaklar.
 | `balloonbaron.decorpack` | Meydan Süsleri | Square Decorations | Paket (v115) | 0,99 € |
 | `balloonbaron.figurepack` | Şölen Figürleri | Show Figures | Paket (v115) | 0,99 € |
 | `balloonbaron.founder` | Kurucu Paketi | Founder Pack | Paket (v113) | 6,99 € |
-| `balloonbaron.worldtour` | Dünya Turu | Grand Tour | Bölge kilidi (v115) | 5,99 € |
+| `balloonbaron.worldtour` | Dünya Turu | Grand Tour | Bölge kilidi (v115) | 4,99 € |
 | `balloonbaron.supporter` | Destekçi Sürümü | Supporter Edition | Paket (v115) | 11,99 € |
 
 - Fener dizileri (`lanterns`) Hezarfen'in hediyesi. Ürün değil, App Store'a girilmez.

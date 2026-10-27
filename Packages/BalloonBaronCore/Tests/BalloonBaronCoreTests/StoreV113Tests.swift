@@ -54,7 +54,7 @@ final class StoreV113Tests: XCTestCase {
         XCTAssertEqual(g.state.showFigure, .figStar)
         XCTAssertFalse(StoreItem.figTulip.isProduct, "sold in the pack")
         XCTAssertEqual(StoreItem.figurePack.productID, "balloonbaron.figurepack")
-        XCTAssertEqual(StoreItem.worldTour.euro, 5.99)
+        XCTAssertEqual(StoreItem.worldTour.euro, 4.99)
     }
 
     func testOldSavesStillDecode() throws {

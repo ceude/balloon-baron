@@ -82,7 +82,7 @@ public enum StoreItem: String, Codable, CaseIterable, CodingKeyRepresentable, Se
         switch self {
         case .heart, .star, .skull: 1.99
         case .pigeons, .arch, .cafe, .rugs, .figStar, .figTulip, .figButterfly, .figSpiral, .figInitial: 0
-        case .worldTour: 5.99
+        case .worldTour: 4.99
         case .founder: 6.99
         case .supporter: 11.99
         case .lanterns: 0
