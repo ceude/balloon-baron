@@ -989,6 +989,10 @@ const HEZ = {
   price: 'Dün koltukların hepsi dolmadı evlat. Bilet fiyatı turistin kararını değiştirir: biraz düşürürsen boş koltuk kalmaz. Koltuklar hep doluysa da fiyatı artırıp daha çok kazanırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.',
   bank: 'Banka kapısı açıldı. Kredi seni hızlandırır ama faiz sabırlı bir düşmandır, unutma.',
   market: 'Pazar sayfası açıldı. Rakiplerini tanı: Göreme Sky ağır abidir, Kızıl Vadi kural tanımaz. Otellerle anlaşmalar da orada.',
+  guide: 'Rehber ofisi açıldı evlat. Otel ve tur rehberlerini ücretsiz uçurursan seni müşterilerine önerirler: popülerlik ve birkaç gün boyunca fazladan turist.',
+  agency: 'Influencer ajansı açıldı. Gezi influencerları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap.',
+  workshop: 'Balon atölyesinin arsası hazır evlat. Kurarsan balonlarını kendin tasarlarsın, sonra da kendi balonlarını üretirsin.',
+  school: 'Pilot okulunun arsası da hazır. Okulun olursa her sabah başvuranlar arasında bir okul mezunu bulunur: daha az kaza yapan pilotlar.',
   crew: 'Ekip sayfası açıldı. Çaylak pilot ucuzdur ama rüzgârda titrer. Uçtukça tecrübe kazanırlar, tabii maaş da isterler.',
   yellow: 'Sarı bayrak! Rüzgâr huysuz bugün. Ya pahalı sigortayla uç ya da balonları dinlendir.',
   red: 'Kırmızı bayrak, evlat. Ben bile böyle günde kanat açmazdım. Pas geçmek ayıp değil.',
@@ -1199,7 +1203,7 @@ function newState() {
       { name: 'Peribaca Balloons', col: '#9b7be0', col2: '#f2ebff', style: 'mid',   balloons: ['M', 'M', 'M', 'S'],      price: 165, rep: 1,    cash: 20000 },
       { name: 'Kızıl Vadi Air',    col: '#c73a2a', col2: '#ffd9a8', style: 'risky', balloons: ['S', 'S', 'S'],           price: 135, rep: .85,  cash: 12000 }
     ],
-    region: 'cap', regions: {}, barons: {}, designs: [], holding: 0, hold: null, lastShare: null, monopolyShown: false, over: false, tutorialDone: false, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, hotels: [], unl: {}, tips: {}, hezQ: [], hotelTaken: {}, poach: null, ownHotels: [], school: false, winter: null, nextWinter: null, monoDays: 0
+    region: 'cap', regions: {}, barons: {}, designs: [], holding: 0, hold: null, lastShare: null, monopolyShown: false, over: false, tutorialDone: false, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, hotels: [], unl: {}, unlV: 2, tips: {}, hezQ: [], hotelTaken: {}, poach: null, ownHotels: [], school: false, winter: null, nextWinter: null, monoDays: 0
   };
   s.rivals.forEach(r => { r.alive = true; r.dmg = r.balloons.map(() => 0); r.lastPax = 0; r.lastCap = 0; r.forSale = null; r.lowDays = 0; });
   s.balloons.push({ id: s.nextId++, size: 'S', name: 'Şafak', fly: true, dmgUntil: 0, pilot: null });
@@ -1522,16 +1526,24 @@ function inspect() {
   }
 }
 function unlockCheck() {
-  /* one new building every two days, so each lesson lands before the next */
-  const rules = { ins: S.day >= 2, fleet: S.day >= 4 || S.cash >= 7000, bank: S.day >= 6, market: S.day >= 8, crew: S.balloons.length >= 2 || S.day >= 10 };
-  for (const k in rules) if (rules[k] && !S.unl[k]) { S.unl[k] = 1; hezAdd(k); }
+  /* v121.9 (TestFlight: days with nothing new felt empty): something opens every day from day 2 to day 11, one lesson
+     at a time. Saves from before get the split-off buildings with the page they used to come with, silently. */
+  if (!S.unlV) { /* a save from before: what the old pages included stays open */
+    if (S.unl.market) Object.assign(S.unl, { guide: 1, agency: 1, bazaar: 1 });
+    if (S.unl.fleet) S.unl.workshop = 1;
+    if (S.unl.crew) S.unl.school = 1;
+    S.unlV = 2;
+  }
+  const rules = { ins: S.day >= 2, fleet: S.day >= UNLOCK_DAY.fleet || S.cash >= 7000, bank: S.day >= UNLOCK_DAY.bank, crew: S.balloons.length >= 2 || S.day >= UNLOCK_DAY.crew,
+    market: S.day >= UNLOCK_DAY.market, guide: S.day >= UNLOCK_DAY.guide, agency: S.day >= UNLOCK_DAY.agency, bazaar: S.day >= UNLOCK_DAY.bazaar,
+    workshop: S.day >= UNLOCK_DAY.workshop, school: S.day >= UNLOCK_DAY.school };
+  for (const k in rules) if (rules[k] && !S.unl[k]) { S.unl[k] = 1; hezAdd(k === 'bazaar' ? 'bazaar' : k); }
   hezAdd('welcome');
   if (S.day >= 3) hezAdd('goals'); /* day 3 (v110): day 2 already teaches insurance and often the yellow flag */
   if (S.day >= (S.region === 'cap' ? 1 : 3) && bossRival()) bossSay('hello'); /* v121: Kenan greets Hasan's grandson on the first morning */
-  if (S.day >= 9) hezAdd('pr');
+  if (S.unl.guide) hezAdd('pr');
   /* v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows where it is */
   { const l = S.lastShare; if (S.day >= 2 && S.day <= 12 && l && l.cap && l.me < l.cap) hezAdd('price'); }
-  if (S.unl.market && S.day >= 11) hezAdd('bazaar');
   if (S.weather.flag === 'yellow') hezAdd('yellow');
   if (S.weather.flag === 'red') hezAdd('red');
   if (S.weather.mission) hezAdd('mission');
@@ -1681,7 +1693,7 @@ function showRescue() {
   const idle = S.pilots.filter(p => !S.balloons.some(b => b.pilot === p.id)), sellable = S.balloons.filter(b => b.id !== S.flag).sort((a, b) => SIZES[a.size].cost - SIZES[b.size].cost);
   /* the guides' flight and a hotel deal (only when there's none yet) bring customers fastest; on this card they may take
      cash below zero, never past the seizure line */
-  if (unlocked('market') && S.guideCd <= S.day && S.cash - GUIDE_COST >= -5000) opt(`Rehberlere tanıtım uçuşu: ${eur(GUIDE_COST)}`, `Hemen +0,2★ ve 3 gün rehberlerin gönderdiği turistler. Sonra kasa: ${eur(S.cash - GUIDE_COST)}.`, doGuide);
+  if (unlocked('guide') && S.guideCd <= S.day && S.cash - GUIDE_COST >= -5000) opt(`Rehberlere tanıtım uçuşu: ${eur(GUIDE_COST)}`, `Hemen +0,2★ ve 3 gün rehberlerin gönderdiği turistler. Sonra kasa: ${eur(S.cash - GUIDE_COST)}.`, doGuide);
   const hot = unlocked('market') && !S.hotels.length && [...HOTELS].reverse().find(x => !S.hotels.includes(x.id) && !owns(x) && !hotelOwner(x) && starVal(S.rep) >= x.min && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && S.cash - x.fee * 3 >= -5000);
   if (hot) opt(`Otel anlaşması: ${hot.name} (peşin ${eur(hot.fee * 3)})`, `Günlük misafir: yaklaşık ${hot.pax}, popülerliğin de artar. Sonra kasa: ${eur(S.cash - hot.fee * 3)}.`, () => { S.cash -= hot.fee * 3; S.hotels.push(hot.id); });
   if (idle.length) opt(`Boştaki pilotları çıkar (${idle.length})`, `Günde ${eur(idle.reduce((a, p) => a + pilotWage(p), 0))} maaştan kurtulursun.`, () => { S.pilots = S.pilots.filter(p => !idle.includes(p)); });
@@ -3011,7 +3023,8 @@ function tabCrew(body) {
   }
   body.appendChild(s);
   const sc = h('div', 'sec'); sc.appendChild(h('h2', null, 'Pilot okulu'));
-  if (S.school) sc.appendChild(h('div', 'callout grn', '<b>Pilot okulun açık.</b> Her sabah başvuranlar arasında bir okul mezunu olur. Mezunlar ömür boyu %30 daha düşük maaşla çalışır, terfi etseler bile. Rakibe kaptırırsan bu avantaj gider.'));
+  if (!S.school && !unlocked('school')) sc.appendChild(h('p', 'hint', `Pilot okulu ${UNLOCK_DAY.school}. günde açılır.`));
+  else if (S.school) sc.appendChild(h('div', 'callout grn', '<b>Pilot okulun açık.</b> Her sabah başvuranlar arasında bir okul mezunu olur. Mezunlar ömür boyu %30 daha düşük maaşla çalışır, terfi etseler bile. Rakibe kaptırırsan bu avantaj gider.'));
   else {
     const it = h('div', 'item');
     it.appendChild(h('div', 'main', `<div class="t">Kendi pilot okulunu kur</div><div class="s">Her sabah bir mezun başvurur. Mezunlar ömür boyu %30 daha ucuza çalışır. 10 pilotla günde ~${eur(450)} tasarruf.</div>`));
@@ -4251,10 +4264,10 @@ function showRepChart() {
   if (ads.length) act('Balon reklamlarını kaldır', `${ads.length} balonunda reklam var. Kaldırırsan reklam geliri biter, popülerlik kaybı durur.`, 'Kaldır', () => { ads.forEach(b => b.ad = null); m.hidden = true; refresh(); });
   act('Otellerle anlaş', `Oteller misafirlerine seni önerir, her gün popülerlik ve turist getirir. ${S.hotels.length ? S.hotels.length + ' otelle anlaşman var.' : 'Henüz anlaşman yok.'}`, 'Oteller', () => { m.hidden = true; openPage('market'); setTimeout(() => { const t = [...document.querySelectorAll('#tabBody h2')].find(x => x.textContent === 'Otel anlaşmaları'); if (t) t.scrollIntoView(); }, 50); });
   const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
-  act('Influencer kampanyası', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : `Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir.`, eur(influCost()), () => {
+  if (unlocked('agency')) act('Influencer kampanyası', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : `Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir.`, eur(influCost()), () => {
     m.hidden = true; doInfluencer();
   }, icd > 0 || S.cash < influCost());
-  act('Rehberlere tanıtım uçuşu', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', eur(GUIDE_COST), () => {
+  if (unlocked('guide')) act('Rehberlere tanıtım uçuşu', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', eur(GUIDE_COST), () => {
     m.hidden = true; doGuide();
   }, gcd > 0 || S.cash < GUIDE_COST);
   if (unlocked('market') && S.balloons.length >= SHOW.min) { const ss = showState(); act('Balon Şöleni Düzenle', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
@@ -5953,6 +5966,7 @@ function showOrder() {
 }
 function studioSection(body) {
   const ws = h('div', 'sec'); ws.appendChild(h('h2', null, S.workshop ? 'Tasarımlar' : 'Balon atölyesi'));
+  if (!S.workshop && !unlocked('workshop')) { ws.appendChild(h('p', 'hint', `Balon atölyesi ${UNLOCK_DAY.workshop}. günde açılır.`)); body.appendChild(ws); return; }
   if (!S.workshop) {
     const it = h('div', 'item');
     it.appendChild(h('div', 'main', `<div class="t">Kendi balon atölyeni kur</div><div class="s">Balonlarının desenlerini kendin tasarlarsın. Yaratıcı tasarımlar yolcuların ilgisini çeker ve popülerlik getirir. Atölye bir kez kurulur, tasarımların bütün bölgelerde kullanılır.</div>`));
@@ -6381,7 +6395,7 @@ function forecastBox(n) {
 }
 function rollFlag() { const r = Math.random(), gq = S.winter ? .35 : .55, yq = S.winter ? .7 : .85; return r < gq ? 'green' : r < yq ? 'yellow' : 'red'; }
 function forecastFlag(day) { S.fc = S.fc || {}; for (const d in S.fc) if (+d < S.day) delete S.fc[d]; if (!S.fc[day]) { S.fc[day] = rollFlag(); save(); } return S.fc[day]; }
-const UNLOCK_DAY = { fleet: 4, bank: 6, market: 8, crew: 10 };
+const UNLOCK_DAY = { fleet: 3, bank: 4, crew: 5, market: 6, guide: 7, agency: 8, bazaar: 9, workshop: 10, school: 11 }; /* v121.9: one a day */
 /* The bazaar: everything sold for real money, in one place. Decorations show up in the town and draw a few more tourists. */
 /* A pattern or shape bought here arrives as a ready design in your colours and goes straight onto the flagship,
    so it works without the workshop; the workshop only adds designing your own. */
@@ -6443,12 +6457,12 @@ function townBuildings() {
   const add = (o) => L.push(o);
   const n = S.balloons.length, np = S.pilots.length, ds = (S.designs || []).length;
   add({ id: 'hangar', gx: 1, gy: 1, w: 3, d: 2, name: 'Hangar', look: 'hangar', lv: n >= 8 ? 2 : 1, sub: `Balon: ${n} · Sv. ${bl('hangar')}`, tap: () => unlocked('fleet') ? buildingCard('hangar', () => openSection('fleet', 'Balonların'), 'Balonlarına git') : lockedCard('Hangar', 'fleet') });
-  add({ id: 'shop', gx: 5, gy: 1, w: 2, d: 2, name: 'Balon atölyesi', look: 'workshop', lv: S.workshop ? (ds >= 3 || fabLv() >= 3 ? 2 : 1) : 0,
-    sub: S.workshop ? (fabBusy() ? `Üretimde: ${S.workshop.job.size} · ${Math.max(0, S.workshop.job.done - S.day)} gün` : `Sv. ${fabLv()} · Tasarım: ${ds}`) : `Kur: ${eur(WORKSHOP_COST)}`, tap: () => unlocked('fleet') ? openPage('workshop') : lockedCard('Balon atölyesi', 'fleet') });
+  add({ id: 'shop', gx: 5, gy: 1, w: 2, d: 2, name: 'Balon atölyesi', look: 'workshop', lv: S.workshop ? (ds >= 3 || fabLv() >= 3 ? 2 : 1) : unlocked('workshop') ? 0 : -1,
+    sub: S.workshop ? (fabBusy() ? `Üretimde: ${S.workshop.job.size} · ${Math.max(0, S.workshop.job.done - S.day)} gün` : `Sv. ${fabLv()} · Tasarım: ${ds}`) : `Kur: ${eur(WORKSHOP_COST)}`, tap: () => unlocked('workshop') || S.workshop ? openPage('workshop') : lockedCard('Balon atölyesi', 'workshop') });
   add({ id: 'office', gx: 9, gy: 5, w: 2, d: 2, name: 'Pilot ofisi', look: 'office', lv: unlocked('crew') ? (np >= 6 ? 2 : 1) : -1,
     sub: unlocked('crew') ? `Pilot: ${np} · Sv. ${bl('office')}` : 'Yakında', tap: () => unlocked('crew') ? buildingCard('office', () => openSection('crew'), 'Ekibe git') : lockedCard('Pilot ofisi', 'crew') });
-  add({ id: 'school', gx: 12, gy: 5, w: 2, d: 2, name: 'Pilot okulu', look: 'school', lv: S.school ? (np >= 8 ? 2 : 1) : (unlocked('crew') ? 0 : -1),
-    sub: S.school ? 'Açık' : `Kur: ${eur(SCHOOL_COST)}`, tap: () => unlocked('crew') ? openSection('crew', 'Pilot okulu') : lockedCard('Pilot okulu', 'crew') });
+  add({ id: 'school', gx: 12, gy: 5, w: 2, d: 2, name: 'Pilot okulu', look: 'school', lv: S.school ? (np >= 8 ? 2 : 1) : (unlocked('school') ? 0 : -1),
+    sub: S.school ? 'Açık' : `Kur: ${eur(SCHOOL_COST)}`, tap: () => unlocked('school') ? openSection('crew', 'Pilot okulu') : lockedCard('Pilot okulu', 'school') });
   /* finance sits in the back row so the tall holding tower hides nothing behind it; the tower takes the inner plot so it stays on screen */
   add({ id: 'bank', gx: 12, gy: 1, w: 2, d: 2, name: 'Banka', look: 'bank', lv: unlocked('bank') ? (S.loans.length ? 2 : 1) : -1,
     sub: unlocked('bank') ? (S.loans.length ? `Kredi: ${S.loans.length}` : 'Kredi yok') : 'Yakında', tap: () => unlocked('bank') ? openSection('bank') : lockedCard('Banka', 'bank') });
@@ -6462,17 +6476,17 @@ function townBuildings() {
       tap: () => unlocked('market') ? openSection('market', 'Otel anlaşmaları') : lockedCard(x.name, 'market') });
   });
   const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
-  add({ id: 'influ', gx: 9, gy: 9, w: 2, d: 2, name: 'Influencer ajansı', look: 'agency', lv: unlocked('market') ? (S.day <= S.influUntil ? 2 : 1) : -1,
-    sub: !unlocked('market') ? 'Yakında' : S.day <= S.influUntil ? 'Kampanya sürüyor' : icd > 0 ? `Bekle: ${icd} gün` : eur(influCost()),
-    tap: () => !unlocked('market') ? lockedCard('Influencer ajansı', 'market') : townCard('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : 'Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir. Otelin yoksa popülerliğini 4,5★\'a kadar taşır.', `Kampanya yap ${eur(influCost())}`, doInfluencer, icd > 0 || S.cash < influCost()) });
-  add({ id: 'guide', gx: 12, gy: 9, w: 2, d: 2, name: 'Rehber ofisi', look: 'guide', lv: unlocked('market') ? (S.day <= (S.guideUntil || 0) ? 2 : 1) : -1,
-    sub: !unlocked('market') ? 'Yakında' : S.day <= (S.guideUntil || 0) ? 'Rehberler seni öneriyor' : gcd > 0 ? `Bekle: ${gcd} gün` : eur(GUIDE_COST),
-    tap: () => !unlocked('market') ? lockedCard('Rehber ofisi', 'market') : townCard('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', `Tanıtım uçuşu ${eur(GUIDE_COST)}`, doGuide, gcd > 0 || S.cash < GUIDE_COST) });
+  add({ id: 'influ', gx: 9, gy: 9, w: 2, d: 2, name: 'Influencer ajansı', look: 'agency', lv: unlocked('agency') ? (S.day <= S.influUntil ? 2 : 1) : -1,
+    sub: !unlocked('agency') ? 'Yakında' : S.day <= S.influUntil ? 'Kampanya sürüyor' : icd > 0 ? `Bekle: ${icd} gün` : eur(influCost()),
+    tap: () => !unlocked('agency') ? lockedCard('Influencer ajansı', 'agency') : townCard('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : 'Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir. Otelin yoksa popülerliğini 4,5★\'a kadar taşır.', `Kampanya yap ${eur(influCost())}`, doInfluencer, icd > 0 || S.cash < influCost()) });
+  add({ id: 'guide', gx: 12, gy: 9, w: 2, d: 2, name: 'Rehber ofisi', look: 'guide', lv: unlocked('guide') ? (S.day <= (S.guideUntil || 0) ? 2 : 1) : -1,
+    sub: !unlocked('guide') ? 'Yakında' : S.day <= (S.guideUntil || 0) ? 'Rehberler seni öneriyor' : gcd > 0 ? `Bekle: ${gcd} gün` : eur(GUIDE_COST),
+    tap: () => !unlocked('guide') ? lockedCard('Rehber ofisi', 'guide') : townCard('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', `Tanıtım uçuşu ${eur(GUIDE_COST)}`, doGuide, gcd > 0 || S.cash < GUIDE_COST) });
   /* booking offices side by side: yours first, then the rivals; same kiosk, awning in each company's balloon colours */
   add({ id: 'mine', gx: 8.7, gy: 12.2, w: 1.2, d: 1.2, name: S.company || 'Senin ofisin', look: 'rival', lv: 1, col: myCol()[0], col2: myCol()[1],
     sub: `Balon: ${n} · Sv. ${bl('mine')}`, small: true, tap: () => unlocked('market') ? buildingCard('mine', () => openSection('market', 'Sen ve rakiplerin'), 'Pazara git') : lockedCard(S.company || 'Senin ofisin', 'market') });
-  add({ id: 'bazaar', gx: 14.05, gy: 2.75, w: 1.35, d: 1.7, name: 'Çarşı', look: 'bazaar', lv: unlocked('market') ? (decorN() ? 2 : 1) : -1, small: true,
-    sub: unlocked('market') ? `Süs: ${decorN()}/${DECOR.length}` : 'Yakında', tap: () => unlocked('market') ? showBazaar() : lockedCard('Çarşı', 'market') });
+  add({ id: 'bazaar', gx: 14.05, gy: 2.75, w: 1.35, d: 1.7, name: 'Çarşı', look: 'bazaar', lv: unlocked('bazaar') ? (decorN() ? 2 : 1) : -1, small: true,
+    sub: unlocked('bazaar') ? `Süs: ${decorN()}/${DECOR.length}` : 'Yakında', tap: () => unlocked('bazaar') ? showBazaar() : lockedCard('Çarşı', 'bazaar') });
   add({ id: 'mast', gx: 6.95, gy: 3.95, w: .4, d: .4, name: 'Rüzgâr direği', look: 'mast', lv: 1, small: true, sub: bl('mast') >= 2 ? `Yarın: ${FLAGS[forecastFlag(S.day + 1)].name.split(' ')[0]}` : `Sv. ${bl('mast')}`, tap: () => buildingCard('mast') });
   S.rivals.forEach((r, i) => add({ id: 'rival' + i, gx: 10.55 + i * 1.85, gy: 12.2, w: 1.2, d: 1.2, name: r.name, look: 'rival', lv: r.alive ? 1 : 0, col: r.col, col2: r.col2,
     sub: r.alive ? `Balon: ${r.balloons.length}` : r.merged ? 'Birleşti' : r.forSale ? 'Satışta' : 'Kapandı', small: true,

@@ -12,7 +12,7 @@ Bu belge `prototype/balloon-baron.html` içindeki güncel mekanikleri ve sayıla
 ## Başlangıç
 Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigorta ilk günden açık. Kurulumda şirket adı ve balon rengi seçilir (10 palet).
 
-**Binaların açılışı** (her ders yerine otursun diye iki günde bir): sigorta 2. gün, hangar 4. gün (ya da kasa ≥ 7.000), banka 6. gün, pazar 8. gün, pilot ofisi 10. gün (ya da 2 balon). Hezarfen'in popülerlik dersi 9. gün, rakip ipuçları 10., 13. ve 16. gün.
+**Binaların açılışı** (v121.9, TestFlight: hiçbir şey açılmayan günler boş geçiyordu; artık 2.–11. günler arasında her gün bir şey açılır ve Hezarfen anlatır): sigorta 2. gün, hangar ve filo 3. gün (ya da kasa ≥ 7.000), banka 4. gün, pilot ofisi ve ekip 5. gün (ya da 2 balon), pazar, oteller ve şirketler 6. gün, rehber ofisi 7. gün, influencer ajansı 8. gün, çarşı 9. gün, balon atölyesinin arsası 10. gün, pilot okulunun arsası 11. gün. Popülerlik tavanı (4,2★) ve Hezarfen'in otel uyarısı pazar açıldıktan sonra başlar. Eski kayıtlarda o sayfalarla gelen binalar açık kalır.
 
 ## Balonlar
 | Boy | Kapasite | Fiyat | Yakıt/uçuş | Bakım | Risk |
@@ -359,7 +359,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Süsler artık yalnızca görsel (v115):** eski kuraldaki "her süs talebi %1 artırır" kaldırıldı.
 - **Dünya Turu (v115)** 4,99 € (v121: 5,99 €'dan indi): Kapadokya ücretsiz oyundur; Amerika (Albuquerque), Mısır (Luksor) ve gelecek bölgeler Dünya Turu ister (oyun içi giriş bedeli yine holdingden). Kapadokya Baronu töreninde "Devam" ile teklif kartı açılır: Dünya Turu, ve Kurucu Paketi alınmamışsa ikinci seçenek **Destekçi Sürümü 9,99 €** (v121: 11,99 €'dan indi; Dünya Turu + Kurucu Paketi + kasabada destekçi plaketi; üstü çizili 11,98 €). Kurucu Paketi alınmışsa yalnızca Dünya Turu sunulur. Dünya haritasında ve holdingin bölgeler listesinde de "Dünya Turu 5,99 €" düğmesi aynı kartı açar. Çarşıda bölge satılmaz. v113'ün Mısır (2,99 €) ürünü kaldırıldı; onu alanlarda Dünya Turu açık sayılır.
 - **Kurucu Paketi** 6,99 €: desenler, şekiller, büyük süsler ve iki paket (bölge değil). Tek tek toplamı 14,88 €, yani %53 indirim; üstü çizili fiyat henüz sahip olunmayanların toplamıdır, %20'nin altına düşerse gösterilmez.
-- Hepsi kasabadaki **Çarşı** binasından alınır (pazarla birlikte açılır). Desen ya da şekil şirket renklerinde hazır bir tasarımla gelir ve amiral balonuna hemen giydirilir; atölye gerekmez; bu tasarımlar her balona bedava giydirilir (normal tasarımda boya €1.000) (atölye yalnızca kendi tasarımını yapmak için). Atölyede bu desen ve şekiller kilitli görünür, oradan da alınabilir.
+- Hepsi kasabadaki **Çarşı** binasından alınır (9. günde açılır). Desen ya da şekil şirket renklerinde hazır bir tasarımla gelir ve amiral balonuna hemen giydirilir; atölye gerekmez; bu tasarımlar her balona bedava giydirilir (normal tasarımda boya €1.000) (atölye yalnızca kendi tasarımını yapmak için). Atölyede bu desen ve şekiller kilitli görünür, oradan da alınabilir.
 
 
 ## Otomatik ilerletme (v117)
