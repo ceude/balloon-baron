@@ -286,13 +286,25 @@ struct BazaarView: View {
                         store.storeItem = k
                     } label: {
                         VStack(spacing: 2) {
+                            // A pack's count sits on its picture, so every card has the same rows and the prices line up.
                             StoreThumb(item: k, colors: s.colors, company: s.company).frame(width: 60, height: 68).accessibilityHidden(true)
+                                .overlay(alignment: .topTrailing) {
+                                    if k.kind == .pack {
+                                        Text(loc("bazaar.packParts", num(k.packItems.count)))
+                                            .font(Theme.font(10.5, .heavy, condensed: true)).foregroundStyle(.white)
+                                            .padding(.horizontal, 6).padding(.vertical, 1)
+                                            .background(Theme.coral, in: RoundedRectangle(cornerRadius: 8))
+                                            .fixedSize()
+                                            .offset(x: 12, y: -4)
+                                    }
+                                }
                             Text(k.title).font(Theme.font(14, .bold, condensed: true)).foregroundStyle(Theme.ink)
                                 .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
-                            if k.kind == .pack {
-                                Text(loc("bazaar.packParts", num(k.packItems.count))).font(Theme.font(11)).foregroundStyle(Theme.ink2)
+                                .frame(height: 34)
+                            HStack(spacing: 3) {
+                                if locked && !own && !k.gift { LockGlyph(size: 11) }
+                                Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : storePrice(k))
                             }
-                            Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : storePrice(k))
                                 .font(Theme.font(13, .heavy)).foregroundStyle(.white)
                                 .padding(.horizontal, 9).padding(.vertical, 2)
                                 .background(own ? Theme.green : k.gift ? Theme.coral : locked ? Color(hex: "#8a8398") : Theme.ink, in: Capsule())

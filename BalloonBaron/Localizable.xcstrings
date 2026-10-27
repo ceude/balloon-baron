@@ -4025,37 +4025,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "🔒 Gesperrt"
+            "value": "Gesperrt"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "🔒 Locked"
+            "value": "Locked"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "🔒 Bloqueado"
+            "value": "Bloqueado"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "🔒 未解放"
+            "value": "未解放"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "🔒 잠김"
+            "value": "잠김"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "🔒 Kilitli"
+            "value": "Kilitli"
           }
         }
       }

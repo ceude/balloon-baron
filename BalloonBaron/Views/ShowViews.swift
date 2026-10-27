@@ -128,7 +128,11 @@ struct ShowCardView: View {
                 Text(k.map { $0 == .figInitial ? "\($0.title): \(ShowCardView.initial(s.company))" : $0.title } ?? loc("show.figAuto"))
                     .font(Theme.font(12, .bold)).foregroundStyle(Theme.ink).lineLimit(2).multilineTextAlignment(.center).minimumScaleFactor(0.8)
                 if let k, lock {
-                    Text("🔒 " + loc("show.inPack")).font(Theme.font(11, .heavy)).foregroundStyle(Theme.coral)
+                    HStack(spacing: 3) {
+                        LockGlyph(size: 10)
+                        Text(loc("show.inPack")).font(Theme.font(11, .heavy))
+                    }
+                    .foregroundStyle(Theme.coral)
                 }
             }
             .frame(width: 78)

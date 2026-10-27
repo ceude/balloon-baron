@@ -68,9 +68,10 @@ struct RegionsCard: View {
                     Text("\(pin.land) · \(why)").font(Theme.font(13)).foregroundStyle(Theme.ink2)
                 }
                 Spacer()
-                Text(open ? loc("regions.enter") : "🔒")
-                    .font(Theme.font(open ? 17 : 15, .heavy, condensed: true))
-                    .foregroundStyle(Theme.coral)
+                Group {
+                    if open { Text(loc("regions.enter")).font(Theme.font(17, .heavy, condensed: true)) } else { LockGlyph(size: 16) }
+                }
+                .foregroundStyle(Theme.coral)
             }
             .padding(.horizontal, 14).padding(.vertical, 12)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 16))

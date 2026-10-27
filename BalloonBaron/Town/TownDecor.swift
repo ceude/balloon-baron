@@ -8,7 +8,7 @@ struct DecorPainter {
     var c: GraphicsContext
 
     static let arches: [((Double, Double), (Double, Double), Double)] = [((6.75, 15.35), (8.15, 15.35), 23.2), ((15.35, 6.75), (15.35, 8.15), 23.2)]
-    static let cafeAt = (14.9, 1.1), rugsAt = (9.8, 0.9), plaqueAt = (9.15, 6.55)
+    static let cafeAt = (14.9, 1.1), rugsAt = (7.6, 0.9), plaqueAt = (9.15, 6.55)
 
     func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
     func hex(_ h: String) -> Color { Color(hex: h) }

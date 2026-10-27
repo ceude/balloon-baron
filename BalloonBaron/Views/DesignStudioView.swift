@@ -125,7 +125,7 @@ struct DesignStudioView: View {
             label(loc("studio.shape"))
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
                 ForEach([nil] + EnvelopeShape.allCases.map { Optional($0) }, id: \.self) { k in
-                    choice(k.map { (locked($0.storeItem) ? "🔒 " : "✦ ") + $0.title } ?? loc("studio.classic"), on: shape == k) {
+                    choice(k.map { (locked($0.storeItem) ? "" : "✦ ") + $0.title } ?? loc("studio.classic"), lock: k.map { locked($0.storeItem) } ?? false, on: shape == k) {
                         if let k, locked(k.storeItem) { openStore(k.storeItem) } else { shape = k }
                     }
                 }
@@ -133,9 +133,12 @@ struct DesignStudioView: View {
         }
     }
 
-    private func choice(_ title: String, on: Bool, action: @escaping () -> Void) -> some View {
+    private func choice(_ title: String, lock: Bool = false, on: Bool, action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Text(title)
+            HStack(spacing: 4) {
+                if lock { LockGlyph(size: 12) }
+                Text(title)
+            }
                 .font(Theme.font(15, .bold, condensed: true))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
@@ -152,7 +155,10 @@ struct DesignStudioView: View {
         return Button {
             if locked(p.storeItem), let k = p.storeItem { openStore(k) } else { pattern = p }
         } label: {
-            Text((p.premium ? (locked(p.storeItem) ? "🔒 " : "✦ ") : "") + p.title)
+            HStack(spacing: 4) {
+                if p.premium && locked(p.storeItem) { LockGlyph(size: 12) }
+                Text((p.premium && !locked(p.storeItem) ? "✦ " : "") + p.title)
+            }
                 .font(Theme.font(15, .bold, condensed: true))
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
