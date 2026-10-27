@@ -128,6 +128,8 @@ public enum Rules {
     /// Keeping a hotel in a tug-of-war you're there for costs this many days of its fee, from the holding: two months,
     /// for keeping it away from the rival too.
     public static let hotelKeepDays = 60
+    /// An owned hotel sells back for this share of its price.
+    public static let hotelSellShare = 0.6
     /// v117: the autopilot opens from this many balloons in the region (and Baron of Cappadocia), and plays at most
     /// this many days in a row.
     public static let autopilotBalloons = 35

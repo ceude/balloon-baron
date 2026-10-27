@@ -459,6 +459,9 @@ struct RescueView: View {
         if !idle.isEmpty {
             option(loc("rescue.fire", num(idle.count)), loc("rescue.fire.sub", eur(idle.reduce(0) { $0 + $1.wage }))) { $0.fireIdlePilots() }
         }
+        if let h = store.game?.rescueSellHotel, let v = store.game?.hotelSellValue(h) {
+            option(loc("rescue.sellHotel", h.title), loc("rescue.sellHotel.sub", eur(v))) { _ = $0.sellHotel(h) }
+        }
         if let b = sellable.first {
             let v = store.game?.sellValue(b) ?? 0
             option(loc("rescue.sell", b.title), loc("rescue.sell.sub", eur(v))) { _ = $0.sellBalloon(b.id) }

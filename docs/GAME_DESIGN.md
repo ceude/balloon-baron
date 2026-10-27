@@ -147,6 +147,8 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
 - Popülerlik eşiğin altındaysa gelirin %50'si gelir.
 - Kışın gelir ×0,6.
 
+- **Otel satışı (v118):** sahip olunan otel alış fiyatının %60'ına satılır (Pazar'daki otel kartında "Sat"). Kurtarma planında, otelin varsa en küçüğünü satma seçeneği çıkar.
+
 ## Görevler
 Ödül amiral balonunun boyuyla çarpılır: S ×1, M ×2, L ×3, XL ×4.
 
@@ -354,7 +356,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Balloon Fiesta:** her 30 günde bir, 4 gün, talep ×1,9 (ilki girişten 12 gün sonra).
 - **Otomatik mod:** Ayrılınan bölge son 14 günün ortanca net kârının %85'ini (euroya çevrilmiş) her gün ±%15 oynayarak holdinge getirir.
 - **Sorunlar:** son sorundan 6 gün sonra her gün %7. Karar verilene kadar kazanç yarıda.
-- **Sorunlu bölgeye gitmek (v108):** karar bekleyen sorun bölgeyle birlikte durur; oraya geçince kaybolmaz. Varınca kamera önce ofisin önüne gider (zam isteyen pilotlar orada pankartla bekler), 3,5 saniye sonra karar kartı alttan açılır (ofisin önü üstte görünmeye devam eder); ana ekranda kırmızı uyarı da olur. Kartta "Sonra" yok: bölgedeyken karar verilir; başka bölgedeyken kartta iki seçeneğin yanında "<bölge> bölgesine git" düğmesi var. Geri dönersen sorun otomatik modda beklemeye devam eder. Bölgedeyken seçimlerin sonucu yerinde olur: zam ver = pilot maaşları %15 artar; reddet = pilotlar 3 gün uçmaz (sadece amiral, sen); fiyatı eşitle = bilet fiyatın en ucuz rakibe iner; popülerliğine güven = %50 popülerlik −0,08; sert iniş: kendin ilgilen −0,05, müdür halletsin −0,1 popülerlik; otel: o otelin 60 günlük ücretini (holding kasasından; rakibe kaptırmamanın bedeli) ödersen kalır, bırakırsan bir otel anlaşman en popüler rakibe geçer ve 30 gün seninle çalışmaz (aynı gün 3 günlük ücretle geri alınamaz); zarflar: bütçeyi onaylarsan %30 altındaki zarflar yenilenir.
+- **Sorunlu bölgeye gitmek (v108):** karar bekleyen sorun bölgeyle birlikte durur; oraya geçince kaybolmaz. Varınca kamera önce ofisin önüne gider (zam isteyen pilotlar orada pankartla bekler), 3,5 saniye sonra karar kartı alttan açılır (ofisin önü üstte görünmeye devam eder); ana ekranda kırmızı uyarı da olur. Kartta "Sonra" yok: bölgedeyken karar verilir; başka bölgedeyken kartta iki seçeneğin yanında "<bölge> bölgesine git" düğmesi var. Geri dönersen sorun otomatik modda beklemeye devam eder. Bölgedeyken seçimlerin sonucu yerinde olur: zam ver = pilot maaşları %15 artar; reddet = pilotlar 3 gün uçmaz (sadece amiral, sen); fiyatı eşitle = bilet fiyatın en ucuz rakibe iner; popülerliğine güven = %50 popülerlik −0,08; sert iniş: kendin ilgilen −0,05, müdür halletsin −0,1 popülerlik; otel (yalnızca anlaşmalı oteli olan bölgede çıkar; sahip olunan oteller kapışmaya girmez): o otelin 60 günlük ücretini (holding kasasından; rakibe kaptırmamanın bedeli) ödersen kalır, bırakırsan bir otel anlaşman en popüler rakibe geçer ve 30 gün seninle çalışmaz (aynı gün 3 günlük ücretle geri alınamaz); zarflar: bütçeyi onaylarsan %30 altındaki zarflar yenilenir.
   - Zam: kalıcı −%6 ya da 3 gün sıfır.
   - Fiyat savaşı: kalıcı −%10 ya da %50 şansla 10 gün −%25.
   - Sert iniş: bölgeye git (popülerlik −0,05) ya da 7 gün −%15.

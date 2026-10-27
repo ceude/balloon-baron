@@ -348,7 +348,14 @@ struct MarketView: View {
                     FleetUI.Detail(hotelBody(h, own: own, s))
                 }
             }
-            if !own {
+            if own {
+                // v118: an owned hotel sells back for 60% of its price.
+                FleetUI.ButtonGrid {
+                    FleetUI.SmallButton(title: loc("marketPage.sellHotel", eur(game.hotelSellValue(h))), note: loc("marketPage.sellHotelNote"), ghost: true) {
+                        store.act { _ = $0.sellHotel(h) }
+                    }
+                }
+            } else {
                 hotelActions(h, has: has, ok: ok, s)
             }
         }

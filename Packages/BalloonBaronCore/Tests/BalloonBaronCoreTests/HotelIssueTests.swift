@@ -22,3 +22,18 @@ final class HotelIssueTests: XCTestCase {
         XCTAssertTrue(g.signHotel(h), "after a month it's free again")
     }
 }
+
+final class HotelSaleTests: XCTestCase {
+    func testOwnedHotelSellsForSixtyPercent() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 4)
+        let h = Hotel.allCases[0]
+        g.state.ownHotels = [h]
+        let cash = g.state.cash
+        XCTAssertEqual(g.rescueSellHotel, h)
+        XCTAssertTrue(g.sellHotel(h))
+        XCTAssertEqual(g.state.cash - cash, jsRound(Double(h.buyPrice) * 0.6 / 100) * 100)
+        XCTAssertTrue(g.state.ownHotels.isEmpty)
+        XCTAssertFalse(g.sellHotel(h), "only once")
+        XCTAssertNil(g.rescueSellHotel)
+    }
+}

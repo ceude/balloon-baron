@@ -243,7 +243,8 @@ extension Game {
             a.todayRaw = inc
             a.today = jsRound(inc * holdingBoost(r) * state.holding.officeMultiplier(r))
             if a.issue == nil && state.day - a.lastIssue >= 6 && rng.chance(0.07) {
-                let k = rng.pick(Issue.allCases)
+                // A hotel tug-of-war needs a partner hotel there: hotels you own aren't anyone's to take.
+                let k = rng.pick(Issue.allCases.filter { $0 != .hotel || !p.state.hotelDeals.isEmpty })
                 a.issue = Autopilot.OpenIssue(kind: k, day: state.day)
                 a.lastIssue = state.day
                 state.hezQueue.append(.regionIssue(r, k))

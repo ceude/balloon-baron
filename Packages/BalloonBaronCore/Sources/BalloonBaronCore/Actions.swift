@@ -348,6 +348,18 @@ extension Game {
 
     public mutating func endHotelDeal(_ h: Hotel) { state.hotelDeals.removeAll { $0 == h } }
 
+    /// What an owned hotel sells for: `Rules.hotelSellShare` of its price.
+    public func hotelSellValue(_ h: Hotel) -> Int { jsRound(Double(h.buyPrice) * Rules.hotelSellShare / 100) * 100 }
+
+    /// Sells an owned hotel: the money comes at once, its room income and guests stop.
+    @discardableResult
+    public mutating func sellHotel(_ h: Hotel) -> Bool {
+        guard state.ownHotels.contains(h) else { return false }
+        state.ownHotels.removeAll { $0 == h }
+        state.cash += hotelSellValue(h)
+        return true
+    }
+
     @discardableResult
     public mutating func buyHotel(_ h: Hotel) -> Bool {
         guard !state.ownHotels.contains(h), state.stars >= h.minStars, state.cash >= h.buyPrice else { return false }
@@ -398,6 +410,9 @@ extension Game {
             !state.hotelActive($0) && state.stars >= $0.minStars && hotelLockedByRival($0) == nil && state.cash - $0.dailyFee * 3 >= Rules.seizeBelow
         }
     }
+
+    /// Rescue card: the smallest hotel you own, to sell (the best ones stay).
+    public var rescueSellHotel: Hotel? { state.ownHotels.min { $0.buyPrice < $1.buyPrice } }
 
     // MARK: Rival deals
 

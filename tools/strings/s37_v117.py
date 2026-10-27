@@ -22,3 +22,9 @@ add("hez.autopilot",
     "Tu flota ha pasado de 35 globos, aprendiz; ya no tienes que llevar cada mañana tú mismo. «Avanzar», abajo, juega los días solo, y la tripulación vuela también el globo insignia. Se detiene cuando surge una decisión, un objetivo o un apuro de caja, como mucho a los 7 días; el periódico y las noticias esperan y aparecen al parar. Si llega una noche de Espectáculo de globos, te deja verlo entero y luego se detiene.",
     "フリートが35機を超えたな、弟子よ。もう毎朝ひとつずつ采配せんでもよい。下の「早送り」が日々をひとりでに進め、旗艦も乗組員が飛ばすのだ。決断や目標、資金難が出れば止まり、長くても7日で止まる。新聞と知らせはためておき、止まったときに見せる。バルーンショーの夜が来れば、ショーを最後まで見せてから止まるぞ。",
     "기단이 35대를 넘었군, 제자여. 이제 매일 아침을 하나하나 챙길 필요는 없네. 아래 '빨리 감기'가 날들을 알아서 진행하고, 기함도 승무원이 띄우지. 결정할 일, 목표, 자금 문제가 생기면 멈추고, 늦어도 7일이면 멈추네. 신문과 소식은 모아 두었다가 멈출 때 보여 주지. 열기구 쇼의 밤이 오면 쇼를 끝까지 보여 준 뒤 멈추네.")
+
+# v118: owned hotels can be sold (60% of the price), also from the rescue card
+add("marketPage.sellHotel", "Sell %@", "Sat %@", "Verkaufen %@", "Vender %@", "売却 %@", "판매 %@")
+add("marketPage.sellHotelNote", "60% of the price", "Alış fiyatının %60'ı", "60 % des Preises", "El 60 % del precio", "価格の60%", "가격의 60%")
+add("rescue.sellHotel", "Sell the hotel: %@", "Oteli sat: %@", "Hotel verkaufen: %@", "Vender el hotel: %@", "ホテルを売却：%@", "호텔 판매: %@")
+add("rescue.sellHotel.sub", "%@ in the cash box at once; its room income and guests stop.", "%@ hemen kasaya girer; oda geliri ve misafirleri biter.", "Sofort %@ in der Kasse; Zimmereinnahmen und Gäste fallen weg.", "%@ en caja al instante; se acaban sus ingresos por habitaciones y sus huéspedes.", "すぐに%@が金庫に入る。客室収入と宿泊客はなくなる。", "%@이(가) 바로 금고에 들어옵니다. 객실 수입과 손님은 끊깁니다.")
