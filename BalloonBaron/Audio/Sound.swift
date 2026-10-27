@@ -405,11 +405,19 @@ private enum FilmScore {
         } else {
             riser(1.6, 2)
             boom(3.6, true)
-            maqsum(3.6, 11, 0.08)
+            maqsum(3.6, 18.6, 0.08)
             strings([n("D3"), n("A3"), n("D4"), n("Fs4")], 3.6, 7, 0.03)
             phrase(4.2, [("D5", 1), ("Eb5", 0.5), ("Fs5", 0.5), ("G5", 1), ("A4", 0.5), ("Bb4", 0.5), ("A4", 1), ("G4", 0.5), ("Fs4", 0.5), ("D5", 2)])
             boom(5.5, false)
             boom(10.8, true)
+            // v121.5: the flight to our town and the landing: the drive thins out, a falling phrase on the way down, and the
+            // touchdown resolves on D with a soft hit, strings and a long ney note
+            strings([n("G4") / 2, n("Bb4") / 2, n("D4")], 11, 7, 0.026)
+            phrase(13, [("A4", 1), ("G4", 0.5), ("Fs4", 0.5), ("G4", 1), ("Eb4", 1), ("D4", 2)])
+            riser(18.8, 2.2)
+            boom(21, false)
+            strings([n("D3"), n("Fs4") / 2, n("A3"), n("D4")], 21, 5, 0.032)
+            ney(n("D5"), 21.3, 3.2, 0.06)
         }
         return out
     }

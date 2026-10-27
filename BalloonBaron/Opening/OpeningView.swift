@@ -1,3 +1,4 @@
+import BalloonBaronCore
 import Metal
 import QuartzCore
 import SceneKit
@@ -69,7 +70,8 @@ private final class FrameTicker: NSObject {
 /// the colour pick in the sky, the lift-off with the company's name and Day 1, then the town.
 @Observable
 final class OpeningFlow {
-    enum Stage { case loading, film, talk, name, pick, liftOff, done }
+    /// `landed`: the film has handed over to the game's town and fades out over it; `done`: skipped to the town.
+    enum Stage { case loading, film, talk, name, pick, liftOff, landed, done }
 
     private(set) var stage = Stage.loading
     /// The take on screen and its time, for the captions, the bars and the fade.
@@ -82,12 +84,16 @@ final class OpeningFlow {
     private(set) var fallback = false
     /// The cream flash into the town (`#fade`).
     private(set) var cream = false
+    /// Landed: the film fades out over the game's town.
+    private(set) var leaving = false
     private(set) var film: OpeningFilm?
 
     @ObservationIgnored weak var view: SCNView?
     @ObservationIgnored private var ticker: FrameTicker?
     @ObservationIgnored private var burning = false
     @ObservationIgnored var onFinish: () -> Void = {}
+    /// The landing hands over: the 2D zoom matching the last frame, the flagship's grid spot, the look's height in 2D px.
+    @ObservationIgnored var onLanded: (_ z: Double, _ gx: Double, _ gy: Double, _ up: Double) -> Void = { _, _, _, _ in }
 
     var filmReady: Bool { stage != .loading }
 
@@ -128,7 +134,7 @@ final class OpeningFlow {
                 burning = burn
                 SoundEngine.shared.burner(burn)
             }
-            if tt > 12.5 { begin() }
+            if tt > OpeningFilm.landedAt { land() }
         default:
             break
         }
@@ -176,14 +182,35 @@ final class OpeningFlow {
     }
 
     /// `openLiftOff`: the envelope fills in the company's colours on the field and goes up.
-    func liftOff(company: String, colors: [String]) {
+    func liftOff(company: String, colors: [String], state: GameState?) {
         guard stage == .pick || stage == .name, let film else { return }
         self.company = company
         stage = .liftOff
         film.setPick(false, aspect: 0.46)
         film.prepareHero(name: company.uppercased(with: Locale.current), colors: colors)
+        if let state { film.prepareTown(state) }
         film.start(.b)
         SoundEngine.shared.filmMusic(.b)
+    }
+
+    /// v121.5 (`openBegin(true)`): landed on our field. The film dissolves into the game's own town at the same spot and
+    /// scale, which then pulls back to day one's view; the music plays on a little and fades.
+    private func land() {
+        guard stage == .liftOff, let film else { return }
+        stage = .landed
+        SoundEngine.shared.burner(false)
+        burning = false
+        let h = film.handoff(height: Double(view?.bounds.height ?? 800))
+        onLanded(h.z, h.gx, h.gy, h.up)
+        view?.isPlaying = false
+        view?.rendersContinuously = false
+        withAnimation(.easeInOut(duration: 1.1)) { leaving = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.8) { SoundEngine.shared.filmMusic(nil) }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) { [weak self] in
+            guard let self else { return }
+            self.stop()
+            self.onFinish()
+        }
     }
 
     /// `openBegin`: the music fades, a cream flash, and the town.
@@ -256,17 +283,25 @@ struct OpeningView: View {
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
         }
+        // landed: the frozen last frame fades out over the game's town
+        .opacity(flow.leaving ? 0 : 1)
+        .allowsHitTesting(!flow.leaving)
         .onAppear {
             flow.onFinish = {
                 store.finishOpening()
                 OpeningLoader.shared.release()
+            }
+            flow.onLanded = { z, gx, gy, up in
+                let c = TownGeo.iso(gx, gy)
+                store.startHomeIntro(HomeIntro(z0: CGFloat(z), px: c.x, py: c.y - CGFloat(up), start: Date().addingTimeInterval(0.7)))
             }
             flow.load()
         }
         .onDisappear {
             flow.stop()
             SoundEngine.shared.burner(false)
-            if flow.stage != .done { SoundEngine.shared.filmMusic(nil) }
+            // after the landing the score plays on over the pull-back and fades by itself
+            if flow.stage != .done && flow.stage != .landed { SoundEngine.shared.filmMusic(nil) }
         }
     }
 
@@ -332,17 +367,17 @@ private struct FilmTimeline: View {
         ZStack {
             letterbox
             captions
-            // the film's own fade to black at the end of the lift-off
+            // v121.5: the town darkens as night falls after the landing; skipping fades to black
             Color.black
-                .opacity(flow.stage == .done ? 1 : (flow.part == .b ? oClamp((flow.t - 11.6) / 0.8, 0, 1) : 0))
+                .opacity(flow.stage == .done ? 1 : (flow.part == .b ? OpeningFilm.dusk(flow.t) * 0.25 : 0))
                 .ignoresSafeArea()
                 .allowsHitTesting(false)
         }
     }
 
-    /// The letterbox: 7% bars that open at the end of the lift-off.
+    /// The letterbox: 7% bars that open as the balloon comes down.
     private var letterbox: some View {
-        let on = !(flow.part == .b && flow.t > 11)
+        let on = !(flow.part == .b && flow.t > 19.5)
         return GeometryReader { g in
             VStack(spacing: 0) {
                 Rectangle().fill(Color(hex: "#06040e")).frame(height: g.size.height * 0.07)
@@ -362,7 +397,7 @@ private struct FilmTimeline: View {
         let list: [(Double, Double, String, String)] = flow.part == .a
             ? [(1, 5.5, loc("opening.cap1.title"), loc("opening.cap1.sub")), (9, 13.5, loc("opening.cap2.title"), loc("opening.cap2.sub")),
                (19.5, 24.5, loc("opening.cap3.title"), loc("opening.cap3.sub"))]
-            : [(5.5, 12.2, flow.company.uppercased(with: Locale.current), loc("hud.day", num(1)))]
+            : [(8, 13.5, flow.company.uppercased(with: Locale.current), loc("hud.day", num(1)))]
         let t = flow.t
         let c = flow.stage == .loading ? nil : list.first { t > $0.0 - 0.6 && t < $0.1 + 0.6 }
         let a = c.map { oClamp(min(t - $0.0, $0.1 - t) * 1.2 + 0.5, 0, 1) } ?? 0

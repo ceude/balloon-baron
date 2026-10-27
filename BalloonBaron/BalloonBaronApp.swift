@@ -34,11 +34,13 @@ struct RootView: View {
     var body: some View {
         ZStack {
             Theme.sky.ignoresSafeArea()
-            if store.game == nil || store.openingFilm {
-                // A new company: the opening film (or the 2D setup without it), until its lift-off hands over to the town.
-                if !store.showIntro { OpeningGate() }
-            } else {
+            // The town; once the opening film has landed it is already there under the film's last frame (v121.5).
+            if store.game != nil && (!store.openingFilm || store.homeIntro != nil) {
                 HomeView()
+            }
+            // A new company: the opening film (or the 2D setup without it), until it hands over to the town.
+            if (store.game == nil || store.openingFilm) && !store.showIntro {
+                OpeningGate()
             }
             if store.collecting && store.game != nil {
                 CollectView()

@@ -1,3 +1,4 @@
+import BalloonBaronCore
 import QuartzCore
 import SceneKit
 import UIKit
@@ -34,9 +35,25 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
     private var hero: FilmBalloon?
     private var lastDawn = -1.0
     private var heroBurn = false
+    /// What the camera looks at after the lift-off (the shadows follow it), nil before.
+    private var lastLook: D3?
+
+    // v121.5: the flight to our town. `slot` (shared) is the launch-field spot the game gives the flagship.
+    private var slot = (gx: 1.8, gy: 5.0)
+    private var handoffInfo = (dist: 300.0, fov: 14.0, lookY: 3.5)
+    /// The camera's offset from the balloon after the lift-off: behind the drift (south-west), up, then round to the
+    /// game's own angle, from the south-east 30° down (`CRANE`).
+    private let crane: CRCurve
+    private static let craneFov = [66.0, 55, 48, 45, 40, 26, 14]
+    /// The take B's length up to the hand-off to the game's town.
+    static let landedAt = 23.8
 
     init(world: OpeningWorld) {
         self.world = world
+        let B = world.BASKET, h72 = OpeningFilm.heroPos(7.2, basket: B, land: OpeningLand.tw(1.8, 5))
+        let iso = D3(1, 0, 1) / 2.0.squareRoot() * cos(Double.pi / 6) + D3(0, sin(Double.pi / 6), 0)
+        let cr0 = D3(B.x + 3, 1.2, B.z + 9) - h72, ISO = iso * 285
+        crane = CRCurve([cr0, D3(-22, 32, 34), D3(-52, 96, 42), D3(-58, 140, 48), D3(10, 160, 110), D3(110, 155, 150), ISO])
         super.init()
         pickK = Array(repeating: 0, count: world.pick.count)
         frame(.a, 0, CACurrentMediaTime())
@@ -78,6 +95,34 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
                 self.lastDawn = -1
             }
         }
+    }
+
+    /// v121.5: builds our town (in the background) from the new company's first day, and lands the balloon on the
+    /// flagship's spot on the launch field (`fieldSlots`).
+    func prepareTown(_ s: GameState) {
+        let i = s.fieldBalloons.prefix(6).firstIndex { $0.id == s.local.flagship } ?? 0
+        locked { slot = (1.8 + Double(i % 3) * 1.9, 5 + Double(i / 3) * 1.4) }
+        let kit = world.kit, lit = world.litWindows
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            let (node, mats) = OpeningTown.build(s, kit: kit, litWindows: lit)
+            guard let self else { return }
+            self.locked {
+                self.pending.append { [weak self] in
+                    guard let self else { return }
+                    self.world.scene.rootNode.addChildNode(node)
+                    for m in mats { self.world.addFogged(m) }
+                    self.lastDawn = -1
+                }
+            }
+        }
+    }
+
+    /// `OPEN3D.handoff()`: the 2D town's zoom that matches this frame (12 m tiles seen at the game's angle, the view `height`
+    /// points tall), the flagship's grid spot, and how high above it the camera looks (in 2D pixels).
+    func handoff(height: Double) -> (z: Double, gx: Double, gy: Double, up: Double) {
+        let (h, s) = locked { (handoffInfo, slot) }
+        let ppm = height / (2 * h.dist * tan(h.fov * Double.pi / 180 / 2))
+        return (ppm * OpeningLand.TL * 2.0.squareRoot() / 128, s.gx, s.gy, h.lookY * OpeningTown.PXM)
     }
 
     /// The pick balloon under a tap (`pointerdown` on the canvas), once the camera has turned far enough to the sky.
@@ -131,10 +176,11 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
             hero?.node.isHidden = true
             if heroBurn { heroBurn = false; W.flameLight.intensity = 0 }
         } else {
-            dawn(1)
+            // v121.5: night falls on the town after the landing (the darkening is the overlay's, in OpeningView)
+            dawn(1 - OpeningFilm.dusk(t) * 0.97)
             W.cloth.isHidden = true
             W.basket.isHidden = true
-            // the colour choices leave the sky with the pick (the prototype leaves them hanging there)
+            // the colour choices stay behind in the sky
             if pk > 0 {
                 pk = 0
                 for b in W.pick { b.node.isHidden = true }
@@ -146,7 +192,10 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
                 h.env.scale = SCNVector3(Float(oLerp(0.55, 1, fill)), Float(oLerp(0.25, 1, fill)), Float(oLerp(0.55, 1, fill)))
                 h.env.simdEulerAngles = F3(0, 0, Float(oLerp(-1.25, 0, oEase3(fill * 1.2))))
                 h.env.simdPosition = F3(Float(oLerp(0.5, 0, fill)), 0.3, 0)
-                h.node.simdPosition = F3(Float(W.BASKET.x), Float(W.BASKET.y + heroAlt(t)), Float(W.BASKET.z))
+                OpeningWorld.ropeFrame(h, fill: fill)
+                h.node.simdPosition = F3(heroPos(t))
+                let s = Float(OpeningFilm.heroS(t))
+                h.node.scale = SCNVector3(s, s, s)
                 h.node.simdEulerAngles = F3(0, Float(time * 0.05), 0)
                 let burn = OpeningFilm.heroBurns(t)
                 heroBurn = burn
@@ -159,9 +208,9 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
         }
         place(part, t)
         if part == .a { pickFrame(time) }
-        // the sun's shadow follows the camera
-        let cam = W.cameraNode.simdPosition
-        let tgt = F3(cam.x, 0, cam.z)
+        // the sun's shadow follows the camera, after the lift-off what it looks at
+        let cam = W.cameraNode.simdPosition, focus = lastLook.map { F3($0) } ?? cam
+        let tgt = F3(focus.x, 0, focus.z)
         W.sunNode.simdPosition = tgt + sunDir * 1100
         W.sunNode.simdOrientation = OpeningFilm.look(from: W.sunNode.simdPosition, to: tgt)
         for m in W.mists {
@@ -172,10 +221,33 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
         }
     }
 
-    /// The lift-off's burner: on while the envelope fills, then in bursts until the balloon is away.
-    static func heroBurns(_ t: Double) -> Bool { t < 9.5 && (t < 3.4 || sin(t * 4.1) > -0.1) }
+    /// The lift-off's burner: on while the envelope fills, in bursts until the balloon is away, then bursts to hold the
+    /// height and to soften the landing.
+    static func heroBurns(_ t: Double) -> Bool {
+        (t < 9.5 && (t < 3.4 || sin(t * 4.1) > -0.1)) || (t > 13.5 && t < 14.6) || (t > 18.4 && t < 19.8)
+    }
 
-    private func heroAlt(_ t: Double) -> Double { t < 3.6 ? 0 : oEaseIO3((t - 3.6) / 8) * 90 }
+    /// Night falling after the landing (0 … 1).
+    static func dusk(_ t: Double) -> Double { oEaseIO3((t - 21.4) / 2.2) }
+
+    private static func heroAlt(_ t: Double) -> Double { t < 3.6 ? 0 : oEaseIO3((t - 3.6) / 8) * 90 }
+    private func heroAlt(_ t: Double) -> Double { OpeningFilm.heroAlt(t) }
+
+    /// Far from the camera the balloon shrinks to the game's scale.
+    static func heroS(_ t: Double) -> Double { oLerp(15, 7.6, oEaseIO3((t - 9) / 7)) }
+
+    /// After the lift-off the balloon drifts north-east to our town and comes down on its spot on the launch field.
+    static func heroPos(_ t: Double, basket B: D3, land L: D3) -> D3 {
+        let u = oEaseIO3((t - 6) / 15), alt = t < 14 ? heroAlt(t) : 90 * (1 - oEaseIO3((t - 14) / 7))
+        return D3(oLerp(B.x, L.x, u), B.y + alt, oLerp(B.z, L.z, u))
+    }
+
+    private var land: D3 {
+        let s = locked { slot }
+        return OpeningLand.tw(s.gx, s.gy)
+    }
+
+    private func heroPos(_ t: Double) -> D3 { OpeningFilm.heroPos(t, basket: world.BASKET, land: land) }
 
     // MARK: camera
 
@@ -220,16 +292,25 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
             at = D3(B.x, B.y + 10 + heroAlt(t) * 0.9, B.z - 12)
             fov = 66
         } else {
-            // the balloon stays in frame, then the view opens
-            let k = oEaseIO3((t - 7.2) / 5)
-            eye = W.liftUp.point(k)
-            at = oLerp(D3(B.x, B.y + 8 + heroAlt(t), B.z), D3(-60, 40, -220), k * k * k)
-            fov = oLerp(56, 42, k)
+            // v121.5: the camera rides with the balloon: pulls away and climbs faster to look down from high, then swings
+            // round to the game's own angle and closes in on a long lens as it lands (away quickly, settling slowly)
+            let k = oClamp((t - 7.2) / 14.8, 0, 1), p = 1 - pow(1 - k, 2.4) * (1 - 0.5 * pow(1 - k, 6))
+            let hp = heroPos(t), F = OpeningFilm.craneFov, fi = p * Double(F.count - 1), f0 = Int(floor(min(fi, Double(F.count - 2))))
+            eye = hp + crane.point(p)
+            let center = hp + D3(0, OpeningFilm.heroS(t) * 0.92, 0), old = D3(B.x, B.y + 10 + heroAlt(t) * 0.9, B.z - 12)
+            let hand = land + D3(0, 3.5, 0)
+            at = oLerp(oLerp(old, center, oEaseIO3((t - 7.2) / 1.3)), hand, oEaseIO3((t - 19) / 3))
+            fov = oLerp(F[f0], F[f0 + 1], fi - Double(f0))
         }
         if part != .a { eye.y = max(eye.y, W.height(eye.x, eye.z) + 2) } // never into the ground
+        lastLook = part == .b && t >= 7.2 ? at : nil
         W.cameraNode.simdPosition = F3(eye)
         W.cameraNode.simdOrientation = OpeningFilm.look(from: F3(eye), to: F3(at))
         W.camera.fieldOfView = CGFloat(fov)
+        if part == .b {
+            let info = (dist: simd_distance(eye, at), fov: fov, lookY: at.y)
+            locked { handoffInfo = info }
+        }
     }
 
     // MARK: the colour pick in the sky (v121.3)
