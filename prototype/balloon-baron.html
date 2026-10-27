@@ -299,7 +299,7 @@ body.mhold #town{z-index:3;background:transparent}
 .act{padding:10px 16px 10px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:8px}
 .est{font-size:13.5px;color:var(--ink2);display:flex;justify-content:space-between;gap:8px}
 .est b{color:var(--ink);font-family:var(--cond);font-size:17px}
-.btns{display:flex;gap:10px}#auto{flex:0 0 auto;padding:4px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1}#auto span{font-size:20px}#auto small{font:800 12px 'Barlow Condensed',sans-serif;letter-spacing:.3px}
+.btns{display:flex;gap:10px}#auto{flex:0 0 auto;padding:4px 10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;line-height:1}#auto .ffw svg{width:20px;height:15px;display:block;margin-bottom:2px}.autobar .ffw svg{width:16px;height:11px;display:inline-block}#auto small{font:800 12px 'Barlow Condensed',sans-serif;letter-spacing:.3px}
 .autobar{position:absolute;left:50%;top:50%;transform:translate(-50%,-12px);opacity:0;z-index:7;display:flex;align-items:baseline;gap:8px;padding:9px 16px;border-radius:999px;background:rgba(27,24,64,.86);color:#fff8e6;font:600 14px Barlow,sans-serif;white-space:nowrap;box-shadow:0 8px 20px rgba(0,0,0,.25);transition:opacity .3s,transform .3s;pointer-events:none}.autobar.on{opacity:1;transform:translate(-50%,0)}.autobar b{font:800 16px 'Barlow Condensed',sans-serif}.autobar small{opacity:.65;font-size:11.5px}.autobar .pos{color:#7be0a0;font-style:normal}.autobar .neg{color:#ff9a86;font-style:normal}
 .autoshield{position:absolute;inset:0;z-index:6}body.night .autobar{opacity:0}
 .big{flex:1;height:54px;border-radius:16px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:22px;letter-spacing:.01em;
@@ -787,7 +787,7 @@ body.night #cv{touch-action:none}
       <div class="chips" id="fleetChips"></div>
       <div class="chips" id="optChips"></div>
       <button class="pcard" id="pcard"></button>
-      <div class="btns"><button class="ghost" id="skip">Pas geç</button><button class="ghost" id="auto" hidden aria-label="Bir şey olana kadar ilerlet"><span>⏩</span><small>İlerlet</small></button><button class="big" id="go"></button></div>
+      <div class="btns"><button class="ghost" id="skip">Pas geç</button><button class="ghost" id="auto" hidden aria-label="Bir şey olana kadar ilerlet"><span class="ffw"><svg viewBox="0 0 20 14" aria-hidden="true"><path d="M1.5 1.6 9 7l-7.5 5.4z M10.5 1.6 18 7l-7.5 5.4z" fill="currentColor" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span><small>İlerlet</small></button><button class="big" id="go"></button></div>
     </div>
   </div>
   <div id="psheet" hidden><div class="psh">
@@ -987,7 +987,7 @@ const HEZ = {
   antitrust: 'Dikkat evlat! Pazarın çoğu senin elinde ve Rekabet Kurumu kapıda. Tekel olmaya devam edersen şirketinin büyüklüğüne göre ağır bir ceza kesebilirler. Ya bunu göze al ya da fiyatını biraz yükseltip rakiplere nefes aldır.',
   goals: 'Her büyük şirketin bir yol haritası olur evlat. Sağdaki bayrağa dokun: orada bölüm hedeflerin yazıyor. Üç bölümü bitiren Kapadokya\'nın baronu olur, sonra da dünya seni bekler.',
   absent: 'Evlat, yolcular hep aynı şeyi soruyor: "Kurucu nerede?" Kaptanı uçmayan şirketin ruhu kaybolur. Sepete geri dön; uzak kaldığın her gün popülerliğin aşınıyor.',
-  autopilot: 'Filon 35 balonu geçti evlat, artık her sabahı tek tek yönetmene gerek yok. Alttaki "⏩ İlerlet" günleri kendi kendine oynatır: amirali de ekip uçurur. Bir karar, hedef ya da para sıkıntısı çıkınca, en geç 7 günde durur; gazeteyi ve haberleri biriktirip durunca gösterir. Şölen gecesi gelirse gösteriyi baştan sona izletir, sonra durur.',
+  autopilot: 'Filon 35 balonu geçti evlat, artık her sabahı tek tek yönetmene gerek yok. Alttaki "İlerlet" günleri kendi kendine oynatır: amirali de ekip uçurur. Bir karar, hedef ya da para sıkıntısı çıkınca, en geç 7 günde durur; gazeteyi ve haberleri biriktirip durunca gösterir. Şölen gecesi gelirse gösteriyi baştan sona izletir, sonra durur.',
   delegate: 'Filon büyüdü evlat. Artık her sabah sepete binmek zorunda değilsin: uçuş planında amiral balonu için Pilot seçeneğini seç, sen yönetime geç. Yalnız iki şeyi unutma: lisansın için 15 günde en az bir kez kendin uçmalısın, yoksa diğer balonların yere iner. Bir de 5 günden uzun uçmazsan yolcular kurucuyu arar, popülerliğin aşınır.',
   noRivals: 'Dün gökyüzünde tek başınaydın evlat, rakibin yoktu. Ama koltukların yine de dolmadı, çünkü turist rakip olmasa da cebine bakar: fiyat çok yükselince bir kısmı balondan vazgeçip vadide yürümeyi seçer. Fiyat kartındaki ibreye bak; pahalıya kaydıkça vazgeçen artar. Dolu sepet çoğu zaman en pahalı biletten çok kazandırır.',
   licenseHold: 'Lisansın düştü evlat, otorite balonlarını yere indirdi. İki yol var: bugün sepete geç ve amiral balonunu kendin uçur, bu yenileme uçuşu bedava. Ya da ücreti öde. Ben olsam hangisini seçerdim, biliyorsun.',
@@ -8062,13 +8062,14 @@ $('hqSClose').onclick = () => { HQ.sheet = null; hqRender(); };
 $('hqSheet').addEventListener('click', e => { if (e.target.id === 'hqSheet') { HQ.sheet = null; hqRender(); } });
 
 /* ---------- autopilot (v117) ----------
-   "⏩ İlerlet", once the company is big (35 balloons, Baron of Cappadocia): the days play by themselves, the crew
+   "İlerlet" (Advance), once the company is big (35 balloons, Baron of Cappadocia): the days play by themselves, the crew
    flying the flagship too. Red days are skipped, the nights pass without their scene, except a Balloon Show, which
    always plays to its end. It stops when anything wants a decision (an event, a goal, a deal, an offer, a pilot's
    request, one of Hezarfen's lessons, the show's highlights), when the cash would last less than three days, after
    7 days, or on a tap. The paper and Hezarfen's news don't stop it (with 35 balloons there is a story nearly every
    morning, and a hard landing somewhere most days): they wait, and come up once it stops, accidents only counted. */
 const AUTO_MIN = 35, AUTO_DAYS = 7;
+const FFW = '<span class="ffw"><svg viewBox="0 0 20 14" aria-hidden="true"><path d="M1.5 1.6 9 7l-7.5 5.4z M10.5 1.6 18 7l-7.5 5.4z" fill="currentColor" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>';
 let AUTO = null;
 const autoOk = () => S.balloons.length >= AUTO_MIN && isBaron('cap');
 const autoBusy = () => TRAVEL || mode !== 'office' || !$('menu').hidden || !$('report').hidden || !$('page').hidden || !$('hez').hidden || !$('psheet').hidden;
@@ -8086,14 +8087,14 @@ function autoStart() {
 function autoStep() {
   if (!AUTO) return;
   if (!licenseOk()) return autoStop('Lisans yenileme uçuşu seni bekliyor');
-  autoBar(`<b>⏩ İlerliyor</b><span>Gün ${S.day} · ${AUTO.n + 1}/${AUTO_DAYS}</span><small>Durdurmak için dokun</small>`);
+  autoBar(`<b>${FFW} İlerliyor</b><span>Gün ${S.day} · ${AUTO.n + 1}/${AUTO_DAYS}</span><small>Durdurmak için dokun</small>`);
   AUTO.left--;
   setTimeout(() => { if (AUTO && !autoBusy()) launch(S.weather.flag === 'red' || !flying().length); else if (AUTO) autoStop(); }, 450);
 }
 /* the day is done (instead of the report): count it, note a reason to stop, then the night */
 function autoDay() {
   const R = lastReport, L = R.Lg; AUTO.n++; AUTO.net += R.net;
-  autoBar(`<b>⏩ Gün ${R.day}</b><span class="${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span><small>Durdurmak için dokun</small>`);
+  autoBar(`<b>${FFW} Gün ${R.day}</b><span class="${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span><small>Durdurmak için dokun</small>`);
   const cost = L.fuel + L.wage + L.up + L.ins + L.loan;
   if (L.repair || L.comp) AUTO.acc++;
   if (S.over) AUTO.why = 'Şirket kapandı';

@@ -60,6 +60,20 @@ struct RootView: View {
                     .transition(.opacity)
                     .zIndex(50)
             }
+            if store.auto != nil && store.night == nil {
+                // v117: on autopilot a tap anywhere stops it.
+                Color.clear.contentShape(Rectangle()).ignoresSafeArea()
+                    .onTapGesture { store.stopAuto(.tapped) }
+                    .accessibilityAddTraits(.isButton)
+                    .accessibilityLabel(loc("auto.stopA11y"))
+            }
+            if let n = store.autoNote, store.night == nil {
+                AutopilotStrip(note: n)
+                    .frame(maxHeight: .infinity, alignment: .bottom)
+                    .padding(.bottom, 150)
+                    .allowsHitTesting(false)
+                    .transition(.opacity)
+            }
             if let c = store.chapter {
                 ChapterView(news: c)
                     .transition(.opacity)

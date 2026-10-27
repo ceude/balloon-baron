@@ -203,6 +203,11 @@ final class GameStore {
         } else if let m = s.mergeNews {
             merge = m
             act { $0.state.mergeNews = nil }
+        } else if let p = s.paper, !p.isEmpty, auto != nil {
+            // On autopilot the paper waits for the stop.
+            auto?.paper += p
+            act { $0.state.paper = nil }
+            showNextHezarfen()
         } else if let p = s.paper, !p.isEmpty {
             act { paper = $0.readPaper() }
             SoundEngine.shared.play(.tick)
@@ -223,6 +228,11 @@ final class GameStore {
         } else if s.factoryOrderDue {
             act { $0.markFactoryOrderSeen() }
             showFactoryOrder = true
+        } else if auto != nil, let m = s.hezQueue.first, Self.isNews(m) {
+            // So does Hezarfen's news.
+            auto?.news.append(m)
+            act { $0.state.hezQueue.removeFirst() }
+            showNextHezarfen()
         } else if !s.hezQueue.isEmpty {
             act { $0.clearRescue() }
             act { hezarfen = $0.nextHezarfen() }
@@ -529,7 +539,8 @@ final class GameStore {
         var selfPax: Int?
         act { selfPax = $0.launch(skip: skip) }
         flushSave()
-        if let selfPax { flightPax = selfPax } else { endDay(nil) }
+        // On autopilot the crew flies the flagship too: no flight scene.
+        if let selfPax, auto == nil { flightPax = selfPax } else { endDay(nil) }
     }
 
     func endDay(_ result: FlightResult?) {
@@ -542,6 +553,7 @@ final class GameStore {
             if let result, result.landing != .cancel { Telemetry.flight(result, s) }
             if let r { Telemetry.dayEnded(s, r) }
         }
+        if auto != nil, let r { autoDay(r); return }
         report = r
     }
 
@@ -576,6 +588,109 @@ final class GameStore {
         night = nil
         act { $0.startDay() }
         showNextHezarfen()
+        // After the morning's first card has had its chance.
+        if auto != nil { DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in self?.autoCheck() } }
+    }
+
+    // MARK: Autopilot (v117)
+
+    /// "⏩ Advance" (prototype `AUTO`), once the company is big (`GameState.autopilotOK`): the days play by
+    /// themselves, the crew flying the flagship too. Red days are skipped and the nights pass without their scene,
+    /// except a Balloon Show, which always plays to its end. It stops when anything wants a decision (a card, a goal,
+    /// a deal, one of Hezarfen's lessons, the show's highlights), when the cash would last less than three days, when
+    /// the license needs your flight, after `Rules.autopilotDays` days, or on a tap. The paper and Hezarfen's news
+    /// don't stop it (with 35 balloons there is a story nearly every morning): they wait and come up at the stop, and
+    /// accidents are only counted.
+    struct Autopilot {
+        var left = Rules.autopilotDays
+        var days = 0, net = 0, accidents = 0
+        var paper: [PaperItem] = []
+        var news: [HezMessage] = []
+        var why: AutoStop?
+    }
+    enum AutoStop: String { case tapped, days, cash, license, waiting, show, over }
+    /// The strip over the day's buttons: the day running (`net` nil while it flies), its result, or why it stopped.
+    struct AutoNote: Equatable {
+        var day: Int
+        var net: Int?
+        var stop: AutoStop? = nil
+        var days = 0
+        var accidents = 0
+    }
+    var auto: Autopilot?
+    var autoNote: AutoNote?
+
+    func startAuto() {
+        guard auto == nil, let s = state, s.autopilotOK, !busy else { return }
+        auto = Autopilot()
+        Telemetry.send("auto.started", value: Double(s.day))
+        autoStep()
+    }
+
+    private func autoStep() {
+        guard auto != nil, let s = state else { return }
+        guard s.licenseValid else { stopAuto(.license); return }
+        auto?.left -= 1
+        autoNote = AutoNote(day: s.day, net: nil)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak self] in
+            guard let self, self.auto != nil, let s = self.state else { return }
+            if self.busy { self.stopAuto(.waiting); return }
+            self.fly(skip: s.weather?.flag == .red || s.flyingToday.isEmpty)
+        }
+    }
+
+    /// The day is done (instead of the report): count it, note a reason to stop, then the night.
+    private func autoDay(_ r: DayReport) {
+        guard var a = auto, let s = state else { return }
+        a.days += 1
+        a.net += r.net
+        let L = r.ledger
+        if L.repairs > 0 || L.compensation > 0 { a.accidents += 1 }
+        let cost = L.fuel + L.wages + L.upkeep + L.insurance + L.loans
+        if s.over { a.why = .over } else if s.cash < cost * 3 { a.why = .cash } else if a.left <= 0 { a.why = .days }
+        auto = a
+        autoNote = AutoNote(day: r.day, net: r.net)
+        if s.over {
+            stopAuto(.over)
+            report = r
+            return
+        }
+        var ev: NightEvent?
+        act { ev = $0.startNight() }
+        if case .show? = ev { night = Night(event: ev) } else { endNight() }
+    }
+
+    private func autoCheck() {
+        guard let a = auto else { return }
+        if let why = a.why { stopAuto(why); return }
+        if showShots != nil { stopAuto(.show); return }
+        if busy { stopAuto(.waiting); return }
+        autoStep()
+    }
+
+    /// Stops, puts back what waited (the paper, the last three pieces of Hezarfen's news) and shows the tally.
+    func stopAuto(_ why: AutoStop) {
+        guard let a = auto else { return }
+        auto = nil
+        act { g in
+            if !a.paper.isEmpty { g.state.paper = (g.state.paper ?? []) + a.paper }
+            g.state.hezQueue.append(contentsOf: a.news.suffix(3))
+        }
+        let note = AutoNote(day: state?.day ?? 0, net: a.net, stop: why, days: a.days, accidents: a.accidents)
+        autoNote = note
+        Telemetry.send("auto.stopped", value: Double(a.days), ["why": why.rawValue])
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.8) { [weak self] in if self?.autoNote == note { self?.autoNote = nil } }
+        save()
+        if !busy { showNextHezarfen() }
+    }
+
+    /// Hezarfen's messages that are news, not lessons or offers: on autopilot they wait for the stop.
+    static func isNews(_ m: HezMessage) -> Bool {
+        switch m {
+        case .winterComing, .spring, .entrant, .fiestaStarted, .festivalStarted, .eventOutcome, .praise, .deed, .milestone,
+             .boss, .flagshipBack, .rescued, .inspector, .record, .celebritySigned: return true
+        default: return false
+        }
     }
 
     #if DEBUG

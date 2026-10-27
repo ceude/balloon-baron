@@ -337,8 +337,8 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 
 
 ## Otomatik ilerletme (v117)
-- **Ne zaman:** bulunulan bölgede en az 35 balon ve Kapadokya Baronu olunca, alttaki düğmelerde "⏩ İlerlet" çıkar. Hezarfen ilk açıldığında bir kez anlatır.
-- **Ne yapar:** günleri kendi kendine oynatır. Amirali de ekip uçurur (kurucu primi ve görev yok). Kırmızı bayrakta pas geçer. Gecelerin sahnesi atlanır, ama **Balon Şöleni gecesi atlanmaz**: gösteri baştan sona oynar, sonra durur ("Şölen bitti") ve en güzel anlar kartı gelir. Her gün düğmelerin üstünde kısa bir şerit: "⏩ Gün N +€X".
+- **Ne zaman:** bulunulan bölgede en az 35 balon ve Kapadokya Baronu olunca, alttaki düğmelerde "İlerlet" (çizilmiş ileri sar simgesi) çıkar. Hezarfen ilk açıldığında bir kez anlatır.
+- **Ne yapar:** günleri kendi kendine oynatır. Amirali de ekip uçurur (kurucu primi ve görev yok). Kırmızı bayrakta pas geçer. Gecelerin sahnesi atlanır, ama **Balon Şöleni gecesi atlanmaz**: gösteri baştan sona oynar, sonra durur ("Şölen bitti") ve en güzel anlar kartı gelir. Her gün düğmelerin üstünde kısa bir şerit: "Gün N +€X".
 - **Ne zaman durur:** karar ya da kart isteyen her şey (sabah olayı, hedef/bölüm, birleşme, satılık rakip, transfer teklifi, sipariş, sorun, kartpostal, Hezarfen dersi, şölen anları), kasa 3 günlük giderin altına inince, lisans yenileme uçuşu gerekince, 7 gün dolunca ya da ekrana dokununca.
 - **Durmayanlar:** gazete ve Hezarfen'in haberleri biriktirilir, durunca gösterilir (haberlerin son üçü). 35 balonla neredeyse her sabah bir manşet, çoğu gün bir sert iniş olur; kazalar sadece sayılır ("kaza: N"). Durunca şerit: sebep, gün sayısı, toplam net, kaza sayısı.
 

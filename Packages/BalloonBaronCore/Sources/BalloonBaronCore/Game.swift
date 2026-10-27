@@ -130,6 +130,8 @@ public struct Game: Sendable {
         if !s.licenseValid { queueTip(.licenseHold) }
         // Once the fleet has grown: you may hand the flagship to a pilot (but keep the license and the passengers in mind).
         if s.day >= 7 && s.tipsSeen.contains(.crew) && s.balloons.count >= 2 && s.local.selfFly && s.licenseValid { queueTip(.delegate) }
+        // v117: the autopilot opens.
+        if s.autopilotOK { queueTip(.autopilot) }
         // No rival flew, yet seats stayed empty because the price was high: tourists still weigh the price.
         if !s.rivals.contains(where: \.alive), let ls = s.local.lastShare, ls.cap > 0, ls.me < ls.cap,
            Rules.willing(Double(s.price)) < 0.85 { queueTip(.noRivals) }

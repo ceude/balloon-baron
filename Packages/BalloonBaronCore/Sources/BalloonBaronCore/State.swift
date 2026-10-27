@@ -156,6 +156,8 @@ public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
     case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold, goals
     case pr, influ, prcap, bazaar, delegate, noRivals, show, price
+    /// v117: "⏩ Advance" is open (`GameState.autopilotOK`).
+    case autopilot
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {
@@ -387,6 +389,9 @@ public struct GameState: Codable, Equatable, Sendable {
     }
 
     public func isBaron(_ r: RegionID? = nil) -> Bool { barons[r ?? region] != nil }
+    /// v117: the autopilot ("⏩ Advance", played by the app) opens with a big company: enough balloons here and
+    /// Baron of Cappadocia.
+    public var autopilotOK: Bool { local.balloons.count >= Rules.autopilotBalloons && isBaron(.cap) }
     public var anyBaron: Bool { !barons.isEmpty }
     public func owns(_ r: RegionID) -> Bool { r == region || parked[r] != nil }
     public func design(of b: Balloon) -> Design? { b.design.flatMap { id in designs.first { $0.id == id } } }

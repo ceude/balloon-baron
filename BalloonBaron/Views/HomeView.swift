@@ -783,7 +783,23 @@ struct HomeView: View {
                 // A flyable green or yellow day asks first; on a red flag, or with nothing to fly, it just passes.
                 if s.weather?.flag != .red && !none { confirmSkip = true } else { store.fly(skip: true) }
             }
-                .frame(width: 140)
+                .frame(width: s.autopilotOK ? 104 : 140)
+            if s.autopilotOK {
+                // v117: "⏩ Advance": the days play by themselves until something wants you.
+                Button {
+                    SoundEngine.shared.play(.click)
+                    store.startAuto()
+                } label: {
+                    VStack(spacing: 2) {
+                        FastForwardGlyph(size: 15)
+                        Text(loc("auto.button")).font(Theme.font(12, .heavy, condensed: true))
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+                .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+                .frame(width: 64)
+                .accessibilityLabel(loc("auto.a11y"))
+            }
             BigButton(title: loc(none ? "home.noneFlying" : "home.collect")) {
                 Haptics.press()
                 if !GroundedView.grounded(s).isEmpty { groundedWarning = true; Haptics.warning() } else { launchOrConfirmRed(s) }

@@ -123,6 +123,10 @@ public enum Rules {
     public static let startDemand = 165
     public static let priceRange = 40...320
     public static let licenseDays = 15
+    /// v117: the autopilot opens from this many balloons in the region (and Baron of Cappadocia), and plays at most
+    /// this many days in a row.
+    public static let autopilotBalloons = 35
+    public static let autopilotDays = 7
     public static let recertCost = 15000
     public static let cancelCompensation = 40
     public static let envelopeLife = 120
