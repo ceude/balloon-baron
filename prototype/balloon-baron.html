@@ -4032,11 +4032,13 @@ function updateCollect(dt) {
     $('cTitle').textContent = c.shown >= c.cap ? 'Balonlar doldu!' : 'Yolcular hazır';
     $('cGo').textContent = self ? 'Kalkışa geç' : 'Pilotlar uçsun';
     /* who flies the flagship is decided here, when it can still change without grounding a balloon */
-    if (flyChoice()) {
+    const ch = flyChoice();
+    if (ch) {
       const row = $('cBtns'), back = row.firstChild, pick = on => () => { S.selfFly = on; assignPilots(); leaveCollect(); };
-      const solo = flying().length === 1;
-      /* today's choice is the big button on top; cancel and the other choice sit under it, slimmer */
-      const selfT = solo ? 'Kendin uç' : 'Sen ve pilotlar uçsun', pilotsT = solo ? 'Pilot uçursun' : 'Sadece pilotlar uçsun';
+      const solo = flying().length === 1, down = ch.self - ch.pilots;
+      /* today's choice is the big button on top; cancel and the other choice sit under it, slimmer. With no spare pilot,
+         letting the pilots fly leaves a balloon on the ground; the button says so. */
+      const selfT = solo ? 'Kendin uç' : 'Sen ve pilotlar uçsun', pilotsT = (solo ? 'Pilot uçursun' : 'Sadece pilotlar uçsun') + (down > 0 ? ` · ${down} balon yerde` : '');
       const main = h('button', 'big', S.selfFly ? selfT : pilotsT); main.onclick = pick(S.selfFly); main.style.cssText = 'width:100%;height:58px;flex:none';
       const other = h('button', 'ghost', S.selfFly ? pilotsT : selfT); other.onclick = pick(!S.selfFly); other.style.cssText = 'flex:1;height:46px';
       back.style.height = '46px';
@@ -4044,14 +4046,15 @@ function updateCollect(dt) {
     }
   }
 }
-/* Whether you can still choose who flies the flagship today without changing which balloons take off. */
+/* v121.6: who flies the flagship can always be chosen at the end of boarding (a TestFlight player missed the two buttons
+   when no pilot was spare). Returns how many balloons each choice puts up, or null when there is no choice. */
 function flyChoice() {
   const fb = bal(S.flag);
-  if (!fb || !licenseOk() || S.strikeDay === S.day || !flying().includes(fb)) return false;
-  const before = flying().map(b => b.id).join(), keep = S.selfFly;
-  S.selfFly = !keep; assignPilots(); const after = flying().map(b => b.id).join();
+  if (!fb || !licenseOk() || S.strikeDay === S.day) return null;
+  const keep = S.selfFly, n = {};
+  for (const v of [true, false]) { S.selfFly = v; assignPilots(); n[v] = flying().length; if (v && !flying().includes(fb)) n.none = true; }
   S.selfFly = keep; assignPilots();
-  return before === after;
+  return n.none || !n[false] ? null : { self: n[true], pilots: n[false] };
 }
 /* ---------- passengers at your booking office ---------- */
 /* While passengers gather, the town's camera sits on your kiosk: they walk up from the road and queue in front.
@@ -8037,8 +8040,7 @@ function drawHomeTown(w, h, dockTop, top) {
   const wx = $('wx'), wxb = wx && !wx.hidden && wx.offsetHeight ? wx.offsetTop + wx.offsetHeight : top;
   const back = Math.max(top + 20, wxb - 16), front = dockTop - 6;
   HOME.h = h; HOME.z = clamp((front - back) / 1024, .15, w / 1500);
-  /* centred in the room left of the side buttons */
-  const [cx] = tiso(7, 8), right = $('nav').offsetWidth ? $('nav').offsetWidth + 14 : 0; HOME.ox = (w - right) / 2 - cx * HOME.z; HOME.oy = front - tiso(15.5, 15.5)[1] * HOME.z;
+  const [cx] = tiso(7.5, 7.5); HOME.ox = w / 2 - cx * HOME.z; HOME.oy = front - tiso(15.5, 15.5)[1] * HOME.z; /* v121.6: the town's middle on the screen's middle */
   if (HOMEI) { /* the opening's pull-back: from the film's last frame to this view, the landed balloon moving in a straight line */
     const I = HOMEI, k = easeIO3((T - I.t0) / I.dur), z = Math.exp(lerp(Math.log(I.z0), Math.log(HOME.z), k));
     /* the film hands over in the dark; the night lifts and the sun comes up on day one as we pull back */
@@ -8880,9 +8882,21 @@ async function open3dLoad() {
   const palMat = PAL.map(p => new THREE.MeshStandardMaterial({ map: goreTex(p), roughness: .62, side: THREE.DoubleSide }));
   const basketG = new THREE.BoxGeometry(.1, .08, .1), basketM = new THREE.MeshStandardMaterial({ map: wicker, roughness: 1 });
   const flameMat = new THREE.SpriteMaterial({ map: glowTex, color: 0xffa040, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending });
+  /* v121.6: the ropes from the basket's corners up to the envelope's mouth: very thin, but there */
+  const ropeG = new THREE.CylinderGeometry(1, 1, 1, 5); ropeG.translate(0, .5, 0); const ropeM = new THREE.MeshStandardMaterial({ color: 0x3a2a1e, roughness: .9 }), UPV = V3(0, 1, 0);
+  const ROPE_B = [[1, 1], [1, -1], [-1, 1], [-1, -1]].map(([a, c]) => V3(a * .047, .06, c * .047)), ROPE_M = [[1, 1], [1, -1], [-1, 1], [-1, -1]].map(([a, c]) => V3(a * .074, 0, c * .074));
+  const span = (m, a, b) => { const d = b.clone().sub(a), l = d.length(); m.position.copy(a); m.quaternion.setFromUnitVectors(UPV, d.divideScalar(l || 1)); m.scale.set(.002, l, .002); };
   const makeBalloon = (mat, s) => { const g = new THREE.Group(), env = new THREE.Mesh(envG, mat); env.position.y = .3; env.castShadow = true;
     const b = new THREE.Mesh(basketG, basketM); b.position.y = .02; const gl = new THREE.Sprite(flameMat.clone()); gl.position.y = .34; gl.scale.setScalar(.9);
-    g.add(env, b, gl); g.scale.setScalar(s); g.userData = { env, glow: gl }; return g; };
+    const ropes = new THREE.Group(); ROPE_B.forEach((p, i) => { const r = new THREE.Mesh(ropeG, ropeM); span(r, p, ROPE_M[i].clone().setY(.3)); ropes.add(r); });
+    g.add(env, b, gl, ropes); g.scale.setScalar(s); g.userData = { env, glow: gl, ropes }; return g; };
+  /* the hero's ropes follow its envelope: slack and curling on the grass while it lies there filling, taut once it stands */
+  const ROPE_N = 12, ROPE_L = .246;
+  const heroRopes = g => { const list = ROPE_B.map(() => Array.from({ length: ROPE_N }, () => { const m = new THREE.Mesh(ropeG, ropeM); g.add(m); return m; })); g.userData.ropes.visible = false; g.userData.dyn = list; };
+  const ropeFrame = (g, fill) => { const env = g.userData.env; env.updateMatrix();
+    g.userData.dyn.forEach((segs, i) => { const a = ROPE_B[i], b = ROPE_M[i].clone().applyMatrix4(env.matrix), d = a.distanceTo(b), L = Math.max(ROPE_L, d * (1 + .14 * (1 - fill))), sag = d < L ? Math.sqrt(L * L - d * d) * .6 : 0; /* slack until the envelope stands */
+      const ctl = a.clone().add(b).multiplyScalar(.5).add(V3(0, -sag * 2, 0)).add(V3(Math.sin(i * 2.3) * sag * .5, 0, Math.cos(i * 1.7) * sag * .5)); /* each droops its own way */
+      let prev = a; for (let k = 1; k <= ROPE_N; k++) { const u = k / ROPE_N, q = a.clone().multiplyScalar((1 - u) * (1 - u)).add(ctl.clone().multiplyScalar(2 * u * (1 - u))).add(b.clone().multiplyScalar(u * u)); q.y = Math.max(q.y, -.012); span(segs[k - 1], prev, q); prev = q; } }); };
   /* the morning's balloons: standing on the fields north of the village, burners lighting them in the dark; up at dawn */
   const crowd = [];
   for (let i = 0; i < 52; i++) { const a = -Math.PI / 2 + (rnd() - .5) * 2.6, d = 160 + rnd() * 1100, x = Math.cos(a) * d, z = Math.sin(a) * d;
@@ -8982,7 +8996,7 @@ async function open3dLoad() {
   };
   const heroFor = () => {
     if (hero) return hero;
-    hero = makeBalloon(new THREE.MeshStandardMaterial({ map: heroTex(), roughness: .6, side: THREE.DoubleSide }), 15); scene.add(hero);
+    hero = makeBalloon(new THREE.MeshStandardMaterial({ map: heroTex(), roughness: .6, side: THREE.DoubleSide }), 15); heroRopes(hero); scene.add(hero);
     hero.add(flameLight); flameLight.position.set(0, .4, 0); return hero;
   };
   /* v121.3: the colour pick happens in the film: from the field the camera tilts up to the sky, where the colour
@@ -9035,6 +9049,7 @@ async function open3dLoad() {
       PK.list.forEach(b => { b.visible = false; }); if (PK.halo) PK.halo.visible = false; /* the colour choices stay behind in the sky */
       const h = heroFor(), fill = easeIO3(t / 3.4); h.visible = true;
       h.userData.env.scale.set(lerp(.55, 1, fill), lerp(.25, 1, fill), lerp(.55, 1, fill)); h.userData.env.rotation.z = lerp(-1.25, 0, ease3(fill * 1.2)); h.userData.env.position.x = lerp(.5, 0, fill);
+      ropeFrame(h, fill);
       h.position.copy(heroPos(t)); h.scale.setScalar(heroS(t)); h.rotation.y = time * .05;
       const burn = (t < 9.5 && (t < 3.4 || Math.sin(t * 4.1) > -.1)) || (t > 13.5 && t < 14.6) || (t > 18.4 && t < 19.8); /* bursts to hold the height and to soften the landing */ if (OPEN) OPEN.burn = burn; h.userData.glow.material.opacity = burn ? 1 : 0; h.userData.glow.scale.setScalar(1.2 + Math.sin(time * 40) * .2); flameLight.intensity = burn ? 300 + Math.sin(time * 33) * 70 : 0;
     }
