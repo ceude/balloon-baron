@@ -1323,7 +1323,7 @@ struct TownPainter {
     /// Fairy chimneys, trees, your fleet on the launch field and people walking the roads.
     func scenery() -> [TownItem] {
         var items: [TownItem] = []
-        let chims: [(Double, Double, CGFloat)] = [(0.3, 6.6, 150), (15.2, 8, 140), (0.4, 12.6, 130), (7.7, 0.3, 120),
+        let chims: [(Double, Double, CGFloat)] = [(0.3, 6.6, 150), (16.4, 11.2, 140), (0.4, 12.6, 130), (7.7, 0.3, 120),
                                                    (5.6, 15.2, 150), (0.5, 3.0, 160), (12.8, 0.2, 140)]
         // Albuquerque leaves the edge spots empty; Luxor puts palms and obelisks there, Cappadocia fairy chimneys.
         for (gx, gy, hh) in chims where s.region != .abq {

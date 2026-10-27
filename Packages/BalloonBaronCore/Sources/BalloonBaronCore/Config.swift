@@ -215,7 +215,7 @@ public enum Rules {
     public static let factoryDiscount = 0.5
     public static let factoryOrderShare = 0.8
     public static let factoryOrderChance = 0.08
-    public static func factoryDays(_ z: BalloonSize) -> Int { z == .S ? 3 : z == .M ? 5 : 7 }
+    public static func factoryDays(_ z: BalloonSize) -> Int { z == .S ? 3 : z == .M ? 4 : 5 }
 
     public static func influencerCost(balloons: Int) -> Int { 2500 + 400 * balloons }
 

@@ -8,7 +8,7 @@ struct DecorPainter {
     var c: GraphicsContext
 
     static let arches: [((Double, Double), (Double, Double), Double)] = [((6.75, 15.35), (8.15, 15.35), 23.2), ((15.35, 6.75), (15.35, 8.15), 23.2)]
-    static let cafeAt = (14.9, 1.1), rugsAt = (7.6, 0.9), plaqueAt = (9.15, 6.55)
+    static let cafeAt = (14.9, 1.1), rugsAt = (2.5, 0.35), plaqueAt = (9.15, 6.55)
 
     func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
     func hex(_ h: String) -> Color { Color(hex: h) }
@@ -60,7 +60,22 @@ struct DecorPainter {
         var g = c
         g.translateBy(x: mx, y: my - 13)
         g.rotate(by: .radians(an * 0.6))
-        let label = g.resolve(Text(name).font(.custom("BarlowCondensed-ExtraBold", fixedSize: 11)).foregroundColor(c1))
+        // The sign holds about 60 pt: a long name shrinks down to 8 pt, then a name of several words becomes its
+        // initials and one long word is cut short (prototype `archLabel`).
+        func resolved(_ s: String) -> GraphicsContext.ResolvedText {
+            g.resolve(Text(s).font(.custom("BarlowCondensed-ExtraBold", fixedSize: 11)).foregroundColor(c1))
+        }
+        var label = resolved(name)
+        let w8 = label.measure(in: CGSize(width: 400, height: 40)).width * 8 / 11
+        if w8 > 60 {
+            let words = name.split(whereSeparator: \.isWhitespace)
+            if words.count > 1 {
+                label = resolved(words.prefix(4).map { String($0.prefix(1)).uppercased(with: Locale(identifier: "tr")) }.joined())
+            } else {
+                // One long word: as much as fits.
+                label = resolved(String(name.prefix(max(1, Int(CGFloat(name.count) * 60 / w8) - 1))) + ".")
+            }
+        }
         let tw = label.measure(in: CGSize(width: 400, height: 40)).width, sw = min(70, tw + 14), k = min(1, (sw - 10) / max(1, tw))
         g.fill(Path(CGRect(x: -1, y: -24, width: 2, height: 10)), with: .color(hex("#5a3a24")))
         let sign = Path(roundedRect: CGRect(x: -sw / 2, y: -8, width: sw, height: 16), cornerRadius: 4)
