@@ -265,7 +265,7 @@ Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükse
 ## Gece
 Uçuş defterinden sonra kasabada gece olur (3,5 sn, olay gecesi 5,5 sn; kasabayı gezerken bekler, en fazla 25 sn; alttaki düğmeyle hemen sabaha geçilir): ışıklar yanar, cırcır böcekleri öter, ateş böcekleri uçar. Bazen bir gece olayı olur ve ertesi sabah gazetede çıkar: festival gecesi fener alayı, Fiesta'da Balloon Glow, kışın ilk gecesi karlı ışıklı kasaba, bir otelde düğün havai fişekleri (%22), kayan yıldız (%10). Olaylar şimdilik yalnızca görsel ve haber.
 
-## Açılış (v120, yalnız prototipte)
+## Açılış (v120–v121.6)
 Eski başlangıç hikâyesinin yerine sinematik bir açılış. 3B, kodla üretilmiş bir Kapadokya (three.js); WebGL yoksa ya da yüklenemezse v119'un 2B açılışı oynar.
 - **Tek parça drone çekimi (~30 sn), karanlıktan gün doğumuna:**
   1. Üç Güzeller: yıldızların altında üç kapaklı peri bacasının etrafında alçak dönüş, "KAPADOKYA · Şafaktan hemen önce".
@@ -283,7 +283,7 @@ Eski başlangıç hikâyesinin yerine sinematik bir açılış. 3B, kodla üreti
 - **Uçuş (v121.1):** kamera yüksekliği tek tek tümseklere değil, yolun önündeki ve arkasındaki en yüksek zeminin yumuşatılmış haline göre ayarlanır: yere girmez, inip çıkıp titremez; sonda düz tarlaya iner.
 - **Başlık ekranı:** "Brülöre basılı tut" beyaz bir konuşma balonunda, düğmeyi gösteren küçük bir çentikle.
 
-## Hikâye (v121, yalnız prototipte)
+## Hikâye (v121)
 Film yalnızca tohumu atar; hikâye ilk günlerde oyunun içinde akar. Eski v112 hikâyesini oynayan kayıtlarda (`storyDone`) bu satırlar çıkmaz.
 - **Film:** Hezarfen tarlada: "Bu sepet deden Hasan'ındı evlat. Kapadokya'nın ilk balonlarından biriydi. Kumaş hazır, sepet hazır. Bir tek adı eksik."
 - **Gün 1 sabahı:** Kenan Arslan (Göreme Sky) küçümser: "Hasan'ın torunu ha? … Deden de böyle başlamıştı." (Kapadokya'da selam artık 1. gün; diğer bölgelerde 3. gün.)
@@ -328,9 +328,11 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 ## Festivaller (Kapadokya)
 24. günden başlayarak 35 günde bir, 3 gün: Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
 
-## TestFlight düzeltmeleri (v121.2, yalnız prototipte)
+## TestFlight düzeltmeleri (v121.2, v121.6)
 - **Uçuşta duraklatma:** uçuş sırasında sağ üstteki menü düğmesi ⏸ olur; "Duraklatıldı" kartı (irtifa, yakıt, Devam et, Ayarlar) açılır, uçuş donar, brülör ve valf bırakılır. Ayarlar kapanınca kart geri gelir. Uygulama arka plana giderse uçuş kendiliğinden duraklar.
 - **Rüzgâr etiketi:** sepetin altındaki yeşil/kırmızı hap yerine balonun üstünde küçük koyu cam bir etiket: renkli dairede ok (yeşil: tarlaya taşıyor, turuncu: taşımıyor) ve hız. Alçalırken iniş alanı, peri bacaları ve engeller görünür kalır.
+- **Binişin sonu (v121.6):** "Sen ve pilotlar uçsun" / "Sadece pilotlar uçsun" her zaman sorulur; boşta pilot yoksa ikincisi kaç balonun yerde kalacağını yazar.
+- **Ana ekran (v121.6):** kasabanın ortası ekranın ortasında.
 - **Bugünün uçuş planı:** SEN/PİLOT sorusu kalktı. Kendin uçurduğun balon listenin en üstünde "Sen uçuruyorsun" etiketiyle durur (altında "Pilota ver"); diğer balonlarda "Ben uçurayım" düğmesi var (o balon amiral olur, filodaki gibi). Üstteki kart yalnızca durumu ve günün görevini söyler; kendin uçmuyorsan görev uyarısı kırmızı.
 
 ## Uçuş anları
