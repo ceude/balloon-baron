@@ -134,6 +134,12 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
             dawn(1)
             W.cloth.isHidden = true
             W.basket.isHidden = true
+            // the colour choices leave the sky with the pick (the prototype leaves them hanging there)
+            if pk > 0 {
+                pk = 0
+                for b in W.pick { b.node.isHidden = true }
+                W.halo.isHidden = true
+            }
             if let h = hero {
                 let fill = oEaseIO3(t / 3.4)
                 h.node.isHidden = false
