@@ -2739,9 +2739,8 @@ function showFleetPlan() {
       else { const t = blockedTap(b); if (t) { const go = h('button', 'pbtn light', st === 'worn' ? 'Filo' : 'Ekip'); go.onclick = () => { m.hidden = true; t(); }; row.appendChild(go); } }
       return row;
     };
-    if (mine) c.appendChild(fRow(mine));
     for (const z of ['XL', 'L', 'M', 'S']) {
-      const list = sortedFleet().filter(b => b.size === z && b !== mine);
+      const list = sortedFleet().filter(b => b.size === z); /* v121.7: your balloon stays in its place, tagged */
       if (!list.length) continue;
       const okList = list.filter(b => canFly(b) === 'ok'), on = okList.filter(b => b.fly).length;
       const gh = h('div', 'fgh', `<span><b>${SIZES[z].label}</b> · ${SIZES[z].cap} kişi · ${on}/${list.length} uçacak</span>`);

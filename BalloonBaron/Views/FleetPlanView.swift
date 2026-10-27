@@ -63,7 +63,6 @@ struct FleetPlanView: View {
                     header(g.state)
                     whoFlies(g.state)
                     topButtons(g.state)
-                    if let mine = myBalloon(g.state) { row(mine, g) }
                     ForEach(groups(g.state)) { grp in
                         groupView(grp, g)
                     }
@@ -78,14 +77,8 @@ struct FleetPlanView: View {
         }
     }
 
-    /// The balloon you fly today, pinned on top of the list.
-    private func myBalloon(_ s: GameState) -> Balloon? {
-        s.balloon(s.flagship).flatMap { s.isSelf($0) ? $0 : nil }
-    }
-
     private func groups(_ s: GameState) -> [SizeGroup] {
-        let mine = myBalloon(s)?.id
-        let fleet = s.sortedFleet.filter { $0.id != mine }
+        let fleet = s.sortedFleet // v121.7: your balloon stays in its place in its group, tagged
         return [BalloonSize.XL, .L, .M, .S].compactMap { z -> SizeGroup? in
             let list = fleet.filter { $0.size == z }
             return list.isEmpty ? nil : SizeGroup(size: z, list: list)

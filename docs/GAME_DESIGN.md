@@ -333,7 +333,7 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 - **Rüzgâr etiketi:** sepetin altındaki yeşil/kırmızı hap yerine balonun üstünde küçük koyu cam bir etiket: renkli dairede ok (yeşil: tarlaya taşıyor, turuncu: taşımıyor) ve hız. Alçalırken iniş alanı, peri bacaları ve engeller görünür kalır.
 - **Binişin sonu (v121.6):** "Sen ve pilotlar uçsun" / "Sadece pilotlar uçsun" her zaman sorulur; boşta pilot yoksa ikincisi kaç balonun yerde kalacağını yazar.
 - **Ana ekran (v121.6):** kasabanın ortası ekranın ortasında.
-- **Bugünün uçuş planı:** SEN/PİLOT sorusu kalktı. Kendin uçurduğun balon listenin en üstünde "Sen uçuruyorsun" etiketiyle durur (altında "Pilota ver"); diğer balonlarda "Ben uçurayım" düğmesi var (o balon amiral olur, filodaki gibi). Üstteki kart yalnızca durumu ve günün görevini söyler; kendin uçmuyorsan görev uyarısı kırmızı.
+- **Bugünün uçuş planı:** SEN/PİLOT sorusu kalktı. Kendin uçurduğun balon kendi grubunda, yerinde "Sen uçuruyorsun" etiketiyle durur (altında "Pilota ver"; v121.7); diğer balonlarda "Ben uçurayım" düğmesi var (o balon amiral olur, filodaki gibi). Üstteki kart yalnızca durumu ve günün görevini söyler; kendin uçmuyorsan görev uyarısı kırmızı.
 
 ## Uçuş anları
 Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen hava kolonu, 2 sn içinde kal: +15 yakıt), **selam** (başka bir balonun 95 m / 50 m yakınında 2 sn), **fotoğraf** (150–280 m arasında 1,5 sn, flaş). Başarılırsa yolcu başı bahşiş +€5 ve popülerlik +0,008.
