@@ -26,7 +26,7 @@ add("hez.show",
     "Filon kalabalıklaştı evlat. Bir gece bütün balonlarını kasabanın üstünde yakıp bir Balon Şöleni düzenlesene! Balon başına para ödersin ama vadide adın konuşulur, önümüzdeki üç gün şölene gelen turistler boş koltuklarını doldurur. On beş günde bir yapabilirsin.",
     "Deine Flotte ist gewachsen, Lehrling. Lass doch eines Nachts alle Ballone über der Stadt leuchten und veranstalte eine Ballon-Show! Du zahlst pro Ballon, aber das Tal wird von dir reden, und drei Tage lang füllen die Show-Touristen deine leeren Plätze. Alle fünfzehn Tage ist eine möglich.",
     "Tu flota ha crecido, aprendiz. ¿Por qué no enciendes todos tus globos una noche sobre el pueblo y organizas un Espectáculo de globos? Pagas por globo, pero el valle hablará de ti y durante tres días los turistas del espectáculo llenarán tus plazas vacías. Puedes hacer uno cada quince días.",
-    "弟子よ、船団も大きくなったな。ある夜、全部の気球を町の上で灯してバルーンショーを開いてはどうだ？気球ごとに費用はかかるが、谷じゅうの噂になり、3日間はショー目当ての観光客が空席を埋めてくれる。15日に1回開けるぞ。",
+    "弟子よ、フリートも大きくなったな。ある夜、全部の気球を町の上で灯してバルーンショーを開いてはどうだ？気球ごとに費用はかかるが、谷じゅうの噂になり、3日間はショー目当ての観光客が空席を埋めてくれる。15日に1回開けるぞ。",
     "제자여, 선단이 커졌구먼. 어느 밤 모든 열기구를 마을 위에서 밝혀 열기구 쇼를 열어 보게! 기구마다 비용이 들지만 계곡 전체가 자네 얘기를 할 테고, 사흘 동안 쇼를 보러 온 관광객이 빈 좌석을 채워 줄 걸세. 15일에 한 번 열 수 있다네.")
 add("hez.toShow", "See the show", "Şöleni gör", "Zur Show", "Ver el espectáculo", "ショーを見る", "쇼 보기")
 add("collect.src.show", "Balloon Show", "Balon şöleni", "Ballon-Show", "Espectáculo de globos", "バルーンショー", "열기구 쇼")

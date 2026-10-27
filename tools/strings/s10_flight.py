@@ -96,7 +96,7 @@ add("flight.abort.lead",
 add("flight.abort.refund", "Ticket refunds (lost revenue)", "Bilet iadesi (gelir kaybı)", "Ticketerstattung (Umsatzverlust)", "Reembolso de billetes (ingresos perdidos)", "チケット払い戻し（売上減）", "티켓 환불 (매출 손실)")
 add("flight.abort.comp", "Compensation per person: %@", "Kişi başı tazminat: %@", "Entschädigung pro Person: %@", "Indemnización por persona: %@", "1人あたりの補償：%@", "1인당 보상: %@")
 add("flight.abort.rep", "Popularity", "Popülerlik", "Beliebtheit", "Popularidad", "人気", "인기")
-add("flight.abort.total", "From your cash", "Kasadan çıkacak", "Aus der Kasse", "Sale de tu caja", "手持ち資金から", "현금에서 지출")
+add("flight.abort.total", "From your cash", "Kasadan çıkacak", "Aus der Kasse", "Sale de tu caja", "資金から", "현금에서 지출")
 add("flight.abort.hint",
     "Since you don't fly, today doesn't renew your pilot license.",
     "Uçmadığın için bugün pilot lisansın yenilenmez.",
@@ -109,7 +109,7 @@ add("flight.abort.confirm", "Cancel flight", "İptal et", "Flug absagen", "Cance
 
 # Gathering passengers (CollectView)
 add("collect.title", "Gathering passengers…", "Yolcular toplanıyor…", "Passagiere werden gesammelt …", "Reuniendo pasajeros…", "乗客を集めています…", "승객을 모으는 중…")
-add("collect.sub", "Ticket: %1$@ · Balloons: %2$@", "Bilet %1$@, balon: %2$@", "Ticket %1$@, Ballone: %2$@", "Billete %1$@, globos: %2$@", "チケット%1$@、気球：%2$@", "티켓 %1$@, 열기구: %2$@")
+add("collect.sub", "Ticket: %1$@ · Balloons: %2$@", "Bilet %1$@, balon: %2$@", "Ticket %1$@, Ballone: %2$@", "Billete %1$@, globos: %2$@", "チケット：%1$@・気球：%2$@", "티켓 %1$@, 열기구: %2$@")
 add("collect.full", "Balloons are full!", "Balonlar doldu!", "Die Ballone sind voll!", "¡Los globos están llenos!", "気球は満席！", "열기구가 꽉 찼어요!")
 add("collect.ready", "Passengers ready", "Yolcular hazır", "Passagiere bereit", "Pasajeros listos", "乗客の準備完了", "승객 준비 완료")
 add("collect.skip", "Skip", "Atla", "Überspringen", "Saltar", "スキップ", "건너뛰기")

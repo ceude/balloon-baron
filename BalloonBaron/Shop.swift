@@ -25,7 +25,7 @@ final class Shop {
     }
 
     func load() async {
-        let ids = StoreItem.allCases.filter { !$0.gift }.map(\.productID)
+        let ids = StoreItem.allCases.filter(\.isProduct).map(\.productID)
         guard let list = try? await Product.products(for: ids) else { return }
         for p in list { if let k = item(p.id) { products[k] = p } }
     }

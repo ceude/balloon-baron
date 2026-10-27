@@ -101,17 +101,11 @@ Burada yazanlar senin hesabında yapılacaklar.
 | `balloonbaron.fountain` | Meydan çeşmesi | Square fountain | Süs | 0,99 € |
 | `balloonbaron.statue` | Hezarfen heykeli | Hezarfen statue | Süs | 0,99 € |
 | `balloonbaron.flags` | Şirket bayrakları | Company flags | Süs | 0,99 € |
-| `balloonbaron.pigeons` | Güvercin sürüsü | Pigeon flock | Süs (v113) | 0,49 € |
-| `balloonbaron.arch` | Karşılama kemeri | Welcome arch | Süs (v113) | 0,49 € |
-| `balloonbaron.cafe` | Bahçe kafe | Garden café | Süs (v113) | 0,49 € |
-| `balloonbaron.rugs` | Kilim sergisi | Kilim display | Süs (v113) | 0,49 € |
-| `balloonbaron.fig.star` | Şölen figürü: Yıldız | Show figure: Star | Figür (v113) | 0,49 € |
-| `balloonbaron.fig.tulip` | Şölen figürü: Lale | Show figure: Tulip | Figür (v113) | 0,49 € |
-| `balloonbaron.fig.butterfly` | Şölen figürü: Kelebek | Show figure: Butterfly | Figür (v113) | 0,49 € |
-| `balloonbaron.fig.spiral` | Şölen figürü: Girdap | Show figure: Spiral | Figür (v113) | 0,49 € |
-| `balloonbaron.fig.initial` | Şölen figürü: Baş harfin | Show figure: Your initial | Figür (v113) | 0,49 € |
-| `balloonbaron.egypt` | Mısır: Luksor | Egypt: Luxor | Bölge (v113) | 2,99 € |
+| `balloonbaron.decorpack` | Meydan Süsleri | Square Decorations | Paket (v115) | 0,99 € |
+| `balloonbaron.figurepack` | Şölen Figürleri | Show Figures | Paket (v115) | 0,99 € |
 | `balloonbaron.founder` | Kurucu Paketi | Founder Pack | Paket (v113) | 6,99 € |
+| `balloonbaron.worldtour` | Dünya Turu | Grand Tour | Bölge kilidi (v115) | 5,99 € |
+| `balloonbaron.supporter` | Destekçi Sürümü | Supporter Edition | Paket (v115) | 11,99 € |
 
 - Fener dizileri (`lanterns`) Hezarfen'in hediyesi. Ürün değil, App Store'a girilmez.
 - Kimlikler `StoreItem.productID` ile aynı olmalı.
@@ -175,7 +169,7 @@ Başarımlar oyunda kartpostal olarak kutlanıyor, bu yüzden Game Center afişi
 
 ## 6. İnceleme notu (App Review)
 
-> No login needed. The game saves on the device. All purchases are non-consumable and can be restored from the bazaar ("Restore purchases"). Balloon patterns, shaped envelopes, town decorations and Balloon Show figures change the look of the game; town decorations also bring slightly more tourists (+1% each), and shop patterns and shapes never fade and can be applied to any balloon for free. "Egypt: Luxor" unlocks an additional late-game region (Luxor) once the player has completed Albuquerque. The "Founder Pack" unlocks every pattern, shape, decoration and show figure at once. The bazaar opens on game day 11; to reach it quickly, play a few days (each day: tap "Collect passengers", take off, land).
+> No login needed. The game saves on the device. All purchases are non-consumable and can be restored from the bazaar ("Restore purchases"). Balloon patterns, shaped envelopes, town decorations and Balloon Show figures change the look of the game; shop patterns and shapes never fade and can be applied to any balloon for free. The whole Cappadocia campaign is free; the "Grand Tour" unlocks the further regions (America, Egypt) after the player becomes Baron of Cappadocia. The "Founder Pack" unlocks every pattern, shape, decoration and show figure at once; the "Supporter Edition" is the Grand Tour plus the Founder Pack and a supporter plaque in town. The bazaar opens on game day 11; to reach it quickly, play a few days (each day: tap "Collect passengers", take off, land).
 
 ## 7. Sürüm numaraları
 

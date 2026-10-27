@@ -42,7 +42,7 @@ add("common.cancel", "Cancel", "Vazgeç", "Abbrechen", "Cancelar", "キャンセ
 # Flight placeholder
 add("flight.title", "In the basket", "Sepettesin", "Im Korb", "En la cesta", "バスケットの中", "바스켓 안")
 add("flight.pax", "Passengers with you: %@", "Seninle uçan yolcu: %@", "Passagiere an Bord: %@", "Pasajeros contigo: %@", "同乗客：%@人", "함께 탄 승객: %@명")
-add("flight.placeholder", "The flight scene arrives in the next build. For now, pick how the landing went.", "Uçuş sahnesi bir sonraki sürümde geliyor. Şimdilik inişin nasıl geçtiğini seç.", "Die Flugszene kommt im nächsten Build. Wähle vorerst, wie die Landung lief.", "La escena de vuelo llega en la próxima versión. Por ahora, elige cómo fue el aterrizaje.", "飛行シーンは次のビルドで追加。今は着陸結果を選んでね。", "비행 장면은 다음 빌드에 추가됩니다. 지금은 착륙 결과를 고르세요.")
+add("flight.placeholder", "The flight scene arrives in the next build. For now, pick how the landing went.", "Uçuş sahnesi bir sonraki sürümde geliyor. Şimdilik inişin nasıl geçtiğini seç.", "Die Flugszene kommt im nächsten Build. Wähle vorerst, wie die Landung lief.", "La escena de vuelo llega en la próxima versión. Por ahora, elige cómo fue el aterrizaje.", "飛行シーンは次のビルドで追加予定。今は着陸の結果を選ぼう。", "비행 장면은 다음 빌드에 추가됩니다. 지금은 착륙 결과를 고르세요.")
 add("flight.missionDone", "Mission completed", "Görev tamamlandı", "Auftrag erfüllt", "Misión cumplida", "依頼達成", "임무 완료")
 add("landing.perfect", "Perfect landing", "Kusursuz iniş", "Perfekte Landung", "Aterrizaje perfecto", "完璧な着陸", "완벽한 착륙")
 add("landing.good", "Good landing", "İyi iniş", "Gute Landung", "Buen aterrizaje", "良い着陸", "좋은 착륙")
@@ -105,14 +105,14 @@ for k, v in {
 }.items():
     add("mission.desc." + k, *v)
 for k, v in {
- "stone": ("Göreme Stone Houses", "Göreme Taş Evleri", "Göreme Steinhäuser", "Casas de piedra de Göreme", "ギョレメ石の家", "괴레메 돌집"),
+ "stone": ("Göreme Stone Houses", "Göreme Taş Evleri", "Göreme Steinhäuser", "Casas de piedra de Göreme", "ギョレメ・ストーンハウス", "괴레메 돌집"),
  "mansion": ("Peri Mansion Ürgüp", "Peri Konak Ürgüp", "Peri-Herrenhaus Ürgüp", "Mansión Peri Ürgüp", "ペリ邸宅ユルギュップ", "페리 맨션 위르귑"),
  "cave": ("Uçhisar Cave Hotel", "Uçhisar Mağara Otel", "Höhlenhotel Uçhisar", "Hotel cueva de Uçhisar", "ウチヒサル洞窟ホテル", "우치히사르 동굴 호텔"),
  "palace": ("Cappadocia Palace Resort", "Kapadokya Saray Resort", "Kappadokien Palast-Resort", "Resort Palacio de Capadocia", "カッパドキア・パレスリゾート", "카파도키아 팰리스 리조트"),
 }.items():
     add("hotel." + k, *v)
 for k, v in {
- "carpet": ("Göreme Carpet House", "Göreme Halı Evi", "Göreme Teppichhaus", "Casa de Alfombras Göreme", "ギョレメ絨毯の家", "괴레메 카펫 하우스"),
+ "carpet": ("Göreme Carpet House", "Göreme Halı Evi", "Göreme Teppichhaus", "Casa de Alfombras Göreme", "ギョレメ・カーペットハウス", "괴레메 카펫 하우스"),
  "wine": ("Cappadocia Vineyards", "Kapadokya Bağları", "Weingüter Kappadokien", "Viñedos de Capadocia", "カッパドキア・ワイナリー", "카파도키아 포도원"),
  "bank": ("Peri Bank", "Peri Bankası", "Peri Bank", "Banco Peri", "ペリ銀行", "페리 은행"),
  "energy": ("Turbo Energy Drink", "Turbo Enerji İçeceği", "Turbo Energydrink", "Bebida energética Turbo", "ターボ・エナジードリンク", "터보 에너지 드링크"),

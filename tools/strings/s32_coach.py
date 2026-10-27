@@ -49,7 +49,7 @@ add("hez.price",
     "Dün koltukların hepsi dolmadı evlat. Bilet fiyatı turistin kararını değiştirir: biraz düşürürsen boş koltuk kalmaz. Koltuklar hep doluysa da fiyatı artırıp daha çok kazanırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.",
     "Gestern blieben Plätze leer, Lehrling. Der Ticketpreis entscheidet mit: Senkst du ihn etwas, bleibt kein Platz frei. Sind deine Plätze immer voll, erhöhe ihn und verdiene mehr. Den Preis stellst du unten im Ticket-Feld ein.",
     "Ayer no se llenaron todas las plazas, aprendiz. El precio del billete hace cambiar de idea a los turistas: bájalo un poco y no quedará ninguna vacía. Si siempre se llenan, súbelo y ganarás más. El precio se ajusta en la casilla Billete de abajo.",
-    "弟子よ、昨日は空席が出たな。チケット代で客の気持ちは変わる。少し下げれば空席はなくなる。いつも満席なら上げて稼げばいい。料金は下のチケット欄で設定するんだ。",
+    "弟子よ、昨日は空席が出たな。チケット代で客の気持ちは変わる。少し下げれば空席はなくなる。いつも満席なら上げて稼げばよい。料金は下のチケット欄で設定するのだ。",
     "제자여, 어제는 빈 좌석이 남았네. 티켓 가격이 관광객의 마음을 바꾼다네. 조금 내리면 빈 좌석이 없어지고, 늘 가득 찬다면 올려서 더 벌게. 가격은 아래 티켓 칸에서 정한다네.")
 add("hez.toPrice", "Set the price", "Fiyatı ayarla", "Preis einstellen", "Ajustar el precio", "料金を設定", "가격 정하기")
 add("event.showDropped", "A balloon that crashed today can't go up in tonight's show. Its fee came back: %@.", "Kaza yapan balon bu gece şölene çıkamayacak. Ücreti kasana geri döndü: %@.", "Ein Ballon, der heute verunglückt ist, kann heute Nacht nicht bei der Show mitmachen. Seine Gebühr kam zurück: %@.", "Un globo que se accidentó hoy no podrá salir en el espectáculo de esta noche. Su tarifa se devolvió: %@.", "今日事故を起こした気球は今夜のショーに出られない。その分の費用が戻った：%@。", "오늘 사고 난 열기구는 오늘 밤 쇼에 나갈 수 없습니다. 그 비용이 돌아왔습니다: %@.")

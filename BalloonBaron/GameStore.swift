@@ -62,6 +62,8 @@ final class GameStore {
     var showTempFlag = false
     /// v114: a rival's order for the workshop, shown in the morning.
     var showFactoryOrder = false
+    /// v115: the Grand Tour offer (after the Baron of Cappadocia ceremony, or when a new region is out of reach).
+    var showTourOffer = false
     /// The Balloon Show's card (v111).
     var showShowCard = false
     /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
@@ -88,7 +90,7 @@ final class GameStore {
     private var busy: Bool {
         showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
-            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
     }
 
@@ -474,7 +476,7 @@ final class GameStore {
 
     /// Moves to another region (or into a new one) and closes the office pages.
     func goTo(_ r: RegionID) {
-        if let s = state, !s.owns(r), s.needsPack(r) { storeItem = .egypt; return }
+        if let s = state, !s.owns(r), s.needsPack(r) { showTourOffer = true; return }
         page = nil
         issueRegion = nil
         act { g in

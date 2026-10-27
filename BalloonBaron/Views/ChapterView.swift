@@ -72,10 +72,18 @@ struct ChapterView: View {
             Text(loc("ceremony.baronHint.\(news.region.rawValue)"))
                 .font(Theme.font(14))
                 .foregroundStyle(Theme.ink2)
-            BigButton(title: loc("ceremony.openMap")) {
-                // The page goes up first so the next popup waits until the map is closed.
-                store.page = .map
-                store.dismissPopup()
+            if news.region == .cap && !s.owned(.worldTour) {
+                // v115: the free game ends here; the Grand Tour is offered right after the ceremony
+                BigButton(title: loc("ceremony.next")) {
+                    store.showTourOffer = true
+                    store.dismissPopup()
+                }
+            } else {
+                BigButton(title: loc("ceremony.openMap")) {
+                    // The page goes up first so the next popup waits until the map is closed.
+                    store.page = .map
+                    store.dismissPopup()
+                }
             }
             BigButton(title: loc("world.close"), style: .ghost) { store.dismissPopup() }
         }

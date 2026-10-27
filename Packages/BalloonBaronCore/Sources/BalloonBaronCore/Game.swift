@@ -40,7 +40,7 @@ public struct Game: Sendable {
         let flag = state.weather?.flag ?? .green
         return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? 0.55 : 1)
                        * (state.fiesta != nil ? state.region.fiestaDemand : 1) * (state.festival != nil ? Rules.festivalDemand : 1)
-                       * state.salesFactor * (1 + 0.01 * Double(state.decorationCount)) * holdingBoost(state.region))
+                       * state.salesFactor * holdingBoost(state.region))
     }
 
     mutating func newWeather() -> Weather {

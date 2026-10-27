@@ -6,13 +6,13 @@ add("trait.showman.d", "Entertains the passengers: tips three times as big.", "Y
 add("trait.careful", "Careful", "Temkinli", "Vorsichtig", "Prudente", "慎重", "신중함")
 add("trait.careful.d", "25% lower accident risk.", "Kaza riski %25 düşük.", "25 % weniger Unfallrisiko.", "Un 25 % menos de riesgo de accidente.", "事故リスクが25%低い。", "사고 위험 25% 감소.")
 add("trait.daredevil", "Daredevil", "Gözü kara", "Draufgänger", "Temerario", "命知らず", "무모함")
-add("trait.daredevil.d", "30% higher accident risk, but passengers love it: a popularity boost on every flight.", "Kaza riski %30 yüksek, ama yolcular bayılır: her uçuşta popülerlik.", "30 % mehr Unfallrisiko, aber die Passagiere lieben es: Beliebtheit bei jedem Flug.", "Un 30 % más de riesgo, pero a los pasajeros les encanta: popularidad en cada vuelo.", "事故リスク30%増。でも乗客は大喜び：毎回人気アップ。", "사고 위험 30% 증가. 하지만 승객들이 열광: 매 비행마다 인기 상승.")
+add("trait.daredevil.d", "30% higher accident risk, but passengers love it: a popularity boost on every flight.", "Kaza riski %30 yüksek, ama yolcular bayılır: her uçuşta popülerlik.", "30 % mehr Unfallrisiko, aber die Passagiere lieben es: Beliebtheit bei jedem Flug.", "Un 30 % más de riesgo, pero a los pasajeros les encanta: popularidad en cada vuelo.", "事故リスク30%増。だが乗客は大喜び：毎回人気アップ。", "사고 위험 30% 증가. 하지만 승객들이 열광: 매 비행마다 인기 상승.")
 add("trait.thrifty", "Thrifty", "Tutumlu", "Sparsam", "Ahorrador", "倹約家", "알뜰함")
 add("trait.thrifty.d", "Reads the thermals well: 15% less fuel.", "Termikleri iyi okur: yakıt %15 az.", "Liest die Thermik gut: 15 % weniger Treibstoff.", "Lee bien las térmicas: un 15 % menos de combustible.", "上昇気流を読むのが上手：燃料15%節約。", "상승기류를 잘 읽음: 연료 15% 절약.")
 add("trait.loyal", "Loyal", "Sadık", "Treu", "Leal", "忠実", "충성스러움")
 add("trait.loyal.d", "Rivals' offers don't interest them.", "Rakip teklifleri onu ilgilendirmez.", "Angebote der Konkurrenz lassen sie kalt.", "Las ofertas de los rivales no le interesan.", "ライバルの誘いに乗らない。", "경쟁사의 제안에 관심 없음.")
 add("trait.storyteller", "Storyteller", "Hikâyeci", "Geschichtenerzähler", "Cuentacuentos", "語り部", "이야기꾼")
-add("trait.storyteller.d", "Tells Cappadocia's legends: glowing reviews and a popularity boost on every flight.", "Kapadokya efsanelerini anlatır: yorumlar parlar, her uçuşta popülerlik.", "Erzählt Kappadokiens Legenden: glänzende Bewertungen, Beliebtheit bei jedem Flug.", "Cuenta las leyendas de Capadocia: reseñas brillantes y popularidad en cada vuelo.", "カッパドキアの伝説を語る：口コミが輝き、毎回人気アップ。", "카파도키아의 전설을 들려줌: 리뷰가 빛나고 매 비행마다 인기 상승.")
+add("trait.storyteller.d", "Tells Cappadocia's legends: glowing reviews and a popularity boost on every flight.", "Kapadokya efsanelerini anlatır: yorumlar parlar, her uçuşta popülerlik.", "Erzählt Kappadokiens Legenden: glänzende Bewertungen, Beliebtheit bei jedem Flug.", "Cuenta las leyendas de Capadocia: reseñas brillantes y popularidad en cada vuelo.", "カッパドキアの伝説を語る：絶賛のレビューが集まり、毎回人気アップ。", "카파도키아의 전설을 들려줌: 리뷰가 빛나고 매 비행마다 인기 상승.")
 add("trait.nightOwl", "Night owl", "Gece kuşu", "Nachteule", "Noctámbulo", "夜型", "올빼미형")
 add("trait.nightOwl.d", "15% lower wage, but oversleeps now and then.", "Maaşı %15 düşük, ama arada bir uyuyakalır.", "15 % weniger Gehalt, verschläft aber ab und zu.", "Un 15 % menos de sueldo, pero a veces se duerme.", "給料15%安いが、たまに寝坊する。", "급여 15% 낮음. 하지만 가끔 늦잠을 잠.")
 
@@ -39,11 +39,11 @@ add("building.hangar.2.d", "Daily upkeep of your balloons drops 15%.", "Balonlar
 add("building.hangar.3", "Fabric store", "Kumaş deposu", "Stofflager", "Almacén de tela", "生地倉庫", "원단 창고")
 add("building.hangar.3.d", "Upkeep drops 30% and envelopes wear 15% more slowly.", "Bakım %30 azalır, zarflar %15 daha yavaş yıpranır.", "Wartung −30 %, und die Hüllen verschleißen 15 % langsamer.", "El mantenimiento baja un 30 % y las envolturas se gastan un 15 % más despacio.", "整備費が30%下がり、球皮の傷みが15%遅くなる。", "유지비 30% 감소, 외피 마모 15% 감소.")
 add("building.office", "Pilot office", "Pilot ofisi", "Pilotenbüro", "Oficina de pilotos", "パイロット事務所", "조종사 사무실")
-add("building.office.2", "Pilots' lounge", "Dinlenme odası", "Ruheraum", "Sala de descanso", "休憩室", "휴게실")
+add("building.office.2", "Pilots' lounge", "Dinlenme odası", "Ruheraum", "Sala de descanso", "パイロットラウンジ", "휴게실")
 add("building.office.2.d", "Rivals are half as likely to lure your pilots away.", "Rakiplerin pilotlarını ayartma şansı yarıya iner.", "Die Konkurrenz kann deine Piloten nur halb so oft abwerben.", "Los rivales tienen la mitad de probabilidades de llevarse a tus pilotos.", "ライバルに引き抜かれる確率が半分になる。", "경쟁사가 조종사를 빼 갈 확률이 절반으로 줄어듭니다.")
 add("building.office.3", "Flight simulator", "Uçuş simülatörü", "Flugsimulator", "Simulador de vuelo", "フライトシミュレーター", "비행 시뮬레이터")
 add("building.office.3.d", "Pilots gain experience 50% faster.", "Pilotlar %50 daha hızlı tecrübe kazanır.", "Piloten sammeln 50 % schneller Erfahrung.", "Los pilotos ganan experiencia un 50 % más rápido.", "パイロットの経験値が50%早くたまる。", "조종사의 경험치가 50% 더 빨리 쌓입니다.")
-add("building.sales", "Booking office", "Satış ofisi", "Buchungsbüro", "Oficina de reservas", "販売所", "예약 사무소")
+add("building.sales", "Booking office", "Satış ofisi", "Buchungsbüro", "Oficina de reservas", "予約所", "예약 사무소")
 add("building.sales.2", "Shop window and sign", "Vitrin ve tabela", "Schaufenster und Schild", "Escaparate y letrero", "ショーウィンドウと看板", "쇼윈도와 간판")
 add("building.sales.2.d", "5% more tourists notice you.", "Turistlerin %5 fazlası seni fark eder.", "5 % mehr Touristen bemerken dich.", "Un 5 % más de turistas se fija en ti.", "あなたに気づく観光客が5%増える。", "당신을 알아보는 관광객이 5% 늘어납니다.")
 add("building.sales.3", "Ticket center", "Bilet merkezi", "Ticketzentrum", "Central de reservas", "チケットセンター", "티켓 센터")
@@ -74,7 +74,7 @@ add("store.star", "Star balloon", "Yıldız balon", "Sternballon", "Globo estrel
 add("store.skull", "Skull balloon", "Kurukafa balon", "Totenkopf-Ballon", "Globo calavera", "ドクロ気球", "해골 열기구")
 add("store.fountain", "Square fountain", "Meydan çeşmesi", "Brunnen am Platz", "Fuente de la plaza", "広場の噴水", "광장 분수")
 add("store.statue", "Hezarfen statue", "Hezarfen heykeli", "Hezarfen-Statue", "Estatua de Hezarfen", "ヘザルフェン像", "헤자르펜 동상")
-add("store.lanterns", "Lantern strings", "Fener dizileri", "Laternenketten", "Guirnaldas de farolillos", "ランタンの列", "등불 줄")
+add("store.lanterns", "Lantern strings", "Fener dizileri", "Laternenketten", "Guirnaldas de farolillos", "吊るしランタン", "등불 줄")
 add("store.flags", "Company flags", "Şirket bayrakları", "Firmenflaggen", "Banderas de la empresa", "社旗", "회사 깃발")
 
 # Postcards (achievements)
@@ -88,8 +88,8 @@ for k, en, tr, de, es, ja, ko in [
     ("hotel", ("Hotel partner", "Your first hotel deal"), ("Otel ortağı", "İlk otel anlaşması"), ("Hotelpartner", "Dein erster Hotelvertrag"), ("Socio hotelero", "Tu primer acuerdo con un hotel"), ("ホテルの相棒", "初めてのホテル提携"), ("호텔 파트너", "첫 호텔 제휴")),
     ("hotelOwn", ("Hotel owner", "You bought a hotel"), ("Otel sahibi", "Bir otel satın aldın"), ("Hotelbesitzer", "Du hast ein Hotel gekauft"), ("Dueño de hotel", "Compraste un hotel"), ("ホテルオーナー", "ホテルを買った"), ("호텔 주인", "호텔을 샀습니다")),
     ("star45", ("Darling of the valley", "4.5★ popularity"), ("Vadinin gözdesi", "4,5★ popülerlik"), ("Liebling des Tals", "4,5★ Beliebtheit"), ("Favorito del valle", "4,5★ de popularidad"), ("谷の人気者", "人気4.5★"), ("계곡의 인기 스타", "인기 4.5★")),
-    ("pax1k", ("A thousand passengers", "1,000 passengers flown in all"), ("Bin yolcu", "Toplam 1.000 yolcu uçurdun"), ("Tausend Passagiere", "Insgesamt 1.000 Passagiere geflogen"), ("Mil pasajeros", "1.000 pasajeros en total"), ("乗客1000人", "通算1,000人を運んだ"), ("승객 천 명", "누적 승객 1,000명")),
-    ("pax10k", ("Ten thousand passengers", "10,000 passengers flown in all"), ("On bin yolcu", "Toplam 10.000 yolcu"), ("Zehntausend Passagiere", "Insgesamt 10.000 Passagiere"), ("Diez mil pasajeros", "10.000 pasajeros en total"), ("乗客1万人", "通算10,000人"), ("승객 만 명", "누적 승객 10,000명")),
+    ("pax1k", ("A thousand passengers", "1,000 passengers flown in all"), ("Bin yolcu", "Toplam 1.000 yolcu uçurdun"), ("Tausend Passagiere", "Insgesamt 1.000 Passagiere geflogen"), ("Mil pasajeros", "1.000 pasajeros en total"), ("乗客千人", "通算1,000人を運んだ"), ("승객 천 명", "누적 승객 1,000명")),
+    ("pax10k", ("Ten thousand passengers", "10,000 passengers flown in all"), ("On bin yolcu", "Toplam 10.000 yolcu"), ("Zehntausend Passagiere", "Insgesamt 10.000 Passagiere"), ("Diez mil pasajeros", "10.000 pasajeros en total"), ("乗客1万人", "通算10,000人を運んだ"), ("승객 만 명", "누적 승객 10,000명")),
     ("winter", ("Through the winter", "Your first winter is over"), ("Kışı atlattın", "İlk kış bitti"), ("Winter überstanden", "Dein erster Winter ist vorbei"), ("Superaste el invierno", "Tu primer invierno ha terminado"), ("冬を越えた", "最初の冬が終わった"), ("겨울을 버텼다", "첫 겨울이 끝났습니다")),
     ("fest", ("Festival spirit", "You flew in a festival"), ("Festival havası", "Bir festivalde uçtun"), ("Festivalstimmung", "Du bist auf einem Festival geflogen"), ("Ambiente de fiesta", "Volaste en un festival"), ("お祭り気分", "フェスティバルで飛んだ"), ("축제 분위기", "축제에서 비행했습니다")),
     ("rivalDown", ("A rival fell", "A rival went bankrupt"), ("Rakip düştü", "Bir rakip iflas etti"), ("Ein Konkurrent weniger", "Ein Konkurrent ging pleite"), ("Cayó un rival", "Un rival quebró"), ("ライバル陥落", "ライバルが倒産した"), ("경쟁자 몰락", "경쟁사가 파산했습니다")),
@@ -108,10 +108,10 @@ for k, en, tr, de, es, ja, ko in [
 # Holding goals on the whiteboard
 add("hgoal.million", "Holding cash €1 million", "Holding kasası €1 milyon", "Holding-Kasse 1 Mio. €", "Caja del holding: 1 millón de €", "ホールディングス資金100万ユーロ", "지주회사 금고 100만 유로")
 add("hgoal.baronAbq", "Baron of Albuquerque", "Albuquerque Baronu", "Baron von Albuquerque", "Barón de Albuquerque", "アルバカーキの男爵", "앨버커키의 남작")
-add("hgoal.tv", "A TV campaign", "Bir TV kampanyası", "Eine TV-Kampagne", "Una campaña de TV", "テレビキャンペーン", "TV 캠페인")
+add("hgoal.tv", "A TV campaign", "Bir TV kampanyası", "Eine TV-Kampagne", "Una campaña de TV", "テレビCMキャンペーン", "TV 캠페인")
 add("hgoal.celebrity", "A celebrity face", "Ünlü reklam yüzü", "Ein prominentes Werbegesicht", "Una cara famosa", "有名人の広告塔", "유명인 광고 모델")
 add("hgoal.research", "Envelope research done", "Zarf Ar-Ge'si tamam", "Hüllenforschung abgeschlossen", "Investigación de envolturas terminada", "球皮研究の完了", "외피 연구 완료")
-add("hgoal.offices", "Four world offices", "Dört dünya ofisi", "Vier Büros weltweit", "Cuatro oficinas en el mundo", "世界4都市の事務所", "세계 4대 사무소")
+add("hgoal.offices", "Four world offices", "Dört dünya ofisi", "Vier Büros weltweit", "Cuatro oficinas en el mundo", "世界4都市のオフィス", "세계 4대 사무소")
 add("hgoal.title", "Holding goals", "Holding hedefleri", "Ziele der Holding", "Objetivos del holding", "ホールディングスの目標", "지주회사 목표")
 add("hgoal.worldTitle", "World Baron 👑", "Dünya Baronu 👑", "Weltbaron 👑", "Barón mundial 👑", "世界の男爵 👑", "세계의 남작 👑")
 add("hgoal.hint", "Finish them all to become World Baron.", "Hepsi tamamlanınca Dünya Baronu olursun.", "Erfülle alle, um Weltbaron zu werden.", "Complétalos todos para ser barón mundial.", "すべて達成すると世界の男爵になる。", "모두 달성하면 세계의 남작이 됩니다.")

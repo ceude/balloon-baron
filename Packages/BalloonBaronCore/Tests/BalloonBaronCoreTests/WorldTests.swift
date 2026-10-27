@@ -24,6 +24,7 @@ final class WorldTests: XCTestCase {
         var g = newGame()
         g.state.chapter = 4
         g.state.barons[.cap] = 1
+        g.grantStoreItem(.worldTour)
         g.state.local.netHistory = [2000, 2200, 2400]
         return g
     }

@@ -418,7 +418,7 @@ add("holding.shape.cta", "Sign", "İmzala", "Unterschreiben", "Firmar", "契約�
 add("holding.shape.oneAtATime", "One contract at a time", "Aynı anda bir sözleşme", "Immer nur ein Vertrag", "Un contrato a la vez", "契約は一度にひとつ", "한 번에 하나의 계약")
 add("holding.shape.active", "Flying over %1$@ · days left: %2$@", "%1$@ üstünde uçuyor · kalan gün: %2$@", "Fliegt über %1$@ · Resttage: %2$@", "Volando sobre %1$@ · días restantes: %2$@", "%1$@の上空を飛行中・残り%2$@日", "%1$@ 상공 비행 중 · 남은 일수: %2$@")
 add("holding.chip.perDay", "To the holding: %@/day", "Holdinge %@/gün", "An die Holding: %@/Tag", "Al holding: %@/día", "ホールディングスへ%@/日", "지주회사 수입: %@/일")
-add("holding.chip.repDay", "Popularity per day −%@", "Popülerlik günde −%@", "Beliebtheit pro Tag −%@", "Popularidad por día −%@", "人気 1日−%@", "인기 하루 −%@")
+add("holding.chip.repDay", "Popularity per day −%@", "Popülerlik günde −%@", "Beliebtheit pro Tag −%@", "Popularidad por día −%@", "人気：1日−%@", "인기 하루 −%@")
 add("adshape.bottle", "Fizz Cola bottle", "Fizz Cola şişesi", "Fizz-Cola-Flasche", "Botella de Fizz Cola", "フィズコーラのボトル", "피즈 콜라 병")
 add("adshape.rocket", "Yıldız Telekom rocket", "Yıldız Telekom roketi", "Yıldız-Telekom-Rakete", "Cohete de Yıldız Telekom", "ユルドゥズ・テレコムのロケット", "이을드즈 텔레콤 로켓")
 add("adshape.shoe", "Kanat sneaker", "Kanat spor ayakkabısı", "Kanat-Sneaker", "Zapatilla Kanat", "カナットのスニーカー", "카나트 운동화")
@@ -475,14 +475,14 @@ add("settings.copyHint",
  "Başka bir cihazda devam etmek için bu kodu kopyala, orada “Kayıt kodu yükle” bölümüne yapıştır.",
  "Um auf einem anderen Gerät weiterzuspielen, kopiere diesen Code und füge ihn dort unter „Speichercode laden“ ein.",
  "Para seguir en otro dispositivo, copia este código y pégalo allí en «Cargar un código de partida».",
- "別の端末で続けるには、このコードをコピーして、そちらの「セーブコードを読み込む」に貼り付けよう。",
+ "別の端末で続けるには、このコードをコピーし、その端末の「セーブコードを読み込む」に貼り付けてください。",
  "다른 기기에서 이어 하려면 이 코드를 복사해 그쪽의 '저장 코드 불러오기'에 붙여 넣으세요.")
 add("settings.loadHint",
  "Paste the code you copied on another device and tap Load. It replaces the game on this device.",
  "Başka cihazdan kopyaladığın kodu buraya yapıştır ve Yükle'ye bas. Buradaki oyunun yerini alır.",
  "Füge den Code ein, den du auf einem anderen Gerät kopiert hast, und tippe auf Laden. Er ersetzt das Spiel auf diesem Gerät.",
  "Pega el código que copiaste en otro dispositivo y toca Cargar. Sustituye la partida de este dispositivo.",
- "別の端末でコピーしたコードを貼り付けて「読み込む」を押そう。この端末のゲームと置き換わる。",
+ "別の端末でコピーしたコードを貼り付けて「読み込む」をタップしてください。この端末のゲームは上書きされます。",
  "다른 기기에서 복사한 코드를 붙여 넣고 불러오기를 누르세요. 이 기기의 게임을 대체합니다.")
 add("settings.pastePlaceholder", "Paste the code here", "Kodu buraya yapıştır", "Code hier einfügen", "Pega el código aquí", "ここにコードを貼り付け", "여기에 코드를 붙여 넣으세요")
 add("settings.paste", "Paste", "Yapıştır", "Einfügen", "Pegar", "貼り付け", "붙여넣기")
@@ -493,6 +493,6 @@ add("settings.about", "About", "Hakkında", "Info", "Acerca de", "このアプ�
 add("settings.privacy", "Privacy policy", "Gizlilik politikası", "Datenschutz", "Política de privacidad", "プライバシーポリシー", "개인정보 처리방침")
 add("settings.support", "Support", "Destek", "Support", "Soporte", "サポート", "지원")
 add("settings.version", "Version", "Sürüm", "Version", "Versión", "バージョン", "버전")
-add("settings.sure", "Sure? All progress is deleted. Tap again", "Emin misin? Bütün ilerleme silinir. Tekrar dokun", "Sicher? Der gesamte Fortschritt wird gelöscht. Noch mal tippen", "¿Seguro? Se borra todo el progreso. Toca otra vez", "本当に？すべての進行が消える。もう一度タップ", "정말요? 모든 진행이 삭제됩니다. 다시 누르세요")
+add("settings.sure", "Sure? All progress is deleted. Tap again", "Emin misin? Bütün ilerleme silinir. Tekrar dokun", "Sicher? Der gesamte Fortschritt wird gelöscht. Noch mal tippen", "¿Seguro? Se borra todo el progreso. Toca otra vez", "本当に？進行状況はすべて消えます。もう一度タップ", "정말요? 모든 진행이 삭제됩니다. 다시 누르세요")
 add("a11y.on", "On", "Açık", "Ein", "Activado", "オン", "켬")
 add("a11y.off", "Off", "Kapalı", "Aus", "Desactivado", "オフ", "끔")

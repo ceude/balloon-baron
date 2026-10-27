@@ -3,9 +3,9 @@ from s1_ui import add
 # Placeholders in braces are filled by the app: {c} company, {b} balloon, {p} price, {s} sponsor, {r} rival.
 R = {
  "perfect": [
-  ("The pilot set us down in the middle of the field like a feather. Not a drop of champagne spilled!", "Pilot bizi tarlanın tam ortasına kuş tüyü gibi indirdi. Şampanya bile dökülmedi!", "Der Pilot hat uns wie eine Feder mitten aufs Feld gesetzt. Kein Tropfen Champagner verschüttet!", "El piloto nos posó en medio del campo como una pluma. ¡Ni una gota de champán derramada!", "パイロットは畑の真ん中に羽のように降ろしてくれた。シャンパンが一滴もこぼれなかった！", "조종사가 깃털처럼 들판 한가운데 내려 줬어요. 샴페인 한 방울도 안 흘렸어요!"),
+  ("The pilot set us down in the middle of the field like a feather. Not a drop of champagne spilled!", "Pilot bizi tarlanın tam ortasına kuş tüyü gibi indirdi. Şampanya bile dökülmedi!", "Der Pilot hat uns wie eine Feder mitten aufs Feld gesetzt. Kein Tropfen Champagner verschüttet!", "El piloto nos posó en medio del campo como una pluma. ¡Ni una gota de champán derramada!", "パイロットは野原の真ん中に羽のように降ろしてくれた。シャンパンも一滴もこぼれなかった！", "조종사가 깃털처럼 들판 한가운데 내려 줬어요. 샴페인 한 방울도 안 흘렸어요!"),
   ("Sunrise, fairy chimneys and a flawless landing. The morning of my life.", "Gün doğumu, peribacaları ve kusursuz bir iniş. Hayatımın en güzel sabahıydı.", "Sonnenaufgang, Feenkamine und eine makellose Landung. Der Morgen meines Lebens.", "Amanecer, chimeneas de hadas y un aterrizaje impecable. La mañana de mi vida.", "日の出、妖精の煙突、そして完璧な着陸。人生最高の朝。", "일출, 요정의 굴뚝, 완벽한 착륙. 인생 최고의 아침이었어요."),
-  ("The captain literally reads the wind. I'd fly again in a heartbeat.", "Kaptan rüzgârı okuyor resmen. Kesinlikle tekrar uçarım.", "Der Kapitän liest den Wind förmlich. Ich würde sofort wieder fliegen.", "El capitán literalmente lee el viento. Volvería a volar sin dudarlo.", "キャプテンはまさに風を読んでいる。絶対にまた乗る。", "기장님이 진짜 바람을 읽어요. 당장이라도 또 탈래요."),
+  ("The captain literally reads the wind. I'd fly again in a heartbeat.", "Kaptan rüzgârı okuyor resmen. Kesinlikle tekrar uçarım.", "Der Kapitän liest den Wind förmlich. Ich würde sofort wieder fliegen.", "El capitán literalmente lee el viento. Volvería a volar sin dudarlo.", "パイロットはまさに風を読んでいる。絶対にまた乗る。", "기장님이 진짜 바람을 읽어요. 당장이라도 또 탈래요."),
  ],
  "good": [
   ("The view was stunning; the landing was a little bumpy, but no problem.", "Manzara muhteşemdi, iniş biraz sarsıntılıydı ama sorun değil.", "Die Aussicht war atemberaubend, die Landung etwas holprig, aber kein Problem.", "La vista fue impresionante; el aterrizaje, algo movido, pero sin problema.", "景色は最高。着陸は少し揺れたけど問題なし。", "경치가 최고였어요. 착륙이 좀 흔들렸지만 괜찮아요."),
@@ -38,7 +38,7 @@ R = {
  ],
  "cheap": [
   ("This view at this price? Don't miss it!", "Bu fiyata bu manzara mı? Kaçırmayın!", "Diese Aussicht zu dem Preis? Nicht verpassen!", "¿Estas vistas a este precio? ¡No te lo pierdas!", "この値段でこの景色？見逃し厳禁！", "이 가격에 이 경치라니? 놓치지 마세요!"),
-  ("I paid {p}. Maybe the best price in Cappadocia.", "{p} ödedim, Kapadokya'nın en iyi fiyatı bu olabilir.", "Ich habe {p} bezahlt. Vielleicht der beste Preis in Kappadokien.", "Pagué {p}. Quizá el mejor precio de Capadocia.", "{p}だった。カッパドキアで一番安いかも。", "{p} 냈어요. 카파도키아 최저가일지도요."),
+  ("I paid {p}. Maybe the best price in Cappadocia.", "{p} ödedim, Kapadokya'nın en iyi fiyatı bu olabilir.", "Ich habe {p} bezahlt. Vielleicht der beste Preis in Kappadokien.", "Pagué {p}. Quizá el mejor precio de Capadocia.", "{p}払った。カッパドキアでいちばん安いかも。", "{p} 냈어요. 카파도키아 최저가일지도요."),
  ],
  "pricey": [
   ("It was lovely, but {p} is a bit much. Others flew cheaper next door.", "Güzeldi ama {p} biraz fazla. Yan firmada daha ucuza uçmuşlar.", "Schön war's, aber {p} ist etwas viel. Bei der Konkurrenz flogen andere billiger.", "Estuvo bonito, pero {p} es un poco caro. En la empresa de al lado volaron más barato.", "良かったけど{p}は少し高い。隣の会社はもっと安かったらしい。", "좋았지만 {p}는 좀 비싸요. 옆 회사는 더 싸게 탔대요."),

@@ -19,16 +19,17 @@ final class LuxorTests: XCTestCase {
     func luxorReady() -> Game {
         var g = newGame()
         g.state.barons[.cap] = 1
+        g.grantStoreItem(.worldTour)
         g.state.holding.cash = 1_000_000
         XCTAssertTrue(g.enterRegion(.abq))
         g.state.barons[.abq] = g.state.day
-        g.grantStoreItem(.egypt)
         return g
     }
 
     func testLuxorOpensAfterAlbuquerque() {
         var g = newGame()
         g.state.barons[.cap] = 1
+        g.grantStoreItem(.worldTour)
         g.state.holding.cash = 1_000_000
         XCTAssertFalse(g.state.regionOpen(.lux))
         XCTAssertFalse(g.enterRegion(.lux), "Albuquerque first")
@@ -246,6 +247,7 @@ final class LiveIssueTests: XCTestCase {
         var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 11)
         g.startDay()
         g.state.barons[.cap] = 1
+        g.grantStoreItem(.worldTour)
         g.state.holding.cash = 1_000_000
         g.addBalloon(.M)
         g.state.pilots.append(Pilot(id: 900, name: "Ali Kaya", level: .rookie))
@@ -300,6 +302,7 @@ final class V109Tests: XCTestCase {
     func testHoldingGoalNeedsLuxorAndStaysTickedAfterWorldBaron() {
         var g = newGame()
         g.state.barons[.cap] = 1
+        g.grantStoreItem(.worldTour)
         g.state.barons[.abq] = 2
         XCTAssertFalse(g.state.done(.baronLux), "Albuquerque is no longer enough")
         g.state.barons[.lux] = 3
@@ -330,6 +333,7 @@ final class V109Tests: XCTestCase {
     func testHoldingInvestmentsArePraisedAndReported() {
         var g = newGame()
         g.state.barons[.cap] = 1
+        g.grantStoreItem(.worldTour)
         g.state.holding.cash = 10_000_000
         g.state.hezQueue = []
         XCTAssertTrue(g.runTVCampaign())

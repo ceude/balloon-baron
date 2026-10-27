@@ -7,7 +7,7 @@ add("issueSheet.yourCall", "You're here, so it's your call.", "Buradasın, karar
 add("home.alert.issueHere", "Tap to decide.", "Karar vermek için dokun.", "Tippen, um zu entscheiden.", "Toca para decidir.", "タップして決める。", "탭해서 결정하세요.")
 add("home.alert.issueHere.raise", "Your pilots are waiting outside the office. Tap to decide.", "Pilotların ofisin önünde bekliyor. Karar vermek için dokun.",
     "Deine Piloten warten vor dem Büro. Tippen, um zu entscheiden.", "Tus pilotos esperan frente a la oficina. Toca para decidir.",
-    "パイロットたちがオフィスの前で待っている。タップして決める。", "조종사들이 사무실 앞에서 기다립니다. 탭해서 결정하세요.")
+    "パイロットたちが事務所の前で待っている。タップして決める。", "조종사들이 사무실 앞에서 기다립니다. 탭해서 결정하세요.")
 add("issue.raise.a.live", "Pilot wages go up 15%.", "Pilot maaşları %15 artar.", "Die Pilotengehälter steigen um 15 %.", "Los sueldos de los pilotos suben un 15 %.",
     "パイロットの給料が15%上がる。", "조종사 급여가 15% 오릅니다.")
 add("issue.raise.b.live", "Your pilots stay off for three days; only you fly, in the flagship.", "Pilotlar üç gün uçmaz, sadece amiral balonunu sen uçurursun.",
@@ -110,7 +110,7 @@ add("holding.shape.breakYes", "Break it", "Boz", "Brechen", "Romper", "破棄す
 add("holding.shape.breakNo", "Keep the deal", "Sözleşme sürsün", "Vertrag behalten", "Mantener el contrato", "契約を続ける", "계약 유지")
 
 # The chapter's number as a big heading
-add("goals.chapterBig", "Chapter %1$@/%2$@", "Bölüm %1$@/%2$@", "Kapitel %1$@/%2$@", "Capítulo %1$@/%2$@", "第%1$@章 / %2$@", "챕터 %1$@/%2$@")
+add("goals.chapterBig", "Chapter %1$@/%2$@", "Bölüm %1$@/%2$@", "Kapitel %1$@/%2$@", "Capítulo %1$@/%2$@", "第%1$@章／全%2$@章", "챕터 %1$@/%2$@")
 
 # The guides' short names, for buttons
 add("guide.short.cap", "Hezarfen", "Hezarfen", "Hezarfen", "Hezarfen", "ヘザルフェン", "헤자르펜")
@@ -173,7 +173,7 @@ D = {
   "Bir marka kendi dev balonunu senin göğünde uçurmak istiyor evlat! Turistler biraz söylenir ama holding her gün parasını alır.",
   "Eine Marke will ihren eigenen Riesenballon an deinem Himmel, Lehrling! Die Touristen murren ein wenig, aber die Holding wird jeden Tag bezahlt.",
   "¡Una marca quiere su propio globo gigante en tu cielo, aprendiz! Los turistas refunfuñarán un poco, pero el holding cobra cada día.",
-  "あるブランドがお前の空に自社の巨大気球を飛ばしたいそうだ、弟子よ！観光客は少しぼやくが、ホールディングスには毎日お金が入る。",
+  "あるブランドがお前の空に自社の巨大気球を飛ばしたいそうだ、弟子よ！観光客は少しぼやくが、ホールディングスには毎日金が入る。",
   "한 브랜드가 자네 하늘에 자기 거대 열기구를 띄우고 싶어 하네, 제자여! 관광객은 조금 투덜대겠지만 지주회사는 매일 돈을 받지."),
 }
 for k, t in D.items():
@@ -204,7 +204,7 @@ M = {
          "Yüzüncü günün kutlu olsun evlat! İlk sabahki o tek balonu hatırlıyor musun? Şimdi bir bak gökyüzüne.",
          "Hundert Tage, Lehrling! Weißt du noch, der eine Ballon am ersten Morgen? Schau dir jetzt den Himmel an.",
          "¡Cien días, aprendiz! ¿Recuerdas aquel único globo la primera mañana? Mira ahora el cielo.",
-         "100日目おめでとう、弟子よ！最初の朝のたった一機の気球を覚えているか？今の空を見てみろ。",
+         "100日目おめでとう、弟子よ！最初の朝のたった一機の気球を覚えておるか？今の空を見てみよ。",
          "100일째를 축하하네, 제자여! 첫날 아침 그 열기구 한 대를 기억하나? 이제 하늘을 보게."),
  "200": ("Two hundred days! Everyone can see now that you run this on hard work, not luck, kid.",
          "İki yüz gün! Bu işi şansla değil emekle yürüttüğünü artık herkes görüyor evlat.",
@@ -250,16 +250,16 @@ add("paper.year.sub", "The town celebrates the balloon company's first birthday.
 # Big loans (v109)
 add("bank.needNet", "Opens for good when your typical day here nets at least %1$@ (lately: %2$@).", "Buradaki günlük net kazancın en az %1$@ olunca açılır ve açık kalır (son iki hafta: %2$@).",
     "Öffnet sich dauerhaft, wenn dein typischer Tag hier mindestens %1$@ netto bringt (zuletzt: %2$@).", "Se abre para siempre cuando tu día típico aquí deje al menos %1$@ netos (últimamente: %2$@).",
-    "ここでの1日の純利益が%1$@以上になると利用可能になり、その後も使える（最近：%2$@）。", "이곳의 하루 순이익이 %1$@ 이상이 되면 열리고 계속 열려 있습니다 (최근: %2$@).")
+    "ここでの1日の純利益がふだん%1$@以上になると解放され、以後ずっと使える（最近：%2$@）。", "이곳의 하루 순이익이 %1$@ 이상이 되면 열리고 계속 열려 있습니다 (최근: %2$@).")
 add("bank.opened", "Open.", "Açıldı.", "Freigeschaltet.", "Disponible.", "利用可能。", "열림.")
 
 # Purchase loan (v109.2): a mortgage for a rival up for sale
-add("deal.shortLoan", "Cash: %@. The purchase loan can pay the rest to the seller.", "Kasanda %@ var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.", "Kasse: %@. Der Kaufkredit kann den Rest an den Verkäufer zahlen.", "Caja: %@. El préstamo de compra puede pagar el resto al vendedor.", "金庫：%@。不足分は買収ローンで売り手に支払える。", "금고: %@. 부족분은 인수 대출로 판매자에게 지불할 수 있습니다.")
+add("deal.shortLoan", "Cash: %@. The purchase loan can pay the rest to the seller.", "Kasanda %@ var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.", "Kasse: %@. Der Kaufkredit kann den Rest an den Verkäufer zahlen.", "Caja: %@. El préstamo de compra puede pagar el resto al vendedor.", "資金：%@。不足分は買収ローンで売り手に支払える。", "금고: %@. 부족분은 인수 대출로 판매자에게 지불할 수 있습니다.")
 add("deal.shortFew", "Cash: %1$@. The purchase loan needs a bigger fleet. Balloons needed: %2$@, you have: %3$@.",
     "Kasanda %1$@ var. Satın alma kredisi için daha büyük bir filo gerekir. Gereken balon: %2$@, sende: %3$@.",
     "Kasse: %1$@. Für den Kaufkredit brauchst du eine größere Flotte. Nötige Ballone: %2$@, du hast: %3$@.",
     "Caja: %1$@. El préstamo de compra pide una flota mayor. Globos necesarios: %2$@, tienes: %3$@.",
-    "所持金：%1$@。買収ローンには保有気球がもっと必要。必要な気球：%2$@、保有：%3$@。",
+    "資金：%1$@。買収ローンには保有気球がもっと必要。必要な気球：%2$@、保有：%3$@。",
     "보유 현금: %1$@. 인수 대출에는 더 큰 기단이 필요합니다. 필요한 열기구: %2$@, 보유: %3$@.")
 add("buyLoan.button", "Buy with a loan (bank pays %@)", "Krediyle al (banka %@)", "Mit Kredit kaufen (Bank zahlt %@)", "Comprar con préstamo (el banco paga %@)", "ローンで買う（銀行が%@）", "대출로 사기 (은행 %@)")
 add("buyLoan.kicker", "Purchase loan", "Satın alma kredisi", "Kaufkredit", "Préstamo de compra", "買収ローン", "인수 대출")
@@ -336,4 +336,4 @@ add("skip.lead", "The weather is fine for flying. If you skip, there's no ticket
     "El tiempo es bueno para volar. Si saltas el día, hoy no habrá ingresos por billetes, pero los sueldos y el mantenimiento se pagan igual.",
     "飛ぶのに良い天気だ。休むと今日のチケット収入はないが、給料と維持費はかかる。",
     "비행하기 좋은 날씨입니다. 쉬면 오늘 티켓 수입은 없지만 급여와 유지비는 그대로 나갑니다.")
-add("skip.fly", "No, let's fly", "Vazgeç, uçalım", "Nein, wir fliegen", "No, vamos a volar", "やめて、飛ぼう", "아니요, 비행할게요")
+add("skip.fly", "No, let's fly", "Vazgeç, uçalım", "Nein, wir fliegen", "No, vamos a volar", "いや、飛ぼう", "아니요, 비행할게요")

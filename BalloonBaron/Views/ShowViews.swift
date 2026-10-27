@@ -111,7 +111,7 @@ struct ShowCardView: View {
         let lock = k.map { !s.owned($0) } ?? false, on = s.showFigure == k
         return Button {
             SoundEngine.shared.play(.click)
-            if let k, lock { store.storeItem = k } else { store.act { $0.state.showFig = k } }
+            if let k, lock { store.storeItem = .figurePack } else { store.act { $0.state.showFig = k } }
         } label: {
             VStack(spacing: 2) {
                 Group {
@@ -128,7 +128,7 @@ struct ShowCardView: View {
                 Text(k.map { $0 == .figInitial ? "\($0.title): \(ShowCardView.initial(s.company))" : $0.title } ?? loc("show.figAuto"))
                     .font(Theme.font(12, .bold)).foregroundStyle(Theme.ink).lineLimit(2).multilineTextAlignment(.center).minimumScaleFactor(0.8)
                 if let k, lock {
-                    Text("🔒 " + storePrice(k)).font(Theme.font(11, .heavy)).foregroundStyle(Theme.coral)
+                    Text("🔒 " + loc("show.inPack")).font(Theme.font(11, .heavy)).foregroundStyle(Theme.coral)
                 }
             }
             .frame(width: 78)

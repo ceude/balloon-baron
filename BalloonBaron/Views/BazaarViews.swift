@@ -103,15 +103,21 @@ struct StoreThumb: View {
         switch item.kind {
         case .figure:
             FigureThumb(item: item, colors: colors, company: company).clipShape(RoundedRectangle(cornerRadius: 10))
-        case .region:
+        case .unlock, .supporter:
             Canvas { ctx, size in
                 let k = min(size.width / 64, size.height / 72)
                 var c = ctx
                 c.translateBy(x: (size.width - 64 * k) / 2, y: (size.height - 72 * k) / 2)
                 c.scaleBy(x: k, y: k)
-                StoreThumb.egypt(&c, colors: colors)
+                if item.kind == .unlock { StoreThumb.worldTour(&c, colors: colors) } else { StoreThumb.plaque(&c, company: company) }
             }
             .clipShape(RoundedRectangle(cornerRadius: 10))
+        case .pack:
+            // the pack's items in a little grid
+            let items = item.packItems
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 3), count: items.count > 4 ? 3 : 2), spacing: 3) {
+                ForEach(items, id: \.self) { q in StoreThumb(item: q, colors: colors, company: company).aspectRatio(64 / 72, contentMode: .fit) }
+            }
         case .bundle:
             StoreThumb(item: .heart, colors: colors)
         case .pattern:
@@ -142,6 +148,37 @@ struct StoreThumb: View {
                 StoreThumb.decoration(item, &ctx, colors: colors)
             }
         }
+    }
+
+    /// v115, the Grand Tour: dawn over a desert mesa and a pyramid, your balloon on a dotted route between them (64 × 72).
+    static func worldTour(_ c: inout GraphicsContext, colors: [String]) {
+        func fill(_ pts: [CGPoint], _ hex: String) { var p = Path(); p.move(to: pts[0]); for q in pts.dropFirst() { p.addLine(to: q) }; p.closeSubpath(); c.fill(p, with: .color(Color(hex: hex))) }
+        func box(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ hex: String) { c.fill(Path(CGRect(x: x, y: y, width: w, height: h)), with: .color(Color(hex: hex))) }
+        c.fill(Path(CGRect(x: 0, y: 0, width: 64, height: 72)), with: .linearGradient(Gradient(stops: [.init(color: Color(hex: "#7fb2e0"), location: 0), .init(color: Color(hex: "#f6c98a"), location: 0.55), .init(color: Color(hex: "#e8b07a"), location: 1)]),
+                                                                                    startPoint: .zero, endPoint: CGPoint(x: 0, y: 72)))
+        c.fill(Path(ellipseIn: CGRect(x: 23, y: 37, width: 18, height: 18)), with: .color(Color(hex: "#fff4d0")))
+        fill([CGPoint(x: 0, y: 60), CGPoint(x: 3, y: 44), CGPoint(x: 19, y: 44), CGPoint(x: 23, y: 60)], "#b5552e"); box(2, 43, 18, 2.5, "#8f3f22")
+        fill([CGPoint(x: 40, y: 60), CGPoint(x: 53, y: 42), CGPoint(x: 66, y: 60)], "#c98a4a"); fill([CGPoint(x: 53, y: 42), CGPoint(x: 66, y: 60), CGPoint(x: 56, y: 60)], "#a86a34")
+        box(0, 60, 64, 12, "#d9a46a"); box(38, 62, 26, 3, "#4aa0c0")
+        var route = Path(); route.move(to: CGPoint(x: 11, y: 40)); route.addQuadCurve(to: CGPoint(x: 53, y: 38), control: CGPoint(x: 32, y: 2))
+        c.stroke(route, with: .color(.white.opacity(0.9)), style: StrokeStyle(lineWidth: 1.1, dash: [1.5, 2.5]))
+        c.fill(Path(ellipseIn: CGRect(x: 25, y: 5.5, width: 14, height: 17)), with: .color(Color(hex: colors.first ?? "#ff5e3a")))
+        box(30.5, 5.5, 3, 17, colors.count > 1 ? colors[1] : "#ffc23d"); box(30, 24, 4, 3.5, "#6a4020")
+    }
+
+    /// v115, the supporter plaque: brass on dark wood, a heart and your company's name (64 × 72).
+    static func plaque(_ c: inout GraphicsContext, company: String) {
+        c.fill(Path(CGRect(x: 0, y: 0, width: 64, height: 72)), with: .linearGradient(Gradient(colors: [Color(hex: "#3b2a4f"), Color(hex: "#2b2350")]), startPoint: .zero, endPoint: CGPoint(x: 0, y: 72)))
+        c.fill(Path(roundedRect: CGRect(x: 8, y: 14, width: 48, height: 40), cornerRadius: 5), with: .color(Color(hex: "#6a4024")))
+        c.fill(Path(roundedRect: CGRect(x: 12, y: 18, width: 40, height: 32), cornerRadius: 3),
+               with: .linearGradient(Gradient(colors: [Color(hex: "#ffe39a"), Color(hex: "#e8b04a"), Color(hex: "#b07a1e")]), startPoint: CGPoint(x: 0, y: 18), endPoint: CGPoint(x: 0, y: 50)))
+        var heart = Path()
+        heart.move(to: CGPoint(x: 32, y: 32))
+        heart.addCurve(to: CGPoint(x: 32, y: 24.5), control1: CGPoint(x: 26, y: 27), control2: CGPoint(x: 27, y: 21))
+        heart.addCurve(to: CGPoint(x: 32, y: 32), control1: CGPoint(x: 37, y: 21), control2: CGPoint(x: 38, y: 27))
+        c.fill(heart, with: .color(Color(hex: "#c2401f")))
+        c.draw(Text(loc("store.plaque")).font(.custom("BarlowCondensed-ExtraBold", fixedSize: 6)).foregroundColor(Color(hex: "#5a3a10")), at: CGPoint(x: 32, y: 39))
+        c.draw(Text(company).font(.custom("Barlow-Bold", fixedSize: 5.5)).foregroundColor(Color(hex: "#5a3a10")), at: CGPoint(x: 32, y: 45.5))
     }
 
     /// Egypt: the Nile at dawn, a pyramid, an obelisk and a balloon in your colours over them (64 × 72 units).
@@ -215,7 +252,6 @@ struct BazaarView: View {
                 section(.figure, "bazaar.figures", s)
                 section(.shape, "bazaar.shapes", s)
                 section(.pattern, "bazaar.patterns", s)
-                section(.region, "bazaar.regions", s)
             }
             CardText.hint(loc("bazaar.localPrices"))
             Button {
@@ -236,10 +272,11 @@ struct BazaarView: View {
     @MainActor private func section(_ kind: StoreItem.Kind, _ key: String, _ s: GameState) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(loc(key)).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
-            CardText.hint(loc(key + ".hint"))
+            CardText.hint(loc(key == "bazaar.decor" ? "bazaar.decor.hint2" : key + ".hint"))
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 8)], spacing: 8) {
-                ForEach(StoreItem.allCases.filter { $0.kind == kind }, id: \.self) { k in
-                    let own = s.owned(k), locked = k == .egypt && !own && !s.regionOpen(.lux)
+                // v115: the small decorations and the figures are sold as packs, the rest one by one
+                ForEach(StoreItem.allCases.filter { kind == .figure ? $0 == .figurePack : (($0.kind == kind && $0.isProduct) || (kind == .decoration && $0 == .decorPack)) }, id: \.self) { k in
+                    let own = k.kind == .pack ? (s.owned(k) || k.packItems.allSatisfy(s.owned)) : s.owned(k), locked = false
                     Button {
                         SoundEngine.shared.play(.click)
                         store.storeItem = k
@@ -248,6 +285,9 @@ struct BazaarView: View {
                             StoreThumb(item: k, colors: s.colors, company: s.company).frame(width: 60, height: 68).accessibilityHidden(true)
                             Text(k.title).font(Theme.font(14, .bold, condensed: true)).foregroundStyle(Theme.ink)
                                 .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
+                            if k.kind == .pack {
+                                Text(loc("bazaar.packParts", num(k.packItems.count))).font(Theme.font(11)).foregroundStyle(Theme.ink2)
+                            }
                             Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : storePrice(k))
                                 .font(Theme.font(13, .heavy)).foregroundStyle(.white)
                                 .padding(.horizontal, 9).padding(.vertical, 2)
@@ -335,9 +375,9 @@ struct StoreItemView: View {
             if item.kind == .decoration, let s {
                 Text(loc(item == .pigeons ? "store.dayPreview" : "store.nightPreview")).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
                 DecorNightPreview(item: item, state: s)
-            } else if item == .founder, let s {
+            } else if item == .founder || item.kind == .pack, let s {
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 6), count: 5), spacing: 6) {
-                    ForEach(s.bundleLeft, id: \.self) { q in
+                    ForEach(item == .founder ? s.bundleLeft : item.packItems, id: \.self) { q in
                         StoreThumb(item: q, colors: s.colors, company: s.company).aspectRatio(64 / 72, contentMode: .fit)
                             .background(Color.white.opacity(0.55), in: RoundedRectangle(cornerRadius: 10))
                     }
@@ -378,7 +418,7 @@ struct StoreItemView: View {
             .buttonStyle(ChunkyButtonStyle(kind: .big))
             .disabled(shop.buying != nil)
             // every single cosmetic also points at the pack while the pack saves money
-            if let s, [.pattern, .shape, .decoration, .figure].contains(item.kind), !item.gift, s.bundleWorth {
+            if let s, [.pattern, .shape, .decoration, .pack].contains(item.kind), item.isProduct, s.bundleWorth {
                 Button {
                     SoundEngine.shared.play(.click)
                     store.storeItem = .founder
@@ -416,7 +456,9 @@ struct StoreItemView: View {
         case .shape: loc("store.lead.shape")
         case .pattern: loc("store.lead.pattern")
         case .figure: item == .figInitial ? loc("store.lead.figInitial", ShowCardView.initial(s?.company ?? "")) : loc("store.lead.figure")
-        case .region: loc("store.lead.egypt")
+        case .pack: loc(item == .figurePack ? "store.lead.figurePack" : "store.lead.decorPack")
+        case .unlock: loc("store.lead.worldTour")
+        case .supporter: loc("store.lead.supporter")
         case .bundle: loc("store.lead.bundle", num(s?.bundleLeft.count ?? 0))
         }
     }
@@ -460,5 +502,62 @@ struct DecorNightPreview: View {
         .background(Color(hex: "#1b1840"))
         .clipShape(RoundedRectangle(cornerRadius: 16))
         .accessibilityHidden(true)
+    }
+}
+
+/// v115: after the Baron of Cappadocia ceremony (or when a new region is out of reach): the Grand Tour, or the Supporter
+/// Edition when the Founder Pack isn't yours yet (`showTourOffer`).
+struct TourOfferView: View {
+    @Environment(GameStore.self) private var store
+
+    var body: some View {
+        let s = store.state
+        ModalCard(onClose: close) {
+            Text(loc("store.worldTour")).font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
+            CardText.title(loc("tour.title"))
+            StoreThumb(item: .worldTour, colors: s?.colors ?? [])
+                .accessibilityHidden(true)
+                .frame(width: 140, height: 158)
+                .frame(maxWidth: .infinity)
+                .padding(8)
+                .background(LinearGradient(colors: [Color(hex: "#bfe0f2"), Color(hex: "#ffe6c4")], startPoint: .top, endPoint: .bottom), in: RoundedRectangle(cornerRadius: 16))
+            CardText.lead(loc("tour.lead"))
+            option(.worldTour, sub: loc("tour.worldSub"), was: nil, main: true)
+            if let s, !s.owned(.founder) {
+                option(.supporter, sub: loc("tour.supporterSub", StoreItem.founder.title), was: StoreItem.price(of: StoreItem.worldTour.euro + StoreItem.founder.euro), main: false)
+            }
+            Button {
+                SoundEngine.shared.play(.click)
+                close()
+            } label: { Text(loc("tour.later")).frame(maxWidth: .infinity) }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost, wide: true))
+        }
+    }
+
+    private func option(_ k: StoreItem, sub: String, was: String?, main: Bool) -> some View {
+        Button {
+            SoundEngine.shared.play(.click)
+            store.showTourOffer = false
+            store.storeItem = k
+        } label: {
+            HStack(alignment: .center, spacing: 10) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(k.title).font(Theme.font(20, .heavy, condensed: true)).foregroundStyle(Theme.ink)
+                    Text(sub).font(Theme.font(12.5)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 6)
+                if let was { Text(was).font(Theme.font(13)).strikethrough().foregroundStyle(Theme.ink2) }
+                Text(storePrice(k)).font(Theme.font(17, .heavy)).foregroundStyle(Theme.ink)
+            }
+            .padding(.horizontal, 14).padding(.vertical, 12)
+            .background(main ? Color(hex: "#fff6f2") : Color.white, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(main ? Theme.coral : Theme.line, lineWidth: 2))
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func close() {
+        store.showTourOffer = false
+        store.showNextHezarfen()
     }
 }

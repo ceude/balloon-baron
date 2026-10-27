@@ -30,4 +30,4 @@ add("studio.classic", "Classic", "Klasik", "Klassisch", "Clásica", "クラシ�
 
 # Passengers queueing at your office
 add("collect.queue", "Passengers: %@", "Yolcu: %@", "Passagiere: %@", "Pasajeros: %@", "乗客：%@", "승객: %@")
-add("store.nightPreview", "Your town will look like this at night", "Kasaban gece böyle görünecek", "So sieht deine Stadt nachts aus", "Así se verá tu pueblo de noche", "夜の町はこう見えます", "밤에는 마을이 이렇게 보여요")
+add("store.nightPreview", "Your town will look like this at night", "Kasaban gece böyle görünecek", "So sieht deine Stadt nachts aus", "Así se verá tu pueblo de noche", "夜の町はこうなる", "밤에는 마을이 이렇게 보여요")

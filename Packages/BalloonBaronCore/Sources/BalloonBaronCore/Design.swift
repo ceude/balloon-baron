@@ -37,34 +37,54 @@ public enum StoreItem: String, Codable, CaseIterable, CodingKeyRepresentable, Se
     case fountain, statue, lanterns, flags
     case pigeons, arch, cafe, rugs
     case figStar, figTulip, figButterfly, figSpiral, figInitial
-    case egypt
+    /// v115: the small decorations and the show figures are sold as two packs.
+    case decorPack, figurePack
     case founder
+    /// v115: Cappadocia is the free game; the Grand Tour opens America, Egypt and the regions to come. The Supporter
+    /// Edition is the Grand Tour, the Founder Pack and a supporter plaque in town.
+    case worldTour, supporter
 
-    /// The skull replaced the Hezarfen balloon: whoever bought that one owns the skull.
+    /// The skull replaced the Hezarfen balloon: whoever bought that one owns the skull. v113's Egypt unlock became the
+    /// Grand Tour.
     public init?(rawValue: String) {
-        guard let k = Self.allCases.first(where: { "\($0)" == (rawValue == "hezarfen" ? "skull" : rawValue) }) else { return nil }
+        let name = rawValue == "hezarfen" ? "skull" : rawValue == "egypt" ? "worldTour" : rawValue
+        guard let k = Self.allCases.first(where: { "\($0)" == name }) else { return nil }
         self = k
     }
 
-    public enum Kind: Sendable { case pattern, shape, decoration, figure, region, bundle }
+    public enum Kind: Sendable { case pattern, shape, decoration, figure, pack, unlock, bundle, supporter }
     public var kind: Kind {
         switch self {
         case .gold, .tile, .sky, .kilim: .pattern
         case .heart, .star, .skull: .shape
         case .fountain, .statue, .lanterns, .flags, .pigeons, .arch, .cafe, .rugs: .decoration
         case .figStar, .figTulip, .figButterfly, .figSpiral, .figInitial: .figure
-        case .egypt: .region
+        case .decorPack, .figurePack: .pack
+        case .worldTour: .unlock
         case .founder: .bundle
+        case .supporter: .supporter
         }
     }
+    /// The pack an item comes in (it isn't sold on its own), and a pack's items.
+    public var pack: StoreItem? {
+        switch self {
+        case .pigeons, .arch, .cafe, .rugs: .decorPack
+        case .figStar, .figTulip, .figButterfly, .figSpiral, .figInitial: .figurePack
+        default: nil
+        }
+    }
+    public var packItems: [StoreItem] { Self.allCases.filter { $0.pack == self } }
+    /// Sold on the App Store (the gift and the pack items aren't).
+    public var isProduct: Bool { !gift && pack == nil }
     public var gift: Bool { self == .lanterns }
     /// The price in euros (the App Store shows its own local price once loaded).
     public var euro: Double {
         switch self {
         case .heart, .star, .skull: 1.99
-        case .pigeons, .arch, .cafe, .rugs, .figStar, .figTulip, .figButterfly, .figSpiral, .figInitial: 0.49
-        case .egypt: 2.99
+        case .pigeons, .arch, .cafe, .rugs, .figStar, .figTulip, .figButterfly, .figSpiral, .figInitial: 0
+        case .worldTour: 5.99
         case .founder: 6.99
+        case .supporter: 11.99
         case .lanterns: 0
         default: 0.99
         }
@@ -76,25 +96,25 @@ public enum StoreItem: String, Codable, CaseIterable, CodingKeyRepresentable, Se
         case .figButterfly: "balloonbaron.fig.butterfly"
         case .figSpiral: "balloonbaron.fig.spiral"
         case .figInitial: "balloonbaron.fig.initial"
-        default: "balloonbaron.\(rawValue)"
+        default: "balloonbaron.\(rawValue.lowercased())"
         }
     }
     public var pattern: Pattern? { kind == .pattern ? Pattern(rawValue: rawValue) : nil }
     public var shape: EnvelopeShape? { kind == .shape ? EnvelopeShape(rawValue: rawValue) : nil }
 
-    /// What the Founder Pack holds: every pattern, shape, decoration and show figure (not Egypt, not the gift).
-    public static let bundle: [StoreItem] = allCases.filter { [.pattern, .shape, .decoration, .figure].contains($0.kind) && !$0.gift }
+    /// What the Founder Pack holds: every pattern, shape, big decoration and the two packs (not the Grand Tour, not the gift).
+    public static let bundle: [StoreItem] = allCases.filter { [.pattern, .shape, .decoration, .pack].contains($0.kind) && $0.isProduct }
 }
 
 extension GameState {
     /// The pack items not owned yet, what they'd cost one by one, and how much the pack saves on that.
-    public var bundleLeft: [StoreItem] { StoreItem.bundle.filter { !owned($0) } }
+    public var bundleLeft: [StoreItem] { StoreItem.bundle.filter { !owned($0) && !($0.kind == .pack && $0.packItems.allSatisfy(owned)) } }
     public var bundleWas: Double { (bundleLeft.reduce(0) { $0 + $1.euro } * 100).rounded() / 100 }
     public var bundleOff: Int { bundleWas > 0 ? Int(((1 - StoreItem.founder.euro / bundleWas) * 100).rounded()) : 0 }
     /// The pack is offered while it saves at least a fifth.
-    public var bundleWorth: Bool { !owned(.founder) && bundleOff >= 20 }
-    /// Luxor needs the Egypt unlock before you can go in.
-    public func needsPack(_ r: RegionID) -> Bool { r == .lux && !owned(.egypt) }
+    public var bundleWorth: Bool { !owned(.founder) && !owned(.supporter) && bundleOff >= 20 }
+    /// America and Egypt need the Grand Tour before you can go in (v115; Cappadocia is the free game).
+    public func needsPack(_ r: RegionID) -> Bool { r != .cap && !owned(.worldTour) }
     /// The Balloon Show's figure, when one is bought and picked.
     public var showFigure: StoreItem? { showFig.flatMap { owned($0) ? $0 : nil } }
 }
@@ -213,10 +233,18 @@ extension Game {
     public mutating func grantStoreItem(_ k: StoreItem) {
         guard !state.owned(k) else { return }
         if k == .founder { grantBundle(); return }
+        if k == .supporter {
+            if !state.owned(.founder) { grantBundle() }
+            var st = state.store ?? [:]
+            st[.supporter] = state.day
+            state.store = st
+            return
+        }
         var st = state.store ?? [:]
         st[k] = state.day
         state.store = st
         if k.kind == .figure { state.showFig = k }
+        if k == .figurePack && state.showFig == nil { state.showFig = .figStar }
         guard k.kind == .pattern || k.kind == .shape else { return }
         let d = addGiftDesign(k)
         let fb = state.balloon(state.flagship) ?? state.balloons.first

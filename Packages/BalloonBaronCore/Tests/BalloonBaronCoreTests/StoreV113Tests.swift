@@ -5,18 +5,23 @@ import XCTest
 final class StoreV113Tests: XCTestCase {
     func newGame() -> Game { Game(company: "Test Air", colors: Rules.palettes[0], seed: 5) }
 
-    func testEgyptGatesLuxorOnly() {
+    /// v115: Cappadocia is the free game; America and Egypt need the Grand Tour (or the Supporter Edition).
+    func testGrandTourGatesTheWorld() {
         var g = newGame()
         g.state.barons[.cap] = 1
         g.state.holding.cash = 1_000_000
-        XCTAssertFalse(g.state.needsPack(.abq), "America is free")
+        XCTAssertTrue(g.state.needsPack(.abq))
+        XCTAssertFalse(g.enterRegion(.abq), "Grand Tour first")
+        g.grantStoreItem(.worldTour)
         XCTAssertTrue(g.enterRegion(.abq))
         g.state.barons[.abq] = g.state.day
-        XCTAssertTrue(g.state.needsPack(.lux))
-        XCTAssertFalse(g.enterRegion(.lux), "Egypt first")
-        g.grantStoreItem(.egypt)
-        XCTAssertFalse(g.state.needsPack(.lux))
         XCTAssertTrue(g.enterRegion(.lux))
+        var h = newGame()
+        h.grantStoreItem(.supporter)
+        XCTAssertTrue(h.state.owned(.worldTour))
+        XCTAssertTrue(h.state.owned(.founder) || StoreItem.bundle.allSatisfy { h.state.owned($0) })
+        XCTAssertTrue(h.state.owned(.pigeons), "the pack items come with it")
+        XCTAssertEqual(StoreItem(rawValue: "egypt"), .worldTour, "v113 Egypt buyers have the Grand Tour")
     }
 
     func testFounderPackGrantsEverythingOnce() {
@@ -24,19 +29,20 @@ final class StoreV113Tests: XCTestCase {
         g.grantStoreItem(.gold)
         XCTAssertEqual(g.state.bundleLeft.count, StoreItem.bundle.count - 1)
         XCTAssertTrue(g.state.bundleWorth)
-        XCTAssertEqual(g.state.bundleWas, 16.32, accuracy: 0.001)
-        XCTAssertEqual(g.state.bundleOff, 57)
+        XCTAssertEqual(g.state.bundleWas, 13.89, accuracy: 0.001)
+        XCTAssertEqual(g.state.bundleOff, 50)
         let designs = g.state.designs.count
         g.grantStoreItem(.founder)
         XCTAssertTrue(StoreItem.bundle.allSatisfy { g.state.owned($0) })
-        XCTAssertFalse(g.state.owned(.egypt), "Egypt isn't in the pack")
+        XCTAssertFalse(g.state.owned(.worldTour), "the Grand Tour isn't in the pack")
         XCTAssertFalse(g.state.bundleWorth)
         XCTAssertEqual(g.state.designs.count, designs + 6, "three patterns and three shapes not owned yet")
+        XCTAssertTrue(g.state.owned(.figTulip), "figures come in their pack")
         XCTAssertEqual(g.state.design(of: g.state.balloon(g.state.flagship)!)?.shape, .heart, "first shape on the flagship")
         XCTAssertEqual(g.state.decorationCount, 7)
-        if case .founderPack(18, _, .heart) = g.state.hezQueue.first {} else { XCTFail("one message: \(String(describing: g.state.hezQueue.first))") }
-        XCTAssertEqual(StoreItem.bundle.count, 19)
-        XCTAssertEqual(StoreItem.bundle.reduce(0) { $0 + $1.euro }, 17.31, accuracy: 0.001)
+        if case .founderPack(11, _, .heart) = g.state.hezQueue.first {} else { XCTFail("one message: \(String(describing: g.state.hezQueue.first))") }
+        XCTAssertEqual(StoreItem.bundle.count, 12)
+        XCTAssertEqual(StoreItem.bundle.reduce(0) { $0 + $1.euro }, 14.88, accuracy: 0.001)
     }
 
     func testFiguresArePickedWhenBought() {
@@ -44,10 +50,11 @@ final class StoreV113Tests: XCTestCase {
         XCTAssertNil(g.state.showFigure)
         g.state.showFig = .figStar
         XCTAssertNil(g.state.showFigure, "not owned")
-        g.grantStoreItem(.figTulip)
-        XCTAssertEqual(g.state.showFigure, .figTulip)
-        XCTAssertEqual(StoreItem.figTulip.productID, "balloonbaron.fig.tulip")
-        XCTAssertEqual(StoreItem.egypt.euro, 2.99)
+        g.grantStoreItem(.figurePack)
+        XCTAssertEqual(g.state.showFigure, .figStar)
+        XCTAssertFalse(StoreItem.figTulip.isProduct, "sold in the pack")
+        XCTAssertEqual(StoreItem.figurePack.productID, "balloonbaron.figurepack")
+        XCTAssertEqual(StoreItem.worldTour.euro, 5.99)
     }
 
     func testOldSavesStillDecode() throws {

@@ -148,7 +148,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ダブルタップでバルブを開閉。"
+            "value": "ダブルタップでベントを開閉。"
           }
         },
         "ko": {
@@ -1993,7 +1993,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "通算10,000人"
+            "value": "通算10,000人を運んだ"
           }
         },
         "ko": {
@@ -2034,7 +2034,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "乗客1000人"
+            "value": "乗客千人"
           }
         },
         "ko": {
@@ -3182,7 +3182,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ここでの1日の純利益が%1$@以上になると利用可能になり、その後も使える（最近：%2$@）。"
+            "value": "ここでの1日の純利益がふだん%1$@以上になると解放され、以後ずっと使える（最近：%2$@）。"
           }
         },
         "ko": {
@@ -3732,6 +3732,47 @@
         }
       }
     },
+    "bazaar.decor.hint2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bleibender Schmuck in der Stadt; jedes Stück leuchtet nachts auf seine Art."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lasting decorations in town; each lights up in its own way at night."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adornos permanentes en el pueblo; cada uno se ilumina a su manera de noche."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "町に残る飾り。夜はそれぞれの灯りがともる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마을에 남는 장식. 밤에는 저마다의 불빛이 켜집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasabada kalıcı süsler; gece her birinin kendi ışığı var."
+          }
+        }
+      }
+    },
     "bazaar.figures": {
       "extractionState": "manual",
       "localizations": {
@@ -4015,6 +4056,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "🔒 Kilitli"
+          }
+        }
+      }
+    },
+    "bazaar.packParts": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teile: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pieces: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piezas: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@点"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "구성: %@개"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parça: %@"
           }
         }
       }
@@ -5068,7 +5150,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "最後の気球も売ったよ。アルバカーキはもうお前のものだ、坊や。フィエスタでビールをおごってくれ。"
+            "value": "最後の気球も売ったよ。アルバカーキはもうお前のものだ、新入り。フィエスタでビールをおごってくれ。"
           }
         },
         "ko": {
@@ -5109,7 +5191,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "おやおや、風が妙なものを運んできたな。サンディア・スカイ・ライズのデール・ウィテカーだ。ボックス風を知ってるか、坊や？ここで気球を飛ばすのはトルコとは違うぜ。フィエスタで会おう、まだここにいればな。"
+            "value": "おやおや、風が妙なものを運んできたな。サンディア・スカイ・ライズのデール・ウィテカーだ。ボックス風を知ってるか、新入り？ここで気球を飛ばすのはトルコとは違うぜ。フィエスタで会おう、まだここにいればな。"
           }
         },
         "ko": {
@@ -5150,7 +5232,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "あのホテルのオーナーとは同じロデオクラブでね。契約は今や俺とだ。悪く思うなよ。"
+            "value": "あのホテルのオーナーとは同じロデオクラブの仲間でな。契約は今や俺とだ。悪く思うなよ。"
           }
         },
         "ko": {
@@ -5273,7 +5355,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "お前のパイロットとコーヒーを飲んで、いい条件を出した。ここはアメリカだぜ、坊や。誰だって一番いい条件に乗る。"
+            "value": "お前のパイロットとコーヒーを飲んで、いい条件を出した。ここはアメリカだぜ、新入り。誰だって一番いい条件に乗る。"
           }
         },
         "ko": {
@@ -5355,7 +5437,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ハードランディングの話は聞いた。観光客は忘れんぞ。気球を飛ばすのはわしだ。お前は……まあ好きにやれ。"
+            "value": "ハードランディングの話は聞いた。観光客は忘れんぞ。気球を飛ばすのは俺だ。お前は……まあ好きにやれ。"
           }
         },
         "ko": {
@@ -5396,7 +5478,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "谷の鍵はお前のものだ。20年前、わしもお前と同じくバスケット一つで始めた。誰にも言うなよ。カッパドキアはもうお前のものだ。大事にしてくれ。"
+            "value": "谷の鍵はお前のものだ。20年前、俺もお前と同じくバスケット一つで始めた。誰にも言うなよ。カッパドキアはもうお前のものだ。大事にしてくれ。"
           }
         },
         "ko": {
@@ -5437,7 +5519,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "気球5機だと？わしの格納庫にはその倍ある。ホテルはわしと組み、ガイドはわしを勧める。カッパドキアは家業だ、若いの。お前は家族じゃない。"
+            "value": "気球5機だと？俺の格納庫にはその倍ある。ホテルは俺と組み、ガイドは俺を勧める。カッパドキアは家業だ、若いの。お前は家族じゃない。"
           }
         },
         "ko": {
@@ -5601,7 +5683,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "気球商売を始めたそうだな。わしはケナン・アルスラン、ギョレメ・スカイだ。この谷を20年飛んでいる。バスケット一つと小銭でか？まあやってみろ。一シーズン持ちこたえたら話をしよう。"
+            "value": "気球商売を始めたそうだな。俺はケナン・アルスラン、ギョレメ・スカイだ。この谷を20年飛んでいる。バスケット一つと小銭でか？まあやってみろ。一シーズン持ちこたえたら話をしよう。"
           }
         },
         "ko": {
@@ -5642,7 +5724,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "あのホテルは今やわしと組んでいる。支配人とは20年来の友だ。商売は値段だけじゃないぞ、若いの。"
+            "value": "あのホテルは今や俺と組んでいる。支配人とは20年来の友だ。商売は値段だけじゃないぞ、若いの。"
           }
         },
         "ko": {
@@ -5724,7 +5806,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "昨日はわしより多くの客を運んだそうだな。一日の運だ。明日は値下げする。観光客は誰がこの谷の主か思い出すだろう。"
+            "value": "昨日は俺より多くの客を運んだそうだな。一日の運だ。明日は値下げする。観光客は誰がこの谷の主か思い出すだろう。"
           }
         },
         "ko": {
@@ -6954,7 +7036,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "休憩室"
+            "value": "パイロットラウンジ"
           }
         },
         "ko": {
@@ -7118,7 +7200,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "販売所"
+            "value": "予約所"
           }
         },
         "ko": {
@@ -8822,37 +8904,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Als Nächstes: Kapitel %1$@, %2$@"
+            "value": "Weiter"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Next: chapter %1$@, %2$@"
+            "value": "Continue"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Siguiente: capítulo %1$@, %2$@"
+            "value": "Continuar"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "次：第%1$@章「%2$@」"
+            "value": "次へ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "다음: 챕터 %1$@, %2$@"
+            "value": "계속"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sıradaki: Bölüm %1$@, %2$@"
+            "value": "Devam"
           }
         }
       }
@@ -10562,7 +10644,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "チケット%1$@、気球：%2$@"
+            "value": "チケット：%1$@・気球：%2$@"
           }
         },
         "ko": {
@@ -13924,7 +14006,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "手元資金は%@。銀行で借りて、あとで市場画面から買える。"
+            "value": "資金：%@。銀行で借りれば、あとで市場画面から買える。"
           }
         },
         "ko": {
@@ -13965,7 +14047,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "所持金：%1$@。買収ローンには保有気球がもっと必要。必要な気球：%2$@、保有：%3$@。"
+            "value": "資金：%1$@。買収ローンには保有気球がもっと必要。必要な気球：%2$@、保有：%3$@。"
           }
         },
         "ko": {
@@ -14006,7 +14088,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "金庫：%@。不足分は買収ローンで売り手に支払える。"
+            "value": "資金：%@。不足分は買収ローンで売り手に支払える。"
           }
         },
         "ko": {
@@ -15195,7 +15277,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "工房の新しい気球が完成し、船団に加わった：%1$@（%2$@）。"
+            "value": "工房の新しい気球が完成し、フリートに加わった：%1$@（%2$@）。"
           }
         },
         "ko": {
@@ -15564,7 +15646,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "操縦免許は今日で切れる。明日は旗艦を自分で飛ばせない。乗組員タブで更新しよう。"
+            "value": "操縦免許は今日で切れる。明日は旗艦を自分で飛ばせない。クルー画面で更新しよう。"
           }
         },
         "ko": {
@@ -17901,7 +17983,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "工房で"
+            "value": "工房"
           }
         },
         "ko": {
@@ -17983,7 +18065,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "完成したら船団に加わる。"
+            "value": "完成したらフリートに加わる。"
           }
         },
         "ko": {
@@ -18516,7 +18598,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@が船団に気球を1機加えたく、あなたの工房から買いたいと言っている。バスケット：%2$@。お金はあなたのものだが、ライバルは気球が1機増える。"
+            "value": "%1$@がフリートに気球を1機加えたいと、あなたの工房に購入を申し出ている。バスケット：%2$@。代金はあなたのものだが、ライバルの気球も1機増える。"
           }
         },
         "ko": {
@@ -19869,7 +19951,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "劣化した球皮を交換（%1$@）· %2$@"
+            "value": "劣化した球皮を交換（%1$@）・%2$@"
           }
         },
         "ko": {
@@ -20074,7 +20156,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "準備OK · %@"
+            "value": "準備OK・%@"
           }
         },
         "ko": {
@@ -20115,7 +20197,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "準備OK · 球皮が劣化"
+            "value": "準備OK・球皮が劣化"
           }
         },
         "ko": {
@@ -20156,7 +20238,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "準備OK · パイロット：あなた"
+            "value": "準備OK・パイロット：あなた"
           }
         },
         "ko": {
@@ -21017,7 +21099,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "創造性：%1$@ · 鮮度：%2$@ · 気球：%3$@"
+            "value": "創造性：%1$@・鮮度：%2$@・気球：%3$@"
           }
         },
         "ko": {
@@ -21058,7 +21140,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "創造性：%1$@ · 鮮度：%2$@（色あせ）· 気球：%3$@"
+            "value": "創造性：%1$@・鮮度：%2$@（色あせ）・気球：%3$@"
           }
         },
         "ko": {
@@ -21222,7 +21304,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "創造性：%1$@ · 鮮度：%2$@"
+            "value": "創造性：%1$@・鮮度：%2$@"
           }
         },
         "ko": {
@@ -21263,7 +21345,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "球皮 %1$@ · 残りフライト：%2$@"
+            "value": "球皮 %1$@・残りフライト：%2$@"
           }
         },
         "ko": {
@@ -21304,7 +21386,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "球皮 %1$@、消耗 · 残りフライト：%2$@"
+            "value": "球皮 %1$@（消耗）・残りフライト：%2$@"
           }
         },
         "ko": {
@@ -22165,7 +22247,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "座席：%1$@ · 風のリスク：×%2$@ · 整備費：%3$@/日 · 燃料：%4$@/回"
+            "value": "座席：%1$@・風のリスク：×%2$@・整備費：%3$@/日・燃料：%4$@/回"
           }
         },
         "ko": {
@@ -22206,7 +22288,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "座席：%1$@ · 整備費：%2$@/日 · 燃料：%3$@/回"
+            "value": "座席：%1$@・整備費：%2$@/日・燃料：%3$@/回"
           }
         },
         "ko": {
@@ -22329,7 +22411,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "修理中 · 残り日数：%@"
+            "value": "修理中・残り日数：%@"
           }
         },
         "ko": {
@@ -23313,7 +23395,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "手持ち資金から"
+            "value": "資金から"
           }
         },
         "ko": {
@@ -24584,7 +24666,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "飛行シーンは次のビルドで追加。今は着陸結果を選んでね。"
+            "value": "飛行シーンは次のビルドで追加予定。今は着陸の結果を選ぼう。"
           }
         },
         "ko": {
@@ -24871,7 +24953,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "**排気弁**：長押しすると気球のてっぺんのパラシュートバルブが開き、熱い空気が抜けて一気に下降する。地面の近くでは注意：ハードランディングになる。"
+            "value": "**ベント**：長押しすると気球のてっぺんのパラシュートベントが開き、熱い空気が抜けて一気に下降する。地面の近くでは注意：ハードランディングになる。"
           }
         },
         "ko": {
@@ -24994,7 +25076,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "排気弁"
+            "value": "ベント"
           }
         },
         "ko": {
@@ -25035,7 +25117,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パラシュートバルブ"
+            "value": "パラシュートベント"
           }
         },
         "ko": {
@@ -25199,7 +25281,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "全部"
+            "value": "すべて"
           }
         },
         "ko": {
@@ -25240,7 +25322,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "全部飛ぶ"
+            "value": "全機飛行"
           }
         },
         "ko": {
@@ -25281,7 +25363,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "全部地上"
+            "value": "全機待機"
           }
         },
         "ko": {
@@ -25404,7 +25486,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "飛ぶ"
+            "value": "飛行"
           }
         },
         "ko": {
@@ -25445,7 +25527,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "地上"
+            "value": "待機"
           }
         },
         "ko": {
@@ -26593,7 +26675,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "所持金：%@"
+            "value": "資金：%@"
           }
         },
         "ko": {
@@ -27167,7 +27249,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "人気 %@"
+            "value": "人気：%@"
           }
         },
         "ko": {
@@ -27372,7 +27454,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "第%1$@章 / %2$@"
+            "value": "第%1$@章／全%2$@章"
           }
         },
         "ko": {
@@ -28192,7 +28274,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "気球のひとつの球皮がくたびれておる。古い布に強風は事故を招く。フリート画面で張り替えよ。"
+            "value": "お前の気球の一機、球皮がくたびれておる。古い布に強風は事故を招く。フリート画面で張り替えよ。"
           }
         },
         "ko": {
@@ -28356,7 +28438,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "町の東にバザールがあるのを見たか、弟子よ。気球用の特別な柄や形のある球皮、町の飾りを売っている。飾りは観光客を呼び、夜には町を明るく照らす。わしから贈り物だ。バザールでランタンのセットが待っておるぞ。"
+            "value": "町の東にバザールがあるのを見たか、弟子よ。気球用の特別な柄や変わり形の球皮、町の飾りを売っておる。飾りは観光客を呼び、夜には町を明るく照らす。わしから贈り物だ。バザールでランタンのセットが待っておるぞ。"
           }
         },
         "ko": {
@@ -28479,7 +28561,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@がお前の広告の顔になったぞ！あちこちにポスターが貼られ、電話が鳴りやまんぞ、弟子よ。"
+            "value": "%@がお前の広告の顔になったぞ！街じゅうにポスターが貼られ、電話が鳴りやまん、弟子よ。"
           }
         },
         "ko": {
@@ -28725,7 +28807,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "あるブランドがお前の空に自社の巨大気球を飛ばしたいそうだ、弟子よ！観光客は少しぼやくが、ホールディングスには毎日お金が入る。"
+            "value": "あるブランドがお前の空に自社の巨大気球を飛ばしたいそうだ、弟子よ！観光客は少しぼやくが、ホールディングスには毎日金が入る。"
           }
         },
         "ko": {
@@ -28848,7 +28930,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "アメリカだぞ、弟子よ！アルバカーキの風は別物だ。名高い「ボックス」。低空では一方へ、少し上では逆へ運ぶから、腕のいい操縦士は離陸地点に戻ってこられる。30日ごとにバルーン・フィエスタもある。4日間、観光客が倍になる。ここでは全てドルで、ゼロからの出発だ。%@と小さな気球ひとつ。カッパドキアは自動運営で稼ぎ続け、収入はホールディングスへ行く。だがホールディングスからここへは送金できん。アメリカは自力で攻略するのだ。何かあれば呼ぶぞ。"
+            "value": "アメリカだぞ、弟子よ！アルバカーキの風は別物だ。名高い「ボックス」。低空では一方へ、少し上では逆へ運ぶから、腕のいいパイロットは離陸地点に戻ってこられる。30日ごとにバルーン・フィエスタもある。4日間、観光客が倍になる。ここでは全てドルで、ゼロからの出発だ。%@と小さな気球ひとつ。カッパドキアは自動運営で稼ぎ続け、収入はホールディングスへ行く。だがホールディングスからここへは送金できん。アメリカは自力で攻略するのだ。何かあれば呼ぶぞ。"
           }
         },
         "ko": {
@@ -29094,7 +29176,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "デザート・ブルーム・フライツという高級ブティックが開業した。機数は少なく高価格、だが大人気だ。"
+            "value": "デザート・ブルーム・フライツという高級ブティックが開業した。気球は少なく高価格、だが大人気だ。"
           }
         },
         "ko": {
@@ -29258,7 +29340,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "メサ・ゴールド・バルーンズがテキサスの石油マネーでアルバカーキにやって来た！資金も機体も豊富だ。気をつけよ、弟子よ。"
+            "value": "メサ・ゴールド・バルーンズがテキサスの石油マネーでアルバカーキにやって来た！資金も気球も豊富だ。気をつけよ、弟子よ。"
           }
         },
         "ko": {
@@ -29463,7 +29545,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "工房が開いたぞ、弟子よ！今はデザインだけだが、建物を大きくすれば自分の気球を作れる。まず小型、次に中型、そして大型、しかも市場価格より安く（割引：%@）。ライバルも注文してくるようになる。受ければ利益はお前のものだ。"
+            "value": "工房が開いたぞ、弟子よ！今はデザインだけだが、建物を強化すれば自分の気球を作れる。まず小型、次に中型、そして大型、しかも市場価格より安く（割引：%@）。ライバルも注文してくるようになる。受ければ利益はお前のものだ。"
           }
         },
         "ko": {
@@ -29586,7 +29668,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "光の祭典が始まったぞ、弟子よ！妖精の煙突はランタンで飾られ、3日間は観光客がたくさんだ。特別依頼を逃すなよ。"
+            "value": "光の祭典が始まったぞ、弟子よ！妖精の煙突はランタンで飾られ、3日間は観光客であふれる。特別依頼を逃すでないぞ。"
           }
         },
         "ko": {
@@ -29709,7 +29791,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "弟子よ、旗艦%@の修理が終わった。また旗艦に戻ったから、今日からはそれを操縦するんだ。"
+            "value": "弟子よ、旗艦%@の修理が終わった。また旗艦に戻ったから、今日からはそれを操縦するのだ。"
           }
         },
         "ko": {
@@ -29750,7 +29832,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "弟子よ、フリート画面が開いたぞ。金庫が潤ったら二機目の気球を考えてもよいが、気球ごとにパイロットが要るぞ。"
+            "value": "弟子よ、フリート画面が開いたぞ。金庫が潤ったら二機目の気球を考えてもよい。だが、気球一機ごとにパイロットが要る。"
           }
         },
         "ko": {
@@ -29791,7 +29873,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "創業者パックが届いたぞ、弟子よ！品数：%@。柄と変わり形の気球はデザイン工房に、飾りは町に、図形はショーのカードにある。"
+            "value": "創業者パックが届いたぞ、弟子よ！品数：%@。柄と変わり形の気球はデザインスタジオに、飾りは町に、図形はショーのカードにある。"
           }
         },
         "ko": {
@@ -29832,7 +29914,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "創業者パックが届いたぞ、弟子よ！品数：%1$@。柄と変わり形の気球はデザイン工房に、飾りは町に、図形はショーのカードにある。旗艦に最初の形を着せておいた：%2$@（%3$@）。"
+            "value": "創業者パックが届いたぞ、弟子よ！品数：%1$@。柄と変わり形の気球はデザインスタジオに、飾りは町に、図形はショーのカードにある。旗艦に最初の形を着せておいた：%2$@（%3$@）。"
           }
         },
         "ko": {
@@ -29996,7 +30078,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "空はいつも味方とは限らん。初日から気球も乗客も保険付きで飛んでおる。これからは保険を自分で切り替えられるが、忘れるな。たった一度の事故で、ひと朝のうちに金庫が空になることもある。"
+            "value": "空はいつも味方とは限らん。初日から気球も乗客も保険付きで飛んでおる。これからは保険を自分で切り替えられるが、忘れるな。たった一度の事故で、一朝にして金庫が空になることもある。"
           }
         },
         "ko": {
@@ -30119,7 +30201,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "100日目おめでとう、弟子よ！最初の朝のたった一機の気球を覚えているか？今の空を見てみろ。"
+            "value": "100日目おめでとう、弟子よ！最初の朝のたった一機の気球を覚えておるか？今の空を見てみよ。"
           }
         },
         "ko": {
@@ -30529,7 +30611,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "新しいオフィスが開いたぞ、弟子よ：%@！"
+            "value": "新しいオフィスが開いたぞ、弟子よ。%@だ！"
           }
         },
         "ko": {
@@ -30652,7 +30734,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "建物を大きくしたな。町もお前と一緒に育っておる、弟子よ。遠くから見ていて誇らしいぞ。"
+            "value": "建物を強化したな。町もお前と一緒に育っておる、弟子よ。遠くから見ていて誇らしいぞ。"
           }
         },
         "ko": {
@@ -30939,7 +31021,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "赤旗の日に地上にとどまったな。よくやったぞ、弟子よ。勇気はたやすく、忍耐は難しい。空は明日もそこにある。"
+            "value": "赤い旗の日に地上にとどまったな。よくやったぞ、弟子よ。勇気はたやすく、忍耐は難しい。空は明日もそこにある。"
           }
         },
         "ko": {
@@ -31103,7 +31185,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "弟子よ、昨日は空席が出たな。チケット代で客の気持ちは変わる。少し下げれば空席はなくなる。いつも満席なら上げて稼げばいい。料金は下のチケット欄で設定するんだ。"
+            "value": "弟子よ、昨日は空席が出たな。チケット代で客の気持ちは変わる。少し下げれば空席はなくなる。いつも満席なら上げて稼げばよい。料金は下のチケット欄で設定するのだ。"
           }
         },
         "ko": {
@@ -31226,7 +31308,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "よくやった、弟子よ。資金はまたプラスだ。これからは出費を引き締めよう。"
+            "value": "よくやった、弟子よ。資金はまたプラスだ。これからは出費を引き締めるのだ。"
           }
         },
         "ko": {
@@ -31349,7 +31431,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "第三の秘訣は忍耐だ。四日間半分空席で飛ぶか、金が尽きかけたライバルは売りに出る。好機を逃すな。クズル・ヴァディは赤旗でも飛び、罰金を払い、保険もない。真っ先に倒れるのはあいつらだ。"
+            "value": "第三の秘訣は忍耐だ。四日続けて半分空席で飛んだり、金が尽きかけたりしたライバルは売りに出る。好機を逃すな。クズル・ヴァディは赤い旗の日でも飛び、罰金を払い、保険もない。真っ先に倒れるのはあいつらだ。"
           }
         },
         "ko": {
@@ -31390,7 +31472,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "弟子よ、船団も大きくなったな。ある夜、全部の気球を町の上で灯してバルーンショーを開いてはどうだ？気球ごとに費用はかかるが、谷じゅうの噂になり、3日間はショー目当ての観光客が空席を埋めてくれる。15日に1回開けるぞ。"
+            "value": "弟子よ、フリートも大きくなったな。ある夜、全部の気球を町の上で灯してバルーンショーを開いてはどうだ？気球ごとに費用はかかるが、谷じゅうの噂になり、3日間はショー目当ての観光客が空席を埋めてくれる。15日に1回開けるぞ。"
           }
         },
         "ko": {
@@ -32005,7 +32087,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "世界4都市の事務所"
+            "value": "世界4都市のオフィス"
           }
         },
         "ko": {
@@ -32128,7 +32210,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "テレビキャンペーン"
+            "value": "テレビCMキャンペーン"
           }
         },
         "ko": {
@@ -33194,7 +33276,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "人気 1日−%@"
+            "value": "人気：1日−%@"
           }
         },
         "ko": {
@@ -35859,7 +35941,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "市場の%@があなたのもの。"
+            "value": "市場の%@を握っている。"
           }
         },
         "ko": {
@@ -36679,7 +36761,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パイロットたちがオフィスの前で待っている。タップして決める。"
+            "value": "パイロットたちが事務所の前で待っている。タップして決める。"
           }
         },
         "ko": {
@@ -37458,7 +37540,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "フリート：%1$@/%2$@機が飛ぶ"
+            "value": "フリート：%1$@/%2$@機が飛行"
           }
         },
         "ko": {
@@ -39713,7 +39795,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ギョレメ石の家"
+            "value": "ギョレメ・ストーンハウス"
           }
         },
         "ko": {
@@ -40082,7 +40164,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "事務所"
+            "value": "オフィス"
           }
         },
         "ko": {
@@ -40574,7 +40656,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "事務所：%1$@/%2$@"
+            "value": "オフィス：%1$@/%2$@"
           }
         },
         "ko": {
@@ -43239,7 +43321,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ホテルに忠誠心はない。だが小さな心づけで大抵は足りる。"
+            "value": "ホテルに忠誠心などない、弟子よ。だがちょっとした心づけで大抵は足りる。"
           }
         },
         "ko": {
@@ -43608,7 +43690,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パイロットなしに気球は飛ばん。昇給はたいていストより安くつくぞ。"
+            "value": "パイロットなしに気球は飛ばんぞ、弟子よ。昇給はたいていストより安くつく。"
           }
         },
         "ko": {
@@ -46659,6 +46741,47 @@
         }
       }
     },
+    "map.openTour": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weltreise %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grand Tour %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gran Tour %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グランドツアー %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그랜드 투어 %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Turu %@"
+          }
+        }
+      }
+    },
     "map.place": {
       "extractionState": "manual",
       "localizations": {
@@ -46942,6 +47065,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dünya haritası"
+          }
+        }
+      }
+    },
+    "map.tourNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zuerst schaltest du einmalig die Weltreise frei: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First you open the Grand Tour, once: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primero abres el Gran Tour, una sola vez: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まずグランドツアーを一度だけ開く：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "먼저 그랜드 투어를 한 번 엽니다: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Önce Dünya Turu'nu açarsın, bir kez: %@."
           }
         }
       }
@@ -47503,7 +47667,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@と契約中 · 残り日数：%2$@。"
+            "value": "%1$@と契約中・残り日数：%2$@。"
           }
         },
         "ko": {
@@ -49307,7 +49471,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "別の端末で続けるには、コードをコピーして、そちらでこの欄に貼り付け「読み込む」を押してください。"
+            "value": "別の端末で続けるには、コードをコピーし、その端末でこの欄に貼り付けて「読み込む」をタップしてください。"
           }
         },
         "ko": {
@@ -50906,7 +51070,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "雪の下で町の明かりが灯る。"
+            "value": "雪の中で町の明かりが灯る。"
           }
         },
         "ko": {
@@ -51316,7 +51480,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "デザイン制作が無料、創造性+10、デザインが60日間新鮮。アジア進出が半額。"
+            "value": "デザイン制作が無料、創造性+10、デザインの鮮度が60日間持続。アジア進出が半額。"
           }
         },
         "ko": {
@@ -51398,7 +51562,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ボンベは格納庫だ。賢いぞ、弟子よ。"
+            "value": "燃料ボンベは格納庫に収めたぞ。賢い手だ、弟子よ。"
           }
         },
         "ko": {
@@ -51644,7 +51808,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "花嫁はバスケットで泣いたそうだ、幸せで。写真は谷じゅうに広まるだろう。"
+            "value": "花嫁はバスケットの中でうれし泣きしたそうだ。写真は谷じゅうに広まるだろう。"
           }
         },
         "ko": {
@@ -53653,7 +53817,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "雪の下で灯る町"
+            "value": "雪の中に灯る町"
           }
         },
         "ko": {
@@ -54186,7 +54350,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@、赤旗の日に飛行して摘発"
+            "value": "%@、赤い旗の日に飛行して摘発"
           }
         },
         "ko": {
@@ -54432,7 +54596,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@、赤旗の日に摘発"
+            "value": "%@、赤い旗の日に摘発"
           }
         },
         "ko": {
@@ -56195,7 +56359,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "日"
+            "value": "DAY"
           }
         },
         "ko": {
@@ -57589,7 +57753,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "若い会社は一度の事故、一度の罰金にも耐えられないかもしれん。赤旗で飛べば潰れるかもしれんぞ。一日待っても何も失わない。"
+            "value": "若い会社は一度の事故、一度の罰金にも耐えられんかもしれん。赤い旗の日に飛べば潰れるかもしれんぞ。一日待っても何も失わん。"
           }
         },
         "ko": {
@@ -57630,7 +57794,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "そうだな、今日は見送る"
+            "value": "確かに、今日は見送る"
           }
         },
         "ko": {
@@ -58368,7 +58532,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "今日の風はどうだ？離陸の前に旗を確かめるんだぞ。"
+            "value": "今日の風はどうだ？離陸の前に旗を確かめるのだぞ。"
           }
         },
         "ko": {
@@ -58409,7 +58573,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ライバルはもう空の上。あなたも行かない？"
+            "value": "ライバルはもう空の上だ。お前も来るか？"
           }
         },
         "ko": {
@@ -59557,7 +59721,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "手元資金"
+            "value": "資金"
           }
         },
         "ko": {
@@ -59639,7 +59803,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "模様入りの気球が今日、人気を+%@押し上げた。"
+            "value": "柄入りの気球が今日、人気を+%@押し上げた。"
           }
         },
         "ko": {
@@ -60746,7 +60910,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "すぐに+0.2★、3日間ガイドが観光客を紹介。支払い後の所持金：%@。"
+            "value": "すぐに+0.2★、3日間ガイドが観光客を紹介。支払い後の資金：%@。"
           }
         },
         "ko": {
@@ -60869,7 +61033,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "1日の宿泊客：約%1$@、評価も上がる。支払い後の所持金：%2$@。"
+            "value": "1日の宿泊客：約%1$@、評価も上がる。支払い後の資金：%2$@。"
           }
         },
         "ko": {
@@ -61689,7 +61853,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "{p}だった。カッパドキアで一番安いかも。"
+            "value": "{p}払った。カッパドキアでいちばん安いかも。"
           }
         },
         "ko": {
@@ -63124,7 +63288,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パイロットは畑の真ん中に羽のように降ろしてくれた。シャンパンが一滴もこぼれなかった！"
+            "value": "パイロットは野原の真ん中に羽のように降ろしてくれた。シャンパンも一滴もこぼれなかった！"
           }
         },
         "ko": {
@@ -63288,7 +63452,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "キャプテンはまさに風を読んでいる。絶対にまた乗る。"
+            "value": "パイロットはまさに風を読んでいる。絶対にまた乗る。"
           }
         },
         "ko": {
@@ -64518,7 +64682,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "別の端末で続けるには、このコードをコピーして、そちらの「セーブコードを読み込む」に貼り付けよう。"
+            "value": "別の端末で続けるには、このコードをコピーし、その端末の「セーブコードを読み込む」に貼り付けてください。"
           }
         },
         "ko": {
@@ -64682,7 +64846,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "別の端末でコピーしたコードを貼り付けて「読み込む」を押そう。この端末のゲームと置き換わる。"
+            "value": "別の端末でコピーしたコードを貼り付けて「読み込む」をタップしてください。この端末のゲームは上書きされます。"
           }
         },
         "ko": {
@@ -65297,7 +65461,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "本当に？すべての進行が消える。もう一度タップ"
+            "value": "本当に？進行状況はすべて消えます。もう一度タップ"
           }
         },
         "ko": {
@@ -66281,7 +66445,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "船団に合わせる"
+            "value": "フリートに合わせる"
           }
         },
         "ko": {
@@ -66581,6 +66745,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ne kazandırır?"
+          }
+        }
+      }
+    },
+    "show.inPack": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Im Paket"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In the pack"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el pack"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パックに収録"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "팩에 포함"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pakette"
           }
         }
       }
@@ -67224,7 +67429,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "やめて、飛ぼう"
+            "value": "いや、飛ぼう"
           }
         },
         "ko": {
@@ -67388,7 +67593,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ギョレメ絨毯の家"
+            "value": "ギョレメ・カーペットハウス"
           }
         },
         "ko": {
@@ -67716,7 +67921,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "町はこう見えます"
+            "value": "町はこうなる"
           }
         },
         "ko": {
@@ -67729,6 +67934,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kasaban böyle görünecek"
+          }
+        }
+      }
+    },
+    "store.decorPack": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Platzschmuck"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Square Decorations"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Adornos de la plaza"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "広場の飾り"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "광장 장식"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meydan Süsleri"
           }
         }
       }
@@ -68016,6 +68262,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lale"
+          }
+        }
+      }
+    },
+    "store.figurePack": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show-Figuren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Figures"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Figuras del espectáculo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショーの図形"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쇼 도형"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şölen Figürleri"
           }
         }
       }
@@ -68331,7 +68618,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ランタンの列"
+            "value": "吊るしランタン"
           }
         },
         "ko": {
@@ -68430,6 +68717,47 @@
         }
       }
     },
+    "store.lead.decorPack": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vier bleibende Schmuckstücke für deine Stadt: ein Taubenschwarm, ein Willkommensbogen, ein Gartencafé und eine Kelim-Auslage. Alle sind in der Stadt zu sehen, nachts mit eigenem Licht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Four lasting decorations for your town: a pigeon flock, a welcome arch, a garden café and a kilim display. All show in town, each with its own lights at night."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuatro adornos permanentes para tu pueblo: una bandada de palomas, un arco de bienvenida, un café con terraza y una exposición de kilims. Todos se ven en el pueblo, cada uno con sus luces de noche."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "町に残る4つの飾り：ハトの群れ、歓迎のアーチ、ガーデンカフェ、キリムの展示。どれも町に飾られ、夜はそれぞれの灯りがともる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마을에 남는 장식 네 가지: 비둘기 떼, 환영 아치, 정원 카페, 킬림 전시. 모두 마을에 보이고 밤에는 각자 불이 켜집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasabana dört kalıcı süs: güvercin sürüsü, karşılama kemeri, bahçe kafe ve kilim sergisi. Hepsi kasabada görünür, gece kendi ışıkları yanar."
+          }
+        }
+      }
+    },
     "store.lead.egypt": {
       "extractionState": "manual",
       "localizations": {
@@ -68454,7 +68782,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "エジプトへの扉を永久に開く。ナイル川、王家の谷、そして世界一厳しい気球市場。ゲーム内の参入費はこれまで通りホールディングから支払う。"
+            "value": "エジプトへの扉を永久に開く。ナイル川、王家の谷、そして世界一厳しい気球市場。ゲーム内の参入費はこれまで通りホールディングスから支払う。"
           }
         },
         "ko": {
@@ -68553,6 +68881,47 @@
         }
       }
     },
+    "store.lead.figurePack": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fünf Figuren für das Finale der Ballon-Show: Stern, Tulpe, Schmetterling, Spirale und der Anfangsbuchstabe deiner Firma. Gehören dir für immer; wähle eine auf der Show-Karte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Five figures for the Balloon Show's finale: Star, Tulip, Butterfly, Spiral and your company's first letter. Yours for good; pick one on the show card."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cinco figuras para el final del Espectáculo de globos: Estrella, Tulipán, Mariposa, Espiral y la inicial de tu empresa. Son tuyas para siempre; elige una en la tarjeta del espectáculo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バルーンショーのフィナーレ用の5つの図形：星、チューリップ、蝶、渦巻き、そして会社の頭文字。ずっと使え、ショーのカードで選べる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 쇼 피날레를 위한 도형 다섯 가지: 별, 튤립, 나비, 소용돌이, 그리고 회사 이니셜. 영구 소장이며 쇼 카드에서 고릅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon Şöleni'nin finali için beş figür: Yıldız, Lale, Kelebek, Girdap ve şirketinin baş harfi. Kalıcıdır; şölen kartından istediğini seçersin."
+          }
+        }
+      }
+    },
     "store.lead.pattern": {
       "extractionState": "manual",
       "localizations": {
@@ -68635,6 +69004,88 @@
         }
       }
     },
+    "store.lead.supporter": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Weltreise, alles aus dem Gründerpaket und eine Unterstützer-Tafel in deiner Stadt. Das größte Dankeschön an den Solo-Entwickler dieses Spiels."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Grand Tour, everything in the Founder Pack and a supporter plaque in your town. The biggest thank-you to the solo developer who makes this game."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Gran Tour, todo el Pack Fundador y una placa de apoyo en tu pueblo. El mayor agradecimiento al desarrollador que hace este juego en solitario."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グランドツアー、創業者パックのすべて、そして町にサポーターの銘板。このゲームをひとりで作る開発者への最大の応援。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그랜드 투어, 창업자 팩의 모든 것, 그리고 마을의 후원자 명판. 이 게임을 혼자 만드는 개발자에게 가장 큰 응원입니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Turu, Kurucu Paketi'ndeki her şey ve kasabanda bir destekçi plaketi. Bu oyunu tek başına yapan geliştiriciye en büyük destek."
+          }
+        }
+      }
+    },
+    "store.lead.worldTour": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jenseits von Kappadokien: Albuquerque in Amerika, dann Luxor in Ägypten und alle kommenden Regionen. Die Eintrittsgebühr im Spiel zahlt weiterhin die Holding."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beyond Cappadocia: Albuquerque in America, then Luxor in Egypt and every region to come. The in-game entry fee is still paid from the holding."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más allá de Capadocia: Albuquerque en América, luego Luxor en Egipto y todas las regiones que vendrán. La cuota de entrada del juego se sigue pagando desde el holding."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カッパドキアの先へ。アメリカのアルバカーキ、続いてエジプトのルクソール、そして今後のすべての地域。ゲーム内の参入費はこれまで通りホールディングスから支払う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "카파도키아 너머로: 미국의 앨버커키, 이어서 이집트의 룩소르와 앞으로 나올 모든 지역. 게임 내 진입 비용은 여전히 지주회사가 냅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapadokya'nın ötesi: Amerika'da Albuquerque, ardından Mısır'da Luksor ve gelecek bütün bölgeler. Bölgelere girişin oyun içi bedeli yine holding kasasından ödenir."
+          }
+        }
+      }
+    },
     "store.nightPreview": {
       "extractionState": "manual",
       "localizations": {
@@ -68659,7 +69110,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "夜の町はこう見えます"
+            "value": "夜の町はこうなる"
           }
         },
         "ko": {
@@ -68836,6 +69287,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Güvercin sürüsü"
+          }
+        }
+      }
+    },
+    "store.plaque": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UNTERSTÜTZER"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SUPPORTER"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "APOYO"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サポーター"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "후원자"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DESTEKÇİ"
           }
         }
       }
@@ -69086,6 +69578,47 @@
         }
       }
     },
+    "store.supporter": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unterstützer-Edition"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Supporter Edition"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Edición de apoyo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サポーター版"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "후원자 에디션"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Destekçi Sürümü"
+          }
+        }
+      }
+    },
     "store.tag": {
       "extractionState": "manual",
       "localizations": {
@@ -69246,6 +69779,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Mağazaya şu an ulaşılamıyor. Biraz sonra yeniden dene."
+          }
+        }
+      }
+    },
+    "store.worldTour": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weltreise"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grand Tour"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gran Tour"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グランドツアー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그랜드 투어"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Turu"
           }
         }
       }
@@ -70135,7 +70709,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@は地上待機。修理の日数：%2$@。その間、別の気球を操縦しますか？はいなら修理が終わるまでその気球をあなたが飛ばし、その後旗艦は自動で戻ります。いいえなら他の気球はパイロットが飛ばします。"
+            "value": "%1$@は地上待機中。修理の日数：%2$@。その間、別の気球を操縦する？「はい」なら修理が終わるまでその気球をあなたが飛ばし、終われば旗艦は自動で戻る。「いいえ」ならほかの気球はパイロットが飛ばす。"
           }
         },
         "ko": {
@@ -70312,6 +70886,211 @@
           "stringUnit": {
             "state": "translated",
             "value": "Evet"
+          }
+        }
+      }
+    },
+    "tour.later": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vorerst in Kappadokien bleiben"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stay in Cappadocia for now"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quedarme en Capadocia por ahora"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今はカッパドキアに残る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지금은 카파도키아에 머물기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şimdilik Kapadokya'da kal"
+          }
+        }
+      }
+    },
+    "tour.lead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kappadokien gehört dir. Mit der Weltreise geht es nach Albuquerque in Amerika, dann nach Luxor in Ägypten; du gründest deine eigene Holding und betrittst alle kommenden Regionen. Einmal gekauft."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cappadocia is yours. With the Grand Tour you open up to Albuquerque in America, then Luxor in Egypt; you found your own holding and enter every region to come. Bought once."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Capadocia es tuya. Con el Gran Tour te abres a Albuquerque en América y luego a Luxor en Egipto; fundas tu propio holding y entras en todas las regiones que vendrán. Se compra una vez."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カッパドキアはお前のものだ。グランドツアーでアメリカのアルバカーキ、そしてエジプトのルクソールへ。自分のホールディングスを作り、今後のすべての地域にも進出できる。購入は一度だけ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "카파도키아는 당신 것입니다. 그랜드 투어로 미국의 앨버커키, 이어서 이집트의 룩소르로 진출하고, 지주회사를 세워 앞으로 나올 모든 지역에도 들어갑니다. 한 번만 구매합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapadokya senin. Dünya Turu ile Amerika'da Albuquerque'ye, sonra Mısır'da Luksor'a açılırsın; kendi holdingini kurar, gelecek bütün bölgelere de girersin. Bir kez alınır."
+          }
+        }
+      }
+    },
+    "tour.supporterSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weltreise + %@ + Unterstützer-Tafel in der Stadt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grand Tour + %@ + a supporter plaque in town"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gran Tour + %@ + placa de apoyo en el pueblo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グランドツアー＋%@＋町のサポーター銘板"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그랜드 투어 + %@ + 마을 후원자 명판"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Turu + %@ + kasabanda destekçi plaketi"
+          }
+        }
+      }
+    },
+    "tour.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Himmel ist größer als Kappadokien"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The sky is bigger than Cappadocia"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cielo es más grande que Capadocia"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空はカッパドキアより広い"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하늘은 카파도키아보다 넓다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gökyüzü Kapadokya'dan büyük"
+          }
+        }
+      }
+    },
+    "tour.worldSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amerika, Ägypten und kommende Regionen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "America, Egypt and the regions to come"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "América, Egipto y las regiones que vendrán"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アメリカ、エジプト、今後の地域"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "미국, 이집트, 앞으로의 지역"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amerika, Mısır ve gelecek bölgeler"
           }
         }
       }
@@ -72431,7 +73210,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "事故リスク30%増。でも乗客は大喜び：毎回人気アップ。"
+            "value": "事故リスク30%増。だが乗客は大喜び：毎回人気アップ。"
           }
         },
         "ko": {
@@ -72759,7 +73538,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "カッパドキアの伝説を語る：口コミが輝き、毎回人気アップ。"
+            "value": "カッパドキアの伝説を語る：絶賛のレビューが集まり、毎回人気アップ。"
           }
         },
         "ko": {

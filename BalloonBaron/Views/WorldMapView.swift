@@ -160,7 +160,7 @@ struct WorldMapView: View {
             return text
         case .open:
             let sub = loc(pin == .lux ? "map.openSub.lux" : "map.openSub", eurH(pin.region?.entryFee ?? Holding.entryFee))
-            return pin.region.map(s.needsPack) == true ? sub + " " + loc("map.egyptNote", storePrice(.egypt)) : sub
+            return pin.region.map(s.needsPack) == true ? sub + " " + loc("map.tourNote", storePrice(.worldTour)) : sub
         case .locked:
             return loc(pin == .lux ? "map.lockedSub.lux" : "map.lockedSub")
         case .soon:
@@ -181,7 +181,7 @@ struct WorldMapView: View {
             .fixedSize()
         case .open:
             if game.state.needsPack(r) {
-                WorldPillButton(title: loc("map.openEgypt", storePrice(.egypt))) { store.storeItem = .egypt }
+                WorldPillButton(title: loc("map.openTour", storePrice(.worldTour))) { store.showTourOffer = true }
                     .fixedSize()
             } else {
                 WorldPillButton(title: loc("map.enter", eurH(r.entryFee)), enabled: game.canEnterRegion(r)) { store.goTo(r) }

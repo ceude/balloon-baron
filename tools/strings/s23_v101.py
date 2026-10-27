@@ -7,7 +7,7 @@ add("hez.praise.red",
  "Kırmızı bayrakta yerde kaldın, aferin evlat. Cesaret kolaydır, sabır zor. Gökyüzü yarın da orada olacak.",
  "Bei roter Flagge bist du am Boden geblieben. Gut gemacht, mein Kind. Mut ist leicht, Geduld ist schwer. Der Himmel ist morgen auch noch da.",
  "Con bandera roja te quedaste en tierra. Bien hecho, muchacho. El valor es fácil, la paciencia es difícil. El cielo seguirá ahí mañana.",
- "赤旗の日に地上にとどまったな。よくやったぞ、弟子よ。勇気はたやすく、忍耐は難しい。空は明日もそこにある。",
+ "赤い旗の日に地上にとどまったな。よくやったぞ、弟子よ。勇気はたやすく、忍耐は難しい。空は明日もそこにある。",
  "빨간 깃발 날에 땅에 머물렀군. 잘했네, 제자여. 용기는 쉽고 인내는 어렵지. 하늘은 내일도 그 자리에 있을 걸세.")
 add("hez.praise.perfect",
  "What a landing! The basket touched down like a feather. Your passengers will talk about it for years. Keep it up, kid.",
@@ -56,7 +56,7 @@ add("hez.praise.build",
  "Binanı büyüttün. Kasaban da seninle birlikte büyüyor evlat, uzaktan bakınca gururlanıyorum.",
  "Du hast ein Gebäude ausgebaut. Dein Städtchen wächst mit dir, mein Kind. Das von Weitem zu sehen macht mich stolz.",
  "Ampliaste un edificio. Tu pueblo crece contigo, muchacho. Verlo de lejos me llena de orgullo.",
- "建物を大きくしたな。町もお前と一緒に育っておる、弟子よ。遠くから見ていて誇らしいぞ。",
+ "建物を強化したな。町もお前と一緒に育っておる、弟子よ。遠くから見ていて誇らしいぞ。",
  "건물을 키웠군. 자네 마을도 함께 자라고 있네, 제자여. 멀리서 보니 뿌듯하다네.")
 add("hez.praise.profit",
  "Five days of profit in a row! You're doing so well, kid. Keep the cash box this strong and winter won't scare you.",
@@ -80,9 +80,9 @@ add("red.sureHez",
  "Yeni bir şirket tek bir kazayı, tek bir cezayı kaldıramayabilir. Kırmızı bayrakta uçarsan batabilirsin. Bir gün beklemek hiçbir şey kaybettirmez.",
  "Eine junge Firma übersteht vielleicht keinen einzigen Unfall, keine einzige Strafe. Fliegst du bei roter Flagge, kannst du untergehen. Einen Tag zu warten kostet dich nichts.",
  "Una empresa joven puede no aguantar un solo accidente ni una sola multa. Si vuelas con bandera roja, podrías hundirte. Esperar un día no te cuesta nada.",
- "若い会社は一度の事故、一度の罰金にも耐えられないかもしれん。赤旗で飛べば潰れるかもしれんぞ。一日待っても何も失わない。",
+ "若い会社は一度の事故、一度の罰金にも耐えられんかもしれん。赤い旗の日に飛べば潰れるかもしれんぞ。一日待っても何も失わん。",
  "신생 회사는 사고 한 번, 벌금 한 번도 견디지 못할 수 있네. 빨간 깃발에 날았다간 회사가 무너질 수도 있지. 하루 기다린다고 잃는 건 없다네.")
-add("red.sureSkip", "You're right, skip today", "Haklısın, pas geç", "Du hast recht, heute nicht", "Tienes razón, hoy no", "そうだな、今日は見送る", "맞아요, 오늘은 쉴게요")
+add("red.sureSkip", "You're right, skip today", "Haklısın, pas geç", "Du hast recht, heute nicht", "Tienes razón, hoy no", "確かに、今日は見送る", "맞아요, 오늘은 쉴게요")
 add("red.sureFly", "I'm flying anyway", "Yine de uçuyorum", "Ich fliege trotzdem", "Vuelo de todos modos", "それでも飛ぶ", "그래도 날래요")
 
 # Sharing a postcard (prototype v100, `shareCard`)

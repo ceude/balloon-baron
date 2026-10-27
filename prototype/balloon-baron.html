@@ -719,7 +719,8 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .shopi span{margin-top:3px;font-weight:800;font-size:13px;background:var(--ink);color:#fff;border-radius:10px;padding:2px 9px}
 .shopi.own{opacity:1}.shopi.own span{background:var(--green)}
 .shopi.gift{border-color:#ff9a7a;box-shadow:0 3px 0 #e8806a}.shopi.gift span{background:var(--coral)}
-.shopi.lock{opacity:.6}.shopi.lock span{background:#8a8398}.shopi.fig img{background:#141838;border-radius:12px}.shopi.region img{border-radius:12px}
+.touropt{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;margin:6px 0;padding:12px 14px;border-radius:16px;border:2px solid var(--line);background:#fff;color:var(--ink)}.touropt b{display:block;font-family:var(--cond);font-size:20px}.touropt small{font-size:12.5px;color:var(--ink2)}.touropt em{font-style:normal;font-weight:800;font-size:17px;white-space:nowrap}.touropt em s{font-weight:600;font-size:13px;opacity:.6;margin-right:4px}.touropt.main{border-color:var(--coral);background:#fff6f2}.tourimg img{width:150px!important;height:auto!important}.bundleg.figs img{background:#141838}
+.packg{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:72px;height:72px}.packg img{width:100%!important;height:auto!important;border-radius:6px}.packg.n5{grid-template-columns:1fr 1fr 1fr}.shopi.pack small{font-size:11px;color:var(--ink2)}.shopi.lock{opacity:.6}.shopi.lock span{background:#8a8398}.shopi.fig img{background:#141838;border-radius:12px}.shopi.region img{border-radius:12px}
 .iapimg.fig{background:linear-gradient(#0d1030,#2a2350)}
 button.founder{display:block;width:100%;text-align:left;margin:4px 0 12px;padding:12px 14px;border-radius:18px;border:2px solid #e8b04a;background:linear-gradient(135deg,#2b2350,#4a2f6a);color:#fff;box-shadow:0 4px 0 #1a1438}
 .founder .fh{display:flex;justify-content:space-between;align-items:center}.founder .fh b{font-family:'Barlow Condensed',sans-serif;font-size:22px;color:#ffd27a}
@@ -1458,7 +1459,7 @@ function market(myPrice, myCap) {
 
 /* ---------- day flow ---------- */
 const demandGrowth = () => 1 + .6 * (1 - Math.exp(-(S.day - 1) / 50));
-const dayDemand = () => Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? (S.region === 'lux' ? 1.6 : 1.9) : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * (1 + .01 * decorN()) * holdBoost(S.region));
+const dayDemand = () => Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? (S.region === 'lux' ? 1.6 : 1.9) : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * holdBoost(S.region));
 let mode = 'office', tab = 'plan', FL = null, lastReport = null;
 function hezAdd(k) { if (!S.tips[k] && !S.hezQ.includes(k)) S.hezQ.push(k); }
 /* Early on Hezarfen notices what you do right: each once, at most every other day, in your first 40 days in Cappadocia. */
@@ -2106,7 +2107,8 @@ function showChapter() {
     c.appendChild(h('p', 'lead', `Gün ${S.day}. ${RD().name} göğündeki her üç balondan ikisi ${esc(S.company)} renklerinde. ${guide().baron}`));
     c.appendChild(h('div', 'hzline bossq', `${BOSS_AV[S.region]}<span><b>${BOSS[S.region].name}:</b> ${BOSS_LINES[S.region].baron}</span>`));
     c.appendChild(h('p', 'hint', S.region === 'cap' ? 'Kapadokya şirketin artık dünyaya açılabilir. Dünya haritasında ilk yeni bölgen seni bekliyor.' : 'İki kıtanın göğü senin. Sıradaki bölgeler çok yakında haritada belirecek.'));
-    const w = h('button', 'big', 'Dünya haritasını aç'); w.onclick = showWorldMap; c.appendChild(w);
+    /* v115: the free game ends here; the Grand Tour is offered right after the ceremony */
+    const w = h('button', 'big', S.region === 'cap' && !owned('worldTour') ? 'Devam' : 'Dünya haritasını aç'); w.onclick = S.region === 'cap' && !owned('worldTour') ? showTourOffer : showWorldMap; c.appendChild(w);
     sfx('fanfare'); setTimeout(() => sfx('applause'), 600);
   } else {
     c.appendChild(h('div', 'chap', `Bölüm ${i + 1} tamamlandı`));
@@ -2121,8 +2123,8 @@ function showChapter() {
 }
 /* Each region opens when you're baron of the one before it. */
 const regionOpen = id => id === 'abq' ? isBaron('cap') : id === 'lux' ? isBaron('abq') : false;
-/* v113: Luxor sits behind the €2,99 Egypt unlock (America stays free) */
-const needsPack = id => id === 'lux' && !owned('lux');
+/* v115: Cappadocia is free; America and Egypt need the Grand Tour */
+const needsPack = id => (id === 'abq' || id === 'lux') && !owned('worldTour');
 const REGIONS = [
   { id: 'cap', name: 'Kapadokya', land: 'Türkiye', lon: 34.8, lat: 38.6, side: 'r' },
   { id: 'abq', name: 'Albuquerque', land: 'ABD', lon: -106.6, lat: 35.1, side: 'r' },
@@ -2180,8 +2182,8 @@ function showWorldMap() {
     let tag = '', sub = '';
     if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = { cap: 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.', abq: 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.', lux: 'Nil, firavunların vadisi ve dünyanın en çetin balon pazarı.' }[R.id]; }
     else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
-    else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Mısır'ın kapısını açarsın: ${SHOP.lux.price}, bir kez.` : ''}`; }
-    else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.`; }
+    else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
+    else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.${needsPack('abq') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (R.id === 'abq') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Kapadokya baronu olunca açılır.'; }
     else if (R.id === 'lux') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Albuquerque baronu olunca açılır. Nil kıyısında, firavunların vadisi üstünde.'; }
     else { tag = '<span class="tag n">Yakında</span>'; sub = R.mystery ? `${R.land} göğünde yeni bir macera. Nerede olduğunu Hezarfen bile bilmiyor.` : R.about || ''; }
@@ -2192,7 +2194,7 @@ function showWorldMap() {
     if (owned && !here) {
       if (A && A.issue) acts.appendChild(pbtn('Karar ver', () => showIssue(R.id)));
       acts.appendChild(pbtn('Bölgeye git', () => switchRegion(R.id), false, true));
-    } else if (open && !owned && needsPack(R.id)) acts.appendChild(pbtn(`Mısır'ı aç ${SHOP.lux.price}`, () => iapBuy('lux', showWorldMap)));
+    } else if (open && !owned && needsPack(R.id)) acts.appendChild(pbtn(`Dünya Turu ${SHOP.worldTour.price}`, showTourOffer));
     else if (open && !owned) acts.appendChild(pbtn(`Gir ${eurH(entryFee(R.id))}`, () => enterRegion(R.id), (S.holding || 0) < entryFee(R.id)));
     if (acts.children.length) it.appendChild(acts);
     list.appendChild(it);
@@ -5190,7 +5192,7 @@ function switchRegion(id) {
   showTravel(from, id);
 }
 function enterRegion(id) {
-  if (needsPack(id)) return iapBuy(id, showWorldMap);
+  if (needsPack(id)) return showTourOffer();
   const fee = entryFee(id);
   if ((S.holding || 0) < fee) return;
   S.holding -= fee; holdLog('exp', fee);
@@ -5289,26 +5291,35 @@ const SHOP = {
   heart: { n: 'Kalp balon', kind: 'shape', p: 1.99 }, star: { n: 'Yıldız balon', kind: 'shape', p: 1.99 }, skull: { n: 'Kurukafa balon', kind: 'shape', p: 1.99 },
   fountain: { n: 'Meydan çeşmesi', kind: 'decor', p: .99 }, statue: { n: 'Hezarfen heykeli', kind: 'decor', p: .99 }, lanterns: { n: 'Fener dizileri', kind: 'decor', p: 0, gift: true }, flags: { n: 'Şirket bayrakları', kind: 'decor', p: .99 },
   /* v113: small town decorations and Balloon Show figures, €0,49 each, yours for good */
-  pigeons: { n: 'Güvercin sürüsü', kind: 'decor', p: .49 }, arch: { n: 'Karşılama kemeri', kind: 'decor', p: .49 }, cafe: { n: 'Bahçe kafe', kind: 'decor', p: .49 }, rugs: { n: 'Kilim sergisi', kind: 'decor', p: .49 },
-  fstar: { n: 'Yıldız', kind: 'fig', p: .49 }, ftulip: { n: 'Lale', kind: 'fig', p: .49 }, fbutterfly: { n: 'Kelebek', kind: 'fig', p: .49 }, fspiral: { n: 'Girdap', kind: 'fig', p: .49 }, finitial: { n: 'Baş harfin', kind: 'fig', p: .49 },
-  /* v113: America is free; Egypt (Luxor) is a €2,99 unlock, and the World Baron needs Luxor */
-  lux: { n: 'Mısır: Luksor', kind: 'region', p: 2.99 },
+  /* v115: the small decorations and the show figures come in two packs (not one by one) */
+  pigeons: { n: 'Güvercin sürüsü', kind: 'decor', p: 0, pack: 'decorPack' }, arch: { n: 'Karşılama kemeri', kind: 'decor', p: 0, pack: 'decorPack' }, cafe: { n: 'Bahçe kafe', kind: 'decor', p: 0, pack: 'decorPack' }, rugs: { n: 'Kilim sergisi', kind: 'decor', p: 0, pack: 'decorPack' },
+  fstar: { n: 'Yıldız', kind: 'fig', p: 0, pack: 'figPack' }, ftulip: { n: 'Lale', kind: 'fig', p: 0, pack: 'figPack' }, fbutterfly: { n: 'Kelebek', kind: 'fig', p: 0, pack: 'figPack' }, fspiral: { n: 'Girdap', kind: 'fig', p: 0, pack: 'figPack' }, finitial: { n: 'Baş harfin', kind: 'fig', p: 0, pack: 'figPack' },
+  decorPack: { n: 'Meydan Süsleri', kind: 'pack', p: .99, items: ['pigeons', 'arch', 'cafe', 'rugs'] },
+  figPack: { n: 'Şölen Figürleri', kind: 'pack', p: .99, items: ['fstar', 'ftulip', 'fbutterfly', 'fspiral', 'finitial'] },
   /* v113: every cosmetic in one purchase */
-  founder: { n: 'Kurucu Paketi', kind: 'bundle', p: 6.99 }
+  founder: { n: 'Kurucu Paketi', kind: 'bundle', p: 6.99 },
+  /* v115: Cappadocia is the free game; the Grand Tour opens America, Egypt and the regions to come. Offered at the
+     Baron of Cappadocia ceremony; the Supporter Edition adds the Founder Pack and a supporter plaque in town. */
+  worldTour: { n: 'Dünya Turu', kind: 'unlock', p: 5.99 },
+  supporter: { n: 'Destekçi Sürümü', kind: 'supporter', p: 11.99 }
 };
 const priceTxt = p => p.toFixed(2).replace('.', ',') + ' €';
 for (const k in SHOP) SHOP[k].price = SHOP[k].gift ? '🎁 Hediye' : priceTxt(SHOP[k].p);
-const owned = k => !!(S.iap && S.iap[k]);
+/* a pack item is owned with its pack; the old one-by-one purchases still count */
+const inPackOwned = k => SHOP[k] && SHOP[k].pack && !!(S.iap && S.iap[SHOP[k].pack]);
+const owned = k => !!(S.iap && S.iap[k]) || inPackOwned(k) || (k === 'worldTour' && !!(S.iap && (S.iap.supporter || S.iap.lux)));
 const DECOR = ['fountain', 'statue', 'lanterns', 'flags', 'pigeons', 'arch', 'cafe', 'rugs'];
 /* The Founder pack: every pattern, shape, decoration and show figure. Its "was" price is what the ones you don't own yet
    would cost one by one; it's offered only while it saves at least a fifth. */
-const BUNDLE = Object.keys(SHOP).filter(k => ['pat', 'shape', 'decor', 'fig'].includes(SHOP[k].kind) && !SHOP[k].gift);
-const bundleLeft = () => BUNDLE.filter(k => !owned(k));
+/* the pack's products: patterns, shapes, the big decorations and the two small packs */
+const BUNDLE = Object.keys(SHOP).filter(k => ['pat', 'shape', 'decor', 'pack'].includes(SHOP[k].kind) && !SHOP[k].gift && !SHOP[k].pack);
+const packDone = k => SHOP[k].kind === 'pack' ? owned(k) || SHOP[k].items.every(owned) : owned(k);
+const bundleLeft = () => BUNDLE.filter(k => !packDone(k));
 const bundleWas = () => Math.round(bundleLeft().reduce((a, k) => a + SHOP[k].p, 0) * 100) / 100;
 const bundleOff = () => { const w = bundleWas(); return w > 0 ? Math.round((1 - SHOP.founder.p / w) * 100) : 0; };
 /* the pack's teaser: one or two of each kind, so it shows balloons, the town and the show at a glance */
 const bundlePeek = left => { const out = []; for (const kind of ['shape', 'fig', 'decor', 'pat', 'shape', 'fig']) { const q = left.find(x => SHOP[x].kind === kind && !out.includes(x)); if (q) out.push(q); } for (const q of left) if (out.length < 6 && !out.includes(q)) out.push(q); return out.slice(0, 6); };
-const bundleWorth = () => !owned('founder') && bundleOff() >= 20;
+const bundleWorth = () => !owned('founder') && !owned('supporter') && bundleOff() >= 20;
 const decorN = () => DECOR.filter(owned).length;
 /* Purchase sheet (prototype stand-in for the store's own payment sheet). */
 /* A live picture of the town at night with this decoration, for the shop card. Runs while the canvas is on screen. */
@@ -5333,6 +5344,7 @@ function iapBuy(k, then) {
   c.appendChild(h('h1', null, K.n));
   if (K.kind === 'decor') { const nv = h('canvas', 'nightprev'); c.appendChild(h('div', 'lbl', DECOR_AT[k][3] ? 'Kasaban böyle görünecek' : 'Kasaban gece böyle görünecek')); c.appendChild(nv); requestAnimationFrame(() => nightPreview(k, nv)); }
   else if (K.kind === 'bundle') { const g = h('div', 'bundleg'); for (const q of bundleLeft()) g.appendChild(h('img', 'k-' + SHOP[q].kind)).src = shopThumb(q); c.appendChild(g); }
+  else if (K.kind === 'pack') { const g = h('div', 'bundleg' + (k === 'figPack' ? ' figs' : '')); for (const q of K.items) g.appendChild(h('img', 'k-' + SHOP[q].kind)).src = shopThumb(q); c.appendChild(g); }
   else c.appendChild(h('div', 'iapimg' + (K.kind === 'fig' ? ' fig' : ''), `<img src="${shopThumb(k)}" alt="">`));
   const left = bundleLeft().length;
   c.appendChild(h('p', 'lead', {
@@ -5340,24 +5352,44 @@ function iapBuy(k, then) {
     shape: 'Özel şekilli balon zarfı. Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir; her uçuşta ekstra popülerlik getirir.',
     decor: 'Kasabana kalıcı bir süs. Çarşıdan alınır, şehirde görünür.',
     fig: `Balon Şöleni'nin finalinde balonların gökyüzünde bu figürü çizer${k === 'finitial' ? `: şirketinin baş harfi, ${esc((S.company || 'B').trim()[0].toLocaleUpperCase('tr'))}` : ''}. Kalıcıdır; şölen kartından istediğin figürü seçersin.`,
-    region: 'Mısır\'ın kapısını kalıcı olarak açar: Nil kıyısı, Krallar Vadisi ve dünyanın en çetin balon pazarı. Bölgeye girişin oyun içi bedeli yine holding kasasından ödenir.',
+    pack: k === 'figPack' ? 'Balon Şöleni\'nin finali için beş figür: Yıldız, Lale, Kelebek, Girdap ve şirketinin baş harfi. Kalıcıdır; şölen kartından istediğini seçersin.' : 'Kasabana dört kalıcı süs: güvercin sürüsü, karşılama kemeri, bahçe kafe ve kilim sergisi. Hepsi kasabada görünür, gece kendi ışıkları yanar.',
+    unlock: 'Kapadokya\'nın ötesi: Amerika\'da Albuquerque, ardından Mısır\'da Luksor ve gelecek bütün bölgeler. Bölgelere girişin oyun içi bedeli yine holding kasasından ödenir.',
+    supporter: 'Dünya Turu, Kurucu Paketi\'ndeki her şey ve kasabanda bir destekçi plaketi. Bu oyunu tek başına yapan geliştiriciye en büyük destek.',
     bundle: `Çarşıdaki her şey tek seferde: desenler, şekilli balonlar, kasaba süsleri ve şölen figürleri. Henüz sahip olmadığın ${left} ürünün hepsi.`
   }[K.kind]));
   if (K.kind === 'bundle') c.appendChild(h('div', 'dealrow', `<s>${priceTxt(bundleWas())}</s><b>${K.price}</b><span>%${bundleOff()} indirim</span>`));
   c.appendChild(h('p', 'hint', K.gift ? 'Hezarfen Usta\'dan hediye, ücretsiz.' : 'Prototip: gerçek ödeme yok. App Store yerel fiyatlandırması kullanılacak.'));
   const b = h('button', 'big', K.gift ? 'Hediyeni al' : `Satın al ${K.price}`); b.onclick = () => {
-    if (K.kind === 'bundle') grantBundle(); else S.iap = Object.assign({}, S.iap, { [k]: S.day });
+    if (K.kind === 'bundle') grantBundle();
+    else if (K.kind === 'supporter') { if (!owned('founder')) grantBundle(); S.iap = Object.assign({}, S.iap, { supporter: S.day, worldTour: S.day }); }
+    else S.iap = Object.assign({}, S.iap, { [k]: S.day });
     sfx('coin'); save(); if (back) m.replaceChildren(...back); else m.hidden = true; if (then) then(); refresh();
   };
   c.appendChild(b);
   /* every single cosmetic also points at the pack while the pack saves money */
-  if (['pat', 'shape', 'decor', 'fig'].includes(K.kind) && !K.gift && bundleWorth()) {
+  if (['pat', 'shape', 'decor', 'pack'].includes(K.kind) && !K.gift && bundleWorth()) {
     const u = h('button', 'upsell', `<span>Ya da hepsi bir arada: <b>${SHOP.founder.n}</b></span><span><s>${priceTxt(bundleWas())}</s> <b>${SHOP.founder.price}</b> · %${bundleOff()} indirim</span>`);
     u.onclick = () => { if (back) m.replaceChildren(...back); else m.hidden = true; iapBuy('founder', then); };
     c.appendChild(u);
   }
   const x = h('button', 'ghost', 'Vazgeç'); x.style.width = '100%'; x.onclick = () => { if (back) m.replaceChildren(...back); else m.hidden = true; };
   c.appendChild(x); m.appendChild(c); m.hidden = false;
+}
+/* v115: after the Baron of Cappadocia ceremony: the Grand Tour, or the Supporter Edition (only if the Founder Pack
+   isn't already yours). Also what the world map and the holding open when a new region is out of reach. */
+function showTourOffer() {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card tour');
+  c.appendChild(h('div', 'chap', 'Dünya Turu'));
+  c.appendChild(h('h1', null, 'Gökyüzü Kapadokya\'dan büyük'));
+  c.appendChild(h('div', 'iapimg tourimg', `<img src="${shopThumb('worldTour')}" alt="">`));
+  c.appendChild(h('p', 'lead', 'Kapadokya senin. Dünya Turu ile Amerika\'da Albuquerque\'ye, sonra Mısır\'da Luksor\'a açılırsın; kendi holdingini kurar, gelecek bütün bölgelere de girersin. Bir kez alınır.'));
+  const close = then => { m.hidden = true; refresh(); if (then) then(); };
+  const opt = (k, title, sub, price, big) => { const b = h('button', 'touropt' + (big ? ' main' : ''), `<span><b>${title}</b><small>${sub}</small></span><em>${price}</em>`); b.onclick = () => iapBuy(k, () => close(showWorldMap)); c.appendChild(b); };
+  opt('worldTour', SHOP.worldTour.n, 'Amerika, Mısır ve gelecek bölgeler', SHOP.worldTour.price, true);
+  if (!owned('founder')) opt('supporter', SHOP.supporter.n, `Dünya Turu + ${SHOP.founder.n} + kasabanda destekçi plaketi`, `<s>${priceTxt(SHOP.worldTour.p + SHOP.founder.p)}</s> ${SHOP.supporter.price}`);
+  c.appendChild(h('p', 'hint', 'Prototip: gerçek ödeme yok. App Store yerel fiyatlandırması kullanılacak.'));
+  const x = h('button', 'ghost', 'Şimdilik Kapadokya\'da kal'); x.style.width = '100%'; x.onclick = () => close(() => setTimeout(nextPopup, 250)); c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
 }
 /* The pack: everything not owned yet; patterns and shapes arrive as ready designs (the first shape goes on the flagship). */
 function grantBundle() {
@@ -5726,7 +5758,7 @@ function hqRegions(body) {
     const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
     if (A && A.issue) acts.appendChild(pbtn('Karar ver', () => showIssue(R.id)));
     if (!here && ownsRegion(R.id)) acts.appendChild(pbtn('Bölgeye git', () => { closePage(); switchRegion(R.id); }, false, true));
-    if (!ownsRegion(R.id) && needsPack(R.id)) acts.appendChild(pbtn(`Mısır'ı aç ${SHOP.lux.price}`, () => { closePage(); iapBuy('lux', showWorldMap); }));
+    if (!ownsRegion(R.id) && needsPack(R.id)) acts.appendChild(pbtn(`Dünya Turu ${SHOP.worldTour.price}`, () => { closePage(); showTourOffer(); }));
     else if (!ownsRegion(R.id)) acts.appendChild(pbtn(`Gir ${eurH(entryFee(R.id))}`, () => { closePage(); enterRegion(R.id); }, (S.holding || 0) < entryFee(R.id)));
     if (acts.children.length) it.appendChild(acts);
     r.appendChild(it);
@@ -5925,8 +5957,8 @@ function showCard(done) {
 function figPicker(c, done) {
   c.appendChild(h('div', 'lbl', 'Final figürü'));
   const row = h('div', 'figrow'), cur = showFigOn();
-  const chip = (k, label, img) => { const lock = k && !owned(k), b = h('button', 'figc' + ((cur || null) === k ? ' on' : '') + (lock ? ' lock' : ''), `${img ? `<img src="${img}" alt="">` : '<span class="auto">V · ◯ · ♥</span>'}<b>${label}</b>${lock ? `<small>🔒 ${SHOP[k].price}</small>` : ''}`);
-    b.onclick = () => { if (lock) return iapBuy(k, () => { S.showFig = k; save(); showCard(done); }); S.showFig = k; save(); showCard(done); }; row.appendChild(b); };
+  const chip = (k, label, img) => { const lock = k && !owned(k), b = h('button', 'figc' + ((cur || null) === k ? ' on' : '') + (lock ? ' lock' : ''), `${img ? `<img src="${img}" alt="">` : '<span class="auto">V · ◯ · ♥</span>'}<b>${label}</b>${lock ? '<small>🔒 Pakette</small>' : ''}`);
+    b.onclick = () => { if (lock) return iapBuy('figPack', () => { S.showFig = k; save(); showCard(done); }); S.showFig = k; save(); showCard(done); }; row.appendChild(b); };
   chip(null, 'Filona göre');
   for (const k of Object.keys(SHOP).filter(q => SHOP[q].kind === 'fig')) chip(k, k === 'finitial' ? `${SHOP[k].n}: ${esc(figLetter())}` : SHOP[k].n, shopThumb(k));
   c.appendChild(row);
@@ -5999,7 +6031,7 @@ const UNLOCK_DAY = { fleet: 4, bank: 6, market: 8, crew: 10 };
 /* A pattern or shape bought here arrives as a ready design in your colours and goes straight onto the flagship,
    so it works without the workshop; the workshop only adds designing your own. */
 function bazaarGift(k, quiet) {
-  const K = SHOP[k]; if (K.kind !== 'pat' && K.kind !== 'shape') { if (K.kind === 'fig') S.showFig = k; return; }
+  const K = SHOP[k]; if (K.kind !== 'pat' && K.kind !== 'shape') { if (k === 'figPack' && !S.showFig) S.showFig = 'fstar'; return; }
   const c = myCol(); if (!S.designs) S.designs = [];
   const d = { id: S.nextId++, name: K.n, pat: K.kind === 'pat' ? k : 'stripes', shape: K.kind === 'shape' ? k : null, cols: [c[0], c[1], '#ffffff'], day: S.day };
   d.score = designScore(d); S.designs.push(d);
@@ -6017,16 +6049,19 @@ function showBazaar() {
     const left = bundleLeft(), d = h('button', 'founder', `<div class="fh"><b>${SHOP.founder.n}</b><span class="off">%${bundleOff()} indirim</span></div><div class="fthumbs">${bundlePeek(left).map(q => `<img class="k-${SHOP[q].kind}" src="${shopThumb(q)}" alt="">`).join('')}${left.length > 6 ? `<i>+${left.length - 6}</i>` : ''}</div><div class="fp"><span>Çarşıdaki ${left.length} ürünün hepsi</span><span><s>${priceTxt(bundleWas())}</s> <b>${SHOP.founder.price}</b></span></div>`);
     d.onclick = () => iapBuy('founder', showBazaar); c.appendChild(d);
   }
-  for (const [kind, lab] of [['decor', 'Kasaba süsleri'], ['fig', 'Şölen figürleri'], ['shape', 'Balon şekilleri'], ['pat', 'Özel desenler'], ['region', 'Bölgeler']]) {
+  /* v115: the small decorations and the figures are sold as packs; patterns, shapes and the big decorations one by one */
+  const SECS = [['decor', 'Kasaba süsleri', () => Object.keys(SHOP).filter(k => SHOP[k].kind === 'decor' && !SHOP[k].pack).concat(['decorPack'])],
+    ['fig', 'Şölen figürleri', () => ['figPack']], ['shape', 'Balon şekilleri'], ['pat', 'Özel desenler']];
+  for (const [kind, lab, list] of SECS) {
     c.appendChild(h('div', 'lbl', lab));
-    c.appendChild(h('p', 'hint', { decor: 'Kasabada kalıcı süs, her biri talebi %1 artırır.', fig: 'Balon Şöleni\'nin finalinde balonların bu figürü çizer. Kalıcıdır, şölen kartından seçilir.', shape: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Hiç eskimez, her uçuşta ekstra popülerlik.', pat: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yüksek yaratıcılık, hiç eskimez.', region: 'Mısır\'ı açınca Luksor\'da da şirket kurabilirsin. Albuquerque baronu olunca açılır.' }[kind]));
+    c.appendChild(h('p', 'hint', { decor: 'Kasabada kalıcı süsler; gece her birinin kendi ışığı var.', fig: 'Balon Şöleni\'nin finalinde balonların bu figürleri çizer. Kalıcıdır, şölen kartından seçilir.', shape: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Hiç eskimez, her uçuşta ekstra popülerlik.', pat: 'Hazır tasarımıyla gelir, amiral balonuna hemen giydirilir. Yüksek yaratıcılık, hiç eskimez.' }[kind]));
     const g = h('div', 'shopg');
-    for (const k in SHOP) if (SHOP[k].kind === kind) {
-      const own = owned(k), it = h('button', 'shopi' + (own ? ' own' : '') + (SHOP[k].gift && !own ? ' gift' : ''), `<img src="${shopThumb(k)}" alt=""><b>${SHOP[k].n}</b><span>${own ? '✓ Senin' : SHOP[k].price}</span>`);
+    for (const k of list ? list() : Object.keys(SHOP).filter(q => SHOP[q].kind === kind)) {
+      const K = SHOP[k], own = K.kind === 'pack' ? packDone(k) : owned(k), pack = K.kind === 'pack';
+      const pic = pack ? `<div class="packg n${K.items.length}">${K.items.map(q => `<img src="${shopThumb(q)}" alt="">`).join('')}</div>` : `<img src="${shopThumb(k)}" alt="">`;
+      const it = h('button', 'shopi' + (own ? ' own' : '') + (K.gift && !own ? ' gift' : '') + (pack ? ' pack' : ''), `${pic}<b>${K.n}</b>${pack ? `<small>${K.items.length} parça</small>` : ''}<span>${own ? '✓ Senin' : K.price}</span>`);
       it.disabled = own; it.onclick = () => iapBuy(k, () => { bazaarGift(k); showBazaar(); }); g.appendChild(it);
-      /* a region you can't reach yet shows no price, only that it's locked */
-      if (SHOP[k].kind === 'region' && !own && !regionOpen(k)) { it.disabled = true; it.classList.add('lock'); it.querySelector('span').textContent = '🔒 Kilitli'; }
-      if (SHOP[k].kind === 'fig' || SHOP[k].kind === 'region') it.classList.add(SHOP[k].kind);
+      if (kind === 'fig') it.classList.add('fig');
     }
     c.appendChild(g);
   }
@@ -6567,6 +6602,15 @@ function decoFlag(p, t, c, ph) {
   ctx.fillStyle = c[1]; ctx.fillRect(p[0] + 8, p[1] - 74 + Math.sin(t * 4 + 2.5 + ph) * 2, 12, 5);
 }
 /* where they stand: arches over the two roads into town you can see, the café by the bazaar, the rugs by the workshop */
+const PLAQUE_AT = [9.15, 6.55];
+/* v115: the Supporter Edition's brass plaque on two posts by the square, a heart and your company's name */
+function decoPlaque(p) {
+  ctx.fillStyle = '#4a2e1a'; ctx.fillRect(p[0] - 13, p[1] - 22, 3, 22); ctx.fillRect(p[0] + 10, p[1] - 22, 3, 22);
+  ctx.fillStyle = '#6a4024'; rrect(p[0] - 17, p[1] - 38, 34, 20, 3); ctx.fill();
+  const b = ctx.createLinearGradient(0, p[1] - 36, 0, p[1] - 20); b.addColorStop(0, '#ffe39a'); b.addColorStop(.5, '#e8b04a'); b.addColorStop(1, '#b07a1e'); ctx.fillStyle = b; rrect(p[0] - 15, p[1] - 36, 30, 16, 2); ctx.fill();
+  ctx.fillStyle = '#c2401f'; ctx.beginPath(); ctx.arc(p[0] - 1.6, p[1] - 31, 1.8, 0, 7); ctx.arc(p[0] + 1.6, p[1] - 31, 1.8, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(p[0] - 3.3, p[1] - 30.4); ctx.lineTo(p[0], p[1] - 27); ctx.lineTo(p[0] + 3.3, p[1] - 30.4); ctx.fill();
+  ctx.fillStyle = '#5a3a10'; ctx.font = '700 4.5px Barlow, sans-serif'; ctx.textAlign = 'center'; let fs = 4.5; const nm = S.company || ''; while (ctx.measureText(nm).width > 26 && fs > 2.5) { fs -= .25; ctx.font = `700 ${fs}px Barlow, sans-serif`; } ctx.fillText(nm, p[0], p[1] - 22.5); ctx.textAlign = 'left';
+}
 const ARCHES = [[[6.75, 15.35], [8.15, 15.35], 23.2], [[15.35, 6.75], [15.35, 8.15], 23.2]], CAFE_AT = [14.9, 1.1], RUGS_AT = [9.8, 0.9];
 /* v113 decorations. Each draws round a ground point p (screen units); iu/iv step one tile along the two grid axes. */
 const iu = (p, u, v) => [p[0] + (u - v) * TW / 2, p[1] + (u + v) * TH / 2];
@@ -6636,6 +6680,33 @@ function decoRugs(p, t) {
 /* A shop picture: the decoration on a patch of sand, a pattern or a shape on a balloon. */
 function shopThumb(k) {
   const K = SHOP[k];
+  if (K.kind === 'pack') return shopThumb(K.items[0]);
+  if (K.kind === 'unlock' || K.kind === 'supporter') {
+    const cv = document.createElement('canvas'); cv.width = 192; cv.height = 216;
+    const keep = ctx; ctx = cv.getContext('2d'); ctx.scale(3, 3);
+    try {
+      const c = myCol();
+      if (K.kind === 'unlock') {
+        /* the Grand Tour: dawn over a desert mesa and a pyramid, your balloon on a dotted route between them */
+        const g = ctx.createLinearGradient(0, 0, 0, 72); g.addColorStop(0, '#7fb2e0'); g.addColorStop(.55, '#f6c98a'); g.addColorStop(1, '#e8b07a'); ctx.fillStyle = g; ctx.fillRect(0, 0, 64, 72);
+        ctx.fillStyle = '#fff4d0'; ctx.beginPath(); ctx.arc(32, 46, 9, 0, 7); ctx.fill();
+        ctx.fillStyle = '#b5552e'; ctx.beginPath(); ctx.moveTo(0, 60); ctx.lineTo(3, 44); ctx.lineTo(19, 44); ctx.lineTo(23, 60); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#8f3f22'; ctx.fillRect(2, 43, 18, 2.5);
+        ctx.fillStyle = '#c98a4a'; ctx.beginPath(); ctx.moveTo(40, 60); ctx.lineTo(53, 42); ctx.lineTo(66, 60); ctx.closePath(); ctx.fill(); ctx.fillStyle = '#a86a34'; ctx.beginPath(); ctx.moveTo(53, 42); ctx.lineTo(66, 60); ctx.lineTo(56, 60); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = '#d9a46a'; ctx.fillRect(0, 60, 64, 12); ctx.fillStyle = '#4aa0c0'; ctx.fillRect(38, 62, 26, 3);
+        ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.1; ctx.setLineDash([1.5, 2.5]); ctx.beginPath(); ctx.moveTo(11, 40); ctx.quadraticCurveTo(32, 2, 53, 38); ctx.stroke(); ctx.setLineDash([]);
+        ctx.fillStyle = c[0]; ctx.beginPath(); ctx.ellipse(32, 14, 7, 8.5, 0, 0, 7); ctx.fill(); ctx.fillStyle = c[1]; ctx.fillRect(30.5, 5.5, 3, 17); ctx.fillStyle = '#6a4020'; ctx.fillRect(30, 24, 4, 3.5);
+      } else {
+        /* the supporter plaque: brass on dark wood, a heart and your company's name */
+        const g = ctx.createLinearGradient(0, 0, 0, 72); g.addColorStop(0, '#3b2a4f'); g.addColorStop(1, '#2b2350'); ctx.fillStyle = g; ctx.fillRect(0, 0, 64, 72);
+        ctx.fillStyle = '#6a4024'; rrect(8, 14, 48, 40, 5); ctx.fill();
+        const b = ctx.createLinearGradient(0, 18, 0, 50); b.addColorStop(0, '#ffe39a'); b.addColorStop(.5, '#e8b04a'); b.addColorStop(1, '#b07a1e'); ctx.fillStyle = b; rrect(12, 18, 40, 32, 3); ctx.fill();
+        ctx.fillStyle = '#c2401f'; ctx.beginPath(); ctx.moveTo(32, 32); ctx.bezierCurveTo(26, 27, 26, 22, 30, 22); ctx.bezierCurveTo(31.5, 22, 32, 23.5, 32, 24.5); ctx.bezierCurveTo(32, 23.5, 32.5, 22, 34, 22); ctx.bezierCurveTo(38, 22, 38, 27, 32, 32); ctx.fill();
+        ctx.fillStyle = '#5a3a10'; ctx.textAlign = 'center'; ctx.font = '800 6px "Barlow Condensed", sans-serif'; ctx.fillText('DESTEKÇİ', 32, 40); let fs = 6; ctx.font = `700 ${fs}px Barlow, sans-serif`; const nm = S.company || 'Balon'; while (ctx.measureText(nm).width > 36 && fs > 3) { fs -= .5; ctx.font = `700 ${fs}px Barlow, sans-serif`; } ctx.fillText(nm, 32, 47); ctx.textAlign = 'left';
+        ctx.fillStyle = '#ffd27a'; for (const [x, y] of [[8, 8], [56, 10], [6, 62], [58, 60], [32, 64]]) { ctx.beginPath(); ctx.arc(x, y, .9, 0, 7); ctx.fill(); }
+      }
+    } finally { ctx = keep; }
+    return cv.toDataURL();
+  }
   if (K.kind === 'fig' || K.kind === 'region') {
     const cv = document.createElement('canvas'); cv.width = K.kind === 'fig' ? 192 : 128; cv.height = K.kind === 'fig' ? 216 : 144;
     const keep = ctx; ctx = cv.getContext('2d'); ctx.scale(2, 2);
@@ -6728,6 +6799,7 @@ function townScenery(t) {
   if (owned('arch')) for (const [P, Q, dp] of ARCHES) items.push({ depth: dp, draw: () => decoArch(tiso(...P), tiso(...Q), t, myCol(), S.company || '') });
   if (owned('cafe')) items.push({ depth: CAFE_AT[0] + CAFE_AT[1], shadow: () => { const p = tiso(...CAFE_AT); blobShadow(p[0], p[1] + 4, 70, 22, .1); }, draw: () => decoCafe(tiso(...CAFE_AT), t) });
   if (owned('rugs')) items.push({ depth: RUGS_AT[0] + RUGS_AT[1], draw: () => decoRugs(tiso(...RUGS_AT), t) });
+  if (owned('supporter')) items.push({ depth: PLAQUE_AT[0] + PLAQUE_AT[1], draw: () => decoPlaque(tiso(...PLAQUE_AT)) });
   if (owned('pigeons') && NIGHT_K < .3) items.push({ depth: 99, draw: () => { const c = tiso(7.5, 5.5); ctx.save(); ctx.globalAlpha = 1 - NIGHT_K / .3; decoPigeons([c[0], c[1] - 250], t); ctx.restore(); } });
   /* people strolling on the roads */
   for (let i = 0; i < 10; i++) { const along = ((t * .05 + i * .1) % 1) * 15, onX = i % 2; const gx = onX ? along : 7.8 + (i % 3) * .15, gy = onX ? 7.8 + (i % 3) * .15 : along; items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); person(p[0], p[1], ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0'][i % 5], t, i); } }); }

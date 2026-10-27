@@ -8,7 +8,7 @@ struct DecorPainter {
     var c: GraphicsContext
 
     static let arches: [((Double, Double), (Double, Double), Double)] = [((6.75, 15.35), (8.15, 15.35), 23.2), ((15.35, 6.75), (15.35, 8.15), 23.2)]
-    static let cafeAt = (14.9, 1.1), rugsAt = (9.8, 0.9)
+    static let cafeAt = (14.9, 1.1), rugsAt = (9.8, 0.9), plaqueAt = (9.15, 6.55)
 
     func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
     func hex(_ h: String) -> Color { Color(hex: h) }
@@ -128,6 +128,22 @@ struct DecorPainter {
         }
     }
 
+    /// v115: the Supporter Edition's brass plaque on two posts by the square, a heart and your company's name.
+    mutating func plaque(_ p: CGPoint, _ company: String) {
+        rect(p.x - 13, p.y - 22, 3, 22, hex("#4a2e1a")); rect(p.x + 10, p.y - 22, 3, 22, hex("#4a2e1a"))
+        c.fill(Path(roundedRect: CGRect(x: p.x - 17, y: p.y - 38, width: 34, height: 20), cornerRadius: 3), with: .color(hex("#6a4024")))
+        c.fill(Path(roundedRect: CGRect(x: p.x - 15, y: p.y - 36, width: 30, height: 16), cornerRadius: 2),
+               with: .linearGradient(Gradient(colors: [hex("#ffe39a"), hex("#e8b04a"), hex("#b07a1e")]), startPoint: pt(0, p.y - 36), endPoint: pt(0, p.y - 20)))
+        oval(p.x - 1.6, p.y - 31, 1.8, 1.8, hex("#c2401f")); oval(p.x + 1.6, p.y - 31, 1.8, 1.8, hex("#c2401f"))
+        fill([pt(p.x - 3.3, p.y - 30.4), pt(p.x, p.y - 27), pt(p.x + 3.3, p.y - 30.4)], hex("#c2401f"))
+        var t = c
+        t.translateBy(x: p.x, y: p.y - 22.5)
+        let r = t.resolve(Text(company).font(.custom("Barlow-Bold", fixedSize: 4.5)).foregroundColor(hex("#5a3a10")))
+        let w = r.measure(in: CGSize(width: 400, height: 20)).width, k = min(1, 26 / max(1, w))
+        t.scaleBy(x: k, y: k)
+        t.draw(r, at: .zero, anchor: .bottom)
+    }
+
     /// The bazaar thumbnail of the pigeons: a dovecote on a pole with pigeons flying round it (64 × 72 units).
     mutating func dovecote() {
         rect(30.5, 36, 3.5, 22, hex("#6a4a30")); rect(21, 24, 22, 14, hex("#e8d2ac")); rect(34, 24, 9, 14, hex("#c9ad84"))
@@ -153,6 +169,10 @@ extension TownPainter {
             let a = DecorPainter.cafeAt
             items.append(TownItem(depth: a.0 + a.1, shadow: { p in let q = TownGeo.iso(a.0, a.1); p.blobShadow(q.x, q.y + 4, 70, 22, 0.1) },
                                   draw: { p in var d = DecorPainter(c: p.c); d.cafe(TownGeo.iso(a.0, a.1), tt) }))
+        }
+        if s.owned(.supporter) {
+            let a = DecorPainter.plaqueAt
+            items.append(TownItem(depth: a.0 + a.1, draw: { p in var d = DecorPainter(c: p.c); d.plaque(TownGeo.iso(a.0, a.1), name) }))
         }
         if s.owned(.rugs) {
             let a = DecorPainter.rugsAt

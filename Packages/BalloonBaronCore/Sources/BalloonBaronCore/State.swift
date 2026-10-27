@@ -289,8 +289,11 @@ public struct GameState: Codable, Equatable, Sendable {
 
     public var achievements: [Achievement: Int] { postcards ?? [:] }
     public var statistics: Stats { stats ?? Stats() }
-    public func owned(_ k: StoreItem) -> Bool { store?[k] != nil }
-    /// Town decorations draw a few more tourists: +1% each.
+    /// A pack's items come with the pack; the Supporter Edition holds the Grand Tour.
+    public func owned(_ k: StoreItem) -> Bool {
+        store?[k] != nil || k.pack.map { store?[$0] != nil } == true || (k == .worldTour && store?[.supporter] != nil)
+    }
+    /// Town decorations owned (v115: only the look; they no longer bring tourists).
     public var decorationCount: Int { StoreItem.allCases.filter { $0.kind == .decoration && owned($0) }.count }
 
     public subscript<T>(dynamicMember path: WritableKeyPath<RegionState, T>) -> T {

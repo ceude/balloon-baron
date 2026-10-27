@@ -3,7 +3,7 @@ from s1_ui import add
 # Day report ticket (showReport)
 add("report.stubFlew", "%1$@, seats filled: %2$@/%3$@", "%1$@, dolan koltuk: %2$@/%3$@", "%1$@, belegte Plätze: %2$@/%3$@", "%1$@, plazas ocupadas: %2$@/%3$@", "%1$@、埋まった座席：%2$@/%3$@", "%1$@, 채운 좌석: %2$@/%3$@")
 add("report.stubSkipped", "%@, no flight", "%@, uçuş yapılmadı", "%@, kein Flug", "%@, sin vuelo", "%@、運航なし", "%@, 비행 없음")
-add("report.cash", "Cash", "Kasa", "Kasse", "Caja", "手元資金", "현금")
+add("report.cash", "Cash", "Kasa", "Kasse", "Caja", "資金", "현금")
 add("ledger.missionReward", "Mission reward", "Görev ödülü", "Auftragsprämie", "Recompensa de la misión", "依頼の報酬", "임무 보상")
 add("report.holdTitle", "Holding cash +%@.", "Holding kasasına +%@.", "Holding-Kasse +%@.", "Caja del holding +%@.", "ホールディングスへ+%@。", "지주회사 금고 +%@.")
 add("report.holdBody",
@@ -19,7 +19,7 @@ add("report.designBody",
     "Desenli balonların bugün popülerliğine +%@ ekledi.",
     "Deine gemusterten Ballone haben deiner Beliebtheit heute +%@ gebracht.",
     "Tus globos con diseño sumaron hoy +%@ a tu popularidad.",
-    "模様入りの気球が今日、人気を+%@押し上げた。",
+    "柄入りの気球が今日、人気を+%@押し上げた。",
     "무늬 열기구가 오늘 인기를 +%@ 올렸습니다.")
 add("report.adTitle", "The ads you're paid for count too.", "Parasını aldığın reklamların da bir bedeli var.", "Die Werbung, für die du kassierst, wirkt auch.", "Los anuncios que te pagan también cuentan.", "お金をもらっている広告にも代償がある。", "광고 수입에도 대가가 있습니다.")
 add("report.adBody",

@@ -106,7 +106,7 @@ add("event.licenseExpiring",
  "Pilot lisansın bugün sona eriyor. Yarın amiral balonunu kendin uçuramazsın; Ekip sekmesinden yenileyebilirsin.",
  "Deine Pilotenlizenz läuft heute ab. Morgen darfst du das Flaggschiff nicht selbst fliegen; erneuere sie im Bereich Crew.",
  "Tu licencia de piloto caduca hoy. Mañana no podrás pilotar el globo insignia; renuévala en la pestaña Equipo.",
- "操縦免許は今日で切れる。明日は旗艦を自分で飛ばせない。乗組員タブで更新しよう。",
+ "操縦免許は今日で切れる。明日は旗艦を自分で飛ばせない。クルー画面で更新しよう。",
  "조종 면허가 오늘 만료됩니다. 내일은 기함을 직접 조종할 수 없으니 크루 탭에서 갱신하세요.")
 add("event.antitrustFine",
  "The Competition Authority fined you %2$@ for holding %1$@%% of the market.",

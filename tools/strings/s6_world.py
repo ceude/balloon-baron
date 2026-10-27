@@ -110,8 +110,8 @@ add("goal.pilots", "Pilots on the team: %@", "Ekipteki pilot: %@", "Piloten im T
 add("goal.hotelDeals", "Hotel deals: %@", "Otel anlaşması: %@", "Hotelverträge: %@", "Acuerdos con hoteles: %@", "ホテル契約：%@", "호텔 제휴: %@")
 add("goal.bldMastLevel", "Wind mast level: %@", "Rüzgâr direği seviyesi: %@", "Windmast-Stufe: %@", "Nivel del mástil de viento: %@", "風向塔のレベル：%@", "풍향탑 레벨: %@")
 add("goal.bldHangarLevel", "Hangar level: %@", "Hangar seviyesi: %@", "Hangar-Stufe: %@", "Nivel del hangar: %@", "格納庫のレベル：%@", "격납고 레벨: %@")
-add("goal.stars", "Popularity: %@", "Popülerlik %@", "Beliebtheit %@", "Popularidad %@", "人気 %@", "인기 %@")
-add("goal.cash", "Cash: %@", "Kasada: %@", "Kasse: %@", "Caja: %@", "所持金：%@", "보유 현금: %@")
+add("goal.stars", "Popularity: %@", "Popülerlik %@", "Beliebtheit %@", "Popularidad %@", "人気：%@", "인기 %@")
+add("goal.cash", "Cash: %@", "Kasada: %@", "Kasse: %@", "Caja: %@", "資金：%@", "보유 현금: %@")
 add("goal.hotelDeal", "Sign a deal with a hotel", "Bir otelle anlaşma yap", "Schließe einen Hotelvertrag", "Firma un acuerdo con un hotel", "ホテルと契約する", "호텔과 제휴하기")
 add("goal.hotelOwn", "Hotels owned: %@", "Sahip olduğun otel: %@", "Eigene Hotels: %@", "Hoteles propios: %@", "所有ホテル：%@軒", "보유 호텔: %@곳")
 add("goal.influencer", "Run an influencer campaign", "Bir influencer kampanyası yap", "Starte eine Influencer-Kampagne", "Haz una campaña con influencers", "インフルエンサーキャンペーンを実施する", "인플루언서 캠페인 진행하기")
@@ -169,7 +169,7 @@ add("office.tyo.perk",
  "Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya'ya giriş yarı fiyatına.",
  "Kostenlose Designproduktion, Kreativität +10, Designs bleiben 60 Tage frisch. Einstieg in Asien zum halben Preis.",
  "Diseños gratis, creatividad +10, los diseños siguen frescos 60 días. Entrada a Asia a mitad de precio.",
- "デザイン制作が無料、創造性+10、デザインが60日間新鮮。アジア進出が半額。",
+ "デザイン制作が無料、創造性+10、デザインの鮮度が60日間持続。アジア進出が半額。",
  "디자인 제작 무료, 창의성 +10, 디자인 신선도 60일 유지. 아시아 진출 반값.")
 
 # Made-up celebrities for the holding's ad deal
@@ -188,7 +188,7 @@ ISSUES = {
     "raise": (
         ("Pilots want a raise", "Pilotlar zam istiyor", "Piloten wollen mehr Geld", "Los pilotos piden aumento", "パイロットが昇給を要求", "조종사 임금 인상 요구"),
         ("The pilots want a raise, or they won't fly for three days.", "Pilotlar maaşlarına zam istiyor, yoksa üç gün uçmayacaklarmış.", "Die Piloten wollen eine Gehaltserhöhung, sonst fliegen sie drei Tage nicht.", "Los pilotos quieren un aumento o no volarán durante tres días.", "パイロットが昇給を求めている。さもなくば3日間飛ばないそうだ。", "조종사들이 임금 인상을 요구합니다. 아니면 3일간 비행하지 않겠답니다."),
-        ("No balloon flies without a pilot, kid. A raise is usually cheaper than a strike.", "Pilotsuz balon uçmaz evlat. Zam çoğu zaman grevden ucuza gelir.", "Ohne Piloten fliegt kein Ballon, Lehrling. Eine Erhöhung ist meist billiger als ein Streik.", "Sin piloto no vuela ningún globo, aprendiz. Un aumento suele salir más barato que una huelga.", "パイロットなしに気球は飛ばん。昇給はたいていストより安くつくぞ。", "조종사 없이는 열기구가 못 뜬다네, 제자여. 임금 인상이 대개 파업보다 싸게 먹히지."),
+        ("No balloon flies without a pilot, kid. A raise is usually cheaper than a strike.", "Pilotsuz balon uçmaz evlat. Zam çoğu zaman grevden ucuza gelir.", "Ohne Piloten fliegt kein Ballon, Lehrling. Eine Erhöhung ist meist billiger als ein Streik.", "Sin piloto no vuela ningún globo, aprendiz. Un aumento suele salir más barato que una huelga.", "パイロットなしに気球は飛ばんぞ、弟子よ。昇給はたいていストより安くつく。", "조종사 없이는 열기구가 못 뜬다네, 제자여. 임금 인상이 대개 파업보다 싸게 먹히지."),
         ("Give the raise", "Zam ver", "Erhöhung gewähren", "Dar el aumento", "昇給する", "인상해 주기"),
         ("The region's daily income drops 6% for good.", "Bölgenin günlük kazancı kalıcı olarak %6 düşer.", "Die Tageseinnahmen der Region sinken dauerhaft um 6 %.", "Los ingresos diarios de la región bajan un 6 % para siempre.", "地域の日収が恒久的に6%下がる。", "지역 일일 수입이 영구적으로 6% 감소합니다."),
         ("Refuse", "Reddet", "Ablehnen", "Rechazar", "断る", "거절하기"),
@@ -215,7 +215,7 @@ ISSUES = {
     "hotel": (
         ("Hotel tug-of-war", "Otel kapışması", "Hotel-Gerangel", "Disputa por un hotel", "ホテルの奪い合い", "호텔 쟁탈전"),
         ("A rival is trying to lure away your partner hotel.", "Bir rakip, anlaşmalı otelini kendine çekmeye çalışıyor.", "Ein Konkurrent versucht, dein Partnerhotel abzuwerben.", "Un rival intenta quitarte tu hotel asociado.", "ライバルが提携ホテルを引き抜こうとしている。", "경쟁사가 제휴 호텔을 빼가려 합니다."),
-        ("Hotels aren't loyal, kid, but a small gesture is usually enough.", "Oteller sadık değildir evlat, ama küçük bir jest çoğu zaman yeter.", "Hotels sind nicht treu, Lehrling, aber eine kleine Geste genügt meistens.", "Los hoteles no son leales, aprendiz, pero un pequeño gesto suele bastar.", "ホテルに忠誠心はない。だが小さな心づけで大抵は足りる。", "호텔은 의리가 없다네, 제자여. 하지만 작은 성의면 대개 충분하지."),
+        ("Hotels aren't loyal, kid, but a small gesture is usually enough.", "Oteller sadık değildir evlat, ama küçük bir jest çoğu zaman yeter.", "Hotels sind nicht treu, Lehrling, aber eine kleine Geste genügt meistens.", "Los hoteles no son leales, aprendiz, pero un pequeño gesto suele bastar.", "ホテルに忠誠心などない、弟子よ。だがちょっとした心づけで大抵は足りる。", "호텔은 의리가 없다네, 제자여. 하지만 작은 성의면 대개 충분하지."),
         ("Pay a bonus", "Ek ödeme yap", "Prämie zahlen", "Pagar un extra", "ボーナスを払う", "추가금 지급하기"),
         ("Paid from the holding; the problem is closed.", "Holding kasasından ödenir, sorun kapanır.", "Wird von der Holding bezahlt; das Problem ist erledigt.", "Lo paga el holding; el problema queda resuelto.", "ホールディングスから支払い、問題は解決。", "지주회사에서 지급하고 문제가 해결됩니다."),
         ("Let it go", "Bırak gitsin", "Gehen lassen", "Dejarlo ir", "手放す", "포기하기"),
@@ -260,7 +260,7 @@ add("hez.entered.abq",
  "Amerika evlat! Albuquerque'de rüzgâr bambaşka: meşhur \"kutu\". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: %@ ve küçük bir balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım.",
  "Amerika, Lehrling! Der Wind in Albuquerque ist etwas Besonderes: die berühmte „Box“. Unten trägt er dich in eine Richtung, etwas höher zurück, so landet ein guter Pilot dort, wo er gestartet ist. Alle 30 Tage ist Balloon Fiesta: Vier Tage lang kommen doppelt so viele Touristen. Hier läuft alles in Dollar, und du fängst bei null an: %@ und ein kleiner Ballon. Kappadokien verdient im Autopilot weiter und schickt alles an die Holding, aber die Holding kann kein Geld hierher schicken. Amerika musst du allein erobern. Gibt es Ärger, rufe ich dich.",
  "¡América, aprendiz! El viento de Albuquerque es otra cosa: la famosa «caja». Abajo te lleva en una dirección y un poco más arriba te devuelve, así que un buen piloto aterriza donde despegó. Cada 30 días hay Balloon Fiesta: durante cuatro días los turistas se duplican. Aquí todo va en dólares y empiezas de cero: %@ y un globo pequeño. Capadocia sigue ganando en piloto automático y sus ingresos van al holding, pero el holding no puede enviar dinero aquí. Conquistarás América con lo tuyo. Si hay problemas, te llamaré.",
- "アメリカだぞ、弟子よ！アルバカーキの風は別物だ。名高い「ボックス」。低空では一方へ、少し上では逆へ運ぶから、腕のいい操縦士は離陸地点に戻ってこられる。30日ごとにバルーン・フィエスタもある。4日間、観光客が倍になる。ここでは全てドルで、ゼロからの出発だ。%@と小さな気球ひとつ。カッパドキアは自動運営で稼ぎ続け、収入はホールディングスへ行く。だがホールディングスからここへは送金できん。アメリカは自力で攻略するのだ。何かあれば呼ぶぞ。",
+ "アメリカだぞ、弟子よ！アルバカーキの風は別物だ。名高い「ボックス」。低空では一方へ、少し上では逆へ運ぶから、腕のいいパイロットは離陸地点に戻ってこられる。30日ごとにバルーン・フィエスタもある。4日間、観光客が倍になる。ここでは全てドルで、ゼロからの出発だ。%@と小さな気球ひとつ。カッパドキアは自動運営で稼ぎ続け、収入はホールディングスへ行く。だがホールディングスからここへは送金できん。アメリカは自力で攻略するのだ。何かあれば呼ぶぞ。",
  "미국이라네, 제자여! 앨버커키의 바람은 완전히 다르지. 그 유명한 '박스'일세. 낮은 곳에선 한쪽으로, 조금 위에선 반대로 데려가니, 노련한 조종사는 이륙한 곳에 다시 내린다네. 30일마다 벌룬 피에스타도 열리지. 나흘 동안 관광객이 두 배가 된다네. 여기선 모든 게 달러고 처음부터 다시 시작일세. 가진 건 %@와 작은 열기구 하나. 카파도키아는 자동 운영으로 계속 벌고 그 수입은 지주회사로 가지만, 지주회사는 여기로 돈을 보낼 수 없네. 미국은 자네 힘으로 일궈야 하네. 문제가 생기면 부르겠네.")
 add("hez.fiestaStarted",
  "The Albuquerque Balloon Fiesta has begun, kid! For four days tourists will pour in from all over the world and the sky will fill with hundreds of balloons. Get every balloon you have into the air!",
@@ -281,7 +281,7 @@ add("hez.officeOpened",
  "Yeni ofisin açıldı evlat: %@!",
  "Dein neues Büro ist eröffnet, Lehrling: %@!",
  "¡Tu nueva oficina está abierta, aprendiz: %@!",
- "新しいオフィスが開いたぞ、弟子よ：%@！",
+ "新しいオフィスが開いたぞ、弟子よ。%@だ！",
  "새 사무소가 문을 열었네, 제자여: %@!")
 add("hez.allOffices",
  "All four offices are open, kid! New York, Istanbul, Tokyo, Seoul... You're a real global company now. Shared costs fell: holding expenses are down to 20%.",
@@ -295,7 +295,7 @@ add("hez.celebritySigned",
  "Reklamlarının yeni yüzü: %@! Afişler her yerde evlat, telefonlar susmuyor.",
  "%@ ist jetzt das Gesicht deiner Werbung! Plakate überall, Lehrling, die Telefone stehen nicht still.",
  "¡%@ es ahora la imagen de tus anuncios! Carteles por todas partes, aprendiz, los teléfonos no paran.",
- "%@がお前の広告の顔になったぞ！あちこちにポスターが貼られ、電話が鳴りやまんぞ、弟子よ。",
+ "%@がお前の広告の顔になったぞ！街じゅうにポスターが貼られ、電話が鳴りやまん、弟子よ。",
  "자네 광고의 새 얼굴은 바로 %@일세! 포스터가 사방에 붙고 전화가 끊이질 않는군, 제자여.")
 for k, v in {
     "mesaGold": (
@@ -303,7 +303,7 @@ for k, v in {
         "Mesa Gold Balloons, Teksas petrol parasıyla Albuquerque'ye geldi! Kesesi derin, filosu büyük. Dikkatli ol evlat.",
         "Mesa Gold Balloons ist mit texanischem Ölgeld nach Albuquerque gekommen! Volle Kassen und eine große Flotte. Pass auf, Lehrling.",
         "¡Mesa Gold Balloons ha llegado a Albuquerque con dinero del petróleo de Texas! Bolsillos llenos y una gran flota. Cuidado, aprendiz.",
-        "メサ・ゴールド・バルーンズがテキサスの石油マネーでアルバカーキにやって来た！資金も機体も豊富だ。気をつけよ、弟子よ。",
+        "メサ・ゴールド・バルーンズがテキサスの石油マネーでアルバカーキにやって来た！資金も気球も豊富だ。気をつけよ、弟子よ。",
         "메사 골드 벌룬스가 텍사스 석유 자본을 등에 업고 앨버커키에 왔네! 돈도 많고 기단도 크지. 조심하게, 제자여."),
     "turquoise": (
         "An aggressive budget outfit called Turquoise Trail Air has opened. They'll cut prices and don't care much for the rules.",
@@ -317,7 +317,7 @@ for k, v in {
         "Desert Bloom Flights adında lüks bir butik şirket açıldı. Az balon, yüksek fiyat, çok popüler.",
         "Ein Luxus-Boutiqueanbieter namens Desert Bloom Flights hat eröffnet. Wenige Ballone, hohe Preise, sehr beliebt.",
         "Ha abierto una empresa boutique de lujo llamada Desert Bloom Flights. Pocos globos, precios altos y mucha popularidad.",
-        "デザート・ブルーム・フライツという高級ブティックが開業した。機数は少なく高価格、だが大人気だ。",
+        "デザート・ブルーム・フライツという高級ブティックが開業した。気球は少なく高価格、だが大人気だ。",
         "데저트 블룸 플라이츠라는 고급 부티크 업체가 문을 열었네. 열기구는 적고 가격은 높지만 인기가 대단하지."),
     "bigSky": (
         "Big Sky Fiesta Co. from California has opened a branch here. A balanced, solid rival.",

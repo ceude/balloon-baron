@@ -105,6 +105,9 @@ struct RootView: View {
             if store.showFactoryOrder {
                 FactoryOrderView().transition(.opacity)
             }
+            if store.showTourOffer {
+                TourOfferView().transition(.opacity)
+            }
             if let a = store.postcard {
                 PostcardView(achievement: a).transition(.opacity)
             }
