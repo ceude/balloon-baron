@@ -84,7 +84,7 @@ public enum StoreItem: String, Codable, CaseIterable, CodingKeyRepresentable, Se
         case .pigeons, .arch, .cafe, .rugs, .figStar, .figTulip, .figButterfly, .figSpiral, .figInitial: 0
         case .worldTour: 4.99
         case .founder: 6.99
-        case .supporter: 11.99
+        case .supporter: 9.99
         case .lanterns: 0
         default: 0.99
         }

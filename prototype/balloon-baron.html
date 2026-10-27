@@ -5639,7 +5639,7 @@ const SHOP = {
   /* v115: Cappadocia is the free game; the Grand Tour opens America, Egypt and the regions to come. Offered at the
      Baron of Cappadocia ceremony; the Supporter Edition adds the Founder Pack and a supporter plaque in town. */
   worldTour: { n: 'Dünya Turu', kind: 'unlock', p: 4.99 },
-  supporter: { n: 'Destekçi Sürümü', kind: 'supporter', p: 11.99 }
+  supporter: { n: 'Destekçi Sürümü', kind: 'supporter', p: 9.99 }
 };
 const priceTxt = p => p.toFixed(2).replace('.', ',') + ' €';
 for (const k in SHOP) SHOP[k].price = SHOP[k].gift ? '🎁 Hediye' : priceTxt(SHOP[k].p);
