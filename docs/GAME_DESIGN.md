@@ -278,6 +278,10 @@ Eski başlangıç hikâyesinin yerine sinematik bir açılış. 3B, kodla üreti
 - Sağ üstte "Geç ›" her iki çekimi de atlar.
 - **Müzik (v121):** WebAudio ile kodla: rüzgâr, sabit bas (gün doğarken açılan filtre), doğru anlarda bas vuruşları ve yükselen geçişler, Hicaz makamında ney cümleleri, kalkışta darbuka (maksum) ve yaylılar; balon şişerken brülör sesi.
 
+- **Renk seçimi (v121.3):** isim yazılırken olduğu gibi film sahnesinde kalınır: kamera tarladan gökyüzüne döner (güneşi arkasına alır), on renk seçeneği gerçek balonlar olarak süzülür; dokunulan balon öne gelir, brülörü yanar. "Geri" kamerayı tarlaya indirir. WebGL yoksa eski 2B seçim.
+- **Uçuş (v121.1):** kamera yüksekliği tek tek tümseklere değil, yolun önündeki ve arkasındaki en yüksek zeminin yumuşatılmış haline göre ayarlanır: yere girmez, inip çıkıp titremez; sonda düz tarlaya iner.
+- **Başlık ekranı:** "Brülöre basılı tut" beyaz bir konuşma balonunda, düğmeyi gösteren küçük bir çentikle.
+
 ## Hikâye (v121, yalnız prototipte)
 Film yalnızca tohumu atar; hikâye ilk günlerde oyunun içinde akar. Eski v112 hikâyesini oynayan kayıtlarda (`storyDone`) bu satırlar çıkmaz.
 - **Film:** Hezarfen tarlada: "Bu sepet deden Hasan'ındı evlat. Kapadokya'nın ilk balonlarından biriydi. Kumaş hazır, sepet hazır. Bir tek adı eksik."
@@ -322,6 +326,11 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 
 ## Festivaller (Kapadokya)
 24. günden başlayarak 35 günde bir, 3 gün: Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
+
+## TestFlight düzeltmeleri (v121.2, yalnız prototipte)
+- **Uçuşta duraklatma:** uçuş sırasında sağ üstteki menü düğmesi ⏸ olur; "Duraklatıldı" kartı (irtifa, yakıt, Devam et, Ayarlar) açılır, uçuş donar, brülör ve valf bırakılır. Ayarlar kapanınca kart geri gelir. Uygulama arka plana giderse uçuş kendiliğinden duraklar.
+- **Rüzgâr etiketi:** sepetin altındaki yeşil/kırmızı hap yerine balonun üstünde küçük koyu cam bir etiket: renkli dairede ok (yeşil: tarlaya taşıyor, turuncu: taşımıyor) ve hız. Alçalırken iniş alanı, peri bacaları ve engeller görünür kalır.
+- **Bugünün uçuş planı:** SEN/PİLOT sorusu kalktı. Kendin uçurduğun balon listenin en üstünde "Sen uçuruyorsun" etiketiyle durur (altında "Pilota ver"); diğer balonlarda "Ben uçurayım" düğmesi var (o balon amiral olur, filodaki gibi). Üstteki kart yalnızca durumu ve günün görevini söyler; kendin uçmuyorsan görev uyarısı kırmızı.
 
 ## Uçuş anları
 Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen hava kolonu, 2 sn içinde kal: +15 yakıt), **selam** (başka bir balonun 95 m / 50 m yakınında 2 sn), **fotoğraf** (150–280 m arasında 1,5 sn, flaş). Başarılırsa yolcu başı bahşiş +€5 ve popülerlik +0,008.

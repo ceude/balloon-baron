@@ -40,6 +40,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .chip.neg{color:var(--red)}
 #bMenu{width:34px;padding:0;justify-content:center}
 #bMenu svg{width:18px;height:18px}
+#bMenu .pz,#bMenu.pz svg:first-child{display:none}#bMenu.pz .pz{display:block}
 
 /* home: world full screen, glass widgets on top */
 #sheet{position:absolute;inset:0;z-index:5;pointer-events:none}
@@ -134,6 +135,10 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .whofly{display:flex;flex-direction:column;gap:6px;padding:12px;border-radius:16px;background:#fff3e8;font-size:13px;color:var(--ink2)}
 .whofly b{color:var(--ink);font-size:15px}
 .whob{display:flex;gap:8px;margin-top:4px}
+.whofly .warn{color:var(--coral-d);font-weight:700}
+.frow.you{background:#fff3e8;box-shadow:inset 0 0 0 2px #ffcbb5}
+.frow .mefly{display:inline-block;margin-top:4px;padding:3px 10px;border-radius:10px;border:0;background:#fff;box-shadow:inset 0 0 0 1.5px var(--line);color:var(--ink);font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.02em;cursor:pointer}
+.frow.you .mefly{color:var(--ink2)}
 .whob .flybtn{flex:1}
 .flybtn:active{transform:translateY(3px);box-shadow:none}
 .frow.blocked{opacity:.7}
@@ -708,10 +713,9 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 #introBurn.on::before{animation:none;opacity:0}
 #introBurn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;background:radial-gradient(circle at 50% 35%,#ff8a5a,var(--coral) 60%)}
 #introBurn svg{width:34px;height:34px;margin-top:-6px;filter:drop-shadow(0 0 6px rgba(255,200,90,.8))}
-#introHint{position:relative;display:flex;align-items:center;gap:8px;max-width:calc(100% - 32px);padding:10px 16px 10px 12px;border-radius:16px;background:var(--paper);color:var(--ink);
+#introHint{position:relative;display:flex;align-items:center;gap:8px;max-width:calc(100% - 32px);padding:10px 18px;border-radius:16px;background:var(--paper);color:var(--ink);
   font-family:var(--cond);font-weight:800;font-size:18px;letter-spacing:.02em;box-shadow:0 8px 24px rgba(20,10,40,.35);animation:hint 1.6s ease-in-out infinite}
 #introHint::after{content:"";position:absolute;left:50%;bottom:-7px;width:14px;height:14px;margin-left:-7px;background:var(--paper);transform:rotate(45deg);border-radius:0 0 3px 0}
-#introHint svg{width:22px;height:22px;flex:none;color:var(--coral)}
 @keyframes hint{0%,100%{transform:translateY(0)}50%{transform:translateY(4px)}}
 @keyframes ring{0%,100%{transform:scale(.94);opacity:.9}50%{transform:scale(1.1);opacity:.35}}
 #fade{position:absolute;inset:0;z-index:9;background:#fff6ea;opacity:0;pointer-events:none;transition:opacity .45s}
@@ -783,7 +787,7 @@ body.night #cv{touch-action:none}
     <div class="chip" id="hDay"></div>
     <div class="chip n" id="hCash" role="button" tabindex="0" aria-label="Kasa, bankayı aç"></div>
     <div class="chip n" id="hRep" role="button" tabindex="0" aria-label="Popülerlik grafiği"></div>
-    <button class="chip" id="bMenu" aria-label="Menü"><svg viewBox="0 0 24 24" fill="none" stroke="#2b2350" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
+    <button class="chip" id="bMenu" aria-label="Menü"><svg viewBox="0 0 24 24" fill="none" stroke="#2b2350" stroke-width="2.4" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="pz" viewBox="0 0 24 24" fill="#2b2350"><rect x="6" y="5" width="4.2" height="14" rx="1.4"/><rect x="13.8" y="5" width="4.2" height="14" rx="1.4"/></svg></button>
   </div>
 
   <div id="sheet">
@@ -826,7 +830,7 @@ body.night #cv{touch-action:none}
   <div class="modal" id="menu" hidden></div>
   <div class="modal" id="setup" hidden></div>
   <div class="chirp out" id="chirp" hidden></div>
-  <div id="intro" hidden><div id="introHint" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V10m0-1.5a1.5 1.5 0 0 1 3 0V11m0-1a1.5 1.5 0 0 1 3 0v4.5c0 3.6-2.4 6.5-6 6.5-2.4 0-3.8-1.1-5-3l-2.2-3.6a1.4 1.4 0 0 1 2.3-1.6L9 14.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Brülöre basılı tut</span></div><button id="introBurn" aria-label="Brülörü yak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 3.5 5 5.6 5 10.2A5 5 0 0 1 7 12.2c0-2 1-3.4 2-4.4.2 1.6 1 2.7 2.2 3.2C10.6 8 11 4.6 12 2z" fill="#ffe08a"/><path d="M12 11c.8 1.7 2.6 2.6 2.6 4.6a2.6 2.6 0 0 1-5.2 0c0-1.5.9-2.3 1.6-3 .1.8.5 1.3 1 1.5-.3-1.1-.2-2.2 0-3.1z" fill="#fff6d8"/></svg>BRÜLÖR</button></div>
+  <div id="intro" hidden><div id="introHint" hidden><span>Brülöre basılı tut</span></div><button id="introBurn" aria-label="Brülörü yak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 3.5 5 5.6 5 10.2A5 5 0 0 1 7 12.2c0-2 1-3.4 2-4.4.2 1.6 1 2.7 2.2 3.2C10.6 8 11 4.6 12 2z" fill="#ffe08a"/><path d="M12 11c.8 1.7 2.6 2.6 2.6 4.6a2.6 2.6 0 0 1-5.2 0c0-1.5.9-2.3 1.6-3 .1.8.5 1.3 1 1.5-.3-1.1-.2-2.2 0-3.1z" fill="#fff6d8"/></svg>BRÜLÖR</button></div>
   <div id="fade"></div>
 </div>
 
@@ -2709,11 +2713,11 @@ function showFleetPlan() {
       const box = h('div', 'whofly');
       if (!licenseOk()) box.innerHTML = `<b>Amiral balonunu sen uçurmalısın.</b><span>Lisansın doldu: yenileme uçuşu bedava, ya da Ekip'ten ${eur(RECERT)} öde.</span>`;
       else {
-        box.innerHTML = `<b>${esc(fb.name)} balonunu kim uçursun?</b><span>Sen uçarsan yolcular %${FOUNDER * 100} fazla öder ve görevleri alabilirsin.</span>`;
-        const row = h('div', 'whob');
-        const me = h('button', 'flybtn' + (S.selfFly ? ' on' : ''), 'SEN'); me.onclick = () => { S.selfFly = true; assignPilots(); sfx('tick'); refresh(); draw(); };
-        const pl = h('button', 'flybtn' + (!S.selfFly ? ' on' : ''), 'PİLOT'); pl.onclick = () => { S.selfFly = false; assignPilots(); sfx('tick'); refresh(); draw(); };
-        row.append(me, pl); box.appendChild(row);
+        /* v121.2 (TestFlight): no SEN/PİLOT question; you pick your balloon in the list below, like in the fleet */
+        const M = S.weather && S.weather.mission && MISSIONS[S.weather.mission];
+        box.innerHTML = (S.selfFly ? `<b>Bugün ${esc(fb.name)} balonunu sen uçuruyorsun.</b><span>Yolcuların %${FOUNDER * 100} fazla öder ve görevleri sen alırsın. Başka bir balonu uçurmak için listede "Ben uçurayım"a dokun.</span>`
+          : `<b>Bugün bütün balonları pilotlar uçuruyor.</b><span>Kendin uçarsan yolcular %${FOUNDER * 100} fazla öder ve görevleri alabilirsin. Listede bir balonda "Ben uçurayım"a dokun.</span>`)
+          + (M ? `<span class="${S.selfFly ? '' : 'warn'}">${S.selfFly ? 'Bugünkü görev senin' : 'Bugünkü görev için sepette sen olmalısın'}: ${M.name} (+${eur(M.reward)}).</span>` : '');
       }
       c.appendChild(box);
     }
@@ -2722,8 +2726,22 @@ function showFleetPlan() {
     const all = h('button', 'ghost', 'Hepsi uçsun'); all.onclick = () => set(S.balloons, true);
     const none = h('button', 'ghost', 'Hepsi yerde'); none.onclick = () => set(S.balloons, false);
     top.append(all, none); c.appendChild(top);
+    const mine = fb && isSelf(fb) ? fb : null;
+    const flyMe = b => { S.flag = b.id; S.selfFly = true; b.fly = true; assignPilots(); sfx('tick'); refresh(); draw(); };
+    const meOk = b => ['ok', 'nopilot', 'late', 'strike'].includes(canFly(b));
+    const fRow = b => {
+      const st = canFly(b), you = b === mine, row = h('div', 'frow' + (you ? ' you' : '') + (st !== 'ok' ? ' blocked' : b.fly ? '' : ' off'));
+      row.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<div class="main"><div class="t">${esc(b.name)}${you ? ' <span class="tag o">Sen uçuruyorsun</span>' : b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}</div><div class="s">${fleetSub(b)}${riskDot(b)}</div></div>`;
+      const main = row.querySelector('.main');
+      if (you && licenseOk()) { const g = h('button', 'mefly', 'Pilota ver'); g.onclick = () => { S.selfFly = false; assignPilots(); sfx('tick'); refresh(); draw(); }; main.appendChild(g); }
+      else if (!you && licenseOk() && meOk(b)) { const g = h('button', 'mefly', 'Ben uçurayım'); g.onclick = () => flyMe(b); main.appendChild(g); }
+      if (st === 'ok') { const fb = h('button', 'flybtn' + (b.fly ? ' on' : ''), b.fly ? 'UÇACAK' : 'YERDE'); fb.setAttribute('aria-pressed', String(!!b.fly)); fb.onclick = () => { b.fly = !b.fly; sfx('tick'); refresh(); draw(); }; row.appendChild(fb); }
+      else { const t = blockedTap(b); if (t) { const go = h('button', 'pbtn light', st === 'worn' ? 'Filo' : 'Ekip'); go.onclick = () => { m.hidden = true; t(); }; row.appendChild(go); } }
+      return row;
+    };
+    if (mine) c.appendChild(fRow(mine));
     for (const z of ['XL', 'L', 'M', 'S']) {
-      const list = sortedFleet().filter(b => b.size === z);
+      const list = sortedFleet().filter(b => b.size === z && b !== mine);
       if (!list.length) continue;
       const okList = list.filter(b => canFly(b) === 'ok'), on = okList.filter(b => b.fly).length;
       const gh = h('div', 'fgh', `<span><b>${SIZES[z].label}</b> · ${SIZES[z].cap} kişi · ${on}/${list.length} uçacak</span>`);
@@ -2734,13 +2752,7 @@ function showFleetPlan() {
         g.append(a, n); gh.appendChild(g);
       }
       c.appendChild(gh);
-      for (const b of list) {
-        const st = canFly(b), row = h('div', 'frow' + (st !== 'ok' ? ' blocked' : b.fly ? '' : ' off'));
-        row.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<div class="main"><div class="t">${esc(b.name)}${b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}</div><div class="s">${fleetSub(b)}${riskDot(b)}</div></div>`;
-        if (st === 'ok') { const fb = h('button', 'flybtn' + (b.fly ? ' on' : ''), b.fly ? 'UÇACAK' : 'YERDE'); fb.setAttribute('aria-pressed', String(!!b.fly)); fb.onclick = () => { b.fly = !b.fly; sfx('tick'); refresh(); draw(); }; row.appendChild(fb); }
-        else { const t = blockedTap(b); if (t) { const go = h('button', 'pbtn light', st === 'worn' ? 'Filo' : 'Ekip'); go.onclick = () => { m.hidden = true; t(); }; row.appendChild(go); } }
-        c.appendChild(row);
-      }
+      for (const b of list) c.appendChild(fRow(b));
     }
     const ok = h('button', 'big', 'Tamam'); ok.onclick = () => { m.hidden = true; refresh(); }; c.appendChild(ok);
     m.appendChild(c);
@@ -3863,7 +3875,7 @@ function showSetup(step) {
   }
   if (step === 1) {
     mode = OPEN ? 'open' : 'setup'; /* during the opening the town stays on screen behind the card */
-    if (OPEN && OPEN.three) OPEN3D.pause(false);
+    if (OPEN && OPEN.three) { OPEN3D.pause(false); OPEN3D.pick(null); }
     c.appendChild(h('h1', null, S.story ? 'Hayalindeki şirket' : 'Gökyüzü seni bekliyor'));
     c.appendChild(h('p', 'lead', S.story ? 'Bir gün kapında, tabelanda bu isim yazacak. Ne olsun?' : 'Balon imparatorluğunu kurmaya başlamak için afilli bir isme ihtiyacımız var.'));
     const inp = document.createElement('input'); inp.className = 'field'; inp.id = 'coName'; inp.maxLength = 24; inp.placeholder = 'Şirketinin adı'; inp.value = setupName || S.company || '';
@@ -3878,7 +3890,7 @@ function showSetup(step) {
     c.append(err, go);
     setTimeout(() => inp.focus(), 60);
   } else {
-    mode = 'pick'; if (OPEN && OPEN.three) OPEN3D.pause(true);
+    mode = 'pick'; if (OPEN && OPEN.three) OPEN3D.pick(PICK, () => pickI, i => { if (i !== pickI) { pickI = i; sfx('tick'); } });
     pickI = Math.max(0, PICK.findIndex(p => p.c[0] === myCol()[0]));
     c.appendChild(h('h1', null, S.story ? 'Hayalindeki balon' : 'Balonunu seç'));
     c.appendChild(h('p', 'lead', S.story ? `${esc(setupName)} balonları hangi renklerle uçsun? Gökyüzündeki balonlardan birine dokun.` : `${esc(setupName)} filosu bu renklerle uçacak. Gökyüzündeki balonlardan birine dokun.`));
@@ -4148,6 +4160,20 @@ function redSure() {
   c.append(no, yes);
   m.appendChild(c); m.hidden = false;
 }
+/* v121.2: TestFlight asked for a pause in flight: the menu button turns into ⏸ and freezes the flight */
+const inFlight = () => mode === 'flight' && FL && !FL.done;
+function showPause() {
+  if (!inFlight()) return;
+  setBurn(false); setVent(false); FL.paused = true;
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Duraklatıldı'));
+  c.appendChild(h('p', 'lead', `İrtifa: ${Math.round(FL.alt)} m · Yakıt: %${Math.round(FL.fuel)}. Balonun sen dönene kadar havada bekler.`));
+  const go = h('button', 'big', 'Devam et'); go.onclick = () => { sfx('click'); m.hidden = true; FL.paused = false; };
+  const set = h('button', 'ghost', 'Ayarlar'); set.style.width = '100%'; set.onclick = () => { sfx('click'); showMenu(); };
+  c.appendChild(go); c.appendChild(set); m.appendChild(c); m.hidden = false; sfx('click');
+}
+document.addEventListener('visibilitychange', () => { if (document.hidden && inFlight() && !FL.paused) showPause(); });
 function confirmAbort() {
   if (!FL || FL.air || FL.done) return;
   const m = $('menu'); m.replaceChildren();
@@ -4550,7 +4576,7 @@ function coachTick(f, dt) {
   else if (f.stillT > 4) coachSay('still', '<b>Neredeyse duruyorsun.</b> Başka bir yüksekliğe geç: her katmanın rüzgârı solda, balonunun altındaki etiket şu anki rüzgârı gösterir.');
 }
 function setVent(on) { if (mode !== 'flight' || !FL || FL.done) return; FL.venting = on; $('vent').classList.toggle('on', on); }
-function setBurn(on) { if (mode !== 'flight' || !FL || FL.done) return; FL.burning = on; $('burn').classList.toggle('on', on); if (on && FL.t > 1 && !FL.msg && !(FL.coachK && T - FL.coachAt < 5)) $('tip').hidden = true; }
+function setBurn(on) { if (mode !== 'flight' || !FL || FL.done || (on && FL.paused)) return; FL.burning = on; $('burn').classList.toggle('on', on); if (on && FL.t > 1 && !FL.msg && !(FL.coachK && T - FL.coachAt < 5)) $('tip').hidden = true; }
 function updateFlight(dt) {
   const f = FL; if (!f || f.done) return;
   const s = dt * SIM;
@@ -5178,13 +5204,17 @@ function draw(dt) {
       if (d) designBalloon3d(bx, by, R, myc[0], myc[1], burn, 1, fb.ad, d); else balloon3d(bx, by, R, myc[0], myc[1], burn, 1, fb.ad);
       ctx.restore();
       /* v111: the wind where the balloon is, right under the basket: green when it carries you toward the landing field */
+      /* v121.2: the wind where the balloon is, in a small dark-glass tag like the wind card: a coloured disc with the arrow (green toward
+         the field). It rides above the envelope, so the ground, the landing field and the chimneys below stay clear */
       if (f.alt > 3 && !f.done) {
         const wv = windBase(f.alt), wd = Math.sign(wv) || 1, good = wv * Math.sign(S.weather.target - f.x) > .3, lbl = `${Math.round(Math.abs(wv) * 3.6)} km/s`;
-        ctx.font = '800 13px "Barlow Condensed", system-ui, sans-serif'; const tw = ctx.measureText(lbl).width, pw = tw + 30, py = by + 16;
-        ctx.fillStyle = good ? 'rgba(34,164,93,.92)' : 'rgba(229,67,47,.88)'; rrect(bx - pw / 2, py - 11, pw, 22, 11); ctx.fill();
-        ctx.strokeStyle = ctx.fillStyle = '#fff'; ctx.lineWidth = 2.2; ctx.lineCap = 'round'; const a0 = bx - pw / 2 + 8, a1 = a0 + 12, ax0 = wd > 0 ? a0 : a1, ax1 = wd > 0 ? a1 : a0;
-        ctx.beginPath(); ctx.moveTo(ax0, py); ctx.lineTo(ax1, py); ctx.stroke(); ctx.beginPath(); ctx.moveTo(ax1 + wd * 2, py); ctx.lineTo(ax1 - wd * 3, py - 4); ctx.lineTo(ax1 - wd * 3, py + 4); ctx.fill();
-        ctx.fillText(lbl, a1 + 6, py + 5);
+        ctx.font = '700 13px "Barlow Condensed", system-ui, sans-serif'; const tw = ctx.measureText(lbl).width, pw = tw + 34, ph = 22, py = Math.max(top + ph, pv - R * 1.2 - 12), px = bx - pw / 2;
+        ctx.fillStyle = 'rgba(30,24,64,.62)'; rrect(px, py - ph / 2, pw, ph, ph / 2); ctx.fill();
+        const cx = px + 12, cr = 7.5; ctx.fillStyle = good ? '#22a45d' : '#ff5e3a'; ctx.beginPath(); ctx.arc(cx, py, cr, 0, 7); ctx.fill();
+        ctx.strokeStyle = ctx.fillStyle = '#fff'; ctx.lineWidth = 1.8; ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(cx - wd * 3.8, py); ctx.lineTo(cx + wd * 1.6, py); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(cx + wd * 4.2, py); ctx.lineTo(cx + wd * .4, py - 3.2); ctx.lineTo(cx + wd * .4, py + 3.2); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle'; ctx.fillText(lbl, cx + cr + 5, py + 1); ctx.textBaseline = 'alphabetic';
       }
     }
     if (f.celebAt) {
@@ -8439,7 +8469,7 @@ $('grab').onclick = () => dockOpen(!$('dock').classList.contains('open'));
 })();
 $('psOk').onclick = $('psClose').onclick = () => priceSheet(false);
 $('psheet').addEventListener('click', e => { if (e.target.id === 'psheet') priceSheet(false); });
-$('bMenu').onclick = () => showMenu();
+$('bMenu').onclick = () => inFlight() ? showPause() : showMenu();
 $('pClose').onclick = closePage;
 $('abort').onclick = confirmAbort;
 $('hRep').onclick = () => { if (mode === 'office' && $('report').hidden) showRepChart(); };
@@ -8449,7 +8479,9 @@ window.addEventListener('resize', () => { if (mode === 'office') placeWidgets();
 let last = performance.now();
 function frame(now) {
   const dt = Math.min(.05, Math.max(0, (now - last) / 1000)); last = now; T += dt;
-  if (mode === 'flight') updateFlight(dt);
+  if (mode === 'flight' && !(FL && FL.paused)) updateFlight(dt);
+  if (FL && FL.paused && (!inFlight() || $('menu').hidden)) { if (inFlight()) showPause(); else FL.paused = false; } /* settings closed: back to the pause card */
+  $('bMenu').classList.toggle('pz', inFlight());
   if (mode === 'intro') updateIntro(dt);
   if (mode === 'story') updateStory(dt);
   if (mode === 'collect') updateCollect(dt);
@@ -8824,6 +8856,45 @@ async function open3dLoad() {
     hero = makeBalloon(new THREE.MeshStandardMaterial({ map: heroTex(), roughness: .6, side: THREE.DoubleSide }), 15); scene.add(hero);
     hero.add(flameLight); flameLight.position.set(0, .4, 0); return hero;
   };
+  /* v121.3: the colour pick happens in the film: from the field the camera tilts up to the sky, where the colour
+     choices float as real balloons; tap one and it comes forward with its burner lit */
+  const PK = { on: false, k: 0, list: [], sel: () => -1, cb: null, last: 0, dir: null, halo: null };
+  const pickBuild = choices => {
+    PK.list.forEach(b => scene.remove(b)); PK.list = [];
+    const eye = FLIGHT.eye.getPoint(1), base = V3(-.45, 0, 1).normalize(); /* away from the sun: the envelopes lit from the front, in full colour */
+    const fwd = base.clone().multiplyScalar(.62).add(V3(0, .78, 0)).normalize(), right = V3().crossVectors(fwd, V3(0, 1, 0)).normalize(), up = V3().crossVectors(right, fwd);
+    PK.dir = fwd; const tv = Math.tan(THREE.MathUtils.degToRad(50) / 2), th = tv * W3() / H3();
+    choices.forEach((c, i) => {
+      const b = makeBalloon(new THREE.MeshStandardMaterial({ map: goreTex(c.c), roughness: .58, side: THREE.DoubleSide, fog: false }), 1);
+      const d = lerp(150, 70, clamp((c.s - .45) / .6, 0, 1)), sz = d * .085;
+      b.scale.setScalar(sz); const ctr = eye.clone().addScaledVector(fwd, d).addScaledVector(right, (2 * c.x - 1) * th * .85 * d).addScaledVector(up, (1 - 2 * c.y) * tv * d);
+      Object.assign(b.userData, { home: ctr, sz, ph: i * 1.7, k: 0 }); b.visible = false; scene.add(b); PK.list.push(b);
+    });
+    if (!PK.halo) { PK.halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowTex, color: 0xfff0c8, transparent: true, depthWrite: false, opacity: .5 })); scene.add(PK.halo); }
+  };
+  const pickFrame = time => {
+    const dt = Math.min(.2, Math.max(0, time - (PK.last || time))); PK.last = time;
+    PK.k = clamp(PK.k + (PK.on ? dt / 1.8 : -dt / 1.2), 0, 1); const k = easeIO3(PK.k);
+    PK.list.forEach((b, i) => {
+      const U = b.userData, sel = i === PK.sel(); U.k = lerp(U.k, sel ? 1 : 0, Math.min(1, dt * 6));
+      b.visible = PK.k > 0; const s = U.sz * (1 + U.k * .35);
+      b.scale.setScalar(s); b.position.copy(U.home).addScaledVector(PK.dir, -U.k * 12); b.position.y += Math.sin(time * .7 + U.ph) * U.sz * .25 - s * .92 + (1 - k) * 40; /* the envelope's middle on the spot */
+      const burn = sel && Math.sin(time * 5 + U.ph) > -.4; U.glow.material.opacity = burn ? 1 : 0; U.glow.scale.setScalar(1.1 + Math.sin(time * 37) * .15);
+      if (sel) { PK.halo.position.copy(b.position).y += s * .92; PK.halo.scale.setScalar(s * 4.2); }
+    });
+    if (PK.halo) PK.halo.visible = PK.k > 0 && PK.sel() >= 0;
+    if (k > 0) { const q0 = camera.quaternion.clone(); camera.lookAt(camera.position.clone().add(PK.dir)); const q1 = camera.quaternion.clone();
+      camera.quaternion.slerpQuaternions(q0, q1, k); camera.fov = lerp(camera.fov, 50, k); camera.updateProjectionMatrix(); } /* turns up and round to the sky */
+  };
+  canvas.addEventListener('pointerdown', e => {
+    if (!PK.on || PK.k < .6 || !PK.cb) return;
+    const r = canvas.getBoundingClientRect(), x = (e.clientX - r.left) / r.width * 2 - 1, y = -((e.clientY - r.top) / r.height * 2 - 1);
+    let best = -1, bd = 1e9;
+    PK.list.forEach((b, i) => { const s = b.scale.x, c = b.position.clone(); c.y += s * .92; const p = c.clone().project(camera), e2 = c.clone().addScaledVector(camera.up, s * .7).project(camera);
+      const rad = Math.hypot(e2.x - p.x, (e2.y - p.y)) * 1.2, dd = Math.hypot((p.x - x) * r.width / r.height, p.y - y) / rad;
+      if (p.z < 1 && dd < 1 && dd < bd) { bd = dd; best = i; } });
+    if (best >= 0) PK.cb(best);
+  });
   const frameAt = (part, t, now) => {
     const time = now / 1000, ta = part === 'A' ? t : 30 + t;
     crowd.forEach(b => { const U = b.userData, rise = Math.max(0, ta - U.go), alt = U.v * Math.max(0, rise - 2 + 2 * Math.exp(-rise / 2)); /* eases off the ground */
@@ -8838,7 +8909,7 @@ async function open3dLoad() {
       const burn = t < 9.5 && (t < 3.4 || Math.sin(t * 4.1) > -.1); if (OPEN) OPEN.burn = burn; h.userData.glow.material.opacity = burn ? 1 : 0; h.userData.glow.scale.setScalar(1.2 + Math.sin(time * 40) * .2); flameLight.intensity = burn ? 300 + Math.sin(time * 33) * 70 : 0;
     }
     const tgt = camera.position.clone(); tgt.y = 0; sun.target.position.copy(tgt); sun.position.add(tgt);
-    grade.uniforms.t.value = time; place(part, t);
+    grade.uniforms.t.value = time; place(part, t); if (part === 'A') pickFrame(time);
     mists.forEach(m => { const dx = Math.hypot(m.position.x - camera.position.x, m.position.z - camera.position.z) - m.scale.x * .5, dy = Math.abs(m.position.y - camera.position.y);
       m.material.opacity = .3 * clamp(Math.max(dx / 120, (dy - 4) / 30), 0, 1) * (part === 'A' ? 1 : .6); }); /* no hard edge when the drone flies through */
   };
@@ -8847,6 +8918,7 @@ async function open3dLoad() {
   return {
     start(p, cb) { part = p; t0 = performance.now(); onPhase = cb; paused = false; canvas.style.display = 'block'; if (!raf) raf = requestAnimationFrame(loop); },
     pause(on) { paused = on; canvas.style.display = on ? 'none' : 'block'; },
+    pick(choices, sel, cb) { if (choices) { if (!PK.list.length) pickBuild(choices); PK.sel = sel; PK.cb = cb; } PK.on = !!choices; paused = false; canvas.style.display = 'block'; },
     fade(k) { grade.uniforms.fade.value = k; },
     seek(t) { t0 = performance.now() - t * 1000; },
     at(p, t) { paused = true; part = p; frameAt(p, t, 1000 + t * 1000); composer.render(); canvas.style.display = 'block'; },
