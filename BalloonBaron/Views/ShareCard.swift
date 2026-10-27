@@ -34,15 +34,7 @@ struct ShareCardArt: View {
                     .lineLimit(1).minimumScaleFactor(0.5)
                     .padding(.horizontal, 60)
                 Spacer()
-                HStack(spacing: 20) {
-                    BalloonShape(colors: colors.isEmpty ? ["#ff5e3a", "#ffc23d"] : colors)
-                        .frame(width: 56, height: 72)
-                    Text("BALLOON BARON").font(Theme.font(64, .heavy, condensed: true)).foregroundStyle(top)
-                }
-                Text("Cappadocia")
-                    .font(.system(size: 36, weight: .bold, design: .serif).italic())
-                    .foregroundStyle(Color(hex: dark ? "#ffc23d" : "#c0582c"))
-                    .padding(.bottom, 74)
+                ShareBrand(colors: colors, dark: dark)
             }
             PostcardArt(achievement: achievement, day: day, colors: colors)
                 .frame(width: 900)
@@ -77,6 +69,26 @@ struct ShareCardArt: View {
         r.scale = 1
         r.proposedSize = ProposedViewSize(size)
         return r.uiImage
+    }
+}
+
+/// The game's name under a share picture, with a small balloon in the company's colours.
+struct ShareBrand: View {
+    let colors: [String]
+    let dark: Bool
+
+    var body: some View {
+        VStack(spacing: 0) {
+            HStack(spacing: 20) {
+                BalloonShape(colors: colors.isEmpty ? ["#ff5e3a", "#ffc23d"] : colors)
+                    .frame(width: 56, height: 72)
+                Text("BALLOON BARON").font(Theme.font(64, .heavy, condensed: true)).foregroundStyle(dark ? Color(hex: "#fff6e6") : Theme.ink)
+            }
+            Text("Cappadocia")
+                .font(.system(size: 36, weight: .bold, design: .serif).italic())
+                .foregroundStyle(Color(hex: dark ? "#ffc23d" : "#c0582c"))
+                .padding(.bottom, 74)
+        }
     }
 }
 

@@ -82,13 +82,23 @@ final class GameStore {
     /// The night between two days, with what lights it up.
     struct Night: Equatable { var event: NightEvent? }
     var night: Night?
+    /// v116: the Balloon Show's highlights, waiting for the morning: the night as it was, the show's balloons, the
+    /// moments it reached and the screen it played on (the pictures are drawn again from these).
+    struct ShowShots {
+        let state: GameState
+        let ids: [Int]
+        let moments: [Int]
+        let size: CGSize
+        let day: Int
+    }
+    var showShots: ShowShots?
     /// The short flight across the world map when the region changes (`showTravel`).
     struct Travel: Equatable { let from: RegionID, to: RegionID }
     var travel: Travel?
 
     /// Anything already covering the home screen; the next popup waits for it.
     private var busy: Bool {
-        showIntro || collecting || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
+        showIntro || collecting || showShots != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
@@ -560,8 +570,9 @@ final class GameStore {
     /// The night's camera, handed to the home town as the morning comes (`HomeTownView` takes it).
     var morningCamera: TownViewport?
 
-    func endNight(camera: TownViewport? = nil) {
+    func endNight(camera: TownViewport? = nil, shots: ShowShots? = nil) {
         morningCamera = camera
+        showShots = shots
         night = nil
         act { $0.startDay() }
         showNextHezarfen()

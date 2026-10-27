@@ -10,6 +10,7 @@
 		03B50818350CB24EFC0CFCAA /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EDB158A34F42484C541CFE0 /* HomeView.swift */; };
 		07C4DCFC0699ED567F7D68F4 /* IssueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2070C4DCB9F9DE7745FEBC0 /* IssueView.swift */; };
 		08F7B0D73C66145A446F6067 /* Shop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C148975EC28ECA71CB3536 /* Shop.swift */; };
+		0DA629045DADE2453DF1F645 /* ShowHighlights.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79E97362F1C9F4742E77E38 /* ShowHighlights.swift */; };
 		102B4A4B20A2D62462977EDF /* TownCollect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CD61C9B79F78E77AE45096 /* TownCollect.swift */; };
 		1421D95F62AFE6F52A424C1A /* SaveVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF3B0C99D9EE5597D3FDD37 /* SaveVault.swift */; };
 		14AD9C93BE90A398F1F2752B /* BarlowCondensed-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6858154E303E2FAC806C1D22 /* BarlowCondensed-ExtraBold.ttf */; };
@@ -149,6 +150,7 @@
 		B3141C729AE6B19C61AE6F2A /* BankView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BankView.swift"; sourceTree = "<group>"; };
 		B31687098E5783CD57B19E0E /* BarlowCondensed-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-SemiBold.ttf"; sourceTree = "<group>"; };
 		B5C0F39AF215684082C179ED /* SettingsIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SettingsIcon.swift"; sourceTree = "<group>"; };
+		B79E97362F1C9F4742E77E38 /* ShowHighlights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShowHighlights.swift"; sourceTree = "<group>"; };
 		BA0BD7F812F90140ACBE8488 /* MarketView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MarketView.swift"; sourceTree = "<group>"; };
 		BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownExtras.swift"; sourceTree = "<group>"; };
 		BA6CB771A7741DFE9025EA00 /* GoalsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GoalsView.swift"; sourceTree = "<group>"; };
@@ -308,6 +310,7 @@
 				B5C0F39AF215684082C179ED /* SettingsIcon.swift */,
 				32555776BC90AFB75C336EF3 /* SetupView.swift */,
 				99A21C41BCDC5DB2BD7E3B4C /* ShareCard.swift */,
+				B79E97362F1C9F4742E77E38 /* ShowHighlights.swift */,
 				F98CDA199A25FEB255AFEB7D /* ShowViews.swift */,
 				6A1530CCE3E7DC76FA3B9FB3 /* TravelView.swift */,
 				A258F2D4FE78330C3E2FFE72 /* WorkshopView.swift */,
@@ -475,6 +478,7 @@
 				A6E2F5DC504E6F47EC3886DB /* SettingsIcon.swift in Sources */,
 				37A512CC536FFCC07E95ABE3 /* SetupView.swift in Sources */,
 				187F26A420BE9FAF166CED97 /* ShareCard.swift in Sources */,
+				0DA629045DADE2453DF1F645 /* ShowHighlights.swift in Sources */,
 				6A5552AB7B779F4B6E638218 /* ShowViews.swift in Sources */,
 				F1CA4068815D57F906401D61 /* TravelView.swift in Sources */,
 				90BA8075016BCAB1610D19B8 /* WorkshopView.swift in Sources */,

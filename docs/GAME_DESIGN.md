@@ -304,6 +304,8 @@ Pazar açıldıktan sonra, en az 5 uçabilen balonla, 15 günde bir düzenlenebi
 
 Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistlerinin bileti / şölen maliyeti) €1.000 ve balon başı günde 1,5 / 2 / 2,5 / 3,5 / 4 turistte 0,5 / 0,65 / 0,85 / 1,1 / 1,4; €1.500'de zarar. 10/15/20 gün aralığı sonucu az değiştirdi. Koltukları zaten dolu olan şirkette şölen kazandırmaz (turistler sığmaz), boş koltuğu olan şirkette yaklaşık 1,4 kat geri döner; bu yüzden Hezarfen yalnızca koltuklar boş kalırken önerir.
 
+**Şölenin en güzel anları (v116):** gösteri oynarken dört an saklanır: bütün brülörlerin aynı vuruşta yandığı an (8,5. sn), ışık dalgası (10,3), balonların figürü tuttuğu an (20,85; adı satın alınan figür ya da filoya göre Kaz sürüsü / Işık çemberi / Gökte bir kalp) ve final (22,9; "Final: N balon"). Ertesi sabah ilk kart olarak 2×2 baskı halinde gelir; her biri dokununca 1080×1350 paylaşım kartı olur (gece gökyüzü, eğik baskı, altında oyunun adı). Şölen bir an gelmeden geçilirse o an olmaz; ikiden az an varsa kart çıkmaz.
+
 ## Festivaller (Kapadokya)
 24. günden başlayarak 35 günde bir, 3 gün: Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
 

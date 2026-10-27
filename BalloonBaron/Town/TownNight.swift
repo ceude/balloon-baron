@@ -461,12 +461,19 @@ struct NightView: View {
     /// The sky pales for a second, then the morning starts where the night's camera is.
     private func bringMorning() {
         guard dawn == nil else { return }
-        dawn = Date()
+        let now = Date()
+        dawn = now
         SoundEngine.shared.showMusic(false)
+        // v116: the show's highlights, if it got as far as two of its moments.
+        var shots: GameStore.ShowShots?
+        if case .show(let ids)? = night.event, let s = store.state {
+            let reached = ShowMoments.reached(now.timeIntervalSince(start) - 1.2)
+            if reached.count >= 2 { shots = GameStore.ShowShots(state: s, ids: ids, moments: reached, size: size, day: s.day - 1) }
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             var v = view ?? camera(size)
             NightCamera.clamp(&v, size)
-            store.endNight(camera: v)
+            store.endNight(camera: v, shots: shots)
         }
     }
 
