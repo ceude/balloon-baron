@@ -1346,7 +1346,7 @@ struct TownPainter {
         }
         // Your fleet on the launch field, burners flickering. At night the envelopes are packed away, except for a Fiesta balloon glow.
         let colors = s.colors, tt = t
-        let packed = night != nil && night?.event != .balloonGlow
+        let packed = night != nil && night?.event != .balloonGlow && night?.fieldShown != true
         for (i, b) in s.fieldBalloons.prefix(packed ? 0 : 6).enumerated() {
             let gx = 1.8 + Double(i % 3) * 1.9, gy = 5 + Double(i / 3) * 1.4
             let r: CGFloat = b.size == .XL ? 44 : b.size == .L ? 38 : b.size == .M ? 33 : 28

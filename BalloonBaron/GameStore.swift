@@ -50,6 +50,8 @@ final class GameStore {
     var showIntro = true
     /// The opening film's lift-off is still playing over the game it has just created: the town and its popups wait.
     var openingFilm = false
+    /// v121.5: the film has landed and the town pulls back to day one's view; the controls and popups wait for it.
+    var homeIntro: HomeIntro?
     /// Passengers are being gathered (the seat-filling screen before take-off).
     var collecting = false
     /// Passengers riding with you while the flight scene runs.
@@ -104,7 +106,7 @@ final class GameStore {
 
     /// Anything already covering the home screen; the next popup waits for it.
     private var busy: Bool {
-        showIntro || openingFilm || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
+        showIntro || openingFilm || homeIntro != nil || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
@@ -318,6 +320,7 @@ final class GameStore {
         showMenu = false
         showRepChart = false
         openingFilm = false
+        homeIntro = nil
         showIntro = true
     }
 
@@ -548,6 +551,16 @@ final class GameStore {
     func finishOpening() {
         openingFilm = false
         showNextHezarfen()
+    }
+
+    /// The film landed: the town pulls back from its last frame; the controls come in after, then Hezarfen.
+    func startHomeIntro(_ h: HomeIntro) {
+        homeIntro = h
+        DispatchQueue.main.asyncAfter(deadline: .now() + max(0, h.start.timeIntervalSinceNow) + HomeIntro.dur) { [weak self] in
+            guard let self, self.homeIntro == h else { return }
+            withAnimation(.easeOut(duration: 0.6)) { self.homeIntro = nil }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in self?.showNextHezarfen() }
+        }
     }
 
     func finishIntro() {

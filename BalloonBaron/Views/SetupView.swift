@@ -248,7 +248,7 @@ struct SetupView: View {
                         // The game is made now (and saved); the lift-off plays over it before the town comes up.
                         store.openingFilm = true
                         store.newGame(company: trimmed, colors: colors)
-                        opening.liftOff(company: trimmed, colors: colors)
+                        opening.liftOff(company: trimmed, colors: colors, state: store.state)
                     } else {
                         store.newGame(company: trimmed, colors: colors)
                     }

@@ -15,6 +15,8 @@ struct TownNight {
     var sunrise: Double = 0
     /// The Balloon Show's sprites, resolved from the night canvas's symbols.
     var sprite: ((BalloonShow.Look) -> GraphicsContext.ResolvedSymbol?)? = nil
+    /// The balloons stay out on the launch field (the opening film's landing, v121.5).
+    var fieldShown = false
 }
 
 /// The night camera (`nightBase`, `nightClamp`, `nightHorizon`): closer than the home screen, with a big sky.

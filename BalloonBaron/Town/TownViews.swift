@@ -116,7 +116,13 @@ struct HomeTownView: View {
                         // At home the town stops at the dock; zoomed in it fills the screen.
                         let now = model.time(tl.date)
                         var c = ctx
-                        if store.collecting && store.collectAnimation {
+                        if let hi = store.homeIntro {
+                            // v121.5: the opening film's landing, pulling back to the home view as the night lifts
+                            let v = hi.viewport(home: model.home, size: sz, now: tl.date), n = hi.night(tl.date)
+                            let night = n.k > 0.001 || n.sunrise > 0.001
+                                ? TownNight(k: n.k, event: nil, t0: now, sunrise: n.sunrise, fieldShown: true) : nil
+                            _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, night: night)
+                        } else if store.collecting && store.collectAnimation {
                             renderCollect(&c, s, sz, now)
                         } else if let e = store.morningEvent {
                             renderEvent(&c, s, sz, now, spot: e.townSpot, strike: e == .strike)
@@ -141,6 +147,7 @@ struct HomeTownView: View {
                     }
                 }
                 .ignoresSafeArea()
+                .allowsHitTesting(store.homeIntro == nil)
                 .gesture(pan)
                 .simultaneousGesture(pinch, including: store.collecting ? .none : .all)
                 .onTapGesture { p in tap(CGPoint(x: p.x + origin.x, y: p.y + origin.y)) }
@@ -314,7 +321,7 @@ struct HomeTownView: View {
 
     /// The camera is (or may be) moving: zoomed in, gliding, collecting, a morning event, the morning's hold.
     private var moving: Bool {
-        zoomed || hold || diving || model.mode != .home || store.collecting || store.morningEvent != nil
+        zoomed || hold || diving || model.mode != .home || store.collecting || store.morningEvent != nil || store.homeIntro != nil
     }
 
     /// `instant`: a pinch that started on the home screen carries on zooming by itself.

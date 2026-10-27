@@ -141,6 +141,9 @@ struct HomeView: View {
             .padding(.horizontal, 12)
             .padding(.top, 10)
             .padding(.bottom, 6)
+            // v121.5: while the town pulls back from the opening film's landing, the controls wait, then fade in
+            .opacity(store.homeIntro == nil ? 1 : 0)
+            .allowsHitTesting(store.homeIntro == nil)
         }
         // Measurements freeze while zoomed in and while the controls slide back: the town glides back to the home
         // layout, not the slid-away one, and nothing re-measures on every frame of the slide.

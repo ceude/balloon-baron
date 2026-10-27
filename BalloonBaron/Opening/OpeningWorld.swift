@@ -8,7 +8,25 @@ struct OpeningLand {
     let perlin: Perlin2
     let UG = D3(270, 0, 560), UCH = D3(-390, 0, 400)
 
+    /// v121.5: our own town east of Göreme, the game's grid one to one: tile (gx, gy) is 12 m, gx runs east, gy south.
+    static let TL = 12.0, TO = D3(110, 0, -150)
+    static func tw(_ gx: Double, _ gy: Double, _ y: Double = 0) -> D3 { D3(TO.x + gx * TL, y, TO.z + gy * TL) }
+    static let TC = tw(7.5, 7.5)
+    /// Inside the town's square, with a margin.
+    static func inTown(_ x: Double, _ z: Double, _ m: Double) -> Bool { abs(x - TC.x) < 8 * TL + m && abs(z - TC.z) < 8 * TL + m }
+    /// Distance from the line the balloon flies from the field to the town (kept clear of the big cave rocks).
+    static func toTown(_ x: Double, _ z: Double) -> Double {
+        let ax = -44.0, az = 31.0, bx = TO.x + 2 * TL, bz = TO.z + 5 * TL
+        let k = oClamp(((x - ax) * (bx - ax) + (z - az) * (bz - az)) / ((bx - ax) * (bx - ax) + (bz - az) * (bz - az)), 0, 1)
+        return hypot(x - ax - k * (bx - ax), z - az - k * (bz - az))
+    }
+
     func height(_ x: Double, _ z: Double) -> Double {
+        let tb = max(abs(x - OpeningLand.TC.x) - 100, abs(z - OpeningLand.TC.z) - 100, 0) // the town stands on level ground
+        return natural(x, z) * oClamp(tb / 70, 0, 1)
+    }
+
+    private func natural(_ x: Double, _ z: Double) -> Double {
         let d = hypot(x, z), flat = oClamp((d - 80) / 240, 0, 1)
         var y = perlin.fbm(x * 0.004, z * 0.004) * 80 * flat + max(0, perlin.fbm(x * 0.0016 + 7, z * 0.0016) * 220 - 20) * flat * flat
         y += abs(perlin.fbm(x * 0.01 + 3, z * 0.01 + 9, 3)) * 12 * flat
@@ -25,6 +43,22 @@ struct FilmBalloon {
     let node: SCNNode
     let env: SCNNode
     let glow: SCNNode
+    /// The hero's ropes, each a chain of short segments that can hang slack (`ropeFrame`).
+    var dyn: [[SCNNode]] = []
+}
+
+/// What the film's copy of our town is built from, kept from the world (`OpeningTown`).
+struct TownKit {
+    let facades: [SCNMaterial]
+    let tuff: SCNMaterial
+    let basalt: SCNMaterial
+    let basaltColor: F3
+    let mottle: CGImage?
+    let chimneys: [Mesh]
+    let cap: Mesh
+    /// The rounded unit box standing on its base (`hgeo`) and the parapet slab (`parG`).
+    let box: Mesh
+    let parapet: Mesh
 }
 
 /// One of the morning's balloons: where it stands, when it goes up and how fast.
@@ -70,6 +104,48 @@ final class OpeningWorld {
     private let envGeometry: SCNGeometry
     private let basketGeometry: SCNGeometry
     private let flameMaterial: SCNMaterial
+    private let ropeMaterial: SCNMaterial
+    private let ropeSegment: SCNGeometry
+    let kit: TownKit
+
+    /// Where the ropes start (the basket's corners) and end (round the envelope's mouth), in balloon units.
+    static let ropeB = [(1, 1), (1, -1), (-1, 1), (-1, -1)].map { F3(Float($0.0) * 0.047, 0.06, Float($0.1) * 0.047) }
+    static let ropeM = [(1, 1), (1, -1), (-1, 1), (-1, -1)].map { F3(Float($0.0) * 0.074, 0, Float($0.1) * 0.074) }
+
+    /// A rope segment: a thin five-sided tube from the origin up to y = 1.
+    static func ropeCylinder() -> Mesh {
+        var m = Mesh()
+        for y in [Float(0), Float(1)] {
+            for s in 0...5 {
+                let a = Float(s) / 5 * 2 * Float.pi
+                m.p.append(F3(sin(a), y, cos(a)))
+            }
+        }
+        for s in 0..<5 {
+            let a = UInt32(s), b = UInt32(s + 1), c = UInt32(s + 6), d = UInt32(s + 7)
+            m.i += [a, b, c, b, d, c]
+        }
+        m.computeNormals()
+        return m
+    }
+
+    /// The rotation and length that take a unit rope segment from `a` to `b` (`span`).
+    static func span(_ a: F3, _ b: F3) -> (simd_quatf, Float) {
+        let d = b - a, l = simd_length(d)
+        guard l > 1e-6 else { return (simd_quatf(angle: 0, axis: F3(0, 1, 0)), 0) }
+        return (simd_quatf(from: F3(0, 1, 0), to: d / l), l)
+    }
+
+    /// Windows and doors: arched panes turned to face out (`winMesh`).
+    static func windows(_ list: [(D3, Double, Double)]) -> SCNGeometry {
+        var arch = Mesh()
+        arch.p = [F3(-0.5, 0, 0), F3(0.5, 0, 0), F3(-0.5, 1.5, 0), F3(0.5, 1.5, 0)]
+        arch.n = Array(repeating: F3(0, 0, 1), count: 4)
+        arch.i = [0, 1, 2, 1, 3, 2]
+        var m = Mesh()
+        for (p, a, s) in list { m.add(arch, at: F3(p), rot: simd_quatf(angle: Float(Double.pi / 2 - a), axis: F3(0, 1, 0)), scale: F3(repeating: Float(s))) }
+        return OpeningKit.geometry(m, colors: false)
+    }
 
     // the camera's paths
     let flightEye: CRCurve, flightAt: CRCurve
@@ -318,7 +394,7 @@ final class OpeningWorld {
         func free(_ x: Double, _ z: Double, _ r: Double) -> Bool { !spots.contains { hypot($0.0 - x, $0.1 - z) < r + $0.2 * 0.7 } }
         func keepOut(_ x: Double, _ z: Double) -> Bool {
             hypot(x - FIELD.x, z - FIELD.z) < 40 || hypot(x, z) < 70 || hypot(x - UCH.x, z - UCH.z) < 170 || hypot(x - UG.x, z - UG.z) < 50
-                || nearValley(x, z) < 14 || hypot(x - TERR.x, z - TERR.z) < 24
+                || nearValley(x, z) < 14 || hypot(x - TERR.x, z - TERR.z) < 24 || OpeningLand.inTown(x, z, 30)
         }
         var tries = 0
         while tries < 3000 && spots.count < 300 {
@@ -374,7 +450,7 @@ final class OpeningWorld {
                 n += 1
                 let x = (rnd.next() - 0.5) * 900, z = (rnd.next() - 0.35) * 900, nv = nearValley(x, z), nvil = hypot(x, z)
                 if !(nv < 70 || (nvil > 40 && nvil < 260)) { continue }
-                if hypot(x - FIELD.x, z - FIELD.z) < 30 || hypot(x, z) < 60 || nv < 6 { continue }
+                if hypot(x - FIELD.x, z - FIELD.z) < 30 || hypot(x, z) < 60 || nv < 6 || OpeningLand.inTown(x, z, 8) { continue }
                 if rnd.next() < 0.6 { rocks.append((x, z)) } else { shrubs.append((x, z)) }
             }
             for (x, z) in rocks {
@@ -483,10 +559,11 @@ final class OpeningWorld {
                 if rnd.next() < 0.6 { lights.append((p, atan2(nrm.z, nrm.x), 0.75)) }
             }
         }
+        let facadeMats = facades.map { lit($0) }
         for (kind, list) in kindLists.enumerated() {
             var m = Mesh()
             for (p, a, s) in list { m.add(hgeo, at: p, rot: simd_quatf(angle: a, axis: F3(0, 1, 0)), scale: s, tint: F3(repeating: Float(0.9 + rnd.next() * 0.12))) }
-            if !m.isEmpty { _ = node(OpeningKit.geometry(m), [lit(facades[kind])]) }
+            if !m.isEmpty { _ = node(OpeningKit.geometry(m), [facadeMats[kind]]) }
         }
         do {
             // a barrel vault on top: half a cylinder along the house, closed at both ends
@@ -525,7 +602,9 @@ final class OpeningWorld {
         for k in 0..<18 {
             let a = -Double.pi * (0.1 + rnd.next() * 0.8), d = 70 + rnd.next() * 50, x = cos(a) * d + 8, z = sin(a) * d - 6
             // north-east of the village: off the camera's way in and out of the field's view
-            if hypot(x - FIELD.x, z - FIELD.z) < 36 || hypot(x - TERR.x, z - TERR.z) < 20 || x < -10 { continue }
+            // (v121.5: and off the way to our town)
+            if hypot(x - FIELD.x, z - FIELD.z) < 36 || hypot(x - TERR.x, z - TERR.z) < 20 || x < -10 || OpeningLand.inTown(x, z, 25)
+                || OpeningLand.toTown(x, z) < 110 { continue }
             var rock = boulder(Double(40 + k), 0.8, detail: 5)
             rock.c = Array(repeating: F3(0.94, 0.82, 0.7), count: rock.p.count)
             let s = 10 + rnd.next() * 10, sc = F3(Float(s * 1.3), Float(s), Float(s))
@@ -558,15 +637,7 @@ final class OpeningWorld {
         minaret(26, -30, 26)
 
         // windows: carved holes dark, lit ones warm before dawn and going out with the sun (a few stay on)
-        var arch = Mesh()
-        arch.p = [F3(-0.5, 0, 0), F3(0.5, 0, 0), F3(-0.5, 1.5, 0), F3(0.5, 1.5, 0)]
-        arch.n = Array(repeating: F3(0, 0, 1), count: 4)
-        arch.i = [0, 1, 2, 1, 3, 2]
-        func windows(_ list: [(D3, Double, Double)]) -> SCNGeometry {
-            var m = Mesh()
-            for (p, a, s) in list { m.add(arch, at: F3(p), rot: simd_quatf(angle: Float(Double.pi / 2 - a), axis: F3(0, 1, 0)), scale: F3(repeating: Float(s))) }
-            return OpeningKit.geometry(m, colors: false)
-        }
+        let windows = OpeningWorld.windows
         let holeMat = OpeningKit.flat(OpeningKit.color(linearColor(0x2a1812)))
         holeMat.shaderModifiers = [.fragment: OpeningKit.fogModifier]
         fogged.append(holeMat)
@@ -696,6 +767,21 @@ final class OpeningWorld {
         basketGeometry = basketG
         let flameMat = OpeningKit.flat(OpeningTextures.glow(srgbColor(0xffa040)), additive: true)
         flameMaterial = flameMat
+        // v121.6: the ropes from the basket's corners up to the envelope's mouth: very thin, but there. One merged geometry
+        // of the four, shared by every balloon.
+        let ropeMat = lit(UIColor(red: 0x3a / 255, green: 0x2a / 255, blue: 0x1e / 255, alpha: 1))
+        ropeMaterial = ropeMat
+        let ropeSeg = OpeningWorld.ropeCylinder()
+        let ropeSegG = OpeningKit.geometry(ropeSeg, colors: false)
+        ropeSegG.materials = [ropeMat]
+        ropeSegment = ropeSegG
+        var ropeMesh = Mesh()
+        for (i, a) in OpeningWorld.ropeB.enumerated() {
+            let b = OpeningWorld.ropeM[i] + F3(0, 0.3, 0), (q, l) = OpeningWorld.span(a, b)
+            ropeMesh.add(ropeSeg, at: a, rot: q, scale: F3(0.002, l, 0.002))
+        }
+        let ropesG = OpeningKit.geometry(ropeMesh, colors: false)
+        ropesG.materials = [ropeMat]
         func makeBalloon(_ mat: SCNMaterial, _ s: Double) -> FilmBalloon {
             let g = SCNNode()
             let eg = envG.copy() as? SCNGeometry ?? envG
@@ -707,14 +793,18 @@ final class OpeningWorld {
             let gl = OpeningKit.sprite(flameMat)
             gl.position.y = 0.34
             gl.scale = SCNVector3(0.9, 0.9, 0.9)
-            for c in [env, b, gl] { g.addChildNode(c) }
+            let ropes = SCNNode(geometry: ropesG)
+            ropes.castsShadow = false
+            for c in [env, b, gl, ropes] { g.addChildNode(c) }
             g.scale = SCNVector3(Float(s), Float(s), Float(s))
             return FilmBalloon(node: g, env: env, glow: gl)
         }
         // the morning's balloons: standing on the fields north of the village, burners lighting them in the dark; up at dawn
+        // (none in our town)
         var crowd: [CrowdBalloon] = []
         for i in 0..<52 {
             let a = -Double.pi / 2 + (rnd.next() - 0.5) * 2.6, d = 160 + rnd.next() * 1100, x = cos(a) * d, z = sin(a) * d
+            if OpeningLand.inTown(x, z, 20) { continue }
             let b = makeBalloon(palMat[i % palMat.count], 17 + rnd.next() * 6)
             let gy = height(x, z)
             b.node.simdPosition = F3(Float(x), Float(gy), Float(z))
@@ -758,9 +848,14 @@ final class OpeningWorld {
         dust.opacity = 0
 
         // the merged tiles
-        for (tiles, mat) in [(tuffTiles, tuffMat), (basaltTiles, lit(mottle)), (shrubTiles, lit(mottle))] {
+        let basaltMat = lit(mottle)
+        for (tiles, mat) in [(tuffTiles, tuffMat), (basaltTiles, basaltMat), (shrubTiles, lit(mottle))] {
             for (_, m) in tiles where !m.isEmpty { _ = node(OpeningKit.geometry(m), [mat]) }
         }
+        var parapet = Mesh.roundedBox(F3(1, 1, 1), radius: 0.2, segments: 2)
+        parapet.c = Array(repeating: linearColor(0xdcc4a2), count: parapet.p.count)
+        kit = TownKit(facades: facadeMats, tuff: tuffMat, basalt: basaltMat, basaltColor: basaltCol, mottle: mottle, chimneys: fineVar,
+                      cap: capGeo, box: hgeo, parapet: parapet)
 
         // the colour pick: the choices as real balloons, out of the fog, built now and placed when the pick begins
         pick = PickBalloon.all.map { p in
@@ -849,8 +944,43 @@ final class OpeningWorld {
         light.light = flameLight
         light.position.y = 0.4
         for c in [env, b, gl, light] { g.addChildNode(c) }
+        // its ropes follow the envelope: slack on the grass while it fills, taut once it stands (`heroRopes`)
+        let dyn = OpeningWorld.ropeB.map { _ in
+            (0..<OpeningWorld.ropeSegments).map { _ -> SCNNode in
+                let n = SCNNode(geometry: ropeSegment)
+                n.castsShadow = false
+                g.addChildNode(n)
+                return n
+            }
+        }
         g.scale = SCNVector3(15, 15, 15)
-        return FilmBalloon(node: g, env: env, glow: gl)
+        return FilmBalloon(node: g, env: env, glow: gl, dyn: dyn)
+    }
+
+    static let ropeSegments = 12, ropeLength: Float = 0.246
+
+    /// `ropeFrame(g, fill)`: each rope a quadratic curve from its basket corner to the envelope's mouth, sagging (each its
+    /// own way) by as much as it is longer than the gap, never through the grass.
+    static func ropeFrame(_ h: FilmBalloon, fill: Double) {
+        let env = h.env.simdTransform
+        for (i, segs) in h.dyn.enumerated() {
+            let a = ropeB[i], m4 = env * SIMD4<Float>(ropeM[i], 1), b = F3(m4.x, m4.y, m4.z)
+            let d = simd_length(b - a), L = max(ropeLength, d * Float(1 + 0.14 * (1 - fill)))
+            let sag = d < L ? (L * L - d * d).squareRoot() * 0.6 : 0
+            let ctl = (a + b) * 0.5 + F3(sin(Float(i) * 2.3) * sag * 0.5, -sag * 2, cos(Float(i) * 1.7) * sag * 0.5)
+            var prev = a
+            for k in 1...segs.count {
+                let u = Float(k) / Float(segs.count)
+                var q = a * ((1 - u) * (1 - u)) + ctl * (2 * u * (1 - u)) + b * (u * u)
+                q.y = max(q.y, -0.012)
+                let (rot, l) = span(prev, q)
+                let n = segs[k - 1]
+                n.simdPosition = prev
+                n.simdOrientation = rot
+                n.simdScale = F3(0.002, max(l, 1e-4), 0.002)
+                prev = q
+            }
+        }
     }
 
     /// The hero's material takes the fog too; `OpeningFilm` adds it when the hero is built.
