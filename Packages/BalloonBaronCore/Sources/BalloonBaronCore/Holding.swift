@@ -270,7 +270,7 @@ extension Game {
     public func issueCost(in r: RegionID, choice: Issue.Choice) -> Int {
         if r == state.region {
             guard let open = state.local.openIssue else { return 0 }
-            // On the spot, keeping the hotel costs a month of that hotel's own fee (in the holding's euros), not the
+            // On the spot, keeping the hotel costs two months of that hotel's own fee (in the holding's euros), not the
             // region's five days of autopilot earnings, which made paying pointless next to a three-day re-signing.
             if open.kind == .hotel && choice == .a, let h = state.hotelDeals.last {
                 return jsRound(Double(h.dailyFee * Rules.hotelKeepDays) / r.fx / 100) * 100
