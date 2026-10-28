@@ -61,11 +61,13 @@ final class DawnSceneModel {
 final class IntroModel {
     var y = 0.0, vy = 0.0, t = 0.0
     var hold = false, out = false
+    /// v122.6: the very first launch climbs at the old, calmer pace (+240/s², at most 230) so a newcomer feels the
+    /// burner; every launch after that rises fast (v122.1).
+    var fast = true
 
     func step(_ dt: Double) {
         t += dt
-        // v122.1: rises faster (was +240/s², at most 230)
-        if hold { vy = min(vy + 520 * dt, 420); Haptics.burner(at: t) } else { vy = max(vy - 160 * dt, y > 0 ? -35 : 0) }
+        if hold { vy = fast ? min(vy + 520 * dt, 420) : min(vy + 240 * dt, 230); Haptics.burner(at: t) } else { vy = max(vy - 160 * dt, y > 0 ? -35 : 0) }
         y = max(0, y + vy * dt)
     }
 }
@@ -113,6 +115,7 @@ struct IntroView: View {
         }
         .onAppear {
             SoundEngine.shared.start()
+            intro.fast = store.state != nil // the first launch ever (no saved game) climbs calmly
             // A new company: the opening film's set builds in the background while the balloon rises.
             if store.state == nil && !reduceMotion { OpeningLoader.shared.preload() }
         }

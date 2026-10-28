@@ -3685,7 +3685,7 @@ function startIntro() {
 }
 function updateIntro(dt) {
   const I = INTRO; I.t += dt;
-  if (I.hold) I.vy = Math.min(I.vy + 520 * dt, 420); /* v122.1: rises faster */ else I.vy = Math.max(I.vy - 160 * dt, I.y > 0 ? -35 : 0);
+  if (I.hold) I.vy = S.company ? Math.min(I.vy + 520 * dt, 420) : Math.min(I.vy + 240 * dt, 230); /* v122.1: rises faster; v122.6: but the very first launch (no company yet) climbs calmly */ else I.vy = Math.max(I.vy - 160 * dt, I.y > 0 ? -35 : 0);
   I.y = Math.max(0, I.y + I.vy * dt);
   $('intro').hidden = I.out;
   $('introBurn').classList.toggle('on', I.hold);

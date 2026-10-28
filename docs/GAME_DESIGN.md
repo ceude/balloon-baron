@@ -494,7 +494,7 @@ Uçuş bitince yarım kalan adımlar sonraki uçuşa kalır.
 
 **Peribacaları her zaman okunur:** çarpılabilen bacalar daha koyu ve ince koyu konturlu çizilir; arka plandaki süs bacaları ufuk sisine daha çok karışır (%45 yerine %58). Sepet bir bacaya yatayda 90 m, dikeyde tepesinin 60 m üstüne kadar yaklaştıkça baca kırmızı kontur ve kırmızı ışıltıyla parlar.
 
-**v122.1 (TestFlight):** yaklaşınca yanan kırmızı parlama yalnızca ilk 3 kendi uçuşunda (koçlu uçuşlar); sonra bacalar yalnızca koyu ve ince konturlu kalır. Açılıştaki rüya uçuşunda brülörle balon daha hızlı yükselir (ivme 240 → 520, en çok 230 → 420).
+**v122.1 (TestFlight):** yaklaşınca yanan kırmızı parlama yalnızca ilk 3 kendi uçuşunda (koçlu uçuşlar); sonra bacalar yalnızca koyu ve ince konturlu kalır. Açılıştaki rüya uçuşunda brülörle balon daha hızlı yükselir (ivme 240 → 520, en çok 230 → 420); v122.6: yalnızca ilk açılışta (henüz şirket yokken) eski sakin hızla (240 / 230) yükselir.
 
 **Termik:** kaldırma ikiye katlandı: içindeyken dikey hıza sim saniyesi başına +1,0 (önceden +0,5; sim saati gerçek saatin 6 katı, yani dikey hızda ~2,5 birimlik fark yerine önceki ~1,25). 2 sn'lik an hâlâ tamamlanır (sütun 130 m geniş); an tamamlanınca kaldırma eskisi gibi durur. Sütun daha belirgin: daha sıcak ışık, kenarlarında akan kesik çizgiler, yükselen ok başları, "TERMİK ↑" yazısı. İçindeyken sepetin altında yükselen üç ok ve küçük turuncu "Termik ↑" etiketi.
 
