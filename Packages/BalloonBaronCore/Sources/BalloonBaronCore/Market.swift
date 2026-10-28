@@ -78,7 +78,7 @@ extension Game {
         let hotels = s.activeHotels.reduce(0) { acc, h in
             acc + jsRound(Double(h.guests) * (s.ownHotels.contains(h) ? 1.5 : 1) * (winter ? 0.6 : 1))
         }
-        return (s.demand ?? 0) + hotels + (s.day <= s.guideUntil ? 5 : 0) + (s.day <= s.influencerUntil ? 8 : 0)
+        return (s.demand ?? 0) + hotels + (s.day <= s.guideUntil ? s.local.guidePax ?? 5 : 0) + (s.day <= s.influencerUntil ? s.local.influPax ?? 8 : 0)
             + (s.day <= (s.local.showUntil ?? 0) ? jsRound(showTourists) : 0) + popularityBonusRaw()
     }
 
@@ -125,8 +125,8 @@ extension Game {
             let n = Double(h.guests) * (s.ownHotels.contains(h) ? 1.5 : 1) * (winter ? 0.6 : 1) * Rules.willing(p, center: h.priceCenter)
             return (.hotel(h), jsRound(n))
         }
-        if s.day <= s.guideUntil { out.append((.guide, jsRound(5 * Rules.willing(p)))) }
-        if s.day <= s.influencerUntil { out.append((.influencer, jsRound(8 * Rules.willing(p)))) }
+        if s.day <= s.guideUntil { out.append((.guide, jsRound(Double(s.local.guidePax ?? 5) * Rules.willing(p)))) }
+        if s.day <= s.influencerUntil { out.append((.influencer, jsRound(Double(s.local.influPax ?? 8) * Rules.willing(p)))) }
         if s.day <= (s.local.showUntil ?? 0) { out.append((.show, jsRound(showTourists * Rules.willing(p)))) }
         out.append((.popularity, popularityBonus()))
         return out.filter { $0.1 > 0 }

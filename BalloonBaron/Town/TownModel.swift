@@ -15,6 +15,8 @@ enum TownTap: Equatable {
     /// A building's upgrade card (with the way into its page).
     case building(Building)
     case bazaar
+    /// v122: the guide office's and the agency's own screens.
+    case guides, agency
 }
 
 /// A section an office page can scroll to when it opens from the town.
@@ -24,14 +26,11 @@ enum PageSection: String {
 
 /// The small card the town shows for the agencies and for buildings that aren't open yet.
 enum TownCard: Equatable, Identifiable {
-    case influencer, guide
     /// A building that opens on a later day.
     case locked(name: String, day: Int)
 
     var id: String {
         switch self {
-        case .influencer: return "influencer"
-        case .guide: return "guide"
         case .locked(let name, _): return "locked." + name
         }
     }
@@ -144,16 +143,16 @@ enum Town {
         let icd = s.local.influencerCooldown - s.day, gcd = s.local.guideCooldown - s.day
         let influ = loc("town.b.influencer"), market = open.contains(.market), agency = open.contains(.agency), guides = open.contains(.guide)
         let influSub = !agency ? soon : s.day <= s.local.influencerUntil ? loc("town.sub.running")
-            : icd > 0 ? loc("town.sub.wait", num(icd)) : eur(s.influencerCost)
+            : icd > 0 ? loc("town.sub.wait", num(icd)) : loc("town.sub.from", eur(InfluencerOffer.local.cost(s)))
         L.append(TownBuilding(id: "influ", gx: 9, gy: 9, w: 2, d: 2, name: influ, look: .agency,
                               lv: agency ? (s.day <= s.local.influencerUntil ? 2 : 1) : -1, sub: influSub,
-                              tap: agency ? .card(.influencer) : locked(influ, .agency)))
+                              tap: agency ? .agency : locked(influ, .agency)))
         let guide = loc("town.b.guide")
         let guideSub = !guides ? soon : s.day <= s.local.guideUntil ? loc("town.sub.guides")
-            : gcd > 0 ? loc("town.sub.wait", num(gcd)) : eur(Rules.guideCost)
+            : gcd > 0 ? loc("town.sub.wait", num(gcd)) : loc("town.sub.from", eur(GuideOffer.ayse.cost))
         L.append(TownBuilding(id: "guide", gx: 12, gy: 9, w: 2, d: 2, name: guide, look: .guide,
                               lv: guides ? (s.day <= s.local.guideUntil ? 2 : 1) : -1, sub: guideSub,
-                              tap: guides ? .card(.guide) : locked(guide, .guide)))
+                              tap: guides ? .guides : locked(guide, .guide)))
 
         // Booking offices side by side: yours first, then the rivals'. Same kiosk, awning in each company's colors.
         let mine = s.company.isEmpty ? loc("town.b.mine") : s.company

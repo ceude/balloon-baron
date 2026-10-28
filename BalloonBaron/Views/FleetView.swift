@@ -32,6 +32,7 @@ enum FleetUI {
                             .padding(16)
                         }
                         .onAppear { store.scrollToSection(proxy) }
+                        .tutScrolling(proxy, store)
                     }
                 }
             }
@@ -497,7 +498,7 @@ struct FleetView: View {
     private func shopCard(_ s: GameState) -> some View {
         FleetUI.Card(loc("fleetPage.shop")) {
             ForEach(BalloonSize.shop, id: \.self) { z in
-                shopRow(z, s)
+                shopRow(z, s, first: z == BalloonSize.shop.first)
             }
             if !s.balloons.contains(where: { $0.size == .XL }) {
                 xlRow(s)
@@ -516,7 +517,7 @@ struct FleetView: View {
         loc("fleetPage.shopSpecs", num(z.capacity), z.risk.formatted(.number.precision(.fractionLength(0...2))), eur(z.upkeep), eur(z.fuel))
     }
 
-    private func shopRow(_ z: BalloonSize, _ s: GameState) -> some View {
+    private func shopRow(_ z: BalloonSize, _ s: GameState, first: Bool = false) -> some View {
         FleetUI.Item {
             HStack(alignment: .center, spacing: 12) {
                 DesignBalloon(colors: ["#cfc8dd", "#ffffff"])
@@ -530,6 +531,7 @@ struct FleetView: View {
                     FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
                         store.act { _ = $0.buyBalloon(z) }
                     }
+                    .tutTargetIf(first, "ga.fleet", disabled: s.cash < z.cost) // v122: the guided action lights the first
                     // v114: the same balloon from your own workshop, cheaper but not today
                     if s.factoryCan(z) {
                         FleetUI.SmallButton(title: loc("factory.inWorkshop"), note: loc("factory.priceDays", eur(s.factoryCost(z)), num(Rules.factoryDays(z))),

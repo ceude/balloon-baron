@@ -271,6 +271,8 @@ public struct GameState: Codable, Equatable, Sendable {
     public var hezLater: [HezMessage]?
     public var postcardsLater: [Achievement]?
     public var spreadDay: Int?
+    /// v122: the tutorial that shows (steps done, and whether it's over). Nil in older saves (`tutorialCheck`).
+    public var tutorial: TutorialState?
     public var tipsSeen: Set<Tip> = []
     public var hezQueue: [HezMessage] = []
     public var over = false
@@ -330,6 +332,7 @@ public struct GameState: Codable, Equatable, Sendable {
         self.company = company
         self.colors = colors
         unlockVersion = 2
+        tutorial = TutorialState()
         local = RegionState(rivals: RegionID.cap.startingRivals())
         local.balloons.append(Balloon(id: nextID, size: .S, name: Rules.balloonNames[0]))
         local.flagship = nextID

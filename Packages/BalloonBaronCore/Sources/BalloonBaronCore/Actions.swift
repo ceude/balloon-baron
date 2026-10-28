@@ -425,27 +425,31 @@ extension Game {
         return true
     }
 
+    /// v122: one of the agency's three influencers (the travel influencer is the old single campaign).
     @discardableResult
-    public mutating func runInfluencer() -> Bool {
-        let cost = state.influencerCost
+    public mutating func runInfluencer(_ i: InfluencerOffer = .travel) -> Bool {
+        let cost = i.cost(state)
         guard state.influencerCooldown <= state.day, state.cash >= cost else { return false }
         state.cash -= cost
-        state.rep = min(1.4, state.rep + 0.1)
-        state.influencerUntil = state.day + 3
-        state.influencerCooldown = state.day + 10
+        state.rep = min(1.4, state.rep + i.rep)
+        state.influencerUntil = state.day + i.days
+        state.influencerCooldown = state.day + i.cooldown
+        state.local.influPax = i.pax
         state.influencerCount += 1
         addReview(.influencer)
         queueTip(.influ)
         return true
     }
 
+    /// v122: one of the guide office's three guides (Mehmet is the old single deal, and the rescue plan's).
     @discardableResult
-    public mutating func runGuideFlight(inRescue: Bool = false) -> Bool {
-        guard state.guideCooldown <= state.day, state.cash - Rules.guideCost >= (inRescue ? Rules.seizeBelow : 0) else { return false }
-        state.cash -= Rules.guideCost
-        state.rep = min(1.4, state.rep + 0.05)
-        state.guideCooldown = state.day + 5
-        state.guideUntil = state.day + 3
+    public mutating func runGuideFlight(_ g: GuideOffer = .mehmet, inRescue: Bool = false) -> Bool {
+        guard state.guideCooldown <= state.day, state.cash - g.cost >= (inRescue ? Rules.seizeBelow : 0) else { return false }
+        state.cash -= g.cost
+        state.rep = min(1.4, state.rep + g.rep)
+        state.guideCooldown = state.day + g.cooldown
+        state.guideUntil = state.day + g.days
+        state.local.guidePax = g.pax
         state.guideCount += 1
         state.lastGuide = state.day
         addReview(.guide)

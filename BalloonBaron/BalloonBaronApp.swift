@@ -148,6 +148,12 @@ struct RootView: View {
             if let b = store.buildingCard {
                 BuildingCardView(building: b).transition(.opacity)
             }
+            if store.showGuides && store.game != nil {
+                GuideOfficeView().transition(.opacity)
+            }
+            if store.showAgency && store.game != nil {
+                AgencyView().transition(.opacity)
+            }
             if store.showBazaar {
                 BazaarView().transition(.opacity)
             }
@@ -193,6 +199,13 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.showBazaar)
         .animation(.easeOut(duration: 0.25), value: store.storeItem)
         .animation(.easeInOut(duration: 0.6), value: store.night)
+        .animation(.easeOut(duration: 0.25), value: store.showGuides)
+        .animation(.easeOut(duration: 0.25), value: store.showAgency)
+        // v122: the tutorial that shows: day one's steps and the guided actions, over the town, its pages and cards
+        .tutorialHost(minLineY: 104, present: { store.rootSpots = $0 },
+                      alive: { store.guided != nil || store.homeFocus != nil || store.homeTutStep != nil },
+                      frame: { store.rootTutFrame($0) },
+                      onSkip: { store.skipTutorial() })
         // One cover for the flight and its report: the report slides up over the flight inside it, so the home
         // screen never flashes between two presentations.
         .fullScreenCover(isPresented: Binding(get: { store.flightPax != nil || store.report != nil }, set: { _ in })) {

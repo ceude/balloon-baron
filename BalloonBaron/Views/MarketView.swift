@@ -291,8 +291,9 @@ struct MarketView: View {
     private func hotelsCard(_ game: Game) -> some View {
         FleetUI.Card(loc("marketPage.hotels")) {
             FleetUI.Hint(loc("marketPage.hotelsHint"))
+            let target = tutHotel(game)
             ForEach(Hotel.allCases, id: \.self) { h in
-                hotelRow(h, game)
+                hotelRow(h, game, target: h == target)
             }
             FleetUI.Hint(loc("marketPage.hotelsFootnote"))
         }
@@ -324,7 +325,15 @@ struct MarketView: View {
             .background(Theme.ink, in: RoundedRectangle(cornerRadius: 10))
     }
 
-    private func hotelRow(_ h: Hotel, _ game: Game) -> some View {
+    /// v122: the hotel the guided action lights: the first you can sign now, else the first without a deal.
+    private func tutHotel(_ game: Game) -> Hotel? {
+        let s = game.state
+        let open = Hotel.allCases.filter { !s.hotelDeals.contains($0) && !s.ownHotels.contains($0) }
+        return open.first { s.stars >= $0.minStars && game.hotelLockedByRival($0) == nil && game.hotelRivalOwner($0) == nil && s.cash >= $0.dailyFee * 3 }
+            ?? open.first
+    }
+
+    private func hotelRow(_ h: Hotel, _ game: Game, target: Bool = false) -> some View {
         let s = game.state
         let own = s.ownHotels.contains(h)
         let has = s.hotelDeals.contains(h)
@@ -363,13 +372,13 @@ struct MarketView: View {
                     }
                 }
             } else {
-                hotelActions(h, has: has, ok: ok, price: game.hotelBuyPrice(h), s)
+                hotelActions(h, has: has, ok: ok, price: game.hotelBuyPrice(h), s, target: target)
             }
         }
         .opacity(!ok && !has && !own ? 0.7 : 1)
     }
 
-    private func hotelActions(_ h: Hotel, has: Bool, ok: Bool, price: Int, _ s: GameState) -> some View {
+    private func hotelActions(_ h: Hotel, has: Bool, ok: Bool, price: Int, _ s: GameState, target: Bool = false) -> some View {
         let fee = h.dailyFee * 3
         return FleetUI.ButtonGrid {
             if has {
@@ -381,8 +390,10 @@ struct MarketView: View {
                                     disabled: s.cash < fee) {
                     store.act { _ = $0.signHotel(h) }
                 }
+                .tutTargetIf(target, "ga.hotel", disabled: s.cash < fee)
             } else {
                 FleetUI.SmallButton(title: loc("fleetPage.locked"), ghost: true, disabled: true) {}
+                    .tutTargetIf(target, "ga.hotel", disabled: true)
             }
             FleetUI.SmallButton(title: loc("marketPage.buy", eur(price)), note: loc("marketPage.buyNote", eur(h.roomIncome)),
                                 disabled: s.stars < h.minStars || s.cash < price) {
@@ -398,8 +409,8 @@ struct MarketView: View {
         let icd = s.influencerCooldown - s.day
         let gcd = s.guideCooldown - s.day
         let influText = icd > 0 ? loc("marketPage.wait", num(icd))
-            : s.day <= s.influencerUntil ? loc("marketPage.running") : loc("marketPage.influencerBody")
-        let guideText = gcd > 0 ? loc("marketPage.wait", num(gcd)) : loc("marketPage.guideBody")
+            : s.day <= s.influencerUntil ? loc("marketPage.running") : loc("repChart.agencyBody")
+        let guideText = gcd > 0 ? loc("marketPage.wait", num(gcd)) : loc("repChart.guideBody")
         return FleetUI.Card(loc("marketPage.marketing")) {
             if ads > 0 {
                 marketingRow(loc("marketPage.removeAds"), loc("marketPage.removeAdsBody", num(ads)), button: loc("marketPage.remove"),
@@ -407,17 +418,15 @@ struct MarketView: View {
                     store.act { $0.removeAllAds() }
                 }
             }
-            // v121.9: the agency and the guides' office open on their own days
-            if s.unlocked.contains(.agency) {
-                marketingRow(loc("marketPage.influencer"), influText, button: eur(s.influencerCost),
-                             disabled: icd > 0 || s.cash < s.influencerCost) {
-                    store.act { _ = $0.runInfluencer() }
+            // v121.9: the agency and the guides' office open on their own days; v122: each has its own screen
+            if s.unlocked.contains(.guide) {
+                marketingRow(loc("town.b.guide"), guideText, button: loc("repChart.guidesButton"), disabled: gcd > 0) {
+                    store.showGuides = true
                 }
             }
-            if s.unlocked.contains(.guide) {
-                marketingRow(loc("marketPage.guide"), guideText, button: eur(Rules.guideCost),
-                             disabled: gcd > 0 || s.cash < Rules.guideCost) {
-                    store.act { _ = $0.runGuideFlight() }
+            if s.unlocked.contains(.agency) {
+                marketingRow(loc("town.b.influencer"), influText, button: loc("repChart.agencyButton"), disabled: icd > 0) {
+                    store.showAgency = true
                 }
             }
             if let g = store.game, ShowCardView.offered(g) {

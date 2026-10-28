@@ -147,6 +147,9 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var repHistory: [RepPoint] = []
     public var influencerUntil = 0, influencerCooldown = 0, influencerCount = 0
     public var guideUntil = 0, guideCooldown = 0, guideCount = 0
+    /// v122: tourists a day sent by the guide and the influencer you picked (nil: the old deal's 5 and 8).
+    public var guidePax: Int?
+    public var influPax: Int?
     public var plan: DayPlan?
     public var winter: Winter?
     public var nextWinter: Int?

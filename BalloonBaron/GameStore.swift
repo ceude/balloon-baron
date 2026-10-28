@@ -106,12 +106,35 @@ final class GameStore {
     struct Travel: Equatable { let from: RegionID, to: RegionID }
     var travel: Travel?
 
+    // MARK: v122 tutorial (`TutorialCoach.swift`)
+
+    /// The guide office's and the influencer agency's screens (`showGuides`, `showAgency`).
+    var showGuides = false
+    var showAgency = false
+    /// The home screen's price sheet is up; the tutorial follows it.
+    var priceSheetOpen = false
+    /// The price when day one's price step started (`TUTA.p0`).
+    @ObservationIgnored var tutP0: Int?
+    /// A guided action in progress (`GA`).
+    var guided: GuidedAction?
+    /// The spots on screen in the root presentation and in the price sheet: id → its button is disabled.
+    @ObservationIgnored var rootSpots: [String: Bool] = [:]
+    @ObservationIgnored var sheetSpots: [String: Bool] = [:]
+    /// The open page scrolls to this spot.
+    var tutScroll: TutScroll?
+    /// The home town glides to a building (`HOMEF`), and where the canvas drew it.
+    var homeFocus: HomeFocus?
+    let focusBox = HomeFocusBox()
+    @ObservationIgnored var guideTimer: Timer?
+    /// A guided action ended: the morning's next card comes once its page or card is closed (`GA_NEXT`).
+    @ObservationIgnored var guideNext = false
+
     /// Anything already covering the home screen; the next popup waits for it.
-    private var busy: Bool {
+    var busy: Bool {
         showIntro || openingFilm || homeIntro != nil || replayingOpening || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
-            || night != nil || travel != nil || issueScene || buyLoan != nil
+            || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency
     }
 
     init() {
@@ -205,7 +228,8 @@ final class GameStore {
     /// Shows the next popup in the prototype's order (`nextPopup`): chapter ceremony, merger news, the morning
     /// paper, the rescue plan, a morning event, a new postcard, then Hezarfen, a poaching rival and deals.
     func showNextHezarfen() {
-        guard !busy, let g = game else { return }
+        // v122: a guided action is running; it calls back when it ends
+        guard !busy, guided == nil, let g = game else { return }
         let s = g.state
         if let c = s.chapterNews {
             chapter = c
@@ -245,7 +269,10 @@ final class GameStore {
             showNextHezarfen()
         } else if !s.hezQueue.isEmpty {
             act { $0.clearRescue() }
-            act { hezarfen = $0.nextHezarfen() }
+            var m: HezMessage?
+            act { m = $0.nextHezarfen() }
+            // v122: the lessons of new buildings and first jobs are shown, not told
+            if case .tip(let t)? = m, guideOK(t) { startGuide(t) } else { hezarfen = m }
         } else if g.liveIssue != nil && s.local.issueSeen != s.day {
             // A problem that waited for you here opens by itself once a day.
             act { _ = $0.liveIssueCardDue() }
@@ -325,6 +352,13 @@ final class GameStore {
         homeIntro = nil
         replayingOpening = false
         showIntro = true
+        guided = nil
+        homeFocus = nil
+        guideNext = false
+        showGuides = false
+        showAgency = false
+        priceSheetOpen = false
+        tutP0 = nil
     }
 
     /// A save code to continue on another device, and loading one. v121.8 (TestFlight: a late game's code passed 65,000
@@ -489,7 +523,18 @@ final class GameStore {
             buildingCard = b
         case .bazaar:
             showBazaar = true
+        case .guides:
+            showGuides = true
+        case .agency:
+            showAgency = true
         }
+    }
+
+    /// The guide office's or the agency's screen closed.
+    func closeOffers() {
+        showGuides = false
+        showAgency = false
+        showNextHezarfen()
     }
 
     func closeBuildingCard() {

@@ -67,6 +67,7 @@ struct BankView: View {
         FleetUI.Card(loc("bank.offers")) {
             ForEach(Array(Rules.loans.enumerated()), id: \.offset) { i, o in
                 offerRow(i, o)
+                    .tutTargetIf(i == 0, "ga.bank") // v122: the guided action shows the first offer
             }
             FleetUI.Item {
                 FleetUI.Title(loc("buyLoan.bankTitle", eur(Rules.buyLoanMax)))

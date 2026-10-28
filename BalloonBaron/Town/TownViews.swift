@@ -129,6 +129,9 @@ struct HomeTownView: View {
                         } else if store.issueScene {
                             // The office sits in the top third, above the decision card that comes up low.
                             renderEvent(&c, s, sz, now, spot: MorningEvent.strike.townSpot, strike: s.local.openIssue?.kind == .raise, focusY: 0.3)
+                        } else if model.mode == .home, let f = store.homeFocus, let b = Town.buildings(s).first(where: { $0.id == f.id }) {
+                            store.collectScene.from = nil
+                            renderFocus(&c, s, sz, now, f, b, date: tl.date)
                         } else {
                             store.collectScene.from = nil
                             // Zoomed in, the horizon stays where the home screen had it; from the night it stays the night's,
@@ -236,6 +239,32 @@ struct HomeTownView: View {
         _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, strike: strike)
     }
 
+    /// v122: a guided action glides the home view to the building that just opened (`HOMEF`): it comes closer and to
+    /// the middle in 0.9 s, pulses with a gold ring, and glides back in 0.7 s once its card or page opens.
+    private func renderFocus(_ c: inout GraphicsContext, _ s: GameState, _ sz: CGSize, _ now: Double, _ f: HomeFocus, _ b: TownBuilding, date: Date) {
+        func ease(_ t: Double) -> CGFloat {
+            let t = min(max(t, 0), 1)
+            return CGFloat(t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2)
+        }
+        let e: CGFloat = reduceMotion ? (f.out == nil ? 1 : 0)
+            : f.out.map { 1 - ease(date.timeIntervalSince($0) / 0.7) } ?? ease(date.timeIntervalSince(f.t0) / 0.9)
+        let H = model.home, cp = TownGeo.iso(b.gx + b.w / 2, b.gy + b.d / 2), top = CGFloat(Town.labelTop(b)) * 0.8
+        let zf = max(H.z, min(0.62, H.z * 2.4)), z = exp(log(H.z) + (log(zf) - log(H.z)) * e)
+        let hx = cp.x * H.z + H.ox, hy = cp.y * H.z + H.oy
+        let px = hx + (sz.width / 2 - hx) * e, py = hy + (sz.height * 0.52 - hy) * e
+        var v = TownViewport(z: z, ox: px - cp.x * z, oy: py - cp.y * z)
+        v.hzCap = TownGeo.horizon(H, height: sz.height)
+        model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz)
+        let rx = CGFloat(max(b.w, b.d)) * TownGeo.TW * 0.42 * z + 12, my = py - top * z * 0.45, r = max(rx, top * z * 0.6 + 10)
+        store.focusBox.pos = CGRect(x: px - r, y: my - r, width: r * 2, height: r * 2)
+        if e > 0.9 {
+            let k = CGFloat(now * 1.3).truncatingRemainder(dividingBy: 1)
+            let w = rx * (1 + k * 0.4)
+            c.stroke(Path(ellipseIn: CGRect(x: px - w, y: py - w * 0.5, width: w * 2, height: w)),
+                     with: .color(Color(red: 1, green: 210 / 255, blue: 122 / 255).opacity(Double(1 - k))), lineWidth: 4)
+        }
+    }
+
     private func homeViewport(width w: CGFloat, dockTop: CGFloat) -> TownViewport {
         let back = max(hudBottom + 20, weatherBottom - 16), front = dockTop - 6
         let z = min(max((front - back) / 1024, 0.15), w / 1500)
@@ -323,6 +352,7 @@ struct HomeTownView: View {
     /// The camera is (or may be) moving: zoomed in, gliding, collecting, a morning event, the morning's hold.
     private var moving: Bool {
         zoomed || hold || diving || model.mode != .home || store.collecting || store.morningEvent != nil || store.homeIntro != nil
+            || store.homeFocus != nil
     }
 
     /// `instant`: a pinch that started on the home screen carries on zooming by itself.
@@ -351,6 +381,8 @@ struct HomeTownView: View {
             return
         case .home:
             guard dockTop <= 0 || p.y < dockTop else { return }
+            // v122: while it glides to a building for a guided action, only that building takes a tap
+            if store.homeFocus?.active == true { store.homeFocusTap(p); return }
             SoundEngine.shared.play(.click)
             let hit = model.hits.hit(p)
             if let z = hit.zone { zoomIn(at: z.at) } else if let b = hit.building { store.tapTown(b.tap) } else { zoomIn(at: model.grid(p)) }
@@ -424,23 +456,10 @@ struct TownCardView: View {
     let card: TownCard
 
     var body: some View {
-        if let s = store.state {
+        if store.state != nil {
             ModalCard(onClose: { store.closeTownCard() }) {
+                // v122: the guide office and the agency open their own screens (`GuideOfficeView`, `AgencyView`)
                 switch card {
-                case .influencer:
-                    let wait = s.local.influencerCooldown - s.day
-                    CardText.title(loc("town.b.influencer"))
-                    CardText.lead(wait > 0 ? loc("town.card.influWait", num(wait)) : loc("marketPage.influencerBody") + " " + loc("town.card.influCap"))
-                    action(loc("town.card.influAction", eur(s.influencerCost)), disabled: wait > 0 || s.cash < s.influencerCost) {
-                        store.act { _ = $0.runInfluencer() }
-                    }
-                case .guide:
-                    let wait = s.local.guideCooldown - s.day
-                    CardText.title(loc("town.b.guide"))
-                    CardText.lead(wait > 0 ? loc("town.card.guideWait", num(wait)) : loc("marketPage.guideBody"))
-                    action(loc("town.card.guideAction", eur(Rules.guideCost)), disabled: wait > 0 || s.cash < Rules.guideCost) {
-                        store.act { _ = $0.runGuideFlight() }
-                    }
                 case .locked(let name, let day):
                     CardText.title(name)
                     CardText.lead(loc("town.card.locked", num(day)))
@@ -450,15 +469,5 @@ struct TownCardView: View {
                     .frame(maxWidth: .infinity)
             }
         }
-    }
-
-    private func action(_ title: String, disabled: Bool, run: @escaping () -> Void) -> some View {
-        Button(title) {
-            SoundEngine.shared.play(.coin)
-            run()
-            store.closeTownCard()
-        }
-        .buttonStyle(ChunkyButtonStyle(kind: .big))
-        .disabled(disabled)
     }
 }

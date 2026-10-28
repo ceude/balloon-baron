@@ -39,6 +39,7 @@ struct WorkshopView: View {
                     store.act { _ = $0.buildWorkshop() }
                     store.showNextHezarfen()
                 }
+                .tutTarget("ga.workshop", disabled: s.cash < Studio.workshopCost) // v122
             }
         }
     }

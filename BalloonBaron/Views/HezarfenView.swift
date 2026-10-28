@@ -9,6 +9,17 @@ struct HezarfenView: View {
     var day = 1
     let onClose: () -> Void
     @State private var shown = 0
+    /// v122: "More" was tapped: the whole lesson, at once.
+    @State private var long = false
+
+    /// v122 (`HEZ_SHORT`): the lessons of the first days say one sentence; the old text is behind "More".
+    static let shortTips: Set<Tip> = [.welcome, .insurance, .fleet, .bank, .crew, .market, .guide, .agency, .bazaar, .workshop, .school,
+                                      .goals, .price, .yellow, .red, .mission, .accident, .pr, .rivals, .aging]
+
+    private var shortKey: String? {
+        if case .tip(let t) = message, Self.shortTips.contains(t) { return "tip.\(t.rawValue).short" }
+        return nil
+    }
 
     private var boss: (RegionID, BossLine)? {
         if case let .boss(r, l) = message { return (r, l) }
@@ -40,7 +51,8 @@ struct HezarfenView: View {
     }
 
     var body: some View {
-        let text = message.text
+        let short = long ? nil : shortKey
+        let text = short.map { loc($0) } ?? message.text
         ZStack(alignment: .bottom) {
             Color.black.opacity(0.45).ignoresSafeArea()
             HStack(alignment: .bottom, spacing: 10) {
@@ -80,8 +92,24 @@ struct HezarfenView: View {
                     }
                     .font(Theme.font(17, .medium))
                     .foregroundStyle(Theme.ink)
-                    BigButton(title: button) {
-                        if shown < text.count { shown = text.count } else { onClose() }
+                    if short != nil {
+                        HStack(spacing: 10) {
+                            Button {
+                                SoundEngine.shared.play(.click)
+                                long = true
+                            } label: {
+                                Text(loc("tut.more")).font(Theme.font(13.5, .bold)).underline().foregroundStyle(Theme.ink2)
+                                    .lineLimit(1).fixedSize()
+                            }
+                            .buttonStyle(.plain)
+                            BigButton(title: button) {
+                                if shown < text.count { shown = text.count } else { onClose() }
+                            }
+                        }
+                    } else {
+                        BigButton(title: button) {
+                            if shown < text.count { shown = text.count } else { onClose() }
+                        }
                     }
                 }
                 .padding(16)
@@ -90,7 +118,10 @@ struct HezarfenView: View {
             }
             .padding(16)
         }
+        .onChange(of: message) { _, _ in long = false }
         .task(id: text) {
+            // The long lesson behind "More" comes at once.
+            if long { shown = text.count; return }
             shown = 0
             while shown < text.count {
                 try? await Task.sleep(for: .milliseconds(22))

@@ -31,6 +31,7 @@ struct CrewView: View {
                         .padding(16)
                     }
                     .onAppear { store.scrollToSection(proxy) }
+                    .tutScrolling(proxy, store)
                 }
             }
         }
@@ -307,7 +308,8 @@ struct CrewView: View {
         VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("crew.candidates"))
             ForEach(s.local.candidates) { p in
-                pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), Self.riskText(p)].joined(separator: " · "), button: loc("crew.hire"), light: false) {
+                pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), Self.riskText(p)].joined(separator: " · "), button: loc("crew.hire"), light: false,
+                         spot: p.id == s.local.candidates.first?.id ? "ga.hire" : nil) {
                     store.act { $0.hire(p.id) }
                 }
             }
@@ -340,6 +342,7 @@ struct CrewView: View {
                     PlanSmallButton(title: eur(Rules.schoolCost), disabled: s.cash < Rules.schoolCost) {
                         store.act { $0.buildSchool() }
                     }
+                    .tutTarget("ga.school", disabled: s.cash < Rules.schoolCost) // v122
                 }
                 .padding(12)
                 .background(Theme.paper, in: RoundedRectangle(cornerRadius: 16))
@@ -349,7 +352,7 @@ struct CrewView: View {
 
     // MARK: Building blocks
 
-    private func pilotRow(_ p: Pilot, detail: String, button: String, light: Bool, action: @escaping () -> Void) -> some View {
+    private func pilotRow(_ p: Pilot, detail: String, button: String, light: Bool, spot: String? = nil, action: @escaping () -> Void) -> some View {
         HStack(spacing: 10) {
             avatar(p)
             VStack(alignment: .leading, spacing: 3) {
@@ -375,6 +378,7 @@ struct CrewView: View {
             }
             Spacer(minLength: 6)
             PlanSmallButton(title: button, light: light, action: action)
+                .tutTargetIf(spot != nil, spot ?? "", disabled: false) // v122
         }
         .padding(12)
         .background(Theme.paper, in: RoundedRectangle(cornerRadius: 16))

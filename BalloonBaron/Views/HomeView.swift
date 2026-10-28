@@ -79,6 +79,8 @@ struct HomeView: View {
                 .onChange(of: store.showPriceSheet) { _, open in
                     if open { showPrice = true; store.showPriceSheet = false }
                 }
+                // v122: the tutorial follows the price sheet (day one's price step, the guided price lesson)
+                .onChange(of: showPrice) { _, open in store.priceSheet(open: open) }
                 .sheet(isPresented: $showPrice) {
                     PriceSheetView()
                         .environment(store)
@@ -341,6 +343,7 @@ struct HomeView: View {
         let dots = Town.alerts(s)
         return VStack(spacing: 8) {
             navButton(.goals, loc("home.nav.goals"), .goals, badge: goalsBadge(s))
+                .tutSpot("ga.goals")
             if s.anyBaron {
                 navButton(.world, loc("home.nav.holding"), .holding, dot: issue)
             }
@@ -440,6 +443,7 @@ struct HomeView: View {
                 pill(color: Color.white.opacity(0.12), fg: ins == 0 ? Color(hex: "#ffb4a6") : .white) {
                     Text(loc(ins == 2 ? "home.strip.insured" : ins == 1 ? "home.strip.halfInsured" : "home.strip.uninsured"))
                 }
+                .tutSpot("ga.insPill")
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -690,6 +694,7 @@ struct HomeView: View {
                 store.act { $0.setInsurance(pax: !s.insurePax) }
             }
         }
+        .tutSpot("ga.insChips")
     }
 
     private func insuranceChip(on: Bool, label: String, action: @escaping () -> Void) -> some View {
@@ -752,6 +757,7 @@ struct HomeView: View {
             .background(Theme.paper, in: RoundedRectangle(cornerRadius: 18))
         }
         .buttonStyle(.plain)
+        .tutSpot("pcard")
     }
 
     @ViewBuilder
@@ -763,6 +769,8 @@ struct HomeView: View {
                     .foregroundStyle(Theme.ink)
                     .lineLimit(2)
                     .minimumScaleFactor(0.8)
+                    // v122: a lower price counts the passengers up where you can see it
+                    .paxPop(pax: est.pax, seats: est.seats, price: s.price, alignment: .topTrailing)
                 TicketFillBar(fraction: Double(est.pax) / Double(max(1, est.seats)), height: 6)
             }
         } else {
@@ -842,10 +850,13 @@ struct HomeView: View {
             // v121.12: when nothing can fly and nothing can change that (repair, flying ban) the day has to be skipped
             BigButton(title: loc(none ? (s.forcedSkip ? "home.skipForced" : "home.openPlan") : "home.collect")) {
                 Haptics.press()
+                if store.homeTutStep == "go" { store.tutStep("go") } // v122
                 if none && s.forcedSkip { store.fly(skip: true) }
                 else if none { showPlan = true }
                 else if !GroundedView.grounded(s).isEmpty { groundedWarning = true; Haptics.warning() } else { launchOrConfirmRed(s) }
             }
+            .modifier(TutPulse(on: store.tutPulseGo))
+            .tutSpot("go")
         }
     }
 }

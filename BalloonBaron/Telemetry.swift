@@ -85,6 +85,12 @@ enum Telemetry {
         send("store.bought", value: Double(day), ["item": k.rawValue])
     }
 
+    /// v122: a step of the tutorial that shows (`tutorial.price` … `tutorial.ga_bank_done`), once each, with the day:
+    /// the players who leave in their first three days are compared with the steps they reached.
+    static func tutorial(_ step: String, day: Int) {
+        send("tutorial.\(step)", value: Double(day), ["day": String(day)])
+    }
+
     /// The funnel's first steps: a company founded, the intro balloon gone.
     static func started(company: String) { send("game.started") }
     static func introDone(_ s: GameState?) { send("intro.done", value: s.map { Double($0.day) }) }

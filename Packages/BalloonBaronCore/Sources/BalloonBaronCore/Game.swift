@@ -14,6 +14,7 @@ public struct Game: Sendable {
         self.state = state
         rng = SplitMix64(seed: seed)
         self.state.migrate()
+        tutorialCheck()
     }
 
     // MARK: Day start

@@ -2789,6 +2789,129 @@
         }
       }
     },
+    "agency.busy": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Kampagne läuft. Resttage der Beiträge: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The campaign is running. Days of posts left: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La campaña está en marcha. Días de publicaciones restantes: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンペーン実施中。投稿の残り日数：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "캠페인 진행 중입니다. 게시물 남은 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kampanya sürüyor. Paylaşımların kalan günü: %@"
+          }
+        }
+      }
+    },
+    "agency.row": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@. %2$@ sofort, %4$@ Tage lang etwa %3$@ Follower als Touristen am Tag. Danach %5$@ Tage Wartezeit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@. %2$@ right away, about %3$@ follower tourists a day for %4$@ days. Then a wait of %5$@ days."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@. %2$@ al instante y unos %3$@ seguidores turistas al día durante %4$@ días. Después, %5$@ días de espera."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@。すぐに%2$@、%4$@日間、1日約%3$@人のフォロワーが観光に来る。その後%5$@日待ち。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@. 즉시 %2$@, %4$@일 동안 하루 약 %3$@명의 팔로워 관광객. 그 뒤 %5$@일 대기."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@. %2$@ hemen, %4$@ gün boyunca günde ~%3$@ takipçi turist. Sonra %5$@ gün bekleme."
+          }
+        }
+      }
+    },
+    "agency.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sie fliegen mit dir und posten darüber; an jedem Kampagnentag %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They fly with you and post about it; %@ every day of the campaign"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuelan contigo y lo publican; %@ cada día de campaña"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一緒に飛んで発信してくれる。キャンペーン中は毎日%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "함께 날고 소식을 올립니다. 캠페인 기간 매일 %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seninle uçup paylaşırlar; kampanya boyunca her gün %@"
+          }
+        }
+      }
+    },
     "album.count": {
       "extractionState": "manual",
       "localizations": {
@@ -24560,6 +24683,47 @@
         }
       }
     },
+    "flight.chimneyLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Korb stößt an: Unfall"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If the basket hits: crash"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si la cesta choca: accidente"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バスケットが当たれば事故"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "바스켓이 닿으면 사고"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sepet çarparsa kaza"
+          }
+        }
+      }
+    },
     "flight.coach.goal": {
       "extractionState": "manual",
       "localizations": {
@@ -26036,6 +26200,88 @@
         }
       }
     },
+    "flight.thermalColumn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "THERMIK ↑"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "THERMAL ↑"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TÉRMICA ↑"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上昇気流 ↑"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상승기류 ↑"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TERMİK ↑"
+          }
+        }
+      }
+    },
+    "flight.thermalTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thermik ↑"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Thermal ↑"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Térmica ↑"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上昇気流 ↑"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상승기류 ↑"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termik ↑"
+          }
+        }
+      }
+    },
     "flight.tip.fuel": {
       "extractionState": "manual",
       "localizations": {
@@ -26278,6 +26524,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "İniş alanı %@ km"
+          }
+        }
+      }
+    },
+    "flight.toTarget": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZUM ZIEL"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TO TARGET"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AL OBJETIVO"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "目標へ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "목표로"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HEDEFE"
           }
         }
       }
@@ -29439,6 +29726,88 @@
         }
       }
     },
+    "guide.ayse.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayşe"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayşe"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayşe"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アイシェ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아이셰"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayşe"
+          }
+        }
+      }
+    },
+    "guide.ayse.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotelguide"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hotel guide"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guía de hotel"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホテルのガイド"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "호텔 가이드"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otel rehberi"
+          }
+        }
+      }
+    },
     "guide.lux.hello": {
       "extractionState": "manual",
       "localizations": {
@@ -29517,6 +29886,170 @@
           "stringUnit": {
             "state": "translated",
             "value": "İmhotep"
+          }
+        }
+      }
+    },
+    "guide.mehmet.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mehmet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mehmet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mehmet"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メフメト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "메흐메트"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mehmet"
+          }
+        }
+      }
+    },
+    "guide.mehmet.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reiseleiter"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tour guide"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guía turístico"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ツアーガイド"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "투어 가이드"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tur rehberi"
+          }
+        }
+      }
+    },
+    "guide.selin.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selin"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selin"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selin"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "セリン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "셀린"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Selin"
+          }
+        }
+      }
+    },
+    "guide.selin.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erfahrene Reiseleiterin"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senior guide"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guía veterana"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ベテランガイド"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "베테랑 가이드"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kıdemli rehber"
           }
         }
       }
@@ -29644,6 +30177,129 @@
         }
       }
     },
+    "guides.busy": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Guides empfehlen dich. Resttage: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides are recommending you. Days left: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los guías te recomiendan. Días restantes: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ガイドが推薦中。残り日数：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가이드가 추천 중입니다. 남은 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rehberler seni öneriyor. Kalan gün: %@"
+          }
+        }
+      }
+    },
+    "guides.row": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ sofort, %3$@ Tage lang etwa %2$@ Touristen am Tag. Danach %4$@ Tage Wartezeit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ right away, about %2$@ tourists a day for %3$@ days. Then a wait of %4$@ days."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ al instante y unos %2$@ turistas al día durante %3$@ días. Después, %4$@ días de espera."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すぐに%1$@、%3$@日間、1日約%2$@人の観光客。その後%4$@日待ち。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즉시 %1$@, %3$@일 동안 하루 약 %2$@명의 관광객. 그 뒤 %4$@일 대기."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ hemen, %3$@ gün boyunca günde ~%2$@ turist. Sonra %4$@ gün bekleme."
+          }
+        }
+      }
+    },
+    "guides.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nimm die Guides kostenlos mit, dann empfehlen sie dich ihren Kunden"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fly the guides for free and they recommend you to their clients"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lleva gratis a los guías y te recomendarán a sus clientes"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ガイドを無料で乗せれば、客にお前を薦めてくれる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가이드를 무료로 태우면 손님에게 당신을 추천합니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rehberleri ücretsiz uçur, seni müşterilerine önersinler"
+          }
+        }
+      }
+    },
     "hez.absent": {
       "extractionState": "manual",
       "localizations": {
@@ -29732,37 +30388,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Influencer-Agentur hat geöffnet. Reise-Influencer fliegen mit dir und posten es; deine Beliebtheit steigt schnell. Teuer, also mach es, wenn die Kasse stimmt. Such die Agentur mit dem Pool in der Stadt und tipp darauf."
+            "value": "Die Influencer-Agentur hat geöffnet. Reise-Influencer fliegen mit dir und posten es; deine Beliebtheit steigt schnell. Teuer, also mach es, wenn die Kasse stimmt. Drinnen gibt es drei Influencer: der lokale Reisende ist günstig, der berühmte teuer, aber sehr stark."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The influencer agency is open. Travel influencers fly with you and post about it; your popularity climbs fast. It's pricey, so do it when you have cash to spare. Find the agency with the pool in town and tap it."
+            "value": "The influencer agency is open. Travel influencers fly with you and post about it; your popularity climbs fast. It's pricey, so do it when you have cash to spare. Inside there are three influencers: the local traveller is cheap, the famous one is dear but very strong."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La agencia de influencers ha abierto. Los influencers de viajes vuelan contigo y lo publican; tu popularidad sube rápido. Es caro, hazlo cuando la caja vaya holgada. Busca la agencia con piscina en el pueblo y tócala."
+            "value": "La agencia de influencers ha abierto. Los influencers de viajes vuelan contigo y lo publican; tu popularidad sube rápido. Es caro, hazlo cuando la caja vaya holgada. Dentro hay tres influencers: el viajero local es barato; el famoso, caro pero muy potente."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "インフルエンサー事務所が開いた。旅行インフルエンサーが一緒に飛んで発信してくれ、人気が一気に上がる。高いので、金庫に余裕がある時にな。町でプールのあるエージェンシーを探してタップするのだ。"
+            "value": "インフルエンサー事務所が開いた。旅行インフルエンサーが一緒に飛んで発信してくれ、人気が一気に上がる。高いので、金庫に余裕がある時にな。中には三人のインフルエンサーがいる。地元の旅人は安く、有名な旅人は高いがとても強力だ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "인플루언서 에이전시가 문을 열었다네. 여행 인플루언서가 함께 날고 소식을 올리면 인기가 빠르게 오르지. 비싸니 금고가 넉넉할 때 하게. 마을에서 수영장이 있는 에이전시를 찾아 눌러 보게."
+            "value": "인플루언서 에이전시가 문을 열었다네. 여행 인플루언서가 함께 날고 소식을 올리면 인기가 빠르게 오르지. 비싸니 금고가 넉넉할 때 하게. 안에는 인플루언서가 세 명 있지. 동네 여행자는 싸고, 유명 여행자는 비싸지만 아주 강력하다네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Influencer ajansı açıldı. Gezi influencer'ları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap. Kasabada havuzlu ajans binasını bul ve dokun."
+            "value": "Influencer ajansı açıldı. Gezi influencer'ları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap. İçeride üç influencer var: yerel gezgin ucuz, ünlü gezgin pahalı ama çok güçlü."
           }
         }
       }
@@ -31536,37 +32192,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Guide-Büro hat geöffnet, Lehrling. Nimm Hotel- und Tourguides kostenlos mit, dann schicken sie dir ihre Gäste: Beliebtheit und ein paar Tage lang mehr Touristen. Such das Guide-Büro in der Stadt und tipp darauf."
+            "value": "Das Guide-Büro hat geöffnet, Lehrling. Nimm Hotel- und Tourguides kostenlos mit, dann schicken sie dir ihre Gäste: Beliebtheit und ein paar Tage lang mehr Touristen. Drinnen warten drei Guides: der günstige schickt kurz Touristen, der teure länger."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The guide office is open, kid. Fly the hotel and tour guides for free and they'll send you their guests: popularity, and extra tourists for a few days. Find the guide office in town and tap it."
+            "value": "The guide office is open, kid. Fly the hotel and tour guides for free and they'll send you their guests: popularity, and extra tourists for a few days. Inside there are three guides: the cheap one sends tourists for a short while, the dear one for longer."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La oficina de guías ha abierto, aprendiz. Lleva gratis a los guías de hotel y de turismo y te mandarán a sus clientes: popularidad y más turistas durante unos días. Busca la oficina de guías en el pueblo y tócala."
+            "value": "La oficina de guías ha abierto, aprendiz. Lleva gratis a los guías de hotel y de turismo y te mandarán a sus clientes: popularidad y más turistas durante unos días. Dentro hay tres guías: el barato te manda turistas poco tiempo, el caro durante más días."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ガイド事務所が開いた。ホテルやツアーのガイドを無料で乗せれば客を回してくれる。人気が上がり、数日は観光客も増える。町でガイド事務所を探してタップするのだ。"
+            "value": "ガイド事務所が開いた。ホテルやツアーのガイドを無料で乗せれば客を回してくれる。人気が上がり、数日は観光客も増える。中には三人のガイドがいる。安い者は短く、高い者は長く観光客を送ってくれる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "가이드 사무소가 문을 열었다네. 호텔과 투어 가이드를 무료로 태워 주면 손님을 보내 주지. 인기가 오르고 며칠간 관광객도 늘어난다네. 마을에서 가이드 사무소를 찾아 눌러 보게."
+            "value": "가이드 사무소가 문을 열었다네. 호텔과 투어 가이드를 무료로 태워 주면 손님을 보내 주지. 인기가 오르고 며칠간 관광객도 늘어난다네. 안에는 가이드가 세 명 있지. 싼 가이드는 짧게, 비싼 가이드는 오래 관광객을 보내 준다네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rehber ofisi açıldı evlat. Otel ve tur rehberlerini ücretsiz uçurursan seni müşterilerine önerirler: popülerlik ve birkaç gün boyunca fazladan turist. Kasabada Rehber ofisini bul ve dokun."
+            "value": "Rehber ofisi açıldı evlat. Otel ve tur rehberlerini ücretsiz uçurursan seni müşterilerine önerirler: popülerlik ve birkaç gün boyunca fazladan turist. İçeride üç rehber var: ucuzu kısa, pahalısı uzun süre turist gönderir."
           }
         }
       }
@@ -33094,37 +33750,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Auch das Grundstück für die Pilotenschule ist bereit. Mit einer Schule ist jeden Morgen ein Absolvent unter den Bewerbern: Piloten, die seltener verunglücken. Such das Grundstück der Schule in der Stadt und tipp darauf."
+            "value": "Auch das Grundstück für die Pilotenschule ist bereit. Mit einer Schule ist jeden Morgen ein Absolvent unter den Bewerbern: Piloten, die seltener verunglücken."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The pilot school's plot is ready too. With a school, every morning one of the applicants is a graduate: pilots who crash less. Find the school's plot in town and tap it."
+            "value": "The pilot school's plot is ready too. With a school, every morning one of the applicants is a graduate: pilots who crash less."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El solar de la escuela de pilotos también está listo. Con una escuela, cada mañana uno de los candidatos es un graduado: pilotos que tienen menos accidentes. Busca el solar de la escuela en el pueblo y tócalo."
+            "value": "El solar de la escuela de pilotos también está listo. Con una escuela, cada mañana uno de los candidatos es un graduado: pilotos que tienen menos accidentes."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パイロット学校の土地も整った。学校があれば毎朝の応募者に卒業生が一人混じる。事故の少ないパイロットだ。町で学校の空き地を探してタップするのだ。"
+            "value": "パイロット学校の土地も整った。学校があれば毎朝の応募者に卒業生が一人混じる。事故の少ないパイロットだ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "조종사 학교 부지도 준비됐다네. 학교가 있으면 매일 아침 지원자 중 졸업생이 한 명 있지. 사고를 덜 내는 조종사들이라네. 마을에서 학교 부지를 찾아 눌러 보게."
+            "value": "조종사 학교 부지도 준비됐다네. 학교가 있으면 매일 아침 지원자 중 졸업생이 한 명 있지. 사고를 덜 내는 조종사들이라네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilot okulunun arsası da hazır. Okulun olursa her sabah başvuranlar arasında bir okul mezunu bulunur: daha az kaza yapan pilotlar. Kasabada Pilot okulunun arsasını bul ve dokun."
+            "value": "Pilot okulunun arsası da hazır. Okulun olursa her sabah başvuranlar arasında bir okul mezunu bulunur: daha az kaza yapan pilotlar."
           }
         }
       }
@@ -33463,37 +34119,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Grundstück für die Ballonwerkstatt ist bereit, Lehrling. Bau sie, dann entwirfst du deine Ballone selbst und baust sie später auch. Such das Grundstück der Werkstatt in der Stadt und tipp darauf."
+            "value": "Das Grundstück für die Ballonwerkstatt ist bereit, Lehrling. Bau sie, dann entwirfst du deine Ballone selbst und baust sie später auch."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The balloon workshop's plot is ready, kid. Build it and you design your own balloons, and later you make them too. Find the workshop's plot in town and tap it."
+            "value": "The balloon workshop's plot is ready, kid. Build it and you design your own balloons, and later you make them too."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El solar del taller de globos está listo, aprendiz. Constrúyelo y diseñarás tus propios globos, y más tarde también los fabricarás. Busca el solar del taller en el pueblo y tócalo."
+            "value": "El solar del taller de globos está listo, aprendiz. Constrúyelo y diseñarás tus propios globos, y más tarde también los fabricarás."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "気球工房の土地が整ったぞ。建てれば自分で気球をデザインでき、いずれは作ることもできる。町で工房の空き地を探してタップするのだ。"
+            "value": "気球工房の土地が整ったぞ。建てれば自分で気球をデザインでき、いずれは作ることもできる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "열기구 공방 부지가 준비됐다네. 지으면 열기구를 직접 디자인하고, 나중엔 직접 만들 수도 있지. 마을에서 공방 부지를 찾아 눌러 보게."
+            "value": "열기구 공방 부지가 준비됐다네. 지으면 열기구를 직접 디자인하고, 나중엔 직접 만들 수도 있지."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Balon atölyesinin arsası hazır evlat. Kurarsan balonlarını kendin tasarlarsın, sonra da kendi balonlarını üretirsin. Kasabada Balon atölyesinin arsasını bul ve dokun."
+            "value": "Balon atölyesinin arsası hazır evlat. Kurarsan balonlarını kendin tasarlarsın, sonra da kendi balonlarını üretirsin."
           }
         }
       }
@@ -43498,6 +44154,252 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gün %@"
+          }
+        }
+      }
+    },
+    "influ.local.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lokale Reisende"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Local traveller"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viajera local"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "地元の旅人"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "동네 여행자"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yerel gezgin"
+          }
+        }
+      }
+    },
+    "influ.local.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenige, aber treue Follower"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Small but loyal following"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pocos seguidores, pero fieles"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "少ないが熱心なフォロワー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "적지만 충성스러운 팔로워"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Küçük ama sadık takipçiler"
+          }
+        }
+      }
+    },
+    "influ.star.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Berühmter Reisender"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Famous traveller"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viajero famoso"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "有名な旅人"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "유명 여행자"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ünlü gezgin"
+          }
+        }
+      }
+    },
+    "influ.star.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Millionen Follower, teuer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Millions of followers, pricey"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Millones de seguidores, caro"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フォロワー数百万、高額"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "팔로워 수백만, 비쌈"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Milyonlarca takipçi, pahalı"
+          }
+        }
+      }
+    },
+    "influ.travel.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reise-Influencer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Travel influencer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Influencer de viajes"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "旅行インフルエンサー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "여행 인플루언서"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gezi influencerı"
+          }
+        }
+      }
+    },
+    "influ.travel.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zeigt das Tal der ganzen Welt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows the valley to the whole world"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra el valle al mundo entero"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "谷を世界中に見せてくれる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계곡을 온 세상에 보여 줍니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vadiyi bütün dünyaya gösterir"
           }
         }
       }
@@ -53957,6 +54859,47 @@
         }
       }
     },
+    "offers.wait": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tage bis zu einem neuen Vertrag: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days until a new deal: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días para un nuevo acuerdo: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次の契約まで：%@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새 계약까지 남은 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni anlaşmaya kalan gün: %@"
+          }
+        }
+      }
+    },
     "office.ist": {
       "extractionState": "manual",
       "localizations": {
@@ -59738,6 +60681,47 @@
         }
       }
     },
+    "price.paxUp": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passagiere: +%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Passengers: +%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasajeros: +%@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%@人"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%@명"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "+%@ yolcu"
+          }
+        }
+      }
+    },
     "psheet.cheap": {
       "extractionState": "manual",
       "localizations": {
@@ -62116,6 +63100,88 @@
         }
       }
     },
+    "repChart.agencyBody": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle einen von drei Influencern: sofort Beliebtheit und an jedem Kampagnentag noch etwas mehr."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick one of three influencers: popularity at once, and a little more each day of the campaign."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige a uno de tres influencers: popularidad al instante y un poco más cada día de campaña."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "三人のインフルエンサーから一人を選ぼう。すぐに人気が上がり、キャンペーン中は毎日さらに上がる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인플루언서 세 명 중 한 명을 고르세요. 바로 인기가 오르고 캠페인 기간 매일 조금씩 더 오릅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç influencerdan birini seç: hemen popülerlik, kampanya boyunca her gün biraz daha."
+          }
+        }
+      }
+    },
+    "repChart.agencyButton": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agentur"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agency"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Agencia"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事務所"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이전시"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajans"
+          }
+        }
+      }
+    },
     "repChart.bonusBody": {
       "extractionState": "manual",
       "localizations": {
@@ -62399,6 +63465,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Birkaç gün oynadıktan sonra burada popülerliğinin günden güne nasıl değiştiğini göreceksin."
+          }
+        }
+      }
+    },
+    "repChart.guideBody": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wähle einen von drei Guides: Sie empfehlen dich ihren Kunden, sofort Beliebtheit und ein paar Tage Touristen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick one of three guides: they recommend you to their clients, popularity at once and tourists for a few days."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Elige a uno de tres guías: te recomiendan a sus clientes, popularidad al instante y turistas durante unos días."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "三人のガイドから一人を選ぼう。客にお前を薦め、すぐに人気が上がり、数日は観光客も来る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가이드 세 명 중 한 명을 고르세요. 손님에게 추천해 주어 바로 인기가 오르고 며칠간 관광객이 옵니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç rehberden birini seç: seni müşterilerine önerirler, hemen popülerlik ve birkaç gün turist."
+          }
+        }
+      }
+    },
+    "repChart.guidesButton": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guides"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guías"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ガイド"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가이드"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rehberler"
           }
         }
       }
@@ -74703,6 +75851,826 @@
         }
       }
     },
+    "tip.accident.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Unfall ist schlimm, aber nicht das Ende, Lehrling: Warte die Reparatur ab und hol dir deine Beliebtheit zurück."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An accident is bad but not the end, kid: wait for the repair and win your popularity back."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un accidente es malo, pero no es el final, aprendiz: espera la reparación y recupera tu popularidad."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事故は痛いが終わりではない、弟子よ。修理を待ち、人気を取り戻せ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사고는 나쁘지만 끝은 아니라네, 제자여. 수리를 기다리며 인기를 되찾게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kaza kötü ama son değil evlat: onarımı bekle, popülerliğini topla."
+          }
+        }
+      }
+    },
+    "tip.agency.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Influencer-Agentur ist offen: teuer, aber sie steigert deine Beliebtheit schnell."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The influencer agency is open: it's pricey, but it lifts your popularity fast."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La agencia de influencers está abierta: es cara, pero sube tu popularidad muy rápido."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "インフルエンサー事務所が開いた。高いが、人気を一気に上げてくれる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인플루언서 에이전시가 열렸네. 비싸지만 인기를 빠르게 올려 준다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Influencer ajansı açıldı: pahalıdır ama popülerliğini hızla yükseltir."
+          }
+        }
+      }
+    },
+    "tip.aging.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Hülle eines deiner Ballone ist müde, Lehrling: Erneuere sie auf der Flottenseite."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One of your balloons has a tired envelope, kid: renew it on the fleet page."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La envoltura de uno de tus globos está cansada, aprendiz: renuévala desde la página de la flota."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "お前の気球の一機、球皮がくたびれておるぞ、弟子よ。フリート画面で張り替えよ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 하나의 외피가 낡았네, 제자여. 기단 페이지에서 교체하게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir balonunun zarfı yorulmuş evlat: Filo sayfasından yenile."
+          }
+        }
+      }
+    },
+    "tip.bank.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Bank ist offen: Ein Kredit macht dich schneller, aber Zinsen sind ein geduldiger Feind, Lehrling."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bank is open: a loan speeds you up, but interest is a patient enemy, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El banco está abierto: un préstamo te acelera, pero el interés es un enemigo paciente, aprendiz."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "銀行が開いた。借金は勢いをくれるが、利子は辛抱強い敵だぞ、弟子よ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "은행이 열렸네. 대출은 속도를 내 주지만 이자는 끈질긴 적이라네, 제자여."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banka açıldı: kredi hızlandırır ama faiz sabırlı bir düşmandır evlat."
+          }
+        }
+      }
+    },
+    "tip.bazaar.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Basar ist offen, Lehrling: Ich habe dir ein Laternenset geschenkt, hol es dir."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bazaar is open, kid: I've left you a set of lanterns as a gift, go and take it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El bazar está abierto, aprendiz: te he regalado un juego de farolillos, ve a por él."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バザールが開いたぞ、弟子よ。ランタンのセットを贈っておいた。受け取るがよい。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "바자르가 열렸네, 제자여. 랜턴 세트를 선물로 두었으니 가져가게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çarşı açıldı evlat: sana bir fener seti hediye ettim, al bakalım."
+          }
+        }
+      }
+    },
+    "tip.crew.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Pilotenbüro ist offen: Jeder Ballon braucht einen Piloten, Lehrling."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The pilot office is open: every balloon needs a pilot, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La oficina de pilotos está abierta: cada globo necesita un piloto, aprendiz."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロット事務所が開いた。気球には一機ごとにパイロットが要るぞ、弟子よ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사 사무실이 열렸네. 열기구마다 조종사가 필요하다네, 제자여."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot ofisi açıldı: her balona bir pilot lazım evlat."
+          }
+        }
+      }
+    },
+    "tip.fleet.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Hangar ist offen, Lehrling: Sobald die Kasse reicht, kaufst du hier deinen zweiten Ballon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The hangar is open, kid: once the cash is there, you buy your second balloon here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El hangar está abierto, aprendiz: cuando tengas el dinero, aquí compras tu segundo globo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "格納庫が開いたぞ、弟子よ。金が貯まったら、ここで二機目の気球を買うのだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "격납고가 열렸네, 제자여. 돈이 모이면 여기서 두 번째 열기구를 사게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hangar açıldı evlat: kasa dolunca ikinci balonu buradan alırsın."
+          }
+        }
+      }
+    },
+    "tip.goals.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tippe auf Ziele, Lehrling: Dort stehen deine Kapitelziele."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tap Goals, kid: your chapter goals are there."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca Objetivos, aprendiz: ahí están los objetivos de tu capítulo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "「目標」を押してみよ、弟子よ。章の目標が書いてある。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "'목표'를 눌러 보게, 제자여. 챕터 목표가 거기 있다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hedef düğmesine dokun evlat: bölüm hedeflerin orada."
+          }
+        }
+      }
+    },
+    "tip.guide.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Guide-Büro ist offen: Nimm einen Guide mit, dann schickt er dir Touristen, Lehrling."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The guide office is open: fly a guide and they'll send you tourists, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La oficina de guías está abierta: lleva a un guía y te mandará turistas, aprendiz."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ガイド事務所が開いた。ガイドを乗せれば観光客を送ってくれるぞ、弟子よ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가이드 사무소가 열렸네. 가이드를 태워 주면 관광객을 보내 준다네, 제자여."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rehber ofisi açıldı: bir rehberi uçur, sana turist göndersin evlat."
+          }
+        }
+      }
+    },
+    "tip.insurance.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Versicherung schaltest du jetzt hier an und aus, Lehrling; ein Unfall kann deine Kasse an einem Morgen leeren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You switch insurance on and off here now, kid; one accident can empty your cash in a single morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora activas y desactivas el seguro aquí, aprendiz; un accidente puede vaciar tu caja en una sola mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "これからは保険をここで切り替えるのだ、弟子よ。一度の事故で一朝にして金庫が空になるぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이제 보험은 여기서 켜고 끄게, 제자여. 사고 한 번이면 하루아침에 금고가 빌 수 있다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sigortayı artık buradan açıp kapatırsın evlat; bir kaza kasayı bir sabahta boşaltabilir."
+          }
+        }
+      }
+    },
+    "tip.market.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Verkaufsbüro ist offen: Mit Hotelverträgen kommen ihre Gäste zu dir, Lehrling."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your sales office is open: sign with hotels and their guests come to you, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu oficina de ventas está abierta: si firmas con hoteles, sus huéspedes vendrán a ti, aprendiz."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "販売所が開いた。ホテルと提携すれば、その客がお前のもとに来るぞ、弟子よ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "판매 사무실이 열렸네. 호텔과 제휴하면 그 손님들이 자네에게 온다네, 제자여."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satış ofisin açıldı: otellerle anlaşırsan misafirleri sana gelir evlat."
+          }
+        }
+      }
+    },
+    "tip.mission.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein erster besonderer Kunde ist da, Lehrling: Halte den Ballon 8 Sekunden zwischen 250 und 350 m, dann lande sanft."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your first special customer is here, kid: hold the balloon between 250 and 350 m for 8 seconds, then land gently."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha llegado tu primer cliente especial, aprendiz: mantén el globo entre 250 y 350 m durante 8 segundos y luego aterriza con suavidad."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "初めての特別なお客だ、弟子よ。気球を250〜350 mで8秒保ち、それからそっと降りよ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "첫 특별 손님이 왔네, 제자여. 열기구를 250~350 m 사이에 8초간 유지하고 살포시 내리게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İlk özel müşterin geldi evlat: balonu 250–350 m arasında 8 saniye tut, sonra yumuşak in."
+          }
+        }
+      }
+    },
+    "tip.pr.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Am Anfang sind Verträge mit Hotels und Guides alles, Lehrling."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Early on, hotel and guide deals are everything, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al principio, los acuerdos con hoteles y guías lo son todo, aprendiz."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最初はホテルとガイドとの提携がすべてだ、弟子よ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "처음에는 호텔과 가이드 제휴가 전부라네, 제자여."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başlarda otel ve rehber anlaşmaları her şeydir evlat."
+          }
+        }
+      }
+    },
+    "tip.price.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestern blieben Plätze leer, Lehrling: Senk den Preis ein wenig, dann füllen sie sich."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yesterday seats stayed empty, kid: lower the price a little and they fill up."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayer quedaron plazas vacías, aprendiz: baja un poco el precio y se llenarán."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "昨日は空席が出たな、弟子よ。料金を少し下げれば埋まる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어제는 빈 좌석이 남았네, 제자여. 가격을 조금 내리면 찬다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dün koltuklar boş kaldı evlat: fiyatı biraz düşürürsen dolar."
+          }
+        }
+      }
+    },
+    "tip.red.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rote Flagge, Lehrling: Heute am Boden zu bleiben ist keine Schande."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red flag, kid: staying on the ground today is no shame."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bandera roja, aprendiz: quedarse hoy en tierra no es ninguna vergüenza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "赤い旗だ、弟子よ。今日は地上に留まっても恥ではない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빨간 깃발이네, 제자여. 오늘은 땅에 머물러도 부끄러울 것 없다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kırmızı bayrak evlat: bugün yerde kalmak ayıp değil."
+          }
+        }
+      }
+    },
+    "tip.rivals.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das erste Geheimnis, um Konkurrenten zu versenken, sind Sitzplätze: Reichen deine Plätze für die Touristen, fliegt die Konkurrenz leer."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The first secret of sinking a rival is seats: once your seats cover the tourists, the rival flies empty."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El primer secreto para hundir a un rival son las plazas: cuando tus plazas cubren a los turistas, el rival vuela vacío."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ライバルを沈める第一の秘訣は座席だ。お前の座席で観光客をまかなえれば、ライバルは空席で飛ぶ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "경쟁자를 무너뜨리는 첫 비결은 좌석이라네. 자네 좌석이 관광객을 감당하면 경쟁사는 빈 채로 날지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rakip batırmanın ilk sırrı koltuktur: koltuğun turiste yetince rakip boş uçar."
+          }
+        }
+      }
+    },
+    "tip.school.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Grundstück der Pilotenschule ist bereit: Ihre Absolventen sind günstiger und verunglücken seltener."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The pilot school's plot is ready: its graduates cost less and crash less."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El solar de la escuela de pilotos está listo: sus graduados cobran menos y tienen menos accidentes."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロット学校の土地が整った。卒業生は安く、事故も少ない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사 학교 부지가 준비됐네. 졸업생은 싸고 사고도 덜 낸다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot okulunun arsası hazır: mezunları ucuz ve daha az kaza yapar."
+          }
+        }
+      }
+    },
+    "tip.welcome.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen, Lehrling! Heute nur eine Aufgabe: Preis festlegen, Passagiere einsammeln, fliegen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome, kid! Just one job today: set your price, collect passengers, fly."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Bienvenido, aprendiz! Hoy solo tienes una tarea: fija el precio, reúne pasajeros y vuela."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よく来たな、弟子よ！今日の仕事はひとつ。料金を決め、乗客を集め、飛ぶのだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어서 오게, 제자여! 오늘 할 일은 하나뿐일세. 가격을 정하고, 승객을 모으고, 날게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoş geldin evlat! Bugün tek işin var: fiyatı belirle, yolcu topla, uç."
+          }
+        }
+      }
+    },
+    "tip.workshop.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Grundstück der Ballonwerkstatt ist bereit: Bau sie, und du entwirfst deine eigenen Ballone, Lehrling."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The balloon workshop's plot is ready: build it and you design your own balloons, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El solar del taller de globos está listo: constrúyelo y diseñarás tus propios globos, aprendiz."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球工房の土地が整った。建てれば自分の気球をデザインできるぞ、弟子よ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 공방 부지가 준비됐네. 지으면 자네 열기구를 직접 디자인한다네, 제자여."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon atölyesinin arsası hazır: kurarsan kendi balonlarını tasarlarsın evlat."
+          }
+        }
+      }
+    },
+    "tip.yellow.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelbe Flagge, Lehrling: Flieg mit der teuren Versicherung oder gönn den Ballonen eine Pause."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yellow flag, kid: fly with the pricey insurance or let the balloons rest."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bandera amarilla, aprendiz: vuela con el seguro caro o deja descansar los globos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "黄色の旗だ、弟子よ。高い保険で飛ぶか、気球を休ませるかだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "노란 깃발이네, 제자여. 비싼 보험을 들고 날든지 열기구를 쉬게 하게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sarı bayrak evlat: ya pahalı sigortayla uç ya da balonları dinlendir."
+          }
+        }
+      }
+    },
     "tour.later": {
       "extractionState": "manual",
       "localizations": {
@@ -75929,6 +77897,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Satışta"
+          }
+        }
+      }
+    },
+    "town.sub.from": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ab %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "From %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desde %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@から"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@부터"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En ucuzu %@"
           }
         }
       }
@@ -77487,6 +79496,580 @@
           "stringUnit": {
             "state": "translated",
             "value": "Rüzgâr seni %@ göğüne taşıyor…"
+          }
+        }
+      }
+    },
+    "tut.a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hezarfens Tipp"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hezarfen's tip"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consejo de Hezarfen"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ヘザルフェンのヒント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "헤자르펜의 조언"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hezarfen'in ipucu"
+          }
+        }
+      }
+    },
+    "tut.burn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gedrückt halten: Du steigst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold it: you climb."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado: subes."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "押し続けよ。上昇するぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "꾹 누르고 있게. 올라간다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Basılı tut: yükselirsin."
+          }
+        }
+      }
+    },
+    "tut.chimney": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flieg über den Feenkamin: Stößt der Korb dagegen, ist das ein Unfall."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pass over the fairy chimney: if the basket hits it, that's a crash."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasa por encima de la chimenea de hadas: si la cesta choca, es un accidente."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "妖精の煙突の上を越えよ。バスケットがぶつかれば事故だ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "요정의 굴뚝 위로 넘어가게. 바스켓이 부딪히면 사고라네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peribacasının üstünden geç: sepet çarparsa kaza."
+          }
+        }
+      }
+    },
+    "tut.field": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hier landen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Land here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aterriza aquí."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ここに降りよ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "여기에 내리게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burada in."
+          }
+        }
+      }
+    },
+    "tut.go": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist bereit: Passagiere einsammeln und los."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're ready: collect passengers and fly."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estás listo: reúne pasajeros y vuela."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "準備はできた。乗客を集めて飛べ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "준비됐네. 승객을 모으고 날게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hazırsın: yolcu topla ve uç."
+          }
+        }
+      }
+    },
+    "tut.more": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mehr"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "More"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "もっと読む"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "더 보기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Daha fazla"
+          }
+        }
+      }
+    },
+    "tut.poor": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Kasse reicht noch nicht: Sobald das Geld da ist, machst du es hier."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not enough cash yet: once it's there, you do it here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no tienes suficiente dinero: cuando lo tengas, lo haces aquí."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ資金が足りない。貯まったら、ここで行うのだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 돈이 모자라네. 돈이 모이면 여기서 하게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasan şimdilik yetmiyor: para birikince buradan yaparsın."
+          }
+        }
+      }
+    },
+    "tut.poorHotel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Für dieses Hotel reichen deine Sterne oder deine Kasse noch nicht: Wenn du gewachsen bist, unterschreibst du hier."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your stars or your cash aren't enough for this hotel yet: once you've grown, you sign here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para este hotel aún no te bastan las estrellas o el dinero: cuando crezcas, firmas aquí."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このホテルには星か資金がまだ足りない。成長したら、ここで提携するのだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 호텔과 제휴하기엔 별이나 돈이 아직 모자라네. 커지면 여기서 계약하게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu otel için yıldızın ya da kasan yetmiyor: büyüyünce buradan anlaşırsın."
+          }
+        }
+      }
+    },
+    "tut.price": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senk den Preis: Mehr Passagiere steigen ein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lower the price: more passengers board."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baja el precio: subirán más pasajeros."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "料金を下げよ。乗客が増えるぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가격을 내리게. 승객이 더 탄다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiyatı düşür: daha çok yolcu biner."
+          }
+        }
+      }
+    },
+    "tut.priceSeen": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siehst du? Mehr Passagiere. Jetzt tippe auf Fertig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See? More passengers. Now tap Done."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Ves? Más pasajeros. Ahora toca Listo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "見たか？乗客が増えた。OKを押せ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "봤나? 승객이 늘었지. 이제 완료를 누르게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gördün mü? Yolcu arttı. Tamam'a bas."
+          }
+        }
+      }
+    },
+    "tut.skip": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Überspringen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Skip"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saltar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スキップ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "건너뛰기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geç"
+          }
+        }
+      }
+    },
+    "tut.thermal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Thermik: Flieg hinein, dann trägt sie dich nach oben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A thermal: fly into it and it carries you up."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una térmica: entra en ella y te subirá."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上昇気流だ。中に入れば上へ運んでくれる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상승기류라네. 안으로 들어가면 위로 올려 주지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Termik: içine girersen seni yukarı taşır."
+          }
+        }
+      }
+    },
+    "tut.vent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Ventil lässt die heiße Luft ab: Du sinkst, vorwärts bringt es dich nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The vent lets the hot air out: you sink, it doesn't take you forward."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La válvula suelta el aire caliente: bajas, pero no avanzas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ベントは熱い空気を逃がす。高度は下がるが、前へは進まん。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "밸브는 뜨거운 공기를 빼낸다네. 내려갈 뿐, 앞으로 가진 않지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Valf sıcak havayı bırakır: alçalırsın, ileri götürmez."
+          }
+        }
+      }
+    },
+    "tut.wind": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Um voranzukommen, finde die richtige Höhe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To go forward, find the right height."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Para avanzar, busca la altura adecuada."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "前へ進むには、ちょうどよい高さを探せ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "앞으로 가려면 알맞은 높이를 찾게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İleri gitmek için doğru yüksekliği bul."
           }
         }
       }

@@ -162,6 +162,10 @@ public struct FlightSim: Sendable {
     public var missionDone = false
     public var moment: FlightMoment?
     public var result: FlightResult?
+    /// v122: riding the thermal in the last step (the arrows and the tag under the basket).
+    public private(set) var inThermal = false
+    /// v122: the tutorial's look at the landing field slows the flight to this share while the camera is away.
+    public var slow = 1.0
 
     public init(weather: Weather, pax: Int, burners: Int = 1, turningVent: Bool = false) {
         self.weather = weather
@@ -179,7 +183,8 @@ public struct FlightSim: Sendable {
     public mutating func step(_ dt: Double) -> [Event] {
         guard !done else { return [] }
         var ev: [Event] = []
-        let s = dt * FlightWorld.timeScale
+        inThermal = false
+        let s = dt * FlightWorld.timeScale * slow
         if venting && airborne { heat -= 0.07 * s }
         if burning && fuel > 0 {
             heat += 0.05 * burnerPower * s
@@ -235,7 +240,8 @@ public struct FlightSim: Sendable {
                 switch m.kind {
                 case .thermal:
                     if abs(x - m.x) < 65 && alt < 520 {
-                        vy += 0.5 * s
+                        vy += Rules.thermalLift * s
+                        inThermal = true
                         m.progress += dt
                         if m.progress > 2 { m.done = true; fuel = min(100, fuel + 15) }
                     }

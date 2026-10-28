@@ -40,7 +40,9 @@ struct PriceSheetView: View {
             .safeAreaInset(edge: .bottom) {
                 VStack(spacing: 10) {
                     result(g)
+                        .tutSpot("est")
                     BigButton(title: loc("home.done")) { dismiss() }
+                        .tutSpot("psOk")
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 12)
@@ -51,6 +53,11 @@ struct PriceSheetView: View {
             .onAppear {
                 if baseIncome == nil { baseIncome = g.estimatedIncome().income }
             }
+            // v122: the sheet hosts its own tutorial layer (day one's price step, the guided price lesson)
+            .tutorialHost(minLineY: 70, present: { store.sheetSpots = $0 },
+                          alive: { store.guided != nil || store.homeTutStep == "price" },
+                          frame: { store.sheetTutFrame($0) }, onSkip: { store.skipTutorial() })
+            .onDisappear { store.sheetSpots = [:] }
         }
     }
 
@@ -75,6 +82,7 @@ struct PriceSheetView: View {
     private func pricer(_ s: GameState) -> some View {
         HStack(spacing: 12) {
             RepeatStepButton(icon: "minus", label: loc("psheet.minus")) { step(-5) }
+                .tutSpot("pMinus")
             Text(eur(s.price))
                 .font(Theme.font(44, .heavy, condensed: true))
                 .foregroundStyle(Theme.ink)
@@ -183,6 +191,8 @@ struct PriceSheetView: View {
                             .lineLimit(1).minimumScaleFactor(0.6)
                             .foregroundStyle(Theme.ink)
                             .monospacedDigit()
+                            // v122: a lower price counts the passengers up: the number pops and "+N" rises
+                            .paxPop(pax: est.pax, seats: est.seats, price: g.state.price, alignment: .trailing)
                         Text(loc("psheet.filled"))
                             .font(Theme.font(13, .semibold))
                             .foregroundStyle(Theme.ink2)
@@ -248,6 +258,7 @@ struct PriceSheetView: View {
         let before = store.state?.price
         store.act { g in g.setPrice(g.state.price + d) }
         if store.state?.price != before { Haptics.tick() }
+        store.tutPriceChanged()
     }
 }
 
@@ -313,8 +324,71 @@ struct TicketFillBar: View {
                 Capsule()
                     .fill(Theme.green)
                     .frame(width: geo.size.width * CGFloat(min(1, max(0, fraction))))
+                    // v122: the bar fills as the passengers count up
+                    .animation(.easeOut(duration: 0.45), value: fraction)
             }
         }
         .frame(height: height)
+    }
+}
+
+/// v122 (`paxBump`): when the price changes and the passengers you'd get go up, the number pops and a green "+N"
+/// rises beside it and fades.
+struct PaxPop: ViewModifier {
+    let pax: Int, seats: Int, price: Int
+    var alignment: Alignment = .topTrailing
+    @State private var last: [Int]?
+    @State private var bump = false
+    @State private var pops: [Pop] = []
+
+    struct Pop: Identifiable { let id = UUID(); let n: Int }
+
+    func body(content: Content) -> some View {
+        content
+            .scaleEffect(bump ? 1.3 : 1, anchor: .leading)
+            .overlay(alignment: alignment) {
+                ZStack {
+                    ForEach(pops) { p in PopText(n: p.n) }
+                }
+                .allowsHitTesting(false)
+            }
+            .onChange(of: price) { _, _ in check() }
+            .onAppear { last = [pax, seats, price] }
+    }
+
+    private func check() {
+        defer { last = [pax, seats, price] }
+        guard let l = last, l[1] == seats, l[2] != price, pax > l[0] else { return }
+        withAnimation(.easeOut(duration: 0.18)) { bump = true }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { withAnimation(.easeIn(duration: 0.25)) { bump = false } }
+        let p = Pop(n: pax - l[0])
+        pops.append(p)
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.3) { pops.removeAll { $0.id == p.id } }
+    }
+
+    private struct PopText: View {
+        let n: Int
+        @State private var up = false
+        @State private var gone = false
+
+        var body: some View {
+            Text(loc("price.paxUp", num(n)))
+                .font(Theme.font(20, .heavy, condensed: true))
+                .foregroundStyle(Color(hex: "#3ac078"))
+                .shadow(color: .black.opacity(0.25), radius: 3, y: 2)
+                .fixedSize()
+                .offset(x: 0, y: up ? -26 : 8)
+                .opacity(gone ? 0 : up ? 1 : 0)
+                .onAppear {
+                    withAnimation(.easeOut(duration: 0.3)) { up = true }
+                    withAnimation(.easeIn(duration: 0.8).delay(0.4)) { gone = true }
+                }
+        }
+    }
+}
+
+extension View {
+    func paxPop(pax: Int, seats: Int, price: Int, alignment: Alignment = .topTrailing) -> some View {
+        modifier(PaxPop(pax: pax, seats: seats, price: price, alignment: alignment))
     }
 }

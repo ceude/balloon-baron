@@ -315,7 +315,8 @@ enum ScenePainter {
         // v111.3: the far row sinks into the haze of the horizon (paler, a little smaller, a mist over its feet), so it
         // never reads as the chimneys you can hit.
         let hz = nile ? mixHex("#f2a050", "#fff0c0", p) : desert ? mixHex("#f39a5a", "#ffe6b0", p) : mixHex("#f08a4a", "#ffe2ac", p)
-        func far(_ a: String, _ b: String) -> Color { mix(mixHex(a, b, p), hz, 0.45) }
+        // v122: hazier still (was 0.45), so they read as scenery behind the ones you can hit
+        func far(_ a: String, _ b: String) -> Color { mix(mixHex(a, b, p), hz, 0.58) }
         var r = Mulberry32(seed: 5)
         for i in 0..<40 {
             let wx = Double(i) * 130 + r.next() * 60 - 600
@@ -479,8 +480,15 @@ enum ScenePainter {
     }
 
     /// Fairy chimneys (or cottonwoods, or date palms) along the flight path, in front of the far scenery.
-    static func obstacles(_ ctx: inout GraphicsContext, cam: SceneCamera, _ obs: [Obstacle], region: RegionID, p: Double) {
+    /// v122: `basket` (in flight) makes a chimney glow red as it comes close; `ringAll` (the tutorial's chimney step)
+    /// rings every chimney you can hit in red; `pointed` is the one the tutorial shows: its label is drawn when
+    /// `label` is given, and the rectangle holding it and its label (kept on screen) is returned for the spotlight.
+    @discardableResult
+    static func obstacles(_ ctx: inout GraphicsContext, cam: SceneCamera, _ obs: [Obstacle], region: RegionID, p: Double,
+                          basket: (x: Double, alt: Double)? = nil, ringAll: Bool = false, pointed: Obstacle? = nil,
+                          label: String? = nil) -> CGRect? {
         let W = cam.size.width
+        var spot: CGRect?
         for c in obs {
             let x = cam.sx(c.x)
             if x < -80 || x > W + 80 { continue }
@@ -494,10 +502,48 @@ enum ScenePainter {
                 datePalm(&ctx, x, cam.groundY + 1, CGFloat(c.h) * cam.ky,
                          leaf: mix(mixHex("#1e3a22", "#4a7a3a", p), "#6a9a4a", c.tone * 0.3), trunk: mix("#3a2a1e", "#8a6a44", p))
             case .cap:
-                chimney(&ctx, x, cam.groundY + 1, CGFloat(c.w) * cam.kx, CGFloat(c.h) * cam.ky,
-                        body: mix(mixHex("#6a4038", "#e2b48a", p), "#d6a27a", c.tone * 0.3),
-                        shade: mix("#4a2c2a", "#b07a58", p), cap: mix("#3a2420", "#7e5038", p))
+                // v122: the chimneys you can hit are darker and outlined, so they never melt into the hazy ones behind;
+                // they glow red as the basket comes close, and the tutorial rings them in red with a word.
+                let cw = CGFloat(c.w) * cam.kx, chh = CGFloat(c.h) * cam.ky, base = cam.groundY + 1
+                chimney(&ctx, x, base, cw, chh,
+                        body: mix(mixHex("#5a3430", "#cf9a72", p), "#c08c66", c.tone * 0.3),
+                        shade: mix("#3e2422", "#9a6446", p), cap: mix("#2e1c1a", "#6a4030", p))
+                var glow = 0.0
+                if let b = basket {
+                    let dxm = abs(b.x - c.x) - c.w / 2
+                    glow = min(max(1 - dxm / 90, 0), 1) * min(max(1 - (b.alt - c.h) / 60, 0), 1)
+                }
+                let red = glow > 0.02 || ringAll
+                chimneyEdge(&ctx, x, base, cw, chh,
+                            color: red ? Color(red: 1, green: 70 / 255, blue: 50 / 255).opacity(ringAll ? 0.95 : 0.35 + 0.6 * glow)
+                                : Color(red: 30 / 255, green: 14 / 255, blue: 12 / 255).opacity(0.55),
+                            width: red ? 2.6 : 1.4, blur: CGFloat(glow * 14 + (ringAll ? 6 : 0)))
+                if let pc = pointed, pc == c {
+                    let text = ctx.resolve(Text(verbatim: label ?? " ").font(.custom("BarlowCondensed-ExtraBold", fixedSize: 14)).foregroundColor(.white))
+                    let tw = text.measure(in: CGSize(width: W, height: 40)).width + 18
+                    let ly = cam.groundY - chh - 30, lx = min(max(x, tw / 2 + 6), W - tw / 2 - 6)
+                    let x0 = min(x - cw / 2, lx - tw / 2) - 8, x1 = max(x + cw / 2, lx + tw / 2) + 8
+                    spot = CGRect(x: x0, y: ly - 20, width: x1 - x0, height: cam.groundY + 8 - (ly - 20))
+                    if label != nil {
+                        ctx.fill(Path(roundedRect: CGRect(x: lx - tw / 2, y: ly - 12, width: tw, height: 22), cornerRadius: 11), with: .color(Color(hex: "#e5432f")))
+                        ctx.draw(text, at: CGPoint(x: lx, y: ly - 1), anchor: .center)
+                    }
+                }
             }
         }
+        return spot
+    }
+
+    /// v122: the outline (and a red glow) of a chimney you can hit, along the same curve as its body.
+    static func chimneyEdge(_ ctx: inout GraphicsContext, _ x: CGFloat, _ base: CGFloat, _ w: CGFloat, _ hgt: CGFloat,
+                            color: Color, width: CGFloat, blur: CGFloat) {
+        var p = Path()
+        p.move(to: CGPoint(x: x - w / 2, y: base))
+        p.addQuadCurve(to: CGPoint(x: x - w * 0.12, y: base - hgt), control: CGPoint(x: x - w * 0.32, y: base - hgt * 0.55))
+        p.addLine(to: CGPoint(x: x + w * 0.12, y: base - hgt))
+        p.addQuadCurve(to: CGPoint(x: x + w / 2, y: base), control: CGPoint(x: x + w * 0.32, y: base - hgt * 0.55))
+        var c = ctx
+        if blur > 0.5 { c.addFilter(.shadow(color: Color(red: 1, green: 60 / 255, blue: 40 / 255).opacity(0.9), radius: blur / 2)) }
+        c.stroke(p, with: .color(color), lineWidth: width)
     }
 }

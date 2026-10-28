@@ -103,6 +103,142 @@ final class FlightModel {
     /// v121.2 (TestFlight): the flight stands still under the pause card.
     var paused = false
 
+    // MARK: v122 tutorial (`tutFlightStart`, `tutFlightTick`)
+
+    /// The first own flights show their steps: burner, wind layers, vent, the landing field, a chimney, the thermal.
+    private(set) var tut = false
+    private var tutDone: Set<String> = []
+    /// Records a step (the store saves it and sends its telemetry signal).
+    var onTutStep: ((String) -> Void)?
+    /// The step on screen and when it came up.
+    private(set) var tutK: String?
+    private(set) var tutT0 = 0.0
+    private var burnT = 0.0, windT = 0.0, ventT = 0.0, ventWait = 0.0
+    /// A chimney ahead being pointed out (`st.ch`).
+    struct TutChimney { let c: Obstacle; let dir: Double; let t0: Double }
+    private(set) var tutCh: TutChimney?
+    /// The camera's look at the landing field: when it started.
+    private(set) var panT0: Double?
+    /// Where the scene drew what the tutorial points at, this frame (`TUTC`), in screen points.
+    struct TutScene {
+        var cam: SceneCamera?
+        var bal: (c: CGPoint, r: CGFloat)?
+        var layers: CGRect?
+        var field: CGRect?
+        var chim: CGRect?
+        var therm: CGRect?
+    }
+    var tutC = TutScene()
+
+    func tutHas(_ k: String) -> Bool { tutDone.contains(k) }
+
+    private func tutStep(_ k: String) {
+        guard tutDone.insert(k).inserted else { return }
+        onTutStep?(k)
+    }
+
+    private func tutShow(_ k: String) {
+        if tutK != k { tutK = k; tutT0 = T }
+    }
+
+    private func tutEnd(_ k: String) {
+        if tutK == k { tutK = nil }
+    }
+
+    /// "Skip": the whole tutorial ends.
+    func tutSkip() {
+        tut = false
+        tutK = nil
+        tutCh = nil
+        panT0 = nil
+        sim.slow = 1
+    }
+
+    private static func easeIO3(_ t: Double) -> Double {
+        let t = fclamp(t, 0, 1)
+        return t < 0.5 ? 4 * t * t * t : 1 - pow(-2 * t + 2, 3) / 2
+    }
+
+    /// How far the camera has turned to the landing field (0 … 1): 1.2 s there, 2 s on it, 1 s back.
+    var tutPanK: Double {
+        guard let p = panT0 else { return 0 }
+        let t = T - p
+        return t < 1.2 ? Self.easeIO3(t / 1.2) : t < 3.2 ? 1 : 1 - Self.easeIO3((t - 3.2) / 1)
+    }
+
+    /// The wind step lights the layers one after another for 2.4 s, then the one that blows hardest toward the field.
+    var tutLayerLit: Int {
+        let tt = tutK == "wind" ? T - tutT0 : 9
+        let dx: Double = sim.weather.target - sim.x < 0 ? -1 : 1
+        if tt < 2.4 { return 3 - Int(tt / 0.6) }
+        let ls = look.layers
+        var b = 0
+        for (i, v) in ls.enumerated() where v * dx > ls[b] * dx { b = i }
+        return b
+    }
+
+    /// The first chimney ahead, 40–300 m away, on screen and low enough to hit (its top at most 160 m below).
+    private func tutChimney() -> TutChimney? {
+        guard let cam = tutC.cam else { return nil }
+        let f = sim
+        let dir: Double = f.vx > 0 ? 1 : f.vx < 0 ? -1 : (f.weather.target - f.x < 0 ? -1 : 1)
+        var best: Obstacle?
+        var bd = 1e9
+        for c in f.obstacles {
+            let d = (c.x - f.x) * dir, X = cam.sx(c.x)
+            if d > 40 && d < 300 && d < bd && f.alt < c.h + 160 && X > 20 && X < cam.size.width - 20 { best = c; bd = d }
+        }
+        return best.map { TutChimney(c: $0, dir: dir, t0: T) }
+    }
+
+    private func tutTick(_ dt: Double) {
+        guard tut, !sim.done else { return }
+        let dx = sim.weather.target - sim.x, side: Double = dx < 0 ? -1 : 1, toward = sim.vx * side
+        if burning && sim.fuel > 0 { burnT += dt }
+        if let p = panT0 {
+            sim.slow = 0.25
+            if T - p > 4.2 { panT0 = nil; sim.slow = 1; tutStep("field"); tutEnd("field") }
+            return
+        }
+        if let ch = tutCh {
+            let past = (sim.x - ch.c.x) * ch.dir > ch.c.w / 2 + 8
+            if past || T - ch.t0 > 9 { tutStep("chimney"); tutEnd("chimney"); tutCh = nil }
+            else if abs(ch.c.x - sim.x) > 450 { tutCh = nil; tutEnd("chimney") }
+        }
+        let th: FlightMoment? = sim.moment?.kind == .thermal && !tutHas("thermal") ? sim.moment : nil
+        if let t = th, t.progress > 0.3 || t.done || (sim.x - t.x) * side > 160 { tutStep("thermal"); tutEnd("thermal") }
+        var k: String?
+        if !tutHas("burn") {
+            k = "burn"
+        } else if sim.airborne {
+            // a chimney ahead comes first whenever it shows up
+            if !tutHas("chimney") && tutCh == nil { tutCh = tutChimney() }
+            if !tutHas("chimney") && tutCh != nil { k = "chimney" }
+            else if let t = th, !tutHas("thermal"), abs(t.x - sim.x) < 420 { k = "thermal" }
+            else if !tutHas("wind") { k = "wind" }
+            else if !tutHas("vent") { ventWait += dt; if sim.alt >= 70 || ventWait > 6 { k = "vent" } }
+            else if !tutHas("field") { k = "field" }
+        }
+        guard let k else { tutK = nil; return }
+        if tip != .fuel { tip = nil } // one voice at a time: the coach waits
+        tutShow(k)
+        switch k {
+        case "burn":
+            if burnT >= 1 && sim.alt > 20 && sim.vy > 0 { tutStep("burn"); tutEnd("burn") }
+        case "wind":
+            if toward > 0.25 { windT += dt }
+            if windT >= 2 { tutStep("wind"); tutEnd("wind") }
+        case "vent":
+            if sim.venting { ventT += dt }
+            if ventT >= 0.5 { tutStep("vent"); tutEnd("vent") }
+        case "field":
+            panT0 = T
+            sim.slow = 0.25
+        default:
+            break
+        }
+    }
+
     func pause() {
         guard !sim.done, !paused else { return }
         setHold(sky: false, button: false)
@@ -127,6 +263,18 @@ final class FlightModel {
             windText: w.layers.map { loc("flight.kmh", num(Int((abs($0) * 3.6).rounded()))) },
             zoneText: loc("flight.proposalZone"), rewardPop: loc("flight.missionPop", eur(reward)),
             altLabel: loc("flight.alt"), vertLabel: loc("flight.vert"), fuelLabel: loc("flight.fuel"))
+        // v122: the tutorial's flight steps, up to the fifth own flight while some are left
+        let flown = s.selfFlights ?? 0
+        let done = Set(s.tutorial?.steps.keys.map { $0 } ?? [])
+        tutDone = done
+        tut = s.tutorialOn && flown < Rules.tutorialFlights && TutorialState.flightSteps.contains { !done.contains($0) }
+        if tut {
+            // The second own flight brings a thermal if the first had none, so the lesson isn't left to chance.
+            if flown >= 1 && !done.contains("thermal") && sim.moment?.kind != .thermal {
+                sim.moment = FlightMoment.tutorialThermal(w, k: Double.random(in: 0...1))
+            }
+            if !done.contains("burn") { tip = nil }
+        }
     }
 
     var burning: Bool { skyHold || buttonHold }
@@ -166,6 +314,7 @@ final class FlightModel {
             tiltV += ((goal - tilt) * 14 - tiltV * 3.2) * dt
             tilt += tiltV * dt
             coachTick(dt)
+            tutTick(dt)
         }
         stepFx(dt)
         if let a = applauseAt, T >= a {
@@ -192,7 +341,10 @@ final class FlightModel {
         case .airborne:
             if tutorial { tip = nil }
             let d = UserDefaults.standard
-            if !d.bool(forKey: Self.ventTipKey) {
+            if tut {
+                // v122: the tutorial's vent step teaches it
+                d.set(true, forKey: Self.ventTipKey)
+            } else if !d.bool(forKey: Self.ventTipKey) {
                 d.set(true, forKey: Self.ventTipKey)
                 tip = .vent
             } else if coached {
@@ -216,6 +368,13 @@ final class FlightModel {
         case .landed:
             tip = nil
             ventHold = false
+            if tut {
+                // v122: steps left over wait for the next flight
+                tutK = nil
+                panT0 = nil
+                sim.slow = 1
+                tutStep("first_landing")
+            }
             if let q = sim.result?.landing, q == .hard || q == .crash { SoundEngine.shared.play(.thud) }
             if let q = sim.result?.landing { Haptics.landed(q) }
             if !landedHandled {
@@ -229,6 +388,8 @@ final class FlightModel {
     /// goal, lost track of the wind layers and ran out of fuel; in your first flights Hezarfen says a word when it
     /// helps: drifting away, standing still, over the field. Low fuel is said on every flight.
     private func say(_ t: Tip) {
+        // v122: the tutorial's line has the floor
+        guard !(tut && tutK != nil) else { return }
         guard !sim.done, coachTip != t, (said[t] ?? 0) < 2, T - (coachAt ?? -99) >= 5 else { return }
         said[t, default: 0] += 1
         coachTip = t
@@ -355,6 +516,8 @@ struct FlightView: View {
         let m = FlightModel(state: s, weather: w, pax: store.flightPax ?? 0)
         let st = store
         m.onLanded = { st.act { $0.state.tutorialDone = true } }
+        // v122: steps are saved and signalled outside the frame that found them
+        m.onTutStep = { k in DispatchQueue.main.async { st.tutStep(k) } }
         model = m
     }
 
@@ -411,6 +574,7 @@ struct FlightView: View {
 
 /// The animated scene plus the on-screen controls (`#burn`, `#abort`, `#tip`).
 private struct FlightStage: View {
+    @Environment(GameStore.self) private var store
     let model: FlightModel
     let insets: EdgeInsets
     let size: CGSize
@@ -427,6 +591,49 @@ private struct FlightStage: View {
                 resultLayer
                 pauseLayer
             }
+            .tutorialHost(minLineY: insets.top + 60, alive: { model.tut }, frame: tutFrame, onSkip: {
+                model.tutSkip()
+                store.skipTutorial()
+            })
+        }
+    }
+
+    // MARK: v122 tutorial
+
+    /// The flight's step on screen (`tutFlightTick`'s `tutShow`): what to light, where the arrow points.
+    private func tutFrame(_ sp: TutSpots) -> TutFrame? {
+        let m = model, C = m.tutC
+        guard m.tut, let k = m.tutK, !m.sim.done, !m.paused else { return nil }
+        let bal = C.bal.map { TutHole.circle($0.c, $0.r) }
+        // Under the flight panel and the pause button, so it never covers the controls.
+        let lineY = insets.top + 6 + 4 + 92 + 52
+        // In flight the dark lifts after 2.5 s (to 20%) so the chimneys stay visible.
+        let dim = 0.42 * (1 - 0.8 * fclamp(m.T - m.tutT0 - 2.5, 0, 1))
+        func arrowBy(_ dy: CGFloat, _ dir: TutArrow.Dir) -> TutArrow?? {
+            guard let b = C.bal else { return .some(nil) }
+            return .some(TutArrow(at: CGPoint(x: b.c.x + b.r + 22, y: b.c.y + dy), dir: dir))
+        }
+        switch k {
+        case "burn":
+            return TutFrame(key: k, holes: [sp.hole("burn", pad: 8, round: true), bal].compactMap { $0 }, arrow: arrowBy(0, .up),
+                            line: loc("tut.burn"), dim: dim, lineY: lineY)
+        case "wind":
+            let lit = m.tutLayerLit
+            var arrow: TutArrow?? = .some(nil)
+            if let cam = C.cam { arrow = .some(TutArrow(at: CGPoint(x: 146, y: cam.sy(Rules.windCenters[lit])), dir: .left)) }
+            return TutFrame(key: k, holes: [C.layers.map { TutHole(rect: $0, radius: 18) }, bal].compactMap { $0 }, arrow: arrow,
+                            line: loc("tut.wind"), dim: dim, lineY: lineY)
+        case "vent":
+            return TutFrame(key: k, holes: [sp.hole("vent", pad: 8, round: true), bal].compactMap { $0 }, arrow: arrowBy(10, .down),
+                            line: loc("tut.vent"), dim: dim, lineY: lineY)
+        case "field":
+            return TutFrame(key: k, holes: [C.field.map { TutHole(rect: $0, radius: 16) }].compactMap { $0 }, line: loc("tut.field"), dim: dim, lineY: lineY)
+        case "chimney":
+            return TutFrame(key: k, holes: [C.chim.map { TutHole(rect: $0, radius: 14) }].compactMap { $0 }, line: loc("tut.chimney"), dim: dim, lineY: lineY)
+        case "thermal":
+            return TutFrame(key: k, holes: [C.therm.map { TutHole(rect: $0, radius: 14) }].compactMap { $0 }, line: loc("tut.thermal"), dim: dim, lineY: lineY)
+        default:
+            return nil
         }
     }
 
@@ -537,6 +744,7 @@ private struct FlightStage: View {
                     .onEnded { _ in m.setVent(false) }
             )
             .accessibilityElement(children: .ignore)
+            .tutSpot("vent")
             .accessibilityLabel(loc("flight.vent.a11y"))
             .accessibilityHint(loc("a11y.flight.ventHint"))
             .accessibilityAddTraits(on ? [.isButton, .isSelected] : [.isButton])
@@ -573,6 +781,7 @@ private struct FlightStage: View {
             // VoiceOver can't press and hold: double-tapping switches the burner on and off, and the value reads
             // the panel's altitude (to 10 m, so it doesn't change every frame) and fuel.
             .accessibilityElement(children: .ignore)
+            .tutSpot("burn")
             .accessibilityLabel(loc("intro.burn.a11y"))
             .accessibilityValue(loc("a11y.flight.status", num(Int((m.sim.alt / 10).rounded()) * 10), percent(max(0, m.sim.fuel) / 100)))
             .accessibilityHint(loc("a11y.flight.burnHint"))
@@ -695,7 +904,13 @@ private enum FlightPainter {
         let f = m.sim, look = m.look
         let p = fclamp(f.t / 420, 0, 1) * 0.85 + 0.1
         let groundY = size.height * 0.86, topY = top + 34
-        let cam = SceneCamera(size: size, groundY: groundY, topY: topY, focusX: f.x)
+        // v122: the tutorial's camera turns to the landing field for a moment
+        let cam = SceneCamera(size: size, groundY: groundY, topY: topY, focusX: f.x + (look.target - f.x) * m.tutPanK)
+        m.tutC.cam = cam
+        if m.tut {
+            let X0 = cam.sx(look.target - 85), X1 = cam.sx(look.target + 85)
+            m.tutC.field = CGRect(x: X0, y: cam.sy(150), width: X1 - X0, height: groundY + 12 - cam.sy(150))
+        }
         if m.driftDt > 0 {
             ScenePainter.drift(&m.bg, weather: f.weather, cam: cam, dt: m.driftDt, time: m.T, inFlight: true)
             m.driftDt = 0
@@ -707,12 +922,18 @@ private enum FlightPainter {
         fieldColumn(&ctx, cam: cam, target: look.target)
         let lx = cam.sx(FlightWorld.launchX)
         ScenePainter.rect(&ctx, lx - 40, groundY - 1, 80, 4, ScenePainter.mix("#5c4a3a", "#b9996e", p))
-        ScenePainter.obstacles(&ctx, cam: cam, f.obstacles, region: look.region, p: p)
+        let chim = m.tutK == "chimney"
+        var basket: (x: Double, alt: Double)?
+        if f.airborne && !f.done { basket = (x: f.x, alt: f.alt) }
+        m.tutC.chim = ScenePainter.obstacles(&ctx, cam: cam, f.obstacles, region: look.region, p: p,
+                                             basket: basket, ringAll: chim,
+                                             pointed: m.tutCh?.c, label: chim ? loc("flight.chimneyLabel") : nil)
         ScenePainter.powerLines(&ctx, cam: cam, f.lines, p: p)
         let PR = max(12, vh * 0.065)
         windPills(&ctx, cam: cam, m: m)
         let R = PR * 0.75 * (look.xl ? 1.3 : 1)
         let bx = cam.sx(f.x), by = cam.sy(f.alt), burn = f.burning && f.fuel > 0
+        m.tutC.bal = (CGPoint(x: bx, y: by - R * 1.5), R * 2.1) // the tutorial's hole around the balloon
         // The basket swings a little under the envelope (v110), more while the burner roars; still on the ground.
         let pivot = by - R * 1.9
         let sway = (sin(m.T * 1.1) * 0.6 + sin(m.T * 0.43 + 1) * 0.4) * (0.03 + (burn ? 0.015 : 0)) * fclamp(f.alt / 20, 0, 1)
@@ -733,6 +954,7 @@ private enum FlightPainter {
         fieldPointer(&ctx, cam: cam, m: m, top: top, pr: PR)
         missionGuides(&ctx, cam: cam, m: m)
         moment(&ctx, cam: cam, top: top, r: PR, m: m)
+        if f.inThermal && !f.done { thermalRide(&ctx, bx: bx, by: by, T: m.T) }
         missionBanner(&ctx, width: size.width, top: top, m: m)
         panel(&ctx, width: size.width, top: top, m: m)
     }
@@ -754,24 +976,34 @@ private enum FlightPainter {
         let T = m.T, gy = cam.groundY
         switch mo.kind {
         case .thermal:
-            let X = cam.sx(mo.x), wv = cam.sx(mo.x + 65) - X, y0 = cam.sy(520)
-            let g = Gradient(colors: [Color(red: 1, green: 220 / 255, blue: 160 / 255).opacity(0),
-                                      Color(red: 1, green: 220 / 255, blue: 160 / 255).opacity(mo.done ? 0.12 : 0.28),
-                                      Color(red: 1, green: 220 / 255, blue: 160 / 255).opacity(0)])
-            ctx.fill(Path(CGRect(x: X - wv, y: y0, width: wv * 2, height: gy - y0)),
+            // v122: a clearer column: a warmer glow, dashed edges where it starts lifting you, rising chevrons
+            let X = cam.sx(mo.x), wv = cam.sx(mo.x + 65) - X, y0 = cam.sy(520), hh = gy - y0
+            let warm = Color(red: 1, green: 200 / 255, blue: 120 / 255)
+            let g = Gradient(colors: [warm.opacity(0), warm.opacity(mo.done ? 0.12 : 0.38), warm.opacity(0)])
+            ctx.fill(Path(CGRect(x: X - wv, y: y0, width: wv * 2, height: hh)),
                      with: .linearGradient(g, startPoint: CGPoint(x: X - wv, y: 0), endPoint: CGPoint(x: X + wv, y: 0)))
-            var curls = Path()
-            for i in 0..<7 {
-                let yy = gy - CGFloat((T * 40 + Double(i) * 60).truncatingRemainder(dividingBy: Double(max(1, gy - y0))))
-                let xx = X + CGFloat(sin(T * 2 + Double(i))) * wv * 0.4
-                curls.move(to: CGPoint(x: xx, y: yy))
-                curls.addQuadCurve(to: CGPoint(x: xx, y: yy - 16), control: CGPoint(x: xx + 5, y: yy - 8))
-            }
-            ctx.stroke(curls, with: .color(.white.opacity(0.5)), lineWidth: 1.5)
             if !mo.done {
-                ctx.draw(Text(loc("flight.thermal")).font(sceneFont(13, .heavy, condensed: true)).foregroundColor(.white),
+                var edges = Path()
+                edges.move(to: CGPoint(x: X - wv, y: gy)); edges.addLine(to: CGPoint(x: X - wv, y: y0))
+                edges.move(to: CGPoint(x: X + wv, y: gy)); edges.addLine(to: CGPoint(x: X + wv, y: y0))
+                ctx.stroke(edges, with: .color(Color(red: 1, green: 225 / 255, blue: 170 / 255).opacity(0.6)),
+                           style: StrokeStyle(lineWidth: 1.5, dash: [6, 7], dashPhase: CGFloat(-T * 30)))
+            }
+            for i in 0..<9 {
+                let yy = gy - CGFloat((T * 55 + Double(i) * Double(hh) / 9).truncatingRemainder(dividingBy: Double(max(1, hh))))
+                let xx = X + CGFloat(sin(Double(i) * 2.3)) * wv * 0.45
+                let a = fclamp(Double(gy - yy) / 40, 0, 1) * fclamp(Double(yy - y0) / 40, 0, 1)
+                var chev = Path()
+                chev.move(to: CGPoint(x: xx - 6, y: yy + 5))
+                chev.addLine(to: CGPoint(x: xx, y: yy - 1))
+                chev.addLine(to: CGPoint(x: xx + 6, y: yy + 5))
+                ctx.stroke(chev, with: .color(.white.opacity((mo.done ? 0.35 : 0.75) * a)), style: StrokeStyle(lineWidth: 2.2, lineCap: .round))
+            }
+            if !mo.done {
+                ctx.draw(Text(loc("flight.thermalColumn")).font(sceneFont(14, .heavy, condensed: true)).foregroundColor(.white),
                          at: CGPoint(x: X, y: y0 - 6), anchor: .bottom)
             }
+            m.tutC.therm = CGRect(x: X - wv - 6, y: y0 - 26, width: wv * 2 + 12, height: hh + 26)
         case .greet:
             let X = cam.sx(mo.x), Y = cam.sy(mo.alt + sin(T) * 5)
             let cols = FlightMoment.greetColors[mo.colors % FlightMoment.greetColors.count]
@@ -802,6 +1034,25 @@ private enum FlightPainter {
             c.fill(rrect(x - w / 2, top + 150, w, 32, 16), with: .color(Color(red: 20 / 255, green: 120 / 255, blue: 90 / 255).opacity(0.92)))
             c.draw(text, at: CGPoint(x: x, y: top + 166), anchor: .center)
         }
+    }
+
+    /// v122: riding a thermal: rising chevrons under the basket and a small orange tag, so the lift is plain to see.
+    static func thermalRide(_ ctx: inout GraphicsContext, bx: CGFloat, by: CGFloat, T: Double) {
+        var c = ctx
+        c.addFilter(.shadow(color: .black.opacity(0.35), radius: 2))
+        for i in 0..<3 {
+            let ph = (T * 1.6 + Double(i) / 3).truncatingRemainder(dividingBy: 1), yy = by + 34 - CGFloat(ph) * 26
+            var chev = Path()
+            chev.move(to: CGPoint(x: bx - 8, y: yy + 6))
+            chev.addLine(to: CGPoint(x: bx, y: yy - 1))
+            chev.addLine(to: CGPoint(x: bx + 8, y: yy + 6))
+            c.stroke(chev, with: .color(Color(hex: "#ffd27a").opacity(sin(ph * .pi))),
+                     style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+        }
+        let label = ctx.resolve(Text(loc("flight.thermalTag")).font(sceneFont(13, .heavy, condensed: true)).foregroundColor(.white))
+        let tw = label.measure(in: CGSize(width: 200, height: 40)).width + 16, tx = bx + 16, ty = by + 6
+        ctx.fill(rrect(tx, ty - 10, tw, 20, 10), with: .color(Color(red: 214 / 255, green: 120 / 255, blue: 30 / 255).opacity(0.92)))
+        ctx.draw(label, at: CGPoint(x: tx + 8, y: ty), anchor: .leading)
     }
 
     /// A small round badge with a drawn icon.
@@ -837,6 +1088,7 @@ private enum FlightPainter {
     /// The four wind-layer pills on the left with arrow and speed.
     static func windPills(_ ctx: inout GraphicsContext, cam: SceneCamera, m: FlightModel) {
         let alt = m.sim.alt, layers = m.look.layers
+        var tagW: CGFloat = 58
         for i in 0..<min(4, layers.count, m.look.windText.count) {
             let v = layers[i], band = FlightWorld.bands[i]
             let y = cam.sy(Rules.windCenters[i])
@@ -863,7 +1115,25 @@ private enum FlightPainter {
             ctx.fill(head, with: .color(c))
             let label = Text(verbatim: m.look.windText[i]).font(sceneFont(13, .bold, condensed: true)).foregroundColor(Theme.ink)
             ctx.draw(label, at: CGPoint(x: 70, y: y), anchor: .leading)
+            // v122: the wind step lights the layers one by one, then marks the one that blows toward the field
+            if m.tutK == "wind" && i == m.tutLayerLit {
+                let pick = m.T - m.tutT0 >= 2.4
+                let col = pick ? Color(hex: "#22a45d") : Color(hex: "#ffd27a")
+                var g = ctx
+                g.addFilter(.shadow(color: col, radius: 5))
+                g.stroke(rrect(4, y - 15, 116, 30, 15), with: .color(col), lineWidth: 3.5)
+                if pick {
+                    let lbl = ctx.resolve(Text(loc("flight.toTarget")).font(sceneFont(13, .heavy, condensed: true)).foregroundColor(.white))
+                    let w = max(58, lbl.measure(in: CGSize(width: 200, height: 40)).width + 18)
+                    ctx.fill(rrect(124, y - 11, w, 22, 11), with: .color(col))
+                    ctx.draw(lbl, at: CGPoint(x: 124 + w / 2, y: y), anchor: .center)
+                    tagW = w
+                }
+            }
         }
+        let pick = m.tutK == "wind" && m.T - m.tutT0 >= 2.4
+        m.tutC.layers = CGRect(x: 1, y: cam.sy(Rules.windCenters[3]) - 19, width: pick ? 128 + tagW : 124,
+                               height: cam.sy(Rules.windCenters[0]) - cam.sy(Rules.windCenters[3]) + 38)
     }
 
     // MARK: Proposal celebration

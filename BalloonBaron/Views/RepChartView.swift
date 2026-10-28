@@ -78,19 +78,20 @@ struct RepChartView: View {
             store.page = .market
         }
         // v121.9: the agency and the guides' office open on their own days
-        if s.unlocked.contains(.agency) {
-        row(loc("marketPage.influencer"),
-            icd > 0 ? loc("marketPage.wait", num(icd)) : s.day <= s.influencerUntil ? loc("marketPage.running") : loc("marketPage.influencerBody"),
-            button: eur(s.influencerCost), disabled: icd > 0 || s.cash < s.influencerCost) {
-            store.act { _ = $0.runInfluencer() }
-            close()
-        }
-        }
+        // v122: guides and influencers each have their own screen now
         if s.unlocked.contains(.guide) {
-        row(loc("marketPage.guide"), gcd > 0 ? loc("marketPage.wait", num(gcd)) : loc("marketPage.guideBody"),
-            button: eur(Rules.guideCost), disabled: gcd > 0 || s.cash < Rules.guideCost) {
-            store.act { _ = $0.runGuideFlight() }
+        row(loc("town.b.guide"), gcd > 0 ? loc("marketPage.wait", num(gcd)) : loc("repChart.guideBody"),
+            button: loc("repChart.guidesButton"), disabled: gcd > 0) {
             close()
+            store.showGuides = true
+        }
+        }
+        if s.unlocked.contains(.agency) {
+        row(loc("town.b.influencer"),
+            icd > 0 ? loc("marketPage.wait", num(icd)) : s.day <= s.influencerUntil ? loc("marketPage.running") : loc("repChart.agencyBody"),
+            button: loc("repChart.agencyButton"), disabled: icd > 0) {
+            close()
+            store.showAgency = true
         }
         }
         if let g = store.game, ShowCardView.offered(g) {

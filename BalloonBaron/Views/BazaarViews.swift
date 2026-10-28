@@ -39,6 +39,7 @@ struct BuildingCardView: View {
                     store.pageSection = d.2
                     store.page = d.1
                 }
+                .tutSpot(d.1 == .fleet ? "ga.toFleet" : d.1 == .crew ? "ga.toCrew" : "ga.toMarket") // v122
             }
             ghost(loc("world.close")) { store.closeBuildingCard() }
         }
@@ -320,6 +321,7 @@ struct BazaarView: View {
                     .buttonStyle(.plain)
                     .disabled(own || locked)
                     .opacity(locked ? 0.6 : 1)
+                    .tutTargetIf(k == .lanterns && !own, "ga.gift") // v122: Hezarfen's gift
                 }
             }
         }
@@ -434,6 +436,7 @@ struct StoreItemView: View {
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
             .disabled(shop.buying != nil)
+            .tutTargetIf(item.gift, "ga.takeGift") // v122
             // every single cosmetic also points at the pack while the pack saves money
             if let s, [.pattern, .shape, .decoration, .pack].contains(item.kind), item.isProduct, s.bundleWorth {
                 Button {
