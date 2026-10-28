@@ -2804,6 +2804,17 @@ function touristsToday() {
 }
 function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
 /* Who's in the baskets today, for the ticket card. */
+/* TestFlight: why nothing flies today, from the most telling reason */
+function noneReason() {
+  const st = S.balloons.map(canFly), n = st.length, all = x => n && st.every(v => v === x);
+  if (all('ban')) return 'Bugün uçuş yasak.';
+  if (all('dmg')) { const d = Math.max(1, Math.min(...S.balloons.map(b => b.dmgUntil - S.day))); return `${n === 1 ? 'Balonun' : 'Bütün balonların'} onarımda, uçamaz. Kalan gün: ${d}`; }
+  if (st.every(v => v === 'dmg' || v === 'worn')) return n === 1 ? 'Balonunun zarfı yıprandı, uçamaz. Filo\'dan yenile.' : 'Balonların onarımda ya da yıpranmış, uçamaz. Filo\'ya bak.';
+  if (st.includes('nopilot') && !st.includes('ok')) return 'Balonlarının pilotu yok. Birini kendin uçur ya da pilot al.';
+  if (st.includes('strike') && !st.includes('ok')) return 'Pilotların grevde. Amiral balonunu kendin uçur.';
+  if (st.includes('ok')) return 'Bütün balonların yerde kalacak şekilde ayarlı. Planı aç.';
+  return 'Bugün uçacak balon yok';
+}
 function whoFlies(fl) {
   const self = fl.some(isSelf), pilots = fl.length - (self ? 1 : 0);
   return self ? (pilots ? `Sen ve pilot${pilots > 1 ? 'ların' : 'un'} uçuracak` : 'Sen uçuracaksın') : pilots > 1 ? 'Pilotlar uçuracak' : 'Pilot uçuracak';
@@ -2823,7 +2834,7 @@ function renderAct() {
   if (fl.some(isSelf) && pax) notes.push(`Amirali sen uçuruyorsun: yolcuları %${Math.round(FOUNDER * 100)} fazla öder (+${eur(income - pax * S.price)}).`);
   if (S.docDay === S.day && fl.some(b => b.id === S.flag)) notes.push('Amiralde 4 koltuk belgesel ekibinde.');
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
-  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : '<span>Bugün uçacak balon yok</span>'}</span><span class="pgo">Ayarla ›</span>`;
+  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
   const go = $('go'); go.disabled = false;
   go.textContent = n ? `Yolcu topla (${n} balon)` : 'Uçuş planını aç'; /* TestFlight: nothing to fly opens the plan, where the reason is */
   $('auto').hidden = !autoOk();

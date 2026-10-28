@@ -279,7 +279,7 @@ struct BazaarView: View {
             CardText.hint(loc(key == "bazaar.decor" ? "bazaar.decor.hint2" : key + ".hint"))
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 8)], spacing: 8) {
                 // v115: the small decorations and the figures are sold as packs, the rest one by one
-                ForEach(StoreItem.allCases.filter { kind == .figure ? $0 == .figurePack : (($0.kind == kind && $0.isProduct) || (kind == .decoration && $0 == .decorPack)) }, id: \.self) { k in
+                ForEach(StoreItem.allCases.filter { kind == .figure ? $0 == .figurePack : (($0.kind == kind && ($0.isProduct || $0.gift)) || (kind == .decoration && $0 == .decorPack)) }, id: \.self) { k in // TestFlight: Hezarfen's gift lanterns were filtered out
                     let own = k.kind == .pack ? (s.owned(k) || k.packItems.allSatisfy(s.owned)) : s.owned(k), locked = false
                     Button {
                         SoundEngine.shared.play(.click)

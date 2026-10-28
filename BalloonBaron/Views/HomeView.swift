@@ -766,10 +766,29 @@ struct HomeView: View {
                 TicketFillBar(fraction: Double(est.pax) / Double(max(1, est.seats)), height: 6)
             }
         } else {
-            Text(loc("home.noneFlying"))
+            // TestFlight: say why nothing flies (repair, no pilot…), not just that nothing does
+            Text(noneReason(g.state))
                 .font(Theme.font(13, .semibold))
-                .foregroundStyle(Theme.ink2)
+                .foregroundStyle(Theme.red)
+                .fixedSize(horizontal: false, vertical: true)
         }
+    }
+
+    /// Why no balloon flies today, from the most telling reason: all in repair, worn out, no pilot, a ban, a strike, or
+    /// simply all left on the ground in the plan.
+    private func noneReason(_ s: GameState) -> String {
+        let all = s.local.balloons, st = all.map { s.status($0) }, n = all.count
+        func every(_ x: GameState.FlyStatus) -> Bool { !st.isEmpty && st.allSatisfy { $0 == x } }
+        if every(.banned) { return loc("home.none.banned") }
+        if every(.damaged) {
+            let days = all.map { max(1, $0.damagedUntil - s.day) }.min() ?? 1
+            return loc(n == 1 ? "home.none.damagedOne" : "home.none.damaged", num(days))
+        }
+        if st.allSatisfy({ $0 == .damaged || $0 == .worn }) { return loc(n == 1 ? "home.none.wornOne" : "home.none.worn") }
+        if st.contains(.noPilot) && !st.contains(.ok) { return loc("home.none.noPilot") }
+        if st.contains(.strike) && !st.contains(.ok) { return loc("home.none.strike") }
+        if st.contains(.ok) { return loc("home.none.grounded") }
+        return loc("home.noneFlying")
     }
 
     /// Who's in the baskets today, for the ticket card.
