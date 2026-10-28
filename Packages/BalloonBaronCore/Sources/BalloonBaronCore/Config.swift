@@ -90,7 +90,18 @@ public struct LoanOffer: Sendable {
     public var interest: Double { Double(total - amount) / Double(amount) }
 }
 
-public enum RivalStyle: String, Codable, Sendable { case safe, mid, risky }
+public enum RivalStyle: String, Codable, Sendable {
+    case safe, mid, risky
+
+    /// v121.13: the share of rookie, experienced and senior pilots that come with a rival's fleet (`CREW_MIX`).
+    public var crewMix: (rookie: Double, experienced: Double) {
+        switch self {
+        case .safe: (0.05, 0.35)
+        case .mid: (0.2, 0.55)
+        case .risky: (0.5, 0.4)
+        }
+    }
+}
 
 public enum Entrant: String, Codable, CaseIterable, Sendable {
     case bosphorus, anatolian, periLuxe, aegean

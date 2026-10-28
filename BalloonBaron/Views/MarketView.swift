@@ -215,6 +215,7 @@ struct MarketView: View {
             if r.alive, let offer = r.offer {
                 callout(loc("marketPage.offerBody", r.name, eur(offer), num(r.balloons.count)), color: Theme.yellow) {
                     FleetMixList(r.balloons)
+                    FleetUI.Detail(crewNote(s.dealCrew(i, bankrupt: false)))
                     if s.cash < offer, let t = store.game?.buyLoanTerms(price: offer) {
                         FleetUI.SmallButton(title: loc("buyLoan.button", eur(t.financed))) { store.buyLoan = DealOffer(rival: i, bankrupt: false) }
                     } else {
@@ -227,6 +228,7 @@ struct MarketView: View {
             if let sale = r.forSale {
                 callout(loc("marketPage.saleBody", r.name, num(sale.sizes.count)), color: Theme.green) {
                     FleetMixList(sale.sizes)
+                    FleetUI.Detail(crewNote(s.dealCrew(i, bankrupt: true)))
                     if s.cash < sale.price, let t = store.game?.buyLoanTerms(price: sale.price) {
                         FleetUI.SmallButton(title: loc("buyLoan.button", eur(t.financed))) { store.buyLoan = DealOffer(rival: i, bankrupt: true) }
                     } else {

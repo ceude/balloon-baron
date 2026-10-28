@@ -438,13 +438,15 @@ private struct FilmTimeline: View {
         let a = c.map { oClamp(min(t - $0.0, $0.1 - t) * 1.2 + 0.5, 0, 1) } ?? 0
         return GeometryReader { g in
             let big = min(52, max(30, g.size.width * 0.11)), small = min(21, max(15, g.size.width * 0.046))
+            // v122 (TestFlight: a long company name was cut off): wide spacing only for short titles
+            let spacing = (c?.2.count ?? 0) > 10 ? 0.06 : 0.32
             VStack(spacing: 4) {
                 Text(c?.2 ?? " ")
                     .font(Theme.font(big, .heavy, condensed: true))
-                    .tracking(big * 0.32)
-                    .padding(.leading, big * 0.32)
+                    .tracking(big * spacing)
+                    .padding(.leading, big * spacing)
                     .lineLimit(1)
-                    .minimumScaleFactor(0.5)
+                    .minimumScaleFactor(0.35)
                 Text(c?.3 ?? " ")
                     .font(.system(size: small, weight: .bold, design: .serif).italic())
                     .foregroundStyle(Color(hex: "#ffd27a"))

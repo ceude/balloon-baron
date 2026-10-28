@@ -3,9 +3,9 @@
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
 Kuyrukta:
-- v121.13: rakip devralınınca ya da iflas eden şirketin filosu alınınca pilotları da mevcut sözleşmeleriyle gelir, balon başına bir pilot (`dealCrew`, `crewFor`, `CREW_MIX`, `crewNote`; GAME_DESIGN "Pilotlarıyla devralma"). Swift'te: `Rival`'a ve satıştaki filoya isteğe bağlı `crew`, devralmada ve filo alımında `pilots`'a eklenir, satış kartında not, altı dilde metin.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
+v121.13 (prototip ve Swift birlikte): rakip devralınınca ya da iflas eden şirketin filosu alınınca pilotları da mevcut sözleşmeleriyle gelir, balon başına bir pilot (prototipte `dealCrew`, `crewFor`, `CREW_MIX`; Swift'te `GameState.dealCrew`, `RivalStyle.crewMix`, `hireCrew`, `crewNote`, `deal.crew`). Swift'te ekip kayda yazılmaz: anlaşmaya göre tohumlanmış kendi üreteciyle hesaplanır, kart ve anlaşma aynı kişileri gösterir. Faz 2: SATILIK tabelası uçan balonların üstünde çizilir (`TLATE`), Hedef rozeti ikonun köşesinde, filmde uzun şirket adı sığar (`capFit`, Swift'te dar aralık).
 v121.13 (prototip ve Swift birlikte): başka bölgedeyken biten Fiesta, festival ve kış, bölgeye dönünce sabah sessizce kapanır (`expireSeasons`); önceden "Balloon Fiesta, gün 44/4" görünüyordu.
 
 v121.12 (prototip ve Swift birlikte): yeni oyuncu düzeltmeleri (GAME_DESIGN "Yeni oyuncu düzeltmeleri"): sabah kart sınırı, tek balon onarımı en fazla 2 gün, zorunlu pas geç, yıldız yuvarlama, kartpostal koşulları (`firstCleanFlight`, `festivalFlown`), boş sepet sorusu, yakıt uyarısı %25, bayat ipucu ve övgü, bina ipuçları; prototipte Türkçe büyük harf (`lang`), tutardan sonra ek kaldırıldı, kartlarda 28 px düğme hatası, kartpostal düğmeleri eşit; emoji yerine çizim ikonlar (`LineGlyph`, prototipte `GLYPH`), dock düğmeleri tek satır ve sabit boyut, kırmızı bayrak ve yerde kalan balon kartlarında ✕.

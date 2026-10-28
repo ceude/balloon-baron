@@ -312,7 +312,7 @@ body.mhold #town{z-index:3;background:transparent}
 .autoshield{position:absolute;inset:0;z-index:6}
 #open3d{position:absolute;inset:0;width:100%;height:100%;display:block}
 .openbar{position:absolute;left:0;right:0;height:7%;background:#06040e;z-index:3;transition:transform .8s;pointer-events:none}.openbar.top{top:0;transform-origin:top}.openbar.bot{bottom:0;transform-origin:bottom}
-.opencap{position:absolute;left:0;right:0;top:22%;z-index:3;text-align:center;color:#fff6e6;opacity:0;pointer-events:none;text-shadow:0 2px 18px rgba(0,0,0,.55)}.opencap b{display:block;font:800 clamp(30px,11vw,52px) 'Barlow Condensed',sans-serif;letter-spacing:.32em;padding-left:.32em}.opencap i{display:block;margin-top:4px;font:italic 700 clamp(15px,4.6vw,21px) 'Playfair Display',serif;color:#ffd27a}
+.opencap{position:absolute;left:0;right:0;top:22%;z-index:3;text-align:center;color:#fff6e6;opacity:0;pointer-events:none;text-shadow:0 2px 18px rgba(0,0,0,.55)}.opencap b{display:block;white-space:nowrap;font:800 clamp(30px,11vw,52px) 'Barlow Condensed',sans-serif;letter-spacing:.32em;padding-left:.32em}.opencap i{display:block;margin-top:4px;font:italic 700 clamp(15px,4.6vw,21px) 'Playfair Display',serif;color:#ffd27a}
 .openskip{position:fixed;top:calc(env(safe-area-inset-top) + 14px);right:14px;z-index:40;padding:7px 14px;border-radius:999px;background:rgba(11,8,24,.55);color:#fff6e6;border:1px solid rgba(255,246,230,.35);font:700 14px Barlow,sans-serif}
 .opentalk{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom) + 9%);transform:translate(-50%,16px);opacity:0;z-index:40;width:min(92vw,440px);display:flex;flex-direction:column;gap:10px;transition:opacity .5s,transform .5s}.opentalk.on{opacity:1;transform:translate(-50%,0)}.opentalk .hzline{background:rgba(255,250,243,.96);box-shadow:0 10px 26px rgba(0,0,0,.3)}.opentalk .big{width:100%}body.night .autobar{opacity:0}
 .big{flex:1;height:54px;border-radius:16px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:22px;letter-spacing:.01em;
@@ -394,7 +394,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .merge .mtag{align-self:flex-start;font-family:var(--cond);font-weight:800;letter-spacing:.08em;font-size:13px;color:#fff;background:var(--red);padding:3px 9px;border-radius:8px}
 .merge .stats{grid-template-columns:repeat(3,1fr)}
 .merge .stats div{background:var(--haze)}
-.side .gbadge{position:absolute;top:34px;right:-6px;min-width:26px;height:18px;padding:0 5px;border-radius:9px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:12px;line-height:18px;border:2px solid #fff;text-shadow:none}
+.side .gbadge{position:absolute;top:-6px;right:-6px;min-width:26px;height:18px;padding:0 5px;border-radius:9px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:12px;line-height:18px;border:2px solid #fff;text-shadow:none}
 .goals .chead{display:flex;flex-direction:column;gap:2px}
 .goals .chead span{font-family:var(--cond);font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--ink2);text-transform:uppercase}
 .goals .chead b{font-family:var(--cond);font-weight:800;font-size:44px;line-height:1;color:var(--coral)}
@@ -3849,10 +3849,18 @@ function openCaps() {
   const c = h('div', 'opencap', '<b></b><i></i>'); c.id = 'openCap'; w.appendChild(c);
 }
 const OPEN3D_CAPS = { A: [[1, 5.5, 'KAPADOKYA', 'Şafaktan hemen önce'], [9, 13.5, 'UÇHİSAR', 'Kalede ilk ışıklar'], [19.5, 24.5, 'GÖREME', 'Güneş balonlarla doğar']], B: [[8, 13.5, null, 'Gün 1']] };
+/* v122 (TestFlight: a long company name was cut off in the film's caption): narrower spacing, then smaller type, until it fits */
+function capFit(cap, text) {
+  const b = cap.querySelector('b'); if (b.textContent === text) return;
+  b.textContent = text; b.style.fontSize = ''; b.style.letterSpacing = ''; b.style.paddingLeft = '';
+  const room = cap.clientWidth * .92; if (b.scrollWidth <= room) return;
+  b.style.letterSpacing = '.06em'; b.style.paddingLeft = '.06em';
+  let fs = parseFloat(getComputedStyle(b).fontSize); while (b.scrollWidth > room && fs > 16) { fs -= 2; b.style.fontSize = fs + 'px'; }
+}
 function open3dPhase(p, t) {
   if (!OPEN) return;
   const cap = $('openCap'), list = OPEN3D_CAPS[p], c = list.find(x => t > x[0] - .6 && t < x[1] + .6);
-  if (cap) { if (c) { cap.querySelector('b').textContent = c[2] || S.company.toLocaleUpperCase('tr'); cap.querySelector('i').textContent = c[3]; } cap.style.opacity = c ? clamp(Math.min(t - c[0], c[1] - t) * 1.2 + .5, 0, 1) : 0; }
+  if (cap) { if (c) { capFit(cap, c[2] || S.company.toLocaleUpperCase('tr')); cap.querySelector('i').textContent = c[3]; } cap.style.opacity = c ? clamp(Math.min(t - c[0], c[1] - t) * 1.2 + .5, 0, 1) : 0; }
   const bars = p === 'B' && t > 19.5 ? 0 : 1; for (const id of ['openBarT', 'openBarB']) { const b = $(id); if (b) b.style.transform = `scaleY(${bars})`; }
   if (p === 'A' && t > 28.5 && !OPEN.talk) openTalk();
   if (p === 'B' && t > 23.8) openBegin(true); /* v121.5: landed on our field; the game's town takes over */
@@ -6734,6 +6742,7 @@ function boxShadow(gx, gy, w, d, h, a = .22) {
 function blobShadow(x, y, rx, ry, a = .22) { ctx.fillStyle = `rgba(90,45,20,${a})`; ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, 7); ctx.fill(); }
 
 /* ---------- plots ---------- */
+let TLATE = []; /* town things drawn over the flying balloons (the for-sale boards) */
 function tplot(b, t) {
   const { A, B, C, D } = corners(b.gx + .1, b.gy + .1, b.w - .2, b.d - .2);
   tpoly([A, B, C, D], '#c99b6a'); tpoly([lp(A, C, .08), lp(B, D, .08), lp(A, C, .92), lp(B, D, .92)], '#d6ac7a');
@@ -6751,8 +6760,11 @@ function tplot(b, t) {
     return;
   }
   ctx.fillStyle = '#5a3a20'; ctx.fillRect(m[0] - 2, m[1] - 60, 4, 60);
-  ctx.fillStyle = '#fff6e6'; rrect(m[0] - 40, m[1] - 86, 80, 30, 5); ctx.fill(); ctx.strokeStyle = '#ff5e3a'; ctx.lineWidth = 2.5; ctx.stroke();
-  ctx.fillStyle = '#ff5e3a'; ctx.font = '800 17px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('SATILIK', m[0], m[1] - 65); ctx.textAlign = 'left';
+  /* v122 (TestFlight: "ATILIK"): the board is drawn after the balloons over the town, so none hides its letters */
+  TLATE.push(() => {
+    ctx.fillStyle = '#fff6e6'; rrect(m[0] - 40, m[1] - 86, 80, 30, 5); ctx.fill(); ctx.strokeStyle = '#ff5e3a'; ctx.lineWidth = 2.5; ctx.stroke();
+    ctx.fillStyle = '#ff5e3a'; ctx.font = '800 17px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('SATILIK', m[0], m[1] - 65); ctx.textAlign = 'left';
+  });
 }
 
 /* ---------- buildings ---------- */
@@ -7584,8 +7596,10 @@ function renderTown(V, w, h, dpr, offY) {
     const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).map(fade).filter(Boolean), townWall()), sky = townSky(T);
     bs.forEach(buildingShadow); scen.forEach(it => it.shadow && it.shadow()); sky.shadows.forEach(f => f());
     const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => tbuilding(b, T) })).concat(scen, V.extra ? V.extra(T) : S.issue && S.issue.k === 'raise' ? strikers(T) : []);
+    TLATE = [];
     items.sort((a, b) => a.depth - b.depth).forEach(it => it.draw());
     sky.balloons.forEach(f => f());
+    TLATE.forEach(f => f());
     /* winter: snow falling over the town, in screen space */
     if (NIGHT_K > 0) nightLayer(V, w, h, hz, S0, W0, bs);
     if (SUNRISE > 0) sunriseLayer(w, h, hz, S0);

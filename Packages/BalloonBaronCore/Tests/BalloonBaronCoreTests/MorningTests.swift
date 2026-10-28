@@ -65,4 +65,29 @@ final class MorningTests: XCTestCase {
         XCTAssertNil(g.state.winter)
         XCTAssertEqual(g.state.nextWinter, 589 + 45)
     }
+
+    func testATakeOverBringsThePilotsOnTheirContracts() {
+        var g = newGame()
+        g.state.cash = 1_000_000
+        g.state.rivals[0].offer = 1000
+        let crew = g.state.dealCrew(0, bankrupt: false)
+        XCTAssertEqual(crew.count, g.state.rivals[0].balloons.count)
+        XCTAssertEqual(crew, g.state.dealCrew(0, bankrupt: false), "the card and the deal show the same people")
+        let before = g.state.pilots.count
+        XCTAssertTrue(g.takeOver(0))
+        XCTAssertEqual(g.state.pilots.count, before + crew.count)
+        XCTAssertEqual(Set(g.state.pilots.map(\.id)).count, g.state.pilots.count, "unique ids")
+        for p in g.state.pilots.suffix(crew.count) {
+            XCTAssertEqual(Double(p.wage), Double(p.level.wage), accuracy: Double(p.level.wage) * 0.1 + 1)
+        }
+    }
+
+    func testABankruptFleetBringsItsPilots() {
+        var g = newGame()
+        g.state.cash = 1_000_000
+        g.state.rivals[1].forSale = ForSale(sizes: [.S, .S, .M], price: 1000)
+        let before = g.state.pilots.count
+        XCTAssertTrue(g.buyBankruptFleet(1))
+        XCTAssertEqual(g.state.pilots.count, before + 3)
+    }
 }

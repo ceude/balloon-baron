@@ -1,6 +1,12 @@
 import SwiftUI
 import BalloonBaronCore
 
+/// v121.13: who comes with a rival's fleet, and what they cost a day.
+func crewNote(_ crew: [Pilot]) -> String {
+    func n(_ l: PilotLevel) -> String { num(crew.filter { $0.level == l }.count) }
+    return loc("deal.crew", num(crew.count), n(.senior), n(.experienced), n(.rookie), eur(crew.reduce(0) { $0 + $1.wage }))
+}
+
 /// A struggling rival's take-over offer or a bankrupt rival's fleet sale (prototype `checkDeals`).
 struct DealView: View {
     @Environment(GameStore.self) private var store
@@ -20,6 +26,7 @@ struct DealView: View {
             CardText.title(loc(offer.bankrupt ? "deal.bankrupt.title" : "deal.sale.title", name))
             CardText.lead(loc(offer.bankrupt ? "deal.bankrupt.lead" : "deal.sale.lead", num(count), eur(price)))
             FleetMixList(sizes)
+            if let s { CardText.hint(crewNote(s.dealCrew(offer.rival, bankrupt: offer.bankrupt))) }
             CardText.hint(loc("deal.used", percent(Rules.usedSellShare), percent(Rules.sellShare)))
             let terms = cash < price ? store.game?.buyLoanTerms(price: price) : nil
             if cash < price {

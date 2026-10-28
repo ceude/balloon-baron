@@ -37,7 +37,7 @@ public enum Burners {
 }
 
 public struct Pilot: Codable, Identifiable, Equatable, Sendable {
-    public let id: Int
+    public var id: Int
     public var name: String
     public var level: PilotLevel
     /// Flights flown; the flight simulator counts each one as 1.5.

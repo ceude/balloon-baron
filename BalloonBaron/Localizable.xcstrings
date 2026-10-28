@@ -14679,6 +14679,47 @@
         }
       }
     },
+    "deal.crew": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Piloten kommen mit ihren bisherigen Verträgen mit. Piloten: %1$@ (Routinier %2$@, erfahren %3$@, Anfänger %4$@). Gehälter: %5$@/Tag."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Its pilots come along on their current contracts. Pilots: %1$@ (senior %2$@, experienced %3$@, rookie %4$@). Wages: %5$@/day."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sus pilotos vienen con sus contratos actuales. Pilotos: %1$@ (veteranos %2$@, experimentados %3$@, novatos %4$@). Sueldos: %5$@/día."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロットも今の契約のまま移ってくる。パイロット：%1$@（ベテラン%2$@、中堅%3$@、新人%4$@）。給料：%5$@/日。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사들도 현재 계약 그대로 함께 옵니다. 조종사: %1$@ (베테랑 %2$@, 숙련 %3$@, 신입 %4$@). 급여: %5$@/일."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilotları da mevcut sözleşmeleriyle gelir. Pilot: %1$@ (kıdemli %2$@, deneyimli %3$@, çaylak %4$@). Maaşlar: %5$@/gün."
+          }
+        }
+      }
+    },
     "deal.decline": {
       "extractionState": "manual",
       "localizations": {

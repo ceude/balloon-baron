@@ -489,12 +489,22 @@ extension Game {
         if bankrupt { state.rivals[i].saleDeclined = true } else { state.rivals[i].offerDeclined = true }
     }
 
-    /// Buy a struggling rival outright: its balloons join you and it leaves the market.
+    /// The pilots that come with a take-over or a bankrupt fleet join your crew, on their contracts.
+    mutating func hireCrew(_ crew: [Pilot]) {
+        for var p in crew {
+            p.id = state.nextID
+            state.nextID += 1
+            state.pilots.append(p)
+        }
+    }
+
+    /// Buy a struggling rival outright: its balloons and pilots join you and it leaves the market.
     @discardableResult
     public mutating func takeOver(_ i: Int) -> Bool {
         guard state.rivals.indices.contains(i), let price = state.rivals[i].offer, state.rivals[i].alive, state.cash >= price else { return false }
         state.cash -= price
         state.rivals[i].balloons.forEach { addBalloon($0, secondHand: true) }
+        hireCrew(state.dealCrew(i, bankrupt: false))
         rivalGone(state.rivals[i].name, takenOver: true)
         state.rivals[i].alive = false
         state.rivals[i].deadDay = state.day
@@ -509,6 +519,7 @@ extension Game {
         guard state.rivals.indices.contains(i), let sale = state.rivals[i].forSale, state.cash >= sale.price else { return false }
         state.cash -= sale.price
         sale.sizes.forEach { addBalloon($0, secondHand: true) }
+        hireCrew(state.dealCrew(i, bankrupt: true))
         state.rivals[i].forSale = nil
         assignPilots()
         return true
