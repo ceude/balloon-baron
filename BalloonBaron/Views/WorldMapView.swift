@@ -159,7 +159,8 @@ struct WorldMapView: View {
             if let open = auto.issue { text += " " + loc("map.problemSub", open.kind.title) }
             return text
         case .open:
-            let sub = loc(pin == .lux ? "map.openSub.lux" : "map.openSub", eurH(pin.region?.entryFee ?? Holding.entryFee))
+            let fee = eurH(pin.region?.entryFee ?? Holding.entryFee)
+            let sub = pin == .lux ? loc("map.openSub.lux", money(RegionID.lux.startCash, in: .lux), fee) : loc("map.openSub", fee)
             return pin.region.map(s.needsPack) == true ? sub + " " + loc("map.tourNote", storePrice(.worldTour)) : sub
         case .locked:
             return loc(pin == .lux ? "map.lockedSub.lux" : "map.lockedSub")

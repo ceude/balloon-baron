@@ -70,7 +70,7 @@ struct BankView: View {
             }
             FleetUI.Item {
                 FleetUI.Title(loc("buyLoan.bankTitle", eur(Rules.buyLoanMax)))
-                FleetUI.Detail(loc("buyLoan.bankBody", num(Rules.buyLoanDays), percent(Rules.buyLoanRate), percent(Rules.buyLoanDown), num(Rules.buyLoanBalloons)))
+                FleetUI.Detail(loc("buyLoan.bankBody", num(Rules.buyLoanDays), percent(Rules.buyLoanRate), percent(Rules.buyLoanDown), num(Rules.buyLoanBalloons), eur(Rules.loans.last?.amount ?? 100_000)))
             }
             FleetUI.Hint(loc("bank.hint", eur(Rules.seizeBelow)))
         }

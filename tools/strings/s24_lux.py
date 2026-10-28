@@ -14,12 +14,12 @@ add("map.here.lux",
  "ナイル、王家の谷、そして世界一厳しい気球市場。",
  "나일강, 파라오의 계곡, 그리고 세상에서 가장 험한 열기구 시장.")
 add("map.openSub.lux",
- "The Nile, the Valley of the Kings, Hatshepsut's temple. The toughest balloon market in the world: strong rivals who join forces quickly. You start with €5,000. Entry fee %@ from the holding.",
- "Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli %@ holding kasasından.",
- "Der Nil, das Tal der Könige, der Tempel der Hatschepsut. Der härteste Ballonmarkt der Welt: starke Konkurrenten, die sich schnell verbünden. Du startest mit 5.000 €. Einstiegsgebühr %@ aus der Holding.",
- "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Empiezas con 5.000 €. Cuota de entrada: %@, a cargo del holding.",
- "ナイル河畔、王家の谷、ハトシェプスト女王葬祭殿。世界一厳しい気球市場だ。ライバルは強く、すぐに手を組む。5,000ユーロからのスタート。参入費%@はホールディングスから。",
- "나일강변, 왕가의 계곡, 하트셉수트 신전. 세상에서 가장 험한 열기구 시장으로, 경쟁사가 강하고 금세 손을 잡습니다. 5,000유로로 시작합니다. 진입 비용 %@, 지주회사에서 지급.")
+ "The Nile, the Valley of the Kings, Hatshepsut's temple. The toughest balloon market in the world: strong rivals who join forces quickly. You start with %1$@. Entry fee %2$@ from the holding.",
+ "Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. Başlangıç kasası: %1$@. Giriş bedeli %2$@ holding kasasından.",
+ "Der Nil, das Tal der Könige, der Tempel der Hatschepsut. Der härteste Ballonmarkt der Welt: starke Konkurrenten, die sich schnell verbünden. Startkapital: %1$@. Einstiegsgebühr %2$@ aus der Holding.",
+ "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Capital inicial: %1$@. Cuota de entrada: %2$@, a cargo del holding.",
+ "ナイル河畔、王家の谷、ハトシェプスト女王葬祭殿。世界一厳しい気球市場だ。ライバルは強く、すぐに手を組む。開始資金：%1$@。参入費%2$@はホールディングスから。",
+ "나일강변, 왕가의 계곡, 하트셉수트 신전. 세상에서 가장 험한 열기구 시장으로, 경쟁사가 강하고 금세 손을 잡습니다. 시작 자금: %1$@. 진입 비용 %2$@, 지주회사에서 지급.")
 add("map.lockedSub.lux",
  "Unlocks when you become baron of Albuquerque. On the banks of the Nile, above the valley of the pharaohs.",
  "Albuquerque baronu olunca açılır. Nil kıyısında, firavunların vadisi üstünde.",

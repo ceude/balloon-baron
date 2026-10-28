@@ -955,10 +955,11 @@ const FOUNDER = .25, ABSENT_GRACE = 5, ABSENT_LOSS = .008;
 const PR_CAP = 1.05, PR_CAP_INFLU = 1.125, GUIDE_FRESH = 10; /* 4,2★; son 10 günde influencer varsa 4,5★ */
 const prCap = () => S.influCd > S.day ? PR_CAP_INFLU : PR_CAP;
 const prOk = () => myHotels().length > 0 || (S.lastGuide != null && S.day - S.lastGuide <= GUIDE_FRESH) || (S.lastShow != null && S.day - S.lastShow <= GUIDE_FRESH);
+const FEST_DAYS = 4; /* v121.11: four days, like the Fiesta */
 const FESTS = [
-  ['Bağ Bozumu Festivali', 'Bağ Bozumu Festivali başladı evlat! Üç gün boyunca vadi turist dolacak. Her gün özel bir istek gelecek, ödülleri de %50 fazla. Bütün balonlarını kaldır.'],
-  ['Bayram tatili', 'Bayram tatili geldi evlat, şehirliler akın akın Kapadokya\'ya! Üç gün talep yüksek, özel istekler bol ödüllü.'],
-  ['Kapadokya Işık Şenliği', 'Işık Şenliği başladı evlat! Peribacaları fenerlerle süslendi, turist üç gün boyunca bol. Özel istekleri kaçırma.']
+  ['Bağ Bozumu Festivali', 'Bağ Bozumu Festivali başladı evlat! Dört gün boyunca vadi turistle dolacak. Her gün özel bir istek gelecek, ödülleri de %50 fazla. Bütün balonlarını kaldır.'],
+  ['Bayram tatili', 'Bayram tatili geldi evlat, şehirliler akın akın Kapadokya\'ya! Dört gün talep yüksek, özel istekler bol ödüllü.'],
+  ['Kapadokya Işık Şenliği', 'Işık Şenliği başladı evlat! Peribacaları fenerlerle süslendi, turist dört gün boyunca bol. Özel istekleri kaçırma.']
 ];
 const misReward = (k, size) => MISSIONS[k].reward * SIZES[size || (bal(S.flag) || { size: 'S' }).size].cap / 8 * (S.fest ? 1.5 : 1);
 const SIM = 6;
@@ -1999,12 +2000,12 @@ function finishDay(flight) {
     if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 21; }
     else if (!S.fiesta && S.day >= (S.fiestaNext || 0)) { S.fiesta = { start: S.day, end: S.day + 2 }; S.hezQ.push('news:Nil gemileri yanaştı evlat! Üç gün boyunca kıyı turistle dolu, herkes sabah balonuna binmek istiyor. Bütün balonlarını havaya kaldır, ama Theban Skies da aynı şeyi yapacak.'); }
   }
-  /* Cappadocia's festivals: three busy days about every five weeks, never in winter */
+  /* Cappadocia's festivals: four busy days about every five weeks, never in winter */
   if (S.region === 'cap') {
     if (S.fest && S.day > S.fest.end) S.fest = null;
     else if (!S.fest && !S.winter && S.day >= (S.festNext || 24)) {
-      const F = FESTS[(S.festN || 0) % FESTS.length]; S.festN = (S.festN || 0) + 1; S.festNext = S.day + 35; S.fest = { name: F[0], start: S.day, end: S.day + 2 };
-      S.hezQ.push('news:' + F[1]); paperAdd(4, `${F[0]} başlıyor`, 'Üç gün boyunca vadi turist dolacak, özel istekler bol ödüllü.');
+      const F = FESTS[(S.festN || 0) % FESTS.length]; S.festN = (S.festN || 0) + 1; S.festNext = S.day + 35; S.fest = { name: F[0], start: S.day, end: S.day + FEST_DAYS - 1 };
+      S.hezQ.push('news:' + F[1]); paperAdd(4, `${F[0]} başlıyor`, 'Dört gün boyunca vadi turistle dolacak, özel istekler bol ödüllü.');
     }
   }
   if (S.winter && S.day > S.winter.end) { S.winter = null; S.nextWinter = S.day + 45; S.hezQ.push('news:Bahar geldi evlat! Turistler geri dönüyor, gökyüzü yine kalabalıklaşacak. Kışı atlattın, şimdi büyüme zamanı.'); }
@@ -2234,7 +2235,7 @@ function showWorldMap() {
     let tag = '', sub = '';
     if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = { cap: 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.', abq: 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.', lux: 'Nil, firavunların vadisi ve dünyanın en çetin balon pazarı.' }[R.id]; }
     else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
-    else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
+    else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. Başlangıç kasası: ${eurH(5000)}. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.${needsPack('abq') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (R.id === 'abq') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Kapadokya baronu olunca açılır.'; }
     else if (R.id === 'lux') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Albuquerque baronu olunca açılır. Nil kıyısında, firavunların vadisi üstünde.'; }
@@ -2646,7 +2647,7 @@ function renderHome() {
   if (Wx.flag === 'red' && flying().length) alert('red', `<b>Bugün uçuş yasak.</b> Kalkarsan %35 ihtimalle ${eur(5000)} ceza, sigorta geçersiz.`);
   if (S.issue) alert('red', `<b>${ISSUES[S.issue.k].t}.</b> ${S.issue.k === 'raise' ? 'Pilotların ofisin önünde bekliyor. ' : ''}Karar vermek için dokun.`, issueScene);
   for (const id in (S.regions || {})) { const A = S.regions[id].auto; if (A && A.issue) alert('red', `<b>${REGION_DEF[id].name}: ${ISSUES[A.issue.k].t}.</b> Karar verene kadar oradaki kazanç yarıda. Karar vermek için dokun.`, () => showIssue(id)); }
-  if (S.fest) alert('mis', `<b>${S.fest.name}, gün ${S.day - S.fest.start + 1}/3!</b> Turist bol, özel isteklerin ödülü %50 fazla.`);
+  if (S.fest) alert('mis', `<b>${S.fest.name}, gün ${S.day - S.fest.start + 1}/${FEST_DAYS}!</b> Turist bol, özel isteklerin ödülü %50 fazla.`);
   if (S.fiesta && S.region === 'lux') alert('mis', `<b>Nil gemileri limanda, gün ${S.day - S.fiesta.start + 1}/3!</b> Kıyı turist dolu. Bütün balonlarını kaldır.`);
   else if (S.fiesta) alert('mis', `<b>Balloon Fiesta, gün ${S.day - S.fiesta.start + 1}/4!</b> Turist neredeyse iki katı, gökyüzü yüzlerce balonla dolu. Bütün balonlarını kaldır.`);
   else if (S.region === 'lux' && S.fiestaNext && S.fiestaNext - S.day <= 3) alert('grn', `<b>Nil gemileri ${S.fiestaNext - S.day} gün sonra yanaşıyor.</b> Filonu hazırla, otellerle anlaş.`);
@@ -3088,7 +3089,7 @@ function tabBank(body) {
     it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
     o.appendChild(it);
   });
-  o.appendChild(h('div', 'callout grn', `<b>Satın alma kredisi: ${eur(BUYLOAN.max)}'e kadar.</b> Pazar'da satılık bir şirket ya da filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. ${BUYLOAN.days} gün, faiz %${Math.round(BUYLOAN.rate * 100)}. En az ${BUYLOAN.need} balon ve açılmış 100.000 kredisi gerekir. Teklif çıkınca "Krediyle al" düğmesi görünür.`));
+  o.appendChild(h('div', 'callout grn', `<b>Satın alma kredisi: ${eur(BUYLOAN.max)}'e kadar.</b> Pazar'da satılık bir şirket ya da filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. ${BUYLOAN.days} gün, faiz %${Math.round(BUYLOAN.rate * 100)}. En az ${BUYLOAN.need} balon ve açılmış ${eur(LOANS[LOANS.length - 1].amt)} tutarındaki kredi gerekir. Teklif çıkınca "Krediyle al" düğmesi görünür.`));
   o.appendChild(h('p', 'hint', `Aynı anda en fazla iki kredi. Kasa ${eur(-5000)} altına düşerse banka bir balonuna el koyar ve yarı fiyatına satar.`));
   body.appendChild(o);
 }
@@ -5545,7 +5546,7 @@ function enterRegion(id) {
   const fee = entryFee(id);
   if ((S.holding || 0) < fee) return;
   S.holding -= fee; holdLog('exp', fee);
-  if (id === 'lux') S.hezQ.push('hz:Mısır evlat, Luksor! Burası dünyanın en çetin balon pazarı. Batı Yakası\'nda, firavunların vadisinin üstünde her sabah yüzlerce turist bekler ama hepsini Nabil Haddad\'ın Theban Skies\'ı ve onun dostları paylaşır. Burada rakipler sana karşı çok çabuk birleşir, oteller çayla anlaşır, Sivil Havacılık da gözünü senden ayırmaz. 5.000 euro ve bir küçük balonla başlıyorsun; holding buraya para gönderemez. Nil\'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Sabırlı ol evlat, Nil sabırlıyı sever.');
+  if (id === 'lux') S.hezQ.push('hz:Mısır evlat, Luksor! Burası dünyanın en çetin balon pazarı. Batı Yakası\'nda, firavunların vadisinin üstünde her sabah yüzlerce turist bekler ama hepsini Nabil Haddad\'ın Theban Skies\'ı ve onun dostları paylaşır. Burada rakipler sana karşı çok çabuk birleşir, oteller çayla anlaşır, Sivil Havacılık da gözünü senden ayırmaz. 5.000 € ve bir küçük balonla başlıyorsun; holding buraya para gönderemez. Nil\'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Sabırlı ol evlat, Nil sabırlıyı sever.');
   if (id === 'abq') S.hezQ.push('hz:Amerika evlat! Albuquerque\'de rüzgâr bambaşka: meşhur "kutu". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: 3.000 dolar ve bir küçük balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika\'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım.');
   if (GUIDES[id].hello) S.hezQ.push('guide:hello');
   switchRegion(id);

@@ -516,7 +516,7 @@ struct HomeView: View {
             out.append(HomeAlert(id: "founder", level: .green, title: loc("home.founderBonus")))
         }
         if let f = s.local.festival {
-            out.append(HomeAlert(id: "festival", level: .mission, title: loc("home.alert.festival", festivalName(f.index), num(s.day - f.start + 1)),
+            out.append(HomeAlert(id: "festival", level: .mission, title: loc("home.alert.festival", festivalName(f.index), num(s.day - f.start + 1), num(Rules.festivalDays)),
                                  text: loc("home.alert.festival.body")))
         }
         // Luxor's Nile cruise season uses the Fiesta's days with its own words.

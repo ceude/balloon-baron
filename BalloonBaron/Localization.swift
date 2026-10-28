@@ -16,6 +16,11 @@ func eur(_ n: Int) -> String {
     n.formatted(.currency(code: currentRegion.currency).precision(.fractionLength(0)))
 }
 
+/// Money in a given region's currency (e.g. what a region you haven't entered yet starts with).
+func money(_ n: Int, in r: RegionID) -> String {
+    n.formatted(.currency(code: r.currency).precision(.fractionLength(0)))
+}
+
 /// Holding money, always euros.
 func eurH(_ n: Int) -> String {
     n.formatted(.currency(code: "EUR").precision(.fractionLength(0)))

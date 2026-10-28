@@ -281,12 +281,12 @@ add("buyLoan.confirm", "Take over with the loan", "Krediyle devral", "Mit Kredit
 add("buyLoan.confirmFleet", "Buy the fleet with the loan", "Krediyle satın al", "Flotte mit Kredit kaufen", "Comprar la flota con el préstamo", "ローンでフリートを買う", "대출로 기단 구매")
 add("buyLoan.cancel", "Not now", "Vazgeç", "Nicht jetzt", "Ahora no", "やめておく", "다음에")
 add("buyLoan.bankTitle", "Purchase loan: up to %@", "Satın alma kredisi: en fazla %@", "Kaufkredit: bis zu %@", "Préstamo de compra: hasta %@", "買収ローン：最大%@", "인수 대출: 최대 %@")
-add("buyLoan.bankBody", "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; that money never goes into your cash. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened. Balloons needed: %4$@.",
-    "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane; 100.000'lik kredi açıldıktan sonra. Gereken balon: %4$@.",
-    "Steht ein Konkurrent oder eine Konkursflotte zum Verkauf, zahlt die Bank dem Verkäufer, was dir fehlt; in deine Kasse fließt nichts. Mindestens %3$@ des Preises zahlst du selbst. Tage: %1$@, Zins %2$@. Immer nur einer, sobald der 100.000er-Kredit freigeschaltet ist. Nötige Ballone: %4$@.",
-    "Cuando un rival o una flota en quiebra está en venta, el banco paga al vendedor lo que te falta; a tu caja no entra nada. Tú pones al menos el %3$@ del precio. Días: %1$@, interés %2$@. Uno a la vez, cuando se abra el préstamo de 100.000. Globos necesarios: %4$@.",
-    "ライバル企業や倒産企業のフリートが売りに出たとき、不足分を銀行が売り手に支払う。金庫にお金は入らない。価格の少なくとも%3$@は自己負担。日数：%1$@、利息%2$@。同時に1件まで、10万のローンが利用可能になってから。必要な気球：%4$@。",
-    "경쟁사나 파산한 회사의 기단이 매물로 나오면 부족분을 은행이 판매자에게 지불하며, 금고에는 돈이 들어오지 않습니다. 가격의 %3$@ 이상은 직접 내야 합니다. 일수: %1$@, 이자 %2$@. 한 번에 하나씩, 10만 대출이 열린 뒤부터 가능. 필요한 열기구: %4$@.")
+add("buyLoan.bankBody", "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; that money never goes into your cash. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the %5$@ loan has opened. Balloons needed: %4$@.",
+    "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane, %5$@ tutarındaki kredi açıldıktan sonra. Gereken balon: %4$@.",
+    "Steht ein Konkurrent oder eine Konkursflotte zum Verkauf, zahlt die Bank dem Verkäufer, was dir fehlt; in deine Kasse fließt nichts. Mindestens %3$@ des Preises zahlst du selbst. Tage: %1$@, Zins %2$@. Immer nur einer, sobald der Kredit über %5$@ freigeschaltet ist. Nötige Ballone: %4$@.",
+    "Cuando un rival o una flota en quiebra está en venta, el banco paga al vendedor lo que te falta; a tu caja no entra nada. Tú pones al menos el %3$@ del precio. Días: %1$@, interés %2$@. Uno a la vez, cuando se abra el préstamo de %5$@. Globos necesarios: %4$@.",
+    "ライバル企業や倒産企業のフリートが売りに出たとき、不足分を銀行が売り手に支払う。金庫にお金は入らない。価格の少なくとも%3$@は自己負担。日数：%1$@、利息%2$@。同時に1件まで、%5$@のローンが利用可能になってから。必要な気球：%4$@。",
+    "경쟁사나 파산한 회사의 기단이 매물로 나오면 부족분을 은행이 판매자에게 지불하며, 금고에는 돈이 들어오지 않습니다. 가격의 %3$@ 이상은 직접 내야 합니다. 일수: %1$@, 이자 %2$@. 한 번에 하나씩, %5$@ 대출이 열린 뒤부터 가능. 필요한 열기구: %4$@.")
 add("buyLoan.loan", "%@ purchase loan", "%@ satın alma kredisi", "Kaufkredit: %@", "Préstamo de compra de %@", "%@の買収ローン", "%@ 인수 대출")
 
 # v110: second-hand balloons, rivals shrink before going bankrupt, the rescue card's price move

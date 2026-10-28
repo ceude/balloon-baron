@@ -8289,37 +8289,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Steht ein Konkurrent oder eine Konkursflotte zum Verkauf, zahlt die Bank dem Verkäufer, was dir fehlt; in deine Kasse fließt nichts. Mindestens %3$@ des Preises zahlst du selbst. Tage: %1$@, Zins %2$@. Immer nur einer, sobald der 100.000er-Kredit freigeschaltet ist. Nötige Ballone: %4$@."
+            "value": "Steht ein Konkurrent oder eine Konkursflotte zum Verkauf, zahlt die Bank dem Verkäufer, was dir fehlt; in deine Kasse fließt nichts. Mindestens %3$@ des Preises zahlst du selbst. Tage: %1$@, Zins %2$@. Immer nur einer, sobald der Kredit über %5$@ freigeschaltet ist. Nötige Ballone: %4$@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; that money never goes into your cash. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened. Balloons needed: %4$@."
+            "value": "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; that money never goes into your cash. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the %5$@ loan has opened. Balloons needed: %4$@."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cuando un rival o una flota en quiebra está en venta, el banco paga al vendedor lo que te falta; a tu caja no entra nada. Tú pones al menos el %3$@ del precio. Días: %1$@, interés %2$@. Uno a la vez, cuando se abra el préstamo de 100.000. Globos necesarios: %4$@."
+            "value": "Cuando un rival o una flota en quiebra está en venta, el banco paga al vendedor lo que te falta; a tu caja no entra nada. Tú pones al menos el %3$@ del precio. Días: %1$@, interés %2$@. Uno a la vez, cuando se abra el préstamo de %5$@. Globos necesarios: %4$@."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ライバル企業や倒産企業のフリートが売りに出たとき、不足分を銀行が売り手に支払う。金庫にお金は入らない。価格の少なくとも%3$@は自己負担。日数：%1$@、利息%2$@。同時に1件まで、10万のローンが利用可能になってから。必要な気球：%4$@。"
+            "value": "ライバル企業や倒産企業のフリートが売りに出たとき、不足分を銀行が売り手に支払う。金庫にお金は入らない。価格の少なくとも%3$@は自己負担。日数：%1$@、利息%2$@。同時に1件まで、%5$@のローンが利用可能になってから。必要な気球：%4$@。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "경쟁사나 파산한 회사의 기단이 매물로 나오면 부족분을 은행이 판매자에게 지불하며, 금고에는 돈이 들어오지 않습니다. 가격의 %3$@ 이상은 직접 내야 합니다. 일수: %1$@, 이자 %2$@. 한 번에 하나씩, 10만 대출이 열린 뒤부터 가능. 필요한 열기구: %4$@."
+            "value": "경쟁사나 파산한 회사의 기단이 매물로 나오면 부족분을 은행이 판매자에게 지불하며, 금고에는 돈이 들어오지 않습니다. 가격의 %3$@ 이상은 직접 내야 합니다. 일수: %1$@, 이자 %2$@. 한 번에 하나씩, %5$@ 대출이 열린 뒤부터 가능. 필요한 열기구: %4$@."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane; 100.000'lik kredi açıldıktan sonra. Gereken balon: %4$@."
+            "value": "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane, %5$@ tutarındaki kredi açıldıktan sonra. Gereken balon: %4$@."
           }
         }
       }
@@ -30880,37 +30880,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Weinlesefest hat begonnen, Lehrling! Drei Tage lang wird das Tal voller Touristen sein. Jeden Tag kommt ein Sonderwunsch, und die Belohnungen sind 50 % höher. Bring alle Ballone in die Luft."
+            "value": "Das Weinlesefest hat begonnen, Lehrling! Vier Tage lang wird das Tal voller Touristen sein. Jeden Tag kommt ein Sonderwunsch, und die Belohnungen sind 50 % höher. Bring alle Ballone in die Luft."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Grape Harvest Festival has begun, kid! For three days the valley will be full of tourists. A special request comes every day, and the rewards are 50% higher. Put all your balloons up."
+            "value": "The Grape Harvest Festival has begun, kid! For four days the valley will be full of tourists. A special request comes every day, and the rewards are 50% higher. Put all your balloons up."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Ha empezado la Fiesta de la Vendimia, aprendiz! Durante tres días el valle estará lleno de turistas. Cada día llegará un encargo especial, y las recompensas son un 50 % mayores. Sube todos tus globos."
+            "value": "¡Ha empezado la Fiesta de la Vendimia, aprendiz! Durante cuatro días el valle estará lleno de turistas. Cada día llegará un encargo especial, y las recompensas son un 50 % mayores. Sube todos tus globos."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ぶどう収穫祭が始まったぞ、弟子よ！3日間、谷は観光客でいっぱいだ。毎日特別依頼が来て、報酬も50%増しだ。気球を全部飛ばすのだ。"
+            "value": "ぶどう収穫祭が始まったぞ、弟子よ！4日間、谷は観光客でいっぱいだ。毎日特別依頼が来て、報酬も50%増しだ。気球を全部飛ばすのだ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "포도 수확 축제가 시작됐네, 제자여! 사흘 동안 계곡이 관광객으로 가득할 걸세. 매일 특별 요청이 오고 보상도 50% 더 많다네. 열기구를 모두 띄우게."
+            "value": "포도 수확 축제가 시작됐네, 제자여! 나흘 동안 계곡이 관광객으로 가득할 걸세. 매일 특별 요청이 오고 보상도 50% 더 많다네. 열기구를 모두 띄우게."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bağ Bozumu Festivali başladı evlat! Üç gün boyunca vadi turistle dolacak. Her gün özel bir istek gelecek, ödülleri de %50 fazla. Bütün balonlarını kaldır."
+            "value": "Bağ Bozumu Festivali başladı evlat! Dört gün boyunca vadi turistle dolacak. Her gün özel bir istek gelecek, ödülleri de %50 fazla. Bütün balonlarını kaldır."
           }
         }
       }
@@ -30921,37 +30921,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Feiertage sind da, Lehrling, und die Städter strömen nach Kappadokien! Drei Tage hohe Nachfrage, und Sonderwünsche zahlen gut."
+            "value": "Die Feiertage sind da, Lehrling, und die Städter strömen nach Kappadokien! Vier Tage hohe Nachfrage, und Sonderwünsche zahlen gut."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The holidays are here, kid, and city folk are flocking to Cappadocia! Three days of high demand, and special requests pay well."
+            "value": "The holidays are here, kid, and city folk are flocking to Cappadocia! Four days of high demand, and special requests pay well."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Llegan las fiestas, aprendiz, y la gente de la ciudad acude en masa a Capadocia! Tres días de mucha demanda, y los encargos especiales pagan bien."
+            "value": "¡Llegan las fiestas, aprendiz, y la gente de la ciudad acude en masa a Capadocia! Cuatro días de mucha demanda, y los encargos especiales pagan bien."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "祝日の連休だ、弟子よ。都会の人々がカッパドキアに押し寄せてくる！3日間は需要が高く、特別依頼の報酬もたっぷりだ。"
+            "value": "祝日の連休だ、弟子よ。都会の人々がカッパドキアに押し寄せてくる！4日間は需要が高く、特別依頼の報酬もたっぷりだ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "명절 연휴가 왔네, 제자여. 도시 사람들이 카파도키아로 몰려온다네! 사흘간 수요가 높고 특별 요청 보상도 넉넉하네."
+            "value": "명절 연휴가 왔네, 제자여. 도시 사람들이 카파도키아로 몰려온다네! 나흘간 수요가 높고 특별 요청 보상도 넉넉하네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bayram tatili geldi evlat, şehirliler akın akın Kapadokya'ya! Üç gün talep yüksek, özel istekler bol ödüllü."
+            "value": "Bayram tatili geldi evlat, şehirliler akın akın Kapadokya'ya! Dört gün talep yüksek, özel istekler bol ödüllü."
           }
         }
       }
@@ -30962,37 +30962,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Lichterfest hat begonnen, Lehrling! Die Feenkamine sind mit Laternen geschmückt, und drei Tage lang gibt es viele Touristen. Verpass die Sonderwünsche nicht."
+            "value": "Das Lichterfest hat begonnen, Lehrling! Die Feenkamine sind mit Laternen geschmückt, und vier Tage lang gibt es viele Touristen. Verpass die Sonderwünsche nicht."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Festival of Lights has begun, kid! The fairy chimneys are decked with lanterns and tourists will be plentiful for three days. Don't miss the special requests."
+            "value": "The Festival of Lights has begun, kid! The fairy chimneys are decked with lanterns and tourists will be plentiful for four days. Don't miss the special requests."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Ha empezado la Fiesta de las Luces, aprendiz! Las chimeneas de hadas se han adornado con farolillos y habrá muchos turistas durante tres días. No te pierdas los encargos especiales."
+            "value": "¡Ha empezado la Fiesta de las Luces, aprendiz! Las chimeneas de hadas se han adornado con farolillos y habrá muchos turistas durante cuatro días. No te pierdas los encargos especiales."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "光の祭典が始まったぞ、弟子よ！妖精の煙突はランタンで飾られ、3日間は観光客であふれる。特別依頼を逃すでないぞ。"
+            "value": "光の祭典が始まったぞ、弟子よ！妖精の煙突はランタンで飾られ、4日間は観光客であふれる。特別依頼を逃すでないぞ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "빛 축제가 시작됐네, 제자여! 요정의 굴뚝이 등불로 장식됐고 사흘 동안 관광객이 많을 걸세. 특별 요청을 놓치지 말게."
+            "value": "빛 축제가 시작됐네, 제자여! 요정의 굴뚝이 등불로 장식됐고 나흘 동안 관광객이 많을 걸세. 특별 요청을 놓치지 말게."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Işık Şenliği başladı evlat! Peribacaları fenerlerle süslendi, turist üç gün boyunca bol. Özel istekleri kaçırma."
+            "value": "Işık Şenliği başladı evlat! Peribacaları fenerlerle süslendi, turist dört gün boyunca bol. Özel istekleri kaçırma."
           }
         }
       }
@@ -37686,37 +37686,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@, Tag %2$@/3!"
+            "value": "%1$@, Tag %2$@/%3$@!"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@, day %2$@/3!"
+            "value": "%1$@, day %2$@/%3$@!"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡%1$@, día %2$@/3!"
+            "value": "¡%1$@, día %2$@/%3$@!"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@、%2$@/3日目！"
+            "value": "%1$@、%2$@/%3$@日目！"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@, %2$@/3일차!"
+            "value": "%1$@, %2$@/%3$@일차!"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@, gün %2$@/3!"
+            "value": "%1$@, gün %2$@/%3$@!"
           }
         }
       }
@@ -48879,37 +48879,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Der Nil, das Tal der Könige, der Tempel der Hatschepsut. Der härteste Ballonmarkt der Welt: starke Konkurrenten, die sich schnell verbünden. Du startest mit 5.000 €. Einstiegsgebühr %@ aus der Holding."
+            "value": "Der Nil, das Tal der Könige, der Tempel der Hatschepsut. Der härteste Ballonmarkt der Welt: starke Konkurrenten, die sich schnell verbünden. Startkapital: %1$@. Einstiegsgebühr %2$@ aus der Holding."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Nile, the Valley of the Kings, Hatshepsut's temple. The toughest balloon market in the world: strong rivals who join forces quickly. You start with €5,000. Entry fee %@ from the holding."
+            "value": "The Nile, the Valley of the Kings, Hatshepsut's temple. The toughest balloon market in the world: strong rivals who join forces quickly. You start with %1$@. Entry fee %2$@ from the holding."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Empiezas con 5.000 €. Cuota de entrada: %@, a cargo del holding."
+            "value": "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Capital inicial: %1$@. Cuota de entrada: %2$@, a cargo del holding."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ナイル河畔、王家の谷、ハトシェプスト女王葬祭殿。世界一厳しい気球市場だ。ライバルは強く、すぐに手を組む。5,000ユーロからのスタート。参入費%@はホールディングスから。"
+            "value": "ナイル河畔、王家の谷、ハトシェプスト女王葬祭殿。世界一厳しい気球市場だ。ライバルは強く、すぐに手を組む。開始資金：%1$@。参入費%2$@はホールディングスから。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "나일강변, 왕가의 계곡, 하트셉수트 신전. 세상에서 가장 험한 열기구 시장으로, 경쟁사가 강하고 금세 손을 잡습니다. 5,000유로로 시작합니다. 진입 비용 %@, 지주회사에서 지급."
+            "value": "나일강변, 왕가의 계곡, 하트셉수트 신전. 세상에서 가장 험한 열기구 시장으로, 경쟁사가 강하고 금세 손을 잡습니다. 시작 자금: %1$@. 진입 비용 %2$@, 지주회사에서 지급."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli %@ holding kasasından."
+            "value": "Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. Başlangıç kasası: %1$@. Giriş bedeli %2$@ holding kasasından."
           }
         }
       }
@@ -55767,37 +55767,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Drei Tage lang wird das Tal voller Touristen sein, und Sonderwünsche zahlen gut."
+            "value": "Vier Tage lang wird das Tal voller Touristen sein, und Sonderwünsche zahlen gut."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For three days the valley will be full of tourists, and special requests pay well."
+            "value": "For four days the valley will be full of tourists, and special requests pay well."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Durante tres días el valle se llenará de turistas, y los encargos especiales pagan bien."
+            "value": "Durante cuatro días el valle se llenará de turistas, y los encargos especiales pagan bien."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "3日間、谷は観光客でいっぱい。特別依頼の報酬もたっぷり。"
+            "value": "4日間、谷は観光客でいっぱい。特別依頼の報酬もたっぷり。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "사흘간 계곡이 관광객으로 붐비고, 특별 요청 보상도 크다."
+            "value": "나흘간 계곡이 관광객으로 붐비고, 특별 요청 보상도 크다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Üç gün boyunca vadi turistle dolacak, özel istekler bol ödüllü."
+            "value": "Dört gün boyunca vadi turistle dolacak, özel istekler bol ödüllü."
           }
         }
       }

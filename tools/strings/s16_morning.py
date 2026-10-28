@@ -26,7 +26,40 @@ add("paper.antitrust.sub", "%1$@%% of the market in one hand; the fine is %2$@."
 add("paper.seized", "Bank seizes a %@ balloon", "Banka el koydu: %@ balonu", "Bank pfändet einen Ballon von %@", "El banco embarga un globo de %@", "銀行が%@の気球を差し押さえ", "은행, %@ 열기구 압류")
 add("paper.seized.sub", "%@ was sold to cover the debt.", "%@ borç karşılığı satıldı.", "%@ wurde zur Schuldentilgung verkauft.", "%@ se vendió para cubrir la deuda.", "%@は借金返済のため売却された。", "빚을 갚기 위해 %@ 열기구가 매각됐다.")
 add("paper.festival", "%@ begins", "Başlıyor: %@", "%@ beginnt", "Comienza %@", "%@が開幕", "%@ 개막")
-add("paper.festival.sub", "For three days the valley will be full of tourists, and special requests pay well.", "Üç gün boyunca vadi turistle dolacak, özel istekler bol ödüllü.", "Drei Tage lang wird das Tal voller Touristen sein, und Sonderwünsche zahlen gut.", "Durante tres días el valle se llenará de turistas, y los encargos especiales pagan bien.", "3日間、谷は観光客でいっぱい。特別依頼の報酬もたっぷり。", "사흘간 계곡이 관광객으로 붐비고, 특별 요청 보상도 크다.")
+add("paper.festival.sub", "For four days the valley will be full of tourists, and special requests pay well.", "Dört gün boyunca vadi turistle dolacak, özel istekler bol ödüllü.", "Vier Tage lang wird das Tal voller Touristen sein, und Sonderwünsche zahlen gut.", "Durante cuatro días el valle se llenará de turistas, y los encargos especiales pagan bien.", "4日間、谷は観光客でいっぱい。特別依頼の報酬もたっぷり。", "나흘간 계곡이 관광객으로 붐비고, 특별 요청 보상도 크다.")
+add("paper.rivalAccident", "%@ balloon in an accident", "Kaza: %@ balonu", "Unfall eines Ballons von %@", "Accidente de un globo de %@", "%@の気球が事故", "%@ 열기구 사고")
+add("paper.rivalAccident.sub", "Balloons in repair: %@.", "Onarıma giren balon: %@.", "Ballone in Reparatur: %@.", "Globos en reparación: %@.", "修理中の気球：%@。", "수리 중인 열기구: %@.")
+add("paper.rivalRedCaught", "%@ caught under a red flag", "Kırmızı bayrakta yakalandı: %@", "%@ bei roter Flagge erwischt", "%@, sorprendido con bandera roja", "%@、赤い旗の日に摘発", "%@, 빨간 깃발 비행 적발")
+add("paper.rivalRedCaught.sub", "Fine: %@.", "Ceza: %@.", "Strafe: %@.", "Multa: %@.", "罰金：%@。", "벌금: %@.")
+add("paper.rivalBankrupt", "%@ goes bankrupt!", "İflas: %@!", "%@ ist pleite!", "¡%@ quiebra!", "%@が倒産！", "%@ 파산!")
+add("paper.rivalBankrupt.sub", "Fleet for sale. Balloons: %@.", "Filo satışta, balon: %@.", "Flotte zu verkaufen, Ballone: %@.", "Flota en venta, globos: %@.", "フリートを売却中。気球：%@。", "기단 매물로, 열기구: %@.")
+add("paper.newEntrant", "New company takes to the sky: %@", "Yeni şirket göğe çıkıyor: %@", "Neue Firma am Himmel: %@", "Nueva empresa en el cielo: %@", "新会社が空へ：%@", "새 회사가 하늘로: %@")
+add("paper.newEntrant.sub", "Competition in the valley will heat up.", "Vadide rekabet kızışacak.", "Der Wettbewerb im Tal wird härter.", "La competencia en el valle se va a calentar.", "谷の競争が激しくなりそうだ。", "계곡의 경쟁이 한층 뜨거워질 전망이다.")
+add("paper.hotelLost", "%1$@ signs with %2$@", "%1$@ yeni anlaşma imzaladı: %2$@", "%1$@ unterschreibt bei %2$@", "%1$@ firma con %2$@", "%1$@が%2$@と契約", "%1$@, %2$@ 측과 제휴")
+add("paper.hotelLost.sub", "The hotel's guests now go to the rival.", "Otel misafirleri artık rakibe gidiyor.", "Die Hotelgäste gehen jetzt zur Konkurrenz.", "Los huéspedes del hotel van ahora al rival.", "ホテルの客はライバルへ流れる。", "호텔 투숙객은 이제 경쟁사로 향한다.")
+add("paper.record", "Record morning: %1$@ flew %2$@ passengers", "Rekor sabah: %1$@, %2$@ yolcu uçurdu", "Rekordmorgen: %1$@ flog %2$@ Passagiere", "Mañana récord: %1$@ voló con %2$@ pasajeros", "記録的な朝：%1$@が%2$@人を運ぶ", "기록적인 아침: %1$@, 승객 %2$@명 비행")
+add("paper.record.sub", "The company's busiest day so far.", "Şirketin bugüne kadarki en kalabalık günü.", "Der bisher vollste Tag der Firma.", "El día con más pasajeros de la empresa hasta ahora.", "会社史上もっとも忙しい一日。", "회사 역사상 가장 바쁜 날이었다.")
+add("paper.passedBoss", "%1$@ overtakes %2$@", "Zirve değişti: %1$@, %2$@ şirketini geçti", "%1$@ überholt %2$@", "%1$@ adelanta a %2$@", "%1$@が%2$@を抜く", "%1$@, %2$@ 추월")
+add("paper.passedBoss.sub", "The valley's busiest company has changed.", "Vadinin en çok yolcu uçuran şirketi değişti.", "Die Firma mit den meisten Passagieren im Tal hat gewechselt.", "La empresa con más pasajeros del valle ha cambiado.", "谷で最も多くの乗客を運ぶ会社が交代した。", "계곡에서 승객을 가장 많이 태우는 회사가 바뀌었다.")
+add("paper.upgrade", "%1$@ expands: %2$@", "%1$@ büyüyor: %2$@", "%1$@ baut aus: %2$@", "%1$@ se amplía: %2$@", "%1$@が拡張：%2$@", "%1$@ 확장: %2$@")
+add("paper.worldBaron", "%@ is now a world giant", "Artık bir dünya devi: %@", "%@ ist jetzt ein Weltkonzern", "%@ ya es un gigante mundial", "%@、ついに世界的大企業に", "%@, 이제 세계적 기업")
+add("paper.worldBaron.sub", "From Cappadocia to Albuquerque and Luxor, offices on four continents.", "Kapadokya'dan Albuquerque'ye ve Luksor'a, dört kıtada ofis.", "Von Kappadokien über Albuquerque bis Luxor, Büros auf vier Kontinenten.", "De Capadocia a Albuquerque y Luxor, oficinas en cuatro continentes.", "カッパドキアからアルバカーキ、ルクソールまで、4大陸にオフィス。", "카파도키아에서 앨버커키, 룩소르까지, 네 대륙에 사무소.")
+add("paper.night.lanterns", "Lantern walk lights up the valley", "Fener alayı vadiyi aydınlattı", "Laternenumzug erleuchtet das Tal", "El desfile de farolillos ilumina el valle", "ランタン行列が谷を照らす", "등불 행렬이 계곡을 밝히다")
+add("paper.night.lanterns.sub", "Thousands of lanterns passed between the fairy chimneys.", "Binlerce fener peribacalarının arasından geçti.", "Tausende Laternen zogen zwischen den Feenkaminen hindurch.", "Miles de farolillos pasaron entre las chimeneas de hadas.", "何千ものランタンが妖精の煙突の間を通った。", "수천 개의 등불이 요정의 굴뚝 사이를 지나갔다.")
+add("paper.night.glow", "Fiesta night all aglow", "Fiesta gecesi ışıl ışıl", "Fiesta-Nacht in hellem Glanz", "Noche de Fiesta resplandeciente", "フィエスタの夜がきらめく", "환하게 빛난 피에스타의 밤")
+add("paper.night.glow.sub", "The balloons on the ground fired their burners; the field was like a fair.", "Yerdeki balonlar brülörlerini yaktı, meydan bayram yeri gibiydi.", "Die Ballone am Boden zündeten ihre Brenner; der Platz war wie ein Jahrmarkt.", "Los globos en tierra encendieron sus quemadores; el campo parecía una feria.", "地上の気球がバーナーを焚き、広場はお祭りのようだった。", "땅 위의 열기구들이 일제히 버너를 켜 들판이 축제장처럼 빛났다.")
+add("paper.night.snow", "The town lit up under the snow", "Kar altında ışıklı kasaba", "Die Stadt leuchtet unter dem Schnee", "El pueblo iluminado bajo la nieve", "雪の中に灯る町", "눈 속에 불 밝힌 마을")
+add("paper.night.snow.sub", "The valley turned white, with warm lights in the windows.", "Vadi beyaza büründü, pencerelerde sıcak ışıklar.", "Das Tal wurde weiß, warmes Licht in den Fenstern.", "El valle se volvió blanco, luces cálidas en las ventanas.", "谷は白く染まり、窓には暖かな明かり。", "계곡은 하얗게 물들고 창마다 따뜻한 불빛이 번졌다.")
+add("paper.night.fireworks", "Midnight fireworks: %@", "Gece yarısı havai fişek: %@", "Feuerwerk um Mitternacht: %@", "Fuegos artificiales a medianoche: %@", "真夜中の花火：%@", "한밤의 불꽃놀이: %@")
+add("paper.night.fireworks.sub", "Wedding fireworks lit up the whole valley.", "Bir düğün gecesi bütün vadiyi renklendirdi.", "Eine Hochzeitsnacht färbte das ganze Tal.", "Una noche de boda llenó de color todo el valle.", "結婚式の夜が谷じゅうを彩った。", "결혼식 밤의 불꽃이 계곡 전체를 물들였다.")
+add("paper.night.shooting", "A shooting star was seen in the night", "Gece bir kayan yıldız görüldü", "In der Nacht wurde eine Sternschnuppe gesehen", "Se vio una estrella fugaz por la noche", "夜に流れ星が目撃された", "밤에 별똥별이 목격되다")
+add("paper.night.shooting.sub", "Early-rising balloon passengers say they saw it too.", "Erken kalkan balon yolcuları da gördüklerini söylüyor.", "Früh aufgestandene Ballonpassagiere sagen, sie hätten sie auch gesehen.", "Los pasajeros madrugadores dicen que también la vieron.", "早起きした気球の乗客も見たという。", "일찍 일어난 열기구 승객들도 봤다고 전했다.")
+
+# Festivals of Cappadocia
+add("festival.0", "Grape Harvest Festival", "Bağ Bozumu Festivali", "Weinlesefest", "Fiesta de la Vendimia", "ぶどう収穫祭", "포도 수확 축제")
+add("festival.1", "Holiday week", "Bayram tatili", "Feiertagswoche", "Semana de fiesta", "祝日の連休", "명절 연휴")
+add("festival.2", "Cappadocia Festival of Lights", "Kapadokya Işık Şenliği", "Lichterfest von Kappadokien", "Fiesta de las Luces de Capadocia", "カッパドキア光の祭典", "카파도키아 빛 축제")
+
 add("paper.rivalAccident", "%@ balloon in an accident", "Kaza: %@ balonu", "Unfall eines Ballons von %@", "Accidente de un globo de %@", "%@の気球が事故", "%@ 열기구 사고")
 add("paper.rivalAccident.sub", "Balloons in repair: %@.", "Onarıma giren balon: %@.", "Ballone in Reparatur: %@.", "Globos en reparación: %@.", "修理中の気球：%@。", "수리 중인 열기구: %@.")
 add("paper.rivalRedCaught", "%@ caught under a red flag", "Kırmızı bayrakta yakalandı: %@", "%@ bei roter Flagge erwischt", "%@, sorprendido con bandera roja", "%@、赤い旗の日に摘発", "%@, 빨간 깃발 비행 적발")
@@ -60,26 +93,26 @@ add("festival.0", "Grape Harvest Festival", "Bağ Bozumu Festivali", "Weinlesefe
 add("festival.1", "Holiday week", "Bayram tatili", "Feiertagswoche", "Semana de fiesta", "祝日の連休", "명절 연휴")
 add("festival.2", "Cappadocia Festival of Lights", "Kapadokya Işık Şenliği", "Lichterfest von Kappadokien", "Fiesta de las Luces de Capadocia", "カッパドキア光の祭典", "카파도키아 빛 축제")
 add("hez.festival.0",
- "The Grape Harvest Festival has begun, kid! For three days the valley will be full of tourists. A special request comes every day, and the rewards are 50% higher. Put all your balloons up.",
- "Bağ Bozumu Festivali başladı evlat! Üç gün boyunca vadi turistle dolacak. Her gün özel bir istek gelecek, ödülleri de %50 fazla. Bütün balonlarını kaldır.",
- "Das Weinlesefest hat begonnen, Lehrling! Drei Tage lang wird das Tal voller Touristen sein. Jeden Tag kommt ein Sonderwunsch, und die Belohnungen sind 50 % höher. Bring alle Ballone in die Luft.",
- "¡Ha empezado la Fiesta de la Vendimia, aprendiz! Durante tres días el valle estará lleno de turistas. Cada día llegará un encargo especial, y las recompensas son un 50 % mayores. Sube todos tus globos.",
- "ぶどう収穫祭が始まったぞ、弟子よ！3日間、谷は観光客でいっぱいだ。毎日特別依頼が来て、報酬も50%増しだ。気球を全部飛ばすのだ。",
- "포도 수확 축제가 시작됐네, 제자여! 사흘 동안 계곡이 관광객으로 가득할 걸세. 매일 특별 요청이 오고 보상도 50% 더 많다네. 열기구를 모두 띄우게.")
+ "The Grape Harvest Festival has begun, kid! For four days the valley will be full of tourists. A special request comes every day, and the rewards are 50% higher. Put all your balloons up.",
+ "Bağ Bozumu Festivali başladı evlat! Dört gün boyunca vadi turistle dolacak. Her gün özel bir istek gelecek, ödülleri de %50 fazla. Bütün balonlarını kaldır.",
+ "Das Weinlesefest hat begonnen, Lehrling! Vier Tage lang wird das Tal voller Touristen sein. Jeden Tag kommt ein Sonderwunsch, und die Belohnungen sind 50 % höher. Bring alle Ballone in die Luft.",
+ "¡Ha empezado la Fiesta de la Vendimia, aprendiz! Durante cuatro días el valle estará lleno de turistas. Cada día llegará un encargo especial, y las recompensas son un 50 % mayores. Sube todos tus globos.",
+ "ぶどう収穫祭が始まったぞ、弟子よ！4日間、谷は観光客でいっぱいだ。毎日特別依頼が来て、報酬も50%増しだ。気球を全部飛ばすのだ。",
+ "포도 수확 축제가 시작됐네, 제자여! 나흘 동안 계곡이 관광객으로 가득할 걸세. 매일 특별 요청이 오고 보상도 50% 더 많다네. 열기구를 모두 띄우게.")
 add("hez.festival.1",
- "The holidays are here, kid, and city folk are flocking to Cappadocia! Three days of high demand, and special requests pay well.",
- "Bayram tatili geldi evlat, şehirliler akın akın Kapadokya'ya! Üç gün talep yüksek, özel istekler bol ödüllü.",
- "Die Feiertage sind da, Lehrling, und die Städter strömen nach Kappadokien! Drei Tage hohe Nachfrage, und Sonderwünsche zahlen gut.",
- "¡Llegan las fiestas, aprendiz, y la gente de la ciudad acude en masa a Capadocia! Tres días de mucha demanda, y los encargos especiales pagan bien.",
- "祝日の連休だ、弟子よ。都会の人々がカッパドキアに押し寄せてくる！3日間は需要が高く、特別依頼の報酬もたっぷりだ。",
- "명절 연휴가 왔네, 제자여. 도시 사람들이 카파도키아로 몰려온다네! 사흘간 수요가 높고 특별 요청 보상도 넉넉하네.")
+ "The holidays are here, kid, and city folk are flocking to Cappadocia! Four days of high demand, and special requests pay well.",
+ "Bayram tatili geldi evlat, şehirliler akın akın Kapadokya'ya! Dört gün talep yüksek, özel istekler bol ödüllü.",
+ "Die Feiertage sind da, Lehrling, und die Städter strömen nach Kappadokien! Vier Tage hohe Nachfrage, und Sonderwünsche zahlen gut.",
+ "¡Llegan las fiestas, aprendiz, y la gente de la ciudad acude en masa a Capadocia! Cuatro días de mucha demanda, y los encargos especiales pagan bien.",
+ "祝日の連休だ、弟子よ。都会の人々がカッパドキアに押し寄せてくる！4日間は需要が高く、特別依頼の報酬もたっぷりだ。",
+ "명절 연휴가 왔네, 제자여. 도시 사람들이 카파도키아로 몰려온다네! 나흘간 수요가 높고 특별 요청 보상도 넉넉하네.")
 add("hez.festival.2",
- "The Festival of Lights has begun, kid! The fairy chimneys are decked with lanterns and tourists will be plentiful for three days. Don't miss the special requests.",
- "Işık Şenliği başladı evlat! Peribacaları fenerlerle süslendi, turist üç gün boyunca bol. Özel istekleri kaçırma.",
- "Das Lichterfest hat begonnen, Lehrling! Die Feenkamine sind mit Laternen geschmückt, und drei Tage lang gibt es viele Touristen. Verpass die Sonderwünsche nicht.",
- "¡Ha empezado la Fiesta de las Luces, aprendiz! Las chimeneas de hadas se han adornado con farolillos y habrá muchos turistas durante tres días. No te pierdas los encargos especiales.",
- "光の祭典が始まったぞ、弟子よ！妖精の煙突はランタンで飾られ、3日間は観光客であふれる。特別依頼を逃すでないぞ。",
- "빛 축제가 시작됐네, 제자여! 요정의 굴뚝이 등불로 장식됐고 사흘 동안 관광객이 많을 걸세. 특별 요청을 놓치지 말게.")
+ "The Festival of Lights has begun, kid! The fairy chimneys are decked with lanterns and tourists will be plentiful for four days. Don't miss the special requests.",
+ "Işık Şenliği başladı evlat! Peribacaları fenerlerle süslendi, turist dört gün boyunca bol. Özel istekleri kaçırma.",
+ "Das Lichterfest hat begonnen, Lehrling! Die Feenkamine sind mit Laternen geschmückt, und vier Tage lang gibt es viele Touristen. Verpass die Sonderwünsche nicht.",
+ "¡Ha empezado la Fiesta de las Luces, aprendiz! Las chimeneas de hadas se han adornado con farolillos y habrá muchos turistas durante cuatro días. No te pierdas los encargos especiales.",
+ "光の祭典が始まったぞ、弟子よ！妖精の煙突はランタンで飾られ、4日間は観光客であふれる。特別依頼を逃すでないぞ。",
+ "빛 축제가 시작됐네, 제자여! 요정의 굴뚝이 등불로 장식됐고 나흘 동안 관광객이 많을 걸세. 특별 요청을 놓치지 말게.")
 
 # Morning events
 add("event.tag", "Morning event", "Sabah olayı", "Morgenereignis", "Suceso de la mañana", "朝の出来事", "아침 이벤트")

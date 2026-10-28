@@ -10,7 +10,7 @@ add("home.who.youPilot", "You and your pilot will fly", "Sen ve pilotun uçuraca
 add("home.who.youPilots", "You and your pilots will fly", "Sen ve pilotların uçuracak", "Du und deine Piloten fliegen", "Volarás tú, y también tus pilotos", "あなたとパイロットたちが飛ぶ", "당신과 조종사들이 비행합니다")
 add("home.who.pilot", "Your pilot will fly", "Pilotun uçuracak", "Dein Pilot fliegt", "Volará tu piloto", "パイロットが飛ぶ", "조종사가 비행합니다")
 add("home.who.pilots", "Your pilots will fly", "Pilotların uçuracak", "Deine Piloten fliegen", "Volarán tus pilotos", "パイロットたちが飛ぶ", "조종사들이 비행합니다")
-add("home.alert.festival", "%1$@, day %2$@/3!", "%1$@, gün %2$@/3!", "%1$@, Tag %2$@/3!", "¡%1$@, día %2$@/3!", "%1$@、%2$@/3日目！", "%1$@, %2$@/3일차!")
+add("home.alert.festival", "%1$@, day %2$@/%3$@!", "%1$@, gün %2$@/%3$@!", "%1$@, Tag %2$@/%3$@!", "¡%1$@, día %2$@/%3$@!", "%1$@、%2$@/%3$@日目！", "%1$@, %2$@/%3$@일차!")
 add("home.alert.festival.body", "Plenty of tourists, and special requests pay 50% more.", "Turist bol, özel isteklerin ödülü %50 fazla.", "Viele Touristen, und Sonderwünsche zahlen 50 % mehr.", "Muchos turistas, y los encargos especiales pagan un 50 % más.", "観光客がたくさん。特別依頼の報酬は50%増し。", "관광객이 많고 특별 요청 보상이 50% 더 많습니다.")
 add("regions.title", "Your regions", "Bölgelerin", "Deine Regionen", "Tus regiones", "あなたの地域", "내 지역")
 add("regions.here", "You're here", "Buradasın", "Du bist hier", "Estás aquí", "現在地", "현재 위치")

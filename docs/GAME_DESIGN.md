@@ -326,7 +326,7 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 **Şölenin en güzel anları (v116):** gösteri oynarken dört an saklanır: bütün brülörlerin aynı vuruşta yandığı an (8,5. sn), ışık dalgası (10,3), balonların figürü tuttuğu an (20,85; adı satın alınan figür ya da filoya göre Kaz sürüsü / Işık çemberi / Gökte bir kalp) ve final (22,9; "Final: N balon"). Ertesi sabah ilk kart olarak 2×2 baskı halinde gelir; her biri dokununca 1080×1350 paylaşım kartı olur (gece gökyüzü, eğik baskı, altında oyunun adı). Şölen bir an gelmeden geçilirse o an olmaz; ikiden az an varsa kart çıkmaz.
 
 ## Festivaller (Kapadokya)
-24. günden başlayarak 35 günde bir, 3 gün: Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
+24. günden başlayarak 35 günde bir, 4 gün (v121.11; Fiesta gibi): Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
 
 ## TestFlight düzeltmeleri (v121.2, v121.6)
 - **Uçuşta duraklatma:** uçuş sırasında sağ üstteki menü düğmesi ⏸ olur; "Duraklatıldı" kartı (irtifa, yakıt, Devam et, Ayarlar) açılır, uçuş donar, brülör ve valf bırakılır. Ayarlar kapanınca kart geri gelir. Uygulama arka plana giderse uçuş kendiliğinden duraklar.
