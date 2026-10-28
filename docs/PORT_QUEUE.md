@@ -5,6 +5,8 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 Kuyrukta:
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
+v121.12 (prototip ve Swift birlikte): yeni oyuncu düzeltmeleri (GAME_DESIGN "Yeni oyuncu düzeltmeleri"): sabah kart sınırı, tek balon onarımı en fazla 2 gün, zorunlu pas geç, yıldız yuvarlama, kartpostal koşulları (`firstCleanFlight`, `festivalFlown`), boş sepet sorusu, yakıt uyarısı %25, bayat ipucu ve övgü, bina ipuçları; prototipte Türkçe büyük harf (`lang`), tutardan sonra ek kaldırıldı, kartlarda 28 px düğme hatası, kartpostal düğmeleri eşit; emoji yerine çizim ikonlar (`LineGlyph`, prototipte `GLYPH`), dock düğmeleri tek satır ve sabit boyut, kırmızı bayrak ve yerde kalan balon kartlarında ✕.
+
 v121.11 (prototip ve Swift birlikte): Kapadokya festivalleri 4 gün (`FEST_DAYS`, `Rules.festivalDays`), uyarıdaki gün sayısı buna bağlı; Luksor tanıtımında başlangıç kasası ve satın alma kredisi metnindeki büyük kredi tutarı sabit yazı yerine para biçimiyle (`money(_:in:)`); altı dilde dil doğallığı düzeltmeleri.
 
 v121.9 (prototip ve Swift birlikte): her gün bir bina: `UNLOCK_DAY` (filo 3, banka 4, ekip 5, pazar 6, rehber 7, ajans 8, çarşı 9, atölye 10, okul 11), yeni kilitler `guide`, `agency`, `bazaar`, `workshop`, `school` (Swift'te yeni `Feature` durumları; eski kayıtlarda pazar/filo/ekip açıksa onlarla gelen binalar sessizce açılır, `unlV`), yeni Hezarfen ipuçları `guide`, `agency`, `workshop`, `school` (altı dilde), `pr` ipucu rehber ofisiyle, çarşı ipucu çarşının açılışında; bina dokunuşları, rehber/influencer eylemleri, okul ve atölye bölümleri yeni kilitlere bağlı.

@@ -236,5 +236,10 @@ public enum Rules {
     /// Share of tourists happy to pay `price`.
     public static func willing(_ price: Double, center: Double = 230) -> Double { 1 / (1 + exp((price - center) / 30)) }
 
-    public static func stars(_ rep: Double) -> Double { clamp(3 + (rep - 0.75) * 4, 1, 5) }
+    /// v121.12: rounded to one decimal, like every star the player sees, so a 2.96 that reads 3.0 opens a 3.0 hotel.
+    public static func stars(_ rep: Double) -> Double { (clamp(3 + (rep - 0.75) * 4, 1, 5) * 10).rounded() / 10 }
+    /// v121.12: with a single balloon a repair takes two days at most, so a crash doesn't stop the game for a week.
+    public static let onlyBalloonRepairDays = 2
+    /// v121.12: a morning shows at most this many of Hezarfen's lessons (and one postcard); the rest wait.
+    public static let morningLessons = 2
 }

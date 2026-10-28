@@ -238,6 +238,7 @@ extension DayEvent {
         case .showDropped(let r): loc("event.showDropped", eur(r))
         case .showCancelled(let r): loc("event.showCancelled", eur(r))
         case .rookieRepair: loc("event.rookieRepair")
+        case .onlyBalloonRepair(let d): loc("event.onlyBalloonRepair", num(d))
         case let .factoryReady(b, z): loc("event.factoryReady", bname(b), z.title)
         case let .factoryDelivered(r, z, p): loc("event.factoryDelivered", r, z.title, eur(p))
         case let .factoryKept(r, p): loc("event.factoryKept", r, eur(p))

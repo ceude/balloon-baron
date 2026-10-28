@@ -318,6 +318,7 @@ body.mhold #town{z-index:3;background:transparent}
 .big{flex:1;height:54px;border-radius:16px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:22px;letter-spacing:.01em;
   box-shadow:0 5px 0 var(--coral-d);transition:transform .06s, box-shadow .06s}
 .big:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--coral-d)}
+.card > .big{flex:none} /* v121.12: a column card squeezed flex:1 buttons to 28px */
 .big:disabled{background:#cfc8dd;box-shadow:0 5px 0 #b3aac6;cursor:not-allowed}
 .ghost{height:54px;padding:0 16px;border-radius:16px;background:var(--haze);font-family:var(--cond);font-weight:700;font-size:18px;box-shadow:0 5px 0 var(--line)}
 .ghost:active{transform:translateY(4px);box-shadow:0 1px 0 var(--line)}
@@ -836,6 +837,7 @@ body.night #cv{touch-action:none}
 </div>
 
 <script>
+document.documentElement.lang = 'tr'; /* v121.12: text-transform:uppercase needs it for İ/I */
 "use strict";
 const $ = id => document.getElementById(id);
 const cv = $('cv'); let ctx = cv.getContext('2d');
@@ -912,7 +914,8 @@ const HOTELS = [
   { id: 'magara', name: 'Uçhisar Mağara Otel',    min: 3.8, fee: 220, rep: .01, pax: 12, c: 290, col: '#f3e08a', buy: 240000, inc: 2000 },
   { id: 'saray',  name: 'Kapadokya Saray Resort', min: 4.4, fee: 380, rep: .0125, pax: 18, c: 340, col: '#ffb3a0', buy: 520000, inc: 4300 }
 ];
-const starVal = r => clamp(3 + (r - .75) * 4, 1, 5);
+/* v121.12: rounded to one decimal, like every star the player sees, so a 2,96★ that reads 3,0★ opens a 3,0★ hotel */
+const starVal = r => Math.round(clamp(3 + (r - .75) * 4, 1, 5) * 10) / 10;
 const owns = x => (S.ownHotels || []).includes(x.id);
 const myHotels = () => HOTELS.filter(x => S.hotels.includes(x.id) || owns(x));
 const hotelInc = x => Math.round(x.inc * (starVal(S.rep) < x.min ? .5 : 1) * (S.winter ? .6 : 1));
@@ -991,10 +994,10 @@ const HEZ = {
   price: 'Dün koltukların hepsi dolmadı evlat. Bilet fiyatı turistin kararını değiştirir: biraz düşürürsen boş koltuk kalmaz. Koltuklar hep doluysa da fiyatı artırıp daha çok kazanırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.',
   bank: 'Banka kapısı açıldı. Kredi seni hızlandırır ama faiz sabırlı bir düşmandır, unutma.',
   market: 'Pazar sayfası açıldı. Rakiplerini tanı: Göreme Sky ağır abidir, Kızıl Vadi kural tanımaz. Otellerle anlaşmalar da orada.',
-  guide: 'Rehber ofisi açıldı evlat. Otel ve tur rehberlerini ücretsiz uçurursan seni müşterilerine önerirler: popülerlik ve birkaç gün boyunca fazladan turist.',
-  agency: 'Influencer ajansı açıldı. Gezi influencerları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap.',
-  workshop: 'Balon atölyesinin arsası hazır evlat. Kurarsan balonlarını kendin tasarlarsın, sonra da kendi balonlarını üretirsin.',
-  school: 'Pilot okulunun arsası da hazır. Okulun olursa her sabah başvuranlar arasında bir okul mezunu bulunur: daha az kaza yapan pilotlar.',
+  guide: 'Rehber ofisi açıldı evlat. Otel ve tur rehberlerini ücretsiz uçurursan seni müşterilerine önerirler: popülerlik ve birkaç gün boyunca fazladan turist. Kasabada Rehber ofisini bul ve dokun.',
+  agency: 'Influencer ajansı açıldı. Gezi influencerları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap. Kasabada havuzlu ajans binasını bul ve dokun.',
+  workshop: 'Balon atölyesinin arsası hazır evlat. Kurarsan balonlarını kendin tasarlarsın, sonra da kendi balonlarını üretirsin. Kasabada Balon atölyesinin arsasını bul ve dokun.',
+  school: 'Pilot okulunun arsası da hazır. Okulun olursa her sabah başvuranlar arasında bir okul mezunu bulunur: daha az kaza yapan pilotlar. Kasabada Pilot okulunun arsasını bul ve dokun.',
   crew: 'Ekip sayfası açıldı. Çaylak pilot ucuzdur ama rüzgârda titrer. Uçtukça tecrübe kazanırlar, tabii maaş da isterler.',
   yellow: 'Sarı bayrak! Rüzgâr huysuz bugün. Ya pahalı sigortayla uç ya da balonları dinlendir.',
   red: 'Kırmızı bayrak, evlat. Ben bile böyle günde kanat açmazdım. Pas geçmek ayıp değil.',
@@ -1497,7 +1500,18 @@ function market(myPrice, myCap) {
 const demandGrowth = () => 1 + .6 * (1 - Math.exp(-(S.day - 1) / 50));
 const dayDemand = () => Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? (S.region === 'lux' ? 1.6 : 1.9) : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * holdBoost(S.region));
 let mode = 'office', tab = 'plan', FL = null, lastReport = null;
-function hezAdd(k) { if (!S.tips[k] && !S.hezQ.includes(k)) S.hezQ.push(k); }
+function hezAdd(k) { if (!S.tips[k] && !S.hezQ.includes(k) && !(S.hezLater || []).includes(k)) S.hezQ.push(k); }
+/* v121.12: nobody reads seven cards in a row. A morning shows at most two of Hezarfen's lessons and one postcard; the
+   rest wait for the next mornings, in order. News, rivals and the inspector aren't held back. */
+const MORNING_TIPS = 2;
+function spreadMorning() {
+  if (S.day < 2 || S.spreadDay === S.day) return; /* once a morning, not again on reload */
+  S.spreadDay = S.day;
+  const lesson = k => !/^(news|boss|hz|insp|guide):/.test(k) && !k.startsWith('p_'); /* praise has its own every-other-day pace */
+  const q = (S.hezLater || []).concat(S.hezQ); S.hezQ = []; S.hezLater = [];
+  let n = 0; for (const k of q) (lesson(k) && ++n > MORNING_TIPS ? S.hezLater : S.hezQ).push(k);
+  const posts = (S.postLater || []).concat(S.newPost || []); S.newPost = posts.slice(0, 1); S.postLater = posts.slice(1);
+}
 /* Early on Hezarfen notices what you do right: each once, at most every other day, in your first 40 days in Cappadocia. */
 function praiseCheck(flight, waitedOutRed) {
   if (S.region !== 'cap' || S.day > 40) return;
@@ -1512,6 +1526,7 @@ function praiseCheck(flight, waitedOutRed) {
   const k = Object.keys(ok).find(k => ok[k] && !S.tips[k]);
   if (k) { hezAdd(k); S.praiseDay = S.day; }
 }
+const praiseStill = k => !k.startsWith('p_') || ({ p_fleet: S.balloons.length >= 2, p_pilot: S.pilots.length >= 1, p_hotel: S.hotels.length >= 1, p_stars: starVal(S.rep) >= 4.3 })[k] !== false;
 /* The inspector comes by when an envelope is below 30%: two warnings five days apart, then a fine each visit. */
 function inspect() {
   const worn = S.balloons.filter(b => cond(b) < .3 && cond(b) > 0);
@@ -1724,6 +1739,7 @@ function nextPopup() {
   if (S.cash >= 0) S.rescueShown = false;
   if (S.workshop && S.workshop.order && S.workshop.order.seen !== S.day && !fabBusy()) { showOrder(); return; }
   if (AUTO) while (S.hezQ.length && S.hezQ[0].startsWith('news:')) AUTO.news.push(S.hezQ.shift()); /* so does Hezarfen's news */
+  while (S.hezQ.length && !praiseStill(S.hezQ[0])) S.hezQ.shift(); /* v121.12: a praise that's no longer true (the pilot was let go) is dropped */
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
   if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; issueScene(); return; }
   if (S.poach) { showPoach(); return; }
@@ -1810,7 +1826,7 @@ function startDay() {
   flagBackCheck();
   /* a morning event every 7-8 days once the town is open */
   if (S.day >= 12 && S.unl.crew && !S.winter && S.day >= (S.nextEvent || 12)) { S.eventDue = true; S.nextEvent = S.day + 7 + Math.round(Math.random()); }
-  unlockCheck(); assignPilots();
+  unlockCheck(); assignPilots(); spreadMorning();
   { const owls = S.pilots.filter(p => p.trait === 'nightowl' && S.balloons.some(b => b.pilot === p.id)); if (owls.length && Math.random() < .07) S.late = { day: S.day, pid: pick(owls).id }; }
   buildWorld(); save();
   setTimeout(nextPopup, HOMEI ? 700 + (HOMEI.dur + 1.2) * 1000 : 700); /* after the opening's pull-back */
@@ -1868,7 +1884,8 @@ function finishDay(flight) {
     if (sev) {
       /* v111: in your first three own flights a crash costs one day in repair (Hezarfen knows a mechanic) */
       const rookie = self && (S.selfFlights || 0) < COACH_FLIGHTS;
-      const repair = Math.round(z.cost * .35 * sev), comp = Math.round(pax * 2500 * sev), days = rookie ? 1 : 1 + Math.ceil(4 * sev);
+      const repair = Math.round(z.cost * .35 * sev), comp = Math.round(pax * 2500 * sev), days0 = rookie ? 1 : 1 + Math.ceil(4 * sev), only = S.balloons.length === 1, days = only ? Math.min(days0, ONLY_REPAIR) : days0;
+      if (only && days < days0) ev.push(`Tek balonun olduğu için tamirci acele edecek: onarım en fazla ${ONLY_REPAIR} gün.`);
       if (rookie) ev.push('Acemi koruması: Hezarfen\'in tanıdığı tamirci balonunu bir günde onaracak.');
       const hullPaid = S.ins.hull && !red, paxPaid = S.ins.pax && !red;
       Lg.repair += repair; Lg.comp += comp;
@@ -1954,7 +1971,7 @@ function finishDay(flight) {
     const worth = Math.max(0, S.cash) + S.balloons.reduce((a, b) => a + SIZES[b.size].cost, 0) + (S.ownHotels || []).reduce((a, id) => a + HOTELS.find(x => x.id === id).buy, 0);
     const fine = Math.max(5000, Math.round(worth * MONO_RATE / 100) * 100); Lg.mono = fine; S.cash -= fine; net -= fine; S.monoDays = 0;
     paperAdd(5, `Rekabet Kurumu'ndan tekel cezası: ${S.company}`, `Tek elde toplanan pazar payı: %${Math.round(shr * 100)}. Ceza: ${eur(fine)}.`);
-    ev.push(`Rekabet Kurumu pazarın %${Math.round(shr * 100)}'ini elinde tuttuğun için ${eur(fine)} tekel cezası kesti.`);
+    ev.push(`Rekabet Kurumu tekel cezası kesti: ${eur(fine)}. Pazar payın: %${Math.round(shr * 100)}.`);
   }
 
   if (S.cash < -5000) {
@@ -1964,7 +1981,7 @@ function finishDay(flight) {
       const v = seizeValue(take); S.cash += v; Lg.seize = v; net += v;
       S.balloons = S.balloons.filter(b => b !== take);
       paperAdd(5, `Banka ${S.company} balonuna el koydu`, `${take.name} borç karşılığı satıldı.`);
-      ev.push(`Banka borcun için ${take.name} balonuna el koydu ve ${eur(v)}'ya sattı.`);
+      ev.push(`Banka borcun için ${take.name} balonuna el koydu ve sattı: ${eur(v)}.`);
       if (take.id === S.flag && S.balloons.length) S.flag = S.balloons[0].id;
     }
     if (!S.balloons.length) S.over = true;
@@ -1981,6 +1998,8 @@ function finishDay(flight) {
   S.netHist = (S.netHist || []).concat([net]).slice(-14); loanUnlock();
   autoRegions(); const hn = holdingDay(); if (hn) Lg.hold = hn;
   if (S.fiesta && fl.length) S.fiestaFlown = (S.fiestaFlown || 0) + 1;
+  if (S.fest && fl.length) S.festFlown = 1;
+  if (fl.some(b => !(b.dmgUntil > S.day))) S.firstOk = 1; /* v121.12: the first-flight postcard waits for a flight that didn't end in a crash */
   const rpTot = paxTotal + S.plan.rpax.reduce((a, b) => a + b, 0);
   if (rpTot) S.shareNow = paxTotal / rpTot;
   net += checkChapters(ev, Lg, rpTot > 0);
@@ -2807,10 +2826,12 @@ function touristsToday() {
 function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
 /* Who's in the baskets today, for the ticket card. */
 /* TestFlight: why nothing flies today, from the most telling reason */
+/* v121.12: nothing can fly today and nothing can change that (all in repair, or a flying ban): the day has to be skipped */
+const forcedSkip = () => S.balloons.length > 0 && S.balloons.every(b => ['dmg', 'ban'].includes(canFly(b)));
 function noneReason() {
   const st = S.balloons.map(canFly), n = st.length, all = x => n && st.every(v => v === x);
-  if (all('ban')) return 'Bugün uçuş yasak.';
-  if (all('dmg')) { const d = Math.max(1, Math.min(...S.balloons.map(b => b.dmgUntil - S.day))); return `${n === 1 ? 'Balonun' : 'Bütün balonların'} onarımda, uçamaz. Kalan gün: ${d}`; }
+  if (all('ban')) return 'Bugün uçuş yasak. Günü pas geçmek zorundasın.';
+  if (all('dmg')) { const d = Math.max(1, Math.min(...S.balloons.map(b => b.dmgUntil - S.day))); return `${n === 1 ? 'Balonun' : 'Bütün balonların'} onarımda, uçamaz. Kalan gün: ${d}. Bugün günü pas geçmek zorundasın.`; }
   if (st.every(v => v === 'dmg' || v === 'worn')) return n === 1 ? 'Balonunun zarfı yıprandı, uçamaz. Filo\'dan yenile.' : 'Balonların onarımda ya da yıpranmış, uçamaz. Filo\'ya bak.';
   if (st.includes('nopilot') && !st.includes('ok')) return 'Balonlarının pilotu yok. Birini kendin uçur ya da pilot al.';
   if (st.includes('strike') && !st.includes('ok')) return 'Pilotların grevde. Amiral balonunu kendin uçur.';
@@ -2838,7 +2859,7 @@ function renderAct() {
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
   $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
   const go = $('go'); go.disabled = false;
-  go.textContent = n ? `Yolcu topla (${n} balon)` : 'Uçuş planını aç'; /* TestFlight: nothing to fly opens the plan, where the reason is */
+  go.textContent = n ? `Yolcu topla (${n} balon)` : forcedSkip() ? 'Günü pas geç' : 'Uçuş planını aç'; /* TestFlight: nothing to fly opens the plan, where the reason is */
   $('auto').hidden = !autoOk();
 }
 
@@ -3126,7 +3147,7 @@ function tabMarket(body) {
     else m.innerHTML = `<div class="t">${r.name} <span class="tag r">İflas etti</span></div><div class="s">${r.forSale ? 'Filosu satışta.' : 'Filosu satıldı.'}</div>`;
     it.appendChild(m); t.appendChild(it);
     if (r.alive && r.offer) {
-      const c = h('div', 'callout yel', `<b>${r.name} satılık.</b> Doluluğu düştü ya da parası azaldı. Şirketi ve ${r.balloons.length} balonunu ${eur(r.offer)}'ya devralabilirsin.`);
+      const c = h('div', 'callout yel', `<b>${r.name} satılık.</b> Doluluğu düştü ya da parası azaldı. Şirketi ve ${r.balloons.length} balonunu devralabilirsin: ${eur(r.offer)}.`);
       c.appendChild(fleetMix(r.balloons));
       const T = S.cash < r.offer && buyLoanTerms(r.offer);
       c.appendChild(T ? pbtn(`Krediyle devral (banka ${eur(T.fin)})`, () => buyLoanCard(r, false)) : pbtn(`Devral ${eur(r.offer)}`, () => takeOver(r), S.cash < r.offer));
@@ -3151,7 +3172,7 @@ function tabMarket(body) {
     const fmt = v => v.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const body2 = own
       ? `Senin otelin: ücret yok, ~${eur(hotelInc(x))}/gün oda geliri, ~${Math.round(x.pax * 1.5)} misafir, +${fmt(x.rep * 6)}★/gün.${starVal(S.rep) < x.min ? ' Popülerliğin otelin seviyesinin altında, doluluk yarıya düştü.' : ''}${S.winter ? ' Kışın doluluk düşük.' : ''}`
-      : `${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ ister. Anlaşma ${eur(x.fee)}/gün: ~${x.pax} misafir, +${fmt(x.rep * 4)}★/gün. Misafirleri ${eur(x.c)}'ya kadar bilete razı. Satın alırsan ücret biter, oda geliri gelir.`;
+      : `${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ ister. Anlaşma ${eur(x.fee)}/gün: ~${x.pax} misafir, +${fmt(x.rep * 4)}★/gün. Misafirlerin bilete verebileceği en yüksek fiyat: ${eur(x.c)}. Satın alırsan ücret biter, oda geliri gelir.`;
     it.appendChild(h('div', 'main', `<div class="t">${x.name}${own ? ' <span class="tag g">Senin oteli</span>' : has ? ' <span class="tag g">Anlaşmalı</span>' : ''}</div><div class="s">${body2}</div>`));
     if (owner) it.querySelector('.s').insertAdjacentHTML('afterbegin', `<b style="color:var(--red)">Sahibi: ${esc(owner)}. Bu otelle anlaşma yapılamaz.</b> `);
     else if (taken) it.querySelector('.s').insertAdjacentHTML('afterbegin', `<b style="color:var(--red)">${tk.by} ile anlaşmalı, ${tk.until - S.day} gün.</b> `);
@@ -3183,7 +3204,7 @@ function tabMarket(body) {
   tipBtn.style.alignSelf = 'flex-start'; t.appendChild(tipBtn);
   body.appendChild(hs);
   const rs = h('div', 'sec'); rs.appendChild(h('h2', null, 'Yolcu yorumları'));
-  rs.appendChild(h('div', 'callout grn', `<b>Popülerliğin ${stars(S.rep)}.</b> Yüksek popülerlik, rakiplerden bağımsız ekstra yolcu getirir: koltuklarının %${Math.round(50 * clamp((S.rep - .7) / .7, 0, 1))}'si kadar, bugün bu fiyatla yaklaşık ${repBonus()} kişi. 2,8★ altında bu etki sıfırlanır, 5★'da %50'ye çıkar.`));
+  rs.appendChild(h('div', 'callout grn', `<b>Popülerliğin ${stars(S.rep)}.</b> Yüksek popülerlik, rakiplerden bağımsız ekstra yolcu getirir: koltuk sayına oranla %${Math.round(50 * clamp((S.rep - .7) / .7, 0, 1))}, bugün bu fiyatla yaklaşık ${repBonus()} kişi. 2,8★ altında bu etki sıfırlanır, 5★'da %50'ye çıkar.`));
   if (S.reviews.length) {
     const sv = clamp(3 + (S.rep - .75) * 4, 1, 5);
     rs.appendChild(h('div', 'avg', `<span class="big2">${sv.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}</span><span><span class="stars" style="font-size:18px">${starStr(Math.round(sv))}</span><br><span class="hint">Yolcu puanın, yani popülerliğin</span></span>`));
@@ -4013,7 +4034,7 @@ function checkDeals() {
   const c = h('div', 'card');
   c.insertAdjacentHTML('beforeend', balloonIcon(r.col, r.col2).replace('class="ic"', 'class="ic" style="width:56px;height:56px"'));
   c.appendChild(h('h1', null, sale ? `${r.name} iflas etti!` : `${r.name} satılık!`));
-  c.appendChild(h('p', 'lead', sale ? `Şirket kapandı, ${n} balonluk filosu ${eur(price)}'ya satışta.` : `Doluluğu düştü ya da parası azaldı. Şirketi ve ${n} balonunu ${eur(price)}'ya devralabilirsin. Rakibin pazardan çekilir, yolcuları sana kalır.`));
+  c.appendChild(h('p', 'lead', sale ? `Şirket kapandı, ${n} balonluk filosu satışta: ${eur(price)}.` : `Doluluğu düştü ya da parası azaldı. Şirketi ve ${n} balonunu devralabilirsin: ${eur(price)}. Rakibin pazardan çekilir, yolcuları sana kalır.`));
   c.appendChild(fleetMix(sale ? r.forSale.sizes : r.balloons));
   c.appendChild(h('p', 'hint', 'Rakipten alınan balonlar ikinci el sayılır: satarsan yeni fiyatının %40\'ı eder (yeni balonda %60).'));
   const T = S.cash < price && buyLoanTerms(price);
@@ -4057,7 +4078,7 @@ function startCollect() {
   const go = h('button', 'big', 'Atla'); go.id = 'cGo';
   go.onclick = () => {
     if (!COL.done) { COL.t = COL.dur; return; }
-    leaveCollect();
+    leaveCollectChecked();
   };
   row.append(back, go); el.appendChild(row);
   el.hidden = false;
@@ -4082,7 +4103,7 @@ function updateCollect(dt) {
     /* who flies the flagship is decided here, when it can still change without grounding a balloon */
     const ch = flyChoice();
     if (ch) {
-      const row = $('cBtns'), back = row.firstChild, pick = on => () => { S.selfFly = on; assignPilots(); leaveCollect(); };
+      const row = $('cBtns'), back = row.firstChild, pick = on => () => { S.selfFly = on; assignPilots(); leaveCollectChecked(); };
       const solo = flying().length === 1, down = ch.self - ch.pilots;
       /* today's choice is the big button on top; cancel and the other choice sit under it, slimmer. With no spare pilot,
          letting the pilots fly leaves a balloon on the ground; the button says so. */
@@ -4181,6 +4202,17 @@ function collectItems(t) {
   return items;
 }
 /* Take-off: hide the panel, the jeeps come and go (about 3.5 s), then the flight. */
+/* v121.12: no passengers boarded; flying empty earns nothing, so ask first */
+function leaveCollectChecked() {
+  if (!COL || COL.shown > 0) { leaveCollect(); return; }
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Sepette yolcu yok'));
+  c.appendChild(h('p', 'lead', 'Bu fiyata bilet alan olmadı. Boş uçarsan bilet geliri olmaz ama masraflar yine çıkar. Fiyatı düşürüp yeniden yolcu toplayabilirsin.'));
+  const row = h('div', 'btns');
+  const back = h('button', 'ghost', 'Fiyatı değiştir'); back.onclick = () => { m.hidden = true; $('collect').hidden = true; COL = null; mode = 'office'; $('wx').style.opacity = ''; $('sheet').hidden = false; refresh(); priceSheet(true); };
+  const go = h('button', 'big', 'Boş kalk'); go.onclick = () => { m.hidden = true; leaveCollect(); };
+  row.append(back, go); c.appendChild(row); m.appendChild(c); m.hidden = false;
+}
 function leaveCollect() {
   if (!COL || COL.leave) return;
   COL.leave = T; $('collect').hidden = true; sfx('click');
@@ -4313,7 +4345,7 @@ function showRepChart() {
 /* ---------- achievements and postcards ---------- */
 /* Each first is a postcard you keep: an album in the menu. Checked every evening (shared across regions). */
 const ACHS = [
-  ['first', 'İlk uçuş', 'Şirketinin ilk sabahı', '🎈', () => S.day >= 2],
+  ['first', 'İlk uçuş', 'Şirketinin ilk sabahı', '🎈', () => !!S.firstOk],
   ['mission', 'İlk özel istek', 'Bir görevi başardın', '⭐', () => (S.stat || {}).mis >= 1],
   ['perfect10', 'Tüy gibi', '10 kusursuz iniş', '🪶', () => (S.stat || {}).perfect >= 10],
   ['fleet5', 'Küçük filo', '5 balon', '5️⃣', () => S.balloons.length >= 5],
@@ -4325,7 +4357,7 @@ const ACHS = [
   ['pax1k', 'Bin yolcu', 'Toplam 1.000 yolcu uçurdun', '🧺', () => (S.stat || {}).pax >= 1000],
   ['pax10k', 'On bin yolcu', 'Toplam 10.000 yolcu', '🏆', () => (S.stat || {}).pax >= 10000],
   ['winter', 'Kışı atlattın', 'İlk kış bitti', '❄️', () => !!S.nextWinter],
-  ['fest', 'Festival havası', 'Bir festivalde uçtun', '🎉', () => !!S.festN || !!S.fiestaFlown],
+  ['fest', 'Festival havası', 'Bir festivalde uçtun', '🎉', () => !!S.festFlown || !!S.fiestaFlown],
   ['rivalDown', 'Rakip düştü', 'Bir rakip iflas etti', '📉', () => S.rivals.some(r => !r.alive)],
   ['boss', 'Eski usta', 'Vadinin eski sahibi çekildi', '🎩', () => Object.keys(S.bossSaid || {}).some(k => k.endsWith(':gone'))],
   ['design', 'Kendi desenin', 'İlk balon tasarımın', '🎨', () => (S.designs || []).length >= 1],
@@ -4468,8 +4500,10 @@ function showPostcard() {
   c.appendChild(h('div', 'chap', 'Yeni kartpostal'));
   c.insertAdjacentHTML('beforeend', `<div class="pwrap">${postcard(k, true)}</div>`);
   c.appendChild(h('h1', null, A[1])); c.appendChild(h('p', 'lead', A[2] + '.'));
-  const ok = h('button', 'big', 'Albüme koy'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(ok);
-  const sh = h('button', 'ghost', 'Paylaş'); sh.style.width = '100%'; sh.onclick = () => showShare(k, () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }); c.appendChild(sh);
+  const row = h('div', 'btns'); row.style.width = '100%';
+  const sh = h('button', 'ghost', 'Paylaş'); sh.onclick = () => showShare(k, () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); });
+  const ok = h('button', 'big', 'Albüme koy'); ok.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); };
+  row.append(sh, ok); c.appendChild(row); /* v121.12: the two buttons side by side, the same size */
   m.appendChild(c); m.hidden = false; sfx('fanfare');
 }
 /* The postcard album. A tapped postcard grows into its own card, with the share button right under it. */
@@ -4640,6 +4674,7 @@ function startFlight(pax) {
    layers and ran out of fuel, so for your first three flights Hezarfen says a word when it helps: drifting away from
    the field, standing still, over the field, low on fuel (that one on every flight). */
 const COACH_FLIGHTS = 3;
+const ONLY_REPAIR = 2; /* v121.12: with a single balloon a repair takes two days at most, so a crash doesn't stop the game for a week */
 const coached = () => (S.selfFlights || 0) < COACH_FLIGHTS;
 function coachSay(k, html) {
   const f = FL; if (!f || f.done) return;
@@ -4650,12 +4685,13 @@ function coachSay(k, html) {
 }
 function coachTick(f, dt) {
   if (!f.air || f.done) return;
-  if (f.fuel < 30 && !f.lowFuel) { f.lowFuel = 1; f.coachK = null; f.coachAt = 0; coachSay('fuel', '<b>Yakıt azalıyor.</b> Brülöre kısa kısa bas, yakıtı inişe sakla. Hedefe doğru esen katmanda kal.'); }
+  if (f.fuel < 25 && !f.lowFuel) { f.lowFuel = 1; f.coachK = null; f.coachAt = 0; coachSay('fuel', '<b>Yakıt azalıyor.</b> Brülöre kısa kısa bas, yakıtı inişe sakla. Hedefe doğru esen katmanda kal.'); }
   if (f.coachAt && T - f.coachAt > 6 && f.coachK && !f.msg) { $('tip').hidden = true; f.coachK = null; }
   if (!coached()) return;
   const dx = S.weather.target - f.x, toward = f.vx * Math.sign(dx);
   f.wrongT = toward < -.3 && Math.abs(dx) > 150 ? (f.wrongT || 0) + dt : 0;
   f.stillT = Math.abs(toward) <= .3 && Math.abs(dx) > 150 ? (f.stillT || 0) + dt : 0;
+  if ((f.coachK === 'wrong' && !f.wrongT) || (f.coachK === 'still' && !f.stillT)) { $('tip').hidden = true; f.coachK = null; } /* v121.12: the hint goes once it's no longer true */
   if (Math.abs(dx) < 260 && f.alt > 40) coachSay('near', '<b>İniş alanının üstündesin!</b> Brülörü bırak, yavaşça alçal. Yere yaklaşınca kısa basışlarla yumuşak in.');
   else if (f.wrongT > 2.5) coachSay('wrong', '<b>Bu rüzgâr seni hedeften uzaklaştırıyor.</b> Soldaki oklara bak: hedefe doğru esen katmana çık ya da in. Kesik çizgiyi geçince rüzgâr değişir.');
   else if (f.stillT > 4) coachSay('still', '<b>Neredeyse duruyorsun.</b> Başka bir yüksekliğe geç: her katmanın rüzgârı solda, balonunun altındaki etiket şu anki rüzgârı gösterir.');
@@ -8538,7 +8574,7 @@ function autoStop(why) {
 $('auto').onclick = autoStart;
 
 /* ---------- boot ---------- */
-$('go').onclick = () => !flying().length ? showFleetPlan() : pilotCheck(() => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); });
+$('go').onclick = () => !flying().length ? (forcedSkip() ? launch(true) : showFleetPlan()) : pilotCheck(() => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); });
 /* v110: skipping a flyable green or yellow day asks once, since wages and upkeep are paid anyway */
 $('skip').onclick = () => {
   if (S.weather.flag === 'red' || !flying().length) { launch(true); return; }

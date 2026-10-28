@@ -831,9 +831,11 @@ struct HomeView: View {
             }
             // TestFlight: a new player met a dead "No balloon flies today" button; it now opens the flight plan,
             // where the reason (no pilot, repair…) and the fix are.
-            BigButton(title: loc(none ? "home.openPlan" : "home.collect")) {
+            // v121.12: when nothing can fly and nothing can change that (repair, flying ban) the day has to be skipped
+            BigButton(title: loc(none ? (s.forcedSkip ? "home.skipForced" : "home.openPlan") : "home.collect")) {
                 Haptics.press()
-                if none { showPlan = true }
+                if none && s.forcedSkip { store.fly(skip: true) }
+                else if none { showPlan = true }
                 else if !GroundedView.grounded(s).isEmpty { groundedWarning = true; Haptics.warning() } else { launchOrConfirmRed(s) }
             }
         }

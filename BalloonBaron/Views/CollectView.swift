@@ -123,6 +123,8 @@ private final class CollectModel {
 struct CollectView: View {
     @Environment(GameStore.self) private var store
     @State private var model: CollectModel?
+    /// v121.12: nobody boarded; flying empty earns nothing, so it asks first.
+    @State private var emptyAsk = false
 
     var body: some View {
         VStack(spacing: 0) {
@@ -147,6 +149,20 @@ struct CollectView: View {
             if store.collectAnimation { SoundEngine.shared.crowd(true) } else { model?.skip() }
         }
         .onDisappear { SoundEngine.shared.crowd(false) }
+        .alert(loc("collect.empty.title"), isPresented: $emptyAsk) {
+            Button(loc("collect.empty.price")) {
+                store.cancelCollect()
+                store.showPriceSheet = true
+            }
+            Button(loc("collect.empty.go")) { store.leaveCollect() }
+            Button(loc("common.cancel"), role: .cancel) {}
+        } message: {
+            Text(loc("collect.empty.lead"))
+        }
+    }
+
+    private func leave() {
+        if let m = model, m.shown == 0 { emptyAsk = true } else { store.leaveCollect() }
     }
 
     /// The town's queue follows the seats as they fill.
@@ -322,7 +338,7 @@ struct CollectView: View {
         SoundEngine.shared.play(.click)
         Haptics.press()
         store.act { $0.setSelfFly(on) }
-        store.leaveCollect()
+        leave()
     }
 
     private func goButtons(_ m: CollectModel) -> some View {
@@ -335,7 +351,7 @@ struct CollectView: View {
             .buttonStyle(ChunkyButtonStyle(kind: .glassGhost))
             Button(go) {
                 SoundEngine.shared.play(.click)
-                if !m.done { m.skip() } else { store.leaveCollect() }
+                if !m.done { m.skip() } else { leave() }
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
         }

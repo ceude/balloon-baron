@@ -20,7 +20,7 @@ extension GameState {
     public func earned(_ a: Achievement) -> Bool {
         let s = statistics
         switch a {
-        case .first: return day >= 2
+        case .first: return firstCleanFlight == true
         case .mission: return s.missions >= 1
         case .perfect10: return s.perfectLandings >= 10
         case .fleet5: return local.balloons.count >= 5
@@ -32,7 +32,7 @@ extension GameState {
         case .pax1k: return s.passengers >= 1000
         case .pax10k: return s.passengers >= 10000
         case .winter: return local.nextWinter != nil
-        case .fest: return (local.festivalCount ?? 0) > 0 || local.fiestaFlown > 0
+        case .fest: return local.festivalFlown == true || local.fiestaFlown > 0
         case .rivalDown: return local.rivals.contains { !$0.alive }
         case .boss: return (bossSaid ?? []).contains { $0.hasSuffix(".gone") }
         case .design: return !designs.isEmpty

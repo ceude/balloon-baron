@@ -41,6 +41,6 @@ final class CoachTests: XCTestCase {
         g.state.day = 2
         g.state.local.lastShare = MarketShare(me: 7, cap: 8, rivals: [], demand: 50, extra: 0)
         g.startDay()
-        XCTAssertTrue(g.state.hezQueue.contains(.tip(.price)))
+        XCTAssertTrue((g.state.hezQueue + (g.state.hezLater ?? [])).contains(.tip(.price)))
     }
 }

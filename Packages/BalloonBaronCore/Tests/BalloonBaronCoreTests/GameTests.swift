@@ -177,7 +177,7 @@ final class GameTests: XCTestCase {
                 let r = g.finishDay(flight: nil)
                 if r.events.contains(where: { if case .founderAbsent = $0 { true } else { false } }) { absentEvent = true }
             }
-            return (g.state.rep, absentEvent, g.state.tipsSeen.contains(.absent) || g.state.hezQueue.contains(.tip(.absent)))
+            return (g.state.rep, absentEvent, g.state.tipsSeen.contains(.absent) || (g.state.hezQueue + (g.state.hezLater ?? [])).contains(.tip(.absent)))
         }
         let away = run(present: false), here = run(present: true)
         XCTAssertTrue(away.absentEvent)

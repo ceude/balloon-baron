@@ -30,6 +30,7 @@ public struct Game: Sendable {
         unlockCheck()
         assignPilots()
         rollLatePilot()
+        spreadMorning()
         // The wind mast's forecast is made in the morning, so the town can show it.
         if state.level(.mast) >= 2 { _ = forecast() }
     }
@@ -91,8 +92,27 @@ public struct Game: Sendable {
         if state.school { state.candidates.insert(make(rng.chance(0.3) ? .experienced : .rookie, school: true), at: 0) }
     }
 
+    /// v121.12: nobody reads seven cards in a row. A morning shows at most `Rules.morningLessons` of Hezarfen's lessons
+    /// and one postcard; the rest wait for the next mornings, in order. News, rivals and the inspector aren't held back.
+    mutating func spreadMorning() {
+        guard state.day >= 2, state.spreadDay != state.day else { return }
+        state.spreadDay = state.day
+        var keep: [HezMessage] = [], later: [HezMessage] = [], n = 0
+        for m in (state.hezLater ?? []) + state.hezQueue {
+            var lesson = false
+            if case .tip = m { lesson = true } // praise has its own every-other-day pace
+            if lesson { n += 1 }
+            if lesson && n > Rules.morningLessons { later.append(m) } else { keep.append(m) }
+        }
+        state.hezQueue = keep
+        state.hezLater = later
+        let posts = (state.postcardsLater ?? []) + (state.newPostcards ?? [])
+        state.newPostcards = Array(posts.prefix(1))
+        state.postcardsLater = Array(posts.dropFirst())
+    }
+
     mutating func queueTip(_ t: Tip) {
-        if !state.tipsSeen.contains(t) && !state.hezQueue.contains(.tip(t)) { state.hezQueue.append(.tip(t)) }
+        if !state.tipsSeen.contains(t) && !state.hezQueue.contains(.tip(t)) && !(state.hezLater ?? []).contains(.tip(t)) { state.hezQueue.append(.tip(t)) }
     }
 
     mutating func unlockCheck() {
@@ -169,6 +189,8 @@ public struct Game: Sendable {
 
     /// Pops the next Hezarfen message and marks lessons as seen.
     public mutating func nextHezarfen() -> HezMessage? {
+        // v121.12: a praise that's no longer true (the pilot was let go) is dropped
+        while let first = state.hezQueue.first, case .praise(let p) = first, !praiseStillTrue(p) { state.hezQueue.removeFirst() }
         guard !state.hezQueue.isEmpty else { return nil }
         let m = state.hezQueue.removeFirst()
         if case .tip(let t) = m { state.tipsSeen.insert(t) }

@@ -328,6 +328,16 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 ## Festivaller (Kapadokya)
 24. günden başlayarak 35 günde bir, 4 gün (v121.11; Fiesta gibi): Bağ Bozumu, Bayram tatili, Işık Şenliği sırayla. Talep ×1,4, özel istek her gün çıkar, ödülleri ×1,5. Yollarda bayraklar asılır.
 
+## Yeni oyuncu düzeltmeleri (v121.12)
+- **Sabah kartları:** bir sabah en fazla 2 Hezarfen dersi ve 1 kartpostal gösterilir; kalanlar sırayla sonraki sabahlara kalır (`MORNING_TIPS`, `Rules.morningLessons`, `hezLater`, `postcardsLater`). Haberler, rakipler, müfettiş ve övgüler sınıra girmez (övgü zaten iki günde bir).
+- **Tek balon onarımı:** tek balonun varsa onarım en fazla 2 gün sürer (`ONLY_REPAIR`, `Rules.onlyBalloonRepairDays`), raporda yazar.
+- **Zorunlu pas geç:** bütün balonlar onarımda ya da uçuş yasağı varsa ana düğme "Günü pas geç" olur ve kart "Bugün günü pas geçmek zorundasın" der.
+- **Yıldızlar:** popülerlik her yerde ekrandaki gibi tek ondalığa yuvarlanır; 2,96★ "3,0★" görünür ve 3,0★ isteyen oteli açar.
+- **Kartpostallar:** "İlk uçuş" kazasız ilk uçuştan sonra, "Festival havası" bir festival gününde uçunca gelir.
+- **Boş sepet:** hiç yolcu binmediyse kalkıştan önce sorar: Fiyatı değiştir / Boş kalk.
+- **Uçuş koçu:** yakıt uyarısı %25'te; "Bu rüzgâr seni uzaklaştırıyor" ipucu doğru katmana geçince kalkar. Bekleyen bir övgü artık doğru değilse (pilot çıkarıldıysa) gösterilmez.
+- **Bina ipuçları:** rehber, ajans, atölye ve okul açılınca Hezarfen "kasabada binayı bul ve dokun" der.
+
 ## TestFlight düzeltmeleri (v121.2, v121.6)
 - **Uçuşta duraklatma:** uçuş sırasında sağ üstteki menü düğmesi ⏸ olur; "Duraklatıldı" kartı (irtifa, yakıt, Devam et, Ayarlar) açılır, uçuş donar, brülör ve valf bırakılır. Ayarlar kapanınca kart geri gelir. Uygulama arka plana giderse uçuş kendiliğinden duraklar.
 - **Rüzgâr etiketi:** sepetin altındaki yeşil/kırmızı hap yerine balonun üstünde küçük koyu cam bir etiket: renkli dairede ok (yeşil: tarlaya taşıyor, turuncu: taşımıyor) ve hız. Alçalırken iniş alanı, peri bacaları ve engeller görünür kalır.

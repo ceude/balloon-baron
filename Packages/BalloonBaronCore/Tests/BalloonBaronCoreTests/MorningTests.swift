@@ -1,0 +1,57 @@
+import XCTest
+@testable import BalloonBaronCore
+
+/// v121.12: the newcomer fixes from the playtest.
+final class MorningTests: XCTestCase {
+    func newGame() -> Game { Game(company: "Test Air", colors: Rules.palettes[0], seed: 11) }
+
+    func testAMorningShowsAtMostTwoLessonsAndOnePostcard() {
+        var g = newGame()
+        g.state.day = 3
+        g.state.hezQueue = [.tip(.fleet), .spring, .tip(.goals), .tip(.mission), .tip(.price)]
+        g.state.newPostcards = [.first, .mission]
+        g.spreadMorning()
+        XCTAssertEqual(g.state.hezQueue, [.tip(.fleet), .spring, .tip(.goals)])
+        XCTAssertEqual(g.state.hezLater ?? [], [.tip(.mission), .tip(.price)])
+        XCTAssertEqual(g.state.newPostcards ?? [], [.first])
+        g.spreadMorning()
+        XCTAssertEqual(g.state.hezLater ?? [], [.tip(.mission), .tip(.price)], "once a morning")
+        g.state.hezQueue = []
+        g.state.day = 4
+        g.spreadMorning()
+        XCTAssertEqual(g.state.hezQueue, [.tip(.mission), .tip(.price)], "the rest come the next morning, in order")
+        XCTAssertEqual(g.state.newPostcards ?? [], [.mission])
+    }
+
+    func testOnlyBalloonIsRepairedInTwoDays() {
+        var g = newGame()
+        g.state.selfFlights = Rules.coachFlights
+        g.state.day = 5
+        g.startDay()
+        g.state.weather?.flag = .green
+        guard g.launch(skip: false) != nil else { return XCTFail("the flagship should fly") }
+        let r = g.finishDay(flight: FlightResult(landing: .crash, distance: 400))
+        XCTAssertLessThanOrEqual(g.state.balloons[0].damagedUntil - 5, Rules.onlyBalloonRepairDays)
+        XCTAssertTrue(r.events.contains(.onlyBalloonRepair(days: Rules.onlyBalloonRepairDays)))
+        XCTAssertNotEqual(g.state.firstCleanFlight, true, "a crash isn't the first-flight postcard")
+    }
+
+    func testStarsAreRoundedLikeTheScreen() {
+        let rep = 0.75 + (2.96 - 3) / 4
+        XCTAssertEqual(Rules.stars(rep), 3.0)
+    }
+
+    func testStalePraiseIsDropped() {
+        var g = newGame()
+        g.state.pilots = []
+        g.state.hezQueue = [.praise(.pilot), .spring]
+        XCTAssertEqual(g.nextHezarfen(), .spring)
+    }
+
+    func testForcedSkipWhenTheOnlyBalloonIsInRepair() {
+        var g = newGame()
+        XCTAssertFalse(g.state.forcedSkip)
+        g.state.balloons[0].damagedUntil = g.state.day + 2
+        XCTAssertTrue(g.state.forcedSkip)
+    }
+}

@@ -238,7 +238,7 @@ final class FlightModel {
 
     private func coachTick(_ dt: Double) {
         guard sim.airborne, !sim.done else { return }
-        if sim.fuel < 30 && !lowFuel {
+        if sim.fuel < 25 && !lowFuel {
             lowFuel = true
             coachAt = nil
             coachTip = nil
@@ -252,6 +252,11 @@ final class FlightModel {
         let dx = sim.weather.target - sim.x, toward = sim.vx * (dx < 0 ? -1 : 1)
         wrongT = toward < -0.3 && abs(dx) > 150 ? wrongT + dt : 0
         stillT = abs(toward) <= 0.3 && abs(dx) > 150 ? stillT + dt : 0
+        // v121.12: the hint goes once it's no longer true
+        if (coachTip == .wrong && wrongT == 0) || (coachTip == .still && stillT == 0) {
+            if tip == coachTip { tip = nil }
+            coachTip = nil
+        }
         if abs(dx) < 260 && sim.alt > 40 { say(.near) }
         else if wrongT > 2.5 { say(.wrong) }
         else if stillT > 4 { say(.still) }

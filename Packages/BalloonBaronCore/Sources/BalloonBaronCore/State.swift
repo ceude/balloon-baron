@@ -265,6 +265,12 @@ public struct GameState: Codable, Equatable, Sendable {
     public var unlocked: Set<Feature> = []
     /// v121.9: 2 once the one-building-a-day schedule applies; nil in older saves (`unlockCheck` migrates them).
     public var unlockVersion: Int?
+    /// v121.12: a flight landed without a crash (the first-flight postcard).
+    public var firstCleanFlight: Bool?
+    /// v121.12: lessons and postcards held back for the next mornings, and the day they were last spread.
+    public var hezLater: [HezMessage]?
+    public var postcardsLater: [Achievement]?
+    public var spreadDay: Int?
     public var tipsSeen: Set<Tip> = []
     public var hezQueue: [HezMessage] = []
     public var over = false
@@ -368,6 +374,11 @@ public struct GameState: Codable, Equatable, Sendable {
 
     /// `chartered`: hired out whole by a morning event; `late`: its pilot overslept; `strike`: its pilot is on strike.
     public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold, chartered, late, strike }
+
+    /// v121.12: nothing can fly today and nothing can change that (all in repair, or a flying ban): the day has to be skipped.
+    public var forcedSkip: Bool {
+        !local.balloons.isEmpty && local.balloons.allSatisfy { let s = status($0); return s == .damaged || s == .banned }
+    }
 
     public func status(_ b: Balloon) -> FlyStatus {
         if local.banUntil >= day { return .banned }

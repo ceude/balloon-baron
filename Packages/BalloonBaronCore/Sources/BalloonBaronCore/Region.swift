@@ -178,6 +178,8 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var festival: Festival?
     public var festivalNext: Int?
     public var festivalCount: Int?
+    /// v121.12: flew on a festival day here.
+    public var festivalFlown: Bool?
     /// Most passengers flown in a day, for the record headline.
     public var bestPax: Int?
     /// Morning events: pilots on strike today, a balloon chartered today, fuel price up until, documentary day.

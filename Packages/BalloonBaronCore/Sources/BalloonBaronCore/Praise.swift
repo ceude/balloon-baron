@@ -13,6 +13,17 @@ public enum Praise: String, Codable, CaseIterable, Sendable {
 }
 
 extension Game {
+    /// Whether a waiting praise still holds when its turn comes (v121.12).
+    func praiseStillTrue(_ p: Praise) -> Bool {
+        switch p {
+        case .fleet: return state.balloons.count >= 2
+        case .pilot: return !state.pilots.isEmpty
+        case .hotel: return !state.hotelDeals.isEmpty
+        case .stars: return state.stars >= 4.3
+        default: return true
+        }
+    }
+
     /// In the first 40 days in Cappadocia: each praise once, at most every other day, one waiting at a time.
     /// Port of the prototype's `praiseCheck`.
     mutating func praiseCheck(flight: FlightResult?, waitedOutRed: Bool) {

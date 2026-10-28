@@ -122,7 +122,9 @@ extension Game {
             if severity > 0 {
                 let repair = jsRound(Double(z.cost) * 0.35 * severity)
                 let comp = jsRound(Double(pax) * 2500 * severity)
-                let days = rookie ? 1 : 1 + Int((4 * severity).rounded(.up))
+                let days0 = rookie ? 1 : 1 + Int((4 * severity).rounded(.up))
+                let only = state.balloons.count == 1, days = only ? min(days0, Rules.onlyBalloonRepairDays) : days0
+                if only && days < days0 { ev.append(.onlyBalloonRepair(days: Rules.onlyBalloonRepairDays)) }
                 if rookie { ev.append(.rookieRepair) }
                 let hullPaid = state.insureHull && !red, paxPaid = state.insurePax && !red
                 lg.repairs += repair
@@ -323,6 +325,10 @@ extension Game {
         runAutopilots()
         lg.holdingNet = holdingDay()
         if state.fiesta != nil && !flyingIDs.isEmpty { state.fiestaFlown += 1 }
+        // v121.12: the festival postcard needs a flight in one; the first-flight postcard waits for a flight that didn't
+        // end in a crash.
+        if state.festival != nil && !flyingIDs.isEmpty { state.local.festivalFlown = true }
+        if state.balloons.contains(where: { flyingIDs.contains($0.id) && $0.damagedUntil <= state.day }) { state.firstCleanFlight = true }
         if paxTotal + rivalPax > 0 { state.shareNow = Double(paxTotal) / Double(paxTotal + rivalPax) }
         lg.chapterReward = checkChapters(events: &ev)
         if paxTotal > (state.bestPax ?? 0) && state.day > 5 {

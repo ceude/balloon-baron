@@ -35,6 +35,8 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case showCancelled(refund: Int)
     /// v111: in your first own flights a crash costs one day in repair.
     case rookieRepair
+    /// v121.12: your only balloon is repaired in a hurry.
+    case onlyBalloonRepair(days: Int)
     case licenseRenewedByFlight
     case founderAbsent(days: Int)
     case antitrustFine(sharePercent: Int, fine: Int)

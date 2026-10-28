@@ -17,7 +17,7 @@ final class AutopilotTests: XCTestCase {
         g.state.barons[.cap] = 150
         g.state.hezQueue = []
         g.startDay()
-        XCTAssertTrue(g.state.hezQueue.contains(.tip(.autopilot)))
+        XCTAssertTrue((g.state.hezQueue + (g.state.hezLater ?? [])).contains(.tip(.autopilot)))
     }
 
     func testSelfFlagshipFliesWithoutTheFlightScene() {
