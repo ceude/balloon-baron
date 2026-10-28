@@ -94,6 +94,15 @@ final class OpeningFlow {
     @ObservationIgnored var onFinish: () -> Void = {}
     /// The landing hands over: the 2D zoom matching the last frame, the flagship's grid spot, the look's height in 2D px.
     @ObservationIgnored var onLanded: (_ z: Double, _ gx: Double, _ gy: Double, _ up: Double) -> Void = { _, _, _, _ in }
+    /// v121.10 (`OPEN.replay`): watched again from Settings. Hezarfen's card goes straight to the lift-off, which flies the
+    /// running company's name and colours to its own town.
+    @ObservationIgnored var replay: (company: String, colors: [String], state: GameState)?
+
+    /// "Devam" on Hezarfen's card when watching again: no name, no colour pick.
+    func replayLiftOff() {
+        guard stage == .talk, let r = replay else { return }
+        liftOff(company: r.company, colors: r.colors, state: r.state)
+    }
 
     var filmReady: Bool { stage != .loading }
 
@@ -183,7 +192,7 @@ final class OpeningFlow {
 
     /// `openLiftOff`: the envelope fills in the company's colours on the field and goes up.
     func liftOff(company: String, colors: [String], state: GameState?) {
-        guard stage == .pick || stage == .name, let film else { return }
+        guard stage == .pick || stage == .name || (stage == .talk && replay != nil), let film else { return }
         self.company = company
         stage = .liftOff
         film.setPick(false, aspect: 0.46)
@@ -252,6 +261,25 @@ struct OpeningGate: View {
     }
 }
 
+/// v121.10: the opening film watched again from Settings, over the running game. Without the 3D set (no Metal, Reduce
+/// Motion, not built in time) nothing plays and the game simply comes back; there is no 2D setup to fall back to.
+struct OpeningReplay: View {
+    @Environment(GameStore.self) private var store
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var flow = OpeningFlow()
+
+    var body: some View {
+        ZStack {
+            if !flow.fallback && !reduceMotion && OpeningLoader.supported { OpeningView(flow: flow) }
+        }
+        .onAppear {
+            guard let s = store.state, !reduceMotion, OpeningLoader.supported else { store.finishReplay(); return }
+            flow.replay = (s.company, s.colors, s)
+        }
+        .onChange(of: flow.fallback) { _, f in if f { store.finishReplay() } }
+    }
+}
+
 /// The opening film with its letterbox, captions, Hezarfen's line, the setup cards and "Geç".
 struct OpeningView: View {
     @Environment(GameStore.self) private var store
@@ -287,13 +315,16 @@ struct OpeningView: View {
         .opacity(flow.leaving ? 0 : 1)
         .allowsHitTesting(!flow.leaving)
         .onAppear {
+            let flow = flow
             flow.onFinish = {
-                store.finishOpening()
+                // watched again: the game is back as it was (`replayDone`); a new company: its first day
+                if flow.replay != nil { store.finishReplay() } else { store.finishOpening() }
                 OpeningLoader.shared.release()
             }
             flow.onLanded = { z, gx, gy, up in
                 let c = TownGeo.iso(gx, gy)
-                store.startHomeIntro(HomeIntro(z0: CGFloat(z), px: c.x, py: c.y - CGFloat(up), start: Date().addingTimeInterval(0.7)))
+                store.startHomeIntro(HomeIntro(z0: CGFloat(z), px: c.x, py: c.y - CGFloat(up), start: Date().addingTimeInterval(0.7)),
+                                     popups: flow.replay == nil)
             }
             flow.load()
         }
@@ -347,7 +378,11 @@ struct OpeningView: View {
                 .padding(.horizontal, 10)
                 .background(Color(red: 1, green: 250 / 255, blue: 243 / 255).opacity(0.96), in: RoundedRectangle(cornerRadius: 14))
                 .shadow(color: .black.opacity(0.3), radius: 13, y: 10)
-                BigButton(title: loc("opening.name")) { flow.toName() }
+                if flow.replay != nil {
+                    BigButton(title: loc("intro.setup.continue")) { flow.replayLiftOff() }
+                } else {
+                    BigButton(title: loc("opening.name")) { flow.toName() }
+                }
             }
             .frame(width: min(g.size.width * 0.92, 440))
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)

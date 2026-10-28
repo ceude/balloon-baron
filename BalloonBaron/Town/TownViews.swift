@@ -317,6 +317,7 @@ struct HomeTownView: View {
     /// Something opaque is over the town: a page, the night, the flight or the day's report.
     private var covered: Bool {
         store.page != nil || store.night != nil || store.flightPax != nil || store.report != nil || store.showIntro
+            || (store.replayingOpening && store.homeIntro == nil)
     }
 
     /// The camera is (or may be) moving: zoomed in, gliding, collecting, a morning event, the morning's hold.

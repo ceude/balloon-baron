@@ -21,3 +21,8 @@ add("opening.name", "Let's name it", "Adını koyalım", "Geben wir ihm einen Na
 # The skip button over the film
 add("opening.skip", "Skip ›", "Geç ›", "Überspringen ›", "Saltar ›", "スキップ ›", "건너뛰기 ›")
 add("opening.skip.a11y", "Skip the film", "Filmi geç", "Film überspringen", "Saltar la película", "映像をスキップ", "영상 건너뛰기")
+
+# v121.10: watching the opening film again from Settings
+add("settings.film", "Film", "Film", "Film", "Película", "映像", "영상")
+add("settings.replayOpening", "Watch the opening film again", "Başlangıç filmini tekrar izle", "Eröffnungsfilm noch einmal ansehen",
+    "Volver a ver la película de inicio", "オープニング映像をもう一度見る", "오프닝 영상 다시 보기")
