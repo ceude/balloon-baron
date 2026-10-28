@@ -118,8 +118,8 @@ struct ShowCardView: View {
                     if let k {
                         FigureThumb(item: k, colors: s.colors, company: s.company)
                     } else {
-                        Text("V · ◯ · ♥").font(Theme.font(10, .heavy)).foregroundStyle(Color(hex: "#ffd27a"))
-                            .frame(maxWidth: .infinity, maxHeight: .infinity).background(Color(hex: "#141838"))
+                        // v122.2: drawn, not text: the ♥ turned into an emoji on the phone
+                        AutoFigureGlyph().background(Color(hex: "#141838"))
                     }
                 }
                 .frame(width: 48, height: 54)
@@ -135,7 +135,7 @@ struct ShowCardView: View {
                     .foregroundStyle(Theme.coral)
                 }
             }
-            .frame(width: 78)
+            .frame(width: 78, height: 96, alignment: .top) // v122.2: every chip the same size
             .padding(.vertical, 6).padding(.horizontal, 4)
             .background(on ? Color.white : Color(hex: "#fff8ea"), in: RoundedRectangle(cornerRadius: 14))
             .overlay(RoundedRectangle(cornerRadius: 14).stroke(on ? Theme.coral : Color(hex: "#e6cfa6"), lineWidth: on ? 2.5 : 1.5))
@@ -161,4 +161,27 @@ struct ShowCardView: View {
 
     /// Whether the show is worth a row on the pages: the market is open and the fleet is big enough.
     static func offered(_ g: Game) -> Bool { g.state.unlocked.contains(.market) && g.state.balloons.count >= Rules.showMinBalloons }
+}
+
+/// v122.2: the free finale figure's thumbnail, the three shapes it can draw: a V, a ring and a heart.
+struct AutoFigureGlyph: View {
+    var body: some View {
+        Canvas { ctx, size in
+            let k = min(size.width / 48, size.height / 54), ox = (size.width - 48 * k) / 2, oy = (size.height - 54 * k) / 2
+            func p(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: ox + x * k, y: oy + y * k) }
+            let gold = Color(hex: "#ffd27a")
+            var v = Path()
+            v.move(to: p(6, 22)); v.addLine(to: p(11, 32)); v.addLine(to: p(16, 22))
+            ctx.stroke(v, with: .color(gold), style: StrokeStyle(lineWidth: 1.8 * k, lineCap: .round, lineJoin: .round))
+            ctx.stroke(Path(ellipseIn: CGRect(origin: p(19, 22), size: CGSize(width: 10 * k, height: 10 * k))), with: .color(gold), lineWidth: 1.8 * k)
+            var h = Path()
+            h.move(to: p(38, 32))
+            h.addCurve(to: p(34.6, 23.4), control1: p(33, 28.5), control2: p(32, 25))
+            h.addCurve(to: p(38, 24.6), control1: p(36.4, 22.4), control2: p(37.7, 23.6))
+            h.addCurve(to: p(41.4, 23.4), control1: p(38.3, 23.6), control2: p(39.6, 22.4))
+            h.addCurve(to: p(38, 32), control1: p(44, 25), control2: p(43, 28.5))
+            h.closeSubpath()
+            ctx.fill(h, with: .color(gold))
+        }
+    }
 }

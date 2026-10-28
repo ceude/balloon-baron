@@ -756,7 +756,7 @@ button.founder{display:block;width:100%;text-align:left;margin:4px 0 12px;paddin
 .bundleg{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;background:linear-gradient(#bfe0f2,#ffe6c4);border-radius:16px;padding:8px}.bundleg img{width:100%;height:auto;aspect-ratio:64/72;background:rgba(255,255,255,.55);border-radius:10px}
 
 .figrow{display:flex;gap:6px;overflow-x:auto;padding:2px 0 10px;margin-bottom:4px}.figc{flex:0 0 auto;display:flex;flex-direction:column;align-items:center;gap:2px;width:78px;padding:6px 4px;border-radius:14px;border:1.5px solid #e6cfa6;background:#fff8ea;color:var(--ink)}
-.figc img{width:48px;height:54px;background:#141838;border-radius:10px}.figc .auto{display:flex;align-items:center;justify-content:center;width:48px;height:54px;background:#141838;border-radius:10px;color:#ffd27a;font-size:10px;font-weight:800}
+.figc img{width:48px;height:54px;background:#141838;border-radius:10px}.figc .auto{display:block;width:48px;height:54px;background:#141838;border-radius:10px}.figc .auto svg{width:48px;height:54px;display:block} /* v122.2: drawn V, ring and heart (the ♥ turned into an emoji) */
 .figc b{font-size:12px;line-height:1.1;text-align:center}.figc small{font-size:11px;font-weight:800;color:var(--coral)}.figc.on{border:2.5px solid var(--coral);background:#fff}
 button.upsell{display:flex;flex-direction:column;gap:2px;width:100%;margin-top:8px;padding:9px 12px;border-radius:14px;border:1.5px dashed #c99a4a;background:#fff8ea;color:var(--ink);font-size:13px;text-align:left}
 .nightprev{width:100%;height:220px;border-radius:16px;display:block;background:#1b1840}
@@ -6836,7 +6836,7 @@ function showCard(done) {
 function figPicker(c, done) {
   c.appendChild(h('div', 'lbl', 'Final figürü'));
   const row = h('div', 'figrow'), cur = showFigOn();
-  const chip = (k, label, img) => { const lock = k && !owned(k), b = h('button', 'figc' + ((cur || null) === k ? ' on' : '') + (lock ? ' lock' : ''), `${img ? `<img src="${img}" alt="">` : '<span class="auto">V · ◯ · ♥</span>'}<b>${label}</b>${lock ? '<small>' + LOCK + ' Pakette</small>' : ''}`);
+  const chip = (k, label, img) => { const lock = k && !owned(k), b = h('button', 'figc' + ((cur || null) === k ? ' on' : '') + (lock ? ' lock' : ''), `${img ? `<img src="${img}" alt="">` : '<span class="auto"><svg viewBox="0 0 48 54" aria-hidden="true"><g fill="none" stroke="#ffd27a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22 L11 32 L16 22"/><circle cx="24" cy="27" r="5"/></g><path d="M38 32 C33 28.5 32 25 34.6 23.4 C36.4 22.4 37.7 23.6 38 24.6 C38.3 23.6 39.6 22.4 41.4 23.4 C44 25 43 28.5 38 32Z" fill="#ffd27a"/></svg></span>'}<b>${label}</b>${lock ? '<small>' + LOCK + ' Pakette</small>' : ''}`);
     b.onclick = () => { if (lock) return iapBuy('figPack', () => { S.showFig = k; save(); showCard(done); }); S.showFig = k; save(); showCard(done); }; row.appendChild(b); };
   chip(null, 'Filona göre');
   for (const k of Object.keys(SHOP).filter(q => SHOP[q].kind === 'fig')) chip(k, k === 'finitial' ? `${SHOP[k].n}: ${esc(figLetter())}` : SHOP[k].n, shopThumb(k));
