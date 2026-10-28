@@ -73,6 +73,8 @@ final class FlightModel {
     let tutorial: Bool
     /// v111: your first own flights get the flying coach (`coachTick`).
     let coached: Bool
+    /// v122.8: the very first own flight (the chimneys' red glow is only for it).
+    let firstFlight: Bool
     private var coachAt: Double?
     private var coachTip: Tip?
     private var said: [Tip: Int] = [:]
@@ -252,6 +254,7 @@ final class FlightModel {
         self.pax = pax
         tutorial = !s.tutorialDone
         coached = (s.selfFlights ?? 0) < Rules.coachFlights
+        firstFlight = (s.selfFlights ?? 0) < 1
         tip = s.tutorialDone ? .pax : .tutorial
         bg = ScenePainter.backgroundBalloons(s)
         // Festivals pay half as much again for special requests.
@@ -924,8 +927,8 @@ private enum FlightPainter {
         ScenePainter.rect(&ctx, lx - 40, groundY - 1, 80, 4, ScenePainter.mix("#5c4a3a", "#b9996e", p))
         let chim = m.tutK == "chimney"
         var basket: (x: Double, alt: Double)?
-        // v122.1: the red glow near a chimney only in the first, coached flights; once learned it stays out of the way
-        if f.airborne && !f.done && m.coached { basket = (x: f.x, alt: f.alt) }
+        // v122.1/v122.8: the red glow near a chimney only on the very first own flight; once learned it stays out of the way
+        if f.airborne && !f.done && m.firstFlight { basket = (x: f.x, alt: f.alt) }
         m.tutC.chim = ScenePainter.obstacles(&ctx, cam: cam, f.obstacles, region: look.region, p: p,
                                              basket: basket, ringAll: chim,
                                              pointed: m.tutCh?.c, label: chim ? loc("flight.chimneyLabel") : nil)

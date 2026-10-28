@@ -5715,7 +5715,7 @@ function draw(dt) {
       const cw = c.w * kx, chh = c.h * ky;
       chimney(x, groundY + 1, cw, chh, mix(mix('#5a3430', '#cf9a72', p), '#c08c66', c.tone * .3), mix('#3e2422', '#9a6446', p), mix('#2e1c1a', '#6a4030', p));
       let glow = 0;
-      if (f && f.air && !f.done && coached()) { /* v122.1: the red glow only in the first, coached flights */ const dxm = Math.abs(f.x - c.x) - c.w / 2; glow = clamp(1 - dxm / 90, 0, 1) * clamp(1 - (f.alt - c.h) / 60, 0, 1); }
+      if (f && f.air && !f.done && (S.selfFlights || 0) < 1) { /* v122.1/v122.8: the red glow only on the very first own flight */ const dxm = Math.abs(f.x - c.x) - c.w / 2; glow = clamp(1 - dxm / 90, 0, 1) * clamp(1 - (f.alt - c.h) / 60, 0, 1); }
       const tutC = TUTA && TUTA.k === 'chimney';
       chimneyEdge(x, groundY + 1, cw, chh, glow > .02 || tutC ? `rgba(255,70,50,${tutC ? .95 : .35 + .6 * glow})` : 'rgba(30,14,12,.55)', glow > .02 || tutC ? 2.6 : 1.4, glow * 14 + (tutC ? 6 : 0));
       if (f && f.ts && f.ts.ch && f.ts.ch.c === c) {
