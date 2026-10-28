@@ -5,6 +5,8 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 Kuyrukta: boş.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
+v122.3 (prototip ve Swift birlikte): rehberler Ayşe, Can, Ekin (kimlikler aynı: ayse, mehmet, selin); rehber ofisinin üst yazısı "Rehberle anlaş, sana turist getirsin".
+
 v122.2 (prototip ve Swift birlikte): şölen kartında "Filona göre" figürü emoji yerine çizim (V, halka, kalp: `AutoFigureGlyph`, prototipte satır içi SVG); Swift'te figür kartları eşit boy (96 pt).
 
 v122.1 (prototip ve Swift birlikte): peribacası kırmızı parlaması yalnızca koçlu ilk 3 uçuşta; rüya uçuşunda balon daha hızlı yükselir (520/420).

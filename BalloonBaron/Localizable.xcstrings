@@ -29896,37 +29896,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mehmet"
+            "value": "Can"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mehmet"
+            "value": "Can"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mehmet"
+            "value": "Can"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "メフメト"
+            "value": "ジャン"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "메흐메트"
+            "value": "잔"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mehmet"
+            "value": "Can"
           }
         }
       }
@@ -29978,37 +29978,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Selin"
+            "value": "Ekin"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Selin"
+            "value": "Ekin"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Selin"
+            "value": "Ekin"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "セリン"
+            "value": "エキン"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "셀린"
+            "value": "에킨"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Selin"
+            "value": "Ekin"
           }
         }
       }
@@ -30265,37 +30265,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nimm die Guides kostenlos mit, dann empfehlen sie dich ihren Kunden"
+            "value": "Schließ einen Vertrag mit einem Guide, dann bringt er dir Touristen"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fly the guides for free and they recommend you to their clients"
+            "value": "Sign a guide and they bring you tourists"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lleva gratis a los guías y te recomendarán a sus clientes"
+            "value": "Llega a un acuerdo con un guía y te traerá turistas"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ガイドを無料で乗せれば、客にお前を薦めてくれる"
+            "value": "ガイドと契約すれば観光客を連れてくる"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "가이드를 무료로 태우면 손님에게 당신을 추천합니다"
+            "value": "가이드와 계약하면 관광객을 데려옵니다"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rehberleri ücretsiz uçur, seni müşterilerine önersinler"
+            "value": "Rehberle anlaş, sana turist getirsin"
           }
         }
       }

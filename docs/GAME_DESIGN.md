@@ -128,8 +128,8 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
   | Rehber | Ücret | Popülerlik | Süre | Turist/gün | Bekleme |
   |---|---|---|---|---|---|
   | Ayşe, otel rehberi | €900 | +0,03 (≈+0,1★) | 2 gün | 4 | 4 gün |
-  | Mehmet, tur rehberi (eski tek anlaşma) | €1.500 | +0,05 (≈+0,2★) | 3 gün | 5 | 5 gün |
-  | Selin, kıdemli rehber | €2.400 | +0,07 (≈+0,3★) | 4 gün | 7 | 6 gün |
+  | Can, tur rehberi (eski tek anlaşma) | €1.500 | +0,05 (≈+0,2★) | 3 gün | 5 | 5 gün |
+  | Ekin, kıdemli rehber | €2.400 | +0,07 (≈+0,3★) | 4 gün | 7 | 6 gün |
 - **Influencer ajansı (v122):** kendi ekranı, üç influencer; fiyat 2.500 + 400 × balon sayısı ile çarpılır (100'e yuvarlanır). Kampanya süresince her gün +0,03 popülerlik (eskisi gibi).
 
   | Influencer | Fiyat | Popülerlik | Süre | Turist/gün | Bekleme |

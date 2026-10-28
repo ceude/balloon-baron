@@ -10,7 +10,7 @@ struct GuideOfficeView: View {
         if let s = store.state {
             let wait = s.local.guideCooldown - s.day
             let busy = s.day <= s.local.guideUntil ? loc("guides.busy", num(s.local.guideUntil - s.day + 1)) : nil
-            // The guided action lights the first guide you can afford, else Mehmet.
+            // The guided action lights the first guide you can afford, else Can (id mehmet).
             let tagged = GuideOffer.allCases.first { wait <= 0 && s.cash >= $0.cost } ?? .mehmet
             OfferScreen(title: loc("town.b.guide"), sub: loc("guides.sub"), busy: busy, wait: wait, color: Color(hex: "#3ad0c0")) {
                 ForEach(GuideOffer.allCases, id: \.self) { g in
