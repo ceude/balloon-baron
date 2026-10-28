@@ -739,12 +739,10 @@ struct HoldingDealCard: View {
                     .buttonStyle(.plain)
                     .disabled(!breakEnabled)
                     .opacity(breakEnabled ? 1 : 0.45)
-                    .confirmationDialog(breakTitle, isPresented: $confirmBreak, titleVisibility: .visible) {
-                        Button(loc("holding.shape.breakYes"), role: .destructive, action: breakAction)
-                        Button(loc("holding.shape.breakNo"), role: .cancel) {}
-                    } message: {
-                        Text(breakNote ?? "")
-                    }
+                    // v122.5: the game's own card, not the system dialog
+                    .modifier(GameAlert(shown: $confirmBreak, title: breakTitle, message: breakNote ?? "",
+                                        primary: loc("holding.shape.breakNo"), secondary: loc("holding.shape.breakYes"),
+                                        onSecondary: breakAction, cover: true))
                     if let breakNote {
                         Text(breakNote)
                             .font(Theme.font(12))

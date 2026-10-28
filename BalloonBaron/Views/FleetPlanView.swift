@@ -309,16 +309,11 @@ struct NoPilotAlert: ViewModifier {
     let goCrew: () -> Void
 
     func body(content: Content) -> some View {
-        content.alert(loc("noPilot.title"), isPresented: $shown) {
-            if crewOpen {
-                Button(loc("noPilot.goCrew")) { goCrew() }
-                Button(loc("common.cancel"), role: .cancel) {}
-            } else {
-                Button(loc("noPilot.ok"), role: .cancel) {}
-            }
-        } message: {
-            Text(loc(crewOpen ? "noPilot.body" : "noPilot.locked"))
-        }
+        // v122.5: the game's own card, not the system alert
+        content.modifier(GameAlert(shown: $shown, title: loc("noPilot.title"), message: loc(crewOpen ? "noPilot.body" : "noPilot.locked"),
+                                   primary: loc(crewOpen ? "noPilot.goCrew" : "noPilot.ok"),
+                                   secondary: crewOpen ? loc("common.cancel") : nil,
+                                   onPrimary: { if crewOpen { goCrew() } }))
     }
 }
 

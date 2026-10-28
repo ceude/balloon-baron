@@ -60,6 +60,52 @@ struct CardCloseX: View {
 }
 
 /// Text styles of the prototype's cards.
+/// v122.5 (TestFlight: the iOS system alert looked out of place): a short question in the game's own card. The main
+/// answer is the big coral button, the other one a ghost button under it; ✕ and the dimmed backdrop just close it.
+struct GameAlert: ViewModifier {
+    @Binding var shown: Bool
+    let title: String
+    let message: String
+    let primary: String
+    var secondary: String? = nil
+    var onPrimary: () -> Void = {}
+    var onSecondary: () -> Void = {}
+    /// From a small view deep in a scrolling page: presented over the whole screen instead of over the view.
+    var cover = false
+
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if cover {
+            content.fullScreenCover(isPresented: $shown) { card.presentationBackground(.clear) }
+        } else {
+            content
+                .overlay { if shown { card.transition(.opacity) } }
+                .animation(.easeOut(duration: 0.18), value: shown)
+        }
+    }
+
+    private var card: some View {
+        ModalCard(onClose: { shown = false }) {
+            CardText.title(title)
+            CardText.lead(message)
+            Button(primary) {
+                SoundEngine.shared.play(.click)
+                shown = false
+                onPrimary()
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+            if let secondary {
+                Button {
+                    SoundEngine.shared.play(.click)
+                    shown = false
+                    onSecondary()
+                } label: { Text(secondary).frame(maxWidth: .infinity) }
+                .buttonStyle(ChunkyButtonStyle(kind: .ghost, wide: true))
+            }
+        }
+    }
+}
+
 enum CardText {
     /// `.card h1`.
     static func title(_ s: String) -> some View {

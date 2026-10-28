@@ -5,6 +5,8 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 Kuyrukta: boş.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
+v122.5 (yalnız Swift): sistem uyarıları yerine oyunun kart stili (`GameAlert`: başlık, metin, büyük turuncu ana düğme, altında ikinci düğme, ✕): pilotsuz balon uyarısı, boş sepet sorusu, holding'de sponsorlu şekil sözleşmesini bozma onayı. Prototip zaten kendi kartlarını kullanıyordu.
+
 v122.4 (prototip ve Swift birlikte): öğretici sürerken Kapadokya'nın 1. ve 2. günü sabit senaryo (`GameState.tutorialScene`, `TutorialScene`: yeşil bayrak, sabit katmanlar ve hedef, görev yok, talep 110 / 320), 2. gün 160 € ile başlar (`price2_start`), 2. gün dersi `price2` / `price2_up` ("Dün düşürmek işe yaradı; bugün turist çok: fiyatı artır, müşterin azalmaz."), `TutorialState.all`'a `price2`. Ekonomi testleri öğreticiyi kapatarak çalışır.
 
 v122.3 (prototip ve Swift birlikte): rehberler Ayşe, Sena, Ekin (kimlikler aynı: ayse, mehmet, selin); rehber ofisinin üst yazısı "Rehberle anlaş, sana turist getirsin".

@@ -149,16 +149,11 @@ struct CollectView: View {
             if store.collectAnimation { SoundEngine.shared.crowd(true) } else { model?.skip() }
         }
         .onDisappear { SoundEngine.shared.crowd(false) }
-        .alert(loc("collect.empty.title"), isPresented: $emptyAsk) {
-            Button(loc("collect.empty.price")) {
-                store.cancelCollect()
-                store.showPriceSheet = true
-            }
-            Button(loc("collect.empty.go")) { store.leaveCollect() }
-            Button(loc("common.cancel"), role: .cancel) {}
-        } message: {
-            Text(loc("collect.empty.lead"))
-        }
+        // v122.5: the game's own card, not the system alert
+        .modifier(GameAlert(shown: $emptyAsk, title: loc("collect.empty.title"), message: loc("collect.empty.lead"),
+                            primary: loc("collect.empty.price"), secondary: loc("collect.empty.go"),
+                            onPrimary: { store.cancelCollect(); store.showPriceSheet = true },
+                            onSecondary: { store.leaveCollect() }))
     }
 
     private func leave() {
