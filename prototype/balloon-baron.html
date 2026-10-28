@@ -3167,6 +3167,7 @@ function tabMarket(body) {
     if (r.forSale) {
       const c = h('div', 'callout grn', `<b>${r.name} filosu satışta.</b> Balon: ${r.forSale.sizes.length}.`);
       c.appendChild(fleetMix(r.forSale.sizes));
+      c.appendChild(h('p', 'hint', crewNote(r, true)));
       const T = S.cash < r.forSale.price && buyLoanTerms(r.forSale.price);
       c.appendChild(T ? pbtn(`Krediyle satın al (banka ${eur(T.fin)})`, () => buyLoanCard(r, true)) : pbtn(`Satın al ${eur(r.forSale.price)}`, () => buyFleet(r), S.cash < r.forSale.price));
       t.appendChild(c);
@@ -4028,19 +4029,21 @@ function openAdPicker(b) {
    rival's pilots too, one per balloon, on the contracts they had. Their level follows the rival's style. The crew is
    made once per offer, so the card and the deal show the same people. */
 const CREW_MIX = { safe: [.05, .35, .6], mid: [.2, .55, .25], risky: [.5, .4, .1] };
-function rivalCrew(r) {
-  if (r.crew && r.crew.length === r.balloons.length) return r.crew;
-  const mix = CREW_MIX[r.style] || CREW_MIX.mid;
-  r.crew = r.balloons.map(() => {
+/* v121.13: a bankrupt rival's fleet comes with its pilots too (a player can't tell the two deals apart) */
+const dealCrew = (r, sale) => sale ? crewFor(r.forSale, r.forSale.sizes, r.style) : crewFor(r, r.balloons, r.style);
+const rivalCrew = r => dealCrew(r, false);
+function crewFor(o, sizes, style) {
+  if (o.crew && o.crew.length === sizes.length) return o.crew;
+  const mix = CREW_MIX[style] || CREW_MIX.mid;
+  o.crew = sizes.map(() => {
     const x = Math.random(), lvl = x < mix[0] ? 1 : x < mix[0] + mix[1] ? 2 : 3;
     return { name: pick(P_NAMES) + ' ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + '.', lvl, xp: 0, trait: rollTrait(), wage: Math.round(LEVELS[lvl].wage * rnd(.9, 1.1)) };
   });
-  return r.crew;
+  return o.crew;
 }
-const crewWages = r => rivalCrew(r).reduce((a, p) => a + p.wage, 0);
-const crewNote = r => { const c = rivalCrew(r), n = k => c.filter(p => p.lvl === k).length; return `Pilotları da mevcut sözleşmeleriyle gelir. Pilot: ${c.length} (kıdemli ${n(3)}, deneyimli ${n(2)}, çaylak ${n(1)}). Maaşlar: ${eur(crewWages(r))}/gün.`; };
+const crewNote = (r, sale) => { const c = dealCrew(r, sale), n = k => c.filter(p => p.lvl === k).length; return `Pilotları da mevcut sözleşmeleriyle gelir. Pilot: ${c.length} (kıdemli ${n(3)}, deneyimli ${n(2)}, çaylak ${n(1)}). Maaşlar: ${eur(c.reduce((a, p) => a + p.wage, 0))}/gün.`; };
 function takeOver(r) { setTimeout(nextPopup, 300); S.cash -= r.offer; r.balloons.forEach(z => addUsedBalloon(z)); rivalCrew(r).forEach(p => S.pilots.push({ id: S.nextId++, ...p })); r.crew = null; rivalGone(r.name, true); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; assignPilots(); $('menu').hidden = true; refresh(); }
-function buyFleet(r) { S.cash -= r.forSale.price; r.forSale.sizes.forEach(z => addUsedBalloon(z)); r.forSale = null; assignPilots(); $('menu').hidden = true; refresh(); }
+function buyFleet(r) { S.cash -= r.forSale.price; r.forSale.sizes.forEach(z => addUsedBalloon(z)); dealCrew(r, true).forEach(p => S.pilots.push({ id: S.nextId++, ...p })); r.forSale = null; assignPilots(); $('menu').hidden = true; refresh(); }
 /* What a rival's fleet is made of, one line per basket size, biggest first. */
 function fleetMix(sizes) {
   const box = h('div', 'fmix');
@@ -4062,7 +4065,7 @@ function checkDeals() {
   c.appendChild(h('h1', null, sale ? `${r.name} iflas etti!` : `${r.name} satılık!`));
   c.appendChild(h('p', 'lead', sale ? `Şirket kapandı, ${n} balonluk filosu satışta: ${eur(price)}.` : `Doluluğu düştü ya da parası azaldı. Şirketi ve ${n} balonunu devralabilirsin: ${eur(price)}. Rakibin pazardan çekilir, yolcuları sana kalır.`));
   c.appendChild(fleetMix(sale ? r.forSale.sizes : r.balloons));
-  if (!sale) c.appendChild(h('p', 'hint', crewNote(r)));
+  c.appendChild(h('p', 'hint', crewNote(r, sale)));
   c.appendChild(h('p', 'hint', 'Rakipten alınan balonlar ikinci el sayılır: satarsan yeni fiyatının %40\'ı eder (yeni balonda %60).'));
   const T = S.cash < price && buyLoanTerms(price);
   if (S.cash < price) c.appendChild(h('p', 'hint', T ? `Kasanda ${eur(S.cash)} var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.` : S.unl.bank && S.balloons.length < BUYLOAN.need ? `Kasanda ${eur(S.cash)} var. Satın alma kredisi için daha büyük bir filo gerekir. Gereken balon: ${BUYLOAN.need}, sende: ${S.balloons.length}.` : `Kasanda ${eur(S.cash)} var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin.`));

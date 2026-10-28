@@ -3,7 +3,7 @@
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
 Kuyrukta:
-- v121.13: rakip devralınınca pilotları da mevcut sözleşmeleriyle gelir, balon başına bir pilot (`rivalCrew`, `CREW_MIX`, `crewNote`; GAME_DESIGN "Pilotlarıyla devralma"). Swift'te: `Rival`'a isteğe bağlı `crew`, devralmada `pilots`'a eklenir, satış kartında not, altı dilde metin.
+- v121.13: rakip devralınınca ya da iflas eden şirketin filosu alınınca pilotları da mevcut sözleşmeleriyle gelir, balon başına bir pilot (`dealCrew`, `crewFor`, `CREW_MIX`, `crewNote`; GAME_DESIGN "Pilotlarıyla devralma"). Swift'te: `Rival`'a ve satıştaki filoya isteğe bağlı `crew`, devralmada ve filo alımında `pilots`'a eklenir, satış kartında not, altı dilde metin.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
 v121.13 (prototip ve Swift birlikte): başka bölgedeyken biten Fiesta, festival ve kış, bölgeye dönünce sabah sessizce kapanır (`expireSeasons`); önceden "Balloon Fiesta, gün 44/4" görünüyordu.
