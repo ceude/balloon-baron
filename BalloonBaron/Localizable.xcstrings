@@ -33381,37 +33381,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "4,3 Sterne! Dein Name spricht sich im Tal herum, Lehrling. Die Touristen fragen jetzt nach dir."
+            "value": "Über 4,3 Sterne! Dein Name spricht sich im Tal herum, Lehrling. Die Touristen fragen jetzt nach dir."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "4.3 stars! Your name is spreading in the valley, kid. Tourists are asking for you now."
+            "value": "Past 4.3 stars! Your name is spreading in the valley, kid. Tourists are asking for you now."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡4,3 estrellas! Tu nombre empieza a sonar en el valle, aprendiz. Los turistas ya preguntan por ti."
+            "value": "¡Más de 4,3 estrellas! Tu nombre empieza a sonar en el valle, aprendiz. Los turistas ya preguntan por ti."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "星4.3だ！谷でお前の名が知られ始めたぞ、弟子よ。観光客がお前のことを尋ねておる。"
+            "value": "星4.3を超えたぞ！谷でお前の名が知られ始めたぞ、弟子よ。観光客がお前のことを尋ねておる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "별 4.3개! 계곡에 자네 이름이 퍼지기 시작했군, 제자여. 관광객들이 이제 자네를 찾는다네."
+            "value": "별 4.3개를 넘었군! 계곡에 자네 이름이 퍼지기 시작했군, 제자여. 관광객들이 이제 자네를 찾는다네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "4,3 yıldız! Vadide adın duyulmaya başladı evlat. Turistler artık seni soruyor."
+            "value": "4,3 yıldızı geçtin! Vadide adın duyulmaya başladı evlat. Turistler artık seni soruyor."
           }
         }
       }

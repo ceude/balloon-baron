@@ -66,12 +66,12 @@ add("hez.praise.profit",
  "五日続けて黒字だ！本当によくやっている。金庫をこのまま守れば、冬も怖くない。",
  "닷새 연속 흑자라니! 정말 잘하고 있네, 제자여. 금고를 이렇게 튼튼히 지키면 겨울도 두렵지 않을 걸세.")
 add("hez.praise.stars",
- "4.3 stars! Your name is spreading in the valley, kid. Tourists are asking for you now.",
- "4,3 yıldız! Vadide adın duyulmaya başladı evlat. Turistler artık seni soruyor.",
- "4,3 Sterne! Dein Name spricht sich im Tal herum, Lehrling. Die Touristen fragen jetzt nach dir.",
- "¡4,3 estrellas! Tu nombre empieza a sonar en el valle, aprendiz. Los turistas ya preguntan por ti.",
- "星4.3だ！谷でお前の名が知られ始めたぞ、弟子よ。観光客がお前のことを尋ねておる。",
- "별 4.3개! 계곡에 자네 이름이 퍼지기 시작했군, 제자여. 관광객들이 이제 자네를 찾는다네.")
+ "Past 4.3 stars! Your name is spreading in the valley, kid. Tourists are asking for you now.",
+ "4,3 yıldızı geçtin! Vadide adın duyulmaya başladı evlat. Turistler artık seni soruyor.",
+ "Über 4,3 Sterne! Dein Name spricht sich im Tal herum, Lehrling. Die Touristen fragen jetzt nach dir.",
+ "¡Más de 4,3 estrellas! Tu nombre empieza a sonar en el valle, aprendiz. Los turistas ya preguntan por ti.",
+ "星4.3を超えたぞ！谷でお前の名が知られ始めたぞ、弟子よ。観光客がお前のことを尋ねておる。",
+ "별 4.3개를 넘었군! 계곡에 자네 이름이 퍼지기 시작했군, 제자여. 관광객들이 이제 자네를 찾는다네.")
 
 # A second word from Hezarfen before a red-flag take-off in the first 20 days (prototype `redSure`)
 add("red.sureTitle", "Are you sure, kid?", "Emin misin evlat?", "Bist du sicher, Lehrling?", "¿Seguro, aprendiz?", "本当にいいのか、弟子よ？", "정말 괜찮겠나, 제자여?")
