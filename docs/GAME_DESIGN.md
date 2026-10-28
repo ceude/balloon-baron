@@ -488,6 +488,8 @@ Uçuş bitince yarım kalan adımlar sonraki uçuşa kalır.
 
 **Peribacaları her zaman okunur:** çarpılabilen bacalar daha koyu ve ince koyu konturlu çizilir; arka plandaki süs bacaları ufuk sisine daha çok karışır (%45 yerine %58). Sepet bir bacaya yatayda 90 m, dikeyde tepesinin 60 m üstüne kadar yaklaştıkça baca kırmızı kontur ve kırmızı ışıltıyla parlar.
 
+**v122.1 (TestFlight):** yaklaşınca yanan kırmızı parlama yalnızca ilk 3 kendi uçuşunda (koçlu uçuşlar); sonra bacalar yalnızca koyu ve ince konturlu kalır. Açılıştaki rüya uçuşunda brülörle balon daha hızlı yükselir (ivme 240 → 520, en çok 230 → 420).
+
 **Termik:** kaldırma ikiye katlandı: içindeyken dikey hıza sim saniyesi başına +1,0 (önceden +0,5; sim saati gerçek saatin 6 katı, yani dikey hızda ~2,5 birimlik fark yerine önceki ~1,25). 2 sn'lik an hâlâ tamamlanır (sütun 130 m geniş); an tamamlanınca kaldırma eskisi gibi durur. Sütun daha belirgin: daha sıcak ışık, kenarlarında akan kesik çizgiler, yükselen ok başları, "TERMİK ↑" yazısı. İçindeyken sepetin altında yükselen üç ok ve küçük turuncu "Termik ↑" etiketi.
 
 **Rehberli eylemler (yeni binalar ve ilk işler):** Hezarfen'in dersi uzun kart yerine tek cümlelik altyazı olur, uzun metin satırdaki "Daha fazla"nın arkasında. Ana ekran kamerası 0,9 sn'de binaya kayar ve yakınlaşır, bina altın halkayla nabız atar, ok gösterir; o sırada yalnızca bina dokunulur. Bina açılınca sayfa yapılacak öğeye kayar, geri kalan kararır, düğme aydınlanır. Düğme pasifse (para ya da yıldız yetmiyor) satır bunu tek cümleyle söyler, "Geç" ile geçilir. Oyuncu işi yapınca, sayfayı kapatınca ya da "Geç"e basınca biter (burada "Geç" yalnız o eylemi geçer); sonra sabahın sıradaki kartı gelir. Sabah en fazla 2 ders kuralı (v121.12) bunları da sayar.

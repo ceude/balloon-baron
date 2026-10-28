@@ -64,7 +64,8 @@ final class IntroModel {
 
     func step(_ dt: Double) {
         t += dt
-        if hold { vy = min(vy + 240 * dt, 230); Haptics.burner(at: t) } else { vy = max(vy - 160 * dt, y > 0 ? -35 : 0) }
+        // v122.1: rises faster (was +240/s², at most 230)
+        if hold { vy = min(vy + 520 * dt, 420); Haptics.burner(at: t) } else { vy = max(vy - 160 * dt, y > 0 ? -35 : 0) }
         y = max(0, y + vy * dt)
     }
 }
