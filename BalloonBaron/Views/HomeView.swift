@@ -736,7 +736,7 @@ struct HomeView: View {
                         .lineLimit(1)
                 }
                 VStack(alignment: .leading, spacing: 4) {
-                    ticketForecast(est)
+                    ticketForecast(est, s)
                     if est.seats > 0 {
                         Text(whoFlies(s))
                             .font(Theme.font(12.5, .bold))
@@ -755,7 +755,7 @@ struct HomeView: View {
     }
 
     @ViewBuilder
-    private func ticketForecast(_ est: (pax: Int, seats: Int, income: Int)) -> some View {
+    private func ticketForecast(_ est: (pax: Int, seats: Int, income: Int), _ s: GameState) -> some View {
         if est.seats > 0 {
             VStack(alignment: .leading, spacing: 6) {
                 Text(loc("home.ticketEst", "\(num(est.pax))/\(num(est.seats))", eur(est.income)))
@@ -767,7 +767,7 @@ struct HomeView: View {
             }
         } else {
             // TestFlight: say why nothing flies (repair, no pilot…), not just that nothing does
-            Text(noneReason(g.state))
+            Text(noneReason(s))
                 .font(Theme.font(13, .semibold))
                 .foregroundStyle(Theme.red)
                 .fixedSize(horizontal: false, vertical: true)
