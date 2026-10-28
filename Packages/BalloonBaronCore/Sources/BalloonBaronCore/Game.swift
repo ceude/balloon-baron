@@ -96,13 +96,23 @@ public struct Game: Sendable {
     }
 
     mutating func unlockCheck() {
+        // v121.9 (TestFlight: days with nothing new felt empty): something opens every day from day 2 to day 11. A save
+        // from before keeps the buildings that its pages used to bring, without a burst of lessons.
+        if state.unlockVersion == nil {
+            if state.unlocked.contains(.market) { state.unlocked.formUnion([.guide, .agency, .bazaar]) }
+            if state.unlocked.contains(.fleet) { state.unlocked.insert(.workshop) }
+            if state.unlocked.contains(.crew) { state.unlocked.insert(.school) }
+            state.unlockVersion = 2
+        }
         let s = state
-        // One new building every two days, so each lesson lands before the next.
+        func at(_ f: Feature) -> Bool { s.day >= Rules.unlockDay[f]! }
         let rules: [Feature: Bool] = [
-            .insurance: s.day >= 2, .fleet: s.day >= 4 || s.cash >= 7000, .bank: s.day >= 6,
-            .market: s.day >= 8, .crew: s.balloons.count >= 2 || s.day >= 10
+            .insurance: at(.insurance), .fleet: at(.fleet) || s.cash >= 7000, .bank: at(.bank),
+            .crew: s.balloons.count >= 2 || at(.crew), .market: at(.market), .guide: at(.guide), .agency: at(.agency),
+            .bazaar: at(.bazaar), .workshop: at(.workshop), .school: at(.school)
         ]
-        let tipFor: [Feature: Tip] = [.insurance: .insurance, .fleet: .fleet, .bank: .bank, .market: .market, .crew: .crew]
+        let tipFor: [Feature: Tip] = [.insurance: .insurance, .fleet: .fleet, .bank: .bank, .market: .market, .crew: .crew,
+                                      .guide: .guide, .agency: .agency, .bazaar: .bazaar, .workshop: .workshop, .school: .school]
         for f in Feature.allCases where rules[f]! && !state.unlocked.contains(f) {
             state.unlocked.insert(f)
             queueTip(tipFor[f]!)
@@ -110,10 +120,9 @@ public struct Game: Sendable {
         queueTip(.welcome)
         if s.day >= 3 { queueTip(.goals) } // day 3: day 2 already teaches insurance and often the yellow flag
         if s.day >= (s.region == .cap ? 1 : 3) { bossSay(.hello) } // v121: Kenan greets Hasan's grandchild on the first morning
-        if s.day >= 9 { queueTip(.pr) }
+        if s.unlocked.contains(.guide) { queueTip(.pr) }
         // v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows it.
         if s.day >= 2 && s.day <= 12, let l = s.local.lastShare, l.cap > 0, l.me < l.cap { queueTip(.price) }
-        if s.unlocked.contains(.market) && s.day >= 11 { queueTip(.bazaar) }
         if s.weather?.flag == .yellow { queueTip(.yellow) }
         if s.weather?.flag == .red { queueTip(.red) }
         if s.weather?.mission != nil { queueTip(.mission) }

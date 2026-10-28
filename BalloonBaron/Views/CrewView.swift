@@ -319,7 +319,11 @@ struct CrewView: View {
     private func schoolSection(_ s: GameState) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("crew.schoolTitle"))
-            if s.local.school {
+            if !s.local.school && !s.unlocked.contains(.school) {
+                // v121.9: the school's plot opens on its own day
+                Text(loc("crew.schoolSoon", num(Rules.unlockDay[.school] ?? 11)))
+                    .font(Theme.font(13)).foregroundStyle(Theme.ink2)
+            } else if s.local.school {
                 callout(loc("crew.schoolOpen"), loc("crew.schoolOpen.body"), color: Theme.green)
             } else {
                 HStack(spacing: 10) {

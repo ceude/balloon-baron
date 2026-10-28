@@ -135,7 +135,7 @@ extension TownPainter {
             glow(p.x, p.y - 44, 7, (255, 240, 200), 0.95 * k)
         }
         // The influencer agency's pool, lit from below.
-        if s.unlocked.contains(.market) {
+        if s.unlocked.contains(.agency) {
             let pp = iso(9.8, 11.17)
             glow(pp.x, pp.y, 46, (80, 220, 230), 0.45 * k * (0.85 + 0.15 * sin(t * 1.7)), sy: 0.45)
         }
@@ -222,7 +222,7 @@ extension TownPainter {
             let a = DecorPainter.rugsAt, p = iso(a.0, a.1)
             glow(p.x, p.y - 30, 50, (255, 180, 100), 0.32 * k)
         }
-        if s.unlocked.contains(.market) {
+        if s.unlocked.contains(.bazaar) {
             // The bazaar keeps a string of bulbs along its awning and a warm glow over the goods.
             let a0 = upp(iso(14.15, 4.35), 28), a1 = upp(iso(15.3, 4.35), 28)
             glow((a0.x + a1.x) / 2 - 10, (a0.y + a1.y) / 2 + 26, 44, (255, 180, 100), 0.45 * k, sy: 0.5)

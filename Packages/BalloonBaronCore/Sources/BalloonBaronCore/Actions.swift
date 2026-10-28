@@ -454,7 +454,7 @@ extension Game {
 
     /// Rescue card: the guides' flight, when the market is open, it's off cooldown and paying keeps cash above seizure.
     public var rescueGuideOK: Bool {
-        state.unlocked.contains(.market) && state.guideCooldown <= state.day && state.cash - Rules.guideCost >= Rules.seizeBelow
+        state.unlocked.contains(.guide) && state.guideCooldown <= state.day && state.cash - Rules.guideCost >= Rules.seizeBelow
     }
 
     /// Rescue card: the best hotel deal the player can sign right now, only when there's no deal yet; paying keeps cash

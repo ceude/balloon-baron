@@ -156,7 +156,11 @@ public struct RepPoint: Codable, Equatable, Sendable {
     public var day: Int, rep: Double
 }
 
-public enum Feature: String, Codable, CaseIterable, Sendable { case insurance, fleet, bank, market, crew }
+public enum Feature: String, Codable, CaseIterable, Sendable {
+    case insurance, fleet, bank, market, crew
+    /// v121.9: split off the market, fleet and crew so something opens every day from day 2 to day 11.
+    case guide, agency, bazaar, workshop, school
+}
 
 /// Hezarfen's one-off lessons. Text lives in the string catalog under `hez.<rawValue>`.
 public enum Tip: String, Codable, CaseIterable, Sendable {
@@ -167,6 +171,8 @@ public enum Tip: String, Codable, CaseIterable, Sendable {
     case autopilot
     /// v121: Hezarfen tells Hasan's story after the first flight in Cappadocia.
     case hasan
+    /// v121.9: the buildings that open on their own day.
+    case guide, agency, workshop, school
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {
@@ -257,6 +263,8 @@ public struct GameState: Codable, Equatable, Sendable {
     /// v111: flights you flew yourself (cancelled ones not counted); the first few get the flying coach.
     public var selfFlights: Int?
     public var unlocked: Set<Feature> = []
+    /// v121.9: 2 once the one-building-a-day schedule applies; nil in older saves (`unlockCheck` migrates them).
+    public var unlockVersion: Int?
     public var tipsSeen: Set<Tip> = []
     public var hezQueue: [HezMessage] = []
     public var over = false
@@ -315,6 +323,7 @@ public struct GameState: Codable, Equatable, Sendable {
     public init(company: String, colors: [String]) {
         self.company = company
         self.colors = colors
+        unlockVersion = 2
         local = RegionState(rivals: RegionID.cap.startingRivals())
         local.balloons.append(Balloon(id: nextID, size: .S, name: Rules.balloonNames[0]))
         local.flagship = nextID

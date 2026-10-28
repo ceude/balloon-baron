@@ -11,7 +11,12 @@ struct WorkshopView: View {
         if let game = store.game {
             let s = game.state
             FleetUI.PageFrame(title: loc("town.b.workshop"), cash: s.cash, close: { store.closePage() }) {
-                if s.workshopDay == nil {
+                if s.workshopDay == nil && !s.unlocked.contains(.workshop) {
+                    // v121.9: the workshop's plot opens on its own day
+                    FleetUI.Card(loc("fleetPage.workshop")) {
+                        FleetUI.Hint(loc("factory.soon", num(Rules.unlockDay[.workshop] ?? 10)))
+                    }
+                } else if s.workshopDay == nil {
                     foundCard(s)
                 } else {
                     levelCard(s)

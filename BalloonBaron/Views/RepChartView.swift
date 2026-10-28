@@ -77,16 +77,21 @@ struct RepChartView: View {
             store.showRepChart = false
             store.page = .market
         }
+        // v121.9: the agency and the guides' office open on their own days
+        if s.unlocked.contains(.agency) {
         row(loc("marketPage.influencer"),
             icd > 0 ? loc("marketPage.wait", num(icd)) : s.day <= s.influencerUntil ? loc("marketPage.running") : loc("marketPage.influencerBody"),
             button: eur(s.influencerCost), disabled: icd > 0 || s.cash < s.influencerCost) {
             store.act { _ = $0.runInfluencer() }
             close()
         }
+        }
+        if s.unlocked.contains(.guide) {
         row(loc("marketPage.guide"), gcd > 0 ? loc("marketPage.wait", num(gcd)) : loc("marketPage.guideBody"),
             button: eur(Rules.guideCost), disabled: gcd > 0 || s.cash < Rules.guideCost) {
             store.act { _ = $0.runGuideFlight() }
             close()
+        }
         }
         if let g = store.game, ShowCardView.offered(g) {
             let st = g.showState

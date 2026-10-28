@@ -405,13 +405,18 @@ struct MarketView: View {
                     store.act { $0.removeAllAds() }
                 }
             }
-            marketingRow(loc("marketPage.influencer"), influText, button: eur(s.influencerCost),
-                         disabled: icd > 0 || s.cash < s.influencerCost) {
-                store.act { _ = $0.runInfluencer() }
+            // v121.9: the agency and the guides' office open on their own days
+            if s.unlocked.contains(.agency) {
+                marketingRow(loc("marketPage.influencer"), influText, button: eur(s.influencerCost),
+                             disabled: icd > 0 || s.cash < s.influencerCost) {
+                    store.act { _ = $0.runInfluencer() }
+                }
             }
-            marketingRow(loc("marketPage.guide"), guideText, button: eur(Rules.guideCost),
-                         disabled: gcd > 0 || s.cash < Rules.guideCost) {
-                store.act { _ = $0.runGuideFlight() }
+            if s.unlocked.contains(.guide) {
+                marketingRow(loc("marketPage.guide"), guideText, button: eur(Rules.guideCost),
+                             disabled: gcd > 0 || s.cash < Rules.guideCost) {
+                    store.act { _ = $0.runGuideFlight() }
+                }
             }
             if let g = store.game, ShowCardView.offered(g) {
                 let st = g.showState

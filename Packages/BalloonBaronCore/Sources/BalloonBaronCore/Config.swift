@@ -148,6 +148,9 @@ public enum Rules {
     public static let schoolCost = 60000
     public static let schoolWageFactor = 0.7
     public static let guideCost = 1500
+    /// v121.9: the day each part of the town opens (the hangar earlier with €7,000 in cash, the crew with a second balloon).
+    public static let unlockDay: [Feature: Int] = [.insurance: 2, .fleet: 3, .bank: 4, .crew: 5, .market: 6, .guide: 7, .agency: 8,
+                                                    .bazaar: 9, .workshop: 10, .school: 11]
     public static let crisisRep = 0.5
     public static let repRange = 0.4...1.4
     public static let maxLoans = 2

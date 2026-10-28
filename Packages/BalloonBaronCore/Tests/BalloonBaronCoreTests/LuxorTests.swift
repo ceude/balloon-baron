@@ -391,7 +391,7 @@ final class V109Tests: XCTestCase {
 
     func testRescueGuideAndHotelMayDipBelowZeroButNotPastSeizure() {
         var g = newGame()
-        g.state.unlocked.insert(.market)
+        g.state.unlocked.formUnion([.market, .guide])
         g.state.cash = -2000
         XCTAssertFalse(g.runGuideFlight(), "normally you need the cash")
         XCTAssertTrue(g.rescueGuideOK)

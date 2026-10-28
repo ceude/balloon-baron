@@ -68,7 +68,7 @@ struct TownZone {
 
 /// The town's layout and what each building says about the company. Port of the prototype's `townBuildings()`.
 enum Town {
-    static let unlockDay: [Feature: Int] = [.fleet: 4, .bank: 6, .market: 8, .crew: 10]
+    static let unlockDay: [Feature: Int] = Rules.unlockDay
 
     static let zones: [TownZone] = [
         TownZone(key: "town.zone.depot", gx: 4, gy: 3.55, at: (4, 2)),
@@ -103,11 +103,11 @@ enum Town {
                               tap: open.contains(.fleet) ? .building(.hangar) : locked(hangar, .fleet)))
         let shop = loc("town.b.workshop")
         L.append(TownBuilding(id: "shop", gx: 5, gy: 1, w: 2, d: 2, name: shop, look: .workshop,
-                              lv: s.workshopDay != nil ? (ds >= 3 || s.factoryLevel >= 3 ? 2 : 1) : 0,
+                              lv: s.workshopDay != nil ? (ds >= 3 || s.factoryLevel >= 3 ? 2 : 1) : open.contains(.workshop) ? 0 : -1,
                               sub: s.workshopDay == nil ? loc("town.sub.build", eur(Studio.workshopCost))
                                 : s.factory?.job.map { loc("town.sub.making", $0.size.rawValue, num(max(0, $0.done - s.day))) }
                                 ?? loc("town.sub.workshopLevel", num(s.factoryLevel), num(ds)),
-                              tap: open.contains(.fleet) ? .page(.workshop, section: nil) : locked(shop, .fleet)))
+                              tap: open.contains(.workshop) || s.workshopDay != nil ? .page(.workshop, section: nil) : locked(shop, .workshop)))
         let office = loc("town.b.office")
         L.append(TownBuilding(id: "office", gx: 9, gy: 5, w: 2, d: 2, name: office, look: .office,
                               lv: open.contains(.crew) ? (np >= 6 ? 2 : 1) : -1,
@@ -115,9 +115,9 @@ enum Town {
                               tap: open.contains(.crew) ? .building(.office) : locked(office, .crew)))
         let school = loc("town.b.school")
         L.append(TownBuilding(id: "school", gx: 12, gy: 5, w: 2, d: 2, name: school, look: .school,
-                              lv: s.local.school ? (np >= 8 ? 2 : 1) : (open.contains(.crew) ? 0 : -1),
+                              lv: s.local.school ? (np >= 8 ? 2 : 1) : (open.contains(.school) ? 0 : -1),
                               sub: s.local.school ? loc("town.sub.open") : loc("town.sub.build", eur(Rules.schoolCost)),
-                              tap: open.contains(.crew) ? .page(.crew, section: .school) : locked(school, .crew)))
+                              tap: open.contains(.school) || s.local.school ? .page(.crew, section: .school) : locked(school, .school)))
         // Finance sits in the back row so the tall holding tower hides nothing behind it.
         let bank = loc("town.b.bank")
         L.append(TownBuilding(id: "bank", gx: 12, gy: 1, w: 2, d: 2, name: bank, look: .bank,
@@ -142,18 +142,18 @@ enum Town {
         }
 
         let icd = s.local.influencerCooldown - s.day, gcd = s.local.guideCooldown - s.day
-        let influ = loc("town.b.influencer"), market = open.contains(.market)
-        let influSub = !market ? soon : s.day <= s.local.influencerUntil ? loc("town.sub.running")
+        let influ = loc("town.b.influencer"), market = open.contains(.market), agency = open.contains(.agency), guides = open.contains(.guide)
+        let influSub = !agency ? soon : s.day <= s.local.influencerUntil ? loc("town.sub.running")
             : icd > 0 ? loc("town.sub.wait", num(icd)) : eur(s.influencerCost)
         L.append(TownBuilding(id: "influ", gx: 9, gy: 9, w: 2, d: 2, name: influ, look: .agency,
-                              lv: market ? (s.day <= s.local.influencerUntil ? 2 : 1) : -1, sub: influSub,
-                              tap: market ? .card(.influencer) : locked(influ, .market)))
+                              lv: agency ? (s.day <= s.local.influencerUntil ? 2 : 1) : -1, sub: influSub,
+                              tap: agency ? .card(.influencer) : locked(influ, .agency)))
         let guide = loc("town.b.guide")
-        let guideSub = !market ? soon : s.day <= s.local.guideUntil ? loc("town.sub.guides")
+        let guideSub = !guides ? soon : s.day <= s.local.guideUntil ? loc("town.sub.guides")
             : gcd > 0 ? loc("town.sub.wait", num(gcd)) : eur(Rules.guideCost)
         L.append(TownBuilding(id: "guide", gx: 12, gy: 9, w: 2, d: 2, name: guide, look: .guide,
-                              lv: market ? (s.day <= s.local.guideUntil ? 2 : 1) : -1, sub: guideSub,
-                              tap: market ? .card(.guide) : locked(guide, .market)))
+                              lv: guides ? (s.day <= s.local.guideUntil ? 2 : 1) : -1, sub: guideSub,
+                              tap: guides ? .card(.guide) : locked(guide, .guide)))
 
         // Booking offices side by side: yours first, then the rivals'. Same kiosk, awning in each company's colors.
         let mine = s.company.isEmpty ? loc("town.b.mine") : s.company
@@ -165,9 +165,9 @@ enum Town {
         let bazaar = loc("town.b.bazaar")
         let decor = StoreItem.allCases.filter { $0.kind == .decoration }
         L.append(TownBuilding(id: "bazaar", gx: 14.05, gy: 2.75, w: 1.35, d: 1.7, name: bazaar, look: .bazaar,
-                              lv: market ? (s.decorationCount > 0 ? 2 : 1) : -1,
-                              sub: market ? loc("town.sub.decor", num(s.decorationCount), num(decor.count)) : soon,
-                              tap: market ? .bazaar : locked(bazaar, .market), small: true))
+                              lv: open.contains(.bazaar) ? (s.decorationCount > 0 ? 2 : 1) : -1,
+                              sub: open.contains(.bazaar) ? loc("town.sub.decor", num(s.decorationCount), num(decor.count)) : soon,
+                              tap: open.contains(.bazaar) ? .bazaar : locked(bazaar, .bazaar), small: true))
         let mastSub = s.level(.mast) >= 2 ? loc("building.sub.tomorrow", (s.local.forecast?[s.day + 1]).map { $0.title } ?? "?")
             : loc("building.sub.level", num(s.level(.mast)))
         L.append(TownBuilding(id: "mast", gx: 6.95, gy: 3.95, w: 0.4, d: 0.4, name: Building.mast.title, look: .mast, lv: 1,

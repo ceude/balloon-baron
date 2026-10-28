@@ -15,7 +15,7 @@ final class PrototypeV85Tests: XCTestCase {
         if g.launch() != nil { g.finishDay(flight: FlightResult(landing: landing, distance: 120)) } else { g.finishDay(flight: nil) }
     }
 
-    func testOpeningScheduleIsOneBuildingEveryTwoDays() {
+    func testOpeningScheduleIsOneBuildingADay() {
         var g = newGame()
         var opened: [Feature: Int] = [:]
         for _ in 0..<12 {
@@ -23,11 +23,20 @@ final class PrototypeV85Tests: XCTestCase {
             g.state.cash = 3000 // stay below the €7.000 that opens the hangar early
             play(&g)
         }
-        XCTAssertEqual(opened[.insurance], 2)
-        XCTAssertEqual(opened[.fleet], 4)
-        XCTAssertEqual(opened[.bank], 6)
-        XCTAssertEqual(opened[.market], 8)
-        XCTAssertEqual(opened[.crew], 10)
+        // v121.9: something opens every day from day 2 to day 11
+        for (f, d) in Rules.unlockDay { XCTAssertEqual(opened[f], d, "\(f)") }
+        XCTAssertEqual(Set(Rules.unlockDay.values).count, Rules.unlockDay.count, "one a day")
+    }
+
+    func testOldSaveKeepsWhatItsPagesBrought() {
+        var g = newGame()
+        g.state.day = 40
+        g.state.unlocked = [.insurance, .fleet, .bank, .market, .crew]
+        g.state.unlockVersion = nil
+        g.state.hezQueue = []
+        g.startDay()
+        XCTAssertTrue(g.state.unlocked.isSuperset(of: [.guide, .agency, .bazaar, .workshop, .school]))
+        for t in [Tip.guide, .agency, .workshop, .school] { XCTAssertFalse(g.state.hezQueue.contains(.tip(t)), "no burst of lessons") }
     }
 
     func testOldSaveWithoutNewFieldsLoads() throws {
