@@ -52,6 +52,8 @@ final class GameStore {
     var openingFilm = false
     /// v121.5: the film has landed and the town pulls back to day one's view; the controls and popups wait for it.
     var homeIntro: HomeIntro?
+    /// v121.10: the opening film is being watched again from Settings, over the running game.
+    var replayingOpening = false
     /// Passengers are being gathered (the seat-filling screen before take-off).
     var collecting = false
     /// Passengers riding with you while the flight scene runs.
@@ -106,7 +108,7 @@ final class GameStore {
 
     /// Anything already covering the home screen; the next popup waits for it.
     private var busy: Bool {
-        showIntro || openingFilm || homeIntro != nil || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
+        showIntro || openingFilm || homeIntro != nil || replayingOpening || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil
@@ -321,6 +323,7 @@ final class GameStore {
         showRepChart = false
         openingFilm = false
         homeIntro = nil
+        replayingOpening = false
         showIntro = true
     }
 
@@ -566,13 +569,29 @@ final class GameStore {
     }
 
     /// The film landed: the town pulls back from its last frame; the controls come in after, then Hezarfen.
-    func startHomeIntro(_ h: HomeIntro) {
+    /// `popups`: false when the film was watched again from Settings, so the game comes back exactly as it was.
+    func startHomeIntro(_ h: HomeIntro, popups: Bool = true) {
         homeIntro = h
         DispatchQueue.main.asyncAfter(deadline: .now() + max(0, h.start.timeIntervalSinceNow) + HomeIntro.dur) { [weak self] in
             guard let self, self.homeIntro == h else { return }
             withAnimation(.easeOut(duration: 0.6)) { self.homeIntro = nil }
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in self?.showNextHezarfen() }
+            if popups { DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { [weak self] in self?.showNextHezarfen() } }
         }
+    }
+
+    /// v121.10 (`replayOpening`): the opening film again from Settings, over the running game. Nothing in the game
+    /// changes: no new game, no new day, no popups.
+    func replayOpening() {
+        guard game != nil, !replayingOpening, OpeningLoader.supported else { return }
+        showMenu = false
+        replayingOpening = true
+        OpeningLoader.shared.preload()
+    }
+
+    /// `replayDone`: the film is over (or couldn't play); the game is back as it was.
+    func finishReplay() {
+        replayingOpening = false
+        OpeningLoader.shared.release()
     }
 
     func finishIntro() {

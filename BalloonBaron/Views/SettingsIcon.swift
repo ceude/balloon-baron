@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Line icons for the settings rows (`SET_IC`), drawn like the side buttons' `ProtoIcon`: 24×24, round strokes.
 struct SettingsIcon: View {
-    enum Kind { case trophy, game, moon, people, sound, haptic, bell, cloud, copy, paste, bag, shield, mail, info, trash, chevron, down, close }
+    enum Kind { case trophy, game, moon, people, sound, haptic, bell, cloud, copy, paste, bag, shield, mail, info, trash, chevron, down, close, film }
     let kind: Kind
     var color: Color = Theme.ink
     var width: CGFloat = 2
@@ -41,6 +41,14 @@ struct SettingsIcon: View {
             line(&path, [p(12, 13), p(12, 16.5)])
             round(&path, 9.5, 16.5, 5, 3.5, 0.8)
             line(&path, [p(8.5, 20), p(15.5, 20)])
+        case .film:
+            // a clapperboard with a play mark
+            round(&path, 4, 10, 16, 10, 2)
+            line(&path, [p(4.5, 10), p(4, 6.6), p(19.4, 4.2), p(20, 7.6)])
+            line(&path, [p(8.6, 5.9), p(10.2, 9)])
+            line(&path, [p(13.6, 5.1), p(15.2, 8.3)])
+            line(&path, [p(10.5, 12.8), p(14.6, 15), p(10.5, 17.2)])
+            path.closeSubpath()
         case .game:
             round(&path, 3.5, 8.5, 17, 9.5, 4.5)
             line(&path, [p(8.5, 11), p(8.5, 15)])

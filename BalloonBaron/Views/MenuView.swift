@@ -8,6 +8,7 @@ import BalloonBaronCore
 struct MenuView: View {
     @Environment(GameStore.self) private var store
     @Environment(\.openURL) private var openURL
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage("sound") private var soundOn = true
     @AppStorage("haptics") private var hapticsOn = true
     @AppStorage(GameStore.nightSceneKey) private var nightOn = true
@@ -32,6 +33,7 @@ struct MenuView: View {
         static let save = Color(hex: "#3d7fd0")
         static let shop = Color(hex: "#9b7be0")
         static let about = Theme.ink2
+        static let film = Theme.coral
         static let danger = Theme.red
     }
 
@@ -151,6 +153,12 @@ struct MenuView: View {
             divider
             row(.info, loc("settings.version"),
                 value: Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0", info: true)
+        }
+        // v121.10: the opening film again, over the running game (it is Cappadocia's, so only there)
+        if s?.region == .cap && !reduceMotion && OpeningLoader.supported {
+            group(loc("settings.film"), Tint.film) {
+                row(.film, loc("settings.replayOpening")) { store.replayOpening() }
+            }
         }
         group(nil, Tint.danger) {
             row(.trash, loc(armed ? "settings.sure" : "menu.newGame"), danger: true) { newGame() }

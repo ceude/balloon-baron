@@ -42,6 +42,10 @@ struct RootView: View {
             if (store.game == nil || store.openingFilm) && !store.showIntro {
                 OpeningGate()
             }
+            // v121.10: the opening film again from Settings, over the running game
+            if store.replayingOpening && store.game != nil {
+                OpeningReplay()
+            }
             if store.collecting && store.game != nil {
                 CollectView()
                     .transition(.move(edge: .bottom))
