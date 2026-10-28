@@ -2713,6 +2713,19 @@ function fleetSummary() {
   btn.onclick = showFleetPlan;
   return btn;
 }
+/* v121.10: "Give to a pilot". With a pilot free the flagship goes to them; with none, a card offers the crew page (or says
+   when it opens) instead of grounding the balloon. */
+function pilotFreeForFlag() { const fb = bal(S.flag), keep = S.selfFly; S.selfFly = false; assignPilots(); const ok = !!fb && canFly(fb) === 'ok'; S.selfFly = keep; assignPilots(); return ok; }
+function giveToPilot(done) {
+  if (pilotFreeForFlag()) { S.selfFly = false; assignPilots(); done(); return; }
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Pilotun yok'));
+  c.appendChild(h('p', 'lead', unlocked('crew') ? 'Bu balon için boşta pilotun yok. Ekip sayfasından yeni bir pilot işe almak ister misin?' : `Bu balon için pilotun yok. Pilot ofisi ${UNLOCK_DAY.crew}. günde açılır; o zamana kadar balonunu sen uçur evlat.`));
+  if (unlocked('crew')) { const go = h('button', 'big', 'Ekibe git'); go.onclick = () => { m.hidden = true; openSection('crew'); }; c.appendChild(go); }
+  const no = h('button', 'ghost', unlocked('crew') ? 'Vazgeç' : 'Tamam'); no.style.width = '100%'; no.onclick = () => { m.hidden = true; refresh(); }; c.appendChild(no);
+  m.appendChild(c); m.hidden = false; sfx('click');
+}
 function showFleetPlan() {
   const m = $('menu');
   const draw = () => {
@@ -2745,8 +2758,7 @@ function showFleetPlan() {
       const st = canFly(b), you = b === mine, row = h('div', 'frow' + (you ? ' you' : '') + (st !== 'ok' ? ' blocked' : b.fly ? '' : ' off'));
       row.innerHTML = balloonIcon(myCol()[0], myCol()[1]) + `<div class="main"><div class="t">${esc(b.name)}${you ? ' <span class="tag o">Sen uçuruyorsun</span>' : b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}</div><div class="s">${fleetSub(b)}${riskDot(b)}</div></div>`;
       const main = row.querySelector('.main');
-      const pilotFree = () => { S.selfFly = false; assignPilots(); const ok = canFly(fb) === 'ok'; S.selfFly = true; assignPilots(); return ok; };
-      if (you && licenseOk() && pilotFree()) { const g = h('button', 'mefly', 'Pilota ver'); /* only when a pilot is free for it */ g.onclick = () => { S.selfFly = false; assignPilots(); sfx('tick'); refresh(); draw(); }; main.appendChild(g); }
+      if (you && licenseOk()) { const g = h('button', 'mefly', 'Pilota ver'); /* with no pilot free, it offers the crew page instead */ g.onclick = () => giveToPilot(() => { sfx('tick'); refresh(); draw(); }); main.appendChild(g); }
       else if (!you && licenseOk() && meOk(b)) { const g = h('button', 'mefly', 'Ben uçurayım'); g.onclick = () => flyMe(b); main.appendChild(g); }
       if (st === 'ok') { const fb = h('button', 'flybtn' + (b.fly ? ' on' : ''), b.fly ? 'UÇACAK' : 'YERDE'); fb.setAttribute('aria-pressed', String(!!b.fly)); fb.onclick = () => { b.fly = !b.fly; sfx('tick'); refresh(); draw(); }; row.appendChild(fb); }
       else { const t = blockedTap(b); if (t) { const go = h('button', 'pbtn light', st === 'worn' ? 'Filo' : 'Ekip'); go.onclick = () => { m.hidden = true; t(); }; row.appendChild(go); } }
@@ -2859,6 +2871,7 @@ function balloonCard(b) {
   const acts = h('div', 'btns');
   if (cd < .6) acts.appendChild(pbtn(`Zarf yenile ${eur(z.cost * RENEW)}`, () => { S.cash -= z.cost * RENEW; b.flights = 0; refresh(); balloonCard(b); }, S.cash < z.cost * RENEW));
   /* v111: pick the balloon you fly yourself right here (it becomes the flagship) */
+  if (isSelf(b) && licenseOk()) acts.appendChild(pbtn('Pilota ver', () => giveToPilot(() => { refresh(); balloonCard(b); }), false, true));
   if (!isSelf(b)) acts.appendChild(pbtn('Bu balonu ben uçurayım', () => { S.flag = b.id; S.selfFly = true; assignPilots(); refresh(); balloonCard(b); }, st === 'dmg' || st === 'worn'));
   if (b.id !== S.flag && !selfFlying()) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); balloonCard(b); }, false, true));
   if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(sellValue(b))}`, () => { S.cash += sellValue(b); S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); m.hidden = true; refresh(); }, false, true));
@@ -3703,6 +3716,15 @@ let HOMEI = null;
 /* camera keys: [second, gx, gy (what the camera looks at), zoom, where that point sits on screen (x, y), horizon] */
 const OPEN_IN = [[0, 7.5, 7.5, .15, .5, .84, .6], [6, 6.6, 7.2, .3, .54, .72, .34], [12, 3.1, 5.4, .8, .44, .6, .08]];
 const OPEN_FIELD = [3.4, 5.8]; /* the old basket */
+/* v121.10: the opening film again from Settings, over the running game: no name or colour pick (the Hezarfen card goes
+   straight to the lift-off), and at the end the game comes back as it was, without starting a new day */
+function replayOpening() {
+  if (OPEN) return;
+  startOpen(); OPEN.replay = true;
+}
+function replayDone() {
+  mode = 'office'; hideAll(); $('hud').hidden = false; $('sheet').hidden = false; $('wx').style.opacity = ''; tab = 'plan'; refresh();
+}
 function startOpen() {
   OPEN = { t0: T, out: false, talk: false, burn: false, loading: !!window.WebGL2RenderingContext };
   mode = 'open'; hideAll(); $('hud').hidden = true; $('setup').hidden = true;
@@ -3808,7 +3830,7 @@ function openTalk() {
   filmMusic('bed');
   const d = h('div', 'opentalk'); d.id = 'openTalk';
   d.innerHTML = `<div class="hzline">${HEZ_AV}<span><b>Hezarfen Usta:</b> Bu sepet deden Hasan'ındı evlat. Kapadokya'nın ilk balonlarından biriydi. Kumaş hazır, sepet hazır. Bir tek adı eksik.</span></div>`;
-  const go = h('button', 'big', 'Adını koyalım'); go.onclick = () => { sfx('click'); d.remove(); const s = $('openSkip'); if (s) s.hidden = true; showSetup(1); };
+  const go = h('button', 'big', OPEN.replay ? 'Devam' : 'Adını koyalım'); go.onclick = () => { sfx('click'); d.remove(); const s = $('openSkip'); if (s) s.hidden = true; if (OPEN.replay) { if (OPEN.three) OPEN3D.pause(false); openLiftOff(); } else showSetup(1); };
   d.appendChild(go); document.body.appendChild(d); requestAnimationFrame(() => d.classList.add('on'));
   const s = $('openSkip'); if (s) s.hidden = true;
 }
@@ -3821,7 +3843,7 @@ function openLiftOff() {
 }
 function openBegin(landed) {
   if (!OPEN) return;
-  const hand = landed && OPEN.three && OPEN3D ? OPEN3D.handoff() : null;
+  const hand = landed && OPEN.three && OPEN3D ? OPEN3D.handoff() : null, replay = OPEN.replay, back = replay ? replayDone : startDay;
   OPEN = null; openEnd(); NIGHT_K = 0; SUNRISE = 0; burner(false);
   if (hand) {
     /* v121.5: the film dissolves into the game's own town at the same spot and scale, which then pulls back to day one's
@@ -3830,14 +3852,14 @@ function openBegin(landed) {
     cv3.style.transition = 'opacity 1.1s ease'; requestAnimationFrame(() => { cv3.style.opacity = '0'; }); setTimeout(() => api.stop(), 1300);
     const c = tiso(hand.gx, hand.gy); HOMEI = { t0: T + .7, dur: 3.4, z0: hand.z, px: c[0], py: c[1] - hand.up };
     for (const id of ['hud', 'sheet', 'wx', 'nav']) { const e = $(id); e.style.transition = 'none'; e.style.opacity = '0'; e.style.pointerEvents = 'none'; }
-    $('hud').hidden = false; tab = 'plan'; startDay();
+    $('hud').hidden = false; tab = 'plan'; back();
     setTimeout(() => filmMusic(null), 3800);
     return;
   }
   if (OPEN3D) { OPEN3D.stop(); OPEN3D = null; }
   filmMusic(null);
   $('fade').classList.add('on');
-  setTimeout(() => { $('fade').classList.remove('on'); $('hud').hidden = false; tab = 'plan'; startDay(); }, 480);
+  setTimeout(() => { $('fade').classList.remove('on'); $('hud').hidden = false; tab = 'plan'; back(); }, 480);
 }
 
 /* what the film adds to the town: the old basket and envelope on the field; then our balloon filling and rising */
@@ -4553,6 +4575,8 @@ function showMenu(open) {
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
   group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); })]);
+  /* v121.10: watch the opening film again; the name and colours are skipped, the company flies in its own colours */
+  group('Film', '#ff5e3a', [row('star', 'Başlangıç filmini tekrar izle', chev, () => { m.hidden = true; replayOpening(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
   nb.onclick = () => { if (!nb.dataset.arm) { nb.dataset.arm = '1'; nb.querySelector('b').textContent = 'Emin misin? Bütün ilerleme silinir. Tekrar dokun'; return; } S = newState(); setupName = ''; m.hidden = true; startIntro(); };
   c.appendChild(h('div', 'sg-t', ''));
