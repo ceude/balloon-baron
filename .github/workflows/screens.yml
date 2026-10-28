@@ -64,6 +64,9 @@ jobs:
           lux|-demoDays 60 -demoRegion lux|12
           luxintro|-demoDays 60 -demoRegion lux -demoIntro|8
           holding|-demoDays 60 -demoRegion lux -demoPage holding|9
+          hqdesks|-demoDays 60 -demoRegion lux -demoHolding jersey -demoPage holding|9
+          hqdeals|-demoDays 60 -demoRegion lux -demoHolding deals -demoPage holding -demoUnit deals|10
+          hqjersey|-demoDays 60 -demoRegion lux -demoHolding jersey -demoPage holding -demoUnit deals|10
           crew|-demoDays 60 -demoPage crew|8
           bank|-demoDays 60 -demoPage bank|8
           map|-demoDays 60 -demoRegion abq -demoPage map|9

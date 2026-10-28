@@ -46,7 +46,14 @@ struct HoldingOfficeView: View {
         .opacity(shown ? 1 : 0)
         // Reduce Motion: a plain fade, without the zoom.
         .scaleEffect(shown || reduceMotion ? 1 : 1.08)
-        .onAppear { withAnimation(.timingCurve(0.3, 0.7, 0.3, 1, duration: 0.45)) { shown = true } }
+        .onAppear {
+            withAnimation(.timingCurve(0.3, 0.7, 0.3, 1, duration: 0.45)) { shown = true }
+            #if DEBUG
+            // Screenshot runs: `-demoUnit deals` opens that desk.
+            let args = ProcessInfo.processInfo.arguments
+            if let i = args.firstIndex(of: "-demoUnit"), i + 1 < args.count { unit = HoldingUnit(rawValue: args[i + 1]) }
+            #endif
+        }
         .sheet(item: $unit) { u in
             HoldingView(unit: u, onClose: { unit = nil })
                 .environment(store)

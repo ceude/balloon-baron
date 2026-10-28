@@ -4,7 +4,7 @@ import BalloonBaronCore
 
 /// Screenshot runs on the simulator (.github/workflows/screens.yml), debug builds only. Launch arguments:
 /// `-demoDays N` plays N days with a simple bot and opens on the home screen; `-demoIntro` keeps the intro;
-/// `-demoPage fleet` opens an office page; `-demoRegion abq` plays on in Albuquerque after Cappadocia, `-demoRegion lux` then on in Luxor.
+/// `-demoPage fleet` opens an office page (`-demoUnit deals` then a holding desk, `-demoHolding deals|jersey` its money and deal); `-demoRegion abq` plays on in Albuquerque after Cappadocia, `-demoRegion lux` then on in Luxor.
 /// One scene on top: `-demoScene issue` (pilots asking for a raise outside the office, then the card), `collect`, `album`, `deal`.
 extension GameStore {
     func applyDemoArguments() {
@@ -27,6 +27,11 @@ extension GameStore {
                 g.state.cash = 120_000
                 for _ in 0..<20 { Self.demoDay(&g) }
             }
+        }
+        // `-demoHolding deals`: holding money for the deals desk; `jersey`: the jersey sponsorship is running.
+        if let h = value("-demoHolding") {
+            g.state.holding.cash = 15_000_000
+            if h == "jersey" { g.sponsorJersey() }
         }
         g.startDay()
         g.state.hezQueue = []
