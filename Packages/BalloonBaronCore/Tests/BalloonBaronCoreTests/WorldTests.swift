@@ -5,6 +5,7 @@ import XCTest
 final class WorldTests: XCTestCase {
     func newGame(seed: UInt64 = 42) -> Game {
         var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: seed)
+        g.state.tutorial = TutorialState(done: true) // the economy without the tutorial's fixed first days (v122.4)
         g.startDay()
         return g
     }

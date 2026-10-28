@@ -23,6 +23,13 @@ public struct Game: Sendable {
     public mutating func startDay() {
         expireSeasons()
         if state.weather == nil { state.weather = newWeather() }
+        // v122.4: day 2 of the fixed scenario starts at €160, once, so raising the price keeps the basket full
+        if state.tutorialScene == 2 && !state.tutorialHas("price2_start") {
+            state.price = TutorialScene.dayTwoPrice
+            var t = state.tutorial ?? TutorialState()
+            t.steps["price2_start"] = state.day
+            state.tutorial = t
+        }
         if state.demand == nil { state.demand = dayDemand() }
         if state.candidates.isEmpty { newCandidates() }
         if state.rivalPlanDay != state.day { planRivalFlights() }
@@ -40,6 +47,7 @@ public struct Game: Sendable {
     func demandGrowth() -> Double { 1 + 0.6 * (1 - exp(-Double(state.day - 1) / 50)) }
 
     mutating func dayDemand() -> Int {
+        if let d = TutorialScene.demand[state.tutorialScene] { return d }
         let flag = state.weather?.flag ?? .green
         return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? 0.55 : 1)
                        * (state.fiesta != nil ? state.region.fiestaDemand : 1) * (state.festival != nil ? Rules.festivalDemand : 1)
@@ -47,6 +55,11 @@ public struct Game: Sendable {
     }
 
     mutating func newWeather() -> Weather {
+        let sc = state.tutorialScene
+        if sc > 0, let l = TutorialScene.layers[sc], let tx = TutorialScene.target[sc] {
+            return Weather(flag: .green, surfaceWind: TutorialScene.surfaceWind[sc] ?? 5, layers: l, target: tx,
+                           seed: UInt64(7700 + sc), mission: nil, valley: 220 + (tx - 220) * 0.45)
+        }
         // The wind mast's forecast, once made, comes true.
         var flag: Flag = state.day == 1 ? .green : state.forecast?[state.day] ?? rollFlag()
         // The first days never ground a beginner.

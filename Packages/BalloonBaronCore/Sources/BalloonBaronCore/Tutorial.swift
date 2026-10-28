@@ -16,7 +16,7 @@ public struct TutorialState: Codable, Equatable, Sendable {
     }
 
     /// The steps that make up the tutorial (`TUT_ALL`); once all are done it is over.
-    public static let all = ["price", "go", "burn", "wind", "vent", "field", "chimney", "thermal"]
+    public static let all = ["price", "go", "price2", "burn", "wind", "vent", "field", "chimney", "thermal"]
     /// The flight's steps.
     public static let flightSteps = ["burn", "wind", "vent", "field", "chimney", "thermal"]
 }
@@ -60,6 +60,20 @@ extension GameState {
     /// The tutorial is running (not done, not skipped).
     public var tutorialOn: Bool { tutorial.map { $0.done != true } ?? false }
     public func tutorialHas(_ step: String) -> Bool { tutorial?.steps[step] != nil }
+
+    /// v122.4: while the tutorial runs, days 1 and 2 in Cappadocia are a fixed scenario (`tutScene`): 1 or 2, else 0.
+    public var tutorialScene: Int { region == .cap && tutorialOn && (day == 1 || day == 2) ? day : 0 }
+}
+
+/// v122.4 (`TUT_WX`, `TUT_DEMAND`, `TUT_P2`): the same first two days for everyone. Green flag, a layer that carries you
+/// to the field, no request. Day 1: fewer tourists than seats at the start price, so lowering it fills seats. Day 2:
+/// demand is high and the day starts at €160, so raising the price keeps the basket full (up to about €260).
+public enum TutorialScene {
+    public static let surfaceWind = [1: 5, 2: 6]
+    public static let layers: [Int: [Double]] = [1: [-1.3, 4.6, -2.2, 6.2], 2: [-1, -2, 5.2, 3.4]]
+    public static let target: [Int: Double] = [1: 1720, 2: 1900]
+    public static let demand = [1: 110, 2: 320]
+    public static let dayTwoPrice = 160
 }
 
 extension Game {

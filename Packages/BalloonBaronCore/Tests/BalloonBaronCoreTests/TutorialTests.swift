@@ -130,4 +130,25 @@ final class TutorialTests: XCTestCase {
         XCTAssertEqual(Rules.unlockDay[.guide], 7)
         XCTAssertEqual(Rules.unlockDay[.agency], 8)
     }
+
+    /// v122.4: days 1 and 2 are the same for everyone; on day 2 a higher price still fills the basket.
+    func testTheFirstTwoDaysAreAFixedScenario() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 3)
+        g.state.tutorial = TutorialState()
+        g.state.weather = nil; g.state.demand = nil
+        g.startDay()
+        XCTAssertEqual(g.state.weather?.flag, .green)
+        XCTAssertEqual(g.state.weather?.layers, TutorialScene.layers[1])
+        XCTAssertEqual(g.state.demand, TutorialScene.demand[1])
+        let low = g.estimatedIncome(price: g.state.price), lower = g.estimatedIncome(price: g.state.price - 30)
+        XCTAssertLessThan(low.pax, low.seats, "day 1: seats left at the start price")
+        XCTAssertGreaterThan(lower.pax, low.pax, "day 1: lowering the price fills seats")
+        g.state.day = 2; g.state.weather = nil; g.state.demand = nil
+        g.startDay()
+        XCTAssertEqual(g.state.price, TutorialScene.dayTwoPrice)
+        XCTAssertEqual(g.state.demand, TutorialScene.demand[2])
+        let a = g.estimatedIncome(price: 160), b = g.estimatedIncome(price: 220)
+        XCTAssertEqual(a.pax, a.seats); XCTAssertEqual(b.pax, b.seats, "day 2: a higher price keeps the basket full")
+        XCTAssertGreaterThan(b.income, a.income)
+    }
 }

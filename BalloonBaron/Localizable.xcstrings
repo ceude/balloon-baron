@@ -79869,6 +79869,88 @@
         }
       }
     },
+    "tut.price2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestern hat Senken geholfen; heute gibt es viele Touristen: Erhöh den Preis, du verlierst keine Passagiere."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lowering it worked yesterday; today there are lots of tourists: raise the price, you won't lose passengers."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayer bajarlo funcionó; hoy hay muchos turistas: sube el precio, no perderás pasajeros."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "昨日は下げて正解だった。今日は観光客が多い。値上げしても客は減らんぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어제는 내리는 게 통했지. 오늘은 관광객이 많으니 가격을 올리게, 손님은 줄지 않네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dün düşürmek işe yaradı; bugün turist çok: fiyatı artır, müşterin azalmaz."
+          }
+        }
+      }
+    },
+    "tut.price2Seen": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siehst du? Gleich viele Passagiere, mehr Geld. Richte den Preis jeden Tag nach den Touristen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "See? Same passengers, more money. Set the price to each day's tourists."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Ves? Los mismos pasajeros, más dinero. Ajusta el precio a los turistas de cada día."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "見たか？客は同じで、稼ぎは増えた。値段は毎日の観光客に合わせるのだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "봤나? 승객은 그대로, 수입은 늘었네. 가격은 매일 관광객에 맞춰 정하게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gördün mü? Yolcu aynı, kazanç arttı. Fiyatı her gün turiste göre ayarla."
+          }
+        }
+      }
+    },
     "tut.priceSeen": {
       "extractionState": "manual",
       "localizations": {

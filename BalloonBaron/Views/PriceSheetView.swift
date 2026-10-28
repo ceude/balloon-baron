@@ -91,6 +91,7 @@ struct PriceSheetView: View {
                 .minimumScaleFactor(0.6)
                 .frame(maxWidth: .infinity)
             RepeatStepButton(icon: "plus", label: loc("psheet.plus")) { step(5) }
+                .tutSpot("pPlus")
         }
     }
 

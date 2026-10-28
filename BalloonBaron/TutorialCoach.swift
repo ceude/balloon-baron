@@ -134,10 +134,13 @@ extension GameStore {
 
     // MARK: Day one at home (`tutHome`)
 
-    /// The day-one step at home: "price" until the price sheet has been closed once, then "go".
+    /// The day-one step at home: "price" until the price sheet has been closed once, then "go". v122.4: day 2's
+    /// "price2" (raise the price on a busy day) until the sheet is closed after raising it.
     var homeTutStep: String? {
-        guard let s = state, s.tutorialOn, auto == nil, guided == nil, s.day == 1, s.region == .cap,
+        guard let s = state, s.tutorialOn, auto == nil, guided == nil, s.region == .cap,
               s.flyingToday.contains(where: { s.isSelf($0) }) else { return nil }
+        if s.day == 2 && !s.tutorialHas("price2") { return "price2" }
+        guard s.day == 1 else { return nil }
         if !s.tutorialHas("price") { return "price" }
         if !s.tutorialHas("go") { return "go" }
         return nil
@@ -157,15 +160,22 @@ extension GameStore {
     func priceSheet(open: Bool) {
         priceSheetOpen = open
         if open {
-            if homeTutStep == "price" && tutP0 == nil { tutP0 = state?.price }
+            if (homeTutStep == "price" || homeTutStep == "price2") && tutP0 == nil { tutP0 = state?.price }
         } else if homeTutStep == "price" {
             // On to "Yolcu topla", whether or not the price went down.
             tutStep("price")
+        } else if homeTutStep == "price2", state?.tutorialHas("price2_up") == true {
+            tutStep("price2")
         }
     }
 
     /// A price change on the sheet: going below where the lesson started counts as `price_low`.
     func tutPriceChanged() {
+        if homeTutStep == "price2", let p0 = tutP0, let p = state?.price, p > p0, state?.tutorialHas("price2_up") == false,
+           let est = game?.estimatedIncome(), est.seats > 0, est.pax >= est.seats {
+            tutStep("price2_up") // v122.4: higher price, still a full basket
+            return
+        }
         guard homeTutStep == "price", let p0 = tutP0, let p = state?.price, p < p0, state?.tutorialHas("price_low") == false else { return }
         tutStep("price_low")
     }
@@ -176,9 +186,9 @@ extension GameStore {
               homeIntro == nil, !collecting, !openingFilm, !replayingOpening else { return nil }
         if let g = guided { return guideFrame(g, sp, sheet: false) }
         guard let k = homeTutStep, homeQuiet else { return nil }
-        if k == "price" {
+        if k == "price" || k == "price2" {
             guard let h = sp.hole("pcard", pad: 4) else { return nil }
-            return TutFrame(key: "price", holes: [h], line: loc("tut.price"))
+            return TutFrame(key: k, holes: [h], line: loc("tut." + k))
         }
         guard let h = sp.hole("go", pad: 5) else { return nil }
         return TutFrame(key: "go", holes: [h], line: loc("tut.go"))
@@ -188,6 +198,14 @@ extension GameStore {
     func sheetTutFrame(_ sp: TutSpots) -> TutFrame? {
         guard hezarfen == nil else { return nil }
         if let g = guided { return guideFrame(g, sp, sheet: true) }
+        if homeTutStep == "price2", let s = state {
+            if s.tutorialHas("price2_up") {
+                let hs = [sp.hole("psOk", pad: 6), sp.hole("est", pad: 6)].compactMap { $0 }
+                return TutFrame(key: "price2.up", holes: hs, arrow: .some(nil), line: loc("tut.price2Seen"))
+            }
+            let hs = [sp.hole("pPlus", pad: 6, round: true), sp.hole("est", pad: 6)].compactMap { $0 }
+            return TutFrame(key: "price2", holes: hs, line: loc("tut.price2"))
+        }
         guard homeTutStep == "price", let s = state else { return nil }
         if s.tutorialHas("price_low") {
             let hs = [sp.hole("psOk", pad: 6), sp.hole("est", pad: 6)].compactMap { $0 }
