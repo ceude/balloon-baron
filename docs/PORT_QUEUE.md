@@ -6,6 +6,8 @@ Kuyrukta:
 - v121.13: rakip devralınınca pilotları da mevcut sözleşmeleriyle gelir, balon başına bir pilot (`rivalCrew`, `CREW_MIX`, `crewNote`; GAME_DESIGN "Pilotlarıyla devralma"). Swift'te: `Rival`'a isteğe bağlı `crew`, devralmada `pilots`'a eklenir, satış kartında not, altı dilde metin.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
+v121.13 (prototip ve Swift birlikte): başka bölgedeyken biten Fiesta, festival ve kış, bölgeye dönünce sabah sessizce kapanır (`expireSeasons`); önceden "Balloon Fiesta, gün 44/4" görünüyordu.
+
 v121.12 (prototip ve Swift birlikte): yeni oyuncu düzeltmeleri (GAME_DESIGN "Yeni oyuncu düzeltmeleri"): sabah kart sınırı, tek balon onarımı en fazla 2 gün, zorunlu pas geç, yıldız yuvarlama, kartpostal koşulları (`firstCleanFlight`, `festivalFlown`), boş sepet sorusu, yakıt uyarısı %25, bayat ipucu ve övgü, bina ipuçları; prototipte Türkçe büyük harf (`lang`), tutardan sonra ek kaldırıldı, kartlarda 28 px düğme hatası, kartpostal düğmeleri eşit; emoji yerine çizim ikonlar (`LineGlyph`, prototipte `GLYPH`), dock düğmeleri tek satır ve sabit boyut, kırmızı bayrak ve yerde kalan balon kartlarında ✕.
 
 v121.11 (prototip ve Swift birlikte): Kapadokya festivalleri 4 gün (`FEST_DAYS`, `Rules.festivalDays`), uyarıdaki gün sayısı buna bağlı; Luksor tanıtımında başlangıç kasası ve satın alma kredisi metnindeki büyük kredi tutarı sabit yazı yerine para biçimiyle (`money(_:in:)`); altı dilde dil doğallığı düzeltmeleri.

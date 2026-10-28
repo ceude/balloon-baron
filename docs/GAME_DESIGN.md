@@ -337,6 +337,7 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 - **Kartpostallar:** "İlk uçuş" kazasız ilk uçuştan sonra, "Festival havası" bir festival gününde uçunca gelir.
 - **Boş sepet:** hiç yolcu binmediyse kalkıştan önce sorar: Fiyatı değiştir / Boş kalk.
 - **Uçuş koçu:** yakıt uyarısı %25'te; "Bu rüzgâr seni uzaklaştırıyor" ipucu doğru katmana geçince kalkar. Bekleyen bir övgü artık doğru değilse (pilot çıkarıldıysa) gösterilmez.
+- **Başka bölgedeki mevsimler (v121.13):** bir bölgenin Fiesta'sı, festivali ve kışı yalnızca orada oynanan günün sonunda biter; bölgeye dönünce süresi geçmiş olanlar sabah sessizce kapanır (`expireSeasons`).
 - **Bina ipuçları:** rehber, ajans, atölye ve okul açılınca Hezarfen "kasabada binayı bul ve dokun" der.
 
 ## TestFlight düzeltmeleri (v121.2, v121.6)

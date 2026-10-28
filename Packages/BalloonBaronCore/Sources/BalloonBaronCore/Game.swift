@@ -20,6 +20,7 @@ public struct Game: Sendable {
 
     /// Fills in today's weather, demand and candidates if missing, and queues Hezarfen's lessons.
     public mutating func startDay() {
+        expireSeasons()
         if state.weather == nil { state.weather = newWeather() }
         if state.demand == nil { state.demand = dayDemand() }
         if state.candidates.isEmpty { newCandidates() }
@@ -94,6 +95,20 @@ public struct Game: Sendable {
 
     /// v121.12: nobody reads seven cards in a row. A morning shows at most `Rules.morningLessons` of Hezarfen's lessons
     /// and one postcard; the rest wait for the next mornings, in order. News, rivals and the inspector aren't held back.
+    /// v121.13 (TestFlight: "Balloon Fiesta, day 44/4"): a region you were away from keeps its last fiesta, festival or
+    /// winter, since they only end at the close of a day played there. On coming back, the ones that are over end quietly.
+    mutating func expireSeasons() {
+        if let f = state.fiesta, state.day > f.end {
+            state.fiesta = nil
+            state.fiestaNext = state.day + state.region.fiestaEvery
+        }
+        if let f = state.festival, state.day > f.end { state.festival = nil }
+        if let w = state.winter, state.day > w.end {
+            state.winter = nil
+            state.nextWinter = state.day + 45
+        }
+    }
+
     mutating func spreadMorning() {
         guard state.day >= 2, state.spreadDay != state.day else { return }
         state.spreadDay = state.day

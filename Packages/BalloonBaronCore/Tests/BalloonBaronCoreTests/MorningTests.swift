@@ -54,4 +54,15 @@ final class MorningTests: XCTestCase {
         g.state.balloons[0].damagedUntil = g.state.day + 2
         XCTAssertTrue(g.state.forcedSkip)
     }
+
+    func testSeasonsFromAnotherRegionEndWhenYouComeBack() {
+        var g = newGame()
+        g.state.day = 589
+        g.state.fiesta = Fiesta(start: 546, end: 549)
+        g.state.winter = Winter(start: 546, end: 553)
+        g.startDay()
+        XCTAssertNil(g.state.fiesta)
+        XCTAssertNil(g.state.winter)
+        XCTAssertEqual(g.state.nextWinter, 589 + 45)
+    }
 }

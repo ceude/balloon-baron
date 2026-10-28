@@ -1816,7 +1816,15 @@ function showPoach() {
   no.style.width = '100%';
   c.append(yes, no); m.appendChild(c); m.hidden = false;
 }
+/* v121.13 (TestFlight: "Balloon Fiesta, gün 44/4"): a region you were away from keeps its last fiesta, festival or
+   winter, since they only end at the close of a day played there. On coming back, the ones that are over end quietly. */
+function expireSeasons() {
+  if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + (S.region === 'lux' ? 21 : 30); }
+  if (S.fest && S.day > S.fest.end) S.fest = null;
+  if (S.winter && S.day > S.winter.end) { S.winter = null; S.nextWinter = S.day + 45; }
+}
 function startDay() {
+  expireSeasons();
   alertsOpen = false; $('dock').classList.remove('open'); applyRegionTheme();
   if (!S.company) { showSetup(1); return; }
   if (S.story) { storyResume(); return; } /* v112: the opening story isn't over yet */
