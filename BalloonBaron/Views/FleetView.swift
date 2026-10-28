@@ -572,6 +572,7 @@ private struct BalloonCardSheet: View {
     @State private var designPick: BalloonPick?
     @State private var equipPick: BalloonPick?
     @State private var renamePick: BalloonPick?
+    @State private var noPilot = false
 
     var body: some View {
         if let game = store.game, let b = game.state.balloon(balloonID) {
@@ -591,6 +592,10 @@ private struct BalloonCardSheet: View {
             .sheet(item: $renamePick) { pick in
                 RenameSheet(balloonID: pick.id).environment(store)
             }
+            .modifier(NoPilotAlert(shown: $noPilot, crewOpen: game.state.unlocked.contains(.crew)) {
+                dismiss()
+                store.page = .crew
+            })
         }
     }
 
@@ -744,6 +749,12 @@ private struct BalloonCardSheet: View {
             if s.condition(b) < 0.6 {
                 FleetUI.SmallButton(title: loc("fleetPage.renew", eur(renew)), disabled: s.cash < renew) {
                     store.act { _ = $0.renewEnvelope(b.id) }
+                }
+            }
+            // v121.10: hand your own balloon to a pilot; with none free, offer the crew page
+            if s.isSelf(b) && s.licenseValid {
+                FleetUI.SmallButton(title: loc("fplan.toPilot"), ghost: true) {
+                    if game.pilotFreeForFlagship { store.act { $0.setSelfFly(false) } } else { noPilot = true }
                 }
             }
             // v111: pick the balloon you fly yourself right here; it becomes the flagship.

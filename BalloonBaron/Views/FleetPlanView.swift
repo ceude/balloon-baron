@@ -49,6 +49,7 @@ struct FleetPlanView: View {
     /// Called with an office page to open once the sheet has closed.
     var openPage: (Page) -> Void = { _ in }
     @State private var tick = 0
+    @State private var noPilot = false
 
     private struct SizeGroup: Identifiable {
         let size: BalloonSize
@@ -74,6 +75,7 @@ struct FleetPlanView: View {
             }
             .background(Theme.paper.ignoresSafeArea())
             .sensoryFeedback(.selection, trigger: tick)
+            .modifier(NoPilotAlert(shown: $noPilot, crewOpen: g.state.unlocked.contains(.crew)) { go(.crew) })
         }
     }
 
@@ -193,9 +195,11 @@ struct FleetPlanView: View {
                 Text(detail(b, g))
                     .font(Theme.font(12))
                     .foregroundStyle(Theme.ink2)
-                // "Give to a pilot" only when a pilot is free for it (TestFlight: it grounded the flagship)
-                if s.licenseValid && (you ? pilotFree(g) : ([.ok, .noPilot, .late, .strike] as [GameState.FlyStatus]).contains(st)) {
-                    PlanChipButton(title: loc(you ? "fplan.toPilot" : "fleetPage.flyMyself")) { you ? setSelf(false) : flyMyself(b.id) }
+                // "Give to a pilot": with no pilot free it asks to hire one instead of grounding the flagship (v121.10)
+                if s.licenseValid && (you || ([.ok, .noPilot, .late, .strike] as [GameState.FlyStatus]).contains(st)) {
+                    PlanChipButton(title: loc(you ? "fplan.toPilot" : "fleetPage.flyMyself")) {
+                        if !you { flyMyself(b.id) } else if g.pilotFreeForFlagship { setSelf(false) } else { noPilot = true }
+                    }
                         .padding(.top, 3)
                 }
             }
@@ -259,13 +263,6 @@ struct FleetPlanView: View {
 
     // MARK: Actions
 
-    /// Whether a pilot could take the flagship if you stepped out.
-    private func pilotFree(_ g: Game) -> Bool {
-        var t = g
-        t.setSelfFly(false)
-        return t.state.balloon(t.state.flagship).map { t.state.status($0) == .ok } ?? false
-    }
-
     /// "I'll fly this one": it becomes the flagship, flying today.
     private func flyMyself(_ id: Int) {
         store.act { g in
@@ -293,6 +290,35 @@ struct FleetPlanView: View {
     private func go(_ p: Page) {
         openPage(p)
         dismiss()
+    }
+}
+
+extension Game {
+    /// Whether a pilot could take the flagship if you stepped out of its basket.
+    var pilotFreeForFlagship: Bool {
+        var t = self
+        t.setSelfFly(false)
+        return t.state.balloon(t.state.flagship).map { t.state.status($0) == .ok } ?? false
+    }
+}
+
+/// v121.10: "Give to a pilot" with no pilot free: offer the crew page (or say it isn't open yet).
+struct NoPilotAlert: ViewModifier {
+    @Binding var shown: Bool
+    let crewOpen: Bool
+    let goCrew: () -> Void
+
+    func body(content: Content) -> some View {
+        content.alert(loc("noPilot.title"), isPresented: $shown) {
+            if crewOpen {
+                Button(loc("noPilot.goCrew")) { goCrew() }
+                Button(loc("common.cancel"), role: .cancel) {}
+            } else {
+                Button(loc("noPilot.ok"), role: .cancel) {}
+            }
+        } message: {
+            Text(loc(crewOpen ? "noPilot.body" : "noPilot.locked"))
+        }
     }
 }
 

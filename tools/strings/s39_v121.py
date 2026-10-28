@@ -48,3 +48,10 @@ add("collect.downCount", "Grounded: %@", "Yerde: %@", "Am Boden: %@", "En tierra
 # TestFlight: with nothing able to fly, the main button opens the flight plan
 add("home.openPlan", "Open the flight plan", "Uçuş planını aç", "Flugplan öffnen", "Abrir el plan de vuelo", "飛行計画を開く", "비행 계획 열기")
 add("home.fleet.flagNoPilot", "Your flagship has no pilot: fly it yourself in the plan", "Amiral balonunun pilotu yok: Plan'dan kendin uçur", "Dein Flaggschiff hat keinen Piloten: flieg es im Plan selbst", "Tu globo insignia no tiene piloto: pilótalo tú en el plan", "旗艦にパイロットがいない：計画で自分で飛ばそう", "기함에 조종사가 없습니다: 계획에서 직접 조종하세요")
+
+# v121.10: "Give to a pilot" with no pilot free
+add("noPilot.title", "No pilot", "Pilotun yok", "Kein Pilot", "Sin piloto", "パイロットがいない", "조종사가 없습니다")
+add("noPilot.body", "You have no free pilot for this balloon. Would you like to hire a new pilot on the Crew page?", "Bu balon için boşta pilotun yok. Ekip sayfasından yeni bir pilot işe almak ister misin?", "Für diesen Ballon ist kein Pilot frei. Möchtest du auf der Crew-Seite einen neuen Piloten einstellen?", "No tienes ningún piloto libre para este globo. ¿Quieres contratar uno nuevo en la página de Equipo?", "この気球に空いているパイロットがいない。チームのページで新しいパイロットを雇う？", "이 열기구를 맡을 조종사가 없습니다. 팀 페이지에서 새 조종사를 고용할까요?")
+add("noPilot.locked", "You have no pilot for this balloon. The pilot office opens soon; until then, fly it yourself.", "Bu balon için pilotun yok. Pilot ofisi yakında açılacak; o zamana kadar balonunu sen uçur.", "Für diesen Ballon hast du keinen Piloten. Das Pilotenbüro öffnet bald; bis dahin fliegst du selbst.", "No tienes piloto para este globo. La oficina de pilotos abre pronto; hasta entonces, pilótalo tú.", "この気球のパイロットがいない。パイロット事務所はもうすぐ開く。それまでは自分で飛ばそう。", "이 열기구를 맡을 조종사가 없습니다. 조종사 사무실이 곧 열리니 그때까지는 직접 조종하세요.")
+add("noPilot.goCrew", "Go to Crew", "Ekibe git", "Zur Crew", "Ir a Equipo", "チームへ", "팀으로 가기")
+add("noPilot.ok", "OK", "Tamam", "OK", "Vale", "OK", "확인")
