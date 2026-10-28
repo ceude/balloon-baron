@@ -21,7 +21,7 @@ public struct TutorialState: Codable, Equatable, Sendable {
     public static let flightSteps = ["burn", "wind", "vent", "field", "chimney", "thermal"]
 }
 
-/// v122: the guide office's three guides (`GUIDES_PICK`). Can (id mehmet) is the old single deal (v121): €1,500, +0.05
+/// v122: the guide office's three guides (`GUIDES_PICK`). Sena (id mehmet) is the old single deal (v121): €1,500, +0.05
 /// popularity, three days of five tourists, then five days to wait. Text: `guide.<rawValue>.name` / `.title`.
 public enum GuideOffer: String, Codable, CaseIterable, Sendable {
     case ayse, mehmet, selin

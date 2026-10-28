@@ -441,7 +441,7 @@ extension Game {
         return true
     }
 
-    /// v122: one of the guide office's three guides (Can, id mehmet, is the old single deal, and the rescue plan's).
+    /// v122: one of the guide office's three guides (Sena, id mehmet, is the old single deal, and the rescue plan's).
     @discardableResult
     public mutating func runGuideFlight(_ g: GuideOffer = .mehmet, inRescue: Bool = false) -> Bool {
         guard state.guideCooldown <= state.day, state.cash - g.cost >= (inRescue ? Rules.seizeBelow : 0) else { return false }

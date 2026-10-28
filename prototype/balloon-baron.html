@@ -5036,7 +5036,7 @@ function guideHoles() {
    choices cost and bring about what the single deal did before (v121). */
 const GUIDES_PICK = [
   { id: 'ayse', n: 'Ayşe', t: 'Otel rehberi', cost: 900, rep: .03, days: 2, pax: 4, cd: 4 },
-  { id: 'mehmet', n: 'Can', t: 'Tur rehberi', cost: 1500, rep: .05, days: 3, pax: 5, cd: 5 },
+  { id: 'mehmet', n: 'Sena', t: 'Tur rehberi', cost: 1500, rep: .05, days: 3, pax: 5, cd: 5 },
   { id: 'selin', n: 'Ekin', t: 'Kıdemli rehber', cost: 2400, rep: .07, days: 4, pax: 7, cd: 6 }
 ];
 const INFLU_PICK = [
@@ -6848,7 +6848,7 @@ function bookShow() {
   S.tips.show = 1; sfx('coin');
 }
 function doGuide(G) {
-  G = G && G.cost ? G : GUIDES_PICK[1]; /* v122: one of the guide office's guides (Can, id mehmet, is the old single deal) */
+  G = G && G.cost ? G : GUIDES_PICK[1]; /* v122: one of the guide office's guides (Sena, id mehmet, is the old single deal) */
   S.cash -= G.cost; S.rep = Math.min(1.4, S.rep + G.rep); S.guideCd = S.day + G.cd; S.guideUntil = S.day + G.days; S.guidePax = G.pax; S.guideCount = (S.guideCount || 0) + 1; S.lastGuide = S.day; addReview('guide'); sfx('coin'); refresh();
 }
 /* ---------- building upgrades ---------- */

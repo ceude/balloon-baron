@@ -52,7 +52,7 @@ add("tip.aging.short", "One of your balloons has a tired envelope, kid: renew it
 # The guide office's three guides
 add("guide.ayse.name", "Ayşe", "Ayşe", "Ayşe", "Ayşe", "アイシェ", "아이셰")
 add("guide.ayse.title", "Hotel guide", "Otel rehberi", "Hotelguide", "Guía de hotel", "ホテルのガイド", "호텔 가이드")
-add("guide.mehmet.name", "Can", "Can", "Can", "Can", "ジャン", "잔")
+add("guide.mehmet.name", "Sena", "Sena", "Sena", "Sena", "セナ", "세나")
 add("guide.mehmet.title", "Tour guide", "Tur rehberi", "Reiseleiter", "Guía turístico", "ツアーガイド", "투어 가이드")
 add("guide.selin.name", "Ekin", "Ekin", "Ekin", "Ekin", "エキン", "에킨")
 add("guide.selin.title", "Senior guide", "Kıdemli rehber", "Erfahrene Reiseleiterin", "Guía veterana", "ベテランガイド", "베테랑 가이드")
