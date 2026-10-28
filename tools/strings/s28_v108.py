@@ -10,7 +10,7 @@ add("home.alert.issueHere.raise", "Your pilots are waiting outside the office. T
     "パイロットたちが事務所の前で待っている。タップして決める。", "조종사들이 사무실 앞에서 기다립니다. 탭해서 결정하세요.")
 add("issue.raise.a.live", "Pilot wages go up 15%.", "Pilot maaşları %15 artar.", "Die Pilotengehälter steigen um 15 %.", "Los sueldos de los pilotos suben un 15 %.",
     "パイロットの給料が15%上がる。", "조종사 급여가 15% 오릅니다.")
-add("issue.raise.b.live", "Your pilots stay off for three days; only you fly, in the flagship.", "Pilotlar üç gün uçmaz, sadece amiral balonunu sen uçurursun.",
+add("issue.raise.b.live", "Your pilots stop work for three days; only you fly, in the flagship.", "Pilotlar üç gün uçmaz, sadece amiral balonunu sen uçurursun.",
     "Deine Piloten bleiben drei Tage weg; nur du fliegst, mit dem Flaggschiff.", "Tus pilotos no vuelan durante tres días; solo vuelas tú, en el globo insignia.",
     "パイロットは3日間飛ばない。飛ぶのは旗艦のあなただけ。", "조종사들이 사흘간 비행하지 않고, 기함은 당신만 띄웁니다.")
 add("issue.war.a.live", "Your ticket price drops to your cheapest rival's.", "Bilet fiyatın en ucuz rakibinkine iner.",
@@ -19,7 +19,7 @@ add("issue.war.a.live", "Your ticket price drops to your cheapest rival's.", "Bi
 add("issue.war.b.live", "Fifty-fifty: nothing happens, or your popularity drops.", "Yarı yarıya: ya bir şey olmaz ya da popülerliğin düşer.",
     "Fifty-fifty: Entweder passiert nichts, oder deine Beliebtheit sinkt.", "Cara o cruz: o no pasa nada o baja tu popularidad.",
     "五分五分：何も起きないか、人気が下がるか。", "반반입니다: 아무 일도 없거나 인기가 떨어집니다.")
-add("issue.accident.a.live", "Popularity drops a little, but the story is over.", "Popülerlik biraz düşer ama konu kapanır.",
+add("issue.accident.a.live", "Popularity drops a little, but the story blows over.", "Popülerlik biraz düşer ama konu kapanır.",
     "Die Beliebtheit sinkt etwas, aber die Geschichte ist vorbei.", "La popularidad baja un poco, pero el asunto queda zanjado.",
     "人気は少し下がるが、話はそこで終わる。", "인기가 조금 떨어지지만 사건은 일단락됩니다.")
 add("issue.accident.b.live", "The press keeps at it; popularity drops more.", "Basın üstüne gider, popülerlik daha çok düşer.",
@@ -141,7 +141,7 @@ add("crew.row.a11y", "%1$@, %2$@, %3$@", "%1$@, %2$@, %3$@", "%1$@, %2$@, %3$@",
 # Holding investments: the region's guide praises them, the next paper reports them (v109)
 D = {
  "tv": (
-  "Your TV ad is on the air, kid! People all over the world are talking about your balloons. You'll see this investment in the till.",
+  "Your TV ad is on the air, kid! People all over the world are talking about your balloons. You'll see this investment pay off in your cash.",
   "TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin.",
   "Dein TV-Spot läuft, Lehrling! Überall auf der Welt reden die Leute über deine Ballone. Diese Investition wirst du in der Kasse sehen.",
   "¡Tu anuncio ya está en la tele, aprendiz! En todo el mundo se habla de tus globos. Verás esta inversión en la caja.",
@@ -239,7 +239,7 @@ M = {
 }
 for d, t in M.items():
     add(f"hez.milestone.{d}", *t)
-add("hez.milestone.more", "Day: %@! One more milestone, kid. The sky is still yours.", "Gün: %@! Bir kilometre taşı daha evlat. Gökyüzü hâlâ senin.",
+add("hez.milestone.more", "Day %@! One more milestone, kid. The sky is still yours.", "Gün: %@! Bir kilometre taşı daha evlat. Gökyüzü hâlâ senin.",
     "Tag: %@! Wieder ein Meilenstein, Lehrling. Der Himmel gehört immer noch dir.", "Día: %@. ¡Otro hito, aprendiz! El cielo sigue siendo tuyo.",
     "%@日目！また一つ節目だな、弟子よ。空はまだお前のものだ。", "%@일째! 또 하나의 이정표일세, 제자여. 하늘은 여전히 자네 것이라네.")
 add("paper.milestone", "Day %2$@ in the sky: %1$@", "Gökyüzünde %2$@. gün: %1$@", "Tag %2$@ am Himmel: %1$@", "Día %2$@ en el cielo: %1$@", "空で%2$@日目：%1$@", "하늘에서 %2$@일째: %1$@")
@@ -263,7 +263,7 @@ add("deal.shortFew", "Cash: %1$@. The purchase loan needs a bigger fleet. Balloo
     "보유 현금: %1$@. 인수 대출에는 더 큰 기단이 필요합니다. 필요한 열기구: %2$@, 보유: %3$@.")
 add("buyLoan.button", "Buy with a loan (bank pays %@)", "Krediyle al (banka %@)", "Mit Kredit kaufen (Bank zahlt %@)", "Comprar con préstamo (el banco paga %@)", "ローンで買う（銀行が%@）", "대출로 사기 (은행 %@)")
 add("buyLoan.kicker", "Purchase loan", "Satın alma kredisi", "Kaufkredit", "Préstamo de compra", "買収ローン", "인수 대출")
-add("buyLoan.lead", "The bank pays the seller the %1$@ you're short; nothing goes into your till. %2$@ comes out of your cash and %3$@ stays in it.", "Banka eksik %1$@ tutarını doğrudan satıcıya öder, kasana para girmez. Kasandan %2$@ gider, %3$@ kasada kalır.",
+add("buyLoan.lead", "The bank pays the seller the %1$@ you're short; that money never goes into your cash. %2$@ comes out of your cash and %3$@ stays in it.", "Banka eksik %1$@ tutarını doğrudan satıcıya öder, kasana para girmez. Kasandan %2$@ gider, %3$@ kasada kalır.",
     "Die Bank zahlt dem Verkäufer die fehlenden %1$@; in deine Kasse fließt nichts. %2$@ gehen aus deiner Kasse, %3$@ bleiben drin.", "El banco paga al vendedor los %1$@ que te faltan; a tu caja no entra nada. Salen %2$@ de tu caja y quedan %3$@.",
     "不足分の%1$@は銀行が売り手に直接支払う。金庫にお金は入らない。金庫から%2$@が出て、%3$@が残る。", "부족분(%1$@)은 은행이 판매자에게 직접 지불하며, 금고에는 돈이 들어오지 않습니다. 금고에서 %2$@ 지출, 잔액 %3$@.")
 add("buyLoan.price", "Price", "Fiyat", "Preis", "Precio", "価格", "가격")
@@ -271,7 +271,7 @@ add("buyLoan.own", "Your share", "Senin payın", "Dein Anteil", "Tu parte", "自
 add("buyLoan.bank", "Bank pays", "Banka öder", "Bank zahlt", "Paga el banco", "銀行負担", "은행 부담")
 add("buyLoan.installment", "Installment, days: %@", "Taksit, gün: %@", "Rate, Tage: %@", "Cuota, días: %@", "返済、日数：%@", "할부, 일수: %@")
 add("buyLoan.total", "Total repaid (interest %@)", "Toplam geri ödeme (faiz %@)", "Insgesamt zurück (Zins %@)", "Total a devolver (interés %@)", "返済総額（利息%@）", "총 상환액 (이자 %@)")
-add("buyLoan.warning", "Careful: in winter fewer tourists come, but the installment goes on. The new balloons add %1$@ a day in upkeep, pilots' wages on top. If your cash falls below %2$@, the bank seizes your balloons.",
+add("buyLoan.warning", "Careful: in winter fewer tourists come, but the installments don't stop. The new balloons add %1$@ a day in upkeep, plus pilot wages. If your cash falls below %2$@, the bank seizes your balloons.",
     "Dikkat: kışın yolcu azalır ama taksit sürer. Yeni balonların bakımı günde %1$@ ekler, pilot maaşları ayrıca. Kasa %2$@ altına düşerse banka balonlarına el koyar.",
     "Vorsicht: Im Winter kommen weniger Touristen, die Rate läuft aber weiter. Die neuen Ballone kosten täglich %1$@ Wartung, dazu die Pilotengehälter. Fällt deine Kasse unter %2$@, pfändet die Bank deine Ballone.",
     "Cuidado: en invierno llegan menos turistas, pero la cuota sigue. Los globos nuevos suman %1$@ al día de mantenimiento, más los sueldos de los pilotos. Si tu caja baja de %2$@, el banco embarga tus globos.",
@@ -281,7 +281,7 @@ add("buyLoan.confirm", "Take over with the loan", "Krediyle devral", "Mit Kredit
 add("buyLoan.confirmFleet", "Buy the fleet with the loan", "Krediyle satın al", "Flotte mit Kredit kaufen", "Comprar la flota con el préstamo", "ローンでフリートを買う", "대출로 기단 구매")
 add("buyLoan.cancel", "Not now", "Vazgeç", "Nicht jetzt", "Ahora no", "やめておく", "다음에")
 add("buyLoan.bankTitle", "Purchase loan: up to %@", "Satın alma kredisi: en fazla %@", "Kaufkredit: bis zu %@", "Préstamo de compra: hasta %@", "買収ローン：最大%@", "인수 대출: 최대 %@")
-add("buyLoan.bankBody", "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; nothing goes into your till. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened. Balloons needed: %4$@.",
+add("buyLoan.bankBody", "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; that money never goes into your cash. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened. Balloons needed: %4$@.",
     "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane; 100.000'lik kredi açıldıktan sonra. Gereken balon: %4$@.",
     "Steht ein Konkurrent oder eine Konkursflotte zum Verkauf, zahlt die Bank dem Verkäufer, was dir fehlt; in deine Kasse fließt nichts. Mindestens %3$@ des Preises zahlst du selbst. Tage: %1$@, Zins %2$@. Immer nur einer, sobald der 100.000er-Kredit freigeschaltet ist. Nötige Ballone: %4$@.",
     "Cuando un rival o una flota en quiebra está en venta, el banco paga al vendedor lo que te falta; a tu caja no entra nada. Tú pones al menos el %3$@ del precio. Días: %1$@, interés %2$@. Uno a la vez, cuando se abra el préstamo de 100.000. Globos necesarios: %4$@.",
@@ -310,7 +310,7 @@ add("rescue.price.sub", "The highest price that still fills the seats. Seats fil
 
 # v110: Hezarfen's lessons on handing the flagship to a pilot, and on empty seats with no rival in the sky
 add("hez.delegate",
-    "Your fleet has grown, kid. You don't have to climb into the basket every morning anymore: in the flight plan, pick Pilot for the flagship and move to management. Just don't forget two things: for your license you must fly yourself at least once every 15 days, or your other balloons stay on the ground. And if you stay off for more than 5 days, passengers ask for the founder and your popularity wears down.",
+    "Your fleet has grown, kid. You don't have to climb into the basket every morning anymore: in the flight plan, pick Pilot for the flagship and move to management. Just don't forget two things: for your license you must fly yourself at least once every 15 days, or your other balloons stay on the ground. And if you stay out of the basket for more than 5 days, passengers ask for the founder and your popularity wears down.",
     "Filon büyüdü evlat. Artık her sabah sepete binmek zorunda değilsin: uçuş planında amiral balonu için Pilot seçeneğini seç, sen yönetime geç. Yalnız iki şeyi unutma: lisansın için 15 günde en az bir kez kendin uçmalısın, yoksa diğer balonların yerde kalır. Bir de 5 günden uzun uçmazsan yolcular kurucuyu arar, popülerliğin aşınır.",
     "Deine Flotte ist gewachsen, Lehrling. Du musst nicht mehr jeden Morgen in den Korb steigen: Wähle im Flugplan Pilot für das Flaggschiff und widme dich der Leitung. Vergiss nur zwei Dinge nicht: Für deine Lizenz musst du mindestens alle 15 Tage einmal selbst fliegen, sonst bleiben deine anderen Ballone am Boden. Und bleibst du länger als 5 Tage weg, fragen die Passagiere nach dem Gründer und deine Beliebtheit schwindet.",
     "Tu flota ha crecido, aprendiz. Ya no tienes que subir a la cesta cada mañana: en el plan de vuelo elige Piloto para el globo insignia y pasa a la gestión. Pero no olvides dos cosas: para conservar tu licencia debes volar tú mismo al menos una vez cada 15 días, o tus otros globos se quedan en tierra. Y si pasas más de 5 días sin volar, los pasajeros preguntan por el fundador y tu popularidad se desgasta.",

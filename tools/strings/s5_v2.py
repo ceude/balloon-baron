@@ -22,7 +22,7 @@ add("review.absent.0",
  "フライトは良かったけど、創業者が操縦するってパンフレットに書いてあったのに、一度も姿を見なかった。",
  "비행은 좋았지만 브로슈어에는 창업자가 직접 조종한다고 쓰여 있었어요. 한 번도 못 봤어요.")
 add("review.absent.1",
- "It feels like a factory now. The family company spirit is gone.",
+ "It feels like a factory now. That family-business feel is gone.",
  "Artık fabrika gibi olmuş. Aile şirketi havası kalmamış.",
  "Es fühlt sich jetzt wie eine Fabrik an. Der Geist des Familienbetriebs ist weg.",
  "Ahora parece una fábrica. Ya no queda el espíritu de empresa familiar.",

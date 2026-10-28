@@ -72,9 +72,9 @@ add("store.kilim", "Cappadocia kilim", "Kapadokya kilimi", "Kappadokien-Kelim", 
 add("store.heart", "Heart balloon", "Kalp balon", "Herzballon", "Globo corazón", "ハート気球", "하트 열기구")
 add("store.star", "Star balloon", "Yıldız balon", "Sternballon", "Globo estrella", "星の気球", "별 열기구")
 add("store.skull", "Skull balloon", "Kurukafa balon", "Totenkopf-Ballon", "Globo calavera", "ドクロ気球", "해골 열기구")
-add("store.fountain", "Square fountain", "Meydan çeşmesi", "Brunnen am Platz", "Fuente de la plaza", "広場の噴水", "광장 분수")
+add("store.fountain", "Town square fountain", "Meydan çeşmesi", "Brunnen am Platz", "Fuente de la plaza", "広場の噴水", "광장 분수")
 add("store.statue", "Hezarfen statue", "Hezarfen heykeli", "Hezarfen-Statue", "Estatua de Hezarfen", "ヘザルフェン像", "헤자르펜 동상")
-add("store.lanterns", "Lantern strings", "Fener dizileri", "Laternenketten", "Guirnaldas de farolillos", "吊るしランタン", "등불 줄")
+add("store.lanterns", "Strings of lanterns", "Fener dizileri", "Laternenketten", "Guirnaldas de farolillos", "吊るしランタン", "등불 줄")
 add("store.flags", "Company flags", "Şirket bayrakları", "Firmenflaggen", "Banderas de la empresa", "社旗", "회사 깃발")
 
 # Postcards (achievements)
@@ -95,12 +95,12 @@ for k, en, tr, de, es, ja, ko in [
     ("rivalDown", ("A rival fell", "A rival went bankrupt"), ("Rakip düştü", "Bir rakip iflas etti"), ("Ein Konkurrent weniger", "Ein Konkurrent ging pleite"), ("Cayó un rival", "Un rival quebró"), ("ライバル陥落", "ライバルが倒産した"), ("경쟁자 몰락", "경쟁사가 파산했습니다")),
     ("boss", ("The old master", "The valley's old owner stepped aside"), ("Eski usta", "Vadinin eski sahibi çekildi"), ("Der alte Meister", "Der alte Herr des Tals hat sich zurückgezogen"), ("El viejo maestro", "El antiguo dueño del valle se retiró"), ("古参の退場", "谷のかつての主が身を引いた"), ("노장의 퇴장", "계곡의 옛 주인이 물러났습니다")),
     ("design", ("Your own pattern", "Your first balloon design"), ("Kendi desenin", "İlk balon tasarımın"), ("Dein eigenes Muster", "Dein erstes Ballondesign"), ("Tu propio diseño", "Tu primer diseño de globo"), ("自分の柄", "初めての気球デザイン"), ("나만의 무늬", "첫 열기구 디자인")),
-    ("upgrade3", ("Master's work", "You took a building to level 3"), ("Usta işi", "Bir binayı 3. seviyeye çıkardın"), ("Meisterwerk", "Du hast ein Gebäude auf Stufe 3 gebracht"), ("Obra maestra", "Llevaste un edificio al nivel 3"), ("匠の技", "建物をレベル3にした"), ("장인의 솜씨", "건물을 레벨 3으로 올렸습니다")),
+    ("upgrade3", ("Masterwork", "You took a building to level 3"), ("Usta işi", "Bir binayı 3. seviyeye çıkardın"), ("Meisterwerk", "Du hast ein Gebäude auf Stufe 3 gebracht"), ("Obra maestra", "Llevaste un edificio al nivel 3"), ("匠の技", "建物をレベル3にした"), ("장인의 솜씨", "건물을 레벨 3으로 올렸습니다")),
     ("xl", ("Giant balloon", "Your giant balloon is in the sky"), ("Dev balon", "Dev balonun gökyüzünde"), ("Riesenballon", "Dein Riesenballon ist am Himmel"), ("Globo gigante", "Tu globo gigante está en el cielo"), ("巨大気球", "巨大気球が空に"), ("거대 열기구", "거대 열기구가 하늘에")),
     ("baronCap", ("Baron of Cappadocia", "Master of the valley"), ("Kapadokya Baronu", "Vadinin efendisi"), ("Baron von Kappadokien", "Herr des Tals"), ("Barón de Capadocia", "Señor del valle"), ("カッパドキアの男爵", "谷の主"), ("카파도키아의 남작", "계곡의 주인")),
     ("abq", ("New World", "You entered Albuquerque"), ("Yeni Dünya", "Albuquerque'ye girdin"), ("Neue Welt", "Du bist in Albuquerque gestartet"), ("Nuevo Mundo", "Entraste en Albuquerque"), ("新世界", "アルバカーキに進出した"), ("신대륙", "앨버커키에 진출했습니다")),
     ("baronAbq", ("Baron of Albuquerque", "The sky of two continents"), ("Albuquerque Baronu", "İki kıtanın göğü"), ("Baron von Albuquerque", "Der Himmel zweier Kontinente"), ("Barón de Albuquerque", "El cielo de dos continentes"), ("アルバカーキの男爵", "二つの大陸の空"), ("앨버커키의 남작", "두 대륙의 하늘")),
-    ("world", ("World Baron", "Every holding goal"), ("Dünya Baronu", "Holdingin bütün hedefleri"), ("Weltbaron", "Alle Ziele der Holding"), ("Barón mundial", "Todos los objetivos del holding"), ("世界の男爵", "ホールディングスの全目標"), ("세계의 남작", "지주회사의 모든 목표")),
+    ("world", ("World Baron", "All holding goals complete"), ("Dünya Baronu", "Holdingin bütün hedefleri"), ("Weltbaron", "Alle Ziele der Holding"), ("Barón mundial", "Todos los objetivos del holding"), ("世界の男爵", "ホールディングスの全目標"), ("세계의 남작", "지주회사의 모든 목표")),
 ]:
     add(f"ach.{k}", en[0], tr[0], de[0], es[0], ja[0], ko[0])
     add(f"ach.{k}.d", en[1], tr[1], de[1], es[1], ja[1], ko[1])
@@ -109,7 +109,7 @@ for k, en, tr, de, es, ja, ko in [
 add("hgoal.million", "Holding cash €1 million", "Holding kasası €1 milyon", "Holding-Kasse 1 Mio. €", "Caja del holding: 1 millón de €", "ホールディングス資金100万ユーロ", "지주회사 금고 100만 유로")
 add("hgoal.baronAbq", "Baron of Albuquerque", "Albuquerque Baronu", "Baron von Albuquerque", "Barón de Albuquerque", "アルバカーキの男爵", "앨버커키의 남작")
 add("hgoal.tv", "A TV campaign", "Bir TV kampanyası", "Eine TV-Kampagne", "Una campaña de TV", "テレビCMキャンペーン", "TV 캠페인")
-add("hgoal.celebrity", "A celebrity face", "Ünlü reklam yüzü", "Ein Promi als Werbegesicht", "Una cara famosa", "有名人の広告塔", "유명인 광고 모델")
+add("hgoal.celebrity", "A celebrity ambassador", "Ünlü reklam yüzü", "Ein Promi als Werbegesicht", "Una cara famosa", "有名人の広告塔", "유명인 광고 모델")
 add("hgoal.research", "Envelope research done", "Zarf Ar-Ge'si tamam", "Hüllenforschung abgeschlossen", "Investigación de envolturas terminada", "球皮研究の完了", "외피 연구 완료")
 add("hgoal.offices", "Four world offices", "Dört dünya ofisi", "Vier Büros weltweit", "Cuatro oficinas en el mundo", "世界4都市のオフィス", "세계 4대 사무소")
 add("hgoal.title", "Holding goals", "Holding hedefleri", "Ziele der Holding", "Objetivos del holding", "ホールディングスの目標", "지주회사 목표")

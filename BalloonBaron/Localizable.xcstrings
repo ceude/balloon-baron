@@ -2350,7 +2350,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Master's work"
+            "value": "Masterwork"
           }
         },
         "es": {
@@ -2555,7 +2555,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Every holding goal"
+            "value": "All holding goals complete"
           }
         },
         "es": {
@@ -3252,7 +3252,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your license needs your own flight"
+            "value": "Fly yourself to keep your license"
           }
         },
         "es": {
@@ -3539,7 +3539,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Two loans at most at a time. If your cash drops below %@, the bank seizes one of your balloons and sells it at half price."
+            "value": "You can have at most two loans at a time. If your cash drops below %@, the bank seizes one of your balloons and sells it at half price."
           }
         },
         "es": {
@@ -4277,7 +4277,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A lasting decoration in town; each brings 1% more tourists."
+            "value": "Permanent town decorations; each brings 1% more tourists."
           }
         },
         "es": {
@@ -4564,7 +4564,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prices show in your country's currency on the App Store."
+            "value": "The App Store shows prices in your local currency."
           }
         },
         "es": {
@@ -4728,7 +4728,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Comes as a ready design and goes straight onto your flagship. High creativity, never fades."
+            "value": "Comes as a ready-made design and goes straight onto your flagship. High creativity, never fades."
           }
         },
         "es": {
@@ -4810,7 +4810,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Open Egypt and you can found a company in Luxor too. It opens once you're Baron of Albuquerque."
+            "value": "Open Egypt and you can found a company in Luxor too. It opens once you're baron of Albuquerque."
           }
         },
         "es": {
@@ -4892,7 +4892,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Comes as a ready design and goes straight onto your flagship. Never fades; extra popularity on every flight."
+            "value": "Comes as a ready-made design and goes straight onto your flagship. Never fades; extra popularity on every flight."
           }
         },
         "es": {
@@ -5548,7 +5548,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Baron of Albuquerque, huh? Valleys on two continents. I take my hat off to you. I really do, look."
+            "value": "Baron of Albuquerque, huh? Valleys on two continents. I tip my hat to you. Look, I really am."
           }
         },
         "es": {
@@ -6122,7 +6122,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Things reach my ears. Hotel deals, influencer campaigns... Not bad. But growing is easy, staying on your feet is hard. Let's see how you get through the winter."
+            "value": "I hear things. Hotel deals, influencer campaigns... Not bad. But growing is easy, staying on your feet is hard. Let's see how you get through the winter."
           }
         },
         "es": {
@@ -6696,7 +6696,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "I sold my last balloon. The West Bank is yours now. Some morning, fly a round over Deir el-Bahari for me too."
+            "value": "I sold my last balloon. The West Bank is yours now. Some morning, fly a lap over Deir el-Bahari for me."
           }
         },
         "es": {
@@ -6860,7 +6860,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yesterday you flew more passengers than me. That has happened twice in the history of Theban Skies. Both times I laughed last."
+            "value": "Yesterday you flew more passengers than me. That has happened twice in the history of Theban Skies. Both times, I had the last laugh."
           }
         },
         "es": {
@@ -6901,7 +6901,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "I offered your pilot a house with a view of the Nile. Here loyalty is measured in bread."
+            "value": "I offered your pilot a house with a view of the Nile. Here, loyalty goes to whoever puts bread on the table."
           }
         },
         "es": {
@@ -8295,7 +8295,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; nothing goes into your till. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened. Balloons needed: %4$@."
+            "value": "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; that money never goes into your cash. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened. Balloons needed: %4$@."
           }
         },
         "es": {
@@ -8623,7 +8623,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The bank pays the seller the %1$@ you're short; nothing goes into your till. %2$@ comes out of your cash and %3$@ stays in it."
+            "value": "The bank pays the seller the %1$@ you're short; that money never goes into your cash. %2$@ comes out of your cash and %3$@ stays in it."
           }
         },
         "es": {
@@ -8828,7 +8828,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Careful: in winter fewer tourists come, but the installment goes on. The new balloons add %1$@ a day in upkeep, pilots' wages on top. If your cash falls below %2$@, the bank seizes your balloons."
+            "value": "Careful: in winter fewer tourists come, but the installments don't stop. The new balloons add %1$@ a day in upkeep, plus pilot wages. If your cash falls below %2$@, the bank seizes your balloons."
           }
         },
         "es": {
@@ -10058,7 +10058,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Albuquerque Pilots' Club named you master of the box"
+            "value": "The Albuquerque Pilots' Club named you Master of the Box"
           }
         },
         "es": {
@@ -10222,7 +10222,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Cappadocia Tourism Association named you young entrepreneur of the year"
+            "value": "The Cappadocia Tourism Association named you Young Entrepreneur of the Year"
           }
         },
         "es": {
@@ -14404,7 +14404,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The company closed. Its fleet is for sale: balloons: %1$@, price: %2$@."
+            "value": "The company closed. Its fleet is for sale. Balloons: %1$@ · Price: %2$@."
           }
         },
         "es": {
@@ -14773,7 +14773,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You have %@ in cash. Take a bank loan, then buy it later from the Market page."
+            "value": "You have %@ in cash. Take out a bank loan, then buy it from the Market page."
           }
         },
         "es": {
@@ -15306,7 +15306,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The choice of big baskets. Accident risk %1$@%% lower than a single burner, the balloon heats and climbs %2$@%% faster."
+            "value": "The go-to for big baskets. Accident risk %1$@%% lower than a single burner, the balloon heats and climbs %2$@%% faster."
           }
         },
         "es": {
@@ -15470,7 +15470,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ (%2$@) had a hard landing and will be grounded for %3$@ days. Repairs %4$@, compensation %5$@."
+            "value": "%1$@ (%2$@) had a hard landing and is grounded. Days in repair: %3$@. Repairs %4$@, compensation %5$@."
           }
         },
         "es": {
@@ -15511,7 +15511,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ (%2$@) had a serious accident and will be grounded for %3$@ days. Repairs %4$@, compensation %5$@."
+            "value": "%1$@ (%2$@) had a serious accident and is grounded. Days in repair: %3$@. Repairs %4$@, compensation %5$@."
           }
         },
         "es": {
@@ -15634,7 +15634,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You cancelled the %1$@ flight. %2$@ passengers got their money back plus %3$@ each in compensation."
+            "value": "You cancelled the %1$@ flight. Passengers refunded: %2$@, plus %3$@ each in compensation."
           }
         },
         "es": {
@@ -15921,7 +15921,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your workshop delivered an order to %1$@ (%2$@). Paid in: %3$@."
+            "value": "Your workshop delivered an order to %1$@ (%2$@). Payment received: %3$@."
           }
         },
         "es": {
@@ -16413,7 +16413,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your pilot license expires today. Tomorrow you can't fly the flagship yourself; renew it in the Crew tab."
+            "value": "Your pilot license expires today. Tomorrow you can't fly the flagship yourself; renew it on the Crew page."
           }
         },
         "es": {
@@ -16782,7 +16782,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ is now a %2$@ pilot! Accident risk is down, wage is now %3$@/day."
+            "value": "%1$@ has been promoted to %2$@ pilot! Accident risk is down; wage is now %3$@/day."
           }
         },
         "es": {
@@ -17192,7 +17192,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ went bankrupt! Its fleet is for sale: %2$@ balloons for %3$@."
+            "value": "%1$@ went bankrupt! Its fleet is for sale. Balloons: %2$@ · Price: %3$@."
           }
         },
         "es": {
@@ -17766,7 +17766,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "After today's accidents too few balloons are left for a show, so tonight's show is off. The other fees came back too: %@. You can hold it again once the balloons are repaired."
+            "value": "After today's accidents too few balloons are left for a show, so tonight's show is off. The other fees were refunded too: %@. You can hold it again once the balloons are repaired."
           }
         },
         "es": {
@@ -17807,7 +17807,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A balloon that crashed today can't go up in tonight's show. Its fee came back: %@."
+            "value": "A balloon that crashed today can't go up in tonight's show. Its fee was refunded: %@."
           }
         },
         "es": {
@@ -17848,7 +17848,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tonight is your Balloon Show: your balloons will light up over the town. For the next 3 days its tourists will look for you. Balloons: %@."
+            "value": "Tonight is your Balloon Show: your balloons will light up over the town. For the next 3 days, the tourists it draws will look for you. Balloons: %@."
           }
         },
         "es": {
@@ -19324,7 +19324,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "They pay %1$@ on delivery; it costs you %2$@, profit %3$@. The line is busy (days: %4$@), and %5$@ grows by a balloon."
+            "value": "They pay %1$@ on delivery; it costs you %2$@, profit %3$@. The line is busy (days: %4$@), and %5$@ gains a balloon."
           }
         },
         "es": {
@@ -19365,7 +19365,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ wants to add a balloon to its fleet and offers to buy it from your workshop. Basket: %2$@. The money is yours, but your rival grows by a balloon."
+            "value": "%1$@ wants to add a balloon to its fleet and offers to buy it from your workshop. Basket: %2$@. The money is yours, but your rival gains a balloon."
           }
         },
         "es": {
@@ -19406,7 +19406,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Building takes days: %1$@; meanwhile the line can't make your own balloons. Turn it down and there's no deal, the rival stays as it is (%2$@). The offer is good today."
+            "value": "Building takes days: %1$@; meanwhile the line can't make your own balloons. Turn it down and the rival stays as it is (%2$@). The offer is only good today."
           }
         },
         "es": {
@@ -20636,7 +20636,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Attention"
+            "value": "Needs attention"
           }
         },
         "es": {
@@ -20718,7 +20718,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Envelope wearing"
+            "value": "Worn envelopes"
           }
         },
         "es": {
@@ -21456,7 +21456,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No ads. Find a sponsor"
+            "value": "No ads: find a sponsor"
           }
         },
         "es": {
@@ -21989,7 +21989,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Patterns and shapes from the bazaar go on for free."
+            "value": "Applying bazaar patterns and shapes is free."
           }
         },
         "es": {
@@ -23957,7 +23957,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Since you don't fly, today doesn't renew your pilot license."
+            "value": "If you don't fly, today won't count toward your pilot license."
           }
         },
         "es": {
@@ -23998,7 +23998,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keep flying"
+            "value": "Don't cancel"
           }
         },
         "es": {
@@ -24326,7 +24326,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "**Your goal is the landing field:** on the right, km: %@. The arrows on the left show the wind at each height; find the layer that blows toward it."
+            "value": "**Your goal is the landing field:** on the right, %@ km away. The arrows on the left show the wind at each height; find the layer that blows toward it."
           }
         },
         "es": {
@@ -24531,7 +24531,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Day report"
+            "value": "Daily report"
           }
         },
         "es": {
@@ -28057,7 +28057,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fly in a Nile cruise season"
+            "value": "Fly during the Nile cruise season"
           }
         },
         "es": {
@@ -28590,7 +28590,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Meet them all on the same day to become baron of %@ and open up to the world. Careful: the Competition Authority and merging rivals will try to stop you."
+            "value": "Meet them all on the same day to become baron of %@ and go global. Careful: the Competition Authority and merging rivals will try to stop you."
           }
         },
         "es": {
@@ -29492,7 +29492,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The influencer agency is open. Travel influencers fly with you and post it; your popularity climbs fast. It's pricey, so do it when your till is comfortable."
+            "value": "The influencer agency is open. Travel influencers fly with you and post about it; your popularity climbs fast. It's pricey, so do it when you have cash to spare."
           }
         },
         "es": {
@@ -29656,7 +29656,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your fleet has passed 35 balloons, kid; you don't have to run every morning yourself anymore. \"Advance\" down below plays the days by themselves, with the crew flying the flagship too. It stops when a decision, a goal or a cash problem comes up, after 7 days at the latest; the paper and the news wait and come up when it stops. If a Balloon Show night comes, it lets you watch the whole show, then stops."
+            "value": "Your fleet has passed 35 balloons, kid; you don't have to run every morning yourself anymore. \"Advance\" down below plays the days for you, with the crew flying the flagship too. It stops when a decision, a goal or a cash problem comes up, after 7 days at the latest; the paper and the news are saved for when it stops. If a Balloon Show night comes, it lets you watch the whole show, then stops."
           }
         },
         "es": {
@@ -29902,7 +29902,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The crew page is open. A rookie pilot is cheap but trembles in the wind. They gain experience as they fly, and of course they'll want a raise."
+            "value": "The crew page is open. A rookie pilot is cheap but gets shaky in the wind. They gain experience as they fly, and of course they'll want a raise."
           }
         },
         "es": {
@@ -30148,7 +30148,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your TV ad is on the air, kid! People all over the world are talking about your balloons. You'll see this investment in the till."
+            "value": "Your TV ad is on the air, kid! People all over the world are talking about your balloons. You'll see this investment pay off in your cash."
           }
         },
         "es": {
@@ -30189,7 +30189,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your fleet has grown, kid. You don't have to climb into the basket every morning anymore: in the flight plan, pick Pilot for the flagship and move to management. Just don't forget two things: for your license you must fly yourself at least once every 15 days, or your other balloons stay on the ground. And if you stay off for more than 5 days, passengers ask for the founder and your popularity wears down."
+            "value": "Your fleet has grown, kid. You don't have to climb into the basket every morning anymore: in the flight plan, pick Pilot for the flagship and move to management. Just don't forget two things: for your license you must fly yourself at least once every 15 days, or your other balloons stay on the ground. And if you stay out of the basket for more than 5 days, passengers ask for the founder and your popularity wears down."
           }
         },
         "es": {
@@ -30230,7 +30230,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "America, kid! The wind in Albuquerque is something else: the famous \"box\". Down low it carries you one way, a little higher it brings you back, so a good pilot lands where they took off. Every 30 days there's the Balloon Fiesta: for four days the tourists double. Everything here runs in dollars and you start from scratch: %@ and one small balloon. Cappadocia keeps earning on autopilot and its income goes to the holding, but the holding can't send money here. You'll make America on your own. If there's trouble, I'll call you."
+            "value": "America, kid! The wind in Albuquerque is something else: the famous \"box\". Down low it carries you one way, a little higher it brings you back, so a good pilot lands where they took off. Every 30 days there's the Balloon Fiesta: for four days the tourists double. Everything here runs in dollars and you start from scratch: %@ and one small balloon. Cappadocia keeps earning on autopilot and its income goes to the holding, but the holding can't send money here. You'll have to make it in America on your own. If there's trouble, I'll call you."
           }
         },
         "es": {
@@ -31091,7 +31091,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your flagship %@ is out of repair, kid. It's your flagship again, and from today you fly it."
+            "value": "Your flagship %@ has been repaired, kid. It's your flagship again, and from today you fly it."
           }
         },
         "es": {
@@ -31132,7 +31132,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The fleet page is open, kid. Once the safe fills up you could think about a second balloon, but every balloon needs a pilot."
+            "value": "The fleet page is open, kid. Once your cash builds up you could think about a second balloon, but every balloon needs a pilot."
           }
         },
         "es": {
@@ -31173,7 +31173,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Founder Pack is here, kid! Items: %@. Patterns and shaped balloons wait in the Design Studio, the decorations are up in town, the figures are on the show card."
+            "value": "The Founder Pack is here, kid! Items: %@. Patterns and shaped balloons wait in the design studio, the decorations are up in town, the figures are on the show card."
           }
         },
         "es": {
@@ -31214,7 +31214,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Founder Pack is here, kid! Items: %1$@. Patterns and shaped balloons wait in the Design Studio, the decorations are up in town, the figures are on the show card. I dressed your flagship in the first shape: %2$@ (%3$@)."
+            "value": "The Founder Pack is here, kid! Items: %1$@. Patterns and shaped balloons wait in the design studio, the decorations are up in town, the figures are on the show card. I dressed your flagship in the first shape: %2$@ (%3$@)."
           }
         },
         "es": {
@@ -31296,7 +31296,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The guides' office is open, kid. Fly the hotel and tour guides for free and they'll send you their guests: popularity, and extra tourists for a few days."
+            "value": "The guide office is open, kid. Fly the hotel and tour guides for free and they'll send you their guests: popularity, and extra tourists for a few days."
           }
         },
         "es": {
@@ -31378,7 +31378,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You have a holding now, kid! Tap Holding. You can move money from the Cappadocia cash box into the holding, and Albuquerque's entry fee is paid from the holding. One warning: holding money never goes back to a country. Each country grows on its own cash."
+            "value": "You have a holding now, kid! Tap Holding. You can move money from the Cappadocia cash box into the holding, and Albuquerque's entry fee is paid from the holding. One warning: holding money never goes back to a region. Each region grows on its own cash."
           }
         },
         "es": {
@@ -31419,7 +31419,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Careful with influencer deals, kid. Do them rarely at first, or your cash flow suffers. Once your safe is comfortable, they pay off far better."
+            "value": "Careful with influencer deals, kid. Do them rarely at first, or your cash flow suffers. Once you have cash to spare, they pay off far better."
           }
         },
         "es": {
@@ -31460,7 +31460,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The sky isn't always a friend. Since day one your balloon and passengers have flown insured. Now you can switch insurance on and off yourself, but remember: one accident can empty your safe in a single morning."
+            "value": "The sky isn't always a friend. Since day one your balloon and passengers have flown insured. Now you can switch insurance on and off yourself, but remember: one accident can wipe out your cash in a single morning."
           }
         },
         "es": {
@@ -31542,7 +31542,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The market page is open. Know your rivals: Göreme Sky is the big brother, Kızıl Vadi plays by no rules. Hotel deals are there too."
+            "value": "The market page is open. Know your rivals: Göreme Sky is the big player, Kızıl Vadi plays by no rules. Hotel deals are there too."
           }
         },
         "es": {
@@ -31829,7 +31829,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Day: %@! One more milestone, kid. The sky is still yours."
+            "value": "Day %@! One more milestone, kid. The sky is still yours."
           }
         },
         "es": {
@@ -32075,7 +32075,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Here's a secret, kid: early on, hotel and guide deals are everything. The more popular you get, the more customers you find at a higher price. Luxury hotels send their guests even at high prices. A company with no hotel and no guides never gets talked about beyond 4.2 stars."
+            "value": "Here's a secret, kid: early on, hotel and guide deals are everything. The more popular you get, the more customers you find at a higher price. Luxury hotels send their guests even at high prices. A company with no hotel and no guides never gets past 4.2 stars."
           }
         },
         "es": {
@@ -32567,7 +32567,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Yesterday not every seat was filled, kid. The ticket price changes the tourists' minds: lower it a little and no seat stays empty. If your seats are always full, raise it and earn more. You set the price in the Ticket box at the bottom."
+            "value": "Yesterday not every seat was filled, kid. The ticket price sways tourists: lower it a little and no seat stays empty. If your seats are always full, raise it and earn more. You set the price in the Ticket box at the bottom."
           }
         },
         "es": {
@@ -33182,7 +33182,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Winter is at the door! For 8 days tourists will be halved, red flags will come more often, and your hotels will empty out. Wages and maintenance are still paid. Keep unneeded balloons on the ground and protect your cash. Spring will return."
+            "value": "Winter is at the door! For 8 days tourists will be halved, red flags will come more often, and your hotels will empty out. You still pay wages and upkeep. Keep unneeded balloons on the ground and protect your cash. Spring will return."
           }
         },
         "es": {
@@ -33428,7 +33428,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A celebrity face"
+            "value": "A celebrity ambassador"
           }
         },
         "es": {
@@ -34207,7 +34207,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Face deal"
+            "value": "Star power"
           }
         },
         "es": {
@@ -34248,7 +34248,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Celebrity ad face"
+            "value": "Celebrity ambassador"
           }
         },
         "es": {
@@ -35150,7 +35150,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "New fabric research with universities; envelopes wear out later."
+            "value": "New fabric research with universities; envelopes wear out more slowly."
           }
         },
         "es": {
@@ -35970,7 +35970,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Record projects open once you have entered Luxor. Open Luxor first."
+            "value": "Record attempts unlock once you've entered Luxor. Open Luxor first."
           }
         },
         "es": {
@@ -37528,7 +37528,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fly the flagship yourself today (free renewal flight) or pay %@ to renew. Tap for the crew."
+            "value": "Fly the flagship yourself today (free renewal flight) or pay %@ to renew. Tap to open Crew."
           }
         },
         "es": {
@@ -38307,7 +38307,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "If you fly yourself, today's mission: %1$@ (+%2$@)"
+            "value": "Fly yourself to take today's mission: %1$@ (+%2$@)"
           }
         },
         "es": {
@@ -38512,7 +38512,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You can't make a renewal flight: make another balloon your flagship, or pay %@ to renew the license. Tap for the fleet."
+            "value": "You can't make a renewal flight: make another balloon your flagship, or pay %@ to renew the license. Tap to open Fleet."
           }
         },
         "es": {
@@ -38553,7 +38553,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You can't make a renewal flight: renew its envelope, make another balloon your flagship, or pay %@ to renew the license. Tap for the fleet."
+            "value": "You can't make a renewal flight: renew its envelope, make another balloon your flagship, or pay %@ to renew the license. Tap to open Fleet."
           }
         },
         "es": {
@@ -39742,7 +39742,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilot license: %@ days left"
+            "value": "Pilot license · days left: %@"
           }
         },
         "es": {
@@ -40439,7 +40439,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your balloons are in repair or worn out. Look in the Fleet."
+            "value": "Your balloons are in repair or worn out. Check the Fleet page."
           }
         },
         "es": {
@@ -40480,7 +40480,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your balloon's envelope is worn out. Renew it in the Fleet."
+            "value": "Your balloon's envelope is worn out. Renew it on the Fleet page."
           }
         },
         "es": {
@@ -41013,7 +41013,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Insurance 1/2"
+            "value": "Partly insured"
           }
         },
         "es": {
@@ -41874,7 +41874,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ buys %2$@. You can't make a deal with this hotel again; you can only buy it back from that company."
+            "value": "%1$@ buys %2$@. You can't sign with this hotel again; you can only buy it back from that company."
           }
         },
         "es": {
@@ -41915,7 +41915,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A local investor buys %@. You can make a deal with it again later."
+            "value": "A local investor buys %@. You can sign with it again later."
           }
         },
         "es": {
@@ -42202,7 +42202,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Advertising face"
+            "value": "Brand ambassador"
           }
         },
         "es": {
@@ -42735,7 +42735,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "No advertising face"
+            "value": "No brand ambassador"
           }
         },
         "es": {
@@ -43022,7 +43022,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "TV on air, %@ days"
+            "value": "TV on air · days: %@"
           }
         },
         "es": {
@@ -43309,7 +43309,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "My second warning. The envelopes of %1$@ still haven't been renewed. If it's the same at the next inspection, I'll have to write a fine."
+            "value": "My second warning. The envelopes of %1$@ still haven't been renewed. If it's the same at the next inspection, I'll have to issue a fine."
           }
         },
         "es": {
@@ -43350,7 +43350,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "My second warning. The envelope of %1$@ still hasn't been renewed. If it's the same at the next inspection, I'll have to write a fine."
+            "value": "My second warning. The envelope of %1$@ still hasn't been renewed. If it's the same at the next inspection, I'll have to issue a fine."
           }
         },
         "es": {
@@ -43391,7 +43391,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "At this inspection I found the envelopes of %1$@ worn again. Fine: %2$@. I'll write a fine at every inspection until they're renewed."
+            "value": "At this inspection I found the envelopes of %1$@ worn again. Fine: %2$@. I'll issue a fine at every inspection until they're renewed."
           }
         },
         "es": {
@@ -43432,7 +43432,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "At this inspection I found the envelope of %1$@ worn again. Fine: %2$@. I'll write a fine at every inspection until it's renewed."
+            "value": "At this inspection I found the envelope of %1$@ worn again. Fine: %2$@. I'll issue a fine at every inspection until it's renewed."
           }
         },
         "es": {
@@ -44539,7 +44539,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Popularity drops a little, but the story is over."
+            "value": "Popularity drops a little, but the story blows over."
           }
         },
         "es": {
@@ -44580,7 +44580,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You move to the region; popularity dips a little but the story is over."
+            "value": "You go to the region; popularity dips a little, but the story blows over."
           }
         },
         "es": {
@@ -44949,7 +44949,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Paid from the holding; the problem is closed."
+            "value": "Paid from the holding; problem solved."
           }
         },
         "es": {
@@ -45277,7 +45277,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Paid from the holding; the problem is closed."
+            "value": "Paid from the holding; problem solved."
           }
         },
         "es": {
@@ -45728,7 +45728,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your pilots stay off for three days; only you fly, in the flagship."
+            "value": "Your pilots stop work for three days; only you fly, in the flagship."
           }
         },
         "es": {
@@ -47532,7 +47532,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maintenance"
+            "value": "Upkeep"
           }
         },
         "es": {
@@ -48311,7 +48311,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "First you open Egypt's gate, once: %@."
+            "value": "First, unlock Egypt (one-time purchase): %@."
           }
         },
         "es": {
@@ -48475,7 +48475,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Desert, the Sandia mountains and the famous box winds."
+            "value": "Desert, the Sandia Mountains and the famous box winds."
           }
         },
         "es": {
@@ -49254,7 +49254,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "First you open the Grand Tour, once: %@."
+            "value": "First, unlock the Grand Tour (one-time purchase): %@."
           }
         },
         "es": {
@@ -49705,7 +49705,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Needs: %1$@. Deal: %2$@/day. Guests: ~%3$@. Popularity: +%4$@/day. Its guests accept tickets up to %5$@. Buy it and the fee ends, room income starts."
+            "value": "Needs: %1$@. Deal: %2$@/day. Guests: ~%3$@. Popularity: +%4$@/day. Its guests accept tickets up to %5$@. Buy it: no more fee, and you earn room income."
           }
         },
         "es": {
@@ -50197,7 +50197,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Travel influencers fly with you and post about it. +0.4★ right away, another +0.1★ each of the next 3 days, and their followers come."
+            "value": "Travel influencers fly with you and post about it. +0.4★ right away, another +0.1★ each of the next 3 days, and their followers book with you."
           }
         },
         "es": {
@@ -50238,7 +50238,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Win popularity"
+            "value": "Boost popularity"
           }
         },
         "es": {
@@ -54789,7 +54789,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ stays grounded for %2$@ days. Passengers were compensated."
+            "value": "%1$@ is grounded. Days in repair: %2$@. Passengers were compensated."
           }
         },
         "es": {
@@ -55978,7 +55978,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The civil aviation inspector wrote a fine of %@."
+            "value": "The civil aviation inspector issued a fine of %@."
           }
         },
         "es": {
@@ -56347,7 +56347,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A wedding night colored the whole valley."
+            "value": "Wedding fireworks lit up the whole valley."
           }
         },
         "es": {
@@ -56880,7 +56880,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Years ago Göreme Sky took over Hasan Usta's company. Now the valley's busiest company belongs to his grandchild."
+            "value": "Years ago Göreme Sky took over Master Hasan's company. Now the valley's busiest company belongs to his grandchild."
           }
         },
         "es": {
@@ -57495,7 +57495,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fleet for sale, balloons: %@."
+            "value": "Fleet for sale. Balloons: %@."
           }
         },
         "es": {
@@ -59545,7 +59545,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "4 seats in the flagship are with the documentary crew."
+            "value": "4 seats in the flagship are taken by the documentary crew."
           }
         },
         "es": {
@@ -60406,7 +60406,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Insurance pays for no damage or compensation today."
+            "value": "Insurance won't cover any damage or compensation today."
           }
         },
         "es": {
@@ -61185,7 +61185,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Opens when you're Baron of Cappadocia"
+            "value": "Opens when you're baron of Cappadocia"
           }
         },
         "es": {
@@ -61226,7 +61226,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Opens when you're Baron of Albuquerque"
+            "value": "Opens when you're baron of Albuquerque"
           }
         },
         "es": {
@@ -62169,7 +62169,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Make hotel deals"
+            "value": "Sign hotel deals"
           }
         },
         "es": {
@@ -62415,7 +62415,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your passenger rating, which is your popularity"
+            "value": "Your passenger rating (your popularity)"
           }
         },
         "es": {
@@ -62620,7 +62620,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The ads you're paid for count too."
+            "value": "Balloon ads cost you popularity."
           }
         },
         "es": {
@@ -64506,7 +64506,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "It feels like a factory now. The family company spirit is gone."
+            "value": "It feels like a factory now. That family-business feel is gone."
           }
         },
         "es": {
@@ -66597,7 +66597,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "It was lovely, but {p} is a bit much. Others flew cheaper next door."
+            "value": "It was lovely, but {p} is a bit much. Others next door were cheaper."
           }
         },
         "es": {
@@ -66966,7 +66966,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Postponed because of the wind; they found us a spot the next day right away."
+            "value": "Postponed because of the wind, but they rebooked us for the next day right away."
           }
         },
         "es": {
@@ -68565,7 +68565,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sure? All progress is deleted. Tap again"
+            "value": "Are you sure? All progress will be deleted. Tap again"
           }
         },
         "es": {
@@ -69385,7 +69385,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When you finish today, the Balloon Show takes place over the town tonight: your balloons put on a show in the sky. Balloons: %@. You'll see it even if you've turned the night scene off."
+            "value": "When you end the day, the Balloon Show takes place over the town tonight: your balloons put on a show in the sky. Balloons: %@. You'll see it even if you've turned the night scene off."
           }
         },
         "es": {
@@ -69426,7 +69426,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A balloon that crashes today can't go up tonight; its fee comes back. If fewer than %@ are left, the show is called off and every fee comes back."
+            "value": "A balloon that crashes today can't go up tonight; its fee is refunded. If fewer than %@ are left, the show is called off and all fees are refunded."
           }
         },
         "es": {
@@ -69631,7 +69631,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "For 10 days it lifts the popularity cap, like a hotel or a guide flight"
+            "value": "For 10 days it lifts the popularity cap, like a hotel deal or a promo flight for guides"
           }
         },
         "es": {
@@ -70123,7 +70123,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tap a picture to make it a card to share."
+            "value": "Tap a picture to turn it into a shareable card."
           }
         },
         "es": {
@@ -71476,7 +71476,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Square Decorations"
+            "value": "Town Square Decorations"
           }
         },
         "es": {
@@ -71927,7 +71927,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Square fountain"
+            "value": "Town square fountain"
           }
         },
         "es": {
@@ -72132,7 +72132,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lantern strings"
+            "value": "Strings of lanterns"
           }
         },
         "es": {
@@ -72214,7 +72214,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A lasting decoration for your town. Bought at the bazaar, seen in town, and it lights up at night."
+            "value": "A permanent decoration for your town. Buy it at the bazaar and it appears in town, lighting up at night."
           }
         },
         "es": {
@@ -72296,7 +72296,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Opens Egypt's gate for good: the Nile, the Valley of the Kings and the toughest balloon market in the world. The region's in-game entry fee is still paid from the holding."
+            "value": "Unlocks Egypt for good: the Nile, the Valley of the Kings and the toughest balloon market in the world. The region's in-game entry fee is still paid from the holding."
           }
         },
         "es": {
@@ -72460,7 +72460,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A special pattern. It comes as a ready design and goes straight onto your flagship. High creativity score, never fades."
+            "value": "A special pattern. It comes as a ready-made design and goes straight onto your flagship. High creativity score, never fades."
           }
         },
         "es": {
@@ -72501,7 +72501,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "A specially shaped envelope. It comes as a ready design and goes straight onto your flagship; extra popularity on every flight."
+            "value": "A specially shaped envelope. It comes as a ready-made design and goes straight onto your flagship; extra popularity on every flight."
           }
         },
         "es": {
@@ -72542,7 +72542,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Grand Tour, everything in the Founder Pack and a supporter plaque in your town. The biggest support for the people who make this game."
+            "value": "The Grand Tour, everything in the Founder Pack and a supporter plaque in your town. The best way to support the people who make this game."
           }
         },
         "es": {
@@ -74182,7 +74182,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "change"
+            "value": "Change"
           }
         },
         "es": {
@@ -74223,7 +74223,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ is grounded. Days in repair: %2$@. Would you like to pilot another balloon meanwhile? Say yes and you fly it until the repair is done, then your flagship comes back by itself. Say no and pilots fly your other balloons."
+            "value": "%1$@ is grounded. Days in repair: %2$@. Would you like to pilot another balloon meanwhile? Say yes and you fly it until the repair is done, then your flagship comes back automatically. Say no and pilots fly your other balloons."
           }
         },
         "es": {
@@ -74469,7 +74469,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cappadocia is yours. With the Grand Tour you open up to Albuquerque in America, then Luxor in Egypt; you found your own holding and enter every region to come. Bought once."
+            "value": "Cappadocia is yours. With the Grand Tour you expand to Albuquerque in America, then Luxor in Egypt; you found your own holding and can enter every region to come. One-time purchase."
           }
         },
         "es": {
@@ -76273,7 +76273,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "My company"
+            "value": "Your company"
           }
         },
         "es": {

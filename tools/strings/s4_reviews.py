@@ -34,14 +34,14 @@ R = {
  ],
  "skip": [
   ("The flight was called off because of the weather, but they refunded us right away. Safety first.", "Hava yüzünden uçuş iptal oldu ama paramızı hemen iade ettiler. Önce güvenlik.", "Der Flug fiel wegen des Wetters aus, aber wir bekamen sofort unser Geld zurück. Sicherheit geht vor.", "El vuelo se canceló por el tiempo, pero nos devolvieron el dinero enseguida. La seguridad es lo primero.", "天候で中止になったが、すぐに返金してくれた。安全第一。", "날씨 때문에 취소됐지만 바로 환불해 줬어요. 안전이 우선이죠."),
-  ("Postponed because of the wind; they found us a spot the next day right away.", "Rüzgâr yüzünden ertelendi, ertesi güne hemen yer buldular.", "Wegen des Windes verschoben, für den nächsten Tag haben sie sofort Plätze gefunden.", "Se aplazó por el viento y nos encontraron sitio al día siguiente enseguida.", "風で延期になったが、翌日の枠をすぐ用意してくれた。", "바람 때문에 미뤄졌지만 다음 날 자리를 바로 잡아 줬어요."),
+  ("Postponed because of the wind, but they rebooked us for the next day right away.", "Rüzgâr yüzünden ertelendi, ertesi güne hemen yer buldular.", "Wegen des Windes verschoben, für den nächsten Tag haben sie sofort Plätze gefunden.", "Se aplazó por el viento y nos encontraron sitio al día siguiente enseguida.", "風で延期になったが、翌日の枠をすぐ用意してくれた。", "바람 때문에 미뤄졌지만 다음 날 자리를 바로 잡아 줬어요."),
  ],
  "cheap": [
   ("This view at this price? Don't miss it!", "Bu fiyata bu manzara mı? Kaçırmayın!", "Diese Aussicht zu dem Preis? Nicht verpassen!", "¿Estas vistas a este precio? ¡No te lo pierdas!", "この値段でこの景色？見逃し厳禁！", "이 가격에 이 경치라니? 놓치지 마세요!"),
   ("I paid {p}. Maybe the best price in Cappadocia.", "{p} ödedim, Kapadokya'nın en iyi fiyatı bu olabilir.", "Ich habe {p} bezahlt. Vielleicht der beste Preis in Kappadokien.", "Pagué {p}. Quizá el mejor precio de Capadocia.", "{p}払った。カッパドキアでいちばん安いかも。", "{p} 냈어요. 카파도키아 최저가일지도요."),
  ],
  "pricey": [
-  ("It was lovely, but {p} is a bit much. Others flew cheaper next door.", "Güzeldi ama {p} biraz fazla. Yan firmada daha ucuza uçmuşlar.", "Schön war's, aber {p} ist etwas viel. Bei der Konkurrenz flogen andere billiger.", "Estuvo bonito, pero {p} es un poco caro. En la empresa de al lado volaron más barato.", "良かったけど{p}は少し高い。隣の会社はもっと安かったらしい。", "좋았지만 {p} 내기엔 좀 비싸요. 옆 회사는 더 싸게 탔대요."),
+  ("It was lovely, but {p} is a bit much. Others next door were cheaper.", "Güzeldi ama {p} biraz fazla. Yan firmada daha ucuza uçmuşlar.", "Schön war's, aber {p} ist etwas viel. Bei der Konkurrenz flogen andere billiger.", "Estuvo bonito, pero {p} es un poco caro. En la empresa de al lado volaron más barato.", "良かったけど{p}は少し高い。隣の会社はもっと安かったらしい。", "좋았지만 {p} 내기엔 좀 비싸요. 옆 회사는 더 싸게 탔대요."),
   ("The experience was good; my wallet, however, cried.", "Deneyim iyiydi ama cüzdanım ağladı.", "Das Erlebnis war gut, mein Geldbeutel hat allerdings geweint.", "La experiencia fue buena; mi cartera, en cambio, lloró.", "体験は良かった。財布は泣いたけど。", "경험은 좋았는데 지갑이 울었어요."),
  ],
  "general": [

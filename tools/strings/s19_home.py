@@ -3,7 +3,7 @@ from s1_ui import add
 # The home screen after the phone test (v68–v76)
 add("home.dockCards", "Today's cards", "Bugünün kartları", "Karten von heute", "Tarjetas de hoy", "今日のカード", "오늘의 카드")
 add("home.strip.insured", "✓ Insured", "✓ Sigortalı", "✓ Versichert", "✓ Asegurado", "✓ 保険あり", "✓ 보험")
-add("home.strip.halfInsured", "Insurance 1/2", "Sigorta 1/2", "Versicherung 1/2", "Seguro 1/2", "保険 1/2", "보험 1/2")
+add("home.strip.halfInsured", "Partly insured", "Sigorta 1/2", "Versicherung 1/2", "Seguro 1/2", "保険 1/2", "보험 1/2")
 add("home.strip.uninsured", "Uninsured", "Sigortasız", "Unversichert", "Sin seguro", "無保険", "무보험")
 add("home.who.you", "You'll fly", "Sen uçuracaksın", "Du fliegst", "Volarás tú", "あなたが飛ぶ", "당신이 비행합니다")
 add("home.who.youPilot", "You and your pilot will fly", "Sen ve pilotun uçuracak", "Du und dein Pilot fliegen", "Volarás tú, y también tu piloto", "あなたとパイロットが飛ぶ", "당신과 조종사가 비행합니다")

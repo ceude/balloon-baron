@@ -71,7 +71,7 @@ add("flight.land.crash.abq",
     "**미루나무에 부딪혔습니다!** 열기구가 크게 부서지고 승객들이 다쳤습니다.")
 add("flight.missionOk", "Mission complete: %@!", "Görev tamam: %@!", "Auftrag erfüllt: %@!", "¡Misión cumplida: %@!", "依頼達成：%@！", "임무 완료: %@!")
 add("flight.missionFail", "Mission failed: %@.", "Görev tamamlanamadı: %@.", "Auftrag nicht erfüllt: %@.", "Misión fallida: %@.", "依頼失敗：%@。", "임무 실패: %@.")
-add("flight.dayReport", "Day report", "Gün sonu raporu", "Tagesbericht", "Informe del día", "本日のレポート", "일일 보고서")
+add("flight.dayReport", "Daily report", "Gün sonu raporu", "Tagesbericht", "Informe del día", "本日のレポート", "일일 보고서")
 
 # Canvas labels
 add("flight.kmh", "%@ km/h", "%@ km/sa", "%@ km/h", "%@ km/h", "%@ km/h", "%@ km/h")
@@ -98,13 +98,13 @@ add("flight.abort.comp", "Compensation per person: %@", "Kişi başı tazminat: 
 add("flight.abort.rep", "Popularity", "Popülerlik", "Beliebtheit", "Popularidad", "人気", "인기")
 add("flight.abort.total", "From your cash", "Kasadan çıkacak", "Aus der Kasse", "Sale de tu caja", "資金から", "현금에서 지출")
 add("flight.abort.hint",
-    "Since you don't fly, today doesn't renew your pilot license.",
+    "If you don't fly, today won't count toward your pilot license.",
     "Uçmadığın için bugün pilot lisansın yenilenmez.",
     "Da du nicht fliegst, wird deine Pilotenlizenz heute nicht verlängert.",
     "Como no vuelas, hoy no se renueva tu licencia de piloto.",
     "飛ばないので、今日は操縦免許が更新されない。",
     "비행하지 않으므로 오늘은 조종 면허가 갱신되지 않습니다.")
-add("flight.abort.keep", "Keep flying", "Uçuşa devam", "Weiterfliegen", "Seguir volando", "フライトを続ける", "비행 계속")
+add("flight.abort.keep", "Don't cancel", "Uçuşa devam", "Weiterfliegen", "Seguir volando", "フライトを続ける", "비행 계속")
 add("flight.abort.confirm", "Cancel flight", "İptal et", "Flug absagen", "Cancelar vuelo", "中止する", "취소하기")
 
 # Gathering passengers (CollectView)
@@ -141,7 +141,7 @@ add("red.fine",
     "%1$@の確率で%2$@の罰金と警告。現在の警告：%3$@/3。3回目で3日間の飛行禁止。",
     "%1$@ 확률로 %2$@ 벌금과 경고를 받습니다. 현재 경고: %3$@/3. 세 번째에는 3일 비행 금지가 내려집니다.")
 add("red.insurance",
-    "Insurance pays for no damage or compensation today.",
+    "Insurance won't cover any damage or compensation today.",
     "Sigorta bugün hiçbir hasarı ve tazminatı ödemez.",
     "Die Versicherung zahlt heute weder Schäden noch Entschädigungen.",
     "Hoy el seguro no cubre ningún daño ni indemnización.",

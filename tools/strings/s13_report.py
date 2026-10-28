@@ -21,7 +21,7 @@ add("report.designBody",
     "Tus globos con diseño sumaron hoy +%@ a tu popularidad.",
     "柄入りの気球が今日、人気を+%@押し上げた。",
     "무늬 열기구가 오늘 인기를 +%@ 올렸습니다.")
-add("report.adTitle", "The ads you're paid for count too.", "Parasını aldığın reklamların da bir bedeli var.", "Die Werbung, für die du kassierst, wirkt auch.", "Los anuncios que te pagan también cuentan.", "お金をもらっている広告にも代償がある。", "광고 수입에도 대가가 있습니다.")
+add("report.adTitle", "Balloon ads cost you popularity.", "Parasını aldığın reklamların da bir bedeli var.", "Die Werbung, für die du kassierst, wirkt auch.", "Los anuncios que te pagan también cuentan.", "お金をもらっている広告にも代償がある。", "광고 수입에도 대가가 있습니다.")
 add("report.adBody",
     "Today the ads on your balloons lowered your popularity by %@.",
     "Bugün balonlarındaki reklamlar popülerliğini %@ düşürdü.",
@@ -64,7 +64,7 @@ add("repChart.hint",
     "人気は完璧な着陸で上がり、事故・遠い着陸・キャンセル・気球広告で下がる。人気が高いと観光客が増える。今日の追加観光客：約%1$@。%2$@を超えると期待が高まり、人気は毎日少しずつ下がる。",
     "인기는 완벽한 착륙으로 오르고 사고, 먼 착륙, 취소, 열기구 광고로 떨어집니다. 인기가 높으면 관광객이 더 옵니다. 오늘 추가 관광객: 약 %1$@. %2$@ 이상에서는 기대치가 높아져 인기가 매일 조금씩 깎입니다.")
 add("repChart.recover", "Recover your popularity", "Popülerliğini toparla", "Beliebtheit zurückgewinnen", "Recupera tu popularidad", "人気を立て直す", "인기 회복하기")
-add("repChart.hotels", "Make hotel deals", "Otellerle anlaş", "Hotelverträge schließen", "Firma acuerdos con hoteles", "ホテルと提携する", "호텔과 제휴하기")
+add("repChart.hotels", "Sign hotel deals", "Otellerle anlaş", "Hotelverträge schließen", "Firma acuerdos con hoteles", "ホテルと提携する", "호텔과 제휴하기")
 add("repChart.hotelsBody",
     "Hotels recommend you to their guests, bringing popularity and tourists every day.",
     "Oteller misafirlerine seni önerir, her gün popülerlik ve turist getirir.",
@@ -84,7 +84,7 @@ add("repChart.bonusBody",
     "Una popularidad alta trae pasajeros extra hagan lo que hagan tus rivales: hasta el %1$@ de tus plazas. Pasajeros extra hoy a este precio: unos %2$@. Por debajo de %3$@ el efecto desaparece; con %4$@ llega al %5$@.",
     "人気が高いと、ライバルに関係なく乗客が増える（座席の最大%1$@）。この価格での今日の追加乗客：約%2$@。%3$@未満では効果なし、%4$@で%5$@に達する。",
     "인기가 높으면 경쟁사와 상관없이 승객이 더 옵니다(좌석의 최대 %1$@). 이 가격에서 오늘 추가 승객: 약 %2$@. %3$@ 미만이면 효과가 없고 %4$@에서 %5$@에 이릅니다.")
-add("repChart.rating", "Your passenger rating, which is your popularity", "Yolcu puanın, yani popülerliğin", "Deine Passagierbewertung, also deine Beliebtheit", "La nota que te dan los pasajeros: tu popularidad", "乗客の評価＝あなたの人気", "승객 평점, 즉 당신의 인기")
+add("repChart.rating", "Your passenger rating (your popularity)", "Yolcu puanın, yani popülerliğin", "Deine Passagierbewertung, also deine Beliebtheit", "La nota que te dan los pasajeros: tu popularidad", "乗客の評価＝あなたの人気", "승객 평점, 즉 당신의 인기")
 add("repChart.noReviews",
     "Your passengers will start writing reviews after your first flight.",
     "İlk uçuşundan sonra yolcuların yorum yazmaya başlayacak.",

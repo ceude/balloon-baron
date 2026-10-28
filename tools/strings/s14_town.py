@@ -1,7 +1,7 @@
 from s1_ui import add
 
 # Şirketim: the company town
-add("town.title", "My company", "Şirketim", "Meine Firma", "Mi empresa", "わが社", "내 회사")
+add("town.title", "Your company", "Şirketim", "Meine Firma", "Mi empresa", "わが社", "내 회사")
 add("town.zoomOut", "Zoom out", "Uzaklaş", "Herauszoomen", "Alejar", "縮小", "축소")
 add("goals.finished", "Done", "Tamamlandı", "Erledigt", "Hecho", "達成", "완료")
 add("ceremony.start", "Start", "Başla", "Los geht's", "Empezar", "始める", "시작")
@@ -58,14 +58,14 @@ add("town.card.locked", "This building opens on day %@. Until then, keep flying 
 
 # Hezarfen: popularity lessons
 add("hez.pr",
- "Here's a secret, kid: early on, hotel and guide deals are everything. The more popular you get, the more customers you find at a higher price. Luxury hotels send their guests even at high prices. A company with no hotel and no guides never gets talked about beyond 4.2 stars.",
+ "Here's a secret, kid: early on, hotel and guide deals are everything. The more popular you get, the more customers you find at a higher price. Luxury hotels send their guests even at high prices. A company with no hotel and no guides never gets past 4.2 stars.",
  "Bir sır vereyim evlat: başlarda otel ve rehber anlaşmaları her şeydir. Popülerliğin arttıkça daha yüksek fiyattan daha çok müşteri bulursun. Lüks oteller de misafirlerini yüksek fiyata bile getirir. Otelsiz, rehbersiz bir şirketin adı 4,2 yıldızdan öteye duyulmaz.",
  "Ich verrate dir ein Geheimnis, Lehrling: Am Anfang sind Verträge mit Hotels und Guides alles. Je beliebter du wirst, desto mehr Kunden findest du zu höheren Preisen. Luxushotels schicken ihre Gäste sogar zu hohen Preisen. Eine Firma ohne Hotel und ohne Guides kommt nie über 4,2 Sterne hinaus.",
  "Te cuento un secreto, aprendiz: al principio, los acuerdos con hoteles y guías lo son todo. Cuanto más popular seas, más clientes encontrarás a un precio más alto. Los hoteles de lujo te mandan huéspedes incluso a precios altos. De una empresa sin hoteles ni guías nadie habla más allá de las 4,2 estrellas.",
  "秘密を教えよう、弟子よ。最初はホテルとガイドとの提携がすべてだ。人気が上がるほど、高い値段でも多くの客が見つかる。高級ホテルは高値でも客を送ってくれる。ホテルもガイドもない会社の名は、星4.2より先には広まらん。",
  "비밀 하나 알려 주지, 제자여. 처음에는 호텔과 가이드 제휴가 전부라네. 인기가 오를수록 더 높은 가격에 더 많은 손님을 찾게 되지. 고급 호텔은 비싼 가격에도 손님을 보내 준다네. 호텔도 가이드도 없는 회사의 이름은 별 4.2개를 넘어서 퍼지지 않는다네.")
 add("hez.influ",
- "Careful with influencer deals, kid. Do them rarely at first, or your cash flow suffers. Once your safe is comfortable, they pay off far better.",
+ "Careful with influencer deals, kid. Do them rarely at first, or your cash flow suffers. Once you have cash to spare, they pay off far better.",
  "Influencer anlaşmalarına dikkat evlat. Başlarda nadir yap, yoksa nakit akışın bozulur. Kasan rahatladıktan sonra çok daha verimli olurlar.",
  "Vorsicht mit Influencer-Deals, Lehrling. Mach sie am Anfang selten, sonst leidet dein Geldfluss. Wenn deine Kasse gut gefüllt ist, lohnen sie sich viel mehr.",
  "Cuidado con los acuerdos con influencers, aprendiz. Al principio hazlos pocas veces o tu flujo de caja se resentirá. Cuando tu caja esté holgada, rinden mucho más.",

@@ -29,7 +29,7 @@ add("home.missionSelf", "Only you can take this one: fly the flagship yourself."
 add("home.fly", "Fly", "Uç", "Fliegen", "Volar", "飛ぶ", "비행")
 add("home.send", "Send balloons", "Balonları gönder", "Ballone starten", "Enviar globos", "気球を出す", "열기구 보내기")
 add("home.skip", "Skip today", "Bugünü pas geç", "Heute aussetzen", "Saltar hoy", "今日は休む", "오늘은 쉬기")
-add("home.license", "Pilot license: %@ days left", "Pilot lisansı: %@ gün kaldı", "Pilotenlizenz: noch %@ Tage", "Licencia de piloto: quedan %@ días", "操縦免許：残り%@日", "조종 면허: %@일 남음")
+add("home.license", "Pilot license · days left: %@", "Pilot lisansı: %@ gün kaldı", "Pilotenlizenz: noch %@ Tage", "Licencia de piloto: quedan %@ días", "操縦免許：残り%@日", "조종 면허: %@일 남음")
 add("home.licenseExpired", "Your license has expired: your other balloons are grounded. Fly the flagship yourself today (free renewal flight) or pay %@ to renew.", "Lisansın doldu: diğer balonların yerde. Bugün amiral balonunu kendin uçur (ücretsiz yenileme uçuşu) ya da %@ ödeyip yenile.", "Deine Lizenz ist abgelaufen: Deine anderen Ballone bleiben am Boden. Flieg heute selbst das Flaggschiff (kostenloser Erneuerungsflug) oder zahle %@.", "Tu licencia ha caducado: tus otros globos están en tierra. Pilota hoy tú mismo el globo insignia (vuelo de renovación gratuito) o paga %@ para renovarla.", "免許が切れたため、ほかの気球は飛べない。今日、旗艦を自分で飛ばす（無料の更新フライト）か、%@を払って更新しよう。", "면허가 만료되어 다른 열기구는 운항할 수 없습니다. 오늘 기함을 직접 조종하거나(무료 갱신 비행) %@ 비용을 내고 갱신하세요.")
 add("home.renew", "Pay to renew", "Ödeyip yenile", "Gegen Gebühr erneuern", "Pagar y renovar", "支払って更新", "비용 내고 갱신")
 add("home.founderBonus", "Flying with the founder: passengers pay +30%.", "Kurucuyla uçuş: yolcular %30 fazla öder.", "Flug mit dem Gründer: Passagiere zahlen 30 % mehr.", "Volar con el fundador: los pasajeros pagan un 30 % más.", "創業者のフライト：乗客は30%増しで払う。", "창업자와 함께하는 비행: 승객이 30% 더 냅니다.")
@@ -73,7 +73,7 @@ for k, v in {
  "seizure": ("Bank sale of a balloon", "Bankanın balon satışı", "Ballonverkauf durch die Bank", "Venta del globo por el banco", "銀行による気球売却", "은행 압류 매각"),
  "fuel": ("Fuel", "Yakıt", "Treibstoff", "Combustible", "燃料", "연료"),
  "wages": ("Pilot wages", "Pilot maaşları", "Pilotengehälter", "Sueldos de pilotos", "パイロット給与", "조종사 급여"),
- "upkeep": ("Maintenance", "Bakım", "Wartung", "Mantenimiento", "整備費", "유지비"),
+ "upkeep": ("Upkeep", "Bakım", "Wartung", "Mantenimiento", "整備費", "유지비"),
  "insurance": ("Insurance premiums", "Sigorta primi", "Versicherungsprämien", "Primas de seguro", "保険料", "보험료"),
  "loans": ("Loan installments", "Kredi taksiti", "Kreditraten", "Cuotas del préstamo", "ローン返済", "대출 상환"),
  "repairs": ("Repairs", "Onarım", "Reparaturen", "Reparaciones", "修理費", "수리비"),

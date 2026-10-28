@@ -9,7 +9,7 @@ add("goals.mapLink", "World map ›", "Dünya haritası ›", "Weltkarte ›", "
 add("goals.chapterOf", "%1$@ · Chapter %2$@/%3$@", "%1$@ · Bölüm %2$@/%3$@", "%1$@ · Kapitel %2$@/%3$@", "%1$@ · Capítulo %2$@/%3$@", "%1$@・第%2$@/%3$@章", "%1$@ · 챕터 %2$@/%3$@")
 add("goals.reward", "Chapter reward: %@", "Bölüm ödülü: %@", "Kapitelpreis: %@", "Premio del capítulo: %@", "章の賞金：%@", "챕터 상금: %@")
 add("goals.baronHint",
- "Meet them all on the same day to become baron of %@ and open up to the world. Careful: the Competition Authority and merging rivals will try to stop you.",
+ "Meet them all on the same day to become baron of %@ and go global. Careful: the Competition Authority and merging rivals will try to stop you.",
  "Hepsini aynı gün tamamlarsan %@ baronu olursun ve dünyaya açılırsın. Dikkat: Rekabet Kurumu ve birleşen rakipler seni durdurmaya çalışacak.",
  "Erfülle alle am selben Tag, dann wirst du Baron von %@, und die Welt steht dir offen. Vorsicht: Die Wettbewerbsbehörde und fusionierende Konkurrenten werden dich aufhalten wollen.",
  "Cúmplelos todos el mismo día para convertirte en barón de %@ y abrirte al mundo. Cuidado: la Autoridad de la Competencia y los rivales que se fusionen intentarán detenerte.",
@@ -92,7 +92,7 @@ add("map.here.cap",
  "妖精の煙突と日の出。すべてが始まった場所。",
  "요정의 굴뚝과 일출. 모든 것이 시작된 곳.")
 add("map.here.abq",
- "Desert, the Sandia mountains and the famous box winds.",
+ "Desert, the Sandia Mountains and the famous box winds.",
  "Çöl, Sandia dağları ve meşhur kutu rüzgârları.",
  "Wüste, die Sandia-Berge und die berühmten Box-Winde.",
  "Desierto, las montañas Sandia y los famosos vientos de caja.",
@@ -248,8 +248,8 @@ add("holding.tv.desc",
 add("holding.tv.cta", "Go on air", "Yayına al", "Auf Sendung gehen", "Emitir", "放映する", "방송 시작")
 add("holding.tv.active", "On air · days left: %@", "Yayında · kalan gün: %@", "Auf Sendung · Resttage: %@", "En antena · días restantes: %@", "放映中・残り日数：%@", "방송 중 · 남은 일수: %@")
 add("holding.tv.lock", "Days until the next campaign: %@", "Yeni kampanyaya kalan gün: %@", "Tage bis zur nächsten Kampagne: %@", "Días para la próxima campaña: %@", "次のキャンペーンまでの日数：%@", "다음 캠페인까지 남은 일수: %@")
-add("holding.celeb.kicker", "Face deal", "Ünlü anlaşması", "Werbegesicht", "Imagen de marca", "広告塔契約", "모델 계약")
-add("holding.celeb.title", "Celebrity ad face", "Ünlü reklam yüzü", "Promi als Werbegesicht", "Rostro famoso", "有名人の広告塔", "유명인 광고 모델")
+add("holding.celeb.kicker", "Star power", "Ünlü anlaşması", "Werbegesicht", "Imagen de marca", "広告塔契約", "모델 계약")
+add("holding.celeb.title", "Celebrity ambassador", "Ünlü reklam yüzü", "Promi als Werbegesicht", "Rostro famoso", "有名人の広告塔", "유명인 광고 모델")
 add("holding.celeb.desc",
  "An ad contract with a celebrity. Their agents decide who it will be.",
  "Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.",
@@ -280,7 +280,7 @@ add("holding.bb.active", "Up · days left: %@", "Asılı · kalan gün: %@", "Ak
 add("holding.lab.kicker", "R&D", "Ar-Ge", "F&E", "I+D", "研究開発", "R&D")
 add("holding.lab.title", "Envelope research with academics", "Akademisyenlerle zarf araştırması", "Hüllenforschung mit Hochschulen", "Investigación de envolturas con académicos", "研究者との球皮研究", "학계와 함께하는 외피 연구")
 add("holding.lab.desc",
- "New fabric research with universities; envelopes wear out later.",
+ "New fabric research with universities; envelopes wear out more slowly.",
  "Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.",
  "Neue Stoffforschung mit Universitäten; die Hüllen verschleißen später.",
  "Investigación de nuevas telas con universidades; las envolturas se desgastan más tarde.",

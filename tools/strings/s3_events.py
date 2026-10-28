@@ -1,7 +1,7 @@
 from s1_ui import add
 
 add("event.cancelled",
- "You cancelled the %1$@ flight. %2$@ passengers got their money back plus %3$@ each in compensation.",
+ "You cancelled the %1$@ flight. Passengers refunded: %2$@, plus %3$@ each in compensation.",
  "%1$@ uçuşunu iptal ettin. %2$@ yolcunun bilet parası iade edildi ve kişi başı %3$@ tazminat ödendi.",
  "Du hast den Flug mit %1$@ abgesagt. %2$@ Passagiere bekamen ihr Geld zurück und je %3$@ Entschädigung.",
  "Cancelaste el vuelo de %1$@. %2$@ pasajeros recuperaron su dinero y recibieron %3$@ cada uno de indemnización.",
@@ -33,14 +33,14 @@ add("event.farLanding",
  "%1$@：目標から%2$@ m離れて着陸。地上クルーの到着が遅れた。",
  "%1$@: 목표에서 %2$@ m 떨어진 곳에 착륙해 지상 요원이 늦게 찾았습니다.")
 add("event.accident.light",
- "%1$@ (%2$@) had a hard landing and will be grounded for %3$@ days. Repairs %4$@, compensation %5$@.",
+ "%1$@ (%2$@) had a hard landing and is grounded. Days in repair: %3$@. Repairs %4$@, compensation %5$@.",
  "%1$@ (%2$@) sert iniş yaptı ve %3$@ gün yerde kalacak. Onarım %4$@, tazminat %5$@.",
  "%1$@ (%2$@) hatte eine harte Landung und bleibt %3$@ Tage am Boden. Reparatur %4$@, Entschädigung %5$@.",
  "%1$@ (%2$@) tuvo un aterrizaje brusco y quedará en tierra %3$@ días. Reparación %4$@, indemnización %5$@.",
  "%1$@（%2$@）がハードランディング。%3$@日間地上待機。修理費%4$@、補償%5$@。",
  "%1$@ (%2$@) 거친 착륙으로 %3$@일간 운항 불가. 수리비 %4$@, 보상금 %5$@.")
 add("event.accident.severe",
- "%1$@ (%2$@) had a serious accident and will be grounded for %3$@ days. Repairs %4$@, compensation %5$@.",
+ "%1$@ (%2$@) had a serious accident and is grounded. Days in repair: %3$@. Repairs %4$@, compensation %5$@.",
  "%1$@ (%2$@) ağır kaza yaptı ve %3$@ gün yerde kalacak. Onarım %4$@, tazminat %5$@.",
  "%1$@ (%2$@) hatte einen schweren Unfall und bleibt %3$@ Tage am Boden. Reparatur %4$@, Entschädigung %5$@.",
  "%1$@ (%2$@) sufrió un accidente grave y quedará en tierra %3$@ días. Reparación %4$@, indemnización %5$@.",
@@ -88,7 +88,7 @@ add("event.redUnseen",
  "赤い旗の日に飛んだが、誰にも気づかれなかった。今回は。",
  "빨간 깃발에 비행했지만 아무도 눈치채지 못했습니다. 이번엔.")
 add("event.pilotPromoted",
- "%1$@ is now a %2$@ pilot! Accident risk is down, wage is now %3$@/day.",
+ "%1$@ has been promoted to %2$@ pilot! Accident risk is down; wage is now %3$@/day.",
  "%1$@ artık %2$@ pilot! Kaza riski düştü, maaşı %3$@/gün oldu.",
  "Neue Stufe für %1$@: %2$@! Weniger Unfallrisiko, Gehalt jetzt %3$@/Tag.",
  "¡%1$@ ya es piloto de nivel %2$@! Menos riesgo de accidente; sueldo ahora %3$@/día.",
@@ -102,7 +102,7 @@ add("event.envelopeWorn",
  "%@の球皮が寿命を迎えた。張り替えるまで飛べない。",
  "%@ 열기구의 외피 수명이 다했습니다. 교체 전에는 비행할 수 없습니다.")
 add("event.licenseExpiring",
- "Your pilot license expires today. Tomorrow you can't fly the flagship yourself; renew it in the Crew tab.",
+ "Your pilot license expires today. Tomorrow you can't fly the flagship yourself; renew it on the Crew page.",
  "Pilot lisansın bugün sona eriyor. Yarın amiral balonunu kendin uçuramazsın; Ekip sekmesinden yenileyebilirsin.",
  "Deine Pilotenlizenz läuft heute ab. Morgen darfst du das Flaggschiff nicht selbst fliegen; erneuere sie im Bereich Crew.",
  "Tu licencia de piloto caduca hoy. Mañana no podrás pilotar el globo insignia; renuévala en la pestaña Equipo.",
@@ -142,5 +142,5 @@ add("event.rivalStoleHotel", "%2$@ took a better offer from %1$@ and ended its d
 add("event.rivalCampaign", "%@ launched an influencer campaign; their popularity went up.", "%@ influencer kampanyası başlattı, popülerliği arttı.", "%@ startete eine Influencer-Kampagne, ihre Beliebtheit stieg.", "%@ lanzó una campaña con influencers y su popularidad subió.", "%@がインフルエンサーキャンペーンを開始。人気が上昇。", "%@ 측이 인플루언서 캠페인을 벌여 인기가 올랐습니다.")
 add("event.rivalPrice", "%1$@ changed its price: %2$@ → %3$@.", "%1$@ fiyatını değiştirdi: %2$@ → %3$@.", "%1$@ hat den Preis geändert: %2$@ → %3$@.", "%1$@ cambió su precio: %2$@ → %3$@.", "%1$@が価格を変更：%2$@ → %3$@。", "%1$@ 가격 변경: %2$@ → %3$@.")
 add("event.rivalNewBalloon", "%@ added a new balloon to its fleet.", "%@ filosuna yeni bir balon ekledi.", "%@ hat einen neuen Ballon in die Flotte aufgenommen.", "%@ añadió un globo nuevo a su flota.", "%@が新しい気球を導入した。", "%@ 측이 기단에 새 열기구를 추가했습니다.")
-add("event.rivalBankrupt", "%1$@ went bankrupt! Its fleet is for sale: %2$@ balloons for %3$@.", "%1$@ iflas etti! Filosu satışta: %2$@ balon, %3$@.", "%1$@ ist pleite! Die Flotte steht zum Verkauf: %2$@ Ballone für %3$@.", "¡%1$@ ha quebrado! Su flota está en venta: %2$@ globos por %3$@.", "%1$@が倒産！フリートが売りに出た：気球%2$@機で%3$@。", "%1$@ 파산! 기단 매각: 열기구 %2$@대, %3$@.")
+add("event.rivalBankrupt", "%1$@ went bankrupt! Its fleet is for sale. Balloons: %2$@ · Price: %3$@.", "%1$@ iflas etti! Filosu satışta: %2$@ balon, %3$@.", "%1$@ ist pleite! Die Flotte steht zum Verkauf: %2$@ Ballone für %3$@.", "¡%1$@ ha quebrado! Su flota está en venta: %2$@ globos por %3$@.", "%1$@が倒産！フリートが売りに出た：気球%2$@機で%3$@。", "%1$@ 파산! 기단 매각: 열기구 %2$@대, %3$@.")
 add("event.rivalForSale", "%1$@ is struggling. You can make a takeover offer: %2$@.", "%1$@ zor durumda. Şirketi devralma teklifi yapabilirsin: %2$@.", "%1$@ steckt in Schwierigkeiten. Du kannst ein Übernahmeangebot machen: %2$@.", "%1$@ está en apuros. Puedes hacer una oferta de compra: %2$@.", "%1$@は苦境にある。買収を提案できる：%2$@。", "%1$@ 경영난. 인수 제안을 할 수 있습니다: %2$@.")

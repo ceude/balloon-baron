@@ -82,7 +82,7 @@ add("chapter.pharaohs.award",
  "エジプト観光省から年間最優秀気球会社に選ばれた",
  "이집트 관광부가 당신을 올해의 열기구 회사로 선정했습니다")
 add("chapter.baronLux.award", "", "", "", "", "", "")
-add("goal.fiesta.lux", "Fly in a Nile cruise season", "Bir Nil gemisi sezonunda uç", "Flieg in einer Nilkreuzfahrt-Saison", "Vuela en una temporada de cruceros del Nilo", "ナイルクルーズの季節に飛ぶ", "나일 크루즈 시즌에 비행하기")
+add("goal.fiesta.lux", "Fly during the Nile cruise season", "Bir Nil gemisi sezonunda uç", "Flieg in einer Nilkreuzfahrt-Saison", "Vuela en una temporada de cruceros del Nilo", "ナイルクルーズの季節に飛ぶ", "나일 크루즈 시즌에 비행하기")
 
 for k, en, tr, de, es, ja, ko in [
     ("lux", ("Sky of the Nile", "You entered Luxor"), ("Nil'in göğü", "Luksor'a girdin"), ("Himmel des Nils", "Du bist in Luxor gestartet"), ("Cielo del Nilo", "Entraste en Luxor"), ("ナイルの空", "ルクソールに進出した"), ("나일의 하늘", "룩소르에 진출했습니다")),
@@ -166,7 +166,7 @@ add("boss.lux.ch2",
  "ナイルの船が着いた時、観光客は誰の気球に乗る？見たことがあるか？私のだ。だが、悪くはやっていない。認めよう。",
  "나일 배가 들어오면 관광객이 누구 열기구를 타는지 본 적 있나? 내 것이지. 그래도 자네, 나쁘지 않군. 인정하지.")
 add("boss.lux.passed",
- "Yesterday you flew more passengers than me. That has happened twice in the history of Theban Skies. Both times I laughed last.",
+ "Yesterday you flew more passengers than me. That has happened twice in the history of Theban Skies. Both times, I had the last laugh.",
  "Dün benden fazla yolcu uçurmuşsun. Theban Skies'ın tarihinde bu iki kez oldu. İkisinde de son gülen ben oldum.",
  "Gestern hast du mehr Passagiere geflogen als ich. Das ist in der Geschichte von Theban Skies zweimal passiert. Beide Male habe ich zuletzt gelacht.",
  "Ayer llevaste más pasajeros que yo. Eso ha pasado dos veces en la historia de Theban Skies. Las dos veces reí el último.",
@@ -180,7 +180,7 @@ add("boss.lux.hotel",
  "あのホテルの支配人は私のいとこの義兄弟だ。ここでは契約は紙ではなく茶で結ぶものだ、よそ者。",
  "그 호텔 지배인은 내 사촌의 처남이라네. 여기선 계약을 종이가 아니라 차로 맺지, 이방인.")
 add("boss.lux.poach",
- "I offered your pilot a house with a view of the Nile. Here loyalty is measured in bread.",
+ "I offered your pilot a house with a view of the Nile. Here, loyalty goes to whoever puts bread on the table.",
  "Pilotuna Nil manzaralı bir ev teklif ettim. Burada sadakat ekmekle ölçülür.",
  "Ich habe deinem Piloten ein Haus mit Nilblick angeboten. Hier misst man Treue in Brot.",
  "Le ofrecí a tu piloto una casa con vistas al Nilo. Aquí la lealtad se mide en pan.",
@@ -201,7 +201,7 @@ add("boss.lux.deal",
  "いいだろう。風向きが変わった。テーベ・スカイズを引き継ぎたいなら話そう。だが名前は変えるな。父の名だ。",
  "좋네. 바람이 바뀌었군. 테베 스카이스를 인수하고 싶다면 이야기하세. 하지만 이름은 바꾸지 말게. 우리 아버지 이름이야.")
 add("boss.lux.gone",
- "I sold my last balloon. The West Bank is yours now. Some morning, fly a round over Deir el-Bahari for me too.",
+ "I sold my last balloon. The West Bank is yours now. Some morning, fly a lap over Deir el-Bahari for me.",
  "Son balonumu da sattım. Batı Yakası artık senin. Bir sabah Deir el-Bahari'nin üstünde benim için de bir tur at.",
  "Ich habe meinen letzten Ballon verkauft. Das Westufer gehört jetzt dir. Flieg eines Morgens auch für mich eine Runde über Deir el-Bahari.",
  "Vendí mi último globo. La Ribera Oeste es tuya. Alguna mañana, da también una vuelta por mí sobre Deir el-Bahari.",
@@ -276,28 +276,28 @@ add("insp.1.many",
  "定期検査です。気球%1$@の球皮が30%%を下回っています。傷んだ生地で乗客を運ぶと事故の危険が高まります。交換をお願いします。5日後にもう一度確認します。",
  "정기 점검입니다. 열기구 %1$@의 외피가 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다.")
 add("insp.2.one",
- "My second warning. The envelope of %1$@ still hasn't been renewed. If it's the same at the next inspection, I'll have to write a fine.",
+ "My second warning. The envelope of %1$@ still hasn't been renewed. If it's the same at the next inspection, I'll have to issue a fine.",
  "İkinci uyarım. %1$@ balonunun zarfı hâlâ yenilenmemiş. Bir dahaki denetimde aynı durumdaysa ceza yazmak zorundayım.",
  "Meine zweite Warnung. Die Hülle von %1$@ wurde immer noch nicht erneuert. Ist es bei der nächsten Kontrolle genauso, muss ich ein Bußgeld verhängen.",
  "Mi segundo aviso. La envoltura de %1$@ sigue sin renovarse. Si sigue igual en la próxima inspección, tendré que multarte.",
  "2度目の警告です。%1$@の球皮はまだ交換されていません。次の検査でも同じなら罰金を科さざるを得ません。",
  "두 번째 경고입니다. %1$@의 외피가 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다.")
 add("insp.2.many",
- "My second warning. The envelopes of %1$@ still haven't been renewed. If it's the same at the next inspection, I'll have to write a fine.",
+ "My second warning. The envelopes of %1$@ still haven't been renewed. If it's the same at the next inspection, I'll have to issue a fine.",
  "İkinci uyarım. %1$@ balonlarının zarfları hâlâ yenilenmemiş. Bir dahaki denetimde aynı durumdaysa ceza yazmak zorundayım.",
  "Meine zweite Warnung. Die Hüllen von %1$@ wurden immer noch nicht erneuert. Ist es bei der nächsten Kontrolle genauso, muss ich ein Bußgeld verhängen.",
  "Mi segundo aviso. Las envolturas de %1$@ siguen sin renovarse. Si sigue igual en la próxima inspección, tendré que multarte.",
  "2度目の警告です。%1$@の球皮はまだ交換されていません。次の検査でも同じなら罰金を科さざるを得ません。",
  "두 번째 경고입니다. %1$@의 외피가 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다.")
 add("insp.3.one",
- "At this inspection I found the envelope of %1$@ worn again. Fine: %2$@. I'll write a fine at every inspection until it's renewed.",
+ "At this inspection I found the envelope of %1$@ worn again. Fine: %2$@. I'll issue a fine at every inspection until it's renewed.",
  "Denetimde %1$@ balonunun zarfını yine yıpranmış buldum. Ceza: %2$@. Yenilenene kadar her denetimde ceza yazacağım.",
  "Bei dieser Kontrolle war die Hülle von %1$@ wieder abgenutzt. Bußgeld: %2$@. Bis sie erneuert ist, verhänge ich bei jeder Kontrolle eins.",
  "En esta inspección encontré otra vez gastada la envoltura de %1$@. Multa: %2$@. Multaré en cada inspección hasta que se renueve.",
  "今回の検査でも%1$@の球皮が傷んでいました。罰金：%2$@。交換されるまで検査のたびに罰金を科します。",
  "이번 점검에서도 %1$@의 외피가 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다.")
 add("insp.3.many",
- "At this inspection I found the envelopes of %1$@ worn again. Fine: %2$@. I'll write a fine at every inspection until they're renewed.",
+ "At this inspection I found the envelopes of %1$@ worn again. Fine: %2$@. I'll issue a fine at every inspection until they're renewed.",
  "Denetimde %1$@ balonlarının zarflarını yine yıpranmış buldum. Ceza: %2$@. Yenilenene kadar her denetimde ceza yazacağım.",
  "Bei dieser Kontrolle waren die Hüllen von %1$@ wieder abgenutzt. Bußgeld: %2$@. Bis sie erneuert sind, verhänge ich bei jeder Kontrolle eins.",
  "En esta inspección encontré otra vez gastadas las envolturas de %1$@. Multa: %2$@. Multaré en cada inspección hasta que se renueven.",
@@ -319,7 +319,7 @@ add("equip.double.d",
  "片方のバーナーが詰まったり消えたりしても、もう片方で安全に着陸できる。事故リスクは%1$@%%低下、気球は%2$@%%速く温まり上昇する。乗客は安全な気球が大好きだ。",
  "버너 하나가 막히거나 꺼져도 다른 하나로 안전하게 내릴 수 있습니다. 사고 위험 %1$@%% 감소, 열기구가 %2$@%% 더 빨리 데워지고 상승합니다. 승객은 안전한 열기구를 좋아하죠.")
 add("equip.triple.d",
- "The choice of big baskets. Accident risk %1$@%% lower than a single burner, the balloon heats and climbs %2$@%% faster.",
+ "The go-to for big baskets. Accident risk %1$@%% lower than a single burner, the balloon heats and climbs %2$@%% faster.",
  "Büyük sepetlerin tercihi. Kaza riski tek brülöre göre %%%1$@ daha düşük, balon %%%2$@ daha hızlı ısınır ve tırmanır.",
  "Die Wahl großer Körbe. Unfallrisiko %1$@ %% niedriger als mit einem Brenner, der Ballon heizt und steigt %2$@ %% schneller.",
  "La elección de las cestas grandes. Riesgo de accidente un %1$@ %% menor que con un quemador; el globo se calienta y sube un %2$@ %% más rápido.",
@@ -383,7 +383,7 @@ add("holding.rec.hint",
  "スポンサー付きの世界記録への挑戦。成功すればすべての地域で需要が永続的に増える。失敗すれば資金は失うが、再挑戦できる。",
  "스폰서가 붙은 세계 기록 도전. 성공하면 모든 지역의 수요가 영구히 늘어납니다. 실패하면 돈은 사라지지만 다시 도전할 수 있습니다.")
 add("holding.rec.locked",
- "Record projects open once you have entered Luxor. Open Luxor first.",
+ "Record attempts unlock once you've entered Luxor. Open Luxor first.",
  "Rekor projeleri Luksor'a girdikten sonra açılır. Önce Luksor'u açmalısın.",
  "Rekordprojekte öffnen sich, sobald du in Luxor eingestiegen bist. Eröffne erst Luxor.",
  "Los proyectos de récord se abren cuando entras en Luxor. Primero abre Luxor.",
@@ -493,6 +493,6 @@ add("settings.about", "About", "Hakkında", "Info", "Acerca de", "このアプ�
 add("settings.privacy", "Privacy policy", "Gizlilik politikası", "Datenschutz", "Política de privacidad", "プライバシーポリシー", "개인정보 처리방침")
 add("settings.support", "Support", "Destek", "Support", "Soporte", "サポート", "지원")
 add("settings.version", "Version", "Sürüm", "Version", "Versión", "バージョン", "버전")
-add("settings.sure", "Sure? All progress is deleted. Tap again", "Emin misin? Bütün ilerleme silinir. Tekrar dokun", "Sicher? Der gesamte Fortschritt wird gelöscht. Noch mal tippen", "¿Seguro? Se borra todo el progreso. Toca otra vez", "本当に？進行状況はすべて消えます。もう一度タップ", "정말요? 모든 진행 상황이 삭제됩니다. 다시 누르세요")
+add("settings.sure", "Are you sure? All progress will be deleted. Tap again", "Emin misin? Bütün ilerleme silinir. Tekrar dokun", "Sicher? Der gesamte Fortschritt wird gelöscht. Noch mal tippen", "¿Seguro? Se borra todo el progreso. Toca otra vez", "本当に？進行状況はすべて消えます。もう一度タップ", "정말요? 모든 진행 상황이 삭제됩니다. 다시 누르세요")
 add("a11y.on", "On", "Açık", "Ein", "Activado", "オン", "켬")
 add("a11y.off", "Off", "Kapalı", "Aus", "Desactivado", "オフ", "끔")
