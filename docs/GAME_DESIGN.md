@@ -347,7 +347,7 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 Öğretici sürerken Kapadokya'nın 1. ve 2. günü herkes için aynıdır, sürpriz yoktur (`tutScene`, `TUT_WX`, `TUT_DEMAND`):
 - **1. gün:** yeşil bayrak, yer rüzgârı 5 km/sa, katmanlar (0–60 m'den yukarı) −1,3 / +4,6 / −2,2 / +6,2 m/s, iniş alanı 1.720'de, görev yok. Talep 110: 170 €'da 5/8 yolcu, 140 €'da 7/8, 110 €'da 8/8; fiyatı düşürme dersi her zaman işe yarar.
 - **2. gün:** yeşil bayrak, yer rüzgârı 6 km/sa, katmanlar −1 / −2 / +5,2 / +3,4 m/s, iniş alanı 1.900'de, görev yok. Talep 320 (turist koltuktan çok). Gün 160 € fiyatla başlar (`TUT_P2`); fiyat 260 €'ya kadar çıksa da sepet dolu kalır.
-- **2. gün dersi (`price2`):** sabah kartlarından sonra bilet kartı aydınlanır: "Bazı günler talep çok olur: fiyatı artır, müşterin azalmaz." + düğmesi gösterilir; fiyat artıp sepet dolu kalınca "Gördün mü? Yolcu aynı, kazanç arttı." Tamam'la biter. Ölçüm: `price2_up`, `price2`.
+- **2. gün dersi (`price2`):** sabah kartlarından sonra bilet kartı aydınlanır: "Dün düşürmek işe yaradı; bugün turist çok: fiyatı artır, müşterin azalmaz." + düğmesi gösterilir; fiyat artıp sepet dolu kalınca "Gördün mü? Yolcu aynı, kazanç arttı. Fiyatı her gün turiste göre ayarla." Tamam'la biter. Amaç: oyuncu 1. günden "fiyat hep düşürülür" diye öğrenmesin, fiyatın günün talebine göre ayarlandığını görsün. Ölçüm: `price2_up`, `price2`.
 
 ## Yeni oyuncu düzeltmeleri (v121.12)
 - **Sabah kartları:** bir sabah en fazla 2 Hezarfen dersi ve 1 kartpostal gösterilir; kalanlar sırayla sonraki sabahlara kalır (`MORNING_TIPS`, `Rules.morningLessons`, `hezLater`, `postcardsLater`). Haberler, rakipler, müfettiş ve övgüler sınıra girmez (övgü zaten iki günde bir).

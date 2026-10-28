@@ -4904,10 +4904,10 @@ function tutHome() {
   /* v122.4: day 2, demand is high (fixed scenario): raise the price, the basket stays full and you earn more */
   if (S.day === 2 && !tutHas('price2')) {
     if (!TUTA || TUTA.k !== 'price2') { S.price = TUT_P2; refresh(); }
-    const A = tutShow('price2', 'Bazı günler talep çok olur: fiyatı artır, müşterin azalmaz.', { mode: 'office', p0: S.price,
+    const A = tutShow('price2', 'Dün düşürmek işe yaradı; bugün turist çok: fiyatı artır, müşterin azalmaz.', { mode: 'office', p0: S.price,
       holes: () => $('psheet').hidden ? [tutRel($('pcard'), 4)] : [tutRel(A.up ? $('psOk') : $('pPlus'), 6, !A.up), tutRel($('est'), 6)],
       arrow: hs => A.up && !$('psheet').hidden ? null : tutArrowAt(hs[0]),
-      lineNow: () => A.up && !$('psheet').hidden ? 'Gördün mü? Yolcu aynı, kazanç arttı. Tamam\'a bas.' : A.line });
+      lineNow: () => A.up && !$('psheet').hidden ? 'Gördün mü? Yolcu aynı, kazanç arttı. Fiyatı her gün turiste göre ayarla.' : A.line });
     return true;
   }
   if (S.day !== 1) return false;
