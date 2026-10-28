@@ -113,7 +113,7 @@ add("hgoal.celebrity", "A celebrity ambassador", "Ünlü reklam yüzü", "Ein Pr
 add("hgoal.research", "Envelope research done", "Zarf Ar-Ge'si tamam", "Hüllenforschung abgeschlossen", "Investigación de envolturas terminada", "球皮研究の完了", "외피 연구 완료")
 add("hgoal.offices", "Four world offices", "Dört dünya ofisi", "Vier Büros weltweit", "Cuatro oficinas en el mundo", "世界4都市のオフィス", "세계 4대 사무소")
 add("hgoal.title", "Holding goals", "Holding hedefleri", "Ziele der Holding", "Objetivos del holding", "ホールディングスの目標", "지주회사 목표")
-add("hgoal.worldTitle", "World Baron 👑", "Dünya Baronu 👑", "Weltbaron 👑", "Barón mundial 👑", "世界の男爵 👑", "세계의 남작 👑")
+add("hgoal.worldTitle", "World Baron", "Dünya Baronu", "Weltbaron", "Barón mundial", "世界の男爵", "세계의 남작")
 add("hgoal.hint", "Finish them all to become World Baron.", "Hepsi tamamlanınca Dünya Baronu olursun.", "Erfülle alle, um Weltbaron zu werden.", "Complétalos todos para ser barón mundial.", "すべて達成すると世界の男爵になる。", "모두 달성하면 세계의 남작이 됩니다.")
 
 # Flight moments

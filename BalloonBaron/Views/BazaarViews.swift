@@ -303,6 +303,7 @@ struct BazaarView: View {
                                 .frame(height: 34)
                             HStack(spacing: 3) {
                                 if locked && !own && !k.gift { LockGlyph(size: 11) }
+                                if k.gift && !own { LineGlyph(kind: .gift, size: 13, weight: 2.6) }
                                 Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : storePrice(k))
                             }
                                 .font(Theme.font(13, .heavy)).foregroundStyle(.white)

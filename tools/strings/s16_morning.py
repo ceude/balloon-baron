@@ -181,14 +181,14 @@ add("album.title", "Achievements", "Başarımlar", "Erfolge", "Logros", "実績"
 add("album.count", "Postcard album: %1$@/%2$@", "Kartpostal albümü: %1$@/%2$@", "Postkartenalbum: %1$@/%2$@", "Álbum de postales: %1$@/%2$@", "絵はがきアルバム：%1$@/%2$@", "엽서 앨범: %1$@/%2$@")
 add("album.earned", "%1$@: %2$@, day %3$@.", "%1$@: %2$@, gün %3$@.", "%1$@: %2$@, Tag %3$@.", "%1$@: %2$@, día %3$@.", "%1$@：%2$@、%3$@日目。", "%1$@: %2$@, %3$@일차.")
 add("album.lockedHint", "%1$@: %2$@ (locked).", "%1$@: %2$@ (kilitli).", "%1$@: %2$@ (gesperrt).", "%1$@: %2$@ (bloqueada).", "%1$@：%2$@（未獲得）。", "%1$@: %2$@ (잠김).")
-add("menu.album", "🏆 Achievements", "🏆 Başarımlar", "🏆 Erfolge", "🏆 Logros", "🏆 実績", "🏆 업적")
+add("menu.album", "Achievements", "Başarımlar", "Erfolge", "Logros", "実績", "업적")
 
 # Chapter ceremony: the rewarded ad
 
 # The night
 add("night.title", "Night of day %@", "Gün %@ gecesi", "Nacht von Tag %@", "Noche del día %@", "%@日目の夜", "%@일차의 밤")
 add("night.wander", "You can look around the town", "Kasabayı gezebilirsin", "Du kannst dich in der Stadt umsehen", "Puedes recorrer el pueblo", "町を見て回れる", "마을을 둘러볼 수 있습니다")
-add("night.morning", "Go to the morning of day %@ ☀", "Gün %@ sabahına geç ☀", "Weiter zum Morgen von Tag %@ ☀", "Ir a la mañana del día %@ ☀", "%@日目の朝へ ☀", "%@일차 아침으로 ☀")
+add("night.morning", "Go to the morning of day %@", "Gün %@ sabahına geç", "Weiter zum Morgen von Tag %@", "Ir a la mañana del día %@", "%@日目の朝へ", "%@일차 아침으로")
 add("night.lanterns", "%@: a lantern walk passes through the valley.", "%@: fener alayı vadiden geçiyor.", "%@: Ein Laternenumzug zieht durchs Tal.", "%@: un desfile de farolillos cruza el valle.", "%@：ランタン行列が谷を進む。", "%@: 등불 행렬이 계곡을 지나갑니다.")
 add("night.glow", "Fiesta night: Balloon Glow! The balloons on the ground fire their burners.", "Fiesta gecesi: Balloon Glow! Balonlar yerde brülörlerini yakıyor.", "Fiesta-Nacht: Balloon Glow! Die Ballone am Boden zünden ihre Brenner.", "Noche de Fiesta: ¡Balloon Glow! Los globos en tierra encienden sus quemadores.", "フィエスタの夜：バルーングロー！地上の気球がバーナーを焚く。", "피에스타의 밤: 벌룬 글로! 땅 위의 열기구들이 버너를 켭니다.")
 add("night.snow", "The town's lights shine under the snow.", "Kar altında kasabanın ışıkları yanıyor.", "Die Lichter der Stadt leuchten unter dem Schnee.", "Las luces del pueblo brillan bajo la nieve.", "雪の中で町の明かりが灯る。", "눈 속에서 마을의 불빛이 빛납니다.")

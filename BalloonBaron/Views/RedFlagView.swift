@@ -101,7 +101,7 @@ struct GroundedView: View {
 
     var body: some View {
         let left = store.state.map(Self.grounded) ?? []
-        ModalCard {
+        ModalCard(onClose: onClose) {
             CardText.title(left.count == 1 ? loc("grounded.one") : loc("grounded.many", num(left.count)))
             CardText.lead(loc("grounded.lead", left.map(\.title).joined(separator: ", ")))
             HStack(spacing: 10) {
@@ -157,7 +157,7 @@ struct RedFlagView: View {
     }
 
     private var secondThoughts: some View {
-        ModalCard {
+        ModalCard(onClose: onClose) {
             CardText.title(loc("red.sureTitle"))
             HStack(alignment: .top, spacing: 10) {
                 HezarfenAvatar(size: 44)
@@ -185,7 +185,7 @@ struct RedFlagView: View {
         let fl = store.state?.flyingToday ?? []
         let strikes = store.state?.strikes ?? 0
         let worst = fl.compactMap { b in store.game?.accidentChance(b) }.max() ?? 0
-        return ModalCard {
+        return ModalCard(onClose: onClose) {
             CardText.title(loc("red.title"))
             CardText.lead(loc("red.lead", num(fl.count)))
             CardText.bullets([

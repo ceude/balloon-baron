@@ -68,6 +68,7 @@ struct BigButton: View {
     let action: () -> Void
 
     enum Style { case primary, ghost }
+    static let height: CGFloat = 52
 
     var body: some View {
         Button {
@@ -77,7 +78,11 @@ struct BigButton: View {
             Text(title)
                 .font(Theme.font(19, .heavy, condensed: true))
                 .textCase(.uppercase)
-                .frame(maxWidth: .infinity, minHeight: 52)
+                // One line at one height in every language: a long label shrinks instead of wrapping.
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .padding(.horizontal, 8)
+                .frame(maxWidth: .infinity, minHeight: Self.height, maxHeight: Self.height)
                 .foregroundStyle(style == .primary ? .white : Theme.ink)
                 .background(style == .primary ? Theme.coral : Color.white, in: RoundedRectangle(cornerRadius: 16))
                 .overlay(RoundedRectangle(cornerRadius: 16).stroke(style == .ghost ? Theme.line : .clear, lineWidth: 2))

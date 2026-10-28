@@ -64,7 +64,8 @@ extension Pattern { var title: String { storeItem.map { loc("store.\($0.rawValue
 extension Office {
     var title: String { loc("office.\(rawValue)") }
     var perk: String { loc("office.\(rawValue).perk") }
-    var icon: String { ["🕌", "🗽", "🏙️", "🗼"][Office.allCases.firstIndex(of: self)!] }
+    /// Istanbul a mosque, New York the Statue of Liberty, Seoul Namsan Tower, Tokyo Tokyo Tower.
+    var glyph: LineGlyph.Kind { [.mosque, .liberty, .namsan, .tokyoTower][Office.allCases.firstIndex(of: self)!] }
 }
 extension Design {
     var title: String { gift?.title ?? (name.isEmpty ? "\(pattern.title) \(number)" : name) }

@@ -4476,37 +4476,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "🎁 Geschenk"
+            "value": "Geschenk"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "🎁 Gift"
+            "value": "Gift"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "🎁 Regalo"
+            "value": "Regalo"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "🎁 贈り物"
+            "value": "贈り物"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "🎁 선물"
+            "value": "선물"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "🎁 Hediye"
+            "value": "Hediye"
           }
         }
       }
@@ -33914,37 +33914,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Weltbaron 👑"
+            "value": "Weltbaron"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "World Baron 👑"
+            "value": "World Baron"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Barón mundial 👑"
+            "value": "Barón mundial"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "世界の男爵 👑"
+            "value": "世界の男爵"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "세계의 남작 👑"
+            "value": "세계의 남작"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dünya Baronu 👑"
+            "value": "Dünya Baronu"
           }
         }
       }
@@ -51872,37 +51872,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "🏆 Erfolge"
+            "value": "Erfolge"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "🏆 Achievements"
+            "value": "Achievements"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "🏆 Logros"
+            "value": "Logros"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "🏆 実績"
+            "value": "実績"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "🏆 업적"
+            "value": "업적"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "🏆 Başarımlar"
+            "value": "Başarımlar"
           }
         }
       }
@@ -53471,37 +53471,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Weiter zum Morgen von Tag %@ ☀"
+            "value": "Weiter zum Morgen von Tag %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Go to the morning of day %@ ☀"
+            "value": "Go to the morning of day %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ir a la mañana del día %@ ☀"
+            "value": "Ir a la mañana del día %@"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@日目の朝へ ☀"
+            "value": "%@日目の朝へ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@일차 아침으로 ☀"
+            "value": "%@일차 아침으로"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gün %@ sabahına geç ☀"
+            "value": "Gün %@ sabahına geç"
           }
         }
       }

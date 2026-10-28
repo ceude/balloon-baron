@@ -458,7 +458,7 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .offices{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .office{display:flex;flex-direction:column;gap:5px;padding:12px;border-radius:18px;background:linear-gradient(160deg,#2e2460,#1d1740);box-shadow:0 0 0 1px rgba(255,194,61,.25) inset}
 .office.on{box-shadow:0 0 0 2px var(--sun) inset}
-.office .oi{font-size:30px;line-height:1}
+.office .oi{line-height:1;color:#ffd27a}.office.on .oi{color:var(--sun)}.office .oi .gl{width:34px;height:34px;stroke-width:1.7}
 .office .onm{font-family:var(--cond);font-weight:800;font-size:19px;color:#fff}
 .office .op{font-size:12px;color:rgba(244,239,255,.7);line-height:1.35;flex:1}
 .office .ostat{font-family:var(--cond);font-weight:800;color:var(--sun);font-size:15px}
@@ -731,6 +731,8 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 /* the bazaar's shelves */
 .shopg{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;margin-bottom:6px}
 .lk{display:inline-block;width:.85em;height:1em;vertical-align:-.1em}
+.gl{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.22em;fill:none;stroke:currentColor;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.nightgo .gl{margin-left:6px}h2 .gl.gcrown{width:1.1em;height:1.1em;margin-left:6px;stroke-width:2}
 .shopi{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 6px 9px;border-radius:16px;background:linear-gradient(#fff6e6,#f3e2c4);border:1.5px solid #e6cfa6;box-shadow:0 3px 0 #d9bd8c;color:var(--ink)}
 .shopi img{width:64px;height:72px}
 .shopi b{font-family:'Barlow Condensed',sans-serif;font-size:14px;line-height:1.1;text-align:center}
@@ -4345,34 +4347,34 @@ function showRepChart() {
 /* ---------- achievements and postcards ---------- */
 /* Each first is a postcard you keep: an album in the menu. Checked every evening (shared across regions). */
 const ACHS = [
-  ['first', 'İlk uçuş', 'Şirketinin ilk sabahı', '🎈', () => !!S.firstOk],
-  ['mission', 'İlk özel istek', 'Bir görevi başardın', '⭐', () => (S.stat || {}).mis >= 1],
-  ['perfect10', 'Tüy gibi', '10 kusursuz iniş', '🪶', () => (S.stat || {}).perfect >= 10],
-  ['fleet5', 'Küçük filo', '5 balon', '5️⃣', () => S.balloons.length >= 5],
-  ['fleet10', 'Gökyüzü kalabalık', '10 balon', '🔟', () => S.balloons.length >= 10],
-  ['fleet20', 'Armada', '20 balon', '🛩️', () => S.balloons.length >= 20],
-  ['hotel', 'Otel ortağı', 'İlk otel anlaşması', '🏨', () => S.hotels.length + (S.ownHotels || []).length >= 1],
-  ['hotelOwn', 'Otel sahibi', 'Bir otel satın aldın', '🔑', () => (S.ownHotels || []).length >= 1],
-  ['star45', 'Vadinin gözdesi', '4,5★ popülerlik', '🌟', () => starVal(S.rep) >= 4.5],
-  ['pax1k', 'Bin yolcu', 'Toplam 1.000 yolcu uçurdun', '🧺', () => (S.stat || {}).pax >= 1000],
-  ['pax10k', 'On bin yolcu', 'Toplam 10.000 yolcu', '🏆', () => (S.stat || {}).pax >= 10000],
-  ['winter', 'Kışı atlattın', 'İlk kış bitti', '❄️', () => !!S.nextWinter],
-  ['fest', 'Festival havası', 'Bir festivalde uçtun', '🎉', () => !!S.festFlown || !!S.fiestaFlown],
-  ['rivalDown', 'Rakip düştü', 'Bir rakip iflas etti', '📉', () => S.rivals.some(r => !r.alive)],
-  ['boss', 'Eski usta', 'Vadinin eski sahibi çekildi', '🎩', () => Object.keys(S.bossSaid || {}).some(k => k.endsWith(':gone'))],
-  ['design', 'Kendi desenin', 'İlk balon tasarımın', '🎨', () => (S.designs || []).length >= 1],
-  ['upgrade3', 'Usta işi', 'Bir binayı 3. seviyeye çıkardın', '🏗️', () => Object.keys(UPGRADES).some(k => bl(k) >= 3)],
-  ['xl', 'Dev balon', 'Dev balonun gökyüzünde', '🎪', () => S.balloons.some(b => b.size === 'XL')],
-  ['baronCap', 'Kapadokya Baronu', 'Vadinin efendisi', '👑', () => !!(S.barons || {}).cap],
-  ['abq', 'Yeni Dünya', 'Albuquerque\'ye girdin', '🌵', () => ownsRegion('abq')],
-  ['baronAbq', 'Albuquerque Baronu', 'İki kıtanın göğü', '🦅', () => !!(S.barons || {}).abq],
-  ['lux', 'Nil\'in göğü', 'Luksor\'a girdin', '🌴', () => ownsRegion('lux')],
-  ['baronLux', 'Luksor Baronu', 'Firavunların vadisi senin', '👑', () => !!(S.barons || {}).lux],
-  ['world', 'Dünya Baronu', 'Holdingin bütün hedefleri', '🌍', () => !!(S.hold || {}).worldBaron]
+  ['first', 'İlk uçuş', 'Şirketinin ilk sabahı', () => !!S.firstOk],
+  ['mission', 'İlk özel istek', 'Bir görevi başardın', () => (S.stat || {}).mis >= 1],
+  ['perfect10', 'Tüy gibi', '10 kusursuz iniş', () => (S.stat || {}).perfect >= 10],
+  ['fleet5', 'Küçük filo', '5 balon', () => S.balloons.length >= 5],
+  ['fleet10', 'Gökyüzü kalabalık', '10 balon', () => S.balloons.length >= 10],
+  ['fleet20', 'Armada', '20 balon', () => S.balloons.length >= 20],
+  ['hotel', 'Otel ortağı', 'İlk otel anlaşması', () => S.hotels.length + (S.ownHotels || []).length >= 1],
+  ['hotelOwn', 'Otel sahibi', 'Bir otel satın aldın', () => (S.ownHotels || []).length >= 1],
+  ['star45', 'Vadinin gözdesi', '4,5★ popülerlik', () => starVal(S.rep) >= 4.5],
+  ['pax1k', 'Bin yolcu', 'Toplam 1.000 yolcu uçurdun', () => (S.stat || {}).pax >= 1000],
+  ['pax10k', 'On bin yolcu', 'Toplam 10.000 yolcu', () => (S.stat || {}).pax >= 10000],
+  ['winter', 'Kışı atlattın', 'İlk kış bitti', () => !!S.nextWinter],
+  ['fest', 'Festival havası', 'Bir festivalde uçtun', () => !!S.festFlown || !!S.fiestaFlown],
+  ['rivalDown', 'Rakip düştü', 'Bir rakip iflas etti', () => S.rivals.some(r => !r.alive)],
+  ['boss', 'Eski usta', 'Vadinin eski sahibi çekildi', () => Object.keys(S.bossSaid || {}).some(k => k.endsWith(':gone'))],
+  ['design', 'Kendi desenin', 'İlk balon tasarımın', () => (S.designs || []).length >= 1],
+  ['upgrade3', 'Usta işi', 'Bir binayı 3. seviyeye çıkardın', () => Object.keys(UPGRADES).some(k => bl(k) >= 3)],
+  ['xl', 'Dev balon', 'Dev balonun gökyüzünde', () => S.balloons.some(b => b.size === 'XL')],
+  ['baronCap', 'Kapadokya Baronu', 'Vadinin efendisi', () => !!(S.barons || {}).cap],
+  ['abq', 'Yeni Dünya', 'Albuquerque\'ye girdin', () => ownsRegion('abq')],
+  ['baronAbq', 'Albuquerque Baronu', 'İki kıtanın göğü', () => !!(S.barons || {}).abq],
+  ['lux', 'Nil\'in göğü', 'Luksor\'a girdin', () => ownsRegion('lux')],
+  ['baronLux', 'Luksor Baronu', 'Firavunların vadisi senin', () => !!(S.barons || {}).lux],
+  ['world', 'Dünya Baronu', 'Holdingin bütün hedefleri', () => !!(S.hold || {}).worldBaron]
 ];
 function achCheck() {
   S.ach = S.ach || {};
-  for (const [k, t] of ACHS.map(a => [a[0], a[4]])) if (!S.ach[k] && t()) { S.ach[k] = S.day; (S.newPost = S.newPost || []).push(k); }
+  for (const [k, t] of ACHS.map(a => [a[0], a[3]])) if (!S.ach[k] && t()) { S.ach[k] = S.day; (S.newPost = S.newPost || []).push(k); }
 }
 /* A postcard: a small painted scene for each achievement, the title and a postmark with the day. */
 const PC_SKY = { sunrise: ['#6b7fc4', '#f0b48c', '#ffdca8'], day: ['#4f9ee0', '#9fd2f0', '#e6f4fb'], night: ['#0f0e2e', '#2b2350', '#5a4a8a'], dusk: ['#3a2a6a', '#c8607a', '#ffb070'], snow: ['#7fa6cf', '#c7dcef', '#f2f7fc'], desert: ['#3f62b4', '#f09a6a', '#ffd08a'] };
@@ -4547,6 +4549,18 @@ const SET_IC = {
   down: '<path d="m6 9.5 6 6 6-6"/>'
 };
 const setIcon = (k, cls) => `<svg viewBox="0 0 24 24" class="${cls || ''}">${SET_IC[k]}</svg>`;
+/* Small line drawings in place of emoji (24×24, round strokes like the side buttons); the app's LineGlyph draws
+   the same paths. Offices: Istanbul a mosque, New York the Statue of Liberty, Seoul Namsan Tower, Tokyo Tokyo Tower. */
+const GLYPH = {
+  gift: '<path d="M3.5 8 L20.5 8 L20.5 11.5 L3.5 11.5 Z M5 11.5 L5 20.5 L19 20.5 L19 11.5 M12 8 L12 20.5 M12 8 C9.5 8 6.5 6.8 7.2 4.6 C7.9 2.6 10.8 4 12 8 M12 8 C14.5 8 17.5 6.8 16.8 4.6 C16.1 2.6 13.2 4 12 8"/>',
+  sun: '<path d="M12 2.5 L12 4.5 M12 19.5 L12 21.5 M2.5 12 L4.5 12 M19.5 12 L21.5 12 M5.3 5.3 L6.7 6.7 M17.3 17.3 L18.7 18.7 M5.3 18.7 L6.7 17.3 M17.3 6.7 L18.7 5.3"/><circle cx="12" cy="12" r="4.2"/>',
+  crown: '<path d="M4.5 17.5 L3 7.5 L8.5 11.5 L12 5 L15.5 11.5 L21 7.5 L19.5 17.5 Z M4.5 20.5 L19.5 20.5" fill="#ffc23d" stroke="#c98a00"/>',
+  ist: '<path d="M2 20.5 L22 20.5 M6.5 14 C6.5 10.5 9 8.3 12 7.5 C15 8.3 17.5 10.5 17.5 14 Z M12 7.5 L12 5 M7 14 L7 20.5 M17 14 L17 20.5 M10.5 20.5 L10.5 18 C10.5 16.6 13.5 16.6 13.5 18 L13.5 20.5 M3.5 20.5 L3.5 8.5 M2.6 8.5 L3.5 4.5 L4.4 8.5 M2.6 12 L4.4 12 M20.5 20.5 L20.5 8.5 M19.6 8.5 L20.5 4.5 L21.4 8.5 M19.6 12 L21.4 12"/>',
+  nyc: '<path d="M6.5 20.5 L17.5 20.5 M8.5 20.5 L8.5 16.5 L15.5 16.5 L15.5 20.5 M9.4 16.5 C9.8 13.5 9.6 12 10.5 10.8 L13.5 10.8 C14.4 12 14.2 13.5 14.6 16.5 M10.4 6.9 L9.3 5.7 M12 6.5 L12 4.9 M13.5 10.8 L17 4.6 M16 4.6 L18 4.6 M17 3.7 C16.2 3 16.6 2.1 17 1.5 C17.4 2.1 17.8 3 17 3.7 Z M10.5 12 L8.6 13.8"/><circle cx="12" cy="8.5" r="1.7"/>',
+  sel: '<path d="M2 20.5 L22 20.5 M2 20.5 C6 15.8 9 14.5 12 14.5 C15 14.5 18 15.8 22 20.5 M11 14.5 L11.3 10.5 M13 14.5 L12.7 10.5 M9.5 10.5 L14.5 10.5 L13.8 7.8 L10.2 7.8 Z M12 7.8 L12 2.5"/>',
+  tyo: '<path d="M5.5 20.5 C8.5 16 10 11 11 5 M18.5 20.5 C15.5 16 14 11 13 5 M10.6 5 L13.4 5 M12 5 L12 1.8 M7.8 14.6 L16.2 14.6 L15.7 12.4 L8.3 12.4 Z M9.8 9.8 L14.2 9.8 L13.9 8.3 L10.1 8.3 Z M8.4 20.5 Q12 16.2 15.6 20.5"/>'
+};
+const glyph = (k, cls) => `<svg viewBox="0 0 24 24" class="gl${cls ? ' ' + cls : ''}" aria-hidden="true">${GLYPH[k]}</svg>`;
 /* The menu behind the top-right button: a settings screen in the game's own look. Rows sit on white cards with the
    game's hard shadow; each group has its own icon tint. The save code hides behind its own rows. */
 let hapticsOn = (() => { try { return localStorage.getItem('safak-haptics') !== 'off'; } catch (e) { return true; } })();
@@ -5741,7 +5755,7 @@ const SHOP = {
   supporter: { n: 'Destekçi Sürümü', kind: 'supporter', p: 9.99 }
 };
 const priceTxt = p => p.toFixed(2).replace('.', ',') + ' €';
-for (const k in SHOP) SHOP[k].price = SHOP[k].gift ? '🎁 Hediye' : priceTxt(SHOP[k].p);
+for (const k in SHOP) SHOP[k].price = SHOP[k].gift ? glyph('gift') + ' Hediye' : priceTxt(SHOP[k].p);
 /* a pack item is owned with its pack; the old one-by-one purchases still count */
 const inPackOwned = k => SHOP[k] && SHOP[k].pack && !!(S.iap && S.iap[SHOP[k].pack]);
 const owned = k => !!(S.iap && S.iap[k]) || inPackOwned(k) || (k === 'worldTour' && !!(S.iap && (S.iap.supporter || S.iap.lux)));
@@ -6082,10 +6096,10 @@ function tree(x, base, w, hgt, crown, trunk) {
 const HOLD_COST = .25; /* maaş, bina vb. giderler: otomatik gelirin %25'i */
 const CELEBS = ['Selin Arda (oyuncu)', 'Kenji Mori (aktör)', 'Lucía Varela (şarkıcı)', 'Emre Kaan (futbolcu)', 'Ji-ho Park (K-pop yıldızı)', 'Maya Collins (sunucu)'];
 const HQ_CITIES = {
-  nyc: { name: 'New York', cost: 450000, perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: '🗽' },
-  ist: { name: 'İstanbul', cost: 350000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: '🕌' },
-  tyo: { name: 'Tokyo', cost: 400000, perk: 'Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya\'ya giriş yarı fiyatına.', icon: '🗼' },
-  sel: { name: 'Seul', cost: 400000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun ve %30 ucuz.', icon: '🏙️' }
+  nyc: { name: 'New York', cost: 450000, perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: glyph('nyc') },
+  ist: { name: 'İstanbul', cost: 350000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: glyph('ist') },
+  tyo: { name: 'Tokyo', cost: 400000, perk: 'Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya\'ya giriş yarı fiyatına.', icon: glyph('tyo') },
+  sel: { name: 'Seul', cost: 400000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun ve %30 ucuz.', icon: glyph('sel') }
 };
 /* ofisler: her şehirde bir tane açılabilir, avantajları birikir; dördü birden açıksa holding giderleri azalır */
 const hasOffice = k => !!(S && S.hold && S.hold.offices && S.hold.offices[k]);
@@ -7923,7 +7937,7 @@ function startNight() {
   mode = 'night'; hideAll(); $('hud').hidden = true;
   const cap = h('div', 'nightcap', `<b>Gün ${S.day - 1} gecesi</b>${ev ? `<span>${esc(ev.line)}</span>` : ''}<small>Kasabayı gezebilirsin</small>`); cap.id = 'nightcap';
   document.body.appendChild(cap); requestAnimationFrame(() => cap.classList.add('on'));
-  const go = h('button', 'big nightgo', `Gün ${S.day} sabahına geç ☀`); go.id = 'nightgo'; go.onclick = () => { if (NIGHT && !NIGHT.dawn) { NIGHT.dawn = T; sfx('click'); } };
+  const go = h('button', 'big nightgo', `Gün ${S.day} sabahına geç${glyph('sun')}`); go.id = 'nightgo'; go.onclick = () => { if (NIGHT && !NIGHT.dawn) { NIGHT.dawn = T; sfx('click'); } };
   document.body.appendChild(go); requestAnimationFrame(() => go.classList.add('on')); document.body.classList.add('night');
   crickets(true); save();
   if (show) showMusic(true);
@@ -8467,7 +8481,7 @@ function holdGoalsCheck() {
   paperAdd(6, `${S.company} artık bir dünya devi`, 'Kapadokya\'dan Albuquerque\'ye ve Luksor\'a, dört kıtada ofis.');
 }
 function hqGoals(body) {
-  const sec = h('div', 'sec'); sec.appendChild(h('h2', null, (S.hold || {}).worldBaron ? 'Dünya Baronu 👑' : 'Holding hedefleri'));
+  const sec = h('div', 'sec'); sec.appendChild(h('h2', null, (S.hold || {}).worldBaron ? 'Dünya Baronu' + glyph('crown', 'gcrown') : 'Holding hedefleri'));
   for (const [t, f] of HOLD_GOALS) { const d = holdGoalDone(f); sec.appendChild(h('div', 'goal' + (d ? ' done' : ''), `<span class="gk">${d ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${t}</b><span>${d ? 'tamam' : ''}</span></div></div>`)); }
   sec.appendChild(h('p', 'hint', 'Hepsi tamamlanınca Dünya Baronu olursun.')); body.appendChild(sec);
 }

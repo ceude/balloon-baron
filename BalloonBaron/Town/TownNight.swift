@@ -428,7 +428,10 @@ struct NightView: View {
                 bringMorning()
             } label: {
                 // The night passing fills the whole face from the left (`.nightgo`'s --p), not just the text's line.
-                Text(loc("night.morning", num(day)))
+                HStack(spacing: 8) {
+                    Text(loc("night.morning", num(day)))
+                    LineGlyph(kind: .sun, size: 20, weight: 2.4)
+                }
                     .frame(maxWidth: .infinity, minHeight: 54)
                     .background(alignment: .topLeading) {
                         GeometryReader { g in
