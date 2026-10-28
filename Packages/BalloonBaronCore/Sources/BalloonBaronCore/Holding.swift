@@ -27,6 +27,10 @@ public struct Holding: Codable, Equatable, Sendable {
     public static let tvCost = 250000, tvDays = 14, tvCooldown = 30
     public static let celebrityCost = 600000, celebrityDays = 90, celebrityCount = 6
     public static let billboardCost = 120000, billboardDays = 20
+    /// v122.7 (`JERSEY`, `WGAMES`): the league champion's jersey (no team named, the game is played worldwide), and the
+    /// balloon show at the World Games' opening ceremony, once.
+    public static let jerseyCost = 3_000_000, jerseyDays = 180, jerseyBoost = 1.15, jerseyRep = 0.1
+    public static let worldGamesCost = 10_000_000, worldGamesDays = 60, worldGamesBoost = 1.3, worldGamesRep = 0.2
     public static let researchLevels = [ResearchLevel(cost: 400000, life: 160), ResearchLevel(cost: 900000, life: 200)]
     /// What you leave in a region's cash box when you take "all".
     public static let withdrawKeep = 10000
@@ -53,6 +57,10 @@ public struct Holding: Codable, Equatable, Sendable {
     public var recordBoost: Double?
     /// A brand's shaped balloon flying over a region for money.
     public var adShape: AdContract?
+    // Added in v122.7.
+    /// The jersey deal runs until this day; the World Games show was held, and its effect lasts until this day.
+    public var jerseyUntil: Int?
+    public var worldGamesUntil: Int?
 
     public func has(_ o: Office) -> Bool { offices[o] != nil }
     public var expenseRate: Double { offices.count == Office.allCases.count ? Self.allOfficesExpenseRate : Self.expenseRate }
@@ -79,6 +87,7 @@ extension Game {
     public func holdingBoost(_ r: RegionID) -> Double {
         let h = state.holding, d = state.day
         return (1 + (h.recordBoost ?? 0)) * (h.tvUntil > d ? 1.2 : 1) * ((h.celebrity?.until ?? 0) > d ? 1.1 : 1) * ((h.billboards[r] ?? 0) > d ? 1.1 : 1)
+            * ((h.jerseyUntil ?? 0) > d ? Holding.jerseyBoost : 1) * ((h.worldGamesUntil ?? 0) > d ? Holding.worldGamesBoost : 1)
     }
 
     /// Takes money out of the region you're playing into the holding, converted to euros.
@@ -131,6 +140,26 @@ extension Game {
         state.rep = min(1.4, state.rep + 0.15)
         state.hezQueue.append(.celebritySigned(c.index))
         celebrate(.celebrity)
+        return true
+    }
+
+    /// v122.7: sponsor the league champion's jersey.
+    @discardableResult
+    public mutating func sponsorJersey() -> Bool {
+        guard (state.holding.jerseyUntil ?? 0) <= state.day, spendHolding(Holding.jerseyCost) else { return false }
+        state.holding.jerseyUntil = state.day + Holding.jerseyDays
+        state.rep = min(1.4, state.rep + Holding.jerseyRep)
+        celebrate(.jersey)
+        return true
+    }
+
+    /// v122.7: the balloon show at the World Games' opening ceremony, once.
+    @discardableResult
+    public mutating func holdWorldGamesShow() -> Bool {
+        guard state.holding.worldGamesUntil == nil, spendHolding(Holding.worldGamesCost) else { return false }
+        state.holding.worldGamesUntil = state.day + Holding.worldGamesDays
+        state.rep = min(1.4, state.rep + Holding.worldGamesRep)
+        celebrate(.worldGames)
         return true
     }
 

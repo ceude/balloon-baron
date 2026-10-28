@@ -30915,6 +30915,47 @@
         }
       }
     },
+    "hez.deed.jersey": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Name steht auf dem Trikot des Meisters, Lehrling! Millionen sehen ihn bei jedem Spiel; die Touristen gehen vom Stadion direkt in den Korb."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your name is on the champion's jersey, kid! Millions will see it every match; tourists will walk out of the stadium and into a basket."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Tu nombre está en la camiseta del campeón, aprendiz! Millones lo verán en cada partido; los turistas saldrán del estadio y subirán a un globo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "王者のユニフォームにお前の名があるぞ、弟子よ！毎試合何百万人もが見る。観光客はスタジアムを出てそのまま気球に乗るだろう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "챔피언 유니폼에 자네 이름이 있네, 제자여! 매 경기 수백만 명이 볼 걸세. 관광객들이 경기장에서 나와 곧장 바스켓에 오를 거야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şampiyonun formasında adın var evlat! Her maçta milyonlar görecek; turistler stadyumdan çıkıp balona binecek."
+          }
+        }
+      }
+    },
     "hez.deed.record": {
       "extractionState": "manual",
       "localizations": {
@@ -31075,6 +31116,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin."
+          }
+        }
+      }
+    },
+    "hez.deed.worldGames": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die ganze Welt hat deine Ballone gesehen, Lehrling! Du hast mit einem einzigen Korb angefangen; jetzt gehört dir der Himmel der Eröffnungsfeier."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The whole world watched your balloons, kid! You started with a single basket; now the opening ceremony's sky is yours."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡El mundo entero vio tus globos, aprendiz! Empezaste con una sola cesta; ahora el cielo de la ceremonia inaugural es tuyo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界中がお前の気球を見たぞ、弟子よ！たった一つのカゴから始めたお前が、今や開会式の空の主だ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "온 세계가 자네 열기구를 봤네, 제자여! 바스켓 하나로 시작했는데, 이제 개막식의 하늘이 자네 것이야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bütün dünya senin balonlarını izledi evlat! Bir zamanlar tek sepetle başlamıştın, şimdi açılış töreninin göğü senin."
           }
         }
       }
@@ -35999,6 +36081,252 @@
         }
       }
     },
+    "holding.jersey.active": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf dem Trikot · Resttage: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On the jersey · days left: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la camiseta · días restantes: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユニフォームに掲載・残り日数：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "유니폼에 표시 · 남은 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formada adın · kalan gün: %@"
+          }
+        }
+      }
+    },
+    "holding.jersey.cta": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patrocinar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "スポンサーになる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "스폰서 되기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sponsor ol"
+          }
+        }
+      }
+    },
+    "holding.jersey.desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der letzte Meister der Liga sucht einen Trikotsponsor. Dein Name in jedem Spiel, in jedem Bericht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The league's last champion is looking for a jersey sponsor. Your name in every match, in every story."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El último campeón de la liga busca patrocinador de camiseta. Tu nombre en cada partido, en cada noticia."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リーグ最新の王者がユニフォームスポンサーを探している。全試合、全ニュースにお前の名が出る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "리그의 지난 챔피언이 유니폼 스폰서를 찾고 있습니다. 모든 경기, 모든 뉴스에 당신의 이름이 나옵니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ligin son şampiyonu forma sponsoru arıyor. Her maçta, her haberde adın."
+          }
+        }
+      }
+    },
+    "holding.jersey.descActive": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf dem Trikot des Meisters steht %@; Millionen sehen es bei jedem Spiel."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The champion's jersey reads %@; millions see it every match."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La camiseta del campeón lleva el nombre %@; millones la ven en cada partido."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "王者のユニフォームには%@の文字。毎試合、何百万人もが目にする。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "챔피언 유니폼에 %@ 이름이 새겨져 있습니다. 매 경기 수백만 명이 봅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şampiyonun formasında %@ yazıyor; her maçta milyonlar görüyor."
+          }
+        }
+      }
+    },
+    "holding.jersey.kicker": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trikotsponsoring"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jersey sponsorship"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patrocinio de camiseta"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユニフォームスポンサー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "유니폼 스폰서"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forma sponsorluğu"
+          }
+        }
+      }
+    },
+    "holding.jersey.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Name auf dem Trikot des Meisters"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your name on the champion's jersey"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu nombre en la camiseta del campeón"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "王者のユニフォームにお前の名を"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "챔피언 유니폼에 당신의 이름"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şampiyonun formasında adın"
+          }
+        }
+      }
+    },
     "holding.lab.cta": {
       "extractionState": "manual",
       "localizations": {
@@ -37758,6 +38086,334 @@
           "stringUnit": {
             "state": "translated",
             "value": "TV reklam kampanyası"
+          }
+        }
+      }
+    },
+    "holding.wg.active": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wirkung der Feier · Resttage: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ceremony effect · days left: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Efecto de la ceremonia · días restantes: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開会式の効果・残り日数：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "개막식 효과 · 남은 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tören etkisi · kalan gün: %@"
+          }
+        }
+      }
+    },
+    "holding.wg.cta": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show übernehmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take on the show"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asumir el espectáculo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショーを引き受ける"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쇼 맡기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gösteriyi üstlen"
+          }
+        }
+      }
+    },
+    "holding.wg.desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die offizielle Ballonshow der Eröffnungsfeier der Weltspiele. Hunderte Ballone über dem Stadion, weltweit live. Gibt es nur einmal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The official balloon show of the World Games opening ceremony. Hundreds of balloons over the stadium, live around the world. It happens once."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El espectáculo oficial de globos de la ceremonia inaugural de los Juegos Mundiales. Cientos de globos sobre el estadio, en directo para todo el mundo. Solo se hace una vez."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界競技大会開会式の公式バルーンショー。スタジアムの上に何百もの気球、世界中に生中継。一度きりだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 대회 개막식의 공식 열기구 쇼. 경기장 위의 수백 대의 열기구, 전 세계 생중계. 단 한 번뿐입니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır."
+          }
+        }
+      }
+    },
+    "holding.wg.descActive": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Ballone schwebten bei der Eröffnungsfeier über dem Stadion; die ganze Welt sah zu."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your balloons floated over the stadium at the opening ceremony; the whole world watched."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus globos flotaron sobre el estadio en la ceremonia inaugural; el mundo entero lo vio."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開会式でお前の気球がスタジアムの上を舞い、世界中が見た。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "개막식에서 당신의 열기구가 경기장 위를 날았고, 온 세계가 지켜봤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi."
+          }
+        }
+      }
+    },
+    "holding.wg.descDone": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du hast die Show zur Eröffnungsfeier gemacht; die Welt spricht noch davon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You put on the opening ceremony's show; the world is still talking about it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hiciste el espectáculo de la ceremonia inaugural; el mundo aún habla de ello."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開会式のショーを成功させた。世界はまだその話をしている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "개막식 쇼를 해냈습니다. 세계는 아직도 그 이야기를 합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açılış töreni gösterini yaptın; dünya hâlâ konuşuyor."
+          }
+        }
+      }
+    },
+    "holding.wg.held": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erledigt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Done"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hecho"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "実施済み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "완료"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yapıldı"
+          }
+        }
+      }
+    },
+    "holding.wg.kicker": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weltbühne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "World stage"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escenario mundial"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界の舞台"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 무대"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya sahnesi"
+          }
+        }
+      }
+    },
+    "holding.wg.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ballonshow zur Eröffnung der Weltspiele"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon show at the World Games opening"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espectáculo de globos en la inauguración de los Juegos Mundiales"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界競技大会開会式のバルーンショー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 대회 개막식 열기구 쇼"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Oyunları açılışında balon gösterisi"
           }
         }
       }
@@ -43133,6 +43789,47 @@
         }
       }
     },
+    "hq.dealsTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deals"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deals"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acuerdos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "契約"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계약"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anlaşmalar"
+          }
+        }
+      }
+    },
     "hq.face": {
       "extractionState": "manual",
       "localizations": {
@@ -43543,6 +44240,47 @@
         }
       }
     },
+    "hq.s.jersey": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Trikot des Meisters"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The champion's jersey"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Camiseta del campeón"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "王者のユニフォーム"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "챔피언 유니폼"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şampiyonun forması"
+          }
+        }
+      }
+    },
     "hq.s.level": {
       "extractionState": "manual",
       "localizations": {
@@ -43662,6 +44400,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kampanya yok"
+          }
+        }
+      }
+    },
+    "hq.s.noDeal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Deal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No deal"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin acuerdo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "契約なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계약 없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anlaşma yok"
           }
         }
       }
@@ -43990,6 +44769,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "TV yayında, %@ gün"
+          }
+        }
+      }
+    },
+    "hq.s.worldGames": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show bei den Weltspielen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "World Games show"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espectáculo de los Juegos Mundiales"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界競技大会のショー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 대회 쇼"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Oyunları gösterisi"
           }
         }
       }
@@ -56376,6 +57196,88 @@
         }
       }
     },
+    "paper.deed.jersey": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neuer Name auf dem Trikot des Meisters: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A new name on the champion's jersey: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuevo nombre en la camiseta del campeón: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "王者のユニフォームに新しい名：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "챔피언 유니폼에 새 이름: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şampiyonun formasında yeni ad: %@"
+          }
+        }
+      }
+    },
+    "paper.deed.jersey.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der letzte Meister der Liga startet mit einem neuen Namen in die Saison."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The league's last champion starts the new season with a new name."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El último campeón de la liga empieza la temporada con un nombre nuevo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リーグ最新の王者が新しい名で新シーズンへ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "리그의 지난 챔피언이 새 이름으로 새 시즌을 시작합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ligin son şampiyonu yeni sezona yeni bir adla çıkıyor."
+          }
+        }
+      }
+    },
     "paper.deed.office": {
       "extractionState": "manual",
       "localizations": {
@@ -56782,6 +57684,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Holdingin TV kampanyası bütün bölgelere turist getiriyor."
+          }
+        }
+      }
+    },
+    "paper.deed.worldGames": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@-Ballone bei der Eröffnung der Weltspiele"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ balloons at the World Games opening"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Globos de %@ en la inauguración de los Juegos Mundiales"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界競技大会の開会式に%@の気球"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 대회 개막식에 %@ 열기구"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Oyunları açılışında %@ balonları"
+          }
+        }
+      }
+    },
+    "paper.deed.worldGames.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hunderte Ballone schwebten über dem Stadion; die Feier lief weltweit live."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hundreds of balloons floated over the stadium; the ceremony went out live all over the world."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cientos de globos flotaron sobre el estadio; la ceremonia se emitió en directo en todo el mundo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "何百もの気球がスタジアムの上を舞い、式典は世界中に生中継された。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "수백 대의 열기구가 경기장 위를 날았고, 개막식은 전 세계에 생중계되었습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stadyumun üstünde yüzlerce balon süzüldü; tören dünyanın her yerinde canlı yayınlandı."
           }
         }
       }

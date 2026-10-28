@@ -25,6 +25,8 @@ public struct RecordRun: Codable, Equatable, Sendable {
 /// A holding investment worth a word from the guide and a story in the paper. Text: `hez.deed.<rawValue>`, `paper.deed.<rawValue>`.
 public enum HoldingDeed: String, Codable, Sendable {
     case tv, billboards, celebrity, research, office, record, shape
+    /// v122.7: the champion's jersey, the World Games' opening show.
+    case jersey, worldGames
 }
 
 public enum AdShape: String, Codable, CaseIterable, Sendable {

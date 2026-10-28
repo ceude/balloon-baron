@@ -127,7 +127,9 @@ struct HoldingOfficeView: View {
             return (tv ? loc("hq.s.tv", num(h.tvUntil - d)) : bb ? loc("hq.s.billboards") : loc("hq.s.noCampaign"), tv || bb, false)
         case .deals:
             let c = (h.celebrity?.until ?? 0) > d ? h.celebrity : nil
-            return (c.map { celebrityName($0.index) } ?? loc("hq.s.noFace"), c != nil, false)
+            if (h.worldGamesUntil ?? 0) > d { return (loc("hq.s.worldGames"), true, false) }
+            if (h.jerseyUntil ?? 0) > d { return (loc("hq.s.jersey"), true, false) }
+            return (c.map { celebrityName($0.index) } ?? loc("hq.s.noDeal"), c != nil, false)
         case .research:
             let top = h.research >= Holding.researchLevels.count
             return (top ? loc("hq.s.done") : loc("hq.s.level", num(h.research)), top, false)

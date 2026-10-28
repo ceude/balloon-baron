@@ -51,8 +51,10 @@ struct HoldingView: View {
             billboardCard(s)
         }
         if unit == .deals {
-            sectionTitle(loc("hq.face"))
+            sectionTitle(loc("hq.dealsTitle"))
             celebrityCard(s)
+            jerseyCard(s)
+            worldGamesCard(s)
         }
         if unit == .research {
             sectionTitle(loc("hq.lab"))
@@ -294,6 +296,32 @@ struct HoldingView: View {
                                detail: detail, chips: chips, price: h.celebrityCost, cta: loc("holding.celeb.cta"),
                                enabled: h.cash >= h.celebrityCost, active: active,
                                action: { store.act { g in _ = g.signCelebrity() } })
+    }
+
+    /// v122.7: the league champion's jersey.
+    private func jerseyCard(_ s: GameState) -> some View {
+        let h = s.holding, d = s.day, on = (h.jerseyUntil ?? 0) > d
+        let chips = [loc("holding.chip.allDemand", percent(Holding.jerseyBoost - 1)), loc("holding.chip.days", num(Holding.jerseyDays)),
+                     loc("holding.chip.stars", s.region.title, starsValue(Holding.jerseyRep * 4))]
+        return HoldingDealCard(art: .jersey, kicker: loc("holding.jersey.kicker"), title: loc("holding.jersey.title"),
+                               detail: loc(on ? "holding.jersey.descActive" : "holding.jersey.desc", s.company), chips: chips,
+                               price: Holding.jerseyCost, cta: loc("holding.jersey.cta"),
+                               enabled: h.cash >= Holding.jerseyCost,
+                               active: on ? loc("holding.jersey.active", num((h.jerseyUntil ?? d) - d)) : nil,
+                               action: { store.act { g in _ = g.sponsorJersey() } })
+    }
+
+    /// v122.7: the World Games' opening show, once.
+    private func worldGamesCard(_ s: GameState) -> some View {
+        let h = s.holding, d = s.day, held = h.worldGamesUntil != nil, on = (h.worldGamesUntil ?? 0) > d
+        let chips = [loc("holding.chip.allDemand", percent(Holding.worldGamesBoost - 1)), loc("holding.chip.days", num(Holding.worldGamesDays)),
+                     loc("holding.chip.stars", s.region.title, starsValue(Holding.worldGamesRep * 4))]
+        return HoldingDealCard(art: .worldGames, kicker: loc("holding.wg.kicker"), title: loc("holding.wg.title"),
+                               detail: loc(!held ? "holding.wg.desc" : on ? "holding.wg.descActive" : "holding.wg.descDone"), chips: chips,
+                               price: Holding.worldGamesCost, cta: loc("holding.wg.cta"),
+                               enabled: !held && h.cash >= Holding.worldGamesCost,
+                               active: on ? loc("holding.wg.active", num((h.worldGamesUntil ?? d) - d)) : held ? loc("holding.wg.held") : nil,
+                               action: { store.act { g in _ = g.holdWorldGamesShow() } })
     }
 
     private func billboardCard(_ s: GameState) -> some View {
@@ -827,7 +855,7 @@ struct HoldingChipFlow: Layout {
 
 /// Code-drawn art for the deal cards (64×64 artboard, after the prototype's SVGs).
 struct HoldingArt: View {
-    enum Kind { case tv, star, billboard, lab, record, shape(AdShape) }
+    enum Kind { case tv, star, billboard, lab, record, jersey, worldGames, shape(AdShape) }
     let kind: Kind
 
     var body: some View {
@@ -839,6 +867,8 @@ struct HoldingArt: View {
             case .billboard: drawBillboard(&ctx, k)
             case .lab: drawLab(&ctx, k)
             case .record: drawRecord(&ctx, k)
+            case .jersey: drawJersey(&ctx, k)
+            case .worldGames: drawWorldGames(&ctx, k)
             case .shape(let s): AdShapeArt.draw(&ctx, s, center: CGPoint(x: 32 * k, y: 32 * k), size: 56 * k)
             }
         }
@@ -849,6 +879,26 @@ struct HoldingArt: View {
     private static let teal = Color(hex: "#3ad0c0")
 
     private func pt(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat) -> CGPoint { CGPoint(x: x * k, y: y * k) }
+
+    private func svg(_ d: String, _ k: CGFloat) -> Path { HezarfenAvatar.svgPath(d).applying(CGAffineTransform(scaleX: k, y: k)) }
+
+    /// v122.7: a red jersey with a gold collar and a white sponsor band (`INVEST_ART.jersey`).
+    private func drawJersey(_ ctx: inout GraphicsContext, _ k: CGFloat) {
+        ctx.fill(svg("M22 10 L14 14 L6 24 L14 30 L18 26 L18 56 L46 56 L46 26 L50 30 L58 24 L50 14 L42 10 C40 15 36 17 32 17 C28 17 24 15 22 10 Z", k), with: .color(Color(hex: "#e5432f")))
+        ctx.stroke(svg("M22 10 C24 15 28 17 32 17 C36 17 40 15 42 10", k), with: .color(Self.gold), lineWidth: 2.5 * k)
+        ctx.fill(Path(roundedRect: rect(22, 30, 20, 9, k), cornerRadius: 2 * k), with: .color(.white))
+        ctx.stroke(line([(26, 34.5), (38, 34.5)], k), with: .color(Color(hex: "#2b2350")), style: StrokeStyle(lineWidth: 2.4 * k, lineCap: .round))
+    }
+
+    /// v122.7: a stadium under three balloons and a star (`INVEST_ART.wg`).
+    private func drawWorldGames(_ ctx: inout GraphicsContext, _ k: CGFloat) {
+        ctx.fill(svg("M4 50 C14 40 50 40 60 50 L60 58 L4 58 Z", k), with: .color(Color(hex: "#5a4a8a")))
+        ctx.stroke(svg("M10 50 C20 44 44 44 54 50", k), with: .color(Self.gold), style: StrokeStyle(lineWidth: 2 * k, dash: [3 * k, 3 * k]))
+        ctx.fill(svg("M14 30 C10 24 12 16 18 16 C24 16 26 24 22 30 L20 33 L16 33 Z", k), with: .color(Color(hex: "#ff5e3a")))
+        ctx.fill(svg("M30 24 C26 18 28 9 34 9 C40 9 42 18 38 24 L36 27 L32 27 Z", k), with: .color(Self.gold))
+        ctx.fill(svg("M46 30 C42 24 44 16 50 16 C56 16 58 24 54 30 L52 33 L48 33 Z", k), with: .color(Self.teal))
+        ctx.fill(svg("M8 8 L10 12 L14 13 L11 16 L12 20 L8 18 L4 20 L5 16 L2 13 L6 12 Z", k), with: .color(Color(hex: "#fff3c4")))
+    }
 
     /// A record balloon with a pressurised capsule and a climbing red line (`INVEST_ART.rec`).
     private func drawRecord(_ ctx: inout GraphicsContext, _ k: CGFloat) {
