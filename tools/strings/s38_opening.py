@@ -15,8 +15,8 @@ add("opening.hez", "This basket was your grandfather Hasan's, kid. It was one of
     "Dieser Korb gehörte deinem Großvater Hasan, Lehrling. Er war einer der allerersten Ballone Kappadokiens. Der Stoff ist bereit, der Korb ist bereit. Es fehlt nur noch ein Name.",
     "Esta cesta era de tu abuelo Hasan, aprendiz. Fue uno de los primeros globos de Capadocia. La tela está lista, la cesta está lista. Solo le falta un nombre.",
     "このバスケットはお前のじいさん、ハサンのものだった。カッパドキアで最初の気球のひとつだ。布も、バスケットも用意はできている。足りないのは名前だけだ。",
-    "이 바구니는 네 할아버지 하산의 것이었네. 카파도키아 최초의 열기구 중 하나였지. 천도 준비됐고, 바구니도 준비됐네. 이제 이름만 있으면 되네.")
-add("opening.name", "Let's name it", "Adını koyalım", "Geben wir ihm einen Namen", "Pongámosle un nombre", "名前をつけよう", "이름을 지어 주자")
+    "이 바스켓은 자네 할아버지 하산의 것이었네, 제자여. 카파도키아 최초의 열기구 중 하나였지. 천도 준비됐고, 바스켓도 준비됐네. 이제 이름만 있으면 되네.")
+add("opening.name", "Let's name it", "Adını koyalım", "Geben wir ihm einen Namen", "Pongámosle un nombre", "名前をつけよう", "이름을 지어 볼까요")
 
 # The skip button over the film
 add("opening.skip", "Skip ›", "Geç ›", "Überspringen ›", "Saltar ›", "スキップ ›", "건너뛰기 ›")

@@ -4,7 +4,7 @@ add("event.cancelled",
  "You cancelled the %1$@ flight. %2$@ passengers got their money back plus %3$@ each in compensation.",
  "%1$@ uçuşunu iptal ettin. %2$@ yolcunun bilet parası iade edildi ve kişi başı %3$@ tazminat ödendi.",
  "Du hast den Flug mit %1$@ abgesagt. %2$@ Passagiere bekamen ihr Geld zurück und je %3$@ Entschädigung.",
- "Cancelaste el vuelo del %1$@. %2$@ pasajeros recuperaron su dinero y recibieron %3$@ cada uno de indemnización.",
+ "Cancelaste el vuelo de %1$@. %2$@ pasajeros recuperaron su dinero y recibieron %3$@ cada uno de indemnización.",
  "%1$@のフライトを中止した。乗客%2$@人に払い戻しと、一人%3$@の補償を支払った。",
  "%1$@ 비행을 취소했습니다. 승객 %2$@명에게 환불하고 1인당 %3$@의 보상금을 지급했습니다.")
 add("event.missionDone",
@@ -136,7 +136,7 @@ add("event.newEntrant", "New rival: %1$@ has started flying in %2$@!", "Yeni rak
 add("event.rivalAccidents", "%1$@ had accidents. Balloons damaged: %2$@.", "%1$@ kaza yaptı. Hasarlı balon: %2$@.", "%1$@ hatte Unfälle. Beschädigte Ballone: %2$@.", "%1$@ tuvo accidentes. Globos dañados: %2$@.", "%1$@で事故。損傷した気球：%2$@機。", "%1$@ 사고 발생. 파손된 열기구: %2$@대.")
 add("event.rivalRedFined", "%1$@ flew on a red flag and got a %2$@ fine.", "%1$@ kırmızı bayrakta uçtu ve %2$@ ceza yedi.", "%1$@ flog bei roter Flagge und bekam %2$@ Strafe.", "%1$@ voló con bandera roja y recibió una multa de %2$@.", "%1$@が赤い旗の日に飛び、%2$@の罰金。", "%1$@ 측이 빨간 깃발에 비행했다가 벌금 %2$@ 처분을 받았습니다.")
 add("event.rivalRedSneaked", "%@ secretly flew on a red flag.", "%@ kırmızı bayrakta gizlice uçtu.", "%@ ist heimlich bei roter Flagge geflogen.", "%@ voló a escondidas con bandera roja.", "%@がこっそり赤い旗の日に飛んだ。", "%@ 측이 빨간 깃발에 몰래 비행했습니다.")
-add("event.poachAttempt", "%1$@ offered your pilot %2$@ a job!", "%1$@ pilotunu ayartmaya çalışıyor: %2$@ iş teklifi aldı!", "%1$@ hat deinem Piloten %2$@ einen Job angeboten!", "¡%1$@ ofreció trabajo a tu piloto %2$@!", "%1$@があなたのパイロット%2$@を引き抜こうとしている！", "%1$@ 측이 내 조종사 %2$@에게 일자리를 제안했습니다!")
+add("event.poachAttempt", "%1$@ offered your pilot %2$@ a job!", "%1$@ senin pilotunu ayartmaya çalışıyor: %2$@ iş teklifi aldı!", "%1$@ hat deinem Piloten %2$@ einen Job angeboten!", "¡%1$@ ofreció trabajo a tu piloto %2$@!", "%1$@があなたのパイロット%2$@を引き抜こうとしている！", "%1$@ 측이 내 조종사 %2$@에게 일자리를 제안했습니다!")
 add("event.rivalHotelDeal", "%1$@ signed with %2$@. The hotel won't work with anyone else for 12 days.", "%1$@, %2$@ ile anlaştı. Otel 12 gün boyunca başka şirketle çalışmayacak.", "%1$@ hat einen Vertrag mit %2$@ geschlossen. Das Hotel arbeitet 12 Tage lang mit niemand anderem zusammen.", "%1$@ firmó con %2$@. El hotel no trabajará con nadie más durante 12 días.", "%1$@が%2$@と契約。ホテルは12日間ほかの会社と組まない。", "%1$@ 측이 %2$@ 측과 제휴했습니다. 이 호텔은 12일간 다른 회사와 일하지 않습니다.")
 add("event.rivalStoleHotel", "%2$@ took a better offer from %1$@ and ended its deal with you!", "%2$@, %1$@ şirketinden gelen daha iyi teklifi kabul edip seninle anlaşmasını bitirdi!", "%2$@ hat ein besseres Angebot von %1$@ angenommen und deinen Vertrag beendet!", "¡%2$@ aceptó una oferta mejor de %1$@ y terminó su acuerdo contigo!", "%2$@が%1$@のより良い条件を受け入れ、あなたとの契約を打ち切った！", "%2$@ 측이 %1$@의 더 좋은 제안을 받아들여 나와의 제휴를 끝냈습니다!")
 add("event.rivalCampaign", "%@ launched an influencer campaign; their popularity went up.", "%@ influencer kampanyası başlattı, popülerliği arttı.", "%@ startete eine Influencer-Kampagne, ihre Beliebtheit stieg.", "%@ lanzó una campaña con influencers y su popularidad subió.", "%@がインフルエンサーキャンペーンを開始。人気が上昇。", "%@ 측이 인플루언서 캠페인을 벌여 인기가 올랐습니다.")

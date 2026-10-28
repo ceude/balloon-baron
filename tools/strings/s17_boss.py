@@ -54,7 +54,7 @@ add("boss.cap.poach",
 add("boss.cap.accident",
  "I heard about the hard landing. Tourists don't forget. I fly balloons; you... do whatever it is you do.",
  "Sert iniş haberini duydum. Turistler unutmaz. Balonları ben uçururum, sen de... ne yapıyorsan onu yap.",
- "Ich habe von der harten Landung gehört. Touristen vergessen nicht. Ich fliege Ballone; du … mach eben, was du machst.",
+ "Ich habe von der harten Landung gehört. Touristen vergessen nicht. Ich fliege Ballone; du … machst eben, was auch immer du machst.",
  "Me enteré del aterrizaje brusco. Los turistas no olvidan. Yo vuelo globos; tú... a saber qué haces.",
  "ハードランディングの話は聞いた。観光客は忘れんぞ。気球を飛ばすのは俺だ。お前は……まあ好きにやれ。",
  "경착륙 소식 들었소. 관광객은 잊지 않소. 나는 열기구를 띄우고, 당신은... 뭘 하는 건지 모르겠구려.")

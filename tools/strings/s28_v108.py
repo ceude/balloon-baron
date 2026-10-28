@@ -11,16 +11,16 @@ add("home.alert.issueHere.raise", "Your pilots are waiting outside the office. T
 add("issue.raise.a.live", "Pilot wages go up 15%.", "Pilot maaşları %15 artar.", "Die Pilotengehälter steigen um 15 %.", "Los sueldos de los pilotos suben un 15 %.",
     "パイロットの給料が15%上がる。", "조종사 급여가 15% 오릅니다.")
 add("issue.raise.b.live", "Your pilots stay off for three days; only you fly, in the flagship.", "Pilotlar üç gün uçmaz, sadece amiral balonunu sen uçurursun.",
-    "Deine Piloten bleiben drei Tage weg, nur du fliegst, im Flaggschiff.", "Tus pilotos no vuelan durante tres días; solo vuelas tú, en el globo insignia.",
+    "Deine Piloten bleiben drei Tage weg; nur du fliegst, mit dem Flaggschiff.", "Tus pilotos no vuelan durante tres días; solo vuelas tú, en el globo insignia.",
     "パイロットは3日間飛ばない。飛ぶのは旗艦のあなただけ。", "조종사들이 사흘간 비행하지 않고, 기함은 당신만 띄웁니다.")
 add("issue.war.a.live", "Your ticket price drops to your cheapest rival's.", "Bilet fiyatın en ucuz rakibinkine iner.",
     "Dein Ticketpreis sinkt auf den des günstigsten Konkurrenten.", "El precio de tu billete baja al de tu rival más barato.",
     "チケット価格が最も安いライバルと同じになる。", "티켓 가격이 가장 싼 경쟁사 수준으로 내려갑니다.")
 add("issue.war.b.live", "Fifty-fifty: nothing happens, or your popularity drops.", "Yarı yarıya: ya bir şey olmaz ya da popülerliğin düşer.",
-    "Fifty-fifty: Entweder passiert nichts, oder deine Beliebtheit sinkt.", "Mitad y mitad: o no pasa nada o baja tu popularidad.",
+    "Fifty-fifty: Entweder passiert nichts, oder deine Beliebtheit sinkt.", "Cara o cruz: o no pasa nada o baja tu popularidad.",
     "五分五分：何も起きないか、人気が下がるか。", "반반입니다: 아무 일도 없거나 인기가 떨어집니다.")
 add("issue.accident.a.live", "Popularity drops a little, but the story is over.", "Popülerlik biraz düşer ama konu kapanır.",
-    "Die Beliebtheit sinkt etwas, aber die Geschichte ist vorbei.", "La popularidad baja un poco, pero la historia se cierra.",
+    "Die Beliebtheit sinkt etwas, aber die Geschichte ist vorbei.", "La popularidad baja un poco, pero el asunto queda zanjado.",
     "人気は少し下がるが、話はそこで終わる。", "인기가 조금 떨어지지만 사건은 일단락됩니다.")
 add("issue.accident.b.live", "The press keeps at it; popularity drops more.", "Basın üstüne gider, popülerlik daha çok düşer.",
     "Die Presse bleibt dran, die Beliebtheit sinkt stärker.", "La prensa insiste y la popularidad baja más.",
@@ -48,7 +48,7 @@ RR = {
               "ハコヤナギに激突！全員無事だけど、ありえない。", "미루나무에 부딪혔어요! 다들 괜찮지만 이건 용납할 수 없어요."),
   "cheap.1": ("I paid {p}. Maybe the best price in Albuquerque.", "{p} ödedim, Albuquerque'nin en iyi fiyatı bu olabilir.",
               "Ich habe {p} bezahlt. Vielleicht der beste Preis in Albuquerque.", "Pagué {p}. Quizás el mejor precio de Albuquerque.",
-              "{p}払った。アルバカーキでいちばん安いかも。", "{p} 냈어요. 앨버커키 최저가일지도."),
+              "{p}払った。アルバカーキでいちばん安いかも。", "{p} 냈어요. 앨버커키 최저가일지도요."),
   "general.0": ("You can't come to Albuquerque and skip the balloon. This team is very professional.", "Albuquerque'ye gelip balona binmemek olmaz. Bu ekip çok profesyonel.",
                 "Man kann nicht nach Albuquerque kommen und keinen Ballon fahren. Sehr professionelles Team.", "No puedes venir a Albuquerque y no subir en globo. Este equipo es muy profesional.",
                 "アルバカーキに来て気球に乗らないなんてありえない。このチームはとてもプロフェッショナル。", "앨버커키에 와서 열기구를 안 탈 순 없죠. 정말 프로페셔널한 팀이에요."),
@@ -63,7 +63,7 @@ RR = {
                "川の上の低空飛行は最高。すぐ横からサギが飛び立った。", "강 위 저공비행은 정말 대단했어요. 바로 옆에서 왜가리가 날아올랐죠."),
   "xl.2": ("We saw the Fiesta Star from afar and booked. No regrets.", "Fiesta Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.",
            "Wir sahen den Fiesta-Stern von Weitem und buchten. Keine Reue.", "Vimos la Estrella de la Fiesta de lejos y reservamos. No nos arrepentimos.",
-           "遠くからフィエスタ・スターを見て予約した。後悔なし。", "멀리서 피에스타 스타를 보고 예약했어요. 후회 없어요."),
+           "遠くからフィエスタの星を見て予約した。後悔なし。", "멀리서 피에스타의 별를 보고 예약했어요. 후회 없어요."),
  },
  "lux": {
   "perfect.1": ("Sunrise over the Valley of the Kings and a flawless landing. The morning of my life.", "Krallar Vadisi'nde gün doğumu ve kusursuz bir iniş. Hayatımın en güzel sabahıydı.",
@@ -74,7 +74,7 @@ RR = {
               "ナツメヤシに激突！全員無事だけど、ありえない。", "대추야자나무에 부딪혔어요! 다들 괜찮지만 이건 용납할 수 없어요."),
   "cheap.1": ("I paid {p}. Maybe the best price in Luxor.", "{p} ödedim, Luksor'un en iyi fiyatı bu olabilir.",
               "Ich habe {p} bezahlt. Vielleicht der beste Preis in Luxor.", "Pagué {p}. Quizás el mejor precio de Luxor.",
-              "{p}払った。ルクソールでいちばん安いかも。", "{p} 냈어요. 룩소르 최저가일지도."),
+              "{p}払った。ルクソールでいちばん安いかも。", "{p} 냈어요. 룩소르 최저가일지도요."),
   "general.0": ("You can't come to Luxor and skip the balloon. This team is very professional.", "Luksor'a gelip balona binmemek olmaz. Bu ekip çok profesyonel.",
                 "Man kann nicht nach Luxor kommen und keinen Ballon fahren. Sehr professionelles Team.", "No puedes venir a Luxor y no subir en globo. Este equipo es muy profesional.",
                 "ルクソールに来て気球に乗らないなんてありえない。このチームはとてもプロフェッショナル。", "룩소르에 와서 열기구를 안 탈 순 없죠. 정말 프로페셔널한 팀이에요."),
@@ -89,7 +89,7 @@ RR = {
                "ナイルの上の低空飛行は最高。漁師たちが手を振ってくれた。", "나일강 위 저공비행은 정말 대단했어요. 어부들이 손을 흔들어 줬죠."),
   "xl.2": ("We saw the Theban Star from afar and booked. No regrets.", "Teb Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.",
            "Wir sahen den Theben-Stern von Weitem und buchten. Keine Reue.", "Vimos la Estrella de Tebas de lejos y reservamos. No nos arrepentimos.",
-           "遠くからテーベ・スターを見て予約した。後悔なし。", "멀리서 테베 스타를 보고 예약했어요. 후회 없어요."),
+           "遠くからテーベの星を見て予約した。後悔なし。", "멀리서 테베의 별를 보고 예약했어요. 후회 없어요."),
  },
 }
 for r, items in RR.items():
@@ -98,12 +98,12 @@ for r, items in RR.items():
 
 # Shaped-balloon deals: how the price adds up, and breaking a deal
 add("holding.shape.terms", "%1$@ a day × %2$@ days", "Günde %1$@ × %2$@ gün", "%1$@ pro Tag × %2$@ Tage", "%1$@ al día × %2$@ días", "1日%1$@ × %2$@日", "하루 %1$@ × %2$@일")
-add("holding.shape.break", "Break the deal · penalty %@", "Sözleşmeyi boz · ceza %@", "Vertrag brechen · Strafe %@", "Romper el contrato · multa %@",
+add("holding.shape.break", "Break the deal · penalty %@", "Sözleşmeyi boz · ceza %@", "Vertrag brechen · Strafe %@", "Romper el contrato · penalización %@",
     "契約を破棄・違約金 %@", "계약 파기 · 위약금 %@")
 add("holding.shape.breakNote", "The penalty is what the brand has paid you so far plus half of the time left. Breaking always costs you.",
     "Ceza: şimdiye kadar aldığın para ve kalan sürenin yarısı. Bozmak hep zarar ettirir.",
     "Die Strafe ist alles, was die Marke bisher gezahlt hat, plus die Hälfte der Restlaufzeit. Ein Vertragsbruch kostet dich immer.",
-    "La multa es lo que la marca te ha pagado hasta ahora más la mitad del tiempo restante. Romper siempre te cuesta.",
+    "La penalización es lo que la marca te ha pagado hasta ahora más la mitad del tiempo restante. Romper siempre te cuesta.",
     "違約金は、これまでブランドから受け取った額と残り期間の半分。破棄すれば必ず損をする。",
     "위약금은 지금까지 브랜드에게 받은 돈과 남은 기간의 절반입니다. 파기하면 언제나 손해입니다.")
 add("holding.shape.breakYes", "Break it", "Boz", "Brechen", "Romper", "破棄する", "파기")
@@ -279,7 +279,7 @@ add("buyLoan.warning", "Careful: in winter fewer tourists come, but the installm
     "주의: 겨울에는 관광객이 줄지만 할부는 계속됩니다. 새 열기구로 유지비가 하루 %1$@ 늘고, 조종사 급여는 별도입니다. 금고가 %2$@ 아래로 떨어지면 은행이 열기구를 압류합니다.")
 add("buyLoan.confirm", "Take over with the loan", "Krediyle devral", "Mit Kredit übernehmen", "Adquirir con el préstamo", "ローンで買収する", "대출로 인수")
 add("buyLoan.confirmFleet", "Buy the fleet with the loan", "Krediyle satın al", "Flotte mit Kredit kaufen", "Comprar la flota con el préstamo", "ローンでフリートを買う", "대출로 기단 구매")
-add("buyLoan.cancel", "Not now", "Vazgeç", "Lieber nicht", "Ahora no", "やめておく", "다음에")
+add("buyLoan.cancel", "Not now", "Vazgeç", "Nicht jetzt", "Ahora no", "やめておく", "다음에")
 add("buyLoan.bankTitle", "Purchase loan: up to %@", "Satın alma kredisi: en fazla %@", "Kaufkredit: bis zu %@", "Préstamo de compra: hasta %@", "買収ローン：最大%@", "인수 대출: 최대 %@")
 add("buyLoan.bankBody", "When a rival or a bankrupt fleet is up for sale, the bank pays the seller what you're short; nothing goes into your till. You put down at least %3$@ of the price. Days: %1$@, interest %2$@. One at a time, once the 100,000 loan has opened. Balloons needed: %4$@.",
     "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane; 100.000'lik kredi açıldıktan sonra. Gereken balon: %4$@.",
@@ -329,11 +329,11 @@ add("settings.night", "Night scene", "Gece sahnesi", "Nachtszene", "Escena noctu
 add("settings.collect", "Boarding animation", "Yolcu toplama animasyonu", "Einstiegsanimation", "Animación de embarque", "搭乗アニメーション", "탑승 애니메이션")
 
 # v110: skipping a flyable day asks first
-add("skip.title", "Skip today?", "Bugünü pas geç?", "Heute aussetzen?", "¿Saltar hoy?", "今日は休む？", "오늘은 쉴까요?")
+add("skip.title", "Skip today?", "Bugün pas mı geçiyorsun?", "Heute aussetzen?", "¿Saltar hoy?", "今日は休む？", "오늘은 쉴까요?")
 add("skip.lead", "The weather is fine for flying. If you skip, there's no ticket money today, but wages and upkeep are paid anyway.",
     "Hava uçuşa uygun. Pas geçersen bugün bilet geliri olmaz ama maaşlar ve bakım yine ödenir.",
-    "Das Wetter passt zum Fliegen. Setzt du aus, gibt es heute keine Ticketeinnahmen, Löhne und Wartung zahlst du trotzdem.",
+    "Das Wetter passt zum Fliegen. Setzt du aus, gibt es heute keine Ticketeinnahmen, Gehälter und Wartung zahlst du trotzdem.",
     "El tiempo es bueno para volar. Si saltas el día, hoy no habrá ingresos por billetes, pero los sueldos y el mantenimiento se pagan igual.",
-    "飛ぶのに良い天気だ。休むと今日のチケット収入はないが、給料と維持費はかかる。",
+    "飛ぶのに良い天気だ。休むと今日のチケット収入はないが、給料と整備費はかかる。",
     "비행하기 좋은 날씨입니다. 쉬면 오늘 티켓 수입은 없지만 급여와 유지비는 그대로 나갑니다.")
 add("skip.fly", "No, let's fly", "Vazgeç, uçalım", "Nein, wir fliegen", "No, vamos a volar", "いや、飛ぼう", "아니요, 비행할게요")

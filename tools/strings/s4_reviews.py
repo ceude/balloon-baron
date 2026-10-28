@@ -33,7 +33,7 @@ R = {
   ("A company that ignores the rules. The flag was red and they still took off.", "Kurallara uymayan bir şirket. Bayrak kırmızıydı, yine de kaldırdılar.", "Eine Firma, die Regeln ignoriert. Die Flagge war rot, und sie sind trotzdem gestartet.", "Una empresa que ignora las normas. La bandera era roja y aun así despegaron.", "ルールを守らない会社。旗は赤だったのに飛ばした。", "규칙을 무시하는 회사. 깃발이 빨간데도 띄웠어요."),
  ],
  "skip": [
-  ("The flight was called off because of the weather, but they refunded us right away. Safety first.", "Hava yüzünden uçuş iptal oldu ama paramızı hemen iade ettiler. Güvenlik önce gelir.", "Der Flug fiel wegen des Wetters aus, aber wir bekamen sofort unser Geld zurück. Sicherheit geht vor.", "El vuelo se canceló por el tiempo, pero nos devolvieron el dinero enseguida. La seguridad es lo primero.", "天候で中止になったが、すぐに返金してくれた。安全第一。", "날씨 때문에 취소됐지만 바로 환불해 줬어요. 안전이 우선이죠."),
+  ("The flight was called off because of the weather, but they refunded us right away. Safety first.", "Hava yüzünden uçuş iptal oldu ama paramızı hemen iade ettiler. Önce güvenlik.", "Der Flug fiel wegen des Wetters aus, aber wir bekamen sofort unser Geld zurück. Sicherheit geht vor.", "El vuelo se canceló por el tiempo, pero nos devolvieron el dinero enseguida. La seguridad es lo primero.", "天候で中止になったが、すぐに返金してくれた。安全第一。", "날씨 때문에 취소됐지만 바로 환불해 줬어요. 안전이 우선이죠."),
   ("Postponed because of the wind; they found us a spot the next day right away.", "Rüzgâr yüzünden ertelendi, ertesi güne hemen yer buldular.", "Wegen des Windes verschoben, für den nächsten Tag haben sie sofort Plätze gefunden.", "Se aplazó por el viento y nos encontraron sitio al día siguiente enseguida.", "風で延期になったが、翌日の枠をすぐ用意してくれた。", "바람 때문에 미뤄졌지만 다음 날 자리를 바로 잡아 줬어요."),
  ],
  "cheap": [
@@ -41,7 +41,7 @@ R = {
   ("I paid {p}. Maybe the best price in Cappadocia.", "{p} ödedim, Kapadokya'nın en iyi fiyatı bu olabilir.", "Ich habe {p} bezahlt. Vielleicht der beste Preis in Kappadokien.", "Pagué {p}. Quizá el mejor precio de Capadocia.", "{p}払った。カッパドキアでいちばん安いかも。", "{p} 냈어요. 카파도키아 최저가일지도요."),
  ],
  "pricey": [
-  ("It was lovely, but {p} is a bit much. Others flew cheaper next door.", "Güzeldi ama {p} biraz fazla. Yan firmada daha ucuza uçmuşlar.", "Schön war's, aber {p} ist etwas viel. Bei der Konkurrenz flogen andere billiger.", "Estuvo bonito, pero {p} es un poco caro. En la empresa de al lado volaron más barato.", "良かったけど{p}は少し高い。隣の会社はもっと安かったらしい。", "좋았지만 {p}는 좀 비싸요. 옆 회사는 더 싸게 탔대요."),
+  ("It was lovely, but {p} is a bit much. Others flew cheaper next door.", "Güzeldi ama {p} biraz fazla. Yan firmada daha ucuza uçmuşlar.", "Schön war's, aber {p} ist etwas viel. Bei der Konkurrenz flogen andere billiger.", "Estuvo bonito, pero {p} es un poco caro. En la empresa de al lado volaron más barato.", "良かったけど{p}は少し高い。隣の会社はもっと安かったらしい。", "좋았지만 {p} 내기엔 좀 비싸요. 옆 회사는 더 싸게 탔대요."),
   ("The experience was good; my wallet, however, cried.", "Deneyim iyiydi ama cüzdanım ağladı.", "Das Erlebnis war gut, mein Geldbeutel hat allerdings geweint.", "La experiencia fue buena; mi cartera, en cambio, lloró.", "体験は良かった。財布は泣いたけど。", "경험은 좋았는데 지갑이 울었어요."),
  ],
  "general": [
@@ -51,7 +51,7 @@ R = {
  ],
  "ad": [
   ("There was a huge {s} ad on the balloon, and it's in all my photos.", "Balonun üstünde kocaman bir {s} reklamı vardı, bütün fotoğraflarıma girdi.", "Auf dem Ballon prangte riesige Werbung für {s}, sie ist auf all meinen Fotos.", "En el globo había un enorme anuncio de {s} y sale en todas mis fotos.", "気球に巨大な{s}の広告があって、全部の写真に写り込んだ。", "열기구에 거대한 {s} 광고가 있어서 모든 사진에 찍혔어요."),
-  ("The flight was nice, but the {s} ad kind of killed the romance.", "Uçuş güzeldi ama {s} reklamı romantizmi biraz öldürdü.", "Der Flug war schön, aber die Werbung für {s} hat die Romantik etwas zerstört.", "El vuelo fue bonito, pero el anuncio de {s} mató un poco el romanticismo.", "フライトは良かったが、{s}の広告でロマンチックさが台無し。", "비행은 좋았지만 {s} 광고 때문에 낭만이 좀 깨졌어요."),
+  ("The flight was nice, but the {s} ad kind of killed the romance.", "Uçuş güzeldi ama {s} reklamı romantizmi biraz bozdu.", "Der Flug war schön, aber die Werbung für {s} hat die Romantik etwas zerstört.", "El vuelo fue bonito, pero el anuncio de {s} mató un poco el romanticismo.", "フライトは良かったが、{s}の広告でロマンチックさが台無し。", "비행은 좋았지만 {s} 광고 때문에 낭만이 좀 깨졌어요."),
   ("My dream balloon ride happened under a billboard.", "Hayalimdeki balon turu bir reklam panosunun altında geçti.", "Meine Traum-Ballonfahrt fand unter einer Werbetafel statt.", "El paseo en globo de mis sueños fue bajo una valla publicitaria.", "夢の気球ツアーは広告看板の下で終わった。", "꿈에 그리던 열기구 투어를 광고판 밑에서 했네요."),
  ],
  "cancel": [
@@ -86,7 +86,7 @@ R = {
  "xl": [
   ("That giant {c} balloon was in everyone's photos, and we were inside it!", "Gökyüzündeki o dev {c} balonu herkesin fotoğrafındaydı, biz de içindeydik!", "Der riesige {c}-Ballon war auf allen Fotos, und wir waren drin!", "¡Ese globo gigante de {c} salía en las fotos de todos, y nosotros íbamos dentro!", "空に浮かぶ巨大な{c}の気球はみんなの写真に写っていた。私たちはその中にいた！", "하늘의 거대한 {c} 열기구가 모두의 사진에 있었고, 우린 그 안에 있었어요!"),
   ("The 32-person giant balloon was unbelievable. The basket felt like a balcony.", "32 kişilik dev balon inanılmazdı. Sepet bir balkon gibiydi.", "Der Riesenballon für 32 Personen war unglaublich. Der Korb war wie ein Balkon.", "El globo gigante de 32 plazas fue increíble. La cesta parecía un balcón.", "32人乗りの巨大気球は信じられない。バスケットはまるでバルコニー。", "32인승 거대 열기구는 믿기지 않았어요. 바스켓이 발코니 같았어요."),
-  ("We saw the Cappadocia Star from afar and booked. No regrets.", "Kapadokya Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.", "Wir haben den Kappadokien-Stern von Weitem gesehen und gebucht. Keine Reue.", "Vimos la Estrella de Capadocia de lejos y reservamos. No nos arrepentimos.", "遠くからカッパドキア・スターを見て予約した。後悔なし。", "멀리서 카파도키아의 별을 보고 예약했어요. 후회 없어요."),
+  ("We saw the Cappadocia Star from afar and booked. No regrets.", "Kapadokya Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.", "Wir haben den Kappadokien-Stern von Weitem gesehen und gebucht. Keine Reue.", "Vimos la Estrella de Capadocia de lejos y reservamos. No nos arrepentimos.", "遠くからカッパドキアの星を見て予約した。後悔なし。", "멀리서 카파도키아의 별을 보고 예약했어요. 후회 없어요."),
  ],
  "meh": [
   ("Not bad, but the crew didn't seem to care, and the balloon looked tired.", "Fena değildi ama ekip pek ilgilenmedi, balon da yorgun görünüyordu.", "Nicht schlecht, aber die Crew war desinteressiert und der Ballon wirkte müde.", "No estuvo mal, pero al equipo no le importábamos y el globo parecía cansado.", "悪くはないが、スタッフはそっけなく、気球もくたびれていた。", "나쁘진 않았지만 직원들이 무심했고 열기구도 낡아 보였어요."),

@@ -5,14 +5,14 @@ add("town.title", "My company", "Şirketim", "Meine Firma", "Mi empresa", "わ�
 add("town.zoomOut", "Zoom out", "Uzaklaş", "Herauszoomen", "Alejar", "縮小", "축소")
 add("goals.finished", "Done", "Tamamlandı", "Erledigt", "Hecho", "達成", "완료")
 add("ceremony.start", "Start", "Başla", "Los geht's", "Empezar", "始める", "시작")
-add("town.hint", "Tap a zone or zoom in; tap a building to open it.", "Bölgeye dokun ya da yakınlaştır, binaya dokununca açılır.", "Tippe auf eine Zone oder zoome hinein; tippe auf ein Gebäude, um es zu öffnen.", "Toca una zona o amplía; toca un edificio para abrirlo.", "エリアをタップするか拡大。建物をタップすると開く。", "구역을 탭하거나 확대하세요. 건물을 탭하면 열립니다.")
+add("town.hint", "Tap a zone or zoom in; tap a building to open it.", "Bir alana dokun ya da yakınlaştır, binaya dokununca açılır.", "Tippe auf eine Zone oder zoome hinein; tippe auf ein Gebäude, um es zu öffnen.", "Toca una zona o amplía; toca un edificio para abrirlo.", "エリアをタップするか拡大。建物をタップすると開く。", "구역을 탭하거나 확대하세요. 건물을 탭하면 열립니다.")
 add("town.forSale", "FOR SALE", "SATILIK", "ZU VERKAUFEN", "SE VENDE", "売地", "매물")
 
 # Zones written in the sand
 add("town.zone.depot", "HANGAR", "HANGAR", "HANGAR", "HANGAR", "格納庫", "격납고")
 add("town.zone.finance", "FINANCE", "FİNANS", "FINANZEN", "FINANZAS", "金融", "금융")
 add("town.zone.crew", "CREW", "EKİP", "CREW", "EQUIPO", "クルー", "크루")
-add("town.zone.agency", "AGENCIES", "AJANS", "AGENTUREN", "AGENCIAS", "代理店", "에이전시")
+add("town.zone.agency", "AGENCIES", "AJANSLAR", "AGENTUREN", "AGENCIAS", "代理店", "에이전시")
 add("town.zone.companies", "COMPANIES", "ŞİRKETLER", "FIRMEN", "EMPRESAS", "各社", "회사들")
 add("town.zone.hotels", "HOTELS", "OTELLER", "HOTELS", "HOTELES", "ホテル", "호텔")
 
@@ -38,7 +38,7 @@ add("town.sub.noLoans", "No loans", "Kredi yok", "Keine Kredite", "Sin préstamo
 add("town.sub.loans", "Loans: %@", "Kredi: %@", "Kredite: %@", "Préstamos: %@", "借入：%@", "대출: %@")
 add("town.sub.baron", "Once you're baron", "Baron olunca", "Sobald du Baron bist", "Cuando seas barón", "男爵になったら", "남작이 되면")
 add("town.sub.yours", "Yours", "Senin", "Deins", "Tuyo", "あなたのもの", "내 소유")
-add("town.sub.signed", "Signed", "Anlaşmalı", "Vertrag", "Con acuerdo", "提携中", "제휴 중")
+add("town.sub.signed", "Signed", "Anlaşmalı", "Unter Vertrag", "Con acuerdo", "提携中", "제휴 중")
 add("town.sub.rivalSigned", "Signed with a rival", "Rakibinle anlaşmalı", "Vertrag mit Konkurrenz", "Firmado con un rival", "ライバルと提携中", "경쟁사와 제휴 중")
 add("town.sub.wants", "Wants %@", "İstenen: %@", "Will %@", "Pide %@", "%@以上が条件", "%@ 이상 필요")
 add("town.sub.running", "Campaign running", "Kampanya sürüyor", "Kampagne läuft", "Campaña en curso", "キャンペーン中", "캠페인 진행 중")
@@ -75,6 +75,6 @@ add("hez.prcap",
  "Your popularity has hit the ceiling, kid. However well you fly, without hotel deals or promo flights for guides your name won't go past 4.2 stars; an influencer campaign carries you to 4.5 at most. Look at the hotels and the agencies in town.",
  "Popülerliğin tavana dayandı evlat. Ne kadar güzel uçarsan uç, otellerle anlaşmadan ya da rehberleri uçurmadan adın 4,2 yıldızdan öteye gitmez; bir influencer kampanyası seni en fazla 4,5 yıldıza taşır. Kasabadaki otellere ve ajanslara bak.",
  "Deine Beliebtheit stößt an die Decke, Lehrling. Egal wie schön du fliegst: Ohne Hotelverträge oder Werbeflüge für Guides kommt dein Name nicht über 4,2 Sterne; eine Influencer-Kampagne bringt dich höchstens auf 4,5. Schau dir die Hotels und Agenturen in der Stadt an.",
- "Tu popularidad ha tocado techo, aprendiz. Por bien que vueles, sin acuerdos con hoteles ni vuelos con los guías tu nombre no pasará de 4,2 estrellas; una campaña con influencers te lleva como mucho a 4,5. Mira los hoteles y las agencias del pueblo.",
+ "Tu popularidad ha tocado techo, aprendiz. Por bien que vueles, sin acuerdos con hoteles ni vuelos promocionales para guías tu nombre no pasará de 4,2 estrellas; una campaña con influencers te lleva como mucho a 4,5. Mira los hoteles y las agencias del pueblo.",
  "人気が天井に達したぞ、弟子よ。どれほど見事に飛んでも、ホテルと提携するかガイドを乗せなければ、名は星4.2より先へは行かん。インフルエンサーのキャンペーンでも最大4.5までだ。町のホテルと代理店を見てみるのだ。",
  "인기가 천장에 닿았네, 제자여. 아무리 멋지게 날아도 호텔과 제휴하거나 가이드를 태우지 않으면 이름이 별 4.2개를 넘지 못한다네. 인플루언서 캠페인도 최대 4.5까지일세. 마을의 호텔과 에이전시를 둘러보게.")

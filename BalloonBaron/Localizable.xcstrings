@@ -476,7 +476,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "リオグランデ川の上で高度150m以下まで下がり、川にあいさつしよう。"
+            "value": "リオグランデ川の上で高度150 m以下まで下がり、川にあいさつしよう。"
           }
         },
         "ko": {
@@ -1237,7 +1237,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du bist auf einem Festival geflogen"
+            "value": "Du bist während eines Festivals geflogen"
           }
         },
         "en": {
@@ -2005,7 +2005,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toplam 10.000 yolcu"
+            "value": "Toplam 10.000 yolcu uçurdun"
           }
         }
       }
@@ -3246,7 +3246,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine Lizenz braucht deinen eigenen Flug"
+            "value": "Für deine Lizenz musst du selbst fliegen"
           }
         },
         "en": {
@@ -3264,7 +3264,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ライセンス更新の飛行が待っている"
+            "value": "免許の更新には自分の飛行が必要"
           }
         },
         "ko": {
@@ -3305,7 +3305,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "会社がたたまれた"
+            "value": "会社は廃業した"
           }
         },
         "ko": {
@@ -3387,7 +3387,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "停止しました"
+            "value": "停止"
           }
         },
         "ko": {
@@ -3428,7 +3428,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "あなたを待つことがある"
+            "value": "あなたの判断が必要"
           }
         },
         "ko": {
@@ -3885,7 +3885,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "하루 %1$@, 총 %2$@를 갚습니다."
+            "value": "하루 %1$@, 총 상환액은 %2$@입니다."
           }
         },
         "tr": {
@@ -4412,7 +4412,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "バルーンショーのフィナーレで気球がこの図形を描く。ずっと使え、ショーのカードで選べる。"
+            "value": "バルーンショーのフィナーレで気球がこの図形を描く。ずっと使えて、ショーのカードで選べる。"
           }
         },
         "ko": {
@@ -4910,7 +4910,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "완성 디자인으로 와서 바로 기함에 입혀집니다. 바래지 않고 매 비행마다 추가 인기."
+            "value": "완성 디자인으로 와서 바로 기함에 입혀집니다. 바래지 않고 비행마다 추가 인기."
           }
         },
         "tr": {
@@ -5993,7 +5993,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ich habe von der harten Landung gehört. Touristen vergessen nicht. Ich fliege Ballone; du … mach eben, was du machst."
+            "value": "Ich habe von der harten Landung gehört. Touristen vergessen nicht. Ich fliege Ballone; du … machst eben, was auch immer du machst."
           }
         },
         "en": {
@@ -6585,7 +6585,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "8機だと？私の船団は王家の谷に影を落とす。君はまだ客を数えているが、私は船を数える。"
+            "value": "8機だと？私のフリートは王家の谷に影を落とす。君はまだ客を数えているが、私は船を数える。"
           }
         },
         "ko": {
@@ -6649,7 +6649,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nun gut. Der Wind hat gedreht. Wenn du Theban Skies übernehmen willst, reden wir. Aber ändere den Namen nicht, es war der meines Vaters."
+            "value": "Nun gut. Der Wind hat gedreht. Wenn du Theban Skies übernehmen willst, reden wir. Aber ändere den Namen nicht, er stammt von meinem Vater."
           }
         },
         "en": {
@@ -6743,7 +6743,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bienvenido, forastero. Nabil Haddad, Theban Skies. Cuando mi padre infló el primer globo en esta Ribera Oeste, tú ni habías nacido. Aquí cada hotel, cada guía, cada faluca conoce mi nombre. Dicen que ganaste en Capadocia y en América. El Nilo es distinto. El Nilo ama al paciente y se traga al soberbio."
+            "value": "Bienvenido, forastero. Nabil Haddad, Theban Skies. Cuando mi padre infló el primer globo en esta Ribera Oeste, tú ni habías nacido. Aquí cada hotel, cada guía, cada faluca conoce mi nombre. Dicen que ganaste en Capadocia y en Estados Unidos. El Nilo es distinto. El Nilo ama al paciente y se traga al soberbio."
           }
         },
         "ja": {
@@ -7510,7 +7510,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du siehst auch übermorgen; 20 % weniger Unfälle bei gelber Flagge."
+            "value": "Du siehst auch die Flagge von übermorgen; 20 % weniger Unfälle bei gelber Flagge."
           }
         },
         "en": {
@@ -8412,7 +8412,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lieber nicht"
+            "value": "Nicht jetzt"
           }
         },
         "en": {
@@ -9297,7 +9297,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@일차. %2$@ 하늘의 열기구 세 대 중 두 대가 %3$@의 색을 달고 있습니다. 헤자르펜 장인의 눈시울이 붉어집니다. “갈라타에서 위스퀴다르로 날던 날도 이렇게 자랑스럽진 않았다네, 제자여.”"
+            "value": "%1$@일차. %2$@ 하늘의 열기구 세 대 중 두 대가 %3$@의 색을 달고 있습니다. 헤자르펜 스승의 눈시울이 붉어집니다. “갈라타에서 위스퀴다르로 날던 날도 이렇게 자랑스럽진 않았다네, 제자여.”"
           }
         },
         "tr": {
@@ -9414,13 +9414,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "祖父のバスケットは今、ホールディングの入口でガラスケースに収まっている。"
+            "value": "祖父のバスケットは今、ホールディングスの入口でガラスケースに収まっている。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "할아버지의 바스켓은 이제 지주회사 입구의 유리 진열장 안에 있다."
+            "value": "할아버지의 바스켓은 이제 지주회사 입구의 유리 진열장 안에 있습니다."
           }
         },
         "tr": {
@@ -10298,7 +10298,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bei den Türkiye-Tourismuspreisen wurdest du Ballonfirma des Jahres"
+            "value": "Bei den Tourismuspreisen der Türkei wurdest du zur Ballonfirma des Jahres gekürt"
           }
         },
         "en": {
@@ -10310,7 +10310,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fuiste elegido Empresa de Globos del Año en los Premios de Turismo de Turquía"
+            "value": "Te nombraron Empresa de Globos del Año en los Premios de Turismo de Turquía"
           }
         },
         "ja": {
@@ -10363,7 +10363,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "신세계"
+            "value": "신대륙"
           }
         },
         "tr": {
@@ -10380,7 +10380,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Handelskammer Albuquerque kürte dich zum Neuunternehmen des Jahres"
+            "value": "Die Handelskammer Albuquerque kürte dich zum Newcomer des Jahres"
           }
         },
         "en": {
@@ -11312,7 +11312,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Balon şöleni"
+            "value": "Balon Şöleni"
           }
         }
       }
@@ -11364,7 +11364,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ticket %1$@, Ballone: %2$@"
+            "value": "Ticket: %1$@ · Ballone: %2$@"
           }
         },
         "en": {
@@ -11376,7 +11376,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Billete %1$@, globos: %2$@"
+            "value": "Billete: %1$@ · Globos: %2$@"
           }
         },
         "ja": {
@@ -11388,13 +11388,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "티켓 %1$@, 열기구: %2$@"
+            "value": "티켓: %1$@ · 열기구: %2$@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bilet %1$@, balon: %2$@"
+            "value": "Bilet: %1$@ · Balon: %2$@"
           }
         }
       }
@@ -12987,7 +12987,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "오늘 기함을 직접 조종하면 면허가 무료로 갱신됩니다. 비행하기 싫다면 %@를 내고 갱신할 수 있습니다."
+            "value": "오늘 기함을 직접 조종하면 면허가 무료로 갱신됩니다. 비행하기 싫다면 %@ 비용을 내고 갱신할 수 있습니다."
           }
         },
         "tr": {
@@ -14603,7 +14603,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sagst du später, wartet das Angebot auf der Marktseite. Bis du ablehnst oder annimmst, bleibt ein roter Punkt am Markt-Button."
+            "value": "Tippst du auf „Später“, wartet das Angebot auf der Marktseite. Bis du ablehnst oder annimmst, bleibt ein roter Punkt am Markt-Button."
           }
         },
         "en": {
@@ -15640,7 +15640,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cancelaste el vuelo del %1$@. %2$@ pasajeros recuperaron su dinero y recibieron %3$@ cada uno de indemnización."
+            "value": "Cancelaste el vuelo de %1$@. %2$@ pasajeros recuperaron su dinero y recibieron %3$@ cada uno de indemnización."
           }
         },
         "ja": {
@@ -15980,7 +15980,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "주문한 회사가 사라졌습니다(%1$@). 이미 %2$@를 지급했고 열기구는 당신 것이 되었습니다."
+            "value": "주문한 회사가 사라졌습니다(%1$@). 이미 %2$@ 지급받았고, 열기구는 당신 것이 되었습니다."
           }
         },
         "tr": {
@@ -16062,7 +16062,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "공방의 새 열기구가 완성되어 선단에 합류했습니다: %1$@ (%2$@)."
+            "value": "공방의 새 열기구가 완성되어 기단에 합류했습니다: %1$@ (%2$@)."
           }
         },
         "tr": {
@@ -16185,7 +16185,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "공급업체가 앞으로 5일간 연료 가격을 50%% 올린다고 합니다. 지금 %@를 내고 옛 가격으로 비축하면 인상의 영향을 받지 않습니다."
+            "value": "공급업체가 앞으로 5일간 연료 가격을 50%% 올린다고 합니다. 지금 %@ 들여 옛 가격으로 비축하면 인상의 영향을 받지 않습니다."
           }
         },
         "tr": {
@@ -16847,7 +16847,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ pilotunu ayartmaya çalışıyor: %2$@ iş teklifi aldı!"
+            "value": "%1$@ senin pilotunu ayartmaya çalışıyor: %2$@ iş teklifi aldı!"
           }
         }
       }
@@ -17696,19 +17696,19 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "初心者の救済：ヘザルフェンの知り合いの整備士が1日で気球を直してくれる。"
+            "value": "ビギナーズラック：ヘザルフェンの知り合いの整備士が1日で気球を直してくれる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "초보자 보호: 헤자르펜이 아는 정비사가 하루 만에 열기구를 고쳐 줍니다."
+            "value": "초심자의 행운: 헤자르펜이 아는 정비사가 하루 만에 열기구를 고쳐 줍니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Acemi koruması: Hezarfen'in tanıdığı tamirci balonunu bir günde onaracak."
+            "value": "Acemi şansı: Hezarfen'in tanıdığı tamirci balonunu bir günde onaracak."
           }
         }
       }
@@ -17760,7 +17760,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nach den heutigen Unfällen sind zu wenige Ballone für eine Show übrig, die Show heute Nacht fällt aus. Auch die übrigen Gebühren kamen zurück: %@. Sobald die Ballone repariert sind, kannst du sie erneut veranstalten."
+            "value": "Nach den heutigen Unfällen sind zu wenige Ballone für eine Show übrig, die Show heute Nacht fällt aus. Auch die übrigen Gebühren wurden erstattet: %@. Sobald die Ballone repariert sind, kannst du sie erneut veranstalten."
           }
         },
         "en": {
@@ -17801,7 +17801,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein Ballon, der heute verunglückt ist, kann heute Nacht nicht bei der Show mitmachen. Seine Gebühr kam zurück: %@."
+            "value": "Ein Ballon, der heute verunglückt ist, kann heute Nacht nicht bei der Show mitmachen. Seine Gebühr wurde erstattet: %@."
           }
         },
         "en": {
@@ -17883,7 +17883,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine Piloten warten mit Plakaten vor deinem Büro. Sie wollen 15 %% mehr Lohn. Du zahlst derzeit %@ pro Tag."
+            "value": "Deine Piloten warten mit Plakaten vor deinem Büro. Sie wollen 15 %% mehr Gehalt. Du zahlst derzeit %@ pro Tag."
           }
         },
         "en": {
@@ -17913,7 +17913,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilotların ofisinin önünde pankartlarla bekliyor. Maaşlarına %%15 zam istiyorlar. Şu an günde toplam %@ ödüyorsun."
+            "value": "Pilotların ellerinde pankartlarla ofisinin önünde bekliyor. Maaşlarına %%15 zam istiyorlar. Şu an günde toplam %@ ödüyorsun."
           }
         }
       }
@@ -18006,7 +18006,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lohnerhöhung (+%@/Tag)"
+            "value": "Gehaltserhöhung (+%@/Tag)"
           }
         },
         "en": {
@@ -18112,7 +18112,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@에 묵는 사업가가 가족을 위해 %2$@ 열기구를 통째로 빌리고 싶어 합니다. 선불로 %3$@를 내며, 이 열기구는 오늘 다른 승객을 받지 않습니다."
+            "value": "%1$@에 묵는 사업가가 가족을 위해 %2$@ 열기구를 통째로 빌리고 싶어 합니다. 선불 %3$@, 이 열기구는 오늘 다른 승객을 받지 않습니다."
           }
         },
         "tr": {
@@ -18826,7 +18826,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wenn fertig, kommt er in deine Flotte."
+            "value": "Sobald er fertig ist, kommt er in deine Flotte."
           }
         },
         "en": {
@@ -18850,7 +18850,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "완성되면 선단에 합류합니다."
+            "value": "완성되면 기단에 합류합니다."
           }
         },
         "tr": {
@@ -19195,7 +19195,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine Werkstatt baut auch eine größere Größe. Korb: %1$@. Rabatt auf den Marktpreis: %2$@. Bautage: %3$@. Auch Konkurrenten können diese Größe bei dir bestellen."
+            "value": "Deine Werkstatt baut jetzt auch größere Ballone. Korb: %1$@. Rabatt auf den Marktpreis: %2$@. Bautage: %3$@. Auch Konkurrenten können diese Größe bei dir bestellen."
           }
         },
         "en": {
@@ -19342,7 +19342,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "납품 시 %1$@를 지급합니다. 원가 %2$@, 이익 %3$@. 라인이 %4$@일 동안 사용되고 %5$@의 열기구가 한 대 늘어납니다."
+            "value": "납품 시 %1$@ 지급. 원가 %2$@, 이익 %3$@. 라인이 %4$@일 동안 사용되고 %5$@의 열기구가 한 대 늘어납니다."
           }
         },
         "tr": {
@@ -19383,7 +19383,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@에서 선단에 열기구를 한 대 추가하려고 당신의 공방에서 사겠다고 합니다. 바스켓: %2$@. 돈은 당신 것이지만 경쟁사는 열기구 한 대만큼 커집니다."
+            "value": "%1$@에서 기단에 열기구를 한 대 추가하려고 당신의 공방에서 사겠다고 합니다. 바스켓: %2$@. 돈은 당신 것이지만 경쟁사는 열기구 한 대만큼 커집니다."
           }
         },
         "tr": {
@@ -19465,13 +19465,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@에서 주문을 원합니다. 바스켓: %2$@"
+            "value": "%1$@ 측이 열기구를 원합니다. 바스켓: %2$@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ sipariş istiyor. Sepet: %2$@"
+            "value": "%1$@ balon istiyor. Sepet: %2$@"
           }
         }
       }
@@ -21064,7 +21064,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "준비 완료 · 조종사: 당신"
+            "value": "준비 완료 · 조종사: 나"
           }
         },
         "tr": {
@@ -21122,7 +21122,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fliegst du"
+            "value": "Du fliegst"
           }
         },
         "en": {
@@ -21327,7 +21327,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Der Sponsor zahlt jeden Flug. Passagiere mögen keine Werbeballone, deine Beliebtheit sinkt mit jedem Flug ein wenig."
+            "value": "Der Sponsor zahlt pro Flug. Passagiere mögen keine Werbeballone, deine Beliebtheit sinkt mit jedem Flug ein wenig."
           }
         },
         "en": {
@@ -21380,7 +21380,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo acepta cestas grandes."
+            "value": "Solo para cestas grandes."
           }
         },
         "ja": {
@@ -21421,7 +21421,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Solo acepta cestas medianas y grandes."
+            "value": "Solo para cestas medianas y grandes."
           }
         },
         "ja": {
@@ -21503,7 +21503,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sin ingresos, tu popularidad está a salvo."
+            "value": "Sin ingresos, pero tu popularidad está a salvo."
           }
         },
         "ja": {
@@ -21890,7 +21890,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Desen: %@"
+            "value": "Tasarım: %@"
           }
         }
       }
@@ -22095,7 +22095,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@: desen"
+            "value": "%@: tasarım"
           }
         }
       }
@@ -22294,7 +22294,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이 기구는 내가 몬다"
+            "value": "이 기구는 내가 몰게요"
           }
         },
         "tr": {
@@ -22352,7 +22352,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tippe einen Ballon an und wähle \"Den fliege ich selbst\", um deinen eigenen Ballon zu bestimmen; er wird dein Flaggschiff. Die anderen Ballone brauchen einen Piloten. Mit Werbung auf einem Ballon zahlt der Sponsor jeden Flug, aber Passagiere mögen keine Werbeballone und deine Beliebtheit sinkt mit jedem Flug ein wenig."
+            "value": "Tippe einen Ballon an und wähle „Den fliege ich selbst“, um deinen eigenen Ballon zu bestimmen; er wird dein Flaggschiff. Die anderen Ballone brauchen einen Piloten. Mit Werbung auf einem Ballon zahlt der Sponsor pro Flug, aber Passagiere mögen keine Werbeballone und deine Beliebtheit sinkt mit jedem Flug ein wenig."
           }
         },
         "en": {
@@ -22364,7 +22364,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Toca un globo y elige \"Este lo piloto yo\" para escoger el globo que pilotas tú; pasa a ser tu globo insignia. Los demás globos necesitan un piloto. Si pones un anuncio en un globo, el patrocinador paga cada vuelo, pero a los pasajeros no les gustan los globos con publicidad y tu popularidad baja un poco en cada vuelo."
+            "value": "Toca un globo y elige «Este lo piloto yo» para escoger el globo que pilotas tú; pasa a ser tu globo insignia. Los demás globos necesitan un piloto. Si pones un anuncio en un globo, el patrocinador paga cada vuelo, pero a los pasajeros no les gustan los globos con publicidad y tu popularidad baja un poco en cada vuelo."
           }
         },
         "ja": {
@@ -22376,7 +22376,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "열기구를 누르고 \"이 기구는 내가 몬다\"를 고르면 직접 조종할 기구를 정할 수 있습니다. 그 기구가 기함이 됩니다. 다른 열기구에는 조종사가 필요합니다. 열기구에 광고를 달면 스폰서가 비행마다 돈을 내지만, 승객은 광고 열기구를 싫어해서 비행할 때마다 인기가 조금씩 떨어집니다."
+            "value": "열기구를 누르고 \"이 기구는 내가 몰게요\"를 고르면 직접 조종할 기구를 정할 수 있습니다. 그 기구가 기함이 됩니다. 다른 열기구에는 조종사가 필요합니다. 열기구에 광고를 달면 스폰서가 비행마다 돈을 내지만, 승객은 광고 열기구를 싫어해서 비행할 때마다 인기가 조금씩 떨어집니다."
           }
         },
         "tr": {
@@ -22868,7 +22868,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "조종사: 당신 (창업자)"
+            "value": "조종사: 나 (창업자)"
           }
         },
         "tr": {
@@ -23951,7 +23951,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Da du nicht fliegst, verlängert der heutige Tag deine Pilotenlizenz nicht."
+            "value": "Da du nicht fliegst, wird deine Pilotenlizenz heute nicht verlängert."
           }
         },
         "en": {
@@ -24338,7 +24338,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "**目標は着陸場**：右へ、km：%@。左の矢印は高度ごとの風。そちらへ吹く層を探そう。"
+            "value": "**目標は着陸場**：右へ%@ km。左の矢印は高度ごとの風。そちらへ吹く層を探そう。"
           }
         },
         "ko": {
@@ -24361,7 +24361,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "**Der Treibstoff wird knapp.** Nutze den Brenner in kurzen Stößen und heb etwas für die Landung auf. Bleib in der Schicht, die zum Feld weht."
+            "value": "**Das Gas wird knapp.** Nutze den Brenner in kurzen Stößen und heb etwas für die Landung auf. Bleib in der Schicht, die zum Feld weht."
           }
         },
         "en": {
@@ -25293,7 +25293,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Görev başarıldı! +%@"
+            "value": "Görev tamamlandı! +%@"
           }
         }
       }
@@ -25468,7 +25468,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Höhe: %1$@ · Brennstoff: %2$@. Dein Ballon wartet in der Luft, bis du zurück bist."
+            "value": "Höhe: %1$@ · Gas: %2$@. Dein Ballon wartet in der Luft, bis du zurück bist."
           }
         },
         "en": {
@@ -25486,7 +25486,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "高度：%1$@ · 燃料：%2$@。戻るまで気球は空で待っている。"
+            "value": "高度：%1$@・燃料：%2$@。戻るまで気球は空で待っている。"
           }
         },
         "ko": {
@@ -26552,7 +26552,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@・定員：%2$@・飛行：%3$@/%4$@"
+            "value": "%1$@・座席：%2$@・飛行：%3$@/%4$@"
           }
         },
         "ko": {
@@ -26722,7 +26722,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "면허 만료: 갱신 비행은 무료이며, 크루에서 %@를 낼 수도 있습니다."
+            "value": "면허 만료: 갱신 비행은 무료이며, 크루에서 %@ 비용을 내고 갱신할 수도 있습니다."
           }
         },
         "tr": {
@@ -26739,7 +26739,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Keiner"
+            "value": "Keine"
           }
         },
         "en": {
@@ -26903,7 +26903,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wenn du selbst fliegst, zahlen die Passagiere %@ mehr und du kannst Aufträge annehmen. Tippe in der Liste bei einem Ballon auf \"Den fliege ich selbst\"."
+            "value": "Wenn du selbst fliegst, zahlen die Passagiere %@ mehr und du kannst Aufträge annehmen. Tippe in der Liste bei einem Ballon auf „Den fliege ich selbst“."
           }
         },
         "en": {
@@ -26915,7 +26915,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Si pilotas tú, los pasajeros pagan un %@ más y puedes aceptar misiones. Toca \"Este lo piloto yo\" en un globo de la lista."
+            "value": "Si pilotas tú, los pasajeros pagan un %@ más y puedes aceptar misiones. Toca «Este lo piloto yo» en un globo de la lista."
           }
         },
         "ja": {
@@ -26927,7 +26927,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "직접 조종하면 승객이 %@ 더 내고 임무도 받을 수 있습니다. 목록의 기구에서 \"이 기구는 내가 몬다\"를 누르세요."
+            "value": "직접 조종하면 승객이 %@ 더 내고 임무도 받을 수 있습니다. 목록의 기구에서 \"이 기구는 내가 몰게요\"를 누르세요."
           }
         },
         "tr": {
@@ -27026,7 +27026,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine Passagiere zahlen %@ mehr, und die Aufträge gehören dir. Um einen anderen Ballon zu fliegen, tippe in der Liste auf \"Den fliege ich selbst\"."
+            "value": "Deine Passagiere zahlen %@ mehr, und die Aufträge gehören dir. Um einen anderen Ballon zu fliegen, tippe in der Liste auf „Den fliege ich selbst“."
           }
         },
         "en": {
@@ -27038,7 +27038,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tus pasajeros pagan un %@ más y las misiones son tuyas. Para pilotar otro globo, toca \"Este lo piloto yo\" en la lista."
+            "value": "Tus pasajeros pagan un %@ más y las misiones son tuyas. Para pilotar otro globo, toca «Este lo piloto yo» en la lista."
           }
         },
         "ja": {
@@ -27050,7 +27050,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "승객이 %@ 더 내고 임무는 당신 몫입니다. 다른 기구를 조종하려면 목록에서 \"이 기구는 내가 몬다\"를 누르세요."
+            "value": "승객이 %@ 더 내고 임무는 당신 몫입니다. 다른 기구를 조종하려면 목록에서 \"이 기구는 내가 몰게요\"를 누르세요."
           }
         },
         "tr": {
@@ -27993,7 +27993,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "자기 공방에서 첫 열기구 만들기"
+            "value": "내 공방에서 첫 열기구 만들기"
           }
         },
         "tr": {
@@ -28110,7 +28110,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ガイド向け招待フライトを飛ぶ"
+            "value": "ガイド向け招待フライトを実施する"
           }
         },
         "ko": {
@@ -28356,7 +28356,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "チームのパイロット：%@"
+            "value": "所属パイロット：%@"
           }
         },
         "ko": {
@@ -28461,7 +28461,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Beliebtheit %@"
+            "value": "Beliebtheit: %@"
           }
         },
         "en": {
@@ -28473,7 +28473,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Popularidad %@"
+            "value": "Popularidad: %@"
           }
         },
         "ja": {
@@ -28485,13 +28485,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "인기 %@"
+            "value": "인기: %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Popülerlik %@"
+            "value": "Popülerlik: %@"
           }
         }
       }
@@ -28584,7 +28584,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Erfülle alle am selben Tag, dann wirst du Baron von %@ und öffnest dich der Welt. Vorsicht: Die Wettbewerbsbehörde und fusionierende Konkurrenten werden dich aufhalten wollen."
+            "value": "Erfülle alle am selben Tag, dann wirst du Baron von %@, und die Welt steht dir offen. Vorsicht: Die Wettbewerbsbehörde und fusionierende Konkurrenten werden dich aufhalten wollen."
           }
         },
         "en": {
@@ -28596,7 +28596,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cúmplelos todos el mismo día para convertirte en barón de %@ y abrirte al mundo. Cuidado: la autoridad de competencia y los rivales que se fusionen intentarán detenerte."
+            "value": "Cúmplelos todos el mismo día para convertirte en barón de %@ y abrirte al mundo. Cuidado: la Autoridad de la Competencia y los rivales que se fusionen intentarán detenerte."
           }
         },
         "ja": {
@@ -29141,7 +29141,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "안녕하신가, 젊은 친구. 나는 벤 프랭클린일세. 1783년 몽골피에 형제의 열기구가 떠오를 때 나는 파리에 있었지. 누군가 \"열기구가 무슨 쓸모가 있소?\" 하고 묻길래 \"갓난아기는 무슨 쓸모가 있소?\" 하고 답했다네. 헤자르펜 장인께서 자네를 내게 맡기셨으니, 앨버커키에선 내가 길을 안내하겠네. 기억하게, 시간은 돈일세!"
+            "value": "안녕하신가, 젊은 친구. 나는 벤 프랭클린일세. 1783년 몽골피에 형제의 열기구가 떠오를 때 나는 파리에 있었지. 누군가 \"열기구가 무슨 쓸모가 있소?\" 하고 묻길래 \"갓난아기는 무슨 쓸모가 있소?\" 하고 답했다네. 자네 스승 헤자르펜께서 자네를 내게 맡기셨으니, 앨버커키에선 내가 길을 안내하겠네. 기억하게, 시간은 돈일세!"
           }
         },
         "tr": {
@@ -29516,7 +29516,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Influencer ajansı açıldı. Gezi influencerları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap."
+            "value": "Influencer ajansı açıldı. Gezi influencer'ları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap."
           }
         }
       }
@@ -29650,7 +29650,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine Flotte hat 35 Ballone überschritten, Lehrling; du musst nicht mehr jeden Morgen selbst lenken. „Vorspulen“ unten spielt die Tage von allein, auch das Flaggschiff fliegt dann die Crew. Es hält an, wenn eine Entscheidung, ein Ziel oder Geldsorgen anstehen, spätestens nach 7 Tagen; Zeitung und Neuigkeiten warten und kommen beim Anhalten. Kommt eine Ballon-Show-Nacht, siehst du die ganze Show, dann hält es an."
+            "value": "Deine Flotte hat jetzt mehr als 35 Ballone, Lehrling; du musst nicht mehr jeden Morgen selbst lenken. „Vorspulen“ unten spielt die Tage von allein, auch das Flaggschiff fliegt dann die Crew. Es hält an, wenn eine Entscheidung, ein Ziel oder Geldsorgen anstehen, spätestens nach 7 Tagen; Zeitung und Neuigkeiten warten und kommen beim Anhalten. Kommt eine Ballon-Show-Nacht, siehst du die ganze Show, dann hält es an."
           }
         },
         "en": {
@@ -29662,19 +29662,19 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu flota ha pasado de 35 globos, aprendiz; ya no tienes que llevar cada mañana tú mismo. «Avanzar», abajo, juega los días solo, y la tripulación vuela también el globo insignia. Se detiene cuando surge una decisión, un objetivo o un apuro de caja, como mucho a los 7 días; el periódico y las noticias esperan y aparecen al parar. Si llega una noche de Espectáculo de globos, te deja verlo entero y luego se detiene."
+            "value": "Tu flota ha pasado de 35 globos, aprendiz; ya no tienes que encargarte tú de cada mañana. «Avanzar», abajo, juega los días solo, y tus pilotos vuelan también el globo insignia. Se detiene cuando surge una decisión, un objetivo o un apuro de caja, como mucho a los 7 días; el periódico y las noticias esperan y aparecen al parar. Si llega una noche de Espectáculo de globos, te deja verlo entero y luego se detiene."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "フリートが35機を超えたな、弟子よ。もう毎朝ひとつずつ采配せんでもよい。下の「早送り」が日々をひとりでに進め、旗艦も乗組員が飛ばすのだ。決断や目標、資金難が出れば止まり、長くても7日で止まる。新聞と知らせはためておき、止まったときに見せる。バルーンショーの夜が来れば、ショーを最後まで見せてから止まるぞ。"
+            "value": "フリートが35機を超えたな、弟子よ。もう毎朝ひとつずつ采配せんでもよい。下の「早送り」が日々をひとりでに進め、旗艦もクルーが飛ばすのだ。決断や目標、資金難が出れば止まり、長くても7日で止まる。新聞と知らせはためておき、止まったときに見せる。バルーンショーの夜が来れば、ショーを最後まで見せてから止まるぞ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "기단이 35대를 넘었군, 제자여. 이제 매일 아침을 하나하나 챙길 필요는 없네. 아래 '빨리 감기'가 날들을 알아서 진행하고, 기함도 승무원이 띄우지. 결정할 일, 목표, 자금 문제가 생기면 멈추고, 늦어도 7일이면 멈추네. 신문과 소식은 모아 두었다가 멈출 때 보여 주지. 열기구 쇼의 밤이 오면 쇼를 끝까지 보여 준 뒤 멈추네."
+            "value": "기단이 35대를 넘었군, 제자여. 이제 매일 아침을 하나하나 챙길 필요는 없네. 아래 '빨리 감기'가 날들을 알아서 진행하고, 기함도 조종사가 띄우지. 결정할 일, 목표, 자금 문제가 생기면 멈추고, 늦어도 7일이면 멈추네. 신문과 소식은 모아 두었다가 멈출 때 보여 주지. 열기구 쇼의 밤이 오면 쇼를 끝까지 보여 준 뒤 멈추네."
           }
         },
         "tr": {
@@ -29773,7 +29773,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ ist fertig, Lehrling! Ich habe es %2$@ angezogen. Für einen anderen Ballon drück in der Flotte auf dessen Design-Knopf."
+            "value": "%1$@ ist fertig, Lehrling! Ich habe %2$@ damit bemalt. Für einen anderen Ballon drück in der Flotte auf dessen Design-Knopf."
           }
         },
         "en": {
@@ -29803,7 +29803,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ hazır evlat! Amiral balonuna giydirdim (%2$@). Başka balona giydirmek için Filo'da balonun Desen düğmesine bas."
+            "value": "%1$@ hazır evlat! Amiral balonuna giydirdim (%2$@). Başka balona giydirmek için Filo'da balonun Tasarım düğmesine bas."
           }
         }
       }
@@ -29844,7 +29844,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ hazır evlat! Filo'da her balonun Desen düğmesinde bulursun."
+            "value": "%@ hazır evlat! Filo'da her balonun Tasarım düğmesinde bulursun."
           }
         }
       }
@@ -29926,7 +29926,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ekip sayfası açıldı. Çaylak pilot ucuzdur ama rüzgârda titrer. Uçtukça tecrübe kazanırlar, tabii maaş da isterler."
+            "value": "Ekip sayfası açıldı. Çaylak pilot ucuzdur ama rüzgârda titrer. Uçtukça tecrübe kazanırlar, tabii zam da isterler."
           }
         }
       }
@@ -30236,7 +30236,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡América, aprendiz! El viento de Albuquerque es otra cosa: la famosa «caja». Abajo te lleva en una dirección y un poco más arriba te devuelve, así que un buen piloto aterriza donde despegó. Cada 30 días hay Balloon Fiesta: durante cuatro días los turistas se duplican. Aquí todo va en dólares y empiezas de cero: %@ y un globo pequeño. Capadocia sigue ganando en piloto automático y sus ingresos van al holding, pero el holding no puede enviar dinero aquí. Conquistarás América con lo tuyo. Si hay problemas, te llamaré."
+            "value": "¡Estados Unidos, aprendiz! El viento de Albuquerque es otra cosa: la famosa «caja». Abajo te lleva en una dirección y un poco más arriba te devuelve, así que un buen piloto aterriza donde despegó. Cada 30 días hay Balloon Fiesta: durante cuatro días los turistas se duplican. Aquí todo va en dólares y empiezas de cero: %@ y un globo pequeño. Capadocia sigue ganando en piloto automático y sus ingresos van al holding, pero el holding no puede enviar dinero aquí. Conquistarás Estados Unidos con lo tuyo. Si hay problemas, te llamaré."
           }
         },
         "ja": {
@@ -30248,7 +30248,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "미국이라네, 제자여! 앨버커키의 바람은 완전히 다르지. 그 유명한 '박스'일세. 낮은 곳에선 한쪽으로, 조금 위에선 반대로 데려가니, 노련한 조종사는 이륙한 곳에 다시 내린다네. 30일마다 벌룬 피에스타도 열리지. 나흘 동안 관광객이 두 배가 된다네. 여기선 모든 게 달러고 처음부터 다시 시작일세. 가진 건 %@와 작은 열기구 하나. 카파도키아는 자동 운영으로 계속 벌고 그 수입은 지주회사로 가지만, 지주회사는 여기로 돈을 보낼 수 없네. 미국은 자네 힘으로 일궈야 하네. 문제가 생기면 부르겠네."
+            "value": "미국이라네, 제자여! 앨버커키의 바람은 완전히 다르지. 그 유명한 '박스'일세. 낮은 곳에선 한쪽으로, 조금 위에선 반대로 데려가니, 노련한 조종사는 이륙한 곳에 다시 내린다네. 30일마다 벌룬 피에스타도 열리지. 나흘 동안 관광객이 두 배가 된다네. 여기선 모든 게 달러고 처음부터 다시 시작일세. 가진 건 %@, 그리고 작은 열기구 하나뿐일세. 카파도키아는 자동 운영으로 계속 벌고 그 수입은 지주회사로 가지만, 지주회사는 여기로 돈을 보낼 수 없네. 미국은 자네 힘으로 일궈야 하네. 문제가 생기면 부르겠네."
           }
         },
         "tr": {
@@ -30289,7 +30289,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이집트라네, 제자여, 룩소르일세! 이곳은 세상에서 가장 험한 열기구 시장이지. 매일 아침 파라오의 계곡 위 서안에서 수백 명의 관광객이 기다리지만, 나빌 하다드의 테베 스카이스와 그 친구들이 모두 나눠 가진다네. 여기선 경쟁사들이 아주 빨리 손잡고 자네에게 맞서고, 호텔은 차를 마시며 계약하고, 민간항공청은 자네에게서 눈을 떼지 않을 걸세. %@와 작은 열기구 하나로 시작하네. 지주회사는 여기로 돈을 보낼 수 없네. 나일의 바람은 낮은 곳에선 북쪽으로, 높은 곳에선 남쪽으로 분다네. 가끔 나일 크루즈선이 들어오면 마을이 관광객으로 가득 차지. 인내하게, 제자여. 나일은 인내하는 자를 사랑한다네. 여기서부터는 내 오랜 친구 임호테프가 길을 안내할 걸세."
+            "value": "이집트라네, 제자여, 룩소르일세! 이곳은 세상에서 가장 험한 열기구 시장이지. 매일 아침 파라오의 계곡 위 서안에서 수백 명의 관광객이 기다리지만, 나빌 하다드의 테베 스카이스와 그 친구들이 모두 나눠 가진다네. 여기선 경쟁사들이 아주 빨리 손잡고 자네에게 맞서고, 호텔은 차를 마시며 계약하고, 민간항공청은 자네에게서 눈을 떼지 않을 걸세. 자금 %@, 그리고 작은 열기구 하나로 시작하네. 지주회사는 여기로 돈을 보낼 수 없네. 나일의 바람은 낮은 곳에선 북쪽으로, 높은 곳에선 남쪽으로 분다네. 가끔 나일 크루즈선이 들어오면 마을이 관광객으로 가득 차지. 인내하게, 제자여. 나일은 인내하는 자를 사랑한다네. 여기서부터는 내 오랜 친구 임호테프가 길을 안내할 걸세."
           }
         },
         "tr": {
@@ -30429,7 +30429,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die reiche Istanbuler Kette Bosphorus Balloons ist in Kappadokien angekommen! Große Ballone und tiefe Taschen. Sei vorsichtig, Lehrling."
+            "value": "Die reiche Istanbuler Kette Bosphorus Balloons ist in Kappadokien angekommen! Große Ballone und volle Kassen. Sei vorsichtig, Lehrling."
           }
         },
         "en": {
@@ -30529,7 +30529,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "フェルーカ・フライツという格安業者が開業した。クルーズ客に半額で切符を売り、規則などあまり気にせんだろう。"
+            "value": "ファルーカ・フライツという格安業者が開業した。クルーズ客に半額でチケットを売り、規則などあまり気にせんだろう。"
           }
         },
         "ko": {
@@ -30716,7 +30716,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Red Sea Balloon Co. ist mit dem Geld der Hotelketten von Hurghada nach Luxor gekommen! Große Flotte, tiefe Taschen. Nach Theban Skies vielleicht die gefährlichste von allen."
+            "value": "Red Sea Balloon Co. ist mit dem Geld der Hotelketten von Hurghada nach Luxor gekommen! Große Flotte, volle Kassen. Nach Theban Skies vielleicht die gefährlichste von allen."
           }
         },
         "en": {
@@ -30798,7 +30798,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Glückwunsch, Lehrling, du hast 4,5 Sterne überschritten! Aber Vorsicht: Die Erwartungen sind jetzt viel höher. Passagiere wollen Perfektion. Eine ordentliche Landung bringt keine Punkte mehr, eine Landung weit vom Ziel kostet doppelt so viel, und deine Beliebtheit bröckelt jeden Tag ein wenig. Um oben zu bleiben, brauchst du makellose Landungen, Aufträge und gute Hotels."
+            "value": "Glückwunsch, Lehrling, du hast die 4,5-Sterne-Marke geknackt! Aber Vorsicht: Die Erwartungen sind jetzt viel höher. Passagiere wollen Perfektion. Eine ordentliche Landung bringt keine Punkte mehr, eine Landung weit vom Ziel kostet doppelt so viel, und deine Beliebtheit bröckelt jeden Tag ein wenig. Um oben zu bleiben, brauchst du makellose Landungen, Aufträge und gute Hotels."
           }
         },
         "en": {
@@ -30869,7 +30869,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Atölyen açıldı evlat! Şimdilik tasarım yaparsın. Binayı büyüttükçe kendi balonlarını üretirsin: önce küçük, sonra orta, sonra büyük, hem de piyasanın altına (indirim: %@). Rakipler de senden balon sipariş etmeye başlar; kabul edersen kârı sen alırsın."
+            "value": "Atölyen açıldı evlat! Şimdilik tasarım yaparsın. Binayı büyüttükçe kendi balonlarını üretirsin: önce küçük, sonra orta, sonra büyük, hem de piyasa fiyatının altında (indirim: %@). Rakipler de senden balon sipariş etmeye başlar; kabul edersen kârı sen alırsın."
           }
         }
       }
@@ -31115,7 +31115,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Amiral balonun tamirden çıktı evlat: %@. Yeniden amiral o, bugünden itibaren onu uçuruyorsun."
+            "value": "Amiral balonun onarımdan çıktı evlat: %@. Yeniden amiral o, bugünden itibaren onu uçuruyorsun."
           }
         }
       }
@@ -31191,7 +31191,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "창업자 팩이 도착했네, 제자여! 상품: %@. 무늬와 모양 열기구는 디자인 공방에, 장식은 마을에, 도형은 쇼 카드에 있다네."
+            "value": "창업자 팩이 도착했네, 제자여! 상품: %@. 무늬와 모양 열기구는 디자인 스튜디오에, 장식은 마을에, 도형은 쇼 카드에 있다네."
           }
         },
         "tr": {
@@ -31232,7 +31232,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "창업자 팩이 도착했네, 제자여! 상품: %1$@. 무늬와 모양 열기구는 디자인 공방에, 장식은 마을에, 도형은 쇼 카드에 있다네. 기함에 첫 모양을 입혔네: %2$@ (%3$@)."
+            "value": "창업자 팩이 도착했네, 제자여! 상품: %1$@. 무늬와 모양 열기구는 디자인 스튜디오에, 장식은 마을에, 도형은 쇼 카드에 있다네. 기함에 첫 모양을 입혔네: %2$@ (%3$@)."
           }
         },
         "tr": {
@@ -31279,7 +31279,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Her büyük şirketin bir yol haritası olur evlat. Hedef butonuna dokun: bölüm hedeflerin orada yazıyor. Dört bölümü bitiren Kapadokya'nın baronu olur, sonra da dünya seni bekler."
+            "value": "Her büyük şirketin bir yol haritası olur evlat. Hedef düğmesine dokun: bölüm hedeflerin orada yazıyor. Dört bölümü bitiren Kapadokya'nın baronu olur, sonra da dünya seni bekler."
           }
         }
       }
@@ -31290,7 +31290,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Büro der Reiseführer hat geöffnet, Lehrling. Nimm Hotel- und Tourguides kostenlos mit, dann schicken sie dir ihre Gäste: Beliebtheit und ein paar Tage lang mehr Touristen."
+            "value": "Das Guide-Büro hat geöffnet, Lehrling. Nimm Hotel- und Tourguides kostenlos mit, dann schicken sie dir ihre Gäste: Beliebtheit und ein paar Tage lang mehr Touristen."
           }
         },
         "en": {
@@ -31302,7 +31302,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La oficina de guías ha abierto, aprendiz. Vuela gratis con los guías de hoteles y tours y te mandarán a sus clientes: popularidad y más turistas durante unos días."
+            "value": "La oficina de guías ha abierto, aprendiz. Lleva gratis a los guías de hotel y de turismo y te mandarán a sus clientes: popularidad y más turistas durante unos días."
           }
         },
         "ja": {
@@ -31349,13 +31349,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "お前の祖父の話をまだしていなかったな。ハサンはまさにこの畑から、カッパドキア最初の気球の一つを揚げた。会社は大きくなったが、ある不作の季節に借金を抱えた。ケナン・アルスランがその借金を安く買い集め、会社を奪った。ハサンは二度と飛ばなかった。バスケットはわしが預かっておいた。今日、そのバスケットがまた空を飛んだのだ。"
+            "value": "お前の祖父の話をまだしていなかったな。ハサンはまさにこの畑から、カッパドキア最初の気球の一つを揚げた。会社は大きくなったが、ある不振のシーズンに借金を抱えた。ケナン・アルスランがその借金を安く買い集め、会社を奪った。ハサンは二度と飛ばなかった。バスケットはわしが預かっておいた。今日、そのバスケットがまた空を飛んだのだ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "할아버지 이야기를 한 번도 해 준 적이 없구나. 하산은 바로 이 밭에서 카파도키아 최초의 열기구 중 하나를 띄웠단다. 회사는 커졌지만 어느 나쁜 시즌에 빚을 졌지. 케난 아르슬란이 그 빚을 헐값에 사들여 회사를 빼앗았다. 하산은 다시는 날지 않았어. 바스켓은 내가 간직했지. 오늘 그 바스켓이 다시 하늘을 날았구나."
+            "value": "자네 할아버지 이야기를 한 번도 해 준 적이 없었지, 제자여. 하산은 바로 이 들판에서 카파도키아 최초의 열기구 중 하나를 띄웠다네. 회사는 커졌지만 어느 나쁜 시즌에 빚을 지고 말았지. 케난 아르슬란이 그 빚을 헐값에 사들여 회사를 빼앗았네. 하산은 다시는 날지 않았지. 바스켓은 내가 간직해 두었네. 오늘 그 바스켓이 다시 하늘을 날았구먼."
           }
         },
         "tr": {
@@ -31402,7 +31402,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Artık bir holdingin var evlat! Holding butonuna dokun. Kapadokya kasasından holdinge para çekebilirsin; Albuquerque'nin giriş bedeli holdingden ödenir. Bir uyarı: holding parası ülkelere geri dönmez, her ülke kendi kasasıyla büyür."
+            "value": "Artık bir holdingin var evlat! Holding düğmesine dokun. Kapadokya kasasından holdinge para çekebilirsin; Albuquerque'nin giriş bedeli holdingden ödenir. Bir uyarı: holding parası ülkelere geri dönmez, her ülke kendi kasasıyla büyür."
           }
         }
       }
@@ -31929,7 +31929,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "헤자르펜 장인"
+            "value": "헤자르펜 스승"
           }
         },
         "tr": {
@@ -32110,7 +32110,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du hast ein Gebäude ausgebaut. Dein Städtchen wächst mit dir, mein Kind. Das von Weitem zu sehen macht mich stolz."
+            "value": "Du hast ein Gebäude ausgebaut. Dein Städtchen wächst mit dir, Lehrling. Das von Weitem zu sehen macht mich stolz."
           }
         },
         "en": {
@@ -32122,7 +32122,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ampliaste un edificio. Tu pueblo crece contigo, muchacho. Verlo de lejos me llena de orgullo."
+            "value": "Ampliaste un edificio. Tu pueblo crece contigo, aprendiz. Verlo de lejos me llena de orgullo."
           }
         },
         "ja": {
@@ -32151,7 +32151,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein zweiter Ballon! Die Firma wächst, mein Kind. Gut gerechnet, und die Kasse hast du nicht geleert."
+            "value": "Ein zweiter Ballon! Die Firma wächst, Lehrling. Gut gerechnet, und die Kasse hast du nicht geleert."
           }
         },
         "en": {
@@ -32163,7 +32163,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Un segundo globo! La empresa crece, muchacho. Echaste bien las cuentas y no vaciaste la caja."
+            "value": "¡Un segundo globo! La empresa crece, aprendiz. Echaste bien las cuentas y no vaciaste la caja."
           }
         },
         "ja": {
@@ -32192,7 +32192,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du hast mit einem Hotel abgeschlossen, klug! Die Gäste kommen jetzt direkt zu dir. Am Anfang ist nichts wertvoller."
+            "value": "Du hast einen Hotelvertrag geschlossen. Kluger Zug! Die Gäste kommen jetzt direkt zu dir. Am Anfang ist nichts wertvoller."
           }
         },
         "en": {
@@ -32204,7 +32204,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Firmaste con un hotel, muy listo! Ahora los huéspedes vendrán directo a ti. Al principio no hay nada más valioso."
+            "value": "Firmaste con un hotel. ¡Bien pensado! Ahora los huéspedes vendrán directo a ti. Al principio no hay nada más valioso."
           }
         },
         "ja": {
@@ -32233,7 +32233,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du hast den Sonderwunsch erfüllt! Solche Kunden tragen deinen Namen weiter. Du machst das gut, mein Kind."
+            "value": "Du hast den Sonderwunsch erfüllt! Solche Kunden tragen deinen Namen weiter. Du machst das gut, Lehrling."
           }
         },
         "en": {
@@ -32245,7 +32245,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Cumpliste el encargo especial! Clientes así corren la voz. Vas muy bien, muchacho."
+            "value": "¡Cumpliste el encargo especial! Clientes así corren la voz. Vas muy bien, aprendiz."
           }
         },
         "ja": {
@@ -32274,7 +32274,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Was für eine Landung! Der Korb setzte auf wie eine Feder. Deine Passagiere werden noch jahrelang davon erzählen. Weiter so, mein Kind."
+            "value": "Was für eine Landung! Der Korb setzte auf wie eine Feder. Deine Passagiere werden noch jahrelang davon erzählen. Weiter so, Lehrling."
           }
         },
         "en": {
@@ -32286,7 +32286,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Menudo aterrizaje! La cesta se posó como una pluma. Tus pasajeros lo contarán durante años. Sigue así, muchacho."
+            "value": "¡Menudo aterrizaje! La cesta se posó como una pluma. Tus pasajeros lo contarán durante años. Sigue así, aprendiz."
           }
         },
         "ja": {
@@ -32315,7 +32315,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du hast deinen ersten Piloten eingestellt. Richtig so, mein Kind: Ein Chef kann nicht jeden Ballon selbst fliegen. Vertrau deinem Piloten, dann vertraut er dir."
+            "value": "Du hast deinen ersten Piloten eingestellt. Richtig so, Lehrling: Ein Chef kann nicht jeden Ballon selbst fliegen. Vertrau deinem Piloten, dann vertraut er dir."
           }
         },
         "en": {
@@ -32327,7 +32327,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Contrataste a tu primer piloto. Buena decisión, muchacho: un jefe no puede volar todos los globos. Confía en tu piloto y confiará en ti."
+            "value": "Contrataste a tu primer piloto. Buena decisión, aprendiz: un jefe no puede volar todos los globos. Confía en tu piloto y confiará en ti."
           }
         },
         "ja": {
@@ -32356,7 +32356,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Fünf Tage Gewinn in Folge! Du machst das großartig, mein Kind. Halte die Kasse so stark, dann macht dir der Winter keine Angst."
+            "value": "Fünf Tage Gewinn in Folge! Du machst das großartig, Lehrling. Halte die Kasse so stark, dann macht dir der Winter keine Angst."
           }
         },
         "en": {
@@ -32368,7 +32368,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Cinco días seguidos de beneficios! Lo estás haciendo genial, muchacho. Si mantienes la caja así de fuerte, el invierno no te asustará."
+            "value": "¡Cinco días seguidos de beneficios! Lo estás haciendo genial, aprendiz. Si mantienes la caja así de fuerte, el invierno no te asustará."
           }
         },
         "ja": {
@@ -32397,7 +32397,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bei roter Flagge bist du am Boden geblieben. Gut gemacht, mein Kind. Mut ist leicht, Geduld ist schwer. Der Himmel ist morgen auch noch da."
+            "value": "Bei roter Flagge bist du am Boden geblieben. Gut gemacht, Lehrling. Mut ist leicht, Geduld ist schwer. Der Himmel ist morgen auch noch da."
           }
         },
         "en": {
@@ -32409,7 +32409,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Con bandera roja te quedaste en tierra. Bien hecho, muchacho. El valor es fácil, la paciencia es difícil. El cielo seguirá ahí mañana."
+            "value": "Con bandera roja te quedaste en tierra. Bien hecho, aprendiz. El valor es fácil, la paciencia es difícil. El cielo seguirá ahí mañana."
           }
         },
         "ja": {
@@ -32479,7 +32479,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "4,3 Sterne! Dein Name spricht sich im Tal herum, mein Kind. Die Touristen fragen jetzt nach dir."
+            "value": "4,3 Sterne! Dein Name spricht sich im Tal herum, Lehrling. Die Touristen fragen jetzt nach dir."
           }
         },
         "en": {
@@ -32491,7 +32491,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡4,3 estrellas! Tu nombre empieza a sonar en el valle, muchacho. Los turistas ya preguntan por ti."
+            "value": "¡4,3 estrellas! Tu nombre empieza a sonar en el valle, aprendiz. Los turistas ya preguntan por ti."
           }
         },
         "ja": {
@@ -32532,7 +32532,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu popularidad ha tocado techo, aprendiz. Por bien que vueles, sin acuerdos con hoteles ni vuelos con los guías tu nombre no pasará de 4,2 estrellas; una campaña con influencers te lleva como mucho a 4,5. Mira los hoteles y las agencias del pueblo."
+            "value": "Tu popularidad ha tocado techo, aprendiz. Por bien que vueles, sin acuerdos con hoteles ni vuelos promocionales para guías tu nombre no pasará de 4,2 estrellas; una campaña con influencers te lleva como mucho a 4,5. Mira los hoteles y las agencias del pueblo."
           }
         },
         "ja": {
@@ -32661,7 +32661,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@から知らせだ、弟子よ。%2$@ お前が決めるまで、そこの収入は半分になる。ホーム画面の警告を押すか、ホールディングスを開け。"
+            "value": "%1$@から知らせだ、弟子よ。%2$@お前が決めるまで、そこの収入は半分になる。ホーム画面の警告を押すか、ホールディングスを開け。"
           }
         },
         "ko": {
@@ -32684,7 +32684,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gut gemacht, Lehrling, die Kasse ist wieder im Plus. Jetzt halten wir die Kosten knapp."
+            "value": "Gut gemacht, Lehrling, die Kasse ist wieder im Plus. Jetzt halten wir die Kosten niedrig."
           }
         },
         "en": {
@@ -32784,7 +32784,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "第二の秘訣：人気は値段に勝る。観光客は人気の二乗でお前を選ぶ。値下げの前に星を磨き、ホテルと契約せよ。提携ホテルの客はライバルに見向きもせん。"
+            "value": "第二の秘訣は人気だ。人気は値段に勝る。観光客は人気の二乗でお前を選ぶ。値下げの前に星を磨き、ホテルと契約せよ。提携ホテルの客はライバルに見向きもせん。"
           }
         },
         "ko": {
@@ -32860,7 +32860,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El solar de la escuela de pilotos también está listo. Con una escuela, cada mañana uno de los aspirantes es titulado: pilotos que tienen menos accidentes."
+            "value": "El solar de la escuela de pilotos también está listo. Con una escuela, cada mañana uno de los candidatos es un graduado: pilotos que tienen menos accidentes."
           }
         },
         "ja": {
@@ -32913,7 +32913,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "제자여, 선단이 커졌구먼. 어느 밤 모든 열기구를 마을 위에서 밝혀 열기구 쇼를 열어 보게! 기구마다 비용이 들지만 계곡 전체가 자네 얘기를 할 테고, 사흘 동안 쇼를 보러 온 관광객이 빈 좌석을 채워 줄 걸세. 15일에 한 번 열 수 있다네."
+            "value": "제자여, 기단이 커졌구먼. 어느 밤 모든 열기구를 마을 위에서 밝혀 열기구 쇼를 열어 보게! 기구마다 비용이 들지만 계곡 전체가 자네 얘기를 할 테고, 사흘 동안 쇼를 보러 온 관광객이 빈 좌석을 채워 줄 걸세. 15일에 한 번 열 수 있다네."
           }
         },
         "tr": {
@@ -32995,7 +32995,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "고마워요, 장인님"
+            "value": "고마워요, 스승님"
           }
         },
         "tr": {
@@ -33036,7 +33036,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "바자르로"
+            "value": "바자르로 가기"
           }
         },
         "tr": {
@@ -33258,7 +33258,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Weltbaron! Du hast alle Ziele der Holding erreicht, Lehrling. Als Mann, der von Galata nach Üsküdar geflogen ist, sage ich dir: Größeres habe ich nie gesehen."
+            "value": "Weltbaron! Du hast alle Ziele der Holding erreicht, Lehrling. Als Mann, der von Galata nach Üsküdar geflogen ist, sage ich dir: Einen Größeren als dich habe ich nie gesehen."
           }
         },
         "en": {
@@ -33422,7 +33422,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein prominentes Werbegesicht"
+            "value": "Ein Promi als Werbegesicht"
           }
         },
         "en": {
@@ -33791,7 +33791,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hängen · Resttage: %@"
+            "value": "Aktiv · Resttage: %@"
           }
         },
         "en": {
@@ -33926,7 +33926,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Exterior"
+            "value": "Publicidad exterior"
           }
         },
         "ja": {
@@ -34242,7 +34242,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prominentes Werbegesicht"
+            "value": "Promi als Werbegesicht"
           }
         },
         "en": {
@@ -34254,7 +34254,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Famoso como imagen"
+            "value": "Rostro famoso"
           }
         },
         "ja": {
@@ -34652,7 +34652,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vorbereitung: %@ Tage"
+            "value": "Vorbereitungstage: %@"
           }
         },
         "en": {
@@ -34869,7 +34869,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entrada de %1$@ del holding. Empiezas desde cero: %2$@ y un globo pequeño."
+            "value": "Cuota de entrada: %1$@, a cargo del holding. Empiezas desde cero: %2$@ y un globo pequeño."
           }
         },
         "ja": {
@@ -36181,7 +36181,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Romper el contrato · multa %@"
+            "value": "Romper el contrato · penalización %@"
           }
         },
         "ja": {
@@ -36263,7 +36263,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La multa es lo que la marca te ha pagado hasta ahora más la mitad del tiempo restante. Romper siempre te cuesta."
+            "value": "La penalización es lo que la marca te ha pagado hasta ahora más la mitad del tiempo restante. Romper siempre te cuesta."
           }
         },
         "ja": {
@@ -36714,7 +36714,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tus globos planeando al amanecer, en los canales nacionales justo antes del telediario."
+            "value": "Tus globos planeando al amanecer, en los canales nacionales justo antes de las noticias de la noche."
           }
         },
         "ja": {
@@ -36755,7 +36755,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Horario estelar"
+            "value": "Máxima audiencia"
           }
         },
         "ja": {
@@ -37206,7 +37206,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pasado el día %@, los pasajeros empiezan a preguntar por el fundador y tu popularidad se desgasta."
+            "value": "Tras %@ días sin volar, los pasajeros empiezan a preguntar por el fundador y tu popularidad se desgasta."
           }
         },
         "ja": {
@@ -37452,7 +37452,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La autoridad de competencia te vigila."
+            "value": "La Autoridad de la Competencia te vigila."
           }
         },
         "ja": {
@@ -37546,7 +37546,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "오늘 기함을 직접 조종하거나(무료 갱신 비행) %@를 내고 갱신하세요. 탭하면 크루로 갑니다."
+            "value": "오늘 기함을 직접 조종하거나(무료 갱신 비행) %@ 비용을 내고 갱신하세요. 탭하면 크루로 갑니다."
           }
         },
         "tr": {
@@ -37563,7 +37563,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Flieg für deine Lizenz."
+            "value": "Flieg selbst, um deine Lizenz zu behalten."
           }
         },
         "en": {
@@ -37628,7 +37628,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "남은 일수: %1$@. 그때까지 직접 비행하지 않으면 면허가 만료됩니다. 다른 열기구는 지상에 묶이고, 직접 비행하거나 %2$@를 내야 합니다."
+            "value": "남은 일수: %1$@. 그때까지 직접 비행하지 않으면 면허가 만료됩니다. 다른 열기구는 지상에 묶이고, 직접 비행하거나 %2$@ 비용을 내야 합니다."
           }
         },
         "tr": {
@@ -37669,7 +37669,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "오늘 직접 비행하지 않으면 면허가 만료됩니다. 다른 열기구는 지상에 묶이고, 직접 비행하거나 %@를 내야 합니다."
+            "value": "오늘 직접 비행하지 않으면 면허가 만료됩니다. 다른 열기구는 지상에 묶이고, 직접 비행하거나 %@ 비용을 내야 합니다."
           }
         },
         "tr": {
@@ -37698,7 +37698,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@, día %2$@/3!"
+            "value": "¡%1$@, día %2$@/3!"
           }
         },
         "ja": {
@@ -38055,7 +38055,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tage bis die Nilschiffe anlegen: %@."
+            "value": "Tage, bis die Nilschiffe anlegen: %@."
           }
         },
         "en": {
@@ -38530,7 +38530,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "갱신 비행을 할 수 없습니다. 다른 열기구를 기함으로 지정하거나 %@를 내고 면허를 갱신하세요. 탭하면 기단으로 갑니다."
+            "value": "갱신 비행을 할 수 없습니다. 다른 열기구를 기함으로 지정하거나 %@ 비용을 내고 면허를 갱신하세요. 탭하면 기단으로 갑니다."
           }
         },
         "tr": {
@@ -38571,7 +38571,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "갱신 비행을 할 수 없습니다. 외피를 교체하거나, 다른 열기구를 기함으로 지정하거나, %@를 내고 면허를 갱신하세요. 탭하면 기단으로 갑니다."
+            "value": "갱신 비행을 할 수 없습니다. 외피를 교체하거나, 다른 열기구를 기함으로 지정하거나, %@ 비용을 내고 면허를 갱신하세요. 탭하면 기단으로 갑니다."
           }
         },
         "tr": {
@@ -38805,7 +38805,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Recoger pasajeros"
+            "value": "Reunir pasajeros"
           }
         },
         "ja": {
@@ -38998,7 +38998,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Flotte: %1$@/%2$@ fliegen"
+            "value": "Flotte in der Luft: %1$@/%2$@"
           }
         },
         "en": {
@@ -39801,7 +39801,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "면허가 만료되어 다른 열기구는 운항할 수 없습니다. 오늘 기함을 직접 조종하거나(무료 갱신 비행) %@를 내고 갱신하세요."
+            "value": "면허가 만료되어 다른 열기구는 운항할 수 없습니다. 오늘 기함을 직접 조종하거나(무료 갱신 비행) %@ 비용을 내고 갱신하세요."
           }
         },
         "tr": {
@@ -39924,7 +39924,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "알림 더 보기: +%@"
+            "value": "추가 알림: +%@"
           }
         },
         "tr": {
@@ -40381,7 +40381,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Balonlarının pilotu yok. Birini kendin uçur ya da pilot al."
+            "value": "Balonlarının pilotu yok. Birini kendin uçur ya da pilot işe al."
           }
         }
       }
@@ -40451,13 +40451,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "気球は修理中かすり切れている。フリートを確認しよう。"
+            "value": "気球は修理中か、球皮が寿命を迎えている。フリートを確認しよう。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "열기구가 수리 중이거나 닳았습니다. 함대를 확인하세요."
+            "value": "열기구가 수리 중이거나 닳았습니다. 기단을 확인하세요."
           }
         },
         "tr": {
@@ -40492,13 +40492,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "気球の外皮がすり切れた。フリートで交換しよう。"
+            "value": "気球の球皮が寿命を迎えた。フリートで交換しよう。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "열기구 외피가 닳았습니다. 함대에서 교체하세요."
+            "value": "열기구 외피가 닳았습니다. 기단에서 교체하세요."
           }
         },
         "tr": {
@@ -40574,7 +40574,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "飛行計画を開く"
+            "value": "フライト計画を開く"
           }
         },
         "ko": {
@@ -41066,7 +41066,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "✓ 保険"
+            "value": "✓ 保険あり"
           }
         },
         "ko": {
@@ -41704,7 +41704,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ ist pleite, und das Hotel, das sie dir abgekauft haben, %2$@, steht zum Verkauf."
+            "value": "%1$@ ist pleite, und %2$@, das Hotel, das die Firma dir abgekauft hat, steht zum Verkauf."
           }
         },
         "en": {
@@ -41728,7 +41728,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@이(가) 파산했고, 당신에게서 사 간 %2$@이(가) 매물로 나왔습니다."
+            "value": "%1$@ 측이 파산해, 당신에게서 사 간 호텔이 매물로 나왔습니다: %2$@."
           }
         },
         "tr": {
@@ -41745,7 +41745,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Verzichten: es geht zurück auf den Markt"
+            "value": "Verzichten: Es geht zurück auf den Markt"
           }
         },
         "en": {
@@ -41769,7 +41769,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "넘기기: 호텔은 다시 시장으로 돌아갑니다"
+            "value": "포기하기: 호텔은 다시 시장에 나옵니다"
           }
         },
         "tr": {
@@ -41892,7 +41892,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%2$@은(는) %1$@이(가) 사들입니다. 이 호텔과는 다시 계약할 수 없고, 그 회사에서 되사는 수밖에 없습니다."
+            "value": "%1$@ 측이 사들입니다: %2$@. 이 호텔과는 다시 계약할 수 없고, 그 회사에서 되사는 수밖에 없습니다."
           }
         },
         "tr": {
@@ -41933,7 +41933,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@은(는) 지역 투자자가 사들입니다. 나중에 다시 계약할 수 있습니다."
+            "value": "지역 투자자가 사들입니다: %@. 나중에 다시 계약할 수 있습니다."
           }
         },
         "tr": {
@@ -43016,7 +43016,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "TV läuft, %@ Tage"
+            "value": "TV läuft · Resttage: %@"
           }
         },
         "en": {
@@ -43245,7 +43245,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "정기 점검입니다. 열기구 %1$@의 외피이 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다."
+            "value": "정기 점검입니다. 열기구 %1$@의 외피가 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다."
           }
         },
         "tr": {
@@ -43286,7 +43286,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "정기 점검입니다. 열기구 %1$@의 외피이 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다."
+            "value": "정기 점검입니다. 열기구 %1$@의 외피가 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다."
           }
         },
         "tr": {
@@ -43327,7 +43327,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "두 번째 경고입니다. %1$@의 외피이 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다."
+            "value": "두 번째 경고입니다. %1$@의 외피가 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다."
           }
         },
         "tr": {
@@ -43368,7 +43368,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "두 번째 경고입니다. %1$@의 외피이 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다."
+            "value": "두 번째 경고입니다. %1$@의 외피가 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다."
           }
         },
         "tr": {
@@ -43409,7 +43409,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이번 점검에서도 %1$@의 외피이 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다."
+            "value": "이번 점검에서도 %1$@의 외피가 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다."
           }
         },
         "tr": {
@@ -43450,7 +43450,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이번 점검에서도 %1$@의 외피이 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다."
+            "value": "이번 점검에서도 %1$@의 외피가 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다."
           }
         },
         "tr": {
@@ -44545,7 +44545,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La popularidad baja un poco, pero la historia se cierra."
+            "value": "La popularidad baja un poco, pero el asunto queda zanjado."
           }
         },
         "ja": {
@@ -44586,7 +44586,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Te trasladas a la región; la popularidad baja un poco, pero la historia se cierra."
+            "value": "Te trasladas a la región; la popularidad baja un poco, pero el asunto queda zanjado."
           }
         },
         "ja": {
@@ -45324,7 +45324,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dejarlo ir"
+            "value": "Dejar que se vaya"
           }
         },
         "ja": {
@@ -45722,7 +45722,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Deine Piloten bleiben drei Tage weg, nur du fliegst, im Flaggschiff."
+            "value": "Deine Piloten bleiben drei Tage weg; nur du fliegst, mit dem Flaggschiff."
           }
         },
         "en": {
@@ -46103,7 +46103,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mitad y mitad: o no pasa nada o baja tu popularidad."
+            "value": "Cara o cruz: o no pasa nada o baja tu popularidad."
           }
         },
         "ja": {
@@ -46144,7 +46144,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mitad y mitad: no pasa nada o los ingresos bajan un 25 % durante 10 días."
+            "value": "Cara o cruz: no pasa nada o los ingresos bajan un 25 % durante 10 días."
           }
         },
         "ja": {
@@ -47005,7 +47005,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Prima del vuelo con el fundador"
+            "value": "Extra por volar con el fundador"
           }
         },
         "ja": {
@@ -47093,7 +47093,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ホテル契約"
+            "value": "ホテル契約料"
           }
         },
         "ko": {
@@ -47134,7 +47134,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ホテル客室"
+            "value": "ホテル客室収入"
           }
         },
         "ko": {
@@ -47913,7 +47913,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ナイルの上で高度150m以下に下り、ファルーカに挨拶しよう。"
+            "value": "ナイルの上で高度150 m以下に下り、ファルーカに挨拶しよう。"
           }
         },
         "ko": {
@@ -48850,7 +48850,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La ciudad del mayor festival de globos del mundo. Los famosos vientos de «caja» te devuelven a donde despegaste. Entrada de %@ del holding (licencia FAA y oficina); empiezas desde cero en la región."
+            "value": "La ciudad del mayor festival de globos del mundo. Los famosos vientos de «caja» te devuelven a donde despegaste. Cuota de entrada: %@, a cargo del holding (licencia FAA y oficina); empiezas desde cero en la región."
           }
         },
         "ja": {
@@ -48891,7 +48891,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Empiezas con 5.000 €. Entrada de %@ del holding."
+            "value": "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Empiezas con 5.000 €. Cuota de entrada: %@, a cargo del holding."
           }
         },
         "ja": {
@@ -49553,7 +49553,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "保有気球が売りに出ている。"
+            "value": "フリートが売りに出ている。"
           }
         },
         "ko": {
@@ -49594,7 +49594,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "保有気球は売却済み。"
+            "value": "フリートは売却済み。"
           }
         },
         "ko": {
@@ -51164,7 +51164,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ortayolcu. Sarı bayrakta da uçar."
+            "value": "Orta karar. Sarı bayrakta da uçar."
           }
         }
       }
@@ -52458,7 +52458,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ y %2$@ no soportaron que tengas el %3$@ del mercado y unieron fuerzas. La nueva empresa: %4$@."
+            "value": "%1$@ y %2$@ no soportaron que tuvieras el %3$@ del mercado y unieron fuerzas. La nueva empresa: %4$@."
           }
         },
         "ja": {
@@ -52610,7 +52610,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ich bin bereit zu kämpfen"
+            "value": "Auf in den Kampf!"
           }
         },
         "en": {
@@ -52634,7 +52634,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "싸울 준비가 됐다"
+            "value": "싸울 준비 됐어요"
           }
         },
         "tr": {
@@ -52856,7 +52856,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Überfliege das markierte Tal tiefer als 150 m."
+            "value": "Überfliege das markierte Tal tief, unter 150 m."
           }
         },
         "en": {
@@ -52874,7 +52874,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "印の谷の上を150 m以下で低く通過。"
+            "value": "印のついた谷の上を150 m以下で低く通過。"
           }
         },
         "ko": {
@@ -53489,13 +53489,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "この気球に空いているパイロットがいない。チームのページで新しいパイロットを雇う？"
+            "value": "この気球に空いているパイロットがいない。クルー画面で新しいパイロットを雇う？"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이 열기구를 맡을 조종사가 없습니다. 팀 페이지에서 새 조종사를 고용할까요?"
+            "value": "이 열기구를 맡을 조종사가 없습니다. 크루 페이지에서 새 조종사를 고용할까요?"
           }
         },
         "tr": {
@@ -53530,13 +53530,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "チームへ"
+            "value": "クルーへ"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "팀으로 가기"
+            "value": "크루로 가기"
           }
         },
         "tr": {
@@ -53606,7 +53606,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vale"
+            "value": "Entendido"
           }
         },
         "ja": {
@@ -54274,7 +54274,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이 바구니는 네 할아버지 하산의 것이었네. 카파도키아 최초의 열기구 중 하나였지. 천도 준비됐고, 바구니도 준비됐네. 이제 이름만 있으면 되네."
+            "value": "이 바스켓은 자네 할아버지 하산의 것이었네, 제자여. 카파도키아 최초의 열기구 중 하나였지. 천도 준비됐고, 바스켓도 준비됐네. 이제 이름만 있으면 되네."
           }
         },
         "tr": {
@@ -54315,7 +54315,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이름을 지어 주자"
+            "value": "이름을 지어 볼까요"
           }
         },
         "tr": {
@@ -54619,7 +54619,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Piloten sind zufrieden, Lehrling, heute sind alle in ihren Körben. Aber die Lohnliste ist gewachsen, also pass deine Preise an."
+            "value": "Die Piloten sind zufrieden, Lehrling, heute sind alle in ihren Körben. Aber die Gehaltskosten sind gestiegen, also pass deine Preise an."
           }
         },
         "en": {
@@ -56699,7 +56699,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Erken kalkan balon yolcuları da gördüğünü söylüyor."
+            "value": "Erken kalkan balon yolcuları da gördüklerini söylüyor."
           }
         }
       }
@@ -59129,7 +59129,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Sie haben %1$@ (%2$@) %3$@ pro Tag angeboten. Im Moment verdient er %4$@. Damit er bleibt, musst du das Gehalt angleichen."
+            "value": "Sie haben %1$@ (%2$@) %3$@ pro Tag geboten. Bisheriges Gehalt: %4$@. Ziehst du beim Gehalt nicht gleich, ist der Pilot weg."
           }
         },
         "en": {
@@ -59153,7 +59153,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@(%2$@)에게 하루 %3$@를 제안했습니다. 지금은 %4$@를 받습니다. 붙잡으려면 급여를 맞춰야 합니다."
+            "value": "%1$@(%2$@)에게 하루 %3$@의 급여를 제안했습니다. 현재 급여는 %4$@입니다. 붙잡으려면 급여를 맞춰야 합니다."
           }
         },
         "tr": {
@@ -59282,7 +59282,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@ pilotunu istiyor"
+            "value": "%@ senin pilotunu istiyor"
           }
         }
       }
@@ -59592,7 +59592,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Turistas hoy: %1$@. Plazas en el cielo, rivales incluidos: %2$@. Hay más turistas que plazas, los globos se llenan fácil."
+            "value": "Turistas hoy: %1$@. Plazas en el cielo, rivales incluidos: %2$@. Hay más turistas que plazas, los globos se llenan con facilidad."
           }
         },
         "ja": {
@@ -60769,7 +60769,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bist du sicher, mein Kind?"
+            "value": "Bist du sicher, Lehrling?"
           }
         },
         "en": {
@@ -60781,7 +60781,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¿Estás seguro, muchacho?"
+            "value": "¿Seguro, aprendiz?"
           }
         },
         "ja": {
@@ -61015,7 +61015,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Betreten ›"
+            "value": "Einsteigen ›"
           }
         },
         "en": {
@@ -61056,7 +61056,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hin ›"
+            "value": "Wechseln ›"
           }
         },
         "en": {
@@ -61156,7 +61156,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "問題が判断待ち"
+            "value": "判断待ちの問題あり"
           }
         },
         "ko": {
@@ -61343,7 +61343,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Offen, bereit zum Eintritt"
+            "value": "Offen für den Einstieg"
           }
         },
         "en": {
@@ -61566,7 +61566,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "あなたの町で新しい一日が始まる。気球の準備はできているぞ。"
+            "value": "お前の町で新しい一日が始まる。気球の準備はできているぞ。"
           }
         },
         "ko": {
@@ -63751,7 +63751,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Boştaki pilotları çıkar: %@"
+            "value": "Boştaki pilotları işten çıkar: %@"
           }
         }
       }
@@ -63762,7 +63762,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du sparst %@ Lohn pro Tag."
+            "value": "Du sparst %@ Gehalt pro Tag."
           }
         },
         "en": {
@@ -63786,7 +63786,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "하루 인건비 %@를 아낍니다."
+            "value": "하루 인건비 절약: %@."
           }
         },
         "tr": {
@@ -63985,7 +63985,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "1日の宿泊客：約%1$@、評価も上がる。支払い後の資金：%2$@。"
+            "value": "1日の宿泊客：約%1$@、人気も上がる。支払い後の資金：%2$@。"
           }
         },
         "ko": {
@@ -64401,7 +64401,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@이(가) 바로 금고에 들어옵니다. 객실 수입과 손님은 끊깁니다."
+            "value": "즉시 금고에 %@ 입금. 객실 수입과 손님은 끊깁니다."
           }
         },
         "tr": {
@@ -64694,7 +64694,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uçuş güzeldi ama {s} reklamı romantizmi biraz öldürdü."
+            "value": "Uçuş güzeldi ama {s} reklamı romantizmi biraz bozdu."
           }
         }
       }
@@ -64934,7 +64934,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "{p} 냈어요. 앨버커키 최저가일지도."
+            "value": "{p} 냈어요. 앨버커키 최저가일지도요."
           }
         },
         "tr": {
@@ -64975,7 +64975,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "{p} 냈어요. 룩소르 최저가일지도."
+            "value": "{p} 냈어요. 룩소르 최저가일지도요."
           }
         },
         "tr": {
@@ -65215,7 +65215,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "「{d}」柄の気球を見て予約した。写真が最高！"
+            "value": "「{d}」デザインの気球を見て予約した。写真が最高！"
           }
         },
         "ko": {
@@ -66615,7 +66615,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "좋았지만 {p}는 좀 비싸요. 옆 회사는 더 싸게 탔대요."
+            "value": "좋았지만 {p} 내기엔 좀 비싸요. 옆 회사는 더 싸게 탔대요."
           }
         },
         "tr": {
@@ -66949,7 +66949,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hava yüzünden uçuş iptal oldu ama paramızı hemen iade ettiler. Güvenlik önce gelir."
+            "value": "Hava yüzünden uçuş iptal oldu ama paramızı hemen iade ettiler. Önce güvenlik."
           }
         }
       }
@@ -67388,7 +67388,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "遠くからカッパドキア・スターを見て予約した。後悔なし。"
+            "value": "遠くからカッパドキアの星を見て予約した。後悔なし。"
           }
         },
         "ko": {
@@ -67429,13 +67429,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "遠くからフィエスタ・スターを見て予約した。後悔なし。"
+            "value": "遠くからフィエスタの星を見て予約した。後悔なし。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "멀리서 피에스타 스타를 보고 예약했어요. 후회 없어요."
+            "value": "멀리서 피에스타의 별를 보고 예약했어요. 후회 없어요."
           }
         },
         "tr": {
@@ -67470,13 +67470,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "遠くからテーベ・スターを見て予約した。後悔なし。"
+            "value": "遠くからテーベの星を見て予約した。後悔なし。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "멀리서 테베 스타를 보고 예약했어요. 후회 없어요."
+            "value": "멀리서 테베의 별를 보고 예약했어요. 후회 없어요."
           }
         },
         "tr": {
@@ -68583,7 +68583,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "정말요? 모든 진행이 삭제됩니다. 다시 누르세요"
+            "value": "정말요? 모든 진행 상황이 삭제됩니다. 다시 누르세요"
           }
         },
         "tr": {
@@ -68946,7 +68946,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ポストカード・%@日目"
+            "value": "絵はがき・%@日目"
           }
         },
         "ko": {
@@ -69280,7 +69280,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "금고에 %@가 있어야 합니다."
+            "value": "금고에 %@ 이상이 있어야 합니다."
           }
         },
         "tr": {
@@ -69409,7 +69409,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bugünü tamamladığında bu gece kasabanın üstünde Balon Şöleni düzenlenecek: balonların gökyüzünde gösteri yapacak. Balon: %@. Gece animasyonunu kapatmış olsan da şöleni göreceksin."
+            "value": "Bugünü tamamladığında bu gece kasabanın üstünde Balon Şöleni düzenlenecek: balonların gökyüzünde gösteri yapacak. Balon: %@. Gece sahnesini kapatmış olsan da şöleni göreceksin."
           }
         }
       }
@@ -69420,7 +69420,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ein Ballon, der heute verunglückt, kann heute Nacht nicht mitmachen; seine Gebühr kommt zurück. Bleiben weniger als %@, fällt die Show aus und alle Gebühren kommen zurück."
+            "value": "Ein Ballon, der heute verunglückt, kann heute Nacht nicht mitmachen; seine Gebühr wird erstattet. Bleiben weniger als %@, fällt die Show aus und alle Gebühren werden erstattet."
           }
         },
         "en": {
@@ -69450,7 +69450,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bugün kaza yapan balon olursa o gece şölene çıkamaz; ücreti kasana geri döner. Şu sayının altına düşersen şölen iptal olur ve bütün ücretler geri döner: %@."
+            "value": "Bugün kaza yapan balon olursa o gece şölene çıkamaz; ücreti kasana geri döner. Uçabilen balon şu sayının altına düşerse şölen iptal olur ve bütün ücretler geri döner: %@."
           }
         }
       }
@@ -69567,7 +69567,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "선단에 맞춤"
+            "value": "기단에 맞춤"
           }
         },
         "tr": {
@@ -69625,7 +69625,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "10 Tage lang hebt sie die Beliebtheitsgrenze an, wie ein Hotel oder ein Führerflug"
+            "value": "10 Tage lang hebt sie die Beliebtheitsgrenze an, wie ein Hotel oder ein Werbeflug für Guides"
           }
         },
         "en": {
@@ -69643,7 +69643,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "10日間、ホテルやガイド飛行のように人気の上限を引き上げる"
+            "value": "10日間、ホテルやガイド招待フライトのように人気の上限を引き上げる"
           }
         },
         "ko": {
@@ -70457,7 +70457,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vale"
+            "value": "Entendido"
           }
         },
         "ja": {
@@ -70516,7 +70516,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Balon Şöleni Düzenle"
+            "value": "Balon Şöleni düzenle"
           }
         }
       }
@@ -70978,7 +70978,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Wetter passt zum Fliegen. Setzt du aus, gibt es heute keine Ticketeinnahmen, Löhne und Wartung zahlst du trotzdem."
+            "value": "Das Wetter passt zum Fliegen. Setzt du aus, gibt es heute keine Ticketeinnahmen, Gehälter und Wartung zahlst du trotzdem."
           }
         },
         "en": {
@@ -70996,7 +70996,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "飛ぶのに良い天気だ。休むと今日のチケット収入はないが、給料と維持費はかかる。"
+            "value": "飛ぶのに良い天気だ。休むと今日のチケット収入はないが、給料と整備費はかかる。"
           }
         },
         "ko": {
@@ -71049,7 +71049,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bugünü pas geç?"
+            "value": "Bugün pas mı geçiyorsun?"
           }
         }
       }
@@ -71388,7 +71388,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Lieber nicht"
+            "value": "Nicht jetzt"
           }
         },
         "en": {
@@ -71986,7 +71986,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "헤자르펜 장인의 선물, 무료."
+            "value": "헤자르펜 스승의 선물, 무료."
           }
         },
         "tr": {
@@ -72290,7 +72290,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Öffnet Ägyptens Tor für immer: der Nil, das Tal der Könige und der härteste Ballonmarkt der Welt. Die Eintrittsgebühr im Spiel zahlt weiterhin die Holding."
+            "value": "Öffnet Ägyptens Tor für immer: der Nil, das Tal der Könige und der härteste Ballonmarkt der Welt. Die Einstiegsgebühr im Spiel zahlt weiterhin die Holding."
           }
         },
         "en": {
@@ -72349,7 +72349,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "バルーンショーのフィナーレで、気球が空に会社の頭文字を描く。文字：%@。ずっと使え、ショーのカードで選べる。"
+            "value": "バルーンショーのフィナーレで、気球が空に会社の頭文字を描く。文字：%@。ずっと使えて、ショーのカードで選べる。"
           }
         },
         "ko": {
@@ -72390,7 +72390,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "バルーンショーのフィナーレで、気球が空にこの図形を描く。ずっと使え、ショーのカードで好きな図形を選べる。"
+            "value": "バルーンショーのフィナーレで、気球が空にこの図形を描く。ずっと使えて、ショーのカードで好きな図形を選べる。"
           }
         },
         "ko": {
@@ -72431,7 +72431,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "バルーンショーのフィナーレ用の5つの図形：星、チューリップ、蝶、渦巻き、そして会社の頭文字。ずっと使え、ショーのカードで選べる。"
+            "value": "バルーンショーのフィナーレ用の5つの図形：星、チューリップ、蝶、渦巻き、そして会社の頭文字。ずっと使えて、ショーのカードで選べる。"
           }
         },
         "ko": {
@@ -72519,7 +72519,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "특별한 모양의 외피. 완성 디자인으로 와서 바로 기함에 입혀지며 매 비행마다 추가 인기를 줍니다."
+            "value": "특별한 모양의 외피. 완성 디자인으로 와서 바로 기함에 입혀지며 비행마다 추가 인기를 줍니다."
           }
         },
         "tr": {
@@ -72548,7 +72548,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El Gran Tour, todo el Pack Fundador y una placa de apoyo en tu pueblo. El mayor apoyo para quienes desarrollan este juego."
+            "value": "El Gran Tour, todo el Pack Fundador y una placa de mecenas en tu pueblo. El mayor apoyo para quienes desarrollan este juego."
           }
         },
         "ja": {
@@ -72577,7 +72577,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jenseits von Kappadokien: Albuquerque in Amerika, dann Luxor in Ägypten und alle kommenden Regionen. Die Eintrittsgebühr im Spiel zahlt weiterhin die Holding."
+            "value": "Jenseits von Kappadokien: Albuquerque in Amerika, dann Luxor in Ägypten und alle kommenden Regionen. Die Einstiegsgebühr im Spiel zahlt weiterhin die Holding."
           }
         },
         "en": {
@@ -72589,7 +72589,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Más allá de Capadocia: Albuquerque en América, luego Luxor en Egipto y todas las regiones que vendrán. La cuota de entrada del juego se sigue pagando desde el holding."
+            "value": "Más allá de Capadocia: Albuquerque en Estados Unidos, luego Luxor en Egipto y todas las regiones que vendrán. La cuota de entrada del juego se sigue pagando desde el holding."
           }
         },
         "ja": {
@@ -72835,7 +72835,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "APOYO"
+            "value": "MECENAS"
           }
         },
         "ja": {
@@ -73122,7 +73122,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Edición de apoyo"
+            "value": "Edición Mecenas"
           }
         },
         "ja": {
@@ -73479,7 +73479,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "FAIR"
+            "value": "FAIRER LOHN"
           }
         },
         "en": {
@@ -73491,7 +73491,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "JUSTICIA"
+            "value": "SUELDO JUSTO"
           }
         },
         "ja": {
@@ -74147,7 +74147,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Llamativo! Todos le harán fotos."
+            "value": "¡Llamativo! Todos querrán fotografiarlo."
           }
         },
         "ja": {
@@ -74247,7 +74247,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ balonu yerde. Tamirde kalacağı gün: %2$@. Bu sürede başka bir balonda pilotluk yapmak ister misin? Evet dersen tamir bitene kadar onu sen uçurursun, sonra amiralin kendiliğinden geri döner. Hayır dersen diğer balonlarını pilotlar uçurur."
+            "value": "%1$@ balonu yerde. Onarımda kalacağı gün: %2$@. Bu sürede başka bir balonda pilotluk yapmak ister misin? Evet dersen onarım bitene kadar onu sen uçurursun, sonra amiralin kendiliğinden geri döner. Hayır dersen diğer balonlarını pilotlar uçurur."
           }
         }
       }
@@ -74370,7 +74370,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Amiral balonun tamirde"
+            "value": "Amiral balonun onarımda"
           }
         }
       }
@@ -74463,7 +74463,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kappadokien gehört dir. Mit der Weltreise geht es nach Albuquerque in Amerika, dann nach Luxor in Ägypten; du gründest deine eigene Holding und betrittst alle kommenden Regionen. Einmal gekauft."
+            "value": "Kappadokien gehört dir. Mit der Weltreise geht es nach Albuquerque in Amerika, dann nach Luxor in Ägypten; du gründest deine eigene Holding und erschließt alle kommenden Regionen. Einmaliger Kauf."
           }
         },
         "en": {
@@ -74475,13 +74475,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Capadocia es tuya. Con el Gran Tour te abres a Albuquerque en América y luego a Luxor en Egipto; fundas tu propio holding y entras en todas las regiones que vendrán. Se compra una vez."
+            "value": "Capadocia es tuya. Con el Gran Tour te abres a Albuquerque en Estados Unidos y luego a Luxor en Egipto; fundas tu propio holding y entras en todas las regiones que vendrán. Se compra una vez."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "カッパドキアはお前のものだ。グランドツアーでアメリカのアルバカーキ、そしてエジプトのルクソールへ。自分のホールディングスを作り、今後のすべての地域にも進出できる。購入は一度だけ。"
+            "value": "カッパドキアはあなたのものだ。グランドツアーでアメリカのアルバカーキ、そしてエジプトのルクソールへ。自分のホールディングスを作り、今後のすべての地域にも進出できる。購入は一度だけ。"
           }
         },
         "ko": {
@@ -74516,7 +74516,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gran Tour + %@ + placa de apoyo en el pueblo"
+            "value": "Gran Tour + %@ + placa de mecenas en el pueblo"
           }
         },
         "ja": {
@@ -74598,7 +74598,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "América, Egipto y las regiones que vendrán"
+            "value": "Estados Unidos, Egipto y las regiones que vendrán"
           }
         },
         "ja": {
@@ -75354,7 +75354,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bölgeye dokun ya da yakınlaştır, binaya dokununca açılır."
+            "value": "Bir alana dokun ya da yakınlaştır, binaya dokununca açılır."
           }
         }
       }
@@ -76021,7 +76021,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vertrag"
+            "value": "Unter Vertrag"
           }
         },
         "en": {
@@ -76197,7 +76197,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nv. %1$@ · Diseños: %2$@"
+            "value": "Niv. %1$@ · Diseños: %2$@"
           }
         },
         "ja": {
@@ -76338,7 +76338,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "AJANS"
+            "value": "AJANSLAR"
           }
         }
       }
@@ -76718,7 +76718,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "30 % mehr Unfallrisiko, aber die Passagiere lieben es: Beliebtheit bei jedem Flug."
+            "value": "30 % mehr Unfallrisiko, aber die Passagiere lieben es: Beliebtheitsplus bei jedem Flug."
           }
         },
         "en": {
@@ -76742,7 +76742,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "사고 위험 30% 증가. 하지만 승객들이 열광: 매 비행마다 인기 상승."
+            "value": "사고 위험 30% 증가. 하지만 승객들이 열광: 비행마다 인기 상승."
           }
         },
         "tr": {
@@ -76800,7 +76800,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Angebote der Konkurrenz lassen sie kalt."
+            "value": "Lässt sich von der Konkurrenz nicht abwerben."
           }
         },
         "en": {
@@ -77046,7 +77046,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Erzählt Kappadokiens Legenden: glänzende Bewertungen, Beliebtheit bei jedem Flug."
+            "value": "Erzählt Kappadokiens Legenden: glänzende Bewertungen und ein Beliebtheitsplus bei jedem Flug."
           }
         },
         "en": {
@@ -77070,7 +77070,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "카파도키아의 전설을 들려줌: 리뷰가 빛나고 매 비행마다 인기 상승."
+            "value": "카파도키아의 전설을 들려줌: 리뷰가 빛나고 비행마다 인기 상승."
           }
         },
         "tr": {

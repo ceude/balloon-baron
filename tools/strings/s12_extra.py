@@ -15,14 +15,14 @@ add("bank.payoff", "Pay off %@", "Kapat %@", "Ablösen %@", "Liquidar %@", "完�
 add("bank.offers", "Loan offers", "Kredi teklifleri", "Kreditangebote", "Ofertas de préstamo", "ローンの提案", "대출 상품")
 add("bank.offer", "%1$@, days: %2$@", "%1$@, gün: %2$@", "%1$@, Tage: %2$@", "%1$@, días: %2$@", "%1$@、日数：%2$@", "%1$@, 기간: %2$@일")
 add("bank.interest", "interest %@", "faiz %@", "Zinsen %@", "interés %@", "利息 %@", "이자 %@")
-add("bank.offerDetail", "%1$@ a day, you repay %2$@ in total.", "Günlük %1$@, toplam %2$@ geri ödersin.", "%1$@ pro Tag, insgesamt zahlst du %2$@ zurück.", "%1$@ al día, devuelves %2$@ en total.", "1日%1$@、合計%2$@を返済。", "하루 %1$@, 총 %2$@를 갚습니다.")
+add("bank.offerDetail", "%1$@ a day, you repay %2$@ in total.", "Günlük %1$@, toplam %2$@ geri ödersin.", "%1$@ pro Tag, insgesamt zahlst du %2$@ zurück.", "%1$@ al día, devuelves %2$@ en total.", "1日%1$@、合計%2$@を返済。", "하루 %1$@, 총 상환액은 %2$@입니다.")
 add("bank.need", "Balloons needed: at least %@.", "Gereken balon: en az %@.", "Benötigte Ballone: mindestens %@.", "Globos necesarios: al menos %@.", "必要な気球：%@機以上。", "필요한 열기구: 최소 %@대.")
 add("bank.take", "Take loan", "Kredi çek", "Kredit aufnehmen", "Pedir préstamo", "借りる", "대출 받기")
 add("bank.hint", "Two loans at most at a time. If your cash drops below %@, the bank seizes one of your balloons and sells it at half price.", "Aynı anda en fazla iki kredi. Kasa %@ altına düşerse banka bir balonuna el koyar ve yarı fiyatına satar.", "Höchstens zwei Kredite gleichzeitig. Fällt deine Kasse unter %@, pfändet die Bank einen deiner Ballone und verkauft ihn zum halben Preis.", "Dos préstamos como máximo a la vez. Si tu caja baja de %@, el banco embarga uno de tus globos y lo vende a mitad de precio.", "ローンは同時に2件まで。資金が%@を下回ると、銀行が気球を1機差し押さえて半額で売る。", "대출은 동시에 최대 두 건입니다. 금고가 %@ 아래로 떨어지면 은행이 열기구 한 대를 압류해 반값에 팝니다.")
 
 # Poach (showPoach)
-add("poach.title", "%@ wants your pilot", "%@ pilotunu istiyor", "%@ will deinen Piloten", "%@ quiere a tu piloto", "%@があなたのパイロットを狙っている", "%@ 측이 당신의 조종사를 노립니다")
-add("poach.lead", "They offered %1$@ (%2$@) %3$@ a day. Right now they earn %4$@. To keep them, you have to match the wage.", "%1$@ (%2$@) için günlük %3$@ teklif ettiler. Şu an %4$@ alıyor. Kalması için maaşını eşitlemen gerekiyor.", "Sie haben %1$@ (%2$@) %3$@ pro Tag angeboten. Im Moment verdient er %4$@. Damit er bleibt, musst du das Gehalt angleichen.", "Le ofrecieron a %1$@ (%2$@) %3$@ al día. Ahora cobra %4$@. Para que se quede, tienes que igualar el sueldo.", "%1$@（%2$@）に日給%3$@が提示された。今の日給は%4$@。引き留めるには同額まで上げる必要がある。", "%1$@(%2$@)에게 하루 %3$@를 제안했습니다. 지금은 %4$@를 받습니다. 붙잡으려면 급여를 맞춰야 합니다.")
+add("poach.title", "%@ wants your pilot", "%@ senin pilotunu istiyor", "%@ will deinen Piloten", "%@ quiere a tu piloto", "%@があなたのパイロットを狙っている", "%@ 측이 당신의 조종사를 노립니다")
+add("poach.lead", "They offered %1$@ (%2$@) %3$@ a day. Right now they earn %4$@. To keep them, you have to match the wage.", "%1$@ (%2$@) için günlük %3$@ teklif ettiler. Şu an %4$@ alıyor. Kalması için maaşını eşitlemen gerekiyor.", "Sie haben %1$@ (%2$@) %3$@ pro Tag geboten. Bisheriges Gehalt: %4$@. Ziehst du beim Gehalt nicht gleich, ist der Pilot weg.", "Le ofrecieron a %1$@ (%2$@) %3$@ al día. Ahora cobra %4$@. Para que se quede, tienes que igualar el sueldo.", "%1$@（%2$@）に日給%3$@が提示された。今の日給は%4$@。引き留めるには同額まで上げる必要がある。", "%1$@(%2$@)에게 하루 %3$@의 급여를 제안했습니다. 현재 급여는 %4$@입니다. 붙잡으려면 급여를 맞춰야 합니다.")
 add("poach.raise", "Raise to %@/day", "Zam yap: %@/gün", "Erhöhen auf %@/Tag", "Subir a %@/día", "昇給：%@/日", "인상: %@/일")
 add("poach.letGo", "Let them go", "Bırak gitsin", "Gehen lassen", "Dejar que se vaya", "行かせる", "보내 주기")
 
@@ -36,7 +36,7 @@ add("deal.buy", "Buy %@", "Satın al %@", "Kaufen %@", "Comprar %@", "購入 %@"
 add("deal.takeOver", "Take over %@", "Devral %@", "Übernehmen %@", "Adquirir %@", "買収 %@", "인수 %@")
 add("deal.decline", "Decline", "Reddet", "Ablehnen", "Rechazar", "断る", "거절")
 add("deal.later", "Later", "Sonra", "Später", "Luego", "あとで", "나중에")
-add("deal.hint", "If you tap Later, the offer waits on the Market page. A red dot stays on the Market button until you decline or accept.", "Sonra dersen teklif Pazar sayfasında bekler. Reddedene ya da kabul edene kadar Pazar düğmesinde kırmızı nokta kalır.", "Sagst du später, wartet das Angebot auf der Marktseite. Bis du ablehnst oder annimmst, bleibt ein roter Punkt am Markt-Button.", "Si eliges «Luego», la oferta espera en la página Mercado. Un punto rojo queda en el botón Mercado hasta que la rechaces o aceptes.", "「あとで」を選ぶと、提案は市場画面に残る。断るか受けるまで、市場ボタンに赤い点が付いたままになる。", "'나중에'를 누르면 제안은 시장 페이지에서 기다립니다. 거절하거나 수락할 때까지 시장 버튼에 빨간 점이 남습니다.")
+add("deal.hint", "If you tap Later, the offer waits on the Market page. A red dot stays on the Market button until you decline or accept.", "Sonra dersen teklif Pazar sayfasında bekler. Reddedene ya da kabul edene kadar Pazar düğmesinde kırmızı nokta kalır.", "Tippst du auf „Später“, wartet das Angebot auf der Marktseite. Bis du ablehnst oder annimmst, bleibt ein roter Punkt am Markt-Button.", "Si eliges «Luego», la oferta espera en la página Mercado. Un punto rojo queda en el botón Mercado hasta que la rechaces o aceptes.", "「あとで」を選ぶと、提案は市場画面に残る。断るか受けるまで、市場ボタンに赤い点が付いたままになる。", "'나중에'를 누르면 제안은 시장 페이지에서 기다립니다. 거절하거나 수락할 때까지 시장 버튼에 빨간 점이 남습니다.")
 
 # Menu (showMenu)
 add("menu.title", "Menu", "Menü", "Menü", "Menú", "メニュー", "메뉴")

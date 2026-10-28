@@ -11,8 +11,8 @@ add("goals.reward", "Chapter reward: %@", "Bölüm ödülü: %@", "Kapitelpreis:
 add("goals.baronHint",
  "Meet them all on the same day to become baron of %@ and open up to the world. Careful: the Competition Authority and merging rivals will try to stop you.",
  "Hepsini aynı gün tamamlarsan %@ baronu olursun ve dünyaya açılırsın. Dikkat: Rekabet Kurumu ve birleşen rakipler seni durdurmaya çalışacak.",
- "Erfülle alle am selben Tag, dann wirst du Baron von %@ und öffnest dich der Welt. Vorsicht: Die Wettbewerbsbehörde und fusionierende Konkurrenten werden dich aufhalten wollen.",
- "Cúmplelos todos el mismo día para convertirte en barón de %@ y abrirte al mundo. Cuidado: la autoridad de competencia y los rivales que se fusionen intentarán detenerte.",
+ "Erfülle alle am selben Tag, dann wirst du Baron von %@, und die Welt steht dir offen. Vorsicht: Die Wettbewerbsbehörde und fusionierende Konkurrenten werden dich aufhalten wollen.",
+ "Cúmplelos todos el mismo día para convertirte en barón de %@ y abrirte al mundo. Cuidado: la Autoridad de la Competencia y los rivales que se fusionen intentarán detenerte.",
  "すべてを同じ日に達成すれば%@の男爵となり、世界へ羽ばたける。ただし、競争当局と合併したライバルが阻もうとしてくる。",
  "모두 같은 날 달성하면 %@의 남작이 되어 세계로 나아갑니다. 조심하세요: 경쟁 당국과 합병하는 경쟁사들이 당신을 막으려 할 겁니다.")
 add("goals.baronLead",
@@ -35,7 +35,7 @@ add("ceremony.baronLead",
  "Tag %1$@. Zwei von drei Ballonen am Himmel über %2$@ tragen die Farben von %3$@. Meister Hezarfen hat Tränen in den Augen: „Nicht einmal an dem Tag, als ich von Galata nach Üsküdar flog, war ich so stolz, Lehrling.“",
  "Día %1$@. Dos de cada tres globos en el cielo de %2$@ llevan los colores de %3$@. Al maestro Hezarfen se le humedecen los ojos: «Ni el día que volé de Gálata a Üsküdar estuve tan orgulloso, aprendiz».",
  "%1$@日目。%2$@の空を飛ぶ気球の3機に2機が%3$@の色だ。ヘザルフェン師匠の目が潤む。「ガラタからユスキュダルへ飛んだ日でさえ、これほど誇らしくはなかったぞ、弟子よ」",
- "%1$@일차. %2$@ 하늘의 열기구 세 대 중 두 대가 %3$@의 색을 달고 있습니다. 헤자르펜 장인의 눈시울이 붉어집니다. “갈라타에서 위스퀴다르로 날던 날도 이렇게 자랑스럽진 않았다네, 제자여.”")
+ "%1$@일차. %2$@ 하늘의 열기구 세 대 중 두 대가 %3$@의 색을 달고 있습니다. 헤자르펜 스승의 눈시울이 붉어집니다. “갈라타에서 위스퀴다르로 날던 날도 이렇게 자랑스럽진 않았다네, 제자여.”")
 add("ceremony.baronHint.cap",
  "Your company can now go global. Your first new region awaits on the world map.",
  "Şirketin artık dünyaya açılabilir. Dünya haritasında ilk yeni bölgen seni bekliyor.",
@@ -59,7 +59,7 @@ add("merge.body",
  "%1$@ and %2$@ couldn't stand you holding %3$@ of the market, so they joined forces. The new company: %4$@.",
  "%1$@ ile %2$@, pazarın %3$@ kadarını elinde tutmana dayanamayıp güçlerini birleştirdi. Yeni şirket: %4$@.",
  "%1$@ und %2$@ ertrugen deinen Marktanteil von %3$@ nicht und haben sich zusammengetan. Die neue Firma: %4$@.",
- "%1$@ y %2$@ no soportaron que tengas el %3$@ del mercado y unieron fuerzas. La nueva empresa: %4$@.",
+ "%1$@ y %2$@ no soportaron que tuvieras el %3$@ del mercado y unieron fuerzas. La nueva empresa: %4$@.",
  "%1$@と%2$@は、あなたが市場の%3$@を握ることに耐えられず手を組んだ。新会社：%4$@。",
  "당신이 시장의 %3$@를 장악하자 %1$@ 측과 %2$@ 측이 참다못해 힘을 합쳤습니다. 새 회사: %4$@.")
 add("merge.balloons", "Balloons", "Balon", "Ballone", "Globos", "気球", "열기구")
@@ -72,7 +72,7 @@ add("merge.hint",
  "Con su gran caja, la nueva empresa puede bajar precios, ir a por tus hoteles y crecer rápido. Cuida tu popularidad y asegura tus acuerdos con hoteles.",
  "新会社は豊富な資金で値下げを仕掛け、あなたのホテルを奪い、急成長しようとするだろう。人気を守り、ホテル契約を固めよう。",
  "새 회사는 막대한 자금으로 가격을 낮추고 호텔을 빼앗으려 하며 빠르게 성장할 겁니다. 인기를 지키고 호텔 제휴를 다져 두세요.")
-add("merge.ready", "I'm ready to fight", "Mücadeleye hazırım", "Ich bin bereit zu kämpfen", "Estoy listo para luchar", "受けて立つ", "싸울 준비가 됐다")
+add("merge.ready", "I'm ready to fight", "Mücadeleye hazırım", "Auf in den Kampf!", "Estoy listo para luchar", "受けて立つ", "싸울 준비 됐어요")
 
 # World map
 add("map.title", "World map", "Dünya haritası", "Weltkarte", "Mapa del mundo", "世界地図", "세계 지도")
@@ -116,7 +116,7 @@ add("map.openSub",
  "City of the world's biggest balloon festival. The famous “box” winds bring you back to where you took off. Entry fee %@ from the holding (FAA license and office); you start from scratch in the region.",
  "Dünyanın en büyük balon festivalinin şehri. Meşhur “kutu” rüzgârları seni kalktığın yere geri getirir. Giriş bedeli %@ holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.",
  "Die Stadt des größten Ballonfestivals der Welt. Die berühmten „Box“-Winde bringen dich zurück zum Startplatz. Einstiegsgebühr %@ aus der Holding (FAA-Lizenz und Büro); in der Region fängst du bei null an.",
- "La ciudad del mayor festival de globos del mundo. Los famosos vientos de «caja» te devuelven a donde despegaste. Entrada de %@ del holding (licencia FAA y oficina); empiezas desde cero en la región.",
+ "La ciudad del mayor festival de globos del mundo. Los famosos vientos de «caja» te devuelven a donde despegaste. Cuota de entrada: %@, a cargo del holding (licencia FAA y oficina); empiezas desde cero en la región.",
  "世界最大の気球フェスティバルの街。名高い「ボックス」風が離陸地点へ連れ戻してくれる。参入費%@はホールディングスから（FAAライセンスと事務所）。この地域ではゼロから始まる。",
  "세계 최대 열기구 축제의 도시. 유명한 ‘박스’ 바람이 이륙한 곳으로 되돌려 줍니다. 진입 비용 %@, 지주회사에서 지급(FAA 면허와 사무소). 이 지역에서는 처음부터 시작합니다.")
 add("map.lockedSub",
@@ -226,7 +226,7 @@ add("holding.enterSub",
  "Entry fee %1$@ from the holding. You start from scratch: %2$@ and a small balloon.",
  "Giriş bedeli %1$@, holding kasasından. Bölgede sıfırdan başlarsın: %2$@ ve küçük bir balon.",
  "Einstiegsgebühr %1$@ aus der Holding. Du fängst bei null an: %2$@ und ein kleiner Ballon.",
- "Entrada de %1$@ del holding. Empiezas desde cero: %2$@ y un globo pequeño.",
+ "Cuota de entrada: %1$@, a cargo del holding. Empiezas desde cero: %2$@ y un globo pequeño.",
  "参入費%1$@はホールディングスから。ゼロからのスタート：%2$@と小型気球1機。",
  "진입 비용 %1$@, 지주회사에서 지급. 처음부터 시작합니다: 자금 %2$@, 소형 열기구 한 대.")
 add("holding.deals", "Campaigns and deals", "Kampanyalar ve anlaşmalar", "Kampagnen und Deals", "Campañas y acuerdos", "キャンペーンと契約", "캠페인과 계약")
@@ -236,20 +236,20 @@ add("holding.chip.stars", "%1$@: +%2$@", "%1$@: +%2$@", "%1$@: +%2$@", "%1$@: +%
 add("holding.chip.days", "Days: %@", "Gün: %@", "Tage: %@", "Días: %@", "日数：%@", "일수: %@")
 add("holding.chip.life", "Envelope life (flights): %1$@ → %2$@", "Zarf ömrü (uçuş): %1$@ → %2$@", "Hüllen-Lebensdauer (Flüge): %1$@ → %2$@", "Vida de la envoltura (vuelos): %1$@ → %2$@", "球皮寿命（フライト）：%1$@ → %2$@", "외피 수명(비행): %1$@ → %2$@")
 add("holding.chip.permanent", "All regions, permanent", "Bütün bölgeler, kalıcı", "Alle Regionen, dauerhaft", "Todas las regiones, permanente", "全地域・恒久", "전 지역, 영구")
-add("holding.tv.kicker", "Prime time", "Altın kuşak", "Primetime", "Horario estelar", "ゴールデンタイム", "프라임 타임")
+add("holding.tv.kicker", "Prime time", "Altın kuşak", "Primetime", "Máxima audiencia", "ゴールデンタイム", "프라임 타임")
 add("holding.tv.title", "TV ad campaign", "TV reklam kampanyası", "TV-Werbekampagne", "Campaña de anuncios en TV", "テレビCMキャンペーン", "TV 광고 캠페인")
 add("holding.tv.desc",
  "Your balloons gliding at sunrise, on national channels right before the evening news.",
  "Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların.",
  "Deine Ballone im Sonnenaufgang, auf den großen Sendern direkt vor den Abendnachrichten.",
- "Tus globos planeando al amanecer, en los canales nacionales justo antes del telediario.",
+ "Tus globos planeando al amanecer, en los canales nacionales justo antes de las noticias de la noche.",
  "全国放送の夕方のニュース直前に、朝日の中を漂うあなたの気球。",
  "전국 방송 저녁 뉴스 직전, 해돋이 속을 떠다니는 당신의 열기구.")
 add("holding.tv.cta", "Go on air", "Yayına al", "Auf Sendung gehen", "Emitir", "放映する", "방송 시작")
 add("holding.tv.active", "On air · days left: %@", "Yayında · kalan gün: %@", "Auf Sendung · Resttage: %@", "En antena · días restantes: %@", "放映中・残り日数：%@", "방송 중 · 남은 일수: %@")
 add("holding.tv.lock", "Days until the next campaign: %@", "Yeni kampanyaya kalan gün: %@", "Tage bis zur nächsten Kampagne: %@", "Días para la próxima campaña: %@", "次のキャンペーンまでの日数：%@", "다음 캠페인까지 남은 일수: %@")
 add("holding.celeb.kicker", "Face deal", "Ünlü anlaşması", "Werbegesicht", "Imagen de marca", "広告塔契約", "모델 계약")
-add("holding.celeb.title", "Celebrity ad face", "Ünlü reklam yüzü", "Prominentes Werbegesicht", "Famoso como imagen", "有名人の広告塔", "유명인 광고 모델")
+add("holding.celeb.title", "Celebrity ad face", "Ünlü reklam yüzü", "Promi als Werbegesicht", "Rostro famoso", "有名人の広告塔", "유명인 광고 모델")
 add("holding.celeb.desc",
  "An ad contract with a celebrity. Their agents decide who it will be.",
  "Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.",
@@ -266,7 +266,7 @@ add("holding.celeb.descActive",
  "회사의 얼굴: %@. 포스터에도, 잡지에도, 어디에나.")
 add("holding.celeb.cta", "Sign the contract", "Sözleşme imzala", "Vertrag unterschreiben", "Firmar el contrato", "契約する", "계약 체결")
 add("holding.celeb.active", "%1$@ · days left: %2$@", "%1$@ · kalan gün: %2$@", "%1$@ · Resttage: %2$@", "%1$@ · días restantes: %2$@", "%1$@・残り日数：%2$@", "%1$@ · 남은 일수: %2$@")
-add("holding.bb.kicker", "Outdoor", "Açık hava", "Außenwerbung", "Exterior", "屋外広告", "옥외 광고")
+add("holding.bb.kicker", "Outdoor", "Açık hava", "Außenwerbung", "Publicidad exterior", "屋外広告", "옥외 광고")
 add("holding.bb.title", "Highway billboards", "Otoban reklam panoları", "Autobahn-Plakate", "Vallas en la autopista", "高速道路の看板", "고속도로 광고판")
 add("holding.bb.desc",
  "Giant posters along the airport road and highways: %@.",
@@ -276,7 +276,7 @@ add("holding.bb.desc",
  "空港への道と高速道路に巨大看板：%@。",
  "공항 도로와 고속도로의 대형 광고판: %@.")
 add("holding.bb.cta", "Put up the posters", "Afişleri as", "Plakate aufhängen", "Colgar los carteles", "看板を出す", "광고판 걸기")
-add("holding.bb.active", "Up · days left: %@", "Asılı · kalan gün: %@", "Hängen · Resttage: %@", "Colgados · días restantes: %@", "掲示中・残り日数：%@", "게시 중 · 남은 일수: %@")
+add("holding.bb.active", "Up · days left: %@", "Asılı · kalan gün: %@", "Aktiv · Resttage: %@", "Colgados · días restantes: %@", "掲示中・残り日数：%@", "게시 중 · 남은 일수: %@")
 add("holding.lab.kicker", "R&D", "Ar-Ge", "F&E", "I+D", "研究開発", "R&D")
 add("holding.lab.title", "Envelope research with academics", "Akademisyenlerle zarf araştırması", "Hüllenforschung mit Hochschulen", "Investigación de envolturas con académicos", "研究者との球皮研究", "학계와 함께하는 외피 연구")
 add("holding.lab.desc",

@@ -24,7 +24,7 @@ add("abq.mission.desc.valley",
  "Rio Grande'nin üzerinde 150 m'nin altına alçal, nehri selamla.",
  "Sinke über dem Rio Grande unter 150 m und grüße den Fluss.",
  "Desciende por debajo de 150 m sobre el Río Grande y saluda al río.",
- "リオグランデ川の上で高度150m以下まで下がり、川にあいさつしよう。",
+ "リオグランデ川の上で高度150 m以下まで下がり、川にあいさつしよう。",
  "리오그란데강 위에서 150 m 아래로 내려가 강에 인사하세요.")
 
 # Day events
@@ -55,7 +55,7 @@ add("chapter.founding", "Founding", "Kuruluş", "Gründung", "Fundación", "創�
 add("chapter.rising", "Rising", "Yükseliş", "Aufstieg", "Ascenso", "躍進", "도약")
 add("chapter.growth", "Growth", "Büyüme", "Wachstum", "Crecimiento", "成長", "성장")
 add("chapter.baron", "Baron of Cappadocia", "Kapadokya Baronu", "Baron von Kappadokien", "Barón de Capadocia", "カッパドキアの男爵", "카파도키아의 남작")
-add("chapter.newWorld", "New World", "Yeni Dünya", "Neue Welt", "Nuevo Mundo", "新世界", "신세계")
+add("chapter.newWorld", "New World", "Yeni Dünya", "Neue Welt", "Nuevo Mundo", "新世界", "신대륙")
 add("chapter.boxWind", "The Box", "Kutu Rüzgârı", "Die Box", "La Caja", "ボックスの風", "박스 바람")
 add("chapter.fiesta", "Fiesta", "Fiesta", "Fiesta", "Fiesta", "フィエスタ", "피에스타")
 add("chapter.baronAbq", "Baron of Albuquerque", "Albuquerque Baronu", "Baron von Albuquerque", "Barón de Albuquerque", "アルバカーキの男爵", "앨버커키의 남작")
@@ -76,14 +76,14 @@ add("chapter.rising.award",
 add("chapter.growth.award",
  "You were named Balloon Company of the Year at the Türkiye Tourism Awards",
  "Türkiye Turizm Ödülleri'nde Yılın Balon Şirketi seçildin",
- "Bei den Türkiye-Tourismuspreisen wurdest du Ballonfirma des Jahres",
- "Fuiste elegido Empresa de Globos del Año en los Premios de Turismo de Turquía",
+ "Bei den Tourismuspreisen der Türkei wurdest du zur Ballonfirma des Jahres gekürt",
+ "Te nombraron Empresa de Globos del Año en los Premios de Turismo de Turquía",
  "トルコ観光アワードで年間最優秀気球会社に選ばれた",
  "튀르키예 관광 어워드에서 올해의 열기구 회사로 선정되었습니다")
 add("chapter.newWorld.award",
  "The Albuquerque Chamber of Commerce named you New Company of the Year",
  "Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti",
- "Die Handelskammer Albuquerque kürte dich zum Neuunternehmen des Jahres",
+ "Die Handelskammer Albuquerque kürte dich zum Newcomer des Jahres",
  "La Cámara de Comercio de Albuquerque te nombró Nueva Empresa del Año",
  "アルバカーキ商工会議所の年間最優秀新企業に選ばれた",
  "앨버커키 상공회의소가 당신을 올해의 신생 기업으로 선정했습니다")
@@ -106,16 +106,16 @@ add("chapter.baronAbq.award", "", "", "", "", "", "")
 
 # Goals
 add("goal.balloons", "Balloons in the fleet: %@", "Filoda balon: %@", "Ballone in der Flotte: %@", "Globos en la flota: %@", "保有気球：%@機", "보유 열기구: %@대")
-add("goal.pilots", "Pilots on the team: %@", "Ekipteki pilot: %@", "Piloten im Team: %@", "Pilotos en el equipo: %@", "チームのパイロット：%@", "팀의 조종사: %@")
+add("goal.pilots", "Pilots on the team: %@", "Ekipteki pilot: %@", "Piloten im Team: %@", "Pilotos en el equipo: %@", "所属パイロット：%@", "팀의 조종사: %@")
 add("goal.hotelDeals", "Hotel deals: %@", "Otel anlaşması: %@", "Hotelverträge: %@", "Acuerdos con hoteles: %@", "ホテル契約：%@", "호텔 제휴: %@")
 add("goal.bldMastLevel", "Wind mast level: %@", "Rüzgâr direği seviyesi: %@", "Windmast-Stufe: %@", "Nivel del mástil de viento: %@", "風向塔のレベル：%@", "풍향탑 레벨: %@")
 add("goal.bldHangarLevel", "Hangar level: %@", "Hangar seviyesi: %@", "Hangar-Stufe: %@", "Nivel del hangar: %@", "格納庫のレベル：%@", "격납고 레벨: %@")
-add("goal.stars", "Popularity: %@", "Popülerlik %@", "Beliebtheit %@", "Popularidad %@", "人気：%@", "인기 %@")
+add("goal.stars", "Popularity: %@", "Popülerlik: %@", "Beliebtheit: %@", "Popularidad: %@", "人気：%@", "인기: %@")
 add("goal.cash", "Cash: %@", "Kasada: %@", "Kasse: %@", "Caja: %@", "資金：%@", "보유 현금: %@")
 add("goal.hotelDeal", "Sign a deal with a hotel", "Bir otelle anlaşma yap", "Schließe einen Hotelvertrag", "Firma un acuerdo con un hotel", "ホテルと契約する", "호텔과 제휴하기")
 add("goal.hotelOwn", "Hotels owned: %@", "Sahip olduğun otel: %@", "Eigene Hotels: %@", "Hoteles propios: %@", "所有ホテル：%@軒", "보유 호텔: %@곳")
 add("goal.influencer", "Run an influencer campaign", "Bir influencer kampanyası yap", "Starte eine Influencer-Kampagne", "Haz una campaña con influencers", "インフルエンサーキャンペーンを実施する", "인플루언서 캠페인 진행하기")
-add("goal.guide", "Fly a promo flight for tour guides", "Rehberlere tanıtım uçuşu yap", "Mach einen Werbeflug für Guides", "Haz un vuelo promocional para guías", "ガイド向け招待フライトを飛ぶ", "가이드 홍보 비행하기")
+add("goal.guide", "Fly a promo flight for tour guides", "Rehberlere tanıtım uçuşu yap", "Mach einen Werbeflug für Guides", "Haz un vuelo promocional para guías", "ガイド向け招待フライトを実施する", "가이드 홍보 비행하기")
 add("goal.share", "Market share: %@", "Pazar payı: %@", "Marktanteil: %@", "Cuota de mercado: %@", "市場シェア：%@", "시장 점유율: %@")
 add("goal.workshop", "Build a balloon workshop", "Balon atölyesi kur", "Baue eine Ballonwerkstatt", "Construye un taller de globos", "気球工房を建てる", "열기구 공방 세우기")
 add("goal.school", "Found a pilot school", "Pilot okulu kur", "Gründe eine Pilotenschule", "Funda una escuela de pilotos", "パイロット学校を設立する", "조종사 학교 세우기")
@@ -201,14 +201,14 @@ ISSUES = {
         ("Match the price", "Fiyatı eşitle", "Preis angleichen", "Igualar el precio", "価格を合わせる", "가격 맞추기"),
         ("Income drops 10% for good, but you keep your market.", "Kazanç kalıcı olarak %10 düşer ama pazarını korursun.", "Die Einnahmen sinken dauerhaft um 10 %, aber du behältst deinen Markt.", "Los ingresos bajan un 10 % para siempre, pero conservas tu mercado.", "収入は恒久的に10%下がるが、市場は守れる。", "수입이 영구적으로 10% 줄지만 시장을 지킵니다."),
         ("Trust your popularity", "Popülerliğine güven", "Auf Beliebtheit vertrauen", "Confiar en tu popularidad", "人気を信じる", "인기를 믿기"),
-        ("Fifty-fifty: nothing happens, or income drops 25% for 10 days.", "Yarı yarıya: ya bir şey olmaz ya da 10 gün kazanç %25 düşer.", "Fifty-fifty: Nichts passiert, oder die Einnahmen sinken 10 Tage um 25 %.", "Mitad y mitad: no pasa nada o los ingresos bajan un 25 % durante 10 días.", "五分五分：何も起きないか、10日間収入が25%下がる。", "반반: 아무 일 없거나 10일간 수입 25% 감소."),
+        ("Fifty-fifty: nothing happens, or income drops 25% for 10 days.", "Yarı yarıya: ya bir şey olmaz ya da 10 gün kazanç %25 düşer.", "Fifty-fifty: Nichts passiert, oder die Einnahmen sinken 10 Tage um 25 %.", "Cara o cruz: no pasa nada o los ingresos bajan un 25 % durante 10 días.", "五分五分：何も起きないか、10日間収入が25%下がる。", "반반: 아무 일 없거나 10일간 수입 25% 감소."),
     ),
     "accident": (
         ("Hard landing", "Sert iniş", "Harte Landung", "Aterrizaje brusco", "ハードランディング", "거친 착륙"),
         ("A balloon made a hard landing. Passengers are complaining and the local press is at the door.", "Bir balon sert iniş yaptı. Yolcular şikâyetçi, yerel basın kapıda.", "Ein Ballon ist hart gelandet. Die Passagiere beschweren sich, die Lokalpresse steht vor der Tür.", "Un globo aterrizó bruscamente. Los pasajeros se quejan y la prensa local está en la puerta.", "気球がハードランディングした。乗客は苦情を言い、地元の記者が来ている。", "열기구가 거칠게 착륙했습니다. 승객들은 항의하고 지역 언론이 찾아왔습니다."),
         ("On days like this, the boss showing up changes everything.", "Böyle günlerde patronun orada olması her şeyi değiştirir.", "An solchen Tagen ändert es alles, wenn der Chef vor Ort ist.", "En días así, que el jefe aparezca lo cambia todo.", "こういう日は、社長が顔を出すだけで全てが変わる。", "이런 날엔 사장이 직접 나타나는 게 모든 걸 바꾸지."),
         ("Go and handle it", "Gidip kendin ilgilen", "Selbst hinfahren", "Ir en persona", "自ら対応しに行く", "직접 가서 처리하기"),
-        ("You move to the region; popularity dips a little but the story is over.", "Bölgeye geçersin, popülerlik biraz düşer ama konu kapanır.", "Du wechselst in die Region; die Beliebtheit sinkt etwas, aber die Geschichte ist erledigt.", "Te trasladas a la región; la popularidad baja un poco, pero la historia se cierra.", "その地域へ移動する。人気は少し下がるが、騒ぎは収まる。", "그 지역으로 이동합니다. 인기는 조금 떨어지지만 사건은 일단락됩니다."),
+        ("You move to the region; popularity dips a little but the story is over.", "Bölgeye geçersin, popülerlik biraz düşer ama konu kapanır.", "Du wechselst in die Region; die Beliebtheit sinkt etwas, aber die Geschichte ist erledigt.", "Te trasladas a la región; la popularidad baja un poco, pero el asunto queda zanjado.", "その地域へ移動する。人気は少し下がるが、騒ぎは収まる。", "그 지역으로 이동합니다. 인기는 조금 떨어지지만 사건은 일단락됩니다."),
         ("Let the manager handle it", "Müdür halletsin", "Der Manager soll es regeln", "Que lo resuelva el gerente", "マネージャーに任せる", "매니저에게 맡기기"),
         ("Income drops 15% for 7 days.", "7 gün kazanç %15 düşer.", "7 Tage lang 15 % weniger Einnahmen.", "Los ingresos bajan un 15 % durante 7 días.", "7日間収入が15%下がる。", "7일간 수입 15% 감소."),
     ),
@@ -218,7 +218,7 @@ ISSUES = {
         ("Hotels aren't loyal, kid, but a small gesture is usually enough.", "Oteller sadık değildir evlat, ama küçük bir jest çoğu zaman yeter.", "Hotels sind nicht treu, Lehrling, aber eine kleine Geste genügt meistens.", "Los hoteles no son leales, aprendiz, pero un pequeño gesto suele bastar.", "ホテルに忠誠心などない、弟子よ。だがちょっとした心づけで大抵は足りる。", "호텔은 의리가 없다네, 제자여. 하지만 작은 성의면 대개 충분하지."),
         ("Pay a bonus", "Ek ödeme yap", "Prämie zahlen", "Pagar un extra", "ボーナスを払う", "추가금 지급하기"),
         ("Paid from the holding; the problem is closed.", "Holding kasasından ödenir, sorun kapanır.", "Wird von der Holding bezahlt; das Problem ist erledigt.", "Lo paga el holding; el problema queda resuelto.", "ホールディングスから支払い、問題は解決。", "지주회사에서 지급하고 문제가 해결됩니다."),
-        ("Let it go", "Bırak gitsin", "Gehen lassen", "Dejarlo ir", "手放す", "포기하기"),
+        ("Let it go", "Bırak gitsin", "Gehen lassen", "Dejar que se vaya", "手放す", "포기하기"),
         ("Income drops 5% for good.", "Kazanç kalıcı olarak %5 düşer.", "Die Einnahmen sinken dauerhaft um 5 %.", "Los ingresos bajan un 5 % para siempre.", "収入が恒久的に5%下がる。", "수입이 영구적으로 5% 감소합니다."),
     ),
     "envelope": (
@@ -243,14 +243,14 @@ for k, (t, body, hez, a, an, b, bn) in ISSUES.items():
 # Hezarfen
 add("hez.goals",
  "Every great company has a road map, kid. Tap Goals: your chapter goals are there. Finish all four chapters and you become the baron of Cappadocia, and then the world awaits.",
- "Her büyük şirketin bir yol haritası olur evlat. Hedef butonuna dokun: bölüm hedeflerin orada yazıyor. Dört bölümü bitiren Kapadokya'nın baronu olur, sonra da dünya seni bekler.",
+ "Her büyük şirketin bir yol haritası olur evlat. Hedef düğmesine dokun: bölüm hedeflerin orada yazıyor. Dört bölümü bitiren Kapadokya'nın baronu olur, sonra da dünya seni bekler.",
  "Jede große Firma hat einen Fahrplan, Lehrling. Tippe auf Ziele: Dort stehen deine Kapitelziele. Wer alle vier Kapitel schafft, wird Baron von Kappadokien, und dann wartet die Welt.",
  "Toda gran empresa tiene una hoja de ruta, aprendiz. Toca Objetivos: ahí están los de cada capítulo. Completa los cuatro capítulos y serás el barón de Capadocia; después, el mundo te espera.",
  "大きな会社には道しるべがあるものだ。「目標」を押してみよ。章ごとの目標が書いてある。四章すべてを終えればカッパドキアの男爵、その先は世界が待っておる。",
  "큰 회사엔 로드맵이 있는 법이지. '목표'를 눌러 보게. 챕터 목표가 적혀 있다네. 네 챕터를 모두 끝내면 카파도키아의 남작이 되고, 그다음엔 세계가 기다리지.")
 add("hez.holdingOpened",
  "You have a holding now, kid! Tap Holding. You can move money from the Cappadocia cash box into the holding, and Albuquerque's entry fee is paid from the holding. One warning: holding money never goes back to a country. Each country grows on its own cash.",
- "Artık bir holdingin var evlat! Holding butonuna dokun. Kapadokya kasasından holdinge para çekebilirsin; Albuquerque'nin giriş bedeli holdingden ödenir. Bir uyarı: holding parası ülkelere geri dönmez, her ülke kendi kasasıyla büyür.",
+ "Artık bir holdingin var evlat! Holding düğmesine dokun. Kapadokya kasasından holdinge para çekebilirsin; Albuquerque'nin giriş bedeli holdingden ödenir. Bir uyarı: holding parası ülkelere geri dönmez, her ülke kendi kasasıyla büyür.",
  "Du hast jetzt eine Holding, Lehrling! Tippe auf Holding. Du kannst Geld aus der Kasse in Kappadokien an die Holding überweisen, und der Einstieg in Albuquerque wird von der Holding bezahlt. Eine Warnung: Holding-Geld fließt nie in ein Land zurück. Jedes Land wächst mit seiner eigenen Kasse.",
  "¡Ya tienes un holding, aprendiz! Toca Holding. Puedes pasar dinero de la caja de Capadocia al holding, y la entrada en Albuquerque se paga desde el holding. Un aviso: el dinero del holding nunca vuelve a un país. Cada país crece con su propia caja.",
  "ついにホールディングスを持ったな、弟子よ！「ホールディングス」を押せ。カッパドキアの金庫から資金を移せるし、アルバカーキへの参入費はホールディングスから払う。ひとつ忠告だ。ホールディングスの金は国へは戻らん。各国は自分の金庫で育つのだ。",
@@ -259,9 +259,9 @@ add("hez.entered.abq",
  "America, kid! The wind in Albuquerque is something else: the famous \"box\". Down low it carries you one way, a little higher it brings you back, so a good pilot lands where they took off. Every 30 days there's the Balloon Fiesta: for four days the tourists double. Everything here runs in dollars and you start from scratch: %@ and one small balloon. Cappadocia keeps earning on autopilot and its income goes to the holding, but the holding can't send money here. You'll make America on your own. If there's trouble, I'll call you.",
  "Amerika evlat! Albuquerque'de rüzgâr bambaşka: meşhur \"kutu\". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: %@ ve küçük bir balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım.",
  "Amerika, Lehrling! Der Wind in Albuquerque ist etwas Besonderes: die berühmte „Box“. Unten trägt er dich in eine Richtung, etwas höher zurück, so landet ein guter Pilot dort, wo er gestartet ist. Alle 30 Tage ist Balloon Fiesta: Vier Tage lang kommen doppelt so viele Touristen. Hier läuft alles in Dollar, und du fängst bei null an: %@ und ein kleiner Ballon. Kappadokien verdient im Autopilot weiter und schickt alles an die Holding, aber die Holding kann kein Geld hierher schicken. Amerika musst du allein erobern. Gibt es Ärger, rufe ich dich.",
- "¡América, aprendiz! El viento de Albuquerque es otra cosa: la famosa «caja». Abajo te lleva en una dirección y un poco más arriba te devuelve, así que un buen piloto aterriza donde despegó. Cada 30 días hay Balloon Fiesta: durante cuatro días los turistas se duplican. Aquí todo va en dólares y empiezas de cero: %@ y un globo pequeño. Capadocia sigue ganando en piloto automático y sus ingresos van al holding, pero el holding no puede enviar dinero aquí. Conquistarás América con lo tuyo. Si hay problemas, te llamaré.",
+ "¡Estados Unidos, aprendiz! El viento de Albuquerque es otra cosa: la famosa «caja». Abajo te lleva en una dirección y un poco más arriba te devuelve, así que un buen piloto aterriza donde despegó. Cada 30 días hay Balloon Fiesta: durante cuatro días los turistas se duplican. Aquí todo va en dólares y empiezas de cero: %@ y un globo pequeño. Capadocia sigue ganando en piloto automático y sus ingresos van al holding, pero el holding no puede enviar dinero aquí. Conquistarás Estados Unidos con lo tuyo. Si hay problemas, te llamaré.",
  "アメリカだぞ、弟子よ！アルバカーキの風は別物だ。名高い「ボックス」。低空では一方へ、少し上では逆へ運ぶから、腕のいいパイロットは離陸地点に戻ってこられる。30日ごとにバルーン・フィエスタもある。4日間、観光客が倍になる。ここでは全てドルで、ゼロからの出発だ。%@と小さな気球ひとつ。カッパドキアは自動運営で稼ぎ続け、収入はホールディングスへ行く。だがホールディングスからここへは送金できん。アメリカは自力で攻略するのだ。何かあれば呼ぶぞ。",
- "미국이라네, 제자여! 앨버커키의 바람은 완전히 다르지. 그 유명한 '박스'일세. 낮은 곳에선 한쪽으로, 조금 위에선 반대로 데려가니, 노련한 조종사는 이륙한 곳에 다시 내린다네. 30일마다 벌룬 피에스타도 열리지. 나흘 동안 관광객이 두 배가 된다네. 여기선 모든 게 달러고 처음부터 다시 시작일세. 가진 건 %@와 작은 열기구 하나. 카파도키아는 자동 운영으로 계속 벌고 그 수입은 지주회사로 가지만, 지주회사는 여기로 돈을 보낼 수 없네. 미국은 자네 힘으로 일궈야 하네. 문제가 생기면 부르겠네.")
+ "미국이라네, 제자여! 앨버커키의 바람은 완전히 다르지. 그 유명한 '박스'일세. 낮은 곳에선 한쪽으로, 조금 위에선 반대로 데려가니, 노련한 조종사는 이륙한 곳에 다시 내린다네. 30일마다 벌룬 피에스타도 열리지. 나흘 동안 관광객이 두 배가 된다네. 여기선 모든 게 달러고 처음부터 다시 시작일세. 가진 건 %@, 그리고 작은 열기구 하나뿐일세. 카파도키아는 자동 운영으로 계속 벌고 그 수입은 지주회사로 가지만, 지주회사는 여기로 돈을 보낼 수 없네. 미국은 자네 힘으로 일궈야 하네. 문제가 생기면 부르겠네.")
 add("hez.fiestaStarted",
  "The Albuquerque Balloon Fiesta has begun, kid! For four days tourists will pour in from all over the world and the sky will fill with hundreds of balloons. Get every balloon you have into the air!",
  "Albuquerque Balloon Fiesta başladı evlat! Dört gün boyunca dünyanın dört bir yanından turist akın edecek, gökyüzü yüzlerce balonla dolacak. Bütün balonlarını havaya kaldır!",
@@ -274,7 +274,7 @@ add("hez.regionIssue",
  "%1$@ bölgesinden haber var evlat: %2$@ Karar verene kadar oradaki kazancın yarıya düştü. Ana ekrandaki uyarıya dokun ya da holdingi aç.",
  "Neuigkeiten aus %1$@, Lehrling: %2$@ Bis du entscheidest, halbieren sich die Einnahmen dort. Tippe auf die Warnung auf dem Startbildschirm oder öffne die Holding.",
  "Noticias de %1$@, aprendiz: %2$@ Hasta que decidas, los ingresos allí se reducen a la mitad. Toca el aviso en la pantalla principal o abre el holding.",
- "%1$@から知らせだ、弟子よ。%2$@ お前が決めるまで、そこの収入は半分になる。ホーム画面の警告を押すか、ホールディングスを開け。",
+ "%1$@から知らせだ、弟子よ。%2$@お前が決めるまで、そこの収入は半分になる。ホーム画面の警告を押すか、ホールディングスを開け。",
  "%1$@에서 소식이 왔네, 제자여. %2$@ 자네가 결정할 때까지 그곳 수입은 절반으로 줄어든다네. 홈 화면의 알림을 누르거나 지주회사를 열어 보게.")
 add("hez.officeOpened",
  "Your new office is open, kid: %@!",
@@ -335,7 +335,7 @@ add("review.design.0",
  "\"{d}\" desenli balonu görünce rezervasyon yaptık, fotoğraflar efsane oldu!",
  "Wir haben gebucht, nachdem wir den Ballon „{d}“ gesehen hatten. Die Fotos sind legendär!",
  "Reservamos después de ver el globo «{d}». ¡Las fotos son legendarias!",
- "「{d}」柄の気球を見て予約した。写真が最高！",
+ "「{d}」デザインの気球を見て予約した。写真が最高！",
  "'{d}' 무늬 열기구를 보고 예약했어요. 사진이 전설이에요!")
 add("review.design.1",
  "\"{d}\" was the most beautiful balloon in the sky. Being in it felt special.",

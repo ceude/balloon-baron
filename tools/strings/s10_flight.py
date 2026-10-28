@@ -78,7 +78,7 @@ add("flight.kmh", "%@ km/h", "%@ km/sa", "%@ km/h", "%@ km/h", "%@ km/h", "%@ km
 add("flight.toField", "Landing field %@ km", "İniş alanı %@ km", "Landefeld %@ km", "Zona de aterrizaje %@ km", "着陸場まで%@ km", "착륙장 %@ km")
 add("flight.proposalZone", "PROPOSAL ZONE  250–350 m", "TEKLİF ALANI  250–350 m", "ANTRAGSZONE  250–350 m", "ZONA DE PEDIDA  250–350 m", "プロポーズ高度  250–350 m", "청혼 구역  250–350 m")
 add("flight.proposalProgress", "%@/8 s", "%@/8 sn", "%@/8 s", "%@/8 s", "%@/8秒", "%@/8초")
-add("flight.missionPop", "Mission complete! +%@", "Görev başarıldı! +%@", "Auftrag erfüllt! +%@", "¡Misión cumplida! +%@", "依頼達成！+%@", "임무 성공! +%@")
+add("flight.missionPop", "Mission complete! +%@", "Görev tamamlandı! +%@", "Auftrag erfüllt! +%@", "¡Misión cumplida! +%@", "依頼達成！+%@", "임무 성공! +%@")
 add("flight.alt", "Altitude", "İrtifa", "Höhe", "Altitud", "高度", "고도")
 add("flight.vert", "Vertical", "Dikey", "Vertikal", "Vertical", "昇降", "수직")
 add("flight.fuel", "Fuel", "Yakıt", "Gas", "Combustible", "燃料", "연료")
@@ -100,7 +100,7 @@ add("flight.abort.total", "From your cash", "Kasadan çıkacak", "Aus der Kasse"
 add("flight.abort.hint",
     "Since you don't fly, today doesn't renew your pilot license.",
     "Uçmadığın için bugün pilot lisansın yenilenmez.",
-    "Da du nicht fliegst, verlängert der heutige Tag deine Pilotenlizenz nicht.",
+    "Da du nicht fliegst, wird deine Pilotenlizenz heute nicht verlängert.",
     "Como no vuelas, hoy no se renueva tu licencia de piloto.",
     "飛ばないので、今日は操縦免許が更新されない。",
     "비행하지 않으므로 오늘은 조종 면허가 갱신되지 않습니다.")
@@ -109,7 +109,7 @@ add("flight.abort.confirm", "Cancel flight", "İptal et", "Flug absagen", "Cance
 
 # Gathering passengers (CollectView)
 add("collect.title", "Gathering passengers…", "Yolcular toplanıyor…", "Passagiere werden gesammelt …", "Reuniendo pasajeros…", "乗客を集めています…", "승객을 모으는 중…")
-add("collect.sub", "Ticket: %1$@ · Balloons: %2$@", "Bilet %1$@, balon: %2$@", "Ticket %1$@, Ballone: %2$@", "Billete %1$@, globos: %2$@", "チケット：%1$@・気球：%2$@", "티켓 %1$@, 열기구: %2$@")
+add("collect.sub", "Ticket: %1$@ · Balloons: %2$@", "Bilet: %1$@ · Balon: %2$@", "Ticket: %1$@ · Ballone: %2$@", "Billete: %1$@ · Globos: %2$@", "チケット：%1$@・気球：%2$@", "티켓: %1$@ · 열기구: %2$@")
 add("collect.full", "Balloons are full!", "Balonlar doldu!", "Die Ballone sind voll!", "¡Los globos están llenos!", "気球は満席！", "열기구가 꽉 찼어요!")
 add("collect.ready", "Passengers ready", "Yolcular hazır", "Passagiere bereit", "Pasajeros listos", "乗客の準備完了", "승객 준비 완료")
 add("collect.skip", "Skip", "Atla", "Überspringen", "Saltar", "スキップ", "건너뛰기")

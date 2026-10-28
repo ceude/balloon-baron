@@ -17,7 +17,7 @@ add("map.openSub.lux",
  "The Nile, the Valley of the Kings, Hatshepsut's temple. The toughest balloon market in the world: strong rivals who join forces quickly. You start with €5,000. Entry fee %@ from the holding.",
  "Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. 5.000 euro ile başlarsın. Giriş bedeli %@ holding kasasından.",
  "Der Nil, das Tal der Könige, der Tempel der Hatschepsut. Der härteste Ballonmarkt der Welt: starke Konkurrenten, die sich schnell verbünden. Du startest mit 5.000 €. Einstiegsgebühr %@ aus der Holding.",
- "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Empiezas con 5.000 €. Entrada de %@ del holding.",
+ "La orilla del Nilo, el Valle de los Reyes, el templo de Hatshepsut. El mercado de globos más duro del mundo: rivales fuertes que se unen enseguida. Empiezas con 5.000 €. Cuota de entrada: %@, a cargo del holding.",
  "ナイル河畔、王家の谷、ハトシェプスト女王葬祭殿。世界一厳しい気球市場だ。ライバルは強く、すぐに手を組む。5,000ユーロからのスタート。参入費%@はホールディングスから。",
  "나일강변, 왕가의 계곡, 하트셉수트 신전. 세상에서 가장 험한 열기구 시장으로, 경쟁사가 강하고 금세 손을 잡습니다. 5,000유로로 시작합니다. 진입 비용 %@, 지주회사에서 지급.")
 add("map.lockedSub.lux",
@@ -52,7 +52,7 @@ add("lux.mission.desc.valley",
  "Nil'in üzerinde 150 m'nin altına alçal, felukaları selamla.",
  "Sinke über dem Nil unter 150 m und grüße die Feluken.",
  "Desciende por debajo de 150 m sobre el Nilo y saluda a las falucas.",
- "ナイルの上で高度150m以下に下り、ファルーカに挨拶しよう。",
+ "ナイルの上で高度150 m以下に下り、ファルーカに挨拶しよう。",
  "나일강 위에서 150 m 아래로 내려가 펠루카에 인사하세요.")
 
 # Chapters
@@ -98,7 +98,7 @@ add("hez.entered.lux",
  "Ägypten, Lehrling, Luxor! Das ist der härteste Ballonmarkt der Welt. Jeden Morgen warten Hunderte Touristen am Westufer über dem Tal der Pharaonen, aber Nabil Haddads Theban Skies und seine Freunde teilen sie alle unter sich auf. Hier verbünden sich die Konkurrenten sehr schnell gegen dich, Hotels schließen ihre Verträge beim Tee, und die Luftfahrtbehörde lässt dich nie aus den Augen. Du startest mit %@ und einem kleinen Ballon; die Holding kann kein Geld hierher schicken. Der Nilwind weht unten nach Norden und weiter oben nach Süden. Ab und zu legen die Nilkreuzfahrtschiffe an, und die Stadt füllt sich mit Touristen. Sei geduldig, Lehrling: Der Nil liebt die Geduldigen. Von hier an zeigt dir mein alter Freund Imhotep den Weg.",
  "¡Egipto, aprendiz, Luxor! Este es el mercado de globos más duro del mundo. Cada mañana cientos de turistas esperan en la Ribera Oeste, sobre el valle de los faraones, pero Theban Skies de Nabil Haddad y sus amigos se los reparten todos. Aquí los rivales se unen contra ti muy rápido, los hoteles cierran sus tratos con té y Aviación Civil no te quita el ojo de encima. Empiezas con %@ y un globo pequeño; el holding no puede enviar dinero aquí. El viento del Nilo sopla hacia el norte abajo y hacia el sur más arriba. De vez en cuando atracan los cruceros del Nilo y el pueblo se llena de turistas. Ten paciencia, aprendiz: el Nilo ama a los pacientes. Desde aquí te guiará mi viejo amigo Imhotep.",
  "エジプトだ、弟子よ、ルクソールだ！ここは世界一厳しい気球市場だ。毎朝、王家の谷の上の西岸で何百人もの観光客が待っているが、ナビル・ハッダードのテーベ・スカイズとその仲間が全部分け合っている。ここではライバルがすぐに手を組んでお前に対抗し、ホテルは茶を飲みながら契約し、民間航空局はお前から目を離さん。%@と小さな気球ひとつで始まる。ホールディングスからここへは送金できん。ナイルの風は低空では北へ、上空では南へ吹く。時々ナイルのクルーズ船が着いて、町は観光客でいっぱいになる。辛抱するのだ、弟子よ。ナイルは辛抱強い者を愛する。ここから先は、わしの古い友人イムホテプが道を示してくれる。",
- "이집트라네, 제자여, 룩소르일세! 이곳은 세상에서 가장 험한 열기구 시장이지. 매일 아침 파라오의 계곡 위 서안에서 수백 명의 관광객이 기다리지만, 나빌 하다드의 테베 스카이스와 그 친구들이 모두 나눠 가진다네. 여기선 경쟁사들이 아주 빨리 손잡고 자네에게 맞서고, 호텔은 차를 마시며 계약하고, 민간항공청은 자네에게서 눈을 떼지 않을 걸세. %@와 작은 열기구 하나로 시작하네. 지주회사는 여기로 돈을 보낼 수 없네. 나일의 바람은 낮은 곳에선 북쪽으로, 높은 곳에선 남쪽으로 분다네. 가끔 나일 크루즈선이 들어오면 마을이 관광객으로 가득 차지. 인내하게, 제자여. 나일은 인내하는 자를 사랑한다네. 여기서부터는 내 오랜 친구 임호테프가 길을 안내할 걸세.")
+ "이집트라네, 제자여, 룩소르일세! 이곳은 세상에서 가장 험한 열기구 시장이지. 매일 아침 파라오의 계곡 위 서안에서 수백 명의 관광객이 기다리지만, 나빌 하다드의 테베 스카이스와 그 친구들이 모두 나눠 가진다네. 여기선 경쟁사들이 아주 빨리 손잡고 자네에게 맞서고, 호텔은 차를 마시며 계약하고, 민간항공청은 자네에게서 눈을 떼지 않을 걸세. 자금 %@, 그리고 작은 열기구 하나로 시작하네. 지주회사는 여기로 돈을 보낼 수 없네. 나일의 바람은 낮은 곳에선 북쪽으로, 높은 곳에선 남쪽으로 분다네. 가끔 나일 크루즈선이 들어오면 마을이 관광객으로 가득 차지. 인내하게, 제자여. 나일은 인내하는 자를 사랑한다네. 여기서부터는 내 오랜 친구 임호테프가 길을 안내할 걸세.")
 add("hez.fiestaStarted.lux",
  "The Nile cruise ships have docked! For three days the riverbank is full of tourists, and everyone wants a sunrise balloon ride. Get all your balloons up, but Theban Skies will do the same.",
  "Nil gemileri yanaştı evlat! Üç gün boyunca kıyı turistle dolu, herkes sabah balonuna binmek istiyor. Bütün balonlarını havaya kaldır, ama Theban Skies da aynı şeyi yapacak.",
@@ -108,14 +108,14 @@ add("hez.fiestaStarted.lux",
  "나일 크루즈선이 들어왔네! 사흘 동안 강변은 관광객으로 가득하고 모두가 일출 열기구를 타고 싶어 하지. 열기구를 전부 띄우게. 하지만 테베 스카이스도 똑같이 할 걸세.")
 add("home.alert.fiesta.lux", "Nile cruise ships in port, day %1$@/%2$@!", "Nil gemileri limanda, gün %1$@/%2$@!", "Nilschiffe im Hafen, Tag %1$@/%2$@!", "¡Cruceros del Nilo en el puerto, día %1$@/%2$@!", "ナイルのクルーズ船が入港中、%1$@/%2$@日目！", "나일 크루즈선 정박 중, %1$@/%2$@일차!")
 add("home.alert.fiesta.body.lux", "The riverbank is full of tourists. Get all your balloons up.", "Kıyı turist dolu. Bütün balonlarını kaldır.", "Das Ufer ist voller Touristen. Schick alle deine Ballone hoch.", "La orilla está llena de turistas. Sube todos tus globos.", "川岸は観光客でいっぱい。全部の気球を上げよう。", "강변이 관광객으로 가득합니다. 모든 열기구를 띄우세요.")
-add("home.alert.fiestaSoon.lux", "Days until the Nile ships dock: %@.", "Nil gemilerinin yanaşmasına kalan gün: %@.", "Tage bis die Nilschiffe anlegen: %@.", "Días para que atraquen los cruceros del Nilo: %@.", "ナイルの船が着くまで：%@日。", "나일 크루즈선 입항까지: %@일.")
+add("home.alert.fiestaSoon.lux", "Days until the Nile ships dock: %@.", "Nil gemilerinin yanaşmasına kalan gün: %@.", "Tage, bis die Nilschiffe anlegen: %@.", "Días para que atraquen los cruceros del Nilo: %@.", "ナイルの船が着くまで：%@日。", "나일 크루즈선 입항까지: %@일.")
 add("home.alert.fiestaSoon.body.lux", "Get your fleet ready and sign hotel deals.", "Filonu hazırla, otellerle anlaş.", "Mach deine Flotte bereit und schließ Hotelverträge.", "Prepara tu flota y cierra acuerdos con hoteles.", "フリートを整え、ホテルと契約しよう。", "기단을 준비하고 호텔과 제휴하세요.")
 
 # Luxor's newcomers
 add("hez.entrant.redSea",
  "Red Sea Balloon Co. has come to Luxor with the money of Hurghada's hotel chains! A big fleet and deep pockets. After Theban Skies this may be the most dangerous of them all.",
  "Red Sea Balloon Co., Hurghada'nın otel zincirlerinin parasıyla Luksor'a geldi! Filosu büyük, kesesi derin. Theban Skies'tan sonra en tehlikelisi bu olabilir.",
- "Red Sea Balloon Co. ist mit dem Geld der Hotelketten von Hurghada nach Luxor gekommen! Große Flotte, tiefe Taschen. Nach Theban Skies vielleicht die gefährlichste von allen.",
+ "Red Sea Balloon Co. ist mit dem Geld der Hotelketten von Hurghada nach Luxor gekommen! Große Flotte, volle Kassen. Nach Theban Skies vielleicht die gefährlichste von allen.",
  "¡Red Sea Balloon Co. ha llegado a Luxor con el dinero de las cadenas hoteleras de Hurghada! Flota grande y bolsillos llenos. Después de Theban Skies, quizá la más peligrosa.",
  "レッドシー・バルーン社がフルガダのホテルチェーンの資金でルクソールに来た！大規模なフリートに潤沢な資金。テーベ・スカイズの次に危険な相手かもしれん。",
  "레드시 벌룬이 후르가다 호텔 체인의 돈을 등에 업고 룩소르에 왔네! 기단이 크고 자금도 두둑하지. 테베 스카이스 다음으로 가장 위험한 상대일지도 모르겠네.")
@@ -124,7 +124,7 @@ add("hez.entrant.felucca",
  "Felucca Flights diye bir ucuzcu açıldı. Gemi turistlerine yarı fiyata bilet satacaklar, kuralları da pek takmayacaklar.",
  "Ein Billiganbieter namens Felucca Flights hat eröffnet. Sie verkaufen den Kreuzfahrttouristen Tickets zum halben Preis und nehmen es mit den Regeln nicht so genau.",
  "Ha abierto una empresa de precios bajos llamada Felucca Flights. Venderán billetes a mitad de precio a los turistas de los cruceros y no harán mucho caso de las normas.",
- "フェルーカ・フライツという格安業者が開業した。クルーズ客に半額で切符を売り、規則などあまり気にせんだろう。",
+ "ファルーカ・フライツという格安業者が開業した。クルーズ客に半額でチケットを売り、規則などあまり気にせんだろう。",
  "펠루카 플라이츠라는 저가 업체가 문을 열었네. 크루즈 관광객에게 반값에 표를 팔고 규칙은 별로 신경 쓰지 않을 걸세.")
 add("hez.entrant.hatshepsut",
  "A luxury boutique company called Hatshepsut Air has opened. Few balloons, very high prices, very popular. The rich tourists will go to them.",
@@ -148,7 +148,7 @@ add("boss.lux.hello",
  "Welcome, stranger. Nabil Haddad, Theban Skies. When my father inflated the first balloon on this West Bank, you weren't even born. Here every hotel, every guide, every felucca knows my name. I hear you won in Cappadocia and in America. The Nile is different. The Nile loves the patient and swallows the proud.",
  "Hoş geldin, yabancı. Nabil Haddad, Theban Skies. Babam bu Batı Yakası'nda ilk balonu şişirdiğinde sen daha doğmamıştın. Burada her otel, her rehber, her feluka benim adımı bilir. Kapadokya'da, Amerika'da kazanmışsın, duydum. Nil başkadır. Nil sabırlı olanı sever, kibirliyi yutar.",
  "Willkommen, Fremder. Nabil Haddad, Theban Skies. Als mein Vater an diesem Westufer den ersten Ballon aufblies, warst du noch nicht geboren. Hier kennt jedes Hotel, jeder Guide, jede Feluke meinen Namen. Du hast in Kappadokien und in Amerika gewonnen, hört man. Der Nil ist anders. Der Nil liebt die Geduldigen und verschlingt die Hochmütigen.",
- "Bienvenido, forastero. Nabil Haddad, Theban Skies. Cuando mi padre infló el primer globo en esta Ribera Oeste, tú ni habías nacido. Aquí cada hotel, cada guía, cada faluca conoce mi nombre. Dicen que ganaste en Capadocia y en América. El Nilo es distinto. El Nilo ama al paciente y se traga al soberbio.",
+ "Bienvenido, forastero. Nabil Haddad, Theban Skies. Cuando mi padre infló el primer globo en esta Ribera Oeste, tú ni habías nacido. Aquí cada hotel, cada guía, cada faluca conoce mi nombre. Dicen que ganaste en Capadocia y en Estados Unidos. El Nilo es distinto. El Nilo ama al paciente y se traga al soberbio.",
  "ようこそ、よそ者。ナビル・ハッダード、テーベ・スカイズだ。父がこの西岸で最初の気球を膨らませた時、君はまだ生まれてもいなかった。ここではどのホテルも、どのガイドも、どのファルーカも私の名を知っている。カッパドキアでもアメリカでも勝ったそうだな。ナイルは違う。ナイルは辛抱強い者を愛し、傲慢な者を呑み込む。",
  "어서 오게, 이방인. 나빌 하다드, 테베 스카이스일세. 우리 아버지가 이 서안에서 첫 열기구를 부풀렸을 때 자네는 태어나지도 않았지. 여기선 모든 호텔, 모든 가이드, 모든 펠루카가 내 이름을 알아. 카파도키아에서도, 미국에서도 이겼다고 들었네. 나일은 다르다네. 나일은 인내하는 자를 사랑하고 오만한 자를 삼키지.")
 add("boss.lux.ch1",
@@ -156,7 +156,7 @@ add("boss.lux.ch1",
  "Sekiz balon mu? Benim filom firavunların vadisini gölgeler. Sen hâlâ müşteri sayıyorsun, ben gemileri sayarım.",
  "Acht Ballone? Meine Flotte wirft ihren Schatten über das Tal der Pharaonen. Du zählst noch Kunden, ich zähle Schiffe.",
  "¿Ocho globos? Mi flota hace sombra sobre el valle de los faraones. Tú aún cuentas clientes; yo cuento barcos.",
- "8機だと？私の船団は王家の谷に影を落とす。君はまだ客を数えているが、私は船を数える。",
+ "8機だと？私のフリートは王家の谷に影を落とす。君はまだ客を数えているが、私は船を数える。",
  "여덟 대라고? 내 기단은 파라오의 계곡에 그늘을 드리우지. 자네는 아직 손님을 세지만 나는 배를 센다네.")
 add("boss.lux.ch2",
  "When the Nile ships dock, whose balloons do the tourists ride? Have you ever looked? Mine. But you're not doing badly, I admit.",
@@ -196,7 +196,7 @@ add("boss.lux.accident",
 add("boss.lux.deal",
  "Very well. The wind has turned. If you want to take over Theban Skies, let's talk. But don't change the name; it was my father's.",
  "Peki. Rüzgâr döndü. Theban Skies'ı devralmak istersen konuşalım. Ama adını değiştirme, babamın adıdır.",
- "Nun gut. Der Wind hat gedreht. Wenn du Theban Skies übernehmen willst, reden wir. Aber ändere den Namen nicht, es war der meines Vaters.",
+ "Nun gut. Der Wind hat gedreht. Wenn du Theban Skies übernehmen willst, reden wir. Aber ändere den Namen nicht, er stammt von meinem Vater.",
  "Muy bien. El viento ha cambiado. Si quieres quedarte con Theban Skies, hablemos. Pero no le cambies el nombre; era el de mi padre.",
  "いいだろう。風向きが変わった。テーベ・スカイズを引き継ぎたいなら話そう。だが名前は変えるな。父の名だ。",
  "좋네. 바람이 바뀌었군. 테베 스카이스를 인수하고 싶다면 이야기하세. 하지만 이름은 바꾸지 말게. 우리 아버지 이름이야.")
@@ -224,7 +224,7 @@ add("guide.abq.hello",
  "Hallo, mein junger Freund, ich bin Ben Franklin. 1783 war ich in Paris, als der Ballon der Montgolfiers aufstieg. Jemand fragte mich: „Wozu ist ein Ballon gut?“ und ich antwortete: „Wozu ist ein neugeborenes Kind gut?“ Meister Hezarfen hat dich mir anvertraut; in Albuquerque zeige ich dir den Weg. Denk daran: Zeit ist Geld!",
  "Hola, joven amigo, soy Ben Franklin. En 1783 estaba en París cuando subió el globo de los Montgolfier. Alguien me preguntó: «¿Para qué sirve un globo?», y respondí: «¿Para qué sirve un recién nacido?». El maestro Hezarfen te ha dejado a mi cargo; en Albuquerque te mostraré el camino. Recuerda: ¡el tiempo es oro!",
  "やあ、若い友よ、ベン・フランクリンだ。1783年、モンゴルフィエ兄弟の気球が上がった時、私はパリにいた。ある人に「気球が何の役に立つのか」と聞かれ、「生まれたばかりの赤ん坊が何の役に立つのか」と答えたものだ。ヘザルフェン師匠が君を私に託した。アルバカーキでは私が道を示そう。覚えておきたまえ、時は金なりだ！",
- "안녕하신가, 젊은 친구. 나는 벤 프랭클린일세. 1783년 몽골피에 형제의 열기구가 떠오를 때 나는 파리에 있었지. 누군가 \"열기구가 무슨 쓸모가 있소?\" 하고 묻길래 \"갓난아기는 무슨 쓸모가 있소?\" 하고 답했다네. 헤자르펜 장인께서 자네를 내게 맡기셨으니, 앨버커키에선 내가 길을 안내하겠네. 기억하게, 시간은 돈일세!")
+ "안녕하신가, 젊은 친구. 나는 벤 프랭클린일세. 1783년 몽골피에 형제의 열기구가 떠오를 때 나는 파리에 있었지. 누군가 \"열기구가 무슨 쓸모가 있소?\" 하고 묻길래 \"갓난아기는 무슨 쓸모가 있소?\" 하고 답했다네. 자네 스승 헤자르펜께서 자네를 내게 맡기셨으니, 앨버커키에선 내가 길을 안내하겠네. 기억하게, 시간은 돈일세!")
 add("guide.lux.hello",
  "Welcome, my young friend, I'm Imhotep. Four thousand years ago I drew the first step pyramid on this land and healed the sick. They call Hezarfen \"master of a thousand sciences\"; they used to call me that too. I never tried flying, but I know the sky well: the Nile wind helps the patient. In Luxor I'll show you the way.",
  "Hoş geldin genç dostum, ben İmhotep. Dört bin yıl önce bu topraklarda ilk basamaklı piramidi ben çizdim, hastaları ben iyileştirdim. Hezarfen'e \"bin ilmin ustası\" derler, bana da öyle derlerdi. Uçmayı hiç denemedim ama gökyüzünü iyi bilirim: Nil'in rüzgârı sabırlıya yardım eder. Luksor'da sana ben yol göstereceğim.",
@@ -267,42 +267,42 @@ add("insp.1.one",
  "Routinekontrolle. Die Hülle deines Ballons %1$@ liegt unter 30 %%. Mit abgenutztem Stoff Passagiere zu befördern erhöht das Unfallrisiko. Bitte erneuere sie. In fünf Tagen sehe ich wieder nach.",
  "Inspección rutinaria. La envoltura de tu globo %1$@ está por debajo del 30 %%. Llevar pasajeros con tela gastada aumenta el riesgo de accidente. Te ruego que la renueves. Volveré a revisarla en cinco días.",
  "定期検査です。気球%1$@の球皮が30%%を下回っています。傷んだ生地で乗客を運ぶと事故の危険が高まります。交換をお願いします。5日後にもう一度確認します。",
- "정기 점검입니다. 열기구 %1$@의 외피이 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다.")
+ "정기 점검입니다. 열기구 %1$@의 외피가 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다.")
 add("insp.1.many",
  "Routine inspection. The envelopes of your balloons %1$@ are below 30%%. Carrying passengers on worn fabric raises the accident risk. Please renew them. I'll check again in five days.",
  "Rutin denetim. %1$@ balonlarınızın zarfları %%30'un altına düşmüş. Yıpranmış kumaşla yolcu taşımak kaza riskini artırır. Zarfları yenilemenizi rica ederim. Beş gün sonra tekrar bakacağım.",
  "Routinekontrolle. Die Hüllen deiner Ballone %1$@ liegen unter 30 %%. Mit abgenutztem Stoff Passagiere zu befördern erhöht das Unfallrisiko. Bitte erneuere sie. In fünf Tagen sehe ich wieder nach.",
  "Inspección rutinaria. Las envolturas de tus globos %1$@ están por debajo del 30 %%. Llevar pasajeros con tela gastada aumenta el riesgo de accidente. Te ruego que las renueves. Volveré a revisarlas en cinco días.",
  "定期検査です。気球%1$@の球皮が30%%を下回っています。傷んだ生地で乗客を運ぶと事故の危険が高まります。交換をお願いします。5日後にもう一度確認します。",
- "정기 점검입니다. 열기구 %1$@의 외피이 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다.")
+ "정기 점검입니다. 열기구 %1$@의 외피가 30%% 아래로 떨어졌습니다. 낡은 천으로 승객을 태우면 사고 위험이 높아집니다. 교체를 부탁드립니다. 5일 뒤에 다시 확인하겠습니다.")
 add("insp.2.one",
  "My second warning. The envelope of %1$@ still hasn't been renewed. If it's the same at the next inspection, I'll have to write a fine.",
  "İkinci uyarım. %1$@ balonunun zarfı hâlâ yenilenmemiş. Bir dahaki denetimde aynı durumdaysa ceza yazmak zorundayım.",
  "Meine zweite Warnung. Die Hülle von %1$@ wurde immer noch nicht erneuert. Ist es bei der nächsten Kontrolle genauso, muss ich ein Bußgeld verhängen.",
  "Mi segundo aviso. La envoltura de %1$@ sigue sin renovarse. Si sigue igual en la próxima inspección, tendré que multarte.",
  "2度目の警告です。%1$@の球皮はまだ交換されていません。次の検査でも同じなら罰金を科さざるを得ません。",
- "두 번째 경고입니다. %1$@의 외피이 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다.")
+ "두 번째 경고입니다. %1$@의 외피가 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다.")
 add("insp.2.many",
  "My second warning. The envelopes of %1$@ still haven't been renewed. If it's the same at the next inspection, I'll have to write a fine.",
  "İkinci uyarım. %1$@ balonlarının zarfları hâlâ yenilenmemiş. Bir dahaki denetimde aynı durumdaysa ceza yazmak zorundayım.",
  "Meine zweite Warnung. Die Hüllen von %1$@ wurden immer noch nicht erneuert. Ist es bei der nächsten Kontrolle genauso, muss ich ein Bußgeld verhängen.",
  "Mi segundo aviso. Las envolturas de %1$@ siguen sin renovarse. Si sigue igual en la próxima inspección, tendré que multarte.",
  "2度目の警告です。%1$@の球皮はまだ交換されていません。次の検査でも同じなら罰金を科さざるを得ません。",
- "두 번째 경고입니다. %1$@의 외피이 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다.")
+ "두 번째 경고입니다. %1$@의 외피가 아직 교체되지 않았습니다. 다음 점검에서도 그대로면 벌금을 부과할 수밖에 없습니다.")
 add("insp.3.one",
  "At this inspection I found the envelope of %1$@ worn again. Fine: %2$@. I'll write a fine at every inspection until it's renewed.",
  "Denetimde %1$@ balonunun zarfını yine yıpranmış buldum. Ceza: %2$@. Yenilenene kadar her denetimde ceza yazacağım.",
  "Bei dieser Kontrolle war die Hülle von %1$@ wieder abgenutzt. Bußgeld: %2$@. Bis sie erneuert ist, verhänge ich bei jeder Kontrolle eins.",
  "En esta inspección encontré otra vez gastada la envoltura de %1$@. Multa: %2$@. Multaré en cada inspección hasta que se renueve.",
  "今回の検査でも%1$@の球皮が傷んでいました。罰金：%2$@。交換されるまで検査のたびに罰金を科します。",
- "이번 점검에서도 %1$@의 외피이 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다.")
+ "이번 점검에서도 %1$@의 외피가 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다.")
 add("insp.3.many",
  "At this inspection I found the envelopes of %1$@ worn again. Fine: %2$@. I'll write a fine at every inspection until they're renewed.",
  "Denetimde %1$@ balonlarının zarflarını yine yıpranmış buldum. Ceza: %2$@. Yenilenene kadar her denetimde ceza yazacağım.",
  "Bei dieser Kontrolle waren die Hüllen von %1$@ wieder abgenutzt. Bußgeld: %2$@. Bis sie erneuert sind, verhänge ich bei jeder Kontrolle eins.",
  "En esta inspección encontré otra vez gastadas las envolturas de %1$@. Multa: %2$@. Multaré en cada inspección hasta que se renueven.",
  "今回の検査でも%1$@の球皮が傷んでいました。罰金：%2$@。交換されるまで検査のたびに罰金を科します。",
- "이번 점검에서도 %1$@의 외피이 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다.")
+ "이번 점검에서도 %1$@의 외피가 낡은 상태였습니다. 벌금: %2$@. 교체될 때까지 점검 때마다 벌금을 부과하겠습니다.")
 
 # Balloon equipment (fleet page)
 add("equip.title", "Equipment", "Donanım", "Ausrüstung", "Equipamiento", "装備", "장비")
@@ -396,7 +396,7 @@ add("holding.rec.yours", "The record is yours", "Rekor senin", "Der Rekord gehö
 add("holding.rec.lockNote", "Open Luxor first", "Önce Luksor'u açmalısın", "Erst Luxor eröffnen", "Primero abre Luxor", "まずルクソールを開こう", "먼저 룩소르를 여세요")
 add("holding.rec.oneAtATime", "One attempt at a time", "Aynı anda bir deneme", "Immer nur ein Versuch", "Un intento a la vez", "挑戦は一度にひとつ", "한 번에 하나의 도전")
 add("holding.rec.active", "Getting ready · days left: %@", "Hazırlanıyor · kalan gün: %@", "In Vorbereitung · Resttage: %@", "En preparación · días restantes: %@", "準備中・残り%@日", "준비 중 · 남은 일수: %@")
-add("holding.chip.prep", "Preparation: %@ days", "Hazırlık: %@ gün", "Vorbereitung: %@ Tage", "Preparación: %@ días", "準備：%@日", "준비: %@일")
+add("holding.chip.prep", "Preparation: %@ days", "Hazırlık: %@ gün", "Vorbereitungstage: %@", "Preparación: %@ días", "準備：%@日", "준비: %@일")
 add("holding.chip.odds", "Success chance %@", "Başarı şansı %@", "Erfolgschance %@", "Probabilidad de éxito %@", "成功率%@", "성공 확률 %@")
 add("holding.chip.allDemandLasting", "Demand +%@ for good", "Talep kalıcı +%@", "Nachfrage dauerhaft +%@", "Demanda +%@ para siempre", "需要が永続的に+%@", "수요 영구 +%@")
 add("holding.shape.hint",
@@ -493,6 +493,6 @@ add("settings.about", "About", "Hakkında", "Info", "Acerca de", "このアプ�
 add("settings.privacy", "Privacy policy", "Gizlilik politikası", "Datenschutz", "Política de privacidad", "プライバシーポリシー", "개인정보 처리방침")
 add("settings.support", "Support", "Destek", "Support", "Soporte", "サポート", "지원")
 add("settings.version", "Version", "Sürüm", "Version", "Versión", "バージョン", "버전")
-add("settings.sure", "Sure? All progress is deleted. Tap again", "Emin misin? Bütün ilerleme silinir. Tekrar dokun", "Sicher? Der gesamte Fortschritt wird gelöscht. Noch mal tippen", "¿Seguro? Se borra todo el progreso. Toca otra vez", "本当に？進行状況はすべて消えます。もう一度タップ", "정말요? 모든 진행이 삭제됩니다. 다시 누르세요")
+add("settings.sure", "Sure? All progress is deleted. Tap again", "Emin misin? Bütün ilerleme silinir. Tekrar dokun", "Sicher? Der gesamte Fortschritt wird gelöscht. Noch mal tippen", "¿Seguro? Se borra todo el progreso. Toca otra vez", "本当に？進行状況はすべて消えます。もう一度タップ", "정말요? 모든 진행 상황이 삭제됩니다. 다시 누르세요")
 add("a11y.on", "On", "Açık", "Ein", "Activado", "オン", "켬")
 add("a11y.off", "Off", "Kapalı", "Aus", "Desactivado", "オフ", "끔")

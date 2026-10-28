@@ -1,10 +1,10 @@
 from s1_ui import add
 
 # The flagship you fly is in repair: fly another balloon until it's back (prototype v110)
-add("tempFlag.title", "Your flagship is in repair", "Amiral balonun tamirde", "Dein Flaggschiff ist in Reparatur", "Tu globo insignia está en reparación", "旗艦が修理中", "기함이 수리 중입니다")
+add("tempFlag.title", "Your flagship is in repair", "Amiral balonun onarımda", "Dein Flaggschiff ist in Reparatur", "Tu globo insignia está en reparación", "旗艦が修理中", "기함이 수리 중입니다")
 add("tempFlag.lead",
     "%1$@ is grounded. Days in repair: %2$@. Would you like to pilot another balloon meanwhile? Say yes and you fly it until the repair is done, then your flagship comes back by itself. Say no and pilots fly your other balloons.",
-    "%1$@ balonu yerde. Tamirde kalacağı gün: %2$@. Bu sürede başka bir balonda pilotluk yapmak ister misin? Evet dersen tamir bitene kadar onu sen uçurursun, sonra amiralin kendiliğinden geri döner. Hayır dersen diğer balonlarını pilotlar uçurur.",
+    "%1$@ balonu yerde. Onarımda kalacağı gün: %2$@. Bu sürede başka bir balonda pilotluk yapmak ister misin? Evet dersen onarım bitene kadar onu sen uçurursun, sonra amiralin kendiliğinden geri döner. Hayır dersen diğer balonlarını pilotlar uçurur.",
     "%1$@ bleibt am Boden. Tage in Reparatur: %2$@. Möchtest du so lange einen anderen Ballon fliegen? Bei Ja fliegst du ihn, bis die Reparatur fertig ist, dann kehrt dein Flaggschiff von selbst zurück. Bei Nein fliegen Piloten deine übrigen Ballone.",
     "%1$@ está en tierra. Días en reparación: %2$@. ¿Quieres pilotar otro globo mientras tanto? Si dices que sí, lo pilotas hasta que termine la reparación y luego tu globo insignia vuelve solo. Si dices que no, los pilotos vuelan tus otros globos.",
     "%1$@は地上待機中。修理の日数：%2$@。その間、別の気球を操縦する？「はい」なら修理が終わるまでその気球をあなたが飛ばし、終われば旗艦は自動で戻る。「いいえ」ならほかの気球はパイロットが飛ばす。",
@@ -15,7 +15,7 @@ add("tempFlag.no", "No", "Hayır", "Nein", "No", "いいえ", "아니요")
 add("tempFlag.yes", "Yes", "Evet", "Ja", "Sí", "はい", "예")
 add("hez.flagshipBack",
     "Your flagship %@ is out of repair, kid. It's your flagship again, and from today you fly it.",
-    "Amiral balonun tamirden çıktı evlat: %@. Yeniden amiral o, bugünden itibaren onu uçuruyorsun.",
+    "Amiral balonun onarımdan çıktı evlat: %@. Yeniden amiral o, bugünden itibaren onu uçuruyorsun.",
     "Dein Flaggschiff %@ ist aus der Reparatur, Lehrling. Es ist wieder dein Flaggschiff, ab heute fliegst du es.",
     "Tu globo insignia %@ ya salió de reparación, aprendiz. Vuelve a ser tu insignia y desde hoy lo pilotas tú.",
     "弟子よ、旗艦%@の修理が終わった。また旗艦に戻ったから、今日からはそれを操縦するのだ。",

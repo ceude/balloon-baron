@@ -17,7 +17,7 @@ add("fleet.renewAll", "Renew worn envelopes (%1$@) · %2$@", "Yıpranan zarflar�
     "Renovar envolturas gastadas (%1$@) · %2$@", "劣化した球皮を交換（%1$@）・%2$@", "마모된 외피 교체 (%1$@) · %2$@")
 add("fleet.empty", "No balloons in this filter.", "Bu filtrede balon yok.", "Keine Ballone in diesem Filter.", "No hay globos con este filtro.",
     "この条件の気球はありません。", "이 필터에 해당하는 열기구가 없습니다.")
-add("fleet.row.readyYou", "Ready · pilot: you", "Hazır · pilot: sen", "Startklar · Pilot: du", "Listo · piloto: tú", "準備OK・パイロット：あなた", "준비 완료 · 조종사: 당신")
+add("fleet.row.readyYou", "Ready · pilot: you", "Hazır · pilot: sen", "Startklar · Pilot: du", "Listo · piloto: tú", "準備OK・パイロット：あなた", "준비 완료 · 조종사: 나")
 add("fleet.row.ready", "Ready · %@", "Hazır · pilot: %@", "Startklar · %@", "Listo · %@", "準備OK・%@", "준비 완료 · %@")
 add("fleet.row.readyWorn", "Ready · envelope worn", "Hazır · zarf yıpranmış", "Startklar · Hülle abgenutzt", "Listo · envoltura gastada", "準備OK・球皮が劣化", "준비 완료 · 외피 마모")
 add("fleet.row.worn", "Envelope worn out", "Zarf bitti", "Hülle verschlissen", "Envoltura gastada", "球皮が寿命", "외피 수명 다함")
