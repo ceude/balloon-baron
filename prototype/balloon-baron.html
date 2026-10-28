@@ -782,6 +782,36 @@ body.night #cv{touch-action:none}
 .showcalc{display:grid;grid-template-columns:1fr auto;gap:4px 12px;background:#fff3cf;border-radius:14px;padding:10px 14px;margin:0 0 12px;font-size:14px;color:#2a2340}.showcalc .tot{border-top:1px solid rgba(0,0,0,.12);padding-top:6px;font-weight:800}
 .storybtns{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}.storybtns .ghost{flex:none;padding:0 14px;height:40px;font-size:15px}
 #hez.story::before{background:rgba(20,14,40,.18)}
+/* v122: the tutorial that shows (Faz 1). The screen dims with holes cut out for what to use, an arrow, one line;
+   it never takes a tap, so the game below keeps working. */
+#tut{position:absolute;inset:0;z-index:7;pointer-events:none}
+#tutDim{position:absolute;inset:0;width:100%;height:100%}
+#tutDim path{fill:rgba(16,10,36,.62);transition:fill .3s}
+#tut.fl #tutDim path{fill:rgba(16,10,36,.42)}
+#tut.ga{z-index:9} /* guided actions light buttons inside cards and pages too */
+#tutDim #tutRing{fill:none;stroke:#ffd27a;stroke-width:3;stroke-dasharray:7 6;animation:tutdash 1s linear infinite}
+@keyframes tutdash{to{stroke-dashoffset:-26}}
+#tutArrow{position:absolute;left:0;top:0;width:44px;height:44px;margin:-22px 0 0 -22px;filter:drop-shadow(0 3px 6px rgba(0,0,0,.45))}
+#tutArrow svg{width:100%;height:100%;animation:tutbob .8s ease-in-out infinite}
+@keyframes tutbob{50%{transform:translateY(-9px)}}
+#tutLine{position:absolute;left:50%;transform:translateX(-50%);width:max-content;max-width:calc(100% - 32px);box-sizing:border-box;display:flex;align-items:center;gap:8px;pointer-events:auto;
+  padding:6px 6px 6px 6px;border-radius:999px;background:#fff;box-shadow:0 8px 24px rgba(15,8,35,.45);animation:tutin .3s cubic-bezier(.2,.9,.3,1.2)}
+@keyframes tutin{from{opacity:0;transform:translate(-50%,8px)}}
+#tutLine .hzav{width:34px;height:34px;flex:none;filter:none}
+#tutLine b{font-family:var(--cond);font-weight:700;font-size:17px;line-height:1.15;color:var(--ink);padding-right:2px}
+#tutLine.more{flex-wrap:wrap;border-radius:18px;width:min(420px,calc(100% - 32px))}#tutLine.more b{flex:1 1 200px;font:500 14.5px/1.4 Barlow,sans-serif}
+#tutMore{flex:none;height:30px;padding:0 8px;background:none;color:var(--ink2);font:700 13px Barlow,sans-serif;text-decoration:underline}
+#tutSkip{flex:none;height:30px;padding:0 11px;border-radius:999px;background:#ece7f4;color:#6c6488;font:700 13px Barlow,sans-serif}
+.tutpulse{animation:tutpulse 1.1s ease-in-out infinite}
+@keyframes tutpulse{50%{box-shadow:0 0 0 8px rgba(255,210,122,.55),0 0 26px 6px rgba(255,194,61,.55)}}
+.pxpop{position:absolute;right:6px;top:-6px;font:800 20px var(--cond);color:#5ee08f;pointer-events:none;animation:pxpop 1.2s ease-out forwards;text-shadow:0 2px 6px rgba(0,0,0,.4)}
+@keyframes pxpop{0%{opacity:0;transform:translateY(8px) scale(.8)}20%{opacity:1;transform:translateY(-4px) scale(1.15)}100%{opacity:0;transform:translateY(-26px)}}
+.psh .est,.pcard .pf{position:relative}.psh .est .pxpop{right:auto;left:96px;top:6px}
+.est b.bump,.pcard b.bump{display:inline-block;animation:bump .45s ease-out}
+@keyframes bump{40%{transform:scale(1.35);color:#5ee08f}}
+.hzb .hzmore{align-self:flex-start;background:none;color:var(--ink2);font:700 13.5px Barlow,sans-serif;padding:0;text-decoration:underline}
+.hzb .hzrow{display:flex;justify-content:space-between;align-items:center;gap:10px}
+#hez.spot::before{background:transparent}
 </style>
 
 <div id="wrap">
@@ -829,6 +859,7 @@ body.night #cv{touch-action:none}
   <button id="abort" hidden>Uçuştan vazgeç</button>
   <div id="testEnd" hidden><span>TEST · uçuşu bitir</span><div><button data-q="perfect">Kusursuz</button><button data-q="good">İyi</button><button data-q="far">Uzak</button><button data-q="crash">Kaza</button></div></div>
   <button id="vent" hidden aria-label="Paraşüt valfi">VALF</button>
+  <div id="tut" hidden><svg id="tutDim"><path fill-rule="evenodd"/><path id="tutRing"/></svg><div id="tutArrow"><svg viewBox="0 0 44 44" aria-hidden="true"><path d="M22 40 L22 12 M10 22 L22 8 L34 22" fill="none" stroke="#fff" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M22 40 L22 12 M10 22 L22 8 L34 22" fill="none" stroke="#ff5e3a" stroke-width="5.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div id="tutLine"><span class="av"></span><b></b><button id="tutMore" hidden>Daha fazla</button><button id="tutSkip">Geç</button></div></div>
 
   <div class="modal" id="report" hidden></div>
   <div class="modal" id="menu" hidden></div>
@@ -924,8 +955,8 @@ const hotelInc = x => Math.round(x.inc * (starVal(S.rep) < x.min ? .5 : 1) * (S.
 const willingAt = (p, c) => 1 / (1 + Math.exp((p - c) / 30));
 function extraSources() {
   const out = myHotels().map(x => ({ label: x.name, n: Math.round(x.pax * (owns(x) ? 1.5 : 1) * (S.winter ? .6 : 1) * willingAt(S.price, x.c)), col: x.col }));
-  if (S.day <= (S.guideUntil || 0)) out.push({ label: 'Rehber tavsiyesi', n: Math.round(5 * willing(S.price)), col: '#3ad0c0' });
-  if (S.day <= S.influUntil) out.push({ label: 'Influencer paylaşımı', n: Math.round(8 * willing(S.price)), col: '#ff6fa8' });
+  if (S.day <= (S.guideUntil || 0)) out.push({ label: 'Rehber tavsiyesi', n: Math.round((S.guidePax || 5) * willing(S.price)), col: '#3ad0c0' }); /* v122: per guide */
+  if (S.day <= S.influUntil) out.push({ label: 'Influencer paylaşımı', n: Math.round((S.influPax || 8) * willing(S.price)), col: '#ff6fa8' });
   if (S.day <= (S.showUntil || 0)) out.push({ label: 'Balon şöleni', n: showPax(), col: '#ffc23d' });
   out.push({ label: 'Popülerliğin', n: repBonus(), col: '#b79cff' });
   return out.filter(x => x.n > 0);
@@ -996,10 +1027,10 @@ const HEZ = {
   price: 'Dün koltukların hepsi dolmadı evlat. Bilet fiyatı turistin kararını değiştirir: biraz düşürürsen boş koltuk kalmaz. Koltuklar hep doluysa da fiyatı artırıp daha çok kazanırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.',
   bank: 'Banka kapısı açıldı. Kredi seni hızlandırır ama faiz sabırlı bir düşmandır, unutma.',
   market: 'Pazar sayfası açıldı. Rakiplerini tanı: Göreme Sky ağır abidir, Kızıl Vadi kural tanımaz. Otellerle anlaşmalar da orada.',
-  guide: 'Rehber ofisi açıldı evlat. Otel ve tur rehberlerini ücretsiz uçurursan seni müşterilerine önerirler: popülerlik ve birkaç gün boyunca fazladan turist. Kasabada Rehber ofisini bul ve dokun.',
-  agency: 'Influencer ajansı açıldı. Gezi influencerları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap. Kasabada havuzlu ajans binasını bul ve dokun.',
-  workshop: 'Balon atölyesinin arsası hazır evlat. Kurarsan balonlarını kendin tasarlarsın, sonra da kendi balonlarını üretirsin. Kasabada Balon atölyesinin arsasını bul ve dokun.',
-  school: 'Pilot okulunun arsası da hazır. Okulun olursa her sabah başvuranlar arasında bir okul mezunu bulunur: daha az kaza yapan pilotlar. Kasabada Pilot okulunun arsasını bul ve dokun.',
+  guide: 'Rehber ofisi açıldı evlat. Otel ve tur rehberlerini ücretsiz uçurursan seni müşterilerine önerirler: popülerlik ve birkaç gün boyunca fazladan turist. İçeride üç rehber var: ucuzu kısa, pahalısı uzun süre turist gönderir.',
+  agency: 'Influencer ajansı açıldı. Gezi influencerları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap. İçeride üç influencer var: yerel gezgin ucuz, ünlü gezgin pahalı ama çok güçlü.',
+  workshop: 'Balon atölyesinin arsası hazır evlat. Kurarsan balonlarını kendin tasarlarsın, sonra da kendi balonlarını üretirsin.',
+  school: 'Pilot okulunun arsası da hazır. Okulun olursa her sabah başvuranlar arasında bir okul mezunu bulunur: daha az kaza yapan pilotlar.',
   crew: 'Ekip sayfası açıldı. Çaylak pilot ucuzdur ama rüzgârda titrer. Uçtukça tecrübe kazanırlar, tabii maaş da isterler.',
   yellow: 'Sarı bayrak! Rüzgâr huysuz bugün. Ya pahalı sigortayla uç ya da balonları dinlendir.',
   red: 'Kırmızı bayrak, evlat. Ben bile böyle günde kanat açmazdım. Pas geçmek ayıp değil.',
@@ -1023,6 +1054,30 @@ const HEZ = {
   influ: 'Influencer anlaşmalarına dikkat evlat. Başlarda nadir yap, yoksa nakit akışın bozulur. Kasan rahatladıktan sonra çok daha verimli olurlar.',
   prcap: 'Popülerliğin tavana dayandı evlat. Ne kadar güzel uçarsan uç, otellerle anlaşmadan ya da rehberleri uçurmadan adın 4,2 yıldızdan öteye gitmez; bir influencer kampanyası seni en fazla 4,5 yıldıza taşır. Kasabadaki otellere ve ajanslara bak.',
   aging: 'Bir balonunun zarfı yorulmuş. Eski kumaş sert rüzgârda kazaya davetiyedir. Filo sayfasından yenile.'
+};
+/* v122: TestFlight players skip long bubbles, so the lessons of the first days say one sentence; the text above stays
+   behind "Daha fazla". Keys are HEZ's. */
+const HEZ_SHORT = {
+  welcome: 'Hoş geldin evlat! Bugün tek işin var: fiyatı belirle, yolcu topla, uç.',
+  ins: 'Sigortayı artık buradan açıp kapatırsın evlat; bir kaza kasayı bir sabahta boşaltabilir.',
+  fleet: 'Hangar açıldı evlat: kasa dolunca ikinci balonu buradan alırsın.',
+  bank: 'Banka açıldı: kredi hızlandırır ama faiz sabırlı bir düşmandır evlat.',
+  crew: 'Pilot ofisi açıldı: her balona bir pilot lazım evlat.',
+  market: 'Satış ofisin açıldı: otellerle anlaşırsan misafirleri sana gelir evlat.',
+  guide: 'Rehber ofisi açıldı: bir rehberi uçur, sana turist göndersin evlat.',
+  agency: 'Influencer ajansı açıldı: pahalıdır ama popülerliğini hızla yükseltir.',
+  bazaar: 'Çarşı açıldı evlat: sana bir fener seti hediye ettim, al bakalım.',
+  workshop: 'Balon atölyesinin arsası hazır: kurarsan kendi balonlarını tasarlarsın evlat.',
+  school: 'Pilot okulunun arsası hazır: mezunları ucuz ve daha az kaza yapar.',
+  goals: 'Hedef düğmesine dokun evlat: bölüm hedeflerin orada.',
+  price: 'Dün koltuklar boş kaldı evlat: fiyatı biraz düşürürsen dolar.',
+  yellow: 'Sarı bayrak evlat: ya pahalı sigortayla uç ya da balonları dinlendir.',
+  red: 'Kırmızı bayrak evlat: bugün yerde kalmak ayıp değil.',
+  mission: 'İlk özel müşterin geldi evlat: balonu 250–350 m arasında 8 saniye tut, sonra yumuşak in.',
+  accident: 'Kaza kötü ama son değil evlat: onarımı bekle, popülerliğini topla.',
+  pr: 'Başlarda otel ve rehber anlaşmaları her şeydir evlat.',
+  rivals: 'Rakip batırmanın ilk sırrı koltuktur: koltuğun turiste yetince rakip boş uçar.',
+  aging: 'Bir balonunun zarfı yorulmuş evlat: Filo sayfasından yenile.'
 };
 /* The rival boss of each region: the old money you're up against. Portraits drawn in code like Hezarfen's. */
 const BOSS_AV = {
@@ -1210,7 +1265,7 @@ function newState() {
       { name: 'Peribaca Balloons', col: '#9b7be0', col2: '#f2ebff', style: 'mid',   balloons: ['M', 'M', 'M', 'S'],      price: 165, rep: 1,    cash: 20000 },
       { name: 'Kızıl Vadi Air',    col: '#c73a2a', col2: '#ffd9a8', style: 'risky', balloons: ['S', 'S', 'S'],           price: 135, rep: .85,  cash: 12000 }
     ],
-    region: 'cap', regions: {}, barons: {}, designs: [], holding: 0, hold: null, lastShare: null, monopolyShown: false, over: false, tutorialDone: false, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, hotels: [], unl: {}, unlV: 2, tips: {}, hezQ: [], hotelTaken: {}, poach: null, ownHotels: [], school: false, winter: null, nextWinter: null, monoDays: 0
+    region: 'cap', regions: {}, barons: {}, designs: [], holding: 0, hold: null, lastShare: null, monopolyShown: false, over: false, tutorialDone: false, tut: {}, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, hotels: [], unl: {}, unlV: 2, tips: {}, hezQ: [], hotelTaken: {}, poach: null, ownHotels: [], school: false, winter: null, nextWinter: null, monoDays: 0
   };
   s.rivals.forEach(r => { r.alive = true; r.dmg = r.balloons.map(() => 0); r.lastPax = 0; r.lastCap = 0; r.forSale = null; r.lowDays = 0; });
   s.balloons.push({ id: s.nextId++, size: 'S', name: 'Şafak', fly: true, dmgUntil: 0, pilot: null });
@@ -1252,6 +1307,7 @@ function migrate(s) {
   (s.designs || []).forEach(d => { if (d.shape === 'hezarfen') { d.shape = 'skull'; if (d.name === 'Hezarfen balonu') d.name = 'Kurukafa balon'; } });
   if (s.hold && s.hold.hq) { s.hold.offices = { [s.hold.hq]: s.day }; delete s.hold.hq; }
   for (const id in s.regions) { if (s.regions[id].cash == null) { s.regions[id].cash = 0; s.regions[id].loans = []; } }
+  if (s.tut == null) s.tut = (s.selfFlights || 0) >= 1 || s.day > 1 ? { done: 1, old: 1 } : {}; /* v122: saves that already flew skip the tutorial */
   return s;
 }
 const KEY = 'safak-balon-v1';
@@ -1728,7 +1784,7 @@ function showRescue() {
 }
 function showRescueStep() { if (S.cash >= 0) { $('menu').hidden = true; S.hezQ.unshift('news:Aferin evlat, kasa yeniden artıda. Şimdi masrafları sıkı tutalım.'); setTimeout(nextPopup, 250); } else showRescue(); }
 function nextPopup() {
-  if (TRAVEL) return;
+  if (TRAVEL || GA) return; /* v122: a guided action is running; it calls back when it ends */
   if (mode !== 'office' || !$('menu').hidden || !$('report').hidden || !$('page').hidden || !$('hez').hidden) return;
   if (SHOWHL) { showHighlights(); return; }
   if (S.chapterNews != null) { showChapter(); return; }
@@ -1746,15 +1802,18 @@ function nextPopup() {
   if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; issueScene(); return; }
   if (S.poach) { showPoach(); return; }
   if (S.hotelBargains && S.hotelBargains.length) { showHotelBargain(); return; }
+  if (tutHome()) return; /* v122: day one's price lesson, then "Yolcu topla" */
   checkDeals();
 }
 let hezTimer = 0;
 function showHez(k) {
   const news = k.startsWith('news:'), boss = k.startsWith('boss:'), hz = k.startsWith('hz:'), insp = k.startsWith('insp:'), gh = k === 'guide:hello';
   if (!news && !boss && !hz && !insp && !gh) S.tips[k] = 1; save();
+  if (!news && !boss && !hz && !insp && !gh && guideOk(k)) { guideStart(k); return; } /* v122: shown, not told */
   const G = hz ? GUIDES.cap : guide(), I = INSPECTOR[S.region] || INSPECTOR.cap;
   $('hez').classList.remove('story');
-  const el = $('hez'), text = news ? k.slice(5) : hz ? k.slice(3) : insp ? k.slice(5) : gh ? G.hello : boss ? BOSS_LINES[S.region][k.slice(5)].replace(/\{c\}/g, S.company) : HEZ[k];
+  const el = $('hez'), long = !news && !boss && !hz && !insp && !gh && HEZ_SHORT[k] ? HEZ[k] : null; /* v122: one sentence, the rest behind "Daha fazla" */
+  let text = news ? k.slice(5) : hz ? k.slice(3) : insp ? k.slice(5) : gh ? G.hello : boss ? BOSS_LINES[S.region][k.slice(5)].replace(/\{c\}/g, S.company) : long ? HEZ_SHORT[k] : HEZ[k];
   el.innerHTML = boss ? `<div class="hzcol">${BOSS_AV[S.region]}<span class="hzname boss">${BOSS[S.region].name}</span></div><div class="hzb"><span class="bosst">${BOSS[S.region].title}</span><p></p></div>`
     : insp ? `<div class="hzcol">${INSP_AV}<span class="hzname boss">${I.name}</span></div><div class="hzb"><span class="bosst">${I.title}</span><p></p></div>`
     : `<div class="hzcol">${G.av()}<span class="hzname">${G.name}</span></div><div class="hzb"><p></p></div>`;
@@ -1766,7 +1825,11 @@ function showHez(k) {
   bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
   const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : k === 'bazaar' ? 'Çarşıya git' : k === 'show' ? 'Şöleni gör' : k === 'price' ? 'Fiyatı ayarla' : k.startsWith('p_') ? 'Sağ ol usta' : 'Anladım');
   ok.onclick = () => { finish(); el.hidden = true; refresh(); if (k === 'bazaar') showBazaar(); else if (k === 'show') showCard(); else if (k === 'price') priceSheet(true); else setTimeout(nextPopup, 250); };
-  bub.appendChild(ok);
+  if (long) {
+    const row = h('div', 'hzrow'), more = h('button', 'hzmore', 'Daha fazla');
+    more.onclick = () => { finish(); text = long; p.style.minHeight = ''; p.textContent = long; more.remove(); };
+    row.append(more, ok); bub.appendChild(row);
+  } else bub.appendChild(ok);
   el.hidden = false;
 }
 /* v110: the flagship you fly is in repair. Offer another balloon to fly until it's back (the biggest that can fly,
@@ -1825,6 +1888,7 @@ function expireSeasons() {
 }
 function startDay() {
   expireSeasons();
+  if (TUTA && TUTA.mode === 'office') TUTA = null; /* v122: a day-one step left open (the day was skipped) */
   alertsOpen = false; $('dock').classList.remove('open'); applyRegionTheme();
   if (!S.company) { showSetup(1); return; }
   if (S.story) { storyResume(); return; } /* v112: the opening story isn't over yet */
@@ -2831,7 +2895,7 @@ function feelPos(w) { const cuts = [1, .85, .6, .35, 0]; for (let i = 0; i < 4; 
 /* günün turist sayısı fiyattan bağımsız: fiyat sadece kaçının seni seçtiğini değiştirir */
 function touristsToday() {
   const hotels = myHotels().reduce((a, x) => a + Math.round(x.pax * (owns(x) ? 1.5 : 1) * (S.winter ? .6 : 1)), 0);
-  return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? 5 : 0) + (S.day <= S.influUntil ? 8 : 0) + (S.day <= (S.showUntil || 0) ? Math.round(SHOW.pax * (S.showN || 0)) : 0) + repBonusRaw();
+  return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? S.guidePax || 5 : 0) + (S.day <= S.influUntil ? S.influPax || 8 : 0) + (S.day <= (S.showUntil || 0) ? Math.round(SHOW.pax * (S.showN || 0)) : 0) + repBonusRaw();
 }
 function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
 /* Who's in the baskets today, for the ticket card. */
@@ -2868,6 +2932,10 @@ function renderAct() {
   if (S.docDay === S.day && fl.some(b => b.id === S.flag)) notes.push('Amiralde 4 koltuk belgesel ekibinde.');
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
   $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
+  /* v122: price changes count the passengers up or down where you can see it */
+  if (TUTA && TUTA.k === 'price' && S.price < TUTA.p0 && !TUTA.low) { TUTA.low = true; tutStep('price_low'); }
+  if (renderAct.pax != null && renderAct.cap === cap && renderAct.price !== S.price) { paxBump($('est').querySelector('.res') ? $('est') : null, pax, renderAct.pax); paxBump($('pcard').querySelector('.pf'), pax, renderAct.pax); }
+  renderAct.pax = pax; renderAct.cap = cap; renderAct.price = S.price;
   const go = $('go'); go.disabled = false;
   go.textContent = n ? `Yolcu topla (${n} balon)` : forcedSkip() ? 'Günü pas geç' : 'Uçuş planını aç'; /* TestFlight: nothing to fly opens the plan, where the reason is */
   $('auto').hidden = !autoOk();
@@ -2988,7 +3056,7 @@ function tabFleet(body) {
     const z = SIZES[k], it = h('div', 'item');
     it.insertAdjacentHTML('beforeend', balloonIcon('#cfc8dd', '#ffffff'));
     it.appendChild(h('div', 'main', `<div class="t">${z.label}, ${z.cap} kişi</div><div class="s">Rüzgârda risk ×${z.risk.toLocaleString('tr-TR')}. Bakım ${eur(z.up)}/gün.</div>`));
-    it.appendChild(pbtn(eur(z.cost), () => { S.cash -= z.cost; addBalloon(k); assignPilots(); refresh(); }, S.cash < z.cost));
+    { const bb = pbtn(eur(z.cost), () => { S.cash -= z.cost; addBalloon(k); assignPilots(); refresh(); }, S.cash < z.cost); if (!b2.querySelector('[data-tut]')) bb.dataset.tut = 'fleet'; it.appendChild(bb); } /* v122: the guided action lights the first one */
     /* v114: the same balloon from your own workshop, cheaper but not today */
     if (fabCan(k)) { const fb = pbtn(`Atölyede ${eur(fabCost(k))}`, () => { fabBuild(k); refresh(); }, fabBusy() || S.cash < fabCost(k)); fb.classList.add('two'); fb.innerHTML = `Atölyede<small>${eur(fabCost(k))} · ${FAB.days[k]} gün</small>`; it.appendChild(fb); }
     b2.appendChild(it);
@@ -3086,7 +3154,7 @@ function tabCrew(body) {
   else {
     const it = h('div', 'item');
     it.appendChild(h('div', 'main', `<div class="t">Kendi pilot okulunu kur</div><div class="s">Her sabah bir mezun başvurur. Mezunlar ömür boyu %30 daha ucuza çalışır. 10 pilotla günde ~${eur(450)} tasarruf.</div>`));
-    it.appendChild(pbtn(eur(SCHOOL_COST), () => { S.cash -= SCHOOL_COST; S.school = true; newCandidates(); refresh(); }, S.cash < SCHOOL_COST));
+    { const sb = pbtn(eur(SCHOOL_COST), () => { S.cash -= SCHOOL_COST; S.school = true; newCandidates(); refresh(); }, S.cash < SCHOOL_COST); sb.dataset.tut = 'school'; it.appendChild(sb); } /* v122 */
     sc.appendChild(it);
   }
   body.appendChild(sc);
@@ -3095,7 +3163,7 @@ function tabCrew(body) {
     const it = h('div', 'item');
     it.appendChild(h('div', 'av', p.name[0])).style.background = CREW_COL[p.lvl - 1];
     it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, kaza riski ${pilotRiskText(p)}${traitLine(p)}</div>`));
-    it.appendChild(pbtn('İşe al', () => { S.pilots.push(p); S.candidates = S.candidates.filter(x => x !== p); assignPilots(); refresh(); }));
+    { const hb = pbtn('İşe al', () => { S.pilots.push(p); S.candidates = S.candidates.filter(x => x !== p); assignPilots(); refresh(); }); if (!c.querySelector('[data-tut]')) hb.dataset.tut = 'hire'; it.appendChild(hb); } /* v122 */
     c.appendChild(it);
   }
   c.appendChild(h('p', 'hint', 'Maaşlar balon uçmasa da her gün ödenir. Pilotlar uçtukça tecrübe kazanır: çaylak 40 uçuşta deneyimli, deneyimli 100 uçuşta kıdemli olur ve maaşı da yükselir. Başvuranlar her sabah değişir.'));
@@ -3117,7 +3185,7 @@ function tabBank(body) {
     const total = L.inst * L.days, rate = (total - L.amt) / L.amt, it = h('div', 'item');
     const opened = !L.net || (S.loanOpen || {})[L.amt], locked = S.balloons.length < L.need || !opened, full = S.loans.length >= 2;
     it.appendChild(h('div', 'main', `<div class="t">${eur(L.amt)}, ${L.days} gün <span class="tag ${rate > .22 ? 'r' : 'y'}">faiz ${pct(rate)}</span></div><div class="s">Günlük ${eur(L.inst)}, toplam ${eur(total)} geri ödersin.${L.need ? ` En az ${L.need} balon gerekir.` : ''}${L.net ? (opened ? ' <b>Açıldı.</b>' : ` Buradaki günlük net kazancın en az ${eur(L.net)} olunca açılır ve açık kalır (son iki hafta: ${eur(dailyNet())}).`) : ''}</div>`));
-    it.appendChild(pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full));
+    { const lb = pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full); if (!o.querySelector('[data-tut]')) it.dataset.tut = 'bank'; it.appendChild(lb); } /* v122 */
     o.appendChild(it);
   });
   o.appendChild(h('div', 'callout grn', `<b>Satın alma kredisi: ${eur(BUYLOAN.max)}'e kadar.</b> Pazar'da satılık bir şirket ya da filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. ${BUYLOAN.days} gün, faiz %${Math.round(BUYLOAN.rate * 100)}. En az ${BUYLOAN.need} balon ve açılmış ${eur(LOANS[LOANS.length - 1].amt)} tutarındaki kredi gerekir. Teklif çıkınca "Krediyle al" düğmesi görünür.`));
@@ -3199,6 +3267,7 @@ function tabMarket(body) {
       else {
         const hb = pbtn(ok ? 'Anlaş' : 'Kilitli', () => { S.cash -= x.fee * 3; S.hotels.push(x.id); refresh(); }, !ok || S.cash < x.fee * 3, true);
         if (ok) { hb.classList.add('two'); hb.innerHTML = `Anlaş ${eur(x.fee * 3)}<small>3 günlük peşin</small>`; }
+        if (!hs.querySelector('[data-tut]') && ok && S.cash >= x.fee * 3) hb.dataset.tut = 'hotel'; /* v122: the first deal you can make (else the first one, below) */
         acts.appendChild(hb);
       }
       const canBuy = sv0 >= x.min;
@@ -3211,6 +3280,7 @@ function tabMarket(body) {
     if (!ok && !has && !own) it.style.opacity = '.7';
     hs.appendChild(it);
   });
+  if (!hs.querySelector('[data-tut]')) { const fb = [...hs.querySelectorAll('.pbtn')].find(b => /^(Anlaş|Kilitli)/.test(b.textContent)); if (fb) fb.dataset.tut = 'hotel'; }
   hs.appendChild(h('p', 'hint', 'Anlaşırken üç günlük ücreti peşin ödersin, sonra her gün günlük ücret kasadan çıkar.'));
   const tipBtn = pbtn(`${guide().name.split(' ')[0]}: rakip taktikleri`, () => { S.hezQ.push('rivals', 'rivals2', 'rivals3'); closePage(); setTimeout(nextPopup, 200); }, false, true);
   tipBtn.style.alignSelf = 'flex-start'; t.appendChild(tipBtn);
@@ -4370,12 +4440,9 @@ function showRepChart() {
   if (ads.length) act('Balon reklamlarını kaldır', `${ads.length} balonunda reklam var. Kaldırırsan reklam geliri biter, popülerlik kaybı durur.`, 'Kaldır', () => { ads.forEach(b => b.ad = null); m.hidden = true; refresh(); });
   act('Otellerle anlaş', `Oteller misafirlerine seni önerir, her gün popülerlik ve turist getirir. ${S.hotels.length ? S.hotels.length + ' otelle anlaşman var.' : 'Henüz anlaşman yok.'}`, 'Oteller', () => { m.hidden = true; openPage('market'); setTimeout(() => { const t = [...document.querySelectorAll('#tabBody h2')].find(x => x.textContent === 'Otel anlaşmaları'); if (t) t.scrollIntoView(); }, 50); });
   const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
-  if (unlocked('agency')) act('Influencer kampanyası', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : `Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir.`, eur(influCost()), () => {
-    m.hidden = true; doInfluencer();
-  }, icd > 0 || S.cash < influCost());
-  if (unlocked('guide')) act('Rehberlere tanıtım uçuşu', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', eur(GUIDE_COST), () => {
-    m.hidden = true; doGuide();
-  }, gcd > 0 || S.cash < GUIDE_COST);
+  /* v122: guides and influencers each have their own screen now */
+  if (unlocked('guide')) act('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Üç rehberden birini seç: seni müşterilerine önerirler, hemen popülerlik ve birkaç gün turist.', 'Rehberler', () => { m.hidden = true; showGuides(); }, gcd > 0);
+  if (unlocked('agency')) act('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : 'Üç influencerdan birini seç: hemen popülerlik, kampanya boyunca her gün biraz daha.', 'Ajans', () => { m.hidden = true; showAgency(); }, icd > 0);
   if (unlocked('market') && S.balloons.length >= SHOW.min) { const ss = showState(); act('Balon Şöleni Düzenle', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
@@ -4684,7 +4751,7 @@ function showMenu(open) {
 
 /* Prototype test: day 30 in Cappadocia, 20 balloons (some with shapes and patterns), pilots for all, €50,000. */
 function testShowGame() {
-  S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 30; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1;
+  S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 30; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1; S.tut = { done: 1 };
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1 };
   Object.keys(HEZ).forEach(k => { if (k !== 'show') S.tips[k] = 1; });
   const sizes = ['M', 'L', 'M', 'S', 'L', 'M', 'M', 'S', 'L', 'M', 'M', 'L', 'S', 'M', 'L', 'M', 'S', 'M', 'L', 'M'];
@@ -4719,15 +4786,18 @@ function startFlight(pax) {
   if (S.story) FL.borrow = { c: [S.rivals[0].col, S.rivals[0].col2] }; /* v112: Kenan's balloon, in Göreme Sky's colours */
   const tip = $('tip'); tip.hidden = false; tip.className = 'up'; tip.style.setProperty('--tipTop', ($('hud').offsetHeight + 10) + 'px');
   tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> Hedef: ${S.weather.target > 220 ? 'sağdaki' : 'soldaki'} iniş alanı.` : '<b>Hedefin sağdaki iniş alanı.</b> Brülöre basılı tut: balon ısınır ve yükselir. Bırak: soğur ve alçalır. Her yükseklikte rüzgâr farklı eser; seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
+  tutFlightStart(); /* v122 */
 }
 /* v111: the flying coach. A TestFlight player didn't see that the landing field was the goal, lost track of the wind
    layers and ran out of fuel, so for your first three flights Hezarfen says a word when it helps: drifting away from
    the field, standing still, over the field, low on fuel (that one on every flight). */
 const COACH_FLIGHTS = 3;
+const THERMAL_LIFT = 1; /* v122: was .5 */
 const ONLY_REPAIR = 2; /* v121.12: with a single balloon a repair takes two days at most, so a crash doesn't stop the game for a week */
 const coached = () => (S.selfFlights || 0) < COACH_FLIGHTS;
 function coachSay(k, html) {
   const f = FL; if (!f || f.done) return;
+  if (f.tut && TUTA && !TUTA.ga) return; /* v122: the tutorial's line has the floor */
   f.said = f.said || {};
   if (f.coachK === k || (f.said[k] || 0) >= 2 || (f.coachAt && T - f.coachAt < 5)) return;
   f.said[k] = (f.said[k] || 0) + 1; f.coachK = k; f.coachAt = T;
@@ -4746,11 +4816,281 @@ function coachTick(f, dt) {
   else if (f.wrongT > 2.5) coachSay('wrong', '<b>Bu rüzgâr seni hedeften uzaklaştırıyor.</b> Soldaki oklara bak: hedefe doğru esen katmana çık ya da in. Kesik çizgiyi geçince rüzgâr değişir.');
   else if (f.stillT > 4) coachSay('still', '<b>Neredeyse duruyorsun.</b> Başka bir yüksekliğe geç: her katmanın rüzgârı solda, balonunun altındaki etiket şu anki rüzgârı gösterir.');
 }
+/* ---------- v122: Faz 1, the tutorial that shows ----------
+   TestFlight newcomers don't read Hezarfen's bubbles ("I never read those in any game"). So the first day and the
+   first flight dim the screen, keep one thing lit, point at it and say one short line; a step ends when the player
+   uses that thing, never on an OK. The overlay never takes a tap, so nothing can lock the game; a small "Geç" ends the
+   whole tutorial. Progress lives in S.tut (steps → the day each was done), so nothing repeats; saves that had already
+   flown skip it. tutStep() is the one place a step is recorded: the Swift port sends its TelemetryDeck event there. */
+let TUTA = null, TUTC = {}, HOMEF = null, GA = null, GA_NEXT = false;
+const TUT_ALL = ['price', 'go', 'burn', 'wind', 'vent', 'field', 'chimney', 'thermal'];
+const TUT_FLIGHTS = 5; /* the flight steps that are left (the thermal, a chimney) are still shown up to the fifth own flight */
+const tutOn = () => !!(S && S.tut && !S.tut.done);
+const tutHas = k => !!(S && S.tut && S.tut.steps && S.tut.steps[k]);
+function tutStep(k) {
+  if (!S) return;
+  S.tut = S.tut || {}; S.tut.steps = S.tut.steps || {};
+  if (S.tut.steps[k]) return;
+  S.tut.steps[k] = S.day; /* Swift: TelemetryDeck.signal("tutorial.<k>", ["day": S.day]) */
+  if (TUT_ALL.every(tutHas)) S.tut.done = 1;
+  save();
+}
+function tutShow(k, line, o) {
+  if (TUTA && TUTA.k === k) return TUTA;
+  TUTA = Object.assign({ k, line, t0: T }, o || {});
+  const L = $('tutLine'); L.classList.remove('more'); L.querySelector('b').textContent = line;
+  const av = L.querySelector('.av'); if (!av.firstChild) av.innerHTML = guide().av();
+  L.style.animation = 'none'; void L.offsetWidth; L.style.animation = '';
+  return TUTA;
+}
+const tutEnd = k => { if (TUTA && (!k || TUTA.k === k)) TUTA = null; };
+/* a DOM element's box in the game's coordinates, padded; round buttons get a round hole */
+function tutRel(el, pad = 6, round) {
+  if (!el || !el.getClientRects().length) return null;
+  const r = el.getBoundingClientRect(), w = $('wrap').getBoundingClientRect();
+  if (r.width < 2 || r.bottom < w.top || r.top > w.bottom) return null;
+  return { x: r.left - w.left - pad, y: r.top - w.top - pad, w: r.width + pad * 2, h: r.height + pad * 2, r: round ? r.height / 2 + pad : 16 };
+}
+const tutCirc = c => c && { x: c.x - c.r, y: c.y - c.r, w: c.r * 2, h: c.r * 2, r: c.r };
+function tutPath(q) {
+  const r = Math.min(q.r || 0, q.w / 2, q.h / 2), x = q.x, y = q.y, w = q.w, hh = q.h;
+  return `M${x + r} ${y}H${x + w - r}A${r} ${r} 0 0 1 ${x + w} ${y + r}V${y + hh - r}A${r} ${r} 0 0 1 ${x + w - r} ${y + hh}H${x + r}A${r} ${r} 0 0 1 ${x} ${y + hh - r}V${y + r}A${r} ${r} 0 0 1 ${x + r} ${y}Z`;
+}
+const tutArrowAt = q => q.y > 150 ? { x: q.x + q.w / 2, y: q.y - 26, dir: 'down' } : { x: q.x + q.w / 2, y: q.y + q.h + 26, dir: 'up' };
+/* every frame: place the holes, the arrow and the line, or hide it all while something else is on top */
+function tutFrame() {
+  const el = $('tut'); if (!el || !S) return;
+  if (GA) guideTick();
+  if (GA_NEXT && mode === 'office' && $('page').hidden && $('menu').hidden && $('hez').hidden && $('psheet').hidden && !TOWN.open) { GA_NEXT = false; setTimeout(nextPopup, 300); }
+  const A = TUTA;
+  let ok = !!A && $('hez').hidden && $('report').hidden && !(TOWN.open && !TOWN.hold) && !TRAVEL;
+  if (ok && !A.ga) ok = $('menu').hidden && $('page').hidden && (!A.mode || A.mode === mode);
+  const hs = ok ? (A.holes() || []).filter(q => q && q.w > 0) : [];
+  $('go').classList.toggle('tutpulse', !!(hs.length && A.k === 'go'));
+  if (!hs.length) { el.hidden = true; return; }
+  el.hidden = false; el.classList.toggle('fl', mode === 'flight'); el.classList.toggle('ga', !!A.ga);
+  const d = hs.map(tutPath).join(''), ps = el.querySelectorAll('#tutDim path');
+  ps[0].setAttribute('d', `M0 0H${W}V${H}H0Z` + d); ps[1].setAttribute('d', d);
+  /* in flight the dark lifts after a moment so you can still see the chimneys; the ring, arrow and line stay */
+  ps[0].style.opacity = mode === 'flight' ? 1 - .8 * clamp(T - A.t0 - 2.5, 0, 1) : 1;
+  const ar = $('tutArrow'), a = A.arrow ? A.arrow(hs) : tutArrowAt(hs[0]);
+  ar.hidden = !a;
+  if (a) { ar.style.left = a.x + 'px'; ar.style.top = a.y + 'px'; ar.style.transform = `rotate(${{ up: 0, right: 90, down: 180, left: -90 }[a.dir]}deg)`; }
+  const L = $('tutLine'), lb = L.querySelector('b'), txt = A.lineNow ? A.lineNow() : A.line;
+  if (!L.classList.contains('more') && lb.textContent !== txt) lb.textContent = txt;
+  $('tutMore').hidden = !A.more || L.classList.contains('more');
+  const lh = L.offsetHeight, hudB = $('hud').offsetHeight + 8, top = Math.min(...hs.map(q => q.y)), bot = Math.max(...hs.map(q => q.y + q.h));
+  const y = A.lineY ? A.lineY() : (top + bot) / 2 > H * .5 ? top - 64 - lh : bot + 64; /* clear of every hole */
+  L.style.top = clamp(y, hudB, H - lh - 10) + 'px';
+}
+function tutSkipAll() {
+  sfx('click');
+  if (TUTA && TUTA.ga) { guideEnd('skip'); return; } /* on a guided action "Geç" skips just that one */
+  tutStep('skip'); S.tut.done = 1; save(); TUTA = null;
+  if (FL) { FL.tut = false; FL.pan = null; FL.slow = 1; }
+}
+/* Day one at home: first the ticket price (lower it, watch the passengers go up), then "Yolcu topla". */
+function tutHome() {
+  if (!tutOn() || mode !== 'office' || AUTO || S.day !== 1 || S.region !== 'cap' || !flying().some(isSelf)) return false;
+  if (!tutHas('price')) {
+    const A = tutShow('price', 'Fiyatı düşür: daha çok yolcu biner.', { mode: 'office', p0: S.price,
+      holes: () => $('psheet').hidden ? [tutRel($('pcard'), 4)] : [tutRel(A.low ? $('psOk') : $('pMinus'), 6, !A.low), tutRel($('est'), 6)],
+      arrow: hs => A.low && !$('psheet').hidden ? null : tutArrowAt(hs[0]),
+      lineNow: () => A.low && !$('psheet').hidden ? 'Gördün mü? Yolcu arttı. Tamam\'a bas.' : A.line });
+    return true;
+  }
+  if (!tutHas('go')) { tutShow('go', 'Hazırsın: yolcu topla ve uç.', { mode: 'office', holes: () => [tutRel($('go'), 5)] }); return true; }
+  return false;
+}
+/* The first own flight, step by step: burner, wind layers, vent, the landing field; a chimney and the thermal whenever
+   they come up. */
+function tutFlightStart() {
+  const f = FL;
+  f.tut = tutOn() && !S.story && (S.selfFlights || 0) < TUT_FLIGHTS && ['burn', 'wind', 'vent', 'field', 'chimney', 'thermal'].some(k => !tutHas(k));
+  if (!f.tut) return;
+  /* the second own flight brings a thermal if the first had none, so the lesson isn't left to chance */
+  if ((S.selfFlights || 0) >= 1 && !tutHas('thermal') && !(f.mom && f.mom.k === 'thermal')) f.mom = { k: 'thermal', x: 220 + (Math.sign(S.weather.target - 220) || 1) * rnd(380, 700), in: 0 };
+  if (!tutHas('burn')) $('tip').hidden = true;
+}
+const tutPanK = f => { if (!f.pan) return 0; const t = T - f.pan.t0; return t < 1.2 ? easeIO3(t / 1.2) : t < 3.2 ? 1 : 1 - easeIO3((t - 3.2) / 1); };
+/* the layer the wind step lights: one after another for 2.4 s, then the one that blows hardest toward the field */
+function tutLayerLit() {
+  const tt = TUTA ? T - TUTA.t0 : 9, dx = Math.sign(S.weather.target - (FL ? FL.x : 220)) || 1;
+  if (tt < 2.4) return 3 - Math.floor(tt / .6);
+  let b = 0; S.weather.layers.forEach((v, i) => { if (v * dx > S.weather.layers[b] * dx) b = i; }); return b;
+}
+function tutChimney(f) {
+  const dir = Math.sign(f.vx) || Math.sign(S.weather.target - f.x) || 1;
+  let best = null, bd = 1e9;
+  for (const c of terrain) {
+    const d = (c.x - f.x) * dir, X = TUTC.sx ? TUTC.sx(c.x) : -1;
+    if (d > 40 && d < 300 && d < bd && f.alt < c.h + 160 && X > 20 && X < W - 20) { best = c; bd = d; }
+  }
+  return best ? { c: best, dir, t0: T } : null;
+}
+function tutFlightTick(f, dt) {
+  if (!f.tut || f.done) return;
+  const st = f.ts || (f.ts = { bt: 0, wt: 0, vt: 0, vw: 0 }), dx = S.weather.target - f.x, toward = f.vx * Math.sign(dx);
+  if (f.burning && f.fuel > 0) st.bt += dt;
+  if (f.pan) { f.slow = .25; if (T - f.pan.t0 > 4.2) { f.pan = null; f.slow = 1; tutStep('field'); tutEnd('field'); } return; }
+  if (st.ch) { /* a chimney ahead is being pointed out: done once you're past it */
+    const c = st.ch.c, past = (f.x - c.x) * st.ch.dir > c.w / 2 + 8;
+    if (past || T - st.ch.t0 > 9) { tutStep('chimney'); tutEnd('chimney'); st.ch = null; }
+    else if (Math.abs(c.x - f.x) > 450) { st.ch = null; tutEnd('chimney'); }
+  }
+  const M = f.mom, th = M && M.k === 'thermal' && !tutHas('thermal') ? M : null;
+  if (th && (th.in > .3 || th.ok || (f.x - th.x) * (Math.sign(dx) || 1) > 160)) { tutStep('thermal'); tutEnd('thermal'); }
+  let k = null;
+  if (!tutHas('burn')) k = 'burn';
+  else if (!f.air) k = null;
+  else if (!tutHas('chimney') && (st.ch || (st.ch = tutChimney(f)))) k = 'chimney';
+  else if (th && !tutHas('thermal') && Math.abs(th.x - f.x) < 420) k = 'thermal';
+  else if (!tutHas('wind')) k = 'wind';
+  else if (!tutHas('vent')) { st.vw += dt; if (f.alt >= 70 || st.vw > 6) k = 'vent'; }
+  else if (!tutHas('field')) k = 'field';
+  if (!k) { if (TUTA && !TUTA.ga) TUTA = null; return; }
+  if (!f.msg) $('tip').hidden = true; /* one voice at a time: the coach waits */
+  const lineY = () => $('hud').offsetHeight + 112, bal = () => tutCirc(TUTC.bal);
+  if (k === 'burn') {
+    tutShow('burn', 'Basılı tut: yükselirsin.', { mode: 'flight', lineY, holes: () => [tutRel($('burn'), 8, true), bal()], arrow: () => TUTC.bal && { x: TUTC.bal.x + TUTC.bal.r + 22, y: TUTC.bal.y, dir: 'up' } });
+    if (st.bt >= 1 && f.alt > 20 && f.vy > 0) { tutStep('burn'); tutEnd('burn'); }
+  } else if (k === 'wind') {
+    tutShow('wind', 'İleri gitmek için doğru yüksekliği bul.', { mode: 'flight', lineY, holes: () => [TUTC.layers, bal()], arrow: () => TUTC.sy && { x: 146, y: TUTC.sy(CENTERS[tutLayerLit()]), dir: 'left' } });
+    if (toward > .25) st.wt += dt;
+    if (st.wt >= 2) { tutStep('wind'); tutEnd('wind'); }
+  } else if (k === 'vent') {
+    $('vent').hidden = false;
+    tutShow('vent', 'Valf sıcak havayı bırakır: alçalırsın, ileri götürmez.', { mode: 'flight', lineY, holes: () => [tutRel($('vent'), 8, true), bal()], arrow: () => TUTC.bal && { x: TUTC.bal.x + TUTC.bal.r + 22, y: TUTC.bal.y + 10, dir: 'down' } });
+    if (f.venting) st.vt += dt;
+    if (st.vt >= .5) { tutStep('vent'); tutEnd('vent'); }
+  } else if (k === 'field') {
+    f.pan = { t0: T }; f.slow = .25;
+    tutShow('field', 'Burada in.', { mode: 'flight', lineY, holes: () => [TUTC.field] });
+  } else if (k === 'chimney') {
+    tutShow('chimney', 'Peribacasının üstünden geç: sepet çarparsa kaza.', { mode: 'flight', lineY, holes: () => [TUTC.chim] });
+  } else if (k === 'thermal') {
+    tutShow('thermal', 'Termik: içine girersen seni yukarı taşır.', { mode: 'flight', lineY, holes: () => [TUTC.therm] });
+  }
+}
+/* v122: Guided actions. When a building opens, the camera glides to it, it pulses and an arrow says "tap"; inside, the
+   page scrolls to the one thing to do and lights it. One line (Hezarfen's short lesson), the long text behind
+   "Daha fazla", "Geç" skips. If the money isn't there, the line says so and the player moves on. */
+const tutPage = sel => () => $('page').hidden ? null : $('tabBody').querySelector(sel);
+const tutMenu = sel => () => $('menu').hidden ? null : $('menu').querySelector(sel);
+const tutMenuBtn = txt => () => $('menu').hidden ? null : [...$('menu').querySelectorAll('button')].find(b => b.textContent.trim().startsWith(txt));
+const GUIDED = {
+  ins: { steps: [() => $('dock').classList.contains('open') ? null : [...$('strip').querySelectorAll('.spill')].find(b => /Sigorta/.test(b.textContent)), () => $('dock').classList.contains('open') ? $('optChips') : null], look: 2.5 },
+  goals: { steps: [() => [...$('nav').querySelectorAll('button')].find(b => /Hedef/.test(b.textContent))], done: g => g.max > 0 && !$('menu').hidden },
+  fleet: { bld: 'hangar', steps: [tutMenuBtn('Balonlarına git'), tutPage('[data-tut=fleet]')], done: g => S.balloons.length > g.n0.b },
+  price: { steps: [() => $('psheet').hidden ? $('pcard') : null, () => $('psheet').hidden ? null : $('pMinus')], done: g => g.max >= 2 && $('psheet').hidden },
+  bank: { bld: 'bank', steps: [tutPage('[data-tut=bank]')], look: 3 },
+  crew: { bld: 'office', steps: [tutMenuBtn('Ekibe git'), tutPage('[data-tut=hire]')], done: g => S.pilots.length > g.n0.p },
+  market: { bld: 'mine', steps: [tutMenuBtn('Pazara git'), tutPage('[data-tut=hotel]')], done: g => S.hotels.length > g.n0.h, poor: 'Bu otel için yıldızın ya da kasan yetmiyor: büyüyünce buradan anlaşırsın.' },
+  guide: { bld: 'guide', steps: [tutMenu('[data-tut=guide]')], done: g => (S.guideCount || 0) > g.n0.g },
+  agency: { bld: 'influ', steps: [tutMenu('[data-tut=influ]')], done: g => (S.influCount || 0) > g.n0.i },
+  bazaar: { bld: 'bazaar', steps: [tutMenu('.shopi.gift'), tutMenuBtn('Hediyeni al')], done: () => owned('lanterns') },
+  workshop: { bld: 'shop', steps: [tutPage('[data-tut=workshop]')], done: () => !!S.workshop },
+  school: { bld: 'school', steps: [tutPage('[data-tut=school]')], done: () => !!S.school }
+};
+const guideOk = k => !!GUIDED[k] && mode === 'office' && !AUTO && !TOWN.open && (!GUIDED[k].bld || townBuildings().some(b => b.id === GUIDED[k].bld && b.lv >= 0));
+function guideStart(k) {
+  const def = GUIDED[k];
+  GA = { k, def, t0: T, max: 0, cur: -2, n0: { b: S.balloons.length, p: S.pilots.length, h: S.hotels.length, g: S.guideCount || 0, i: S.influCount || 0 } };
+  if (S.tips) S.tips[k] = 1; save();
+  TUTA = null; tutShow('ga:' + k, HEZ_SHORT[k] || HEZ[k], { ga: true, more: HEZ[k], holes: guideHoles, lineNow: () => GA && GA.poor ? (def.poor || 'Kasan şimdilik yetmiyor: para birikince buradan yaparsın.') : TUTA.line });
+}
+function guideEnd(how) {
+  if (!GA) return;
+  tutStep(`ga_${GA.k}_${how}`); /* telemetry: done, left or skip */
+  GA = null; TUTA = null; if (HOMEF && !HOMEF.out) HOMEF.out = T;
+  GA_NEXT = true; /* the morning's next card comes once the page or card it opened is closed (tutFrame) */
+}
+function guideTick() {
+  const g = GA, def = g.def;
+  if (def.done && def.done(g)) { sfx('coin'); guideEnd('done'); return; }
+  let idx = -1, el = null;
+  for (let i = def.steps.length - 1; i >= 0; i--) { const e = def.steps[i](); if (e && e.getClientRects().length) { idx = i; el = e; break; } }
+  const home = mode === 'office' && $('page').hidden && $('menu').hidden && $('psheet').hidden && !TOWN.open;
+  if (idx === -1 && g.max > 0 && home) { guideEnd('left'); return; }
+  if (idx >= 0) {
+    g.max = Math.max(g.max, idx + 1);
+    if (g.cur !== idx) { g.cur = idx; g.t1 = T; g.sc = 0; }
+    /* bring it into view (again, if the page scrolled itself to a heading meanwhile) */
+    const box = el.closest('#tabBody, .modal');
+    if (box && T - (g.sc || 0) > .7) { const r = el.getBoundingClientRect(), b = box.getBoundingClientRect(); if (r.top < b.top + 40 || r.bottom > Math.min(b.bottom, H) - 90) { el.scrollIntoView({ block: 'center', behavior: 'smooth' }); g.sc = T; } }
+    if (def.look && idx === def.steps.length - 1 && T - g.t1 > def.look) { guideEnd('done'); return; }
+  } else g.cur = -1;
+  g.el = el; g.poor = !!(el && el.disabled);
+  /* the building step: the home camera glides to it while nothing else is open */
+  const wantPan = def.bld && idx === -1 && home && g.max === 0;
+  if (wantPan && (!HOMEF || HOMEF.out)) HOMEF = { id: def.bld, t0: T };
+  if (!wantPan && HOMEF && !HOMEF.out) HOMEF.out = T;
+}
+function guideHoles() {
+  const g = GA; if (!g) return [];
+  if (g.el) return [tutRel(g.el, 6)];
+  if (HOMEF && !HOMEF.out && HOMEF.pos && T - HOMEF.t0 > .6) return [tutCirc(HOMEF.pos)];
+  return [];
+}
+/* v122: the guide office and the agency each open their own screen with a few people to choose from. On average the
+   choices cost and bring about what the single deal did before (v121). */
+const GUIDES_PICK = [
+  { id: 'ayse', n: 'Ayşe', t: 'Otel rehberi', cost: 900, rep: .03, days: 2, pax: 4, cd: 4 },
+  { id: 'mehmet', n: 'Mehmet', t: 'Tur rehberi', cost: 1500, rep: .05, days: 3, pax: 5, cd: 5 },
+  { id: 'selin', n: 'Selin', t: 'Kıdemli rehber', cost: 2400, rep: .07, days: 4, pax: 7, cd: 6 }
+];
+const INFLU_PICK = [
+  { id: 'local', n: 'Yerel gezgin', t: 'Küçük ama sadık takipçiler', k: .6, rep: .06, days: 2, pax: 5, cd: 8 },
+  { id: 'travel', n: 'Gezi influencerı', t: 'Vadiyi bütün dünyaya gösterir', k: 1, rep: .1, days: 3, pax: 8, cd: 10 },
+  { id: 'star', n: 'Ünlü gezgin', t: 'Milyonlarca takipçi, pahalı', k: 1.8, rep: .16, days: 4, pax: 12, cd: 12 }
+];
+const influPrice = I => Math.round(influCost() * I.k / 100) * 100;
+const starTxt = rep => '+' + (rep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 1 }) + '★';
+function pickScreen(title, sub, rows, wait, busy) {
+  const m = $('menu'); m.replaceChildren();
+  const c = h('div', 'card'); c.appendChild(h('div', 'chap', sub)); c.appendChild(h('h1', null, title));
+  if (busy) c.appendChild(h('div', 'callout grn', busy));
+  if (wait > 0) c.appendChild(h('div', 'callout yel', `Yeni anlaşma için ${wait} gün beklemelisin.`));
+  rows.forEach(r => c.appendChild(r));
+  const x = h('button', 'big', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
+function showGuides() {
+  const wait = (S.guideCd || 0) - S.day, busy = S.day <= (S.guideUntil || 0) ? `<b>Rehberler seni öneriyor.</b> ${S.guideUntil - S.day + 1} gün daha turist gönderecekler.` : null;
+  let tagged = false;
+  pickScreen('Rehber ofisi', 'Rehberleri ücretsiz uçur, seni müşterilerine önersinler', GUIDES_PICK.map(G => {
+    const it = h('div', 'item'), dis = wait > 0 || S.cash < G.cost;
+    it.appendChild(h('div', 'av', G.n[0])).style.background = '#3ad0c0';
+    it.appendChild(h('div', 'main', `<div class="t">${G.n} <span class="tag n">${G.t}</span></div><div class="s">${starTxt(G.rep)} hemen, ${G.days} gün boyunca günde ~${G.pax} turist. Sonra ${G.cd} gün bekleme.</div>`));
+    const b = pbtn(eur(G.cost), () => { doGuide(G); showGuides(); }, dis);
+    if (!tagged && (!dis || G.id === 'mehmet')) { b.dataset.tut = 'guide'; tagged = true; }
+    it.appendChild(b); return it;
+  }), wait, busy);
+}
+function showAgency() {
+  const wait = (S.influCd || 0) - S.day, busy = S.day <= S.influUntil ? `<b>Kampanya sürüyor.</b> ${S.influUntil - S.day + 1} gün daha paylaşımlar turist getirecek.` : null;
+  let tagged = false;
+  pickScreen('Influencer ajansı', 'Seninle uçup paylaşırlar; kampanya boyunca her gün +0,1★', INFLU_PICK.map(I => {
+    const it = h('div', 'item'), cost = influPrice(I), dis = wait > 0 || S.cash < cost;
+    it.appendChild(h('div', 'av', I.n[0])).style.background = '#ff6fa8';
+    it.appendChild(h('div', 'main', `<div class="t">${I.n}</div><div class="s">${I.t}. ${starTxt(I.rep)} hemen, ${I.days} gün boyunca günde ~${I.pax} takipçi turist. Sonra ${I.cd} gün bekleme.</div>`));
+    const b = pbtn(eur(cost), () => { doInfluencer(I); showAgency(); }, dis);
+    if (!tagged && (!dis || I.id === 'local')) { b.dataset.tut = 'influ'; tagged = true; }
+    it.appendChild(b); return it;
+  }), wait, busy);
+}
+/* v122: the passengers you'd get, counted up when the price changes: the number pops and the bar fills */
+function paxBump(box, pax, prev) {
+  if (!box || prev == null || pax === prev) return;
+  const bar = box.querySelector('.bar i'), b = box.querySelector('b');
+  if (bar && prev != null) { const to = bar.style.width, cap = +(b && b.textContent.split('/')[1]) || 1; bar.style.transition = 'none'; bar.style.width = Math.round(prev / cap * 100) + '%'; void bar.offsetWidth; bar.style.transition = 'width .45s ease-out'; bar.style.width = to; }
+  if (pax > prev) { if (b) b.classList.add('bump'); const p = h('span', 'pxpop', `+${pax - prev} yolcu`); box.appendChild(p); setTimeout(() => p.remove(), 1300); }
+}
 function setVent(on) { if (mode !== 'flight' || !FL || FL.done) return; FL.venting = on; $('vent').classList.toggle('on', on); }
 function setBurn(on) { if (mode !== 'flight' || !FL || FL.done || (on && FL.paused)) return; FL.burning = on; $('burn').classList.toggle('on', on); if (on && FL.t > 1 && !FL.msg && !(FL.coachK && T - FL.coachAt < 5)) $('tip').hidden = true; }
 function updateFlight(dt) {
   const f = FL; if (!f || f.done) return;
-  const s = dt * SIM;
+  const s = dt * SIM * (f.slow || 1); /* v122: the tutorial's pan to the landing field slows the flight while you look */
   if (f.venting && f.air) f.heat -= .07 * s; /* the parachute vent lets hot air out of the crown */
   if (f.burning && f.fuel > 0) { f.heat += .05 * f.bpow * s; f.fuel = Math.max(0, f.fuel - 2 * dt); }
   f.heat = clamp(f.heat - .012 * s, 0, 1);
@@ -4761,7 +5101,7 @@ function updateFlight(dt) {
   const w = windAt(f.alt, f.t);
   if (f.alt > 1) { f.vx += (w - f.vx) * (1 - Math.exp(-s / 6)); f.x += f.vx * s; }
   f.t += s;
-  if (f.alt > 15 && !f.air) { f.air = true; $('abort').hidden = true; $('vent').hidden = false; if (!S.ventTip) { S.ventTip = 1; f.ventTipAt = T; } else if (coached()) coachSay('goal', `<b>Hedefin iniş alanı:</b> ${S.weather.target > 220 ? 'sağda' : 'solda'}, ${(Math.abs(S.weather.target - f.x) / 1000).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} km. Soldaki oklar her yükseklikteki rüzgârı gösterir; hedefe doğru esen katmanı bul.`); else if (!S.tutorialDone) $('tip').hidden = true; }
+  if (f.alt > 15 && !f.air) { f.air = true; $('abort').hidden = true; $('vent').hidden = false; if (f.tut) S.ventTip = 1; /* v122: the tutorial's vent step teaches it */ else if (!S.ventTip) { S.ventTip = 1; f.ventTipAt = T; } else if (coached()) coachSay('goal', `<b>Hedefin iniş alanı:</b> ${S.weather.target > 220 ? 'sağda' : 'solda'}, ${(Math.abs(S.weather.target - f.x) / 1000).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} km. Soldaki oklar her yükseklikteki rüzgârı gösterir; hedefe doğru esen katmanı bul.`); else if (!S.tutorialDone) $('tip').hidden = true; }
   if (f.air) {
     const th = terrainH(f.x);
     if (th > 4 && f.alt < th) { f.wire = wires.some(w => f.x > w.x0 && f.x < w.x1); return land('crash'); }
@@ -4774,7 +5114,8 @@ function updateFlight(dt) {
   }
   const M = f.mom;
   if (M && !M.ok && f.air) {
-    if (M.k === 'thermal' && Math.abs(f.x - M.x) < 65 && f.alt < 520) { f.vy += .5 * s; M.in += dt; if (M.in > 2) momentDone('Termik yakaladın! Sıcak hava seni bedavaya taşıdı.', () => { f.fuel = Math.min(100, f.fuel + 15); }); }
+    /* v122: the thermal lifts twice as hard as before (.5), so you feel it carry you */
+    if (M.k === 'thermal' && Math.abs(f.x - M.x) < 65 && f.alt < 520) { f.vy += THERMAL_LIFT * s; f.thAt = T; M.in += dt; if (M.in > 2) momentDone('Termik yakaladın! Sıcak hava seni bedavaya taşıdı.', () => { f.fuel = Math.min(100, f.fuel + 15); }); }
     if (M.k === 'greet') { M.x += windAt(M.alt, f.t) * s * .9; if (Math.abs(f.x - M.x) < 95 && Math.abs(f.alt - M.alt) < 50) { M.in += dt; if (M.in > 2) momentDone('Komşu balonla el salladınız! Yolcular çok sevindi.'); } else M.in = 0; }
     if (M.k === 'photo' && Math.abs(f.x - M.x) < 70 && f.alt >= M.lo && f.alt <= M.hi) { M.in += dt; if (M.in > 1.5) { f.flashAt = T; momentDone('Gün doğumu karesi! Yolcuların fotoğrafı herkesi kıskandıracak.'); } }
   } else if (M && M.k === 'greet') M.x += windAt(M.alt, f.t) * s * .9;
@@ -4785,6 +5126,7 @@ function updateFlight(dt) {
   { const rel = f.alt > 3 ? windBase(f.alt + 20) - f.vx : 0, goal = clamp(rel * .028, -.1, .1);
     f.tiltV = (f.tiltV || 0) + ((goal - (f.tilt || 0)) * 14 - (f.tiltV || 0) * 3.2) * dt; f.tilt = (f.tilt || 0) + f.tiltV * dt; }
   coachTick(f, dt);
+  tutFlightTick(f, dt);
   if (f.air && f.alt > 0 && f.fuel <= 0 && !f.msg) { f.msg = 1; $('tip').hidden = false; $('tip').innerHTML = '<b>Yakıt bitti!</b> Balon soğuyarak iniyor.'; }
 }
 /* Small round badges over the flight: a waving hand, a camera. */
@@ -4852,6 +5194,7 @@ function land(q) {
   const mok = !!(f.mis && f.mdone);
   if (q === 'hard' || q === 'crash') sfx('thud');
   S.tutorialDone = true;
+  if (f.tut) { if (TUTA && !TUTA.ga) TUTA = null; f.pan = null; f.slow = 1; tutStep('first_landing'); } /* v122: steps left over wait for the next flight */
   const msg = {
     perfect: '<b>Kusursuz iniş!</b> İniş alanının tam ortası.',
     good: '<b>İyi iniş.</b> Yer ekibi seni hemen buldu.',
@@ -4935,6 +5278,12 @@ function resize() {
 }
 function ell(x, y, rx, ry, c) { ctx.fillStyle = c; ctx.beginPath(); ctx.ellipse(x, y, Math.max(.1, rx), Math.max(.1, ry), 0, 0, 7); ctx.fill(); }
 function rrect(x, y, w, hh, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + hh, r); ctx.arcTo(x + w, y + hh, x, y + hh, r); ctx.arcTo(x, y + hh, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+/* v122: the outline (and a red glow) of a chimney you can hit, along the same curve as its body */
+function chimneyEdge(x, base, w, hgt, col, lw, blur) {
+  ctx.save(); ctx.strokeStyle = col; ctx.lineWidth = lw; if (blur) { ctx.shadowColor = 'rgba(255,60,40,.9)'; ctx.shadowBlur = blur; }
+  ctx.beginPath(); ctx.moveTo(x - w / 2, base); ctx.quadraticCurveTo(x - w * .32, base - hgt * .55, x - w * .12, base - hgt);
+  ctx.lineTo(x + w * .12, base - hgt); ctx.quadraticCurveTo(x + w * .32, base - hgt * .55, x + w / 2, base); ctx.stroke(); ctx.restore();
+}
 function chimney(x, base, w, hgt, body, shade, cap) {
   ctx.fillStyle = body; ctx.beginPath();
   ctx.moveTo(x - w / 2, base); ctx.quadraticCurveTo(x - w * .32, base - hgt * .55, x - w * .12, base - hgt);
@@ -5261,7 +5610,7 @@ function scenery(p, groundY, topY, camX, kx, dt, showBg, f) {
   ctx.lineTo(W, groundY); ctx.closePath(); ctx.fill();
   /* v111.3: the far row sinks into the haze of the horizon (paler, a little smaller, a mist over its feet) so it never
      reads as the chimneys you can hit */
-  const hzc = nile ? mix('#f2a050', '#fff0c0', p) : desert ? mix('#f39a5a', '#ffe6b0', p) : mix('#f08a4a', '#ffe2ac', p), far = c => mix(c, hzc, .45);
+  const hzc = nile ? mix('#f2a050', '#fff0c0', p) : desert ? mix('#f39a5a', '#ffe6b0', p) : mix('#f08a4a', '#ffe2ac', p), far = c => mix(c, hzc, .58); /* v122: hazier (was .45), so they read as scenery behind the ones you can hit */
   const R = mulberry32(5);
   for (let i = 0; i < 40; i++) {
     const wx = i * 130 + R() * 60 - 600, x = (wx - camX * .45) * kx, hh = vh * (.07 + R() * .1) * .85, ww = hh * (.4 + R() * .2);
@@ -5314,10 +5663,11 @@ function draw(dt) {
   const dockTop = !$('sheet').hidden ? $('dock').offsetTop : !$('collect').hidden ? $('collect').offsetTop : H;
   const groundY = f ? H * .86 : Math.max(H * .35, dockTop + 4), topY = top + 34;
   const ky = (groundY - topY) / 650, kx = clamp(W / 900, .4, 1.4);
-  const focusX = f ? f.x : 220 + Math.sin(T * .03) * 40;
+  const focusX = f ? f.x + (S.weather.target - f.x) * tutPanK(f) : 220 + Math.sin(T * .03) * 40; /* v122: the tutorial pans to the field */
   const camX = focusX - (W * .36) / kx;
   const sx = wx => (wx - camX) * kx, sy = a => groundY - a * ky;
   const myc = myCol();
+  if (f) { TUTC = { sx, sy }; const X0 = sx(S.weather.target - 85), X1 = sx(S.weather.target + 85); TUTC.field = { x: X0, y: sy(150), w: X1 - X0, h: groundY + 12 - sy(150), r: 16 }; }
 
   const vh = scenery(p, groundY, topY, camX, kx, dt, true, !!f);
   if (S.weather.mission === 'valley' && f) {
@@ -5340,7 +5690,21 @@ function draw(dt) {
     ell(x, groundY + 2, c.w * kx * .62, 3.5, 'rgba(30,15,15,.38)'); /* a contact shadow: these stand on your ground */
     if (S.region === 'abq') tree(x, groundY + 1, c.w * kx * 1.4, c.h * ky, mix(mix('#2e4a2a', '#7a9a52', p), '#9ab060', c.tone * .3), mix('#3a2a1e', '#6a4a30', p)); /* kavak ağaçları */
     else if (S.region === 'lux') datePalm(x, groundY + 1, c.h * ky, mix(mix('#1e3a22', '#4a7a3a', p), '#6a9a4a', c.tone * .3), mix('#3a2a1e', '#8a6a44', p)); /* hurma ağaçları */
-    else chimney(x, groundY + 1, c.w * kx, c.h * ky, mix(mix('#6a4038', '#e2b48a', p), '#d6a27a', c.tone * .3), mix('#4a2c2a', '#b07a58', p), mix('#3a2420', '#7e5038', p));
+    else {
+      /* v122: the chimneys you can hit are darker and outlined, so they never melt into the hazy ones behind; they glow
+         red when the basket comes close, and the tutorial rings them in red with a word */
+      const cw = c.w * kx, chh = c.h * ky;
+      chimney(x, groundY + 1, cw, chh, mix(mix('#5a3430', '#cf9a72', p), '#c08c66', c.tone * .3), mix('#3e2422', '#9a6446', p), mix('#2e1c1a', '#6a4030', p));
+      let glow = 0;
+      if (f && f.air && !f.done) { const dxm = Math.abs(f.x - c.x) - c.w / 2; glow = clamp(1 - dxm / 90, 0, 1) * clamp(1 - (f.alt - c.h) / 60, 0, 1); }
+      const tutC = TUTA && TUTA.k === 'chimney';
+      chimneyEdge(x, groundY + 1, cw, chh, glow > .02 || tutC ? `rgba(255,70,50,${tutC ? .95 : .35 + .6 * glow})` : 'rgba(30,14,12,.55)', glow > .02 || tutC ? 2.6 : 1.4, glow * 14 + (tutC ? 6 : 0));
+      if (f && f.ts && f.ts.ch && f.ts.ch.c === c) {
+        ctx.font = '800 14px "Barlow Condensed", sans-serif'; const lb = 'Sepet çarparsa kaza', tw = ctx.measureText(lb).width + 18, ly = groundY - chh - 30, lx = clamp(x, tw / 2 + 6, W - tw / 2 - 6), x0 = Math.min(x - cw / 2, lx - tw / 2) - 8, x1 = Math.max(x + cw / 2, lx + tw / 2) + 8;
+        TUTC.chim = { x: x0, y: ly - 20, w: x1 - x0, h: groundY + 8 - (ly - 20), r: 14 }; /* the hole holds the chimney and its label (kept on screen) */
+        if (tutC) { ctx.fillStyle = '#e5432f'; rrect(lx - tw / 2, ly - 12, tw, 22, 11); ctx.fill(); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(lb, lx, ly + 4); ctx.textAlign = 'left'; }
+      }
+    }
   }
   for (const wr of wires) {
     const X0 = sx(wr.x0), X1 = sx(wr.x1); if (X1 < -40 || X0 > W + 40) continue;
@@ -5366,10 +5730,18 @@ function draw(dt) {
       ctx.beginPath(); ctx.moveTo(ax0, y); ctx.lineTo(ax1, y); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(ax1 + dir * 2, y); ctx.lineTo(ax1 - dir * 5, y - 5); ctx.lineTo(ax1 - dir * 5, y + 5); ctx.fill();
       ctx.fillStyle = '#2b2350'; ctx.fillText(`${Math.round(Math.abs(v) * 3.6)} km/s`, 70, y + 5);
+      /* v122: the wind step lights the layers one by one, then marks the one that blows toward the field */
+      if (TUTA && TUTA.k === 'wind' && i === tutLayerLit()) {
+        const pick = T - TUTA.t0 >= 2.4;
+        ctx.save(); ctx.strokeStyle = pick ? '#22a45d' : '#ffd27a'; ctx.lineWidth = 3.5; ctx.shadowColor = ctx.strokeStyle; ctx.shadowBlur = 10; rrect(4, y - 15, 116, 30, 15); ctx.stroke(); ctx.restore();
+        if (pick) { ctx.font = '800 13px "Barlow Condensed", system-ui, sans-serif'; ctx.fillStyle = '#22a45d'; rrect(124, y - 11, 58, 22, 11); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillText('HEDEFE', 133, y + 5); ctx.font = '700 13px "Barlow Condensed", system-ui, sans-serif'; }
+      }
     }
+    TUTC.layers = { x: 1, y: sy(CENTERS[3]) - 19, w: (TUTA && TUTA.k === 'wind' && T - TUTA.t0 >= 2.4) ? 186 : 124, h: sy(CENTERS[0]) - sy(CENTERS[3]) + 38, r: 18 };
     { const BR = f.borrow, fb = BR ? {} : bal(S.flag) || {}, d = BR ? null : designOf(bal(S.flag)), R = PR * .75 * (fb.size === 'XL' ? 1.3 : 1), myc = BR ? BR.c : myCol();
       /* v110: the basket swings a little under the envelope, more while the burner roars; still on the ground */
       const bx = sx(f.x), by = sy(f.alt), pv = by - R * 1.9, burn = f.burning && f.fuel > 0;
+      TUTC.bal = { x: bx, y: by - R * 1.5, r: R * 2.1 }; /* v122: the tutorial's hole around the balloon */
       const sw = (Math.sin(T * 1.1) * .6 + Math.sin(T * .43 + 1) * .4) * (.03 + (burn ? .015 : 0)) * clamp(f.alt / 20, 0, 1);
       ctx.save(); ctx.translate(bx, pv); ctx.rotate(sw + (f.tilt || 0)); ctx.translate(-bx, -pv);
       if (d) designBalloon3d(bx, by, R, myc[0], myc[1], burn, 1, fb.ad, d); else balloon3d(bx, by, R, myc[0], myc[1], burn, 1, fb.ad);
@@ -5438,12 +5810,25 @@ function draw(dt) {
     }
     const MO = f.mom;
     if (MO) {
-      if (MO.k === 'thermal') { const X = sx(MO.x), wv = sx(MO.x + 65) - X; ctx.save(); const g = ctx.createLinearGradient(X - wv, 0, X + wv, 0); g.addColorStop(0, 'rgba(255,220,160,0)'); g.addColorStop(.5, `rgba(255,220,160,${MO.ok ? .12 : .28})`); g.addColorStop(1, 'rgba(255,220,160,0)'); ctx.fillStyle = g; ctx.fillRect(X - wv, sy(520), wv * 2, groundY - sy(520));
-        ctx.strokeStyle = 'rgba(255,255,255,.5)'; ctx.lineWidth = 1.5; for (let i = 0; i < 7; i++) { const yy = groundY - ((T * 40 + i * 60) % (groundY - sy(520))), xx = X + Math.sin(T * 2 + i) * wv * .4; ctx.beginPath(); ctx.moveTo(xx, yy); ctx.quadraticCurveTo(xx + 5, yy - 8, xx, yy - 16); ctx.stroke(); }
-        if (!MO.ok) { ctx.font = '800 13px "Barlow Condensed", sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('TERMİK', X, sy(520) - 6); ctx.textAlign = 'left'; } ctx.restore(); }
+      if (MO.k === 'thermal') { const X = sx(MO.x), wv = sx(MO.x + 65) - X, top = sy(520), hh = groundY - top; ctx.save();
+        /* v122: a clearer column: a warmer glow, dashed edges where it starts lifting you, rising chevrons */
+        const g = ctx.createLinearGradient(X - wv, 0, X + wv, 0); g.addColorStop(0, 'rgba(255,200,120,0)'); g.addColorStop(.5, `rgba(255,200,120,${MO.ok ? .12 : .38})`); g.addColorStop(1, 'rgba(255,200,120,0)'); ctx.fillStyle = g; ctx.fillRect(X - wv, top, wv * 2, hh);
+        if (!MO.ok) { ctx.strokeStyle = 'rgba(255,225,170,.6)'; ctx.lineWidth = 1.5; ctx.setLineDash([6, 7]); ctx.lineDashOffset = -T * 30; ctx.beginPath(); ctx.moveTo(X - wv, groundY); ctx.lineTo(X - wv, top); ctx.moveTo(X + wv, groundY); ctx.lineTo(X + wv, top); ctx.stroke(); ctx.setLineDash([]); }
+        ctx.strokeStyle = `rgba(255,255,255,${MO.ok ? .35 : .75})`; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+        for (let i = 0; i < 9; i++) { const yy = groundY - ((T * 55 + i * hh / 9) % hh), xx = X + Math.sin(i * 2.3) * wv * .45, a = clamp((groundY - yy) / 40, 0, 1) * clamp((yy - top) / 40, 0, 1); ctx.globalAlpha = a; ctx.beginPath(); ctx.moveTo(xx - 6, yy + 5); ctx.lineTo(xx, yy - 1); ctx.lineTo(xx + 6, yy + 5); ctx.stroke(); }
+        ctx.globalAlpha = 1;
+        if (!MO.ok) { ctx.font = '800 14px "Barlow Condensed", sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('TERMİK ↑', X, top - 6); ctx.textAlign = 'left'; } ctx.restore();
+        TUTC.therm = { x: X - wv - 6, y: top - 26, w: wv * 2 + 12, h: hh + 26, r: 14 }; }
       if (MO.k === 'greet') { const X = sx(MO.x), Y = sy(MO.alt + Math.sin(T) * 5); balloon(X, Y, PR * .62, MO.c[0], MO.c[1], (T % 4) < .4, .36); if (MO.ok && T - MO.at < 3) momIcon('wave', X + PR * .7, Y - PR * 1.9, Math.min(1, (3 - (T - MO.at)) / .5)); }
       if (MO.k === 'photo' && !MO.ok) { const X = sx(MO.x); ctx.save(); ctx.strokeStyle = 'rgba(255,255,255,.85)'; ctx.lineWidth = 2; ctx.setLineDash([6, 5]); ctx.strokeRect(X - sx(MO.x + 70) + X, sy(MO.hi), (sx(MO.x + 70) - X) * 2, sy(MO.lo) - sy(MO.hi)); ctx.setLineDash([]); ctx.restore(); momIcon('camera', X, sy(MO.hi) - 20, 1); }
       if (MO.ok && T - MO.at < 3.2) { const a = Math.min(1, (3.2 - (T - MO.at)) / .5); ctx.save(); ctx.globalAlpha = a; ctx.font = '800 16px "Barlow Condensed", sans-serif'; const tw = ctx.measureText(MO.text).width + 28; ctx.fillStyle = 'rgba(20,120,90,.92)'; rrect(W / 2 - tw / 2, top + 150, tw, 32, 16); ctx.fill(); ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText(MO.text, W / 2, top + 171); ctx.restore(); ctx.textAlign = 'left'; }
+    }
+    /* v122: riding a thermal: rising chevrons under the basket and a small tag, so the lift is plain to see */
+    if (f.thAt && T - f.thAt < .2 && !f.done) {
+      const bx = sx(f.x), by = sy(f.alt); ctx.save(); ctx.strokeStyle = '#ffd27a'; ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 4;
+      for (let i = 0; i < 3; i++) { const ph = (T * 1.6 + i / 3) % 1, yy = by + 34 - ph * 26; ctx.globalAlpha = Math.sin(ph * Math.PI); ctx.beginPath(); ctx.moveTo(bx - 8, yy + 6); ctx.lineTo(bx, yy - 1); ctx.lineTo(bx + 8, yy + 6); ctx.stroke(); }
+      ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.font = '800 13px "Barlow Condensed", sans-serif'; const lb = 'Termik ↑', tw = ctx.measureText(lb).width + 16, tx2 = bx + 16, ty = by + 6;
+      ctx.fillStyle = 'rgba(214,120,30,.92)'; rrect(tx2, ty - 10, tw, 20, 10); ctx.fill(); ctx.fillStyle = '#fff'; ctx.fillText(lb, tx2 + 8, ty + 4.5); ctx.restore();
     }
     if (f.flashAt && T - f.flashAt < .35) { ctx.fillStyle = `rgba(255,255,255,${.85 * (1 - (T - f.flashAt) / .35)})`; ctx.fillRect(0, 0, W, H); }
     if (f.mis === 'panorama' && !f.mdone) { ctx.strokeStyle = 'rgba(255,194,61,.9)'; ctx.lineWidth = 2; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.moveTo(0, sy(550)); ctx.lineTo(W, sy(550)); ctx.stroke(); ctx.setLineDash([]); }
@@ -5517,7 +5902,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -6094,7 +6479,7 @@ function studioSection(body) {
   if (!S.workshop) {
     const it = h('div', 'item');
     it.appendChild(h('div', 'main', `<div class="t">Kendi balon atölyeni kur</div><div class="s">Balonlarının desenlerini kendin tasarlarsın. Yaratıcı tasarımlar yolcuların ilgisini çeker ve popülerlik getirir. Atölye bir kez kurulur, tasarımların bütün bölgelerde kullanılır.</div>`));
-    it.appendChild(pbtn(eur(WORKSHOP_COST), () => { S.cash -= WORKSHOP_COST; S.workshop = { day: S.day, lv: 1 }; S.hezQ.push(`news:Atölyen açıldı evlat! Şimdilik tasarım yaparsın. Binayı büyüttükçe kendi balonlarını üretirsin: önce küçük, sonra orta, sonra büyük, hem de piyasanın %${Math.round(FAB.disc * 100)} altına. Rakipler de senden balon sipariş etmeye başlar; kabul edersen kârı sen alırsın.`); refresh(); setTimeout(nextPopup, 300); }, S.cash < WORKSHOP_COST));
+    { const wb = pbtn(eur(WORKSHOP_COST), () => { S.cash -= WORKSHOP_COST; S.workshop = { day: S.day, lv: 1 }; S.hezQ.push(`news:Atölyen açıldı evlat! Şimdilik tasarım yaparsın. Binayı büyüttükçe kendi balonlarını üretirsin: önce küçük, sonra orta, sonra büyük, hem de piyasanın %${Math.round(FAB.disc * 100)} altına. Rakipler de senden balon sipariş etmeye başlar; kabul edersen kârı sen alırsın.`); refresh(); setTimeout(nextPopup, 300); }, S.cash < WORKSHOP_COST); wb.dataset.tut = 'workshop'; it.appendChild(wb); } /* v122 */
     ws.appendChild(it); body.appendChild(ws); return;
   }
   const ds = S.designs || [];
@@ -6415,8 +6800,9 @@ function openSection(pageKey, heading) {
   openPage(pageKey);
   if (heading) setTimeout(() => { const b = $('tabBody'), t = [...b.querySelectorAll('h2')].find(x => x.textContent.startsWith(heading)); if (t) b.scrollTop = t.getBoundingClientRect().top - b.getBoundingClientRect().top + b.scrollTop - 8; }, 60);
 }
-function doInfluencer() {
-  S.cash -= influCost(); S.rep = Math.min(1.4, S.rep + .1); S.influUntil = S.day + 3; S.influCd = S.day + 10; S.influCount = (S.influCount || 0) + 1; addReview('influ'); hezAdd('influ'); sfx('coin'); refresh(); setTimeout(nextPopup, 300);
+function doInfluencer(I) {
+  I = I && I.k ? I : INFLU_PICK[1]; /* v122: one of the agency's influencers (the middle one is the old single deal) */
+  S.cash -= influPrice(I); S.rep = Math.min(1.4, S.rep + I.rep); S.influUntil = S.day + I.days; S.influCd = S.day + I.cd; S.influPax = I.pax; S.influCount = (S.influCount || 0) + 1; addReview('influ'); hezAdd('influ'); sfx('coin'); refresh(); setTimeout(nextPopup, 300);
 }
 /* The show's card: what it costs (every balloon that can fly), what it brings, and the wait until the next one. */
 /* The show's card (v111.1): what it brings, how the price is made up, and a clear confirm; booked, it says when the
@@ -6461,8 +6847,9 @@ function bookShow() {
   S.cash -= SHOW.per * n; S.showTonight = S.day; S.showN = n; S.showNext = S.day + SHOW.cd; S.showCount = (S.showCount || 0) + 1;
   S.tips.show = 1; sfx('coin');
 }
-function doGuide() {
-  S.cash -= GUIDE_COST; S.rep = Math.min(1.4, S.rep + .05); S.guideCd = S.day + 5; S.guideUntil = S.day + 3; S.guideCount = (S.guideCount || 0) + 1; S.lastGuide = S.day; addReview('guide'); sfx('coin'); refresh();
+function doGuide(G) {
+  G = G && G.cost ? G : GUIDES_PICK[1]; /* v122: one of the guide office's guides (Mehmet is the old single deal) */
+  S.cash -= G.cost; S.rep = Math.min(1.4, S.rep + G.rep); S.guideCd = S.day + G.cd; S.guideUntil = S.day + G.days; S.guidePax = G.pax; S.guideCount = (S.guideCount || 0) + 1; S.lastGuide = S.day; addReview('guide'); sfx('coin'); refresh();
 }
 /* ---------- building upgrades ---------- */
 /* Four buildings grow in three levels; each level costs more and does more. Levels are per region. */
@@ -6601,11 +6988,11 @@ function townBuildings() {
   });
   const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
   add({ id: 'influ', gx: 9, gy: 9, w: 2, d: 2, name: 'Influencer ajansı', look: 'agency', lv: unlocked('agency') ? (S.day <= S.influUntil ? 2 : 1) : -1,
-    sub: !unlocked('agency') ? 'Yakında' : S.day <= S.influUntil ? 'Kampanya sürüyor' : icd > 0 ? `Bekle: ${icd} gün` : eur(influCost()),
-    tap: () => !unlocked('agency') ? lockedCard('Influencer ajansı', 'agency') : townCard('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : 'Gezi influencerları seninle uçup paylaşır. Hemen +0,4★, sonraki 3 gün her gün +0,1★ daha ve takipçileri gelir. Otelin yoksa popülerliğini 4,5★\'a kadar taşır.', `Kampanya yap ${eur(influCost())}`, doInfluencer, icd > 0 || S.cash < influCost()) });
+    sub: !unlocked('agency') ? 'Yakında' : S.day <= S.influUntil ? 'Kampanya sürüyor' : icd > 0 ? `Bekle: ${icd} gün` : `${eur(influPrice(INFLU_PICK[0]))}'dan`,
+    tap: () => !unlocked('agency') ? lockedCard('Influencer ajansı', 'agency') : showAgency() }); /* v122: its own screen with three influencers */
   add({ id: 'guide', gx: 12, gy: 9, w: 2, d: 2, name: 'Rehber ofisi', look: 'guide', lv: unlocked('guide') ? (S.day <= (S.guideUntil || 0) ? 2 : 1) : -1,
-    sub: !unlocked('guide') ? 'Yakında' : S.day <= (S.guideUntil || 0) ? 'Rehberler seni öneriyor' : gcd > 0 ? `Bekle: ${gcd} gün` : eur(GUIDE_COST),
-    tap: () => !unlocked('guide') ? lockedCard('Rehber ofisi', 'guide') : townCard('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Otel ve tur rehberlerini ücretsiz uçurursun, seni müşterilerine önerirler. Hemen +0,2★ ve 3 gün boyunca rehberlerin gönderdiği turistler.', `Tanıtım uçuşu ${eur(GUIDE_COST)}`, doGuide, gcd > 0 || S.cash < GUIDE_COST) });
+    sub: !unlocked('guide') ? 'Yakında' : S.day <= (S.guideUntil || 0) ? 'Rehberler seni öneriyor' : gcd > 0 ? `Bekle: ${gcd} gün` : `${eur(GUIDES_PICK[0].cost)}'dan`,
+    tap: () => !unlocked('guide') ? lockedCard('Rehber ofisi', 'guide') : showGuides() }); /* v122: its own screen with three guides */
   /* booking offices side by side: yours first, then the rivals; same kiosk, awning in each company's balloon colours */
   add({ id: 'mine', gx: 8.7, gy: 12.2, w: 1.2, d: 1.2, name: S.company || 'Senin ofisin', look: 'rival', lv: 1, col: myCol()[0], col2: myCol()[1],
     sub: `Balon: ${n} · Sv. ${bl('mine')}`, small: true, tap: () => unlocked('market') ? buildingCard('mine', () => openSection('market', 'Sen ve rakiplerin'), 'Pazara git') : lockedCard(S.company || 'Senin ofisin', 'market') });
@@ -8112,8 +8499,8 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
     if (!owned('lanterns')) { ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.fillStyle = '#1c1a30'; ctx.fillRect(p[0] - 1.5, p[1] - 40, 3, 40); ctx.fillRect(p[0] - 5, p[1] - 47, 10, 7); ctx.restore(); }
     glow(p[0], p[1] - 44, 30, '255,190,110', .38 * k * fl); glow(p[0], p[1] - 44, 7, '255,240,200', .95 * k);
   }
-  /* the influencer agency's pool, lit from below */
-  if (unlocked('market')) { const pp = tiso(9.8, 11.17); ctx.save(); ctx.translate(pp[0], pp[1]); ctx.scale(1, .45); glow(0, 0, 46, '80,220,230', .45 * k * (.85 + .15 * Math.sin(t * 1.7))); ctx.restore(); }
+  /* the influencer agency's pool, lit from below (v122: once the agency is open) */
+  if (unlocked('agency')) { const pp = tiso(9.8, 11.17); ctx.save(); ctx.translate(pp[0], pp[1]); ctx.scale(1, .45); glow(0, 0, 46, '80,220,230', .45 * k * (.85 + .15 * Math.sin(t * 1.7))); ctx.restore(); }
   /* festoon lights strung along the main roads between the lamps (the bazaar's lantern strings): warm bulbs on a sagging wire, softly twinkling */
   const pairs = []; for (let i = 0; i < lamps.length; i++) for (let j = i + 1; j < lamps.length; j++) { const a2 = lamps[i], b2 = lamps[j]; if ((a2[0] === b2[0] || a2[1] === b2[1]) && Math.hypot(a2[0] - b2[0], a2[1] - b2[1]) < 4.2 && !(a2[0] < 7.4 && b2[0] > 7.4) && !(a2[1] < 7.4 && b2[1] > 7.4)) pairs.push([a2, b2]); }
   /* only with the bazaar's lantern strings */
@@ -8160,7 +8547,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
     for (const [P1, Q1] of [[A, B], [B, C]]) for (let i = 0; i <= 8; i++) { const f = i / 8, x = lerp(P1[0], Q1[0], f), y = lerp(P1[1], Q1[1], f) - 44 + 10 * 4 * f * (1 - f); glow(x, y, 6, '255,215,150', (.75 + .25 * Math.sin(t * 2.4 + i)) * k); }
   }
   if (owned('rugs')) { const p = tiso(...RUGS_AT); glow(p[0], p[1] - 30, 50, '255,180,100', .32 * k); }
-  if (unlocked('market')) {
+  if (unlocked('bazaar')) { /* v122: once the bazaar is open */
     /* the bazaar keeps a string of bulbs along its awning and a warm glow over the goods */
     const a0 = upp(tiso(14.15, 4.35), 28), a1 = upp(tiso(15.3, 4.35), 28);
     ctx.save(); ctx.translate((a0[0] + a1[0]) / 2 - 10, (a0[1] + a1[1]) / 2 + 26); ctx.scale(1, .5); glow(0, 0, 44, '255,180,100', .45 * k); ctx.restore();
@@ -8206,12 +8593,32 @@ function drawHomeTown(w, h, dockTop, top) {
     if (T - I.t0 >= I.dur) { HOMEI = null; NIGHT_K = 0; SUNRISE = 0; for (const id of ['hud', 'sheet', 'wx', 'nav']) { const e = $(id); e.style.transition = 'opacity .6s ease'; e.style.opacity = ''; e.style.pointerEvents = ''; } setTimeout(() => { for (const id of ['hud', 'sheet', 'wx', 'nav']) $(id).style.transition = ''; }, 700); }
     return;
   }
+  if (HOMEF) { /* v122: a guided action glides the home view to the building that just opened */
+    const b = townBuildings().find(x => x.id === HOMEF.id);
+    const e = !b ? 0 : HOMEF.out ? 1 - easeIO3((T - HOMEF.out) / .7) : easeIO3((T - HOMEF.t0) / .9);
+    if (!b || (HOMEF.out && T - HOMEF.out > .7)) HOMEF = null;
+    else {
+      const [cx, cy] = tiso(b.gx + b.w / 2, b.gy + b.d / 2), top = townTop(b), zf = Math.max(HOME.z, Math.min(.62, HOME.z * 2.4)), z = Math.exp(lerp(Math.log(HOME.z), Math.log(zf), e));
+      const px = lerp(cx * HOME.z + HOME.ox, w / 2, e), py = lerp(cy * HOME.z + HOME.oy, h * .52, e), V = { ...HOME, z, ox: px - cx * z, oy: py - cy * z };
+      renderTown(V, w, h, DPR, 0); HOMEF.hits = V.hits;
+      const rx = Math.max(b.w, b.d) * TW * .42 * z + 12, my = py - top * z * .45;
+      HOMEF.pos = { x: px, y: my, r: Math.max(rx, top * z * .6 + 10) };
+      if (e > .9) { ctx.save(); ctx.setTransform(DPR, 0, 0, DPR, 0, 0); const k = (T * 1.3) % 1; ctx.strokeStyle = `rgba(255,210,122,${1 - k})`; ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(px, py, rx * (1 + k * .4), rx * .5 * (1 + k * .4), 0, 0, 7); ctx.stroke(); ctx.restore(); }
+      return;
+    }
+  }
   renderTown(HOME, w, h, DPR, 0);
 }
 function homeHorizon() { return Math.min(HOME.h * .6, HOME.oy + tiso(-7, -7)[1] * HOME.z); }
 function homeTap(x, y) {
   if (HOMEI) return;
   if (y > (HOME.front || HOME.h)) return;
+  if (HOMEF && !HOMEF.out) { /* v122: during the glide only the lit building takes a tap */
+    if (HOMEF.tapped) return;
+    const P = HOMEF.pos, b = townBuildings().find(q => q.id === HOMEF.id);
+    if (P && b && Math.hypot(x - P.x, y - P.y) <= P.r + 10) { sfx('click'); HOMEF.tapped = true; setTimeout(() => b.tap(), 320); } /* after the touch's own click, so it can't land on the card that opens */
+    return;
+  }
   const zh = HOME.zoneHits.find(hh => inPoly([x, y], hh.pts));
   if (zh) { sfx('click'); openTown(zh.zn.at); return; }
   const hit = townHit(HOME.hits, x, y);
@@ -8630,7 +9037,12 @@ function autoStop(why) {
 $('auto').onclick = autoStart;
 
 /* ---------- boot ---------- */
-$('go').onclick = () => !flying().length ? (forcedSkip() ? launch(true) : showFleetPlan()) : pilotCheck(() => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); });
+$('tutSkip').onclick = tutSkipAll;
+$('tutMore').onclick = () => { if (!TUTA || !TUTA.more) return; sfx('click'); const L = $('tutLine'); L.classList.add('more'); L.querySelector('b').textContent = TUTA.more; };
+$('go').onclick = () => {
+  if (TUTA && TUTA.k === 'go') { tutStep('go'); TUTA = null; } /* v122 */
+  if (!flying().length) forcedSkip() ? launch(true) : showFleetPlan(); else pilotCheck(() => { if (S.weather.flag === 'red' && flying().length) confirmRed(); else startCollect(); });
+};
 /* v110: skipping a flyable green or yellow day asks once, since wages and upkeep are paid anyway */
 $('skip').onclick = () => {
   if (S.weather.flag === 'red' || !flying().length) { launch(true); return; }
@@ -8642,7 +9054,10 @@ $('skip').onclick = () => {
   c.append(fly, skip); m.appendChild(c); m.hidden = false;
 };
 let psBase = null;
-function priceSheet(open) { $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; psBase = null; if (open) { renderAct(); psBase = estIncome(); renderAct(); } else { save(); refresh(); } }
+function priceSheet(open) {
+  $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; psBase = null; if (open) { renderAct(); psBase = estIncome(); renderAct(); } else { save(); refresh(); }
+  if (!open && TUTA && TUTA.k === 'price') { tutStep('price'); TUTA = null; setTimeout(tutHome, 350); } /* v122: on to "Yolcu topla" */
+}
 $('pcard').onclick = () => priceSheet(true);
 $('grab').onclick = () => dockOpen(!$('dock').classList.contains('open'));
 /* drag the dock up to open it, down to fold it back to the strip */
@@ -8683,6 +9098,7 @@ function frame(now) {
   if (wantBurn !== burnState) { burnState = wantBurn; burner(wantBurn); }
   if (mode === 'intro' || mode === 'setup' || mode === 'pick') drawIntro(dt); else if (mode === 'story') drawStory(dt); else if (mode === 'open') drawOpen(); else draw(dt);
   if (S) updateChirp(dt);
+  tutFrame(); /* v122 */
   requestAnimationFrame(frame);
 }
 window.addEventListener('resize', resize);

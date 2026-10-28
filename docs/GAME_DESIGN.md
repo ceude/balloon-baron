@@ -114,7 +114,7 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
 - **Çekicilik:** `rep² × (190 / p)^1.5 × koltuk`. Büyük şirket daha görünür. Popülerlik < 0,5 ise ×0,35 (kriz).
 - **Popülerlik bonusu:** Rakiplerden bağımsız gelen yolcu, koltuklarının en fazla %50'si (2,8★'da 0, 5★'da %50), fiyat isteğiyle çarpılır.
 - **Başlangıç baskısı:** 1. gün tek küçük balonla €170'te 7/8 dolar, dolması için yaklaşık €155'e inmek gerekir.
-- **Turist sayısı:** Günün turisti fiyattan bağımsızdır (pazar talebi + otel misafirleri + rehber 5 + influencer 8 + fiyatsız popülerlik bonusu). Fiyat sadece kaçının seni seçtiğini değiştirir. Fiyat algısı eşikleri: fiyat isteği ≥%85 uygun, ≥%60 biraz pahalı, ≥%35 pahalı, altı çok pahalı.
+- **Turist sayısı:** Günün turisti fiyattan bağımsızdır (pazar talebi + otel misafirleri + rehber 4–7 + influencer 5–12, seçilen kişiye göre, + fiyatsız popülerlik bonusu). Fiyat sadece kaçının seni seçtiğini değiştirir. Fiyat algısı eşikleri: fiyat isteği ≥%85 uygun, ≥%60 biraz pahalı, ≥%35 pahalı, altı çok pahalı.
 - **Dağıtım sırası:** önce sözleşmeli kaynaklar (otel, rehber, influencer), sonra pazar, en son popülerlik bonusu. Boş koltuğu olanlara taşma havuzu dağıtılır.
 - **Yıldız:** `clamp(3 + (rep − 0,75) × 4, 1, 5)`. Popülerlik 0,4–1,4 arasında tutulur.
 - **PR tavanı:** Otel anlaşması ya da sahip olunan otel yoksa ve son 10 günde rehber uçuşu yapılmadıysa popülerlik 4,2★'ı geçemez; son 10 günde influencer kampanyası varsa tavan 4,5★.
@@ -123,8 +123,22 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
   - İyi iniş popülerlik getirmez.
   - Uzak iniş iki kat kaybettirir.
   - Hezarfen bu konuda uyarır.
-- **Rehber:** €1.500. Popülerlik artırır (+0,2★ civarı).
-- **Influencer:** 2.500 + 400 × balon sayısı.
+- **Rehber ofisi (v122):** kendi ekranı, üç rehberden biri seçilir; bekleme süresi ortaktır. Rehberin turistleri fiyat isteğiyle çarpılır.
+
+  | Rehber | Ücret | Popülerlik | Süre | Turist/gün | Bekleme |
+  |---|---|---|---|---|---|
+  | Ayşe, otel rehberi | €900 | +0,03 (≈+0,1★) | 2 gün | 4 | 4 gün |
+  | Mehmet, tur rehberi (eski tek anlaşma) | €1.500 | +0,05 (≈+0,2★) | 3 gün | 5 | 5 gün |
+  | Selin, kıdemli rehber | €2.400 | +0,07 (≈+0,3★) | 4 gün | 7 | 6 gün |
+- **Influencer ajansı (v122):** kendi ekranı, üç influencer; fiyat 2.500 + 400 × balon sayısı ile çarpılır (100'e yuvarlanır). Kampanya süresince her gün +0,03 popülerlik (eskisi gibi).
+
+  | Influencer | Fiyat | Popülerlik | Süre | Turist/gün | Bekleme |
+  |---|---|---|---|---|---|
+  | Yerel gezgin | × 0,6 | +0,06 (≈+0,2★) | 2 gün | 5 | 8 gün |
+  | Gezi influencerı (eski tek kampanya) | × 1 | +0,10 (≈+0,4★) | 3 gün | 8 | 10 gün |
+  | Ünlü gezgin | × 1,8 | +0,16 (≈+0,6★) | 4 gün | 12 | 12 gün |
+
+  Rehber yalnız rehber ofisinden, influencer yalnız ajanstan yapılır (iki bina, iki ekran; eski evet/hayır kartları kalktı). Popülerlik kartındaki "Popülerliğini toparla" satırları bu iki ekranı açar. Kurtarma planındaki rehber seçeneği Mehmet'tir. Gece ajansın havuz ışığı ajans açılınca, çarşının ampulleri çarşı açılınca yanar.
 
 ## Reklam sponsorları (uçuş başına, × (kapasite/8)^0,6)
 | Sponsor | En küçük boy | Ödeme |
@@ -338,7 +352,7 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 - **Boş sepet:** hiç yolcu binmediyse kalkıştan önce sorar: Fiyatı değiştir / Boş kalk.
 - **Uçuş koçu:** yakıt uyarısı %25'te; "Bu rüzgâr seni uzaklaştırıyor" ipucu doğru katmana geçince kalkar. Bekleyen bir övgü artık doğru değilse (pilot çıkarıldıysa) gösterilmez.
 - **Başka bölgedeki mevsimler (v121.13):** bir bölgenin Fiesta'sı, festivali ve kışı yalnızca orada oynanan günün sonunda biter; bölgeye dönünce süresi geçmiş olanlar sabah sessizce kapanır (`expireSeasons`).
-- **Bina ipuçları:** rehber, ajans, atölye ve okul açılınca Hezarfen "kasabada binayı bul ve dokun" der.
+- **Bina ipuçları:** rehber, ajans, atölye ve okul açılınca Hezarfen "kasabada binayı bul ve dokun" derdi; v122'de yerini rehberli eylemler aldı ("Gösteren öğretici").
 
 ## TestFlight düzeltmeleri (v121.2, v121.6)
 - **Uçuşta duraklatma:** uçuş sırasında sağ üstteki menü düğmesi ⏸ olur; "Duraklatıldı" kartı (irtifa, yakıt, Devam et, Ayarlar) açılır, uçuş donar, brülör ve valf bırakılır. Ayarlar kapanınca kart geri gelir. Uygulama arka plana giderse uçuş kendiliğinden duraklar.
@@ -348,7 +362,7 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 - **Bugünün uçuş planı:** SEN/PİLOT sorusu kalktı. Kendin uçurduğun balon kendi grubunda, yerinde "Sen uçuruyorsun" etiketiyle durur (altında "Pilota ver"; v121.7); diğer balonlarda "Ben uçurayım" düğmesi var (o balon amiral olur, filodaki gibi). Üstteki kart yalnızca durumu ve günün görevini söyler; kendin uçmuyorsan görev uyarısı kırmızı.
 
 ## Uçuş anları
-Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen hava kolonu, 2 sn içinde kal: +15 yakıt), **selam** (başka bir balonun 95 m / 50 m yakınında 2 sn), **fotoğraf** (150–280 m arasında 1,5 sn, flaş). Başarılırsa yolcu başı bahşiş +€5 ve popülerlik +0,008.
+Uçuşların %70'inde bir an çıkar: **termik** (65 m genişliğinde yükselen hava kolonu; içindeyken dikey hıza sim saniyesi başına +1,0 eklenir, v122'den önce +0,5; 2 sn içinde kal: +15 yakıt), **selam** (başka bir balonun 95 m / 50 m yakınında 2 sn), **fotoğraf** (150–280 m arasında 1,5 sn, flaş). Başarılırsa yolcu başı bahşiş +€5 ve popülerlik +0,008.
 
 ## Gazete, rakip patronlar, kurtarma planı
 - **Sabah gazetesi** (Kapadokya Postası / Albuquerque Herald) yalnızca bir şey olduysa gelir: kazalar, cezalar, rakip olayları, iflas, yeni rakip, rekor yolcu günü, festival, yükseltmeler.
@@ -452,3 +466,47 @@ Yaşlı, karizmatik mentor. Daktilo efektli konuşma balonuyla konuşur. Konular
 
 ## Yerelleştirme
 Metinler altı dilde: İngilizce (kaynak), Türkçe, Almanca, İspanyolca, Japonca, Korece. Swift'te String Catalog kullanılır (`tools/strings`). Türkçe ek uyumu ("Balon'a/Air'e") için metinler şirket adının arkasına ek gelmeyecek şekilde yazılır.
+
+## Gösteren öğretici (v122)
+TestFlight'taki yeni oyuncular Hezarfen'in balonlarını okumuyor ("hiçbir oyunda okumuyorum"); valfin balonu indirdiğini, peribacalarına çarpılabildiğini ve termiğin ne yaptığını bilmediler. İlke: anlatma, göster. Ekran kararır, kullanılacak öğe bir deliğin içinde aydınlık kalır (kesik altın çerçeve), bir ok gösterir, Hezarfen'in küçük yüzüyle en fazla bir cümle görünür. Adım, oyuncu o öğeyi kullanınca geçer, "Tamam"la değil. Katman hiçbir dokunuşu almaz, oyunu kilitleyemez. Satırdaki küçük "Geç" bütün öğreticiyi bitirir. İlerleme `S.tut.steps` içinde (adım → yapıldığı gün); hiçbir adım tekrarlanmaz. Eski kayıtlar (en az bir uçuş yapmış ya da 1. günü geçmiş) öğreticiyi atlar (`S.tut.done`).
+
+**1. gün, ana ekran** (Hezarfen'in kısa "hoş geldin"i ve Kenan'ın selamından sonra):
+1. `price`: bilet kartı aydınlık, "Fiyatı düşür: daha çok yolcu biner." Kart açılınca − düğmesi ve tahmin kutusu aydınlık. Fiyat düşünce (`price_low`) tahmini yolcu sayısı zıplar, çubuk dolarak uzar, yeşil "+N yolcu" yükselir (bu sayaç her fiyat değişiminde çalışır, kartta da); satır "Gördün mü? Yolcu arttı. Tamam'a bas." olur. Fiyat sayfası kapanınca adım biter (düşürmese de).
+2. `go`: "Yolcu topla" nabızla parlar, ok gösterir: "Hazırsın: yolcu topla ve uç."
+
+Eski boş koltuk ipucu (`price`, 2.–12. gün) kalır; artık o da rehberli bir eylemdir (bilet kartı, sonra − düğmesi).
+
+**İlk kendi uçuşu** (uçuşta karartma 2,5 sn sonra %80 açılır ki peribacaları görünsün; çerçeve, ok ve satır kalır; Hezarfen'in koç ipuçları ve eski valf ipucu o sırada susar):
+1. `burn` (yerdeyken): brülör ve balon aydınlık, balonun yanında yukarı ok, "Basılı tut: yükselirsin." Brülöre toplam 1 sn basıp 20 m'yi geçince ve yükselirken geçer.
+2. `wind`: soldaki katman okları 0,6 sn arayla yukarıdan aşağı sırayla yanar, sonra hedefe en güçlü esen katman yeşil çerçeve ve "HEDEFE" etiketiyle işaretlenir, ok onu gösterir: "İleri gitmek için doğru yüksekliği bul." Balon toplam 2 sn hedefe doğru gidince (yatay hız hedef yönünde > 0,25) geçer.
+3. `vent`: 70 m'nin üstünde (ya da 6 sn bekledikten sonra) valf düğmesi ve balon aydınlık, aşağı ok: "Valf sıcak havayı bırakır: alçalırsın, ileri götürmez." Valfe toplam 0,5 sn basınca geçer.
+4. `field`: kamera 1,2 sn'de iniş alanına kayar, 2 sn durur, 1 sn'de döner; bu sırada uçuş %25 hızda akar. "Burada in." 4,2 sn sonra geçer.
+5. `chimney` (kalkıştan sonra ne zaman çıkarsa, rüzgâr/valf/alan adımlarının önüne geçer): önündeki 40–300 m içindeki, ekranda görünen ve sepetin çarpabileceği yükseklikteki (tepesinin en çok 160 m üstü) ilk peribacası; bütün çarpılabilir bacalar kırmızı konturlu, o bacanın üstünde kırmızı "Sepet çarparsa kaza" etiketi, satır "Peribacasının üstünden geç: sepet çarparsa kaza." Bacayı geçince (ya da 9 sn sonra) biter.
+6. `thermal`: termik 420 m'den yakına gelince sütun aydınlık, "Termik: içine girersen seni yukarı taşır." İçine girince ya da geçip gidince biter. İlk uçuşta termik çıkmadıysa ikinci kendi uçuşunda bir termik garanti edilir. Kalan uçuş adımları 5. kendi uçuşuna kadar gösterilir (`TUT_FLIGHTS`).
+
+Uçuş bitince yarım kalan adımlar sonraki uçuşa kalır.
+
+**Peribacaları her zaman okunur:** çarpılabilen bacalar daha koyu ve ince koyu konturlu çizilir; arka plandaki süs bacaları ufuk sisine daha çok karışır (%45 yerine %58). Sepet bir bacaya yatayda 90 m, dikeyde tepesinin 60 m üstüne kadar yaklaştıkça baca kırmızı kontur ve kırmızı ışıltıyla parlar.
+
+**Termik:** kaldırma ikiye katlandı: içindeyken dikey hıza sim saniyesi başına +1,0 (önceden +0,5; sim saati gerçek saatin 6 katı, yani dikey hızda ~2,5 birimlik fark yerine önceki ~1,25). 2 sn'lik an hâlâ tamamlanır (sütun 130 m geniş); an tamamlanınca kaldırma eskisi gibi durur. Sütun daha belirgin: daha sıcak ışık, kenarlarında akan kesik çizgiler, yükselen ok başları, "TERMİK ↑" yazısı. İçindeyken sepetin altında yükselen üç ok ve küçük turuncu "Termik ↑" etiketi.
+
+**Rehberli eylemler (yeni binalar ve ilk işler):** Hezarfen'in dersi uzun kart yerine tek cümlelik altyazı olur, uzun metin satırdaki "Daha fazla"nın arkasında. Ana ekran kamerası 0,9 sn'de binaya kayar ve yakınlaşır, bina altın halkayla nabız atar, ok gösterir; o sırada yalnızca bina dokunulur. Bina açılınca sayfa yapılacak öğeye kayar, geri kalan kararır, düğme aydınlanır. Düğme pasifse (para ya da yıldız yetmiyor) satır bunu tek cümleyle söyler, "Geç" ile geçilir. Oyuncu işi yapınca, sayfayı kapatınca ya da "Geç"e basınca biter (burada "Geç" yalnız o eylemi geçer); sonra sabahın sıradaki kartı gelir. Sabah en fazla 2 ders kuralı (v121.12) bunları da sayar.
+
+| Ders | Nereye | Yapılacak |
+|---|---|---|
+| `ins` (2. gün) | Dock'taki sigorta çipi | Dock açılır, sigorta seçenekleri 2,5 sn gösterilir |
+| `goals` (3. gün) | Hedef düğmesi | Hedefleri aç |
+| `fleet` (3. gün) | Hangar | Bina kartında "Balonlarına git", sonra ilk "Yeni balon al" düğmesi |
+| `bank` (4. gün) | Banka | İlk kredi teklifi 3 sn gösterilir (çekmek zorunlu değil) |
+| `crew` (5. gün) | Pilot ofisi | "Ekibe git", ilk "İşe al" |
+| `market` (6. gün) | Satış ofisi | "Pazara git", anlaşılabilecek ilk otel (yoksa ilki) |
+| `guide` (7. gün) | Rehber ofisi | Rehber ekranı, bir rehber seç |
+| `agency` (8. gün) | Influencer ajansı | Ajans ekranı, bir influencer seç |
+| `bazaar` (9. gün) | Çarşı | Hediye fener seti, "Hediyeni al" |
+| `workshop` (10. gün) | Balon atölyesi | Atölyeyi kur düğmesi |
+| `school` (11. gün) | Pilot okulu | Okulu kur düğmesi |
+| `price` (boş koltuk, 2.–12. gün) | Bilet kartı | − düğmesi |
+
+**Kısa dersler:** ilk günlerin dersleri tek cümle (`HEZ_SHORT`: welcome, ins, fleet, bank, crew, market, guide, agency, bazaar, workshop, school, goals, price, yellow, red, mission, accident, pr, rivals, aging); eski metin balondaki "Daha fazla"da açılır. Anahtarlar aynı.
+
+**Ölçüm:** `tutStep(ad)` her adımı bir kez `S.tut.steps`'e yazar; Swift portu TelemetryDeck olayını oradan gönderir. Olaylar: `price`, `price_low`, `go`, `burn`, `wind`, `vent`, `field`, `chimney`, `thermal`, `first_landing`, `skip`; rehberli eylemler için `ga_<ders>_done`, `ga_<ders>_left`, `ga_<ders>_skip`.
