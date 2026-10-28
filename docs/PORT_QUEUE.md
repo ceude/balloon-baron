@@ -2,7 +2,8 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-Kuyrukta: boş.
+Kuyrukta:
+- v122.7 (yalnız prototipte): holding Anlaşmalar biriminde forma sponsorluğu (€3M, 180 gün, talep +%15, +0,1 popülerlik) ve Dünya Oyunları açılış gösterisi (€10M, bir kez, 60 gün, talep +%30, +0,2 popülerlik); `JERSEY`, `WGAMES`, `holdBoost`, masa durumu, iki yeni gazete/Hezarfen metni (`HOLD_DEEDS.jersey`, `.worldGames`), iki çizim (`INVEST_ART.jersey`, `.wg`). Swift'te: holding durumuna isteğe bağlı `jerseyUntil`, `worldGames`, `HoldingDeed` yeni durumlar, altı dilde metin.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
 v122.6 (prototip ve Swift birlikte): rüya uçuşu ilk açılışta (kayıt yokken) eski sakin hızla, sonraki açılışlarda hızlı yükselir (`IntroModel.fast`).

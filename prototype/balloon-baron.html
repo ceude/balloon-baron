@@ -6548,13 +6548,17 @@ const holdCostRate = () => officeCount() === 4 ? .2 : HOLD_COST;
 const tvCost = () => Math.round(250000 * (hasOffice('nyc') ? .75 : 1));
 const officeMult = id => (hasOffice('ist') && id === 'cap' ? 1.25 : 1) * (hasOffice('nyc') && id === 'abq' ? 1.2 : 1);
 const celebCost = () => hasOffice('sel') ? 420000 : 600000;
+/* v122.7: two bigger deals at the deals desk. The jersey of the league's last champion, and the balloon show at the
+   World Games' opening ceremony (once). */
+const JERSEY = { cost: 3000000, days: 180, boost: 1.15, rep: .1, team: 'Anadolu Kartalları SK' };
+const WGAMES = { cost: 10000000, days: 60, boost: 1.3, rep: .2 };
 const RD_LEVELS = [{ cost: 400000, life: 160 }, { cost: 900000, life: 200 }];
 const envLife = () => S && S.hold && S.hold.rnd ? RD_LEVELS[S.hold.rnd - 1].life : 120;
 const holdOn = () => S && S.hold;
 /* holding yatırımlarının bir bölgedeki talep çarpanı */
 function holdBoost(id) {
   const H = S.hold; if (!H) return 1;
-  return (1 + (H.recBoost || 0)) * (H.tvUntil > S.day ? 1.2 : 1) * (H.celeb && H.celeb.until > S.day ? 1.1 : 1) * (H.bb && H.bb[id] > S.day ? 1.1 : 1);
+  return (1 + (H.recBoost || 0)) * (H.tvUntil > S.day ? 1.2 : 1) * (H.celeb && H.celeb.until > S.day ? 1.1 : 1) * (H.jersey > S.day ? JERSEY.boost : 1) * (H.wg && H.wg.until > S.day ? WGAMES.boost : 1) * (H.bb && H.bb[id] > S.day ? 1.1 : 1);
 }
 function holdingDay() {
   if (!S.hold) S.hold = { log: [] };
@@ -6613,6 +6617,8 @@ const INVEST_ART = {
   rec: '<svg viewBox="0 0 64 64"><path d="M32 6c9 0 15 7 15 16 0 8-6 14-10 18h-10c-4-4-10-10-10-18 0-9 6-16 15-16z" fill="#ffc23d"/><path d="M27 40h10l-1 6h-8z" fill="#c9ccd2"/><rect x="25" y="47" width="14" height="10" rx="5" fill="#c9ccd2"/><circle cx="35" cy="52" r="2.6" fill="#2b5ab8"/><path d="M8 58l8-10 6 5 8-12" fill="none" stroke="#e5432f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   shape: '<svg viewBox="0 0 64 64"><path d="M27 6h10v8c6 4 9 10 9 18v18a5 5 0 0 1-5 5H23a5 5 0 0 1-5-5V32c0-8 3-14 9-18z" fill="#e5432f"/><rect x="18" y="30" width="28" height="12" fill="#fff"/><text x="32" y="39.5" text-anchor="middle" font-size="9" font-weight="800" fill="#e5432f" font-family="Barlow Condensed,sans-serif">FIZZ</text><rect x="26" y="56" width="12" height="6" rx="1.5" fill="#8a5a34"/></svg>',
   tv: '<svg viewBox="0 0 64 64"><rect x="6" y="12" width="52" height="34" rx="6" fill="#1f1b2e" stroke="#ffc23d" stroke-width="3"/><rect x="11" y="17" width="42" height="24" rx="3" fill="#ff5e3a"/><path d="M26 23l12 6-12 6z" fill="#fff"/><path d="M24 52h16M32 46v6" stroke="#ffc23d" stroke-width="3" stroke-linecap="round"/></svg>',
+  jersey: '<svg viewBox="0 0 64 64"><path d="M22 10 L14 14 L6 24 L14 30 L18 26 L18 56 L46 56 L46 26 L50 30 L58 24 L50 14 L42 10 C40 15 36 17 32 17 C28 17 24 15 22 10Z" fill="#e5432f"/><path d="M22 10 C24 15 28 17 32 17 C36 17 40 15 42 10" fill="none" stroke="#ffc23d" stroke-width="2.5"/><rect x="22" y="30" width="20" height="9" rx="2" fill="#fff"/><path d="M26 34.5h12" stroke="#2b2350" stroke-width="2.4" stroke-linecap="round"/></svg>',
+  wg: '<svg viewBox="0 0 64 64"><path d="M4 50 C14 40 50 40 60 50 L60 58 L4 58Z" fill="#5a4a8a"/><path d="M10 50 C20 44 44 44 54 50" fill="none" stroke="#ffc23d" stroke-width="2" stroke-dasharray="3 3"/><g><path d="M14 30 C10 24 12 16 18 16 C24 16 26 24 22 30 L20 33 L16 33Z" fill="#ff5e3a"/><path d="M30 24 C26 18 28 9 34 9 C40 9 42 18 38 24 L36 27 L32 27Z" fill="#ffc23d"/><path d="M46 30 C42 24 44 16 50 16 C56 16 58 24 54 30 L52 33 L48 33Z" fill="#14a39a"/></g><path d="M8 8l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z" fill="#fff3c4"/></svg>',
   celeb: '<svg viewBox="0 0 64 64"><path d="M32 6l7 15 16 2-12 11 3 16-14-8-14 8 3-16L9 23l16-2z" fill="#ffc23d"/><circle cx="32" cy="29" r="6" fill="#fff3c4"/></svg>',
   bb: '<svg viewBox="0 0 64 64"><rect x="6" y="10" width="52" height="28" rx="3" fill="#ffc23d"/><text x="32" y="29" text-anchor="middle" font-size="11" font-weight="800" fill="#2b2350" font-family="Barlow Condensed,sans-serif">BALON!</text><path d="M18 38v18M46 38v18M12 56h40" stroke="#c9c1db" stroke-width="3" stroke-linecap="round"/></svg>',
   lab: '<svg viewBox="0 0 64 64"><path d="M24 8h16M27 8v16L12 50a5 5 0 0 0 4 7h32a5 5 0 0 0 4-7L37 24V8" fill="none" stroke="#ffc23d" stroke-width="3" stroke-linejoin="round"/><path d="M17 44h30l4 7a2 2 0 0 1-2 3H15a2 2 0 0 1-2-3z" fill="#3ad0c0"/><circle cx="28" cy="38" r="2.5" fill="#3ad0c0"/><circle cx="36" cy="33" r="1.8" fill="#3ad0c0"/></svg>'
@@ -6686,6 +6692,12 @@ function hqDeals(body, which, title) {
   const ce = H.celeb && H.celeb.until > S.day, days = hasOffice('sel') ? 180 : 90;
   if (which.includes('celeb')) deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], celebCost(), 'Sözleşme imzala',
     () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); holdDeed('celebrity'); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
+  const jOn = H.jersey > S.day;
+  if (which.includes('jersey')) deal('jersey', 'Forma sponsorluğu', `Şampiyonun formasında adın`, jOn ? `${JERSEY.team} formasında ${S.company} yazıyor; her maçta milyonlar görüyor.` : `Ligin son şampiyonu ${JERSEY.team} forma sponsoru arıyor. Her maçta, her haberde adın.`, ['Bütün bölgelerde talep +%15', `${JERSEY.days} gün`, `${RD().name}: +0,4★`], JERSEY.cost, 'Sponsor ol',
+    () => { H.jersey = S.day + JERSEY.days; S.rep = Math.min(1.4, S.rep + JERSEY.rep); holdDeed('jersey'); }, { active: jOn ? `Formada adın · ${H.jersey - S.day} gün` : '' });
+  const wgOn = H.wg && H.wg.until > S.day;
+  if (which.includes('wg')) deal('wg', 'Dünya sahnesi', 'Dünya Oyunları açılışında balon gösterisi', H.wg ? (wgOn ? 'Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi.' : 'Açılış töreni gösterini yaptın; dünya hâlâ konuşuyor.') : 'Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır.', ['Bütün bölgelerde talep +%30', `${WGAMES.days} gün`, `${RD().name}: +0,8★`], H.wg ? null : WGAMES.cost, 'Gösteriyi üstlen',
+    () => { H.wg = { until: S.day + WGAMES.days }; S.rep = Math.min(1.4, S.rep + WGAMES.rep); holdDeed('worldGames'); }, { active: wgOn ? `Tören etkisi · ${H.wg.until - S.day} gün` : H.wg ? 'Yapıldı' : '' });
   const bbOn = H.bb && H.bb[S.region] > S.day;
   if (which.includes('bb')) deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
     () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; holdDeed('billboards'); }, { active: bbOn ? `Asılı · ${H.bb[S.region] - S.day} gün` : '' });
@@ -8759,7 +8771,7 @@ const HQ_UNITS = {
   board: { name: 'Kasa ve hedefler', draw: b => { hqCash(b); hqGoals(b); hqTransfer(b); } },
   window: { name: 'Bölgeler', draw: b => hqRegions(b) },
   mkt: { name: 'Pazarlama birimi', draw: b => hqDeals(b, ['tv', 'bb'], 'Kampanyalar') },
-  deals: { name: 'Anlaşmalar birimi', draw: b => hqDeals(b, ['celeb'], 'Reklam yüzü') },
+  deals: { name: 'Anlaşmalar birimi', draw: b => hqDeals(b, ['celeb', 'jersey', 'wg'], 'Anlaşmalar') },
   rnd: { name: 'Ar-Ge birimi', draw: b => hqDeals(b, ['lab'], 'Araştırma') },
   offices: { name: 'Ofisler', draw: b => hqOffices(b) },
   rec: { name: 'Rekor projesi', draw: b => hqRecords(b) },
@@ -8791,7 +8803,7 @@ function hqRender() {
     board: [`${eurH(S.holding || 0)}`, false],
     window: [issue ? 'Bir bölgede sorun var' : `Bölge: ${Object.keys(S.regions || {}).length + 1}`, false, issue],
     mkt: [tvOn ? `TV yayında, ${H.tvUntil - S.day} gün` : bbOn ? 'Afişler asılı' : 'Kampanya yok', tvOn || bbOn],
-    deals: [ce ? H.celeb.name : 'Reklam yüzü yok', ce],
+    deals: H.wg && H.wg.until > S.day ? ['Dünya Oyunları gösterisi', true] : H.jersey > S.day ? [`Forma: ${JERSEY.team}`, true] : [ce ? H.celeb.name : 'Anlaşma yok', ce],
     rnd: [RD_LEVELS[lv] ? `Seviye ${lv}` : 'Tamamlandı', !RD_LEVELS[lv]],
     offices: [`Ofis: ${officeCount()}/4`, officeCount() === 4],
     rec: [!ownsRegion('lux') ? 'Önce Luksor\'u açmalısın' : H.rec ? `${RECORDS[H.rec.k].n}, ${H.rec.done - S.day} gün` : `Rekor: ${Object.keys(H.records || {}).length}/${Object.keys(RECORDS).length}`, !!H.rec],
@@ -8918,6 +8930,8 @@ const HOLD_DEEDS = {
   tv: ['TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin.', c => `Her televizyonda reklamı var: ${c}`, 'Holdingin TV kampanyası bütün bölgelere turist getiriyor.'],
   billboards: ['Bütün şehirde ilan panoların asıldı evlat! Önünden geçen her turist yarın sabah adını hatırlayacak.', c => `Her köşede ilan panosu: ${c}`, 'Turistler otele giderken bu adı görmeden geçemiyor.'],
   celebrity: [null, c => `Ünlü bir yüz: ${c}`, 'Afişler bir gecede asıldı, telefonlar o günden beri susmuyor.'],
+  jersey: ['Şampiyonun formasında adın var evlat! Her maçta milyonlar görecek; turistler stadyumdan çıkıp balona binecek.', c => `${JERSEY.team} formasında yeni ad: ${c}`, 'Ligin son şampiyonu yeni sezona yeni bir adla çıkıyor.'],
+  worldGames: ['Bütün dünya senin balonlarını izledi evlat! Bir zamanlar tek sepetle başlamıştın, şimdi açılış töreninin göğü senin.', c => `Dünya Oyunları açılışında ${c} balonları`, 'Stadyumun üstünde yüzlerce balon süzüldü; tören dünyanın her yerinde canlı yayınlandı.'],
   research: ['Laboratuvardan iyi haber evlat: yeni zarf kumaşı daha uzun dayanıyor. Daha az yenileme, daha çok uçuş. Gerçek şirket böyle büyür.', c => `Yeni zarf kumaşı: ${c}`, 'Daha dayanıklı zarflar: daha az yenileme, daha çok güvenli uçuş.'],
   office: [null, c => `Yurt dışında yeni ofis: ${c}`, 'Oradaki seyahat acenteleri artık onun balon uçuşlarını satıyor.'],
   record: ['Dünya rekoru denemesi! Bütün dünya senin balonunu izleyecek evlat. Ne olursa olsun adın her gazetede olacak.', c => `Dünya rekoru denemesi: ${c}`, 'Bütün balon dünyası denemeyi izliyor.'],
