@@ -104,7 +104,12 @@ struct HoldingView: View {
     /// The holding's own goals; all six make you World Baron.
     private func holdingGoals(_ s: GameState) -> some View {
         VStack(alignment: .leading, spacing: 8) {
-            sectionTitle(loc(s.holding.worldBaron != nil ? "hgoal.worldTitle" : "hgoal.title"))
+            HStack(spacing: 8) {
+                sectionTitle(loc(s.holding.worldBaron != nil ? "hgoal.worldTitle" : "hgoal.title"))
+                if s.holding.worldBaron != nil {
+                    LineGlyph(kind: .crown, size: 24, weight: 2, fill: Theme.sun).foregroundStyle(Color(hex: "#c98a00"))
+                }
+            }
             ForEach(HoldingGoal.allCases, id: \.self) { g in
                 let d = s.done(g)
                 HStack(spacing: 10) {
@@ -346,8 +351,8 @@ struct HoldingView: View {
     private func officeCard(_ o: Office, _ h: Holding) -> some View {
         let open = h.has(o)
         return VStack(alignment: .leading, spacing: 5) {
-            Text(o.icon)
-                .font(.system(size: 30))
+            LineGlyph(kind: o.glyph, size: 34, weight: 1.7)
+                .foregroundStyle(open ? Theme.coral : HoldingLux.title)
             Text(o.title)
                 .font(Theme.font(19, .heavy, condensed: true))
                 .foregroundStyle(HoldingLux.title)

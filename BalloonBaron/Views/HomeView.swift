@@ -806,14 +806,17 @@ struct HomeView: View {
 
     private func actionButtons(_ s: GameState) -> some View {
         let none = s.flyingToday.isEmpty
-        return HStack(spacing: 10) {
+        // All of them share BigButton's height and never wrap. Skip keeps one width whether or not Advance is there, so
+        // the row doesn't jump; the widths leave "HEUTE AUSSETZEN" and "PASSAGIERE EINSAMMELN" room on a 375 pt phone.
+        return HStack(spacing: 8) {
             BigButton(title: loc("home.skip"), style: .ghost) {
                 // A flyable green or yellow day asks first; on a red flag, or with nothing to fly, it just passes.
                 if s.weather?.flag != .red && !none { confirmSkip = true } else { store.fly(skip: true) }
             }
-                .frame(width: s.autopilotOK ? 104 : 140)
+                .frame(width: 108)
             if s.autopilotOK {
-                // v117: "⏩ Advance": the days play by themselves until something wants you.
+                // v117: "Advance": the days play by themselves until something wants you. Drawn like the ghost
+                // BigButton beside it, at its height, so the row lines up.
                 Button {
                     SoundEngine.shared.play(.click)
                     store.startAuto()
@@ -821,12 +824,17 @@ struct HomeView: View {
                     VStack(spacing: 2) {
                         FastForwardGlyph(size: 15)
                         Text(loc("auto.button")).font(Theme.font(12, .heavy, condensed: true))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
                     }
-                    .frame(maxWidth: .infinity)
+                    .foregroundStyle(Theme.ink)
+                    .padding(.horizontal, 4)
+                    .frame(width: 58, height: BigButton.height)
+                    .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.line, lineWidth: 2))
+                    .contentShape(RoundedRectangle(cornerRadius: 16))
                 }
-                .buttonStyle(ChunkyButtonStyle(kind: .ghost))
-                .frame(width: 64)
-                .fixedSize(horizontal: false, vertical: true) // TestFlight: it stretched to the dock's full height
+                .buttonStyle(.plain)
                 .accessibilityLabel(loc("auto.a11y"))
             }
             // TestFlight: a new player met a dead "No balloon flies today" button; it now opens the flight plan,
