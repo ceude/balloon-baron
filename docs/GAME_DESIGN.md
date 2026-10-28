@@ -424,7 +424,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - Giderler: otomatik gelirin %25'i (dört ofis açıksa %20).
 - **TV kampanyası:** €250.000, 14 gün bütün bölgelerde talep +%20, bulunulan bölgede +0,1 popülerlik, 30 gün bekleme.
 - **Ünlü reklam yüzü:** €600.000, 90 gün talep +%10, +0,15 popülerlik.
-- **Forma sponsorluğu (v122.7, Anlaşmalar birimi):** ligin son şampiyonu Anadolu Kartalları SK'nin forma sponsoru: €3.000.000, 180 gün bütün bölgelerde talep +%15, +0,1 popülerlik (≈+0,4★); süre bitince yeniden alınabilir.
+- **Forma sponsorluğu (v122.7, Anlaşmalar birimi):** ligin son şampiyonunun forma sponsoru (takım adı yazılmaz, oyun dünya çapında): €3.000.000, 180 gün bütün bölgelerde talep +%15, +0,1 popülerlik (≈+0,4★); süre bitince yeniden alınabilir.
 - **Dünya Oyunları açılış gösterisi (v122.7, Anlaşmalar birimi):** açılış töreninin resmî balon gösterisi: €10.000.000, bir kez; 60 gün bütün bölgelerde talep +%30, +0,2 popülerlik (≈+0,8★). Etkiler ünlü yüz ve TV ile çarpılarak birleşir.
 - **Billboard:** €120.000, bulunulan bölgede 20 gün talep +%10.
 - **Zarf Ar-Ge'si:** €400.000 ile ömür 160, €900.000 ile 200 uçuş.

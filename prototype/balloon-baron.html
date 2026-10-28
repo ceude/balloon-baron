@@ -6550,7 +6550,7 @@ const officeMult = id => (hasOffice('ist') && id === 'cap' ? 1.25 : 1) * (hasOff
 const celebCost = () => hasOffice('sel') ? 420000 : 600000;
 /* v122.7: two bigger deals at the deals desk. The jersey of the league's last champion, and the balloon show at the
    World Games' opening ceremony (once). */
-const JERSEY = { cost: 3000000, days: 180, boost: 1.15, rep: .1, team: 'Anadolu Kartalları SK' };
+const JERSEY = { cost: 3000000, days: 180, boost: 1.15, rep: .1 }; /* v122.9: no team name, the game is played worldwide */
 const WGAMES = { cost: 10000000, days: 60, boost: 1.3, rep: .2 };
 const RD_LEVELS = [{ cost: 400000, life: 160 }, { cost: 900000, life: 200 }];
 const envLife = () => S && S.hold && S.hold.rnd ? RD_LEVELS[S.hold.rnd - 1].life : 120;
@@ -6693,7 +6693,7 @@ function hqDeals(body, which, title) {
   if (which.includes('celeb')) deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], celebCost(), 'Sözleşme imzala',
     () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); holdDeed('celebrity'); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
   const jOn = H.jersey > S.day;
-  if (which.includes('jersey')) deal('jersey', 'Forma sponsorluğu', `Şampiyonun formasında adın`, jOn ? `${JERSEY.team} formasında ${S.company} yazıyor; her maçta milyonlar görüyor.` : `Ligin son şampiyonu ${JERSEY.team} forma sponsoru arıyor. Her maçta, her haberde adın.`, ['Bütün bölgelerde talep +%15', `${JERSEY.days} gün`, `${RD().name}: +0,4★`], JERSEY.cost, 'Sponsor ol',
+  if (which.includes('jersey')) deal('jersey', 'Forma sponsorluğu', `Şampiyonun formasında adın`, jOn ? `Şampiyonun formasında ${S.company} yazıyor; her maçta milyonlar görüyor.` : 'Ligin son şampiyonu forma sponsoru arıyor. Her maçta, her haberde adın.', ['Bütün bölgelerde talep +%15', `${JERSEY.days} gün`, `${RD().name}: +0,4★`], JERSEY.cost, 'Sponsor ol',
     () => { H.jersey = S.day + JERSEY.days; S.rep = Math.min(1.4, S.rep + JERSEY.rep); holdDeed('jersey'); }, { active: jOn ? `Formada adın · ${H.jersey - S.day} gün` : '' });
   const wgOn = H.wg && H.wg.until > S.day;
   if (which.includes('wg')) deal('wg', 'Dünya sahnesi', 'Dünya Oyunları açılışında balon gösterisi', H.wg ? (wgOn ? 'Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi.' : 'Açılış töreni gösterini yaptın; dünya hâlâ konuşuyor.') : 'Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır.', ['Bütün bölgelerde talep +%30', `${WGAMES.days} gün`, `${RD().name}: +0,8★`], H.wg ? null : WGAMES.cost, 'Gösteriyi üstlen',
@@ -8803,7 +8803,7 @@ function hqRender() {
     board: [`${eurH(S.holding || 0)}`, false],
     window: [issue ? 'Bir bölgede sorun var' : `Bölge: ${Object.keys(S.regions || {}).length + 1}`, false, issue],
     mkt: [tvOn ? `TV yayında, ${H.tvUntil - S.day} gün` : bbOn ? 'Afişler asılı' : 'Kampanya yok', tvOn || bbOn],
-    deals: H.wg && H.wg.until > S.day ? ['Dünya Oyunları gösterisi', true] : H.jersey > S.day ? [`Forma: ${JERSEY.team}`, true] : [ce ? H.celeb.name : 'Anlaşma yok', ce],
+    deals: H.wg && H.wg.until > S.day ? ['Dünya Oyunları gösterisi', true] : H.jersey > S.day ? ['Şampiyonun forması', true] : [ce ? H.celeb.name : 'Anlaşma yok', ce],
     rnd: [RD_LEVELS[lv] ? `Seviye ${lv}` : 'Tamamlandı', !RD_LEVELS[lv]],
     offices: [`Ofis: ${officeCount()}/4`, officeCount() === 4],
     rec: [!ownsRegion('lux') ? 'Önce Luksor\'u açmalısın' : H.rec ? `${RECORDS[H.rec.k].n}, ${H.rec.done - S.day} gün` : `Rekor: ${Object.keys(H.records || {}).length}/${Object.keys(RECORDS).length}`, !!H.rec],
@@ -8930,7 +8930,7 @@ const HOLD_DEEDS = {
   tv: ['TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin.', c => `Her televizyonda reklamı var: ${c}`, 'Holdingin TV kampanyası bütün bölgelere turist getiriyor.'],
   billboards: ['Bütün şehirde ilan panoların asıldı evlat! Önünden geçen her turist yarın sabah adını hatırlayacak.', c => `Her köşede ilan panosu: ${c}`, 'Turistler otele giderken bu adı görmeden geçemiyor.'],
   celebrity: [null, c => `Ünlü bir yüz: ${c}`, 'Afişler bir gecede asıldı, telefonlar o günden beri susmuyor.'],
-  jersey: ['Şampiyonun formasında adın var evlat! Her maçta milyonlar görecek; turistler stadyumdan çıkıp balona binecek.', c => `${JERSEY.team} formasında yeni ad: ${c}`, 'Ligin son şampiyonu yeni sezona yeni bir adla çıkıyor.'],
+  jersey: ['Şampiyonun formasında adın var evlat! Her maçta milyonlar görecek; turistler stadyumdan çıkıp balona binecek.', c => `Şampiyonun formasında yeni ad: ${c}`, 'Ligin son şampiyonu yeni sezona yeni bir adla çıkıyor.'],
   worldGames: ['Bütün dünya senin balonlarını izledi evlat! Bir zamanlar tek sepetle başlamıştın, şimdi açılış töreninin göğü senin.', c => `Dünya Oyunları açılışında ${c} balonları`, 'Stadyumun üstünde yüzlerce balon süzüldü; tören dünyanın her yerinde canlı yayınlandı.'],
   research: ['Laboratuvardan iyi haber evlat: yeni zarf kumaşı daha uzun dayanıyor. Daha az yenileme, daha çok uçuş. Gerçek şirket böyle büyür.', c => `Yeni zarf kumaşı: ${c}`, 'Daha dayanıklı zarflar: daha az yenileme, daha çok güvenli uçuş.'],
   office: [null, c => `Yurt dışında yeni ofis: ${c}`, 'Oradaki seyahat acenteleri artık onun balon uçuşlarını satıyor.'],
