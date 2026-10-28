@@ -2,7 +2,8 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
-Kuyrukta: boş.
+Kuyrukta:
+- v122.4 (yalnız prototipte): ilk iki gün sabit senaryo ve 2. gün "fiyatı artır" dersi (GAME_DESIGN "İlk iki gün sabit senaryo"). Swift'te: `newWeather`/`dayDemand` öğretici sürerken 1. ve 2. gün sabit değerleri döner (rakiplerin rastgele sırasını bozmadan), 2. gün sabahı fiyat 160'a çekilir, `price2` adımı (`tutorialStep`), iki satır metin altı dilde, `TUT_ALL`'a `price2`, telemetri `tutorial.price2_up`, `tutorial.price2`.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
 v122.3 (prototip ve Swift birlikte): rehberler Ayşe, Sena, Ekin (kimlikler aynı: ayse, mehmet, selin); rehber ofisinin üst yazısı "Rehberle anlaş, sana turist getirsin".

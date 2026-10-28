@@ -1317,7 +1317,15 @@ function load() { try { const j = localStorage.getItem(KEY); return j ? JSON.par
 const myCol = () => S.colors || PALETTES[0];
 
 /* ---------- weather & world ---------- */
+/* v122.4: while the tutorial runs, days 1 and 2 in Cappadocia are a fixed scenario, the same for everyone: green flag,
+   a wind layer that carries you to the field, and a demand made for the day's price lesson (day 1: there are fewer
+   tourists than seats at the start price, so lowering it fills seats; day 2: demand is high, so raising the price keeps
+   the basket full). No surprises in the first two days. */
+const tutScene = () => S.region === 'cap' && tutOn() && (S.day === 1 || S.day === 2) ? S.day : 0;
+const TUT_WX = { 1: { surf: 5, layers: [-1.3, 4.6, -2.2, 6.2], target: 1720 }, 2: { surf: 6, layers: [-1, -2, 5.2, 3.4], target: 1900 } };
+const TUT_D1 = 110, TUT_D2 = 320, TUT_DEMAND = { 1: TUT_D1, 2: TUT_D2 }, TUT_P2 = 160;
 function newWeather() {
+  { const sc = tutScene(); if (sc) { const w = TUT_WX[sc]; return { flag: 'green', surf: w.surf, layers: w.layers.slice(), target: w.target, seed: 7700 + sc, mission: null, valley: 220 + (w.target - 220) * .45 }; } }
   let flag = S.day === 1 ? 'green' : (S.fc && S.fc[S.day]) || rollFlag();
   if (flag === 'red' && S.day <= 3) flag = 'yellow'; /* the first days never ground a beginner */
   const F = FLAGS[flag];
@@ -1556,7 +1564,7 @@ function market(myPrice, myCap) {
 
 /* ---------- day flow ---------- */
 const demandGrowth = () => 1 + .6 * (1 - Math.exp(-(S.day - 1) / 50));
-const dayDemand = () => Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? (S.region === 'lux' ? 1.6 : 1.9) : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * holdBoost(S.region));
+const dayDemand = () => tutScene() ? TUT_DEMAND[tutScene()] : Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? (S.region === 'lux' ? 1.6 : 1.9) : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * holdBoost(S.region));
 let mode = 'office', tab = 'plan', FL = null, lastReport = null;
 function hezAdd(k) { if (!S.tips[k] && !S.hezQ.includes(k) && !(S.hezLater || []).includes(k)) S.hezQ.push(k); }
 /* v121.12: nobody reads seven cards in a row. A morning shows at most two of Hezarfen's lessons and one postcard; the
@@ -2934,6 +2942,7 @@ function renderAct() {
   $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
   /* v122: price changes count the passengers up or down where you can see it */
   if (TUTA && TUTA.k === 'price' && S.price < TUTA.p0 && !TUTA.low) { TUTA.low = true; tutStep('price_low'); }
+  if (TUTA && TUTA.k === 'price2' && S.price > TUTA.p0 && pax >= cap && !TUTA.up) { TUTA.up = true; tutStep('price2_up'); } /* v122.4 */
   if (renderAct.pax != null && renderAct.cap === cap && renderAct.price !== S.price) { paxBump($('est').querySelector('.res') ? $('est') : null, pax, renderAct.pax); paxBump($('pcard').querySelector('.pf'), pax, renderAct.pax); }
   renderAct.pax = pax; renderAct.cap = cap; renderAct.price = S.price;
   const go = $('go'); go.disabled = false;
@@ -4823,7 +4832,7 @@ function coachTick(f, dt) {
    whole tutorial. Progress lives in S.tut (steps → the day each was done), so nothing repeats; saves that had already
    flown skip it. tutStep() is the one place a step is recorded: the Swift port sends its TelemetryDeck event there. */
 let TUTA = null, TUTC = {}, HOMEF = null, GA = null, GA_NEXT = false;
-const TUT_ALL = ['price', 'go', 'burn', 'wind', 'vent', 'field', 'chimney', 'thermal'];
+const TUT_ALL = ['price', 'go', 'price2', 'burn', 'wind', 'vent', 'field', 'chimney', 'thermal'];
 const TUT_FLIGHTS = 5; /* the flight steps that are left (the thermal, a chimney) are still shown up to the fifth own flight */
 const tutOn = () => !!(S && S.tut && !S.tut.done);
 const tutHas = k => !!(S && S.tut && S.tut.steps && S.tut.steps[k]);
@@ -4891,7 +4900,17 @@ function tutSkipAll() {
 }
 /* Day one at home: first the ticket price (lower it, watch the passengers go up), then "Yolcu topla". */
 function tutHome() {
-  if (!tutOn() || mode !== 'office' || AUTO || S.day !== 1 || S.region !== 'cap' || !flying().some(isSelf)) return false;
+  if (!tutOn() || mode !== 'office' || AUTO || S.region !== 'cap' || !flying().some(isSelf)) return false;
+  /* v122.4: day 2, demand is high (fixed scenario): raise the price, the basket stays full and you earn more */
+  if (S.day === 2 && !tutHas('price2')) {
+    if (!TUTA || TUTA.k !== 'price2') { S.price = TUT_P2; refresh(); }
+    const A = tutShow('price2', 'Bazı günler talep çok olur: fiyatı artır, müşterin azalmaz.', { mode: 'office', p0: S.price,
+      holes: () => $('psheet').hidden ? [tutRel($('pcard'), 4)] : [tutRel(A.up ? $('psOk') : $('pPlus'), 6, !A.up), tutRel($('est'), 6)],
+      arrow: hs => A.up && !$('psheet').hidden ? null : tutArrowAt(hs[0]),
+      lineNow: () => A.up && !$('psheet').hidden ? 'Gördün mü? Yolcu aynı, kazanç arttı. Tamam\'a bas.' : A.line });
+    return true;
+  }
+  if (S.day !== 1) return false;
   if (!tutHas('price')) {
     const A = tutShow('price', 'Fiyatı düşür: daha çok yolcu biner.', { mode: 'office', p0: S.price,
       holes: () => $('psheet').hidden ? [tutRel($('pcard'), 4)] : [tutRel(A.low ? $('psOk') : $('pMinus'), 6, !A.low), tutRel($('est'), 6)],
@@ -9057,6 +9076,7 @@ let psBase = null;
 function priceSheet(open) {
   $('psheet').hidden = !open; $('dock').style.visibility = open ? 'hidden' : ''; psBase = null; if (open) { renderAct(); psBase = estIncome(); renderAct(); } else { save(); refresh(); }
   if (!open && TUTA && TUTA.k === 'price') { tutStep('price'); TUTA = null; setTimeout(tutHome, 350); } /* v122: on to "Yolcu topla" */
+  if (!open && TUTA && TUTA.k === 'price2' && TUTA.up) { tutStep('price2'); TUTA = null; } /* v122.4: day 2's lesson is done */
 }
 $('pcard').onclick = () => priceSheet(true);
 $('grab').onclick = () => dockOpen(!$('dock').classList.contains('open'));
