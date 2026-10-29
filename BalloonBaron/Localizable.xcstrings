@@ -56136,37 +56136,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Avon-Schlucht, neblige Morgen und Festivalabende."
+            "value": "Die Avon-Schlucht, neblige englische Morgen und die Stadt der Ballonbauer."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Avon Gorge, foggy mornings and festival evenings."
+            "value": "The Avon Gorge, misty English mornings and the city of balloon makers."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La garganta del Avon, mañanas de niebla y tardes de festival."
+            "value": "La garganta del Avon, mañanas inglesas de niebla y la ciudad de los fabricantes de globos."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "エイボン渓谷、霧の朝、そして祭りの夕べ。"
+            "value": "エイボン渓谷、霧のイギリスの朝、そして気球職人の街。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "에이번 협곡, 안개 낀 아침, 그리고 축제의 저녁."
+            "value": "에이번 협곡, 안개 낀 영국의 아침, 그리고 열기구 장인들의 도시."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avon Kanyonu, sisli sabahlar ve festival akşamları."
+            "value": "Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri."
           }
         }
       }
@@ -56587,37 +56587,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Avon-Schlucht, neblige Morgen und jeden Monat ein Ballonfestival. Startkapital: %1$@. Einstiegsgebühr %2$@ aus der Holding."
+            "value": "Die Avon-Schlucht, neblige englische Morgen und die Stadt der Ballonbauer."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Avon Gorge, misty mornings and a balloon festival every month. You start with %1$@. Entry fee %2$@ from the holding."
+            "value": "The Avon Gorge, misty English mornings and the city of balloon makers."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La garganta del Avon, mañanas de niebla y un festival de globos cada mes. Capital inicial: %1$@. Cuota de entrada: %2$@, a cargo del holding."
+            "value": "La garganta del Avon, mañanas inglesas de niebla y la ciudad de los fabricantes de globos."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "エイボン渓谷、霧の朝、毎月の気球祭り。開始資金：%1$@。参入費%2$@はホールディングスから。"
+            "value": "エイボン渓谷、霧のイギリスの朝、そして気球職人の街。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "에이번 협곡, 안개 낀 아침, 매달 열리는 열기구 축제. 시작 자금: %1$@. 진입 비용 %2$@, 지주회사에서 지급."
+            "value": "에이번 협곡, 안개 낀 영국의 아침, 그리고 열기구 장인들의 도시."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avon Kanyonu, sisli sabahlar ve her ay balon festivali. Başlangıç kasası: %1$@. Giriş bedeli %2$@ holding kasasından."
+            "value": "Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri."
           }
         }
       }

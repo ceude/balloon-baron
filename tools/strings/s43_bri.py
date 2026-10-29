@@ -5,19 +5,19 @@ from s1_ui import add
 # Region and map
 add("region.bri", "Bristol", "Bristol", "Bristol", "Bristol", "ブリストル", "브리스톨")
 add("map.here.bri",
- "The Avon Gorge, foggy mornings and festival evenings.",
- "Avon Kanyonu, sisli sabahlar ve festival akşamları.",
- "Die Avon-Schlucht, neblige Morgen und Festivalabende.",
- "La garganta del Avon, mañanas de niebla y tardes de festival.",
- "エイボン渓谷、霧の朝、そして祭りの夕べ。",
- "에이번 협곡, 안개 낀 아침, 그리고 축제의 저녁.")
+ "The Avon Gorge, misty English mornings and the city of balloon makers.",
+ "Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.",
+ "Die Avon-Schlucht, neblige englische Morgen und die Stadt der Ballonbauer.",
+ "La garganta del Avon, mañanas inglesas de niebla y la ciudad de los fabricantes de globos.",
+ "エイボン渓谷、霧のイギリスの朝、そして気球職人の街。",
+ "에이번 협곡, 안개 낀 영국의 아침, 그리고 열기구 장인들의 도시.")
 add("map.openSub.bri",
- "The Avon Gorge, misty mornings and a balloon festival every month. You start with %1$@. Entry fee %2$@ from the holding.",
- "Avon Kanyonu, sisli sabahlar ve her ay balon festivali. Başlangıç kasası: %1$@. Giriş bedeli %2$@ holding kasasından.",
- "Die Avon-Schlucht, neblige Morgen und jeden Monat ein Ballonfestival. Startkapital: %1$@. Einstiegsgebühr %2$@ aus der Holding.",
- "La garganta del Avon, mañanas de niebla y un festival de globos cada mes. Capital inicial: %1$@. Cuota de entrada: %2$@, a cargo del holding.",
- "エイボン渓谷、霧の朝、毎月の気球祭り。開始資金：%1$@。参入費%2$@はホールディングスから。",
- "에이번 협곡, 안개 낀 아침, 매달 열리는 열기구 축제. 시작 자금: %1$@. 진입 비용 %2$@, 지주회사에서 지급.")
+ "The Avon Gorge, misty English mornings and the city of balloon makers.",
+ "Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.",
+ "Die Avon-Schlucht, neblige englische Morgen und die Stadt der Ballonbauer.",
+ "La garganta del Avon, mañanas inglesas de niebla y la ciudad de los fabricantes de globos.",
+ "エイボン渓谷、霧のイギリスの朝、そして気球職人の街。",
+ "에이번 협곡, 안개 낀 영국의 아침, 그리고 열기구 장인들의 도시.")
 add("map.lockedSub.bri",
  "Unlocks when you become baron of Luxor. Over the Avon Gorge, in misty English mornings.",
  "Luksor baronu olunca açılır. Avon Kanyonu'nun üstünde, sisli İngiliz sabahlarında.",
