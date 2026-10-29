@@ -5465,6 +5465,10 @@ const GUIDES_PICK = [
   { id: 'mehmet', n: 'Sena', t: 'Tur rehberi', cost: 1500, rep: .05, days: 3, pax: 5, cd: 5 },
   { id: 'selin', n: 'Ekin', t: 'Kıdemli rehber', cost: 2400, rep: .07, days: 4, pax: 7, cd: 6 }
 ];
+/* v124: the guides are local: Ayşe, Sena and Ekin work in Cappadocia; every other region's guide office has its own
+   three (same slots, costs and effects; the ids stay as they are for telemetry). */
+const GUIDE_NAMES = { cap: ['Ayşe', 'Sena', 'Ekin'], abq: ['Emily', 'Carlos', 'Dakota'], lux: ['Nour', 'Karim', 'Yasmin'], bri: ['Olivia', 'Harry', 'Imogen'] };
+const guideName = G => (GUIDE_NAMES[(S && S.region) || 'cap'] || GUIDE_NAMES.cap)[GUIDES_PICK.indexOf(G)] || G.n;
 const INFLU_PICK = [
   { id: 'local', n: 'Yerel gezgin', t: 'Küçük ama sadık takipçiler', k: .6, rep: .06, days: 2, pax: 5, cd: 8 },
   { id: 'travel', n: 'Gezi influencer\'ı', t: 'Vadiyi bütün dünyaya gösterir', k: 1, rep: .1, days: 3, pax: 8, cd: 10 },
@@ -5486,8 +5490,9 @@ function showGuides() {
   let tagged = false;
   pickScreen('Rehber ofisi', 'Rehberle anlaş, sana turist getirsin', GUIDES_PICK.map(G => {
     const it = h('div', 'item'), dis = wait > 0 || S.cash < G.cost;
-    it.appendChild(h('div', 'av', G.n[0])).style.background = '#3ad0c0';
-    it.appendChild(h('div', 'main', `<div class="t">${G.n} <span class="tag n">${G.t}</span></div><div class="s">${starTxt(G.rep)} hemen, ${G.days} gün boyunca günde ~${G.pax} turist. Sonra ${G.cd} gün bekleme.</div>`));
+    const gn = guideName(G);
+    it.appendChild(h('div', 'av', gn[0])).style.background = '#3ad0c0';
+    it.appendChild(h('div', 'main', `<div class="t">${gn} <span class="tag n">${G.t}</span></div><div class="s">${starTxt(G.rep)} hemen, ${G.days} gün boyunca günde ~${G.pax} turist. Sonra ${G.cd} gün bekleme.</div>`));
     const b = pbtn(eur(G.cost), () => { doGuide(G); showGuides(); }, dis);
     if (!tagged && (!dis || G.id === 'mehmet')) { b.dataset.tut = 'guide'; tagged = true; }
     it.appendChild(b); return it;
