@@ -240,7 +240,7 @@ struct LetterView: View {
     }
 
     /// The App Store's write-review page when the app's Apple ID is known, else Apple's own rating prompt.
-    private func rate() {
+    @MainActor private func rate() {
         SoundEngine.shared.play(.click)
         let day = store.state?.day ?? 0
         store.act { $0.markLetterRated() }

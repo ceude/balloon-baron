@@ -49,7 +49,7 @@ struct ChapterView: View {
 
     /// "Başla" (or ✕) under the next chapter's goals. After the first chapter's ceremony, once and not on autopilot,
     /// Apple's rating prompt comes up (the prototype's `showRateMock`); the system decides whether it really shows.
-    private func start() {
+    @MainActor private func start() {
         let ask = showNext && news.index == 0 && store.auto == nil && store.state?.rateAsked == nil
         if ask {
             store.act { $0.state.rateAsked = $0.state.day }
