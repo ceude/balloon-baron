@@ -236,8 +236,8 @@ struct HoldingView: View {
             if let open = auto.issue { text += " " + loc("map.problemSub", open.kind.title) }
             return text
         }
-        let start = Rules.startCash.formatted(.currency(code: r.currency).precision(.fractionLength(0)))
-        return loc("holding.enterSub", eurH(Holding.entryFee), start)
+        let start = r.startCash.formatted(.currency(code: r.currency).precision(.fractionLength(0)))
+        return loc("holding.enterSub", eurH(r.entryFee), start)
     }
 
     @ViewBuilder

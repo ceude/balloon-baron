@@ -160,10 +160,10 @@ struct WorldMapView: View {
             return text
         case .open:
             let fee = eurH(pin.region?.entryFee ?? Holding.entryFee)
-            let sub = pin == .lux ? loc("map.openSub.lux", money(RegionID.lux.startCash, in: .lux), fee) : loc("map.openSub", fee)
+            let sub = pin == .lux || pin == .bri ? loc("map.openSub.\(pin.rawValue)", money(pin.region?.startCash ?? 0, in: pin.region ?? .cap), fee) : loc("map.openSub", fee)
             return pin.region.map(s.needsPack) == true ? sub + " " + loc("map.tourNote", storePrice(.worldTour)) : sub
         case .locked:
-            return loc(pin == .lux ? "map.lockedSub.lux" : "map.lockedSub")
+            return loc(pin == .lux || pin == .bri ? "map.lockedSub.\(pin.rawValue)" : "map.lockedSub")
         case .soon:
             return pin.mystery ? loc("map.mysterySub", pin.land) : loc("map.soonSub.\(pin.rawValue)")
         }

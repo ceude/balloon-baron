@@ -429,6 +429,12 @@ struct MarketView: View {
                     store.showAgency = true
                 }
             }
+            if let g = store.game, GlowCardView.offered(g) {
+                let gs = g.glowState
+                marketingRow(loc("glow.title"), GlowCardView.why(gs, g), button: eur(Glow.cost), disabled: gs != .ok) {
+                    store.showGlowCard = true
+                }
+            }
             if let g = store.game, ShowCardView.offered(g) {
                 let st = g.showState
                 marketingRow(loc("show.openTitle"), st == .ok ? loc("show.rowBody", num(g.showFleet.count)) : ShowCardView.why(st, g),

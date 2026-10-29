@@ -56,7 +56,7 @@ struct RegionsCard: View {
     private func ahead(_ pin: MapPin, _ s: GameState) -> some View {
         let open = pin.region.map { $0 != .cap && s.regionOpen($0) } ?? false
         let why: String = open ? loc("regions.open")
-            : pin.region == .abq ? loc("regions.lockedAbq") : pin.region == .lux ? loc("regions.lockedLux") : loc("map.soon")
+            : pin.region == .abq ? loc("regions.lockedAbq") : pin.region == .lux ? loc("regions.lockedLux") : pin.region == .bri ? loc("regions.lockedBri") : loc("map.soon")
         return Button {
             SoundEngine.shared.play(.click)
             onClose()

@@ -317,6 +317,25 @@ struct FleetView: View {
                 }
                 .buttonStyle(.plain)
             }
+            // v124: Bristol's Night Glow, on festival days
+            if GlowCardView.offered(game) {
+                let gs = game.glowState
+                Button {
+                    SoundEngine.shared.play(.click)
+                    store.showGlowCard = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Circle().fill(Color(hex: "#ff8a3a")).frame(width: 12, height: 12)
+                        Text(loc("glow.title") + " · " + GlowCardView.short(gs, game))
+                            .font(Theme.font(13, .bold)).foregroundStyle(Theme.ink).lineLimit(1).minimumScaleFactor(0.8)
+                        Spacer(minLength: 4)
+                        Image(systemName: "chevron.right").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.ink2)
+                    }
+                    .padding(.horizontal, 12).padding(.vertical, 9)
+                    .background(Color(hex: "#ff8a3a").opacity(0.16), in: RoundedRectangle(cornerRadius: 12))
+                }
+                .buttonStyle(.plain)
+            }
             if worn > 0 {
                 FleetUI.SmallButton(title: loc("fleet.renewAll", num(worn), eur(cost)), ghost: true, disabled: s.cash < cost) {
                     store.act { _ = $0.renewWornEnvelopes() }

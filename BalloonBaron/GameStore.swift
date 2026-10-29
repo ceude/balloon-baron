@@ -76,6 +76,8 @@ final class GameStore {
     var hotelBargain: HotelBargain?
     /// The Balloon Show's card (v111).
     var showShowCard = false
+    /// v124: Bristol's Night Glow card.
+    var showGlowCard = false
     /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
     var showPriceSheet = false
     /// A new postcard, and the album from the menu.
@@ -135,7 +137,7 @@ final class GameStore {
     var busy: Bool {
         showIntro || openingFilm || homeIntro != nil || replayingOpening || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
-            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || showGlowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency
     }
 
@@ -491,6 +493,11 @@ final class GameStore {
 
     func closeShowCard() {
         showShowCard = false
+        showNextHezarfen()
+    }
+
+    func closeGlowCard() {
+        showGlowCard = false
         showNextHezarfen()
     }
 
