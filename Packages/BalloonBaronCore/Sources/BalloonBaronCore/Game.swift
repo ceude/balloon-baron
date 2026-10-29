@@ -110,7 +110,7 @@ public struct Game: Sendable {
 
     mutating func newCandidates() {
         func make(_ level: PilotLevel, school: Bool = false) -> Pilot {
-            let initial = Character(UnicodeScalar(65 + rng.int(26))!)
+            let initial = rng.pick(state.region.pilotInitials)
             defer { state.nextID += 1 }
             let name = "\(rng.pick(state.region.pilotNames)) \(initial).", trait = rollTrait()
             // v124: Bristol's wages are 15% higher; the region's wage is fixed when the pilot is hired.
@@ -256,17 +256,50 @@ public struct Game: Sendable {
 
     /// Best pilots go to the biggest balloons that can fly; balloons in repair or with a worn
     /// envelope come last. The flagship is yours while you fly it yourself.
+    /// v124.4: the player's pins come first; a pin whose pilot left is dropped. While the pinned balloon is in repair,
+    /// its envelope is done or the founder flies it, the pin stays and the pilot helps out on another balloon that day.
+    /// Everyone else is placed as before: the most senior pilot on the biggest balloon.
     public mutating func assignPilots() {
         var bs = state.balloons
         for i in bs.indices { bs[i].pilot = nil }
         let s = state
         func down(_ b: Balloon) -> Int { b.damagedUntil > s.day || s.condition(b) <= 0 ? 1 : 0 }
+        func isSelf(_ b: Balloon) -> Bool { b.id == s.flagship && s.flyingSelf }
+        let ids = Set(s.pilots.map(\.id))
+        var pinned = Set<Int>()
+        for i in bs.indices {
+            guard let p = bs[i].pinnedPilot else { continue }
+            if pinned.contains(p) || !ids.contains(p) { bs[i].pinnedPilot = nil; continue }
+            pinned.insert(p)
+            if !isSelf(bs[i]) && down(bs[i]) == 0 { bs[i].pilot = p }
+        }
+        let used = Set(bs.compactMap(\.pilot))
         let need = bs.indices
-            .filter { !(bs[$0].id == s.flagship && s.flyingSelf) }
+            .filter { !isSelf(bs[$0]) && bs[$0].pilot == nil }
             .sorted { (down(bs[$0]), -bs[$0].size.capacity) < (down(bs[$1]), -bs[$1].size.capacity) }
-        let ps = s.pilots.sorted { ($0.level.rawValue, $0.xp) > ($1.level.rawValue, $1.xp) }
+        let ps = s.pilots.filter { !used.contains($0.id) }.sorted { ($0.level.rawValue, $0.xp) > ($1.level.rawValue, $1.xp) }
         for (k, i) in need.enumerated() where k < ps.count { bs[i].pilot = ps[k].id }
         state.balloons = bs
+    }
+
+    /// v124.4: puts pilot `pilot` on balloon `balloon`. If that pilot was on another balloon (pinned or placed), the two
+    /// swap: that balloon gets this balloon's pilot. A nil pilot hands the balloon back to the morning's placing.
+    public mutating func pinPilot(balloon: Int, pilot: Int?) {
+        guard let bi = state.balloons.firstIndex(where: { $0.id == balloon }) else { return }
+        guard let p = pilot, state.pilots.contains(where: { $0.id == p }) else {
+            state.balloons[bi].pinnedPilot = nil
+            assignPilots()
+            return
+        }
+        let old = state.balloons[bi].pilot ?? state.balloons[bi].pinnedPilot
+        let other = state.balloons.firstIndex { $0.id != balloon && ($0.pinnedPilot == p || $0.pilot == p) }
+        for i in state.balloons.indices where state.balloons[i].pinnedPilot == p { state.balloons[i].pinnedPilot = nil }
+        state.balloons[bi].pinnedPilot = p
+        if let o = other {
+            let back = old.flatMap { q in q != p && state.pilots.contains { $0.id == q } ? q : nil }
+            state.balloons[o].pinnedPilot = back
+        }
+        assignPilots()
     }
 
     mutating func planRivalFlights() {

@@ -468,6 +468,7 @@ private struct PilotCardSheet: View {
     @Environment(GameStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     let pilotID: Int
+    @State private var picking = false
 
     var body: some View {
         if let s = store.state, let p = s.local.pilots.first(where: { $0.id == pilotID }) {
@@ -499,6 +500,21 @@ private struct PilotCardSheet: View {
                             .foregroundStyle(Theme.ink2)
                             .fixedSize(horizontal: false, vertical: true)
                     }
+                    // v124.4: send the pilot to another balloon
+                    if s.local.balloons.contains(where: { !s.isSelf($0) }) {
+                        Button { picking = true } label: {
+                            HStack(spacing: 6) {
+                                Circle().fill(Color(hex: "#3d7fd0")).frame(width: 12, height: 12)
+                                Text(loc("pick.balloonBtn", b?.title ?? loc("pick.none")))
+                                    .font(Theme.font(13, .bold)).foregroundStyle(Theme.ink).lineLimit(1)
+                                Image(systemName: "chevron.right").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.ink2)
+                            }
+                            .padding(.horizontal, 10).padding(.vertical, 7)
+                            .background(Color.white, in: Capsule())
+                            .overlay(Capsule().stroke(Theme.line, lineWidth: 1))
+                        }
+                        .buttonStyle(.plain)
+                    }
                     HStack(spacing: 10) {
                         PlanSmallButton(title: loc("crew.fire"), light: true) {
                             store.act { $0.fire(p.id) }
@@ -511,6 +527,52 @@ private struct PilotCardSheet: View {
                 .padding(20)
             }
             .background(Theme.paper.ignoresSafeArea())
+            .sheet(isPresented: $picking) {
+                BalloonPicker(pilotID: pilotID).environment(store)
+            }
+        }
+    }
+}
+
+/// v124.4: pick the balloon a pilot flies; that balloon's pilot swaps over (`balloonPicker`).
+private struct BalloonPicker: View {
+    @Environment(GameStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
+    let pilotID: Int
+
+    var body: some View {
+        if let s = store.state, let p = s.local.pilots.first(where: { $0.id == pilotID }) {
+            FleetUI.Sheet(title: loc("pick.balloonTitle", p.name), lead: loc("pick.balloonLead"), close: { dismiss() }) {
+                ForEach(s.local.balloons.filter { !s.isSelf($0) }.sorted { ($0.size.capacity, $1.title) > ($1.size.capacity, $0.title) }) { b in
+                    row(b, p, s)
+                }
+            }
+        }
+    }
+
+    private func row(_ b: Balloon, _ p: Pilot, _ s: GameState) -> some View {
+        let mine = b.pilot == p.id || b.pinnedPilot == p.id
+        var line = mine ? loc("pick.thisPilot") : s.pilot(of: b)?.name ?? loc("fleetPage.status.noPilot")
+        switch s.status(b) {
+        case .damaged: line += " · " + loc("crew.inRepair")
+        case .worn: line += " · " + loc("crew.worn")
+        default: break
+        }
+        return FleetUI.Item(highlight: mine) {
+            HStack(spacing: 12) {
+                DesignBalloon(colors: s.colors, design: s.design(of: b))
+                    .frame(width: 30, height: 38)
+                VStack(alignment: .leading, spacing: 3) {
+                    FleetUI.Title(b.title)
+                    FleetUI.Detail(b.size.title + " · " + line)
+                }
+                Spacer(minLength: 4)
+                FleetUI.SmallButton(title: loc(mine ? "fleetPage.selected" : "fleetPage.choose"), selected: mine) {
+                    store.act { $0.pinPilot(balloon: b.id, pilot: p.id) }
+                    dismiss()
+                }
+                .frame(width: 104)
+            }
         }
     }
 }

@@ -52,6 +52,11 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         }
     }
 
+    /// v124.4: surname initials. Turkish surnames never start with Q, W or X (nor Ğ), so Cappadocia uses Turkish letters.
+    public var pilotInitials: [Character] {
+        self == .cap ? Array("ABCÇDEFGHİKLMNOÖPRSŞTUÜVYZ") : Array("ABCDEFGHIJKLMNOPQRSTUVWXYZ")
+    }
+
     public var pilotNames: [String] {
         switch self {
         case .cap: Rules.pilotNames

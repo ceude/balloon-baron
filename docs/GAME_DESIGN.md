@@ -45,6 +45,8 @@ Kasa €3.000, fiyat €170, popülerlik 1,0, temel talep 165 turist/gün. Sigor
 - Pilot okulu €60.000'a kurulur.
 - **Özellikler:** adayların %75'inin bir özelliği vardır: Şovmen (bahşiş +€9/yolcu), Temkinli (risk ×0,75), Gözü kara (risk ×1,3, uçuş başına popülerlik +0,003), Tutumlu (yakıt ×0,85), Sadık (ayartılamaz), Hikâyeci (popülerlik +0,002, iyi yorum), Gece kuşu (maaş ×0,85, sabah %7 şansla geç kalır ve o gün balonu uçmaz).
 - **Atama:** Pilotlar önce uçabilecek balonlara, büyükten küçüğe atanır; onarımdaki veya zarfı bitmiş balonlar en sona kalır. Kıdemli ve tecrübesi (XP) yüksek olan önce gelir.
+- **Elle atama (v124.4):** oyuncu balon kartından pilotu ya da pilot kartından balonu seçebilir; pilot o balona sabitlenir. Başka balondaki bir pilot seçilirse ikisi yer değiştirir (öbür balon bu balonun eski pilotunu alır). "Otomatik" sabitlemeyi kaldırır. Sabit pilotlar önce yerleşir, kalanlar yukarıdaki kuralla dağılır. Sabit balon onarımdaysa, zarfı bittiyse ya da kurucu uçuruyorsa pilot o gün boşta kalmaz, başka balona geçer; sabitleme durur. Kovulan, ayartılan ya da ayrılan pilotun sabitlemesi düşer. Boşta pilot varken uçabilecek bir balon pilotsuz kalmaz.
+- **Baş harf:** Kapadokya'da soyadı baş harfleri Türk alfabesinden (Q, W, X ve Ğ yok; Ç, Ö, Ş, Ü, İ var). Eski kayıtlarda Q/W/X olan pilotlar K/V/S olur.
 
 ## Hava
 | Bayrak | Kaza olasılığı | Not |

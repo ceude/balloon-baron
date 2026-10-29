@@ -49,8 +49,10 @@ import BalloonBaronCore
                         .textCase(.uppercase)
                         .foregroundStyle(.white)
                         .opacity(hintDim ? 0.4 : 0.85)
-                        .frame(maxHeight: .infinity, alignment: .bottom)
-                        .padding(.bottom, 40)
+                        .multilineTextAlignment(.center)
+                        .frame(width: ew)
+                        // v124.4: right under the envelope, not over the game's buttons at the bottom
+                        .position(x: stage.midX, y: stage.maxY + 44)
                         .allowsHitTesting(false)
                         .transition(.opacity)
                 }
@@ -323,7 +325,10 @@ private struct LetterFront: View {
         let aw = w * 0.81
         let fit = Self.fitName(company, font: font, width: aw)
         let nameH = (fit.two ? 2 : 1) * fit.size * 1.05 + 6
-        let top = h * max(0.30, 0.50 - max(0, nameH - 50) / h)
+        // v124.4: the address block's real height (script fonts have tall lines), so its last line stays on the envelope
+        let nameLine = UIFont(name: font, size: fit.size)?.lineHeight ?? fit.size * 1.25
+        let blockH = (fit.two ? 2 : 1) * nameLine + 6 + (20 * 1.3 + 2) + (15 * 1.3 + 6)
+        let top = min(h * max(0.30, 0.50 - max(0, nameH - 50) / h), h - 12 - blockH)
         ZStack(alignment: .topLeading) {
             RoundedRectangle(cornerRadius: 7).fill(Color(hex: "#f3e6cc"))
             Canvas { c, size in
@@ -343,7 +348,7 @@ private struct LetterFront: View {
                 .frame(width: 70, height: 70)
                 .opacity(0.5)
                 .rotationEffect(.degrees(-14))
-                .offset(x: w - 70 - 70, y: 40)
+                .offset(x: w - 70 - 88, y: 40) // v124.4: further left, so the stamp doesn't cover the day
             Stamp()
                 .frame(width: 82, height: 104)
                 .rotationEffect(.degrees(3))
@@ -364,7 +369,7 @@ private struct LetterFront: View {
                             .padding(.bottom, 2)
                     } else {
                         Text(line.text)
-                            .font(hand.font(24, .semibold))
+                            .font(hand.font(20, .semibold))
                             .lineLimit(1)
                             .minimumScaleFactor(0.7)
                             .padding(.leading, 26)
@@ -372,12 +377,12 @@ private struct LetterFront: View {
                     }
                 }
                 Text(loc("letter.addrPlace"))
-                    .font(hand.font(18, .medium))
+                    .font(hand.font(15, .medium))
                     .foregroundStyle(Color(hex: "#6a5a86"))
                     .lineLimit(1)
                     .minimumScaleFactor(0.7)
                     .padding(.leading, 26)
-                    .padding(.top, 8)
+                    .padding(.top, 6)
             }
             .foregroundStyle(Color(hex: "#2c2350"))
             .frame(width: aw, alignment: .leading)
@@ -395,11 +400,11 @@ private struct LetterFront: View {
         }
     }
 
-    /// v123.5: the name shrinks from 42 to 28 pt to fit one line; past that it takes two lines, from 32 pt down to 20.
+    /// v123.5: the name shrinks from 38 (v124.4; was 42) to 28 pt to fit one line; past that it takes two lines, from 32 pt down to 20.
     static func fitName(_ s: String, font: String, width: CGFloat) -> (size: CGFloat, two: Bool) {
         func ui(_ p: CGFloat) -> UIFont { UIFont(name: font, size: p) ?? .systemFont(ofSize: p) }
         func wid(_ p: CGFloat) -> CGFloat { (s as NSString).size(withAttributes: [.font: ui(p)]).width }
-        var fs: CGFloat = 42
+        var fs: CGFloat = 38
         while wid(fs) > width && fs > 28 { fs -= 1 }
         if wid(fs) <= width { return (fs, false) }
         fs = 32

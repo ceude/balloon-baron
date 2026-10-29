@@ -15546,37 +15546,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Piloten werden jeden Morgen eingeteilt: Die erfahrensten bekommen die größten flugfähigen Ballone, Anfänger die kleinen. Ballone in Reparatur oder mit verschlissener Hülle kommen zuletzt."
+            "value": "Piloten werden jeden Morgen eingeteilt: Die erfahrensten bekommen die größten flugfähigen Ballone, Anfänger die kleinen. Ballone in Reparatur oder mit verschlissener Hülle kommen zuletzt. Tippe auf einen Piloten, um seinen Ballon selbst zu wählen; er bleibt dann darauf."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilots are assigned every morning: the most senior get the biggest balloons that can fly, rookies the small ones. Balloons in repair or with a worn envelope come last."
+            "value": "Pilots are assigned every morning: the most senior get the biggest balloons that can fly, rookies the small ones. Balloons in repair or with a worn envelope come last. Tap a pilot to choose their balloon yourself; they stay on it."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Los pilotos se asignan cada mañana: los más veteranos a los globos más grandes que pueden volar, los novatos a los pequeños. Los globos en reparación o con la envoltura gastada van al final."
+            "value": "Los pilotos se asignan cada mañana: los más veteranos a los globos más grandes que pueden volar, los novatos a los pequeños. Los globos en reparación o con la envoltura gastada van al final. Toca un piloto para elegir tú su globo; se quedará en él."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "パイロットは毎朝自動で割り振られる。ベテランは飛べる一番大きな気球へ、新人は小さな気球へ。修理中や球皮が寿命の気球は最後。"
+            "value": "パイロットは毎朝自動で割り振られる。ベテランは飛べる一番大きな気球へ、新人は小さな気球へ。修理中や球皮が寿命の気球は最後。パイロットをタップすれば気球を自分で選べ、その気球に固定される。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "조종사는 매일 아침 자동 배정됩니다. 베테랑은 뜰 수 있는 가장 큰 열기구에, 신입은 작은 열기구에. 수리 중이거나 외피 수명이 다한 열기구는 마지막입니다."
+            "value": "조종사는 매일 아침 자동 배정됩니다. 베테랑은 뜰 수 있는 가장 큰 열기구에, 신입은 작은 열기구에. 수리 중이거나 외피 수명이 다한 열기구는 마지막입니다. 조종사를 눌러 열기구를 직접 고르면 그 열기구에 고정됩니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilotlar her sabah otomatik dağıtılır: en kıdemliler uçabilecek en büyük balonlara, çaylaklar küçüklere. Onarımdaki ya da zarfı bitmiş balonlar en sona kalır."
+            "value": "Pilotlar her sabah otomatik dağıtılır: en kıdemliler uçabilecek en büyük balonlara, çaylaklar küçüklere. Onarımdaki ya da zarfı bitmiş balonlar en sona kalır. İstersen pilota dokunup balonunu kendin seç; o pilot o balonda kalır."
           }
         }
       }
@@ -67196,6 +67196,498 @@
           "stringUnit": {
             "state": "translated",
             "value": "Zikzak"
+          }
+        }
+      }
+    },
+    "pick.auto": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatisch"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automatic"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Automático"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자동"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otomatik"
+          }
+        }
+      }
+    },
+    "pick.autoDesc": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden Morgen bekommt der erfahrenste Pilot den größten Ballon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every morning the most senior pilot takes the biggest balloon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada mañana el piloto más veterano toma el globo más grande."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "毎朝、一番ベテランのパイロットが一番大きな気球に乗る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매일 아침 가장 베테랑인 조종사가 가장 큰 열기구를 맡습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her sabah en kıdemli pilot en büyük balona geçer."
+          }
+        }
+      }
+    },
+    "pick.balloonBtn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ballon: %@ · ändern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon: %@ · change"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Globo: %@ · cambiar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球: %@ · 変更"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구: %@ · 변경"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon: %@ · değiştir"
+          }
+        }
+      }
+    },
+    "pick.balloonLead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hat der gewählte Ballon einen Piloten, tauschen die beiden die Plätze."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If the balloon you pick has a pilot, the two swap places."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si el globo que eliges tiene piloto, los dos se intercambian."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "選んだ気球にパイロットがいれば、二人が入れ替わる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "고른 열기구에 조종사가 있으면 두 사람이 자리를 바꿉니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seçtiğin balonun pilotu varsa ikisi yer değiştirir."
+          }
+        }
+      }
+    },
+    "pick.balloonTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ballon für %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon for %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Globo para %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@の気球"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@의 열기구"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon seç: %@"
+          }
+        }
+      }
+    },
+    "pick.here": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf diesem Ballon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On this balloon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En este globo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この気球に乗っている"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 열기구 담당"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu balonda"
+          }
+        }
+      }
+    },
+    "pick.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "keiner"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "none"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ninguno"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "yok"
+          }
+        }
+      }
+    },
+    "pick.pilotBtn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piloto: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パイロット: %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조종사: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot: %@"
+          }
+        }
+      }
+    },
+    "pick.pilotLead": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wählst du einen Piloten von einem anderen Ballon, tauschen die beiden die Plätze."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pick a pilot from another balloon and the two swap places."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si eliges un piloto de otro globo, los dos se intercambian."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "別の気球のパイロットを選ぶと、二人が入れ替わる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다른 열기구의 조종사를 고르면 두 사람이 자리를 바꿉니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Başka balondaki bir pilotu seçersen ikisi yer değiştirir."
+          }
+        }
+      }
+    },
+    "pick.pilotTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot für %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot of %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piloto de %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@のパイロット"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 조종사"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilot seç: %@"
+          }
+        }
+      }
+    },
+    "pick.swap": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · tauscht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · swaps"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · se intercambia"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 入れ替わる"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · 자리 바꿈"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ · yer değiştirir"
+          }
+        }
+      }
+    },
+    "pick.thisPilot": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ballon dieses Piloten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This pilot's balloon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Globo de este piloto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このパイロットの気球"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 조종사의 열기구"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu pilotun balonu"
           }
         }
       }

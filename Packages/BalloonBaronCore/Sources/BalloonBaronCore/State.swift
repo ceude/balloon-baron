@@ -19,6 +19,8 @@ public struct Balloon: Codable, Identifiable, Equatable, Sendable {
     public var turningVent: Bool?
     /// Bought from a rival (take-over or bankrupt fleet): second-hand, it resells for less.
     public var used: Bool?
+    /// v124.4: the pilot the player put on this balloon (`Game.pinPilot`); nil leaves it to the morning's placing.
+    public var pinnedPilot: Int?
 
     public var burners: Int { burner ?? 1 }
     public var hasTurningVent: Bool { turningVent ?? false }

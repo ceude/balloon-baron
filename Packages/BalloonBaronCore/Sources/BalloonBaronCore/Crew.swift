@@ -15,7 +15,7 @@ extension GameState {
         return sizes.map { _ in
             let x = rng.unit()
             let level: PilotLevel = x < mix.rookie ? .rookie : x < mix.rookie + mix.experienced ? .experienced : .senior
-            let initial = Character(UnicodeScalar(65 + rng.int(26))!)
+            let initial = rng.pick(region.pilotInitials)
             let trait: PilotTrait? = rng.chance(0.25) ? nil : rng.pick(PilotTrait.allCases)
             return Pilot(id: 0, name: "\(rng.pick(names)) \(initial).", level: level,
                          customWage: jsRound(Double(level.wage) * rng.range(0.9, 1.1)), trait: trait)

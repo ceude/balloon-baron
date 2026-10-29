@@ -647,6 +647,8 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .flrow{box-sizing:border-box;display:flex;align-items:center;gap:10px;width:100%;padding:6px 10px;text-align:left;position:relative;background:none}
 .flrow + .flrow::before{content:'';position:absolute;top:0;left:52px;right:0;height:1.5px;background:var(--line)}
 .flrow:active{background:#f6f3fb}
+.flrow.on{background:#eef7ee;border-radius:12px}
+.flrow > .ok{margin-left:auto;color:var(--green);font-size:18px}
 .flrow .fi{width:30px;height:38px;flex-shrink:0;display:grid;place-items:center}
 .flrow .fi svg,.flrow .fi img{width:30px;height:38px}
 .flrow .fm{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
@@ -828,7 +830,7 @@ body.night #cv{touch-action:none}
 #letter .front .stamp{position:absolute;right:14px;top:12px;width:82px;height:104px;padding:6px;box-sizing:border-box;transform:rotate(3deg);filter:drop-shadow(0 1px 1.5px rgba(0,0,0,.25));
   background:radial-gradient(circle at 50% 50%,transparent 2.7px,#fffaf0 3.1px) -4px -4px/8px 8px}
 #letter .front .stamp svg{display:block;width:100%;height:100%}
-#letter .front .pm{position:absolute;right:70px;top:40px;width:70px;height:70px;opacity:.5;transform:rotate(-14deg)}
+#letter .front .pm{position:absolute;right:88px;top:40px;width:70px;height:70px;opacity:.5;transform:rotate(-14deg)}
 #letter .front .addr{position:absolute;left:11%;right:8%;top:50%;color:#2c2350;line-height:1}
 #letter .front .addr b{display:block;font-family:'Great Vibes',cursive;font-size:42px;font-weight:400;white-space:nowrap;padding:4px 0 2px;line-height:1.05}
 #letter .front .addr b.two{white-space:normal;margin-right:22%}
@@ -853,7 +855,7 @@ body.night #cv{touch-action:none}
 #letter.pull .paper{transform:translateY(-64%)}
 #letter .flat .paper{z-index:1}#letter .flat .pocket{z-index:2}#letter .flat .flap{z-index:3}#letter .flat .sticker{z-index:4}
 #letter.lift .flat .flap{z-index:0}
-#letter .hint{position:absolute;bottom:max(40px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:#fff;font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85;animation:hintP 1.6s ease-in-out infinite}
+#letter .hint{position:absolute;top:calc(50% + min(340px,88vw) / 3 + 30px);left:0;right:0;text-align:center;color:#fff;font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85;animation:hintP 1.6s ease-in-out infinite}
 @keyframes hintP{50%{opacity:.4}}
 #letter.out .stage{transform:translateY(42vh) scale(.9);opacity:0}
 #letter .sheet{position:absolute;z-index:3;left:50%;width:min(400px,calc(100% - 28px));max-height:calc(100% - 24px);transform:translate(-50%,-6vh) scale(.82);opacity:0;pointer-events:none;border-radius:3px;overflow-y:auto;scrollbar-width:none;transition:transform .8s cubic-bezier(.2,.9,.25,1),opacity .45s;padding:20px 22px 16px;box-sizing:border-box;background-color:#f3e2bd;background-image:radial-gradient(ellipse at 50% 40%,rgba(255,250,232,.85),rgba(255,250,232,0) 70%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .3  0 0 0 0 .12  0 0 0 .14 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");box-shadow:inset 0 0 50px rgba(140,90,30,.38),inset 0 0 12px rgba(120,70,20,.3),0 24px 60px rgba(0,0,0,.45);}
@@ -958,6 +960,9 @@ const FLAGS = {
 };
 const BANDS = [[0, 60], [60, 180], [180, 350], [350, 650]], CENTERS = [30, 120, 265, 500], WIND_BLEND = 24;
 const B_NAMES = ['Şafak', 'Güvercin', 'Zelve', 'Uçhisar', 'Avanos', 'Ihlara', 'Ortahisar', 'Kızılçukur', 'Paşabağ', 'Erciyes', 'Soğanlı', 'Mustafapaşa', 'Göreme', 'Çavuşin', 'Ürgüp', 'Sinasos'];
+/* v124.4: a surname initial; Turkish surnames never start with Q, W or X (nor Ğ), so Cappadocia uses the Turkish letters */
+const INITIALS_TR = 'ABCÇDEFGHİKLMNOÖPRSŞTUÜVYZ', INITIALS_EN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+const pilotInitial = i => { const L = !S || S.region === 'cap' ? INITIALS_TR : INITIALS_EN; return L[i == null ? Math.floor(Math.random() * L.length) : i % L.length]; };
 const P_NAMES = ['Mert', 'Elif', 'Kerem', 'Zeynep', 'Hakan', 'Selin', 'Burak', 'Derya', 'Emre', 'Aslı', 'Onur', 'Ceren', 'Tolga', 'Melis', 'Cem', 'İpek'];
 const LOANS = [
   { amt: 10000, days: 40, inst: 300, need: 0 },
@@ -1420,6 +1425,9 @@ function newState() {
   return s;
 }
 function migrate(s) {
+  /* v124.4: Cappadocia's pilots and candidates had Q, W and X initials too */
+  { const fix = l => (l || []).forEach(p => { p.name = p.name.replace(/ ([QWX])\.$/, (_, c) => ' ' + ({ Q: 'K', W: 'V', X: 'S' })[c] + '.'); });
+    const cap = s.region === 'cap' ? s : s.regions && s.regions.cap; if (cap) { fix(cap.pilots); fix(cap.candidates); } }
   if (s.lastSelfFly == null) s.lastSelfFly = s.day;
   if (!s.colors) s.colors = PALETTES[0];
   if (s.company == null) s.company = '';
@@ -1552,12 +1560,33 @@ const bal = id => S.balloons.find(b => b.id === id);
 const licenseLeft = () => LICENSE_DAYS - (S.day - S.lastSelfFly);
 const licenseOk = () => licenseLeft() >= 0;
 const selfFlying = () => S.selfFly || !licenseOk(); /* lisans düşünce amirali sen uçurmak zorundasın */
+/* v124.4: the player can put a pilot on a balloon (b.pin). Pins come first; a pin whose pilot left is dropped. While the
+   pinned balloon is in repair, its envelope is done or the founder flies it, the pin stays and the pilot helps out on
+   another balloon that day. Everyone else is placed as before. */
 function assignPilots() {
   S.balloons.forEach(b => b.pilot = null);
   const down = b => b.dmgUntil > S.day || cond(b) <= 0; /* onarımdaki balona pilot harcama */
-  const need = S.balloons.filter(b => !(b.id === S.flag && selfFlying())).sort((a, b) => down(a) - down(b) || SIZES[b.size].cap - SIZES[a.size].cap);
-  const ps = S.pilots.slice().sort((a, b) => b.lvl - a.lvl || (b.xp || 0) - (a.xp || 0)); /* kıdemli ve tecrübeli olan büyük balona */
+  const self = b => b.id === S.flag && selfFlying(), used = new Set();
+  for (const b of S.balloons) {
+    if (b.pin == null) continue;
+    if (used.has(b.pin) || !S.pilots.some(p => p.id === b.pin)) { b.pin = null; continue; }
+    used.add(b.pin);
+    if (!self(b) && !down(b)) b.pilot = b.pin;
+  }
+  used.clear(); S.balloons.forEach(b => { if (b.pilot) used.add(b.pilot); });
+  const need = S.balloons.filter(b => !self(b) && !b.pilot).sort((a, b) => down(a) - down(b) || SIZES[b.size].cap - SIZES[a.size].cap);
+  const ps = S.pilots.filter(p => !used.has(p.id)).sort((a, b) => b.lvl - a.lvl || (b.xp || 0) - (a.xp || 0)); /* kıdemli ve tecrübeli olan büyük balona */
   need.forEach((b, i) => { if (ps[i]) b.pilot = ps[i].id; });
+}
+/* v124.4: put pilot p on balloon b. If p was on another balloon (pinned or placed), the two swap: that balloon gets b's
+   pilot. p == null hands b back to the automatic placing. */
+function pinPilot(b, p) {
+  if (!p) { b.pin = null; assignPilots(); return; }
+  const old = b.pilot || b.pin, other = S.balloons.find(x => x !== b && (x.pin === p.id || x.pilot === p.id));
+  S.balloons.forEach(x => { if (x.pin === p.id) x.pin = null; });
+  b.pin = p.id;
+  if (other) other.pin = old && old !== p.id && S.pilots.some(q => q.id === old) ? old : null;
+  assignPilots();
 }
 function canFly(b) {
   if (S.banUntil >= S.day) return 'ban';
@@ -1660,9 +1689,9 @@ function newCandidates() {
   S.candidates = [];
   for (let i = 0; i < 3; i++) {
     const r = Math.random(), lvl = r < .5 ? 1 : r < .85 ? 2 : 3;
-    S.candidates.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + '.', lvl, xp: 0, trait: rollTrait() });
+    S.candidates.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + pilotInitial() + '.', lvl, xp: 0, trait: rollTrait() });
   }
-  if (S.school) S.candidates.unshift({ id: S.nextId++, name: pick(P_NAMES) + ' ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + '.', lvl: Math.random() < .3 ? 2 : 1, xp: 0, school: true, trait: rollTrait() });
+  if (S.school) S.candidates.unshift({ id: S.nextId++, name: pick(P_NAMES) + ' ' + pilotInitial() + '.', lvl: Math.random() < .3 ? 2 : 1, xp: 0, school: true, trait: rollTrait() });
 }
 function addBalloon(size) {
   const used = new Set(S.balloons.map(x => x.name)); const name = size === 'XL' ? RD().xl : B_NAMES.find(n => !used.has(n)) || ('Balon ' + S.nextId);
@@ -3179,6 +3208,12 @@ function balloonCard(b) {
   /* v111: name your balloons; the default name stays until you change it */
   const nb = h('button', 'adbtn', `<i style="background:#9b7be0"></i>İsim: ${esc(b.name)} · değiştir`);
   nb.onclick = () => renameCard(b); c.appendChild(nb);
+  /* v124.4: choose who flies this balloon */
+  if (S.pilots.length && !isSelf(b)) {
+    const pp = pilotOf(b) || S.pilots.find(q => q.id === b.pin);
+    const pb = h('button', 'adbtn', `<i style="background:#3d7fd0"></i>Pilot: ${pp ? `${esc(pp.name)} (${LEVELS[pp.lvl].name})` : 'yok'}${b.pin ? '' : ' · otomatik'} · değiştir`);
+    pb.onclick = () => pilotPicker(b); c.appendChild(pb);
+  }
   const csp = b.ad && SPONSORS.find(x => x.id === b.ad);
   const ab = h('button', 'adbtn', csp ? `<i style="background:${csp.col}"></i>${csp.name}: +${eur(adPay(csp, b.size))}/uçuş` : 'Reklam yok. Sponsor bul');
   ab.onclick = () => openAdPicker(b); c.appendChild(ab);
@@ -3195,6 +3230,29 @@ function balloonCard(b) {
   if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(sellValue(b))}`, () => { S.cash += sellValue(b); S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); m.hidden = true; refresh(); }, false, true));
   c.appendChild(acts);
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
+/* v124.4: pick the pilot of balloon b; a pilot already flying another balloon swaps with b's pilot */
+function pilotPicker(b) {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('h1', null, `${esc(b.name)}: pilot seç`));
+  c.appendChild(h('p', 'hint', 'Başka balondaki bir pilotu seçersen ikisi yer değiştirir. Otomatikte en kıdemli pilot en büyük balona gider.'));
+  const auto = h('button', 'adbtn' + (b.pin ? '' : ' on'), `<i style="background:#9a8fb8"></i>Otomatik${b.pin ? '' : ' ✓'}`);
+  auto.onclick = () => { sfx('click'); pinPilot(b, null); save(); refresh(); balloonCard(b); }; c.appendChild(auto);
+  const box = h('div', 'fllist');
+  const where = q => S.balloons.find(x => x.pilot === q.id) || S.balloons.find(x => x.pin === q.id);
+  const list = S.pilots.slice().sort((x, y) => y.lvl - x.lvl || (y.xp || 0) - (x.xp || 0) || x.name.localeCompare(y.name, 'tr'));
+  for (const q of list) {
+    const wb = where(q), mine = b.pilot === q.id || b.pin === q.id;
+    const r = h('button', 'flrow crow' + (mine ? ' on' : ''));
+    r.innerHTML = `<span class="av" style="background:${CREW_COL[q.lvl - 1]}">${esc(q.name[0])}</span>
+      <span class="fm"><b>${esc(q.name)}<em class="sz">${LEVELS[q.lvl].name}</em>${trait(q) ? `<i class="trt" style="color:${TRAITS[q.trait].col}">${TRAITS[q.trait].n}</i>` : ''}</b>
+      <span class="st ${mine ? 'g' : wb ? 'y' : 'o'}"><i></i>${mine ? 'Bu balonda' : wb ? `${esc(wb.name)} · yer değiştirir` : 'Boşta'}</span></span>${mine ? '<b class="ok">✓</b>' : ''}`;
+    r.onclick = () => { sfx('click'); pinPilot(b, q); save(); refresh(); balloonCard(b); };
+    box.appendChild(r);
+  }
+  c.appendChild(box);
+  const back = h('button', 'ghost', 'Geri'); back.style.width = '100%'; back.onclick = () => balloonCard(b); c.appendChild(back);
   m.appendChild(c); m.hidden = false;
 }
 function renameCard(b) {
@@ -3299,9 +3357,35 @@ function pilotCard(p) {
   it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, kaza riski ${pilotRiskText(p)}. ${b ? `${esc(b.name)} balonunda.` : 'Boşta.'}${p.lvl < 3 ? ` Tecrübe ${Math.round(p.xp || 0)}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}${traitLine(p)}</div>`));
   c.appendChild(it);
   const acts = h('div', 'btns');
+  /* v124.4: send the pilot to another balloon */
+  const own = S.balloons.filter(x => !isSelf(x));
+  if (own.length) {
+    const bb = h('button', 'adbtn', `<i style="background:#3d7fd0"></i>Balon: ${b ? esc(b.name) : 'yok'} · değiştir`);
+    bb.onclick = () => balloonPicker(p); c.appendChild(bb);
+  }
   acts.appendChild(pbtn('Kov', () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); m.hidden = true; refresh(); }, false, true));
   c.appendChild(acts);
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
+/* v124.4: pick the balloon pilot p flies; its pilot swaps over */
+function balloonPicker(p) {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('h1', null, `${esc(p.name)}: balon seç`));
+  c.appendChild(h('p', 'hint', 'Seçtiğin balonun pilotu varsa ikisi yer değiştirir.'));
+  const box = h('div', 'fllist');
+  const list = S.balloons.filter(x => !isSelf(x)).sort((x, y) => SIZES[y.size].cap - SIZES[x.size].cap || x.name.localeCompare(y.name, 'tr'));
+  for (const b of list) {
+    const mine = b.pilot === p.id || b.pin === p.id, q = pilotOf(b), st = canFly(b);
+    const r = h('button', 'flrow' + (mine ? ' on' : ''));
+    r.innerHTML = `<span class="fi">${balloonIcon(...iconCols(b))}</span>
+      <span class="fm"><b>${esc(b.name)}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em></b>
+      <span class="st ${mine ? 'g' : st === 'dmg' || st === 'worn' ? 'r' : q ? 'y' : 'o'}"><i></i>${mine ? 'Bu pilotun balonu' : `${q ? esc(q.name) : 'Pilot yok'}${st === 'dmg' ? ' · onarımda' : st === 'worn' ? ' · zarf bitti' : ''}`}</span></span>${mine ? '<b class="ok">✓</b>' : ''}`;
+    r.onclick = () => { sfx('click'); pinPilot(b, p); save(); refresh(); pilotCard(p); };
+    box.appendChild(r);
+  }
+  c.appendChild(box);
+  const back = h('button', 'ghost', 'Geri'); back.style.width = '100%'; back.onclick = () => pilotCard(p); c.appendChild(back);
   m.appendChild(c); m.hidden = false;
 }
 function tabCrew(body) {
@@ -3356,7 +3440,7 @@ function tabCrew(body) {
     }
     if (!list.length) box.appendChild(h('p', 'hint', 'Bu filtrede pilot yok.'));
     s.appendChild(box);
-    if (S.pilots.length > 1) s.appendChild(h('p', 'hint', 'Pilotlar her sabah otomatik dağıtılır: en kıdemli pilot en büyük balona, çaylaklar küçüklere. Pilot yetmezse önce küçük balonlar yerde kalır. Halka, bir sonraki seviyeye kadar tecrübeyi gösterir.'));
+    if (S.pilots.length > 1) s.appendChild(h('p', 'hint', 'Pilotlar her sabah otomatik dağıtılır: en kıdemli pilot en büyük balona, çaylaklar küçüklere. İstersen pilota dokunup balonunu kendin seç; o pilot o balonda kalır. Pilot yetmezse önce küçük balonlar yerde kalır. Halka, bir sonraki seviyeye kadar tecrübeyi gösterir.'));
   }
   body.appendChild(s);
   const sc = h('div', 'sec'); sc.appendChild(h('h2', null, 'Pilot okulu'));
@@ -4332,7 +4416,7 @@ function crewFor(o, sizes, style) {
   const mix = CREW_MIX[style] || CREW_MIX.mid;
   o.crew = sizes.map(() => {
     const x = Math.random(), lvl = x < mix[0] ? 1 : x < mix[0] + mix[1] ? 2 : 3;
-    return { name: pick(P_NAMES) + ' ' + String.fromCharCode(65 + Math.floor(Math.random() * 26)) + '.', lvl, xp: 0, trait: rollTrait(), wage: Math.round(LEVELS[lvl].wage * rnd(.9, 1.1)) };
+    return { name: pick(P_NAMES) + ' ' + pilotInitial() + '.', lvl, xp: 0, trait: rollTrait(), wage: Math.round(LEVELS[lvl].wage * rnd(.9, 1.1)) };
   });
   return o.crew;
 }
@@ -5168,7 +5252,7 @@ function test49() {
   Object.keys(UNLOCK_DAY).concat(['ins']).forEach(k => S.unl[k] = 1);
   Object.keys(HEZ).forEach(k => S.tips[k] = 1);
   S.balloons = []; S.nextId = 1; ['S', 'M', 'M', 'S', 'M'].forEach(z => addBalloon(z));
-  S.pilots = []; for (let i = 0; i < 4; i++) S.pilots.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + String.fromCharCode(65 + i) + '.', lvl: 1 + (i % 2), xp: 0, trait: null });
+  S.pilots = []; for (let i = 0; i < 4; i++) S.pilots.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + pilotInitial(i) + '.', lvl: 1 + (i % 2), xp: 0, trait: null });
   S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 42000; S.rep = 1.06; S.chapter = 1; S.rateAsked = 12;
   S.hotels = ['tas']; S.guideCount = 2; S.netHist = [1400, 1650, 900, 1800, 1500, 2100, 1700];
   S.lastShare = { me: 60, cap: 64, rivals: [], demand: 240, extra: 0 }; S.firstMis = 1;
@@ -5188,7 +5272,7 @@ function testShowGame() {
   ['heart', 'star', 'skull'].forEach((k, i) => { bazaarGift(k); S.balloons[i * 4 + 1].design = S.designs[S.designs.length - 1].id; });
   [['zigzag', '#3ad0c0', '#ffc23d'], ['stars', '#2b2350', '#ffd27a'], ['rainbow', '#ff5e3a', '#ffffff']].forEach(([pat, a, b], i) => {
     const d = { id: S.nextId++, name: PATTERNS[pat][0], pat, shape: null, cols: [a, b, '#ffffff'], day: 20 }; d.score = designScore(d); S.designs.push(d); S.balloons[i * 4 + 3].design = d.id; });
-  S.pilots = []; for (let i = 0; i < 19; i++) S.pilots.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + String.fromCharCode(65 + i) + '.', lvl: 2, xp: 0, wage: LEVELS[2].wage, trait: null });
+  S.pilots = []; for (let i = 0; i < 19; i++) S.pilots.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + pilotInitial(i) + '.', lvl: 2, xp: 0, wage: LEVELS[2].wage, trait: null });
   S.flag = S.balloons[1].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 50000; S.rep = 1.12; S.hezQ = []; S.paper = null; S.eventDue = false;
   S.lastShare = { me: 250, cap: 320, rivals: [], demand: 300, extra: 0 };
   S.bossSaid = { 'cap:hello': 1 }; S.weather = null; S.demand = null; S.nextEvent = S.day + 30; S.festNext = S.day + 60; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
@@ -5214,7 +5298,7 @@ function testLuxBaron() {
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
   S.balloons = []; for (let i = 0; i < 28; i++) addBalloon(i % 4 === 0 ? 'L' : 'M'); addBalloon('XL');
-  S.pilots = []; for (let i = 0; i < 28; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i % P_NAMES.length] + ' ' + String.fromCharCode(65 + (i % 26)) + '.', lvl: 2 + (i % 2), xp: 0, trait: null });
+  S.pilots = []; for (let i = 0; i < 28; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i % P_NAMES.length] + ' ' + pilotInitial(i) + '.', lvl: 2 + (i % 2), xp: 0, trait: null });
   S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 250000; S.rep = 1.25; S.chapter = CHAPTERS_LUX.length;
   S.school = true; S.workshop = { day: 300, lv: 2 }; S.bld = { mast: 3, hangar: 3 };
   S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { 'lux:hello': 1 }; S.weather = null; S.demand = null;
@@ -5229,7 +5313,7 @@ function testBristol() {
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1 };
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
   S.balloons = []; ['M', 'L', 'M', 'S', 'M', 'L'].forEach(z => addBalloon(z));
-  S.pilots = []; for (let i = 0; i < 5; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + String.fromCharCode(65 + i) + '.', lvl: 2, xp: 0, trait: null });
+  S.pilots = []; for (let i = 0; i < 5; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + pilotInitial(i) + '.', lvl: 2, xp: 0, trait: null });
   S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 40000; S.rep = 1.1; S.hezQ = ['guide:hello']; S.paper = null; S.eventDue = false;
   S.bossSaid = {}; S.weather = null; S.demand = null; S.nextEvent = S.day + 30; S.fiestaNext = S.day + 2; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
   if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }

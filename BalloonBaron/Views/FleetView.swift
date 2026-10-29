@@ -593,6 +593,7 @@ private struct BalloonCardSheet: View {
     @State private var designPick: BalloonPick?
     @State private var equipPick: BalloonPick?
     @State private var renamePick: BalloonPick?
+    @State private var pilotPick: BalloonPick?
     @State private var noPilot = false
 
     var body: some View {
@@ -612,6 +613,9 @@ private struct BalloonCardSheet: View {
             }
             .sheet(item: $renamePick) { pick in
                 RenameSheet(balloonID: pick.id).environment(store)
+            }
+            .sheet(item: $pilotPick) { pick in
+                PilotPicker(balloonID: pick.id).environment(store)
             }
             .modifier(NoPilotAlert(shown: $noPilot, crewOpen: game.state.unlocked.contains(.crew)) {
                 dismiss()
@@ -719,6 +723,15 @@ private struct BalloonCardSheet: View {
                 chip(dot: Color(hex: "#9b7be0"), text: loc("fleetPage.nameBtn", b.title))
             }
             .buttonStyle(.plain)
+            // v124.4: choose who flies this balloon
+            if !s.local.pilots.isEmpty && !s.isSelf(b) {
+                Button {
+                    pilotPick = BalloonPick(id: b.id)
+                } label: {
+                    chip(dot: Color(hex: "#3d7fd0"), text: pilotChip(b, s))
+                }
+                .buttonStyle(.plain)
+            }
             Button {
                 adPick = BalloonPick(id: b.id)
             } label: {
@@ -744,6 +757,14 @@ private struct BalloonCardSheet: View {
                 .buttonStyle(.plain)
             }
         }
+    }
+
+    private func pilotChip(_ b: Balloon, _ s: GameState) -> String {
+        let pinned = s.local.pilots.first { $0.id == b.pinnedPilot }
+        let name: String
+        if let p = s.pilot(of: b) ?? pinned { name = "\(p.name) (\(p.level.title))" } else { name = loc("pick.none") }
+        let text = loc("pick.pilotBtn", name)
+        return b.pinnedPilot == nil ? text + " · " + loc("pick.auto") : text
     }
 
     private func chip(dot: Color, text: String) -> some View {
@@ -849,6 +870,63 @@ private struct RenameSheet: View {
 }
 
 /// Sponsor choice for one balloon (`openAdPicker`).
+/// v124.4: pick the pilot of a balloon; a pilot already on another balloon swaps with this one's (`pilotPicker`).
+private struct PilotPicker: View {
+    @Environment(GameStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
+    let balloonID: Int
+
+    var body: some View {
+        if let s = store.state, let b = s.balloon(balloonID) {
+            FleetUI.Sheet(title: loc("pick.pilotTitle", b.title), lead: loc("pick.pilotLead"), close: { dismiss() }) {
+                FleetUI.Item {
+                    HStack(spacing: 12) {
+                        VStack(alignment: .leading, spacing: 3) {
+                            FleetUI.Title(loc("pick.auto"))
+                            FleetUI.Detail(loc("pick.autoDesc"))
+                        }
+                        Spacer(minLength: 4)
+                        FleetUI.SmallButton(title: loc(b.pinnedPilot == nil ? "fleetPage.selected" : "fleetPage.choose"),
+                                            selected: b.pinnedPilot == nil) { choose(nil, b) }
+                            .frame(width: 104)
+                    }
+                }
+                ForEach(s.local.pilots.sorted { ($0.level.rawValue, $0.xp) > ($1.level.rawValue, $1.xp) }) { p in
+                    row(p, b, s)
+                }
+            }
+        }
+    }
+
+    private func row(_ p: Pilot, _ b: Balloon, _ s: GameState) -> some View {
+        let mine = b.pilot == p.id || b.pinnedPilot == p.id
+        let other = s.local.balloons.first { $0.id != b.id && $0.pilot == p.id }
+            ?? s.local.balloons.first { $0.id != b.id && $0.pinnedPilot == p.id }
+        let line = mine ? loc("pick.here") : other.map { loc("pick.swap", $0.title) } ?? loc("crew.idleTag")
+        return FleetUI.Item(highlight: mine) {
+            HStack(spacing: 12) {
+                Text(String(p.name.prefix(1)))
+                    .font(Theme.font(17, .heavy, condensed: true))
+                    .foregroundStyle(.white)
+                    .frame(width: 34, height: 34)
+                    .background(CrewView.levelColor(p.level), in: Circle())
+                VStack(alignment: .leading, spacing: 3) {
+                    FleetUI.Title(p.name)
+                    FleetUI.Detail(p.level.title + (p.trait.map { " · " + $0.title } ?? "") + " · " + line)
+                }
+                Spacer(minLength: 4)
+                FleetUI.SmallButton(title: loc(mine ? "fleetPage.selected" : "fleetPage.choose"), selected: mine) { choose(p.id, b) }
+                    .frame(width: 104)
+            }
+        }
+    }
+
+    private func choose(_ pilot: Int?, _ b: Balloon) {
+        store.act { $0.pinPilot(balloon: b.id, pilot: pilot) }
+        dismiss()
+    }
+}
+
 private struct AdPicker: View {
     @Environment(GameStore.self) private var store
     @Environment(\.dismiss) private var dismiss

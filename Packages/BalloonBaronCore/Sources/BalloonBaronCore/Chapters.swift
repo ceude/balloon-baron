@@ -137,6 +137,17 @@ extension GameState {
     /// Brings an older save up to date. Version 3 had three chapters per region; a new second chapter was added,
     /// so anyone past it skips ahead and nobody falls back.
     mutating func migrate() {
+        // v124.4: Cappadocia's pilots and candidates had Q, W and X initials too
+        func fix(_ l: inout [Pilot]) {
+            for i in l.indices {
+                let n = l[i].name
+                guard n.count >= 3, n.hasSuffix("."), let c = n.dropLast().last, n.dropLast(2).last == " ",
+                      let r = ["Q": "K", "W": "V", "X": "S"][String(c)] else { continue }
+                l[i].name = String(n.dropLast(2)) + r + "."
+            }
+        }
+        if region == .cap { fix(&local.pilots); fix(&local.candidates) }
+        else if parked[.cap] != nil { fix(&parked[.cap]!.state.pilots); fix(&parked[.cap]!.state.candidates) }
         guard version < 4 else { return }
         func shift(_ c: Int) -> Int { c >= 2 ? c + 1 : c }
         local.chapter = shift(local.chapter)
