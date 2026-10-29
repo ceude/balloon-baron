@@ -2524,7 +2524,7 @@ function showWorldMap() {
     else if (open && R.id === 'bri') { tag = '<span class="tag y">Açıldı</span>'; sub = `Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.`; }
     else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. Başlangıç kasası: ${eurH(5000)}. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.${needsPack('abq') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
-    else if (R.id === 'abq') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Kapadokya baronu olunca açılır.'; }
+    else if (R.id === 'abq') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Kapadokya baronu olunca açılır. Sandia Dağları\'nın eteğinde, dünyanın en büyük balon festivalinin şehrinde.'; }
     else if (R.id === 'lux') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Albuquerque baronu olunca açılır. Nil kıyısında, firavunların vadisi üstünde.'; }
     else if (R.id === 'bri') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Luksor baronu olunca açılır. Avon Kanyonu\'nun üstünde, sisli İngiliz sabahlarında.'; }
     else { tag = '<span class="tag n">Yakında</span>'; sub = R.mystery ? `${R.land} göğünde yeni bir macera. Nerede olduğunu Hezarfen bile bilmiyor.` : R.about || ''; }

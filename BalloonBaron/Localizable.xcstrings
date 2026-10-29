@@ -56300,37 +56300,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wird freigeschaltet, wenn du Baron von Kappadokien bist."
+            "value": "Wird freigeschaltet, wenn du Baron von Kappadokien bist. Am Fuß der Sandia Mountains, in der Stadt des größten Ballonfestivals der Welt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Unlocks when you become baron of Cappadocia."
+            "value": "Unlocks when you become baron of Cappadocia. At the foot of the Sandia Mountains, in the city of the world's biggest balloon festival."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Se desbloquea cuando seas barón de Capadocia."
+            "value": "Se desbloquea cuando seas barón de Capadocia. Al pie de las montañas Sandía, en la ciudad del mayor festival de globos del mundo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "カッパドキアの男爵になると解放される。"
+            "value": "カッパドキアの男爵になると解放される。サンディア山脈のふもと、世界最大の気球祭りの街。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "카파도키아의 남작이 되면 열립니다."
+            "value": "카파도키아의 남작이 되면 열립니다. 샌디아 산맥 기슭, 세계 최대 열기구 축제의 도시."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kapadokya baronu olunca açılır."
+            "value": "Kapadokya baronu olunca açılır. Sandia Dağları'nın eteğinde, dünyanın en büyük balon festivalinin şehrinde."
           }
         }
       }

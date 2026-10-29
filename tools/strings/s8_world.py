@@ -120,12 +120,12 @@ add("map.openSub",
  "世界最大の気球フェスティバルの街。名高い「ボックス」風が離陸地点へ連れ戻してくれる。参入費%@はホールディングスから（FAAライセンスと事務所）。この地域ではゼロから始まる。",
  "세계 최대 열기구 축제의 도시. 유명한 ‘박스’ 바람이 이륙한 곳으로 되돌려 줍니다. 진입 비용 %@, 지주회사에서 지급(FAA 면허와 사무소). 이 지역에서는 처음부터 시작합니다.")
 add("map.lockedSub",
- "Unlocks when you become baron of Cappadocia.",
- "Kapadokya baronu olunca açılır.",
- "Wird freigeschaltet, wenn du Baron von Kappadokien bist.",
- "Se desbloquea cuando seas barón de Capadocia.",
- "カッパドキアの男爵になると解放される。",
- "카파도키아의 남작이 되면 열립니다.")
+ "Unlocks when you become baron of Cappadocia. At the foot of the Sandia Mountains, in the city of the world's biggest balloon festival.",
+ "Kapadokya baronu olunca açılır. Sandia Dağları'nın eteğinde, dünyanın en büyük balon festivalinin şehrinde.",
+ "Wird freigeschaltet, wenn du Baron von Kappadokien bist. Am Fuß der Sandia Mountains, in der Stadt des größten Ballonfestivals der Welt.",
+ "Se desbloquea cuando seas barón de Capadocia. Al pie de las montañas Sandía, en la ciudad del mayor festival de globos del mundo.",
+ "カッパドキアの男爵になると解放される。サンディア山脈のふもと、世界最大の気球祭りの街。",
+ "카파도키아의 남작이 되면 열립니다. 샌디아 산맥 기슭, 세계 최대 열기구 축제의 도시.")
 add("map.mysterySub",
  "A new adventure in the skies of %@. Not even Hezarfen knows where.",
  "%@ göğünde yeni bir macera. Nerede olduğunu Hezarfen bile bilmiyor.",
