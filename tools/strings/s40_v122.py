@@ -84,7 +84,6 @@ add("tut.price2", "Lowering it worked yesterday; today there are lots of tourist
 add("tut.price2Seen", "See? Same passengers, more money. Set the price to each day's tourists.", "Gördün mü? Yolcu aynı, kazanç arttı. Fiyatı her gün turiste göre ayarla.", "Siehst du? Gleich viele Passagiere, mehr Geld. Richte den Preis jeden Tag nach den Touristen.", "¿Ves? Los mismos pasajeros, más dinero. Ajusta el precio a los turistas de cada día.", "見たか？客は同じで、稼ぎは増えた。値段は毎日の観光客に合わせるのだ。", "봤나? 승객은 그대로, 수입은 늘었네. 가격은 매일 관광객에 맞춰 정하게.")
 
 # v122.7: two bigger deals at the holding's deals desk (no team named: the game is played worldwide)
-add("hq.dealsTitle", "Deals", "Anlaşmalar", "Deals", "Acuerdos", "契約", "계약")
 add("hq.s.noDeal", "No deal", "Anlaşma yok", "Kein Deal", "Sin acuerdo", "契約なし", "계약 없음")
 add("hq.s.jersey", "The champion's jersey", "Şampiyonun forması", "Trikot des Meisters", "Camiseta del campeón", "王者のユニフォーム", "챔피언 유니폼")
 add("hq.s.worldGames", "World Games show", "Dünya Oyunları gösterisi", "Show bei den Weltspielen", "Espectáculo de los Juegos Mundiales", "世界競技大会のショー", "세계 대회 쇼")

@@ -51,7 +51,6 @@ struct HoldingView: View {
             billboardCard(s)
         }
         if unit == .deals {
-            sectionTitle(loc("hq.dealsTitle"))
             celebrityCard(s)
             jerseyCard(s)
             worldGamesCard(s)
