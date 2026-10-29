@@ -1582,7 +1582,8 @@ function fabDay(ev) {
   else if (S.regions && S.regions[j.region]) S.regions[j.region].balloons.push({ id: S.nextId++, size: j.size, name: 'Balon ' + S.nextId, fly: true, dmgUntil: 0, pilot: null, flights: 0 });
   W.saved = (W.saved || 0) + SIZES[j.size].cost - fabCost(j.size); W.made = (W.made || 0) + 1;
 }
-const pilotWage = p => p.wage || Math.round(LEVELS[p.lvl].wage * (p.school ? .7 : 1) * (p.trait === 'nightowl' ? .85 : 1));
+const regWage = () => S && S.region === 'bri' ? 1.15 : 1; /* v124: Bristol's pilots cost a little more */
+const pilotWage = p => p.wage || Math.round(LEVELS[p.lvl].wage * regWage() * (p.school ? .7 : 1) * (p.trait === 'nightowl' ? .85 : 1));
 /* A pilot's own share of the accident risk: level times trait, as accP uses it; the trait's part is named when there is one. */
 const traitRisk = p => p.trait === 'careful' ? .75 : p.trait === 'daredevil' ? 1.3 : 1;
 function pilotRiskText(p) {
@@ -1680,7 +1681,7 @@ function market(myPrice, myCap) {
 
 /* ---------- day flow ---------- */
 const demandGrowth = () => 1 + .6 * (1 - Math.exp(-(S.day - 1) / 50));
-const dayDemand = () => tutScene() ? TUT_DEMAND[tutScene()] : Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? (S.region === 'lux' ? 1.6 : 1.9) : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * holdBoost(S.region));
+const dayDemand = () => tutScene() ? TUT_DEMAND[tutScene()] : Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? (S.region === 'lux' ? 1.6 : S.region === 'bri' ? 1.8 : 1.9) : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * holdBoost(S.region));
 let mode = 'office', tab = 'plan', FL = null, lastReport = null;
 function hezAdd(k) { if (!S.tips[k] && !S.hezQ.includes(k) && !(S.hezLater || []).includes(k)) S.hezQ.push(k); }
 /* v121.12: nobody reads seven cards in a row. A morning shows at most two of Hezarfen's lessons and one postcard; the
@@ -1771,7 +1772,7 @@ function unlockCheck() {
 /* Morning paper: only when something worth a headline happened; the biggest story leads, up to two more below. */
 function paperAdd(p, head, sub) { (S.paperNext = S.paperNext || []).push({ p, head, sub }); }
 /* A halftone photo of balloons over the chimneys, in newspaper ink. */
-const paperName = () => S.region === 'lux' ? 'Nil Postası' : S.region === 'abq' ? 'Albuquerque Herald' : 'Kapadokya Postası';
+const paperName = () => S.region === 'bri' ? 'Avon Postası' : S.region === 'lux' ? 'Nil Postası' : S.region === 'abq' ? 'Albuquerque Herald' : 'Kapadokya Postası';
 function paperPhoto() {
   return `<svg class="pphoto" viewBox="0 0 300 110" preserveAspectRatio="xMidYMid slice"><defs>
     <pattern id="ht1" width="4" height="4" patternUnits="userSpaceOnUse"><circle cx="2" cy="2" r=".75" fill="#2a2620"/></pattern>
@@ -1788,7 +1789,7 @@ function showPaper() {
   const m = $('menu'); m.replaceChildren();
   /* a sheet of newsprint lying on old parchment */
   const c = h('div', 'card paper'), sh = h('div', 'sheet');
-  sh.appendChild(h('div', 'mast', `<b>${paperName()}</b><div class="dl"><span>Gün ${S.day}</span><span>Sabah baskısı</span><span>${S.region === 'lux' ? '50 piastre' : S.region === 'abq' ? '25¢' : '5 kuruş'}</span></div>`));
+  sh.appendChild(h('div', 'mast', `<b>${paperName()}</b><div class="dl"><span>Gün ${S.day}</span><span>Sabah baskısı</span><span>${S.region === 'bri' ? '20 peni' : S.region === 'lux' ? '50 piastre' : S.region === 'abq' ? '25¢' : '5 kuruş'}</span></div>`));
   sh.appendChild(h('h1', 'ph', esc(list[0].head)));
   sh.insertAdjacentHTML('beforeend', paperPhoto());
   if (list[0].sub) sh.appendChild(h('p', 'ps', esc(list[0].sub)));
@@ -2115,7 +2116,7 @@ function finishDay(flight) {
     if (flight && flight.q === 'cancel' && isSelf(b)) return;
     b.flights = (b.flights || 0) + (bl('hangar') >= 3 ? .85 : 1);
     const p = pilotOf(b);
-    if (p && !isSelf(b)) { p.xp = (p.xp || 0) + (bl('office') >= 3 ? 1.5 : 1); if (p.lvl < 3 && p.xp >= XP_UP[p.lvl]) { p.lvl++; p.wage = Math.round(LEVELS[p.lvl].wage * (p.school ? .7 : 1) * (p.trait === 'nightowl' ? .85 : 1)); ev.push(`${p.name} artık ${LEVELS[p.lvl].name.toLowerCase()} bir pilot! Kaza riski düştü, maaşı ${eur(p.wage)}/gün oldu.`); } }
+    if (p && !isSelf(b)) { p.xp = (p.xp || 0) + (bl('office') >= 3 ? 1.5 : 1); if (p.lvl < 3 && p.xp >= XP_UP[p.lvl]) { p.lvl++; p.wage = Math.round(LEVELS[p.lvl].wage * regWage() * (p.school ? .7 : 1) * (p.trait === 'nightowl' ? .85 : 1)); ev.push(`${p.name} artık ${LEVELS[p.lvl].name.toLowerCase()} bir pilot! Kaza riski düştü, maaşı ${eur(p.wage)}/gün oldu.`); } }
     if (cond(b) <= 0) ev.push(`${b.name} balonunun zarfı ömrünü doldurdu. Yenilenmeden uçamaz.`);
   });
   Lg.up = Math.round(S.balloons.reduce((a, b) => a + SIZES[b.size].up, 0) * [1, 1, .85, .7][bl('hangar')]);
@@ -2165,7 +2166,7 @@ function finishDay(flight) {
   S.domDays = S.day >= 30 && shr > .5 ? (S.domDays || 0) + 1 : Math.max(0, (S.domDays || 0) - 1);
   const sinking = S.rivals.some(r => r.alive && r.cash < -4000) && shr > .4; /* batmak üzere olan rakip kurtarıcı arar */
   /* Luxor's rivals join forces sooner, more often, and at a smaller share */
-  const lux = S.region === 'lux', mergeGap = lux ? 15 : 25, domNeed = lux ? 2 : 4;
+  const lux = S.region === 'lux' || S.region === 'bri', mergeGap = lux ? 15 : 25, domNeed = lux ? 2 : 4;
   if (lux && S.day >= 20 && shr > .38) S.domDays = (S.domDays || 0) + 1;
   if (S.day - (S.lastMerge || -99) >= mergeGap && ((S.domDays >= domNeed && Math.random() < (lux ? .5 : .35)) || (sinking && Math.random() < .6))) mergeRivals(shr, rev);
   /* only on a day the share really was over 60%: a grounded red-flag day must not bring a fine reading 0% (v110) */
@@ -2221,6 +2222,12 @@ function finishDay(flight) {
   if (S.region === 'lux') {
     if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 21; }
     else if (!S.fiesta && S.day >= (S.fiestaNext || 0)) { S.fiesta = { start: S.day, end: S.day + 2 }; S.hezQ.push('news:Nil gemileri yanaştı evlat! Üç gün boyunca kıyı turistle dolu, herkes sabah balonuna binmek istiyor. Bütün balonlarını havaya kaldır, ama Theban Skies da aynı şeyi yapacak.'); }
+  }
+  /* v124: Bristol's balloon festival: four days about once a month, never in winter. Festival days have an evening
+     ascent too (a second, shorter flight) and one Night Glow can be booked per festival. */
+  if (S.region === 'bri') {
+    if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 30; }
+    else if (!S.fiesta && S.day >= (S.fiestaNext || 0) && !S.winter) { S.fiesta = { start: S.day, end: S.day + 3 }; S.hezQ.push('news:Bristol Balon Festivali başladı canım! Dört gün boyunca Ashton\'un çayırları turist dolu. Festival akşamları balonlar ikinci kez kalkar, bir gece de Gece Işıltısı düzenleyebilirsin. Bütün balonlarını havaya kaldır!'); paperAdd(4, 'Bristol Balon Festivali başladı', 'Dört gün boyunca sabah ve akşam kalkışları, çayırlarda yüzlerce balon.'); }
   }
   /* Cappadocia's festivals: four busy days about every five weeks, never in winter */
   if (S.region === 'cap') {
@@ -2303,6 +2310,8 @@ function goalVal(k) {
     case 'school': return S.school ? 1 : 0;
     case 'xl': return S.balloons.some(b => b.size === 'XL') ? 1 : 0;
     case 'fiesta': return S.fiestaFlown || 0;
+    case 'fog': return S.fogFlown || 0; /* v124: Bristol, own flights on a foggy morning */
+    case 'glow': return S.glowCount || 0; /* v124: Night Glows held */
     case 'bldMast': return bl('mast');
     case 'bldHangar': return bl('hangar');
     case 'bldTop': return Math.max(...Object.keys(UPGRADES).map(bl));
@@ -2310,7 +2319,7 @@ function goalVal(k) {
   return 0;
 }
 const goalDone = g => goalVal(g[0]) >= g[1] - 1e-9;
-const YESNO = ['workshop', 'fabBuilt', 'school', 'xl', 'influ', 'guide', 'fiesta', 'bldMast', 'bldHangar', 'bldTop'];
+const YESNO = ['workshop', 'fabBuilt', 'school', 'xl', 'influ', 'guide', 'fiesta', 'fog', 'glow', 'bldMast', 'bldHangar', 'bldTop'];
 function goalText(g) {
   const v = goalVal(g[0]), f1 = x => x.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   return g[0] === 'stars' ? `${f1(v)}★ / ${f1(g[1])}★` : g[0] === 'cash' ? `${eur(v)} / ${eur(g[1])}` : g[0] === 'share' ? `%${Math.round(v * 100)} / %${Math.round(g[1] * 100)}` : YESNO.includes(g[0]) ? (v >= g[1] ? 'tamam' : 'yok') : `${v}/${g[1]}`;
@@ -2381,7 +2390,7 @@ function showChapter() {
     c.appendChild(h('p', 'lead', `Gün ${S.day}. ${RD().name} göğündeki her üç balondan ikisi ${esc(S.company)} renklerinde. ${guide().baron}`));
     if (S.region === 'cap' && !S.storyDone) c.appendChild(h('div', 'vitrin', `${VITRIN}<p>Dedenin sepeti artık holdingin girişinde, camın ardında.</p>`));
     c.appendChild(h('div', 'hzline bossq', `${BOSS_AV[S.region]}<span><b>${BOSS[S.region].name}${S.region === 'cap' ? ' bir not bıraktı' : ''}:</b> ${BOSS_LINES[S.region].baron}</span>`));
-    c.appendChild(h('p', 'hint', S.region === 'cap' ? 'Kapadokya şirketin artık dünyaya açılabilir. Dünya haritasında ilk yeni bölgen seni bekliyor.' : 'İki kıtanın göğü senin. Sıradaki bölgeler çok yakında haritada belirecek.'));
+    c.appendChild(h('p', 'hint', S.region === 'cap' ? 'Kapadokya şirketin artık dünyaya açılabilir. Dünya haritasında ilk yeni bölgen seni bekliyor.' : S.region === 'abq' ? 'İki kıtanın göğü senin. Dünya haritasında Luksor açıldı.' : S.region === 'lux' ? 'Üç bölgenin göğü senin. Dünya haritasında Bristol açıldı.' : 'Dört bölgenin göğü senin. Holdingin son hedefi seni bekliyor: Dünya Oyunları gösterisi.'));
     /* v115: the free game ends here; the Grand Tour is offered right after the ceremony */
     const w = h('button', 'big', S.region === 'cap' && !owned('worldTour') ? 'Devam' : 'Dünya haritasını aç'); w.onclick = S.region === 'cap' && !owned('worldTour') ? showTourOffer : showWorldMap; c.appendChild(w);
     sfx('fanfare'); setTimeout(() => sfx('applause'), 600);
@@ -2397,14 +2406,14 @@ function showChapter() {
   m.appendChild(c); m.hidden = false;
 }
 /* Each region opens when you're baron of the one before it. */
-const regionOpen = id => id === 'abq' ? isBaron('cap') : id === 'lux' ? isBaron('abq') : false;
+const regionOpen = id => id === 'abq' ? isBaron('cap') : id === 'lux' ? isBaron('abq') : id === 'bri' ? isBaron('lux') : false;
 /* v115: Cappadocia is free; America and Egypt need the Grand Tour */
-const needsPack = id => (id === 'abq' || id === 'lux') && !owned('worldTour');
+const needsPack = id => (id === 'abq' || id === 'lux' || id === 'bri') && !owned('worldTour');
 const REGIONS = [
   { id: 'cap', name: 'Kapadokya', land: 'Türkiye', lon: 34.8, lat: 38.6, side: 'r' },
   { id: 'abq', name: 'Albuquerque', land: 'ABD', lon: -106.6, lat: 35.1, side: 'r' },
   { id: 'lux', name: 'Luksor', land: 'Mısır', lon: 32.6, lat: 25.7, side: 'l' },
-  { id: 'bri', name: 'Bristol', land: 'İngiltere', lon: -2.6, lat: 51.45, side: 'l', soon: true, about: 'Dünyanın en büyük balon üreticilerinin şehri ve Avrupa\'nın en büyük balon festivali, Bristol International Balloon Fiesta. Çok yakında.' },
+  { id: 'bri', name: 'Bristol', land: 'İngiltere', lon: -2.6, lat: 51.45, side: 'l' }, /* v124: open after the Luxor baron */
   { id: 'mara', name: 'Maasai Mara', land: 'Kenya', lon: 35.1, lat: -1.5, side: 'r', soon: true, about: 'Savananın üstünde gün doğumu safarisi: aslanlar, filler ve büyük göç. İnişte çalı altında kahvaltı. Çok yakında.' },
   { id: 'q1', name: '???', land: 'Asya', lon: 95, lat: 21, side: 'b', soon: true, mystery: true }
 ];
@@ -2455,12 +2464,14 @@ function showWorldMap() {
     const open = regionOpen(R.id);
     const it = h('div', 'item' + (owned || open ? '' : ' lock'));
     let tag = '', sub = '';
-    if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = { cap: 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.', abq: 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.', lux: 'Nil, firavunların vadisi ve dünyanın en çetin balon pazarı.' }[R.id]; }
+    if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = { cap: 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.', abq: 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.', lux: 'Nil, firavunların vadisi ve dünyanın en çetin balon pazarı.', bri: 'Avon Kanyonu, sisli sabahlar ve festival akşamları.' }[R.id]; }
     else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
+    else if (open && R.id === 'bri') { tag = '<span class="tag y">Açıldı</span>'; sub = `Avon Kanyonu ve asma köprü, Gürcü evleri, liman. Değişken İngiliz havası: sabah sisi, batı rüzgârı, havalimanının yasak göğü. Her ay bir balon festivali, festival akşamları ikinci uçuş. Para birimi sterlin. Başlangıç kasası: £6.000. Giriş bedeli ${eurH(entryFee('bri'))} holding kasasından.${needsPack('bri') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. Başlangıç kasası: ${eurH(5000)}. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.${needsPack('abq') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (R.id === 'abq') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Kapadokya baronu olunca açılır.'; }
     else if (R.id === 'lux') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Albuquerque baronu olunca açılır. Nil kıyısında, firavunların vadisi üstünde.'; }
+    else if (R.id === 'bri') { tag = '<span class="tag n">Kilitli</span>'; sub = 'Luksor baronu olunca açılır. Avon Kanyonu\'nun üstünde, sisli İngiliz sabahlarında.'; }
     else { tag = '<span class="tag n">Yakında</span>'; sub = R.mystery ? `${R.land} göğünde yeni bir macera. Nerede olduğunu Hezarfen bile bilmiyor.` : R.about || ''; }
     if (isBaron(R.id)) tag += ' <span class="tag g">Baron</span>';
     const main = h('div', 'main', `<div class="t">${R.mystery ? `Yeni bölge: ${R.land}` : `${R.name}, ${R.land}`} ${tag}</div><div class="s">${sub}</div>`);
@@ -2725,7 +2736,13 @@ const REV_AT = {
     cheap: { 1: '{p} ödedim, Luksor\'un en iyi fiyatı bu olabilir.' }, general: { 0: 'Luksor\'a gelip balona binmemek olmaz. Bu ekip çok profesyonel.' },
     m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Tapınaklar ve Nil ayaklarımızın altındaydı.' },
     m_valley: { 0: 'Nil\'in üstünden süzüldük, feluka yelkenlerine dokunacak gibiydik!', 1: 'Nil\'in üstünde alçak uçuş inanılmazdı, balıkçılar bize el salladı.' },
-    xl: { 2: 'Teb Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' } }
+    xl: { 2: 'Teb Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' } },
+  /* v124 */
+  bri: { perfect: { 1: 'Asma köprünün üstünde gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Meşe ağaçlarına çarptık! Herkes iyi ama bu kabul edilemez.' },
+    cheap: { 1: '{p} ödedim, Bristol\'ün en iyi fiyatı bu olabilir.' }, general: { 0: 'Bristol\'e gelip balona binmemek olmaz. Bu ekip çok profesyonel.', 1: 'Sabah sisi kalkarken Clifton\'ın üstündeydik. Yağmur da yağmadı, şükür.' },
+    m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Kanyon, liman ve Bristol Kanalı ayaklarımızın altındaydı.' },
+    m_valley: { 0: 'Avon\'un üstünden süzüldük, köprünün kulelerine dokunacak gibiydik!', 1: 'Kanyonda alçak uçuş inanılmazdı, martılar hemen yanımızdan havalandı.' },
+    xl: { 2: 'Avon Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' } }
 };
 function addReview(kind, vars) {
   const i = Math.floor(Math.random() * REV[kind].length), [stars, text0] = REV[kind][i], [n, c] = pick(REVIEWERS);
@@ -2822,7 +2839,7 @@ function renderNav() {
     g.onclick = showGoals; el.appendChild(g);
     if (anyBaron()) {
       const w = h('button', null, `<span class="ib"><svg viewBox="0 0 24 24">${ICONS.world}</svg></span>Holding`);
-      if (Object.values(S.regions || {}).some(r => r.auto && r.auto.issue) || (isBaron('cap') && !ownsRegion('abq')) || (isBaron('abq') && !ownsRegion('lux'))) w.appendChild(h('span', 'dot'));
+      if (Object.values(S.regions || {}).some(r => r.auto && r.auto.issue) || (isBaron('cap') && !ownsRegion('abq')) || (isBaron('abq') && !ownsRegion('lux')) || (isBaron('lux') && !ownsRegion('bri'))) w.appendChild(h('span', 'dot'));
       w.onclick = () => openPage('holding'); el.appendChild(w);
     }
   }
@@ -2870,8 +2887,10 @@ function renderHome() {
   if (S.issue) alert('red', `<b>${ISSUES[S.issue.k].t}.</b> ${S.issue.k === 'raise' ? 'Pilotların ofisin önünde bekliyor. ' : ''}Karar vermek için dokun.`, issueScene);
   for (const id in (S.regions || {})) { const A = S.regions[id].auto; if (A && A.issue) alert('red', `<b>${REGION_DEF[id].name}: ${ISSUES[A.issue.k].t}.</b> Karar verene kadar oradaki kazanç yarıda. Karar vermek için dokun.`, () => showIssue(id)); }
   if (S.fest) alert('mis', `<b>${S.fest.name}, gün ${S.day - S.fest.start + 1}/${FEST_DAYS}!</b> Turist bol, özel isteklerin ödülü %50 fazla.`);
-  if (S.fiesta && S.region === 'lux') alert('mis', `<b>Nil gemileri limanda, gün ${S.day - S.fiesta.start + 1}/3!</b> Kıyı turist dolu. Bütün balonlarını kaldır.`);
+  if (S.fiesta && S.region === 'bri') alert('mis', `<b>Bristol Balon Festivali, gün ${S.day - S.fiesta.start + 1}/4!</b> Turist neredeyse iki katı, akşam da ikinci kalkış var.${S.glowFest === S.fiesta.start ? '' : ' Bu festivalde Gece Işıltısı düzenleyebilirsin.'}`, S.glowFest === S.fiesta.start ? null : () => glowCard());
+  else if (S.fiesta && S.region === 'lux') alert('mis', `<b>Nil gemileri limanda, gün ${S.day - S.fiesta.start + 1}/3!</b> Kıyı turist dolu. Bütün balonlarını kaldır.`);
   else if (S.fiesta) alert('mis', `<b>Balloon Fiesta, gün ${S.day - S.fiesta.start + 1}/4!</b> Turist neredeyse iki katı, gökyüzü yüzlerce balonla dolu. Bütün balonlarını kaldır.`);
+  else if (S.region === 'bri' && S.fiestaNext && S.fiestaNext - S.day <= 3) alert('grn', `<b>Bristol Balon Festivali ${S.fiestaNext - S.day} gün sonra.</b> Filonu hazırla, otellerle anlaş.`);
   else if (S.region === 'lux' && S.fiestaNext && S.fiestaNext - S.day <= 3) alert('grn', `<b>Nil gemileri ${S.fiestaNext - S.day} gün sonra yanaşıyor.</b> Filonu hazırla, otellerle anlaş.`);
   else if (S.region === 'abq' && S.fiestaNext && S.fiestaNext - S.day <= 3) alert('grn', `<b>Balloon Fiesta ${S.fiestaNext - S.day} gün sonra.</b> Filonu hazırla, otellerle anlaş.`);
   const ll = licenseLeft();
@@ -4603,6 +4622,8 @@ const ACHS = [
   ['baronAbq', 'Albuquerque Baronu', 'İki kıtanın göğü', () => !!(S.barons || {}).abq],
   ['lux', 'Nil\'in göğü', 'Luksor\'a girdin', () => ownsRegion('lux')],
   ['baronLux', 'Luksor Baronu', 'Firavunların vadisi senin', () => !!(S.barons || {}).lux],
+  ['bri', 'Avon\'un göğü', 'Bristol\'e girdin', () => ownsRegion('bri')],
+  ['baronBri', 'Bristol Baronu', 'Kanyonun ve festivalin sahibi', () => !!(S.barons || {}).bri],
   ['world', 'Dünya Baronu', 'Holdingin bütün hedefleri', () => !!(S.hold || {}).worldBaron]
 ];
 function achCheck() {
@@ -4643,6 +4664,7 @@ function pcScene(k, c) {
     case 'baronCap': return ['sunrise', `<circle cx="75" cy="56" r="14" fill="#fff0c8"/>${cap}${pcCh(60, 26)}${pcCh(92, 24)}${pcB(32, 18, .55, PC_COLS[2], '#fff')}${pcB(108, 30, .5, PC_COLS[3], "#fff")}${pcB(75, 34, .65, c[0], c[1])}${pcCrown(75, 20, 1.1)}`];
     case 'lux': return ['sunrise', `<circle cx="112" cy="44" r="9" fill="#fff0c8"/><path d="M6 60 L40 52 L58 56 L76 48 L144 58 L144 72 L6 72Z" fill="#c98a6a"/><path d="M84 58 L98 38 L112 58Z" fill="#b07858"/><rect x="6" y="64" width="138" height="5" fill="#3a8ab0"/>${[20, 34, 128].map(x => `<path d="M${x} 72 Q${x + 1} 60 ${x} 52" stroke="#5a3a20" stroke-width="1.6" fill="none"/>${[0, 1, 2, 3, 4].map(f => `<ellipse cx="${x + Math.cos(f * 1.26) * 4}" cy="${52 + Math.sin(f * 1.26) * 1.4}" rx="5" ry="1.4" transform="rotate(${f * 72} ${x} 52)" fill="#2e6a2a"/>`).join('')}`).join('')}${pcB(70, 14, .9, c[0], c[1])}`];
     case 'baronLux': return ['sunrise', `<path d="M6 60 L40 52 L58 56 L76 48 L144 58 L144 72 L6 72Z" fill="#c98a6a"/><rect x="6" y="64" width="138" height="5" fill="#3a8ab0"/>${many(8, .5, 24, 44)}${pcCrown(75, 18, 1.2)}`];
+    case 'bri': case 'baronBri': return ['day', `<path d="M6 72 L6 40 Q14 36 22 44 L30 50 L32 72Z" fill="#7a8a5a"/><path d="M144 72 L144 38 Q134 36 126 44 L116 52 L114 72Z" fill="#6a7a4a"/><rect x="30" y="62" width="86" height="10" fill="#7a8a8a"/>${k === 'bri' ? `<path d="M26 44 L120 44" stroke="#4a4a50" stroke-width="2"/><rect x="34" y="30" width="6" height="16" fill="#cbb48a"/><rect x="106" y="30" width="6" height="16" fill="#cbb48a"/><path d="M37 31 Q73 54 109 31" stroke="#3a3a40" stroke-width="1.2" fill="none"/>${pcB(76, 6, .8, c[0], c[1])}` : `${many(8, .5, 10, 34)}${pcCrown(75, 18, 1.2)}`}`];
     case 'abq': return ['desert', `<circle cx="110" cy="40" r="10" fill="#fff0c8"/>${pcMesa()}${pcCactus(30)}${pcCactus(126, .8)}${pcB(70, 12, .9, c[0], c[1])}`];
     case 'baronAbq': return ['desert', `${pcMesa()}${pcCactus(132, .7)}${many(8, .5, 26, 44)}${pcCrown(75, 18, 1.2)}`];
     case 'world': return ['night', `${Array.from({ length: 20 }, () => `<circle cx="${(6 + R() * 138).toFixed(1)}" cy="${(6 + R() * 62).toFixed(1)}" r=".7" fill="#fff6d0"/>`).join('')}<circle cx="75" cy="40" r="26" fill="#2a6ab8"/><path d="M58 26 Q66 20 72 26 Q70 34 62 36 Q56 32 58 26Z M78 22 Q90 20 94 30 Q88 34 82 30Z M80 40 Q90 38 92 48 Q84 58 78 52 Q76 46 80 40Z M56 44 Q62 42 64 50 Q58 56 54 50Z" fill="#5ab86a"/><ellipse cx="75" cy="40" rx="38" ry="8" fill="none" stroke="#ffc23d" stroke-width=".8" stroke-dasharray="2 2"/>${pcB(36, 30, .45, c[0], c[1])}${pcB(114, 34, .45, PC_COLS[2], '#fff')}${pcB(75, 4, .4, PC_COLS[5], '#fff')}`];
@@ -5031,7 +5053,7 @@ function showMenu(open) {
   group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
-  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); })]);
+  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); })]);
   /* v121.10: watch the opening film again; the name and colours are skipped, the company flies in its own colours */
   group('Film', '#ff5e3a', [row('star', 'Başlangıç filmini tekrar izle', chev, () => { m.hidden = true; replayOpening(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
@@ -5075,6 +5097,20 @@ function testShowGame() {
   S.flag = S.balloons[1].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 50000; S.rep = 1.12; S.hezQ = []; S.paper = null; S.eventDue = false;
   S.lastShare = { me: 250, cap: 320, rivals: [], demand: 300, extra: 0 };
   S.bossSaid = { 'cap:hello': 1 }; S.weather = null; S.demand = null; S.nextEvent = S.day + 30; S.festNext = S.day + 60; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
+  if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
+  startDay();
+}
+/* v124: straight into Bristol with a small fleet (the three regions before it already won) */
+function testBristol() {
+  S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 90; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1; S.tut = { done: 1 };
+  S.barons = { cap: 30, abq: 55, lux: 80 }; S.baron = { cap: 30 }; S.iap = { worldTour: 1 }; S.holding = 150000; S.storyDone = 1;
+  const st = newRegionState('bri'); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = 'bri'; applyRegionTheme();
+  S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1 };
+  Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
+  S.balloons = []; ['M', 'L', 'M', 'S', 'M', 'L'].forEach(z => addBalloon(z));
+  S.pilots = []; for (let i = 0; i < 5; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + String.fromCharCode(65 + i) + '.', lvl: 2, xp: 0, trait: null });
+  S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 40000; S.rep = 1.1; S.hezQ = ['guide:hello']; S.paper = null; S.eventDue = false;
+  S.bossSaid = {}; S.weather = null; S.demand = null; S.nextEvent = S.day + 30; S.fiestaNext = S.day + 2; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
   if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
   startDay();
 }
@@ -6206,13 +6242,22 @@ const REGION_DEF = {
     hotels: ['Memnon View Inn', 'Theban Garden Hotel', 'Karnak Nile Lodge', 'Nefertari Palace Resort'],
     sponsors: [['Karkade Co.', 'KARKADE'], ['Papyrus Bank', 'PAPYRUS'], ['Nile Cruise Line', 'NILE CRUISE'], ['Scarab Mobile', 'SCARAB']],
     valley: ['Nil dokunuşu', 'Nil\'in üstünde 150 m altına alçal, felukaları selamla.']
+  },
+  /* v124: Bristol counts in pounds (about £0,85 to the euro) */
+  bri: {
+    name: 'Bristol', land: 'İngiltere', cur: '£', fx: .85, xl: 'Avon Yıldızı',
+    bnames: ['Clifton', 'Avon', 'Ashton', 'Severn', 'Redland', 'Cabot', 'Brandon', 'Leigh Woods', 'Kingsweston', 'Bedminster', 'Hotwells', 'Downs', 'Mendip', 'Cotham', 'Brunel', 'Portishead'],
+    pnames: ['Oliver', 'Amelia', 'George', 'Isla', 'Harry', 'Poppy', 'Jack', 'Freya', 'Alfie', 'Evie', 'Charlie', 'Ruby', 'Archie', 'Florence', 'Thomas', 'Daisy'],
+    hotels: ['Harbourside Inn', 'Clifton Terrace Hotel', 'Avon Gorge Lodge', 'Royal Crescent Grand'],
+    sponsors: [['Cider Press Co.', 'CIDER'], ['Severn Bank', 'SEVERN'], ['Harbour Tea Rooms', 'TEA ROOMS'], ['Westcountry Mobile', 'WESTCOUNTRY']],
+    valley: ['Avon dokunuşu', 'Avon nehrinin üstünde 150 m altına alçal, kanyonu selamla.']
   }
 };
 const RD = () => REGION_DEF[(S && S.region) || 'cap'];
 const FX = () => RD().fx;
 const ENTRY_FEE = 100000, AUTO_EFF = .85;
 /* Luxor costs more to enter: the holding pays it, the region still starts from its own small cash box */
-const entryFee = id => id === 'lux' ? 150000 : ENTRY_FEE;
+const entryFee = id => id === 'bri' ? 200000 : id === 'lux' ? 150000 : ENTRY_FEE; /* v124: Bristol, €200k */
 function applyRegionTheme() {
   const d = RD();
   TUFF = TUFF_BY[(S && S.region) || 'cap'] || TUFF_BY.cap;
@@ -6222,7 +6267,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'eveDay'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -6230,12 +6275,24 @@ const ABQ_RIVALS = [
   { name: 'Route 66 Air', col: '#e08a1e', col2: '#fff1d6', style: 'risky', balloons: ['M', 'S', 'S', 'S', 'S'], price: 140, rep: .9, cash: 20000 }
 ];
 /* ...and fight harder: more campaigns, more hotel poaching, faster and bigger fleet growth */
-const RIVAL_EDGE = () => S.region === 'abq' || S.region === 'lux';
+const RIVAL_EDGE = () => S.region === 'abq' || S.region === 'lux' || S.region === 'bri';
 /* Luxor is the hardest market of all: an old family boss with the biggest fleet, rivals that join forces sooner */
 const LUX_RIVALS = [
   { name: 'Theban Skies', col: '#1f6f8b', col2: '#e8c47a', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'L', 'M', 'M', 'M', 'M', 'M'], price: 215, rep: 1.28, cash: 130000 },
   { name: 'Pharaoh Balloons', col: '#c9a040', col2: '#2a2018', style: 'mid', balloons: ['L', 'L', 'M', 'M', 'M', 'M', 'S'], price: 175, rep: 1.1, cash: 60000 },
   { name: 'Nile Dawn Air', col: '#e0408a', col2: '#fff0f6', style: 'risky', balloons: ['M', 'M', 'S', 'S', 'S', 'S'], price: 130, rep: .95, cash: 30000 }
+];
+/* v124: Bristol's companies: old money at the top, a steady middle, a cheap harbour outfit */
+const BRI_RIVALS = [
+  { name: 'Clifton Crown Balloons', col: '#7a2a34', col2: '#e8d6a0', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'L', 'M', 'M', 'M', 'M', 'M', 'M'], price: 230, rep: 1.3, cash: 150000 },
+  { name: 'Severn Sky Co.', col: '#2a6a5a', col2: '#e6f2ea', style: 'mid', balloons: ['L', 'L', 'M', 'M', 'M', 'M', 'S'], price: 190, rep: 1.1, cash: 65000 },
+  { name: 'Harbourside Air', col: '#e0a020', col2: '#1f2a44', style: 'risky', balloons: ['M', 'M', 'S', 'S', 'S', 'S'], price: 145, rep: .95, cash: 30000 }
+];
+const ENTRANTS_BRI = [
+  { name: 'Cotswold Air Holidays', style: 'safe', rich: true, balloons: ['L', 'L', 'L', 'M', 'M'], price: 215, rep: 1.15, cash: 95000, intro: 'Cotswold Air Holidays, Londra\'daki tur şirketlerinin parasıyla Bristol\'e geldi! Filosu büyük, kesesi derin. Sir Reginald\'dan sonra en tehlikelisi bu olabilir canım.' },
+  { name: 'Cheap Skies Bristol', style: 'risky', balloons: ['M', 'M', 'S', 'S', 'S', 'S'], price: 130, rep: .9, cash: 35000, intro: 'Cheap Skies Bristol diye bir ucuzcu açıldı. Öğrencilere yarı fiyata bilet satacaklar, sisi de pek takmayacaklar.' },
+  { name: 'Royal Crescent Flights', style: 'mid', balloons: ['L', 'M', 'M'], price: 270, rep: 1.3, cash: 60000, intro: 'Royal Crescent Flights adında lüks bir butik şirket açıldı. Az balon, şampanyalı kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.' },
+  { name: 'Mendip Balloon Co.', style: 'mid', balloons: ['L', 'M', 'M', 'M'], price: 190, rep: 1.05, cash: 50000, intro: 'Mendip tepelerinden bir aile şirketi Mendip Balloon Co.\'yu kurdu. Dengeli, sağlam, sabırlı bir rakip.' }
 ];
 const ENTRANTS_LUX = [
   { name: 'Red Sea Balloon Co.', style: 'safe', rich: true, balloons: ['L', 'L', 'L', 'M', 'M'], price: 200, rep: 1.15, cash: 90000, intro: 'Red Sea Balloon Co., Hurghada\'nın otel zincirlerinin parasıyla Luksor\'a geldi! Filosu büyük, kesesi derin. Theban Skies\'tan sonra en tehlikelisi bu olabilir evlat.' },
@@ -6249,7 +6306,7 @@ const ENTRANTS_ABQ = [
   { name: 'Desert Bloom Flights', style: 'mid', balloons: ['M', 'M'], price: 250, rep: 1.25, cash: 50000, intro: 'Desert Bloom Flights adında lüks bir butik şirket açıldı. Az balon, yüksek fiyat, çok popüler.' },
   { name: 'Big Sky Fiesta Co.', style: 'mid', balloons: ['L', 'M', 'M'], price: 175, rep: 1, cash: 40000, intro: 'Big Sky Fiesta Co. Kaliforniya\'dan şube açtı. Dengeli, sağlam bir rakip.' }
 ];
-const regionEntrants = () => S.region === 'lux' ? ENTRANTS_LUX : S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
+const regionEntrants = () => S.region === 'bri' ? ENTRANTS_BRI : S.region === 'lux' ? ENTRANTS_LUX : S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
 const CHAPTERS_ABQ = [
   { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['balloons', 3, '3 balonluk filo'], ['pilots', 2, '2 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
   { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['balloons', 7, '7 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
@@ -6263,18 +6320,27 @@ const CHAPTERS_LUX = [
   { name: 'Firavunlar Vadisi', reward: 20000, award: 'Mısır Turizm Bakanlığı seni yılın balon şirketi seçti', awardShort: 'Turizm Bakanlığı ödülü', goals: [['balloons', 14, '14 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Nil gemisi sezonunda uç'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Luksor Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Teb Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
-const chap = () => S.region === 'lux' ? CHAPTERS_LUX : S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;
+/* v124: Bristol, a step harder than Luxor; the canyon chapter wants a flight on a foggy morning, the festival chapter a
+   Night Glow */
+const CHAPTERS_BRI = [
+  { name: 'Ashton Malikânesi', reward: 5000, award: 'Bristol Ticaret Odası seni yılın yeni işletmesi seçti', awardShort: 'Ticaret Odası ödülü', goals: [['balloons', 4, '4 balonluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
+  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['balloons', 8, '8 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .3, 'Pazarın %30\'u'], ['fog', 1, 'Sisli bir günde uç'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['balloons', 15, '15 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Bristol Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Avon Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
+];
+const chap = () => S.region === 'bri' ? CHAPTERS_BRI : S.region === 'lux' ? CHAPTERS_LUX : S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;
 const isBaron = id => !!(S.barons && S.barons[id || S.region]);
 const anyBaron = () => !!(S.barons && Object.keys(S.barons).length);
 const ownsRegion = id => id === S.region || !!(S.regions && S.regions[id]);
 function newRegionState(id) {
   const st = {
-    cash: id === 'lux' ? 5000 : 3000, loans: [], weather: null, demand: null, balloons: [], pilots: [], candidates: [], price: 170, rep: 1, strikes: 0, banUntil: 0, selfFly: true,
+    cash: id === 'bri' ? 6000 : id === 'lux' ? 5000 : 3000, loans: [], weather: null, demand: null, balloons: [], pilots: [], candidates: [], price: id === 'bri' ? 185 : 170, rep: 1, strikes: 0, banUntil: 0, selfFly: true,
     lastShare: null, shareNow: 0, hotels: [], ownHotels: [], hotelTaken: {}, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, guideUntil: 0,
     influCount: 0, guideCount: 0, plan: null, winter: null, nextWinter: S.day + 40, monoDays: 0, domDays: 0, lastMerge: null, firstMis: 1, poach: null,
     school: false, demandBase: 165, chapter: 0, monopolyShown: false, absentNotice: 0, fiesta: null, fiestaNext: S.day + 12, fiestaFlown: 0, netHist: []
   };
-  st.rivals = (id === 'lux' ? LUX_RIVALS : ABQ_RIVALS).map(r => ({ ...r, balloons: r.balloons.slice(), alive: true, dmg: r.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, lowDays: 0 }));
+  if (id === 'bri') { st.fogFlown = 0; st.glowCount = 0; }
+  st.rivals = (id === 'bri' ? BRI_RIVALS : id === 'lux' ? LUX_RIVALS : ABQ_RIVALS).map(r => ({ ...r, balloons: r.balloons.slice(), alive: true, dmg: r.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, lowDays: 0 }));
   const first = { id: S.nextId++, size: 'S', name: REGION_DEF[id].bnames[0], fly: true, dmgUntil: 0, pilot: null, flights: 0 };
   st.balloons.push(first); st.flag = first.id;
   return st;
@@ -6303,7 +6369,7 @@ function regionMenu() {
   /* the regions still ahead: locked, or open and waiting for you to go in */
   for (const R of REGIONS) {
     if (ownsRegion(R.id)) continue;
-    const open = regionOpen(R.id), why = open ? 'Açıldı, girmeye hazır' : R.id === 'abq' ? 'Kapadokya baronu olunca açılır' : R.id === 'lux' ? 'Albuquerque baronu olunca açılır' : 'Yakında';
+    const open = regionOpen(R.id), why = open ? 'Açıldı, girmeye hazır' : R.id === 'abq' ? 'Kapadokya baronu olunca açılır' : R.id === 'lux' ? 'Albuquerque baronu olunca açılır' : R.id === 'bri' ? 'Luksor baronu olunca açılır' : 'Yakında';
     const b = h('button', 'regrow' + (open ? ' open' : ' lock'), `<b>${R.mystery ? 'Yeni bölge' : R.name}</b><span>${R.land} · ${why}</span>${open ? '<em>Gir ›</em>' : '<i>' + LOCK + '</i>'}`);
     b.onclick = showWorldMap; c.appendChild(b);
   }
@@ -6338,6 +6404,7 @@ function enterRegion(id) {
   if ((S.holding || 0) < fee) return;
   S.holding -= fee; holdLog('exp', fee);
   if (id === 'lux') S.hezQ.push('hz:Mısır evlat, Luksor! Burası dünyanın en çetin balon pazarı. Batı Yakası\'nda, firavunların vadisinin üstünde her sabah yüzlerce turist bekler ama hepsini Nabil Haddad\'ın Theban Skies\'ı ve onun dostları paylaşır. Burada rakipler sana karşı çok çabuk birleşir, oteller çayla anlaşır, Sivil Havacılık da gözünü senden ayırmaz. 5.000 € ve bir küçük balonla başlıyorsun; holding buraya para gönderemez. Nil\'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Sabırlı ol evlat, Nil sabırlıyı sever.');
+  if (id === 'bri') S.hezQ.push('hz:İngiltere evlat, Bristol! Dünyanın balon zarflarının yarısı bu şehirde dikilmiş, gökyüzü de onu bilir. Avon Kanyonu\'nun üstünde asma bir köprü, limanda eski bir yelkenli, tepelerde yemyeşil tarlalar. Ama hava İngiliz havası: sarı bayrak sık, sabahları sis olur; sisli sabah iniş alanını görmek için alçalman gerekir. Rüzgâr batıdan, Bristol Kanalı\'ndan esip seni doğuya taşır. Havalimanının göğü de yasak bölge, girersen ceza yersin. Sir Reginald Ashby\'nin Clifton Crown\'u burada yüz yıldır uçuyor ve rakipler çabuk birleşir. 6.000 sterlin ve bir küçük balonla başlıyorsun. Her ay dört günlük bir balon festivali var; festival akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Şemsiyeni al evlat.');
   if (id === 'abq') S.hezQ.push('hz:Amerika evlat! Albuquerque\'de rüzgâr bambaşka: meşhur "kutu". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: 3.000 dolar ve bir küçük balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika\'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım.');
   if (GUIDES[id].hello) S.hezQ.push('guide:hello');
   switchRegion(id);
@@ -6947,7 +7014,7 @@ function hqCash(body) {
 }
 function hqTransfer(body) {
   const w = h('div', 'sec'); w.appendChild(h('h2', null, `${RD().name} kasasından aktar`));
-  w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Aktardığın para holdinge ${S.region === 'abq' ? '1,1\'e bölünerek euro olarak ' : ''}geçer; holding parası ülkelere geri dönmez.`));
+  w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Aktardığın para holdinge ${S.region === 'abq' ? '1,1\'e bölünerek euro olarak ' : S.region === 'bri' ? 'sterlinden euroya çevrilerek (£0,85 = €1) ' : ''}geçer; holding parası ülkelere geri dönmez.`));
   const row = h('div', 'btns');
   [[.25, '%25'], [.5, '%50'], [1, `Hepsi (${eur(10000)} kalsın)`]].forEach(([k, l]) => { const b = h('button', 'ghost', l); b.disabled = S.cash <= 10000; b.onclick = () => withdraw(k); row.appendChild(b); });
   w.appendChild(row); body.appendChild(w);
@@ -8367,6 +8434,7 @@ const NIGHT_WIN = []; /* windows and doors drawn this frame, lit again over the 
 function pickNightEvent() {
   if (S.showTonight === S.day - 1) return { k: 'show', ids: S.showIds || [], line: `Balon Şöleni · ${S.showN} balon` };
   if (S.fest) return { k: 'lanterns', line: `${S.fest.name}: fener alayı vadiden geçiyor.`, head: 'Fener alayı vadiyi aydınlattı', sub: 'Binlerce fener peribacalarının arasından geçti.' };
+  if (S.fiesta && S.region === 'bri') return { k: 'glow', line: 'Festival gecesi: çayırda balonlar brülör yakıyor.', head: 'Festival gecesi ışıl ışıl', sub: 'Ashton\'un çayırında yerdeki balonlar brülörlerini yaktı.' };
   if (S.fiesta && S.region === 'lux') return { k: 'glow', line: 'Nil gecesi: gemiler ışıl ışıl, kıyıda balonlar brülör yakıyor.', head: 'Nil kıyısında ışık gecesi', sub: 'Gemilerin ışıkları ve yerdeki balonlar Nil\'i aydınlattı.' };
   if (S.fiesta) return { k: 'glow', line: 'Fiesta gecesi: Balloon Glow! Balonlar yerde brülörlerini yakıyor.', head: 'Fiesta gecesi ışıl ışıl', sub: 'Yerdeki balonlar brülörlerini yaktı, meydan bayram yeri gibiydi.' };
   if (S.winter && S.winterNight !== S.winter.start) { S.winterNight = S.winter.start; return { k: 'snow', line: 'Kar altında kasabanın ışıkları yanıyor.', head: 'Kar altında ışıklı kasaba', sub: 'Vadi beyaza büründü, pencerelerde sıcak ışıklar.' }; }
