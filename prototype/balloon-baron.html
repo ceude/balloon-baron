@@ -1449,13 +1449,21 @@ function newWeather() {
   let L = [(Math.random() < .5 ? -1 : 1) * surf / 3.6 * .45, rnd(-4, 4) * F.wind, rnd(-6, 6) * F.wind, rnd(-8, 8) * F.wind];
   if (S.region === 'abq') L = [-rnd(2, 4) * F.wind, rnd(3, 5.5) * F.wind, -rnd(1, 3.5) * F.wind, rnd(4, 7) * F.wind]; /* Albuquerque kutusu */
   if (S.region === 'lux') L = [rnd(1.5, 3.5) * F.wind, -rnd(2, 4.5) * F.wind, rnd(2.5, 5) * F.wind, -rnd(3, 6) * F.wind]; /* Nil: alçakta kuzeye, yukarıda güneye */
+  if (S.region === 'bri') L = [rnd(-2.5, 1.5) * F.wind, rnd(2.5, 5) * F.wind, rnd(3, 6) * F.wind, (Math.random() < .5 ? -rnd(1, 4) : rnd(1, 3)) * F.wind]; /* v124: west wind off the Bristol Channel, east at mid heights */
   if (!L.some(v => v > 3)) { const i = 1 + Math.floor(Math.random() * 3); L[i] = rnd(3.5, 6) * F.wind; }
   if (!L.some(v => v < -.5)) { let m = 0; L.forEach((v, i) => { if (v < 3 && (L[m] >= 3 || v < L[m])) m = i; }); L[m] = -rnd(1, 4) * F.wind; }
   const target = 220 + (S.region === 'cap' ? rnd(1300, 2100) : rnd(1000, 1700)), keys = Object.keys(MISSIONS);
   let mission = S.day <= 2 || (Math.random() < .4 && !(S.fest && flag !== 'red')) ? null : (flag === 'yellow' && Math.random() < .5 ? 'precision' : pick(keys)); /* festivals always bring a special request */
   if (!S.firstMis && S.day >= 3 && flag !== 'red') { mission = 'proposal'; S.firstMis = 1; }
   else if (!S.firstMis) mission = null;
-  return { flag, surf: Math.round(surf), layers: L, target, seed: Math.floor(Math.random() * 1e9), mission, valley: 220 + (target - 220) * rnd(.35, .6) };
+  const W0 = { flag, surf: Math.round(surf), layers: L, target, seed: Math.floor(Math.random() * 1e9), mission, valley: 220 + (target - 220) * rnd(.35, .6) };
+  /* v124: Bristol: morning fog on about a quarter of the flyable days (the field shows only under its top), and on
+     ~40% of days the airport's controlled airspace over part of the way (above its floor: warning, then a fine) */
+  if (S.region === 'bri' && flag !== 'red') {
+    if (Math.random() < .28) W0.fog = { top: Math.round(rnd(90, 150)) };
+    if (Math.random() < .4) { const x0 = 220 + rnd(380, Math.max(420, target - 220 - 760)); W0.air = { x0: Math.round(x0), x1: Math.round(x0 + rnd(420, 620)), floor: Math.round(rnd(340, 410)) }; }
+  }
+  return W0;
 }
 /* the layer wind at a height, without gusts: what the arrows on the left and the tag under the basket show */
 function windBase(alt) {
@@ -1473,7 +1481,7 @@ function windBase(alt) {
   return v;
 }
 function windAt(alt, t) { return windBase(alt) + FLAGS[S.weather.flag].gust * .6 * (Math.sin(t * .11 + alt * .013) + .6 * Math.sin(t * .37 + alt * .031)); }
-let terrain = [], bgBalloons = [], wires = [];
+let terrain = [], bgBalloons = [], wires = [], BRI = null; /* v124: Bristol's landmarks for today's flight */
 function buildWorld() {
   const R = mulberry32(S.weather.seed), tx = S.weather.target;
   terrain = [];
@@ -1481,6 +1489,7 @@ function buildWorld() {
     if (Math.abs(x - 220) < 160 || Math.abs(x - tx) < 140 || (S.weather.mission === 'valley' && Math.abs(x - S.weather.valley) < 110)) continue;
     terrain.push({ x, h: 30 + R() * 65, w: 26 + R() * 22, tone: R() });
   }
+  BRI = S.region === 'bri' ? briWorld(R, tx) : null;
   /* power lines across the fields: never fly low under them, and never land beneath them */
   wires = [];
   for (let k = 0; k < 3; k++) {
@@ -1503,6 +1512,7 @@ function terrainH(x) {
   let h = 0;
   for (const c of terrain) { const d = Math.abs(x - c.x); if (d < c.w / 2) h = Math.max(h, c.h * Math.pow(1 - d / (c.w / 2), .6)); }
   for (const w of wires) if (x > w.x0 && x < w.x1) { const k = (x - w.x0) / (w.x1 - w.x0); h = Math.max(h, w.h - 12 * 4 * k * (1 - k)); }
+  if (BRI && BRI.bridge) h = Math.max(h, bridgeH(x - BRI.bridge.x));
   return h;
 }
 
@@ -2083,6 +2093,11 @@ function finishDay(flight) {
       else if (q === 'far') { S.rep -= starVal(S.rep) > 4.5 ? .04 : .02; ev.push(`${b.name}: hedeften ${Math.round(flight.dist)} m uzağa indin, yer ekibi seni geç buldu.`); }
       else if (q === 'hard') sev = .3;
       else if (q === 'crash') sev = .8;
+      /* v124: Bristol's landings and the airport */
+      if (S.weather.fog && q !== 'crash') { S.fogFlown = (S.fogFlown || 0) + 1; if (S.fogFlown === 1) ev.push('Sisli bir sabah uçtun ve sağ salim indin. Bristol\'de pilotluk budur.'); }
+      if (flight.farm) { Lg.fine += 300; S.rep -= .015; addReview('farm'); ev.push(`${flight.farm === 'cow' ? 'İneklerin' : 'Koyunların'} tarlasına indin. Çiftçi bağırıp çağırdı, gönlünü ${eur(300)} ile aldın.`); }
+      if (flight.mud) { S.rep -= .03; addReview('mud'); ev.push('Gelgit çamuruna indin. Yolcular çamura battı, ayakkabılar kurtarılamadı.'); }
+      if (flight.airFine) { Lg.fine += 1500; S.rep -= .04; paperAdd(3, `${S.company} havalimanının göğüne girdi`, `Sivil Havacılık Otoritesi şirkete ${eur(1500)} ceza kesti.`); ev.push(`Havalimanının kontrollü hava sahasına girdin: ${eur(1500)} ceza.`); }
     } else if (Math.random() < accP(b)) sev = rnd(.2, 1);
     else S.rep += .004;
     if (sev) {
@@ -2723,6 +2738,8 @@ const REV = {
   meh: [[2, 'Fena değildi ama ekip pek ilgilenmedi, balon da yorgun görünüyordu.'], [2, 'Yorumları okuyup biraz çekinmiştik, maalesef haklı çıktılar.'], [3, 'Manzara güzeldi, şirket vasat. Bir dahakine başka firmayı denerim.']],
   absent: [[3, 'Uçuş güzeldi ama broşürde kurucunun bizzat pilotluk yaptığı yazıyordu. Hiç görmedik.'], [2, 'Artık fabrika gibi olmuş. Aile şirketi havası kalmamış.']],
   design: [[5, '"{d}" desenli balonu görünce rezervasyon yaptık, fotoğraflar efsane oldu!'], [5, 'Gökyüzündeki en güzel balon "{d}" idi, içinde olmak ayrıcalıktı.'], [4, '"{d}" deseni çok yaratıcı, çocuklar bayıldı.']],
+  farm: [[2, 'Balon bir tarlanın ortasına kondu, hayvanlar kaçıştı. Çiftçi bize bağırdı, çocuklar ise çok eğlendi.'], [3, 'Tarladaki hayvanlar bizi pek sevmedi. Uçuş güzeldi, iniş biraz utanç vericiydi.']],
+  mud: [[2, 'Nehrin çamuruna indik. Manzara harikaydı ama ayakkabılarım orada kaldı.'], [2, 'Gelgit çekilmiş, balon çamura oturdu. Kahvaltıyı otelde yaptık, çamurlu.']],
   rival: [[5, 'Önce {r} ile uçacaktık, iyi ki fikrimizi değiştirmişiz. {c} harikaydı.'], [4, '{r} doluydu, {c} ile uçtuk. Hiç pişman değiliz.']]
 };
 /* Lines that name a place have their own version in Albuquerque and Luxor (same stars, same slot). */
@@ -5131,7 +5148,7 @@ function startFlight(pax) {
   $('testEnd').hidden = !S.story; /* prototype only: end a story flight without flying it */
   if (S.story) FL.borrow = { c: [S.rivals[0].col, S.rivals[0].col2] }; /* v112: Kenan's balloon, in Göreme Sky's colours */
   const tip = $('tip'); tip.hidden = false; tip.className = 'up'; tip.style.setProperty('--tipTop', ($('hud').offsetHeight + 10) + 'px');
-  tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> Hedef: ${S.weather.target > 220 ? 'sağdaki' : 'soldaki'} iniş alanı.` : '<b>Hedefin sağdaki iniş alanı.</b> Brülöre basılı tut: balon ısınır ve yükselir. Bırak: soğur ve alçalır. Her yükseklikte rüzgâr farklı eser; seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
+  tip.innerHTML = S.tutorialDone ? `<b>${pax} yolcu sepette.</b> Hedef: ${S.weather.target > 220 ? 'sağdaki' : 'soldaki'} iniş alanı.${S.weather.fog ? ' <b>Sis var:</b> iniş alanını görmek için alçal.' : ''}${S.weather.air ? ' Kırmızı çizgili bölge havalimanının göğü: içine girme.' : ''}` : '<b>Hedefin sağdaki iniş alanı.</b> Brülöre basılı tut: balon ısınır ve yükselir. Bırak: soğur ve alçalır. Her yükseklikte rüzgâr farklı eser; seni sağa taşıyan katmanı bul ve iniş alanına yavaşça in.';
   tutFlightStart(); /* v122 */
 }
 /* v111: the flying coach. A TestFlight player didn't see that the landing field was the goal, lost track of the wind
@@ -5460,7 +5477,7 @@ function updateFlight(dt) {
   if (f.alt > 15 && !f.air) { f.air = true; $('abort').hidden = true; $('vent').hidden = false; if (f.tut) S.ventTip = 1; /* v122: the tutorial's vent step teaches it */ else if (!S.ventTip) { S.ventTip = 1; f.ventTipAt = T; } else if (coached()) coachSay('goal', `<b>Hedefin iniş alanı:</b> ${S.weather.target > 220 ? 'sağda' : 'solda'}, ${(Math.abs(S.weather.target - f.x) / 1000).toLocaleString('tr-TR', { maximumFractionDigits: 1 })} km. Soldaki oklar her yükseklikteki rüzgârı gösterir; hedefe doğru esen katmanı bul.`); else if (!S.tutorialDone) $('tip').hidden = true; }
   if (f.air) {
     const th = terrainH(f.x);
-    if (th > 4 && f.alt < th) { f.wire = wires.some(w => f.x > w.x0 && f.x < w.x1); return land('crash'); }
+    if (th > 4 && f.alt < th) { f.wire = wires.some(w => f.x > w.x0 && f.x < w.x1); f.hit = briHit(f.x); return land('crash'); }
     if (f.alt <= 0) { f.alt = 0; return land(-f.vy > (f.tvent ? 3.1 : 2.6) ? 'hard' : null); }
   }
   if (f.mis && !f.mdone && f.air) {
@@ -5481,6 +5498,7 @@ function updateFlight(dt) {
      settles as the balloon takes up the new wind. Only the picture leans; the flight itself is unchanged. */
   { const rel = f.alt > 3 ? windBase(f.alt + 20) - f.vx : 0, goal = clamp(rel * .028, -.1, .1);
     f.tiltV = (f.tiltV || 0) + ((goal - (f.tilt || 0)) * 14 - (f.tiltV || 0) * 3.2) * dt; f.tilt = (f.tilt || 0) + f.tiltV * dt; }
+  if (S.weather.air && f.air && !f.done) briAirTick(f, dt);
   coachTick(f, dt);
   tutFlightTick(f, dt);
   if (f.air && f.alt > 0 && f.fuel <= 0 && !f.msg) { f.msg = 1; $('tip').hidden = false; $('tip').innerHTML = '<b>Yakıt bitti!</b> Balon soğuyarak iniyor.'; }
@@ -5556,12 +5574,16 @@ function land(q) {
     good: '<b>İyi iniş.</b> Yer ekibi seni hemen buldu.',
     far: `<b>Hedeften ${Math.round(f.dist)} m uzağa indin.</b> Yolcular bir saat beklemek zorunda kaldı.`,
     hard: '<b>Sert iniş!</b> Sepet devrildi, yolcularda hafif yaralanmalar var.',
-    crash: `<b>${f.wire ? 'Elektrik hattına takıldın!' : S.region === 'cap' ? 'Peribacasına çarptın!' : 'Ağaçlara çarptın!'}</b> Balon ağır hasarlı, yolcular yaralı.`
+    crash: `<b>${f.wire ? 'Elektrik hattına takıldın!' : f.hit ? BRI_HIT[f.hit] : S.region === 'cap' ? 'Peribacasına çarptın!' : 'Ağaçlara çarptın!'}</b> Balon ağır hasarlı, yolcular yaralı.`
   }[q];
+  /* v124: Bristol: where you came down (a field with sheep or cows, the tidal mud), and the airport's fine */
+  if (BRI && q !== 'crash') { f.farm = (BRI.pens.find(z => f.x > z.x0 && f.x < z.x1) || {}).k || null; f.mud = BRI.muds.some(z => f.x > z.x0 && f.x < z.x1); }
+  const extra = [f.farm ? `<b>${f.farm === 'cow' ? 'İneklerin' : 'Koyunların'} tarlasına indin!</b> Çiftçi hiç memnun değil.` : '', f.mud ? '<b>Gelgit çamuruna indin!</b> Yolcular dizlerine kadar çamura battı.' : '', f.airFined ? '<b>Havalimanının göğüne girdin.</b> Sivil Havacılık ceza kesecek.' : ''].filter(Boolean).join(' ');
   const tip = $('tip'); tip.hidden = false; tip.className = 'wide'; tip.replaceChildren(h('div', null, msg));
+  if (extra) tip.appendChild(h('div', null, extra));
   if (f.mis) tip.appendChild(h('div', null, mok ? `<b style="color:var(--green)">Görev tamam: ${MISSIONS[f.mis].name}!</b> +${eur(misReward(f.mis))}` : `<span style="color:var(--ink2)">Görev tamamlanamadı: ${MISSIONS[f.mis].name}.</span>`));
   if (S.story) { const sb = h('button', 'big', 'Maaşını al'); sb.style.cssText = 'width:100%;margin-top:12px'; sb.onclick = () => storyPay(q); tip.appendChild(sb); return; }
-  const b = h('button', 'big', 'Gün sonu raporu'); b.style.cssText = 'width:100%;margin-top:12px'; b.onclick = () => finishDay({ q, dist: f.dist, mis: f.mis, mok, mom: f.mom && f.mom.ok ? f.mom.k : null }); tip.appendChild(b);
+  const b = h('button', 'big', 'Gün sonu raporu'); b.style.cssText = 'width:100%;margin-top:12px'; b.onclick = () => finishDay({ q, dist: f.dist, mis: f.mis, mok, mom: f.mom && f.mom.ok ? f.mom.k : null, farm: f.farm, mud: f.mud, airFine: !!f.airFined }); tip.appendChild(b);
 }
 $('testEnd').addEventListener('click', e => {
   const q = e.target.dataset && e.target.dataset.q; if (!q || !FL || FL.done) return;
@@ -5936,11 +5958,183 @@ function clouds(p, groundY, topY, camX, kx) {
   }
   ctx.globalAlpha = 1;
 }
+/* ---------- v124: Bristol in flight ----------
+   The Avon Gorge with its suspension bridge (towers and chains: fly over them, never under the deck), a hilltop
+   observatory, church spires, the harbour with an old tall ship's masts and dock cranes, green fields with hedgerows,
+   some with sheep or cows (land there and the farmer is angry), the tidal mud of the river (a bad landing), gulls.
+   Fog and the airport's airspace come with the day's weather (S.weather.fog / .air). */
+const BRI_HIT = { bridge: 'Asma köprüye çarptın!', obs: 'Gözlem kulesine çarptın!', spire: 'Kilise kulesine çarptın!', mast: 'Yelkenlinin direklerine takıldın!', crane: 'Liman vincine çarptın!', tree: 'Ağaçlara çarptın!' };
+function briWorld(R, tx) {
+  const B = { bridge: null, pens: [], muds: [], water: [] }, taken = [[220 - 180, 220 + 180], [tx - 190, tx + 190]];
+  if (S.weather.mission === 'valley') taken.push([S.weather.valley - 120, S.weather.valley + 120]);
+  wires.forEach(w => taken.push([w.x0 - 30, w.x1 + 30]));
+  const free = (a, b) => !taken.some(t => b > t[0] && a < t[1]);
+  const place = (w, lo, hi, tries = 30) => { for (let i = 0; i < tries; i++) { const x = lo + R() * Math.max(1, hi - lo); if (free(x - w, x + w)) { taken.push([x - w, x + w]); return x; } } return null; };
+  const clear = (a, b) => { terrain = terrain.filter(c => c.x + c.w / 2 < a || c.x - c.w / 2 > b); };
+  /* the gorge and its bridge, most days on the way to the field */
+  const bx = R() < .75 ? place(195, 560, tx - 400) : place(195, -700, -260);
+  if (bx != null) { B.bridge = { x: bx }; clear(bx - 195, bx + 195); }
+  /* the harbour: water, the tall ship, two cranes, mud at its edge */
+  const hx = R() < .5 ? place(230, tx + 320, tx + 900) : place(230, -900, -280);
+  if (hx != null) {
+    clear(hx - 230, hx + 230); B.water.push([hx - 200, hx + 120]);
+    terrain.push({ x: hx - 70, h: 64 + R() * 10, w: 60, tone: R(), k: 'mast' });
+    terrain.push({ x: hx + 60, h: 78, w: 26, tone: R(), k: 'crane' }, { x: hx + 175, h: 72, w: 26, tone: R(), k: 'crane' });
+    B.muds.push({ x0: hx - 230, x1: hx - 200 + 1 });
+  }
+  /* the observatory on its hill, a church or two */
+  const ox = place(60, -500, tx + 600); if (ox != null) { clear(ox - 60, ox + 60); terrain.push({ x: ox, h: 82, w: 34, tone: R(), k: 'obs' }); }
+  terrain.forEach(c => { if (!c.k) c.k = R() < .14 ? 'spire' : 'tree'; });
+  terrain.filter(c => c.k === 'spire').forEach(c => { c.h = Math.max(c.h, 60); c.w = Math.min(c.w, 30); });
+  /* tidal mud on the way, fields with animals */
+  const mx = place(90, 420, tx - 260); if (mx != null) B.muds.push({ x0: mx - 80, x1: mx + 80 });
+  for (let i = 0; i < 3; i++) { const px = place(110, 300, tx + 700); if (px != null) B.pens.push({ x0: px - 100, x1: px + 100, k: R() < .6 ? 'sheep' : 'cow', n: 4 + Math.floor(R() * 4), s: R() * 99 }); }
+  /* a few gulls */
+  B.gulls = Array.from({ length: 7 }, () => ({ x: -200 + R() * 2600, alt: 90 + R() * 420, ph: R() * 6, v: 6 + R() * 8 }));
+  return B;
+}
+/* the bridge as an obstacle: cliffs on both sides, two towers, and the deck with its chains between them */
+function bridgeH(dx) {
+  const a = Math.abs(dx);
+  if (a > 195) return 0;
+  if (a > 108) return 52 * Math.pow(1 - (a - 108) / 87, .5);
+  if (a > 92) return 108;
+  return 62 + 46 * Math.pow(a / 92, 2);
+}
+function briHit(x) {
+  if (!BRI) return null;
+  if (BRI.bridge && bridgeH(x - BRI.bridge.x) > 0) return 'bridge';
+  const c = terrain.filter(t => Math.abs(x - t.x) < t.w / 2).sort((a, b) => b.h - a.h)[0];
+  return c ? c.k || 'tree' : null;
+}
+/* the airport's airspace: a warning on the way in, a fine after three seconds inside */
+function briAirTick(f, dt) {
+  const A = S.weather.air, inside = f.x > A.x0 && f.x < A.x1 && f.alt > A.floor;
+  f.airIn = inside;
+  if (!inside) { f.airT = 0; return; }
+  f.airT = (f.airT || 0) + dt;
+  const tip = $('tip');
+  if (!f.airWarn) { f.airWarn = 1; tip.hidden = false; tip.className = 'up'; tip.innerHTML = `<b>Havalimanının hava sahası!</b> ${A.floor} m'nin altına in, yoksa ceza yersin.`; sfx('thud'); }
+  if (f.airT > 3 && !f.airFined) { f.airFined = 1; tip.hidden = false; tip.className = 'up'; tip.innerHTML = '<b>Hava sahasını ihlal ettin.</b> Kule seni gördü: Sivil Havacılık ceza kesecek. Alçal.'; if (navigator.vibrate) try { navigator.vibrate(120); } catch (e) {} }
+}
+/* far scenery: rolling green hills, spires and terraces in the haze */
+function briFar(x, base, hh, ww, i, col) {
+  ctx.fillStyle = col;
+  if (i % 6 === 1) { ctx.fillRect(x - ww * .5, base - hh * .45, ww, hh * .45); ctx.beginPath(); ctx.moveTo(x - ww * .18, base - hh * .45); ctx.lineTo(x, base - hh * 1.25); ctx.lineTo(x + ww * .18, base - hh * .45); ctx.fill(); }
+  else if (i % 6 === 4) { ctx.beginPath(); ctx.moveTo(x - ww * 1.4, base); ctx.lineTo(x - ww * 1.4, base - hh * .4); for (let k = 0; k < 6; k++) { const a = x - ww * 1.4 + k * ww * .47; ctx.lineTo(a, base - hh * .48); ctx.lineTo(a + ww * .24, base - hh * .4); } ctx.lineTo(x + ww * 1.4, base - hh * .4); ctx.lineTo(x + ww * 1.4, base); ctx.fill(); }
+  else { ell(x, base - hh * .35, ww * .6, hh * .32, col); ell(x - ww * .3, base - hh * .22, ww * .4, hh * .22, col); }
+}
+/* the ground: fields in two greens divided by hedgerows, the river with its mud banks */
+function briGround(p, groundY, camX, kx) {
+  const gh = H - groundY, span = 150 * kx, off = ((-camX * kx * .9) % span + span) % span - span;
+  for (let i = 0, x = off; x < W + span; i++, x += span) {
+    const k = Math.floor((x - off) / span + Math.floor(camX * kx * .9 / span)); const alt = ((k % 3) + 3) % 3;
+    ctx.fillStyle = alt === 0 ? mix('#2a4420', '#86b452', p) : alt === 1 ? mix('#26401e', '#6e9e44', p) : mix('#2e4824', '#9ab85e', p);
+    ctx.beginPath(); ctx.moveTo(x, groundY + 3); ctx.lineTo(x + span, groundY + 3); ctx.lineTo(x + span * 1.25, groundY + gh * .5); ctx.lineTo(x + span * .25, groundY + gh * .5); ctx.fill();
+    ctx.strokeStyle = mix('#14240e', '#3e6a2a', p); ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, groundY + 3); ctx.lineTo(x + span * .25, groundY + gh * .5); ctx.stroke();
+  }
+  /* a hedgerow along the near side of the fields, bumpy */
+  ctx.fillStyle = mix('#16260f', '#3e6a2a', p);
+  for (let x = ((-camX * kx) % 14 + 14) % 14 - 14; x < W + 14; x += 14) ell(x, groundY + gh * .5, 9, 4.5, ctx.fillStyle);
+  /* the tidal river further in front: a brown bank, grey water */
+  const ry = groundY + gh * .66, rh = Math.max(5, gh * .12);
+  ctx.fillStyle = mix('#3a3024', '#8a7454', p); ctx.fillRect(0, ry - 3, W, rh + 6);
+  ctx.fillStyle = mix('#2a3a48', '#7f98a8', p); ctx.fillRect(0, ry, W, rh);
+  ctx.fillStyle = 'rgba(255,255,255,.2)'; for (let i = 0; i < 10; i++) ctx.fillRect(((i * 151 - camX * kx * .7) % (W + 60) + W + 60) % (W + 60) - 30, ry + rh * (.3 + (i % 3) * .2), 16, 1.5);
+}
+/* world-space Bristol things on the flight line, drawn with the obstacles */
+function briDraw(p, groundY, sx, ky, kx, f) {
+  const B = BRI; if (!B) return;
+  /* harbour water and mud first, flat on the ground */
+  for (const [a, b] of B.water) { const X0 = sx(a), X1 = sx(b); if (X1 < -20 || X0 > W + 20) continue; ctx.fillStyle = mix('#2a3e50', '#6a90a8', p); ctx.fillRect(X0, groundY - 1, X1 - X0, 8); ctx.fillStyle = 'rgba(255,255,255,.25)'; for (let x = X0 + 6; x < X1; x += 22) ctx.fillRect(x, groundY + 2, 10, 1.4); ctx.fillStyle = mix('#5a4a3a', '#a8987a', p); ctx.fillRect(X1, groundY - 4, 8, 6); }
+  for (const z of B.muds) { const X0 = sx(z.x0), X1 = sx(z.x1); if (X1 < -20 || X0 > W + 20) continue; ctx.fillStyle = mix('#3a2e20', '#8a6e48', p); ctx.beginPath(); ctx.ellipse((X0 + X1) / 2, groundY + 1, (X1 - X0) / 2, 5, 0, 0, 7); ctx.fill(); ctx.fillStyle = mix('#2a3a48', '#8aa4b4', p); ctx.beginPath(); ctx.ellipse((X0 + X1) / 2, groundY + 1.5, (X1 - X0) * .3, 2, 0, 0, 7); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.35)'; ctx.fillRect((X0 + X1) / 2 - 8, groundY, 6, 1); }
+  /* fields with animals behind a fence */
+  for (const z of B.pens) {
+    const X0 = sx(z.x0), X1 = sx(z.x1); if (X1 < -20 || X0 > W + 20) continue;
+    ctx.strokeStyle = mix('#3a2a1a', '#8a6a44', p); ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(X0, groundY - 5); ctx.lineTo(X1, groundY - 5); ctx.moveTo(X0, groundY - 2.5); ctx.lineTo(X1, groundY - 2.5); for (let x = X0; x <= X1; x += 14) { ctx.moveTo(x, groundY); ctx.lineTo(x, groundY - 7); } ctx.stroke();
+    const Rn = mulberry32(Math.floor(z.s * 1000));
+    for (let i = 0; i < z.n; i++) {
+      const x = X0 + 10 + Rn() * (X1 - X0 - 20), y = groundY - 1 + Rn() * 3, d = Rn() < .5 ? -1 : 1, bob = Math.sin(T * 1.5 + i) * .4;
+      if (z.k === 'sheep') { ell(x, y - 3.5 + bob, 4.6, 3, mix('#a8a49a', '#f6f2e8', p)); ell(x + d * 4.4, y - 4 + bob, 1.8, 1.6, '#2a2420'); ctx.fillStyle = '#2a2420'; ctx.fillRect(x - 2.5, y - 1, 1, 2); ctx.fillRect(x + 1.5, y - 1, 1, 2); }
+      else { ctx.fillStyle = mix('#8a8680', '#f4f0ea', p); ctx.fillRect(x - 6, y - 7, 12, 5); ctx.fillStyle = '#1f1b1a'; ctx.fillRect(x - 3, y - 7, 4, 3); ctx.fillRect(x + d * 6 - (d < 0 ? 3 : 0), y - 8, 3, 3); ctx.fillRect(x - 5, y - 2, 1.4, 3); ctx.fillRect(x + 4, y - 2, 1.4, 3); }
+    }
+  }
+  /* the gorge and the suspension bridge */
+  if (B.bridge) {
+    const c = B.bridge.x, X = sx(c); if (X > -400 && X < W + 400) {
+      const yA = a => groundY - a * ky, rock = mix('#4a4038', '#a89478', p), rock2 = mix('#3a3028', '#8a7860', p), green = mix('#2a3a20', '#6a8a48', p);
+      for (const s of [-1, 1]) {
+        ctx.fillStyle = rock; ctx.beginPath(); ctx.moveTo(sx(c + s * 195), groundY + 1); for (let a = 195; a >= 104; a -= 6) ctx.lineTo(sx(c + s * a), yA(bridgeH(a) * (a > 108 ? 1 : 0) || 52)); ctx.lineTo(sx(c + s * 104), yA(52)); ctx.lineTo(sx(c + s * 88), groundY + 1); ctx.closePath(); ctx.fill();
+        ctx.fillStyle = rock2; for (let k = 0; k < 4; k++) ctx.fillRect(sx(c + s * (112 + k * 9)) - 1, yA(44 - k * 7), 2.2, (44 - k * 7) * ky * .7);
+        ctx.fillStyle = green; for (let a = 130; a < 195; a += 13) ell(sx(c + s * a), yA(bridgeH(a)) + 2, 6 * kx + 3, 4, green);
+      }
+      ctx.fillStyle = mix('#2a3a48', '#7f98a8', p); ctx.fillRect(sx(c - 88), groundY - 2, sx(c + 88) - sx(c - 88), 6); /* the Avon at the bottom */
+      ctx.fillStyle = mix('#3a2e20', '#8a6e48', p); ctx.fillRect(sx(c - 88), groundY - 3, 10, 4); ctx.fillRect(sx(c + 78), groundY - 3, 10, 4);
+      const dk = yA(62), tTop = yA(108), stone = mix('#5a5040', '#d8c8a0', p), stoneD = mix('#4a4030', '#b0a07a', p);
+      /* chains and hangers */
+      ctx.strokeStyle = mix('#1e1e24', '#4a4a54', p); ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(sx(c - 100), tTop + 4); ctx.quadraticCurveTo(X, 2 * (dk - 3) - (tTop + 4), sx(c + 100), tTop + 4); ctx.stroke();
+      ctx.lineWidth = .8; for (let a = -84; a <= 84; a += 12) { const k = a / 100, cy = tTop + 4 + (1 - k * k) * (dk - 3 - tTop - 4); ctx.beginPath(); ctx.moveTo(sx(c + a), cy); ctx.lineTo(sx(c + a), dk); ctx.stroke(); }
+      ctx.fillStyle = mix('#2a2a30', '#5a5a64', p); ctx.fillRect(sx(c - 104), dk, sx(c + 104) - sx(c - 104), 4); /* the deck */
+      for (const s of [-1, 1]) { const x0 = sx(c + s * 100 - 8), x1 = sx(c + s * 100 + 8); ctx.fillStyle = stone; ctx.fillRect(x0, tTop, x1 - x0, yA(52) - tTop); ctx.fillStyle = stoneD; ctx.fillRect(x0 + (x1 - x0) * .62, tTop, (x1 - x0) * .38, yA(52) - tTop); ctx.fillStyle = mix('#1e1a20', '#6a6a7a', p); const aw = (x1 - x0) * .4; ctx.fillRect(x0 + (x1 - x0) * .3, dk - (yA(62) - yA(84)), aw, yA(62) - yA(84) + 4); ctx.beginPath(); ctx.arc(x0 + (x1 - x0) * .3 + aw / 2, dk - (yA(62) - yA(84)), aw / 2, Math.PI, 0); ctx.fill(); ctx.fillStyle = stoneD; ctx.fillRect(x0 - 1, tTop - 3, x1 - x0 + 2, 4); }
+    }
+  }
+  /* gulls */
+  ctx.strokeStyle = mix('#3a3a44', '#f8f8f4', p); ctx.lineWidth = 1.6; ctx.lineCap = 'round';
+  for (const g of B.gulls) { g.x += g.v * (f ? SIM : 1) * (1 / 60) * .4; const x = sx(g.x + Math.sin(T * .3 + g.ph) * 30), y = groundY - (g.alt + Math.sin(T * .5 + g.ph) * 12) * ky, w = Math.sin(T * 7 + g.ph) * 3; if (x < -10 || x > W + 10) continue; ctx.beginPath(); ctx.moveTo(x - 6, y - w); ctx.quadraticCurveTo(x - 3, y - 3 - w * .3, x, y); ctx.quadraticCurveTo(x + 3, y - 3 - w * .3, x + 6, y - w); ctx.stroke(); }
+}
+/* one Bristol obstacle from the terrain list */
+function briObstacle(c, x, groundY, cw, chh, p) {
+  if (c.k === 'tree') { const beech = c.tone > .55; tree(x, groundY + 1, cw * 1.5, chh, beech ? mix(mix('#2a141a', '#7a2a3a', p), '#8a3a44', c.tone * .3) : mix(mix('#1e3418', '#4a7a32', p), '#5a8a3a', c.tone * .3), mix('#2a1e14', '#5a4430', p)); return; }
+  if (c.k === 'spire') { const st = mix('#5a5040', '#cfc0a0', p), sd = mix('#3a3428', '#9a8a6a', p); ctx.fillStyle = st; ctx.fillRect(x - cw * .55, groundY - chh * .32, cw * .7, chh * .32); ctx.fillRect(x + cw * .1, groundY - chh * .5, cw * .3, chh * .5); ctx.fillStyle = sd; ctx.beginPath(); ctx.moveTo(x + cw * .06, groundY - chh * .5); ctx.lineTo(x + cw * .25, groundY - chh); ctx.lineTo(x + cw * .44, groundY - chh * .5); ctx.fill(); ctx.fillStyle = mix('#3a2420', '#8a4a3a', p); ctx.beginPath(); ctx.moveTo(x - cw * .6, groundY - chh * .32); ctx.lineTo(x - cw * .2, groundY - chh * .45); ctx.lineTo(x + cw * .15, groundY - chh * .32); ctx.fill(); return; }
+  if (c.k === 'obs') { /* a round stone tower on a grassy knoll, with a little dome */
+    ell(x, groundY + 2, cw * 1.6, chh * .14, mix('#2a3a20', '#6a8a48', p));
+    const st = mix('#5a5040', '#d8c8a0', p), tw = Math.max(9, cw * .8); ctx.fillStyle = st; ctx.fillRect(x - tw / 2, groundY - chh * .9, tw, chh * .9); ctx.fillStyle = mix('#4a4030', '#b0a07a', p); ctx.fillRect(x + tw * .18, groundY - chh * .9, tw * .32, chh * .9);
+    ctx.fillStyle = st; for (let k = 0; k < 4; k++) ctx.fillRect(x - tw * .56 + k * tw * .34, groundY - chh * .98, tw * .2, chh * .09);
+    ctx.fillStyle = mix('#2a2a30', '#6a7a8a', p); ctx.beginPath(); ctx.arc(x, groundY - chh * .9, tw * .3, Math.PI, 0); ctx.fill(); ctx.fillStyle = '#1e1a20'; ctx.fillRect(x - tw * .08, groundY - chh * .62, tw * .16, chh * .1); ctx.fillRect(x - tw * .08, groundY - chh * .3, tw * .16, chh * .1); return; }
+  if (c.k === 'mast') { /* the old tall ship: dark hull on the water, three masts with yards and rigging */
+    const hw = cw * 1.1; ctx.fillStyle = mix('#1e1a1a', '#3a2e2a', p); ctx.beginPath(); ctx.moveTo(x - hw, groundY - 9); ctx.lineTo(x + hw * 1.1, groundY - 9); ctx.lineTo(x + hw * .9, groundY + 1); ctx.lineTo(x - hw * .85, groundY + 1); ctx.fill(); ctx.fillStyle = mix('#8a3a2a', '#c8a050', p); ctx.fillRect(x - hw, groundY - 9, hw * 2.1, 1.6);
+    ctx.strokeStyle = mix('#2a2018', '#5a4030', p); ctx.lineWidth = 2; for (const [dx, k] of [[-.55, .9], [0, 1], [.5, .85]]) { const mx = x + dx * hw; ctx.beginPath(); ctx.moveTo(mx, groundY - 9); ctx.lineTo(mx, groundY - chh * k); ctx.stroke(); for (let y = 1; y <= 3; y++) { const yy = groundY - 9 - (chh * k - 9) * y / 3.4, yw = hw * (.34 - y * .06); ctx.beginPath(); ctx.moveTo(mx - yw, yy); ctx.lineTo(mx + yw, yy); ctx.stroke(); } }
+    ctx.lineWidth = .6; ctx.beginPath(); ctx.moveTo(x - hw, groundY - 9); ctx.lineTo(x - .55 * hw, groundY - chh * .9); ctx.lineTo(x, groundY - chh); ctx.lineTo(x + .5 * hw, groundY - chh * .85); ctx.lineTo(x + hw * 1.25, groundY - 10); ctx.stroke(); return; }
+  if (c.k === 'crane') { /* a dock crane: a lattice tower, a cab and a long jib */
+    ctx.strokeStyle = mix('#5a2a1a', '#c0582a', p); ctx.lineWidth = 2; const tw = cw * .4;
+    ctx.beginPath(); ctx.moveTo(x - tw, groundY); ctx.lineTo(x - tw * .5, groundY - chh * .82); ctx.moveTo(x + tw, groundY); ctx.lineTo(x + tw * .5, groundY - chh * .82); ctx.stroke();
+    ctx.lineWidth = .8; ctx.beginPath(); for (let k = 0; k < 5; k++) { const y0 = groundY - chh * .82 * k / 5, y1 = groundY - chh * .82 * (k + 1) / 5; ctx.moveTo(x - tw + (tw * .5) * k / 5, y0); ctx.lineTo(x + tw - (tw * .5) * (k + 1) / 5, y1); } ctx.stroke();
+    ctx.fillStyle = mix('#5a2a1a', '#c0582a', p); ctx.fillRect(x - tw * .9, groundY - chh * .92, tw * 1.8, chh * .1); ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(x - tw, groundY - chh * .88); ctx.lineTo(x - cw * 1.6, groundY - chh * .78); ctx.moveTo(x, groundY - chh); ctx.lineTo(x - cw * 1.6, groundY - chh * .8); ctx.stroke();
+    ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(x - cw * 1.3, groundY - chh * .79); ctx.lineTo(x - cw * 1.3, groundY - chh * .45); ctx.stroke(); ctx.fillStyle = '#2a2a30'; ctx.fillRect(x - cw * 1.3 - 2, groundY - chh * .45, 4, 4); return; }
+}
+/* fog and the airspace go over the scenery, under your balloon */
+function briOverlay(p, groundY, topY, sx, sy, f) {
+  const Wx = S.weather;
+  if (Wx.air && f) {
+    const A = Wx.air, X0 = sx(A.x0), X1 = sx(A.x1), Y = sy(A.floor);
+    if (X1 > -10 && X0 < W + 10) {
+      ctx.save(); ctx.beginPath(); ctx.rect(X0, topY - 40, X1 - X0, Y - topY + 40); ctx.clip();
+      ctx.fillStyle = f.airIn ? 'rgba(229,67,47,.22)' : 'rgba(229,67,47,.12)'; ctx.fillRect(X0, topY - 40, X1 - X0, Y - topY + 40);
+      ctx.strokeStyle = 'rgba(229,67,47,.32)'; ctx.lineWidth = 7; for (let x = X0 - (Y - topY); x < X1 + 40; x += 26) { ctx.beginPath(); ctx.moveTo(x, Y + 4); ctx.lineTo(x + (Y - topY) + 40, topY - 44); ctx.stroke(); }
+      ctx.restore();
+      ctx.strokeStyle = 'rgba(229,67,47,.9)'; ctx.lineWidth = 2; ctx.setLineDash([8, 6]); ctx.beginPath(); ctx.moveTo(X0, topY - 40); ctx.lineTo(X0, Y); ctx.lineTo(X1, Y); ctx.lineTo(X1, topY - 40); ctx.stroke(); ctx.setLineDash([]);
+      const lx = clamp((X0 + X1) / 2, X0 + 50, X1 - 50), ly = Y - 16;
+      ctx.font = '800 14px "Barlow Condensed", system-ui, sans-serif'; const lb = `HAVA SAHASI · ${A.floor} m üstü`, tw = ctx.measureText(lb).width + 40;
+      ctx.fillStyle = 'rgba(160,30,24,.9)'; rrect(lx - tw / 2, ly - 12, tw, 24, 12); ctx.fill(); ctx.fillStyle = '#fff'; ctx.textAlign = 'left'; ctx.fillText(lb, lx - tw / 2 + 32, ly + 5);
+      /* the little plane */
+      ctx.save(); ctx.translate(lx - tw / 2 + 16, ly); ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.ellipse(0, 0, 9, 2.2, 0, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(-1, 0); ctx.lineTo(-5, -7); ctx.lineTo(-2, -7); ctx.lineTo(4, 0); ctx.lineTo(-2, 7); ctx.lineTo(-5, 7); ctx.closePath(); ctx.fill(); ctx.beginPath(); ctx.moveTo(-8, 0); ctx.lineTo(-10, -4); ctx.lineTo(-7.5, -4); ctx.lineTo(-5, 0); ctx.fill(); ctx.restore();
+    }
+  }
+  if (Wx.fog && (f || mode === 'flight')) {
+    const top = sy(Wx.fog.top), under = f && f.alt < Wx.fog.top, a = under ? .42 : .9;
+    const g = ctx.createLinearGradient(0, top - 46, 0, H); g.addColorStop(0, 'rgba(226,230,234,0)'); g.addColorStop(.14, `rgba(226,230,234,${a * .75})`); g.addColorStop(.4, `rgba(232,235,238,${a})`); g.addColorStop(1, `rgba(236,238,240,${a})`);
+    ctx.fillStyle = g; ctx.fillRect(0, top - 46, W, H - top + 46);
+    ctx.fillStyle = `rgba(255,255,255,${under ? .12 : .3})`; for (let i = 0; i < 9; i++) { const x = ((i * 173 + T * 6) % (W + 200)) - 100; ell(x, top + 6 + (i % 3) * 10, 90, 12, ctx.fillStyle); }
+    if (f && !under && !f.done) { ctx.font = '800 13px "Barlow Condensed", system-ui, sans-serif'; ctx.fillStyle = 'rgba(60,70,90,.85)'; ctx.textAlign = 'right'; ctx.fillText(`SİS · ${Wx.fog.top} m · iniş alanını görmek için alçal`, W - 12, top - 8); ctx.textAlign = 'left'; }
+  }
+}
 function scenery(p, groundY, topY, camX, kx, dt, showBg, f) {
   const ky = (groundY - topY) / 650, sx = wx => (wx - camX) * kx, sy = a => groundY - a * ky;
   const g = ctx.createLinearGradient(0, 0, 0, groundY);
-  const desert = S.region === 'abq', nile = S.region === 'lux';
-  if (nile) { g.addColorStop(0, mix('#14203f', '#6aa8d8', p)); g.addColorStop(.55, mix('#6a4a6a', '#f8c890', p)); g.addColorStop(1, mix('#f2a050', '#fff0c0', p)); }
+  const desert = S.region === 'abq', nile = S.region === 'lux', brit = S.region === 'bri';
+  if (brit) { g.addColorStop(0, mix('#28324a', '#8ea4ba', p)); g.addColorStop(.55, mix('#5a6076', '#c6d0d8', p)); g.addColorStop(1, mix('#a88a84', '#e6eae6', p)); } /* v124: an overcast English morning */
+  else if (nile) { g.addColorStop(0, mix('#14203f', '#6aa8d8', p)); g.addColorStop(.55, mix('#6a4a6a', '#f8c890', p)); g.addColorStop(1, mix('#f2a050', '#fff0c0', p)); }
   else if (desert) { g.addColorStop(0, mix('#1d2450', '#6aa5d8', p)); g.addColorStop(.55, mix('#7a4a6a', '#f6c08a', p)); g.addColorStop(1, mix('#f39a5a', '#ffe6b0', p)); }
   else { g.addColorStop(0, mix('#1b1840', '#5f8fc6', p)); g.addColorStop(.55, mix('#6b3e6e', '#f0b48c', p)); g.addColorStop(1, mix('#f08a4a', '#ffe2ac', p)); }
   ctx.fillStyle = g; ctx.fillRect(0, 0, W, groundY);
@@ -5955,23 +6149,30 @@ function scenery(p, groundY, topY, camX, kx, dt, showBg, f) {
     for (let x = W * .15; x <= W + 40; x += 18) { const wx = (x / kx + camX * .08) * .006; ctx.lineTo(x, groundY - vh * (.13 + .05 * Math.sin(wx * 1.3 + 1) + .02 * Math.sin(wx * 5.1)) * clamp((x - W * .15) / (W * .3), 0, 1)); }
     ctx.lineTo(W + 40, groundY); ctx.closePath(); ctx.fill();
   }
+  if (brit) { /* v124: the Mendips, soft and green */
+    ctx.fillStyle = mix('#2e3a3a', '#8aa08a', p); ctx.beginPath(); ctx.moveTo(-20, groundY);
+    for (let x = -20; x <= W + 40; x += 16) { const wx = (x / kx + camX * .08) * .004; ctx.lineTo(x, groundY - vh * (.12 + .04 * Math.sin(wx * 2.1 + .5) + .02 * Math.sin(wx * 5.3))); }
+    ctx.lineTo(W + 40, groundY); ctx.closePath(); ctx.fill();
+  }
   if (nile) { /* the Theban hills: flat-topped cliffs with the pyramid-shaped peak of al-Qurn */
     ctx.fillStyle = mix('#5a3a4a', '#e0a87c', p); ctx.beginPath(); ctx.moveTo(-20, groundY);
     for (let x = -20; x <= W + 40; x += 14) { const wx = (x / kx + camX * .08) * .005, qx = (x / kx + camX * .08) % 2400; ctx.lineTo(x, groundY - vh * (.12 + .015 * Math.sin(wx * 7.3) + Math.max(0, .09 - Math.abs(qx - 1200) / 1200 * .25))); }
     ctx.lineTo(W + 40, groundY); ctx.closePath(); ctx.fill();
   }
-  ctx.fillStyle = nile ? mix('#4a4038', '#c8a070', p) : desert ? mix('#5a3a40', '#c99a74', p) : mix('#4a3050', '#c9967e', p);
+  ctx.fillStyle = brit ? mix('#2e3a2a', '#7a9a62', p) : nile ? mix('#4a4038', '#c8a070', p) : desert ? mix('#5a3a40', '#c99a74', p) : mix('#4a3050', '#c9967e', p);
   ctx.beginPath(); ctx.moveTo(0, groundY);
-  for (let x = -20; x <= W + 40; x += 40) { const wx = (x / kx + camX * .15) * .01; ctx.lineTo(x, groundY - vh * (.11 + .06 * Math.sin(wx * 1.7) + .035 * Math.sin(wx * 4.3))); }
+  if (brit) for (let x = -20; x <= W + 40; x += 12) { const wx = (x / kx + camX * .15) * .01; ctx.lineTo(x, groundY - vh * (.085 + .03 * Math.sin(wx * .8) + .012 * Math.sin(wx * 2.1))); } /* v124: rolling, not peaked */
+  else for (let x = -20; x <= W + 40; x += 40) { const wx = (x / kx + camX * .15) * .01; ctx.lineTo(x, groundY - vh * (.11 + .06 * Math.sin(wx * 1.7) + .035 * Math.sin(wx * 4.3))); }
   ctx.lineTo(W, groundY); ctx.closePath(); ctx.fill();
   /* v111.3: the far row sinks into the haze of the horizon (paler, a little smaller, a mist over its feet) so it never
      reads as the chimneys you can hit */
-  const hzc = nile ? mix('#f2a050', '#fff0c0', p) : desert ? mix('#f39a5a', '#ffe6b0', p) : mix('#f08a4a', '#ffe2ac', p), far = c => mix(c, hzc, .58); /* v122: hazier (was .45), so they read as scenery behind the ones you can hit */
+  const hzc = brit ? mix('#a88a84', '#e6eae6', p) : nile ? mix('#f2a050', '#fff0c0', p) : desert ? mix('#f39a5a', '#ffe6b0', p) : mix('#f08a4a', '#ffe2ac', p), far = c => mix(c, hzc, .58); /* v122: hazier (was .45), so they read as scenery behind the ones you can hit */
   const R = mulberry32(5);
   for (let i = 0; i < 40; i++) {
     const wx = i * 130 + R() * 60 - 600, x = (wx - camX * .45) * kx, hh = vh * (.07 + R() * .1) * .85, ww = hh * (.4 + R() * .2);
     if (x < -60 || x > W + 60) continue;
-    if (nile) { if (i % 5 === 2) temple(x, groundY + 2, ww * 3, hh * .55, far(mix('#6a5040', '#e2c08a', p))); else datePalm(x, groundY + 2, hh * .9, far(mix('#1e3a22', '#4a7a3a', p)), far(mix('#3a2a1e', '#8a6a44', p))); }
+    if (brit) briFar(x, groundY + 2, hh, ww, i, far(mix('#2e3a30', '#6a8462', p)));
+    else if (nile) { if (i % 5 === 2) temple(x, groundY + 2, ww * 3, hh * .55, far(mix('#6a5040', '#e2c08a', p))); else datePalm(x, groundY + 2, hh * .9, far(mix('#1e3a22', '#4a7a3a', p)), far(mix('#3a2a1e', '#8a6a44', p))); }
     else if (desert) mesa(x, groundY + 2, ww * 2.6, hh * .6, far(mix('#5e3a3a', '#c98a5e', p)), S.winter ? '#eef2f8' : far(mix('#4a2c2c', '#a86a44', p)));
     else chimney(x, groundY + 2, ww, hh, far(mix('#5c3a4a', '#d9a07a', p)), null, S.winter ? '#eef2f8' : far(mix('#3e2836', '#9a6448', p)));
   }
@@ -5984,8 +6185,9 @@ function scenery(p, groundY, topY, camX, kx, dt, showBg, f) {
     if (xx > -50 && xx < W + 50) balloon(xx, yy, Math.max(6, vh * .045 * b.s * (f ? .75 : 1)), b.c[0], b.c[1], false, f ? .45 : .92);
   }
   const wz = !!S.winter;
-  const gg = ctx.createLinearGradient(0, groundY, 0, H); gg.addColorStop(0, wz ? mix('#c9d3e2', '#eef3fa', p) : nile ? mix('#3a4a2a', '#9ab85a', p) : desert ? mix('#6a4a30', '#d8b07a', p) : mix('#5a3a32', '#c48a62', p)); gg.addColorStop(1, wz ? mix('#7d879c', '#b9c4d6', p) : nile ? mix('#22301a', '#6a8a3a', p) : desert ? mix('#3a2a1e', '#a07848', p) : mix('#2e1e22', '#7a5040', p));
+  const gg = ctx.createLinearGradient(0, groundY, 0, H); gg.addColorStop(0, wz ? mix('#c9d3e2', '#eef3fa', p) : brit ? mix('#2a4220', '#7aa84a', p) : nile ? mix('#3a4a2a', '#9ab85a', p) : desert ? mix('#6a4a30', '#d8b07a', p) : mix('#5a3a32', '#c48a62', p)); gg.addColorStop(1, wz ? mix('#7d879c', '#b9c4d6', p) : brit ? mix('#1a2c14', '#4a7430', p) : nile ? mix('#22301a', '#6a8a3a', p) : desert ? mix('#3a2a1e', '#a07848', p) : mix('#2e1e22', '#7a5040', p));
   ctx.fillStyle = gg; ctx.fillRect(0, groundY, W, H - groundY);
+  if (brit && !wz) briGround(p, groundY, camX, kx); /* v124: hedgerowed fields and the tidal river */
   if (desert) { ctx.fillStyle = mix('#2e4a66', '#7fb6d6', p); ctx.fillRect(0, groundY + (H - groundY) * .42, W, Math.max(3, (H - groundY) * .07)); } /* Rio Grande */
   if (nile) { /* the Nile across the floodplain, a felucca on it, sugar cane rows on the near bank */
     const ny = groundY + (H - groundY) * .3, nh = Math.max(6, (H - groundY) * .16);
@@ -6032,6 +6234,10 @@ function draw(dt) {
     for (const fx of [vx - 60, vx + 60]) { const X = sx(fx); ctx.strokeStyle = '#2a1a14'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X, groundY); ctx.lineTo(X, groundY - 26); ctx.stroke(); ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.moveTo(X, groundY - 26); ctx.lineTo(X + 12, groundY - 21); ctx.lineTo(X, groundY - 16); ctx.fill(); }
   }
   const tx = S.weather.target, lzx0 = sx(tx - 70), lzx1 = sx(tx + 70);
+  if (BRI) briDraw(p, groundY, sx, ky, kx, f);
+  /* v124: in Bristol's fog the field (flags, glow, trailer) shows only once you're under the fog's top */
+  const fieldVis = !(f && S.weather.fog && f.alt >= S.weather.fog.top && !f.done);
+  if (fieldVis) {
   ctx.fillStyle = mix('#4b5a34', '#a7b46a', p); ctx.fillRect(lzx0, groundY - 2, lzx1 - lzx0, 7);
   for (const fx of [tx - 70, tx + 70]) { const X = sx(fx); ctx.strokeStyle = '#2a1a14'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X, groundY); ctx.lineTo(X, groundY - 22); ctx.stroke(); ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.moveTo(X, groundY - 22); ctx.lineTo(X + 11, groundY - 18); ctx.lineTo(X, groundY - 14); ctx.fill(); }
   /* v111.1: the landing field glows as a soft column up the sky, like the thermal, so the goal is easy to spot */
@@ -6040,12 +6246,14 @@ function draw(dt) {
     ctx.font = '800 13px "Barlow Condensed", sans-serif'; ctx.fillStyle = '#fff'; ctx.textAlign = 'center'; ctx.fillText('İNİŞ ALANI', X, sy(560)); ctx.textAlign = 'left'; }
   const trx = sx(tx + 35); ctx.fillStyle = '#f2eee6'; ctx.fillRect(trx, groundY - 13, 22, 9); ctx.fillRect(trx + 14, groundY - 18, 9, 6); ctx.fillStyle = '#7b5a3c'; ctx.fillRect(trx - 18, groundY - 10, 16, 6);
   ell(trx + 4, groundY - 3, 3, 3, '#1d1418'); ell(trx + 18, groundY - 3, 3, 3, '#1d1418'); ell(trx - 10, groundY - 3, 3, 3, '#1d1418');
+  }
   const lx = sx(220); ctx.fillStyle = mix('#5c4a3a', '#b9996e', p); ctx.fillRect(lx - 40, groundY - 1, 80, 4);
   for (const c of terrain) {
     const x = sx(c.x); if (x < -80 || x > W + 80) continue;
     ell(x, groundY + 2, c.w * kx * .62, 3.5, 'rgba(30,15,15,.38)'); /* a contact shadow: these stand on your ground */
     if (S.region === 'abq') tree(x, groundY + 1, c.w * kx * 1.4, c.h * ky, mix(mix('#2e4a2a', '#7a9a52', p), '#9ab060', c.tone * .3), mix('#3a2a1e', '#6a4a30', p)); /* kavak ağaçları */
     else if (S.region === 'lux') datePalm(x, groundY + 1, c.h * ky, mix(mix('#1e3a22', '#4a7a3a', p), '#6a9a4a', c.tone * .3), mix('#3a2a1e', '#8a6a44', p)); /* hurma ağaçları */
+    else if (S.region === 'bri') briObstacle(c, x, groundY, c.w * kx, c.h * ky, p); /* v124 */
     else {
       /* v122: the chimneys you can hit are darker and outlined, so they never melt into the hazy ones behind; they glow
          red when the basket comes close, and the tutorial rings them in red with a word */
@@ -6072,6 +6280,7 @@ function draw(dt) {
     ctx.fillStyle = '#ff5e3a'; ctx.beginPath(); ctx.arc((X0 + X1) / 2, top + 12 * ky, 3.2, 0, 7); ctx.fill(); /* marker ball */
   }
   const PR = Math.max(12, vh * .065);
+  if (S.region === 'bri') briOverlay(p, groundY, topY, sx, sy, f);
   if (f) {
     const curAlt = f.alt;
     ctx.font = '700 13px "Barlow Condensed", system-ui, sans-serif';
@@ -7303,7 +7512,7 @@ function forecastBox(n) {
   for (let d = 1; d < n; d++) { const f = forecastFlag(S.day + d), F = FLAGS[f]; box.appendChild(h('div', 'fc', `<span>${d === 1 ? 'Yarın' : 'Öbür gün'}</span><i style="background:${F.col}"></i><b>${F.name}</b>`)); }
   return box;
 }
-function rollFlag() { const r = Math.random(), gq = S.winter ? .35 : .55, yq = S.winter ? .7 : .85; return r < gq ? 'green' : r < yq ? 'yellow' : 'red'; }
+function rollFlag() { const bri = S.region === 'bri', r = Math.random(), gq = S.winter ? .35 : bri ? .42 : .55, yq = S.winter ? .7 : .85; return r < gq ? 'green' : r < yq ? 'yellow' : 'red'; } /* v124: Bristol's changeable weather, more yellow flags */
 function forecastFlag(day) { S.fc = S.fc || {}; for (const d in S.fc) if (+d < S.day) delete S.fc[d]; if (!S.fc[day]) { S.fc[day] = rollFlag(); save(); } return S.fc[day]; }
 const UNLOCK_DAY = { fleet: 3, bank: 4, crew: 5, market: 6, guide: 7, agency: 8, bazaar: 9, workshop: 10, school: 11 }; /* v121.9: one a day */
 /* The bazaar: everything sold for real money, in one place. Decorations show up in the town and draw a few more tourists. */
