@@ -15,6 +15,8 @@ public struct Mulberry32: Sendable {
 /// A fairy chimney (or a cottonwood tree in Albuquerque) you can crash into. x in meters, h in meters.
 public struct Obstacle: Equatable, Sendable {
     public let x: Double, h: Double, w: Double, tone: Double
+    /// v124: what it is in Bristol (a tree, a spire, the tall ship…); `.plain` elsewhere.
+    public var kind: ObstacleKind = .plain
 }
 
 /// Power lines across the fields: two poles and the wire between, sagging 12 m in the middle. Never fly low under one.
@@ -67,8 +69,8 @@ public enum FlightWorld {
         return out
     }
 
-    public static func terrainHeight(at x: Double, _ obs: [Obstacle], lines: [PowerLine] = []) -> Double {
-        var h = 0.0
+    public static func terrainHeight(at x: Double, _ obs: [Obstacle], lines: [PowerLine] = [], bristol: BristolWorld? = nil) -> Double {
+        var h = bristol?.bridgeHeight(at: x) ?? 0
         for c in obs {
             let d = abs(x - c.x)
             if d < c.w / 2 { h = max(h, c.h * pow(1 - d / (c.w / 2), 0.6)) }
@@ -138,7 +140,11 @@ public struct FlightMoment: Equatable, Sendable {
 
 /// The player's own flight: hold the burner to heat and climb, let go to cool and sink.
 public struct FlightSim: Sendable {
-    public enum Event: Equatable, Sendable { case airborne, missionDone, fuelOut, landed, moment(FlightMoment.Kind) }
+    public enum Event: Equatable, Sendable {
+        case airborne, missionDone, fuelOut, landed, moment(FlightMoment.Kind)
+        /// v124: flying into the airport's airspace (a warning), and staying in it three seconds (the fine is coming).
+        case airspaceWarning, airspaceViolated
+    }
 
     public let weather: Weather
     public let obstacles: [Obstacle]
@@ -151,6 +157,13 @@ public struct FlightSim: Sendable {
     public var venting = false
     /// The crash was into a power line.
     public var hitWire = false
+    /// v124: Bristol's landmarks on today's flight line (nil elsewhere), and what a crash hit there.
+    public let bristol: BristolWorld?
+    public var hit: ObstacleKind?
+    /// v124: inside the airport's airspace now, seconds in it, warned, fined.
+    public var inAirspace = false
+    public var airspaceTime = 0.0
+    public var airspaceWarned = false, airspaceFined = false
     public var x = FlightWorld.launchX, alt = 0.0, vx = 0.0, vy = 0.0
     public var heat = 0.42, fuel = 100.0
     /// Flight time in simulated seconds.
@@ -167,14 +180,27 @@ public struct FlightSim: Sendable {
     /// v122: the tutorial's look at the landing field slows the flight to this share while the camera is away.
     public var slow = 1.0
 
-    public init(weather: Weather, pax: Int, burners: Int = 1, turningVent: Bool = false) {
+    public init(weather: Weather, pax: Int, burners: Int = 1, turningVent: Bool = false, region: RegionID = .cap) {
         self.weather = weather
         self.pax = pax
         burnerPower = Burners.heat[clamp(burners, 1, 3) - 1]
         self.turningVent = turningVent
-        obstacles = FlightWorld.obstacles(for: weather)
+        var obs = FlightWorld.obstacles(for: weather)
         lines = FlightWorld.powerLines(for: weather)
+        bristol = region.bristol ? BristolWorld.build(weather, obstacles: &obs, lines: lines) : nil
+        obstacles = obs
         moment = FlightMoment.roll(weather)
+    }
+
+    /// v124: the fog hides the landing field while you're above its top.
+    public var fieldHidden: Bool { weather.fog.map { alt >= $0.top && !done } ?? false }
+
+    /// `briHit`: what a crash at x hit in Bristol.
+    func bristolHit(_ x: Double) -> ObstacleKind? {
+        guard let b = bristol else { return nil }
+        if b.bridgeHeight(at: x) > 0 { return .bridge }
+        guard let o = obstacles.filter({ abs(x - $0.x) < $0.w / 2 }).max(by: { $0.h < $1.h }) else { return nil }
+        return o.kind == .plain ? .tree : o.kind
     }
 
     public var distanceToTarget: Double { abs(x - weather.target) }
@@ -203,9 +229,10 @@ public struct FlightSim: Sendable {
         t += s
         if alt > 15 && !airborne { airborne = true; ev.append(.airborne) }
         if airborne {
-            let th = FlightWorld.terrainHeight(at: x, obstacles, lines: lines)
+            let th = FlightWorld.terrainHeight(at: x, obstacles, lines: lines, bristol: bristol)
             if th > 4 && alt < th {
                 hitWire = lines.contains { $0.wire(at: x) != nil }
+                hit = hitWire ? nil : bristolHit(x)
                 land(.crash)
                 return ev + [.landed]
             }
@@ -255,6 +282,17 @@ public struct FlightSim: Sendable {
             moment = m
         }
         if airborne && alt > 0 && fuel <= 0 && !fuelWarned { fuelWarned = true; ev.append(.fuelOut) }
+        // v124 `briAirTick`: a warning on the way in, a fine after three seconds inside
+        if let a = weather.air, airborne {
+            inAirspace = a.contains(x: x, alt: alt)
+            if inAirspace {
+                airspaceTime += dt
+                if !airspaceWarned { airspaceWarned = true; ev.append(.airspaceWarning) }
+                if airspaceTime > Airspace.seconds && !airspaceFined { airspaceFined = true; ev.append(.airspaceViolated) }
+            } else {
+                airspaceTime = 0
+            }
+        }
         return ev
     }
 
@@ -267,6 +305,12 @@ public struct FlightSim: Sendable {
         if mission == .precision && dist < 40 && landing != .hard && landing != .crash { missionDone = true }
         result = FlightResult(landing: landing, distance: dist, mission: mission, missionDone: mission != nil && missionDone,
                               moment: moment?.done == true ? moment?.kind : nil)
+        // v124: Bristol: where you came down (a field with sheep or cows, the tidal mud), and the airport's fine
+        if let b = bristol, landing != .crash {
+            result?.farm = b.pen(at: x)
+            result?.mud = b.mud(at: x) ? true : nil
+        }
+        if airspaceFined { result?.airFine = true }
     }
 
     /// Cancel before take-off: passengers get refunds and compensation.

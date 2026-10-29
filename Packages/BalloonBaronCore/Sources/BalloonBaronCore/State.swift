@@ -51,8 +51,10 @@ public struct Pilot: Codable, Identifiable, Equatable, Sendable {
         customWage ?? Pilot.baseWage(level, school: fromSchool, trait: trait)
     }
 
-    static func baseWage(_ level: PilotLevel, school: Bool, trait: PilotTrait?) -> Int {
-        jsRound(Double(level.wage) * (school ? Rules.schoolWageFactor : 1) * (trait == .nightOwl ? 0.85 : 1))
+    /// `region`: v124, Bristol's pilots cost 15% more (`regWage`); the region's factor is fixed into `customWage`
+    /// when a pilot is hired there or promoted.
+    static func baseWage(_ level: PilotLevel, school: Bool, trait: PilotTrait?, region: RegionID = .cap) -> Int {
+        jsRound(Double(level.wage) * region.wageFactor * (school ? Rules.schoolWageFactor : 1) * (trait == .nightOwl ? 0.85 : 1))
     }
 }
 
@@ -118,6 +120,22 @@ public struct Weather: Codable, Equatable, Sendable {
     public var mission: Mission?
     /// Valley x for the valley mission.
     public var valley: Double
+    /// v124 Bristol: morning fog up to this height, and the airport's controlled airspace (optional: older saves).
+    public var fog: Fog? = nil
+    public var air: Airspace? = nil
+}
+
+/// v124: Bristol's morning fog: the landing field is hidden while you're above its top (90–150 m).
+public struct Fog: Codable, Equatable, Sendable {
+    public var top: Double
+}
+
+/// v124: the airport's controlled airspace over part of the way: from `x0` to `x1`, above `floor`. Inside it for three
+/// seconds is a violation: a fine and a story at the end of the day.
+public struct Airspace: Codable, Equatable, Sendable {
+    public var x0: Double, x1: Double, floor: Double
+    public func contains(x: Double, alt: Double) -> Bool { x > x0 && x < x1 && alt > floor }
+    public static let fine = 1500, rep = 0.04, seconds = 3.0
 }
 
 public struct Winter: Codable, Equatable, Sendable {

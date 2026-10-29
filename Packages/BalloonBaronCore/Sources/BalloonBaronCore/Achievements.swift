@@ -3,7 +3,10 @@ import Foundation
 /// Each first is a postcard kept in the album, shared by all regions. Title and line: `ach.<rawValue>` / `ach.<rawValue>.d`.
 public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     case first, mission, perfect10, fleet5, fleet10, fleet20, hotel, hotelOwn, star45, pax1k, pax10k
-    case winter, fest, rivalDown, boss, design, upgrade3, xl, baronCap, abq, baronAbq, lux, baronLux, world
+    case winter, fest, rivalDown, boss, design, upgrade3, xl, baronCap, abq, baronAbq, lux, baronLux
+    /// v124: entering Bristol, the first Night Glow, Baron of Bristol.
+    case bri, nightGlow, baronBri
+    case world
 }
 
 /// The holding's own goals, written on the office whiteboard. All six make you World Baron. Text: `hgoal.<rawValue>`.
@@ -43,6 +46,9 @@ extension GameState {
         case .baronAbq: return barons[.abq] != nil
         case .lux: return owns(.lux)
         case .baronLux: return barons[.lux] != nil
+        case .bri: return owns(.bri)
+        case .nightGlow: return (local.glowCount ?? 0) >= 1
+        case .baronBri: return barons[.bri] != nil
         case .world: return holding.worldBaron != nil
         }
     }

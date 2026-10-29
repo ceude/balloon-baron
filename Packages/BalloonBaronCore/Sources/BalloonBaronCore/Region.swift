@@ -3,17 +3,21 @@ import Foundation
 /// A place the company can fly. Display names are localized in the app under `region.<rawValue>`.
 public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     case cap, abq, lux
+    /// v124: Bristol, England. Opens after the Luxor baron.
+    case bri
 
     /// ISO currency of the region's own cash box.
-    public var currency: String { self == .abq ? "USD" : "EUR" }
+    public var currency: String { self == .abq ? "USD" : self == .bri ? "GBP" : "EUR" }
     /// Local money per euro. Every price is the same number in every region; only the holding converts.
-    public var fx: Double { self == .abq ? 1.1 : 1 }
+    /// Bristol counts in pounds, about £0.85 to the euro.
+    public var fx: Double { self == .abq ? 1.1 : self == .bri ? 0.85 : 1 }
     /// The signature XL balloon.
     public var xlName: String {
         switch self {
         case .cap: Rules.xlName
         case .abq: "Fiesta Yıldızı"
         case .lux: "Teb Yıldızı"
+        case .bri: "Avon Yıldızı"
         }
     }
     /// The region before it: becoming its baron opens this one (none for Cappadocia).
@@ -22,12 +26,21 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         case .cap: nil
         case .abq: .cap
         case .lux: .abq
+        case .bri: .lux
         }
     }
     /// What the holding pays to open the region.
-    public var entryFee: Int { self == .lux ? 150000 : Holding.entryFee }
+    public var entryFee: Int { self == .bri ? 200000 : self == .lux ? 150000 : Holding.entryFee }
     /// Cash in the region's box on the first day.
-    public var startCash: Int { self == .lux ? 5000 : Rules.startCash }
+    public var startCash: Int { self == .bri ? 6000 : self == .lux ? 5000 : Rules.startCash }
+    /// The ticket price on the first day (v124: £185 in Bristol).
+    public var startPrice: Int { self == .bri ? 185 : Rules.startPrice }
+    /// Tourists a day at the start (v124: Bristol has fewer, 145).
+    public var startDemand: Int { self == .bri ? 145 : Rules.startDemand }
+    /// v124: Bristol's pilots cost 15% more (`regWage`).
+    public var wageFactor: Double { self == .bri ? 1.15 : 1 }
+    /// v124: Bristol's changeable weather: more yellow flags (green 42%, yellow 43%, red 15%; winter as everywhere).
+    public var greenShare: Double { self == .bri ? 0.42 : 0.55 }
 
     public var balloonNames: [String] {
         switch self {
@@ -35,6 +48,7 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         case .abq: ["Sandia", "Rio Grande", "Corrales", "Bernalillo", "Placitas", "Isleta", "Jemez", "Taos",
                     "Santa Fe", "Mesa", "Zuni", "Acoma", "Chama", "Galisteo", "Pecos", "Cibola"]
         case .lux: LUX.balloonNames
+        case .bri: BRI.balloonNames
         }
     }
 
@@ -44,6 +58,7 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         case .abq: ["Jake", "Emma", "Luis", "Sofia", "Tyler", "Grace", "Diego", "Hannah",
                     "Cody", "Maya", "Ryan", "Ava", "Miguel", "Chloe", "Ethan", "Lily"]
         case .lux: LUX.pilotNames
+        case .bri: BRI.pilotNames
         }
     }
 
@@ -54,22 +69,28 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
     public var boxWinds: Bool { self == .abq }
     /// The Nile valley's layers: north low, south higher, alternating the other way round from the box.
     public var nileWinds: Bool { self == .lux }
+    /// v124: Bristol's west wind off the Bristol Channel: low air mixed, east at middle heights, the top half the time
+    /// against you or weak.
+    public var westWinds: Bool { self == .bri }
+    /// v124: Bristol's morning fog, the airport's airspace and its own flight world (bridge, harbour, fields, mud).
+    public var bristol: Bool { self == .bri }
     /// Albuquerque's Balloon Fiesta, and Luxor's Nile cruise season, which uses the same days and goal.
     public var hasFiesta: Bool { self != .cap }
     public var fiestaEvery: Int { self == .lux ? 21 : Rules.fiestaEvery }
     public var fiestaDays: Int { self == .lux ? 3 : Rules.fiestaDays }
-    public var fiestaDemand: Double { self == .lux ? 1.6 : Rules.fiestaDemand }
+    public var fiestaDemand: Double { self == .lux ? 1.6 : self == .bri ? 1.8 : Rules.fiestaDemand }
     public var hasFestivals: Bool { self == .cap }
     /// Rivals here fight harder: more campaigns, more hotel poaching, faster and bigger fleet growth.
     public var rivalEdge: Bool { self != .cap }
     /// Luxor's rivals join forces sooner, more often, and at a smaller share of the market.
-    public var mergesEarly: Bool { self == .lux }
+    public var mergesEarly: Bool { self == .lux || self == .bri }
     /// The rival owned by the region's boss (Kenan Arslan, Dale Whitaker, Nabil Haddad).
     public var bossCompany: String {
         switch self {
         case .cap: "Göreme Sky"
         case .abq: "Sandia Sky Rides"
         case .lux: "Theban Skies"
+        case .bri: "Clifton Crown Balloons"
         }
     }
 
@@ -89,8 +110,20 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
             [Rival(id: 0, name: "Theban Skies", colors: ["#1f6f8b", "#e8c47a"], style: .safe, balloons: [.L, .L, .L, .L, .L, .M, .M, .M, .M, .M], price: 215, rep: 1.28, cash: 130000),
              Rival(id: 1, name: "Pharaoh Balloons", colors: ["#c9a040", "#2a2018"], style: .mid, balloons: [.L, .L, .M, .M, .M, .M, .S], price: 175, rep: 1.1, cash: 60000),
              Rival(id: 2, name: "Nile Dawn Air", colors: ["#e0408a", "#fff0f6"], style: .risky, balloons: [.M, .M, .S, .S, .S, .S], price: 130, rep: 0.95, cash: 30000)]
+        // v124: old money at the top, a steady middle, a cheap harbour outfit.
+        case .bri:
+            [Rival(id: 0, name: "Clifton Crown Balloons", colors: ["#7a2a34", "#e8d6a0"], style: .safe, balloons: [.L, .L, .L, .L, .L, .M, .M, .M, .M, .M, .M], price: 230, rep: 1.3, cash: 150000),
+             Rival(id: 1, name: "Severn Sky Co.", colors: ["#2a6a5a", "#e6f2ea"], style: .mid, balloons: [.L, .L, .M, .M, .M, .M, .S], price: 190, rep: 1.1, cash: 65000),
+             Rival(id: 2, name: "Harbourside Air", colors: ["#e0a020", "#1f2a44"], style: .risky, balloons: [.M, .M, .S, .S, .S, .S], price: 145, rep: 0.95, cash: 30000)]
         }
     }
+}
+
+private enum BRI {
+    static let balloonNames = ["Clifton", "Avon", "Ashton", "Severn", "Redland", "Cabot", "Brandon", "Leigh Woods",
+                               "Kingsweston", "Bedminster", "Hotwells", "Downs", "Mendip", "Cotham", "Brunel", "Portishead"]
+    static let pilotNames = ["Oliver", "Amelia", "George", "Isla", "Harry", "Poppy", "Jack", "Freya",
+                             "Alfie", "Evie", "Charlie", "Ruby", "Archie", "Florence", "Thomas", "Daisy"]
 }
 
 private enum LUX {
@@ -221,6 +254,16 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var showUntil: Int?
     public var lastShow: Int?
     public var showCount: Int?
+    /// v124 Bristol (optional so older saves load): own flights ended safely on a foggy morning; Night Glows held; the
+    /// night one is booked for, the festival (its start day) it was booked in, and its balloons; the last festival day
+    /// with an evening ascent and how many balloons went up.
+    public var fogFlown: Int?
+    public var glowCount: Int?
+    public var glowTonight: Int?
+    public var glowFest: Int?
+    public var glowN: Int?
+    public var eveDay: Int?
+    public var eveN: Int?
 
     init(rivals: [Rival]) { self.rivals = rivals }
 

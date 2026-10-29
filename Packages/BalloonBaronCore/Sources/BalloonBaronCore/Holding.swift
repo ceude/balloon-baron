@@ -156,7 +156,9 @@ extension Game {
     /// v122.7: the balloon show at the World Games' opening ceremony, once.
     @discardableResult
     public mutating func holdWorldGamesShow() -> Bool {
-        guard state.holding.worldGamesUntil == nil, spendHolding(Holding.worldGamesCost) else { return false }
+        // MERGE(v123.5/v124): the World Games show needs the Bristol baron. The parallel branch adds a lock helper
+        // (`bristolBaron`) and the 7th holding goal; keep one of them when merging.
+        guard state.worldGamesOpen, state.holding.worldGamesUntil == nil, spendHolding(Holding.worldGamesCost) else { return false }
         state.holding.worldGamesUntil = state.day + Holding.worldGamesDays
         state.rep = min(1.4, state.rep + Holding.worldGamesRep)
         celebrate(.worldGames)
@@ -210,6 +212,9 @@ extension Game {
     func newRegionState(_ r: RegionID) -> RegionState {
         var st = RegionState(rivals: r.startingRivals())
         st.cash = r.startCash
+        st.price = r.startPrice
+        st.demandBase = r.startDemand
+        if r.bristol { st.fogFlown = 0; st.glowCount = 0 }
         st.nextWinter = state.day + 40
         st.firstMissionGiven = true
         if r.hasFiesta { st.fiestaNext = state.day + 12 }
@@ -382,4 +387,9 @@ extension Game {
         state.local.openIssue = nil
         return true
     }
+}
+
+extension GameState {
+    /// MERGE(v123.5/v124): v124: the World Games show opens with the Bristol baron.
+    public var worldGamesOpen: Bool { barons[.bri] != nil }
 }
