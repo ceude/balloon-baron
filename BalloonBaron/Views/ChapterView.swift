@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 import BalloonBaronCore
 
 /// Ceremony for a finished chapter, shown as soon as its goals are met. The last chapter crowns you baron.
@@ -10,6 +11,8 @@ struct ChapterView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     /// After Devam: the chapter that starts now and its goals.
     @State private var showNext = false
+    /// v123.1: Apple's rating prompt, once, when the second chapter starts.
+    @Environment(\.requestReview) private var requestReview
 
     var body: some View {
         let chapters = news.region.chapters
@@ -40,8 +43,19 @@ struct ChapterView: View {
         if finishedCard && chapters.indices.contains(news.index + 1) {
             withAnimation(.easeOut(duration: 0.2)) { showNext = true }
         } else {
-            store.dismissPopup()
+            start()
         }
+    }
+
+    /// "Başla" (or ✕) under the next chapter's goals. After the first chapter's ceremony, once and not on autopilot,
+    /// Apple's rating prompt comes up (the prototype's `showRateMock`); the system decides whether it really shows.
+    private func start() {
+        let ask = showNext && news.index == 0 && store.auto == nil && store.state?.rateAsked == nil
+        if ask {
+            store.act { $0.state.rateAsked = $0.state.day }
+            requestReview()
+        }
+        store.dismissPopup()
     }
 
     private func baron(_ c: Chapter, _ s: GameState) -> some View {
@@ -136,7 +150,7 @@ struct ChapterView: View {
             ForEach(next.goals.indices, id: \.self) { i in
                 ChapterGoalRow(goal: next.goals[i], state: s)
             }
-            BigButton(title: loc("ceremony.start")) { store.dismissPopup() }
+            BigButton(title: loc("ceremony.start")) { start() }
                 .padding(.top, 4)
         }
     }

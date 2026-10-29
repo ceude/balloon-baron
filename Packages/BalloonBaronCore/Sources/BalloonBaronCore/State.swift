@@ -316,6 +316,12 @@ public struct GameState: Codable, Equatable, Sendable {
     public var praised: Set<Praise>?
     public var praiseDay: Int?
     public var goodRun: Int?
+    /// v123: the family's letter (`S.letter`): the day it was shown, once from day 50, and whether its review button
+    /// was tapped.
+    public var letterDay: Int?
+    public var letterRated: Bool?
+    /// v123.1: the day Apple's rating prompt was asked for, once, after the first chapter's ceremony (`S.rateAsked`).
+    public var rateAsked: Int?
 
     public var achievements: [Achievement: Int] { postcards ?? [:] }
     public var statistics: Stats { stats ?? Stats() }
