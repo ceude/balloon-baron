@@ -525,3 +525,14 @@ Uçuş bitince yarım kalan adımlar sonraki uçuşa kalır.
 ## Ailenin mektubu ve puan isteği (v123.1)
 - **Puan penceresi:** ilk bölüm töreninden sonra ("Başla"ya basınca) bir kez Apple'ın kendi puan penceresi istenir. İlk büyük mutlu an orası.
 - **Mektup:** 50. gün sabahı, Hezarfen'in kartlarından sonra bir kez bir zarf gelir. Ön yüzde Nevşehir balon pulu, Göreme damgası (o günün numarası) ve çizgisiz, romantik el yazısıyla "<şirket adı> kurucusuna, Göreme, Nevşehir". Dokununca zarf 180° döner; arkada kapağı tutan balon sticker'ı (şirketin renklerinde) brülör sesiyle yükselip uçar (alev çizilmez), kapak açılır, mektup zarftan çıkıp büyür. Zarf dönerken ve açılırken havada gündoğumu simleri (altın, şeftali, pembe) uçuşur, çanlarla sihirli bir müzik çalar; mektup açılınca açılış filmindeki gibi Hicaz makamında, kanunun çaldığı, hafif def eşliğinde ve kısa bir ney cevabıyla sade bir ezgi başlar, simler mektubun çevresinde süzülmeye devam eder. Mektup parşömen gibidir, mürekkep lekeli el yazısıyla yazılmıştır ve kaydırmadan ekrana sığar; üstünde köşelerinden bantlı aile fotoğrafı; metin aileden, 50. günü kutlar ve sevdiyse App Store'a yorum yazmasını rica eder; "Sevgiler, S. & U." imzalı. Altta "App Store'da yorum yaz" (uygulamada App Store'un yorum yazma sayfası) ve "Şimdi değil". Bir daha gösterilmez; otomatik ilerletmede gelmez.
+
+## Tam oyun süresi (simülasyon, v123.4)
+`tools/sim-campaign.js`: bot Kapadokya'dan başlar, baron olunca kasasını holdinge çekip Albuquerque'ye, sonra Luksor'a girer (Dünya Turu alınmış), en son holding hedeflerini bitirir. Uçuşların %85'i iyi ya da kusursuz, bölüm hedeflerine göre para biriktirir. 20 tohum, hepsi bitirdi, iflas yok. Ortanca oyun günü (aralık):
+
+| Bölge | Giriş | Bölüm 1 | Bölüm 2 | Bölüm 3 | Baron |
+|---|---|---|---|---|---|
+| Kapadokya | 1 | 11 (10–13) | 56 (37–62) | 98 (85–114) | 139 (118–155) |
+| Albuquerque | 142 (120–160) | 168 | 223 | 248 | 288 (252–311) |
+| Luksor | 289 (253–312) | 340 | 370 | 387 | 424 (397–474) |
+
+Bölge içinde baron süresi her bölgede ~140–145 gün. Dünya Baronu ortanca 428. gün (400–477), Luksor Baronu'ndan 1–3 gün sonra: Luksor Baronu anında holding kasasında €7–9 milyon birikmiş oluyor (Albuquerque baronunda €2,3–3,1 milyon), holding hedeflerinin toplamı ise ~€4,75 milyon (dört ofis €1,6M, Ar-Ge €1,3M, TV €250 bin, ünlü yüz €600 bin, kasa €1M). Yani holding hedefleri şu haliyle ayrı bir aşama değil.
