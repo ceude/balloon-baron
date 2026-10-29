@@ -564,3 +564,5 @@ Bölge içinde baron süresi her bölgede ~140–145 gün. Dünya Baronu ortanca
 v124: bot Luksor'dan sonra Bristol'e girer (Gece Işıltısı'nı festival bölümünde ayarlar), Bristol Baronu olunca Dünya Oyunları gösterisini alır. Sonuçlar "Bristol (v124)" bölümünde; Kapadokya, Albuquerque ve Luksor değişmedi.
 
 v123.5: Dünya Baronu için 7. hedef Dünya Oyunları gösterisi (€10M), gösteri de ancak Bristol Baronu olunca alınabilir; Bristol Luksor Baronu'ndan sonra açılır. Böylece Dünya Baronu Bristol'ün sonuna taşınır.
+
+v124.1: Bristol'ün kasabası kırmızı tuğla ağırlıklı: Viktorya dönemi tuğla duvarlar (açık derz, ara ara koyu ve açık tuğla), gri arduvaz üçgen çatılar, beyaz çerçeveli sürgülü pencereler, taş lento ve denizlik, her evde ayrı renkte boyalı kapı ve üstünde küçük ışıklık. Oteller ve banka bal rengi Bath taşı (Clifton). Çarşı, pub tabelasının yanında siyah meşe kirişli, beyaz badanalı bir Tudor pub. Kasabanın çevresi taş kapaklı alçak tuğla duvar. Hangar da tuğla.

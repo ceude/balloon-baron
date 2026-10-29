@@ -7727,8 +7727,10 @@ const TUFF_BY = {
   cap: { lit: '#f1d6b0', shade: '#b9825c', top: '#f8e4c4', line: 'rgba(110,60,30,.16)' },
   abq: { lit: '#dfa676', shade: '#a6653e', top: '#d79a68', line: 'rgba(120,60,25,.10)', smooth: true },
   lux: { lit: '#f3e8d2', shade: '#c4ab80', top: '#ece0c4', line: 'rgba(130,100,60,.14)' },
-  bri: { lit: '#e9cf98', shade: '#b8955e', top: '#dcc290', line: 'rgba(110,80,40,.13)' } /* v124: honey Bath stone */
+  bri: { lit: '#b65c42', shade: '#7a3426', top: '#8e4636', line: 'rgba(236,222,204,.42)', brick: true } /* v124.1: Victorian red brick, light mortar */
 };
+/* v124.1: Bristol's grander buildings (the hotels, the bank) stay in honey Bath stone, Clifton style */
+const BATH = { lit: '#ecd39c', shade: '#b8955e', top: '#e0c896', line: 'rgba(110,80,40,.13)' };
 let TUFF = TUFF_BY.cap;
 const SUN_SH = [0.55, 0.2]; /* screen offset of a shadow per world px of height */
 function tpoly(pts, fill, stroke, lw = 1.5) { ctx.beginPath(); pts.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); if (fill) { ctx.fillStyle = fill; ctx.fill(); } if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = lw; ctx.stroke(); } }
@@ -7743,6 +7745,22 @@ function stoneWall(p, q, h, col, seed, courses = true) {
   tpoly(poly, col);
   ctx.save(); ctx.beginPath(); poly.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.clip();
   const R = mulberry32(seed), len = Math.hypot(q[0] - p[0], q[1] - p[1]);
+  if (TUFF.brick) {
+    /* v124.1: brick: short courses, a few bricks a shade darker or lighter, pale mortar */
+    const ch = 5.5, bw = 12;
+    for (let y = 0, row = 0; y < h; y += ch, row++) for (let u = (row % 2) * .5 * bw / len - bw / len; u < 1; u += bw / len) {
+      const r = R(); if (r > .28) continue; const a = lp(p, q, Math.max(0, u)), b2 = lp(p, q, Math.min(1, u + bw / len));
+      ctx.fillStyle = r < .14 ? 'rgba(60,15,8,.16)' : 'rgba(255,200,170,.13)'; ctx.beginPath(); ctx.moveTo(a[0], a[1] - y); ctx.lineTo(b2[0], b2[1] - y); ctx.lineTo(b2[0], b2[1] - y - ch); ctx.lineTo(a[0], a[1] - y - ch); ctx.fill();
+    }
+    if (courses) {
+      ctx.strokeStyle = TUFF.line; ctx.lineWidth = .8;
+      for (let y = ch, row = 0; y < h; y += ch, row++) {
+        ctx.beginPath(); ctx.moveTo(p[0], p[1] - y); ctx.lineTo(q[0], q[1] - y); ctx.stroke();
+        for (let u = (row % 2) * .5 * bw / len; u < 1; u += bw / len) { const a = lp(p, q, u); ctx.beginPath(); ctx.moveTo(a[0], a[1] - y); ctx.lineTo(a[0], a[1] - y + ch); ctx.stroke(); }
+      }
+    }
+    courses = false;
+  }
   if (courses) {
     ctx.strokeStyle = TUFF.line; ctx.lineWidth = 1;
     for (let y = 14, row = 0; y < h; y += 14, row++) {
@@ -7750,7 +7768,7 @@ function stoneWall(p, q, h, col, seed, courses = true) {
       for (let u = (row % 2) * .5 / Math.max(1, len / 26); u < 1; u += 26 / len) { const a = lp(p, q, u); ctx.beginPath(); ctx.moveTo(a[0], a[1] - y); ctx.lineTo(a[0], a[1] - y + 14); ctx.stroke(); }
     }
   }
-  for (let i = 0; i < len * h / 260; i++) { const a = lp(p, q, R()), y = R() * h; ctx.fillStyle = R() < .5 ? 'rgba(255,245,225,.18)' : 'rgba(90,45,20,.12)'; ctx.fillRect(a[0], a[1] - y, 2 + R() * 3, 2); }
+  if (!TUFF.brick) for (let i = 0; i < len * h / 260; i++) { const a = lp(p, q, R()), y = R() * h; ctx.fillStyle = R() < .5 ? 'rgba(255,245,225,.18)' : 'rgba(90,45,20,.12)'; ctx.fillRect(a[0], a[1] - y, 2 + R() * 3, 2); }
   const g = ctx.createLinearGradient(0, Math.min(p[1], q[1]) - h, 0, Math.max(p[1], q[1]));
   g.addColorStop(0, 'rgba(255,240,215,.10)'); g.addColorStop(.75, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(70,30,15,.28)');
   ctx.fillStyle = g; ctx.fillRect(Math.min(p[0], q[0]) - 2, Math.min(p[1], q[1]) - h - 2, Math.abs(q[0] - p[0]) + 4, h + Math.abs(q[1] - p[1]) + 4);
@@ -7769,11 +7787,62 @@ function block(gx, gy, w, d, h, o = {}) {
 /* Arched window or door on a face, in face units (u along the wall, v up). Lit ones glow. */
 function opening(p, q, h, u, v, w, hh, kind = 'win', lit = false) {
   if (NIGHT_K > 0) NIGHT_WIN.push({ p, q, h, u, v, w, hh, kind }); /* relit after the night falls */
+  if (S && S.region === 'bri') return briOpening(p, q, h, u, v, w, hh, kind, lit);
   tface(p, q, h, () => {
     const x0 = u - w / 2;
     ctx.beginPath(); ctx.moveTo(x0, v); ctx.lineTo(x0, v + hh - w / 2); ctx.quadraticCurveTo(u, v + hh + w * .45, x0 + w, v + hh - w / 2); ctx.lineTo(x0 + w, v); ctx.closePath();
     ctx.fillStyle = kind === 'door' ? '#5a3418' : lit ? '#ffd27a' : '#3a2018'; ctx.fill();
     if (kind === 'door') { ctx.fillStyle = '#7a4a24'; ctx.fillRect(x0 + w * .1, v, w * .35, hh * .8); ctx.fillRect(x0 + w * .55, v, w * .35, hh * .8); }
+  });
+  if (lit) {
+    const m = lp(p, q, u), cy = m[1] - h * (v + hh / 2);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(m[0], cy, 0, m[0], cy, 24); g.addColorStop(0, 'rgba(255,190,90,.16)'); g.addColorStop(1, 'rgba(255,190,90,0)'); ctx.fillStyle = g; ctx.fillRect(m[0] - 34, cy - 34, 68, 68); ctx.restore();
+  }
+}
+/* v124.1: in Bristol the bazaar is the old harbour pub: whitewashed walls under black oak beams with braces, small
+   leaded windows, a dark door and a slate gable roof. */
+function tudorPub(b) {
+  const x0 = b.gx + .1, y0 = b.gy + .1, w = b.w - .2, d = b.d - .2, hh = 46;
+  const f = block(x0, y0, w, d, hh, { lit: '#f3ede0', shade: '#cdc4b2', top: '#e8e0cc', courses: false });
+  const beams = (p, q) => tface(p, q, hh, () => {
+    ctx.fillStyle = '#2a201a';
+    ctx.fillRect(0, 0, 1, .07); ctx.fillRect(0, .46, 1, .06); ctx.fillRect(0, .93, 1, .07);
+    for (let i = 0; i <= 5; i++) ctx.fillRect(Math.min(.955, i * .19), 0, .045, 1);
+    ctx.lineWidth = .035; ctx.strokeStyle = '#2a201a';
+    for (let i = 0; i < 5; i += 2) { ctx.beginPath(); ctx.moveTo(i * .19 + .04, .52); ctx.lineTo(i * .19 + .19, .93); ctx.stroke(); ctx.beginPath(); ctx.moveTo(i * .19 + .19 + .04, .07); ctx.lineTo(i * .19 + .04 + .19 * 2 - .04, .46); ctx.stroke(); }
+  });
+  beams(f.D, f.C); beams(f.C, f.B);
+  const win = (p, q, u, v, lit) => tface(p, q, hh, () => {
+    ctx.fillStyle = '#2a201a'; ctx.fillRect(u - .09, v - .03, .18, .26);
+    ctx.fillStyle = lit || NIGHT_K > 0 ? '#ffcf6a' : '#5a6878'; ctx.fillRect(u - .07, v, .14, .2);
+    ctx.strokeStyle = 'rgba(40,30,20,.6)'; ctx.lineWidth = .01; for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(u - .07 + i * .035, v); ctx.lineTo(u - .07 + i * .035, v + .2); ctx.stroke(); }
+  });
+  win(f.D, f.C, .28, .6, false); win(f.D, f.C, .72, .6, true); win(f.C, f.B, .3, .6, true); win(f.C, f.B, .7, .6, false); win(f.C, f.B, .5, .14, true);
+  tface(f.D, f.C, hh, () => { ctx.fillStyle = '#2a201a'; ctx.fillRect(.4, 0, .2, .4); ctx.fillStyle = '#4a2a1a'; ctx.fillRect(.43, 0, .14, .36); ctx.fillStyle = '#d8b040'; ctx.fillRect(.53, .17, .02, .03); });
+  gableRoof(x0, y0, w, d, hh, 30, '#5e6874', .12);
+  /* a chimney with a curl of smoke */
+  const ch = tiso(x0 + w * .8, y0 + d * .5); ctx.fillStyle = '#8e4636'; ctx.fillRect(ch[0] - 4, ch[1] - hh - 40, 8, 18); ctx.fillStyle = '#5a2a20'; ctx.fillRect(ch[0] - 5, ch[1] - hh - 42, 10, 3);
+}
+/* v124.1: Bristol's windows are white-framed sashes with a stone lintel; doors are painted (each house its own colour)
+   under a small fanlight. */
+function briOpening(p, q, h, u, v, w, hh, kind, lit) {
+  tface(p, q, h, () => {
+    const x0 = u - w / 2, fr = Math.min(w, hh) * .14;
+    if (kind === 'door') {
+      const cols = ['#1f4a7a', '#2e6a3e', '#a8232c', '#e0a020', '#3a3a44'], c = cols[Math.floor(Math.abs(Math.sin(u * 91.7 + v * 13.1 + p[0] * .37)) * 5) % 5];
+      ctx.fillStyle = '#f4efe4'; ctx.fillRect(x0 - fr, v, w + fr * 2, hh + fr);
+      ctx.fillStyle = c; ctx.fillRect(x0, v, w, hh * .82);
+      ctx.fillStyle = lit || NIGHT_K > 0 ? '#ffd27a' : '#cfe0e8'; ctx.fillRect(x0, v + hh * .86, w, hh * .12);
+      ctx.fillStyle = 'rgba(0,0,0,.18)'; ctx.fillRect(x0 + w * .12, v + hh * .1, w * .32, hh * .62); ctx.fillRect(x0 + w * .56, v + hh * .1, w * .32, hh * .62);
+      ctx.fillStyle = '#d8b040'; ctx.fillRect(x0 + w * .78, v + hh * .38, w * .08, hh * .06);
+      return;
+    }
+    ctx.fillStyle = '#d8c8a8'; ctx.fillRect(x0 - fr * 1.4, v + hh, w + fr * 2.8, fr * 1.6); /* stone lintel */
+    ctx.fillStyle = '#d8c8a8'; ctx.fillRect(x0 - fr, v - fr, w + fr * 2, fr); /* sill */
+    ctx.fillStyle = '#f6f2ea'; ctx.fillRect(x0, v, w, hh);
+    ctx.fillStyle = lit ? '#ffd27a' : '#3b4656'; ctx.fillRect(x0 + fr, v + fr, w - fr * 2, hh - fr * 2);
+    if (!lit) { ctx.fillStyle = 'rgba(180,210,230,.28)'; ctx.fillRect(x0 + fr, v + hh * .55, (w - fr * 2) * .5, hh * .4 - fr); }
+    ctx.fillStyle = '#f6f2ea'; ctx.fillRect(x0, v + hh * .48, w, fr * .9); ctx.fillRect(u - fr * .35, v, fr * .7, hh);
   });
   if (lit) {
     const m = lp(p, q, u), cy = m[1] - h * (v + hh / 2);
@@ -7879,7 +7948,7 @@ function tbuilding(b, t) {
     case 'hangar': {
       /* barrel vault in company colours, big open doors, propane and crates */
       const x0 = g + .25, y0 = k + .2, w = b.w - .5, d = b.d - .4, wallH = big ? 46 : 36, rise = 52, c = myCol();
-      const f = block(x0, y0, w, d, wallH, { lit: '#ead2b0', shade: '#b48a64', top: '#e9d2b0' });
+      const f = block(x0, y0, w, d, wallH, S.region === 'bri' ? {} : { lit: '#ead2b0', shade: '#b48a64', top: '#e9d2b0' });
       const N = 14, P = (x, y, z) => upp(tiso(x, y), z), zh = s => wallH + rise * Math.sin(Math.PI * s);
       for (let i = 0; i < N; i++) {
         const s0 = i / N, s1 = (i + 1) / N, yA = y0 + d * s0, yB = y0 + d * s1, shade = .55 + .45 * Math.cos(Math.PI * (s0 + s1) / 2 - .6);
@@ -8039,6 +8108,7 @@ function tbuilding(b, t) {
     case 'hotel': hotel(b, t); break;
     case 'mast': windMast(b.gx + .2, b.gy + .2, t); break;
     case 'bazaar': {
+      if (S.region === 'bri') { tudorPub(b); break; } /* v124.1 */
       /* a covered bazaar: tuff walls, two small domes, striped awning over carpets and pots */
       const x0 = g + .1, y0 = k + .1, w = b.w - .2, d = b.d - .2, hh = 40;
       const f = block(x0, y0, w, d, hh, { parapet: true });
@@ -8668,7 +8738,8 @@ function outerLandmark(x, y, hh, i) {
 /* A low tuff wall round the town with gaps where the roads leave. */
 function townWall() {
   const items = [], H = 16, T0 = -.5, T1 = 15.5, th = .14;
-  const seg = (gx, gy, w, d) => items.push({ depth: gx + w + gy + d - .5, draw: () => block(gx, gy, w, d, H, { courses: false, top: '#f3dcb8' }) });
+  const bri = S.region === 'bri'; /* v124.1: a low brick wall with a stone coping */
+  const seg = (gx, gy, w, d) => items.push({ depth: gx + w + gy + d - .5, draw: () => bri ? block(gx, gy, w, d, 11, { top: '#cfc6b4' }) : block(gx, gy, w, d, H, { courses: false, top: '#f3dcb8' }) });
   for (let x = T0; x < T1; x += 1) { const w = Math.min(1, T1 - x); if (x + w > 7.55 && x < 8.45) continue; seg(x, T0 - th, w, th); seg(x, T1, w, th); }
   for (let y = T0; y < T1; y += 1) { const d = Math.min(1, T1 - y); if (y + d > 7.55 && y < 8.45) continue; seg(T0 - th, y, th, d); seg(T1, y, th, d); }
   return items;
@@ -8776,7 +8847,7 @@ function renderTown(V, w, h, dpr, offY) {
       return { depth: it.depth, shadow: it.shadow, draw: () => { ctx.globalAlpha = a; it.draw(); ctx.globalAlpha = 1; } }; };
     const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).map(fade).filter(Boolean), townWall()), sky = townSky(T);
     bs.forEach(buildingShadow); scen.forEach(it => it.shadow && it.shadow()); sky.shadows.forEach(f => f());
-    const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => tbuilding(b, T) })).concat(scen, V.extra ? V.extra(T) : S.issue && S.issue.k === 'raise' ? strikers(T) : []);
+    const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => { if (S.region === 'bri' && (b.look === 'hotel' || b.look === 'bank')) { const keep = TUFF; TUFF = BATH; try { tbuilding(b, T); } finally { TUFF = keep; } } else tbuilding(b, T); } })).concat(scen, V.extra ? V.extra(T) : S.issue && S.issue.k === 'raise' ? strikers(T) : []);
     TLATE = [];
     items.sort((a, b) => a.depth - b.depth).forEach(it => it.draw());
     sky.balloons.forEach(f => f());
