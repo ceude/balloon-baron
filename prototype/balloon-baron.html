@@ -2,7 +2,7 @@
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Caveat+Brush&family=Caveat:wght@500;600;700&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:wght@700;900&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Caveat+Brush&family=Caveat:wght@500;600;700&family=Dancing+Script:wght@500;600;700&family=Great+Vibes&family=Playfair+Display:wght@700;900&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 /* Layout: dawn sky canvas on top, a white "ground crew" sheet below with a big ignition button, icon tab bar at the very bottom */
 :root{
@@ -829,9 +829,10 @@ body.night #cv{touch-action:none}
 #letter .front .stamp svg{display:block;width:100%;height:100%}
 #letter .front .pm{position:absolute;right:70px;top:40px;width:70px;height:70px;opacity:.5;transform:rotate(-14deg)}
 #letter .front .addr{position:absolute;left:11%;right:8%;top:50%;color:#2c2350;line-height:1}
-#letter .front .addr b{display:block;font-family:'Caveat',cursive;font-size:40px;font-weight:700;transform:rotate(-2deg);transform-origin:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 0 2px}
-#letter .front .addr span{display:block;font-family:'Caveat',cursive;font-weight:600;font-size:26px;margin:0 0 0 30px;transform:rotate(-1deg)}
-#letter .front .addr i{display:block;font-family:'Caveat',cursive;font-style:normal;font-weight:500;font-size:21px;color:#6a5a86;margin:4px 0 0 30px}
+#letter .front .addr b{display:block;font-family:'Great Vibes',cursive;font-size:42px;font-weight:400;white-space:nowrap;padding:4px 0 2px;line-height:1.05}
+#letter .front .addr b.two{white-space:normal;margin-right:22%}
+#letter .front .addr span{display:block;font-family:'Dancing Script',cursive;font-weight:600;font-size:24px;margin:2px 0 0 26px}
+#letter .front .addr i{display:block;font-family:'Dancing Script',cursive;font-style:normal;font-weight:500;font-size:18px;color:#6a5a86;margin:8px 0 0 26px}
 #letter .backf{transform:rotateY(180deg)}
 #letter .flat{position:absolute;inset:0;border-radius:7px;box-shadow:0 20px 44px rgba(0,0,0,.38);display:none}
 #letter.flat3 .card3d{visibility:hidden}#letter.flat3 .flat{display:block}
@@ -4804,6 +4805,12 @@ function showLetter() {
   <div class="sign">Sevgiler,<br>S. &amp; U.<svg class="blot" style="left:8px;top:2px;width:34px;transform:rotate(-20deg)" viewBox="0 0 40 40"><path d="M20 8c5 0 6 5 9 6s6 2 5 7-5 4-6 8-4 5-8 4-5-4-9-5-6-4-4-8 2-5 4-8 5-4 9-4z" fill="#1f2350" opacity=".78"/><circle cx="35" cy="9" r="2" fill="#1f2350" opacity=".7"/><circle cx="6" cy="31" r="1.4" fill="#1f2350" opacity=".6"/><circle cx="31" cy="35" r="1" fill="#1f2350" opacity=".6"/></svg></div>
   <button class="rate">App Store'da yorum yaz</button><button class="later">Şimdi değil</button></div>`;
   $('wrap').appendChild(L); sfx('click');
+  { /* v123.5: a long company name shrinks to fit on one line; past that it takes two lines */
+    const ab = L.querySelector('.front .addr'), nb = ab.querySelector('b'); let fs = 42;
+    const fit = () => { fs = 42; nb.classList.remove('two'); nb.style.fontSize = fs + 'px'; while (nb.scrollWidth > nb.clientWidth + 1 && fs > 28) nb.style.fontSize = --fs + 'px';
+      if (nb.scrollWidth > nb.clientWidth + 1) { nb.classList.add('two'); fs = 32; nb.style.fontSize = fs + 'px'; while (nb.scrollHeight > fs * 1.05 * 2 + 8 && fs > 20) nb.style.fontSize = --fs + 'px'; }
+      ab.style.top = Math.max(30, 50 - Math.max(0, nb.offsetHeight - 50) / L.querySelector('.front').offsetHeight * 100) + '%'; };
+    fit(); if (document.fonts && document.fonts.ready) document.fonts.ready.then(fit); }
   const sheet = L.querySelector('.sheet'), at = (ms, f) => setTimeout(f, ms);
   const SP = letterSparkles(L);
   const close = () => { letterMusic(null); L.style.transition = 'opacity .35s'; L.style.opacity = 0; setTimeout(() => { L.remove(); refresh(); setTimeout(nextPopup, 250); }, 380); };
