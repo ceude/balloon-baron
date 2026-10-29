@@ -9,7 +9,7 @@ import BalloonBaronCore
 /// burner, the flap opens, a folded letter rises out, the envelope drops away and the letter grows to full size: the
 /// family's photo taped on, a few lines, and a button to the App Store's review page. Sunrise glitter and a short magic
 /// chime while it opens, then a light Hicaz tune while it is read (`SoundEngine.letterMusic`).
-struct LetterView: View {
+@MainActor struct LetterView: View {
     @Environment(GameStore.self) private var store
     @Environment(\.requestReview) private var requestReview
     @Environment(\.openURL) private var openURL

@@ -3,7 +3,7 @@ import StoreKit
 import BalloonBaronCore
 
 /// Ceremony for a finished chapter, shown as soon as its goals are met. The last chapter crowns you baron.
-struct ChapterView: View {
+@MainActor struct ChapterView: View {
     @Environment(GameStore.self) private var store
     let news: ChapterNews
     @State private var shown = false
