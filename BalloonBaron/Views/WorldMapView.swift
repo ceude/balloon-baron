@@ -227,7 +227,8 @@ private enum MapPinStatus: Equatable {
         case .here: loc("map.here")
         case .auto, .problem: loc("map.auto")
         case .open: loc("map.unlocked")
-        case .locked, .soon: loc("map.soon")
+        case .locked: loc("map.locked")
+        case .soon: loc("map.soon")
         }
     }
 

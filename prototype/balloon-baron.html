@@ -2509,7 +2509,7 @@ function showWorldMap() {
     const own = ownsRegion(R.id), open = regionOpen(R.id) && !own;
     const pin = h('div', 'wpin' + (own ? ' own' : open ? ' open' : ' soon'));
     pin.style.left = ((R.lon + 130) / 260 * 100) + '%'; pin.style.top = ((70 - R.lat) / 110 * 100) + '%'; pin.classList.add('s' + R.side);
-    pin.innerHTML = R.mystery ? '<span class="pd"></span><span class="pl"><b>Yakında</b></span>' : `<span class="pd"></span><span class="pl"><b>${R.name}</b>${R.id === S.region ? 'Buradasın' : own ? 'Otomatik' : open ? 'Açıldı' : 'Yakında'}</span>`;
+    pin.innerHTML = R.mystery ? '<span class="pd"></span><span class="pl"><b>Yakında</b></span>' : `<span class="pd"></span><span class="pl"><b>${R.name}</b>${R.id === S.region ? 'Buradasın' : own ? 'Otomatik' : open ? 'Açıldı' : ['abq', 'lux', 'bri'].includes(R.id) ? 'Kilitli' : 'Yakında'}</span>`; /* v124.3: a city in the game is locked; one not in it yet is coming soon */
     map.appendChild(pin);
   }
   c.appendChild(map);
@@ -5128,8 +5128,7 @@ function showMenu(open) {
     const shareCode = () => {
       const f = new File([ta.value], fileName(), { type: 'text/plain' });
       if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: S.company }).catch(() => {}); return; }
-      const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
-      msg.textContent = 'Dosya indirildi.';
+      navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = 'Bu tarayıcı dosya paylaşamıyor; kod kopyalandı.'; }).catch(() => { msg.textContent = 'Bu tarayıcı dosya paylaşamıyor; kodu kopyala.'; });
     };
     const loadText = t => unpackCode(t).then(txt => { const s = JSON.parse(txt); if (!s || !s.balloons || !s.rivals) throw 0; S = migrate(s); m.hidden = true; tab = 'plan'; startDay(); })
       .catch(() => { msg.textContent = 'Bu kod okunamadı. Kodun tamamını yapıştırdığından emin ol.'; });

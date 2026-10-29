@@ -57,7 +57,7 @@ enum GameCenter {
 enum AppStoreLink {
     /// The app's Apple ID from App Store Connect (My Apps → the app → App Information → Apple ID), a number such as
     /// "6740000000". While it is nil the letter's review button shows Apple's own rating prompt instead.
-    static let appStoreID: String? = nil
+    static let appStoreID: String? = "6826829538"
 
     /// The App Store's write-review page for this app (`https://apps.apple.com/app/id<ID>?action=write-review`).
     static var writeReviewURL: URL? {
