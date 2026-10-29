@@ -61,9 +61,10 @@ final class SoundEngine {
         resume()
     }
 
-    func burner(_ on: Bool) {
+    /// `level` scales the roar: 1 in flight; the design studio's spun balloon uses a faint one.
+    func burner(_ on: Bool, level: Double = 1) {
         guard started else { return }
-        synth.send(.burner(on))
+        synth.send(.burner(on, level))
     }
 
     func crowd(_ on: Bool) {
@@ -425,7 +426,7 @@ private enum FilmScore {
 
 private enum Command {
     case voice(VoiceSpec)
-    case burner(Bool)
+    case burner(Bool, Double)
     case crowd(Bool)
     case birds(Bool)
     case master(Bool)
@@ -671,11 +672,11 @@ private final class Synth {
         case .voice(let s): add(s)
         case .master(let on): masterOn = on
         case .birds(let on): birds = on
-        case .burner(let on):
+        case .burner(let on, let level):
             if on {
                 // A broadband roar is loud on a phone speaker; a third of the prototype's first level sits under the music.
-                burnTarget = 0.12
-                burnStep = 0.12 / (0.08 * sr)
+                burnTarget = 0.12 * level
+                burnStep = burnTarget / (0.08 * sr)
             } else {
                 burnTarget = 0
                 burnStep = max(burnGain, 0.0001) / (0.18 * sr)

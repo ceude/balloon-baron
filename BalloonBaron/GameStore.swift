@@ -85,6 +85,8 @@ final class GameStore {
     var buildingCard: Building?
     var showBazaar = false
     var storeItem: StoreItem?
+    /// The design studio is open (a sheet): its locked items open their purchase card inside it, over the studio.
+    var studioOpen = false
     /// Passengers queueing in the town while they gather (shared by the card and the town canvas).
     let collectScene = CollectScene()
     /// Take-off was pressed: the collect card fades while the jeeps come (observed, unlike `collectScene`).

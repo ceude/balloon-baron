@@ -24,6 +24,14 @@ enum Haptics {
         soft.impactOccurred(intensity: 0.45)
     }
 
+    /// The design studio's balloon spun fast enough to light its burner: the same rumble, fainter.
+    static func studioBurner(at t: Double) {
+        guard Self.on else { return }
+        guard t - lastBurn >= 0.14 else { return }
+        lastBurn = t
+        soft.impactOccurred(intensity: 0.22)
+    }
+
     /// Burner lit or put out.
     static func burnerToggled(on: Bool) { guard Self.on else { return }; (on ? medium : light).impactOccurred(intensity: on ? 0.7 : 0.4) }
 

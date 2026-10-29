@@ -11,6 +11,16 @@ struct DesignStudioView: View {
     @State private var colors: [String] = ["#ff5e3a", "#ffc23d", "#ffffff"]
     @State private var name = ""
     @State private var ready = false
+    /// The preview turns under a finger (v123.6): angle and speed in radians, the drag's last point, and whether a
+    /// fast spin has lit the burner.
+    @State private var spin = 0.0
+    @State private var spinSpeed = 0.0
+    @State private var dragLast: (x: CGFloat, t: Date)?
+    @State private var burning = false
+    @State private var coast: Task<Void, Never>?
+    /// A locked item tapped here: chosen once it is bought.
+    @State private var pendingShape: EnvelopeShape?
+    @State private var pendingPattern: Pattern?
 
     private static let maxName = 22
 
@@ -37,8 +47,27 @@ struct DesignStudioView: View {
                     .overlay(alignment: .topTrailing) { CardCloseX { dismiss() } }
                 }
             }
+            // v123.6: a locked pattern or shape opens its purchase card here, over the studio, not instead of it.
+            if let k = store.storeItem {
+                StoreItemView(item: k).transition(.opacity)
+            }
         }
-        .onAppear(perform: setup)
+        .animation(.easeOut(duration: 0.2), value: store.storeItem)
+        .onAppear {
+            store.studioOpen = true
+            setup()
+        }
+        .onDisappear {
+            store.studioOpen = false
+            stopSpin()
+        }
+        .onChange(of: store.storeItem) { _, item in
+            guard item == nil else { return }
+            if let k = pendingShape, !locked(k.storeItem) { shape = k }
+            if let p = pendingPattern, !locked(p.storeItem) { pattern = p }
+            pendingShape = nil
+            pendingPattern = nil
+        }
     }
 
     /// First unused pattern in the company's colours, like the prototype.
@@ -61,11 +90,16 @@ struct DesignStudioView: View {
         let score = game.designScore(pattern: pattern, colors: colors, shape: shape)
         return HStack(alignment: .center, spacing: 16) {
             // In full volume (v110), as it will fly.
-            Canvas { ctx, size in
-                ScenePainter.designBalloon3d(&ctx, x: size.width / 2, y: size.height - 4, r: size.height * 0.28 / 0.86, colors: colors,
-                                             design: Design(preview: pattern, colors: colors, shape: shape))
+            // v123.6: a finger turns it round its axis; spun fast, its burner lights with a faint roar and hum.
+            TimelineView(.animation(paused: !burning)) { _ in
+                Canvas { ctx, size in
+                    ScenePainter.designBalloon3d(&ctx, x: size.width / 2, y: size.height - 4, r: size.height * 0.28 / 0.86, colors: colors,
+                                                 burn: burning, design: Design(preview: pattern, colors: colors, shape: shape), spin: spin)
+                }
             }
             .frame(width: 140, height: 178)
+            .contentShape(Rectangle())
+            .simultaneousGesture(spinGesture)
             .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 6) {
                 Text(loc("studio.creativity"))
@@ -95,6 +129,63 @@ struct DesignStudioView: View {
         .animation(.easeOut(duration: 0.2), value: score)
     }
 
+    /// About 60 points of drag turn it one radian; the speed is smoothed so a flick reads as a flick.
+    private var spinGesture: some Gesture {
+        DragGesture(minimumDistance: 2)
+            .onChanged { v in
+                coast?.cancel()
+                let now = Date()
+                if let last = dragLast {
+                    let dt = max(now.timeIntervalSince(last.t), 1.0 / 240)
+                    let d = Double(v.location.x - last.x) / 60
+                    spin += d
+                    spinSpeed = spinSpeed * 0.6 + (d / dt) * 0.4
+                    spinTick(now)
+                }
+                dragLast = (v.location.x, now)
+            }
+            .onEnded { _ in
+                dragLast = nil
+                startCoast()
+            }
+    }
+
+    /// Let go, it turns on and slows down, like a balloon on its rope.
+    private func startCoast() {
+        coast?.cancel()
+        coast = Task { @MainActor in
+            var last = Date()
+            while !Task.isCancelled, abs(spinSpeed) > 0.05 {
+                try? await Task.sleep(nanoseconds: 16_000_000)
+                let now = Date(), dt = now.timeIntervalSince(last)
+                last = now
+                spin += spinSpeed * dt
+                spinSpeed *= pow(0.25, dt)
+                spinTick(now)
+            }
+            spinSpeed = 0
+            setBurn(false)
+        }
+    }
+
+    /// Faster than about one and a half turns a second, the burner fires.
+    private func spinTick(_ now: Date) {
+        setBurn(abs(spinSpeed) > 9)
+        if burning { Haptics.studioBurner(at: now.timeIntervalSinceReferenceDate) }
+    }
+
+    private func setBurn(_ on: Bool) {
+        guard on != burning else { return }
+        burning = on
+        SoundEngine.shared.burner(on, level: 0.3)
+    }
+
+    private func stopSpin() {
+        coast?.cancel()
+        spinSpeed = 0
+        setBurn(false)
+    }
+
     private func label(_ text: String) -> some View {
         Text(text)
             .font(Theme.font(14, .bold))
@@ -116,8 +207,8 @@ struct DesignStudioView: View {
     private func locked(_ k: StoreItem?) -> Bool { k.map { !(store.state?.owned($0) ?? false) } ?? false }
 
     private func openStore(_ k: StoreItem) {
-        dismiss()
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) { store.storeItem = k }
+        SoundEngine.shared.play(.click)
+        store.storeItem = k
     }
 
     private var shapePicker: some View {
@@ -126,7 +217,7 @@ struct DesignStudioView: View {
             LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 8), count: 2), spacing: 8) {
                 ForEach([nil] + EnvelopeShape.allCases.map { Optional($0) }, id: \.self) { k in
                     choice(k.map { (locked($0.storeItem) ? "" : "✦ ") + $0.title } ?? loc("studio.classic"), lock: k.map { locked($0.storeItem) } ?? false, on: shape == k) {
-                        if let k, locked(k.storeItem) { openStore(k.storeItem) } else { shape = k }
+                        if let k, locked(k.storeItem) { pendingShape = k; openStore(k.storeItem) } else { shape = k }
                     }
                 }
             }
@@ -153,7 +244,7 @@ struct DesignStudioView: View {
     private func patternButton(_ p: Pattern) -> some View {
         let on = p == pattern
         return Button {
-            if locked(p.storeItem), let k = p.storeItem { openStore(k) } else { pattern = p }
+            if locked(p.storeItem), let k = p.storeItem { pendingPattern = p; openStore(k) } else { pattern = p }
         } label: {
             HStack(spacing: 4) {
                 if p.premium && locked(p.storeItem) { LockGlyph(size: 12) }

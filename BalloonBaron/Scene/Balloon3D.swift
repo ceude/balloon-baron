@@ -210,8 +210,10 @@ extension ScenePainter {
     /// `designBalloon3d(...)`: a workshop design (pattern or special shape) in the same volume as the company balloon:
     /// the design painted on the envelope, then key light, core shadow, darker bottom, the flame's glow inside, seams and
     /// a rim light, and the 3D rig underneath. Same overall height as `balloon3d`; (x, y) is the bottom of the basket.
+    /// `spin` (radians) turns the envelope about its axis (the design studio's preview): the pattern is wrapped round
+    /// the envelope, the same design on both halves, and drawn in vertical slices so it curves away at the edges.
     static func designBalloon3d(_ ctx: inout GraphicsContext, x: CGFloat, y: CGFloat, r R: CGFloat, colors: [String], burn: Bool = false,
-                                alpha: Double = 1, ad: Sponsor? = nil, design d: Design, region: RegionID = .cap) {
+                                alpha: Double = 1, ad: Sponsor? = nil, design d: Design, region: RegionID = .cap, spin: Double = 0) {
         guard R > 0.5 else { return }
         var c = ctx
         c.opacity = alpha
@@ -251,7 +253,25 @@ extension ScenePainter {
         do {
             var inner = c
             inner.clip(to: env)
-            if d.colors.count >= 3 {
+            if d.colors.count >= 3 && spin != 0 {
+                // Slices of the visible half: a slice at view angle t shows the pattern at angle t + spin, where each
+                // half of the round (-90°…90° and 90°…270°) carries the whole design, flat across 2r.
+                let n = 28, half = Double.pi / 2
+                for i in 0..<n {
+                    let t0 = -half + Double.pi * Double(i) / Double(n), t1 = t0 + Double.pi / Double(n)
+                    let sx0 = x + r * CGFloat(sin(t0)), sx1 = x + r * CGFloat(sin(t1))
+                    guard sx1 - sx0 > 0.05 else { continue }
+                    var a = (t0 + spin + half).truncatingRemainder(dividingBy: Double.pi)
+                    if a < 0 { a += Double.pi }
+                    let px0 = x - r + r * CGFloat(a / half), px1 = px0 + r * CGFloat((t1 - t0) / half)
+                    let k = (sx1 - sx0) / (px1 - px0)
+                    var slice = inner
+                    slice.clip(to: Path(CGRect(x: sx0 - 0.4, y: top - r * 0.3, width: sx1 - sx0 + 0.8, height: r * 3.4)))
+                    slice.translateBy(x: sx0 - px0 * k, y: 0)
+                    slice.scaleBy(x: k, y: 1)
+                    BalloonPainter.paint(&slice, pattern: d.pattern, colors: d.colors, x: x, cy: cy, r: r, top: top)
+                }
+            } else if d.colors.count >= 3 {
                 BalloonPainter.paint(&inner, pattern: d.pattern, colors: d.colors, x: x, cy: cy, r: r, top: top)
             } else {
                 BalloonPainter.stripes(&inner, color: Color(hex: colors.count > 1 ? colors[1] : "#ffc23d"), x: x, cy: cy, r: r)
@@ -265,9 +285,11 @@ extension ScenePainter {
             }
             // Seams on the round envelope; a special shape keeps its outline clean.
             if shape == nil {
-                for k in 1..<12 {
-                    inner.stroke(meridian(CGFloat(sin(-Double.pi / 2 + Double.pi * Double(k) / 12))),
-                                 with: .color(rgba(40, 15, 30, 0.2)), lineWidth: max(1, r * 0.006))
+                // 24 gores round the envelope; the front half's seams show and turn with `spin`.
+                for k in 0..<24 {
+                    let ang = Double.pi * Double(k) / 12 + spin
+                    guard cos(ang) > 0.02 else { continue }
+                    inner.stroke(meridian(CGFloat(sin(ang))), with: .color(rgba(40, 15, 30, 0.2)), lineWidth: max(1, r * 0.006))
                 }
             }
             let W = r * 1.5, box = Path(CGRect(x: x - W, y: top - r * 0.3, width: W * 2, height: r * 3))

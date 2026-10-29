@@ -157,7 +157,7 @@ struct RootView: View {
             if store.showBazaar {
                 BazaarView().transition(.opacity)
             }
-            if let k = store.storeItem {
+            if let k = store.storeItem, !store.studioOpen {
                 StoreItemView(item: k).transition(.opacity)
             }
             if let m = store.hezarfen {
