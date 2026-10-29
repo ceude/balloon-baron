@@ -842,9 +842,6 @@ body.night #cv{touch-action:none}
 #letter .flap{position:absolute;left:0;right:0;top:0;height:60%;background:#e0c592;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s ease-in-out;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
 #letter .sticker{position:absolute;left:50%;top:60%;width:80px;height:80px;margin:-48px 0 0 -40px;border-radius:50%;background:#fffaf0;box-shadow:0 2px 4px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center;transition:transform 1.5s cubic-bezier(.55,0,.75,.4),opacity 1.5s ease-in}
 #letter .sticker svg{width:66px;height:66px;overflow:visible}
-#letter .sticker canvas{position:absolute;left:50%;top:50%;width:66px;height:66px;transform:translate(-50%,-50%);pointer-events:none}
-#letter .sticker .glow{opacity:0;transition:opacity .4s}
-#letter.burn .sticker .glow{opacity:1}
 #letter.lift .sticker{transform:translate(18px,-62vh) rotate(8deg) scale(1.25);opacity:.0}
 #letter.lift .flap{transform:rotateX(180deg)}
 #letter.lift .flap{transition-delay:.25s}
@@ -4702,26 +4699,10 @@ const postmarkSvg = () => `<svg viewBox="0 0 66 66"><g fill="none" stroke="#3b2c
   <text x="33" y="39" text-anchor="middle" font-family="Barlow Condensed,sans-serif" font-weight="700" font-size="6" fill="#3b2c5a">GÜN ${S.day}</text></svg>`;
 function stickerSvg() {
   const c = myCol();
-  return `<svg viewBox="0 0 64 64"><defs><radialGradient id="stkGlow"><stop offset="0" stop-color="#fff0b0" stop-opacity=".75"/><stop offset="1" stop-color="#ffb347" stop-opacity="0"/></radialGradient></defs>
+  return `<svg viewBox="0 0 64 64">
     <path d="M32 6 C42 6 48 13 48 22 C48 30 42 35 38 39 L26 39 C22 35 16 30 16 22 C16 13 22 6 32 6Z" fill="${c[0]}"/>
-    <path d="M32 6 C36 6 39 13 39 22 C39 30 36 35 35 39 L29 39 C28 35 25 30 25 22 C25 13 28 6 32 6Z" fill="${c[1]}"/><ellipse class="glow" cx="32" cy="30" rx="13" ry="12" fill="url(#stkGlow)"/>
+    <path d="M32 6 C36 6 39 13 39 22 C39 30 36 35 35 39 L29 39 C28 35 25 30 25 22 C25 13 28 6 32 6Z" fill="${c[1]}"/>
     <path d="M27 39 L28.5 47 M37 39 L35.5 47" stroke="#6b4a26" stroke-width="1"/><rect x="27.5" y="47" width="9" height="7" rx="1.2" fill="#8a5a2e"/></svg>`;
-}
-/* v123.2: the sticker's burner is the game's own flame (flame3d), drawn into the open mouth and clipped so its tip stays
-   inside the envelope, as in flight. Canvas units: the sticker's 64-unit viewBox × 3. */
-function stickerFlame(L) {
-  const c = L.querySelector('.flat .sticker canvas'); if (!c) return;
-  const g = c.getContext('2d'), t0 = performance.now();
-  const draw = () => {
-    if (!L.isConnected || L.classList.contains('read')) return;
-    const keep = ctx, keepT = T, grow = clamp((performance.now() - t0) / 350, 0, 1);
-    ctx = g; T = performance.now() / 1000;
-    g.setTransform(1, 0, 0, 1, 0, 0); g.clearRect(0, 0, c.width, c.height); g.setTransform(3, 0, 0, 3, 0, 0);
-    g.save(); g.beginPath(); g.rect(14, 22, 36, 24.5); g.clip(); flame3d(32, 46.5, 17 * grow, false); g.restore();
-    ctx = keep; T = keepT;
-    requestAnimationFrame(draw);
-  };
-  draw();
 }
 function showLetter() {
   S.letter = { day: S.day }; save();
@@ -4730,7 +4711,7 @@ function showLetter() {
   L.innerHTML = `<div class="stage"><div class="card3d"><div class="face front"><div class="pm">${postmarkSvg()}</div><div class="stamp">${STAMP_SVG}</div>
     <div class="addr"><b>${esc(S.company)}</b><span>kurucusuna</span><i>Göreme, Nevşehir</i></div></div>
     <div class="face backf"><div class="bk"></div><div class="pocket"></div><div class="flap"></div><div class="sticker">${stickerSvg()}</div></div></div>
-    <div class="flat">${back.replace('</svg></div>', '</svg><canvas width="198" height="198"></canvas></div>')}</div></div><div class="hint">Sana bir mektup var · dokun</div>
+    <div class="flat">${back}</div></div><div class="hint">Sana bir mektup var · dokun</div>
   <div class="sheet"><div class="photo"><img src="${LETTER_IMG}" alt="Oyunu yapan aile, Kapadokya'da balonların altında"><i class="tape tl"></i><i class="tape tr"></i><i class="tape bl"></i><i class="tape br"></i></div>
   <div class="hi">Sevgili ${esc(S.company)} kurucusu,</div>
   <div class="body" style="position:relative"><p>Bugün şirketinin ${S.day}. günü. Bu kadar yol gelmen, balonlarını her sabah yeniden göğe salman bizi gerçekten çok mutlu etti.</p>
@@ -4744,7 +4725,7 @@ function showLetter() {
     if (L.classList.contains('flip')) return;
     L.classList.add('flip'); L.querySelector('.hint').hidden = true; sfx('click');
     at(1050, () => L.classList.add('flat3'));           /* the back, now flat, so the flap and sticker move in plain 2D */
-    at(1300, () => { L.classList.add('burn'); burner(true); stickerFlame(L); });
+    at(1300, () => { L.classList.add('burn'); burner(true); });
     at(2700, () => burner(false));
     at(2000, () => L.classList.add('lift'));
     at(2900, () => L.classList.add('pull'));
