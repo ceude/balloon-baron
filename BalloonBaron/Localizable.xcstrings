@@ -56587,37 +56587,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Avon-Schlucht mit ihrer Hängebrücke, georgianische Häuser, der Hafen. Wechselhaftes englisches Wetter: Morgennebel, Westwind, der gesperrte Himmel des Flughafens. Jeden Monat ein Ballonfestival, an Festivalabenden ein zweiter Flug. Hier zahlt man in Pfund. Startkapital: %1$@. Einstiegsgebühr %2$@ aus der Holding."
+            "value": "Die Avon-Schlucht, neblige Morgen und jeden Monat ein Ballonfestival. Startkapital: %1$@. Einstiegsgebühr %2$@ aus der Holding."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Avon Gorge and its suspension bridge, Georgian houses, the harbour. Changeable English weather: morning fog, the west wind, the airport's forbidden sky. A balloon festival every month, with a second flight on festival evenings. The money here is the pound. You start with %1$@. Entry fee %2$@ from the holding."
+            "value": "The Avon Gorge, misty mornings and a balloon festival every month. You start with %1$@. Entry fee %2$@ from the holding."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La garganta del Avon y su puente colgante, casas georgianas, el puerto. Tiempo inglés y cambiante: niebla matinal, viento del oeste, el cielo prohibido del aeropuerto. Un festival de globos cada mes, con un segundo vuelo en las tardes de festival. Aquí se paga en libras. Capital inicial: %1$@. Cuota de entrada: %2$@, a cargo del holding."
+            "value": "La garganta del Avon, mañanas de niebla y un festival de globos cada mes. Capital inicial: %1$@. Cuota de entrada: %2$@, a cargo del holding."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "エイボン渓谷と吊り橋、ジョージアン様式の家々、港。変わりやすいイギリスの天気：朝霧、西風、空港の飛行禁止空域。毎月気球祭りがあり、祭りの夕方には2回目のフライト。通貨はポンド。開始資金：%1$@。参入費%2$@はホールディングスから。"
+            "value": "エイボン渓谷、霧の朝、毎月の気球祭り。開始資金：%1$@。参入費%2$@はホールディングスから。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "에이번 협곡과 현수교, 조지아풍 집들, 항구. 변덕스러운 영국 날씨: 아침 안개, 서풍, 공항의 비행 금지 하늘. 매달 열기구 축제가 열리고, 축제 저녁에는 두 번째 비행이 있습니다. 화폐는 파운드. 시작 자금: %1$@. 진입 비용 %2$@, 지주회사에서 지급."
+            "value": "에이번 협곡, 안개 낀 아침, 매달 열리는 열기구 축제. 시작 자금: %1$@. 진입 비용 %2$@, 지주회사에서 지급."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Avon Kanyonu ve asma köprü, Gürcü evleri, liman. Değişken İngiliz havası: sabah sisi, batı rüzgârı, havalimanının yasak göğü. Her ay bir balon festivali, festival akşamları ikinci uçuş. Para birimi sterlin. Başlangıç kasası: %1$@. Giriş bedeli %2$@ holding kasasından."
+            "value": "Avon Kanyonu, sisli sabahlar ve her ay balon festivali. Başlangıç kasası: %1$@. Giriş bedeli %2$@ holding kasasından."
           }
         }
       }
