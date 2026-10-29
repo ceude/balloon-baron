@@ -164,6 +164,9 @@ struct RootView: View {
                 HezarfenView(message: m, day: store.state?.day ?? 1) { store.dismissHezarfen(openBazaar: m == .tip(.bazaar), openShow: m == .tip(.show), openPrice: m == .tip(.price) || m == .tip(.price3)) }
                     .transition(.opacity)
             }
+            if store.letter && store.game != nil {
+                LetterView().transition(.opacity)
+            }
             if let n = store.night {
                 // It is already there when the report slides away (its own dusk falls inside it); the last of the
                 // night fades slowly over the morning town (`dawnTick`).
@@ -201,6 +204,7 @@ struct RootView: View {
         .animation(.easeInOut(duration: 0.6), value: store.night)
         .animation(.easeOut(duration: 0.25), value: store.showGuides)
         .animation(.easeOut(duration: 0.25), value: store.showAgency)
+        .animation(.easeOut(duration: 0.25), value: store.letter)
         // v122: the tutorial that shows: day one's steps and the guided actions, over the town, its pages and cards
         .tutorialHost(minLineY: 104, present: { store.rootSpots = $0 },
                       alive: { store.guided != nil || store.homeFocus != nil || store.homeTutStep != nil },

@@ -51,6 +51,7 @@
 		79B8CE209311039EBF6C306B /* DealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3655D7D3B1C7B70D724F89A0 /* DealView.swift */; };
 		830D0F939F4AAC7708ACF61A /* CrewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EF8C34E905788B88E5C1BE /* CrewView.swift */; };
 		85AF43A366075059ABDDD599 /* ProtoIcon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */; };
+		85B99035E251E92B051A9026 /* LetterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 528E8390D5578AD5A4F6E4D5 /* LetterView.swift */; };
 		86F9815AF00AF54BD422516A /* Localization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690DAAB2ED10C6DCD5FE72B2 /* Localization.swift */; };
 		88A32D55CBEBF17C3D652F2A /* IntroScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A0065FA7F524A063D270336 /* IntroScene.swift */; };
 		89387608271733A9FA3C605B /* TownExtras.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */; };
@@ -141,6 +142,7 @@
 		45339BBAA04927D7F285CA21 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Platform.swift"; sourceTree = "<group>"; };
 		46C131F9B2830128FA15F1DB /* MorningViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MorningViews.swift"; sourceTree = "<group>"; };
 		50879B7F79F10952427AF4CD /* DancingScript-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DancingScript-Bold.ttf"; sourceTree = "<group>"; };
+		528E8390D5578AD5A4F6E4D5 /* LetterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LetterView.swift"; sourceTree = "<group>"; };
 		55E8C0DF1F0146F2DEF826B2 /* MergeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MergeView.swift"; sourceTree = "<group>"; };
 		57EF8C34E905788B88E5C1BE /* CrewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CrewView.swift"; sourceTree = "<group>"; };
 		58E7979CAF17F9DA860DACA2 /* Gaegu-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gaegu-Bold.ttf"; sourceTree = "<group>"; };
@@ -358,6 +360,7 @@
 				1A0065FA7F524A063D270336 /* IntroScene.swift */,
 				C804C45BE5B7FBFE970EB00E /* IntroView.swift */,
 				C2070C4DCB9F9DE7745FEBC0 /* IssueView.swift */,
+				528E8390D5578AD5A4F6E4D5 /* LetterView.swift */,
 				B632960ED55BC368BDCB46A2 /* LineGlyph.swift */,
 				CBC38C06FC44700CC832EDD9 /* LockGlyph.swift */,
 				BA0BD7F812F90140ACBE8488 /* MarketView.swift */,
@@ -545,6 +548,7 @@
 				88A32D55CBEBF17C3D652F2A /* IntroScene.swift in Sources */,
 				F81E8DEC76F22207B34A4722 /* IntroView.swift in Sources */,
 				07C4DCFC0699ED567F7D68F4 /* IssueView.swift in Sources */,
+				85B99035E251E92B051A9026 /* LetterView.swift in Sources */,
 				DA44FBC3675F4777CFB47A4E /* LineGlyph.swift in Sources */,
 				97C26259A18B66BA03E01A0B /* LockGlyph.swift in Sources */,
 				89A5610C4F91854923A845D3 /* MarketView.swift in Sources */,

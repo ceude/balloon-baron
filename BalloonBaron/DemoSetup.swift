@@ -5,7 +5,8 @@ import BalloonBaronCore
 /// Screenshot runs on the simulator (.github/workflows/screens.yml), debug builds only. Launch arguments:
 /// `-demoDays N` plays N days with a simple bot and opens on the home screen; `-demoIntro` keeps the intro;
 /// `-demoPage fleet` opens an office page (`-demoUnit deals` then a holding desk, `-demoHolding deals|jersey` its money and deal); `-demoRegion abq` plays on in Albuquerque after Cappadocia, `-demoRegion lux` then on in Luxor.
-/// One scene on top: `-demoScene issue` (pilots asking for a raise outside the office, then the card), `collect`, `album`, `deal`.
+/// One scene on top: `-demoScene issue` (pilots asking for a raise outside the office, then the card), `collect`, `album`, `deal`,
+/// `letter` (the family's letter, sealed) and `letterRead` (the letter already open).
 extension GameStore {
     func applyDemoArguments() {
         let args = ProcessInfo.processInfo.arguments
@@ -62,6 +63,9 @@ extension GameStore {
                 game = gg
                 deal = DealOffer(rival: 0, bankrupt: false)
             }
+        case "letter", "letterRead":
+            game?.state.letterDay = game?.state.day
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.letter = true }
         default: break
         }
     }

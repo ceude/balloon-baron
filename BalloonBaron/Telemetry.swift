@@ -91,6 +91,11 @@ enum Telemetry {
         send("tutorial.\(step)", value: Double(day), ["day": String(day)])
     }
 
+    /// v123: the family's letter: `letter.shown`, `letter.rate` (its App Store button) or `letter.later`, with the day.
+    static func letter(_ what: String, day: Int) {
+        send("letter.\(what)", value: Double(day), ["day": String(day)])
+    }
+
     /// The funnel's first steps: a company founded, the intro balloon gone.
     static func started(company: String) { send("game.started") }
     static func introDone(_ s: GameState?) { send("intro.done", value: s.map { Double($0.day) }) }

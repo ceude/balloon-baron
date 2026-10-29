@@ -53,6 +53,18 @@ enum GameCenter {
     }
 }
 
+/// v123: the App Store page the family's letter sends players to, to write a review.
+enum AppStoreLink {
+    /// The app's Apple ID from App Store Connect (My Apps → the app → App Information → Apple ID), a number such as
+    /// "6740000000". While it is nil the letter's review button shows Apple's own rating prompt instead.
+    static let appStoreID: String? = nil
+
+    /// The App Store's write-review page for this app (`https://apps.apple.com/app/id<ID>?action=write-review`).
+    static var writeReviewURL: URL? {
+        appStoreID.flatMap { URL(string: "https://apps.apple.com/app/id\($0)?action=write-review") }
+    }
+}
+
 /// The morning reminder: off until the player turns it on in the menu. Each time the app goes to the background
 /// it leaves one gentle note in Hezarfen's voice for about the same time tomorrow, replacing the last one.
 enum Reminder {

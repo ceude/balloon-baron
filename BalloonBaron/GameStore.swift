@@ -76,6 +76,8 @@ final class GameStore {
     var hotelBargain: HotelBargain?
     /// The Balloon Show's card (v111).
     var showShowCard = false
+    /// v123: the family's letter on screen (once, from the morning of day 50).
+    var letter = false
     /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
     var showPriceSheet = false
     /// A new postcard, and the album from the menu.
@@ -136,7 +138,7 @@ final class GameStore {
         showIntro || openingFilm || homeIntro != nil || replayingOpening || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
-            || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency
+            || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency || letter
     }
 
     init() {
@@ -275,6 +277,11 @@ final class GameStore {
             act { m = $0.nextHezarfen() }
             // v122: the lessons of new buildings and first jobs are shown, not told
             if case .tip(let t)? = m, guideOK(t) { startGuide(t) } else { hezarfen = m }
+        } else if s.letterDue && auto == nil && travel == nil {
+            // v123: the family's letter, once, from the morning of day 50, after Hezarfen's cards
+            act { $0.markLetterShown() }
+            letter = true
+            Telemetry.letter("shown", day: s.day)
         } else if g.liveIssue != nil && s.local.issueSeen != s.day {
             // A problem that waited for you here opens by itself once a day.
             act { _ = $0.liveIssueCardDue() }
@@ -491,6 +498,12 @@ final class GameStore {
 
     func closeShowCard() {
         showShowCard = false
+        showNextHezarfen()
+    }
+
+    /// The letter was put away: the morning goes on.
+    func closeLetter() {
+        letter = false
         showNextHezarfen()
     }
 

@@ -75,6 +75,8 @@ jobs:
           collect|-demoDays 60 -demoScene collect|11
           album|-demoDays 60 -demoScene album|8
           deal|-demoDays 60 -demoScene deal|8
+          letter|-demoDays 60 -demoScene letter|8
+          letterread|-demoDays 60 -demoScene letterRead|9
           LIST
             xcrun simctl shutdown "$UDID"
           done
