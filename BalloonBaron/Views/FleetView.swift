@@ -279,6 +279,7 @@ struct FleetView: View {
             .sheet(item: $cardPick) { pick in
                 BalloonCardSheet(balloonID: pick.id).environment(store)
             }
+            .overlay(alignment: .top) { ToastView(text: store.toast) }
         }
     }
 
@@ -595,6 +596,7 @@ private struct BalloonCardSheet: View {
     @State private var renamePick: BalloonPick?
     @State private var pilotPick: BalloonPick?
     @State private var noPilot = false
+    @State private var askSell = false
 
     var body: some View {
         if let game = store.game, let b = game.state.balloon(balloonID) {
@@ -621,6 +623,10 @@ private struct BalloonCardSheet: View {
                 dismiss()
                 store.page = .crew
             })
+            // v124.5: selling asks first, in the game's own card, and says "sold" after
+            .modifier(GameAlert(shown: $askSell, title: loc("sell.title"), message: sellNote(b, game.state),
+                                primary: loc("fleetPage.sell", eur(game.sellValue(b))), secondary: loc("sell.cancel"),
+                                onPrimary: { sell(b, game) }))
         }
     }
 
@@ -759,6 +765,24 @@ private struct BalloonCardSheet: View {
         }
     }
 
+    private func sellNote(_ b: Balloon, _ s: GameState) -> String {
+        var parts = [loc("sell.lead", b.title, eur(store.game?.sellValue(b) ?? 0))]
+        if b.used == true { parts.append(loc("sell.used")) }
+        if b.id == s.flagship { parts.append(loc("sell.flagship")) }
+        if !s.isSelf(b), let p = s.pilot(of: b) { parts.append(loc("sell.pilot", p.name)) }
+        return parts.joined(separator: " ")
+    }
+
+    private func sell(_ b: Balloon, _ game: Game) {
+        let value = game.sellValue(b), name = b.title
+        var sold = false
+        store.act { sold = $0.sellBalloon(b.id) }
+        guard sold else { return }
+        SoundEngine.shared.play(.coin)
+        dismiss()
+        store.showToast(loc("sell.done", name, eur(value)))
+    }
+
     private func pilotChip(_ b: Balloon, _ s: GameState) -> String {
         let pinned = s.local.pilots.first { $0.id == b.pinnedPilot }
         let name: String
@@ -813,8 +837,7 @@ private struct BalloonCardSheet: View {
             }
             if s.balloons.count > 1 {
                 FleetUI.SmallButton(title: loc("fleetPage.sell", eur(sale)), ghost: true) {
-                    store.act { _ = $0.sellBalloon(b.id) }
-                    dismiss()
+                    askSell = true
                 }
             }
         }
@@ -1110,5 +1133,37 @@ private struct DesignPicker: View {
     private func paint(_ design: Int?, _ b: Balloon) {
         store.act { _ = $0.paint(b.id, design: design) }
         dismiss()
+    }
+}
+
+/// v124.5: `toast()`: a dark pill with a green check under the top bar that fades by itself (`GameStore.showToast`).
+struct ToastView: View {
+    let text: String?
+
+    var body: some View {
+        if let text {
+            HStack(spacing: 8) {
+                Image(systemName: "checkmark")
+                    .font(.system(size: 12, weight: .black))
+                    .foregroundStyle(.white)
+                    .frame(width: 24, height: 24)
+                    .background(Theme.green, in: Circle())
+                Text(text)
+                    .font(Theme.font(17, .heavy, condensed: true))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.75)
+            }
+            .padding(.leading, 12)
+            .padding(.trailing, 16)
+            .padding(.vertical, 10)
+            .background(Theme.ink, in: Capsule())
+            .shadow(color: Theme.ink.opacity(0.35), radius: 12, y: 8)
+            .padding(.horizontal, 24)
+            .padding(.top, 70)
+            .transition(.move(edge: .top).combined(with: .opacity))
+            .allowsHitTesting(false)
+            .accessibilityAddTraits(.isStaticText)
+        }
     }
 }

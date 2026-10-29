@@ -91,6 +91,19 @@ final class GameStore {
     var storeItem: StoreItem?
     /// The design studio is open (a sheet): its locked items open their purchase card inside it, over the studio.
     var studioOpen = false
+    /// v124.5: a short note that fades by itself ("Clifton sold · +£21,000"), shown by `ToastView`.
+    var toast: String?
+    private var toastToken = 0
+
+    func showToast(_ text: String) {
+        toastToken += 1
+        let t = toastToken
+        withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) { toast = text }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.7) { [weak self] in
+            guard let self, self.toastToken == t else { return }
+            withAnimation(.easeOut(duration: 0.25)) { self.toast = nil }
+        }
+    }
     /// Passengers queueing in the town while they gather (shared by the card and the town canvas).
     let collectScene = CollectScene()
     /// Take-off was pressed: the collect card fades while the jeeps come (observed, unlike `collectScene`).

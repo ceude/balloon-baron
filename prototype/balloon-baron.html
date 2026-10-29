@@ -560,6 +560,11 @@ button.srow:active{background:#f6f3fb}
 .stats b{display:block;font-family:var(--cond);font-size:17px;color:var(--ink)}
 
 /* modals */
+/* v124.5: a short note that fades by itself ("Sold") */
+#toast{position:absolute;left:50%;top:calc(env(safe-area-inset-top,0px) + 78px);z-index:40;display:flex;align-items:center;gap:8px;max-width:86%;padding:10px 16px 10px 12px;border-radius:999px;background:var(--ink);color:#fff;font-family:var(--cond);font-weight:800;font-size:17px;letter-spacing:.02em;box-shadow:0 8px 24px rgba(27,24,64,.35);opacity:0;transform:translate(-50%,-10px) scale(.96);transition:opacity .22s,transform .3s cubic-bezier(.2,.9,.3,1.2);pointer-events:none;white-space:nowrap}
+#toast.on{opacity:1;transform:translate(-50%,0) scale(1)}
+#toast i{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:50%;background:var(--green);font-style:normal;font-size:14px}
+#toast span{overflow:hidden;text-overflow:ellipsis}
 .modal{position:absolute;inset:0;z-index:8;display:flex;align-items:center;justify-content:center;background:rgba(27,24,64,.55);
   padding:16px max(16px, env(safe-area-inset-right, 0px)) 16px max(16px, env(safe-area-inset-left, 0px))}
 .card{box-sizing:border-box;width:min(420px,100%);max-height:100%;overflow-y:auto;background:var(--paper);border-radius:24px;padding:22px 20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 20px 50px rgba(0,0,0,.35)}
@@ -932,6 +937,7 @@ body.night #cv{touch-action:none}
 
   <div class="modal" id="report" hidden></div>
   <div class="modal" id="menu" hidden></div>
+  <div id="toast" role="status" aria-live="polite"></div>
   <div class="modal" id="setup" hidden></div>
   <div class="chirp out" id="chirp" hidden></div>
   <div id="intro" hidden><div id="introHint" hidden><span>Brülöre basılı tut</span></div><button id="introBurn" aria-label="Brülörü yak"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2c1 3.5 5 5.6 5 10.2A5 5 0 0 1 7 12.2c0-2 1-3.4 2-4.4.2 1.6 1 2.7 2.2 3.2C10.6 8 11 4.6 12 2z" fill="#ffe08a"/><path d="M12 11c.8 1.7 2.6 2.6 2.6 4.6a2.6 2.6 0 0 1-5.2 0c0-1.5.9-2.3 1.6-3 .1.8.5 1.3 1 1.5-.3-1.1-.2-2.2 0-3.1z" fill="#fff6d8"/></svg>BRÜLÖR</button></div>
@@ -3227,7 +3233,7 @@ function balloonCard(b) {
   if (isSelf(b) && licenseOk()) acts.appendChild(pbtn('Pilota ver', () => giveToPilot(() => { refresh(); balloonCard(b); }), false, true));
   if (!isSelf(b)) acts.appendChild(pbtn('Bu balonu ben uçurayım', () => { S.flag = b.id; S.selfFly = true; assignPilots(); refresh(); balloonCard(b); }, st === 'dmg' || st === 'worn'));
   if (b.id !== S.flag && !selfFlying()) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); balloonCard(b); }, false, true));
-  if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(sellValue(b))}`, () => { S.cash += sellValue(b); S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id; assignPilots(); m.hidden = true; refresh(); }, false, true));
+  if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(sellValue(b))}`, () => sellCard(b), false, true));
   c.appendChild(acts);
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
@@ -3254,6 +3260,32 @@ function pilotPicker(b) {
   c.appendChild(box);
   const back = h('button', 'ghost', 'Geri'); back.style.width = '100%'; back.onclick = () => balloonCard(b); c.appendChild(back);
   m.appendChild(c); m.hidden = false;
+}
+/* v124.5: selling asks first, in the game's own card, and says "sold" after */
+function sellCard(b) {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  const v = sellValue(b), p = isSelf(b) ? null : pilotOf(b);
+  c.appendChild(h('h1', null, 'Balonu sat'));
+  c.appendChild(h('p', 'lead', `<b>${esc(b.name)}</b> ${eur(v)} karşılığında satılacak. Para hemen kasaya girer.`));
+  const notes = [];
+  if (b.used) notes.push('İkinci el olduğu için değerinin %40\'ı ödenir.');
+  if (b.id === S.flag) notes.push('Amiral balonun bu. Amiral başka bir balona geçer.');
+  if (p) notes.push(`Pilotu ${esc(p.name)} başka balona geçer ya da boşta kalır.`);
+  if (notes.length) c.appendChild(h('p', 'hint', notes.join(' ')));
+  const ok = h('button', 'big', `Sat ${eur(v)}`), no = h('button', 'ghost', 'Vazgeç'); ok.style.width = no.style.width = '100%';
+  ok.onclick = () => {
+    if (!S.balloons.includes(b)) { m.hidden = true; return; }
+    S.cash += v; S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id;
+    assignPilots(); save(); m.hidden = true; refresh(); sfx('coin'); toast(`${b.name} satıldı · +${eur(v)}`);
+  };
+  no.onclick = () => balloonCard(b);
+  c.append(ok, no); m.appendChild(c); m.hidden = false;
+}
+let toastT = 0;
+function toast(text) {
+  const t = $('toast'); t.innerHTML = `<i>✓</i><span>${esc(text)}</span>`;
+  t.classList.remove('on'); void t.offsetWidth; t.classList.add('on');
+  clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), 1700);
 }
 function renameCard(b) {
   const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
