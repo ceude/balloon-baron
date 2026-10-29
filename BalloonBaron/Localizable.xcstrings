@@ -862,6 +862,88 @@
         }
       }
     },
+    "ach.baronBri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron von Bristol"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron of Bristol"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barón de Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル男爵"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 남작"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Baronu"
+          }
+        }
+      }
+    },
+    "ach.baronBri.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Herr über Schlucht und Festival"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Master of the gorge and the festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dueño de la garganta y del festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "渓谷と祭りの主"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "협곡과 축제의 주인"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kanyonun ve festivalin sahibi"
+          }
+        }
+      }
+    },
     "ach.baronCap": {
       "extractionState": "manual",
       "localizations": {
@@ -1104,6 +1186,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vadinin eski sahibi çekildi"
+          }
+        }
+      }
+    },
+    "ach.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Himmel über dem Avon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sky of the Avon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cielo del Avon"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボンの空"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번의 하늘"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon'un göğü"
+          }
+        }
+      }
+    },
+    "ach.bri.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist in Bristol angekommen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You entered Bristol"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Llegaste a Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストルに進出した"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨에 진출했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol'e girdin"
           }
         }
       }
@@ -1924,6 +2088,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bir görevi başardın"
+          }
+        }
+      }
+    },
+    "ach.nightGlow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイトグロー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나이트 글로"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gece Işıltısı"
+          }
+        }
+      }
+    },
+    "ach.nightGlow.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Ballons leuchteten in einer Festivalnacht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your balloons glowed on a festival night"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus globos brillaron en una noche de festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの夜、君の気球が輝いた"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제의 밤, 당신의 열기구가 빛났습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival gecesi balonların ışıldadı"
           }
         }
       }
@@ -5208,6 +5454,47 @@
         }
       }
     },
+    "bname.avonStar": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stern des Avon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Star of the Avon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estrella del Avon"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボンの星"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번의 별"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Yıldızı"
+          }
+        }
+      }
+    },
     "bname.capStar": {
       "extractionState": "manual",
       "localizations": {
@@ -6106,6 +6393,498 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sandia Sky Rides sahibi"
+          }
+        }
+      }
+    },
+    "boss.bri.accident": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bist du auf einer Schafweide gelandet oder im Schlamm? Über dieser Schlucht wählt ein Gentleman seine Landung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Did you come down in a sheep field, or in the mud? Over this gorge a gentleman chooses his landing."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Aterrizaste en un campo de ovejas o en el barro? Sobre esta garganta, un caballero elige dónde aterriza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "羊の牧草地に降りたのかね、それとも泥の中かね？この渓谷では紳士は着陸地を選ぶものだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "양 목장에 내렸나, 아니면 진흙탕에? 이 협곡에선 신사라면 착륙지를 고르는 법이지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir koyun tarlasına mı indin, yoksa çamura mı? Bu kanyonda bir centilmen inişini seçer."
+          }
+        }
+      }
+    },
+    "boss.bri.baron": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron von Bristol. Meinem Urgroßvater wäre das Monokel heruntergefallen. Mir nicht, siehst du. Aber ich ziehe den Hut vor dir. Du hast es dir verdient."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron of Bristol. My great-grandfather would have dropped his monocle. I'm not dropping mine, you see. But I take my hat off to you. You've earned it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barón de Bristol. A mi bisabuelo se le habría caído el monóculo. A mí no, ya ves. Pero me quito el sombrero. Te lo has ganado."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル男爵か。曾祖父なら片眼鏡を落としていただろう。私は落とさんよ、ほらね。だが脱帽だ。君はそれに値する。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 남작이라. 증조부셨다면 외알 안경을 떨어뜨리셨을 걸세. 난 떨어뜨리지 않네, 보게. 하지만 모자는 벗겠네. 자네는 자격이 있어."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Baronu. Büyük büyükbabam görse monoklü düşerdi. Ben düşürmüyorum, bak. Ama şapkamı çıkarıyorum. Hak ettin."
+          }
+        }
+      }
+    },
+    "boss.bri.ch1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glaubst du, vier Ballons bringen dich in den Club? In meinem Hangar kennt man Ballons beim Familiennamen. Ich zähle meine Flotte, bevor ich meinen Morgentee ausgetrunken habe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You think four balloons get you into the club? In my hangar, balloons are known by their family names. I count my fleet before I finish my morning tea."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Crees que con cuatro globos entras en el club? En mi hangar los globos se conocen por su apellido. Cuento mi flota antes de terminar el té de la mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球4機でクラブに入れると思っているのかね？私の格納庫では気球は家名で呼ばれる。朝の紅茶を飲み終える前に私は船団を数えるのだよ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 네 대로 클럽에 들어올 수 있다고 생각하나? 내 격납고에선 열기구를 성으로 부른다네. 나는 아침 차를 다 마시기 전에 함대를 세지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dört balonla kulübe girdiğini mi sanıyorsun? Benim hangarımda balonlar soyadıyla anılır. Sabah çayını bitirmeden filonu sayarım."
+          }
+        }
+      }
+    },
+    "boss.bri.ch2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Festival steht bevor. In Bristol kommen alle, um die Ballons von Clifton Crown zu sehen. Deine werden auch am Himmel sein, zugegeben. In den hinteren Reihen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The festival is coming. In Bristol everyone comes to see Clifton Crown's balloons. Yours will be in the sky too, I grant you. In the back rows."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se acerca el festival. En Bristol todos vienen a ver los globos de Clifton Crown. Los tuyos también estarán en el cielo, lo admito. En las últimas filas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りが近い。ブリストルでは皆クリフトン・クラウンの気球を見に来る。君の気球も空にはいるだろう、認めよう。後ろの列でね。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제가 다가오는군. 브리스톨에선 모두가 클리프턴 크라운의 열기구를 보러 온다네. 자네 열기구도 하늘에 있겠지, 인정하지. 뒷줄에서."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival yaklaşıyor. Bristol'de herkes Clifton Crown'un balonlarını görmeye gelir. Senin balonların da gökyüzünde olacak, kabul. Arka sıralarda."
+          }
+        }
+      }
+    },
+    "boss.bri.deal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nun gut. Ich muss zugeben, der Wind hat sich zu deinen Gunsten gedreht. Wenn du Clifton Crown übernehmen willst, stehen meine Anwälte bereit. Nur nimm bitte die Krone nicht aus dem Logo."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Very well. I must admit the wind has turned your way. If you wish to take over Clifton Crown, my solicitors are ready. Only, please don't take the crown off the logo."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muy bien. Debo admitir que el viento ha girado a tu favor. Si quieres quedarte con Clifton Crown, mis abogados están listos. Solo te ruego que no quites la corona del logotipo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "よろしい。風が君の側に回ったことは認めねばなるまい。クリフトン・クラウンを引き継ぎたいなら、私の弁護士がいつでも応じる。ただ、ロゴから王冠は消さないでくれたまえ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "좋네. 바람이 자네 쪽으로 돌아섰다는 걸 인정해야겠군. 클리프턴 크라운을 인수하고 싶다면 내 변호사들이 준비돼 있네. 다만 로고에서 왕관만은 지우지 말아 주게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peki. Kabul etmeliyim, rüzgâr senden yana döndü. Clifton Crown'u devralmak istersen avukatlarım hazır. Yalnız tacı logodan silme, rica ederim."
+          }
+        }
+      }
+    },
+    "boss.bri.gone": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich habe meinen letzten Ballon verkauft. Den Hangar schenke ich einem Museum. Bristol gehört jetzt dir. Beim Festival erhebe ich ein Glas, aus der Ferne."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I've sold my last balloon. I'm giving the hangar to a museum. Bristol is yours now. I'll raise a glass at the festival, from a distance."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "He vendido mi último globo. Donaré el hangar a un museo. Bristol es tuyo ahora. En el festival alzaré una copa, desde lejos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最後の気球も売ったよ。格納庫は博物館に寄贈する。ブリストルはもう君のものだ。祭りでは遠くから杯を掲げよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마지막 열기구도 팔았네. 격납고는 박물관에 기증하겠네. 이제 브리스톨은 자네 것이야. 축제 때 멀리서 잔을 들겠네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son balonumu da sattım. Hangarı bir müzeye bağışlıyorum. Bristol artık senin. Festivalde bir kadeh kaldırırım, uzaktan."
+          }
+        }
+      }
+    },
+    "boss.bri.hello": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ah, ein Neuling. Sir Reginald Ashby, Clifton Crown Balloons. Als mein Urgroßvater den ersten Ballon über diese Schlucht flog, war die Brücke gerade erst fertig. Hier kennt man gute Familien, gute Hotels und guten Tee. In Ägypten hast du gewonnen, sagt man? Bristols Wetter empfängt dich morgens mit Nebel und verabschiedet dich mittags mit Regen. Mal sehen, wie lange du durchhältst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ah, a newcomer. Sir Reginald Ashby, Clifton Crown Balloons. When my great-grandfather flew the first balloon over this gorge, the bridge had only just been finished. Here one knows good families, good hotels and good tea. You won in Egypt, did you? Bristol's weather will greet you with fog in the morning and see you off with rain at noon. Let's see how long you last."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ah, un recién llegado. Sir Reginald Ashby, Clifton Crown Balloons. Cuando mi bisabuelo voló el primer globo sobre esta garganta, el puente acababa de terminarse. Aquí se conocen las buenas familias, los buenos hoteles y el buen té. Ganaste en Egipto, ¿no? El tiempo de Bristol te recibirá con niebla por la mañana y te despedirá con lluvia al mediodía. Veamos cuánto aguantas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ほう、新参者か。サー・レジナルド・アシュビー、クリフトン・クラウン・バルーンズだ。曾祖父がこの渓谷の上に初めて気球を飛ばしたとき、橋はできたばかりだった。ここでは良き家柄、良きホテル、良き紅茶がものを言う。エジプトで勝ったそうだね？ブリストルの天気は朝は霧で迎え、昼は雨で見送る。どこまで持つか見せてもらおう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아, 신참이군. 레지널드 애슈비 경, 클리프턴 크라운 벌룬스일세. 증조부께서 이 협곡 위로 첫 열기구를 띄우셨을 때 다리는 막 완공된 참이었지. 이곳에선 좋은 가문, 좋은 호텔, 좋은 차를 알아본다네. 이집트에서 이겼다고? 브리스톨의 날씨는 아침엔 안개로 맞이하고 낮엔 비로 배웅하지. 얼마나 버티는지 보자고."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ah, yeni gelen. Sir Reginald Ashby, Clifton Crown Balloons. Büyük büyükbabam bu kanyonun üstünde ilk balonu uçurduğunda köprü daha yeni bitmişti. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Mısır'da kazanmışsın, öyle mi? Bristol'ün havası seni sabah sisle karşılar, öğlen yağmurla uğurlar. Bakalım ne kadar dayanacaksın."
+          }
+        }
+      }
+    },
+    "boss.bri.hotel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Besitzer dieses Hotels und ich waren auf derselben Schule. Hier werden Geschäfte beim Mittagessen mit Kristallgläsern gemacht, mein Lieber."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That hotel's owner and I went to the same school. Here deals are made over lunch with crystal glasses, my dear fellow."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El dueño de ese hotel y yo fuimos al mismo colegio. Aquí los tratos se cierran en el almuerzo, con copas de cristal, querido amigo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あのホテルのオーナーとは同じ学校の出でね。ここでは取引は昼食の席で、クリスタルのグラスを傾けて決まるのだよ、君。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그 호텔 주인과 나는 같은 학교를 다녔다네. 이곳에선 거래가 점심 자리에서 크리스털 잔을 들고 이루어지지, 친애하는 친구."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O otelin sahibiyle aynı okulda okuduk. Burada anlaşmalar öğle yemeğinde, kristal kadehle yapılır, sevgili dostum."
+          }
+        }
+      }
+    },
+    "boss.bri.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sir Reginald Ashby"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sir Reginald Ashby"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sir Reginald Ashby"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "サー・レジナルド・アシュビー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "레지널드 애슈비 경"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sir Reginald Ashby"
+          }
+        }
+      }
+    },
+    "boss.bri.passed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestern hast du mehr Passagiere geflogen als ich. Im Club spricht man darüber. Ich nicht. Aber man spricht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yesterday you flew more passengers than I did. They're talking about it at the club. I'm not. But they are."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayer volaste con más pasajeros que yo. En el club se habla de ello. Yo no. Pero se habla."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "昨日は私より多くの乗客を乗せたそうだね。クラブで噂になっている。私は口にしない。だが噂にはなっている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어제 자네가 나보다 승객을 더 태웠다더군. 클럽에서 말들이 많아. 나는 말하지 않네. 하지만 말들이 많지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dün benden fazla yolcu uçurmuşsun. Kulüpte konuşuluyor. Ben konuşmuyorum. Ama konuşuluyor."
+          }
+        }
+      }
+    },
+    "boss.bri.poach": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich habe deinem Piloten eine Wohnung in Clifton und eine Clubmitgliedschaft angeboten. Ein gentlemanhaftes Angebot; du wirst es akzeptieren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I offered your pilot a flat in Clifton and a club membership. A gentlemanly offer; you'll accept it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le ofrecí a tu piloto un piso en Clifton y la membresía del club. Una oferta de caballeros; la aceptarás."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "君のパイロットにクリフトンのフラットとクラブの会員権を提示したよ。紳士的な申し出だ、受け入れたまえ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자네 조종사에게 클리프턴의 아파트와 클럽 회원권을 제안했네. 신사다운 제안이니 받아들이게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pilotuna Clifton'da bir daire ve kulübe üyelik teklif ettim. Centilmence bir teklif, kabul edersin."
+          }
+        }
+      }
+    },
+    "boss.bri.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhaber von Clifton Crown Balloons"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owner of Clifton Crown Balloons"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dueño de Clifton Crown Balloons"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "クリフトン・クラウン・バルーンズのオーナー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "클리프턴 크라운 벌룬스 대표"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clifton Crown Balloons sahibi"
           }
         }
       }
@@ -7213,6 +7992,416 @@
           "stringUnit": {
             "state": "translated",
             "value": "Hmm"
+          }
+        }
+      }
+    },
+    "bri.hotel.cave": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Gorge Lodge"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Gorge Lodge"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Gorge Lodge"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Gorge Lodge"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Gorge Lodge"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Gorge Lodge"
+          }
+        }
+      }
+    },
+    "bri.hotel.mansion": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clifton Terrace Hotel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clifton Terrace Hotel"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clifton Terrace Hotel"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clifton Terrace Hotel"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clifton Terrace Hotel"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Clifton Terrace Hotel"
+          }
+        }
+      }
+    },
+    "bri.hotel.palace": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royal Crescent Grand"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royal Crescent Grand"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royal Crescent Grand"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royal Crescent Grand"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royal Crescent Grand"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royal Crescent Grand"
+          }
+        }
+      }
+    },
+    "bri.hotel.stone": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbourside Inn"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbourside Inn"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbourside Inn"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbourside Inn"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbourside Inn"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbourside Inn"
+          }
+        }
+      }
+    },
+    "bri.mission.desc.valley": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sinke über dem Avon unter 150 m und grüße die Schlucht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drop below 150 m over the River Avon and salute the gorge."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desciende por debajo de 150 m sobre el río Avon y saluda a la garganta."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボン川の上で高度150 m以下に下り、渓谷に挨拶しよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번강 위에서 150 m 아래로 내려가 협곡에 인사하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon nehrinin üstünde 150 m'nin altına alçal, kanyonu selamla."
+          }
+        }
+      }
+    },
+    "bri.mission.valley": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gruß an den Avon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Touch of the Avon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toque del Avon"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボン・タッチ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번 터치"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon dokunuşu"
+          }
+        }
+      }
+    },
+    "bri.sponsor.bank": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbour Tea Rooms"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbour Tea Rooms"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbour Tea Rooms"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbour Tea Rooms"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbour Tea Rooms"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harbour Tea Rooms"
+          }
+        }
+      }
+    },
+    "bri.sponsor.carpet": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cider Press Co."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cider Press Co."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cider Press Co."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cider Press Co."
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cider Press Co."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cider Press Co."
+          }
+        }
+      }
+    },
+    "bri.sponsor.energy": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Westcountry Mobile"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Westcountry Mobile"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Westcountry Mobile"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Westcountry Mobile"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Westcountry Mobile"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Westcountry Mobile"
+          }
+        }
+      }
+    },
+    "bri.sponsor.wine": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Severn Bank"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Severn Bank"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Severn Bank"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Severn Bank"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Severn Bank"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Severn Bank"
           }
         }
       }
@@ -9308,6 +10497,47 @@
         }
       }
     },
+    "ceremony.baronHint.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Himmel über vier Regionen gehört dir. Das letzte Ziel der Holding wartet: die Show bei den Weltspielen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The skies of four regions are yours. The holding's last goal is waiting: the World Games show."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los cielos de cuatro regiones son tuyos. Te espera el último objetivo del holding: el espectáculo de los Juegos Mundiales."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4つの地域の空は君のものだ。ホールディングスの最後の目標が待っている。ワールドゲームズのショーだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "네 지역의 하늘이 당신 것입니다. 지주회사의 마지막 목표가 기다립니다: 월드 게임 쇼."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dört bölgenin göğü senin. Holdingin son hedefi seni bekliyor: Dünya Oyunları gösterisi."
+          }
+        }
+      }
+    },
     "ceremony.baronHint.cap": {
       "extractionState": "manual",
       "localizations": {
@@ -9355,37 +10585,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Der Himmel dreier Kontinente gehört dir. Bristol und die Maasai Mara öffnen sich bald auf der Karte."
+            "value": "Der Himmel über drei Regionen gehört dir. Auf der Weltkarte ist Bristol freigeschaltet."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The skies of three continents are yours. Bristol and the Maasai Mara will open on the map very soon."
+            "value": "The skies of three regions are yours. Bristol has opened on the world map."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El cielo de tres continentes es tuyo. Bristol y el Maasai Mara se abrirán muy pronto en el mapa."
+            "value": "Los cielos de tres regiones son tuyos. Bristol se ha abierto en el mapa del mundo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "三つの大陸の空はあなたのものだ。ブリストルとマサイマラもまもなく地図に登場する。"
+            "value": "3つの地域の空は君のものだ。世界地図でブリストルが解放された。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "세 대륙의 하늘이 당신의 것입니다. 브리스톨과 마사이마라가 곧 지도에 열립니다."
+            "value": "세 지역의 하늘이 당신 것입니다. 세계 지도에 브리스톨이 열렸습니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Üç kıtanın göğü senin. Bristol ve Maasai Mara çok yakında haritada açılacak."
+            "value": "Üç bölgenin göğü senin. Dünya haritasında Bristol açıldı."
           }
         }
       }
@@ -9468,6 +10698,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gün %1$@. %2$@ göğündeki her üç balondan ikisi %3$@ renklerinde. Ben Franklin gözlüğünü siliyor: “1783'te Paris'te ilk balonu izlerken 'bu bebek büyüyecek' demiştim. İşte büyüdü, dostum.”"
+          }
+        }
+      }
+    },
+    "ceremony.baronLead.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag %1$@. Zwei von drei Ballons am Himmel über %2$@ tragen die Farben von %3$@. Maggie Holloway nimmt die Brille ab und wischt sich die Augen: „Vierzig Jahre habe ich Ballonhüllen genäht, Schätzchen, und keine ist so hoch gestiegen. Komm, ich setz Tee auf.“"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Day %1$@. Two of every three balloons in the sky over %2$@ fly the colors of %3$@. Maggie Holloway takes off her glasses and wipes her eyes: “Forty years I sewed balloon envelopes, love, and not one of them went this high. Come on, I'll put the kettle on.”"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día %1$@. Dos de cada tres globos en el cielo de %2$@ llevan los colores de %3$@. Maggie Holloway se quita las gafas y se seca los ojos: «Cuarenta años cosiendo envolturas de globos, cielo, y ninguna subió tan alto. Ven, que pongo el té»."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@日目。%2$@の空を飛ぶ気球の3機に2機が%3$@の色だ。マギー・ホロウェイが眼鏡を外して目元をぬぐう。「40年も気球を縫ってきたけど、こんなに高く上がったのは一つもなかったよ、あんた。さあおいで、お茶を淹れるから。」"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@일째. %2$@ 하늘의 열기구 셋 중 둘이 %3$@의 색을 띠고 있습니다. 매기 홀로웨이가 안경을 벗고 눈가를 훔칩니다. “40년 동안 열기구를 꿰맸지만 이렇게 높이 오른 건 하나도 없었단다, 얘야. 이리 와, 차 한잔 끓여 줄게.”"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gün %1$@. %2$@ göğündeki her üç balondan ikisi %3$@ renklerinde. Maggie Holloway gözlüklerini çıkarıp gözünü siliyor: “Kırk yıl balon zarfı diktim tatlım, hiçbiri bu kadar yükseğe çıkmadı. Gel bakalım, bir çay koyayım.”"
           }
         }
       }
@@ -9882,6 +11153,170 @@
         }
       }
     },
+    "chapter.ashton": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ashton Court"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ashton Court"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ashton Court"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アシュトン・コート"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "애시턴 코트"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ashton Malikânesi"
+          }
+        }
+      }
+    },
+    "chapter.ashton.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Handelskammer Bristol hat dich zum neuen Unternehmen des Jahres gewählt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Bristol Chamber of Commerce named you New Business of the Year"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La Cámara de Comercio de Bristol te eligió nueva empresa del año"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル商工会議所が君を年間最優秀新企業に選んだ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 상공회의소가 당신을 올해의 신생 기업으로 선정했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Ticaret Odası seni yılın yeni işletmesi seçti"
+          }
+        }
+      }
+    },
+    "chapter.avonGorge": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon-Schlucht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Gorge"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Garganta del Avon"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボン渓谷"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번 협곡"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Kanyonu"
+          }
+        }
+      }
+    },
+    "chapter.avonGorge.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Pilotenverband Westengland hat dich zum Meister der Schlucht erklärt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The West of England Pilots' Association named you master of the gorge"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La Asociación de Pilotos del Oeste de Inglaterra te nombró maestro de la garganta"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "西イングランド・パイロット協会が君を渓谷の名手と認めた"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "서잉글랜드 조종사 협회가 당신을 협곡의 명인으로 인정했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti"
+          }
+        }
+      }
+    },
     "chapter.baron": {
       "extractionState": "manual",
       "localizations": {
@@ -10006,6 +11441,88 @@
       }
     },
     "chapter.baronAbq.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ""
+          }
+        }
+      }
+    },
+    "chapter.baronBri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron von Bristol"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron of Bristol"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Barón de Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル男爵"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 남작"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Baronu"
+          }
+        }
+      }
+    },
+    "chapter.baronBri.award": {
       "extractionState": "manual",
       "localizations": {
         "de": {
@@ -10206,6 +11723,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti"
+          }
+        }
+      }
+    },
+    "chapter.festivalBri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フェスティバル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival"
+          }
+        }
+      }
+    },
+    "chapter.festivalBri.award": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Festivaljury hat dich zum Star des Festivals gewählt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The festival jury named you the star of the festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El jurado del festival te eligió la estrella del festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの審査員が君を祭りのスターに選んだ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 심사위원단이 당신을 축제의 스타로 선정했습니다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival jürisi seni festivalin yıldızı seçti"
           }
         }
       }
@@ -15868,6 +17467,47 @@
         }
       }
     },
+    "event.airspaceFine": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist in den kontrollierten Luftraum des Flughafens geflogen. Strafe: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You flew into the airport's controlled airspace. Fine: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entraste en el espacio aéreo controlado del aeropuerto. Multa: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空港の管制空域に入った。罰金：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공항 관제 공역에 들어갔습니다. 벌금: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Havalimanının kontrollü hava sahasına girdin. Ceza: %@."
+          }
+        }
+      }
+    },
     "event.antitrustFine": {
       "extractionState": "manual",
       "localizations": {
@@ -16237,6 +17877,47 @@
         }
       }
     },
+    "event.eveningAscent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalabend: Deine Ballons stiegen ein zweites Mal auf. Ballons: %1$@, Abendpassagiere: %2$@, Einnahmen: %3$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival evening: your balloons went up a second time. Balloons: %1$@, evening passengers: %2$@, income: %3$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarde de festival: tus globos despegaron por segunda vez. Globos: %1$@, pasajeros de la tarde: %2$@, ingresos: %3$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの夕方：君の気球が2度目に飛び立った。気球：%1$@、夕方の乗客：%2$@、収入：%3$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 저녁: 열기구가 두 번째로 이륙했습니다. 열기구: %1$@, 저녁 승객: %2$@, 수입: %3$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival akşamı: balonların ikinci kez kalktı. Balon: %1$@, akşam yolcusu: %2$@, gelir: %3$@."
+          }
+        }
+      }
+    },
     "event.factoryDelivered": {
       "extractionState": "manual",
       "localizations": {
@@ -16438,6 +18119,129 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@: hedeften %2$@ m uzağa indin, yer ekibi seni geç buldu."
+          }
+        }
+      }
+    },
+    "event.farmLanding.cow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist auf der Kuhweide gelandet. Der Bauer tobte; das hat ihn beruhigt: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You landed in the cows' field. The farmer ranted and raved; this calmed him down: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aterrizaste en el campo de vacas. El granjero gritó y protestó; esto lo calmó: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "牛の牧草地に着陸した。農家は怒鳴り散らしたが、これでなだめた：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "소 목장에 착륙했습니다. 농부가 고래고래 소리쳤고, 이걸로 달랬습니다: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İneklerin tarlasına indin. Çiftçi bağırıp çağırdı, gönlünü şununla aldın: %@."
+          }
+        }
+      }
+    },
+    "event.farmLanding.sheep": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist auf der Schafweide gelandet. Der Bauer tobte; das hat ihn beruhigt: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You landed in the sheep's field. The farmer ranted and raved; this calmed him down: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aterrizaste en el campo de ovejas. El granjero gritó y protestó; esto lo calmó: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "羊の牧草地に着陸した。農家は怒鳴り散らしたが、これでなだめた：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "양 목장에 착륙했습니다. 농부가 고래고래 소리쳤고, 이걸로 달랬습니다: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koyunların tarlasına indin. Çiftçi bağırıp çağırdı, gönlünü şununla aldın: %@."
+          }
+        }
+      }
+    },
+    "event.fogFlown": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist an einem nebligen Morgen geflogen und sicher gelandet. Genau darum geht es beim Fliegen in Bristol."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You flew on a foggy morning and landed safely. That's what flying in Bristol is about."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volaste una mañana de niebla y aterrizaste sano y salvo. De eso se trata volar en Bristol."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "霧の朝に飛び、無事に着陸した。ブリストルで飛ぶとはこういうことだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안개 낀 아침에 비행하고 무사히 착륙했습니다. 브리스톨에서 조종한다는 게 바로 이런 거죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sisli bir sabah uçtun ve sağ salim indin. Bristol'de pilotluk budur."
           }
         }
       }
@@ -17016,6 +18820,47 @@
         }
       }
     },
+    "event.mudLanding": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist im Gezeitenschlamm gelandet. Die Passagiere versanken darin, ihre Schuhe waren nicht mehr zu retten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You landed in the tidal mud. The passengers sank into it, and their shoes could not be saved."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aterrizaste en el barro de la marea. Los pasajeros se hundieron y sus zapatos no se pudieron salvar."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "干潟の泥に着陸した。乗客は泥に沈み、靴は救えなかった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "갯벌 진흙에 착륙했습니다. 승객들이 진흙에 빠졌고, 신발은 건지지 못했습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelgit çamuruna indin. Yolcular çamura battı, ayakkabılar kurtarılamadı."
+          }
+        }
+      }
+    },
     "event.newEntrant": {
       "extractionState": "manual",
       "localizations": {
@@ -17053,6 +18898,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yeni rakip: %1$@ %2$@ bölgesinde uçmaya başladı!"
+          }
+        }
+      }
+    },
+    "event.nightGlowTonight": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute Nacht ist Night Glow: Deine Ballons leuchten auf der Wiese zur Musik. Ballons: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tonight is the Night Glow: your balloons on the meadow will glow to music. Balloons: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta noche es el Night Glow: tus globos brillarán con música en el prado. Globos: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今夜はナイトグロー：草地で君の気球が音楽に合わせて輝く。気球：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 밤은 나이트 글로: 초원에서 열기구들이 음악에 맞춰 빛납니다. 열기구: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu gece Gece Işıltısı var: balonların çayırda müzikle ışıldayacak. Balon: %@."
           }
         }
       }
@@ -24601,6 +26487,47 @@
         }
       }
     },
+    "flight.airspaceLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LUFTRAUM · über %@ m"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "AIRSPACE · above %@ m"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ESPACIO AÉREO · sobre %@ m"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空域・%@ m以上"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "공역 · %@ m 이상"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "HAVA SAHASI · %@ m üstü"
+          }
+        }
+      }
+    },
     "flight.alt": {
       "extractionState": "manual",
       "localizations": {
@@ -25011,6 +26938,47 @@
         }
       }
     },
+    "flight.fogLabel": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NEBEL · %@ m · tiefer gehen, um das Landefeld zu sehen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FOG · %@ m · descend to see the landing field"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NIEBLA · %@ m · desciende para ver el campo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "霧・%@ m・着陸場を見るには下降"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안개 · %@ m · 착륙장을 보려면 하강"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SİS · %@ m · iniş alanını görmek için alçal"
+          }
+        }
+      }
+    },
     "flight.fuel": {
       "extractionState": "manual",
       "localizations": {
@@ -25048,6 +27016,252 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yakıt"
+          }
+        }
+      }
+    },
+    "flight.hit.bridge": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist gegen die Hängebrücke geprallt!** Der Ballon ist schwer beschädigt, Passagiere sind verletzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You hit the suspension bridge!** The balloon is badly damaged and passengers are injured."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Chocaste contra el puente colgante!** El globo está muy dañado y hay pasajeros heridos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**吊り橋に衝突した！** 気球は大破し、乗客が負傷した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**현수교에 부딪혔습니다!** 열기구가 크게 파손되고 승객들이 다쳤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Asma köprüye çarptın!** Balon ağır hasarlı, yolcular yaralı."
+          }
+        }
+      }
+    },
+    "flight.hit.crane": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist gegen einen Hafenkran geprallt!** Der Ballon ist schwer beschädigt, Passagiere sind verletzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You hit a dock crane!** The balloon is badly damaged and passengers are injured."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Chocaste contra una grúa del puerto!** El globo está muy dañado y hay pasajeros heridos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**港のクレーンに衝突した！** 気球は大破し、乗客が負傷した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**항구 크레인에 부딪혔습니다!** 열기구가 크게 파손되고 승객들이 다쳤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Liman vincine çarptın!** Balon ağır hasarlı, yolcular yaralı."
+          }
+        }
+      }
+    },
+    "flight.hit.mast": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du hast dich in den Masten des Großseglers verfangen!** Der Ballon ist schwer beschädigt, Passagiere sind verletzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You got caught in the tall ship's masts!** The balloon is badly damaged and passengers are injured."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Te enganchaste en los mástiles del velero!** El globo está muy dañado y hay pasajeros heridos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**帆船のマストに引っかかった！** 気球は大破し、乗客が負傷した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**범선 돛대에 걸렸습니다!** 열기구가 크게 파손되고 승객들이 다쳤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Yelkenlinin direklerine takıldın!** Balon ağır hasarlı, yolcular yaralı."
+          }
+        }
+      }
+    },
+    "flight.hit.observatory": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist gegen den Observatoriumsturm geprallt!** Der Ballon ist schwer beschädigt, Passagiere sind verletzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You hit the observatory tower!** The balloon is badly damaged and passengers are injured."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Chocaste contra la torre del observatorio!** El globo está muy dañado y hay pasajeros heridos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**展望塔に衝突した！** 気球は大破し、乗客が負傷した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**전망탑에 부딪혔습니다!** 열기구가 크게 파손되고 승객들이 다쳤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Gözlem kulesine çarptın!** Balon ağır hasarlı, yolcular yaralı."
+          }
+        }
+      }
+    },
+    "flight.hit.spire": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist gegen eine Kirchturmspitze geprallt!** Der Ballon ist schwer beschädigt, Passagiere sind verletzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You hit a church spire!** The balloon is badly damaged and passengers are injured."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Chocaste contra la aguja de una iglesia!** El globo está muy dañado y hay pasajeros heridos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**教会の尖塔に衝突した！** 気球は大破し、乗客が負傷した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**교회 첨탑에 부딪혔습니다!** 열기구가 크게 파손되고 승객들이 다쳤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Kilise kulesine çarptın!** Balon ağır hasarlı, yolcular yaralı."
+          }
+        }
+      }
+    },
+    "flight.hit.tree": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist in die Bäume gekracht!** Der Ballon ist schwer beschädigt, Passagiere sind verletzt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You hit the trees!** The balloon is badly damaged and passengers are injured."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Chocaste contra los árboles!** El globo está muy dañado y hay pasajeros heridos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**木々に衝突した！** 気球は大破し、乗客が負傷した。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**나무에 부딪혔습니다!** 열기구가 크게 파손되고 승객들이 다쳤습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Ağaçlara çarptın!** Balon ağır hasarlı, yolcular yaralı."
           }
         }
       }
@@ -25130,6 +27344,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ km/sa"
+          }
+        }
+      }
+    },
+    "flight.land.airFine": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist in den Himmel des Flughafens geflogen.** Die Luftfahrtbehörde wird dich bestrafen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You flew into the airport's sky.** Civil Aviation will fine you."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Entraste en el cielo del aeropuerto.** Aviación Civil te multará."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**空港の空に入ってしまった。**民間航空局から罰金が来る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**공항 하늘에 들어갔습니다.** 민간항공청이 벌금을 부과할 겁니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Havalimanının göğüne girdin.** Sivil Havacılık ceza kesecek."
           }
         }
       }
@@ -25339,6 +27594,88 @@
         }
       }
     },
+    "flight.land.farm.cow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist auf einer Kuhweide gelandet!** Der Bauer ist gar nicht erfreut."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You landed in a field of cows!** The farmer is not pleased."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Aterrizaste en un campo de vacas!** El granjero no está nada contento."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**牛の牧草地に着陸した！**農家はまったく喜んでいない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**소 목장에 착륙했습니다!** 농부가 전혀 달가워하지 않습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**İneklerin tarlasına indin!** Çiftçi hiç memnun değil."
+          }
+        }
+      }
+    },
+    "flight.land.farm.sheep": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist auf einer Schafweide gelandet!** Der Bauer ist gar nicht erfreut."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You landed in a field of sheep!** The farmer is not pleased."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Aterrizaste en un campo de ovejas!** El granjero no está nada contento."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**羊の牧草地に着陸した！**農家はまったく喜んでいない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**양 목장에 착륙했습니다!** 농부가 전혀 달가워하지 않습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Koyunların tarlasına indin!** Çiftçi hiç memnun değil."
+          }
+        }
+      }
+    },
     "flight.land.good": {
       "extractionState": "manual",
       "localizations": {
@@ -25417,6 +27754,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "**Sert iniş!** Sepet devrildi, yolcularda hafif yaralanmalar var."
+          }
+        }
+      }
+    },
+    "flight.land.mud": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du bist im Gezeitenschlamm gelandet!** Die Passagiere versanken bis zu den Knien."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You landed in the tidal mud!** The passengers sank in up to their knees."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Aterrizaste en el barro de la marea!** Los pasajeros se hundieron hasta las rodillas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**干潟の泥に着陸した！**乗客は膝まで泥に沈んだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**갯벌 진흙에 착륙했습니다!** 승객들이 무릎까지 빠졌습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Gelgit çamuruna indin!** Yolcular dizlerine kadar çamura battı."
           }
         }
       }
@@ -26278,6 +28656,170 @@
           "stringUnit": {
             "state": "translated",
             "value": "Termik ↑"
+          }
+        }
+      }
+    },
+    "flight.tip.air": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die rot gestreifte Zone ist der Himmel des Flughafens: Halte dich fern."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The red-striped zone is the airport's sky: stay out of it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La zona de rayas rojas es el cielo del aeropuerto: no entres."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "赤い斜線の区域は空港の空だ。入ってはいけない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빨간 줄무늬 구역은 공항 하늘입니다: 들어가지 마세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kırmızı çizgili bölge havalimanının göğü: içine girme."
+          }
+        }
+      }
+    },
+    "flight.tip.airspace": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Luftraum des Flughafens!** Sinke unter %@ m, sonst gibt es eine Strafe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**The airport's airspace!** Get below %@ m or you'll be fined."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**¡Espacio aéreo del aeropuerto!** Baja de %@ m o te multarán."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**空港の空域だ！** %@ m以下に下りないと罰金だ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**공항 공역입니다!** %@ m 아래로 내려가지 않으면 벌금입니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Havalimanının hava sahası!** Şu yüksekliğin altına in, yoksa ceza yersin: %@ m."
+          }
+        }
+      }
+    },
+    "flight.tip.airspaceFined": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Du hast den Luftraum verletzt.** Der Tower hat dich gesehen: Die Luftfahrtbehörde wird dich bestrafen. Geh tiefer."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**You've violated the airspace.** The tower saw you: Civil Aviation will fine you. Descend."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Has violado el espacio aéreo.** La torre te ha visto: Aviación Civil te multará. Desciende."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**空域に違反した。**管制塔に見られた。民間航空局から罰金が来る。高度を下げよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**공역을 침범했습니다.** 관제탑이 봤습니다: 민간항공청이 벌금을 부과할 겁니다. 내려가세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Hava sahasını ihlal ettin.** Kule seni gördü: Sivil Havacılık ceza kesecek. Alçal."
+          }
+        }
+      }
+    },
+    "flight.tip.fog": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Nebel:** Geh tiefer, um das Landefeld zu sehen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Fog:** descend to see the landing field."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Niebla:** desciende para ver el campo de aterrizaje."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**霧だ：**着陸場を見るには高度を下げよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**안개:** 착륙장을 보려면 고도를 낮추세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "**Sis var:** iniş alanını görmek için alçal."
           }
         }
       }
@@ -28168,6 +30710,826 @@
         }
       }
     },
+    "glow.bookedBody": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn du den Tag beendest, stehen deine Ballons auf der Festivalwiese und zünden ihre Brenner zur Musik, danach steigt das Feuerwerk. Ballons: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "When you finish today, your balloons will stand on the festival meadow and fire their burners to music, then the fireworks go up. Balloons: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando termines el día, tus globos estarán en el prado del festival encendiendo sus quemadores al ritmo de la música, y después habrá fuegos artificiales. Globos: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日を終えると、君の気球が祭りの草地に並び、音楽に合わせてバーナーを燃やす。そのあと花火だ。気球：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘을 마치면 열기구들이 축제 초원에 서서 음악에 맞춰 버너를 켜고, 이어서 불꽃놀이가 펼쳐집니다. 열기구: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugünü tamamladığında balonların festival çayırında yerde durup müzikle brülörlerini yakacak, sonra havai fişekler atılacak. Balon: %@."
+          }
+        }
+      }
+    },
+    "glow.bookedTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute Nacht Night Glow!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow tonight!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Night Glow esta noche!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今夜はナイトグロー！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 밤 나이트 글로!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gece Işıltısı bu gece!"
+          }
+        }
+      }
+    },
+    "glow.confirm": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bestätigen und buchen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirm and book: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confirmar y reservar: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "確定して予約：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "확정하고 예약: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Onayla ve düzenle: %@"
+          }
+        }
+      }
+    },
+    "glow.gainGoal": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eines der Ziele im Festival-Kapitel"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One of the festival chapter's goals"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uno de los objetivos del capítulo del festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの章の目標のひとつ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 챕터의 목표 중 하나"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival bölümünün hedeflerinden biri"
+          }
+        }
+      }
+    },
+    "glow.gainPaper": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Schlagzeile am nächsten Morgen und eine Postkarte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A headline the next morning and a postcard"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un titular a la mañana siguiente y una postal"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "翌朝の新聞の見出しと絵はがき"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다음 날 아침 신문 머리기사와 엽서"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ertesi sabah gazete manşeti ve bir kartpostal"
+          }
+        }
+      }
+    },
+    "glow.gainRep": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sofort Beliebtheit: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularity at once: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularidad al instante: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "すぐに人気：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "즉시 인기: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hemen popülerlik: %@"
+          }
+        }
+      }
+    },
+    "glow.intro": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In einer Festivalnacht stehen deine Ballons auf der Wiese und leuchten zur Musik, indem sie ihre Brenner zünden; zum Schluss ein Feuerwerk. Einmal pro Festival."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On a festival night your balloons stand on the meadow and glow to music, firing their burners; fireworks at the end. Once per festival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En una noche de festival tus globos se quedan en el prado y brillan al ritmo de la música encendiendo sus quemadores; al final, fuegos artificiales. Una vez por festival."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの夜、君の気球が草地に並び、音楽に合わせてバーナーを燃やして輝く。最後は花火。祭りごとに1回。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제의 밤, 열기구들이 초원에 서서 음악에 맞춰 버너를 켜며 빛납니다. 마지막엔 불꽃놀이. 축제마다 한 번."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival gecesi balonların çayırda yerde durur, müzikle brülörlerini yakıp ışıldar; sonunda havai fişekler. Her festivalde bir kez."
+          }
+        }
+      }
+    },
+    "glow.short.booked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "heute Nacht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tonight"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "esta noche"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今夜"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 밤"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bu gece"
+          }
+        }
+      }
+    },
+    "glow.short.cash": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "nötig: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "needed: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "necesario: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "必要：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "필요: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gerekli: %@"
+          }
+        }
+      }
+    },
+    "glow.short.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bei diesem Festival schon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "held at this festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ya celebrado en este festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この祭りでは開催済み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 축제에선 완료"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bu festivalde yapıldı"
+          }
+        }
+      }
+    },
+    "glow.short.few": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "flugbereite Ballons nötig: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "flyable balloons needed: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "globos listos necesarios: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "必要な飛べる気球：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "필요한 비행 가능 열기구: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "gereken uçabilen balon: %@"
+          }
+        }
+      }
+    },
+    "glow.short.show": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "heute Nacht Show"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "show tonight"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "esta noche hay espectáculo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今夜はショー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 밤 쇼"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bu gece şölen var"
+          }
+        }
+      }
+    },
+    "glow.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイトグロー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나이트 글로"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gece Işıltısı"
+          }
+        }
+      }
+    },
+    "glow.why.booked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Glow ist heute Nacht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The glow is tonight."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El glow es esta noche."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グローは今夜だ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "글로는 오늘 밤입니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Işıltı bu gece."
+          }
+        }
+      }
+    },
+    "glow.why.cash": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "So viel muss in der Kasse sein: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You need this much in the till: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Necesitas esto en caja: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "金庫に必要な額：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "금고에 이만큼 있어야 합니다: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasada şu kadar olmalı: %@."
+          }
+        }
+      }
+    },
+    "glow.why.done": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Night Glow dieses Festivals hat stattgefunden. Warte auf das nächste Festival."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This festival's Night Glow has been held. Wait for the next festival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Night Glow de este festival ya se celebró. Espera al próximo festival."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この祭りのナイトグローはもう開いた。次の祭りを待とう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 축제의 나이트 글로는 이미 열렸습니다. 다음 축제를 기다리세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu festivalin Gece Işıltısı yapıldı. Bir sonraki festivali bekle."
+          }
+        }
+      }
+    },
+    "glow.why.few": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du brauchst flugbereite Ballons: mindestens %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You need flyable balloons: at least %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Necesitas globos listos para volar: al menos %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛べる気球が必要：最低%@機。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행 가능한 열기구가 필요합니다: 최소 %@대."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçabilen balon gerekiyor: en az %@."
+          }
+        }
+      }
+    },
+    "glow.why.nofest": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Night Glow kann nur während des Bristol-Ballonfestivals stattfinden."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Night Glow can only be held during the Bristol Balloon Festival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Night Glow solo se puede organizar durante el Festival de Globos de Bristol."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイトグローはブリストル気球祭りの期間中しか開けない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나이트 글로는 브리스톨 열기구 축제 기간에만 열 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gece Işıltısı yalnızca Bristol Balon Festivali günlerinde düzenlenir."
+          }
+        }
+      }
+    },
+    "glow.why.ok": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In einer Festivalnacht leuchten deine Ballons auf der Wiese zur Musik, danach Feuerwerk. Einmal pro Festival."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On a festival night your balloons glow to music on the meadow, then fireworks. Once per festival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En una noche de festival tus globos brillan con música en el prado, y luego fuegos artificiales. Una vez por festival."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの夜、草地で君の気球が音楽に合わせて輝き、そのあと花火。祭りごとに1回。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제의 밤, 초원에서 열기구가 음악에 맞춰 빛나고 이어서 불꽃놀이. 축제마다 한 번."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival gecesi balonların çayırda müzikle ışıldar, sonra havai fişekler. Her festivalde bir kez."
+          }
+        }
+      }
+    },
+    "glow.why.show": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute Nacht ist eine Ballonshow. Verschiebe das Glow auf eine andere Festivalnacht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There's a Balloon Show tonight. Leave the glow for another night of the festival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta noche hay un Espectáculo de Globos. Deja el glow para otra noche del festival."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今夜はバルーンショーがある。グローは祭りの別の夜にしよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 밤은 벌룬 쇼가 있습니다. 글로는 축제의 다른 밤으로 미루세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu gece Balon Şöleni var. Işıltıyı festivalin başka bir gecesine bırak."
+          }
+        }
+      }
+    },
     "goal.balloons": {
       "extractionState": "manual",
       "localizations": {
@@ -28578,6 +31940,47 @@
         }
       }
     },
+    "goal.fiesta.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fliege beim Bristol-Ballonfestival"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fly at the Bristol Balloon Festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuela en el Festival de Globos de Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル気球祭りで飛ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 열기구 축제에서 비행하기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Balon Festivali'nde uç"
+          }
+        }
+      }
+    },
     "goal.fiesta.lux": {
       "extractionState": "manual",
       "localizations": {
@@ -28615,6 +32018,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bir Nil gemisi sezonunda uç"
+          }
+        }
+      }
+    },
+    "goal.fog": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fliege an einem nebligen Tag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fly on a foggy day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vuela un día de niebla"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "霧の日に飛ぶ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안개 낀 날 비행하기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sisli bir günde uç"
+          }
+        }
+      }
+    },
+    "goal.glow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veranstalte ein Night Glow"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hold a Night Glow"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Organiza un Night Glow"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイトグローを開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나이트 글로 열기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir Gece Işıltısı düzenle"
           }
         }
       }
@@ -29767,6 +33252,47 @@
         }
       }
     },
+    "guide.ayse.name.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olivia"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olivia"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olivia"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オリビア"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "올리비아"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olivia"
+          }
+        }
+      }
+    },
     "guide.ayse.title": {
       "extractionState": "manual",
       "localizations": {
@@ -29804,6 +33330,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Otel rehberi"
+          }
+        }
+      }
+    },
+    "guide.bri.hello": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hallo, Schätzchen, ich bin Maggie. Maggie Holloway. Vierzig Jahre lang habe ich in dieser Stadt Ballonhüllen genäht; ein Blick auf die Nähte deines Ballons, und ich sage dir, aus wessen Händen er stammt. Meister Hezarfen hat dich mir anvertraut, in Bristol zeige ich dir den Weg. Drei Dinge musst du wissen, Liebes: Morgens gibt es Nebel, der Wind weht von Westen, vom Bristolkanal, und flieg niemals in den Himmel des Flughafens. Ach, und vergiss deinen Regenschirm nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hello, love, I'm Maggie. Maggie Holloway. I sewed balloon envelopes in this city for forty years; one look at your balloon's seams and I could tell you whose hands made it. Master Hezarfen has put you in my care, and in Bristol I'll show you the way. Three things to know, dear: there's fog in the mornings, the wind blows from the west, off the Bristol Channel, and never, ever fly into the airport's sky. Oh, and don't forget your umbrella."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hola, cielo, soy Maggie. Maggie Holloway. Cosí envolturas de globos en esta ciudad durante cuarenta años; con mirar las costuras de tu globo te diría de qué manos salió. El maestro Hezarfen te ha dejado a mi cargo, y en Bristol yo te guiaré. Tres cosas, querida: por las mañanas hay niebla, el viento sopla del oeste, desde el canal de Bristol, y nunca, jamás, entres en el cielo del aeropuerto. Ah, y no olvides el paraguas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "こんにちは、あんた。マギーよ。マギー・ホロウェイ。この街で40年、気球の外皮を縫ってきたの。あんたの気球の縫い目を見れば、誰の手によるものかだってわかるわ。ヘザルフェン師匠にあんたを託されたから、ブリストルでは私が案内するわね。覚えておいてほしいことが三つ。朝は霧が出る、風は西のブリストル海峡から吹く、そして空港の空には絶対に入らないこと。あ、それと傘を忘れないでね。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안녕, 얘야, 나는 매기란다. 매기 홀로웨이. 이 도시에서 40년 동안 열기구 외피를 꿰맸지. 네 열기구 바느질만 봐도 누구 손에서 나왔는지 알 수 있단다. 헤자르펜 스승님이 너를 내게 맡기셨으니, 브리스톨에선 내가 길을 알려 줄게. 세 가지만 기억하렴: 아침엔 안개가 끼고, 바람은 서쪽 브리스톨 해협에서 불어오고, 공항 하늘엔 절대 들어가지 마. 아, 우산도 잊지 말고."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merhaba canım, ben Maggie. Maggie Holloway. Kırk yıl bu şehirde balon zarfı diktim; senin balonunun dikişlerine bakınca kimin elinden çıktığını bile söylerim. Hezarfen Usta seni bana emanet etti, Bristol'de sana ben yol göstereceğim. Üç şey bil, tatlım: sabahları sis olur, rüzgâr Bristol Kanalı'ndan, batıdan eser, havalimanının göğüne de asla girme. Bir de şemsiyeni unutma."
+          }
+        }
+      }
+    },
+    "guide.bri.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maggie Holloway"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maggie Holloway"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maggie Holloway"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マギー・ホロウェイ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매기 홀로웨이"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maggie Holloway"
           }
         }
       }
@@ -29931,6 +33539,47 @@
         }
       }
     },
+    "guide.mehmet.name.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harry"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harry"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harry"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハリー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "해리"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harry"
+          }
+        }
+      }
+    },
     "guide.mehmet.title": {
       "extractionState": "manual",
       "localizations": {
@@ -30013,6 +33662,47 @@
         }
       }
     },
+    "guide.selin.name.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imogen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imogen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imogen"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "イモージェン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이모젠"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imogen"
+          }
+        }
+      }
+    },
     "guide.selin.title": {
       "extractionState": "manual",
       "localizations": {
@@ -30091,6 +33781,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Franklin"
+          }
+        }
+      }
+    },
+    "guide.short.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maggie"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maggie"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maggie"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マギー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maggie"
           }
         }
       }
@@ -31243,6 +34974,47 @@
         }
       }
     },
+    "hez.entered.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "England, Kind, Bristol! Die Hälfte aller Ballonhüllen der Welt wurde in dieser Stadt genäht, und der Himmel weiß das. Eine Hängebrücke über der Avon-Schlucht, ein alter Großsegler im Hafen, sattgrüne Felder auf den Hügeln. Aber das Wetter ist englisch: Gelbe Flaggen sind häufig, und morgens gibt es Nebel; an einem nebligen Morgen musst du tiefer gehen, um das Landefeld zu sehen. Der Wind weht von Westen, vom Bristolkanal, und trägt dich nach Osten. Der Himmel des Flughafens ist Sperrgebiet: Fliegst du hinein, gibt es eine Strafe. Sir Reginald Ashbys Clifton Crown fliegt hier seit hundert Jahren, und die Rivalen verbünden sich schnell. Du beginnst mit %@ und einem kleinen Ballon. Jeden Monat gibt es ein viertägiges Ballonfestival; an Festivalabenden steigen die Ballons ein zweites Mal auf, und du kannst ein Night Glow veranstalten. Nimm deinen Regenschirm mit, Kind."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "England, kid, Bristol! Half the world's balloon envelopes were sewn in this city, and the sky knows it. A suspension bridge over the Avon Gorge, an old tall ship in the harbour, bright green fields on the hills. But the weather is English: yellow flags are common and there's fog in the mornings; on a foggy morning you have to come down to see the landing field. The wind blows from the west, off the Bristol Channel, and carries you east. The airport's sky is forbidden: fly into it and you'll be fined. Sir Reginald Ashby's Clifton Crown has flown here for a hundred years, and the rivals join forces quickly. You start with %@ and one small balloon. Every month there's a four-day balloon festival; on festival evenings the balloons go up a second time, and you can hold a Night Glow too. Take your umbrella, kid."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Inglaterra, chico, Bristol! La mitad de las envolturas de globos del mundo se cosieron en esta ciudad, y el cielo lo sabe. Un puente colgante sobre la garganta del Avon, un viejo velero en el puerto, campos verdísimos en las colinas. Pero el tiempo es inglés: las banderas amarillas son frecuentes y por las mañanas hay niebla; una mañana de niebla tendrás que bajar para ver el campo de aterrizaje. El viento sopla del oeste, desde el canal de Bristol, y te lleva hacia el este. El cielo del aeropuerto está prohibido: si entras, te multarán. El Clifton Crown de Sir Reginald Ashby lleva cien años volando aquí, y los rivales se unen enseguida. Empiezas con %@ y un globo pequeño. Cada mes hay un festival de globos de cuatro días; en las tardes de festival los globos despegan por segunda vez, y también puedes organizar un Night Glow. Llévate el paraguas, chico."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "イギリスだ、ブリストルだぞ！世界の気球の外皮の半分はこの街で縫われた。空もそれを知っている。エイボン渓谷にかかる吊り橋、港の古い帆船、丘に広がる緑の畑。だが天気はイギリスの天気だ。黄旗が多く、朝は霧が出る。霧の朝は着陸場を見るために高度を下げねばならん。風は西、ブリストル海峡から吹き、君を東へ運ぶ。空港の空は飛行禁止区域だ。入れば罰金だぞ。サー・レジナルド・アシュビーのクリフトン・クラウンは百年もここを飛んでいるし、ライバルはすぐに手を組む。%@と小さな気球1機からのスタートだ。毎月4日間の気球祭りがあり、祭りの夕方には気球が2度目に飛び立つ。夜にはナイトグローも開ける。傘を持っていけ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "영국이다, 브리스톨! 세상 열기구 외피의 절반이 이 도시에서 꿰매졌고, 하늘도 그걸 안단다. 에이번 협곡 위의 현수교, 항구의 오래된 범선, 언덕 위의 푸르른 들판. 하지만 날씨는 영국 날씨야: 노란 깃발이 잦고 아침엔 안개가 낀다. 안개 낀 아침엔 착륙장을 보려면 고도를 낮춰야 해. 바람은 서쪽, 브리스톨 해협에서 불어와 너를 동쪽으로 실어 간다. 공항 하늘은 금지 구역이야. 들어가면 벌금이다. 레지널드 애슈비 경의 클리프턴 크라운은 백 년째 여기서 날고 있고, 경쟁자들은 금세 손을 잡는다. 시작 자금은 %@, 그리고 작은 열기구 한 대다. 매달 나흘짜리 열기구 축제가 열리고, 축제 저녁엔 열기구가 두 번째로 뜨며 밤에는 나이트 글로도 열 수 있지. 우산 챙겨라."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İngiltere evlat, Bristol! Dünyanın balon zarflarının yarısı bu şehirde dikilmiş, gökyüzü de onu bilir. Avon Kanyonu'nun üstünde asma bir köprü, limanda eski bir yelkenli, tepelerde yemyeşil tarlalar. Ama hava İngiliz havası: sarı bayrak sık, sabahları sis olur; sisli sabah iniş alanını görmek için alçalman gerekir. Rüzgâr batıdan, Bristol Kanalı'ndan esip seni doğuya taşır. Havalimanının göğü de yasak bölge, girersen ceza yersin. Sir Reginald Ashby'nin Clifton Crown'u burada yüz yıldır uçuyor ve rakipler çabuk birleşir. %@ ve küçük bir balonla başlıyorsun. Her ay dört günlük bir balon festivali var; festival akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Şemsiyeni al evlat."
+          }
+        }
+      }
+    },
     "hez.entered.lux": {
       "extractionState": "manual",
       "localizations": {
@@ -31448,6 +35220,88 @@
         }
       }
     },
+    "hez.entrant.cheapSkies": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Billiganbieter namens Cheap Skies Bristol hat eröffnet. Sie verkaufen Studenten Tickets zum halben Preis und kümmern sich nicht groß um den Nebel."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A discount outfit called Cheap Skies Bristol has opened. They'll sell tickets to students at half price, and they won't care much about the fog."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha abierto una empresa low cost llamada Cheap Skies Bristol. Venderán billetes a estudiantes a mitad de precio, y la niebla no les importará mucho."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チープ・スカイズ・ブリストルという格安業者が開業した。学生に半額でチケットを売るつもりで、霧なんてあまり気にしないらしい。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "칩 스카이즈 브리스톨이라는 저가 업체가 문을 열었어요. 학생들에게 반값에 표를 팔 거고, 안개는 별로 신경 쓰지 않을 거예요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cheap Skies Bristol diye bir ucuzcu açıldı. Öğrencilere yarı fiyata bilet satacaklar, sisi de pek takmayacaklar."
+          }
+        }
+      }
+    },
+    "hez.entrant.cotswold": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cotswold Air Holidays ist mit dem Geld Londoner Reiseveranstalter nach Bristol gekommen! Eine große Flotte und tiefe Taschen. Nach Sir Reginald vielleicht der gefährlichste von allen, mein Lieber."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cotswold Air Holidays has come to Bristol with the money of London's tour companies! A big fleet and deep pockets. After Sir Reginald, this may be the most dangerous of them all, dear."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Cotswold Air Holidays ha llegado a Bristol con el dinero de las agencias de viajes de Londres! Una gran flota y bolsillos profundos. Después de Sir Reginald, quizá sea el más peligroso de todos, cielo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "コッツウォルド・エア・ホリデーズが、ロンドンの旅行会社の資金でブリストルにやって来たよ！大きな船団に潤沢な資金。サー・レジナルドの次に一番手ごわいかもしれないね、あんた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "코츠월드 에어 홀리데이스가 런던 여행사들의 돈을 등에 업고 브리스톨에 왔어요! 함대도 크고 자금도 두둑해요. 레지널드 경 다음으로 가장 위험한 상대일지도 몰라요, 얘야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cotswold Air Holidays, Londra'daki tur şirketlerinin parasıyla Bristol'e geldi! Filosu büyük, kesesi derin. Sir Reginald'dan sonra en tehlikelisi bu olabilir canım."
+          }
+        }
+      }
+    },
     "hez.entrant.desertBloom": {
       "extractionState": "manual",
       "localizations": {
@@ -31612,6 +35466,47 @@
         }
       }
     },
+    "hez.entrant.mendip": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Familie aus den Mendip Hills hat die Mendip Balloon Co. gegründet. Ein ausgewogener, solider, geduldiger Rivale."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A family from the Mendip Hills has founded Mendip Balloon Co. A balanced, solid, patient rival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una familia de las colinas de Mendip ha fundado Mendip Balloon Co. Un rival equilibrado, sólido y paciente."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "メンディップ丘陵の一家がメンディップ・バルーン社を立ち上げた。バランスが良く、堅実で、辛抱強いライバルだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "멘딥 언덕의 한 가족이 멘딥 벌룬 컴퍼니를 세웠어요. 균형 잡히고 탄탄하며 끈기 있는 경쟁자예요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mendip tepelerinden bir aile şirketi Mendip Balloon Co.'yu kurdu. Dengeli, sağlam, sabırlı bir rakip."
+          }
+        }
+      }
+    },
     "hez.entrant.mesaGold": {
       "extractionState": "manual",
       "localizations": {
@@ -31731,6 +35626,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Red Sea Balloon Co., Hurghada'nın otel zincirlerinin parasıyla Luksor'a geldi! Filosu büyük, kesesi derin. Theban Skies'tan sonra en tehlikelisi bu olabilir."
+          }
+        }
+      }
+    },
+    "hez.entrant.royalCrescent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Luxus-Boutiqueunternehmen namens Royal Crescent Flights hat eröffnet. Wenige Ballons, Champagnerfrühstück, sehr hohe Preise. Die reichen Touristen werden zu ihnen gehen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A luxury boutique company called Royal Crescent Flights has opened. Few balloons, champagne breakfasts, very high prices. The rich tourists will go to them."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ha abierto una empresa boutique de lujo llamada Royal Crescent Flights. Pocos globos, desayuno con champán, precios muy altos. Los turistas ricos irán con ellos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロイヤル・クレセント・フライツという高級ブティック会社が開業した。気球は少なく、シャンパン付きの朝食、とても高い料金。裕福な観光客はそっちへ行くだろう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "로열 크레센트 플라이츠라는 고급 부티크 회사가 문을 열었어요. 열기구는 적고, 샴페인 아침 식사에, 가격은 아주 비싸요. 부유한 관광객들은 그쪽으로 갈 거예요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Royal Crescent Flights adında lüks bir butik şirket açıldı. Az balon, şampanyalı kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek."
           }
         }
       }
@@ -32018,6 +35954,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Albuquerque Balloon Fiesta başladı evlat! Dört gün boyunca dünyanın dört bir yanından turist akın edecek, gökyüzü yüzlerce balonla dolacak. Bütün balonlarını havaya kaldır!"
+          }
+        }
+      }
+    },
+    "hez.fiestaStarted.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Bristol-Ballonfestival hat begonnen, Schätzchen! Vier Tage lang sind Ashtons Wiesen voller Touristen. An Festivalabenden steigen die Ballons ein zweites Mal auf, und in einer Nacht kannst du ein Night Glow veranstalten. Bring alle deine Ballons in die Luft!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Bristol Balloon Festival has begun, love! For four days Ashton's meadows are full of tourists. On festival evenings the balloons go up a second time, and one night you can hold a Night Glow. Get all your balloons up!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Ha empezado el Festival de Globos de Bristol, cielo! Durante cuatro días los prados de Ashton estarán llenos de turistas. En las tardes de festival los globos despegan por segunda vez, y una noche puedes organizar un Night Glow. ¡Sube todos tus globos!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル気球祭りが始まったよ、あんた！4日間、アシュトンの草地は観光客でいっぱい。祭りの夕方には気球が2度目に飛び立つし、ある夜にはナイトグローも開けるわ。気球を全部上げなさい！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 열기구 축제가 시작됐단다, 얘야! 나흘 동안 애시턴의 초원이 관광객으로 가득해. 축제 저녁엔 열기구가 두 번째로 뜨고, 하룻밤은 나이트 글로도 열 수 있어. 열기구를 전부 띄우렴!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Balon Festivali başladı canım! Dört gün boyunca Ashton'un çayırları turist dolu. Festival akşamları balonlar ikinci kez kalkar, bir gece de Gece Işıltısı düzenleyebilirsin. Bütün balonlarını havaya kaldır!"
           }
         }
       }
@@ -39402,6 +43379,47 @@
         }
       }
     },
+    "home.alert.fiesta.body.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fast doppelt so viele Touristen, und abends ein zweiter Aufstieg."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nearly twice the tourists, and a second ascent in the evening."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Casi el doble de turistas, y un segundo despegue por la tarde."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "観光客はほぼ2倍、夕方には2回目の離陸もある。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "관광객이 거의 두 배, 저녁엔 두 번째 이륙도 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turist neredeyse iki katı, akşam da ikinci kalkış var."
+          }
+        }
+      }
+    },
     "home.alert.fiesta.body.lux": {
       "extractionState": "manual",
       "localizations": {
@@ -39439,6 +43457,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kıyı turist dolu. Bütün balonlarını kaldır."
+          }
+        }
+      }
+    },
+    "home.alert.fiesta.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol-Ballonfestival, Tag %1$@/%2$@!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Balloon Festival, day %1$@/%2$@!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Festival de Globos de Bristol, día %1$@/%2$@!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル気球祭り、%1$@/%2$@日目！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 열기구 축제, %1$@/%2$@일째!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Balon Festivali, gün %1$@/%2$@!"
+          }
+        }
+      }
+    },
+    "home.alert.fiesta.glow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bei diesem Festival kannst du ein Night Glow veranstalten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can hold a Night Glow at this festival."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En este festival puedes organizar un Night Glow."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この祭りではナイトグローを開ける。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 축제에서 나이트 글로를 열 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu festivalde Gece Işıltısı düzenleyebilirsin."
           }
         }
       }
@@ -39566,6 +43666,47 @@
         }
       }
     },
+    "home.alert.fiestaSoon.body.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mach deine Flotte bereit und schließe Hotelverträge."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Get your fleet ready and sign hotel deals."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prepara tu flota y cierra tratos con hoteles."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "船団を準備し、ホテルと契約しよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "함대를 준비하고 호텔과 계약하세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Filonu hazırla, otellerle anlaş."
+          }
+        }
+      }
+    },
     "home.alert.fiestaSoon.body.lux": {
       "extractionState": "manual",
       "localizations": {
@@ -39603,6 +43744,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filonu hazırla, otellerle anlaş."
+          }
+        }
+      }
+    },
+    "home.alert.fiestaSoon.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tage bis zum Bristol-Ballonfestival: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days until the Bristol Balloon Festival: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días para el Festival de Globos de Bristol: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル気球祭りまであと%@日。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 열기구 축제까지 남은 날: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Balon Festivali'ne kalan gün: %@."
           }
         }
       }
@@ -45470,6 +49652,47 @@
         }
       }
     },
+    "insp.name.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspektor Graham Pike"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspector Graham Pike"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inspector Graham Pike"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グレアム・パイク検査官"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그레이엄 파이크 검사관"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Müfettiş Graham Pike"
+          }
+        }
+      }
+    },
     "insp.name.cap": {
       "extractionState": "manual",
       "localizations": {
@@ -45589,6 +49812,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "FAA, Federal Havacılık İdaresi"
+          }
+        }
+      }
+    },
+    "insp.title.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Britische Zivilluftfahrtbehörde"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "UK Civil Aviation Authority"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autoridad de Aviación Civil del Reino Unido"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "英国民間航空局"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "영국 민간항공청"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İngiltere Sivil Havacılık Otoritesi"
           }
         }
       }
@@ -48914,6 +53178,47 @@
         }
       }
     },
+    "ledger.evening": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abendaufstieg (Festival)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evening ascent (festival)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Despegue de la tarde (festival)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "夕方の離陸（祭り）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저녁 이륙 (축제)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akşam kalkışı (festival)"
+          }
+        }
+      }
+    },
     "ledger.fines": {
       "extractionState": "manual",
       "localizations": {
@@ -51046,6 +55351,47 @@
         }
       }
     },
+    "map.here.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Avon-Schlucht, neblige Morgen und Festivalabende."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Avon Gorge, foggy mornings and festival evenings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La garganta del Avon, mañanas de niebla y tardes de festival."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボン渓谷、霧の朝、そして祭りの夕べ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번 협곡, 안개 낀 아침, 그리고 축제의 저녁."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Kanyonu, sisli sabahlar ve festival akşamları."
+          }
+        }
+      }
+    },
     "map.here.cap": {
       "extractionState": "manual",
       "localizations": {
@@ -51206,6 +55552,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kapadokya baronu olunca açılır."
+          }
+        }
+      }
+    },
+    "map.lockedSub.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wird freigeschaltet, wenn du Baron von Luxor bist. Über der Avon-Schlucht, an nebligen englischen Morgen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unlocks when you become baron of Luxor. Over the Avon Gorge, in misty English mornings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se desbloquea cuando seas barón de Luxor. Sobre la garganta del Avon, en brumosas mañanas inglesas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールの男爵になると解放される。エイボン渓谷の上、霧のイギリスの朝。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르의 남작이 되면 열립니다. 에이번 협곡 위, 안개 낀 영국의 아침."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor baronu olunca açılır. Avon Kanyonu'nun üstünde, sisli İngiliz sabahlarında."
           }
         }
       }
@@ -51411,6 +55798,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dünyanın en büyük balon festivalinin şehri. Meşhur “kutu” rüzgârları seni kalktığın yere geri getirir. Giriş bedeli %@ holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın."
+          }
+        }
+      }
+    },
+    "map.openSub.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Avon-Schlucht mit ihrer Hängebrücke, georgianische Häuser, der Hafen. Wechselhaftes englisches Wetter: Morgennebel, Westwind, der gesperrte Himmel des Flughafens. Jeden Monat ein Ballonfestival, an Festivalabenden ein zweiter Flug. Hier zahlt man in Pfund. Startkapital: %1$@. Einstiegsgebühr %2$@ aus der Holding."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Avon Gorge and its suspension bridge, Georgian houses, the harbour. Changeable English weather: morning fog, the west wind, the airport's forbidden sky. A balloon festival every month, with a second flight on festival evenings. The money here is the pound. You start with %1$@. Entry fee %2$@ from the holding."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La garganta del Avon y su puente colgante, casas georgianas, el puerto. Tiempo inglés y cambiante: niebla matinal, viento del oeste, el cielo prohibido del aeropuerto. Un festival de globos cada mes, con un segundo vuelo en las tardes de festival. Aquí se paga en libras. Capital inicial: %1$@. Cuota de entrada: %2$@, a cargo del holding."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボン渓谷と吊り橋、ジョージアン様式の家々、港。変わりやすいイギリスの天気：朝霧、西風、空港の飛行禁止空域。毎月気球祭りがあり、祭りの夕方には2回目のフライト。通貨はポンド。開始資金：%1$@。参入費%2$@はホールディングスから。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번 협곡과 현수교, 조지아풍 집들, 항구. 변덕스러운 영국 날씨: 아침 안개, 서풍, 공항의 비행 금지 하늘. 매달 열기구 축제가 열리고, 축제 저녁에는 두 번째 비행이 있습니다. 화폐는 파운드. 시작 자금: %1$@. 진입 비용 %2$@, 지주회사에서 지급."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Kanyonu ve asma köprü, Gürcü evleri, liman. Değişken İngiliz havası: sabah sisi, batı rüzgârı, havalimanının yasak göğü. Her ay bir balon festivali, festival akşamları ikinci uçuş. Para birimi sterlin. Başlangıç kasası: %1$@. Giriş bedeli %2$@ holding kasasından."
           }
         }
       }
@@ -55597,6 +60025,47 @@
         }
       }
     },
+    "night.eve": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalabend: Ballons beim Abendaufstieg: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival evening: balloons in the evening ascent: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarde de festival: globos en el despegue de la tarde: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの夕方：夕方の離陸に参加した気球：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 저녁: 저녁 이륙에 나선 열기구: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival akşamı: akşam kalkışındaki balon: %@"
+          }
+        }
+      }
+    },
     "night.fireworks": {
       "extractionState": "manual",
       "localizations": {
@@ -55675,6 +60144,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fiesta gecesi: Balloon Glow! Balonlar yerde brülörlerini yakıyor."
+          }
+        }
+      }
+    },
+    "night.glow.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalnacht: Auf der Wiese zünden die Ballons ihre Brenner."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival night: on the meadow the balloons fire their burners."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche de festival: en el prado los globos encienden sus quemadores."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの夜：草地で気球がバーナーを燃やしている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제의 밤: 초원에서 열기구들이 버너를 켜고 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival gecesi: çayırda balonlar brülör yakıyor."
           }
         }
       }
@@ -55798,6 +60308,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gün %@ sabahına geç"
+          }
+        }
+      }
+    },
+    "night.nglow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow · Ballons, die zur Musik leuchten: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow · balloons glowing to music: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Night Glow · globos que brillan con música: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイトグロー・音楽に合わせて輝く気球：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나이트 글로 · 음악에 맞춰 빛나는 열기구: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gece Işıltısı · müzikle ışıldayan balon: %@"
           }
         }
       }
@@ -57442,6 +61993,88 @@
         }
       }
     },
+    "paper.airspace": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ fliegt in den Luftraum des Flughafens"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ flies into the airport's airspace"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ entra en el espacio aéreo del aeropuerto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@、空港の空域に侵入"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, 공항 공역 침범"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ havalimanının göğüne girdi"
+          }
+        }
+      }
+    },
+    "paper.airspace.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Zivilluftfahrtbehörde verhängte eine Strafe gegen das Unternehmen. Strafe: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Civil Aviation Authority fined the company. Fine: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La Autoridad de Aviación Civil multó a la empresa. Multa: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "民間航空局は同社に罰金を科した。罰金：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "민간항공청은 회사에 벌금을 부과했다. 벌금: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sivil Havacılık Otoritesi şirkete ceza kesti. Ceza: %@."
+          }
+        }
+      }
+    },
     "paper.antitrust": {
       "extractionState": "manual",
       "localizations": {
@@ -57520,6 +62153,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pazar payı %%%1$@ tek elde, ceza %2$@."
+          }
+        }
+      }
+    },
+    "paper.briFestival": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Bristol-Ballonfestival beginnt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Bristol Balloon Festival begins"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comienza el Festival de Globos de Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル気球祭りが開幕"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 열기구 축제 개막"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Balon Festivali başladı"
+          }
+        }
+      }
+    },
+    "paper.briFestival.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vier Tage lang Aufstiege am Morgen und am Abend, Hunderte Ballons auf den Wiesen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Four days of morning and evening ascents, hundreds of balloons on the meadows."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuatro días de despegues por la mañana y por la tarde, cientos de globos en los prados."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4日間、朝と夕方に離陸。草地には何百もの気球。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나흘 동안 아침저녁 이륙, 초원에는 수백 대의 열기구."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dört gün boyunca sabah ve akşam kalkışları, çayırlarda yüzlerce balon."
           }
         }
       }
@@ -58795,6 +63510,47 @@
         }
       }
     },
+    "paper.mast.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Post"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Post"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Correo del Avon"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボン・ポスト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번 포스트"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Postası"
+          }
+        }
+      }
+    },
     "paper.mast.cap": {
       "extractionState": "manual",
       "localizations": {
@@ -59041,6 +63797,88 @@
         }
       }
     },
+    "paper.night.eve": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Am Festivalabend füllte sich der Himmel erneut"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The sky filled again on the festival evening"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El cielo volvió a llenarse en la tarde del festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの夕方、空は再び気球で埋まった"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 저녁, 하늘이 다시 가득 찼다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival akşamı gökyüzü yine doldu"
+          }
+        }
+      }
+    },
+    "paper.night.eve.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beim Abendaufstieg stiegen die Ballons bei Sonnenuntergang über den Avon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At the evening ascent the balloons rose over the Avon at sunset."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el despegue de la tarde, los globos se elevaron sobre el Avon al atardecer."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "夕方の離陸で、気球は夕日の中エイボン川の上へ昇っていった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "저녁 이륙에서 열기구들이 해 질 녘 에이번강 위로 떠올랐다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Akşam kalkışında balonlar gün batımında Avon'un üstüne yükseldi."
+          }
+        }
+      }
+    },
     "paper.night.fireworks": {
       "extractionState": "manual",
       "localizations": {
@@ -59160,6 +63998,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fiesta gecesi ışıl ışıl"
+          }
+        }
+      }
+    },
+    "paper.night.glow.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalnacht im Lichterglanz"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival night all aglow"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche de festival resplandeciente"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "光あふれる祭りの夜"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "환하게 빛난 축제의 밤"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival gecesi ışıl ışıl"
+          }
+        }
+      }
+    },
+    "paper.night.glow.bri.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf Ashtons Wiese zündeten die Ballons am Boden ihre Brenner."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On Ashton's meadow the balloons on the ground fired their burners."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el prado de Ashton, los globos en tierra encendieron sus quemadores."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アシュトンの草地で、地上の気球がバーナーを燃やした。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "애시턴의 초원에서 땅 위의 열기구들이 버너를 켰다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ashton'un çayırında yerdeki balonlar brülörlerini yaktı."
           }
         }
       }
@@ -59369,6 +64289,88 @@
         }
       }
     },
+    "paper.night.nglow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Night Glow erhellte die Festivalwiese"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Night Glow lit up the festival meadow"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Night Glow iluminó el prado del festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイトグローが祭りの草地を照らした"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나이트 글로가 축제 초원을 밝혔다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gece Işıltısı festival çayırını aydınlattı"
+          }
+        }
+      }
+    },
+    "paper.night.nglow.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Ballons leuchteten am Boden zur Musik, dann füllte sich der Himmel mit Feuerwerk."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The balloons glowed to music on the ground, then the sky filled with fireworks."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los globos brillaron en tierra al ritmo de la música, y luego el cielo se llenó de fuegos artificiales."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球は地上で音楽に合わせて輝き、やがて空は花火で満たされた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구들이 땅 위에서 음악에 맞춰 빛났고, 이어 하늘이 불꽃으로 가득 찼다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balonlar yerde müzikle ışıldadı, sonra gökyüzü havai fişeklerle doldu."
+          }
+        }
+      }
+    },
     "paper.night.shooting": {
       "extractionState": "manual",
       "localizations": {
@@ -59529,6 +64531,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Vadi beyaza büründü, pencerelerde sıcak ışıklar."
+          }
+        }
+      }
+    },
+    "paper.nightGlow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ erhellt die Festivalnacht"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ lit up the festival night"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ iluminó la noche del festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@が祭りの夜を照らす"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@, 축제의 밤을 밝히다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ festival gecesini aydınlattı"
+          }
+        }
+      }
+    },
+    "paper.nightGlow.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beim Night Glow leuchteten die Ballons zur Musik, danach kam das Feuerwerk. Ballons: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "At the Night Glow the balloons glowed to music, then came the fireworks. Balloons: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el Night Glow los globos brillaron con música, y luego llegaron los fuegos artificiales. Globos: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイトグローで気球が音楽に合わせて輝き、続いて花火が上がった。気球：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나이트 글로에서 열기구들이 음악에 맞춰 빛났고, 이어서 불꽃놀이가 펼쳐졌다. 열기구: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gece Işıltısı'nda balonlar müzikle ışıldadı, ardından havai fişekler. Balon: %@."
           }
         }
       }
@@ -59857,6 +64941,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "25¢"
+          }
+        }
+      }
+    },
+    "paper.price.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20 Pence"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20p"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20 peniques"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20ペンス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20펜스"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "20 peni"
           }
         }
       }
@@ -63674,6 +68799,47 @@
         }
       }
     },
+    "region.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol"
+          }
+        }
+      }
+    },
     "region.cap": {
       "extractionState": "manual",
       "localizations": {
@@ -63998,6 +69164,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kapadokya baronu olunca açılır"
+          }
+        }
+      }
+    },
+    "regions.lockedBri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Öffnet, wenn du Baron von Luxor bist"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opens when you're baron of Luxor"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se abre cuando seas barón de Luxor"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールの男爵になると開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르의 남작이 되면 열림"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor baronu olunca açılır"
           }
         }
       }
@@ -67897,6 +73104,47 @@
         }
       }
     },
+    "review.cheap.1.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich habe {p} bezahlt, vielleicht der beste Preis in Bristol."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I paid {p}, maybe the best price in Bristol."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pagué {p}, quizá el mejor precio de Bristol."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p}払った。ブリストルで一番お得かも。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p} 냈어요. 브리스톨 최저가일지도요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{p} ödedim, Bristol'ün en iyi fiyatı bu olabilir."
+          }
+        }
+      }
+    },
     "review.cheap.1.lux": {
       "extractionState": "manual",
       "localizations": {
@@ -68016,6 +73264,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kavak ağacına çarptık! Herkes iyi ama bu kabul edilemez."
+          }
+        }
+      }
+    },
+    "review.crash.0.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir sind in die Eichen gekracht! Allen geht es gut, aber das ist inakzeptabel."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We crashed into the oak trees! Everyone's fine, but this is unacceptable."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Chocamos contra los robles! Todos estamos bien, pero esto es inaceptable."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "樫の木に突っ込んだ！みんな無事だけど、これは許されない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "참나무에 부딪혔어요! 모두 무사하지만 이건 용납할 수 없어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meşe ağaçlarına çarptık! Herkes iyi ama bu kabul edilemez."
           }
         }
       }
@@ -68348,6 +73637,88 @@
         }
       }
     },
+    "review.farm.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Ballon landete mitten auf einer Weide, und die Tiere stoben davon. Der Bauer schrie uns an; die Kinder fanden es toll."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The balloon came down in the middle of a field and the animals scattered. The farmer shouted at us; the kids loved it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El globo bajó en medio de un campo y los animales salieron corriendo. El granjero nos gritó; a los niños les encantó."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球が畑の真ん中に降りて、動物たちが逃げ回った。農家には怒鳴られたけど、子どもたちは大喜び。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구가 들판 한가운데 내려앉자 동물들이 흩어졌어요. 농부는 소리쳤지만 아이들은 신났죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon bir tarlanın ortasına kondu, hayvanlar kaçıştı. Çiftçi bize bağırdı, çocuklar ise çok eğlendi."
+          }
+        }
+      }
+    },
+    "review.farm.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Tiere auf der Weide mochten uns nicht besonders. Der Flug war schön, die Landung etwas peinlich."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The animals in the field didn't like us much. The flight was lovely; the landing was a bit embarrassing."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A los animales del campo no les gustamos mucho. El vuelo fue precioso; el aterrizaje, un poco vergonzoso."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "畑の動物たちには嫌われたみたい。フライトは素敵だったけど、着陸はちょっと恥ずかしかった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "들판의 동물들이 우리를 별로 반기지 않았어요. 비행은 멋졌지만 착륙은 좀 민망했죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tarladaki hayvanlar bizi pek sevmedi. Uçuş güzeldi, iniş biraz utanç vericiydi."
+          }
+        }
+      }
+    },
     "review.general.0": {
       "extractionState": "manual",
       "localizations": {
@@ -68430,6 +73801,47 @@
         }
       }
     },
+    "review.general.0.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Man kann nicht nach Bristol kommen, ohne Ballon zu fahren. Dieses Team ist sehr professionell."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You can't come to Bristol and not ride a balloon. This team is very professional."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No puedes venir a Bristol y no subir a un globo. Este equipo es muy profesional."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストルに来て気球に乗らないなんてありえない。とてもプロフェッショナルなチーム。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨에 와서 열기구를 안 타면 안 되죠. 이 팀은 정말 프로예요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol'e gelip balona binmemek olmaz. Bu ekip çok profesyonel."
+          }
+        }
+      }
+    },
     "review.general.0.lux": {
       "extractionState": "manual",
       "localizations": {
@@ -68508,6 +73920,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sabah 4'te kalkmaya değdi. Gökyüzü yüzlerce balonla doluydu."
+          }
+        }
+      }
+    },
+    "review.general.1.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir waren über Clifton, als sich der Morgennebel lichtete. Und es hat nicht mal geregnet, Gott sei Dank."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We were over Clifton as the morning fog lifted. And it didn't even rain, thank goodness."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estábamos sobre Clifton cuando se levantaba la niebla de la mañana. Y ni siquiera llovió, menos mal."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "朝霧が晴れていく中、クリフトンの上空にいた。雨も降らなくて本当によかった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아침 안개가 걷힐 때 클리프턴 위에 있었어요. 비도 안 와서 다행이었죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sabah sisi kalkarken Clifton'ın üstündeydik. Yağmur da yağmadı, şükür."
           }
         }
       }
@@ -69086,6 +74539,88 @@
         }
       }
     },
+    "review.mud.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir sind im Flussschlamm gelandet. Die Aussicht war herrlich, aber meine Schuhe sind dort geblieben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We landed in the river mud. The view was wonderful, but my shoes stayed there."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aterrizamos en el barro del río. La vista era maravillosa, pero mis zapatos se quedaron allí."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "川の泥に着陸した。景色は最高だったけど、靴はそこに置いてきた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강 진흙에 착륙했어요. 경치는 훌륭했지만 제 신발은 거기 남았어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nehrin çamuruna indik. Manzara harikaydı ama ayakkabılarım orada kaldı."
+          }
+        }
+      }
+    },
+    "review.mud.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es war Ebbe, und der Ballon setzte im Schlamm auf. Wir frühstückten im Hotel, voller Schlamm."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The tide was out and the balloon sat down in the mud. We had breakfast at the hotel, muddy."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Había marea baja y el globo se posó en el barro. Desayunamos en el hotel, llenos de barro."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "潮が引いていて、気球は泥の上に座り込んだ。泥だらけでホテルの朝食をとった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "썰물이라 열기구가 진흙에 내려앉았어요. 진흙투성이로 호텔에서 아침을 먹었죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelgit çekilmiş, balon çamura oturdu. Kahvaltıyı otelde yaptık, çamurlu."
+          }
+        }
+      }
+    },
     "review.panorama.0": {
       "extractionState": "manual",
       "localizations": {
@@ -69164,6 +74699,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Bütün Rio Grande vadisi ayaklarımızın altındaydı."
+          }
+        }
+      }
+    },
+    "review.panorama.0.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unser Fotograf liebte die Aufnahme aus 550 Metern. Die Schlucht, der Hafen und der Bristolkanal lagen uns zu Füßen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Our photographer loved the shot from 550 meters. The gorge, the harbour and the Bristol Channel were at our feet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A nuestro fotógrafo le encantó la foto desde 550 metros. La garganta, el puerto y el canal de Bristol a nuestros pies."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "カメラマンは550 mから撮った一枚に大喜び。渓谷も港もブリストル海峡も足元にあった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사진작가가 550 m에서 찍은 사진에 반했어요. 협곡, 항구, 브리스톨 해협이 발아래 있었죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Kanyon, liman ve Bristol Kanalı ayaklarımızın altındaydı."
           }
         }
       }
@@ -69369,6 +74945,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sandia Dağları'nda gün doğumu ve kusursuz bir iniş. Hayatımın en güzel sabahıydı."
+          }
+        }
+      }
+    },
+    "review.perfect.1.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonnenaufgang über der Hängebrücke und eine perfekte Landung. Der Morgen meines Lebens."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sunrise over the suspension bridge and a perfect landing. The morning of my life."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amanecer sobre el puente colgante y un aterrizaje perfecto. La mañana de mi vida."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "吊り橋の上の日の出、そして完璧な着陸。人生最高の朝だった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현수교 위의 일출과 완벽한 착륙. 내 인생 최고의 아침이었어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Asma köprünün üstünde gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı."
           }
         }
       }
@@ -70029,6 +75646,47 @@
         }
       }
     },
+    "review.valley.0.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir glitten über den Avon, so nah, dass wir die Brückentürme fast berühren konnten!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We glided over the Avon, close enough to touch the bridge's towers!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Planeamos sobre el Avon, tan cerca que casi tocábamos las torres del puente!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボン川の上を滑るように飛んで、橋の塔に手が届きそうだった！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번강 위를 미끄러지듯 날았어요. 다리 탑에 손이 닿을 것 같았죠!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon'un üstünden süzüldük, köprünün kulelerine dokunacak gibiydik!"
+          }
+        }
+      }
+    },
     "review.valley.0.lux": {
       "extractionState": "manual",
       "localizations": {
@@ -70148,6 +75806,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nehrin üstünde alçak uçuş inanılmazdı, balıkçıllar hemen yanımızdan havalandı."
+          }
+        }
+      }
+    },
+    "review.valley.1.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Tiefflug durch die Schlucht war unglaublich; die Möwen flogen direkt neben uns auf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The low flight through the gorge was incredible; the gulls took off right beside us."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El vuelo bajo por la garganta fue increíble; las gaviotas alzaron el vuelo justo a nuestro lado."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "渓谷を低空で飛ぶのは最高だった。すぐそばからカモメが飛び立った。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "협곡을 낮게 나는 비행은 믿을 수 없었어요. 바로 옆에서 갈매기들이 날아올랐죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kanyonda alçak uçuş inanılmazdı, martılar hemen yanımızdan havalandı."
           }
         }
       }
@@ -70394,6 +76093,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fiesta Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz."
+          }
+        }
+      }
+    },
+    "review.xl.2.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir haben den Stern des Avon von Weitem gesehen und gebucht. Wir bereuen nichts."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We saw the Star of the Avon from afar and booked. No regrets."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vimos la Estrella del Avon desde lejos y reservamos. No nos arrepentimos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遠くからエイボンの星を見て予約した。後悔なし。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "멀리서 에이번의 별을 보고 예약했어요. 후회 없어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon Yıldızı'nı uzaktan görüp rezervasyon yaptık, pişman değiliz."
           }
         }
       }

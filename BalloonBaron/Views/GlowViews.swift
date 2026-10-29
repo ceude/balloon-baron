@@ -18,7 +18,7 @@ struct GlowCardView: View {
                     CardText.lead(loc("glow.intro"))
                     VStack(alignment: .leading, spacing: 4) {
                         Text(loc("show.gainsTitle")).font(Theme.font(14, .bold)).foregroundStyle(Theme.ink)
-                        ForEach([loc("glow.gainRep", "+" + starsValue(Glow.rep * 4)), loc("glow.gainPaper"), loc("glow.gainGoal")], id: \.self) { line in
+                        ForEach([loc("glow.gainRep", "+" + (Glow.rep * 4).formatted(.number.precision(.fractionLength(2))) + "★"), loc("glow.gainPaper"), loc("glow.gainGoal")], id: \.self) { line in
                             HStack(alignment: .firstTextBaseline, spacing: 6) {
                                 Text("•").foregroundStyle(Theme.coral)
                                 Text(line).fixedSize(horizontal: false, vertical: true)
