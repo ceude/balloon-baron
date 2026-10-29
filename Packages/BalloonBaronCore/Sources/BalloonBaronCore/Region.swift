@@ -146,6 +146,7 @@ public enum MapPin: String, CaseIterable, Sendable {
 
 public struct Fiesta: Codable, Equatable, Sendable {
     public var start: Int, end: Int
+    public init(start: Int, end: Int) { self.start = start; self.end = end }
 }
 
 /// Everything that belongs to one region. The active region lives in `GameState.local`; the

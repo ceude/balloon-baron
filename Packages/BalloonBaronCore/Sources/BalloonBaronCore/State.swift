@@ -128,12 +128,14 @@ public struct Weather: Codable, Equatable, Sendable {
 /// v124: Bristol's morning fog: the landing field is hidden while you're above its top (90–150 m).
 public struct Fog: Codable, Equatable, Sendable {
     public var top: Double
+    public init(top: Double) { self.top = top }
 }
 
 /// v124: the airport's controlled airspace over part of the way: from `x0` to `x1`, above `floor`. Inside it for three
 /// seconds is a violation: a fine and a story at the end of the day.
 public struct Airspace: Codable, Equatable, Sendable {
     public var x0: Double, x1: Double, floor: Double
+    public init(x0: Double, x1: Double, floor: Double) { self.x0 = x0; self.x1 = x1; self.floor = floor }
     public func contains(x: Double, alt: Double) -> Bool { x > x0 && x < x1 && alt > floor }
     public static let fine = 1500, rep = 0.04, seconds = 3.0
 }
