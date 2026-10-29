@@ -129,6 +129,10 @@ final class SoundEngine {
     /// The opening film's score (`filmMusic(part)`): wind under everything, a low drone on D whose low-pass opens at the
     /// sunrise, deep hits with risers, a ney in the Hicaz makam, darbuka in maqsum and strings once the flight gets going.
     /// `.bed` is the wind and drone alone (under the cards); nil fades everything out. A new part crossfades over 0.8 s.
+    /// v123.3: the family letter's music (`letterMusic`): `.magic` while the envelope turns and opens, `.letter` once it
+    /// is open, nil fades it out. Shares the film's voices; the two are never on screen together.
+    func letterMusic(_ part: FilmPart?) { filmMusic(part) }
+
     func filmMusic(_ part: FilmPart?) {
         guard started else { return }
         filmID &+= 1
@@ -286,7 +290,9 @@ struct VoiceSpec {
 }
 
 /// The parts of the opening film's score: the flight (A), the lift-off (B), and the bed of wind and drone under the cards.
-enum FilmPart { case a, b, bed }
+/// v123.3: the family's letter plays on the same synth (`letterMusic`): `.magic` while the envelope turns and opens, then
+/// `.letter`, a light tune in the Hicaz makam. Neither has the film's wind; only `.letter` has a soft drone.
+enum FilmPart { case a, b, bed, magic, letter }
 
 /// One note of the film score, timed from the part's start: an oscillator (or filtered noise) with an exponential pitch
 /// glide, a vibrato that fades in, a filter sweep and the prototype's `env()` (linear attack, hold, exponential release).
@@ -316,6 +322,7 @@ private enum FilmScore {
 
     static func notes(_ part: FilmPart) -> [FilmNote] {
         guard part != .bed else { return [] }
+        if part == .magic || part == .letter { return LetterScore.notes(part) }
         var out: [FilmNote] = []
         func boom(_ at: Double, _ big: Bool) {
             var o = FilmNote()
@@ -424,6 +431,104 @@ private enum FilmScore {
     }
 }
 
+/// v123.3: the family letter's music, the prototype's `letterMusic(part)` note for note. Quiet: its peaks are a tenth of
+/// the film's.
+private enum LetterScore {
+    static let N: [String: Double] = ["D4": 293.66, "Eb4": 311.13, "Fs4": 369.99, "G4": 392, "A4": 440, "Bb4": 466.16, "C5": 523.25,
+                                      "D5": 587.33, "Fs5": 739.99, "G5": 783.99, "A5": 880, "D6": 1174.66]
+    static let B = 0.714
+
+    static func notes(_ part: FilmPart) -> [FilmNote] {
+        var out: [FilmNote] = []
+        func n(_ k: String) -> Double { N[k] ?? 0 }
+        /// A bell: three sine partials, each fading faster than the one below.
+        func bell(_ f: Double, _ at: Double, _ v: Double = 0.05, _ dec: Double = 1.6) {
+            for (k, vv) in [(1.0, 1.0), (2.76, 0.35), (5.4, 0.12)] {
+                var o = FilmNote()
+                o.f = f * k; o.fEnd = o.f
+                o.at = at; o.attack = 0.004; o.peak = v * vv; o.hold = 0.01; o.release = dec / k; o.stop = dec + 0.1
+                out.append(o)
+            }
+        }
+        func pad(_ fs: [Double], _ at: Double, _ dur: Double, _ v: Double, _ wave: Wave, _ cut: Double) {
+            for fr in fs {
+                for d in [-6.0, 6.0] {
+                    var o = FilmNote()
+                    o.wave = wave; o.f = fr * pow(2, d / 1200); o.fEnd = o.f
+                    o.filtered = true; o.filter = .lowpass; o.cutoff = cut; o.cutoffEnd = cut
+                    o.at = at; o.attack = min(2, dur * 0.35); o.peak = v; o.hold = dur * 0.35; o.release = dur * 0.35; o.stop = dur + 0.3
+                    out.append(o)
+                }
+            }
+        }
+        if part == .magic {
+            pad([n("D4"), n("Fs4"), n("A4"), n("D5")], 0, 5.5, 0.022, .triangle, 3200)
+            // a shimmer: high noise through a narrow band, swelling
+            var sh = FilmNote()
+            sh.noise = true; sh.filtered = true; sh.filter = .bandpass; sh.q = 3; sh.cutoff = 5000; sh.cutoffEnd = 8000; sh.sweep = 4
+            sh.at = 0; sh.attack = 1.5; sh.peak = 0.035; sh.hold = 1.6; sh.release = 1.6
+            out.append(sh)
+            for (i, f) in [n("D5"), n("Fs5"), n("A5"), n("D6"), n("A5"), n("D6")].enumerated() { bell(f, 0.1 + Double(i) * 0.16, 0.045, 1.8) } // the turn
+            for (i, f) in [n("G5"), n("A5"), n("D6")].enumerated() { bell(f, 2 + Double(i) * 0.12, 0.04, 2) } // the sticker lifts
+            let chimes = [n("D6"), n("A5"), n("Fs5") * 2, n("G5") * 2]
+            for i in 0..<9 { bell(chimes[i % 4], 1 + Double(i) * 0.37 + Double.random(in: 0..<0.1), 0.018, 1.2) }
+            bell(n("D5"), 3.85, 0.05, 2.6)
+            bell(n("A5"), 3.85, 0.03, 2.6)
+            return out
+        }
+        // `.letter` (v123.4): ~22 s at 84 bpm. A kanun plays the tune over a light frame-drum tap, one short ney answer,
+        // and it ends on D (the soft drone is the layer's).
+        func kanun(_ f: Double, _ at: Double, _ v: Double = 0.035) {
+            for (wave, mul, gain) in [(Wave.triangle, 1.0, 1.0), (Wave.sine, 3.0, 0.15)] {
+                var o = FilmNote()
+                o.wave = wave; o.f = f * mul; o.fEnd = o.f
+                o.at = at; o.attack = 0.003; o.peak = v * gain; o.hold = 0.01; o.release = 0.55; o.stop = 0.7
+                out.append(o)
+            }
+        }
+        func tap(_ at: Double, _ v: Double) {
+            var t = FilmNote()
+            t.noise = true; t.filtered = true; t.filter = .bandpass; t.cutoff = 1800; t.cutoffEnd = 1800; t.q = 1.2
+            t.at = at; t.attack = 0.001; t.peak = v; t.hold = 0.004; t.release = 0.06; t.stop = 0.1
+            out.append(t)
+        }
+        func ney(_ f: Double, _ at: Double, _ dur: Double, _ v: Double = 0.04) {
+            let hold = max(0.05, dur - 0.35)
+            var o = FilmNote()
+            o.wave = .triangle; o.f = f; o.fEnd = f
+            o.vibRate = 5; o.vibDepth = f * 0.01; o.vibRamp = min(0.5, dur * 0.6)
+            o.at = at; o.attack = 0.1; o.peak = v; o.hold = hold; o.release = 0.3; o.stop = dur + 0.5
+            out.append(o)
+            var br = FilmNote()
+            br.noise = true; br.filtered = true; br.filter = .bandpass; br.cutoff = f * 2; br.cutoffEnd = f * 2; br.q = 6
+            br.at = at; br.attack = 0.08; br.peak = v * 0.35; br.hold = hold; br.release = 0.25; br.stop = dur + 0.5
+            out.append(br)
+        }
+        func tune(_ at: Double, _ notes: [(String, Double)], _ v: Double) {
+            var x = at
+            for (k, l) in notes {
+                if let f = N[k] { kanun(f, x, v) }
+                x += l * B
+            }
+        }
+        var x = 1.4
+        while x < 19 {
+            tap(x, Int(((x - 1.4) / B).rounded()) % 4 == 0 ? 0.03 : 0.015)
+            x += B
+        }
+        tune(1.4, [("D4", 0.5), ("Eb4", 0.5), ("Fs4", 1), ("G4", 0.5), ("A4", 0.5), ("Bb4", 0.5), ("A4", 0.5), ("G4", 1), ("Fs4", 1)], 0.035)
+        tune(6.4, [("A4", 0.5), ("Bb4", 0.5), ("A4", 0.5), ("G4", 0.5), ("Fs4", 0.5), ("G4", 0.5), ("Eb4", 0.5), ("Fs4", 0.5), ("D4", 2)], 0.035)
+        ney(n("A4"), 11.4, B * 1.5)
+        ney(n("G4"), 11.4 + B * 1.5, B * 0.5)
+        ney(n("Fs4"), 11.4 + B * 2, B)
+        ney(n("G4"), 11.4 + B * 3, B * 2)
+        tune(15.7, [("D5", 0.5), ("C5", 0.5), ("Bb4", 0.5), ("A4", 0.5), ("G4", 0.5), ("Fs4", 0.5), ("Eb4", 0.5), ("D4", 1.5)], 0.032)
+        kanun(n("D4"), 19.6, 0.03)
+        kanun(n("A4"), 19.6, 0.02)
+        return out
+    }
+}
+
 private enum Command {
     case voice(VoiceSpec)
     case burner(Bool, Double)
@@ -528,6 +633,8 @@ private struct FilmLayer {
     var gain = 0.0, target = 0.0, step = 0.0
     var endAt = Int64.max
     var wind = 0.08
+    /// The drone's level: 1 in the film, softer under the letter, none under its magic.
+    var drone = 1.0
     var opens = false
     var windBP = Biquad(), droneLP = Biquad()
     var ph0 = 0.0, ph1 = 0.0, ph2 = 0.0, ph3 = 0.0
@@ -721,8 +828,10 @@ private final class Synth {
         L.live = true
         L.t0 = frame + Int64(0.15 * sr)
         L.target = 0.95 * filmLevel
-        L.step = L.target / (1.2 * sr)
-        L.wind = part == .b ? 0.05 : 0.08
+        // the letter's magic comes in at once (0.3 s), its tune slowly (2 s), like the prototype
+        L.step = L.target / ((part == .magic ? 0.3 : part == .letter ? 2 : 1.2) * sr)
+        L.wind = part == .b ? 0.05 : part == .magic || part == .letter ? 0 : 0.08
+        L.drone = part == .magic ? 0 : part == .letter ? 0.3 : 1
         L.opens = part == .a
         L.windBP.set(.bandpass, 520, 0.45, sr)
         L.droneLP.set(.lowpass, 380, 1, sr)
@@ -798,7 +907,7 @@ private final class Synth {
                 L.ph1 += f.1 / sr; if L.ph1 >= 1 { L.ph1 -= 1 }
                 L.ph2 += f.2 / sr; if L.ph2 >= 1 { L.ph2 -= 1 }
                 L.ph3 += f.3 / sr; if L.ph3 >= 1 { L.ph3 -= 1 }
-                out += (w + L.droneLP.process(d) * 0.045 * min(1, ts / 4)) * L.gain
+                out += (w + L.droneLP.process(d) * 0.045 * L.drone * min(1, ts / 4)) * L.gain
             }
             layers[li] = L
         }

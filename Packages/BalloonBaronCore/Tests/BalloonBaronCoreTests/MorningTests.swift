@@ -120,3 +120,33 @@ final class MorningTests: XCTestCase {
         XCTAssertEqual(g.state.pilots.count, before + 3)
     }
 }
+
+/// v123: the family's letter comes once, from day 50; v123.1 and v123 add only optional fields to the save.
+final class LetterTests: XCTestCase {
+    func testLetterComesOnceFromDayFifty() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 3)
+        g.state.day = 49
+        XCTAssertFalse(g.state.letterDue)
+        g.state.day = 50
+        XCTAssertTrue(g.state.letterDue)
+        g.markLetterShown()
+        XCTAssertEqual(g.state.letterDay, 50)
+        XCTAssertFalse(g.state.letterDue)
+        g.state.day = 80
+        XCTAssertFalse(g.state.letterDue, "only once")
+        g.markLetterRated()
+        XCTAssertEqual(g.state.letterRated, true)
+    }
+
+    func testOldSaveWithoutLetterFieldsLoads() throws {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 3)
+        g.state.day = 70
+        var json = try JSONSerialization.jsonObject(with: JSONEncoder().encode(g.state)) as! [String: Any]
+        for k in ["letterDay", "letterRated", "rateAsked"] { json.removeValue(forKey: k) }
+        if var t = json["tutorial"] as? [String: Any] { t.removeValue(forKey: "old"); json["tutorial"] = t }
+        let s = try JSONDecoder().decode(GameState.self, from: JSONSerialization.data(withJSONObject: json))
+        XCTAssertNil(s.letterDay)
+        XCTAssertNil(s.rateAsked)
+        XCTAssertTrue(s.letterDue, "a save already past day 50 gets the letter on its next morning")
+    }
+}
