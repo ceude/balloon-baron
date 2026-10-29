@@ -510,7 +510,8 @@ button.srow:active{background:#f6f3fb}
 .opt.a:disabled{opacity:1;background:#e6e1ef;color:#857d9f;box-shadow:none}
 .studio{gap:10px}
 .studio .pv{display:flex;gap:14px;align-items:center;background:linear-gradient(#6aa5d8,#f6c08a);border-radius:18px;padding:8px 14px}
-.studio .pv img{width:150px;height:190px}
+.studio .pv img,.studio .pv canvas{width:150px;height:190px}
+.studio .pv canvas{cursor:grab;touch-action:none}
 .studio .sc{flex:1;display:flex;flex-direction:column;gap:4px;background:rgba(255,255,255,.85);border-radius:14px;padding:10px;font-size:12px;color:var(--ink2)}
 .studio .sc b{font-family:var(--cond);font-size:36px;color:var(--ink);line-height:1}
 .studio .sc .gb{height:7px;border-radius:4px;background:#e2dcef;overflow:hidden}.studio .sc .gb i{display:block;height:100%;background:var(--coral)}
@@ -1065,7 +1066,7 @@ function glowCard() {
   const close = (label, big) => { const x = h('button', big ? 'big' : 'ghost', label); x.style.width = '100%'; x.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(x); };
   if (st === 'booked') { c.appendChild(h('p', 'lead', `Bugünü tamamladığında festival çayırında ${glowFleet().length} balonun yerde durup müzikle brülörlerini yakacak, sonra havai fişekler atılacak.`)); close('Tamam', true); m.appendChild(c); m.hidden = false; return; }
   c.appendChild(h('p', 'lead', 'Festival gecesi balonların çayırda yerde durur, müzikle brülörlerini yakıp ışıldar; sonunda havai fişekler. Her festivalde bir kez.'));
-  c.appendChild(h('div', 'showgain', `<b>Ne kazandırır?</b><ul><li>Popülerlik hemen <b>+0,15★</b></li><li>Ertesi sabah gazete manşeti ve bir kartpostal</li><li>Festival bölümünün hedeflerinden biri</li></ul>`));
+  c.appendChild(h('div', 'showgain', `<b>Ne kazandırır?</b><ul><li>Popülerlik hemen <b>${starTxt(GLOW.rep)}</b></li><li>Ertesi sabah gazete manşeti ve bir kartpostal</li><li>Festival bölümünün hedeflerinden biri</li></ul>`));
   if (st === 'ok') { const go = h('button', 'big', `Onayla ve düzenle: ${eur(GLOW.cost)}`); go.onclick = () => { bookGlow(); refresh(); glowCard(); }; c.appendChild(go); close('Vazgeç'); }
   else { c.appendChild(h('div', 'callout red', { nofest: 'Gece Işıltısı yalnızca Bristol Balon Festivali günlerinde düzenlenir.', done: 'Bu festivalin Gece Işıltısı yapıldı. Bir sonraki festivali bekle.', show: 'Bu gece Balon Şöleni var. Işıltıyı festivalin başka bir gecesine bırak.', few: `En az ${GLOW.min} uçabilen balon gerekiyor.`, cash: `Kasada ${eur(GLOW.cost)} olmalı.` }[st])); close('Kapat', true); }
   m.appendChild(c); m.hidden = false;
@@ -2652,12 +2653,12 @@ function noiseBuf(sec) { const n = Math.floor(AC.sampleRate * sec), b = AC.creat
 let master = null;
 function out() { if (!master) { master = AC.createGain(); master.gain.value = soundOn ? 1 : 0; master.connect(AC.destination); } return master; }
 function setSound(on) { soundOn = on; try { localStorage.setItem('safak-sound', on ? 'on' : 'off'); } catch (e) {} if (master) master.gain.value = on ? 1 : 0; }
-function burner(on) {
+function burner(on, level = 1) { /* v123.6: level scales the roar (the studio's spun balloon uses .3) */
   if (!AC) return;
   if (on && !burnNode) {
     const src = AC.createBufferSource(); src.buffer = noiseBuf(2); src.loop = true;
     const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 420; f.Q.value = .6;
-    const g = AC.createGain(); g.gain.setValueAtTime(0, AC.currentTime); g.gain.linearRampToValueAtTime(.12, AC.currentTime + .08);
+    const g = AC.createGain(); g.gain.setValueAtTime(0, AC.currentTime); g.gain.linearRampToValueAtTime(.12 * level, AC.currentTime + .08);
     src.connect(f).connect(g).connect(out()); src.start(); burnNode = { src, g };
   } else if (!on && burnNode) {
     const { src, g } = burnNode, t = AC.currentTime;
@@ -5857,7 +5858,10 @@ function rig3d(R, mouth, mouthW, col, flame, flameScale) {
 /* A workshop design (pattern or special shape) in the same volume as the company balloon: the design painted on the
    envelope, then key light, core shadow, darker bottom, the flame's glow inside, seams and a rim light, and the 3D rig
    underneath. Same overall height as balloon3d(); (x, y) is the bottom of the basket. */
-function designBalloon3d(x, y, R, c1, c2, burn, alpha, ad, design) {
+/* v123.6: spin (radians) turns the envelope about its axis (the studio's preview): the design is wrapped round the
+   envelope, the same on both halves, and drawn in 28 vertical slices mapped by sin, so it curves away at the edges;
+   the gore seams turn with it. */
+function designBalloon3d(x, y, R, c1, c2, burn, alpha, ad, design, spin = 0) {
   const r = R * .86, mouth = y - r * .81, shape = design.shape, cy = mouth - r * (shape ? 1.55 : 1.42), top = cy - r * (shape ? 1 : 1.05);
   /* the round envelope uses the company balloon's profile, so its gores curve with the volume */
   const half = yy => {
@@ -5875,7 +5879,16 @@ function designBalloon3d(x, y, R, c1, c2, burn, alpha, ad, design) {
   outline();
   ctx.fillStyle = design.cols ? design.cols[0] : c1; ctx.fill();
   ctx.save(); ctx.clip();
-  paintDesign(x, cy, r, top, design);
+  if (spin) {
+    const n = 28, hp = Math.PI / 2;
+    for (let i = 0; i < n; i++) {
+      const t0 = -hp + Math.PI * i / n, t1 = t0 + Math.PI / n, sx0 = x + r * Math.sin(t0), sx1 = x + r * Math.sin(t1);
+      if (sx1 - sx0 < .05) continue;
+      const a = pmod(t0 + spin + hp, Math.PI), px0 = x - r + r * a / hp, px1 = px0 + r * (t1 - t0) / hp, k = (sx1 - sx0) / (px1 - px0);
+      ctx.save(); ctx.beginPath(); ctx.rect(sx0 - .4, top - r * .3, sx1 - sx0 + .8, r * 3.4); ctx.clip();
+      ctx.translate(sx0 - px0 * k, 0); ctx.scale(k, 1); paintDesign(x, cy, r, top, design); ctx.restore();
+    }
+  } else paintDesign(x, cy, r, top, design);
   const sp = ad && SPONSORS.find(q => q.id === ad);
   if (sp) {
     ctx.fillStyle = sp.col; ctx.fillRect(x - r * 1.4, cy + r * .12, r * 2.8, r * .52);
@@ -5885,7 +5898,8 @@ function designBalloon3d(x, y, R, c1, c2, burn, alpha, ad, design) {
   /* seams on the round envelope; a special shape keeps its outline clean */
   if (!shape) {
     ctx.strokeStyle = 'rgba(40,15,30,.2)'; ctx.lineWidth = Math.max(1, r * .006);
-    for (let k = 1; k < 12; k++) { ctx.beginPath(); meridian(Math.sin(-Math.PI / 2 + Math.PI * k / 12)); ctx.stroke(); }
+    if (spin) for (let k = 0; k < 24; k++) { const an = Math.PI * k / 12 + spin; if (Math.cos(an) <= .02) continue; ctx.beginPath(); meridian(Math.sin(an)); ctx.stroke(); }
+    else for (let k = 1; k < 12; k++) { ctx.beginPath(); meridian(Math.sin(-Math.PI / 2 + Math.PI * k / 12)); ctx.stroke(); }
   }
   const W = r * 1.5, kl = ctx.createRadialGradient(x - r * .45, cy - r * .45, r * .05, x - r * .3, cy - r * .3, r * 1.3);
   kl.addColorStop(0, 'rgba(255,248,230,.5)'); kl.addColorStop(.35, 'rgba(255,235,210,.12)'); kl.addColorStop(1, 'rgba(255,235,210,0)');
@@ -6863,8 +6877,10 @@ function nightPreview(k, cv) {
   };
   frame();
 }
-function iapBuy(k, then) {
-  const m = $('menu'), back = m.hidden ? null : [...m.childNodes]; m.replaceChildren();
+function iapBuy(k, then, over) {
+  /* v123.6: from the design studio the card opens over it (its own layer), so the studio stays as it was */
+  const m = over ? (() => { const e = h('div', 'modal'); e.style.zIndex = 9; $('menu').after(e); return e; })() : $('menu'), back = over || m.hidden ? null : [...m.childNodes]; m.replaceChildren();
+  const shut = () => { if (over) m.remove(); else if (back) m.replaceChildren(...back); else m.hidden = true; };
   const K = SHOP[k], c = h('div', 'card iap');
   c.appendChild(h('div', 'chap', 'Mağaza'));
   c.appendChild(h('h1', null, K.n));
@@ -6889,16 +6905,16 @@ function iapBuy(k, then) {
     if (K.kind === 'bundle') grantBundle();
     else if (K.kind === 'supporter') { if (!owned('founder')) grantBundle(); S.iap = Object.assign({}, S.iap, { supporter: S.day, worldTour: S.day }); }
     else S.iap = Object.assign({}, S.iap, { [k]: S.day });
-    sfx('coin'); save(); if (back) m.replaceChildren(...back); else m.hidden = true; if (then) then(); refresh();
+    sfx('coin'); save(); shut(); if (then) then(); refresh();
   };
   c.appendChild(b);
   /* every single cosmetic also points at the pack while the pack saves money */
   if (['pat', 'shape', 'decor', 'pack'].includes(K.kind) && !K.gift && bundleWorth()) {
     const u = h('button', 'upsell', `<span>Ya da hepsi bir arada: <b>${SHOP.founder.n}</b></span><span><s>${priceTxt(bundleWas())}</s> <b>${SHOP.founder.price}</b> · %${bundleOff()} indirim</span>`);
-    u.onclick = () => { if (back) m.replaceChildren(...back); else m.hidden = true; iapBuy('founder', then); };
+    u.onclick = () => { shut(); iapBuy('founder', then, over); };
     c.appendChild(u);
   }
-  const x = h('button', 'ghost', 'Vazgeç'); x.style.width = '100%'; x.onclick = () => { if (back) m.replaceChildren(...back); else m.hidden = true; };
+  const x = h('button', 'ghost', 'Vazgeç'); x.style.width = '100%'; x.onclick = shut;
   c.appendChild(x); m.appendChild(c); m.hidden = false;
 }
 /* v115: after the Baron of Cappadocia ceremony: the Grand Tour, or the Supporter Edition (only if the Founder Pack
@@ -7026,15 +7042,15 @@ function showDesigner() {
     const c = h('div', 'card studio');
     c.appendChild(h('h1', null, 'Tasarım stüdyosu'));
     const pv = h('div', 'pv'), sc = designScore(dr);
-    pv.innerHTML = `<img src="${designThumb(dr, 150, 190, true)}" alt="Tasarım önizlemesi"><div class="sc"><span>Yaratıcılık</span><b>${sc}</b><div class="gb"><i style="width:${sc}%"></i></div><small>${sc >= 80 ? 'Göz alıcı! Herkes fotoğrafını çekecek.' : sc >= 60 ? 'Güzel, dikkat çeker.' : sc >= 40 ? 'Fena değil, biraz sıradan.' : 'Pek akılda kalmaz.'}</small></div>`;
-    c.appendChild(pv);
+    pv.innerHTML = `<canvas class="spinpv" width="300" height="380" aria-label="Tasarım önizlemesi"></canvas><div class="sc"><span>Yaratıcılık</span><b>${sc}</b><div class="gb"><i style="width:${sc}%"></i></div><small>${sc >= 80 ? 'Göz alıcı! Herkes fotoğrafını çekecek.' : sc >= 60 ? 'Güzel, dikkat çeker.' : sc >= 40 ? 'Fena değil, biraz sıradan.' : 'Pek akılda kalmaz.'}</small></div>`;
+    c.appendChild(pv); studioSpin(pv.querySelector('canvas'), dr);
     c.appendChild(h('div', 'lbl', 'Desen'));
     const pr = h('div', 'pats');
-    for (const k in PATTERNS) { const prem = PATTERNS[k][2], lock = prem && !owned(k); const b = h('button', 'pat' + (dr.pat === k ? ' on' : '') + (prem ? ' prem' : ''), (lock ? LOCK + ' ' : prem ? '✦ ' : '') + PATTERNS[k][0] + (lock ? ` <small>${SHOP[k].price}</small>` : '')); b.onclick = () => { if (lock) return iapBuy(k, () => { dr.pat = k; draw(); }); dr.pat = k; draw(); }; pr.appendChild(b); }
+    for (const k in PATTERNS) { const prem = PATTERNS[k][2], lock = prem && !owned(k); const b = h('button', 'pat' + (dr.pat === k ? ' on' : '') + (prem ? ' prem' : ''), (lock ? LOCK + ' ' : prem ? '✦ ' : '') + PATTERNS[k][0] + (lock ? ` <small>${SHOP[k].price}</small>` : '')); b.onclick = () => { if (lock) return iapBuy(k, () => { dr.pat = k; draw(); }, true); dr.pat = k; draw(); }; pr.appendChild(b); }
     c.appendChild(pr);
     c.appendChild(h('div', 'lbl', 'Zarf şekli'));
     const sr = h('div', 'pats');
-    for (const k of [null, 'heart', 'star', 'skull']) { const lock = k && !owned(k); const b = h('button', 'pat' + ((dr.shape || null) === k ? ' on' : '') + (k ? ' prem' : ''), k ? `${lock ? LOCK : '✦'} ${SHOP[k].n}${lock ? ` <small>${SHOP[k].price}</small>` : ''}` : 'Klasik'); b.onclick = () => { if (lock) return iapBuy(k, () => { dr.shape = k; draw(); }); dr.shape = k; draw(); }; sr.appendChild(b); }
+    for (const k of [null, 'heart', 'star', 'skull']) { const lock = k && !owned(k); const b = h('button', 'pat' + ((dr.shape || null) === k ? ' on' : '') + (k ? ' prem' : ''), k ? `${lock ? LOCK : '✦'} ${SHOP[k].n}${lock ? ` <small>${SHOP[k].price}</small>` : ''}` : 'Klasik'); b.onclick = () => { if (lock) return iapBuy(k, () => { dr.shape = k; draw(); }, true); dr.shape = k; draw(); }; sr.appendChild(b); }
     c.appendChild(sr);
     ['Ana renk', 'Desen rengi', 'Vurgu rengi'].forEach((lab, i) => {
       c.appendChild(h('div', 'lbl', lab));
@@ -7055,6 +7071,38 @@ function showDesigner() {
     c.append(mk, no); m.appendChild(c);
   };
   draw(); m.hidden = false;
+}
+/* v123.6 (from the Swift app): the studio's preview turns under a finger. About 60 px of drag is one radian; let go and
+   it coasts, slowing (speed × 0.25 each second). Spun faster than ~9 rad/s (one and a half turns a second) its burner
+   lights: the flight's flame and glow, a faint roar and, where the browser can, short vibrations. The angle lives in
+   the draft, so it survives the studio redrawing when you pick a colour. */
+function studioSpin(cv, dr) {
+  const g = cv.getContext('2d'), st = dr.sp || (dr.sp = { a: 0, v: 0, burn: false, buzz: 0 });
+  let drag = null, last = performance.now(), raf = 0;
+  const setBurn = on => { if (on === st.burn) return; st.burn = on; burner(on, .3); };
+  const paint = () => {
+    const keep = ctx; ctx = g; ctx.setTransform(2, 0, 0, 2, 0, 0); ctx.clearRect(0, 0, 150, 190);
+    try { designBalloon3d(75, 186, 190 * .28 / .86, dr.cols[0], dr.cols[1], st.burn, 1, null, dr, st.a); } finally { ctx = keep; }
+  };
+  const tick = now => {
+    if (!cv.isConnected) { setBurn(false); return; }
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    if (!drag && Math.abs(st.v) > .05) { st.a += st.v * dt; st.v *= Math.pow(.25, dt); } else if (!drag) st.v = 0;
+    setBurn(Math.abs(st.v) > 9);
+    if (st.burn && now - st.buzz > 140) { st.buzz = now; try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {} }
+    paint();
+    raf = requestAnimationFrame(tick);
+  };
+  cv.style.touchAction = 'none';
+  cv.addEventListener('pointerdown', e => { drag = { x: e.clientX, t: performance.now() }; cv.setPointerCapture(e.pointerId); audioInit(); });
+  cv.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const now = performance.now(), dt = Math.max((now - drag.t) / 1000, 1 / 240), d = (e.clientX - drag.x) / 60;
+    st.a += d; st.v = st.v * .6 + (d / dt) * .4; drag = { x: e.clientX, t: now };
+  });
+  const up = () => { drag = null; };
+  cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+  paint(); raf = requestAnimationFrame(tick);
 }
 function openDesignPicker(b) {
   const m = $('menu'); m.replaceChildren();
