@@ -82,7 +82,7 @@ struct LetterView: View {
         .frame(width: w, height: h)
         .animation(.timingCurve(0.5, 0, 0.3, 1, duration: 1), value: phase >= .flip)
         .contentShape(Rectangle())
-        .onTapGesture(perform: open)
+        .onTapGesture(perform: openEnvelope)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(loc("letter.hint"))
         .accessibilityAddTraits(.isButton)
@@ -214,7 +214,7 @@ struct LetterView: View {
 
     /// The prototype's timeline after the tap (ms): turn 0, burner 1300–2700, sticker and flap 2000, letter out 2900,
     /// envelope away and the letter up 3900.
-    private func open() {
+    private func openEnvelope() {
         guard phase == .front else { return }
         phase = .flip
         SoundEngine.shared.letterMusic(.magic)
