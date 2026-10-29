@@ -378,7 +378,7 @@ final class GameStore {
     static let codePrefix = "BB1:"
 
     var saveCode: String? {
-        guard let state = game?.state, let data = try? JSONEncoder().encode(state),
+        guard let state = game?.state.forCode(), let data = try? JSONEncoder().encode(state),
               let packed = try? (data as NSData).compressed(using: .zlib) else { return nil }
         return Self.codePrefix + (packed as Data).base64EncodedString()
     }

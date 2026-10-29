@@ -471,19 +471,19 @@ add("settings.autosaved", "Saved automatically", "Otomatik kaydedildi", "Automat
 add("settings.copyCode", "Copy save code", "Kayıt kodunu kopyala", "Speichercode kopieren", "Copiar código de partida", "セーブコードをコピー", "저장 코드 복사")
 add("settings.loadCode", "Load a save code", "Kayıt kodu yükle", "Speichercode laden", "Cargar un código de partida", "セーブコードを読み込む", "저장 코드 불러오기")
 add("settings.copyHint",
- "To continue on another device, copy this code and paste it there under \"Load a save code\".",
- "Başka bir cihazda devam etmek için bu kodu kopyala, orada “Kayıt kodu yükle” bölümüne yapıştır.",
- "Um auf einem anderen Gerät weiterzuspielen, kopiere diesen Code und füge ihn dort unter „Speichercode laden“ ein.",
- "Para seguir en otro dispositivo, copia este código y pégalo allí en «Cargar un código de partida».",
- "別の端末で続けるには、このコードをコピーし、その端末の「セーブコードを読み込む」に貼り付けてください。",
- "다른 기기에서 이어 하려면 이 코드를 복사해 그쪽의 '저장 코드 불러오기'에 붙여 넣으세요.")
+ "To continue on another device, copy this code or share it as a file. Open it there under \"Load a save code\".",
+ "Başka bir cihazda devam etmek için bu kodu kopyala ya da dosya olarak paylaş. Orada “Kayıt kodu yükle” bölümünden aç.",
+ "Um auf einem anderen Gerät weiterzuspielen, kopiere diesen Code oder teile ihn als Datei. Öffne ihn dort unter „Speichercode laden“.",
+ "Para seguir en otro dispositivo, copia este código o compártelo como archivo. Ábrelo allí en «Cargar un código de partida».",
+ "別の端末で続けるには、このコードをコピーするか、ファイルとして共有してください。その端末の「セーブコードを読み込む」から開けます。",
+ "다른 기기에서 이어 하려면 이 코드를 복사하거나 파일로 공유하세요. 그쪽의 '저장 코드 불러오기'에서 열면 됩니다.")
 add("settings.loadHint",
- "Paste the code you copied on another device and tap Load. It replaces the game on this device.",
- "Başka cihazdan kopyaladığın kodu buraya yapıştır ve Yükle'ye bas. Buradaki oyunun yerini alır.",
- "Füge den Code ein, den du auf einem anderen Gerät kopiert hast, und tippe auf Laden. Er ersetzt das Spiel auf diesem Gerät.",
- "Pega el código que copiaste en otro dispositivo y toca Cargar. Sustituye la partida de este dispositivo.",
- "別の端末でコピーしたコードを貼り付けて「読み込む」をタップしてください。この端末のゲームは上書きされます。",
- "다른 기기에서 복사한 코드를 붙여 넣고 불러오기를 누르세요. 이 기기의 게임을 대체합니다.")
+ "Paste the code and tap Load, or pick the file you shared. It replaces the game on this device.",
+ "Kodu buraya yapıştırıp Yükle'ye bas ya da paylaştığın dosyayı seç. Buradaki oyunun yerini alır.",
+ "Füge den Code ein und tippe auf Laden, oder wähle die Datei, die du geteilt hast. Er ersetzt das Spiel auf diesem Gerät.",
+ "Pega el código y toca Cargar, o elige el archivo que compartiste. Sustituye la partida de este dispositivo.",
+ "コードを貼り付けて「読み込む」をタップするか、共有したファイルを選んでください。この端末のゲームは上書きされます。",
+ "코드를 붙여 넣고 불러오기를 누르거나, 공유한 파일을 선택하세요. 이 기기의 게임을 대체합니다.")
 add("settings.pastePlaceholder", "Paste the code here", "Kodu buraya yapıştır", "Code hier einfügen", "Pega el código aquí", "ここにコードを貼り付け", "여기에 코드를 붙여 넣으세요")
 add("settings.paste", "Paste", "Yapıştır", "Einfügen", "Pegar", "貼り付け", "붙여넣기")
 add("settings.purchases", "Purchases", "Satın alımlar", "Käufe", "Compras", "購入", "구매")

@@ -5065,6 +5065,17 @@ async function packCode(txt) {
   const buf = await new Response(new Blob([txt]).stream().pipeThrough(new CompressionStream('deflate-raw'))).arrayBuffer();
   let bin = ''; new Uint8Array(buf).forEach(b => { bin += String.fromCharCode(b); }); return 'BB1:' + btoa(bin);
 }
+/* v124.3: the code leaves out what the game rebuilds or never shows again: tomorrow's paper, reviews past the eight
+   on screen, the reputation history past the sixty days in the chart; fractions keep four decimals */
+function codeState() {
+  const c = JSON.parse(JSON.stringify(S, (k, v) => typeof v === 'number' && !Number.isInteger(v) ? Math.round(v * 1e4) / 1e4 : v));
+  c.paperNext = null;
+  [c, ...Object.values(c.regions || {})].forEach(r => {
+    if (r.reviews) r.reviews = r.reviews.slice(0, 8);
+    if (r.repHist) r.repHist = r.repHist.slice(-60);
+  });
+  return c;
+}
 async function unpackCode(code) {
   const c = code.replace(/\s+/g, '');
   if (!c.startsWith('BB1:')) return decodeURIComponent(escape(atob(c)));
@@ -5108,16 +5119,30 @@ function showMenu(open) {
   ]);
   if (open) {
     const box = h('div', 'sbox');
-    box.appendChild(h('p', 'hint', open === 'copy' ? 'Başka bir cihazda devam etmek için bu kodu kopyala, orada "Kayıt kodu yükle"ye yapıştır.' : 'Başka cihazdan kopyaladığın kodu buraya yapıştır ve Yükle\'ye bas. Buradaki oyunun yerini alır.'));
+    box.appendChild(h('p', 'hint', open === 'copy' ? 'Başka bir cihazda devam etmek için bu kodu kopyala ya da dosya olarak paylaş. Orada "Kayıt kodu yükle"den aç.' : 'Kodu buraya yapıştırıp Yükle\'ye bas ya da paylaştığın dosyayı seç. Buradaki oyunun yerini alır.'));
     const ta = document.createElement('textarea'); ta.rows = 3; ta.id = 'saveCode'; ta.value = open === 'copy' ? code : ''; if (open === 'copy') ta.readOnly = true; else ta.placeholder = 'Kodu buraya yapıştır';
-    if (open === 'copy') packCode(JSON.stringify(S)).then(c => { ta.value = c; }).catch(() => {}); /* v121.8: compressed, about a tenth as long */
+    if (open === 'copy') packCode(JSON.stringify(codeState())).then(c => { ta.value = c; }).catch(() => {}); /* v121.8: compressed, about a tenth as long */
     const msg = h('p', 'hint'), btns = h('div', 'btns');
-    if (open === 'copy') btns.append(pbtn('Kopyala', () => { navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = 'Kopyalandı.'; }).catch(() => { ta.focus(); ta.select(); msg.textContent = 'Kod seçildi, kopyalamak için Ctrl+C.'; }); }));
+    /* v124.3: the code also travels as a small text file: share it (AirDrop, Messages, Files) or load it from one */
+    const fileName = () => 'BalloonBaron-' + (S.company || 'save').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-|-$/g, '') + '.txt';
+    const shareCode = () => {
+      const f = new File([ta.value], fileName(), { type: 'text/plain' });
+      if (navigator.canShare && navigator.canShare({ files: [f] })) { navigator.share({ files: [f], title: S.company }).catch(() => {}); return; }
+      const a = document.createElement('a'); a.href = URL.createObjectURL(f); a.download = f.name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+      msg.textContent = 'Dosya indirildi.';
+    };
+    const loadText = t => unpackCode(t).then(txt => { const s = JSON.parse(txt); if (!s || !s.balloons || !s.rivals) throw 0; S = migrate(s); m.hidden = true; tab = 'plan'; startDay(); })
+      .catch(() => { msg.textContent = 'Bu kod okunamadı. Kodun tamamını yapıştırdığından emin ol.'; });
+    const pickFile = () => {
+      const inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.txt,text/plain';
+      inp.onchange = () => { const f = inp.files[0]; if (f) f.text().then(t => { ta.value = t.trim(); loadText(t); }); };
+      inp.click();
+    };
+    if (open === 'copy') btns.append(pbtn('Kopyala', () => { navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = 'Kopyalandı.'; }).catch(() => { ta.focus(); ta.select(); msg.textContent = 'Kod seçildi, kopyalamak için Ctrl+C.'; }); }),
+      pbtn('Paylaş', shareCode, false, true));
     else btns.append(pbtn('Yapıştır', () => { navigator.clipboard.readText().then(t => { ta.value = t; }).catch(() => { ta.focus(); msg.textContent = 'Kutuya uzun basıp Yapıştır de.'; }); }, false, true),
-      pbtn('Yükle', () => {
-        unpackCode(ta.value).then(txt => { const s = JSON.parse(txt); if (!s || !s.balloons || !s.rivals) throw 0; S = migrate(s); m.hidden = true; tab = 'plan'; startDay(); })
-          .catch(() => { msg.textContent = 'Bu kod okunamadı. Kodun tamamını yapıştırdığından emin ol.'; });
-      }));
+      pbtn('Dosyadan', pickFile, false, true),
+      pbtn('Yükle', () => loadText(ta.value)));
     box.append(ta, btns, msg);
     c.appendChild(box);
   }

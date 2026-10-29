@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import UniformTypeIdentifiers
 import BalloonBaronCore
 
 /// The menu behind the top-right button (`showMenu`, prototype v106): a settings screen in the game's own look.
@@ -17,6 +18,9 @@ struct MenuView: View {
     @State private var code = ""
     @State private var pasted = ""
     @State private var message = ""
+    /// v124.3: the code written to a small text file to share (AirDrop, Messages, Files), and the file picker to load one.
+    @State private var codeFile: URL?
+    @State private var importing = false
     /// Which save-code row is open.
     private enum CodeBox { case copy, load }
     @State private var open: CodeBox?
@@ -63,6 +67,15 @@ struct MenuView: View {
         .onAppear {
             store.save()
             code = store.saveCode ?? ""
+            codeFile = Self.writeCodeFile(code, company: store.game?.state.company ?? "")
+        }
+        .fileImporter(isPresented: $importing, allowedContentTypes: [.plainText, .text, .data]) { result in
+            guard case .success(let url) = result else { return }
+            let scoped = url.startAccessingSecurityScopedResource()
+            defer { if scoped { url.stopAccessingSecurityScopedResource() } }
+            guard let text = try? String(contentsOf: url, encoding: .utf8) else { message = loc("menu.badCode"); return }
+            pasted = text.trimmingCharacters(in: .whitespacesAndNewlines)
+            if !store.load(code: pasted) { message = loc("menu.badCode") }
         }
     }
 
@@ -224,9 +237,21 @@ struct MenuView: View {
                         UIPasteboard.general.string = code
                         message = loc("menu.copied")
                     }
+                    if let codeFile {
+                        ShareLink(item: codeFile) {
+                            Text(loc("settings.shareCode")).frame(minWidth: 70)
+                        }
+                        .buttonStyle(ChunkyButtonStyle(kind: .ghost, height: 42))
+                        .fixedSize()
+                        .simultaneousGesture(TapGesture().onEnded { SoundEngine.shared.play(.click) })
+                    }
                 } else {
                     codeButton(loc("settings.paste")) {
                         pasted = UIPasteboard.general.string ?? ""
+                    }
+                    codeButton(loc("settings.fromFile")) {
+                        message = ""
+                        importing = true
                     }
                     codeButton(loc("menu.load"), primary: true) {
                         if !store.load(code: pasted) { message = loc("menu.badCode") }
@@ -240,6 +265,16 @@ struct MenuView: View {
         .padding(12)
         .background(Color(hex: "#f6f3fb"), in: RoundedRectangle(cornerRadius: 16))
         .padding(.top, 10)
+    }
+
+    /// "BalloonBaron-<company>.txt" in the temporary folder, holding the save code.
+    private static func writeCodeFile(_ code: String, company: String) -> URL? {
+        guard !code.isEmpty else { return nil }
+        let parts = company.components(separatedBy: CharacterSet.alphanumerics.inverted).filter { !$0.isEmpty }
+        let name = "BalloonBaron" + (parts.isEmpty ? "" : "-" + parts.joined(separator: "-")) + ".txt"
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
+        do { try code.write(to: url, atomically: true, encoding: .utf8) } catch { return nil }
+        return url
     }
 
     private func codeButton(_ title: String, primary: Bool = false, action: @escaping () -> Void) -> some View {
