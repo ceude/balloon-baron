@@ -62,6 +62,10 @@ public enum PaperItem: Codable, Equatable, Sendable {
     case show(balloons: Int)
     /// v114: the workshop grew a level.
     case factoryGrew(company: String, level: Int)
+    /// v124 Bristol: the airport's fine; tonight's Night Glow (the company lit up the festival night); the festival opens.
+    case airspace(fine: Int)
+    case nightGlow(balloons: Int)
+    case briFestival
 
     public var priority: Int {
         switch self {
@@ -69,7 +73,8 @@ public enum PaperItem: Codable, Equatable, Sendable {
         case .vip, .wedding, .record, .night, .milestone: 2
         case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine, .deed: 3
         case .accident(_, _, let severe): severe ? 5 : 3
-        case .redCaught, .festival, .newEntrant, .passedBoss, .show: 4
+        case .redCaught, .festival, .newEntrant, .passedBoss, .show, .nightGlow, .briFestival: 4
+        case .airspace: 3
         case .antitrust, .seized: 5
         case .rivalBankrupt, .worldBaron, .worldRecord: 6
         }
@@ -89,6 +94,9 @@ public enum NightEvent: Codable, Equatable, Sendable {
     case shootingStar
     /// v111: your Balloon Show over the town, with these balloons.
     case show(balloons: [Int])
+    /// v124 Bristol: the booked Night Glow, with this many balloons; a festival evening's ascent at dusk.
+    case nightGlow(balloons: Int)
+    case eveningAscent(balloons: Int)
 }
 
 extension Game {
@@ -243,6 +251,11 @@ extension Game {
         if state.local.showTonight == state.day - 1, let ids = state.local.showIDs {
             // The Balloon Show has its own headline (made in finishDay).
             return .show(balloons: ids)
+        } else if state.local.glowTonight == state.day - 1 {
+            // v124: Bristol's festival evenings: the booked Night Glow, otherwise the evening ascent at dusk
+            ev = .nightGlow(balloons: state.local.glowN ?? glowFleet.count)
+        } else if state.region.bristol && state.local.eveDay == state.day - 1 {
+            ev = .eveningAscent(balloons: state.local.eveN ?? 1)
         } else if let f = state.festival {
             ev = .lanterns(festival: f.index)
         } else if state.fiesta != nil {

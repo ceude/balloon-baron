@@ -259,9 +259,10 @@ private enum OfficePainter {
         ridge.closeSubpath()
         g.fill(ridge, with: .color(Color(hex: "#d7a27e")))
         var R = Mulberry32(seed: 31)
-        for _ in 0..<9 {
+        for i in 0..<9 {
             let cx = x0 + CGFloat(R.next()) * (x1 - x0), hh = 16 + CGFloat(R.next()) * 26
             switch s.region {
+            case .bri: if i % 3 == 0 { windowSpire(&g, cx, hz + 4, hh) } else { windowOak(&g, cx, hz + 6, hh / 40) } // v124
             case .abq: windowButte(&g, cx, hz + 4, hh * 1.2, hh * 0.6)
             case .lux: windowPalm(&g, cx, hz + 6, hh)
             case .cap: ScenePainter.chimney(&g, cx, hz + 4, hh * 0.42, hh, body: Color(hex: "#e8b48e"), shade: Color(hex: "#c98d68"), cap: Color(hex: "#7a4e38"))
@@ -297,6 +298,20 @@ private enum OfficePainter {
         }
         poly([CGPoint(x: x - w * 0.55, y: y), CGPoint(x: x - w * 0.42, y: y - h), CGPoint(x: x + w * 0.42, y: y - h), CGPoint(x: x + w * 0.55, y: y)], "#a65e38")
         poly([CGPoint(x: x - w * 0.55, y: y), CGPoint(x: x - w * 0.42, y: y - h), CGPoint(x: x + w * 0.05, y: y - h), CGPoint(x: x + w * 0.1, y: y)], "#d98e5e")
+    }
+
+    /// v124: Bristol out of the window: an oak (`oakTree`) and a church spire in Bath stone.
+    static func windowOak(_ c: inout GraphicsContext, _ x: CGFloat, _ y: CGFloat, _ s: CGFloat) {
+        c.fill(Path(CGRect(x: x - 2.5 * s, y: y - 18 * s, width: 5 * s, height: 18 * s)), with: .color(Color(hex: "#4a3420")))
+        for (dx, dy, r, col) in [(-9, -24, 12, "#3e6a2c"), (9, -26, 12, "#4a7a34"), (0, -34, 14, "#5a8a3e"), (-2, -24, 11, "#467a32")] as [(CGFloat, CGFloat, CGFloat, String)] {
+            c.fill(Path(ellipseIn: CGRect(x: x + dx * s - r * s, y: y + dy * s - r * 0.85 * s, width: r * 2 * s, height: r * 1.7 * s)), with: .color(Color(hex: col)))
+        }
+    }
+
+    static func windowSpire(_ c: inout GraphicsContext, _ x: CGFloat, _ y: CGFloat, _ h: CGFloat) {
+        var p = Path(CGRect(x: x - 3, y: y - h * 0.6, width: 6, height: h * 0.6))
+        p.move(to: CGPoint(x: x - 3.5, y: y - h * 0.6)); p.addLine(to: CGPoint(x: x, y: y - h * 1.1)); p.addLine(to: CGPoint(x: x + 3.5, y: y - h * 0.6)); p.closeSubpath()
+        c.fill(p, with: .color(Color(hex: "#c8b080")))
     }
 
     /// Luxor out of the window: a date palm in silhouette (`palmSil`).

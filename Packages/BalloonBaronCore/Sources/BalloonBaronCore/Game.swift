@@ -71,6 +71,10 @@ public struct Game: Sendable {
             l = [-rng.range(2, 4) * flag.wind, rng.range(3, 5.5) * flag.wind, -rng.range(1, 3.5) * flag.wind, rng.range(4, 7) * flag.wind]
         } else if state.region.nileWinds {
             l = [rng.range(1.5, 3.5) * flag.wind, -rng.range(2, 4.5) * flag.wind, rng.range(2.5, 5) * flag.wind, -rng.range(3, 6) * flag.wind]
+        } else if state.region.westWinds {
+            // v124: west wind off the Bristol Channel, east at mid heights
+            l = [rng.range(-2.5, 1.5) * flag.wind, rng.range(2.5, 5) * flag.wind, rng.range(3, 6) * flag.wind,
+                 (rng.chance(0.5) ? -rng.range(1, 4) : rng.range(1, 3)) * flag.wind]
         }
         // Always leave one layer that carries you east and one that brings you back.
         if !l.contains(where: { $0 > 3 }) { l[1 + rng.int(3)] = rng.range(3.5, 6) * flag.wind }
@@ -79,7 +83,8 @@ public struct Game: Sendable {
             for (i, v) in l.enumerated() where v < 3 && (l[m] >= 3 || v < l[m]) { m = i }
             l[m] = -rng.range(1, 4) * flag.wind
         }
-        let target = 220 + (state.region.boxWinds ? rng.range(1000, 1700) : rng.range(1300, 2100))
+        // v124: Bristol's field is nearer, like Albuquerque's (`cap ? 1300–2100 : 1000–1700` in the prototype).
+        let target = 220 + (state.region.boxWinds || state.region.bristol ? rng.range(1000, 1700) : rng.range(1300, 2100))
         // Festivals always bring a special request.
         var mission: Mission? = state.day <= 2 || (rng.chance(0.4) && !(state.festival != nil && flag != .red)) ? nil
             : (flag == .yellow && rng.chance(0.5) ? .precision : rng.pick(Mission.allCases))
@@ -89,15 +94,28 @@ public struct Game: Sendable {
         } else if !state.firstMissionGiven {
             mission = nil
         }
-        return Weather(flag: flag, surfaceWind: jsRound(surf), layers: l, target: target, seed: rng.next(),
-                       mission: mission, valley: 220 + (target - 220) * rng.range(0.35, 0.6))
+        var w = Weather(flag: flag, surfaceWind: jsRound(surf), layers: l, target: target, seed: rng.next(),
+                        mission: mission, valley: 220 + (target - 220) * rng.range(0.35, 0.6))
+        // v124: Bristol: morning fog on about a quarter of the flyable days (the field shows only under its top), and on
+        // ~40% of days the airport's controlled airspace over part of the way (above its floor: warning, then a fine).
+        if state.region.bristol && flag != .red {
+            if rng.chance(0.28) { w.fog = Fog(top: Double(jsRound(rng.range(90, 150)))) }
+            if rng.chance(0.4) {
+                let x0 = 220 + rng.range(380, max(420, target - 220 - 760))
+                w.air = Airspace(x0: Double(jsRound(x0)), x1: Double(jsRound(x0 + rng.range(420, 620))), floor: Double(jsRound(rng.range(340, 410))))
+            }
+        }
+        return w
     }
 
     mutating func newCandidates() {
         func make(_ level: PilotLevel, school: Bool = false) -> Pilot {
             let initial = Character(UnicodeScalar(65 + rng.int(26))!)
             defer { state.nextID += 1 }
-            return Pilot(id: state.nextID, name: "\(rng.pick(state.region.pilotNames)) \(initial).", level: level, fromSchool: school, trait: rollTrait())
+            let name = "\(rng.pick(state.region.pilotNames)) \(initial).", trait = rollTrait()
+            // v124: Bristol's wages are 15% higher; the region's wage is fixed when the pilot is hired.
+            let wage = state.region.wageFactor != 1 ? Pilot.baseWage(level, school: school, trait: trait, region: state.region) : nil
+            return Pilot(id: state.nextID, name: name, level: level, fromSchool: school, customWage: wage, trait: trait)
         }
         state.candidates = []
         for _ in 0..<3 {

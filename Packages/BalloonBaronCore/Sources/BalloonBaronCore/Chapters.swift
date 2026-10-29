@@ -5,11 +5,13 @@ public enum GoalKind: String, Codable, Sendable {
     case balloons, pilots, stars, cash, hotelDeal, hotelOwn, influencer, guide, share, workshop, school, xl, fiesta
     /// v114: a balloon built in your own workshop (level 2).
     case factoryBuilt
+    /// v124 Bristol: an own flight ended safely on a foggy morning; a Night Glow held.
+    case fog, glow
     /// Building levels: the wind mast, the hangar, or any building.
     case bldMast, bldHangar, bldTop
 
     /// Shown as done / not yet instead of a count.
-    public var yesNo: Bool { [.workshop, .factoryBuilt, .school, .xl, .influencer, .guide, .fiesta, .bldMast, .bldHangar, .bldTop].contains(self) }
+    public var yesNo: Bool { [.workshop, .factoryBuilt, .school, .xl, .influencer, .guide, .fiesta, .fog, .glow, .bldMast, .bldHangar, .bldTop].contains(self) }
     var building: Bool { [.bldMast, .bldHangar, .bldTop].contains(self) }
 }
 
@@ -48,6 +50,15 @@ public struct Chapter: Equatable, Sendable {
                 Chapter(id: "pharaohs", reward: 20000, goals: [g(.balloons, 14), g(.hotelOwn, 1), g(.fiesta, 1), g(.share, 0.5)]),
                 Chapter(id: "baronLux", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
             ]
+        // v124: a step harder than Luxor (balanced with tools/sim-campaign.js); the gorge wants a foggy flight, the
+        // festival a Night Glow.
+        case .bri:
+            return [
+                Chapter(id: "ashton", reward: 5000, goals: [g(.balloons, 4), g(.pilots, 3), g(.stars, 4.7), g(.hotelDeal, 2), g(.guide, 1), g(.bldMast, 2)]),
+                Chapter(id: "avonGorge", reward: 10000, goals: [g(.balloons, 14), g(.influencer, 1), g(.stars, 4.75), g(.share, 0.35), g(.fog, 1), g(.bldMast, 3), g(.bldHangar, 2)]),
+                Chapter(id: "festivalBri", reward: 20000, goals: [g(.balloons, 24), g(.hotelOwn, 1), g(.fiesta, 1), g(.glow, 1), g(.share, 0.55)]),
+                Chapter(id: "baronBri", reward: 0, goals: [g(.share, 0.75), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
+            ]
         }
     }
 }
@@ -76,6 +87,8 @@ extension GameState {
         case .school: return s.school ? 1 : 0
         case .xl: return s.balloons.contains { $0.size == .XL } ? 1 : 0
         case .fiesta: return Double(s.fiestaFlown)
+        case .fog: return Double(s.fogFlown ?? 0)
+        case .glow: return Double(s.glowCount ?? 0)
         case .bldMast: return Double(level(.mast))
         case .bldHangar: return Double(level(.hangar))
         case .bldTop: return Double(topBuildingLevel)

@@ -11,6 +11,7 @@
 		07C4DCFC0699ED567F7D68F4 /* IssueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2070C4DCB9F9DE7745FEBC0 /* IssueView.swift */; };
 		087F61159801C392339A63F7 /* OpeningMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = A467DC08FB9A6ED13E3DA833 /* OpeningMath.swift */; };
 		08F7B0D73C66145A446F6067 /* Shop.swift in Sources */ = {isa = PBXBuildFile; fileRef = 13C148975EC28ECA71CB3536 /* Shop.swift */; };
+		0AAEDA10EE95B4D8F8D7E33E /* TownBristol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5FBF18D1873CAB6FA1955151 /* TownBristol.swift */; };
 		0DA629045DADE2453DF1F645 /* ShowHighlights.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79E97362F1C9F4742E77E38 /* ShowHighlights.swift */; };
 		102B4A4B20A2D62462977EDF /* TownCollect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14CD61C9B79F78E77AE45096 /* TownCollect.swift */; };
 		1421D95F62AFE6F52A424C1A /* SaveVault.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DF3B0C99D9EE5597D3FDD37 /* SaveVault.swift */; };
@@ -88,7 +89,9 @@
 		BBB4A8150F49C505DE1C2F67 /* TownViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 151A0BC3B17C01FBFECAA493 /* TownViews.swift */; };
 		BC27AE17F47E178813ADC9E7 /* Barlow-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 344C57C234A4658DBD789843 /* Barlow-Medium.ttf */; };
 		C0DFC55B4B2D1E82DACD6AA4 /* OpeningScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1E82B36F0B974360466A00D /* OpeningScene.swift */; };
+		C264D505971AD590C53B4058 /* BristolPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 759B91984D338381CCB45902 /* BristolPainter.swift */; };
 		C2B154218D66DBAE24868DA9 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 158AFE69FAF9C43034FBC847 /* Theme.swift */; };
+		C7DBFB0AC3E31D06093383BD /* TownBristolTown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BA4B517AF6528A635C8B7A4 /* TownBristolTown.swift */; };
 		C9DAAF451BF565688EC4D187 /* ChapterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E80660872C36D7349FC2CB0 /* ChapterView.swift */; };
 		CDE747CAF5B1BDD693D6FB79 /* OfficeSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DC99A8B37B92CB3C497642 /* OfficeSceneView.swift */; };
 		D8A8F36DCC2528347D214C6F /* PoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF94474E4B1A4F2261794B11 /* PoachView.swift */; };
@@ -97,6 +100,7 @@
 		DD35D40BDE2365FF1F2D8551 /* HoldingOffice.swift in Sources */ = {isa = PBXBuildFile; fileRef = 35623869A60618088C41AF72 /* HoldingOffice.swift */; };
 		DEEAB119EDBF9CB14089F610 /* BarlowCondensed-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B31687098E5783CD57B19E0E /* BarlowCondensed-SemiBold.ttf */; };
 		E42444BDE50E6271C9E8404C /* OpeningTextures.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6B191228284CEC62FA071BA /* OpeningTextures.swift */; };
+		E4643F93055B503AE98BDF72 /* GlowViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4526DE27B1C957F767B5AAA2 /* GlowViews.swift */; };
 		E4784A24C39AC33337B15154 /* AdShapeArt.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DB9359E7A5D91DE3E717B69 /* AdShapeArt.swift */; };
 		E69B4CB75937456ED93981A4 /* BazaarViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 73920F4A7D747582F67B5D94 /* BazaarViews.swift */; };
 		E97DB4A97AA58EE10F7572BE /* HezarfenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 258193DAFB836A70F64C8C53 /* HezarfenView.swift */; };
@@ -132,6 +136,7 @@
 		22723823825DD9B1F7F96443 /* Gaegu-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gaegu-Regular.ttf"; sourceTree = "<group>"; };
 		23D4D33454C06481C5DCFCD1 /* ReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReportView.swift"; sourceTree = "<group>"; };
 		258193DAFB836A70F64C8C53 /* HezarfenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HezarfenView.swift"; sourceTree = "<group>"; };
+		2BA4B517AF6528A635C8B7A4 /* TownBristolTown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownBristolTown.swift"; sourceTree = "<group>"; };
 		2D7BE289C7562657B915A5A1 /* Balloon3D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Balloon3D.swift"; sourceTree = "<group>"; };
 		32555776BC90AFB75C336EF3 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "SetupView.swift"; sourceTree = "<group>"; };
 		344C57C234A4658DBD789843 /* Barlow-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Medium.ttf"; sourceTree = "<group>"; };
@@ -139,6 +144,7 @@
 		3655D7D3B1C7B70D724F89A0 /* DealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DealView.swift"; sourceTree = "<group>"; };
 		3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorldMapView.swift"; sourceTree = "<group>"; };
 		3E80660872C36D7349FC2CB0 /* ChapterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterView.swift"; sourceTree = "<group>"; };
+		4526DE27B1C957F767B5AAA2 /* GlowViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlowViews.swift"; sourceTree = "<group>"; };
 		45339BBAA04927D7F285CA21 /* Platform.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Platform.swift"; sourceTree = "<group>"; };
 		46C131F9B2830128FA15F1DB /* MorningViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MorningViews.swift"; sourceTree = "<group>"; };
 		50879B7F79F10952427AF4CD /* DancingScript-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DancingScript-Bold.ttf"; sourceTree = "<group>"; };
@@ -147,6 +153,7 @@
 		57EF8C34E905788B88E5C1BE /* CrewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CrewView.swift"; sourceTree = "<group>"; };
 		58E7979CAF17F9DA860DACA2 /* Gaegu-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Gaegu-Bold.ttf"; sourceTree = "<group>"; };
 		5A7F9E6E220C47610C3B3C41 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Assets.xcassets"; sourceTree = "<group>"; };
+		5FBF18D1873CAB6FA1955151 /* TownBristol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownBristol.swift"; sourceTree = "<group>"; };
 		610DCA796EFEF22379BB71FD /* Barlow-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Regular.ttf"; sourceTree = "<group>"; };
 		64334C9F947BE9EF2E1B63A6 /* Sound.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Sound.swift"; sourceTree = "<group>"; };
 		6858154E303E2FAC806C1D22 /* BarlowCondensed-ExtraBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-ExtraBold.ttf"; sourceTree = "<group>"; };
@@ -161,6 +168,7 @@
 		73920F4A7D747582F67B5D94 /* BazaarViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BazaarViews.swift"; sourceTree = "<group>"; };
 		73CE86E1131A0D2F69D02D15 /* ReviewChirpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ReviewChirpView.swift"; sourceTree = "<group>"; };
 		74743D6DF14E3F20528EAA46 /* PriceSheetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PriceSheetView.swift"; sourceTree = "<group>"; };
+		759B91984D338381CCB45902 /* BristolPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BristolPainter.swift"; sourceTree = "<group>"; };
 		763B98D1DA188953D28B6370 /* GuideAvatars.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GuideAvatars.swift"; sourceTree = "<group>"; };
 		7979FE3F575B19E31E0B24FD /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MenuView.swift"; sourceTree = "<group>"; };
 		798EB2611FCE0760FCDC6A30 /* DancingScript-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DancingScript-Medium.ttf"; sourceTree = "<group>"; };
@@ -306,6 +314,8 @@
 			isa = PBXGroup;
 			children = (
 				6F1A2D95CABAF8E879CAADAB /* ShowFigures.swift */,
+				5FBF18D1873CAB6FA1955151 /* TownBristol.swift */,
+				2BA4B517AF6528A635C8B7A4 /* TownBristolTown.swift */,
 				14CD61C9B79F78E77AE45096 /* TownCollect.swift */,
 				18984496BC160B829AD4E3E8 /* TownDecor.swift */,
 				BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */,
@@ -350,6 +360,7 @@
 				9F81A32D63C6E3949B8B2AA2 /* FleetPlanView.swift */,
 				D5B20ABBDA63F2F318C03DED /* FleetView.swift */,
 				9662F101C27DC417A5D0A108 /* FlightView.swift */,
+				4526DE27B1C957F767B5AAA2 /* GlowViews.swift */,
 				BA6CB771A7741DFE9025EA00 /* GoalsView.swift */,
 				763B98D1DA188953D28B6370 /* GuideAvatars.swift */,
 				C75F9CDDED31E1B1E782B22C /* HezarfenAvatar.swift */,
@@ -394,6 +405,7 @@
 			isa = PBXGroup;
 			children = (
 				2D7BE289C7562657B915A5A1 /* Balloon3D.swift */,
+				759B91984D338381CCB45902 /* BristolPainter.swift */,
 				F4DC99A8B37B92CB3C497642 /* OfficeSceneView.swift */,
 				AC0AFDF1E7A3A9121D93DD8E /* ScenePainter.swift */,
 			);
@@ -515,9 +527,12 @@
 				6DB89744E0F09A9CE4F4AB95 /* OpeningView.swift in Sources */,
 				70E271D8D3F5A06FED61E6BE /* OpeningWorld.swift in Sources */,
 				9918316F55A4B8C2B4D3F7FE /* Balloon3D.swift in Sources */,
+				C264D505971AD590C53B4058 /* BristolPainter.swift in Sources */,
 				CDE747CAF5B1BDD693D6FB79 /* OfficeSceneView.swift in Sources */,
 				43D34FF299E13570C04FCAA5 /* ScenePainter.swift in Sources */,
 				571496AACD5147313750FB23 /* ShowFigures.swift in Sources */,
+				0AAEDA10EE95B4D8F8D7E33E /* TownBristol.swift in Sources */,
+				C7DBFB0AC3E31D06093383BD /* TownBristolTown.swift in Sources */,
 				102B4A4B20A2D62462977EDF /* TownCollect.swift in Sources */,
 				96D085A373064DE08FC6CA2F /* TownDecor.swift in Sources */,
 				89387608271733A9FA3C605B /* TownExtras.swift in Sources */,
@@ -538,6 +553,7 @@
 				988D0F2211B78B583593F5FD /* FleetPlanView.swift in Sources */,
 				247D71012621FEDAFD91686F /* FleetView.swift in Sources */,
 				EF3F4E97DEC19EE3C40076E6 /* FlightView.swift in Sources */,
+				E4643F93055B503AE98BDF72 /* GlowViews.swift in Sources */,
 				8FFFF3B3D192A53D1D07FB92 /* GoalsView.swift in Sources */,
 				47FB6CACD2AB59B070A4E164 /* GuideAvatars.swift in Sources */,
 				A818B3A8939636A60B498B62 /* HezarfenAvatar.swift in Sources */,

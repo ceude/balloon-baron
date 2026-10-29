@@ -15,6 +15,9 @@ enum IntroScene {
                          cap: "#3f7a3a", ground: ["#8a4e2c", "#28120a"], name: "ALBUQUERQUE")
         case "lux": Look(sky: ["#0d1836", "#2a3664", "#b0605a", "#f2a656", "#ffe2a0"], far: "#6a5260", mid: "#c89a62", midShade: "#8a6440",
                          cap: "#2e5a2a", ground: ["#a07a4a", "#30200e"], name: "LUXOR")
+        // v124: an overcast dawn over Bristol
+        case "bri": Look(sky: ["#1a2236", "#3a4a66", "#8a8aa0", "#d8b49a", "#eee2cc"], far: "#4a5868", mid: "#cdb07a", midShade: "#8a7450",
+                         cap: "#3a5a2e", ground: ["#4a6a34", "#1a2a14"], name: "BRISTOL")
         default: Look(sky: ["#120d33", "#3a2460", "#a24e7a", "#f0875a", "#ffd59a"], far: "#4e3460", mid: "#c8866a", midShade: "#8a5060",
                       cap: "#4a2a2a", ground: ["#6e4a3a", "#2a1822"], name: "CAPPADOCIA")
         }
@@ -177,6 +180,25 @@ enum IntroScene {
                         leaf.rotate(by: .radians(a))
                         leaf.fill(Path(ellipseIn: CGRect(x: -hh * 0.22, y: -hh * 0.05, width: hh * 0.44, height: hh * 0.1)), with: .color(cap))
                     }
+                }
+            case "bri":
+                // v124: spires, Georgian terraces and round trees
+                if s < 0.3 {
+                    var sp = Path(CGRect(x: x - hh * 0.07, y: base - hh * 0.55, width: hh * 0.14, height: hh * 0.55))
+                    sp.move(to: CGPoint(x: x - hh * 0.08, y: base - hh * 0.55))
+                    sp.addLine(to: CGPoint(x: x, y: base - hh))
+                    sp.addLine(to: CGPoint(x: x + hh * 0.08, y: base - hh * 0.55))
+                    sp.closeSubpath()
+                    ctx.fill(sp, with: .color(body))
+                } else if s < 0.65 {
+                    ctx.fill(Path(CGRect(x: x - hh * 0.6, y: base - hh * 0.42, width: hh * 1.2, height: hh * 0.42)), with: .color(body))
+                    for c in 0..<5 {
+                        ctx.fill(Path(CGRect(x: x - hh * 0.55 + CGFloat(c) * hh * 0.24, y: base - hh * 0.5, width: hh * 0.06, height: hh * 0.1)), with: .color(shade))
+                    }
+                } else {
+                    ScenePainter.ell(&ctx, x, base - hh * 0.45, hh * 0.3, hh * 0.3, cap)
+                    ScenePainter.ell(&ctx, x - hh * 0.18, base - hh * 0.32, hh * 0.2, hh * 0.18, cap)
+                    ctx.fill(Path(CGRect(x: x - hh * 0.03, y: base - hh * 0.2, width: hh * 0.06, height: hh * 0.2)), with: .color(cap))
                 }
             default:
                 ScenePainter.chimney(&ctx, x, base, hh * 0.36, hh, body: body, shade: shade, cap: cap)

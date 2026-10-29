@@ -46,6 +46,14 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case baron(RegionID)
     /// A small moment in your flight (a thermal, a greeting, a sunrise photo) and the tips it brought.
     case moment(FlightMoment.Kind, tips: Int)
+    /// v124 Bristol: the first safe flight on a foggy morning; landing among sheep or cows (the farmer's due); in the
+    /// tidal mud; the airport's fine; the festival's evening ascent; tonight's Night Glow.
+    case fogFlown
+    case farmLanding(PenAnimal, fine: Int)
+    case mudLanding
+    case airspaceFine(fine: Int)
+    case eveningAscent(balloons: Int, pax: Int, income: Int)
+    case nightGlowTonight(balloons: Int)
 
     // Rivals
     case rivalFleetSold(rival: String)
@@ -69,6 +77,8 @@ public struct Ledger: Codable, Equatable, Sendable {
     // Income
     public var tickets = 0, founderBonus = 0, hotelIncome = 0, mission = 0, ads = 0, tips = 0, insurancePaid = 0, seizure = 0
     public var chapterReward = 0
+    /// v124: tickets of a Bristol festival's evening ascent (optional: older saved reports).
+    public var evening: Int?
     public var missionDone: Mission?
     public var adRepLoss = 0.0
     /// Popularity your designs brought today.
@@ -80,7 +90,7 @@ public struct Ledger: Codable, Equatable, Sendable {
     public var fines = 0, cancellations = 0, hotelFees = 0, antitrust = 0
 
     public var net: Int {
-        tickets + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
+        tickets + (evening ?? 0) + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
             - fuel - wages - upkeep - insurance - loans - repairs - compensation - fines - cancellations - hotelFees - antitrust
     }
 }
@@ -106,6 +116,10 @@ public struct FlightResult: Codable, Equatable, Sendable {
     public var missionDone: Bool
     /// The flight moment you caught, if any.
     public var moment: FlightMoment.Kind?
+    /// v124 Bristol: landed in a field with these animals, in the tidal mud, and stayed in the airport's airspace.
+    public var farm: PenAnimal?
+    public var mud: Bool?
+    public var airFine: Bool?
 
     public init(landing: Landing, distance: Double = 0, mission: Mission? = nil, missionDone: Bool = false, moment: FlightMoment.Kind? = nil) {
         self.landing = landing; self.distance = distance; self.mission = mission; self.missionDone = missionDone; self.moment = moment

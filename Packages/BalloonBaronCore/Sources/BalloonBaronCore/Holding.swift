@@ -210,6 +210,9 @@ extension Game {
     func newRegionState(_ r: RegionID) -> RegionState {
         var st = RegionState(rivals: r.startingRivals())
         st.cash = r.startCash
+        st.price = r.startPrice
+        st.demandBase = r.startDemand
+        if r.bristol { st.fogFlown = 0; st.glowCount = 0 }
         st.nextWinter = state.day + 40
         st.firstMissionGiven = true
         if r.hasFiesta { st.fiestaNext = state.day + 12 }
@@ -385,9 +388,8 @@ extension Game {
 }
 
 extension GameState {
-    /// v123.5: Baron of Bristol, the fourth region. Read by its raw value so this compiles before `RegionID.bri` exists;
-    /// once Bristol is ported this is simply `barons[.bri] != nil`.
-    public var bristolBaron: Bool { barons.keys.contains { $0.rawValue == "bri" } }
+    /// v123.5: Baron of Bristol, the fourth region. 
+    public var bristolBaron: Bool { barons[.bri] != nil }
     /// v123.5: the World Games show is the holding's finale: it opens once you're Baron of Bristol.
     public var worldGamesOpen: Bool { bristolBaron }
 }

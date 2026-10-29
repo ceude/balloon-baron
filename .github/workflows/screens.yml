@@ -63,6 +63,10 @@ jobs:
           abq|-demoDays 60 -demoRegion abq|10
           lux|-demoDays 60 -demoRegion lux|12
           luxintro|-demoDays 60 -demoRegion lux -demoIntro|8
+          bri|-demoDays 60 -demoRegion bri|14
+          briintro|-demoDays 60 -demoRegion bri -demoIntro|8
+          briflight|-demoDays 60 -demoRegion bri -demoScene flight|14
+          briglow|-demoDays 60 -demoRegion bri -demoScene glow|22
           holding|-demoDays 60 -demoRegion lux -demoPage holding|9
           hqdesks|-demoDays 60 -demoRegion lux -demoHolding jersey -demoPage holding|9
           hqdeals|-demoDays 60 -demoRegion lux -demoHolding deals -demoPage holding -demoUnit deals|10

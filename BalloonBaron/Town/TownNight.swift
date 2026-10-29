@@ -253,33 +253,23 @@ extension TownPainter {
                 glow(p.x, p.y - 70, 80, (255, 150, 60), 0.25 + 0.55 * f)
             }
         case .fireworks(let hotel):
-            // Rockets rise from the hotel and burst above the town, in screen space.
-            var sparks = screen
-            sparks.blendMode = .plusLighter
-            let spot = [(2.0, 10.0), (5, 10), (2, 12.6), (5, 12.8)][Hotel.allCases.firstIndex(of: hotel) ?? 0]
-            let hw = v.screen(iso(spot.0, spot.1)), hx = min(max(hw.x, w * 0.2), w * 0.8), hy = hw.y, tt = t - n.t0
-            for j in 0..<5 {
-                let ph = (tt * 0.55 + Double(j) * 0.21).truncatingRemainder(dividingBy: 1)
-                let cx = w * (0.18 + CGFloat(j) * 0.16) + (hx - w / 2) * 0.2, cy = hz * (0.45 + CGFloat(j % 3) * 0.2)
-                let col: (Double, Double, Double) = [(255, 94, 58), (255, 194, 61), (58, 208, 192), (255, 111, 168), (155, 123, 224)][j]
-                func spark(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ c: (Double, Double, Double), _ a: Double) {
-                    sparks.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)),
-                                with: .radialGradient(Gradient(colors: [Color(red: c.0 / 255, green: c.1 / 255, blue: c.2 / 255).opacity(min(1, a)), .clear]),
-                                                      center: pt(x, y), startRadius: 0, endRadius: r))
-                }
-                if ph < 0.3 {
-                    spark(cx, hy - (hy - cy) * CGFloat(ph / 0.3), 6, (255, 230, 180), 0.9)
-                } else {
-                    let r = CGFloat((ph - 0.3) / 0.7), a = (1 - Double(r)) * k
-                    for i in 0..<18 {
-                        let an = Double(i) / 18 * .pi * 2
-                        spark(cx + CGFloat(cos(an)) * r * w * 0.14, cy + CGFloat(sin(an)) * r * w * 0.14 + r * r * 24, 7, col, a)
-                    }
-                    spark(cx, cy, w * 0.2 * r, col, 0.12 * a)
-                }
-            }
+            fireworks(screen: screen, hz: hz, hotel: hotel, t0: n.t0, k: k)
         case .show(let ids):
             showLayer(screen: screen, hz: hz, ids: ids, t0: n.t0)
+        case .nightGlow:
+            // v124: the Night Glow: every balloon on the field fires on the beat, in waves across the rows, all
+            // together at the end; fireworks from the ninth second
+            for i in 0..<min(6, s.fieldBalloons.count) {
+                let gx = 1.8 + Double(i % 3) * 1.9, gy = 5 + Double(i / 3) * 1.4, p = iso(gx, gy)
+                glow(p.x, p.y - 70, 95, (255, 150, 60), 0.2 + 0.75 * BristolNight.glowPulse(t - n.t0, i))
+            }
+            if t - n.t0 > Glow.fireworksAt { fireworks(screen: screen, hz: hz, hotel: .stone, t0: n.t0, k: k) }
+        case .eveningAscent:
+            // v124: the evening ascent: the balloons lift off the field into the dusk, their burners glowing
+            for i in 0..<min(6, s.fieldBalloons.count) {
+                let gx = 1.8 + Double(i % 3) * 1.9, gy = 5 + Double(i / 3) * 1.4, p = iso(gx, gy), r = CGFloat(BristolNight.eveRise(t - n.t0, i))
+                glow(p.x + r * 0.3, p.y - 70 - r, 50, (255, 160, 70), 0.35 + 0.4 * max(0, sin(t * 4 + Double(i))))
+            }
         default: break
         }
     }
@@ -324,6 +314,37 @@ extension TownPainter {
     }
 }
 
+extension TownPainter {
+    /// Rockets rise from the hotel and burst above the town, in screen space (a wedding's fireworks, the Night Glow's).
+    func fireworks(screen: GraphicsContext, hz: CGFloat, hotel: Hotel, t0: Double, k: Double) {
+        let w = size.width
+        var sparks = screen
+        sparks.blendMode = .plusLighter
+        let spot = [(2.0, 10.0), (5, 10), (2, 12.6), (5, 12.8)][Hotel.allCases.firstIndex(of: hotel) ?? 0]
+        let hw = v.screen(iso(spot.0, spot.1)), hx = min(max(hw.x, w * 0.2), w * 0.8), hy = hw.y, tt = t - t0
+        for j in 0..<5 {
+            let ph = (tt * 0.55 + Double(j) * 0.21).truncatingRemainder(dividingBy: 1)
+            let cx = w * (0.18 + CGFloat(j) * 0.16) + (hx - w / 2) * 0.2, cy = hz * (0.45 + CGFloat(j % 3) * 0.2)
+            let col: (Double, Double, Double) = [(255, 94, 58), (255, 194, 61), (58, 208, 192), (255, 111, 168), (155, 123, 224)][j]
+            func spark(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ c: (Double, Double, Double), _ a: Double) {
+                sparks.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)),
+                            with: .radialGradient(Gradient(colors: [Color(red: c.0 / 255, green: c.1 / 255, blue: c.2 / 255).opacity(min(1, a)), .clear]),
+                                                  center: pt(x, y), startRadius: 0, endRadius: r))
+            }
+            if ph < 0.3 {
+                spark(cx, hy - (hy - cy) * CGFloat(ph / 0.3), 6, (255, 230, 180), 0.9)
+            } else {
+                let r = CGFloat((ph - 0.3) / 0.7), a = (1 - Double(r)) * k
+                for i in 0..<18 {
+                    let an = Double(i) / 18 * .pi * 2
+                    spark(cx + CGFloat(cos(an)) * r * w * 0.14, cy + CGFloat(sin(an)) * r * w * 0.14 + r * r * 24, 7, col, a)
+                }
+                spark(cx, cy, w * 0.2 * r, col, 0.12 * a)
+            }
+        }
+    }
+}
+
 /// The night screen: the town at night under a big sky. Drag to look around, pinch to zoom; the big button
 /// (it fills up as the night passes) brings the morning. Port of `startNight` and `drawNightTown`.
 struct NightView: View {
@@ -341,9 +362,14 @@ struct NightView: View {
 
     /// Seconds the night waits before passing by itself; an event night waits longer. Never past 25 s.
     /// The Balloon Show plays to its end whatever you do (the button skips it).
-    private var wait: Double { isShow ? BalloonShow.length : night.event == nil ? 3.5 : 5.5 }
+    private var wait: Double {
+        isShow ? BalloonShow.length : isGlow ? Glow.duration : night.event == nil ? 3.5 : isEve ? 8 : 5.5
+    }
     private var isShow: Bool { if case .show? = night.event { return true }; return false }
-    private var limit: Double { isShow ? BalloonShow.length : 25 }
+    /// v124: Bristol's Night Glow plays to its end like the show; the evening ascent waits a little longer.
+    private var isGlow: Bool { BristolNight.kind(night.event) == .glow }
+    private var isEve: Bool { BristolNight.kind(night.event) == .eve }
+    private var limit: Double { isShow ? BalloonShow.length : isGlow ? Glow.duration : 25 }
     private var showLooks: [BalloonShow.Look] {
         guard case .show(let ids)? = night.event, let s = store.state else { return [] }
         return BalloonShow.looks(s, ids: ids)
@@ -386,7 +412,7 @@ struct NightView: View {
             withAnimation(.easeOut(duration: 0.6)) { shown = true }
             SoundEngine.shared.ambienceBirds = false
             SoundEngine.shared.crickets(true)
-            if isShow { SoundEngine.shared.showMusic(true) }
+            if isShow || isGlow { SoundEngine.shared.showMusic(true) } // v124: the Night Glow plays to the show's music
         }
         .onDisappear {
             SoundEngine.shared.showMusic(false)
@@ -421,7 +447,7 @@ struct NightView: View {
 
     private func morningButton(day: Int) -> some View {
         TimelineView(.animation(minimumInterval: 1 / 15)) { tl in
-            let left = isShow ? limit - tl.date.timeIntervalSince(start) : min(wait - tl.date.timeIntervalSince(idle), 25 - tl.date.timeIntervalSince(start))
+            let left = isShow || isGlow ? limit - tl.date.timeIntervalSince(start) : min(wait - tl.date.timeIntervalSince(idle), 25 - tl.date.timeIntervalSince(start))
             let p = dawn != nil ? 1 : min(max(1 - left / wait, 0), 1)
             Button {
                 SoundEngine.shared.play(.click)
@@ -458,8 +484,9 @@ struct NightView: View {
         while dawn == nil {
             try? await Task.sleep(for: .milliseconds(200))
             let now = Date()
-            if (!isShow && now.timeIntervalSince(idle) >= wait) || now.timeIntervalSince(start) >= limit { bringMorning() }
+            if (!isShow && !isGlow && now.timeIntervalSince(idle) >= wait) || now.timeIntervalSince(start) >= limit { bringMorning() }
             if case .fireworks = night.event { SoundEngine.shared.firework(now.timeIntervalSince(start)) }
+            if isGlow && now.timeIntervalSince(start) > Glow.fireworksAt { SoundEngine.shared.firework(now.timeIntervalSince(start)) }
         }
     }
 

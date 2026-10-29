@@ -165,6 +165,7 @@ enum ScenePainter {
         case .cap: texts = ["HALI EVİ", "BAĞLAR", "PERİ BANK", "TURBO!"]
         case .abq: texts = ["GREEN CHILE", "WINERY", "TURQUOISE", "ROUTE 66!"]
         case .lux: texts = ["KARKADE", "PAPYRUS", "NILE CRUISE", "SCARAB"]
+        case .bri: texts = ["CIDER", "SEVERN", "TEA ROOMS", "WESTCOUNTRY"]
         }
         return texts[min(i, texts.count - 1)]
     }
@@ -249,8 +250,8 @@ enum ScenePainter {
     static func scenery(_ ctx: inout GraphicsContext, cam: SceneCamera, p: Double, region: RegionID, winter: Bool,
                         time T: Double, background: [BackgroundBalloon], inFlight: Bool) -> CGFloat {
         let W = cam.size.width, H = cam.size.height, groundY = cam.groundY, topY = cam.topY, kx = cam.kx, camX = cam.camX
-        let desert = region == .abq, nile = region == .lux
-        let sky = nile
+        let desert = region == .abq, nile = region == .lux, brit = region == .bri
+        let sky = brit ? BristolPainter.sky(p) : nile
             ? Gradient(stops: [.init(color: mix("#14203f", "#6aa8d8", p), location: 0), .init(color: mix("#6a4a6a", "#f8c890", p), location: 0.55),
                                .init(color: mix("#f2a050", "#fff0c0", p), location: 1)])
             : desert
@@ -284,6 +285,7 @@ enum ScenePainter {
             m.closeSubpath()
             ctx.fill(m, with: .color(mix("#4e2c4c", "#d98a96", p)))
         }
+        if brit { BristolPainter.mendips(&ctx, cam: cam, p: p) } // v124
         if nile {
             // The Theban hills: flat-topped cliffs with the pyramid-shaped peak of al-Qurn.
             var m = Path()
@@ -302,7 +304,8 @@ enum ScenePainter {
         }
         var ridge = Path()
         ridge.move(to: CGPoint(x: 0, y: groundY))
-        var rx: CGFloat = -20
+        var rx: CGFloat = brit ? W + 41 : -20 // v124: Bristol's ridge rolls (drawn by BristolPainter)
+        if brit { BristolPainter.ridge(&ctx, cam: cam, p: p) }
         while rx <= W + 40 {
             let wx = Double(rx / kx + CGFloat(camX) * 0.15) * 0.01
             ridge.addLine(to: CGPoint(x: rx, y: groundY - vh * CGFloat(0.11 + 0.06 * sin(wx * 1.7) + 0.035 * sin(wx * 4.3))))
@@ -310,11 +313,11 @@ enum ScenePainter {
         }
         ridge.addLine(to: CGPoint(x: W, y: groundY))
         ridge.closeSubpath()
-        ctx.fill(ridge, with: .color(nile ? mix("#4a4038", "#c8a070", p) : desert ? mix("#5a3a40", "#c99a74", p) : mix("#4a3050", "#c9967e", p)))
+        if !brit { ctx.fill(ridge, with: .color(nile ? mix("#4a4038", "#c8a070", p) : desert ? mix("#5a3a40", "#c99a74", p) : mix("#4a3050", "#c9967e", p))) }
 
         // v111.3: the far row sinks into the haze of the horizon (paler, a little smaller, a mist over its feet), so it
         // never reads as the chimneys you can hit.
-        let hz = nile ? mixHex("#f2a050", "#fff0c0", p) : desert ? mixHex("#f39a5a", "#ffe6b0", p) : mixHex("#f08a4a", "#ffe2ac", p)
+        let hz = brit ? mixHex(BristolPainter.horizon.0, BristolPainter.horizon.1, p) : nile ? mixHex("#f2a050", "#fff0c0", p) : desert ? mixHex("#f39a5a", "#ffe6b0", p) : mixHex("#f08a4a", "#ffe2ac", p)
         // v122: hazier still (was 0.45), so they read as scenery behind the ones you can hit
         func far(_ a: String, _ b: String) -> Color { mix(mixHex(a, b, p), hz, 0.58) }
         var r = Mulberry32(seed: 5)
@@ -324,7 +327,9 @@ enum ScenePainter {
             let hh = vh * CGFloat(0.07 + r.next() * 0.1) * 0.85, ww = hh * CGFloat(0.4 + r.next() * 0.2)
             if x < -60 || x > W + 60 { continue }
             let snow = Color(hex: "#eef2f8")
-            if nile {
+            if brit {
+                BristolPainter.far(&ctx, x: x, base: groundY + 2, hh: hh, ww: ww, i: i, col: far("#2e3a30", "#6a8462"))
+            } else if nile {
                 if i % 5 == 2 {
                     temple(&ctx, x, groundY + 2, ww * 3, hh * 0.55, far("#6a5040", "#e2c08a"))
                 } else {
@@ -353,11 +358,13 @@ enum ScenePainter {
 
         let ground = winter
             ? Gradient(colors: [mix("#c9d3e2", "#eef3fa", p), mix("#7d879c", "#b9c4d6", p)])
+            : brit ? BristolPainter.ground(p)
             : nile ? Gradient(colors: [mix("#3a4a2a", "#9ab85a", p), mix("#22301a", "#6a8a3a", p)])
             : desert ? Gradient(colors: [mix("#6a4a30", "#d8b07a", p), mix("#3a2a1e", "#a07848", p)])
             : Gradient(colors: [mix("#5a3a32", "#c48a62", p), mix("#2e1e22", "#7a5040", p)])
         ctx.fill(Path(CGRect(x: 0, y: groundY, width: W, height: H - groundY)),
                  with: .linearGradient(ground, startPoint: CGPoint(x: 0, y: groundY), endPoint: CGPoint(x: 0, y: H)))
+        if brit && !winter { BristolPainter.fields(&ctx, cam: cam, p: p) } // v124: hedgerowed fields and the tidal river
         if desert {
             // Rio Grande.
             rect(&ctx, 0, groundY + (H - groundY) * 0.42, W, max(3, (H - groundY) * 0.07), mix("#2e4a66", "#7fb6d6", p))
@@ -501,6 +508,8 @@ enum ScenePainter {
             case .lux:
                 datePalm(&ctx, x, cam.groundY + 1, CGFloat(c.h) * cam.ky,
                          leaf: mix(mixHex("#1e3a22", "#4a7a3a", p), "#6a9a4a", c.tone * 0.3), trunk: mix("#3a2a1e", "#8a6a44", p))
+            case .bri:
+                BristolPainter.obstacle(&ctx, c, x: x, gy: cam.groundY, cw: CGFloat(c.w) * cam.kx, chh: CGFloat(c.h) * cam.ky, p: p)
             case .cap:
                 // v122: the chimneys you can hit are darker and outlined, so they never melt into the hazy ones behind;
                 // they glow red as the basket comes close, and the tutorial rings them in red with a word.

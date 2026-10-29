@@ -78,6 +78,8 @@ final class GameStore {
     var showShowCard = false
     /// v123: the family's letter on screen (once, from the morning of day 50).
     var letter = false
+    /// v124: Bristol's Night Glow card.
+    var showGlowCard = false
     /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
     var showPriceSheet = false
     /// A new postcard, and the album from the menu.
@@ -137,7 +139,7 @@ final class GameStore {
     var busy: Bool {
         showIntro || openingFilm || homeIntro != nil || replayingOpening || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
-            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || showGlowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency || letter
     }
 
@@ -507,6 +509,11 @@ final class GameStore {
         showNextHezarfen()
     }
 
+    func closeGlowCard() {
+        showGlowCard = false
+        showNextHezarfen()
+    }
+
     func dismissPopup() {
         if let c = chapter, c.region == state?.region { act { $0.chapterStarted(c.index + 1) } }
         chapter = nil
@@ -700,8 +707,8 @@ final class GameStore {
     func closeReport() {
         var ev: NightEvent?
         act { ev = $0.startNight() }
-        // A paid Balloon Show always plays; other nights follow the setting.
-        let show: Bool = { if case .show? = ev { return true }; return false }()
+        // A paid Balloon Show always plays (v124: and Bristol's Night Glow); other nights follow the setting.
+        let show: Bool = { if case .show? = ev { return true }; return BristolNight.kind(ev) == .glow }()
         if !show && UserDefaults.standard.object(forKey: Self.nightSceneKey) as? Bool == false {
             report = nil
             endNight()
@@ -789,7 +796,7 @@ final class GameStore {
         }
         var ev: NightEvent?
         act { ev = $0.startNight() }
-        if case .show? = ev { night = Night(event: ev) } else { endNight() }
+        if case .show? = ev { night = Night(event: ev) } else if BristolNight.kind(ev) == .glow { night = Night(event: ev) } else { endNight() }
     }
 
     private func autoCheck() {

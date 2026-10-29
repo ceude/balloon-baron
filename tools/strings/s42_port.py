@@ -28,6 +28,7 @@ add("holding.wg.lockBri", "Once you're Baron of Bristol", "Bristol Baronu olunca
 GUIDE_NAMES = {
     "abq": [("Emily", "エミリー", "에밀리", "f"), ("Carlos", "カルロス", "카를로스", "m"), ("Dakota", "ダコタ", "다코타", "f")],
     "lux": [("Nour", "ヌール", "누르", "f"), ("Karim", "カリーム", "카림", "m"), ("Yasmin", "ヤスミン", "야스민", "f")],
+    "bri": [("Olivia", "オリビア", "올리비아", "f"), ("Harry", "ハリー", "해리", "m"), ("Imogen", "イモージェン", "이모젠", "f")],
 }
 GUIDE_TITLES = {  # slot → gender → en, tr, de, es, ja, ko (the feminine forms are guide.<id>.title in s40_v122.py)
     "ayse": {"f": ("Hotel guide", "Otel rehberi", "Hotelguide", "Guía de hotel", "ホテルのガイド", "호텔 가이드"),

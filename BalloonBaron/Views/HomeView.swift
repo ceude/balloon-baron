@@ -523,9 +523,16 @@ struct HomeView: View {
             out.append(HomeAlert(id: "festival", level: .mission, title: loc("home.alert.festival", festivalName(f.index), num(s.day - f.start + 1), num(Rules.festivalDays)),
                                  text: loc("home.alert.festival.body")))
         }
-        // Luxor's Nile cruise season uses the Fiesta's days with its own words.
-        let cruise = s.region == .lux ? ".lux" : ""
-        if let f = s.fiesta {
+        // Luxor's Nile cruise season uses the Fiesta's days with its own words; so does Bristol's festival (v124).
+        let cruise = s.region == .lux || s.region == .bri ? "." + s.region.rawValue : ""
+        if let f = s.fiesta, s.region == .bri {
+            // v124: the festival's alert offers this festival's Night Glow while it can still be booked
+            let open = s.local.glowFest != f.start
+            out.append(HomeAlert(id: "fiesta", level: .mission,
+                                 title: loc("home.alert.fiesta.bri", num(s.day - f.start + 1), num(f.end - f.start + 1)),
+                                 text: loc("home.alert.fiesta.body.bri") + (open ? " " + loc("home.alert.fiesta.glow") : ""),
+                                 tap: open ? ({ store.showGlowCard = true } as () -> Void) : nil))
+        } else if let f = s.fiesta {
             out.append(HomeAlert(id: "fiesta", level: .mission,
                                  title: loc("home.alert.fiesta" + cruise, num(s.day - f.start + 1), num(f.end - f.start + 1)),
                                  text: loc("home.alert.fiesta.body" + cruise)))

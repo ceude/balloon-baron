@@ -7,6 +7,7 @@ import BalloonBaronCore
 /// `-demoPage fleet` opens an office page (`-demoUnit deals` then a holding desk, `-demoHolding deals|jersey` its money and deal); `-demoRegion abq` plays on in Albuquerque after Cappadocia, `-demoRegion lux` then on in Luxor.
 /// One scene on top: `-demoScene issue` (pilots asking for a raise outside the office, then the card), `collect`, `album`, `deal`,
 /// `letter` (the family's letter, sealed) and `letterRead` (the letter already open).
+/// v124: `flight` (your own flight; in Bristol on a foggy morning with the airport's airspace), `glow` (Bristol's Night Glow night).
 extension GameStore {
     func applyDemoArguments() {
         let args = ProcessInfo.processInfo.arguments
@@ -16,15 +17,22 @@ extension GameStore {
         var g = Game(company: "Şafak Balon", colors: Rules.palettes[0], seed: 7)
         g.state.cash = 30000
         for _ in 0..<days { Self.demoDay(&g) }
-        if let r = value("-demoRegion"), r == "abq" || r == "lux" {
+        if let r = value("-demoRegion"), r == "abq" || r == "lux" || r == "bri" {
             g.state.barons[.cap] = g.state.day
             g.state.holding.cash = 400_000
             _ = g.enterRegion(.abq)
             g.state.cash = 120_000
             for _ in 0..<20 { Self.demoDay(&g) }
-            if r == "lux" {
+            if r == "lux" || r == "bri" {
                 g.state.barons[.abq] = g.state.day
                 _ = g.enterRegion(.lux)
+                g.state.cash = 120_000
+                for _ in 0..<20 { Self.demoDay(&g) }
+            }
+            if r == "bri" {
+                g.state.barons[.lux] = g.state.day
+                g.state.holding.cash = max(g.state.holding.cash, 400_000)
+                _ = g.enterRegion(.bri)
                 g.state.cash = 120_000
                 for _ in 0..<20 { Self.demoDay(&g) }
             }
@@ -57,6 +65,30 @@ extension GameStore {
             for a in Achievement.allCases.prefix(6) { got[a] = got[a] ?? 5 }
             game?.state.postcards = got
             showAlbum = true
+        case "flight":
+            // v124: in Bristol a foggy morning with the airport's airspace on the way
+            if var gg = game, var w = gg.state.weather {
+                w.flag = .green
+                if gg.state.region == .bri {
+                    w.fog = Fog(top: 120)
+                    w.air = Airspace(x0: 700, x1: 1200, floor: 360)
+                }
+                gg.state.weather = w
+                game = gg
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.fly() }
+        case "glow":
+            // v124: Bristol's Night Glow, booked on a festival day, then the night
+            if var gg = game, gg.state.region == .bri {
+                gg.state.fiesta = Fiesta(start: gg.state.day, end: gg.state.day + 3)
+                gg.state.cash = max(gg.state.cash, 50000)
+                _ = gg.bookGlow()
+                game = gg
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                    self.fly(skip: true)
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.closeReport() }
+                }
+            }
         case "deal":
             if var gg = game, !gg.state.rivals.isEmpty {
                 gg.state.rivals[0].offer = 60000

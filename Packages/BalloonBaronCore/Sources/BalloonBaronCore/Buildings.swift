@@ -49,7 +49,7 @@ extension Game {
     /// A day's flag, rolled from the season's odds.
     mutating func rollFlag() -> Flag {
         let r = rng.unit(), winter = state.winter != nil
-        return r < (winter ? 0.35 : 0.55) ? .green : r < (winter ? 0.7 : 0.85) ? .yellow : .red
+        return r < (winter ? 0.35 : state.region.greenShare) ? .green : r < (winter ? 0.7 : 0.85) ? .yellow : .red
     }
 
     /// The flag a coming day will have, rolled now and kept, so the forecast comes true.

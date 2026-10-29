@@ -124,6 +124,9 @@ struct RootView: View {
             if store.showShowCard {
                 ShowCardView().transition(.opacity)
             }
+            if store.showGlowCard {
+                GlowCardView().transition(.opacity)
+            }
             if store.showFactoryOrder {
                 FactoryOrderView().transition(.opacity)
             }
@@ -196,6 +199,7 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.showRescue)
         .animation(.easeOut(duration: 0.25), value: store.showTempFlag)
         .animation(.easeOut(duration: 0.25), value: store.showShowCard)
+        .animation(.easeOut(duration: 0.25), value: store.showGlowCard)
         .animation(.easeOut(duration: 0.25), value: store.postcard)
         .animation(.easeOut(duration: 0.25), value: store.showAlbum)
         .animation(.easeOut(duration: 0.25), value: store.buildingCard)

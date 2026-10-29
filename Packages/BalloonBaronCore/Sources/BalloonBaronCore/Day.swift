@@ -113,6 +113,8 @@ extension Game {
                 case .crash: severity = 0.8
                 case .cancel: break
                 }
+                // v124: Bristol's landings and the airport
+                if state.region.bristol { bristolLanding(f, weather: weather, ledger: &lg, events: &ev) }
             } else if rng.chance(accidentChance(b)) {
                 severity = rng.range(0.2, 1)
             } else {
@@ -169,7 +171,7 @@ extension Game {
                 p.xp += state.level(.office) >= 3 ? 1.5 : 1
                 if let need = p.level.xpToNext, p.xp >= Double(need), let up = PilotLevel(rawValue: p.level.rawValue + 1) {
                     p.level = up
-                    p.customWage = Pilot.baseWage(up, school: p.fromSchool, trait: p.trait)
+                    p.customWage = Pilot.baseWage(up, school: p.fromSchool, trait: p.trait, region: state.region)
                     ev.append(.pilotPromoted(name: p.name, level: up, wage: p.wage))
                 }
                 state.pilots[pi] = p
@@ -192,6 +194,8 @@ extension Game {
         }
         state.loans.removeAll { $0.daysLeft <= 0 }
 
+        // v124: a Bristol festival day's evening ascent and the Night Glow
+        bristolEvening(flying: flyingIDs, cancelledSelf: cancelled, paxTotal: paxTotal, red: red, ledger: &lg, events: &ev)
         state.cash += lg.net
         state.rep = clamp(lerp(state.rep, 1, 0.01), Rules.repRange.lowerBound, Rules.repRange.upperBound)
         if state.stars > 4.5 { state.rep -= 0.006 }
@@ -359,6 +363,7 @@ extension Game {
             } else if state.fiesta == nil && state.day >= (state.fiestaNext ?? 0) && (state.winter == nil || state.region == .lux) {
                 state.fiesta = Fiesta(start: state.day, end: state.day + state.region.fiestaDays - 1)
                 state.hezQueue.append(.fiestaStarted)
+                if state.region.bristol { addPaper(.briFestival) }
             }
         }
         if state.region.hasFestivals {
