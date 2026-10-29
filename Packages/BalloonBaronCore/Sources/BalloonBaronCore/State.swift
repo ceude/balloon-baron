@@ -173,6 +173,9 @@ public enum Tip: String, Codable, CaseIterable, Sendable {
     case hasan
     /// v121.9: the buildings that open on their own day.
     case guide, agency, workshop, school
+    /// v122.11: day 3's reminder to set the price for today's tourists (a tutorial save in Cappadocia). Always the
+    /// morning's first card, and it says what `price` would, so it takes that lesson's place (`spreadMorning`).
+    case price3
 }
 
 public enum HezMessage: Codable, Equatable, Sendable {

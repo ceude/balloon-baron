@@ -23,6 +23,35 @@ final class MorningTests: XCTestCase {
         XCTAssertEqual(g.state.newPostcards ?? [], [.mission])
     }
 
+    /// v122.11: day 3's price reminder leads the morning, ahead of the lesson cap, and takes the `price` lesson's place.
+    func testDayThreePriceReminderComesFirst() {
+        var g = newGame()
+        g.state.day = 3
+        g.state.tutorial = TutorialState()
+        g.state.hezQueue = [.tip(.fleet), .spring, .tip(.goals), .tip(.price), .tip(.price3)]
+        g.spreadMorning()
+        XCTAssertEqual(g.state.hezQueue, [.tip(.price3), .tip(.fleet), .spring])
+        XCTAssertEqual(g.state.hezLater ?? [], [.tip(.goals)])
+    }
+
+    func testDayThreePriceReminderOnlyForTutorialSavesInCappadocia() {
+        var g = newGame()
+        g.state.tutorial = TutorialState()
+        g.state.day = 3
+        g.unlockCheck()
+        XCTAssertTrue(g.state.hezQueue.contains(.tip(.price3)))
+        var old = newGame()
+        old.state.tutorial = TutorialState(done: true, old: true)
+        old.state.day = 3
+        old.unlockCheck()
+        XCTAssertFalse(old.state.hezQueue.contains(.tip(.price3)), "an old save never saw day 2's crowd")
+        var four = newGame()
+        four.state.tutorial = TutorialState()
+        four.state.day = 4
+        four.unlockCheck()
+        XCTAssertFalse(four.state.hezQueue.contains(.tip(.price3)))
+    }
+
     func testOnlyBalloonIsRepairedInTwoDays() {
         var g = newGame()
         g.state.selfFlights = Rules.coachFlights

@@ -14,7 +14,7 @@ struct HezarfenView: View {
 
     /// v122 (`HEZ_SHORT`): the lessons of the first days say one sentence; the old text is behind "More".
     static let shortTips: Set<Tip> = [.welcome, .insurance, .fleet, .bank, .crew, .market, .guide, .agency, .bazaar, .workshop, .school,
-                                      .goals, .price, .yellow, .red, .mission, .accident, .pr, .rivals, .aging]
+                                      .goals, .price, .price3, .yellow, .red, .mission, .accident, .pr, .rivals, .aging]
 
     private var shortKey: String? {
         if case .tip(let t) = message, Self.shortTips.contains(t) { return "tip.\(t.rawValue).short" }
@@ -46,7 +46,7 @@ struct HezarfenView: View {
         if case .deed = message { return loc("hez.thanks") }
         if case .milestone = message { return loc("hez.thanks") }
         if message == .tip(.show) { return loc("hez.toShow") }
-        if message == .tip(.price) { return loc("hez.toPrice") }
+        if message == .tip(.price) || message == .tip(.price3) { return loc("hez.toPrice") }
         return loc(message == .tip(.bazaar) ? "hez.toBazaar" : "hez.ok")
     }
 

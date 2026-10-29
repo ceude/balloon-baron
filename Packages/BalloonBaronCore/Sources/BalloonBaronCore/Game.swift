@@ -127,7 +127,10 @@ public struct Game: Sendable {
         guard state.day >= 2, state.spreadDay != state.day else { return }
         state.spreadDay = state.day
         var keep: [HezMessage] = [], later: [HezMessage] = [], n = 0
-        for m in (state.hezLater ?? []) + state.hezQueue {
+        var q = (state.hezLater ?? []) + state.hezQueue
+        // v122.11: day 3's price reminder comes first, ahead of the lesson cap, and says what `price` would
+        if q.contains(.tip(.price3)) { q = [.tip(.price3)] + q.filter { $0 != .tip(.price3) && $0 != .tip(.price) } }
+        for m in q {
             var lesson = false
             if case .tip = m { lesson = true } // praise has its own every-other-day pace
             if lesson { n += 1 }
@@ -172,6 +175,9 @@ public struct Game: Sendable {
         if s.unlocked.contains(.guide) { queueTip(.pr) }
         // v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows it.
         if s.day >= 2 && s.day <= 12, let l = s.local.lastShare, l.cap > 0, l.me < l.cap { queueTip(.price) }
+        // v122.11: day 2's crowd made the player raise the price; on day 3 the tourists are back to normal, so Hezarfen
+        // says to set it for today (a player who kept day 2's price flew half empty for days in tools/sim).
+        if s.day == 3 && s.region == .cap, let t = s.tutorial, !t.isOld { queueTip(.price3) }
         if s.weather?.flag == .yellow { queueTip(.yellow) }
         if s.weather?.flag == .red { queueTip(.red) }
         if s.weather?.mission != nil { queueTip(.mission) }

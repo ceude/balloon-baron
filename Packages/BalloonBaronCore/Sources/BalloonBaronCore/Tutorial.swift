@@ -9,11 +9,18 @@ public struct TutorialState: Codable, Equatable, Sendable {
     public var steps: [String: Int]
     /// The whole tutorial is over (every step done, skipped, or an old save).
     public var done: Bool?
+    /// v122.11: a save from before the tutorial, which skipped it (`tut.old`). Nil in saves migrated before v122.11:
+    /// those are told by being done with no step recorded (`isOld`).
+    public var old: Bool?
 
-    public init(steps: [String: Int] = [:], done: Bool? = nil) {
+    public init(steps: [String: Int] = [:], done: Bool? = nil, old: Bool? = nil) {
         self.steps = steps
         self.done = done
+        self.old = old
     }
+
+    /// The save is from before v122 and never saw the tutorial.
+    public var isOld: Bool { old == true || (done == true && steps.isEmpty) }
 
     /// The steps that make up the tutorial (`TUT_ALL`); once all are done it is over.
     public static let all = ["price", "go", "price2", "burn", "wind", "vent", "field", "chimney", "thermal"]
@@ -101,7 +108,7 @@ extension Game {
     /// Saves from before v122: one that had flown or was past day one skips the tutorial.
     mutating func tutorialCheck() {
         guard state.tutorial == nil else { return }
-        state.tutorial = (state.selfFlights ?? 0) >= 1 || state.day > 1 ? TutorialState(done: true) : TutorialState()
+        state.tutorial = (state.selfFlights ?? 0) >= 1 || state.day > 1 ? TutorialState(done: true, old: true) : TutorialState()
     }
 }
 
