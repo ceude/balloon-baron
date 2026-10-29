@@ -521,3 +521,6 @@ Uçuş bitince yarım kalan adımlar sonraki uçuşa kalır.
 **Kısa dersler:** ilk günlerin dersleri tek cümle (`HEZ_SHORT`: welcome, ins, fleet, bank, crew, market, guide, agency, bazaar, workshop, school, goals, price, yellow, red, mission, accident, pr, rivals, aging); eski metin balondaki "Daha fazla"da açılır. Anahtarlar aynı.
 
 **Ölçüm:** `tutStep(ad)` her adımı bir kez `S.tut.steps`'e yazar; Swift portu TelemetryDeck olayını oradan gönderir. Olaylar: `price`, `price_low`, `go`, `burn`, `wind`, `vent`, `field`, `chimney`, `thermal`, `first_landing`, `skip`; rehberli eylemler için `ga_<ders>_done`, `ga_<ders>_left`, `ga_<ders>_skip`.
+
+## Ailenin mektubu (v123)
+50. günden sonraki ilk sabah, dün kâr ettiysen (yoksa en geç 56. gün), Hezarfen'in kartlarından sonra bir kez mühürlü bir zarf gelir; zarfın üstünde şirketin adı yazar. Dokununca mühür kırılır, kapak açılır, mektup zarftan çıkıp büyür. Mektubun üstünde köşelerinden bantlı aile fotoğrafı vardır; metin oyunu kızları için yapan ailedendir, oyuncuya 50. gününü kutlar ve sevdiyse App Store'a yorum yazmasını rica eder. Altta "App Store'da yorum yaz" (uygulamada App Store'un yorum yazma sayfasını açar) ve "Şimdi değil". Bir daha gösterilmez. Otomatik ilerletme sırasında gelmez.

@@ -3,6 +3,7 @@
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
 Kuyrukta:
+- v123 (yalnız prototipte): 50. günden sonraki ilk iyi sabah (dün kâr ettiysen; en geç 56. gün) bir kez ailenin mektubu (`letterDue`, `showLetter`, `S.letter`): mühürlü zarf, dokununca mühür kırılır, kapak açılır, mektup çıkar; köşeleri bantlı aile fotoğrafı (`art/letter-photo.jpg`), şirket adına hitap, "App Store'da yorum yaz" ve "Şimdi değil". Ayarlar > Test'te "Mektup testi". Swift'te: `GameState.letterDay` / `letterRated` (isteğe bağlı), sabah sırasında Hezarfen kartlarından sonra, fotoğraf asset kataloğuna, düğme App Store'un yorum yazma sayfasını açar (`https://apps.apple.com/app/id<APP_ID>?action=write-review`, uygulamanın App Store kimliği gerekiyor), altı dilde metin.
 - v122.11 (yalnız prototipte): 3. gün sabahı Hezarfen'in fiyat hatırlatması (`price3`, HEZ ve HEZ_SHORT, "Fiyatı ayarla" düğmesi fiyat sayfasını açar); `spreadMorning` onu sabahın ilk kartı yapar ve aynı sabahki `price` dersini düşürür. Swift'te: `Tip` yeni durum, `unlockCheck`'te 3. gün koşulu (Kapadokya, öğretici eski kayıt değil), sabah dağıtımında öne alma, altı dilde `tip.price3` / `.short`.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
