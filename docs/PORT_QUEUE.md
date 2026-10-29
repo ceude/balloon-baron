@@ -7,6 +7,8 @@ Kuyrukta:
 
 v122.7 (prototip ve Swift birlikte): holding Anlaşmalar biriminde forma sponsorluğu (€3M, 180 gün, talep +%15, +0,1 popülerlik) ve Dünya Oyunları açılış gösterisi (€10M, bir kez, 60 gün, talep +%30, +0,2 popülerlik); takım adı geçmez. Swift'te `Holding.jerseyCost` / `worldGamesCost`, isteğe bağlı `jerseyUntil` / `worldGamesUntil`, `sponsorJersey()`, `holdWorldGamesShow()`, `HoldingDeed.jersey` / `.worldGames`, `HoldingArt.jersey` / `.worldGames`, masa durumu, metinler `holding.jersey.*`, `holding.wg.*`.
 
+v122.10 (prototip ve Swift birlikte): Dünya Oyunları ikonu: çocuk balonları yerine sepetli beş sıcak hava balonu, olimpiyat halkaları düzeninde (üstte mavi, lacivert, kırmızı; altta sarı, yeşil) (`INVEST_ART.wg`, `HoldingArt.drawWorldGames`). Anlaşmalar biriminde ikinci başlık kalktı. v122 sonrası metinlerin altı dilde gözden geçirilmesi: Japoncada kart metinlerinde あなた, バスケット; Korecede 경쟁사, 지난 시즌 챔피언; Almanca ve İspanyolcada Sena ve yerel gezgin dişil, "verschlissen" / "gastada"; Türkçede "Bugünü pas geçmek", "töreninin gösterisini", "Hedefler düğmesine", "influencer'ı", "Kalan paylaşım günü", tutardan sonra ek yerine "En ucuzu €900" ve "en fazla: €…".
+
 v122.8 (prototip ve Swift birlikte): peribacası kırmızı parlaması yalnızca ilk kendi uçuşunda (`FlightModel.firstFlight`).
 
 v122.6 (prototip ve Swift birlikte): rüya uçuşu ilk açılışta (kayıt yokken) eski sakin hızla, sonraki açılışlarda hızlı yükselir (`IntroModel.fast`).

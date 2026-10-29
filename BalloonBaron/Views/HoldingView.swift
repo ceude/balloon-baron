@@ -889,14 +889,33 @@ struct HoldingArt: View {
         ctx.stroke(line([(26, 34.5), (38, 34.5)], k), with: .color(Color(hex: "#2b2350")), style: StrokeStyle(lineWidth: 2.4 * k, lineCap: .round))
     }
 
-    /// v122.7: a stadium under three balloons and a star (`INVEST_ART.wg`).
+    /// v122.7: five hot-air balloons over a stadium, in the order of the Olympic rings (`INVEST_ART.wg`).
     private func drawWorldGames(_ ctx: inout GraphicsContext, _ k: CGFloat) {
-        ctx.fill(svg("M4 50 C14 40 50 40 60 50 L60 58 L4 58 Z", k), with: .color(Color(hex: "#5a4a8a")))
-        ctx.stroke(svg("M10 50 C20 44 44 44 54 50", k), with: .color(Self.gold), style: StrokeStyle(lineWidth: 2 * k, dash: [3 * k, 3 * k]))
-        ctx.fill(svg("M14 30 C10 24 12 16 18 16 C24 16 26 24 22 30 L20 33 L16 33 Z", k), with: .color(Color(hex: "#ff5e3a")))
-        ctx.fill(svg("M30 24 C26 18 28 9 34 9 C40 9 42 18 38 24 L36 27 L32 27 Z", k), with: .color(Self.gold))
-        ctx.fill(svg("M46 30 C42 24 44 16 50 16 C56 16 58 24 54 30 L52 33 L48 33 Z", k), with: .color(Self.teal))
-        ctx.fill(svg("M8 8 L10 12 L14 13 L11 16 L12 20 L8 18 L4 20 L5 16 L2 13 L6 12 Z", k), with: .color(Color(hex: "#fff3c4")))
+        ctx.fill(svg("M4 56 C14 48 50 48 60 56 L60 62 L4 62 Z", k), with: .color(Color(hex: "#5a4a8a")))
+        ctx.stroke(svg("M10 56 C20 51 44 51 54 56", k), with: .color(Self.gold), style: StrokeStyle(lineWidth: 2 * k, dash: [3 * k, 3 * k]))
+        let balloons: [(CGFloat, CGFloat, String)] = [(13, 14, "#2b7fd6"), (32, 14, "#2b2350"), (51, 14, "#e5432f"), (22.5, 29, "#ffc23d"), (41.5, 29, "#1fa35a")]
+        let wicker = Color(hex: "#8a5a2e")
+        for (x, y, hex) in balloons {
+            ctx.fill(envelope(x, y, 7.5, k), with: .color(Color(hex: hex)))
+            ctx.fill(envelope(x, y, 3, k), with: .color(.white.opacity(0.18)))
+            ctx.stroke(line([(x - 2, y + 9), (x - 1.6, y + 12)], k), with: .color(wicker), lineWidth: 0.8 * k)
+            ctx.stroke(line([(x + 2, y + 9), (x + 1.6, y + 12)], k), with: .color(wicker), lineWidth: 0.8 * k)
+            ctx.fill(Path(roundedRect: rect(x - 2, y + 12, 4, 3.5, k), cornerRadius: 0.6 * k), with: .color(wicker))
+        }
+    }
+
+    /// A balloon envelope centred at (x, y), half as wide as `w`, its mouth 9 below the centre.
+    private func envelope(_ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ k: CGFloat) -> Path {
+        let m = min(3, w * 0.4)
+        var p = Path()
+        p.move(to: pt(x, y - 8, k))
+        p.addCurve(to: pt(x + w, y, k), control1: pt(x + w * 2 / 3, y - 8, k), control2: pt(x + w, y - 4.5, k))
+        p.addCurve(to: pt(x + 2, y + 9, k), control1: pt(x + w, y + 4, k), control2: pt(x + m, y + 7, k))
+        p.addLine(to: pt(x - 2, y + 9, k))
+        p.addCurve(to: pt(x - w, y, k), control1: pt(x - m, y + 7, k), control2: pt(x - w, y + 4, k))
+        p.addCurve(to: pt(x, y - 8, k), control1: pt(x - w, y - 4.5, k), control2: pt(x - w * 2 / 3, y - 8, k))
+        p.closeSubpath()
+        return p
     }
 
     /// A record balloon with a pressurised capsule and a climbing red line (`INVEST_ART.rec`).

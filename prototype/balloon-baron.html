@@ -1028,7 +1028,7 @@ const HEZ = {
   bank: 'Banka kapısı açıldı. Kredi seni hızlandırır ama faiz sabırlı bir düşmandır, unutma.',
   market: 'Pazar sayfası açıldı. Rakiplerini tanı: Göreme Sky ağır abidir, Kızıl Vadi kural tanımaz. Otellerle anlaşmalar da orada.',
   guide: 'Rehber ofisi açıldı evlat. Otel ve tur rehberlerini ücretsiz uçurursan seni müşterilerine önerirler: popülerlik ve birkaç gün boyunca fazladan turist. İçeride üç rehber var: ucuzu kısa, pahalısı uzun süre turist gönderir.',
-  agency: 'Influencer ajansı açıldı. Gezi influencerları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap. İçeride üç influencer var: yerel gezgin ucuz, ünlü gezgin pahalı ama çok güçlü.',
+  agency: 'Influencer ajansı açıldı. Gezi influencer\'ları seninle uçup paylaşır, popülerliğin hızla yükselir. Pahalıdır, kasan rahatken yap. İçeride üç influencer var: yerel gezgin ucuz, ünlü gezgin pahalı ama çok güçlü.',
   workshop: 'Balon atölyesinin arsası hazır evlat. Kurarsan balonlarını kendin tasarlarsın, sonra da kendi balonlarını üretirsin.',
   school: 'Pilot okulunun arsası da hazır. Okulun olursa her sabah başvuranlar arasında bir okul mezunu bulunur: daha az kaza yapan pilotlar.',
   crew: 'Ekip sayfası açıldı. Çaylak pilot ucuzdur ama rüzgârda titrer. Uçtukça tecrübe kazanırlar, tabii maaş da isterler.',
@@ -1068,8 +1068,8 @@ const HEZ_SHORT = {
   agency: 'Influencer ajansı açıldı: pahalıdır ama popülerliğini hızla yükseltir.',
   bazaar: 'Çarşı açıldı evlat: sana bir fener seti hediye ettim, al bakalım.',
   workshop: 'Balon atölyesinin arsası hazır: kurarsan kendi balonlarını tasarlarsın evlat.',
-  school: 'Pilot okulunun arsası hazır: mezunları ucuz ve daha az kaza yapar.',
-  goals: 'Hedef düğmesine dokun evlat: bölüm hedeflerin orada.',
+  school: 'Pilot okulunun arsası hazır: mezunları daha ucuza çalışır ve daha az kaza yapar.',
+  goals: 'Hedefler düğmesine dokun evlat: bölüm hedeflerin orada.',
   price: 'Dün koltuklar boş kaldı evlat: fiyatı biraz düşürürsen dolar.',
   yellow: 'Sarı bayrak evlat: ya pahalı sigortayla uç ya da balonları dinlendir.',
   red: 'Kırmızı bayrak evlat: bugün yerde kalmak ayıp değil.',
@@ -2913,7 +2913,7 @@ const forcedSkip = () => S.balloons.length > 0 && S.balloons.every(b => ['dmg', 
 function noneReason() {
   const st = S.balloons.map(canFly), n = st.length, all = x => n && st.every(v => v === x);
   if (all('ban')) return 'Bugün uçuş yasak. Günü pas geçmek zorundasın.';
-  if (all('dmg')) { const d = Math.max(1, Math.min(...S.balloons.map(b => b.dmgUntil - S.day))); return `${n === 1 ? 'Balonun' : 'Bütün balonların'} onarımda, uçamaz. Kalan gün: ${d}. Bugün günü pas geçmek zorundasın.`; }
+  if (all('dmg')) { const d = Math.max(1, Math.min(...S.balloons.map(b => b.dmgUntil - S.day))); return `${n === 1 ? 'Balonun' : 'Bütün balonların'} onarımda, uçamaz. Kalan gün: ${d}. Bugünü pas geçmek zorundasın.`; }
   if (st.every(v => v === 'dmg' || v === 'worn')) return n === 1 ? 'Balonunun zarfı yıprandı, uçamaz. Filo\'dan yenile.' : 'Balonların onarımda ya da yıpranmış, uçamaz. Filo\'ya bak.';
   if (st.includes('nopilot') && !st.includes('ok')) return 'Balonlarının pilotu yok. Birini kendin uçur ya da pilot al.';
   if (st.includes('strike') && !st.includes('ok')) return 'Pilotların grevde. Amiral balonunu kendin uçur.';
@@ -3197,7 +3197,7 @@ function tabBank(body) {
     { const lb = pbtn('Kredi çek', () => { S.cash += L.amt; S.loans.push({ amt: L.amt, inst: L.inst, left: L.days }); refresh(); }, locked || full); if (!o.querySelector('[data-tut]')) it.dataset.tut = 'bank'; it.appendChild(lb); } /* v122 */
     o.appendChild(it);
   });
-  o.appendChild(h('div', 'callout grn', `<b>Satın alma kredisi: ${eur(BUYLOAN.max)}'e kadar.</b> Pazar'da satılık bir şirket ya da filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. ${BUYLOAN.days} gün, faiz %${Math.round(BUYLOAN.rate * 100)}. En az ${BUYLOAN.need} balon ve açılmış ${eur(LOANS[LOANS.length - 1].amt)} tutarındaki kredi gerekir. Teklif çıkınca "Krediyle al" düğmesi görünür.`));
+  o.appendChild(h('div', 'callout grn', `<b>Satın alma kredisi, en fazla: ${eur(BUYLOAN.max)}.</b> Pazar sayfasında satılık bir rakip şirket ya da filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. ${BUYLOAN.days} gün, faiz %${Math.round(BUYLOAN.rate * 100)}. En az ${BUYLOAN.need} balon ve açılmış ${eur(LOANS[LOANS.length - 1].amt)} tutarındaki kredi gerekir. Teklif çıkınca "Krediyle al" düğmesi görünür.`));
   o.appendChild(h('p', 'hint', `Aynı anda en fazla iki kredi. Kasa ${eur(-5000)} altına düşerse banka bir balonuna el koyar ve yarı fiyatına satar.`));
   body.appendChild(o);
 }
@@ -4451,7 +4451,7 @@ function showRepChart() {
   const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
   /* v122: guides and influencers each have their own screen now */
   if (unlocked('guide')) act('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Üç rehberden birini seç: seni müşterilerine önerirler, hemen popülerlik ve birkaç gün turist.', 'Rehberler', () => { m.hidden = true; showGuides(); }, gcd > 0);
-  if (unlocked('agency')) act('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : 'Üç influencerdan birini seç: hemen popülerlik, kampanya boyunca her gün biraz daha.', 'Ajans', () => { m.hidden = true; showAgency(); }, icd > 0);
+  if (unlocked('agency')) act('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : 'Üç influencer\'dan birini seç: hemen popülerlik, kampanya boyunca her gün biraz daha.', 'Ajans', () => { m.hidden = true; showAgency(); }, icd > 0);
   if (unlocked('market') && S.balloons.length >= SHOW.min) { const ss = showState(); act('Balon Şöleni Düzenle', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
@@ -5060,7 +5060,7 @@ const GUIDES_PICK = [
 ];
 const INFLU_PICK = [
   { id: 'local', n: 'Yerel gezgin', t: 'Küçük ama sadık takipçiler', k: .6, rep: .06, days: 2, pax: 5, cd: 8 },
-  { id: 'travel', n: 'Gezi influencerı', t: 'Vadiyi bütün dünyaya gösterir', k: 1, rep: .1, days: 3, pax: 8, cd: 10 },
+  { id: 'travel', n: 'Gezi influencer\'ı', t: 'Vadiyi bütün dünyaya gösterir', k: 1, rep: .1, days: 3, pax: 8, cd: 10 },
   { id: 'star', n: 'Ünlü gezgin', t: 'Milyonlarca takipçi, pahalı', k: 1.8, rep: .16, days: 4, pax: 12, cd: 12 }
 ];
 const influPrice = I => Math.round(influCost() * I.k / 100) * 100;
@@ -6618,7 +6618,7 @@ const INVEST_ART = {
   shape: '<svg viewBox="0 0 64 64"><path d="M27 6h10v8c6 4 9 10 9 18v18a5 5 0 0 1-5 5H23a5 5 0 0 1-5-5V32c0-8 3-14 9-18z" fill="#e5432f"/><rect x="18" y="30" width="28" height="12" fill="#fff"/><text x="32" y="39.5" text-anchor="middle" font-size="9" font-weight="800" fill="#e5432f" font-family="Barlow Condensed,sans-serif">FIZZ</text><rect x="26" y="56" width="12" height="6" rx="1.5" fill="#8a5a34"/></svg>',
   tv: '<svg viewBox="0 0 64 64"><rect x="6" y="12" width="52" height="34" rx="6" fill="#1f1b2e" stroke="#ffc23d" stroke-width="3"/><rect x="11" y="17" width="42" height="24" rx="3" fill="#ff5e3a"/><path d="M26 23l12 6-12 6z" fill="#fff"/><path d="M24 52h16M32 46v6" stroke="#ffc23d" stroke-width="3" stroke-linecap="round"/></svg>',
   jersey: '<svg viewBox="0 0 64 64"><path d="M22 10 L14 14 L6 24 L14 30 L18 26 L18 56 L46 56 L46 26 L50 30 L58 24 L50 14 L42 10 C40 15 36 17 32 17 C28 17 24 15 22 10Z" fill="#e5432f"/><path d="M22 10 C24 15 28 17 32 17 C36 17 40 15 42 10" fill="none" stroke="#ffc23d" stroke-width="2.5"/><rect x="22" y="30" width="20" height="9" rx="2" fill="#fff"/><path d="M26 34.5h12" stroke="#2b2350" stroke-width="2.4" stroke-linecap="round"/></svg>',
-  wg: '<svg viewBox="0 0 64 64"><path d="M4 50 C14 40 50 40 60 50 L60 58 L4 58Z" fill="#5a4a8a"/><path d="M10 50 C20 44 44 44 54 50" fill="none" stroke="#ffc23d" stroke-width="2" stroke-dasharray="3 3"/><g><path d="M14 30 C10 24 12 16 18 16 C24 16 26 24 22 30 L20 33 L16 33Z" fill="#ff5e3a"/><path d="M30 24 C26 18 28 9 34 9 C40 9 42 18 38 24 L36 27 L32 27Z" fill="#ffc23d"/><path d="M46 30 C42 24 44 16 50 16 C56 16 58 24 54 30 L52 33 L48 33Z" fill="#14a39a"/></g><path d="M8 8l2 4 4 1-3 3 1 4-4-2-4 2 1-4-3-3 4-1z" fill="#fff3c4"/></svg>',
+  wg: '<svg viewBox="0 0 64 64"><path d="M4 56 C14 48 50 48 60 56 L60 62 L4 62Z" fill="#5a4a8a"/><path d="M10 56 C20 51 44 51 54 56" fill="none" stroke="#ffc23d" stroke-width="2" stroke-dasharray="3 3"/><path d="M13 6 C18 6 20.5 9.5 20.5 14 C20.5 18 16 21 15 23 L11 23 C10 21 5.5 18 5.5 14 C5.5 9.5 8 6 13 6Z" fill="#2b7fd6"/><path d="M13 6 C15 6 16 9.5 16 14 C16 18 14.2 21 15 23 L11 23 C11.8 21 10 18 10 14 C10 9.5 11 6 13 6Z" fill="#fff" opacity=".18"/><path d="M11 23L11.4 26M15 23L14.6 26" stroke="#8a5a2e" stroke-width=".8"/><rect x="11" y="26" width="4" height="3.5" rx=".6" fill="#8a5a2e"/><path d="M32 6 C37 6 39.5 9.5 39.5 14 C39.5 18 35 21 34 23 L30 23 C29 21 24.5 18 24.5 14 C24.5 9.5 27 6 32 6Z" fill="#2b2350"/><path d="M32 6 C34 6 35 9.5 35 14 C35 18 33.2 21 34 23 L30 23 C30.8 21 29 18 29 14 C29 9.5 30 6 32 6Z" fill="#fff" opacity=".18"/><path d="M30 23L30.4 26M34 23L33.6 26" stroke="#8a5a2e" stroke-width=".8"/><rect x="30" y="26" width="4" height="3.5" rx=".6" fill="#8a5a2e"/><path d="M51 6 C56 6 58.5 9.5 58.5 14 C58.5 18 54 21 53 23 L49 23 C48 21 43.5 18 43.5 14 C43.5 9.5 46 6 51 6Z" fill="#e5432f"/><path d="M51 6 C53 6 54 9.5 54 14 C54 18 52.2 21 53 23 L49 23 C49.8 21 48 18 48 14 C48 9.5 49 6 51 6Z" fill="#fff" opacity=".18"/><path d="M49 23L49.4 26M53 23L52.6 26" stroke="#8a5a2e" stroke-width=".8"/><rect x="49" y="26" width="4" height="3.5" rx=".6" fill="#8a5a2e"/><path d="M22.5 21 C27.5 21 30 24.5 30 29 C30 33 25.5 36 24.5 38 L20.5 38 C19.5 36 15 33 15 29 C15 24.5 17.5 21 22.5 21Z" fill="#ffc23d"/><path d="M22.5 21 C24.5 21 25.5 24.5 25.5 29 C25.5 33 23.7 36 24.5 38 L20.5 38 C21.3 36 19.5 33 19.5 29 C19.5 24.5 20.5 21 22.5 21Z" fill="#fff" opacity=".18"/><path d="M20.5 38L20.9 41M24.5 38L24.1 41" stroke="#8a5a2e" stroke-width=".8"/><rect x="20.5" y="41" width="4" height="3.5" rx=".6" fill="#8a5a2e"/><path d="M41.5 21 C46.5 21 49 24.5 49 29 C49 33 44.5 36 43.5 38 L39.5 38 C38.5 36 34 33 34 29 C34 24.5 36.5 21 41.5 21Z" fill="#1fa35a"/><path d="M41.5 21 C43.5 21 44.5 24.5 44.5 29 C44.5 33 42.7 36 43.5 38 L39.5 38 C40.3 36 38.5 33 38.5 29 C38.5 24.5 39.5 21 41.5 21Z" fill="#fff" opacity=".18"/><path d="M39.5 38L39.9 41M43.5 38L43.1 41" stroke="#8a5a2e" stroke-width=".8"/><rect x="39.5" y="41" width="4" height="3.5" rx=".6" fill="#8a5a2e"/></svg>',
   celeb: '<svg viewBox="0 0 64 64"><path d="M32 6l7 15 16 2-12 11 3 16-14-8-14 8 3-16L9 23l16-2z" fill="#ffc23d"/><circle cx="32" cy="29" r="6" fill="#fff3c4"/></svg>',
   bb: '<svg viewBox="0 0 64 64"><rect x="6" y="10" width="52" height="28" rx="3" fill="#ffc23d"/><text x="32" y="29" text-anchor="middle" font-size="11" font-weight="800" fill="#2b2350" font-family="Barlow Condensed,sans-serif">BALON!</text><path d="M18 38v18M46 38v18M12 56h40" stroke="#c9c1db" stroke-width="3" stroke-linecap="round"/></svg>',
   lab: '<svg viewBox="0 0 64 64"><path d="M24 8h16M27 8v16L12 50a5 5 0 0 0 4 7h32a5 5 0 0 0 4-7L37 24V8" fill="none" stroke="#ffc23d" stroke-width="3" stroke-linejoin="round"/><path d="M17 44h30l4 7a2 2 0 0 1-2 3H15a2 2 0 0 1-2-3z" fill="#3ad0c0"/><circle cx="28" cy="38" r="2.5" fill="#3ad0c0"/><circle cx="36" cy="33" r="1.8" fill="#3ad0c0"/></svg>'
@@ -6696,7 +6696,7 @@ function hqDeals(body, which, title) {
   if (which.includes('jersey')) deal('jersey', 'Forma sponsorluğu', `Şampiyonun formasında adın`, jOn ? `Şampiyonun formasında ${S.company} yazıyor; her maçta milyonlar görüyor.` : 'Ligin son şampiyonu forma sponsoru arıyor. Her maçta, her haberde adın.', ['Bütün bölgelerde talep +%15', `${JERSEY.days} gün`, `${RD().name}: +0,4★`], JERSEY.cost, 'Sponsor ol',
     () => { H.jersey = S.day + JERSEY.days; S.rep = Math.min(1.4, S.rep + JERSEY.rep); holdDeed('jersey'); }, { active: jOn ? `Formada adın · ${H.jersey - S.day} gün` : '' });
   const wgOn = H.wg && H.wg.until > S.day;
-  if (which.includes('wg')) deal('wg', 'Dünya sahnesi', 'Dünya Oyunları açılışında balon gösterisi', H.wg ? (wgOn ? 'Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi.' : 'Açılış töreni gösterini yaptın; dünya hâlâ konuşuyor.') : 'Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır.', ['Bütün bölgelerde talep +%30', `${WGAMES.days} gün`, `${RD().name}: +0,8★`], H.wg ? null : WGAMES.cost, 'Gösteriyi üstlen',
+  if (which.includes('wg')) deal('wg', 'Dünya sahnesi', 'Dünya Oyunları açılışında balon gösterisi', H.wg ? (wgOn ? 'Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi.' : 'Açılış töreninin gösterisini yaptın; dünya hâlâ konuşuyor.') : 'Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır.', ['Bütün bölgelerde talep +%30', `${WGAMES.days} gün`, `${RD().name}: +0,8★`], H.wg ? null : WGAMES.cost, 'Gösteriyi üstlen',
     () => { H.wg = { until: S.day + WGAMES.days }; S.rep = Math.min(1.4, S.rep + WGAMES.rep); holdDeed('worldGames'); }, { active: wgOn ? `Tören etkisi · ${H.wg.until - S.day} gün` : H.wg ? 'Yapıldı' : '' });
   const bbOn = H.bb && H.bb[S.region] > S.day;
   if (which.includes('bb')) deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
@@ -7019,10 +7019,10 @@ function townBuildings() {
   });
   const icd = S.influCd - S.day, gcd = S.guideCd - S.day;
   add({ id: 'influ', gx: 9, gy: 9, w: 2, d: 2, name: 'Influencer ajansı', look: 'agency', lv: unlocked('agency') ? (S.day <= S.influUntil ? 2 : 1) : -1,
-    sub: !unlocked('agency') ? 'Yakında' : S.day <= S.influUntil ? 'Kampanya sürüyor' : icd > 0 ? `Bekle: ${icd} gün` : `${eur(influPrice(INFLU_PICK[0]))}'dan`,
+    sub: !unlocked('agency') ? 'Yakında' : S.day <= S.influUntil ? 'Kampanya sürüyor' : icd > 0 ? `Bekle: ${icd} gün` : `En ucuzu ${eur(influPrice(INFLU_PICK[0]))}`,
     tap: () => !unlocked('agency') ? lockedCard('Influencer ajansı', 'agency') : showAgency() }); /* v122: its own screen with three influencers */
   add({ id: 'guide', gx: 12, gy: 9, w: 2, d: 2, name: 'Rehber ofisi', look: 'guide', lv: unlocked('guide') ? (S.day <= (S.guideUntil || 0) ? 2 : 1) : -1,
-    sub: !unlocked('guide') ? 'Yakında' : S.day <= (S.guideUntil || 0) ? 'Rehberler seni öneriyor' : gcd > 0 ? `Bekle: ${gcd} gün` : `${eur(GUIDES_PICK[0].cost)}'dan`,
+    sub: !unlocked('guide') ? 'Yakında' : S.day <= (S.guideUntil || 0) ? 'Rehberler seni öneriyor' : gcd > 0 ? `Bekle: ${gcd} gün` : `En ucuzu ${eur(GUIDES_PICK[0].cost)}`,
     tap: () => !unlocked('guide') ? lockedCard('Rehber ofisi', 'guide') : showGuides() }); /* v122: its own screen with three guides */
   /* booking offices side by side: yours first, then the rivals; same kiosk, awning in each company's balloon colours */
   add({ id: 'mine', gx: 8.7, gy: 12.2, w: 1.2, d: 1.2, name: S.company || 'Senin ofisin', look: 'rival', lv: 1, col: myCol()[0], col2: myCol()[1],

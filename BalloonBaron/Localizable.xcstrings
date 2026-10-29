@@ -2825,7 +2825,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kampanya sürüyor. Paylaşımların kalan günü: %@"
+            "value": "Kampanya sürüyor. Kalan paylaşım günü: %@"
           }
         }
       }
@@ -8442,7 +8442,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Satılık bir şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane, %5$@ tutarındaki kredi açıldıktan sonra. Gereken balon: %4$@."
+            "value": "Satılık bir rakip şirket ya da iflas etmiş bir filo olunca eksik tutarı banka satıcıya öder, kasana para girmez. Fiyatın en az %3$@ kadarını sen ödersin. Gün: %1$@, faiz %2$@. Aynı anda bir tane, %5$@ tutarındaki kredi açıldıktan sonra. Gereken balon: %4$@."
           }
         }
       }
@@ -11054,7 +11054,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "カゴに乗客がいない"
+            "value": "バスケットに乗客がいない"
           }
         },
         "ko": {
@@ -14808,7 +14808,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Piloten kommen mit ihren bisherigen Verträgen mit. Piloten: %1$@ (Routinier %2$@, erfahren %3$@, Anfänger %4$@). Gehälter: %5$@/Tag."
+            "value": "Die Piloten kommen mit ihren bisherigen Verträgen mit. Piloten: %1$@ (Routiniers %2$@, Erfahrene %3$@, Anfänger %4$@). Gehälter: %5$@/Tag."
           }
         },
         "en": {
@@ -29937,7 +29937,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Reiseleiter"
+            "value": "Reiseleiterin"
           }
         },
         "en": {
@@ -29949,7 +29949,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Guía turístico"
+            "value": "Guía turística"
           }
         },
         "ja": {
@@ -30388,7 +30388,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Influencer-Agentur hat geöffnet. Reise-Influencer fliegen mit dir und posten es; deine Beliebtheit steigt schnell. Teuer, also mach es, wenn die Kasse stimmt. Drinnen gibt es drei Influencer: der lokale Reisende ist günstig, der berühmte teuer, aber sehr stark."
+            "value": "Die Influencer-Agentur hat geöffnet. Reise-Influencer fliegen mit dir und posten es; deine Beliebtheit steigt schnell. Teuer, also mach es, wenn die Kasse stimmt. Drinnen gibt es drei Influencer: die lokale Reisende ist günstig, der berühmte teuer, aber sehr stark."
           }
         },
         "en": {
@@ -30400,7 +30400,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La agencia de influencers ha abierto. Los influencers de viajes vuelan contigo y lo publican; tu popularidad sube rápido. Es caro, hazlo cuando la caja vaya holgada. Dentro hay tres influencers: el viajero local es barato; el famoso, caro pero muy potente."
+            "value": "La agencia de influencers ha abierto. Los influencers de viajes vuelan contigo y lo publican; tu popularidad sube rápido. Es caro, hazlo cuando la caja vaya holgada. Dentro hay tres influencers: la viajera local es barata; el famoso, caro pero muy potente."
           }
         },
         "ja": {
@@ -31144,7 +31144,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "世界中がお前の気球を見たぞ、弟子よ！たった一つのカゴから始めたお前が、今や開会式の空の主だ。"
+            "value": "世界中がお前の気球を見たぞ、弟子よ！たった一つのバスケットから始めたお前が、今や開会式の空の主だ。"
           }
         },
         "ko": {
@@ -36187,13 +36187,13 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "リーグ最新の王者がユニフォームスポンサーを探している。全試合、全ニュースにお前の名が出る。"
+            "value": "リーグの前回王者がユニフォームスポンサーを探している。全試合、全ニュースにあなたの名が出る。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "리그의 지난 챔피언이 유니폼 스폰서를 찾고 있습니다. 모든 경기, 모든 뉴스에 당신의 이름이 나옵니다."
+            "value": "리그의 지난 시즌 챔피언이 유니폼 스폰서를 찾고 있습니다. 모든 경기, 모든 뉴스에 당신의 이름이 나옵니다."
           }
         },
         "tr": {
@@ -36310,7 +36310,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "王者のユニフォームにお前の名を"
+            "value": "王者のユニフォームにあなたの名を"
           }
         },
         "ko": {
@@ -38149,7 +38149,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asumir el espectáculo"
+            "value": "Organizar el espectáculo"
           }
         },
         "ja": {
@@ -38237,7 +38237,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "開会式でお前の気球がスタジアムの上を舞い、世界中が見た。"
+            "value": "開会式であなたの気球がスタジアムの上を舞い、世界中が見た。"
           }
         },
         "ko": {
@@ -38290,7 +38290,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Açılış töreni gösterini yaptın; dünya hâlâ konuşuyor."
+            "value": "Açılış töreninin gösterisini yaptın; dünya hâlâ konuşuyor."
           }
         }
       }
@@ -41775,7 +41775,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bugün uçuş yasak. Bugün günü pas geçmek zorundasın."
+            "value": "Bugün uçuş yasak. Günü pas geçmek zorundasın."
           }
         }
       }
@@ -41792,7 +41792,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "All your balloons are in repair. Days left: %@ You have to skip today."
+            "value": "All your balloons are in repair. Days left: %@. You have to skip today."
           }
         },
         "es": {
@@ -41804,7 +41804,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "すべての気球が修理中。残り日数：%@今日は休むしかない。"
+            "value": "すべての気球が修理中。残り日数：%@。今日は休むしかない。"
           }
         },
         "ko": {
@@ -41816,7 +41816,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bütün balonların onarımda, uçamaz. Kalan gün: %@ Bugün günü pas geçmek zorundasın."
+            "value": "Bütün balonların onarımda, uçamaz. Kalan gün: %@. Bugünü pas geçmek zorundasın."
           }
         }
       }
@@ -41833,7 +41833,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your balloon is in repair. Days left: %@ You have to skip today."
+            "value": "Your balloon is in repair. Days left: %@. You have to skip today."
           }
         },
         "es": {
@@ -41845,7 +41845,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "気球は修理中。残り日数：%@今日は休むしかない。"
+            "value": "気球は修理中。残り日数：%@。今日は休むしかない。"
           }
         },
         "ko": {
@@ -41857,7 +41857,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Balonun onarımda, uçamaz. Kalan gün: %@ Bugün günü pas geçmek zorundasın."
+            "value": "Balonun onarımda, uçamaz. Kalan gün: %@. Bugünü pas geçmek zorundasın."
           }
         }
       }
@@ -45137,7 +45137,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gezi influencerı"
+            "value": "Gezi influencer'ı"
           }
         }
       }
@@ -57220,7 +57220,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "リーグ最新の王者が新しい名で新シーズンへ。"
+            "value": "リーグの前回王者が新しい名で新シーズンへ。"
           }
         },
         "ko": {
@@ -57653,7 +57653,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@-Ballone bei der Eröffnung der Weltspiele"
+            "value": "Ballone von %@ bei der Eröffnung der Weltspiele"
           }
         },
         "en": {
@@ -64079,7 +64079,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Üç influencerdan birini seç: hemen popülerlik, kampanya boyunca her gün biraz daha."
+            "value": "Üç influencer'dan birini seç: hemen popülerlik, kampanya boyunca her gün biraz daha."
           }
         }
       }
@@ -64436,7 +64436,7 @@
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "三人のガイドから一人を選ぼう。客にお前を薦め、すぐに人気が上がり、数日は観光客も来る。"
+            "value": "三人のガイドから一人を選ぼう。客にあなたを薦め、すぐに人気が上がり、数日は観光客も来る。"
           }
         },
         "ko": {
@@ -76882,7 +76882,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Hülle eines deiner Ballone ist müde, Lehrling: Erneuere sie auf der Flottenseite."
+            "value": "Die Hülle eines deiner Ballone ist verschlissen, Lehrling: Erneuere sie auf der Flottenseite."
           }
         },
         "en": {
@@ -76894,7 +76894,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La envoltura de uno de tus globos está cansada, aprendiz: renuévala desde la página de la flota."
+            "value": "La envoltura de uno de tus globos está gastada, aprendiz: renuévala desde la página de la flota."
           }
         },
         "ja": {
@@ -77117,7 +77117,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hedef düğmesine dokun evlat: bölüm hedeflerin orada."
+            "value": "Hedefler düğmesine dokun evlat: bölüm hedeflerin orada."
           }
         }
       }
@@ -77439,7 +77439,7 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "경쟁자를 무너뜨리는 첫 비결은 좌석이라네. 자네 좌석이 관광객을 감당하면 경쟁사는 빈 채로 날지."
+            "value": "경쟁사를 무너뜨리는 첫 비결은 좌석이라네. 자네 좌석이 관광객을 감당하면 경쟁사는 빈 채로 날지."
           }
         },
         "tr": {
@@ -77456,7 +77456,7 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Das Grundstück der Pilotenschule ist bereit: Ihre Absolventen sind günstiger und verunglücken seltener."
+            "value": "Das Grundstück der Pilotenschule ist bereit: Die Absolventen der Schule sind günstiger und verunglücken seltener."
           }
         },
         "en": {
@@ -77486,7 +77486,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilot okulunun arsası hazır: mezunları ucuz ve daha az kaza yapar."
+            "value": "Pilot okulunun arsası hazır: mezunları daha ucuza çalışır ve daha az kaza yapar."
           }
         }
       }
