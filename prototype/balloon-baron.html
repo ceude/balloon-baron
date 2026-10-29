@@ -1073,7 +1073,7 @@ function glowCard() {
 /* v124: festival days in Bristol have an evening ascent: the fleet goes up a second time at dusk for a shorter flight.
    It is played out on the report (and in the evening scene), not flown by hand: about 85% of the morning's passengers
    at the same price, 60% of the fuel. */
-const EVE = { pax: .85, fuel: .6 };
+const EVE = { pax: .5, fuel: .6 };
 const adPay = (sp, size) => Math.round(sp.pay * Math.pow(SIZES[size].cap / 8, .6) / 5) * 5;
 /* seats you can sell today: the documentary crew takes 4 in the flagship */
 const sellSeats = b => SIZES[b.size].cap - (S.docDay === S.day && b.id === S.flag ? Math.min(4, SIZES[b.size].cap - 1) : 0);
@@ -6591,9 +6591,9 @@ const CHAPTERS_LUX = [
    Night Glow */
 const CHAPTERS_BRI = [
   { name: 'Ashton Malikânesi', reward: 5000, award: 'Bristol Ticaret Odası seni yılın yeni işletmesi seçti', awardShort: 'Ticaret Odası ödülü', goals: [['balloons', 4, '4 balonluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['balloons', 8, '8 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .3, 'Pazarın %30\'u'], ['fog', 1, 'Sisli bir günde uç'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['balloons', 15, '15 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['share', .5, 'Pazarın %50\'si']] },
-  { name: 'Bristol Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Avon Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
+  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['balloons', 14, '14 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .35, 'Pazarın %35\'i'], ['fog', 1, 'Sisli bir günde uç'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['balloons', 24, '24 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['share', .55, 'Pazarın %55\'i']] },
+  { name: 'Bristol Baronu', reward: 0, goals: [['share', .75, 'Pazarın %75\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Avon Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 const chap = () => S.region === 'bri' ? CHAPTERS_BRI : S.region === 'lux' ? CHAPTERS_LUX : S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;
 const isBaron = id => !!(S.barons && S.barons[id || S.region]);
@@ -6604,7 +6604,7 @@ function newRegionState(id) {
     cash: id === 'bri' ? 6000 : id === 'lux' ? 5000 : 3000, loans: [], weather: null, demand: null, balloons: [], pilots: [], candidates: [], price: id === 'bri' ? 185 : 170, rep: 1, strikes: 0, banUntil: 0, selfFly: true,
     lastShare: null, shareNow: 0, hotels: [], ownHotels: [], hotelTaken: {}, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, guideUntil: 0,
     influCount: 0, guideCount: 0, plan: null, winter: null, nextWinter: S.day + 40, monoDays: 0, domDays: 0, lastMerge: null, firstMis: 1, poach: null,
-    school: false, demandBase: 165, chapter: 0, monopolyShown: false, absentNotice: 0, fiesta: null, fiestaNext: S.day + 12, fiestaFlown: 0, netHist: []
+    school: false, demandBase: id === 'bri' ? 145 : 165, chapter: 0, monopolyShown: false, absentNotice: 0, fiesta: null, fiestaNext: S.day + 12, fiestaFlown: 0, netHist: []
   };
   if (id === 'bri') { st.fogFlown = 0; st.glowCount = 0; }
   st.rivals = (id === 'bri' ? BRI_RIVALS : id === 'lux' ? LUX_RIVALS : ABQ_RIVALS).map(r => ({ ...r, balloons: r.balloons.slice(), alive: true, dmg: r.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, lowDays: 0 }));
