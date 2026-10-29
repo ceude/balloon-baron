@@ -1179,12 +1179,30 @@ const BOSS_AV = {
 <path d="M37 42 L48 42 L47 47 L38 47Z M52 42 L63 42 L62 47 L53 47Z" fill="#2a2018"/><path d="M48 43.5 L52 43.5" stroke="#c9a040" stroke-width="1.6"/>
 <path d="M39 53 C44 50 47 51.5 50 51.5 C53 51.5 56 50 61 53 C57 55 53 54.5 50 54.5 C47 54.5 43 55 39 53Z" fill="#1f1a1a"/>
 <path d="M45 58 Q50 60.5 55 58" stroke="#6a3a2a" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-<circle cx="32" cy="88" r="3" fill="#c9a040"/></g></svg>`
+<circle cx="32" cy="88" r="3" fill="#c9a040"/></g></svg>`,
+  /* v124: Sir Reginald Ashby: silver hair, monocle, clipped moustache, tweed and a silk cravat */
+  bri: `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Sir Reginald Ashby"><defs><clipPath id="brc"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="brbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4a5a70"/><stop offset="1" stop-color="#b8c4cc"/></linearGradient></defs>
+<circle cx="50" cy="50" r="50" fill="#7a2a34"/><g clip-path="url(#brc)"><rect width="100" height="100" fill="url(#brbg)"/>
+<path d="M14 100 C16 78 30 70 50 70 C70 70 84 78 86 100Z" fill="#6a5a3e"/><path d="M14 100 C16 78 30 70 50 70 L50 100Z" fill="#7a6a4a"/>
+<g stroke="#4e4230" stroke-width=".8" opacity=".6"><path d="M22 84 L40 84 M60 84 L80 84 M20 92 L42 92 M58 92 L82 92"/><path d="M28 78 L28 100 M36 74 L36 100 M64 74 L64 100 M72 78 L72 100"/></g>
+<path d="M40 70 L50 84 L60 70Z" fill="#f4efe6"/><path d="M45 72 L55 72 L53 82 L50 86 L47 82Z" fill="#7a2a34"/><circle cx="50" cy="75" r="2.4" fill="#9a3a44"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#e0b090"/>
+<ellipse cx="50" cy="45" rx="17" ry="20" fill="#f0c4a2"/>
+<path d="M32 42 C30 24 40 18 51 18 C63 18 70 25 68 42 C66 32 62 28 56 27 C50 30 42 29 36 31 C34 34 33 38 32 42Z" fill="#d8dce2"/><path d="M36 30 C42 27 50 26 58 27" stroke="#b8bec8" stroke-width="2" fill="none"/>
+<ellipse cx="33.5" cy="47" rx="2.6" ry="4" fill="#e0aa88"/><ellipse cx="66.5" cy="47" rx="2.6" ry="4" fill="#e0aa88"/>
+<path d="M38 40 Q43 38 47 40 M53 40 Q57 38 62 40" stroke="#9aa0aa" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="45" r="1.6" fill="#1f1b2e"/><circle cx="57" cy="45" r="1.6" fill="#1f1b2e"/>
+<circle cx="57" cy="45" r="4.6" fill="rgba(255,255,255,.18)" stroke="#c9a040" stroke-width="1.3"/><path d="M61.4 47 Q64 56 62 66" stroke="#c9a040" stroke-width=".8" fill="none"/>
+<path d="M50 46 L48 53 Q50 54.5 52 53.5" fill="#e0aa88"/>
+<path d="M41 57 C45 54 48 55.5 50 55.5 C52 55.5 55 54 59 57 C55 58.4 52 57.6 50 57.6 C48 57.6 45 58.4 41 57Z" fill="#c8ccd4"/>
+<path d="M46 61 Q50 62 54 60.5" stroke="#9a5a4a" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<path d="M70 86 L76 80 L78 82 L72 88Z" fill="#f4efe6"/></g></svg>`
 };
 const BOSS = {
   cap: { name: 'Kenan Arslan', co: 'Göreme Sky', title: 'Göreme Sky sahibi' },
   abq: { name: 'Dale Whitaker', co: 'Sandia Sky Rides', title: 'Sandia Sky Rides sahibi' },
-  lux: { name: 'Nabil Haddad', co: 'Theban Skies', title: 'Theban Skies sahibi' }
+  lux: { name: 'Nabil Haddad', co: 'Theban Skies', title: 'Theban Skies sahibi' },
+  bri: { name: 'Sir Reginald Ashby', co: 'Clifton Crown Balloons', title: 'Clifton Crown Balloons sahibi' }
 };
 /* What the boss says, once each. {c} is your company. */
 /* v121: Hasan's basket in a glass case, for the Cappadocia ceremony */
@@ -1234,6 +1252,19 @@ const BOSS_LINES = {
     deal: 'Peki. Rüzgâr döndü. Theban Skies\'ı devralmak istersen konuşalım. Ama ismini değiştirme, babamın ismi.',
     gone: 'Son balonumu da sattım. Batı Yakası artık senin. Bir sabah Deir el-Bahari\'nin üstünde benim için de bir tur at.',
     baron: 'Luksor Baronu. Babam görse ne derdi bilmiyorum. Ben şunu diyorum: Nil seni kabul etti. Bu kolay değildir.'
+  },
+  /* v124: Bristol's old money */
+  bri: {
+    hello: 'Ah, yeni gelen. Sir Reginald Ashby, Clifton Crown Balloons. Büyük büyükbabam bu kanyonun üstünde ilk balonu uçurduğunda köprü daha yeni bitmişti. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Mısır\'da kazanmışsın, öyle mi? Bristol\'ün havası seni sabah sisle karşılar, öğlen yağmurla uğurlar. Bakalım ne kadar dayanacaksın.',
+    ch1: 'Dört balonla kulübe girdiğini mi sanıyorsun? Benim hangarımda balonlar soyadıyla anılır. Sabah çayını bitirmeden filonu sayarım.',
+    ch2: 'Festival yaklaşıyor. Bristol\'de herkes Clifton Crown\'un balonlarını görmeye gelir. Senin balonların da gökyüzünde olacak, kabul. Arka sıralarda.',
+    passed: 'Dün benden fazla yolcu uçurmuşsun. Kulüpte konuşuluyor. Ben konuşmuyorum. Ama konuşuluyor.',
+    hotel: 'O otelin sahibiyle aynı okulda okuduk. Burada anlaşmalar öğle yemeğinde, kristal kadehle yapılır, sevgili dostum.',
+    poach: 'Pilotuna Clifton\'da bir daire ve kulübe üyelik teklif ettim. Centilmence bir teklif, kabul edersin.',
+    accident: 'Bir koyun tarlasına mı indin, yoksa çamura mı? Bu kanyonda bir centilmen inişini seçer.',
+    deal: 'Peki. Kabul etmeliyim, rüzgâr senden yana döndü. Clifton Crown\'u devralmak istersen avukatlarım hazır. Yalnız tacı logodan silme, rica ederim.',
+    gone: 'Son balonumu da sattım. Hangarı bir müzeye bağışlıyorum. Bristol artık senin. Festivalde bir kadeh kaldırırım, uzaktan.',
+    baron: 'Bristol Baronu. Büyük büyükbabam görse monoklü düşerdi. Ben düşürmüyorum, bak. Ama şapkamı çıkarıyorum. Hak ettin.'
   }
 };
 /* Each region has its own guide. Hezarfen stays in Cappadocia; in Albuquerque Ben Franklin, who watched the first
@@ -1258,19 +1289,36 @@ const IMHOTEP_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-labe
 <path d="M38 42 Q43 40 47 42 M53 42 Q57 40 62 42" stroke="#2a1a10" stroke-width="2" fill="none" stroke-linecap="round"/>
 <path d="M38 46.5 Q43 44 47 46.5 Q43 48.2 38 46.5Z M53 46.5 Q57 44 62 46.5 Q57 48.2 53 46.5Z" fill="#fff" stroke="#1a1010" stroke-width="1.2"/><circle cx="43" cy="46.5" r="1.5" fill="#1a1010"/><circle cx="57" cy="46.5" r="1.5" fill="#1a1010"/><path d="M47 46.5 L50 47.5 M62 46.5 L65 47.5" stroke="#1a1010" stroke-width="1.2"/>
 <path d="M50 48 L48 54 Q50 55.5 52 54.5" fill="#a86c44"/><path d="M44 59 Q50 62.5 56 59" stroke="#6a3020" stroke-width="1.8" fill="none" stroke-linecap="round"/></g></svg>`;
+/* v124: Bristol's guide, Margaret "Maggie" Holloway: a retired balloon-envelope seamstress; grey bun, reading glasses,
+   a cardigan and a tape measure round her neck */
+const MAGGIE_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Maggie Holloway"><defs><clipPath id="mgc"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="mgbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a86a8"/><stop offset=".6" stop-color="#c8a0a8"/><stop offset="1" stop-color="#f2d8b8"/></linearGradient></defs>
+<circle cx="50" cy="50" r="50" fill="#c86a7a"/><g clip-path="url(#mgc)"><rect width="100" height="100" fill="url(#mgbg)"/>
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#b84a5a"/><path d="M40 70 L50 90 L60 70Z" fill="#f6efe4"/>
+<g fill="#f6efe4"><circle cx="45" cy="80" r="1.3"/><circle cx="46" cy="88" r="1.3"/></g>
+<path d="M34 72 C38 82 40 92 40 100 M66 72 C62 82 60 92 60 100" stroke="#ffd27a" stroke-width="3.2" fill="none"/><g stroke="#8a6a30" stroke-width=".7"><path d="M35 76 L37.6 75 M36.6 80 L39 79.4 M37.8 84 L40.2 83.6 M38.6 88 L41 87.8 M65 76 L62.4 75 M63.4 80 L61 79.4 M62.2 84 L59.8 83.6"/></g>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#e8b494"/>
+<ellipse cx="50" cy="46" rx="17" ry="20" fill="#f4c8a8"/>
+<circle cx="50" cy="20" r="9" fill="#e6e2e8"/><path d="M33 44 C31 28 40 24 50 24 C60 24 69 28 67 44 C64 36 58 32 50 32 C42 32 36 36 33 44Z" fill="#e6e2e8"/><path d="M43 18 Q50 14 57 18" stroke="#c8c2cc" stroke-width="1.4" fill="none"/>
+<rect x="37.5" y="43" width="10" height="7" rx="3" fill="rgba(255,255,255,.3)" stroke="#8a4a5a" stroke-width="1.3"/><rect x="52.5" y="43" width="10" height="7" rx="3" fill="rgba(255,255,255,.3)" stroke="#8a4a5a" stroke-width="1.3"/><path d="M47.5 46 L52.5 46" stroke="#8a4a5a" stroke-width="1.3"/>
+<path d="M40.5 46.5 Q42.5 45 44.5 46.5 M55.5 46.5 Q57.5 45 59.5 46.5" stroke="#2a2030" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+<ellipse cx="39" cy="54" rx="3.4" ry="2" fill="#f0a0a0" opacity=".55"/><ellipse cx="61" cy="54" rx="3.4" ry="2" fill="#f0a0a0" opacity=".55"/>
+<path d="M50 48 L48.5 53.5 Q50 54.6 51.6 53.8" fill="#e8b494"/><path d="M43 58 Q50 63.5 57 58" stroke="#a0505a" stroke-width="1.9" fill="none" stroke-linecap="round"/></g></svg>`;
 const GUIDES = {
   cap: { name: 'Hezarfen Usta', av: () => HEZ_AV, baron: 'Hezarfen Usta gözleri dolu: "Galata\'dan Üsküdar\'a uçtuğum gün bile bu kadar gururlanmamıştım, evlat."' },
   abq: { name: 'Ben Franklin', av: () => FRANKLIN_AV, baron: 'Ben Franklin gözlüğünü siliyor: "1783\'te Paris\'te ilk balonu izlerken \'bu bebek büyüyecek\' demiştim. İşte büyüdü, evlat."',
     hello: 'Merhaba evlat, ben Ben Franklin. 1783\'te Paris\'te Montgolfier\'lerin balonu havalandığında oradaydım. Biri "Bu balonun ne faydası var?" diye sordu, ben de "Yeni doğmuş bir bebeğin ne faydası var?" dedim. Hezarfen Usta seni bana emanet etti, Albuquerque\'de sana ben yol göstereceğim. Unutma: vakit nakittir!' },
   lux: { name: 'İmhotep', av: () => IMHOTEP_AV, baron: 'İmhotep gülümsüyor: "Dört bin yıl önce taşı göğe doğru yükselttim. Sen insanları yükselttin, evlat. Firavunlar kıskanırdı."',
-    hello: 'Hoş geldin evlat, ben İmhotep. Dört bin yıl önce bu topraklarda ilk basamaklı piramidi ben çizdim, hastaları ben iyileştirdim. Hezarfen\'e "bin ilmin ustası" derler, bana da öyle derlerdi. Uçmayı hiç denemedim ama gökyüzünü iyi bilirim: Nil\'in rüzgârı sabırlıya yardım eder. Luksor\'da sana ben yol göstereceğim.' }
+    hello: 'Hoş geldin evlat, ben İmhotep. Dört bin yıl önce bu topraklarda ilk basamaklı piramidi ben çizdim, hastaları ben iyileştirdim. Hezarfen\'e "bin ilmin ustası" derler, bana da öyle derlerdi. Uçmayı hiç denemedim ama gökyüzünü iyi bilirim: Nil\'in rüzgârı sabırlıya yardım eder. Luksor\'da sana ben yol göstereceğim.' },
+  bri: { name: 'Maggie Holloway', av: () => MAGGIE_AV, baron: 'Maggie Holloway gözlüklerini çıkarıp gözünü siliyor: "Kırk yıl balon zarfı diktim tatlım, hiçbiri bu kadar yükseğe çıkmadı. Gel bakalım, bir çay koyayım."',
+    hello: 'Merhaba canım, ben Maggie. Maggie Holloway. Kırk yıl bu şehirde balon zarfı diktim; senin balonunun dikişlerine bakınca kimin elinden çıktığını bile söylerim. Hezarfen Usta seni bana emanet etti, Bristol\'de sana ben yol göstereceğim. Üç şey bil, tatlım: sabahları sis olur, rüzgâr Bristol Kanalı\'ndan, batıdan eser, havalimanının göğüne de asla girme. Bir de şemsiyeni unutma.' }
 };
 const guide = id => GUIDES[id || (S && S.region) || 'cap'] || GUIDES.cap;
 /* The civil aviation inspector of each region: warns when an envelope is worn below 30%, and fines on the third visit. */
 const INSPECTOR = {
   cap: { name: 'Müfettiş Ekin Demir', title: 'Sivil Havacılık Genel Müdürlüğü' },
   abq: { name: 'Inspector Karen Diaz', title: 'FAA, Federal Havacılık İdaresi' },
-  lux: { name: 'Müfettiş Omar Fathy', title: 'Mısır Sivil Havacılık Otoritesi' }
+  lux: { name: 'Müfettiş Omar Fathy', title: 'Mısır Sivil Havacılık Otoritesi' },
+  bri: { name: 'Müfettiş Graham Pike', title: 'İngiltere Sivil Havacılık Otoritesi' }
 };
 const INSP_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Müfettiş"><defs><clipPath id="isc"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="isbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a7a90"/><stop offset="1" stop-color="#d8e0ea"/></linearGradient></defs>
 <circle cx="50" cy="50" r="50" fill="#2b3a5a"/><g clip-path="url(#isc)"><rect width="100" height="100" fill="url(#isbg)"/>
@@ -1312,7 +1360,7 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, k) => a + (b - a) * k;
-const eur = n => { const c = typeof S !== 'undefined' && S && S.region === 'abq' ? '$' : '€'; return (n < 0 ? '−' + c : c) + Math.abs(Math.round(n)).toLocaleString('tr-TR'); };
+const eur = n => { const r = typeof S !== 'undefined' && S ? S.region : ''; const c = r === 'abq' ? '$' : r === 'bri' ? '£' : '€'; /* v124: Bristol counts in pounds */ return (n < 0 ? '−' + c : c) + Math.abs(Math.round(n)).toLocaleString('tr-TR'); };
 const eurH = n => (n < 0 ? '−€' : '€') + Math.abs(Math.round(n)).toLocaleString('tr-TR'); /* holding kasası her zaman euro */
 const pct = n => '%' + (n * 100).toLocaleString('tr-TR', { maximumFractionDigits: 1 });
 const stars = r => clamp(3 + (r - .75) * 4, 1, 5).toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '★';
