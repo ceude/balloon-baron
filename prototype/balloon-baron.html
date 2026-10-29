@@ -817,7 +817,8 @@ body.night #cv{touch-action:none}
    over; on the back a balloon sticker holds the flap down: its burner lights, it lifts off, the flap opens and the
    letter comes out. */
 #letter{position:absolute;inset:0;z-index:30;display:flex;align-items:center;justify-content:center;background:rgba(20,14,40,.74);overflow:hidden;perspective:1300px}
-#letter .stage{position:relative;width:min(340px,88vw);aspect-ratio:3/2;transition:transform .7s cubic-bezier(.4,0,.6,1),opacity .6s;animation:envIn .8s cubic-bezier(.2,.9,.3,1.15)}
+#letter canvas.spark{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+#letter .stage{position:relative;z-index:1;width:min(340px,88vw);aspect-ratio:3/2;transition:transform .7s cubic-bezier(.4,0,.6,1),opacity .6s;animation:envIn .8s cubic-bezier(.2,.9,.3,1.15)}
 @keyframes envIn{from{transform:translateY(70px) rotate(-7deg);opacity:0}to{transform:none;opacity:1}}
 #letter .card3d{position:absolute;inset:0;transform-style:preserve-3d;transition:transform 1s cubic-bezier(.5,0,.3,1);cursor:pointer}
 #letter.flip .card3d{transform:rotateY(180deg)}
@@ -851,7 +852,7 @@ body.night #cv{touch-action:none}
 #letter .hint{position:absolute;bottom:max(40px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:#fff;font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85;animation:hintP 1.6s ease-in-out infinite}
 @keyframes hintP{50%{opacity:.4}}
 #letter.out .stage{transform:translateY(42vh) scale(.9);opacity:0}
-#letter .sheet{position:absolute;left:50%;width:min(400px,calc(100% - 28px));max-height:calc(100% - 24px);transform:translate(-50%,-6vh) scale(.82);opacity:0;pointer-events:none;border-radius:3px;overflow-y:auto;scrollbar-width:none;transition:transform .8s cubic-bezier(.2,.9,.25,1),opacity .45s;padding:20px 22px 16px;box-sizing:border-box;background-color:#f3e2bd;background-image:radial-gradient(ellipse at 50% 40%,rgba(255,250,232,.85),rgba(255,250,232,0) 70%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .3  0 0 0 0 .12  0 0 0 .14 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");box-shadow:inset 0 0 50px rgba(140,90,30,.38),inset 0 0 12px rgba(120,70,20,.3),0 24px 60px rgba(0,0,0,.45);}
+#letter .sheet{position:absolute;z-index:3;left:50%;width:min(400px,calc(100% - 28px));max-height:calc(100% - 24px);transform:translate(-50%,-6vh) scale(.82);opacity:0;pointer-events:none;border-radius:3px;overflow-y:auto;scrollbar-width:none;transition:transform .8s cubic-bezier(.2,.9,.25,1),opacity .45s;padding:20px 22px 16px;box-sizing:border-box;background-color:#f3e2bd;background-image:radial-gradient(ellipse at 50% 40%,rgba(255,250,232,.85),rgba(255,250,232,0) 70%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .3  0 0 0 0 .12  0 0 0 .14 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");box-shadow:inset 0 0 50px rgba(140,90,30,.38),inset 0 0 12px rgba(120,70,20,.3),0 24px 60px rgba(0,0,0,.45);}
 #letter .sheet::-webkit-scrollbar{display:none}
 #letter.read .sheet{transform:translate(-50%,0) scale(1);opacity:1;pointer-events:auto}
 #letter .photo{position:relative;margin:2px auto 14px;width:74%;transform:rotate(-2.2deg);background:#fff;padding:8px 8px 10px;box-shadow:0 6px 16px rgba(0,0,0,.18)}
@@ -4704,6 +4705,89 @@ function stickerSvg() {
     <path d="M32 6 C36 6 39 13 39 22 C39 30 36 35 35 39 L29 39 C28 35 25 30 25 22 C25 13 28 6 32 6Z" fill="${c[1]}"/>
     <path d="M27 39 L28.5 47 M37 39 L35.5 47" stroke="#6b4a26" stroke-width="1"/><rect x="27.5" y="47" width="9" height="7" rx="1.2" fill="#8a5a2e"/></svg>`;
 }
+/* v123.3: the letter's sound. 'magic' while the envelope turns and opens: a shimmering pad, a celesta arpeggio climbing
+   and little chimes. 'letter' once it is open: slow and tender in the Hicaz makam like the film's score: a drone on D,
+   soft strings, a kanun-like pluck and a ney that sings the melody. null fades it out. */
+let LMUS = null;
+function letterMusic(part) {
+  if (!AC) audioInit(); if (!AC) return;
+  const now = AC.currentTime;
+  if (LMUS) { const M = LMUS; M.g.gain.cancelScheduledValues(now); M.g.gain.setValueAtTime(M.g.gain.value, now); M.g.gain.linearRampToValueAtTime(0, now + 1.2); setTimeout(() => { M.stop.forEach(s => { try { s.stop(); } catch (e) {} }); M.g.disconnect(); }, 1400); LMUS = null; }
+  if (!part) return;
+  const g = AC.createGain(); g.gain.setValueAtTime(0, now); g.gain.linearRampToValueAtTime(1, now + (part === 'magic' ? .3 : 2)); g.connect(out());
+  const M = LMUS = { g, stop: [] }, t0 = now + .05;
+  const env = (node, at, a, peak, hold, rel) => { node.gain.setValueAtTime(0, t0 + at); node.gain.linearRampToValueAtTime(peak, t0 + at + a); node.gain.setValueAtTime(peak, t0 + at + a + hold); node.gain.exponentialRampToValueAtTime(.0001, t0 + at + a + hold + rel); };
+  const bell = (f, at, v = .05, dec = 1.6) => { for (const [k, vv] of [[1, 1], [2.76, .35], [5.4, .12]]) { const o = AC.createOscillator(), e = AC.createGain(); o.type = 'sine'; o.frequency.value = f * k; env(e, at, .004, v * vv, .01, dec / k); o.connect(e).connect(g); o.start(t0 + at); o.stop(t0 + at + dec + .1); } };
+  const pad = (fs, at, dur, v, type = 'sine', cut = 2400) => { const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = cut; const e = AC.createGain(); env(e, at, Math.min(2, dur * .35), v, dur * .35, dur * .35); f.connect(e).connect(g);
+    fs.forEach(fr => [-6, 6].forEach(d => { const o = AC.createOscillator(); o.type = type; o.frequency.value = fr; o.detune.value = d; o.connect(f); o.start(t0 + at); o.stop(t0 + at + dur + .3); M.stop.push(o); })); };
+  const N = { D3: 146.83, A3: 220, Bb3: 233.08, C4: 261.63, D4: 293.66, Eb4: 311.13, Fs4: 369.99, G4: 392, A4: 440, Bb4: 466.16, C5: 523.25, D5: 587.33, Eb5: 622.25, Fs5: 739.99, G5: 783.99, A5: 880, D6: 1174.66 };
+  if (part === 'magic') {
+    pad([N.D4, N.Fs4, N.A4, N.D5], 0, 5.5, .022, 'triangle', 3200);
+    /* a shimmer: high noise through a narrow band, swelling */
+    const n = AC.createBufferSource(); n.buffer = noiseBuf(5); const nf = AC.createBiquadFilter(); nf.type = 'bandpass'; nf.frequency.setValueAtTime(5000, t0); nf.frequency.linearRampToValueAtTime(8000, t0 + 4); nf.Q.value = 3; const ne = AC.createGain(); env(ne, 0, 1.5, .035, 1.6, 1.6); n.connect(nf).connect(ne).connect(g); n.start(t0); M.stop.push(n);
+    [N.D5, N.Fs5, N.A5, N.D6, N.A5, N.D6].forEach((f, i) => bell(f, .1 + i * .16, .045, 1.8)); /* the turn */
+    [N.G5, N.A5, N.D6].forEach((f, i) => bell(f, 2 + i * .12, .04, 2)); /* the sticker lifts */
+    for (let i = 0; i < 9; i++) bell([N.D6, N.A5, N.Fs5 * 2, N.G5 * 2][i % 4], 1 + i * .37 + Math.random() * .1, .018, 1.2); /* chimes */
+    bell(N.D5, 3.85, .05, 2.6); bell(N.A5, 3.85, .03, 2.6);
+    return;
+  }
+  /* 'letter': ~34 s, 64 bpm, then the drone stays under until it is closed */
+  const B = .9375;
+  const df = AC.createBiquadFilter(); df.type = 'lowpass'; df.frequency.value = 520; const dg = AC.createGain(); dg.gain.setValueAtTime(0, t0); dg.gain.linearRampToValueAtTime(.03, t0 + 3); df.connect(dg).connect(g);
+  for (const [f, d] of [[73.42, -5], [73.42, 5], [110, 0]]) { const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = d; o.connect(df); o.start(t0); M.stop.push(o); }
+  const ney = (f, at, dur, v = .06) => { const o = AC.createOscillator(), o2 = AC.createOscillator(), e = AC.createGain(), vib = AC.createOscillator(), vg = AC.createGain();
+    o.type = 'triangle'; o2.type = 'sine'; o.frequency.value = f; o2.frequency.value = f * 2; vib.frequency.value = 5; vg.gain.setValueAtTime(0, t0 + at); vg.gain.linearRampToValueAtTime(f * .013, t0 + at + Math.min(.7, dur * .6)); vib.connect(vg); vg.connect(o.frequency); vg.connect(o2.frequency);
+    const g2 = AC.createGain(); g2.gain.value = .22; o2.connect(g2).connect(e); o.connect(e); env(e, at, .18, v, Math.max(.05, dur - .5), .45); e.connect(g);
+    const br = AC.createBufferSource(); br.buffer = noiseBuf(dur + .6); const bf = AC.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = f * 2; bf.Q.value = 6; const be = AC.createGain(); env(be, at, .1, v * .45, Math.max(.05, dur - .5), .35); br.connect(bf).connect(be).connect(g);
+    for (const s of [o, o2, vib]) { s.start(t0 + at); s.stop(t0 + at + dur + .6); M.stop.push(s); } br.start(t0 + at); M.stop.push(br); };
+  /* kanun: a bright pluck, the long notes with a soft tremolo */
+  const kanun = (f, at, v = .05, trem = 0) => { const reps = trem ? Math.round(trem / .09) : 1; for (let i = 0; i < reps; i++) { const o = AC.createOscillator(), o2 = AC.createOscillator(), e = AC.createGain(); o.type = 'triangle'; o2.type = 'sine'; o.frequency.value = f; o2.frequency.value = f * 3; const g3 = AC.createGain(); g3.gain.value = .15; o2.connect(g3).connect(e); o.connect(e); const a = at + i * .09; env(e, a, .003, v * (trem ? .55 + .45 * Math.sin(i / reps * Math.PI) : 1), .01, trem ? .12 : .9); e.connect(g); o.start(t0 + a); o2.start(t0 + a); o.stop(t0 + a + 1); o2.stop(t0 + a + 1); } };
+  const phrase = (at, notes, beat, v) => { let x = at; for (const [n, l] of notes) { if (n) ney(N[n], x, l * beat * .95, v); x += l * beat; } };
+  const arp = (at, ns, step, v) => ns.forEach((n, i) => kanun(N[n], at + i * step, v));
+  pad([N.D3, N.A3, N.D4], 0, 9, .02); arp(.6, ['D4', 'Eb4', 'Fs4', 'G4', 'A4', 'Fs4', 'Eb4', 'D4'], B / 2, .04);
+  phrase(3.4, [['A4', 2], ['Bb4', 1], ['A4', 1], ['G4', 1.5], ['Fs4', .5], ['G4', 1], ['A4', 3]], B, .055);
+  pad([N.G4 / 2, N.Bb3, N.D4], 9, 8, .02); arp(9.2, ['G4', 'Bb4', 'D5', 'Bb4', 'G4', 'Fs4'], B / 2, .035);
+  phrase(11.6, [['D5', 1.5], ['C5', .5], ['Bb4', 1], ['A4', 1], ['Bb4', 1], ['A4', .5], ['G4', .5], ['Fs4', 1], ['Eb4', 1], ['D4', 3]], B, .055);
+  pad([N.D3, N.Fs4 / 2, N.A3, N.D4], 19, 9, .022); kanun(N.D5, 19.2, .05, 1.6);
+  phrase(21, [['Fs4', 1], ['G4', 1], ['A4', 1], ['Bb4', .5], ['C5', .5], ['D5', 2], ['Eb5', .5], ['D5', .5], ['C5', 1], ['Bb4', 1], ['A4', 3]], B, .06);
+  pad([N.D3, N.A3, N.D4, N.Fs4], 30, 8, .02); arp(30, ['D4', 'Fs4', 'A4', 'D5'], B * .66, .035); ney(N.D4, 31.5, 4.5, .045);
+}
+/* v123.3: sunrise glitter in the air around the letter: gold, peach, pink and white specks and four-point stars that
+   float up and twinkle. A burst when it turns, a trail behind the rising sticker, a shower when the letter opens, then a
+   few drifting by while it is read. */
+function letterSparkles(L) {
+  const c = h('canvas'); c.className = 'spark'; L.insertBefore(c, L.querySelector('.sheet'));
+  const g = c.getContext('2d'), P = [], cols = ['#ffd27a', '#ffb36b', '#ff9ec4', '#fff6dc', '#ffe08a', '#ffc2a8'];
+  let w = 0, hh = 0, rate = 0, acc = 0, last = performance.now(), follow = null;
+  const fit = () => { const r = L.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1); w = r.width; hh = r.height; c.width = w * d; c.height = hh * d; g.setTransform(d, 0, 0, d, 0, 0); };
+  fit();
+  const add = (x, y, sp = 1) => { const a = Math.random() * Math.PI * 2, v = (20 + Math.random() * 90) * sp; P.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 25, life: 0, max: 1.6 + Math.random() * 2, s: 1.8 + Math.random() * 3.4, col: cols[Math.floor(Math.random() * cols.length)], star: Math.random() < .35, ph: Math.random() * 6 }); };
+  const center = () => { const r = L.querySelector('.stage').getBoundingClientRect(), o = L.getBoundingClientRect(); return [r.left - o.left + r.width / 2, r.top - o.top + r.height / 2, r.width, r.height]; };
+  const api = {
+    burst(n, sp = 1.4) { const [x, y, rw, rh] = center(); for (let i = 0; i < n; i++) add(x + (Math.random() - .5) * rw, y + (Math.random() - .5) * rh, sp); },
+    rain(n) { for (let i = 0; i < n; i++) { add(Math.random() * w, -10 - Math.random() * 60, .3); P[P.length - 1].vy = 30 + Math.random() * 40; } },
+    rate(r) { rate = r; }, follow(el) { follow = el; }
+  };
+  const step = now => {
+    if (!L.isConnected) return;
+    const dt = Math.min(.05, (now - last) / 1000); last = now;
+    acc += rate * dt; while (acc >= 1) { acc--; if (L.classList.contains('read')) { add(Math.random() * w, hh + 5, .4); P[P.length - 1].vy = -30 - Math.random() * 30; } else api.burst(1, .8); }
+    if (follow && follow.isConnected) { const r = follow.getBoundingClientRect(), o = L.getBoundingClientRect(); for (let i = 0; i < 3; i++) add(r.left - o.left + r.width / 2 + (Math.random() - .5) * r.width * .5, r.top - o.top + r.height * .7, .5); }
+    g.clearRect(0, 0, w, hh); g.globalCompositeOperation = 'lighter';
+    for (let i = P.length - 1; i >= 0; i--) {
+      const p = P[i]; p.life += dt; if (p.life > p.max) { P.splice(i, 1); continue; }
+      p.vx *= 1 - dt * 1.2; p.vy = p.vy * (1 - dt * 1.2) - 18 * dt; p.x += p.vx * dt; p.y += p.vy * dt;
+      const k = p.life / p.max, tw = .55 + .45 * Math.sin(p.life * 9 + p.ph), al = Math.min(1, p.life * 4) * (1 - k) * tw;
+      g.globalAlpha = al; g.fillStyle = p.col;
+      if (p.star) { const s = p.s * 2.6; g.globalAlpha = al * .3; g.beginPath(); g.arc(p.x, p.y, s * 1.1, 0, 7); g.fill(); g.globalAlpha = al; g.beginPath(); g.moveTo(p.x, p.y - s); g.quadraticCurveTo(p.x, p.y, p.x + s, p.y); g.quadraticCurveTo(p.x, p.y, p.x, p.y + s); g.quadraticCurveTo(p.x, p.y, p.x - s, p.y); g.quadraticCurveTo(p.x, p.y, p.x, p.y - s); g.fill(); }
+      else { g.beginPath(); g.arc(p.x, p.y, p.s * .7, 0, 7); g.fill(); g.globalAlpha = al * .3; g.beginPath(); g.arc(p.x, p.y, p.s * 2.4, 0, 7); g.fill(); }
+    }
+    g.globalAlpha = 1; g.globalCompositeOperation = 'source-over';
+    requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+  return api;
+}
 function showLetter() {
   S.letter = { day: S.day }; save();
   const L = h('div'); L.id = 'letter';
@@ -4715,21 +4799,23 @@ function showLetter() {
   <div class="sheet"><div class="photo"><img src="${LETTER_IMG}" alt="Oyunu yapan aile, Kapadokya'da balonların altında"><i class="tape tl"></i><i class="tape tr"></i><i class="tape bl"></i><i class="tape br"></i></div>
   <div class="hi">Sevgili ${esc(S.company)} kurucusu,</div>
   <div class="body" style="position:relative"><p>Bugün şirketinin ${S.day}. günü. Bu kadar yol gelmen, balonlarını her sabah yeniden göğe salman bizi gerçekten çok mutlu etti.</p>
-  <p>Kızım için geliştirdiğimiz oyunu sevdiysen App Store'a birkaç cümle yazar mısın? Başka oyuncuların bu Kapadokya'yı bulmasını sağlayan şey senin sözlerin.</p><svg class="blot" style="right:-16px;top:-14px;width:18px" viewBox="0 0 20 20"><path d="M10 3c3 0 3 3 5 4s3 3 1 5-2 4-5 4-4-2-6-3-3-3-1-6 3-4 6-4z" fill="#1f2350" opacity=".55"/><circle cx="17" cy="4" r="1.1" fill="#1f2350" opacity=".5"/></svg></div>
+  <p>Kızımız için geliştirdiğimiz oyunu sevdiysen App Store'a birkaç cümle yazar mısın? Başka oyuncuların bu Kapadokya'yı bulmasını sağlayan şey senin sözlerin.</p><svg class="blot" style="right:-16px;top:-14px;width:18px" viewBox="0 0 20 20"><path d="M10 3c3 0 3 3 5 4s3 3 1 5-2 4-5 4-4-2-6-3-3-3-1-6 3-4 6-4z" fill="#1f2350" opacity=".55"/><circle cx="17" cy="4" r="1.1" fill="#1f2350" opacity=".5"/></svg></div>
   <div class="sign">Sevgiler,<br>S. &amp; U.<svg class="blot" style="left:8px;top:2px;width:34px;transform:rotate(-20deg)" viewBox="0 0 40 40"><path d="M20 8c5 0 6 5 9 6s6 2 5 7-5 4-6 8-4 5-8 4-5-4-9-5-6-4-4-8 2-5 4-8 5-4 9-4z" fill="#1f2350" opacity=".78"/><circle cx="35" cy="9" r="2" fill="#1f2350" opacity=".7"/><circle cx="6" cy="31" r="1.4" fill="#1f2350" opacity=".6"/><circle cx="31" cy="35" r="1" fill="#1f2350" opacity=".6"/></svg></div>
   <button class="rate">App Store'da yorum yaz</button><button class="later">Şimdi değil</button></div>`;
   $('wrap').appendChild(L); sfx('click');
   const sheet = L.querySelector('.sheet'), at = (ms, f) => setTimeout(f, ms);
-  const close = () => { L.style.transition = 'opacity .35s'; L.style.opacity = 0; setTimeout(() => { L.remove(); refresh(); setTimeout(nextPopup, 250); }, 380); };
+  const SP = letterSparkles(L);
+  const close = () => { letterMusic(null); L.style.transition = 'opacity .35s'; L.style.opacity = 0; setTimeout(() => { L.remove(); refresh(); setTimeout(nextPopup, 250); }, 380); };
   L.querySelector('.card3d').onclick = () => {
     if (L.classList.contains('flip')) return;
-    L.classList.add('flip'); L.querySelector('.hint').hidden = true; sfx('click');
+    L.classList.add('flip'); L.querySelector('.hint').hidden = true; letterMusic('magic'); SP.burst(90); SP.rate(45);
     at(1050, () => L.classList.add('flat3'));           /* the back, now flat, so the flap and sticker move in plain 2D */
     at(1300, () => { L.classList.add('burn'); burner(true); });
     at(2700, () => burner(false));
-    at(2000, () => L.classList.add('lift'));
+    at(2000, () => { L.classList.add('lift'); SP.follow(L.querySelector('.flat .sticker')); });
+    at(3500, () => SP.follow(null));
     at(2900, () => L.classList.add('pull'));
-    at(3900, () => { L.classList.add('out', 'read'); sheet.scrollTop = 0; sfx('coin'); });
+    at(3900, () => { L.classList.add('out', 'read'); sheet.scrollTop = 0; SP.burst(140, 2.6); SP.rain(60); SP.rate(9); letterMusic('letter'); });
   };
   L.querySelector('.later').onclick = close;
   L.querySelector('.rate').onclick = () => {
