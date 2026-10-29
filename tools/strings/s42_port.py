@@ -21,3 +21,23 @@ add("tip.price3.short",
 # v123.5: the World Games show is the holding's seventh goal, and opens with the Baron of Bristol
 add("hgoal.worldGames", "World Games show", "Dünya Oyunları gösterisi", "Show bei den Weltspielen", "Espectáculo de los Juegos Mundiales", "世界競技大会のショー", "세계 대회 쇼")
 add("holding.wg.lockBri", "Once you're Baron of Bristol", "Bristol Baronu olunca", "Sobald du Baron von Bristol bist", "Cuando seas barón de Bristol", "ブリストルの男爵になったら", "브리스톨의 남작이 되면")
+
+# v124 (f9e60f0): the guide office's guides are local in every region (GUIDE_NAMES). Cappadocia keeps guide.<id>.name
+# (Ayşe, Sena, Ekin); every other region has guidePick.<region>.<id> and its title, by the guide's gender. Same ids,
+# costs and effects. To add a region, add one line here: its three guides as (name in en/tr/de/es, ja, ko, gender).
+GUIDE_NAMES = {
+    "abq": [("Emily", "エミリー", "에밀리", "f"), ("Carlos", "カルロス", "카를로스", "m"), ("Dakota", "ダコタ", "다코타", "f")],
+    "lux": [("Nour", "ヌール", "누르", "f"), ("Karim", "カリーム", "카림", "m"), ("Yasmin", "ヤスミン", "야스민", "f")],
+}
+GUIDE_TITLES = {  # slot → gender → en, tr, de, es, ja, ko (the feminine forms are guide.<id>.title in s40_v122.py)
+    "ayse": {"f": ("Hotel guide", "Otel rehberi", "Hotelguide", "Guía de hotel", "ホテルのガイド", "호텔 가이드"),
+             "m": ("Hotel guide", "Otel rehberi", "Hotelguide", "Guía de hotel", "ホテルのガイド", "호텔 가이드")},
+    "mehmet": {"f": ("Tour guide", "Tur rehberi", "Reiseleiterin", "Guía turística", "ツアーガイド", "투어 가이드"),
+               "m": ("Tour guide", "Tur rehberi", "Reiseleiter", "Guía turístico", "ツアーガイド", "투어 가이드")},
+    "selin": {"f": ("Senior guide", "Kıdemli rehber", "Erfahrene Reiseleiterin", "Guía veterana", "ベテランガイド", "베테랑 가이드"),
+              "m": ("Senior guide", "Kıdemli rehber", "Erfahrener Reiseleiter", "Guía veterano", "ベテランガイド", "베테랑 가이드")},
+}
+for region, guides in GUIDE_NAMES.items():
+    for gid, (latin, ja, ko, gender) in zip(["ayse", "mehmet", "selin"], guides):
+        add(f"guidePick.{region}.{gid}", latin, latin, latin, latin, ja, ko)
+        add(f"guidePick.{region}.{gid}.title", *GUIDE_TITLES[gid][gender])
