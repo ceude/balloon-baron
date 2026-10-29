@@ -3933,7 +3933,8 @@ function pickSpots() {
 const INTRO_LOOK = {
   cap: { sky: ['#120d33', '#3a2460', '#a24e7a', '#f0875a', '#ffd59a'], far: '#4e3460', mid: '#c8866a', midShade: '#8a5060', cap: '#4a2a2a', ground: ['#6e4a3a', '#2a1822'], name: 'CAPPADOCIA' },
   abq: { sky: ['#0f1534', '#31275c', '#bc4e6a', '#ff8f4e', '#ffcf80'], far: '#5e345a', mid: '#a8503a', midShade: '#6a3022', cap: '#3f7a3a', ground: ['#8a4e2c', '#28120a'], name: 'ALBUQUERQUE' },
-  lux: { sky: ['#0d1836', '#2a3664', '#b0605a', '#f2a656', '#ffe2a0'], far: '#6a5260', mid: '#c89a62', midShade: '#8a6440', cap: '#2e5a2a', ground: ['#a07a4a', '#30200e'], name: 'LUXOR' }
+  lux: { sky: ['#0d1836', '#2a3664', '#b0605a', '#f2a656', '#ffe2a0'], far: '#6a5260', mid: '#c89a62', midShade: '#8a6440', cap: '#2e5a2a', ground: ['#a07a4a', '#30200e'], name: 'LUXOR' },
+  bri: { sky: ['#1a2236', '#3a4a66', '#8a8aa0', '#d8b49a', '#eee2cc'], far: '#4a5868', mid: '#cdb07a', midShade: '#8a7450', cap: '#3a5a2e', ground: ['#4a6a34', '#1a2a14'], name: 'BRISTOL' } /* v124 */
 };
 function introScene(gy) {
   const L = INTRO_LOOK[S.region] || INTRO_LOOK.cap, t = INTRO.t, lift = Math.min(1, INTRO.y / (H * .45)), u = Math.min(W, H);
@@ -3974,6 +3975,11 @@ function introScene(gy) {
     for (const it of items) {
       const body = mix(L.mid, L.far, k), shade = mix(L.midShade, L.far, k);
       if (S.region === 'cap') chimney(it.x, base, it.h * .36, it.h, body, shade, mix(L.cap, L.far, k));
+      else if (S.region === 'bri') { /* v124: spires, Georgian terraces and round trees */
+        if (it.s < .3) { ctx.fillStyle = body; ctx.fillRect(it.x - it.h * .07, base - it.h * .55, it.h * .14, it.h * .55); ctx.beginPath(); ctx.moveTo(it.x - it.h * .08, base - it.h * .55); ctx.lineTo(it.x, base - it.h); ctx.lineTo(it.x + it.h * .08, base - it.h * .55); ctx.fill(); }
+        else if (it.s < .65) { ctx.fillStyle = body; ctx.fillRect(it.x - it.h * .6, base - it.h * .42, it.h * 1.2, it.h * .42); ctx.fillStyle = shade; for (let c = 0; c < 5; c++) ctx.fillRect(it.x - it.h * .55 + c * it.h * .24, base - it.h * .5, it.h * .06, it.h * .1); }
+        else { const col = mix(L.cap, L.far, k); ell(it.x, base - it.h * .45, it.h * .3, it.h * .3, col); ell(it.x - it.h * .18, base - it.h * .32, it.h * .2, it.h * .18, col); ctx.fillStyle = col; ctx.fillRect(it.x - it.h * .03, base - it.h * .2, it.h * .06, it.h * .2); }
+      }
       else if (S.region === 'abq') {
         if (it.s < .55) { ctx.fillStyle = body; ctx.beginPath(); ctx.moveTo(it.x - it.h * .9, base); ctx.lineTo(it.x - it.h * .6, base - it.h * .55); ctx.lineTo(it.x + it.h * .6, base - it.h * .55); ctx.lineTo(it.x + it.h * .9, base); ctx.fill(); ctx.fillStyle = shade; ctx.fillRect(it.x - it.h * .6, base - it.h * .55, it.h * 1.2, it.h * .07); }
         else { ctx.fillStyle = mix(L.cap, L.far, k); const w = it.h * .09; rrect(it.x - w / 2, base - it.h * .6, w, it.h * .6, w / 2); ctx.fill(); rrect(it.x - w * 2.2, base - it.h * .45, w * .8, it.h * .25, w * .4); ctx.fill(); ctx.fillRect(it.x - w * 2.2, base - it.h * .24, w * 2, w * .7); rrect(it.x + w * 1.4, base - it.h * .52, w * .8, it.h * .22, w * .4); ctx.fill(); ctx.fillRect(it.x + w * .4, base - it.h * .32, w * 1.6, w * .7); }
@@ -5167,7 +5173,7 @@ function testShowGame() {
 /* v124: straight into Bristol with a small fleet (the three regions before it already won) */
 function testBristol() {
   S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 90; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1; S.tut = { done: 1 };
-  S.barons = { cap: 30, abq: 55, lux: 80 }; S.baron = { cap: 30 }; S.iap = { worldTour: 1 }; S.holding = 150000; S.storyDone = 1;
+  S.barons = { cap: 30, abq: 55, lux: 80 }; S.baron = { cap: 30 }; S.iap = { worldTour: 1 }; S.holding = 150000; S.storyDone = 1; S.letter = { day: 50, rated: 50 };
   const st = newRegionState('bri'); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = 'bri'; applyRegionTheme();
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1 };
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
@@ -7667,7 +7673,8 @@ function townBuildings() {
 const TUFF_BY = {
   cap: { lit: '#f1d6b0', shade: '#b9825c', top: '#f8e4c4', line: 'rgba(110,60,30,.16)' },
   abq: { lit: '#dfa676', shade: '#a6653e', top: '#d79a68', line: 'rgba(120,60,25,.10)', smooth: true },
-  lux: { lit: '#f3e8d2', shade: '#c4ab80', top: '#ece0c4', line: 'rgba(130,100,60,.14)' }
+  lux: { lit: '#f3e8d2', shade: '#c4ab80', top: '#ece0c4', line: 'rgba(130,100,60,.14)' },
+  bri: { lit: '#e9cf98', shade: '#b8955e', top: '#dcc290', line: 'rgba(110,80,40,.13)' } /* v124: honey Bath stone */
 };
 let TUFF = TUFF_BY.cap;
 const SUN_SH = [0.55, 0.2]; /* screen offset of a shadow per world px of height */
@@ -7733,7 +7740,8 @@ function flatRoof(gx, gy, w, d, h, dome) {
 }
 /* Gable roof with the ridge along gx. Tiles drawn as lines. */
 function gableRoof(gx, gy, w, d, h, rise, col, eave = .08) {
-  if (S.region !== 'cap') return flatRoof(gx, gy, w, d, h, false);
+  if (S.region === 'bri') col = '#5e6874'; /* v124: Welsh slate */
+  else if (S.region !== 'cap') return flatRoof(gx, gy, w, d, h, false);
   if (S.winter) col = mix(col, '#f4f7fb', .7); /* snow on the tiles */
   const x0 = gx - eave, x1 = gx + w + eave, y0 = gy - eave, y1 = gy + d + eave, ym = gy + d / 2;
   const P = (x, y, z) => upp(tiso(x, y), z);
@@ -7748,7 +7756,8 @@ function gableRoof(gx, gy, w, d, h, rise, col, eave = .08) {
 }
 /* Hip roof (four slopes) for the konak. */
 function hipRoof(gx, gy, w, d, h, rise, col) {
-  if (S.region !== 'cap') return flatRoof(gx, gy, w, d, h, true);
+  if (S.region === 'bri') col = '#5e6874';
+  else if (S.region !== 'cap') return flatRoof(gx, gy, w, d, h, true);
   if (S.winter) col = mix(col, '#f4f7fb', .7);
   const e = .1, P = (x, y, z) => upp(tiso(x, y), z), r0 = [gx + w * .35, gy + d / 2], r1 = [gx + w * .65, gy + d / 2];
   const A = P(gx - e, gy - e, h), B = P(gx + w + e, gy - e, h), C = P(gx + w + e, gy + d + e, h), D = P(gx - e, gy + d + e, h), R0 = P(r0[0], r0[1], h + rise), R1 = P(r1[0], r1[1], h + rise);
@@ -8036,6 +8045,7 @@ function hotel(b, t) {
       if (S.region === 'abq') { /* stepped adobe pueblo with viga ends */
         for (const [k, w0] of [[0, .5], [.38, .36]]) { const y0 = p[1] - hh * k, ht = hh * .36; ctx.fillStyle = '#b8724a'; ctx.fillRect(p[0] - hh * w0 / 2, y0 - ht, hh * w0, ht); ctx.fillStyle = '#d99a6c'; ctx.fillRect(p[0] - hh * w0 / 2, y0 - ht, hh * w0 * .6, ht); ctx.fillStyle = '#e6b088'; ctx.fillRect(p[0] - hh * w0 / 2 - 2, y0 - ht - 3, hh * w0 + 4, 4); ctx.fillStyle = '#6a4028'; for (let v = 0; v < 4; v++) ctx.fillRect(p[0] - hh * w0 / 2 + 4 + v * hh * w0 / 4, y0 - ht + 3, 3, 3); }
       }
+      else if (S.region === 'bri') { const pc = ['#f2b8c0', '#a8d4c8', '#f4dc8a'][Math.round(x * 7) % 3], ph = hh * .62; ctx.fillStyle = pc; ctx.fillRect(p[0] - hh * .2, p[1] - ph, hh * .4, ph); ctx.fillStyle = mix(pc, '#000000', .15); ctx.fillRect(p[0] + hh * .1, p[1] - ph, hh * .1, ph); ctx.fillStyle = '#5e6874'; ctx.beginPath(); ctx.moveTo(p[0] - hh * .23, p[1] - ph); ctx.lineTo(p[0] - hh * .12, p[1] - ph - hh * .14); ctx.lineTo(p[0] + hh * .12, p[1] - ph - hh * .14); ctx.lineTo(p[0] + hh * .23, p[1] - ph); ctx.fill(); ctx.fillStyle = '#8a5a44'; ctx.fillRect(p[0] + hh * .06, p[1] - ph - hh * .2, hh * .06, hh * .1); } /* v124: pastel Clifton houses */
       else if (S.region === 'lux') { ctx.fillStyle = '#c9ab7e'; ctx.fillRect(p[0] - hh * .2, p[1] - hh * .7, hh * .4, hh * .7); ctx.fillStyle = '#efe0c2'; ctx.fillRect(p[0] - hh * .24, p[1] - hh * .7, hh * .26, hh * .7); dome(p[0] - hh * .02, p[1] - hh * .7, hh * .17, '#f3e8d2'); } /* Nubian mud-brick house */
       else chimney(p[0], p[1], hh * .55, hh, '#efc79e', '#c69068', '#6a4430');
       for (let i = 0; i < 3; i++) { const wy = p[1] - hh * (.18 + i * .22), wx = p[0] - hh * .08 + (i % 2) * hh * .1; ctx.fillStyle = '#ffd27a'; ctx.beginPath(); ctx.moveTo(wx - 5, wy + 8); ctx.lineTo(wx - 5, wy); ctx.arc(wx, wy, 5, Math.PI, 0); ctx.lineTo(wx + 5, wy + 8); ctx.fill(); lantern(wx, wy + 2); }
@@ -8055,11 +8065,12 @@ function hotel(b, t) {
     for (const f of [wingL, wingR]) { for (let r = 0; r < 2; r++) for (const u of [.2, .5, .8]) opening(f.D, f.C, 80, u, .12 + r * .45, .16, .28, 'win', r === 0 || u !== .5); }
     /* colonnade of arches across the main front */
     for (let r = 0; r < 2; r++) for (let i = 0; i < 5; i++) opening(main.D, main.C, 130, .1 + i * .2, .06 + r * .46, .13, .34, 'win', r === 0 || i % 2 === 0);
-    const dc = lp(main.a, main.c, .5); dome(dc[0], dc[1] - 6, 38, '#e8b23a');
-    for (const f of [wingL, wingR]) { const p = lp(f.a, f.c, .5); dome(p[0], p[1] - 4, 18, '#e8b23a'); }
+    const dcol = S.region === 'bri' ? '#7ab0a0' : '#e8b23a'; /* v124: Bristol's domes in green copper */
+    const dc = lp(main.a, main.c, .5); dome(dc[0], dc[1] - 6, 38, dcol);
+    for (const f of [wingL, wingR]) { const p = lp(f.a, f.c, .5); dome(p[0], p[1] - 4, 18, dcol); }
     for (const f of [wingL, main, wingR]) tflag(f.b[0] - 4, f.b[1], own ? myCol()[0] : '#ffc23d', t, 40);
     const rc = lp(main.D, main.C, .5); tpoly([rc, [rc[0] + 10, rc[1] + 5], [rc[0] - 18, rc[1] + 40], [rc[0] - 28, rc[1] + 35]], '#c0283a'); /* red carpet */
-    for (const [x, y] of [[g + .1, k + 2.7], [g + 1, k + 2.85], [g + 2, k + 2.85], [g + 2.95, k + 2.7]]) { const p = tiso(x, y); palm(p[0], p[1], .9, t); }
+    for (const [x, y] of [[g + .1, k + 2.7], [g + 1, k + 2.85], [g + 2, k + 2.85], [g + 2.95, k + 2.7]]) { const p = tiso(x, y); if (S.region === 'bri') oakTree(p[0], p[1], .85); else palm(p[0], p[1], .9, t); }
     for (const [x, y] of [[g + .05, k + .2], [g + 3, k + .25]]) { const p = tiso(x, y); hotelTree(p[0], p[1], 1.2); }
   }
   /* your flag, or a rival's, and a golden glow when it's yours */
@@ -8078,17 +8089,19 @@ function buildingShadow(b) {
 function tdecor(t) {
   const R = mulberry32(5);
   /* dusty ground patches and tufts */
-  for (let i = 0; i < 160; i++) { const p = tiso(R() * 15, R() * 15); ctx.fillStyle = R() < .5 ? 'rgba(160,120,70,.18)' : 'rgba(120,150,70,.22)'; ctx.beginPath(); ctx.ellipse(p[0], p[1], 6 + R() * 16, 3 + R() * 6, 0, 0, 7); ctx.fill(); }
+  const bri = S.region === 'bri';
+  for (let i = 0; i < 160; i++) { const p = tiso(R() * 15, R() * 15); ctx.fillStyle = bri ? (R() < .5 ? 'rgba(70,130,50,.22)' : 'rgba(150,200,100,.22)') : R() < .5 ? 'rgba(160,120,70,.18)' : 'rgba(120,150,70,.22)'; ctx.beginPath(); ctx.ellipse(p[0], p[1], 6 + R() * 16, 3 + R() * 6, 0, 0, 7); ctx.fill(); }
   /* vineyard rows at the edges */
   for (const [gx0, gy0, gw, gd] of [[-9, 2, 5, 4], [18, 10, 4, 5], [2, 18, 4, 3.5], [-12, 12, 4, 3]]) {
-    for (let r = 0; r < 6; r++) { const a = tiso(gx0, gy0 + r * gd / 6), c = tiso(gx0 + gw, gy0 + r * gd / 6); ctx.strokeStyle = '#6f8a3a'; ctx.lineWidth = 4; ctx.setLineDash([6, 4]); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...c); ctx.stroke(); ctx.setLineDash([]); }
+    for (let r = 0; r < 6; r++) { const a = tiso(gx0, gy0 + r * gd / 6), c = tiso(gx0 + gw, gy0 + r * gd / 6); ctx.strokeStyle = bri ? (r % 3 ? 'rgba(0,0,0,0)' : '#2e5a24') : '#6f8a3a'; ctx.lineWidth = bri ? 7 : 4; ctx.setLineDash(bri ? [] : [6, 4]); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...c); ctx.stroke(); ctx.setLineDash([]); }
   }
   /* cobbled roads with kerbs */
   const road = (gx0, gy0, gx1, gy1) => {
     const poly = [tiso(gx0, gy0), tiso(gx1, gy0), tiso(gx1, gy1), tiso(gx0, gy1)];
-    tpoly(poly, '#c9a47a'); ctx.save(); ctx.beginPath(); poly.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.clip();
+    tpoly(poly, bri ? '#9c968c' : '#c9a47a'); ctx.save(); ctx.beginPath(); poly.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.clip();
     const RR = mulberry32(Math.round(gx0 * 13 + gy0 * 7 + 1));
-    for (let i = 0; i < 260; i++) { const p = tiso(lerp(gx0, gx1, RR()), lerp(gy0, gy1, RR())); ctx.fillStyle = RR() < .5 ? 'rgba(255,240,215,.35)' : 'rgba(110,70,40,.22)'; ctx.beginPath(); ctx.ellipse(p[0], p[1], 4, 2, 0, 0, 7); ctx.fill(); }
+    for (let i = 0; i < 260; i++) { const p = tiso(lerp(gx0, gx1, RR()), lerp(gy0, gy1, RR())); ctx.fillStyle = RR() < .5 ? (bri ? 'rgba(230,228,220,.35)' : 'rgba(255,240,215,.35)') : (bri ? 'rgba(50,50,60,.25)' : 'rgba(110,70,40,.22)'); ctx.beginPath(); ctx.ellipse(p[0], p[1], 4, 2, 0, 0, 7); ctx.fill(); }
+    if (bri) for (let i = 0; i < 3; i++) { const p = tiso(lerp(gx0, gx1, .2 + RR() * .6), lerp(gy0, gy1, .2 + RR() * .6)); ctx.fillStyle = 'rgba(150,175,195,.75)'; ctx.beginPath(); ctx.ellipse(p[0], p[1], 14 + RR() * 10, 5, 0, 0, 7); ctx.fill(); ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.beginPath(); ctx.ellipse(p[0] - 4, p[1] - 1, 6, 1.4, 0, 0, 7); ctx.fill(); } /* v124: puddles */
     ctx.restore(); tpoly(poly, null, 'rgba(110,70,40,.35)', 2);
   };
   road(0, 7.55, 15, 8.45); road(7.55, 0, 8.45, 15); road(0.6, 3.6, 7.55, 4.1);
@@ -8322,6 +8335,54 @@ function shopThumb(k) {
   } finally { ctx = keep; }
   return cv.toDataURL();
 }
+/* ---------- v124: Bristol's town ----------
+   Honey Bath-stone walls and slate roofs come from TUFF_BY.bri and the roof functions; here the street furniture:
+   red telephone boxes and pillar boxes, a double-decker bus on each main road, the pub's hanging sign, puddles on the
+   cobbles, copper beeches and oaks, sheep behind hedges at the edges, the harbour with its tall ship behind the town,
+   and gulls overhead. */
+function copperBeech(x, y, s = 1) { roundTree(x, y, s * 1.05, '#7a2a3a'); ell(x + 6 * s, y - 22 * s, 9 * s, 8 * s, 'rgba(150,60,70,.45)'); }
+function oakTree(x, y, s = 1) { ctx.fillStyle = '#4a3420'; ctx.fillRect(x - 2.5 * s, y - 18 * s, 5 * s, 18 * s); for (const [dx, dy, r, c] of [[-9, -24, 12, '#3e6a2c'], [9, -26, 12, '#4a7a34'], [0, -34, 14, '#5a8a3e'], [-2, -24, 11, '#467a32']]) ell(x + dx * s, y + dy * s, r * s, r * .85 * s, c); }
+function phoneBox(x, y) {
+  ctx.fillStyle = '#b8141c'; ctx.fillRect(x - 6, y - 34, 12, 34); ctx.fillStyle = '#8a0c12'; ctx.fillRect(x + 2, y - 34, 4, 34);
+  ctx.beginPath(); ctx.moveTo(x - 7, y - 34); ctx.quadraticCurveTo(x, y - 40, x + 7, y - 34); ctx.fill();
+  ctx.fillStyle = '#f4f0e0'; ctx.fillRect(x - 5, y - 32, 7, 2.5);
+  ctx.fillStyle = NIGHT_K > 0 ? '#ffe08a' : '#cfe0e8'; for (let r = 0; r < 3; r++) ctx.fillRect(x - 4.5, y - 27 + r * 7, 6, 5.5);
+}
+function pillarBox(x, y) { ctx.fillStyle = '#c0181e'; ctx.fillRect(x - 4, y - 16, 8, 16); ctx.beginPath(); ctx.ellipse(x, y - 16, 4.6, 2.4, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle = '#8a0c12'; ctx.fillRect(x + 1.5, y - 16, 2.5, 16); ctx.fillStyle = '#1a1010'; ctx.fillRect(x - 3, y - 12, 5, 1.2); ctx.fillStyle = '#2a1a1a'; ctx.fillRect(x - 4.5, y - 1.5, 9, 1.5); }
+/* a red double-decker going along a road; onX: along gx */
+function decker(gx, gy, onX) {
+  const w = onX ? 1.05 : .42, d = onX ? .42 : 1.05, H = 36;
+  const f = block(gx - w / 2, gy - d / 2, w, d, H, { lit: '#c8202a', shade: '#8e1218', top: '#b81c24', courses: false });
+  for (const [p, q] of [[f.D, f.C], [f.C, f.B]]) tface(p, q, H, () => { ctx.fillStyle = '#2a3440'; for (let r = 0; r < 2; r++) for (let i = 0; i < 4; i++) ctx.fillRect(.06 + i * .235, .14 + r * .44, .18, .26); ctx.fillStyle = '#f4f0e0'; ctx.fillRect(0, .5, 1, .05); });
+}
+function pubSign(x, y, t) {
+  ctx.fillStyle = '#2a1e14'; ctx.fillRect(x - 1.5, y - 52, 3, 52); ctx.fillRect(x - 1.5, y - 52, 20, 2.5);
+  const sw = Math.sin(t * 1.4) * .08; ctx.save(); ctx.translate(x + 14, y - 50); ctx.rotate(sw);
+  ctx.strokeStyle = '#2a1e14'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(-5, 0); ctx.lineTo(-5, 5); ctx.moveTo(5, 0); ctx.lineTo(5, 5); ctx.stroke();
+  ctx.fillStyle = '#1e3a2a'; ctx.fillRect(-9, 5, 18, 22); ctx.strokeStyle = '#c9a040'; ctx.lineWidth = 1.2; ctx.strokeRect(-8, 6, 16, 20);
+  const c = myCol(); ctx.fillStyle = c[0]; ctx.beginPath(); ctx.arc(0, 13, 5, Math.PI, 0); ctx.quadraticCurveTo(5, 18, 1.5, 21); ctx.lineTo(-1.5, 21); ctx.quadraticCurveTo(-5, 18, -5, 13); ctx.fill(); ctx.fillStyle = '#6b4426'; ctx.fillRect(-1.5, 22, 3, 2.5);
+  ctx.restore();
+}
+function sheepFlock(x, y, n, t) { for (let i = 0; i < n; i++) { const sx = x + (i % 3) * 13 - 13 + (i > 2 ? 6 : 0), sy = y + Math.floor(i / 3) * 7, b = Math.sin(t * 1.3 + i) * .5; ell(sx, sy - 5 + b, 6, 4, '#f4f0e6'); ell(sx + 5, sy - 6 + b, 2.4, 2, '#2a2420'); ctx.fillStyle = '#2a2420'; ctx.fillRect(sx - 3, sy - 2, 1.2, 3); ctx.fillRect(sx + 2, sy - 2, 1.2, 3); } }
+function hedge(x, y, len) { ctx.fillStyle = '#2e5a24'; for (let i = 0; i <= len; i += 8) ell(x + i, y - 5 - Math.sin(i) * 1.5, 6, 5, i % 16 ? '#2e5a24' : '#3a6a2c'); }
+function tallShip(x, y, t) {
+  const bob = Math.sin(t * .8) * 1.5; y += bob;
+  ctx.fillStyle = '#1e1a1a'; ctx.beginPath(); ctx.moveTo(x - 60, y - 14); ctx.lineTo(x + 66, y - 18); ctx.lineTo(x + 50, y); ctx.lineTo(x - 50, y); ctx.fill();
+  ctx.fillStyle = '#c8a050'; ctx.fillRect(x - 58, y - 13, 118, 2);
+  ctx.strokeStyle = '#2a2018'; ctx.lineWidth = 2.4; for (const [dx, hh] of [[-30, 80], [4, 96], [36, 74]]) { ctx.beginPath(); ctx.moveTo(x + dx, y - 14); ctx.lineTo(x + dx, y - 14 - hh); ctx.stroke(); ctx.lineWidth = 1.6; for (let k = 1; k <= 3; k++) { const yy = y - 14 - hh * k / 3.6, yw = 16 - k * 3; ctx.beginPath(); ctx.moveTo(x + dx - yw, yy); ctx.lineTo(x + dx + yw, yy); ctx.stroke(); } ctx.lineWidth = 2.4; }
+  ctx.lineWidth = .7; ctx.beginPath(); ctx.moveTo(x - 60, y - 14); ctx.lineTo(x - 30, y - 94); ctx.lineTo(x + 4, y - 110); ctx.lineTo(x + 36, y - 88); ctx.lineTo(x + 80, y - 20); ctx.stroke();
+}
+function gulls(t, cx, cy) { ctx.strokeStyle = 'rgba(250,250,246,.95)'; ctx.lineWidth = 1.8; ctx.lineCap = 'round'; for (let i = 0; i < 6; i++) { const x = cx + Math.sin(t * .2 + i * 1.3) * 260 + i * 30, y = cy + Math.cos(t * .27 + i) * 60 + i * 12, w = Math.sin(t * 6 + i) * 4; ctx.beginPath(); ctx.moveTo(x - 8, y - w); ctx.quadraticCurveTo(x - 4, y - 4 - w * .3, x, y); ctx.quadraticCurveTo(x + 4, y - 4 - w * .3, x + 8, y - w); ctx.stroke(); } }
+function briTownScenery(items, t) {
+  for (const [gx, gy] of [[7.32, 2.6], [8.7, 11.1], [3.2, 7.32]]) items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 8, p[1] + 2, 9, 3, .18); }, draw: () => phoneBox(...tiso(gx, gy)) });
+  for (const [gx, gy] of [[7.3, 10.6], [11.6, 7.3], [8.7, 4.4]]) items.push({ depth: gx + gy, draw: () => pillarBox(...tiso(gx, gy)) });
+  items.push({ depth: 13.7 + 4.65, draw: () => pubSign(...tiso(13.7, 4.65), t) });
+  /* a bus on each road, slowly; it waits at the crossing now and then */
+  const run = (k, ph) => { const u = pmod(t * .045 * k + ph, 1.2); return clamp(u, 0, 1) * 17 - 1; };
+  { const gx = run(1, 0), gy = 7.75; items.push({ depth: gx + gy + .6, draw: () => decker(gx, gy, true) }); }
+  { const gy = run(.8, .55), gx = 8.25; items.push({ depth: gx + gy + .6, draw: () => decker(gx, gy, false) }); }
+  if (NIGHT_K < .3) items.push({ depth: 99, draw: () => { const c = tiso(7.5, 6); ctx.save(); ctx.globalAlpha = 1 - NIGHT_K / .3; gulls(t, c[0], c[1] - 330); ctx.restore(); } });
+}
 function townScenery(t) {
   const items = [];
   /* fairy chimneys stay on the edges and gaps so they never hide a building */
@@ -8354,6 +8415,7 @@ function townScenery(t) {
   if (owned('rugs')) items.push({ depth: RUGS_AT[0] + RUGS_AT[1], draw: () => decoRugs(tiso(...RUGS_AT), t) });
   if (owned('supporter')) items.push({ depth: PLAQUE_AT[0] + PLAQUE_AT[1], draw: () => decoPlaque(tiso(...PLAQUE_AT)) });
   if (owned('pigeons') && NIGHT_K < .3) items.push({ depth: 99, draw: () => { const c = tiso(7.5, 5.5); ctx.save(); ctx.globalAlpha = 1 - NIGHT_K / .3; decoPigeons([c[0], c[1] - 250], t); ctx.restore(); } });
+  if (S.region === 'bri') briTownScenery(items, t); /* v124 */
   /* people strolling on the roads */
   for (let i = 0; i < 10; i++) { const along = ((t * .05 + i * .1) % 1) * 15, onX = i % 2; const gx = onX ? along : 7.8 + (i % 3) * .15, gy = onX ? 7.8 + (i % 3) * .15 : along; items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); person(p[0], p[1], ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0'][i % 5], t, i); } }); }
   return items;
@@ -8361,6 +8423,7 @@ function townScenery(t) {
 /* What stands on the town's edges: Cappadocia's fairy chimneys, Albuquerque's red buttes, Luxor's palm clumps and an obelisk. */
 function edgeLandmark(x, y, hh, seed) {
   if (S.region === 'abq') return;
+  if (S.region === 'bri') { const k = Math.round(seed * 10) % 3; if (k === 0) { copperBeech(x - 14, y, 1.3); return oakTree(x + 16, y + 6, 1.2); } if (k === 1) { hedge(x - 30, y + 2, 60); return sheepFlock(x, y - 2, 5, T); } oakTree(x, y, 1.4); return copperBeech(x + 22, y + 8, 1); }
   if (S.region === 'lux') {
     if (Math.round(seed) % 3 === 0) return obelisk(x, y, hh * .9);
     for (const [dx, k] of [[-16, .85], [10, 1], [26, .75]]) palm(x + dx, y + (dx > 0 ? 4 : 0), k * hh / 90, T);
@@ -8370,6 +8433,7 @@ function edgeLandmark(x, y, hh, seed) {
 }
 /* A garden tree by a hotel: cypress in Cappadocia, cottonwood in Albuquerque, date palm in Luxor. */
 function hotelTree(x, y, s) {
+  if (S.region === 'bri') return copperBeech(x, y, s * .9);
   if (S.region === 'abq') return roundTree(x, y, s * .9, '#9aa84a');
   if (S.region === 'lux') return palm(x, y, s * .9, T);
   cypress(x, y, s);
@@ -8390,6 +8454,7 @@ function obelisk(x, y, h) {
 }
 /* Town trees outside Cappadocia: cottonwoods, cholla and yucca in Albuquerque; date palms in Luxor. */
 function regionTree(x, y, i, t) {
+  if (S.region === 'bri') return i % 3 === 0 ? copperBeech(x, y, 1.05) : oakTree(x, y, 1.05);
   if (S.region === 'lux') return palm(x, y, .9 + (i % 3) * .12, t + i);
   if (i % 3 === 0) return cholla(x, y, .9);
   if (i % 3 === 1) return yucca(x, y, .9);
@@ -8487,16 +8552,24 @@ function outerDecor(t) {
     const band = (y0, y1, c) => tpoly([tiso(-60, y0), tiso(70, y0), tiso(70, y1), tiso(-60, y1)], c);
     band(-15.5, -9.5, '#8fb85a'); band(-13.6, -11.2, '#3f8fa8'); band(-13.1, -12.7, 'rgba(255,255,255,.18)');
   }
+  /* v124: Bristol: the harbour behind the town, the old tall ship at the quay */
+  if (S.region === 'bri') {
+    const band = (y0, y1, c) => tpoly([tiso(-60, y0), tiso(70, y0), tiso(70, y1), tiso(-60, y1)], c);
+    band(-15.8, -9.2, '#b8a888'); band(-14.6, -10.4, '#5f8494'); band(-13.1, -12.7, 'rgba(255,255,255,.16)');
+    const s = tiso(2, -10.9); tallShip(s[0], s[1], t);
+    for (const [cx, cy] of [[9, -10.2], [12, -10.2]]) { const p = tiso(cx, cy); ctx.strokeStyle = '#c0582a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(p[0] - 8, p[1]); ctx.lineTo(p[0], p[1] - 90); ctx.lineTo(p[0] + 8, p[1]); ctx.moveTo(p[0], p[1] - 86); ctx.lineTo(p[0] - 70, p[1] - 76); ctx.stroke(); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p[0] - 60, p[1] - 77); ctx.lineTo(p[0] - 60, p[1] - 40); ctx.stroke(); }
+  }
   const dirt = (x0, y0, x1, y1) => { tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], L.road); };
   dirt(-40, 7.65, 0, 8.35); dirt(15, 7.65, 55, 8.35); dirt(7.65, -40, 8.35, 0); dirt(7.65, 15, 8.35, 55);
-  for (const f of OUTER_FIELDS) { const q = [tiso(f[0], f[1]), tiso(f[0] + 3, f[1]), tiso(f[0] + 3, f[1] + 2.2), tiso(f[0], f[1] + 2.2)]; tpoly(q, L.field); tpoly(q, null, 'rgba(110,90,40,.3)', 2);
+  for (const f of OUTER_FIELDS) { const q = [tiso(f[0], f[1]), tiso(f[0] + 3, f[1]), tiso(f[0] + 3, f[1] + 2.2), tiso(f[0], f[1] + 2.2)]; tpoly(q, L.field); tpoly(q, null, S.region === 'bri' ? 'rgba(30,70,25,.85)' : 'rgba(110,90,40,.3)', S.region === 'bri' ? 5 : 2); /* v124: hedgerows round Bristol's fields */
     if (S.region === 'lux') for (let k = 1; k < 8; k++) tpoly([tiso(f[0] + k * .37, f[1]), tiso(f[0] + k * .37, f[1] + 2.2)], null, 'rgba(60,100,40,.35)', 1.5); }
 }
 /* Colours of the land round the town: patches, dirt roads, fields (vineyards, alfalfa, sugar cane). */
 const OUTER_LOOK = {
   cap: { patch: ['rgba(160,120,70,.16)', 'rgba(120,150,70,.2)'], split: .55, road: '#d8b085', field: '#b3b86e' },
   abq: { patch: ['rgba(170,90,50,.16)', 'rgba(130,140,90,.22)'], split: .6, road: '#d49a6e', field: '#a9b46a' },
-  lux: { patch: ['rgba(110,160,70,.24)', 'rgba(200,170,110,.18)'], split: .6, road: '#dcc28e', field: '#8db05a' }
+  lux: { patch: ['rgba(110,160,70,.24)', 'rgba(200,170,110,.18)'], split: .6, road: '#dcc28e', field: '#8db05a' },
+  bri: { patch: ['rgba(70,120,50,.22)', 'rgba(150,190,90,.2)'], split: .55, road: '#a6a29a', field: '#8ab85a' }
 };
 const OUTER_FIELDS = [[-6, 9.5], [18, 2], [10, 18], [-4, -6], [20, 15]];
 /* Fairy chimney clusters out in the valley, and balloons inflating and lifting off the other fields. */
@@ -8522,6 +8595,12 @@ function outerScenery(t) {
 }
 /* Out in the land: fairy chimneys in Cappadocia; red buttes and junipers in Albuquerque; palm groves and temple ruins in Luxor. */
 function outerLandmark(x, y, hh, i) {
+  if (S.region === 'bri') { /* v124: oaks and copper beeches, sheep behind hedges, now and then a church */
+    if (i % 5 === 0) { const c = '#cdb07a'; ctx.fillStyle = c; ctx.fillRect(x - 16, y - hh * .3, 26, hh * .3); ctx.fillStyle = '#a88a5a'; ctx.fillRect(x + 10, y - hh * .5, 12, hh * .5); ctx.fillStyle = '#5e6874'; ctx.beginPath(); ctx.moveTo(x + 9, y - hh * .5); ctx.lineTo(x + 16, y - hh * .85); ctx.lineTo(x + 23, y - hh * .5); ctx.fill(); ctx.beginPath(); ctx.moveTo(x - 18, y - hh * .3); ctx.lineTo(x - 3, y - hh * .42); ctx.lineTo(x + 12, y - hh * .3); ctx.fill(); return; }
+    if (i % 5 === 2) { hedge(x - 34, y + 4, 68); return sheepFlock(x, y, 4 + i % 3, T + i); }
+    if (i % 2) { oakTree(x, y, 1 + (i % 3) * .2); return oakTree(x + 22, y + 8, .9); }
+    return copperBeech(x, y, 1.1);
+  }
   if (S.region === 'abq') {
     if (i % 3 === 0) { roundTree(x, y, .7, '#4f6e3a'); return roundTree(x + 18, y + 6, .55, '#5a7a40'); }
     return butte(x, y, hh * (i % 2 ? 1.3 : .8), hh * (i % 2 ? .45 : .7), '#c8744a', '#8e4a2c');
@@ -8553,7 +8632,10 @@ function townHorizon(h) {
 function townBackdrop(w, h, t) {
   const hz = townHorizon(h), px = TV.ox * .08, p = .32;
   if (hz < 2) return; /* zoomed in: only ground in view */
-  const g = ctx.createLinearGradient(0, 0, 0, hz); g.addColorStop(0, mix('#1b1840', '#5f8fc6', p)); g.addColorStop(.5, mix('#6b3e6e', '#f0b48c', p)); g.addColorStop(1, mix('#f08a4a', '#ffe2ac', p));
+  const bri = S.region === 'bri';
+  const g = ctx.createLinearGradient(0, 0, 0, hz);
+  if (bri) { g.addColorStop(0, '#6a7c94'); g.addColorStop(.5, '#a8b6c4'); g.addColorStop(1, '#dcd8d0'); } /* v124: overcast, pale blue-grey */
+  else { g.addColorStop(0, mix('#1b1840', '#5f8fc6', p)); g.addColorStop(.5, mix('#6b3e6e', '#f0b48c', p)); g.addColorStop(1, mix('#f08a4a', '#ffe2ac', p)); }
   ctx.fillStyle = g; ctx.fillRect(0, 0, w, hz + 2);
   /* faint stars still fading at the top */
   const R = mulberry32(11); ctx.fillStyle = '#ffffff';
@@ -8561,7 +8643,8 @@ function townBackdrop(w, h, t) {
   ctx.globalAlpha = 1;
   const sx = w * .74 + px, sy = hz - h * .045, sr = Math.min(w, h) * .055;
   const sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, sr * 7); sg.addColorStop(0, 'rgba(255,225,160,.65)'); sg.addColorStop(.35, 'rgba(255,170,110,.25)'); sg.addColorStop(1, 'rgba(255,160,110,0)');
-  if (NIGHT_K <= 0) { ctx.fillStyle = sg; ctx.fillRect(sx - sr * 7, sy - sr * 7, sr * 14, sr * 14); ell(sx, sy, sr, sr, '#fff0c8'); } /* no sun at night */
+  if (NIGHT_K <= 0) { if (bri) ctx.globalAlpha = .45; ctx.fillStyle = sg; ctx.fillRect(sx - sr * 7, sy - sr * 7, sr * 14, sr * 14); ell(sx, sy, sr, sr, '#fff0c8'); ctx.globalAlpha = 1; } /* no sun at night; a pale one behind Bristol's clouds */
+  if (bri && NIGHT_K <= 0) for (let i = 0; i < 5; i++) { const cw = w * (.4 + .12 * (i % 2)), cx = ((i * w * .29 + t * (2 + i) + px * .5) % (w + cw)) - cw * .5, cy = hz * (.12 + i * .15); ctx.save(); ctx.globalAlpha = .55; ell(cx, cy, cw * .5, h * .02 + 4, '#c8ced6'); ell(cx + cw * .15, cy - h * .012, cw * .3, h * .016 + 3, '#dfe3e8'); ctx.restore(); }
   /* thin pink clouds lit from below */
   for (let i = 0; i < 4; i++) { const cw = w * (.28 + .1 * (i % 2)), cx = ((i * w * .37 + t * (4 + i * 2) + px * .5) % (w + cw)) - cw * .5, cy = hz * (.3 + i * .13);
     ctx.save(); ctx.globalAlpha = .5; ell(cx, cy, cw * .5, h * .007 + 2, mix('#c77a9a', '#ffd0b0', .25 + i * .18)); ell(cx + cw * .12, cy - h * .006, cw * .3, h * .006 + 2, mix('#e89aa8', '#ffe2c4', .3 + i * .15)); ctx.restore(); }
@@ -8579,7 +8662,7 @@ function townBackdrop(w, h, t) {
   };
   far(0);
   /* far ridge with fairy chimney silhouettes, then a nearer one */
-  const RG = { abq: [['#8a4a6e', '#e09a8a', .4, .07], ['#6a3a50', '#c47a6e', .3, .03]], lux: [['#9a7a5e', '#e8c49a', .45, .06], ['#7a6a48', '#b8a070', .3, .02]] }[S.region];
+  const RG = { abq: [['#8a4a6e', '#e09a8a', .4, .07], ['#6a3a50', '#c47a6e', .3, .03]], lux: [['#9a7a5e', '#e8c49a', .45, .06], ['#7a6a48', '#b8a070', .3, .02]], bri: [['#5a6a70', '#a8b8b0', .45, .05], ['#4a6448', '#8aa480', .35, .03]] }[S.region];
   for (const [k, col, amp, par, seed] of [[.0, RG ? mix(RG[0][0], RG[0][1], RG[0][2]) : mix('#6b4a6e', '#d9a07a', .35), RG ? RG[0][3] : .05, .5, 3], [.025, RG ? mix(RG[1][0], RG[1][1], RG[1][2]) : mix('#5a3a50', '#c48a6e', .3), RG ? RG[1][3] : .035, 1, 7]]) {
     const base = hz + h * k, off = px * par;
     ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, h);
@@ -8588,6 +8671,7 @@ function townBackdrop(w, h, t) {
     const Rc = mulberry32(seed * 13);
     for (let i = 0; i < 14; i++) { const x = ((Rc() * (w + 200) + off) % (w + 200)) - 100, hh = h * (.03 + Rc() * .035) * (k ? 1.2 : .8), by = base - h * amp * .35;
       if (S.region === 'abq') { if (i % 2) { ctx.fillStyle = col; ctx.fillRect(x - hh * .7, by - hh * .5, hh * 1.4, hh * .5 + 4); ctx.beginPath(); ctx.moveTo(x - hh * .9, by + 4); ctx.lineTo(x - hh * .7, by - hh * .5); ctx.lineTo(x + hh * .7, by - hh * .5); ctx.lineTo(x + hh * .9, by + 4); ctx.fill(); } }
+      else if (S.region === 'bri') { if (i % 4 === 1) { ctx.fillStyle = col; ctx.fillRect(x - hh * .06, by - hh * .5, hh * .12, hh * .5 + 4); ctx.beginPath(); ctx.moveTo(x - hh * .07, by - hh * .5); ctx.lineTo(x, by - hh * 1.05); ctx.lineTo(x + hh * .07, by - hh * .5); ctx.fill(); } else { ell(x, by - hh * .25, hh * .32, hh * .26, col); ell(x + hh * .25, by - hh * .12, hh * .22, hh * .18, col); } }
       else if (S.region === 'lux') { if (k) palmSil(x, by + h * .02, hh * .9, col); else if (i === 3) { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x - hh * 1.2, by + 4); ctx.lineTo(x, by - hh * 1.3); ctx.lineTo(x + hh * 1.2, by + 4); ctx.fill(); } }
       else chimney(x, by, hh * .42, hh, col, null, mix(col, '#000000', .25)); }
   }
@@ -8603,13 +8687,14 @@ function palmSil(x, y, h, col) {
 /* The valley floor runs from the horizon to the bottom of the screen; the town sits in it. */
 function townGround(w, h) {
   const hz = Math.max(0, townHorizon(h) + h * .015);
-  const g = ctx.createLinearGradient(0, hz, 0, Math.max(hz + 1, h)); if (S.winter) { g.addColorStop(0, '#c9d2e0'); g.addColorStop(.25, '#dfe6ef'); g.addColorStop(1, '#eef2f8'); } else { const G = { abq: ['#d4987a', '#dca67e', '#e2b384'], lux: ['#c9b48a', '#c8be8a', '#cfc490'] }[S.region] || ['#d9a88a', '#e2b98e', '#e6c294']; g.addColorStop(0, G[0]); g.addColorStop(.25, G[1]); g.addColorStop(1, G[2]); }
+  const g = ctx.createLinearGradient(0, hz, 0, Math.max(hz + 1, h)); if (S.winter) { g.addColorStop(0, '#c9d2e0'); g.addColorStop(.25, '#dfe6ef'); g.addColorStop(1, '#eef2f8'); } else { const G = { abq: ['#d4987a', '#dca67e', '#e2b384'], lux: ['#c9b48a', '#c8be8a', '#cfc490'], bri: ['#7a9a72', '#86a86a', '#90b46c'] }[S.region] || ['#d9a88a', '#e2b98e', '#e6c294']; g.addColorStop(0, G[0]); g.addColorStop(.25, G[1]); g.addColorStop(1, G[2]); }
   ctx.fillStyle = g; ctx.fillRect(0, hz, w, h - hz);
   return hz;
 }
 /* Haze where the ground meets the sky, drawn over the flat ground before anything stands on it. */
 function townHaze(w, h) {
   const hz = townHorizon(h); if (hz < -h * .2) return;
+  if (S.region === 'bri') { const g = ctx.createLinearGradient(0, hz - h * .05, 0, hz + h * .15); g.addColorStop(0, 'rgba(220,226,230,0)'); g.addColorStop(.25, 'rgba(222,228,232,.75)'); g.addColorStop(.45, 'rgba(220,226,228,.45)'); g.addColorStop(1, 'rgba(220,226,228,0)'); ctx.fillStyle = g; ctx.fillRect(0, hz - h * .05, w, h * .2); return; } /* v124: a grey-white English haze */
   const g = ctx.createLinearGradient(0, hz - h * .05, 0, hz + h * .15); g.addColorStop(0, 'rgba(236,170,135,0)'); g.addColorStop(.25, 'rgba(236,172,136,.75)'); g.addColorStop(.45, 'rgba(232,180,140,.45)'); g.addColorStop(1, 'rgba(232,190,145,0)');
   ctx.fillStyle = g; ctx.fillRect(0, hz - h * .05, w, h * .2);
 }
@@ -8628,7 +8713,7 @@ function renderTown(V, w, h, dpr, offY) {
     W0();
     outerDecor(T);
     const E = [tiso(-.5, -.5), tiso(15.5, -.5), tiso(15.5, 15.5), tiso(-.5, 15.5)];
-    tpoly(E, S.winter ? 'rgba(250,252,255,.6)' : 'rgba(240,210,165,.55)');
+    tpoly(E, S.winter ? 'rgba(250,252,255,.6)' : S.region === 'bri' ? 'rgba(130,180,90,.6)' : 'rgba(240,210,165,.55)'); /* v124: Bristol's lawns */
     tdecor(T);
     townZoneText();
     ctx.restore();
@@ -9495,6 +9580,7 @@ function hqScene(L, t) {
   for (let i = 0; i < 9; i++) { const x = wx0 + R() * (wx1 - wx0), hh = 16 + R() * 26;
     if (S.region === 'abq') butte(x, hz + 4, hh * 1.2, hh * .6, '#d98e5e', '#a65e38');
     else if (S.region === 'lux') palmSil(x, hz + 6, hh, '#7a8a4a');
+    else if (S.region === 'bri') { if (i % 3) oakTree(x, hz + 6, hh / 40); else { ctx.fillStyle = '#c8b080'; ctx.fillRect(x - 3, hz + 4 - hh * .6, 6, hh * .6); ctx.beginPath(); ctx.moveTo(x - 3.5, hz + 4 - hh * .6); ctx.lineTo(x, hz + 4 - hh * 1.1); ctx.lineTo(x + 3.5, hz + 4 - hh * .6); ctx.fill(); } } /* v124 */
     else chimney(x, hz + 4, hh * .42, hh, '#e8b48e', '#c98d68', '#7a4e38'); }
   for (let i = 0; i < 7; i++) { const x = wx0 + 6 + i * (wx1 - wx0) / 7, bw = 14 + R() * 12, bh = 10 + R() * 16; ctx.fillStyle = '#f1d6b0'; ctx.fillRect(x, wy1 - bh, bw, bh); ctx.fillStyle = '#c9925f'; ctx.fillRect(x + bw, wy1 - bh + 2, 5, bh - 2); ctx.fillStyle = '#ffd27a'; ctx.fillRect(x + 4, wy1 - bh + 5, 3, 4); }
   const cols = [myCol()].concat(S.rivals.map(r => [r.col, r.col2]), [['#14a39a', '#e8fff9'], ['#e0408a', '#ffd0e0']]);
