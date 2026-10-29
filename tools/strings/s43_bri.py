@@ -583,3 +583,10 @@ add("review.mud.1", "The tide was out and the balloon sat down in the mud. We ha
  "Había marea baja y el globo se posó en el barro. Desayunamos en el hotel, llenos de barro.",
  "潮が引いていて、気球は泥の上に座り込んだ。泥だらけでホテルの朝食をとった。",
  "썰물이라 열기구가 진흙에 내려앉았어요. 진흙투성이로 호텔에서 아침을 먹었죠.")
+add("holding.withdrawHintFx.bri",
+ "The %1$@ cash box holds %2$@. Money you move is changed from pounds into euros (£0.85 = €1) on its way to the holding; holding money never goes back to the regions.",
+ "%1$@ kasasında %2$@ var. Aktardığın para sterlinden euroya çevrilerek (£0,85 = €1) holdinge geçer; holding parası bölgelere geri dönmez.",
+ "In der Kasse von %1$@ liegen %2$@. Überwiesenes Geld wird von Pfund in Euro umgerechnet (£0,85 = 1 €) und geht an die Holding; Holding-Geld fließt nie in die Regionen zurück.",
+ "La caja de %1$@ tiene %2$@. El dinero que muevas se cambia de libras a euros (0,85 £ = 1 €) al pasar al holding; el dinero del holding nunca vuelve a las regiones.",
+ "%1$@の金庫には%2$@ある。移した資金はポンドからユーロに両替され（£0.85＝€1）ホールディングスへ入る。ホールディングスの資金は地域へは戻らない。",
+ "%1$@ 금고 잔액: %2$@. 옮긴 돈은 파운드에서 유로로 환전되어(£0.85 = €1) 지주회사로 가며, 지주회사 돈은 지역으로 돌아가지 않습니다.")

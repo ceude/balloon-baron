@@ -158,7 +158,7 @@ struct HoldingView: View {
 
     private func withdrawSection(_ s: GameState) -> some View {
         let canTake = s.cash > Holding.withdrawKeep
-        let hintKey = s.region.fx != 1 ? "holding.withdrawHintFx" : "holding.withdrawHint"
+        let hintKey = s.region == .bri ? "holding.withdrawHintFx.bri" : s.region.fx != 1 ? "holding.withdrawHintFx" : "holding.withdrawHint" // v124: pounds
         return VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("holding.withdrawTitle", s.region.title))
             hint(loc(hintKey, s.region.title, eur(s.cash)))
