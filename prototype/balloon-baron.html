@@ -1024,6 +1024,7 @@ const HEZ = {
   welcome: 'Hoş geldin evlat! Ben Hezarfen. Bir zamanlar Galata Kulesi\'nden kanat takıp Üsküdar\'a süzüldüm, derler. Sen işi daha sağlam yapacaksın: sıcak havayla! Bugün tek işin var: fiyatı belirle, yolcu topla ve uç.',
   ins: 'Gökyüzü her zaman dost değildir. İlk günden beri balonun ve yolcuların sigortalı uçuyor. Artık sigortayı kendin açıp kapatabilirsin, ama bir kazanın kasanı bir sabahta boşaltabileceğini unutma.',
   fleet: 'Filo sayfası açıldı evlat. Kasa dolunca ikinci balonu düşünebilirsin, ama her balona bir pilot lazım.',
+  price3: 'Dünkü kalabalık geçti evlat; bugün vadide turist her zamanki kadar. Fiyatı her sabah o günün turistine göre ayarla: dünkü yüksek fiyatta kalırsan koltukların boş gider, gereksiz düşürürsen de para kaçırırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.',
   price: 'Dün koltukların hepsi dolmadı evlat. Bilet fiyatı turistin kararını değiştirir: biraz düşürürsen boş koltuk kalmaz. Koltuklar hep doluysa da fiyatı artırıp daha çok kazanırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.',
   bank: 'Banka kapısı açıldı. Kredi seni hızlandırır ama faiz sabırlı bir düşmandır, unutma.',
   market: 'Pazar sayfası açıldı. Rakiplerini tanı: Göreme Sky ağır abidir, Kızıl Vadi kural tanımaz. Otellerle anlaşmalar da orada.',
@@ -1071,6 +1072,7 @@ const HEZ_SHORT = {
   school: 'Pilot okulunun arsası hazır: mezunları daha ucuza çalışır ve daha az kaza yapar.',
   goals: 'Hedefler düğmesine dokun evlat: bölüm hedeflerin orada.',
   price: 'Dün koltuklar boş kaldı evlat: fiyatı biraz düşürürsen dolar.',
+  price3: 'Dünkü kalabalık geçti evlat: fiyatı bugünün turistine göre yeniden ayarla.', /* v122.11 */
   yellow: 'Sarı bayrak evlat: ya pahalı sigortayla uç ya da balonları dinlendir.',
   red: 'Kırmızı bayrak evlat: bugün yerde kalmak ayıp değil.',
   mission: 'İlk özel müşterin geldi evlat: balonu 250–350 m arasında 8 saniye tut, sonra yumuşak in.',
@@ -1574,7 +1576,8 @@ function spreadMorning() {
   if (S.day < 2 || S.spreadDay === S.day) return; /* once a morning, not again on reload */
   S.spreadDay = S.day;
   const lesson = k => !/^(news|boss|hz|insp|guide):/.test(k) && !k.startsWith('p_'); /* praise has its own every-other-day pace */
-  const q = (S.hezLater || []).concat(S.hezQ); S.hezQ = []; S.hezLater = [];
+  let q = (S.hezLater || []).concat(S.hezQ); S.hezQ = []; S.hezLater = [];
+  if (q.includes('price3')) q = ['price3'].concat(q.filter(k => k !== 'price3' && k !== 'price')); /* v122.11: first, and it says what 'price' would */
   let n = 0; for (const k of q) (lesson(k) && ++n > MORNING_TIPS ? S.hezLater : S.hezQ).push(k);
   const posts = (S.postLater || []).concat(S.newPost || []); S.newPost = posts.slice(0, 1); S.postLater = posts.slice(1);
 }
@@ -1627,6 +1630,9 @@ function unlockCheck() {
   if (S.unl.guide) hezAdd('pr');
   /* v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows where it is */
   { const l = S.lastShare; if (S.day >= 2 && S.day <= 12 && l && l.cap && l.me < l.cap) hezAdd('price'); }
+  /* v122.11: day 2's crowd made the player raise the price; on day 3 the tourists are back to normal, so Hezarfen says to
+     set it for today (a player who kept day 2's price flew half empty for days in tools/sim). */
+  if (S.day === 3 && S.region === 'cap' && S.tut && !S.tut.old) hezAdd('price3');
   if (S.weather.flag === 'yellow') hezAdd('yellow');
   if (S.weather.flag === 'red') hezAdd('red');
   if (S.weather.mission) hezAdd('mission');
@@ -1831,8 +1837,8 @@ function showHez(k) {
   const finish = () => { clearInterval(hezTimer); p.textContent = text; i = text.length; };
   hezTimer = setInterval(() => { i += 2; p.textContent = text.slice(0, i); if (i % 8 === 0) sfx('blip'); if (i >= text.length) finish(); }, 22);
   bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
-  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : k === 'bazaar' ? 'Çarşıya git' : k === 'show' ? 'Şöleni gör' : k === 'price' ? 'Fiyatı ayarla' : k.startsWith('p_') ? 'Sağ ol usta' : 'Anladım');
-  ok.onclick = () => { finish(); el.hidden = true; refresh(); if (k === 'bazaar') showBazaar(); else if (k === 'show') showCard(); else if (k === 'price') priceSheet(true); else setTimeout(nextPopup, 250); };
+  const ok = h('button', 'pbtn', boss ? ['Göreceğiz', 'Bakalım', 'Hmm'][(S.day + k.length) % 3] : k === 'bazaar' ? 'Çarşıya git' : k === 'show' ? 'Şöleni gör' : k === 'price' || k === 'price3' ? 'Fiyatı ayarla' : k.startsWith('p_') ? 'Sağ ol usta' : 'Anladım');
+  ok.onclick = () => { finish(); el.hidden = true; refresh(); if (k === 'bazaar') showBazaar(); else if (k === 'show') showCard(); else if (k === 'price' || k === 'price3') priceSheet(true); else setTimeout(nextPopup, 250); };
   if (long) {
     const row = h('div', 'hzrow'), more = h('button', 'hzmore', 'Daha fazla');
     more.onclick = () => { finish(); text = long; p.style.minHeight = ''; p.textContent = long; more.remove(); };

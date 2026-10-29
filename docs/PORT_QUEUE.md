@@ -3,6 +3,7 @@
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
 Kuyrukta:
+- v122.11 (yalnız prototipte): 3. gün sabahı Hezarfen'in fiyat hatırlatması (`price3`, HEZ ve HEZ_SHORT, "Fiyatı ayarla" düğmesi fiyat sayfasını açar); `spreadMorning` onu sabahın ilk kartı yapar ve aynı sabahki `price` dersini düşürür. Swift'te: `Tip` yeni durum, `unlockCheck`'te 3. gün koşulu (Kapadokya, öğretici eski kayıt değil), sabah dağıtımında öne alma, altı dilde `tip.price3` / `.short`.
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
 v122.7 (prototip ve Swift birlikte): holding Anlaşmalar biriminde forma sponsorluğu (€3M, 180 gün, talep +%15, +0,1 popülerlik) ve Dünya Oyunları açılış gösterisi (€10M, bir kez, 60 gün, talep +%30, +0,2 popülerlik); takım adı geçmez. Swift'te `Holding.jerseyCost` / `worldGamesCost`, isteğe bağlı `jerseyUntil` / `worldGamesUntil`, `sponsorJersey()`, `holdWorldGamesShow()`, `HoldingDeed.jersey` / `.worldGames`, `HoldingArt.jersey` / `.worldGames`, masa durumu, metinler `holding.jersey.*`, `holding.wg.*`.
