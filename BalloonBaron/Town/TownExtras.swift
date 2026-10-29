@@ -67,6 +67,7 @@ extension TownPainter {
 
     /// A covered bazaar: tuff walls, two small domes, a striped awning over carpets and pots.
     mutating func bazaar(_ b: TownBuilding) {
+        if s.region == .bri { tudorPub(b); return } // v124.1: Bristol's bazaar is the old harbour pub
         let x0 = b.gx + 0.1, y0 = b.gy + 0.1, w = b.w - 0.2, d = b.d - 0.2, hh: CGFloat = 40
         let f = block(x0, y0, w, d, hh, parapet: true)
         opening(f.D, f.C, hh, 0.3, 0, 0.22, 0.6, door: true)
