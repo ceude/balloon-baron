@@ -43,7 +43,7 @@ final class BristolTests: XCTestCase {
         let before = g.state.holding.cash
         g.state.hezQueue = []
         XCTAssertTrue(g.enterRegion(.bri))
-        XCTAssertEqual(before - g.state.holding.cash, 200_000)
+        XCTAssertEqual(before - g.state.holding.cash, 240_000) // £200,000 at £1 = €1.20
         XCTAssertEqual(g.state.region, .bri)
         XCTAssertEqual(g.state.cash, 6000)
         XCTAssertEqual(g.state.price, 185)
@@ -73,14 +73,14 @@ final class BristolTests: XCTestCase {
 
     func testPoundsToTheHolding() {
         XCTAssertEqual(RegionID.bri.currency, "GBP")
-        XCTAssertEqual(RegionID.bri.fx, 0.85)
+        XCTAssertEqual(RegionID.bri.fx * 1.2, 1, accuracy: 1e-12)
         var g = inBristol()
         g.state.cash = 40000
         let h = g.state.holding.cash
         XCTAssertEqual(g.withdraw(share: 1), 30000)
-        // £30,000 leaves £10,000 behind and reaches the holding as euros: 30,000 / 0.85.
+        // £30,000 leaves £10,000 behind and reaches the holding as euros at £1 = €1.20: €36,000.
         XCTAssertEqual(g.state.cash, 10000)
-        XCTAssertEqual(g.state.holding.cash - h, jsRound(30000 / 0.85))
+        XCTAssertEqual(g.state.holding.cash - h, 36000)
     }
 
     func testPilotsCostMoreInBristol() {

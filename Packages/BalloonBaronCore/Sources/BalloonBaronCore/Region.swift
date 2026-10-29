@@ -9,8 +9,8 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
     /// ISO currency of the region's own cash box.
     public var currency: String { self == .abq ? "USD" : self == .bri ? "GBP" : "EUR" }
     /// Local money per euro. Every price is the same number in every region; only the holding converts.
-    /// Bristol counts in pounds, about £0.85 to the euro.
-    public var fx: Double { self == .abq ? 1.1 : self == .bri ? 0.85 : 1 }
+    /// Bristol counts in pounds at a fixed £1 = €1.20 (v124.2).
+    public var fx: Double { self == .abq ? 1.1 : self == .bri ? 1 / 1.2 : 1 }
     /// The signature XL balloon.
     public var xlName: String {
         switch self {
@@ -30,7 +30,7 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         }
     }
     /// What the holding pays to open the region.
-    public var entryFee: Int { self == .bri ? 200000 : self == .lux ? 150000 : Holding.entryFee }
+    public var entryFee: Int { self == .bri ? 240000 : self == .lux ? 150000 : Holding.entryFee }
     /// Cash in the region's box on the first day.
     public var startCash: Int { self == .bri ? 6000 : self == .lux ? 5000 : Rules.startCash }
     /// The ticket price on the first day (v124: £185 in Bristol).

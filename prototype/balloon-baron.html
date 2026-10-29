@@ -5124,7 +5124,7 @@ function showMenu(open) {
   group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
-  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); })]);
+  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); })]);
   /* v121.10: watch the opening film again; the name and colours are skipped, the company flies in its own colours */
   group('Film', '#ff5e3a', [row('star', 'Başlangıç filmini tekrar izle', chev, () => { m.hidden = true; replayOpening(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
@@ -5172,6 +5172,32 @@ function testShowGame() {
   startDay();
 }
 /* v124: straight into Bristol with a small fleet (the three regions before it already won) */
+/* v124.2 (prototype only): a company that has just become Baron of Luxor: Cappadocia and Albuquerque on autopilot,
+   a big fleet in Luxor, the holding with money for Bristol's entry; the world map shows Bristol open. */
+function testLuxBaron() {
+  const name = S && S.company ? S.company : 'Test Balon', cols = S && S.colors ? S.colors : PALETTES[0];
+  S = newState(); S.company = name; S.colors = cols; S.day = 424; S.tutorialDone = true; S.selfFlights = 60; S.ventTip = 1; S.tut = { done: 1 };
+  S.barons = { cap: 139, abq: 288, lux: 424 }; S.baron = { cap: 139 }; S.iap = { worldTour: 1 }; S.storyDone = 1; S.letter = { day: 50, rated: 50 }; S.rateAsked = 12;
+  S.holding = 1500000; S.hold = { log: [] };
+  /* the two regions behind you, run by their managers */
+  S.regions = {};
+  for (const [id, n] of [['cap', 30], ['abq', 26]]) {
+    const rs = newRegionState(id); rs.balloons = []; rs.pilots = []; rs.chapter = 4; rs.rep = 1.25;
+    for (let i = 0; i < n; i++) rs.balloons.push({ id: S.nextId++, size: i % 3 ? 'M' : 'L', name: 'Balon ' + (i + 1), fly: true, dmgUntil: 0, pilot: null, flights: 20 });
+    rs.auto = makeAuto(rs, id); S.regions[id] = rs;
+  }
+  const st = newRegionState('lux'); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = 'lux'; applyRegionTheme();
+  S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
+  Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
+  S.balloons = []; for (let i = 0; i < 28; i++) addBalloon(i % 4 === 0 ? 'L' : 'M'); addBalloon('XL');
+  S.pilots = []; for (let i = 0; i < 28; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i % P_NAMES.length] + ' ' + String.fromCharCode(65 + (i % 26)) + '.', lvl: 2 + (i % 2), xp: 0, trait: null });
+  S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 250000; S.rep = 1.25; S.chapter = CHAPTERS_LUX.length;
+  S.school = true; S.workshop = { day: 300, lv: 2 }; S.bld = { mast: 3, hangar: 3 };
+  S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { 'lux:hello': 1 }; S.weather = null; S.demand = null;
+  S.nextEvent = S.day + 30; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
+  if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
+  assignPilots(); startDay();
+}
 function testBristol() {
   S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 90; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1; S.tut = { done: 1 };
   S.barons = { cap: 30, abq: 55, lux: 80 }; S.baron = { cap: 30 }; S.iap = { worldTour: 1 }; S.holding = 150000; S.storyDone = 1; S.letter = { day: 50, rated: 50 };
@@ -6524,9 +6550,9 @@ const REGION_DEF = {
     sponsors: [['Karkade Co.', 'KARKADE'], ['Papyrus Bank', 'PAPYRUS'], ['Nile Cruise Line', 'NILE CRUISE'], ['Scarab Mobile', 'SCARAB']],
     valley: ['Nil dokunuşu', 'Nil\'in üstünde 150 m altına alçal, felukaları selamla.']
   },
-  /* v124: Bristol counts in pounds (about £0,85 to the euro) */
+  /* v124: Bristol counts in pounds; v124.2: at a fixed £1 = €1,20 */
   bri: {
-    name: 'Bristol', land: 'İngiltere', cur: '£', fx: .85, xl: 'Avon Yıldızı',
+    name: 'Bristol', land: 'İngiltere', cur: '£', fx: 1 / 1.2, xl: 'Avon Yıldızı',
     bnames: ['Clifton', 'Avon', 'Ashton', 'Severn', 'Redland', 'Cabot', 'Brandon', 'Leigh Woods', 'Kingsweston', 'Bedminster', 'Hotwells', 'Downs', 'Mendip', 'Cotham', 'Brunel', 'Portishead'],
     pnames: ['Oliver', 'Amelia', 'George', 'Isla', 'Harry', 'Poppy', 'Jack', 'Freya', 'Alfie', 'Evie', 'Charlie', 'Ruby', 'Archie', 'Florence', 'Thomas', 'Daisy'],
     hotels: ['Harbourside Inn', 'Clifton Terrace Hotel', 'Avon Gorge Lodge', 'Royal Crescent Grand'],
@@ -6538,7 +6564,7 @@ const RD = () => REGION_DEF[(S && S.region) || 'cap'];
 const FX = () => RD().fx;
 const ENTRY_FEE = 100000, AUTO_EFF = .85;
 /* Luxor costs more to enter: the holding pays it, the region still starts from its own small cash box */
-const entryFee = id => id === 'bri' ? 200000 : id === 'lux' ? 150000 : ENTRY_FEE; /* v124: Bristol, €200k */
+const entryFee = id => id === 'bri' ? 240000 : id === 'lux' ? 150000 : ENTRY_FEE; /* v124.2: Bristol, £200,000 = €240,000 */
 function applyRegionTheme() {
   const d = RD();
   TUFF = TUFF_BY[(S && S.region) || 'cap'] || TUFF_BY.cap;
@@ -7329,7 +7355,7 @@ function hqCash(body) {
 }
 function hqTransfer(body) {
   const w = h('div', 'sec'); w.appendChild(h('h2', null, `${RD().name} kasasından aktar`));
-  w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Aktardığın para holdinge ${S.region === 'abq' ? '1,1\'e bölünerek euro olarak ' : S.region === 'bri' ? 'sterlinden euroya çevrilerek (£0,85 = €1) ' : ''}geçer; holding parası ülkelere geri dönmez.`));
+  w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Aktardığın para holdinge ${S.region === 'abq' ? '1,1\'e bölünerek euro olarak ' : S.region === 'bri' ? 'sterlinden euroya sabit kurla çevrilerek (£1 = €1,20) ' : ''}geçer; holding parası ülkelere geri dönmez.`));
   const row = h('div', 'btns');
   [[.25, '%25'], [.5, '%50'], [1, `Hepsi (${eur(10000)} kalsın)`]].forEach(([k, l]) => { const b = h('button', 'ghost', l); b.disabled = S.cash <= 10000; b.onclick = () => withdraw(k); row.appendChild(b); });
   w.appendChild(row); body.appendChild(w);
