@@ -2,7 +2,7 @@
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Caveat+Brush&family=Dancing+Script:wght@500;600;700&family=Great+Vibes&family=Playfair+Display:wght@700;900&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&family=Caveat+Brush&family=Caveat:wght@500;600;700&family=Dancing+Script:wght@500;600;700&family=Playfair+Display:wght@700;900&family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 <style>
 /* Layout: dawn sky canvas on top, a white "ground crew" sheet below with a big ignition button, icon tab bar at the very bottom */
 :root{
@@ -829,15 +829,16 @@ body.night #cv{touch-action:none}
 #letter .front .stamp svg{display:block;width:100%;height:100%}
 #letter .front .pm{position:absolute;right:70px;top:40px;width:70px;height:70px;opacity:.5;transform:rotate(-14deg)}
 #letter .front .addr{position:absolute;left:11%;right:8%;top:50%;color:#2c2350;line-height:1}
-#letter .front .addr b{display:block;font-family:'Great Vibes',cursive;font-size:42px;font-weight:400;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 0 2px}
-#letter .front .addr span{display:block;font-family:'Dancing Script',cursive;font-weight:600;font-size:24px;margin:2px 0 0 26px}
-#letter .front .addr i{display:block;font-family:'Dancing Script',cursive;font-style:normal;font-weight:500;font-size:18px;color:#6a5a86;margin:8px 0 0 26px}
+#letter .front .addr b{display:block;font-family:'Caveat',cursive;font-size:40px;font-weight:700;transform:rotate(-2deg);transform-origin:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:4px 0 2px}
+#letter .front .addr span{display:block;font-family:'Caveat',cursive;font-weight:600;font-size:26px;margin:0 0 0 30px;transform:rotate(-1deg)}
+#letter .front .addr i{display:block;font-family:'Caveat',cursive;font-style:normal;font-weight:500;font-size:21px;color:#6a5a86;margin:4px 0 0 30px}
 #letter .backf{transform:rotateY(180deg)}
 #letter .flat{position:absolute;inset:0;border-radius:7px;box-shadow:0 20px 44px rgba(0,0,0,.38);display:none}
 #letter.flat3 .card3d{visibility:hidden}#letter.flat3 .flat{display:block}
 #letter .bk{position:absolute;inset:0;border-radius:7px;background:#e7d2ab}
 #letter .paper{position:absolute;left:7%;right:7%;top:6%;bottom:8%;border-radius:3px;opacity:0;transition:transform .9s cubic-bezier(.3,.7,.3,1),opacity .2s .3s;background-color:#f3e2bd;background-image:radial-gradient(ellipse at 50% 40%,rgba(255,250,232,.85),rgba(255,250,232,0) 70%),url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='220' height='220'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 .45  0 0 0 0 .3  0 0 0 0 .12  0 0 0 .14 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");box-shadow:inset 0 0 50px rgba(140,90,30,.38),inset 0 0 12px rgba(120,70,20,.3),0 1px 2px rgba(0,0,0,.1);}
-#letter .paper::before{content:"";position:absolute;left:14%;right:14%;top:10%;height:38%;background:linear-gradient(#ffb36b,#f07a54);transform:rotate(-2deg);box-shadow:0 2px 5px rgba(0,0,0,.15)}
+#letter .paper::before{content:"";position:absolute;inset:0;border-radius:3px;background:linear-gradient(180deg,rgba(120,80,30,0) 0,rgba(120,80,30,0) 32.5%,rgba(120,80,30,.16) 33.3%,rgba(255,255,255,.35) 34.2%,rgba(120,80,30,0) 36%,rgba(120,80,30,0) 65.8%,rgba(120,80,30,.16) 66.6%,rgba(255,255,255,.35) 67.5%,rgba(120,80,30,0) 69%)}
+#letter .paper::after{content:"";position:absolute;left:12%;right:16%;top:9%;height:20%;background:repeating-linear-gradient(180deg,rgba(35,42,92,.28) 0 1.2px,transparent 1.2px 7px);border-radius:2px;-webkit-mask:linear-gradient(90deg,#000 70%,transparent);mask:linear-gradient(90deg,#000 70%,transparent)}
 #letter .pocket{position:absolute;inset:0;border-radius:7px;background:linear-gradient(to top right,#f2e2c2 50%,transparent 50.3%) left/50% 100% no-repeat,linear-gradient(to top left,#eddcb9 50%,transparent 50.3%) right/50% 100% no-repeat}
 #letter .pocket::after{content:"";position:absolute;left:0;right:0;bottom:0;height:55%;background:#f0dfbd;clip-path:polygon(0 100%,50% 0,100% 100%);border-radius:0 0 7px 7px}
 #letter .flap{position:absolute;left:0;right:0;top:0;height:60%;background:#e0c592;clip-path:polygon(0 0,100% 0,50% 100%);transform-origin:top;transition:transform .6s ease-in-out;filter:drop-shadow(0 2px 2px rgba(0,0,0,.15))}
@@ -848,7 +849,8 @@ body.night #cv{touch-action:none}
 #letter.lift .flap{transition-delay:.25s}
 #letter.lift .paper{opacity:1}
 #letter.pull .paper{transform:translateY(-64%)}
-#letter.pull .flap{z-index:0}
+#letter .flat .paper{z-index:1}#letter .flat .pocket{z-index:2}#letter .flat .flap{z-index:3}#letter .flat .sticker{z-index:4}
+#letter.lift .flat .flap{z-index:0}
 #letter .hint{position:absolute;bottom:max(40px,env(safe-area-inset-bottom));left:0;right:0;text-align:center;color:#fff;font-family:var(--cond);font-weight:700;letter-spacing:.06em;text-transform:uppercase;opacity:.85;animation:hintP 1.6s ease-in-out infinite}
 @keyframes hintP{50%{opacity:.4}}
 #letter.out .stage{transform:translateY(42vh) scale(.9);opacity:0}
@@ -860,9 +862,9 @@ body.night #cv{touch-action:none}
 #letter .tape{position:absolute;width:70px;height:22px;background:rgba(247,232,190,.82);box-shadow:0 1px 2px rgba(0,0,0,.08);border-left:2px dotted rgba(255,255,255,.5);border-right:2px dotted rgba(255,255,255,.5)}
 #letter .tape.tl{left:-22px;top:2px;transform:rotate(-42deg)}#letter .tape.tr{right:-22px;top:2px;transform:rotate(42deg)}
 #letter .tape.bl{left:-22px;bottom:4px;transform:rotate(42deg)}#letter .tape.br{right:-22px;bottom:4px;transform:rotate(-42deg)}
-#letter .hi{font-family:'Great Vibes',cursive;font-size:30px;color:#1f2350;margin:0 0 4px;text-shadow:0 0 .7px rgba(31,35,80,.55)}
+#letter .hi{font-family:'Dancing Script',cursive;font-weight:700;font-size:25px;color:#1f2350;margin:0 0 4px;text-shadow:0 0 .7px rgba(31,35,80,.55)}
 #letter .body p{font-family:'Dancing Script',cursive;font-weight:500;font-size:19px;line-height:1.32;color:#232a5c;margin:0 0 9px;text-shadow:0 0 .8px rgba(35,42,92,.55)}
-#letter .sign{position:relative;font-family:'Great Vibes',cursive;font-size:28px;color:#1f2350;margin:6px 6px 12px 0;text-align:right;line-height:1.1;text-shadow:0 0 .7px rgba(31,35,80,.55)}
+#letter .sign{position:relative;font-family:'Dancing Script',cursive;font-weight:700;font-size:23px;color:#1f2350;margin:6px 6px 12px 0;text-align:right;line-height:1.1;text-shadow:0 0 .7px rgba(31,35,80,.55)}
 #letter .blot{position:absolute;pointer-events:none}
 #letter .rate{display:block;width:100%;padding:13px 12px;border-radius:14px;background:var(--coral);color:#fff;font-family:var(--cond);font-weight:800;font-size:19px;letter-spacing:.02em;box-shadow:0 4px 0 var(--coral-d)}
 #letter .later{display:block;width:100%;margin-top:6px;padding:8px;color:var(--ink2);font-family:var(--cond);font-weight:700;font-size:15px}
@@ -4731,26 +4733,25 @@ function letterMusic(part) {
     bell(N.D5, 3.85, .05, 2.6); bell(N.A5, 3.85, .03, 2.6);
     return;
   }
-  /* 'letter': ~34 s, 64 bpm, then the drone stays under until it is closed */
-  const B = .9375;
-  const df = AC.createBiquadFilter(); df.type = 'lowpass'; df.frequency.value = 520; const dg = AC.createGain(); dg.gain.setValueAtTime(0, t0); dg.gain.linearRampToValueAtTime(.03, t0 + 3); df.connect(dg).connect(g);
-  for (const [f, d] of [[73.42, -5], [73.42, 5], [110, 0]]) { const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = d; o.connect(df); o.start(t0); M.stop.push(o); }
-  const ney = (f, at, dur, v = .06) => { const o = AC.createOscillator(), o2 = AC.createOscillator(), e = AC.createGain(), vib = AC.createOscillator(), vg = AC.createGain();
-    o.type = 'triangle'; o2.type = 'sine'; o.frequency.value = f; o2.frequency.value = f * 2; vib.frequency.value = 5; vg.gain.setValueAtTime(0, t0 + at); vg.gain.linearRampToValueAtTime(f * .013, t0 + at + Math.min(.7, dur * .6)); vib.connect(vg); vg.connect(o.frequency); vg.connect(o2.frequency);
-    const g2 = AC.createGain(); g2.gain.value = .22; o2.connect(g2).connect(e); o.connect(e); env(e, at, .18, v, Math.max(.05, dur - .5), .45); e.connect(g);
-    const br = AC.createBufferSource(); br.buffer = noiseBuf(dur + .6); const bf = AC.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = f * 2; bf.Q.value = 6; const be = AC.createGain(); env(be, at, .1, v * .45, Math.max(.05, dur - .5), .35); br.connect(bf).connect(be).connect(g);
-    for (const s of [o, o2, vib]) { s.start(t0 + at); s.stop(t0 + at + dur + .6); M.stop.push(s); } br.start(t0 + at); M.stop.push(br); };
-  /* kanun: a bright pluck, the long notes with a soft tremolo */
-  const kanun = (f, at, v = .05, trem = 0) => { const reps = trem ? Math.round(trem / .09) : 1; for (let i = 0; i < reps; i++) { const o = AC.createOscillator(), o2 = AC.createOscillator(), e = AC.createGain(); o.type = 'triangle'; o2.type = 'sine'; o.frequency.value = f; o2.frequency.value = f * 3; const g3 = AC.createGain(); g3.gain.value = .15; o2.connect(g3).connect(e); o.connect(e); const a = at + i * .09; env(e, a, .003, v * (trem ? .55 + .45 * Math.sin(i / reps * Math.PI) : 1), .01, trem ? .12 : .9); e.connect(g); o.start(t0 + a); o2.start(t0 + a); o.stop(t0 + a + 1); o2.stop(t0 + a + 1); } };
-  const phrase = (at, notes, beat, v) => { let x = at; for (const [n, l] of notes) { if (n) ney(N[n], x, l * beat * .95, v); x += l * beat; } };
-  const arp = (at, ns, step, v) => ns.forEach((n, i) => kanun(N[n], at + i * step, v));
-  pad([N.D3, N.A3, N.D4], 0, 9, .02); arp(.6, ['D4', 'Eb4', 'Fs4', 'G4', 'A4', 'Fs4', 'Eb4', 'D4'], B / 2, .04);
-  phrase(3.4, [['A4', 2], ['Bb4', 1], ['A4', 1], ['G4', 1.5], ['Fs4', .5], ['G4', 1], ['A4', 3]], B, .055);
-  pad([N.G4 / 2, N.Bb3, N.D4], 9, 8, .02); arp(9.2, ['G4', 'Bb4', 'D5', 'Bb4', 'G4', 'Fs4'], B / 2, .035);
-  phrase(11.6, [['D5', 1.5], ['C5', .5], ['Bb4', 1], ['A4', 1], ['Bb4', 1], ['A4', .5], ['G4', .5], ['Fs4', 1], ['Eb4', 1], ['D4', 3]], B, .055);
-  pad([N.D3, N.Fs4 / 2, N.A3, N.D4], 19, 9, .022); kanun(N.D5, 19.2, .05, 1.6);
-  phrase(21, [['Fs4', 1], ['G4', 1], ['A4', 1], ['Bb4', .5], ['C5', .5], ['D5', 2], ['Eb5', .5], ['D5', .5], ['C5', 1], ['Bb4', 1], ['A4', 3]], B, .06);
-  pad([N.D3, N.A3, N.D4, N.Fs4], 30, 8, .02); arp(30, ['D4', 'Fs4', 'A4', 'D5'], B * .66, .035); ney(N.D4, 31.5, 4.5, .045);
+  /* 'letter' (v123.4, lighter): ~22 s at 84 bpm, quiet. A soft drone, a kanun playing the tune in the Hicaz makam over
+     a light frame-drum tap, one short ney answer, and it ends on D. No swelling strings. */
+  const B = .714;
+  const df = AC.createBiquadFilter(); df.type = 'lowpass'; df.frequency.value = 420; const dg = AC.createGain(); dg.gain.setValueAtTime(0, t0); dg.gain.linearRampToValueAtTime(.016, t0 + 2.5); df.connect(dg).connect(g);
+  for (const [f, d] of [[73.42, -4], [110, 4]]) { const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f; o.detune.value = d; o.connect(df); o.start(t0); M.stop.push(o); }
+  const ney = (f, at, dur, v = .04) => { const o = AC.createOscillator(), e = AC.createGain(), vib = AC.createOscillator(), vg = AC.createGain();
+    o.type = 'triangle'; o.frequency.value = f; vib.frequency.value = 5; vg.gain.setValueAtTime(0, t0 + at); vg.gain.linearRampToValueAtTime(f * .01, t0 + at + Math.min(.5, dur * .6)); vib.connect(vg).connect(o.frequency);
+    o.connect(e); env(e, at, .1, v, Math.max(.05, dur - .35), .3); e.connect(g);
+    const br = AC.createBufferSource(); br.buffer = noiseBuf(dur + .5); const bf = AC.createBiquadFilter(); bf.type = 'bandpass'; bf.frequency.value = f * 2; bf.Q.value = 6; const be = AC.createGain(); env(be, at, .08, v * .35, Math.max(.05, dur - .35), .25); br.connect(bf).connect(be).connect(g);
+    for (const s of [o, vib]) { s.start(t0 + at); s.stop(t0 + at + dur + .5); M.stop.push(s); } br.start(t0 + at); M.stop.push(br); };
+  const kanun = (f, at, v = .035) => { const o = AC.createOscillator(), o2 = AC.createOscillator(), e = AC.createGain(), g3 = AC.createGain(); o.type = 'triangle'; o2.type = 'sine'; o.frequency.value = f; o2.frequency.value = f * 3; g3.gain.value = .15; o2.connect(g3).connect(e); o.connect(e); env(e, at, .003, v, .01, .55); e.connect(g); o.start(t0 + at); o2.start(t0 + at); o.stop(t0 + at + .7); o2.stop(t0 + at + .7); };
+  const tap = (at, v) => { const n = AC.createBufferSource(); n.buffer = noiseBuf(.1); const f = AC.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1800; f.Q.value = 1.2; const e = AC.createGain(); env(e, at, .001, v, .004, .06); n.connect(f).connect(e).connect(g); n.start(t0 + at); };
+  const tune = (at, notes, v) => { let x = at; for (const [n, l] of notes) { if (n) kanun(N[n], x, v); x += l * B; } };
+  for (let x = 1.4; x < 19; x += B) tap(x, (Math.round((x - 1.4) / B) % 4 === 0) ? .03 : .015);
+  tune(1.4, [['D4', .5], ['Eb4', .5], ['Fs4', 1], ['G4', .5], ['A4', .5], ['Bb4', .5], ['A4', .5], ['G4', 1], ['Fs4', 1]], .035);
+  tune(6.4, [['A4', .5], ['Bb4', .5], ['A4', .5], ['G4', .5], ['Fs4', .5], ['G4', .5], ['Eb4', .5], ['Fs4', .5], ['D4', 2]], .035);
+  ney(N.A4, 11.4, B * 1.5); ney(N.G4, 11.4 + B * 1.5, B * .5); ney(N.Fs4, 11.4 + B * 2, B); ney(N.G4, 11.4 + B * 3, B * 2);
+  tune(15.7, [['D5', .5], ['C5', .5], ['Bb4', .5], ['A4', .5], ['G4', .5], ['Fs4', .5], ['Eb4', .5], ['D4', 1.5]], .032);
+  kanun(N.D4, 19.6, .03); kanun(N.A4, 19.6, .02);
 }
 /* v123.3: sunrise glitter in the air around the letter: gold, peach, pink and white specks and four-point stars that
    float up and twinkle. A burst when it turns, a trail behind the rising sticker, a shower when the letter opens, then a
@@ -4761,7 +4762,7 @@ function letterSparkles(L) {
   let w = 0, hh = 0, rate = 0, acc = 0, last = performance.now(), follow = null;
   const fit = () => { const r = L.getBoundingClientRect(), d = Math.min(2, window.devicePixelRatio || 1); w = r.width; hh = r.height; c.width = w * d; c.height = hh * d; g.setTransform(d, 0, 0, d, 0, 0); };
   fit();
-  const add = (x, y, sp = 1) => { const a = Math.random() * Math.PI * 2, v = (20 + Math.random() * 90) * sp; P.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 25, life: 0, max: 1.6 + Math.random() * 2, s: 1.8 + Math.random() * 3.4, col: cols[Math.floor(Math.random() * cols.length)], star: Math.random() < .35, ph: Math.random() * 6 }); };
+  const add = (x, y, sp = 1) => { const a = Math.random() * Math.PI * 2, v = (20 + Math.random() * 90) * sp; P.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 25, life: 0, max: 1.4 + Math.random() * 1.6, s: 1.4 + Math.random() * 2.4, col: cols[Math.floor(Math.random() * cols.length)], star: Math.random() < .35, ph: Math.random() * 6 }); };
   const center = () => { const r = L.querySelector('.stage').getBoundingClientRect(), o = L.getBoundingClientRect(); return [r.left - o.left + r.width / 2, r.top - o.top + r.height / 2, r.width, r.height]; };
   const api = {
     burst(n, sp = 1.4) { const [x, y, rw, rh] = center(); for (let i = 0; i < n; i++) add(x + (Math.random() - .5) * rw, y + (Math.random() - .5) * rh, sp); },
@@ -4772,7 +4773,7 @@ function letterSparkles(L) {
     if (!L.isConnected) return;
     const dt = Math.min(.05, (now - last) / 1000); last = now;
     acc += rate * dt; while (acc >= 1) { acc--; if (L.classList.contains('read')) { add(Math.random() * w, hh + 5, .4); P[P.length - 1].vy = -30 - Math.random() * 30; } else api.burst(1, .8); }
-    if (follow && follow.isConnected) { const r = follow.getBoundingClientRect(), o = L.getBoundingClientRect(); for (let i = 0; i < 3; i++) add(r.left - o.left + r.width / 2 + (Math.random() - .5) * r.width * .5, r.top - o.top + r.height * .7, .5); }
+    if (follow && follow.isConnected) { const r = follow.getBoundingClientRect(), o = L.getBoundingClientRect(); if (Math.random() < .45) for (let i = 0; i < 1; i++) add(r.left - o.left + r.width / 2 + (Math.random() - .5) * r.width * .5, r.top - o.top + r.height * .7, .5); }
     g.clearRect(0, 0, w, hh); g.globalCompositeOperation = 'lighter';
     for (let i = P.length - 1; i >= 0; i--) {
       const p = P[i]; p.life += dt; if (p.life > p.max) { P.splice(i, 1); continue; }
@@ -4799,7 +4800,7 @@ function showLetter() {
   <div class="sheet"><div class="photo"><img src="${LETTER_IMG}" alt="Oyunu yapan aile, Kapadokya'da balonların altında"><i class="tape tl"></i><i class="tape tr"></i><i class="tape bl"></i><i class="tape br"></i></div>
   <div class="hi">Sevgili ${esc(S.company)} kurucusu,</div>
   <div class="body" style="position:relative"><p>Bugün şirketinin ${S.day}. günü. Bu kadar yol gelmen, balonlarını her sabah yeniden göğe salman bizi gerçekten çok mutlu etti.</p>
-  <p>Kızımız için geliştirdiğimiz oyunu sevdiysen App Store'a birkaç cümle yazar mısın? Başka oyuncuların bu Kapadokya'yı bulmasını sağlayan şey senin sözlerin.</p><svg class="blot" style="right:-16px;top:-14px;width:18px" viewBox="0 0 20 20"><path d="M10 3c3 0 3 3 5 4s3 3 1 5-2 4-5 4-4-2-6-3-3-3-1-6 3-4 6-4z" fill="#1f2350" opacity=".55"/><circle cx="17" cy="4" r="1.1" fill="#1f2350" opacity=".5"/></svg></div>
+  <p>Kızımız için geliştirdiğimiz oyunu sevdiysen App Store'a birkaç cümle yazar mısın? Başka oyuncuların Kapadokya'yı bulmasını sağlayan şey senin sözlerin.</p><svg class="blot" style="right:-16px;top:-14px;width:18px" viewBox="0 0 20 20"><path d="M10 3c3 0 3 3 5 4s3 3 1 5-2 4-5 4-4-2-6-3-3-3-1-6 3-4 6-4z" fill="#1f2350" opacity=".55"/><circle cx="17" cy="4" r="1.1" fill="#1f2350" opacity=".5"/></svg></div>
   <div class="sign">Sevgiler,<br>S. &amp; U.<svg class="blot" style="left:8px;top:2px;width:34px;transform:rotate(-20deg)" viewBox="0 0 40 40"><path d="M20 8c5 0 6 5 9 6s6 2 5 7-5 4-6 8-4 5-8 4-5-4-9-5-6-4-4-8 2-5 4-8 5-4 9-4z" fill="#1f2350" opacity=".78"/><circle cx="35" cy="9" r="2" fill="#1f2350" opacity=".7"/><circle cx="6" cy="31" r="1.4" fill="#1f2350" opacity=".6"/><circle cx="31" cy="35" r="1" fill="#1f2350" opacity=".6"/></svg></div>
   <button class="rate">App Store'da yorum yaz</button><button class="later">Şimdi değil</button></div>`;
   $('wrap').appendChild(L); sfx('click');
@@ -4808,14 +4809,14 @@ function showLetter() {
   const close = () => { letterMusic(null); L.style.transition = 'opacity .35s'; L.style.opacity = 0; setTimeout(() => { L.remove(); refresh(); setTimeout(nextPopup, 250); }, 380); };
   L.querySelector('.card3d').onclick = () => {
     if (L.classList.contains('flip')) return;
-    L.classList.add('flip'); L.querySelector('.hint').hidden = true; letterMusic('magic'); SP.burst(90); SP.rate(45);
+    L.classList.add('flip'); L.querySelector('.hint').hidden = true; letterMusic('magic'); SP.burst(35); SP.rate(14);
     at(1050, () => L.classList.add('flat3'));           /* the back, now flat, so the flap and sticker move in plain 2D */
     at(1300, () => { L.classList.add('burn'); burner(true); });
     at(2700, () => burner(false));
     at(2000, () => { L.classList.add('lift'); SP.follow(L.querySelector('.flat .sticker')); });
     at(3500, () => SP.follow(null));
     at(2900, () => L.classList.add('pull'));
-    at(3900, () => { L.classList.add('out', 'read'); sheet.scrollTop = 0; SP.burst(140, 2.6); SP.rain(60); SP.rate(9); letterMusic('letter'); });
+    at(3900, () => { L.classList.add('out', 'read'); sheet.scrollTop = 0; SP.burst(45, 2.2); SP.rain(14); SP.rate(2.5); letterMusic('letter'); });
   };
   L.querySelector('.later').onclick = close;
   L.querySelector('.rate').onclick = () => {
