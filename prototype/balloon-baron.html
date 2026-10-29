@@ -6950,7 +6950,7 @@ function hqDeals(body, which, title) {
     () => { H.jersey = S.day + JERSEY.days; S.rep = Math.min(1.4, S.rep + JERSEY.rep); holdDeed('jersey'); }, { active: jOn ? `Formada adın · ${H.jersey - S.day} gün` : '' });
   const wgOn = H.wg && H.wg.until > S.day;
   if (which.includes('wg')) deal('wg', 'Dünya sahnesi', 'Dünya Oyunları açılışında balon gösterisi', H.wg ? (wgOn ? 'Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi.' : 'Açılış töreninin gösterisini yaptın; dünya hâlâ konuşuyor.') : 'Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır.', ['Bütün bölgelerde talep +%30', `${WGAMES.days} gün`, `${RD().name}: +0,8★`], H.wg ? null : WGAMES.cost, 'Gösteriyi üstlen',
-    () => { H.wg = { until: S.day + WGAMES.days }; S.rep = Math.min(1.4, S.rep + WGAMES.rep); holdDeed('worldGames'); }, { active: wgOn ? `Tören etkisi · ${H.wg.until - S.day} gün` : H.wg ? 'Yapıldı' : '' });
+    () => { H.wg = { until: S.day + WGAMES.days }; S.rep = Math.min(1.4, S.rep + WGAMES.rep); holdDeed('worldGames'); }, { active: wgOn ? `Tören etkisi · ${H.wg.until - S.day} gün` : H.wg ? 'Yapıldı' : '', lock: !(S.barons || {}).bri ? 'Bristol Baronu olunca' : '' });
   const bbOn = H.bb && H.bb[S.region] > S.day;
   if (which.includes('bb')) deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
     () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; holdDeed('billboards'); }, { active: bbOn ? `Asılı · ${H.bb[S.region] - S.day} gün` : '' });
@@ -9173,7 +9173,8 @@ const HOLD_GOALS = [
   ['Bir TV kampanyası', () => ((S.hold || {}).tvN || 0) >= 1],
   ['Ünlü reklam yüzü', () => !!(S.hold || {}).celeb],
   ['Zarf Ar-Ge\'si tamam', () => ((S.hold || {}).rnd || 0) >= 2],
-  ['Dört dünya ofisi', () => officeCount() >= 4]
+  ['Dört dünya ofisi', () => officeCount() >= 4],
+  ['Dünya Oyunları gösterisi', () => !!(S.hold || {}).wg] /* v123.5: the finale; it needs the Bristol baron */
 ];
 /* Once you're World Baron, the goals stay ticked whatever the holding's cash does later. */
 const holdGoalDone = f => !!(S.hold || {}).worldBaron || f();

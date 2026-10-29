@@ -536,3 +536,5 @@ Uçuş bitince yarım kalan adımlar sonraki uçuşa kalır.
 | Luksor | 289 (253–312) | 340 | 370 | 387 | 424 (397–474) |
 
 Bölge içinde baron süresi her bölgede ~140–145 gün. Dünya Baronu ortanca 428. gün (400–477), Luksor Baronu'ndan 1–3 gün sonra: Luksor Baronu anında holding kasasında €7–9 milyon birikmiş oluyor (Albuquerque baronunda €2,3–3,1 milyon), holding hedeflerinin toplamı ise ~€4,75 milyon (dört ofis €1,6M, Ar-Ge €1,3M, TV €250 bin, ünlü yüz €600 bin, kasa €1M). Yani holding hedefleri şu haliyle ayrı bir aşama değil.
+
+v123.5: Dünya Baronu için 7. hedef Dünya Oyunları gösterisi (€10M), gösteri de ancak Bristol Baronu olunca alınabilir; Bristol Luksor Baronu'ndan sonra açılır. Böylece Dünya Baronu Bristol'ün sonuna taşınır.
