@@ -130,6 +130,8 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
   | Ayşe, otel rehberi | €900 | +0,03 (≈+0,1★) | 2 gün | 4 | 4 gün |
   | Sena, tur rehberi (eski tek anlaşma) | €1.500 | +0,05 (≈+0,2★) | 3 gün | 5 | 5 gün |
   | Ekin, kıdemli rehber | €2.400 | +0,07 (≈+0,3★) | 4 gün | 7 | 6 gün |
+
+  v124: Ayşe, Sena ve Ekin yalnız Kapadokya'da. Diğer bölgelerin rehber ofisinde aynı üç sıra (ücret, etki, id'ler aynı) yerel adlarla: Albuquerque Emily, Carlos, Dakota; Luksor Nour, Karim, Yasmin; Bristol Olivia, Harry, Imogen (`GUIDE_NAMES`, `guideName`). Influencer adları ("Yerel gezgin" vb.) kişi adı olmadığı için değişmedi.
 - **Influencer ajansı (v122):** kendi ekranı, üç influencer; fiyat 2.500 + 400 × balon sayısı ile çarpılır (100'e yuvarlanır). Kampanya süresince her gün +0,03 popülerlik (eskisi gibi).
 
   | Influencer | Fiyat | Popülerlik | Süre | Turist/gün | Bekleme |
@@ -409,6 +411,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 - **Nil rüzgârı (Luksor):** katmanlar +, −, +, − yönünde, Albuquerque'den biraz daha sert.
 - **Nil gemisi sezonu (Luksor):** her 21 günde bir, 3 gün, talep ×1,6. Gece olayı "Nil gecesi". Gazete: Nil Postası.
 - **Kasabalar bölgeye göre:** Kapadokya peri bacaları ve tüf evler; Albuquerque kızıl mesalar, kerpiç (adobe) evler, düz çatılar ve vigalar, kaktüs, yucca ve kavak; Luksor kireç badanalı kerpiç evler ve kubbeler, hurma bahçeleri, şeker kamışı tarlaları, Nil, dikilitaş, tapınak kalıntıları ve Teb tepeleri. Satın alınan süsler her bölgede görünür.
+- **Bristol (v124)** Luksor baronu olunca açılır; ayrıntılar aşağıda "Bristol (v124)" bölümünde.
 - **Kutu rüzgârı (Albuquerque):** katmanlar −, +, −, + yönünde. Hedef 1.000–1.700 m.
 - **Balloon Fiesta:** her 30 günde bir, 4 gün, talep ×1,9 (ilki girişten 12 gün sonra).
 - **Otomatik mod:** Ayrılınan bölge son 14 günün ortanca net kârının %85'ini (euroya çevrilmiş) her gün ±%15 oynayarak holdinge getirir.
@@ -419,6 +422,27 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
   - Sert iniş: bölgeye git (popülerlik −0,05) ya da 7 gün −%15.
   - Otel kapışması: 5 günlük kazanç öde ya da kalıcı −%5.
   - Yıpranan zarflar: 8 günlük kazanç öde ya da 10 gün −%12.
+
+## Bristol (v124)
+Dördüncü bölge, İngiltere. Luksor'dan bir basamak zor.
+- **Açılış:** Luksor Baronu olunca (`regionOpen('bri')`), Dünya Turu / Destekçi paketiyle (abq, lux gibi). Giriş €200.000 holding kasasından. Para birimi sterlin (`£`, `fx` 0,85: £0,85 = €1; holdinge aktarılan sterlin euroya çevrilir). Başlangıç £6.000 ve bir S balon, başlangıç bileti £185. Pilot maaşları %15 yüksek (`regWage`). Turist tabanı 145 (diğer bölgeler 165).
+- **Karakterler:** rehber Maggie Holloway (emekli balon zarfı terzisi), rakip patron Sir Reginald Ashby (Clifton Crown Balloons), müfettiş Graham Pike (İngiltere Sivil Havacılık Otoritesi). Rakipler: Clifton Crown Balloons (11 balon, £230), Severn Sky Co. (7, £190), Harbourside Air (6, £145); sonradan gelebilecekler Cotswold Air Holidays, Cheap Skies Bristol, Royal Crescent Flights, Mendip Balloon Co. Rakipler Luksor'daki gibi çabuk birleşir. Gazete: Avon Postası (20 peni). Girişte Hezarfen'in Bristol mesajı ve Maggie'nin tanışma sözü.
+- **Hava:** sarı bayrak daha sık (yeşil %42, sarı %43, kırmızı %15; kış aynı). Batı rüzgârı Bristol Kanalı'ndan: katmanlar alçakta −2,5…+1,5, 60–180 m +2,5…+5, 180–350 m +3…+6 (doğuya, hedefe), en üstte yarı yarıya ters ya da zayıf.
+- **Sabah sisi:** kırmızı olmayan günlerin %28'inde (`S.weather.fog.top` 90–150 m). Uçuşta yere yakın beyaz-gri bir bant; balon sisin üstündeyken iniş alanı (bayraklar, ışık sütunu, karavan) görünmez, altına inince görünür. Uçuş ipucu "Sis var: iniş alanını görmek için alçal". Sisli günde kendi uçuşunu kazasız bitirmek `fogFlown` sayacını artırır.
+- **Havalimanı hava sahası:** kırmızı olmayan günlerin %40'ında (`S.weather.air`: başlangıçtan 380 m ötede başlayan 420–620 m genişlikte bir şerit, 340–410 m tabanının üstü). Kırmızı çizgili yarı saydam bölge, küçük uçak ve "HAVA SAHASI · N m üstü" etiketi. İçine girince uyarı; 3 saniye içinde kalınca ihlal: gün sonunda £1.500 ceza, popülerlik −0,04, gazete haberi. Kaza değil.
+- **Uçuş manzarası:** Avon Kanyonu ve asma köprü (iki taş kule, zincirler, askılar; çoğu gün yolun üstünde). Köprü engeldir: kayalıklar 52 m, kuleler 108 m, kuleler arası zincir çizgisi 62–108 m; güvertenin altından geçmek yok. Tepedeki yuvarlak taş gözlem kulesi (82 m), liman (su, eski yelkenlinin direkleri 64–74 m, iki liman vinci 72–78 m), kilise kuleleri (engellerin %14'ü), meşe ve bakır kayın ağaçları, elektrik hatları. Tarlalar yeşil, çitlerle bölünmüş; önde gelgitli nehir. Martılar. Çarpışma mesajı engelin adını söyler.
+- **İniş yerleri:** koyunlu ya da inekli tarla (1–3 tane): oraya inmek çiftçiyi kızdırır, £300 ceza, popülerlik −0,015, kötü yorum. Gelgit çamuru (yolda bir, limanda bir): kötü iniş, popülerlik −0,03, kötü yorum. Hedef alanı ve kalkış yeri bunlardan uzak tutulur.
+- **Bristol Balon Festivali:** her 30 günde bir, 4 gün, talep ×1,8, kışın olmaz (ilki girişten 12 gün sonra). Bölüm hedefi `fiesta`. Festival günleri **akşam kalkışı**: filo gün batımında ikinci kez kalkar; elle uçulmaz, raporda oynanır: sabahki yolcunun %50'si aynı fiyatla, yakıt %60 (`EVE`). Rapor satırı "Akşam kalkışı (festival)", gece sahnesinde balonlar çayırdan yükselir.
+- **Gece Işıltısı (Night Glow):** her festivalde bir kez, festival günlerinden birinde ayarlanır (£2.500, en az 3 uçabilen balon, o gece Şölen yoksa). O gece balonlar çayırda yerde durup müzikle (Şölen müziği) dalga dalga, sonra hep birlikte brülör yakar, 9. saniyeden sonra havai fişekler; ~15 sn, atlanabilir, gece animasyonu kapalı olsa da oynar. Popülerlik +0,04, ertesi sabah manşet, "Gece Işıltısı" kartpostalı. Balon Şöleni'nin yerine geçmez. Filo sayfasında ve aksiyon listesinde düğme, festival uyarısından da açılır.
+- **Kasaba:** bal rengi Bath taşı, arduvaz (slate) beşik çatılar, pastel Clifton evleri (mağara otelinin yerine), yeşil bakır kubbeli saray oteli, kırmızı telefon kulübeleri ve posta kutuları, iki yolda giden çift katlı otobüsler, pub'ın asılı tabelası (çarşının yanında), arnavut kaldırımı ve su birikintileri, bakır kayın (mor-kırmızı) ve meşe, kenarlarda çitli tarlalar ve koyunlar, kasabanın arkasında liman ve eski yelkenli, martılar, bulutlu soluk mavi-gri gökyüzü ve gri-beyaz pus. Açılış ekranında BRISTOL, kuleler, Gürcü sıra evleri ve ağaçlar.
+- **Bölümler (`CHAPTERS_BRI`):**
+  1. Ashton Malikânesi (£5.000, Bristol Ticaret Odası): 4 balon, 3 pilot, 4,7★, iki otel anlaşması, rehber uçuşu, rüzgâr direği sv. 2.
+  2. Avon Kanyonu (£10.000, Batı İngiltere Pilotlar Derneği): 14 balon, influencer, 4,75★, pazarın %35'i, sisli bir günde uç, direk sv. 3, hangar sv. 2.
+  3. Festival (£20.000, festival jürisi): 24 balon, bir otel satın al, festivalde uç, bir Gece Işıltısı düzenle, pazarın %55'i.
+  4. Bristol Baronu: pazarın %75'i, 2 otel, pilot okulu, 4,8★, dev balon "Avon Yıldızı", hangar sv. 3.
+  Bristol Baronu, holdingin son hedefi Dünya Oyunları gösterisini açar (Dünya Baronu).
+- **Simülasyon (v124, `tools/sim-campaign.js 6 2000`):** Bristol'e girişten bölüm sonlarına gün (tohum 1–6): [39, 91, 126, 139], [39, 86, 120, 144], [37, 82, 116, 127], [31, 76, 116, 135], [55, 109, 161, 188], [34, 81, 124, 151]. Baron 127–188 gün, ortalama ~147 (12 tohumda bir tohum 215). Hiçbir bot takılmadı, iflas yok; Dünya Oyunları Bristol Baronu'ndan 1 gün sonra alınır, Dünya Baronu 540.–665. gün. Ayar: başta (4/8/15 balon, %30/%50/%70) Bristol ~118 gün sürüyordu; filo hedefleri 4/14/24, pay %35/%55/%75, turist tabanı 145 ve akşam kalkışı %50 ile uzatıldı. Bölümleri çoğunlukla filo (para) bitiriyor; son bölümü dev balon.
+- **Test:** Ayarlar > Test (prototip) > "Bristol testi": üç bölgenin baronu, Bristol'de 6 balon, 5 pilot, £40.000, iki gün sonra festival.
 
 ## Holding
 - Holding kasası euro. Ülkelere para aktaramaz. Otomatik bölgelerin kazancı her gün gelir; oynanan bölgeden %25, %50 ya da 10.000 bırakıp hepsi çekilebilir (dolar 1,1'e bölünür).
@@ -536,5 +560,7 @@ Uçuş bitince yarım kalan adımlar sonraki uçuşa kalır.
 | Luksor | 289 (253–312) | 340 | 370 | 387 | 424 (397–474) |
 
 Bölge içinde baron süresi her bölgede ~140–145 gün. Dünya Baronu ortanca 428. gün (400–477), Luksor Baronu'ndan 1–3 gün sonra: Luksor Baronu anında holding kasasında €7–9 milyon birikmiş oluyor (Albuquerque baronunda €2,3–3,1 milyon), holding hedeflerinin toplamı ise ~€4,75 milyon (dört ofis €1,6M, Ar-Ge €1,3M, TV €250 bin, ünlü yüz €600 bin, kasa €1M). Yani holding hedefleri şu haliyle ayrı bir aşama değil.
+
+v124: bot Luksor'dan sonra Bristol'e girer (Gece Işıltısı'nı festival bölümünde ayarlar), Bristol Baronu olunca Dünya Oyunları gösterisini alır. Sonuçlar "Bristol (v124)" bölümünde; Kapadokya, Albuquerque ve Luksor değişmedi.
 
 v123.5: Dünya Baronu için 7. hedef Dünya Oyunları gösterisi (€10M), gösteri de ancak Bristol Baronu olunca alınabilir; Bristol Luksor Baronu'ndan sonra açılır. Böylece Dünya Baronu Bristol'ün sonuna taşınır.
