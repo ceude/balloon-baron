@@ -253,7 +253,18 @@ final class PrototypeV85Tests: XCTestCase {
         g.state.holding.research = 2
         for o in Office.allCases { g.state.holding.offices[o] = 1 }
         g.checkHoldingGoals()
+        XCTAssertNil(g.state.holding.worldBaron, "v123.5: the World Games show is the seventh goal")
+        XCTAssertFalse(g.holdWorldGamesShow(), "the show needs the Baron of Bristol")
+        XCTAssertFalse(g.state.worldGamesOpen)
+        g.state.holding.worldGamesUntil = 60 // held (Bristol isn't in the Swift game yet)
+        g.checkHoldingGoals()
         XCTAssertNotNil(g.state.holding.worldBaron)
         XCTAssertTrue(g.state.hezQueue.contains(.worldBaron))
+    }
+
+    func testOldWorldBaronKeepsTheWorldGamesGoal() {
+        var g = newGame()
+        g.state.holding.worldBaron = 300 // a save from before v123.5, World Baron with six goals
+        XCTAssertTrue(HoldingGoal.allCases.allSatisfy(g.state.done))
     }
 }

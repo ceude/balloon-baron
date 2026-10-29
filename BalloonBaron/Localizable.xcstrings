@@ -34728,6 +34728,47 @@
         }
       }
     },
+    "hgoal.worldGames": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show bei den Weltspielen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "World Games show"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espectáculo de los Juegos Mundiales"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界競技大会のショー"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 대회 쇼"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya Oyunları gösterisi"
+          }
+        }
+      }
+    },
     "hgoal.worldTitle": {
       "extractionState": "manual",
       "localizations": {
@@ -38414,6 +38455,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dünya sahnesi"
+          }
+        }
+      }
+    },
+    "holding.wg.lockBri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobald du Baron von Bristol bist"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Once you're Baron of Bristol"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuando seas barón de Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストルの男爵になったら"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨의 남작이 되면"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol Baronu olunca"
           }
         }
       }

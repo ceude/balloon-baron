@@ -102,7 +102,7 @@ struct HoldingView: View {
                                action: { store.act { g in _ = g.signAdShape(k) } })
     }
 
-    /// The holding's own goals; all six make you World Baron.
+    /// The holding's own goals; all seven make you World Baron.
     private func holdingGoals(_ s: GameState) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 8) {
@@ -318,7 +318,8 @@ struct HoldingView: View {
         return HoldingDealCard(art: .worldGames, kicker: loc("holding.wg.kicker"), title: loc("holding.wg.title"),
                                detail: loc(!held ? "holding.wg.desc" : on ? "holding.wg.descActive" : "holding.wg.descDone"), chips: chips,
                                price: Holding.worldGamesCost, cta: loc("holding.wg.cta"),
-                               enabled: !held && h.cash >= Holding.worldGamesCost,
+                               enabled: s.worldGamesOpen && !held && h.cash >= Holding.worldGamesCost,
+                               lockNote: s.worldGamesOpen || held ? nil : loc("holding.wg.lockBri"),
                                active: on ? loc("holding.wg.active", num((h.worldGamesUntil ?? d) - d)) : held ? loc("holding.wg.held") : nil,
                                action: { store.act { g in _ = g.holdWorldGamesShow() } })
     }

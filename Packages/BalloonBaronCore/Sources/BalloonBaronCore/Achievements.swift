@@ -6,9 +6,11 @@ public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, 
     case winter, fest, rivalDown, boss, design, upgrade3, xl, baronCap, abq, baronAbq, lux, baronLux, world
 }
 
-/// The holding's own goals, written on the office whiteboard. All six make you World Baron. Text: `hgoal.<rawValue>`.
+/// The holding's own goals, written on the office whiteboard. All seven make you World Baron. Text: `hgoal.<rawValue>`.
 public enum HoldingGoal: String, CaseIterable, Sendable {
     case million, baronLux, tv, celebrity, research, offices
+    /// v123.5: the finale, the World Games show (it needs the Baron of Bristol).
+    case worldGames
 }
 
 /// What a region's rival boss says, once each. Text: `boss.<region>.<rawValue>`.
@@ -57,6 +59,7 @@ extension GameState {
         case .celebrity: return holding.celebrity != nil
         case .research: return holding.research >= Holding.researchLevels.count
         case .offices: return holding.offices.count >= Office.allCases.count
+        case .worldGames: return holding.worldGamesUntil != nil
         }
     }
 }

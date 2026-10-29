@@ -17,3 +17,7 @@ add("tip.price3.short",
     "La multitud de ayer ya pasó, aprendiz: vuelve a ajustar el precio a los turistas de hoy.",
     "弟子よ、昨日の混雑は終わった。今日の客に合わせて料金を決め直すのだ。",
     "제자여, 어제의 인파는 지나갔네. 오늘 관광객에 맞춰 가격을 다시 정하게.")
+
+# v123.5: the World Games show is the holding's seventh goal, and opens with the Baron of Bristol
+add("hgoal.worldGames", "World Games show", "Dünya Oyunları gösterisi", "Show bei den Weltspielen", "Espectáculo de los Juegos Mundiales", "世界競技大会のショー", "세계 대회 쇼")
+add("holding.wg.lockBri", "Once you're Baron of Bristol", "Bristol Baronu olunca", "Sobald du Baron von Bristol bist", "Cuando seas barón de Bristol", "ブリストルの男爵になったら", "브리스톨의 남작이 되면")

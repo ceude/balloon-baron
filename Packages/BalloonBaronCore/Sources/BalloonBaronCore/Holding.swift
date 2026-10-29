@@ -156,7 +156,7 @@ extension Game {
     /// v122.7: the balloon show at the World Games' opening ceremony, once.
     @discardableResult
     public mutating func holdWorldGamesShow() -> Bool {
-        guard state.holding.worldGamesUntil == nil, spendHolding(Holding.worldGamesCost) else { return false }
+        guard state.worldGamesOpen, state.holding.worldGamesUntil == nil, spendHolding(Holding.worldGamesCost) else { return false }
         state.holding.worldGamesUntil = state.day + Holding.worldGamesDays
         state.rep = min(1.4, state.rep + Holding.worldGamesRep)
         celebrate(.worldGames)
@@ -382,4 +382,12 @@ extension Game {
         state.local.openIssue = nil
         return true
     }
+}
+
+extension GameState {
+    /// v123.5: Baron of Bristol, the fourth region. Read by its raw value so this compiles before `RegionID.bri` exists;
+    /// once Bristol is ported this is simply `barons[.bri] != nil`.
+    public var bristolBaron: Bool { barons.keys.contains { $0.rawValue == "bri" } }
+    /// v123.5: the World Games show is the holding's finale: it opens once you're Baron of Bristol.
+    public var worldGamesOpen: Bool { bristolBaron }
 }
