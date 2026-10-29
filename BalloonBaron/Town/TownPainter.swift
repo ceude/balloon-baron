@@ -1346,16 +1346,23 @@ struct TownPainter {
         }
         // Your fleet on the launch field, burners flickering. At night the envelopes are packed away, except for a Fiesta balloon glow.
         let colors = s.colors, tt = t
-        let packed = night != nil && night?.event != .balloonGlow && night?.fieldShown != true
+        // v124: the Night Glow fires on the beat, the evening ascent lifts off.
+        let nk = BristolNight.kind(night?.event), nt = night.map { t - $0.t0 } ?? 0
+        let packed = night != nil && night?.event != .balloonGlow && nk == nil && night?.fieldShown != true
         for (i, b) in s.fieldBalloons.prefix(packed ? 0 : 6).enumerated() {
             let gx = 1.8 + Double(i % 3) * 1.9, gy = 5 + Double(i / 3) * 1.4
             let r: CGFloat = b.size == .XL ? 44 : b.size == .L ? 38 : b.size == .M ? 33 : 28
             let design = s.design(of: b), ad = b.ad
+            let rise = nk == .eve ? CGFloat(BristolNight.eveRise(nt, i)) : 0
             items.append(TownItem(depth: gx + gy, shadow: { p in
+                if rise > 30 { return }
                 let q = TownGeo.iso(gx, gy); p.blobShadow(q.x + 26, q.y + 6, 26, 9, 0.18)
             }, draw: { p in
                 let q = TownGeo.iso(gx, gy)
-                p.balloon(q.x, q.y, r, colors, burn: (tt * 1.3 + Double(i)).truncatingRemainder(dividingBy: 3) < 0.4, ad: ad, design: design)
+                let burn = nk == .glow ? BristolNight.glowPulse(nt, i) > 0.5
+                    : nk == .eve ? (tt * 2 + Double(i)).truncatingRemainder(dividingBy: 2) < 0.8
+                    : (tt * 1.3 + Double(i)).truncatingRemainder(dividingBy: 3) < 0.4
+                p.balloon(q.x + rise * 0.3, q.y - rise, r, colors, burn: burn, ad: ad, design: design)
             }))
         }
         items += decorations() + newDecorations() + bunting()

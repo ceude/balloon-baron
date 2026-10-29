@@ -60,7 +60,7 @@ private struct FlightLook {
 
 /// The running flight (`FL` in the prototype). A plain class: the TimelineView redraws every frame.
 final class FlightModel {
-    enum Tip { case tutorial, pax, fuel, vent, goal, wrong, still, near, lowFuel }
+    enum Tip { case tutorial, pax, fuel, vent, goal, wrong, still, near, lowFuel, airspace, airspaceFined }
 
     /// Shown once ever, the first time a flight leaves the ground.
     static let ventTipKey = "ventTip"
@@ -250,7 +250,7 @@ final class FlightModel {
 
     init(state s: GameState, weather w: Weather, pax: Int) {
         let fb = s.balloon(s.flagship)
-        sim = FlightSim(weather: w, pax: pax, burners: fb?.burners ?? 1, turningVent: fb?.hasTurningVent ?? false)
+        sim = FlightSim(weather: w, pax: pax, burners: fb?.burners ?? 1, turningVent: fb?.hasTurningVent ?? false, region: s.region)
         self.pax = pax
         tutorial = !s.tutorialDone
         coached = (s.selfFlights ?? 0) < Rules.coachFlights
@@ -364,6 +364,13 @@ final class FlightModel {
             }
         case .fuelOut:
             tip = .fuel
+        case .airspaceWarning:
+            // v124: the airport's airspace: a warning on the way in, then the fine is coming
+            tip = .airspace
+            SoundEngine.shared.play(.thud)
+        case .airspaceViolated:
+            tip = .airspaceFined
+            Haptics.landed(.hard)
         case .moment:
             momentAt = T
             SoundEngine.shared.play(.coin)
@@ -475,9 +482,19 @@ final class FlightModel {
             case .cap: return loc("flight.land.crash")
             case .abq: return loc("flight.land.crash.abq")
             case .lux: return loc("flight.land.crash.lux")
+            case .bri: return loc("flight.hit.\((sim.hit ?? .tree).rawValue)")
             }
         case .cancel: return ""
         }
+    }
+
+    /// v124: Bristol's extra lines on the result card: the field with animals, the tidal mud, the airport.
+    func bristolLines(_ r: FlightResult) -> [String] {
+        var out: [String] = []
+        if let a = r.farm { out.append(loc("flight.land.farm.\(a.rawValue)")) }
+        if r.mud == true { out.append(loc("flight.land.mud")) }
+        if r.airFine == true { out.append(loc("flight.land.airFine")) }
+        return out
     }
 
     var missionTitle: String { look.missionTitle }
@@ -817,7 +834,11 @@ private struct FlightStage: View {
     private func tipText(_ t: FlightModel.Tip) -> String {
         switch t {
         case .tutorial: return loc("flight.tip.tutorial")
-        case .pax: return loc("flight.tip.pax", num(model.pax))
+        case .pax:
+            // v124: Bristol's fog and airspace are named under the passengers line
+            let w = model.sim.weather
+            return [loc("flight.tip.pax", num(model.pax)), w.fog != nil ? loc("flight.tip.fog") : nil, w.air != nil ? loc("flight.tip.air") : nil]
+                .compactMap { $0 }.joined(separator: " ")
         case .fuel: return loc("flight.tip.fuel")
         case .vent: return loc("flight.tip.vent")
         case .goal: return loc("flight.coach.goal", model.fieldKm)
@@ -825,6 +846,8 @@ private struct FlightStage: View {
         case .still: return loc("flight.coach.still")
         case .near: return loc("flight.coach.near")
         case .lowFuel: return loc("flight.coach.lowFuel")
+        case .airspace: return loc("flight.tip.airspace", num(Int(model.sim.weather.air?.floor ?? 0)))
+        case .airspaceFined: return loc("flight.tip.airspaceFined")
         }
     }
 
@@ -844,6 +867,9 @@ private struct FlightStage: View {
             richText(model.landingText(r), size: 14.5)
                 .foregroundColor(Theme.ink)
                 .fixedSize(horizontal: false, vertical: true)
+            ForEach(model.bristolLines(r), id: \.self) { l in
+                richText(l, size: 14.5).foregroundColor(Theme.ink).fixedSize(horizontal: false, vertical: true)
+            }
             if r.mission != nil { missionLine(r) }
             Button(loc("flight.dayReport")) {
                 SoundEngine.shared.play(.click)
@@ -921,8 +947,12 @@ private enum FlightPainter {
         let vh = ScenePainter.scenery(&ctx, cam: cam, p: p, region: look.region, winter: look.winter, time: m.T,
                                       background: m.bg, inFlight: true)
         if look.mission == .valley { valleyZone(&ctx, cam: cam, vx: look.valley) }
-        ScenePainter.landingField(&ctx, cam: cam, target: look.target, p: p)
-        fieldColumn(&ctx, cam: cam, target: look.target)
+        if let b = f.bristol { BristolPainter.world(&ctx, cam: cam, b, p: p, time: m.T) } // v124
+        // v124: in Bristol's fog the field (flags, glow, trailer) shows only once you're under the fog's top
+        if !f.fieldHidden {
+            ScenePainter.landingField(&ctx, cam: cam, target: look.target, p: p)
+            fieldColumn(&ctx, cam: cam, target: look.target)
+        }
         let lx = cam.sx(FlightWorld.launchX)
         ScenePainter.rect(&ctx, lx - 40, groundY - 1, 80, 4, ScenePainter.mix("#5c4a3a", "#b9996e", p))
         let chim = m.tutK == "chimney"
@@ -933,6 +963,11 @@ private enum FlightPainter {
                                              basket: basket, ringAll: chim,
                                              pointed: m.tutCh?.c, label: chim ? loc("flight.chimneyLabel") : nil)
         ScenePainter.powerLines(&ctx, cam: cam, f.lines, p: p)
+        if look.region == .bri {
+            BristolPainter.overlay(&ctx, cam: cam, weather: f.weather, alt: f.alt, inside: f.inAirspace, done: f.done, time: m.T,
+                                   airLabel: loc("flight.airspaceLabel", num(Int(f.weather.air?.floor ?? 0))),
+                                   fogLabel: loc("flight.fogLabel", num(Int(f.weather.fog?.top ?? 0))))
+        }
         let PR = max(12, vh * 0.065)
         windPills(&ctx, cam: cam, m: m)
         let R = PR * 0.75 * (look.xl ? 1.3 : 1)

@@ -2,7 +2,8 @@ import SwiftUI
 import BalloonBaronCore
 
 /// Each region's guide speaks through Hezarfen's bubble with their own face: Hezarfen in Cappadocia, Ben Franklin in
-/// Albuquerque (he watched the first balloons rise over Paris in 1783), Imhotep in Luxor. Ports of `FRANKLIN_AV` and `IMHOTEP_AV`.
+/// Albuquerque (he watched the first balloons rise over Paris in 1783), Imhotep in Luxor, Maggie Holloway (a retired
+/// balloon-envelope seamstress) in Bristol. Ports of `FRANKLIN_AV`, `IMHOTEP_AV` and `MAGGIE_AV`.
 struct GuideAvatar: View {
     let region: RegionID
     let size: CGFloat
@@ -11,12 +12,43 @@ struct GuideAvatar: View {
         if region == .cap {
             HezarfenAvatar(size: size)
         } else {
-            PortraitCanvas(rim: region == .abq ? "#5aa9e6" : "#c9a040",
-                           background: region == .abq ? ["#2a3a6a", "#c06a5a", "#f6c08a"] : ["#1f4f6b", "#c88a4a", "#f2d69a"],
-                           items: region == .abq ? Self.franklin : Self.imhotep, size: size)
+            let look = Self.look(region)
+            PortraitCanvas(rim: look.rim, background: look.background, items: look.items, size: size)
                 .accessibilityLabel(guideName(region))
         }
     }
+
+    private static func look(_ r: RegionID) -> (rim: String, background: [String], items: [ArtItem]) {
+        switch r {
+        case .abq: ("#5aa9e6", ["#2a3a6a", "#c06a5a", "#f6c08a"], franklin)
+        case .bri: ("#c86a7a", ["#6a86a8", "#c8a0a8", "#f2d8b8"], maggie)
+        default: ("#c9a040", ["#1f4f6b", "#c88a4a", "#f2d69a"], imhotep)
+        }
+    }
+
+    /// v124: Maggie Holloway: grey bun, reading glasses, a cardigan and a tape measure round her neck.
+    private static let maggie: [ArtItem] = [
+        .fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#b84a5a"),
+        .fill("M40 70 L50 90 L60 70Z", "#f6efe4"),
+        .dot(45, 80, 1.3, "#f6efe4"), .dot(46, 88, 1.3, "#f6efe4"),
+        .line("M34 72 C38 82 40 92 40 100 M66 72 C62 82 60 92 60 100", "#ffd27a", 3.2),
+        .line("M35 76 L37.6 75 M36.6 80 L39 79.4 M37.8 84 L40.2 83.6 M38.6 88 L41 87.8 M65 76 L62.4 75 M63.4 80 L61 79.4 M62.2 84 L59.8 83.6", "#8a6a30", 0.7),
+        .box(43, 58, 14, 14, 4, "#e8b494"),
+        .oval(50, 46, 17, 20, "#f4c8a8"),
+        .dot(50, 20, 9, "#e6e2e8"),
+        .fill("M33 44 C31 28 40 24 50 24 C60 24 69 28 67 44 C64 36 58 32 50 32 C42 32 36 36 33 44Z", "#e6e2e8"),
+        .line("M43 18 Q50 14 57 18", "#c8c2cc", 1.4),
+        ArtItem(path: Path(roundedRect: CGRect(x: 37.5, y: 43, width: 10, height: 7), cornerRadius: 3), fill: Color.white.opacity(0.3),
+                stroke: Color(hex: "#8a4a5a"), width: 1.3),
+        ArtItem(path: Path(roundedRect: CGRect(x: 52.5, y: 43, width: 10, height: 7), cornerRadius: 3), fill: Color.white.opacity(0.3),
+                stroke: Color(hex: "#8a4a5a"), width: 1.3),
+        .line("M47.5 46 L52.5 46", "#8a4a5a", 1.3),
+        .line("M40.5 46.5 Q42.5 45 44.5 46.5 M55.5 46.5 Q57.5 45 59.5 46.5", "#2a2030", 1.6),
+        ArtItem(path: Path(ellipseIn: CGRect(x: 35.6, y: 52, width: 6.8, height: 4)), fill: Color(hex: "#f0a0a0").opacity(0.55)),
+        ArtItem(path: Path(ellipseIn: CGRect(x: 57.6, y: 52, width: 6.8, height: 4)), fill: Color(hex: "#f0a0a0").opacity(0.55)),
+        .fill("M50 48 L48.5 53.5 Q50 54.6 51.6 53.8", "#e8b494"),
+        .line("M43 58 Q50 63.5 57 58", "#a0505a", 1.9)
+    ]
 
     private static let franklin: [ArtItem] = [
         .fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#6a4a2e"),

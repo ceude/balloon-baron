@@ -14,8 +14,8 @@ struct GuideOfficeView: View {
             let tagged = GuideOffer.allCases.first { wait <= 0 && s.cash >= $0.cost } ?? .mehmet
             OfferScreen(title: loc("town.b.guide"), sub: loc("guides.sub"), busy: busy, wait: wait, color: Color(hex: "#3ad0c0")) {
                 ForEach(GuideOffer.allCases, id: \.self) { g in
-                    OfferRow(initial: loc("guide.\(g.rawValue).name"), color: Color(hex: "#3ad0c0"),
-                             name: loc("guide.\(g.rawValue).name"), tag: loc("guide.\(g.rawValue).title"),
+                    OfferRow(initial: g.name(in: s.region), color: Color(hex: "#3ad0c0"),
+                             name: g.name(in: s.region), tag: loc("guide.\(g.rawValue).title"),
                              detail: loc("guides.row", "+" + starsValue(g.rep * 4), num(g.pax), num(g.days), num(g.cooldown)),
                              price: eur(g.cost), disabled: wait > 0 || s.cash < g.cost, spot: g == tagged ? "ga.guide" : nil) {
                         SoundEngine.shared.play(.coin)

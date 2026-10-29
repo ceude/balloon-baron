@@ -370,6 +370,40 @@ private struct PostcardPainter {
             nile()
             many(8, 0.5, 24, 44)
             crown(75, 18, 1.2)
+        case .bri, .baronBri:
+            // v124: the Avon Gorge's cliffs and, for entering Bristol, the suspension bridge with a balloon above it
+            fill("M6 72 L6 40 Q14 36 22 44 L30 50 L32 72Z", "#7a8a5a")
+            fill("M144 72 L144 38 Q134 36 126 44 L116 52 L114 72Z", "#6a7a4a")
+            rect(30, 62, 86, 10, "#7a8a8a")
+            if a == .bri {
+                stroke("M26 44 L120 44", "#4a4a50", 2)
+                rect(34, 30, 6, 16, "#cbb48a")
+                rect(106, 30, 6, 16, "#cbb48a")
+                stroke("M37 31 Q73 54 109 31", "#3a3a40", 1.2)
+                balloon(76, 6, 0.8, c0, c1)
+            } else {
+                many(8, 0.5, 10, 34)
+                crown(75, 18, 1.2)
+            }
+        case .nightGlow:
+            // v124: balloons glowing on the festival field, fireworks above
+            for _ in 0..<16 {
+                let x = r1(6, 138), y = r1(6, 30)
+                circle(x, y, 0.7, "#fff6d0")
+            }
+            for (x, y, col) in [(34.0, 20.0, "#ffc23d"), (112, 16, "#ff6fa8")] {
+                for i in 0..<12 {
+                    let a = Double(i) * 0.52
+                    stroke("M\(f(x + cos(a) * 3)) \(f(y + sin(a) * 3)) L\(f(x + cos(a) * 11)) \(f(y + sin(a) * 11))", col, 1.3, round: true)
+                }
+            }
+            fill("M6 72 L6 62 Q40 56 75 60 Q110 64 144 58 L144 72Z", "#1e2a1a")
+            for (i, (x, y, k)) in [(30.0, 40.0, 0.8), (56, 34, 1), (84, 36, 1), (112, 40, 0.85)].enumerated() {
+                var glow = c
+                glow.opacity = 0.35
+                circle(CGFloat(x), CGFloat(y + 14 * k), CGFloat(16 * k), "#ff9a40", in: glow)
+                balloon(CGFloat(x), CGFloat(y), CGFloat(k), i == 1 ? c0 : Self.cols[i * 2 % 8], i == 1 ? c1 : "#ffffff")
+            }
         case .world:
             for _ in 0..<20 {
                 let x = r1(6, 138), y = r1(6, 62)

@@ -119,7 +119,7 @@ extension Goal {
         case .hotelOwn: loc("goal.hotelOwn", num(Int(target)))
         case .share: loc("goal.share", percent(target))
         case .xl: loc("goal.xl", region.xlName)
-        case .fiesta where region == .lux: loc("goal.fiesta.lux")
+        case .fiesta where region == .lux || region == .bri: loc("goal.fiesta.\(region.rawValue)")
         default: loc("goal.\(kind.rawValue)")
         }
     }
@@ -139,6 +139,12 @@ extension GameState {
     }
 }
 extension PilotLevel { var title: String { loc("level.\(rawValue)") } }
+
+/// v124: the guide office's guides are local (`GUIDE_NAMES`): Cappadocia keeps Ayşe, Sena and Ekin; Bristol has Olivia,
+/// Harry and Imogen. MERGE(v124): the parallel branch adds names for every region; keep one of the two.
+extension GuideOffer {
+    func name(in r: RegionID) -> String { r == .bri ? loc("guide.\(rawValue).name.bri") : loc("guide.\(rawValue).name") }
+}
 extension BalloonSize { var title: String { loc("size.\(rawValue)") } }
 extension Factory {
     /// The workshop's level names: design, then the small, medium and large lines.
@@ -148,7 +154,7 @@ extension Factory {
 /// Balloon names are saved as the core's lists have them; the few that are words or Turkish spellings are
 /// shown per language (older saves keep working, and a language switch renames them too).
 private let balloonNameKeys: [String: String] = [
-    "Şafak": "dawn", "Güvercin": "dove", "Kapadokya Yıldızı": "capStar", "Fiesta Yıldızı": "fiestaStar", "Teb Yıldızı": "thebesStar",
+    "Şafak": "dawn", "Güvercin": "dove", "Kapadokya Yıldızı": "capStar", "Fiesta Yıldızı": "fiestaStar", "Teb Yıldızı": "thebesStar", "Avon Yıldızı": "avonStar",
     "Hatşepsut": "hatshepsut", "İsis": "isis", "File": "philae", "Teb": "thebes", "Abidos": "abydos", "Amon": "amun", "Kurna": "qurna"
 ]
 func bname(_ raw: String) -> String { balloonNameKeys[raw].map { loc("bname.\($0)") } ?? raw }
@@ -174,7 +180,7 @@ extension HezMessage {
         case .entrant(let e): loc("hez.entrant.\(e.rawValue)")
         case .holdingOpened: loc("hez.holdingOpened")
         case .enteredRegion(let r): loc("hez.entered.\(r.rawValue)", eur(r.startCash))
-        case .fiestaStarted: loc(currentRegion == .lux ? "hez.fiestaStarted.lux" : "hez.fiestaStarted")
+        case .fiestaStarted: loc(currentRegion == .lux || currentRegion == .bri ? "hez.fiestaStarted.\(currentRegion.rawValue)" : "hez.fiestaStarted")
         case let .regionIssue(r, i): loc("hez.regionIssue", r.title, i.body)
         case .officeOpened(let o): loc("hez.officeOpened", o.title) + " " + o.perk
         case .allOffices: loc("hez.allOffices")
@@ -252,6 +258,12 @@ extension DayEvent {
         case let .chapterDone(id, reward): loc("event.chapterDone", loc("chapter.\(id)"), loc("chapter.\(id).award"), eur(reward))
         case let .baron(r): loc("event.baron", loc("chapter.\(r.chapters.last!.id)"))
         case let .moment(k, tips): loc("event.moment.\(k.rawValue)", eur(tips))
+        case .fogFlown: loc("event.fogFlown")
+        case let .farmLanding(a, fine): loc("event.farmLanding.\(a.rawValue)", eur(fine))
+        case .mudLanding: loc("event.mudLanding")
+        case .airspaceFine(let fine): loc("event.airspaceFine", eur(fine))
+        case let .eveningAscent(n, pax, income): loc("event.eveningAscent", num(n), num(pax), eur(income))
+        case .nightGlowTonight(let n): loc("event.nightGlowTonight", num(n))
         case let .rivalFleetSold(r): loc("event.rivalFleetSold", r)
         case let .rivalShrank(r): loc("event.rivalShrank", r)
         case let .newEntrant(r): loc("event.newEntrant", r, currentRegion.title)

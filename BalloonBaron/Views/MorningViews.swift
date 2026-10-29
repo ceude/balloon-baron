@@ -61,8 +61,34 @@ struct BossAvatar: View {
         case .cap: ("#5aa9e6", ["#3d5a8c", "#9fc0e0"], kenan)
         case .abq: ("#5aa9e6", ["#e08a4a", "#f6d08a"], dale)
         case .lux: ("#1f6f8b", ["#1f6f8b", "#e8c47a"], nabil)
+        case .bri: ("#7a2a34", ["#4a5a70", "#b8c4cc"], reginald)
         }
     }
+
+    /// v124: Sir Reginald Ashby: silver hair, monocle, clipped moustache, tweed and a silk cravat.
+    private static let reginald: [ArtItem] = [
+        .fill("M14 100 C16 78 30 70 50 70 C70 70 84 78 86 100Z", "#6a5a3e"),
+        .fill("M14 100 C16 78 30 70 50 70 L50 100Z", "#7a6a4a"),
+        ArtItem(path: HezarfenAvatar.svgPath("M22 84 L40 84 M60 84 L80 84 M20 92 L42 92 M58 92 L82 92 M28 78 L28 100 M36 74 L36 100 M64 74 L64 100 M72 78 L72 100"),
+                stroke: Color(hex: "#4e4230").opacity(0.6), width: 0.8),
+        .fill("M40 70 L50 84 L60 70Z", "#f4efe6"),
+        .fill("M45 72 L55 72 L53 82 L50 86 L47 82Z", "#7a2a34"),
+        .dot(50, 75, 2.4, "#9a3a44"),
+        .box(43, 58, 14, 14, 4, "#e0b090"),
+        .oval(50, 45, 17, 20, "#f0c4a2"),
+        .fill("M32 42 C30 24 40 18 51 18 C63 18 70 25 68 42 C66 32 62 28 56 27 C50 30 42 29 36 31 C34 34 33 38 32 42Z", "#d8dce2"),
+        .line("M36 30 C42 27 50 26 58 27", "#b8bec8", 2),
+        .oval(33.5, 47, 2.6, 4, "#e0aa88"), .oval(66.5, 47, 2.6, 4, "#e0aa88"),
+        .line("M38 40 Q43 38 47 40 M53 40 Q57 38 62 40", "#9aa0aa", 2.4),
+        .dot(43, 45, 1.6, "#1f1b2e"), .dot(57, 45, 1.6, "#1f1b2e"),
+        ArtItem(path: Path(ellipseIn: CGRect(x: 52.4, y: 40.4, width: 9.2, height: 9.2)), fill: Color.white.opacity(0.18),
+                stroke: Color(hex: "#c9a040"), width: 1.3),
+        .line("M61.4 47 Q64 56 62 66", "#c9a040", 0.8),
+        .fill("M50 46 L48 53 Q50 54.5 52 53.5", "#e0aa88"),
+        .fill("M41 57 C45 54 48 55.5 50 55.5 C52 55.5 55 54 59 57 C55 58.4 52 57.6 50 57.6 C48 57.6 45 58.4 41 57Z", "#c8ccd4"),
+        .line("M46 61 Q50 62 54 60.5", "#9a5a4a", 1.6),
+        .fill("M70 86 L76 80 L78 82 L72 88Z", "#f4efe6")
+    ]
 
     private static let kenan: [ArtItem] = [
         .fill("M14 100 C16 78 30 70 50 70 C70 70 84 78 86 100Z", "#1f2a44"),
@@ -267,6 +293,9 @@ extension PaperItem {
         case .milestone(let d): d == 365 ? "year" : "milestone"
         case .show: "show"
         case .factoryGrew: "factoryGrew"
+        case .airspace: "airspace"
+        case .nightGlow: "nightGlow"
+        case .briFestival: "briFestival"
         }
     }
 
@@ -292,6 +321,8 @@ extension PaperItem {
         case .milestone(let d): d == 365 ? loc("paper.year", company) : loc("paper.milestone", company, num(d))
         case .show: loc("paper.show", company)
         case .factoryGrew: loc("paper.factoryGrew", company)
+        case .airspace, .nightGlow: loc("paper.\(key)", company)
+        case .briFestival: loc("paper.briFestival")
         }
     }
 
@@ -310,6 +341,8 @@ extension PaperItem {
         case .inspectorFine(let fine): loc("paper.inspectorFine.sub", eur(fine))
         case .show(let n): loc("paper.show.sub", num(n))
         case .factoryGrew(_, let lv): Factory.levelTitle(lv)
+        case .airspace(let fine): loc("paper.airspace.sub", eur(fine))
+        case .nightGlow(let n): loc("paper.nightGlow.sub", num(n))
         case .passedBoss: loc(region == .cap ? "paper.passedBoss.sub.cap" : "paper.passedBoss.sub") // v121: Hasan's grandchild
         default: loc("paper.\(key).sub")
         }
@@ -325,11 +358,16 @@ extension NightEvent {
         case .fireworks: "fireworks"
         case .shootingStar: "shooting"
         case .show: "show"
+        case .nightGlow: "nglow"
+        case .eveningAscent: "eve"
         }
     }
 
-    /// Text key: in Luxor the glow night is the Nile night, the cruise ships lit up.
-    private var textKey: String { self == .balloonGlow && currentRegion == .lux ? "glow.lux" : key }
+    /// Text key: in Luxor the glow night is the Nile night, the cruise ships lit up; in Bristol the festival night.
+    private var textKey: String {
+        guard self == .balloonGlow else { return key }
+        return currentRegion == .lux ? "glow.lux" : currentRegion == .bri ? "glow.bri" : key
+    }
 
     /// The line under "Night of day N".
     var line: String {
@@ -337,6 +375,8 @@ extension NightEvent {
         case .lanterns(let f): loc("night.lanterns", festivalName(f))
         case .fireworks(let h): loc("night.fireworks", h.title)
         case .show(let ids): loc("night.show", num(ids.count))
+        case .nightGlow(let n): loc("night.nglow", num(n))
+        case .eveningAscent(let n): loc("night.eve", num(n))
         default: loc("night.\(textKey)")
         }
     }
@@ -646,7 +686,8 @@ extension Achievement {
     var sky: [String] {
         switch self {
         case .mission, .fleet5, .pax1k, .design, .upgrade3: ["#4f9ee0", "#9fd2f0", "#e6f4fb"]
-        case .star45, .fest, .world: ["#0f0e2e", "#2b2350", "#5a4a8a"]
+        case .star45, .fest, .world, .nightGlow: ["#0f0e2e", "#2b2350", "#5a4a8a"]
+        case .bri, .baronBri: ["#4f9ee0", "#9fd2f0", "#e6f4fb"]
         case .hotel, .hotelOwn, .rivalDown, .boss: ["#3a2a6a", "#c8607a", "#ffb070"]
         case .winter: ["#7fa6cf", "#c7dcef", "#f2f7fc"]
         case .abq, .baronAbq: ["#3f62b4", "#f09a6a", "#ffd08a"]

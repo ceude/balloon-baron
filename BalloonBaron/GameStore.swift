@@ -687,8 +687,8 @@ final class GameStore {
     func closeReport() {
         var ev: NightEvent?
         act { ev = $0.startNight() }
-        // A paid Balloon Show always plays; other nights follow the setting.
-        let show: Bool = { if case .show? = ev { return true }; return false }()
+        // A paid Balloon Show always plays (v124: and Bristol's Night Glow); other nights follow the setting.
+        let show: Bool = { if case .show? = ev { return true }; return BristolNight.kind(ev) == .glow }()
         if !show && UserDefaults.standard.object(forKey: Self.nightSceneKey) as? Bool == false {
             report = nil
             endNight()
@@ -776,7 +776,7 @@ final class GameStore {
         }
         var ev: NightEvent?
         act { ev = $0.startNight() }
-        if case .show? = ev { night = Night(event: ev) } else { endNight() }
+        if case .show? = ev { night = Night(event: ev) } else if BristolNight.kind(ev) == .glow { night = Night(event: ev) } else { endNight() }
     }
 
     private func autoCheck() {
