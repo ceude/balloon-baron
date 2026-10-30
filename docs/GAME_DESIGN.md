@@ -464,6 +464,8 @@ Arada bir sabah yerel bir şirketin sahibi teklif getirir. Bölge ayarı `CTR[b�
   - Bristol: Nigel Pemberton (West Country Weekenders; "splendid"), Priya Shah (Capital Rail Breaks; hızlı, uygulamalı), Fiona MacLeod (Steam & Sky Excursions; buharlı tren, "canım").
 - **Rakip güçlenir:** reddedilen, kaçan ya da teslim edilemeyen grup o gün(ler) popülerliği en yüksek rakibin yolcusu olur (pazar payına sayılır); ilk gününde rakibin popülerliği +0,05, kişi başı farkı kasasına girer ve grubun toplam yolcusuna göre hemen balon alır (Abq ve Bristol 24, Luksor 20 kişiden bir balon, her iki katı için bir tane daha). Gazete ve rapor satırı.
 - **Bölüm hedefleri:** 2. bölümde rüzgâr direği Sv. 3 yerine "2 tur / gemi / hafta sonu grubunu eksiksiz uçur", 3. bölümde yeni beşinci hedef "3 kontratı eksiksiz uçur (herhangi bir şirket)" (bölgedeki toplam başarılı iş).
+- **Kaydırma (v125.5):** `townClamp`, kontrat yerini her yakınlaştırmada ekranın ortasına ve ±%25 yatay / ±%20 dikey çevresine getirmeye izin verir (telefonda Luksor ve Bristol'de takılma düzeltildi).
+- **Bristol saçağı (v125.5):** peron saçağı trenden sonra çizilir; tren saçağın altından/arkasından geçer, saçak kaybolmaz.
 - **Görünmezlik kuralı (bütün şehirler):** kontrat yeri, ona giden asfalt ve cipler ana ekranın varsayılan görünümünde hiç görünmez; kasabaya yakın yol kasabanın kendi toprak yoludur. Kontrol: kontrat yeri ve cip animasyonu (11 sn'lik döngünün her yarım saniyesi) tek başına boş bir tuvale ana ekran kamerasıyla çizilir; 390×844, 400×860, 430×932, 834×1194 ve 1024×1366'da (dikey) ekrana düşen piksel 0. Kasaba görünümünde sürükleyerek gidilir (`townClamp` kontrat yerini her yönde ekranın ortasına getirmeye izin verir).
   - Albuquerque: güneybatı yolunda, yerleşim 12 kare dışarıda. Otoyol terminalde biter: asfalt terminalden dışarıya doğru, kasabaya doğru değil; terminalin kasaba tarafında toprak "BALLOON SHUTTLE" cip durağı.
   - Luksor: Nil kıyısında doğuda (gx ≈ 30): taş rıhtım, ahşap iskele, bilet kulübesi, "LUXOR CRUISE PIER" tabelası, hurmalar, fenerler, feluka; iskeleden doğu yoluna toprak patika.
@@ -491,6 +493,7 @@ Koşu başına başarılı iş: Albuquerque 9,6, Luksor 5,4 (24 uçulan sabah), 
 Önceki sürümün (v125–v125.1, yalnız Albuquerque, prim fiyatla) `sim-abq.js` sonuçları: kontratsız 53,5 / 82,2 / 102,3 / 139,8; kontratlı 53,5 / 80,5 / 101,1 / 141,4.
 
 ## Filo ve pilot getirme (v125, bütün bölgeler)
+- **Kart (v125.5):** üç adım: balonlar, pilotlar, özet ve bedel (Geri / İleri, her adımda "Geç: sıfırdan başla"); listeler ince çerçeveli kutuda kayar, kart 375×667'ye kadar ekrana sığar.
 Yeni bir bölgeye **girerken, yalnızca o an**, otomatik moddaki bölgelerden balon ve pilot getirilebilir ("Filonu getir" kartı; geçilebilir).
 - **En çok 2 pilot** ve **en çok 16 koltuk** balon (iki küçük ya da bir orta sepet; büyük ve dev sepet taşınmaz). Kart en iyileri işaretli açar.
 - **Pilotlar hemen gelir** (girişte ekipte). **Balonlar kargoyla 10 günde gelir** (Gün +10 sabahı "Kargo geldi evlat!"; v125.1, önce 30 gün ve pilotlar da kargodaydı).
@@ -566,6 +569,9 @@ Dördüncü bölge, İngiltere. Luksor'dan bir basamak zor.
 - **Yolcu toplama animasyonu:** ayarlardan kapatılabilir. Kapalıyken yolcu kartı yine çıkar (yolcuların nereden geldiği, kimin uçacağı seçimi) ama hemen dolar; kasabada yürüyen yolcular ve cipler gösterilmez, kalkışa beklemeden geçilir.
 - **Gece sahnesi:** ayarlardan kapatılabilir. Kapalıyken gece yine hesaplanır (olayı gazeteye girer), sadece kasabanın gece görüntüsü atlanıp sabaha geçilir.
 - **Kayıt kodu (v124.3):** başka cihaza geçmek için. Kod oyunun sıkıştırılmış hâli ("BB1:" ile başlar); yarın gelecek gazeteyi, ekranda görünen 8'den eski yorumları ve grafikteki 60 günden eski itibar geçmişini taşımaz, kesirli sayılar 4 basamağa yuvarlanır (prototip). Geç bir oyunda ~%25 kısalır. Kod kopyalanabilir ya da "BalloonBaron-<şirket>.txt" dosyası olarak paylaşılabilir (AirDrop, Mesajlar, Dosyalar); yükleme ekranında yapıştırılır ya da "Dosyadan" ile seçilir. Eski kodlar da yüklenir. Kısa kod için sunucu sonra.
+
+## Bölgenin ilk günü (v125.5)
+Yeni bölgeye girince gelen kartlar kısa: Hezarfen'in giriş sözü, yerel rehberin tanışması ve patronun merhabası birer ikişer cümle (rüzgârın türü, başlangıç parası ve balon, rehberin adı, patronun tek iğnesi); geri kalanı "Daha fazla"nın arkasında. Metinler PORT_QUEUE v125.5'te eski/yeni olarak listeli.
 
 ## Hezarfen Usta
 Hezarfen Kapadokya'nın rehberi. Albuquerque'de Ben Franklin (1783'te Paris'te ilk balonları izlemişti), Luksor'da İmhotep rehberlik eder. Dünya haritasında Bristol ve Maasai Mara isim olarak var, henüz açılmaz.

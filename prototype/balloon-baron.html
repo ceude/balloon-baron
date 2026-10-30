@@ -704,14 +704,18 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .bosst{font-size:11.5px;font-weight:700;color:var(--ink2);margin-bottom:-4px}
 .hzname.ctrn{color:#fff;border-color:rgba(255,255,255,.6)}
 .card.ctr{border-top:6px solid #2ab0a8}
-.card.xfer h2.xh{font-family:var(--cond);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin:12px 0 6px}
-.xlist{display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto;flex:none;padding:2px}
-.xrow{display:grid;grid-template-columns:26px 1fr;column-gap:10px;align-items:center;text-align:left;padding:9px 12px;border-radius:14px;background:#fff;box-shadow:0 0 0 2px var(--line) inset}
+.card.xfer{display:flex;flex-direction:column;max-height:calc(100% - 24px)}
+.xstep{display:flex;align-items:center;gap:6px;margin-bottom:4px}.xstep i{width:22px;height:5px;border-radius:3px;background:var(--line)}.xstep i.on{background:#14a39a}.xstep i.done{background:#8fd4cc}.xstep span{margin-left:6px;font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2)}
+.card.xfer .xh{display:flex;justify-content:space-between;align-items:baseline;margin:8px 2px 6px;font-size:13px;color:var(--ink2)}.card.xfer .xh b{font-family:var(--cond);font-weight:800;font-size:18px;color:var(--ink)}
+.xlist{display:flex;flex-direction:column;gap:6px;max-height:min(300px, 36vh);overflow-y:auto;flex:0 1 auto;min-height:96px;padding:6px;border:1.5px solid #cfc8de;border-radius:14px;background:#faf8fd;-webkit-overflow-scrolling:touch}
+.xrow{display:grid;grid-template-columns:26px 1fr;column-gap:10px;align-items:center;text-align:left;padding:8px 11px;border-radius:12px;background:#fff;box-shadow:0 0 0 1.5px var(--line) inset;flex:none}
 .xrow i{grid-row:span 2;width:24px;height:24px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;color:#fff}
 .xrow.on{box-shadow:0 0 0 2px #14a39a inset;background:#effaf8}.xrow.on i{background:#14a39a;border-color:#14a39a}
 .xrow b{font-size:15px;color:var(--ink)}.xrow span{font-size:12.5px;color:var(--ink2)}
 .xrow:disabled{opacity:.45}
-.card.xfer .callout{margin:12px 0}
+.card.xfer .callout{margin:10px 0}
+.xnav{display:flex;gap:8px;margin-top:12px}.xnav button{flex:1}.xnav .ghost{flex:0 0 34%}
+.card.xfer .xskip{width:100%;margin-top:6px}
 .ctrhd{display:flex;align-items:center;gap:12px;margin-bottom:6px}
 .ctrav{width:56px;height:56px;flex:none}.ctrav .hzav{width:56px;height:56px}
 .card.ctr{padding-top:16px;padding-bottom:16px}
@@ -1314,7 +1318,7 @@ const BOSS_LINES = {
     baron: 'Tebrikler. Bu vadide ilk balonlardan birinin Hasan\'a ait olduğunu herkes unuttu, ben unutmadım. Şirketini ondan ben aldım, vadiyi sen geri aldın. Hasan gurur duyardı. Kapadokya artık senin, iyi bak ona.'
   },
   abq: {
-    hello: 'Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Kutu rüzgârını bilir misin evlat? Burada balon uçurmak Türkiye\'deki gibi değil. Fiesta\'da görüşürüz, tabii hâlâ buradaysan.',
+    hello: 'Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Fiesta\'da görüşürüz evlat, tabii hâlâ buradaysan.§Kutu rüzgârını bilir misin? Burada balon uçurmak Türkiye\'deki gibi değil.',
     ch1: 'Beş balonla Albuquerque\'de iş yapacağını mı sanıyorsun? Bu şehrin her oteli benim kartımı taşır. Kapadokya\'da kral olabilirsin, burada yabancısın.',
     ch2: 'Fiesta yaklaşıyor ve senin balonların hâlâ gökyüzünde. Saygı duyuyorum. Ama Fiesta dört gün, yıl ise üç yüz altmış beş.',
     passed: 'Dünkü yolcu sayılarını gördüm. Hmm. Sandia\'nın gölgesi geniştir, ama sen de bayağı bir yer kaplamaya başladın.',
@@ -1326,7 +1330,7 @@ const BOSS_LINES = {
     baron: 'Albuquerque Baronu ha? İki kıtada vadi. Şapkamı çıkarıyorum. Gerçekten çıkarıyorum, bak.'
   },
   lux: {
-    hello: 'Hoş geldin, yabancı. Nabil Haddad, Theban Skies. Babam bu Batı Yakası\'nda ilk balonu şişirdiğinde sen daha doğmamıştın. Burada her otel, her rehber, her feluka benim adımı bilir. Kapadokya\'da, Amerika\'da kazanmışsın, duydum. Nil başkadır. Nil sabırlı olanı sever, kibirliyi yutar.',
+    hello: 'Hoş geldin, yabancı. Nabil Haddad, Theban Skies. Burada her otel, her rehber benim adımı bilir; Nil kibirliyi yutar.§Babam bu Batı Yakası\'nda ilk balonu şişirdiğinde sen daha doğmamıştın. Kapadokya\'da, Amerika\'da kazanmışsın, duydum. Nil başkadır; sabırlı olanı sever.',
     ch1: 'Sekiz balon mu? Benim filom firavunların vadisini gölgeler. Sen hâlâ müşteri sayıyorsun, ben gemileri sayarım.',
     ch2: 'Nil gemileri yanaştığında turistler kimin balonuna biniyor, hiç baktın mı? Benimkine. Ama fena gitmiyorsun, kabul.',
     passed: 'Dün benden fazla yolcu uçurmuşsun. Theban Skies\'ın tarihinde bu iki kez oldu. İkisinde de ben güldüm en son.',
@@ -1339,7 +1343,7 @@ const BOSS_LINES = {
   },
   /* v124: Bristol's old money */
   bri: {
-    hello: 'Ah, yeni gelen. Sir Reginald Ashby, Clifton Crown Balloons. Büyük büyükbabam bu kanyonun üstünde ilk balonu uçurduğunda köprü daha yeni bitmişti. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Mısır\'da kazanmışsın, öyle mi? Bristol\'ün havası seni sabah sisle karşılar, öğlen yağmurla uğurlar. Bakalım ne kadar dayanacaksın.',
+    hello: 'Ah, yeni gelen. Sir Reginald Ashby, Clifton Crown Balloons. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Bakalım ne kadar dayanacaksın.§Büyük büyükbabam bu kanyonun üstünde ilk balonu uçurduğunda köprü daha yeni bitmişti. Mısır\'da kazanmışsın, öyle mi? Bristol\'ün havası seni sabah sisle karşılar, öğlen yağmurla uğurlar.',
     ch1: 'Dört balonla kulübe girdiğini mi sanıyorsun? Benim hangarımda balonlar soyadıyla anılır. Sabah çayını bitirmeden filonu sayarım.',
     ch2: 'Festival yaklaşıyor. Bristol\'de herkes Clifton Crown\'un balonlarını görmeye gelir. Senin balonların da gökyüzünde olacak, kabul. Arka sıralarda.',
     passed: 'Dün benden fazla yolcu uçurmuşsun. Kulüpte konuşuluyor. Ben konuşmuyorum. Ama konuşuluyor.',
@@ -1390,11 +1394,11 @@ const MAGGIE_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label
 const GUIDES = {
   cap: { name: 'Hezarfen Usta', av: () => HEZ_AV, baron: 'Hezarfen Usta gözleri dolu: "Galata\'dan Üsküdar\'a uçtuğum gün bile bu kadar gururlanmamıştım, evlat."' },
   abq: { name: 'Ben Franklin', av: () => FRANKLIN_AV, baron: 'Ben Franklin gözlüğünü siliyor: "1783\'te Paris\'te ilk balonu izlerken \'bu bebek büyüyecek\' demiştim. İşte büyüdü, evlat."',
-    hello: 'Merhaba evlat, ben Ben Franklin. 1783\'te Paris\'te Montgolfier\'lerin balonu havalandığında oradaydım. Biri "Bu balonun ne faydası var?" diye sordu, ben de "Yeni doğmuş bir bebeğin ne faydası var?" dedim. Hezarfen Usta seni bana emanet etti, Albuquerque\'de sana ben yol göstereceğim. Unutma: vakit nakittir!' },
+    hello: 'Merhaba evlat, ben Ben Franklin. Albuquerque\'de sana ben yol göstereceğim. Vakit nakittir!§1783\'te Paris\'te Montgolfier\'lerin balonu havalandığında oradaydım. Biri "Bu balonun ne faydası var?" diye sordu, ben de "Yeni doğmuş bir bebeğin ne faydası var?" dedim. Hezarfen Usta seni bana emanet etti.' },
   lux: { name: 'İmhotep', av: () => IMHOTEP_AV, baron: 'İmhotep gülümsüyor: "Dört bin yıl önce taşı göğe doğru yükselttim. Sen insanları yükselttin, evlat. Firavunlar kıskanırdı."',
-    hello: 'Hoş geldin evlat, ben İmhotep. Dört bin yıl önce bu topraklarda ilk basamaklı piramidi ben çizdim, hastaları ben iyileştirdim. Hezarfen\'e "bin ilmin ustası" derler, bana da öyle derlerdi. Uçmayı hiç denemedim ama gökyüzünü iyi bilirim: Nil\'in rüzgârı sabırlıya yardım eder. Luksor\'da sana ben yol göstereceğim.' },
+    hello: 'Hoş geldin evlat, ben İmhotep. Luksor\'da sana ben yol göstereceğim; Nil\'in rüzgârı sabırlıya yardım eder.§Dört bin yıl önce bu topraklarda ilk basamaklı piramidi ben çizdim, hastaları ben iyileştirdim. Hezarfen\'e "bin ilmin ustası" derler, bana da öyle derlerdi. Uçmayı hiç denemedim ama gökyüzünü iyi bilirim.' },
   bri: { name: 'Maggie Holloway', av: () => MAGGIE_AV, baron: 'Maggie Holloway gözlüklerini çıkarıp gözünü siliyor: "Kırk yıl balon zarfı diktim tatlım, hiçbiri bu kadar yükseğe çıkmadı. Gel bakalım, bir çay koyayım."',
-    hello: 'Merhaba canım, ben Maggie. Maggie Holloway. Kırk yıl bu şehirde balon zarfı diktim; senin balonunun dikişlerine bakınca kimin elinden çıktığını bile söylerim. Hezarfen Usta seni bana emanet etti, Bristol\'de sana ben yol göstereceğim. Üç şey bil, tatlım: sabahları sis olur, rüzgâr Bristol Kanalı\'ndan, batıdan eser, havalimanının göğüne de asla girme. Bir de şemsiyeni unutma.' }
+    hello: 'Merhaba canım, ben Maggie Holloway. Kırk yıl bu şehirde balon zarfı diktim; Bristol\'de sana ben yol göstereceğim.§Senin balonunun dikişlerine bakınca kimin elinden çıktığını bile söylerim. Hezarfen Usta seni bana emanet etti. Bir de şemsiyeni unutma, tatlım.' }
 };
 const guide = id => GUIDES[id || (S && S.region) || 'cap'] || GUIDES.cap;
 /* The civil aviation inspector of each region: warns when an envelope is worn below 30%, and fines on the third visit. */
@@ -2071,8 +2075,9 @@ function showHez(k) {
   if (!news && !boss && !hz && !insp && !gh && guideOk(k)) { guideStart(k); return; } /* v122: shown, not told */
   const G = hz ? GUIDES.cap : guide(), I = INSPECTOR[S.region] || INSPECTOR.cap;
   $('hez').classList.remove('story');
-  const el = $('hez'), long = !news && !boss && !hz && !insp && !gh && HEZ_SHORT[k] ? HEZ[k] : null; /* v122: one sentence, the rest behind "Daha fazla" */
+  const el = $('hez'); let long = !news && !boss && !hz && !insp && !gh && HEZ_SHORT[k] ? HEZ[k] : null; /* v122: one sentence, the rest behind "Daha fazla" */
   let text = news ? k.slice(5) : hz ? k.slice(3) : insp ? k.slice(5) : gh ? G.hello : boss ? BOSS_LINES[S.region][k.slice(5)].replace(/\{c\}/g, S.company) : long ? HEZ_SHORT[k] : HEZ[k];
+  if (text.includes('§')) { const [a, b] = text.split('§'); text = a; long = a + ' ' + b; } /* v125.5: a region's first-day lines: the short part first, the rest behind "Daha fazla" */
   el.innerHTML = boss ? `<div class="hzcol">${BOSS_AV[S.region]}<span class="hzname boss">${BOSS[S.region].name}</span></div><div class="hzb"><span class="bosst">${BOSS[S.region].title}</span><p></p></div>`
     : insp ? `<div class="hzcol">${INSP_AV}<span class="hzname boss">${I.name}</span></div><div class="hzb"><span class="bosst">${I.title}</span><p></p></div>`
     : `<div class="hzcol">${G.av()}<span class="hzname">${G.name}</span></div><div class="hzb"><p></p></div>`;
@@ -7008,9 +7013,9 @@ function enterRegion(id) {
   const fee = entryFee(id);
   if ((S.holding || 0) < fee) return;
   S.holding -= fee; holdLog('exp', fee);
-  if (id === 'lux') S.hezQ.push('hz:Mısır evlat, Luksor! Burası dünyanın en çetin balon pazarı. Batı Yakası\'nda, firavunların vadisinin üstünde her sabah yüzlerce turist bekler ama hepsini Nabil Haddad\'ın Theban Skies\'ı ve onun dostları paylaşır. Burada rakipler sana karşı çok çabuk birleşir, oteller çayla anlaşır, Sivil Havacılık da gözünü senden ayırmaz. 5.000 € ve bir küçük balonla başlıyorsun; holding buraya para gönderemez. Nil\'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Sabırlı ol evlat, Nil sabırlıyı sever.');
-  if (id === 'bri') S.hezQ.push('hz:İngiltere evlat, Bristol! Dünyanın balon zarflarının yarısı bu şehirde dikilmiş, gökyüzü de onu bilir. Avon Kanyonu\'nun üstünde asma bir köprü, limanda eski bir yelkenli, tepelerde yemyeşil tarlalar. Ama hava İngiliz havası: sarı bayrak sık, sabahları sis olur; sisli sabah iniş alanını görmek için alçalman gerekir. Rüzgâr batıdan, Bristol Kanalı\'ndan esip seni doğuya taşır. Havalimanının göğü de yasak bölge, girersen ceza yersin. Sir Reginald Ashby\'nin Clifton Crown\'u burada yüz yıldır uçuyor ve rakipler çabuk birleşir. 6.000 sterlin ve bir küçük balonla başlıyorsun. Her ay dört günlük bir balon festivali var; festival akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Şemsiyeni al evlat.');
-  if (id === 'abq') S.hezQ.push('hz:Amerika evlat! Albuquerque\'de rüzgâr bambaşka: meşhur "kutu". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: 3.000 dolar ve bir küçük balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika\'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım.');
+  if (id === 'lux') S.hezQ.push('hz:Luksor evlat, dünyanın en çetin balon pazarı! 5.000 € ve bir küçük balonla başlıyorsun; rakipler sana karşı çabuk birleşir.§Nil\'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Holding buraya para gönderemez. Sabırlı ol evlat, Nil sabırlıyı sever.');
+  if (id === 'bri') S.hezQ.push('hz:Bristol evlat! Sabahları sis olur, rüzgâr batıdan eser, havalimanının göğüne girme. 6.000 sterlin ve bir küçük balonla başlıyorsun.§Sisli sabah iniş alanını görmek için alçal. Her ay dört günlük bir balon festivali var: akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Sir Reginald Ashby\'nin Clifton Crown\'u burada yüz yıldır uçuyor; rakipler çabuk birleşir. Şemsiyeni al evlat.');
+  if (id === 'abq') S.hezQ.push('hz:Amerika evlat! Burada rüzgâr "kutu" gibi döner: alçakta bir yöne, yukarıda ters yöne. 3.000 dolar ve bir küçük balonla sıfırdan başlıyorsun.§Usta pilot kalktığı yere geri döner. Her 30 günde bir Balloon Fiesta var: dört gün turist iki katına çıkar. Kapadokya otomatik modda kazanır, kazancı holdinge gider; ama holding buraya para gönderemez. Bir sorun olursa seni çağırırım.');
   if (GUIDES[id].hello) S.hezQ.push('guide:hello');
   if (Object.keys(S.regions || {}).length || S.balloons.length) S.xfer = { from: S.region, to: id }; /* v125: the entry card */
   switchRegion(id);
@@ -7791,7 +7796,7 @@ function trainItems(add, t) {
     const r = [tiso(-13.9, 6.85), tiso(-8.9, 6.85), tiso(-8.9, 7.55), tiso(-13.9, 7.55)].map(p => upp(p, 56)); tpoly(r, '#f2ead6');
     tpoly([r[3], r[2], upp(r[2], -6), upp(r[3], -6)], '#2a5a3a');
     const p = tiso(-14.1, 7.3); ctx.fillStyle = '#2a5a3a'; ctx.fillRect(p[0] - 30, p[1] - 44, 2, 44); ctx.fillRect(p[0] + 28, p[1] - 44, 2, 44); rrect(p[0] - 34, p[1] - 60, 68, 18, 3); ctx.fillStyle = '#f6f2e4'; ctx.fill(); ctx.strokeStyle = '#2a5a3a'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#2a2a2e'; ctx.font = '800 12px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('AVONSIDE', p[0], p[1] - 46); ctx.textAlign = 'left';
-  });
+  }, -7.2 + 6.6 + .15); /* v125.5: drawn after the whole train, which runs behind it (a long train's own depth sorted it over the canopy) */
   add(-6.7, 6.25, () => { const p = tiso(-6.7, 6.25); ctx.fillStyle = '#c0392b'; ctx.fillRect(p[0] - 14, p[1] - 18, 28, 8); ctx.fillStyle = '#f6f2e4'; ctx.fillRect(p[0] - 10, p[1] - 17, 6, 6); ctx.fillRect(p[0] + 4, p[1] - 17, 6, 6); ctx.fillStyle = '#3a3a40'; ctx.fillRect(p[0] - 12, p[1] - 10, 3, 10); ctx.fillRect(p[0] + 9, p[1] - 10, 3, 10); });
   for (const x of [-14.2, -7.6]) add(x, 7.5, () => { const p = tiso(x, 7.5); ctx.fillStyle = '#2a2a2e'; ctx.fillRect(p[0] - 1.5, p[1] - 44, 3, 44); ell(p[0], p[1] - 46, 5, 6, '#ffe2a0'); });
   for (const [x, y] of [[-15.5, 3.6], [-9, 3.8], [-17, 5.2], [-12.4, 9.9], [-9.4, 10.2]]) add(x, y, () => { const p = tiso(x, y); oakTree(p[0], p[1], .9); });
@@ -7953,38 +7958,57 @@ function xferDebtStart(bs) {
   const due = Math.round(bs.reduce((a, b) => a + SIZES[b.size].cost, 0) * XFER.debt * FX());
   if (due > 0) S.xferDebt = { left: XFER.debtDays, inst: Math.round(due / XFER.debtDays), from: bs[0].imp };
 }
-/* The entry card: pick up to two balloons and two pilots (the best are ticked), or skip. */
+/* The entry card, in steps so it fits a phone (v125.5): 1. balloons, 2. pilots, 3. what it costs and "Getir". Each list
+   sits in a thin frame and scrolls inside it; the best are ticked to start with. */
 function showXfer() {
   const id = S.xfer.from; S.xfer = null; save();
   const B = xferBalloons(), P = xferPilots();
   if (!B.length && !P.length) { nextPopup(); return; }
   const sel = new Set(P.slice(0, XFER.maxP).map(x => 'p' + x.p.id)); { let st = 0, n = 0; for (const x of B) if (n < XFER.maxB && st + SIZES[x.b.size].cap <= XFER.seats) { sel.add('b' + x.b.id); st += SIZES[x.b.size].cap; n++; } }
   const selSeats = () => B.filter(x => sel.has('b' + x.b.id)).reduce((a, x) => a + SIZES[x.b.size].cap, 0);
+  const steps = [B.length ? 'b' : null, P.length ? 'p' : null, 'sum'].filter(Boolean);
+  let step = 0;
   const m = $('menu');
   const draw = () => {
-    m.replaceChildren(); const c = h('div', 'card xfer');
-    c.appendChild(h('div', 'hzline', `${guide().av()}<span><b>${guide().name}:</b> Eli boş gelme evlat. Otomatik moddaki bölgelerinden birkaç balon ve ${XFER.maxP} pilot getirebilirsin; orada kazanç biraz düşer.</span>`));
-    c.appendChild(h('h1', null, 'Filonu getir'));
-    c.appendChild(h('p', 'hint', `Pilotlar seninle hemen gelir. Balonlar kargoyla ${XFER.ship} günde gelir; kargoya ${XFER.seats} koltuk sığar (iki küçük ya da bir orta sepet). Balonlar adını, tasarımını ve donanımını, pilotlar seviyesini ve özelliğini korur. Getirdiklerin buradaki bölüm hedeflerine sayılmaz.`));
-    const nb = [...sel].filter(k => k[0] === 'b').length, np = [...sel].filter(k => k[0] === 'p').length;
+    m.replaceChildren(); const c = h('div', 'card xfer'), k = steps[step];
+    const nb = [...sel].filter(q => q[0] === 'b').length, np = [...sel].filter(q => q[0] === 'p').length;
+    c.appendChild(h('div', 'xstep', steps.map((q, i) => `<i class="${i === step ? 'on' : i < step ? 'done' : ''}"></i>`).join('') + `<span>Adım ${step + 1}/${steps.length}</span>`));
+    c.appendChild(h('h1', null, k === 'b' ? 'Hangi balonlar gelsin?' : k === 'p' ? 'Hangi pilotlar gelsin?' : 'Filonu getir'));
     const row = (key, html, full) => { const on = sel.has(key), b = h('button', 'xrow' + (on ? ' on' : ''), `<i>${on ? '✓' : ''}</i>${html}`); b.disabled = !on && full; b.onclick = () => { on ? sel.delete(key) : sel.add(key); sfx('click'); draw(); }; return b; };
-    if (B.length) { c.appendChild(h('h2', 'xh', `Balonlar · koltuk: ${selSeats()}/${XFER.seats}`)); const box = h('div', 'xlist'); B.slice(0, 8).forEach(x => box.appendChild(row('b' + x.b.id, `<b>${esc(x.b.name)}</b><span>${SIZES[x.b.size].label} · koltuk: ${SIZES[x.b.size].cap} · ${REGION_DEF[x.id].name}${designOf(x.b) ? ' · desenli' : ''}</span>`, nb >= XFER.maxB || selSeats() + SIZES[x.b.size].cap > XFER.seats))); c.appendChild(box); }
-    if (P.length) { c.appendChild(h('h2', 'xh', `Pilotlar: ${np}/${XFER.maxP}`)); const box = h('div', 'xlist'); P.slice(0, 8).forEach(x => box.appendChild(row('p' + x.p.id, `<b>${esc(x.p.name)}</b><span>${LEVELS[x.p.lvl].name}${trait(x.p) ? ' · ' + TRAITS[x.p.trait].n : ''} · ${REGION_DEF[x.id].name}</span>`, np >= XFER.maxP))); c.appendChild(box); }
-    /* what it costs at home */
-    const loss = {}; for (const k of sel) { const isB = k[0] === 'b', q = isB ? B.find(x => 'b' + x.b.id === k) : P.find(x => 'p' + x.p.id === k); if (!q) continue; const L = loss[q.id] || (loss[q.id] = { seats: 0, p: 0 }); if (isB) L.seats += SIZES[q.b.size].cap; else L.p++; }
-    const lines = Object.keys(loss).map(rid => { const rs = S.regions[rid], s0 = rs.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0), k = Math.max(0, 1 - (s0 ? loss[rid].seats / s0 : 0) - XFER.pilotCut * loss[rid].p), base = rs.auto ? rs.auto.base : 0; return `${REGION_DEF[rid].name}: günde ${eurH(base)} → ${eurH(base * k)}`; });
-    const debt = Math.round(B.filter(x => sel.has('b' + x.b.id)).reduce((a, x) => a + SIZES[x.b.size].cost, 0) * XFER.debt * FX());
-    if (debt) lines.push(`Balonların bedeli: ${eur(debt)}, ${XFER.debtDays} gün boyunca günde ${eur(Math.round(debt / XFER.debtDays))}`);
-    if (lines.length) c.appendChild(h('div', 'callout yel', `<b>Bedeli var.</b><br>${lines.join('<br>')}`));
-    const go = h('button', 'big', nb + np ? `Getir: ${nb} balon, ${np} pilot` : 'Hiçbirini getirme');
-    go.onclick = () => {
-      const pickSel = {}; for (const k of sel) { const isB = k[0] === 'b', q = isB ? B.find(x => 'b' + x.b.id === k) : P.find(x => 'p' + x.p.id === k); if (!q) continue; const o = pickSel[q.id] || (pickSel[q.id] = { b: [], p: [] }); (isB ? o.b : o.p).push(isB ? q.b.id : q.p.id); }
-      const mv = xferApply(pickSel); sfx(nb + np ? 'coin' : 'click'); m.hidden = true;
-      if (mv.p.length || mv.b.length) S.hezQ.unshift(`news:${[mv.p.length ? `${mv.p.map(p => p.name).join(' ve ')} seninle geldi, ekipte` : '', mv.b.length ? `${mv.b.map(b => b.name).join(' ve ')} kargoda: Gün ${S.day + XFER.ship} sabahı burada` : ''].filter(Boolean).join('; ')}. Bir süre ${RD().name}'yi kendi yağınla kavur evlat.`);
-      save(); refresh(); setTimeout(nextPopup, 300);
-    };
-    const skip = h('button', 'ghost', 'Geç: sıfırdan başla'); skip.style.width = '100%'; skip.onclick = () => { sfx('click'); m.hidden = true; save(); refresh(); setTimeout(nextPopup, 250); };
-    c.append(go, skip); m.appendChild(c); m.hidden = false;
+    if (k === 'b') {
+      c.appendChild(h('p', 'hint', `${guide().name}: Otomatik moddaki bölgelerinden balon getirebilirsin evlat. Kargoya ${XFER.seats} koltuk sığar (iki küçük ya da bir orta sepet), yolculuk ${XFER.ship} gün.`));
+      c.appendChild(h('div', 'xh', `<span>Seçilen koltuk</span><b>${selSeats()}/${XFER.seats}</b>`));
+      const box = h('div', 'xlist'); B.forEach(x => box.appendChild(row('b' + x.b.id, `<b>${esc(x.b.name)}</b><span>${SIZES[x.b.size].label} · koltuk: ${SIZES[x.b.size].cap} · ${REGION_DEF[x.id].name}${designOf(x.b) ? ' · desenli' : ''}</span>`, nb >= XFER.maxB || selSeats() + SIZES[x.b.size].cap > XFER.seats))); c.appendChild(box);
+    } else if (k === 'p') {
+      c.appendChild(h('p', 'hint', `Pilotlar seninle hemen gelir; seviyesini ve özelliğini korur, maaşı ${RD().cur} ile ödenir.`));
+      c.appendChild(h('div', 'xh', `<span>Seçilen pilot</span><b>${np}/${XFER.maxP}</b>`));
+      const box = h('div', 'xlist'); P.forEach(x => box.appendChild(row('p' + x.p.id, `<b>${esc(x.p.name)}</b><span>${LEVELS[x.p.lvl].name}${trait(x.p) ? ' · ' + TRAITS[x.p.trait].n : ''} · ${REGION_DEF[x.id].name}</span>`, np >= XFER.maxP))); c.appendChild(box);
+    } else {
+      const bs = B.filter(x => sel.has('b' + x.b.id)), ps = P.filter(x => sel.has('p' + x.p.id));
+      c.appendChild(h('div', 'fmix', `<div><span>Balonlar (${XFER.ship} gün sonra)</span><b>${bs.length ? bs.map(x => esc(x.b.name)).join(', ') : 'yok'}</b></div><div><span>Pilotlar (hemen)</span><b>${ps.length ? ps.map(x => esc(x.p.name)).join(', ') : 'yok'}</b></div>`));
+      const loss = {}; for (const x of bs) (loss[x.id] = loss[x.id] || { seats: 0, p: 0 }).seats += SIZES[x.b.size].cap; for (const x of ps) (loss[x.id] = loss[x.id] || { seats: 0, p: 0 }).p++;
+      const lines = Object.keys(loss).map(rid => { const rs = S.regions[rid], s0 = rs.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0), kk = Math.max(0, 1 - (s0 ? loss[rid].seats / s0 : 0) - XFER.pilotCut * loss[rid].p), base = rs.auto ? rs.auto.base : 0; return `${REGION_DEF[rid].name}: günde ${eurH(base)} → ${eurH(base * kk)}`; });
+      const debt = Math.round(bs.reduce((a, x) => a + SIZES[x.b.size].cost, 0) * XFER.debt * FX());
+      if (debt) lines.push(`Balonların bedeli: ${eur(debt)}, ${XFER.debtDays} gün boyunca günde ${eur(Math.round(debt / XFER.debtDays))}`);
+      if (lines.length) c.appendChild(h('div', 'callout yel', `<b>Bedeli var.</b><br>${lines.join('<br>')}`));
+      c.appendChild(h('p', 'hint', 'Getirdiklerin buradaki bölüm hedeflerine sayılmaz.'));
+    }
+    const nav = h('div', 'xnav');
+    if (step > 0) { const bk = h('button', 'ghost', 'Geri'); bk.onclick = () => { step--; sfx('click'); draw(); }; nav.appendChild(bk); }
+    if (k !== 'sum') { const nx = h('button', 'big', 'İleri'); nx.onclick = () => { step++; sfx('click'); draw(); }; nav.appendChild(nx); }
+    else {
+      const go = h('button', 'big', nb + np ? `Getir: ${nb} balon, ${np} pilot` : 'Hiçbirini getirme');
+      go.onclick = () => {
+        const pickSel = {}; for (const q of sel) { const isB = q[0] === 'b', x = isB ? B.find(y => 'b' + y.b.id === q) : P.find(y => 'p' + y.p.id === q); if (!x) continue; const o = pickSel[x.id] || (pickSel[x.id] = { b: [], p: [] }); (isB ? o.b : o.p).push(isB ? x.b.id : x.p.id); }
+        const mv = xferApply(pickSel); sfx(nb + np ? 'coin' : 'click'); m.hidden = true;
+        if (mv.p.length || mv.b.length) S.hezQ.unshift(`news:${[mv.p.length ? `${mv.p.map(p => p.name).join(' ve ')} seninle geldi, ekipte` : '', mv.b.length ? `${mv.b.map(b => b.name).join(' ve ')} kargoda: Gün ${S.day + XFER.ship} sabahı burada` : ''].filter(Boolean).join('; ')}. Bir süre ${RD().name}'yi kendi yağınla kavur evlat.`);
+        save(); refresh(); setTimeout(nextPopup, 300);
+      };
+      nav.appendChild(go);
+    }
+    c.appendChild(nav);
+    const skip = h('button', 'ghost xskip', 'Geç: sıfırdan başla'); skip.onclick = () => { sfx('click'); m.hidden = true; save(); refresh(); setTimeout(nextPopup, 250); };
+    c.appendChild(skip); m.appendChild(c); m.hidden = false;
   };
   draw();
 }
@@ -10858,7 +10882,7 @@ function townClamp(w, h) {
   const hx = c[0] * HOME.z + HOME.ox, hy = c[1] * HOME.z + HOME.oy;
   let x0 = Math.min(w * .5, w * .85 - mx, hx), x1 = Math.max(w * .5, w * .15 + mx, hx), y0 = Math.min(h * .5, h * .3 - my, hy), y1 = Math.max(h * .55, h * .8 + my, hy);
   /* v125: the coach terminal outside town can be dragged to the middle of the screen */
-  const K = ctrCfg(); if (K) { const p = tiso(...ctrSpot()), ex = w / 2 + (c[0] - p[0]) * TOWN.z, ey = h * .5 + (c[1] - p[1]) * TOWN.z; x0 = Math.min(x0, ex); x1 = Math.max(x1, ex); y0 = Math.min(y0, ey); y1 = Math.max(y1, ey); } /* v125.2: any direction */
+  const K = ctrCfg(); if (K) { const p = tiso(...ctrSpot()), ex = w / 2 + (c[0] - p[0]) * TOWN.z, ey = h * .5 + (c[1] - p[1]) * TOWN.z; x0 = Math.min(x0, ex - w * .3); x1 = Math.max(x1, ex + w * .3); y0 = Math.min(y0, ey - h * .25); y1 = Math.max(y1, ey + h * .25); } /* v125.2: any direction; v125.5: with room around it */
   TOWN.ox += clamp(sx, x0, x1) - sx;
   TOWN.oy += clamp(sy, y0, y1) - sy;
 }
