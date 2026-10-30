@@ -7246,7 +7246,7 @@ const CTR = {
   },
   /* v125.2: London weekend trains: Saturday and Sunday, a premium price, and a fog guarantee */
   bri: {
-    kind: 'train', cast: CTR_CAST_BRI, spot: [-12, 10.2], shift: [0, 0],
+    kind: 'train', cast: CTR_CAST_BRI, spot: [-11, 6.4], shift: [0, 0],
     minChapter: 1, minSeats: 48, firstWait: 1,
     gap: [10, 14], prefGap: [7, 9], lead: [3, 4], len: [2, 2], weekend: true, share: [.25, .4], price: [.9, 1], prefPrice: 1.04,
     fogG: true, voucher: .15, fogP: [.05, .45],
@@ -7265,6 +7265,7 @@ const CTR = {
 const ctrCfg = () => CTR[S && S.region];
 const ctrSpot = () => { const K = ctrCfg(); return [K.spot[0] + K.shift[0], K.spot[1] + K.shift[1]]; };
 const DAY_NAMES = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+const DAY_SHORT = ['Pzt', 'Sal', 'Çar', 'Per', 'Cum', 'Cmt', 'Paz'];
 const dayName = d => DAY_NAMES[((d - 1) % 7 + 7) % 7]; /* day 1 is a Monday */
 function ctrState() {
   if (!S.ctr) S.ctr = { next: null, offer: null, booked: [], ok: 0, fail: 0, who: 0, rel: 0, okWho: 0, met: false, pref: false, prefEver: false, gone: [], scene: false };
@@ -7444,7 +7445,7 @@ function ctrCard() {
   ctrSpeech(c, (C.met ? '' : w.L.intro + ' ') + ctrLine(w, 'offer', kArgs(O)));
   const seats = fleetSeats(), riv = ctrRival(), len = O.len || 1;
   c.appendChild(h('div', 'ctrfacts', `<div><b>${O.n}${len > 1 ? ' × ' + len : ''}</b><span>${len > 1 ? 'kişi her sabah' : 'kişi'} · filon ${seats} koltuk</span></div><div><b>${ctrWhen(O)}</b><span>${K.weekend ? `${dayName(O.day)}–${dayName(O.day + 1)}` : `${O.day - S.day} gün sonra${len > 1 ? `, ${len} gün` : ''}`}</span></div><div><b>${eur(O.price)}</b><span>kişi başı</span></div><div><b>${eur(ctrTotal(O))}</b><span>toplam</span></div>`));
-  if (O.fogP) c.appendChild(h('div', 'ctrfog', `<span>Sis tahmini</span>${O.fogP.map((p, i) => `<b class="${p >= .4 ? 'hi' : p >= .25 ? 'mid' : ''}">${dayName(O.day + i).slice(0, 3)} %${Math.round(p * 100)}</b>`).join('')}`));
+  if (O.fogP) c.appendChild(h('div', 'ctrfog', `<span>Sis tahmini</span>${O.fogP.map((p, i) => `<b class="${p >= .4 ? 'hi' : p >= .25 ? 'mid' : ''}">${DAY_SHORT[((O.day + i - 1) % 7 + 7) % 7]} %${Math.round(p * 100)}</b>`).join('')}`));
   const rule = K.fogG ? `Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade, üstüne kişi başı ${eur(Math.round(O.price * K.voucher))} kupon. Eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza.`
     : len > 1 ? `${len} sabah boyunca koltuklar önce gruba gider; her sabah eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza. Kırmızı bayraklı sabah sayılmaz.`
     : `O sabah koltuklar önce gruba gider. Eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza; kırmızı bayrakta grup bir gün kayar (%${Math.round(K.redCut * 100)} indirimle).`;
@@ -7683,8 +7684,7 @@ function cruiseShip(x0, y0, col, name, t) {
     const hull = block(x0, y0, L, Wd, 16, { lit: '#f6f4ee', shade: '#d8d4c8', top: '#c8a878', courses: false });
     tface(hull.D, hull.C, 16, () => { ctx.fillStyle = '#1f3a5a'; ctx.fillRect(0, 0, 1, .32); ctx.fillStyle = col; ctx.fillRect(0, .34, 1, .08); ctx.fillStyle = '#3a4a5a'; for (let i = 0; i < 18; i++) ctx.fillRect(.03 + i * .053, .58, .02, .16); });
     tface(hull.C, hull.B, 16, () => { ctx.fillStyle = '#1f3a5a'; ctx.fillRect(0, 0, 1, .32); ctx.fillStyle = col; ctx.fillRect(0, .34, 1, .08); });
-    const m = lp(upp(hull.D, 6), upp(hull.C, 6), .5), ang = Math.atan2(hull.C[1] - hull.D[1], hull.C[0] - hull.D[0]);
-    ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.transform(1, 0, -.9, 1, 0, 0); ctx.fillStyle = '#f6f4ee'; ctx.font = '800 11px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText(name.toUpperCase(), 0, 0); ctx.restore(); ctx.textAlign = 'left';
+    tface(hull.D, hull.C, 16, () => { ctx.fillStyle = '#f6f4ee'; for (let i = 0; i < 4; i++) ctx.fillRect(.06 + i * .02, .12, .012, .14); });
     ctx.save(); ctx.translate(0, -16);
     const d2 = block(x0 + .3, y0 + .1, L - .7, Wd - .2, 14, { lit: '#fbfaf6', shade: '#dedad0', top: '#e8e2d4', courses: false });
     tface(d2.D, d2.C, 14, () => { ctx.fillStyle = '#2a4a6a'; for (let i = 0; i < 14; i++) ctx.fillRect(.03 + i * .07, .3, .045, .45); });
@@ -7779,7 +7779,7 @@ function trainItems(add, t) {
     for (const x of [-13.4, -11.4, -9.4]) { const p = tiso(x, 7.35); ctx.fillStyle = '#2a5a3a'; ctx.fillRect(p[0] - 2, p[1] - 56, 4, 56); }
     const r = [tiso(-13.9, 6.85), tiso(-8.9, 6.85), tiso(-8.9, 7.55), tiso(-13.9, 7.55)].map(p => upp(p, 56)); tpoly(r, '#f2ead6');
     tpoly([r[3], r[2], upp(r[2], -6), upp(r[3], -6)], '#2a5a3a');
-    const p = tiso(-8.2, 7.4); ctx.fillStyle = '#2a5a3a'; ctx.fillRect(p[0] - 30, p[1] - 44, 2, 44); ctx.fillRect(p[0] + 28, p[1] - 44, 2, 44); rrect(p[0] - 34, p[1] - 60, 68, 18, 3); ctx.fillStyle = '#f6f2e4'; ctx.fill(); ctx.strokeStyle = '#2a5a3a'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#2a2a2e'; ctx.font = '800 12px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('AVONSIDE', p[0], p[1] - 46); ctx.textAlign = 'left';
+    const p = tiso(-14.1, 7.3); ctx.fillStyle = '#2a5a3a'; ctx.fillRect(p[0] - 30, p[1] - 44, 2, 44); ctx.fillRect(p[0] + 28, p[1] - 44, 2, 44); rrect(p[0] - 34, p[1] - 60, 68, 18, 3); ctx.fillStyle = '#f6f2e4'; ctx.fill(); ctx.strokeStyle = '#2a5a3a'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#2a2a2e'; ctx.font = '800 12px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('AVONSIDE', p[0], p[1] - 46); ctx.textAlign = 'left';
   });
   add(-6.7, 6.25, () => { const p = tiso(-6.7, 6.25); ctx.fillStyle = '#c0392b'; ctx.fillRect(p[0] - 14, p[1] - 18, 28, 8); ctx.fillStyle = '#f6f2e4'; ctx.fillRect(p[0] - 10, p[1] - 17, 6, 6); ctx.fillRect(p[0] + 4, p[1] - 17, 6, 6); ctx.fillStyle = '#3a3a40'; ctx.fillRect(p[0] - 12, p[1] - 10, 3, 10); ctx.fillRect(p[0] + 9, p[1] - 10, 3, 10); });
   for (const x of [-14.2, -7.6]) add(x, 7.5, () => { const p = tiso(x, 7.5); ctx.fillStyle = '#2a2a2e'; ctx.fillRect(p[0] - 1.5, p[1] - 44, 3, 44); ell(p[0], p[1] - 46, 5, 6, '#ffe2a0'); });
