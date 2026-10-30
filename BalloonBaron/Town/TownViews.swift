@@ -124,7 +124,7 @@ struct HomeTownView: View {
                         let h = dockTop > 0 ? min(dockTop, sz.height) : sz.height * 0.6
                         model.size = sz
                         model.instant = reduceMotion
-                        model.contractSpot = s.contractConfig != nil ? ContractPlace.of(s.region)?.center : nil
+                        model.contractSpot = Self.contractSpot(s)
                         model.home = homeViewport(width: sz.width, dockTop: h)
                         if model.mode == .home { model.view = model.home } else { model.step(now: model.time(tl.date)) }
                         // At home the town stops at the dock; zoomed in it fills the screen.
@@ -149,20 +149,7 @@ struct HomeTownView: View {
                             store.collectScene.from = nil
                             renderFocus(&c, s, sz, now, f, b, date: tl.date)
                         } else {
-                            store.collectScene.from = nil
-                            // Zoomed in, the horizon stays where the home screen had it; from the night it stays the night's,
-                            // and gliding home it slides down to the home screen's.
-                            var v = model.view
-                            if model.mode != .home {
-                                let homeHz = TownGeo.horizon(model.home, height: sz.height)
-                                if let f = model.hzFrom { v.hzFix = f + (homeHz - f) * model.glided }
-                                else if model.night { v.hzFix = NightCamera.horizon(v, sz) }
-                                else { v.hzCap = homeHz }
-                            }
-                            // Pilots asking for a raise wait outside the office until you answer.
-                            model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz,
-                                                            strike: s.local.openIssue?.kind == .raise)
-                            contractTick(s, v, sz, now)
+                            renderHome(&c, s, sz, now)
                         }
                     }
                 }
@@ -193,12 +180,12 @@ struct HomeTownView: View {
                 }
                 .onChange(of: store.hqDive) { _, dive in if dive { diveIntoTower() } }
                 .onChange(of: covered) { _, c in
+                    if c { SoundEngine.shared.contractHum(0, level: 0) }
                     if c { DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { if covered { asleep = true } } } else { asleep = false }
                 }
                 .onChange(of: store.night) { old, new in if old != nil, new == nil { startMorning() } }
                 .onChange(of: store.collecting) { _, on in if on { collectFromHere(); SoundEngine.shared.contractHum(0, level: 0) } }
                 .onChange(of: store.contractScene == nil) { _, ended in if ended { endContractScene() } }
-                .onChange(of: covered) { _, c in if c { SoundEngine.shared.contractHum(0, level: 0) } }
                 .onDisappear { SoundEngine.shared.contractHum(0, level: 0) }
                 .onChange(of: store.page) { old, new in
                     // Leaving the office, the camera steps back out in front of the tower (`closeHQ`).
@@ -224,6 +211,27 @@ struct HomeTownView: View {
                 }
             }
         }
+    }
+
+    /// The town as the home screen and the zoomed view show it.
+    /// Zoomed in, the horizon stays where the home screen had it; from the night it stays the night's, and gliding home
+    /// it slides down to the home screen's. Pilots asking for a raise wait outside the office until you answer.
+    private func renderHome(_ c: inout GraphicsContext, _ s: GameState, _ sz: CGSize, _ now: Double) {
+        store.collectScene.from = nil
+        var v = model.view
+        if model.mode != .home {
+            let homeHz = TownGeo.horizon(model.home, height: sz.height)
+            if let f = model.hzFrom { v.hzFix = f + (homeHz - f) * model.glided }
+            else if model.night { v.hzFix = NightCamera.horizon(v, sz) }
+            else { v.hzCap = homeHz }
+        }
+        model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, strike: s.local.openIssue?.kind == .raise)
+        contractTick(s, v, sz, now)
+    }
+
+    private static func contractSpot(_ s: GameState) -> (Double, Double)? {
+        guard s.contractConfig != nil, let p = ContractPlace.of(s.region) else { return nil }
+        return p.center
     }
 
     /// v125 `ctrScene`: the camera leaves town for the off-map place (3.6 s, zoom 0.86, the place in the middle); when

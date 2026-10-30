@@ -18,7 +18,18 @@ struct HezarfenView: View {
 
     private var shortKey: String? {
         if case .tip(let t) = message, Self.shortTips.contains(t) { return "tip.\(t.rawValue).short" }
-        return nil
+        // v125.5: a new region's first-day texts say the short part; the rest is behind "More"
+        switch message {
+        case .enteredRegion(let r) where r != .cap: return "hez.entered.\(r.rawValue).short"
+        case .guideHello(let r) where r != .cap: return "guide.\(r.rawValue).hello.short"
+        case .boss(let r, .hello) where r != .cap: return "boss.\(r.rawValue).hello.short"
+        default: return nil
+        }
+    }
+
+    private func shortText(_ key: String) -> String {
+        if case .enteredRegion(let r) = message { return loc(key, eur(r.startCash)) }
+        return loc(key)
     }
 
     private var boss: (RegionID, BossLine)? {
@@ -58,7 +69,7 @@ struct HezarfenView: View {
 
     var body: some View {
         let short = long ? nil : shortKey
-        let text = short.map { loc($0) } ?? message.text
+        let text = short.map { shortText($0) } ?? message.text
         ZStack(alignment: .bottom) {
             Color.black.opacity(0.45).ignoresSafeArea()
             HStack(alignment: .bottom, spacing: 10) {

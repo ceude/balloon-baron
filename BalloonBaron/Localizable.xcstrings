@@ -6157,37 +6157,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Na sieh mal einer an, was der Wind da hergeweht hat. Dale Whitaker, Sandia Sky Rides. Schon mal was vom Box-Wind gehört, Kleiner? Ballonfahren ist hier nicht wie in der Türkei. Wir sehen uns auf der Fiesta, falls du dann noch da bist."
+            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Wir sehen uns auf der Fiesta, Kleiner, falls du dann noch da bist. Kennst du den Box-Wind? Ballonfahren ist hier nicht wie in der Türkei."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Ever heard of the box winds, kid? Flying balloons here isn't like in Turkey. See you at the Fiesta, if you're still around."
+            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. See you at the Fiesta, kid, if you're still around. Do you know the box wind? Flying balloons here isn't like in Turkey."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Well, look what the wind blew in. Dale Whitaker, de Sandia Sky Rides. ¿Conoces los vientos de caja, chico? Volar globos aquí no es como en Turquía. Nos vemos en la Fiesta, si sigues por aquí."
+            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Nos vemos en la Fiesta, chico, si sigues por aquí. ¿Conoces el viento de caja? Volar globos aquí no es como en Turquía."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "おやおや、風が妙なものを運んできたな。サンディア・スカイ・ライズのデール・ウィテカーだ。ボックス風を知ってるか、新入り？ここで気球を飛ばすのはトルコとは違うぜ。フィエスタで会おう、まだここにいればな。"
+            "value": "おやおや、風が何を運んできたかと思えば。サンディア・スカイ・ライズのデイル・ウィテカーだ。フィエスタで会おう、坊や。まだここにいればの話だがな。 ボックス風を知っているか？ここで気球を飛ばすのはトルコとは違うぞ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이런, 바람에 누가 날려 왔나 보군. 샌디아 스카이 라이즈의 데일 휘태커다. 박스 바람은 들어 봤나, 친구? 여기서 열기구 띄우는 건 튀르키예랑 달라. 피에스타에서 보자고. 그때까지 버티고 있다면."
+            "value": "이런, 바람이 뭘 몰고 왔나 했더니. 샌디아 스카이 라이즈의 데일 휘터커요. 피에스타에서 봅시다, 꼬마. 그때까지 버틴다면. 박스 바람을 아시오? 여기서 열기구 띄우는 건 튀르키예와 다르오."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Kutu rüzgârını bilir misin evlat? Burada balon uçurmak Türkiye'deki gibi değil. Fiesta'da görüşürüz, tabii hâlâ buradaysan."
+            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Fiesta'da görüşürüz evlat, tabii hâlâ buradaysan. Kutu rüzgârını bilir misin? Burada balon uçurmak Türkiye'deki gibi değil."
+          }
+        }
+      }
+    },
+    "boss.abq.hello.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Wir sehen uns auf der Fiesta, Kleiner, falls du dann noch da bist."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. See you at the Fiesta, kid, if you're still around."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Nos vemos en la Fiesta, chico, si sigues por aquí."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "おやおや、風が何を運んできたかと思えば。サンディア・スカイ・ライズのデイル・ウィテカーだ。フィエスタで会おう、坊や。まだここにいればの話だがな。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이런, 바람이 뭘 몰고 왔나 했더니. 샌디아 스카이 라이즈의 데일 휘터커요. 피에스타에서 봅시다, 꼬마. 그때까지 버틴다면."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Fiesta'da görüşürüz evlat, tabii hâlâ buradaysan."
           }
         }
       }
@@ -6649,37 +6690,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ah, ein Neuling. Sir Reginald Ashby, Clifton Crown Balloons. Als mein Urgroßvater den ersten Ballon über diese Schlucht flog, war die Brücke gerade erst fertig. Hier kennt man gute Familien, gute Hotels und guten Tee. In Ägypten hast du gewonnen, sagt man? Bristols Wetter empfängt dich morgens mit Nebel und verabschiedet dich mittags mit Regen. Mal sehen, wie lange du durchhältst."
+            "value": "Ah, der Neuankömmling. Sir Reginald Ashby, Clifton Crown Balloons. Hier kennt man gute Familien, gute Hotels und guten Tee. Mal sehen, wie lange du durchhältst. Als mein Urgroßvater den ersten Ballon über diese Schlucht flog, war die Brücke gerade erst fertig. Du hast in Ägypten gewonnen, ja? Bristols Wetter empfängt dich morgens mit Nebel und verabschiedet dich mittags mit Regen."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ah, a newcomer. Sir Reginald Ashby, Clifton Crown Balloons. When my great-grandfather flew the first balloon over this gorge, the bridge had only just been finished. Here one knows good families, good hotels and good tea. You won in Egypt, did you? Bristol's weather will greet you with fog in the morning and see you off with rain at noon. Let's see how long you last."
+            "value": "Ah, the newcomer. Sir Reginald Ashby, Clifton Crown Balloons. Here one knows good families, good hotels and good tea. Let's see how long you last. When my great-grandfather flew the first balloon over this gorge, the bridge had only just been finished. You won in Egypt, did you? Bristol's weather greets you with fog in the morning and sees you off with rain at noon."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ah, un recién llegado. Sir Reginald Ashby, Clifton Crown Balloons. Cuando mi bisabuelo voló el primer globo sobre esta garganta, el puente acababa de terminarse. Aquí se conocen las buenas familias, los buenos hoteles y el buen té. Ganaste en Egipto, ¿no? El tiempo de Bristol te recibirá con niebla por la mañana y te despedirá con lluvia al mediodía. Veamos cuánto aguantas."
+            "value": "Ah, el recién llegado. Sir Reginald Ashby, Clifton Crown Balloons. Aquí se conocen las buenas familias, los buenos hoteles y el buen té. Veamos cuánto aguantas. Cuando mi bisabuelo voló el primer globo sobre esta garganta, el puente acababa de terminarse. Ganaste en Egipto, ¿verdad? El tiempo de Bristol te recibe con niebla por la mañana y te despide con lluvia a mediodía."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ほう、新参者か。サー・レジナルド・アシュビー、クリフトン・クラウン・バルーンズだ。曾祖父がこの渓谷の上に初めて気球を飛ばしたとき、橋はできたばかりだった。ここでは良き家柄、良きホテル、良き紅茶がものを言う。エジプトで勝ったそうだね？ブリストルの天気は朝は霧で迎え、昼は雨で見送る。どこまで持つか見せてもらおう。"
+            "value": "ああ、新入りか。クリフトン・クラウン・バルーンズのサー・レジナルド・アシュビーだ。ここでは良い家柄、良いホテル、良い紅茶がものを言う。どれだけもつか見ものだな。 曾祖父がこの渓谷の上を初めて気球で飛んだとき、橋はできたばかりだった。エジプトで勝ったそうだな？ブリストルの天気は朝は霧で迎え、昼は雨で見送るぞ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "아, 신참이군. 레지널드 애슈비 경, 클리프턴 크라운 벌룬스일세. 증조부께서 이 협곡 위로 첫 열기구를 띄우셨을 때 다리는 막 완공된 참이었지. 이곳에선 좋은 가문, 좋은 호텔, 좋은 차를 알아본다네. 이집트에서 이겼다고? 브리스톨의 날씨는 아침엔 안개로 맞이하고 낮엔 비로 배웅하지. 얼마나 버티는지 보자고."
+            "value": "아, 신참이로군. 클리프턴 크라운 벌룬스의 레지널드 애슈비 경이오. 이곳에선 좋은 가문, 좋은 호텔, 좋은 차를 알아보지. 얼마나 버티나 봅시다. 증조부께서 이 협곡 위로 첫 열기구를 띄웠을 때 다리는 막 완공된 참이었소. 이집트에서 이겼다고? 브리스톨의 날씨는 아침엔 안개로 맞이하고 낮엔 비로 배웅하지."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ah, yeni gelen. Sir Reginald Ashby, Clifton Crown Balloons. Büyük büyükbabam bu kanyonun üstünde ilk balonu uçurduğunda köprü daha yeni bitmişti. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Mısır'da kazanmışsın, öyle mi? Bristol'ün havası seni sabah sisle karşılar, öğlen yağmurla uğurlar. Bakalım ne kadar dayanacaksın."
+            "value": "Ah, yeni gelen. Sir Reginald Ashby, Clifton Crown Balloons. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Bakalım ne kadar dayanacaksın. Büyük büyükbabam bu kanyonun üstünde ilk balonu uçurduğunda köprü daha yeni bitmişti. Mısır'da kazanmışsın, öyle mi? Bristol'ün havası seni sabah sisle karşılar, öğlen yağmurla uğurlar."
+          }
+        }
+      }
+    },
+    "boss.bri.hello.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ah, der Neuankömmling. Sir Reginald Ashby, Clifton Crown Balloons. Hier kennt man gute Familien, gute Hotels und guten Tee. Mal sehen, wie lange du durchhältst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ah, the newcomer. Sir Reginald Ashby, Clifton Crown Balloons. Here one knows good families, good hotels and good tea. Let's see how long you last."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ah, el recién llegado. Sir Reginald Ashby, Clifton Crown Balloons. Aquí se conocen las buenas familias, los buenos hoteles y el buen té. Veamos cuánto aguantas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ああ、新入りか。クリフトン・クラウン・バルーンズのサー・レジナルド・アシュビーだ。ここでは良い家柄、良いホテル、良い紅茶がものを言う。どれだけもつか見ものだな。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아, 신참이로군. 클리프턴 크라운 벌룬스의 레지널드 애슈비 경이오. 이곳에선 좋은 가문, 좋은 호텔, 좋은 차를 알아보지. 얼마나 버티나 봅시다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ah, yeni gelen. Sir Reginald Ashby, Clifton Crown Balloons. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Bakalım ne kadar dayanacaksın."
           }
         }
       }
@@ -7633,37 +7715,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Willkommen, Fremder. Nabil Haddad, Theban Skies. Als mein Vater an diesem Westufer den ersten Ballon aufblies, warst du noch nicht geboren. Hier kennt jedes Hotel, jeder Guide, jede Feluke meinen Namen. Du hast in Kappadokien und in Amerika gewonnen, hört man. Der Nil ist anders. Der Nil liebt die Geduldigen und verschlingt die Hochmütigen."
+            "value": "Willkommen, Fremder. Nabil Haddad, Theban Skies. Hier kennt jedes Hotel und jeder Führer meinen Namen; der Nil verschlingt die Hochmütigen. Als mein Vater am Westufer den ersten Ballon füllte, warst du noch nicht geboren. Ich höre, du hast in Kappadokien und Amerika gewonnen. Der Nil ist anders; er liebt die Geduldigen."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Welcome, stranger. Nabil Haddad, Theban Skies. When my father inflated the first balloon on this West Bank, you weren't even born. Here every hotel, every guide, every felucca knows my name. I hear you won in Cappadocia and in America. The Nile is different. The Nile loves the patient and swallows the proud."
+            "value": "Welcome, stranger. Nabil Haddad, Theban Skies. Here every hotel and every guide knows my name; the Nile swallows the proud. When my father inflated the first balloon on this West Bank, you weren't even born. I hear you won in Cappadocia and America. The Nile is different; it loves the patient."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bienvenido, forastero. Nabil Haddad, Theban Skies. Cuando mi padre infló el primer globo en esta Ribera Oeste, tú ni habías nacido. Aquí cada hotel, cada guía, cada faluca conoce mi nombre. Dicen que ganaste en Capadocia y en Estados Unidos. El Nilo es distinto. El Nilo ama al paciente y se traga al soberbio."
+            "value": "Bienvenido, forastero. Nabil Haddad, Theban Skies. Aquí cada hotel y cada guía conoce mi nombre; el Nilo se traga a los soberbios. Cuando mi padre infló el primer globo en esta Ribera Oeste, tú aún no habías nacido. He oído que ganaste en Capadocia y en Estados Unidos. El Nilo es distinto; ama a los pacientes."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ようこそ、よそ者。ナビル・ハッダード、テーベ・スカイズだ。父がこの西岸で最初の気球を膨らませた時、君はまだ生まれてもいなかった。ここではどのホテルも、どのガイドも、どのファルーカも私の名を知っている。カッパドキアでもアメリカでも勝ったそうだな。ナイルは違う。ナイルは辛抱強い者を愛し、傲慢な者を呑み込む。"
+            "value": "ようこそ、よそ者よ。テーベ・スカイズのナビル・ハッダードだ。ここではどのホテルもガイドも私の名を知っている。ナイルは驕る者を呑み込む。 父がこの西岸で最初の気球を膨らませたとき、お前はまだ生まれてもいなかった。カッパドキアとアメリカで勝ったそうだな。ナイルは違う。辛抱強い者を愛するのだ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "어서 오게, 이방인. 나빌 하다드, 테베 스카이스일세. 우리 아버지가 이 서안에서 첫 열기구를 부풀렸을 때 자네는 태어나지도 않았지. 여기선 모든 호텔, 모든 가이드, 모든 펠루카가 내 이름을 알아. 카파도키아에서도, 미국에서도 이겼다고 들었네. 나일은 다르다네. 나일은 인내하는 자를 사랑하고 오만한 자를 삼키지."
+            "value": "어서 오시오, 이방인. 테베 스카이스의 나빌 하다드요. 이곳의 모든 호텔과 가이드가 내 이름을 알지. 나일은 오만한 자를 삼키오. 내 아버지가 이 서안에서 첫 열기구를 부풀렸을 때 당신은 태어나지도 않았소. 카파도키아와 미국에서 이겼다고 들었소. 나일은 다르오. 인내하는 자를 사랑하지."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hoş geldin, yabancı. Nabil Haddad, Theban Skies. Babam bu Batı Yakası'nda ilk balonu şişirdiğinde sen daha doğmamıştın. Burada her otel, her rehber, her feluka benim adımı bilir. Kapadokya'da, Amerika'da kazanmışsın, duydum. Nil başkadır. Nil sabırlı olanı sever, kibirliyi yutar."
+            "value": "Hoş geldin, yabancı. Nabil Haddad, Theban Skies. Burada her otel, her rehber benim adımı bilir; Nil kibirliyi yutar. Babam bu Batı Yakası'nda ilk balonu şişirdiğinde sen daha doğmamıştın. Kapadokya'da, Amerika'da kazanmışsın, duydum. Nil başkadır; sabırlı olanı sever."
+          }
+        }
+      }
+    },
+    "boss.lux.hello.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen, Fremder. Nabil Haddad, Theban Skies. Hier kennt jedes Hotel und jeder Führer meinen Namen; der Nil verschlingt die Hochmütigen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome, stranger. Nabil Haddad, Theban Skies. Here every hotel and every guide knows my name; the Nile swallows the proud."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenido, forastero. Nabil Haddad, Theban Skies. Aquí cada hotel y cada guía conoce mi nombre; el Nilo se traga a los soberbios."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ようこそ、よそ者よ。テーベ・スカイズのナビル・ハッダードだ。ここではどのホテルもガイドも私の名を知っている。ナイルは驕る者を呑み込む。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어서 오시오, 이방인. 테베 스카이스의 나빌 하다드요. 이곳의 모든 호텔과 가이드가 내 이름을 알지. 나일은 오만한 자를 삼키오."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoş geldin, yabancı. Nabil Haddad, Theban Skies. Burada her otel, her rehber benim adımı bilir; Nil kibirliyi yutar."
           }
         }
       }
@@ -43139,37 +43262,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hallo, mein junger Freund, ich bin Ben Franklin. 1783 war ich in Paris, als der Ballon der Montgolfiers aufstieg. Jemand fragte mich: „Wozu ist ein Ballon gut?“ und ich antwortete: „Wozu ist ein neugeborenes Kind gut?“ Meister Hezarfen hat dich mir anvertraut; in Albuquerque zeige ich dir den Weg. Denk daran: Zeit ist Geld!"
+            "value": "Hallo, Kleiner, ich bin Ben Franklin. In Albuquerque zeige ich dir den Weg. Zeit ist Geld! 1783 war ich in Paris, als der Ballon der Montgolfiers aufstieg. Jemand fragte: „Wozu ist ein Ballon gut?“ Und ich sagte: „Wozu ist ein neugeborenes Kind gut?“ Meister Hezarfen hat dich mir anvertraut."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hello, my young friend, I'm Ben Franklin. In 1783 I was in Paris when the Montgolfiers' balloon went up. Someone asked me, \"What good is a balloon?\" and I answered, \"What good is a newborn baby?\" Master Hezarfen has left you in my care; in Albuquerque I'll show you the way. Remember: time is money!"
+            "value": "Hello, kid, I'm Ben Franklin. I'll show you the way in Albuquerque. Time is money! In 1783 I was in Paris when the Montgolfiers' balloon rose. Someone asked, \"What use is a balloon?\" and I said, \"What use is a newborn baby?\" Master Hezarfen has left you in my care."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hola, joven amigo, soy Ben Franklin. En 1783 estaba en París cuando subió el globo de los Montgolfier. Alguien me preguntó: «¿Para qué sirve un globo?», y respondí: «¿Para qué sirve un recién nacido?». El maestro Hezarfen te ha dejado a mi cargo; en Albuquerque te mostraré el camino. Recuerda: ¡el tiempo es oro!"
+            "value": "Hola, chico, soy Ben Franklin. En Albuquerque te mostraré el camino. ¡El tiempo es oro! En 1783 estaba en París cuando se elevó el globo de los Montgolfier. Alguien preguntó: «¿Para qué sirve un globo?», y yo respondí: «¿Para qué sirve un bebé recién nacido?». El maestro Hezarfen te ha dejado a mi cargo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "やあ、若い友よ、ベン・フランクリンだ。1783年、モンゴルフィエ兄弟の気球が上がった時、私はパリにいた。ある人に「気球が何の役に立つのか」と聞かれ、「生まれたばかりの赤ん坊が何の役に立つのか」と答えたものだ。ヘザルフェン師匠が君を私に託した。アルバカーキでは私が道を示そう。覚えておきたまえ、時は金なりだ！"
+            "value": "やあ、若者よ、ベン・フランクリンだ。アルバカーキでは私が道を示そう。時は金なり！ 1783年、モンゴルフィエ兄弟の気球が上がったとき、私はパリにいた。誰かが「気球が何の役に立つ？」と尋ね、私は「生まれたての赤ん坊が何の役に立つ？」と答えた。ヘザルフェン師匠が君を私に託したのだ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "안녕하신가, 젊은 친구. 나는 벤 프랭클린일세. 1783년 몽골피에 형제의 열기구가 떠오를 때 나는 파리에 있었지. 누군가 \"열기구가 무슨 쓸모가 있소?\" 하고 묻길래 \"갓난아기는 무슨 쓸모가 있소?\" 하고 답했다네. 자네 스승 헤자르펜께서 자네를 내게 맡기셨으니, 앨버커키에선 내가 길을 안내하겠네. 기억하게, 시간은 돈일세!"
+            "value": "안녕하신가, 젊은이. 나는 벤 프랭클린일세. 앨버커키에선 내가 길을 안내하지. 시간은 돈이야! 1783년 몽골피에 형제의 열기구가 떠오를 때 나는 파리에 있었네. 누군가 '열기구가 무슨 쓸모가 있소?'라고 묻길래 '갓 태어난 아기는 무슨 쓸모가 있소?'라고 답했지. 헤자르펜 스승이 자네를 내게 맡겼네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Merhaba genç dostum, ben Ben Franklin. 1783'te Paris'te Montgolfier'lerin balonu havalandığında oradaydım. Biri \"Bu balonun ne faydası var?\" diye sordu, ben de \"Yeni doğmuş bir bebeğin ne faydası var?\" dedim. Hezarfen Usta seni bana emanet etti, Albuquerque'de sana ben yol göstereceğim. Unutma: vakit nakittir!"
+            "value": "Merhaba evlat, ben Ben Franklin. Albuquerque'de sana ben yol göstereceğim. Vakit nakittir! 1783'te Paris'te Montgolfier'lerin balonu havalandığında oradaydım. Biri \"Bu balonun ne faydası var?\" diye sordu, ben de \"Yeni doğmuş bir bebeğin ne faydası var?\" dedim. Hezarfen Usta seni bana emanet etti."
+          }
+        }
+      }
+    },
+    "guide.abq.hello.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hallo, Kleiner, ich bin Ben Franklin. In Albuquerque zeige ich dir den Weg. Zeit ist Geld!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hello, kid, I'm Ben Franklin. I'll show you the way in Albuquerque. Time is money!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hola, chico, soy Ben Franklin. En Albuquerque te mostraré el camino. ¡El tiempo es oro!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "やあ、若者よ、ベン・フランクリンだ。アルバカーキでは私が道を示そう。時は金なり！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안녕하신가, 젊은이. 나는 벤 프랭클린일세. 앨버커키에선 내가 길을 안내하지. 시간은 돈이야!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merhaba evlat, ben Ben Franklin. Albuquerque'de sana ben yol göstereceğim. Vakit nakittir!"
           }
         }
       }
@@ -43303,37 +43467,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hallo, Schätzchen, ich bin Maggie. Maggie Holloway. Vierzig Jahre lang habe ich in dieser Stadt Ballonhüllen genäht; ein Blick auf die Nähte deines Ballons, und ich sage dir, aus wessen Händen er stammt. Meister Hezarfen hat dich mir anvertraut, in Bristol zeige ich dir den Weg. Drei Dinge musst du wissen, Liebes: Morgens gibt es Nebel, der Wind weht von Westen, vom Bristolkanal, und flieg niemals in den Himmel des Flughafens. Ach, und vergiss deinen Regenschirm nicht."
+            "value": "Hallo, Schätzchen, ich bin Maggie Holloway. Vierzig Jahre habe ich in dieser Stadt Ballonhüllen genäht; in Bristol zeige ich dir den Weg. Ein Blick auf die Nähte deines Ballons, und ich sage dir, wessen Hände ihn gemacht haben. Meister Hezarfen hat dich mir anvertraut. Und vergiss deinen Schirm nicht, Liebes."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hello, love, I'm Maggie. Maggie Holloway. I sewed balloon envelopes in this city for forty years; one look at your balloon's seams and I could tell you whose hands made it. Master Hezarfen has put you in my care, and in Bristol I'll show you the way. Three things to know, dear: there's fog in the mornings, the wind blows from the west, off the Bristol Channel, and never, ever fly into the airport's sky. Oh, and don't forget your umbrella."
+            "value": "Hello, love, I'm Maggie Holloway. I sewed balloon envelopes in this city for forty years; I'll show you the way in Bristol. One look at your balloon's seams and I can tell whose hands made it. Master Hezarfen has left you in my care. And don't forget your umbrella, sweetheart."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hola, cielo, soy Maggie. Maggie Holloway. Cosí envolturas de globos en esta ciudad durante cuarenta años; con mirar las costuras de tu globo te diría de qué manos salió. El maestro Hezarfen te ha dejado a mi cargo, y en Bristol yo te guiaré. Tres cosas, querida: por las mañanas hay niebla, el viento sopla del oeste, desde el canal de Bristol, y nunca, jamás, entres en el cielo del aeropuerto. Ah, y no olvides el paraguas."
+            "value": "Hola, cariño, soy Maggie Holloway. Cosí envolturas de globo en esta ciudad durante cuarenta años; en Bristol te mostraré el camino. Con mirar las costuras de tu globo te digo hasta qué manos lo hicieron. El maestro Hezarfen te ha dejado a mi cargo. Y no olvides el paraguas, cielo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "こんにちは、あんた。マギーよ。マギー・ホロウェイ。この街で40年、気球の外皮を縫ってきたの。あんたの気球の縫い目を見れば、誰の手によるものかだってわかるわ。ヘザルフェン師匠にあんたを託されたから、ブリストルでは私が案内するわね。覚えておいてほしいことが三つ。朝は霧が出る、風は西のブリストル海峡から吹く、そして空港の空には絶対に入らないこと。あ、それと傘を忘れないでね。"
+            "value": "こんにちは、あなた。マギー・ホロウェイよ。この街で40年、気球の球皮を縫ってきたの。ブリストルでは私が道案内するわ。 あなたの気球の縫い目を見れば、誰の手で作られたかまでわかるわ。ヘザルフェン師匠があなたを私に託したの。それと傘を忘れないでね。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "안녕, 얘야, 나는 매기란다. 매기 홀로웨이. 이 도시에서 40년 동안 열기구 외피를 꿰맸지. 네 열기구 바느질만 봐도 누구 손에서 나왔는지 알 수 있단다. 헤자르펜 스승님이 너를 내게 맡기셨으니, 브리스톨에선 내가 길을 알려 줄게. 세 가지만 기억하렴: 아침엔 안개가 끼고, 바람은 서쪽 브리스톨 해협에서 불어오고, 공항 하늘엔 절대 들어가지 마. 아, 우산도 잊지 말고."
+            "value": "안녕, 얘. 나는 매기 홀로웨이야. 이 도시에서 40년 동안 열기구 외피를 꿰맸지. 브리스톨에선 내가 길을 안내할게. 네 열기구 솔기만 봐도 누구 손에서 나왔는지 알 수 있어. 헤자르펜 스승이 너를 내게 맡겼단다. 그리고 우산 잊지 마, 얘."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Merhaba canım, ben Maggie. Maggie Holloway. Kırk yıl bu şehirde balon zarfı diktim; senin balonunun dikişlerine bakınca kimin elinden çıktığını bile söylerim. Hezarfen Usta seni bana emanet etti, Bristol'de sana ben yol göstereceğim. Üç şey bil, tatlım: sabahları sis olur, rüzgâr Bristol Kanalı'ndan, batıdan eser, havalimanının göğüne de asla girme. Bir de şemsiyeni unutma."
+            "value": "Merhaba canım, ben Maggie Holloway. Kırk yıl bu şehirde balon zarfı diktim; Bristol'de sana ben yol göstereceğim. Senin balonunun dikişlerine bakınca kimin elinden çıktığını bile söylerim. Hezarfen Usta seni bana emanet etti. Bir de şemsiyeni unutma, tatlım."
+          }
+        }
+      }
+    },
+    "guide.bri.hello.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hallo, Schätzchen, ich bin Maggie Holloway. Vierzig Jahre habe ich in dieser Stadt Ballonhüllen genäht; in Bristol zeige ich dir den Weg."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hello, love, I'm Maggie Holloway. I sewed balloon envelopes in this city for forty years; I'll show you the way in Bristol."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hola, cariño, soy Maggie Holloway. Cosí envolturas de globo en esta ciudad durante cuarenta años; en Bristol te mostraré el camino."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "こんにちは、あなた。マギー・ホロウェイよ。この街で40年、気球の球皮を縫ってきたの。ブリストルでは私が道案内するわ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안녕, 얘. 나는 매기 홀로웨이야. 이 도시에서 40년 동안 열기구 외피를 꿰맸지. 브리스톨에선 내가 길을 안내할게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merhaba canım, ben Maggie Holloway. Kırk yıl bu şehirde balon zarfı diktim; Bristol'de sana ben yol göstereceğim."
           }
         }
       }
@@ -43385,37 +43590,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Willkommen, mein junger Freund, ich bin Imhotep. Vor viertausend Jahren habe ich auf diesem Land die erste Stufenpyramide entworfen und die Kranken geheilt. Hezarfen nennt man „Meister der tausend Wissenschaften“; so nannte man auch mich. Fliegen habe ich nie versucht, aber den Himmel kenne ich gut: Der Nilwind hilft den Geduldigen. In Luxor zeige ich dir den Weg."
+            "value": "Willkommen, Kleiner, ich bin Imhotep. In Luxor zeige ich dir den Weg; der Wind des Nils hilft den Geduldigen. Vor viertausend Jahren habe ich in diesem Land die erste Stufenpyramide entworfen und die Kranken geheilt. Hezarfen nennt man „Meister der tausend Wissenschaften“; so nannte man auch mich. Fliegen habe ich nie versucht, aber den Himmel kenne ich gut."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Welcome, my young friend, I'm Imhotep. Four thousand years ago I drew the first step pyramid on this land and healed the sick. They call Hezarfen \"master of a thousand sciences\"; they used to call me that too. I never tried flying, but I know the sky well: the Nile wind helps the patient. In Luxor I'll show you the way."
+            "value": "Welcome, kid, I am Imhotep. I will show you the way in Luxor; the Nile's wind helps the patient. Four thousand years ago I drew the first step pyramid in this land and healed the sick. They call Hezarfen \"master of a thousand sciences\"; they called me that too. I never tried to fly, but I know the sky well."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bienvenido, joven amigo, soy Imhotep. Hace cuatro mil años dibujé en esta tierra la primera pirámide escalonada y curé a los enfermos. A Hezarfen lo llaman «maestro de mil ciencias»; a mí también me llamaban así. Nunca intenté volar, pero conozco bien el cielo: el viento del Nilo ayuda al paciente. En Luxor te mostraré el camino."
+            "value": "Bienvenido, chico, soy Imhotep. En Luxor te mostraré el camino; el viento del Nilo ayuda a los pacientes. Hace cuatro mil años dibujé la primera pirámide escalonada de esta tierra y curé a los enfermos. A Hezarfen lo llaman «maestro de mil ciencias»; a mí también me llamaban así. Nunca intenté volar, pero conozco bien el cielo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ようこそ、若い友よ、イムホテプだ。四千年前、この地で最初の階段ピラミッドを設計し、病人を癒やした。ヘザルフェンは「千の学問の師」と呼ばれるが、私もかつてそう呼ばれた。空を飛ぼうとしたことはないが、空のことはよく知っている。ナイルの風は辛抱強い者を助ける。ルクソールでは私が道を示そう。"
+            "value": "ようこそ、若者よ。私はイムホテプ。ルクソールでは私が道を示そう。ナイルの風は辛抱強い者を助ける。 四千年前、私はこの地で最初の階段ピラミッドを設計し、病人を癒した。ヘザルフェンは「千の学問の達人」と呼ばれるが、私もそう呼ばれていた。飛ぼうとしたことはないが、空のことはよく知っている。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "어서 오게, 젊은 친구. 나는 임호테프일세. 사천 년 전 이 땅에 첫 계단식 피라미드를 설계하고 병자를 고쳤지. 헤자르펜을 '천 가지 학문의 대가'라 부르는데, 나도 그렇게 불렸다네. 하늘을 날아 본 적은 없지만 하늘은 잘 알지. 나일의 바람은 인내하는 자를 돕는다네. 룩소르에선 내가 길을 안내하겠네."
+            "value": "어서 오게, 젊은이. 나는 임호테프일세. 룩소르에선 내가 길을 안내하지. 나일의 바람은 인내하는 자를 돕는다네. 사천 년 전 나는 이 땅에 첫 계단식 피라미드를 설계하고 병자를 고쳤지. 헤자르펜을 '천 가지 학문의 대가'라 부르는데, 나도 그렇게 불렸다네. 날아 본 적은 없지만 하늘은 잘 안다네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hoş geldin genç dostum, ben İmhotep. Dört bin yıl önce bu topraklarda ilk basamaklı piramidi ben çizdim, hastaları ben iyileştirdim. Hezarfen'e \"bin ilmin ustası\" derler, bana da öyle derlerdi. Uçmayı hiç denemedim ama gökyüzünü iyi bilirim: Nil'in rüzgârı sabırlıya yardım eder. Luksor'da sana ben yol göstereceğim."
+            "value": "Hoş geldin evlat, ben İmhotep. Luksor'da sana ben yol göstereceğim; Nil'in rüzgârı sabırlıya yardım eder. Dört bin yıl önce bu topraklarda ilk basamaklı piramidi ben çizdim, hastaları ben iyileştirdim. Hezarfen'e \"bin ilmin ustası\" derler, bana da öyle derlerdi. Uçmayı hiç denemedim ama gökyüzünü iyi bilirim."
+          }
+        }
+      }
+    },
+    "guide.lux.hello.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Willkommen, Kleiner, ich bin Imhotep. In Luxor zeige ich dir den Weg; der Wind des Nils hilft den Geduldigen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Welcome, kid, I am Imhotep. I will show you the way in Luxor; the Nile's wind helps the patient."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bienvenido, chico, soy Imhotep. En Luxor te mostraré el camino; el viento del Nilo ayuda a los pacientes."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ようこそ、若者よ。私はイムホテプ。ルクソールでは私が道を示そう。ナイルの風は辛抱強い者を助ける。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "어서 오게, 젊은이. 나는 임호테프일세. 룩소르에선 내가 길을 안내하지. 나일의 바람은 인내하는 자를 돕는다네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoş geldin evlat, ben İmhotep. Luksor'da sana ben yol göstereceğim; Nil'in rüzgârı sabırlıya yardım eder."
           }
         }
       }
@@ -45599,37 +45845,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Amerika, Lehrling! Der Wind in Albuquerque ist etwas Besonderes: die berühmte „Box“. Unten trägt er dich in eine Richtung, etwas höher zurück, so landet ein guter Pilot dort, wo er gestartet ist. Alle 30 Tage ist Balloon Fiesta: Vier Tage lang kommen doppelt so viele Touristen. Hier läuft alles in Dollar, und du fängst bei null an: %@ und ein kleiner Ballon. Kappadokien verdient im Autopilot weiter und schickt alles an die Holding, aber die Holding kann kein Geld hierher schicken. Amerika musst du allein erobern. Gibt es Ärger, rufe ich dich."
+            "value": "Amerika, Lehrling! Hier dreht der Wind wie eine „Box“: unten in eine Richtung, weiter oben zurück. Du fängst bei null an, mit %@ und einem kleinen Ballon. Ein guter Pilot landet dort, wo er gestartet ist. Alle 30 Tage ist Balloon Fiesta: Vier Tage lang kommen doppelt so viele Touristen. Kappadokien verdient im Autopilot weiter, das Geld geht an die Holding, aber die Holding kann nichts hierher schicken. Gibt es Ärger, rufe ich dich."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "America, kid! The wind in Albuquerque is something else: the famous \"box\". Down low it carries you one way, a little higher it brings you back, so a good pilot lands where they took off. Every 30 days there's the Balloon Fiesta: for four days the tourists double. Everything here runs in dollars and you start from scratch: %@ and one small balloon. Cappadocia keeps earning on autopilot and its income goes to the holding, but the holding can't send money here. You'll have to make it in America on your own. If there's trouble, I'll call you."
+            "value": "America, kid! Here the wind turns like a \"box\": one way down low, back the other way higher up. You start from scratch with %@ and one small balloon. A good pilot lands back where they took off. Every 30 days there's the Balloon Fiesta: for four days the tourists double. Cappadocia keeps earning on autopilot and its income goes to the holding, but the holding can't send money here. If there's trouble, I'll call you."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Estados Unidos, aprendiz! El viento de Albuquerque es otra cosa: la famosa «caja». Abajo te lleva en una dirección y un poco más arriba te devuelve, así que un buen piloto aterriza donde despegó. Cada 30 días hay Balloon Fiesta: durante cuatro días los turistas se duplican. Aquí todo va en dólares y empiezas de cero: %@ y un globo pequeño. Capadocia sigue ganando en piloto automático y sus ingresos van al holding, pero el holding no puede enviar dinero aquí. Conquistarás Estados Unidos con lo tuyo. Si hay problemas, te llamaré."
+            "value": "¡Estados Unidos, aprendiz! Aquí el viento gira como una «caja»: abajo hacia un lado, más arriba hacia el otro. Empiezas de cero con %@ y un globo pequeño. Un buen piloto aterriza donde despegó. Cada 30 días hay Balloon Fiesta: durante cuatro días los turistas se duplican. Capadocia sigue ganando en piloto automático y el dinero va al holding, pero el holding no puede enviar dinero aquí. Si hay problemas, te llamaré."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "アメリカだぞ、弟子よ！アルバカーキの風は別物だ。名高い「ボックス」。低空では一方へ、少し上では逆へ運ぶから、腕のいいパイロットは離陸地点に戻ってこられる。30日ごとにバルーン・フィエスタもある。4日間、観光客が倍になる。ここでは全てドルで、ゼロからの出発だ。%@と小さな気球ひとつ。カッパドキアは自動運営で稼ぎ続け、収入はホールディングスへ行く。だがホールディングスからここへは送金できん。アメリカは自力で攻略するのだ。何かあれば呼ぶぞ。"
+            "value": "アメリカだぞ、弟子よ！ここの風は「ボックス」のように回る。低空では一方へ、上空では逆へ。%@と小さな気球ひとつでゼロから始めるのだ。 腕のいいパイロットは離陸地点に戻る。30日ごとにバルーン・フィエスタがあり、4日間観光客が倍になる。カッパドキアは自動運営で稼ぎ、収入はホールディングスへ行くが、ホールディングスからここへは送金できん。何かあれば呼ぶぞ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "미국이라네, 제자여! 앨버커키의 바람은 완전히 다르지. 그 유명한 '박스'일세. 낮은 곳에선 한쪽으로, 조금 위에선 반대로 데려가니, 노련한 조종사는 이륙한 곳에 다시 내린다네. 30일마다 벌룬 피에스타도 열리지. 나흘 동안 관광객이 두 배가 된다네. 여기선 모든 게 달러고 처음부터 다시 시작일세. 가진 건 %@, 그리고 작은 열기구 하나뿐일세. 카파도키아는 자동 운영으로 계속 벌고 그 수입은 지주회사로 가지만, 지주회사는 여기로 돈을 보낼 수 없네. 미국은 자네 힘으로 일궈야 하네. 문제가 생기면 부르겠네."
+            "value": "미국이라네, 제자여! 여기 바람은 '박스'처럼 돈다네. 낮은 곳에선 한쪽으로, 높은 곳에선 반대로. %@, 그리고 작은 열기구 하나로 처음부터 시작하게. 노련한 조종사는 이륙한 곳으로 돌아온다네. 30일마다 벌룬 피에스타가 열려 나흘 동안 관광객이 두 배가 되지. 카파도키아는 자동 운영으로 벌고 수입은 지주회사로 가지만, 지주회사는 여기로 돈을 보낼 수 없네. 문제가 생기면 부르겠네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Amerika evlat! Albuquerque'de rüzgâr bambaşka: meşhur \"kutu\". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: %@ ve küçük bir balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım."
+            "value": "Amerika evlat! Burada rüzgâr \"kutu\" gibi döner: alçakta bir yöne, yukarıda ters yöne. %@ ve bir küçük balonla sıfırdan başlıyorsun. Usta pilot kalktığı yere geri döner. Her 30 günde bir Balloon Fiesta var: dört gün turist iki katına çıkar. Kapadokya otomatik modda kazanır, kazancı holdinge gider; ama holding buraya para gönderemez. Bir sorun olursa seni çağırırım."
+          }
+        }
+      }
+    },
+    "hez.entered.abq.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amerika, Lehrling! Hier dreht der Wind wie eine „Box“: unten in eine Richtung, weiter oben zurück. Du fängst bei null an, mit %@ und einem kleinen Ballon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "America, kid! Here the wind turns like a \"box\": one way down low, back the other way higher up. You start from scratch with %@ and one small balloon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Estados Unidos, aprendiz! Aquí el viento gira como una «caja»: abajo hacia un lado, más arriba hacia el otro. Empiezas de cero con %@ y un globo pequeño."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アメリカだぞ、弟子よ！ここの風は「ボックス」のように回る。低空では一方へ、上空では逆へ。%@と小さな気球ひとつでゼロから始めるのだ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "미국이라네, 제자여! 여기 바람은 '박스'처럼 돈다네. 낮은 곳에선 한쪽으로, 높은 곳에선 반대로. %@, 그리고 작은 열기구 하나로 처음부터 시작하게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Amerika evlat! Burada rüzgâr \"kutu\" gibi döner: alçakta bir yöne, yukarıda ters yöne. %@ ve bir küçük balonla sıfırdan başlıyorsun."
           }
         }
       }
@@ -45640,37 +45927,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "England, Kind, Bristol! Die Hälfte aller Ballonhüllen der Welt wurde in dieser Stadt genäht, und der Himmel weiß das. Eine Hängebrücke über der Avon-Schlucht, ein alter Großsegler im Hafen, sattgrüne Felder auf den Hügeln. Aber das Wetter ist englisch: Gelbe Flaggen sind häufig, und morgens gibt es Nebel; an einem nebligen Morgen musst du tiefer gehen, um das Landefeld zu sehen. Der Wind weht von Westen, vom Bristolkanal, und trägt dich nach Osten. Der Himmel des Flughafens ist Sperrgebiet: Fliegst du hinein, gibt es eine Strafe. Sir Reginald Ashbys Clifton Crown fliegt hier seit hundert Jahren, und die Rivalen verbünden sich schnell. Du beginnst mit %@ und einem kleinen Ballon. Jeden Monat gibt es ein viertägiges Ballonfestival; an Festivalabenden steigen die Ballons ein zweites Mal auf, und du kannst ein Night Glow veranstalten. Nimm deinen Regenschirm mit, Kind."
+            "value": "Bristol, Lehrling! Morgens gibt es Nebel, der Wind kommt von Westen, und bleib aus dem Luftraum des Flughafens. Du startest mit %@ und einem kleinen Ballon. An einem nebligen Morgen sinke tiefer, um das Landefeld zu sehen. Jeden Monat gibt es ein viertägiges Ballonfestival: Abends steigen die Ballons ein zweites Mal auf, und eine Nacht kannst du ein Night Glow veranstalten. Sir Reginald Ashbys Clifton Crown fliegt hier seit hundert Jahren; die Konkurrenten verbünden sich schnell. Nimm deinen Schirm mit, Lehrling."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "England, kid, Bristol! Half the world's balloon envelopes were sewn in this city, and the sky knows it. A suspension bridge over the Avon Gorge, an old tall ship in the harbour, bright green fields on the hills. But the weather is English: yellow flags are common and there's fog in the mornings; on a foggy morning you have to come down to see the landing field. The wind blows from the west, off the Bristol Channel, and carries you east. The airport's sky is forbidden: fly into it and you'll be fined. Sir Reginald Ashby's Clifton Crown has flown here for a hundred years, and the rivals join forces quickly. You start with %@ and one small balloon. Every month there's a four-day balloon festival; on festival evenings the balloons go up a second time, and you can hold a Night Glow too. Take your umbrella, kid."
+            "value": "Bristol, kid! Mornings bring fog, the wind blows from the west, and stay out of the airport's sky. You start with %@ and one small balloon. On a foggy morning, go down to see the landing field. Every month there's a four-day balloon festival: in the evenings the balloons go up a second time, and one night you can hold a Night Glow. Sir Reginald Ashby's Clifton Crown has flown here for a hundred years; the rivals join forces quickly. Take your umbrella, kid."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Inglaterra, chico, Bristol! La mitad de las envolturas de globos del mundo se cosieron en esta ciudad, y el cielo lo sabe. Un puente colgante sobre la garganta del Avon, un viejo velero en el puerto, campos verdísimos en las colinas. Pero el tiempo es inglés: las banderas amarillas son frecuentes y por las mañanas hay niebla; una mañana de niebla tendrás que bajar para ver el campo de aterrizaje. El viento sopla del oeste, desde el canal de Bristol, y te lleva hacia el este. El cielo del aeropuerto está prohibido: si entras, te multarán. El Clifton Crown de Sir Reginald Ashby lleva cien años volando aquí, y los rivales se unen enseguida. Empiezas con %@ y un globo pequeño. Cada mes hay un festival de globos de cuatro días; en las tardes de festival los globos despegan por segunda vez, y también puedes organizar un Night Glow. Llévate el paraguas, chico."
+            "value": "¡Bristol, aprendiz! Por la mañana hay niebla, el viento sopla del oeste, y no entres en el cielo del aeropuerto. Empiezas con %@ y un globo pequeño. Una mañana de niebla, baja para ver el campo de aterrizaje. Cada mes hay un festival de globos de cuatro días: por la tarde los globos despegan una segunda vez, y una noche puedes organizar un Night Glow. El Clifton Crown de Sir Reginald Ashby vuela aquí desde hace cien años; los rivales se unen rápido. Llévate el paraguas, aprendiz."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "イギリスだ、ブリストルだぞ！世界の気球の外皮の半分はこの街で縫われた。空もそれを知っている。エイボン渓谷にかかる吊り橋、港の古い帆船、丘に広がる緑の畑。だが天気はイギリスの天気だ。黄旗が多く、朝は霧が出る。霧の朝は着陸場を見るために高度を下げねばならん。風は西、ブリストル海峡から吹き、君を東へ運ぶ。空港の空は飛行禁止区域だ。入れば罰金だぞ。サー・レジナルド・アシュビーのクリフトン・クラウンは百年もここを飛んでいるし、ライバルはすぐに手を組む。%@と小さな気球1機からのスタートだ。毎月4日間の気球祭りがあり、祭りの夕方には気球が2度目に飛び立つ。夜にはナイトグローも開ける。傘を持っていけ。"
+            "value": "ブリストルだ、弟子よ！朝は霧が出て、風は西から吹く。空港の空には入るな。%@と小さな気球ひとつで始まる。 霧の朝は高度を下げて着陸場を見るのだ。毎月4日間の気球フェスティバルがあり、夕方には気球が2度目に上がる。ある夜にはナイトグローも開ける。サー・レジナルド・アシュビーのクリフトン・クラウンはここで百年飛んでいる。ライバルはすぐ手を組むぞ。傘を持っていけ、弟子よ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "영국이다, 브리스톨! 세상 열기구 외피의 절반이 이 도시에서 꿰매졌고, 하늘도 그걸 안단다. 에이번 협곡 위의 현수교, 항구의 오래된 범선, 언덕 위의 푸르른 들판. 하지만 날씨는 영국 날씨야: 노란 깃발이 잦고 아침엔 안개가 낀다. 안개 낀 아침엔 착륙장을 보려면 고도를 낮춰야 해. 바람은 서쪽, 브리스톨 해협에서 불어와 너를 동쪽으로 실어 간다. 공항 하늘은 금지 구역이야. 들어가면 벌금이다. 레지널드 애슈비 경의 클리프턴 크라운은 백 년째 여기서 날고 있고, 경쟁자들은 금세 손을 잡는다. 시작 자금은 %@, 그리고 작은 열기구 한 대다. 매달 나흘짜리 열기구 축제가 열리고, 축제 저녁엔 열기구가 두 번째로 뜨며 밤에는 나이트 글로도 열 수 있지. 우산 챙겨라."
+            "value": "브리스톨일세, 제자여! 아침엔 안개가 끼고 바람은 서쪽에서 불지. 공항 하늘엔 들어가지 말게. %@, 그리고 작은 열기구 하나로 시작하네. 안개 낀 아침엔 고도를 낮춰 착륙장을 보게. 매달 나흘간 열기구 축제가 열려 저녁엔 열기구가 두 번째로 뜨고, 하룻밤은 나이트 글로를 열 수도 있다네. 레지널드 애슈비 경의 클리프턴 크라운은 여기서 백 년을 날았지. 경쟁사들은 금세 손을 잡는다네. 우산 챙기게, 제자여."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "İngiltere evlat, Bristol! Dünyanın balon zarflarının yarısı bu şehirde dikilmiş, gökyüzü de onu bilir. Avon Kanyonu'nun üstünde asma bir köprü, limanda eski bir yelkenli, tepelerde yemyeşil tarlalar. Ama hava İngiliz havası: sarı bayrak sık, sabahları sis olur; sisli sabah iniş alanını görmek için alçalman gerekir. Rüzgâr batıdan, Bristol Kanalı'ndan esip seni doğuya taşır. Havalimanının göğü de yasak bölge, girersen ceza yersin. Sir Reginald Ashby'nin Clifton Crown'u burada yüz yıldır uçuyor ve rakipler çabuk birleşir. %@ ve küçük bir balonla başlıyorsun. Her ay dört günlük bir balon festivali var; festival akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Şemsiyeni al evlat."
+            "value": "Bristol evlat! Sabahları sis olur, rüzgâr batıdan eser, havalimanının göğüne girme. %@ ve bir küçük balonla başlıyorsun. Sisli sabah iniş alanını görmek için alçal. Her ay dört günlük bir balon festivali var: akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Sir Reginald Ashby'nin Clifton Crown'u burada yüz yıldır uçuyor; rakipler çabuk birleşir. Şemsiyeni al evlat."
+          }
+        }
+      }
+    },
+    "hez.entered.bri.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol, Lehrling! Morgens gibt es Nebel, der Wind kommt von Westen, und bleib aus dem Luftraum des Flughafens. Du startest mit %@ und einem kleinen Ballon."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol, kid! Mornings bring fog, the wind blows from the west, and stay out of the airport's sky. You start with %@ and one small balloon."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Bristol, aprendiz! Por la mañana hay niebla, el viento sopla del oeste, y no entres en el cielo del aeropuerto. Empiezas con %@ y un globo pequeño."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストルだ、弟子よ！朝は霧が出て、風は西から吹く。空港の空には入るな。%@と小さな気球ひとつで始まる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨일세, 제자여! 아침엔 안개가 끼고 바람은 서쪽에서 불지. 공항 하늘엔 들어가지 말게. %@, 그리고 작은 열기구 하나로 시작하네."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol evlat! Sabahları sis olur, rüzgâr batıdan eser, havalimanının göğüne girme. %@ ve bir küçük balonla başlıyorsun."
           }
         }
       }
@@ -45681,37 +46009,78 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ägypten, Lehrling, Luxor! Das ist der härteste Ballonmarkt der Welt. Jeden Morgen warten Hunderte Touristen am Westufer über dem Tal der Pharaonen, aber Nabil Haddads Theban Skies und seine Freunde teilen sie alle unter sich auf. Hier verbünden sich die Konkurrenten sehr schnell gegen dich, Hotels schließen ihre Verträge beim Tee, und die Luftfahrtbehörde lässt dich nie aus den Augen. Du startest mit %@ und einem kleinen Ballon; die Holding kann kein Geld hierher schicken. Der Nilwind weht unten nach Norden und weiter oben nach Süden. Ab und zu legen die Nilkreuzfahrtschiffe an, und die Stadt füllt sich mit Touristen. Sei geduldig, Lehrling: Der Nil liebt die Geduldigen. Von hier an zeigt dir mein alter Freund Imhotep den Weg."
+            "value": "Luxor, Lehrling, der härteste Ballonmarkt der Welt! Du startest mit %@ und einem kleinen Ballon; die Konkurrenten verbünden sich schnell gegen dich. Der Nilwind weht unten nach Norden und weiter oben nach Süden. Ab und zu legen die Nilschiffe an, und die Stadt füllt sich mit Touristen. Die Holding kann kein Geld hierher schicken. Sei geduldig, Lehrling: Der Nil liebt die Geduldigen."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Egypt, kid, Luxor! This is the toughest balloon market in the world. Every morning hundreds of tourists wait on the West Bank above the valley of the pharaohs, but Nabil Haddad's Theban Skies and his friends share them all. Here the rivals join forces against you very quickly, hotels sign their deals over tea, and Civil Aviation never takes its eyes off you. You start with %@ and one small balloon; the holding can't send money here. The Nile wind blows north down low and south higher up. Now and then the Nile cruise ships dock and the town fills with tourists. Be patient, kid: the Nile loves the patient. From here on my old friend Imhotep will show you the way."
+            "value": "Luxor, kid, the toughest balloon market in the world! You start with %@ and one small balloon; the rivals join forces against you quickly. The Nile wind blows north down low and south higher up. Now and then the Nile cruise ships dock and the town fills with tourists. The holding can't send money here. Be patient, kid: the Nile loves the patient."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Egipto, aprendiz, Luxor! Este es el mercado de globos más duro del mundo. Cada mañana cientos de turistas esperan en la Ribera Oeste, sobre el valle de los faraones, pero Theban Skies de Nabil Haddad y sus amigos se los reparten todos. Aquí los rivales se unen contra ti muy rápido, los hoteles cierran sus tratos con té y Aviación Civil no te quita el ojo de encima. Empiezas con %@ y un globo pequeño; el holding no puede enviar dinero aquí. El viento del Nilo sopla hacia el norte abajo y hacia el sur más arriba. De vez en cuando atracan los cruceros del Nilo y el pueblo se llena de turistas. Ten paciencia, aprendiz: el Nilo ama a los pacientes. Desde aquí te guiará mi viejo amigo Imhotep."
+            "value": "¡Luxor, aprendiz, el mercado de globos más duro del mundo! Empiezas con %@ y un globo pequeño; los rivales se unen rápido contra ti. El viento del Nilo sopla hacia el norte abajo y hacia el sur más arriba. De vez en cuando atracan los cruceros del Nilo y el pueblo se llena de turistas. El holding no puede enviar dinero aquí. Ten paciencia, aprendiz: el Nilo ama a los pacientes."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "エジプトだ、弟子よ、ルクソールだ！ここは世界一厳しい気球市場だ。毎朝、王家の谷の上の西岸で何百人もの観光客が待っているが、ナビル・ハッダードのテーベ・スカイズとその仲間が全部分け合っている。ここではライバルがすぐに手を組んでお前に対抗し、ホテルは茶を飲みながら契約し、民間航空局はお前から目を離さん。%@と小さな気球ひとつで始まる。ホールディングスからここへは送金できん。ナイルの風は低空では北へ、上空では南へ吹く。時々ナイルのクルーズ船が着いて、町は観光客でいっぱいになる。辛抱するのだ、弟子よ。ナイルは辛抱強い者を愛する。ここから先は、わしの古い友人イムホテプが道を示してくれる。"
+            "value": "ルクソールだ、弟子よ、世界一厳しい気球市場だ！%@と小さな気球ひとつで始まる。ライバルはすぐに手を組んで対抗してくるぞ。 ナイルの風は低空では北へ、上空では南へ吹く。時々ナイルのクルーズ船が着いて、町は観光客でいっぱいになる。ホールディングスからここへは送金できん。辛抱するのだ、弟子よ。ナイルは辛抱強い者を愛する。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "이집트라네, 제자여, 룩소르일세! 이곳은 세상에서 가장 험한 열기구 시장이지. 매일 아침 파라오의 계곡 위 서안에서 수백 명의 관광객이 기다리지만, 나빌 하다드의 테베 스카이스와 그 친구들이 모두 나눠 가진다네. 여기선 경쟁사들이 아주 빨리 손잡고 자네에게 맞서고, 호텔은 차를 마시며 계약하고, 민간항공청은 자네에게서 눈을 떼지 않을 걸세. 자금 %@, 그리고 작은 열기구 하나로 시작하네. 지주회사는 여기로 돈을 보낼 수 없네. 나일의 바람은 낮은 곳에선 북쪽으로, 높은 곳에선 남쪽으로 분다네. 가끔 나일 크루즈선이 들어오면 마을이 관광객으로 가득 차지. 인내하게, 제자여. 나일은 인내하는 자를 사랑한다네. 여기서부터는 내 오랜 친구 임호테프가 길을 안내할 걸세."
+            "value": "룩소르일세, 제자여, 세상에서 가장 험한 열기구 시장이지! %@, 그리고 작은 열기구 하나로 시작하네. 경쟁사들은 금세 손잡고 맞설 걸세. 나일의 바람은 낮은 곳에선 북쪽, 높은 곳에선 남쪽으로 분다네. 가끔 나일 크루즈선이 들어오면 마을이 관광객으로 가득 차지. 지주회사는 여기로 돈을 보낼 수 없네. 인내하게, 제자여. 나일은 인내하는 자를 사랑한다네."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mısır evlat, Luksor! Burası dünyanın en çetin balon pazarı. Batı Yakası'nda, firavunların vadisinin üstünde her sabah yüzlerce turist bekler ama hepsini Nabil Haddad'ın Theban Skies'ı ve onun dostları paylaşır. Burada rakipler sana karşı çok çabuk birleşir, oteller çayla anlaşır, Sivil Havacılık da gözünü senden ayırmaz. %@ ve küçük bir balonla başlıyorsun; holding buraya para gönderemez. Nil'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Sabırlı ol evlat, Nil sabırlıyı sever. Buradan sonra sana eski dostum İmhotep yol gösterecek."
+            "value": "Luksor evlat, dünyanın en çetin balon pazarı! %@ ve bir küçük balonla başlıyorsun; rakipler sana karşı çabuk birleşir. Nil'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Holding buraya para gönderemez. Sabırlı ol evlat, Nil sabırlıyı sever."
+          }
+        }
+      }
+    },
+    "hez.entered.lux.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luxor, Lehrling, der härteste Ballonmarkt der Welt! Du startest mit %@ und einem kleinen Ballon; die Konkurrenten verbünden sich schnell gegen dich."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luxor, kid, the toughest balloon market in the world! You start with %@ and one small balloon; the rivals join forces against you quickly."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Luxor, aprendiz, el mercado de globos más duro del mundo! Empiezas con %@ y un globo pequeño; los rivales se unen rápido contra ti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ルクソールだ、弟子よ、世界一厳しい気球市場だ！%@と小さな気球ひとつで始まる。ライバルはすぐに手を組んで対抗してくるぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "룩소르일세, 제자여, 세상에서 가장 험한 열기구 시장이지! %@, 그리고 작은 열기구 하나로 시작하네. 경쟁사들은 금세 손잡고 맞설 걸세."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luksor evlat, dünyanın en çetin balon pazarı! %@ ve bir küçük balonla başlıyorsun; rakipler sana karşı çabuk birleşir."
           }
         }
       }
