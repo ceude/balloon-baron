@@ -702,6 +702,35 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .hzav{width:84px;height:84px;filter:drop-shadow(0 8px 16px rgba(15,8,35,.5))}
 .hzname.boss{background:#1f2a44;border-color:#5aa9e6;color:#bfe0ff}
 .bosst{font-size:11.5px;font-weight:700;color:var(--ink2);margin-bottom:-4px}
+.hzname.ctrn{color:#fff;border-color:rgba(255,255,255,.6)}
+.card.ctr{border-top:6px solid #2ab0a8}
+.card.xfer h2.xh{font-family:var(--cond);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin:12px 0 6px}
+.xlist{display:flex;flex-direction:column;gap:6px;max-height:182px;overflow-y:auto}
+.xrow{display:grid;grid-template-columns:26px 1fr;column-gap:10px;align-items:center;text-align:left;padding:9px 12px;border-radius:14px;background:#fff;box-shadow:0 0 0 2px var(--line) inset}
+.xrow i{grid-row:span 2;width:24px;height:24px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;color:#fff}
+.xrow.on{box-shadow:0 0 0 2px #14a39a inset;background:#effaf8}.xrow.on i{background:#14a39a;border-color:#14a39a}
+.xrow b{font-size:15px;color:var(--ink)}.xrow span{font-size:12.5px;color:var(--ink2)}
+.xrow:disabled{opacity:.45}
+.card.xfer .callout{margin:12px 0}
+.ctrhd{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+.ctrav{width:56px;height:56px;flex:none}.ctrav .hzav{width:56px;height:56px}
+.card.ctr{padding-top:16px;padding-bottom:16px}
+.ctrfacts{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.ctrfacts div{padding:7px 10px;border-radius:12px;background:rgba(108,100,136,.09);display:flex;flex-direction:column}
+.ctrfacts b{font-family:var(--cond);font-weight:800;font-size:19px;line-height:1.1;color:var(--ink)}.ctrfacts span{font-size:12px;color:var(--ink2)}
+.ctrrule{font-size:12.5px;line-height:1.4;color:var(--ink2);margin:6px 0}
+.ctrrow{display:flex;gap:8px;margin-top:8px}.ctrrow .opt{flex:1;margin:0;padding:9px 12px}.ctrrow .opt b{font-size:14.5px}.ctrrow .opt span{font-size:12px}
+.ctrrow .opt.no b{color:#a8302a}
+.ctrhd b{display:block;font-family:var(--cond);font-weight:800;font-size:21px;line-height:1.05;color:var(--ink)}
+.ctrhd span{display:block;font-size:13px;color:var(--ink2)}
+.ctrhd .ctrtag{font-family:var(--cond);font-weight:800;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#14a39a}
+.ctrsay{position:relative;margin:6px 0 4px;padding:9px 12px;border-radius:14px;background:#eef8f7;font-size:14.5px;line-height:1.4;color:var(--ink)}
+.ctrsay::before{content:"";position:absolute;left:22px;top:-7px;border:7px solid transparent;border-top:0;border-bottom-color:#eef8f7}
+.ctrsay.sm{font-size:13.5px;color:var(--ink2);background:#f4f1f8}.ctrsay.sm::before{display:none}
+.ctrtrust{display:flex;align-items:center;gap:10px;margin:6px 0 10px;font-size:12.5px;line-height:1.35;color:var(--ink2);font-style:italic}
+.ctrtrust .dots{display:flex;gap:5px;flex:none}.ctrtrust .dots i{width:14px;height:14px;border-radius:50%;border:2px solid #14a39a;background:#fff}.ctrtrust .dots i.on{background:#14a39a}
+.ctrtrust .pref{flex:none;padding:3px 9px;border-radius:99px;background:#14a39a;color:#fff;font-family:var(--cond);font-size:14px}
+.card.ctr .opt{width:100%;margin-top:8px}.card.ctr .ghost{margin-top:8px}
 .hzname{margin-top:-10px;font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.02em;color:#ffd27a;background:var(--ink);padding:3px 9px;border-radius:8px;border:1.5px solid #e8b04a;white-space:nowrap}
 .hzb{position:relative;flex:1;min-width:0;display:flex;flex-direction:column;gap:8px;margin-bottom:22px;background:#fff;border-radius:20px 20px 20px 6px;padding:13px 15px 12px;box-shadow:0 14px 36px rgba(15,8,35,.45)}
 .hzb::before{content:"";position:absolute;left:-10px;bottom:10px;border-style:solid;border-width:8px 12px 8px 0;border-color:transparent #fff transparent transparent}
@@ -1786,7 +1815,7 @@ const MORNING_TIPS = 2;
 function spreadMorning() {
   if (S.day < 2 || S.spreadDay === S.day) return; /* once a morning, not again on reload */
   S.spreadDay = S.day;
-  const lesson = k => !/^(news|boss|hz|insp|guide):/.test(k) && !k.startsWith('p_'); /* praise has its own every-other-day pace */
+  const lesson = k => !/^(news|boss|hz|insp|guide|ctr):/.test(k) && !k.startsWith('p_'); /* praise has its own every-other-day pace */
   let q = (S.hezLater || []).concat(S.hezQ); S.hezQ = []; S.hezLater = [];
   if (q.includes('price3')) q = ['price3'].concat(q.filter(k => k !== 'price3' && k !== 'price')); /* v122.11: first, and it says what 'price' would */
   let n = 0; for (const k of q) (lesson(k) && ++n > MORNING_TIPS ? S.hezLater : S.hezQ).push(k);
@@ -2018,12 +2047,14 @@ function nextPopup() {
   if (S.cash < 0 && !S.rescueShown) { showRescue(); return; }
   if (tempFlagCands().length) { showTempFlag(); return; }
   if (S.eventDue) { showEvent(); return; }
+  if (S.ctr && S.ctr.offer && S.ctr.offer.seen !== S.day && ctrCfg()) { if (!S.ctr.scene) ctrScene(); else ctrCard(); return; } /* v125 */
   if (S.newPost && S.newPost.length) { showPostcard(); return; }
   if (S.cash >= 0) S.rescueShown = false;
   if (S.workshop && S.workshop.order && S.workshop.order.seen !== S.day && !fabBusy()) { showOrder(); return; }
   if (AUTO) while (S.hezQ.length && S.hezQ[0].startsWith('news:')) AUTO.news.push(S.hezQ.shift()); /* so does Hezarfen's news */
   while (S.hezQ.length && !praiseStill(S.hezQ[0])) S.hezQ.shift(); /* v121.12: a praise that's no longer true (the pilot was let go) is dropped */
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
+  if (S.xfer) { if (S.xfer.to === S.region) showXfer(); else { S.xfer = null; nextPopup(); } return; } /* v125: only on entering */
   if (letterDue()) { showLetter(); return; } /* v123: the family's letter, once, from day 50 */
   if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; issueScene(); return; }
   if (S.poach) { showPoach(); return; }
@@ -2033,6 +2064,7 @@ function nextPopup() {
 }
 let hezTimer = 0;
 function showHez(k) {
+  if (k.startsWith('ctr:')) return ctrHez(k); /* v125: a tour company owner speaks */
   const news = k.startsWith('news:'), boss = k.startsWith('boss:'), hz = k.startsWith('hz:'), insp = k.startsWith('insp:'), gh = k === 'guide:hello';
   if (!news && !boss && !hz && !insp && !gh) S.tips[k] = 1; save();
   if (!news && !boss && !hz && !insp && !gh && guideOk(k)) { guideStart(k); return; } /* v122: shown, not told */
@@ -2135,9 +2167,11 @@ function startDay() {
 }
 function launch(skip) {
   const fl = skip ? [] : flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0);
-  const m = market(S.price, cap);
+  /* v125: a tour group booked for today takes its seats first; the market gets the rest */
+  const held = ctrHeld(cap), K = ctrToday(), m = market(S.price, cap - held);
   const plan = { skip: !!skip, fly: fl.map(b => b.id), pax: {}, rpax: m.pax.slice(1), rcap: m.caps.slice(1), extra: skip ? 0 : m.bonus };
-  let left = m.pax[0];
+  if (K) { const free = cap ? market(S.price, cap).pax[0] : 0; plan.ctr = { id: K.id, held, load: cap ? free / cap : 1, lost: Math.max(0, free - m.pax[0]) }; }
+  let left = m.pax[0] + held;
   const order = fl.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag));
   for (const b of order) { const n = Math.min(left, sellSeats(b)); plan.pax[b.id] = n; left -= n; }
   S.plan = plan;
@@ -2227,8 +2261,10 @@ function finishDay(flight) {
   Lg.up = Math.round(S.balloons.reduce((a, b) => a + SIZES[b.size].up, 0) * [1, 1, .85, .7][bl('hangar')]);
   { const r0 = S.rep; myHotels().forEach(x => { if (owns(x)) { Lg.hotelInc += hotelInc(x); S.rep = Math.min(1.4, S.rep + x.rep * 1.5); } else { Lg.hotel += x.fee; S.rep = Math.min(1.4, S.rep + x.rep); } }); repMark('Otel anlaşmaları', r0); }
   S.loans.forEach(l => { Lg.loan += l.inst; l.left--; });
+  if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; S.holding = (S.holding || 0) + D.inst / FX(); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
   S.loans = S.loans.filter(l => l.left > 0);
-  let net = Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
+  const ctrR = ctrSettle(Lg, ev, rev, paxTotal);
+  let net = (Lg.ctr || 0) - (Lg.ctrPen || 0) - (Lg.xfer || 0) + Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
   S.cash += net;
   { const r0 = S.rep; S.rep = clamp(lerp(S.rep, 1, .01), .4, 1.4); if (starVal(S.rep) > 4.5) S.rep -= .006; repMark('Zamanla ortalamaya döner', r0); }
   repBy('Dev balon', fl.filter(b => b.size === 'XL').length * .005);
@@ -2325,7 +2361,7 @@ function finishDay(flight) {
   (S.stat = S.stat || {}).pax = (S.stat.pax || 0) + paxTotal;
   praiseCheck(flight, red && !fl.length);
   if (S.region === 'cap' && fl.length && !S.storyDone && S.day <= 3) hezAdd('hasan'); /* v121: after the first flight, the grandfather's story */
-  lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip, rep0, rep1: S.rep, repWhy: REPW }; REPW = null;
+  lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip, rep0, rep1: S.rep, repWhy: REPW, ctr: ctrR }; REPW = null;
   S.day++; S.plan = null; fabDay(ev); milestoneCheck(); achCheck(); if (anyBaron()) holdGoalsCheck();
   if (S.region === 'abq') {
     if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 30; }
@@ -2355,6 +2391,7 @@ function finishDay(flight) {
   newCandidates();
   S.weather = newWeather();
   S.demand = dayDemand();
+  ctrMorning(); xferArrive(); /* v125: after the weather, so a red flag moves today's tour group; the ship from home */
   rivalFlyPlan(); assignPilots(); buildWorld(); save();
   if (AUTO) autoDay(); else showReport();
 }
@@ -2410,8 +2447,8 @@ const BARON_SHARE = .7, BARON_STARS = 4.8;
 function goalVal(k) {
   switch (k) {
     case 'balloons': return S.balloons.length;
-    case 'seats': return S.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0); /* v124.6: fleet goals count seats, so any balloon size counts fairly */
-    case 'pilots': return S.pilots.length;
+    case 'seats': return S.balloons.reduce((a, b) => a + (b.imp && XFER.local ? 0 : SIZES[b.size].cap), 0); /* v124.6: fleet goals count seats, so any balloon size counts fairly; v125: not the ones brought in */
+    case 'pilots': return S.pilots.filter(p => !(p.imp && XFER.local)).length;
     case 'stars': return starVal(S.rep);
     case 'cash': return S.cash;
     case 'hotelDeal': return S.hotels.length;
@@ -2426,6 +2463,8 @@ function goalVal(k) {
     case 'fiesta': return S.fiestaFlown || 0;
     case 'fog': return S.fogFlown || 0; /* v124: Bristol, own flights on a foggy morning */
     case 'glow': return S.glowCount || 0; /* v124: Night Glows held */
+    case 'ctrDone': return (S.ctr && S.ctr.ok) || 0; /* v125: tour groups delivered in full */
+    case 'ctrPref': return S.ctr && S.ctr.prefEver ? 1 : 0;
     case 'bldMast': return bl('mast');
     case 'bldHangar': return bl('hangar');
     case 'bldTop': return Math.max(...Object.keys(UPGRADES).map(bl));
@@ -2433,9 +2472,10 @@ function goalVal(k) {
   return 0;
 }
 const goalDone = g => goalVal(g[0]) >= g[1] - 1e-9;
-const YESNO = ['workshop', 'fabBuilt', 'school', 'xl', 'influ', 'guide', 'fiesta', 'fog', 'glow', 'bldMast', 'bldHangar', 'bldTop'];
+const YESNO = ['ctrPref', 'workshop', 'fabBuilt', 'school', 'xl', 'influ', 'guide', 'fiesta', 'fog', 'glow', 'bldMast', 'bldHangar', 'bldTop'];
 function goalText(g) {
   const v = goalVal(g[0]), f1 = x => x.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  if ((g[0] === 'seats' || g[0] === 'pilots') && XFER.local && (g[0] === 'seats' ? S.balloons : S.pilots).some(x => x.imp)) return `${v}/${g[1]} (getirilenler hariç)`; /* v125 */
   return g[0] === 'stars' ? `${f1(v)}★ / ${f1(g[1])}★` : g[0] === 'cash' ? `${eur(v)} / ${eur(g[1])}` : g[0] === 'share' ? `%${Math.round(v * 100)} / %${Math.round(g[1] * 100)}` : YESNO.includes(g[0]) ? (v >= g[1] ? 'tamam' : 'yok') : `${v}/${g[1]}`;
 }
 const goalPct = g => g[0].startsWith('bld') ? clamp((goalVal(g[0]) - 1) / (g[1] - 1), 0, 1) : clamp(goalVal(g[0]) / g[1], 0, 1);
@@ -3161,7 +3201,7 @@ function touristsToday() {
   const hotels = myHotels().reduce((a, x) => a + Math.round(x.pax * (owns(x) ? 1.5 : 1) * (S.winter ? .6 : 1)), 0);
   return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? S.guidePax || 5 : 0) + (S.day <= S.influUntil ? S.influPax || 8 : 0) + (S.day <= (S.showUntil || 0) ? Math.round(SHOW.pax * (S.showN || 0)) : 0) + repBonusRaw();
 }
-function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), pax = market(S.price, cap).pax[0]; return pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
+function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), held = ctrHeld(cap), pax = market(S.price, cap - held).pax[0], k = ctrToday(); return pax * S.price + held * (k ? k.price : 0) + (fl.some(isSelf) ? Math.round(Math.min(pax + held, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
 /* Who's in the baskets today, for the ticket card. */
 /* TestFlight: why nothing flies today, from the most telling reason */
 /* v121.12: nothing can fly today and nothing can change that (all in repair, or a flying ban): the day has to be skipped */
@@ -3187,6 +3227,7 @@ function whyRows(m) {
   }
   const df = demandFactors();
   if (df.length) rows.push(`<div class="wr"><span>Turist sayısı</span><em>${df.map(x => `${x.label} ${pctTxt(x.k)}`).join(' · ')}</em></div>`);
+  if (m.ctr) { const w = CTR[S.region].cast.find(x => x.id === m.ctr.k.who); rows.push(`<div class="wr"><span><i style="background:${w.col}"></i>Tur grubu: ${esc(w.co)}</span><em class="${m.ctr.held < m.ctr.k.n ? 'r' : 'g'}">${m.ctr.held < m.ctr.k.n ? `${m.ctr.held}/${m.ctr.k.n} koltuk!` : `+${m.ctr.held} yolcu · ${eur(m.ctr.k.price)}`}</em></div>`); }
   for (const x of (m.parts || [])) rows.push(`<div class="wr"><span><i style="background:${x.col}"></i>${esc(x.label)}</span><em class="g">+${x.n} yolcu</em></div>`);
   return rows.length ? `<div class="why">${rows.join('')}</div>` : '';
 }
@@ -3196,9 +3237,10 @@ function whoFlies(fl) {
 }
 function renderAct() {
   const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), n = fl.length;
-  const m = market(S.price, cap), pax = m.pax[0], seats = m.caps.reduce((a, b) => a + b, 0);
+  const held = ctrHeld(cap), K = ctrToday(), m = market(S.price, cap - held), pax = m.pax[0] + held, seats = m.caps.reduce((a, b) => a + b, 0) + held;
+  if (K) m.ctr = { held, k: K };
   const direct = extraSources().reduce((a, x) => a + x.n, 0);
-  const income = pax * S.price + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0);
+  const income = (pax - held) * S.price + held * (K ? K.price : 0) + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0);
   const w = willing(S.price), feel = w >= .85 ? ['Uygun fiyat', 'g'] : w >= .6 ? ['Biraz pahalı', 'y'] : w >= .35 ? ['Pahalı', 'o'] : ['Çok pahalı', 'r'];
   const tour = touristsToday(), crowded = seats > tour;
   $('dem').innerHTML = `<div class="feel"><div class="fl"><span>Turistlere göre</span><b class="${feel[1]}">${feel[0]}</b></div><div class="meter"><i style="left:${feelPos(w)}%"></i></div><div class="fl sm"><span>ucuz</span><span>pahalı</span></div></div>
@@ -3206,7 +3248,8 @@ function renderAct() {
   const delta = psBase == null ? 0 : income - psBase;
   /* why the sum is not simply seats × price */
   const notes = [];
-  if (fl.some(isSelf) && pax) notes.push(`Amirali sen uçuruyorsun: yolcuları %${Math.round(FOUNDER * 100)} fazla öder (+${eur(income - pax * S.price)}).`);
+  if (fl.some(isSelf) && pax) notes.push(`Amirali sen uçuruyorsun: yolcuları %${Math.round(FOUNDER * 100)} fazla öder (+${eur(Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER))}).`);
+  if (K) notes.push(held < K.n ? `Tur grubu ${K.n} kişi ama bugün ${held} koltuğun uçabiliyor: eksik koltuk başına ${eur(Math.round(K.price * CTR[S.region].pen))} ceza.` : `Tur grubu ${K.n} kişi, kişi başı ${eur(K.price)}: koltuklar önce onlara.`);
   if (S.docDay === S.day && fl.some(b => b.id === S.flag)) notes.push('Amiralde 4 koltuk belgesel ekibinde.');
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
   $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
@@ -3670,8 +3713,8 @@ function showReport() {
   tk.appendChild(h('div', 'perf'));
   const b = h('div', 'tbody'), led = h('div', 'led');
   const line = (k, v) => { if (!v) return; led.appendChild(h('div', null, `<span>${k}</span><span class="v ${v > 0 ? 'pos' : 'neg'}">${v > 0 ? '+' : ''}${eur(v)}</span>`)); };
-  line('Bilet geliri', L.rev); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
-  line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan);
+  line('Bilet geliri', L.rev); if (L.ctr) line(`Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
+  line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan); if (L.xfer) line('Getirilen balonların bedeli', -L.xfer);
   line('Kaza: onarım', -L.repair); line('Kaza: yolcu tazminatı', -L.comp); line('Sigorta ödemesi', L.insPay);
   line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize);  line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
   led.appendChild(h('div', 'tot', `<span>Net</span><span class="v ${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span>`));
@@ -5309,7 +5352,7 @@ function showMenu(open) {
   group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
-  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); })]);
+  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); })]);
   /* v121.10: watch the opening film again; the name and colours are skipped, the company flies in its own colours */
   group('Film', '#ff5e3a', [row('star', 'Başlangıç filmini tekrar izle', chev, () => { m.hidden = true; replayOpening(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
@@ -5382,6 +5425,37 @@ function testLuxBaron() {
   S.nextEvent = S.day + 30; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
   if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
   assignPilots(); startDay();
+}
+/* v125 (prototype only): Albuquerque at the start of chapter 2 with a mid fleet; the first tour offer comes this
+   morning (the terminal scene). Cappadocia runs on autopilot. */
+function testAbqContract() {
+  S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 120; S.tutorialDone = true; S.selfFlights = 30; S.ventTip = 1; S.tut = { done: 1 };
+  S.barons = { cap: 66 }; S.baron = { cap: 66 }; S.iap = { worldTour: 1 }; S.holding = 80000; S.storyDone = 1; S.letter = { day: 50, rated: 50 }; S.rateAsked = 12;
+  S.regions = {}; { const rs = newRegionState('cap'); rs.balloons = []; rs.pilots = []; rs.chapter = 4; rs.rep = 1.2; for (let i = 0; i < 24; i++) rs.balloons.push({ id: S.nextId++, size: ['S', 'M', 'L'][i % 3], name: B_NAMES[i % B_NAMES.length], fly: true, dmgUntil: 0, pilot: null, flights: 20 }); for (let i = 0; i < 20; i++) rs.pilots.push({ id: S.nextId++, name: P_NAMES[i % P_NAMES.length] + ' ' + pilotInitial(i) + '.', lvl: 1 + i % 3, xp: 0, trait: null }); rs.auto = makeAuto(rs, 'cap'); S.regions.cap = rs; }
+  const st = newRegionState('abq'); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = 'abq'; applyRegionTheme();
+  S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
+  Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
+  S.balloons = []; ['M', 'L', 'M', 'S', 'M', 'L', 'M'].forEach(z => addBalloon(z));
+  S.pilots = []; for (let i = 0; i < 6; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + pilotInitial(i) + '.', lvl: 2, xp: 0, trait: null });
+  S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 30000; S.rep = 1.1; S.chapter = 1; S.hotels = [HOTELS[0].id, HOTELS[1].id];
+  S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { 'abq:hello': 1, 'abq:ch1': 1 }; S.nextEvent = S.day + 30; S.fiestaNext = S.day + 20; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
+  S.weather = newWeather(); if (S.weather.flag === 'red') S.weather.flag = 'green'; S.demand = dayDemand();
+  ctrState().next = S.day; ctrMorning();
+  if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
+  startDay();
+}
+/* v125 (prototype only): Baron of Cappadocia with the money for Albuquerque: entering shows the fleet-transfer card. */
+function testAbqEntry() {
+  S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 140; S.tutorialDone = true; S.selfFlights = 40; S.ventTip = 1; S.tut = { done: 1 };
+  S.barons = { cap: 139 }; S.baron = { cap: 139 }; S.iap = { worldTour: 1 }; S.holding = 160000; S.storyDone = 1; S.letter = { day: 50, rated: 50 }; S.rateAsked = 12;
+  S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
+  Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
+  S.balloons = []; ['M', 'L', 'S', 'M', 'L', 'S', 'M', 'L', 'M', 'L', 'XL'].forEach(z => addBalloon(z)); S.balloons[2].design = null;
+  S.pilots = []; for (let i = 0; i < 10; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + pilotInitial(i) + '.', lvl: 1 + i % 3, xp: 4, trait: i % 2 ? pick(Object.keys(TRAITS)) : null });
+  S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 90000; S.rep = 1.25; S.chapter = 4; S.netHist = [6000, 6400, 5800, 6200, 6100, 6600, 5900];
+  S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { 'cap:hello': 1 }; mode = 'office'; tab = 'plan';
+  if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
+  enterRegion('abq');
 }
 function testBristol() {
   S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 90; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1; S.tut = { done: 1 };
@@ -6760,7 +6834,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'glowN', 'eveDay', 'eveN'];
+const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'glowN', 'eveDay', 'eveN', 'ctr', 'xferShip', 'xferDebt'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -6802,8 +6876,8 @@ const ENTRANTS_ABQ = [
 const regionEntrants = () => S.region === 'bri' ? ENTRANTS_BRI : S.region === 'lux' ? ENTRANTS_LUX : S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
 const CHAPTERS_ABQ = [
   { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['seats', 32, '32 koltukluk filo'], ['pilots', 2, '2 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['seats', 100, '100 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['seats', 180, '180 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['seats', 100, '100 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['ctrDone', 2, '2 tur grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['seats', 180, '180 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['ctrPref', 1, 'Bir tur şirketinin tercih edilen operatörü ol'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Fiesta Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 /* Luxor: every chapter a step harder than Albuquerque's */
@@ -6900,7 +6974,582 @@ function enterRegion(id) {
   if (id === 'bri') S.hezQ.push('hz:İngiltere evlat, Bristol! Dünyanın balon zarflarının yarısı bu şehirde dikilmiş, gökyüzü de onu bilir. Avon Kanyonu\'nun üstünde asma bir köprü, limanda eski bir yelkenli, tepelerde yemyeşil tarlalar. Ama hava İngiliz havası: sarı bayrak sık, sabahları sis olur; sisli sabah iniş alanını görmek için alçalman gerekir. Rüzgâr batıdan, Bristol Kanalı\'ndan esip seni doğuya taşır. Havalimanının göğü de yasak bölge, girersen ceza yersin. Sir Reginald Ashby\'nin Clifton Crown\'u burada yüz yıldır uçuyor ve rakipler çabuk birleşir. 6.000 sterlin ve bir küçük balonla başlıyorsun. Her ay dört günlük bir balon festivali var; festival akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Şemsiyeni al evlat.');
   if (id === 'abq') S.hezQ.push('hz:Amerika evlat! Albuquerque\'de rüzgâr bambaşka: meşhur "kutu". Alçakta seni bir yöne, biraz yukarıda ters yöne taşır; usta pilot kalktığı yere geri döner. Her 30 günde bir de Balloon Fiesta var: dört gün boyunca turist iki katına çıkar. Burada her şey dolarla döner ve sıfırdan başlıyorsun: 3.000 dolar ve bir küçük balon. Kapadokya otomatik modda kazanmaya devam edecek, kazancı holdinge gidecek; ama holding buraya para gönderemez, Amerika\'yı kendi yağınla kavuracaksın. Bir sorun olursa seni çağırırım.');
   if (GUIDES[id].hello) S.hezQ.push('guide:hello');
+  if (Object.keys(S.regions || {}).length || S.balloons.length) S.xfer = { from: S.region, to: id }; /* v125: the entry card */
   switchRegion(id);
+}
+
+/* ---------- v125: corporate contracts ----------
+   Now and then a morning brings an offer from a local tour company: one big group on one fixed day a few days ahead.
+   On the day the group gets seats first, the rest of the fleet sells to the market as usual. Deliver and the company
+   trusts you more (three good jobs: preferred operator, offers come more often and pay a little better); fall short and
+   you pay per missing seat, the trust drops, and badly enough the owner stops calling and another company's owner comes
+   in time. Whatever you don't take or can't deliver flies with a rival that day. Each region has its own config; only
+   Albuquerque (tour coaches from Santa Fe and Route 66) is on now, Luxor (Nile cruise ships, multi-day blocks) and
+   Bristol (London rail weekends with a fog guarantee) are meant to reuse it. */
+/* The tour company owners of Albuquerque: Rosa first; if that breaks, Hank, then Linda. */
+const ROSA_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Rosa Delgado"><defs><clipPath id="rsc"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="rsbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a8a9a"/><stop offset=".62" stop-color="#e0905a"/><stop offset="1" stop-color="#f8d89a"/></linearGradient></defs>
+<circle cx="50" cy="50" r="50" fill="#2ab0b0"/><g clip-path="url(#rsc)"><rect width="100" height="100" fill="url(#rsbg)"/>
+<path d="M60 30 C72 34 74 52 70 70 C68 80 64 90 60 96 L56 96 C60 84 62 72 62 60 C62 48 60 38 56 32Z" fill="#2a1a14"/>
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#4a6e9a"/><path d="M12 100 C15 79 30 70 50 70 L44 100Z" fill="#567ca8"/><path d="M40 70 L50 84 L60 70Z" fill="#f4e6d0"/>
+<path d="M34 72 L40 70 L44 82Z M66 72 L60 70 L56 82Z" fill="#3a5a84"/>
+<g fill="#2ab0a8" stroke="#e8e0c8" stroke-width=".8"><circle cx="50" cy="86" r="3.4"/><circle cx="43" cy="82.5" r="2.2"/><circle cx="57" cy="82.5" r="2.2"/></g>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#b8784e"/>
+<ellipse cx="50" cy="45" rx="17" ry="20" fill="#c98a5e"/>
+<path d="M32 46 C28 26 40 18 51 18 C63 18 72 26 68 46 C66 34 60 28 50 28 C42 30 36 34 32 46Z" fill="#2a1a14"/>
+<path d="M33 30 C40 22 60 22 67 30 L66 34 C58 28 42 28 34 34Z" fill="#e5432f"/><path d="M35 31 L65 31" stroke="#ffd27a" stroke-width="1" stroke-dasharray="2 2"/>
+<circle cx="33.5" cy="52" r="2.2" fill="#2ab0a8" stroke="#e8e0c8" stroke-width=".7"/><circle cx="66.5" cy="52" r="2.2" fill="#2ab0a8" stroke="#e8e0c8" stroke-width=".7"/>
+<path d="M38 41 Q43 38.5 47 41 M53 41 Q57 38.5 62 41" stroke="#2a1a14" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="46" r="1.8" fill="#1f1b2e"/><circle cx="57" cy="46" r="1.8" fill="#1f1b2e"/>
+<ellipse cx="39" cy="53" rx="3.2" ry="1.8" fill="#e07a6a" opacity=".5"/><ellipse cx="61" cy="53" rx="3.2" ry="1.8" fill="#e07a6a" opacity=".5"/>
+<path d="M50 48 L48.5 53 Q50 54.4 51.6 53.6" fill="#b8784e"/><path d="M42 57.5 Q50 64 58 57.5 Q50 60.5 42 57.5Z" fill="#a8302a"/></g></svg>`;
+const HANK_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Hank Begay"><defs><clipPath id="hkc"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="hkbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6a4a8a"/><stop offset=".6" stop-color="#d0785a"/><stop offset="1" stop-color="#f0c890"/></linearGradient></defs>
+<circle cx="50" cy="50" r="50" fill="#8a5aa8"/><g clip-path="url(#hkc)"><rect width="100" height="100" fill="url(#hkbg)"/>
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#3a3a44"/><path d="M38 70 L50 80 L62 70 L60 100 L40 100Z" fill="#c8a070"/><path d="M50 80 L50 100" stroke="#8a6a40" stroke-width="1"/>
+<path d="M44 72 C47 75 53 75 56 72 L54 77 L50 79 L46 77Z" fill="#2ab0a8" stroke="#d8d8d8" stroke-width="1"/><path d="M47 76 L44 84 M53 76 L56 84" stroke="#2a2a2a" stroke-width="1.2"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#9a6440"/>
+<ellipse cx="50" cy="46" rx="17" ry="20" fill="#ab7248"/>
+<path d="M33 46 C33 50 34 56 36 60 L33 62 C31 56 30 50 31 44Z M67 46 C67 50 66 56 64 60 L67 62 C69 56 70 50 69 44Z" fill="#1f1a1a"/>
+<path d="M14 38 C24 34 76 34 86 38 C86 42 76 42 50 42 C24 42 14 42 14 38Z" fill="#2a2a30"/><path d="M30 39 C30 22 40 15 50 15 C60 15 70 22 70 39Z" fill="#33333a"/><path d="M30 34 L70 34 L70 38 L30 38Z" fill="#c0c6cc"/><circle cx="62" cy="36" r="2" fill="#2ab0a8"/>
+<path d="M38 45 L47 45 M53 45 L62 45" stroke="#1f1a1a" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="43" cy="49" r="1.7" fill="#1f1b2e"/><circle cx="57" cy="49" r="1.7" fill="#1f1b2e"/>
+<path d="M50 50 L48 56 Q50 57.4 52 56.4" fill="#9a6440"/><path d="M44 61 Q50 63 56 61" stroke="#5a2a1a" stroke-width="1.9" fill="none" stroke-linecap="round"/>
+<path d="M38 57 Q39 60 41 61 M62 57 Q61 60 59 61" stroke="#8a5434" stroke-width="1" fill="none"/></g></svg>`;
+const LINDA_AV = `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="Linda Park"><defs><clipPath id="ldc"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="ldbg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#3a6aa8"/><stop offset=".6" stop-color="#e09aa0"/><stop offset="1" stop-color="#fbe2b8"/></linearGradient></defs>
+<circle cx="50" cy="50" r="50" fill="#e0408a"/><g clip-path="url(#ldc)"><rect width="100" height="100" fill="url(#ldbg)"/>
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#f6efe2"/><path d="M28 78 C34 72 42 70 46 70 L50 100 L24 100Z M72 78 C66 72 58 70 54 70 L50 100 L76 100Z" fill="#e0408a"/>
+<path d="M44 72 L50 78 L56 72" stroke="#c8306a" stroke-width="1.4" fill="none"/><rect x="58" y="82" width="10" height="7" rx="1" fill="#fff" stroke="#c8306a" stroke-width=".8"/><path d="M60 85 L66 85" stroke="#2b2350" stroke-width=".9"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#e6b890"/>
+<ellipse cx="50" cy="46" rx="17" ry="20" fill="#f2c8a0"/>
+<path d="M31 50 C27 30 38 20 50 20 C62 20 73 30 69 50 C68 60 66 64 64 66 C65 56 65 44 62 36 C56 34 46 34 40 34 C36 40 35 52 36 66 C34 64 32 60 31 50Z" fill="#1a1414"/>
+<path d="M38 32 C44 26 58 26 64 34 C56 31 46 31 38 32Z" fill="#2a2222"/>
+<rect x="36" y="42" width="12" height="7" rx="3.4" fill="rgba(255,255,255,.2)" stroke="#2b2350" stroke-width="1.5"/><rect x="52" y="42" width="12" height="7" rx="3.4" fill="rgba(255,255,255,.2)" stroke="#2b2350" stroke-width="1.5"/><path d="M48 45 L52 45" stroke="#2b2350" stroke-width="1.5"/>
+<circle cx="42" cy="45.6" r="1.6" fill="#1f1b2e"/><circle cx="58" cy="45.6" r="1.6" fill="#1f1b2e"/>
+<ellipse cx="39" cy="53" rx="3" ry="1.7" fill="#f09aa0" opacity=".55"/><ellipse cx="61" cy="53" rx="3" ry="1.7" fill="#f09aa0" opacity=".55"/>
+<path d="M50 48 L48.6 53 Q50 54.2 51.5 53.5" fill="#e6b890"/><path d="M43 58 Q50 63 57 58" stroke="#c0405a" stroke-width="1.9" fill="none" stroke-linecap="round"/></g></svg>`;
+/* Lines: {n} group size, {d} the day, {p} price per head, {r} the rival, {c} your company. Short, in their own voice. */
+const CTR_CAST_ABQ = [
+  { id: 'rosa', name: 'Rosa Delgado', co: 'Mother Road Coaches', title: 'Mother Road Coaches sahibi', av: () => ROSA_AV, col: '#2ab0a8', L: {
+    intro: '¡Hola! Rosa Delgado. Santa Fe\'den Route 66 boyunca tur otobüsü işletirim; yolcularım gün doğumunda balon istiyor.',
+    offer: 'Gün {d} sabahı {n} kişilik bir grubum var. Kişi başı {p}. Ne dersin?',
+    promise: '3 başarılı iş yaparsak sana daha sık gelirim, fiyat da tatlanır.',
+    negOk: 'Sıkı pazarlıkçısın! Peki: kişi başı {p}.', negWalk: 'Bu fiyata olmaz, cariño. Grubu {r} uçuracak.',
+    decline: 'Peki, başka sefere. Grubu {r} alır.', today: 'Otobüslerim terminalde, {n} yolcu sepet bekliyor. Bugün senin günün!',
+    thanks: 'Yolcularım bayıldı! Dönüş yolunda otobüste kimse susmadı.', pref: 'Üç iş, üçü de tamam. Artık sana daha sık geleceğim, fiyatı da biraz artırıyorum. Sen benim operatörümsün.',
+    fail: 'Yolcularımın bir kısmı yerde kaldı. Bunu unutmak kolay olmayacak.', lostPref: 'Sana güvenmiştim. Bir süre başka şirketlerle de çalışacağım.',
+    red: 'Kırmızı bayrak, kimse uçmaz. Grubu yarına kaydırıyorum ama yarın kişi başı {p} öderim.', bye: 'Üzgünüm, artık seninle çalışamam. Mother Road başka bir şirkete gidiyor. Adiós.' } },
+  { id: 'hank', name: 'Hank Begay', co: 'Turquoise Mesa Tours', title: 'Turquoise Mesa Tours sahibi', av: () => HANK_AV, col: '#8a5aa8', L: {
+    intro: 'Hank Begay. Gallup\'tan Turquoise Mesa Tours. Az konuşurum, çok yolcu getiririm. Rosa\'yla aranın bozulduğunu duydum.',
+    offer: 'Gün {d}, {n} yolcu. Kişi başı {p}.',
+    promise: 'Sözünü tutarsan üç işten sonra seni ilk ben ararım.',
+    negOk: 'Hmm. Tamam, {p}. Ama yolcularım yerde kalmasın.', negWalk: 'Olmaz. {r} ile anlaştım.',
+    decline: 'Anladım. {r} alır.', today: 'Otobüsler geldi. {n} yolcu. Hadi.',
+    thanks: 'İyi iş. Yolcularım memnun.', pref: 'Üç iş, hepsi düzgün. Bundan sonra seni ilk ben ararım, daha sık. Fiyat da biraz yukarı.',
+    fail: 'Yolcularım yerde kaldı. Bir daha olmasın.', lostPref: 'Artık ilk seni aramam. Görürüz.',
+    red: 'Kırmızı bayrak. Yarın uçarız, kişi başı {p}.', bye: 'Bitti. Turquoise Mesa başka yere gidiyor.' } },
+  { id: 'linda', name: 'Linda Park', co: 'High Desert Coachlines', title: 'High Desert Coachlines sahibi', av: () => LINDA_AV, col: '#e0408a', L: {
+    intro: 'Merhaba! Linda Park, High Desert Coachlines. Phoenix\'ten Albuquerque\'ye gelen bütün kongre gruplarını ben taşırım. Seninle çalışmak isterim.',
+    offer: 'Gün {d} için {n} kişilik bir kongre grubu. Kişi başı {p}, faturalı. Uygun mu?',
+    promise: 'Takvimime üç başarılı iş yazarsan seni tercih edilen operatör yaparım: daha sık iş, daha iyi fiyat.',
+    negOk: 'Bütçeyi zorladın ama tamam: kişi başı {p}.', negWalk: 'Bütçe izin vermiyor, üzgünüm. Grup {r} ile uçacak.',
+    decline: 'Not aldım. Grubu {r} ile planlıyorum.', today: 'Kongre grubu terminalde: {n} kişi. Herkes kameralarını hazırladı!',
+    thanks: 'Harika iş! Değerlendirme formları tam puan.', pref: 'Üç başarılı iş! Artık tercih edilen operatörümsün: daha sık geleceğim, fiyat da biraz daha iyi.',
+    fail: 'Grubun bir kısmı yerde kaldı. Bunu raporuma yazmak zorundayım.', lostPref: 'Tercih edilen operatör listemden seni çıkarıyorum. Şimdilik.',
+    red: 'Kırmızı bayrak! Programı yarına kaydırıyorum; kişi başı {p} olur.', bye: 'Maalesef sözleşmemizi bitiriyorum. High Desert başka şirketle devam edecek.' } }
+];
+/* The numbers: tools in the report (tuned with sim-abq.js, see GAME_DESIGN "Kurumsal kontratlar") */
+const CTR = {
+  abq: {
+    kind: 'bus', cast: CTR_CAST_ABQ, spot: [12.2, 24.4], label: 'Tur kontratı', unit: 'kişilik tur grubu',
+    minChapter: 1, minSeats: 40, firstWait: 1, /* the first offer: the morning after chapter 2 starts */
+    gap: [10, 14], prefGap: [6, 9], lead: [3, 5], share: [.4, .7], price: [1.3, 1.5], prefPrice: 1.08,
+    negUp: .15, negWalk: .35, prefWalk: .15, pen: .5, redCut: .2, prefNeed: 3, breakAt: -3, cool: 14,
+    rivalRep: .05, rivalGrow: 24
+  }
+};
+const ctrCfg = () => CTR[S && S.region];
+function ctrState() {
+  if (!S.ctr) S.ctr = { next: null, offer: null, booked: [], ok: 0, fail: 0, who: 0, rel: 0, okWho: 0, met: false, pref: false, prefEver: false, gone: [], scene: false };
+  return S.ctr;
+}
+const ctrWho = () => { const K = ctrCfg(), C = ctrState(); return K.cast[C.who % K.cast.length]; };
+const ctrLine = (w, k, o = {}) => w.L[k].replace(/\{n\}/g, o.n).replace(/\{d\}/g, o.d).replace(/\{p\}/g, o.p != null ? eur(o.p) : '').replace(/\{r\}/g, o.r || '').replace(/\{c\}/g, S.company);
+/* the character speaks on a morning card, like the boss: 'ctr:<id>:<text>' */
+function ctrSay(w, text) { S.hezQ.push(`ctr:${w.id}:${text}`); }
+const fleetSeats = () => S.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0);
+/* the rival who takes a group: the most popular one still flying */
+const ctrRival = () => S.rivals.filter(r => r.alive).sort((a, b) => b.rep - a.rep)[0];
+/* today's group of yours (and whether a red flag moved it) */
+const ctrToday = () => { const C = S.ctr; return C ? (C.booked || []).find(k => !k.rival && k.day === S.day) : null; };
+/* seats the group takes today out of cap: the group is seated first */
+function ctrHeld(cap) { const k = ctrToday(); return k && S.weather && S.weather.flag !== 'red' ? Math.min(k.n, cap) : 0; }
+/* Each morning (after the day's weather): a red flag moves today's groups, an unanswered offer lapses to a rival, and
+   maybe a new offer comes. */
+function ctrMorning() {
+  const K = ctrCfg(); if (!K) return;
+  const C = ctrState();
+  if (C.offer && C.offer.made < S.day) ctrDecline(true); /* not answered yesterday */
+  for (const k of C.booked) {
+    if (k.day !== S.day || S.weather.flag !== 'red') continue;
+    k.moves = (k.moves || 0) + 1;
+    if (k.moves > 2) { k.cancel = true; continue; } /* three red mornings in a row: the tour goes home, nobody's fault */
+    if (k.moves === 1) k.price = Math.round(k.price * (1 - K.redCut));
+    k.day++;
+    if (!k.rival) { const w = K.cast.find(x => x.id === k.who) || ctrWho(); ctrSay(w, ctrLine(w, 'red', { p: k.price })); }
+  }
+  for (const k of C.booked) if (k.cancel && !k.rival) { const w = K.cast.find(x => x.id === k.who) || ctrWho(); S.hezQ.push(`ctr:${w.id}:Üç sabah üst üste kırmızı bayrak. Grup eve dönüyor, kimsenin suçu değil. Başka sefere.`); }
+  C.booked = C.booked.filter(k => !k.cancel);
+  const mine = C.booked.find(k => !k.rival && k.day === S.day);
+  if (mine) { const w = K.cast.find(x => x.id === mine.who) || ctrWho(); ctrSay(w, ctrLine(w, 'today', { n: mine.n })); }
+  if ((S.chapter || 0) < K.minChapter) return;
+  if (C.next == null) C.next = S.day + K.firstWait;
+  if (C.offer || C.booked.some(k => !k.rival) || S.day < C.next || fleetSeats() < K.minSeats) return;
+  const w = ctrWho(), seats = fleetSeats(), n = Math.max(12, Math.round(seats * rnd(K.share[0], K.share[1]) / 2) * 2);
+  const riv = S.rivals.filter(r => r.alive), ref = riv.length ? (S.price + riv.reduce((a, r) => a + r.price, 0) / riv.length) / 2 : S.price;
+  const price = Math.round(ref * rnd(K.price[0], K.price[1]) * (C.pref ? K.prefPrice : 1) / 5) * 5;
+  C.offer = { n, price, day: S.day + Math.round(rnd(K.lead[0], K.lead[1])), who: w.id, made: S.day, first: !C.scene };
+}
+function ctrNextGap() { const K = ctrCfg(), C = ctrState(), g = C.pref ? K.prefGap : K.gap; C.next = S.day + Math.round(rnd(g[0], g[1])); }
+function ctrAccept() {
+  const C = ctrState(), O = C.offer; if (!O) return;
+  C.booked.push({ n: O.n, price: O.price, day: O.day, who: O.who, neg: O.neg || 0, id: S.nextId++ });
+  C.offer = null; C.met = true; ctrNextGap();
+}
+/* ask more per head: higher price, or the company walks to a rival */
+function ctrNegotiate() {
+  const K = ctrCfg(), C = ctrState(), O = C.offer; if (!O || O.neg) return null;
+  if (Math.random() < (C.pref ? K.prefWalk : K.negWalk)) { ctrRel(-1); ctrToRival(O); C.offer = null; C.met = true; ctrNextGap(); ctrBreakCheck(); return 'walk'; }
+  O.price = Math.round(O.price * (1 + K.negUp) / 5) * 5; O.neg = 1; return 'ok';
+}
+function ctrDecline(lapsed) {
+  const C = ctrState(), O = C.offer; if (!O) return;
+  ctrRel(-1); ctrToRival(O); C.offer = null; C.met = true; ctrNextGap(); ctrBreakCheck();
+}
+function ctrRel(d) { const C = ctrState(); C.rel = clamp(C.rel + d, -9, 5); }
+function ctrToRival(O) { const r = ctrRival(); if (r) ctrState().booked.push({ rival: r.name, n: O.n, price: O.price, day: O.day, who: O.who, id: S.nextId++ }); }
+/* too many no's or failures: the owner stops calling; after a while the next owner of the cast comes */
+function ctrBreakCheck() {
+  const K = ctrCfg(), C = ctrState(), w = ctrWho();
+  if (C.pref && C.rel < 1) { C.pref = false; ctrSay(w, w.L.lostPref); }
+  if (C.rel > K.breakAt) return;
+  ctrSay(w, w.L.bye);
+  C.gone.push(w.id); C.who = (C.who + 1) % K.cast.length; C.rel = 0; C.okWho = 0; C.pref = false; C.met = false; C.next = S.day + K.cool;
+}
+/* The evening of a contract day: what flew, what it paid, what it cost, and the rival's share. lastReport.ctr for sims. */
+function ctrSettle(Lg, ev, rev, paxTotal) {
+  const K = ctrCfg(), C = S.ctr; if (!K || !C) return null;
+  const R = {};
+  const mine = C.booked.find(k => !k.rival && k.day === S.day);
+  if (mine && S.plan) {
+    const w = K.cast.find(x => x.id === mine.who) || ctrWho();
+    const got = Math.min(mine.n, (S.plan.ctr && S.plan.ctr.held) || 0, paxTotal), short = mine.n - got;
+    Lg.rev -= got * S.price; Lg.ctr = got * mine.price; Lg.ctrN = got;
+    const pen = short * Math.round(mine.price * K.pen); Lg.ctrPen = pen;
+    Object.assign(R, { mine: true, n: mine.n, got, short, rev: Lg.ctr, pen, price: mine.price, normal: Math.round(got * S.price * ((S.plan.ctr && S.plan.ctr.load) || 1)), gain: Lg.ctr - Math.round(((S.plan.ctr && S.plan.ctr.lost) || 0) * S.price) });
+    if (!short) {
+      C.ok++; C.okWho++; ctrRel(1);
+      ev.push(`${w.co} grubu: ${got} yolcu uçtu, kişi başı ${eur(mine.price)}. Toplam ${eur(Lg.ctr)}.`);
+      if (!C.pref && C.okWho >= K.prefNeed && C.rel >= 2) { C.pref = C.prefEver = true; ctrSay(w, w.L.pref); paperAdd(3, `${S.company}, ${w.co}'in tercih ettiği operatör oldu`, 'Tur otobüsleri artık önce ona gidiyor.'); }
+      else ctrSay(w, w.L.thanks);
+      if (C.okWho < K.prefNeed) ev.push(`${w.name} ile başarılı iş: ${C.okWho}/${K.prefNeed}. Üçüncüde tercih edilen operatörü olursun.`);
+    } else {
+      C.fail++; ctrRel(got >= mine.n * .75 ? -1 : -2);
+      ev.push(`${w.co} grubundan ${short} kişi uçamadı. Eksik koltuk başına ${eur(Math.round(mine.price * K.pen))} ceza: ${eur(pen)}. ${w.name} sana daha az güveniyor.`);
+      ctrSay(w, w.L.fail); repBy('Tur grubu yerde kaldı', -.02);
+      ctrToRival({ n: short, price: mine.price, day: S.day, who: mine.who });
+      ctrBreakCheck();
+    }
+  }
+  /* the rival's groups: today's passengers (over its seats if need be), a bit of popularity; its cash grows by itself */
+  for (const k of C.booked.filter(q => q.rival && q.day === S.day)) {
+    let r = S.rivals.find(x => x.alive && x.name === k.rival) || ctrRival(); if (!r) continue;
+    const ri = S.rivals.indexOf(r), w = K.cast.find(x => x.id === k.who) || ctrWho();
+    S.plan.rpax[ri] = (S.plan.rpax[ri] || 0) + k.n; S.plan.rcap[ri] = Math.max(S.plan.rcap[ri] || 0, S.plan.rpax[ri]);
+    r.rep = Math.min(1.4, r.rep + K.rivalRep); r.cash += k.n * Math.max(0, k.price - r.price);
+    /* the group's money buys the rival a balloon at once: that's what makes saying no felt */
+    const nb = r.style === 'safe' ? 'L' : 'M', maxB = (r.style === 'safe' ? 25 : r.style === 'mid' ? 18 : 12) + 5;
+    let grow = 0; for (let i = 0; i < Math.max(k.n >= K.rivalGrow ? 1 : 0, Math.floor(k.n / (K.rivalGrow * 2))) && r.balloons.length < maxB; i++) { r.balloons.push(nb); r.dmg.push(0); grow++; }
+    paperAdd(3, `${r.name}, ${w.co} grubunu uçurdu`, `${k.n} otobüs yolcusu ${r.name} sepetlerindeydi.${grow ? ` Şirket tur parasıyla filosuna ${grow > 1 ? grow + ' ' : 'yeni bir '}balon ekledi.` : ''}`);
+    rev.push(`${r.name}, ${w.co} grubunun ${k.n} yolcusunu uçurdu${grow ? ` ve parasıyla filosuna ${grow > 1 ? grow + ' ' : 'yeni bir '}balon ekledi` : ''}. Popülerliği arttı.`);
+    R.rivalGrow = (R.rivalGrow || 0) + grow;
+    R.rival = r.name; R.rivalPax = (R.rivalPax || 0) + k.n;
+  }
+  C.booked = C.booked.filter(k => k.day !== S.day);
+  return Object.keys(R).length ? R : null;
+}
+
+/* v125: the offer card, spoken by the tour company's owner. The first one in a region comes after a short scene at the
+   coach terminal outside town (ctrScene). */
+function ctrHead(c, w, chap) {
+  c.appendChild(h('div', 'ctrhd', `<div class="ctrav">${w.av()}</div><div><span class="ctrtag">${chap}</span><b>${esc(w.name)}</b><span>${esc(w.title)}</span></div>`));
+}
+function ctrSpeech(c, text) { c.appendChild(h('p', 'ctrsay', esc(text))); }
+function ctrTrust(c, promise) {
+  const K = ctrCfg(), C = ctrState();
+  const dots = Array.from({ length: K.prefNeed }, (_, i) => `<i class="${i < Math.min(C.okWho, K.prefNeed) ? 'on' : ''}"></i>`).join('');
+  c.appendChild(h('div', 'ctrtrust', C.pref ? `<b class="pref">Tercih edilen operatör</b><span>Teklifler daha sık, kişi başı %${Math.round((K.prefPrice - 1) * 100)} fazla</span>` : `<span class="dots">${dots}</span><span>${promise ? `“${esc(promise)}”` : `Başarılı iş: ${Math.min(C.okWho, K.prefNeed)}/${K.prefNeed}, üçüncüde tercih edilen operatör`}</span>`));
+}
+function ctrClose(back) {
+  const m = $('menu'); m.hidden = true; m.classList.remove('evm');
+  const town = TOWN.open && TOWN.cine;
+  if (town) ctrSceneEnd(); else { refresh(); setTimeout(nextPopup, 250); }
+}
+function ctrCard() {
+  const K = ctrCfg(), C = ctrState(), O = C.offer; if (!O) return nextPopup();
+  O.seen = S.day; save();
+  const w = K.cast.find(x => x.id === O.who) || ctrWho(), m = $('menu'); m.replaceChildren();
+  m.classList.toggle('evm', !!(TOWN.open && TOWN.cine));
+  if (TOWN.open && TOWN.cine) { const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...K.spot), Z = TOWN.cine.to.z; TOWN.cine = Object.assign(TOWN.cine, { t0: performance.now(), dur: 900, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: Z, ox: r.width / 2 - cx * Z, oy: r.height * .2 - cy * Z } }); }
+  const c = h('div', 'card ctr');
+  ctrHead(c, w, C.met ? 'Tur kontratı teklifi' : 'Yeni bir iş bağlantısı');
+  ctrSpeech(c, (C.met ? '' : w.L.intro + ' ') + ctrLine(w, 'offer', { n: O.n, d: O.day, p: O.price }));
+  const seats = fleetSeats(), riv = ctrRival();
+  c.appendChild(h('div', 'ctrfacts', `<div><b>${O.n}</b><span>kişi · filon ${seats} koltuk</span></div><div><b>Gün ${O.day}</b><span>${O.day - S.day} gün sonra</span></div><div><b>${eur(O.price)}</b><span>kişi başı</span></div><div><b>${eur(O.n * O.price)}</b><span>toplam</span></div>`));
+  c.appendChild(h('p', 'ctrrule', `O sabah koltuklar önce gruba gider. Eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza; kırmızı bayrakta grup bir gün kayar (%${Math.round(K.redCut * 100)} indirimle). Almazsan grubu <b>${riv ? esc(riv.name) : 'bir rakip'}</b> uçurur.`));
+  ctrTrust(c, !C.pref && C.okWho < K.prefNeed ? w.L.promise : null);
+  const ok = h('button', 'big', `Kabul et: ${eur(O.n * O.price)}`);
+  ok.onclick = () => { sfx('coin'); ctrAccept(); ctrResult(w, 'ok', O); };
+  c.appendChild(ok);
+  const row = h('div', 'ctrrow');
+  if (!O.neg) {
+    const ng = h('button', 'opt', `<b>Pazarlık: ${eur(Math.round(O.price * (1 + K.negUp) / 5) * 5)}</b><span>${C.pref ? 'Pek kaçmaz' : 'Rakibe gidebilir'}</span>`);
+    ng.onclick = () => { const r = ctrNegotiate(); if (r === 'ok') { sfx('coin'); ctrAccept(); ctrResult(w, 'negOk', O); } else { sfx('low'); ctrResult(w, 'negWalk', O, riv); } };
+    row.appendChild(ng);
+  }
+  const no = h('button', 'opt no', '<b>Reddet</b><span>Grup rakibe gider</span>');
+  no.onclick = () => { ctrDecline(); ctrResult(w, 'decline', O, riv); };
+  row.appendChild(no); c.appendChild(row);
+  m.appendChild(c); m.hidden = false;
+}
+/* the answer, in the owner's words; where the coaches will wait */
+function ctrResult(w, k, O, riv) {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card ctr');
+  const good = k === 'ok' || k === 'negOk';
+  ctrHead(c, w, good ? 'Anlaştınız' : 'Grup rakibe gitti');
+  ctrSpeech(c, k === 'ok' ? 'Harika! Otobüslerim terminalde olacak. Sepetleri hazırla!' : ctrLine(w, k, { p: O.price, r: riv ? riv.name : 'bir rakip' }));
+  if (good) c.appendChild(h('div', 'callout grn', `<b>Gün ${O.day}: ${O.n} kişi, kişi başı ${eur(O.price)}.</b> Otobüsler şehrin dışındaki terminalde bekliyor; kasabayı aşağı sola kaydırırsan görürsün. O sabah yeterli balonun uçmaya hazır olsun.`));
+  else c.appendChild(h('div', 'callout red', `<b>${riv ? esc(riv.name) : 'Rakip'} o gün ${O.n} yolcu daha uçuracak.</b> Kasası dolacak, adı duyulacak.`));
+  const x = h('button', 'big', 'Tamam'); x.onclick = () => ctrClose(); c.appendChild(x);
+  m.appendChild(c); m.hidden = false; save(); refresh();
+}
+/* Tapping the terminal (or the coaches) in town: what's booked. */
+function ctrStatusCard() {
+  const K = ctrCfg(), C = ctrState(), m = $('menu'); m.replaceChildren(); const c = h('div', 'card ctr');
+  const mine = C.booked.filter(k => !k.rival).sort((a, b) => a.day - b.day), w = ctrWho();
+  ctrHead(c, w, 'Otobüs terminali');
+  if (mine.length) for (const k of mine) { const ww = K.cast.find(x => x.id === k.who) || w; c.appendChild(h('div', 'fmix', `<div><span>${esc(ww.co)}</span><b>Gün ${k.day}</b></div><div><span>Grup</span><b>${k.n} kişi · ${eur(k.price)}</b></div>`)); }
+  else c.appendChild(h('p', 'lead', C.met || C.ok ? 'Terminal boş. Yeni bir tur grubu teklifi sabah gelir.' : 'Route 66\'dan gelen tur otobüsleri burada durur. Tur şirketleri büyük grupları balona bindirmek ister.'));
+  ctrTrust(c);
+  const x = h('button', 'big', 'Kapat'); x.onclick = () => { m.hidden = true; refresh(); }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false;
+}
+/* The first offer: the camera leaves town down the highway to the coach terminal, the guide says what's coming, the
+   owner's card opens there; afterwards the camera goes back. Once per region; "Geç" goes straight to the card. */
+const CTR_SCENE_LINES = [
+  'Bak evlat: şehrin dışındaki otoyol terminali. Route 66\'dan gelen tur otobüsleri burada mola verir.',
+  'Tur şirketleri büyük grupları tek sabahta balona bindirmek ister. İlk teklif geliyor!',
+  'Kabul edersen o gün koltuklar önce gruba gider. Almazsan grubu bir rakip kapar.',
+  'Üç işi sağlam teslim edersen sana daha sık gelirler. Vakit nakittir!'
+];
+function ctrScene() {
+  const K = ctrCfg(), C = ctrState(); C.scene = true; save();
+  if (mode !== 'office' || !HOME.h) return ctrCard();
+  openTown(null, true); TOWN.noLabels = true; $('tClose').classList.add('gone');
+  const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...K.spot), z1 = .86;
+  TOWN.cine = { t0: performance.now(), dur: 3600, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: z1, ox: r.width / 2 - cx * z1, oy: r.height * .5 - cy * z1 }, arrive: T + 1.6 };
+  let i = 0;
+  const say = () => {
+    if (!TOWN.cine) return;
+    if (i >= CTR_SCENE_LINES.length) { $('hez').hidden = true; $('hez').classList.remove('story'); ctrHorn(); setTimeout(ctrCard, 500); return; }
+    storySay2(guide(), CTR_SCENE_LINES[i++], [['Geç', () => { i = CTR_SCENE_LINES.length; say(); }, 'ghost'], [i < CTR_SCENE_LINES.length ? 'Devam' : 'Teklife bak', say, 'big']]);
+  };
+  setTimeout(say, 2600);
+}
+function ctrSceneEnd() {
+  TOWN.cine = null; TOWN.noLabels = false; $('hez').classList.remove('story');
+  closeTown(); refresh(); setTimeout(nextPopup, 800);
+}
+/* storySay with any guide (the opening story's is Hezarfen's) */
+function storySay2(G, text, buttons) {
+  const el = $('hez'); el.classList.add('story');
+  el.innerHTML = `<div class="hzcol">${G.av()}<span class="hzname">${G.name}</span></div><div class="hzb"><p></p></div>`;
+  const p = el.querySelector('p'), bub = el.querySelector('.hzb');
+  let i = 0; clearInterval(hezTimer);
+  el.hidden = false; p.textContent = text; p.style.minHeight = p.offsetHeight + 'px'; p.textContent = '';
+  const finish = () => { clearInterval(hezTimer); p.textContent = text; i = text.length; };
+  hezTimer = setInterval(() => { i += 2; p.textContent = text.slice(0, i); if (i % 8 === 0) sfx('blip'); if (i >= text.length) finish(); }, 22);
+  bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
+  const row = h('div', 'storybtns');
+  buttons.forEach(([label, fn, cls]) => { const b = h('button', cls === 'ghost' ? 'ghost' : 'pbtn', label); b.onclick = () => { finish(); el.hidden = true; fn(); }; row.appendChild(b); });
+  bub.appendChild(row);
+}
+
+/* a tour company owner's line on a morning card, in the boss's bubble */
+function ctrHez(k) {
+  const [, id, ...rest] = k.split(':'), text = rest.join(':'), K = CTR[S.region], w = K && K.cast.find(x => x.id === id);
+  if (!w) { nextPopup(); return; }
+  const el = $('hez'); el.classList.remove('story');
+  el.innerHTML = `<div class="hzcol">${w.av()}<span class="hzname ctrn" style="background:${w.col}">${esc(w.name.split(' ')[0])}</span></div><div class="hzb"><span class="bosst">${esc(w.title)}</span><p></p></div>`;
+  const p = el.querySelector('p'), bub = el.querySelector('.hzb');
+  let i = 0; clearInterval(hezTimer);
+  el.hidden = false; p.textContent = text; p.style.minHeight = p.offsetHeight + 'px'; p.textContent = '';
+  const finish = () => { clearInterval(hezTimer); p.textContent = text; i = text.length; };
+  hezTimer = setInterval(() => { i += 2; p.textContent = text.slice(0, i); if (i % 8 === 0) sfx('blip'); if (i >= text.length) finish(); }, 22);
+  bub.addEventListener('click', e => { if (i < text.length && !e.target.closest('button')) finish(); });
+  const ok = h('button', 'pbtn', 'Tamam'); ok.onclick = () => { finish(); el.hidden = true; refresh(); setTimeout(nextPopup, 250); };
+  bub.appendChild(ok);
+}
+/* ---------- v125: the coach terminal outside Albuquerque ----------
+   Down the highway south-west of town, past the edge of the usual view: the tour coaches' roadside terminal. It is
+   part of the pannable town (drag down-left); coaches stand in the bays while a contract you took is still to fly, and
+   idle with their engines running. Empty otherwise. */
+const CTR_BAYS = [9.2, 10.2, 11.2]; /* bay lines across the lot (gx); a coach is parked along gy */
+const CTR_BAY_GY = 22.5;
+/* the coaches standing today: one per ~50 people of every group you've taken that hasn't flown yet */
+function ctrCoaches() {
+  const K = ctrCfg(), C = S && S.ctr; if (!K || !C) return [];
+  const out = [];
+  for (const k of (C.booked || []).filter(q => !q.rival && q.day >= S.day).sort((a, b) => a.day - b.day)) {
+    const w = K.cast.find(x => x.id === k.who) || K.cast[0];
+    for (let i = 0; i < clamp(Math.ceil(k.n / 50), 1, 4) && out.length < CTR_BAYS.length; i++) out.push({ col: w.col, name: w.co });
+  }
+  /* the first offer's scene: its coaches drive in (and out again if you say no) */
+  if (TOWN.cine && C.offer && !out.length) { const w = K.cast.find(x => x.id === C.offer.who) || K.cast[0]; for (let i = 0; i < clamp(Math.ceil(C.offer.n / 50), 1, 4); i++) out.push({ col: w.col, name: w.co, arrive: true }); }
+  if (TOWN.cine && TOWN.cine.leaving) for (const x of out) x.leave = TOWN.cine.leaving;
+  return out;
+}
+/* Flat things at the terminal: the highway's asphalt, the lot with its bay lines. */
+function ctrGround() {
+  const K = ctrCfg(); if (!K || K.kind !== 'bus') return;
+  const q = (x0, y0, x1, y1, c) => tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], c);
+  q(7.45, 15.6, 8.55, 60, '#5e5a62'); /* the highway leaving town, asphalt from the gate on */
+  q(7.45, 15.6, 7.55, 60, '#e8e0d0'); q(8.45, 15.6, 8.55, 60, '#e8e0d0');
+  for (let y = 16; y < 60; y += .9) q(7.97, y, 8.03, y + .45, '#ffd23a');
+  q(8.55, 20.9, 14.6, 26.4, '#6c6870'); q(8.55, 20.9, 14.6, 21.0, '#d8d0c0'); q(8.55, 26.3, 14.6, 26.4, '#d8d0c0');
+  for (const x of CTR_BAYS) { q(x - .33, 21.3, x - .3, 24.6, '#f4f0e6'); q(x + .3, 21.3, x + .33, 24.6, '#f4f0e6'); }
+  q(9.3, 25.1, 12.2, 25.5, '#e8b23a'); /* the painted kerb */
+  const p = tiso(11.6, 25.9); ctx.save(); ctx.translate(p[0], p[1]); ctx.transform(1, .5, -1, .5, 0, 0); ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.font = '800 26px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('BUS ONLY', 0, 0); ctx.restore();
+}
+/* Route 66 shield on a pole: the black-capped US shield, or the brown "historic" one. */
+function routeShield(x, y, s, hist) {
+  ctx.fillStyle = '#6a6a70'; ctx.fillRect(x - 1.5 * s, y - 64 * s, 3 * s, 64 * s);
+  ctx.save(); ctx.translate(x, y - 76 * s); ctx.scale(s, s);
+  const sh = () => { ctx.beginPath(); ctx.moveTo(-15, -14); ctx.quadraticCurveTo(-8, -18, 0, -14); ctx.quadraticCurveTo(8, -18, 15, -14); ctx.lineTo(15, 2); ctx.quadraticCurveTo(14, 12, 0, 18); ctx.quadraticCurveTo(-14, 12, -15, 2); ctx.closePath(); };
+  sh(); ctx.fillStyle = hist ? '#7a4a24' : '#fdfaf0'; ctx.fill(); ctx.lineWidth = 2.4; ctx.strokeStyle = hist ? '#f4ead0' : '#1a1a1a'; ctx.stroke();
+  ctx.fillStyle = hist ? '#f4ead0' : '#1a1a1a'; ctx.textAlign = 'center';
+  if (hist) { ctx.font = '800 5px "Barlow Condensed", sans-serif'; ctx.fillText('HISTORIC', 0, -7); ctx.fillText('ROUTE', 0, -1.5); ctx.font = '800 14px "Barlow Condensed", sans-serif'; ctx.fillText('66', 0, 12); }
+  else { ctx.fillRect(-14, -12, 28, 6); ctx.fillStyle = '#fdfaf0'; ctx.font = '800 5px "Barlow Condensed", sans-serif'; ctx.fillText('U S', 0, -7.4); ctx.fillStyle = '#1a1a1a'; ctx.font = '800 17px "Barlow Condensed", sans-serif'; ctx.fillText('66', 0, 11); }
+  ctx.restore(); ctx.textAlign = 'left';
+}
+/* A tour coach parked along gy: tall cream body, the company's stripe, a band of dark windows, big windscreen at the
+   front (towards +gy), wheels; idling, it shivers and puffs from the back. */
+function coach(gx, gy, col, t, idle, k = 1) {
+  const w = .46, d = 1.6, hh = 34, z = 5 + (idle ? Math.sin(t * 38 + gx) * .5 : 0);
+  const { A, B, C, D } = corners(gx - w / 2, gy, w, d);
+  blobShadow((A[0] + C[0]) / 2 + 10, (A[1] + C[1]) / 2 + 4, 52, 18, .25);
+  const L = p => upp(p, z);
+  /* wheels */
+  for (const u of [.16, .78]) { const p = lp(C, B, u); ell(p[0], p[1] - 6, 7, 7, '#1f1c22'); ell(p[0], p[1] - 6, 3, 3, '#a8a8b0'); }
+  { const p = lp(D, C, .5); ell(p[0] - 6, p[1] - 6, 4, 6, '#1f1c22'); }
+  /* side (C→B, the long one), front (D→C), roof */
+  tpoly([L(C), L(B), upp(B, z + hh), upp(C, z + hh)], '#efe6d2');
+  tface(L(C), L(B), hh, () => {
+    ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12); ctx.fillStyle = mix(col, '#000000', .25); ctx.fillRect(0, .32, 1, .03);
+    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.17, .5, .8, .36);
+    ctx.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 6; i++) ctx.fillRect(.2 + i * .13, .78, .05, .06);
+    ctx.fillStyle = '#efe6d2'; for (let i = 1; i < 6; i++) ctx.fillRect(.17 + i * .133, .5, .012, .36);
+    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.04, .06, .1, .8); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(.088, .06, .006, .8); /* the door */
+    ctx.fillStyle = '#c0c6cc'; ctx.fillRect(0, 0, 1, .05);
+  });
+  tpoly([L(D), L(C), upp(C, z + hh), upp(D, z + hh)], mix('#efe6d2', '#000000', .12));
+  tface(L(D), L(C), hh, () => {
+    ctx.fillStyle = '#1e2a3c'; ctx.fillRect(.08, .42, .84, .48); ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.beginPath(); ctx.moveTo(.15, .9); ctx.lineTo(.35, .9); ctx.lineTo(.2, .45); ctx.lineTo(.1, .45); ctx.fill();
+    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(.15, .84, .7, .06);
+    ctx.fillStyle = '#ffb030'; ctx.save(); ctx.scale(1, -1); ctx.font = '800 .07px "Barlow Condensed", sans-serif'; ctx.restore();
+    ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12);
+    ctx.fillStyle = '#fff6c8'; ctx.fillRect(.08, .08, .14, .07); ctx.fillRect(.78, .08, .14, .07);
+  });
+  tpoly([upp(A, z + hh), upp(B, z + hh), upp(C, z + hh), upp(D, z + hh)], '#f8f2e4');
+  { const a = lp(upp(A, z + hh), upp(C, z + hh), .3), c2 = lp(upp(A, z + hh), upp(C, z + hh), .55), b2 = lp(upp(B, z + hh), upp(D, z + hh), .3), d2 = lp(upp(B, z + hh), upp(D, z + hh), .55); tpoly([a, b2, c2, d2], '#d8d2c4'); }
+  if (idle) { /* exhaust at the back corner */
+    const p = upp(B, z + 4);
+    for (let i = 0; i < 4; i++) { const ph = (t * .9 + i / 4) % 1; ctx.globalAlpha = (1 - ph) * .35 * k; ell(p[0] + 6 + ph * 18, p[1] - ph * 30, 3 + ph * 9, 3 + ph * 7, '#9a9aa4'); }
+    ctx.globalAlpha = 1;
+  }
+}
+/* The standing things: the terminal with its canopy, signs, the Sandia-pink mesas, and the coaches. */
+function ctrSpotItems(t) {
+  const K = ctrCfg(); if (!K || K.kind !== 'bus') return [];
+  const items = [], add = (gx, gy, fn, dep) => items.push({ at: [gx, gy], depth: dep != null ? dep : gx + gy, draw: fn });
+  /* the terminal: a long low adobe hall along the back of the lot, a sign on the roof */
+  add(13.2, 23.8, () => {
+    const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 });
+    try {
+      const f = block(12.9, 21.3, 1.6, 4.9, 38, { lit: '#e9c9a0', shade: '#c49a72', top: '#d8b68c', courses: false });
+      tface(f.D, f.C, 38, () => { ctx.fillStyle = '#2a8a9a'; ctx.fillRect(0, .82, 1, .1); ctx.fillStyle = '#3a2a24'; ctx.fillRect(.3, 0, .4, .55); ctx.fillStyle = '#7ab8c8'; ctx.fillRect(.34, .06, .32, .45); });
+      tface(f.C, f.B, 38, () => {
+        ctx.fillStyle = '#2a8a9a'; ctx.fillRect(0, .82, 1, .1);
+        for (let i = 0; i < 6; i++) { ctx.fillStyle = '#3a4a5a'; ctx.fillRect(.06 + i * .16, .25, .1, .38); ctx.fillStyle = 'rgba(255,240,200,.35)'; ctx.fillRect(.06 + i * .16, .5, .1, .13); }
+      });
+      /* roof sign */
+      const s0 = upp(lp(f.C, f.B, .2), 38), s1 = upp(lp(f.C, f.B, .8), 38);
+      ctx.fillStyle = '#5a5a60'; ctx.fillRect(s0[0] - 1, s0[1] - 20, 2, 20); ctx.fillRect(s1[0] - 1, s1[1] - 20, 2, 20);
+      tface(upp(s0, 18), upp(s1, 18), 26, () => {
+        ctx.fillStyle = '#c0392b'; ctx.fillRect(0, 0, 1, 1); ctx.fillStyle = '#ffd23a'; ctx.fillRect(0, .86, 1, .14); ctx.fillRect(0, 0, 1, .1);
+      });
+      const m = lp(upp(s0, 31), upp(s1, 31), .5), ang = Math.atan2(s0[1] - s1[1], s0[0] - s1[0]) + Math.PI;
+      ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.fillStyle = '#fff6dc'; ctx.font = '800 15px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('TOUR COACH TERMINAL', 0, 5); ctx.restore(); ctx.textAlign = 'left';
+    } finally { TUFF = keep; }
+  }, 12.9 + 1.6 + 21.3 + 4.9 - .5);
+  /* the canopy over the bays: posts and a flat turquoise roof, drawn after the coaches under it */
+  add(11.2, 23.6, () => {
+    for (const gy of [21.4, 23.2, 25]) { const p = tiso(12.75, gy); ctx.fillStyle = '#8a8a90'; ctx.fillRect(p[0] - 2, p[1] - 64, 4, 64); }
+    const r = [tiso(12.0, 21.2), tiso(12.9, 21.2), tiso(12.9, 25.4), tiso(12.0, 25.4)].map(p => upp(p, 64));
+    tpoly(r, '#2aa0a8'); tpoly([r[3], r[2], upp(r[2], -5), upp(r[3], -5)], '#1f7f88');
+  }, 12.9 + 25.4 - .2);
+  /* signs along the highway */
+  add(8.75, 20.4, () => { const p = tiso(8.75, 20.4); routeShield(p[0], p[1], 1.25, false); });
+  add(8.75, 27, () => { const p = tiso(8.75, 27); routeShield(p[0], p[1], 1.25, true); });
+  add(7.1, 24, () => { /* billboard on the far side */
+    const a = tiso(7.1, 23.2), b = tiso(7.1, 24.8);
+    for (const p of [a, b]) { ctx.fillStyle = '#5a4a3a'; ctx.fillRect(p[0] - 2, p[1] - 70, 4, 70); }
+    tface(upp(a, 50), upp(b, 50), 44, () => { ctx.fillStyle = '#fff1d6'; ctx.fillRect(0, 0, 1, 1); ctx.fillStyle = '#e08a1e'; ctx.fillRect(0, 0, 1, .2); ctx.fillStyle = '#2a8a9a'; ctx.fillRect(0, .8, 1, .2); });
+    const m = lp(upp(a, 72), upp(b, 72), .5), ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
+    ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.textAlign = 'center'; ctx.fillStyle = '#c0392b'; ctx.font = '800 19px "Barlow Condensed", sans-serif'; ctx.fillText('ROUTE 66', 0, 2); ctx.fillStyle = '#2b2350'; ctx.font = '700 10px "Barlow Condensed", sans-serif'; ctx.fillText('TOUR COACHES · NEXT EXIT', 0, 14); ctx.restore(); ctx.textAlign = 'left';
+  });
+  /* a little Route 66 diner across the lot, its neon sign */
+  add(14.1, 27.9, () => {
+    const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 });
+    try {
+      const f = block(13.2, 27.3, 1.8, 1.2, 26, { lit: '#f4f0e6', shade: '#d0c8b8', top: '#e04a3a', courses: false });
+      tface(f.D, f.C, 26, () => { ctx.fillStyle = '#e04a3a'; ctx.fillRect(0, .78, 1, .22); ctx.fillStyle = '#7ab8c8'; ctx.fillRect(.08, .3, .84, .36); ctx.fillStyle = '#f4f0e6'; for (let i = 1; i < 6; i++) ctx.fillRect(.08 + i * .14, .3, .02, .36); });
+      tface(f.C, f.B, 26, () => { ctx.fillStyle = '#e04a3a'; ctx.fillRect(0, .78, 1, .22); ctx.fillStyle = '#3a2a24'; ctx.fillRect(.35, 0, .3, .62); });
+      const p = upp(tiso(13.4, 28.5), 26); ctx.fillStyle = '#5a5a60'; ctx.fillRect(p[0] - 1.5, p[1] - 34, 3, 34);
+      const on = NIGHT_K > 0 || Math.sin(T * 2.2) > -.7;
+      rrect(p[0] - 26, p[1] - 56, 52, 24, 8); ctx.fillStyle = '#1f2a44'; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = on ? '#ff6fa8' : '#7a4a6a'; ctx.stroke();
+      ctx.fillStyle = on ? '#ffd23a' : '#8a7a4a'; ctx.font = '800 15px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('66 DINER', p[0], p[1] - 39); ctx.textAlign = 'left';
+    } finally { TUFF = keep; }
+  });
+  /* desert round it: the Sandia's pink mesas behind, yucca and cholla in the sand */
+  for (const [gx, gy, w, hh] of [[4.2, 20.5, 210, 120], [5.6, 18.6, 150, 80], [16.4, 20.2, 230, 140], [17.6, 23.4, 160, 90], [17.4, 30.4, 200, 110], [6.2, 31.4, 180, 100]]) add(gx, gy, () => { const p = tiso(gx, gy); butte(p[0], p[1], w, hh, '#d98a78', '#9a5050'); });
+  for (const [gx, gy, k] of [[12.4, 27.4, 0], [12.6, 29.4, 1], [14.9, 22.1, 2], [6.6, 21.6, 1], [6.4, 26.5, 0], [15.2, 26.2, 2], [11.8, 29.8, 1], [15.6, 29.2, 0], [9.2, 30.6, 2], [13.2, 31.2, 0], [16.8, 27.6, 1]]) add(gx, gy, () => { const p = tiso(gx, gy); k === 0 ? yucca(p[0], p[1], 1.1) : k === 1 ? cholla(p[0], p[1], 1) : roundTree(p[0], p[1], .6, '#7a8a50'); });
+  /* coaches */
+  ctrCoaches().forEach((c, i) => {
+    const bx = CTR_BAYS[CTR_BAYS.length - 1 - i];
+    let gx = bx, gy = CTR_BAY_GY, alpha = 1;
+    if (c.arrive && TOWN.cine) {
+      const a = clamp((T - TOWN.cine.arrive - i * .7) / 3.2, 0, 1), e = easeIO3(a);
+      if (e < .7) { gx = 8; gy = lerp(13 - i * 2, CTR_BAY_GY + 1.4, e / .7); } else { const f = (e - .7) / .3; gx = lerp(8, bx, f); gy = lerp(CTR_BAY_GY + 1.4, CTR_BAY_GY, f); }
+      if (c.leave) { const l = clamp((T - c.leave - i * .4) / 2.6, 0, 1); gx = lerp(bx, 8, Math.min(1, l * 3)); gy = CTR_BAY_GY + l * 14; alpha = 1 - clamp(l * 1.4 - .4, 0, 1); }
+    }
+    items.push({ at: [gx, gy], depth: gx + gy + .9, draw: () => { ctx.globalAlpha = alpha; coach(gx, gy, c.col, t, true); ctx.globalAlpha = 1; } });
+  });
+  return items;
+}
+const ctrSpotFree = (gx, gy) => !(ctrCfg() && gx > 3 && gx < 19 && gy > 17.5 && gy < 33);
+/* Engine idle while coaches stand in view: low rumble, its loudness from how close the terminal is to the screen's middle. */
+let hum = null;
+function ctrHum(level) {
+  if (!AC || !soundOn) level = 0;
+  if (!hum && level > .01 && AC) {
+    const src = AC.createBufferSource(); src.buffer = noiseBuf(2); src.loop = true;
+    const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 140;
+    const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = 34; const of = AC.createBiquadFilter(); of.type = 'lowpass'; of.frequency.value = 90;
+    const lfo = AC.createOscillator(); lfo.frequency.value = 6.5; const lg = AC.createGain(); lg.gain.value = .25;
+    const g = AC.createGain(); g.gain.value = 0; const am = AC.createGain(); am.gain.value = .75;
+    src.connect(f).connect(am); o.connect(of).connect(am); lfo.connect(lg).connect(am.gain); am.connect(g).connect(out());
+    src.start(); o.start(); lfo.start(); hum = { g, stop: () => { try { src.stop(); o.stop(); lfo.stop(); } catch (e) {} } };
+  }
+  if (!hum) return;
+  hum.g.gain.setTargetAtTime(.22 * level, AC.currentTime, .25);
+  if (level <= .01 && !hum.off) { hum.off = setTimeout(() => { if (hum && hum.g.gain.value < .005) { hum.stop(); hum = null; } else if (hum) hum.off = null; }, 1500); }
+  else if (level > .01 && hum.off) { clearTimeout(hum.off); hum.off = null; }
+}
+function ctrHumTick(V, w, h) {
+  const K = ctrCfg();
+  if (!K || !TOWN.open || !ctrCoaches().length) return ctrHum(0);
+  const p = tiso(...K.spot), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy, d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h);
+  ctrHum(clamp(1.2 - d * 2.2, 0, 1) * clamp(V.z / .6, .3, 1));
+}
+/* two-tone coach horn when the first group pulls in */
+function ctrHorn() { if (!AC) return; tone(311, 311, .45, 'sawtooth', .035); tone(392, 392, .45, 'sawtooth', .03); tone(311, 311, .3, 'sawtooth', .035, .55); tone(392, 392, .3, 'sawtooth', .03, .55); }
+
+/* ---------- v125: bringing balloons and pilots into a new region ----------
+   Only when you enter a new region: up to XFER.maxB balloons and XFER.maxP pilots from regions on autopilot come with
+   you. Balloons keep their name, design and equipment (a sponsor deal stays home); pilots keep level, experience and
+   trait, and their wage turns into the new region's money at the same level (Bristol's ×1.15 on or off). The region they
+   leave earns less on autopilot: its daily base falls by the share of seats that left, and 2% for each pilot. */
+const XFER = { maxB: 2, maxP: 2, seats: 16, sizes: ['S', 'M'], pilotCut: .02, local: true, ship: 30, debt: 1, debtDays: 30 };
+const wageF = id => id === 'bri' ? 1.15 : 1;
+const xferSeats = bs => bs.reduce((a, b) => a + SIZES[b.size].cap, 0);
+const xferBalloons = () => { const out = []; for (const id in (S.regions || {})) for (const b of S.regions[id].balloons) if (XFER.sizes.includes(b.size) && !(b.dmgUntil > S.day) && cond(b) > .2) out.push({ id, b }); return out.sort((p, q) => SIZES[q.b.size].cap - SIZES[p.b.size].cap || cond(q.b) - cond(p.b)); };
+const xferPilots = () => { const out = []; for (const id in (S.regions || {})) for (const p of S.regions[id].pilots) out.push({ id, p }); return out.sort((a, b) => b.p.lvl - a.p.lvl || (b.p.xp || 0) - (a.p.xp || 0)); };
+/* sel: { regionId: { b: [balloon ids], p: [pilot ids] } } */
+function xferApply(sel) {
+  const to = S.region, moved = { b: [], p: [] };
+  for (const id in sel) {
+    const rs = S.regions && S.regions[id]; if (!rs) continue;
+    const seats0 = rs.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0);
+    const bs = []; for (const b of rs.balloons) if ((sel[id].b || []).includes(b.id) && XFER.sizes.includes(b.size) && moved.b.length + bs.length < XFER.maxB && xferSeats(moved.b.concat(bs)) + SIZES[b.size].cap <= XFER.seats) bs.push(b);
+    const ps = rs.pilots.filter(p => (sel[id].p || []).includes(p.id)).slice(0, XFER.maxP - moved.p.length);
+    for (const b of bs) { rs.balloons = rs.balloons.filter(x => x !== b); Object.assign(b, { pilot: null, pin: null, ad: null, dmgUntil: 0, imp: id }); moved.b.push(b); }
+    for (const p of ps) {
+      rs.pilots = rs.pilots.filter(x => x !== p); rs.balloons.forEach(b => { if (b.pin === p.id) b.pin = null; if (b.pilot === p.id) b.pilot = null; });
+      if (p.wage) p.wage = Math.round(p.wage / wageF(id) * wageF(to) / 5) * 5;
+      p.imp = id; moved.p.push(p);
+    }
+    if (bs.some(b => b.id === rs.flag) || !rs.balloons.some(b => b.id === rs.flag)) rs.flag = rs.balloons.length ? rs.balloons[0].id : null;
+    /* the region left behind earns less, in proportion */
+    const lost = seats0 ? bs.reduce((a, b) => a + SIZES[b.size].cap, 0) / seats0 : 0, k = Math.max(0, 1 - lost - XFER.pilotCut * ps.length);
+    if (rs.auto) rs.auto.base = Math.round(rs.auto.base * k);
+    rs.netHist = (rs.netHist || []).map(v => Math.round(v * k));
+  }
+  /* they come by ship: XFER.ship days later they join the fleet (xferArrive), pilots with them */
+  if (moved.b.length || moved.p.length) { if (XFER.ship) S.xferShip = { day: S.day + XFER.ship, b: moved.b, p: moved.p }; else { S.balloons.push(...moved.b); S.pilots.push(...moved.p); } }
+  assignPilots();
+  return moved;
+}
+function xferArrive() {
+  const X = S.xferShip; if (!X || S.day < X.day) return;
+  S.xferShip = null; S.balloons.push(...X.b); S.pilots.push(...X.p); assignPilots();
+  /* the region pays its home region back for the balloons, a little every day */
+  const due = Math.round(X.b.reduce((a, b) => a + SIZES[b.size].cost, 0) * XFER.debt * FX());
+  if (due > 0) S.xferDebt = { left: XFER.debtDays, inst: Math.round(due / XFER.debtDays), from: X.b[0].imp };
+  S.hezQ.push(`news:Gemi limana yanaştı evlat! ${[X.b.map(b => b.name).join(' ve '), X.p.map(p => p.name).join(' ve ')].filter(Boolean).join(', ')} artık burada. Balonlar filoda, pilotlar ekipte.`);
+}
+/* The entry card: pick up to two balloons and two pilots (the best are ticked), or skip. */
+function showXfer() {
+  const id = S.xfer.from; S.xfer = null; save();
+  const B = xferBalloons(), P = xferPilots();
+  if (!B.length && !P.length) { nextPopup(); return; }
+  const sel = new Set(P.slice(0, XFER.maxP).map(x => 'p' + x.p.id)); { let st = 0, n = 0; for (const x of B) if (n < XFER.maxB && st + SIZES[x.b.size].cap <= XFER.seats) { sel.add('b' + x.b.id); st += SIZES[x.b.size].cap; n++; } }
+  const selSeats = () => B.filter(x => sel.has('b' + x.b.id)).reduce((a, x) => a + SIZES[x.b.size].cap, 0);
+  const m = $('menu');
+  const draw = () => {
+    m.replaceChildren(); const c = h('div', 'card xfer');
+    c.appendChild(h('div', 'hzline', `${guide().av()}<span><b>${guide().name}:</b> ${RD().name}'ye eli boş gelme evlat. Otomatik moddaki bölgelerinden ${XFER.maxB} balon ve ${XFER.maxP} pilot getirebilirsin. Ama orada kazanç biraz düşer.</span>`));
+    c.appendChild(h('h1', null, 'Filonu getir'));
+    c.appendChild(h('p', 'hint', `Gemiye ${XFER.seats} koltuk sığar: iki küçük ya da bir orta sepet. Gemi ${XFER.ship} gün sonra yanaşır; balonların bedelini buradaki kasan ${XFER.debtDays} günde öder. Balonlar adını, tasarımını ve donanımını korur, reklam anlaşması orada kalır. Pilotlar seviyesini ve özelliğini korur, maaşları ${RD().cur} ile ödenir. Getirdiklerin buradaki bölüm hedeflerine sayılmaz.`));
+    const nb = [...sel].filter(k => k[0] === 'b').length, np = [...sel].filter(k => k[0] === 'p').length;
+    const row = (key, html, full) => { const on = sel.has(key), b = h('button', 'xrow' + (on ? ' on' : ''), `<i>${on ? '✓' : ''}</i>${html}`); b.disabled = !on && full; b.onclick = () => { on ? sel.delete(key) : sel.add(key); sfx('click'); draw(); }; return b; };
+    if (B.length) { c.appendChild(h('h2', 'xh', `Balonlar · koltuk: ${selSeats()}/${XFER.seats}`)); const box = h('div', 'xlist'); B.slice(0, 8).forEach(x => box.appendChild(row('b' + x.b.id, `<b>${esc(x.b.name)}</b><span>${SIZES[x.b.size].label} · koltuk: ${SIZES[x.b.size].cap} · ${REGION_DEF[x.id].name}${designOf(x.b) ? ' · desenli' : ''}</span>`, nb >= XFER.maxB || selSeats() + SIZES[x.b.size].cap > XFER.seats))); c.appendChild(box); }
+    if (P.length) { c.appendChild(h('h2', 'xh', `Pilotlar: ${np}/${XFER.maxP}`)); const box = h('div', 'xlist'); P.slice(0, 8).forEach(x => box.appendChild(row('p' + x.p.id, `<b>${esc(x.p.name)}</b><span>${LEVELS[x.p.lvl].name}${trait(x.p) ? ' · ' + TRAITS[x.p.trait].n : ''} · ${REGION_DEF[x.id].name}</span>`, np >= XFER.maxP))); c.appendChild(box); }
+    /* what it costs at home */
+    const loss = {}; for (const k of sel) { const isB = k[0] === 'b', q = isB ? B.find(x => 'b' + x.b.id === k) : P.find(x => 'p' + x.p.id === k); if (!q) continue; const L = loss[q.id] || (loss[q.id] = { seats: 0, p: 0 }); if (isB) L.seats += SIZES[q.b.size].cap; else L.p++; }
+    const lines = Object.keys(loss).map(rid => { const rs = S.regions[rid], s0 = rs.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0), k = Math.max(0, 1 - (s0 ? loss[rid].seats / s0 : 0) - XFER.pilotCut * loss[rid].p), base = rs.auto ? rs.auto.base : 0; return `${REGION_DEF[rid].name}: günde ${eurH(base)} → ${eurH(base * k)}`; });
+    const debt = Math.round(B.filter(x => sel.has('b' + x.b.id)).reduce((a, x) => a + SIZES[x.b.size].cost, 0) * XFER.debt * FX());
+    if (debt) lines.push(`Balonların bedeli: ${eur(debt)}, ${XFER.debtDays} gün boyunca günde ${eur(Math.round(debt / XFER.debtDays))}`);
+    if (lines.length) c.appendChild(h('div', 'callout yel', `<b>Bedeli var.</b><br>${lines.join('<br>')}`));
+    const go = h('button', 'big', nb + np ? `Getir: ${nb} balon, ${np} pilot` : 'Hiçbirini getirme');
+    go.onclick = () => {
+      const pickSel = {}; for (const k of sel) { const isB = k[0] === 'b', q = isB ? B.find(x => 'b' + x.b.id === k) : P.find(x => 'p' + x.p.id === k); if (!q) continue; const o = pickSel[q.id] || (pickSel[q.id] = { b: [], p: [] }); (isB ? o.b : o.p).push(isB ? q.b.id : q.p.id); }
+      const mv = xferApply(pickSel); sfx(nb + np ? 'coin' : 'click'); m.hidden = true;
+      if (mv.b.length || mv.p.length) S.hezQ.unshift(`news:${[mv.b.length ? mv.b.map(b => b.name).join(' ve ') + ' gemiden indi' : '', mv.p.length ? mv.p.map(p => p.name).join(' ve ') + ' yanında' : ''].filter(Boolean).join(', ')}. ${RD().name}'de ilk günler daha kolay geçecek evlat, ama rakipler de seni fark edecek.`);
+      save(); refresh(); setTimeout(nextPopup, 300);
+    };
+    const skip = h('button', 'ghost', 'Geç: sıfırdan başla'); skip.style.width = '100%'; skip.onclick = () => { sfx('click'); m.hidden = true; save(); refresh(); setTimeout(nextPopup, 250); };
+    c.append(go, skip); m.appendChild(c); m.hidden = false;
+  };
+  draw();
 }
 
 /* ---------- autopilot problems ---------- */
@@ -8929,6 +9578,7 @@ function outerScenery(t) {
     const gx = -18 + R() * 50, gy = -18 + R() * 50, hh = 110 + R() * 120;
     if (gx > -2 && gx < 17 && gy > -2 && gy < 17) continue;
     if (Math.abs(gx - 8) < 1.6 || Math.abs(gy - 8) < 1.6) continue;
+    if (!ctrSpotFree(gx, gy)) continue; /* v125: the coach terminal's ground */
     if (OUTER_FIELDS.some(f => gx > f[0] - 1 && gx < f[0] + 4 && gy > f[1] - 1 && gy < f[1] + 3.5)) continue;
     items.push({ at: [gx, gy], depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .14); }, draw: () => { const p = tiso(gx, gy); outerLandmark(p[0], p[1], hh, i); } });
   }
@@ -9062,7 +9712,7 @@ function renderTown(V, w, h, dpr, offY) {
     /* flat things on the ground, clipped at the horizon */
     ctx.save(); ctx.beginPath(); ctx.rect(0, hz, w, h); ctx.clip();
     W0();
-    outerDecor(T);
+    outerDecor(T); ctrGround();
     const E = [tiso(-.5, -.5), tiso(15.5, -.5), tiso(15.5, 15.5), tiso(-.5, 15.5)];
     tpoly(E, S.winter ? 'rgba(250,252,255,.6)' : S.region === 'bri' ? 'rgba(130,180,90,.6)' : 'rgba(240,210,165,.55)'); /* v124: Bristol's lawns */
     tdecor(T);
@@ -9072,7 +9722,7 @@ function renderTown(V, w, h, dpr, offY) {
     W0();
     const fade = (it) => { if (!it.at) return it; const sy = tiso(...it.at)[1] * V.z + V.oy, a = clamp((sy - hz) / (h * .1), 0, 1); if (a <= 0) return null;
       return { depth: it.depth, shadow: it.shadow, draw: () => { ctx.globalAlpha = a; it.draw(); ctx.globalAlpha = 1; } }; };
-    const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).map(fade).filter(Boolean), townWall()), sky = townSky(T);
+    const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).concat(ctrSpotItems(T)).map(fade).filter(Boolean), townWall()), sky = townSky(T);
     bs.forEach(buildingShadow); scen.forEach(it => it.shadow && it.shadow()); sky.shadows.forEach(f => f());
     const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => { if (S.region === 'bri' && (b.look === 'hotel' || b.look === 'bank')) { const keep = TUFF; TUFF = BATH; try { tbuilding(b, T); } finally { TUFF = keep; } } else tbuilding(b, T); } })).concat(scen, V.extra ? V.extra(T) : S.issue && S.issue.k === 'raise' ? strikers(T) : []);
     TLATE = [];
@@ -9112,8 +9762,9 @@ function drawTown() {
   const keep = ctx; ctx = cvs.getContext('2d');
   try {
     if (TOWN.night && !TOWN.leaving) { if (!TOWN.anim) nightClamp(TOWN, r.width, r.height); TOWN.hzFix = nightHorizon(TOWN, r.width, r.height); }
-    else if (!TOWN.anim) townClamp(r.width, r.height);
+    else if (!TOWN.anim && !TOWN.cine) townClamp(r.width, r.height);
     renderTown(TOWN, r.width, r.height, dpr, 0);
+    ctrHumTick(TOWN, r.width, r.height);
   } finally { ctx = keep; }
 }
 /* The home screen shows the town above the day's cards: a fixed overview you tap into. */
@@ -9740,7 +10391,13 @@ function homeGrid(x, y) {
 }
 function townLoop() {
   if (!TOWN.open) return;
-  const a = TOWN.anim;
+  const a = TOWN.anim, cn = TOWN.cine;
+  if (cn && !a) { /* v125: the slow camera move to the coach terminal */
+    const e = easeIO3((performance.now() - cn.t0) / cn.dur), zz = Math.exp(lerp(Math.log(cn.from.z), Math.log(cn.to.z), e));
+    /* the world point under the screen's middle travels in a straight line while the zoom eases */
+    const r = $('tcv').getBoundingClientRect(), fx = (r.width / 2 - cn.from.ox) / cn.from.z, fy = (r.height / 2 - cn.from.oy) / cn.from.z, tx = (r.width / 2 - cn.to.ox) / cn.to.z, ty = (r.height / 2 - cn.to.oy) / cn.to.z;
+    TOWN.z = zz; TOWN.ox = r.width / 2 - lerp(fx, tx, e) * zz; TOWN.oy = r.height / 2 - lerp(fy, ty, e) * zz;
+  }
   if (a) {
     const k = clamp((performance.now() - a.t0) / 450, 0, 1), e = 1 - Math.pow(1 - k, 3);
     TOWN.z = lerp(a.from.z, a.to.z, e); TOWN.ox = lerp(a.from.ox, a.to.ox, e); TOWN.oy = lerp(a.from.oy, a.to.oy, e);
@@ -9762,8 +10419,11 @@ function townClamp(w, h) {
   const c = tiso(7.5, 7.5), sx = c[0] * TOWN.z + TOWN.ox, sy = c[1] * TOWN.z + TOWN.oy, mx = 16 * TW / 2 * TOWN.z, my = 8 * TH / 2 * TOWN.z;
   /* the home screen's own framing is always allowed, so dragging from it never jumps */
   const hx = c[0] * HOME.z + HOME.ox, hy = c[1] * HOME.z + HOME.oy;
-  TOWN.ox += clamp(sx, Math.min(w * .5, w * .85 - mx, hx), Math.max(w * .5, w * .15 + mx, hx)) - sx;
-  TOWN.oy += clamp(sy, Math.min(h * .5, h * .3 - my, hy), Math.max(h * .55, h * .8 + my, hy)) - sy;
+  let x0 = Math.min(w * .5, w * .85 - mx, hx), x1 = Math.max(w * .5, w * .15 + mx, hx), y0 = Math.min(h * .5, h * .3 - my, hy), y1 = Math.max(h * .55, h * .8 + my, hy);
+  /* v125: the coach terminal outside town can be dragged to the middle of the screen */
+  const K = ctrCfg(); if (K) { const p = tiso(...K.spot), ex = w / 2 + (c[0] - p[0]) * TOWN.z, ey = h * .5 + (c[1] - p[1]) * TOWN.z; x1 = Math.max(x1, ex); y0 = Math.min(y0, ey); }
+  TOWN.ox += clamp(sx, x0, x1) - sx;
+  TOWN.oy += clamp(sy, y0, y1) - sy;
 }
 /* Zoom into the home screen's town: start from exactly what the home shows, fade the rest of the screen away
    and glide in on the tapped spot. Zooming back out (pinch, wheel or the X) returns to the home screen. */
@@ -9795,7 +10455,7 @@ function closeTown() {
   document.body.classList.remove('zoomed', 'mhold'); TOWN.hold = false;
   const night = TOWN.night;
   townGlide({ z: HOME.z, ox: HOME.ox, oy: HOME.oy }, () => {
-    TOWN.open = false; TOWN.leaving = false; TOWN.night = false; TOWN.hzFix = null; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh();
+    TOWN.open = false; TOWN.leaving = false; TOWN.night = false; TOWN.hzFix = null; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); ctrHum(0); refresh();
   });
   if (night) TOWN.anim.hz = [TOWN.hzFix, homeHorizon()];
 }
@@ -9810,6 +10470,8 @@ function townTap(x, y) {
   if (zh) { sfx('click'); endHold(); townFocus(zh.zn.at); return; }
   const hit = townHit(TOWN.hits, x, y);
   if (hit) { sfx('click'); hit.b.tap(); return; }
+  /* v125: the coach terminal (its lot) shows what's booked */
+  if (ctrCfg() && inPoly([x, y], [tiso(8.5, 20.8), tiso(14.6, 20.8), tiso(14.6, 26.5), tiso(8.5, 26.5)].map(([fx, fy]) => [fx * TOWN.z + TOWN.ox, (fy - 20) * TOWN.z + TOWN.oy]))) { sfx('click'); ctrStatusCard(); return; }
   /* v110: the launch field, or a balloon standing on it, opens your balloons */
   const V = TOWN, f = [tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)];
   if ([0, 90].some(up => inPoly([x, y], f.map(([fx, fy]) => [fx * V.z + V.ox, (fy - up) * V.z + V.oy]))) && unlocked('fleet')) { sfx('click'); openSection('fleet', 'Balonların'); }
