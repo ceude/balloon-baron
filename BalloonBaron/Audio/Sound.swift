@@ -183,6 +183,42 @@ final class SoundEngine {
         }
     }
 
+    /// v125: the contract place's ambient sound while its vehicle stands in view (`ctrHum`); 0 turns it off.
+    private var humSent = (-1, -1.0)
+    func contractHum(_ kind: Int, level: Double) {
+        guard started else { return }
+        let l = (level * 50).rounded() / 50
+        guard humSent.0 != kind || abs(humSent.1 - l) > 0.001 else { return }
+        humSent = (kind, l)
+        synth.send(.hum(kind, l))
+    }
+
+    /// v125: a coach horn, a ship's horn, a steam whistle as the vehicle comes in; leaving: engine revs and a short toot,
+    /// the same ship's horn, a whistle and chuffs speeding up (`ctrArriveSound`).
+    func contractArrive(_ kind: Int, leaving: Bool = false) {
+        guard started else { return }
+        if leaving && kind == 0 {
+            tone(60, 110, 1.4, .sawtooth, 0.03); tone(311, 311, 0.3, .sawtooth, 0.03, 0.3); tone(392, 392, 0.3, .sawtooth, 0.025, 0.3)
+            return
+        }
+        if leaving && kind == 2 {
+            tone(1108, 1128, 0.5, .sine, 0.03); tone(880, 900, 0.5, .square, 0.018)
+            for i in 0..<8 { tone(180, 90, 0.12, .sawtooth, 0.02, 0.6 + Double(i) * (0.5 - Double(i) * 0.03)) }
+            return
+        }
+        switch kind {
+        case 1:
+            tone(98, 96, 1.5, .sawtooth, 0.045); tone(147, 145, 1.5, .sawtooth, 0.03)
+            tone(98, 96, 1.1, .sawtooth, 0.045, 1.9); tone(147, 145, 1.1, .sawtooth, 0.03, 1.9)
+        case 2:
+            tone(880, 900, 1.2, .square, 0.018); tone(1108, 1128, 1.2, .sine, 0.03)
+            tone(880, 900, 0.4, .square, 0.018, 1.5); tone(1108, 1128, 0.4, .sine, 0.03, 1.5)
+        default:
+            tone(311, 311, 0.45, .sawtooth, 0.035); tone(392, 392, 0.45, .sawtooth, 0.03)
+            tone(311, 311, 0.3, .sawtooth, 0.035, 0.55); tone(392, 392, 0.3, .sawtooth, 0.03, 0.55)
+        }
+    }
+
     /// The prototype's `tone()`: exponential pitch glide f1→f2, 10 ms attack, exponential decay over `dur`.
     private func tone(_ f1: Double, _ f2: Double, _ dur: Double, _ wave: Wave, _ vol: Double, _ delay: Double = 0) {
         synth.send(.voice(VoiceSpec.tone(f1, f2, dur, wave, vol, delay)))
@@ -538,6 +574,8 @@ private enum Command {
     case filmStart(Int32, FilmPart)
     case filmNote(Int32, FilmNote)
     case filmStop
+    /// v125: the contract place's ambient sound (kind 0 bus, 1 ship, 2 train) at this level (0 = off).
+    case hum(Int, Double)
 }
 
 /// RBJ cookbook biquad, transposed direct form II. Q follows Web Audio
@@ -704,6 +742,18 @@ private final class Synth {
     private let layers: UnsafeMutablePointer<FilmLayer>
     private var filmActive = false
     private var filmCtrl = 0
+
+    // v125: the contract place's hum (`ctrHum`): noise through a filter, a low oscillator through a 90 Hz lowpass, both
+    // under a slow (or square) tremolo; the level glides like setTargetAtTime(…, 0.25 s).
+    struct HumSpec { var nf: Double; var bandpass: Bool; var of: Double; var wave: Wave; var og: Double; var lf: Double; var ld: Double; var square: Bool }
+    static let humSpec: [HumSpec] = [
+        HumSpec(nf: 140, bandpass: false, of: 34, wave: .sawtooth, og: 0.75, lf: 6.5, ld: 0.25, square: false),
+        HumSpec(nf: 520, bandpass: false, of: 44, wave: .sine, og: 0.35, lf: 0.28, ld: 0.5, square: false),
+        HumSpec(nf: 820, bandpass: true, of: 30, wave: .sine, og: 0, lf: 1.6, ld: 0.95, square: true)
+    ]
+    private var humKind = -1
+    private var humNoise = Biquad(), humOscLP = Biquad()
+    private var humGain = 0.0, humTarget = 0.0, humPhase = 0.0, humLfo = 0.0
     /// The prototype's score peaks near full scale; a little headroom on a phone speaker, like the burner.
     private let filmLevel = 0.8
 
@@ -800,6 +850,16 @@ private final class Synth {
         case .filmStart(let id, let part): startFilm(id, part)
         case .filmNote(let id, let n): addFilm(id, n)
         case .filmStop: fadeFilm()
+        case let .hum(kind, level):
+            if kind != humKind {
+                humKind = kind
+                let P = Synth.humSpec[kind]
+                humNoise = Biquad()
+                humNoise.set(P.bandpass ? .bandpass : .lowpass, P.nf, P.bandpass ? 0.9 : 0.7, sr)
+                humOscLP = Biquad()
+                humOscLP.set(.lowpass, 90, 0.7, sr)
+            }
+            humTarget = 0.22 * level
         }
     }
 
@@ -1063,6 +1123,20 @@ private final class Synth {
 
                 // the opening film's score
                 if filmActive { mono += filmSample() }
+
+                // v125: the contract place's hum
+                if humKind >= 0 && (humGain > 0.00001 || humTarget > 0) {
+                    humGain += (humTarget - humGain) * (1 - exp(-1 / (0.25 * sr)))
+                    let P = Synth.humSpec[humKind]
+                    let dt = P.of / sr
+                    let o = humOscLP.process(Synth.osc(P.wave, humPhase, dt)) * P.og
+                    humPhase += dt
+                    if humPhase >= 1 { humPhase -= 1 }
+                    let l = P.square ? (humLfo < 0.5 ? 1.0 : -1.0) : sin(2 * Double.pi * humLfo)
+                    humLfo += P.lf / sr
+                    if humLfo >= 1 { humLfo -= 1 }
+                    mono += (humNoise.process(noise()) + o) * max(0, 0.55 + l * P.ld * 0.5) * humGain
+                }
 
                 // one-shot voices
                 var k = 0

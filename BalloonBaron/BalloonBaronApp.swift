@@ -163,6 +163,18 @@ struct RootView: View {
             if let k = store.storeItem, !store.studioOpen {
                 StoreItemView(item: k).transition(.opacity)
             }
+            if let cs = store.contractScene, cs.line >= 0, store.contractCard == nil, store.game != nil {
+                ContractSceneView(line: cs.line).transition(.opacity)
+            }
+            if store.contractCard == .offer && store.game != nil {
+                ContractOfferView().transition(.move(edge: .bottom))
+            }
+            if store.contractCard == .status && store.game != nil {
+                ContractStatusView().transition(.opacity)
+            }
+            if store.showTransfer && store.game != nil {
+                TransferView().transition(.opacity)
+            }
             if let m = store.hezarfen {
                 HezarfenView(message: m, day: store.state?.day ?? 1) { store.dismissHezarfen(openBazaar: m == .tip(.bazaar), openShow: m == .tip(.show), openPrice: m == .tip(.price) || m == .tip(.price3)) }
                     .transition(.opacity)
@@ -209,6 +221,9 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.showGuides)
         .animation(.easeOut(duration: 0.25), value: store.showAgency)
         .animation(.easeOut(duration: 0.25), value: store.letter)
+        .animation(.easeOut(duration: 0.25), value: store.contractCard)
+        .animation(.easeOut(duration: 0.25), value: store.contractScene)
+        .animation(.easeOut(duration: 0.25), value: store.showTransfer)
         // v122: the tutorial that shows: day one's steps and the guided actions, over the town, its pages and cards
         .tutorialHost(minLineY: 104, present: { store.rootSpots = $0 },
                       alive: { store.guided != nil || store.homeFocus != nil || store.homeTutStep != nil },

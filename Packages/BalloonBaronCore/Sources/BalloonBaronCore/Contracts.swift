@@ -263,7 +263,7 @@ extension Game {
     /// Each morning, after the day's weather (`ctrMorning`): a red flag moves a one-day group or skips a day of a block,
     /// Bristol's fog follows the forecast given with the offer, an unanswered offer lapses to a rival, and maybe a new
     /// offer comes.
-    mutating func contractMorning() {
+    public mutating func contractMorning() {
         guard let K = state.contractConfig else { return }
         if state.local.contracts == nil { state.local.contracts = ContractState() }
         contractTidy()

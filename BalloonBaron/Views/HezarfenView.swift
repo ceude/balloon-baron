@@ -26,6 +26,12 @@ struct HezarfenView: View {
         return nil
     }
 
+    /// v125: a contract company's owner speaks, with their own face and a name tag in their color.
+    private var owner: ContractOwner? {
+        if case let .contract(w, _, _, _) = message { return w }
+        return nil
+    }
+
     private var inspector: Bool {
         if case .inspector = message { return true }
         return false
@@ -57,7 +63,17 @@ struct HezarfenView: View {
             Color.black.opacity(0.45).ignoresSafeArea()
             HStack(alignment: .bottom, spacing: 10) {
                 VStack(spacing: 4) {
-                    if let (r, _) = boss {
+                    if let w = owner {
+                        ContractAvatar(owner: w, size: 64)
+                        Text(w.short)
+                            .font(Theme.font(13, .heavy, condensed: true))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, 9).padding(.vertical, 3)
+                            .background(Color(hex: w.color), in: RoundedRectangle(cornerRadius: 8))
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.white.opacity(0.6), lineWidth: 1.5))
+                            .fixedSize()
+                            .offset(y: -8)
+                    } else if let (r, _) = boss {
                         BossAvatar(region: r, size: 64)
                         Text(loc("boss.\(r.rawValue).name"))
                             .font(Theme.font(12, .bold, condensed: true))
@@ -78,7 +94,9 @@ struct HezarfenView: View {
                     }
                 }
                 VStack(alignment: .leading, spacing: 12) {
-                    if let (r, _) = boss {
+                    if let w = owner {
+                        Text(w.role).font(Theme.font(11.5, .bold)).foregroundStyle(Theme.ink2)
+                    } else if let (r, _) = boss {
                         Text(loc("boss.\(r.rawValue).title"))
                             .font(Theme.font(11.5, .bold)).foregroundStyle(Theme.ink2)
                     } else if inspector {

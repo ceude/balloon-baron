@@ -23,6 +23,11 @@ final class TownCanvasModel {
     var glided: CGFloat = 0
     /// Reduce Motion: glides cut straight to where they're going.
     var instant = false
+    /// v125: the region's contract place (town grid point): dragging can bring it to the middle of the screen.
+    var contractSpot: (Double, Double)?
+    /// v125: the first offer's scene: its camera glide (start time and view, target), and the view it last showed.
+    var cine: (t0: Double, from: TownViewport, card: Bool)?
+    var cineView: TownViewport?
 
     func time(_ date: Date) -> Double { date.timeIntervalSinceReferenceDate - t0 }
     var now: Double { time(Date()) }
@@ -71,8 +76,16 @@ final class TownCanvasModel {
         let mx = 16 * TownGeo.TW / 2 * view.z, my = 8 * TownGeo.TH / 2 * view.z
         // The home screen's own framing is always allowed, so dragging from it never jumps.
         let hx = c.x * home.z + home.ox, hy = c.y * home.z + home.oy
-        view.ox += min(max(sx, min(w * 0.5, w * 0.85 - mx, hx)), max(w * 0.5, w * 0.15 + mx, hx)) - sx
-        view.oy += min(max(sy, min(h * 0.5, h * 0.3 - my, hy)), max(h * 0.55, h * 0.8 + my, hy)) - sy
+        var x0 = min(w * 0.5, w * 0.85 - mx, hx), x1 = max(w * 0.5, w * 0.15 + mx, hx)
+        var y0 = min(h * 0.5, h * 0.3 - my, hy), y1 = max(h * 0.55, h * 0.8 + my, hy)
+        // v125.5: the contract place outside town can be dragged to the middle of the screen and round it, any direction
+        if let sp = contractSpot {
+            let p = TownGeo.iso(sp.0, sp.1), ex = w / 2 + (c.x - p.x) * view.z, ey = h * 0.5 + (c.y - p.y) * view.z
+            x0 = min(x0, ex - 0.3 * w); x1 = max(x1, ex + 0.3 * w)
+            y0 = min(y0, ey - 0.25 * h); y1 = max(y1, ey + 0.25 * h)
+        }
+        view.ox += min(max(sx, x0), x1) - sx
+        view.oy += min(max(sy, y0), y1) - sy
     }
 }
 
@@ -111,12 +124,15 @@ struct HomeTownView: View {
                         let h = dockTop > 0 ? min(dockTop, sz.height) : sz.height * 0.6
                         model.size = sz
                         model.instant = reduceMotion
+                        model.contractSpot = s.contractConfig != nil ? ContractPlace.of(s.region)?.center : nil
                         model.home = homeViewport(width: sz.width, dockTop: h)
                         if model.mode == .home { model.view = model.home } else { model.step(now: model.time(tl.date)) }
                         // At home the town stops at the dock; zoomed in it fills the screen.
                         let now = model.time(tl.date)
                         var c = ctx
-                        if let hi = store.homeIntro {
+                        if store.contractScene != nil {
+                            renderContractScene(&c, s, sz, now)
+                        } else if let hi = store.homeIntro {
                             // v121.5: the opening film's landing, pulling back to the home view as the night lifts
                             let v = hi.viewport(home: model.home, size: sz, now: tl.date), n = hi.night(tl.date)
                             let night = n.k > 0.001 || n.sunrise > 0.001
@@ -146,6 +162,7 @@ struct HomeTownView: View {
                             // Pilots asking for a raise wait outside the office until you answer.
                             model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz,
                                                             strike: s.local.openIssue?.kind == .raise)
+                            contractTick(s, v, sz, now)
                         }
                     }
                 }
@@ -179,7 +196,10 @@ struct HomeTownView: View {
                     if c { DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { if covered { asleep = true } } } else { asleep = false }
                 }
                 .onChange(of: store.night) { old, new in if old != nil, new == nil { startMorning() } }
-                .onChange(of: store.collecting) { _, on in if on { collectFromHere() } }
+                .onChange(of: store.collecting) { _, on in if on { collectFromHere(); SoundEngine.shared.contractHum(0, level: 0) } }
+                .onChange(of: store.contractScene == nil) { _, ended in if ended { endContractScene() } }
+                .onChange(of: covered) { _, c in if c { SoundEngine.shared.contractHum(0, level: 0) } }
+                .onDisappear { SoundEngine.shared.contractHum(0, level: 0) }
                 .onChange(of: store.page) { old, new in
                     // Leaving the office, the camera steps back out in front of the tower (`closeHQ`).
                     if old == .holding, new == nil, model.mode == .zoomed { model.focus(Self.tower.0, Self.tower.1) }
@@ -204,6 +224,77 @@ struct HomeTownView: View {
                 }
             }
         }
+    }
+
+    /// v125 `ctrScene`: the camera leaves town for the off-map place (3.6 s, zoom 0.86, the place in the middle); when
+    /// the card opens it moves the place to the top fifth of the screen (0.9 s).
+    private func renderContractScene(_ c: inout GraphicsContext, _ s: GameState, _ sz: CGSize, _ now: Double) {
+        guard let P = ContractPlace.of(s.region) else { return }
+        let T = ContractTown.shared
+        let card = store.contractCard != nil
+        if model.cine == nil {
+            model.cine = (now, model.mode == .home ? model.home : model.view, false)
+            T.cineArrive = now + 1.6
+        }
+        if let ci = model.cine, ci.card != card, let cur = model.cineView { model.cine = (now, cur, card) }
+        guard let ci = model.cine else { return }
+        let z: CGFloat = 0.86, p = TownGeo.iso(P.center.0, P.center.1)
+        let to = TownViewport(z: z, ox: sz.width / 2 - p.x * z, oy: sz.height * (card ? 0.2 : 0.5) - p.y * z)
+        let dur = card ? 0.9 : 3.6
+        let k = reduceMotion ? 1 : CGFloat(ContractGeo.easeIO3(min(max((now - ci.t0) / dur, 0), 1)))
+        var v = TownViewport(z: ci.from.z + (to.z - ci.from.z) * k, ox: ci.from.ox + (to.ox - ci.from.ox) * k, oy: ci.from.oy + (to.oy - ci.from.oy) * k)
+        v.noLabels = true
+        v.hzCap = TownGeo.horizon(model.home, height: sz.height)
+        model.cineView = v
+        _ = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz)
+        contractTick(s, v, sz, now)
+    }
+
+    /// The scene is over: the camera glides back home from where it was.
+    private func endContractScene() {
+        model.cine = nil
+        guard let v = model.cineView else { return }
+        model.cineView = nil
+        model.view = v
+        model.mode = .leaving
+        model.glide(to: model.home, dur: 0.8, inOut: true)
+    }
+
+    /// v125 `ctrHumTick`: near the screen's middle the job's vehicle pulls in (the first time you look on its first day),
+    /// a finished job's vehicle leaves, and the place's ambient sound follows how close it is.
+    private func contractTick(_ s: GameState, _ v: TownViewport, _ sz: CGSize, _ now: Double) {
+        guard let K = s.contractConfig, let P = ContractPlace.of(s.region) else { return }
+        let T = ContractTown.shared, kind = K.kind == .bus ? 0 : K.kind == .ship ? 1 : 2
+        let p = v.screen(TownGeo.iso(P.center.0, P.center.1))
+        let d = hypot(p.x - sz.width / 2, p.y - sz.height / 2) / max(sz.width, sz.height)
+        if let dp = s.local.contracts?.depart {
+            if let t1 = T.departT, now - t1 > 9 {
+                if !T.pending {
+                    T.pending = true
+                    DispatchQueue.main.async {
+                        store.act { $0.clearContractDepart() }
+                        T.departT = nil
+                        T.pending = false
+                    }
+                }
+            } else if T.departT == nil && s.day >= dp.from && d < 0.42 {
+                T.departT = now
+                DispatchQueue.main.async { SoundEngine.shared.contractArrive(kind, leaving: true) }
+            }
+        }
+        if let due = s.contractDue, d < 0.42, !T.pending {
+            T.pending = true
+            T.arriveT[due.id] = now
+            T.departT = nil
+            DispatchQueue.main.async {
+                SoundEngine.shared.contractArrive(kind)
+                store.act { $0.markContractArrived() }
+                T.pending = false
+            }
+        }
+        let on = !ContractGeo.vehicles(s, now).isEmpty
+        let level = on ? min(max(1.2 - Double(d) * 2.2, 0), 1) * min(max(Double(v.z) / 0.6, 0.3), 1) : 0
+        DispatchQueue.main.async { SoundEngine.shared.contractHum(kind, level: level) }
     }
 
     /// The camera glides from what the home showed to your office in 0.8 s and stays there while the jeeps leave.
@@ -352,7 +443,7 @@ struct HomeTownView: View {
     /// The camera is (or may be) moving: zoomed in, gliding, collecting, a morning event, the morning's hold.
     private var moving: Bool {
         zoomed || hold || diving || model.mode != .home || store.collecting || store.morningEvent != nil || store.homeIntro != nil
-            || store.homeFocus != nil
+            || store.homeFocus != nil || store.contractScene != nil
     }
 
     /// `instant`: a pinch that started on the home screen carries on zooming by itself.
@@ -375,7 +466,7 @@ struct HomeTownView: View {
     }
 
     private func tap(_ p: CGPoint) {
-        guard !store.collecting, !diving else { return }
+        guard !store.collecting, !diving, store.contractScene == nil else { return }
         switch model.mode {
         case .leaving:
             return
@@ -392,6 +483,10 @@ struct HomeTownView: View {
                 SoundEngine.shared.play(.click)
                 endHold()
                 model.focus(z.at.0, z.at.1)
+            } else if model.hits.contract.count > 2, TownGeo.inPoly(p, model.hits.contract) {
+                // v125: the contract place: what's booked
+                SoundEngine.shared.play(.click)
+                store.contractCard = .status
             } else if let b = hit.building {
                 SoundEngine.shared.play(.click)
                 store.tapTown(b.tap)
@@ -405,7 +500,7 @@ struct HomeTownView: View {
     private var pan: some Gesture {
         DragGesture(minimumDistance: 6)
             .onChanged { v in
-                guard !diving, !store.collecting, store.morningEvent == nil else { return }
+                guard !diving, !store.collecting, store.morningEvent == nil, store.contractScene == nil else { return }
                 // One finger on the home town drags it at the home screen's size, the controls staying over it
                 // (like the morning's hold); zooming out comes back home, zooming in zooms as usual.
                 if model.mode == .home {

@@ -84,18 +84,23 @@ private final class CollectModel {
     var last: Double?
     var lastTick = 0.0
 
-    init(parts: [CollectPart], cap: Int, balloons: Int) {
+    /// v125.3: a contract morning: the jeeps fetch the group first (2.6 s), and its seats (part 0) fill first.
+    let delay: Double
+
+    init(parts: [CollectPart], cap: Int, balloons: Int, group: Bool = false, delay: Double = 0) {
         self.parts = parts
         self.cap = cap
         self.balloons = balloons
+        self.delay = delay
         var s: [Int] = []
-        for (i, p) in parts.enumerated() { s += Array(repeating: i, count: max(0, p.count)) }
+        for (i, p) in parts.enumerated() where !(group && i == 0) { s += Array(repeating: i, count: max(0, p.count)) }
         s.shuffle()
+        if group { s = Array(repeating: 0, count: max(0, parts[0].count)) + s }
         seq = Array(s.prefix(cap))
         counts = Array(repeating: 0, count: parts.count)
     }
 
-    var k: Double { min(1, t / dur) }
+    var k: Double { min(1, max(0, t - delay) / dur) }
 
     /// `updateCollect(dt)`.
     func advance(to date: Date) {
@@ -116,7 +121,7 @@ private final class CollectModel {
         if kk >= 1 && !done { done = true }
     }
 
-    func skip() { t = dur }
+    func skip() { t = dur + delay }
 }
 
 /// The passenger-gathering card shown at the bottom over the home scene (`#collect`).
@@ -170,10 +175,20 @@ struct CollectView: View {
         guard let game = store.game else { return nil }
         let s = game.state
         let fl = s.flyingToday
-        let m = game.market(price: s.price, capacity: s.capacityToday)
+        // v125: a tour group booked for today is seated first; the market fills the rest
+        let held = s.contractHeld(capacity: s.capacityToday)
+        let m = game.market(price: s.price, capacity: s.capacityToday - held)
         var parts = [CollectPart(label: loc("collect.src.tourists", s.region.title), color: .white, count: m.base)]
         for p in m.parts { parts.append(CollectPart(label: Self.label(p.source), color: Self.color(p.source), count: p.count)) }
-        return CollectModel(parts: parts, cap: s.capacityToday, balloons: fl.count)
+        guard held > 0, let k = s.contractToday, let place = ContractPlace.of(s.region) else {
+            store.collectScene.group = nil
+            return CollectModel(parts: parts, cap: s.capacityToday, balloons: fl.count)
+        }
+        parts.insert(CollectPart(label: loc("collect.src.contract", k.owner.company), color: Color(hex: k.owner.color), count: held), at: 0)
+        store.collectScene.group = store.collectAnimation
+            ? CollectScene.Group(n: held, color: k.owner.color, jeeps: min(max(Int((Double(held) / 10).rounded(.up)), 1), 3), road: place.town) : nil
+        store.collectScene.ctrT0 = nil
+        return CollectModel(parts: parts, cap: s.capacityToday, balloons: fl.count, group: true, delay: store.collectAnimation ? 2.6 : 0)
     }
 
     static func label(_ s: PaxSource) -> String {

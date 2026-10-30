@@ -181,7 +181,8 @@ struct PriceSheetView: View {
     /// changes the number of tourists today, and who sends tourists straight to you. Rows appear only when they apply.
     @ViewBuilder
     private func whyRows(_ g: Game) -> some View {
-        let m = g.market(price: g.state.price, capacity: g.state.capacityToday)
+        let held = g.state.contractHeld(capacity: g.state.capacityToday), K = g.state.contractToday
+        let m = g.market(price: g.state.price, capacity: g.state.capacityToday - held)
         let factors = g.demandFactors
         VStack(alignment: .leading, spacing: 5) {
             if let pull = g.popularityPull, let avg = g.rivalAverageRep {
@@ -192,6 +193,10 @@ struct PriceSheetView: View {
             if !factors.isEmpty {
                 whyRow(loc("why.tourists"), factors.map { loc("why.\($0.factor.rawValue)", g.state.weather?.flag.title ?? "") + " " + Self.pct($0.k) }
                     .joined(separator: " · "), Theme.ink)
+            }
+            if let k = K { // v125: today's contract group
+                whyRow(loc("price.ctr.row", k.owner.company), held < k.n ? loc("price.ctr.short", num(held), num(k.n)) : loc("price.ctr.ok", num(held), eur(k.price)),
+                       held < k.n ? Theme.red : Theme.green, dot: Color(hex: k.owner.color))
             }
             ForEach(Array(m.parts.enumerated()), id: \.offset) { _, p in
                 whyRow(CollectView.label(p.source), loc("why.pax", num(p.count)), Theme.green, dot: CollectView.color(p.source))
@@ -268,8 +273,13 @@ struct PriceSheetView: View {
     private func notes(_ g: Game, _ est: (pax: Int, seats: Int, income: Int)) -> [String] {
         let s = g.state, fl = s.flyingToday
         var out: [String] = []
-        if fl.contains(where: { s.isSelf($0) }) && est.pax > 0 {
-            out.append(loc("psheet.founderNote", percent(Rules.founderPremium), eur(est.income - est.pax * s.price)))
+        if let fb = fl.first(where: { s.isSelf($0) }), est.pax > 0 {
+            let bonus = jsRoundUI(Double(min(est.pax, s.sellSeats(fb)) * s.price) * Rules.founderPremium)
+            out.append(loc("psheet.founderNote", percent(Rules.founderPremium), eur(bonus)))
+        }
+        if let k = s.contractToday { // v125
+            let held = s.contractHeld(capacity: s.capacityToday), pen = jsRoundUI(Double(k.price) * (s.contractConfig?.pen ?? 0.5))
+            out.append(held < k.n ? loc("price.ctr.noteShort", num(k.n), num(held), eur(pen)) : loc("price.ctr.note", num(k.n), eur(k.price)))
         }
         if s.local.docDay == s.day && fl.contains(where: { $0.id == s.flagship }) { out.append(loc("psheet.docNote")) }
         return out

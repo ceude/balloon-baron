@@ -32,7 +32,7 @@ struct HomeView: View {
     @State private var hudBottom: CGFloat = 56
     /// Bottom of the weather card; the town's back corner sits just under it.
     /// A morning event or a region's problem: the camera is at the office and the side controls step aside.
-    private var townScene: Bool { store.issueScene || store.morningEvent != nil }
+    private var townScene: Bool { store.issueScene || store.morningEvent != nil || store.contractScene != nil }
     @State private var weatherBottom: CGFloat = 0
     /// Bottom of the side buttons: the column is taller than the weather card, so zooming slides it off by this.
     @State private var navBottom: CGFloat = 0
@@ -750,7 +750,7 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: 4) {
                     ticketForecast(est, s)
                     if est.seats > 0 {
-                        Text(whoFlies(s))
+                        Text((s.contractToday.map { loc("price.ctr.today", num(s.contractHeld(capacity: s.capacityToday)), num($0.n)) + " · " } ?? "") + whoFlies(s))
                             .font(Theme.font(12.5, .bold))
                             .foregroundStyle(Theme.ink)
                     }

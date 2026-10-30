@@ -25,9 +25,14 @@ final class CollectScene {
     var hzFix: CGFloat?
     /// Top of the collect card on screen, so the camera centres the office above it.
     var cardTop: CGFloat = 0
+    /// v125.3: a contract morning: the group (its size, the owner's color, the jeeps that fetch it, the road to the
+    /// off-map place) rides in first; `ctrT0` is when the jeeps set off (painter time).
+    struct Group { var n: Int; var color: String; var jeeps: Int; var road: [(Double, Double)] }
+    var group: Group?
+    var ctrT0: Double?
 
     func reset() {
-        shown = 0; total = 0; leaveAt = nil; leaveDate = nil; people = []; from = nil; target = nil; hzFix = nil
+        shown = 0; total = 0; leaveAt = nil; leaveDate = nil; people = []; from = nil; target = nil; hzFix = nil; group = nil; ctrT0 = nil
     }
 
     static func queueSpot(_ i: Int) -> (Double, Double) { (8.85 + Double(i % 6) * 0.24, 13.72 + Double(i / 6) * 0.19) }
@@ -60,15 +65,18 @@ extension TownPainter {
     /// The queue, the passenger count over it and, after take-off, the jeeps.
     func collectItems(_ sc: CollectScene) -> [TownItem] {
         var items: [TownItem] = []
-        let tt = t, total = sc.total
-        let want = total <= CollectScene.queueMax ? sc.shown : Int((Double(sc.shown) / Double(max(1, total)) * Double(CollectScene.queueMax)).rounded())
+        let tt = t
+        // v125.2: the tour group rides in jeeps, it doesn't queue
+        let G = sc.group?.n ?? 0, shownR = max(0, sc.shown - G), total = sc.total - G
+        let want = total <= CollectScene.queueMax ? shownR : Int((Double(shownR) / Double(max(1, total)) * Double(CollectScene.queueMax)).rounded())
         let shirts = ["#2b2350", "#ff5e3a", "#14a39a", "#ffc23d", "#9b7be0", "#5aa9e6", "#ff6fa8"]
         while sc.people.count < want {
             let i = sc.people.count
             let a = abs(sin(Double(i) * 12.9898) * 43758.5).truncatingRemainder(dividingBy: 1), b = abs(sin(Double(i) * 78.233) * 24634.6).truncatingRemainder(dividingBy: 1)
             sc.people.append(.init(i: i, t0: tt, from: (8 + (a - 0.5) * 0.5, 9.5 + b * 2), color: shirts[i % shirts.count]))
         }
-        let P = sc.people.count, J = min(max(Int((Double(P) / Double(CollectScene.jeepSeats)).rounded(.up)), 1), 5)
+        let Jg = sc.group?.jeeps ?? 0
+        let P = sc.people.count, J = min(max(max(Jg, Int((Double(P) / Double(CollectScene.jeepSeats)).rounded(.up))), 1), 5)
         let tl = sc.leaveAt.map { tt - $0 } ?? -1
         func jeepOf(_ i: Int) -> Int { min(J - 1, i * J / max(1, P)) }
         for p in sc.people {
@@ -100,9 +108,45 @@ extension TownPainter {
                 pp.c.draw(r, at: CGPoint(x: q.x, y: q.y - 56), anchor: .center)
             }))
         }
+        // v125.2: on a contract morning the first jeeps drive out to the off-map place and come back with the group,
+        // before the queue forms; at take-off the queue climbs into the same jeeps
+        if let g = sc.group, sc.leaveAt == nil {
+            if sc.ctrT0 == nil { sc.ctrT0 = tt }
+            let ts = tt - (sc.ctrT0 ?? tt)
+            for j in 0..<Jg {
+                let toT = [CollectScene.stop(j)] + g.road
+                let len = zip(toT, toT.dropFirst()).reduce(0.0) { $0 + hypot($1.1.0 - $1.0.0, $1.1.1 - $1.0.1) }, tj = ts - Double(j) * 0.15
+                var r: (p: (Double, Double), dir: (Double, Double))
+                var full = false
+                if tj >= 2.6 {
+                    r = (CollectScene.stop(j), (1, 0))
+                    full = true
+                } else if tj < 1.1 {
+                    r = CollectScene.walk(toT, pow(min(max(tj / 1.1, 0), 1), 1.6) * len)
+                } else if tj < 1.5 {
+                    continue
+                } else {
+                    r = CollectScene.walk(Array(toT.reversed()), (1 - pow(1 - min(max((tj - 1.5) / 1.1, 0), 1), 2)) * len)
+                    full = true
+                }
+                let alongX = tj >= 2.6 ? true : abs(r.dir.0) > abs(r.dir.1), pos = r.p, nP = full ? 4 : 0
+                items.append(TownItem(depth: pos.0 + pos.1 + 0.3, draw: { pp in pp.jeep(pos.0, pos.1, alongX, tt, nP) }))
+            }
+            if ts > 0.2 && ts < 3.2 {
+                let text = ts < 1.6 ? loc("collect.ctr.fetch") : loc("collect.ctr.coming", num(g.n)), col = g.color
+                items.append(TownItem(depth: 99, draw: { pp in
+                    let q = TownGeo.iso(10.2, CollectScene.jeepRowY)
+                    let r = pp.c.resolve(Text(text).font(.custom("BarlowCondensed-ExtraBold", size: 15)).foregroundColor(Color(hex: col)))
+                    let w = r.measure(in: CGSize(width: 600, height: 40)).width + 20
+                    pp.c.fill(Path(roundedRect: CGRect(x: q.x - w / 2, y: q.y + 12, width: w, height: 24), cornerRadius: 12),
+                              with: .color(Color(red: 1, green: 250 / 255, blue: 243 / 255).opacity(0.95)))
+                    pp.c.draw(r, at: CGPoint(x: q.x, y: q.y + 24), anchor: .center)
+                }))
+            }
+        }
         if sc.leaveAt != nil {
             for j in 0..<J {
-                let tin = tl - Double(j) * 0.12, tout = tl - 2 - Double(j) * 0.12, st = CollectScene.stop(j)
+                let tin = j < Jg ? 9 : tl - Double(j) * 0.12, tout = tl - 2 - Double(j) * 0.12, st = CollectScene.stop(j)
                 let r: (p: (Double, Double), dir: (Double, Double))
                 if tout > 0 {
                     r = CollectScene.walk([st, (8, CollectScene.jeepRowY), (8, 22)], pow(tout, 1.6) * 7)
@@ -112,7 +156,8 @@ extension TownPainter {
                 }
                 let alongX = abs(r.dir.0) > abs(r.dir.1), pos = r.p
                 let boarded = sc.people.filter { jeepOf($0.i) == j && tl > 1.15 + Double($0.i) * 0.025 + 0.55 }.count
-                items.append(TownItem(depth: pos.0 + pos.1 + 0.3, draw: { pp in pp.jeep(pos.0, pos.1, alongX, tt, min(CollectScene.jeepSeats, boarded)) }))
+                let riders = min(CollectScene.jeepSeats, boarded + (j < Jg ? 4 : 0))
+                items.append(TownItem(depth: pos.0 + pos.1 + 0.3, draw: { pp in pp.jeep(pos.0, pos.1, alongX, tt, riders) }))
             }
         }
         return items

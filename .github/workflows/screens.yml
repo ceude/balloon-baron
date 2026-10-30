@@ -81,6 +81,10 @@ jobs:
           deal|-demoDays 60 -demoScene deal|8
           letter|-demoDays 60 -demoScene letter|8
           letterread|-demoDays 60 -demoScene letterRead|9
+          contract|-demoDays 60 -demoRegion abq -demoScene contract|11
+          ctrscene|-demoDays 60 -demoRegion lux -demoScene contractScene|19
+          brictr|-demoDays 60 -demoRegion bri -demoScene contract|17
+          transfer|-demoDays 60 -demoRegion abq -demoScene transfer|11
           LIST
             xcrun simctl shutdown "$UDID"
           done

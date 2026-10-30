@@ -8,6 +8,8 @@ import BalloonBaronCore
 /// One scene on top: `-demoScene issue` (pilots asking for a raise outside the office, then the card), `collect`, `album`, `deal`,
 /// `letter` (the family's letter, sealed) and `letterRead` (the letter already open).
 /// v124: `flight` (your own flight; in Bristol on a foggy morning with the airport's airspace), `glow` (Bristol's Night Glow night).
+/// v125 (with `-demoRegion`): `contract` (a contract offer card), `contractScene` (the first offer's scene at the off-map
+/// place), `transfer` (the card to bring the fleet, entering the region).
 extension GameStore {
     func applyDemoArguments() {
         let args = ProcessInfo.processInfo.arguments
@@ -21,11 +23,13 @@ extension GameStore {
             g.state.barons[.cap] = g.state.day
             g.state.holding.cash = 400_000
             _ = g.enterRegion(.abq)
+            g.state.transferAsk = nil
             g.state.cash = 120_000
             for _ in 0..<20 { Self.demoDay(&g) }
             if r == "lux" || r == "bri" {
                 g.state.barons[.abq] = g.state.day
                 _ = g.enterRegion(.lux)
+                g.state.transferAsk = nil
                 g.state.cash = 120_000
                 for _ in 0..<20 { Self.demoDay(&g) }
             }
@@ -33,6 +37,7 @@ extension GameStore {
                 g.state.barons[.lux] = g.state.day
                 g.state.holding.cash = max(g.state.holding.cash, 400_000)
                 _ = g.enterRegion(.bri)
+                g.state.transferAsk = nil
                 g.state.cash = 120_000
                 for _ in 0..<20 { Self.demoDay(&g) }
             }
@@ -88,6 +93,28 @@ extension GameStore {
                     self.fly(skip: true)
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.closeReport() }
                 }
+            }
+        case "contract", "contractScene":
+            // v125: chapter 2 with a mid fleet; this morning the region's contract offer comes
+            if var gg = game, gg.state.contractConfig != nil {
+                gg.state.local.chapter = max(gg.state.local.chapter, 1)
+                gg.state.cash = max(gg.state.cash, 400_000)
+                for z in [BalloonSize.M, .L, .M, .L] { _ = gg.buyBalloon(z) }
+                gg.state.weather?.flag = .green
+                gg.state.local.contracts = ContractState()
+                gg.state.local.contracts?.next = gg.state.day
+                gg.state.local.contracts?.scene = value("-demoScene") == "contract"
+                gg.state.local.contracts?.met = value("-demoScene") == "contract"
+                gg.contractMorning()
+                gg.state.hezQueue = []
+                game = gg
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.showNextHezarfen() }
+            }
+        case "transfer":
+            if var gg = game, !gg.state.parked.isEmpty {
+                gg.state.transferAsk = gg.state.region
+                game = gg
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.showNextHezarfen() }
             }
         case "deal":
             if var gg = game, !gg.state.rivals.isEmpty {

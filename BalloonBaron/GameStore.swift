@@ -80,6 +80,14 @@ final class GameStore {
     var letter = false
     /// v124: Bristol's Night Glow card.
     var showGlowCard = false
+    /// v125: a contract company's offer card, or the off-map place's status card.
+    enum ContractCard: Equatable { case offer, status }
+    var contractCard: ContractCard?
+    /// v125: the first offer's scene: the camera at the off-map place, the guide's line on screen (-1: none yet).
+    struct ContractScene: Equatable { var line = -1 }
+    var contractScene: ContractScene?
+    /// v125: the card to bring balloons and pilots into a new region.
+    var showTransfer = false
     /// Ask the home screen to open the price sheet (Hezarfen's price lesson).
     var showPriceSheet = false
     /// A new postcard, and the album from the menu.
@@ -156,6 +164,7 @@ final class GameStore {
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
             || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || showGlowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency || letter
+            || contractCard != nil || contractScene != nil || showTransfer
     }
 
     init() {
@@ -294,6 +303,15 @@ final class GameStore {
             act { m = $0.nextHezarfen() }
             // v122: the lessons of new buildings and first jobs are shown, not told
             if case .tip(let t)? = m, guideOK(t) { startGuide(t) } else { hezarfen = m }
+        } else if let o = s.local.contracts?.offer, o.seen != s.day, s.contractConfig != nil {
+            // v125: after the owner's own lines; the region's first offer comes after its scene
+            if s.local.contracts?.scene == true { openContractOffer() } else { startContractScene() }
+        } else if let to = s.transferAsk {
+            // v125: only on entering
+            if to == s.region && (!g.transferBalloons.isEmpty || !g.transferPilots.isEmpty) { showTransfer = true } else {
+                act { $0.skipTransfer() }
+                showNextHezarfen()
+            }
         } else if s.letterDue && auto == nil && travel == nil {
             // v123: the family's letter, once, from the morning of day 50, after Hezarfen's cards
             act { $0.markLetterShown() }
@@ -418,6 +436,61 @@ final class GameStore {
         showMenu = false
         showNextHezarfen()
         return true
+    }
+
+    // MARK: v125 contracts and the fleet transfer
+
+    func openContractOffer() {
+        act { $0.markContractOfferSeen() }
+        contractCard = .offer
+    }
+
+    /// `ctrScene`: the camera leaves town for the off-map place (3.6 s), the vehicle arrives with its sound, the guide
+    /// says four lines ("Skip" goes straight to the card), then the offer card opens there. Once per region.
+    func startContractScene() {
+        act { $0.markContractScene() }
+        let T = ContractTown.shared
+        T.cine = true
+        T.cineArrive = nil
+        contractScene = ContractScene()
+        let kind = state?.contractConfig?.kind
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.4) {
+            if self.contractScene != nil, let k = kind { SoundEngine.shared.contractArrive(k == .bus ? 0 : k == .ship ? 1 : 2) }
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.6) {
+            if self.contractScene != nil { self.contractScene?.line = 0 }
+        }
+    }
+
+    /// The guide's next line, or the card after the last ("Skip": straight to the card).
+    func nextContractLine(skip: Bool = false) {
+        guard var cs = contractScene else { return }
+        cs.line = skip ? 4 : cs.line + 1
+        if cs.line >= 4 {
+            cs.line = -2
+            contractScene = cs
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { if self.contractScene != nil { self.openContractOffer() } }
+        } else {
+            contractScene = cs
+        }
+    }
+
+    /// The offer's answer or the status card is closed; after the scene the camera goes back to town.
+    func closeContractCard() {
+        contractCard = nil
+        if contractScene != nil {
+            contractScene = nil
+            ContractTown.shared.cine = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { self.showNextHezarfen() }
+        } else {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) { self.showNextHezarfen() }
+        }
+    }
+
+    func closeTransfer(balloons: [Int]?, pilots: [Int]) {
+        if let b = balloons { act { $0.applyTransfer(balloons: b, pilots: pilots) } } else { act { $0.skipTransfer() } }
+        showTransfer = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { self.showNextHezarfen() }
     }
 
     func dismissHezarfen() {

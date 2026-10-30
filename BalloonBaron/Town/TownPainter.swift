@@ -32,6 +32,8 @@ struct TownHits {
     var zones: [Zone] = []
     /// The launch field and the balloons standing on it (v110): a tap there opens your balloons.
     var field: [[CGPoint]] = []
+    /// v125: the contract place outside town (`ctrTapHit`).
+    var contract: [CGPoint] = []
 
     func onField(_ p: CGPoint) -> Bool { field.contains { TownGeo.inPoly(p, $0) } }
 
@@ -154,6 +156,7 @@ struct TownPainter {
         flat.concatenate(worldTransform)
         c = flat
         outerDecor()
+        contractGround() // v125: the contract place outside town
         let E = [iso(-0.5, -0.5), iso(15.5, -0.5), iso(15.5, 15.5), iso(-0.5, 15.5)]
         poly(E, s.region == .bri ? rgba(130, 180, 90, 0.6) : rgba(240, 210, 165, 0.55)) // v124: Bristol's lawns
         townDecor()
@@ -179,7 +182,7 @@ struct TownPainter {
             }
             return out
         }
-        let scen = scenery() + outerScenery().compactMap(fade) + townWall()
+        let scen = scenery() + (outerScenery() + contractItems()).compactMap(fade) + townWall()
         let sky = skyBalloons()
         for b in bs { buildingShadow(b) }
         for it in scen { it.shadow?(&self) }
@@ -204,7 +207,12 @@ struct TownPainter {
         if let n = night, n.sunrise > 0 { sunriseLayer(screen: screen, hz: hz, amount: n.sunrise) }
         c = screen
         if s.local.winter != nil { snowfall(w, h) }
-        return labels(bs)
+        var hits = labels(bs)
+        if let P = ContractPlace.of(s.region), s.contractConfig != nil {
+            let (a, b, c2, d) = P.tap, sh = P.shift
+            hits.contract = [iso(a + sh.0, b + sh.1), iso(c2 + sh.0, b + sh.1), iso(c2 + sh.0, d + sh.1), iso(a + sh.0, d + sh.1)].map(v.screen)
+        }
+        return hits
     }
 
     private var worldTransform: CGAffineTransform {
@@ -1431,6 +1439,7 @@ struct TownPainter {
             let gx = -18 + R.next() * 50, gy = -18 + R.next() * 50, hh = CGFloat(110 + R.next() * 120)
             if gx > -2 && gx < 17 && gy > -2 && gy < 17 { continue }
             if abs(gx - 8) < 1.6 || abs(gy - 8) < 1.6 { continue }
+            if let P = ContractPlace.of(s.region), s.contractConfig != nil, !P.isFree(gx, gy) { continue } // v125: the contract place's ground
             if Self.outerFields.contains(where: { gx > $0.0 - 1 && gx < $0.0 + 4 && gy > $0.1 - 1 && gy < $0.1 + 3.5 }) { continue }
             items.append(TownItem(depth: gx + gy, at: (gx, gy), shadow: { p in
                 let q = TownGeo.iso(gx, gy); p.blobShadow(q.x + hh * 0.3, q.y + 8, hh * 0.3, hh * 0.08, 0.14)

@@ -856,3 +856,26 @@ add("hez.xfer.end", "For a while, run %@ on your own steam, kid.", "Bir süre %@
 add("hez.cargoArrived", "The cargo is here, kid! %@ are in the fleet now, ready for the sky.", "Kargo geldi evlat! %@ artık filoda, gökyüzüne hazır.",
     "Die Fracht ist da, Kleiner! %@ sind jetzt in der Flotte, bereit für den Himmel.", "¡Llegó la carga, chico! %@ ya están en la flota, listos para el cielo.",
     "貨物が着いたぞ！%@はもう機体に加わり、空へ飛ぶ準備ができている。", "화물이 도착했네! %@은(는) 이제 기단에 들어와 하늘로 갈 준비가 됐네.")
+
+# ---- v125.5: the fleet card in three steps ----
+add("xfer.step", "Step %1$@/%2$@", "Adım %1$@/%2$@", "Schritt %1$@/%2$@", "Paso %1$@/%2$@", "ステップ %1$@/%2$@", "단계 %1$@/%2$@")
+add("xfer.whichBalloons", "Which balloons come?", "Hangi balonlar gelsin?", "Welche Ballons kommen mit?", "¿Qué globos vienen?", "どの気球を連れてくる？", "어떤 열기구를 데려올까요?")
+add("xfer.whichPilots", "Which pilots come?", "Hangi pilotlar gelsin?", "Welche Piloten kommen mit?", "¿Qué pilotos vienen?", "どのパイロットを連れてくる？", "어떤 조종사를 데려올까요?")
+add("xfer.seatsPicked", "Selected seats", "Seçilen koltuk", "Gewählte Plätze", "Plazas elegidas", "選んだ座席", "선택한 좌석")
+add("xfer.pilotsPicked", "Selected pilots", "Seçilen pilot", "Gewählte Piloten", "Pilotos elegidos", "選んだパイロット", "선택한 조종사")
+add("common.back", "Back", "Geri", "Zurück", "Atrás", "戻る", "뒤로")
+add("common.next", "Next", "İleri", "Weiter", "Siguiente", "次へ", "다음")
+add("xfer.sumBalloons", "Balloons (in %@ days)", "Balonlar (%@ gün sonra)", "Ballons (in %@ Tagen)", "Globos (en %@ días)", "気球（%@日後）", "열기구(%@일 후)")
+add("xfer.sumPilots", "Pilots (right away)", "Pilotlar (hemen)", "Piloten (sofort)", "Pilotos (enseguida)", "パイロット（すぐ）", "조종사(바로)")
+add("xfer.nothing", "none", "yok", "keine", "ninguno", "なし", "없음")
+add("xfer.bNote", "%1$@: You can bring balloons from your regions on autopilot, kid. The cargo takes %2$@ seats (two small or one medium basket); the trip takes %3$@ days.",
+    "%1$@: Otomatik moddaki bölgelerinden balon getirebilirsin evlat. Kargoya %2$@ koltuk sığar (iki küçük ya da bir orta sepet), yolculuk %3$@ gün.",
+    "%1$@: Du kannst Ballons aus deinen Regionen im Autopilot mitbringen, Kleiner. Die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb); die Reise dauert %3$@ Tage.",
+    "%1$@: Puedes traer globos de tus regiones en piloto automático, chico. En la carga caben %2$@ plazas (dos canastas pequeñas o una mediana); el viaje dura %3$@ días.",
+    "%1$@：自動運営中の地域から気球を連れてこられるぞ。貨物に積めるのは%2$@席（小2つか中1つ）、輸送は%3$@日だ。",
+    "%1$@: 자동 운영 중인 지역에서 열기구를 데려올 수 있네. 화물에는 %2$@석(소형 두 개나 중형 한 개)이 실리고, 운송은 %3$@일 걸리지.")
+add("xfer.pNote", "Pilots come with you at once; they keep their level and trait, and are paid in %@.", "Pilotlar seninle hemen gelir; seviyesini ve özelliğini korur, maaşı %@ ile ödenir.",
+    "Piloten kommen sofort mit; sie behalten Stufe und Eigenschaft und werden in %@ bezahlt.", "Los pilotos vienen contigo enseguida; conservan nivel y rasgo, y cobran en %@.",
+    "パイロットはすぐに来る。レベルと特性はそのままで、給料は%@で支払われる。", "조종사는 바로 함께 옵니다. 레벨과 특성은 그대로이고 급여는 %@로 받습니다.")
+add("xfer.notCounted", "What you bring doesn't count toward the chapter goals here.", "Getirdiklerin buradaki bölüm hedeflerine sayılmaz.",
+    "Mitgebrachtes zählt hier nicht für die Kapitelziele.", "Lo que traigas no cuenta para los objetivos de capítulo de aquí.", "持ち込んだ分はここの章の目標には数えない。", "가져온 것은 이곳 챕터 목표에 포함되지 않습니다.")
