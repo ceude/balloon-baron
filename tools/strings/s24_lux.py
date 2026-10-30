@@ -479,11 +479,11 @@ add("settings.copyHint",
  "다른 기기에서 이어 하려면 이 코드를 복사하거나 파일로 공유하세요. 그쪽의 '저장 코드 불러오기'에서 열면 됩니다.")
 add("settings.loadHint",
  "Paste the code and tap Load, or pick the file you shared. It replaces the game on this device.",
- "Kodu buraya yapıştırıp Yükle'ye bas ya da paylaştığın dosyayı seç. Buradaki oyunun yerini alır.",
- "Füge den Code ein und tippe auf Laden, oder wähle die Datei, die du geteilt hast. Er ersetzt das Spiel auf diesem Gerät.",
- "Pega el código y toca Cargar, o elige el archivo que compartiste. Sustituye la partida de este dispositivo.",
+ "Kodu buraya yapıştırıp Yükle'ye bas ya da paylaştığın dosyayı seç. Bu cihazdaki oyunun üzerine yazılır.",
+ "Füge den Code ein und tippe auf Laden, oder wähle die Datei, die du geteilt hast. Das ersetzt den Spielstand auf diesem Gerät.",
+ "Pega el código y toca Cargar, o elige el archivo que compartiste. Reemplaza la partida de este dispositivo.",
  "コードを貼り付けて「読み込む」をタップするか、共有したファイルを選んでください。この端末のゲームは上書きされます。",
- "코드를 붙여 넣고 불러오기를 누르거나, 공유한 파일을 선택하세요. 이 기기의 게임을 대체합니다.")
+ "코드를 붙여 넣고 불러오기를 누르거나, 공유한 파일을 선택하세요. 이 기기의 진행 상황을 덮어씁니다.")
 add("settings.pastePlaceholder", "Paste the code here", "Kodu buraya yapıştır", "Code hier einfügen", "Pega el código aquí", "ここにコードを貼り付け", "여기에 코드를 붙여 넣으세요")
 add("settings.paste", "Paste", "Yapıştır", "Einfügen", "Pegar", "貼り付け", "붙여넣기")
 add("settings.purchases", "Purchases", "Satın alımlar", "Käufe", "Compras", "購入", "구매")

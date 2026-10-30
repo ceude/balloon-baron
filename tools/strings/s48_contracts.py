@@ -43,7 +43,7 @@ def lines(owner, d):
 # ---- Albuquerque: tour coaches on Route 66 ----
 lines("rosa", {
  "intro": ("¡Hola! Rosa Delgado. I run tour coaches from Santa Fe along Route 66; my passengers want a balloon at sunrise.",
-           "¡Hola! Rosa Delgado. Santa Fe'den Route 66 boyunca tur otobüsü işletirim; yolcularım gün doğumunda balon istiyor.",
+           "¡Hola! Ben Rosa Delgado. Santa Fe'den Route 66 boyunca tur otobüsü işletirim; yolcularım gün doğumunda balon istiyor.",
            "¡Hola! Rosa Delgado. Ich fahre Reisebusse von Santa Fe die Route 66 entlang; meine Gäste wollen bei Sonnenaufgang einen Ballon.",
            "¡Hola! Rosa Delgado. Llevo autobuses turísticos desde Santa Fe por la Ruta 66; mis pasajeros quieren un globo al amanecer.",
            "¡Hola! ロサ・デルガドよ。サンタフェからルート66沿いにツアーバスを走らせてるの。お客さんは日の出の気球に乗りたがってるわ。",
@@ -53,18 +53,18 @@ lines("rosa", {
            "Am Morgen von Tag {d} habe ich eine Gruppe von {n} Leuten. {p} pro Kopf. Was meinst du?",
            "Tengo un grupo de {n} personas la mañana del día {d}. {p} por cabeza. ¿Qué me dices?",
            "{d}日目の朝に{n}人のグループがあるの。1人{p}。どう？",
-           "{d}일째 아침에 {n}명 단체가 있어요. 1인당 {p}. 어때요?"),
+           "{d}일차 아침에 {n}명 단체가 있어요. 1인당 {p}. 어때요?"),
  "promise": ("Three good jobs and I'll come to you more often, and the price gets sweeter.",
-             "3 başarılı iş yaparsak sana daha sık gelirim, fiyat da tatlanır.",
-             "Drei gute Aufträge, und ich komme öfter zu dir, und der Preis wird süßer.",
-             "Tres buenos trabajos y vendré más seguido, y el precio se endulza.",
-             "3回うまくいったら、もっと頻繁に頼むわ。値段も甘くなるわよ。",
+             "Üç işi iyi yaparsan sana daha sık gelirim, fiyatı da tatlandırırım.",
+             "Drei gute Aufträge, dann komme ich öfter zu dir – und der Preis wird besser.",
+             "Tres buenos trabajos y vendré más seguido, y te mejoro el precio.",
+             "3回うまくいったら、もっと頻繁に頼むわ。支払いも弾むわよ。",
              "세 번 잘 해내면 더 자주 올게요. 가격도 좋아지고요."),
  "negOk": ("You drive a hard bargain! Fine: {p} a head.", "Sıkı pazarlıkçısın! Peki: kişi başı {p}.",
            "Du verhandelst hart! Na gut: {p} pro Kopf.", "¡Qué duro negocias! Está bien: {p} por cabeza.",
            "手強いわね！いいわ、1人{p}。", "흥정을 잘하시네요! 좋아요, 1인당 {p}."),
  "negWalk": ("Not at that price, cariño. {r} will fly the group.", "Bu fiyata olmaz, cariño. Grubu {r} uçuracak.",
-             "Nicht zu dem Preis, cariño. {r} fliegt die Gruppe.", "A ese precio no, cariño. {r} volará al grupo.",
+             "Nicht zu dem Preis, cariño. {r} fliegt die Gruppe.", "A ese precio no, cariño. {r} llevará al grupo.",
              "その値段じゃ無理よ、カリーニョ。グループは{r}が飛ばすわ。", "그 가격엔 안 돼요, 카리뇨. 단체는 {r}이(가) 태울 거예요."),
  "decline": ("Fine, another time. {r} takes the group.", "Peki, başka sefere. Grubu {r} alır.",
              "Gut, ein andermal. {r} nimmt die Gruppe.", "Bueno, otra vez será. {r} se queda con el grupo.",
@@ -72,18 +72,18 @@ lines("rosa", {
  "today": ("My coaches are at the terminal, {n} passengers waiting for a basket. Today's your day!",
            "Otobüslerim terminalde, {n} yolcu sepet bekliyor. Bugün senin günün!",
            "Meine Busse stehen am Terminal, {n} Gäste warten auf einen Korb. Heute ist dein Tag!",
-           "Mis autobuses están en la terminal, {n} pasajeros esperan una canasta. ¡Hoy es tu día!",
-           "バスはターミナルに着いたわ。{n}人がゴンドラを待ってる。今日はあなたの日よ！",
-           "버스가 터미널에 있어요. {n}명이 바구니를 기다려요. 오늘은 당신의 날이에요!"),
+           "Mis autobuses están en la terminal, {n} pasajeros esperan para subir a una cesta. ¡Hoy es tu día!",
+           "バスはターミナルに着いたわ。{n}人がバスケットを待ってる。今日はあなたの日よ！",
+           "버스가 터미널에 있어요. {n}명이 바스켓를 기다려요. 오늘은 당신의 날이에요!"),
  "thanks": ("My passengers loved it! Nobody stopped talking on the coach home.", "Yolcularım bayıldı! Dönüş yolunda otobüste kimse susmadı.",
-            "Meine Gäste waren begeistert! Auf der Rückfahrt hat im Bus keiner geschwiegen.", "¡A mis pasajeros les encantó! Nadie se calló en el autobús de vuelta.",
+            "Meine Gäste waren begeistert! Auf der Rückfahrt hat im Bus keiner geschwiegen.", "¡A mis pasajeros les encantó! En el autobús de vuelta nadie paró de hablar.",
             "お客さん大喜び！帰りのバスでみんなしゃべりっぱなしだったわ。", "손님들이 정말 좋아했어요! 돌아오는 버스에서 다들 쉬지 않고 얘기했어요."),
  "pref": ("Three jobs, all three done right. I'll come to you more often now, and I'm raising the price a little. You're my operator.",
-          "Üç iş, üçü de tamam. Artık sana daha sık geleceğim, fiyatı da biraz artırıyorum. Sen benim operatörümsün.",
-          "Drei Aufträge, alle drei perfekt. Ich komme jetzt öfter zu dir und lege beim Preis etwas drauf. Du bist mein Anbieter.",
+          "Üç iş, üçü de tamam. Artık sana daha sık geleceğim, fiyatı da biraz artırıyorum. Artık benim balon şirketim sensin.",
+          "Drei Aufträge, alle drei perfekt. Ich komme jetzt öfter zu dir und lege beim Preis etwas drauf. Du bist ab jetzt mein Ballonanbieter.",
           "Tres trabajos, los tres impecables. Ahora vendré más seguido y subo un poco el precio. Eres mi operador.",
           "3回とも完璧。これからはもっと頻繁に来るし、値段も少し上げるわ。あなたが私の専属よ。",
-          "세 번 모두 완벽했어요. 이제 더 자주 오고 가격도 조금 올릴게요. 당신이 제 운영사예요."),
+          "세 번 모두 완벽했어요. 이제 더 자주 오고 가격도 조금 올릴게요. 이제 당신이 제 전속 업체예요."),
  "fail": ("Some of my passengers stayed on the ground. That won't be easy to forget.", "Yolcularımın bir kısmı yerde kaldı. Bunu unutmak kolay olmayacak.",
           "Ein Teil meiner Gäste ist am Boden geblieben. Das vergesse ich nicht so leicht.", "Parte de mis pasajeros se quedó en tierra. No será fácil olvidarlo.",
           "お客さんの一部が地上に残されたわ。簡単には忘れられないわね。", "손님 일부가 땅에 남았어요. 쉽게 잊히진 않을 거예요."),
@@ -94,7 +94,7 @@ lines("rosa", {
          "Kırmızı bayrak, kimse uçmaz. Grubu yarına kaydırıyorum ama yarın kişi başı {p} öderim.",
          "Rote Flagge, niemand fliegt. Ich verschiebe die Gruppe auf morgen, aber morgen zahle ich {p} pro Kopf.",
          "Bandera roja, nadie vuela. Paso el grupo a mañana, pero mañana pago {p} por cabeza.",
-         "赤旗、誰も飛べないわ。グループは明日に回すけど、明日は1人{p}よ。",
+         "赤い旗、誰も飛べないわ。グループは明日に回すけど、明日は1人{p}よ。",
          "빨간 깃발이라 아무도 못 날아요. 단체를 내일로 미룰게요. 대신 내일은 1인당 {p}예요."),
  "bye": ("Sorry, I can't work with you anymore. Mother Road is going to another company. Adiós.",
          "Üzgünüm, artık seninle çalışamam. Mother Road başka bir şirkete gidiyor. Adiós.",
@@ -112,19 +112,19 @@ lines("hank", {
            "행크 비게이. 갤럽의 터콰즈 메사 투어스요. 말은 적고 손님은 많이 데려오지. 로사와 틀어졌다고 들었소."),
  "offer": ("Day {d}, {n} passengers. {p} a head.", "Gün {d}, {n} yolcu. Kişi başı {p}.",
            "Tag {d}, {n} Gäste. {p} pro Kopf.", "Día {d}, {n} pasajeros. {p} por cabeza.",
-           "{d}日目、{n}人。1人{p}。", "{d}일째, {n}명. 1인당 {p}."),
+           "{d}日目、{n}人。1人{p}。", "{d}일차, {n}명. 1인당 {p}."),
  "promise": ("Keep your word for three jobs and I'll call you first.", "Sözünü tutarsan üç işten sonra seni ilk ben ararım.",
              "Halte dein Wort drei Aufträge lang, dann rufe ich dich zuerst an.", "Cumple tu palabra tres veces y te llamaré primero.",
              "3回約束を守れば、真っ先にお前に電話する。", "세 번 약속을 지키면 제일 먼저 당신에게 연락하겠소."),
  "negOk": ("Hmm. All right, {p}. But my passengers don't stay on the ground.", "Hmm. Tamam, {p}. Ama yolcularım yerde kalmasın.",
            "Hm. Na gut, {p}. Aber meine Gäste bleiben nicht am Boden.", "Hmm. Está bien, {p}. Pero mis pasajeros no se quedan en tierra.",
            "ふむ。いいだろう、{p}だ。だが客を地上に残すなよ。", "흠. 좋소, {p}. 대신 손님을 땅에 남기지 마시오."),
- "negWalk": ("No. I've made a deal with {r}.", "Olmaz. {r} ile anlaştım.", "Nein. Ich habe mit {r} abgeschlossen.",
+ "negWalk": ("No. I've made a deal with {r}.", "Olmaz. {r} ile anlaştım.", "Nein. Ich bin mit {r} schon handelseinig.",
              "No. Ya cerré con {r}.", "断る。{r}と話をつけた。", "안 되오. {r}와(과) 계약했소."),
  "decline": ("Understood. {r} takes it.", "Anladım. {r} alır.", "Verstanden. {r} übernimmt.", "Entendido. Lo toma {r}.",
              "わかった。{r}が引き受ける。", "알겠소. {r}이(가) 맡겠지."),
  "today": ("The coaches are here. {n} passengers. Let's go.", "Otobüsler geldi. {n} yolcu. Hadi.", "Die Busse sind da. {n} Gäste. Los.",
-           "Los autobuses llegaron. {n} pasajeros. Vamos.", "バスが着いた。{n}人だ。行こう。", "버스가 왔소. {n}명. 갑시다."),
+           "Ya están aquí los autobuses. {n} pasajeros. Vamos.", "バスが着いた。{n}人だ。行こう。", "버스가 왔소. {n}명. 갑시다."),
  "thanks": ("Good work. My passengers are happy.", "İyi iş. Yolcularım memnun.", "Gute Arbeit. Meine Gäste sind zufrieden.",
             "Buen trabajo. Mis pasajeros están contentos.", "いい仕事だ。客は満足している。", "잘했소. 손님들이 만족하오."),
  "pref": ("Three jobs, all clean. From now on I call you first, and more often. The price goes up a little too.",
@@ -134,34 +134,34 @@ lines("hank", {
           "3回とも問題なし。これからはお前に真っ先に、もっと頻繁に頼む。値段も少し上げる。",
           "세 번 다 깔끔했소. 이제부터 제일 먼저, 더 자주 연락하겠소. 가격도 조금 올리지."),
  "fail": ("My passengers stayed on the ground. Don't let it happen again.", "Yolcularım yerde kaldı. Bir daha olmasın.",
-          "Meine Gäste sind am Boden geblieben. Das passiert nicht noch mal.", "Mis pasajeros se quedaron en tierra. Que no vuelva a pasar.",
+          "Meine Gäste sind am Boden geblieben. Lass das nicht noch mal passieren.", "Mis pasajeros se quedaron en tierra. Que no vuelva a pasar.",
           "客が地上に残された。二度とないようにしろ。", "손님들이 땅에 남았소. 다시는 그러지 마시오."),
- "lostPref": ("I won't call you first anymore. We'll see.", "Artık ilk seni aramam. Görürüz.", "Ich rufe dich nicht mehr zuerst an. Mal sehen.",
+ "lostPref": ("I won't call you first anymore. We'll see.", "Artık ilk seni aramam. Bakalım.", "Ich rufe dich nicht mehr zuerst an. Mal sehen.",
               "Ya no te llamaré primero. Ya veremos.", "もう真っ先には電話しない。様子を見る。", "이제 당신에게 먼저 연락하지 않겠소. 두고 봅시다."),
  "red": ("Red flag. We fly tomorrow, {p} a head.", "Kırmızı bayrak. Yarın uçarız, kişi başı {p}.", "Rote Flagge. Wir fliegen morgen, {p} pro Kopf.",
-         "Bandera roja. Volamos mañana, {p} por cabeza.", "赤旗だ。明日飛ぶ。1人{p}。", "빨간 깃발이오. 내일 날지, 1인당 {p}."),
+         "Bandera roja. Volamos mañana, {p} por cabeza.", "赤い旗だ。明日飛ぶ。1人{p}。", "빨간 깃발이오. 내일 날지, 1인당 {p}."),
  "bye": ("It's over. Turquoise Mesa is going elsewhere.", "Bitti. Turquoise Mesa başka yere gidiyor.", "Es ist vorbei. Turquoise Mesa geht woanders hin.",
          "Se acabó. Turquoise Mesa se va a otra parte.", "終わりだ。ターコイズ・メサはよそへ行く。", "끝났소. 터콰즈 메사는 다른 곳으로 가오."),
 })
 lines("linda", {
  "intro": ("Hi! Linda Park, High Desert Coachlines. I carry every conference group from Phoenix to Albuquerque. I'd like to work with you.",
-           "Merhaba! Linda Park, High Desert Coachlines. Phoenix'ten Albuquerque'ye gelen bütün kongre gruplarını ben taşırım. Seninle çalışmak isterim.",
+           "Merhaba! Ben Linda Park, High Desert Coachlines. Phoenix'ten Albuquerque'ye gelen bütün kongre gruplarını ben taşırım. Seninle çalışmak isterim.",
            "Hallo! Linda Park, High Desert Coachlines. Ich fahre jede Kongressgruppe von Phoenix nach Albuquerque. Ich würde gern mit dir arbeiten.",
            "¡Hola! Linda Park, High Desert Coachlines. Llevo todos los grupos de congresos de Phoenix a Albuquerque. Me gustaría trabajar contigo.",
-           "こんにちは！ハイ・デザート・コーチラインズのリンダ・パークです。フェニックスからアルバカーキへの学会グループは全部うちが運んでいます。一緒に仕事がしたいわ。",
+           "こんにちは！ハイ・デザート・コーチラインズのリンダ・パークよ。フェニックスからアルバカーキへの学会グループは全部うちが運んでるの。一緒に仕事がしたいわ。",
            "안녕하세요! 하이 데저트 코치라인스의 린다 박이에요. 피닉스에서 앨버커키로 오는 학회 단체는 전부 제가 실어 나르죠. 함께 일하고 싶어요."),
  "offer": ("A conference group of {n} for day {d}. {p} a head, invoiced. Does that work?",
            "Gün {d} için {n} kişilik bir kongre grubu. Kişi başı {p}, faturalı. Uygun mu?",
            "Eine Kongressgruppe von {n} Leuten für Tag {d}. {p} pro Kopf, auf Rechnung. Passt das?",
            "Un grupo de congreso de {n} personas para el día {d}. {p} por cabeza, con factura. ¿Te va bien?",
            "{d}日目に{n}人の学会グループ。1人{p}、請求書払いで。いかが？",
-           "{d}일째에 {n}명 학회 단체예요. 1인당 {p}, 세금계산서로요. 괜찮으세요?"),
+           "{d}일차에 {n}명 학회 단체예요. 1인당 {p}, 청구서로 정산할게요. 괜찮으세요?"),
  "promise": ("Put three good jobs in my calendar and you'll be my preferred operator: more work, a better price.",
-             "Takvimime üç başarılı iş yazarsan seni tercih edilen operatör yaparım: daha sık iş, daha iyi fiyat.",
+             "Takvimime üç başarılı iş yazarsan seni gözde ortağım yaparım: daha sık iş, daha iyi fiyat.",
              "Bring drei gelungene Aufträge in meinen Kalender, und du wirst mein bevorzugter Anbieter: mehr Arbeit, besserer Preis.",
              "Pon tres buenos trabajos en mi calendario y serás mi operador preferido: más trabajo, mejor precio.",
              "私のカレンダーに成功を3つ書き込めたら、優先業者にするわ。仕事も増えて、値段も良くなる。",
-             "제 일정표에 성공 세 번을 적어 주시면 우선 운영사로 정할게요. 일도 더 많고 가격도 더 좋아요."),
+             "제 일정표에 성공 세 번을 적어 주시면 우선 협력사로 정할게요. 일도 더 많고 가격도 더 좋아요."),
  "negOk": ("You pushed the budget, but fine: {p} a head.", "Bütçeyi zorladın ama tamam: kişi başı {p}.",
            "Du hast das Budget strapaziert, aber gut: {p} pro Kopf.", "Has forzado el presupuesto, pero vale: {p} por cabeza.",
            "予算ぎりぎりだけど、いいわ。1人{p}。", "예산을 빠듯하게 만드셨지만 좋아요. 1인당 {p}."),
@@ -174,31 +174,31 @@ lines("linda", {
            "Kongre grubu terminalde: {n} kişi. Herkes kameralarını hazırladı!",
            "Die Kongressgruppe ist am Terminal: {n} Leute. Alle haben die Kameras bereit!",
            "El grupo del congreso está en la terminal: {n} personas. ¡Todos con la cámara lista!",
-           "学会グループがターミナルに到着：{n}人。みんなカメラを構えてるわ！",
+           "学会グループがターミナルに到着したわ。{n}人よ。みんなカメラを構えてるわ！",
            "학회 단체가 터미널에 왔어요. {n}명이에요. 다들 카메라를 꺼냈어요!"),
- "thanks": ("Great job! Full marks on the feedback forms.", "Harika iş! Değerlendirme formları tam puan.",
+ "thanks": ("Great job! Full marks on the feedback forms.", "Harika iş! Değerlendirme formlarında tam puan!",
             "Großartig! Volle Punktzahl in den Feedbackbögen.", "¡Gran trabajo! Nota máxima en las encuestas.",
             "最高！アンケートは満点よ。", "훌륭해요! 만족도 조사 만점이에요."),
  "pref": ("Three good jobs! You're my preferred operator now: I'll come more often, and the price is a little better.",
-          "Üç başarılı iş! Artık tercih edilen operatörümsün: daha sık geleceğim, fiyat da biraz daha iyi.",
+          "Üç başarılı iş! Artık gözde ortağımsın: daha sık geleceğim, fiyat da biraz daha iyi.",
           "Drei gelungene Aufträge! Du bist jetzt mein bevorzugter Anbieter: Ich komme öfter, und der Preis wird etwas besser.",
           "¡Tres buenos trabajos! Ahora eres mi operador preferido: vendré más seguido y el precio es un poco mejor.",
           "成功3回！これであなたは優先業者よ。もっと頻繁に来るし、値段も少し良くするわ。",
-          "성공 세 번! 이제 제 우선 운영사예요. 더 자주 오고 가격도 조금 더 드릴게요."),
+          "성공 세 번! 이제 제 우선 협력사예요. 더 자주 오고 가격도 조금 더 드릴게요."),
  "fail": ("Part of the group stayed on the ground. I have to put that in my report.", "Grubun bir kısmı yerde kaldı. Bunu raporuma yazmak zorundayım.",
           "Ein Teil der Gruppe ist am Boden geblieben. Das muss in meinen Bericht.", "Parte del grupo se quedó en tierra. Tengo que ponerlo en mi informe.",
-          "グループの一部が地上に残ったわ。報告書に書かないといけない。", "단체 일부가 땅에 남았어요. 보고서에 써야 해요."),
- "lostPref": ("I'm taking you off my preferred operator list. For now.", "Tercih edilen operatör listemden seni çıkarıyorum. Şimdilik.",
+          "グループの一部が地上に残ったわ。報告書に書かないといけないわ。", "단체 일부가 땅에 남았어요. 보고서에 써야 해요."),
+ "lostPref": ("I'm taking you off my preferred operator list. For now.", "Seni gözde ortaklar listemden çıkarıyorum. Şimdilik.",
               "Ich nehme dich von meiner Liste bevorzugter Anbieter. Vorerst.", "Te saco de mi lista de operadores preferidos. Por ahora.",
-              "優先業者リストから外すわ。今のところはね。", "우선 운영사 명단에서 빼겠어요. 일단은요."),
+              "優先業者リストから外すわ。今のところはね。", "우선 협력사 명단에서 빼겠어요. 일단은요."),
  "red": ("Red flag! I'm moving the program to tomorrow; that makes {p} a head.", "Kırmızı bayrak! Programı yarına kaydırıyorum; kişi başı {p} olur.",
          "Rote Flagge! Ich verschiebe das Programm auf morgen; das macht {p} pro Kopf.", "¡Bandera roja! Paso el programa a mañana; serán {p} por cabeza.",
-         "赤旗！予定は明日にずらすわ。1人{p}になるわね。", "빨간 깃발! 일정을 내일로 옮길게요. 1인당 {p}이 돼요."),
+         "赤い旗！予定は明日にずらすわ。1人{p}になるわね。", "빨간 깃발! 일정을 내일로 옮길게요. 1인당 {p}로 바뀌어요."),
  "bye": ("I'm afraid I'm ending our contract. High Desert will carry on with another company.",
-         "Maalesef sözleşmemizi bitiriyorum. High Desert başka şirketle devam edecek.",
+         "Maalesef anlaşmamızı bitiriyorum. High Desert başka şirketle devam edecek.",
          "Leider beende ich unseren Vertrag. High Desert macht mit einer anderen Firma weiter.",
          "Lamentablemente termino nuestro contrato. High Desert seguirá con otra empresa.",
-         "残念だけど契約は終わりにするわ。ハイ・デザートは別の会社と続けます。",
+         "残念だけど契約は終わりにするわ。ハイ・デザートは別の会社と続けるわ。",
          "안타깝지만 계약을 끝낼게요. 하이 데저트는 다른 회사와 계속할 거예요."),
 })
 
@@ -215,10 +215,10 @@ lines("farouk", {
            "Mein Schiff legt am Morgen von Tag {d} an und bleibt {len} Tage. Jeden Morgen wollen {n} Gäste einen Ballon, {p} pro Kopf. Abgemacht?",
            "Mi barco atraca la mañana del día {d} y se queda {len} días. Cada mañana {n} pasajeros quieren globo, {p} por cabeza. ¿Trato hecho?",
            "わしの船は{d}日目の朝に桟橋に着き、{len}日間停泊する。毎朝{n}人の客が気球を望んでいる。1人{p}。どうだ？",
-           "내 배가 {d}일째 아침에 부두에 닿아 {len}일 머무르오. 매일 아침 손님 {n}명이 열기구를 원하오. 1인당 {p}. 어떻소?"),
+           "내 배가 {d}일차 아침에 부두에 닿아 {len}일 머무르오. 매일 아침 손님 {n}명이 열기구를 원하오. 1인당 {p}. 어떻소?"),
  "promise": ("If three of my voyages go smoothly, I'll call you to the pier first, and more often.",
              "Üç seferim sorunsuz geçerse iskeleye ilk seni çağırırım, daha sık.",
-             "Wenn drei meiner Fahrten glatt laufen, rufe ich dich zuerst an den Anleger, und öfter.",
+             "Wenn drei meiner Fahrten glatt laufen, hole ich dich als Ersten an den Anleger, und öfter.",
              "Si tres de mis travesías salen bien, te llamaré primero al muelle, y más seguido.",
              "3回の航海が無事に済めば、真っ先に、もっと頻繁にお前を桟橋に呼ぼう。",
              "세 번의 항해가 무사히 끝나면 제일 먼저, 더 자주 당신을 부두로 부르겠소."),
@@ -229,67 +229,67 @@ lines("farouk", {
              "Nein, mein Kind, das zahlen meine Gäste nicht. Ich gehe zu {r}.", "No, hijo mío, mis pasajeros no pagan eso. Trataré con {r}.",
              "だめだ、若いの。客はその金は払わん。{r}と話をつける。", "안 되오, 젊은이. 손님들이 그 돈은 안 내오. {r}와(과) 계약하겠소."),
  "decline": ("The Nile is long, the ships are many. Let {r} fly this voyage.", "Nil uzun, gemi çok. Bu seferi {r} uçursun.",
-             "Der Nil ist lang, Schiffe gibt es viele. Soll {r} diese Fahrt fliegen.", "El Nilo es largo y los barcos muchos. Que {r} vuele esta travesía.",
+             "Der Nil ist lang, Schiffe gibt es viele. Soll doch {r} diese Fahrt übernehmen.", "El Nilo es largo y los barcos muchos. Que {r} vuele esta travesía.",
              "ナイルは長く、船は多い。この航海は{r}に任せよう。", "나일은 길고 배는 많소. 이번 항해는 {r}에 맡기겠소."),
  "today": ("My ship is at the pier! Every morning {n} of my passengers will board the jeeps; have your baskets ready.",
            "Gemim iskelede! Her sabah {n} yolcum cipe binecek, sepetlerin hazır olsun.",
            "Mein Schiff liegt am Anleger! Jeden Morgen steigen {n} Gäste in die Jeeps; halte die Körbe bereit.",
-           "¡Mi barco está en el muelle! Cada mañana {n} pasajeros subirán a los jeeps; ten las canastas listas.",
-           "船が桟橋に着いた！毎朝{n}人がジープに乗る。ゴンドラを用意しておけ。",
-           "배가 부두에 닿았소! 매일 아침 손님 {n}명이 지프에 탈 거요. 바구니를 준비해 두시오."),
+           "¡Mi barco está en el muelle! Cada mañana {n} pasajeros subirán a los jeeps; ten las cestas listas.",
+           "船が桟橋に着いた！毎朝{n}人がジープに乗る。バスケットを用意しておけ。",
+           "배가 부두에 닿았소! 매일 아침 손님 {n}명이 지프에 탈 거요. 바스켓를 준비해 두시오."),
  "thanks": ("My passengers are still talking about the balloons on deck. A blessed voyage.", "Yolcularım güvertede hâlâ balonları anlatıyor. Bereketli bir sefer oldu.",
-            "Meine Gäste erzählen an Deck immer noch von den Ballons. Eine gesegnete Fahrt.", "Mis pasajeros siguen hablando de los globos en cubierta. Una travesía bendita.",
+            "Meine Gäste erzählen an Deck immer noch von den Ballonen. Eine gesegnete Fahrt.", "Mis pasajeros siguen hablando de los globos en cubierta. Una travesía bendita.",
             "客はまだ甲板で気球の話をしている。実りある航海だった。", "손님들이 아직도 갑판에서 열기구 얘기를 하오. 복된 항해였소."),
  "pref": ("Three voyages, all three smooth. Now I call you to the pier first, and more often. I've raised the price a little too; you've earned it.",
           "Üç sefer, üçü de sorunsuz. Artık iskeleye ilk seni çağırırım, daha sık. Fiyatı da biraz artırdım, hak ettin.",
-          "Drei Fahrten, alle drei glatt. Jetzt rufe ich dich zuerst an den Anleger, und öfter. Den Preis habe ich etwas erhöht; du hast es verdient.",
+          "Drei Fahrten, alle drei glatt. Jetzt hole ich dich als Ersten an den Anleger, und öfter. Den Preis habe ich etwas erhöht; du hast es verdient.",
           "Tres travesías, las tres sin problemas. Ahora te llamo primero al muelle, y más seguido. También subí un poco el precio; te lo has ganado.",
           "3回の航海、すべて無事だった。これからは真っ先に、もっと頻繁に桟橋に呼ぶ。値段も少し上げた、お前はそれに値する。",
           "세 번의 항해 모두 무사했소. 이제 제일 먼저, 더 자주 부두로 부르겠소. 가격도 조금 올렸소. 그럴 자격이 있소."),
  "fail": ("Some mornings my passengers waited at the pier for nothing. A captain keeps his word; so must you.",
-          "Bazı sabahlar yolcularım iskelede bekleyip kaldı. Kaptan sözünü tutar, sen de tutmalısın.",
+          "Bazı sabahlar yolcularım iskelede boşuna bekledi. Kaptan sözünü tutar, sen de tutmalısın.",
           "Manche Morgen haben meine Gäste umsonst am Anleger gewartet. Ein Kapitän hält sein Wort; du musst es auch.",
-          "Algunas mañanas mis pasajeros esperaron en el muelle para nada. Un capitán cumple su palabra; tú también debes.",
+          "Algunas mañanas mis pasajeros esperaron en balde en el muelle. Un capitán cumple su palabra; tú también debes cumplirla.",
           "朝によっては客が桟橋で待ちぼうけだった。船長は約束を守る。お前も守らねばならん。",
           "어떤 아침엔 손님들이 부두에서 헛되이 기다렸소. 선장은 약속을 지키오. 당신도 지켜야 하오."),
- "lostPref": ("I won't call you first anymore. Slow like the Nile, but trust comes back.", "Artık ilk seni çağırmam. Nil gibi yavaş, ama güven yeniden gelir.",
-              "Ich rufe dich nicht mehr zuerst. Langsam wie der Nil, aber Vertrauen kommt zurück.", "Ya no te llamaré primero. Lento como el Nilo, pero la confianza vuelve.",
+ "lostPref": ("I won't call you first anymore. Slow like the Nile, but trust comes back.", "Artık ilk seni çağırmam. Güven Nil gibi yavaş gelir, ama gelir.",
+              "Ich rufe dich nicht mehr als Ersten. Langsam wie der Nil, aber Vertrauen kommt zurück.", "Ya no te llamaré primero. Lento como el Nilo, pero la confianza vuelve.",
               "もう真っ先には呼ばん。ナイルのようにゆっくりだが、信頼は戻るものだ。", "이제 먼저 부르지 않겠소. 나일처럼 느리지만 신뢰는 돌아오는 법이오."),
  "redSkip": ("Red flag, nobody flies today. I'm taking my passengers to Karnak; today doesn't count.",
              "Kırmızı bayrak, bugün kimse uçmaz. Yolcularımı Karnak'a götürüyorum; bugünü saymayız.",
              "Rote Flagge, heute fliegt keiner. Ich bringe meine Gäste nach Karnak; heute zählt nicht.",
              "Bandera roja, hoy nadie vuela. Llevo a mis pasajeros a Karnak; hoy no cuenta.",
-             "赤旗、今日は誰も飛ばん。客はカルナックへ連れていく。今日は数えない。",
-             "빨간 깃발, 오늘은 아무도 못 나오. 손님들은 카르나크로 데려가겠소. 오늘은 치지 않소."),
+             "赤い旗、今日は誰も飛ばん。客はカルナックへ連れていく。今日は数えない。",
+             "빨간 깃발, 오늘은 아무도 못 띄우오. 손님들은 카르나크로 데려가겠소. 오늘은 치지 않소."),
  "bye": ("I'm mooring my ship at another pier. May God make it easy for you.", "Gemimi başka iskeleye bağlıyorum. Allah kolaylık versin.",
          "Ich mache mein Schiff an einem anderen Anleger fest. Gott mache es dir leicht.", "Amarro mi barco en otro muelle. Que Dios te lo haga fácil.",
          "わしの船は別の桟橋につなぐ。神のご加護を。", "내 배는 다른 부두에 대겠소. 신의 가호가 있기를."),
 })
 lines("dalia", {
  "intro": ("Good day, Dalia Rizk. Golden Lotus Line's luxury ships come up from Cairo; our guests expect the very best.",
-           "Merhaba, Dalia Rizk. Golden Lotus Line'ın lüks gemileri Kahire'den gelir; misafirlerimiz en iyisini bekler.",
-           "Guten Tag, Dalia Rizk. Die Luxusschiffe der Golden Lotus Line kommen aus Kairo; unsere Gäste erwarten das Beste.",
-           "Buenos días, Dalia Rizk. Los barcos de lujo de Golden Lotus Line vienen de El Cairo; nuestros huéspedes esperan lo mejor.",
+           "İyi günler, ben Dalia Rizk. Golden Lotus Line'ın lüks gemileri Kahire'den gelir; misafirlerimiz en iyisini bekler.",
+           "Guten Tag, hier ist Dalia Rizk. Die Luxusschiffe der Golden Lotus Line kommen aus Kairo; unsere Gäste erwarten das Beste.",
+           "Buenos días, soy Dalia Rizk. Los barcos de lujo de Golden Lotus Line vienen de El Cairo; nuestros huéspedes esperan lo mejor.",
            "こんにちは、ダリア・リズクです。ゴールデン・ロータス・ラインの豪華客船はカイロから参ります。お客様は最上のものをお求めです。",
            "안녕하세요, 달리아 리즈크입니다. 골든 로터스 라인의 고급 크루즈는 카이로에서 옵니다. 저희 고객은 최고를 기대하시죠."),
- "offer": ("Days {d} to {e}, {len} days, {n} guests every morning. {p} a head. I'm putting it in my calendar; do you confirm?",
+ "offer": ("Days {d} to {e}, {len} days, {n} guests every morning. {p} a head. I'm putting it in my calendar; can you confirm?",
            "Gün {d}–{e} arası, {len} gün, her sabah {n} misafir. Kişi başı {p}. Takvimime yazıyorum, onaylıyor musun?",
            "Tag {d} bis {e}, {len} Tage, jeden Morgen {n} Gäste. {p} pro Kopf. Ich trage es ein; bestätigst du?",
            "Del día {d} al {e}, {len} días, {n} huéspedes cada mañana. {p} por cabeza. Lo apunto en mi agenda; ¿confirmas?",
-           "{d}日目から{e}日目まで{len}日間、毎朝{n}名様。1人{p}。予定に入れます。ご確認いただけますか？",
-           "{d}일째부터 {e}일째까지 {len}일, 매일 아침 {n}명. 1인당 {p}. 일정에 올리겠습니다. 확정하시겠어요?"),
+           "{d}日目から{e}日目まで{len}日間、毎朝{n}名様。1人{p}。予定に入れます。ご承諾いただけますか？",
+           "{d}일차부터 {e}일차까지 {len}일, 매일 아침 {n}명. 1인당 {p}. 일정에 올리겠습니다. 확정하시겠어요?"),
  "promise": ("Three flawless voyages and I'll put you on our preferred operator list: more work, a better price.",
-             "Üç kusursuz sefer, ve seni tercih edilen operatör listemize alırım: daha sık iş, daha iyi fiyat.",
+             "Üç kusursuz seferden sonra seni gözde ortağımız yaparım: daha sık iş, daha iyi fiyat.",
              "Drei makellose Fahrten, und ich nehme dich auf unsere Liste bevorzugter Anbieter: mehr Arbeit, besserer Preis.",
              "Tres travesías impecables y te pongo en nuestra lista de operadores preferidos: más trabajo, mejor precio.",
              "完璧な航海を3回。そうすれば優先業者リストに載せます。仕事も増え、条件も良くなります。",
-             "완벽한 항해 세 번이면 우선 운영사 명단에 올려 드리죠. 일도 더 많고 가격도 더 좋아요."),
+             "완벽한 항해 세 번이면 우선 협력사 명단에 올려 드리죠. 일도 더 많고 가격도 더 좋아요."),
  "negOk": ("A good negotiation. {p} a head, but I expect quality.", "İyi müzakere. Kişi başı {p}, ama kalite beklerim.",
            "Gut verhandelt. {p} pro Kopf, aber ich erwarte Qualität.", "Buena negociación. {p} por cabeza, pero espero calidad.",
            "良い交渉でした。1人{p}。ただし品質は期待しています。", "좋은 협상이었어요. 1인당 {p}, 대신 품질을 기대합니다."),
  "negWalk": ("Our budget is fixed. We're going ahead with {r}.", "Bütçemiz net. {r} ile devam ediyoruz.", "Unser Budget steht fest. Wir machen mit {r} weiter.",
              "Nuestro presupuesto es fijo. Seguimos con {r}.", "予算は決まっております。{r}と進めます。", "예산은 정해져 있어요. {r}와(과) 진행하겠습니다."),
- "decline": ("Understood. On this voyage we'll work with {r}.", "Anlaşıldı. Bu seferde {r} ile çalışacağız.", "Verstanden. Diese Fahrt arbeiten wir mit {r}.",
+ "decline": ("Understood. On this voyage we'll work with {r}.", "Anlaşıldı. Bu sefer {r} ile çalışacağız.", "Verstanden. Bei dieser Fahrt arbeiten wir mit {r}.",
              "Entendido. En esta travesía trabajaremos con {r}.", "承知しました。今回の航海は{r}と組みます。", "알겠습니다. 이번 항해는 {r}와(과) 하겠습니다."),
  "today": ("Golden Lotus is at the pier. {n} guests every morning; let's be punctual, please.", "Golden Lotus iskelede. Her sabah {n} misafir; dakik olalım lütfen.",
            "Golden Lotus liegt am Anleger. Jeden Morgen {n} Gäste; bitte pünktlich.", "Golden Lotus está en el muelle. {n} huéspedes cada mañana; seamos puntuales, por favor.",
@@ -297,31 +297,31 @@ lines("dalia", {
  "thanks": ("The guest surveys are excellent. Thank you.", "Misafir anketleri mükemmel. Teşekkürler.", "Die Gästeumfragen sind hervorragend. Danke.",
             "Las encuestas de los huéspedes son excelentes. Gracias.", "お客様アンケートは素晴らしい結果です。ありがとうございます。", "고객 설문이 훌륭해요. 감사합니다."),
  "pref": ("Three flawless voyages. You're our preferred operator now: I'll come more often, and the price is a little better.",
-          "Üç kusursuz sefer. Artık tercih edilen operatörümüzsün: daha sık geleceğim, fiyat da biraz daha iyi.",
+          "Üç kusursuz sefer. Artık gözde ortağımızsın: daha sık geleceğim, fiyat da biraz daha iyi.",
           "Drei makellose Fahrten. Du bist jetzt unser bevorzugter Anbieter: Ich komme öfter, und der Preis ist etwas besser.",
           "Tres travesías impecables. Ahora eres nuestro operador preferido: vendré más seguido y el precio es un poco mejor.",
           "完璧な航海を3回。これで当社の優先業者です。より頻繁に参りますし、条件も少し良くします。",
-          "완벽한 항해 세 번. 이제 저희 우선 운영사예요. 더 자주 오고 가격도 조금 더 좋게 해 드릴게요."),
+          "완벽한 항해 세 번. 이제 저희 우선 협력사예요. 더 자주 오고 가격도 조금 더 좋게 해 드릴게요."),
  "fail": ("Some of my guests couldn't fly. That means complaints.", "Misafirlerimin bir kısmı uçamadı. Bu, şikâyet demek.",
           "Ein Teil meiner Gäste konnte nicht fliegen. Das heißt Beschwerden.", "Parte de mis huéspedes no pudo volar. Eso significa quejas.",
           "お客様の一部が飛べませんでした。苦情になります。", "고객 일부가 비행하지 못했어요. 그건 불만이 생긴다는 뜻이죠."),
- "lostPref": ("I'm taking you off our preferred operator list. For now.", "Tercih edilen operatör listemizden çıkarıyorum. Şimdilik.",
+ "lostPref": ("I'm taking you off our preferred operator list. For now.", "Seni gözde ortaklar listemizden çıkarıyorum. Şimdilik.",
               "Ich nehme dich von unserer Liste bevorzugter Anbieter. Vorerst.", "Te saco de nuestra lista de operadores preferidos. Por ahora.",
-              "優先業者リストから外します。当面は。", "우선 운영사 명단에서 빼겠습니다. 당분간은요."),
+              "優先業者リストから外します。当面は。", "우선 협력사 명단에서 빼겠습니다. 당분간은요."),
  "redSkip": ("Red flag. I'm turning today's program into a visit to Hatshepsut's temple; today doesn't count.",
-             "Kırmızı bayrak. Bugünün programını Hatşepsut Tapınağı'na çeviriyorum; bugün sayılmaz.",
+             "Kırmızı bayrak. Bugünkü programı Hatşepsut Tapınağı gezisine çeviriyorum; bugün sayılmaz.",
              "Rote Flagge. Ich mache aus dem heutigen Programm einen Besuch im Hatschepsut-Tempel; heute zählt nicht.",
              "Bandera roja. Cambio el programa de hoy por una visita al templo de Hatshepsut; hoy no cuenta.",
-             "赤旗です。本日の予定はハトシェプスト女王葬祭殿の見学に変更します。今日は数えません。",
+             "赤い旗です。本日の予定はハトシェプスト女王葬祭殿の見学に変更します。今日は数えません。",
              "빨간 깃발이네요. 오늘 일정은 하트셉수트 신전 관람으로 바꿀게요. 오늘은 치지 않습니다."),
- "bye": ("I'm ending our contract. Golden Lotus will work with another company.", "Sözleşmemizi bitiriyorum. Golden Lotus başka şirketle çalışacak.",
+ "bye": ("I'm ending our contract. Golden Lotus will work with another company.", "Anlaşmamızı bitiriyorum. Golden Lotus başka şirketle çalışacak.",
          "Ich beende unseren Vertrag. Golden Lotus arbeitet mit einer anderen Firma.", "Termino nuestro contrato. Golden Lotus trabajará con otra empresa.",
          "契約を終了します。ゴールデン・ロータスは別の会社と組みます。", "계약을 끝내겠습니다. 골든 로터스는 다른 회사와 일할 거예요."),
 })
 lines("hamza", {
  "intro": ("Hello, my friend! Hamza, Dahabiya Pearl. I bring small but cheerful groups on sailing dahabiyas. I heard you and Captain Farouk fell out.",
            "Selam dostum! Hamza, Dahabiya Pearl. Yelkenli dahabiyelerle küçük ama neşeli gruplar getiririm. Farouk Kaptan'la aranız bozulmuş, duydum.",
-           "Hallo, mein Freund! Hamza, Dahabiya Pearl. Ich bringe kleine, aber fröhliche Gruppen auf Segel-Dahabiyas. Ich hörte, du und Kapitän Farouk habt euch zerstritten.",
+           "Hallo, mein Freund! Hamza, Dahabiya Pearl. Ich bringe kleine, aber fröhliche Gruppen auf Segel-Dahabiyas. Ich habe gehört, du und Kapitän Farouk habt euch zerstritten.",
            "¡Hola, amigo! Hamza, Dahabiya Pearl. Traigo grupos pequeños pero alegres en dahabiyas de vela. Oí que tú y el capitán Farouk os peleasteis.",
            "やあ、友よ！ダハビヤ・パールのハムザだ。帆船ダハビヤで小さいけど陽気なグループを連れてくる。ファルーク船長ともめたって聞いたよ。",
            "안녕, 친구! 다하비야 펄의 함자야. 돛단배 다하비야로 작지만 유쾌한 단체를 데려와. 파루크 선장이랑 틀어졌다며?"),
@@ -330,14 +330,14 @@ lines("hamza", {
            "Meine Dahabiyas kommen am Morgen von Tag {d}; wir bleiben {len} Tage. Jeden Morgen {n} Leute, {p} pro Kopf. Was sagst du?",
            "Mis dahabiyas llegan la mañana del día {d}; nos quedamos {len} días. Cada mañana {n} personas, {p} por cabeza. ¿Qué dices?",
            "ダハビヤは{d}日目の朝に着く。{len}日いるよ。毎朝{n}人、1人{p}。どうだい？",
-           "다하비야가 {d}일째 아침에 도착해. {len}일 머물 거야. 매일 아침 {n}명, 1인당 {p}. 어때?"),
+           "다하비야가 {d}일차 아침에 도착해. {len}일 머물 거야. 매일 아침 {n}명, 1인당 {p}. 어때?"),
  "promise": ("If three voyages go well, I'll tell everyone about you and come to you more often!",
              "Üç sefer iyi giderse seni herkese anlatırım, sana daha sık gelirim!",
              "Wenn drei Fahrten gut laufen, erzähle ich allen von dir und komme öfter!",
              "¡Si tres travesías salen bien, hablaré de ti a todos y vendré más seguido!",
              "3回うまくいったら、みんなに君のことを話して、もっと頻繁に来るよ！",
              "세 번 잘 되면 모두에게 네 얘기를 하고 더 자주 올게!"),
- "negOk": ("Ha! Okay, okay: {p}. But you're buying me tea.", "Hah! Tamam, tamam: {p}. Ama bana çay ısmarlarsın.",
+ "negOk": ("Ha! Okay, okay: {p}. But you're buying me tea.", "Ha! Tamam, tamam: {p}. Ama bana çay ısmarlarsın.",
            "Ha! Schon gut: {p}. Aber du lädst mich auf einen Tee ein.", "¡Ja! Vale, vale: {p}. Pero me invitas a un té.",
            "はは！わかったよ、{p}だ。でもお茶をおごってくれよ。", "하! 알았어, 알았어. {p}. 대신 차 한잔 사."),
  "negWalk": ("No, my friend, not at that price. Let {r} fly them.", "Yok dostum, bu fiyata olmaz. {r} uçursun.",
@@ -349,7 +349,7 @@ lines("hamza", {
            "Die Dahabiyas haben festgemacht! Jeden Morgen springen {n} Leute in die Jeeps.", "¡Las dahabiyas están amarradas! Cada mañana {n} personas saltarán a los jeeps.",
            "ダハビヤが停泊したよ！毎朝{n}人がジープに飛び乗るぞ。", "다하비야를 댔어! 매일 아침 {n}명이 지프에 올라탈 거야."),
  "thanks": ("My passengers wrote songs about your balloons! It was wonderful.", "Yolcularım şarkılar yazdı balonlarına! Harikaydı.",
-            "Meine Gäste haben Lieder über deine Ballons geschrieben! Es war wunderbar.", "¡Mis pasajeros escribieron canciones sobre tus globos! Fue maravilloso.",
+            "Meine Gäste haben Lieder über deine Ballone geschrieben! Es war wunderbar.", "¡Mis pasajeros escribieron canciones sobre tus globos! Fue maravilloso.",
             "客が君の気球の歌を作ったよ！最高だった。", "손님들이 네 열기구 노래를 지었어! 정말 멋졌어."),
  "pref": ("Three voyages, all splendid! I'll come to you more often now, and I'm raising the price a little.",
           "Üç sefer, hepsi şahane! Artık sana daha sık geleceğim, fiyatı da biraz artırıyorum.",
@@ -365,7 +365,7 @@ lines("hamza", {
               "もう真っ先には来ないよ。ちょっと傷ついた。", "이제 먼저 오지 않을 거야. 좀 서운해."),
  "redSkip": ("Red flag! Today my passengers and I swim in the Nile; it doesn't count.", "Kırmızı bayrak! Bugün yolcularımla Nil'de yüzeriz, saymayız.",
              "Rote Flagge! Heute schwimmen meine Gäste und ich im Nil; das zählt nicht.", "¡Bandera roja! Hoy mis pasajeros y yo nadamos en el Nilo; no cuenta.",
-             "赤旗だ！今日は客とナイルで泳ぐよ。数えないでおこう。", "빨간 깃발! 오늘은 손님들이랑 나일에서 수영할래. 안 치는 걸로."),
+             "赤い旗だ！今日は客とナイルで泳ぐよ。数えないでおこう。", "빨간 깃발! 오늘은 손님들이랑 나일에서 수영할래. 안 치는 걸로."),
  "bye": ("My friend, our paths part. Dahabiya Pearl is going elsewhere.", "Dostum, yollarımız ayrılıyor. Dahabiya Pearl başka yere gidiyor.",
          "Mein Freund, unsere Wege trennen sich. Dahabiya Pearl geht woanders hin.", "Amigo, nuestros caminos se separan. Dahabiya Pearl se va a otra parte.",
          "友よ、ここでお別れだ。ダハビヤ・パールはよそへ行く。", "친구, 우리 길이 갈리네. 다하비야 펄은 다른 곳으로 가."),
@@ -379,12 +379,12 @@ lines("nigel", {
            "¡Buenos días! Nigel Pemberton, West Country Weekenders. Organizo paquetes de fin de semana en tren de Londres a Bristol: tren, hotel y un globo.",
            "ごきげんよう！ウエスト・カントリー・ウィークエンダーズのナイジェル・ペンバートンです。ロンドンからブリストルへの週末列車パックを手がけております。列車、ホテル、そして気球。",
            "안녕하십니까! 웨스트 컨트리 위켄더스의 나이절 펨버턴입니다. 런던에서 브리스톨로 가는 주말 기차 패키지를 운영하지요. 기차, 호텔, 그리고 열기구."),
- "offer": ("{wd} morning and the day after, days {d} to {e}: {n} people each morning, {p} a head. Fog guaranteed, of course: if there's fog we refund them and give vouchers.",
-           "{wd} sabahı ve ertesi gün, Gün {d}–{e}: her sabah {n} kişi, kişi başı {p}. Sis garantili tabii: sis olursa paralarını iade eder, kupon veririz.",
+ "offer": ("{wd} morning and the day after, days {d} to {e}: {n} people each morning, {p} a head. With our fog guarantee, of course: if there's fog, we refund them and give vouchers.",
+           "{wd} sabahı ve ertesi gün, Gün {d}–{e}: her sabah {n} kişi, kişi başı {p}. Sis garantili tabii: sis olursa paralarını iade ediyor, üstüne kupon veriyoruz.",
            "{wd}morgen und der Tag danach, Tag {d} bis {e}: jeden Morgen {n} Leute, {p} pro Kopf. Mit Nebelgarantie natürlich: Bei Nebel erstatten wir und geben Gutscheine.",
-           "La mañana del {wd} y el día siguiente, días {d} a {e}: {n} personas cada mañana, {p} por cabeza. Con garantía de niebla, claro: si hay niebla, reembolsamos y damos vales.",
+           "La mañana del {wd} y el día siguiente, del día {d} al {e}: {n} personas cada mañana, {p} por cabeza. Con garantía de niebla, claro: si hay niebla, reembolsamos y damos vales.",
            "{wd}の朝と翌日、{d}日目から{e}日目：毎朝{n}名、1人{p}。もちろん霧保証付き。霧なら返金して、クーポンをお渡しします。",
-           "{wd} 아침과 다음 날, {d}일째부터 {e}일째: 매일 아침 {n}명, 1인당 {p}. 물론 안개 보증이 있습니다. 안개가 끼면 환불하고 쿠폰을 드리지요."),
+           "{wd} 아침과 다음 날, {d}일차부터 {e}일차: 매일 아침 {n}명, 1인당 {p}. 물론 안개 보증이 있습니다. 안개가 끼면 환불하고 쿠폰을 드리지요."),
  "promise": ("If three weekends go smoothly, I'll put your name in our brochure and come more often.",
              "Üç hafta sonu sorunsuz geçerse broşürümüze adını yazarım, daha sık gelirim.",
              "Wenn drei Wochenenden reibungslos laufen, kommst du in unsere Broschüre, und ich komme öfter.",
@@ -394,16 +394,16 @@ lines("nigel", {
  "negOk": ("Very well, very well. {p} a head. But the fog guarantee stands.", "Pekâlâ, pekâlâ. Kişi başı {p}. Ama sis garantisi aynen geçerli.",
            "Na schön, na schön. {p} pro Kopf. Aber die Nebelgarantie bleibt.", "Muy bien, muy bien. {p} por cabeza. Pero la garantía de niebla sigue en pie.",
            "よろしい、よろしい。1人{p}。ただし霧保証はそのままです。", "좋습니다, 좋아요. 1인당 {p}. 하지만 안개 보증은 그대로입니다."),
- "negWalk": ("I'm afraid that won't do. I've agreed with {r}.", "Korkarım bu olmaz. {r} ile anlaştım.", "Ich fürchte, das geht nicht. Ich habe mit {r} abgeschlossen.",
+ "negWalk": ("I'm afraid that won't do. I've agreed with {r}.", "Korkarım bu olmaz. {r} ile anlaştım.", "Ich fürchte, das geht nicht. Ich bin mit {r} schon handelseinig.",
              "Me temo que no puede ser. He cerrado con {r}.", "残念ながらそれは無理ですな。{r}と話がつきました。", "유감이지만 안 되겠군요. {r}와(과) 계약했습니다."),
  "decline": ("I understand. This weekend with {r}, then.", "Anlıyorum. Bu hafta sonu {r} ile.", "Verstehe. Dieses Wochenende dann mit {r}.",
              "Entiendo. Este fin de semana, con {r}.", "承知しました。今週末は{r}で。", "알겠습니다. 이번 주말은 {r}와(과) 하지요."),
  "today": ("The train's in the station! {n} Londoners with umbrellas are waiting for a basket.", "Tren istasyonda! {n} Londralı şemsiyesiyle sepet bekliyor.",
-           "Der Zug steht im Bahnhof! {n} Londoner mit Regenschirmen warten auf einen Korb.", "¡El tren está en la estación! {n} londinenses con paraguas esperan una canasta.",
-           "列車が駅に着きました！傘を持ったロンドンっ子{n}名がゴンドラを待っています。", "기차가 역에 들어왔습니다! 우산을 든 런던 사람 {n}명이 바구니를 기다립니다."),
- "thanks": ("Splendid! On the train home my passengers talked of nothing but balloons.", "Splendid! Yolcularım dönüş treninde yalnızca balonları konuştu.",
-            "Splendid! Im Zug nach Hause haben meine Gäste nur von Ballons geredet.", "¡Splendid! En el tren de vuelta mis pasajeros no hablaron más que de globos.",
-            "スプレンディッド！帰りの列車でお客様は気球の話ばかりでした。", "스플렌디드! 돌아가는 기차에서 손님들이 열기구 얘기만 했습니다."),
+           "Der Zug steht im Bahnhof! {n} Londoner mit Regenschirmen warten auf einen Korb.", "¡El tren está en la estación! {n} londinenses con paraguas esperan una cesta.",
+           "列車が駅に着きました！傘を持ったロンドンっ子{n}名がバスケットを待っています。", "기차가 역에 들어왔습니다! 우산을 든 런던 사람 {n}명이 바스켓를 기다립니다."),
+ "thanks": ("Splendid! On the train home my passengers talked of nothing but balloons.", "Muhteşem! Yolcularım dönüş treninde yalnızca balonları konuştu.",
+            "Splendid! Im Zug nach Hause haben meine Gäste nur von Ballonen geredet.", "¡Espléndido! En el tren de vuelta mis pasajeros no hablaron más que de globos.",
+            "素晴らしい！帰りの列車でお客様は気球の話ばかりでした。", "스플렌디드! 돌아가는 기차에서 손님들이 열기구 얘기만 했습니다."),
  "pref": ("Three weekends, flawless. You're in our brochure now: I'll come more often, and the price is a little better.",
           "Üç hafta sonu, kusursuz. Artık broşürümüzde sen varsın: daha sık geleceğim, fiyat da biraz daha iyi.",
           "Drei Wochenenden, makellos. Du stehst jetzt in unserer Broschüre: Ich komme öfter, und der Preis ist etwas besser.",
@@ -423,14 +423,14 @@ lines("nigel", {
          "안개입니다! 보증은 보증이지요. 오늘 손님들께 환불하고, 쿠폰은 귀사가 부담합니다."),
  "redSkip": ("Red flag. My passengers will visit a museum today; we won't count today.", "Kırmızı bayrak. Yolcularım bugün müze gezer; bugünü saymayız.",
              "Rote Flagge. Meine Gäste besuchen heute ein Museum; heute zählt nicht.", "Bandera roja. Mis pasajeros visitarán un museo hoy; hoy no cuenta.",
-             "赤旗です。本日は博物館見学にします。今日は数えません。", "빨간 깃발이군요. 손님들은 오늘 박물관에 갑니다. 오늘은 치지 않지요."),
+             "赤い旗です。本日は博物館見学にします。今日は数えません。", "빨간 깃발이군요. 손님들은 오늘 박물관에 갑니다. 오늘은 치지 않지요."),
  "bye": ("I'm sorry, West Country Weekenders will carry on with another company. Good luck.", "Üzgünüm, West Country Weekenders başka bir şirketle devam edecek. İyi şanslar.",
          "Tut mir leid, West Country Weekenders macht mit einer anderen Firma weiter. Viel Glück.", "Lo siento, West Country Weekenders seguirá con otra empresa. Buena suerte.",
          "残念ですが、ウエスト・カントリー・ウィークエンダーズは別の会社と続けます。ご健闘を。", "유감이지만 웨스트 컨트리 위켄더스는 다른 회사와 계속합니다. 행운을 빕니다."),
 })
 lines("priya", {
  "intro": ("Hi! Priya Shah, Capital Rail Breaks. We're London's fastest-growing weekend getaway company. You and Nigel fell out; that's my chance.",
-           "Merhaba! Priya Shah, Capital Rail Breaks. Londra'nın en hızlı büyüyen hafta sonu kaçamağı şirketiyiz. Nigel'la aranız bozulmuş, fırsat bu fırsat.",
+           "Merhaba! Ben Priya Shah, Capital Rail Breaks. Londra'nın en hızlı büyüyen hafta sonu kaçamağı şirketiyiz. Nigel'la aranız bozulmuş, fırsat bu fırsat.",
            "Hallo! Priya Shah, Capital Rail Breaks. Wir sind Londons am schnellsten wachsender Anbieter für Wochenendtrips. Du und Nigel habt euch zerstritten; das ist meine Chance.",
            "¡Hola! Priya Shah, Capital Rail Breaks. Somos la empresa de escapadas de fin de semana que más crece en Londres. Tú y Nigel os peleasteis; es mi oportunidad.",
            "こんにちは！キャピタル・レール・ブレイクスのプリヤ・シャーです。ロンドンで一番伸びている週末旅行会社よ。ナイジェルともめたんでしょ、チャンスだわ。",
@@ -438,33 +438,33 @@ lines("priya", {
  "offer": ("{wd} and Sunday, days {d} to {e}: {n} people each morning, {p} a head, with the fog guarantee. I'll put it on sale right away; are you in?",
            "{wd} ve Pazar, Gün {d}–{e}: her sabah {n} kişi, kişi başı {p}, sis garantisiyle. Satışa hemen açarım, var mısın?",
            "{wd} und Sonntag, Tag {d} bis {e}: jeden Morgen {n} Leute, {p} pro Kopf, mit Nebelgarantie. Ich stelle es sofort in den Verkauf; bist du dabei?",
-           "{wd} y domingo, días {d} a {e}: {n} personas cada mañana, {p} por cabeza, con garantía de niebla. Lo pongo a la venta ya; ¿te apuntas?",
+           "El {wd} y el domingo, del día {d} al {e}: {n} personas cada mañana, {p} por cabeza, con garantía de niebla. Lo pongo a la venta ya; ¿te apuntas?",
            "{wd}と日曜、{d}日目から{e}日目：毎朝{n}人、1人{p}、霧保証付き。すぐ販売開始するわ。乗る？",
-           "{wd}과 일요일, {d}일째부터 {e}일째: 매일 아침 {n}명, 1인당 {p}, 안개 보증 포함. 바로 판매 시작할게요. 하실래요?"),
- "promise": ("Three good weekends and I'll feature you in our app: more work.", "Üç başarılı hafta sonu ve seni uygulamamızda öne çıkarırım: daha sık iş.",
-             "Drei gelungene Wochenenden, und ich stelle dich in unserer App heraus: mehr Arbeit.", "Tres buenos fines de semana y te destaco en nuestra app: más trabajo.",
+           "{wd}과 일요일, {d}일차부터 {e}일차: 매일 아침 {n}명, 1인당 {p}, 안개 보증 포함. 바로 판매 시작할게요. 하실래요?"),
+ "promise": ("Three good weekends and I'll feature you in our app: more work.", "Üç hafta sonu iyi geçerse seni uygulamamızda öne çıkarırım: daha sık iş.",
+             "Drei gelungene Wochenenden, und ich empfehle dich in unserer App: mehr Arbeit.", "Tres buenos fines de semana y te destaco en nuestra app: más trabajo.",
              "週末を3回成功させたら、アプリでおすすめにするわ。仕事が増えるわよ。", "주말 세 번 성공하면 앱에서 추천해 드릴게요. 일이 더 많아져요."),
  "negOk": ("Okay, {p} a head. Let's decide fast.", "Tamam, kişi başı {p}. Hızlı karar verelim.", "Okay, {p} pro Kopf. Lass uns schnell entscheiden.",
            "Vale, {p} por cabeza. Decidamos rápido.", "オーケー、1人{p}。さっさと決めましょ。", "좋아요, 1인당 {p}. 빨리 정해요."),
- "negWalk": ("The numbers don't work. I've already closed with {r}.", "Rakamlar tutmuyor. {r} ile kapattım bile.", "Die Zahlen passen nicht. Ich habe schon mit {r} abgeschlossen.",
+ "negWalk": ("The numbers don't work. I've already closed with {r}.", "Rakamlar tutmuyor. {r} ile kapattım bile.", "Die Zahlen passen nicht. Ich bin mit {r} schon handelseinig.",
              "Los números no cuadran. Ya cerré con {r}.", "数字が合わないわ。もう{r}と契約したの。", "숫자가 안 맞아요. 벌써 {r}와(과) 계약했어요."),
  "decline": ("No problem, I'm planning it with {r}.", "Sorun değil, {r} ile planlıyorum.", "Kein Problem, ich plane mit {r}.",
              "No hay problema, lo planifico con {r}.", "問題ないわ、{r}で手配する。", "괜찮아요, {r}와(과) 진행할게요."),
  "today": ("Our train is in! {n} people, phones ready, stories to shoot.", "Trenimiz geldi! {n} kişi, telefonlar hazır, hikâyeler çekilecek.",
-           "Unser Zug ist da! {n} Leute, Handys bereit, Storys werden gedreht.", "¡Llegó nuestro tren! {n} personas, móviles listos, a grabar historias.",
+           "Unser Zug ist da! {n} Leute, Handys bereit, Storys werden gedreht.", "¡Llegó nuestro tren! {n} personas, móviles listos, a grabar stories.",
            "列車が着いたわ！{n}人、スマホを構えてストーリーを撮る気満々よ。", "기차가 도착했어요! {n}명, 휴대폰 준비 완료, 스토리 찍을 거예요."),
- "thanks": ("Five-star reviews are pouring in on the app! Thanks.", "Uygulamada beş yıldız yağıyor! Teşekkürler.", "In der App regnet es fünf Sterne! Danke.",
-            "¡Llueven cinco estrellas en la app! Gracias.", "アプリに星5つが殺到してる！ありがとう。", "앱에 별 다섯 개가 쏟아져요! 고마워요."),
+ "thanks": ("Five-star reviews are pouring in on the app! Thanks.", "Uygulamada beş yıldız yağıyor! Teşekkürler.", "In der App hagelt es Fünf-Sterne-Bewertungen! Danke.",
+            "¡Llueven reseñas de cinco estrellas en la app! Gracias.", "アプリに星5つが殺到してる！ありがとう。", "앱에 별 다섯 개가 쏟아져요! 고마워요."),
  "pref": ("Three weekends, all good! I'm featuring you now: I'll come more often, and the price goes up a little.",
           "Üç hafta sonu, hepsi başarılı! Artık seni öne çıkarıyorum: daha sık geleceğim, fiyat da biraz yukarı.",
-          "Drei Wochenenden, alle gelungen! Ich stelle dich jetzt heraus: Ich komme öfter, und der Preis steigt etwas.",
+          "Drei Wochenenden, alle gelungen! Ab jetzt empfehle ich dich in der App: Ich komme öfter, und der Preis steigt etwas.",
           "¡Tres fines de semana, todos un éxito! Ahora te destaco: vendré más seguido y el precio sube un poco.",
           "週末3回、全部成功！これからおすすめにするわ。もっと頻繁に来るし、値段も少し上げる。",
           "주말 세 번 모두 성공! 이제 추천할게요. 더 자주 오고 가격도 조금 올려요."),
  "fail": ("Some of my customers couldn't fly; the reviews will be brutal.", "Bazı müşterilerim uçamadı; yorumlar acımasız olur.",
           "Ein paar meiner Kunden konnten nicht fliegen; die Bewertungen werden brutal.", "Algunos de mis clientes no pudieron volar; las reseñas serán brutales.",
           "お客さんの何人かが飛べなかった。レビューは容赦ないわよ。", "고객 몇 명이 못 날았어요. 리뷰가 혹독할 거예요."),
- "lostPref": ("I'm no longer featuring you, sorry.", "Seni öne çıkarmayı bırakıyorum, kusura bakma.", "Ich stelle dich nicht mehr heraus, tut mir leid.",
+ "lostPref": ("I'm no longer featuring you, sorry.", "Seni öne çıkarmayı bırakıyorum, kusura bakma.", "Ich empfehle dich nicht mehr in der App, sorry.",
               "Dejo de destacarte, lo siento.", "おすすめから外すわ、ごめんね。", "추천은 그만할게요, 미안해요."),
  "fog": ("Fog, the guarantee kicks in: refunds for today's lot, and you cover the vouchers.", "Sis var, garanti devrede: bugünkülere iade, kuponları da sen karşılıyorsun.",
          "Nebel, die Garantie greift: Erstattung für die heutigen Gäste, und du übernimmst die Gutscheine.", "Niebla, la garantía se activa: reembolso para los de hoy, y tú cubres los vales.",
@@ -473,7 +473,7 @@ lines("priya", {
              "Kırmızı bayrak: bugün yolcularımı Clifton'a yürüyüşe çıkarıyorum, saymıyoruz.",
              "Rote Flagge: Ich mache heute mit meinen Gästen einen Spaziergang nach Clifton; das zählt nicht.",
              "Bandera roja: hoy llevo a mis pasajeros de paseo a Clifton; no cuenta.",
-             "赤旗。今日はお客さんとクリフトンまで散歩するわ。数えないで。",
+             "赤い旗。今日はお客さんとクリフトンまで散歩するわ。数えないで。",
              "빨간 깃발이에요. 오늘은 손님들과 클리프턴까지 산책해요. 안 치는 걸로요."),
  "bye": ("Capital Rail Breaks is moving on with another company. Good luck.", "Capital Rail Breaks yoluna başka şirketle devam ediyor. Bol şans.",
          "Capital Rail Breaks macht mit einer anderen Firma weiter. Viel Glück.", "Capital Rail Breaks sigue su camino con otra empresa. Buena suerte.",
@@ -481,26 +481,26 @@ lines("priya", {
 })
 lines("fiona", {
  "intro": ("Hello, love! Fiona MacLeod, Steam & Sky Excursions. I run weekend tours from London in my old red steam train: steam, tea and balloons!",
-           "Merhaba canım! Fiona MacLeod, Steam & Sky Excursions. Eski kırmızı buharlı trenimle Londra'dan hafta sonu turu yaparım: buhar, çay ve balon!",
-           "Hallo, Schätzchen! Fiona MacLeod, Steam & Sky Excursions. Mit meinem alten roten Dampfzug mache ich Wochenendtouren ab London: Dampf, Tee und Ballons!",
+           "Merhaba canım! Ben Fiona MacLeod, Steam & Sky Excursions. Eski kırmızı buharlı trenimle Londra'dan hafta sonu turu yaparım: buhar, çay ve balon!",
+           "Hallo, Schätzchen! Fiona MacLeod, Steam & Sky Excursions. Mit meinem alten roten Dampfzug mache ich Wochenendtouren ab London: Dampf, Tee und Ballone!",
            "¡Hola, cariño! Fiona MacLeod, Steam & Sky Excursions. Hago excursiones de fin de semana desde Londres en mi viejo tren de vapor rojo: ¡vapor, té y globos!",
-           "こんにちは、あなた！スチーム＆スカイ・エクスカーションズのフィオナ・マクラウドよ。古い赤い蒸気機関車でロンドンから週末ツアーをしてるの。蒸気と紅茶と気球！",
-           "안녕, 자기! 스팀 앤 스카이 익스커션스의 피오나 매클라우드예요. 낡은 빨간 증기기관차로 런던에서 주말 투어를 해요. 증기, 홍차, 그리고 열기구!"),
+           "あら、こんにちは！スチーム＆スカイ・エクスカーションズのフィオナ・マクラウドよ。古い赤い蒸気機関車でロンドンから週末ツアーをしてるの。蒸気と紅茶と気球！",
+           "어머, 반가워요! 스팀 앤 스카이 익스커션스의 피오나 매클라우드예요. 낡은 빨간 증기기관차로 런던에서 주말 투어를 해요. 증기, 홍차, 그리고 열기구!"),
  "offer": ("My steam train's at the station on {wd} morning: days {d} to {e}, {n} people each morning, {p} a head. There's a fog guarantee, you know.",
            "Buharlı trenim {wd} sabahı istasyonda: Gün {d}–{e}, her sabah {n} kişi, kişi başı {p}. Sis garantisi var, bilirsin.",
            "Mein Dampfzug steht am {wd}morgen im Bahnhof: Tag {d} bis {e}, jeden Morgen {n} Leute, {p} pro Kopf. Mit Nebelgarantie, weißt du ja.",
-           "Mi tren de vapor estará en la estación el {wd} por la mañana: días {d} a {e}, {n} personas cada mañana, {p} por cabeza. Hay garantía de niebla, ya sabes.",
+           "Mi tren de vapor estará en la estación el {wd} por la mañana: del día {d} al {e}, {n} personas cada mañana, {p} por cabeza. Hay garantía de niebla, ya sabes.",
            "私の蒸気機関車は{wd}の朝に駅に着くわ。{d}日目から{e}日目、毎朝{n}人、1人{p}。霧保証付きよ、わかってるでしょ。",
-           "제 증기기관차는 {wd} 아침에 역에 와요. {d}일째부터 {e}일째, 매일 아침 {n}명, 1인당 {p}. 안개 보증이 있는 거 알죠?"),
+           "제 증기기관차는 {wd} 아침에 역에 와요. {d}일차부터 {e}일차, 매일 아침 {n}명, 1인당 {p}. 안개 보증이 있는 거 알죠?"),
  "promise": ("If three weekends go nicely, I'll come to you more often, promise.", "Üç hafta sonu güzel geçerse sana daha sık gelirim, söz.",
              "Wenn drei Wochenenden schön laufen, komme ich öfter zu dir, versprochen.", "Si tres fines de semana van bien, vendré más seguido, prometido.",
              "週末が3回うまくいったら、もっと頻繁に来るわ。約束よ。", "주말 세 번이 잘 되면 더 자주 올게요. 약속해요."),
- "negOk": ("Oh, you're a proper trader! All right, {p} a head.", "Ah, sen tam bir tüccarsın! Peki, kişi başı {p}.", "Oh, du bist ja ein richtiger Händler! Na gut, {p} pro Kopf.",
+ "negOk": ("Oh, you're a proper trader! All right, {p} a head.", "Ah, sen tam bir tüccarsın! Peki, kişi başı {p}.", "Oh, du kannst ja richtig feilschen! Na gut, {p} pro Kopf.",
            "¡Ay, eres todo un comerciante! Está bien, {p} por cabeza.", "まあ、商売上手ね！いいわ、1人{p}。", "어머, 진짜 장사꾼이네요! 좋아요, 1인당 {p}."),
- "negWalk": ("No, love, coal is dear. I'm going with {r}.", "Olmaz canım, kömür pahalı. {r} ile gidiyorum.", "Nein, Schätzchen, Kohle ist teuer. Ich gehe mit {r}.",
-             "No, cariño, el carbón está caro. Me voy con {r}.", "だめよ、石炭は高いの。{r}にするわ。", "안 돼요, 자기. 석탄이 비싸요. {r}와(과) 갈게요."),
+ "negWalk": ("No, love, coal is dear. I'm going with {r}.", "Olmaz canım, kömür pahalı. {r} ile gidiyorum.", "Nein, Schätzchen, Kohle ist teuer. Ich nehme {r}.",
+             "No, cariño, el carbón está caro. Me voy con {r}.", "だめよ、石炭は高いの。{r}にするわ。", "안 돼요. 석탄이 비싸요. {r}와(과) 갈게요."),
  "decline": ("All right, love. {r} this time.", "Peki canım. Bu sefer {r}.", "Na gut, Schätzchen. Diesmal {r}.", "Bueno, cariño. Esta vez {r}.",
-             "わかったわ。今回は{r}ね。", "알았어요, 자기. 이번엔 {r}."),
+             "わかったわ。今回は{r}ね。", "알았어요. 이번엔 {r}."),
  "today": ("Did you hear the whistle? The steam train's in; {n} of my passengers are having tea and waiting for you.",
            "Düdüğü duydun mu? Buharlı tren geldi, {n} yolcum çay içip seni bekliyor.",
            "Hast du den Pfiff gehört? Der Dampfzug ist da; {n} meiner Gäste trinken Tee und warten auf dich.",
@@ -508,7 +508,7 @@ lines("fiona", {
            "汽笛が聞こえた？蒸気機関車が着いたわ。お客さん{n}人が紅茶を飲みながら待ってる。",
            "기적 소리 들었어요? 증기기관차가 왔어요. 손님 {n}명이 차를 마시며 기다려요."),
  "thanks": ("My passengers saw steam and balloons on the same day, what more could they want!", "Yolcularım buharla balonu aynı günde gördü, daha ne olsun!",
-            "Meine Gäste haben Dampf und Ballons am selben Tag gesehen, was will man mehr!", "¡Mis pasajeros vieron vapor y globos el mismo día, qué más se puede pedir!",
+            "Meine Gäste haben Dampf und Ballone am selben Tag gesehen, was will man mehr!", "¡Mis pasajeros vieron vapor y globos el mismo día, qué más se puede pedir!",
             "お客さんは蒸気と気球を同じ日に見たのよ、言うことなしだわ！", "손님들이 증기와 열기구를 하루에 다 봤어요. 더 바랄 게 없죠!"),
  "pref": ("Three weekends, all three lovely. I'll come to you more often now, and I'm raising the price a little.",
           "Üç hafta sonu, üçü de şahane. Artık sana daha sık geleceğim, fiyatı da biraz artırıyorum.",
@@ -517,8 +517,8 @@ lines("fiona", {
           "週末3回、どれも素敵だった。これからはもっと頻繁に来るし、値段も少し上げるわ。",
           "주말 세 번 다 멋졌어요. 이제 더 자주 오고 가격도 조금 올릴게요."),
  "fail": ("Some of my passengers were left at the station, love. Not nice at all.", "Yolcularımın bir kısmı istasyonda kaldı canım. Hiç hoş olmadı.",
-          "Ein paar meiner Gäste sind am Bahnhof geblieben, Schätzchen. Gar nicht schön.", "Parte de mis pasajeros se quedó en la estación, cariño. Nada bonito.",
-          "お客さんの何人かは駅に置いてけぼりよ。ちっとも良くないわ。", "손님 일부가 역에 남았어요, 자기. 전혀 좋지 않았어요."),
+          "Ein paar meiner Gäste sind am Bahnhof zurückgeblieben, Schätzchen. Gar nicht schön.", "Parte de mis pasajeros se quedó en la estación, cariño. Nada bonito.",
+          "お客さんの何人かは駅に置いてけぼりよ。困ったものよ。", "손님 일부가 역에 남았어요. 전혀 좋지 않았어요."),
  "lostPref": ("For a while I'll work with other companies too.", "Bir süre başka şirketlerle de çalışacağım.", "Eine Weile arbeite ich auch mit anderen Firmen.",
               "Por un tiempo trabajaré también con otras empresas.", "しばらくは他の会社とも組むわ。", "당분간 다른 회사와도 일할게요."),
  "fog": ("Fog's rolled in! Our guarantee holds: refunds for today's lot, and the vouchers are on you.",
@@ -529,29 +529,29 @@ lines("fiona", {
          "안개가 꼈어요! 보증 유효예요. 오늘 손님은 환불, 쿠폰은 당신 몫이에요."),
  "redSkip": ("Red flag! I'm taking my passengers to the railway museum; today doesn't count.", "Kırmızı bayrak! Yolcularımı demiryolu müzesine götürüyorum, bugün sayılmaz.",
              "Rote Flagge! Ich bringe meine Gäste ins Eisenbahnmuseum; heute zählt nicht.", "¡Bandera roja! Llevo a mis pasajeros al museo del ferrocarril; hoy no cuenta.",
-             "赤旗！お客さんは鉄道博物館に連れていくわ。今日は数えない。", "빨간 깃발! 손님들은 철도 박물관에 데려갈게요. 오늘은 안 쳐요."),
+             "赤い旗！お客さんは鉄道博物館に連れていくわ。今日は数えない。", "빨간 깃발! 손님들은 철도 박물관에 데려갈게요. 오늘은 안 쳐요."),
  "bye": ("The steam train will stop at another station now. Goodbye, love.", "Buharlı tren artık başka istasyonda duracak. Hoşça kal canım.",
          "Der Dampfzug hält jetzt an einem anderen Bahnhof. Mach's gut, Schätzchen.", "El tren de vapor parará ahora en otra estación. Adiós, cariño.",
-         "蒸気機関車はこれから別の駅に停まるわ。さよなら、あなた。", "증기기관차는 이제 다른 역에 서요. 잘 있어요, 자기."),
+         "蒸気機関車はこれから別の駅に停まるわ。じゃあね、さよなら。", "증기기관차는 이제 다른 역에 서요. 잘 있어요."),
 })
 add("ctr.redCancel", "Three red mornings in a row. The group is going home; nobody's fault. Another time.",
     "Üç sabah üst üste kırmızı bayrak. Grup eve dönüyor, kimsenin suçu değil. Başka sefere.",
     "Drei rote Morgen hintereinander. Die Gruppe fährt nach Hause; niemand ist schuld. Ein andermal.",
     "Tres mañanas seguidas de bandera roja. El grupo vuelve a casa; no es culpa de nadie. Otra vez será.",
-    "3朝続けて赤旗。グループは帰るわ。誰のせいでもない。また今度ね。",
+    "3日続けて朝から赤い旗。グループは帰る。誰のせいでもない。また今度。",
     "사흘 아침 연속 빨간 깃발이에요. 단체는 돌아가요. 누구 탓도 아니에요. 다음에요.")
 
 # ---- Per region: what the card and the town say ----
 REG = {
  "abq": dict(
-  tag=("Tour contract offer", "Tur kontratı teklifi", "Angebot: Tourvertrag", "Oferta de contrato turístico", "ツアー契約の提案", "투어 계약 제안"),
+  tag=("Tour contract offer", "Tur grubu teklifi", "Angebot: Tourvertrag", "Oferta de contrato turístico", "ツアー契約の提案", "투어 계약 제안"),
   place=("Coach terminal", "Otobüs terminali", "Busterminal", "Terminal de autobuses", "バスターミナル", "버스 터미널"),
   accepted=("Great! My coaches will be at the terminal. Get the baskets ready!", "Harika! Otobüslerim terminalde olacak. Sepetleri hazırla!",
-            "Großartig! Meine Busse stehen am Terminal. Mach die Körbe bereit!", "¡Genial! Mis autobuses estarán en la terminal. ¡Prepara las canastas!",
-            "最高！バスはターミナルに着くわ。ゴンドラを準備して！", "좋아요! 버스가 터미널에 있을 거예요. 바구니를 준비하세요!"),
+            "Großartig! Meine Busse stehen am Terminal. Mach die Körbe bereit!", "¡Genial! Mis autobuses estarán en la terminal. ¡Prepara las cestas!",
+            "決まりですね！バスはターミナルに着きます。バスケットの準備をお願いします！", "좋아요! 버스가 터미널에 있을 거예요. 바스켓를 준비하세요!"),
   where=("The coaches wait at the terminal outside town; drag the town down and to the left to see it. Have enough balloons ready to fly that morning.",
-         "Otobüsler şehrin dışındaki terminalde bekliyor; kasabayı aşağı sola kaydırırsan görürsün. O sabah yeterli balonun uçmaya hazır olsun.",
-         "Die Busse warten am Terminal vor der Stadt; zieh die Stadt nach links unten, dann siehst du es. Halte an dem Morgen genug Ballons startbereit.",
+         "Otobüsler kasabanın dışındaki terminalde bekliyor; kasabayı aşağı sola kaydırırsan görürsün. O sabah yeterli balonun uçmaya hazır olsun.",
+         "Die Busse warten am Terminal vor der Stadt; zieh die Stadt nach links unten, dann siehst du es. Halte an dem Morgen genug Ballone startbereit.",
          "Los autobuses esperan en la terminal fuera del pueblo; arrastra el pueblo hacia abajo a la izquierda para verla. Ten suficientes globos listos esa mañana.",
          "バスは町の外のターミナルで待っている。町を左下にドラッグすれば見える。その朝は十分な気球を飛べる状態にしておこう。",
          "버스는 마을 밖 터미널에서 기다려요. 마을을 왼쪽 아래로 끌면 보여요. 그날 아침 충분한 열기구를 띄울 준비를 해 두세요."),
@@ -559,31 +559,31 @@ REG = {
          "Das Terminal ist leer. Ein neues Angebot für eine Tourgruppe kommt morgens.", "La terminal está vacía. Una nueva oferta de grupo llega por la mañana.",
          "ターミナルは空っぽ。新しいツアーグループの提案は朝に来る。", "터미널이 비어 있어요. 새 투어 단체 제안은 아침에 와요."),
   fresh=("Tour coaches from Route 66 stop here; the passengers take jeeps into town.", "Route 66'dan gelen tur otobüsleri burada durur, yolcular cipe binip kasabaya gelir.",
-         "Reisebusse von der Route 66 halten hier; die Gäste fahren mit Jeeps in die Stadt.", "Los autobuses turísticos de la Ruta 66 paran aquí; los pasajeros van al pueblo en jeep.",
+         "Reisebusse von der Route 66 halten hier; die Passagiere fahren mit Jeeps in die Stadt.", "Los autobuses turísticos de la Ruta 66 paran aquí; los pasajeros van al pueblo en jeep.",
          "ルート66のツアーバスはここに停まり、客はジープで町へ向かう。", "66번 국도의 관광버스가 여기 서고, 손님들은 지프를 타고 마을로 와요."),
   prefPaper=("The tour coaches now go to them first.", "Tur otobüsleri artık önce ona gidiyor.", "Die Reisebusse fahren jetzt zuerst zu ihnen.",
              "Los autobuses turísticos ahora van primero a ellos.", "ツアーバスはまずそこへ向かうようになった。", "관광버스는 이제 그곳으로 먼저 가요."),
-  scene=[("Look, kid: the highway terminal outside the city. Tour coaches on Route 66 stop here.", "Bak evlat: şehrin dışındaki otoyol terminali. Route 66'dan gelen tur otobüsleri burada mola verir.",
-          "Schau, Kleiner: das Autobahnterminal vor der Stadt. Reisebusse auf der Route 66 machen hier Halt.", "Mira, chico: la terminal de la autopista fuera de la ciudad. Los autobuses de la Ruta 66 paran aquí.",
+  scene=[("Look, kid: the highway terminal outside the city. Tour coaches on Route 66 stop here.", "Bak genç dostum: kasabanın dışındaki otoyol terminali. Route 66'dan gelen tur otobüsleri burada mola verir.",
+          "Schau, mein junger Freund: das Autobahnterminal vor der Stadt. Reisebusse auf der Route 66 machen hier Halt.", "Mira, joven amigo: la terminal de la autopista fuera de la ciudad. Los autobuses de la Ruta 66 paran aquí.",
           "見たまえ、若者よ。町の外の幹線道路ターミナルだ。ルート66のツアーバスはここで休憩する。", "보게, 젊은이. 도시 밖 고속도로 터미널이네. 66번 국도의 관광버스가 여기서 쉬어 가지."),
          ("The passengers get off and take jeeps along the dirt road into town. The first offer is coming!", "Yolcular otobüsten inip cipe biner, toprak yoldan kasabaya gelir. İlk teklif geliyor!",
-          "Die Gäste steigen aus und fahren mit Jeeps über den Feldweg in die Stadt. Das erste Angebot kommt!", "Los pasajeros bajan y van en jeep por el camino de tierra hasta el pueblo. ¡Llega la primera oferta!",
+          "Die Passagiere steigen aus und fahren mit Jeeps über den Feldweg in die Stadt. Das erste Angebot kommt!", "Los pasajeros bajan y van en jeep por el camino de tierra hasta el pueblo. ¡Llega la primera oferta!",
           "客はバスを降りてジープに乗り、土の道を通って町へ来る。最初の提案が来るぞ！", "손님들은 버스에서 내려 지프를 타고 흙길로 마을에 오지. 첫 제안이 온다네!"),
-         ("If you accept, that day the seats go to the group first. Turn it down and a rival grabs the group.", "Kabul edersen o gün koltuklar önce gruba gider. Almazsan grubu bir rakip kapar.",
-          "Wenn du annimmst, gehen die Plätze an dem Tag zuerst an die Gruppe. Lehnst du ab, schnappt sich ein Rivale die Gruppe.", "Si aceptas, ese día los asientos van primero al grupo. Si no, un rival se lleva al grupo.",
+         ("If you accept, that day the seats go to the group first. Turn it down and a rival grabs the group.", "Kabul edersen o gün koltuklar önce gruba gider. Reddedersen grubu bir rakip kapar.",
+          "Wenn du annimmst, gehen die Plätze an dem Tag zuerst an die Gruppe. Lehnst du ab, schnappt sich ein Konkurrent die Gruppe.", "Si aceptas, ese día las plazas van primero al grupo. Si no, un rival se lleva al grupo.",
           "引き受ければ、その日の座席はまずグループに回る。断ればライバルがグループをさらう。", "받아들이면 그날 좌석은 먼저 단체에게 가네. 거절하면 경쟁사가 단체를 채가지."),
-         ("Deliver three jobs well and they'll come to you more often. Time is money!", "Üç işi sağlam teslim edersen sana daha sık gelirler. Vakit nakittir!",
+         ("Do three jobs well and they'll come to you more often. Time is money!", "Üç işi sağlam teslim edersen sana daha sık gelirler. Vakit nakittir!",
           "Liefere drei Aufträge sauber ab, dann kommen sie öfter zu dir. Zeit ist Geld!", "Cumple bien tres trabajos y vendrán más a menudo. ¡El tiempo es oro!",
           "3つの仕事をきちんとこなせば、もっと頻繁に来てくれる。時は金なり！", "일 세 건을 잘 해내면 더 자주 찾아올 걸세. 시간은 돈이야!")]),
  "lux": dict(
-  tag=("Cruise contract offer", "Gemi kontratı teklifi", "Angebot: Schiffsvertrag", "Oferta de contrato de crucero", "クルーズ契約の提案", "크루즈 계약 제안"),
+  tag=("Cruise contract offer", "Gemi grubu teklifi", "Angebot: Schiffsvertrag", "Oferta de contrato de crucero", "クルーズ契約の提案", "크루즈 계약 제안"),
   place=("Nile pier", "Nil iskelesi", "Nil-Anleger", "Muelle del Nilo", "ナイルの桟橋", "나일 부두"),
   accepted=("Good! When my ship ties up at the pier, my passengers will board the jeeps every morning.", "Güzel! Gemim iskeleye yanaşınca her sabah yolcularım cipe biner.",
             "Gut! Wenn mein Schiff angelegt hat, steigen meine Gäste jeden Morgen in die Jeeps.", "¡Bien! Cuando mi barco atraque, mis pasajeros subirán a los jeeps cada mañana.",
-            "よし！船が桟橋に着いたら、毎朝客がジープに乗る。", "좋소! 배가 부두에 닿으면 매일 아침 손님들이 지프에 타오."),
+            "決まりですね！船が桟橋に着いたら、毎朝お客様がジープに乗ります。", "좋아요! 배가 부두에 닿으면 매일 아침 손님들이 지프에 탈 거예요."),
   where=("The ship stays moored at the pier for the whole contract; drag the town to the right, along the Nile, to see it. Have enough balloons ready every morning.",
-         "Gemi kontrat boyunca iskelede bağlı duracak; kasabayı sağa, Nil boyunca kaydırırsan görürsün. Her sabah yeterli balonun uçmaya hazır olsun.",
-         "Das Schiff bleibt den ganzen Vertrag über am Anleger; zieh die Stadt nach rechts, den Nil entlang, dann siehst du es. Halte jeden Morgen genug Ballons bereit.",
+         "Gemi anlaşma boyunca iskelede bağlı duracak; kasabayı sağa, Nil boyunca kaydırırsan görürsün. Her sabah yeterli balonun uçmaya hazır olsun.",
+         "Das Schiff bleibt den ganzen Vertrag über am Anleger; zieh die Stadt nach rechts, den Nil entlang, dann siehst du es. Halte jeden Morgen genug Ballone bereit.",
          "El barco queda amarrado en el muelle todo el contrato; arrastra el pueblo a la derecha, a lo largo del Nilo, para verlo. Ten suficientes globos listos cada mañana.",
          "契約期間中、船は桟橋に停泊している。町を右へ、ナイル沿いにドラッグすれば見える。毎朝十分な気球を飛べる状態にしておこう。",
          "계약 기간 내내 배가 부두에 정박해 있어요. 마을을 오른쪽으로, 나일을 따라 끌면 보여요. 매일 아침 충분한 열기구를 준비하세요."),
@@ -591,28 +591,28 @@ REG = {
          "Der Anleger ist leer. Ein neues Schiffsangebot kommt morgens.", "El muelle está vacío. Una nueva oferta de crucero llega por la mañana.",
          "桟橋は空っぽ。新しいクルーズの提案は朝に来る。", "부두가 비어 있어요. 새 크루즈 제안은 아침에 와요."),
   fresh=("Nile cruise ships tie up at this pier; the passengers take jeeps into town.", "Nil gemileri bu iskeleye yanaşır, yolcular cipe binip kasabaya gelir.",
-         "Nilschiffe legen an diesem Anleger an; die Gäste fahren mit Jeeps in die Stadt.", "Los cruceros del Nilo atracan en este muelle; los pasajeros van al pueblo en jeep.",
+         "Nilschiffe legen an diesem Anleger an; die Passagiere fahren mit Jeeps in die Stadt.", "Los cruceros del Nilo atracan en este muelle; los pasajeros van al pueblo en jeep.",
          "ナイルのクルーズ船はこの桟橋に着き、客はジープで町へ向かう。", "나일 크루즈선이 이 부두에 닿고, 손님들은 지프를 타고 마을로 와요."),
   prefPaper=("Nile cruise ships now tie up for them first.", "Nil gemileri artık önce ona yanaşıyor.", "Nilschiffe legen jetzt zuerst für sie an.",
              "Los cruceros del Nilo ahora atracan primero para ellos.", "ナイルのクルーズ船はまずそこへ着くようになった。", "나일 크루즈선은 이제 그곳에 먼저 닿아요."),
-  scene=[("Look there, kid: the pier on the bank of the Nile. Ships from Aswan tie up here for a few days.", "Şuraya bak evlat: Nil kıyısındaki iskele. Asvan'dan gelen gemiler burada birkaç gün bağlanır.",
-          "Sieh dorthin, Kleiner: der Anleger am Nilufer. Schiffe aus Assuan machen hier ein paar Tage fest.", "Mira allí, chico: el muelle a orillas del Nilo. Los barcos de Asuán amarran aquí unos días.",
+  scene=[("Look there, kid: the pier on the bank of the Nile. Ships from Aswan tie up here for a few days.", "Şuraya bak genç dostum: Nil kıyısındaki iskele. Asvan'dan gelen gemiler burada birkaç gün bağlanır.",
+          "Sieh dorthin, mein junger Freund: der Anleger am Nilufer. Schiffe aus Assuan machen hier ein paar Tage fest.", "Mira allí, joven amigo: el muelle a orillas del Nilo. Los barcos de Asuán amarran aquí unos días.",
           "あれを見よ、若者よ。ナイル河畔の桟橋だ。アスワンからの船がここに数日停泊する。", "저기를 보게, 젊은이. 나일 강변의 부두라네. 아스완에서 온 배들이 여기서 며칠 머물지."),
          ("Every morning the ship's passengers take jeeps from the pier along the dirt road into town. The first offer is coming!", "Gemi yolcuları her sabah iskeleden cipe biner, toprak yoldan kasabaya gelir. İlk teklif geliyor!",
-          "Jeden Morgen fahren die Schiffsgäste vom Anleger mit Jeeps über den Feldweg in die Stadt. Das erste Angebot kommt!", "Cada mañana los pasajeros del barco van del muelle al pueblo en jeep por el camino de tierra. ¡Llega la primera oferta!",
+          "Jeden Morgen fahren die Schiffspassagiere vom Anleger mit Jeeps über den Feldweg in die Stadt. Das erste Angebot kommt!", "Cada mañana los pasajeros del barco van del muelle al pueblo en jeep por el camino de tierra. ¡Llega la primera oferta!",
           "船の客は毎朝、桟橋からジープに乗り、土の道で町へ来る。最初の提案が来るぞ！", "배 손님들은 매일 아침 부두에서 지프를 타고 흙길로 마을에 오지. 첫 제안이 온다네!"),
-         ("A ship stays for days: your balloons must be ready every morning. Turn it down and a rival grabs the passengers.", "Gemi günlerce kalır: her sabah balonların hazır olmalı. Almazsan yolcuları bir rakip kapar.",
-          "Ein Schiff bleibt tagelang: Deine Ballons müssen jeden Morgen bereit sein. Lehnst du ab, schnappt sich ein Rivale die Gäste.", "Un barco se queda días: tus globos deben estar listos cada mañana. Si no, un rival se lleva a los pasajeros.",
+         ("A ship stays for days: your balloons must be ready every morning. Turn it down and a rival grabs the passengers.", "Gemi günlerce kalır: her sabah balonların hazır olmalı. Reddedersen yolcuları bir rakip kapar.",
+          "Ein Schiff bleibt tagelang: Deine Ballone müssen jeden Morgen bereit sein. Lehnst du ab, schnappt sich ein Konkurrent die Passagiere.", "Un barco se queda días: tus globos deben estar listos cada mañana. Si no, un rival se lleva a los pasajeros.",
           "船は何日も留まる。毎朝気球を用意しておかねばならん。断ればライバルが客をさらう。", "배는 며칠씩 머무르니 매일 아침 열기구가 준비돼 있어야 하네. 거절하면 경쟁사가 손님을 채가지."),
-         ("Deliver three voyages well and the ships will tie up for you more often. Patience, kid; the Nile loves the patient.", "Üç seferi sağlam teslim edersen gemiler sana daha sık yanaşır. Sabır, evlat; Nil sabırlıyı sever.",
-          "Liefere drei Fahrten sauber ab, dann legen die Schiffe öfter für dich an. Geduld, Kleiner; der Nil liebt die Geduldigen.", "Cumple bien tres travesías y los barcos atracarán más a menudo para ti. Paciencia, chico; el Nilo ama a los pacientes.",
+         ("Get three voyages right and the ships will tie up for you more often. Patience, kid; the Nile loves the patient.", "Üç seferi sağlam teslim edersen gemiler sana daha sık yanaşır. Sabır, genç dostum; Nil sabırlıyı sever.",
+          "Liefere drei Fahrten sauber ab, dann legen die Schiffe öfter für dich an. Geduld, mein junger Freund; der Nil liebt die Geduldigen.", "Cumple bien tres travesías y los barcos atracarán más a menudo para ti. Paciencia, joven amigo; el Nilo ama a los pacientes.",
           "3回の航海をきちんとこなせば、船はもっと頻繁に来る。忍耐だ、若者よ。ナイルは辛抱強い者を愛する。", "항해 세 번을 잘 해내면 배가 더 자주 찾아올 걸세. 인내하게, 젊은이. 나일은 참을성 있는 자를 사랑하지.")]),
  "bri": dict(
-  tag=("Train contract offer", "Tren kontratı teklifi", "Angebot: Bahnvertrag", "Oferta de contrato ferroviario", "列車契約の提案", "열차 계약 제안"),
+  tag=("Train contract offer", "Tren grubu teklifi", "Angebot: Bahnvertrag", "Oferta de contrato ferroviario", "列車契約の提案", "열차 계약 제안"),
   place=("Avonside station", "Avonside istasyonu", "Bahnhof Avonside", "Estación de Avonside", "エイボンサイド駅", "에이번사이드역"),
-  accepted=("Splendid! The train will be in the station on Saturday morning. We'll pray against the fog together.", "Harika! Tren cumartesi sabahı istasyonda olacak. Sisi de birlikte dua ederiz.",
-            "Großartig! Der Zug steht am Samstagmorgen im Bahnhof. Gegen den Nebel beten wir gemeinsam.", "¡Espléndido! El tren estará en la estación el sábado por la mañana. Rezaremos juntos contra la niebla.",
-            "素晴らしい！列車は土曜の朝に駅に着きます。霧が出ないよう一緒に祈りましょう。", "훌륭합니다! 기차는 토요일 아침 역에 있을 겁니다. 안개가 안 끼도록 함께 기도하지요."),
+  accepted=("Great! The train will be in the station on Saturday morning. We'll keep our fingers crossed for no fog.", "Harika! Tren Cumartesi sabahı istasyonda olacak. Sis olmasın diye birlikte dua ederiz.",
+            "Großartig! Der Zug steht am Samstagmorgen im Bahnhof. Drücken wir die Daumen, dass kein Nebel kommt.", "¡Genial! El tren estará en la estación el sábado por la mañana. Crucemos los dedos para que no haya niebla.",
+            "決まりですね！列車は土曜の朝に駅に着きます。霧が出ないよう一緒に祈りましょう。", "좋아요! 기차는 토요일 아침에 역에 와 있을 거예요. 안개가 끼지 않길 함께 빌어요."),
   where=("The train stays at the station all weekend; drag the town to the left, along the west road, to see it. Check the fog forecast in the mornings.",
          "Tren hafta sonu boyunca istasyonda duracak; kasabayı sola, batı yolu boyunca kaydırırsan görürsün. Sabahları sis tahminine bak.",
          "Der Zug bleibt das ganze Wochenende im Bahnhof; zieh die Stadt nach links, die Westroute entlang, dann siehst du ihn. Schau morgens auf die Nebelvorhersage.",
@@ -623,25 +623,25 @@ REG = {
          "Der Bahnhof ist leer. Ein neues Wochenendangebot kommt morgens.", "La estación está vacía. Una nueva oferta de fin de semana llega por la mañana.",
          "駅は空っぽ。新しい週末の提案は朝に来る。", "역이 비어 있어요. 새 주말 제안은 아침에 와요."),
   fresh=("Weekend trains from London stop here; the passengers take jeeps into town.", "Londra'dan gelen hafta sonu trenleri burada durur, yolcular cipe binip kasabaya gelir.",
-         "Wochenendzüge aus London halten hier; die Gäste fahren mit Jeeps in die Stadt.", "Los trenes de fin de semana desde Londres paran aquí; los pasajeros van al pueblo en jeep.",
+         "Wochenendzüge aus London halten hier; die Passagiere fahren mit Jeeps in die Stadt.", "Los trenes de fin de semana desde Londres paran aquí; los pasajeros van al pueblo en jeep.",
          "ロンドンからの週末列車はここに停まり、客はジープで町へ向かう。", "런던에서 오는 주말 기차가 여기 서고, 손님들은 지프를 타고 마을로 와요."),
   prefPaper=("London's weekend trains now come to them first.", "Londra'nın hafta sonu trenleri artık önce ona geliyor.", "Londons Wochenendzüge kommen jetzt zuerst zu ihnen.",
              "Los trenes de fin de semana de Londres ahora vienen primero a ellos.", "ロンドンの週末列車はまずそこへ来るようになった。", "런던의 주말 기차는 이제 그곳에 먼저 와요."),
   scene=[("Look, love: the little station at the end of the west road. Weekend trains from London come in here.", "Bak canım, batı yolunun sonundaki küçük istasyon. Londra'dan hafta sonu trenleri buraya gelir.",
           "Schau, Schätzchen: der kleine Bahnhof am Ende der Westroute. Hier kommen die Wochenendzüge aus London an.", "Mira, cariño: la pequeña estación al final del camino del oeste. Aquí llegan los trenes de fin de semana desde Londres.",
-          "ほら、あなた。西の道の終わりの小さな駅よ。ロンドンからの週末列車がここに着くの。", "봐요, 얘. 서쪽 길 끝의 작은 역이에요. 런던에서 주말 기차가 여기로 와요."),
+          "ほら、あんた。西の道の終わりの小さな駅よ。ロンドンからの週末列車がここに着くの。", "보렴, 얘야. 서쪽 길 끝의 작은 역이란다. 런던에서 오는 주말 기차가 여기 선단다."),
          ("The passengers take jeeps from the platform along the road into town. The first offer is coming!", "Yolcular perondan cipe biner, yoldan kasabaya gelir. İlk teklif geliyor!",
-          "Die Gäste fahren vom Bahnsteig mit Jeeps die Straße entlang in die Stadt. Das erste Angebot kommt!", "Los pasajeros van del andén al pueblo en jeep por el camino. ¡Llega la primera oferta!",
-          "客はホームからジープに乗り、道を通って町へ来るの。最初の提案が来るわよ！", "손님들은 승강장에서 지프를 타고 길을 따라 마을에 와요. 첫 제안이 와요!"),
+          "Die Passagiere fahren vom Bahnsteig mit Jeeps die Straße entlang in die Stadt. Das erste Angebot kommt!", "Los pasajeros van del andén al pueblo en jeep por el camino. ¡Llega la primera oferta!",
+          "客はホームからジープに乗り、道を通って町へ来るの。最初の提案が来るわよ！", "손님들은 승강장에서 지프를 타고 길을 따라 마을로 온단다. 첫 제안이 오는구나!"),
          ("A weekend is two days, the price is good, but there's a fog guarantee: on a foggy morning the tickets are refunded, plus a voucher. Watch the forecast.",
-          "Hafta sonu iki gün sürer, fiyatı iyidir ama sis garantisi var: sisli sabah bilet iade, üstüne kupon. Tahmine bak.",
+          "Hafta sonu iki gün sürer, fiyatı iyidir ama sis garantisi var: sisli sabah bilet parası geri ödenir, üstüne kupon verilir. Tahmine bak.",
           "Ein Wochenende dauert zwei Tage, der Preis ist gut, aber es gibt eine Nebelgarantie: An einem nebligen Morgen werden die Tickets erstattet, dazu ein Gutschein. Achte auf die Vorhersage.",
           "Un fin de semana son dos días y el precio es bueno, pero hay garantía de niebla: una mañana con niebla se devuelven los billetes y además un vale. Mira el pronóstico.",
           "週末は2日間、値段はいいけど霧保証があるの。霧の朝はチケット返金、さらにクーポン。予報をよく見て。",
-          "주말은 이틀이고 가격도 좋지만 안개 보증이 있어요. 안개 낀 아침엔 표값을 환불하고 쿠폰까지 줘요. 예보를 잘 봐요."),
+          "주말은 이틀이고 가격도 좋지만 안개 보증이 있단다. 안개 낀 아침엔 표값을 환불하고 쿠폰까지 줘야 해. 예보를 잘 보렴."),
          ("If three weekends go smoothly, they'll come to you more often. Don't forget your umbrella!", "Üç hafta sonu sorunsuz geçerse sana daha sık gelirler. Şemsiyeni unutma!",
           "Wenn drei Wochenenden glatt laufen, kommen sie öfter zu dir. Vergiss den Schirm nicht!", "Si tres fines de semana salen bien, vendrán más a menudo. ¡No olvides el paraguas!",
-          "週末が3回うまくいけば、もっと頻繁に来てくれるわ。傘を忘れないでね！", "주말 세 번이 순조로우면 더 자주 올 거예요. 우산 잊지 말아요!")]),
+          "週末が3回うまくいけば、もっと頻繁に来てくれるわ。傘を忘れないでね！", "주말 세 번이 순조로우면 더 자주 올 거란다. 우산 잊지 말렴!")]),
 }
 for r, d in REG.items():
     for k in ("tag", "place", "accepted", "where", "empty", "fresh", "prefPaper"):
@@ -652,68 +652,68 @@ for r, d in REG.items():
 # ---- The offer card ----
 add("ctr.newContact", "A new business contact", "Yeni bir iş bağlantısı", "Ein neuer Geschäftskontakt", "Un nuevo contacto de negocios", "新しい取引先", "새로운 거래처")
 add("ctr.fact.people", "people · fleet seats: %@", "kişi · filon: %@ koltuk", "Personen · Flottenplätze: %@", "personas · plazas de la flota: %@", "人 · 保有座席：%@", "명 · 보유 좌석: %@")
-add("ctr.fact.peopleDaily", "people each morning · fleet seats: %@", "kişi her sabah · filon: %@ koltuk", "Personen jeden Morgen · Flottenplätze: %@",
+add("ctr.fact.peopleDaily", "people each morning · fleet seats: %@", "kişi, her sabah · filon: %@ koltuk", "Personen jeden Morgen · Flottenplätze: %@",
     "personas cada mañana · plazas de la flota: %@", "人（毎朝） · 保有座席：%@", "명(매일 아침) · 보유 좌석: %@")
-add("ctr.when.one", "Day %@", "Gün %@", "Tag %@", "Día %@", "%@日目", "%@일째")
-add("ctr.when.range", "Days %1$@–%2$@", "Gün %1$@–%2$@", "Tag %1$@–%2$@", "Días %1$@–%2$@", "%1$@〜%2$@日目", "%1$@~%2$@일째")
-add("ctr.fact.inDays", "in %@ days", "%@ gün sonra", "in %@ Tagen", "en %@ días", "%@日後", "%@일 후")
-add("ctr.fact.inDaysFor", "in %1$@ days, for %2$@ days", "%1$@ gün sonra, %2$@ gün", "in %1$@ Tagen, %2$@ Tage lang", "en %1$@ días, durante %2$@ días", "%1$@日後から%2$@日間", "%1$@일 후부터 %2$@일간")
+add("ctr.when.one", "Day %@", "Gün %@", "Tag %@", "Día %@", "%@日目", "%@일차")
+add("ctr.when.range", "Days %1$@–%2$@", "Gün %1$@–%2$@", "Tag %1$@–%2$@", "Días %1$@–%2$@", "%1$@〜%2$@日目", "%1$@~%2$@일차")
+add("ctr.fact.inDays", "Days to go: %@", "Kalan gün: %@", "Noch Tage: %@", "Faltan días: %@", "残り日数：%@", "남은 날: %@")
+add("ctr.fact.inDaysFor", "Days to go: %1$@ · length: %2$@", "Kalan gün: %1$@ · süre: %2$@", "Noch Tage: %1$@ · Dauer: %2$@", "Faltan días: %1$@ · duración: %2$@", "残り日数：%1$@ · 期間：%2$@", "남은 날: %1$@ · 기간: %2$@")
 add("ctr.fact.perHead", "a head", "kişi başı", "pro Kopf", "por cabeza", "1人あたり", "1인당")
 add("ctr.fact.total", "total", "toplam", "gesamt", "total", "合計", "합계")
 add("ctr.fogForecast", "Fog forecast", "Sis tahmini", "Nebelvorhersage", "Pronóstico de niebla", "霧予報", "안개 예보")
 add("ctr.rule.fog", "Every morning the seats go to the group first. Fog guarantee: on a foggy morning that day's tickets are refunded, plus a %1$@ voucher a head. Penalty per missing seat: %2$@.",
-    "Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade, üstüne kişi başı %1$@ kupon. Eksik koltuk başına %2$@ ceza.",
+    "Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade edilir, üstüne kişi başı %1$@ kupon verilir. Eksik koltuk başına %2$@ ceza.",
     "Jeden Morgen gehen die Plätze zuerst an die Gruppe. Nebelgarantie: An einem nebligen Morgen werden die Tickets des Tages erstattet, dazu ein Gutschein von %1$@ pro Kopf. Strafe pro fehlendem Platz: %2$@.",
-    "Cada mañana los asientos van primero al grupo. Garantía de niebla: una mañana con niebla se devuelven los billetes del día y además un vale de %1$@ por cabeza. Multa por asiento que falte: %2$@.",
+    "Cada mañana las plazas van primero al grupo. Garantía de niebla: una mañana con niebla se devuelven los billetes del día y además un vale de %1$@ por cabeza. Multa por plaza que falte: %2$@.",
     "毎朝、座席はまずグループへ。霧保証：霧の朝はその日のチケット代を返金し、さらに1人%1$@のクーポン。不足座席1つにつき%2$@の違約金。",
     "매일 아침 좌석은 먼저 단체에게 갑니다. 안개 보증: 안개 낀 아침엔 그날 표값을 환불하고 1인당 %1$@ 쿠폰을 더 줍니다. 부족한 좌석당 위약금 %2$@.")
 add("ctr.rule.block", "For %1$@ mornings the seats go to the group first; every morning the penalty per missing seat is %2$@. A red-flag morning doesn't count.",
     "%1$@ sabah boyunca koltuklar önce gruba gider; her sabah eksik koltuk başına %2$@ ceza. Kırmızı bayraklı sabah sayılmaz.",
     "%1$@ Morgen lang gehen die Plätze zuerst an die Gruppe; jeden Morgen kostet ein fehlender Platz %2$@ Strafe. Ein Morgen mit roter Flagge zählt nicht.",
-    "Durante %1$@ mañanas los asientos van primero al grupo; cada mañana la multa por asiento que falte es de %2$@. Una mañana con bandera roja no cuenta.",
-    "%1$@朝の間、座席はまずグループへ。毎朝、不足座席1つにつき%2$@の違約金。赤旗の朝は数えない。",
+    "Durante %1$@ mañanas las plazas van primero al grupo; cada mañana la multa por plaza que falte es de %2$@. Una mañana con bandera roja no cuenta.",
+    "%1$@日間、毎朝座席はまずグループへ。毎朝、不足座席1つにつき%2$@の違約金。赤い旗の朝は数えない。",
     "%1$@일 아침 동안 좌석은 먼저 단체에게 갑니다. 매일 아침 부족한 좌석당 위약금 %2$@. 빨간 깃발 아침은 치지 않습니다.")
 add("ctr.rule.one", "That morning the seats go to the group first. Penalty per missing seat: %1$@; on a red flag the group moves a day (at %2$@ off).",
     "O sabah koltuklar önce gruba gider. Eksik koltuk başına %1$@ ceza; kırmızı bayrakta grup bir gün kayar (%2$@ indirimle).",
     "An dem Morgen gehen die Plätze zuerst an die Gruppe. Strafe pro fehlendem Platz: %1$@; bei roter Flagge rückt die Gruppe einen Tag weiter (mit %2$@ Rabatt).",
-    "Esa mañana los asientos van primero al grupo. Multa por asiento que falte: %1$@; con bandera roja el grupo se mueve un día (con un %2$@ de descuento).",
-    "その朝、座席はまずグループへ。不足座席1つにつき%1$@の違約金。赤旗ならグループは1日ずれる（%2$@引き）。",
+    "Esa mañana las plazas van primero al grupo. Multa por plaza que falte: %1$@; con bandera roja el grupo se mueve un día (con un %2$@ de descuento).",
+    "その朝、座席はまずグループへ。不足座席1つにつき%1$@の違約金。赤い旗ならグループは1日ずれる（%2$@引き）。",
     "그날 아침 좌석은 먼저 단체에게 갑니다. 부족한 좌석당 위약금 %1$@. 빨간 깃발이면 단체는 하루 밀립니다(%2$@ 할인).")
-add("ctr.rule.rival", "Turn it down and %@ flies the group.", "Almazsan grubu %@ uçurur.", "Lehnst du ab, fliegt %@ die Gruppe.",
-    "Si lo rechazas, %@ volará al grupo.", "断れば%@がグループを飛ばす。", "거절하면 %@이(가) 단체를 태웁니다.")
-add("ctr.rule.rivalAny", "Turn it down and a rival flies the group.", "Almazsan grubu bir rakip uçurur.", "Lehnst du ab, fliegt ein Rivale die Gruppe.",
-    "Si lo rechazas, un rival volará al grupo.", "断ればライバルがグループを飛ばす。", "거절하면 경쟁사가 단체를 태웁니다.")
-add("ctr.pref", "Preferred operator", "Tercih edilen operatör", "Bevorzugter Anbieter", "Operador preferido", "優先業者", "우선 운영사")
+add("ctr.rule.rival", "Turn it down and %@ flies the group.", "Reddedersen grubu %@ uçurur.", "Lehnst du ab, fliegt %@ die Gruppe.",
+    "Si lo rechazas, %@ llevará al grupo.", "断れば%@がグループを飛ばす。", "거절하면 %@이(가) 단체를 태웁니다.")
+add("ctr.rule.rivalAny", "Turn it down and a rival flies the group.", "Reddedersen grubu bir rakip uçurur.", "Lehnst du ab, fliegt ein Konkurrent die Gruppe.",
+    "Si lo rechazas, un rival llevará al grupo.", "断ればライバルがグループを飛ばす。", "거절하면 경쟁사가 단체를 태웁니다.")
+add("ctr.pref", "Preferred operator", "Gözde ortak", "Bevorzugter Anbieter", "Operador preferido", "優先業者", "우선 협력사")
 add("ctr.pref.sub", "Offers come more often, %@ more a head", "Teklifler daha sık, kişi başı %@ fazla", "Angebote kommen öfter, %@ mehr pro Kopf",
     "Las ofertas llegan más seguido, %@ más por cabeza", "提案がより頻繁に、1人あたり%@増し", "제안이 더 자주, 1인당 %@ 더")
-add("ctr.trust", "Jobs done: %1$@/%2$@; the third makes you the preferred operator", "Başarılı iş: %1$@/%2$@, üçüncüde tercih edilen operatör",
-    "Erledigte Aufträge: %1$@/%2$@; beim dritten wirst du bevorzugter Anbieter", "Trabajos cumplidos: %1$@/%2$@; con el tercero serás operador preferido",
-    "成功した仕事：%1$@/%2$@。3回目で優先業者に", "성공한 일: %1$@/%2$@, 세 번째에 우선 운영사")
+add("ctr.trust", "Jobs done: %1$@/%2$@; the third makes you the preferred operator", "Başarılı iş: %1$@/%2$@ · üçüncüsünde gözde ortağı olursun",
+    "Aufträge: %1$@/%2$@ · beim 3. bevorzugt", "Trabajos: %1$@/%2$@ · al 3.º, preferido",
+    "成功した仕事：%1$@/%2$@。3回目で優先業者に", "성공한 일: %1$@/%2$@, 세 번째에 우선 협력사")
 add("ctr.accept", "Accept: %@", "Kabul et: %@", "Annehmen: %@", "Aceptar: %@", "引き受ける：%@", "수락: %@")
 add("ctr.negotiate", "Negotiate: %@", "Pazarlık: %@", "Verhandeln: %@", "Negociar: %@", "交渉：%@", "협상: %@")
-add("ctr.negotiate.safe", "Rarely walks", "Pek kaçmaz", "Springt selten ab", "Rara vez se va", "まず逃げない", "거의 안 떠나요")
-add("ctr.negotiate.risk", "May go to a rival", "Rakibe gidebilir", "Könnte zum Rivalen gehen", "Puede irse con un rival", "ライバルに行くかも", "경쟁사로 갈 수 있어요")
+add("ctr.negotiate.safe", "Rarely walks away", "Genelde kabul eder", "Springt selten ab", "Rara vez se va", "まず逃げない", "거의 안 떠나요")
+add("ctr.negotiate.risk", "May go to a rival", "Rakibe gidebilir", "Kann abspringen", "Puede irse a otro", "ライバルに行くかも", "경쟁사로 갈 수 있어요")
 add("ctr.decline", "Decline", "Reddet", "Ablehnen", "Rechazar", "断る", "거절")
-add("ctr.decline.sub", "The group goes to a rival", "Grup rakibe gider", "Die Gruppe geht zum Rivalen", "El grupo se va con un rival", "グループはライバルへ", "단체는 경쟁사로")
-add("ctr.deal", "You have a deal", "Anlaştınız", "Abgemacht", "Trato hecho", "契約成立", "계약 성사")
-add("ctr.lost", "The group went to a rival", "Grup rakibe gitti", "Die Gruppe ging zum Rivalen", "El grupo se fue con un rival", "グループはライバルへ", "단체가 경쟁사로 갔어요")
+add("ctr.decline.sub", "The group goes to a rival", "Grup rakibe gider", "Geht zur Konkurrenz", "Se va con un rival", "グループはライバルへ", "단체는 경쟁사로")
+add("ctr.deal", "You have a deal", "Anlaştık!", "Abgemacht", "Trato hecho", "契約成立", "계약 성사")
+add("ctr.lost", "The group went to a rival", "Grup rakibe gitti", "Die Gruppe ging zur Konkurrenz", "El grupo se fue con un rival", "グループはライバルへ", "단체가 경쟁사로 갔어요")
 add("ctr.deal.one", "%1$@: %2$@ people, %3$@ a head.", "%1$@: %2$@ kişi, kişi başı %3$@.", "%1$@: %2$@ Personen, %3$@ pro Kopf.",
     "%1$@: %2$@ personas, %3$@ por cabeza.", "%1$@：%2$@人、1人%3$@。", "%1$@: %2$@명, 1인당 %3$@.")
 add("ctr.deal.daily", "%1$@: %2$@ people every morning, %3$@ a head.", "%1$@: her sabah %2$@ kişi, kişi başı %3$@.", "%1$@: jeden Morgen %2$@ Personen, %3$@ pro Kopf.",
     "%1$@: %2$@ personas cada mañana, %3$@ por cabeza.", "%1$@：毎朝%2$@人、1人%3$@。", "%1$@: 매일 아침 %2$@명, 1인당 %3$@.")
-add("ctr.lost.one", "%1$@ will fly %2$@ more passengers that day.", "%1$@ o gün %2$@ yolcu daha uçuracak.", "%1$@ fliegt an dem Tag %2$@ Gäste mehr.",
-    "%1$@ volará %2$@ pasajeros más ese día.", "%1$@はその日%2$@人多く飛ばす。", "%1$@은(는) 그날 손님 %2$@명을 더 태웁니다.")
+add("ctr.lost.one", "%1$@ will fly %2$@ more passengers that day.", "%1$@ o gün %2$@ yolcu daha uçuracak.", "%1$@ fliegt an dem Tag %2$@ Passagiere mehr.",
+    "%1$@ llevará %2$@ pasajeros más ese día.", "%1$@はその日%2$@人多く飛ばす。", "%1$@은(는) 그날 손님 %2$@명을 더 태웁니다.")
 add("ctr.lost.daily", "%1$@ will fly %2$@ more passengers every morning of those days.", "%1$@ o günlerde her sabah %2$@ yolcu daha uçuracak.",
-    "%1$@ fliegt an diesen Tagen jeden Morgen %2$@ Gäste mehr.", "%1$@ volará %2$@ pasajeros más cada mañana de esos días.",
+    "%1$@ fliegt an diesen Tagen jeden Morgen %2$@ Passagiere mehr.", "%1$@ llevará %2$@ pasajeros más cada mañana de esos días.",
     "%1$@はその期間、毎朝%2$@人多く飛ばす。", "%1$@은(는) 그 기간 매일 아침 손님 %2$@명을 더 태웁니다.")
 add("ctr.lost.why", "Its cash box will fill, its fleet will grow, its name will spread.", "Kasası dolacak, filosu büyüyecek, adı duyulacak.",
-    "Seine Kasse wird sich füllen, seine Flotte wachsen, sein Name sich herumsprechen.", "Su caja se llenará, su flota crecerá, su nombre se oirá.",
-    "金庫は潤い、機体は増え、名は広まる。", "금고는 차고, 기단은 커지고, 이름은 알려질 겁니다.")
-add("ctr.rival", "A rival", "Bir rakip", "Ein Rivale", "Un rival", "ライバル", "경쟁사")
+    "Seine Kasse wird sich füllen, seine Flotte wachsen, sein Name sich herumsprechen.", "Su caja se llenará, su flota crecerá, su nombre correrá.",
+    "金庫は潤い、気球は増え、名は広まる。", "금고는 차고, 기단은 커지고, 이름은 알려질 겁니다.")
+add("ctr.rival", "A rival", "Bir rakip", "Ein Konkurrent", "Un rival", "ライバル", "경쟁사")
 add("ctr.group", "Group", "Grup", "Gruppe", "Grupo", "グループ", "단체")
 add("ctr.group.size", "People: %1$@ · %2$@", "%1$@ kişi · %2$@", "Personen: %1$@ · %2$@", "Personas: %1$@ · %2$@", "%1$@人 · %2$@", "%1$@명 · %2$@")
 add("ctr.group.sizeDaily", "People: %1$@ × %2$@ · %3$@", "%1$@ kişi × %2$@ · %3$@", "Personen: %1$@ × %2$@ · %3$@", "Personas: %1$@ × %2$@ · %3$@", "%1$@人 × %2$@ · %3$@", "%1$@명 × %2$@ · %3$@")
-add("ctr.scene.next", "Next", "Devam", "Weiter", "Seguir", "次へ", "다음")
+add("ctr.scene.next", "Next", "Devam", "Weiter", "Siguiente", "次へ", "다음")
 add("ctr.scene.offer", "See the offer", "Teklife bak", "Zum Angebot", "Ver la oferta", "提案を見る", "제안 보기")
 add("ctr.scene.skip", "Skip", "Geç", "Überspringen", "Saltar", "スキップ", "건너뛰기")
 
@@ -730,151 +730,152 @@ for i, t in enumerate([("Mon", "Pzt", "Mo", "lun", "月", "월"), ("Tue", "Sal",
 # ---- The day: events, report, paper, goals, price sheet, boarding ----
 add("event.contractFog", "Fog guarantee: %2$@ passengers of the %1$@ group didn't fly today; their tickets were refunded. Vouchers: %3$@.",
     "Sis garantisi: %1$@ grubundan %2$@ yolcu bugün uçmadı, bilet paraları iade edildi. Kuponlar: %3$@.",
-    "Nebelgarantie: %2$@ Gäste der Gruppe von %1$@ sind heute nicht geflogen; ihre Tickets wurden erstattet. Gutscheine: %3$@.",
+    "Nebelgarantie: %2$@ Passagiere der Gruppe von %1$@ sind heute nicht geflogen; ihre Tickets wurden erstattet. Gutscheine: %3$@.",
     "Garantía de niebla: %2$@ pasajeros del grupo de %1$@ no volaron hoy; se les devolvieron los billetes. Vales: %3$@.",
     "霧保証：%1$@のグループ%2$@人は今日飛ばず、チケット代を返金。クーポン：%3$@。",
     "안개 보증: %1$@ 단체 손님 %2$@명이 오늘 비행하지 않아 표값을 환불했습니다. 쿠폰: %3$@.")
 add("event.contractRed", "Red flag: the %@ group didn't fly today. No pay, and no penalty.", "Kırmızı bayrak: %@ grubu bugün uçmadı. Ödeme yok, ceza da yok.",
     "Rote Flagge: Die Gruppe von %@ ist heute nicht geflogen. Kein Geld, aber auch keine Strafe.", "Bandera roja: el grupo de %@ no voló hoy. Sin pago y sin multa.",
-    "赤旗：%@のグループは今日飛ばなかった。支払いも違約金もなし。", "빨간 깃발: %@ 단체는 오늘 비행하지 않았습니다. 지급도 위약금도 없습니다.")
+    "赤い旗：%@のグループは今日飛ばなかった。支払いも違約金もなし。", "빨간 깃발: %@ 단체는 오늘 비행하지 않았습니다. 지급도 위약금도 없습니다.")
 add("event.contractFlown", "%1$@ group: %2$@ passengers flew, %3$@ a head. Total %4$@.", "%1$@ grubu: %2$@ yolcu uçtu, kişi başı %3$@. Toplam %4$@.",
-    "Gruppe von %1$@: %2$@ Gäste sind geflogen, %3$@ pro Kopf. Zusammen %4$@.", "Grupo de %1$@: volaron %2$@ pasajeros, %3$@ por cabeza. Total %4$@.",
+    "Gruppe von %1$@: %2$@ Passagiere sind geflogen, %3$@ pro Kopf. Zusammen %4$@.", "Grupo de %1$@: volaron %2$@ pasajeros, %3$@ por cabeza. Total %4$@.",
     "%1$@のグループ：%2$@人が飛んだ。1人%3$@、合計%4$@。", "%1$@ 단체: 손님 %2$@명 비행, 1인당 %3$@. 합계 %4$@.")
 add("event.contractFlownDay", "%1$@ group (day %2$@ of %3$@): %4$@ passengers flew, %5$@ a head. Total %6$@.",
-    "%1$@ grubu (%2$@/%3$@. gün): %4$@ yolcu uçtu, kişi başı %5$@. Toplam %6$@.",
-    "Gruppe von %1$@ (Tag %2$@ von %3$@): %4$@ Gäste sind geflogen, %5$@ pro Kopf. Zusammen %6$@.",
+    "%1$@ grubu (gün %2$@/%3$@): %4$@ yolcu uçtu, kişi başı %5$@. Toplam %6$@.",
+    "Gruppe von %1$@ (Tag %2$@ von %3$@): %4$@ Passagiere sind geflogen, %5$@ pro Kopf. Zusammen %6$@.",
     "Grupo de %1$@ (día %2$@ de %3$@): volaron %4$@ pasajeros, %5$@ por cabeza. Total %6$@.",
     "%1$@のグループ（%3$@日中%2$@日目）：%4$@人が飛んだ。1人%5$@、合計%6$@。",
-    "%1$@ 단체(%3$@일 중 %2$@일째): 손님 %4$@명 비행, 1인당 %5$@. 합계 %6$@.")
-add("event.contractShort", "%1$@ people couldn't fly. Penalty per missing seat: %2$@, %3$@ in all.", "%1$@ kişi uçamadı. Eksik koltuk başına %2$@ ceza: %3$@.",
-    "%1$@ Personen konnten nicht fliegen. Strafe pro fehlendem Platz: %2$@, zusammen %3$@.", "%1$@ personas no pudieron volar. Multa por asiento que falta: %2$@, %3$@ en total.",
+    "%1$@ 단체(%3$@일 중 %2$@일차): 손님 %4$@명 비행, 1인당 %5$@. 합계 %6$@.")
+add("event.contractShort", "%1$@ people couldn't fly. Penalty per missing seat: %2$@, %3$@ in all.", "%1$@ kişi uçamadı. Eksik koltuk başına %2$@ ceza, toplam %3$@.",
+    "%1$@ Personen konnten nicht fliegen. Strafe pro fehlendem Platz: %2$@, zusammen %3$@.", "%1$@ personas no pudieron volar. Multa por plaza que falte: %2$@, %3$@ en total.",
     "%1$@人が飛べなかった。不足座席1つにつき%2$@、計%3$@の違約金。", "%1$@명이 비행하지 못했습니다. 부족한 좌석당 %2$@, 총 위약금 %3$@.")
 add("event.contractWeather", "The %@ job ended without a single flight because of the weather. Nobody's fault.", "%@ işi hava yüzünden hiç uçamadan bitti. Kimsenin suçu değil.",
     "Der Auftrag von %@ endete wetterbedingt ohne einen einzigen Flug. Niemand ist schuld.", "El trabajo de %@ terminó sin un solo vuelo por el tiempo. No es culpa de nadie.",
     "%@の仕事は天候のため一度も飛べずに終わった。誰のせいでもない。", "%@ 일은 날씨 때문에 한 번도 비행하지 못하고 끝났습니다. 누구 탓도 아닙니다.")
 add("event.contractProgress", "Jobs done with %1$@: %2$@/%3$@. At the third you become their preferred operator.",
-    "%1$@ ile başarılı iş: %2$@/%3$@. Üçüncüde tercih edilen operatörü olursun.",
+    "%1$@ ile başarılı iş: %2$@/%3$@. Üçüncüsünde gözde ortağı olursun.",
     "Erledigte Aufträge mit %1$@: %2$@/%3$@. Beim dritten wirst du bevorzugter Anbieter.",
     "Trabajos cumplidos con %1$@: %2$@/%3$@. Con el tercero serás su operador preferido.",
-    "%1$@との成功した仕事：%2$@/%3$@。3回目で優先業者になる。", "%1$@와(과)의 성공한 일: %2$@/%3$@. 세 번째에 우선 운영사가 됩니다.")
-add("event.contractTrustDown", "%1$@ trusts you less: passengers who couldn't fly: %2$@.", "%1$@ sana daha az güveniyor: uçamayan yolcu: %2$@.",
-    "%1$@ vertraut dir weniger: Gäste, die nicht fliegen konnten: %2$@.", "%1$@ confía menos en ti: pasajeros que no pudieron volar: %2$@.",
-    "%1$@の信頼が下がった：飛べなかった客：%2$@人。", "%1$@의 신뢰가 떨어졌습니다. 비행하지 못한 손님: %2$@명.")
+    "%1$@との成功した仕事：%2$@/%3$@。3回目で優先業者になる。", "%1$@와(과)의 성공한 일: %2$@/%3$@. 세 번째에 우선 협력사가 됩니다.")
+add("event.contractTrustDown", "%1$@ trusts you less. Passengers who couldn't fly: %2$@.", "%1$@ sana artık daha az güveniyor. Uçamayan yolcu: %2$@.",
+    "%1$@ vertraut dir weniger. Passagiere, die nicht fliegen konnten: %2$@.", "%1$@ confía menos en ti. Pasajeros que no pudieron volar: %2$@.",
+    "%1$@の信頼が下がった。飛べなかった客：%2$@人。", "%1$@의 신뢰가 떨어졌습니다. 비행하지 못한 손님: %2$@명.")
 add("event.rivalFlewGroup", "%1$@ flies %3$@ passengers of the %2$@ group. Its popularity grew.", "%1$@, %2$@ grubundan %3$@ yolcu uçuruyor. Popülerliği arttı.",
-    "%1$@ fliegt %3$@ Gäste der Gruppe von %2$@. Seine Beliebtheit ist gestiegen.", "%1$@ vuela a %3$@ pasajeros del grupo de %2$@. Su popularidad creció.",
+    "%1$@ fliegt %3$@ Passagiere der Gruppe von %2$@. Seine Beliebtheit ist gestiegen.", "%1$@ lleva a %3$@ pasajeros del grupo de %2$@. Su popularidad creció.",
     "%1$@が%2$@のグループ%3$@人を飛ばしている。人気が上がった。", "%1$@이(가) %2$@ 단체 손님 %3$@명을 태웁니다. 인기가 올랐습니다.")
 add("event.rivalFlewGroupDays", "%1$@ flies %3$@ passengers of the %2$@ group every morning for %4$@ days. Its popularity grew.",
     "%1$@, %2$@ grubundan %4$@ gün boyunca her sabah %3$@ yolcu uçuruyor. Popülerliği arttı.",
-    "%1$@ fliegt %4$@ Tage lang jeden Morgen %3$@ Gäste der Gruppe von %2$@. Seine Beliebtheit ist gestiegen.",
-    "%1$@ vuela a %3$@ pasajeros del grupo de %2$@ cada mañana durante %4$@ días. Su popularidad creció.",
+    "%1$@ fliegt %4$@ Tage lang jeden Morgen %3$@ Passagiere der Gruppe von %2$@. Seine Beliebtheit ist gestiegen.",
+    "%1$@ lleva a %3$@ pasajeros del grupo de %2$@ cada mañana durante %4$@ días. Su popularidad creció.",
     "%1$@が%4$@日間、毎朝%2$@のグループ%3$@人を飛ばす。人気が上がった。", "%1$@이(가) %4$@일 동안 매일 아침 %2$@ 단체 손님 %3$@명을 태웁니다. 인기가 올랐습니다.")
-add("event.rivalGrewWithGroup", "With the money it added balloons to its fleet: %@.", "Bu parayla filosuna balon ekledi: %@.", "Mit dem Geld hat es seine Flotte vergrößert: Ballons: %@.",
+add("event.rivalGrewWithGroup", "With the money it added balloons to its fleet: %@.", "Bu parayla filosuna balon ekledi: %@.", "Mit dem Geld hat die Firma ihre Flotte vergrößert. Ballone: %@.",
     "Con ese dinero añadió globos a su flota: %@.", "その金で気球を%@機増やした。", "그 돈으로 열기구를 %@대 늘렸습니다.")
 add("ledger.contract", "Tour group (people: %@)", "Tur grubu (%@ kişi)", "Tourgruppe (Personen: %@)", "Grupo turístico (personas: %@)", "ツアーグループ（%@人）", "투어 단체(%@명)")
-add("ledger.contractPenalty", "Tour group: missing seats penalty", "Tur grubu: eksik koltuk cezası", "Tourgruppe: Strafe für fehlende Plätze", "Grupo turístico: multa por asientos que faltan",
+add("ledger.contractPenalty", "Tour group: missing seats penalty", "Tur grubu: eksik koltuk cezası", "Tourgruppe: Strafe für fehlende Plätze", "Grupo turístico: multa por plazas que faltan",
     "ツアーグループ：座席不足の違約金", "투어 단체: 좌석 부족 위약금")
 add("ledger.contractVoucher", "Fog guarantee: vouchers", "Sis garantisi: kuponlar", "Nebelgarantie: Gutscheine", "Garantía de niebla: vales", "霧保証：クーポン", "안개 보증: 쿠폰")
-add("ledger.transfer", "Balloons brought from home", "Getirilen balonların bedeli", "Mitgebrachte Ballons", "Globos traídos de casa", "持ち込んだ気球の代金", "가져온 열기구 대금")
+add("ledger.transfer", "Balloons brought from home", "Getirilen balonların bedeli", "Mitgebrachte Ballone", "Globos traídos de casa", "持ち込んだ気球の代金", "가져온 열기구 대금")
 add("repWhy.contract", "A contract group left on the ground", "Grup yerde kaldı", "Eine Vertragsgruppe blieb am Boden", "Un grupo contratado se quedó en tierra", "契約グループが地上に残った", "계약 단체가 땅에 남음")
-add("paper.preferredOperator", "%1$@ is now the preferred operator of %2$@", "%1$@, %2$@ için tercih edilen operatör oldu", "%1$@ ist jetzt bevorzugter Anbieter von %2$@",
-    "%1$@ es ahora el operador preferido de %2$@", "%1$@、%2$@の優先業者に", "%1$@, %2$@의 우선 운영사로")
-add("paper.rivalGroup", "%1$@ flew the %2$@ group", "%1$@, %2$@ grubunu uçurdu", "%1$@ flog die Gruppe von %2$@", "%1$@ voló al grupo de %2$@", "%1$@、%2$@のグループを乗せる", "%1$@, %2$@ 단체를 태우다")
+add("paper.preferredOperator", "%1$@ is now the preferred operator of %2$@", "%1$@ artık %2$@ şirketinin gözde ortağı", "%1$@ ist jetzt bevorzugter Anbieter von %2$@",
+    "%1$@ es ahora el operador preferido de %2$@", "%1$@、%2$@の優先業者に", "%1$@, %2$@의 우선 협력사로")
+add("paper.rivalGroup", "%1$@ flew the %2$@ group", "%1$@, %2$@ grubunu uçurdu", "%1$@ flog die Gruppe von %2$@", "%1$@ llevó al grupo de %2$@", "%1$@、%2$@のグループを乗せる", "%1$@, %2$@ 단체를 태우다")
 for kind, t in [("bus", ("%1$@ tour coach passengers in the baskets of %2$@.", "%1$@ otobüs yolcusu %2$@ sepetlerinde.", "%1$@ Busreisende in den Körben von %2$@.",
-                          "%1$@ pasajeros de autobús en las canastas de %2$@.", "%2$@のゴンドラにバスの客%1$@人。", "%2$@의 바구니에 버스 손님 %1$@명.")),
+                          "%1$@ pasajeros de autobús en las cestas de %2$@.", "%2$@のバスケットにバスの客%1$@人。", "%2$@의 바스켓에 버스 손님 %1$@명.")),
                 ("ship", ("%1$@ cruise passengers in the baskets of %2$@.", "%1$@ gemi yolcusu %2$@ sepetlerinde.", "%1$@ Schiffsgäste in den Körben von %2$@.",
-                          "%1$@ pasajeros de crucero en las canastas de %2$@.", "%2$@のゴンドラに船の客%1$@人。", "%2$@의 바구니에 크루즈 손님 %1$@명.")),
+                          "%1$@ pasajeros de crucero en las cestas de %2$@.", "%2$@のバスケットに船の客%1$@人。", "%2$@의 바스켓에 크루즈 손님 %1$@명.")),
                 ("train", ("%1$@ train passengers in the baskets of %2$@.", "%1$@ tren yolcusu %2$@ sepetlerinde.", "%1$@ Bahnreisende in den Körben von %2$@.",
-                           "%1$@ pasajeros de tren en las canastas de %2$@.", "%2$@のゴンドラに列車の客%1$@人。", "%2$@의 바구니에 기차 손님 %1$@명."))]:
+                           "%1$@ pasajeros de tren en las cestas de %2$@.", "%2$@のバスケットに列車の客%1$@人。", "%2$@의 바스켓에 기차 손님 %1$@명."))]:
     add(f"paper.rivalGroup.sub.{kind}", *t)
 add("paper.rivalGroup.days", "Every morning for %@ days.", "%@ gün boyunca her sabah.", "%@ Tage lang jeden Morgen.", "Cada mañana durante %@ días.", "%@日間、毎朝。", "%@일 동안 매일 아침.")
 add("paper.rivalGroup.grow", "The company added balloons to its fleet with the money: %@.", "Şirket bu parayla filosuna balon ekledi: %@.",
-    "Die Firma hat mit dem Geld ihre Flotte vergrößert: Ballons: %@.", "La empresa añadió globos a su flota con ese dinero: %@.", "同社はその金で気球を%@機増やした。", "회사는 그 돈으로 열기구를 %@대 늘렸다.")
-for r, t in [("abq", ("Tour groups flown in full: %@", "Eksiksiz uçurulan tur grubu: %@", "Vollständig geflogene Tourgruppen: %@", "Grupos turísticos volados completos: %@", "完全に飛ばしたツアーグループ：%@", "완벽히 태운 투어 단체: %@")),
-             ("lux", ("Cruise groups flown in full: %@", "Eksiksiz uçurulan gemi grubu: %@", "Vollständig geflogene Schiffsgruppen: %@", "Grupos de crucero volados completos: %@", "完全に飛ばしたクルーズグループ：%@", "완벽히 태운 크루즈 단체: %@")),
-             ("bri", ("Weekend groups flown in full: %@", "Eksiksiz uçurulan hafta sonu grubu: %@", "Vollständig geflogene Wochenendgruppen: %@", "Grupos de fin de semana volados completos: %@", "完全に飛ばした週末グループ：%@", "완벽히 태운 주말 단체: %@"))]:
+    "Mit dem Geld hat die Firma ihre Flotte vergrößert. Ballone: %@.", "La empresa añadió globos a su flota con ese dinero: %@.", "同社はその金で気球を%@機増やした。", "회사는 그 돈으로 열기구를 %@대 늘렸다.")
+for r, t in [("abq", ("Tour groups flown in full: %@", "Eksiksiz uçurulan tur grubu: %@", "Vollständig geflogene Tourgruppen: %@", "Grupos turísticos completados: %@", "全員を飛ばしたツアーグループ：%@", "전원 태운 투어 단체: %@")),
+             ("lux", ("Cruise groups flown in full: %@", "Eksiksiz uçurulan gemi grubu: %@", "Vollständig geflogene Schiffsgruppen: %@", "Grupos de crucero completados: %@", "全員を飛ばしたクルーズグループ：%@", "전원 태운 크루즈 단체: %@")),
+             ("bri", ("Weekend groups flown in full: %@", "Eksiksiz uçurulan hafta sonu grubu: %@", "Vollständig geflogene Wochenendgruppen: %@", "Grupos de fin de semana completados: %@", "全員を飛ばした週末グループ：%@", "전원 태운 주말 단체: %@"))]:
     add(f"goal.ctrDone.{r}", *t)
-add("goal.ctrDoneAny.abq", "Tour groups flown in full, any company: %@", "Eksiksiz uçurulan tur grubu (herhangi bir şirket): %@", "Vollständig geflogene Tourgruppen, beliebige Firma: %@",
-    "Grupos turísticos volados completos, cualquier empresa: %@", "完全に飛ばしたツアーグループ（どの会社でも）：%@", "완벽히 태운 투어 단체(어느 회사든): %@")
-for r in ("lux", "bri"):
-    add(f"goal.ctrDoneAny.{r}", "Contracts flown in full, any company: %@", "Eksiksiz uçurulan kontrat (herhangi bir şirket): %@", "Vollständig geflogene Verträge, beliebige Firma: %@",
-        "Contratos volados completos, cualquier empresa: %@", "完全にこなした契約（どの会社でも）：%@", "완벽히 수행한 계약(어느 회사든): %@")
-add("goal.ctrPref", "Become a contract company's preferred operator", "Bir kontrat şirketinin tercih edilen operatörü ol", "Werde bevorzugter Anbieter einer Vertragsfirma",
-    "Sé el operador preferido de una empresa contratante", "契約会社の優先業者になる", "계약 회사의 우선 운영사 되기")
+add("goal.ctrDoneAny.abq", "Tour groups flown in full, any company: %@", "Eksiksiz uçurulan tur grubu (tüm şirketler): %@", "Vollständig geflogene Tourgruppen, beliebige Firma: %@",
+    "Grupos turísticos completados, cualquier empresa: %@", "全員を飛ばしたツアーグループ（どの会社でも）：%@", "전원 태운 투어 단체(어느 회사든): %@")
+add("goal.ctrDoneAny.lux", "Cruise groups flown in full, any company: %@", "Eksiksiz uçurulan grup (tüm şirketler): %@", "Vollständig geflogene Schiffsgruppen, beliebige Firma: %@",
+    "Grupos de crucero completados, cualquier empresa: %@", "全員を飛ばしたクルーズグループ（どの会社でも）：%@", "전원 태운 크루즈 단체(어느 회사든): %@")
+add("goal.ctrDoneAny.bri", "Weekend groups flown in full, any company: %@", "Eksiksiz uçurulan grup (tüm şirketler): %@", "Vollständig geflogene Wochenendgruppen, beliebige Firma: %@",
+    "Grupos de fin de semana completados, cualquier empresa: %@", "全員を飛ばした週末グループ（どの会社でも）：%@", "전원 태운 주말 단체(어느 회사든): %@")
+add("goal.ctrPref", "Become a contract company's preferred operator", "Bir tur şirketinin gözde ortağı ol", "Werde bevorzugter Anbieter einer Vertragsfirma",
+    "Sé el operador preferido de una empresa contratante", "契約会社の優先業者になる", "계약 회사의 우선 협력사 되기")
 add("goal.excludingBrought", "%@ (not counting brought ones)", "%@ (getirilenler hariç)", "%@ (ohne mitgebrachte)", "%@ (sin contar los traídos)", "%@（持ち込み分を除く）", "%@ (가져온 것 제외)")
 add("price.ctr.row", "Tour group: %@", "Tur grubu: %@", "Tourgruppe: %@", "Grupo turístico: %@", "ツアーグループ：%@", "투어 단체: %@")
-add("price.ctr.short", "Seats: %1$@/%2$@!", "%1$@/%2$@ koltuk!", "Plätze: %1$@/%2$@!", "Asientos: %1$@/%2$@!", "座席：%1$@/%2$@！", "좌석: %1$@/%2$@!")
-add("price.ctr.ok", "Passengers: +%1$@ · %2$@", "+%1$@ yolcu · %2$@", "Gäste: +%1$@ · %2$@", "Pasajeros: +%1$@ · %2$@", "乗客：+%1$@ · %2$@", "승객: +%1$@ · %2$@")
+add("price.ctr.short", "Seats: %1$@/%2$@!", "%1$@/%2$@ koltuk!", "Plätze: %1$@/%2$@!", "¡Plazas: %1$@/%2$@!", "座席：%1$@/%2$@！", "좌석: %1$@/%2$@!")
+add("price.ctr.ok", "Passengers: +%1$@ · %2$@", "+%1$@ yolcu · %2$@", "Passagiere: +%1$@ · %2$@", "Pasajeros: +%1$@ · %2$@", "乗客：+%1$@ · %2$@", "승객: +%1$@ · %2$@")
 add("price.ctr.noteShort", "The tour group is %1$@ people, but today only %2$@ of your seats can fly: penalty per missing seat %3$@.",
-    "Tur grubu %1$@ kişi ama bugün %2$@ koltuğun uçabiliyor: eksik koltuk başına %3$@ ceza.",
+    "Tur grubu %1$@ kişi ama bugün yalnızca %2$@ koltuğun uçabiliyor: eksik koltuk başına %3$@ ceza.",
     "Die Tourgruppe hat %1$@ Personen, aber heute können nur %2$@ deiner Plätze fliegen: Strafe pro fehlendem Platz %3$@.",
-    "El grupo turístico es de %1$@ personas, pero hoy solo pueden volar %2$@ de tus asientos: multa por asiento que falte %3$@.",
-    "ツアーグループは%1$@人だが、今日飛べる座席は%2$@席：不足座席1つにつき%3$@の違約金。",
+    "El grupo turístico es de %1$@ personas, pero hoy solo pueden volar %2$@ de tus plazas: multa por plaza que falte %3$@.",
+    "ツアーグループは%1$@人だが、今日飛べる座席は%2$@席。不足座席1つにつき%3$@の違約金。",
     "투어 단체는 %1$@명인데 오늘 띄울 수 있는 좌석은 %2$@석: 부족한 좌석당 위약금 %3$@.")
 add("price.ctr.note", "The tour group is %1$@ people at %2$@ a head: the seats go to them first.", "Tur grubu %1$@ kişi, kişi başı %2$@: koltuklar önce onlara.",
-    "Die Tourgruppe hat %1$@ Personen zu %2$@ pro Kopf: Die Plätze gehen zuerst an sie.", "El grupo turístico es de %1$@ personas a %2$@ por cabeza: los asientos van primero a ellos.",
+    "Die Tourgruppe hat %1$@ Personen zu %2$@ pro Kopf: Die Plätze gehen zuerst an sie.", "El grupo turístico es de %1$@ personas a %2$@ por cabeza: las plazas van primero a ellos.",
     "ツアーグループは%1$@人、1人%2$@：座席はまず彼らに。", "투어 단체 %1$@명, 1인당 %2$@: 좌석은 먼저 그들에게.")
-add("price.ctr.today", "Tour group today: %1$@/%2$@ people", "Tur grubu bugün: %1$@/%2$@ kişi", "Tourgruppe heute: %1$@/%2$@ Personen", "Grupo turístico hoy: %1$@/%2$@ personas",
+add("price.ctr.today", "Tour group today: %1$@/%2$@ people", "Bugünkü tur grubu: %1$@/%2$@ kişi", "Tourgruppe heute: %1$@/%2$@ Personen", "Grupo turístico hoy: %1$@/%2$@ personas",
     "今日のツアーグループ：%1$@/%2$@人", "오늘 투어 단체: %1$@/%2$@명")
 add("collect.src.contract", "Tour group: %@", "Tur grubu: %@", "Tourgruppe: %@", "Grupo turístico: %@", "ツアーグループ：%@", "투어 단체: %@")
-add("collect.ctr.fetch", "The jeeps are off to fetch the tour group", "Jeepler tur grubunu almaya gidiyor", "Die Jeeps holen die Tourgruppe ab", "Los jeeps van a buscar al grupo",
+add("collect.ctr.fetch", "The jeeps are off to fetch the tour group", "Cipler tur grubunu almaya gidiyor", "Die Jeeps holen die Tourgruppe ab", "Los jeeps van a buscar al grupo",
     "ジープがツアーグループを迎えに行く", "지프가 투어 단체를 데리러 가요")
 add("collect.ctr.coming", "Tour group coming: %@ people", "Tur grubu geliyor: %@ kişi", "Die Tourgruppe kommt: %@ Personen", "Llega el grupo: %@ personas", "ツアーグループ到着：%@人", "투어 단체 도착: %@명")
 
 # ---- Bringing the fleet ----
 add("xfer.guide", "Don't come empty-handed, kid. You can bring a few balloons and up to %@ pilots from your regions on autopilot; earnings there drop a little.",
     "Eli boş gelme evlat. Otomatik moddaki bölgelerinden birkaç balon ve en fazla %@ pilot getirebilirsin; orada kazanç biraz düşer.",
-    "Komm nicht mit leeren Händen, Kleiner. Du kannst ein paar Ballons und bis zu %@ Piloten aus deinen Regionen im Autopilot mitbringen; dort sinkt der Verdienst etwas.",
-    "No vengas con las manos vacías, chico. Puedes traer algunos globos y hasta %@ pilotos de tus regiones en piloto automático; allí las ganancias bajan un poco.",
+    "Komm nicht mit leeren Händen, Lehrling. Du kannst ein paar Ballone und bis zu %@ Piloten aus deinen Regionen im Autopilot mitbringen; dort sinkt der Verdienst etwas.",
+    "No vengas con las manos vacías, aprendiz. Puedes traer algunos globos y hasta %@ pilotos de tus regiones en piloto automático; allí las ganancias bajan un poco.",
     "手ぶらで来るなよ。自動運営中の地域から気球を少しと、パイロットを最大%@人連れてこられる。向こうの稼ぎは少し減るがな。",
     "빈손으로 오지 말게. 자동 운영 중인 지역에서 열기구 몇 대와 조종사를 최대 %@명까지 데려올 수 있네. 그쪽 수입은 조금 줄지.")
-add("xfer.title", "Bring your fleet", "Filonu getir", "Bring deine Flotte mit", "Trae tu flota", "機体を連れてくる", "기단 데려오기")
+add("xfer.title", "Bring your fleet", "Filonu getir", "Bring deine Flotte mit", "Trae tu flota", "フリートを連れてくる", "기단 가져오기")
 add("xfer.hint", "Pilots come with you at once. Balloons come by cargo in %1$@ days; the cargo takes %2$@ seats (two small or one medium basket). Balloons keep their name, design and equipment, pilots their level and trait. What you bring doesn't count toward the goals here.",
     "Pilotlar seninle hemen gelir. Balonlar kargoyla %1$@ günde gelir; kargoya %2$@ koltuk sığar (iki küçük ya da bir orta sepet). Balonlar adını, tasarımını ve donanımını, pilotlar seviyesini ve özelliğini korur. Getirdiklerin buradaki bölüm hedeflerine sayılmaz.",
-    "Piloten kommen sofort mit. Ballons kommen per Fracht in %1$@ Tagen; die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb). Ballons behalten Namen, Design und Ausstattung, Piloten Stufe und Eigenschaft. Mitgebrachtes zählt hier nicht für die Ziele.",
-    "Los pilotos vienen contigo enseguida. Los globos llegan por carga en %1$@ días; caben %2$@ plazas (dos canastas pequeñas o una mediana). Los globos conservan nombre, diseño y equipo; los pilotos, nivel y rasgo. Lo que traigas no cuenta para los objetivos de aquí.",
+    "Piloten kommen sofort mit. Ballone kommen per Fracht in %1$@ Tagen; die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb). Ballone behalten Namen, Design und Ausstattung, Piloten Stufe und Eigenschaft. Mitgebrachtes zählt hier nicht für die Ziele.",
+    "Los pilotos vienen contigo enseguida. Los globos llegan en un envío de carga en %1$@ días; caben %2$@ plazas (dos cestas pequeñas o una mediana). Los globos conservan nombre, diseño y equipo; los pilotos, nivel y rasgo. Lo que traigas no cuenta para los objetivos de aquí.",
     "パイロットはすぐに一緒に来る。気球は貨物で%1$@日後に届く。貨物に積めるのは%2$@席（小2つか中1つ）。気球は名前・デザイン・装備を、パイロットはレベルと特性を保つ。持ち込んだ分はここの目標には数えない。",
     "조종사는 바로 함께 옵니다. 열기구는 화물로 %1$@일 후 도착하고, 화물에는 %2$@석(소형 두 개나 중형 한 개)이 실립니다. 열기구는 이름·디자인·장비를, 조종사는 레벨과 특성을 유지합니다. 가져온 것은 이곳 목표에 포함되지 않습니다.")
-add("xfer.balloons", "Balloons · seats: %1$@/%2$@", "Balonlar · koltuk: %1$@/%2$@", "Ballons · Plätze: %1$@/%2$@", "Globos · plazas: %1$@/%2$@", "気球 · 座席：%1$@/%2$@", "열기구 · 좌석: %1$@/%2$@")
+add("xfer.balloons", "Balloons · seats: %1$@/%2$@", "Balonlar · koltuk: %1$@/%2$@", "Ballone · Plätze: %1$@/%2$@", "Globos · plazas: %1$@/%2$@", "気球 · 座席：%1$@/%2$@", "열기구 · 좌석: %1$@/%2$@")
 add("xfer.pilots", "Pilots: %1$@/%2$@", "Pilotlar: %1$@/%2$@", "Piloten: %1$@/%2$@", "Pilotos: %1$@/%2$@", "パイロット：%1$@/%2$@", "조종사: %1$@/%2$@")
 add("xfer.seats", "seats: %@", "koltuk: %@", "Plätze: %@", "plazas: %@", "座席：%@", "좌석: %@")
 add("xfer.designed", "designed", "desenli", "mit Design", "con diseño", "デザイン付き", "디자인")
-add("xfer.cost", "It has a cost.", "Bedeli var.", "Das hat seinen Preis.", "Tiene un coste.", "代償はある。", "대가가 있습니다.")
+add("xfer.cost", "It comes at a cost.", "Bedeli var.", "Das hat seinen Preis.", "Tiene un coste.", "代償はある。", "대가가 있습니다.")
 add("xfer.income", "%1$@: %2$@ a day → %3$@", "%1$@: günde %2$@ → %3$@", "%1$@: %2$@ pro Tag → %3$@", "%1$@: %2$@ al día → %3$@", "%1$@：1日%2$@ → %3$@", "%1$@: 하루 %2$@ → %3$@")
 add("xfer.debt", "The balloons' price: %1$@, paid over %2$@ days at %3$@ a day", "Balonların bedeli: %1$@, %2$@ gün boyunca günde %3$@",
-    "Preis der Ballons: %1$@, über %2$@ Tage mit %3$@ pro Tag", "Precio de los globos: %1$@, pagado en %2$@ días a %3$@ al día",
+    "Preis der Ballone: %1$@, über %2$@ Tage mit %3$@ pro Tag", "Precio de los globos: %1$@, a pagar en %2$@ días a %3$@ al día",
     "気球の代金：%1$@、%2$@日間で1日%3$@ずつ", "열기구 대금: %1$@, %2$@일 동안 하루 %3$@")
-add("xfer.go", "Bring: balloons %1$@, pilots %2$@", "Getir: %1$@ balon, %2$@ pilot", "Mitbringen: Ballons %1$@, Piloten %2$@", "Traer: globos %1$@, pilotos %2$@",
-    "連れてくる：気球%1$@、パイロット%2$@", "데려오기: 열기구 %1$@, 조종사 %2$@")
-add("xfer.none", "Bring nothing", "Hiçbirini getirme", "Nichts mitbringen", "No traer nada", "何も連れてこない", "아무것도 안 데려오기")
+add("xfer.go", "Bring: balloons %1$@, pilots %2$@", "Getir: %1$@ balon, %2$@ pilot", "Mitbringen: Ballone %1$@, Piloten %2$@", "Traer: globos %1$@, pilotos %2$@",
+    "持ってくる：気球%1$@、パイロット%2$@", "가져오기: 열기구 %1$@, 조종사 %2$@")
+add("xfer.none", "Bring nothing", "Hiçbirini getirme", "Nichts mitbringen", "No traer nada", "何も持ってこない", "아무것도 안 가져오기")
 add("xfer.skip", "Skip: start from scratch", "Geç: sıfırdan başla", "Überspringen: bei null anfangen", "Saltar: empezar de cero", "スキップ：ゼロから始める", "건너뛰기: 처음부터 시작")
 add("hez.xfer.pilots", "%@ came with you and are on the team", "%@ seninle geldi, ekipte", "%@ sind mit dir gekommen und im Team", "%@ vinieron contigo y están en el equipo",
-    "%@は君と一緒に来て、チームに入った", "%@은(는) 자네와 함께 와서 팀에 합류했네")
-add("hez.xfer.balloons", "%1$@ are on the cargo: here on the morning of day %2$@", "%1$@ kargoda: Gün %2$@ sabahı burada", "%1$@ sind in der Fracht: am Morgen von Tag %2$@ hier",
-    "%1$@ van en la carga: aquí la mañana del día %2$@", "%1$@は貨物で運ばれている：%2$@日目の朝に到着", "%1$@은(는) 화물로 오고 있네. %2$@일째 아침에 도착하지")
-add("hez.xfer.end", "For a while, run %@ on your own steam, kid.", "Bir süre %@ bölgesini kendi yağınla kavur evlat.", "Eine Weile musst du %@ aus eigener Kraft stemmen, Kleiner.",
-    "Por un tiempo, saca adelante %@ con tus propias fuerzas, chico.", "しばらくは%@を自力で切り盛りするんだ。", "당분간은 %@을(를) 자네 힘으로 꾸려 가게.")
+    "%@はお前と一緒に来て、チームに入った", "%@은(는) 자네와 함께 와서 팀에 합류했네")
+add("hez.xfer.balloons", "%1$@ are coming by cargo: here on the morning of day %2$@", "%1$@ kargoda: Gün %2$@ sabahı burada", "%1$@ sind in der Fracht: am Morgen von Tag %2$@ hier",
+    "%1$@ van en la carga: aquí la mañana del día %2$@", "%1$@は貨物で運ばれている：%2$@日目の朝に到着", "%1$@은(는) 화물로 오고 있네. %2$@일차 아침에 도착하지")
+add("hez.xfer.end", "For a while, run %@ under your own steam, kid.", "Bir süre %@ bölgesinde kendi yağınla kavrul evlat.", "Eine Weile musst du %@ aus eigener Kraft stemmen, Lehrling.",
+    "Por un tiempo, saca adelante %@ con tus propias fuerzas, aprendiz.", "しばらくは%@を自力で切り盛りするんだ。", "당분간은 %@을(를) 자네 힘으로 꾸려 가게.")
 add("hez.cargoArrived", "The cargo is here, kid! %@ are in the fleet now, ready for the sky.", "Kargo geldi evlat! %@ artık filoda, gökyüzüne hazır.",
-    "Die Fracht ist da, Kleiner! %@ sind jetzt in der Flotte, bereit für den Himmel.", "¡Llegó la carga, chico! %@ ya están en la flota, listos para el cielo.",
-    "貨物が着いたぞ！%@はもう機体に加わり、空へ飛ぶ準備ができている。", "화물이 도착했네! %@은(는) 이제 기단에 들어와 하늘로 갈 준비가 됐네.")
+    "Die Fracht ist da, Lehrling! %@ sind jetzt in der Flotte, bereit für den Himmel.", "¡Llegó la carga, aprendiz! %@ ya están en la flota, listos para el cielo.",
+    "貨物が着いたぞ！%@はもうフリートに加わり、空へ飛ぶ準備ができている。", "화물이 도착했네! %@은(는) 이제 기단에 들어와 하늘로 갈 준비가 됐네.")
 
 # ---- v125.5: the fleet card in three steps ----
 add("xfer.step", "Step %1$@/%2$@", "Adım %1$@/%2$@", "Schritt %1$@/%2$@", "Paso %1$@/%2$@", "ステップ %1$@/%2$@", "단계 %1$@/%2$@")
-add("xfer.whichBalloons", "Which balloons come?", "Hangi balonlar gelsin?", "Welche Ballons kommen mit?", "¿Qué globos vienen?", "どの気球を連れてくる？", "어떤 열기구를 데려올까요?")
+add("xfer.whichBalloons", "Which balloons come?", "Hangi balonlar gelsin?", "Welche Ballone kommen mit?", "¿Qué globos vienen?", "どの気球を持ってくる？", "어떤 열기구를 가져올까요?")
 add("xfer.whichPilots", "Which pilots come?", "Hangi pilotlar gelsin?", "Welche Piloten kommen mit?", "¿Qué pilotos vienen?", "どのパイロットを連れてくる？", "어떤 조종사를 데려올까요?")
 add("xfer.seatsPicked", "Selected seats", "Seçilen koltuk", "Gewählte Plätze", "Plazas elegidas", "選んだ座席", "선택한 좌석")
 add("xfer.pilotsPicked", "Selected pilots", "Seçilen pilot", "Gewählte Piloten", "Pilotos elegidos", "選んだパイロット", "선택한 조종사")
 add("common.back", "Back", "Geri", "Zurück", "Atrás", "戻る", "뒤로")
-add("common.next", "Next", "İleri", "Weiter", "Siguiente", "次へ", "다음")
-add("xfer.sumBalloons", "Balloons (in %@ days)", "Balonlar (%@ gün sonra)", "Ballons (in %@ Tagen)", "Globos (en %@ días)", "気球（%@日後）", "열기구(%@일 후)")
+add("common.next", "Next", "Devam", "Weiter", "Siguiente", "次へ", "다음")
+add("xfer.sumBalloons", "Balloons (in %@ days)", "Balonlar (%@ gün sonra)", "Ballone (in %@ Tagen)", "Globos (en %@ días)", "気球（%@日後）", "열기구(%@일 후)")
 add("xfer.sumPilots", "Pilots (right away)", "Pilotlar (hemen)", "Piloten (sofort)", "Pilotos (enseguida)", "パイロット（すぐ）", "조종사(바로)")
 add("xfer.nothing", "none", "yok", "keine", "ninguno", "なし", "없음")
 add("xfer.bNote", "%1$@: You can bring balloons from your regions on autopilot, kid. The cargo takes %2$@ seats (two small or one medium basket); the trip takes %3$@ days.",
     "%1$@: Otomatik moddaki bölgelerinden balon getirebilirsin evlat. Kargoya %2$@ koltuk sığar (iki küçük ya da bir orta sepet), yolculuk %3$@ gün.",
-    "%1$@: Du kannst Ballons aus deinen Regionen im Autopilot mitbringen, Kleiner. Die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb); die Reise dauert %3$@ Tage.",
-    "%1$@: Puedes traer globos de tus regiones en piloto automático, chico. En la carga caben %2$@ plazas (dos canastas pequeñas o una mediana); el viaje dura %3$@ días.",
-    "%1$@：自動運営中の地域から気球を連れてこられるぞ。貨物に積めるのは%2$@席（小2つか中1つ）、輸送は%3$@日だ。",
-    "%1$@: 자동 운영 중인 지역에서 열기구를 데려올 수 있네. 화물에는 %2$@석(소형 두 개나 중형 한 개)이 실리고, 운송은 %3$@일 걸리지.")
-add("xfer.pNote", "Pilots come with you at once; they keep their level and trait, and are paid in %@.", "Pilotlar seninle hemen gelir; seviyesini ve özelliğini korur, maaşı %@ ile ödenir.",
+    "%1$@: Du kannst Ballone aus deinen Regionen im Autopilot mitbringen, Lehrling. Die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb); die Reise dauert %3$@ Tage.",
+    "%1$@: Puedes traer globos de tus regiones en piloto automático, aprendiz. En la carga caben %2$@ plazas (dos cestas pequeñas o una mediana); el viaje dura %3$@ días.",
+    "%1$@：自動運営中の地域から気球を持ってこられるぞ。貨物に積めるのは%2$@席（小2つか中1つ）、輸送は%3$@日だ。",
+    "%1$@: 자동 운영 중인 지역에서 열기구를 가져올 수 있네. 화물에는 %2$@석(소형 두 개나 중형 한 개)이 실리고, 운송은 %3$@일 걸리지.")
+add("xfer.pNote", "Pilots come with you at once; they keep their level and trait, and are paid in %@.", "Pilotlar seninle hemen gelir; seviyelerini ve özelliklerini korur, maaşları %@ ile ödenir.",
     "Piloten kommen sofort mit; sie behalten Stufe und Eigenschaft und werden in %@ bezahlt.", "Los pilotos vienen contigo enseguida; conservan nivel y rasgo, y cobran en %@.",
     "パイロットはすぐに来る。レベルと特性はそのままで、給料は%@で支払われる。", "조종사는 바로 함께 옵니다. 레벨과 특성은 그대로이고 급여는 %@로 받습니다.")
 add("xfer.notCounted", "What you bring doesn't count toward the chapter goals here.", "Getirdiklerin buradaki bölüm hedeflerine sayılmaz.",
@@ -883,11 +884,11 @@ add("xfer.notCounted", "What you bring doesn't count toward the chapter goals he
 # ---- v125.5: shorter first-day texts in new regions; the rest behind "More" (full = short + more) ----
 def short_more(key, short, more):
     add(key + ".short", *short)
-    add(key, *[s + " " + m for s, m in zip(short, more)])
+    add(key, *[s + ("" if i == 4 else " ") + m for i, (s, m) in enumerate(zip(short, more))])  # ja: no space between sentences
 
 short_more("hez.entered.abq",
  ("America, kid! Here the wind turns like a \"box\": one way down low, back the other way higher up. You start from scratch with %@ and one small balloon.",
-  "Amerika evlat! Burada rüzgâr \"kutu\" gibi döner: alçakta bir yöne, yukarıda ters yöne. %@ ve bir küçük balonla sıfırdan başlıyorsun.",
+  "Amerika evlat! Burada rüzgâr \"kutu\" gibi döner: alçakta bir yöne, yukarıda ters yöne. %@ ve küçük bir balonla sıfırdan başlıyorsun.",
   "Amerika, Lehrling! Hier dreht der Wind wie eine „Box“: unten in eine Richtung, weiter oben zurück. Du fängst bei null an, mit %@ und einem kleinen Ballon.",
   "¡Estados Unidos, aprendiz! Aquí el viento gira como una «caja»: abajo hacia un lado, más arriba hacia el otro. Empiezas de cero con %@ y un globo pequeño.",
   "アメリカだぞ、弟子よ！ここの風は「ボックス」のように回る。低空では一方へ、上空では逆へ。%@と小さな気球ひとつでゼロから始めるのだ。",
@@ -900,7 +901,7 @@ short_more("hez.entered.abq",
   "노련한 조종사는 이륙한 곳으로 돌아온다네. 30일마다 벌룬 피에스타가 열려 나흘 동안 관광객이 두 배가 되지. 카파도키아는 자동 운영으로 벌고 수입은 지주회사로 가지만, 지주회사는 여기로 돈을 보낼 수 없네. 문제가 생기면 부르겠네."))
 short_more("hez.entered.lux",
  ("Luxor, kid, the toughest balloon market in the world! You start with %@ and one small balloon; the rivals join forces against you quickly.",
-  "Luksor evlat, dünyanın en çetin balon pazarı! %@ ve bir küçük balonla başlıyorsun; rakipler sana karşı çabuk birleşir.",
+  "Luksor evlat, dünyanın en çetin balon pazarı! %@ ve küçük bir balonla başlıyorsun; rakipler sana karşı çabuk birleşir.",
   "Luxor, Lehrling, der härteste Ballonmarkt der Welt! Du startest mit %@ und einem kleinen Ballon; die Konkurrenten verbünden sich schnell gegen dich.",
   "¡Luxor, aprendiz, el mercado de globos más duro del mundo! Empiezas con %@ y un globo pequeño; los rivales se unen rápido contra ti.",
   "ルクソールだ、弟子よ、世界一厳しい気球市場だ！%@と小さな気球ひとつで始まる。ライバルはすぐに手を組んで対抗してくるぞ。",
@@ -912,36 +913,36 @@ short_more("hez.entered.lux",
   "ナイルの風は低空では北へ、上空では南へ吹く。時々ナイルのクルーズ船が着いて、町は観光客でいっぱいになる。ホールディングスからここへは送金できん。辛抱するのだ、弟子よ。ナイルは辛抱強い者を愛する。",
   "나일의 바람은 낮은 곳에선 북쪽, 높은 곳에선 남쪽으로 분다네. 가끔 나일 크루즈선이 들어오면 마을이 관광객으로 가득 차지. 지주회사는 여기로 돈을 보낼 수 없네. 인내하게, 제자여. 나일은 인내하는 자를 사랑한다네."))
 short_more("hez.entered.bri",
- ("Bristol, kid! Mornings bring fog, the wind blows from the west, and stay out of the airport's sky. You start with %@ and one small balloon.",
-  "Bristol evlat! Sabahları sis olur, rüzgâr batıdan eser, havalimanının göğüne girme. %@ ve bir küçük balonla başlıyorsun.",
-  "Bristol, Lehrling! Morgens gibt es Nebel, der Wind kommt von Westen, und bleib aus dem Luftraum des Flughafens. Du startest mit %@ und einem kleinen Ballon.",
+ ("Bristol, kid! Mornings bring fog and the wind blows from the west. Stay out of the airport's sky. You start with %@ and one small balloon.",
+  "Bristol evlat! Sabahları sis olur, rüzgâr batıdan eser, havalimanının göğüne girme. %@ ve küçük bir balonla başlıyorsun.",
+  "Bristol, Lehrling! Morgens gibt es Nebel, der Wind kommt von Westen – und halte dich vom Luftraum des Flughafens fern. Du startest mit %@ und einem kleinen Ballon.",
   "¡Bristol, aprendiz! Por la mañana hay niebla, el viento sopla del oeste, y no entres en el cielo del aeropuerto. Empiezas con %@ y un globo pequeño.",
   "ブリストルだ、弟子よ！朝は霧が出て、風は西から吹く。空港の空には入るな。%@と小さな気球ひとつで始まる。",
   "브리스톨일세, 제자여! 아침엔 안개가 끼고 바람은 서쪽에서 불지. 공항 하늘엔 들어가지 말게. %@, 그리고 작은 열기구 하나로 시작하네."),
  ("On a foggy morning, go down to see the landing field. Every month there's a four-day balloon festival: in the evenings the balloons go up a second time, and one night you can hold a Night Glow. Sir Reginald Ashby's Clifton Crown has flown here for a hundred years; the rivals join forces quickly. Take your umbrella, kid.",
   "Sisli sabah iniş alanını görmek için alçal. Her ay dört günlük bir balon festivali var: akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Sir Reginald Ashby'nin Clifton Crown'u burada yüz yıldır uçuyor; rakipler çabuk birleşir. Şemsiyeni al evlat.",
-  "An einem nebligen Morgen sinke tiefer, um das Landefeld zu sehen. Jeden Monat gibt es ein viertägiges Ballonfestival: Abends steigen die Ballons ein zweites Mal auf, und eine Nacht kannst du ein Night Glow veranstalten. Sir Reginald Ashbys Clifton Crown fliegt hier seit hundert Jahren; die Konkurrenten verbünden sich schnell. Nimm deinen Schirm mit, Lehrling.",
+  "An einem nebligen Morgen sinke tiefer, um das Landefeld zu sehen. Jeden Monat gibt es ein viertägiges Ballonfestival: Abends steigen die Ballone ein zweites Mal auf, und an einem Abend kannst du ein Night Glow veranstalten. Sir Reginald Ashbys Clifton Crown fliegt hier seit hundert Jahren; die Konkurrenten verbünden sich schnell. Nimm deinen Schirm mit, Lehrling.",
   "Una mañana de niebla, baja para ver el campo de aterrizaje. Cada mes hay un festival de globos de cuatro días: por la tarde los globos despegan una segunda vez, y una noche puedes organizar un Night Glow. El Clifton Crown de Sir Reginald Ashby vuela aquí desde hace cien años; los rivales se unen rápido. Llévate el paraguas, aprendiz.",
   "霧の朝は高度を下げて着陸場を見るのだ。毎月4日間の気球フェスティバルがあり、夕方には気球が2度目に上がる。ある夜にはナイトグローも開ける。サー・レジナルド・アシュビーのクリフトン・クラウンはここで百年飛んでいる。ライバルはすぐ手を組むぞ。傘を持っていけ、弟子よ。",
   "안개 낀 아침엔 고도를 낮춰 착륙장을 보게. 매달 나흘간 열기구 축제가 열려 저녁엔 열기구가 두 번째로 뜨고, 하룻밤은 나이트 글로를 열 수도 있다네. 레지널드 애슈비 경의 클리프턴 크라운은 여기서 백 년을 날았지. 경쟁사들은 금세 손을 잡는다네. 우산 챙기게, 제자여."))
 short_more("guide.abq.hello",
  ("Hello, kid, I'm Ben Franklin. I'll show you the way in Albuquerque. Time is money!",
-  "Merhaba evlat, ben Ben Franklin. Albuquerque'de sana ben yol göstereceğim. Vakit nakittir!",
-  "Hallo, Kleiner, ich bin Ben Franklin. In Albuquerque zeige ich dir den Weg. Zeit ist Geld!",
-  "Hola, chico, soy Ben Franklin. En Albuquerque te mostraré el camino. ¡El tiempo es oro!",
+  "Merhaba genç dostum, adım Ben Franklin. Albuquerque'de sana ben yol göstereceğim. Vakit nakittir!",
+  "Hallo, mein junger Freund, ich bin Ben Franklin. In Albuquerque zeige ich dir den Weg. Zeit ist Geld!",
+  "Hola, joven amigo, soy Ben Franklin. En Albuquerque te mostraré el camino. ¡El tiempo es oro!",
   "やあ、若者よ、ベン・フランクリンだ。アルバカーキでは私が道を示そう。時は金なり！",
   "안녕하신가, 젊은이. 나는 벤 프랭클린일세. 앨버커키에선 내가 길을 안내하지. 시간은 돈이야!"),
  ("In 1783 I was in Paris when the Montgolfiers' balloon rose. Someone asked, \"What use is a balloon?\" and I said, \"What use is a newborn baby?\" Master Hezarfen has left you in my care.",
   "1783'te Paris'te Montgolfier'lerin balonu havalandığında oradaydım. Biri \"Bu balonun ne faydası var?\" diye sordu, ben de \"Yeni doğmuş bir bebeğin ne faydası var?\" dedim. Hezarfen Usta seni bana emanet etti.",
   "1783 war ich in Paris, als der Ballon der Montgolfiers aufstieg. Jemand fragte: „Wozu ist ein Ballon gut?“ Und ich sagte: „Wozu ist ein neugeborenes Kind gut?“ Meister Hezarfen hat dich mir anvertraut.",
-  "En 1783 estaba en París cuando se elevó el globo de los Montgolfier. Alguien preguntó: «¿Para qué sirve un globo?», y yo respondí: «¿Para qué sirve un bebé recién nacido?». El maestro Hezarfen te ha dejado a mi cargo.",
+  "En 1783 estaba en París cuando se elevó el globo de los Montgolfier. Alguien preguntó: «¿Para qué sirve un globo?», y yo respondí: «¿Para qué sirve un recién nacido?». El maestro Hezarfen te ha dejado a mi cargo.",
   "1783年、モンゴルフィエ兄弟の気球が上がったとき、私はパリにいた。誰かが「気球が何の役に立つ？」と尋ね、私は「生まれたての赤ん坊が何の役に立つ？」と答えた。ヘザルフェン師匠が君を私に託したのだ。",
   "1783년 몽골피에 형제의 열기구가 떠오를 때 나는 파리에 있었네. 누군가 '열기구가 무슨 쓸모가 있소?'라고 묻길래 '갓 태어난 아기는 무슨 쓸모가 있소?'라고 답했지. 헤자르펜 스승이 자네를 내게 맡겼네."))
 short_more("guide.lux.hello",
  ("Welcome, kid, I am Imhotep. I will show you the way in Luxor; the Nile's wind helps the patient.",
-  "Hoş geldin evlat, ben İmhotep. Luksor'da sana ben yol göstereceğim; Nil'in rüzgârı sabırlıya yardım eder.",
-  "Willkommen, Kleiner, ich bin Imhotep. In Luxor zeige ich dir den Weg; der Wind des Nils hilft den Geduldigen.",
-  "Bienvenido, chico, soy Imhotep. En Luxor te mostraré el camino; el viento del Nilo ayuda a los pacientes.",
+  "Hoş geldin genç dostum, ben İmhotep. Luksor'da sana ben yol göstereceğim; Nil'in rüzgârı sabırlıya yardım eder.",
+  "Willkommen, mein junger Freund, ich bin Imhotep. In Luxor zeige ich dir den Weg; der Wind des Nils hilft den Geduldigen.",
+  "Bienvenido, joven amigo, soy Imhotep. En Luxor te mostraré el camino; el viento del Nilo ayuda a los pacientes.",
   "ようこそ、若者よ。私はイムホテプ。ルクソールでは私が道を示そう。ナイルの風は辛抱強い者を助ける。",
   "어서 오게, 젊은이. 나는 임호테프일세. 룩소르에선 내가 길을 안내하지. 나일의 바람은 인내하는 자를 돕는다네."),
  ("Four thousand years ago I drew the first step pyramid in this land and healed the sick. They call Hezarfen \"master of a thousand sciences\"; they called me that too. I never tried to fly, but I know the sky well.",
@@ -955,18 +956,18 @@ short_more("guide.bri.hello",
   "Merhaba canım, ben Maggie Holloway. Kırk yıl bu şehirde balon zarfı diktim; Bristol'de sana ben yol göstereceğim.",
   "Hallo, Schätzchen, ich bin Maggie Holloway. Vierzig Jahre habe ich in dieser Stadt Ballonhüllen genäht; in Bristol zeige ich dir den Weg.",
   "Hola, cariño, soy Maggie Holloway. Cosí envolturas de globo en esta ciudad durante cuarenta años; en Bristol te mostraré el camino.",
-  "こんにちは、あなた。マギー・ホロウェイよ。この街で40年、気球の球皮を縫ってきたの。ブリストルでは私が道案内するわ。",
-  "안녕, 얘. 나는 매기 홀로웨이야. 이 도시에서 40년 동안 열기구 외피를 꿰맸지. 브리스톨에선 내가 길을 안내할게."),
+  "こんにちは、あんた。マギー・ホロウェイよ。この街で40年、気球の球皮を縫ってきたの。ブリストルでは私が道案内するわ。",
+  "안녕, 얘야. 나는 매기 홀로웨이란다. 이 도시에서 40년 동안 열기구 외피를 꿰맸지. 브리스톨에선 내가 길을 안내해 주마."),
  ("One look at your balloon's seams and I can tell whose hands made it. Master Hezarfen has left you in my care. And don't forget your umbrella, sweetheart.",
   "Senin balonunun dikişlerine bakınca kimin elinden çıktığını bile söylerim. Hezarfen Usta seni bana emanet etti. Bir de şemsiyeni unutma, tatlım.",
   "Ein Blick auf die Nähte deines Ballons, und ich sage dir, wessen Hände ihn gemacht haben. Meister Hezarfen hat dich mir anvertraut. Und vergiss deinen Schirm nicht, Liebes.",
-  "Con mirar las costuras de tu globo te digo hasta qué manos lo hicieron. El maestro Hezarfen te ha dejado a mi cargo. Y no olvides el paraguas, cielo.",
-  "あなたの気球の縫い目を見れば、誰の手で作られたかまでわかるわ。ヘザルフェン師匠があなたを私に託したの。それと傘を忘れないでね。",
-  "네 열기구 솔기만 봐도 누구 손에서 나왔는지 알 수 있어. 헤자르펜 스승이 너를 내게 맡겼단다. 그리고 우산 잊지 마, 얘."))
+  "Con mirar las costuras de tu globo te digo qué manos lo hicieron. El maestro Hezarfen te ha dejado a mi cargo. Y no olvides el paraguas, cielo.",
+  "あんたの気球の縫い目を見れば、誰の手で作られたかまでわかるわ。ヘザルフェン師匠があんたを私に託したの。それと傘を忘れないでね。",
+  "네 열기구 솔기만 봐도 누구 손에서 나왔는지 알 수 있단다. 헤자르펜 스승님이 너를 내게 맡기셨단다. 그리고 우산 잊지 말렴, 얘야."))
 short_more("boss.abq.hello",
  ("Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. See you at the Fiesta, kid, if you're still around.",
-  "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Fiesta'da görüşürüz evlat, tabii hâlâ buradaysan.",
-  "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Wir sehen uns auf der Fiesta, Kleiner, falls du dann noch da bist.",
+  "Bak sen, rüzgâr kimi getirmiş! Dale Whitaker, Sandia Sky Rides. Fiesta'da görüşürüz çaylak, tabii hâlâ buradaysan.",
+  "Na sieh mal einer an, was der Wind da hergeweht hat. Dale Whitaker, Sandia Sky Rides. Wir sehen uns auf der Fiesta, Kleiner, falls du dann noch da bist.",
   "Well, look what the wind blew in. Dale Whitaker, Sandia Sky Rides. Nos vemos en la Fiesta, chico, si sigues por aquí.",
   "おやおや、風が何を運んできたかと思えば。サンディア・スカイ・ライズのデイル・ウィテカーだ。フィエスタで会おう、坊や。まだここにいればの話だがな。",
   "이런, 바람이 뭘 몰고 왔나 했더니. 샌디아 스카이 라이즈의 데일 휘터커요. 피에스타에서 봅시다, 꼬마. 그때까지 버틴다면."),
@@ -979,26 +980,26 @@ short_more("boss.abq.hello",
 short_more("boss.lux.hello",
  ("Welcome, stranger. Nabil Haddad, Theban Skies. Here every hotel and every guide knows my name; the Nile swallows the proud.",
   "Hoş geldin, yabancı. Nabil Haddad, Theban Skies. Burada her otel, her rehber benim adımı bilir; Nil kibirliyi yutar.",
-  "Willkommen, Fremder. Nabil Haddad, Theban Skies. Hier kennt jedes Hotel und jeder Führer meinen Namen; der Nil verschlingt die Hochmütigen.",
+  "Willkommen, Fremder. Nabil Haddad, Theban Skies. Hier kennt jedes Hotel und jeder Reiseleiter meinen Namen; der Nil verschlingt die Hochmütigen.",
   "Bienvenido, forastero. Nabil Haddad, Theban Skies. Aquí cada hotel y cada guía conoce mi nombre; el Nilo se traga a los soberbios.",
   "ようこそ、よそ者よ。テーベ・スカイズのナビル・ハッダードだ。ここではどのホテルもガイドも私の名を知っている。ナイルは驕る者を呑み込む。",
   "어서 오시오, 이방인. 테베 스카이스의 나빌 하다드요. 이곳의 모든 호텔과 가이드가 내 이름을 알지. 나일은 오만한 자를 삼키오."),
  ("When my father inflated the first balloon on this West Bank, you weren't even born. I hear you won in Cappadocia and America. The Nile is different; it loves the patient.",
   "Babam bu Batı Yakası'nda ilk balonu şişirdiğinde sen daha doğmamıştın. Kapadokya'da, Amerika'da kazanmışsın, duydum. Nil başkadır; sabırlı olanı sever.",
-  "Als mein Vater am Westufer den ersten Ballon füllte, warst du noch nicht geboren. Ich höre, du hast in Kappadokien und Amerika gewonnen. Der Nil ist anders; er liebt die Geduldigen.",
+  "Als mein Vater am Westufer den ersten Ballon aufblies, warst du noch nicht geboren. Ich höre, du hast in Kappadokien und Amerika gewonnen. Der Nil ist anders; er liebt die Geduldigen.",
   "Cuando mi padre infló el primer globo en esta Ribera Oeste, tú aún no habías nacido. He oído que ganaste en Capadocia y en Estados Unidos. El Nilo es distinto; ama a los pacientes.",
   "父がこの西岸で最初の気球を膨らませたとき、お前はまだ生まれてもいなかった。カッパドキアとアメリカで勝ったそうだな。ナイルは違う。辛抱強い者を愛するのだ。",
   "내 아버지가 이 서안에서 첫 열기구를 부풀렸을 때 당신은 태어나지도 않았소. 카파도키아와 미국에서 이겼다고 들었소. 나일은 다르오. 인내하는 자를 사랑하지."))
 short_more("boss.bri.hello",
- ("Ah, the newcomer. Sir Reginald Ashby, Clifton Crown Balloons. Here one knows good families, good hotels and good tea. Let's see how long you last.",
-  "Ah, yeni gelen. Sir Reginald Ashby, Clifton Crown Balloons. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Bakalım ne kadar dayanacaksın.",
+ ("Ah, the newcomer. Sir Reginald Ashby, Clifton Crown Balloons. Here, good families, good hotels and good tea are what count. Let's see how long you last.",
+  "Vay, yeni gelen demek. Sir Reginald Ashby, Clifton Crown Balloons. Burada iyi aileler, iyi oteller ve iyi çay bilinir. Bakalım ne kadar dayanacaksın.",
   "Ah, der Neuankömmling. Sir Reginald Ashby, Clifton Crown Balloons. Hier kennt man gute Familien, gute Hotels und guten Tee. Mal sehen, wie lange du durchhältst.",
   "Ah, el recién llegado. Sir Reginald Ashby, Clifton Crown Balloons. Aquí se conocen las buenas familias, los buenos hoteles y el buen té. Veamos cuánto aguantas.",
   "ああ、新入りか。クリフトン・クラウン・バルーンズのサー・レジナルド・アシュビーだ。ここでは良い家柄、良いホテル、良い紅茶がものを言う。どれだけもつか見ものだな。",
   "아, 신참이로군. 클리프턴 크라운 벌룬스의 레지널드 애슈비 경이오. 이곳에선 좋은 가문, 좋은 호텔, 좋은 차를 알아보지. 얼마나 버티나 봅시다."),
  ("When my great-grandfather flew the first balloon over this gorge, the bridge had only just been finished. You won in Egypt, did you? Bristol's weather greets you with fog in the morning and sees you off with rain at noon.",
-  "Büyük büyükbabam bu kanyonun üstünde ilk balonu uçurduğunda köprü daha yeni bitmişti. Mısır'da kazanmışsın, öyle mi? Bristol'ün havası seni sabah sisle karşılar, öğlen yağmurla uğurlar.",
+  "Büyük dedem bu kanyonun üstünde ilk balonu uçurduğunda köprü daha yeni bitmişti. Mısır'da kazanmışsın, öyle mi? Bristol'ün havası seni sabah sisle karşılar, öğlen yağmurla uğurlar.",
   "Als mein Urgroßvater den ersten Ballon über diese Schlucht flog, war die Brücke gerade erst fertig. Du hast in Ägypten gewonnen, ja? Bristols Wetter empfängt dich morgens mit Nebel und verabschiedet dich mittags mit Regen.",
   "Cuando mi bisabuelo voló el primer globo sobre esta garganta, el puente acababa de terminarse. Ganaste en Egipto, ¿verdad? El tiempo de Bristol te recibe con niebla por la mañana y te despide con lluvia a mediodía.",
   "曾祖父がこの渓谷の上を初めて気球で飛んだとき、橋はできたばかりだった。エジプトで勝ったそうだな？ブリストルの天気は朝は霧で迎え、昼は雨で見送るぞ。",
-  "증조부께서 이 협곡 위로 첫 열기구를 띄웠을 때 다리는 막 완공된 참이었소. 이집트에서 이겼다고? 브리스톨의 날씨는 아침엔 안개로 맞이하고 낮엔 비로 배웅하지."))
+  "증조부께서 이 협곡 위로 첫 열기구를 띄우셨을 때 다리는 막 완공된 참이었소. 이집트에서 이겼다고? 브리스톨의 날씨는 아침엔 안개로 맞이하고 낮엔 비로 배웅하지."))

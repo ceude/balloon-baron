@@ -3,7 +3,7 @@ from s1_ui import add
 # v124.5: selling a balloon asks first, in the game's own card, and says "sold" after.
 add("sell.title", "Sell this balloon?", "Balonu sat", "Ballon verkaufen?", "¿Vender este globo?", "気球を売る？", "열기구를 팔까요?")
 add("sell.lead",
- "%1$@ will be sold for %2$@. The money goes straight into the till.",
+ "%1$@ will be sold for %2$@. The money goes straight into the cash box.",
  "%1$@ %2$@ karşılığında satılacak. Para hemen kasaya girer.",
  "%1$@ wird für %2$@ verkauft. Das Geld kommt sofort in die Kasse.",
  "%1$@ se venderá por %2$@. El dinero entra en caja al momento.",
@@ -12,17 +12,17 @@ add("sell.lead",
 add("sell.used",
  "It is second-hand, so it fetches 40% of its price.",
  "İkinci el olduğu için değerinin %40'ı ödenir.",
- "Er ist gebraucht, daher gibt es 40 % seines Preises.",
- "Es de segunda mano, así que se paga el 40 % de su precio.",
+ "Er ist gebraucht, daher bekommst du 40 % des Kaufpreises.",
+ "Es de segunda mano, así que te dan el 40 % de su precio.",
  "中古なので、価格の40%で売れる。",
  "중고라서 가격의 40%를 받습니다.")
 add("sell.flagship",
  "It is your flagship; the flag moves to another balloon.",
- "Amiral balonun bu. Amiral başka bir balona geçer.",
+ "Bu senin amiral balonun. Satarsan başka bir balon amiral olur.",
  "Es ist dein Flaggschiff; die Flagge geht an einen anderen Ballon.",
  "Es tu globo insignia; la insignia pasa a otro globo.",
- "これは旗艦だ。旗艦は別の気球に移る。",
- "기함입니다. 기함은 다른 열기구로 넘어갑니다.")
+ "これは旗艦だ。旗艦の座は別の気球に移る。",
+ "기함입니다. 기함 자리는 다른 열기구로 넘어갑니다.")
 add("sell.pilot",
  "Its pilot %@ moves to another balloon or waits.",
  "Pilotu %@ başka balona geçer ya da boşta kalır.",
