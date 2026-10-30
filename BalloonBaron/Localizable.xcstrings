@@ -23635,7 +23635,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Multa por asiento que falte: %@"
+            "value": "Multa por plaza que falte: %@"
           }
         },
         "ja": {
@@ -25398,13 +25398,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Durante %@ mañanas los asientos van primero al grupo, y la multa cuenta cada mañana. Una mañana con bandera roja no cuenta."
+            "value": "Durante %@ mañanas las plazas van primero al grupo, y la multa cuenta cada mañana. Una mañana con bandera roja no cuenta."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "%@朝の間、座席はまずグループへ。違約金は毎朝かかる。赤旗の朝は数えない。"
+            "value": "%@日間、毎朝座席はまずグループへ。違約金は毎朝かかる。赤い旗の朝は数えない。"
           }
         },
         "ko": {
@@ -25439,7 +25439,7 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cada mañana los asientos van primero al grupo. Garantía de niebla: una mañana con niebla se devuelven los billetes del día y además un vale de %@ por cabeza."
+            "value": "Cada mañana las plazas van primero al grupo. Garantía de niebla: una mañana con niebla se devuelven los billetes del día y además un vale de %@ por cabeza."
           }
         },
         "ja": {
@@ -25457,7 +25457,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade, üstüne kişi başı %@ kupon."
+            "value": "Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade edilir, üstüne kişi başı %@ kupon verilir."
           }
         }
       }
@@ -25480,13 +25480,13 @@
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Esa mañana los asientos van primero al grupo; con bandera roja el grupo se mueve un día (con un %@ de descuento)."
+            "value": "Esa mañana las plazas van primero al grupo; con bandera roja el grupo se mueve un día (con un %@ de descuento)."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "その朝、座席はまずグループへ。赤旗ならグループは1日ずれる（%@引き）。"
+            "value": "その朝、座席はまずグループへ。赤い旗ならグループは1日ずれる（%@引き）。"
           }
         },
         "ko": {
