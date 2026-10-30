@@ -494,4 +494,16 @@ final class ContractTests: XCTestCase {
         g.applyTransfer(balloons: [], pilots: [900])
         XCTAssertEqual(g.state.local.pilots.first { $0.id == 900 }?.wage, jsRound(240 * 1.15 / 5) * 5)
     }
+
+    /// v125.5: entering a new region late in the game, no morning event comes before its welcome cards.
+    func testNoMorningEventOnANewRegionsFirstDays() {
+        var g = newGame()
+        g.grantStoreItem(.worldTour)
+        g.state.holding.cash = 1_000_000
+        g.state.day = 140
+        g.state.barons[.cap] = 1
+        XCTAssertTrue(g.enterRegion(.abq))
+        XCTAssertEqual(g.state.local.nextEvent, 154)
+        XCTAssertNotEqual(g.state.eventDue, true)
+    }
 }

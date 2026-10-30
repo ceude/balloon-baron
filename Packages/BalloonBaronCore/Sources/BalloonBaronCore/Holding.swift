@@ -214,6 +214,8 @@ extension Game {
         st.demandBase = r.startDemand
         if r.bristol { st.fogFlown = 0; st.glowCount = 0 }
         st.nextWinter = state.day + 40
+        // v125.5: no morning event before the region's welcome cards: the first comes two weeks in
+        st.nextEvent = state.day + 14
         st.firstMissionGiven = true
         if r.hasFiesta { st.fiestaNext = state.day + 12 }
         st.balloons.append(Balloon(id: state.nextID, size: .S, name: r.balloonNames[0]))
