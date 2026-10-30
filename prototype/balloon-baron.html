@@ -186,6 +186,11 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .meter{position:relative;height:10px;border-radius:5px;background:linear-gradient(90deg,#3ad07a 0%,#3ad07a 18%,#ffc23d 32%,#ffc23d 43%,#ff8a3d 57%,#ff8a3d 68%,#ff5540 82%)}
 .meter i{position:absolute;top:-4px;width:6px;height:18px;margin-left:-3px;border-radius:3px;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.5);transition:left .15s}
 .mood{margin:2px 0 0;font-size:13px;line-height:1.4;opacity:.85;text-align:left}
+.why{margin:8px 0 0;display:grid;gap:4px;font-size:12.5px;text-align:left}
+.why .wr{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.why .wr span{opacity:.85;white-space:nowrap}.why .wr span i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.why .wr em{font-style:normal;font-weight:700;text-align:right}
+.why em.g{color:var(--green)}.why em.y{color:#e0a400}.why em.r{color:var(--red)}
 .mood b{font-family:var(--cond);font-size:15px}
 .res{display:flex;justify-content:space-between;align-items:flex-end;width:100%}
 .res div{display:flex;flex-direction:column}
@@ -1105,7 +1110,10 @@ const FESTS = [
   ['Bayram tatili', 'Bayram tatili geldi evlat, şehirliler akın akın Kapadokya\'ya! Dört gün talep yüksek, özel istekler bol ödüllü.'],
   ['Kapadokya Işık Şenliği', 'Işık Şenliği başladı evlat! Peribacaları fenerlerle süslendi, turist dört gün boyunca bol. Özel istekleri kaçırma.']
 ];
-const misReward = (k, size) => MISSIONS[k].reward * SIZES[size || (bal(S.flag) || { size: 'S' }).size].cap / 8 * (S.fest ? 1.5 : 1);
+/* v124.6: a special request pays at least 8% of a typical day's net (the 14-day median, scaled by the mission: the
+   proposal 9%, the panorama 5%), so it still matters when the company is big; early on the old reward stands */
+const MIS_NET = .08;
+const misReward = (k, size) => { const base = MISSIONS[k].reward * SIZES[size || (bal(S.flag) || { size: 'S' }).size].cap / 8, byNet = dailyNet() * MIS_NET * MISSIONS[k].reward / 400; return Math.round(Math.max(base, byNet) * (S.fest ? 1.5 : 1) / 10) * 10; };
 const SIM = 6;
 const LIFE = 120, RENEW = .35;
 const XP_UP = [0, 40, 100];
@@ -1133,6 +1141,8 @@ const HEZ = {
   ins: 'Gökyüzü her zaman dost değildir. İlk günden beri balonun ve yolcuların sigortalı uçuyor. Artık sigortayı kendin açıp kapatabilirsin, ama bir kazanın kasanı bir sabahta boşaltabileceğini unutma.',
   fleet: 'Filo sayfası açıldı evlat. Kasa dolunca ikinci balonu düşünebilirsin, ama her balona bir pilot lazım.',
   price3: 'Dünkü kalabalık geçti evlat; bugün vadide turist her zamanki kadar. Fiyatı her sabah o günün turistine göre ayarla: dünkü yüksek fiyatta kalırsan koltukların boş gider, gereksiz düşürürsen de para kaçırırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.',
+  priceRep: 'Dün koltukların hepsi dolmadı evlat, ama fiyatın uygun. Sorun popülerlik: kazalar ve sert inişler yıldızlarını düşürdü, turistler önce yıldızı yüksek şirkete gider. Yumuşak inişler, tamamlanan görevler ve rehberler yıldızı geri getirir. Fiyatı düşürmek az yardım eder.',
+  priceRiv: 'Dün koltukların hepsi dolmadı evlat. Fiyatın da yıldızların da iyi; ama gökyüzünde turistten çok koltuk vardı. Rakiplerden biraz ucuz olmak, rehber ya da otel anlaşması turisti sana getirir.',
   price: 'Dün koltukların hepsi dolmadı evlat. Bilet fiyatı turistin kararını değiştirir: biraz düşürürsen boş koltuk kalmaz. Koltuklar hep doluysa da fiyatı artırıp daha çok kazanırsın. Fiyatı alttaki Bilet kutusundan ayarlarsın.',
   bank: 'Banka kapısı açıldı. Kredi seni hızlandırır ama faiz sabırlı bir düşmandır, unutma.',
   market: 'Pazar sayfası açıldı. Rakiplerini tanı: Göreme Sky ağır abidir, Kızıl Vadi kural tanımaz. Otellerle anlaşmalar da orada.',
@@ -1180,6 +1190,8 @@ const HEZ_SHORT = {
   school: 'Pilot okulunun arsası hazır: mezunları daha ucuza çalışır ve daha az kaza yapar.',
   goals: 'Hedefler düğmesine dokun evlat: bölüm hedeflerin orada.',
   price: 'Dün koltuklar boş kaldı evlat: fiyatı biraz düşürürsen dolar.',
+  priceRep: 'Dün koltuklar boş kaldı evlat: fiyat değil, düşen yıldızların yüzünden.',
+  priceRiv: 'Dün koltuklar boş kaldı evlat: gökyüzünde turistten çok koltuk vardı.',
   price3: 'Dünkü kalabalık geçti evlat: fiyatı bugünün turistine göre yeniden ayarla.', /* v122.11 */
   yellow: 'Sarı bayrak evlat: ya pahalı sigortayla uç ya da balonları dinlendir.',
   red: 'Kırmızı bayrak evlat: bugün yerde kalmak ayıp değil.',
@@ -1483,7 +1495,7 @@ const myCol = () => S.colors || PALETTES[0];
    tourists than seats at the start price, so lowering it fills seats; day 2: demand is high, so raising the price keeps
    the basket full). No surprises in the first two days. */
 const tutScene = () => S.region === 'cap' && tutOn() && (S.day === 1 || S.day === 2) ? S.day : 0;
-const TUT_WX = { 1: { surf: 5, layers: [-1.3, 4.6, -2.2, 6.2], target: 1720 }, 2: { surf: 6, layers: [-1, -2, 5.2, 3.4], target: 1900 } };
+const TUT_WX = { 1: { surf: 5, layers: [-1.3, 4.6, -2.2, 6.2], target: 1300 }, 2: { surf: 6, layers: [-1, -2, 5.2, 3.4], target: 1420 } }; /* v124.6: the field is closer on the first days (was 1720, 1900) */
 const TUT_D1 = 110, TUT_D2 = 320, TUT_DEMAND = { 1: TUT_D1, 2: TUT_D2 }, TUT_P2 = 160;
 function newWeather() {
   { const sc = tutScene(); if (sc) { const w = TUT_WX[sc]; return { flag: 'green', surf: w.surf, layers: w.layers.slice(), target: w.target, seed: 7700 + sc, mission: null, valley: 220 + (w.target - 220) * .45 }; } }
@@ -1497,7 +1509,7 @@ function newWeather() {
   if (S.region === 'bri') L = [rnd(-2.5, 1.5) * F.wind, rnd(2.5, 5) * F.wind, rnd(3, 6) * F.wind, (Math.random() < .5 ? -rnd(1, 4) : rnd(1, 3)) * F.wind]; /* v124: west wind off the Bristol Channel, east at mid heights */
   if (!L.some(v => v > 3)) { const i = 1 + Math.floor(Math.random() * 3); L[i] = rnd(3.5, 6) * F.wind; }
   if (!L.some(v => v < -.5)) { let m = 0; L.forEach((v, i) => { if (v < 3 && (L[m] >= 3 || v < L[m])) m = i; }); L[m] = -rnd(1, 4) * F.wind; }
-  const target = 220 + (S.region === 'cap' ? rnd(1300, 2100) : rnd(1000, 1700)), keys = Object.keys(MISSIONS);
+  const target = 220 + (S.region === 'cap' ? (S.day <= 3 ? rnd(1000, 1250) : rnd(1300, 2100)) : rnd(1000, 1700)), keys = Object.keys(MISSIONS); /* v124.6: day 3 in Cappadocia is still close */
   let mission = S.day <= 2 || (Math.random() < .4 && !(S.fest && flag !== 'red')) ? null : (flag === 'yellow' && Math.random() < .5 ? 'precision' : pick(keys)); /* festivals always bring a special request */
   if (!S.firstMis && S.day >= 3 && flag !== 'red') { mission = 'proposal'; S.firstMis = 1; }
   else if (!S.firstMis) mission = null;
@@ -1759,6 +1771,14 @@ function market(myPrice, myCap) {
 const demandGrowth = () => 1 + .6 * (1 - Math.exp(-(S.day - 1) / 50));
 const dayDemand = () => tutScene() ? TUT_DEMAND[tutScene()] : Math.round(S.demandBase * demandGrowth() * rnd(.85, 1.15) * FLAGS[S.weather.flag].dem * (S.winter ? .55 : 1) * (S.fiesta ? (S.region === 'lux' ? 1.6 : S.region === 'bri' ? 1.8 : 1.9) : 1) * (S.fest ? 1.4 : 1) * [1, 1, 1.05, 1.12][bl('mine')] * holdBoost(S.region));
 let mode = 'office', tab = 'plan', FL = null, lastReport = null;
+/* v124.6: empty seats yesterday: say why. A dear ticket, low popularity against the rivals, or more seats than tourists. */
+function emptySeatCause() {
+  const w = willing(S.price), pull = repPull();
+  if (w < .7) return 'price';
+  if (S.rep < CRISIS_REP || (pull != null && pull < .6)) return 'priceRep';
+  if (w < .85) return 'price';
+  return 'priceRiv';
+}
 function hezAdd(k) { if (!S.tips[k] && !S.hezQ.includes(k) && !(S.hezLater || []).includes(k)) S.hezQ.push(k); }
 /* v121.12: nobody reads seven cards in a row. A morning shows at most two of Hezarfen's lessons and one postcard; the
    rest wait for the next mornings, in order. News, rivals and the inspector aren't held back. */
@@ -1820,7 +1840,7 @@ function unlockCheck() {
   if (S.day >= (S.region === 'cap' ? 1 : 3) && bossRival()) bossSay('hello'); /* v121: Kenan greets Hasan's grandson on the first morning */
   if (S.unl.guide) hezAdd('pr');
   /* v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows where it is */
-  { const l = S.lastShare; if (S.day >= 2 && S.day <= 12 && l && l.cap && l.me < l.cap) hezAdd('price'); }
+  { const l = S.lastShare; if (S.day >= 2 && S.day <= 12 && l && l.cap && l.me < l.cap) hezAdd(emptySeatCause()); }
   /* v122.11: day 2's crowd made the player raise the price; on day 3 the tourists are back to normal, so Hezarfen says to
      set it for today (a player who kept day 2's price flew half empty for days in tools/sim). */
   if (S.day === 3 && S.region === 'cap' && S.tut && !S.tut.old) hezAdd('price3');
@@ -2125,23 +2145,27 @@ function launch(skip) {
   if (fb && isSelf(fb) && fl.includes(fb) && !AUTO) startFlight(plan.pax[fb.id] || 0); /* on autopilot the crew flies the flagship */
   else finishDay(null);
 }
+/* v124.6: where today's popularity change came from, for the report (REPW: label -> change in rep) */
+let REPW = null;
+const repBy = (k, d) => { S.rep += d; if (REPW && d) REPW[k] = (REPW[k] || 0) + d; };
+const repMark = (k, r0) => { if (REPW && S.rep !== r0) REPW[k] = (REPW[k] || 0) + (S.rep - r0); };
 function finishDay(flight) {
-  const red = S.weather.flag === 'red', ev = [], rev = [];
+  const red = S.weather.flag === 'red', ev = [], rev = [], rep0 = S.rep; REPW = {};
   const Lg = { rev: 0, founder: 0, hotelInc: 0, mono: 0, mission: 0, ad: 0, adRep: 0, cancel: 0, hotel: 0, tips: 0, fuel: 0, wage: 0, up: 0, ins: 0, loan: 0, repair: 0, comp: 0, insPay: 0, fine: 0, seize: 0 };
   const fl = S.plan.fly.map(bal).filter(Boolean), accNames = [], adNames = [];
   let paxTotal = 0;
   for (const b of fl) {
     const z = SIZES[b.size], pax = S.plan.pax[b.id] || 0, self = isSelf(b); paxTotal += pax;
     if (self && flight && flight.q === 'cancel') {
-      paxTotal -= pax; Lg.cancel += pax * CANCEL_COMP; S.rep -= .03;
+      paxTotal -= pax; Lg.cancel += pax * CANCEL_COMP; repBy('İptal edilen uçuş', -.03);
       ev.push(`${b.name} uçuşunu iptal ettin. ${pax} yolcunun bilet parası iade edildi ve kişi başı ${eur(CANCEL_COMP)} tazminat ödendi.`);
       continue;
     }
     const tp = !self && pilotOf(b) ? pilotOf(b).trait : null;
     Lg.rev += pax * S.price; Lg.fuel += z.fuel * (S.fuelUp >= S.day ? 1.5 : 1) * (tp === 'thrifty' ? .85 : 1);
-    if (tp === 'showman') Lg.tips += pax * 9; if (tp === 'daredevil') S.rep += .003; if (tp === 'storyteller') { S.rep += .002; if (Math.random() < .15) addReview('perfect'); }
+    if (tp === 'showman') Lg.tips += pax * 9; if (tp === 'daredevil') repBy('Pilotların özellikleri', .003); if (tp === 'storyteller') { repBy('Pilotların özellikleri', .002); if (Math.random() < .15) addReview('perfect'); }
     const sp = b.ad && SPONSORS.find(x => x.id === b.ad);
-    if (sp) { Lg.ad += adPay(sp, b.size); Lg.adRep += sp.rep; S.rep -= sp.rep; adNames.push(sp.name); }
+    if (sp) { Lg.ad += adPay(sp, b.size); Lg.adRep += sp.rep; repBy('Balon reklamları', -sp.rep); adNames.push(sp.name); }
     const pr = premium(b.size, accP(b));
     if (S.ins.hull) Lg.ins += pr.hull; if (S.ins.pax) Lg.ins += pr.pax;
     let sev = 0;
@@ -2151,21 +2175,21 @@ function finishDay(flight) {
       if (flight.q !== 'cancel') S.selfFlightsNext = (S.selfFlights || 0) + 1;
       Lg.founder += Math.round(pax * S.price * FOUNDER);
       const q = flight.q;
-      if (flight.mok) { (S.stat = S.stat || {}).mis = (S.stat.mis || 0) + 1; const M = MISSIONS[flight.mis], rw = misReward(flight.mis, b.size); Lg.mission += rw; Lg.missionName = M.name; S.rep += .02; ev.push(`Görev tamamlandı: ${M.name}. Müşteri ${eur(rw)} ödül verdi.`); }
+      if (flight.mok) { (S.stat = S.stat || {}).mis = (S.stat.mis || 0) + 1; const M = MISSIONS[flight.mis], rw = misReward(flight.mis, b.size); Lg.mission += rw; Lg.missionName = M.name; repBy('Görev', .02); ev.push(`Görev tamamlandı: ${M.name}. Müşteri ${eur(rw)} ödül verdi.`); }
       else if (flight.mis && q !== 'cancel') ev.push(`Görev tamamlanamadı: ${MISSIONS[flight.mis].name}.`);
-      if (flight.mom && q !== 'crash') { Lg.tips += pax * 5; S.rep += .008; ev.push({ thermal: 'Uçuşta bir termik yakaladın, yolcular süzülmeye bayıldı.', greet: 'Gökyüzünde komşu balonla selamlaştınız, yolcular el salladı.', photo: 'Yolcuların gün doğumu fotoğrafı bütün vadide paylaşıldı.' }[flight.mom] + ` Bahşiş ${eur(pax * 5)}.`); }
-      if (q === 'perfect') { (S.stat = S.stat || {}).perfect = (S.stat.perfect || 0) + 1; Lg.tips += pax * 15; S.rep += .03; ev.push(`${b.name}: kusursuz iniş. Yolcular ${eur(pax * 15)} bahşiş bıraktı.`); }
-      else if (q === 'good') { Lg.tips += pax * 6; S.rep += starVal(S.rep) > 4.5 ? 0 : .01; ev.push(`${b.name}: düzgün iniş, yolcular memnun.`); }
-      else if (q === 'far') { S.rep -= starVal(S.rep) > 4.5 ? .04 : .02; ev.push(`${b.name}: hedeften ${Math.round(flight.dist)} m uzağa indin, yer ekibi seni geç buldu.`); }
+      if (flight.mom && q !== 'crash') { Lg.tips += pax * 5; repBy('Uçuştaki güzel an', .008); ev.push({ thermal: 'Uçuşta bir termik yakaladın, yolcular süzülmeye bayıldı.', greet: 'Gökyüzünde komşu balonla selamlaştınız, yolcular el salladı.', photo: 'Yolcuların gün doğumu fotoğrafı bütün vadide paylaşıldı.' }[flight.mom] + ` Bahşiş ${eur(pax * 5)}.`); }
+      if (q === 'perfect') { (S.stat = S.stat || {}).perfect = (S.stat.perfect || 0) + 1; Lg.tips += pax * 15; repBy('Kusursuz iniş', .03); ev.push(`${b.name}: kusursuz iniş. Yolcular ${eur(pax * 15)} bahşiş bıraktı.`); }
+      else if (q === 'good') { Lg.tips += pax * 6; repBy('Düzgün iniş', starVal(S.rep) > 4.5 ? 0 : .01); ev.push(`${b.name}: düzgün iniş, yolcular memnun.`); }
+      else if (q === 'far') { repBy('Hedefe uzak iniş', -(starVal(S.rep) > 4.5 ? .04 : .02)); ev.push(`${b.name}: hedeften ${Math.round(flight.dist)} m uzağa indin, yer ekibi seni geç buldu.`); }
       else if (q === 'hard') sev = .3;
       else if (q === 'crash') sev = .8;
       /* v124: Bristol's landings and the airport */
       if (S.weather.fog && q !== 'crash') { S.fogFlown = (S.fogFlown || 0) + 1; if (S.fogFlown === 1) ev.push('Sisli bir sabah uçtun ve sağ salim indin. Bristol\'de pilotluk budur.'); }
-      if (flight.farm) { Lg.fine += 300; S.rep -= .015; addReview('farm'); ev.push(`${flight.farm === 'cow' ? 'İneklerin' : 'Koyunların'} tarlasına indin. Çiftçi bağırıp çağırdı, gönlünü ${eur(300)} ile aldın.`); }
-      if (flight.mud) { S.rep -= .03; addReview('mud'); ev.push('Gelgit çamuruna indin. Yolcular çamura battı, ayakkabılar kurtarılamadı.'); }
-      if (flight.airFine) { Lg.fine += 1500; S.rep -= .04; paperAdd(3, `${S.company} havalimanının göğüne girdi`, `Sivil Havacılık Otoritesi şirkete ${eur(1500)} ceza kesti.`); ev.push(`Havalimanının kontrollü hava sahasına girdin: ${eur(1500)} ceza.`); }
+      if (flight.farm) { Lg.fine += 300; repBy('Çiftçinin şikâyeti', -.015); addReview('farm'); ev.push(`${flight.farm === 'cow' ? 'İneklerin' : 'Koyunların'} tarlasına indin. Çiftçi bağırıp çağırdı, gönlünü ${eur(300)} ile aldın.`); }
+      if (flight.mud) { repBy('Çamura iniş', -.03); addReview('mud'); ev.push('Gelgit çamuruna indin. Yolcular çamura battı, ayakkabılar kurtarılamadı.'); }
+      if (flight.airFine) { Lg.fine += 1500; repBy('Hava sahası ihlali', -.04); paperAdd(3, `${S.company} havalimanının göğüne girdi`, `Sivil Havacılık Otoritesi şirkete ${eur(1500)} ceza kesti.`); ev.push(`Havalimanının kontrollü hava sahasına girdin: ${eur(1500)} ceza.`); }
     } else if (Math.random() < accP(b)) sev = rnd(.2, 1);
-    else S.rep += .004;
+    else repBy('Pilotların güvenli uçuşları', .004);
     if (sev) {
       /* v111: in your first three own flights a crash costs one day in repair (Hezarfen knows a mechanic) */
       const rookie = self && (S.selfFlights || 0) < COACH_FLIGHTS;
@@ -2175,7 +2199,7 @@ function finishDay(flight) {
       const hullPaid = S.ins.hull && !red, paxPaid = S.ins.pax && !red;
       Lg.repair += repair; Lg.comp += comp;
       if (hullPaid) Lg.insPay += repair; if (paxPaid) Lg.insPay += comp;
-      b.dmgUntil = S.day + days; S.rep -= .08 + .15 * sev;
+      b.dmgUntil = S.day + days; repBy(self ? (sev < .5 ? 'Sert iniş' : 'Kaza') : 'Pilot kazası', -(.08 + .15 * sev));
       if (!self) accNames.push(b.name);
       const who = self ? 'Sen' : (pilotOf(b) ? pilotOf(b).name : 'Pilot');
       const paid = hullPaid && paxPaid ? 'Sigorta tamamını ödedi.' : hullPaid ? 'Sigorta onarımı ödedi, tazminat kasadan çıktı.' : paxPaid ? 'Sigorta tazminatı ödedi, onarım kasadan çıktı.' : 'Sigorta yoktu, hepsi kasadan çıktı.';
@@ -2201,16 +2225,15 @@ function finishDay(flight) {
     if (cond(b) <= 0) ev.push(`${b.name} balonunun zarfı ömrünü doldurdu. Yenilenmeden uçamaz.`);
   });
   Lg.up = Math.round(S.balloons.reduce((a, b) => a + SIZES[b.size].up, 0) * [1, 1, .85, .7][bl('hangar')]);
-  myHotels().forEach(x => { if (owns(x)) { Lg.hotelInc += hotelInc(x); S.rep = Math.min(1.4, S.rep + x.rep * 1.5); } else { Lg.hotel += x.fee; S.rep = Math.min(1.4, S.rep + x.rep); } });
+  { const r0 = S.rep; myHotels().forEach(x => { if (owns(x)) { Lg.hotelInc += hotelInc(x); S.rep = Math.min(1.4, S.rep + x.rep * 1.5); } else { Lg.hotel += x.fee; S.rep = Math.min(1.4, S.rep + x.rep); } }); repMark('Otel anlaşmaları', r0); }
   S.loans.forEach(l => { Lg.loan += l.inst; l.left--; });
   S.loans = S.loans.filter(l => l.left > 0);
   let net = Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
   S.cash += net;
-  S.rep = clamp(lerp(S.rep, 1, .01), .4, 1.4);
-  if (starVal(S.rep) > 4.5) S.rep -= .006;
-  S.rep += fl.filter(b => b.size === 'XL').length * .005;
+  { const r0 = S.rep; S.rep = clamp(lerp(S.rep, 1, .01), .4, 1.4); if (starVal(S.rep) > 4.5) S.rep -= .006; repMark('Zamanla ortalamaya döner', r0); }
+  repBy('Dev balon', fl.filter(b => b.size === 'XL').length * .005);
   const dRep = Math.min(.015, fl.reduce((a, b) => { const d = designOf(b); return a + (d ? .003 * d.score / 100 * freshness(d) + (d.shape ? .0015 : 0) : 0); }, 0));
-  if (dRep) { S.rep += dRep; Lg.designRep = dRep; if (Math.random() < .25) { const d = designOf(pick(fl.filter(designOf))); addReview('design', { d: d.name }); } }
+  if (dRep) { repBy('Balon tasarımların', dRep); Lg.designRep = dRep; if (Math.random() < .25) { const d = designOf(pick(fl.filter(designOf))); addReview('design', { d: d.name }); } }
   if (S.showTonight === S.day) {
     /* a balloon that crashed today can't go up tonight: it drops out and its fee comes back */
     const out = (S.showIds || []).filter(id => { const b = bal(id); return !b || b.dmgUntil > S.day; });
@@ -2231,20 +2254,20 @@ function finishDay(flight) {
     if (pax > 0) { const ef = Math.round(up.reduce((a, b) => a + SIZES[b.size].fuel, 0) * EVE.fuel); Lg.eve = pax * S.price; Lg.fuel += ef; S.cash += Lg.eve - ef; net += Lg.eve - ef; S.eveDay = S.day; S.eveN = up.length; ev.push(`Festival akşamı: ${up.length} balonun ikinci kez kalktı, ${pax} yolcu akşam uçuşu yaptı. Gelir ${eur(Lg.eve)}.`); }
   }
   if (S.glowTonight === S.day) {
-    S.rep += GLOW.rep; S.glowCount = (S.glowCount || 0) + 1;
+    repBy('Gece Işıltısı', GLOW.rep); S.glowCount = (S.glowCount || 0) + 1;
     paperAdd(4, `${S.company} festival gecesini aydınlattı`, `Gece Işıltısı'nda ${glowFleet().length} balon müzikle ışıldadı, ardından havai fişekler.`);
     ev.push(`Bu gece Gece Işıltısı var: ${glowFleet().length} balonun çayırda müzikle ışıldayacak.`);
   }
   if (S.showTonight === S.day) {
-    S.rep += SHOW.rep; S.showUntil = S.day + SHOW.days; S.lastShow = S.day;
+    repBy('Balon Şöleni', SHOW.rep); S.showUntil = S.day + SHOW.days; S.lastShow = S.day;
     paperAdd(4, `${S.company} gökyüzünü aydınlattı`, `${S.showN} balonluk Balon Şöleni bütün vadiyi meydana topladı.`);
     ev.push(`Bu gece Balon Şöleni var: ${S.showN} balonun kasabanın üstünde yanacak. Önümüzdeki 3 gün şölene gelen turistler seni arayacak.`);
   }
-  if (S.unl.market && !prOk() && S.rep > prCap()) { S.rep = prCap(); hezAdd('prcap'); } /* only once hotels and guides are open */
+  if (S.unl.market && !prOk() && S.rep > prCap()) { const r0 = S.rep; S.rep = prCap(); repMark('Tanıtım eksik (rehber, otel)', r0); hezAdd('prcap'); } /* only once hotels and guides are open */
   if (licenseLeft() === 0) ev.push('Pilot lisansın bugün sona eriyor. Yarın kendin uçmazsan ya da ücreti ödemezsen diğer balonların yerde kalır.');
   const away = S.day - S.lastSelfFly;
   if (fl.length && away > ABSENT_GRACE) {
-    S.rep -= ABSENT_LOSS; hezAdd('absent');
+    repBy('Kurucu sepete binmedi', -ABSENT_LOSS); hezAdd('absent');
     if ((S.absentNotice || 0) < S.lastSelfFly || S.day - S.absentNotice >= 5) { S.absentNotice = S.day; ev.push(`${away} gündür sepete binmedin. Yolcular kurucuyu soruyor, popülerlik eriyor.`); }
     if (Math.random() < .3) addReview('absent');
   }
@@ -2285,7 +2308,7 @@ function finishDay(flight) {
   genReviews({ xl: fl.some(b => b.size === 'XL'), mis: flight && flight.mok && flight.q !== 'hard' && flight.q !== 'crash' ? flight.mis : null, ads: adNames, q: flight ? flight.q : null, acc: accNames, red, flew: paxTotal > 0, skip: S.plan.skip, flag: S.weather.flag });
   chirpI = 0; chirpT = 1.5;
   myHotels().forEach(x => { if (!owns(x) && starVal(S.rep) < x.min - .3) { S.hotels = S.hotels.filter(id => id !== x.id); ev.push(`${x.name} anlaşmayı bitirdi. Popülerliğin ${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ seviyesinin çok altına düştü.`); } });
-  if (S.day <= S.influUntil) { S.rep = Math.min(1.4, S.rep + .03); if (Math.random() < .6) addReview('influ'); }
+  if (S.day <= S.influUntil) { const r0 = S.rep; S.rep = Math.min(1.4, S.rep + .03); repMark('Influencer paylaşımı', r0); if (Math.random() < .6) addReview('influ'); }
   if (S.selfFlightsNext) { S.selfFlights = S.selfFlightsNext; delete S.selfFlightsNext; }
   S.repHist.push({ d: S.day, r: S.rep }); if (S.repHist.length > 120) S.repHist.shift();
   S.lastShare = { me: paxTotal, cap: capToday, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
@@ -2302,7 +2325,7 @@ function finishDay(flight) {
   (S.stat = S.stat || {}).pax = (S.stat.pax || 0) + paxTotal;
   praiseCheck(flight, red && !fl.length);
   if (S.region === 'cap' && fl.length && !S.storyDone && S.day <= 3) hezAdd('hasan'); /* v121: after the first flight, the grandfather's story */
-  lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip };
+  lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip, rep0, rep1: S.rep, repWhy: REPW }; REPW = null;
   S.day++; S.plan = null; fabDay(ev); milestoneCheck(); achCheck(); if (anyBaron()) holdGoalsCheck();
   if (S.region === 'abq') {
     if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 30; }
@@ -2378,15 +2401,16 @@ function showMerge() {
 }
 /* ---------- chapters ---------- */
 const CHAPTERS = [
-  { name: 'Kuruluş', reward: 5000, award: 'Kapadokya Turizm Derneği seni yılın genç girişimcisi seçti', awardShort: 'Kapadokya Turizm Derneği ödülü', goals: [['balloons', 2, 'İkinci balonunu al'], ['pilots', 1, 'İlk pilotunu işe al'], ['stars', 4.3, '4,3★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Yükseliş', reward: 10000, award: 'Göreme Belediyesi seni vadinin en hızlı büyüyen şirketi seçti', awardShort: 'Göreme Belediyesi ödülü', goals: [['balloons', 5, '5 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Büyüme', reward: 20000, award: 'Türkiye Turizm Ödülleri\'nde Yılın Balon Şirketi seçildin', awardShort: 'Türkiye Turizm Ödülleri', goals: [['balloons', 10, '10 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['share', .5, 'Pazarın %50\'si'], ['fabBuilt', 1, 'Atölyende ilk balonunu üret']] },
+  { name: 'Kuruluş', reward: 5000, award: 'Kapadokya Turizm Derneği seni yılın genç girişimcisi seçti', awardShort: 'Kapadokya Turizm Derneği ödülü', goals: [['seats', 16, '16 koltukluk filo'], ['pilots', 1, 'İlk pilotunu işe al'], ['stars', 4.3, '4,3★ popülerlik'], ['hotelDeal', 1, 'Bir otelle anlaşma yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
+  { name: 'Yükseliş', reward: 10000, award: 'Göreme Belediyesi seni vadinin en hızlı büyüyen şirketi seçti', awardShort: 'Göreme Belediyesi ödülü', goals: [['seats', 64, '64 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Büyüme', reward: 20000, award: 'Türkiye Turizm Ödülleri\'nde Yılın Balon Şirketi seçildin', awardShort: 'Türkiye Turizm Ödülleri', goals: [['seats', 150, '150 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['share', .5, 'Pazarın %50\'si'], ['fabBuilt', 1, 'Atölyende ilk balonunu üret']] },
   { name: 'Kapadokya Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Kapadokya Yıldızı'], ['bldTop', 3, 'Bir binayı 3. seviyeye çıkar']] }
 ];
 const BARON_SHARE = .7, BARON_STARS = 4.8;
 function goalVal(k) {
   switch (k) {
     case 'balloons': return S.balloons.length;
+    case 'seats': return S.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0); /* v124.6: fleet goals count seats, so any balloon size counts fairly */
     case 'pilots': return S.pilots.length;
     case 'stars': return starVal(S.rep);
     case 'cash': return S.cash;
@@ -2908,7 +2932,7 @@ function renderHud() {
 }
 const ICONS = {
   plan: '<path d="M3 18h18M6.5 18a5.5 5.5 0 0 1 11 0M12 6v2.5M5.2 9.6l1.7 1.7M18.8 9.6l-1.7 1.7"/>',
-  fleet: '<path d="M12 3a6.5 6.5 0 0 0-6.5 6.5c0 3.6 3.5 6.6 4.7 8.5h3.6c1.2-1.9 4.7-4.9 4.7-8.5A6.5 6.5 0 0 0 12 3z"/><path d="M10 21h4"/>',
+  fleet: '<path d="M12 2.5a6 6 0 0 0-6 6c0 3.2 3 5.6 4.3 7.5h3.4c1.3-1.9 4.3-4.3 4.3-7.5a6 6 0 0 0-6-6z"/><path d="M12 2.5c-1.5 1.7-2.1 4-2.1 6.2 0 2.7.6 5.2 1.3 7.3M12 2.5c1.5 1.7 2.1 4 2.1 6.2 0 2.7-.6 5.2-1.3 7.3"/><path d="M10.4 16.2l.3 2.3M13.6 16.2l-.3 2.3"/><rect x="9.9" y="18.5" width="4.2" height="3" rx=".8"/>', /* v124.6: ropes and a basket, so it reads as a balloon, not a light bulb */
   crew: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20.5c0-3.4 2.7-6 6-6s6 2.6 6 6"/><circle cx="17.2" cy="9" r="2.4"/><path d="M16 14.4c3 .3 5 2.6 5 5.6"/>',
   bank: '<path d="M3 9.5 12 4l9 5.5M5.5 10.5v7M10 10.5v7M14 10.5v7M18.5 10.5v7M3 20.5h18"/>',
   market: '<path d="M4 20.5v-7M10 20.5V5M16 20.5v-10M2.5 20.5h19"/>',
@@ -2962,7 +2986,7 @@ function dockOpen(v) {
 function renderHome() {
   if (!S.weather) return;
   const Wx = S.weather, F = FLAGS[Wx.flag];
-  $('wx').innerHTML = `<div class="wxh"><span class="flagmini" style="background:${F.col}"></span><div><div class="wxt">${F.name}${S.winter ? ', kış' : ''}</div><div class="wxs">Yerde rüzgâr ${Wx.surf} km/s</div></div></div>` +
+  $('wx').innerHTML = `<div class="wxh"><span class="flagmini" style="background:${F.col}"></span><div><div class="wxt">${F.name}${S.winter ? ', kış' : ''}</div><div class="wxs">Yerde rüzgâr ${Wx.surf} km/sa</div></div></div>` +
     [3, 2, 1, 0].map(i => { const v = Wx.layers[i], w = Math.min(44, Math.abs(v) / 10 * 44); return `<div class="lr"><span>${BANDS[i][0]}–${BANDS[i][1]} m</span><span class="lt"><i class="${v >= 0 ? 'r' : 'l'}" style="${v >= 0 ? 'left:50%' : 'right:50%'};width:${w}%"></i></span><b>${Math.round(Math.abs(v) * 3.6)}</b></div>`; }).join('');
   const al = $('alerts'); al.replaceChildren();
   const alert = (cls, html, on) => { const a = h(on ? 'button' : 'div', 'alert ' + cls, html); if (on) a.onclick = on; al.appendChild(a); };
@@ -3152,6 +3176,20 @@ function noneReason() {
   if (st.includes('ok')) return 'Bütün balonların yerde kalacak şekilde ayarlı. Planı aç.';
   return 'Bugün uçacak balon yok';
 }
+/* v124.6: under the price meter, what else decides the passengers: popularity against the rivals, what changes the
+   number of tourists today, and who sends tourists straight to you. Rows appear only when they apply, so day one shows
+   popularity alone and hotels, guides, influencers or holding boosts join as the player gets them. */
+function whyRows(m) {
+  const rows = [], pull = repPull(), avg = rivalAvgRep();
+  if (pull != null) {
+    const cls = pull >= 1.1 ? 'g' : pull >= .8 ? '' : pull >= .5 ? 'y' : 'r';
+    rows.push(`<div class="wr"><span>Popülerlik <b>${stars(S.rep)}</b> · rakipler ${stars(avg)}</span><em class="${cls}">${Math.abs(pull - 1) < .05 ? 'eşit ilgi' : `turist ilgisi ${pctTxt(Math.min(pull, 3))}`}</em></div>`);
+  }
+  const df = demandFactors();
+  if (df.length) rows.push(`<div class="wr"><span>Turist sayısı</span><em>${df.map(x => `${x.label} ${pctTxt(x.k)}`).join(' · ')}</em></div>`);
+  for (const x of (m.parts || [])) rows.push(`<div class="wr"><span><i style="background:${x.col}"></i>${esc(x.label)}</span><em class="g">+${x.n} yolcu</em></div>`);
+  return rows.length ? `<div class="why">${rows.join('')}</div>` : '';
+}
 function whoFlies(fl) {
   const self = fl.some(isSelf), pilots = fl.length - (self ? 1 : 0);
   return self ? (pilots ? `Sen ve pilot${pilots > 1 ? 'ların' : 'un'} uçuracak` : 'Sen uçuracaksın') : pilots > 1 ? 'Pilotlar uçuracak' : 'Pilot uçuracak';
@@ -3164,7 +3202,7 @@ function renderAct() {
   const w = willing(S.price), feel = w >= .85 ? ['Uygun fiyat', 'g'] : w >= .6 ? ['Biraz pahalı', 'y'] : w >= .35 ? ['Pahalı', 'o'] : ['Çok pahalı', 'r'];
   const tour = touristsToday(), crowded = seats > tour;
   $('dem').innerHTML = `<div class="feel"><div class="fl"><span>Turistlere göre</span><b class="${feel[1]}">${feel[0]}</b></div><div class="meter"><i style="left:${feelPos(w)}%"></i></div><div class="fl sm"><span>ucuz</span><span>pahalı</span></div></div>
-    <p class="mood">Bugün <b>${tour}</b> turist var, rakiplerle birlikte gökyüzünde <b>${seats}</b> koltuk: ${crowded ? 'koltuk fazla, rekabet sert.' : 'turist fazla, balonlar kolay dolar.'}</p>`;
+    <p class="mood">Bugün <b>${tour}</b> turist var, rakiplerle birlikte gökyüzünde <b>${seats}</b> koltuk: ${crowded ? 'koltuk fazla, rekabet sert.' : 'turist fazla, balonlar kolay dolar.'}</p>${whyRows(m)}`;
   const delta = psBase == null ? 0 : income - psBase;
   /* why the sum is not simply seats × price */
   const notes = [];
@@ -3173,7 +3211,9 @@ function renderAct() {
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
   $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
   /* v122: price changes count the passengers up or down where you can see it */
-  if (TUTA && TUTA.k === 'price' && S.price < TUTA.p0 && !TUTA.low) { TUTA.low = true; tutStep('price_low'); }
+  /* v124.6: "more passengers" only once the estimate has really gone up; until then, one more tap on − */
+  if (TUTA && TUTA.k === 'price' && TUTA.pax0 == null && S.price === TUTA.p0) TUTA.pax0 = pax;
+  if (TUTA && TUTA.k === 'price' && S.price < TUTA.p0 && pax > (TUTA.pax0 == null ? pax : TUTA.pax0) && !TUTA.low) { TUTA.low = true; tutStep('price_low'); }
   if (TUTA && TUTA.k === 'price2' && S.price > TUTA.p0 && pax >= cap && !TUTA.up) { TUTA.up = true; tutStep('price2_up'); } /* v122.4 */
   if (renderAct.pax != null && renderAct.cap === cap && renderAct.price !== S.price) { paxBump($('est').querySelector('.res') ? $('est') : null, pax, renderAct.pax); paxBump($('pcard').querySelector('.pf'), pax, renderAct.pax); }
   renderAct.pax = pax; renderAct.cap = cap; renderAct.price = S.price;
@@ -3638,6 +3678,11 @@ function showReport() {
   led.appendChild(h('div', null, `<span>Kasa</span><span class="v">${eur(S.cash)}</span>`));
   b.appendChild(led);
   if (L.hold) b.appendChild(h('div', 'callout grn', `<b>Holding kasasına +${eurH(L.hold)}.</b> ${Object.keys(S.regions || {}).map(id => REGION_DEF[id].name).join(', ')} otomatik modda kazandı, holding giderleri (%${Math.round(holdCostRate() * 100)}) düşüldü. Holding kasası: ${eurH(S.holding || 0)}.`));
+  /* v124.6: the stars, yesterday → today, with the biggest reasons */
+  if (R.rep0 != null && stars(R.rep0) !== stars(R.rep1)) {
+    const up = R.rep1 > R.rep0, why = Object.entries(R.repWhy || {}).filter(([, d]) => Math.abs(d) * 4 >= .02).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 3);
+    b.appendChild(h('div', 'callout ' + (up ? 'grn' : 'red') + ' repline', `<b>Popülerlik ${stars(R.rep0)} → ${stars(R.rep1)}</b>${why.length ? `<br><span>${why.map(([k, d]) => `${esc(k)} ${d > 0 ? '+' : '−'}${(Math.abs(d) * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★`).join(' · ')}</span>` : ''}`));
+  }
   if (Math.round(L.designRep * 400) >= 1) b.appendChild(h('div', 'callout grn', `<b>Tasarımların konuşuluyor.</b> Desenli balonların bugün popülerliğine +${(L.designRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ ekledi.`));
   if (Math.round(L.adRep * 400) >= 1) b.appendChild(h('div', 'callout yel', `<b>Puanını aldığın reklamlar da etkiliyor.</b> Bugün balonlarındaki reklamlar popülerliğini ${(L.adRep * 4).toLocaleString('tr-TR', { maximumFractionDigits: 2 })}★ düşürdü.`));
   if (R.ev.length || R.rev.length) {
@@ -3652,7 +3697,7 @@ function showReport() {
     const nb = h('button', 'big', 'Yeni şirket kur'); nb.onclick = () => { S = newState(); setupName = ''; startIntro(); }; b.appendChild(nb);
   } else {
     if (allDead && !S.monopolyShown) { S.monopolyShown = true; save(); b.appendChild(h('div', 'callout grn', '<b>Kapadokya göğünde tek şirket sensin.</b> Fiyatı artık sen belirliyorsun.')); }
-    b.appendChild(h('p', 'hint', `Yarın ${FLAGS[S.weather.flag].name.toLowerCase()}, yerde rüzgâr ${S.weather.surf} km/s.`));
+    b.appendChild(h('p', 'hint', `Yarın ${FLAGS[S.weather.flag].name.toLowerCase()}, yerde rüzgâr ${S.weather.surf} km/sa.`));
     const nb = h('button', 'big', `Gün ${S.day} sabahına geç`); nb.onclick = () => { tab = 'plan'; startNight(); }; b.appendChild(nb);
   }
   tk.appendChild(b); m.appendChild(tk);
@@ -5388,7 +5433,7 @@ function coachSay(k, html) {
 }
 function coachTick(f, dt) {
   if (!f.air || f.done) return;
-  if (f.fuel < 25 && !f.lowFuel) { f.lowFuel = 1; f.coachK = null; f.coachAt = 0; coachSay('fuel', '<b>Yakıt azalıyor.</b> Brülöre kısa kısa bas, yakıtı inişe sakla. Hedefe doğru esen katmanda kal.'); }
+  if (f.fuel < 30 && !f.lowFuel) { /* v124.6: was 25 */ f.lowFuel = 1; f.coachK = null; f.coachAt = 0; coachSay('fuel', '<b>Yakıt azalıyor.</b> Brülöre kısa kısa bas, yakıtı inişe sakla. Hedefe doğru esen katmanda kal.'); }
   if (f.coachAt && T - f.coachAt > 6 && f.coachK && !f.msg) { $('tip').hidden = true; f.coachK = null; }
   if (!coached()) return;
   const dx = S.weather.target - f.x, toward = f.vx * Math.sign(dx);
@@ -5489,7 +5534,7 @@ function tutHome() {
     const A = tutShow('price', 'Fiyatı düşür: daha çok yolcu biner.', { mode: 'office', p0: S.price,
       holes: () => $('psheet').hidden ? [tutRel($('pcard'), 4)] : [tutRel(A.low ? $('psOk') : $('pMinus'), 6, !A.low), tutRel($('est'), 6)],
       arrow: hs => A.low && !$('psheet').hidden ? null : tutArrowAt(hs[0]),
-      lineNow: () => A.low && !$('psheet').hidden ? 'Gördün mü? Yolcu arttı. Tamam\'a bas.' : A.line });
+      lineNow: () => A.low && !$('psheet').hidden ? 'Gördün mü? Yolcu arttı. Tamam\'a bas.' : !$('psheet').hidden && S.price < A.p0 ? 'Yolcu henüz artmadı: bir kez daha −\'ye bas.' : A.line });
     return true;
   }
   if (!tutHas('go')) { tutShow('go', 'Hazırsın: yolcu topla ve uç.', { mode: 'office', holes: () => [tutRel($('go'), 5)] }); return true; }
@@ -5531,7 +5576,7 @@ function tutFlightTick(f, dt) {
     if (past || T - st.ch.t0 > 9) { tutStep('chimney'); tutEnd('chimney'); st.ch = null; }
     else if (Math.abs(c.x - f.x) > 450) { st.ch = null; tutEnd('chimney'); }
   }
-  const M = f.mom, th = M && M.k === 'thermal' && !tutHas('thermal') ? M : null;
+  const M = f.mom, th = M && M.k === 'thermal' && !tutHas('thermal') && (S.selfFlights || 0) >= 1 ? M : null; /* v124.6: the thermal lesson waits for the second flight; the chimney stays on the first */
   if (th && (th.in > .3 || th.ok || (f.x - th.x) * (Math.sign(dx) || 1) > 160)) { tutStep('thermal'); tutEnd('thermal'); }
   let k = null;
   if (!tutHas('burn')) k = 'burn';
@@ -5585,7 +5630,7 @@ const GUIDED = {
   workshop: { bld: 'shop', steps: [tutPage('[data-tut=workshop]')], done: () => !!S.workshop },
   school: { bld: 'school', steps: [tutPage('[data-tut=school]')], done: () => !!S.school }
 };
-const guideOk = k => !!GUIDED[k] && mode === 'office' && !AUTO && !TOWN.open && (!GUIDED[k].bld || townBuildings().some(b => b.id === GUIDED[k].bld && b.lv >= 0));
+const guideOk = k => !!GUIDED[k] && mode === 'office' && !AUTO && !TOWN.open && (k !== 'price' || flying().length > 0) /* v124.6: no price lesson on a forced skip */ && (!GUIDED[k].bld || townBuildings().some(b => b.id === GUIDED[k].bld && b.lv >= 0));
 function guideStart(k) {
   const def = GUIDED[k];
   GA = { k, def, t0: T, max: 0, cur: -2, n0: { b: S.balloons.length, p: S.pilots.length, h: S.hotels.length, g: S.guideCount || 0, i: S.influCount || 0 } };
@@ -5711,9 +5756,10 @@ function updateFlight(dt) {
     if (f.mis === 'panorama' && f.alt >= 550) missionDone();
   }
   const M = f.mom;
+  /* v122: the thermal lifts twice as hard as before (.5), so you feel it carry you; v124.6: all the way up its column,
+     not only until the moment is counted */
+  if (M && f.air && M.k === 'thermal' && Math.abs(f.x - M.x) < 65 && f.alt < 520) { f.vy += THERMAL_LIFT * s; f.thAt = T; if (!M.ok) { M.in += dt; if (M.in > 2) momentDone('Termik yakaladın! Sıcak hava seni bedavaya taşıdı.', () => { f.fuel = Math.min(100, f.fuel + 15); }); } }
   if (M && !M.ok && f.air) {
-    /* v122: the thermal lifts twice as hard as before (.5), so you feel it carry you */
-    if (M.k === 'thermal' && Math.abs(f.x - M.x) < 65 && f.alt < 520) { f.vy += THERMAL_LIFT * s; f.thAt = T; M.in += dt; if (M.in > 2) momentDone('Termik yakaladın! Sıcak hava seni bedavaya taşıdı.', () => { f.fuel = Math.min(100, f.fuel + 15); }); }
     if (M.k === 'greet') { M.x += windAt(M.alt, f.t) * s * .9; if (Math.abs(f.x - M.x) < 95 && Math.abs(f.alt - M.alt) < 50) { M.in += dt; if (M.in > 2) momentDone('Komşu balonla el salladınız! Yolcular çok sevindi.'); } else M.in = 0; }
     if (M.k === 'photo' && Math.abs(f.x - M.x) < 70 && f.alt >= M.lo && f.alt <= M.hi) { M.in += dt; if (M.in > 1.5) { f.flashAt = T; momentDone('Gün doğumu karesi! Yolcuların fotoğrafı herkesi kıskandıracak.'); } }
   } else if (M && M.k === 'greet') M.x += windAt(M.alt, f.t) * s * .9;
@@ -6532,7 +6578,7 @@ function draw(dt) {
       ctx.strokeStyle = ctx.fillStyle = active ? '#ff5e3a' : '#2b2350'; ctx.lineWidth = 3; ctx.lineCap = 'round';
       ctx.beginPath(); ctx.moveTo(ax0, y); ctx.lineTo(ax1, y); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(ax1 + dir * 2, y); ctx.lineTo(ax1 - dir * 5, y - 5); ctx.lineTo(ax1 - dir * 5, y + 5); ctx.fill();
-      ctx.fillStyle = '#2b2350'; ctx.fillText(`${Math.round(Math.abs(v) * 3.6)} km/s`, 70, y + 5);
+      ctx.fillStyle = '#2b2350'; ctx.fillText(`${Math.round(Math.abs(v) * 3.6)} km/sa`, 70, y + 5);
       /* v122: the wind step lights the layers one by one, then marks the one that blows toward the field */
       if (TUTA && TUTA.k === 'wind' && i === tutLayerLit()) {
         const pick = T - TUTA.t0 >= 2.4;
@@ -6553,7 +6599,7 @@ function draw(dt) {
       /* v121.2: the wind where the balloon is, in a small dark-glass tag like the wind card: a coloured disc with the arrow (green toward
          the field). It rides above the envelope, so the ground, the landing field and the chimneys below stay clear */
       if (f.alt > 3 && !f.done) {
-        const wv = windBase(f.alt), wd = Math.sign(wv) || 1, good = wv * Math.sign(S.weather.target - f.x) > .3, lbl = `${Math.round(Math.abs(wv) * 3.6)} km/s`;
+        const wv = windBase(f.alt), wd = Math.sign(wv) || 1, good = wv * Math.sign(S.weather.target - f.x) > .3, lbl = `${Math.round(Math.abs(wv) * 3.6)} km/sa`;
         ctx.font = '700 13px "Barlow Condensed", system-ui, sans-serif'; const tw = ctx.measureText(lbl).width, pw = tw + 34, ph = 22, py = Math.max(top + ph, pv - R * 1.2 - 12), px = bx - pw / 2;
         ctx.fillStyle = 'rgba(30,24,64,.62)'; rrect(px, py - ph / 2, pw, ph, ph / 2); ctx.fill();
         const cx = px + 12, cr = 7.5; ctx.fillStyle = good ? '#22a45d' : '#ff5e3a'; ctx.beginPath(); ctx.arc(cx, py, cr, 0, 7); ctx.fill();
@@ -6659,7 +6705,7 @@ function draw(dt) {
     ctx.fillText(`${f.vy >= 0 ? '↑' : '↓'}${Math.abs(f.vy).toFixed(1)}`, ix + 72, iy + 40);
     ctx.fillStyle = '#6c6488'; ctx.font = '600 11px Barlow, system-ui, sans-serif'; ctx.fillText('Yakıt', ix + 12, iy + 62);
     ctx.fillStyle = '#ece7f4'; rrect(ix + 12, iy + 68, iw - 24, 10, 5); ctx.fill();
-    ctx.fillStyle = f.fuel < 20 ? '#e5432f' : '#ff5e3a'; if (f.fuel > 1) { rrect(ix + 12, iy + 68, (iw - 24) * f.fuel / 100, 10, 5); ctx.fill(); }
+    ctx.fillStyle = f.fuel < 30 ? '#e5432f' : '#ff5e3a'; if (f.fuel > 1) { rrect(ix + 12, iy + 68, (iw - 24) * f.fuel / 100, 10, 5); ctx.fill(); }
   } else {
     balloon(lx, groundY - 1, PR * ((bal(S.flag) || {}).size === 'XL' ? 1.35 : 1), myc[0], myc[1], Math.sin(T * 1.3) > .6, 1, (bal(S.flag) || {}).ad, designOf(bal(S.flag)));
     let i = 1;
@@ -6755,24 +6801,24 @@ const ENTRANTS_ABQ = [
 ];
 const regionEntrants = () => S.region === 'bri' ? ENTRANTS_BRI : S.region === 'lux' ? ENTRANTS_LUX : S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
 const CHAPTERS_ABQ = [
-  { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['balloons', 3, '3 balonluk filo'], ['pilots', 2, '2 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['balloons', 7, '7 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['balloons', 12, '12 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['seats', 32, '32 koltukluk filo'], ['pilots', 2, '2 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
+  { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['seats', 100, '100 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['seats', 180, '180 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Fiesta Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 /* Luxor: every chapter a step harder than Albuquerque's */
 const CHAPTERS_LUX = [
-  { name: 'Batı Yakası', reward: 5000, award: 'Luksor Valiliği seni Batı Yakası\'nın yeni yüzü seçti', awardShort: 'Luksor Valiliği ödülü', goals: [['balloons', 4, '4 balonluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Nil Rüzgârı', reward: 10000, award: 'Mısır Sivil Havacılık Otoritesi seni yılın en güvenli işletmesi seçti', awardShort: 'Sivil Havacılık ödülü', goals: [['balloons', 8, '8 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .3, 'Pazarın %30\'u'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Firavunlar Vadisi', reward: 20000, award: 'Mısır Turizm Bakanlığı seni yılın balon şirketi seçti', awardShort: 'Turizm Bakanlığı ödülü', goals: [['balloons', 14, '14 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Nil gemisi sezonunda uç'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Batı Yakası', reward: 5000, award: 'Luksor Valiliği seni Batı Yakası\'nın yeni yüzü seçti', awardShort: 'Luksor Valiliği ödülü', goals: [['seats', 48, '48 koltukluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
+  { name: 'Nil Rüzgârı', reward: 10000, award: 'Mısır Sivil Havacılık Otoritesi seni yılın en güvenli işletmesi seçti', awardShort: 'Sivil Havacılık ödülü', goals: [['seats', 120, '120 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .3, 'Pazarın %30\'u'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Firavunlar Vadisi', reward: 20000, award: 'Mısır Turizm Bakanlığı seni yılın balon şirketi seçti', awardShort: 'Turizm Bakanlığı ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Nil gemisi sezonunda uç'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Luksor Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Teb Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 /* v124: Bristol, a step harder than Luxor; the canyon chapter wants a flight on a foggy morning, the festival chapter a
    Night Glow */
 const CHAPTERS_BRI = [
-  { name: 'Ashton Malikânesi', reward: 5000, award: 'Bristol Ticaret Odası seni yılın yeni işletmesi seçti', awardShort: 'Ticaret Odası ödülü', goals: [['balloons', 4, '4 balonluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['balloons', 14, '14 balonluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .35, 'Pazarın %35\'i'], ['fog', 1, 'Sisli bir günde uç'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['balloons', 24, '24 balonluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['share', .55, 'Pazarın %55\'i']] },
+  { name: 'Ashton Malikânesi', reward: 5000, award: 'Bristol Ticaret Odası seni yılın yeni işletmesi seçti', awardShort: 'Ticaret Odası ödülü', goals: [['seats', 48, '48 koltukluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
+  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .35, 'Pazarın %35\'i'], ['fog', 1, 'Sisli bir günde uç'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['seats', 380, '380 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['share', .55, 'Pazarın %55\'i']] },
   { name: 'Bristol Baronu', reward: 0, goals: [['share', .75, 'Pazarın %75\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Avon Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 const chap = () => S.region === 'bri' ? CHAPTERS_BRI : S.region === 'lux' ? CHAPTERS_LUX : S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;
@@ -7409,6 +7455,21 @@ function holdBoost(id) {
   const H = S.hold; if (!H) return 1;
   return (1 + (H.recBoost || 0)) * (H.tvUntil > S.day ? 1.2 : 1) * (H.celeb && H.celeb.until > S.day ? 1.1 : 1) * (H.jersey > S.day ? JERSEY.boost : 1) * (H.wg && H.wg.until > S.day ? WGAMES.boost : 1) * (H.bb && H.bb[id] > S.day ? 1.1 : 1);
 }
+/* v124.6: why tourists pick you or not. Popularity weighs as rep² against the rivals' (a crisis below 2★ cuts it to
+   35%), see allocate(); the day's tourists are multiplied by festival, winter, weather, the sales office and the holding. */
+function rivalAvgRep() { const a = S.rivals.filter(r => r.alive); return a.length ? a.reduce((x, r) => x + r.rep, 0) / a.length : null; }
+function repPull() { const avg = rivalAvgRep(); return avg == null ? null : S.rep * S.rep * (S.rep < CRISIS_REP ? .35 : 1) / (avg * avg); }
+function demandFactors() {
+  const f = [], fx = (label, k) => { if (Math.abs(k - 1) > .004) f.push({ label, k }); };
+  if (S.fiesta) fx(S.region === 'lux' ? 'Festival' : 'Balon fiestası', S.region === 'lux' ? 1.6 : S.region === 'bri' ? 1.8 : 1.9);
+  if (S.fest) fx('Festival', 1.4);
+  if (S.winter) fx('Kış', .55);
+  fx(FLAGS[S.weather.flag].name, FLAGS[S.weather.flag].dem);
+  fx('Satış ofisi', [1, 1, 1.05, 1.12][bl('mine')]);
+  fx('Holding yatırımları', holdBoost(S.region));
+  return f;
+}
+const pctTxt = k => (k >= 1 ? '+%' : '−%') + Math.round(Math.abs(k - 1) * 100);
 function holdingDay() {
   if (!S.hold) S.hold = { log: [] };
   let gross = 0;

@@ -111,6 +111,19 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
 Önceki tasarım (v109.1, kaldırıldı): bankada günlük net 50.000 ile açılan 500.000 kredisi; parası toplu balona harcanınca doymuş pazarda kışın iki tohumda şirketi batırıyordu.
 
 ## Pazar ve popülerlik
+- **Neden bu kadar yolcu? (v124.6):** bilet fiyatı ekranında fiyat ölçerin altında, yalnız o gün geçerli olanlar satır satır çıkar:
+  - **Popülerlik:** senin yıldızın ve rakiplerin ortalaması, turist ilgisi yüzde olarak. Formül pazar dağıtımındaki çekicilik: rep², 2★ altında ×0,35, rakip ortalamasının rep²'sine bölünür.
+  - **Turist sayısı:** festival, fiesta, kış, bayrak, satış ofisi ve holding yatırımlarının çarpanı.
+  - **Doğrudan gelenler:** otel anlaşmaları, rehber tavsiyesi, influencer, şölen ve popülerlik bonusu, "+N yolcu" olarak.
+
+  İlk günlerde yalnız popülerlik satırı vardır; diğerleri oyuncu onları edindikçe görünür.
+- **Boş koltuk dersi (v124.6):** 2–12. günlerde koltuk boş kaldıysa Hezarfen sebebi ayırır:
+  - fiyat pahalıysa (turistlerin %70'inden azı razı) fiyatı düşür (`price`),
+  - popülerlik 2★'ın altındaysa ya da rakiplerin %60'ından az ilgi görüyorsan sebep yıldızlar (`priceRep`),
+  - ikisi de iyiyse gökyüzünde turistten çok koltuk vardır (`priceRiv`).
+
+  Rehberli fiyat dersi, hiçbir balonun uçamadığı günde çıkmaz.
+- **Rapor:** yıldız değiştiyse "Popülerlik 4,0★ → 3,5★" satırı ve en büyük üç sebep çıkar (sert iniş, kaza, görev, oteller, reklamlar, kurucu yokluğu, zamanla ortalamaya dönme…).
 - **Fiyat:** €40–320 arası.
 - **Fiyat isteği:** `willing(p) = 1 / (1 + exp((p − 230) / 30))`
 - **Çekicilik:** `rep² × (190 / p)^1.5 × koltuk`. Büyük şirket daha görünür. Popülerlik < 0,5 ise ×0,35 (kriz).
@@ -168,7 +181,7 @@ Simülasyon (`tools/sim-buyloan.js`; bot satılık bir rakibi parası yetmezse h
 - **Otel satışı (v118):** sahip olunan otel alış fiyatının %60'ına satılır (Pazar'daki otel kartında "Sat"). Kurtarma planında, otelin varsa en küçüğünü satma seçeneği çıkar. Satmadan önce bir kart sorar: oteli en popüler rakip satın alır; o rakip ayakta olduğu sürece bu otelle anlaşma yapılamaz (kartta "Sahibi: X"), otel ancak ondan geri alınır ve fiyatı %10 fazladır (oyunda yazmaz, sadece fiyat görünür). Rakip yoksa otel serbest kalır. Oteli alan rakip batarsa "Satılık otel" kartı çıkar: otel bir kez alış fiyatının %70'ine sana önerilir; geçersen piyasaya döner. O rakibi sen satın alırsan otel bedavaya sana geçer; iki rakip birleşirse otel yeni firmaya geçer.
 
 ## Görevler
-Ödül amiral balonunun boyuyla çarpılır: S ×1, M ×2, L ×3, XL ×4.
+Ödül amiral balonunun boyuyla çarpılır: S ×1, M ×2, L ×3, XL ×4. v124.6: şirket büyüdükçe görev ödülü günlük kazançla da büyür; ödül en az günlük netin (son 14 günün ortancası) %8 × taban/400'üdür (evlilik teklifi %9, panorama %5). Hangisi büyükse o, festivalde ×1,5, 10'a yuvarlanır. Erken oyunda eski ödül geçerli; günlük net €28.000 iken evlilik teklifi €2.520, €40.000 iken €3.600.
 
 | Görev | Taban ödül |
 |---|---|
@@ -223,20 +236,20 @@ Albuquerque ve Luksor rakipleri daha sert oynar (`RIVAL_EDGE`, Swift'te `RegionI
   - 5 ve üstünde, payın o gün de %60'ın üstünde olduğu her gün %25 şansla max(€5.000, şirket değerinin %3'ü) ceza (v110: önceden kırmızı bayrakta yerde kalınan gün de gelebiliyor, gazete %0 yazıyordu). Şirket değeri: pozitif kasa + balonların alış fiyatı + sahip olunan oteller.
 
 ## Bölümler ve Baron
-Hedefler her işlemden sonra kontrol edilir: bir bölümün bütün hedefleri tuttuğu anda ödül kasaya girer ve tören hemen açılır (v108). Baron bölümü de öyle (v109): bütün hedefleri aynı anda tuttuğu an baron olursun. Bölüm kartlarında "Bölüm 2/4" büyük başlıkla yazar.
+Filo hedefleri v124.6'dan beri balon sayısı değil koltuk sayısıdır (S 8, M 16, L 24, XL 32), böylece her balon boyu adil sayılır; sadece küçük balon almak eskisi kadar hızlı değil (sim, 6 tohum, Kapadokya: karışık filo bölümleri 12/67/107/143. günde, önce 12/61/101/141; sadece S 12/45/85/121, önce 12/36/88/122). Hedefler her işlemden sonra kontrol edilir: bir bölümün bütün hedefleri tuttuğu anda ödül kasaya girer ve tören hemen açılır (v108). Baron bölümü de öyle (v109): bütün hedefleri aynı anda tuttuğu an baron olursun. Bölüm kartlarında "Bölüm 2/4" büyük başlıkla yazar.
 
 | Bölge | Bölüm | Ödül | Hedefler |
 |---|---|---|---|
-| Kapadokya | Kuruluş | 5.000 | 2 balon, ilk pilot, 4,3★, otel anlaşması, rüzgâr direği Sv. 2 |
-| Kapadokya | Yükseliş | 10.000 | 5 balon, influencer, rehber, hangar Sv. 2 |
-| Kapadokya | Büyüme | 20.000 | 10 balon, otel satın al, pazarın %50'si, balon atölyesi |
+| Kapadokya | Kuruluş | 5.000 | 16 koltuk, ilk pilot, 4,3★, otel anlaşması, rüzgâr direği Sv. 2 |
+| Kapadokya | Yükseliş | 10.000 | 64 koltuk, influencer, rehber, hangar Sv. 2 |
+| Kapadokya | Büyüme | 20.000 | 150 koltuk, otel satın al, pazarın %50'si, balon atölyesi |
 | Kapadokya | Kapadokya Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, bir bina Sv. 3 |
-| Albuquerque | Yeni Dünya | 5.000 | 3 balon, 2 pilot, 4,6★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
-| Albuquerque | Kutu Rüzgârı | 10.000 | 7 balon, influencer, 4,7★, rüzgâr direği Sv. 3, hangar Sv. 2 |
-| Albuquerque | Fiesta | 20.000 | 12 balon, otel satın al, Fiesta'da uç, pazarın %50'si |
-| Luksor | Batı Yakası | 5.000 | 4 balon, 3 pilot, 4,7★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
-| Luksor | Nil Rüzgârı | 10.000 | 8 balon, influencer, 4,75★, pazarın %30'u, rüzgâr direği Sv. 3, hangar Sv. 2 |
-| Luksor | Firavunlar Vadisi | 20.000 | 14 balon, otel satın al, Nil gemisi sezonunda uç, pazarın %50'si |
+| Albuquerque | Yeni Dünya | 5.000 | 32 koltuk, 2 pilot, 4,6★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
+| Albuquerque | Kutu Rüzgârı | 10.000 | 100 koltuk, influencer, 4,7★, rüzgâr direği Sv. 3, hangar Sv. 2 |
+| Albuquerque | Fiesta | 20.000 | 180 koltuk, otel satın al, Fiesta'da uç, pazarın %50'si |
+| Luksor | Batı Yakası | 5.000 | 48 koltuk, 3 pilot, 4,7★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
+| Luksor | Nil Rüzgârı | 10.000 | 120 koltuk, influencer, 4,75★, pazarın %30'u, rüzgâr direği Sv. 3, hangar Sv. 2 |
+| Luksor | Firavunlar Vadisi | 20.000 | 220 koltuk, otel satın al, Nil gemisi sezonunda uç, pazarın %50'si |
 | Luksor | Luksor Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL (Teb Yıldızı), hangar Sv. 3 |
 | Albuquerque | Albuquerque Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, hangar Sv. 3 |
 
@@ -349,8 +362,8 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 
 ## İlk iki gün sabit senaryo (v122.4)
 Öğretici sürerken Kapadokya'nın 1. ve 2. günü herkes için aynıdır, sürpriz yoktur (`tutScene`, `TUT_WX`, `TUT_DEMAND`):
-- **1. gün:** yeşil bayrak, yer rüzgârı 5 km/sa, katmanlar (0–60 m'den yukarı) −1,3 / +4,6 / −2,2 / +6,2 m/s, iniş alanı 1.720'de, görev yok. Talep 110: 170 €'da 5/8 yolcu, 140 €'da 7/8, 110 €'da 8/8; fiyatı düşürme dersi her zaman işe yarar.
-- **2. gün:** yeşil bayrak, yer rüzgârı 6 km/sa, katmanlar −1 / −2 / +5,2 / +3,4 m/s, iniş alanı 1.900'de, görev yok. Talep 320 (turist koltuktan çok). Gün 160 € fiyatla başlar (`TUT_P2`); fiyat 260 €'ya kadar çıksa da sepet dolu kalır.
+- **1. gün:** yeşil bayrak, yer rüzgârı 5 km/sa, katmanlar (0–60 m'den yukarı) −1,3 / +4,6 / −2,2 / +6,2 m/s, iniş alanı 1.300'de (v124.6, önce 1.720), görev yok. Talep 110: 170 €'da 5/8 yolcu, 140 €'da 7/8, 110 €'da 8/8; fiyatı düşürme dersi her zaman işe yarar.
+- **2. gün:** yeşil bayrak, yer rüzgârı 6 km/sa, katmanlar −1 / −2 / +5,2 / +3,4 m/s, iniş alanı 1.420'de (v124.6, önce 1.900), görev yok. Talep 320 (turist koltuktan çok). Gün 160 € fiyatla başlar (`TUT_P2`); fiyat 260 €'ya kadar çıksa da sepet dolu kalır.
 - **2. gün dersi (`price2`):** sabah kartlarından sonra bilet kartı aydınlanır: "Dün düşürmek işe yaradı; bugün turist çok: fiyatı artır, müşterin azalmaz." + düğmesi gösterilir; fiyat artıp sepet dolu kalınca "Gördün mü? Yolcu aynı, kazanç arttı. Fiyatı her gün turiste göre ayarla." Tamam'la biter. Amaç: oyuncu 1. günden "fiyat hep düşürülür" diye öğrenmesin, fiyatın günün talebine göre ayarlandığını görsün. Ölçüm: `price2_up`, `price2`.
 - **3. gün hatırlatması (v122.11, `price3`):** 3. gün sabahı (öğreticiyi oynamış oyuncuda) Hezarfen'in ilk kartı: "Dünkü kalabalık geçti evlat: fiyatı bugünün turistine göre yeniden ayarla." Düğmesi fiyat sayfasını açar; sabah sınırında hep önce gelir, aynı sabahki "koltuklar boş kaldı" dersinin yerini tutar. Neden: simülasyonda (20 tohum) 2. günün ~220 € fiyatını koruyan oyuncunun 3–7. gün doluluğu %90'dan %52'ye düşüyor, 10. günde kasası ~3.000 € eksik kalıyordu; fiyatı geri çeken oyuncu eski sürümle aynı tempoda (bölümler 11 / 56 / 98, baron 138. gün ortanca).
 
@@ -361,7 +374,7 @@ Denge (tools/sim-show.js, 250 gün, 12 tohum): doğrudan getiri (şölen turistl
 - **Yıldızlar:** popülerlik her yerde ekrandaki gibi tek ondalığa yuvarlanır; 2,96★ "3,0★" görünür ve 3,0★ isteyen oteli açar.
 - **Kartpostallar:** "İlk uçuş" kazasız ilk uçuştan sonra, "Festival havası" bir festival gününde uçunca gelir.
 - **Boş sepet:** hiç yolcu binmediyse kalkıştan önce sorar: Fiyatı değiştir / Boş kalk.
-- **Uçuş koçu:** yakıt uyarısı %25'te; "Bu rüzgâr seni uzaklaştırıyor" ipucu doğru katmana geçince kalkar. Bekleyen bir övgü artık doğru değilse (pilot çıkarıldıysa) gösterilmez.
+- **Uçuş koçu:** yakıt uyarısı %30'da (v124.6, önce %25; yakıt çubuğu da %30'un altında kırmızı); "Bu rüzgâr seni uzaklaştırıyor" ipucu doğru katmana geçince kalkar. Bekleyen bir övgü artık doğru değilse (pilot çıkarıldıysa) gösterilmez.
 - **Başka bölgedeki mevsimler (v121.13):** bir bölgenin Fiesta'sı, festivali ve kışı yalnızca orada oynanan günün sonunda biter; bölgeye dönünce süresi geçmiş olanlar sabah sessizce kapanır (`expireSeasons`).
 - **Bina ipuçları:** rehber, ajans, atölye ve okul açılınca Hezarfen "kasabada binayı bul ve dokun" derdi; v122'de yerini rehberli eylemler aldı ("Gösteren öğretici").
 
@@ -438,9 +451,9 @@ Dördüncü bölge, İngiltere. Luksor'dan bir basamak zor.
 - **Gece Işıltısı (Night Glow):** her festivalde bir kez, festival günlerinden birinde ayarlanır (£2.500, en az 3 uçabilen balon, o gece Şölen yoksa). O gece balonlar çayırda yerde durup müzikle (Şölen müziği) dalga dalga, sonra hep birlikte brülör yakar, 9. saniyeden sonra havai fişekler; ~15 sn, atlanabilir, gece animasyonu kapalı olsa da oynar. Popülerlik +0,04, ertesi sabah manşet, "Gece Işıltısı" kartpostalı. Balon Şöleni'nin yerine geçmez. Filo sayfasında ve aksiyon listesinde düğme, festival uyarısından da açılır.
 - **Kasaba:** bal rengi Bath taşı, arduvaz (slate) beşik çatılar, pastel Clifton evleri (mağara otelinin yerine), yeşil bakır kubbeli saray oteli, kırmızı telefon kulübeleri ve posta kutuları, iki yolda giden çift katlı otobüsler, pub'ın asılı tabelası (çarşının yanında), arnavut kaldırımı ve su birikintileri, bakır kayın (mor-kırmızı) ve meşe, kenarlarda çitli tarlalar ve koyunlar, kasabanın arkasında liman ve eski yelkenli, martılar, bulutlu soluk mavi-gri gökyüzü ve gri-beyaz pus. Açılış ekranında BRISTOL, kuleler, Gürcü sıra evleri ve ağaçlar.
 - **Bölümler (`CHAPTERS_BRI`):**
-  1. Ashton Malikânesi (£5.000, Bristol Ticaret Odası): 4 balon, 3 pilot, 4,7★, iki otel anlaşması, rehber uçuşu, rüzgâr direği sv. 2.
-  2. Avon Kanyonu (£10.000, Batı İngiltere Pilotlar Derneği): 14 balon, influencer, 4,75★, pazarın %35'i, sisli bir günde uç, direk sv. 3, hangar sv. 2.
-  3. Festival (£20.000, festival jürisi): 24 balon, bir otel satın al, festivalde uç, bir Gece Işıltısı düzenle, pazarın %55'i.
+  1. Ashton Malikânesi (£5.000, Bristol Ticaret Odası): 48 koltuk, 3 pilot, 4,7★, iki otel anlaşması, rehber uçuşu, rüzgâr direği sv. 2.
+  2. Avon Kanyonu (£10.000, Batı İngiltere Pilotlar Derneği): 220 koltuk, influencer, 4,75★, pazarın %35'i, sisli bir günde uç, direk sv. 3, hangar sv. 2.
+  3. Festival (£20.000, festival jürisi): 380 koltuk, bir otel satın al, festivalde uç, bir Gece Işıltısı düzenle, pazarın %55'i.
   4. Bristol Baronu: pazarın %75'i, 2 otel, pilot okulu, 4,8★, dev balon "Avon Yıldızı", hangar sv. 3.
   Bristol Baronu, holdingin son hedefi Dünya Oyunları gösterisini açar (Dünya Baronu).
 - **Simülasyon (v124, `tools/sim-campaign.js 6 2000`):** Bristol'e girişten bölüm sonlarına gün (tohum 1–6): [39, 91, 126, 139], [39, 86, 120, 144], [37, 82, 116, 127], [31, 76, 116, 135], [55, 109, 161, 188], [34, 81, 124, 151]. Baron 127–188 gün, ortalama ~147 (12 tohumda bir tohum 215). Hiçbir bot takılmadı, iflas yok; Dünya Oyunları Bristol Baronu'ndan 1 gün sonra alınır, Dünya Baronu 540.–665. gün. Ayar: başta (4/8/15 balon, %30/%50/%70) Bristol ~118 gün sürüyordu; filo hedefleri 4/14/24, pay %35/%55/%75, turist tabanı 145 ve akşam kalkışı %50 ile uzatıldı. Bölümleri çoğunlukla filo (para) bitiriyor; son bölümü dev balon.
@@ -525,6 +538,8 @@ Uçuş bitince yarım kalan adımlar sonraki uçuşa kalır.
 **Peribacaları her zaman okunur:** çarpılabilen bacalar daha koyu ve ince koyu konturlu çizilir; arka plandaki süs bacaları ufuk sisine daha çok karışır (%45 yerine %58). Sepet bir bacaya yatayda 90 m, dikeyde tepesinin 60 m üstüne kadar yaklaştıkça baca kırmızı kontur ve kırmızı ışıltıyla parlar.
 
 **v122.1 (TestFlight):** yaklaşınca yanan kırmızı parlama yalnızca ilk kendi uçuşunda (v122.8; önce ilk 3 uçuştu); sonra bacalar yalnızca koyu ve ince konturlu kalır. Açılıştaki rüya uçuşunda brülörle balon daha hızlı yükselir (ivme 240 → 520, en çok 230 → 420); v122.6: yalnızca ilk açılışta (henüz şirket yokken) eski sakin hızla (240 / 230) yükselir.
+
+**Termik (v124.6):** sütunun içinde olduğun sürece, sütunun tepesine (520 m) kadar taşır; önceden 2 sn'lik an sayılınca kaldırma bitiyordu ve balon sütunun ortasında düşüyordu. Termik dersi ikinci kendi uçuşunda (birinci uçuşta peribacası dersi kalır). İlk üç gün iniş alanı daha yakın: 1. gün 1.080 m, 2. gün 1.200 m, 3. gün 780–1.030 m (Kapadokya'da sonra 1.080–1.880 m).
 
 **Termik:** kaldırma ikiye katlandı: içindeyken dikey hıza sim saniyesi başına +1,0 (önceden +0,5; sim saati gerçek saatin 6 katı, yani dikey hızda ~2,5 birimlik fark yerine önceki ~1,25). 2 sn'lik an hâlâ tamamlanır (sütun 130 m geniş); an tamamlanınca kaldırma eskisi gibi durur. Sütun daha belirgin: daha sıcak ışık, kenarlarında akan kesik çizgiler, yükselen ok başları, "TERMİK ↑" yazısı. İçindeyken sepetin altında yükselen üç ok ve küçük turuncu "Termik ↑" etiketi.
 
