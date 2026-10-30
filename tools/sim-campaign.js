@@ -45,6 +45,8 @@ const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM =
           if (!H.celeb && buy(celebCost(), () => { H.celeb = { name: 'X', until: S.day + 90 }; })) L.hold.push('celeb@' + S.day);
           if (isBaron('bri') && !H.wg && buy(WGAMES.cost, () => { H.wg = { until: S.day + WGAMES.days }; })) L.hold.push('wg@' + S.day);
         }
+        /* v125: a tour group offer: take it when it fits 85% of the fleet's seats; nothing brought along on entering */
+        if (typeof ctrState === 'function' && ctrCfg() && ctrState().offer) { if (ctrState().offer.n <= fleetSeats() * .85) ctrAccept(); else ctrDecline(); } S.xfer = null;
         const C0 = chap()[S.chapter || 0], need = k => C0 && C0.goals.some(g => g[0] === k && !goalDone(g));
         const saving = C0 && !need('balloons') && C0.goals.some(g => !goalDone(g) && ['fabBuilt', 'workshop', 'xl', 'school', 'hotelOwn', 'bldTop', 'bldHangar', 'bldMast'].includes(g[0])) && S.cash < 250000;
         if (S.unl.bank && S.loans.length < 1 && S.balloons.length < 4 && S.cash < 15000 && (S.day >= 6 || S.region !== 'cap')) { S.cash += 10000; S.loans.push({ amt: 10000, inst: 300, left: 40 }); }

@@ -6877,7 +6877,7 @@ const regionEntrants = () => S.region === 'bri' ? ENTRANTS_BRI : S.region === 'l
 const CHAPTERS_ABQ = [
   { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['seats', 32, '32 koltukluk filo'], ['pilots', 2, '2 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
   { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['seats', 100, '100 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['ctrDone', 2, '2 tur grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['seats', 180, '180 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['ctrPref', 1, 'Bir tur şirketinin tercih edilen operatörü ol'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['seats', 180, '180 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['ctrDone', 3, '3 tur grubunu eksiksiz uçur (herhangi bir şirket)'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Fiesta Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 /* Luxor: every chapter a step harder than Albuquerque's */
@@ -7059,7 +7059,7 @@ const CTR_CAST_ABQ = [
 /* The numbers: tools in the report (tuned with sim-abq.js, see GAME_DESIGN "Kurumsal kontratlar") */
 const CTR = {
   abq: {
-    kind: 'bus', cast: CTR_CAST_ABQ, spot: [12.2, 24.4], label: 'Tur kontratı', unit: 'kişilik tur grubu',
+    kind: 'bus', cast: CTR_CAST_ABQ, spot: [12.2, 24.4], off: 12, /* layout point; off: how far out along the road it all sits (outside every default view) */ label: 'Tur kontratı', unit: 'kişilik tur grubu',
     minChapter: 1, minSeats: 40, firstWait: 1, /* the first offer: the morning after chapter 2 starts */
     gap: [10, 14], prefGap: [6, 9], lead: [3, 5], share: [.4, .7], price: [1.3, 1.5], prefPrice: 1.08,
     negUp: .15, negWalk: .35, prefWalk: .15, pen: .5, redCut: .2, prefNeed: 3, breakAt: -3, cool: 14,
@@ -7200,7 +7200,7 @@ function ctrCard() {
   O.seen = S.day; save();
   const w = K.cast.find(x => x.id === O.who) || ctrWho(), m = $('menu'); m.replaceChildren();
   m.classList.toggle('evm', !!(TOWN.open && TOWN.cine));
-  if (TOWN.open && TOWN.cine) { const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...K.spot), Z = TOWN.cine.to.z; TOWN.cine = Object.assign(TOWN.cine, { t0: performance.now(), dur: 900, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: Z, ox: r.width / 2 - cx * Z, oy: r.height * .2 - cy * Z } }); }
+  if (TOWN.open && TOWN.cine) { const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...ctrSpot()), Z = TOWN.cine.to.z; TOWN.cine = Object.assign(TOWN.cine, { t0: performance.now(), dur: 900, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: Z, ox: r.width / 2 - cx * Z, oy: r.height * .2 - cy * Z } }); }
   const c = h('div', 'card ctr');
   ctrHead(c, w, C.met ? 'Tur kontratı teklifi' : 'Yeni bir iş bağlantısı');
   ctrSpeech(c, (C.met ? '' : w.L.intro + ' ') + ctrLine(w, 'offer', { n: O.n, d: O.day, p: O.price }));
@@ -7256,7 +7256,7 @@ function ctrScene() {
   const K = ctrCfg(), C = ctrState(); C.scene = true; save();
   if (mode !== 'office' || !HOME.h) return ctrCard();
   openTown(null, true); TOWN.noLabels = true; $('tClose').classList.add('gone');
-  const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...K.spot), z1 = .86;
+  const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...ctrSpot()), z1 = .86;
   TOWN.cine = { t0: performance.now(), dur: 3600, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: z1, ox: r.width / 2 - cx * z1, oy: r.height * .5 - cy * z1 }, arrive: T + 1.6 };
   let i = 0;
   const say = () => {
@@ -7323,14 +7323,27 @@ function ctrCoaches() {
 function ctrGround() {
   const K = ctrCfg(); if (!K || K.kind !== 'bus') return;
   const q = (x0, y0, x1, y1, c) => tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], c);
-  q(7.45, 15.6, 8.55, 60, '#5e5a62'); /* the highway leaving town, asphalt from the gate on */
-  q(7.45, 15.6, 7.55, 60, '#e8e0d0'); q(8.45, 15.6, 8.55, 60, '#e8e0d0');
-  for (let y = 16; y < 60; y += .9) q(7.97, y, 8.03, y + .45, '#ffd23a');
+  /* near town the road stays the town's dirt road; the asphalt starts out of the default view, widening from it */
+  const D = K.off, A = 16.8 + D, E = 70;
+  /* gravel first, the asphalt then widens out of it */
+  for (let k = 0; k < 6; k++) { const y0 = A - 2.4 + k * .4; tpoly([tiso(7.65 - k * .033, y0), tiso(8.35 + k * .033, y0), tiso(8.35 + (k + 1) * .033, y0 + .4), tiso(7.65 - (k + 1) * .033, y0 + .4)], mix('#c89a74', '#5e5a62', (k + 1) / 7)); }
+  { const R = mulberry32(5); ctx.fillStyle = 'rgba(70,60,60,.35)'; for (let i = 0; i < 40; i++) { const p = tiso(7.7 + R() * .6, A - 3 + R() * 2.6); ctx.fillRect(p[0], p[1], 3, 2); } }
+  q(7.45, A, 8.55, E, '#5e5a62');
+  q(7.45, A, 7.55, E, '#e8e0d0'); q(8.45, A, 8.55, E, '#e8e0d0'); q(7.45, A, 8.55, A + .12, '#f4f0e6');
+  for (let y = A + .5; y < E; y += .9) q(7.97, y, 8.03, y + .45, '#ffd23a');
+  if (CTR_HIDE) return;
+  ctx.save(); ctx.translate(-TW / 2 * D, TH / 2 * D); /* the terminal's own drawing is laid out at D = 0 */
+  try { ctrLot(q); } finally { ctx.restore(); }
+}
+function ctrLot(q) {
   q(8.55, 20.9, 14.6, 26.4, '#6c6870'); q(8.55, 20.9, 14.6, 21.0, '#d8d0c0'); q(8.55, 26.3, 14.6, 26.4, '#d8d0c0');
   for (const x of CTR_BAYS) { q(x - .33, 21.3, x - .3, 24.6, '#f4f0e6'); q(x + .3, 21.3, x + .33, 24.6, '#f4f0e6'); }
   q(9.3, 25.1, 12.2, 25.5, '#e8b23a'); /* the painted kerb */
   const p = tiso(11.6, 25.9); ctx.save(); ctx.translate(p[0], p[1]); ctx.transform(1, .5, -1, .5, 0, 0); ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.font = '800 26px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('BUS ONLY', 0, 0); ctx.restore();
 }
+let CTR_HIDE = false; /* tests: draw the town without the terminal, to check the default view doesn't change */
+/* the terminal's place in the world: its layout point moved out along the road by K.off */
+const ctrSpot = () => { const K = ctrCfg(); return [K.spot[0], K.spot[1] + K.off]; };
 /* Route 66 shield on a pole: the black-capped US shield, or the brown "historic" one. */
 function routeShield(x, y, s, hist) {
   ctx.fillStyle = '#6a6a70'; ctx.fillRect(x - 1.5 * s, y - 64 * s, 3 * s, 64 * s);
@@ -7445,9 +7458,10 @@ function ctrSpotItems(t) {
     }
     items.push({ at: [gx, gy], depth: gx + gy + .9, draw: () => { ctx.globalAlpha = alpha; coach(gx, gy, c.col, t, true); ctx.globalAlpha = 1; } });
   });
-  return items;
+  const D = K.off; if (CTR_HIDE) return [];
+  return items.map(it => ({ at: [it.at[0], it.at[1] + D], depth: it.depth + D, draw: () => { ctx.save(); ctx.translate(-TW / 2 * D, TH / 2 * D); try { it.draw(); } finally { ctx.restore(); } } }));
 }
-const ctrSpotFree = (gx, gy) => !(ctrCfg() && gx > 3 && gx < 19 && gy > 17.5 && gy < 33);
+const ctrSpotFree = (gx, gy) => !(ctrCfg() && gx > 3 && gx < 19 && gy > 17.5 + ctrCfg().off && gy < 33 + ctrCfg().off);
 /* Engine idle while coaches stand in view: low rumble, its loudness from how close the terminal is to the screen's middle. */
 let hum = null;
 function ctrHum(level) {
@@ -7469,7 +7483,7 @@ function ctrHum(level) {
 function ctrHumTick(V, w, h) {
   const K = ctrCfg();
   if (!K || !TOWN.open || !ctrCoaches().length) return ctrHum(0);
-  const p = tiso(...K.spot), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy, d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h);
+  const p = tiso(...ctrSpot()), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy, d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h);
   ctrHum(clamp(1.2 - d * 2.2, 0, 1) * clamp(V.z / .6, .3, 1));
 }
 /* two-tone coach horn when the first group pulls in */
@@ -7480,7 +7494,7 @@ function ctrHorn() { if (!AC) return; tone(311, 311, .45, 'sawtooth', .035); ton
    you. Balloons keep their name, design and equipment (a sponsor deal stays home); pilots keep level, experience and
    trait, and their wage turns into the new region's money at the same level (Bristol's ×1.15 on or off). The region they
    leave earns less on autopilot: its daily base falls by the share of seats that left, and 2% for each pilot. */
-const XFER = { maxB: 2, maxP: 2, seats: 16, sizes: ['S', 'M'], pilotCut: .02, local: true, ship: 30, debt: 1, debtDays: 30 };
+const XFER = { maxB: 2, maxP: 2, seats: 16, sizes: ['S', 'M'], pilotCut: .02, local: true, ship: 10, debt: 1, debtDays: 30 };
 const wageF = id => id === 'bri' ? 1.15 : 1;
 const xferSeats = bs => bs.reduce((a, b) => a + SIZES[b.size].cap, 0);
 const xferBalloons = () => { const out = []; for (const id in (S.regions || {})) for (const b of S.regions[id].balloons) if (XFER.sizes.includes(b.size) && !(b.dmgUntil > S.day) && cond(b) > .2) out.push({ id, b }); return out.sort((p, q) => SIZES[q.b.size].cap - SIZES[p.b.size].cap || cond(q.b) - cond(p.b)); };
@@ -7505,18 +7519,21 @@ function xferApply(sel) {
     if (rs.auto) rs.auto.base = Math.round(rs.auto.base * k);
     rs.netHist = (rs.netHist || []).map(v => Math.round(v * k));
   }
-  /* they come by cargo (ship and truck): XFER.ship days later they join the fleet (xferArrive), pilots with them */
-  if (moved.b.length || moved.p.length) { if (XFER.ship) S.xferShip = { day: S.day + XFER.ship, b: moved.b, p: moved.p }; else { S.balloons.push(...moved.b); S.pilots.push(...moved.p); } }
+  /* balloons come by cargo (ship and truck): XFER.ship days later they join the fleet (xferArrive), pilots with them */
+  S.pilots.push(...moved.p); /* pilots fly in with you */
+  if (moved.b.length) { if (XFER.ship) S.xferShip = { day: S.day + XFER.ship, b: moved.b, p: [] }; else { S.balloons.push(...moved.b); xferDebtStart(moved.b); } }
   assignPilots();
   return moved;
 }
 function xferArrive() {
   const X = S.xferShip; if (!X || S.day < X.day) return;
-  S.xferShip = null; S.balloons.push(...X.b); S.pilots.push(...X.p); assignPilots();
-  /* the region pays its home region back for the balloons, a little every day */
-  const due = Math.round(X.b.reduce((a, b) => a + SIZES[b.size].cost, 0) * XFER.debt * FX());
-  if (due > 0) S.xferDebt = { left: XFER.debtDays, inst: Math.round(due / XFER.debtDays), from: X.b[0].imp };
-  S.hezQ.push(`news:Kargo geldi evlat! ${[X.b.map(b => b.name).join(' ve '), X.p.map(p => p.name).join(' ve ')].filter(Boolean).join(', ')} artık burada. Balonlar filoda, pilotlar ekipte.`);
+  S.xferShip = null; S.balloons.push(...X.b); S.pilots.push(...(X.p || [])); assignPilots(); xferDebtStart(X.b);
+  S.hezQ.push(`news:Kargo geldi evlat! ${X.b.map(b => b.name).join(' ve ')} artık filoda, gökyüzüne hazır.`);
+}
+/* the region pays its home region back for the balloons, a little every day */
+function xferDebtStart(bs) {
+  const due = Math.round(bs.reduce((a, b) => a + SIZES[b.size].cost, 0) * XFER.debt * FX());
+  if (due > 0) S.xferDebt = { left: XFER.debtDays, inst: Math.round(due / XFER.debtDays), from: bs[0].imp };
 }
 /* The entry card: pick up to two balloons and two pilots (the best are ticked), or skip. */
 function showXfer() {
@@ -7530,7 +7547,7 @@ function showXfer() {
     m.replaceChildren(); const c = h('div', 'card xfer');
     c.appendChild(h('div', 'hzline', `${guide().av()}<span><b>${guide().name}:</b> Eli boş gelme evlat. Otomatik moddaki bölgelerinden birkaç balon ve ${XFER.maxP} pilot getirebilirsin; orada kazanç biraz düşer.</span>`));
     c.appendChild(h('h1', null, 'Filonu getir'));
-    c.appendChild(h('p', 'hint', `Kargoya ${XFER.seats} koltuk sığar (iki küçük ya da bir orta sepet), yolculuk ${XFER.ship} gün. Balonlar adını, tasarımını ve donanımını, pilotlar seviyesini ve özelliğini korur. Getirdiklerin buradaki bölüm hedeflerine sayılmaz.`));
+    c.appendChild(h('p', 'hint', `Pilotlar seninle hemen gelir. Balonlar kargoyla ${XFER.ship} günde gelir; kargoya ${XFER.seats} koltuk sığar (iki küçük ya da bir orta sepet). Balonlar adını, tasarımını ve donanımını, pilotlar seviyesini ve özelliğini korur. Getirdiklerin buradaki bölüm hedeflerine sayılmaz.`));
     const nb = [...sel].filter(k => k[0] === 'b').length, np = [...sel].filter(k => k[0] === 'p').length;
     const row = (key, html, full) => { const on = sel.has(key), b = h('button', 'xrow' + (on ? ' on' : ''), `<i>${on ? '✓' : ''}</i>${html}`); b.disabled = !on && full; b.onclick = () => { on ? sel.delete(key) : sel.add(key); sfx('click'); draw(); }; return b; };
     if (B.length) { c.appendChild(h('h2', 'xh', `Balonlar · koltuk: ${selSeats()}/${XFER.seats}`)); const box = h('div', 'xlist'); B.slice(0, 8).forEach(x => box.appendChild(row('b' + x.b.id, `<b>${esc(x.b.name)}</b><span>${SIZES[x.b.size].label} · koltuk: ${SIZES[x.b.size].cap} · ${REGION_DEF[x.id].name}${designOf(x.b) ? ' · desenli' : ''}</span>`, nb >= XFER.maxB || selSeats() + SIZES[x.b.size].cap > XFER.seats))); c.appendChild(box); }
@@ -7545,7 +7562,7 @@ function showXfer() {
     go.onclick = () => {
       const pickSel = {}; for (const k of sel) { const isB = k[0] === 'b', q = isB ? B.find(x => 'b' + x.b.id === k) : P.find(x => 'p' + x.p.id === k); if (!q) continue; const o = pickSel[q.id] || (pickSel[q.id] = { b: [], p: [] }); (isB ? o.b : o.p).push(isB ? q.b.id : q.p.id); }
       const mv = xferApply(pickSel); sfx(nb + np ? 'coin' : 'click'); m.hidden = true;
-      if (mv.b.length || mv.p.length) S.hezQ.unshift(`news:${[...mv.b.map(b => b.name), ...mv.p.map(p => p.name)].join(', ')} yola çıktı evlat. Kargo ${XFER.ship} gün sürer; Gün ${S.day + XFER.ship} sabahı burada olurlar. O zamana kadar ${RD().name}'yi kendi yağınla kavur.`);
+      if (mv.p.length || mv.b.length) S.hezQ.unshift(`news:${[mv.p.length ? `${mv.p.map(p => p.name).join(' ve ')} seninle geldi, ekipte` : '', mv.b.length ? `${mv.b.map(b => b.name).join(' ve ')} kargoda: Gün ${S.day + XFER.ship} sabahı burada` : ''].filter(Boolean).join('; ')}. Bir süre ${RD().name}'yi kendi yağınla kavur evlat.`);
       save(); refresh(); setTimeout(nextPopup, 300);
     };
     const skip = h('button', 'ghost', 'Geç: sıfırdan başla'); skip.style.width = '100%'; skip.onclick = () => { sfx('click'); m.hidden = true; save(); refresh(); setTimeout(nextPopup, 250); };
@@ -10423,7 +10440,7 @@ function townClamp(w, h) {
   const hx = c[0] * HOME.z + HOME.ox, hy = c[1] * HOME.z + HOME.oy;
   let x0 = Math.min(w * .5, w * .85 - mx, hx), x1 = Math.max(w * .5, w * .15 + mx, hx), y0 = Math.min(h * .5, h * .3 - my, hy), y1 = Math.max(h * .55, h * .8 + my, hy);
   /* v125: the coach terminal outside town can be dragged to the middle of the screen */
-  const K = ctrCfg(); if (K) { const p = tiso(...K.spot), ex = w / 2 + (c[0] - p[0]) * TOWN.z, ey = h * .5 + (c[1] - p[1]) * TOWN.z; x1 = Math.max(x1, ex); y0 = Math.min(y0, ey); }
+  const K = ctrCfg(); if (K) { const p = tiso(...ctrSpot()), ex = w / 2 + (c[0] - p[0]) * TOWN.z, ey = h * .5 + (c[1] - p[1]) * TOWN.z; x1 = Math.max(x1, ex); y0 = Math.min(y0, ey); }
   TOWN.ox += clamp(sx, x0, x1) - sx;
   TOWN.oy += clamp(sy, y0, y1) - sy;
 }
@@ -10473,7 +10490,7 @@ function townTap(x, y) {
   const hit = townHit(TOWN.hits, x, y);
   if (hit) { sfx('click'); hit.b.tap(); return; }
   /* v125: the coach terminal (its lot) shows what's booked */
-  if (ctrCfg() && inPoly([x, y], [tiso(8.5, 20.8), tiso(14.6, 20.8), tiso(14.6, 26.5), tiso(8.5, 26.5)].map(([fx, fy]) => [fx * TOWN.z + TOWN.ox, (fy - 20) * TOWN.z + TOWN.oy]))) { sfx('click'); ctrStatusCard(); return; }
+  if (ctrCfg() && inPoly([x, y], [tiso(8.5, 20.8 + ctrCfg().off), tiso(14.6, 20.8 + ctrCfg().off), tiso(14.6, 26.5 + ctrCfg().off), tiso(8.5, 26.5 + ctrCfg().off)].map(([fx, fy]) => [fx * TOWN.z + TOWN.ox, (fy - 20) * TOWN.z + TOWN.oy]))) { sfx('click'); ctrStatusCard(); return; }
   /* v110: the launch field, or a balloon standing on it, opens your balloons */
   const V = TOWN, f = [tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)];
   if ([0, 90].some(up => inPoly([x, y], f.map(([fx, fy]) => [fx * V.z + V.ox, (fy - up) * V.z + V.oy]))) && unlocked('fleet')) { sfx('click'); openSection('fleet', 'Balonların'); }

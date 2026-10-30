@@ -246,7 +246,7 @@ Filo hedefleri v124.6'dan beri balon sayısı değil koltuk sayısıdır (S 8, M
 | Kapadokya | Kapadokya Baronu | unvan | pazarın %70'i, 2 otel, pilot okulu, 4,8★, XL, bir bina Sv. 3 |
 | Albuquerque | Yeni Dünya | 5.000 | 32 koltuk, 2 pilot, 4,6★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
 | Albuquerque | Kutu Rüzgârı | 10.000 | 100 koltuk, influencer, 4,7★, 2 tur grubunu eksiksiz uçur (v125, eskiden rüzgâr direği Sv. 3), hangar Sv. 2 |
-| Albuquerque | Fiesta | 20.000 | 180 koltuk, otel satın al, Fiesta'da uç, bir tur şirketinin tercih edilen operatörü ol (v125), pazarın %50'si |
+| Albuquerque | Fiesta | 20.000 | 180 koltuk, otel satın al, Fiesta'da uç, 3 tur grubunu eksiksiz uçur (herhangi bir şirket, v125), pazarın %50'si |
 | Luksor | Batı Yakası | 5.000 | 48 koltuk, 3 pilot, 4,7★, 2 otel anlaşması, rehber, rüzgâr direği Sv. 2 |
 | Luksor | Nil Rüzgârı | 10.000 | 120 koltuk, influencer, 4,75★, pazarın %30'u, rüzgâr direği Sv. 3, hangar Sv. 2 |
 | Luksor | Firavunlar Vadisi | 20.000 | 220 koltuk, otel satın al, Nil gemisi sezonunda uç, pazarın %50'si |
@@ -449,8 +449,9 @@ Arada bir sabah yerel bir tur şirketinin sahibi teklif getirir: **bir gün, tek
 - **Teslim edemezsen** (kaza, onarım, pilot yok, pas geçtin, koltuk az): eksik koltuk başına kişi başı fiyatın %50'si ceza, popülerlik −0,02 (−0,08★), eksik yolcular o gün rakibe gider. Hepsi uçarsa başarılı iş.
 - **Güven ve karakterler:** her şirket sahibiyle bir ilişki puanı: başarılı iş +1 (en çok 5), eksik teslim −1 (gruptan ≥%75 uçtuysa) ya da −2, ret ve pazarlıkta kaçma −1. Aynı kişiyle **3 başarılı iş** ve puan ≥2: **tercih edilen operatör** ("Artık sana daha sık geleceğim"); puan 1'in altına düşerse unvan gider. Puan **−3**'e inerse ilişki biter, sahibi veda eder ve 14 gün sonra kadrodaki bir sonraki şirketin sahibi kendini tanıtarak gelir. Albuquerque kadrosu: **Rosa Delgado** (Mother Road Coaches, Santa Fe, Route 66 turları; sıcak, İspanyolca serpiştirir), **Hank Begay** (Turquoise Mesa Tours, Gallup; az konuşur), **Linda Park** (High Desert Coachlines, kongre grupları; resmî, faturalı). Her birinin kendi portresi, rengi ve repliği var (teklif, söz, pazarlık, ret, o sabah, teşekkür, tercih, başarısızlık, unvan kaybı, kırmızı bayrak, veda).
 - **Rakip güçlenir:** reddedilen, kaçan ya da teslim edilemeyen grup o gün popülerliği en yüksek rakibin yolcusu olur: yolcular onun payına sayılır, popülerliği +0,05, kişi başı farkı kasasına girer ve grubun parasıyla hemen balon alır (24+ kişi: 1 balon, her 48 kişi için bir tane; güvenli rakip L, diğerleri M, filo sınırına kadar). Gazete ve rapor satırı: "Sandia Sky Rides, Mother Road Coaches grubunu uçurdu… filosuna yeni bir balon ekledi".
-- **Bölüm hedefleri:** Kutu Rüzgârı'nda "2 tur grubunu eksiksiz uçur" (rüzgâr direği Sv. 3 yerine), Fiesta'da "Bir tur şirketinin tercih edilen operatörü ol" (yeni, beşinci hedef).
-- **Otobüs terminali:** kasabanın güneybatısında, otoyolun kenarında, normal görüş alanının dışında: asfalt otoyol (sarı orta çizgi), US 66 ve "Historic Route 66" kalkanları, Route 66 reklam panosu, "TOUR COACH TERMINAL" yazılı kerpiç bina, turkuaz saçak, üç otobüs peronu, "66 DINER", pembe mesalar, yucca ve cholla. Kasaba görünümünde aşağı sola sürükleyerek gidilir (`townClamp` terminali ekranın ortasına getirmeye izin verir). Kabul ettiğin her grup için (kişi başına ~50'de bir, en çok 3) otobüsler kontrat gününe kadar peronda bekler, motorları rölantide titrer ve arkadan duman çıkar; terminal ekrana yakınken kod sentezli motor uğultusu (`ctrHum`). Kontrat yokken terminal boş. Terminale dokununca kart: bekleyen gruplar ve güven.
+- **Bölüm hedefleri:** Kutu Rüzgârı'nda "2 tur grubunu eksiksiz uçur" (rüzgâr direği Sv. 3 yerine), Fiesta'da "3 tur grubunu eksiksiz uçur (herhangi bir şirket)" (yeni, beşinci hedef; bölgedeki toplam başarılı iş, şirketler karışık olabilir; v125.1'de "tercih edilen operatör ol" yerine).
+- **Görünmezlik kuralı (bütün şehirler):** kontrat yeri (Albuquerque terminali; ileride Luksor iskelesi, Bristol istasyonu) ve ona giden asfalt, ana ekranın varsayılan görünümünde hiç görünmez. Kasabaya yakın yol kasabanın kendi toprak yoludur; çakıl ve asfalt ancak sürükleyip uzaklaşınca başlar. Yerleşim `CTR[bölge].spot` (çizim noktası) ve `off` (yol boyunca ne kadar dışarıda, Albuquerque 12 kare) ile; asfalt `16,8 + off`'ta başlar, önünde 2,4 karelik çakıl geçişi. Kontrol: terminal ve yol tek başına boş bir tuvale ana ekran kamerasıyla çizilir, 390×844, 400×860, 430×932, 834×1194, 1024×1366 ve 1366×1024'te ekrana düşen piksel sayısı 0.
+- **Otobüs terminali:** kasabanın güneybatısında, otoyolun sonunda, normal görüş alanının çok dışında: asfalt otoyol (sarı orta çizgi), US 66 ve "Historic Route 66" kalkanları, Route 66 reklam panosu, "TOUR COACH TERMINAL" yazılı kerpiç bina, turkuaz saçak, üç otobüs peronu, "66 DINER", pembe mesalar, yucca ve cholla. Kasaba görünümünde aşağı sola sürükleyerek gidilir (`townClamp` terminali ekranın ortasına getirmeye izin verir). Kabul ettiğin her grup için (kişi başına ~50'de bir, en çok 3) otobüsler kontrat gününe kadar peronda bekler, motorları rölantide titrer ve arkadan duman çıkar; terminal ekrana yakınken kod sentezli motor uğultusu (`ctrHum`). Kontrat yokken terminal boş. Terminale dokununca kart: bekleyen gruplar ve güven.
 - **İlk teklif sahnesi (bölge başına bir kez):** kamera kasabadan otoyol boyunca terminale kayar (3,6 sn), otobüsler otoyoldan gelip perona girer, korna çalar; Ben Franklin dört kısa cümle söyler (terminal, ilk teklif geliyor, almazsan rakip kapar, 3 iş iyi giderse daha sık gelirler), "Geç" hepsini atlar. Sonra teklif kartı terminalin altında açılır (kamera terminali yukarı alır); karar sonrası kamera kasabaya döner. Sonraki teklifler aynı kişinin kartıyla, sahnesiz.
 
 Simülasyon (`sim-abq.js`: Kapadokya baronluğu, sonra Albuquerque; 16 tohum; gün = Albuquerque'ye girişten sonra; bot teklifi filo koltuklarının %85'ine sığarsa kabul eder, %30 pazarlık eder):
@@ -461,14 +462,16 @@ Simülasyon (`sim-abq.js`: Kapadokya baronluğu, sonra Albuquerque; 16 tohum; g�
 | Kontratlı, akıllı bot | 53,5 | 80,5 | 101,7 | 140,7 |
 | Hep kabul, %60 pazarlık | 53,5 | 85,5 | 111,9 | 145,3 |
 | Teslim günü %30 ihtimalle filonun yarısı yerde | 53,5 | 86,6 | 124,1 | 155,8 |
+| v125.1 (B3 hedefi "3 başarılı iş, herhangi bir şirket"), akıllı bot | 53,5 | 80,5 | 101,1 | 141,4 |
+| v125.1, teslim günü %30 filonun yarısı yerde | 53,5 | 86,6 | 111,2 | 145,5 |
 
 Akıllı botta koşu başına ~10 teklif, ~9 başarılı teslim, tercih edilen operatörlük girişten ~90 gün sonra. Kontratın getirisi o koltukların normal bir gündeki bilet gelirinin ortalama **1,6 katı** (pazarlıkla 1,8). Hepsini reddeden bot ikinci bölümü bitiremez (hedef); o durumda rakiplerin koltukları 100. günde %7 fazla (548'e karşı 511) ve 80. gündeki pazar payın %23 (akıllı botta %25).
 
 ## Filo ve pilot getirme (v125, bütün bölgeler)
 Yeni bir bölgeye **girerken, yalnızca o an**, otomatik moddaki bölgelerden balon ve pilot getirilebilir ("Filonu getir" kartı; geçilebilir).
 - **En çok 2 pilot** ve **en çok 16 koltuk** balon (iki küçük ya da bir orta sepet; büyük ve dev sepet taşınmaz). Kart en iyileri işaretli açar.
-- **Kargo 30 gün sürer:** balonlar ve pilotlar Gün +30 sabahı gelir ("Kargo geldi evlat!").
-- **Bedel:** balonların yeni fiyatı (bölgenin parasıyla) 30 gün boyunca günlük taksitle bölgenin kasasından holdinge ödenir (raporda "Getirilen balonların bedeli").
+- **Pilotlar hemen gelir** (girişte ekipte). **Balonlar kargoyla 10 günde gelir** (Gün +10 sabahı "Kargo geldi evlat!"; v125.1, önce 30 gün ve pilotlar da kargodaydı).
+- **Bedel:** balonların yeni fiyatı (bölgenin parasıyla) balonlar gelince başlayıp 30 gün boyunca günlük taksitle bölgenin kasasından holdinge ödenir (raporda "Getirilen balonların bedeli").
 - Balonlar adını, tasarımını ve donanımını korur; reklam anlaşması evde kalır. Pilotlar seviyesini, tecrübesini ve özelliğini korur; maaşı yeni bölgenin parasıyla aynı rakam (Bristol'ün ×1,15'i girerken eklenir, çıkarken düşer).
 - **Getirilenler yeni bölgenin bölüm hedeflerine sayılmaz** (koltuk ve pilot hedeflerinde "(getirilenler hariç)").
 - **Kaynak bölge:** otomatik kazancı (`auto.base`) ve son 14 günün net geçmişi, giden koltukların payı kadar ve her pilot için %2 düşer.
@@ -485,7 +488,9 @@ Neden bu kadar sınır: Albuquerque'nin ilk haftaları koltuk sınırlı ($3.000
 | 2 S/M, 45 gün sonra, bedelsiz | 53 | 74 | 91 | 119 | %43 / %63 |
 | **Seçilen: 16 koltuk (bot 1 M seçer) + 2 kıdemli, 30 gün kargo, bedeli 30 günde, hedeflere sayılmaz** | **53,4** | **75,6** | **93,1** | **128,8** | **%36 / %60** |
 
-Seçilen kural Albuquerque'yi ~%8 kısaltır, ilk bölüm aynı kalır. Yalnız pilot getirmek (balonsuz) yavaşlatır (71/91/111/144): kıdemli maaşı erken kasayı eritir.
+| **v125.1: aynı kural, pilotlar hemen, balonlar 10 günde** | **55,9** | **79,2** | **95,7** | **127,1** | **%39 / %61** |
+
+v125 kuralı Albuquerque'yi ~%8 kısaltıyordu; v125.1'de baron ~%10 erken (127 / 141), ilk bölüm biraz uzar (kıdemli maaşları ilk haftalarda kasayı yer), B3 %5 erken. 20. gündeki pazar payı %8 (getirmeden %5). Yalnız pilot getirmek (balonsuz) yavaşlatır (71/91/111/144): kıdemli maaşı erken kasayı eritir.
 
 ## Bristol (v124)
 Dördüncü bölge, İngiltere. Luksor'dan bir basamak zor.
