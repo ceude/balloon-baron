@@ -2155,7 +2155,7 @@ function startDay() {
   if (!S.candidates.length) newCandidates();
   if (!S.rivals[0].fly) rivalFlyPlan();
   if (S.paperNext && S.paperNext.length) { S.paper = S.paperNext; S.paperNext = null; }
-  flagBackCheck();
+  flagBackCheck(); ctrTidy(); /* v125 */
   /* a morning event every 7-8 days once the town is open */
   if (S.day >= 12 && S.unl.crew && !S.winter && S.day >= (S.nextEvent || 12)) { S.eventDue = true; S.nextEvent = S.day + 7 + Math.round(Math.random()); }
   unlockCheck(); assignPilots(); spreadMorning();
@@ -7084,9 +7084,11 @@ const ctrToday = () => { const C = S.ctr; return C ? (C.booked || []).find(k => 
 function ctrHeld(cap) { const k = ctrToday(); return k && S.weather && S.weather.flag !== 'red' ? Math.min(k.n, cap) : 0; }
 /* Each morning (after the day's weather): a red flag moves today's groups, an unanswered offer lapses to a rival, and
    maybe a new offer comes. */
+/* days that went by while you were in another region: the manager saw those groups off, nothing is owed either way */
+function ctrTidy() { const C = S.ctr; if (!C) return; C.booked = (C.booked || []).filter(k => k.day >= S.day); if (C.offer && C.offer.day <= S.day) C.offer = null; }
 function ctrMorning() {
   const K = ctrCfg(); if (!K) return;
-  const C = ctrState();
+  const C = ctrState(); ctrTidy();
   if (C.offer && C.offer.made < S.day) ctrDecline(true); /* not answered yesterday */
   for (const k of C.booked) {
     if (k.day !== S.day || S.weather.flag !== 'red') continue;
