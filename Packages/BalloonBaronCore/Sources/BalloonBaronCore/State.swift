@@ -21,6 +21,8 @@ public struct Balloon: Codable, Identifiable, Equatable, Sendable {
     public var used: Bool?
     /// v124.4: the pilot the player put on this balloon (`Game.pinPilot`); nil leaves it to the morning's placing.
     public var pinnedPilot: Int?
+    /// v125: brought from this region on entering the current one (`Transfer`); not counted toward its goals.
+    public var imported: RegionID?
 
     public var burners: Int { burner ?? 1 }
     public var hasTurningVent: Bool { turningVent ?? false }
@@ -48,6 +50,8 @@ public struct Pilot: Codable, Identifiable, Equatable, Sendable {
     /// Set after a raise; otherwise wage follows level.
     public var customWage: Int?
     public var trait: PilotTrait?
+    /// v125: brought from this region on entering the current one (`Transfer`); not counted toward its goals.
+    public var imported: RegionID?
 
     public var wage: Int {
         customWage ?? Pilot.baseWage(level, school: fromSchool, trait: trait)
@@ -244,6 +248,12 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case record(RecordAttempt, success: Bool)
     /// The flagship is out of repair and is yours to fly again (its name).
     case flagshipBack(String)
+    /// v125: a contract company's owner speaks (`ctrSay`): `n` people (`today`), `price` a head (`red`).
+    case contract(ContractOwner, ContractLine, n: Int, price: Int)
+    /// v125: the pilots who came with you, and the balloons on the cargo arriving on `day`.
+    case transferBrought(pilots: [String], balloons: [String], day: Int)
+    /// v125: the cargo arrived: these balloons are in the fleet.
+    case cargoArrived([String])
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.
@@ -270,6 +280,8 @@ public struct DayPlan: Codable, Equatable, Sendable {
     public var rivalPax: [Int]
     public var rivalCap: [Int]
     public var referrals: Int
+    /// v125: today's contract group, seated first (optional: older saves).
+    public var contract: ContractPlan? = nil
 }
 
 @dynamicMemberLookup
@@ -346,6 +358,8 @@ public struct GameState: Codable, Equatable, Sendable {
     public var letterRated: Bool?
     /// v123.1: the day Apple's rating prompt was asked for, once, after the first chapter's ceremony (`S.rateAsked`).
     public var rateAsked: Int?
+    /// v125: entering a region asks once whether to bring balloons and pilots from the others (`S.xfer`).
+    public var transferAsk: RegionID?
 
     public var achievements: [Achievement: Int] { postcards ?? [:] }
     public var statistics: Stats { stats ?? Stats() }

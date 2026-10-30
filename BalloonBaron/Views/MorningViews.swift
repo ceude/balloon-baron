@@ -296,8 +296,13 @@ extension PaperItem {
         case .airspace: "airspace"
         case .nightGlow: "nightGlow"
         case .briFestival: "briFestival"
+        case .preferredOperator: "preferredOperator"
+        case .rivalGroup: "rivalGroup"
         }
     }
+
+    /// v125: the region whose contracts use this vehicle (for its texts).
+    static func contractRegion(_ k: ContractKind) -> String { k == .bus ? "abq" : k == .ship ? "lux" : "bri" }
 
     func headline(_ company: String) -> String {
         switch self {
@@ -323,6 +328,8 @@ extension PaperItem {
         case .factoryGrew: loc("paper.factoryGrew", company)
         case .airspace, .nightGlow: loc("paper.\(key)", company)
         case .briFestival: loc("paper.briFestival")
+        case .preferredOperator(let co, _): loc("paper.preferredOperator", company, co)
+        case let .rivalGroup(r, co, _, _, _, _): loc("paper.rivalGroup", r, co)
         }
     }
 
@@ -343,6 +350,10 @@ extension PaperItem {
         case .factoryGrew(_, let lv): Factory.levelTitle(lv)
         case .airspace(let fine): loc("paper.airspace.sub", eur(fine))
         case .nightGlow(let n): loc("paper.nightGlow.sub", num(n))
+        case let .preferredOperator(_, kind): loc("ctr.\(Self.contractRegion(kind)).prefPaper")
+        case let .rivalGroup(r, _, n, len, grow, kind):
+            [len > 1 ? loc("paper.rivalGroup.days", num(len)) : nil, loc("paper.rivalGroup.sub.\(kind.rawValue)", num(n), r),
+             grow > 0 ? loc("paper.rivalGroup.grow", num(grow)) : nil].compactMap { $0 }.joined(separator: " ")
         case .passedBoss: loc(region == .cap ? "paper.passedBoss.sub.cap" : "paper.passedBoss.sub") // v121: Hasan's grandchild
         default: loc("paper.\(key).sub")
         }

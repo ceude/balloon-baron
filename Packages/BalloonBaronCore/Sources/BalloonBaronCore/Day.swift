@@ -8,10 +8,13 @@ extension Game {
     public mutating func launch(skip: Bool = false) -> Int? {
         let fl = skip ? [] : state.flyingToday
         let cap = fl.reduce(0) { $0 + state.sellSeats($1) }
-        let m = market(price: state.price, capacity: cap)
+        // v125: a contract group booked for today takes its seats first; the market gets the rest
+        let held = state.contractHeld(capacity: cap)
+        let m = market(price: state.price, capacity: cap - held)
         var plan = DayPlan(skipped: skip, flying: fl.map(\.id), pax: [:], rivalPax: Array(m.pax.dropFirst()),
                            rivalCap: Array(m.caps.dropFirst()), referrals: skip ? 0 : m.referrals)
-        var left = m.pax[0]
+        plan.contract = contractPlan(capacity: cap, marketPax: m.pax[0])
+        var left = m.pax[0] + held
         let flagship = state.flagship
         for b in fl.sorted(by: { ($0.id == flagship ? 1 : 0) > ($1.id == flagship ? 1 : 0) }) {
             let n = min(left, state.sellSeats(b))
@@ -47,7 +50,7 @@ extension Game {
     // MARK: Day end
 
     public mutating func finishDay(flight: FlightResult?) -> DayReport {
-        guard let plan = state.plan, let weather = state.weather else { preconditionFailure("finishDay before launch") }
+        guard var plan = state.plan, let weather = state.weather else { preconditionFailure("finishDay before launch") }
         // v124.6: where today's popularity change comes from, for the report
         let repStart = state.rep
         repLog = [:]
@@ -213,6 +216,10 @@ extension Game {
             state.loans[k].daysLeft -= 1
         }
         state.loans.removeAll { $0.daysLeft <= 0 }
+        // v125: the balloons brought from home, and today's contract groups (yours and the rivals')
+        transferPay(&lg)
+        contractSettle(plan: &plan, ledger: &lg, events: &ev, rivalEvents: &rev, paxTotal: paxTotal)
+        state.plan = plan
 
         // v124: a Bristol festival day's evening ascent and the Night Glow
         bristolEvening(flying: flyingIDs, cancelledSelf: cancelled, paxTotal: paxTotal, red: red, ledger: &lg, events: &ev)
@@ -419,6 +426,9 @@ extension Game {
         newCandidates()
         state.weather = newWeather()
         state.demand = dayDemand()
+        // v125: after the weather, so a red flag moves today's tour group; the cargo from home
+        contractMorning()
+        transferArrive()
         planRivalFlights()
         unlockCheck()
         assignPilots()

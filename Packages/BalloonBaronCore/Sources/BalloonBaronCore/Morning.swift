@@ -66,6 +66,9 @@ public enum PaperItem: Codable, Equatable, Sendable {
     case airspace(fine: Int)
     case nightGlow(balloons: Int)
     case briFestival
+    /// v125: you became a contract company's preferred operator; a rival flew a group you didn't take.
+    case preferredOperator(company: String, kind: ContractKind)
+    case rivalGroup(rival: String, company: String, n: Int, len: Int, balloons: Int, kind: ContractKind)
 
     public var priority: Int {
         switch self {
@@ -74,7 +77,7 @@ public enum PaperItem: Codable, Equatable, Sendable {
         case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine, .deed: 3
         case .accident(_, _, let severe): severe ? 5 : 3
         case .redCaught, .festival, .newEntrant, .passedBoss, .show, .nightGlow, .briFestival: 4
-        case .airspace: 3
+        case .airspace, .preferredOperator, .rivalGroup: 3
         case .antitrust, .seized: 5
         case .rivalBankrupt, .worldBaron, .worldRecord: 6
         }

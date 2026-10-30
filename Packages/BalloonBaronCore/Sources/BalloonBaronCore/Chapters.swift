@@ -11,9 +11,11 @@ public enum GoalKind: String, Codable, Sendable {
     case fog, glow
     /// Building levels: the wind mast, the hangar, or any building.
     case bldMast, bldHangar, bldTop
+    /// v125: contract jobs delivered in full (any company); preferred operator of one (kept, but no chapter asks it).
+    case ctrDone, ctrPref
 
     /// Shown as done / not yet instead of a count.
-    public var yesNo: Bool { [.workshop, .factoryBuilt, .school, .xl, .influencer, .guide, .fiesta, .fog, .glow, .bldMast, .bldHangar, .bldTop].contains(self) }
+    public var yesNo: Bool { [.workshop, .factoryBuilt, .school, .xl, .influencer, .guide, .fiesta, .fog, .glow, .ctrPref, .bldMast, .bldHangar, .bldTop].contains(self) }
     var building: Bool { [.bldMast, .bldHangar, .bldTop].contains(self) }
 }
 
@@ -41,15 +43,15 @@ public struct Chapter: Equatable, Sendable {
         case .abq:
             return [
                 Chapter(id: "newWorld", reward: 5000, goals: [g(.seats, 32), g(.pilots, 2), g(.stars, 4.6), g(.hotelDeal, 2), g(.guide, 1), g(.bldMast, 2)]),
-                Chapter(id: "boxWind", reward: 10000, goals: [g(.seats, 100), g(.influencer, 1), g(.stars, 4.7), g(.bldMast, 3), g(.bldHangar, 2)]),
-                Chapter(id: "fiesta", reward: 20000, goals: [g(.seats, 180), g(.hotelOwn, 1), g(.fiesta, 1), g(.share, 0.5)]),
+                Chapter(id: "boxWind", reward: 10000, goals: [g(.seats, 100), g(.influencer, 1), g(.stars, 4.7), g(.ctrDone, 2), g(.bldHangar, 2)]),
+                Chapter(id: "fiesta", reward: 20000, goals: [g(.seats, 180), g(.hotelOwn, 1), g(.fiesta, 1), g(.ctrDone, 3), g(.share, 0.5)]),
                 Chapter(id: "baronAbq", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
             ]
         case .lux:
             return [
                 Chapter(id: "westBank", reward: 5000, goals: [g(.seats, 48), g(.pilots, 3), g(.stars, 4.7), g(.hotelDeal, 2), g(.guide, 1), g(.bldMast, 2)]),
-                Chapter(id: "nileWind", reward: 10000, goals: [g(.seats, 120), g(.influencer, 1), g(.stars, 4.75), g(.share, 0.3), g(.bldMast, 3), g(.bldHangar, 2)]),
-                Chapter(id: "pharaohs", reward: 20000, goals: [g(.seats, 220), g(.hotelOwn, 1), g(.fiesta, 1), g(.share, 0.5)]),
+                Chapter(id: "nileWind", reward: 10000, goals: [g(.seats, 120), g(.influencer, 1), g(.stars, 4.75), g(.share, 0.3), g(.ctrDone, 2), g(.bldHangar, 2)]),
+                Chapter(id: "pharaohs", reward: 20000, goals: [g(.seats, 220), g(.hotelOwn, 1), g(.fiesta, 1), g(.ctrDone, 3), g(.share, 0.5)]),
                 Chapter(id: "baronLux", reward: 0, goals: [g(.share, 0.7), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
             ]
         // v124: a step harder than Luxor (balanced with tools/sim-campaign.js); the gorge wants a foggy flight, the
@@ -57,8 +59,8 @@ public struct Chapter: Equatable, Sendable {
         case .bri:
             return [
                 Chapter(id: "ashton", reward: 5000, goals: [g(.seats, 48), g(.pilots, 3), g(.stars, 4.7), g(.hotelDeal, 2), g(.guide, 1), g(.bldMast, 2)]),
-                Chapter(id: "avonGorge", reward: 10000, goals: [g(.seats, 220), g(.influencer, 1), g(.stars, 4.75), g(.share, 0.35), g(.fog, 1), g(.bldMast, 3), g(.bldHangar, 2)]),
-                Chapter(id: "festivalBri", reward: 20000, goals: [g(.seats, 380), g(.hotelOwn, 1), g(.fiesta, 1), g(.glow, 1), g(.share, 0.55)]),
+                Chapter(id: "avonGorge", reward: 10000, goals: [g(.seats, 220), g(.influencer, 1), g(.stars, 4.75), g(.share, 0.35), g(.fog, 1), g(.ctrDone, 2), g(.bldHangar, 2)]),
+                Chapter(id: "festivalBri", reward: 20000, goals: [g(.seats, 380), g(.hotelOwn, 1), g(.fiesta, 1), g(.glow, 1), g(.ctrDone, 3), g(.share, 0.55)]),
                 Chapter(id: "baronBri", reward: 0, goals: [g(.share, 0.75), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
             ]
         }
@@ -76,8 +78,9 @@ extension GameState {
         let s = local
         switch k {
         case .balloons: return Double(s.balloons.count)
-        case .seats: return Double(s.balloons.reduce(0) { $0 + $1.size.capacity })
-        case .pilots: return Double(s.pilots.count)
+        // v125: balloons and pilots brought from home don't count
+        case .seats: return Double(s.balloons.reduce(0) { $0 + ($1.imported != nil && Transfer.local ? 0 : $1.size.capacity) })
+        case .pilots: return Double(s.pilots.filter { !($0.imported != nil && Transfer.local) }.count)
         case .stars: return stars
         case .cash: return Double(s.cash)
         case .hotelDeal: return Double(s.hotelDeals.count)
@@ -92,6 +95,8 @@ extension GameState {
         case .fiesta: return Double(s.fiestaFlown)
         case .fog: return Double(s.fogFlown ?? 0)
         case .glow: return Double(s.glowCount ?? 0)
+        case .ctrDone: return Double(s.contracts?.ok ?? 0)
+        case .ctrPref: return s.contracts?.prefEver == true ? 1 : 0
         case .bldMast: return Double(level(.mast))
         case .bldHangar: return Double(level(.hangar))
         case .bldTop: return Double(topBuildingLevel)

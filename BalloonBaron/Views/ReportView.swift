@@ -131,10 +131,12 @@ struct ReportView: View {
     private func lines(_ lg: Ledger) -> [(String, Int)] {
         let mission = lg.missionDone.map { loc("ledger.mission", $0.title) } ?? loc("ledger.missionReward")
         let all: [(String, Int)] = [
-            (loc("ledger.tickets"), lg.tickets), (loc("ledger.evening"), lg.evening ?? 0), (loc("ledger.founderBonus"), lg.founderBonus), (mission, lg.mission),
+            (loc("ledger.tickets"), lg.tickets), (loc("ledger.contract", num(lg.contractN ?? 0)), lg.contract ?? 0),
+            (loc("ledger.contractPenalty"), -(lg.contractPenalty ?? 0)), (loc("ledger.contractVoucher"), -(lg.contractVoucher ?? 0)),
+            (loc("ledger.evening"), lg.evening ?? 0), (loc("ledger.founderBonus"), lg.founderBonus), (mission, lg.mission),
             (loc("ledger.ads"), lg.ads), (loc("ledger.tips"), lg.tips), (loc("ledger.fuel"), -lg.fuel),
             (loc("ledger.wages"), -lg.wages), (loc("ledger.upkeep"), -lg.upkeep), (loc("ledger.insurance"), -lg.insurance),
-            (loc("ledger.loans"), -lg.loans), (loc("ledger.repairs"), -lg.repairs), (loc("ledger.compensation"), -lg.compensation),
+            (loc("ledger.loans"), -lg.loans), (loc("ledger.transfer"), -(lg.transfer ?? 0)), (loc("ledger.repairs"), -lg.repairs), (loc("ledger.compensation"), -lg.compensation),
             (loc("ledger.insurancePaid"), lg.insurancePaid), (loc("ledger.hotelIncome"), lg.hotelIncome),
             (loc("ledger.hotelFees"), -lg.hotelFees), (loc("ledger.antitrust"), -lg.antitrust),
             (loc("ledger.cancellations"), -lg.cancellations), (loc("ledger.fines"), -lg.fines),

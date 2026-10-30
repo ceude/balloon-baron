@@ -843,7 +843,7 @@ final class GameStore {
     static func isNews(_ m: HezMessage) -> Bool {
         switch m {
         case .winterComing, .spring, .entrant, .fiestaStarted, .festivalStarted, .eventOutcome, .praise, .deed, .milestone,
-             .boss, .flagshipBack, .rescued, .inspector, .record, .celebritySigned: return true
+             .boss, .flagshipBack, .rescued, .inspector, .record, .celebritySigned, .cargoArrived: return true
         default: return false
         }
     }

@@ -54,6 +54,18 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case airspaceFine(fine: Int)
     case eveningAscent(balloons: Int, pax: Int, income: Int)
     case nightGlowTonight(balloons: Int)
+    /// v125 contracts: a foggy morning under Bristol's guarantee (refund and vouchers); a red flag (nothing owed); the
+    /// group flew (`dayN`/`len` for a block, 0 for one day); seats missing; a job that never flew for the weather; jobs
+    /// done in full with the owner so far; trust lost over people left on the ground.
+    case contractFog(company: String, n: Int, voucher: Int)
+    case contractRed(company: String)
+    case contractFlown(company: String, dayN: Int, len: Int, n: Int, price: Int, total: Int)
+    case contractShort(short: Int, perSeat: Int, total: Int)
+    case contractWeather(company: String)
+    case contractProgress(owner: ContractOwner, ok: Int, need: Int)
+    case contractTrustDown(owner: ContractOwner, short: Int)
+    /// v125: a rival flies a contract group you didn't take (and bought this many balloons with it).
+    case rivalFlewGroup(rival: String, company: String, n: Int, len: Int, balloons: Int)
 
     // Rivals
     case rivalFleetSold(rival: String)
@@ -79,6 +91,13 @@ public struct Ledger: Codable, Equatable, Sendable {
     public var chapterReward = 0
     /// v124: tickets of a Bristol festival's evening ascent (optional: older saved reports).
     public var evening: Int?
+    /// v125: a contract group's pay and size, the missing seats' penalty, Bristol's fog vouchers, and the day's payment
+    /// for balloons brought from home (optional: older saved reports).
+    public var contract: Int?
+    public var contractN: Int?
+    public var contractPenalty: Int?
+    public var contractVoucher: Int?
+    public var transfer: Int?
     public var missionDone: Mission?
     public var adRepLoss = 0.0
     /// Popularity your designs brought today.
@@ -90,7 +109,7 @@ public struct Ledger: Codable, Equatable, Sendable {
     public var fines = 0, cancellations = 0, hotelFees = 0, antitrust = 0
 
     public var net: Int {
-        tickets + (evening ?? 0) + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
+        tickets + (evening ?? 0) + (contract ?? 0) - (contractPenalty ?? 0) - (contractVoucher ?? 0) - (transfer ?? 0) + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
             - fuel - wages - upkeep - insurance - loans - repairs - compensation - fines - cancellations - hotelFees - antitrust
     }
 }
@@ -120,6 +139,8 @@ public struct DayReport: Codable, Equatable, Sendable {
 public enum RepReason: String, Codable, CaseIterable, Sendable {
     case cancelled, traits, ads, mission, moment, perfect, good, far, farm, mud, airspace, pilotsSafe
     case hard, crash, pilotAccident, hotels, drift, xl, designs, glow, show, prCap, absent, influencer
+    /// v125: a contract group left on the ground.
+    case contract
 }
 
 /// How the player's own flight ended, reported by the flight scene.

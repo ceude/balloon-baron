@@ -37,6 +37,7 @@ public struct Game: Sendable {
         if state.rivalPlanDay != state.day { planRivalFlights() }
         printPaper()
         flagReturnCheck()
+        contractTidy()
         scheduleEvent()
         unlockCheck()
         assignPilots()

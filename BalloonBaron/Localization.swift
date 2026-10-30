@@ -106,9 +106,32 @@ extension Issue {
 }
 func celebrityName(_ i: Int) -> String { loc("celebrity.\(i)") }
 
+/// v125: a list of names in the player's language ("A and B", "A und B" …).
+func listText(_ names: [String]) -> String { names.formatted(.list(type: .and)) }
+
+/// v125: the day of the week (day 1 is a Monday), long and short.
+func weekdayName(_ d: Int) -> String { loc("weekday.\(weekday(d))") }
+func weekdayShort(_ d: Int) -> String { loc("weekday.short.\(weekday(d))") }
+
+extension ContractOwner {
+    var title: String { loc("ctr.\(rawValue).name") }
+    var role: String { loc("ctr.\(rawValue).title") }
+    var short: String { loc("ctr.\(rawValue).short") }
+}
+
+/// v125: a contract owner's line with its blanks filled: {n} people, {d} first day, {e} last day, {len} days,
+/// {wd} the first day's weekday, {p} price per head, {r} the rival (`ctrLine`).
+func ctrText(_ w: ContractOwner, _ key: String, n: Int = 0, day: Int = 0, len: Int = 1, price: Int = 0, rival: String = "") -> String {
+    var t = loc("ctr.\(w.rawValue).\(key)")
+    let vals = ["{n}": num(n), "{d}": num(day), "{e}": num(day + len - 1), "{len}": num(len), "{wd}": weekdayName(day), "{p}": eur(price), "{r}": rival]
+    for (k, v) in vals { t = t.replacingOccurrences(of: k, with: v) }
+    return t
+}
+
 extension Goal {
     func label(region: RegionID) -> String {
         switch kind {
+        case .ctrDone: loc(target >= 3 ? "goal.ctrDoneAny.\(region.rawValue)" : "goal.ctrDone.\(region.rawValue)", num(Int(target)))
         case .balloons: loc("goal.balloons", num(Int(target)))
         case .seats: loc("goal.seats", num(Int(target)))
         case .pilots: loc("goal.pilots", num(Int(target)))
@@ -135,6 +158,11 @@ extension GameState {
         case .stars: return "\(starsValue(v)) / \(starsValue(g.target))"
         case .cash: return "\(eur(Int(v))) / \(eur(Int(g.target)))"
         case .share: return "\(percent(v)) / \(percent(g.target))"
+        case .seats, .pilots:
+            // v125: balloons and pilots brought from home don't count
+            let t = "\(num(Int(v)))/\(num(Int(g.target)))"
+            let brought = g.kind == .seats ? local.balloons.contains { $0.imported != nil } : local.pilots.contains { $0.imported != nil }
+            return brought && Transfer.local ? loc("goal.excludingBrought", t) : t
         default: return "\(num(Int(v)))/\(num(Int(g.target)))"
         }
     }
@@ -198,6 +226,13 @@ extension HezMessage {
             loc("insp.\(visit).\(names.count == 1 ? "one" : "many")", names.map(bname).joined(separator: ", "), eur(fine))
         case let .record(k, success): loc(success ? "record.success" : "record.fail", k.title)
         case .flagshipBack(let name): loc("hez.flagshipBack", bname(name))
+        case let .contract(w, line, n, price):
+            line == .redCancel ? loc("ctr.redCancel") : ctrText(w, line.rawValue, n: n, price: price)
+        case let .transferBrought(ps, bs, day):
+            [ps.isEmpty ? nil : loc("hez.xfer.pilots", listText(ps)),
+             bs.isEmpty ? nil : loc("hez.xfer.balloons", listText(bs.map(bname)), num(day))].compactMap { $0 }.joined(separator: "; ")
+                + ". " + loc("hez.xfer.end", currentRegion.title)
+        case .cargoArrived(let bs): loc("hez.cargoArrived", listText(bs.map(bname)))
         }
     }
 }
@@ -260,6 +295,18 @@ extension DayEvent {
         case .airspaceFine(let fine): loc("event.airspaceFine", eur(fine))
         case let .eveningAscent(n, pax, income): loc("event.eveningAscent", num(n), num(pax), eur(income))
         case .nightGlowTonight(let n): loc("event.nightGlowTonight", num(n))
+        case let .contractFog(co, n, v): loc("event.contractFog", co, num(n), eur(v))
+        case let .contractRed(co): loc("event.contractRed", co)
+        case let .contractFlown(co, dayN, len, n, price, total):
+            len > 1 ? loc("event.contractFlownDay", co, num(dayN), num(len), num(n), eur(price), eur(total))
+                : loc("event.contractFlown", co, num(n), eur(price), eur(total))
+        case let .contractShort(short, per, total): loc("event.contractShort", num(short), eur(per), eur(total))
+        case let .contractWeather(co): loc("event.contractWeather", co)
+        case let .contractProgress(w, ok, need): loc("event.contractProgress", w.title, num(ok), num(need))
+        case let .contractTrustDown(w, short): loc("event.contractTrustDown", w.title, num(short))
+        case let .rivalFlewGroup(r, co, n, len, grow):
+            (len > 1 ? loc("event.rivalFlewGroupDays", r, co, num(n), num(len)) : loc("event.rivalFlewGroup", r, co, num(n)))
+                + (grow > 0 ? " " + loc("event.rivalGrewWithGroup", num(grow)) : "")
         case let .rivalFleetSold(r): loc("event.rivalFleetSold", r)
         case let .rivalShrank(r): loc("event.rivalShrank", r)
         case let .newEntrant(r): loc("event.newEntrant", r, currentRegion.title)

@@ -270,6 +270,11 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var glowN: Int?
     public var eveDay: Int?
     public var eveN: Int?
+    /// v125 (optional so older saves load): corporate contracts; balloons brought from home on their way, and what this
+    /// region still pays back for them.
+    public var contracts: ContractState?
+    public var transferShip: TransferShip?
+    public var transferDebt: TransferDebt?
 
     init(rivals: [Rival]) { self.rivals = rivals }
 

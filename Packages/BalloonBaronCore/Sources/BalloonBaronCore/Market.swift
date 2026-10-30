@@ -87,12 +87,14 @@ extension Game {
         var g = self
         if let price { g.state.price = price }
         let fl = g.state.flyingToday, cap = fl.reduce(0) { $0 + g.state.sellSeats($1) }
-        let pax = g.market(price: g.state.price, capacity: cap).pax[0]
-        var income = pax * g.state.price
+        // v125: today's contract group is seated first, at its own price
+        let held = g.state.contractHeld(capacity: cap)
+        let pax = g.market(price: g.state.price, capacity: cap - held).pax[0]
+        var income = pax * g.state.price + held * (g.state.contractToday?.price ?? 0)
         if let fb = fl.first(where: { g.state.isSelf($0) }) {
-            income += jsRound(Double(min(pax, g.state.sellSeats(fb)) * g.state.price) * Rules.founderPremium)
+            income += jsRound(Double(min(pax + held, g.state.sellSeats(fb)) * g.state.price) * Rules.founderPremium)
         }
-        return (pax, cap, income)
+        return (pax + held, cap, income)
     }
 
     /// The rescue card's price move: the highest ticket price that still fills as many seats as the lowest price would,

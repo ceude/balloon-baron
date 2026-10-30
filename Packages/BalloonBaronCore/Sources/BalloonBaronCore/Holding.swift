@@ -260,6 +260,8 @@ extension Game {
         guard !state.owns(r), state.regionOpen(r), !state.needsPack(r), spendHolding(r.entryFee) else { return false }
         state.hezQueue.append(.enteredRegion(r))
         state.hezQueue.append(.guideHello(r))
+        // v125: the card to bring balloons and pilots, once, on entering
+        if !state.parked.isEmpty || !state.local.balloons.isEmpty { state.transferAsk = r }
         switchRegion(r)
         return true
     }
