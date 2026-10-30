@@ -438,34 +438,55 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
   - Otel kapışması: 5 günlük kazanç öde ya da kalıcı −%5.
   - Yıpranan zarflar: 8 günlük kazanç öde ya da 10 gün −%12.
 
-## Kurumsal kontratlar (v125, şimdilik Albuquerque)
-Arada bir sabah yerel bir tur şirketinin sahibi teklif getirir: **bir gün, tek büyük grup**, birkaç gün sonrası için. Bölge ayarı `CTR[bölge]` (prototip); Luksor (Nil gemileri, çok günlük blok) ve Bristol (Londra tren hafta sonu paketi, sis garantisi) aynı sistemi kendi ayarıyla kullanacak, şimdilik yalnızca Albuquerque açık.
+## Kurumsal kontratlar (v125–v125.3: Albuquerque, Luksor, Bristol)
+Arada bir sabah yerel bir şirketin sahibi teklif getirir. Bölge ayarı `CTR[bölge]` (prototip), ortak kod; her bölgenin kendi türü, kadrosu, kontrat yeri, aracı ve sesi var.
 
-- **Ne zaman:** 2. bölüm (Kutu Rüzgârı) başlayınca, ertesi sabah ilk teklif (filo en az 40 koltuk). Sonra her 10–14 günde bir; tercih edilen operatörsen 6–9 günde bir. Bekleyen kendi grubun varken yeni teklif gelmez. Cevaplanmayan teklif ertesi sabah reddedilmiş sayılır.
-- **Grup ve fiyat:** grup, filonun koltuklarının %40–70'i (en az 12, çift sayı). Kişi başı fiyat = (senin fiyatın + yaşayan rakiplerin ortalama fiyatı) / 2 × 1,3–1,5, 5'e yuvarlı; tercih edilen operatöre ×1,08. Gün: 3–5 gün sonra.
-- **Kabul / Pazarlık / Reddet:** pazarlık kişi başı +%15 ister; %35 ihtimalle (tercih edilen operatörsen %15) şirket grubu rakibe götürür. Pazarlık tutarsa kontrat o fiyatla yapılır. Reddedilen ya da pazarlıkta kaçan grup rakibe gider.
-- **O gün:** grup koltuklara önce oturur, kalan koltuklar normal pazara satılır (`market(fiyat, koltuk − grup)`). Grubun ücreti bilet gelirinden ayrı satırda ("Tur grubu (N kişi)"). Fiyat sayfasında "Tur grubu: şirket +N yolcu · $fiyat" satırı ve bilet kartında "Tur grubu bugün: x/N kişi".
-- **Kırmızı bayrak:** o sabah kırmızı bayraksa grup bir gün kayar, ilk kaymada kişi başı %20 iner (sonrakilerde inmez). Üçüncü kırmızı sabahta grup eve döner, ceza yok.
-- **Teslim edemezsen** (kaza, onarım, pilot yok, pas geçtin, koltuk az): eksik koltuk başına kişi başı fiyatın %50'si ceza, popülerlik −0,02 (−0,08★), eksik yolcular o gün rakibe gider. Hepsi uçarsa başarılı iş.
-- **Güven ve karakterler:** her şirket sahibiyle bir ilişki puanı: başarılı iş +1 (en çok 5), eksik teslim −1 (gruptan ≥%75 uçtuysa) ya da −2, ret ve pazarlıkta kaçma −1. Aynı kişiyle **3 başarılı iş** ve puan ≥2: **tercih edilen operatör** ("Artık sana daha sık geleceğim"); puan 1'in altına düşerse unvan gider. Puan **−3**'e inerse ilişki biter, sahibi veda eder ve 14 gün sonra kadrodaki bir sonraki şirketin sahibi kendini tanıtarak gelir. Albuquerque kadrosu: **Rosa Delgado** (Mother Road Coaches, Santa Fe, Route 66 turları; sıcak, İspanyolca serpiştirir), **Hank Begay** (Turquoise Mesa Tours, Gallup; az konuşur), **Linda Park** (High Desert Coachlines, kongre grupları; resmî, faturalı). Her birinin kendi portresi, rengi ve repliği var (teklif, söz, pazarlık, ret, o sabah, teşekkür, tercih, başarısızlık, unvan kaybı, kırmızı bayrak, veda).
-- **Rakip güçlenir:** reddedilen, kaçan ya da teslim edilemeyen grup o gün popülerliği en yüksek rakibin yolcusu olur: yolcular onun payına sayılır, popülerliği +0,05, kişi başı farkı kasasına girer ve grubun parasıyla hemen balon alır (24+ kişi: 1 balon, her 48 kişi için bir tane; güvenli rakip L, diğerleri M, filo sınırına kadar). Gazete ve rapor satırı: "Sandia Sky Rides, Mother Road Coaches grubunu uçurdu… filosuna yeni bir balon ekledi".
-- **Bölüm hedefleri:** Kutu Rüzgârı'nda "2 tur grubunu eksiksiz uçur" (rüzgâr direği Sv. 3 yerine), Fiesta'da "3 tur grubunu eksiksiz uçur (herhangi bir şirket)" (yeni, beşinci hedef; bölgedeki toplam başarılı iş, şirketler karışık olabilir; v125.1'de "tercih edilen operatör ol" yerine).
-- **Görünmezlik kuralı (bütün şehirler):** kontrat yeri (Albuquerque terminali; ileride Luksor iskelesi, Bristol istasyonu) ve ona giden asfalt, ana ekranın varsayılan görünümünde hiç görünmez. Kasabaya yakın yol kasabanın kendi toprak yoludur; çakıl ve asfalt ancak sürükleyip uzaklaşınca başlar. Yerleşim `CTR[bölge].spot` (çizim noktası) ve `off` (yol boyunca ne kadar dışarıda, Albuquerque 12 kare) ile; asfalt `16,8 + off`'ta başlar, önünde 2,4 karelik çakıl geçişi. Kontrol: terminal ve yol tek başına boş bir tuvale ana ekran kamerasıyla çizilir, 390×844, 400×860, 430×932, 834×1194, 1024×1366 ve 1366×1024'te ekrana düşen piksel sayısı 0.
-- **Otobüs terminali:** kasabanın güneybatısında, otoyolun sonunda, normal görüş alanının çok dışında: asfalt otoyol (sarı orta çizgi), US 66 ve "Historic Route 66" kalkanları, Route 66 reklam panosu, "TOUR COACH TERMINAL" yazılı kerpiç bina, turkuaz saçak, üç otobüs peronu, "66 DINER", pembe mesalar, yucca ve cholla. Kasaba görünümünde aşağı sola sürükleyerek gidilir (`townClamp` terminali ekranın ortasına getirmeye izin verir). Kabul ettiğin her grup için (kişi başına ~50'de bir, en çok 3) otobüsler kontrat gününe kadar peronda bekler, motorları rölantide titrer ve arkadan duman çıkar; terminal ekrana yakınken kod sentezli motor uğultusu (`ctrHum`). Kontrat yokken terminal boş. Terminale dokununca kart: bekleyen gruplar ve güven.
-- **İlk teklif sahnesi (bölge başına bir kez):** kamera kasabadan otoyol boyunca terminale kayar (3,6 sn), otobüsler otoyoldan gelip perona girer, korna çalar; Ben Franklin dört kısa cümle söyler (terminal, ilk teklif geliyor, almazsan rakip kapar, 3 iş iyi giderse daha sık gelirler), "Geç" hepsini atlar. Sonra teklif kartı terminalin altında açılır (kamera terminali yukarı alır); karar sonrası kamera kasabaya döner. Sonraki teklifler aynı kişinin kartıyla, sahnesiz.
+| | Albuquerque | Luksor | Bristol |
+|---|---|---|---|
+| Kim | Tur otobüsü şirketleri (Route 66) | Nil gemisi şirketleri | Londra hafta sonu tren paketleri |
+| Tür | tek gün, tek grup | **blok:** 4–6 ardışık sabah, her sabah N kişi | **hafta sonu:** Cumartesi + Pazar, **sis garantisi** |
+| Grup | filonun koltuklarının %40–70'i | %18–30'u (her sabah) | %25–40'ı (her sabah) |
+| Kişi başı fiyat | referansın ×0,80–0,90'ı | ×0,80–0,90 | ×0,90–1,00 |
+| Sıklık (tercihte) | 10–14 gün (6–9) | 13–18 gün (9–12) | 10–14 gün (7–9) |
+| Kırmızı bayrak | grup bir gün kayar, ilk kaymada %20 iner | o sabah sayılmaz (ödeme yok, ceza yok) | o sabah sayılmaz |
+| Kontrat yeri | otoyolun sonunda otobüs terminali | Nil kıyısında iskele | batı yolunun sonunda Avonside istasyonu |
+| Araç ve ses | 1–3 otobüs, motor rölantisi, korna | üç katlı gemi sallanır, nehir sesi, gemi düdüğü | kırmızı buharlı tren, duman, yavaş puf-puf, düdük |
 
-Simülasyon (`sim-abq.js`: Kapadokya baronluğu, sonra Albuquerque; 16 tohum; gün = Albuquerque'ye girişten sonra; bot teklifi filo koltuklarının %85'ine sığarsa kabul eder, %30 pazarlık eder):
+- **Fiyat (v125.3):** tur şirketi toptan alır: kişi başı fiyat, senin fiyatınla yaşayan rakiplerin ortalamasının ortası (referans) çarpı yukarıdaki oran, 5'e yuvarlı, ve **asla senin biletinden ve referanstan yüksek değil**. Tercih edilen operatöre ×1,06 (Bristol ×1,04), yine aynı tavanla. Pazarlık %10 fazla ister ama en fazla referansa (ve biletine) kadar; fiyat zaten tavandaysa pazarlık düğmesi çıkmaz. %35 ihtimalle (tercihte %15) şirket grubu rakibe götürür. Bristol'ün paketleri pazara daha yakın (×0,90–1,00): Londra'dan gelen hafta sonu kaçamağı premium bir üründür, ama sis garantisinin bedeli (iade ve kupon) operatöre de sana da riskli olduğu için yine biletin üstüne çıkmaz.
+- **Neden alınır:** kontratın değeri prim değil, garanti dolu koltuk ve rakibe gitmemesi. Kişi başı biraz ucuzdur; ama grup, pazarın dolduramayacağı koltukları doldurur. Simde kontrat gelirinin normal bir günde aynı koltukların getireceği bilet gelirine oranı Albuquerque 0,91, Luksor 0,97, Bristol 1,12; kontratın yerinden ettiği pazar yolcuları düşülünce kalan **net kazanç** kontrat gelirinin Albuquerque'de %14'ü, Luksor'da %52'si (küçük gruplar, çok sabah: hep boş koltuk doldurur), Bristol'de %49'u.
+- **Ne zaman:** 2. bölüm başlayınca, ertesi sabah ilk teklif (filo en az 40 / 48 / 48 koltuk). Bekleyen kendi işin varken yeni teklif gelmez. Cevaplanmayan teklif ertesi sabah reddedilmiş sayılır. Bristol'de iş hep bir Cumartesi başlar (1. gün Pazartesi; teklif en az 3 gün sonrası için).
+- **O sabah:** grup koltuklara önce oturur, kalanı normal pazara satılır (`market(fiyat, koltuk − grup)`). Raporda "Tur grubu (N kişi)" ayrı satır, fiyat sayfasında "Tur grubu: şirket +N yolcu · fiyat", bilet kartında "Tur grubu bugün: x/N kişi".
+- **Sis garantisi (Bristol):** teklifte her günün sis tahmini yazar (Cmt %x · Paz %y; %5–45). O günün sisi bu tahmine göre gelir (kontratlı sabahta hava sisini tahmin belirler). Sisli sabah o günün grubu uçmaz: bilet parası iade, üstüne kişi başı fiyatın %15'i kupon (raporda "Sis garantisi: kuponlar"); başarısızlık sayılmaz. Bot ortalama tahmin %45'ten yüksekse reddeder.
+- **Teslim edemezsen:** her sabah eksik koltuk başına kişi başı fiyatın %50'si ceza, popülerlik −0,02, eksik yolcular o gün rakibe gider. İş son gününde bütün olarak değerlendirilir: hiç eksik yoksa başarılı iş; eksik varsa güven düşer; hava yüzünden hiç uçulamadıysa kimsenin suçu değil.
+- **Güven ve karakterler:** başarılı iş +1 (en çok 5), eksik teslim −1 (≥%75 uçtuysa) ya da −2, ret ve pazarlıkta kaçma −1. Aynı kişiyle 3 başarılı iş ve puan ≥2: tercih edilen operatör ("Artık sana daha sık geleceğim"); puan 1'in altında unvan gider; −3'te sahibi veda eder, 14 gün sonra kadrodaki sıradaki sahip kendini tanıtarak gelir. Kadrolar (her birinin SVG portresi, rengi, kendi sesiyle replikleri):
+  - Albuquerque: Rosa Delgado (Mother Road Coaches), Hank Begay (Turquoise Mesa Tours), Linda Park (High Desert Coachlines).
+  - Luksor: Kaptan Farouk Mansour (Sobek Nile Cruises; "kaptan" der), Dalia Rizk (Golden Lotus Line; lüks, resmî), Hamza El-Sayed (Dahabiya Pearl; neşeli, yelkenli dahabiyeler).
+  - Bristol: Nigel Pemberton (West Country Weekenders; "splendid"), Priya Shah (Capital Rail Breaks; hızlı, uygulamalı), Fiona MacLeod (Steam & Sky Excursions; buharlı tren, "canım").
+- **Rakip güçlenir:** reddedilen, kaçan ya da teslim edilemeyen grup o gün(ler) popülerliği en yüksek rakibin yolcusu olur (pazar payına sayılır); ilk gününde rakibin popülerliği +0,05, kişi başı farkı kasasına girer ve grubun toplam yolcusuna göre hemen balon alır (Abq ve Bristol 24, Luksor 20 kişiden bir balon, her iki katı için bir tane daha). Gazete ve rapor satırı.
+- **Bölüm hedefleri:** 2. bölümde rüzgâr direği Sv. 3 yerine "2 tur / gemi / hafta sonu grubunu eksiksiz uçur", 3. bölümde yeni beşinci hedef "3 kontratı eksiksiz uçur (herhangi bir şirket)" (bölgedeki toplam başarılı iş).
+- **Görünmezlik kuralı (bütün şehirler):** kontrat yeri, ona giden asfalt ve cipler ana ekranın varsayılan görünümünde hiç görünmez; kasabaya yakın yol kasabanın kendi toprak yoludur. Kontrol: kontrat yeri ve cip animasyonu (11 sn'lik döngünün her yarım saniyesi) tek başına boş bir tuvale ana ekran kamerasıyla çizilir; 390×844, 400×860, 430×932, 834×1194 ve 1024×1366'da (dikey) ekrana düşen piksel 0. Kasaba görünümünde sürükleyerek gidilir (`townClamp` kontrat yerini her yönde ekranın ortasına getirmeye izin verir).
+  - Albuquerque: güneybatı yolunda, yerleşim 12 kare dışarıda. Otoyol terminalde biter: asfalt terminalden dışarıya doğru, kasabaya doğru değil; terminalin kasaba tarafında toprak "BALLOON SHUTTLE" cip durağı.
+  - Luksor: Nil kıyısında doğuda (gx ≈ 30): taş rıhtım, ahşap iskele, bilet kulübesi, "LUXOR CRUISE PIER" tabelası, hurmalar, fenerler, feluka; iskeleden doğu yoluna toprak patika.
+  - Bristol: batı yolunun ucunda (gx ≈ −11): raylar ufka uzanır, tampon, peron ve yeşil saçak, saatli tuğla istasyon, "AVONSIDE" levhası, cip durağı yolun öbür yanında.
+- **Araç ne zaman orada:** yalnızca senin bir işin sürerken (ilk günden son güne). İlk gün araç, kontrat yerine ilk baktığında gelir (otobüsler otoyoldan perona girer ve korna; gemi akıntıdan yanaşır ve düdük; tren raylardan girer, düdük ve puf-puf) ve iş bitene kadar kalır; sonra yer yine boş. Araç dururken ekrana yakınsa ortam sesi (`ctrHum`, türe göre).
+- **Cipler:** işin bir sabahı (araç oradaysa ve kırmızı bayrak / sis yoksa) yolcular araçtan inip oyunun safari ciplerine yürür, cipler toprak yoldan kasabaya doğru gider ve varsayılan görünüme girmeden kaybolur; 11 saniyelik döngü.
+- **Yolcu toplama (v125.3):** kontrat sabahı "Yolcu topla"ya basınca önce 1–3 cip dükkânın önünden kontrat yerinin yoluna çıkar ("Jeepler tur grubunu almaya gidiyor"), grubu alıp geri gelir ("Tur grubu geliyor: N kişi"), koltuk göstergesinde grup ilk dolar (kendi rengiyle), sonra normal kuyruk oluşur; kalkışta kuyruk aynı ciplere biner ve hepsi birlikte çıkar. 2,6 sn ekler; yolcu toplama animasyonu ayarı kapalıysa hiç oynamaz.
+- **İlk teklif sahnesi (bölge başına bir kez):** kamera kasabadan kontrat yerine kayar (3,6 sn), araç gelir (sesiyle), rehber (Ben Franklin / İmhotep / Maggie) dört kısa cümle söyler, "Geç" atlar; teklif kartı yerin altında açılır, karar sonrası kamera kasabaya döner.
 
-| Durum | Abq B1 | B2 | B3 | Baron |
-|---|---|---|---|---|
-| Kontratsız (v124.6) | 53,5 | 82,2 | 102,3 | 139,8 |
-| Kontratlı, akıllı bot | 53,5 | 80,5 | 101,7 | 140,7 |
-| Hep kabul, %60 pazarlık | 53,5 | 85,5 | 111,9 | 145,3 |
-| Teslim günü %30 ihtimalle filonun yarısı yerde | 53,5 | 86,6 | 124,1 | 155,8 |
-| v125.1 (B3 hedefi "3 başarılı iş, herhangi bir şirket"), akıllı bot | 53,5 | 80,5 | 101,1 | 141,4 |
-| v125.1, teslim günü %30 filonun yarısı yerde | 53,5 | 86,6 | 111,2 | 145,5 |
+Simülasyon (bütün kampanya botu `camp2.js` = `tools/sim-campaign.js` + istatistik; 16 tohum; gün = bölgeye girişten sonra; bot teklifi filo koltuklarının %85'ine sığarsa ve Bristol'de ortalama sis tahmini %45'i geçmezse kabul eder):
 
-Akıllı botta koşu başına ~10 teklif, ~9 başarılı teslim, tercih edilen operatörlük girişten ~90 gün sonra. Kontratın getirisi o koltukların normal bir gündeki bilet gelirinin ortalama **1,6 katı** (pazarlıkla 1,8). Hepsini reddeden bot ikinci bölümü bitiremez (hedef); o durumda rakiplerin koltukları 100. günde %7 fazla (548'e karşı 511) ve 80. gündeki pazar payın %23 (akıllı botta %25).
+| Bölge | Durum | B1 | B2 | B3 | Baron |
+|---|---|---|---|---|---|
+| Albuquerque | kontratsız (v124.6) | 55,1 | 83,5 | 105,0 | 140,9 |
+| Albuquerque | v125.3 | 55,1 | 79,3 | 100,6 | 141,9 |
+| Luksor | kontratsız | 59,9 | 86,3 | 109,7 | 139,1 |
+| Luksor | v125.3 | 57,4 | 83,9 | 105,2 | 134,9 |
+| Bristol | kontratsız | 56,4 | 98,1 | 127,8 | 147,5 |
+| Bristol | v125.3 | 57,8 | 106,4 | 135,3 | 156,1 |
+
+Koşu başına başarılı iş: Albuquerque 9,6, Luksor 5,4 (24 uçulan sabah), Bristol 7,9 (11 uçulan sabah, sis kuponları ortalama £7.800). Bristol B2 ve B3 %6–9 uzar (filo hedefi biraz geç dolar, hafta sonu takvimi). Kontrat hedefleri kaldırılıp kontratlar açık bırakılınca (ekonomik etki) Bristol baronu 150,9, kontratlar kapalıyken 150,4: kontratlar kendi başına aşağı yukarı nötr, fark hedeften.
+
+Önceki sürümün (v125–v125.1, yalnız Albuquerque, prim fiyatla) `sim-abq.js` sonuçları: kontratsız 53,5 / 82,2 / 102,3 / 139,8; kontratlı 53,5 / 80,5 / 101,1 / 141,4.
 
 ## Filo ve pilot getirme (v125, bütün bölgeler)
 Yeni bir bölgeye **girerken, yalnızca o an**, otomatik moddaki bölgelerden balon ve pilot getirilebilir ("Filonu getir" kartı; geçilebilir).
