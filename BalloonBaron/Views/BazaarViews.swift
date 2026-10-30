@@ -530,8 +530,10 @@ struct DecorNightPreview: View {
 
 /// v115: after the Baron of Cappadocia ceremony (or when a new region is out of reach): the Grand Tour, or the Supporter
 /// Edition when the Founder Pack isn't yours yet (`showTourOffer`).
+@MainActor
 struct TourOfferView: View {
     @Environment(GameStore.self) private var store
+    private var shop: Shop { Shop.shared }
 
     var body: some View {
         let s = store.state
@@ -549,6 +551,7 @@ struct TourOfferView: View {
             if let s, !s.owned(.founder) {
                 option(.supporter, sub: loc("tour.supporterSub", StoreItem.founder.title), was: StoreItem.price(of: StoreItem.worldTour.euro + StoreItem.founder.euro), main: false)
             }
+            if let note = shop.note { CardText.hint(note) }
             Button {
                 SoundEngine.shared.play(.click)
                 Telemetry.offer("grandTour", "declined", store.state)
@@ -560,11 +563,13 @@ struct TourOfferView: View {
     }
 
     private func option(_ k: StoreItem, sub: String, was: String?, main: Bool) -> some View {
+        // v124.7 (TestFlight): the choice buys at once; it used to open a second purchase card first
         Button {
             SoundEngine.shared.play(.click)
-            store.showTourOffer = false
-            store.storeItem = k
             Telemetry.offer("grandTour", "chose." + k.rawValue, store.state)
+            Task {
+                if await shop.buy(k) { close() }
+            }
         } label: {
             HStack(alignment: .center, spacing: 10) {
                 VStack(alignment: .leading, spacing: 2) {
@@ -573,13 +578,18 @@ struct TourOfferView: View {
                 }
                 Spacer(minLength: 6)
                 if let was { Text(was).font(Theme.font(13)).strikethrough().foregroundStyle(Theme.ink2) }
-                Text(storePrice(k)).font(Theme.font(17, .heavy)).foregroundStyle(Theme.ink)
+                if shop.buying == k {
+                    ProgressView().tint(Theme.ink)
+                } else {
+                    Text(storePrice(k)).font(Theme.font(17, .heavy)).foregroundStyle(Theme.ink)
+                }
             }
             .padding(.horizontal, 14).padding(.vertical, 12)
             .background(main ? Color(hex: "#fff6f2") : Color.white, in: RoundedRectangle(cornerRadius: 16))
             .overlay(RoundedRectangle(cornerRadius: 16).stroke(main ? Theme.coral : Theme.line, lineWidth: 2))
         }
         .buttonStyle(.plain)
+        .disabled(shop.buying != nil)
     }
 
     private func close() {
