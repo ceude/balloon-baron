@@ -6947,7 +6947,7 @@ function newRegionState(id) {
     cash: id === 'bri' ? 6000 : id === 'lux' ? 5000 : 3000, loans: [], weather: null, demand: null, balloons: [], pilots: [], candidates: [], price: id === 'bri' ? 185 : 170, rep: 1, strikes: 0, banUntil: 0, selfFly: true,
     lastShare: null, shareNow: 0, hotels: [], ownHotels: [], hotelTaken: {}, reviews: [], repHist: [], influUntil: 0, influCd: 0, guideCd: 0, guideUntil: 0,
     influCount: 0, guideCount: 0, plan: null, winter: null, nextWinter: S.day + 40, monoDays: 0, domDays: 0, lastMerge: null, firstMis: 1, poach: null,
-    school: false, demandBase: id === 'bri' ? 145 : 165, chapter: 0, monopolyShown: false, absentNotice: 0, fiesta: null, fiestaNext: S.day + 12, fiestaFlown: 0, netHist: []
+    school: false, demandBase: id === 'bri' ? 145 : 165, chapter: 0, monopolyShown: false, absentNotice: 0, fiesta: null, fiestaNext: S.day + 12, fiestaFlown: 0, netHist: [], nextEvent: S.day + 14 /* v125.6: no morning event (press, VIP…) on the first days in a new region */
   };
   if (id === 'bri') { st.fogFlown = 0; st.glowCount = 0; }
   st.rivals = (id === 'bri' ? BRI_RIVALS : id === 'lux' ? LUX_RIVALS : ABQ_RIVALS).map(r => ({ ...r, balloons: r.balloons.slice(), alive: true, dmg: r.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, lowDays: 0 }));
