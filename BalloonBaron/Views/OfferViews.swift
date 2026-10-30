@@ -140,7 +140,7 @@ private struct OfferRow: View {
     }
 
     @ViewBuilder private var button: some View {
-        let b = PlanSmallButton(title: price, disabled: disabled, action: action)
+        let b = PlanSmallButton(title: price, disabled: disabled, sound: nil, action: action)
         if let spot { b.tutTarget(spot, disabled: disabled) } else { b }
     }
 }

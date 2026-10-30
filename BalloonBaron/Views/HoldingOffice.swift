@@ -66,32 +66,19 @@ struct HoldingOfficeView: View {
         .onChange(of: store.travel) { _, t in if t != nil { unit = nil } }
     }
 
+    /// The office pages' title bar (white title, money pill, dark round ✕) on a band of the sky's night colour,
+    /// so the holding reads like the fleet, market and crew pages. The pill shows the holding's cash.
     private func header(_ s: GameState) -> some View {
-        HStack(spacing: 10) {
-            VStack(alignment: .leading, spacing: 1) {
-                Text(loc("holding.title", s.company)).font(Theme.font(22, .heavy, condensed: true)).foregroundStyle(Theme.ink)
-                (Text(loc("hq.cash") + " ") + Text(eurH(s.holding.cash)).font(Theme.font(16, .heavy, condensed: true)).foregroundColor(Theme.coral))
-                    .font(Theme.font(12.5)).foregroundStyle(Theme.ink2)
-            }
-            .padding(.horizontal, 14).padding(.vertical, 8)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Color(red: 1, green: 250 / 255, blue: 243 / 255).opacity(0.94), in: RoundedRectangle(cornerRadius: 16))
-            .background(RoundedRectangle(cornerRadius: 16).fill(Theme.ink.opacity(0.18)).offset(y: 4))
-            Button {
-                SoundEngine.shared.play(.click)
-                withAnimation(.easeIn(duration: 0.25)) { shown = false }
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { store.closePage() }
-            } label: {
-                Image(systemName: "xmark").font(.system(size: 18, weight: .heavy)).foregroundStyle(Theme.ink)
-                    .frame(width: 44, height: 44)
-                    .background(Color.white, in: RoundedRectangle(cornerRadius: 14))
-                    .background(RoundedRectangle(cornerRadius: 14).fill(Theme.line).offset(y: 3))
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(loc("world.close"))
+        FleetUI.Header(title: loc("holding.title", s.company), money: eurH(s.holding.cash)) {
+            SoundEngine.shared.play(.click)
+            withAnimation(.easeIn(duration: 0.25)) { shown = false }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) { store.closePage() }
         }
-        .padding(.horizontal, 14)
-        .padding(.top, 14)
+        .padding(.bottom, 6)
+        .background(
+            LinearGradient(colors: [Color(hex: "#2f2560"), Color(hex: "#4a2f6e")], startPoint: .top, endPoint: .bottom)
+                .ignoresSafeArea(edges: .top)
+        )
     }
 
     /// A label over a desk: its name, its state (green when something is running), a red dot when it needs you.

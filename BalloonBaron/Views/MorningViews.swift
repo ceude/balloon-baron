@@ -400,35 +400,44 @@ struct MorningEventView: View {
         let g = store.game
         let o = g?.eventOffer(event) ?? EventOffer()
         let s = g?.state
-        ZStack(alignment: .bottom) {
+        return ZStack(alignment: .bottom) {
             Color(red: 27 / 255, green: 24 / 255, blue: 64 / 255).opacity(0.18).ignoresSafeArea()
-            VStack(alignment: .leading, spacing: 14) {
-                Text(loc("event.tag"))
-                    .font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
-                CardText.title(event.title)
-                CardText.lead(lead(o, s))
-                Button(accept(o)) {
-                    SoundEngine.shared.play(.coin)
-                    store.answerEvent(event, accept: true)
-                }
-                .buttonStyle(ChunkyButtonStyle(kind: .big))
-                .disabled(event == .fuel && (s?.cash ?? 0) < o.stock)
-                Button {
-                    SoundEngine.shared.play(.click)
-                    store.answerEvent(event, accept: false)
-                } label: {
-                    Text(loc("event.\(event.rawValue).no")).frame(maxWidth: .infinity)
-                }
-                .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+            // Taller than the screen (big text sizes, long translations): the card scrolls.
+            ViewThatFits(in: .vertical) {
+                card(o, s)
+                ScrollView { card(o, s) }.defaultScrollAnchor(.bottom)
             }
-            .padding(.horizontal, 20).padding(.vertical, 22)
-            .frame(maxWidth: 420, alignment: .leading)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 24))
-            .overlay(alignment: .top) { UnevenRoundedRectangle(topLeadingRadius: 24, topTrailingRadius: 24).fill(Theme.sun).frame(height: 6) }
-            .compositingGroup()
-            .shadow(color: .black.opacity(0.35), radius: 25, y: 10)
-            .padding(.horizontal, 16).padding(.bottom, 12)
         }
+    }
+
+    private func card(_ o: EventOffer, _ s: GameState?) -> some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Text(loc("event.tag"))
+                .font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
+            CardText.title(event.title)
+            CardText.lead(lead(o, s))
+            Button(accept(o)) {
+                SoundEngine.shared.play(.coin)
+                store.answerEvent(event, accept: true)
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .big))
+            .disabled(event == .fuel && (s?.cash ?? 0) < o.stock)
+            Button {
+                SoundEngine.shared.play(.click)
+                store.answerEvent(event, accept: false)
+            } label: {
+                Text(loc("event.\(event.rawValue).no")).frame(maxWidth: .infinity)
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .ghost))
+        }
+        .padding(.horizontal, 20).padding(.vertical, 22)
+        .frame(maxWidth: 420, alignment: .leading)
+        .background(Color.white, in: RoundedRectangle(cornerRadius: 24))
+        .overlay(alignment: .top) { UnevenRoundedRectangle(topLeadingRadius: 24, topTrailingRadius: 24).fill(Theme.sun).frame(height: 6) }
+        .compositingGroup()
+        .shadow(color: .black.opacity(0.35), radius: 25, y: 10)
+        .padding(.horizontal, 16).padding(.bottom, 12)
+        .frame(maxWidth: .infinity)
     }
 
     private func lead(_ o: EventOffer, _ s: GameState?) -> String {
@@ -532,7 +541,9 @@ struct RescueView: View {
     private func optionLabel(_ title: String, _ sub: String) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(title).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
+                .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
             Text(sub).font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 14).padding(.vertical, 12)
@@ -567,8 +578,10 @@ struct TempFlagView: View {
                     HStack {
                         VStack(alignment: .leading, spacing: 3) {
                             Text(chosen.title).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
+                                .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                             Text(loc("tempFlag.seats", chosen.size.title, num(chosen.size.capacity)))
                                 .font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                                .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer(minLength: 8)
                         if list.count > 1 {

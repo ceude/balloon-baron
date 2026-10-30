@@ -49,6 +49,9 @@ enum Haptics {
     /// A price step, or any small dial: barely there.
     static func tick() { guard Self.on else { return }; selection.selectionChanged() }
 
+    /// A small button in a list (hire, fire, renew): a light tap.
+    static func tap() { guard Self.on else { return }; light.impactOccurred(intensity: 0.5) }
+
     /// A button that starts something (take off, collect passengers).
     static func press() { guard Self.on else { return }; medium.impactOccurred(intensity: 0.6) }
 

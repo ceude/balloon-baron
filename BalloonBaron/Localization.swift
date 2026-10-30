@@ -126,10 +126,10 @@ extension Goal {
 }
 
 extension GameState {
-    /// "3/5", "4.2★ / 4.8★", "done" …
+    /// "3/5", "4.2★ / 4.8★", "done" … A reached goal reads "5/5", never "7/5": the tick says it's done.
     func progressText(_ g: Goal) -> String {
-        let v = value(g.kind)
-        if g.kind.yesNo { return loc(v >= g.target ? "goal.done" : "goal.notYet") }
+        let v = min(value(g.kind), g.target)
+        if g.kind.yesNo { return loc(value(g.kind) >= g.target ? "goal.done" : "goal.notYet") }
         switch g.kind {
         case .stars: return "\(starsValue(v)) / \(starsValue(g.target))"
         case .cash: return "\(eur(Int(v))) / \(eur(Int(g.target)))"

@@ -6,16 +6,15 @@ struct GoalsView: View {
     @Environment(GameStore.self) private var store
 
     var body: some View {
-        VStack(spacing: 0) {
-            WorldPageHeader(title: loc("goals.title")) { store.closePage() }
-            ScrollView {
-                if let s = store.state {
-                    content(s)
-                        .padding(16)
-                }
+        // The same frame as the fleet, market and crew pages: sky, white title, cash pill, dark ✕.
+        FleetUI.PageFrame(title: loc("goals.title"), cash: store.state?.cash ?? 0, close: { store.closePage() }) {
+            if let s = store.state {
+                content(s)
+                    .padding(16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Theme.paper, in: RoundedRectangle(cornerRadius: 20))
             }
         }
-        .background(Theme.paper.ignoresSafeArea())
     }
 
     @ViewBuilder
@@ -81,15 +80,8 @@ struct WorldPageHeader: View {
                 .lineLimit(2)
                 .minimumScaleFactor(0.7)
             Spacer(minLength: 8)
-            Button(action: onClose) {
-                Image(systemName: "xmark")
-                    .font(.system(size: 16, weight: .bold))
-                    .foregroundStyle(dark ? Color.white : Theme.ink)
-                    .frame(width: 40, height: 40)
-                    .background(dark ? Color.white.opacity(0.12) : Theme.line.opacity(0.6), in: Circle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel(loc("world.close"))
+            // The office pages' dark round ✕, on every page.
+            FleetUI.CloseX(action: onClose)
         }
         .padding(.horizontal, 16)
         .padding(.top, 12)

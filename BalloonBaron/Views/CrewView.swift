@@ -309,7 +309,7 @@ struct CrewView: View {
             sectionTitle(loc("crew.candidates"))
             ForEach(s.local.candidates) { p in
                 pilotRow(p, detail: [loc("crew.wage", eur(p.wage)), Self.riskText(p)].joined(separator: " · "), button: loc("crew.hire"), light: false,
-                         spot: p.id == s.local.candidates.first?.id ? "ga.hire" : nil) {
+                         spot: p.id == s.local.candidates.first?.id ? "ga.hire" : nil, sound: .coin) {
                     store.act { $0.hire(p.id) }
                 }
             }
@@ -352,7 +352,7 @@ struct CrewView: View {
 
     // MARK: Building blocks
 
-    private func pilotRow(_ p: Pilot, detail: String, button: String, light: Bool, spot: String? = nil, action: @escaping () -> Void) -> some View {
+    private func pilotRow(_ p: Pilot, detail: String, button: String, light: Bool, spot: String? = nil, sound: Sfx = .click, action: @escaping () -> Void) -> some View {
         HStack(spacing: 10) {
             avatar(p)
             VStack(alignment: .leading, spacing: 3) {
@@ -377,7 +377,7 @@ struct CrewView: View {
                 }
             }
             Spacer(minLength: 6)
-            PlanSmallButton(title: button, light: light, action: action)
+            PlanSmallButton(title: button, light: light, sound: sound, action: action)
                 .tutTargetIf(spot != nil, spot ?? "", disabled: false) // v122
         }
         .padding(12)

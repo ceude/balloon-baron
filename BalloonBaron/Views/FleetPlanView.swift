@@ -365,26 +365,82 @@ struct PlanChipButton: View {
     }
 }
 
-/// Small action button for list rows.
+/// Small action button for list rows. Looks like `FleetUI.SmallButton` (one small-button style across the app);
+/// taps click and give a light haptic (`sound: nil` when the action plays its own sound).
 struct PlanSmallButton: View {
     let title: String
     var light = false
     var disabled = false
+    var sound: Sfx? = .click
     let action: () -> Void
 
     var body: some View {
-        Button(action: action) {
+        Button {
+            if let sound { SoundEngine.shared.play(sound) }
+            Haptics.tap()
+            action()
+        } label: {
             Text(title)
-                .font(Theme.font(15, .heavy, condensed: true))
                 .lineLimit(1)
-                .padding(.horizontal, 12)
-                .frame(minHeight: 34)
-                .foregroundStyle(light ? Theme.ink : disabled ? Theme.offText : Color.white)
-                .background(light ? Theme.line : disabled ? Theme.offFill : Theme.coral, in: RoundedRectangle(cornerRadius: 11))
+                .minimumScaleFactor(0.8)
+                .smallButtonLook(kind: light ? .ghost : disabled ? .off : .main)
         }
         .buttonStyle(.plain)
         .disabled(disabled)
         .opacity(disabled && light ? 0.55 : 1)
+    }
+}
+
+/// The one look of the small buttons (`PlanSmallButton`, `FleetUI.SmallButton`): condensed capitals, 12 pt corners,
+/// at least 44 pt tall so it's easy to hit.
+struct SmallButtonLook: ViewModifier {
+    enum Kind { case main, ghost, off, selected }
+    let kind: Kind
+    var wide = false
+
+    func body(content: Content) -> some View {
+        content
+            .font(Theme.font(15, .heavy, condensed: true))
+            .textCase(.uppercase)
+            .padding(.horizontal, 12)
+            .padding(.vertical, 6)
+            .frame(maxWidth: wide ? .infinity : nil, minHeight: 44)
+            .foregroundStyle(fg)
+            .background(bg, in: RoundedRectangle(cornerRadius: 12))
+            .overlay(RoundedRectangle(cornerRadius: 12).strokeBorder(stroke, lineWidth: 2))
+            .contentShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var fg: Color {
+        switch kind {
+        case .main: Color.white
+        case .ghost: Theme.ink
+        case .off: Theme.offText
+        case .selected: Color(hex: "#1b7d47")
+        }
+    }
+
+    private var bg: Color {
+        switch kind {
+        case .main: Theme.coral
+        case .ghost: Color.white
+        case .off: Theme.offFill
+        case .selected: Theme.green.opacity(0.14)
+        }
+    }
+
+    private var stroke: Color {
+        switch kind {
+        case .ghost: Theme.line
+        case .selected: Theme.green.opacity(0.5)
+        case .main, .off: Color.clear
+        }
+    }
+}
+
+extension View {
+    func smallButtonLook(kind: SmallButtonLook.Kind, wide: Bool = false) -> some View {
+        modifier(SmallButtonLook(kind: kind, wide: wide))
     }
 }
 

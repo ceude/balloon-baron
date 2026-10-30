@@ -110,6 +110,8 @@ struct TownPainter {
 
     static let tuffLit = "#f1d6b0", tuffShade = "#b9825c", tuffTop = "#f8e4c4"
     static let sunShadow = CGSize(width: 0.55, height: 0.2)
+    /// Room the home screen's side buttons (Goals, Fleet, …) take at the right edge, with their margin.
+    static let sideColumn: CGFloat = 96
 
     /// Wall stone of the town, per region: Cappadocia's tuff, Albuquerque's smooth adobe, Luxor's mudbrick and limewash.
     struct Tuff {
@@ -1744,14 +1746,21 @@ struct TownPainter {
             .foregroundColor(plot ? hex("#ff5e3a") : locked ? Color.white.opacity(0.75) : Theme.ink2))
         let nw = name.measure(in: CGSize(width: 600, height: 100)).width, sw = sub.measure(in: CGSize(width: 600, height: 100)).width
         let w = max(nw, sw) + 16 * sc, hh = fn + fs + 14
-        let r = CGRect(x: sx - w / 2, y: sy - hh, width: w, height: hh)
+        var x = sx - w / 2
+        // iPad: the town is wide enough that edge buildings label past the screen and under the side buttons, so
+        // tags stay on screen and left of the button column. iPhone keeps the old placement.
+        if size.width >= 600 {
+            let lo: CGFloat = 8, hi = size.width - Self.sideColumn
+            x = min(max(x, lo), max(lo, hi - w))
+        }
+        let r = CGRect(x: x, y: sy - hh, width: w, height: hh)
         if taken.contains(where: { $0.intersects(r) }) { return }
         taken.append(r)
         let shape = Path(roundedRect: r, cornerRadius: 9 * sc)
         c.fill(shape, with: .color(locked ? Color(red: 43 / 255, green: 35 / 255, blue: 80 / 255).opacity(0.72) : Color(red: 1, green: 250 / 255, blue: 243 / 255).opacity(0.94)))
         if plot { c.stroke(shape, with: .color(hex("#ff5e3a")), lineWidth: 1.5) }
-        c.draw(name, at: pt(sx, r.minY + 4), anchor: .top)
-        c.draw(sub, at: pt(sx, sy - 5), anchor: .bottom)
+        c.draw(name, at: pt(r.midX, r.minY + 4), anchor: .top)
+        c.draw(sub, at: pt(r.midX, sy - 5), anchor: .bottom)
     }
 }
 

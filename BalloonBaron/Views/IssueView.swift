@@ -34,9 +34,11 @@ struct IssueView: View {
         Text(issue.title)
             .font(Theme.font(28, .heavy, condensed: true))
             .foregroundStyle(Theme.ink)
+            .fixedSize(horizontal: false, vertical: true)
         Text(issue.body + " " + (auto.map { loc("issueSheet.halved", eurH($0.today)) } ?? loc("issueSheet.yourCall")))
             .font(Theme.font(16, .medium))
             .foregroundStyle(Theme.ink)
+            .fixedSize(horizontal: false, vertical: true)
         hezarfenLine(issue)
         option(issue, .a, auto)
         option(issue, .b, auto)
@@ -47,6 +49,7 @@ struct IssueView: View {
             GuideAvatar(region: region, size: 34)
             (Text(guideName(region) + ": ").font(Theme.font(14, .bold)) + Text(issue.hezarfen).font(Theme.font(14)))
                 .foregroundStyle(Theme.ink)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .padding(10)
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -62,10 +65,13 @@ struct IssueView: View {
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(Theme.font(18, .heavy, condensed: true))
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(auto == nil ? issue.liveNote(choice) : issue.note(choice))
                     .font(Theme.font(13, .medium))
                     .opacity(0.85)
                     .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .foregroundStyle(isA && affordable ? Color.white : isA ? Theme.offText : Theme.ink)
             .frame(maxWidth: .infinity, alignment: .leading)

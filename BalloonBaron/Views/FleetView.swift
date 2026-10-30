@@ -39,30 +39,59 @@ enum FleetUI {
         }
 
         private var header: some View {
+            Header(title: title, money: eur(cash), close: close)
+        }
+    }
+
+    /// The office pages' title bar (fleet, market, crew, bank, goals, holding): white title on the dark sky,
+    /// a money pill and a dark round ✕. `money` is already formatted (`eur` or `eurH`).
+    struct Header: View {
+        let title: String
+        var money: String?
+        let close: () -> Void
+
+        var body: some View {
             HStack(spacing: 10) {
                 Text(title)
                     .font(Theme.font(30, .heavy, condensed: true))
                     .foregroundStyle(Color.white)
-                Spacer()
-                Text(eur(cash))
-                    .font(Theme.font(17, .bold, condensed: true))
-                    .foregroundStyle(Color.white)
-                    .padding(.horizontal, 14)
-                    .padding(.vertical, 8)
-                    .background(Theme.glass, in: Capsule())
-                Button(action: close) {
-                    Image(systemName: "xmark")
-                        .font(.system(size: 16, weight: .bold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.6)
+                Spacer(minLength: 8)
+                if let money {
+                    Text(money)
+                        .font(Theme.font(17, .bold, condensed: true))
                         .foregroundStyle(Color.white)
-                        .frame(width: 40, height: 40)
-                        .background(Theme.glass, in: Circle())
+                        .lineLimit(1)
+                        .fixedSize()
+                        .padding(.horizontal, 14)
+                        .padding(.vertical, 8)
+                        .background(Theme.glass, in: Capsule())
                 }
-                .buttonStyle(.plain)
-                .accessibilityLabel(loc("fleetPage.close"))
+                CloseX(action: close)
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)
             .padding(.bottom, 4)
+        }
+    }
+
+    /// The dark round ✕ of the office pages.
+    struct CloseX: View {
+        let action: () -> Void
+
+        var body: some View {
+            Button(action: action) {
+                Image(systemName: "xmark")
+                    .font(.system(size: 16, weight: .bold))
+                    .foregroundStyle(Color.white)
+                    .frame(width: 40, height: 40)
+                    .background(Theme.glass, in: Circle())
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel(loc("fleetPage.close"))
         }
     }
 
@@ -121,19 +150,13 @@ enum FleetUI {
             Button(action: action) {
                 VStack(spacing: 1) {
                     Text(selected ? "✓ " + title : title)
-                        .font(Theme.font(15, .heavy, condensed: true))
-                        .textCase(.uppercase)
                         .multilineTextAlignment(.center)
                     if let note, !selected {
-                        Text(note).font(Theme.font(12.5, .bold)).opacity(0.9)
+                        Text(note).font(Theme.font(12.5, .bold)).textCase(nil).opacity(0.9)
                     }
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .frame(maxWidth: .infinity, minHeight: 40)
-                .foregroundStyle(selected ? Color(hex: "#1b7d47") : ghost ? Theme.ink : disabled ? Theme.offText : Color.white)
-                .background(selected ? Theme.green.opacity(0.14) : ghost ? Color.white : disabled ? Theme.offFill : Theme.coral, in: RoundedRectangle(cornerRadius: 12))
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(selected ? Theme.green.opacity(0.5) : ghost ? Theme.line : Color.clear, lineWidth: 2))
+                .padding(.vertical, 2)
+                .smallButtonLook(kind: selected ? .selected : ghost ? .ghost : disabled ? .off : .main, wide: true)
             }
             .buttonStyle(.plain)
             .disabled(disabled || selected)
