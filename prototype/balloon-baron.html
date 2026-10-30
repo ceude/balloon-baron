@@ -7248,7 +7248,7 @@ const CTR = {
   bri: {
     kind: 'train', cast: CTR_CAST_BRI, spot: [-11, 6.4], shift: [0, 0],
     minChapter: 1, minSeats: 48, firstWait: 1,
-    gap: [10, 14], prefGap: [7, 9], lead: [3, 4], len: [2, 2], weekend: true, share: [.25, .4], price: [.9, 1], prefPrice: 1.04,
+    gap: [7, 10], prefGap: [5, 7], lead: [3, 4], len: [2, 2], weekend: true, share: [.25, .4], price: [.9, 1], prefPrice: 1.04,
     fogG: true, voucher: .15, fogP: [.05, .45],
     negUp: .1, negWalk: .35, prefWalk: .15, pen: .5, redCut: 0, redMove: false, prefNeed: 3, breakAt: -3, cool: 14,
     rivalRep: .05, rivalGrow: 24,
@@ -7381,7 +7381,7 @@ function ctrSettle(Lg, ev, rev, paxTotal) {
       }
     }
     if (S.day === kEnd(mine)) { /* the job is judged as a whole */
-      R.done = true;
+      R.done = true; C.depart = { col: w.col, name: w.co, n: mine.n, from: S.day + 1 }; /* it leaves the next time you look */
       if (!mine.flown) ev.push(`${w.co} işi hava yüzünden hiç uçamadan bitti. Kimsenin suçu değil.`);
       else if (!mine.short) {
         C.ok++; C.okWho++; ctrRel(1); R.ok = true;
@@ -7558,6 +7558,8 @@ function ctrVehicles() {
     const w = ctrOwner(k), t0 = k.day === S.day && k.arrT != null && T - k.arrT < 8 ? k.arrT : null;
     for (let i = 0; i < many(k.n) && out.length < room; i++) out.push({ col: w.col, name: w.co, t0 });
   }
+  const Dp = C.depart; /* a finished job's vehicle waits until you look, then leaves */
+  if (Dp && S.day >= Dp.from && !(Dp.t1 != null && T - Dp.t1 > 9)) for (let i = 0; i < many(Dp.n) && out.length < room; i++) out.push({ col: Dp.col, name: Dp.name, t1: Dp.t1 });
   if (TOWN.cine && C.offer && !out.length) { const w = ctrOwner(C.offer); for (let i = 0; i < many(C.offer.n); i++) out.push({ col: w.col, name: w.co, t0: TOWN.cine.arrive }); }
   return out;
 }
@@ -7580,7 +7582,7 @@ function routeShield(x, y, s, hist) {
 }
 /* A tour coach parked along gy, nose towards town (−gy): we see its long right side with the door near the front and
    its rear (tail lights, rear window); idling, it shivers and puffs from the exhaust. */
-function coach(gx, gy, col, t, idle) {
+function coach(gx, gy, col, t, idle, away) { /* away: leaving towards +gy, so we see its front */
   const w = .46, d = 1.6, hh = 34, z = 5 + (idle ? Math.sin(t * 38 + gx) * .5 : 0);
   const { A, B, C, D } = corners(gx - w / 2, gy, w, d);
   blobShadow((A[0] + C[0]) / 2 + 10, (A[1] + C[1]) / 2 + 4, 52, 18, .25);
@@ -7593,11 +7595,12 @@ function coach(gx, gy, col, t, idle) {
     ctx.fillStyle = '#2a3a50'; ctx.fillRect(.04, .5, .8, .36);
     ctx.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 6; i++) ctx.fillRect(.07 + i * .13, .78, .05, .06);
     ctx.fillStyle = '#efe6d2'; for (let i = 1; i < 6; i++) ctx.fillRect(.04 + i * .133, .5, .012, .36);
-    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.87, .06, .1, .8); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(.918, .06, .006, .8); /* the door */
+    const dx = away ? .03 : .87; ctx.fillStyle = '#2a3a50'; ctx.fillRect(dx, .06, .1, .8); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(dx + .048, .06, .006, .8); /* the door, near the front */
     ctx.fillStyle = '#c0c6cc'; ctx.fillRect(0, 0, 1, .05);
   });
   tpoly([L(D), L(C), upp(C, z + hh), upp(D, z + hh)], mix('#efe6d2', '#000000', .12));
-  tface(L(D), L(C), hh, () => { /* the rear */
+  tface(L(D), L(C), hh, () => { /* the rear, or the front when it drives away */
+    if (away) { ctx.fillStyle = '#1e2a3c'; ctx.fillRect(.08, .42, .84, .48); ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12); ctx.fillStyle = '#fff6c8'; ctx.fillRect(.08, .08, .14, .07); ctx.fillRect(.78, .08, .14, .07); return; }
     ctx.fillStyle = '#2a3a50'; ctx.fillRect(.15, .62, .7, .26);
     ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12);
     ctx.fillStyle = '#e5432f'; ctx.fillRect(.06, .1, .1, .16); ctx.fillRect(.84, .1, .1, .16);
@@ -7670,7 +7673,13 @@ function busItems(add, t) {
       const e = easeIO3(clamp((T - c.t0 - i * .7) / 3.6, 0, 1));
       if (e < .75) { gx = 8; gy = lerp(44 + i * 2.4, CTR_BAY_GY + 2.2, e / .75); } else { const f = (e - .75) / .25; gx = lerp(8, bx, f); gy = lerp(CTR_BAY_GY + 2.2, CTR_BAY_GY, f); }
     }
-    add(gx, gy, () => coach(gx, gy, c.col, t, true), gx + gy + .9);
+    let al = 1;
+    if (c.t1 != null) { /* out of the bay and away up the highway */
+      const e = easeIO3(clamp((T - c.t1 - i * .6) / 4, 0, 1));
+      if (e < .25) { const f = e / .25; gx = lerp(bx, 8, f); gy = lerp(CTR_BAY_GY, CTR_BAY_GY + 2.2, f); } else { gx = 8; gy = lerp(CTR_BAY_GY + 2.2, 50, (e - .25) / .75); }
+      al = 1 - clamp((e - .8) / .2, 0, 1);
+    }
+    add(gx, gy, () => { ctx.save(); ctx.globalAlpha *= al; coach(gx, gy, c.col, t, true, c.t1 != null && T - c.t1 > .6); ctx.restore(); }, gx + gy + .9);
   });
 }
 /* ---- Luxor: the cruise pier ---- */
@@ -7724,7 +7733,9 @@ function shipItems(add, t) {
   ctrVehicles().slice(0, 1).forEach(c => {
     let dx = 0;
     if (c.t0 != null) dx = 9 * (1 - easeIO3(clamp((T - c.t0) / 4.2, 0, 1)));
-    add(27.3 + dx + 2.5, -12.8, () => cruiseShip(27.3 + dx, -13.4, c.col, c.name, t), 27.3 + dx - 13.4 + 1.6);
+    let al = 1;
+    if (c.t1 != null) { const e = clamp((T - c.t1) / 6, 0, 1); dx = 14 * e * e; al = 1 - clamp((e - .7) / .3, 0, 1); } /* casts off and sails away down the Nile */
+    add(27.3 + dx + 2.5, -12.8, () => { ctx.save(); ctx.globalAlpha *= al; cruiseShip(27.3 + dx, -13.4, c.col, c.name, t); ctx.restore(); }, 27.3 + dx - 13.4 + 1.6);
   });
 }
 /* ---- Bristol: the station and its red steam train ---- */
@@ -7788,8 +7799,10 @@ function trainItems(add, t) {
   ctrVehicles().slice(0, 1).forEach(c => {
     let dx = 0, moving = false;
     if (c.t0 != null) { const k = clamp((T - c.t0) / 4.6, 0, 1); dx = -14 * (1 - (1 - Math.pow(1 - k, 3))); moving = k < 1; }
+    let al = 1;
+    if (c.t1 != null) { const e = clamp((T - c.t1 - .6) / 5, 0, 1); dx = -18 * e * e; moving = true; al = 1 - clamp((e - .75) / .25, 0, 1); } /* pulls out, back the way it came */
     const x0 = -19.4 + dx;
-    add(x0 + 6, 6.3, () => steamTrain(x0, 5.95, '#a8232c', t, moving), x0 + 11.8 + 6.6);
+    add(x0 + 6, 6.3, () => { ctx.save(); ctx.globalAlpha *= al; steamTrain(x0, 5.95, '#a8232c', t, moving); ctx.restore(); }, x0 + 11.8 + 6.6);
   });
 }
 /* ---- per kind: where things are, how the jeeps go, what you hear ---- */
@@ -7877,13 +7890,18 @@ function ctrHumTick(V, w, h) {
   const K = ctrCfg();
   if (!K || !TOWN.open) return ctrHum(0);
   const p = tiso(...ctrSpot()), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy, d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h);
-  const due = ctrDue(); if (due && d < .42) { due.arrDay = S.day; due.arrT = T; ctrArriveSound(); save(); } /* it pulls in as you look */
+  const C = S.ctr, Dp = C && C.depart;
+  if (Dp && Dp.t1 != null && T - Dp.t1 > 9) { C.depart = null; save(); } /* gone: the place is empty again */
+  else if (Dp && Dp.t1 == null && S.day >= Dp.from && d < .42) { Dp.t1 = T; ctrArriveSound(true); }
+  const due = ctrDue(); if (due && d < .42) { if (C.depart) C.depart = null; due.arrDay = S.day; due.arrT = T; ctrArriveSound(); save(); } /* it pulls in as you look */
   if (!ctrVehicles().length) return ctrHum(0);
   ctrHum(clamp(1.2 - d * 2.2, 0, 1) * clamp(V.z / .6, .3, 1));
 }
 /* the arrival in the first offer's scene: a coach horn, a ship's horn, a steam whistle */
-function ctrArriveSound() {
+function ctrArriveSound(leaving) {
   if (!AC) return; const k = (ctrCfg() || {}).kind;
+  if (leaving && k === 'bus') { tone(60, 110, 1.4, 'sawtooth', .03); tone(311, 311, .3, 'sawtooth', .03, .3); tone(392, 392, .3, 'sawtooth', .025, .3); return; } /* engine revs, a short toot */
+  if (leaving && k === 'train') { tone(1108, 1128, .5, 'sine', .03); tone(880, 900, .5, 'square', .018); for (let i = 0; i < 8; i++) tone(180, 90, .12, 'sawtooth', .02, .6 + i * (.5 - i * .03)); return; } /* whistle, then chuffs speeding up */
   if (k === 'ship') { tone(98, 96, 1.5, 'sawtooth', .045); tone(147, 145, 1.5, 'sawtooth', .03); tone(98, 96, 1.1, 'sawtooth', .045, 1.9); tone(147, 145, 1.1, 'sawtooth', .03, 1.9); }
   else if (k === 'train') { tone(880, 900, 1.2, 'square', .018); tone(1108, 1128, 1.2, 'sine', .03); tone(880, 900, .4, 'square', .018, 1.5); tone(1108, 1128, .4, 'sine', .03, 1.5); }
   else { tone(311, 311, .45, 'sawtooth', .035); tone(392, 392, .45, 'sawtooth', .03); tone(311, 311, .3, 'sawtooth', .035, .55); tone(392, 392, .3, 'sawtooth', .03, .55); }

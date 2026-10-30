@@ -447,7 +447,7 @@ Arada bir sabah yerel bir şirketin sahibi teklif getirir. Bölge ayarı `CTR[b�
 | Tür | tek gün, tek grup | **blok:** 4–6 ardışık sabah, her sabah N kişi | **hafta sonu:** Cumartesi + Pazar, **sis garantisi** |
 | Grup | filonun koltuklarının %40–70'i | %18–30'u (her sabah) | %25–40'ı (her sabah) |
 | Kişi başı fiyat | referansın ×0,80–0,90'ı | ×0,80–0,90 | ×0,90–1,00 |
-| Sıklık (tercihte) | 10–14 gün (6–9) | 13–18 gün (9–12) | 10–14 gün (7–9) |
+| Sıklık (tercihte) | 10–14 gün (6–9) | 13–18 gün (9–12) | 7–10 gün (5–7; v125.4) |
 | Kırmızı bayrak | grup bir gün kayar, ilk kaymada %20 iner | o sabah sayılmaz (ödeme yok, ceza yok) | o sabah sayılmaz |
 | Kontrat yeri | otoyolun sonunda otobüs terminali | Nil kıyısında iskele | batı yolunun sonunda Avonside istasyonu |
 | Araç ve ses | 1–3 otobüs, motor rölantisi, korna | üç katlı gemi sallanır, nehir sesi, gemi düdüğü | kırmızı buharlı tren, duman, yavaş puf-puf, düdük |
@@ -468,7 +468,7 @@ Arada bir sabah yerel bir şirketin sahibi teklif getirir. Bölge ayarı `CTR[b�
   - Albuquerque: güneybatı yolunda, yerleşim 12 kare dışarıda. Otoyol terminalde biter: asfalt terminalden dışarıya doğru, kasabaya doğru değil; terminalin kasaba tarafında toprak "BALLOON SHUTTLE" cip durağı.
   - Luksor: Nil kıyısında doğuda (gx ≈ 30): taş rıhtım, ahşap iskele, bilet kulübesi, "LUXOR CRUISE PIER" tabelası, hurmalar, fenerler, feluka; iskeleden doğu yoluna toprak patika.
   - Bristol: batı yolunun ucunda (gx ≈ −11): raylar ufka uzanır, tampon, peron ve yeşil saçak, saatli tuğla istasyon, "AVONSIDE" levhası, cip durağı yolun öbür yanında.
-- **Araç ne zaman orada:** yalnızca senin bir işin sürerken (ilk günden son güne). İlk gün araç, kontrat yerine ilk baktığında gelir (otobüsler otoyoldan perona girer ve korna; gemi akıntıdan yanaşır ve düdük; tren raylardan girer, düdük ve puf-puf) ve iş bitene kadar kalır; sonra yer yine boş. Araç dururken ekrana yakınsa ortam sesi (`ctrHum`, türe göre).
+- **Araç ne zaman orada:** yalnızca senin bir işin sürerken (ilk günden son güne). İlk gün araç, kontrat yerine ilk baktığında gelir (otobüsler otoyoldan perona girer ve korna; gemi akıntıdan yanaşır ve düdük; tren raylardan girer, düdük ve puf-puf) ve iş bitene kadar kalır. **Ayrılış (v125.4):** işin son gününden sonra araç, kontrat yerine ilk baktığında gider: otobüsler perondan çıkıp otoyoldan uzaklaşır (motor ve kısa korna; giderken önleri görünür), gemi iskeleden ayrılıp Nil'de akıntı yönüne açılır (gemi düdüğü), tren geldiği yöne çekilir (düdük, hızlanan puf-puf); 4–6 saniyede kaybolur, yer boş kalır. Yeni bir iş gelirse bekleyen ayrılış atlanır. Ayrılış da varsayılan görünümün dışında kalır. Araç dururken ekrana yakınsa ortam sesi (`ctrHum`, türe göre).
 - **Cipler:** işin bir sabahı (araç oradaysa ve kırmızı bayrak / sis yoksa) yolcular araçtan inip oyunun safari ciplerine yürür, cipler toprak yoldan kasabaya doğru gider ve varsayılan görünüme girmeden kaybolur; 11 saniyelik döngü.
 - **Yolcu toplama (v125.3):** kontrat sabahı "Yolcu topla"ya basınca önce 1–3 cip dükkânın önünden kontrat yerinin yoluna çıkar ("Jeepler tur grubunu almaya gidiyor"), grubu alıp geri gelir ("Tur grubu geliyor: N kişi"), koltuk göstergesinde grup ilk dolar (kendi rengiyle), sonra normal kuyruk oluşur; kalkışta kuyruk aynı ciplere biner ve hepsi birlikte çıkar. 2,6 sn ekler; yolcu toplama animasyonu ayarı kapalıysa hiç oynamaz.
 - **İlk teklif sahnesi (bölge başına bir kez):** kamera kasabadan kontrat yerine kayar (3,6 sn), araç gelir (sesiyle), rehber (Ben Franklin / İmhotep / Maggie) dört kısa cümle söyler, "Geç" atlar; teklif kartı yerin altında açılır, karar sonrası kamera kasabaya döner.
@@ -483,8 +483,10 @@ Simülasyon (bütün kampanya botu `camp2.js` = `tools/sim-campaign.js` + istati
 | Luksor | v125.3 | 57,4 | 83,9 | 105,2 | 134,9 |
 | Bristol | kontratsız | 56,4 | 98,1 | 127,8 | 147,5 |
 | Bristol | v125.3 | 57,8 | 106,4 | 135,3 | 156,1 |
+| Bristol | kontratsız, 32 tohum (1–32) | 57,4 | 101,0 | 128,6 | 148,2 |
+| Bristol | v125.4 (teklif aralığı 7–10), 32 tohum | 56,5 | 102,5 | 130,8 | 151,3 |
 
-Koşu başına başarılı iş: Albuquerque 9,6, Luksor 5,4 (24 uçulan sabah), Bristol 7,9 (11 uçulan sabah, sis kuponları ortalama £7.800). Bristol B2 ve B3 %6–9 uzar (filo hedefi biraz geç dolar, hafta sonu takvimi). Kontrat hedefleri kaldırılıp kontratlar açık bırakılınca (ekonomik etki) Bristol baronu 150,9, kontratlar kapalıyken 150,4: kontratlar kendi başına aşağı yukarı nötr, fark hedeften.
+Koşu başına başarılı iş: Albuquerque 9,6, Luksor 5,4 (24 uçulan sabah), Bristol v125.4'te 10,2 (14 uçulan sabah, sis kuponları ortalama £9.400). v125.3'te Bristol B2 %8,5 uzundu; v125.4'te teklif aralığı 7–10 güne indi ve 32 tohumla B2 +%1,5, B3 +%1,7, baron +%2,1 (16 tohumluk yarılar arasında ±%3 gürültü var: 1–16 +%6,5, 17–32 −%3). Kontrat hedefleri kaldırılıp kontratlar açık bırakılınca (ekonomik etki) Bristol baronu 150,9, kontratlar kapalıyken 150,4: kontratlar kendi başına aşağı yukarı nötr, fark hedeften.
 
 Önceki sürümün (v125–v125.1, yalnız Albuquerque, prim fiyatla) `sim-abq.js` sonuçları: kontratsız 53,5 / 82,2 / 102,3 / 139,8; kontratlı 53,5 / 80,5 / 101,1 / 141,4.
 
