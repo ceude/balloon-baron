@@ -721,6 +721,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .ctrrule{font-size:12.5px;line-height:1.4;color:var(--ink2);margin:6px 0}
 .ctrrow{display:flex;gap:8px;margin-top:8px}.ctrrow .opt{flex:1;margin:0;padding:9px 12px}.ctrrow .opt b{font-size:14.5px}.ctrrow .opt span{font-size:12px}
 .ctrrow .opt.no b{color:#a8302a}
+.ctrfog{display:flex;align-items:center;gap:8px;margin:2px 0 6px;font-size:12.5px;color:var(--ink2)}.ctrfog b{font-family:var(--cond);font-weight:800;font-size:15px;padding:2px 8px;border-radius:99px;background:#e6eef4;color:#3a5a7a}.ctrfog b.mid{background:#fff3cf;color:#6b4c00}.ctrfog b.hi{background:#fde6e2;color:#8c2414}
 .ctrhd b{display:block;font-family:var(--cond);font-weight:800;font-size:21px;line-height:1.05;color:var(--ink)}
 .ctrhd span{display:block;font-size:13px;color:var(--ink2)}
 .ctrhd .ctrtag{font-family:var(--cond);font-weight:800;font-size:12.5px;letter-spacing:.06em;text-transform:uppercase;color:#14a39a}
@@ -2264,7 +2265,7 @@ function finishDay(flight) {
   if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; S.holding = (S.holding || 0) + D.inst / FX(); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
   S.loans = S.loans.filter(l => l.left > 0);
   const ctrR = ctrSettle(Lg, ev, rev, paxTotal);
-  let net = (Lg.ctr || 0) - (Lg.ctrPen || 0) - (Lg.xfer || 0) + Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
+  let net = (Lg.ctr || 0) - (Lg.ctrPen || 0) - (Lg.ctrVoucher || 0) - (Lg.xfer || 0) + Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
   S.cash += net;
   { const r0 = S.rep; S.rep = clamp(lerp(S.rep, 1, .01), .4, 1.4); if (starVal(S.rep) > 4.5) S.rep -= .006; repMark('Zamanla ortalamaya döner', r0); }
   repBy('Dev balon', fl.filter(b => b.size === 'XL').length * .005);
@@ -3713,7 +3714,7 @@ function showReport() {
   tk.appendChild(h('div', 'perf'));
   const b = h('div', 'tbody'), led = h('div', 'led');
   const line = (k, v) => { if (!v) return; led.appendChild(h('div', null, `<span>${k}</span><span class="v ${v > 0 ? 'pos' : 'neg'}">${v > 0 ? '+' : ''}${eur(v)}</span>`)); };
-  line('Bilet geliri', L.rev); if (L.ctr) line(`Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
+  line('Bilet geliri', L.rev); if (L.ctr) line(`Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.ctrVoucher) line('Sis garantisi: kuponlar', -L.ctrVoucher); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
   line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan); if (L.xfer) line('Getirilen balonların bedeli', -L.xfer);
   line('Kaza: onarım', -L.repair); line('Kaza: yolcu tazminatı', -L.comp); line('Sigorta ödemesi', L.insPay);
   line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize);  line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
@@ -4579,11 +4580,14 @@ function checkDeals() {
 }
 let COL = null;
 function startCollect() {
-  const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), m = market(S.price, cap);
+  const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), held = ctrHeld(cap), K = ctrToday(), m = market(S.price, cap - held);
   const parts = [{ label: `${RD().name} bölgesindeki turistler`, n: m.base, col: '#ffffff' }].concat(m.parts);
   const seq = []; parts.forEach((p, i) => { for (let k = 0; k < p.n; k++) seq.push(i); });
   for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
-  COL = { t: 0, dur: 3.2, cap, parts, seq, shown: 0, counts: parts.map(() => 0), done: false, n: fl.length };
+  /* v125.2: a contract morning: the jeeps first fetch the group from the off-map place; its seats fill first */
+  let ctrC = null;
+  if (held) { const w = ctrOwner(K); parts.unshift({ label: `Tur grubu: ${w.co}`, n: held, col: w.col }); for (let i = 0; i < seq.length; i++) seq[i]++; seq.unshift(...Array(held).fill(0)); ctrC = { n: held, col: w.col, jeeps: clamp(Math.ceil(held / 10), 1, 3) }; }
+  COL = { t: 0, dur: 3.2, cap, parts, seq, shown: 0, counts: parts.map(() => 0), done: false, n: fl.length, ctr: ctrC, t0: T, delay: ctrC && collectAnimOn ? 2.6 : 0 };
   /* from the morning's town (still at the night's camera) the scene glides on from where the town was */
   let hz = null;
   if (TOWN.open) {
@@ -4606,17 +4610,17 @@ function startCollect() {
   const back = h('button', 'ghost', 'Vazgeç'); back.onclick = () => { $('collect').hidden = true; COL = null; mode = 'office'; $('wx').style.opacity = ''; $('sheet').hidden = false; refresh(); };
   const go = h('button', 'big', 'Atla'); go.id = 'cGo';
   go.onclick = () => {
-    if (!COL.done) { COL.t = COL.dur; return; }
+    if (!COL.done) { COL.t = COL.dur + (COL.delay || 0); return; }
     leaveCollectChecked();
   };
   row.append(back, go); el.appendChild(row);
   el.hidden = false;
-  if (!collectAnimOn) COL.t = COL.dur;
+  if (!collectAnimOn) COL.t = COL.dur + COL.delay;
 }
 function updateCollect(dt) {
   const c = COL; if (!c) return;
   c.t += dt;
-  const k = Math.min(1, c.t / c.dur), target = Math.floor(k * (2 - k) * c.seq.length), seats = $('cSeats').children;
+  const k = clamp((c.t - (c.delay || 0)) / c.dur, 0, 1), target = Math.floor(k * (2 - k) * c.seq.length), seats = $('cSeats').children;
   while (c.shown < target) {
     const pi = c.seq[c.shown], seat = seats[c.shown];
     if (seat) { seat.style.background = c.parts[pi].col; seat.classList.add('f'); sfx('tick'); }
@@ -4702,10 +4706,11 @@ function drawCollectTown() {
 /* The queue grows with the passengers (one figure stands for several in a big company), then the jeeps. */
 function collectItems(t) {
   const c = COL, items = []; if (!c) return items;
-  const total = c.seq.length, want = total <= QUEUE_MAX ? c.shown : Math.round(c.shown / Math.max(1, total) * QUEUE_MAX);
+  const G = c.ctr ? c.ctr.n : 0, shownR = Math.max(0, c.shown - G); /* v125.2: the tour group rides in jeeps, it doesn't queue */
+  const total = c.seq.length - G, want = total <= QUEUE_MAX ? shownR : Math.round(shownR / Math.max(1, total) * QUEUE_MAX);
   c.people = c.people || [];
   while (c.people.length < want) { const i = c.people.length; c.people.push({ i, t0: t, from: [8 + (Math.random() - .5) * .5, 9.5 + Math.random() * 2], col: ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0', '#5aa9e6', '#ff6fa8'][i % 7] }); }
-  const L = c.leave, P = c.people.length, J = clamp(Math.ceil(P / JEEP_SEATS), 1, 5);
+  const Jg = c.ctr ? c.ctr.jeeps : 0, L = c.leave, P = c.people.length, J = clamp(Math.max(Jg, Math.ceil(P / JEEP_SEATS)), 1, 5);
   const stop = j => [9.05 + j * .95, JEEP_ROW_Y], tl = L ? t - L : -1;
   const jeepPath = j => [[8, 10.2], [8, JEEP_ROW_Y], stop(j)], outPath = j => [stop(j), [8, JEEP_ROW_Y], [8, 22]];
   const boarded = j => c.people.filter(p => Math.min(J - 1, Math.floor(p.i * J / Math.max(1, P))) === j && tl > 1.15 + p.i * .025 + .55).length;
@@ -4720,13 +4725,28 @@ function collectItems(t) {
   /* passenger count over the queue, so a big day still reads right when one figure stands for several */
   if (c.shown) items.push({ depth: 99, draw: () => { const q = tiso(9.4, 13.9); ctx.font = '800 19px "Barlow Condensed", sans-serif'; const txt = `${L ? Math.max(0, c.shown - Math.round(c.shown * clamp((tl - 1.15) / 1.2, 0, 1))) : c.shown} yolcu`, w = ctx.measureText(txt).width + 22;
     ctx.fillStyle = 'rgba(255,250,243,.95)'; rrect(q[0] - w / 2, q[1] - 70, w, 28, 14); ctx.fill(); ctx.fillStyle = '#2b2350'; ctx.textAlign = 'center'; ctx.fillText(txt, q[0], q[1] - 50); ctx.textAlign = 'left'; } });
+  /* v125.2: on a contract morning the first jeeps drive out to the off-map place and come back with the group, before the
+     queue forms; at take-off the queue climbs into the same jeeps */
+  const ts = t - (c.t0 || t), KK = c.ctr ? ctrKind() : null;
+  if (c.ctr && !L) for (let j = 0; j < Jg; j++) {
+    const toT = [stop(j), ...KK.town], len = toT.slice(1).reduce((a, p, k) => a + Math.hypot(p[0] - toT[k][0], p[1] - toT[k][1]), 0), tj = ts - j * .15;
+    let r, full = false;
+    if (tj >= 2.6) continue;
+    if (tj < 1.1) r = walkPath(toT, Math.pow(clamp(tj / 1.1, 0, 1), 1.6) * len);
+    else if (tj < 1.5) continue;
+    else { const back = toT.slice().reverse(); r = walkPath(back, (1 - Math.pow(1 - clamp((tj - 1.5) / 1.1, 0, 1), 2)) * len); full = true; }
+    const alongX = Math.abs(r.dir[0]) > Math.abs(r.dir[1]), pos = r.p, nP = full ? 4 : 0;
+    items.push({ depth: pos[0] + pos[1] + .3, draw: () => jeep(pos[0], pos[1], alongX, t, nP) });
+  }
+  if (c.ctr && !L) for (let j = 0; j < Jg; j++) if (ts - j * .15 >= 2.6) { const pos = stop(j); items.push({ depth: pos[0] + pos[1] + .3, draw: () => jeep(pos[0], pos[1], true, t, 4) }); }
+  if (c.ctr && ts > .2 && ts < 3.2) items.push({ depth: 99, draw: () => { const q = tiso(10.2, JEEP_ROW_Y); ctx.font = '800 15px "Barlow Condensed", sans-serif'; const txt = ts < 1.6 ? 'Jeepler tur grubunu almaya gidiyor' : `Tur grubu geliyor: ${c.ctr.n} kişi`, w = ctx.measureText(txt).width + 20; ctx.fillStyle = 'rgba(255,250,243,.95)'; rrect(q[0] - w / 2, q[1] + 12, w, 24, 12); ctx.fill(); ctx.fillStyle = c.ctr.col; ctx.textAlign = 'center'; ctx.fillText(txt, q[0], q[1] + 29); ctx.textAlign = 'left'; } });
   if (L) for (let j = 0; j < J; j++) {
-    const tin = tl - j * .12, tout = tl - 2.0 - j * .12;
+    const tin = j < Jg ? 9 : tl - j * .12, tout = tl - 2.0 - j * .12;
     let r;
     if (tout > 0) { const path = outPath(j); r = walkPath(path, Math.pow(tout, 1.6) * 7); }
     else { const path = jeepPath(j), len = 4.75 + Math.abs(stop(j)[0] - 8); r = walkPath(path, easeIO(clamp(tin / 1.0, 0, 1)) * len); }
     const alongX = Math.abs(r.dir[0]) > Math.abs(r.dir[1]), pos = r.p;
-    items.push({ depth: pos[0] + pos[1] + .3, draw: () => jeep(pos[0], pos[1], alongX, t, Math.min(JEEP_SEATS, boarded(j))) });
+    items.push({ depth: pos[0] + pos[1] + .3, draw: () => jeep(pos[0], pos[1], alongX, t, Math.min(JEEP_SEATS, boarded(j) + (j < Jg ? 4 : 0))) });
   }
   return items;
 }
@@ -5352,7 +5372,7 @@ function showMenu(open) {
   group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
-  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); })]);
+  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); }), row('star', 'Luksor kontrat testi (Nil gemisi)', chev, () => { m.hidden = true; testRegionContract('lux'); }), row('star', 'Bristol kontrat testi (hafta sonu treni)', chev, () => { m.hidden = true; testRegionContract('bri'); })]);
   /* v121.10: watch the opening film again; the name and colours are skipped, the company flies in its own colours */
   group('Film', '#ff5e3a', [row('star', 'Başlangıç filmini tekrar izle', chev, () => { m.hidden = true; replayOpening(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
@@ -5439,6 +5459,24 @@ function testAbqContract() {
   S.pilots = []; for (let i = 0; i < 6; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + pilotInitial(i) + '.', lvl: 2, xp: 0, trait: null });
   S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 30000; S.rep = 1.1; S.chapter = 1; S.hotels = [HOTELS[0].id, HOTELS[1].id];
   S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { 'abq:hello': 1, 'abq:ch1': 1 }; S.nextEvent = S.day + 30; S.fiestaNext = S.day + 20; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
+  S.weather = newWeather(); if (S.weather.flag === 'red') S.weather.flag = 'green'; S.demand = dayDemand();
+  ctrState().next = S.day; ctrMorning();
+  if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
+  startDay();
+}
+/* v125.2 (prototype only): Luxor or Bristol at the start of chapter 2 with a mid fleet; the first contract offer comes
+   this morning (its scene). The regions before run on autopilot. */
+function testRegionContract(id) {
+  S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = id === 'bri' ? 400 : 300; S.tutorialDone = true; S.selfFlights = 60; S.ventTip = 1; S.tut = { done: 1 };
+  S.barons = id === 'bri' ? { cap: 66, abq: 180, lux: 340 } : { cap: 66, abq: 180 }; S.baron = { cap: 66 }; S.iap = { worldTour: 1 }; S.holding = 300000; S.storyDone = 1; S.letter = { day: 50, rated: 50 }; S.rateAsked = 12;
+  S.regions = {}; for (const r of id === 'bri' ? ['cap', 'abq', 'lux'] : ['cap', 'abq']) { const rs = newRegionState(r); rs.balloons = []; rs.pilots = []; rs.chapter = 4; rs.rep = 1.2; for (let i = 0; i < 20; i++) rs.balloons.push({ id: S.nextId++, size: ['M', 'L'][i % 2], name: 'Balon ' + (i + 1), fly: true, dmgUntil: 0, pilot: null, flights: 20 }); rs.auto = makeAuto(rs, r); S.regions[r] = rs; }
+  const st = newRegionState(id); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = id; applyRegionTheme();
+  S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
+  Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
+  S.balloons = []; ['M', 'L', 'M', 'L', 'M', 'L', 'M', 'L', 'M'].forEach(z => addBalloon(z));
+  S.pilots = []; for (let i = 0; i < 8; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + pilotInitial(i) + '.', lvl: 2, xp: 0, trait: null });
+  S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 40000; S.rep = 1.15; S.chapter = 1; S.hotels = [HOTELS[0].id, HOTELS[1].id];
+  S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { [id + ':hello']: 1, [id + ':ch1']: 1 }; S.nextEvent = S.day + 30; S.fiestaNext = S.day + 20; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
   S.weather = newWeather(); if (S.weather.flag === 'red') S.weather.flag = 'green'; S.demand = dayDemand();
   ctrState().next = S.day; ctrMorning();
   if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
@@ -6883,16 +6921,16 @@ const CHAPTERS_ABQ = [
 /* Luxor: every chapter a step harder than Albuquerque's */
 const CHAPTERS_LUX = [
   { name: 'Batı Yakası', reward: 5000, award: 'Luksor Valiliği seni Batı Yakası\'nın yeni yüzü seçti', awardShort: 'Luksor Valiliği ödülü', goals: [['seats', 48, '48 koltukluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Nil Rüzgârı', reward: 10000, award: 'Mısır Sivil Havacılık Otoritesi seni yılın en güvenli işletmesi seçti', awardShort: 'Sivil Havacılık ödülü', goals: [['seats', 120, '120 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .3, 'Pazarın %30\'u'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Firavunlar Vadisi', reward: 20000, award: 'Mısır Turizm Bakanlığı seni yılın balon şirketi seçti', awardShort: 'Turizm Bakanlığı ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Nil gemisi sezonunda uç'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Nil Rüzgârı', reward: 10000, award: 'Mısır Sivil Havacılık Otoritesi seni yılın en güvenli işletmesi seçti', awardShort: 'Sivil Havacılık ödülü', goals: [['seats', 120, '120 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .3, 'Pazarın %30\'u'], ['ctrDone', 2, '2 gemi grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Firavunlar Vadisi', reward: 20000, award: 'Mısır Turizm Bakanlığı seni yılın balon şirketi seçti', awardShort: 'Turizm Bakanlığı ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Nil gemisi sezonunda uç'], ['ctrDone', 3, '3 kontratı eksiksiz uçur (herhangi bir şirket)'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Luksor Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Teb Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 /* v124: Bristol, a step harder than Luxor; the canyon chapter wants a flight on a foggy morning, the festival chapter a
    Night Glow */
 const CHAPTERS_BRI = [
   { name: 'Ashton Malikânesi', reward: 5000, award: 'Bristol Ticaret Odası seni yılın yeni işletmesi seçti', awardShort: 'Ticaret Odası ödülü', goals: [['seats', 48, '48 koltukluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .35, 'Pazarın %35\'i'], ['fog', 1, 'Sisli bir günde uç'], ['bldMast', 3, 'Rüzgâr direği seviyesi: 3'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['seats', 380, '380 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['share', .55, 'Pazarın %55\'i']] },
+  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .35, 'Pazarın %35\'i'], ['fog', 1, 'Sisli bir günde uç'], ['ctrDone', 2, '2 hafta sonu grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['seats', 380, '380 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['ctrDone', 3, '3 kontratı eksiksiz uçur (herhangi bir şirket)'], ['share', .55, 'Pazarın %55\'i']] },
   { name: 'Bristol Baronu', reward: 0, goals: [['share', .75, 'Pazarın %75\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Avon Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 const chap = () => S.region === 'bri' ? CHAPTERS_BRI : S.region === 'lux' ? CHAPTERS_LUX : S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;
@@ -7056,78 +7094,256 @@ const CTR_CAST_ABQ = [
     fail: 'Grubun bir kısmı yerde kaldı. Bunu raporuma yazmak zorundayım.', lostPref: 'Tercih edilen operatör listemden seni çıkarıyorum. Şimdilik.',
     red: 'Kırmızı bayrak! Programı yarına kaydırıyorum; kişi başı {p} olur.', bye: 'Maalesef sözleşmemizi bitiriyorum. High Desert başka şirketle devam edecek.' } }
 ];
-/* The numbers: tools in the report (tuned with sim-abq.js, see GAME_DESIGN "Kurumsal kontratlar") */
+/* v125.2: Luxor's Nile cruise companies and Bristol's London rail weekend operators. Lines: {n} people a day, {d} first
+   day, {e} last day, {len} days, {wd} the first day's weekday, {p} per head, {r} the rival. */
+const avFrame = (id, bg0, bg1, ring, inner) => `<svg viewBox="0 0 100 100" class="hzav" role="img" aria-label="${id}"><defs><clipPath id="c_${id.replace(/\W/g, '')}"><circle cx="50" cy="50" r="48"/></clipPath><linearGradient id="g_${id.replace(/\W/g, '')}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${bg0}"/><stop offset="1" stop-color="${bg1}"/></linearGradient></defs><circle cx="50" cy="50" r="50" fill="${ring}"/><g clip-path="url(#c_${id.replace(/\W/g, '')})"><rect width="100" height="100" fill="url(#g_${id.replace(/\W/g, '')})"/>${inner}</g></svg>`;
+const FAROUK_AV = avFrame('Farouk Mansour', '#1f6f8b', '#e8c47a', '#1f6f8b', `
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#1f2a50"/><path d="M41 70 L50 82 L59 70Z" fill="#f4efe4"/><g fill="#d8b040"><circle cx="40" cy="84" r="1.6"/><circle cx="40" cy="92" r="1.6"/><circle cx="60" cy="84" r="1.6"/><circle cx="60" cy="92" r="1.6"/></g><path d="M22 78 L34 74 M78 78 L66 74" stroke="#d8b040" stroke-width="2.4"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#a8683e"/><ellipse cx="50" cy="46" rx="17" ry="20" fill="#b97a50"/>
+<path d="M30 34 C30 22 40 18 50 18 C60 18 70 22 70 34Z" fill="#f6f6f2"/><path d="M27 34 L73 34 L72 39 L28 39Z" fill="#1f2a50"/><path d="M28 39 C40 44 60 44 72 39 L74 41 C60 47 40 47 26 41Z" fill="#1a1a24"/><circle cx="50" cy="28" r="3.4" fill="#d8b040"/>
+<path d="M33 44 C32 40 33 38 34 38 L35 46Z M67 44 C68 40 67 38 66 38 L65 46Z" fill="#d0d0d4"/>
+<path d="M38 45 Q43 43 47 45 M53 45 Q57 43 62 45" stroke="#e8e8ea" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="49" r="1.7" fill="#1f1b2e"/><circle cx="57" cy="49" r="1.7" fill="#1f1b2e"/><path d="M50 50 L48 56 Q50 57.4 52 56.4" fill="#a8683e"/>
+<path d="M38 59 C43 55 47 57 50 57 C53 57 57 55 62 59 C57 61 54 60 50 60 C46 60 43 61 38 59Z" fill="#e6e6ea"/>`);
+const DALIA_AV = avFrame('Dalia Rizk', '#c9a040', '#f6e2b0', '#c9a040', `
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#2a3a5a"/><path d="M44 70 L50 78 L56 70" stroke="#f4efe4" stroke-width="3" fill="none"/>
+<path d="M28 52 C24 30 36 16 50 16 C64 16 76 30 72 52 C72 64 66 72 60 76 L40 76 C34 72 28 64 28 52Z" fill="#14a39a"/><path d="M30 46 C34 40 40 38 42 44 M70 46 C66 40 60 38 58 44" stroke="#0e7a72" stroke-width="2" fill="none"/>
+<g fill="#ffd27a"><circle cx="34" cy="30" r="1.3"/><circle cx="42" cy="22" r="1.3"/><circle cx="58" cy="22" r="1.3"/><circle cx="66" cy="30" r="1.3"/><circle cx="31" cy="44" r="1.3"/><circle cx="69" cy="44" r="1.3"/></g>
+<ellipse cx="50" cy="48" rx="15" ry="18" fill="#c99470"/>
+<path d="M39 45 Q43 43 47 45 M53 45 Q57 43 61 45" stroke="#2a1a14" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="49" r="1.7" fill="#1f1b2e"/><circle cx="57" cy="49" r="1.7" fill="#1f1b2e"/><path d="M41 47.5 L39 46 M59 47.5 L61 46" stroke="#1f1b2e" stroke-width="1"/>
+<path d="M50 51 L48.6 56 Q50 57 51.5 56.3" fill="#b07c58"/><path d="M44 60 Q50 64.5 56 60" stroke="#a83a4a" stroke-width="2" fill="none" stroke-linecap="round"/>`);
+const HAMZA_AV = avFrame('Hamza El-Sayed', '#e0408a', '#ffd8a8', '#e0408a', `
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#f6f2e8"/><path d="M50 72 L50 96" stroke="#d8d0c0" stroke-width="1.4"/><path d="M45 72 L50 78 L55 72" stroke="#c9a040" stroke-width="1.6" fill="none"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#9a6440"/><ellipse cx="50" cy="46" rx="17" ry="20" fill="#a87048"/>
+<path d="M32 40 C30 24 40 17 50 17 C61 17 70 24 68 40 C66 32 60 28 50 28 C41 28 35 32 32 40Z" fill="#1a1414"/><g fill="#1a1414"><circle cx="36" cy="26" r="4"/><circle cx="44" cy="20" r="4.4"/><circle cx="54" cy="19" r="4.4"/><circle cx="63" cy="24" r="4"/></g>
+<path d="M34 52 C36 64 44 68 50 68 C56 68 64 64 66 52 C62 58 58 60 50 60 C42 60 38 58 34 52Z" fill="#2a1e18"/>
+<path d="M38 43 Q43 41 47 43 M53 43 Q57 41 62 43" stroke="#1a1414" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="47" r="1.8" fill="#1f1b2e"/><circle cx="57" cy="47" r="1.8" fill="#1f1b2e"/><path d="M50 48 L48 54 Q50 55.4 52 54.4" fill="#966040"/>
+<path d="M43 58 Q50 63 57 58" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round"/>`);
+const NIGEL_AV = avFrame('Nigel Pemberton', '#3a5a4a', '#c8d4c0', '#2a5a3a', `
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#3a4a3a"/><path d="M40 70 L50 84 L60 70Z" fill="#f4efe6"/><path d="M47 72 L53 72 L52 80 L50 84 L48 80Z" fill="#2a5a3a"/><circle cx="35" cy="80" r="2" fill="#c9a040"/><path d="M35 82 Q32 88 36 92" stroke="#c9a040" stroke-width="1" fill="none"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#e0b090"/><ellipse cx="50" cy="46" rx="17" ry="20" fill="#f0c4a2"/>
+<path d="M24 34 C30 31 70 31 76 34 C76 37 70 37 50 37 C30 37 24 37 24 34Z" fill="#1a1a1e"/><path d="M33 34 C33 18 41 13 50 13 C59 13 67 18 67 34Z" fill="#22222a"/><path d="M33 31 L67 31 L67 34 L33 34Z" fill="#5a1a24"/>
+<path d="M38 43 Q43 41 47 43 M53 43 Q57 41 62 43" stroke="#7a6a5a" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="47" r="1.6" fill="#1f1b2e"/><circle cx="57" cy="47" r="1.6" fill="#1f1b2e"/><path d="M50 48 L48 54 Q50 55.4 52 54.4" fill="#e0aa88"/>
+<path d="M38 58 C42 54 47 57 50 56 C53 57 58 54 62 58 C60 60 55 59 50 59 C45 59 40 60 38 58Z" fill="#8a6a50"/><ellipse cx="39" cy="53" rx="3" ry="1.7" fill="#f0a0a0" opacity=".5"/><ellipse cx="61" cy="53" rx="3" ry="1.7" fill="#f0a0a0" opacity=".5"/>`);
+const PRIYA_AV = avFrame('Priya Shah', '#5a3a8a', '#e8c8e8', '#7a2a8a', `
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#2b2350"/><path d="M42 70 L50 86 L58 70Z" fill="#f6f2ea"/><path d="M30 76 L42 70 L46 88Z M70 76 L58 70 L54 88Z" fill="#3a3270"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#b0784e"/><ellipse cx="50" cy="46" rx="17" ry="20" fill="#c08458"/>
+<path d="M30 56 C26 32 36 18 50 18 C64 18 74 32 70 56 C68 52 67 44 66 38 C60 32 46 30 36 36 C34 44 33 52 30 56Z" fill="#14101a"/>
+<circle cx="50" cy="31" r="1.6" fill="#e0408a"/>
+<rect x="36.5" y="43" width="11" height="7.5" rx="2" fill="rgba(255,255,255,.2)" stroke="#e0408a" stroke-width="1.5"/><rect x="52.5" y="43" width="11" height="7.5" rx="2" fill="rgba(255,255,255,.2)" stroke="#e0408a" stroke-width="1.5"/><path d="M47.5 46 L52.5 46" stroke="#e0408a" stroke-width="1.5"/>
+<circle cx="42" cy="46.6" r="1.6" fill="#1f1b2e"/><circle cx="58" cy="46.6" r="1.6" fill="#1f1b2e"/><path d="M50 49 L48.6 54 Q50 55 51.5 54.3" fill="#a87048"/>
+<path d="M43 58 Q50 63.5 57 58" stroke="#a8304a" stroke-width="2" fill="none" stroke-linecap="round"/>`);
+const FIONA_AV = avFrame('Fiona MacLeod', '#8a3a2a', '#f6d8b0', '#c0392b', `
+<path d="M24 50 C16 34 30 14 50 14 C70 14 84 34 76 50 C80 62 74 72 70 76 L30 76 C26 72 20 62 24 50Z" fill="#d0602a"/><g fill="#e07a3a"><circle cx="26" cy="44" r="6"/><circle cx="74" cy="44" r="6"/><circle cx="28" cy="60" r="6"/><circle cx="72" cy="60" r="6"/><circle cx="40" cy="18" r="6"/><circle cx="60" cy="18" r="6"/></g>
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#2a4a6a"/>
+<path d="M28 74 C38 82 62 82 72 74 L74 82 C62 90 38 90 26 82Z" fill="#c0392b"/><path d="M30 78 L70 78 M34 74 L34 86 M44 76 L44 88 M56 76 L56 88 M66 74 L66 86" stroke="#2a5a3a" stroke-width="1.6"/><path d="M60 82 L64 98 L70 96 L66 82Z" fill="#c0392b"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#ecc0a0"/><ellipse cx="50" cy="46" rx="16" ry="19" fill="#f6d2b4"/>
+<path d="M34 40 C36 28 44 24 50 24 C58 24 64 28 66 40 C62 33 56 31 50 31 C44 31 38 33 34 40Z" fill="#d0602a"/>
+<path d="M39 43 Q43 41 47 43 M53 43 Q57 41 61 43" stroke="#a0481e" stroke-width="2" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="47" r="1.7" fill="#2a5a3a"/><circle cx="57" cy="47" r="1.7" fill="#2a5a3a"/>
+<g fill="#c87a50" opacity=".7"><circle cx="40" cy="52" r=".9"/><circle cx="43" cy="53.5" r=".9"/><circle cx="57" cy="53.5" r=".9"/><circle cx="60" cy="52" r=".9"/><circle cx="46" cy="52" r=".8"/><circle cx="54" cy="52" r=".8"/></g>
+<path d="M50 49 L48.6 54 Q50 55 51.5 54.3" fill="#e8b494"/><path d="M42 58 Q50 64 58 58" stroke="#b0404a" stroke-width="2" fill="none" stroke-linecap="round"/>`);
+const CTR_CAST_LUX = [
+  { id: 'farouk', name: 'Kaptan Farouk Mansour', co: 'Sobek Nile Cruises', title: 'Sobek Nile Cruises kaptanı ve sahibi', av: () => FAROUK_AV, col: '#1f6f8b', L: {
+    intro: 'Esselamu aleyküm, kaptan! Farouk Mansour, Sobek Nile Cruises. Kırk yıldır Asvan\'la Luksor arasında gemi işletirim.',
+    offer: 'Gemim Gün {d} sabahı iskeleye yanaşıyor, {len} gün kalacak. Her sabah {n} yolcum balon ister, kişi başı {p}. Anlaştık mı?',
+    promise: 'Üç seferim sorunsuz geçerse iskeleye ilk seni çağırırım, daha sık.',
+    negOk: 'Ah, pazarlık! Nil\'in dili bu. Peki: kişi başı {p}.', negWalk: 'Olmaz evladım, yolcularım bu parayı vermez. {r} ile anlaşacağım.',
+    decline: 'Nil uzun, gemi çok. Bu seferi {r} uçursun.', today: 'Gemim iskelede! Her sabah {n} yolcum cipe binecek, sepetlerin hazır olsun.',
+    thanks: 'Yolcularım güvertede hâlâ balonları anlatıyor. Bereketli bir sefer oldu.', pref: 'Üç sefer, üçü de sorunsuz. Artık iskeleye ilk seni çağırırım, daha sık. Fiyatı da biraz artırdım, hak ettin.',
+    fail: 'Bazı sabahlar yolcularım iskelede bekleyip kaldı. Kaptan sözünü tutar, sen de tutmalısın.', lostPref: 'Artık ilk seni çağırmam. Nil gibi yavaş, ama güven yeniden gelir.',
+    redSkip: 'Kırmızı bayrak, bugün kimse uçmaz. Yolcularımı Karnak\'a götürüyorum; bugünü saymayız.', bye: 'Gemimi başka iskeleye bağlıyorum. Allah kolaylık versin.' } },
+  { id: 'dalia', name: 'Dalia Rizk', co: 'Golden Lotus Line', title: 'Golden Lotus Line genel müdürü', av: () => DALIA_AV, col: '#c9a040', L: {
+    intro: 'Merhaba, Dalia Rizk. Golden Lotus Line\'ın lüks gemileri Kahire\'den gelir; misafirlerimiz en iyisini bekler.',
+    offer: 'Gün {d}–{e} arası, {len} gün, her sabah {n} misafir. Kişi başı {p}. Takvimime yazıyorum, onaylıyor musun?',
+    promise: 'Üç kusursuz sefer, ve seni tercih edilen operatör listemize alırım: daha sık iş, daha iyi fiyat.',
+    negOk: 'İyi müzakere. Kişi başı {p}, ama kalite beklerim.', negWalk: 'Bütçemiz net. {r} ile devam ediyoruz.',
+    decline: 'Anlaşıldı. Bu seferde {r} ile çalışacağız.', today: 'Golden Lotus iskelede. Her sabah {n} misafir; dakik olalım lütfen.',
+    thanks: 'Misafir anketleri mükemmel. Teşekkürler.', pref: 'Üç kusursuz sefer. Artık tercih edilen operatörümüzsün: daha sık geleceğim, fiyat da biraz daha iyi.',
+    fail: 'Misafirlerimin bir kısmı uçamadı. Bu, şikâyet demek.', lostPref: 'Tercih edilen operatör listemizden çıkarıyorum. Şimdilik.',
+    redSkip: 'Kırmızı bayrak. Bugünün programını Hatşepsut Tapınağı\'na çeviriyorum; bugün sayılmaz.', bye: 'Sözleşmemizi bitiriyorum. Golden Lotus başka şirketle çalışacak.' } },
+  { id: 'hamza', name: 'Hamza El-Sayed', co: 'Dahabiya Pearl', title: 'Dahabiya Pearl sahibi', av: () => HAMZA_AV, col: '#e0408a', L: {
+    intro: 'Selam dostum! Hamza, Dahabiya Pearl. Yelkenli dahabiyelerle küçük ama neşeli gruplar getiririm. Farouk Kaptan\'la aranız bozulmuş, duydum.',
+    offer: 'Dahabiyelerim Gün {d}\'de geliyor, {len} gün kalırız. Her sabah {n} kişi, kişi başı {p}. Ne dersin?',
+    promise: 'Üç sefer iyi giderse seni herkese anlatırım, sana daha sık gelirim!',
+    negOk: 'Hah! Tamam, tamam: {p}. Ama bana çay ısmarlarsın.', negWalk: 'Yok dostum, bu fiyata olmaz. {r} uçursun.',
+    decline: 'Olsun, başka sefere. {r} alır.', today: 'Dahabiyeler bağlandı! Her sabah {n} kişi cipe atlayacak.',
+    thanks: 'Yolcularım şarkılar yazdı balonlarına! Harikaydı.', pref: 'Üç sefer, hepsi şahane! Artık sana daha sık geleceğim, fiyatı da biraz artırıyorum.',
+    fail: 'Bazı yolcularım yerde kaldı dostum. Üzüldüler.', lostPref: 'Artık ilk sana gelmeyeceğim. Biraz kırgınım.',
+    redSkip: 'Kırmızı bayrak! Bugün yolcularımla Nil\'de yüzeriz, saymayız.', bye: 'Dostum, yollarımız ayrılıyor. Dahabiya Pearl başka yere gidiyor.' } }
+];
+const CTR_CAST_BRI = [
+  { id: 'nigel', name: 'Nigel Pemberton', co: 'West Country Weekenders', title: 'West Country Weekenders sahibi', av: () => NIGEL_AV, col: '#2a5a3a', L: {
+    intro: 'İyi günler! Nigel Pemberton, West Country Weekenders. Londra\'dan Bristol\'e hafta sonu tren paketleri düzenlerim: tren, otel, bir de balon.',
+    offer: '{wd} sabahı ve ertesi gün, Gün {d}–{e}: her sabah {n} kişi, kişi başı {p}. Sis garantili tabii: sis olursa paralarını iade eder, kupon veririz.',
+    promise: 'Üç hafta sonu sorunsuz geçerse broşürümüze adını yazarım, daha sık gelirim.',
+    negOk: 'Pekâlâ, pekâlâ. Kişi başı {p}. Ama sis garantisi aynen geçerli.', negWalk: 'Korkarım bu olmaz. {r} ile anlaştım.',
+    decline: 'Anlıyorum. Bu hafta sonu {r} ile.', today: 'Tren istasyonda! {n} Londralı şemsiyesiyle sepet bekliyor.',
+    thanks: 'Splendid! Yolcularım dönüş treninde yalnızca balonları konuştu.', pref: 'Üç hafta sonu, kusursuz. Artık broşürümüzde sen varsın: daha sık geleceğim, fiyat da biraz daha iyi.',
+    fail: 'Yolcularımın bir kısmı uçamadı. Londra\'da bunu konuşurlar, korkarım.', lostPref: 'Broşürden adını çıkarıyorum. Şimdilik.',
+    fog: 'Sis! Garanti garantidir: bugünün yolcularına parayı iade ediyorum, sen de kuponları karşılıyorsun.', redSkip: 'Kırmızı bayrak. Yolcularım bugün müze gezer; bugünü saymayız.',
+    bye: 'Üzgünüm, West Country Weekenders başka bir şirketle devam edecek. İyi şanslar.' } },
+  { id: 'priya', name: 'Priya Shah', co: 'Capital Rail Breaks', title: 'Capital Rail Breaks kurucusu', av: () => PRIYA_AV, col: '#7a2a8a', L: {
+    intro: 'Merhaba! Priya Shah, Capital Rail Breaks. Londra\'nın en hızlı büyüyen hafta sonu kaçamağı şirketiyiz. Nigel\'la aranız bozulmuş, fırsat bu fırsat.',
+    offer: '{wd} ve Pazar, Gün {d}–{e}: her sabah {n} kişi, kişi başı {p}, sis garantisiyle. Satışa hemen açarım, var mısın?',
+    promise: 'Üç başarılı hafta sonu ve seni uygulamamızda öne çıkarırım: daha sık iş.',
+    negOk: 'Tamam, kişi başı {p}. Hızlı karar verelim.', negWalk: 'Rakamlar tutmuyor. {r} ile kapattım bile.',
+    decline: 'Sorun değil, {r} ile planlıyorum.', today: 'Trenimiz geldi! {n} kişi, telefonlar hazır, hikâyeler çekilecek.',
+    thanks: 'Uygulamada beş yıldız yağıyor! Teşekkürler.', pref: 'Üç hafta sonu, hepsi başarılı! Artık seni öne çıkarıyorum: daha sık geleceğim, fiyat da biraz yukarı.',
+    fail: 'Bazı müşterilerim uçamadı; yorumlar acımasız olur.', lostPref: 'Seni öne çıkarmayı bırakıyorum, kusura bakma.',
+    fog: 'Sis var, garanti devrede: bugünkülere iade, kuponları da sen karşılıyorsun.', redSkip: 'Kırmızı bayrak: bugün yolcularımı Clifton\'a yürüyüşe çıkarıyorum, saymıyoruz.',
+    bye: 'Capital Rail Breaks yoluna başka şirketle devam ediyor. Bol şans.' } },
+  { id: 'fiona', name: 'Fiona MacLeod', co: 'Steam & Sky Excursions', title: 'Steam & Sky Excursions sahibi', av: () => FIONA_AV, col: '#c0392b', L: {
+    intro: 'Merhaba canım! Fiona MacLeod, Steam & Sky Excursions. Eski kırmızı buharlı trenimle Londra\'dan hafta sonu turu yaparım: buhar, çay ve balon!',
+    offer: 'Buharlı trenim {wd} sabahı istasyonda: Gün {d}–{e}, her sabah {n} kişi, kişi başı {p}. Sis garantisi var, bilirsin.',
+    promise: 'Üç hafta sonu güzel geçerse sana daha sık gelirim, söz.',
+    negOk: 'Ah, sen tam bir tüccarsın! Peki, kişi başı {p}.', negWalk: 'Olmaz canım, kömür pahalı. {r} ile gidiyorum.',
+    decline: 'Peki canım. Bu sefer {r}.', today: 'Düdüğü duydun mu? Buharlı tren geldi, {n} yolcum çay içip seni bekliyor.',
+    thanks: 'Yolcularım buharla balonu aynı günde gördü, daha ne olsun!', pref: 'Üç hafta sonu, üçü de şahane. Artık sana daha sık geleceğim, fiyatı da biraz artırıyorum.',
+    fail: 'Yolcularımın bir kısmı istasyonda kaldı canım. Hiç hoş olmadı.', lostPref: 'Bir süre başka şirketlerle de çalışacağım.',
+    fog: 'Sis bastı! Garantimiz geçerli: bugünkülere para iadesi, kupon da senden.', redSkip: 'Kırmızı bayrak! Yolcularımı demiryolu müzesine götürüyorum, bugün sayılmaz.',
+    bye: 'Buharlı tren artık başka istasyonda duracak. Hoşça kal canım.' } }
+];
+/* The numbers per region (tuned with sim-abq.js and the campaign bot, see GAME_DESIGN "Kurumsal kontratlar").
+   kind: what stands off the map (bus / ship / train). len: days per booking (a range for Luxor's blocks); weekend: the
+   booking starts on a Saturday; fogG: Bristol's fog guarantee (a foggy morning refunds the day and costs a voucher per
+   head); redMove: a red flag moves a one-day group to the next day, otherwise a red day is simply skipped. spot is the
+   layout point of the off-map place, shift moves the whole layout out (all of it stays outside every default view). */
 const CTR = {
   abq: {
-    kind: 'bus', cast: CTR_CAST_ABQ, spot: [12.2, 24.4], off: 12, /* layout point; off: how far out along the road it all sits (outside every default view) */ label: 'Tur kontratı', unit: 'kişilik tur grubu',
+    kind: 'bus', cast: CTR_CAST_ABQ, spot: [12.2, 24.4], shift: [0, 12],
     minChapter: 1, minSeats: 40, firstWait: 1, /* the first offer: the morning after chapter 2 starts */
-    gap: [10, 14], prefGap: [6, 9], lead: [3, 5], share: [.4, .7], price: [1.3, 1.5], prefPrice: 1.08,
-    negUp: .15, negWalk: .35, prefWalk: .15, pen: .5, redCut: .2, prefNeed: 3, breakAt: -3, cool: 14,
-    rivalRep: .05, rivalGrow: 24
+    gap: [10, 14], prefGap: [6, 9], lead: [3, 5], len: [1, 1], share: [.4, .7], price: [.8, .9], prefPrice: 1.06,
+    negUp: .1, negWalk: .35, prefWalk: .15, pen: .5, redCut: .2, redMove: true, prefNeed: 3, breakAt: -3, cool: 14,
+    rivalRep: .05, rivalGrow: 24,
+    T: { tag: 'Tur kontratı', group: 'tur grubu', pax: 'otobüs yolcusu', place: 'Otobüs terminali', accepted: 'Harika! Otobüslerim terminalde olacak. Sepetleri hazırla!',
+      where: 'Otobüsler şehrin dışındaki terminalde bekliyor; kasabayı aşağı sola kaydırırsan görürsün. O sabah yeterli balonun uçmaya hazır olsun.',
+      empty: 'Terminal boş. Yeni bir tur grubu teklifi sabah gelir.', fresh: 'Route 66\'dan gelen tur otobüsleri burada durur, yolcular cipe binip kasabaya gelir.',
+      prefPaper: 'Tur otobüsleri artık önce ona gidiyor.',
+      scene: ['Bak evlat: şehrin dışındaki otoyol terminali. Route 66\'dan gelen tur otobüsleri burada mola verir.',
+        'Yolcular otobüsten inip cipe biner, toprak yoldan kasabaya gelir. İlk teklif geliyor!',
+        'Kabul edersen o gün koltuklar önce gruba gider. Almazsan grubu bir rakip kapar.',
+        'Üç işi sağlam teslim edersen sana daha sık gelirler. Vakit nakittir!'] }
+  },
+  /* v125.2: Nile cruise ships tie up for a block of mornings; endurance: the fleet has to be ready every one of them */
+  lux: {
+    kind: 'ship', cast: CTR_CAST_LUX, spot: [30, -10.4], shift: [0, 0],
+    minChapter: 1, minSeats: 48, firstWait: 1,
+    gap: [13, 18], prefGap: [9, 12], lead: [3, 5], len: [4, 6], share: [.18, .3], price: [.8, .9], prefPrice: 1.06,
+    negUp: .1, negWalk: .35, prefWalk: .15, pen: .5, redCut: 0, redMove: false, prefNeed: 3, breakAt: -3, cool: 14,
+    rivalRep: .05, rivalGrow: 20,
+    T: { tag: 'Gemi kontratı', group: 'gemi grubu', pax: 'gemi yolcusu', place: 'Nil iskelesi', accepted: 'Güzel! Gemim iskeleye yanaşınca her sabah yolcularım cipe biner.',
+      where: 'Gemi kontrat boyunca iskelede bağlı duracak; kasabayı sağa, Nil boyunca kaydırırsan görürsün. Her sabah yeterli balonun uçmaya hazır olsun.',
+      empty: 'İskele boş. Yeni bir gemi teklifi sabah gelir.', fresh: 'Nil gemileri bu iskeleye yanaşır, yolcular cipe binip kasabaya gelir.',
+      prefPaper: 'Nil gemileri artık önce ona yanaşıyor.',
+      scene: ['Şuraya bak evlat: Nil kıyısındaki iskele. Asvan\'dan gelen gemiler burada birkaç gün bağlanır.',
+        'Gemi yolcuları her sabah iskeleden cipe biner, toprak yoldan kasabaya gelir. İlk teklif geliyor!',
+        'Gemi günlerce kalır: her sabah balonların hazır olmalı. Almazsan yolcuları bir rakip kapar.',
+        'Üç seferi sağlam teslim edersen gemiler sana daha sık yanaşır. Sabır, evlat; Nil sabırlıyı sever.'] }
+  },
+  /* v125.2: London weekend trains: Saturday and Sunday, a premium price, and a fog guarantee */
+  bri: {
+    kind: 'train', cast: CTR_CAST_BRI, spot: [-12, 10.2], shift: [0, 0],
+    minChapter: 1, minSeats: 48, firstWait: 1,
+    gap: [10, 14], prefGap: [7, 9], lead: [3, 4], len: [2, 2], weekend: true, share: [.25, .4], price: [.9, 1], prefPrice: 1.04,
+    fogG: true, voucher: .15, fogP: [.05, .45],
+    negUp: .1, negWalk: .35, prefWalk: .15, pen: .5, redCut: 0, redMove: false, prefNeed: 3, breakAt: -3, cool: 14,
+    rivalRep: .05, rivalGrow: 24,
+    T: { tag: 'Tren kontratı', group: 'hafta sonu grubu', pax: 'tren yolcusu', place: 'Avonside istasyonu', accepted: 'Harika! Tren cumartesi sabahı istasyonda olacak. Sisi de birlikte dua ederiz.',
+      where: 'Tren hafta sonu boyunca istasyonda duracak; kasabayı sola, batı yolu boyunca kaydırırsan görürsün. Sabahları sis tahminine bak.',
+      empty: 'İstasyon boş. Yeni bir hafta sonu teklifi sabah gelir.', fresh: 'Londra\'dan gelen hafta sonu trenleri burada durur, yolcular cipe binip kasabaya gelir.',
+      prefPaper: 'Londra\'nın hafta sonu trenleri artık önce ona geliyor.',
+      scene: ['Bak canım, batı yolunun sonundaki küçük istasyon. Londra\'dan hafta sonu trenleri buraya gelir.',
+        'Yolcular perondan cipe biner, yoldan kasabaya gelir. İlk teklif geliyor!',
+        'Hafta sonu iki gün sürer, fiyatı iyidir ama sis garantisi var: sisli sabah bilet iade, üstüne kupon. Tahmine bak.',
+        'Üç hafta sonu sorunsuz geçerse sana daha sık gelirler. Şemsiyeni unutma!'] }
   }
 };
 const ctrCfg = () => CTR[S && S.region];
+const ctrSpot = () => { const K = ctrCfg(); return [K.spot[0] + K.shift[0], K.spot[1] + K.shift[1]]; };
+const DAY_NAMES = ['Pazartesi', 'Salı', 'Çarşamba', 'Perşembe', 'Cuma', 'Cumartesi', 'Pazar'];
+const dayName = d => DAY_NAMES[((d - 1) % 7 + 7) % 7]; /* day 1 is a Monday */
 function ctrState() {
   if (!S.ctr) S.ctr = { next: null, offer: null, booked: [], ok: 0, fail: 0, who: 0, rel: 0, okWho: 0, met: false, pref: false, prefEver: false, gone: [], scene: false };
   return S.ctr;
 }
 const ctrWho = () => { const K = ctrCfg(), C = ctrState(); return K.cast[C.who % K.cast.length]; };
-const ctrLine = (w, k, o = {}) => w.L[k].replace(/\{n\}/g, o.n).replace(/\{d\}/g, o.d).replace(/\{p\}/g, o.p != null ? eur(o.p) : '').replace(/\{r\}/g, o.r || '').replace(/\{c\}/g, S.company);
+const ctrOwner = k => { const K = ctrCfg(); return K.cast.find(x => x.id === k.who) || ctrWho(); };
+const kLen = k => k.len || 1, kEnd = k => k.day + kLen(k) - 1;
+const ctrActive = (k, d = S.day) => d >= k.day && d <= kEnd(k);
+const ctrLine = (w, k, o = {}) => (w.L[k] || '').replace(/\{n\}/g, o.n).replace(/\{d\}/g, o.d).replace(/\{e\}/g, o.e).replace(/\{len\}/g, o.len).replace(/\{wd\}/g, o.d != null ? dayName(o.d) : '').replace(/\{p\}/g, o.p != null ? eur(o.p) : '').replace(/\{r\}/g, o.r || '').replace(/\{c\}/g, S.company);
+const kArgs = (k, extra) => Object.assign({ n: k.n, d: k.day, e: kEnd(k), len: kLen(k), p: k.price }, extra || {});
 /* the character speaks on a morning card, like the boss: 'ctr:<id>:<text>' */
 function ctrSay(w, text) { S.hezQ.push(`ctr:${w.id}:${text}`); }
 const fleetSeats = () => S.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0);
 /* the rival who takes a group: the most popular one still flying */
 const ctrRival = () => S.rivals.filter(r => r.alive).sort((a, b) => b.rep - a.rep)[0];
-/* today's group of yours (and whether a red flag moved it) */
-const ctrToday = () => { const C = S.ctr; return C ? (C.booked || []).find(k => !k.rival && k.day === S.day) : null; };
+/* today's group of yours */
+const ctrToday = () => { const C = S.ctr; return C && ctrCfg() ? (C.booked || []).find(k => !k.rival && ctrActive(k)) : null; };
+/* nobody flies the group today: a red flag, or fog under Bristol's guarantee */
+const ctrOff = k => !!S.weather && (S.weather.flag === 'red' || (!!k.fogP && !!S.weather.fog));
 /* seats the group takes today out of cap: the group is seated first */
-function ctrHeld(cap) { const k = ctrToday(); return k && S.weather && S.weather.flag !== 'red' ? Math.min(k.n, cap) : 0; }
-/* Each morning (after the day's weather): a red flag moves today's groups, an unanswered offer lapses to a rival, and
-   maybe a new offer comes. */
+function ctrHeld(cap) { const k = ctrToday(); return k && !ctrOff(k) ? Math.min(k.n, cap) : 0; }
 /* days that went by while you were in another region: the manager saw those groups off, nothing is owed either way */
-function ctrTidy() { const C = S.ctr; if (!C) return; C.booked = (C.booked || []).filter(k => k.day >= S.day); if (C.offer && C.offer.day <= S.day) C.offer = null; }
+function ctrTidy() { const C = S.ctr; if (!C) return; C.booked = (C.booked || []).filter(k => kEnd(k) >= S.day); if (C.offer && C.offer.day <= S.day) C.offer = null; }
+/* Each morning (after the day's weather): a red flag moves a one-day group or skips a day of a block, Bristol's fog
+   follows the forecast given with the offer, an unanswered offer lapses to a rival, and maybe a new offer comes. */
 function ctrMorning() {
   const K = ctrCfg(); if (!K) return;
   const C = ctrState(); ctrTidy();
   if (C.offer && C.offer.made < S.day) ctrDecline(true); /* not answered yesterday */
+  /* the forecast decides today's fog for a booked weekend day (yours or a rival's) */
+  const fk = C.booked.find(k => k.fogP && ctrActive(k));
+  if (fk && S.weather.flag !== 'red') S.weather.fog = Math.random() < fk.fogP[S.day - fk.day] ? { top: Math.round(rnd(90, 150)) } : null;
   for (const k of C.booked) {
-    if (k.day !== S.day || S.weather.flag !== 'red') continue;
+    if (!ctrActive(k) || S.weather.flag !== 'red') continue;
+    if (!K.redMove || kLen(k) > 1) { if (!k.rival) { const w = ctrOwner(k); ctrSay(w, ctrLine(w, 'redSkip', kArgs(k))); } continue; }
     k.moves = (k.moves || 0) + 1;
     if (k.moves > 2) { k.cancel = true; continue; } /* three red mornings in a row: the tour goes home, nobody's fault */
     if (k.moves === 1) k.price = Math.round(k.price * (1 - K.redCut));
     k.day++;
-    if (!k.rival) { const w = K.cast.find(x => x.id === k.who) || ctrWho(); ctrSay(w, ctrLine(w, 'red', { p: k.price })); }
+    if (!k.rival) { const w = ctrOwner(k); ctrSay(w, ctrLine(w, 'red', { p: k.price })); }
   }
-  for (const k of C.booked) if (k.cancel && !k.rival) { const w = K.cast.find(x => x.id === k.who) || ctrWho(); S.hezQ.push(`ctr:${w.id}:Üç sabah üst üste kırmızı bayrak. Grup eve dönüyor, kimsenin suçu değil. Başka sefere.`); }
+  for (const k of C.booked) if (k.cancel && !k.rival) S.hezQ.push(`ctr:${ctrOwner(k).id}:Üç sabah üst üste kırmızı bayrak. Grup eve dönüyor, kimsenin suçu değil. Başka sefere.`);
   C.booked = C.booked.filter(k => !k.cancel);
-  const mine = C.booked.find(k => !k.rival && k.day === S.day);
-  if (mine) { const w = K.cast.find(x => x.id === mine.who) || ctrWho(); ctrSay(w, ctrLine(w, 'today', { n: mine.n })); }
+  const mine = ctrToday();
+  if (mine && S.weather.flag !== 'red') { const w = ctrOwner(mine); if (mine.fogP && S.weather.fog) ctrSay(w, w.L.fog); else if (S.day === mine.day) ctrSay(w, ctrLine(w, 'today', kArgs(mine))); }
   if ((S.chapter || 0) < K.minChapter) return;
   if (C.next == null) C.next = S.day + K.firstWait;
   if (C.offer || C.booked.some(k => !k.rival) || S.day < C.next || fleetSeats() < K.minSeats) return;
   const w = ctrWho(), seats = fleetSeats(), n = Math.max(12, Math.round(seats * rnd(K.share[0], K.share[1]) / 2) * 2);
   const riv = S.rivals.filter(r => r.alive), ref = riv.length ? (S.price + riv.reduce((a, r) => a + r.price, 0) / riv.length) / 2 : S.price;
-  const price = Math.round(ref * rnd(K.price[0], K.price[1]) * (C.pref ? K.prefPrice : 1) / 5) * 5;
-  C.offer = { n, price, day: S.day + Math.round(rnd(K.lead[0], K.lead[1])), who: w.id, made: S.day, first: !C.scene };
+  /* v125.3: a tour operator buys in bulk: below the market, never above your own ticket */
+  const cap5 = Math.floor(Math.min(ref, S.price) / 5) * 5, price = Math.min(cap5, Math.round(ref * rnd(K.price[0], K.price[1]) * (C.pref ? K.prefPrice : 1) / 5) * 5);
+  let day = S.day + Math.round(rnd(K.lead[0], K.lead[1]));
+  if (K.weekend) while (dayName(day) !== 'Cumartesi') day++;
+  const len = Math.round(rnd(K.len[0], K.len[1]));
+  C.offer = { n, price, day, len, who: w.id, made: S.day, first: !C.scene, top: cap5 };
+  if (K.fogG) C.offer.fogP = Array.from({ length: len }, () => Math.round(rnd(K.fogP[0], K.fogP[1]) * 20) / 20);
 }
 function ctrNextGap() { const K = ctrCfg(), C = ctrState(), g = C.pref ? K.prefGap : K.gap; C.next = S.day + Math.round(rnd(g[0], g[1])); }
 function ctrAccept() {
   const C = ctrState(), O = C.offer; if (!O) return;
-  C.booked.push({ n: O.n, price: O.price, day: O.day, who: O.who, neg: O.neg || 0, id: S.nextId++ });
+  C.booked.push({ n: O.n, price: O.price, day: O.day, len: O.len || 1, fogP: O.fogP, who: O.who, neg: O.neg || 0, id: S.nextId++, short: 0, got: 0, flown: 0 });
   C.offer = null; C.met = true; ctrNextGap();
 }
 /* ask more per head: higher price, or the company walks to a rival */
 function ctrNegotiate() {
   const K = ctrCfg(), C = ctrState(), O = C.offer; if (!O || O.neg) return null;
   if (Math.random() < (C.pref ? K.prefWalk : K.negWalk)) { ctrRel(-1); ctrToRival(O); C.offer = null; C.met = true; ctrNextGap(); ctrBreakCheck(); return 'walk'; }
-  O.price = Math.round(O.price * (1 + K.negUp) / 5) * 5; O.neg = 1; return 'ok';
+  O.price = ctrNegPrice(O); O.neg = 1; return 'ok';
 }
+/* what a negotiation asks: a bit more, but no more than the market (and your own ticket) */
+const ctrNegPrice = O => Math.max(O.price, Math.min(Math.round(O.price * (1 + ctrCfg().negUp) / 5) * 5, O.top || O.price));
 function ctrDecline(lapsed) {
   const C = ctrState(), O = C.offer; if (!O) return;
   ctrRel(-1); ctrToRival(O); C.offer = null; C.met = true; ctrNextGap(); ctrBreakCheck();
 }
 function ctrRel(d) { const C = ctrState(); C.rel = clamp(C.rel + d, -9, 5); }
-function ctrToRival(O) { const r = ctrRival(); if (r) ctrState().booked.push({ rival: r.name, n: O.n, price: O.price, day: O.day, who: O.who, id: S.nextId++ }); }
+function ctrToRival(O) { const r = ctrRival(); if (r) ctrState().booked.push({ rival: r.name, n: O.n, price: O.price, day: O.day, len: O.len || 1, fogP: O.fogP, who: O.who, id: S.nextId++ }); }
 /* too many no's or failures: the owner stops calling; after a while the next owner of the cast comes */
 function ctrBreakCheck() {
   const K = ctrCfg(), C = ctrState(), w = ctrWho();
@@ -7136,51 +7352,71 @@ function ctrBreakCheck() {
   ctrSay(w, w.L.bye);
   C.gone.push(w.id); C.who = (C.who + 1) % K.cast.length; C.rel = 0; C.okWho = 0; C.pref = false; C.met = false; C.next = S.day + K.cool;
 }
-/* The evening of a contract day: what flew, what it paid, what it cost, and the rival's share. lastReport.ctr for sims. */
+/* The evening of a contract day: what flew, what it paid, what it cost, and the rival's share. A block (Luxor) or a
+   weekend (Bristol) is judged on its last day. lastReport.ctr for sims. */
 function ctrSettle(Lg, ev, rev, paxTotal) {
   const K = ctrCfg(), C = S.ctr; if (!K || !C) return null;
   const R = {};
-  const mine = C.booked.find(k => !k.rival && k.day === S.day);
+  const mine = C.booked.find(k => !k.rival && ctrActive(k));
   if (mine && S.plan) {
-    const w = K.cast.find(x => x.id === mine.who) || ctrWho();
-    const got = Math.min(mine.n, (S.plan.ctr && S.plan.ctr.held) || 0, paxTotal), short = mine.n - got;
-    Lg.rev -= got * S.price; Lg.ctr = got * mine.price; Lg.ctrN = got;
-    const pen = short * Math.round(mine.price * K.pen); Lg.ctrPen = pen;
-    Object.assign(R, { mine: true, n: mine.n, got, short, rev: Lg.ctr, pen, price: mine.price, normal: Math.round(got * S.price * ((S.plan.ctr && S.plan.ctr.load) || 1)), gain: Lg.ctr - Math.round(((S.plan.ctr && S.plan.ctr.lost) || 0) * S.price) });
-    if (!short) {
-      C.ok++; C.okWho++; ctrRel(1);
-      ev.push(`${w.co} grubu: ${got} yolcu uçtu, kişi başı ${eur(mine.price)}. Toplam ${eur(Lg.ctr)}.`);
-      if (!C.pref && C.okWho >= K.prefNeed && C.rel >= 2) { C.pref = C.prefEver = true; ctrSay(w, w.L.pref); paperAdd(3, `${S.company}, ${w.co}'in tercih ettiği operatör oldu`, 'Tur otobüsleri artık önce ona gidiyor.'); }
-      else ctrSay(w, w.L.thanks);
-      if (C.okWho < K.prefNeed) ev.push(`${w.name} ile başarılı iş: ${C.okWho}/${K.prefNeed}. Üçüncüde tercih edilen operatörü olursun.`);
+    const w = ctrOwner(mine), multi = kLen(mine) > 1, dayN = S.day - mine.day + 1;
+    R.mine = true;
+    if (ctrOff(mine)) {
+      if (mine.fogP && S.weather.fog && S.weather.flag !== 'red') {
+        const v = Math.round(mine.n * mine.price * K.voucher); Lg.ctrVoucher = v; mine.fogged = (mine.fogged || 0) + 1; R.fog = v;
+        ev.push(`Sis garantisi: ${w.co} grubunun ${mine.n} yolcusu bugün uçmadı, bilet paraları iade edildi. Kuponlar: ${eur(v)}.`);
+      } else ev.push(`Kırmızı bayrak: ${w.co} grubu bugün uçmadı. Ödeme yok, ceza da yok.`);
     } else {
-      C.fail++; ctrRel(got >= mine.n * .75 ? -1 : -2);
-      ev.push(`${w.co} grubundan ${short} kişi uçamadı. Eksik koltuk başına ${eur(Math.round(mine.price * K.pen))} ceza: ${eur(pen)}. ${w.name} sana daha az güveniyor.`);
-      ctrSay(w, w.L.fail); repBy('Tur grubu yerde kaldı', -.02);
-      ctrToRival({ n: short, price: mine.price, day: S.day, who: mine.who });
-      ctrBreakCheck();
+      const got = Math.min(mine.n, (S.plan.ctr && S.plan.ctr.held) || 0, paxTotal), short = mine.n - got;
+      Lg.rev -= got * S.price; Lg.ctr = got * mine.price; Lg.ctrN = got;
+      const pen = short * Math.round(mine.price * K.pen); Lg.ctrPen = pen;
+      mine.got += got; mine.short += short; mine.flown++;
+      Object.assign(R, { n: mine.n, got, short, rev: Lg.ctr, pen, price: mine.price, normal: Math.round(got * S.price * ((S.plan.ctr && S.plan.ctr.load) || 1)), lostRev: Math.round(((S.plan.ctr && S.plan.ctr.lost) || 0) * S.price) });
+      ev.push(`${w.co} grubu${multi ? ` (${dayN}/${kLen(mine)}. gün)` : ''}: ${got} yolcu uçtu, kişi başı ${eur(mine.price)}. Toplam ${eur(Lg.ctr)}.`);
+      if (short) {
+        ev.push(`${short} kişi uçamadı. Eksik koltuk başına ${eur(Math.round(mine.price * K.pen))} ceza: ${eur(pen)}.`);
+        repBy(K.T.group[0].toLocaleUpperCase('tr') + K.T.group.slice(1) + ' yerde kaldı', -.02);
+        ctrToRival({ n: short, price: mine.price, day: S.day, len: 1, who: mine.who });
+      }
+    }
+    if (S.day === kEnd(mine)) { /* the job is judged as a whole */
+      R.done = true;
+      if (!mine.flown) ev.push(`${w.co} işi hava yüzünden hiç uçamadan bitti. Kimsenin suçu değil.`);
+      else if (!mine.short) {
+        C.ok++; C.okWho++; ctrRel(1); R.ok = true;
+        if (!C.pref && C.okWho >= K.prefNeed && C.rel >= 2) { C.pref = C.prefEver = true; ctrSay(w, w.L.pref); paperAdd(3, `${S.company}, ${w.co}'in tercih ettiği operatör oldu`, K.T.prefPaper); }
+        else ctrSay(w, w.L.thanks);
+        if (C.okWho < K.prefNeed) ev.push(`${w.name} ile başarılı iş: ${C.okWho}/${K.prefNeed}. Üçüncüde tercih edilen operatörü olursun.`);
+      } else {
+        C.fail++; R.fail = true; ctrRel(mine.got >= (mine.got + mine.short) * .75 ? -1 : -2);
+        ev.push(`${w.name} sana daha az güveniyor: ${mine.short} yolcusu uçamadı.`);
+        ctrSay(w, w.L.fail); ctrBreakCheck();
+      }
     }
   }
-  /* the rival's groups: today's passengers (over its seats if need be), a bit of popularity; its cash grows by itself */
-  for (const k of C.booked.filter(q => q.rival && q.day === S.day)) {
+  /* the rival's groups: today's passengers (over its seats if need be), a bit of popularity, and on the first day the
+     group's money buys it balloons at once; that's what makes saying no felt */
+  for (const k of C.booked.filter(q => q.rival && ctrActive(q))) {
+    if (S.weather.flag === 'red' || (k.fogP && S.weather.fog)) continue;
     let r = S.rivals.find(x => x.alive && x.name === k.rival) || ctrRival(); if (!r) continue;
-    const ri = S.rivals.indexOf(r), w = K.cast.find(x => x.id === k.who) || ctrWho();
+    const ri = S.rivals.indexOf(r), w = ctrOwner(k);
     S.plan.rpax[ri] = (S.plan.rpax[ri] || 0) + k.n; S.plan.rcap[ri] = Math.max(S.plan.rcap[ri] || 0, S.plan.rpax[ri]);
-    r.rep = Math.min(1.4, r.rep + K.rivalRep); r.cash += k.n * Math.max(0, k.price - r.price);
-    /* the group's money buys the rival a balloon at once: that's what makes saying no felt */
-    const nb = r.style === 'safe' ? 'L' : 'M', maxB = (r.style === 'safe' ? 25 : r.style === 'mid' ? 18 : 12) + 5;
-    let grow = 0; for (let i = 0; i < Math.max(k.n >= K.rivalGrow ? 1 : 0, Math.floor(k.n / (K.rivalGrow * 2))) && r.balloons.length < maxB; i++) { r.balloons.push(nb); r.dmg.push(0); grow++; }
-    paperAdd(3, `${r.name}, ${w.co} grubunu uçurdu`, `${k.n} otobüs yolcusu ${r.name} sepetlerindeydi.${grow ? ` Şirket tur parasıyla filosuna ${grow > 1 ? grow + ' ' : 'yeni bir '}balon ekledi.` : ''}`);
-    rev.push(`${r.name}, ${w.co} grubunun ${k.n} yolcusunu uçurdu${grow ? ` ve parasıyla filosuna ${grow > 1 ? grow + ' ' : 'yeni bir '}balon ekledi` : ''}. Popülerliği arttı.`);
-    R.rivalGrow = (R.rivalGrow || 0) + grow;
     R.rival = r.name; R.rivalPax = (R.rivalPax || 0) + k.n;
+    if (k.paid) continue;
+    k.paid = 1;
+    r.rep = Math.min(1.4, r.rep + K.rivalRep); r.cash += k.n * kLen(k) * Math.max(0, k.price - r.price);
+    const nb = r.style === 'safe' ? 'L' : 'M', maxB = (r.style === 'safe' ? 25 : r.style === 'mid' ? 18 : 12) + 5, tot = k.n * kLen(k);
+    let grow = 0; for (let i = 0; i < Math.max(tot >= K.rivalGrow ? 1 : 0, Math.floor(tot / (K.rivalGrow * 2))) && r.balloons.length < maxB; i++) { r.balloons.push(nb); r.dmg.push(0); grow++; }
+    paperAdd(3, `${r.name}, ${w.co} grubunu uçurdu`, `${kLen(k) > 1 ? `${kLen(k)} gün boyunca her sabah ` : ''}${k.n} ${K.T.pax} ${r.name} sepetlerinde.${grow ? ` Şirket bu parayla filosuna ${grow > 1 ? grow + ' ' : 'yeni bir '}balon ekledi.` : ''}`);
+    rev.push(`${r.name}, ${w.co} grubunun ${k.n} yolcusunu uçuruyor${kLen(k) > 1 ? ` (${kLen(k)} gün)` : ''}${grow ? ` ve parasıyla filosuna ${grow > 1 ? grow + ' ' : 'yeni bir '}balon ekledi` : ''}. Popülerliği arttı.`);
+    R.rivalGrow = (R.rivalGrow || 0) + grow;
   }
-  C.booked = C.booked.filter(k => k.day !== S.day);
+  C.booked = C.booked.filter(k => kEnd(k) !== S.day);
   return Object.keys(R).length ? R : null;
 }
 
-/* v125: the offer card, spoken by the tour company's owner. The first one in a region comes after a short scene at the
-   coach terminal outside town (ctrScene). */
+/* v125: the offer card, spoken by the company's owner. The first one in a region comes after a short scene at the
+   off-map place (ctrScene). */
 function ctrHead(c, w, chap) {
   c.appendChild(h('div', 'ctrhd', `<div class="ctrav">${w.av()}</div><div><span class="ctrtag">${chap}</span><b>${esc(w.name)}</b><span>${esc(w.title)}</span></div>`));
 }
@@ -7195,25 +7431,31 @@ function ctrClose(back) {
   const town = TOWN.open && TOWN.cine;
   if (town) ctrSceneEnd(); else { refresh(); setTimeout(nextPopup, 250); }
 }
+const ctrWhen = O => (O.len || 1) > 1 ? `Gün ${O.day}–${O.day + O.len - 1}` : `Gün ${O.day}`;
+const ctrTotal = O => O.n * (O.len || 1) * O.price;
 function ctrCard() {
   const K = ctrCfg(), C = ctrState(), O = C.offer; if (!O) return nextPopup();
   O.seen = S.day; save();
-  const w = K.cast.find(x => x.id === O.who) || ctrWho(), m = $('menu'); m.replaceChildren();
+  const w = ctrOwner(O), m = $('menu'); m.replaceChildren();
   m.classList.toggle('evm', !!(TOWN.open && TOWN.cine));
   if (TOWN.open && TOWN.cine) { const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...ctrSpot()), Z = TOWN.cine.to.z; TOWN.cine = Object.assign(TOWN.cine, { t0: performance.now(), dur: 900, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: Z, ox: r.width / 2 - cx * Z, oy: r.height * .2 - cy * Z } }); }
   const c = h('div', 'card ctr');
-  ctrHead(c, w, C.met ? 'Tur kontratı teklifi' : 'Yeni bir iş bağlantısı');
-  ctrSpeech(c, (C.met ? '' : w.L.intro + ' ') + ctrLine(w, 'offer', { n: O.n, d: O.day, p: O.price }));
-  const seats = fleetSeats(), riv = ctrRival();
-  c.appendChild(h('div', 'ctrfacts', `<div><b>${O.n}</b><span>kişi · filon ${seats} koltuk</span></div><div><b>Gün ${O.day}</b><span>${O.day - S.day} gün sonra</span></div><div><b>${eur(O.price)}</b><span>kişi başı</span></div><div><b>${eur(O.n * O.price)}</b><span>toplam</span></div>`));
-  c.appendChild(h('p', 'ctrrule', `O sabah koltuklar önce gruba gider. Eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza; kırmızı bayrakta grup bir gün kayar (%${Math.round(K.redCut * 100)} indirimle). Almazsan grubu <b>${riv ? esc(riv.name) : 'bir rakip'}</b> uçurur.`));
+  ctrHead(c, w, C.met ? `${K.T.tag} teklifi` : 'Yeni bir iş bağlantısı');
+  ctrSpeech(c, (C.met ? '' : w.L.intro + ' ') + ctrLine(w, 'offer', kArgs(O)));
+  const seats = fleetSeats(), riv = ctrRival(), len = O.len || 1;
+  c.appendChild(h('div', 'ctrfacts', `<div><b>${O.n}${len > 1 ? ' × ' + len : ''}</b><span>${len > 1 ? 'kişi her sabah' : 'kişi'} · filon ${seats} koltuk</span></div><div><b>${ctrWhen(O)}</b><span>${K.weekend ? `${dayName(O.day)}–${dayName(O.day + 1)}` : `${O.day - S.day} gün sonra${len > 1 ? `, ${len} gün` : ''}`}</span></div><div><b>${eur(O.price)}</b><span>kişi başı</span></div><div><b>${eur(ctrTotal(O))}</b><span>toplam</span></div>`));
+  if (O.fogP) c.appendChild(h('div', 'ctrfog', `<span>Sis tahmini</span>${O.fogP.map((p, i) => `<b class="${p >= .4 ? 'hi' : p >= .25 ? 'mid' : ''}">${dayName(O.day + i).slice(0, 3)} %${Math.round(p * 100)}</b>`).join('')}`));
+  const rule = K.fogG ? `Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade, üstüne kişi başı ${eur(Math.round(O.price * K.voucher))} kupon. Eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza.`
+    : len > 1 ? `${len} sabah boyunca koltuklar önce gruba gider; her sabah eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza. Kırmızı bayraklı sabah sayılmaz.`
+    : `O sabah koltuklar önce gruba gider. Eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza; kırmızı bayrakta grup bir gün kayar (%${Math.round(K.redCut * 100)} indirimle).`;
+  c.appendChild(h('p', 'ctrrule', `${rule} Almazsan grubu <b>${riv ? esc(riv.name) : 'bir rakip'}</b> uçurur.`));
   ctrTrust(c, !C.pref && C.okWho < K.prefNeed ? w.L.promise : null);
-  const ok = h('button', 'big', `Kabul et: ${eur(O.n * O.price)}`);
+  const ok = h('button', 'big', `Kabul et: ${eur(ctrTotal(O))}`);
   ok.onclick = () => { sfx('coin'); ctrAccept(); ctrResult(w, 'ok', O); };
   c.appendChild(ok);
   const row = h('div', 'ctrrow');
-  if (!O.neg) {
-    const ng = h('button', 'opt', `<b>Pazarlık: ${eur(Math.round(O.price * (1 + K.negUp) / 5) * 5)}</b><span>${C.pref ? 'Pek kaçmaz' : 'Rakibe gidebilir'}</span>`);
+  if (!O.neg && ctrNegPrice(O) > O.price) {
+    const ng = h('button', 'opt', `<b>Pazarlık: ${eur(ctrNegPrice(O))}</b><span>${C.pref ? 'Pek kaçmaz' : 'Rakibe gidebilir'}</span>`);
     ng.onclick = () => { const r = ctrNegotiate(); if (r === 'ok') { sfx('coin'); ctrAccept(); ctrResult(w, 'negOk', O); } else { sfx('low'); ctrResult(w, 'negWalk', O, riv); } };
     row.appendChild(ng);
   }
@@ -7222,48 +7464,43 @@ function ctrCard() {
   row.appendChild(no); c.appendChild(row);
   m.appendChild(c); m.hidden = false;
 }
-/* the answer, in the owner's words; where the coaches will wait */
+/* the answer, in the owner's words; where the vehicle will wait */
 function ctrResult(w, k, O, riv) {
-  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card ctr');
+  const K = ctrCfg(), m = $('menu'); m.replaceChildren(); const c = h('div', 'card ctr');
   const good = k === 'ok' || k === 'negOk';
   ctrHead(c, w, good ? 'Anlaştınız' : 'Grup rakibe gitti');
-  ctrSpeech(c, k === 'ok' ? 'Harika! Otobüslerim terminalde olacak. Sepetleri hazırla!' : ctrLine(w, k, { p: O.price, r: riv ? riv.name : 'bir rakip' }));
-  if (good) c.appendChild(h('div', 'callout grn', `<b>Gün ${O.day}: ${O.n} kişi, kişi başı ${eur(O.price)}.</b> Otobüsler şehrin dışındaki terminalde bekliyor; kasabayı aşağı sola kaydırırsan görürsün. O sabah yeterli balonun uçmaya hazır olsun.`));
-  else c.appendChild(h('div', 'callout red', `<b>${riv ? esc(riv.name) : 'Rakip'} o gün ${O.n} yolcu daha uçuracak.</b> Kasası dolacak, adı duyulacak.`));
+  ctrSpeech(c, k === 'ok' ? K.T.accepted : ctrLine(w, k, { p: O.price, r: riv ? riv.name : 'bir rakip' }));
+  if (good) c.appendChild(h('div', 'callout grn', `<b>${ctrWhen(O)}: ${(O.len || 1) > 1 ? 'her sabah ' : ''}${O.n} kişi, kişi başı ${eur(O.price)}.</b> ${K.T.where}`));
+  else c.appendChild(h('div', 'callout red', `<b>${riv ? esc(riv.name) : 'Rakip'} ${(O.len || 1) > 1 ? 'o günlerde her sabah' : 'o gün'} ${O.n} yolcu daha uçuracak.</b> Kasası dolacak, filosu büyüyecek, adı duyulacak.`));
   const x = h('button', 'big', 'Tamam'); x.onclick = () => ctrClose(); c.appendChild(x);
   m.appendChild(c); m.hidden = false; save(); refresh();
 }
-/* Tapping the terminal (or the coaches) in town: what's booked. */
+/* Tapping the off-map place in town: what's booked. */
 function ctrStatusCard() {
   const K = ctrCfg(), C = ctrState(), m = $('menu'); m.replaceChildren(); const c = h('div', 'card ctr');
   const mine = C.booked.filter(k => !k.rival).sort((a, b) => a.day - b.day), w = ctrWho();
-  ctrHead(c, w, 'Otobüs terminali');
-  if (mine.length) for (const k of mine) { const ww = K.cast.find(x => x.id === k.who) || w; c.appendChild(h('div', 'fmix', `<div><span>${esc(ww.co)}</span><b>Gün ${k.day}</b></div><div><span>Grup</span><b>${k.n} kişi · ${eur(k.price)}</b></div>`)); }
-  else c.appendChild(h('p', 'lead', C.met || C.ok ? 'Terminal boş. Yeni bir tur grubu teklifi sabah gelir.' : 'Route 66\'dan gelen tur otobüsleri burada durur. Tur şirketleri büyük grupları balona bindirmek ister.'));
+  ctrHead(c, w, K.T.place);
+  if (mine.length) for (const k of mine) c.appendChild(h('div', 'fmix', `<div><span>${esc(ctrOwner(k).co)}</span><b>${ctrWhen(k)}</b></div><div><span>Grup</span><b>${k.n} kişi${kLen(k) > 1 ? ' × ' + kLen(k) : ''} · ${eur(k.price)}</b></div>`));
+  else c.appendChild(h('p', 'lead', C.met || C.ok ? K.T.empty : K.T.fresh));
   ctrTrust(c);
   const x = h('button', 'big', 'Kapat'); x.onclick = () => { m.hidden = true; refresh(); }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
 }
-/* The first offer: the camera leaves town down the highway to the coach terminal, the guide says what's coming, the
-   owner's card opens there; afterwards the camera goes back. Once per region; "Geç" goes straight to the card. */
-const CTR_SCENE_LINES = [
-  'Bak evlat: şehrin dışındaki otoyol terminali. Route 66\'dan gelen tur otobüsleri burada mola verir.',
-  'Tur şirketleri büyük grupları tek sabahta balona bindirmek ister. İlk teklif geliyor!',
-  'Kabul edersen o gün koltuklar önce gruba gider. Almazsan grubu bir rakip kapar.',
-  'Üç işi sağlam teslim edersen sana daha sık gelirler. Vakit nakittir!'
-];
+/* The first offer: the camera leaves town to the off-map place, the guide says what's coming, the owner's card opens
+   there; afterwards the camera goes back. Once per region; "Geç" goes straight to the card. */
 function ctrScene() {
   const K = ctrCfg(), C = ctrState(); C.scene = true; save();
   if (mode !== 'office' || !HOME.h) return ctrCard();
   openTown(null, true); TOWN.noLabels = true; $('tClose').classList.add('gone');
   const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...ctrSpot()), z1 = .86;
   TOWN.cine = { t0: performance.now(), dur: 3600, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: z1, ox: r.width / 2 - cx * z1, oy: r.height * .5 - cy * z1 }, arrive: T + 1.6 };
-  let i = 0;
+  const L = K.T.scene; let i = 0;
   const say = () => {
     if (!TOWN.cine) return;
-    if (i >= CTR_SCENE_LINES.length) { $('hez').hidden = true; $('hez').classList.remove('story'); ctrHorn(); setTimeout(ctrCard, 500); return; }
-    storySay2(guide(), CTR_SCENE_LINES[i++], [['Geç', () => { i = CTR_SCENE_LINES.length; say(); }, 'ghost'], [i < CTR_SCENE_LINES.length ? 'Devam' : 'Teklife bak', say, 'big']]);
+    if (i >= L.length) { $('hez').hidden = true; $('hez').classList.remove('story'); setTimeout(ctrCard, 500); return; }
+    storySay2(guide(), L[i++], [['Geç', () => { i = L.length; say(); }, 'ghost'], [i < L.length ? 'Devam' : 'Teklife bak', say, 'big']]);
   };
+  setTimeout(() => ctrArriveSound(), 2400);
   setTimeout(say, 2600);
 }
 function ctrSceneEnd() {
@@ -7284,13 +7521,12 @@ function storySay2(G, text, buttons) {
   buttons.forEach(([label, fn, cls]) => { const b = h('button', cls === 'ghost' ? 'ghost' : 'pbtn', label); b.onclick = () => { finish(); el.hidden = true; fn(); }; row.appendChild(b); });
   bub.appendChild(row);
 }
-
-/* a tour company owner's line on a morning card, in the boss's bubble */
+/* a company owner's line on a morning card, in the boss's bubble */
 function ctrHez(k) {
   const [, id, ...rest] = k.split(':'), text = rest.join(':'), K = CTR[S.region], w = K && K.cast.find(x => x.id === id);
   if (!w) { nextPopup(); return; }
   const el = $('hez'); el.classList.remove('story');
-  el.innerHTML = `<div class="hzcol">${w.av()}<span class="hzname ctrn" style="background:${w.col}">${esc(w.name.split(' ')[0])}</span></div><div class="hzb"><span class="bosst">${esc(w.title)}</span><p></p></div>`;
+  el.innerHTML = `<div class="hzcol">${w.av()}<span class="hzname ctrn" style="background:${w.col}">${esc(w.name.replace('Kaptan ', '').split(' ')[0])}</span></div><div class="hzb"><span class="bosst">${esc(w.title)}</span><p></p></div>`;
   const p = el.querySelector('p'), bub = el.querySelector('.hzb');
   let i = 0; clearInterval(hezTimer);
   el.hidden = false; p.textContent = text; p.style.minHeight = p.offsetHeight + 'px'; p.textContent = '';
@@ -7300,50 +7536,36 @@ function ctrHez(k) {
   const ok = h('button', 'pbtn', 'Tamam'); ok.onclick = () => { finish(); el.hidden = true; refresh(); setTimeout(nextPopup, 250); };
   bub.appendChild(ok);
 }
-/* ---------- v125: the coach terminal outside Albuquerque ----------
-   Down the highway south-west of town, past the edge of the usual view: the tour coaches' roadside terminal. It is
-   part of the pannable town (drag down-left); coaches stand in the bays while a contract you took is still to fly, and
-   idle with their engines running. Empty otherwise. */
-const CTR_BAYS = [9.2, 10.2, 11.2]; /* bay lines across the lot (gx); a coach is parked along gy */
+/* ---------- v125: the contract places outside town ----------
+   Each region's contract place lies on its own road out of town, past the edge of every default view (checked by
+   drawing it alone through the home camera on phones and iPads: no pixel lands on screen). Near town the road stays the
+   town's dirt road. Albuquerque: the Route 66 highway ends at a coach terminal; Luxor: a cruise pier on the Nile; Bristol:
+   a small station with a red steam train. The vehicle stands there for as long as a job you took runs, with its own
+   ambient sound; empty otherwise. On a contract morning the passengers walk to the game's safari jeeps, which drive off
+   along the dirt road towards town (and vanish before the default view). */
+let CTR_HIDE = false; /* tests: draw the town without the contract place */
+const CTR_BAYS = [9.2, 10.2, 11.2]; /* Albuquerque: bay lines across the lot (gx); a coach is parked along gy */
 const CTR_BAY_GY = 22.5;
-/* the coaches standing today: one per ~50 people of every group you've taken that hasn't flown yet */
-function ctrCoaches() {
+/* the vehicle stands there only while a job of yours runs (its first day to its last); on the first day it arrives the
+   first time you look (drives in, moors, pulls in, with its sound), then the place is empty again. In the first offer's
+   scene, the offer's vehicle is there. */
+function ctrVehicles() {
   const K = ctrCfg(), C = S && S.ctr; if (!K || !C) return [];
-  const out = [];
-  for (const k of (C.booked || []).filter(q => !q.rival && q.day >= S.day).sort((a, b) => a.day - b.day)) {
-    const w = K.cast.find(x => x.id === k.who) || K.cast[0];
-    for (let i = 0; i < clamp(Math.ceil(k.n / 50), 1, 4) && out.length < CTR_BAYS.length; i++) out.push({ col: w.col, name: w.co });
+  const out = [], room = K.kind === 'bus' ? CTR_BAYS.length : 1, many = n => K.kind === 'bus' ? clamp(Math.ceil(n / 50), 1, 3) : 1;
+  for (const k of (C.booked || []).filter(q => !q.rival && ctrActive(q))) {
+    if (k.day === S.day && k.arrDay !== S.day) continue; /* not arrived yet: ctrHumTick brings it in when you look */
+    const w = ctrOwner(k), t0 = k.day === S.day && k.arrT != null && T - k.arrT < 8 ? k.arrT : null;
+    for (let i = 0; i < many(k.n) && out.length < room; i++) out.push({ col: w.col, name: w.co, t0 });
   }
-  /* the first offer's scene: its coaches drive in (and out again if you say no) */
-  if (TOWN.cine && C.offer && !out.length) { const w = K.cast.find(x => x.id === C.offer.who) || K.cast[0]; for (let i = 0; i < clamp(Math.ceil(C.offer.n / 50), 1, 4); i++) out.push({ col: w.col, name: w.co, arrive: true }); }
-  if (TOWN.cine && TOWN.cine.leaving) for (const x of out) x.leave = TOWN.cine.leaving;
+  if (TOWN.cine && C.offer && !out.length) { const w = ctrOwner(C.offer); for (let i = 0; i < many(C.offer.n); i++) out.push({ col: w.col, name: w.co, t0: TOWN.cine.arrive }); }
   return out;
 }
-/* Flat things at the terminal: the highway's asphalt, the lot with its bay lines. */
-function ctrGround() {
-  const K = ctrCfg(); if (!K || K.kind !== 'bus') return;
-  const q = (x0, y0, x1, y1, c) => tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], c);
-  /* near town the road stays the town's dirt road; the asphalt starts out of the default view, widening from it */
-  const D = K.off, A = 16.8 + D, E = 70;
-  /* gravel first, the asphalt then widens out of it */
-  for (let k = 0; k < 6; k++) { const y0 = A - 2.4 + k * .4; tpoly([tiso(7.65 - k * .033, y0), tiso(8.35 + k * .033, y0), tiso(8.35 + (k + 1) * .033, y0 + .4), tiso(7.65 - (k + 1) * .033, y0 + .4)], mix('#c89a74', '#5e5a62', (k + 1) / 7)); }
-  { const R = mulberry32(5); ctx.fillStyle = 'rgba(70,60,60,.35)'; for (let i = 0; i < 40; i++) { const p = tiso(7.7 + R() * .6, A - 3 + R() * 2.6); ctx.fillRect(p[0], p[1], 3, 2); } }
-  q(7.45, A, 8.55, E, '#5e5a62');
-  q(7.45, A, 7.55, E, '#e8e0d0'); q(8.45, A, 8.55, E, '#e8e0d0'); q(7.45, A, 8.55, A + .12, '#f4f0e6');
-  for (let y = A + .5; y < E; y += .9) q(7.97, y, 8.03, y + .45, '#ffd23a');
-  if (CTR_HIDE) return;
-  ctx.save(); ctx.translate(-TW / 2 * D, TH / 2 * D); /* the terminal's own drawing is laid out at D = 0 */
-  try { ctrLot(q); } finally { ctx.restore(); }
-}
-function ctrLot(q) {
-  q(8.55, 20.9, 14.6, 26.4, '#6c6870'); q(8.55, 20.9, 14.6, 21.0, '#d8d0c0'); q(8.55, 26.3, 14.6, 26.4, '#d8d0c0');
-  for (const x of CTR_BAYS) { q(x - .33, 21.3, x - .3, 24.6, '#f4f0e6'); q(x + .3, 21.3, x + .33, 24.6, '#f4f0e6'); }
-  q(9.3, 25.1, 12.2, 25.5, '#e8b23a'); /* the painted kerb */
-  const p = tiso(11.6, 25.9); ctx.save(); ctx.translate(p[0], p[1]); ctx.transform(1, .5, -1, .5, 0, 0); ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.font = '800 26px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('BUS ONLY', 0, 0); ctx.restore();
-}
-let CTR_HIDE = false; /* tests: draw the town without the terminal, to check the default view doesn't change */
-/* the terminal's place in the world: its layout point moved out along the road by K.off */
-const ctrSpot = () => { const K = ctrCfg(); return [K.spot[0], K.spot[1] + K.off]; };
+/* today's job that should arrive now */
+const ctrDue = () => { const C = S && S.ctr; return C && ctrCfg() ? (C.booked || []).find(q => !q.rival && q.day === S.day && q.arrDay !== S.day) : null; };
+/* the passengers change into jeeps: on a morning a job of yours flies, and in the first offer's scene */
+const ctrXferOn = () => { const k = ctrToday(); return !!(k && !ctrOff(k)) || !!(TOWN.cine && S.ctr && S.ctr.offer); };
+const ctrQ = (x0, y0, x1, y1, c) => tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], c);
+/* ---- Albuquerque: the coach terminal ---- */
 /* Route 66 shield on a pole: the black-capped US shield, or the brown "historic" one. */
 function routeShield(x, y, s, hist) {
   ctx.fillStyle = '#6a6a70'; ctx.fillRect(x - 1.5 * s, y - 64 * s, 3 * s, 64 * s);
@@ -7355,83 +7577,77 @@ function routeShield(x, y, s, hist) {
   else { ctx.fillRect(-14, -12, 28, 6); ctx.fillStyle = '#fdfaf0'; ctx.font = '800 5px "Barlow Condensed", sans-serif'; ctx.fillText('U S', 0, -7.4); ctx.fillStyle = '#1a1a1a'; ctx.font = '800 17px "Barlow Condensed", sans-serif'; ctx.fillText('66', 0, 11); }
   ctx.restore(); ctx.textAlign = 'left';
 }
-/* A tour coach parked along gy: tall cream body, the company's stripe, a band of dark windows, big windscreen at the
-   front (towards +gy), wheels; idling, it shivers and puffs from the back. */
-function coach(gx, gy, col, t, idle, k = 1) {
+/* A tour coach parked along gy, nose towards town (−gy): we see its long right side with the door near the front and
+   its rear (tail lights, rear window); idling, it shivers and puffs from the exhaust. */
+function coach(gx, gy, col, t, idle) {
   const w = .46, d = 1.6, hh = 34, z = 5 + (idle ? Math.sin(t * 38 + gx) * .5 : 0);
   const { A, B, C, D } = corners(gx - w / 2, gy, w, d);
   blobShadow((A[0] + C[0]) / 2 + 10, (A[1] + C[1]) / 2 + 4, 52, 18, .25);
   const L = p => upp(p, z);
-  /* wheels */
-  for (const u of [.16, .78]) { const p = lp(C, B, u); ell(p[0], p[1] - 6, 7, 7, '#1f1c22'); ell(p[0], p[1] - 6, 3, 3, '#a8a8b0'); }
+  for (const u of [.2, .84]) { const p = lp(C, B, u); ell(p[0], p[1] - 6, 7, 7, '#1f1c22'); ell(p[0], p[1] - 6, 3, 3, '#a8a8b0'); }
   { const p = lp(D, C, .5); ell(p[0] - 6, p[1] - 6, 4, 6, '#1f1c22'); }
-  /* side (C→B, the long one), front (D→C), roof */
   tpoly([L(C), L(B), upp(B, z + hh), upp(C, z + hh)], '#efe6d2');
-  tface(L(C), L(B), hh, () => {
+  tface(L(C), L(B), hh, () => { /* u: 0 at the rear, 1 at the front */
     ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12); ctx.fillStyle = mix(col, '#000000', .25); ctx.fillRect(0, .32, 1, .03);
-    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.17, .5, .8, .36);
-    ctx.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 6; i++) ctx.fillRect(.2 + i * .13, .78, .05, .06);
-    ctx.fillStyle = '#efe6d2'; for (let i = 1; i < 6; i++) ctx.fillRect(.17 + i * .133, .5, .012, .36);
-    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.04, .06, .1, .8); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(.088, .06, .006, .8); /* the door */
+    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.04, .5, .8, .36);
+    ctx.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 6; i++) ctx.fillRect(.07 + i * .13, .78, .05, .06);
+    ctx.fillStyle = '#efe6d2'; for (let i = 1; i < 6; i++) ctx.fillRect(.04 + i * .133, .5, .012, .36);
+    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.87, .06, .1, .8); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(.918, .06, .006, .8); /* the door */
     ctx.fillStyle = '#c0c6cc'; ctx.fillRect(0, 0, 1, .05);
   });
   tpoly([L(D), L(C), upp(C, z + hh), upp(D, z + hh)], mix('#efe6d2', '#000000', .12));
-  tface(L(D), L(C), hh, () => {
-    ctx.fillStyle = '#1e2a3c'; ctx.fillRect(.08, .42, .84, .48); ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.beginPath(); ctx.moveTo(.15, .9); ctx.lineTo(.35, .9); ctx.lineTo(.2, .45); ctx.lineTo(.1, .45); ctx.fill();
-    ctx.fillStyle = '#1a1a1a'; ctx.fillRect(.15, .84, .7, .06);
-    ctx.fillStyle = '#ffb030'; ctx.save(); ctx.scale(1, -1); ctx.font = '800 .07px "Barlow Condensed", sans-serif'; ctx.restore();
+  tface(L(D), L(C), hh, () => { /* the rear */
+    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.15, .62, .7, .26);
     ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12);
-    ctx.fillStyle = '#fff6c8'; ctx.fillRect(.08, .08, .14, .07); ctx.fillRect(.78, .08, .14, .07);
+    ctx.fillStyle = '#e5432f'; ctx.fillRect(.06, .1, .1, .16); ctx.fillRect(.84, .1, .1, .16);
+    ctx.fillStyle = '#c8c0b0'; for (let i = 0; i < 5; i++) ctx.fillRect(.3, .4 + i * .035, .4, .015); /* engine grille */
   });
   tpoly([upp(A, z + hh), upp(B, z + hh), upp(C, z + hh), upp(D, z + hh)], '#f8f2e4');
-  { const a = lp(upp(A, z + hh), upp(C, z + hh), .3), c2 = lp(upp(A, z + hh), upp(C, z + hh), .55), b2 = lp(upp(B, z + hh), upp(D, z + hh), .3), d2 = lp(upp(B, z + hh), upp(D, z + hh), .55); tpoly([a, b2, c2, d2], '#d8d2c4'); }
-  if (idle) { /* exhaust at the back corner */
-    const p = upp(B, z + 4);
-    for (let i = 0; i < 4; i++) { const ph = (t * .9 + i / 4) % 1; ctx.globalAlpha = (1 - ph) * .35 * k; ell(p[0] + 6 + ph * 18, p[1] - ph * 30, 3 + ph * 9, 3 + ph * 7, '#9a9aa4'); }
-    ctx.globalAlpha = 1;
-  }
+  { const a = lp(upp(A, z + hh), upp(C, z + hh), .45), c2 = lp(upp(A, z + hh), upp(C, z + hh), .7), b2 = lp(upp(B, z + hh), upp(D, z + hh), .45), d2 = lp(upp(B, z + hh), upp(D, z + hh), .7); tpoly([a, b2, c2, d2], '#d8d2c4'); }
+  if (idle) { const p = upp(lp(D, C, .85), z + 2); for (let i = 0; i < 4; i++) { const ph = (t * .9 + i / 4) % 1; ctx.save(); ctx.globalAlpha *= (1 - ph) * .35; ell(p[0] - 4 - ph * 16, p[1] + 2 - ph * 26, 3 + ph * 9, 3 + ph * 7, '#9a9aa4'); ctx.restore(); } }
 }
-/* The standing things: the terminal with its canopy, signs, the Sandia-pink mesas, and the coaches. */
-function ctrSpotItems(t) {
-  const K = ctrCfg(); if (!K || K.kind !== 'bus') return [];
-  const items = [], add = (gx, gy, fn, dep) => items.push({ at: [gx, gy], depth: dep != null ? dep : gx + gy, draw: fn });
-  /* the terminal: a long low adobe hall along the back of the lot, a sign on the roof */
+function busGround() {
+  const q = ctrQ, A = 20.9, E = 58; /* the highway ends at the terminal: asphalt from the lot outwards only */
+  q(7.45, A, 8.55, E, '#5e5a62'); q(7.45, A, 7.55, E, '#e8e0d0'); q(8.45, A, 8.55, E, '#e8e0d0');
+  for (let y = A + 1.2; y < E; y += .9) q(7.97, y, 8.03, y + .45, '#ffd23a');
+  q(7.45, A, 8.55, A + .14, '#f4f0e6'); /* the end of the road: a white bar */
+  /* the shuttle stand: packed dirt by the road where the jeeps wait */
+  q(8.4, 18.7, 11.6, 20.75, '#c48a62'); { const R = mulberry32(8); ctx.fillStyle = 'rgba(90,60,40,.3)'; for (let i = 0; i < 50; i++) { const p = tiso(8.5 + R() * 3, 18.8 + R() * 1.9); ctx.fillRect(p[0], p[1], 4, 2); } }
+  q(8.55, 20.9, 14.6, 26.4, '#6c6870'); q(8.55, 20.9, 14.6, 21.0, '#d8d0c0'); q(8.55, 26.3, 14.6, 26.4, '#d8d0c0');
+  for (const x of CTR_BAYS) { q(x - .43, 21.3, x - .4, 24.6, '#f4f0e6'); q(x + .4, 21.3, x + .43, 24.6, '#f4f0e6'); }
+  q(9.3, 25.1, 12.2, 25.5, '#e8b23a');
+  const p = tiso(11.6, 25.9); ctx.save(); ctx.translate(p[0], p[1]); ctx.transform(1, .5, -1, .5, 0, 0); ctx.fillStyle = 'rgba(255,255,255,.75)'; ctx.font = '800 26px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('BUS ONLY', 0, 0); ctx.restore();
+}
+function busItems(add, t) {
   add(13.2, 23.8, () => {
     const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 });
     try {
       const f = block(12.9, 21.3, 1.6, 4.9, 38, { lit: '#e9c9a0', shade: '#c49a72', top: '#d8b68c', courses: false });
       tface(f.D, f.C, 38, () => { ctx.fillStyle = '#2a8a9a'; ctx.fillRect(0, .82, 1, .1); ctx.fillStyle = '#3a2a24'; ctx.fillRect(.3, 0, .4, .55); ctx.fillStyle = '#7ab8c8'; ctx.fillRect(.34, .06, .32, .45); });
-      tface(f.C, f.B, 38, () => {
-        ctx.fillStyle = '#2a8a9a'; ctx.fillRect(0, .82, 1, .1);
-        for (let i = 0; i < 6; i++) { ctx.fillStyle = '#3a4a5a'; ctx.fillRect(.06 + i * .16, .25, .1, .38); ctx.fillStyle = 'rgba(255,240,200,.35)'; ctx.fillRect(.06 + i * .16, .5, .1, .13); }
-      });
-      /* roof sign */
+      tface(f.C, f.B, 38, () => { ctx.fillStyle = '#2a8a9a'; ctx.fillRect(0, .82, 1, .1); for (let i = 0; i < 6; i++) { ctx.fillStyle = '#3a4a5a'; ctx.fillRect(.06 + i * .16, .25, .1, .38); ctx.fillStyle = 'rgba(255,240,200,.35)'; ctx.fillRect(.06 + i * .16, .5, .1, .13); } });
       const s0 = upp(lp(f.C, f.B, .2), 38), s1 = upp(lp(f.C, f.B, .8), 38);
       ctx.fillStyle = '#5a5a60'; ctx.fillRect(s0[0] - 1, s0[1] - 20, 2, 20); ctx.fillRect(s1[0] - 1, s1[1] - 20, 2, 20);
-      tface(upp(s0, 18), upp(s1, 18), 26, () => {
-        ctx.fillStyle = '#c0392b'; ctx.fillRect(0, 0, 1, 1); ctx.fillStyle = '#ffd23a'; ctx.fillRect(0, .86, 1, .14); ctx.fillRect(0, 0, 1, .1);
-      });
+      tface(upp(s0, 18), upp(s1, 18), 26, () => { ctx.fillStyle = '#c0392b'; ctx.fillRect(0, 0, 1, 1); ctx.fillStyle = '#ffd23a'; ctx.fillRect(0, .86, 1, .14); ctx.fillRect(0, 0, 1, .1); });
       const m = lp(upp(s0, 31), upp(s1, 31), .5), ang = Math.atan2(s0[1] - s1[1], s0[0] - s1[0]) + Math.PI;
       ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.fillStyle = '#fff6dc'; ctx.font = '800 15px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('TOUR COACH TERMINAL', 0, 5); ctx.restore(); ctx.textAlign = 'left';
     } finally { TUFF = keep; }
   }, 12.9 + 1.6 + 21.3 + 4.9 - .5);
-  /* the canopy over the bays: posts and a flat turquoise roof, drawn after the coaches under it */
   add(11.2, 23.6, () => {
     for (const gy of [21.4, 23.2, 25]) { const p = tiso(12.75, gy); ctx.fillStyle = '#8a8a90'; ctx.fillRect(p[0] - 2, p[1] - 64, 4, 64); }
     const r = [tiso(12.0, 21.2), tiso(12.9, 21.2), tiso(12.9, 25.4), tiso(12.0, 25.4)].map(p => upp(p, 64));
     tpoly(r, '#2aa0a8'); tpoly([r[3], r[2], upp(r[2], -5), upp(r[3], -5)], '#1f7f88');
   }, 12.9 + 25.4 - .2);
-  /* signs along the highway */
-  add(8.75, 20.4, () => { const p = tiso(8.75, 20.4); routeShield(p[0], p[1], 1.25, false); });
-  add(8.75, 27, () => { const p = tiso(8.75, 27); routeShield(p[0], p[1], 1.25, true); });
-  add(7.1, 24, () => { /* billboard on the far side */
+  /* the shuttle stand's sign */
+  add(11.7, 19.2, () => { const p = tiso(11.7, 19.2); ctx.fillStyle = '#6a4a2a'; ctx.fillRect(p[0] - 2, p[1] - 46, 4, 46); rrect(p[0] - 30, p[1] - 66, 60, 24, 5); ctx.fillStyle = '#fff1d6'; ctx.fill(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#2b2350'; ctx.font = '800 11px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('BALLOON', p[0], p[1] - 55); ctx.fillText('SHUTTLE', p[0], p[1] - 45); ctx.textAlign = 'left'; });
+  add(8.75, 27.4, () => { const p = tiso(8.75, 27.4); routeShield(p[0], p[1], 1.25, false); });
+  add(8.75, 33, () => { const p = tiso(8.75, 33); routeShield(p[0], p[1], 1.25, true); });
+  add(7.1, 24, () => {
     const a = tiso(7.1, 23.2), b = tiso(7.1, 24.8);
     for (const p of [a, b]) { ctx.fillStyle = '#5a4a3a'; ctx.fillRect(p[0] - 2, p[1] - 70, 4, 70); }
     tface(upp(a, 50), upp(b, 50), 44, () => { ctx.fillStyle = '#fff1d6'; ctx.fillRect(0, 0, 1, 1); ctx.fillStyle = '#e08a1e'; ctx.fillRect(0, 0, 1, .2); ctx.fillStyle = '#2a8a9a'; ctx.fillRect(0, .8, 1, .2); });
     const m = lp(upp(a, 72), upp(b, 72), .5), ang = Math.atan2(a[1] - b[1], a[0] - b[0]);
-    ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.textAlign = 'center'; ctx.fillStyle = '#c0392b'; ctx.font = '800 19px "Barlow Condensed", sans-serif'; ctx.fillText('ROUTE 66', 0, 2); ctx.fillStyle = '#2b2350'; ctx.font = '700 10px "Barlow Condensed", sans-serif'; ctx.fillText('TOUR COACHES · NEXT EXIT', 0, 14); ctx.restore(); ctx.textAlign = 'left';
+    ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.textAlign = 'center'; ctx.fillStyle = '#c0392b'; ctx.font = '800 19px "Barlow Condensed", sans-serif'; ctx.fillText('ROUTE 66', 0, 2); ctx.fillStyle = '#2b2350'; ctx.font = '700 10px "Barlow Condensed", sans-serif'; ctx.fillText('TOUR COACHES · LAST STOP', 0, 14); ctx.restore(); ctx.textAlign = 'left';
   });
-  /* a little Route 66 diner across the lot, its neon sign */
   add(14.1, 27.9, () => {
     const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 });
     try {
@@ -7444,36 +7660,213 @@ function ctrSpotItems(t) {
       ctx.fillStyle = on ? '#ffd23a' : '#8a7a4a'; ctx.font = '800 15px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('66 DINER', p[0], p[1] - 39); ctx.textAlign = 'left';
     } finally { TUFF = keep; }
   });
-  /* desert round it: the Sandia's pink mesas behind, yucca and cholla in the sand */
   for (const [gx, gy, w, hh] of [[4.2, 20.5, 210, 120], [5.6, 18.6, 150, 80], [16.4, 20.2, 230, 140], [17.6, 23.4, 160, 90], [17.4, 30.4, 200, 110], [6.2, 31.4, 180, 100]]) add(gx, gy, () => { const p = tiso(gx, gy); butte(p[0], p[1], w, hh, '#d98a78', '#9a5050'); });
   for (const [gx, gy, k] of [[12.4, 27.4, 0], [12.6, 29.4, 1], [14.9, 22.1, 2], [6.6, 21.6, 1], [6.4, 26.5, 0], [15.2, 26.2, 2], [11.8, 29.8, 1], [15.6, 29.2, 0], [9.2, 30.6, 2], [13.2, 31.2, 0], [16.8, 27.6, 1]]) add(gx, gy, () => { const p = tiso(gx, gy); k === 0 ? yucca(p[0], p[1], 1.1) : k === 1 ? cholla(p[0], p[1], 1) : roundTree(p[0], p[1], .6, '#7a8a50'); });
-  /* coaches */
-  ctrCoaches().forEach((c, i) => {
+  ctrVehicles().forEach((c, i) => {
     const bx = CTR_BAYS[CTR_BAYS.length - 1 - i];
-    let gx = bx, gy = CTR_BAY_GY, alpha = 1;
-    if (c.arrive && TOWN.cine) {
-      const a = clamp((T - TOWN.cine.arrive - i * .7) / 3.2, 0, 1), e = easeIO3(a);
-      if (e < .7) { gx = 8; gy = lerp(13 - i * 2, CTR_BAY_GY + 1.4, e / .7); } else { const f = (e - .7) / .3; gx = lerp(8, bx, f); gy = lerp(CTR_BAY_GY + 1.4, CTR_BAY_GY, f); }
-      if (c.leave) { const l = clamp((T - c.leave - i * .4) / 2.6, 0, 1); gx = lerp(bx, 8, Math.min(1, l * 3)); gy = CTR_BAY_GY + l * 14; alpha = 1 - clamp(l * 1.4 - .4, 0, 1); }
+    let gx = bx, gy = CTR_BAY_GY;
+    if (c.t0 != null) { /* down the highway from far away, then into the bay */
+      const e = easeIO3(clamp((T - c.t0 - i * .7) / 3.6, 0, 1));
+      if (e < .75) { gx = 8; gy = lerp(44 + i * 2.4, CTR_BAY_GY + 2.2, e / .75); } else { const f = (e - .75) / .25; gx = lerp(8, bx, f); gy = lerp(CTR_BAY_GY + 2.2, CTR_BAY_GY, f); }
     }
-    items.push({ at: [gx, gy], depth: gx + gy + .9, draw: () => { ctx.globalAlpha = alpha; coach(gx, gy, c.col, t, true); ctx.globalAlpha = 1; } });
+    add(gx, gy, () => coach(gx, gy, c.col, t, true), gx + gy + .9);
   });
-  const D = K.off; if (CTR_HIDE) return [];
-  return items.map(it => ({ at: [it.at[0], it.at[1] + D], depth: it.depth + D, draw: () => { ctx.save(); ctx.translate(-TW / 2 * D, TH / 2 * D); try { it.draw(); } finally { ctx.restore(); } } }));
 }
-const ctrSpotFree = (gx, gy) => !(ctrCfg() && gx > 3 && gx < 19 && gy > 17.5 + ctrCfg().off && gy < 33 + ctrCfg().off);
-/* Engine idle while coaches stand in view: low rumble, its loudness from how close the terminal is to the screen's middle. */
+/* ---- Luxor: the cruise pier ---- */
+/* A three-deck Nile cruise ship moored along gx: white hull with a dark band, rows of cabin windows, a sun deck under an
+   awning, the company's funnel; it bobs on the river. */
+function cruiseShip(x0, y0, col, name, t) {
+  const L = 5, Wd = 1.1, bob = Math.sin(t * 1.3) * 2;
+  ctx.save(); ctx.translate(0, bob);
+  const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 });
+  try {
+    const hull = block(x0, y0, L, Wd, 16, { lit: '#f6f4ee', shade: '#d8d4c8', top: '#c8a878', courses: false });
+    tface(hull.D, hull.C, 16, () => { ctx.fillStyle = '#1f3a5a'; ctx.fillRect(0, 0, 1, .32); ctx.fillStyle = col; ctx.fillRect(0, .34, 1, .08); ctx.fillStyle = '#3a4a5a'; for (let i = 0; i < 18; i++) ctx.fillRect(.03 + i * .053, .58, .02, .16); });
+    tface(hull.C, hull.B, 16, () => { ctx.fillStyle = '#1f3a5a'; ctx.fillRect(0, 0, 1, .32); ctx.fillStyle = col; ctx.fillRect(0, .34, 1, .08); });
+    const m = lp(upp(hull.D, 6), upp(hull.C, 6), .5), ang = Math.atan2(hull.C[1] - hull.D[1], hull.C[0] - hull.D[0]);
+    ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.transform(1, 0, -.9, 1, 0, 0); ctx.fillStyle = '#f6f4ee'; ctx.font = '800 11px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText(name.toUpperCase(), 0, 0); ctx.restore(); ctx.textAlign = 'left';
+    ctx.save(); ctx.translate(0, -16);
+    const d2 = block(x0 + .3, y0 + .1, L - .7, Wd - .2, 14, { lit: '#fbfaf6', shade: '#dedad0', top: '#e8e2d4', courses: false });
+    tface(d2.D, d2.C, 14, () => { ctx.fillStyle = '#2a4a6a'; for (let i = 0; i < 14; i++) ctx.fillRect(.03 + i * .07, .3, .045, .45); });
+    tface(d2.C, d2.B, 14, () => { ctx.fillStyle = '#2a4a6a'; ctx.fillRect(.15, .3, .7, .45); });
+    ctx.translate(0, -14);
+    const d3 = block(x0 + .9, y0 + .2, L - 2.2, Wd - .4, 12, { lit: '#fbfaf6', shade: '#dedad0', top: '#e8e2d4', courses: false });
+    tface(d3.D, d3.C, 12, () => { ctx.fillStyle = '#2a4a6a'; for (let i = 0; i < 8; i++) ctx.fillRect(.04 + i * .12, .3, .07, .45); });
+    /* sun deck awning and the funnel */
+    const aw = [tiso(x0 + .6, y0 + .1), tiso(x0 + 1.8, y0 + .1), tiso(x0 + 1.8, y0 + Wd - .1), tiso(x0 + .6, y0 + Wd - .1)].map(p => upp(p, 30));
+    for (const p of [aw[0], aw[1], aw[2], aw[3]]) { ctx.fillStyle = '#8a8a90'; ctx.fillRect(p[0] - 1, p[1], 2, 18); }
+    tpoly(aw, '#e8b23a'); tpoly([aw[3], aw[2], upp(aw[2], -4), upp(aw[3], -4)], '#c8902a');
+    const f = tiso(x0 + 3.2, y0 + .55); ctx.fillStyle = col; ctx.fillRect(f[0] - 7, f[1] - 40, 14, 22); ctx.fillStyle = '#1a1a24'; ctx.fillRect(f[0] - 7, f[1] - 44, 14, 5);
+    ctx.fillStyle = 'rgba(160,160,170,.35)'; for (let i = 0; i < 3; i++) { const ph = (t * .4 + i / 3) % 1; ell(f[0] + ph * 14, f[1] - 48 - ph * 24, 3 + ph * 6, 3 + ph * 5, 'rgba(170,170,180,' + (.4 * (1 - ph)) + ')'); }
+    const fl = tiso(x0 + L - .2, y0 + .5); ctx.fillStyle = '#5a5a60'; ctx.fillRect(fl[0], fl[1] - 46, 2, 22); ctx.fillStyle = '#c0392b'; ctx.fillRect(fl[0] + 2, fl[1] - 46, 12, 4); ctx.fillStyle = '#fff'; ctx.fillRect(fl[0] + 2, fl[1] - 42, 12, 4); ctx.fillStyle = '#1a1a1a'; ctx.fillRect(fl[0] + 2, fl[1] - 38, 12, 4);
+    ctx.restore();
+  } finally { TUFF = keep; ctx.restore(); }
+}
+function felucca(x, y, t, i) { const b = Math.sin(t * 1.1 + i) * 1.5; ctx.fillStyle = '#6a4a2a'; ctx.beginPath(); ctx.moveTo(x - 18, y + b); ctx.lineTo(x + 18, y + b); ctx.lineTo(x + 12, y + 6 + b); ctx.lineTo(x - 12, y + 6 + b); ctx.fill(); ctx.strokeStyle = '#4a3a2a'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y + b); ctx.lineTo(x, y - 34 + b); ctx.stroke(); ctx.fillStyle = '#fbf6ea'; ctx.beginPath(); ctx.moveTo(x, y - 34 + b); ctx.lineTo(x + 16, y - 4 + b); ctx.lineTo(x - 2, y - 4 + b); ctx.fill(); }
+function shipGround() {
+  const q = ctrQ;
+  q(30.25, -8.6, 30.95, 7.65, OUTER_LOOK.lux.road); /* the dirt track from the pier to the east road */
+  q(28.4, -9.95, 32.6, -8.5, '#d4b47e'); { const R = mulberry32(12); ctx.fillStyle = 'rgba(110,80,40,.25)'; for (let i = 0; i < 40; i++) { const p = tiso(28.5 + R() * 4, -9.9 + R() * 1.3); ctx.fillRect(p[0], p[1], 4, 2); } }
+  q(25.5, -11.3, 35, -10.6, '#d8c08e'); q(25.5, -11.3, 35, -11.15, '#a88a5a'); /* the stone quay */
+  q(30.5, -12.4, 31.5, -10.6, '#9a6a3a'); for (let y = -12.3; y < -10.6; y += .22) q(30.5, y, 31.5, y + .03, '#7a4a24'); /* the wooden pier */
+  ctx.strokeStyle = 'rgba(255,255,255,.35)'; ctx.lineWidth = 2; for (let i = 0; i < 9; i++) { const ph = (T * .3 + i / 9) % 1, p = tiso(26 + i * 1.1, -13.5 + ph * .2); ctx.beginPath(); ctx.moveTo(p[0] - 14, p[1]); ctx.lineTo(p[0] + 14, p[1]); ctx.stroke(); }
+}
+function shipItems(add, t) {
+  add(32.9, -9.9, () => { /* the ticket kiosk with its striped awning and the pier sign */
+    const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 });
+    try { block(32.5, -10.3, .9, .7, 22, { lit: '#f2e8d4', shade: '#d2c4a4', top: '#e8dcc0', courses: false }); } finally { TUFF = keep; }
+    const a = [tiso(32.4, -10.4), tiso(33.5, -10.4), tiso(33.5, -9.5), tiso(32.4, -9.5)].map(p => upp(p, 24)); tpoly(a, '#1f6f8b'); tpoly([a[3], a[2], upp(a[2], -5), upp(a[3], -5)], '#e8c47a');
+  });
+  add(29.6, -10.2, () => { const p = tiso(29.6, -10.2); ctx.fillStyle = '#5a4a3a'; ctx.fillRect(p[0] - 30, p[1] - 50, 3, 50); ctx.fillRect(p[0] + 28, p[1] - 50, 3, 50); rrect(p[0] - 36, p[1] - 70, 72, 24, 4); ctx.fillStyle = '#1f6f8b'; ctx.fill(); ctx.fillStyle = '#e8c47a'; ctx.font = '800 11px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('LUXOR CRUISE PIER', p[0], p[1] - 54); ctx.textAlign = 'left'; });
+  for (const [gx, gy, k] of [[26.4, -9.9, 1], [27.5, -9.7, .9], [34.1, -9.8, 1.05], [35.2, -9.5, .9], [27.2, -7.2, .8], [33.8, -7.4, .9]]) add(gx, gy, () => { const p = tiso(gx, gy); palm(p[0], p[1], k, t + gx); });
+  for (const x of [27, 29, 33, 35]) add(x, -10.9, () => { const p = tiso(x, -10.9); ctx.fillStyle = '#4a3a2a'; ctx.fillRect(p[0] - 2, p[1] - 22, 4, 22); ell(p[0], p[1] - 24, 5, 5, '#ffd27a'); });
+  for (const [x, i] of [[23.8, 0], [36.4, 1]]) add(x + Math.sin(t * .1 + i) * .4, -12.6, () => { const p = tiso(x + Math.sin(t * .1 + i) * .4, -12.6); felucca(p[0], p[1], t, i); });
+  ctrVehicles().slice(0, 1).forEach(c => {
+    let dx = 0;
+    if (c.t0 != null) dx = 9 * (1 - easeIO3(clamp((T - c.t0) / 4.2, 0, 1)));
+    add(27.3 + dx + 2.5, -12.8, () => cruiseShip(27.3 + dx, -13.4, c.col, c.name, t), 27.3 + dx - 13.4 + 1.6);
+  });
+}
+/* ---- Bristol: the station and its red steam train ---- */
+function steamTrain(x0, y0, col, t, moving) {
+  const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 });
+  try {
+    const car = (cx, len) => {
+      const f = block(cx, y0, len, .62, 30, { lit: '#8a1f26', shade: '#6a161c', top: '#5a5a62', courses: false });
+      tface(f.D, f.C, 30, () => { ctx.fillStyle = '#efe2c4'; ctx.fillRect(0, .5, 1, .34); ctx.fillStyle = '#2a3040'; for (let i = 0; i < 8; i++) ctx.fillRect(.05 + i * .118, .55, .07, .24); ctx.fillStyle = '#c9a040'; ctx.fillRect(0, .45, 1, .02); ctx.fillRect(.47, .1, .06, .3); });
+      for (const u of [.12, .25, .75, .88]) { const p = lp(f.D, f.C, u); ell(p[0], p[1] - 2, 5, 5, '#1a1a1e'); }
+    };
+    car(x0, 4.1); car(x0 + 4.2, 4.1);
+    const tx = x0 + 8.4; /* tender */
+    const tf = block(tx, y0 + .02, .95, .58, 22, { lit: col, shade: mix(col, '#000000', .3), top: '#1a1a1e', courses: false });
+    { const p = upp(lp(tf.a, tf.c, .5), 0); ell(p[0], p[1] - 2, 14, 5, '#2a2a2e'); }
+    const ex = tx + 1.0; /* the engine: cab, boiler, smokebox, chimney, big wheels */
+    block(ex, y0 + .05, 2.4, .52, 8, { lit: '#1a1a1e', shade: '#121214', top: '#2a2a2e', courses: false });
+    ctx.save(); ctx.translate(0, -8);
+    const cab = block(ex, y0 + .02, .7, .58, 30, { lit: col, shade: mix(col, '#000000', .3), top: '#2a2a2e', courses: false });
+    tface(cab.D, cab.C, 30, () => { ctx.fillStyle = '#2a3040'; ctx.fillRect(.2, .45, .6, .35); });
+    const boil = block(ex + .7, y0 + .1, 1.55, .42, 20, { lit: col, shade: mix(col, '#000000', .3), top: mix(col, '#ffffff', .15), courses: false });
+    tface(boil.D, boil.C, 20, () => { ctx.fillStyle = '#c9a040'; for (const u of [.25, .55, .85]) ctx.fillRect(u, 0, .025, 1); });
+    tface(boil.C, boil.B, 20, () => { ctx.fillStyle = '#1a1a1e'; ctx.beginPath(); ctx.ellipse(.5, .5, .45, .5, 0, 0, 7); ctx.fill(); ctx.fillStyle = '#c9a040'; ctx.beginPath(); ctx.ellipse(.5, .5, .08, .1, 0, 0, 7); ctx.fill(); });
+    const ch = upp(tiso(ex + 2.05, y0 + .32), 20); ctx.fillStyle = '#1a1a1e'; ctx.fillRect(ch[0] - 5, ch[1] - 16, 10, 16); ctx.fillRect(ch[0] - 7, ch[1] - 19, 14, 4);
+    const dome = upp(tiso(ex + 1.4, y0 + .32), 20); ell(dome[0], dome[1] - 3, 6, 5, '#c9a040');
+    ctx.restore();
+    for (const u of [.3, .55, .8]) { const p = lp(tiso(ex, y0 + .62), tiso(ex + 2.4, y0 + .62), u); ell(p[0], p[1] - 9, 10, 10, '#1a1a1e'); ell(p[0], p[1] - 9, 7, 7, col); ell(p[0], p[1] - 9, 2.5, 2.5, '#c9a040'); }
+    /* smoke from the chimney, faster while moving; steam at the wheels */
+    for (let i = 0; i < 6; i++) { const ph = (t * (moving ? 1.6 : .55) + i / 6) % 1, p = upp(tiso(ex + 2.05, y0 + .32), 46); ell(p[0] - ph * 40, p[1] - ph * 60, 6 + ph * 16, 5 + ph * 12, `rgba(${moving ? 80 : 120},${moving ? 80 : 120},${moving ? 88 : 128},${.55 * (1 - ph)})`); }
+    for (let i = 0; i < 3; i++) { const ph = (t * .8 + i / 3) % 1, p = tiso(ex + .4, y0 + .7); ell(p[0] - 6 - ph * 10, p[1] - 4 - ph * 6, 4 + ph * 6, 3 + ph * 4, `rgba(255,255,255,${.5 * (1 - ph)})`); }
+  } finally { TUFF = keep; }
+}
+function trainGround() {
+  const q = ctrQ;
+  q(-30, 5.75, -6.6, 6.75, '#8a8278'); /* ballast; the rails run off into the far haze */
+  for (let x = -30; x < -6.8; x += .3) q(x, 5.85, x + .12, 6.65, '#5a4030');
+  q(-30, 6.02, -6.7, 6.08, '#6a6a72'); q(-30, 6.42, -6.7, 6.48, '#6a6a72');
+  q(-14.6, 6.8, -7.2, 7.55, '#b8b0a0'); q(-14.6, 6.8, -7.2, 6.88, '#e8c440'); /* the platform with its yellow line */
+  q(-11.2, 8.45, -7.6, 9.75, '#9a968e'); { const R = mulberry32(14); ctx.fillStyle = 'rgba(60,60,60,.25)'; for (let i = 0; i < 40; i++) { const p = tiso(-11.1 + R() * 3.4, 8.5 + R() * 1.2); ctx.fillRect(p[0], p[1], 4, 2); } }
+}
+function trainItems(add, t) {
+  add(-12, 4.9, () => { /* the station: red brick, slate roof, a clock and the name board */
+    const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 });
+    try {
+      const f = block(-13.6, 4.2, 3.4, 1.3, 34, { lit: '#a8503a', shade: '#86402e', top: '#5e6874', courses: false });
+      tface(f.D, f.C, 34, () => { ctx.fillStyle = '#f4efe4'; for (let i = 0; i < 5; i++) { ctx.fillRect(.08 + i * .18, .3, .09, .4); } ctx.fillStyle = '#2a3040'; for (let i = 0; i < 5; i++) ctx.fillRect(.095 + i * .18, .33, .06, .34); });
+      gableRoof(-13.6, 4.2, 3.4, 1.3, 34, 20, '#5e6874', .1);
+      const c = upp(lp(f.D, f.C, .5), 52); ell(c[0], c[1], 9, 9, '#f6f2e4'); ctx.strokeStyle = '#1a1a1e'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.arc(c[0], c[1], 9, 0, 7); ctx.moveTo(c[0], c[1]); ctx.lineTo(c[0], c[1] - 6); ctx.moveTo(c[0], c[1]); ctx.lineTo(c[0] + 4, c[1] + 1); ctx.stroke();
+    } finally { TUFF = keep; }
+  }, -13.6 + 3.4 + 4.2 + 1.3 - .5);
+  add(-10.4, 7.2, () => { /* the platform canopy and the name board */
+    for (const x of [-13.4, -11.4, -9.4]) { const p = tiso(x, 7.35); ctx.fillStyle = '#2a5a3a'; ctx.fillRect(p[0] - 2, p[1] - 56, 4, 56); }
+    const r = [tiso(-13.9, 6.85), tiso(-8.9, 6.85), tiso(-8.9, 7.55), tiso(-13.9, 7.55)].map(p => upp(p, 56)); tpoly(r, '#f2ead6');
+    tpoly([r[3], r[2], upp(r[2], -6), upp(r[3], -6)], '#2a5a3a');
+    const p = tiso(-8.2, 7.4); ctx.fillStyle = '#2a5a3a'; ctx.fillRect(p[0] - 30, p[1] - 44, 2, 44); ctx.fillRect(p[0] + 28, p[1] - 44, 2, 44); rrect(p[0] - 34, p[1] - 60, 68, 18, 3); ctx.fillStyle = '#f6f2e4'; ctx.fill(); ctx.strokeStyle = '#2a5a3a'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#2a2a2e'; ctx.font = '800 12px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('AVONSIDE', p[0], p[1] - 46); ctx.textAlign = 'left';
+  });
+  add(-6.7, 6.25, () => { const p = tiso(-6.7, 6.25); ctx.fillStyle = '#c0392b'; ctx.fillRect(p[0] - 14, p[1] - 18, 28, 8); ctx.fillStyle = '#f6f2e4'; ctx.fillRect(p[0] - 10, p[1] - 17, 6, 6); ctx.fillRect(p[0] + 4, p[1] - 17, 6, 6); ctx.fillStyle = '#3a3a40'; ctx.fillRect(p[0] - 12, p[1] - 10, 3, 10); ctx.fillRect(p[0] + 9, p[1] - 10, 3, 10); });
+  for (const x of [-14.2, -7.6]) add(x, 7.5, () => { const p = tiso(x, 7.5); ctx.fillStyle = '#2a2a2e'; ctx.fillRect(p[0] - 1.5, p[1] - 44, 3, 44); ell(p[0], p[1] - 46, 5, 6, '#ffe2a0'); });
+  for (const [x, y] of [[-15.5, 3.6], [-9, 3.8], [-17, 5.2], [-12.4, 9.9], [-9.4, 10.2]]) add(x, y, () => { const p = tiso(x, y); oakTree(p[0], p[1], .9); });
+  add(-10.8, 9.9, () => hedge(...tiso(-10.8, 9.9), 60));
+  ctrVehicles().slice(0, 1).forEach(c => {
+    let dx = 0, moving = false;
+    if (c.t0 != null) { const k = clamp((T - c.t0) / 4.6, 0, 1); dx = -14 * (1 - (1 - Math.pow(1 - k, 3))); moving = k < 1; }
+    const x0 = -19.4 + dx;
+    add(x0 + 6, 6.3, () => steamTrain(x0, 5.95, '#a8232c', t, moving), x0 + 11.8 + 6.6);
+  });
+}
+/* ---- per kind: where things are, how the jeeps go, what you hear ---- */
+const CTR_KINDS = {
+  bus: { ground: busGround, items: busItems, free: [[3, 17.5, 19, 33]], tap: [8.4, 18.6, 14.6, 26.5],
+    town: [[8, 14.95], [8, 22]],
+    xfer: { doors: i => [CTR_BAYS[CTR_BAYS.length - 1 - (i % 3)] + .3, CTR_BAY_GY + .2], via: d => [[d[0], 20.8]], stops: [[9.3, 19.7], [10.25, 19.7], [11.2, 19.7]], road: s => [s, [8, s[1]], [8, 11.6]] },
+    hum: { nf: 140, nt: 'lowpass', of: 34, ot: 'sawtooth', og: .75, lf: 6.5, ld: .25 } },
+  ship: { ground: shipGround, items: shipItems, free: [[23.5, -12.5, 37, -6.5], [29.5, -9, 31.8, 8.6]], tap: [26, -13.8, 34.5, -8.4],
+    town: [[8, 14.95], [8, 8], [24, 8]],
+    xfer: { doors: () => [31, -12.1], via: () => [[31, -10.8], [31, -9.8]], stops: [[29, -9.2], [29.8, -9.2], [31.8, -9.2]], road: s => [s, [30.6, s[1]], [30.6, 8], [24.2, 8]] },
+    hum: { nf: 520, nt: 'lowpass', of: 44, ot: 'sine', og: .35, lf: .28, ld: .5 } },
+  train: { ground: trainGround, items: trainItems, free: [[-20, 3, -5.6, 10.6]], tap: [-18, 3.8, -6.4, 9.8],
+    town: [[8, 14.95], [8, 8], [-6, 8]],
+    xfer: { doors: i => [-15.6 + (i % 3) * 2.2, 6.75], via: d => [[d[0], 7.3], [d[0] + .3, 8]], stops: [[-10.6, 9.1], [-9.6, 9.1], [-8.6, 9.1]], road: s => [s, [s[0], 8], [-5.6, 8]] },
+    hum: { nf: 820, nt: 'bandpass', of: 0, ot: 'sine', og: 0, lf: 1.6, ld: .95, sq: true } }
+};
+const ctrKind = () => { const K = ctrCfg(); return K && CTR_KINDS[K.kind]; };
+/* the jeeps: passengers walk from the vehicle to three jeeps, the jeeps drive off along the dirt road and fade out well
+   before the default view; it all loops while the morning lasts */
+function ctrXferItems(add, t) {
+  const X = ctrKind().xfer, P = 11, ph = (t % P), items = [];
+  const cols = ['#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0', '#5aa9e6', '#ff6fa8', '#2b2350'];
+  const walkers = 12, boarded = [0, 0, 0];
+  for (let i = 0; i < walkers; i++) {
+    const j = i % 3, s0 = .25 * i, d = X.doors(i), path = [d, ...X.via(d), [X.stops[j][0], X.stops[j][1] + .3]];
+    const len = path.slice(1).reduce((a, p, k) => a + Math.hypot(p[0] - path[k][0], p[1] - path[k][1]), 0), k = (ph - s0) / 2.4;
+    if (k >= 1) { boarded[j]++; continue; }
+    if (k < 0) continue;
+    const pos = walkPath(path, k * len).p;
+    add(pos[0], pos[1], () => { const q = tiso(...pos); person(q[0], q[1], cols[i % 7], t, i); }, pos[0] + pos[1]);
+  }
+  for (let j = 0; j < 3; j++) {
+    const s = X.stops[j], path = X.road(s), len = path.slice(1).reduce((a, p, k) => a + Math.hypot(p[0] - path[k][0], p[1] - path[k][1]), 0);
+    const lv = 4.4 + j * .7, dist = ph > lv ? Math.pow(ph - lv, 1.35) * 2.4 : 0;
+    if (dist >= len) continue;
+    const r = walkPath(path, dist), pos = r.p, alongX = dist ? Math.abs(r.dir[0]) > Math.abs(r.dir[1]) : true;
+    const a = Math.min(clamp(ph / .5, 0, 1), clamp((len - dist) / 1.6, 0, 1));
+    add(pos[0], pos[1], () => { ctx.save(); ctx.globalAlpha *= a; jeep(pos[0], pos[1], alongX, t, Math.min(JEEP_SEATS, boarded[j])); ctx.restore(); }, pos[0] + pos[1] + .3);
+  }
+  return items;
+}
+function ctrGround() {
+  const K = ctrCfg(), KK = ctrKind(); if (!K || !KK || CTR_HIDE) return;
+  ctx.save(); ctx.translate((K.shift[0] - K.shift[1]) * TW / 2, (K.shift[0] + K.shift[1]) * TH / 2);
+  try { KK.ground(); } finally { ctx.restore(); }
+}
+function ctrSpotItems(t) {
+  const K = ctrCfg(), KK = ctrKind(); if (!K || !KK || CTR_HIDE) return [];
+  const items = [], add = (gx, gy, fn, dep) => items.push({ at: [gx, gy], depth: dep != null ? dep : gx + gy, draw: fn });
+  KK.items(add, t);
+  if (ctrXferOn() && ctrVehicles().length) ctrXferItems(add, t);
+  const [sx, sy] = K.shift; if (!sx && !sy) return items;
+  return items.map(it => ({ at: [it.at[0] + sx, it.at[1] + sy], depth: it.depth + sx + sy, draw: () => { ctx.save(); ctx.translate((sx - sy) * TW / 2, (sx + sy) * TH / 2); try { it.draw(); } finally { ctx.restore(); } } }));
+}
+/* the outer scenery keeps clear of the contract place */
+const ctrSpotFree = (gx, gy) => { const K = ctrCfg(), KK = ctrKind(); if (!K || !KK) return true; const x = gx - K.shift[0], y = gy - K.shift[1]; return !KK.free.some(([a, b, c, d]) => x > a && x < c && y > b && y < d); };
+function ctrTapHit(x, y) {
+  const K = ctrCfg(), KK = ctrKind(); if (!K || !KK) return false;
+  const [a, b, c, d] = KK.tap, s = K.shift;
+  return inPoly([x, y], [tiso(a + s[0], b + s[1]), tiso(c + s[0], b + s[1]), tiso(c + s[0], d + s[1]), tiso(a + s[0], d + s[1])].map(([fx, fy]) => [fx * TOWN.z + TOWN.ox, (fy - 20) * TOWN.z + TOWN.oy]));
+}
+/* The place's own sound while its vehicle stands in view: the coaches' idling engines, the river lapping at the ship,
+   the steam engine's slow chuff; loudness from how close it is to the screen's middle. */
 let hum = null;
 function ctrHum(level) {
   if (!AC || !soundOn) level = 0;
-  if (!hum && level > .01 && AC) {
+  const KK = ctrKind(), P = KK ? KK.hum : null;
+  if (hum && P && hum.P !== P) { hum.stop(); hum = null; }
+  if (!hum && level > .01 && AC && P) {
     const src = AC.createBufferSource(); src.buffer = noiseBuf(2); src.loop = true;
-    const f = AC.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 140;
-    const o = AC.createOscillator(); o.type = 'sawtooth'; o.frequency.value = 34; const of = AC.createBiquadFilter(); of.type = 'lowpass'; of.frequency.value = 90;
-    const lfo = AC.createOscillator(); lfo.frequency.value = 6.5; const lg = AC.createGain(); lg.gain.value = .25;
-    const g = AC.createGain(); g.gain.value = 0; const am = AC.createGain(); am.gain.value = .75;
-    src.connect(f).connect(am); o.connect(of).connect(am); lfo.connect(lg).connect(am.gain); am.connect(g).connect(out());
-    src.start(); o.start(); lfo.start(); hum = { g, stop: () => { try { src.stop(); o.stop(); lfo.stop(); } catch (e) {} } };
+    const f = AC.createBiquadFilter(); f.type = P.nt; f.frequency.value = P.nf; f.Q.value = P.nt === 'bandpass' ? .9 : .7;
+    const o = AC.createOscillator(); o.type = P.ot; o.frequency.value = P.of || 30; const of = AC.createBiquadFilter(); of.type = 'lowpass'; of.frequency.value = 90; const og = AC.createGain(); og.gain.value = P.og;
+    const lfo = AC.createOscillator(); lfo.type = P.sq ? 'square' : 'sine'; lfo.frequency.value = P.lf; const lg = AC.createGain(); lg.gain.value = P.ld * .5;
+    const g = AC.createGain(); g.gain.value = 0; const am = AC.createGain(); am.gain.value = .55;
+    src.connect(f).connect(am); o.connect(of).connect(og).connect(am); lfo.connect(lg).connect(am.gain); am.connect(g).connect(out());
+    src.start(); o.start(); lfo.start(); hum = { P, g, stop: () => { try { src.stop(); o.stop(); lfo.stop(); } catch (e) {} } };
   }
   if (!hum) return;
   hum.g.gain.setTargetAtTime(.22 * level, AC.currentTime, .25);
@@ -7482,12 +7875,19 @@ function ctrHum(level) {
 }
 function ctrHumTick(V, w, h) {
   const K = ctrCfg();
-  if (!K || !TOWN.open || !ctrCoaches().length) return ctrHum(0);
+  if (!K || !TOWN.open) return ctrHum(0);
   const p = tiso(...ctrSpot()), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy, d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h);
+  const due = ctrDue(); if (due && d < .42) { due.arrDay = S.day; due.arrT = T; ctrArriveSound(); save(); } /* it pulls in as you look */
+  if (!ctrVehicles().length) return ctrHum(0);
   ctrHum(clamp(1.2 - d * 2.2, 0, 1) * clamp(V.z / .6, .3, 1));
 }
-/* two-tone coach horn when the first group pulls in */
-function ctrHorn() { if (!AC) return; tone(311, 311, .45, 'sawtooth', .035); tone(392, 392, .45, 'sawtooth', .03); tone(311, 311, .3, 'sawtooth', .035, .55); tone(392, 392, .3, 'sawtooth', .03, .55); }
+/* the arrival in the first offer's scene: a coach horn, a ship's horn, a steam whistle */
+function ctrArriveSound() {
+  if (!AC) return; const k = (ctrCfg() || {}).kind;
+  if (k === 'ship') { tone(98, 96, 1.5, 'sawtooth', .045); tone(147, 145, 1.5, 'sawtooth', .03); tone(98, 96, 1.1, 'sawtooth', .045, 1.9); tone(147, 145, 1.1, 'sawtooth', .03, 1.9); }
+  else if (k === 'train') { tone(880, 900, 1.2, 'square', .018); tone(1108, 1128, 1.2, 'sine', .03); tone(880, 900, .4, 'square', .018, 1.5); tone(1108, 1128, .4, 'sine', .03, 1.5); }
+  else { tone(311, 311, .45, 'sawtooth', .035); tone(392, 392, .45, 'sawtooth', .03); tone(311, 311, .3, 'sawtooth', .035, .55); tone(392, 392, .3, 'sawtooth', .03, .55); }
+}
 
 /* ---------- v125: bringing balloons and pilots into a new region ----------
    Only when you enter a new region: up to XFER.maxB balloons and XFER.maxP pilots from regions on autopilot come with
@@ -10440,7 +10840,7 @@ function townClamp(w, h) {
   const hx = c[0] * HOME.z + HOME.ox, hy = c[1] * HOME.z + HOME.oy;
   let x0 = Math.min(w * .5, w * .85 - mx, hx), x1 = Math.max(w * .5, w * .15 + mx, hx), y0 = Math.min(h * .5, h * .3 - my, hy), y1 = Math.max(h * .55, h * .8 + my, hy);
   /* v125: the coach terminal outside town can be dragged to the middle of the screen */
-  const K = ctrCfg(); if (K) { const p = tiso(...ctrSpot()), ex = w / 2 + (c[0] - p[0]) * TOWN.z, ey = h * .5 + (c[1] - p[1]) * TOWN.z; x1 = Math.max(x1, ex); y0 = Math.min(y0, ey); }
+  const K = ctrCfg(); if (K) { const p = tiso(...ctrSpot()), ex = w / 2 + (c[0] - p[0]) * TOWN.z, ey = h * .5 + (c[1] - p[1]) * TOWN.z; x0 = Math.min(x0, ex); x1 = Math.max(x1, ex); y0 = Math.min(y0, ey); y1 = Math.max(y1, ey); } /* v125.2: any direction */
   TOWN.ox += clamp(sx, x0, x1) - sx;
   TOWN.oy += clamp(sy, y0, y1) - sy;
 }
@@ -10490,7 +10890,7 @@ function townTap(x, y) {
   const hit = townHit(TOWN.hits, x, y);
   if (hit) { sfx('click'); hit.b.tap(); return; }
   /* v125: the coach terminal (its lot) shows what's booked */
-  if (ctrCfg() && inPoly([x, y], [tiso(8.5, 20.8 + ctrCfg().off), tiso(14.6, 20.8 + ctrCfg().off), tiso(14.6, 26.5 + ctrCfg().off), tiso(8.5, 26.5 + ctrCfg().off)].map(([fx, fy]) => [fx * TOWN.z + TOWN.ox, (fy - 20) * TOWN.z + TOWN.oy]))) { sfx('click'); ctrStatusCard(); return; }
+  if (ctrTapHit(x, y)) { sfx('click'); ctrStatusCard(); return; }
   /* v110: the launch field, or a balloon standing on it, opens your balloons */
   const V = TOWN, f = [tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)];
   if ([0, 90].some(up => inPoly([x, y], f.map(([fx, fy]) => [fx * V.z + V.ox, (fy - up) * V.z + V.oy]))) && unlocked('fleet')) { sfx('click'); openSection('fleet', 'Balonların'); }
