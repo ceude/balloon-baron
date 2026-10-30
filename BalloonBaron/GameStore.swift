@@ -134,6 +134,8 @@ final class GameStore {
     var priceSheetOpen = false
     /// The price when day one's price step started (`TUTA.p0`).
     @ObservationIgnored var tutP0: Int?
+    /// v124.6: passengers expected at the lesson's start price; "more passengers" waits until there are more.
+    @ObservationIgnored var tutPax0: Int?
     /// A guided action in progress (`GA`).
     var guided: GuidedAction?
     /// The spots on screen in the root presentation and in the price sheet: id → its button is disabled.
@@ -383,6 +385,7 @@ final class GameStore {
         showAgency = false
         priceSheetOpen = false
         tutP0 = nil
+        tutPax0 = nil
     }
 
     /// A save code to continue on another device, and loading one. v121.8 (TestFlight: a late game's code passed 65,000

@@ -78,7 +78,7 @@ extension GameState {
 public enum TutorialScene {
     public static let surfaceWind = [1: 5, 2: 6]
     public static let layers: [Int: [Double]] = [1: [-1.3, 4.6, -2.2, 6.2], 2: [-1, -2, 5.2, 3.4]]
-    public static let target: [Int: Double] = [1: 1720, 2: 1900]
+    public static let target: [Int: Double] = [1: 1300, 2: 1420] // v124.6: closer (was 1720, 1900)
     public static let demand = [1: 110, 2: 320]
     public static let dayTwoPrice = 160
 }

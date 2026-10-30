@@ -31,6 +31,7 @@ struct PriceSheetView: View {
                     rivals(g.state)
                     feelMeter(g.state.price)
                     mood(g)
+                    whyRows(g)
                     resultNotes(g)
                 }
                 .padding(20)
@@ -174,6 +175,43 @@ struct PriceSheetView: View {
             .font(Theme.font(15))
             .foregroundStyle(Theme.ink)
             .fixedSize(horizontal: false, vertical: true)
+    }
+
+    /// v124.6 `whyRows`: under the meter, what else decides the passengers: popularity against the rivals, what
+    /// changes the number of tourists today, and who sends tourists straight to you. Rows appear only when they apply.
+    @ViewBuilder
+    private func whyRows(_ g: Game) -> some View {
+        let m = g.market(price: g.state.price, capacity: g.state.capacityToday)
+        let factors = g.demandFactors
+        VStack(alignment: .leading, spacing: 5) {
+            if let pull = g.popularityPull, let avg = g.rivalAverageRep {
+                let color: Color = pull >= 1.1 ? Theme.green : pull >= 0.8 ? Theme.ink : pull >= 0.5 ? Color(hex: "#c98a00") : Theme.red
+                whyRow(loc("why.popularity", starsText(g.state.rep), starsText(avg)),
+                       abs(pull - 1) < 0.05 ? loc("why.equal") : loc("why.interest", Self.pct(min(pull, 3))), color)
+            }
+            if !factors.isEmpty {
+                whyRow(loc("why.tourists"), factors.map { loc("why.\($0.factor.rawValue)", g.state.weather?.flag.title ?? "") + " " + Self.pct($0.k) }
+                    .joined(separator: " · "), Theme.ink)
+            }
+            ForEach(Array(m.parts.enumerated()), id: \.offset) { _, p in
+                whyRow(CollectView.label(p.source), loc("why.pax", num(p.count)), Theme.green, dot: CollectView.color(p.source))
+            }
+        }
+    }
+
+    private func whyRow(_ label: String, _ value: String, _ color: Color, dot: Color? = nil) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 8) {
+            if let dot { Circle().fill(dot).frame(width: 8, height: 8) }
+            Text(label).foregroundStyle(Theme.ink2).lineLimit(1).minimumScaleFactor(0.8)
+            Spacer(minLength: 6)
+            Text(value).fontWeight(.bold).foregroundStyle(color).multilineTextAlignment(.trailing)
+        }
+        .font(Theme.font(13))
+    }
+
+    /// "+40%" / "−93%".
+    static func pct(_ k: Double) -> String {
+        (k >= 1 ? "+" : "−") + percent(abs(k - 1))
     }
 
     @ViewBuilder

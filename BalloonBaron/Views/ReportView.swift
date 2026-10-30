@@ -77,6 +77,12 @@ struct ReportView: View {
                 ProtoCallout(tone: .green, title: loc("report.holdTitle", eurH(lg.holdingNet)),
                              text: loc("report.holdBody", names, percent(s.holding.expenseRate), eurH(s.holding.cash)))
             }
+            // v124.6: the stars, yesterday → today, with the biggest reasons
+            if let r0 = report.repFrom, let r1 = report.repTo, starsText(r0) != starsText(r1) {
+                let why = report.repReasons.map { loc("repWhy.\($0.0.rawValue)") + " " + ($0.1 > 0 ? "+" : "−") + Self.starDelta(abs($0.1) * 4) }
+                ProtoCallout(tone: r1 > r0 ? .green : .red, title: loc("report.repTitle", starsText(r0), starsText(r1)),
+                             text: why.joined(separator: " · "))
+            }
             if Self.shows(lg.designRep * 4) {
                 ProtoCallout(tone: .green, title: loc("report.designTitle"), text: loc("report.designBody", Self.starDelta(lg.designRep * 4)))
             }

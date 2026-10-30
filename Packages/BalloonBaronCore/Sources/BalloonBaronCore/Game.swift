@@ -4,6 +4,8 @@ import Foundation
 public struct Game: Sendable {
     public var state: GameState
     var rng: SplitMix64
+    /// v124.6: popularity changes by reason while `finishDay` runs (`rep(_:_:)`).
+    var repLog: [RepReason: Double]?
 
     public init(company: String, colors: [String], seed: UInt64 = .random(in: 0...UInt64.max)) {
         state = GameState(company: company, colors: colors)
@@ -84,7 +86,9 @@ public struct Game: Sendable {
             l[m] = -rng.range(1, 4) * flag.wind
         }
         // v124: Bristol's field is nearer, like Albuquerque's (`cap ? 1300–2100 : 1000–1700` in the prototype).
-        let target = 220 + (state.region.boxWinds || state.region.bristol ? rng.range(1000, 1700) : rng.range(1300, 2100))
+        // v124.6: in Cappadocia the field is still close on day 3 (days 1-2 are the fixed scenario)
+        let target = 220 + (state.region.boxWinds || state.region.bristol ? rng.range(1000, 1700)
+            : state.region == .cap && state.day <= 3 ? rng.range(1000, 1250) : rng.range(1300, 2100))
         // Festivals always bring a special request.
         var mission: Mission? = state.day <= 2 || (rng.chance(0.4) && !(state.festival != nil && flag != .red)) ? nil
             : (flag == .yellow && rng.chance(0.5) ? .precision : rng.pick(Mission.allCases))
@@ -147,7 +151,7 @@ public struct Game: Sendable {
         var keep: [HezMessage] = [], later: [HezMessage] = [], n = 0
         var q = (state.hezLater ?? []) + state.hezQueue
         // v122.11: day 3's price reminder comes first, ahead of the lesson cap, and says what `price` would
-        if q.contains(.tip(.price3)) { q = [.tip(.price3)] + q.filter { $0 != .tip(.price3) && $0 != .tip(.price) } }
+        if q.contains(.tip(.price3)) { q = [.tip(.price3)] + q.filter { ![.tip(.price3), .tip(.price), .tip(.priceRep), .tip(.priceRiv)].contains($0) } }
         for m in q {
             var lesson = false
             if case .tip = m { lesson = true } // praise has its own every-other-day pace
@@ -192,7 +196,8 @@ public struct Game: Sendable {
         if s.day >= (s.region == .cap ? 1 : 3) { bossSay(.hello) } // v121: Kenan greets Hasan's grandchild on the first morning
         if s.unlocked.contains(.guide) { queueTip(.pr) }
         // v111: a TestFlight player left seats empty without noticing the price; the morning after, Hezarfen shows it.
-        if s.day >= 2 && s.day <= 12, let l = s.local.lastShare, l.cap > 0, l.me < l.cap { queueTip(.price) }
+        // v124.6: and says why: a dear ticket, low stars against the rivals, or more seats than tourists
+        if s.day >= 2 && s.day <= 12, let l = s.local.lastShare, l.cap > 0, l.me < l.cap { queueTip(emptySeatCause) }
         // v122.11: day 2's crowd made the player raise the price; on day 3 the tourists are back to normal, so Hezarfen
         // says to set it for today (a player who kept day 2's price flew half empty for days in tools/sim).
         if s.day == 3 && s.region == .cap, let t = s.tutorial, !t.isOld { queueTip(.price3) }

@@ -110,6 +110,7 @@ extension Goal {
     func label(region: RegionID) -> String {
         switch kind {
         case .balloons: loc("goal.balloons", num(Int(target)))
+        case .seats: loc("goal.seats", num(Int(target)))
         case .pilots: loc("goal.pilots", num(Int(target)))
         case .hotelDeal where target > 1: loc("goal.hotelDeals", num(Int(target)))
         case .bldMast where target > 2: loc("goal.bldMastLevel", num(Int(target)))

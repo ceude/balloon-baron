@@ -261,14 +261,17 @@ public struct FlightSim: Sendable {
                 break
             }
         }
+        // v124.6: a thermal carries you all the way up its column, not only until the moment is counted
+        if let m = moment, m.kind == .thermal, airborne, abs(x - m.x) < 65 && alt < 520 {
+            vy += Rules.thermalLift * s
+            inThermal = true
+        }
         if var m = moment {
             if m.kind == .greet { m.x += FlightWorld.wind(at: m.alt, time: t, weather) * s * 0.9 }
             if !m.done && airborne {
                 switch m.kind {
                 case .thermal:
                     if abs(x - m.x) < 65 && alt < 520 {
-                        vy += Rules.thermalLift * s
-                        inThermal = true
                         m.progress += dt
                         if m.progress > 2 { m.done = true; fuel = min(100, fuel + 15) }
                     }

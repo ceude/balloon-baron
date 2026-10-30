@@ -189,6 +189,8 @@ public enum Tip: String, Codable, CaseIterable, Sendable {
     case welcome, insurance, fleet, bank, market, crew, yellow, red, mission, accident, crisis
     case rivals, rivals2, rivals3, expect, antitrust, aging, absent, licenseHold, goals
     case pr, influ, prcap, bazaar, delegate, noRivals, show, price
+    /// v124.6: empty seats yesterday because of low popularity, or more seats than tourists (`emptySeatCause`).
+    case priceRep, priceRiv
     /// v117: "⏩ Advance" is open (`GameState.autopilotOK`).
     case autopilot
     /// v121: Hezarfen tells Hasan's story after the first flight in Cappadocia.

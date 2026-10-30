@@ -104,7 +104,22 @@ public struct DayReport: Codable, Equatable, Sendable {
     public var passengers: Int
     public var capacity: Int
     public var skipped: Bool
+    /// v124.6: popularity before and after the day, and what moved it (`RepReason`).
+    public var repFrom: Double?
+    public var repTo: Double?
+    public var repWhy: [RepReason: Double]?
     public var net: Int { ledger.net }
+
+    /// The biggest reasons (at least 0.02★), largest first, at most three.
+    public var repReasons: [(RepReason, Double)] {
+        (repWhy ?? [:]).filter { abs($0.value) * 4 >= 0.02 }.sorted { abs($0.value) > abs($1.value) }.prefix(3).map { ($0.key, $0.value) }
+    }
+}
+
+/// v124.6: why popularity changed on a day. Text: `repWhy.<rawValue>`.
+public enum RepReason: String, Codable, CaseIterable, Sendable {
+    case cancelled, traits, ads, mission, moment, perfect, good, far, farm, mud, airspace, pilotsSafe
+    case hard, crash, pilotAccident, hotels, drift, xl, designs, glow, show, prCap, absent, influencer
 }
 
 /// How the player's own flight ended, reported by the flight scene.

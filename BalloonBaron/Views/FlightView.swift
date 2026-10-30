@@ -409,7 +409,7 @@ final class FlightModel {
 
     private func coachTick(_ dt: Double) {
         guard sim.airborne, !sim.done else { return }
-        if sim.fuel < 25 && !lowFuel {
+        if sim.fuel < 30 && !lowFuel { // v124.6: was 25
             lowFuel = true
             coachAt = nil
             coachTip = nil
@@ -1376,7 +1376,7 @@ private enum FlightPainter {
         ctx.fill(rrect(ix + 12, iy + 68, iw - 24, 10, 5), with: .color(Color(hex: "#ece7f4")))
         if f.fuel > 1 {
             let w = (iw - 24) * CGFloat(f.fuel / 100)
-            ctx.fill(rrect(ix + 12, iy + 68, w, 10, 5), with: .color(f.fuel < 20 ? Theme.red : Theme.coral))
+            ctx.fill(rrect(ix + 12, iy + 68, w, 10, 5), with: .color(f.fuel < 30 ? Theme.red : Theme.coral))
         }
     }
 }

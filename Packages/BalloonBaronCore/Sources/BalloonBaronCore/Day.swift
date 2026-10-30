@@ -24,15 +24,33 @@ extension Game {
     }
 
     /// What a special request pays: bigger baskets carry more guests, and festivals pay half as much again.
+    /// v124.6: at least 8% of a typical day's net (`dailyNet`), scaled by the mission (the proposal 9%, the panorama
+    /// 5%), so it still matters when the company is big; early on the old reward stands. Rounded to 10.
     public func missionReward(_ m: Mission, _ size: BalloonSize? = nil) -> Int {
         let z = size ?? state.balloon(state.flagship)?.size ?? .S
-        return jsRound(Double(m.reward(for: z)) * (state.festival != nil ? Rules.festivalReward : 1))
+        let byNet = Double(dailyNet) * Rules.missionNetShare * Double(m.reward) / 400
+        return jsRound(max(Double(m.reward(for: z)), byNet) * (state.festival != nil ? Rules.festivalReward : 1) / 10) * 10
+    }
+
+    /// v124.6: a change in popularity with its reason, logged for the report while `finishDay` runs.
+    mutating func rep(_ why: RepReason, _ d: Double) {
+        state.rep += d
+        if d != 0, repLog != nil { repLog![why, default: 0] += d }
+    }
+
+    /// v124.6: logs what changed popularity since `r0` (for steps that clamp it).
+    mutating func repMark(_ why: RepReason, since r0: Double) {
+        let d = state.rep - r0
+        if d != 0, repLog != nil { repLog![why, default: 0] += d }
     }
 
     // MARK: Day end
 
     public mutating func finishDay(flight: FlightResult?) -> DayReport {
         guard let plan = state.plan, let weather = state.weather else { preconditionFailure("finishDay before launch") }
+        // v124.6: where today's popularity change comes from, for the report
+        let repStart = state.rep
+        repLog = [:]
         let red = weather.flag == .red
         var ev: [DayEvent] = [], rev: [DayEvent] = []
         var lg = Ledger()
@@ -49,7 +67,7 @@ extension Game {
             if isSelf && cancelled {
                 paxTotal -= pax
                 lg.cancellations += pax * Rules.cancelCompensation
-                state.rep -= 0.03
+                rep(.cancelled, -0.03)
                 ev.append(.cancelled(balloon: b.name, pax: pax, compensation: Rules.cancelCompensation))
                 continue
             }
@@ -58,16 +76,16 @@ extension Game {
             lg.fuel += jsRound(Double(z.fuel) * (state.fuelUpUntil.map { $0 >= state.day } == true ? 1.5 : 1) * (t == .thrifty ? 0.85 : 1))
             switch t {
             case .showman: lg.tips += pax * 9
-            case .daredevil: state.rep += 0.003
+            case .daredevil: rep(.traits, 0.003)
             case .storyteller:
-                state.rep += 0.002
+                rep(.traits, 0.002)
                 if rng.chance(0.15) { addReview(.perfect) }
             default: break
             }
             if let sp = b.ad {
                 lg.ads += sp.pay(for: z)
                 lg.adRepLoss += sp.repLoss
-                state.rep -= sp.repLoss
+                rep(.ads, -sp.repLoss)
                 ads.append(sp)
             }
             let q = premium(z, chance: accidentChance(b))
@@ -85,7 +103,7 @@ extension Game {
                     let reward = missionReward(m, z)
                     lg.mission += reward
                     lg.missionDone = m
-                    state.rep += 0.02
+                    rep(.mission, 0.02)
                     state.stats = { var st = state.statistics; st.missions += 1; return st }()
                     ev.append(.missionDone(m, reward: reward))
                 } else if let m = f.mission {
@@ -93,21 +111,21 @@ extension Game {
                 }
                 if let k = f.moment, f.landing != .crash {
                     lg.tips += pax * 5
-                    state.rep += 0.008
+                    rep(.moment, 0.008)
                     ev.append(.moment(k, tips: pax * 5))
                 }
                 switch f.landing {
                 case .perfect:
                     state.stats = { var st = state.statistics; st.perfectLandings += 1; return st }()
                     lg.tips += pax * 15
-                    state.rep += 0.03
+                    rep(.perfect, 0.03)
                     ev.append(.perfectLanding(balloon: b.name, tips: pax * 15))
                 case .good:
                     lg.tips += pax * 6
-                    state.rep += state.stars > 4.5 ? 0 : 0.01
+                    rep(.good, state.stars > 4.5 ? 0 : 0.01)
                     ev.append(.goodLanding(balloon: b.name))
                 case .far:
-                    state.rep -= state.stars > 4.5 ? 0.04 : 0.02
+                    rep(.far, -(state.stars > 4.5 ? 0.04 : 0.02))
                     ev.append(.farLanding(balloon: b.name, meters: jsRound(f.distance)))
                 case .hard: severity = 0.3
                 case .crash: severity = 0.8
@@ -118,7 +136,7 @@ extension Game {
             } else if rng.chance(accidentChance(b)) {
                 severity = rng.range(0.2, 1)
             } else {
-                state.rep += 0.004
+                rep(.pilotsSafe, 0.004)
             }
 
             if severity > 0 {
@@ -134,7 +152,7 @@ extension Game {
                 if hullPaid { lg.insurancePaid += repair }
                 if paxPaid { lg.insurancePaid += comp }
                 state.balloons[i].damagedUntil = state.day + days
-                state.rep -= 0.08 + 0.15 * severity
+                rep(isSelf ? (severity < 0.5 ? .hard : .crash) : .pilotAccident, -(0.08 + 0.15 * severity))
                 if !isSelf { accidents.append(b.name) }
                 let who: DayEvent.Pilot = isSelf ? .you : state.pilot(of: b).map { .named($0.name) } ?? .unknown
                 if state.bossRival?.alive == true { bossSay(.accident) }
@@ -179,6 +197,7 @@ extension Game {
             if state.condition(state.balloons[i]) <= 0 { ev.append(.envelopeWorn(balloon: state.balloons[i].name)) }
         }
         lg.upkeep = jsRound(Double(state.balloons.reduce(0) { $0 + $1.size.upkeep }) * state.upkeepFactor)
+        let repHotels = state.rep
         for h in state.activeHotels {
             if state.ownHotels.contains(h) {
                 lg.hotelIncome += state.hotelIncome(h)
@@ -188,6 +207,7 @@ extension Game {
                 state.rep = min(1.4, state.rep + h.repPerDay)
             }
         }
+        repMark(.hotels, since: repHotels)
         for k in state.loans.indices {
             lg.loans += state.loans[k].installment
             state.loans[k].daysLeft -= 1
@@ -197,9 +217,11 @@ extension Game {
         // v124: a Bristol festival day's evening ascent and the Night Glow
         bristolEvening(flying: flyingIDs, cancelledSelf: cancelled, paxTotal: paxTotal, red: red, ledger: &lg, events: &ev)
         state.cash += lg.net
+        let repDrift = state.rep
         state.rep = clamp(lerp(state.rep, 1, 0.01), Rules.repRange.lowerBound, Rules.repRange.upperBound)
         if state.stars > 4.5 { state.rep -= 0.006 }
-        state.rep += Double(flyingIDs.compactMap(state.balloon).filter { $0.size == .XL }.count) * Rules.xlRepPerFlight
+        repMark(.drift, since: repDrift)
+        rep(.xl, Double(flyingIDs.compactMap(state.balloon).filter { $0.size == .XL }.count) * Rules.xlRepPerFlight)
         // Painted balloons get talked about; fresh, creative designs most of all.
         let painted = flyingIDs.compactMap(state.balloon).filter { state.design(of: $0) != nil }
         let designRep = min(Studio.maxDailyRep, painted.reduce(0) { acc, b in
@@ -207,7 +229,7 @@ extension Game {
             return acc + 0.003 * Double(d.score) / 100 * freshness(d) + (d.shape != nil ? 0.0015 : 0)
         })
         if designRep > 0 {
-            state.rep += designRep
+            rep(.designs, designRep)
             lg.designRep = designRep
             if rng.chance(0.25), let d = state.design(of: rng.pick(painted)) { addReview(.design, ["d": String(d.id)]) }
         }
@@ -235,7 +257,7 @@ extension Game {
         }
         if state.local.showTonight == state.day {
             let n = state.local.showIDs?.count ?? 0
-            state.rep += Rules.showRep
+            rep(.show, Rules.showRep)
             state.local.showUntil = state.day + Rules.showDays
             state.local.lastShow = state.day
             ev.append(.showTonight(balloons: n))
@@ -244,14 +266,16 @@ extension Game {
         // Popularity needs hotels or guides past 4.2★; an influencer campaign stretches it to 4.5★. Only once the
         // market (hotels, guides) is open: before that there is nothing the tip could send you to (TestFlight).
         if state.unlocked.contains(.market) && !state.prOK && state.rep > state.prCap {
+            let r0 = state.rep
             state.rep = state.prCap
+            repMark(.prCap, since: r0)
             queueTip(.prcap)
         }
         if state.licenseDaysLeft == 0 { ev.append(.licenseExpiring) }
         // Passengers miss the founder: popularity erodes while the balloons fly without you.
         let absent = state.daysSinceSelfFly
         if !flyingIDs.isEmpty && absent > Rules.absentGraceDays {
-            state.rep -= Rules.absentRepLoss
+            rep(.absent, -Rules.absentRepLoss)
             if state.absentNoticeDay < state.lastSelfFly || state.day - state.absentNoticeDay >= 5 {
                 state.absentNoticeDay = state.day
                 ev.append(.founderAbsent(days: absent))
@@ -318,7 +342,9 @@ extension Game {
             ev.append(.hotelLeft(h))
         }
         if state.day <= state.influencerUntil {
+            let r0 = state.rep
             state.rep = min(1.4, state.rep + 0.03)
+            repMark(.influencer, since: r0)
             if rng.chance(0.6) { addReview(.influencer) }
         }
         state.repHistory.append(RepPoint(day: state.day, rep: state.rep))
@@ -348,8 +374,12 @@ extension Game {
         // v121: after the first flight in Cappadocia, Hezarfen tells the grandfather's story
         if state.region == .cap && !flyingIDs.isEmpty && state.day <= 3 { queueTip(.hasan) }
         factoryDay(&ev, tomorrow: state.day + 1)
-        let report = DayReport(day: state.day, flag: weather.flag, ledger: lg, events: ev, rivalEvents: rev,
+        var report = DayReport(day: state.day, flag: weather.flag, ledger: lg, events: ev, rivalEvents: rev,
                                passengers: paxTotal, capacity: capToday, skipped: plan.skipped)
+        report.repFrom = repStart
+        report.repTo = state.rep
+        report.repWhy = repLog
+        repLog = nil
 
         state.day += 1
         state.plan = nil

@@ -161,3 +161,47 @@ extension Game {
         return MarketResult(pax: pax, caps: comps.map(\.cap), referrals: add, base: base, parts: parts)
     }
 }
+
+/// v124.6: what multiplies the day's tourists, shown under the price meter. Text: `why.<rawValue>`.
+public enum DemandFactor: String, Sendable {
+    case fiesta, festival, winter, flag, sales, holding
+}
+
+extension Game {
+    /// The living rivals' average popularity, or nil with no rival in the air.
+    public var rivalAverageRep: Double? {
+        let a = state.rivals.filter(\.alive)
+        return a.isEmpty ? nil : a.reduce(0) { $0 + $1.rep } / Double(a.count)
+    }
+
+    /// v124.6: how much tourists are drawn to you against the rivals: rep² (a crisis below 2★ cuts it to 35%) over the
+    /// rivals' average rep², as in `allocate`. 1 = the same, 0.07 = 93% less interest.
+    public var popularityPull: Double? {
+        guard let avg = rivalAverageRep, avg > 0 else { return nil }
+        let r = state.rep
+        return r * r * (r < Rules.crisisRep ? 0.35 : 1) / (avg * avg)
+    }
+
+    /// v124.6: today's demand multipliers that are not 1 (`demandFactors`).
+    public var demandFactors: [(factor: DemandFactor, k: Double)] {
+        var out: [(DemandFactor, Double)] = []
+        func add(_ f: DemandFactor, _ k: Double) { if abs(k - 1) > 0.004 { out.append((f, k)) } }
+        if state.fiesta != nil { add(.fiesta, state.region.fiestaDemand) }
+        if state.festival != nil { add(.festival, Rules.festivalDemand) }
+        if state.winter != nil { add(.winter, 0.55) }
+        add(.flag, (state.weather?.flag ?? .green).demand)
+        add(.sales, state.salesFactor)
+        add(.holding, holdingBoost(state.region))
+        return out
+    }
+
+    /// v124.6 `emptySeatCause`: why seats stayed empty yesterday. A dear ticket, low popularity against the rivals,
+    /// or more seats than tourists.
+    var emptySeatCause: Tip {
+        let w = Rules.willing(Double(state.price)), pull = popularityPull
+        if w < 0.7 { return .price }
+        if state.rep < Rules.crisisRep || (pull.map { $0 < 0.6 } ?? false) { return .priceRep }
+        if w < 0.85 { return .price }
+        return .priceRiv
+    }
+}

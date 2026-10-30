@@ -148,7 +148,7 @@ final class PrototypeV85Tests: XCTestCase {
         while g.state.day < 24 { g.state.cash = 3000; play(&g) }
         XCTAssertNotNil(g.state.festival)
         XCTAssertTrue(g.state.hezQueue.contains(.festivalStarted(0)) || g.state.festival?.index == 0)
-        XCTAssertEqual(g.missionReward(.proposal, .S), jsRound(450 * 1.5))
+        XCTAssertEqual(g.missionReward(.proposal, .S), 680) // 450 × 1.5, rounded to 10 (v124.6)
         if g.state.weather?.flag != .red { XCTAssertNotNil(g.state.weather?.mission, "festivals always bring a special request") }
     }
 

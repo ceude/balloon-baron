@@ -98,7 +98,7 @@ final class BristolTests: XCTestCase {
         XCTAssertEqual(cs.map(\.id), ["ashton", "avonGorge", "festivalBri", "baronBri"])
         XCTAssertEqual(cs.map(\.reward), [5000, 10000, 20000, 0])
         func target(_ c: Int, _ k: GoalKind) -> Double? { cs[c].goals.first { $0.kind == k }?.target }
-        XCTAssertEqual([target(0, .balloons), target(1, .balloons), target(2, .balloons)], [4, 14, 24])
+        XCTAssertEqual([target(0, .seats), target(1, .seats), target(2, .seats)], [48, 220, 380]) // v124.6: seats, not balloons
         XCTAssertEqual([target(1, .share), target(2, .share), target(3, .share)], [0.35, 0.55, 0.75])
         XCTAssertEqual(target(1, .fog), 1)
         XCTAssertEqual(target(2, .glow), 1)
@@ -110,7 +110,7 @@ final class BristolTests: XCTestCase {
         XCTAssertTrue(g.state.done(Goal(kind: .glow, target: 1)))
         // The first chapter done the moment its goals hold.
         g.state.cash = 1_000_000
-        for _ in 0..<3 { _ = g.buyBalloon(.S) }
+        for _ in 0..<3 { _ = g.buyBalloon(.M) }
         g.state.pilots = (0..<3).map { Pilot(id: 900 + $0, name: "P", level: .experienced) }
         g.state.rep = 1.25
         g.state.hotelDeals = [.stone, .mansion]

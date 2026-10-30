@@ -195,6 +195,8 @@ public enum Rules {
     /// Cappadocia's festivals: from day 24, every 35 days, four days of extra tourists and richer special requests.
     public static let festivalFirst = 24, festivalEvery = 35, festivalDays = 4
     public static let festivalDemand = 1.4, festivalReward = 1.5
+    /// v124.6: a mission pays at least this share of a typical day's net (`missionReward`).
+    public static let missionNetShare = 0.08
     public static let festivalCount = 3
 
     public static let loans = [

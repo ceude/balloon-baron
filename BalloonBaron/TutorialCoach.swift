@@ -160,7 +160,7 @@ extension GameStore {
     func priceSheet(open: Bool) {
         priceSheetOpen = open
         if open {
-            if (homeTutStep == "price" || homeTutStep == "price2") && tutP0 == nil { tutP0 = state?.price }
+            if (homeTutStep == "price" || homeTutStep == "price2") && tutP0 == nil { tutP0 = state?.price; tutPax0 = game?.estimatedIncome().pax }
         } else if homeTutStep == "price" {
             // On to "Yolcu topla", whether or not the price went down.
             tutStep("price")
@@ -177,6 +177,8 @@ extension GameStore {
             return
         }
         guard homeTutStep == "price", let p0 = tutP0, let p = state?.price, p < p0, state?.tutorialHas("price_low") == false else { return }
+        // v124.6: "you see, more passengers" only once the estimate has really gone up; until then, one more tap on −
+        if let pax0 = tutPax0, let pax = game?.estimatedIncome().pax, pax <= pax0 { return }
         tutStep("price_low")
     }
 
@@ -212,7 +214,8 @@ extension GameStore {
             return TutFrame(key: "price.low", holes: hs, arrow: .some(nil), line: loc("tut.priceSeen"))
         }
         let hs = [sp.hole("pMinus", pad: 6, round: true), sp.hole("est", pad: 6)].compactMap { $0 }
-        return TutFrame(key: "price", holes: hs, line: loc("tut.price"))
+        let lowered = tutP0.map { s.price < $0 } ?? false
+        return TutFrame(key: lowered ? "price.again" : "price", holes: hs, line: loc(lowered ? "tut.priceAgain" : "tut.price"))
     }
 
     private func guideFrame(_ g: GuidedAction, _ sp: TutSpots, sheet: Bool) -> TutFrame? {
@@ -235,6 +238,7 @@ extension GameStore {
     /// `guideOk`: a lesson is shown as a guided action from the home screen, when its building is in the town.
     func guideOK(_ t: Tip) -> Bool {
         guard let def = GuidedAction.def(t), let s = state, auto == nil, !collecting, flightPax == nil, report == nil else { return false }
+        if t == .price && s.flyingToday.isEmpty { return false } // v124.6: no price lesson on a day nothing can fly
         if let b = def.bld { return Town.buildings(s).contains { $0.id == b && $0.lv >= 0 } }
         return true
     }

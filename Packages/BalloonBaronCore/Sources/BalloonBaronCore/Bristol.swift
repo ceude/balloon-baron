@@ -192,7 +192,7 @@ extension Game {
         }
         if state.local.glowTonight == state.day {
             let n = glowFleet.count
-            state.rep += Glow.rep
+            rep(.glow, Glow.rep)
             state.local.glowCount = (state.local.glowCount ?? 0) + 1
             addPaper(.nightGlow(balloons: n))
             ev.append(.nightGlowTonight(balloons: n))
@@ -208,18 +208,18 @@ extension Game {
         }
         if let a = f.farm {
             lg.fines += Bristol.farmFine
-            state.rep -= Bristol.farmRep
+            rep(.farm, -Bristol.farmRep)
             addReview(.farm)
             ev.append(.farmLanding(a, fine: Bristol.farmFine))
         }
         if f.mud == true {
-            state.rep -= Bristol.mudRep
+            rep(.mud, -Bristol.mudRep)
             addReview(.mud)
             ev.append(.mudLanding)
         }
         if f.airFine == true {
             lg.fines += Airspace.fine
-            state.rep -= Airspace.rep
+            rep(.airspace, -Airspace.rep)
             addPaper(.airspace(fine: Airspace.fine))
             ev.append(.airspaceFine(fine: Airspace.fine))
         }
