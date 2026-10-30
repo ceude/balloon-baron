@@ -188,7 +188,8 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .mood{margin:2px 0 0;font-size:13px;line-height:1.4;opacity:.85;text-align:left}
 .why{margin:8px 0 0;display:grid;gap:4px;font-size:12.5px;text-align:left}
 .why .wr{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
-.why .wr span{opacity:.85;white-space:nowrap}.why .wr span i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
+.why .wr span{opacity:.85;min-width:0} /* v125.6: a long label wraps instead of being cut */
+.why .wr em{white-space:nowrap}.why .wr span i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
 .why .wr em{font-style:normal;font-weight:700;text-align:right}
 .why em.g{color:var(--green)}.why em.y{color:#e0a400}.why em.r{color:var(--red)}
 .mood b{font-family:var(--cond);font-size:15px}
@@ -324,6 +325,7 @@ body.mhold #town{z-index:3;background:transparent}
   box-shadow:0 5px 0 var(--coral-d);transition:transform .06s, box-shadow .06s}
 .big:active:not(:disabled){transform:translateY(4px);box-shadow:0 1px 0 var(--coral-d)}
 .card > .big{flex:none} /* v121.12: a column card squeezed flex:1 buttons to 28px */
+.big.danger{background:var(--red);box-shadow:0 5px 0 #a8302a}.big.danger:active:not(:disabled){box-shadow:0 1px 0 #a8302a}
 .big:disabled{background:#cfc8dd;box-shadow:0 5px 0 #b3aac6;cursor:not-allowed}
 .ghost{height:54px;padding:0 16px;border-radius:16px;background:var(--haze);font-family:var(--cond);font-weight:700;font-size:18px;box-shadow:0 5px 0 var(--line)}
 .ghost:active{transform:translateY(4px);box-shadow:0 1px 0 var(--line)}
@@ -507,6 +509,7 @@ button.srow:active{background:#f6f3fb}
 .tg.on i::after{opacity:1}
 .sbox{margin-top:10px;padding:12px;border-radius:16px;background:#f6f3fb;display:flex;flex-direction:column;gap:8px}
 .sbox textarea{border-radius:12px}
+.sbox .btns{flex-wrap:wrap}.sbox .btns .pbtn{flex:1 1 auto} /* v125.6: Paste / From file / Load wrap on a small phone */
 .settings > .big{margin-top:18px}
 .opt{display:flex;flex-direction:column;gap:3px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
 .opt.a{box-shadow:0 0 0 2px var(--coral) inset,0 3px 0 #c7381a}
@@ -671,6 +674,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .flrow .st i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .flrow .st.g i{background:var(--green)} .flrow .st.y i{background:var(--yellow)} .flrow .st.o i{background:#ff8a3d} .flrow .st.r i{background:var(--red)}
 .flrow .st.r,.flrow .st.o{color:var(--ink)}
+.flrow.cargo{opacity:.55}.flrow.cargo .st.c i{background:#3d7fd0}
 .flrow .ring{--p:100;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p) * 1%), var(--haze) 0)}
 .flrow .ring em{width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:10.5px;font-weight:800;color:var(--ink)}
 .flrow .chev{width:16px;height:16px;fill:none;stroke:#b9b1cc;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
@@ -713,6 +717,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .xrow.on{box-shadow:0 0 0 2px #14a39a inset;background:#effaf8}.xrow.on i{background:#14a39a;border-color:#14a39a}
 .xrow b{font-size:15px;color:var(--ink)}.xrow span{font-size:12.5px;color:var(--ink2)}
 .xrow:disabled{opacity:.45}
+.card.xfer .xfull{margin:-4px 2px 6px;font-size:12.5px;font-weight:600;color:#8c5a00}
 .card.xfer .callout{margin:10px 0}
 .xnav{display:flex;gap:8px;margin-top:12px}.xnav button{flex:1}.xnav .ghost{flex:0 0 34%}
 .card.xfer .xskip{width:100%;margin-top:6px}
@@ -723,6 +728,13 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .ctrfacts div{padding:7px 10px;border-radius:12px;background:rgba(108,100,136,.09);display:flex;flex-direction:column}
 .ctrfacts b{font-family:var(--cond);font-weight:800;font-size:19px;line-height:1.1;color:var(--ink)}.ctrfacts span{font-size:12px;color:var(--ink2)}
 .ctrrule{font-size:12.5px;line-height:1.4;color:var(--ink2);margin:6px 0}
+.ctrpen{display:flex;flex-direction:column;gap:2px;margin:8px 0 4px;padding:8px 12px 8px 14px;border-radius:12px;background:rgba(229,67,47,.09);box-shadow:5px 0 0 var(--red) inset;font-size:13.5px;line-height:1.35;color:var(--ink)}
+.ctrpen b{font-size:14px;font-weight:700}
+/* v125.6: tighter so the offer card fits an iPhone SE without scrolling */
+.card.ctr{gap:8px}
+.card.ctr .ctrfacts,.card.ctr .ctrpen,.card.ctr .ctrrule,.card.ctr .ctrtrust,.card.ctr .ctrfog{margin:0}.card.ctr .ctrsay{margin:4px 0 0}.card.ctr .ctrrow{margin-top:0}.card.ctr .ctrrow .opt{margin:0}
+@media (max-height:700px){.card.ctr{padding:14px 16px}.ctrav,.ctrav .hzav{width:46px;height:46px}.ctrhd{margin-bottom:0}.ctrhd b{font-size:19px}.ctrsay{font-size:13.5px;padding:7px 11px}.ctrpen{font-size:13px;padding-top:6px;padding-bottom:6px}.ctrtrust{font-size:12px}.ctrfacts div{padding:5px 10px}.ctrfacts b{font-size:17px}.card.ctr > .big{min-height:0;padding-top:12px;padding-bottom:12px}}
+.ctrmore{display:inline;margin-left:6px;background:none;padding:0;color:var(--ink2);font:700 13.5px Barlow,sans-serif;text-decoration:underline}
 .ctrrow{display:flex;gap:8px;margin-top:8px}.ctrrow .opt{flex:1;margin:0;padding:9px 12px}.ctrrow .opt b{font-size:14.5px}.ctrrow .opt span{font-size:12px}
 .ctrrow .opt.no b{color:#a8302a}
 .ctrfog{display:flex;align-items:center;gap:8px;margin:2px 0 6px;font-size:12.5px;color:var(--ink2)}.ctrfog b{font-family:var(--cond);font-weight:800;font-size:15px;padding:2px 8px;border-radius:99px;background:#e6eef4;color:#3a5a7a}.ctrfog b.mid{background:#fff3cf;color:#6b4c00}.ctrfog b.hi{background:#fde6e2;color:#8c2414}
@@ -3361,7 +3373,7 @@ function sellCard(b) {
   if (b.id === S.flag) notes.push('Bu senin amiral balonun. Satarsan başka bir balon amiral olur.');
   if (p) notes.push(`Pilotu ${esc(p.name)} başka balona geçer ya da boşta kalır.`);
   if (notes.length) c.appendChild(h('p', 'hint', notes.join(' ')));
-  const ok = h('button', 'big', `Sat ${eur(v)}`), no = h('button', 'ghost', 'Vazgeç'); ok.style.width = no.style.width = '100%';
+  const ok = h('button', 'big danger', `Sat ${eur(v)}`), no = h('button', 'ghost', 'Vazgeç'); /* v125.6: red, it can't be undone */ ok.style.width = no.style.width = '100%';
   ok.onclick = () => {
     if (!S.balloons.includes(b)) { m.hidden = true; return; }
     S.cash += v; S.balloons = S.balloons.filter(x => x !== b); if (S.flag === b.id) S.flag = S.balloons[0].id;
@@ -3436,7 +3448,15 @@ function tabFleet(body) {
     r.onclick = () => balloonCard(b);
     box.appendChild(r);
   }
-  if (!list.length) box.appendChild(h('p', 'hint', 'Bu filtrede balon yok.'));
+  /* v125.6: balloons on their way by cargo show at the bottom, greyed, until they arrive (xferArrive) */
+  if (S.xferShip && FLEET_F === 'all') for (const b of S.xferShip.b) {
+    const bd = designOf(b), r = h('div', 'flrow cargo');
+    r.innerHTML = `<span class="fi">${bd ? `<img src="${designThumb(bd, 28, 36)}" alt="">` : balloonIcon(myCol()[0], myCol()[1])}</span>
+      <span class="fm"><b>${esc(b.name)}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em></b>
+      <span class="st c"><i></i>Kargoda: ${Math.max(0, S.xferShip.day - S.day)} gün kaldı</span></span>`;
+    box.appendChild(r);
+  }
+  if (!box.children.length) box.appendChild(h('p', 'hint', 'Bu filtrede balon yok.'));
   s.appendChild(box);
   s.appendChild(h('p', 'hint', `Balon zarfı yaklaşık ${envLife()} uçuşta yıpranır. %30 altında kaza riski artar, %0'da balon uçamaz. Yenilemek balon fiyatının %35'i.`));
   s.appendChild(h('p', 'hint', 'Hangi balonu kendin uçuracağını balona dokunup "Bu balonu ben uçurayım" diyerek seçersin; o balon amiralin olur. Diğer balonlara pilot gerekir. Balonuna reklam alırsan sponsor her uçuşta öder, ama yolcular reklamlı balonu sevmez ve popülerliğin her uçuşta biraz düşer.'));
@@ -5366,7 +5386,7 @@ function showMenu(open) {
       inp.onchange = () => { const f = inp.files[0]; if (f) f.text().then(t => { ta.value = t.trim(); loadText(t); }); };
       inp.click();
     };
-    if (open === 'copy') btns.append(pbtn('Kopyala', () => { navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = 'Kopyalandı.'; }).catch(() => { ta.focus(); ta.select(); msg.textContent = 'Kod seçildi, kopyalamak için Ctrl+C.'; }); }),
+    if (open === 'copy') btns.append(pbtn('Kopyala', () => { navigator.clipboard.writeText(ta.value).then(() => { msg.textContent = ''; sfx('click'); toast('Kopyalandı'); }).catch(() => { ta.focus(); ta.select(); msg.textContent = 'Kod seçildi, kopyalamak için Ctrl+C.'; }); }),
       pbtn('Paylaş', shareCode, false, true));
     else btns.append(pbtn('Yapıştır', () => { navigator.clipboard.readText().then(t => { ta.value = t; }).catch(() => { ta.focus(); msg.textContent = 'Kutuya uzun basıp Yapıştır de.'; }); }, false, true),
       pbtn('Dosyadan', pickFile, false, true),
@@ -7447,14 +7467,19 @@ function ctrCard() {
   if (TOWN.open && TOWN.cine) { const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...ctrSpot()), Z = TOWN.cine.to.z; TOWN.cine = Object.assign(TOWN.cine, { t0: performance.now(), dur: 900, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: Z, ox: r.width / 2 - cx * Z, oy: r.height * .2 - cy * Z } }); }
   const c = h('div', 'card ctr');
   ctrHead(c, w, C.met ? `${K.T.tag} teklifi` : 'Yeni bir iş bağlantısı');
-  ctrSpeech(c, (C.met ? '' : w.L.intro + ' ') + ctrLine(w, 'offer', kArgs(O)));
+  /* v125.6: the offer in one or two lines so the card fits a small phone; the introduction behind "Daha fazla" */
+  const say = ctrLine(w, 'offer', kArgs(O));
+  ctrSpeech(c, say);
+  if (!C.met) { const sp = c.lastChild, more = h('button', 'ctrmore', 'Daha fazla'); more.onclick = () => { sp.textContent = w.L.intro + ' ' + say; more.remove(); }; sp.appendChild(more); }
   const seats = fleetSeats(), riv = ctrRival(), len = O.len || 1;
   c.appendChild(h('div', 'ctrfacts', `<div><b>${O.n}${len > 1 ? ' × ' + len : ''}</b><span>${len > 1 ? 'kişi, her sabah' : 'kişi'} · filon: ${seats} koltuk</span></div><div><b>${ctrWhen(O)}</b><span>${K.weekend ? `${dayName(O.day)}–${dayName(O.day + 1)}` : `Kalan gün: ${O.day - S.day}${len > 1 ? ` · süre: ${len}` : ''}`}</span></div><div><b>${eur(O.price)}</b><span>kişi başı</span></div><div><b>${eur(ctrTotal(O))}</b><span>toplam</span></div>`));
   if (O.fogP) c.appendChild(h('div', 'ctrfog', `<span>Sis tahmini</span>${O.fogP.map((p, i) => `<b class="${p >= .4 ? 'hi' : p >= .25 ? 'mid' : ''}">${DAY_SHORT[((O.day + i - 1) % 7 + 7) % 7]} %${Math.round(p * 100)}</b>`).join('')}`));
-  const rule = K.fogG ? `Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade edilir, üstüne kişi başı ${eur(Math.round(O.price * K.voucher))} kupon verilir. Eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza.`
-    : len > 1 ? `${len} sabah boyunca koltuklar önce gruba gider; her sabah eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza. Kırmızı bayraklı sabah sayılmaz.`
-    : `O sabah koltuklar önce gruba gider. Eksik koltuk başına ${eur(Math.round(O.price * K.pen))} ceza; kırmızı bayrakta grup bir gün kayar (%${Math.round(K.redCut * 100)} indirimle).`;
-  c.appendChild(h('p', 'ctrrule', `${rule} Reddedersen grubu <b>${riv ? esc(riv.name) : 'bir rakip'}</b> uçurur.`));
+  /* v125.6: the penalty stands out in a callout with the rule under it; who takes the group if you say no, quieter */
+  const rule = K.fogG ? `Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade edilir, üstüne kişi başı ${eur(Math.round(O.price * K.voucher))} kupon verilir.`
+    : len > 1 ? `${len} sabah boyunca koltuklar önce gruba gider, ceza her sabah ayrı. Kırmızı bayraklı sabah sayılmaz.`
+    : `O sabah koltuklar önce gruba gider; kırmızı bayrakta grup bir gün kayar (%${Math.round(K.redCut * 100)} indirimle).`;
+  c.appendChild(h('div', 'ctrpen', `<b>Eksik koltuk başına ceza: ${eur(Math.round(O.price * K.pen))}</b><span>${rule}</span>`));
+  c.appendChild(h('p', 'ctrrule', `Reddedersen grubu <b>${riv ? esc(riv.name) : 'bir rakip'}</b> uçurur.`));
   ctrTrust(c, !C.pref && C.okWho < K.prefNeed ? w.L.promise : null);
   const ok = h('button', 'big', `Kabul et: ${eur(ctrTotal(O))}`);
   ok.onclick = () => { sfx('coin'); ctrAccept(); ctrResult(w, 'ok', O); };
@@ -7977,11 +8002,15 @@ function showXfer() {
     const row = (key, html, full) => { const on = sel.has(key), b = h('button', 'xrow' + (on ? ' on' : ''), `<i>${on ? '✓' : ''}</i>${html}`); b.disabled = !on && full; b.onclick = () => { on ? sel.delete(key) : sel.add(key); sfx('click'); draw(); }; return b; };
     if (k === 'b') {
       c.appendChild(h('p', 'hint', `${guide().name}: Otomatik moddaki bölgelerinden balon getirebilirsin evlat. Kargoya ${XFER.seats} koltuk sığar (iki küçük ya da bir orta sepet), yolculuk ${XFER.ship} gün.`));
+      /* v125.6: when nothing more fits, say why the other rows are grey */
+      const full = B.some(x => !sel.has('b' + x.b.id) && (nb >= XFER.maxB || selSeats() + SIZES[x.b.size].cap > XFER.seats));
       c.appendChild(h('div', 'xh', `<span>Seçilen koltuk</span><b>${selSeats()}/${XFER.seats}</b>`));
+      if (full) c.appendChild(h('p', 'xfull', 'Kargo dolu: değiştirmek için birinin işaretini kaldır'));
       const box = h('div', 'xlist'); B.forEach(x => box.appendChild(row('b' + x.b.id, `<b>${esc(x.b.name)}</b><span>${SIZES[x.b.size].label} · koltuk: ${SIZES[x.b.size].cap} · ${REGION_DEF[x.id].name}${designOf(x.b) ? ' · desenli' : ''}</span>`, nb >= XFER.maxB || selSeats() + SIZES[x.b.size].cap > XFER.seats))); c.appendChild(box);
     } else if (k === 'p') {
       c.appendChild(h('p', 'hint', `Pilotlar seninle hemen gelir; seviyelerini ve özelliklerini korur, maaşları ${RD().cur} ile ödenir.`));
       c.appendChild(h('div', 'xh', `<span>Seçilen pilot</span><b>${np}/${XFER.maxP}</b>`));
+      if (np >= XFER.maxP && P.length > np) c.appendChild(h('p', 'xfull', 'Yer dolu: değiştirmek için birinin işaretini kaldır'));
       const box = h('div', 'xlist'); P.forEach(x => box.appendChild(row('p' + x.p.id, `<b>${esc(x.p.name)}</b><span>${LEVELS[x.p.lvl].name}${trait(x.p) ? ' · ' + TRAITS[x.p.trait].n : ''} · ${REGION_DEF[x.id].name}</span>`, np >= XFER.maxP))); c.appendChild(box);
     } else {
       const bs = B.filter(x => sel.has('b' + x.b.id)), ps = P.filter(x => sel.has('p' + x.p.id));
