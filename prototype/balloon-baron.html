@@ -705,7 +705,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .hzname.ctrn{color:#fff;border-color:rgba(255,255,255,.6)}
 .card.ctr{border-top:6px solid #2ab0a8}
 .card.xfer h2.xh{font-family:var(--cond);font-weight:800;font-size:15px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin:12px 0 6px}
-.xlist{display:flex;flex-direction:column;gap:6px;max-height:182px;overflow-y:auto}
+.xlist{display:flex;flex-direction:column;gap:6px;max-height:150px;overflow-y:auto;flex:none;padding:2px}
 .xrow{display:grid;grid-template-columns:26px 1fr;column-gap:10px;align-items:center;text-align:left;padding:9px 12px;border-radius:14px;background:#fff;box-shadow:0 0 0 2px var(--line) inset}
 .xrow i{grid-row:span 2;width:24px;height:24px;border-radius:8px;border:2px solid var(--line);display:flex;align-items:center;justify-content:center;font-style:normal;font-weight:800;color:#fff}
 .xrow.on{box-shadow:0 0 0 2px #14a39a inset;background:#effaf8}.xrow.on i{background:#14a39a;border-color:#14a39a}
@@ -2047,13 +2047,13 @@ function nextPopup() {
   if (S.cash < 0 && !S.rescueShown) { showRescue(); return; }
   if (tempFlagCands().length) { showTempFlag(); return; }
   if (S.eventDue) { showEvent(); return; }
-  if (S.ctr && S.ctr.offer && S.ctr.offer.seen !== S.day && ctrCfg()) { if (!S.ctr.scene) ctrScene(); else ctrCard(); return; } /* v125 */
   if (S.newPost && S.newPost.length) { showPostcard(); return; }
   if (S.cash >= 0) S.rescueShown = false;
   if (S.workshop && S.workshop.order && S.workshop.order.seen !== S.day && !fabBusy()) { showOrder(); return; }
   if (AUTO) while (S.hezQ.length && S.hezQ[0].startsWith('news:')) AUTO.news.push(S.hezQ.shift()); /* so does Hezarfen's news */
   while (S.hezQ.length && !praiseStill(S.hezQ[0])) S.hezQ.shift(); /* v121.12: a praise that's no longer true (the pilot was let go) is dropped */
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
+  if (S.ctr && S.ctr.offer && S.ctr.offer.seen !== S.day && ctrCfg()) { if (!S.ctr.scene) ctrScene(); else ctrCard(); return; } /* v125: after the owner's own lines */
   if (S.xfer) { if (S.xfer.to === S.region) showXfer(); else { S.xfer = null; nextPopup(); } return; } /* v125: only on entering */
   if (letterDue()) { showLetter(); return; } /* v123: the family's letter, once, from day 50 */
   if (S.issue && S.issue.seen !== S.day) { S.issue.seen = S.day; issueScene(); return; }
@@ -3252,7 +3252,7 @@ function renderAct() {
   if (K) notes.push(held < K.n ? `Tur grubu ${K.n} kişi ama bugün ${held} koltuğun uçabiliyor: eksik koltuk başına ${eur(Math.round(K.price * CTR[S.region].pen))} ceza.` : `Tur grubu ${K.n} kişi, kişi başı ${eur(K.price)}: koltuklar önce onlara.`);
   if (S.docDay === S.day && fl.some(b => b.id === S.flag)) notes.push('Amiralde 4 koltuk belgesel ekibinde.');
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
-  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
+  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${K ? `Tur grubu bugün: ${held}/${K.n} kişi · ` : ''}${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
   /* v122: price changes count the passengers up or down where you can see it */
   /* v124.6: "more passengers" only once the estimate has really gone up; until then, one more tap on − */
   if (TUTA && TUTA.k === 'price' && TUTA.pax0 == null && S.price === TUTA.p0) TUTA.pax0 = pax;
@@ -7413,7 +7413,7 @@ function ctrSpotItems(t) {
     const a = tiso(7.1, 23.2), b = tiso(7.1, 24.8);
     for (const p of [a, b]) { ctx.fillStyle = '#5a4a3a'; ctx.fillRect(p[0] - 2, p[1] - 70, 4, 70); }
     tface(upp(a, 50), upp(b, 50), 44, () => { ctx.fillStyle = '#fff1d6'; ctx.fillRect(0, 0, 1, 1); ctx.fillStyle = '#e08a1e'; ctx.fillRect(0, 0, 1, .2); ctx.fillStyle = '#2a8a9a'; ctx.fillRect(0, .8, 1, .2); });
-    const m = lp(upp(a, 72), upp(b, 72), .5), ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
+    const m = lp(upp(a, 72), upp(b, 72), .5), ang = Math.atan2(a[1] - b[1], a[0] - b[0]);
     ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.textAlign = 'center'; ctx.fillStyle = '#c0392b'; ctx.font = '800 19px "Barlow Condensed", sans-serif'; ctx.fillText('ROUTE 66', 0, 2); ctx.fillStyle = '#2b2350'; ctx.font = '700 10px "Barlow Condensed", sans-serif'; ctx.fillText('TOUR COACHES · NEXT EXIT', 0, 14); ctx.restore(); ctx.textAlign = 'left';
   });
   /* a little Route 66 diner across the lot, its neon sign */
@@ -7503,7 +7503,7 @@ function xferApply(sel) {
     if (rs.auto) rs.auto.base = Math.round(rs.auto.base * k);
     rs.netHist = (rs.netHist || []).map(v => Math.round(v * k));
   }
-  /* they come by ship: XFER.ship days later they join the fleet (xferArrive), pilots with them */
+  /* they come by cargo (ship and truck): XFER.ship days later they join the fleet (xferArrive), pilots with them */
   if (moved.b.length || moved.p.length) { if (XFER.ship) S.xferShip = { day: S.day + XFER.ship, b: moved.b, p: moved.p }; else { S.balloons.push(...moved.b); S.pilots.push(...moved.p); } }
   assignPilots();
   return moved;
@@ -7514,7 +7514,7 @@ function xferArrive() {
   /* the region pays its home region back for the balloons, a little every day */
   const due = Math.round(X.b.reduce((a, b) => a + SIZES[b.size].cost, 0) * XFER.debt * FX());
   if (due > 0) S.xferDebt = { left: XFER.debtDays, inst: Math.round(due / XFER.debtDays), from: X.b[0].imp };
-  S.hezQ.push(`news:Gemi limana yanaştı evlat! ${[X.b.map(b => b.name).join(' ve '), X.p.map(p => p.name).join(' ve ')].filter(Boolean).join(', ')} artık burada. Balonlar filoda, pilotlar ekipte.`);
+  S.hezQ.push(`news:Kargo geldi evlat! ${[X.b.map(b => b.name).join(' ve '), X.p.map(p => p.name).join(' ve ')].filter(Boolean).join(', ')} artık burada. Balonlar filoda, pilotlar ekipte.`);
 }
 /* The entry card: pick up to two balloons and two pilots (the best are ticked), or skip. */
 function showXfer() {
@@ -7526,9 +7526,9 @@ function showXfer() {
   const m = $('menu');
   const draw = () => {
     m.replaceChildren(); const c = h('div', 'card xfer');
-    c.appendChild(h('div', 'hzline', `${guide().av()}<span><b>${guide().name}:</b> ${RD().name}'ye eli boş gelme evlat. Otomatik moddaki bölgelerinden ${XFER.maxB} balon ve ${XFER.maxP} pilot getirebilirsin. Ama orada kazanç biraz düşer.</span>`));
+    c.appendChild(h('div', 'hzline', `${guide().av()}<span><b>${guide().name}:</b> Eli boş gelme evlat. Otomatik moddaki bölgelerinden birkaç balon ve ${XFER.maxP} pilot getirebilirsin; orada kazanç biraz düşer.</span>`));
     c.appendChild(h('h1', null, 'Filonu getir'));
-    c.appendChild(h('p', 'hint', `Gemiye ${XFER.seats} koltuk sığar: iki küçük ya da bir orta sepet. Gemi ${XFER.ship} gün sonra yanaşır; balonların bedelini buradaki kasan ${XFER.debtDays} günde öder. Balonlar adını, tasarımını ve donanımını korur, reklam anlaşması orada kalır. Pilotlar seviyesini ve özelliğini korur, maaşları ${RD().cur} ile ödenir. Getirdiklerin buradaki bölüm hedeflerine sayılmaz.`));
+    c.appendChild(h('p', 'hint', `Kargoya ${XFER.seats} koltuk sığar (iki küçük ya da bir orta sepet), yolculuk ${XFER.ship} gün. Balonlar adını, tasarımını ve donanımını, pilotlar seviyesini ve özelliğini korur. Getirdiklerin buradaki bölüm hedeflerine sayılmaz.`));
     const nb = [...sel].filter(k => k[0] === 'b').length, np = [...sel].filter(k => k[0] === 'p').length;
     const row = (key, html, full) => { const on = sel.has(key), b = h('button', 'xrow' + (on ? ' on' : ''), `<i>${on ? '✓' : ''}</i>${html}`); b.disabled = !on && full; b.onclick = () => { on ? sel.delete(key) : sel.add(key); sfx('click'); draw(); }; return b; };
     if (B.length) { c.appendChild(h('h2', 'xh', `Balonlar · koltuk: ${selSeats()}/${XFER.seats}`)); const box = h('div', 'xlist'); B.slice(0, 8).forEach(x => box.appendChild(row('b' + x.b.id, `<b>${esc(x.b.name)}</b><span>${SIZES[x.b.size].label} · koltuk: ${SIZES[x.b.size].cap} · ${REGION_DEF[x.id].name}${designOf(x.b) ? ' · desenli' : ''}</span>`, nb >= XFER.maxB || selSeats() + SIZES[x.b.size].cap > XFER.seats))); c.appendChild(box); }
@@ -7543,7 +7543,7 @@ function showXfer() {
     go.onclick = () => {
       const pickSel = {}; for (const k of sel) { const isB = k[0] === 'b', q = isB ? B.find(x => 'b' + x.b.id === k) : P.find(x => 'p' + x.p.id === k); if (!q) continue; const o = pickSel[q.id] || (pickSel[q.id] = { b: [], p: [] }); (isB ? o.b : o.p).push(isB ? q.b.id : q.p.id); }
       const mv = xferApply(pickSel); sfx(nb + np ? 'coin' : 'click'); m.hidden = true;
-      if (mv.b.length || mv.p.length) S.hezQ.unshift(`news:${[mv.b.length ? mv.b.map(b => b.name).join(' ve ') + ' gemiden indi' : '', mv.p.length ? mv.p.map(p => p.name).join(' ve ') + ' yanında' : ''].filter(Boolean).join(', ')}. ${RD().name}'de ilk günler daha kolay geçecek evlat, ama rakipler de seni fark edecek.`);
+      if (mv.b.length || mv.p.length) S.hezQ.unshift(`news:${[...mv.b.map(b => b.name), ...mv.p.map(p => p.name)].join(', ')} yola çıktı evlat. Kargo ${XFER.ship} gün sürer; Gün ${S.day + XFER.ship} sabahı burada olurlar. O zamana kadar ${RD().name}'yi kendi yağınla kavur.`);
       save(); refresh(); setTimeout(nextPopup, 300);
     };
     const skip = h('button', 'ghost', 'Geç: sıfırdan başla'); skip.style.width = '100%'; skip.onclick = () => { sfx('click'); m.hidden = true; save(); refresh(); setTimeout(nextPopup, 250); };
