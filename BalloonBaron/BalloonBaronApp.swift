@@ -280,6 +280,8 @@ private struct DayCover: View {
 /// On an iPad the office pages open as a wide card over the dimmed town, so lines keep a readable length;
 /// the holding office and the world map stay full screen. On an iPhone the page is the screen.
 struct PageFrame<Content: View>: View {
+    /// The home screen's top bar (day, region, cash, stars, menu) reaches about this far below the safe area.
+    static var topBarClearance: CGFloat { 66 }
     var fullBleed = false
     @ViewBuilder let content: () -> Content
     @Environment(\.horizontalSizeClass) private var width
@@ -291,11 +293,13 @@ struct PageFrame<Content: View>: View {
                     .ignoresSafeArea()
                     .contentShape(Rectangle())
                     .onTapGesture {}
+                // v125.6: below the top bar (it stays visible under the dim), at most 700 pt wide
                 content()
-                    .frame(maxWidth: 720)
+                    .frame(maxWidth: 700)
                     .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
                     .shadow(color: .black.opacity(0.3), radius: 30, y: 12)
-                    .padding(.vertical, 28)
+                    .padding(.top, Self.topBarClearance)
+                    .padding(.bottom, 28)
                     .padding(.horizontal, 24)
             }
         } else {

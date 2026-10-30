@@ -23617,6 +23617,47 @@
         }
       }
     },
+    "ctr.penalty": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Strafe pro fehlendem Platz: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Penalty per missing seat: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Multa por asiento que falte: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "不足座席1つにつき違約金：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "부족한 좌석당 위약금: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eksik koltuk başına ceza: %@"
+          }
+        }
+      }
+    },
     "ctr.pref": {
       "extractionState": "manual",
       "localizations": {
@@ -25335,6 +25376,129 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reddedersen grubu bir rakip uçurur."
+          }
+        }
+      }
+    },
+    "ctr.rule2.block": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ Morgen lang gehen die Plätze zuerst an die Gruppe; die Strafe gilt jeden Morgen. Ein Morgen mit roter Flagge zählt nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For %@ mornings the seats go to the group first, and the penalty counts every morning. A red-flag morning doesn't count."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante %@ mañanas los asientos van primero al grupo, y la multa cuenta cada mañana. Una mañana con bandera roja no cuenta."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@朝の間、座席はまずグループへ。違約金は毎朝かかる。赤旗の朝は数えない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@일 아침 동안 좌석은 먼저 단체에게 갑니다. 위약금은 매일 아침 따로 붙습니다. 빨간 깃발 아침은 치지 않습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ sabah boyunca koltuklar önce gruba gider, ceza her sabah ayrı. Kırmızı bayraklı sabah sayılmaz."
+          }
+        }
+      }
+    },
+    "ctr.rule2.fog": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jeden Morgen gehen die Plätze zuerst an die Gruppe. Nebelgarantie: An einem nebligen Morgen werden die Tickets des Tages erstattet, dazu ein Gutschein von %@ pro Kopf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Every morning the seats go to the group first. Fog guarantee: on a foggy morning that day's tickets are refunded, plus a %@ voucher a head."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada mañana los asientos van primero al grupo. Garantía de niebla: una mañana con niebla se devuelven los billetes del día y además un vale de %@ por cabeza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "毎朝、座席はまずグループへ。霧保証：霧の朝はその日のチケット代を返金し、さらに1人%@のクーポン。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매일 아침 좌석은 먼저 단체에게 갑니다. 안개 보증: 안개 낀 아침엔 그날 표값을 환불하고 1인당 %@ 쿠폰을 더 줍니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade, üstüne kişi başı %@ kupon."
+          }
+        }
+      }
+    },
+    "ctr.rule2.one": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An dem Morgen gehen die Plätze zuerst an die Gruppe; bei roter Flagge rückt die Gruppe einen Tag weiter (mit %@ Rabatt)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That morning the seats go to the group first; on a red flag the group moves a day (at %@ off)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esa mañana los asientos van primero al grupo; con bandera roja el grupo se mueve un día (con un %@ de descuento)."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その朝、座席はまずグループへ。赤旗ならグループは1日ずれる（%@引き）。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그날 아침 좌석은 먼저 단체에게 갑니다. 빨간 깃발이면 단체는 하루 밀립니다(%@ 할인)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "O sabah koltuklar önce gruba gider; kırmızı bayrakta grup bir gün kayar (%@ indirimle)."
           }
         }
       }
@@ -32879,6 +33043,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uçuş yasağı"
+          }
+        }
+      }
+    },
+    "fleet.row.cargo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In der Fracht · Verbleibende Tage: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In cargo · Days left: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la carga · Días restantes: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "輸送中・残り日数：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "화물 운송 중 · 남은 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kargoda: %@ gün kaldı"
           }
         }
       }
@@ -102747,6 +102952,47 @@
         }
       }
     },
+    "xfer.cargoFull": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fracht voll: zum Tauschen einen abwählen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargo full: untick one to swap"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carga llena: desmarca uno para cambiar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "貨物は満杯：入れ替えるには1つ外して"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "화물이 가득: 바꾸려면 하나를 해제하세요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kargo dolu: değiştirmek için birinin işaretini kaldır"
+          }
+        }
+      }
+    },
     "xfer.cost": {
       "extractionState": "manual",
       "localizations": {
@@ -103235,6 +103481,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pilotlar: %1$@/%2$@"
+          }
+        }
+      }
+    },
+    "xfer.pilotsFull": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kein Platz mehr: zum Tauschen einen abwählen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No room left: untick one to swap"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No queda sitio: desmarca uno para cambiar"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "枠がいっぱい：入れ替えるには1人外して"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자리가 가득: 바꾸려면 한 명을 해제하세요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yer dolu: değiştirmek için birinin işaretini kaldır"
           }
         }
       }

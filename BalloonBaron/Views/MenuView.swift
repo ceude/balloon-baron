@@ -64,6 +64,7 @@ struct MenuView: View {
                 .frame(maxWidth: .infinity)
             }
         }
+        .overlay(alignment: .top) { ToastView(text: store.toast) }
         .onAppear {
             store.save()
             code = store.saveCode ?? ""
@@ -231,11 +232,13 @@ struct MenuView: View {
             .frame(height: 84)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 12))
             .overlay(RoundedRectangle(cornerRadius: 12).stroke(Theme.line, lineWidth: 1.5))
-            HStack(spacing: 10) {
-                if kind == .copy {
+            if kind == .copy {
+                HStack(spacing: 10) {
                     codeButton(loc("menu.copy"), primary: true) {
                         UIPasteboard.general.string = code
-                        message = loc("menu.copied")
+                        // v125.6: the green-check toast, like the rest of the game
+                        message = ""
+                        store.showToast(loc("menu.copied").trimmingCharacters(in: CharacterSet(charactersIn: ".。")))
                     }
                     if let codeFile {
                         ShareLink(item: codeFile) {
@@ -245,16 +248,15 @@ struct MenuView: View {
                         .fixedSize()
                         .simultaneousGesture(TapGesture().onEnded { SoundEngine.shared.play(.click) })
                     }
-                } else {
-                    codeButton(loc("settings.paste")) {
-                        pasted = UIPasteboard.general.string ?? ""
-                    }
-                    codeButton(loc("settings.fromFile")) {
-                        message = ""
-                        importing = true
-                    }
-                    codeButton(loc("menu.load"), primary: true) {
-                        if !store.load(code: pasted) { message = loc("menu.badCode") }
+                }
+            }
+            if kind == .load {
+                // v125.6: Paste / From file / Load wrap to two lines on a small phone (German, Spanish)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) { loadButtons }
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(spacing: 10) { pasteButton; fileButton }
+                        loadButton
                     }
                 }
             }
@@ -265,6 +267,29 @@ struct MenuView: View {
         .padding(12)
         .background(Color(hex: "#f6f3fb"), in: RoundedRectangle(cornerRadius: 16))
         .padding(.top, 10)
+    }
+
+    @ViewBuilder private var loadButtons: some View {
+        pasteButton
+        fileButton
+        loadButton
+    }
+
+    private var pasteButton: some View {
+        codeButton(loc("settings.paste")) { pasted = UIPasteboard.general.string ?? "" }
+    }
+
+    private var fileButton: some View {
+        codeButton(loc("settings.fromFile")) {
+            message = ""
+            importing = true
+        }
+    }
+
+    private var loadButton: some View {
+        codeButton(loc("menu.load"), primary: true) {
+            if !store.load(code: pasted) { message = loc("menu.badCode") }
+        }
     }
 
     /// "BalloonBaron-<company>.txt" in the temporary folder, holding the save code.

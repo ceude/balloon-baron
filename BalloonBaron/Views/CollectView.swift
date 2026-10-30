@@ -3,7 +3,8 @@ import BalloonBaronCore
 
 /// The prototype's `.big` / `.ghost` buttons: chunky, with a solid drop shadow that sinks when pressed.
 struct ChunkyButtonStyle: ButtonStyle {
-    enum Kind { case big, ghost, glassGhost }
+    /// `danger`: a big red button for what can't be undone (selling a balloon; `.big.danger` in the prototype).
+    enum Kind { case big, ghost, glassGhost, danger }
     var kind: Kind = .big
     var height: CGFloat = 54
     /// Fill the width whatever the kind (big buttons always do).
@@ -24,12 +25,12 @@ struct ChunkyButtonStyle: ButtonStyle {
             let pressed = configuration.isPressed && enabled
             let drop: CGFloat = pressed ? 1 : 5
             return configuration.label
-                .font(kind == .big ? Theme.font(22, .heavy, condensed: true) : Theme.font(18, .bold, condensed: true))
+                .font(kind == .big || kind == .danger ? Theme.font(22, .heavy, condensed: true) : Theme.font(18, .bold, condensed: true))
                 .foregroundStyle(fg)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
                 .padding(.horizontal, 16)
-                .frame(maxWidth: kind == .big || wide ? .infinity : nil, minHeight: height)
+                .frame(maxWidth: kind == .big || kind == .danger || wide ? .infinity : nil, minHeight: height)
                 .background(RoundedRectangle(cornerRadius: 16).fill(bg))
                 .background(DepthBand(radius: 16, drop: drop).fill(shadow))
                 .offset(y: pressed ? 4 : 0)
@@ -39,7 +40,7 @@ struct ChunkyButtonStyle: ButtonStyle {
 
         private var fg: Color {
             switch kind {
-            case .big: .white
+            case .big, .danger: .white
             case .ghost: Theme.ink
             case .glassGhost: .white
             }
@@ -48,6 +49,7 @@ struct ChunkyButtonStyle: ButtonStyle {
         private var bg: Color {
             switch kind {
             case .big: enabled ? Theme.coral : Color(hex: "#cfc8dd")
+            case .danger: enabled ? Theme.red : Color(hex: "#cfc8dd")
             case .ghost: Color(hex: "#f1edf8")
             case .glassGhost: Color(red: 0.24, green: 0.22, blue: 0.36)
             }
@@ -56,6 +58,7 @@ struct ChunkyButtonStyle: ButtonStyle {
         private var shadow: Color {
             switch kind {
             case .big: enabled ? Color(hex: "#d9411f") : Color(hex: "#b3aac6")
+            case .danger: enabled ? Color(hex: "#a8302a") : Color(hex: "#b3aac6")
             case .ghost: Theme.line
             case .glassGhost: Color.black.opacity(0.3)
             }

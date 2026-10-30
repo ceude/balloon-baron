@@ -72,6 +72,8 @@ struct GameAlert: ViewModifier {
     var onSecondary: () -> Void = {}
     /// From a small view deep in a scrolling page: presented over the whole screen instead of over the view.
     var cover = false
+    /// v125.6: the primary button in red, for what can't be undone (selling); the secondary stays neutral.
+    var danger = false
 
     @ViewBuilder
     func body(content: Content) -> some View {
@@ -93,7 +95,7 @@ struct GameAlert: ViewModifier {
                 shown = false
                 onPrimary()
             }
-            .buttonStyle(ChunkyButtonStyle(kind: .big, wide: true))
+            .buttonStyle(ChunkyButtonStyle(kind: danger ? .danger : .big, wide: true))
             if let secondary {
                 Button {
                     SoundEngine.shared.play(.click)

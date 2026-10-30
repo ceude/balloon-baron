@@ -9,14 +9,19 @@ struct ContractOfferView: View {
     @Environment(GameStore.self) private var store
     /// The answer, once given: the offer as it was, what was said, and the rival that took the group.
     @State private var result: (offer: ContractOffer, line: String, good: Bool, rival: String?)?
+    /// v125.6: the owner's introduction, behind "More" the first time.
+    @State private var intro = false
+    /// v125.6: a short screen (iPhone SE): a little tighter so the card fits without scrolling.
+    @State private var compact = false
 
     var body: some View {
         ZStack(alignment: .bottom) {
             Color(red: 27 / 255, green: 24 / 255, blue: 64 / 255).opacity(store.contractScene != nil ? 0.08 : 0.3).ignoresSafeArea()
                 .contentShape(Rectangle()).onTapGesture {}
+                .background(GeometryReader { g in Color.clear.onAppear { compact = g.size.height < 720 } })
             ViewThatFits(in: .vertical) {
                 content
-                ScrollView { content }.defaultScrollAnchor(.bottom)
+                ScrollView { content }.defaultScrollAnchor(.top)
             }
         }
     }
@@ -28,9 +33,9 @@ struct ContractOfferView: View {
     }
 
     private func cardFrame<C: View>(@ViewBuilder _ c: () -> C) -> some View {
-        VStack(alignment: .leading, spacing: 10, content: c)
-            .padding(.horizontal, 18)
-            .padding(.vertical, 16)
+        VStack(alignment: .leading, spacing: compact ? 7 : 9, content: c)
+            .padding(.horizontal, compact ? 16 : 18)
+            .padding(.vertical, compact ? 13 : 16)
             .frame(maxWidth: 440, alignment: .leading)
             .background(Color.white, in: RoundedRectangle(cornerRadius: 24))
             .overlay(alignment: .top) { UnevenRoundedRectangle(topLeadingRadius: 24, topTrailingRadius: 24).fill(Color(hex: "#2ab0a8")).frame(height: 6) }
@@ -42,24 +47,30 @@ struct ContractOfferView: View {
 
     private func offerCard(_ s: GameState, _ K: ContractConfig, _ o: ContractOffer) -> some View {
         let c = s.local.contracts ?? ContractState(), w = o.owner, riv = s.contractRival?.name
-        let text = (c.met ? "" : ctrText(w, "intro") + " ") + ctrText(w, "offer", n: o.n, day: o.day, len: o.len, price: o.price)
+        // v125.6: the offer itself; the first time, the owner's introduction waits behind "More"
+        let say = ctrText(w, "offer", n: o.n, day: o.day, len: o.len, price: o.price)
         let neg = s.negotiatedPrice(o)
         return cardFrame {
-            ContractHead(owner: w, tag: c.met ? loc("ctr.\(s.region.rawValue).tag") : loc("ctr.newContact"))
-            ContractSpeech(text: text)
+            ContractHead(owner: w, tag: c.met ? loc("ctr.\(s.region.rawValue).tag") : loc("ctr.newContact"), avatar: compact ? 46 : 56)
+            if c.met || intro {
+                ContractSpeech(text: (c.met ? "" : ctrText(w, "intro") + " ") + say, size: compact ? 13.5 : 14.5)
+            } else {
+                ContractSpeech(text: say, size: compact ? 13.5 : 14.5, more: { withAnimation(.easeOut(duration: 0.2)) { intro = true } })
+            }
             facts(s, K, o)
             if let fp = o.fogP { fogRow(o, fp) }
-            Text(rule(K, o) + " " + (riv.map { loc("ctr.rule.rival", $0) } ?? loc("ctr.rule.rivalAny")))
+            penalty(K, o)
+            Text(riv.map { loc("ctr.rule.rival", $0) } ?? loc("ctr.rule.rivalAny"))
                 .font(Theme.font(12.5)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
-            ContractTrust(owner: w, promise: !c.pref && c.okWho < K.prefNeed)
+            ContractTrust(owner: w, promise: !c.pref && c.okWho < K.prefNeed, size: compact ? 12 : 12.5)
             Button(loc("ctr.accept", eur(o.total))) {
                 SoundEngine.shared.play(.coin)
                 let o0 = o
                 store.act { $0.acceptContract() }
                 withAnimation { result = (o0, loc("ctr.\(s.region.rawValue).accepted"), true, nil) }
             }
-            .buttonStyle(ChunkyButtonStyle(kind: .big))
-            HStack(spacing: 8) {
+            .buttonStyle(ChunkyButtonStyle(kind: .big, height: compact ? 48 : 54))
+            HStack(alignment: .top, spacing: 8) {
                 if !o.negotiated && neg > o.price {
                     option(loc("ctr.negotiate", eur(neg)), c.pref ? loc("ctr.negotiate.safe") : loc("ctr.negotiate.risk"), red: false) {
                         var ok: Bool?
@@ -97,11 +108,11 @@ struct ContractOfferView: View {
         return LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible())], spacing: 6) {
             ForEach(cells.indices, id: \.self) { i in
                 VStack(alignment: .leading, spacing: 1) {
-                    Text(cells[i].0).font(Theme.font(19, .heavy, condensed: true)).foregroundStyle(Theme.ink).lineLimit(1).minimumScaleFactor(0.7)
+                    Text(cells[i].0).font(Theme.font(compact ? 17 : 19, .heavy, condensed: true)).foregroundStyle(Theme.ink).lineLimit(1).minimumScaleFactor(0.7)
                     Text(cells[i].1).font(Theme.font(12)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-                .padding(.horizontal, 10).padding(.vertical, 7)
+                .padding(.horizontal, 10).padding(.vertical, compact ? 5 : 7)
                 .background(Color(red: 108 / 255, green: 100 / 255, blue: 136 / 255).opacity(0.09), in: RoundedRectangle(cornerRadius: 12))
             }
         }
@@ -122,20 +133,35 @@ struct ContractOfferView: View {
         }
     }
 
-    private func rule(_ K: ContractConfig, _ o: ContractOffer) -> String {
-        let pen = eur(jsRoundUI(Double(o.price) * K.pen))
-        if K.fogGuarantee { return loc("ctr.rule.fog", eur(jsRoundUI(Double(o.price) * K.voucher)), pen) }
-        if o.len > 1 { return loc("ctr.rule.block", num(o.len), pen) }
-        return loc("ctr.rule.one", pen, percent(K.redCut))
+    /// v125.6: the penalty in its own callout, red bar on the left like the result card's, the rest of the rule under it.
+    private func penalty(_ K: ContractConfig, _ o: ContractOffer) -> some View {
+        let rule = K.fogGuarantee ? loc("ctr.rule2.fog", eur(jsRoundUI(Double(o.price) * K.voucher)))
+            : o.len > 1 ? loc("ctr.rule2.block", num(o.len)) : loc("ctr.rule2.one", percent(K.redCut))
+        return HStack(spacing: 10) {
+            RoundedRectangle(cornerRadius: 3).fill(Theme.red).frame(width: 5)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(loc("ctr.penalty", eur(jsRoundUI(Double(o.price) * K.pen)))).font(Theme.font(14, .bold))
+                Text(rule).font(Theme.font(compact ? 13 : 13.5))
+            }
+            .foregroundStyle(Theme.ink).fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, compact ? 7 : 9).padding(.leading, 8).padding(.trailing, 10)
+        .fixedSize(horizontal: false, vertical: true)
+        .background(Theme.red.opacity(0.09), in: RoundedRectangle(cornerRadius: 12))
     }
 
     private func option(_ title: String, _ sub: String, red: Bool, _ action: @escaping () -> Void) -> some View {
         Button(action: action) {
+            // v125.6: both buttons the same text sizes; a long subtitle takes a second line instead of shrinking
             VStack(spacing: 1) {
-                Text(title).font(Theme.font(14.5, .bold)).foregroundStyle(red ? Color(hex: "#a8302a") : Theme.ink).lineLimit(1).minimumScaleFactor(0.7)
-                Text(sub).font(Theme.font(12)).foregroundStyle(Theme.ink2).lineLimit(1).minimumScaleFactor(0.7)
+                Text(title).font(Theme.font(14.5, .bold)).foregroundStyle(red ? Color(hex: "#a8302a") : Theme.ink).lineLimit(2)
+                Text(sub).font(Theme.font(12)).foregroundStyle(Theme.ink2).lineLimit(2)
             }
-            .frame(maxWidth: .infinity, minHeight: 50)
+            .multilineTextAlignment(.center)
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.vertical, compact ? 6 : 8)
+            .frame(maxWidth: .infinity, minHeight: compact ? 46 : 50)
             .padding(.horizontal, 10)
             .background(Color(hex: "#f1edf8"), in: RoundedRectangle(cornerRadius: 14))
             .background(RoundedRectangle(cornerRadius: 14).fill(Theme.line).offset(y: 3))
@@ -185,7 +211,7 @@ struct ContractStatusView: View {
             let c = s.local.contracts ?? ContractState()
             let mine = c.booked.filter(\.mine).sorted { $0.day < $1.day }
             ModalCard(onClose: { store.closeContractCard() }) {
-                ContractHead(owner: w, tag: loc("ctr.\(s.region.rawValue).place"))
+                ContractHead(owner: w, tag: loc("ctr.\(s.region.rawValue).place"), closeSpace: true)
                 if mine.isEmpty {
                     CardText.lead(loc(c.met || c.ok > 0 ? "ctr.\(s.region.rawValue).empty" : "ctr.\(s.region.rawValue).fresh"))
                 } else {
@@ -218,10 +244,13 @@ struct ContractStatusView: View {
 struct ContractHead: View {
     let owner: ContractOwner
     let tag: String
+    var avatar: CGFloat = 56
+    /// Room for a card's ✕ in the top right corner (only the status card has one).
+    var closeSpace = false
 
     var body: some View {
         HStack(spacing: 12) {
-            ContractAvatar(owner: owner, size: 56)
+            ContractAvatar(owner: owner, size: avatar)
             VStack(alignment: .leading, spacing: 1) {
                 Text(tag).font(Theme.font(12.5, .heavy, condensed: true)).tracking(0.7).textCase(.uppercase).foregroundStyle(Color(hex: "#14a39a"))
                 Text(owner.title).font(Theme.font(21, .heavy, condensed: true)).foregroundStyle(Theme.ink)
@@ -229,17 +258,37 @@ struct ContractHead: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(.trailing, 30)
+        .padding(.trailing, closeSpace ? 30 : 0)
     }
 }
 
 /// `.ctrsay`: what the owner says, in a speech bubble.
 struct ContractSpeech: View {
     let text: String
+    var size: CGFloat = 14.5
+    /// v125.6: "More" after the text; tapping the bubble shows the rest.
+    var more: (() -> Void)? = nil
 
-    var body: some View {
-        Text(text)
-            .font(Theme.font(14.5)).foregroundStyle(Theme.ink)
+    @ViewBuilder var body: some View {
+        if let more {
+            bubble
+                .contentShape(Rectangle())
+                .onTapGesture { more() }
+                .accessibilityElement(children: .combine)
+                .accessibilityAction(named: loc("tut.more")) { more() }
+        } else {
+            bubble
+        }
+    }
+
+    private var line: Text {
+        guard more != nil else { return Text(text) }
+        return Text(text) + Text("  " + loc("tut.more")).font(Theme.font(size - 1, .bold)).foregroundStyle(Theme.ink2).underline()
+    }
+
+    private var bubble: some View {
+        line
+            .font(Theme.font(size)).foregroundStyle(Theme.ink)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, 12).padding(.vertical, 9)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -257,6 +306,7 @@ struct ContractTrust: View {
     let owner: ContractOwner
     let promise: Bool
     var need = 3
+    var size: CGFloat = 12.5
 
     var body: some View {
         let c = store.state?.local.contracts ?? ContractState(), K = store.state?.contractConfig
@@ -276,7 +326,7 @@ struct ContractTrust: View {
                 Text(promise ? "“" + ctrText(owner, "promise") + "”" : loc("ctr.trust", num(min(c.okWho, n)), num(n)))
             }
         }
-        .font(Theme.font(12.5).italic()).foregroundStyle(Theme.ink2)
+        .font(Theme.font(size).italic()).foregroundStyle(Theme.ink2)
         .fixedSize(horizontal: false, vertical: true)
     }
 }
@@ -293,9 +343,13 @@ struct ContractSceneView: View {
         VStack {
             Spacer()
             HStack(alignment: .bottom, spacing: 10) {
-                VStack(spacing: 4) {
+                // v125.6: the name on a dark capsule (`.hzname`), readable over any part of the town
+                VStack(spacing: -8) {
                     GuideAvatar(region: r, size: 64)
-                    Text(guideName(r)).font(Theme.font(12, .bold, condensed: true)).foregroundStyle(.white).fixedSize()
+                    Text(guideName(r)).font(Theme.font(13, .heavy, condensed: true)).foregroundStyle(Color(hex: "#ffd27a")).fixedSize()
+                        .padding(.horizontal, 9).padding(.vertical, 3)
+                        .background(Theme.ink, in: RoundedRectangle(cornerRadius: 8))
+                        .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color(hex: "#e8b04a"), lineWidth: 1.5))
                 }
                 VStack(alignment: .leading, spacing: 12) {
                     ZStack(alignment: .topLeading) {
@@ -319,9 +373,19 @@ struct ContractSceneView: View {
                 }
                 .padding(16)
                 .background(Theme.paper, in: RoundedRectangle(cornerRadius: 22))
+                .compositingGroup()
+                .shadow(color: .black.opacity(0.35), radius: 25, y: 20)
                 .onTapGesture { shown = text.count }
             }
             .padding(16)
+        }
+        // a light scrim at the bottom so the bubble stands off the busy town
+        .background(alignment: .bottom) {
+            LinearGradient(colors: [Color(red: 20 / 255, green: 14 / 255, blue: 40 / 255).opacity(0), Color(red: 20 / 255, green: 14 / 255, blue: 40 / 255).opacity(0.3)],
+                           startPoint: .top, endPoint: .bottom)
+                .frame(height: 320)
+                .ignoresSafeArea()
+                .allowsHitTesting(false)
         }
         .task(id: text) {
             shown = 0

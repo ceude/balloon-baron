@@ -370,7 +370,14 @@ struct FleetView: View {
                     if i > 0 { Rectangle().fill(Theme.line).frame(height: 1.5).padding(.leading, 52) }
                     row(b, s)
                 }
-                if list.isEmpty {
+                // v125.6: balloons on their way by cargo, greyed and not tappable until they arrive
+                if current == .all, let ship = s.local.transferShip {
+                    ForEach(ship.balloons) { b in
+                        if !list.isEmpty || b.id != ship.balloons.first?.id { Rectangle().fill(Theme.line).frame(height: 1.5).padding(.leading, 52) }
+                        cargoRow(b, s, days: max(0, ship.day - s.day))
+                    }
+                }
+                if list.isEmpty && (current != .all || s.local.transferShip == nil) {
                     FleetUI.Hint(loc("fleet.empty")).frame(maxWidth: .infinity).padding(14)
                 }
             }
@@ -536,6 +543,33 @@ struct FleetView: View {
         .accessibilityAddTraits(.isButton)
     }
 
+    /// v125.6: a balloon in the cargo (`TransferShip`): not in the fleet yet, so nothing to tap.
+    private func cargoRow(_ b: Balloon, _ s: GameState, days: Int) -> some View {
+        HStack(spacing: 10) {
+            DesignBalloon(colors: s.colors, design: s.design(of: b))
+                .frame(width: 30, height: 38)
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 6) {
+                    Text(b.title).font(Theme.font(17, .heavy, condensed: true)).foregroundStyle(Theme.ink).lineLimit(1)
+                    Text(b.size.rawValue + " · " + num(b.size.capacity))
+                        .font(Theme.font(11, .bold)).foregroundStyle(Theme.ink2)
+                        .padding(.horizontal, 6).padding(.vertical, 1)
+                        .background(Theme.line.opacity(0.6), in: RoundedRectangle(cornerRadius: 6))
+                        .fixedSize()
+                }
+                HStack(spacing: 5) {
+                    Circle().fill(Color(hex: "#3d7fd0")).frame(width: 8, height: 8)
+                    Text(loc("fleet.row.cargo", num(days))).font(Theme.font(12.5, .semibold)).foregroundStyle(Theme.ink2).lineLimit(1)
+                }
+            }
+            Spacer(minLength: 4)
+        }
+        .padding(.horizontal, 10)
+        .padding(.vertical, 7)
+        .opacity(0.55)
+        .accessibilityElement(children: .combine)
+    }
+
     // MARK: Shop
 
     private func shopCard(_ s: GameState) -> some View {
@@ -649,7 +683,7 @@ private struct BalloonCardSheet: View {
             // v124.5: selling asks first, in the game's own card, and says "sold" after
             .modifier(GameAlert(shown: $askSell, title: loc("sell.title"), message: sellNote(b, game.state),
                                 primary: loc("fleetPage.sell", eur(game.sellValue(b))), secondary: loc("sell.cancel"),
-                                onPrimary: { sell(b, game) }))
+                                onPrimary: { sell(b, game) }, danger: true))
         }
     }
 

@@ -85,6 +85,7 @@ jobs:
           ctrscene|-demoDays 60 -demoRegion lux -demoScene contractScene|19
           brictr|-demoDays 60 -demoRegion bri -demoScene contract|17
           transfer|-demoDays 60 -demoRegion abq -demoScene transfer|11
+          cargo|-demoDays 60 -demoRegion abq -demoScene cargo -demoPage fleet|11
           LIST
             xcrun simctl shutdown "$UDID"
           done

@@ -204,12 +204,24 @@ struct PriceSheetView: View {
         }
     }
 
+    /// v125.6: label and value on one line when they fit; otherwise the label above, wrapping, and the value under it
+    /// on the right (long German labels were cut).
     private func whyRow(_ label: String, _ value: String, _ color: Color, dot: Color? = nil) -> some View {
-        HStack(alignment: .firstTextBaseline, spacing: 8) {
+        let lab = HStack(alignment: .firstTextBaseline, spacing: 8) {
             if let dot { Circle().fill(dot).frame(width: 8, height: 8) }
-            Text(label).foregroundStyle(Theme.ink2).lineLimit(1).minimumScaleFactor(0.8)
-            Spacer(minLength: 6)
-            Text(value).fontWeight(.bold).foregroundStyle(color).multilineTextAlignment(.trailing)
+            Text(label).foregroundStyle(Theme.ink2)
+        }
+        let val = Text(value).fontWeight(.bold).foregroundStyle(color).multilineTextAlignment(.trailing)
+        return ViewThatFits(in: .horizontal) {
+            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                lab.lineLimit(1).fixedSize()
+                Spacer(minLength: 6)
+                val.fixedSize()
+            }
+            VStack(alignment: .leading, spacing: 1) {
+                lab.fixedSize(horizontal: false, vertical: true)
+                val.fixedSize(horizontal: false, vertical: true).frame(maxWidth: .infinity, alignment: .trailing)
+            }
         }
         .font(Theme.font(13))
     }

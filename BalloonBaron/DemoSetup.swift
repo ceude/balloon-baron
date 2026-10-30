@@ -9,7 +9,8 @@ import BalloonBaronCore
 /// `letter` (the family's letter, sealed) and `letterRead` (the letter already open).
 /// v124: `flight` (your own flight; in Bristol on a foggy morning with the airport's airspace), `glow` (Bristol's Night Glow night).
 /// v125 (with `-demoRegion`): `contract` (a contract offer card), `contractScene` (the first offer's scene at the off-map
-/// place), `transfer` (the card to bring the fleet, entering the region).
+/// place), `transfer` (the card to bring the fleet, entering the region); v125.6: `cargo` (balloons on their way by cargo,
+/// with `-demoPage fleet`).
 extension GameStore {
     func applyDemoArguments() {
         let args = ProcessInfo.processInfo.arguments
@@ -22,13 +23,16 @@ extension GameStore {
         if let r = value("-demoRegion"), r == "abq" || r == "lux" || r == "bri" {
             g.state.barons[.cap] = g.state.day
             g.state.holding.cash = 400_000
-            _ = g.enterRegion(.abq)
+            // Regions past Cappadocia need the World Tour; without it enterRegion refuses and the run stays home.
+            g.grantStoreItem(.worldTour)
+            Self.demoEnter(&g, .abq)
             g.state.transferAsk = nil
             g.state.cash = 120_000
             for _ in 0..<20 { Self.demoDay(&g) }
             if r == "lux" || r == "bri" {
                 g.state.barons[.abq] = g.state.day
-                _ = g.enterRegion(.lux)
+                g.state.holding.cash = max(g.state.holding.cash, 400_000)
+                Self.demoEnter(&g, .lux)
                 g.state.transferAsk = nil
                 g.state.cash = 120_000
                 for _ in 0..<20 { Self.demoDay(&g) }
@@ -36,7 +40,7 @@ extension GameStore {
             if r == "bri" {
                 g.state.barons[.lux] = g.state.day
                 g.state.holding.cash = max(g.state.holding.cash, 400_000)
-                _ = g.enterRegion(.bri)
+                Self.demoEnter(&g, .bri)
                 g.state.transferAsk = nil
                 g.state.cash = 120_000
                 for _ in 0..<20 { Self.demoDay(&g) }
@@ -116,6 +120,13 @@ extension GameStore {
                 game = gg
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.showNextHezarfen() }
             }
+        case "cargo":
+            // v125.6: the fleet page with balloons still on their way by cargo (with `-demoPage fleet`)
+            if var gg = game, !gg.state.parked.isEmpty {
+                gg.applyTransfer(balloons: gg.transferDefaults.balloons, pilots: [])
+                gg.state.hezQueue = []
+                game = gg
+            }
         case "deal":
             if var gg = game, !gg.state.rivals.isEmpty {
                 gg.state.rivals[0].offer = 60000
@@ -127,6 +138,12 @@ extension GameStore {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.letter = true }
         default: break
         }
+    }
+
+    /// Enters a region for a screenshot run; a refusal would leave every later scene in the wrong region, so it says so.
+    private static func demoEnter(_ g: inout Game, _ r: RegionID) {
+        let ok = g.enterRegion(r)
+        if !ok { NSLog("DemoSetup: enterRegion(\(r.rawValue)) refused (open \(g.state.regionOpen(r)), needsPack \(g.state.needsPack(r)))") }
     }
 
     /// One day of a steady player: grows the fleet, staffs it, signs hotels, flies unless the flag is red.

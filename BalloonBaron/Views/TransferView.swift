@@ -9,6 +9,8 @@ struct TransferView: View {
     @Environment(GameStore.self) private var store
     @State private var picked: Set<Int>?
     @State private var step = 0
+    /// v125.6: the height the card has (the window, not the screen: iPad Split View), for the lists.
+    @State private var room: CGFloat = 700
 
     private enum Step { case balloons, pilots, sum }
 
@@ -34,6 +36,10 @@ struct TransferView: View {
                 case .balloons:
                     CardText.hint(loc("xfer.bNote", guideName(g.state.region), num(Transfer.seats), num(Transfer.shipDays)))
                     header(loc("xfer.seatsPicked"), "\(num(seats))/\(num(Transfer.seats))")
+                    // v125.6: when nothing more fits, say why the other rows are grey
+                    if B.contains(where: { !sel.contains($0.balloon.id) && (bs.count >= Transfer.maxBalloons || seats + $0.balloon.size.capacity > Transfer.seats) }) {
+                        fullNote(loc("xfer.cargoFull"))
+                    }
                     list {
                         ForEach(B, id: \.balloon.id) { x in
                             let on = sel.contains(x.balloon.id)
@@ -48,6 +54,7 @@ struct TransferView: View {
                 case .pilots:
                     CardText.hint(loc("xfer.pNote", Locale.current.localizedString(forCurrencyCode: g.state.region.currency) ?? g.state.region.currency))
                     header(loc("xfer.pilotsPicked"), "\(num(ps.count))/\(num(Transfer.maxPilots))")
+                    if ps.count >= Transfer.maxPilots && P.count > ps.count { fullNote(loc("xfer.pilotsFull")) }
                     list {
                         ForEach(P, id: \.pilot.id) { x in
                             let on = sel.contains(x.pilot.id)
@@ -89,7 +96,18 @@ struct TransferView: View {
                 }
                 .buttonStyle(ChunkyButtonStyle(kind: .ghost, wide: true))
             }
+            .background(GeometryReader { geo in
+                Color.clear
+                    .onAppear { room = geo.size.height }
+                    .onChange(of: geo.size.height) { _, h in room = h }
+            })
         }
+    }
+
+    private func fullNote(_ t: String) -> some View {
+        Text(t).font(Theme.font(12.5, .semibold)).foregroundStyle(Color(hex: "#8c5a00"))
+            .fixedSize(horizontal: false, vertical: true)
+            .padding(.horizontal, 2).padding(.top, -6)
     }
 
     private func toggle(_ id: Int, _ sel: Set<Int>) {
@@ -110,7 +128,7 @@ struct TransferView: View {
 
     /// `.xlist`: a framed box (1.5 pt line, 14 pt corners, light ground); only its inside scrolls.
     private func list<C: View>(@ViewBuilder _ c: () -> C) -> some View {
-        let h = min(300, UIScreen.main.bounds.height * 0.36)
+        let h = min(300, room * 0.36)
         return ScrollView {
             VStack(spacing: 6, content: c).padding(6)
         }
