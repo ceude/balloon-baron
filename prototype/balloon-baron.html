@@ -6964,23 +6964,23 @@ const ENTRANTS_ABQ = [
 const regionEntrants = () => S.region === 'bri' ? ENTRANTS_BRI : S.region === 'lux' ? ENTRANTS_LUX : S.region === 'abq' ? ENTRANTS_ABQ : ENTRANTS;
 const CHAPTERS_ABQ = [
   { name: 'Yeni Dünya', reward: 5000, award: 'Albuquerque Ticaret Odası seni Yılın Yeni Şirketi seçti', awardShort: 'Albuquerque Ticaret Odası ödülü', goals: [['seats', 32, '32 koltukluk filo'], ['pilots', 2, '2 pilotluk ekip'], ['stars', 4.6, '4,6★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['seats', 100, '100 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['ctrDone', 2, '2 tur grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['seats', 180, '180 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['ctrDone', 3, '3 tur grubunu eksiksiz uçur (tüm şirketler)'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Kutu Rüzgârı', reward: 10000, award: 'Albuquerque Pilotlar Kulübü seni kutunun ustası ilan etti', awardShort: 'Pilotlar Kulübü ödülü', goals: [['seats', 100, '100 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.7, '4,7★ popülerlik'], ['ctrDone', 2, 'Toplam 2 tur grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Fiesta', reward: 20000, award: 'Balloon Fiesta jürisi seni Fiesta\'nın Yıldızı seçti', awardShort: 'Balloon Fiesta jüri ödülü', goals: [['seats', 180, '180 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Balloon Fiesta\'da uç'], ['ctrDone', 3, 'Toplam 3 tur grubunu eksiksiz uçur (bütün şirketler)'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Albuquerque Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Fiesta Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 /* Luxor: every chapter a step harder than Albuquerque's */
 const CHAPTERS_LUX = [
   { name: 'Batı Yakası', reward: 5000, award: 'Luksor Valiliği seni Batı Yakası\'nın yeni yüzü seçti', awardShort: 'Luksor Valiliği ödülü', goals: [['seats', 48, '48 koltukluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Nil Rüzgârı', reward: 10000, award: 'Mısır Sivil Havacılık Otoritesi seni yılın en güvenli işletmesi seçti', awardShort: 'Sivil Havacılık ödülü', goals: [['seats', 120, '120 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .3, 'Pazarın %30\'u'], ['ctrDone', 2, '2 gemi grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Firavunlar Vadisi', reward: 20000, award: 'Mısır Turizm Bakanlığı seni yılın balon şirketi seçti', awardShort: 'Turizm Bakanlığı ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Nil gemisi sezonunda uç'], ['ctrDone', 3, '3 grubu eksiksiz uçur (tüm şirketler)'], ['share', .5, 'Pazarın %50\'si']] },
+  { name: 'Nil Rüzgârı', reward: 10000, award: 'Mısır Sivil Havacılık Otoritesi seni yılın en güvenli işletmesi seçti', awardShort: 'Sivil Havacılık ödülü', goals: [['seats', 120, '120 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .3, 'Pazarın %30\'u'], ['ctrDone', 2, 'Toplam 2 gemi grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Firavunlar Vadisi', reward: 20000, award: 'Mısır Turizm Bakanlığı seni yılın balon şirketi seçti', awardShort: 'Turizm Bakanlığı ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bir Nil gemisi sezonunda uç'], ['ctrDone', 3, 'Toplam 3 grubu eksiksiz uçur (bütün şirketler)'], ['share', .5, 'Pazarın %50\'si']] },
   { name: 'Luksor Baronu', reward: 0, goals: [['share', .7, 'Pazarın %70\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Teb Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 /* v124: Bristol, a step harder than Luxor; the canyon chapter wants a flight on a foggy morning, the festival chapter a
    Night Glow */
 const CHAPTERS_BRI = [
   { name: 'Ashton Malikânesi', reward: 5000, award: 'Bristol Ticaret Odası seni yılın yeni işletmesi seçti', awardShort: 'Ticaret Odası ödülü', goals: [['seats', 48, '48 koltukluk filo'], ['pilots', 3, '3 pilotluk ekip'], ['stars', 4.7, '4,7★ popülerlik'], ['hotelDeal', 2, 'İki otelle anlaşma yap'], ['guide', 1, 'Rehberlere tanıtım uçuşu yap'], ['bldMast', 2, 'Rüzgâr direğini yükselt']] },
-  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .35, 'Pazarın %35\'i'], ['fog', 1, 'Sisli bir günde uç'], ['ctrDone', 2, '2 hafta sonu grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
-  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['seats', 380, '380 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['ctrDone', 3, '3 grubu eksiksiz uçur (tüm şirketler)'], ['share', .55, 'Pazarın %55\'i']] },
+  { name: 'Avon Kanyonu', reward: 10000, award: 'Batı İngiltere Pilotlar Derneği seni kanyonun ustası ilan etti', awardShort: 'Pilotlar Derneği ödülü', goals: [['seats', 220, '220 koltukluk filo'], ['influ', 1, 'Bir influencer kampanyası yap'], ['stars', 4.75, '4,75★ popülerlik'], ['share', .35, 'Pazarın %35\'i'], ['fog', 1, 'Sisli bir günde uç'], ['ctrDone', 2, 'Toplam 2 hafta sonu grubunu eksiksiz uçur'], ['bldHangar', 2, 'Hangarı yükselt']] },
+  { name: 'Festival', reward: 20000, award: 'Festival jürisi seni festivalin yıldızı seçti', awardShort: 'Festival jüri ödülü', goals: [['seats', 380, '380 koltukluk filo'], ['hotelOwn', 1, 'Bir otel satın al'], ['fiesta', 1, 'Bristol Balon Festivali\'nde uç'], ['glow', 1, 'Bir Gece Işıltısı düzenle'], ['ctrDone', 3, 'Toplam 3 grubu eksiksiz uçur (bütün şirketler)'], ['share', .55, 'Pazarın %55\'i']] },
   { name: 'Bristol Baronu', reward: 0, goals: [['share', .75, 'Pazarın %75\'i'], ['hotelOwn', 2, '2 otelin sahibi ol'], ['school', 1, 'Pilot okulu kur'], ['stars', 4.8, '4,8★ popülerlik'], ['xl', 1, 'Dev balonun gökyüzünde: Avon Yıldızı'], ['bldHangar', 3, 'Hangar seviyesi: 3']] }
 ];
 const chap = () => S.region === 'bri' ? CHAPTERS_BRI : S.region === 'lux' ? CHAPTERS_LUX : S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;
@@ -7402,7 +7402,7 @@ const CTR = {
     negUp: .1, negWalk: .35, prefWalk: .15, pen: .5, redCut: 0, redMove: false, prefNeed: 3, breakAt: -3, cool: 14,
     rivalRep: .05, rivalGrow: 24,
     delay: { after: 2, warnP: .35, lateP: .6, land: [.3, .7], waitPay: .4 },
-    T: { tag: 'Charter grubu', group: 'charter grubu', pax: 'charter yolcusu', place: 'NAV · Nevşehir Airport', accepted: 'Harika! Uçağım o sabah iniyor, yolcularım terminalden cipe biner. Sepetleri hazırla!',
+    T: { tag: 'Charter grubu', group: 'charter grubu', pax: 'charter yolcusu', place: '<span lang="en" style="color:inherit;font-size:inherit">NAV · NEVŞEHİR AIRPORT</span>', /* the tag is upper-cased: in Turkish "Airport" would become "AİRPORT" */ accepted: 'Harika! Uçağım o sabah iniyor, yolcularım terminalden cipe biner. Sepetleri hazırla!',
       where: 'Uçak anlaşma boyunca havalimanında bekleyecek; kasabayı sağa, doğu yolu boyunca kaydırırsan görürsün. İki sabah da yeterli balonun uçmaya hazır olsun.',
       empty: 'Apron boş. Yeni bir charter teklifi sabah gelir.', fresh: 'Seul\'den, Şanghay\'dan, İstanbul\'dan charter uçakları buraya iner, yolcular cipe binip kasabaya gelir.',
       prefPaper: 'Charter uçakları artık önce ona geliyor.',
@@ -7423,6 +7423,14 @@ function ctrState() {
   return S.ctr;
 }
 const ctrWho = () => { const K = ctrCfg(), C = ctrState(); return K.cast[C.who % K.cast.length]; };
+/* v126.1: good jobs with one owner, kept per owner: the dots, the counter and the "N/3" lines only ever show the
+   owner you're dealing with. A new owner starts at 0 (old saves: okWho belonged to the current owner). Trust broken:
+   that owner's count goes back to 0. */
+function ctrOkWith(id) {
+  const C = ctrState();
+  if (!C.okBy) C.okBy = { [ctrWho().id]: C.okWho || 0 };
+  return C.okBy[id] || 0;
+}
 const ctrOwner = k => { const K = ctrCfg(); return K.cast.find(x => x.id === k.who) || ctrWho(); };
 const kLen = k => k.len || 1, kEnd = k => k.day + kLen(k) - 1;
 const ctrActive = (k, d = S.day) => d >= k.day && d <= kEnd(k);
@@ -7506,6 +7514,7 @@ function ctrBreakCheck() {
   if (C.pref && C.rel < 1) { C.pref = false; ctrSay(w, w.L.lostPref); }
   if (C.rel > K.breakAt) return;
   ctrSay(w, w.L.bye);
+  ctrOkWith(w.id); C.okBy[w.id] = 0;
   C.gone.push(w.id); C.who = (C.who + 1) % K.cast.length; C.rel = 0; C.okWho = 0; C.pref = false; C.met = false; C.next = S.day + K.cool;
 }
 /* The evening of a contract day: what flew, what it paid, what it cost, and the rival's share. A block (Luxor) or a
@@ -7544,10 +7553,11 @@ function ctrSettle(Lg, ev, rev, paxTotal) {
       R.done = true; C.depart = { col: w.col, name: w.co, n: mine.n, from: S.day + 1 }; /* it leaves the next time you look */
       if (!mine.flown) ev.push(`${w.co} işi hava yüzünden hiç uçamadan bitti. Kimsenin suçu değil.`);
       else if (!mine.short) {
-        C.ok++; C.okWho++; ctrRel(1); R.ok = true;
-        if (!C.pref && C.okWho >= K.prefNeed && C.rel >= 2) { C.pref = C.prefEver = true; ctrSay(w, w.L.pref); paperAdd(3, `${S.company} artık ${w.co} şirketinin gözde ortağı`, K.T.prefPaper); }
+        const cur = w.id === ctrWho().id, nOk = ctrOkWith(w.id) + 1; C.okBy[w.id] = nOk; if (cur) C.okWho = nOk;
+        C.ok++; if (cur) ctrRel(1); R.ok = true;
+        if (cur && !C.pref && nOk >= K.prefNeed && C.rel >= 2) { C.pref = C.prefEver = true; ctrSay(w, w.L.pref); paperAdd(3, `${S.company} artık ${w.co} şirketinin gözde ortağı`, K.T.prefPaper); }
         else ctrSay(w, w.L.thanks);
-        if (C.okWho < K.prefNeed) ev.push(`${w.name} ile başarılı iş: ${C.okWho}/${K.prefNeed}. Üçüncüsünde gözde ortağı olursun.`);
+        if (cur && !C.pref && nOk < K.prefNeed) ev.push(`${w.name} ile başarılı iş: ${nOk}/${K.prefNeed}. Onunla üçüncüsünde gözde ortağı olursun.`);
       } else {
         C.fail++; R.fail = true; ctrRel(mine.got >= (mine.got + mine.short) * .75 ? -1 : -2);
         ev.push(`${w.name} sana artık daha az güveniyor. Uçamayan yolcu: ${mine.short}.`);
@@ -7613,10 +7623,12 @@ function ctrHead(c, w, chap) {
   c.appendChild(h('div', 'ctrhd', `<div class="ctrav">${w.av()}</div><div><span class="ctrtag">${chap}</span><b>${esc(w.name)}</b><span>${esc(w.title)}</span></div>`));
 }
 function ctrSpeech(c, text) { c.appendChild(h('p', 'ctrsay', esc(text))); }
-function ctrTrust(c, promise) {
-  const K = ctrCfg(), C = ctrState();
-  const dots = Array.from({ length: K.prefNeed }, (_, i) => `<i class="${i < Math.min(C.okWho, K.prefNeed) ? 'on' : ''}"></i>`).join('');
-  c.appendChild(h('div', 'ctrtrust', C.pref ? `<b class="pref">Gözde ortak</b><span>Teklifler daha sık, kişi başı %${Math.round((K.prefPrice - 1) * 100)} fazla</span>` : `<span class="dots">${dots}</span><span>${promise ? `“${esc(promise)}”` : `Başarılı iş: ${Math.min(C.okWho, K.prefNeed)}/${K.prefNeed} · üçüncüsünde gözde ortağı olursun`}</span>`));
+/* w: the owner on the card; the dots are your good jobs with this owner only */
+function ctrTrust(c, promise, w) {
+  const K = ctrCfg(), C = ctrState(); w = w || ctrWho();
+  const n = Math.min(ctrOkWith(w.id), K.prefNeed), pref = C.pref && w.id === ctrWho().id;
+  const dots = Array.from({ length: K.prefNeed }, (_, i) => `<i class="${i < n ? 'on' : ''}"></i>`).join('');
+  c.appendChild(h('div', 'ctrtrust', pref ? `<b class="pref">Gözde ortak</b><span>Teklifler daha sık, kişi başı %${Math.round((K.prefPrice - 1) * 100)} fazla</span>` : `<span class="dots">${dots}</span><span>${promise ? `“${esc(promise)}”` : `${esc(w.name)} ile başarılı iş: ${n}/${K.prefNeed} · üçüncüsünde gözde ortağı olursun`}</span>`));
 }
 function ctrClose(back) {
   const m = $('menu'); m.hidden = true; m.classList.remove('evm');
@@ -7646,7 +7658,7 @@ function ctrCard() {
     : `O sabah koltuklar önce gruba gider; kırmızı bayrakta grup bir gün kayar (%${Math.round(K.redCut * 100)} indirimle).`;
   c.appendChild(h('div', 'ctrpen', `<b>Eksik koltuk başına ceza: ${eur(Math.round(O.price * K.pen))}</b><span>${rule}</span>`));
   c.appendChild(h('p', 'ctrrule', `Reddedersen grubu <b>${riv ? esc(riv.name) : 'bir rakip'}</b> uçurur.`));
-  ctrTrust(c, !C.pref && C.okWho < K.prefNeed ? w.L.promise : null);
+  ctrTrust(c, !C.pref && ctrOkWith(w.id) < K.prefNeed ? w.L.promise : null, w);
   const ok = h('button', 'big', `Kabul et: ${eur(ctrTotal(O))}`);
   ok.onclick = () => { sfx('coin'); ctrAccept(); ctrResult(w, 'ok', O); };
   c.appendChild(ok);
@@ -7706,7 +7718,7 @@ function ctrStatusCard() {
   ctrHead(c, w, K.T.place);
   if (mine.length) for (const k of mine) c.appendChild(h('div', 'fmix', `<div><span>${esc(ctrOwner(k).co)}</span><b>${ctrWhen(k)}</b></div><div><span>Grup</span><b>${k.n} kişi${kLen(k) > 1 ? ' × ' + kLen(k) : ''} · ${eur(k.price)}</b></div>`));
   else c.appendChild(h('p', 'lead', C.met || C.ok ? K.T.empty : K.T.fresh));
-  ctrTrust(c);
+  ctrTrust(c, null, w);
   const x = h('button', 'big', 'Kapat'); x.onclick = () => { m.hidden = true; refresh(); }; c.appendChild(x);
   m.appendChild(c); m.hidden = false;
 }
@@ -8178,7 +8190,10 @@ function airItems(add, t) {
   add(27, 5.7, () => { ctx.strokeStyle = 'rgba(90,90,100,.65)'; ctx.lineWidth = 1.2; const a = tiso(23.8, 5.7), b = tiso(30.1, 5.7); for (let x = 23.8; x <= 30.1; x += .45) { const p = tiso(x, 5.7); ctx.fillStyle = '#6a6a72'; ctx.fillRect(p[0] - 1, p[1] - 16, 2, 16); } ctx.beginPath(); ctx.moveTo(a[0], a[1] - 15); ctx.lineTo(b[0], b[1] - 15); ctx.moveTo(a[0], a[1] - 7); ctx.lineTo(b[0], b[1] - 7); ctx.stroke(); }, 23.8 + 5.7 + 4.5);
   /* the jeep stand's sign and the way sign at the road */
   add(29.6, 6.2, () => { const p = tiso(29.6, 6.2); ctx.fillStyle = '#6a4a2a'; ctx.fillRect(p[0] - 2, p[1] - 46, 4, 46); rrect(p[0] - 30, p[1] - 66, 60, 24, 5); ctx.fillStyle = '#fff1d6'; ctx.fill(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#2b2350'; ctx.font = '800 11px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('BALON', p[0], p[1] - 55); ctx.fillText('SERVİSİ', p[0], p[1] - 45); ctx.textAlign = 'left'; });
-  add(23.6, 7.3, () => { const p = tiso(23.6, 7.3); ctx.fillStyle = '#5a5a60'; ctx.fillRect(p[0] - 1.5, p[1] - 50, 3, 50); rrect(p[0] - 34, p[1] - 68, 68, 22, 4); ctx.fillStyle = '#1f4a6a'; ctx.fill(); ctx.fillStyle = '#ffffff'; ctx.font = '800 12px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✈ NAV  →', p[0], p[1] - 52); ctx.textAlign = 'left'; });
+  add(23.6, 7.3, () => { const p = tiso(23.6, 7.3); ctx.fillStyle = '#5a5a60'; ctx.fillRect(p[0] - 1.5, p[1] - 50, 3, 50); rrect(p[0] - 34, p[1] - 68, 68, 22, 4); ctx.fillStyle = '#1f4a6a'; ctx.fill(); ctx.fillStyle = '#ffffff'; ctx.font = '800 13px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('NAV', p[0] + 2, p[1] - 52); ctx.textAlign = 'left';
+    /* v126.1: a small plane and an arrow drawn in code (no emoji anywhere in the game) */
+    ctx.save(); ctx.translate(p[0] - 20, p[1] - 57); ctx.rotate(-.5); ctx.beginPath(); ctx.moveTo(7, 0); ctx.lineTo(-6, -1.3); ctx.lineTo(-6, 1.3); ctx.closePath(); ctx.moveTo(1.5, 0); ctx.lineTo(-2, -6.5); ctx.lineTo(-3.6, -6.5); ctx.lineTo(-2, 0); ctx.lineTo(-3.6, 6.5); ctx.lineTo(-2, 6.5); ctx.closePath(); ctx.moveTo(-5, 0); ctx.lineTo(-7, -3); ctx.lineTo(-7.8, -3); ctx.lineTo(-7.2, 0); ctx.lineTo(-7.8, 3); ctx.lineTo(-7, 3); ctx.closePath(); ctx.fill(); ctx.restore();
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.beginPath(); ctx.moveTo(p[0] + 16, p[1] - 57); ctx.lineTo(p[0] + 26, p[1] - 57); ctx.moveTo(p[0] + 22, p[1] - 61); ctx.lineTo(p[0] + 26, p[1] - 57); ctx.lineTo(p[0] + 22, p[1] - 53); ctx.stroke(); ctx.lineCap = 'butt'; });
   /* a few fairy chimneys and poplars round the field */
   for (const [gx, gy, k] of [[21.4, 4.2, 0], [22.4, 5.8, 1], [33.6, 2.2, 1], [37.6, 3.4, 0], [38.6, 6.2, 1], [21.2, 6.6, 1], [36.8, 7.1, 1]]) add(gx, gy, () => { const p = tiso(gx, gy); k ? roundTree(p[0], p[1], .55, '#7a8a50') : chimney(p[0], p[1], 50, 120, '#efc79e', '#c69068', '#6a4430'); });
   /* the plane: landing, parked, or leaving */
