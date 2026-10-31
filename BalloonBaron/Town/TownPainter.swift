@@ -112,7 +112,7 @@ struct TownPainter {
     var tuffOverride: Tuff? = nil
     /// Windows and doors drawn this frame, lit again over the dark.
     var windows: [NightWindow] = []
-    /// v128: small lights the buildings carry (lanterns, the phone sign, the ring light), lit again over the dark.
+    /// v128: small lights the buildings carry (lanterns, the phone sign, the guide office's sign), lit again over the dark.
     var lites: [NightLite] = []
     /// Passengers queueing at your office and the jeeps, while they gather.
     var collect: CollectScene? = nil
@@ -980,12 +980,11 @@ struct TownPainter {
         let x0 = b.gx + 0.35, y0 = b.gy + 0.4, w = b.w - 1, d = b.d - 1
         let h: CGFloat = 48
         let f = block(x0, y0, w, d, h)
-        let a0 = upp(f.D, h - 6), a1 = upp(f.C, h - 6), a2 = pt(a1.x - 16, a1.y + 14), a3 = pt(a0.x - 16, a0.y + 14)
-        for i in 0..<6 {
-            let k0 = CGFloat(i) / 6, k1 = CGFloat(i + 1) / 6
-            poly([lp(a0, a1, k0), lp(a0, a1, k1), lp(a3, a2, k1), lp(a3, a2, k0)], hex(i % 2 == 1 ? "#ffffff" : "#3ad0c0"))
-        }
+        // v129: no awning any more (it made the office look like one of the rivals' shops); two windows by the door and,
+        // on the roof, a tourist-information sign.
         opening(f.D, f.C, h, 0.5, 0, 0.3, 0.55, door: true)
+        for u: CGFloat in [0.18, 0.82] { opening(f.D, f.C, h, u, 0.32, 0.15, 0.36, lit: big) }
+        infoSign(upp(iso(x0 + 0.14, y0 + 0.5), h), upp(iso(x0 + 0.86, y0 + 0.5), h), 40, on: big)
         block(x0 + w + 0.15, y0 + 0.05, 0.55, 0.9, 22, lit: "#ffffff", shade: "#d8d8d8", top: "#f4f4f4", courses: false)
         let s0 = iso(x0 + w + 0.15, y0 + 0.95)
         rect(s0.x - 2, s0.y - 12, 38, 5, hex("#3ad0c0"))
@@ -1002,7 +1001,7 @@ struct TownPainter {
         }
     }
 
-    /// Influencer agency: a modern cave-stone villa with big lit glass, a roof terrace, a pool; v128: a phone sign and a ring light on the roof.
+    /// Influencer agency: a modern cave-stone villa with big lit glass, a roof terrace, a pool; v128: a phone sign on the roof.
     mutating func agency(_ g: Double, _ k: Double, _ big: Bool) {
         let x0 = g + 0.25, y0 = k + 0.25, w = 1.5, d = 1.15
         let h1: CGFloat = 54, h2: CGFloat = 46
@@ -1042,11 +1041,10 @@ struct TownPainter {
         // The influencer filming on the terrace.
         let ip = lp(f2.D, f2.C, 0.1)
         person(ip.x - 26, ip.y + 12, "#ff6fa8", big ? t : 0, 3)
-        // v128: on the roof, a big phone sign with a video playing on it and a ring light beside it, lit up while a
-        // campaign runs.
+        // v128: on the roof, a big phone sign with a video playing on it, lit up while a campaign runs (v129: the ring
+        // light on its tripod went).
         func rp(_ x: Double, _ y: Double) -> CGPoint { upp(iso(x, y), h2) }
         phoneSign(rp(x0 + 0.8, y0 + 0.4), rp(x0 + 1.34, y0 + 0.4), 62, on: big)
-        ringLight(rp(x0 + 0.66, y0 + 0.6), on: big)
         c = keep
         // Turquoise pool in the front garden.
         let (pA, pB, pC, pD) = corners(x0 + 0.05, y0 + d + 0.12, 1.3, 0.4)

@@ -192,6 +192,7 @@ button:focus-visible,input:focus-visible,textarea:focus-visible{outline:3px soli
 .why .wr em{white-space:nowrap}.why .wr span i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
 .why .wr em{font-style:normal;font-weight:700;text-align:right}
 .why em.g{color:var(--green)}.why em.y{color:#e0a400}.why em.r{color:var(--red)}
+.why .ws{margin-top:1px;font-size:11.5px;line-height:1.35;opacity:.62} /* v129: a row's caption, e.g. what changes today's tourists */
 .mood b{font-family:var(--cond);font-size:15px}
 .res{display:flex;justify-content:space-between;align-items:flex-end;width:100%}
 .res div{display:flex;flex-direction:column}
@@ -3295,7 +3296,8 @@ function whyRows(m) {
     rows.push(`<div class="wr"><span>Popülerlik <b>${stars(S.rep)}</b> · rakipler ${stars(avg)}</span><em class="${cls}">${Math.abs(pull - 1) < .05 ? 'eşit ilgi' : `turist ilgisi ${pctTxt(Math.min(pull, 3))}`}</em></div>`);
   }
   const df = demandFactors();
-  if (df.length) rows.push(`<div class="wr"><span>Bugünkü turist</span><em>${df.map(x => `${x.label} ${pctTxt(x.k)}`).join(' · ')}</em></div>`);
+  /* v129: today's tourists on the right like the other rows, and what changes them as a quiet caption under the label */
+  if (df.length) rows.push(`<div><div class="wr"><span>Bugünkü turist</span><em>${touristsToday().toLocaleString('tr-TR')}</em></div><div class="ws">${df.map(x => `${x.label} ${pctTxt(x.k)}`).join(' · ')}</div></div>`);
   if (m.ctr) { const w = CTR[S.region].cast.find(x => x.id === m.ctr.k.who); rows.push(`<div class="wr"><span><i style="background:${w.col}"></i>Tur grubu: ${esc(w.co)}</span><em class="${m.ctr.held < m.ctr.k.n ? 'r' : 'g'}">${m.ctr.held < m.ctr.k.n ? `${m.ctr.held}/${m.ctr.k.n} koltuk!` : `+${m.ctr.held} yolcu · ${eur(m.ctr.k.price)}`}</em></div>`); }
   for (const x of (m.parts || [])) rows.push(`<div class="wr"><span><i style="background:${x.col}"></i>${esc(x.label)}</span><em class="g">+${x.n} yolcu</em></div>`);
   return rows.length ? `<div class="why">${rows.join('')}</div>` : '';
@@ -9891,10 +9893,11 @@ function tbuilding(b, t) {
     case 'guide': {
       const x0 = g + .35, y0 = k + .4, w = b.w - 1, d = b.d - 1, h = 48;
       const f = block(x0, y0, w, d, h);
-      /* striped awning */
-      const a0 = upp(f.D, h - 6), a1 = upp(f.C, h - 6), a2 = [a1[0] - 16, a1[1] + 14], a3 = [a0[0] - 16, a0[1] + 14];
-      for (let i = 0; i < 6; i++) tpoly([lp(a0, a1, i / 6), lp(a0, a1, (i + 1) / 6), lp(a3, a2, (i + 1) / 6), lp(a3, a2, i / 6)], i % 2 ? '#ffffff' : '#3ad0c0');
+      /* v129: no awning any more (it made the office look like one of the rivals' shops); two windows by the door and,
+         on the roof, a tourist-information sign */
       opening(f.D, f.C, h, .5, 0, .3, .55, 'door');
+      for (const u of [.18, .82]) opening(f.D, f.C, h, u, .32, .15, .36, 'win', big);
+      infoSign(upp(tiso(x0 + .14, y0 + .5), h), upp(tiso(x0 + .86, y0 + .5), h), 40, big, t);
       /* the tour minibus */
       block(x0 + w + .15, y0 + .05, .55, .9, 22, { lit: '#ffffff', shade: '#d8d8d8', top: '#f4f4f4', courses: false });
       ctx.fillStyle = '#3ad0c0'; const s0 = tiso(x0 + w + .15, y0 + .95); ctx.fillRect(s0[0] - 2, s0[1] - 12, 38, 5);
@@ -9906,7 +9909,7 @@ function tbuilding(b, t) {
       for (let i = 0; i < n; i++) { const p = tiso(x0 + .05 + (i % 4) * .2 + (i > 3 ? .1 : 0), y0 + d + .48 + (i > 3 ? .22 : 0) + (i % 2) * .05); tourist(p[0], p[1], ['#ffc23d', '#ff6fa8', '#5aa9e6', '#22a45d', '#9b7be0', '#ff8a3d', '#e8e2d4'][i], hats[i], i % 3 === 1, t * .25, i); }
       break;
     }
-    case 'agency': { /* a modern cave-stone villa: big lit glass, roof terrace with pergola, pool; v128: a big phone and a ring light on the roof */
+    case 'agency': { /* a modern cave-stone villa: big lit glass, roof terrace with pergola, pool; v128: a big phone on the roof */
       const x0 = g + .25, y0 = k + .25, w = 1.5, d = 1.15, h1 = 54, h2 = 46;
       const plaster = { lit: '#f6e2c8', shade: '#c4936c', top: '#efd9b8', courses: false };
       /* floor-to-ceiling glass in wooden frames, warm inside */
@@ -9935,10 +9938,9 @@ function tbuilding(b, t) {
       ctx.beginPath(); ctx.moveTo(...upp(pd, ph)); ctx.lineTo(...upp(pc, ph)); ctx.stroke();
       /* the influencer filming on the terrace */
       const ip = lp(f2.D, f2.C, .1), ipos = [ip[0] - 26, ip[1] + 12]; person(ipos[0], ipos[1], '#ff6fa8', big ? t : 0, 3);
-      /* v128: on the roof, a big phone sign with a video playing on it and a ring light beside it, lit up while a campaign runs */
+      /* v128: on the roof, a big phone sign with a video playing on it, lit up while a campaign runs (v129: the ring light on its tripod went) */
       const rp = (x, y) => upp(tiso(x, y), h2);
       phoneSign(rp(x0 + .8, y0 + .4), rp(x0 + 1.34, y0 + .4), 62, big, t);
-      ringLight(rp(x0 + .66, y0 + .6), big, t);
       ctx.restore();
       /* turquoise pool in the front garden */
       const pl = corners(x0 + .05, y0 + d + .12, 1.3, .4); tpoly([pl.A, pl.B, pl.C, pl.D], '#efe2cc');
@@ -9974,7 +9976,7 @@ function tbuilding(b, t) {
 /* ---------- v128: telling the buildings apart ----------
    Players mixed up the guide office, the influencer agency, the bazaar and the pilot school. No writing on them: each
    carries a big drawn sign of its trade, in its region's style. NIGHT_LITE collects the little lights they carry
-   (lanterns, the phone's screen, the ring light) so the night can light them again over the dark. */
+   (lanterns, the phone's screen, the guide office's sign) so the night can light them again over the dark. */
 const NIGHT_LITE = [];
 function nightLite(x, y, r, rgb, a = 1) { if (NIGHT_K > 0) { const m = ctx.getTransform(), p = m.transformPoint(new DOMPoint(x, y)); NIGHT_LITE.push([p.x, p.y, r, rgb, a]); } } /* kept in canvas pixels: the agency draws its roof shifted up */
 /* a point on a wall-like plane: u along p→q, v up to h */
@@ -10050,19 +10052,31 @@ function phoneSign(p, q, H, on, t) {
   }
   const sc = fpt(p, q, H, .5, .58); nightLite(sc[0], sc[1], 40, '255,120,180', on ? .9 : .6);
 }
-/* a ring light on a tripod: a bright white ring, warm inside when it's on */
-function ringLight(c, on, t) {
-  const top = [c[0], c[1] - 34], R = 12.5;
-  ctx.strokeStyle = '#2a2430'; ctx.lineWidth = 1.5;
-  for (const dx of [-8, 1, 8]) { ctx.beginPath(); ctx.moveTo(c[0] + dx, c[1] + (dx === 1 ? -3 : 1)); ctx.lineTo(top[0], top[1] + 10); ctx.stroke(); }
-  ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(top[0], top[1] + 10); ctx.lineTo(top[0], top[1] - 4); ctx.stroke();
-  const cy = top[1] - 4 - R;
-  if (on) { ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(top[0], cy, R * .6, top[0], cy, R * 2.6); g.addColorStop(0, `rgba(255,250,235,${.5 + .2 * Math.sin(t * 5)})`); g.addColorStop(1, 'rgba(255,250,235,0)'); ctx.fillStyle = g; ctx.fillRect(top[0] - R * 2.6, cy - R * 2.6, R * 5.2, R * 5.2); ctx.restore(); }
-  ctx.strokeStyle = '#3a3048'; ctx.lineWidth = 6.5; ctx.beginPath(); ctx.ellipse(top[0], cy, R, R * 1.05, 0, 0, 7); ctx.stroke();
-  ctx.strokeStyle = on ? '#fffdf4' : '#f2eee6'; ctx.lineWidth = 4.2; ctx.beginPath(); ctx.ellipse(top[0], cy, R, R * 1.05, 0, 0, 7); ctx.stroke();
-  ctx.strokeStyle = 'rgba(255,255,255,.9)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.ellipse(top[0] - .6, cy - .6, R - 1, R * 1.05 - 1, 0, Math.PI * .9, Math.PI * 1.6); ctx.stroke();
-  ctx.fillStyle = '#2a2430'; ctx.fillRect(top[0] - 2.5, cy - 4, 5, 8); ctx.fillStyle = '#ff8ab0'; ctx.fillRect(top[0] - 1.6, cy - 3, 3.2, 6);
-  nightLite(top[0], cy, 34, '255,248,230', on ? 1 : .7);
+/* v129: the guide office's rooftop sign, so it can't be taken for a rival's shop: a navy board in a gold frame on two
+   posts, the tourist-information "i" in a white disc and a red map pin beside it, lit while the guides recommend you */
+function infoSign(p, q, H, on, t) {
+  const L = Math.hypot(q[0] - p[0], q[1] - p[1]), px = r => [r / L, r / H]; /* screen pixels in face units */
+  ctx.strokeStyle = '#3a3048'; ctx.lineWidth = 2.5;
+  for (const u of [.2, .8]) { const a = fpt(p, q, H, u, 0), c = fpt(p, q, H, u, .2); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...c); ctx.stroke(); }
+  /* its thickness, on the side away from the light */
+  const t0 = fpt(p, q, H, 1, .99), b0 = fpt(p, q, H, 1, .19); tpoly([t0, [t0[0] + 3, t0[1] + 1.5], [b0[0] + 3, b0[1] + 1.5], b0], '#14304f');
+  if (on) { const c = fpt(p, q, H, .5, .6); ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(c[0], c[1], 0, c[0], c[1], 44); g.addColorStop(0, `rgba(255,214,120,${.26 + .08 * Math.sin(t * 3)})`); g.addColorStop(1, 'rgba(255,214,120,0)'); ctx.fillStyle = g; ctx.fillRect(c[0] - 44, c[1] - 44, 88, 88); ctx.restore(); }
+  tface(p, q, H, () => {
+    ctx.fillStyle = '#ffc23d'; rrect(0, .18, 1, .81, .08); ctx.fill();
+    ctx.fillStyle = '#1f4a7a'; rrect(.035, .24, .93, .69, .06); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.1)'; ctx.beginPath(); ctx.moveTo(.035, .93); ctx.lineTo(.4, .93); ctx.lineTo(.035, .5); ctx.closePath(); ctx.fill();
+    /* the "i" in its white disc */
+    const [ru, rv] = px(11), cu = .3, cv = .585;
+    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(cu, cv, ru, rv, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = '#1f4a7a'; const [du, dv] = px(2.3); ctx.beginPath(); ctx.ellipse(cu, cv + rv * .5, du, dv, 0, 0, 7); ctx.fill();
+    const [sw] = px(3.6); ctx.fillRect(cu - sw / 2, cv - rv * .62, sw, rv * .85);
+    /* the map pin: a red drop with a white heart, its point down */
+    const [pr, pv] = px(7.5), mu = .71, mv = .64, [, tip] = px(19);
+    ctx.fillStyle = '#e04a3a'; ctx.beginPath(); ctx.moveTo(mu, mv - tip); ctx.lineTo(mu - pr * .86, mv - pv * .5); ctx.ellipse(mu, mv, pr, pv, 0, Math.PI + .52, -.52, true); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#ffffff'; const [wu, wv] = px(2.8); ctx.beginPath(); ctx.ellipse(mu, mv, wu, wv, 0, 0, 7); ctx.fill();
+    ctx.fillStyle = 'rgba(0,0,0,.22)'; const [su, sv] = px(5); ctx.beginPath(); ctx.ellipse(mu, mv - tip - sv * .2, su, sv * .35, 0, 0, 7); ctx.fill();
+  });
+  const sc = fpt(p, q, H, .5, .6); nightLite(sc[0], sc[1], 34, '255,226,160', on ? .6 : .35);
 }
 /* the school's flag: navy, a white mortarboard with a gold tassel on it */
 function capFlag(x, y, t, hgt) {
@@ -10696,7 +10710,7 @@ function townTop(b) {
   if (b.look === 'hotel') return [95, 165, 190, 200][b.star];
   if (b.look === 'rival') return 80;
   if (b.look === 'mast') return 175; /* the kiosk row steps down to the right, so neighbouring labels clear each other */
-  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 90, agency: 185, tower: 300, rival: 85 }[b.look] || 135;
+  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 122, agency: 185, tower: 300, rival: 85 }[b.look] || 135;
 }
 function townLabel(b, sx, sy, sc, full, taken) {
   const fn = Math.round((b.small ? 13 : 16) * sc), fs = Math.round((b.small ? 11 : 13) * sc);
@@ -11514,7 +11528,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
     for (const [P1, Q1] of [[A, B], [B, C]]) for (let i = 0; i <= 8; i++) { const f = i / 8, x = lerp(P1[0], Q1[0], f), y = lerp(P1[1], Q1[1], f) - 44 + 10 * 4 * f * (1 - f); glow(x, y, 6, '255,215,150', (.75 + .25 * Math.sin(t * 2.4 + i)) * k); }
   }
   if (placed('rugs')) { const p = tiso(...RUGS_AT); glow(p[0], p[1] - 30, 50, '255,180,100', .32 * k); }
-  /* v128: the little lights the buildings carry (the bazaar's lanterns, the agency's phone and ring light) */
+  /* v128: the little lights the buildings carry (the bazaar's lanterns, the agency's phone, the guide office's sign) */
   { const inv = ctx.getTransform().inverse(); for (const [dx, dy, r, rgb, a] of NIGHT_LITE) { const p = inv.transformPoint(new DOMPoint(dx, dy)); glow(p.x, p.y, r, rgb, .5 * a * k); glow(p.x, p.y, r * .25, '255,245,220', .8 * a * k); } }
   /* fireflies over the launch field and the gardens */
   const RF = mulberry32(5);

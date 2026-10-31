@@ -191,9 +191,15 @@ struct PriceSheetView: View {
                 whyRow(loc("why.popularity", starsText(g.state.rep), starsText(avg)),
                        abs(pull - 1) < 0.05 ? loc("why.equal") : loc("why.interest", Self.pct(min(pull, 3))), color)
             }
-            if !factors.isEmpty {
-                whyRow(loc("why.tourists"), factors.map { loc("why.\($0.factor.rawValue)", g.state.weather?.flag.title ?? "") + " " + Self.pct($0.k) }
-                    .joined(separator: " · "), Theme.ink)
+            if !factors.isEmpty { // v129: the count on the right like the other rows, what changes it as a quiet caption under the label
+                VStack(alignment: .leading, spacing: 1) {
+                    whyRow(loc("why.tourists"), num(g.touristsToday()), Theme.ink)
+                    Text(factors.map { loc("why.\($0.factor.rawValue)", g.state.weather?.flag.title ?? "") + " " + Self.pct($0.k) }.joined(separator: " · "))
+                        .font(Theme.font(11.5))
+                        .foregroundStyle(Theme.ink2.opacity(0.8))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
             if let k = K { // v125: today's contract group
                 whyRow(loc("price.ctr.row", k.owner.company), held < k.n ? loc("price.ctr.short", num(held), num(k.n)) : loc("price.ctr.ok", num(held), eur(k.price)),

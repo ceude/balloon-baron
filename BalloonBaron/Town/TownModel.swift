@@ -204,7 +204,7 @@ enum Town {
         case .office: return b.lv == 2 ? 150 : 120
         case .school: return 160
         case .bank: return 130
-        case .guide: return 90
+        case .guide: return 122 // v129: over the information sign on the roof
         case .agency: return 185 // v128: over the phone sign on the roof
         case .tower: return 300
         case .mast: return 175
