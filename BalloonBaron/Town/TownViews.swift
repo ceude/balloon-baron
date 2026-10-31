@@ -246,7 +246,7 @@ struct HomeTownView: View {
         }
         if let ci = model.cine, ci.card != card, let cur = model.cineView { model.cine = (now, cur, card) }
         guard let ci = model.cine else { return }
-        let z: CGFloat = 0.86, p = TownGeo.iso(P.center.0, P.center.1)
+        let z = CGFloat(s.contractConfig?.sceneZoom ?? 0.86), p = TownGeo.iso(P.center.0, P.center.1) // v126: the airport is wide
         let to = TownViewport(z: z, ox: sz.width / 2 - p.x * z, oy: sz.height * (card ? 0.2 : 0.5) - p.y * z)
         let dur = card ? 0.9 : 3.6
         let k = reduceMotion ? 1 : CGFloat(ContractGeo.easeIO3(min(max((now - ci.t0) / dur, 0), 1)))
@@ -272,11 +272,12 @@ struct HomeTownView: View {
     /// a finished job's vehicle leaves, and the place's ambient sound follows how close it is.
     private func contractTick(_ s: GameState, _ v: TownViewport, _ sz: CGSize, _ now: Double) {
         guard let K = s.contractConfig, let P = ContractPlace.of(s.region) else { return }
-        let T = ContractTown.shared, kind = K.kind == .bus ? 0 : K.kind == .ship ? 1 : 2
+        let T = ContractTown.shared, kind = K.kind.sound
         let p = v.screen(TownGeo.iso(P.center.0, P.center.1))
         let d = hypot(p.x - sz.width / 2, p.y - sz.height / 2) / max(sz.width, sz.height)
         if let dp = s.local.contracts?.depart {
-            if let t1 = T.departT, now - t1 > 9 {
+            // v126.1: gone (or the app restarted mid-departure: it has left, no second departure)
+            if (T.departT.map { now - $0 > K.kind.depDur || now < $0 } ?? false) || (dp.leaving == true && T.departT == nil) {
                 if !T.pending {
                     T.pending = true
                     DispatchQueue.main.async {
@@ -285,9 +286,12 @@ struct HomeTownView: View {
                         T.pending = false
                     }
                 }
-            } else if T.departT == nil && s.day >= dp.from && d < 0.42 {
+            } else if T.departT == nil && s.day >= dp.from && d < 0.42 && !T.pending {
                 T.departT = now
-                DispatchQueue.main.async { SoundEngine.shared.contractArrive(kind, leaving: true) }
+                DispatchQueue.main.async {
+                    SoundEngine.shared.contractArrive(kind, leaving: true)
+                    store.act { $0.markContractLeaving() }
+                }
             }
         }
         if let due = s.contractDue, d < 0.42, !T.pending {

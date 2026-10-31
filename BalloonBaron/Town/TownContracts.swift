@@ -24,7 +24,8 @@ struct ContractPlace {
         case .lux: ContractPlace(spot: (30, -10.4), shift: (0, 0), free: [(23.5, -12.5, 37, -6.5), (29.5, -9, 31.8, 8.6)], tap: (26, -13.8, 34.5, -8.4),
                                  town: [(8, 14.95), (8, 8), (24, 8)])
         case .bri: ContractPlace(spot: (-11, 6.4), shift: (0, 0), free: [(-20, 3, -5.6, 10.6)], tap: (-18, 3.8, -6.4, 9.8), town: [(8, 14.95), (8, 8), (-6, 8)])
-        case .cap: nil
+        // v126: NAV · Nevşehir Airport at the end of the east road
+        case .cap: ContractPlace(spot: (30, 3), shift: (0, 0), free: [(19.5, -2.5, 48, 9.6)], tap: (23.5, -0.2, 36.5, 7.6), town: [(8, 14.95), (8, 8), (23.5, 8)])
         }
     }
 
@@ -62,25 +63,65 @@ final class ContractTown {
 /// A vehicle at the place: its owner's color, and when it is pulling in (`t0`) or leaving (`t1`).
 struct ContractVehicle { var color: String; var t0: Double?; var t1: Double? }
 
+extension ContractKind {
+    /// The region whose texts this vehicle's contracts use.
+    var region: String {
+        switch self {
+        case .bus: "abq"
+        case .ship: "lux"
+        case .train: "bri"
+        case .plane: "cap"
+        }
+    }
+
+    /// The sound engine's index for its arrival and its hum.
+    var sound: Int {
+        switch self {
+        case .bus: 0
+        case .ship: 1
+        case .train: 2
+        case .plane: 3
+        }
+    }
+
+    /// How long its arrival and its departure take (`CTR_KINDS[kind].arrDur / depDur`): v126.1 the coaches drive in and
+    /// out on curves; v126 the plane's landing and take-off.
+    var arrDur: Double {
+        switch self {
+        case .bus: 8.6
+        case .plane: 13.5
+        case .ship, .train: 8
+        }
+    }
+
+    var depDur: Double {
+        switch self {
+        case .bus: 12.2
+        case .plane: 14
+        case .ship, .train: 9
+        }
+    }
+}
+
 enum ContractGeo {
     static let bays = [9.2, 10.2, 11.2], bayGY = 22.5
     static func easeIO3(_ k: Double) -> Double { k < 0.5 ? 4 * k * k * k : 1 - pow(-2 * k + 2, 3) / 2 }
     static func clamp01(_ x: Double) -> Double { min(max(x, 0), 1) }
 
     /// Vehicles at the place now (`ctrVehicles`): your running jobs' (once arrived), a finished job's waiting to leave,
-    /// and in the first offer's scene the offer's.
+    /// and in the first offer's scene the offer's. v126.1: the arrival plays only while `arriveT ≤ t < arriveT + arrDur`;
+    /// after a restart (no time kept) the vehicle simply stands there.
     static func vehicles(_ s: GameState, _ t: Double) -> [ContractVehicle] {
         guard let K = s.contractConfig, let C = s.local.contracts else { return [] }
         let T = ContractTown.shared, bus = K.kind == .bus
         let room = bus ? bays.count : 1
         func many(_ n: Int) -> Int { bus ? min(max(Int((Double(n) / 50).rounded(.up)), 1), 3) : 1 }
         var out: [ContractVehicle] = []
-        for k in C.booked where k.mine && k.active(on: s.day) {
-            if k.day == s.day && k.arrived != s.day { continue }
-            let a = T.arriveT[k.id], t0 = k.day == s.day && a != nil && t - a! < 8 ? a : nil
+        for k in s.contractParked {
+            let t0 = T.arriveT[k.id].flatMap { a in t >= a && t - a < K.kind.arrDur ? a : nil }
             for _ in 0..<many(k.n) where out.count < room { out.append(ContractVehicle(color: k.owner.color, t0: t0, t1: nil)) }
         }
-        if let dp = C.depart, s.day >= dp.from, !(T.departT.map { t - $0 > 9 } ?? false) {
+        if let dp = C.depart, s.day >= dp.from, !(T.departT.map { t - $0 > K.kind.depDur } ?? false) {
             for _ in 0..<many(dp.n) where out.count < room { out.append(ContractVehicle(color: dp.owner.color, t0: nil, t1: T.departT)) }
         }
         if T.cine, let o = C.offer, out.isEmpty {
@@ -131,6 +172,7 @@ extension TownPainter {
         case .bus: busGround()
         case .ship: shipGround()
         case .train: trainGround()
+        case .plane: airGround()
         }
         c = keep
     }
@@ -146,6 +188,7 @@ extension TownPainter {
         case .bus: busItems(add)
         case .ship: shipItems(add)
         case .train: trainItems(add)
+        case .plane: airItems(add)
         }
         if ContractGeo.jeepsOn(s) && !ContractGeo.vehicles(s, t).isEmpty { jeepItems(add, K.kind) }
         let (sx, sy) = P.shift
@@ -186,40 +229,59 @@ extension TownPainter {
         }
     }
 
-    /// A tour coach parked along gy, nose towards town: its long right side with the door near the front and its rear;
-    /// idling, it shivers and puffs from the exhaust. `away`: leaving towards +gy, so we see its front.
-    mutating func coach(_ gx: Double, _ gy: Double, _ col: String, idle: Bool, away: Bool = false) {
+    /// A tour coach. (gx, gy) is the middle of its front bumper, `hd` its heading in grid space (−π/2: nose towards town,
+    /// along −gy, as it stands in a bay). v126.1: drawn turned any way, so it can drive along curves: of its four sides
+    /// the two facing the viewer (+gx +gy) are drawn: the right side with the door near the front, the left side, the
+    /// rear (tail lights, rear window, grille) or the front (windscreen, headlights); idling, it shivers and puffs.
+    mutating func coach(_ gx: Double, _ gy: Double, _ col: String, idle: Bool, hd: Double = -.pi / 2) {
         let w = 0.46, d = 1.6, hh: CGFloat = 34, z: CGFloat = 5 + (idle ? CGFloat(sin(t * 38 + gx)) * 0.5 : 0)
-        let (A, B, C, D) = corners(gx - w / 2, gy, w, d)
-        blobShadow((A.x + C.x) / 2 + 10, (A.y + C.y) / 2 + 4, 52, 18, 0.25)
-        for u in [0.2, 0.84] as [CGFloat] {
-            let p = lp(C, B, u)
-            ellipse(p.x, p.y - 6, 7, 7, hex("#1f1c22")); ellipse(p.x, p.y - 6, 3, 3, hex("#a8a8b0"))
-        }
-        do { let p = lp(D, C, 0.5); ellipse(p.x - 6, p.y - 6, 4, 6, hex("#1f1c22")) }
-        poly([upp(C, z), upp(B, z), upp(B, z + hh), upp(C, z + hh)], hex("#efe6d2"))
-        var f = face(upp(C, z), upp(B, z), hh)
+        let fx = cos(hd), fy = sin(hd), rx = -fy, ry = fx
+        func g(_ a: Double, _ b: Double) -> CGPoint { iso(gx + a * fx + b * rx, gy + a * fy + b * ry) } // a forward, b to the right
+        let A = g(0, -w / 2), B = g(0, w / 2), C = g(-d, w / 2), D = g(-d, -w / 2)
+        do { let m = g(-d / 2, 0); blobShadow(m.x + 10, m.y + 4, 30 + 22 * CGFloat(abs(fy)), 14 + 4 * CGFloat(abs(fx)), 0.25) }
+        let body = "#efe6d2"
+        func L(_ p: CGPoint) -> CGPoint { upp(p, z) }
+        func shade(_ ny: Double) -> Color { mix(body, "#000000", 0.12 * max(0, ny)) }
         func r(_ g: inout GraphicsContext, _ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ col: Color) { g.fill(Path(CGRect(x: x, y: y, width: w, height: h)), with: .color(col)) }
-        r(&f, 0, 0.2, 1, 0.12, hex(col)); r(&f, 0, 0.32, 1, 0.03, mix(col, "#000000", 0.25))
-        r(&f, 0.04, 0.5, 0.8, 0.36, hex("#2a3a50"))
-        for i in 0..<6 { r(&f, 0.07 + CGFloat(i) * 0.13, 0.78, 0.05, 0.06, Color.white.opacity(0.18)) }
-        for i in 1..<6 { r(&f, 0.04 + CGFloat(i) * 0.133, 0.5, 0.012, 0.36, hex("#efe6d2")) }
-        let dx: CGFloat = away ? 0.03 : 0.87
-        r(&f, dx, 0.06, 0.1, 0.8, hex("#2a3a50")); r(&f, dx + 0.048, 0.06, 0.006, 0.8, Color.white.opacity(0.25))
-        r(&f, 0, 0, 1, 0.05, hex("#c0c6cc"))
-        poly([upp(D, z), upp(C, z), upp(C, z + hh), upp(D, z + hh)], mix("#efe6d2", "#000000", 0.12))
-        var e = face(upp(D, z), upp(C, z), hh)
-        if away {
-            r(&e, 0.08, 0.42, 0.84, 0.48, hex("#1e2a3c")); r(&e, 0, 0.2, 1, 0.12, hex(col))
-            r(&e, 0.08, 0.08, 0.14, 0.07, hex("#fff6c8")); r(&e, 0.78, 0.08, 0.14, 0.07, hex("#fff6c8"))
-        } else {
+        func side(_ f: inout GraphicsContext, right: Bool) { // u: 0 at the rear, 1 at the front
+            r(&f, 0, 0.2, 1, 0.12, hex(col)); r(&f, 0, 0.32, 1, 0.03, mix(col, "#000000", 0.25))
+            r(&f, 0.04, 0.5, right ? 0.8 : 0.92, 0.36, hex("#2a3a50"))
+            for i in 0..<6 { r(&f, 0.07 + CGFloat(i) * 0.13, 0.78, 0.05, 0.06, Color.white.opacity(0.18)) }
+            for i in 1..<7 { r(&f, 0.04 + CGFloat(i) * 0.133, 0.5, 0.012, 0.36, hex(body)) }
+            if right { r(&f, 0.87, 0.06, 0.1, 0.8, hex("#2a3a50")); r(&f, 0.918, 0.06, 0.006, 0.8, Color.white.opacity(0.25)) } // the door
+            r(&f, 0, 0, 1, 0.05, hex("#c0c6cc"))
+        }
+        func wheels(_ p: CGPoint, _ q: CGPoint) {
+            for u in [0.2, 0.84] as [CGFloat] { let c = lp(p, q, u); ellipse(c.x, c.y - 6, 7, 7, hex("#1f1c22")); ellipse(c.x, c.y - 6, 3, 3, hex("#a8a8b0")) }
+        }
+        func seen(_ nx: Double, _ ny: Double) -> Bool { nx + ny > 1e-6 }
+        if seen(rx, ry) { // the right side
+            wheels(C, B)
+            poly([L(C), L(B), upp(B, z + hh), upp(C, z + hh)], shade(ry))
+            var f = face(L(C), L(B), hh); side(&f, right: true)
+        }
+        if seen(-rx, -ry) { // the left side
+            wheels(D, A)
+            poly([L(D), L(A), upp(A, z + hh), upp(D, z + hh)], shade(-ry))
+            var f = face(L(D), L(A), hh); side(&f, right: false)
+        }
+        if seen(-fx, -fy) { // the rear
+            let c = lp(D, C, 0.5); ellipse(c.x - 6, c.y - 6, 4, 6, hex("#1f1c22"))
+            poly([L(D), L(C), upp(C, z + hh), upp(D, z + hh)], shade(-fy))
+            var e = face(L(D), L(C), hh)
             r(&e, 0.15, 0.62, 0.7, 0.26, hex("#2a3a50")); r(&e, 0, 0.2, 1, 0.12, hex(col))
             r(&e, 0.06, 0.1, 0.1, 0.16, hex("#e5432f")); r(&e, 0.84, 0.1, 0.1, 0.16, hex("#e5432f"))
             for i in 0..<5 { r(&e, 0.3, 0.4 + CGFloat(i) * 0.035, 0.4, 0.015, hex("#c8c0b0")) }
         }
+        if seen(fx, fy) { // the front
+            poly([L(A), L(B), upp(B, z + hh), upp(A, z + hh)], shade(fy))
+            var e = face(L(A), L(B), hh)
+            r(&e, 0.08, 0.42, 0.84, 0.48, hex("#1e2a3c")); r(&e, 0, 0.2, 1, 0.12, hex(col))
+            r(&e, 0.08, 0.08, 0.14, 0.07, hex("#fff6c8")); r(&e, 0.78, 0.08, 0.14, 0.07, hex("#fff6c8"))
+        }
         let a = upp(A, z + hh), b = upp(B, z + hh), cc = upp(C, z + hh), dd = upp(D, z + hh)
         poly([a, b, cc, dd], hex("#f8f2e4"))
-        poly([lp(a, cc, 0.45), lp(b, dd, 0.45), lp(a, cc, 0.7), lp(b, dd, 0.7)], hex("#d8d2c4"))
+        poly([lp(a, dd, 0.3), lp(b, cc, 0.3), lp(b, cc, 0.55), lp(a, dd, 0.55)], hex("#d8d2c4"))
         if idle {
             let p = upp(lp(D, C, 0.85), z + 2)
             for i in 0..<4 {
@@ -331,26 +393,25 @@ extension TownPainter {
                 if k == 0 { p.yucca(q.x, q.y, 1.1) } else if k == 1 { p.cholla(q.x, q.y, 1) } else { p.roundTree(q.x, q.y, 0.6, "#7a8a50") }
             }
         }
-        let T = t, bays = ContractGeo.bays, by = ContractGeo.bayGY
+        let T = t, bays = ContractGeo.bays
         for (i, v) in ContractGeo.vehicles(s, T).enumerated() {
             let bx = bays[bays.count - 1 - i]
-            var gx = bx, gy = by
-            if let t0 = v.t0 { // down the highway from far away, then into the bay
-                let e = ContractGeo.easeIO3(ContractGeo.clamp01((T - t0 - Double(i) * 0.7) / 3.6))
-                if e < 0.75 { gx = 8; gy = lerpD(44 + Double(i) * 2.4, by + 2.2, e / 0.75) } else { let f = (e - 0.75) / 0.25; gx = lerpD(8, bx, f); gy = lerpD(by + 2.2, by, f) }
+            var gx = bx, gy = ContractGeo.bayGY, hd = -Double.pi / 2, al = 1.0
+            if let t0 = v.t0 { // v126.1: in from the highway, round into the bay
+                let q = CoachPath.pose(bx, i, T - t0 - Double(i) * 0.9, leaving: false)
+                (gx, gy, hd) = (q.p.0, q.p.1, q.hd)
             }
-            var al = 1.0, away = false
-            if let t1 = v.t1 { // out of the bay and away up the highway
-                let e = ContractGeo.easeIO3(ContractGeo.clamp01((T - t1 - Double(i) * 0.6) / 4))
-                if e < 0.25 { let f = e / 0.25; gx = lerpD(bx, 8, f); gy = lerpD(by, by + 2.2, f) } else { gx = 8; gy = lerpD(by + 2.2, 50, (e - 0.25) / 0.75) }
-                al = 1 - ContractGeo.clamp01((e - 0.8) / 0.2)
-                away = T - t1 > 0.6
+            if let t1 = v.t1 { // out of the bay forwards, round onto the highway, away
+                let u = T - t1 - Double(i) * 2.4, q = CoachPath.pose(bx, i, u, leaving: true)
+                (gx, gy, hd) = (q.p.0, q.p.1, q.hd)
+                al = 1 - ContractGeo.clamp01((u - 5.6) / 1.4)
             }
-            let x = gx, y = gy, col = v.color, a = al, aw = away
-            add(x, y, x + y + 0.9) { p in
+            let mx = gx - cos(hd) * CoachPath.length / 2, my = gy - sin(hd) * CoachPath.length / 2
+            let x = gx, y = gy, h = hd, col = v.color, a = al
+            add(mx, my, mx + my + 0.4) { p in
                 let keep = p.c
                 p.c.opacity *= a
-                p.coach(x, y, col, idle: true, away: aw)
+                p.coach(x, y, col, idle: true, hd: h)
                 p.c = keep
             }
         }
@@ -598,6 +659,269 @@ extension TownPainter {
         }
     }
 
+    // MARK: v126 Cappadocia: NAV · Nevşehir Airport and the charter plane
+
+    /// East of town on the east road: the runway runs along gx (gy ≈ 1), two taxiways lead to the apron, where the plane
+    /// stands nose west; the terminal and the control tower stand by the road; a fenced dirt stand in front of the apron
+    /// is where the jeeps wait. All of it lies at gx − gy ≥ 18, off every default view (`AIR`, `airGround`, `airItems`).
+    private mutating func airGround() {
+        let A = AirGeo.self, x0 = A.rwy.0, x1 = A.rwy.1
+        quad(23.8, 2.3, 32.4, 5.55, "#bdb8ac") // the apron, concrete slabs
+        var slabs = Path()
+        var x = 24.6
+        while x < 32.4 { slabs.move(to: iso(x, 2.3)); slabs.addLine(to: iso(x, 5.55)); x += 0.8 }
+        var y = 3.1
+        while y < 5.55 { slabs.move(to: iso(23.8, y)); slabs.addLine(to: iso(32.4, y)); y += 0.8 }
+        c.stroke(slabs, with: .color(rgba(120, 112, 100, 0.35)), lineWidth: 1.2)
+        quad(A.inX - 0.4, 1.6, A.inX + 0.4, 2.35, "#6a6870"); quad(A.outX - 0.4, 1.6, A.outX + 0.4, 2.35, "#6a6870") // taxiways
+        quad(x0, 0.25, x1, 1.75, "#5c5a62"); quad(x0, 0.32, x1, 0.38, "#f2efe6"); quad(x0, 1.62, x1, 1.68, "#f2efe6") // the runway
+        x = x0 + 2.2
+        var marks = Path()
+        while x < x1 - 2 { marks.addLines(q(x, 0.97, x + 0.5, 1.03)); marks.closeSubpath(); x += 1 }
+        for xe in [x0 + 0.2, x1 - 0.9] {
+            var yy = 0.45
+            while yy < 1.55 { marks.addLines(q(xe, yy, xe + 0.7, yy + 0.08)); marks.closeSubpath(); yy += 0.17 }
+        }
+        c.fill(marks, with: .color(hex("#f2efe6")))
+        for (gx, txt, r) in [(x0 + 1.4, "27", 1.0), (x1 - 1.4, "09", -1.0)] {
+            let p = iso(gx, 1)
+            var g = c
+            g.translateBy(x: p.x, y: p.y)
+            g.concatenate(CGAffineTransform(a: 1, b: 0.5, c: -1, d: 0.5, tx: 0, ty: 0))
+            g.rotate(by: .radians(r * .pi / 2))
+            g.draw(Text(txt).font(.custom("BarlowCondensed-ExtraBold", fixedSize: 30)).foregroundColor(rgba(242, 239, 230, 0.9)), at: pt(0, 0), anchor: .center)
+        }
+        // yellow taxi lines: runway exit, the stand's lead-in line, the way out
+        func yl(_ pts: [(Double, Double)]) {
+            var l = Path()
+            l.move(to: iso(pts[0].0, pts[0].1))
+            for g in pts.dropFirst() { l.addLine(to: iso(g.0, g.1)) }
+            c.stroke(l, with: .color(hex("#f0c83a")), lineWidth: 2.4)
+        }
+        let (sx, sy) = A.stand
+        yl([(A.inX, 1.1), (A.inX, sy), (sx - 1.8, sy)]); yl([(sx - 1.8, sy), (A.outX, sy), (A.outX, 1.1)])
+        quad(sx + 1.1, sy - 0.5, sx + 1.18, sy + 0.5, "#f0c83a") // the stop bar
+        quad(sx - 1.95, sy - 0.45, sx - 1.87, sy + 0.45, "#e8e4da")
+        // landside: the jeep stand (packed dirt off the road) and the drop-off in front of the terminal
+        quad(24.8, 5.85, 29.9, 7.65, "#c9986a")
+        var R = rng(31)
+        var specks = Path()
+        for _ in 0..<46 { let p = iso(24.9 + R.next() * 4.9, 5.9 + R.next() * 1.7); specks.addRect(CGRect(x: p.x, y: p.y, width: 4, height: 2)) }
+        c.fill(specks, with: .color(rgba(90, 60, 40, 0.28)))
+        quad(29.9, 7.08, 34.4, 7.65, "#8a8690"); quad(29.9, 7.08, 34.4, 7.14, "#e8e4da")
+    }
+
+    private func airItems(_ add: (Double, Double, Double?, @escaping (inout TownPainter) -> Void) -> Void) {
+        add(32, 6.3, 30.2 + 3.6 + 5.6 + 1.45 - 0.4) { p in // the terminal: tuff walls, a glass front, the name board
+            p.smooth { p in
+                let hh: CGFloat = 34
+                let f = p.block(30.2, 5.6, 3.6, 1.45, hh, lit: "#f0d8b4", shade: "#d0b08a", top: "#e4cca8", courses: false)
+                var a = p.face(f.D, f.C, hh)
+                func r(_ g: inout GraphicsContext, _ x: CGFloat, _ y: CGFloat, _ w: CGFloat, _ h: CGFloat, _ col: Color) { g.fill(Path(CGRect(x: x, y: y, width: w, height: h)), with: .color(col)) }
+                r(&a, 0.06, 0.08, 0.88, 0.66, p.hex("#5e8ea8"))
+                for i in 0..<9 { r(&a, 0.08 + CGFloat(i) * 0.1, 0.5, 0.03, 0.2, Color.white.opacity(0.22)) }
+                for i in 1..<9 { r(&a, 0.06 + CGFloat(i) * 0.098, 0.08, 0.012, 0.66, p.hex("#f0d8b4")) }
+                r(&a, 0.17, 0.08, 0.14, 0.46, p.hex("#2a3a4a")); r(&a, 0, 0.8, 1, 0.06, p.hex("#c0392b"))
+                var b = p.face(f.C, f.B, hh)
+                r(&b, 0.15, 0.3, 0.7, 0.4, p.hex("#5e8ea8")); r(&b, 0, 0.8, 1, 0.06, p.hex("#c0392b"))
+                let s0 = p.upp(p.lp(f.D, f.C, 0.12), hh), s1 = p.upp(p.lp(f.D, f.C, 0.88), hh)
+                p.rect(s0.x - 1, s0.y - 14, 2, 14, p.hex("#5a5a60")); p.rect(s1.x - 1, s1.y - 14, 2, 14, p.hex("#5a5a60"))
+                var sg = p.face(p.upp(s0, 12), p.upp(s1, 12), 24)
+                r(&sg, 0, 0, 1, 1, p.hex("#1f4a6a")); r(&sg, 0, 0, 1, 0.1, p.hex("#ffc23d"))
+                let m = p.lp(p.upp(s0, 24), p.upp(s1, 24), 0.5), ang = atan2(s1.y - s0.y, s1.x - s0.x)
+                p.sign("NAV · Nevşehir Airport", m.x, m.y, size: 15, color: .white, angle: ang)
+            }
+        }
+        add(35.4, 5, 35.0 + 0.7 + 4.6 + 0.7 - 0.3) { p in // the control tower
+            p.smooth { p in
+                let sh = p.block(35.15, 4.75, 0.4, 0.4, 112, lit: "#ecd2ac", shade: "#c8a882", top: "#d8bc94", courses: false)
+                var a = p.face(sh.D, sh.C, 112)
+                for i in 0..<5 { a.fill(Path(CGRect(x: 0.35, y: 0.12 + CGFloat(i) * 0.16, width: 0.3, height: 0.05)), with: .color(p.hex("#3a4a5a"))) }
+                let keep = p.c
+                p.c.translateBy(x: 0, y: -112)
+                let cab = p.block(34.8, 4.4, 1.1, 1.1, 22, lit: "#7ab0c8", shade: "#5a8aa4", top: "#3a4a5a", courses: false)
+                var cf = p.face(cab.D, cab.C, 22)
+                for i in 0..<4 { cf.fill(Path(CGRect(x: 0.05 + CGFloat(i) * 0.25, y: 0.2, width: 0.03, height: 0.7)), with: .color(Color.white.opacity(0.3))) }
+                cf.fill(Path(CGRect(x: 0, y: 0, width: 1, height: 0.14)), with: .color(p.hex("#e8e4da")))
+                var cb = p.face(cab.C, cab.B, 22)
+                cb.fill(Path(CGRect(x: 0, y: 0, width: 1, height: 0.14)), with: .color(p.hex("#e8e4da")))
+                let r = [p.iso(34.74, 4.34), p.iso(35.96, 4.34), p.iso(35.96, 5.56), p.iso(34.74, 5.56)].map { p.upp($0, 24) }
+                p.poly([r[3], r[2], p.upp(r[2], -3), p.upp(r[3], -3)], p.hex("#6a7480")); p.poly(r, p.hex("#8a949e"))
+                let an = p.upp(p.iso(35.35, 4.95), 26)
+                p.rect(an.x - 1, an.y - 22, 2, 22, p.hex("#5a5a60"))
+                p.ellipse(an.x, an.y - 24, 3, 3, p.hex(p.night != nil || p.t.truncatingRemainder(dividingBy: 1.4) < 0.7 ? "#ff4a3a" : "#7a2a24"))
+                p.c = keep
+            }
+        }
+        add(22.6, 2.6, nil) { p in // the windsock by the runway, swinging with the wind
+            let q = p.iso(22.6, 2.6)
+            p.rect(q.x - 1.5, q.y - 58, 3, 58, p.hex("#8a8a90"))
+            let sway = CGFloat(sin(p.t * 2.3)) * 3, dx: CGFloat = 30, k = 0.85 + 0.15 * CGFloat(sin(p.t * 3.1))
+            for i in 0..<5 {
+                let fi = CGFloat(i)
+                let x0 = q.x + fi * dx * k / 5, x1 = q.x + (fi + 1) * dx * k / 5, r0 = 6 - fi * 0.8, r1 = 6 - (fi + 1) * 0.8
+                let y0 = q.y - 56 + fi * (1 + sway * 0.2), y1 = q.y - 56 + (fi + 1) * (1 + sway * 0.2)
+                p.poly([p.pt(x0, y0 - r0), p.pt(x1, y1 - r1), p.pt(x1, y1 + r1), p.pt(x0, y0 + r0)], p.hex(i % 2 == 1 ? "#f6f2ea" : "#ff6a2a"))
+            }
+        }
+        add(27, 5.7, 23.8 + 5.7 + 4.5) { p in // the fence between the apron and the jeep stand
+            var x = 23.8
+            while x <= 30.1 { let q = p.iso(x, 5.7); p.rect(q.x - 1, q.y - 16, 2, 16, p.hex("#6a6a72")); x += 0.45 }
+            let a = p.iso(23.8, 5.7), b = p.iso(30.1, 5.7)
+            var w = Path()
+            w.move(to: p.pt(a.x, a.y - 15)); w.addLine(to: p.pt(b.x, b.y - 15))
+            w.move(to: p.pt(a.x, a.y - 7)); w.addLine(to: p.pt(b.x, b.y - 7))
+            p.c.stroke(w, with: .color(p.rgba(90, 90, 100, 0.65)), lineWidth: 1.2)
+        }
+        add(29.6, 6.2, nil) { p in // the jeep stand's sign (translated: `sign.shuttle`, two lines)
+            let q = p.iso(29.6, 6.2)
+            p.rect(q.x - 2, q.y - 46, 4, 46, p.hex("#6a4a2a"))
+            let box = Path(roundedRect: CGRect(x: q.x - 30, y: q.y - 66, width: 60, height: 24), cornerRadius: 5)
+            p.c.fill(box, with: .color(p.hex("#fff1d6"))); p.c.stroke(box, with: .color(p.hex("#c0392b")), lineWidth: 2)
+            let lines = loc("sign.shuttle").components(separatedBy: "\n")
+            for (i, l) in lines.prefix(2).enumerated() {
+                let y = lines.count > 1 ? q.y - 59 + CGFloat(i) * 10 : q.y - 54
+                p.c.draw(Text(l).font(.custom("BarlowCondensed-ExtraBold", fixedSize: 11)).foregroundColor(p.hex("#2b2350")), at: p.pt(q.x, y), anchor: .center)
+            }
+        }
+        add(23.6, 7.3, nil) { p in // the way sign at the road: "NAV", a small plane and an arrow drawn in code
+            let q = p.iso(23.6, 7.3)
+            p.rect(q.x - 1.5, q.y - 50, 3, 50, p.hex("#5a5a60"))
+            p.c.fill(Path(roundedRect: CGRect(x: q.x - 34, y: q.y - 68, width: 68, height: 22), cornerRadius: 4), with: .color(p.hex("#1f4a6a")))
+            p.sign("NAV", q.x + 2, q.y - 57, size: 13, color: .white)
+            var plane = Path()
+            plane.move(to: p.pt(7, 0)); plane.addLine(to: p.pt(-6, -1.3)); plane.addLine(to: p.pt(-6, 1.3)); plane.closeSubpath()
+            plane.move(to: p.pt(1.5, 0)); plane.addLine(to: p.pt(-2, -6.5)); plane.addLine(to: p.pt(-3.6, -6.5)); plane.addLine(to: p.pt(-2, 0))
+            plane.addLine(to: p.pt(-3.6, 6.5)); plane.addLine(to: p.pt(-2, 6.5)); plane.closeSubpath()
+            plane.move(to: p.pt(-5, 0)); plane.addLine(to: p.pt(-7, -3)); plane.addLine(to: p.pt(-7.8, -3)); plane.addLine(to: p.pt(-7.2, 0))
+            plane.addLine(to: p.pt(-7.8, 3)); plane.addLine(to: p.pt(-7, 3)); plane.closeSubpath()
+            var g = p.c
+            g.translateBy(x: q.x - 20, y: q.y - 57)
+            g.rotate(by: .radians(-0.5))
+            g.fill(plane, with: .color(.white))
+            var arrow = Path()
+            arrow.move(to: p.pt(q.x + 16, q.y - 57)); arrow.addLine(to: p.pt(q.x + 26, q.y - 57))
+            arrow.move(to: p.pt(q.x + 22, q.y - 61)); arrow.addLine(to: p.pt(q.x + 26, q.y - 57)); arrow.addLine(to: p.pt(q.x + 22, q.y - 53))
+            p.c.stroke(arrow, with: .color(.white), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+        }
+        for (gx, gy, k) in [(21.4, 4.2, 0), (22.4, 5.8, 1), (33.6, 2.2, 1), (37.6, 3.4, 0), (38.6, 6.2, 1), (21.2, 6.6, 1), (36.8, 7.1, 1)] {
+            add(gx, gy, nil) { p in // fairy chimneys and poplars round the field
+                let q = p.iso(gx, gy)
+                if k == 1 { p.roundTree(q.x, q.y, 0.55, "#7a8a50") } else {
+                    ScenePainter.chimney(&p.c, q.x, q.y, 50, 120, body: Color(hex: "#efc79e"), shade: Color(hex: "#c69068"), cap: Color(hex: "#6a4430"))
+                }
+            }
+        }
+        // the plane: landing, parked, or leaving
+        let T = t, vs = ContractGeo.vehicles(s, T)
+        if let v = vs.first {
+            let leaving = v.t1 != nil, u: Double? = leaving ? T - v.t1! : v.t0.map { T - $0 }
+            if leaving || u == nil || u! >= 0 {
+                let pose = AirGeo.planePose(u, leaving: leaving)
+                let al = leaving ? 1 - ContractGeo.clamp01(((u ?? 0) - 11.5) / 2) : ContractGeo.clamp01((u ?? 9) / 0.8)
+                let parked = u == nil || (!leaving && u! > 13), col = v.color
+                add(pose.gx, pose.gy, pose.gx + pose.gy + 1.2 + Double(pose.alt) / 60) { p in
+                    let keep = p.c
+                    p.c.opacity *= al
+                    p.charterPlane(pose.gx, pose.gy, pose.hd, pose.alt, col, prop: parked ? 0 : pose.prop, stairs: parked)
+                    p.c = keep
+                }
+            }
+        }
+        // passengers from the plane's stairs into the terminal while a group is here
+        if ContractGeo.jeepsOn(s) && vs.contains(where: { $0.t0 == nil && $0.t1 == nil }) {
+            let cols = ["#ff5e3a", "#14a39a", "#ffc23d", "#9b7be0", "#5aa9e6", "#ff6fa8"], path = [(26.45, 4.6), (26.45, 5.2), (30.6, 5.2), (30.6, 5.55)]
+            let L = CoachPath.len(path)
+            for i in 0..<6 {
+                let k = (T * 0.12 + Double(i) / 6).truncatingRemainder(dividingBy: 1), pos = CollectScene.walk(path, k * L).p
+                add(pos.0, pos.1, nil) { p in let q = p.iso(pos.0, pos.1); p.person(q.x, q.y, cols[i], p.t, Double(i)) }
+            }
+        }
+    }
+
+    /// A twin-turboprop in the game's style (`charterPlane`): white tube with the agency's cheatline and tail, high wing,
+    /// two engines with propellers, T-tail, gear. `hd`: heading in grid space (0 = +gx); `alt`: height in px; `prop`:
+    /// 0 still … 1 a spinning disc. Local coordinates: a along the nose (tiles), b to the side (tiles), z up (px).
+    mutating func charterPlane(_ gx: Double, _ gy: Double, _ hd: Double, _ alt: CGFloat, _ col: String, prop: Double, stairs: Bool) {
+        let fx = cos(hd), fy = sin(hd), rx = -fy, ry = fx, Z0 = 16 + alt
+        func G(_ a: Double, _ b: Double) -> CGPoint { iso(gx + a * fx + b * rx, gy + a * fy + b * ry) }
+        func P(_ a: Double, _ b: Double, _ z: CGFloat) -> CGPoint { upp(G(a, b), z + Z0) }
+        // the shadow on the ground: smaller and fainter with height
+        do {
+            let k = min(max(1 - alt / 320, 0.15), 1)
+            let sh: [(Double, Double)] = [(1.5, 0), (0.3, 0.2), (0.15, 1.55), (-0.15, 1.55), (-0.3, 0.2), (-1.4, 0.12), (-1.55, 0.5), (-1.62, 0.5), (-1.55, 0),
+                                          (-1.62, -0.5), (-1.55, -0.5), (-1.4, -0.12), (-0.3, -0.2), (-0.15, -1.55), (0.15, -1.55), (0.3, -0.2)]
+            poly(sh.map { let p = G($0.0, $0.1); return pt(p.x + alt * 0.25, p.y + alt * 0.1) }, hex("#3a2a1a").opacity(Double(0.2 * k)))
+        }
+        if alt < 60 { // the gear
+            for (a, b) in [(1.0, 0.0), (-0.1, 0.3), (-0.1, -0.3)] {
+                let top = P(a, b, -2), bot = P(a, b, -16)
+                line(top, bot, hex("#4a4a50"), 2)
+                ellipse(bot.x, bot.y + 1, 4, 4, hex("#1f1c22"))
+            }
+        }
+        // the fuselage: sections from tail to nose, outline offset across the screen direction
+        let sec: [(Double, CGFloat, CGFloat)] = [(-1.62, 3, 13), (-1.3, 7, 8), (-0.9, 10.5, 3), (-0.4, 12, 0), (0.6, 12, 0), (1.1, 11, 0), (1.38, 8, -1), (1.52, 4, -3)]
+        let cs = sec.map { (c: P($0.0, 0, $0.2), R: $0.1) }
+        func nrm(_ i: Int) -> CGPoint {
+            let p = cs[max(0, i - 1)].c, q = cs[min(cs.count - 1, i + 1)].c
+            var dx = q.x - p.x, dy = q.y - p.y
+            let l = max(hypot(dx, dy), 1e-9)
+            dx /= l; dy /= l
+            var nx = -dy, ny = dx
+            if ny > 0 { nx = -nx; ny = -ny }
+            return pt(nx, ny)
+        }
+        func edge(_ k: CGFloat) -> [CGPoint] {
+            cs.indices.map { i in let n = nrm(i), r = cs[i].R * (1 + abs(n.x) * 0.25); return pt(cs[i].c.x + n.x * r * k, cs[i].c.y + n.y * r * k) }
+        }
+        func band(_ k0: CGFloat, _ k1: CGFloat, _ c: Color) { poly(edge(k0) + edge(k1).reversed(), c) }
+        poly(edge(1) + edge(-1).reversed(), hex("#f6f5f0"))
+        band(-0.15, -1, hex("#dcdad2")); band(0.95, 0.55, .white)
+        band(0.05, -0.22, hex(col)); band(-0.22, -0.32, mix(col, "#000000", 0.3))
+        var a = -1.05
+        while a <= 0.95 { let p = P(a, 0, 4); ellipse(p.x, p.y, 2.1, 2.4, hex("#2a3a50")); a += 0.17 } // the windows
+        do { let p = P(1.3, 0, 5), q = P(1.42, 0, 3); poly([pt(p.x, p.y - 3), pt(q.x, q.y - 2), pt(q.x, q.y + 2), pt(p.x, p.y + 3)], hex("#1e2a3c")) } // cockpit
+        do { let p = P(0.92, 0, -2); rect(p.x - 1, p.y - 9, 2, 12, hex("#c8c8c4")) } // the front door's outline
+        for b in [-0.62, 0.62] { // the engines
+            var n1 = Path(); n1.move(to: P(-0.15, b, 6)); n1.addLine(to: P(0.5, b, 4))
+            c.stroke(n1, with: .color(hex("#e4e4e0")), style: StrokeStyle(lineWidth: 11, lineCap: .round))
+            var n2 = Path(); n2.move(to: P(-0.1, b, 1)); n2.addLine(to: P(0.45, b, 0))
+            c.stroke(n2, with: .color(hex("#bcbcb8")), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+        }
+        // the high wing
+        let wing = [(0.28, 0.15), (0.14, 1.6), (-0.06, 1.6), (-0.2, 0.15), (-0.2, -0.15), (-0.06, -1.6), (0.14, -1.6), (0.28, -0.15)].map { P($0.0, $0.1, 11) }
+        poly(wing.map { pt($0.x, $0.y + 3) }, hex("#bdbbb4")); poly(wing, hex("#f2f1ec")); outline(wing, hex("#c8c6c0"), 1)
+        var tips = Path()
+        tips.move(to: P(-0.06, 1.6, 11)); tips.addLine(to: P(0.14, 1.6, 11)); tips.move(to: P(-0.06, -1.6, 11)); tips.addLine(to: P(0.14, -1.6, 11))
+        c.stroke(tips, with: .color(hex(col)), lineWidth: 3)
+        // propellers: a blurred disc when turning fast, blades when slow
+        for b in [-0.62, 0.62] {
+            let ctr = P(0.53, b, 4)
+            func ring(_ th: Double) -> CGPoint { P(0.54, b + 0.2 * cos(th), 4 + 13 * CGFloat(sin(th))) }
+            if prop > 0.5 { poly((0..<18).map { ring(Double($0) / 18 * .pi * 2) }, hex("#6a6a74").opacity(0.3 * prop)) }
+            if prop < 0.9 {
+                let ang = t * prop * 30 + b * 2
+                var bl = Path()
+                for k in 0..<3 { bl.move(to: ctr); bl.addLine(to: ring(ang + Double(k) * .pi * 2 / 3)) }
+                c.stroke(bl, with: .color(hex("#5a5a64")), style: StrokeStyle(lineWidth: 2.2, lineCap: .round))
+            }
+            ellipse(ctr.x, ctr.y, 3, 3, hex(col))
+        }
+        // the fin and the T-tail in the agency's colour
+        poly([P(-1.0, 0, 10), P(-1.42, 0, 46), P(-1.62, 0, 46), P(-1.6, 0, 14)], hex(col))
+        poly([P(-1.36, 0, 38), P(-1.42, 0, 46), P(-1.62, 0, 46), P(-1.6, 0, 38)], mix(col, "#ffffff", 0.35))
+        poly([P(-1.38, 0.62, 46), P(-1.38, -0.62, 46), P(-1.62, -0.62, 47), P(-1.62, 0.62, 47)], hex("#f0efea"))
+        if stairs { // boarding stairs at the rear door when parked
+            let d = P(-0.95, -0.32, -2), g = G(-0.95, -0.75)
+            poly([pt(d.x - 3, d.y), pt(d.x + 3, d.y), pt(g.x + 5, g.y), pt(g.x - 5, g.y)], hex("#d8d4c8"))
+            var st = Path()
+            for k in 1..<5 { let p = lp(d, g, CGFloat(k) / 5); st.move(to: pt(p.x - 4, p.y)); st.addLine(to: pt(p.x + 4, p.y)) }
+            c.stroke(st, with: .color(hex("#8a8a90")), lineWidth: 1)
+        }
+        if (t * 1.2).truncatingRemainder(dividingBy: 1) < 0.12 { let p = P(-0.2, 0, 13); ellipse(p.x, p.y - 12, 3, 3, hex("#ff3a2a")) } // beacon
+    }
+
     // MARK: The jeeps
 
     /// Passengers walk from the vehicle to three jeeps, the jeeps drive off along the dirt road and fade out well before
@@ -626,6 +950,11 @@ extension TownPainter {
             doors = { i in (-15.6 + Double(i % 3) * 2.2, 6.75) }
             via = { d in [(d.0, 7.3), (d.0 + 0.3, 8)] }
             road = { s in [s, (s.0, 8), (-5.6, 8)] }
+        case .plane: // from the terminal's front door to the dirt stand, then the east road
+            stops = [(25.7, 6.55), (26.7, 6.55), (27.7, 6.55)]
+            doors = { i in (30.75 + Double(i % 2) * 0.5, 7.1) }
+            via = { d in [(d.0, 7.35), (28.6, 7.35)] }
+            road = { s in [s, (s.0, 8), (23, 8)] }
         }
         func length(_ pts: [(Double, Double)]) -> Double { zip(pts, pts.dropFirst()).reduce(0) { $0 + hypot($1.1.0 - $1.0.0, $1.1.1 - $1.0.1) } }
         var boarded = [0, 0, 0]
@@ -642,7 +971,8 @@ extension TownPainter {
             let path = road(stops[j]), len = length(path)
             let lv = 4.4 + Double(j) * 0.7, dist = ph > lv ? pow(ph - lv, 1.35) * 2.4 : 0
             if dist >= len { continue }
-            let r = CollectScene.walk(path, dist), pos = r.p, alongX = dist > 0 ? abs(r.dir.0) > abs(r.dir.1) : true
+            // v126.1: waiting at the stop it already faces the way it will drive off
+            let r = CollectScene.walk(path, dist), pos = r.p, alongX = abs(r.dir.0) > abs(r.dir.1)
             let a = min(ContractGeo.clamp01(ph / 0.5), ContractGeo.clamp01((len - dist) / 1.6)), n = min(CollectScene.jeepSeats, boarded[j])
             add(pos.0, pos.1, pos.0 + pos.1 + 0.3) { p in
                 let keep = p.c
@@ -666,3 +996,106 @@ extension TownPainter {
 }
 
 private func lerpD(_ a: Double, _ b: Double, _ k: Double) -> Double { a + (b - a) * k }
+
+/// v126: the airport's layout (`AIR`): the runway's ends and line, the stand, the taxiways in and out.
+enum AirGeo {
+    static let rwy = (20.6, 46.0), rwyY = 1.0, stand = (27.4, 3.8), inX = 31.0, outX = 24.6
+
+    static func ease3(_ k: Double) -> Double { 1 - pow(1 - ContractGeo.clamp01(k), 3) }
+
+    /// A point along the path and the heading 0.45 tiles further on (`pathAt`).
+    static func pathAt(_ pts: [(Double, Double)], _ s: Double) -> (p: (Double, Double), hd: Double) {
+        let r = CollectScene.walk(pts, s), r2 = CollectScene.walk(pts, s + 0.45)
+        let dx = r2.p.0 - r.p.0, dy = r2.p.1 - r.p.1
+        return (r.p, hypot(dx, dy) > 1e-3 ? atan2(dy, dx) : atan2(r.dir.1, r.dir.0))
+    }
+
+    /// Where the plane is (`planePose`): parked (u nil), or landing (13.5 s: gliding in from the east from 300 px,
+    /// touchdown at gx 40, slowing to gx 31, the taxiway to the stand) or taking off (14 s: west along the apron, the
+    /// gx 24.6 taxiway onto the runway, the take-off run east, airborne at gx 38, climbing away).
+    static func planePose(_ u: Double?, leaving: Bool) -> (gx: Double, gy: Double, hd: Double, alt: CGFloat, prop: Double) {
+        let (sx, sy) = stand, y = rwyY
+        guard let u else { return (sx, sy, .pi, 0, 0) }
+        if !leaving {
+            if u < 4.5 { let k = u / 4.5; return (lerpD(62, 40, k), y, .pi, CGFloat(300 * pow(1 - k, 1.25)), 1) }
+            if u < 8.5 { let k = ease3((u - 4.5) / 4); return (lerpD(40, inX, k), y, .pi, 0, 1) }
+            let pts = [(inX, y), (inX, sy), (sx, sy)], L = CoachPath.len(pts), k = CollectScene.easeIO(ContractGeo.clamp01((u - 8.5) / 4.5)), r = pathAt(pts, k * L)
+            return (r.p.0, r.p.1, k >= 0.999 ? .pi : r.hd, 0, 1 - ContractGeo.clamp01((u - 12) / 1.5) * 0.8)
+        }
+        if u < 4.5 {
+            let pts = [(sx, sy), (outX, sy), (outX, y), (outX + 1.4, y)], L = CoachPath.len(pts), k = CollectScene.easeIO(ContractGeo.clamp01(u / 4.5)), r = pathAt(pts, k * L)
+            return (r.p.0, r.p.1, k >= 0.999 ? 0 : r.hd, 0, 0.7 + 0.3 * ContractGeo.clamp01(u))
+        }
+        if u < 9 { let k = pow((u - 4.5) / 4.5, 2); return (lerpD(outX + 1.4, 38, k), y, 0, 0, 1) }
+        let k = ContractGeo.clamp01((u - 9) / 4.5)
+        return (lerpD(38, 62, k), y, 0, CGFloat(300 * pow(k, 1.3)), 1)
+    }
+}
+
+/// v126.1: the coaches drive like buses (`smoothPath`, `pathPt`, `coachInPath`, `coachOutPath`, `coachPose`). A path is
+/// a polyline smoothed into curves (Chaikin); the bus's front bumper runs along it and its body trails along the same
+/// path, so the heading follows the way it drives.
+enum CoachPath {
+    static let length = 1.6
+
+    static func smooth(_ p0: [(Double, Double)], _ n: Int = 4) -> [(Double, Double)] {
+        var pts = p0
+        for _ in 0..<n {
+            var o = [pts[0]]
+            for i in 0..<(pts.count - 1) {
+                let p = pts[i], q = pts[i + 1]
+                o.append((p.0 * 0.75 + q.0 * 0.25, p.1 * 0.75 + q.1 * 0.25))
+                o.append((p.0 * 0.25 + q.0 * 0.75, p.1 * 0.25 + q.1 * 0.75))
+            }
+            o.append(pts[pts.count - 1])
+            pts = o
+        }
+        return pts
+    }
+
+    /// A point s along the path; before its start it carries on straight back along the first stretch, past its end
+    /// along the last.
+    static func point(_ pts: [(Double, Double)], _ s0: Double) -> (Double, Double) {
+        var s = s0
+        if s <= 0 {
+            let a = pts[0], b = pts[1], l = max(hypot(b.0 - a.0, b.1 - a.1), 1e-9)
+            return (a.0 + (b.0 - a.0) / l * s, a.1 + (b.1 - a.1) / l * s)
+        }
+        for i in 1..<pts.count {
+            let a = pts[i - 1], b = pts[i], l = hypot(b.0 - a.0, b.1 - a.1)
+            if s <= l { let k = s / max(l, 1e-9); return (a.0 + (b.0 - a.0) * k, a.1 + (b.1 - a.1) * k) }
+            s -= l
+        }
+        let a = pts[pts.count - 2], b = pts[pts.count - 1], l = max(hypot(b.0 - a.0, b.1 - a.1), 1e-9)
+        return (b.0 + (b.0 - a.0) / l * s, b.1 + (b.1 - a.1) / l * s)
+    }
+
+    static func len(_ pts: [(Double, Double)]) -> Double { zip(pts, pts.dropFirst()).reduce(0) { $0 + hypot($1.1.0 - $1.0.0, $1.1.1 - $1.0.1) } }
+
+    /// Bay bx: in from far down the highway (gx 8, coming up −gy), right into the aisle behind the bays (gy ≈ 25.6),
+    /// left into the bay, stop with the nose at the bay line.
+    static func inPath(_ bx: Double, _ i: Int) -> [(Double, Double)] {
+        let by = ContractGeo.bayGY
+        return smooth([(8, 46 + Double(i) * 2.4), (8, 27.6), (8, 26.5), (8.75, 25.65), (max(9.05, bx - 0.9), 25.65), (bx, 24.75), (bx, by + 0.6), (bx, by)])
+    }
+
+    /// Leaving: pull forwards out of the bay, left along the lot's far edge in front of the other coaches' noses
+    /// (gy ≈ 21.3), left again onto the highway and away down it (+gy).
+    static func outPath(_ bx: Double) -> [(Double, Double)] {
+        smooth([(bx, ContractGeo.bayGY), (bx, 21.75), (max(8.95, bx - 0.5), 21.3), (8.75, 21.3), (8.1, 21.75), (8, 22.6), (8, 26), (8, 52)])
+    }
+
+    /// Where coach i is at time u: its front bumper and heading. In: 6 s, slowing down; out: 7 s, speeding up.
+    static func pose(_ bx: Double, _ i: Int, _ u: Double, leaving: Bool) -> (p: (Double, Double), hd: Double) {
+        func at(_ pts: [(Double, Double)], _ s: Double) -> (p: (Double, Double), hd: Double) {
+            let f = point(pts, s), r = point(pts, s - length)
+            return (f, atan2(f.1 - r.1, f.0 - r.0))
+        }
+        if !leaving {
+            let P = inPath(bx, i), k = ContractGeo.clamp01(u / 6)
+            return at(P, len(P) * (1 - pow(1 - k, 2.6)))
+        }
+        let O = outPath(bx), k = ContractGeo.clamp01(u / 7)
+        return at(O, len(O) * 0.6 * k * k)
+    }
+}
