@@ -7804,36 +7804,67 @@ function routeShield(x, y, s, hist) {
   else { ctx.fillRect(-14, -12, 28, 6); ctx.fillStyle = '#fdfaf0'; ctx.font = '800 5px "Barlow Condensed", sans-serif'; ctx.fillText('U S', 0, -7.4); ctx.fillStyle = '#1a1a1a'; ctx.font = '800 17px "Barlow Condensed", sans-serif'; ctx.fillText('66', 0, 11); }
   ctx.restore(); ctx.textAlign = 'left';
 }
-/* A tour coach parked along gy, nose towards town (−gy): we see its long right side with the door near the front and
-   its rear (tail lights, rear window); idling, it shivers and puffs from the exhaust. */
-function coach(gx, gy, col, t, idle, away) { /* away: leaving towards +gy, so we see its front */
+/* A tour coach. (gx, gy) is the middle of its front bumper, hd its heading in grid space (−π/2: nose towards town,
+   along −gy, as it stands in a bay). v126.1: drawn turned any way, so it can drive along curves: of its four sides the
+   two facing the viewer (+gx +gy) are drawn: the right side with the door near the front, the left side, the rear
+   (tail lights, rear window, grille) or the front (windscreen, headlights); idling, it shivers and puffs. */
+function coach(gx, gy, col, t, idle, hd = -Math.PI / 2) {
   const w = .46, d = 1.6, hh = 34, z = 5 + (idle ? Math.sin(t * 38 + gx) * .5 : 0);
-  const { A, B, C, D } = corners(gx - w / 2, gy, w, d);
-  blobShadow((A[0] + C[0]) / 2 + 10, (A[1] + C[1]) / 2 + 4, 52, 18, .25);
-  const L = p => upp(p, z);
-  for (const u of [.2, .84]) { const p = lp(C, B, u); ell(p[0], p[1] - 6, 7, 7, '#1f1c22'); ell(p[0], p[1] - 6, 3, 3, '#a8a8b0'); }
-  { const p = lp(D, C, .5); ell(p[0] - 6, p[1] - 6, 4, 6, '#1f1c22'); }
-  tpoly([L(C), L(B), upp(B, z + hh), upp(C, z + hh)], '#efe6d2');
-  tface(L(C), L(B), hh, () => { /* u: 0 at the rear, 1 at the front */
+  const fx = Math.cos(hd), fy = Math.sin(hd), rx = -fy, ry = fx;
+  const g = (a, b) => tiso(gx + a * fx + b * rx, gy + a * fy + b * ry); /* a: forward from the front bumper, b: to the right */
+  const A = g(0, -w / 2), B = g(0, w / 2), C = g(-d, w / 2), D = g(-d, -w / 2);
+  { const m = g(-d / 2, 0); blobShadow(m[0] + 10, m[1] + 4, 30 + 22 * Math.abs(fy), 14 + 4 * Math.abs(fx), .25); }
+  const L = p => upp(p, z), body = '#efe6d2', seen = (nx, ny) => nx + ny > 1e-6, shade = ny => mix(body, '#000000', .12 * Math.max(0, ny));
+  const side = right => { /* u: 0 at the rear, 1 at the front */
     ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12); ctx.fillStyle = mix(col, '#000000', .25); ctx.fillRect(0, .32, 1, .03);
-    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.04, .5, .8, .36);
+    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.04, .5, right ? .8 : .92, .36);
     ctx.fillStyle = 'rgba(255,255,255,.18)'; for (let i = 0; i < 6; i++) ctx.fillRect(.07 + i * .13, .78, .05, .06);
-    ctx.fillStyle = '#efe6d2'; for (let i = 1; i < 6; i++) ctx.fillRect(.04 + i * .133, .5, .012, .36);
-    const dx = away ? .03 : .87; ctx.fillStyle = '#2a3a50'; ctx.fillRect(dx, .06, .1, .8); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(dx + .048, .06, .006, .8); /* the door, near the front */
+    ctx.fillStyle = body; for (let i = 1; i < 7; i++) ctx.fillRect(.04 + i * .133, .5, .012, .36);
+    if (right) { ctx.fillStyle = '#2a3a50'; ctx.fillRect(.87, .06, .1, .8); ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.fillRect(.918, .06, .006, .8); } /* the door, near the front */
     ctx.fillStyle = '#c0c6cc'; ctx.fillRect(0, 0, 1, .05);
-  });
-  tpoly([L(D), L(C), upp(C, z + hh), upp(D, z + hh)], mix('#efe6d2', '#000000', .12));
-  tface(L(D), L(C), hh, () => { /* the rear, or the front when it drives away */
-    if (away) { ctx.fillStyle = '#1e2a3c'; ctx.fillRect(.08, .42, .84, .48); ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12); ctx.fillStyle = '#fff6c8'; ctx.fillRect(.08, .08, .14, .07); ctx.fillRect(.78, .08, .14, .07); return; }
-    ctx.fillStyle = '#2a3a50'; ctx.fillRect(.15, .62, .7, .26);
-    ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12);
-    ctx.fillStyle = '#e5432f'; ctx.fillRect(.06, .1, .1, .16); ctx.fillRect(.84, .1, .1, .16);
-    ctx.fillStyle = '#c8c0b0'; for (let i = 0; i < 5; i++) ctx.fillRect(.3, .4 + i * .035, .4, .015); /* engine grille */
-  });
+  };
+  const wheels = (p, q) => { for (const u of [.2, .84]) { const c = lp(p, q, u); ell(c[0], c[1] - 6, 7, 7, '#1f1c22'); ell(c[0], c[1] - 6, 3, 3, '#a8a8b0'); } };
+  const faces = [
+    { n: [rx, ry], draw: () => { wheels(C, B); tpoly([L(C), L(B), upp(B, z + hh), upp(C, z + hh)], shade(ry)); tface(L(C), L(B), hh, () => side(true)); } },
+    { n: [-rx, -ry], draw: () => { wheels(D, A); tpoly([L(D), L(A), upp(A, z + hh), upp(D, z + hh)], shade(-ry)); tface(L(D), L(A), hh, () => side(false)); } },
+    { n: [-fx, -fy], draw: () => { const c = lp(D, C, .5); ell(c[0] - 6, c[1] - 6, 4, 6, '#1f1c22'); tpoly([L(D), L(C), upp(C, z + hh), upp(D, z + hh)], shade(-fy)); tface(L(D), L(C), hh, () => {
+      ctx.fillStyle = '#2a3a50'; ctx.fillRect(.15, .62, .7, .26); ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12);
+      ctx.fillStyle = '#e5432f'; ctx.fillRect(.06, .1, .1, .16); ctx.fillRect(.84, .1, .1, .16);
+      ctx.fillStyle = '#c8c0b0'; for (let i = 0; i < 5; i++) ctx.fillRect(.3, .4 + i * .035, .4, .015); }); } }, /* engine grille */
+    { n: [fx, fy], draw: () => { tpoly([L(A), L(B), upp(B, z + hh), upp(A, z + hh)], shade(fy)); tface(L(A), L(B), hh, () => {
+      ctx.fillStyle = '#1e2a3c'; ctx.fillRect(.08, .42, .84, .48); ctx.fillStyle = col; ctx.fillRect(0, .2, 1, .12); ctx.fillStyle = '#fff6c8'; ctx.fillRect(.08, .08, .14, .07); ctx.fillRect(.78, .08, .14, .07); }); } }
+  ];
+  for (const f of faces) if (seen(f.n[0], f.n[1])) f.draw();
   tpoly([upp(A, z + hh), upp(B, z + hh), upp(C, z + hh), upp(D, z + hh)], '#f8f2e4');
-  { const a = lp(upp(A, z + hh), upp(C, z + hh), .45), c2 = lp(upp(A, z + hh), upp(C, z + hh), .7), b2 = lp(upp(B, z + hh), upp(D, z + hh), .45), d2 = lp(upp(B, z + hh), upp(D, z + hh), .7); tpoly([a, b2, c2, d2], '#d8d2c4'); }
+  { const a = lp(upp(A, z + hh), upp(D, z + hh), .3), b = lp(upp(B, z + hh), upp(C, z + hh), .3), c = lp(upp(B, z + hh), upp(C, z + hh), .55), e = lp(upp(A, z + hh), upp(D, z + hh), .55); tpoly([a, b, c, e], '#d8d2c4'); }
   if (idle) { const p = upp(lp(D, C, .85), z + 2); for (let i = 0; i < 4; i++) { const ph = (t * .9 + i / 4) % 1; ctx.save(); ctx.globalAlpha *= (1 - ph) * .35; ell(p[0] - 4 - ph * 16, p[1] + 2 - ph * 26, 3 + ph * 9, 3 + ph * 7, '#9a9aa4'); ctx.restore(); } }
 }
+/* v126.1: the coaches drive like buses. A path is a polyline smoothed into curves (Chaikin); the bus's front bumper runs
+   along it and its body trails along the same path, so the heading follows the way it drives (forwards or reversing). */
+function smoothPath(pts, n = 4) {
+  for (let k = 0; k < n; k++) { const o = [pts[0]]; for (let i = 0; i < pts.length - 1; i++) { const p = pts[i], q = pts[i + 1]; o.push([p[0] * .75 + q[0] * .25, p[1] * .75 + q[1] * .25], [p[0] * .25 + q[0] * .75, p[1] * .25 + q[1] * .75]); } o.push(pts[pts.length - 1]); pts = o; }
+  return pts;
+}
+/* a point s along the path; before its start it carries on straight back along the first stretch, past its end along the last */
+function pathPt(pts, s) {
+  if (s <= 0) { const [a, b] = pts, l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; return [a[0] + (b[0] - a[0]) / l * s, a[1] + (b[1] - a[1]) / l * s]; }
+  for (let i = 1; i < pts.length; i++) { const a = pts[i - 1], b = pts[i], l = Math.hypot(b[0] - a[0], b[1] - a[1]); if (s <= l) return lp(a, b, s / (l || 1)); s -= l; }
+  const a = pts[pts.length - 2], b = pts[pts.length - 1], l = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1; return [b[0] + (b[0] - a[0]) / l * s, b[1] + (b[1] - a[1]) / l * s];
+}
+const COACH_LEN = 1.6;
+/* bay bx: in from far down the highway (gx 8, coming up −gy), right into the aisle behind the bays (gy ≈ 25.6), left
+   into the bay, stop with the nose at CTR_BAY_GY */
+const coachInPath = (bx, i) => smoothPath([[8, 46 + i * 2.4], [8, 27.6], [8, 26.5], [8.75, 25.65], [Math.max(9.05, bx - .9), 25.65], [bx, 24.75], [bx, CTR_BAY_GY + .6], [bx, CTR_BAY_GY]]);
+/* leaving: pull forwards out of the bay, left along the lot's far edge in front of the other coaches' noses (gy ≈ 21.3),
+   left again onto the highway and away down it (+gy) */
+const coachOutPath = bx => smoothPath([[bx, CTR_BAY_GY], [bx, 21.75], [Math.max(8.95, bx - .5), 21.3], [8.75, 21.3], [8.1, 21.75], [8, 22.6], [8, 26], [8, 52]]);
+/* where coach i is at time u: front bumper, heading */
+function coachPose(bx, i, u, leaving) {
+  const at = (pts, s) => { const f = pathPt(pts, s), r = pathPt(pts, s - COACH_LEN); return { p: f, hd: Math.atan2(f[1] - r[1], f[0] - r[0]) }; };
+  if (!leaving) { const P = coachInPath(bx, i), Lh = pathLenC(P), k = clamp(u / 6, 0, 1); return at(P, Lh * (1 - Math.pow(1 - k, 2.6))); }
+  const O = coachOutPath(bx), k = clamp(u / 7, 0, 1); return at(O, pathLenC(O) * .6 * k * k); /* moves off slowly, speeds up on the highway */
+}
+const pathLenC = pts => pts.slice(1).reduce((a, p, k) => a + Math.hypot(p[0] - pts[k][0], p[1] - pts[k][1]), 0);
 function busGround() {
   const q = ctrQ, A = 20.9, E = 58; /* the highway ends at the terminal: asphalt from the lot outwards only */
   q(7.45, A, 8.55, E, '#5e5a62'); q(7.45, A, 7.55, E, '#e8e0d0'); q(8.45, A, 8.55, E, '#e8e0d0');
@@ -7892,18 +7923,11 @@ function busItems(add, t) {
   for (const [gx, gy, k] of [[12.4, 27.4, 0], [12.6, 29.4, 1], [14.9, 22.1, 2], [6.6, 21.6, 1], [6.4, 26.5, 0], [15.2, 26.2, 2], [11.8, 29.8, 1], [15.6, 29.2, 0], [9.2, 30.6, 2], [13.2, 31.2, 0], [16.8, 27.6, 1]]) add(gx, gy, () => { const p = tiso(gx, gy); k === 0 ? yucca(p[0], p[1], 1.1) : k === 1 ? cholla(p[0], p[1], 1) : roundTree(p[0], p[1], .6, '#7a8a50'); });
   ctrVehicles().forEach((c, i) => {
     const bx = CTR_BAYS[CTR_BAYS.length - 1 - i];
-    let gx = bx, gy = CTR_BAY_GY;
-    if (c.t0 != null) { /* down the highway from far away, then into the bay */
-      const e = easeIO3(clamp((T - c.t0 - i * .7) / 3.6, 0, 1));
-      if (e < .75) { gx = 8; gy = lerp(44 + i * 2.4, CTR_BAY_GY + 2.2, e / .75); } else { const f = (e - .75) / .25; gx = lerp(8, bx, f); gy = lerp(CTR_BAY_GY + 2.2, CTR_BAY_GY, f); }
-    }
-    let al = 1;
-    if (c.t1 != null) { /* out of the bay and away up the highway */
-      const e = easeIO3(clamp((T - c.t1 - i * .6) / 4, 0, 1));
-      if (e < .25) { const f = e / .25; gx = lerp(bx, 8, f); gy = lerp(CTR_BAY_GY, CTR_BAY_GY + 2.2, f); } else { gx = 8; gy = lerp(CTR_BAY_GY + 2.2, 50, (e - .25) / .75); }
-      al = 1 - clamp((e - .8) / .2, 0, 1);
-    }
-    add(gx, gy, () => { ctx.save(); ctx.globalAlpha *= al; coach(gx, gy, c.col, t, true, c.t1 != null && T - c.t1 > .6); ctx.restore(); }, gx + gy + .9);
+    let gx = bx, gy = CTR_BAY_GY, hd = -Math.PI / 2, al = 1;
+    if (c.t0 != null) { const q = coachPose(bx, i, T - c.t0 - i * .9, false); [gx, gy] = q.p; hd = q.hd; } /* in from the highway, round into the bay */
+    if (c.t1 != null) { const u = T - c.t1 - i * 2.4, q = coachPose(bx, i, u, true); [gx, gy] = q.p; hd = q.hd; al = 1 - clamp((u - 5.6) / 1.4, 0, 1); } /* out of the bay forwards, round onto the highway, away */
+    const mx = gx - Math.cos(hd) * COACH_LEN / 2, my = gy - Math.sin(hd) * COACH_LEN / 2;
+    add(mx, my, () => { ctx.save(); ctx.globalAlpha *= al; coach(gx, gy, c.col, t, true, hd); ctx.restore(); }, mx + my + .4);
   });
 }
 /* ---- Luxor: the cruise pier ---- */
@@ -8203,7 +8227,7 @@ function planeSound(leaving) {
 }
 /* ---- per kind: where things are, how the jeeps go, what you hear ---- */
 const CTR_KINDS = {
-  bus: { ground: busGround, items: busItems, free: [[3, 17.5, 19, 33]], tap: [8.4, 18.6, 14.6, 26.5],
+  bus: { ground: busGround, items: busItems, free: [[3, 17.5, 19, 33]], tap: [8.4, 18.6, 14.6, 26.5], arrDur: 8.6, depDur: 12.2, /* v126.1: the coaches drive in and out on curves */
     town: [[8, 14.95], [8, 22]],
     xfer: { doors: i => [CTR_BAYS[CTR_BAYS.length - 1 - (i % 3)] + .3, CTR_BAY_GY + .2], via: d => [[d[0], 20.8]], stops: [[9.3, 19.7], [10.25, 19.7], [11.2, 19.7]], road: s => [s, [8, s[1]], [8, 11.6]] },
     hum: { nf: 140, nt: 'lowpass', of: 34, ot: 'sawtooth', og: .75, lf: 6.5, ld: .25 } },
@@ -8240,7 +8264,7 @@ function ctrXferItems(add, t) {
     const s = X.stops[j], path = X.road(s), len = path.slice(1).reduce((a, p, k) => a + Math.hypot(p[0] - path[k][0], p[1] - path[k][1]), 0);
     const lv = 4.4 + j * .7, dist = ph > lv ? Math.pow(ph - lv, 1.35) * 2.4 : 0;
     if (dist >= len) continue;
-    const r = walkPath(path, dist), pos = r.p, alongX = dist ? Math.abs(r.dir[0]) > Math.abs(r.dir[1]) : true;
+    const r = walkPath(path, dist), pos = r.p, alongX = Math.abs(r.dir[0]) > Math.abs(r.dir[1]); /* v126.1: waiting at the stop it already faces the way it will drive off */
     const a = Math.min(clamp(ph / .5, 0, 1), clamp((len - dist) / 1.6, 0, 1));
     add(pos[0], pos[1], () => { ctx.save(); ctx.globalAlpha *= a; jeep(pos[0], pos[1], alongX, t, Math.min(JEEP_SEATS, boarded[j])); ctx.restore(); }, pos[0] + pos[1] + .3);
   }
