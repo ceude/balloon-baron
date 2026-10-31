@@ -12,6 +12,8 @@ struct TownViewport {
     var noLabels = false
     /// Zoomed in, the horizon never comes down past where the home screen had it, so the sky doesn't grow.
     var hzCap: CGFloat? = nil
+    /// The horizon may come down over the town (the bazaar's close-up previews keep their strip of night sky).
+    var hzFree = false
 
     func screen(_ p: CGPoint) -> CGPoint { CGPoint(x: p.x * z + ox, y: p.y * z + oy) }
 }
@@ -70,8 +72,13 @@ enum TownGeo {
 
     /// Horizon on screen: a little above the town's far corner, never below 60 % of the height.
     static func horizon(_ v: TownViewport, height h: CGFloat) -> CGFloat {
-        if let f = v.hzFix { return f }
-        return min(h * 0.6, v.oy + iso(-7, -7).y * v.z, v.hzCap ?? .infinity)
+        let hz = v.hzFix ?? min(h * 0.6, v.oy + iso(-7, -7).y * v.z, v.hzCap ?? .infinity)
+        if v.hzFree { return hz }
+        // Whatever set it (the night's camera, a horizon kept through a glide), the horizon never comes down onto the
+        // town: the ground starts at least a tile behind its far corner. Without this, collecting passengers from the
+        // morning's town (which keeps the night's horizon while the camera glides in on the office) or pinching out from
+        // there slid the sky and the ridges down over the town.
+        return min(hz, v.oy + iso(-1, -1).y * v.z - h * 0.015)
     }
 }
 

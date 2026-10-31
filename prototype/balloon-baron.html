@@ -8708,7 +8708,7 @@ const DECOR_AT = { fountain: [8, 8, .55], statue: [9.05, 6.95, .6], lanterns: [7
 function nightPreview(k, cv) {
   const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1), w = r.width, hh = r.height; if (!w) return;
   cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr);
-  const [gx, gy, z] = DECOR_AT[k], c = tiso(gx, gy), V = { z, ox: w / 2 - c[0] * z, oy: hh * .62 - c[1] * z, noLabels: true, hzFix: hh * .12 };
+  const [gx, gy, z] = DECOR_AT[k], c = tiso(gx, gy), V = { z, ox: w / 2 - c[0] * z, oy: hh * .62 - c[1] * z, noLabels: true, hzFix: hh * .12, hzFree: true };
   const frame = () => {
     if (!cv.isConnected) return;
     const keep = ctx, kN = NIGHT_K, kNi = NIGHT, iap = S.iap;
@@ -10840,8 +10840,10 @@ function townHorizon(h) {
   const far = Math.min(h * .6, TV.oy + tiso(-7, -7)[1] * TV.z);
   /* zoomed or collecting: the horizon never comes down onto the town (it stays behind the far valley) and never drops below
      where the home screen had it, so the sky never grows */
-  if (TV.hzFix != null) return TV.hzFix; /* the night camera sets its own horizon for a big sky */
-  return TV.hz != null ? Math.min(far, TV.hz) : far;
+  const hz = TV.hzFix != null ? TV.hzFix /* the night camera sets its own horizon for a big sky */ : TV.hz != null ? Math.min(far, TV.hz) : far;
+  /* whatever set it, the horizon never comes down onto the town: the ground starts at least a tile behind its far corner
+     (pinching out from the morning's town at the night's horizon slid the sky over it); the bazaar previews keep their sky */
+  return TV.hzFree ? hz : Math.min(hz, TV.oy + tiso(-1, -1)[1] * TV.z - h * .015);
 }
 function townBackdrop(w, h, t) {
   const hz = townHorizon(h), px = TV.ox * .08, p = .32;

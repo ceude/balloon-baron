@@ -598,6 +598,7 @@ struct DecorNightPreview: View {
                 var v = TownViewport(z: z, ox: sz.width / 2 - c.x * z, oy: sz.height * 0.62 - c.y * z)
                 v.noLabels = true
                 v.hzFix = sz.height * 0.12
+                v.hzFree = true
                 var g = ctx
                 _ = TownPainter.render(&g, state: s, time: 1000 + tl.date.timeIntervalSince(start), viewport: v, size: sz,
                                        night: item == .pigeons ? nil : TownNight(k: 1, event: nil, t0: 1000))
