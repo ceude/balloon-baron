@@ -243,6 +243,7 @@ struct ContractDelayView: View {
                 fact(percent(dl.chance), loc("ctr.delay.chance"))
                 fact(num(k.n), loc("ctr.delay.groupSub", eur(k.price)))
             }
+            .fixedSize(horizontal: false, vertical: true) // the cells match each other's height instead of filling the card
             option(loc("ctr.delay.hold"), loc("ctr.delay.holdHint", num(k.n), eur(pay))) { choose(.hold, k, pay) }
             option(loc("ctr.delay.open"), loc("ctr.delay.openHint")) { choose(.open, k, pay) }
         }
