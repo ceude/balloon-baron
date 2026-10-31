@@ -268,13 +268,15 @@ private struct BalloonPick: Identifiable {
 
 /// The fleet page's balloon filters (`FLEET_FILTERS`). Size filters and empty ones are hidden when nothing matches.
 private enum FleetFilter: String, CaseIterable {
-    case all, ready, issue, worn, S, M, L, XL
+    case all, ready, issue, out, worn, S, M, L, XL
 
-    func includes(_ b: Balloon, _ s: GameState) -> Bool {
+    /// `st`: the balloon's status (`GameState.statusByID`, worked out once for the whole fleet).
+    func includes(_ b: Balloon, _ s: GameState, _ st: GameState.FlyStatus) -> Bool {
         switch self {
         case .all: return true
-        case .ready: return s.status(b) == .ok
-        case .issue: return s.status(b) != .ok || s.condition(b) < 0.3
+        case .ready: return st == .ok
+        case .issue: return st != .outside && (st != .ok || s.condition(b) < 0.3)
+        case .out: return st == .outside
         case .worn: return s.condition(b) < 0.6
         case .S: return b.size == .S
         case .M: return b.size == .M
@@ -310,18 +312,25 @@ struct FleetView: View {
 
     private func balloonsCard(_ game: Game) -> some View {
         let s = game.state
+        // v127: worked out once; with hundreds of balloons outside the hangar each status would look at the whole fleet
+        let sts = s.statusByID
+        func st(_ b: Balloon) -> GameState.FlyStatus { sts[b.id] ?? s.status(b) }
+        let rows = Dictionary(s.balloons.map { ($0.id, rowState($0, s, st($0))) }, uniquingKeysWith: { a, _ in a })
         // A filter that no longer matches anything (the last worn envelope was renewed) falls back to all.
-        let current = filter == .all || s.balloons.contains(where: { filter.includes($0, s) }) ? filter : .all
-        let list = s.balloons.filter { current.includes($0, s) }.sorted { a, b in
-            let ra = rank(a, s), rb = rank(b, s)
+        let current = filter == .all || s.balloons.contains(where: { filter.includes($0, s, st($0)) }) ? filter : .all
+        let list = s.balloons.filter { current.includes($0, s, st($0)) }.sorted { a, b in
+            let ra = (a.id == s.flagship ? 0 : 10) + (rows[a.id]?.level ?? 0), rb = (b.id == s.flagship ? 0 : 10) + (rows[b.id]?.level ?? 0)
             if ra != rb { return ra < rb }
             if a.size.capacity != b.size.capacity { return a.size.capacity > b.size.capacity }
             return a.name.localizedCompare(b.name) == .orderedAscending
         }
         let worn = game.wornBalloons.count, cost = game.renewWornCost
         return FleetUI.Card(loc("fleetPage.yours")) {
-            summary(s)
-            chips(s, current)
+            if s.outsideCount > 0 {
+                HangarWarningRow(outside: s.outsideCount, capacity: s.hangarCapacity) { store.buildingCard = .hangar }
+            }
+            summary(s, sts)
+            chips(s, current, st)
             // v111: the Balloon Show, once the market is open and the fleet is big enough.
             if ShowCardView.offered(game) {
                 let st = game.showState
@@ -365,10 +374,10 @@ struct FleetView: View {
                     store.act { _ = $0.renewWornEnvelopes() }
                 }
             }
-            VStack(spacing: 0) {
+            LazyVStack(spacing: 0) {
                 ForEach(Array(list.enumerated()), id: \.element.id) { i, b in
                     if i > 0 { Rectangle().fill(Theme.line).frame(height: 1.5).padding(.leading, 52) }
-                    row(b, s)
+                    row(b, s, rows[b.id] ?? rowState(b, s, st(b)))
                 }
                 // v125.6: balloons on their way by cargo, greyed and not tappable until they arrive
                 if current == .all, let ship = s.local.transferShip {
@@ -388,9 +397,11 @@ struct FleetView: View {
         }
     }
 
-    private func summary(_ s: GameState) -> some View {
-        let seats = s.balloons.reduce(0) { $0 + $1.size.capacity }, up = s.balloons.reduce(0) { $0 + $1.size.upkeep }
-        let ready = s.balloons.filter { s.status($0) == .ok }.count
+    private func summary(_ s: GameState, _ sts: [Int: GameState.FlyStatus]) -> some View {
+        // v127: upkeep is paid for the balloons inside the hangar, with its discount
+        let seats = s.balloons.reduce(0) { $0 + $1.size.capacity }
+        let up = jsRoundUI(Double(s.insideBalloons.reduce(0) { $0 + $1.size.upkeep }) * s.upkeepFactor)
+        let ready = sts.values.filter { $0 == .ok }.count
         return HStack(spacing: 6) {
             tile(num(s.balloons.count), loc("fleet.sum.balloons"))
             tile(num(seats), loc("fleet.sum.seats"))
@@ -420,11 +431,11 @@ struct FleetView: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func chips(_ s: GameState, _ current: FleetFilter) -> some View {
+    private func chips(_ s: GameState, _ current: FleetFilter, _ st: (Balloon) -> GameState.FlyStatus) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
                 ForEach(FleetFilter.allCases, id: \.self) { f in
-                    let n = s.balloons.filter { f.includes($0, s) }.count
+                    let n = s.balloons.filter { f.includes($0, s, st($0)) }.count
                     if f == .all || n > 0 {
                         let on = f == current
                         Button { filter = f } label: {
@@ -447,13 +458,12 @@ struct FleetView: View {
         }
     }
 
-    /// Flagship first, then red, orange, yellow and green.
-    private func rank(_ b: Balloon, _ s: GameState) -> Int { (b.id == s.flagship ? 0 : 10) + rowState(b, s).level }
-
-    /// `fleetState(b)`: how urgent the balloon is (0 red … 3 green), its dot color and a short status.
-    private func rowState(_ b: Balloon, _ s: GameState) -> (level: Int, color: Color, text: String) {
+    /// `fleetState(b)`: how urgent the balloon is (0 red … 3 green; v127: 100 outside the hangar, so they sort last),
+    /// its dot color and a short status. The list is sorted flagship first, then by this level.
+    private func rowState(_ b: Balloon, _ s: GameState, _ status: GameState.FlyStatus) -> (level: Int, color: Color, text: String) {
         let orange = Color(hex: "#ff8a3d")
-        switch s.status(b) {
+        switch status {
+        case .outside: return (100, Color(hex: "#9a8fb8"), loc("fleet.row.outside"))
         case .damaged: return (0, Theme.red, loc("fleetPage.status.damaged", num(b.damagedUntil - s.day)))
         case .worn: return (0, Theme.red, loc("fleet.row.worn"))
         case .banned: return (0, Theme.red, loc("fleet.row.banned"))
@@ -471,8 +481,8 @@ struct FleetView: View {
         }
     }
 
-    private func row(_ b: Balloon, _ s: GameState) -> some View {
-        let st = rowState(b, s), cond = s.condition(b)
+    private func row(_ b: Balloon, _ s: GameState, _ st: (level: Int, color: Color, text: String)) -> some View {
+        let cond = s.condition(b), out = st.level >= 100
         let ring: Color = cond < 0.3 ? Theme.red : cond < 0.6 ? Theme.yellow : Theme.green
         return Button { cardPick = BalloonPick(id: b.id) } label: {
             HStack(spacing: 10) {
@@ -486,6 +496,9 @@ struct FleetView: View {
                             .lineLimit(1)
                         if b.id == s.flagship {
                             Text("★").font(Theme.font(14, .bold)).foregroundStyle(Theme.sun)
+                        }
+                        if out {
+                            FleetUI.Tag(text: loc("fleet.f.out"), color: Theme.red).fixedSize()
                         }
                         Text(b.size.rawValue + " · " + num(b.size.capacity))
                             .font(Theme.font(11, .bold))
@@ -535,6 +548,7 @@ struct FleetView: View {
             }
             .padding(.horizontal, 10)
             .padding(.vertical, 7)
+            .opacity(out ? 0.62 : 1)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -606,7 +620,7 @@ struct FleetView: View {
                 Spacer(minLength: 4)
                 VStack(spacing: 6) {
                     FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
-                        store.act { _ = $0.buyBalloon(z) }
+                        store.actBuying { _ = $0.buyBalloon(z) }
                     }
                     .tutTargetIf(first, "ga.fleet", disabled: s.cash < z.cost) // v122: the guided action lights the first
                     // v114: the same balloon from your own workshop, cheaper but not today
@@ -636,9 +650,45 @@ struct FleetView: View {
                 }
             }
             FleetUI.SmallButton(title: eur(z.cost), disabled: s.cash < z.cost) {
-                store.act { _ = $0.buyBalloon(z) }
+                store.actBuying { _ = $0.buyBalloon(z) }
             }
         }
+    }
+}
+
+/// v127: balloons stand outside the full hangar: how many, the hangar's room, and the way to its upgrade (fleet page,
+/// flight plan, a balloon's card; prototype `hangarRow`).
+struct HangarWarningRow: View {
+    let outside: Int
+    let capacity: Int
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            SoundEngine.shared.play(.click)
+            action()
+        } label: {
+            HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(loc("fleet.outside.row", num(outside)))
+                        .font(Theme.font(15, .bold))
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(loc("fleet.outside.cap", num(capacity)))
+                        .font(Theme.font(13))
+                }
+                Spacer(minLength: 6)
+                Text(loc("fleet.outside.go"))
+                    .font(Theme.font(15, .heavy, condensed: true))
+                    .lineLimit(1)
+                    .fixedSize()
+            }
+            .foregroundStyle(Color(hex: "#8c2414"))
+            .padding(.horizontal, 12).padding(.vertical, 11)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(Color(hex: "#fde6e2"), in: RoundedRectangle(cornerRadius: 14))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
     }
 }
 
@@ -709,6 +759,12 @@ private struct BalloonCardSheet: View {
                     conditionBar(b, s)
                 }
             }
+            if s.isOutside(b) {
+                HangarWarningRow(outside: s.outsideCount, capacity: s.hangarCapacity) {
+                    dismiss()
+                    store.buildingCard = .hangar
+                }
+            }
             extrasRow(b, s)
             actionsRow(b, game)
         }
@@ -750,6 +806,9 @@ private struct BalloonCardSheet: View {
             color = Theme.yellow
         case .strike:
             text = loc("fleetPage.status.strike")
+            color = Theme.red
+        case .outside:
+            text = loc("fleet.row.outside")
             color = Theme.red
         }
         return Text(text)
@@ -882,12 +941,12 @@ private struct BalloonCardSheet: View {
             }
             // v111: pick the balloon you fly yourself right here; it becomes the flagship.
             if !s.isSelf(b) {
-                let down = s.status(b) == .damaged || s.status(b) == .worn
+                let st = s.status(b), down = st == .damaged || st == .worn || st == .outside
                 FleetUI.SmallButton(title: loc("fleetPage.flyMyself"), disabled: down) {
                     store.act { _ = $0.flyMyself(b.id) }
                 }
             }
-            if b.id != s.flagship && !s.flyingSelf {
+            if b.id != s.flagship && !s.flyingSelf && !s.isOutside(b) {
                 FleetUI.SmallButton(title: loc("fleetPage.makeFlagship"), ghost: true) {
                     store.act { $0.makeFlagship(b.id) }
                 }

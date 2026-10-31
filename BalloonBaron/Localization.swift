@@ -181,7 +181,12 @@ private let balloonNameKeys: [String: String] = [
     "Şafak": "dawn", "Güvercin": "dove", "Kapadokya Yıldızı": "capStar", "Fiesta Yıldızı": "fiestaStar", "Teb Yıldızı": "thebesStar", "Avon Yıldızı": "avonStar",
     "Hatşepsut": "hatshepsut", "İsis": "isis", "File": "philae", "Teb": "thebes", "Abidos": "abydos", "Amon": "amun", "Kurna": "qurna"
 ]
-func bname(_ raw: String) -> String { balloonNameKeys[raw].map { loc("bname.\($0)") } ?? raw }
+func bname(_ raw: String) -> String {
+    if let k = balloonNameKeys[raw] { return loc("bname.\(k)") }
+    // v127: once the region's name list is used up the core names a balloon "Balloon <id>"; it reads in the player's language.
+    if raw.hasPrefix("Balloon "), let id = Int(raw.dropFirst(8)) { return loc("balloon.default", String(id)) }
+    return raw
+}
 extension Balloon { var title: String { bname(name) } }
 
 extension Flag {
@@ -234,6 +239,8 @@ extension HezMessage {
                 + ". " + loc("hez.xfer.end", currentRegion.title)
         case .cargoArrived(let bs): loc("hez.cargoArrived", listText(bs.map(bname)))
         case .contractDelayIntro: loc("ctr.cap.delayIntro")
+        case .hangarFull(let n): loc("hez.hangarFull", num(n))
+        case .hangarOutside(let n): loc("hez.hangarOutside", num(n))
         }
     }
 }

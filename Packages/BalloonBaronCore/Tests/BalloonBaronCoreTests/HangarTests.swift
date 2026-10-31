@@ -130,6 +130,8 @@ final class HangarTests: XCTestCase {
         g.startDay()
         let sorted = g.state.sortedFleet
         let st = sorted.map { g.state.status($0) }
+        let byID = g.state.statusByID
+        XCTAssertTrue(sorted.allSatisfy { byID[$0.id] == g.state.status($0) })
         XCTAssertEqual(st.filter { $0 == .outside }.count, 376)
         XCTAssertTrue(sorted.suffix(376).allSatisfy { g.state.isOutside($0) })
         XCTAssertEqual(g.state.flyingToday.count, 24)
@@ -138,16 +140,13 @@ final class HangarTests: XCTestCase {
         XCTAssertLessThan(Date().timeIntervalSince(t), 5, "a day with 400 balloons")
     }
 
-    func testDefaultBalloonNameComesFromTheApp() {
+    func testDefaultBalloonNameIsRawWithItsID() {
         var g = fleetGame(1)
-        let keep = Rules.defaultBalloonName
-        defer { Rules.defaultBalloonName = keep }
-        Rules.defaultBalloonName = { "Balon \($0)" }
         g.state.balloons += Rules.balloonNames.enumerated().map { Balloon(id: 3000 + $0.offset, size: .S, name: $0.element) }
         let id = g.state.nextID
         g.state.cash = 100_000
         XCTAssertTrue(g.buyBalloon(.S))
-        XCTAssertEqual(g.state.balloons.last?.name, "Balon \(id)")
+        XCTAssertEqual(g.state.balloons.last?.name, "Balloon \(id)", "the app shows it in the player's language")
     }
 
     func testOldSaveWithoutReminderLoads() throws {

@@ -6,6 +6,9 @@ struct CrewView: View {
     @Environment(GameStore.self) private var store
     @State private var filter: CrewFilter = .all
     @State private var card: PilotPick?
+    /// v127: the candidates light up for a moment after the "waiting for a pilot" callout scrolled to them.
+    @State private var hireGlow = false
+    private static let hireID = "crew.hire"
 
     private static let levelColors: [PilotLevel: Color] = [
         .rookie: Color(hex: "#9a8fb8"), .experienced: Color(hex: "#14a39a"), .senior: Color(hex: "#ff5e3a")
@@ -19,11 +22,16 @@ struct CrewView: View {
                     ScrollView {
                         VStack(alignment: .leading, spacing: 16) {
                             licenseSection(s)
-                            needPilots(s)
+                            needPilots(s, proxy)
                             crewSummary(s)
                             idleSection(s)
                             dutySection(s)
                             candidatesSection(s)
+                                .padding(8)
+                                .background(RoundedRectangle(cornerRadius: 18).fill(Theme.sun.opacity(hireGlow ? 0.22 : 0)))
+                                .overlay(RoundedRectangle(cornerRadius: 18).stroke(Theme.sun, lineWidth: 3).opacity(hireGlow ? 1 : 0))
+                                .padding(-8)
+                                .id(Self.hireID)
                             schoolSection(s)
                                 .id(PageSection.school)
                             PageDoneButton { store.closePage() }
@@ -83,10 +91,28 @@ struct CrewView: View {
     }
 
     @ViewBuilder
-    private func needPilots(_ s: GameState) -> some View {
-        let need = s.local.balloons.filter { s.status($0) == .noPilot }.count
+    private func needPilots(_ s: GameState, _ proxy: ScrollViewProxy) -> some View {
+        let need = s.statusByID.values.filter { $0 == .noPilot }.count
         if need > 0 {
-            callout(loc("crew.needPilots", num(need)), loc("crew.needPilots.body"), color: Theme.yellow)
+            // v127: a tap scrolls down to the candidates and lights them up for a moment
+            Button {
+                SoundEngine.shared.play(.click)
+                withAnimation(.easeInOut(duration: 0.45)) { proxy.scrollTo(Self.hireID, anchor: .top) }
+                withAnimation(.easeOut(duration: 0.25).delay(0.35)) { hireGlow = true }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.6) {
+                    withAnimation(.easeOut(duration: 0.6)) { hireGlow = false }
+                }
+            } label: {
+                callout(loc("crew.needPilots", num(need)), loc("crew.needPilots.body"), color: Theme.yellow) {
+                    Text(loc("crew.needPilots.go"))
+                        .font(Theme.font(14, .bold))
+                        .foregroundStyle(Theme.ink)
+                        .underline()
+                        .padding(.top, 2)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
         }
     }
 
@@ -543,7 +569,8 @@ private struct BalloonPicker: View {
     var body: some View {
         if let s = store.state, let p = s.local.pilots.first(where: { $0.id == pilotID }) {
             FleetUI.Sheet(title: loc("pick.balloonTitle", p.name), lead: loc("pick.balloonLead"), close: { dismiss() }) {
-                ForEach(s.local.balloons.filter { !s.isSelf($0) }.sorted { ($0.size.capacity, $1.title) > ($1.size.capacity, $0.title) }) { b in
+                let out = s.outsideIDs // v127: no pilot for a balloon outside the hangar
+                ForEach(s.local.balloons.filter { !s.isSelf($0) && !out.contains($0.id) }.sorted { ($0.size.capacity, $1.title) > ($1.size.capacity, $0.title) }) { b in
                     row(b, p, s)
                 }
             }

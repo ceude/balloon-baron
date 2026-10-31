@@ -105,6 +105,7 @@ extension GameStore {
             if var gg = game, gg.state.contractConfig != nil {
                 gg.state.local.chapter = max(gg.state.local.chapter, 1)
                 gg.state.cash = max(gg.state.cash, 400_000)
+                while gg.state.balloons.count + 4 > gg.state.hangarCapacity, gg.upgrade(.hangar) {} // v127: room for them
                 for z in [BalloonSize.M, .L, .M, .L] { _ = gg.buyBalloon(z) }
                 gg.state.weather?.flag = .green
                 gg.state.local.contracts = ContractState()
@@ -122,6 +123,7 @@ extension GameStore {
             if var gg = game, gg.state.region == .cap, gg.state.contractConfig != nil {
                 gg.state.local.chapter = max(gg.state.local.chapter, 1)
                 gg.state.cash = max(gg.state.cash, 400_000)
+                while gg.state.balloons.count + 4 > gg.state.hangarCapacity, gg.upgrade(.hangar) {} // v127: room for them
                 for z in [BalloonSize.M, .L, .M, .L] { _ = gg.buyBalloon(z) }
                 gg.state.weather?.flag = .green
                 gg.state.local.nextEvent = gg.state.day + 30
@@ -183,7 +185,9 @@ extension GameStore {
         g.startDay()
         while g.nextHezarfen() != nil {}
         g.state.chapterNews = nil
-        if g.state.winter == nil && g.state.cash > 45000 && g.state.balloons.count < 9 { _ = g.buyBalloon(.M) }
+        if g.state.winter == nil && g.state.cash > 45000 && g.state.balloons.count < 9 {
+            if g.state.balloons.count >= g.state.hangarCapacity { _ = g.upgrade(.hangar) } else { _ = g.buyBalloon(.M) } // v127
+        }
         while g.state.balloons.contains(where: { g.state.status($0) == .noPilot }), let c = g.state.candidates.first { _ = g.hire(c.id) }
         for h in Hotel.allCases where g.state.hotelDeals.count < 2 && g.state.cash > h.dailyFee * 3 + 6000 { _ = g.signHotel(h) }
         if let o = g.state.poach { g.answerPoach(match: o.wage <= 400) }

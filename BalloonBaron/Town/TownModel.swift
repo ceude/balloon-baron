@@ -81,7 +81,7 @@ enum Town {
     /// Red dots on the zones: a balloon without a pilot or the licence (crew), a rival's offer or a sale (market).
     static func alerts(_ s: GameState) -> Set<TownZone.Alert> {
         var out: Set<TownZone.Alert> = []
-        if !s.licenseValid || s.local.balloons.contains(where: { s.status($0) == .noPilot }) { out.insert(.crew) }
+        if !s.licenseValid || s.statusByID.values.contains(.noPilot) { out.insert(.crew) }
         if s.local.rivals.contains(where: { r in (r.alive && r.offer != nil && !r.offerDeclined) || (r.forSale != nil && !r.saleDeclined) }) {
             out.insert(.market)
         }
@@ -98,7 +98,7 @@ enum Town {
 
         let hangar = loc("town.b.hangar")
         L.append(TownBuilding(id: "hangar", gx: 1, gy: 1, w: 3, d: 2, name: hangar, look: .hangar, lv: n >= 8 ? 2 : 1,
-                              sub: loc("town.sub.balloons", num(n)) + " · " + loc("building.sub.level", num(s.level(.hangar))),
+                              sub: loc("town.sub.balloons", num(n) + "/" + num(s.hangarCapacity)) + " · " + loc("building.sub.level", num(s.level(.hangar))),
                               tap: open.contains(.fleet) ? .building(.hangar) : locked(hangar, .fleet)))
         let shop = loc("town.b.workshop")
         L.append(TownBuilding(id: "shop", gx: 5, gy: 1, w: 2, d: 2, name: shop, look: .workshop,

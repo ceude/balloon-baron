@@ -100,6 +100,8 @@ final class GameStore {
     var showAlbum = false
     /// A building's upgrade card, the bazaar, and the purchase sheet for one of its items.
     var buildingCard: Building?
+    /// v127: a purchase left balloons outside the full hangar: the "no room" card, with how many are outside.
+    var hangarFull: Int?
     var showBazaar = false
     var storeItem: StoreItem?
     /// The design studio is open (a sheet): its locked items open their purchase card inside it, over the studio.
@@ -167,7 +169,7 @@ final class GameStore {
     var busy: Bool {
         showIntro || openingFilm || homeIntro != nil || replayingOpening || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
-            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || showGlowCard || postcard != nil || showAlbum || buildingCard != nil || showBazaar || storeItem != nil
+            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || showGlowCard || postcard != nil || showAlbum || buildingCard != nil || hangarFull != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency || letter
             || contractCard != nil || contractScene != nil || showTransfer
     }
@@ -231,6 +233,27 @@ final class GameStore {
         pendingSave = nil
         guard let state = game?.state else { return }
         saveQueue.async { SaveVault.write(state) }
+    }
+
+    /// v127: runs a purchase (a balloon, a take-over, a bankrupt fleet); when it leaves more balloons outside the hangar
+    /// than before, the "no room in the hangar" card comes up.
+    func actBuying(_ f: (inout Game) -> Void) {
+        let before = game?.state.outsideCount ?? 0
+        var n: Int?
+        act { g in
+            f(&g)
+            n = g.hangarWarn(outsideBefore: before)
+        }
+        if let n {
+            hangarFull = n
+            Haptics.warning()
+        }
+    }
+
+    /// The "no room" card closed; `upgrade` opens the hangar's upgrade card.
+    func closeHangarFull(upgrade: Bool) {
+        hangarFull = nil
+        if upgrade { buildingCard = .hangar } else { showNextHezarfen() }
     }
 
     /// Runs an action on the game and saves.
@@ -357,7 +380,7 @@ final class GameStore {
 
     /// Accept or decline a rival's company or fleet.
     func answerDeal(_ d: DealOffer, accept: Bool) {
-        act { g in
+        actBuying { g in
             if accept {
                 if d.bankrupt { _ = g.buyBankruptFleet(d.rival) } else { _ = g.takeOver(d.rival) }
             } else {
@@ -370,7 +393,7 @@ final class GameStore {
 
     /// Buy with the purchase loan, from its terms card.
     func buyWithLoan(_ d: DealOffer) {
-        act { _ = $0.buyWithLoan(d.rival, bankrupt: d.bankrupt) }
+        actBuying { _ = $0.buyWithLoan(d.rival, bankrupt: d.bankrupt) }
         buyLoan = nil
         deal = nil
         showNextHezarfen()
@@ -925,7 +948,7 @@ final class GameStore {
     static func isNews(_ m: HezMessage) -> Bool {
         switch m {
         case .winterComing, .spring, .entrant, .fiestaStarted, .festivalStarted, .eventOutcome, .praise, .deed, .milestone,
-             .boss, .flagshipBack, .rescued, .inspector, .record, .celebritySigned, .cargoArrived: return true
+             .boss, .flagshipBack, .rescued, .inspector, .record, .celebritySigned, .cargoArrived, .hangarFull, .hangarOutside: return true
         default: return false
         }
     }

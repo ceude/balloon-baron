@@ -792,7 +792,7 @@ struct HomeView: View {
     /// Why no balloon flies today, from the most telling reason: all in repair, worn out, no pilot, a ban, a strike, or
     /// simply all left on the ground in the plan.
     private func noneReason(_ s: GameState) -> String {
-        let all = s.local.balloons, st = all.map { s.status($0) }, n = all.count
+        let all = s.insideBalloons, st = all.map { s.status($0) }, n = all.count // v127: the ones outside the hangar don't count
         func every(_ x: GameState.FlyStatus) -> Bool { !st.isEmpty && st.allSatisfy { $0 == x } }
         if every(.banned) { return loc("home.none.banned") }
         if every(.damaged) {

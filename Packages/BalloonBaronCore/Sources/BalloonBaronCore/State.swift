@@ -443,12 +443,20 @@ public struct GameState: Codable, Equatable, Sendable {
 
     /// v121.12: nothing can fly today and nothing can change that (all in repair, or a flying ban): the day has to be skipped.
     public var forcedSkip: Bool {
-        !local.balloons.isEmpty && insideBalloons.allSatisfy { let s = status($0); return s == .damaged || s == .banned }
+        !local.balloons.isEmpty && insideBalloons.allSatisfy { let s = status($0, outside: false); return s == .damaged || s == .banned }
     }
 
-    public func status(_ b: Balloon) -> FlyStatus {
+    public func status(_ b: Balloon) -> FlyStatus { status(b, outside: isOutside(b)) }
+
+    /// v127: every balloon's status by id, working out who is outside the hangar once (a fleet can have hundreds).
+    public var statusByID: [Int: FlyStatus] {
+        let out = outsideIDs
+        return Dictionary(local.balloons.map { ($0.id, status($0, outside: out.contains($0.id))) }, uniquingKeysWith: { a, _ in a })
+    }
+
+    func status(_ b: Balloon, outside: Bool) -> FlyStatus {
         if local.banUntil >= day { return .banned }
-        if isOutside(b) { return .outside }
+        if outside { return .outside }
         if b.damagedUntil > day { return .damaged }
         if condition(b) <= 0 { return .worn }
         if !licenseValid && b.id != local.flagship { return .licenseHold }
@@ -466,7 +474,7 @@ public struct GameState: Codable, Equatable, Sendable {
     }
 
     /// Balloons that will actually go up today.
-    public var flyingToday: [Balloon] { insideBalloons.filter { $0.fly && status($0) == .ok } }
+    public var flyingToday: [Balloon] { insideBalloons.filter { $0.fly && status($0, outside: false) == .ok } }
     public var capacityToday: Int { flyingToday.reduce(0) { $0 + sellSeats($1) } }
 
     public var influencerCost: Int { Rules.influencerCost(balloons: local.balloons.count) }

@@ -220,7 +220,7 @@ struct MarketView: View {
                         FleetUI.SmallButton(title: loc("buyLoan.button", eur(t.financed))) { store.buyLoan = DealOffer(rival: i, bankrupt: false) }
                     } else {
                         FleetUI.SmallButton(title: loc("marketPage.takeOver", eur(offer)), disabled: s.cash < offer) {
-                            store.act { _ = $0.takeOver(i) }
+                            store.actBuying { _ = $0.takeOver(i) }
                         }
                     }
                 }
@@ -233,7 +233,7 @@ struct MarketView: View {
                         FleetUI.SmallButton(title: loc("buyLoan.button", eur(t.financed))) { store.buyLoan = DealOffer(rival: i, bankrupt: true) }
                     } else {
                         FleetUI.SmallButton(title: loc("marketPage.buy", eur(sale.price)), disabled: s.cash < sale.price) {
-                            store.act { _ = $0.buyBankruptFleet(i) }
+                            store.actBuying { _ = $0.buyBankruptFleet(i) }
                         }
                     }
                 }

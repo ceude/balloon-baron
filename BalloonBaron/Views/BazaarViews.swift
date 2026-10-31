@@ -3,6 +3,23 @@ import BalloonBaronCore
 
 // Building upgrades, the bazaar and its purchase sheet (prototype v77–v85).
 
+/// v127: a purchase left balloons outside the full hangar (prototype `hangarFullCard`): how many, why it matters, and the
+/// way to the hangar's upgrade.
+struct HangarFullView: View {
+    @Environment(GameStore.self) private var store
+    let outside: Int
+
+    var body: some View {
+        ModalCard(onClose: { store.closeHangarFull(upgrade: false) }) {
+            CardText.title(loc("hangar.full.title"))
+            CardText.lead(loc("hangar.full.body", num(outside)))
+            CardText.hint(loc("hangar.full.hint"))
+            BigButton(title: loc("hangar.upgrade")) { store.closeHangarFull(upgrade: true) }
+            BigButton(title: loc("hangar.ok"), style: .ghost) { store.closeHangarFull(upgrade: false) }
+        }
+    }
+}
+
 /// A building's card: the levels it has, the next one, and the way into its page. Port of `buildingCard`.
 struct BuildingCardView: View {
     @Environment(GameStore.self) private var store
@@ -13,10 +30,11 @@ struct BuildingCardView: View {
         let n = s?.level(building) ?? 1
         let cost = building.upgradeCost(from: n)
         return ModalCard(onClose: { store.closeBuildingCard() }) {
-            Text(loc("building.level", num(n), num(Building.maxLevel)))
+            Text(loc("building.level", num(n), num(building.maxLevel)))
                 .font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
             CardText.title(building.title)
-            ForEach(Array(2...Building.maxLevel), id: \.self) { lv in
+            if building == .hangar, let s { capacityBox(s) }
+            ForEach(Array(2...building.maxLevel), id: \.self) { lv in
                 if lv <= n { levelRow(lv, built: true) }
             }
             if building == .mast && n >= 2, let fc = s?.local.forecast, let day = s?.day {
@@ -55,10 +73,30 @@ struct BuildingCardView: View {
         }
     }
 
+    /// v127: the hangar's room now, and how many balloons stand outside.
+    private func capacityBox(_ s: GameState) -> some View {
+        let out = s.outsideCount, n = s.local.balloons.count
+        return VStack(alignment: .leading, spacing: 2) {
+            Text(loc("hangar.capacity", num(s.hangarCapacity))).font(Theme.font(15, .bold)).foregroundStyle(out > 0 ? Theme.red : Theme.green)
+            Text(out > 0 ? loc("hangar.fleetOut", num(n), num(out)) : loc("hangar.fleet", num(n)))
+                .font(Theme.font(13)).foregroundStyle(Theme.ink).fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 12).padding(.vertical, 10)
+        .background((out > 0 ? Theme.red : Theme.green).opacity(0.12), in: RoundedRectangle(cornerRadius: 14))
+    }
+
+    /// A level's line; the hangar's say its room first (levels 4 to 8 only add room).
+    private func detail(_ lv: Int) -> String {
+        guard building == .hangar else { return building.levelDetail(lv) }
+        let cap = loc("hangar.capacity", num(Hangar.capacity[min(lv, Hangar.maxLevel)])) + "."
+        return lv <= 3 ? cap + " " + building.levelDetail(lv) : cap
+    }
+
     private func levelRow(_ lv: Int, built: Bool) -> some View {
         VStack(alignment: .leading, spacing: 2) {
             Text((built ? "✓ " : "") + building.levelTitle(lv)).font(Theme.font(15, .bold)).foregroundStyle(built ? Theme.green : Theme.ink)
-            Text(building.levelDetail(lv)).font(Theme.font(13)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
+            Text(detail(lv)).font(Theme.font(13)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal, 12).padding(.vertical, 10)

@@ -148,6 +148,9 @@ struct RootView: View {
             if store.showAlbum {
                 AlbumView().transition(.opacity)
             }
+            if let n = store.hangarFull {
+                HangarFullView(outside: n).transition(.opacity)
+            }
             if let b = store.buildingCard {
                 BuildingCardView(building: b).transition(.opacity)
             }
@@ -218,6 +221,7 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.postcard)
         .animation(.easeOut(duration: 0.25), value: store.showAlbum)
         .animation(.easeOut(duration: 0.25), value: store.buildingCard)
+        .animation(.easeOut(duration: 0.25), value: store.hangarFull)
         .animation(.easeOut(duration: 0.25), value: store.showBazaar)
         .animation(.easeOut(duration: 0.25), value: store.storeItem)
         .animation(.easeInOut(duration: 0.6), value: store.night)

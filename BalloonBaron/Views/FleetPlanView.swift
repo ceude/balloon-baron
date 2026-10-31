@@ -17,15 +17,16 @@ extension GameState {
         let fl = flyingToday
         var why: [FlyStatus: Int] = [:]
         var grounded = 0
+        let sts = statusByID // v127: once for the whole fleet
         for b in local.balloons {
-            let st = status(b)
+            let st = sts[b.id] ?? status(b)
             if st == .ok {
                 if !b.fly { grounded += 1 }
             } else {
                 why[st, default: 0] += 1
             }
         }
-        let order: [(FlyStatus, String)] = [(.damaged, "home.fleet.damaged"), (.noPilot, "home.fleet.noPilot"), (.worn, "home.fleet.worn"),
+        let order: [(FlyStatus, String)] = [(.outside, "home.fleet.outside"), (.damaged, "home.fleet.damaged"), (.noPilot, "home.fleet.noPilot"), (.worn, "home.fleet.worn"),
                                            (.licenseHold, "home.fleet.license"), (.banned, "home.fleet.banned"), (.late, "home.fleet.late"),
                                            (.strike, "home.fleet.strike"), (.chartered, "home.fleet.chartered")]
         var parts: [String] = []
@@ -67,6 +68,14 @@ struct FleetPlanView: View {
                     ForEach(groups(g.state)) { grp in
                         groupView(grp, g)
                     }
+                    // v127: the balloons outside the hangar aren't listed; one line says how many, and leads to the upgrade
+                    if g.state.outsideCount > 0 {
+                        HangarWarningRow(outside: g.state.outsideCount, capacity: g.state.hangarCapacity) {
+                            dismiss()
+                            store.buildingCard = .hangar
+                        }
+                        .padding(.top, 4)
+                    }
                     BigButton(title: loc("home.done")) { dismiss() }
                         .padding(.top, 6)
                 }
@@ -80,7 +89,8 @@ struct FleetPlanView: View {
     }
 
     private func groups(_ s: GameState) -> [SizeGroup] {
-        let fleet = s.sortedFleet // v121.7: your balloon stays in its place in its group, tagged
+        let out = s.outsideIDs
+        let fleet = s.sortedFleet.filter { !out.contains($0.id) } // v121.7: your balloon stays in its place in its group, tagged; v127: not the ones outside
         return [BalloonSize.XL, .L, .M, .S].compactMap { z -> SizeGroup? in
             let list = fleet.filter { $0.size == z }
             return list.isEmpty ? nil : SizeGroup(size: z, list: list)
@@ -234,6 +244,7 @@ struct FleetPlanView: View {
         case .chartered: return loc("fplan.why.chartered")
         case .late: return loc("fplan.why.late")
         case .strike: return loc("fplan.why.strike")
+        case .outside: return loc("fleet.row.outside")
         case .ok:
             if s.isSelf(b) { return loc("fplan.pilotYou") }
             guard let p = s.pilot(of: b) else { return loc("fplan.why.noPilot") }
