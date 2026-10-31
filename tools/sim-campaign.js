@@ -1,6 +1,6 @@
 // Usage: NODE_PATH=$(npm root -g) node tools/sim-campaign.js [seeds=6] [maxDays=1400] [firstSeed=1]
 // v123: a bot plays the whole game: Cappadocia, then Albuquerque and Luxor (Grand Tour owned), then the holding goals
-// (World Baron). v124: Bristol after Luxor (Night Glow booked when a chapter wants it), and the World Games show at the end. Prints per seed: chapter end days per region, entry days, baron days, holding cash at each baron.
+// (World Baron). v126: Cappadocia's charter offers (taken like the others; a late plane: seats kept when it makes the morning with ≥50%). v124: Bristol after Luxor (Night Glow booked when a chapter wants it), and the World Games show at the end. Prints per seed: chapter end days per region, entry days, baron days, holding cash at each baron.
 const { chromium } = require('playwright');
 const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM = +(process.argv[4] || 1);
 (async () => {
@@ -20,6 +20,8 @@ const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM =
       const NEXT = { cap: 'abq', abq: 'lux', lux: 'bri' };
       const HQ_ORDER = ['ist', 'nyc', 'tyo', 'sel'];
       for (let d = 0; d < DAYS; d++) {
+        for (const k of S.hezQ) if (!/^(news|boss|hz|ctr|insp|guide):/.test(k)) S.tips[k] = 1; /* v126: the player read yesterday's cards (a tip shows once) */
+        if (S.day >= (S.nextEvent || 12)) S.nextEvent = S.day + 7 + Math.round(Math.random()); /* v126: startDay's morning-event cadence (startDay is stubbed); Cappadocia's charter offers wait for a morning without one */
         S.hezQ = []; S.paper = null; S.eventDue = false; S.chapterNews = null; S.poach = null; S.mergeNews = null;
         if (S.issue) S.issue = null; for (const id in (S.regions || {})) { const A = S.regions[id].auto; if (A && A.issue) { A.issue = null; } }
         if (typeof expireSeasons === 'function') expireSeasons();
@@ -70,6 +72,8 @@ const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM =
         const up = (k, buf) => { const Lv = UPGRADES[k].lv[bl(k)]; if (Lv && S.cash > Lv.cost + buf) { S.cash -= Lv.cost; S.bld = Object.assign({}, S.bld, { [k]: bl(k) + 1 }); } };
         if (need('bldMast')) up('mast', 5000); if (need('bldHangar')) up('hangar', 10000); if (need('bldTop')) up('mast', 10000);
         const reg = S.region, ch0 = S.chapter || 0, day = S.day;
+        /* v126: a charter plane is late: keep the seats when it is at least as likely as not to make the morning, otherwise sell them */
+        if (typeof ctrDelayJob === 'function' && ctrDelayJob()) ctrDelayChoose(ctrDelayJob().dl.q >= .5 ? 'hold' : 'open');
         try { launch(S.weather.flag === 'red'); } catch (e) { L.err = e.message + ' @' + day; break; }
         if ((S.chapter || 0) > ch0 && S.region === reg) L.ch[reg].push(day);
         for (const id of ['cap', 'abq', 'lux', 'bri']) if (S.barons && S.barons[id] && !L.baron[id]) { L.baron[id] = S.barons[id]; L['hold_' + id] = Math.round(S.holding || 0); L['cash_' + id] = Math.round(S.cash); L['auto_' + id] = Object.keys(S.regions || {}).map(k => k + ':' + Math.round((S.regions[k].auto || {}).base || 0)).join(' '); }

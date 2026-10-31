@@ -7398,7 +7398,7 @@ const CTR = {
   cap: {
     kind: 'plane', cast: CTR_CAST_CAP, spot: [30, 3], shift: [0, 0], sceneZ: .6,
     minChapter: 1, minSeats: 40, firstWait: 1, firstDay: 40, quiet: true,
-    gap: [11, 15], prefGap: [7, 10], lead: [3, 5], len: [2, 2], share: [.3, .45], price: [.8, .9], prefPrice: 1.06,
+    gap: [11, 15], prefGap: [7, 10], lead: [3, 5], len: [2, 2], share: [.25, .4], price: [.8, .9], prefPrice: 1.06,
     negUp: .1, negWalk: .35, prefWalk: .15, pen: .5, redCut: 0, redMove: false, prefNeed: 3, breakAt: -3, cool: 14,
     rivalRep: .05, rivalGrow: 24,
     delay: { after: 2, warnP: .35, lateP: .6, land: [.3, .7], waitPay: .4 },
@@ -7468,7 +7468,7 @@ function ctrMorning() {
   if (C.next == null) C.next = Math.max(S.day + K.firstWait, K.firstDay || 0);
   if (C.offer || C.booked.some(k => !k.rival) || S.day < C.next || fleetSeats() < K.minSeats) return;
   /* v126: not on a crowded morning (a morning event, a chapter, several cards already): it comes the next quiet one */
-  if (K.quiet && ((S.day >= 12 && S.unl.crew && !S.winter && S.day >= (S.nextEvent || 12)) || S.chapterNews != null || S.hezQ.length > 1 || S.xfer || S.mergeNews)) return;
+  if (K.quiet && ((S.day >= 12 && S.unl.crew && !S.winter && S.day >= (S.nextEvent || 12)) || S.chapterNews != null || S.hezQ.length > 2 || S.xfer || S.mergeNews)) return;
   const w = ctrWho(), seats = fleetSeats(), n = Math.max(12, Math.round(seats * rnd(K.share[0], K.share[1]) / 2) * 2);
   const riv = S.rivals.filter(r => r.alive), ref = riv.length ? (S.price + riv.reduce((a, r) => a + r.price, 0) / riv.length) / 2 : S.price;
   /* v125.3: a tour operator buys in bulk: below the market, never above your own ticket */
