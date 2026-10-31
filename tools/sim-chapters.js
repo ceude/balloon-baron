@@ -3,7 +3,7 @@
 const { chromium } = require('playwright');
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 390, height: 800 } });
-  await p.goto('file:///home/user/balloon-baron/prototype/balloon-baron.html'); await p.waitForTimeout(400);
+  await p.goto('file://' + require('path').resolve(__dirname, '../prototype/balloon-baron.html')); await p.waitForTimeout(400);
   const noUp = !!process.env.NOUP;
   const out = [];
   for (let seed = 1; seed <= 8; seed++) {
@@ -20,7 +20,10 @@ const { chromium } = require('playwright');
         const C = chap()[S.chapter || 0], need = k => C && C.goals.some(g => g[0] === k && !goalDone(g));
         if (S.lastShare && S.lastShare.cap) { const l = S.lastShare.me / S.lastShare.cap; if (l > .97) S.price += 5; else if (l < .75) S.price -= 5; S.price = clamp(S.price, 120, 260); }
         if (S.unl.bank && S.loans.length < 1 && S.day >= 6 && S.balloons.length < 4) { S.cash += 10000; S.loans.push({ amt: 10000, inst: 300, left: 40 }); }
-        if (!S.winter) { if (S.cash > 50000 && S.balloons.length < 14) { S.cash -= 35000; addBalloon('M'); } else if (S.cash > 24000 && S.balloons.length < 3) { S.cash -= 15000; addBalloon('S'); } }
+        /* v127: a full hangar is grown before the next balloon */
+        const hasRoom = () => typeof hangarCap !== 'function' || S.balloons.length < hangarCap();
+        const growHangar = buf => { const L = UPGRADES.hangar.lv[bl('hangar')]; if (L && S.cash > L.cost + buf) { S.cash -= L.cost; S.bld = Object.assign({}, S.bld, { hangar: bl('hangar') + 1 }); log.up.push('hangar' + bl('hangar') + '@' + S.day); } };
+        if (!S.winter) { if (S.cash > 50000 && S.balloons.length < 14) { if (hasRoom()) { S.cash -= 35000; addBalloon('M'); } else growHangar(15000); } else if (S.cash > 24000 && S.balloons.length < 3) { S.cash -= 15000; addBalloon('S'); } }
         while (S.balloons.some(x => canFly(x) === 'nopilot') && S.candidates.length) { const c = S.candidates.sort((x, y) => x.wage - y.wage)[0]; S.pilots.push(c); S.candidates = S.candidates.filter(x => x !== c); assignPilots(); }
         for (const x of S.balloons) if (cond(x) <= 0 && S.cash > SIZES[x.size].cost * RENEW + 3000) { S.cash -= SIZES[x.size].cost * RENEW; x.flights = 0; }
         if (S.unl.market) {
@@ -31,7 +34,7 @@ const { chromium } = require('playwright');
         }
         if (need('workshop') && S.cash > WORKSHOP_COST + 20000) { S.cash -= WORKSHOP_COST; S.workshop = { day: S.day }; }
         if (need('school') && S.cash > SCHOOL_COST + 20000) { S.cash -= SCHOOL_COST; S.school = true; }
-        if (need('xl') && S.cash > 170000) { S.cash -= 150000; addBalloon('XL'); }
+        if (need('xl') && S.cash > 170000) { if (hasRoom()) { S.cash -= 150000; addBalloon('XL'); } else growHangar(170000); }
         if (!noUp) {
           const up = (k, buf) => { const L = UPGRADES[k].lv[bl(k)]; if (L && S.cash > L.cost + buf) { S.cash -= L.cost; S.bld = Object.assign({}, S.bld, { [k]: bl(k) + 1 }); log.up.push(k + bl(k) + '@' + S.day); } };
           if (need('bldMast')) up('mast', 5000);

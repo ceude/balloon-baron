@@ -674,6 +674,12 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .flrow .st i{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 .flrow .st.g i{background:var(--green)} .flrow .st.y i{background:var(--yellow)} .flrow .st.o i{background:#ff8a3d} .flrow .st.r i{background:var(--red)}
 .flrow .st.r,.flrow .st.o{color:var(--ink)}
+.flrow .st.x i{background:#9a8fb8} .flrow.out{opacity:.62} .flrow .tag{font-size:11px;padding:1px 6px;margin-left:6px;vertical-align:1px}
+.hangwarn{display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;margin:0 0 10px;padding:11px 12px;border-radius:14px;background:#fde6e2;color:#8c2414;font-size:14px;line-height:1.35;text-align:left}
+.hangwarn b{display:block;font-size:15px}.hangwarn .go{margin-left:auto;flex:none;font-family:var(--cond);font-weight:800;font-size:15px;white-space:nowrap}
+.callout.tap{cursor:pointer}.callout.tap .go{display:block;margin-top:4px;font-weight:700;text-decoration:underline}
+.sec.hl{animation:sechl 1.6s ease-out}
+@keyframes sechl{0%,30%{box-shadow:0 0 0 3px #ffc23d,0 0 22px 4px rgba(255,194,61,.55)}100%{box-shadow:0 0 0 0 rgba(255,194,61,0)}}
 .flrow.cargo{opacity:.55}.flrow.cargo .st.c i{background:#3d7fd0}
 .flrow .ring{--p:100;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(var(--c) calc(var(--p) * 1%), var(--haze) 0)}
 .flrow .ring em{width:26px;height:26px;border-radius:50%;background:#fff;display:grid;place-items:center;font-style:normal;font-size:10.5px;font-weight:800;color:var(--ink)}
@@ -1100,7 +1106,7 @@ const GUIDE_COST = 1500;
    none, once every SHOW.cd days from SHOW.min balloons. Popularity at once (and it counts as PR like a guide flight),
    then extra tourists for three days in proportion to the fleet. */
 const SHOW = { per: 1000, cd: 15, min: 5, rep: .05, pax: 4, days: 3 }; /* tools/sim-show.js: ~1.4× back in show tickets when seats are free */
-const showFleet = () => S.balloons.filter(b => !(b.dmgUntil > S.day) && cond(b) > 0);
+const showFleet = () => inside().filter(b => !(b.dmgUntil > S.day) && cond(b) > 0); /* v127: not the ones outside the hangar */
 const showCost = () => SHOW.per * showFleet().length;
 const showPax = () => Math.round(SHOW.pax * (S.showN || 0) * willing(S.price));
 function showState() {
@@ -1624,6 +1630,42 @@ function terrainH(x) {
 
 /* ---------- fleet helpers ---------- */
 const bal = id => S.balloons.find(b => b.id === id);
+/* v127: the hangar holds HANGAR_CAP[level] balloons. The rest stand outside: no maintenance there, so they cannot fly, get
+   no pilot and don't count as flying or market capacity (owned-seat goals still count them). The flagship is always inside;
+   of the others, the first ones bought are inside and the newest stand outside, moving in by themselves when the hangar
+   grows. Buying is never blocked. Cached: canFly asks for every balloon, and a fleet can have hundreds. */
+const HANGAR_CAP = [0, 6, 12, 24, 48, 96, 192, 384, 768], HANGAR_HZ = 5;
+const hangarCap = () => HANGAR_CAP[clamp(bl('hangar'), 1, 8)];
+let OUTC = null;
+function outIds() {
+  const B = S.balloons, cap = hangarCap(), last = B.length ? B[B.length - 1].id : 0;
+  if (OUTC && OUTC.B === B && OUTC.n === B.length && OUTC.cap === cap && OUTC.flag === S.flag && OUTC.last === last) return OUTC.ids;
+  const ids = new Set(); let room = cap - (B.some(b => b.id === S.flag) ? 1 : 0);
+  for (const b of B) { if (b.id === S.flag) continue; if (room > 0) room--; else ids.add(b.id); }
+  OUTC = { B, n: B.length, cap, flag: S.flag, last, ids };
+  return ids;
+}
+const isOut = b => outIds().has(b.id);
+const outN = () => outIds().size;
+const inside = () => { const o = outIds(); return o.size ? S.balloons.filter(b => !o.has(b.id)) : S.balloons; };
+const hangarFullTxt = n => `Hangarın dolu: ${n} balon dışarıda kaldı. Hangarı geliştirmen lazım.`;
+/* after a purchase, take-over, production or arrival: say so when it left more balloons outside than before (a card when
+   the player is buying, Hezarfen's news otherwise); the morning reminder then waits HANGAR_HZ days */
+function hangarWarn(n0, card) {
+  const n = outN(); if (n <= n0) return;
+  S.hangarHz = S.day + HANGAR_HZ;
+  if (card) hangarFullCard(n); else S.hezQ.push('news:' + hangarFullTxt(n));
+}
+function hangarFullCard(n) {
+  const m = $('menu'); m.replaceChildren(); const c = h('div', 'card');
+  c.appendChild(h('h1', null, 'Hangarda yer yok'));
+  c.appendChild(h('p', 'lead', esc(hangarFullTxt(n))));
+  c.appendChild(h('p', 'hint', 'Dışarıdaki balonlara bakım yapılamaz: uçamazlar, pilot almazlar. Hangar büyüyünce kendiliğinden içeri girerler.'));
+  const go = h('button', 'big', 'Hangarı geliştir'); go.onclick = () => openHangar(); c.appendChild(go);
+  const x = h('button', 'ghost', 'Tamam'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; refresh(); nextPopup(); }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false; sfx('click');
+}
+const openHangar = () => buildingCard('hangar', () => openSection('fleet', 'Balonların'), 'Balonlarına git');
 const licenseLeft = () => LICENSE_DAYS - (S.day - S.lastSelfFly);
 const licenseOk = () => licenseLeft() >= 0;
 const selfFlying = () => S.selfFly || !licenseOk(); /* lisans düşünce amirali sen uçurmak zorundasın */
@@ -1633,15 +1675,15 @@ const selfFlying = () => S.selfFly || !licenseOk(); /* lisans düşünce amirali
 function assignPilots() {
   S.balloons.forEach(b => b.pilot = null);
   const down = b => b.dmgUntil > S.day || cond(b) <= 0; /* onarımdaki balona pilot harcama */
-  const self = b => b.id === S.flag && selfFlying(), used = new Set();
+  const self = b => b.id === S.flag && selfFlying(), used = new Set(), out = outIds();
   for (const b of S.balloons) {
     if (b.pin == null) continue;
     if (used.has(b.pin) || !S.pilots.some(p => p.id === b.pin)) { b.pin = null; continue; }
     used.add(b.pin);
-    if (!self(b) && !down(b)) b.pilot = b.pin;
+    if (!self(b) && !down(b) && !out.has(b.id)) b.pilot = b.pin;
   }
   used.clear(); S.balloons.forEach(b => { if (b.pilot) used.add(b.pilot); });
-  const need = S.balloons.filter(b => !self(b) && !b.pilot).sort((a, b) => down(a) - down(b) || SIZES[b.size].cap - SIZES[a.size].cap);
+  const need = S.balloons.filter(b => !self(b) && !b.pilot && !out.has(b.id)).sort((a, b) => down(a) - down(b) || SIZES[b.size].cap - SIZES[a.size].cap);
   const ps = S.pilots.filter(p => !used.has(p.id)).sort((a, b) => b.lvl - a.lvl || (b.xp || 0) - (a.xp || 0)); /* kıdemli ve tecrübeli olan büyük balona */
   need.forEach((b, i) => { if (ps[i]) b.pilot = ps[i].id; });
 }
@@ -1657,6 +1699,7 @@ function pinPilot(b, p) {
 }
 function canFly(b) {
   if (S.banUntil >= S.day) return 'ban';
+  if (isOut(b)) return 'out';
   if (b.dmgUntil > S.day) return 'dmg';
   if (cond(b) <= 0) return 'worn';
   if (!licenseOk() && b.id !== S.flag) return 'license';
@@ -1712,10 +1755,10 @@ function fabDay(ev) {
     const r = S.rivals.find(x => x.name === j.rname && x.alive);
     S.cash += j.price; W.earned = (W.earned || 0) + j.price - fabCost(j.size);
     if (r) { r.balloons.push(j.size); r.dmg.push(0); ev.push(`Atölyen ${r.name} için ${SIZES[j.size].label.toLocaleLowerCase('tr')} teslim etti: ${eur(j.price)} kasana girdi.`); }
-    else { ev.push(`${j.rname} siparişi teslim alamadı; ${eur(j.price)} ödendi, balon sende kaldı.`); addBalloon(j.size); }
+    else { ev.push(`${j.rname} siparişi teslim alamadı; ${eur(j.price)} ödendi, balon sende kaldı.`); const n0 = outN(); addBalloon(j.size); hangarWarn(n0); }
     return;
   }
-  if (j.region === S.region) { addBalloon(j.size); ev.push(`Atölyende yeni balonun hazır: ${S.balloons[S.balloons.length - 1].name} (${SIZES[j.size].label.toLocaleLowerCase('tr')}). Filoya katıldı.`); }
+  if (j.region === S.region) { const n0 = outN(); addBalloon(j.size); hangarWarn(n0); ev.push(`Atölyende yeni balonun hazır: ${S.balloons[S.balloons.length - 1].name} (${SIZES[j.size].label.toLocaleLowerCase('tr')}). Filoya katıldı.`); }
   else if (S.regions && S.regions[j.region]) S.regions[j.region].balloons.push({ id: S.nextId++, size: j.size, name: 'Balon ' + S.nextId, fly: true, dmgUntil: 0, pilot: null, flights: 0 });
   W.saved = (W.saved || 0) + SIZES[j.size].cost - fabCost(j.size); W.made = (W.made || 0) + 1;
 }
@@ -1908,6 +1951,8 @@ function unlockCheck() {
   /* v110: once the fleet has grown, tell the player they may hand the flagship to a pilot (license and absence rules) */
   if (S.day >= 7 && S.tips.crew && S.balloons.length >= 2 && S.selfFly && licenseOk()) hezAdd('delegate');
   if (autoOk()) hezAdd('autopilot');
+  /* v127: balloons outside the hangar: Hezarfen reminds at most once every HANGAR_HZ days */
+  { const o = outN(); if (o && S.day >= (S.hangarHz || 0)) { S.hangarHz = S.day + HANGAR_HZ; S.hezQ.push(`news:Dışarıda ${o} balonun var evlat; hangara giremeyip bakım yapılamadığı için uçamıyorlar. Hangarın seviyesini yükselt.`); } }
   /* v110: no rival flew, yet seats stayed empty because the price was high: tourists still weigh the price */
   const ls = S.lastShare;
   if (!S.rivals.some(r => r.alive) && ls && ls.cap && ls.me < ls.cap && willing(S.price) < .85) hezAdd('noRivals');
@@ -1989,7 +2034,7 @@ function eventCard(k) {
     btn('big', 'Kabul et (bugün 4 koltuk eksik, +popülerlik)', () => { S.docDay = S.day; S.rep += .06; paperAdd(3, `${S.company} belgeselde`, 'Gün doğumu çekimleri ekranlara geliyor.'); return 'Kameralar hazır evlat. Bugün güzel uç, bütün dünya izleyecek.'; });
     btn('ghost', 'Reddet', () => null);
   } else if (k === 'fuel') {
-    const per = S.balloons.reduce((a, b) => a + SIZES[b.size].fuel, 0), stock = Math.round(per * 5 * .25 / 50) * 50;
+    const per = inside().reduce((a, b) => a + SIZES[b.size].fuel, 0), stock = Math.round(per * 5 * .25 / 50) * 50;
     c.appendChild(h('div', 'chap', 'Sabah olayı'));
     c.appendChild(h('h1', null, 'Yakıt zammı'));
     c.appendChild(h('p', 'lead', `Tedarikçi gelecek 5 gün yakıta %50 zam yapacağını söyledi. Şimdi ${eur(stock)} verip eski fiyattan stok yaparsan zamdan etkilenmezsin.`));
@@ -2117,7 +2162,7 @@ function showHez(k) {
 function tempFlagCands() {
   const fb = bal(S.flag);
   if (!fb || !(fb.dmgUntil > S.day) || !selfFlying() || S.banUntil >= S.day || S.flagBack || S.flagAsk === fb.dmgUntil) return [];
-  return S.balloons.filter(b => b !== fb && !(b.dmgUntil > S.day) && cond(b) > 0).sort((a, b) => SIZES[b.size].cap - SIZES[a.size].cap);
+  return inside().filter(b => b !== fb && !(b.dmgUntil > S.day) && cond(b) > 0).sort((a, b) => SIZES[b.size].cap - SIZES[a.size].cap);
 }
 function showTempFlag() {
   const fb = bal(S.flag), list = tempFlagCands(); let pick = list[0], open = false;
@@ -2281,7 +2326,7 @@ function finishDay(flight) {
     if (p && !isSelf(b)) { p.xp = (p.xp || 0) + (bl('office') >= 3 ? 1.5 : 1); if (p.lvl < 3 && p.xp >= XP_UP[p.lvl]) { p.lvl++; p.wage = Math.round(LEVELS[p.lvl].wage * regWage() * (p.school ? .7 : 1) * (p.trait === 'nightowl' ? .85 : 1)); ev.push(`${p.name} artık ${LEVELS[p.lvl].name.toLowerCase()} bir pilot! Kaza riski düştü, maaşı ${eur(p.wage)}/gün oldu.`); } }
     if (cond(b) <= 0) ev.push(`${b.name} balonunun zarfı ömrünü doldurdu. Yenilenmeden uçamaz.`);
   });
-  Lg.up = Math.round(S.balloons.reduce((a, b) => a + SIZES[b.size].up, 0) * [1, 1, .85, .7][bl('hangar')]);
+  Lg.up = Math.round(inside().reduce((a, b) => a + SIZES[b.size].up, 0) * upkeepK()); /* v127: no maintenance outside the hangar */
   { const r0 = S.rep; myHotels().forEach(x => { if (owns(x)) { Lg.hotelInc += hotelInc(x); S.rep = Math.min(1.4, S.rep + x.rep * 1.5); } else { Lg.hotel += x.fee; S.rep = Math.min(1.4, S.rep + x.rep); } }); repMark('Otel anlaşmaları', r0); }
   S.loans.forEach(l => { Lg.loan += l.inst; l.left--; });
   if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; S.holding = (S.holding || 0) + D.inst / FX(); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
@@ -3106,10 +3151,10 @@ function renderHome() {
 }
 /* ---------- fleet plan ---------- */
 /* amiral önce, sonra büyükten küçüğe */
-const sortedFleet = () => S.balloons.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag) || SIZES[b.size].cap - SIZES[a.size].cap || a.name.localeCompare(b.name, 'tr'));
+const sortedFleet = () => S.balloons.slice().sort((a, b) => isOut(a) - isOut(b) || (b.id === S.flag) - (a.id === S.flag) || SIZES[b.size].cap - SIZES[a.size].cap || a.name.localeCompare(b.name, 'tr'));
 function fleetSub(b) {
   const st = canFly(b), p = pilotOf(b);
-  return st === 'late' ? 'Pilotu uyuyakaldı' : st === 'strike' ? 'Pilotu grevde' : st === 'charter' ? 'Bugün özel kirada' : st === 'license' ? 'Lisans bekliyor' : st === 'worn' ? 'Zarf yenilenmeli' : st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : st === 'nopilot' ? 'Pilot gerekli' : isSelf(b) ? 'Pilot: sen' : `Pilot: ${p.name.split(' ')[0]} (${LEVELS[p.lvl].name})`;
+  return st === 'late' ? 'Pilotu uyuyakaldı' : st === 'strike' ? 'Pilotu grevde' : st === 'charter' ? 'Bugün özel kirada' : st === 'license' ? 'Lisans bekliyor' : st === 'worn' ? 'Zarf yenilenmeli' : st === 'dmg' ? `Onarımda, ${b.dmgUntil - S.day} gün` : st === 'ban' ? 'Yasaklı' : st === 'out' ? 'Dışarıda: hangarda yer yok' : st === 'nopilot' ? 'Pilot gerekli' : isSelf(b) ? 'Pilot: sen' : `Pilot: ${p.name.split(' ')[0]} (${LEVELS[p.lvl].name})`;
 }
 function riskDot(b) {
   const risk = canFly(b) === 'ok' && S.weather.flag !== 'red' ? accP(b) : null;
@@ -3122,7 +3167,7 @@ function blockedTap(b) {
 function fleetCounts() {
   const fl = flying(), why = {};
   S.balloons.forEach(b => { const st = canFly(b); if (st !== 'ok') why[st] = (why[st] || 0) + 1; });
-  const names = { late: 'pilotu uyuyakaldı', dmg: 'onarımda', nopilot: 'pilot bekliyor', worn: 'zarf yenilenmeli', license: 'lisans bekliyor', ban: 'yasaklı', strike: 'grevde', charter: 'özel kirada' };
+  const names = { out: 'dışarıda', late: 'pilotu uyuyakaldı', dmg: 'onarımda', nopilot: 'pilot bekliyor', worn: 'zarf yenilenmeli', license: 'lisans bekliyor', ban: 'yasaklı', strike: 'grevde', charter: 'özel kirada' };
   const ground = S.balloons.filter(b => canFly(b) === 'ok' && !b.fly).length;
   const parts = Object.keys(names).filter(k => why[k]).map(k => `${why[k]} ${names[k]}`);
   if (ground) parts.unshift(`${ground} yerde`);
@@ -3187,7 +3232,7 @@ function showFleetPlan() {
       return row;
     };
     for (const z of ['XL', 'L', 'M', 'S']) {
-      const list = sortedFleet().filter(b => b.size === z); /* v121.7: your balloon stays in its place, tagged */
+      const list = sortedFleet().filter(b => b.size === z && !isOut(b)); /* v121.7: your balloon stays in its place, tagged; v127: not the ones outside */
       if (!list.length) continue;
       const okList = list.filter(b => canFly(b) === 'ok'), on = okList.filter(b => b.fly).length;
       const gh = h('div', 'fgh', `<span><b>${SIZES[z].label}</b> · ${SIZES[z].cap} kişi · ${on}/${list.length} uçacak</span>`);
@@ -3200,6 +3245,7 @@ function showFleetPlan() {
       c.appendChild(gh);
       for (const b of list) c.appendChild(fRow(b));
     }
+    if (outN()) { const w = hangarRow(() => { m.hidden = true; }); w.style.marginTop = '10px'; c.appendChild(w); } /* v127 */
     const ok = h('button', 'big', 'Tamam'); ok.onclick = () => { m.hidden = true; refresh(); }; c.appendChild(ok);
     m.appendChild(c);
   };
@@ -3228,11 +3274,11 @@ function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSe
 /* Who's in the baskets today, for the ticket card. */
 /* TestFlight: why nothing flies today, from the most telling reason */
 /* v121.12: nothing can fly today and nothing can change that (all in repair, or a flying ban): the day has to be skipped */
-const forcedSkip = () => S.balloons.length > 0 && S.balloons.every(b => ['dmg', 'ban'].includes(canFly(b)));
+const forcedSkip = () => S.balloons.length > 0 && inside().every(b => ['dmg', 'ban'].includes(canFly(b)));
 function noneReason() {
-  const st = S.balloons.map(canFly), n = st.length, all = x => n && st.every(v => v === x);
+  const st = inside().map(canFly), n = st.length, all = x => n && st.every(v => v === x);
   if (all('ban')) return 'Bugün uçuş yasak. Günü pas geçmek zorundasın.';
-  if (all('dmg')) { const d = Math.max(1, Math.min(...S.balloons.map(b => b.dmgUntil - S.day))); return `${n === 1 ? 'Balonun' : 'Bütün balonların'} onarımda, uçamaz. Kalan gün: ${d}. Bugünü pas geçmek zorundasın.`; }
+  if (all('dmg')) { const d = Math.max(1, Math.min(...inside().map(b => b.dmgUntil - S.day))); return `${n === 1 ? 'Balonun' : 'Bütün balonların'} onarımda, uçamaz. Kalan gün: ${d}. Bugünü pas geçmek zorundasın.`; }
   if (st.every(v => v === 'dmg' || v === 'worn')) return n === 1 ? 'Balonunun zarfı yıprandı, uçamaz. Filo\'dan yenile.' : 'Balonların onarımda ya da yıpranmış, uçamaz. Filo\'ya bak.';
   if (st.includes('nopilot') && !st.includes('ok')) return 'Balonlarının pilotu yok. Birini kendin uçur ya da pilot al.';
   if (st.includes('strike') && !st.includes('ok')) return 'Pilotların grevde. Amiral balonunu kendin uçur.';
@@ -3297,12 +3343,14 @@ let FLEET_F = 'all';
 const FLEET_FILTERS = {
   all: ['Hepsi', () => true],
   ready: ['Uçmaya hazır', b => canFly(b) === 'ok'],
-  issue: ['Dikkat', b => canFly(b) !== 'ok' || cond(b) < .3],
+  issue: ['Dikkat', b => !isOut(b) && (canFly(b) !== 'ok' || cond(b) < .3)],
+  out: ['Dışarıda', b => isOut(b)],
   worn: ['Zarf yıpranıyor', b => cond(b) < .6],
   S: ['Küçük', b => b.size === 'S'], M: ['Orta', b => b.size === 'M'], L: ['Büyük', b => b.size === 'L'], XL: ['Dev', b => b.size === 'XL']
 };
 function fleetState(b) {
   const st = canFly(b), cd = cond(b);
+  if (st === 'out') return ['x', 'Hangarda yer yok, uçamaz'];
   if (st === 'dmg') return ['r', `Onarımda · ${b.dmgUntil - S.day} gün`];
   if (st === 'worn') return ['r', 'Zarf bitti'];
   if (st === 'nopilot') return ['o', 'Pilot yok'];
@@ -3316,8 +3364,9 @@ function balloonCard(b) {
   const z = SIZES[b.size], st = canFly(b), bd = designOf(b), c = h('div', 'card bcard');
   const head = h('div', 'item');
   head.insertAdjacentHTML('beforeend', bd ? `<img class="dthumb" src="${designThumb(bd, 44, 56)}" alt="">` : balloonIcon(myCol()[0], myCol()[1]));
-  const mainEl = h('div', 'main', `<div class="t">${esc(b.name)}${isSelf(b) ? ' <span class="tag o">Sen uçuruyorsun</span>' : b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${b.used ? ' <span class="tag y">İkinci el</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş. ${esc(fleetSub(b))}.</div>`);
+  const mainEl = h('div', 'main', `<div class="t">${esc(b.name)}${isSelf(b) ? ' <span class="tag o">Sen uçuruyorsun</span>' : b.id === S.flag ? ' <span class="tag g">Amiral</span>' : ''}${b.used ? ' <span class="tag y">İkinci el</span>' : ''}${st === 'dmg' ? ` <span class="tag r">Onarımda, ${b.dmgUntil - S.day} gün</span>` : st === 'out' ? ' <span class="tag r">Dışarıda</span>' : ''}</div><div class="s">${z.label}, ${z.cap} kişi. Bakım ${eur(z.up)}/gün, yakıt ${eur(z.fuel)}/uçuş. ${esc(fleetSub(b))}.</div>`);
   head.appendChild(mainEl); c.appendChild(head);
+  if (st === 'out') c.appendChild(hangarRow()); /* v127 */
   /* v111: name your balloons; the default name stays until you change it */
   const nb = h('button', 'adbtn', `<i style="background:#9b7be0"></i>İsim: ${esc(b.name)} · değiştir`);
   nb.onclick = () => renameCard(b); c.appendChild(nb);
@@ -3338,8 +3387,8 @@ function balloonCard(b) {
   if (cd < .6) acts.appendChild(pbtn(`Zarf yenile ${eur(z.cost * RENEW)}`, () => { S.cash -= z.cost * RENEW; b.flights = 0; refresh(); balloonCard(b); }, S.cash < z.cost * RENEW));
   /* v111: pick the balloon you fly yourself right here (it becomes the flagship) */
   if (isSelf(b) && licenseOk()) acts.appendChild(pbtn('Pilota ver', () => giveToPilot(() => { refresh(); balloonCard(b); }), false, true));
-  if (!isSelf(b)) acts.appendChild(pbtn('Bu balonu ben uçurayım', () => { S.flag = b.id; S.selfFly = true; assignPilots(); refresh(); balloonCard(b); }, st === 'dmg' || st === 'worn'));
-  if (b.id !== S.flag && !selfFlying()) acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); balloonCard(b); }, false, true));
+  if (!isSelf(b)) acts.appendChild(pbtn('Bu balonu ben uçurayım', () => { S.flag = b.id; S.selfFly = true; assignPilots(); refresh(); balloonCard(b); }, st === 'dmg' || st === 'worn' || st === 'out'));
+  if (b.id !== S.flag && !selfFlying() && st !== 'out') acts.appendChild(pbtn('Amiral yap', () => { S.flag = b.id; assignPilots(); refresh(); balloonCard(b); }, false, true));
   if (S.balloons.length > 1) acts.appendChild(pbtn(`Sat ${eur(sellValue(b))}`, () => sellCard(b), false, true));
   c.appendChild(acts);
   const x = h('button', 'ghost', 'Kapat'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; }; c.appendChild(x);
@@ -3408,10 +3457,17 @@ function renameCard(b) {
   const back = h('button', 'ghost', 'Vazgeç'); back.style.width = '100%'; back.onclick = () => balloonCard(b);
   c.append(ok, back); m.appendChild(c); m.hidden = false; setTimeout(() => { inp.focus(); inp.select(); }, 50);
 }
+/* v127: the fleet page's warning while balloons stand outside the hangar; it opens the hangar's upgrade */
+function hangarRow(before) {
+  const n = outN(), r = h('button', 'hangwarn', `<span><b>Dışarıda ${n} balon: uçamıyorlar</b>Hangar kapasitesi: ${hangarCap()} balon</span><span class="go">Hangarı geliştir ›</span>`);
+  r.onclick = () => { if (before) before(); sfx('click'); openHangar(); };
+  return r;
+}
 function tabFleet(body) {
   const s = h('div', 'sec');
+  if (outN()) s.appendChild(hangarRow());
   const all = S.balloons, ready = all.filter(b => canFly(b) === 'ok'), worn = all.filter(b => cond(b) < .6);
-  const seats = all.reduce((a, b) => a + SIZES[b.size].cap, 0), up = all.reduce((a, b) => a + SIZES[b.size].up, 0);
+  const seats = all.reduce((a, b) => a + SIZES[b.size].cap, 0), up = Math.round(inside().reduce((a, b) => a + SIZES[b.size].up, 0) * upkeepK());
   /* summary */
   const sum = h('div', 'flsum');
   sum.innerHTML = `<div><b>${all.length}</b><span>balon</span></div><div><b>${seats}</b><span>koltuk</span></div><div><b>${ready.length}</b><span>uçmaya hazır</span></div><div><b>${eur(up)}</b><span>bakım/gün</span></div>`;
@@ -3426,7 +3482,7 @@ function tabFleet(body) {
   }
   s.appendChild(chips);
   /* v111: the Balloon Show, once the market is open and the fleet is big enough */
-  if (unlocked('market') && S.balloons.length >= SHOW.min) {
+  if (unlocked('market') && inside().length >= SHOW.min) {
     const ss = showState(), sb = h('button', 'adbtn showbtn', `<i style="background:#ffc23d"></i>Balon Şöleni Düzenle · ${ss === 'ok' ? `${showFleet().length} balon, ${eur(showCost())}` : ss === 'booked' ? 'bu gece' : ss === 'wait' ? `${S.showNext - S.day} gün sonra` : ss === 'few' ? `en az ${SHOW.min} uçabilen balon` : `${eur(showCost())} gerekli`}`);
     sb.onclick = () => showCard(); s.appendChild(sb);
   }
@@ -3439,15 +3495,16 @@ function tabFleet(body) {
   const renew = all.filter(b => cond(b) < .3), cost = renew.reduce((a, b) => a + SIZES[b.size].cost * RENEW, 0);
   if (renew.length) s.appendChild(pbtn(`Yıpranan zarfları yenile (${renew.length}) · ${eur(cost)}`, () => { S.cash -= cost; renew.forEach(b => { b.flights = 0; }); refresh(); }, S.cash < cost, true));
   /* the list */
-  const rank = b => (b.id === S.flag ? 0 : 1) * 10 + ({ r: 0, o: 1, y: 2, g: 3 })[fleetState(b)[0]];
+  const rank = b => isOut(b) ? 100 : (b.id === S.flag ? 0 : 1) * 10 + ({ r: 0, o: 1, y: 2, g: 3 })[fleetState(b)[0]]; /* v127: the ones outside at the bottom */
   const list = all.filter(FLEET_FILTERS[FLEET_F] ? FLEET_FILTERS[FLEET_F][1] : () => true)
     .sort((a, b) => rank(a) - rank(b) || SIZES[b.size].cap - SIZES[a.size].cap || a.name.localeCompare(b.name, 'tr'));
   const box = h('div', 'fllist');
+  const icon0 = balloonIcon(myCol()[0], myCol()[1]);
   for (const b of list) {
-    const bd = designOf(b), [lv, txt] = fleetState(b), cd = cond(b), cp = Math.round(cd * 100), sp = b.ad && SPONSORS.find(x => x.id === b.ad);
-    const r = h('button', 'flrow');
-    r.innerHTML = `<span class="fi">${bd ? `<img src="${designThumb(bd, 28, 36)}" alt="">` : balloonIcon(myCol()[0], myCol()[1])}</span>
-      <span class="fm"><b>${esc(b.name)}${b.id === S.flag ? '<i class="star">★</i>' : ''}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em>${isSelf(b) ? '<i class="you">Sen uçuruyorsun</i>' : ''}${sp ? `<i class="ad" style="background:${sp.col}" title="${sp.name}"></i>` : ''}${burnerLv(b) > 1 ? `<i class="bx">×${burnerLv(b)}</i>` : ''}</b>
+    const bd = designOf(b), [lv, txt] = fleetState(b), cd = cond(b), cp = Math.round(cd * 100), sp = b.ad && SPONSORS.find(x => x.id === b.ad), out = lv === 'x';
+    const r = h('button', 'flrow' + (out ? ' out' : ''));
+    r.innerHTML = `<span class="fi">${bd ? `<img src="${designThumb(bd, 28, 36)}" alt="">` : icon0}</span>
+      <span class="fm"><b>${esc(b.name)}${b.id === S.flag ? '<i class="star">★</i>' : ''}${out ? '<span class="tag r">Dışarıda</span>' : ''}<em class="sz">${b.size} · ${SIZES[b.size].cap}</em>${isSelf(b) ? '<i class="you">Sen uçuruyorsun</i>' : ''}${sp ? `<i class="ad" style="background:${sp.col}" title="${sp.name}"></i>` : ''}${burnerLv(b) > 1 ? `<i class="bx">×${burnerLv(b)}</i>` : ''}</b>
       <span class="st ${lv}"><i></i>${txt}</span></span>
       <span class="fe"><span class="ring" style="--p:${cp};--c:${cd < .3 ? 'var(--red)' : cd < .6 ? 'var(--yellow)' : 'var(--green)'}"><em>${cp}</em></span></span>
       <svg class="chev" viewBox="0 0 24 24"><path d="m9.5 6 6 6-6 6"/></svg>`;
@@ -3472,7 +3529,7 @@ function tabFleet(body) {
     const z = SIZES[k], it = h('div', 'item');
     it.insertAdjacentHTML('beforeend', balloonIcon('#cfc8dd', '#ffffff'));
     it.appendChild(h('div', 'main', `<div class="t">${z.label}, ${z.cap} kişi</div><div class="s">Rüzgârda risk ×${z.risk.toLocaleString('tr-TR')}. Bakım ${eur(z.up)}/gün.</div>`));
-    { const bb = pbtn(eur(z.cost), () => { S.cash -= z.cost; addBalloon(k); assignPilots(); refresh(); }, S.cash < z.cost); if (!b2.querySelector('[data-tut]')) bb.dataset.tut = 'fleet'; it.appendChild(bb); } /* v122: the guided action lights the first one */
+    { const bb = pbtn(eur(z.cost), () => { const n0 = outN(); S.cash -= z.cost; addBalloon(k); assignPilots(); refresh(); hangarWarn(n0, true); }, S.cash < z.cost); if (!b2.querySelector('[data-tut]')) bb.dataset.tut = 'fleet'; it.appendChild(bb); } /* v122: the guided action lights the first one */
     /* v114: the same balloon from your own workshop, cheaper but not today */
     if (fabCan(k)) { const fb = pbtn(`Atölyede ${eur(fabCost(k))}`, () => { fabBuild(k); refresh(); }, fabBusy() || S.cash < fabCost(k)); fb.classList.add('two'); fb.innerHTML = `Atölyede<small>${eur(fabCost(k))} · ${FAB.days[k]} gün</small>`; it.appendChild(fb); }
     b2.appendChild(it);
@@ -3481,7 +3538,7 @@ function tabFleet(body) {
     const z = SIZES.XL, it = h('div', 'item');
     it.insertAdjacentHTML('beforeend', balloonIcon(myCol()[0], '#ffd27a'));
     it.appendChild(h('div', 'main', `<div class="t">${z.label}, ${z.cap} kişi</div><div class="s">Senin renklerinde, gökyüzünün en büyük balonu. Her uçuşta +0,02★ popülerlik ve yolcu yorumları getirir. Sadece bir tane yaptırabilirsin. Bakım ${eur(z.up)}/gün.</div>`));
-    it.appendChild(pbtn(eur(z.cost), () => { S.cash -= z.cost; addBalloon('XL'); assignPilots(); refresh(); }, S.cash < z.cost));
+    it.appendChild(pbtn(eur(z.cost), () => { const n0 = outN(); S.cash -= z.cost; addBalloon('XL'); assignPilots(); refresh(); hangarWarn(n0, true); }, S.cash < z.cost));
     b2.appendChild(it);
   }
   if (S.workshop) {
@@ -3543,7 +3600,11 @@ function tabCrew(body) {
     b.style.marginTop = '10px'; c.appendChild(b); body.appendChild(c);
   } else body.appendChild(h('div', 'callout grn', `<b>Pilot lisansın geçerli.</b> Lisansın düşmemesi için en az ${LICENSE_DAYS} günde bir kendin uçmalısın. Kalan süre: ${licenseLeft()} gün. Düşerse diğer balonların yerde kalır.`));
   const need = S.balloons.filter(b => canFly(b) === 'nopilot').length;
-  if (need) body.appendChild(h('div', 'callout yel', `<b>${need} balonun pilotsuz bekliyor.</b> Aşağıdan bir pilot işe al.`));
+  if (need) { /* v127: a tap scrolls down to the candidates and lights them up */
+    const c = h('div', 'callout yel tap', `<b>${need} balonun pilotsuz bekliyor.</b> Aşağıdan bir pilot işe al.<span class="go">Başvuranlara git ›</span>`);
+    c.setAttribute('role', 'button'); c.onclick = () => { const t = document.querySelector('[data-sec=hire]'); if (!t) return; sfx('click'); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); t.classList.remove('hl'); void t.offsetWidth; t.classList.add('hl'); };
+    body.appendChild(c);
+  }
   /* Readable with thirty pilots: a summary, filters with counts, one line per pilot (the idle ones first, then by
      the size of their balloon). A line opens the pilot's card with the details and Kov. */
   const balOf = p => S.balloons.find(x => x.pilot === p.id);
@@ -3600,7 +3661,7 @@ function tabCrew(body) {
     sc.appendChild(it);
   }
   body.appendChild(sc);
-  const c = h('div', 'sec'); c.appendChild(h('h2', null, 'Başvuranlar'));
+  const c = h('div', 'sec'); c.dataset.sec = 'hire'; c.appendChild(h('h2', null, 'Başvuranlar'));
   for (const p of S.candidates) {
     const it = h('div', 'item');
     it.appendChild(h('div', 'av', p.name[0])).style.background = CREW_COL[p.lvl - 1];
@@ -4573,8 +4634,8 @@ function crewFor(o, sizes, style) {
   return o.crew;
 }
 const crewNote = (r, sale) => { const c = dealCrew(r, sale), n = k => c.filter(p => p.lvl === k).length; return `Pilotları da mevcut sözleşmeleriyle gelir. Pilot: ${c.length} (kıdemli ${n(3)}, deneyimli ${n(2)}, çaylak ${n(1)}). Maaşlar: ${eur(c.reduce((a, p) => a + p.wage, 0))}/gün.`; };
-function takeOver(r) { setTimeout(nextPopup, 300); S.cash -= r.offer; r.balloons.forEach(z => addUsedBalloon(z)); rivalCrew(r).forEach(p => S.pilots.push({ id: S.nextId++, ...p })); r.crew = null; rivalGone(r.name, true); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; assignPilots(); $('menu').hidden = true; refresh(); }
-function buyFleet(r) { S.cash -= r.forSale.price; r.forSale.sizes.forEach(z => addUsedBalloon(z)); dealCrew(r, true).forEach(p => S.pilots.push({ id: S.nextId++, ...p })); r.forSale = null; assignPilots(); $('menu').hidden = true; refresh(); }
+function takeOver(r) { setTimeout(nextPopup, 300); const n0 = outN(); S.cash -= r.offer; r.balloons.forEach(z => addUsedBalloon(z)); rivalCrew(r).forEach(p => S.pilots.push({ id: S.nextId++, ...p })); r.crew = null; rivalGone(r.name, true); r.alive = false; r.deadDay = S.day; r.forSale = null; r.offer = null; assignPilots(); $('menu').hidden = true; refresh(); hangarWarn(n0, true); }
+function buyFleet(r) { const n0 = outN(); S.cash -= r.forSale.price; r.forSale.sizes.forEach(z => addUsedBalloon(z)); dealCrew(r, true).forEach(p => S.pilots.push({ id: S.nextId++, ...p })); r.forSale = null; assignPilots(); $('menu').hidden = true; refresh(); hangarWarn(n0, true); }
 /* What a rival's fleet is made of, one line per basket size, biggest first. */
 function fleetMix(sizes) {
   const box = h('div', 'fmix');
@@ -4916,7 +4977,7 @@ function showRepChart() {
   if (unlocked('guide')) act('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Üç rehberden birini seç: seni müşterilerine önerirler, hemen popülerlik ve birkaç gün turist.', 'Rehberler', () => { m.hidden = true; showGuides(); }, gcd > 0);
   if (unlocked('agency')) act('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : 'Üç influencer\'dan birini seç: hemen popülerlik, kampanya boyunca her gün biraz daha.', 'Ajans', () => { m.hidden = true; showAgency(); }, icd > 0);
   if (S.region === 'bri' && S.fiesta) { const gs = glowState(); act('Gece Işıltısı', gs === 'ok' ? 'Festival gecesi balonların çayırda müzikle ışıldar, sonra havai fişekler. Her festivalde bir kez.' : gs === 'booked' ? 'Işıltı bu gece.' : gs === 'done' ? 'Bu festivalin ışıltısı yapıldı.' : gs === 'few' ? `En az ${GLOW.min} uçabilen balon gerekiyor.` : gs === 'show' ? 'Bu gece Balon Şöleni var.' : `Kasada ${eur(GLOW.cost)} olmalı.`, eur(GLOW.cost), () => { m.hidden = true; glowCard(); }, gs !== 'ok'); }
-  if (unlocked('market') && S.balloons.length >= SHOW.min) { const ss = showState(); act('Balon Şöleni Düzenle', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
+  if (unlocked('market') && inside().length >= SHOW.min) { const ss = showState(); act('Balon Şöleni Düzenle', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
 }
@@ -5403,7 +5464,7 @@ function showMenu(open) {
   group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
-  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); }), row('star', 'Luksor kontrat testi (Nil gemisi)', chev, () => { m.hidden = true; testRegionContract('lux'); }), row('star', 'Bristol kontrat testi (hafta sonu treni)', chev, () => { m.hidden = true; testRegionContract('bri'); }), row('star', 'Kapadokya anlaşma testi (charter uçağı)', chev, () => { m.hidden = true; testCapContract(); })]);
+  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('star', 'Hangar testi: 400 balon, Sv. 3', chev, () => { m.hidden = true; testHangar400(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); }), row('star', 'Luksor kontrat testi (Nil gemisi)', chev, () => { m.hidden = true; testRegionContract('lux'); }), row('star', 'Bristol kontrat testi (hafta sonu treni)', chev, () => { m.hidden = true; testRegionContract('bri'); }), row('star', 'Kapadokya anlaşma testi (charter uçağı)', chev, () => { m.hidden = true; testCapContract(); })]);
   /* v121.10: watch the opening film again; the name and colours are skipped, the company flies in its own colours */
   group('Film', '#ff5e3a', [row('star', 'Başlangıç filmini tekrar izle', chev, () => { m.hidden = true; replayOpening(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
@@ -5438,7 +5499,7 @@ function testShowGame() {
   Object.keys(HEZ).forEach(k => { if (k !== 'show') S.tips[k] = 1; });
   const sizes = ['M', 'L', 'M', 'S', 'L', 'M', 'M', 'S', 'L', 'M', 'M', 'L', 'S', 'M', 'L', 'M', 'S', 'M', 'L', 'M'];
   S.balloons = []; S.nextId = 1;
-  sizes.forEach(z => addBalloon(z));
+  sizes.forEach(z => addBalloon(z)); S.bld = { hangar: 3 }; /* v127: room for 24 */
   S.designs = [];
   ['heart', 'star', 'skull'].forEach((k, i) => { bazaarGift(k); S.balloons[i * 4 + 1].design = S.designs[S.designs.length - 1].id; });
   [['zigzag', '#3ad0c0', '#ffc23d'], ['stars', '#2b2350', '#ffd27a'], ['rainbow', '#ff5e3a', '#ffffff']].forEach(([pat, a, b], i) => {
@@ -5449,6 +5510,15 @@ function testShowGame() {
   S.bossSaid = { 'cap:hello': 1 }; S.weather = null; S.demand = null; S.nextEvent = S.day + 30; S.festNext = S.day + 60; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
   if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
   startDay();
+}
+/* v127: an old save with 400 balloons and the hangar at level 3 (24 inside, 376 outside) */
+function testHangar400() {
+  testShowGame();
+  const sizes = ['M', 'L', 'S', 'M'];
+  for (let i = S.balloons.length; i < 400; i++) addBalloon(sizes[i % 4]);
+  for (let i = 0; i < 40; i++) S.pilots.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + pilotInitial(i) + '.', lvl: 1, xp: 0, wage: LEVELS[1].wage, trait: null });
+  S.bld = { hangar: 3 }; S.cash = 400000; S.hangarHz = 0; S.tips.show = 1;
+  assignPilots(); refresh(); save();
 }
 /* v124: straight into Bristol with a small fleet (the three regions before it already won) */
 /* v124.2 (prototype only): a company that has just become Baron of Luxor: Cappadocia and Albuquerque on autopilot,
@@ -5471,7 +5541,7 @@ function testLuxBaron() {
   S.balloons = []; for (let i = 0; i < 28; i++) addBalloon(i % 4 === 0 ? 'L' : 'M'); addBalloon('XL');
   S.pilots = []; for (let i = 0; i < 28; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i % P_NAMES.length] + ' ' + pilotInitial(i) + '.', lvl: 2 + (i % 2), xp: 0, trait: null });
   S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 250000; S.rep = 1.25; S.chapter = CHAPTERS_LUX.length;
-  S.school = true; S.workshop = { day: 300, lv: 2 }; S.bld = { mast: 3, hangar: 3 };
+  S.school = true; S.workshop = { day: 300, lv: 2 }; S.bld = { mast: 3, hangar: 4 }; /* v127: 29 balloons need room for 48 */
   S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { 'lux:hello': 1 }; S.weather = null; S.demand = null;
   S.nextEvent = S.day + 30; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
   if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
@@ -5486,7 +5556,7 @@ function testAbqContract() {
   const st = newRegionState('abq'); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = 'abq'; applyRegionTheme();
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
-  S.balloons = []; ['M', 'L', 'M', 'S', 'M', 'L', 'M'].forEach(z => addBalloon(z));
+  S.balloons = []; ['M', 'L', 'M', 'S', 'M', 'L', 'M'].forEach(z => addBalloon(z)); S.bld = Object.assign({}, S.bld, { hangar: 2 }); /* v127 */
   S.pilots = []; for (let i = 0; i < 6; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + pilotInitial(i) + '.', lvl: 2, xp: 0, trait: null });
   S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 30000; S.rep = 1.1; S.chapter = 1; S.hotels = [HOTELS[0].id, HOTELS[1].id];
   S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { 'abq:hello': 1, 'abq:ch1': 1 }; S.nextEvent = S.day + 30; S.fiestaNext = S.day + 20; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
@@ -5504,7 +5574,7 @@ function testRegionContract(id) {
   const st = newRegionState(id); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = id; applyRegionTheme();
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
-  S.balloons = []; ['M', 'L', 'M', 'L', 'M', 'L', 'M', 'L', 'M'].forEach(z => addBalloon(z));
+  S.balloons = []; ['M', 'L', 'M', 'L', 'M', 'L', 'M', 'L', 'M'].forEach(z => addBalloon(z)); S.bld = Object.assign({}, S.bld, { hangar: 2 }); /* v127 */
   S.pilots = []; for (let i = 0; i < 8; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + pilotInitial(i) + '.', lvl: 2, xp: 0, trait: null });
   S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 40000; S.rep = 1.15; S.chapter = 1; S.hotels = [HOTELS[0].id, HOTELS[1].id];
   S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { [id + ':hello']: 1, [id + ':ch1']: 1 }; S.nextEvent = S.day + 30; S.fiestaNext = S.day + 20; S.nextWinter = S.day + 60; mode = 'office'; tab = 'plan';
@@ -5538,7 +5608,7 @@ function testAbqEntry() {
   S.barons = { cap: 139 }; S.baron = { cap: 139 }; S.iap = { worldTour: 1 }; S.holding = 160000; S.storyDone = 1; S.letter = { day: 50, rated: 50 }; S.rateAsked = 12;
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
-  S.balloons = []; ['M', 'L', 'S', 'M', 'L', 'S', 'M', 'L', 'M', 'L', 'XL'].forEach(z => addBalloon(z)); S.balloons[2].design = null;
+  S.balloons = []; ['M', 'L', 'S', 'M', 'L', 'S', 'M', 'L', 'M', 'L', 'XL'].forEach(z => addBalloon(z)); S.bld = Object.assign({}, S.bld, { hangar: 2 }); /* v127 */ S.balloons[2].design = null;
   S.pilots = []; for (let i = 0; i < 10; i++) S.pilots.push({ id: S.nextId++, name: P_NAMES[i] + ' ' + pilotInitial(i) + '.', lvl: 1 + i % 3, xp: 4, trait: i % 2 ? pick(Object.keys(TRAITS)) : null });
   S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 90000; S.rep = 1.25; S.chapter = 4; S.netHist = [6000, 6400, 5800, 6200, 6100, 6600, 5900];
   S.hezQ = []; S.paper = null; S.eventDue = false; S.bossSaid = { 'cap:hello': 1 }; mode = 'office'; tab = 'plan';
@@ -6922,7 +6992,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'glowN', 'eveDay', 'eveN', 'ctr', 'xferShip', 'xferDebt'];
+const RKEYS = ['inspDay', 'inspN', 'hangarHz', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'glowN', 'eveDay', 'eveN', 'ctr', 'xferShip', 'xferDebt'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -7438,7 +7508,7 @@ const ctrLine = (w, k, o = {}) => (w.L[k] || '').replace(/\{n\}/g, o.n).replace(
 const kArgs = (k, extra) => Object.assign({ n: k.n, d: k.day, e: kEnd(k), len: kLen(k), p: k.price }, extra || {});
 /* the character speaks on a morning card, like the boss: 'ctr:<id>:<text>' */
 function ctrSay(w, text) { S.hezQ.push(`ctr:${w.id}:${text}`); }
-const fleetSeats = () => S.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0);
+const fleetSeats = () => inside().reduce((a, b) => a + SIZES[b.size].cap, 0); /* v127: a tour group is sized on the balloons that can fly */
 /* the rival who takes a group: the most popular one still flying */
 const ctrRival = () => S.rivals.filter(r => r.alive).sort((a, b) => b.rep - a.rep)[0];
 /* today's group of yours */
@@ -8390,8 +8460,9 @@ function xferApply(sel) {
 }
 function xferArrive() {
   const X = S.xferShip; if (!X || S.day < X.day) return;
-  S.xferShip = null; S.balloons.push(...X.b); S.pilots.push(...(X.p || [])); assignPilots(); xferDebtStart(X.b);
+  const n0 = outN(); S.xferShip = null; S.balloons.push(...X.b); S.pilots.push(...(X.p || [])); assignPilots(); xferDebtStart(X.b);
   S.hezQ.push(`news:Kargo geldi evlat! ${X.b.map(b => b.name).join(' ve ')} artık filoda, gökyüzüne hazır.`);
+  hangarWarn(n0); /* v127 */
 }
 /* the region pays its home region back for the balloons, a little every day */
 function xferDebtStart(bs) {
@@ -9354,18 +9425,23 @@ function doGuide(G) {
 /* Four buildings grow in three levels; each level costs more and does more. Levels are per region. */
 const UPGRADES = {
   mast: { name: 'Rüzgâr direği', lv: [null, { cost: 6000, t: 'Meteoroloji istasyonu', d: 'Direğe dokununca yarının hava bayrağını görürsün.' }, { cost: 25000, t: 'Hava radarı', d: 'İki gün sonrasını da görürsün; sarı bayrakta kaza riski %20 azalır.' }] },
-  hangar: { name: 'Hangar', lv: [null, { cost: 12000, t: 'Bakım atölyesi', d: 'Balonların günlük bakım gideri %15 azalır.' }, { cost: 45000, t: 'Kumaş deposu', d: 'Bakım %30 azalır, zarflar %15 daha yavaş yıpranır.' }] },
+  /* v127: the hangar has room for HANGAR_CAP[level] balloons and grows to level 8; levels 4 to 8 only add room */
+  hangar: { name: 'Hangar', lv: [null, { cost: 12000, t: 'Bakım atölyesi', d: 'Kapasite: 12 balon. Balonların günlük bakım gideri %15 azalır.' }, { cost: 45000, t: 'Kumaş deposu', d: 'Kapasite: 24 balon. Bakım %30 azalır, zarflar %15 daha yavaş yıpranır.' },
+    { cost: 120000, t: 'İkinci hangar', d: 'Kapasite: 48 balon.' }, { cost: 350000, t: 'Büyük hangar', d: 'Kapasite: 96 balon.' }, { cost: 900000, t: 'Hangar kompleksi', d: 'Kapasite: 192 balon.' },
+    { cost: 2400000, t: 'Balon üssü', d: 'Kapasite: 384 balon.' }, { cost: 6000000, t: 'Dev balon üssü', d: 'Kapasite: 768 balon.' }] },
   office: { name: 'Pilot ofisi', lv: [null, { cost: 10000, t: 'Dinlenme odası', d: 'Rakiplerin pilotunu ayartma şansı yarıya iner.' }, { cost: 35000, t: 'Uçuş simülatörü', d: 'Pilotlar %50 daha hızlı tecrübe kazanır.' }] },
   mine: { name: 'Satış ofisi', lv: [null, { cost: 15000, t: 'Vitrin ve tabela', d: 'Turistlerin %5 fazlası seni fark eder.' }, { cost: 50000, t: 'Bilet merkezi', d: 'Turistlerin %12 fazlası seni fark eder.' }] }
 };
 const bl = k => (S.bld && S.bld[k]) || 1;
+const upkeepK = () => [1, 1, .85, .7][Math.min(3, bl('hangar'))]; /* v127: levels 4+ only add room */
 function upgrade(k) { const n = bl(k), L = UPGRADES[k].lv[n]; if (!L || S.cash < L.cost) return; S.cash -= L.cost; S.bld = Object.assign({}, S.bld, { [k]: n + 1 }); sfx('coin'); paperAdd(1, `${S.company} ${UPGRADES[k].name.toLowerCase()} büyüdü`, L.t + ' açıldı.'); refresh(); }
 /* A building's card: what it is now, the next level, and the way into its page. */
 function buildingCard(k, open, openLabel) {
   const m = $('menu'); m.replaceChildren();
   const U = UPGRADES[k], n = bl(k), next = U.lv[n], c = h('div', 'card bcard');
-  c.appendChild(h('div', 'chap', `Seviye ${n}/3`));
+  c.appendChild(h('div', 'chap', `Seviye ${n}/${U.lv.length}`));
   c.appendChild(h('h1', null, U.name));
+  if (k === 'hangar') { const o = outN(); c.appendChild(h('div', 'callout ' + (o ? 'red' : 'grn'), `<b>Kapasite: ${hangarCap()} balon</b> Filonda ${S.balloons.length} balon var${o ? `; ${o} tanesi dışarıda, uçamıyor.` : '.'}`)); } /* v127 */
   for (let i = 1; i < n; i++) c.appendChild(h('div', 'blv on', `<b>✓ ${U.lv[i].t}</b><span>${U.lv[i].d}</span>`));
   if (k === 'mast' && n >= 2) c.appendChild(forecastBox(n));
   if (next) {
@@ -9479,7 +9555,7 @@ function townBuildings() {
   const L = [];
   const add = (o) => L.push(o);
   const n = S.balloons.length, np = S.pilots.length, ds = (S.designs || []).length;
-  add({ id: 'hangar', gx: 1, gy: 1, w: 3, d: 2, name: 'Hangar', look: 'hangar', lv: n >= 8 ? 2 : 1, sub: `Balon: ${n} · Sv. ${bl('hangar')}`, tap: () => unlocked('fleet') ? buildingCard('hangar', () => openSection('fleet', 'Balonların'), 'Balonlarına git') : lockedCard('Hangar', 'fleet') });
+  add({ id: 'hangar', gx: 1, gy: 1, w: 3, d: 2, name: 'Hangar', look: 'hangar', lv: n >= 8 ? 2 : 1, sub: `Balon: ${n}/${hangarCap()} · Sv. ${bl('hangar')}`, tap: () => unlocked('fleet') ? openHangar() : lockedCard('Hangar', 'fleet') });
   add({ id: 'shop', gx: 5, gy: 1, w: 2, d: 2, name: 'Balon atölyesi', look: 'workshop', lv: S.workshop ? (ds >= 3 || fabLv() >= 3 ? 2 : 1) : unlocked('workshop') ? 0 : -1,
     sub: S.workshop ? (fabBusy() ? `Üretimde: ${S.workshop.job.size} · ${Math.max(0, S.workshop.job.done - S.day)} gün` : `Sv. ${fabLv()} · Tasarım: ${ds}`) : `Kur: ${eur(WORKSHOP_COST)}`, tap: () => unlocked('workshop') || S.workshop ? openPage('workshop') : lockedCard('Balon atölyesi', 'workshop') });
   add({ id: 'office', gx: 9, gy: 5, w: 2, d: 2, name: 'Pilot ofisi', look: 'office', lv: unlocked('crew') ? (np >= 6 ? 2 : 1) : -1,
@@ -11711,7 +11787,7 @@ $('hqSheet').addEventListener('click', e => { if (e.target.id === 'hqSheet') { H
 const AUTO_MIN = 35, AUTO_DAYS = 7;
 const FFW = '<span class="ffw"><svg viewBox="0 0 20 14" aria-hidden="true"><path d="M1.5 1.6 9 7l-7.5 5.4z M10.5 1.6 18 7l-7.5 5.4z" fill="currentColor" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></span>';
 let AUTO = null;
-const autoOk = () => S.balloons.length >= AUTO_MIN && isBaron('cap');
+const autoOk = () => inside().length >= AUTO_MIN && isBaron('cap'); /* v127: balloons inside the hangar */
 const autoBusy = () => TRAVEL || mode !== 'office' || !$('menu').hidden || !$('report').hidden || !$('page').hidden || !$('hez').hidden || !$('psheet').hidden;
 function autoBar(html) {
   let b = $('autobar'); if (!b) { b = h('div', 'autobar'); b.id = 'autobar'; $('menu').parentNode.appendChild(b); /* under the cards (.modal) */ }
