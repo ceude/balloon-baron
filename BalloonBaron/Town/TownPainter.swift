@@ -1317,7 +1317,7 @@ struct TownPainter {
         c.stroke(shape, with: .color(rgba(110, 70, 40, 0.35)), lineWidth: 2)
     }
 
-    /// v125.x: Bristol's paved square at the crossing that the buses go round (`BristolBus.square`); kerbs only between
+    /// v125.7: Bristol's paved square at the crossing that the buses go round (`BristolBus.square`); kerbs only between
     /// the roads (prototype `townGround`, `if (bri)` after the roads).
     mutating func busSquare() {
         let (a, b) = BristolBus.square
@@ -1503,7 +1503,7 @@ struct TownPainter {
                 if bri { p.block(gx, gy, w, d, 11, top: "#cfc6b4") } else { p.block(gx, gy, w, d, 16, top: "#f3dcb8", courses: false) }
             })
         }
-        // v125.x: the gaps where the roads leave are `wallGap` wide, the wall ends trimmed to it, so the welcome arch's posts
+        // v125.7: the gaps where the roads leave are `wallGap` wide, the wall ends trimmed to it, so the welcome arch's posts
         // stand right against them (prototype `WALL_GAP`, `cut`).
         let g = TownPainter.wallGap
         let cut = { (a0: Double) -> (Double, Double)? in

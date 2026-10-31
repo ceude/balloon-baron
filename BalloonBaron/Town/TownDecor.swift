@@ -7,7 +7,7 @@ import BalloonBaronCore
 struct DecorPainter {
     var c: GraphicsContext
 
-    /// v125.x: each arch stands in a gap of the town wall where a main road leaves: its posts on the wall's line (15.57),
+    /// v125.7: each arch stands in a gap of the town wall where a main road leaves: its posts on the wall's line (15.57),
     /// flush against the wall ends (`TownPainter.wallGap`, 7.3–8.7), outside the road's edges (7.55–8.45).
     static let arches: [((Double, Double), (Double, Double), Double)] = [((7.37, 15.57), (8.63, 15.57), 23.2), ((15.57, 7.37), (15.57, 8.63), 23.2)]
     static let cafeAt = (14.9, 1.1), rugsAt = (2.5, 0.35), plaqueAt = (9.15, 6.55)
@@ -177,12 +177,12 @@ extension TownPainter {
     func newDecorations() -> [TownItem] {
         var items: [TownItem] = []
         let tt = t, colors = s.colors, name = s.company, nk = night?.k ?? 0
-        if s.owned(.arch) {
+        if s.placed(.arch) {
             for (P, Q, dp) in DecorPainter.arches {
                 items.append(TownItem(depth: dp, draw: { p in var d = DecorPainter(c: p.c); d.arch(TownGeo.iso(P.0, P.1), TownGeo.iso(Q.0, Q.1), tt, colors, name) }))
             }
         }
-        if s.owned(.cafe) {
+        if s.placed(.cafe) {
             let a = DecorPainter.cafeAt
             items.append(TownItem(depth: a.0 + a.1, shadow: { p in let q = TownGeo.iso(a.0, a.1); p.blobShadow(q.x, q.y + 4, 70, 22, 0.1) },
                                   draw: { p in var d = DecorPainter(c: p.c); d.cafe(TownGeo.iso(a.0, a.1), tt) }))
@@ -191,12 +191,12 @@ extension TownPainter {
             let a = DecorPainter.plaqueAt
             items.append(TownItem(depth: a.0 + a.1, draw: { p in var d = DecorPainter(c: p.c); d.plaque(TownGeo.iso(a.0, a.1), name) }))
         }
-        if s.owned(.rugs) {
+        if s.placed(.rugs) {
             let a = DecorPainter.rugsAt
             items.append(TownItem(depth: a.0 + a.1, draw: { p in var d = DecorPainter(c: p.c); d.rugs(TownGeo.iso(a.0, a.1), tt) }))
         }
         // pigeons roost at night
-        if s.owned(.pigeons) && nk < 0.3 {
+        if s.placed(.pigeons) && nk < 0.3 {
             items.append(TownItem(depth: 99, draw: { p in
                 var g = p.c
                 g.opacity = 1 - nk / 0.3

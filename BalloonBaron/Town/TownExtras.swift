@@ -102,17 +102,17 @@ extension TownPainter {
     func decorations() -> [TownItem] {
         var items: [TownItem] = []
         let tt = t, colors = s.colors
-        if s.owned(.fountain) {
+        if s.placed(.fountain) {
             items.append(TownItem(depth: 16.2, draw: { p in p.fountain(TownGeo.iso(8, 8), tt) }))
         }
-        if s.owned(.statue) {
+        if s.placed(.statue) {
             items.append(TownItem(depth: 15.8, shadow: { p in let q = TownGeo.iso(6.9, 8.9); p.blobShadow(q.x + 18, q.y + 4, 18, 6, 0.16) },
                                   draw: { p in p.statue(TownGeo.iso(6.9, 8.9)) }))
         }
-        if s.owned(.lanterns) {
+        if s.placed(.lanterns) {
             for (gx, gy) in Self.lanternSpots { items.append(TownItem(depth: gx + gy, draw: { p in p.lanternPost(TownGeo.iso(gx, gy), tt, gx) })) }
         }
-        if s.owned(.flags) {
+        if s.placed(.flags) {
             for (gx, gy) in Self.flagSpots { items.append(TownItem(depth: gx + gy + 0.6, draw: { p in p.companyFlag(TownGeo.iso(gx, gy), tt, colors, gx) })) }
         }
         return items

@@ -122,7 +122,7 @@ extension TownPainter {
                                          center: .zero, startRadius: 0, endRadius: r))
         }
         // Street lamps: a dark post, a small bright lantern, a halo and a warm pool of light on the cobbles.
-        let lanterns = s.owned(.lanterns)
+        let lanterns = s.placed(.lanterns)
         let lamps: [(Double, Double)] = lanterns ? TownPainter.lanternSpots : [(3.5, 7.4), (11.5, 7.4), (7.4, 3.5), (7.4, 11.5)]
         for (gx, gy) in lamps {
             let p = iso(gx, gy), fl = 0.9 + 0.1 * sin(t * 9 + gx * 3) * sin(t * 4.1 + gy)
@@ -162,7 +162,7 @@ extension TownPainter {
             }
         }
         // Each bazaar decoration gets its own night lighting.
-        if s.owned(.fountain) {
+        if s.placed(.fountain) {
             let p = iso(8, 8)
             glow(p.x, p.y, 70, (255, 190, 110), 0.25 * k, sy: 0.5)
             glow(p.x, p.y - 9, 30, (90, 230, 255), 0.75 * k, sy: 0.47)
@@ -172,7 +172,7 @@ extension TownPainter {
                 glow(p.x + CGFloat(cos(an)) * r, p.y - 9 + CGFloat(sin(an)) * r * 0.45, 3, (255, 255, 255), (0.4 + 0.4 * sin(t * 6 + Double(i))) * k)
             }
         }
-        if s.owned(.statue) {
+        if s.placed(.statue) {
             let p = iso(6.9, 8.9)
             for sx: CGFloat in [-1, 1] {
                 var beam = Path()
@@ -184,7 +184,7 @@ extension TownPainter {
             glow(p.x - 18, p.y - 52, 6, (255, 240, 200), (0.5 + 0.5 * sin(t * 2)) * k)
             glow(p.x + 20, p.y - 50, 5, (255, 240, 200), (0.5 + 0.5 * sin(t * 2 + 2)) * k)
         }
-        if s.owned(.flags) {
+        if s.placed(.flags) {
             for (gx, gy) in TownPainter.flagSpots {
                 let p = iso(gx, gy)
                 var beam = Path()
@@ -195,7 +195,7 @@ extension TownPainter {
             }
         }
         // v113: bulbs along the welcome arches, the café's string lights, a warm wash over the rugs.
-        if s.owned(.arch) {
+        if s.placed(.arch) {
             for (P0, Q0, _) in DecorPainter.arches {
                 let p = iso(P0.0, P0.1), q = iso(Q0.0, Q0.1), H: CGFloat = 66, mx = (p.x + q.x) / 2, my = (p.y + q.y) / 2 - H
                 for i in 0...12 {
@@ -207,7 +207,7 @@ extension TownPainter {
                 glow(mx, my - 13, 26, (255, 220, 160), 0.45 * k)
             }
         }
-        if s.owned(.cafe) {
+        if s.placed(.cafe) {
             let a = DecorPainter.cafeAt, p = iso(a.0, a.1), d = DecorPainter(c: world)
             let A = d.iu(p, -0.75, -0.75), B = d.iu(p, 0.75, -0.75), C = d.iu(p, 0.75, 0.75)
             glow(p.x, p.y, 80, (255, 190, 110), 0.3 * k, sy: 0.5)
@@ -218,7 +218,7 @@ extension TownPainter {
                 }
             }
         }
-        if s.owned(.rugs) {
+        if s.placed(.rugs) {
             let a = DecorPainter.rugsAt, p = iso(a.0, a.1)
             glow(p.x, p.y - 30, 50, (255, 180, 100), 0.32 * k)
         }

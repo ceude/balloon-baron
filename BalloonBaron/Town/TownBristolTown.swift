@@ -383,7 +383,7 @@ extension TownPainter {
     }
 }
 
-/// v125.x: Bristol's buses go round the square at the crossing instead of over its fountain: each swings out to its own
+/// v125.7: Bristol's buses go round the square at the crossing instead of over its fountain: each swings out to its own
 /// side (the paved square is wider than the roads) and back into its lane. The bus along gy gives way: it waits at its
 /// stop line while the one along gx goes round, then follows. Both run on the same 32 s cycle, so their footprints never
 /// touch each other or the fountain (prototype `BUS`, `busAt`).

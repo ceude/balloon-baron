@@ -249,6 +249,7 @@ struct BazaarView: View {
             CardText.lead(loc("bazaar.lead"))
             if let s {
                 if s.bundleWorth { founderCard(s) }
+                if !s.ownedDecorations.isEmpty { myDecorations(s) }
                 section(.decoration, "bazaar.decor", s)
                 section(.figure, "bazaar.figures", s)
                 section(.shape, "bazaar.shapes", s)
@@ -271,6 +272,48 @@ struct BazaarView: View {
         .onAppear {
             Telemetry.storeViewed("bazaar", s)
             if s?.bundleWorth == true { Telemetry.offer("founder", "shown", s) }
+        }
+    }
+
+    /// v125.7: the decorations you own, each in town or put away in storage, with a toggle; put away it stays yours
+    /// (prototype `showBazaar`, "Süslerin").
+    @MainActor private func myDecorations(_ s: GameState) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(loc("bazaar.mine")).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
+            CardText.hint(loc("bazaar.mine.hint"))
+            LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 8)], spacing: 8) {
+                ForEach(s.ownedDecorations, id: \.self) { k in
+                    let on = s.placed(k)
+                    VStack(spacing: 2) {
+                        StoreThumb(item: k, colors: s.colors, company: s.company).frame(width: 60, height: 68)
+                            .opacity(on ? 1 : 0.45).saturation(on ? 1 : 0.4).accessibilityHidden(true)
+                        Text(k.title).font(Theme.font(14, .bold, condensed: true)).foregroundStyle(Theme.ink)
+                            .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.8)
+                            .frame(height: 34)
+                        Text(loc(on ? "bazaar.inTown" : "bazaar.stored"))
+                            .font(Theme.font(12, .bold)).foregroundStyle(on ? Theme.green : Color(hex: "#8a7a66"))
+                            .lineLimit(1).minimumScaleFactor(0.8)
+                        Button {
+                            SoundEngine.shared.play(.click)
+                            store.act { $0.toggleDecoration(k) }
+                        } label: {
+                            Text(loc(on ? "bazaar.putAway" : "bazaar.place"))
+                                .font(Theme.font(13, .heavy)).foregroundStyle(.white)
+                                .lineLimit(1).minimumScaleFactor(0.7)
+                                .frame(maxWidth: .infinity).padding(.vertical, 5)
+                                .background(on ? Theme.ink : Theme.green, in: RoundedRectangle(cornerRadius: 10))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("\(k.title), \(loc(on ? "bazaar.inTown" : "bazaar.stored")): \(loc(on ? "bazaar.putAway" : "bazaar.place"))")
+                        .padding(.top, 4)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.horizontal, 6).padding(.vertical, 8)
+                    .background(LinearGradient(colors: [Color(hex: "#fff6e6"), Color(hex: "#f3e2c4")], startPoint: .top, endPoint: .bottom),
+                                in: RoundedRectangle(cornerRadius: 16))
+                    .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color(hex: "#e6cfa6"), lineWidth: 1.5))
+                }
+            }
         }
     }
 
@@ -510,6 +553,7 @@ struct DecorNightPreview: View {
     var body: some View {
         var s = state
         s.store = (s.store ?? [:]).merging([item: s.day]) { old, _ in old }
+        s.storedDecor?.remove(item) // v125.7: the preview shows it even if it's put away
         return TimelineView(.animation) { tl in
             Canvas { ctx, sz in
                 let (gx, gy, z) = spot, c = TownGeo.iso(gx, gy)

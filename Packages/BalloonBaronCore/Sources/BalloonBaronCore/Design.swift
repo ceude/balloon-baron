@@ -284,3 +284,14 @@ extension Game {
         state.hezQueue.insert(.founderPack(count: ks.count, balloon: firstShape == nil ? nil : fb?.name, shape: firstShape?.gift), at: 0)
     }
 }
+
+extension Game {
+    /// v125.7: put an owned decoration away in storage, or place it in town again (prototype `decorToggle`). It stays
+    /// owned either way; only decorations you own can be put away.
+    public mutating func toggleDecoration(_ k: StoreItem) {
+        guard k.kind == .decoration, state.owned(k) else { return }
+        var stored = state.storedDecor ?? []
+        if stored.contains(k) { stored.remove(k) } else { stored.insert(k) }
+        state.storedDecor = stored.isEmpty ? nil : stored
+    }
+}

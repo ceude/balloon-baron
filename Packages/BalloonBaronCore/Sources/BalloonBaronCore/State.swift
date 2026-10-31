@@ -360,6 +360,9 @@ public struct GameState: Codable, Equatable, Sendable {
     public var rateAsked: Int?
     /// v125: entering a region asks once whether to bring balloons and pilots from the others (`S.xfer`).
     public var transferAsk: RegionID?
+    /// v125.7: decorations put away in storage from the bazaar (`S.decorOff`). They stay owned; put away they aren't
+    /// drawn in any town. nil (old saves): everything owned is placed.
+    public var storedDecor: Set<StoreItem>?
 
     public var achievements: [Achievement: Int] { postcards ?? [:] }
     public var statistics: Stats { stats ?? Stats() }
@@ -369,6 +372,10 @@ public struct GameState: Codable, Equatable, Sendable {
     }
     /// Town decorations owned (v115: only the look; they no longer bring tourists).
     public var decorationCount: Int { StoreItem.allCases.filter { $0.kind == .decoration && owned($0) }.count }
+    /// v125.7: a decoration that is owned and not put away in storage: the towns draw only these (prototype `placed`).
+    public func placed(_ k: StoreItem) -> Bool { owned(k) && storedDecor?.contains(k) != true }
+    /// The decorations owned, in the bazaar's order, for its "Your decorations" shelf.
+    public var ownedDecorations: [StoreItem] { StoreItem.allCases.filter { $0.kind == .decoration && owned($0) } }
 
     public subscript<T>(dynamicMember path: WritableKeyPath<RegionState, T>) -> T {
         get { local[keyPath: path] }
