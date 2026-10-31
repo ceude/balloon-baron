@@ -3,6 +3,7 @@
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
 Kuyrukta:
+- v126.2: yeni bir iş bağlantısının ilk teklif kartında sahibin tanıtımı teklifle birlikte tam gösterilir ("Daha fazla" yok; kişiyi burada tanıyorsun). Sonraki kartlarda yalnız teklif. iPhone SE'de kaydırmasız sığıyor (prototip `ctrCard`).
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 - **v126 Kapadokya charter anlaşmaları (yalnız prototipte, aktarılacak).** Ayrıntı: GAME_DESIGN "Kapadokya charter anlaşmaları (v126)".
   - Çekirdek `ContractConfig.of(.cap)`: `kind .plane`, sahipler aşağıda, `minChapter` 1, `minSeats` 40, `firstWait` 1, **yeni `firstDay` 40** (ilk `next` = max(gün + firstWait, firstDay)), **yeni `quiet` true** (teklif şu sabahlarda gelmez, `next` aynı kalır: sabah olayı vadesi gelmiş — gün ≥ 12, ekip açık, kış değil, gün ≥ `nextEvent` —, `chapterNews`, `mergeNews`, `transferAsk` ya da kuyrukta 2'den fazla kart), `gap` 11–15, `prefGap` 7–10, `lead` 3–5, `len` 2–2, `share` .25–.40, `price` .80–.90, `prefPrice` 1,06, `negUp` .1, `negWalk` .35, `prefWalk` .15, `pen` .5, `redCut` 0, `redMove` false, `prefNeed` 3, `breakAt` −3, `cool` 14, `rivalRep` .05, `rivalGrow` 24, **yeni `delay`: `after` 2, `warnP` .35, `lateP` .6, `land` .3–.7 (0,1'e yuvarlı), `waitPay` .4**; `sceneZoom` .6 (ilk teklif sahnesinin yakınlığı; öbürleri .86). Kapadokya bölüm hedeflerine dokunulmaz (`ctrDone` / `ctrPref` hedefi yok).

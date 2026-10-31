@@ -7645,10 +7645,10 @@ function ctrCard() {
   if (TOWN.open && TOWN.cine) { const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...ctrSpot()), Z = TOWN.cine.to.z; TOWN.cine = Object.assign(TOWN.cine, { t0: performance.now(), dur: 900, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: Z, ox: r.width / 2 - cx * Z, oy: r.height * .2 - cy * Z } }); }
   const c = h('div', 'card ctr');
   ctrHead(c, w, C.met ? `${K.T.tag} teklifi` : 'Yeni bir iş bağlantısı');
-  /* v125.6: the offer in one or two lines so the card fits a small phone; the introduction behind "Daha fazla" */
+  /* v125.6: the offer in one or two lines so the card fits a small phone; v126.2: a new owner introduces themself in
+     full on their first card (you meet them in person), no "Daha fazla" */
   const say = ctrLine(w, 'offer', kArgs(O));
-  ctrSpeech(c, say);
-  if (!C.met) { const sp = c.lastChild, more = h('button', 'ctrmore', 'Daha fazla'); more.onclick = () => { sp.textContent = w.L.intro + ' ' + say; more.remove(); }; sp.appendChild(more); }
+  ctrSpeech(c, C.met ? say : w.L.intro + ' ' + say);
   const seats = fleetSeats(), riv = ctrRival(), len = O.len || 1;
   c.appendChild(h('div', 'ctrfacts', `<div><b>${O.n}${len > 1 ? ' × ' + len : ''}</b><span>${len > 1 ? 'kişi, her sabah' : 'kişi'} · filon: ${seats} koltuk</span></div><div><b>${ctrWhen(O)}</b><span>${K.weekend ? `${dayName(O.day)}–${dayName(O.day + 1)}` : `Kalan gün: ${O.day - S.day}${len > 1 ? ` · süre: ${len}` : ''}`}</span></div><div><b>${eur(O.price)}</b><span>kişi başı</span></div><div><b>${eur(ctrTotal(O))}</b><span>toplam</span></div>`));
   if (O.fogP) c.appendChild(h('div', 'ctrfog', `<span>Sis tahmini</span>${O.fogP.map((p, i) => `<b class="${p >= .4 ? 'hi' : p >= .25 ? 'mid' : ''}">${DAY_SHORT[((O.day + i - 1) % 7 + 7) % 7]} %${Math.round(p * 100)}</b>`).join('')}`));
