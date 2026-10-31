@@ -431,7 +431,7 @@ struct FleetView: View {
         .accessibilityElement(children: .combine)
     }
 
-    private func chips(_ s: GameState, _ current: FleetFilter, _ st: (Balloon) -> GameState.FlyStatus) -> some View {
+    private func chips(_ s: GameState, _ current: FleetFilter, _ st: @escaping (Balloon) -> GameState.FlyStatus) -> some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
                 ForEach(FleetFilter.allCases, id: \.self) { f in
