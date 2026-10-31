@@ -277,7 +277,7 @@ Oyunda reklam yok (v98). Bölüm ödülü tek sefer verilir; eskiden bölüm kar
 - **Müfettiş:** zarf %30 altındayken 5 günde bir denetim. İki uyarı, sonra her ziyarette yıpranmış balon başına 2.500 ceza.
 
 ## Bina yükseltmeleri
-Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükseltme görünür.
+Her bina 3 seviyelidir (hangar v127'den beri 8). Binaya dokununca kartında seviyeler ve sıradaki yükseltme görünür.
 
 | Bina | Sv. 2 | Sv. 3 |
 |---|---|---|
@@ -285,6 +285,26 @@ Her bina 3 seviyelidir. Binaya dokununca kartında seviyeler ve sıradaki yükse
 | Hangar | €12.000: bakım ×0,85 | €45.000: bakım ×0,7, zarf yıpranması ×0,85 |
 | Pilot ofisi | €10.000: pilot ayartma şansı %2 | €35.000: pilotlar ×1,5 XP kazanır |
 | Satış ofisi | €15.000: talep ×1,05 | €50.000: talep ×1,12 |
+
+### Hangar kapasitesi (v127)
+Hangar seviyesine göre balon alır. Seviye numarası oyundaki gibi 1'den başlar (sahibin tablosundaki "Sv.0" = oyunda Seviye 1); Luksor, Albuquerque ve Bristol baron bölümlerindeki "Hangar seviyesi: 3" hedefi aynı kalır (€45.000'lik kumaş deposu, 24 balon).
+
+| Seviye | Kapasite | Yükseltme (bölgenin parasıyla, aynı sayı) | Etki |
+|---|---|---|---|
+| 1 | 6 | başlangıç | |
+| 2 | 12 | 12.000 | bakım ×0,85 |
+| 3 | 24 | 45.000 | bakım ×0,7, zarf yıpranması ×0,85 |
+| 4 | 48 | 120.000 | yalnızca yer (İkinci hangar) |
+| 5 | 96 | 350.000 | yalnızca yer (Büyük hangar) |
+| 6 | 192 | 900.000 | yalnızca yer (Hangar kompleksi) |
+| 7 | 384 | 2.400.000 | yalnızca yer (Balon üssü) |
+| 8 | 768 | 6.000.000 | yalnızca yer (Dev balon üssü) |
+
+- Balon almak, şirket devralmak, batan filoyu almak, atölye üretimi ve kargo **engellenmez**. Kapasiteyi aşan balonlar **dışarıda** durur: bakım yapılamadığı için uçamazlar, pilot almazlar, günlük bakım gideri ödenmez; uçuş ve pazar kapasitesine (bugünkü uçuş, Balon Şöleni / Gece Işıltısı filosu, kontrat koltukları, yakıt stoğu olayı, otomatik ilerletmenin 35 balonu, mecburi pas) sayılmazlar. Bölüm hedeflerindeki koltuk ve balon sayıları, başarımlar ve rakiplerin oyuncunun filosuna göre büyümesi bütün balonları sayar (değişmedi). Rakipler etkilenmez.
+- Hangarın içi: amiral her zaman içeride; diğerleri filoya giriş sırasıyla, en yeniler dışarıda. Hangar büyüyünce kendiliğinden içeri girer, pilot alırlar.
+- Uyarılar: oyuncunun kendi alımında (balon, devralma, batan filo) "Hangarda yer yok" kartı: "Hangarın dolu: N balon dışarıda kaldı. Hangarı geliştirmen lazım." ve "Hangarı geliştir" düğmesi. Atölye üretimi ve kargo gelince aynı cümle Hezarfen'in haberi olarak gelir. Filo sayfasının başında kırmızı satır "Dışarıda N balon: uçamıyorlar · Hangarı geliştir ›" (hangarın yükseltme kartını açar); uçuş planında dışarıdakiler listelenmez, altta aynı satır; balon kartında da. Filo listesinde dışarıdakiler en altta, soluk ve "Dışarıda" etiketli; "Dışarıda" süzgeci. Hezarfen sabahları hatırlatır, en fazla 5 günde bir: "Dışarıda N balonun var evlat; hangara giremeyip bakım yapılamadığı için uçamıyorlar. Hangarın seviyesini yükselt." (bir uyarı kartı da bu 5 günü baştan başlatır; otomatik ilerletmeyi durdurmaz, haber olarak bekler).
+- Eski kayıtlar: bedava geçiş yok, hangar seviyesi olduğu gibi kalır, fazla balonlar dışarıda başlar. 393–400 balonlu kayıt: dışarıdakiler bir kerede hesaplanır (prototipte önbellek, Swift'te `statusByID` / `outsideIDs`), filo listesi Swift'te tembel (`LazyVStack`).
+- Simülasyon (`tools/sim-campaign.js`, 24 tohum; bot hangar dolunca bir sonraki balondan önce hangarı aynı nakit payıyla büyütür): bölgeye girişten bölüm bitişine ortalama gün, önce → sonra: Kapadokya 10,9 / 67,3 / 112,4 / 147,6 → 10,9 / 67,3 / 114,7 / 148,9; Albuquerque 53,9 / 78,8 / 104,7 / 140,6 → 53,4 / 78,6 / 107,0 / 141,8; Luksor 60,3 / 86,9 / 109,8 / 141,3 → 58,5 / 85,1 / 111,2 / 139,7; Bristol 57,7 / 104,3 / 134,6 / 157,5 → 56,9 / 102,4 / 133,8 / 152,5; Dünya Baronu 595,5 → 591,8. En büyük fark %3,2 (Bristol Baronu, erken); %5'in altında, fiyatlar değişmedi. `tools/sim-chapters.js` (Kapadokya, 8 tohum, 260 gün) bölüm günleri aynı; bot hangarı 25–43. günde Sv. 2'ye, 89–101. günde Sv. 3'e çıkarır.
 
 ## Sabah olayları
 12. günden sonra (pilot ofisi açıksa, kış değilse) 7–8 günde bir. Kamera olayın yerine yakınlaşır, kart alttan çıkar. Aynı olay arka arkaya gelmez.
