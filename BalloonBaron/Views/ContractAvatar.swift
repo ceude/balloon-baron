@@ -2,7 +2,7 @@ import SwiftUI
 import BalloonBaronCore
 
 /// v125: the contract companies' owners, three per region. Ports of `ROSA_AV`, `HANK_AV`, `LINDA_AV`, `FAROUK_AV`,
-/// `DALIA_AV`, `HAMZA_AV`, `NIGEL_AV`, `PRIYA_AV` and `FIONA_AV` (100×100 viewBox: a ring, a gradient, the figure).
+/// `DALIA_AV`, `HAMZA_AV`, `NIGEL_AV`, `PRIYA_AV`, `FIONA_AV` and (v126) `JIWOO_AV`, `CHEN_AV`, `MURAT_AV` (100×100 viewBox: a ring, a gradient, the figure).
 struct ContractAvatar: View {
     let owner: ContractOwner
     let size: CGFloat
@@ -211,6 +211,58 @@ struct ContractAvatar: View {
             ArtItem(path: Path(ellipseIn: CGRect(x: 53.2, y: 51.2, width: 1.6, height: 1.6)), fill: Color(hex: "#c87a50").opacity(0.7)),
             ArtItem(path: HezarfenAvatar.svgPath("M50 49 L48.6 54 Q50 55 51.5 54.3"), fill: Color(hex: "#e8b494")),
             ArtItem(path: HezarfenAvatar.svgPath("M42 58 Q50 64 58 58"), stroke: Color(hex: "#b0404a"), width: 2)
+        ])
+        // v126: Cappadocia's charter agencies (`JIWOO_AV`, `CHEN_AV`, `MURAT_AV`)
+        case .jiwoo: ("#e0408a", [("#5aa9e6", 0), ("#ffe0ec", 1)], [
+            ArtItem.fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#f2c4d6"),
+            ArtItem.line("M41 70 L50 80 L59 70", "#ffffff", 3.4),
+            ArtItem.fill("M30 76 L41 70 L45 90Z M70 76 L59 70 L55 90Z", "#e8a8c0"),
+            ArtItem.box(66, 80, 10, 13, 2, "#2b2350"), ArtItem.dot(71, 86, 2.6, "#7ab8c8"),
+            ArtItem.box(43, 58, 14, 14, 4, "#ecc8a8"),
+            ArtItem.fill("M29 58 C25 34 36 19 50 19 C64 19 75 34 71 58 C68 60 66 60 64 58 L64 40 L36 40 L36 58 C34 60 32 60 29 58Z", "#1a1418"),
+            ArtItem.oval(50, 46, 15.5, 18.5, "#f4d4b6"),
+            ArtItem.fill("M34 42 C36 28 46 25 52 26 C60 27 66 32 66 42 C60 36 52 33 46 33 C41 35 37 38 34 42Z", "#1a1418"),
+            ArtItem(path: Path(roundedRect: CGRect(x: 60, y: 30, width: 9, height: 3.4), cornerRadius: 1.7)
+                .applying(CGAffineTransform(translationX: 64, y: 31).rotated(by: -20 * .pi / 180).translatedBy(x: -64, y: -31)), fill: Color(hex: "#ffc23d")),
+            ArtItem.line("M39 44 Q43 42.5 47 44 M53 44 Q57 42.5 61 44", "#3a2a22", 1.8),
+            ArtItem.line("M40 48.4 Q43 46.4 46 48.4 M54 48.4 Q57 46.4 60 48.4", "#1f1b2e", 2),
+            ArtItem(path: Path(ellipseIn: CGRect(x: 36.3, y: 51.2, width: 6.4, height: 3.6)), fill: Color(hex: "#f598a8").opacity(0.6)),
+            ArtItem(path: Path(ellipseIn: CGRect(x: 57.3, y: 51.2, width: 6.4, height: 3.6)), fill: Color(hex: "#f598a8").opacity(0.6)),
+            ArtItem.fill("M50 50 L48.8 54.4 Q50 55.2 51.3 54.6", "#e4b494"),
+            ArtItem.fill("M44 58 Q50 63.6 56 58 Q50 60 44 58Z", "#d0405a")
+        ])
+        case .chen: ("#c0392b", [("#c0392b", 0), ("#ffd27a", 1)], [
+            ArtItem.fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#1f2a44"),
+            ArtItem.fill("M41 70 L50 84 L59 70Z", "#f6f4ee"),
+            ArtItem.fill("M47.6 72 L52.4 72 L53 82 L50 88 L47 82Z", "#c0392b"),
+            ArtItem.fill("M30 76 L41 70 L46 92Z M70 76 L59 70 L54 92Z", "#2a3858"),
+            ArtItem.dot(35, 82, 2.2, "#ffd27a"),
+            ArtItem.box(43, 58, 14, 14, 4, "#e2b48e"), ArtItem.oval(50, 46, 16.5, 19.5, "#efc8a2"),
+            ArtItem.fill("M33 42 C31 24 42 18 51 18 C61 18 70 24 67 42 C66 34 62 30 56 29 C48 31 40 30 36 34 C34 36 33.5 39 33 42Z", "#14121a"),
+            ArtItem.line("M36 34 C44 28 52 27 58 28", "#2e2a36", 1.4),
+            ArtItem(path: Path(roundedRect: CGRect(x: 36, y: 42.4, width: 12, height: 8), cornerRadius: 1.6), fill: Color.white.opacity(0.18), stroke: Color(hex: "#14121a"), width: 1.8),
+            ArtItem(path: Path(roundedRect: CGRect(x: 52, y: 42.4, width: 12, height: 8), cornerRadius: 1.6), fill: Color.white.opacity(0.18), stroke: Color(hex: "#14121a"), width: 1.8),
+            ArtItem.line("M48 45 L52 45", "#14121a", 1.8),
+            ArtItem.dot(42, 46.6, 1.6, "#1f1b2e"), ArtItem.dot(58, 46.6, 1.6, "#1f1b2e"),
+            ArtItem.fill("M50 50 L48.6 55 Q50 56 51.5 55.3", "#d8a882"),
+            ArtItem.line("M43.5 59 Q50 62.4 56.5 59", "#9a3a3a", 2)
+        ])
+        case .murat: ("#e08a1e", [("#1f6f8b", 0), ("#ffd8a8", 1)], [
+            ArtItem.fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#c8b48e"),
+            ArtItem.fill("M41 70 L50 84 L59 70Z", "#f4f8fc"),
+            ArtItem.fill("M47.6 72 L52.4 72 L53 82 L50 88 L47 82Z", "#1f6f8b"),
+            ArtItem.dot(50, 76, 0.9, "#e0408a"), ArtItem.dot(50.6, 81, 0.9, "#e0408a"),
+            ArtItem.fill("M30 76 L41 70 L46 92Z M70 76 L59 70 L54 92Z", "#b29e78"),
+            ArtItem.fill("M33 79 L37 77 L38 82Z", "#c0392b"),
+            ArtItem.box(43, 58, 14, 14, 4, "#c99470"), ArtItem.oval(50, 46, 17, 20, "#d8a47c"),
+            ArtItem.fill("M33 40 C32 25 41 19 50 19 C60 19 68 25 67 40 C65 32 60 28 50 28 C41 28 35 32 33 40Z", "#4a4448"),
+            ArtItem.fill("M33 40 C33 34 35 31 37 30 L36 42Z M67 40 C67 34 65 31 63 30 L64 42Z", "#9a9498"),
+            ArtItem.line("M38 42.6 Q43 40.6 47 42.6 M53 42.6 Q57 40.6 62 42.6", "#4a4448", 2.6),
+            ArtItem.dot(43, 47, 1.8, "#1f1b2e"), ArtItem.dot(57, 47, 1.8, "#1f1b2e"),
+            ArtItem.line("M40 50.6 Q43 49.6 45.6 50.6 M54.4 50.6 Q57 49.6 60 50.6", "#b07a58", 1),
+            ArtItem.fill("M50 48 L48 54 Q50 55.4 52 54.4", "#c08a64"),
+            ArtItem.fill("M38.6 58.6 C42 54.4 47 55.6 50 56 C53 55.6 58 54.4 61.4 58.6 C57 58.4 54 58.6 50 59 C46 58.6 43 58.4 38.6 58.6Z", "#3a3438"),
+            ArtItem.line("M45 61 Q50 64 55 61", "#9a4a3a", 1.8)
         ])
         }
     }

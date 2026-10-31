@@ -302,7 +302,7 @@ extension PaperItem {
     }
 
     /// v125: the region whose contracts use this vehicle (for its texts).
-    static func contractRegion(_ k: ContractKind) -> String { k == .bus ? "abq" : k == .ship ? "lux" : "bri" }
+    static func contractRegion(_ k: ContractKind) -> String { k.region }
 
     func headline(_ company: String) -> String {
         switch self {

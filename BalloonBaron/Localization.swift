@@ -233,6 +233,7 @@ extension HezMessage {
              bs.isEmpty ? nil : loc("hez.xfer.balloons", listText(bs.map(bname)), num(day))].compactMap { $0 }.joined(separator: "; ")
                 + ". " + loc("hez.xfer.end", currentRegion.title)
         case .cargoArrived(let bs): loc("hez.cargoArrived", listText(bs.map(bname)))
+        case .contractDelayIntro: loc("ctr.cap.delayIntro")
         }
     }
 }
@@ -304,6 +305,8 @@ extension DayEvent {
         case let .contractWeather(co): loc("event.contractWeather", co)
         case let .contractProgress(w, ok, need): loc("event.contractProgress", w.title, num(ok), num(need))
         case let .contractTrustDown(w, short): loc("event.contractTrustDown", w.title, num(short))
+        case let .contractDelayWarning(w): loc("ctr.delay.warnEvent", w.title, ctrText(w, "warn"))
+        case let .contractDelayNoShow(w, seats, amount): loc("ctr.delay.noShowEvent", w.company, num(seats), eur(amount))
         case let .rivalFlewGroup(r, co, n, len, grow):
             (len > 1 ? loc("event.rivalFlewGroupDays", r, co, num(n), num(len)) : loc("event.rivalFlewGroup", r, co, num(n)))
                 + (grow > 0 ? " " + loc("event.rivalGrewWithGroup", num(grow)) : "")

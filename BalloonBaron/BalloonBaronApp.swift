@@ -164,10 +164,13 @@ struct RootView: View {
                 StoreItemView(item: k).transition(.opacity)
             }
             if let cs = store.contractScene, cs.line >= 0, store.contractCard == nil, store.game != nil {
-                ContractSceneView(line: cs.line).transition(.opacity)
+                ContractSceneView(line: cs.line, short: cs.short).transition(.opacity)
             }
             if store.contractCard == .offer && store.game != nil {
                 ContractOfferView().transition(.move(edge: .bottom))
+            }
+            if store.contractCard == .delay && store.game != nil {
+                ContractDelayView().transition(.move(edge: .bottom))
             }
             if store.contractCard == .status && store.game != nil {
                 ContractStatusView().transition(.opacity)

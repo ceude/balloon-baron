@@ -182,7 +182,8 @@ struct PriceSheetView: View {
     @ViewBuilder
     private func whyRows(_ g: Game) -> some View {
         let held = g.state.contractHeld(capacity: g.state.capacityToday), K = g.state.contractToday
-        let m = g.market(price: g.state.price, capacity: g.state.capacityToday - held)
+        let wait = g.state.contractWaitSeats(capacity: g.state.capacityToday - held) // v126: seats kept for a late plane
+        let m = g.market(price: g.state.price, capacity: g.state.capacityToday - held - wait)
         let factors = g.demandFactors
         VStack(alignment: .leading, spacing: 5) {
             if let pull = g.popularityPull, let avg = g.rivalAverageRep {
@@ -293,6 +294,8 @@ struct PriceSheetView: View {
             let held = s.contractHeld(capacity: s.capacityToday), pen = jsRoundUI(Double(k.price) * (s.contractConfig?.pen ?? 0.5))
             out.append(held < k.n ? loc("price.ctr.noteShort", num(k.n), num(held), eur(pen)) : loc("price.ctr.note", num(k.n), eur(k.price)))
         }
+        let wait = s.contractWaitSeats(capacity: s.capacityToday - s.contractHeld(capacity: s.capacityToday))
+        if wait > 0 { out.append(loc("ctr.delay.priceNote", num(wait), eur(s.contractWaitPay))) } // v126
         if s.local.docDay == s.day && fl.contains(where: { $0.id == s.flagship }) { out.append(loc("psheet.docNote")) }
         return out
     }

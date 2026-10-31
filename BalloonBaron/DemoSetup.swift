@@ -10,7 +10,9 @@ import BalloonBaronCore
 /// v124: `flight` (your own flight; in Bristol on a foggy morning with the airport's airspace), `glow` (Bristol's Night Glow night).
 /// v125 (with `-demoRegion`): `contract` (a contract offer card), `contractScene` (the first offer's scene at the off-map
 /// place), `transfer` (the card to bring the fleet, entering the region); v125.6: `cargo` (balloons on their way by cargo,
-/// with `-demoPage fleet`).
+/// with `-demoPage fleet`). v126 (in Cappadocia, without `-demoRegion`): `charter` (the first charter offer's scene: the
+/// plane lands at the airport, then the card), `charterDelay` (a booked charter group whose plane is late: the card).
+/// The airport with the parked plane is the `charter` scene's last frames.
 extension GameStore {
     func applyDemoArguments() {
         let args = ProcessInfo.processInfo.arguments
@@ -110,6 +112,36 @@ extension GameStore {
                 gg.state.local.contracts?.scene = value("-demoScene") == "contract"
                 gg.state.local.contracts?.met = value("-demoScene") == "contract"
                 gg.contractMorning()
+                gg.state.hezQueue = []
+                game = gg
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.showNextHezarfen() }
+            }
+        case "charter", "charterDelay":
+            // v126: Cappadocia, chapter 2, a quiet morning with the first charter offer (its scene at the airport); or a
+            // charter group of yours flying today whose plane is late
+            if var gg = game, gg.state.region == .cap, gg.state.contractConfig != nil {
+                gg.state.local.chapter = max(gg.state.local.chapter, 1)
+                gg.state.cash = max(gg.state.cash, 400_000)
+                for z in [BalloonSize.M, .L, .M, .L] { _ = gg.buyBalloon(z) }
+                gg.state.weather?.flag = .green
+                gg.state.local.nextEvent = gg.state.day + 30
+                gg.state.local.contracts = ContractState()
+                gg.state.local.contracts?.next = gg.state.day
+                gg.contractMorning()
+                if value("-demoScene") == "charterDelay" {
+                    gg.state.local.contracts?.scene = true
+                    gg.acceptContract()
+                    if var c = gg.state.local.contracts, !c.booked.isEmpty {
+                        c.taken = 3
+                        c.booked[0].day = gg.state.day
+                        c.booked[0].nth = 3
+                        c.booked[0].warned = true
+                        c.booked[0].warnRolled = true
+                        c.booked[0].delay = ContractDelay(day: gg.state.day, chance: 0.6, lands: true)
+                        c.next = gg.state.day + 30
+                        gg.state.local.contracts = c
+                    }
+                }
                 gg.state.hezQueue = []
                 game = gg
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.showNextHezarfen() }

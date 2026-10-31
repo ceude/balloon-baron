@@ -81,10 +81,15 @@ final class GameStore {
     /// v124: Bristol's Night Glow card.
     var showGlowCard = false
     /// v125: a contract company's offer card, or the off-map place's status card.
-    enum ContractCard: Equatable { case offer, status }
+    enum ContractCard: Equatable { case offer, status, delay }
     var contractCard: ContractCard?
     /// v125: the first offer's scene: the camera at the off-map place, the guide's line on screen (-1: none yet).
-    struct ContractScene: Equatable { var line = -1 }
+    struct ContractScene: Equatable {
+        var line = -1
+        /// v126: Albuquerque's two-line version for players who already had charter groups in Cappadocia.
+        var short = false
+        var count: Int { short ? 2 : 4 }
+    }
     var contractScene: ContractScene?
     /// v125: the card to bring balloons and pilots into a new region.
     var showTransfer = false
@@ -303,6 +308,9 @@ final class GameStore {
             act { m = $0.nextHezarfen() }
             // v122: the lessons of new buildings and first jobs are shown, not told
             if case .tip(let t)? = m, guideOK(t) { startGuide(t) } else { hezarfen = m }
+        } else if s.contractDelayPending != nil {
+            // v126: the charter plane is late: keep the seats or sell them
+            contractCard = .delay
         } else if let o = s.local.contracts?.offer, o.seen != s.day, s.contractConfig != nil {
             // v125: after the owner's own lines; the region's first offer comes after its scene
             if s.local.contracts?.scene == true { openContractOffer() } else { startContractScene() }
@@ -452,10 +460,11 @@ final class GameStore {
         let T = ContractTown.shared
         T.cine = true
         T.cineArrive = nil
-        contractScene = ContractScene()
+        contractScene = ContractScene(short: state?.contractSceneShort ?? false)
         let kind = state?.contractConfig?.kind
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.4) {
-            if self.contractScene != nil, let k = kind { SoundEngine.shared.contractArrive(k == .bus ? 0 : k == .ship ? 1 : 2) }
+        // v126: the plane's sound runs with its landing
+        DispatchQueue.main.asyncAfter(deadline: .now() + (kind == .plane ? 1.6 : 2.4)) {
+            if self.contractScene != nil, let k = kind { SoundEngine.shared.contractArrive(k.sound) }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.6) {
             if self.contractScene != nil { self.contractScene?.line = 0 }
@@ -465,8 +474,8 @@ final class GameStore {
     /// The guide's next line, or the card after the last ("Skip": straight to the card).
     func nextContractLine(skip: Bool = false) {
         guard var cs = contractScene else { return }
-        cs.line = skip ? 4 : cs.line + 1
-        if cs.line >= 4 {
+        cs.line = skip ? cs.count : cs.line + 1
+        if cs.line >= cs.count {
             cs.line = -2
             contractScene = cs
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { if self.contractScene != nil { self.openContractOffer() } }
