@@ -173,7 +173,7 @@ extension TownPainter {
             }
         }
         if s.placed(.statue) {
-            let p = iso(6.9, 8.9)
+            let p = iso(TownPainter.statueAt.0, TownPainter.statueAt.1)
             for sx: CGFloat in [-1, 1] {
                 var beam = Path()
                 beam.move(to: pt(p.x + sx * 8, p.y - 2)); beam.addLine(to: pt(p.x + sx * 34, p.y - 70)); beam.addLine(to: pt(p.x - sx * 4, p.y - 70)); beam.closeSubpath()
@@ -222,14 +222,12 @@ extension TownPainter {
             let a = DecorPainter.rugsAt, p = iso(a.0, a.1)
             glow(p.x, p.y - 30, 50, (255, 180, 100), 0.32 * k)
         }
-        if s.unlocked.contains(.bazaar) {
-            // The bazaar keeps a string of bulbs along its awning and a warm glow over the goods.
-            let a0 = upp(iso(14.15, 4.35), 28), a1 = upp(iso(15.3, 4.35), 28)
-            glow((a0.x + a1.x) / 2 - 10, (a0.y + a1.y) / 2 + 26, 44, (255, 180, 100), 0.45 * k, sy: 0.5)
-            for i in 0...9 {
-                let f = CGFloat(i) / 9, x = a0.x + (a1.x - a0.x) * f - 10, y = a0.y + (a1.y - a0.y) * f + 9 + sin(f * .pi) * 4
-                glow(x, y, 5, i % 2 == 1 ? (255, 120, 140) : (255, 215, 140), (0.7 + 0.3 * sin(t * 3 + Double(i))) * k)
-            }
+        // v128: the little lights the buildings carry (the bazaar's lanterns, the agency's phone sign and ring light)
+        let inv = world.transform.inverted()
+        for l in lites {
+            let p = l.p.applying(inv)
+            glow(p.x, p.y, l.r, l.rgb, 0.5 * l.a * k)
+            glow(p.x, p.y, l.r * 0.25, (255, 245, 220), 0.8 * l.a * k)
         }
         // Fireflies over the launch field and the gardens.
         var RF = Mulberry32(seed: 5)

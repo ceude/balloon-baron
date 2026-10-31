@@ -9976,7 +9976,7 @@ function tbuilding(b, t) {
    carries a big drawn sign of its trade, in its region's style. NIGHT_LITE collects the little lights they carry
    (lanterns, the phone's screen, the ring light) so the night can light them again over the dark. */
 const NIGHT_LITE = [];
-function nightLite(x, y, r, rgb, a = 1) { if (NIGHT_K > 0) NIGHT_LITE.push([x, y, r, rgb, a]); }
+function nightLite(x, y, r, rgb, a = 1) { if (NIGHT_K > 0) { const m = ctx.getTransform(), p = m.transformPoint(new DOMPoint(x, y)); NIGHT_LITE.push([p.x, p.y, r, rgb, a]); } } /* kept in canvas pixels: the agency draws its roof shifted up */
 /* a point on a wall-like plane: u along p→q, v up to h */
 const fpt = (p, q, h, u, v) => [p[0] + (q[0] - p[0]) * u, p[1] + (q[1] - p[1]) * u - h * v];
 /* a tourist: a person with a sun hat or a cap and, now and then, a camera */
@@ -11513,7 +11513,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
   }
   if (placed('rugs')) { const p = tiso(...RUGS_AT); glow(p[0], p[1] - 30, 50, '255,180,100', .32 * k); }
   /* v128: the little lights the buildings carry (the bazaar's lanterns, the agency's phone and ring light) */
-  for (const [x, y, r, rgb, a] of NIGHT_LITE) { glow(x, y, r, rgb, .5 * a * k); glow(x, y, r * .25, '255,245,220', .8 * a * k); }
+  { const inv = ctx.getTransform().inverse(); for (const [dx, dy, r, rgb, a] of NIGHT_LITE) { const p = inv.transformPoint(new DOMPoint(dx, dy)); glow(p.x, p.y, r, rgb, .5 * a * k); glow(p.x, p.y, r * .25, '255,245,220', .8 * a * k); } }
   /* fireflies over the launch field and the gardens */
   const RF = mulberry32(5);
   for (let i = 0; i < 26; i++) { const gx = 1 + RF() * 13, gy = 4.4 + RF() * 9, ph = RF() * 6, p = tiso(gx + Math.sin(t * .4 + ph) * .4, gy + Math.cos(t * .33 + ph) * .4), on = Math.max(0, Math.sin(t * 2.2 + ph * 3)); if (on > .2) { glow(p[0], p[1] - 18 - Math.sin(t + ph) * 8, 9, '200,255,120', on * .8 * k); } }

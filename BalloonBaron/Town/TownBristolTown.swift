@@ -1,10 +1,10 @@
 import SwiftUI
 import BalloonBaronCore
 
-// v124 / v124.1: Bristol's town (prototype `briTownScenery`, `tudorPub`, `briOpening`, `TUFF_BY.bri`, `BATH`):
+// v124 / v124.1: Bristol's town (prototype `briTownScenery`, `briOpening`, `TUFF_BY.bri`, `BATH`):
 // Victorian red brick with slate gables, white sash windows under stone lintels, painted doors with fanlights; the hotels
-// and the bank in honey Bath stone; the bazaar as a Tudor pub; red phone boxes and pillar boxes, double-deckers on the
-// main roads, the pub's hanging sign, puddles, copper beeches and oaks, sheep behind hedges, the harbour with its tall
+// and the bank in honey Bath stone (v128: the bazaar is a street market, TownIdentity.swift); red phone boxes and pillar
+// boxes, double-deckers on the main roads, puddles, copper beeches and oaks, sheep behind hedges, the harbour with its tall
 // ship behind the town, gulls and an overcast sky.
 extension TownPainter {
     /// Victorian red brick with light mortar.
@@ -93,51 +93,6 @@ extension TownPainter {
         }
     }
 
-    // MARK: The Tudor pub
-
-    /// The bazaar is the old harbour pub: whitewashed walls under black oak beams with braces, small leaded windows, a
-    /// dark door, a slate gable roof and a chimney.
-    mutating func tudorPub(_ b: TownBuilding) {
-        let x0 = b.gx + 0.1, y0 = b.gy + 0.1, w = b.w - 0.2, d = b.d - 0.2, hh: CGFloat = 46
-        let f = block(x0, y0, w, d, hh, lit: "#f3ede0", shade: "#cdc4b2", top: "#e8e0cc", courses: false)
-        let beam = hex("#2a201a")
-        for (p, q) in [(f.D, f.C), (f.C, f.B)] {
-            let fc = face(p, q, hh)
-            var beams = Path()
-            beams.addRect(CGRect(x: 0, y: 0, width: 1, height: 0.07))
-            beams.addRect(CGRect(x: 0, y: 0.46, width: 1, height: 0.06))
-            beams.addRect(CGRect(x: 0, y: 0.93, width: 1, height: 0.07))
-            for i in 0...5 { beams.addRect(CGRect(x: min(0.955, CGFloat(i) * 0.19), y: 0, width: 0.045, height: 1)) }
-            fc.fill(beams, with: .color(beam))
-            var braces = Path()
-            for i in stride(from: 0, to: 5, by: 2) {
-                let k = CGFloat(i) * 0.19
-                braces.move(to: pt(k + 0.04, 0.52)); braces.addLine(to: pt(k + 0.19, 0.93))
-                braces.move(to: pt(k + 0.19 + 0.04, 0.07)); braces.addLine(to: pt(k + 0.04 + 0.19 * 2 - 0.04, 0.46))
-            }
-            fc.stroke(braces, with: .color(beam), lineWidth: 0.035)
-        }
-        func win(_ p: CGPoint, _ q: CGPoint, _ u: CGFloat, _ v: CGFloat, _ lit: Bool) {
-            let fc = face(p, q, hh)
-            fc.fill(Path(CGRect(x: u - 0.09, y: v - 0.03, width: 0.18, height: 0.26)), with: .color(beam))
-            fc.fill(Path(CGRect(x: u - 0.07, y: v, width: 0.14, height: 0.2)), with: .color(hex(lit || nightK > 0 ? "#ffcf6a" : "#5a6878")))
-            var lead = Path()
-            for i in 1..<4 { lead.move(to: pt(u - 0.07 + CGFloat(i) * 0.035, v)); lead.addLine(to: pt(u - 0.07 + CGFloat(i) * 0.035, v + 0.2)) }
-            fc.stroke(lead, with: .color(rgba(40, 30, 20, 0.6)), lineWidth: 0.01)
-        }
-        win(f.D, f.C, 0.28, 0.6, false); win(f.D, f.C, 0.72, 0.6, true)
-        win(f.C, f.B, 0.3, 0.6, true); win(f.C, f.B, 0.7, 0.6, false); win(f.C, f.B, 0.5, 0.14, true)
-        let door = face(f.D, f.C, hh)
-        door.fill(Path(CGRect(x: 0.4, y: 0, width: 0.2, height: 0.4)), with: .color(beam))
-        door.fill(Path(CGRect(x: 0.43, y: 0, width: 0.14, height: 0.36)), with: .color(hex("#4a2a1a")))
-        door.fill(Path(CGRect(x: 0.53, y: 0.17, width: 0.02, height: 0.03)), with: .color(hex("#d8b040")))
-        gableRoof(x0, y0, w, d, hh, 30, Self.slate, eave: 0.12)
-        // a chimney
-        let ch = iso(x0 + w * 0.8, y0 + d * 0.5)
-        rect(ch.x - 4, ch.y - hh - 40, 8, 18, hex("#8e4636"))
-        rect(ch.x - 5, ch.y - hh - 42, 10, 3, hex("#5a2a20"))
-    }
-
     // MARK: Hotels
 
     /// Pastel Clifton houses where Cappadocia has its cave suites (the cave hotel), with a slate roof and a chimney.
@@ -198,28 +153,6 @@ extension TownPainter {
         }
     }
 
-    /// The pub's hanging sign: a post, an arm, and a swinging board with a balloon in your colours.
-    mutating func pubSign(_ x: CGFloat, _ y: CGFloat) {
-        rect(x - 1.5, y - 52, 3, 52, hex("#2a1e14"))
-        rect(x - 1.5, y - 52, 20, 2.5, hex("#2a1e14"))
-        var g = c
-        g.translateBy(x: x + 14, y: y - 50)
-        g.rotate(by: .radians(sin(t * 1.4) * 0.08))
-        var chains = Path()
-        chains.move(to: pt(-5, 0)); chains.addLine(to: pt(-5, 5)); chains.move(to: pt(5, 0)); chains.addLine(to: pt(5, 5))
-        g.stroke(chains, with: .color(hex("#2a1e14")), lineWidth: 1)
-        g.fill(Path(CGRect(x: -9, y: 5, width: 18, height: 22)), with: .color(hex("#1e3a2a")))
-        g.stroke(Path(CGRect(x: -8, y: 6, width: 16, height: 20)), with: .color(hex("#c9a040")), lineWidth: 1.2)
-        var bal = Path()
-        bal.addArc(center: pt(0, 13), radius: 5, startAngle: .radians(.pi), endAngle: .radians(0), clockwise: false)
-        bal.addQuadCurve(to: pt(1.5, 21), control: pt(5, 18))
-        bal.addLine(to: pt(-1.5, 21))
-        bal.addQuadCurve(to: pt(-5, 13), control: pt(-5, 18))
-        bal.closeSubpath()
-        g.fill(bal, with: .color(hex(s.colors.first ?? "#ff5e3a")))
-        g.fill(Path(CGRect(x: -1.5, y: 22, width: 3, height: 2.5)), with: .color(hex("#6b4426")))
-    }
-
     mutating func sheepFlock(_ x: CGFloat, _ y: CGFloat, _ n: Int, _ tt: Double) {
         for i in 0..<n {
             let sx = x + CGFloat(i % 3) * 13 - 13 + (i > 2 ? 6 : 0), sy = y + CGFloat(i / 3) * 7, b = CGFloat(sin(tt * 1.3 + Double(i))) * 0.5
@@ -271,17 +204,16 @@ extension TownPainter {
         c.stroke(p, with: .color(rgba(250, 250, 246, 0.95)), style: StrokeStyle(lineWidth: 1.8, lineCap: .round))
     }
 
-    /// Phone boxes, pillar boxes, the pub sign, a bus on each main road, gulls over the town.
+    /// Phone boxes, pillar boxes, a bus on each main road, gulls over the town.
     func bristolScenery() -> [TownItem] {
         var items: [TownItem] = []
         for (gx, gy) in [(7.32, 2.6), (8.7, 11.1), (3.2, 7.32)] {
             items.append(TownItem(depth: gx + gy, shadow: { p in let q = TownGeo.iso(gx, gy); p.blobShadow(q.x + 8, q.y + 2, 9, 3, 0.18) },
                                   draw: { p in let q = TownGeo.iso(gx, gy); p.phoneBox(q.x, q.y) }))
         }
-        for (gx, gy) in [(7.3, 10.6), (11.6, 7.3), (8.7, 4.4)] {
+        for (gx, gy) in [(8.72, 9.7), (11.6, 7.3), (8.7, 4.4)] { // v128: the market row took the west pavement
             items.append(TownItem(depth: gx + gy, draw: { p in let q = TownGeo.iso(gx, gy); p.pillarBox(q.x, q.y) }))
         }
-        items.append(TownItem(depth: 13.7 + 4.65, draw: { p in let q = TownGeo.iso(13.7, 4.65); p.pubSign(q.x, q.y) }))
         // a bus on each road, slowly; they go round the square and the one along gy gives way (`BristolBus`)
         for onX in [true, false] {
             let (bx, by) = BristolBus.at(t, onX: onX)

@@ -105,6 +105,8 @@ struct TownPainter {
     var tuffOverride: Tuff? = nil
     /// Windows and doors drawn this frame, lit again over the dark.
     var windows: [NightWindow] = []
+    /// v128: small lights the buildings carry (lanterns, the phone sign, the ring light), lit again over the dark.
+    var lites: [NightLite] = []
     /// Passengers queueing at your office and the jeeps, while they gather.
     var collect: CollectScene? = nil
     /// Pilots on strike outside your office (a morning event).
@@ -919,22 +921,25 @@ struct TownPainter {
         rect(bench.x + 7, bench.y - 2, 3, 4, hex("#7a4a24"))
     }
 
-    /// Pilot school: gable roof, bell tower, a tethered training balloon and students.
+    /// Pilot school: gable roof, bell tower, the mortarboard flag, a windsock, the training balloon tethered low, students.
     mutating func school(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.25, y0 = b.gy + 0.35, w = b.w - 0.9, d = b.d - 0.7
         let h: CGFloat = 66
         let f = block(x0, y0, w, d, h)
         gableRoof(x0, y0, w, d, h, 26, "#c0583a")
+        // v128: the school's flag (a mortarboard on navy) by the front corner and a windsock over the yard
+        let fp = iso(x0 - 0.14, y0 + d + 0.14)
+        capFlag(fp.x, fp.y, 78)
         for u: CGFloat in [0.2, 0.45, 0.7] { opening(f.D, f.C, h, u, 0.25, 0.14, 0.45, lit: true) }
         opening(f.C, f.B, h, 0.5, 0, 0.3, 0.6, door: true)
         let tw = block(x0 + w + 0.05, y0 + 0.1, 0.45, 0.45, 120, parapet: true)
         opening(tw.D, tw.C, 120, 0.5, 0.72, 0.45, 0.2)
         let bc = lp(tw.D, tw.C, 0.5)
         ellipse(bc.x, bc.y - 120 * 0.78, 5, 5, hex("#ffc23d"))
-        let tb = iso(x0 + w + 0.3, y0 + d + 0.7), alt: CGFloat = big ? 110 : 70, sway = CGFloat(sin(t * 0.8)) * 4
-        line(tb, pt(tb.x + sway, tb.y - alt), rgba(60, 35, 25, 0.7), 1)
-        blobShadow(tb.x + 30, tb.y + 10, 18, 7, 0.18)
-        balloon(tb.x + sway, tb.y - alt + 10, 22, ["#14a39a", "#e8fff9"], burn: t.truncatingRemainder(dividingBy: 3) < 0.3)
+        let ws = iso(x0 + w + 0.62, y0 + d + 0.02)
+        windsockPole(ws.x, ws.y, 50)
+        // The training balloon, tethered low over the yard on four ropes, its basket just off the ground.
+        trainingBalloon(iso(x0 + w + 0.3, y0 + d + 0.72), big: big)
         let cols = ["#2b2350", "#ff5e3a", "#14a39a"]
         for i in 0..<(big ? 5 : 3) {
             let p = iso(x0 + 0.2 + Double(i) * 0.25, y0 + d + 0.5)
@@ -963,7 +968,7 @@ struct TownPainter {
         }
     }
 
-    /// Guide office: striped teal awning, map board, the tour minibus.
+    /// Guide office: striped teal awning, the tour minibus, a big folding map, the guide's umbrella and a group of tourists.
     mutating func guideOffice(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.35, y0 = b.gy + 0.4, w = b.w - 1, d = b.d - 1
         let h: CGFloat = 48
@@ -974,25 +979,23 @@ struct TownPainter {
             poly([lp(a0, a1, k0), lp(a0, a1, k1), lp(a3, a2, k1), lp(a3, a2, k0)], hex(i % 2 == 1 ? "#ffffff" : "#3ad0c0"))
         }
         opening(f.D, f.C, h, 0.5, 0, 0.3, 0.55, door: true)
-        let mb = iso(x0 - 0.2, y0 + d + 0.2)
-        rect(mb.x - 1, mb.y - 30, 3, 30, hex("#5a3a20"))
-        rect(mb.x - 14, mb.y - 42, 28, 18, hex("#f3e8c8"))
-        var route = Path()
-        route.move(to: pt(mb.x - 10, mb.y - 30)); route.addLine(to: pt(mb.x - 2, mb.y - 38)); route.addLine(to: pt(mb.x + 8, mb.y - 32))
-        c.stroke(route, with: .color(hex("#3ad0c0")), lineWidth: 1.5)
         block(x0 + w + 0.15, y0 + 0.05, 0.55, 0.9, 22, lit: "#ffffff", shade: "#d8d8d8", top: "#f4f4f4", courses: false)
         let s0 = iso(x0 + w + 0.15, y0 + 0.95)
         rect(s0.x - 2, s0.y - 12, 38, 5, hex("#3ad0c0"))
-        if big {
-            let cols = ["#ffc23d", "#ff6fa8", "#5aa9e6", "#22a45d"]
-            for i in 0..<4 {
-                let p = iso(x0 + 0.1 + Double(i) * 0.2, y0 + d + 0.45)
-                person(p.x, p.y, cols[i], t * 0.2, Double(i))
-            }
+        // v128: what says "guided tours" from afar: a big folding map of the valley on its easel, and the guide at the
+        // door holding a yellow umbrella up high for a little group of tourists to follow.
+        mapBoard(x0 - 0.42, y0 + d + 0.2)
+        let gp = iso(x0 + w * 0.9, y0 + d + 0.62)
+        guideWithUmbrella(gp.x, gp.y)
+        let cols = ["#ffc23d", "#ff6fa8", "#5aa9e6", "#22a45d", "#9b7be0", "#ff8a3d", "#e8e2d4"]
+        let hats: [String?] = ["#f4e4c0", nil, "#e04a3a", nil, "#f4e4c0", "#2b2350", nil]
+        for i in 0..<(big ? 7 : 5) {
+            let p = iso(x0 + 0.05 + Double(i % 4) * 0.2 + (i > 3 ? 0.1 : 0), y0 + d + 0.48 + (i > 3 ? 0.22 : 0) + Double(i % 2) * 0.05)
+            tourist(p.x, p.y, cols[i], hat: hats[i], camera: i % 3 == 1, t * 0.25, Double(i))
         }
     }
 
-    /// Influencer agency: a modern cave-stone villa with big lit glass, a roof terrace and a pool.
+    /// Influencer agency: a modern cave-stone villa with big lit glass, a roof terrace, a pool; v128: a phone sign and a ring light on the roof.
     mutating func agency(_ g: Double, _ k: Double, _ big: Bool) {
         let x0 = g + 0.25, y0 = k + 0.25, w = 1.5, d = 1.15
         let h1: CGFloat = 54, h2: CGFloat = 46
@@ -1029,18 +1032,14 @@ struct TownPainter {
         }
         beams.move(to: upp(pdd, ph)); beams.addLine(to: upp(pc, ph))
         c.stroke(beams, with: .color(hex("#6a4024")), lineWidth: 2)
-        // The influencer filming with a ring light.
-        let ip = lp(f2.D, f2.C, 0.1), ix = ip.x - 26, iy = ip.y + 12
-        person(ix, iy, "#ff6fa8", big ? t : 0, 3)
-        c.stroke(Path(ellipseIn: CGRect(x: ix - 25, y: iy - 33, width: 14, height: 14)), with: .color(big ? .white : Color.white.opacity(0.7)), lineWidth: 2.5)
-        line(pt(ix - 18, iy - 19), pt(ix - 18, iy), hex("#3a2416"), 1.2)
-        // Neon play sign on the upper wall, pulsing while a campaign runs.
-        let sc = upp(lp(f2.C, f2.B, 0.5), h2 * 0.55), pulse = big ? 0.7 + 0.3 * sin(t * 5) : 0.5
-        var neon = c
-        neon.opacity = pulse
-        if big { neon.addFilter(.shadow(color: hex("#ff6fa8"), radius: 10)) }
-        neon.fill(Path(roundedRect: CGRect(x: sc.x - 13, y: sc.y - 9, width: 26, height: 18), cornerRadius: 5), with: .color(hex("#ff6fa8")))
-        poly([pt(sc.x - 4, sc.y - 5), pt(sc.x + 6, sc.y), pt(sc.x - 4, sc.y + 5)], .white)
+        // The influencer filming on the terrace.
+        let ip = lp(f2.D, f2.C, 0.1)
+        person(ip.x - 26, ip.y + 12, "#ff6fa8", big ? t : 0, 3)
+        // v128: on the roof, a big phone sign with a video playing on it and a ring light beside it, lit up while a
+        // campaign runs.
+        func rp(_ x: Double, _ y: Double) -> CGPoint { upp(iso(x, y), h2) }
+        phoneSign(rp(x0 + 0.8, y0 + 0.4), rp(x0 + 1.34, y0 + 0.4), 62, on: big)
+        ringLight(rp(x0 + 0.66, y0 + 0.6), on: big)
         c = keep
         // Turquoise pool in the front garden.
         let (pA, pB, pC, pD) = corners(x0 + 0.05, y0 + d + 0.12, 1.3, 0.4)
@@ -1256,7 +1255,7 @@ struct TownPainter {
             let p = iso(x, y)
             if s.region == .bri { oakTree(p.x, p.y, 0.85) } else { palm(p.x, p.y, 0.9) }
         }
-        for (x, y) in [(g + 0.05, k + 0.2), (g + 3, k + 0.25)] { let p = iso(x, y); hotelTree(p.x, p.y, 1.2) }
+        for (x, y) in [(g + 0.05, k + 0.2), (g + 3.1, k + 0.7)] { let p = iso(x, y); hotelTree(p.x, p.y, 1.2) } // v128: clear of the bazaar row
     }
 
     // MARK: Ground
@@ -1406,7 +1405,8 @@ struct TownPainter {
             }))
         }
         let cap = s.region == .cap
-        let trees: [(Double, Double)] = [(7.1, 6.9), (7.1, 9.2), (8.9, 6.9), (3.4, 8.9), (6.6, 10.7), (14.6, 7.3), (10.8, 4.4), (4.3, 7.0), (8.4, 15)]
+        // v128: the bazaar row took the square's south-west corner; two trees fill its old corner
+        let trees: [(Double, Double)] = [(7.1, 6.9), (14.55, 3.35), (14.85, 4.5), (3.4, 8.9), (14.6, 7.3), (10.8, 4.4), (4.3, 7.0), (8.4, 15)]
         for (i, (gx, gy)) in trees.enumerated() {
             items.append(TownItem(depth: gx + gy, shadow: { p in
                 let q = TownGeo.iso(gx, gy); p.blobShadow(q.x + 12, q.y + 4, 14, 5, 0.16)
@@ -1757,7 +1757,10 @@ struct TownPainter {
             let half = 50 * z / 0.5
             hits.buildings.append(.init(b: b, pts: pts, box: CGRect(x: sx - half, y: sy - 30, width: half * 2, height: max(0, bottom - sy + 30)),
                                         depth: b.gx + b.gy))
-            if full && !v.noLabels && night == nil { label(b, sx, sy, sc, &taken) }
+            if !v.noLabels && night == nil {
+                // v128: from afar, only a building that opened today shows its name
+                if full { label(b, sx, sy, sc, &taken) } else if Town.openedToday(b, s) { label(b, sx, sy, sc, &taken, full: false) }
+            }
         }
         let alerts = Town.alerts(s)
         for zn in Town.zones {
@@ -1775,7 +1778,7 @@ struct TownPainter {
     }
 
     /// Name tag above a building, with its state below the name. Skipped when it would cover another.
-    mutating func label(_ b: TownBuilding, _ sx: CGFloat, _ sy: CGFloat, _ sc: CGFloat, _ taken: inout [CGRect]) {
+    mutating func label(_ b: TownBuilding, _ sx: CGFloat, _ sy: CGFloat, _ sc: CGFloat, _ taken: inout [CGRect], full: Bool = true) {
         let fn = ((b.small ? 13 : 16) * sc).rounded(), fs = ((b.small ? 11 : 13) * sc).rounded()
         let locked = b.lv == -1, plot = b.lv == 0 && b.look != .kiosk
         let name = c.resolve(Text(b.name).font(.custom("BarlowCondensed-ExtraBold", fixedSize: fn))
@@ -1783,7 +1786,7 @@ struct TownPainter {
         let sub = c.resolve(Text(b.sub).font(.custom("Barlow-SemiBold", fixedSize: fs))
             .foregroundColor(plot ? hex("#ff5e3a") : locked ? Color.white.opacity(0.75) : Theme.ink2))
         let nw = name.measure(in: CGSize(width: 600, height: 100)).width, sw = sub.measure(in: CGSize(width: 600, height: 100)).width
-        let w = max(nw, sw) + 16 * sc, hh = fn + fs + 14
+        let w = max(full ? sw : 0, nw) + 16 * sc, hh = full ? fn + fs + 14 : fn + 10
         var x = sx - w / 2
         // iPad: the town is wide enough that edge buildings label past the screen and under the side buttons, so
         // tags stay on screen and left of the button column. iPhone keeps the old placement.
@@ -1795,10 +1798,15 @@ struct TownPainter {
         if taken.contains(where: { $0.intersects(r) }) { return }
         taken.append(r)
         let shape = Path(roundedRect: r, cornerRadius: 9 * sc)
-        c.fill(shape, with: .color(locked ? Color(red: 43 / 255, green: 35 / 255, blue: 80 / 255).opacity(0.72) : Color(red: 1, green: 250 / 255, blue: 243 / 255).opacity(0.94)))
+        let bg = locked ? Color(red: 43 / 255, green: 35 / 255, blue: 80 / 255).opacity(0.72) : Color(red: 1, green: 250 / 255, blue: 243 / 255).opacity(0.94)
+        // v128: a soft shadow, and a small pointer down to the building
+        c.fill(Path(roundedRect: r.offsetBy(dx: 0, dy: 2.5 * sc), cornerRadius: 9 * sc), with: .color(Theme.ink.opacity(0.18)))
+        c.fill(shape, with: .color(bg))
+        let pw = 6 * sc, px = min(max(sx, r.minX + 9 * sc + pw), r.maxX - 9 * sc - pw)
+        poly([pt(px - pw, r.maxY - 0.5), pt(px, r.maxY + pw * 0.9), pt(px + pw, r.maxY - 0.5)], bg)
         if plot { c.stroke(shape, with: .color(hex("#ff5e3a")), lineWidth: 1.5) }
         c.draw(name, at: pt(r.midX, r.minY + 4), anchor: .top)
-        c.draw(sub, at: pt(r.midX, sy - 5), anchor: .bottom)
+        if full { c.draw(sub, at: pt(r.midX, sy - 5), anchor: .bottom) }
     }
 }
 

@@ -581,7 +581,7 @@ struct DecorNightPreview: View {
         case .arch: (8, 15.57, 0.75)
         case .cafe: (DecorPainter.cafeAt.0, DecorPainter.cafeAt.1, 0.7)
         case .rugs: (DecorPainter.rugsAt.0, DecorPainter.rugsAt.1, 0.75)
-        case .statue: (6.9, 8.9, 0.6)
+        case .statue: (TownPainter.statueAt.0, TownPainter.statueAt.1, 0.6)
         case .lanterns: (7.4, 7.6, 0.3)
         case .flags: (7.5, 9, 0.26)
         default: (8, 8, 0.55)

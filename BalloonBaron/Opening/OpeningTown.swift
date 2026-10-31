@@ -231,7 +231,7 @@ enum OpeningTown {
         var crownBall = Mesh.icosphere(1)
         crownBall.p = crownBall.p.map { $0 * 2.8 }
         let ball = OpeningKit.geometry(crownBall, colors: false)
-        for (i, (gx, gy)) in [(7.1, 6.9), (7.1, 9.2), (8.9, 6.9), (3.4, 8.9), (6.6, 10.7), (14.6, 7.3), (10.8, 4.4), (4.3, 7.0), (8.4, 15)].enumerated() {
+        for (i, (gx, gy)) in [(7.1, 6.9), (14.55, 3.35), (14.85, 4.5), (3.4, 8.9), (14.6, 7.3), (10.8, 4.4), (4.3, 7.0), (8.4, 15)].enumerated() {
             let trunk = SCNCone(topRadius: 0.25, bottomRadius: 0.35, height: 2.4)
             trunk.radialSegmentCount = 8
             _ = place(trunk, wood, at(gx, gy, 1.2))

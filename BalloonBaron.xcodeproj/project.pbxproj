@@ -27,6 +27,7 @@
 		247D71012621FEDAFD91686F /* FleetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5B20ABBDA63F2F318C03DED /* FleetView.swift */; };
 		289E7E966F30C2BF3CD4E2BC /* TownContracts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2EE1C83431E7F8EFDA702F3A /* TownContracts.swift */; };
 		2AE29E79EC58294FF2CF023D /* BalloonBaronApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 716D53AF05BF7F135AC3340E /* BalloonBaronApp.swift */; };
+		2D3D05FCA9C1BB58C369E9CA /* TownIdentity.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA424231B72FE15F1972F9C8 /* TownIdentity.swift */; };
 		2EC0AA89BE01211B35404B76 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45339BBAA04927D7F285CA21 /* Platform.swift */; };
 		31B04EE6C024E443356BDA4B /* TutorialCoach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690B6FEB48442969E47A5436 /* TutorialCoach.swift */; };
 		32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF39B153C032C3B1F8AFDEF /* TownNight.swift */; };
@@ -196,6 +197,7 @@
 		A429A91A72084FD301F9A3E5 /* BarlowCondensed-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "BarlowCondensed-Bold.ttf"; sourceTree = "<group>"; };
 		A467DC08FB9A6ED13E3DA833 /* OpeningMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpeningMath.swift"; sourceTree = "<group>"; };
 		A87581606A4966EC52B22837 /* DesignStudioView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DesignStudioView.swift"; sourceTree = "<group>"; };
+		AA424231B72FE15F1972F9C8 /* TownIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownIdentity.swift"; sourceTree = "<group>"; };
 		AC0AFDF1E7A3A9121D93DD8E /* ScenePainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ScenePainter.swift"; sourceTree = "<group>"; };
 		B1F376872405998A225098DA /* Telemetry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Telemetry.swift"; sourceTree = "<group>"; };
 		B3141C729AE6B19C61AE6F2A /* BankView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BankView.swift"; sourceTree = "<group>"; };
@@ -328,6 +330,7 @@
 				2EE1C83431E7F8EFDA702F3A /* TownContracts.swift */,
 				18984496BC160B829AD4E3E8 /* TownDecor.swift */,
 				BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */,
+				AA424231B72FE15F1972F9C8 /* TownIdentity.swift */,
 				DA747D61B806F541F6AB8DF8 /* TownModel.swift */,
 				FBF39B153C032C3B1F8AFDEF /* TownNight.swift */,
 				028E3000896415942F6E8508 /* TownPainter.swift */,
@@ -549,6 +552,7 @@
 				289E7E966F30C2BF3CD4E2BC /* TownContracts.swift in Sources */,
 				96D085A373064DE08FC6CA2F /* TownDecor.swift in Sources */,
 				89387608271733A9FA3C605B /* TownExtras.swift in Sources */,
+				2D3D05FCA9C1BB58C369E9CA /* TownIdentity.swift in Sources */,
 				9A10F15161315C7C8ACF36B5 /* TownModel.swift in Sources */,
 				32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */,
 				202A37F855488615D2088520 /* TownPainter.swift in Sources */,

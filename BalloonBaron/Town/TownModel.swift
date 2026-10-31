@@ -160,10 +160,10 @@ enum Town {
                               sub: loc("town.sub.balloons", num(n)) + " · " + loc("building.sub.level", num(s.level(.sales))),
                               tap: market ? .building(.sales) : locked(mine, .market),
                               colors: s.colors, small: true))
-        // The bazaar against the east wall, and the wind mast by the launch field.
+        // v128: the bazaar, a row of shops on the main road by the square; the wind mast by the launch field.
         let bazaar = loc("town.b.bazaar")
         let decor = StoreItem.allCases.filter { $0.kind == .decoration }
-        L.append(TownBuilding(id: "bazaar", gx: 14.05, gy: 2.75, w: 1.35, d: 1.7, name: bazaar, look: .bazaar,
+        L.append(TownBuilding(id: "bazaar", gx: 5.9, gy: 8.7, w: 1.4, d: 2.5, name: bazaar, look: .bazaar,
                               lv: open.contains(.bazaar) ? (s.decorationCount > 0 ? 2 : 1) : -1,
                               sub: open.contains(.bazaar) ? loc("town.sub.decor", num(s.decorationCount), num(decor.count)) : soon,
                               tap: open.contains(.bazaar) ? .bazaar : locked(bazaar, .bazaar), small: true))
@@ -182,6 +182,16 @@ enum Town {
         return L
     }
 
+    /// v128: the feature that opens each building; on the day it opens (or the school or workshop is built) its name
+    /// shows from afar too.
+    static let opens: [String: Feature] = ["hangar": .fleet, "shop": .workshop, "office": .crew, "school": .school, "bank": .bank,
+                                           "influ": .agency, "guide": .guide, "bazaar": .bazaar, "mine": .market]
+
+    static func openedToday(_ b: TownBuilding, _ s: GameState) -> Bool {
+        guard b.lv >= 0, let f = opens[b.id], let d = s.openedOn?[f.rawValue] else { return false }
+        return d == s.day
+    }
+
     /// Height above the footprint center where a building's label sits: just over its roof.
     static func labelTop(_ b: TownBuilding) -> Double {
         if b.lv <= 0 && b.look != .kiosk { return 90 }
@@ -195,7 +205,7 @@ enum Town {
         case .school: return 160
         case .bank: return 130
         case .guide: return 90
-        case .agency: return 150
+        case .agency: return 185 // v128: over the phone sign on the roof
         case .tower: return 300
         case .mast: return 175
         case .bazaar: return 82

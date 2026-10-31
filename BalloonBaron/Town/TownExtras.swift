@@ -65,38 +65,15 @@ extension TownPainter {
 
     // MARK: Bazaar
 
-    /// A covered bazaar: tuff walls, two small domes, a striped awning over carpets and pots.
-    mutating func bazaar(_ b: TownBuilding) {
-        if s.region == .bri { tudorPub(b); return } // v124.1: Bristol's bazaar is the old harbour pub
-        let x0 = b.gx + 0.1, y0 = b.gy + 0.1, w = b.w - 0.2, d = b.d - 0.2, hh: CGFloat = 40
-        let f = block(x0, y0, w, d, hh, parapet: true)
-        opening(f.D, f.C, hh, 0.3, 0, 0.22, 0.6, door: true)
-        opening(f.D, f.C, hh, 0.72, 0.35, 0.16, 0.35, lit: true)
-        opening(f.C, f.B, hh, 0.5, 0.35, 0.2, 0.35, lit: true)
-        let top = lp(f.a, f.c, 0.5), domeCol = s.local.winter != nil ? "#f2f5fa" : "#2b8ab0"
-        dome(top.x - 14, top.y + 2, 13, domeCol)
-        dome(top.x + 14, top.y - 2, 10, domeCol)
-        let a0 = upp(f.D, 28), a1 = upp(f.C, 28), a2 = pt(a1.x - 14, a1.y + 12), a3 = pt(a0.x - 14, a0.y + 12)
-        for i in 0..<6 {
-            let k0 = CGFloat(i) / 6, k1 = CGFloat(i + 1) / 6
-            poly([lp(a0, a1, k0), lp(a0, a1, k1), lp(a3, a2, k1), lp(a3, a2, k0)], hex(i % 2 == 1 ? "#fff4dc" : "#c0283a"))
-        }
-        // Goods out front: a hanging kilim, pots.
-        let r = iso(x0 + 0.25, y0 + d + 0.3)
-        rect(r.x - 8, r.y - 16, 16, 14, hex("#c0283a"))
-        rect(r.x - 8, r.y - 11, 16, 3, hex("#ffc23d"))
-        rect(r.x - 2, r.y - 15, 4, 12, hex("#2b2350"))
-        for (i, col) in ["#b8582e", "#2b8ab0", "#d08a3a"].enumerated() {
-            let p = iso(x0 + 0.7 + Double(i) * 0.28, y0 + d + 0.25)
-            ellipse(p.x, p.y - 6, 5, 6, hex(col))
-            rect(p.x - 2, p.y - 14, 4, 4, hex(col))
-        }
-    }
+    /// v128: a row of three awning shops on the main road by the square (`marketRow`, TownIdentity.swift).
+    mutating func bazaar(_ b: TownBuilding) { marketRow(b) }
 
     // MARK: Decorations
 
     /// Lantern posts along the main roads (with the bazaar's lantern strings).
     static let lanternSpots: [(Double, Double)] = [(2, 7.4), (5, 7.4), (10.5, 7.4), (13.5, 7.4), (7.4, 2), (7.4, 5.5), (7.4, 10.5), (7.4, 13.5)]
+    /// v128: Hezarfen's statue stands at the square's north-east corner since the bazaar took the south-west one.
+    static let statueAt: (Double, Double) = (9.05, 6.95)
     static let flagSpots: [(Double, Double)] = [(0, 4), (0, 11), (4, 15.3), (11, 15.3), (15.3, 6.6), (15.3, 11)]
 
     func decorations() -> [TownItem] {
@@ -106,8 +83,9 @@ extension TownPainter {
             items.append(TownItem(depth: 16.2, draw: { p in p.fountain(TownGeo.iso(8, 8), tt) }))
         }
         if s.placed(.statue) {
-            items.append(TownItem(depth: 15.8, shadow: { p in let q = TownGeo.iso(6.9, 8.9); p.blobShadow(q.x + 18, q.y + 4, 18, 6, 0.16) },
-                                  draw: { p in p.statue(TownGeo.iso(6.9, 8.9)) }))
+            let a = Self.statueAt
+            items.append(TownItem(depth: 16, shadow: { p in let q = TownGeo.iso(a.0, a.1); p.blobShadow(q.x + 18, q.y + 4, 18, 6, 0.16) },
+                                  draw: { p in p.statue(TownGeo.iso(a.0, a.1)) }))
         }
         if s.placed(.lanterns) {
             for (gx, gy) in Self.lanternSpots { items.append(TownItem(depth: gx + gy, draw: { p in p.lanternPost(TownGeo.iso(gx, gy), tt, gx) })) }
