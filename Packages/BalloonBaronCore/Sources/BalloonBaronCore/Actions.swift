@@ -234,6 +234,7 @@ extension Game {
         guard !state.school, state.cash >= Rules.schoolCost else { return false }
         state.cash -= Rules.schoolCost
         state.school = true
+        state.openedOn = (state.openedOn ?? [:]).merging([Feature.school.rawValue: state.day]) { _, new in new }
         newCandidates()
         return true
     }

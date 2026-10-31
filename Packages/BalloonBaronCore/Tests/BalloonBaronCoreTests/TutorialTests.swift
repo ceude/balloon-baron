@@ -131,6 +131,26 @@ final class TutorialTests: XCTestCase {
         XCTAssertEqual(Rules.unlockDay[.agency], 8)
     }
 
+    /// v128: the town remembers the day each building opened (its name shows from afar that day); old saves decode.
+    func testOpenedOnRecordsTheDay() throws {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 3)
+        g.state.day = 9
+        g.state.unlocked = [.insurance, .fleet, .bank, .crew, .market, .guide, .agency]
+        g.state.unlockVersion = 2
+        g.state.openedOn = nil
+        g.unlockCheck()
+        XCTAssertEqual(g.state.openedOn?[Feature.bazaar.rawValue], 9)
+        XCTAssertNil(g.state.openedOn?[Feature.guide.rawValue], "already open before")
+        g.state.day = 12; g.state.cash = 1_000_000
+        XCTAssertTrue(g.buildSchool())
+        XCTAssertEqual(g.state.openedOn?[Feature.school.rawValue], 12)
+        let data = try JSONEncoder().encode(g.state)
+        var obj = try JSONSerialization.jsonObject(with: data) as! [String: Any]
+        obj.removeValue(forKey: "openedOn")
+        let old = try JSONDecoder().decode(GameState.self, from: JSONSerialization.data(withJSONObject: obj))
+        XCTAssertNil(old.openedOn)
+    }
+
     /// v122.4: days 1 and 2 are the same for everyone; on day 2 a higher price still fills the basket.
     func testTheFirstTwoDaysAreAFixedScenario() {
         var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 3)

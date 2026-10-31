@@ -312,6 +312,9 @@ public struct GameState: Codable, Equatable, Sendable {
     public var unlocked: Set<Feature> = []
     /// v121.9: 2 once the one-building-a-day schedule applies; nil in older saves (`unlockCheck` migrates them).
     public var unlockVersion: Int?
+    /// v128: the day each feature opened (`Feature.rawValue`), and the day the school or the workshop was built; the town
+    /// shows that building's name from afar on that day. nil in older saves.
+    public var openedOn: [String: Int]?
     /// v121.12: a flight landed without a crash (the first-flight postcard).
     public var firstCleanFlight: Bool?
     /// v121.12: lessons and postcards held back for the next mornings, and the day they were last spread.

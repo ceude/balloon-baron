@@ -190,6 +190,7 @@ public struct Game: Sendable {
                                       .guide: .guide, .agency: .agency, .bazaar: .bazaar, .workshop: .workshop, .school: .school]
         for f in Feature.allCases where rules[f]! && !state.unlocked.contains(f) {
             state.unlocked.insert(f)
+            state.openedOn = (state.openedOn ?? [:]).merging([f.rawValue: state.day]) { _, new in new }
             queueTip(tipFor[f]!)
         }
         queueTip(.welcome)
