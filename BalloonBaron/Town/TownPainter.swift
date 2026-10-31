@@ -1763,8 +1763,8 @@ struct TownPainter {
             hits.buildings.append(.init(b: b, pts: pts, box: CGRect(x: sx - half, y: sy - 30, width: half * 2, height: max(0, bottom - sy + 30)),
                                         depth: b.gx + b.gy))
             if !v.noLabels && night == nil {
-                // v128: from afar, only a building that opened today shows its name
-                if full { label(b, sx, sy, sc, &taken) } else if Town.openedToday(b, s) { label(b, sx, sy, sc, &taken, full: false) }
+                // Names show only when zoomed in (v129.1: no opening-day names from afar)
+                if full { label(b, sx, sy, sc, &taken) }
             }
         }
         let alerts = Town.alerts(s)

@@ -10701,8 +10701,6 @@ function townSky(t) {
   return out;
 }
 /* v128: the feature that opens each building; on the day it opens (or is built) its name shows from afar too */
-const OPENS = { hangar: 'fleet', shop: 'workshop', office: 'crew', school: 'school', bank: 'bank', influ: 'agency', guide: 'guide', bazaar: 'bazaar', mine: 'market' };
-const openedToday = b => b.lv >= 0 && !!OPENS[b.id] && !!S.opened && S.opened[OPENS[b.id]] === S.day;
 /* Name tag above a building. Small when zoomed out (name only), full when zoomed in. Returns its rect. */
 /* Height above the footprint centre where a building's label sits: just over its roof. */
 function townTop(b) {
@@ -10974,7 +10972,6 @@ function renderTown(V, w, h, dpr, offY) {
       const pts = [tiso(b.gx, b.gy), tiso(b.gx + b.w, b.gy), tiso(b.gx + b.w, b.gy + b.d), tiso(b.gx, b.gy + b.d)].map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]);
       V.hits.push({ b, pts, box: [sx - 50 * V.z / .5, sy - 30, sx + 50 * V.z / .5, Math.max(...pts.map(p => p[1]))], depth: b.gx + b.gy });
       if (full && !V.noLabels) townLabel(b, sx, sy, sc, full, taken);
-      else if (!V.noLabels && NIGHT_K <= 0 && openedToday(b)) townLabel(b, sx, sy, sc, false, taken); /* v128: from afar, only a building that opened today */
     }
     /* red dots on zones that need you: pilots or licence (EKİP), offers and sales (ŞİRKETLER) */
     const dots = navDots();

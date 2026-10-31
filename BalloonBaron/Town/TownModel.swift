@@ -182,16 +182,6 @@ enum Town {
         return L
     }
 
-    /// v128: the feature that opens each building; on the day it opens (or the school or workshop is built) its name
-    /// shows from afar too.
-    static let opens: [String: Feature] = ["hangar": .fleet, "shop": .workshop, "office": .crew, "school": .school, "bank": .bank,
-                                           "influ": .agency, "guide": .guide, "bazaar": .bazaar, "mine": .market]
-
-    static func openedToday(_ b: TownBuilding, _ s: GameState) -> Bool {
-        guard b.lv >= 0, let f = opens[b.id], let d = s.openedOn?[f.rawValue] else { return false }
-        return d == s.day
-    }
-
     /// Height above the footprint center where a building's label sits: just over its roof.
     static func labelTop(_ b: TownBuilding) -> Double {
         if b.lv <= 0 && b.look != .kiosk { return 90 }
