@@ -2070,6 +2070,7 @@ function nextPopup() {
   if (AUTO) while (S.hezQ.length && S.hezQ[0].startsWith('news:')) AUTO.news.push(S.hezQ.shift()); /* so does Hezarfen's news */
   while (S.hezQ.length && !praiseStill(S.hezQ[0])) S.hezQ.shift(); /* v121.12: a praise that's no longer true (the pilot was let go) is dropped */
   if (S.hezQ.length) { showHez(S.hezQ.shift()); return; }
+  if (ctrDelayJob()) { ctrDelayCard(); return; } /* v126: the charter plane is late: keep the seats or sell them */
   if (S.ctr && S.ctr.offer && S.ctr.offer.seen !== S.day && ctrCfg()) { if (!S.ctr.scene) ctrScene(); else ctrCard(); return; } /* v125: after the owner's own lines */
   if (S.xfer) { if (S.xfer.to === S.region) showXfer(); else { S.xfer = null; nextPopup(); } return; } /* v125: only on entering */
   if (letterDue()) { showLetter(); return; } /* v123: the family's letter, once, from day 50 */
@@ -2186,8 +2187,9 @@ function startDay() {
 function launch(skip) {
   const fl = skip ? [] : flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0);
   /* v125: a tour group booked for today takes its seats first; the market gets the rest */
-  const held = ctrHeld(cap), K = ctrToday(), m = market(S.price, cap - held);
-  const plan = { skip: !!skip, fly: fl.map(b => b.id), pax: {}, rpax: m.pax.slice(1), rcap: m.caps.slice(1), extra: skip ? 0 : m.bonus };
+  if (ctrDelayJob()) ctrDelayChoose('hold'); /* v126: unanswered (autopilot, sims): the seats wait */
+  const held = ctrHeld(cap), K = ctrToday(), wait = ctrWaitSeats(cap - held), m = market(S.price, cap - held - wait);
+  const plan = { skip: !!skip, fly: fl.map(b => b.id), pax: {}, rpax: m.pax.slice(1), rcap: m.caps.slice(1), extra: skip ? 0 : m.bonus, ctrWait: wait };
   if (K) { const free = cap ? market(S.price, cap).pax[0] : 0; plan.ctr = { id: K.id, held, load: cap ? free / cap : 1, lost: Math.max(0, free - m.pax[0]) }; }
   let left = m.pax[0] + held;
   const order = fl.slice().sort((a, b) => (b.id === S.flag) - (a.id === S.flag));
@@ -2282,7 +2284,7 @@ function finishDay(flight) {
   if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; S.holding = (S.holding || 0) + D.inst / FX(); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
   S.loans = S.loans.filter(l => l.left > 0);
   const ctrR = ctrSettle(Lg, ev, rev, paxTotal);
-  let net = (Lg.ctr || 0) - (Lg.ctrPen || 0) - (Lg.ctrVoucher || 0) - (Lg.xfer || 0) + Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
+  let net = (Lg.ctr || 0) + (Lg.ctrWait || 0) - (Lg.ctrPen || 0) - (Lg.ctrVoucher || 0) - (Lg.xfer || 0) + Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
   S.cash += net;
   { const r0 = S.rep; S.rep = clamp(lerp(S.rep, 1, .01), .4, 1.4); if (starVal(S.rep) > 4.5) S.rep -= .006; repMark('Ortalamaya dönüş', r0); }
   repBy('Dev balon', fl.filter(b => b.size === 'XL').length * .005);
@@ -3219,7 +3221,7 @@ function touristsToday() {
   const hotels = myHotels().reduce((a, x) => a + Math.round(x.pax * (owns(x) ? 1.5 : 1) * (S.winter ? .6 : 1)), 0);
   return S.demand + hotels + (S.day <= (S.guideUntil || 0) ? S.guidePax || 5 : 0) + (S.day <= S.influUntil ? S.influPax || 8 : 0) + (S.day <= (S.showUntil || 0) ? Math.round(SHOW.pax * (S.showN || 0)) : 0) + repBonusRaw();
 }
-function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), held = ctrHeld(cap), pax = market(S.price, cap - held).pax[0], k = ctrToday(); return pax * S.price + held * (k ? k.price : 0) + (fl.some(isSelf) ? Math.round(Math.min(pax + held, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
+function estIncome() { const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), held = ctrHeld(cap), wait = ctrWaitSeats(cap - held), pax = market(S.price, cap - held - wait).pax[0], k = ctrToday(); return pax * S.price + held * (k ? k.price : 0) + wait * (S.ctr && S.ctr.wait ? S.ctr.wait.pay : 0) + (fl.some(isSelf) ? Math.round(Math.min(pax + held, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0); }
 /* Who's in the baskets today, for the ticket card. */
 /* TestFlight: why nothing flies today, from the most telling reason */
 /* v121.12: nothing can fly today and nothing can change that (all in repair, or a flying ban): the day has to be skipped */
@@ -3255,10 +3257,10 @@ function whoFlies(fl) {
 }
 function renderAct() {
   const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), n = fl.length;
-  const held = ctrHeld(cap), K = ctrToday(), m = market(S.price, cap - held), pax = m.pax[0] + held, seats = m.caps.reduce((a, b) => a + b, 0) + held;
+  const held = ctrHeld(cap), K = ctrToday(), wait = ctrWaitSeats(cap - held), m = market(S.price, cap - held - wait), pax = m.pax[0] + held, seats = m.caps.reduce((a, b) => a + b, 0) + held + wait;
   if (K) m.ctr = { held, k: K };
   const direct = extraSources().reduce((a, x) => a + x.n, 0);
-  const income = (pax - held) * S.price + held * (K ? K.price : 0) + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0);
+  const income = (pax - held) * S.price + held * (K ? K.price : 0) + wait * (S.ctr && S.ctr.wait ? S.ctr.wait.pay : 0) + (fl.some(isSelf) ? Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER) : 0);
   const w = willing(S.price), feel = w >= .85 ? ['Uygun fiyat', 'g'] : w >= .6 ? ['Biraz pahalı', 'y'] : w >= .35 ? ['Pahalı', 'o'] : ['Çok pahalı', 'r'];
   const tour = touristsToday(), crowded = seats > tour;
   $('dem').innerHTML = `<div class="feel"><div class="fl"><span>Turistlere göre</span><b class="${feel[1]}">${feel[0]}</b></div><div class="meter"><i style="left:${feelPos(w)}%"></i></div><div class="fl sm"><span>ucuz</span><span>pahalı</span></div></div>
@@ -3267,6 +3269,7 @@ function renderAct() {
   /* why the sum is not simply seats × price */
   const notes = [];
   if (fl.some(isSelf) && pax) notes.push(`Amirali sen uçuruyorsun: yolcuları %${Math.round(FOUNDER * 100)} fazla öder (+${eur(Math.round(Math.min(pax, sellSeats(bal(S.flag))) * S.price * FOUNDER))}).`);
+  if (wait) notes.push(`Rötar: ${wait} koltuk charter grubu için boş bekliyor; acenta koltuk başı ${eur(S.ctr.wait.pay)} öder.`); /* v126 */
   if (K) notes.push(held < K.n ? `Tur grubu ${K.n} kişi ama bugün yalnızca ${held} koltuğun uçabiliyor: eksik koltuk başına ${eur(Math.round(K.price * CTR[S.region].pen))} ceza.` : `Tur grubu ${K.n} kişi, kişi başı ${eur(K.price)}: koltuklar önce onlara.`);
   if (S.docDay === S.day && fl.some(b => b.id === S.flag)) notes.push('Amiralde 4 koltuk belgesel ekibinde.');
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
@@ -3739,7 +3742,7 @@ function showReport() {
   tk.appendChild(h('div', 'perf'));
   const b = h('div', 'tbody'), led = h('div', 'led');
   const line = (k, v) => { if (!v) return; led.appendChild(h('div', null, `<span>${k}</span><span class="v ${v > 0 ? 'pos' : 'neg'}">${v > 0 ? '+' : ''}${eur(v)}</span>`)); };
-  line('Bilet geliri', L.rev); if (L.ctr) line(`Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.ctrVoucher) line('Sis garantisi: kuponlar', -L.ctrVoucher); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
+  line('Bilet geliri', L.rev); if (L.ctr) line(`Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.ctrWait) line('Rötar tazminatı (boş koltuklar)', L.ctrWait); if (L.ctrVoucher) line('Sis garantisi: kuponlar', -L.ctrVoucher); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
   line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan); if (L.xfer) line('Getirilen balonların bedeli', -L.xfer);
   line('Kaza: onarım', -L.repair); line('Kaza: yolcu tazminatı', -L.comp); line('Sigorta ödemesi', L.insPay);
   line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize);  line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
@@ -4605,7 +4608,7 @@ function checkDeals() {
 }
 let COL = null;
 function startCollect() {
-  const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), held = ctrHeld(cap), K = ctrToday(), m = market(S.price, cap - held);
+  const fl = flying(), cap = fl.reduce((a, b) => a + sellSeats(b), 0), held = ctrHeld(cap), K = ctrToday(), m = market(S.price, cap - held - ctrWaitSeats(cap - held));
   const parts = [{ label: `${RD().name} bölgesindeki turistler`, n: m.base, col: '#ffffff' }].concat(m.parts);
   const seq = []; parts.forEach((p, i) => { for (let k = 0; k < p.n; k++) seq.push(i); });
   for (let i = seq.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [seq[i], seq[j]] = [seq[j], seq[i]]; }
@@ -5397,7 +5400,7 @@ function showMenu(open) {
   group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
-  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); }), row('star', 'Luksor kontrat testi (Nil gemisi)', chev, () => { m.hidden = true; testRegionContract('lux'); }), row('star', 'Bristol kontrat testi (hafta sonu treni)', chev, () => { m.hidden = true; testRegionContract('bri'); })]);
+  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); }), row('star', 'Luksor kontrat testi (Nil gemisi)', chev, () => { m.hidden = true; testRegionContract('lux'); }), row('star', 'Bristol kontrat testi (hafta sonu treni)', chev, () => { m.hidden = true; testRegionContract('bri'); }), row('star', 'Kapadokya anlaşma testi (charter uçağı)', chev, () => { m.hidden = true; testCapContract(); })]);
   /* v121.10: watch the opening film again; the name and colours are skipped, the company flies in its own colours */
   group('Film', '#ff5e3a', [row('star', 'Başlangıç filmini tekrar izle', chev, () => { m.hidden = true; replayOpening(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
@@ -5506,6 +5509,25 @@ function testRegionContract(id) {
   ctrState().next = S.day; ctrMorning();
   if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
   startDay();
+}
+/* v126 (prototype only): Cappadocia on day 40 in chapter 2 with a mid fleet; the first charter offer comes this morning
+   (the airport scene). */
+function testCapContract() {
+  const name = S && S.company ? S.company : 'Test Balon', cols = S && S.colors ? S.colors : PALETTES[0];
+  S = newState(); S.company = name; S.colors = cols; S.day = 40; S.tutorialDone = true; S.selfFlights = 30; S.ventTip = 1; S.tut = { done: 1 };
+  Object.keys(UNLOCK_DAY).concat(['ins']).forEach(k => S.unl[k] = 1);
+  Object.keys(HEZ).forEach(k => S.tips[k] = 1);
+  S.balloons = []; S.nextId = 1; ['M', 'M', 'S', 'M'].forEach(z => addBalloon(z));
+  S.pilots = []; for (let i = 0; i < 4; i++) S.pilots.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + pilotInitial(i) + '.', lvl: 1 + (i % 2), xp: 0, trait: null });
+  S.flag = S.balloons[0].id; S.selfFly = true; S.lastSelfFly = S.day; S.cash = 30000; S.rep = 1.08; S.chapter = 1; S.rateAsked = 12;
+  S.hotels = ['tas']; S.guideCount = 2; S.netHist = [2400, 2650, 1900, 2800, 2500, 3100, 2700];
+  S.lastShare = { me: 60, cap: 64, rivals: [], demand: 240, extra: 0 }; S.firstMis = 1;
+  S.bossSaid = { 'cap:hello': 1 }; S.hezQ = []; S.paper = null; S.eventDue = false; S.letter = { day: 30, rated: 30 };
+  S.nextEvent = S.day + 30; S.festNext = S.day + 30; S.nextWinter = S.day + 30; mode = 'office'; tab = 'plan';
+  S.weather = newWeather(); if (S.weather.flag === 'red') S.weather.flag = 'green'; S.demand = dayDemand();
+  ctrState().next = S.day; ctrMorning();
+  if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
+  assignPilots(); startDay();
 }
 /* v125 (prototype only): Baron of Cappadocia with the money for Albuquerque: entering shows the fleet-transfer card. */
 function testAbqEntry() {
@@ -7232,6 +7254,81 @@ const CTR_CAST_BRI = [
     fog: 'Sis bastı! Garantimiz geçerli: bugünkülere para iadesi, kupon da senden.', redSkip: 'Kırmızı bayrak! Yolcularımı demiryolu müzesine götürüyorum, bugün sayılmaz.',
     bye: 'Buharlı tren artık başka istasyonda duracak. Hoşça kal canım.' } }
 ];
+/* v126: Cappadocia's charter flights: tour agencies that fly a group in to the little airport east of town for two
+   mornings. Extra lines: warn {the evening before, the plane may be late}, late {that morning: it is}, onTime, landed
+   (you kept the seats and it made it), noShow (kept them, it didn't), stranded (you sold the seats and it landed),
+   openOk (sold them, it didn't land: fine). */
+const JIWOO_AV = avFrame('Han Ji-woo', '#5aa9e6', '#ffe0ec', '#e0408a', `
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#f2c4d6"/><path d="M41 70 L50 80 L59 70" stroke="#fff" stroke-width="3.4" fill="none"/><path d="M30 76 L41 70 L45 90Z M70 76 L59 70 L55 90Z" fill="#e8a8c0"/>
+<rect x="66" y="80" width="10" height="13" rx="2" fill="#2b2350"/><circle cx="71" cy="86" r="2.6" fill="#7ab8c8"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#ecc8a8"/>
+<path d="M29 58 C25 34 36 19 50 19 C64 19 75 34 71 58 C68 60 66 60 64 58 L64 40 L36 40 L36 58 C34 60 32 60 29 58Z" fill="#1a1418"/>
+<ellipse cx="50" cy="46" rx="15.5" ry="18.5" fill="#f4d4b6"/>
+<path d="M34 42 C36 28 46 25 52 26 C60 27 66 32 66 42 C60 36 52 33 46 33 C41 35 37 38 34 42Z" fill="#1a1418"/>
+<rect x="60" y="30" width="9" height="3.4" rx="1.7" fill="#ffc23d" transform="rotate(-20 64 31)"/>
+<path d="M39 44 Q43 42.5 47 44 M53 44 Q57 42.5 61 44" stroke="#3a2a22" stroke-width="1.8" fill="none" stroke-linecap="round"/>
+<path d="M40 48.4 Q43 46.4 46 48.4 M54 48.4 Q57 46.4 60 48.4" stroke="#1f1b2e" stroke-width="2" fill="none" stroke-linecap="round"/>
+<ellipse cx="39.5" cy="53" rx="3.2" ry="1.8" fill="#f598a8" opacity=".6"/><ellipse cx="60.5" cy="53" rx="3.2" ry="1.8" fill="#f598a8" opacity=".6"/>
+<path d="M50 50 L48.8 54.4 Q50 55.2 51.3 54.6" fill="#e4b494"/><path d="M44 58 Q50 63.6 56 58 Q50 60 44 58Z" fill="#d0405a"/>`);
+const CHEN_AV = avFrame('Chen Hao', '#c0392b', '#ffd27a', '#c0392b', `
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#1f2a44"/><path d="M41 70 L50 84 L59 70Z" fill="#f6f4ee"/><path d="M47.6 72 L52.4 72 L53 82 L50 88 L47 82Z" fill="#c0392b"/><path d="M30 76 L41 70 L46 92Z M70 76 L59 70 L54 92Z" fill="#2a3858"/>
+<circle cx="35" cy="82" r="2.2" fill="#ffd27a"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#e2b48e"/><ellipse cx="50" cy="46" rx="16.5" ry="19.5" fill="#efc8a2"/>
+<path d="M33 42 C31 24 42 18 51 18 C61 18 70 24 67 42 C66 34 62 30 56 29 C48 31 40 30 36 34 C34 36 33.5 39 33 42Z" fill="#14121a"/><path d="M36 34 C44 28 52 27 58 28" stroke="#2e2a36" stroke-width="1.4" fill="none"/>
+<rect x="36" y="42.4" width="12" height="8" rx="1.6" fill="rgba(255,255,255,.18)" stroke="#14121a" stroke-width="1.8"/><rect x="52" y="42.4" width="12" height="8" rx="1.6" fill="rgba(255,255,255,.18)" stroke="#14121a" stroke-width="1.8"/><path d="M48 45 L52 45" stroke="#14121a" stroke-width="1.8"/>
+<circle cx="42" cy="46.6" r="1.6" fill="#1f1b2e"/><circle cx="58" cy="46.6" r="1.6" fill="#1f1b2e"/>
+<path d="M50 50 L48.6 55 Q50 56 51.5 55.3" fill="#d8a882"/><path d="M43.5 59 Q50 62.4 56.5 59" stroke="#9a3a3a" stroke-width="2" fill="none" stroke-linecap="round"/>`);
+const MURAT_AV = avFrame('Murat Bey', '#1f6f8b', '#ffd8a8', '#e08a1e', `
+<path d="M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z" fill="#c8b48e"/><path d="M41 70 L50 84 L59 70Z" fill="#f4f8fc"/><path d="M47.6 72 L52.4 72 L53 82 L50 88 L47 82Z" fill="#1f6f8b"/><g fill="#e0408a"><circle cx="50" cy="76" r=".9"/><circle cx="50.6" cy="81" r=".9"/></g><path d="M30 76 L41 70 L46 92Z M70 76 L59 70 L54 92Z" fill="#b29e78"/>
+<path d="M33 79 L37 77 L38 82Z" fill="#c0392b"/>
+<rect x="43" y="58" width="14" height="14" rx="4" fill="#c99470"/><ellipse cx="50" cy="46" rx="17" ry="20" fill="#d8a47c"/>
+<path d="M33 40 C32 25 41 19 50 19 C60 19 68 25 67 40 C65 32 60 28 50 28 C41 28 35 32 33 40Z" fill="#4a4448"/><path d="M33 40 C33 34 35 31 37 30 L36 42Z M67 40 C67 34 65 31 63 30 L64 42Z" fill="#9a9498"/>
+<path d="M38 42.6 Q43 40.6 47 42.6 M53 42.6 Q57 40.6 62 42.6" stroke="#4a4448" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+<circle cx="43" cy="47" r="1.8" fill="#1f1b2e"/><circle cx="57" cy="47" r="1.8" fill="#1f1b2e"/><path d="M40 50.6 Q43 49.6 45.6 50.6 M54.4 50.6 Q57 49.6 60 50.6" stroke="#b07a58" stroke-width="1" fill="none"/>
+<path d="M50 48 L48 54 Q50 55.4 52 54.4" fill="#c08a64"/>
+<path d="M38.6 58.6 C42 54.4 47 55.6 50 56 C53 55.6 58 54.4 61.4 58.6 C57 58.4 54 58.6 50 59 C46 58.6 43 58.4 38.6 58.6Z" fill="#3a3438"/>
+<path d="M45 61 Q50 64 55 61" stroke="#9a4a3a" stroke-width="1.8" fill="none" stroke-linecap="round"/>`);
+const CTR_CAST_CAP = [
+  { id: 'jiwoo', name: 'Han Ji-woo', co: 'Haneul Wings', title: 'Haneul Wings sahibi, Seul', av: () => JIWOO_AV, col: '#e0408a', L: {
+    intro: 'Annyeong! Ben Han Ji-woo, Seul\'den Haneul Wings. Yolcularım Kapadokya balonlarını dizilerde gördü, şimdi kendileri uçmak istiyor!',
+    offer: 'Charter uçağım Gün {d} sabahı iniyor: iki sabah, her sabah {n} kişi. Kişi başı {p}. Olur mu?',
+    promise: 'Üç işi güzel yaparsan seni Seul\'deki herkese anlatırım, daha sık gelirim!',
+    negOk: 'Ayy, sıkı pazarlık! Tamam: kişi başı {p}.', negWalk: 'Bu fiyat bütçemi aşıyor, üzgünüm. Grubu {r} uçuracak.',
+    decline: 'Anladım, başka sefere! Bu grubu {r} alır.', today: 'Uçağımız indi! {n} yolcu terminalde, herkes telefonunu hazırladı.',
+    thanks: 'Yolcularımın fotoğrafları Seul\'de çok beğenildi! Kamsahamnida!', pref: 'Üç iş, üçü de harika! Artık gözde ortağımsın: daha sık geleceğim, fiyatı da biraz artırıyorum.',
+    fail: 'Yolcularımın bir kısmı uçamadı. Çok üzüldüler, ben de.', lostPref: 'Bir süre başka şirketlerle de çalışacağım. Kırgınım.',
+    redSkip: 'Kırmızı bayrak! Bugün yolcularımla Derinkuyu\'ya gidiyoruz, bugünü saymayız.', bye: 'Haneul Wings başka bir şirketle uçacak. Hoşça kal.',
+    warn: 'Seul\'den kalkış rötarlı. Uçağım yarın sabah gecikebilir.', late: 'Uçak hâlâ havada! Sabaha yetişebilir de, yetişmeyebilir de. Ne yapalım?',
+    onTime: 'Rahatla, uçağımız zamanında indi! {n} yolcu terminalde.', landed: 'İndik! Koltukları beklettiğin için çok teşekkürler. Yolcularım cipe biniyor!',
+    noShow: 'Yetişemedi, uçak öğlen iniyor. Grup yarın uçar; boş koltukların parasını ben öderim.', stranded: 'Uçak indi ama koltuklar dolmuş! Yolcularım bir gün otelde bekleyecek.',
+    openOk: 'İyi ki koltukları satmışsın, uçak öğlen iniyor. Grup yarın sabah uçar.' } },
+  { id: 'chen', name: 'Chen Hao', co: 'Pearl Bund Travel', title: 'Pearl Bund Travel kurucusu, Şanghay', av: () => CHEN_AV, col: '#c0392b', L: {
+    intro: 'Ni hao. Chen Hao, Şanghay\'dan Pearl Bund Travel. Büyük gruplar, sıkı program. Takvim tutarsa iş tutar.',
+    offer: 'Gün {d}–{e}: iki sabah, her sabah {n} kişi. Kişi başı {p}. Rakamlar net.',
+    promise: 'Üç iş takvime uyarsa seni listemin başına yazarım: daha sık iş.',
+    negOk: 'Hmm. Kabul: kişi başı {p}. Ama dakiklik şart.', negWalk: 'Rakam tutmuyor. {r} ile anlaştım.',
+    decline: 'Not ettim. Grup {r} ile uçacak.', today: 'Uçak indi, saat tam. {n} yolcu hazır.',
+    thanks: 'Program kusursuz işledi. Teşekkürler.', pref: 'Üç iş, üçü de tam vaktinde. Artık gözde ortağımsın: daha sık geleceğim, fiyat biraz yukarı.',
+    fail: 'Yolcularımın bir kısmı yerde kaldı. Bu, rapora girer.', lostPref: 'Listemin başından çıkarıyorum. Şimdilik.',
+    redSkip: 'Kırmızı bayrak. Programı Ihlara Vadisi yürüyüşüne çeviriyorum; bugün sayılmaz.', bye: 'Pearl Bund başka bir şirketle devam ediyor. İyi günler.',
+    warn: 'Şanghay\'da sis var. Uçak yarın gecikebilir; sabah netleşir.', late: 'Uçak rötarlı. Kule sabaha yetişebilir diyor, söz veremem. Karar senin.',
+    onTime: 'Uçak tam vaktinde indi. {n} yolcu hazır.', landed: 'İndik. Beklediğin için teşekkürler; program kurtuldu.',
+    noShow: 'Yetişemedi. Grup yarın uçar; boş koltukların tazminatını öderim, anlaşma böyle.', stranded: 'Uçak indi, koltuk yok. Bir günlük otel parası benden çıktı. Not ettim.',
+    openOk: 'Doğru karar: uçak öğleden sonra iniyor. Grup yarın uçar.' } },
+  { id: 'murat', name: 'Murat Bey', co: 'Haliç Gündoğumu Turları', title: 'Haliç Gündoğumu Turları sahibi, İstanbul', av: () => MURAT_AV, col: '#1f6f8b', L: {
+    intro: 'Merhaba kardeşim! Murat, İstanbul\'dan Haliç Gündoğumu Turları. "Gün doğumu paketi" benim işim: sabah uçağı, balon, kahvaltı, akşam dönüş.',
+    offer: 'Gün {d} sabahı uçağım iniyor: iki sabah, her sabah {n} kişi, kişi başı {p}. Anlaştık mı?',
+    promise: 'Üç paket güzel geçerse seni gözde ortağım yaparım, daha sık gelirim.',
+    negOk: 'Pazarlıksız iş olmaz zaten! Peki: kişi başı {p}.', negWalk: 'Olmaz kardeşim, bu fiyata paket çıkmaz. {r} uçursun.',
+    decline: 'Kısmet değilmiş. Bu sefer {r} alır.', today: 'Uçak indi kardeşim! {n} misafirim kahvaltıdan önce gökyüzünde olmak istiyor.',
+    thanks: 'Misafirlerim dönüş uçağında hâlâ balonu konuşuyor. Eline sağlık!', pref: 'Üç paket, üçü de şahane. Artık gözde ortağımsın: daha sık geleceğim, fiyatı da biraz artırıyorum.',
+    fail: 'Misafirlerimin bir kısmı yerde kaldı kardeşim. Hiç hoş olmadı.', lostPref: 'Bir süre başka şirketlerle de çalışacağım. Gönlüm kırık.',
+    redSkip: 'Kırmızı bayrak! Misafirlerimi Avanos\'a çömlek atölyesine götürüyorum, bugünü saymayız.', bye: 'Kardeşim, yollarımız ayrılıyor. Haliç Gündoğumu başka şirketle çalışacak.',
+    warn: 'İstanbul\'da hava trafiği sıkışık. Uçağım yarın sabah gecikebilir.', late: 'Uçağımız rötarlı kardeşim! Sabaha yetişir mi, Allah bilir. Koltukları ne yapalım?',
+    onTime: 'Uçak tam vaktinde indi kardeşim! {n} misafirim terminalde.', landed: 'İndik! Koltukları beklettin, sağ ol kardeşim. Misafirlerim cipe biniyor!',
+    noShow: 'Yetişemedik kardeşim, grup yarın uçar. Boş koltukların parasını ben veririm, gönlün kalmasın.', stranded: 'Uçak indi ama koltuklar satılmış! Misafirlerim bir gün otelde bekleyecek. Olmadı bu.',
+    openOk: 'İyi ki satmışsın, uçak öğlen iniyor. Grup yarın sabah uçar kardeşim.' } }
+];
 /* The numbers per region (tuned with sim-abq.js and the campaign bot, see GAME_DESIGN "Kurumsal kontratlar").
    kind: what stands off the map (bus / ship / train). len: days per booking (a range for Luxor's blocks); weekend: the
    booking starts on a Saturday; fogG: Bristol's fog guarantee (a foggy morning refunds the day and costs a voucher per
@@ -7251,7 +7348,10 @@ const CTR = {
       scene: ['Bak genç dostum: kasabanın dışındaki otoyol terminali. Route 66\'dan gelen tur otobüsleri burada mola verir.',
         'Yolcular otobüsten inip cipe biner, toprak yoldan kasabaya gelir. İlk teklif geliyor!',
         'Kabul edersen o gün koltuklar önce gruba gider. Reddedersen grubu bir rakip kapar.',
-        'Üç işi sağlam teslim edersen sana daha sık gelirler. Vakit nakittir!'] }
+        'Üç işi sağlam teslim edersen sana daha sık gelirler. Vakit nakittir!'],
+      /* v126: the player already had charter groups in Cappadocia: only what's different here */
+      sceneShort: ['Bak genç dostum: burada işler otobüsle. Route 66\'dan gelen tur otobüsleri kasabanın dışındaki bu terminalde durur.',
+        'Gerisini Kapadokya\'dan biliyorsun: koltuklar önce gruba, üç sağlam işte gözde ortak. Bir farkı var: grup tek sabah uçar. İlk teklif geliyor!'] }
   },
   /* v125.2: Nile cruise ships tie up for a block of mornings; endurance: the fleet has to be ready every one of them */
   lux: {
@@ -7285,6 +7385,29 @@ const CTR = {
         'Yolcular perondan cipe biner, yoldan kasabaya gelir. İlk teklif geliyor!',
         'Hafta sonu iki gün sürer, fiyatı iyidir ama sis garantisi var: sisli sabah bilet parası geri ödenir, üstüne kupon verilir. Tahmine bak.',
         'Üç hafta sonu sorunsuz geçerse sana daha sık gelirler. Şemsiyeni unutma!'] }
+  },
+  /* v126: Cappadocia's charter flights: a group flies in for two mornings. firstDay: never before this day; quiet: the
+     offer waits for a morning without a morning event or a pile of cards. delay: from the job after `after` on, the
+     evening before its first morning there's a warnP chance of "the plane may be late"; that morning it is late with
+     lateP. Then you choose: keep the seats (it lands in time with the chance shown, otherwise they fly empty, the group
+     moves a day and the agency pays waitPay of the price per empty seat) or sell them (the group moves a day; if the
+     plane landed in time after all, trust −1). Not a chapter goal here. */
+  cap: {
+    kind: 'plane', cast: CTR_CAST_CAP, spot: [30, 3], shift: [0, 0], sceneZ: .6,
+    minChapter: 1, minSeats: 40, firstWait: 1, firstDay: 40, quiet: true,
+    gap: [11, 15], prefGap: [7, 10], lead: [3, 5], len: [2, 2], share: [.3, .45], price: [.8, .9], prefPrice: 1.06,
+    negUp: .1, negWalk: .35, prefWalk: .15, pen: .5, redCut: 0, redMove: false, prefNeed: 3, breakAt: -3, cool: 14,
+    rivalRep: .05, rivalGrow: 24,
+    delay: { after: 2, warnP: .35, lateP: .6, land: [.3, .7], waitPay: .4 },
+    T: { tag: 'Charter grubu', group: 'charter grubu', pax: 'charter yolcusu', place: 'NAV · Nevşehir Airport', accepted: 'Harika! Uçağım o sabah iniyor, yolcularım terminalden cipe biner. Sepetleri hazırla!',
+      where: 'Uçak anlaşma boyunca havalimanında bekleyecek; kasabayı sağa, doğu yolu boyunca kaydırırsan görürsün. İki sabah da yeterli balonun uçmaya hazır olsun.',
+      empty: 'Apron boş. Yeni bir charter teklifi sabah gelir.', fresh: 'Seul\'den, Şanghay\'dan, İstanbul\'dan charter uçakları buraya iner, yolcular cipe binip kasabaya gelir.',
+      prefPaper: 'Charter uçakları artık önce ona geliyor.',
+      scene: ['Bak evlat: doğu yolunun sonundaki küçük havalimanı. Seul\'den, Şanghay\'dan, İstanbul\'dan charter uçakları buraya iner.',
+        'Yolcular terminalden cipe biner, toprak yoldan kasabaya gelir. İlk teklif geliyor!',
+        'Grup iki sabah uçar; o sabahlar koltuklar önce gruba gider. Reddedersen grubu bir rakip kapar.',
+        'Üç işi sağlam teslim edersen gözde ortakları olursun, daha sık gelirler. Bu bir fırsat evlat, zorunluluk değil.'],
+      delayIntro: 'Uçaklar bazen rötar yapar evlat. Sabah karar senin: koltukları gruba beklet ya da pazara aç. İkisinin de bedeli var; kartta yazıyor.' }
   }
 };
 const ctrCfg = () => CTR[S && S.region];
@@ -7336,10 +7459,13 @@ function ctrMorning() {
   for (const k of C.booked) if (k.cancel && !k.rival) S.hezQ.push(`ctr:${ctrOwner(k).id}:Üç sabah üst üste kırmızı bayrak. Grup eve dönüyor, kimsenin suçu değil. Başka sefere.`);
   C.booked = C.booked.filter(k => !k.cancel);
   const mine = ctrToday();
-  if (mine && S.weather.flag !== 'red') { const w = ctrOwner(mine); if (mine.fogP && S.weather.fog) ctrSay(w, w.L.fog); else if (S.day === mine.day) ctrSay(w, ctrLine(w, 'today', kArgs(mine))); }
+  if (K.delay) ctrDelayMorning(); /* v126: the charter plane that was said to be late may be */
+  if (mine && S.weather.flag !== 'red' && !mine.dl) { const w = ctrOwner(mine); if (mine.fogP && S.weather.fog) ctrSay(w, w.L.fog); else if (S.day === mine.day) ctrSay(w, ctrLine(w, mine.warn && w.L.onTime ? 'onTime' : 'today', kArgs(mine))); }
   if ((S.chapter || 0) < K.minChapter) return;
-  if (C.next == null) C.next = S.day + K.firstWait;
+  if (C.next == null) C.next = Math.max(S.day + K.firstWait, K.firstDay || 0);
   if (C.offer || C.booked.some(k => !k.rival) || S.day < C.next || fleetSeats() < K.minSeats) return;
+  /* v126: not on a crowded morning (a morning event, a chapter, several cards already): it comes the next quiet one */
+  if (K.quiet && ((S.day >= 12 && S.unl.crew && !S.winter && S.day >= (S.nextEvent || 12)) || S.chapterNews != null || S.hezQ.length > 1 || S.xfer || S.mergeNews)) return;
   const w = ctrWho(), seats = fleetSeats(), n = Math.max(12, Math.round(seats * rnd(K.share[0], K.share[1]) / 2) * 2);
   const riv = S.rivals.filter(r => r.alive), ref = riv.length ? (S.price + riv.reduce((a, r) => a + r.price, 0) / riv.length) / 2 : S.price;
   /* v125.3: a tour operator buys in bulk: below the market, never above your own ticket */
@@ -7353,7 +7479,8 @@ function ctrMorning() {
 function ctrNextGap() { const K = ctrCfg(), C = ctrState(), g = C.pref ? K.prefGap : K.gap; C.next = S.day + Math.round(rnd(g[0], g[1])); }
 function ctrAccept() {
   const C = ctrState(), O = C.offer; if (!O) return;
-  C.booked.push({ n: O.n, price: O.price, day: O.day, len: O.len || 1, fogP: O.fogP, who: O.who, neg: O.neg || 0, id: S.nextId++, short: 0, got: 0, flown: 0 });
+  C.taken = (C.taken || 0) + 1; /* v126: the how-manyth job here (Cappadocia's planes are never late in the first two) */
+  C.booked.push({ n: O.n, price: O.price, day: O.day, len: O.len || 1, fogP: O.fogP, who: O.who, neg: O.neg || 0, id: S.nextId++, short: 0, got: 0, flown: 0, nth: C.taken });
   C.offer = null; C.met = true; ctrNextGap();
 }
 /* ask more per head: higher price, or the company walks to a rival */
@@ -7383,6 +7510,11 @@ function ctrBreakCheck() {
 function ctrSettle(Lg, ev, rev, paxTotal) {
   const K = ctrCfg(), C = S.ctr; if (!K || !C) return null;
   const R = {};
+  /* v126: seats kept for a late plane that didn't make it: they flew empty, the agency pays for them */
+  if (C.wait && C.wait.day === S.day) {
+    const W = C.wait, n = Math.min(W.n, (S.plan && S.plan.ctrWait) || 0), w = K.cast.find(x => x.id === W.who) || ctrWho(); C.wait = null;
+    if (n) { Lg.ctrWait = n * W.pay; R.wait = Lg.ctrWait; R.waitSeats = n; ev.push(`Rötar: ${w.co} grubu gelmedi, ${n} koltuk boş kalktı. Acentanın tazminatı: ${eur(Lg.ctrWait)}.`); }
+  }
   const mine = C.booked.find(k => !k.rival && ctrActive(k));
   if (mine && S.plan) {
     const w = ctrOwner(mine), multi = kLen(mine) > 1, dayN = S.day - mine.day + 1;
@@ -7438,8 +7570,39 @@ function ctrSettle(Lg, ev, rev, paxTotal) {
     R.rivalGrow = (R.rivalGrow || 0) + grow;
   }
   C.booked = C.booked.filter(k => kEnd(k) !== S.day);
+  /* v126: the evening before a charter group's first morning: maybe "the plane may be late" (never in the first jobs) */
+  if (K.delay) for (const k of C.booked.filter(q => !q.rival && q.day === S.day + 1 && !q.warnRolled)) {
+    k.warnRolled = 1;
+    if ((k.nth || 0) > K.delay.after && Math.random() < K.delay.warnP) { const w = ctrOwner(k); k.warn = 1; R.warn = true; ev.push(`Rötar haberi, ${w.name}: “${w.L.warn}” Sabah netleşir.`); }
+  }
   return Object.keys(R).length ? R : null;
 }
+/* v126: the morning a warned charter plane is late: how likely it still makes the morning, and whether it will */
+function ctrDelayMorning() {
+  const K = ctrCfg(), C = ctrState(), k = ctrToday();
+  if (!k || !k.warn || k.dl || S.day !== k.day || S.weather.flag === 'red') return;
+  if (Math.random() >= K.delay.lateP) return;
+  const q = Math.round(rnd(K.delay.land[0], K.delay.land[1]) * 10) / 10;
+  k.dl = { day: S.day, q, land: Math.random() < q, choice: null };
+  C.delays = (C.delays || 0) + 1;
+  if (!C.dlIntro) { C.dlIntro = 1; S.hezQ.push('hz:' + K.T.delayIntro); } /* the first time: Hezarfen says what this is */
+}
+/* today's late plane still waiting for your answer */
+const ctrDelayJob = () => { const C = S.ctr; return C && ctrCfg() ? (C.booked || []).find(k => !k.rival && k.dl && k.dl.choice == null && k.dl.day === S.day) : null; };
+/* 'hold': keep the seats; it lands in time (the group flies today as planned) or it doesn't (the seats fly empty, the
+   group moves a day, the agency pays waitPay per seat). 'open': sell the seats today, the group moves a day; if the plane
+   made it after all, the group waits a day for nothing and trust drops by 1. Returns the outcome's line key. */
+function ctrDelayChoose(ch) {
+  const K = ctrCfg(), C = ctrState(), k = ctrDelayJob(); if (!k) return null;
+  k.dl.choice = ch;
+  if (ch === 'hold' && k.dl.land) return 'landed';
+  k.day++; k.arrDay = null;
+  if (ch === 'hold') { C.wait = { day: S.day, n: k.n, pay: Math.round(k.price * K.delay.waitPay), who: k.who }; return 'noShow'; }
+  if (k.dl.land) { ctrRel(-1); ctrBreakCheck(); return 'stranded'; }
+  return 'openOk';
+}
+/* seats kept empty today for a late plane that didn't come */
+const ctrWaitSeats = cap => { const C = S.ctr, W = C && ctrCfg() && C.wait; return W && W.day === S.day ? Math.max(0, Math.min(W.n, cap)) : 0; };
 
 /* v125: the offer card, spoken by the company's owner. The first one in a region comes after a short scene at the
    off-map place (ctrScene). */
@@ -7476,7 +7639,7 @@ function ctrCard() {
   if (O.fogP) c.appendChild(h('div', 'ctrfog', `<span>Sis tahmini</span>${O.fogP.map((p, i) => `<b class="${p >= .4 ? 'hi' : p >= .25 ? 'mid' : ''}">${DAY_SHORT[((O.day + i - 1) % 7 + 7) % 7]} %${Math.round(p * 100)}</b>`).join('')}`));
   /* v125.6: the penalty stands out in a callout with the rule under it; who takes the group if you say no, quieter */
   const rule = K.fogG ? `Her sabah koltuklar önce gruba gider. Sis garantisi: sisli sabah o günün bilet parası iade edilir, üstüne kişi başı ${eur(Math.round(O.price * K.voucher))} kupon verilir.`
-    : len > 1 ? `${len} sabah boyunca koltuklar önce gruba gider, ceza her sabah ayrı. Kırmızı bayraklı sabah sayılmaz.`
+    : len > 1 ? `${len} sabah boyunca koltuklar önce gruba gider, ceza her sabah ayrı. Kırmızı bayraklı sabah sayılmaz.${K.delay && (C.taken || 0) >= K.delay.after ? ' Uçak rötar yaparsa grup bir gün kayabilir.' : ''}`
     : `O sabah koltuklar önce gruba gider; kırmızı bayrakta grup bir gün kayar (%${Math.round(K.redCut * 100)} indirimle).`;
   c.appendChild(h('div', 'ctrpen', `<b>Eksik koltuk başına ceza: ${eur(Math.round(O.price * K.pen))}</b><span>${rule}</span>`));
   c.appendChild(h('p', 'ctrrule', `Reddedersen grubu <b>${riv ? esc(riv.name) : 'bir rakip'}</b> uçurur.`));
@@ -7506,6 +7669,33 @@ function ctrResult(w, k, O, riv) {
   const x = h('button', 'big', 'Tamam'); x.onclick = () => ctrClose(); c.appendChild(x);
   m.appendChild(c); m.hidden = false; save(); refresh();
 }
+/* v126: the charter plane is late: its owner asks; two choices, each with what it costs, then what happened */
+function ctrDelayCard() {
+  const K = ctrCfg(), k = ctrDelayJob(); if (!k) return nextPopup();
+  const w = ctrOwner(k), m = $('menu'), pay = Math.round(k.price * K.delay.waitPay); m.replaceChildren(); m.classList.remove('evm');
+  const c = h('div', 'card ctr');
+  ctrHead(c, w, 'Uçak rötarlı');
+  ctrSpeech(c, w.L.late);
+  c.appendChild(h('div', 'ctrfacts', `<div><b>%${Math.round(k.dl.q * 100)}</b><span>sabaha yetişme ihtimali</span></div><div><b>${k.n} kişi</b><span>${K.T.group} · ${eur(k.price)}</span></div>`));
+  const hold = h('button', 'opt', `<b>Koltukları beklet</b><span>Yetişirse grup bugün uçar. Yetişmezse ${k.n} koltuk boş kalkar, grup yarına kayar; acenta koltuk başı ${eur(pay)} öder.</span>`);
+  const open = h('button', 'opt', `<b>Pazara aç</b><span>Koltuklar bugün normal satılır, grup yarına kayar. Uçak yine de yetişirse grup boşuna bekler: güven azalır.</span>`);
+  hold.onclick = () => ctrDelayResult(w, k, ctrDelayChoose('hold'));
+  open.onclick = () => ctrDelayResult(w, k, ctrDelayChoose('open'));
+  c.append(hold, open); m.appendChild(c); m.hidden = false;
+}
+function ctrDelayResult(w, k, r) {
+  sfx(r === 'landed' || r === 'openOk' ? 'coin' : 'low');
+  const m = $('menu'), W = S.ctr.wait; m.replaceChildren(); const c = h('div', 'card ctr');
+  ctrHead(c, w, r === 'landed' ? 'Uçak indi!' : r === 'stranded' ? 'Uçak indi, koltuk yok' : 'Uçak yetişmedi');
+  ctrSpeech(c, w.L[r]);
+  const when = `Gün ${k.day}–${kEnd(k)}`;
+  c.appendChild(h('div', 'callout ' + (r === 'stranded' ? 'red' : r === 'noShow' ? 'yel' : 'grn'), r === 'landed' ? `<b>Grup bugün uçuyor: ${k.n} kişi.</b> Yarın da uçacaklar; koltuklar önce onlara.`
+    : r === 'noShow' ? `<b>Bugün ${k.n} koltuk boş kalkacak, acenta koltuk başı ${eur(W ? W.pay : 0)} öder.</b> Grup ${when} uçar.`
+    : r === 'stranded' ? `<b>Koltuklar bugün pazarda; grup ${when} uçar.</b> ${esc(w.name)} sana biraz daha az güveniyor.`
+    : `<b>Koltuklar bugün pazarda; grup ${when} uçar.</b> Kimse bir şey kaybetmedi.`));
+  const x = h('button', 'big', 'Tamam'); x.onclick = () => { m.hidden = true; refresh(); setTimeout(nextPopup, 250); }; c.appendChild(x);
+  m.appendChild(c); m.hidden = false; save(); refresh();
+}
 /* Tapping the off-map place in town: what's booked. */
 function ctrStatusCard() {
   const K = ctrCfg(), C = ctrState(), m = $('menu'); m.replaceChildren(); const c = h('div', 'card ctr');
@@ -7523,15 +7713,16 @@ function ctrScene() {
   const K = ctrCfg(), C = ctrState(); C.scene = true; save();
   if (mode !== 'office' || !HOME.h) return ctrCard();
   openTown(null, true); TOWN.noLabels = true; $('tClose').classList.add('gone');
-  const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...ctrSpot()), z1 = .86;
+  const r = $('tcv').getBoundingClientRect(), [cx, cy] = tiso(...ctrSpot()), z1 = K.sceneZ || .86; /* v126: the airport is wide */
   TOWN.cine = { t0: performance.now(), dur: 3600, from: { z: TOWN.z, ox: TOWN.ox, oy: TOWN.oy }, to: { z: z1, ox: r.width / 2 - cx * z1, oy: r.height * .5 - cy * z1 }, arrive: T + 1.6 };
-  const L = K.T.scene; let i = 0;
+  const capDone = S.region === 'abq' && S.regions && S.regions.cap && S.regions.cap.ctr && (S.regions.cap.ctr.taken || S.regions.cap.ctr.ok || S.regions.cap.ctr.fail); /* v126 */
+  const L = capDone && K.T.sceneShort ? K.T.sceneShort : K.T.scene; let i = 0;
   const say = () => {
     if (!TOWN.cine) return;
     if (i >= L.length) { $('hez').hidden = true; $('hez').classList.remove('story'); setTimeout(ctrCard, 500); return; }
     storySay2(guide(), L[i++], [['Geç', () => { i = L.length; say(); }, 'ghost'], [i < L.length ? 'Devam' : 'Teklife bak', say, 'big']]);
   };
-  setTimeout(() => ctrArriveSound(), 2400);
+  setTimeout(() => ctrArriveSound(), K.kind === 'plane' ? 1600 : 2400); /* v126: the plane's sound runs with its landing */
   setTimeout(say, 2600);
 }
 function ctrSceneEnd() {
@@ -7585,11 +7776,11 @@ function ctrVehicles() {
   const out = [], room = K.kind === 'bus' ? CTR_BAYS.length : 1, many = n => K.kind === 'bus' ? clamp(Math.ceil(n / 50), 1, 3) : 1;
   for (const k of (C.booked || []).filter(q => !q.rival && ctrActive(q))) {
     if (k.day === S.day && k.arrDay !== S.day) continue; /* not arrived yet: ctrHumTick brings it in when you look */
-    const w = ctrOwner(k), t0 = k.day === S.day && k.arrT != null && T - k.arrT < 8 ? k.arrT : null;
+    const w = ctrOwner(k), t0 = k.day === S.day && k.arrT != null && T - k.arrT < ((CTR_KINDS[K.kind] || {}).arrDur || 8) ? k.arrT : null;
     for (let i = 0; i < many(k.n) && out.length < room; i++) out.push({ col: w.col, name: w.co, t0 });
   }
   const Dp = C.depart; /* a finished job's vehicle waits until you look, then leaves */
-  if (Dp && S.day >= Dp.from && !(Dp.t1 != null && T - Dp.t1 > 9)) for (let i = 0; i < many(Dp.n) && out.length < room; i++) out.push({ col: Dp.col, name: Dp.name, t1: Dp.t1 });
+  if (Dp && S.day >= Dp.from && !(Dp.t1 != null && T - Dp.t1 > ((CTR_KINDS[K.kind] || {}).depDur || 9))) for (let i = 0; i < many(Dp.n) && out.length < room; i++) out.push({ col: Dp.col, name: Dp.name, t1: Dp.t1 });
   if (TOWN.cine && C.offer && !out.length) { const w = ctrOwner(C.offer); for (let i = 0; i < many(C.offer.n); i++) out.push({ col: w.col, name: w.co, t0: TOWN.cine.arrive }); }
   return out;
 }
@@ -7835,6 +8026,178 @@ function trainItems(add, t) {
     add(x0 + 6, 6.3, () => { ctx.save(); ctx.globalAlpha *= al; steamTrain(x0, 5.95, '#a8232c', t, moving); ctx.restore(); }, x0 + 11.8 + 6.6);
   });
 }
+/* ---- v126 Cappadocia: NAV · Nevşehir Airport and the charter plane ----
+   East of town on the east road: the runway runs along gx (gy ≈ 1), two taxiways lead to the apron, where the plane
+   stands nose west; the terminal and the control tower stand by the road; a fenced dirt stand in front of the apron is
+   where the jeeps wait. All of it lies at gx − gy ≥ 18, off every default view. */
+const AIR = { rwy: [20.6, 46], rwyY: 1, stand: [27.4, 3.8], in: 31, out: 24.6 };
+/* A twin-turboprop in the game's style: white tube with the agency's cheatline and tail, high wing, two engines with
+   propellers, T-tail, gear. hd: heading in grid space (radians, 0 = +gx); alt: height in world px; prop: 0 still … 1 a
+   spinning disc; al: alpha. Local coordinates: a along the nose (tiles), b to the side (tiles), z up (px). */
+function charterPlane(gx, gy, hd, alt, col, t, prop, stairs) {
+  const fx = Math.cos(hd), fy = Math.sin(hd), rx = -fy, ry = fx, Z0 = 16 + alt;
+  const P = (a, b, z) => upp(tiso(gx + a * fx + b * rx, gy + a * fy + b * ry), z + Z0);
+  const G = (a, b) => tiso(gx + a * fx + b * rx, gy + a * fy + b * ry);
+  /* shadow on the ground: smaller and fainter with height */
+  { const k = clamp(1 - alt / 320, .15, 1); ctx.save(); ctx.globalAlpha *= .2 * k; ctx.fillStyle = '#3a2a1a';
+    const sh = [[1.5, 0], [.3, .2], [.15, 1.55], [-.15, 1.55], [-.3, .2], [-1.4, .12], [-1.55, .5], [-1.62, .5], [-1.55, 0], [-1.62, -.5], [-1.55, -.5], [-1.4, -.12], [-.3, -.2], [-.15, -1.55], [.15, -1.55], [.3, -.2]].map(([a, b]) => { const p = G(a, b); return [p[0] + alt * .25, p[1] + alt * .1]; });
+    tpoly(sh, '#3a2a1a'); ctx.restore(); }
+  /* the gear, down below 60 px */
+  if (alt < 60) for (const [a, b] of [[1.0, 0], [-.1, .3], [-.1, -.3]]) { const top = P(a, b, -2), bot = P(a, b, -16); ctx.strokeStyle = '#4a4a50'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(top[0], top[1]); ctx.lineTo(bot[0], bot[1]); ctx.stroke(); ell(bot[0], bot[1] + 1, 4, 4, '#1f1c22'); }
+  /* the fuselage: sections from tail to nose, outline offset across the screen direction */
+  const sec = [[-1.62, 3, 13], [-1.3, 7, 8], [-.9, 10.5, 3], [-.4, 12, 0], [.6, 12, 0], [1.1, 11, 0], [1.38, 8, -1], [1.52, 4, -3]];
+  const cs = sec.map(([a, R, dz]) => ({ c: P(a, 0, dz), R }));
+  const nrm = i => { const p = cs[Math.max(0, i - 1)].c, q = cs[Math.min(cs.length - 1, i + 1)].c; let dx = q[0] - p[0], dy = q[1] - p[1]; const L = Math.hypot(dx, dy) || 1; dx /= L; dy /= L; let nx = -dy, ny = dx; if (ny > 0) { nx = -nx; ny = -ny; } return [nx, ny]; };
+  const up = cs.map((s, i) => { const n = nrm(i), k = s.R * (1 + Math.abs(n[0]) * .25); return [s.c[0] + n[0] * k, s.c[1] + n[1] * k]; });
+  const dn = cs.map((s, i) => { const n = nrm(i), k = s.R * (1 + Math.abs(n[0]) * .25); return [s.c[0] - n[0] * k, s.c[1] - n[1] * k]; });
+  const band = (k0, k1, c) => tpoly(cs.map((s, i) => { const n = nrm(i), r = s.R * (1 + Math.abs(n[0]) * .25); return [s.c[0] + n[0] * r * k0, s.c[1] + n[1] * r * k0]; }).concat(cs.map((s, i) => { const n = nrm(i), r = s.R * (1 + Math.abs(n[0]) * .25); return [s.c[0] + n[0] * r * k1, s.c[1] + n[1] * r * k1]; }).reverse()), c);
+  /* far engine and far wing half first? The wing is high and seen from above: engines, then the tube, then the wing */
+  const nac = b => { const a0 = P(-.15, b, 6), a1 = P(.5, b, 4); ctx.strokeStyle = '#e4e4e0'; ctx.lineCap = 'round'; ctx.lineWidth = 11; ctx.beginPath(); ctx.moveTo(a0[0], a0[1]); ctx.lineTo(a1[0], a1[1]); ctx.stroke(); ctx.strokeStyle = '#bcbcb8'; ctx.lineWidth = 4; ctx.beginPath(); const b0 = P(-.1, b, 1), b1 = P(.45, b, 0); ctx.moveTo(b0[0], b0[1]); ctx.lineTo(b1[0], b1[1]); ctx.stroke(); ctx.lineCap = 'butt'; };
+  tpoly(up.concat(dn.slice().reverse()), '#f6f5f0');
+  band(-.15, -1, '#dcdad2'); band(.95, .55, '#ffffff');
+  band(.05, -.22, col); band(-.22, -.32, mix(col, '#000000', .3));
+  /* windows along the side towards us, the cockpit at the nose */
+  for (let a = -1.05; a <= .95; a += .17) { const p = P(a, 0, 4); ell(p[0], p[1], 2.1, 2.4, '#2a3a50'); }
+  { const p = P(1.3, 0, 5), q = P(1.42, 0, 3); tpoly([[p[0], p[1] - 3], [q[0], q[1] - 2], [q[0], q[1] + 2], [p[0], p[1] + 3]], '#1e2a3c'); }
+  { const p = P(.92, 0, -2); ctx.fillStyle = '#c8c8c4'; ctx.fillRect(p[0] - 1, p[1] - 9, 2, 12); } /* the front door's outline */
+  for (const b of [-.62, .62]) nac(b);
+  /* the high wing */
+  const wing = [[.28, .15], [.14, 1.6], [-.06, 1.6], [-.2, .15], [-.2, -.15], [-.06, -1.6], [.14, -1.6], [.28, -.15]].map(([a, b]) => P(a, b, 11));
+  tpoly(wing.map(p => [p[0], p[1] + 3]), '#bdbbb4'); tpoly(wing, '#f2f1ec'); tpoly(wing, null, '#c8c6c0', 1);
+  { const t0 = P(-.06, 1.6, 11), t1 = P(.14, 1.6, 11), u0 = P(-.06, -1.6, 11), u1 = P(.14, -1.6, 11); ctx.strokeStyle = col; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(t0[0], t0[1]); ctx.lineTo(t1[0], t1[1]); ctx.moveTo(u0[0], u0[1]); ctx.lineTo(u1[0], u1[1]); ctx.stroke(); }
+  /* propellers: a blurred disc when turning fast, blades when slow */
+  for (const b of [-.62, .62]) {
+    const c = P(.53, b, 4);
+    const ring = th => P(.54, b + .2 * Math.cos(th), 4 + 13 * Math.sin(th));
+    if (prop > .5) { ctx.save(); ctx.globalAlpha *= .3 * prop; tpoly(Array.from({ length: 18 }, (_, i) => ring(i / 18 * Math.PI * 2)), '#6a6a74'); ctx.restore(); }
+    if (prop < .9) { const ang = t * prop * 30 + b * 2; ctx.strokeStyle = '#5a5a64'; ctx.lineCap = 'round'; ctx.lineWidth = 2.2; ctx.beginPath(); for (let k = 0; k < 3; k++) { const p = ring(ang + k * Math.PI * 2 / 3); ctx.moveTo(c[0], c[1]); ctx.lineTo(p[0], p[1]); } ctx.stroke(); ctx.lineCap = 'butt'; }
+    ell(c[0], c[1], 3, 3, col);
+  }
+  /* the fin and the T-tail in the agency's colour */
+  const fin = [P(-1.0, 0, 10), P(-1.42, 0, 46), P(-1.62, 0, 46), P(-1.6, 0, 14)];
+  tpoly(fin, col); tpoly([P(-1.36, 0, 38), P(-1.42, 0, 46), P(-1.62, 0, 46), P(-1.6, 0, 38)], mix(col, '#ffffff', .35));
+  tpoly([P(-1.38, .62, 46), P(-1.38, -.62, 46), P(-1.62, -.62, 47), P(-1.62, .62, 47)], '#f0efea');
+  /* boarding stairs at the rear door when parked */
+  if (stairs) { const d = P(-.95, -.32, -2), g = G(-.95, -.75); tpoly([[d[0] - 3, d[1]], [d[0] + 3, d[1]], [g[0] + 5, g[1]], [g[0] - 5, g[1]]], '#d8d4c8'); ctx.strokeStyle = '#8a8a90'; ctx.lineWidth = 1; ctx.beginPath(); for (let k = 1; k < 5; k++) { const p = lp(d, g, k / 5); ctx.moveTo(p[0] - 4, p[1]); ctx.lineTo(p[0] + 4, p[1]); } ctx.stroke(); }
+  /* beacon */
+  if ((t * 1.2) % 1 < .12) { const p = P(-.2, 0, 13); ell(p[0], p[1] - 12, 3, 3, '#ff3a2a'); }
+}
+/* where the plane is: parked, or landing (arrival) / taking off (departure) at u seconds. Returns [gx, gy, hd, alt, prop]. */
+const pathAt = (pts, s) => { const r = walkPath(pts, s), r2 = walkPath(pts, s + .45); const dx = r2.p[0] - r.p[0], dy = r2.p[1] - r.p[1]; return { p: r.p, hd: Math.hypot(dx, dy) > 1e-3 ? Math.atan2(dy, dx) : Math.atan2(r.dir[1], r.dir[0]) }; };
+const pathLen = pts => pts.slice(1).reduce((a, p, k) => a + Math.hypot(p[0] - pts[k][0], p[1] - pts[k][1]), 0);
+function planePose(u, leaving) {
+  const [sx, sy] = AIR.stand, y = AIR.rwyY;
+  if (u == null) return [sx, sy, Math.PI, 0, 0];
+  if (!leaving) {
+    if (u < 4.5) { const k = u / 4.5; return [lerp(62, 40, k), y, Math.PI, 300 * Math.pow(1 - k, 1.25), 1]; }
+    if (u < 8.5) { const k = ease3((u - 4.5) / 4); return [lerp(40, AIR.in, k), y, Math.PI, 0, 1]; }
+    const pts = [[AIR.in, y], [AIR.in, sy], [sx, sy]], L = pathLen(pts), k = easeIO(clamp((u - 8.5) / 4.5, 0, 1)), r = pathAt(pts, k * L);
+    return [r.p[0], r.p[1], k >= .999 ? Math.PI : r.hd, 0, 1 - clamp((u - 12) / 1.5, 0, 1) * .8];
+  }
+  if (u < 4.5) { const pts = [[sx, sy], [AIR.out, sy], [AIR.out, y], [AIR.out + 1.4, y]], L = pathLen(pts), k = easeIO(clamp(u / 4.5, 0, 1)), r = pathAt(pts, k * L); return [r.p[0], r.p[1], k >= .999 ? 0 : r.hd, 0, .7 + .3 * clamp(u, 0, 1)]; }
+  if (u < 9) { const k = Math.pow((u - 4.5) / 4.5, 2); return [lerp(AIR.out + 1.4, 38, k), y, 0, 0, 1]; }
+  const k = clamp((u - 9) / 4.5, 0, 1); return [lerp(38, 62, k), y, 0, 300 * Math.pow(k, 1.3), 1];
+}
+function airGround() {
+  const q = ctrQ, [x0, x1] = AIR.rwy;
+  q(23.8, 2.3, 32.4, 5.55, '#bdb8ac'); /* the apron, concrete slabs */
+  ctx.strokeStyle = 'rgba(120,112,100,.35)'; ctx.lineWidth = 1.2; ctx.beginPath(); for (let x = 24.6; x < 32.4; x += .8) { const a = tiso(x, 2.3), b = tiso(x, 5.55); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); } for (let y = 3.1; y < 5.55; y += .8) { const a = tiso(23.8, y), b = tiso(32.4, y); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]); } ctx.stroke();
+  q(AIR.in - .4, 1.6, AIR.in + .4, 2.35, '#6a6870'); q(AIR.out - .4, 1.6, AIR.out + .4, 2.35, '#6a6870'); /* taxiways */
+  q(x0, .25, x1, 1.75, '#5c5a62'); q(x0, .32, x1, .38, '#f2efe6'); q(x0, 1.62, x1, 1.68, '#f2efe6'); /* the runway */
+  for (let x = x0 + 2.2; x < x1 - 2; x += 1) q(x, .97, x + .5, 1.03, '#f2efe6');
+  for (const xe of [x0 + .2, x1 - .9]) for (let y = .45; y < 1.55; y += .17) q(xe, y, xe + .7, y + .08, '#f2efe6');
+  for (const [x, txt, r] of [[x0 + 1.4, '27', 1], [x1 - 1.4, '09', -1]]) { const p = tiso(x, 1); ctx.save(); ctx.translate(p[0], p[1]); ctx.transform(1, .5, -1, .5, 0, 0); ctx.rotate(r * Math.PI / 2); ctx.fillStyle = 'rgba(242,239,230,.9)'; ctx.font = '800 30px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText(txt, 0, 10); ctx.restore(); }
+  /* yellow taxi lines: runway exit, the stand's lead-in line, the way out */
+  const yl = pts => { ctx.strokeStyle = '#f0c83a'; ctx.lineWidth = 2.4; ctx.beginPath(); pts.forEach((g, i) => { const p = tiso(...g); i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); }); ctx.stroke(); };
+  yl([[AIR.in, 1.1], [AIR.in, AIR.stand[1]], [AIR.stand[0] - 1.8, AIR.stand[1]]]); yl([[AIR.stand[0] - 1.8, AIR.stand[1]], [AIR.out, AIR.stand[1]], [AIR.out, 1.1]]);
+  q(AIR.stand[0] + 1.1, AIR.stand[1] - .5, AIR.stand[0] + 1.18, AIR.stand[1] + .5, '#f0c83a'); /* the stop bar under the nose... the nose points west */
+  q(AIR.stand[0] - 1.95, AIR.stand[1] - .45, AIR.stand[0] - 1.87, AIR.stand[1] + .45, '#e8e4da');
+  /* landside: the jeep stand (packed dirt off the road) and the drop-off in front of the terminal */
+  q(24.8, 5.85, 29.9, 7.65, '#c9986a'); { const R = mulberry32(31); ctx.fillStyle = 'rgba(90,60,40,.28)'; for (let i = 0; i < 46; i++) { const p = tiso(24.9 + R() * 4.9, 5.9 + R() * 1.7); ctx.fillRect(p[0], p[1], 4, 2); } }
+  q(29.9, 7.08, 34.4, 7.65, '#8a8690'); q(29.9, 7.08, 34.4, 7.14, '#e8e4da');
+}
+function airItems(add, t) {
+  const smooth = fn => { const keep = TUFF; TUFF = Object.assign({}, TUFF, { smooth: 1 }); try { fn(); } finally { TUFF = keep; } };
+  /* the terminal: tuff-stone walls, a glass front, a flat roof with the name board */
+  add(32, 6.3, () => smooth(() => {
+    const hh = 34, f = block(30.2, 5.6, 3.6, 1.45, hh, { lit: '#f0d8b4', shade: '#d0b08a', top: '#e4cca8', courses: false });
+    tface(f.D, f.C, hh, () => { ctx.fillStyle = '#5e8ea8'; ctx.fillRect(.06, .08, .88, .66); ctx.fillStyle = 'rgba(255,255,255,.22)'; for (let i = 0; i < 9; i++) ctx.fillRect(.08 + i * .1, .5, .03, .2); ctx.fillStyle = '#f0d8b4'; for (let i = 1; i < 9; i++) ctx.fillRect(.06 + i * .098, .08, .012, .66); ctx.fillStyle = '#2a3a4a'; ctx.fillRect(.17, .08, .14, .46); ctx.fillStyle = '#c0392b'; ctx.fillRect(0, .8, 1, .06); });
+    tface(f.C, f.B, hh, () => { ctx.fillStyle = '#5e8ea8'; ctx.fillRect(.15, .3, .7, .4); ctx.fillStyle = '#c0392b'; ctx.fillRect(0, .8, 1, .06); });
+    const s0 = upp(lp(f.D, f.C, .12), hh), s1 = upp(lp(f.D, f.C, .88), hh);
+    ctx.fillStyle = '#5a5a60'; ctx.fillRect(s0[0] - 1, s0[1] - 14, 2, 14); ctx.fillRect(s1[0] - 1, s1[1] - 14, 2, 14);
+    tface(upp(s0, 12), upp(s1, 12), 24, () => { ctx.fillStyle = '#1f4a6a'; ctx.fillRect(0, 0, 1, 1); ctx.fillStyle = '#ffc23d'; ctx.fillRect(0, 0, 1, .1); });
+    const m = lp(upp(s0, 24), upp(s1, 24), .5), ang = Math.atan2(s1[1] - s0[1], s1[0] - s0[0]);
+    ctx.save(); ctx.translate(m[0], m[1]); ctx.rotate(ang); ctx.textAlign = 'center'; ctx.fillStyle = '#ffffff'; ctx.font = '800 15px "Barlow Condensed", sans-serif'; ctx.fillText('NAV · Nevşehir Airport', 0, 5); ctx.restore(); ctx.textAlign = 'left';
+  }), 30.2 + 3.6 + 5.6 + 1.45 - .4);
+  /* the control tower */
+  add(35.4, 5, () => smooth(() => {
+    const sh = block(35.15, 4.75, .4, .4, 112, { lit: '#ecd2ac', shade: '#c8a882', top: '#d8bc94', courses: false });
+    tface(sh.D, sh.C, 112, () => { ctx.fillStyle = '#3a4a5a'; for (let i = 0; i < 5; i++) ctx.fillRect(.35, .12 + i * .16, .3, .05); });
+    ctx.save(); ctx.translate(0, -112);
+    const cab = block(34.8, 4.4, 1.1, 1.1, 22, { lit: '#7ab0c8', shade: '#5a8aa4', top: '#3a4a5a', courses: false });
+    tface(cab.D, cab.C, 22, () => { ctx.fillStyle = 'rgba(255,255,255,.3)'; for (let i = 0; i < 4; i++) ctx.fillRect(.05 + i * .25, .2, .03, .7); ctx.fillStyle = '#e8e4da'; ctx.fillRect(0, 0, 1, .14); });
+    tface(cab.C, cab.B, 22, () => { ctx.fillStyle = '#e8e4da'; ctx.fillRect(0, 0, 1, .14); });
+    const r = [tiso(34.74, 4.34), tiso(35.96, 4.34), tiso(35.96, 5.56), tiso(34.74, 5.56)].map(p => upp(p, 24)); tpoly([r[3], r[2], upp(r[2], -3), upp(r[3], -3)], '#6a7480'); tpoly(r, '#8a949e');
+    const an = upp(tiso(35.35, 4.95), 26); ctx.fillStyle = '#5a5a60'; ctx.fillRect(an[0] - 1, an[1] - 22, 2, 22); ell(an[0], an[1] - 24, 3, 3, NIGHT_K > 0 || (t % 1.4) < .7 ? '#ff4a3a' : '#7a2a24');
+    ctx.restore();
+  }), 35.0 + .7 + 4.6 + .7 - .3);
+  /* the windsock by the runway, swinging with the wind */
+  add(22.6, 2.6, () => {
+    const p = tiso(22.6, 2.6); ctx.fillStyle = '#8a8a90'; ctx.fillRect(p[0] - 1.5, p[1] - 58, 3, 58);
+    const w = S.weather && S.weather.wind ? S.weather.wind : null, sway = Math.sin(t * 2.3) * 3, dx = 30, k = .85 + .15 * Math.sin(t * 3.1);
+    for (let i = 0; i < 5; i++) { const x0 = p[0] + i * dx * k / 5, x1 = p[0] + (i + 1) * dx * k / 5, r0 = 6 - i * .8, r1 = 6 - (i + 1) * .8, y0 = p[1] - 56 + i * (1 + sway * .2), y1 = p[1] - 56 + (i + 1) * (1 + sway * .2); tpoly([[x0, y0 - r0], [x1, y1 - r1], [x1, y1 + r1], [x0, y0 + r0]], i % 2 ? '#f6f2ea' : '#ff6a2a'); }
+  });
+  /* the fence between the apron and the jeep stand */
+  add(27, 5.7, () => { ctx.strokeStyle = 'rgba(90,90,100,.65)'; ctx.lineWidth = 1.2; const a = tiso(23.8, 5.7), b = tiso(30.1, 5.7); for (let x = 23.8; x <= 30.1; x += .45) { const p = tiso(x, 5.7); ctx.fillStyle = '#6a6a72'; ctx.fillRect(p[0] - 1, p[1] - 16, 2, 16); } ctx.beginPath(); ctx.moveTo(a[0], a[1] - 15); ctx.lineTo(b[0], b[1] - 15); ctx.moveTo(a[0], a[1] - 7); ctx.lineTo(b[0], b[1] - 7); ctx.stroke(); }, 23.8 + 5.7 + 4.5);
+  /* the jeep stand's sign and the way sign at the road */
+  add(29.6, 6.2, () => { const p = tiso(29.6, 6.2); ctx.fillStyle = '#6a4a2a'; ctx.fillRect(p[0] - 2, p[1] - 46, 4, 46); rrect(p[0] - 30, p[1] - 66, 60, 24, 5); ctx.fillStyle = '#fff1d6'; ctx.fill(); ctx.strokeStyle = '#c0392b'; ctx.lineWidth = 2; ctx.stroke(); ctx.fillStyle = '#2b2350'; ctx.font = '800 11px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('BALON', p[0], p[1] - 55); ctx.fillText('SERVİSİ', p[0], p[1] - 45); ctx.textAlign = 'left'; });
+  add(23.6, 7.3, () => { const p = tiso(23.6, 7.3); ctx.fillStyle = '#5a5a60'; ctx.fillRect(p[0] - 1.5, p[1] - 50, 3, 50); rrect(p[0] - 34, p[1] - 68, 68, 22, 4); ctx.fillStyle = '#1f4a6a'; ctx.fill(); ctx.fillStyle = '#ffffff'; ctx.font = '800 12px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('✈ NAV  →', p[0], p[1] - 52); ctx.textAlign = 'left'; });
+  /* a few fairy chimneys and poplars round the field */
+  for (const [gx, gy, k] of [[21.4, 4.2, 0], [22.4, 5.8, 1], [33.6, 2.2, 1], [37.6, 3.4, 0], [38.6, 6.2, 1], [21.2, 6.6, 1], [36.8, 7.1, 1]]) add(gx, gy, () => { const p = tiso(gx, gy); k ? roundTree(p[0], p[1], .55, '#7a8a50') : chimney(p[0], p[1], 50, 120, '#efc79e', '#c69068', '#6a4430'); });
+  /* the plane: landing, parked, or leaving */
+  ctrVehicles().slice(0, 1).forEach(c => {
+    const leaving = c.t1 != null, u = leaving ? T - c.t1 : c.t0 != null ? T - c.t0 : null;
+    if (!leaving && u != null && u < 0) return;
+    const [gx, gy, hd, alt, prop] = planePose(u, leaving), al = leaving ? 1 - clamp((u - 11.5) / 2, 0, 1) : clamp((u == null ? 9 : u) / .8, 0, 1);
+    const parked = u == null || (!leaving && u > 13);
+    add(gx, gy, () => { ctx.save(); ctx.globalAlpha *= al; charterPlane(gx, gy, hd, alt, c.col, t, parked ? 0 : prop, parked); ctx.restore(); }, gx + gy + 1.2 + alt / 60);
+  });
+  /* passengers from the plane's stairs into the terminal while a group is here */
+  if (ctrXferOn() && ctrVehicles().some(c => c.t0 == null && c.t1 == null)) {
+    const cols = ['#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0', '#5aa9e6', '#ff6fa8'], path = [[26.45, 4.6], [26.45, 5.2], [30.6, 5.2], [30.6, 5.55]], L = pathLen(path);
+    for (let i = 0; i < 6; i++) { const k = ((t * .12) + i / 6) % 1, pos = walkPath(path, k * L).p; add(pos[0], pos[1], () => { const q2 = tiso(...pos); person(q2[0], q2[1], cols[i], t, i); }, pos[0] + pos[1]); }
+  }
+}
+/* v126: the plane's own sounds: on arrival the approach (turbine whine and propeller beat), the screech of the wheels
+   at touchdown, reverse thrust, then idle on the taxiway; leaving, idle, the spool-up of the take-off run and the climb
+   fading away. Timed to planePose. */
+function planeSound(leaving) {
+  if (!AC) return; const t = AC.currentTime, o = out();
+  const src = AC.createBufferSource(); src.buffer = noiseBuf(3); src.loop = true;
+  const nf = AC.createBiquadFilter(); nf.type = 'bandpass'; nf.Q.value = .8; const ng = AC.createGain(); ng.gain.value = 0;
+  const eng = AC.createOscillator(); eng.type = 'sawtooth'; const ef = AC.createBiquadFilter(); ef.type = 'lowpass'; ef.frequency.value = 700; const eg = AC.createGain(); eg.gain.value = 0;
+  const wh = AC.createOscillator(); wh.type = 'sine'; const wg = AC.createGain(); wg.gain.value = 0;
+  const lfo = AC.createOscillator(); lfo.type = 'square'; lfo.frequency.value = 22; const lg = AC.createGain(); lg.gain.value = .3; const am = AC.createGain(); am.gain.value = .7;
+  src.connect(nf).connect(ng).connect(am); eng.connect(ef).connect(eg).connect(am); lfo.connect(lg).connect(am.gain); am.connect(o); wh.connect(wg).connect(o);
+  const at = (p, v, s) => p.linearRampToValueAtTime(v, t + s), set = (p, v, s) => p.setValueAtTime(v, t + s);
+  let end;
+  if (!leaving) {
+    set(nf.frequency, 900, 0); at(nf.frequency, 600, 4.5); set(eng.frequency, 118, 0); at(eng.frequency, 92, 4.5); set(wh.frequency, 1500, 0); at(wh.frequency, 1150, 4.5);
+    set(ng.gain, 0, 0); at(ng.gain, .1, 3.6); at(ng.gain, .08, 4.5); at(ng.gain, .16, 5.1); at(ng.gain, .05, 7.5); at(ng.gain, .03, 12); at(ng.gain, 0, 13.4); /* reverse thrust swell after touchdown */
+    set(eg.gain, 0, 0); at(eg.gain, .05, 3.6); at(eg.gain, .02, 8); at(eg.gain, 0, 13.4);
+    set(wg.gain, 0, 0); at(wg.gain, .012, 3.6); at(wg.gain, .006, 8); at(wg.gain, 0, 13.4);
+    end = 13.6;
+    for (const d of [4.5, 4.72]) { const s2 = AC.createBufferSource(); s2.buffer = noiseBuf(.3); const f2 = AC.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 2600; f2.Q.value = 3; const g2 = AC.createGain(); g2.gain.setValueAtTime(0, t + d); g2.gain.linearRampToValueAtTime(.22, t + d + .02); g2.gain.exponentialRampToValueAtTime(.001, t + d + .26); s2.connect(f2).connect(g2).connect(o); s2.start(t + d); s2.stop(t + d + .3); tone(1900, 1500, .22, 'sawtooth', .02, d); } /* the screech of the tyres */
+  } else {
+    set(nf.frequency, 500, 0); at(nf.frequency, 500, 4.5); at(nf.frequency, 1100, 9); at(nf.frequency, 700, 13.5); set(eng.frequency, 80, 0); at(eng.frequency, 80, 4.5); at(eng.frequency, 140, 9); at(eng.frequency, 120, 13.5);
+    set(wh.frequency, 900, 0); at(wh.frequency, 900, 4.3); at(wh.frequency, 2100, 8); at(wh.frequency, 1700, 13.5);
+    set(ng.gain, 0, 0); at(ng.gain, .03, 1); at(ng.gain, .03, 4.4); at(ng.gain, .17, 8); at(ng.gain, .12, 9.5); at(ng.gain, 0, 13.5);
+    set(eg.gain, 0, 0); at(eg.gain, .02, 1); at(eg.gain, .02, 4.4); at(eg.gain, .06, 8); at(eg.gain, 0, 13.5);
+    set(wg.gain, 0, 0); at(wg.gain, .005, 1); at(wg.gain, .005, 4.3); at(wg.gain, .016, 8); at(wg.gain, 0, 13.5);
+    end = 13.7;
+  }
+  for (const n of [src, eng, wh, lfo]) { n.start(t); n.stop(t + end); }
+}
 /* ---- per kind: where things are, how the jeeps go, what you hear ---- */
 const CTR_KINDS = {
   bus: { ground: busGround, items: busItems, free: [[3, 17.5, 19, 33]], tap: [8.4, 18.6, 14.6, 26.5],
@@ -7848,7 +8211,12 @@ const CTR_KINDS = {
   train: { ground: trainGround, items: trainItems, free: [[-20, 3, -5.6, 10.6]], tap: [-18, 3.8, -6.4, 9.8],
     town: [[8, 14.95], [8, 8], [-6, 8]],
     xfer: { doors: i => [-15.6 + (i % 3) * 2.2, 6.75], via: d => [[d[0], 7.3], [d[0] + .3, 8]], stops: [[-10.6, 9.1], [-9.6, 9.1], [-8.6, 9.1]], road: s => [s, [s[0], 8], [-5.6, 8]] },
-    hum: { nf: 820, nt: 'bandpass', of: 0, ot: 'sine', og: 0, lf: 1.6, ld: .95, sq: true } }
+    hum: { nf: 820, nt: 'bandpass', of: 0, ot: 'sine', og: 0, lf: 1.6, ld: .95, sq: true } },
+  /* v126: arrDur / depDur: the landing and the take-off take longer than a coach pulling in */
+  plane: { ground: airGround, items: airItems, free: [[19.5, -2.5, 48, 9.6]], tap: [23.5, -.2, 36.5, 7.6], arrDur: 13.5, depDur: 14,
+    town: [[8, 14.95], [8, 8], [23.5, 8]],
+    xfer: { doors: i => [30.75 + (i % 2) * .5, 7.1], via: d => [[d[0], 7.35], [28.6, 7.35]], stops: [[25.7, 6.55], [26.7, 6.55], [27.7, 6.55]], road: s => [s, [s[0], 8], [23, 8]] },
+    hum: { nf: 1500, nt: 'bandpass', of: 0, ot: 'sine', og: 0, lf: .3, ld: .25 } }
 };
 const ctrKind = () => { const K = ctrCfg(); return K && CTR_KINDS[K.kind]; };
 /* the jeeps: passengers walk from the vehicle to three jeeps, the jeeps drive off along the dirt road and fade out well
@@ -7921,7 +8289,7 @@ function ctrHumTick(V, w, h) {
   if (!K || !TOWN.open) return ctrHum(0);
   const p = tiso(...ctrSpot()), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy, d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h);
   const C = S.ctr, Dp = C && C.depart;
-  if (Dp && Dp.t1 != null && T - Dp.t1 > 9) { C.depart = null; save(); } /* gone: the place is empty again */
+  if (Dp && Dp.t1 != null && T - Dp.t1 > ((ctrKind() || {}).depDur || 9)) { C.depart = null; save(); } /* gone: the place is empty again */
   else if (Dp && Dp.t1 == null && S.day >= Dp.from && d < .42) { Dp.t1 = T; ctrArriveSound(true); }
   const due = ctrDue(); if (due && d < .42) { if (C.depart) C.depart = null; due.arrDay = S.day; due.arrT = T; ctrArriveSound(); save(); } /* it pulls in as you look */
   if (!ctrVehicles().length) return ctrHum(0);
@@ -7930,6 +8298,7 @@ function ctrHumTick(V, w, h) {
 /* the arrival in the first offer's scene: a coach horn, a ship's horn, a steam whistle */
 function ctrArriveSound(leaving) {
   if (!AC) return; const k = (ctrCfg() || {}).kind;
+  if (k === 'plane') return planeSound(leaving); /* v126 */
   if (leaving && k === 'bus') { tone(60, 110, 1.4, 'sawtooth', .03); tone(311, 311, .3, 'sawtooth', .03, .3); tone(392, 392, .3, 'sawtooth', .025, .3); return; } /* engine revs, a short toot */
   if (leaving && k === 'train') { tone(1108, 1128, .5, 'sine', .03); tone(880, 900, .5, 'square', .018); for (let i = 0; i < 8; i++) tone(180, 90, .12, 'sawtooth', .02, .6 + i * (.5 - i * .03)); return; } /* whistle, then chuffs speeding up */
   if (k === 'ship') { tone(98, 96, 1.5, 'sawtooth', .045); tone(147, 145, 1.5, 'sawtooth', .03); tone(98, 96, 1.1, 'sawtooth', .045, 1.9); tone(147, 145, 1.1, 'sawtooth', .03, 1.9); }
