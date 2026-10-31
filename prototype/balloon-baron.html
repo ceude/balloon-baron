@@ -10700,7 +10700,6 @@ function townSky(t) {
   list.forEach(([gx0, gy0, alt, c1, c2], i) => { const gx = pmod(gx0 + t * .12 * windK(1) + i * 3, 18) - 2, gy = gy0 + Math.sin(t * .2 + i) * .5; const p = tiso(gx, gy); out.shadows.push(() => blobShadow(p[0], p[1], 22, 9, .14)); out.balloons.push(() => balloon(p[0], p[1] - alt, 30, c1, c2, (t + i) % 4 < .5, 1)); });
   return out;
 }
-/* v128: the feature that opens each building; on the day it opens (or is built) its name shows from afar too */
 /* Name tag above a building. Small when zoomed out (name only), full when zoomed in. Returns its rect. */
 /* Height above the footprint centre where a building's label sits: just over its roof. */
 function townTop(b) {
