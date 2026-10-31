@@ -222,7 +222,7 @@ extension TownPainter {
             let a = DecorPainter.rugsAt, p = iso(a.0, a.1)
             glow(p.x, p.y - 30, 50, (255, 180, 100), 0.32 * k)
         }
-        // v128: the little lights the buildings carry (the bazaar's lanterns, the agency's phone sign, the guide office's sign)
+        // v128: the little lights the buildings carry (the bazaar's lanterns, the agency's neon, the tour booth's window)
         let inv = world.transform.inverted()
         for l in lites {
             let p = l.p.applying(inv)

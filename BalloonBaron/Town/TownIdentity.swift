@@ -1,12 +1,13 @@
 import SwiftUI
 import BalloonBaronCore
 
-// v128: telling the town's buildings apart (prototype `tourist`, `guideWithUmbrella`, `mapBoard`, `phoneSign`,
-// `infoSign`, `capFlag`, `windsockPole`, `trainingBalloon`, `MARKET`, `marketRow`, `hangOnWall`, `nightLite`).
+// v128: telling the town's buildings apart (prototype `tourist`, `guideWithUmbrella`, `mapBoard`, `neon`, `minibus`,
+// `tourBooth`, `brochureRack`, `capFlag`, `windsockPole`, `trainingBalloon`, `MARKET`, `marketRow`, `hangOnWall`, `nightLite`).
 // Players mixed up the guide office, the influencer agency, the bazaar and the pilot school. No writing on them: each
-// carries a big drawn sign of its trade, in its region's style.
+// shows its trade in its own building and the life around it, in its region's style. v130: no rooftop signs any more
+// (the agency's phone and the guide office's information board made the village look like a row of billboards).
 
-/// A small light a building carries (a lantern, the phone's screen, the guide office's sign), lit again over the dark. Kept in
+/// A small light a building carries (a lantern, the agency's neon, the tour booth's window), lit again over the dark. Kept in
 /// canvas coordinates, since the agency draws its roof shifted up.
 struct NightLite {
     var p: CGPoint
@@ -45,14 +46,6 @@ extension TownPainter {
     mutating func nightLite(_ x: CGFloat, _ y: CGFloat, _ r: CGFloat, _ rgb: (Double, Double, Double), _ a: Double = 1) {
         guard night != nil else { return }
         lites.append(NightLite(p: pt(x, y).applying(c.transform), r: r, rgb: rgb, a: a))
-    }
-
-    mutating func heart(_ x: CGFloat, _ y: CGFloat, _ s: CGFloat, _ col: Color) {
-        var p = Path()
-        p.move(to: pt(x, y + s))
-        p.addCurve(to: pt(x, y - s * 0.35), control1: pt(x - s * 1.6, y - s * 0.2), control2: pt(x - s * 0.6, y - s * 1.3))
-        p.addCurve(to: pt(x, y + s), control1: pt(x + s * 0.6, y - s * 1.3), control2: pt(x + s * 1.6, y - s * 0.2))
-        c.fill(p, with: .color(col))
     }
 
     // MARK: People
@@ -142,87 +135,121 @@ extension TownPainter {
         rect(bp.x - 1, bp.y + 3, 2, 1.6, hex("#6a4024"))
     }
 
-    // MARK: The agency's roof
+    // MARK: The agency's neon
 
-    /// A big phone standing on the roof on two legs: dark body, glowing screen with a play button, hearts floating up.
-    mutating func phoneSign(_ p: CGPoint, _ q: CGPoint, _ H: CGFloat, on: Bool) {
-        let glowA = on ? 0.75 + 0.25 * sin(t * 5) : 0.55
-        for u: CGFloat in [0.25, 0.75] { line(fpt(p, q, H, u, 0), fpt(p, q, H, u, 0.14), hex("#3a3048"), 2.5) }
-        // Its thickness, on the side away from the light.
-        let t0 = fpt(p, q, H, 1, 0.99), b0 = fpt(p, q, H, 1, 0.13)
-        poly([t0, pt(t0.x + 3, t0.y + 1.5), pt(b0.x + 3, b0.y + 1.5), b0], hex("#120e1c"))
-        if on {
-            let cc = fpt(p, q, H, 0.5, 0.58)
-            glow(cc.x, cc.y, 46, Color(red: 1, green: 111 / 255, blue: 168 / 255), 0.32 * glowA)
+    /// v130: a neon tube along a line: a pale core and a soft halo by day; the night lights it up.
+    mutating func neon(_ pts: [CGPoint], _ rgb: (Double, Double, Double), _ a: Double = 1) {
+        guard pts.count > 1 else { return }
+        var p = Path()
+        p.move(to: pts[0])
+        for q in pts.dropFirst() { p.addLine(to: q) }
+        func style(_ w: CGFloat) -> StrokeStyle { StrokeStyle(lineWidth: w, lineCap: .round, lineJoin: .round) }
+        c.stroke(p, with: .color(rgba(rgb.0, rgb.1, rgb.2, 0.16 * a)), style: style(5))
+        c.stroke(p, with: .color(rgba(rgb.0, rgb.1, rgb.2, 0.85 * a)), style: style(2))
+        c.stroke(p, with: .color(Color.white.opacity(0.6)), style: style(0.8))
+        for i in 0..<(pts.count - 1) {
+            for k: CGFloat in [0.25, 0.75] {
+                let m = lp(pts[i], pts[i + 1], k)
+                nightLite(m.x, m.y, 26, rgb, 0.6 * a)
+            }
         }
-        let f = face(p, q, H)
-        f.fill(Path(roundedRect: CGRect(x: 0, y: 0.12, width: 1, height: 0.88), cornerRadius: 0.14), with: .color(hex("#221d33")))
-        f.fill(Path(roundedRect: CGRect(x: 0.09, y: 0.2, width: 0.82, height: 0.7), cornerRadius: 0.08),
-               with: .linearGradient(grad([(hex("#9b7be0"), 0), (hex("#ff6fa8"), 1)]), startPoint: pt(0, 0.2), endPoint: pt(0, 0.94)))
-        var shine = Path()
-        shine.move(to: pt(0.09, 0.9)); shine.addLine(to: pt(0.45, 0.9)); shine.addLine(to: pt(0.09, 0.5)); shine.closeSubpath()
-        f.fill(shine, with: .color(Color.white.opacity(0.12 + 0.1 * glowA)))
-        f.fill(Path(roundedRect: CGRect(x: 0.38, y: 0.925, width: 0.24, height: 0.035), cornerRadius: 0.015), with: .color(hex("#120e1c")))
-        f.fill(Path(ellipseIn: CGRect(x: 0.3, y: 0.45, width: 0.4, height: 0.26)), with: .color(.white))
-        var play = Path()
-        play.move(to: pt(0.43, 0.66)); play.addLine(to: pt(0.62, 0.58)); play.addLine(to: pt(0.43, 0.5)); play.closeSubpath()
-        f.fill(play, with: .color(hex("#ff5e8a")))
-        for i in 0..<3 {
-            f.fill(Path(CGRect(x: 0.2, y: 0.26 + CGFloat(i) * 0.045, width: i == 2 ? 0.3 : 0.6, height: 0.022)), with: .color(Color.white.opacity(0.85)))
-        }
-        // Hearts floating up off the screen.
-        for i in 0..<3 {
-            let u = (t * 0.45 + Double(i) / 3).truncatingRemainder(dividingBy: 1)
-            let a = fpt(p, q, H, 0.75 + 0.15 * CGFloat(sin(Double(i) * 2)), 0.86)
-            let x = a.x + CGFloat(u) * 12 + CGFloat(sin(t * 3 + Double(i))) * 2, y = a.y - CGFloat(u) * 34, sz = 3.4 * (1 - CGFloat(u) * 0.3)
-            let keep = c
-            c.opacity = (on ? 1 : 0.8) * (1 - u)
-            heart(x, y, sz, hex(i % 2 == 1 ? "#ff3d6e" : "#ff8ab0"))
-            c = keep
-        }
-        let sc = fpt(p, q, H, 0.5, 0.58)
-        nightLite(sc.x, sc.y, 40, (255, 120, 180), on ? 0.9 : 0.6)
     }
 
-    // MARK: The guide office's roof
+    // MARK: The guide office
 
-    /// v129: the guide office's rooftop sign, so it can't be taken for a rival's shop: a navy board in a gold frame on
-    /// two posts, the tourist-information "i" in a white disc and a red map pin beside it, lit while the guides recommend you.
-    mutating func infoSign(_ p: CGPoint, _ q: CGPoint, _ H: CGFloat, on: Bool) {
-        let L = hypot(q.x - p.x, q.y - p.y)
-        func px(_ r: CGFloat) -> (CGFloat, CGFloat) { (r / L, r / H) } // screen pixels in face units
-        for u: CGFloat in [0.2, 0.8] { line(fpt(p, q, H, u, 0), fpt(p, q, H, u, 0.2), hex("#3a3048"), 2.5) }
-        // Its thickness, on the side away from the light.
-        let t0 = fpt(p, q, H, 1, 0.99), b0 = fpt(p, q, H, 1, 0.19)
-        poly([t0, pt(t0.x + 3, t0.y + 1.5), pt(b0.x + 3, b0.y + 1.5), b0], hex("#14304f"))
-        if on {
-            let cc = fpt(p, q, H, 0.5, 0.6)
-            glow(cc.x, cc.y, 44, Color(red: 1, green: 214 / 255, blue: 120 / 255), 0.26 + 0.08 * sin(t * 3))
+    /// v130: the tour minibus: white, a teal stripe, windows down its side, headlights and wheels.
+    mutating func minibus(_ gx: Double, _ gy: Double) {
+        let h: CGFloat = 22
+        block(gx, gy, 0.52, 0.88, h, lit: "#ffffff", shade: "#d8d8d8", top: "#f4f4f4", courses: false)
+        let (_, B, C, D) = corners(gx, gy, 0.52, 0.88)
+        let side = face(C, B, h)
+        side.fill(Path(CGRect(x: 0, y: 0.3, width: 1, height: 0.14)), with: .color(hex("#3ad0c0")))
+        var win = Path()
+        for i in 0..<4 { win.addRect(CGRect(x: 0.08 + CGFloat(i) * 0.22, y: 0.55, width: 0.16, height: 0.3)) }
+        side.fill(win, with: .color(hex("#4a5a6a")))
+        let front = face(D, C, h)
+        front.fill(Path(CGRect(x: 0.1, y: 0.52, width: 0.8, height: 0.34)), with: .color(hex("#4a5a6a")))
+        var lamps = Path()
+        for u: CGFloat in [0.08, 0.8] { lamps.addRect(CGRect(x: u, y: 0.2, width: 0.12, height: 0.1)) }
+        front.fill(lamps, with: .color(hex("#ffd27a")))
+        for u: CGFloat in [0.2, 0.8] {
+            let p = lp(C, B, u)
+            ellipse(p.x, p.y - 1, 3.4, 3.6, hex("#2a2430"))
         }
+    }
+
+    /// v130: a timber tour booth: plank walls, a counter window with someone behind it and leaflets on the sill, a little
+    /// pyramid roof of shingles (slate in Bristol); a brochure rack stands by it.
+    mutating func tourBooth(_ gx: Double, _ gy: Double, _ big: Bool) {
+        let W = 0.42, D = 0.4, h: CGFloat = 30
+        let f = block(gx, gy, W, D, h, lit: "#c99058", shade: "#8a5a32", top: "#9a6a3c", courses: false)
+        for (p, q) in [(f.D, f.C), (f.C, f.B)] {
+            let fc = face(p, q, h)
+            var planks = Path()
+            for i in 1..<6 { planks.addRect(CGRect(x: CGFloat(i) / 6 - 0.008, y: 0, width: 0.016, height: 1)) }
+            fc.fill(planks, with: .color(rgba(70, 35, 15, 0.25)))
+            fc.fill(Path(CGRect(x: 0, y: 0, width: 1, height: 0.08)), with: .color(rgba(70, 35, 15, 0.3)))
+        }
+        face(f.D, f.C, h).fill(Path(CGRect(x: 0.12, y: 0.42, width: 0.76, height: 0.42)), with: .color(hex(big ? "#ffd890" : "#4a2c1a")))
+        let cw = fpt(f.D, f.C, h, 0.5, 0.42)
+        rect(cw.x - 3, cw.y - 6, 6, 6, hex("#1f4a7a"))
+        ellipse(cw.x, cw.y - 9, 2.8, 2.8, hex("#3a2418"))
+        let sill = face(f.D, f.C, h)
+        sill.fill(Path(CGRect(x: 0.06, y: 0.38, width: 0.88, height: 0.06)), with: .color(hex("#e8d2a8")))
+        let leaflets = ["#e04a3a", "#3ad0c0", "#ffc23d", "#5aa9e6"]
+        for i in 0..<4 {
+            sill.fill(Path(CGRect(x: 0.14 + CGFloat(i) * 0.07 + (i > 1 ? 0.4 : 0), y: 0.44, width: 0.05, height: 0.07)), with: .color(hex(leaflets[i])))
+        }
+        if big {
+            let m = fpt(f.D, f.C, h, 0.5, 0.62)
+            nightLite(m.x, m.y, 22, (255, 210, 140), 0.7)
+        }
+        let e = 0.07
+        func P(_ x: Double, _ y: Double, _ z: CGFloat) -> CGPoint { upp(iso(x, y), z) }
+        let A = P(gx - e, gy - e, h), B = P(gx + W + e, gy - e, h), C = P(gx + W + e, gy + D + e, h), Dd = P(gx - e, gy + D + e, h)
+        let top = P(gx + W / 2, gy + D / 2, h + 20)
+        let rc: String
+        switch s.region {
+        case .bri: rc = "#5e6874"
+        case .abq: rc = "#8a5a34"
+        case .lux: rc = "#7a5a3a"
+        case .cap: rc = "#a8502e"
+        }
+        poly([A, B, top], mix(rc, "#000000", 0.35))
+        poly([A, Dd, top], mix(rc, "#000000", 0.15))
+        poly([Dd, C, top], hex(rc))
+        poly([C, B, top], mix(rc, "#000000", 0.3))
+        var tiles = Path()
+        for i in 1..<4 {
+            let kk = CGFloat(i) / 4
+            tiles.move(to: lp(Dd, top, kk)); tiles.addLine(to: lp(C, top, kk))
+        }
+        c.stroke(tiles, with: .color(rgba(40, 15, 5, 0.3)), lineWidth: 1)
+        ellipse(top.x, top.y - 1, 2.2, 2.2, hex("#ffc23d"))
+        brochureRack(gx - 0.02, gy + D + 0.2)
+    }
+
+    /// v130: a rack of leaflets facing the street: three shelves of colourful folded brochures in a timber frame.
+    mutating func brochureRack(_ gx: Double, _ gy: Double) {
+        let p = iso(gx, gy), q = iso(gx + 0.28, gy), H: CGFloat = 26
+        let m = lp(p, q, 0.5)
+        blobShadow(m.x + 8, m.y + 2, 12, 3, 0.15)
         let f = face(p, q, H)
-        f.fill(Path(roundedRect: CGRect(x: 0, y: 0.18, width: 1, height: 0.81), cornerRadius: 0.08), with: .color(hex("#ffc23d")))
-        f.fill(Path(roundedRect: CGRect(x: 0.035, y: 0.24, width: 0.93, height: 0.69), cornerRadius: 0.06), with: .color(hex("#1f4a7a")))
-        f.fill(path([pt(0.035, 0.93), pt(0.4, 0.93), pt(0.035, 0.5)]), with: .color(Color.white.opacity(0.1)))
-        // The "i" in its white disc.
-        let (ru, rv) = px(11), cu: CGFloat = 0.3, cv: CGFloat = 0.585
-        f.fill(Path(ellipseIn: CGRect(x: cu - ru, y: cv - rv, width: ru * 2, height: rv * 2)), with: .color(.white))
-        let (du, dv) = px(2.3), sw = px(3.6).0, navy = hex("#1f4a7a")
-        f.fill(Path(ellipseIn: CGRect(x: cu - du, y: cv + rv * 0.5 - dv, width: du * 2, height: dv * 2)), with: .color(navy))
-        f.fill(Path(CGRect(x: cu - sw / 2, y: cv - rv * 0.62, width: sw, height: rv * 0.85)), with: .color(navy))
-        // The map pin: a red drop with a white heart, its point down.
-        let (pr, pv) = px(7.5), mu: CGFloat = 0.71, mv: CGFloat = 0.64, tip = px(19).1
-        var pin = [pt(mu, mv - tip)]
-        for i in 0...16 { // over the top, from the lower left round to the lower right
-            let a = Double.pi + 0.52 - Double(i) / 16 * (Double.pi + 1.04)
-            pin.append(pt(mu + pr * CGFloat(cos(a)), mv + pv * CGFloat(sin(a))))
+        var frame = Path()
+        frame.addRect(CGRect(x: 0, y: 0, width: 0.08, height: 1)); frame.addRect(CGRect(x: 0.92, y: 0, width: 0.08, height: 1))
+        frame.addRect(CGRect(x: 0, y: 0.22, width: 1, height: 0.78))
+        f.fill(frame, with: .color(hex("#6a4024")))
+        f.fill(Path(CGRect(x: 0.08, y: 0.26, width: 0.84, height: 0.7)), with: .color(hex("#8a5a34")))
+        let cols = ["#e04a3a", "#3ad0c0", "#ffc23d", "#5aa9e6", "#ff6fa8", "#22a45d", "#9b7be0", "#ff8a3d", "#fff6e0"]
+        var fold = Path()
+        for r in 0..<3 {
+            for cc in 0..<3 {
+                let u = 0.12 + CGFloat(cc) * 0.27, v = 0.3 + CGFloat(r) * 0.22
+                f.fill(Path(CGRect(x: u, y: v, width: 0.22, height: 0.18)), with: .color(hex(cols[r * 3 + cc])))
+                fold.addRect(CGRect(x: u, y: v + 0.12, width: 0.22, height: 0.05))
+            }
         }
-        f.fill(path(pin), with: .color(hex("#e04a3a")))
-        let (wu, wv) = px(2.8)
-        f.fill(Path(ellipseIn: CGRect(x: mu - wu, y: mv - wv, width: wu * 2, height: wv * 2)), with: .color(.white))
-        let (su, sv) = px(5)
-        f.fill(Path(ellipseIn: CGRect(x: mu - su, y: mv - tip - sv * 0.2 - sv * 0.35, width: su * 2, height: sv * 0.7)), with: .color(Color.black.opacity(0.22)))
-        let sc = fpt(p, q, H, 0.5, 0.6)
-        nightLite(sc.x, sc.y, 34, (255, 226, 160), on ? 0.6 : 0.35)
+        f.fill(fold, with: .color(Color.white.opacity(0.55)))
     }
 
     // MARK: The pilot school

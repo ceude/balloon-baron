@@ -9890,65 +9890,8 @@ function tbuilding(b, t) {
       if (big) { const p = tiso(x0 + w + .4, y0 + d + .2); ctx.fillStyle = '#2b2350'; ctx.fillRect(p[0] - 14, p[1] - 22, 28, 22); ctx.fillStyle = '#ffc23d'; ctx.fillRect(p[0] - 10, p[1] - 18, 20, 6); } /* an armoured van while you owe money */
       break;
     }
-    case 'guide': {
-      const x0 = g + .35, y0 = k + .4, w = b.w - 1, d = b.d - 1, h = 48;
-      const f = block(x0, y0, w, d, h);
-      /* v129: no awning any more (it made the office look like one of the rivals' shops); two windows by the door and,
-         on the roof, a tourist-information sign */
-      opening(f.D, f.C, h, .5, 0, .3, .55, 'door');
-      for (const u of [.18, .82]) opening(f.D, f.C, h, u, .32, .15, .36, 'win', big);
-      infoSign(upp(tiso(x0 + .14, y0 + .5), h), upp(tiso(x0 + .86, y0 + .5), h), 40, big, t);
-      /* the tour minibus */
-      block(x0 + w + .15, y0 + .05, .55, .9, 22, { lit: '#ffffff', shade: '#d8d8d8', top: '#f4f4f4', courses: false });
-      ctx.fillStyle = '#3ad0c0'; const s0 = tiso(x0 + w + .15, y0 + .95); ctx.fillRect(s0[0] - 2, s0[1] - 12, 38, 5);
-      /* v128: what says "guided tours" from afar: a big folding map of the valley on its easel, and the guide at the door
-         holding a yellow umbrella up high for a little group of tourists to follow */
-      mapBoard(x0 - .42, y0 + d + .2, t);
-      const gp = tiso(x0 + w * .9, y0 + d + .62); guideWithUmbrella(gp[0], gp[1], t);
-      const n = big ? 7 : 5, hats = ['#f4e4c0', null, '#e04a3a', null, '#f4e4c0', '#2b2350', null];
-      for (let i = 0; i < n; i++) { const p = tiso(x0 + .05 + (i % 4) * .2 + (i > 3 ? .1 : 0), y0 + d + .48 + (i > 3 ? .22 : 0) + (i % 2) * .05); tourist(p[0], p[1], ['#ffc23d', '#ff6fa8', '#5aa9e6', '#22a45d', '#9b7be0', '#ff8a3d', '#e8e2d4'][i], hats[i], i % 3 === 1, t * .25, i); }
-      break;
-    }
-    case 'agency': { /* a modern cave-stone villa: big lit glass, roof terrace with pergola, pool; v128: a big phone on the roof */
-      const x0 = g + .25, y0 = k + .25, w = 1.5, d = 1.15, h1 = 54, h2 = 46;
-      const plaster = { lit: '#f6e2c8', shade: '#c4936c', top: '#efd9b8', courses: false };
-      /* floor-to-ceiling glass in wooden frames, warm inside */
-      const glass = (p, q, h, u0, u1, v0, v1, lit) => tface(p, q, h, () => {
-        const gr = ctx.createLinearGradient(0, v0, 0, v1); gr.addColorStop(0, lit ? '#ffcf7a' : '#6a8aa8'); gr.addColorStop(1, lit ? '#ffe8b0' : '#a9c6dc');
-        ctx.fillStyle = gr; ctx.fillRect(u0, v0, u1 - u0, v1 - v0);
-        ctx.fillStyle = '#6a4024'; const n = Math.max(2, Math.round((u1 - u0) / .14));
-        for (let i = 0; i <= n; i++) ctx.fillRect(u0 + (u1 - u0) * i / n - .008, v0, .016, v1 - v0);
-        ctx.fillRect(u0, v0, u1 - u0, .03); ctx.fillRect(u0, v1 - .03, u1 - u0, .03);
-      });
-      const f1 = block(x0, y0, w, d, h1, plaster);
-      glass(f1.D, f1.C, h1, .08, .62, .04, .82, true); opening(f1.D, f1.C, h1, .8, 0, .18, .62, 'door');
-      glass(f1.C, f1.B, h1, .2, .8, .3, .78, false);
-      /* bougainvillea climbing the lit wall */
-      const R = mulberry32(77); for (let i = 0; i < 26; i++) { const a = lp(f1.D, f1.C, .62 + R() * .1), y = h1 * (.2 + R() * .8); ctx.fillStyle = R() < .3 ? '#7aa04a' : R() < .6 ? '#e0408a' : '#ff6fa8'; ctx.beginPath(); ctx.arc(a[0] + R() * 6 - 3, a[1] - y, 2.5 + R() * 2, 0, 7); ctx.fill(); }
-      /* upper floor, set back, standing on the roof */
-      ctx.save(); ctx.translate(0, -h1);
-      const f2 = block(x0 + .55, y0 + .05, .9, .75, h2, { ...plaster, parapet: true, roofIn: '#e2c7a2' });
-      glass(f2.D, f2.C, h2, .1, .9, .1, .85, true);
-      glass(f2.C, f2.B, h2, .25, .75, .25, .8, false);
-      /* pergola over the roof terrace */
-      const pa = tiso(x0 + .08, y0 + .1), pb = tiso(x0 + .5, y0 + .1), pc = tiso(x0 + .5, y0 + 1.05), pd = tiso(x0 + .08, y0 + 1.05), ph = 30;
-      ctx.strokeStyle = '#6a4024'; ctx.lineWidth = 2.5;
-      for (const q of [pa, pb, pc, pd]) { ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[0], q[1] - ph); ctx.stroke(); }
-      ctx.lineWidth = 2; for (let i = 0; i <= 5; i++) { const a = upp(lp(pa, pd, i / 5), ph), c = upp(lp(pb, pc, i / 5), ph); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...c); ctx.stroke(); }
-      ctx.beginPath(); ctx.moveTo(...upp(pd, ph)); ctx.lineTo(...upp(pc, ph)); ctx.stroke();
-      /* the influencer filming on the terrace */
-      const ip = lp(f2.D, f2.C, .1), ipos = [ip[0] - 26, ip[1] + 12]; person(ipos[0], ipos[1], '#ff6fa8', big ? t : 0, 3);
-      /* v128: on the roof, a big phone sign with a video playing on it, lit up while a campaign runs (v129: the ring light on its tripod went) */
-      const rp = (x, y) => upp(tiso(x, y), h2);
-      phoneSign(rp(x0 + .8, y0 + .4), rp(x0 + 1.34, y0 + .4), 62, big, t);
-      ctx.restore();
-      /* turquoise pool in the front garden */
-      const pl = corners(x0 + .05, y0 + d + .12, 1.3, .4); tpoly([pl.A, pl.B, pl.C, pl.D], '#efe2cc');
-      const pi = corners(x0 + .12, y0 + d + .17, 1.16, .3), pg = ctx.createLinearGradient(pi.A[0], pi.A[1], pi.C[0], pi.C[1]); pg.addColorStop(0, '#8ae6ec'); pg.addColorStop(1, '#2aa6c4'); tpoly([pi.A, pi.B, pi.C, pi.D], pg);
-      ctx.save(); ctx.globalAlpha = .5; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; for (let i = 0; i < 3; i++) { const a = lp(pi.A, pi.D, .3 + i * .2), c = lp(pi.B, pi.C, .3 + i * .2); ctx.beginPath(); ctx.moveTo(a[0] + Math.sin(t + i) * 3, a[1]); ctx.lineTo(c[0] + Math.sin(t + i + 1) * 3, c[1]); ctx.stroke(); } ctx.restore();
-      const cp = tiso(g + 1.9, k + .35); hotelTree(cp[0], cp[1], 1);
-      break;
-    }
+    case 'guide': guideOffice(b, t, big); break; /* v130: no rooftop signs; a house, a tour booth and the minibus */
+    case 'agency': agencyVilla(b, t, big); break; /* v130: a pink neon line round the top floor instead of the phone */
     case 'tower': {
       const x0 = g + .45, y0 = k + .45, w = b.w - .9, d = b.d - .9, h = 270;
       const { A, B, C, D } = corners(x0, y0, w, d);
@@ -10028,55 +9971,113 @@ function mapBoard(gx, gy, t) {
   /* a small balloon drawn on the map's corner */
   const bp = fpt(p, q, H, .3, .9); ell(bp[0], bp[1] - 1, 3.2, 3.6, '#ff5e3a'); ctx.fillStyle = '#6a4024'; ctx.fillRect(bp[0] - 1, bp[1] + 3, 2, 1.6);
 }
-/* a big phone standing on the roof on two legs: dark body, glowing screen with a play button, hearts floating up */
-function phoneSign(p, q, H, on, t) {
-  const glowA = on ? .75 + .25 * Math.sin(t * 5) : .55;
-  for (const u of [.25, .75]) { const a = fpt(p, q, H, u, 0), c = fpt(p, q, H, u, .14); ctx.strokeStyle = '#3a3048'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...c); ctx.stroke(); }
-  /* its thickness, on the side away from the light */
-  const e = [6, 3], t0 = fpt(p, q, H, 1, .99), b0 = fpt(p, q, H, 1, .13); tpoly([t0, [t0[0] + e[0] * .5, t0[1] + e[1] * .5], [b0[0] + e[0] * .5, b0[1] + e[1] * .5], b0], '#120e1c');
-  if (on) { const c = fpt(p, q, H, .5, .58); ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(c[0], c[1], 0, c[0], c[1], 46); g.addColorStop(0, `rgba(255,111,168,${.32 * glowA})`); g.addColorStop(1, 'rgba(255,111,168,0)'); ctx.fillStyle = g; ctx.fillRect(c[0] - 46, c[1] - 46, 92, 92); ctx.restore(); }
-  tface(p, q, H, () => {
-    ctx.fillStyle = '#221d33'; rrect(0, .12, 1, .88, .14); ctx.fill();
-    const g = ctx.createLinearGradient(0, .2, 0, .94); g.addColorStop(0, '#9b7be0'); g.addColorStop(1, '#ff6fa8'); ctx.fillStyle = g; rrect(.09, .2, .82, .7, .08); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,' + (.12 + .1 * glowA) + ')'; ctx.beginPath(); ctx.moveTo(.09, .9); ctx.lineTo(.45, .9); ctx.lineTo(.09, .5); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#120e1c'; rrect(.38, .925, .24, .035, .015); ctx.fill();
-    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(.5, .58, .2, .13, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = '#ff5e8a'; ctx.beginPath(); ctx.moveTo(.43, .66); ctx.lineTo(.62, .58); ctx.lineTo(.43, .5); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,.85)'; for (let i = 0; i < 3; i++) ctx.fillRect(.2, .26 + i * .045, i === 2 ? .3 : .6, .022);
-  });
-  /* hearts floating up off the screen */
-  for (let i = 0; i < 3; i++) {
-    const u = (t * .45 + i / 3) % 1, a = fpt(p, q, H, .75 + .15 * Math.sin(i * 2), .86), x = a[0] + u * 12 + Math.sin(t * 3 + i) * 2, y = a[1] - u * 34, s = 3.4 * (1 - u * .3);
-    ctx.save(); ctx.globalAlpha = (on ? 1 : .8) * (1 - u); ctx.fillStyle = i % 2 ? '#ff3d6e' : '#ff8ab0';
-    ctx.beginPath(); ctx.moveTo(x, y + s); ctx.bezierCurveTo(x - s * 1.6, y - s * .2, x - s * .6, y - s * 1.3, x, y - s * .35); ctx.bezierCurveTo(x + s * .6, y - s * 1.3, x + s * 1.6, y - s * .2, x, y + s); ctx.fill(); ctx.restore();
-  }
-  const sc = fpt(p, q, H, .5, .58); nightLite(sc[0], sc[1], 40, '255,120,180', on ? .9 : .6);
+/* ---------- v130: the agency and the guide office without rooftop signs ----------
+   The phone on the agency's roof and the information board on the guide office's roof made the village look like a
+   row of billboards. The agency is the glass villa with a pink neon line round its top floor (soft by day, glowing at
+   night); the guide office is a traditional house in the region's own stone and roof with a timber tour booth and a
+   brochure rack beside it, the valley map on its easel, the guide's umbrella over a group and the tour minibus. */
+/* a neon tube along a line: a pale core and a soft halo by day; the night lights it up */
+function neon(pts, rgb, a = 1) {
+  ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+  const path = () => { ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(...p) : ctx.moveTo(...p)); };
+  path(); ctx.strokeStyle = `rgba(${rgb},${.16 * a})`; ctx.lineWidth = 5; ctx.stroke();
+  path(); ctx.strokeStyle = `rgba(${rgb},${.85 * a})`; ctx.lineWidth = 2; ctx.stroke();
+  path(); ctx.strokeStyle = 'rgba(255,255,255,.6)'; ctx.lineWidth = .8; ctx.stroke();
+  ctx.restore();
+  for (let i = 0; i < pts.length - 1; i++) for (const k of [.25, .75]) { const m = lp(pts[i], pts[i + 1], k); nightLite(m[0], m[1], 26, rgb, .6 * a); }
 }
-/* v129: the guide office's rooftop sign, so it can't be taken for a rival's shop: a navy board in a gold frame on two
-   posts, the tourist-information "i" in a white disc and a red map pin beside it, lit while the guides recommend you */
-function infoSign(p, q, H, on, t) {
-  const L = Math.hypot(q[0] - p[0], q[1] - p[1]), px = r => [r / L, r / H]; /* screen pixels in face units */
-  ctx.strokeStyle = '#3a3048'; ctx.lineWidth = 2.5;
-  for (const u of [.2, .8]) { const a = fpt(p, q, H, u, 0), c = fpt(p, q, H, u, .2); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...c); ctx.stroke(); }
-  /* its thickness, on the side away from the light */
-  const t0 = fpt(p, q, H, 1, .99), b0 = fpt(p, q, H, 1, .19); tpoly([t0, [t0[0] + 3, t0[1] + 1.5], [b0[0] + 3, b0[1] + 1.5], b0], '#14304f');
-  if (on) { const c = fpt(p, q, H, .5, .6); ctx.save(); ctx.globalCompositeOperation = 'lighter'; const g = ctx.createRadialGradient(c[0], c[1], 0, c[0], c[1], 44); g.addColorStop(0, `rgba(255,214,120,${.26 + .08 * Math.sin(t * 3)})`); g.addColorStop(1, 'rgba(255,214,120,0)'); ctx.fillStyle = g; ctx.fillRect(c[0] - 44, c[1] - 44, 88, 88); ctx.restore(); }
-  tface(p, q, H, () => {
-    ctx.fillStyle = '#ffc23d'; rrect(0, .18, 1, .81, .08); ctx.fill();
-    ctx.fillStyle = '#1f4a7a'; rrect(.035, .24, .93, .69, .06); ctx.fill();
-    ctx.fillStyle = 'rgba(255,255,255,.1)'; ctx.beginPath(); ctx.moveTo(.035, .93); ctx.lineTo(.4, .93); ctx.lineTo(.035, .5); ctx.closePath(); ctx.fill();
-    /* the "i" in its white disc */
-    const [ru, rv] = px(11), cu = .3, cv = .585;
-    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.ellipse(cu, cv, ru, rv, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = '#1f4a7a'; const [du, dv] = px(2.3); ctx.beginPath(); ctx.ellipse(cu, cv + rv * .5, du, dv, 0, 0, 7); ctx.fill();
-    const [sw] = px(3.6); ctx.fillRect(cu - sw / 2, cv - rv * .62, sw, rv * .85);
-    /* the map pin: a red drop with a white heart, its point down */
-    const [pr, pv] = px(7.5), mu = .71, mv = .64, [, tip] = px(19);
-    ctx.fillStyle = '#e04a3a'; ctx.beginPath(); ctx.moveTo(mu, mv - tip); ctx.lineTo(mu - pr * .86, mv - pv * .5); ctx.ellipse(mu, mv, pr, pv, 0, Math.PI + .52, -.52, true); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#ffffff'; const [wu, wv] = px(2.8); ctx.beginPath(); ctx.ellipse(mu, mv, wu, wv, 0, 0, 7); ctx.fill();
-    ctx.fillStyle = 'rgba(0,0,0,.22)'; const [su, sv] = px(5); ctx.beginPath(); ctx.ellipse(mu, mv - tip - sv * .2, su, sv * .35, 0, 0, 7); ctx.fill();
+/* floor-to-ceiling glass in wooden frames, warm inside when lit */
+function glassWall(p, q, h, u0, u1, v0, v1, lit) {
+  tface(p, q, h, () => {
+    const gr = ctx.createLinearGradient(0, v0, 0, v1); gr.addColorStop(0, lit ? '#ffcf7a' : '#6a8aa8'); gr.addColorStop(1, lit ? '#ffe8b0' : '#a9c6dc');
+    ctx.fillStyle = gr; ctx.fillRect(u0, v0, u1 - u0, v1 - v0);
+    ctx.fillStyle = '#6a4024'; const n = Math.max(2, Math.round((u1 - u0) / .14));
+    for (let i = 0; i <= n; i++) ctx.fillRect(u0 + (u1 - u0) * i / n - .008, v0, .016, v1 - v0);
+    ctx.fillRect(u0, v0, u1 - u0, .03); ctx.fillRect(u0, v1 - .03, u1 - u0, .03);
   });
-  const sc = fpt(p, q, H, .5, .6); nightLite(sc[0], sc[1], 34, '255,226,160', on ? .6 : .35);
+}
+/* the influencer agency: a modern cave-stone villa, big lit glass, a roof terrace under a vine-covered pergola where the
+   influencer films, a pink neon line round the top floor (brighter while a campaign runs) and a pool in the garden */
+function agencyVilla(b, t, big) {
+  const g = b.gx, k = b.gy, x0 = g + .25, y0 = k + .25, w = 1.5, d = 1.15, h1 = 54, h2 = 46;
+  const plaster = { lit: '#f6e2c8', shade: '#c4936c', top: '#efd9b8', courses: false };
+  const f1 = block(x0, y0, w, d, h1, plaster);
+  glassWall(f1.D, f1.C, h1, .08, .62, .04, .82, true); opening(f1.D, f1.C, h1, .8, 0, .18, .62, 'door');
+  glassWall(f1.C, f1.B, h1, .2, .8, .3, .78, false);
+  /* bougainvillea climbing the lit wall */
+  const R = mulberry32(77); for (let i = 0; i < 26; i++) { const a = lp(f1.D, f1.C, .62 + R() * .1), y = h1 * (.2 + R() * .8); ctx.fillStyle = R() < .3 ? '#7aa04a' : R() < .6 ? '#e0408a' : '#ff6fa8'; ctx.beginPath(); ctx.arc(a[0] + R() * 6 - 3, a[1] - y, 2.5 + R() * 2, 0, 7); ctx.fill(); }
+  /* upper floor, set back, standing on the roof */
+  ctx.save(); ctx.translate(0, -h1);
+  const f2 = block(x0 + .55, y0 + .05, .9, .75, h2, { ...plaster, parapet: true, roofIn: '#e2c7a2' });
+  glassWall(f2.D, f2.C, h2, .1, .9, .1, .85, true);
+  glassWall(f2.C, f2.B, h2, .25, .75, .25, .8, false);
+  const pa = tiso(x0 + .08, y0 + .1), pb = tiso(x0 + .5, y0 + .1), pc = tiso(x0 + .5, y0 + 1.05), pd = tiso(x0 + .08, y0 + 1.05), ph = 30;
+  ctx.strokeStyle = '#6a4024'; ctx.lineWidth = 2.5;
+  for (const q of [pa, pb, pc, pd]) { ctx.beginPath(); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[0], q[1] - ph); ctx.stroke(); }
+  ctx.lineWidth = 2; for (let i = 0; i <= 5; i++) { const a = upp(lp(pa, pd, i / 5), ph), c = upp(lp(pb, pc, i / 5), ph); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...c); ctx.stroke(); }
+  ctx.beginPath(); ctx.moveTo(...upp(pd, ph)); ctx.lineTo(...upp(pc, ph)); ctx.stroke();
+  { const R2 = mulberry32(12); for (let i = 0; i < 16; i++) { const a = upp(lp(lp(pa, pd, R2()), lp(pb, pc, R2()), R2()), ph + 1); ctx.fillStyle = R2() < .5 ? '#7aa04a' : '#5f8a3a'; ctx.beginPath(); ctx.arc(a[0], a[1], 2.2 + R2() * 1.8, 0, 7); ctx.fill(); } }
+  const ip = lp(f2.D, f2.C, .1); person(ip[0] - 26, ip[1] + 12, '#ff6fa8', big ? t : 0, 3);
+  neon([f2.d, f2.c, f2.b], '255,92,170', big ? 1 : .8);
+  ctx.restore();
+  /* turquoise pool in the front garden, lit from below at night */
+  const pl = corners(x0 + .05, y0 + d + .12, 1.3, .4); tpoly([pl.A, pl.B, pl.C, pl.D], '#efe2cc');
+  const pi = corners(x0 + .12, y0 + d + .17, 1.16, .3), pg = ctx.createLinearGradient(pi.A[0], pi.A[1], pi.C[0], pi.C[1]); pg.addColorStop(0, '#8ae6ec'); pg.addColorStop(1, '#2aa6c4'); tpoly([pi.A, pi.B, pi.C, pi.D], pg);
+  ctx.save(); ctx.globalAlpha = .5; ctx.strokeStyle = '#fff'; ctx.lineWidth = 1; for (let i = 0; i < 3; i++) { const a = lp(pi.A, pi.D, .3 + i * .2), c = lp(pi.B, pi.C, .3 + i * .2); ctx.beginPath(); ctx.moveTo(a[0] + Math.sin(t + i) * 3, a[1]); ctx.lineTo(c[0] + Math.sin(t + i + 1) * 3, c[1]); ctx.stroke(); } ctx.restore();
+  const cp = tiso(g + 1.9, k + .35); hotelTree(cp[0], cp[1], 1);
+}
+/* the guide office: a traditional house in the region's own stone and roof (no awning: that made it look like a rival's
+   shop), the tour minibus by it, a timber tour booth with a brochure rack, the valley map on its easel and the guide's
+   yellow umbrella over a little group */
+function guideOffice(b, t, big) {
+  const g = b.gx, k = b.gy, x0 = g + .3, y0 = k + .3, w = 1.15, d = .95, h = 54;
+  const f = block(x0, y0, w, d, h);
+  opening(f.D, f.C, h, .5, 0, .22, .55, 'door');
+  for (const u of [.17, .83]) opening(f.D, f.C, h, u, .32, .14, .36, 'win', big);
+  opening(f.C, f.B, h, .5, .32, .2, .36, 'win', big);
+  gableRoof(x0, y0, w, d, h, 24, '#b4623e');
+  minibus(g + 1.52, k + .38);
+  mapBoard(g - .1, k + 1.45, t);
+  tourBooth(g + 1.5, k + 1.4, big);
+  const n = big ? 7 : 5, hats = ['#f4e4c0', null, '#e04a3a', null, '#f4e4c0', '#2b2350', null];
+  for (let i = 0; i < n; i++) { const p = tiso(g + .3 + (i % 4) * .224 + (i > 3 ? .1 : 0), k + 1.62 + (i > 3 ? .2 : 0) + (i % 2) * .05); tourist(p[0], p[1], ['#ffc23d', '#ff6fa8', '#5aa9e6', '#22a45d', '#9b7be0', '#ff8a3d', '#e8e2d4'][i], hats[i], i % 3 === 1, t * .25, i); }
+  const gp = tiso(g + 1.22, k + 1.76); guideWithUmbrella(gp[0], gp[1], t);
+}
+/* the tour minibus: white, a teal stripe, windows down its side, headlights and wheels */
+function minibus(gx, gy) {
+  block(gx, gy, .52, .88, 22, { lit: '#ffffff', shade: '#d8d8d8', top: '#f4f4f4', courses: false });
+  const c = corners(gx, gy, .52, .88);
+  tface(c.C, c.B, 22, () => { ctx.fillStyle = '#3ad0c0'; ctx.fillRect(0, .3, 1, .14); ctx.fillStyle = '#4a5a6a'; for (let i = 0; i < 4; i++) ctx.fillRect(.08 + i * .22, .55, .16, .3); });
+  tface(c.D, c.C, 22, () => { ctx.fillStyle = '#4a5a6a'; ctx.fillRect(.1, .52, .8, .34); ctx.fillStyle = '#ffd27a'; ctx.fillRect(.08, .2, .12, .1); ctx.fillRect(.8, .2, .12, .1); });
+  for (const [u, s] of [[.2, 1], [.8, 1]]) { const p = lp(c.C, c.B, u); ell(p[0], p[1] - 1, 3.4 * s, 3.6 * s, '#2a2430'); }
+}
+/* a timber tour booth: plank walls, a counter window with someone behind it and leaflets on the sill, a little pyramid
+   roof of shingles; a brochure rack stands by it */
+function tourBooth(gx, gy, big) {
+  const W = .42, D = .4, h = 30, wood = { lit: '#c99058', shade: '#8a5a32', top: '#9a6a3c', courses: false };
+  const f = block(gx, gy, W, D, h, wood);
+  for (const [p, q] of [[f.D, f.C], [f.C, f.B]]) tface(p, q, h, () => { ctx.fillStyle = 'rgba(70,35,15,.25)'; for (let i = 1; i < 6; i++) ctx.fillRect(i / 6 - .008, 0, .016, 1); ctx.fillStyle = 'rgba(70,35,15,.3)'; ctx.fillRect(0, 0, 1, .08); });
+  tface(f.D, f.C, h, () => { ctx.fillStyle = big ? '#ffd890' : '#4a2c1a'; ctx.fillRect(.12, .42, .76, .42); });
+  const cw = fpt(f.D, f.C, h, .5, .42); ctx.fillStyle = '#1f4a7a'; ctx.fillRect(cw[0] - 3, cw[1] - 6, 6, 6); ell(cw[0], cw[1] - 9, 2.8, 2.8, '#3a2418');
+  tface(f.D, f.C, h, () => { ctx.fillStyle = '#e8d2a8'; ctx.fillRect(.06, .38, .88, .06); for (let i = 0; i < 4; i++) { ctx.fillStyle = ['#e04a3a', '#3ad0c0', '#ffc23d', '#5aa9e6'][i]; ctx.fillRect(.14 + i * .07 + (i > 1 ? .4 : 0), .44, .05, .07); } });
+  if (big) { const m = fpt(f.D, f.C, h, .5, .62); nightLite(m[0], m[1], 22, '255,210,140', .7); }
+  const e = .07, P = (x, y, z) => upp(tiso(x, y), z), A = P(gx - e, gy - e, h), B = P(gx + W + e, gy - e, h), C = P(gx + W + e, gy + D + e, h), Dd = P(gx - e, gy + D + e, h), top = P(gx + W / 2, gy + D / 2, h + 20);
+  const rc = S.region === 'bri' ? '#5e6874' : S.region === 'abq' ? '#8a5a34' : S.region === 'lux' ? '#7a5a3a' : '#a8502e';
+  tpoly([A, B, top], mix(rc, '#000000', .35)); tpoly([A, Dd, top], mix(rc, '#000000', .15)); tpoly([Dd, C, top], rc); tpoly([C, B, top], mix(rc, '#000000', .3));
+  ctx.strokeStyle = 'rgba(40,15,5,.3)'; ctx.lineWidth = 1; for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(...lp(Dd, top, i / 4)); ctx.lineTo(...lp(C, top, i / 4)); ctx.stroke(); }
+  ell(top[0], top[1] - 1, 2.2, 2.2, '#ffc23d');
+  brochureRack(gx - .02, gy + D + .2);
+}
+/* a rack of leaflets facing the street: three shelves of colourful folded brochures in a timber frame */
+function brochureRack(gx, gy) {
+  const p = tiso(gx, gy), q = tiso(gx + .28, gy), H = 26;
+  blobShadow(lp(p, q, .5)[0] + 8, lp(p, q, .5)[1] + 2, 12, 3, .15);
+  tface(p, q, H, () => {
+    ctx.fillStyle = '#6a4024'; ctx.fillRect(0, 0, .08, 1); ctx.fillRect(.92, 0, .08, 1); ctx.fillRect(0, .22, 1, .78);
+    ctx.fillStyle = '#8a5a34'; ctx.fillRect(.08, .26, .84, .7);
+    const C = ['#e04a3a', '#3ad0c0', '#ffc23d', '#5aa9e6', '#ff6fa8', '#22a45d', '#9b7be0', '#ff8a3d', '#fff6e0'];
+    for (let r = 0; r < 3; r++) for (let c = 0; c < 3; c++) { const u = .12 + c * .27, v = .3 + r * .22; ctx.fillStyle = C[r * 3 + c]; ctx.fillRect(u, v, .22, .18); ctx.fillStyle = 'rgba(255,255,255,.55)'; ctx.fillRect(u, v + .12, .22, .05); }
+  });
 }
 /* the school's flag: navy, a white mortarboard with a gold tassel on it */
 function capFlag(x, y, t, hgt) {
@@ -10280,7 +10281,7 @@ function hotel(b, t) {
 /* Approximate shadow footprint per building, drawn in a pass before everything else. */
 function buildingShadow(b) {
   if (b.lv <= 0 && b.look !== 'rival') return;
-  const hh = { bazaar: 60, hangar: 80, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 48, agency: 100, tower: 270, rival: 44 }[b.look] || ({ 0: 60, 1: 120, 2: 140, 3: 120 })[b.star] || 60;
+  const hh = { bazaar: 60, hangar: 80, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 54, agency: 100, tower: 270, rival: 44 }[b.look] || ({ 0: 60, 1: 120, 2: 140, 3: 120 })[b.star] || 60;
   boxShadow(b.gx + .3, b.gy + .3, b.w - .6, b.d - .6, hh, .18);
 }
 
@@ -10707,7 +10708,7 @@ function townTop(b) {
   if (b.look === 'hotel') return [95, 165, 190, 200][b.star];
   if (b.look === 'rival') return 80;
   if (b.look === 'mast') return 175; /* the kiosk row steps down to the right, so neighbouring labels clear each other */
-  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 122, agency: 185, tower: 300, rival: 85 }[b.look] || 135;
+  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 122, agency: 150, tower: 300, rival: 85 }[b.look] || 135;
 }
 function townLabel(b, sx, sy, sc, full, taken) {
   const fn = Math.round((b.small ? 13 : 16) * sc), fs = Math.round((b.small ? 11 : 13) * sc);
@@ -12386,7 +12387,7 @@ async function open3dLoad() {
         const sock = new THREE.Mesh(new THREE.ConeGeometry(.9, 5, 12, 1, true), new THREE.MeshStandardMaterial({ color: 0xff7a4a, roughness: .7, side: THREE.DoubleSide }));
         sock.rotation.z = Math.PI / 2; sock.position.copy(at(b.gx, b.gy, 14 / PXM + 120 / PXM)).add(V3(2.6, 0, 0)); scene.add(sock);
         continue; }
-      const hpx = b.look === 'hotel' ? [60, 120, 140, 120][b.star] : { bazaar: 60, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 48, agency: 100, tower: 270 }[b.look] || 60;
+      const hpx = b.look === 'hotel' ? [60, 120, 140, 120][b.star] : { bazaar: 60, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 54, agency: 100, tower: 270 }[b.look] || 60;
       const K = b.look === 'hotel' ? [0, 1, 3, 4][b.star] : kindOf[b.look] ?? 0, hgt = hpx / PXM;
       box(gx, gy, w, d, hgt, KIND[K].mat);
       /* windows that light up when night falls after the landing, on the two faces the camera sees */

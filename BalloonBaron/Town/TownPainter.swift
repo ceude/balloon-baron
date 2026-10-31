@@ -112,7 +112,7 @@ struct TownPainter {
     var tuffOverride: Tuff? = nil
     /// Windows and doors drawn this frame, lit again over the dark.
     var windows: [NightWindow] = []
-    /// v128: small lights the buildings carry (lanterns, the phone sign, the guide office's sign), lit again over the dark.
+    /// v128: small lights the buildings carry (lanterns, the agency's neon, the tour booth's window), lit again over the dark.
     var lites: [NightLite] = []
     /// Passengers queueing at your office and the jeeps, while they gather.
     var collect: CollectScene? = nil
@@ -750,7 +750,7 @@ struct TownPainter {
         case .office: h = b.lv == 2 ? 104 : 74
         case .school: h = 90
         case .bank: h = 85
-        case .guide: h = 48
+        case .guide: h = 54
         case .agency: h = 100
         case .tower: h = 270
         case .kiosk: h = 44
@@ -975,33 +975,32 @@ struct TownPainter {
         }
     }
 
-    /// Guide office: striped teal awning, the tour minibus, a big folding map, the guide's umbrella and a group of tourists.
+    /// Guide office (v130): a traditional house in the region's own stone and roof (no awning: that made it look like a
+    /// rival's shop, and no rooftop sign), the tour minibus by it, a timber tour booth with a brochure rack, the valley map
+    /// on its easel and the guide's yellow umbrella over a little group of tourists.
     mutating func guideOffice(_ b: TownBuilding, _ big: Bool) {
-        let x0 = b.gx + 0.35, y0 = b.gy + 0.4, w = b.w - 1, d = b.d - 1
-        let h: CGFloat = 48
+        let g = b.gx, k = b.gy, x0 = g + 0.3, y0 = k + 0.3, w = 1.15, d = 0.95
+        let h: CGFloat = 54
         let f = block(x0, y0, w, d, h)
-        // v129: no awning any more (it made the office look like one of the rivals' shops); two windows by the door and,
-        // on the roof, a tourist-information sign.
-        opening(f.D, f.C, h, 0.5, 0, 0.3, 0.55, door: true)
-        for u: CGFloat in [0.18, 0.82] { opening(f.D, f.C, h, u, 0.32, 0.15, 0.36, lit: big) }
-        infoSign(upp(iso(x0 + 0.14, y0 + 0.5), h), upp(iso(x0 + 0.86, y0 + 0.5), h), 40, on: big)
-        block(x0 + w + 0.15, y0 + 0.05, 0.55, 0.9, 22, lit: "#ffffff", shade: "#d8d8d8", top: "#f4f4f4", courses: false)
-        let s0 = iso(x0 + w + 0.15, y0 + 0.95)
-        rect(s0.x - 2, s0.y - 12, 38, 5, hex("#3ad0c0"))
-        // v128: what says "guided tours" from afar: a big folding map of the valley on its easel, and the guide at the
-        // door holding a yellow umbrella up high for a little group of tourists to follow.
-        mapBoard(x0 - 0.42, y0 + d + 0.2)
-        let gp = iso(x0 + w * 0.9, y0 + d + 0.62)
-        guideWithUmbrella(gp.x, gp.y)
+        opening(f.D, f.C, h, 0.5, 0, 0.22, 0.55, door: true)
+        for u: CGFloat in [0.17, 0.83] { opening(f.D, f.C, h, u, 0.32, 0.14, 0.36, lit: big) }
+        opening(f.C, f.B, h, 0.5, 0.32, 0.2, 0.36, lit: big)
+        gableRoof(x0, y0, w, d, h, 24, "#b4623e")
+        minibus(g + 1.52, k + 0.38)
+        mapBoard(g - 0.1, k + 1.45)
+        tourBooth(g + 1.5, k + 1.4, big)
         let cols = ["#ffc23d", "#ff6fa8", "#5aa9e6", "#22a45d", "#9b7be0", "#ff8a3d", "#e8e2d4"]
         let hats: [String?] = ["#f4e4c0", nil, "#e04a3a", nil, "#f4e4c0", "#2b2350", nil]
         for i in 0..<(big ? 7 : 5) {
-            let p = iso(x0 + 0.05 + Double(i % 4) * 0.2 + (i > 3 ? 0.1 : 0), y0 + d + 0.48 + (i > 3 ? 0.22 : 0) + Double(i % 2) * 0.05)
+            let p = iso(g + 0.3 + Double(i % 4) * 0.224 + (i > 3 ? 0.1 : 0), k + 1.62 + (i > 3 ? 0.2 : 0) + Double(i % 2) * 0.05)
             tourist(p.x, p.y, cols[i], hat: hats[i], camera: i % 3 == 1, t * 0.25, Double(i))
         }
+        let gp = iso(g + 1.22, k + 1.76)
+        guideWithUmbrella(gp.x, gp.y)
     }
 
-    /// Influencer agency: a modern cave-stone villa with big lit glass, a roof terrace, a pool; v128: a phone sign on the roof.
+    /// Influencer agency: a modern cave-stone villa with big lit glass, a roof terrace under a vine-covered pergola, a pool;
+    /// v130: a pink neon line round the top floor (soft by day, glowing at night) instead of the phone sign on the roof.
     mutating func agency(_ g: Double, _ k: Double, _ big: Bool) {
         let x0 = g + 0.25, y0 = k + 0.25, w = 1.5, d = 1.15
         let h1: CGFloat = 54, h2: CGFloat = 46
@@ -1038,13 +1037,18 @@ struct TownPainter {
         }
         beams.move(to: upp(pdd, ph)); beams.addLine(to: upp(pc, ph))
         c.stroke(beams, with: .color(hex("#6a4024")), lineWidth: 2)
+        // A vine on the pergola.
+        var V = rng(12)
+        for _ in 0..<16 {
+            let a = upp(lp(lp(pa, pdd, CGFloat(V.next())), lp(pb, pc, CGFloat(V.next())), CGFloat(V.next())), ph + 1)
+            let col = V.next() < 0.5 ? "#7aa04a" : "#5f8a3a", rr = 2.2 + CGFloat(V.next()) * 1.8
+            ellipse(a.x, a.y, rr, rr, hex(col))
+        }
         // The influencer filming on the terrace.
         let ip = lp(f2.D, f2.C, 0.1)
         person(ip.x - 26, ip.y + 12, "#ff6fa8", big ? t : 0, 3)
-        // v128: on the roof, a big phone sign with a video playing on it, lit up while a campaign runs (v129: the ring
-        // light on its tripod went).
-        func rp(_ x: Double, _ y: Double) -> CGPoint { upp(iso(x, y), h2) }
-        phoneSign(rp(x0 + 0.8, y0 + 0.4), rp(x0 + 1.34, y0 + 0.4), 62, on: big)
+        // v130: a pink neon line round the top floor's roof, brighter while a campaign runs.
+        neon([f2.d, f2.c, f2.b], (255, 92, 170), big ? 1 : 0.8)
         c = keep
         // Turquoise pool in the front garden.
         let (pA, pB, pC, pD) = corners(x0 + 0.05, y0 + d + 0.12, 1.3, 0.4)

@@ -5,6 +5,10 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 Kuyrukta:
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
+v130 (prototip ve Swift birlikte): çatı tabelaları kalktı. Ajans: telefon tabelası yerine üst katta pembe neon çizgi (gece parlar), pergolada asma. Rehber ofisi: bölgenin taşı ve çatısıyla geleneksel ev, ahşap tur kulübesi ve broşür standı, yeni minibüs; harita, şemsiyeli rehber ve turistler kaldı. Ayrıntı: GAME_DESIGN "Kasaba: binaları ayırt etmek (v128)".
+  - Prototip: `agencyVilla`, `guideOffice`, `neon`, `glassWall`, `minibus`, `tourBooth`, `brochureRack`; `phoneSign` ve `infoSign` kalktı; `townTop` ajans 150, gölge rehber 54.
+  - Uygulama: `TownPainter` (`guideOffice`, `agency`, gölge), `TownIdentity` (`neon`, `minibus`, `tourBooth`, `brochureRack`; `phoneSign`, `infoSign`, `heart` kalktı), `TownModel.labelTop` (ajans 150), `TownNight` yorum.
+
 v128 (prototip ve Swift birlikte): binaları ayırt etmek. Rehber ofisinde şemsiyeli rehber, katlanır harita ve turist grubu; ajansın çatısında telefon tabelası ve halka ışık; pilot okulunda kepli bayrak, rüzgâr çorabı, dört halatla bağlı alçak eğitim balonu; çarşı meydanın güneybatısına, ana yola bakan üç dükkânlık tenteli sıra olarak taşındı (her bölgenin üslubunda; Bristol'de Tudor pub yerine sokak pazarı). Heykel, ağaçlar, Bristol posta kutusu yer değiştirdi. Bina açıldığı gün uzaktan da küçük isim etiketi (`opened`). Ayrıntı: GAME_DESIGN "Kasaba: binaları ayırt etmek (v128)".
   - Prototip: `marketRow`, `MARKET`, `hangOnWall`, `mapBoard`, `guideWithUmbrella`, `tourist`, `phoneSign`, `ringLight`, `capFlag`, `windsockPole`, `trainingBalloon`, `NIGHT_LITE` / `nightLite`, `STATUE_AT`, `OPENS` / `openedToday`, `S.opened`; `tudorPub` ve `pubSign` kalktı.
   - Çekirdek: `GameState.openedOn: [String: Int]?` (özellik → açıldığı gün; `unlockCheck`, okul ve atölye kurulunca yazılır).
