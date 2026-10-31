@@ -89,8 +89,10 @@ extension Game {
         let fl = g.state.flyingToday, cap = fl.reduce(0) { $0 + g.state.sellSeats($1) }
         // v125: today's contract group is seated first, at its own price
         let held = g.state.contractHeld(capacity: cap)
-        let pax = g.market(price: g.state.price, capacity: cap - held).pax[0]
-        var income = pax * g.state.price + held * (g.state.contractToday?.price ?? 0)
+        // v126: seats kept for a late charter plane aren't sold; the agency pays for them if it doesn't come
+        let wait = g.state.contractWaitSeats(capacity: cap - held)
+        let pax = g.market(price: g.state.price, capacity: cap - held - wait).pax[0]
+        var income = pax * g.state.price + held * (g.state.contractToday?.price ?? 0) + wait * g.state.contractWaitPay
         if let fb = fl.first(where: { g.state.isSelf($0) }) {
             income += jsRound(Double(min(pax + held, g.state.sellSeats(fb)) * g.state.price) * Rules.founderPremium)
         }

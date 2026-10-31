@@ -250,6 +250,8 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case flagshipBack(String)
     /// v125: a contract company's owner speaks (`ctrSay`): `n` people (`today`), `price` a head (`red`).
     case contract(ContractOwner, ContractLine, n: Int, price: Int)
+    /// v126: the first time a charter plane is late, Hezarfen says what the choice is.
+    case contractDelayIntro
     /// v125: the pilots who came with you, and the balloons on the cargo arriving on `day`.
     case transferBrought(pilots: [String], balloons: [String], day: Int)
     /// v125: the cargo arrived: these balloons are in the fleet.
@@ -282,6 +284,8 @@ public struct DayPlan: Codable, Equatable, Sendable {
     public var referrals: Int
     /// v125: today's contract group, seated first (optional: older saves).
     public var contract: ContractPlan? = nil
+    /// v126: seats kept empty today for a late charter plane that didn't come (optional: older saves).
+    public var contractWait: Int? = nil
 }
 
 @dynamicMemberLookup

@@ -62,12 +62,13 @@ final class ContractTests: XCTestCase {
 
     // MARK: Offers
 
-    func testNoContractsInCappadocia() {
+    /// v126: Cappadocia has charter contracts now, but none in chapter 1.
+    func testNoContractsInCappadociasFirstChapter() {
         var g = newGame()
-        g.state.local.chapter = 2
+        g.state.local.chapter = 0
         g.contractMorning()
-        XCTAssertNil(g.state.local.contracts)
-        XCTAssertNil(RegionID.cap.contracts)
+        XCTAssertNil(g.state.local.contracts?.offer)
+        XCTAssertEqual(RegionID.cap.contracts?.kind, .plane)
     }
 
     func testOfferRangesPerRegion() {

@@ -64,6 +64,10 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case contractWeather(company: String)
     case contractProgress(owner: ContractOwner, ok: Int, need: Int)
     case contractTrustDown(owner: ContractOwner, short: Int)
+    /// v126: the evening before a charter group's first morning: "the plane may be late" (the owner's `warn` line).
+    case contractDelayWarning(owner: ContractOwner)
+    /// v126: seats kept for a late plane flew empty; the agency pays `amount` for them.
+    case contractDelayNoShow(owner: ContractOwner, seats: Int, amount: Int)
     /// v125: a rival flies a contract group you didn't take (and bought this many balloons with it).
     case rivalFlewGroup(rival: String, company: String, n: Int, len: Int, balloons: Int)
 
@@ -97,6 +101,8 @@ public struct Ledger: Codable, Equatable, Sendable {
     public var contractN: Int?
     public var contractPenalty: Int?
     public var contractVoucher: Int?
+    /// v126: what the agency paid for seats kept empty for a late charter plane.
+    public var contractWait: Int?
     public var transfer: Int?
     public var missionDone: Mission?
     public var adRepLoss = 0.0
@@ -109,7 +115,7 @@ public struct Ledger: Codable, Equatable, Sendable {
     public var fines = 0, cancellations = 0, hotelFees = 0, antitrust = 0
 
     public var net: Int {
-        tickets + (evening ?? 0) + (contract ?? 0) - (contractPenalty ?? 0) - (contractVoucher ?? 0) - (transfer ?? 0) + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
+        tickets + (evening ?? 0) + (contract ?? 0) + (contractWait ?? 0) - (contractPenalty ?? 0) - (contractVoucher ?? 0) - (transfer ?? 0) + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
             - fuel - wages - upkeep - insurance - loans - repairs - compensation - fines - cancellations - hotelFees - antitrust
     }
 }

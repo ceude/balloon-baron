@@ -9,11 +9,16 @@ extension Game {
         let fl = skip ? [] : state.flyingToday
         let cap = fl.reduce(0) { $0 + state.sellSeats($1) }
         // v125: a contract group booked for today takes its seats first; the market gets the rest
+        // v126: a late charter plane left unanswered (autopilot): the seats wait for it
+        if state.contractDelayPending != nil { chooseContractDelay(.hold) }
         let held = state.contractHeld(capacity: cap)
-        let m = market(price: state.price, capacity: cap - held)
+        // v126: seats kept empty for a late plane that didn't come aren't sold either
+        let wait = state.contractWaitSeats(capacity: cap - held)
+        let m = market(price: state.price, capacity: cap - held - wait)
         var plan = DayPlan(skipped: skip, flying: fl.map(\.id), pax: [:], rivalPax: Array(m.pax.dropFirst()),
                            rivalCap: Array(m.caps.dropFirst()), referrals: skip ? 0 : m.referrals)
         plan.contract = contractPlan(capacity: cap, marketPax: m.pax[0])
+        if wait > 0 { plan.contractWait = wait }
         var left = m.pax[0] + held
         let flagship = state.flagship
         for b in fl.sorted(by: { ($0.id == flagship ? 1 : 0) > ($1.id == flagship ? 1 : 0) }) {

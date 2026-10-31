@@ -4,10 +4,11 @@ import Foundation
 // group at a price below the market: tour coaches in Albuquerque (one day), Nile cruise ships in Luxor (a block of
 // mornings), London weekend trains in Bristol (Saturday and Sunday, with a fog guarantee). Each region has its own cast
 // of three owners; saying no, or not delivering, sends the group to the most popular rival, who grows with it.
+// v126: Cappadocia's charter flights (two mornings, a plane that may be late).
 
-/// What stands at the off-map place and brings the group: coaches, a cruise ship or a steam train.
+/// What stands at the off-map place and brings the group: coaches, a cruise ship, a steam train or (v126) a charter plane.
 public enum ContractKind: String, Codable, Sendable {
-    case bus, ship, train
+    case bus, ship, train, plane
 }
 
 /// The owners of the contract companies, three per region (`CTR_CAST_*`). Their names, titles and lines live in the
@@ -16,6 +17,7 @@ public enum ContractOwner: String, Codable, CaseIterable, Sendable {
     case rosa, hank, linda
     case farouk, dalia, hamza
     case nigel, priya, fiona
+    case jiwoo, chen, murat
 
     public var company: String {
         switch self {
@@ -28,6 +30,9 @@ public enum ContractOwner: String, Codable, CaseIterable, Sendable {
         case .nigel: "West Country Weekenders"
         case .priya: "Capital Rail Breaks"
         case .fiona: "Steam & Sky Excursions"
+        case .jiwoo: "Haneul Wings"
+        case .chen: "Pearl Bund Travel"
+        case .murat: "Haliç Gündoğumu Turları"
         }
     }
 
@@ -43,6 +48,9 @@ public enum ContractOwner: String, Codable, CaseIterable, Sendable {
         case .nigel: "#2a5a3a"
         case .priya: "#7a2a8a"
         case .fiona: "#c0392b"
+        case .jiwoo: "#e0408a"
+        case .chen: "#c0392b"
+        case .murat: "#1f6f8b"
         }
     }
 }
@@ -50,6 +58,19 @@ public enum ContractOwner: String, Codable, CaseIterable, Sendable {
 /// What an owner says on a morning card (`ctrSay`). Text: `ctr.<owner>.<rawValue>`.
 public enum ContractLine: String, Codable, Sendable {
     case today, thanks, pref, fail, lostPref, red, redSkip, redCancel, fog, bye
+    /// v126: a charter plane: "it may be late" (the evening before), "it's late" (the card), "landed on time", and how
+    /// the choice turned out.
+    case warn, late, onTime, landed, noShow, stranded, openOk
+}
+
+/// v126: a charter plane's delay (`CTR.cap.delay`): from the job after `after` on, the evening before its first morning
+/// there's a `warnP` chance of a warning; that morning it is late with `lateP`, and makes the morning with a chance in
+/// `land` (rounded to 0.1). Seats kept for it that fly empty are paid at `waitPay` of the price per head.
+public struct ContractDelayConfig: Sendable {
+    public var after = 2
+    public var warnP = 0.35, lateP = 0.6
+    public var land: ClosedRange<Double> = 0.3...0.7
+    public var waitPay = 0.4
 }
 
 /// The numbers per region (tuned with the prototype's simulations, see GAME_DESIGN "Kurumsal kontratlar").
@@ -83,10 +104,25 @@ public struct ContractConfig: Sendable {
     /// A rival who takes a group gains this much popularity, and a balloon for every `rivalGrow` people.
     public var rivalRep = 0.05
     public var rivalGrow = 24
+    /// v126: never before this day; and not on a crowded morning (a morning event, a chapter, a merger, the fleet
+    /// transfer, or more than two cards waiting): the offer waits for the next quiet one.
+    public var firstDay = 0
+    public var quiet = false
+    /// v126: the charter plane may be late.
+    public var delay: ContractDelayConfig?
+    /// How close the first offer's scene looks at the place (the airport is wide).
+    public var sceneZoom = 0.86
 
     public static func of(_ r: RegionID) -> ContractConfig? {
         switch r {
-        case .cap: return nil
+        case .cap:
+            var k = ContractConfig(kind: .plane, cast: [.jiwoo, .chen, .murat])
+            k.firstDay = 40; k.quiet = true
+            k.gap = 11...15; k.prefGap = 7...10; k.len = 2...2; k.share = 0.25...0.4
+            k.redCut = 0; k.redMove = false
+            k.delay = ContractDelayConfig()
+            k.sceneZoom = 0.6
+            return k
         case .abq: return ContractConfig(kind: .bus, cast: [.rosa, .hank, .linda])
         case .lux:
             var k = ContractConfig(kind: .ship, cast: [.farouk, .dalia, .hamza])
@@ -146,12 +182,58 @@ public struct ContractJob: Codable, Equatable, Sendable, Identifiable {
     public var got = 0, short = 0, flown = 0, fogged = 0
     /// A rival's group paid the rival on its first day.
     public var paid = false
-    /// The day its vehicle pulled in at the off-map place (it does when you first look on its first day).
+    /// The day its vehicle pulled in at the off-map place. v126.1: it arrives once (the first time you look on one of
+    /// its days) and stays until the job is over, even when a red flag or a late plane moves the job; any value means
+    /// it has arrived (a day, not a flag, so saves from v125 still load).
     public var arrived: Int?
+    /// v126: the how-manyth job taken in this region (Cappadocia's planes are never late in the first two); the evening
+    /// warning has been rolled, and came; today's delay.
+    public var nth: Int?
+    public var warnRolled: Bool?
+    public var warned: Bool?
+    public var delay: ContractDelay?
 
     public var lastDay: Int { day + len - 1 }
     public func active(on d: Int) -> Bool { d >= day && d <= lastDay }
     public var mine: Bool { rival == nil }
+    public var hasArrived: Bool { arrived != nil }
+}
+
+/// v126: what you do about a late charter plane: keep its seats, or sell them on the market.
+public enum DelayChoice: String, Codable, Sendable {
+    case hold, open
+}
+
+/// v126: a late plane on the morning of `day`: the chance it makes the morning (0.3 … 0.7), whether it will, your choice.
+public struct ContractDelay: Codable, Equatable, Sendable {
+    public var day: Int
+    public var chance: Double
+    public var lands: Bool
+    public var choice: DelayChoice?
+
+    public init(day: Int, chance: Double, lands: Bool, choice: DelayChoice? = nil) {
+        self.day = day; self.chance = chance; self.lands = lands; self.choice = choice
+    }
+}
+
+/// v126: how the choice turned out. Owner's line: `ctr.<owner>.<rawValue>`.
+public enum DelayOutcome: String, Codable, Sendable {
+    /// Kept the seats and it landed: the group flies today.
+    case landed
+    /// Kept the seats, it didn't come: they fly empty, the agency pays, the group moves a day.
+    case noShow
+    /// Sold the seats and it landed after all: the group waits a day for nothing, trust −1.
+    case stranded
+    /// Sold the seats and it didn't come in time: nobody loses anything, the group moves a day.
+    case openOk
+}
+
+/// v126: seats kept today for a late plane that didn't come, paid at `pay` each.
+public struct ContractWait: Codable, Equatable, Sendable {
+    public var day: Int
+    public var n: Int
+    public var pay: Int
+    public var owner: ContractOwner
 }
 
 /// A finished job's vehicle waits at the off-map place until you look, then leaves (from `from`).
@@ -159,6 +241,8 @@ public struct ContractDepart: Codable, Equatable, Sendable {
     public var owner: ContractOwner
     public var n: Int
     public var from: Int
+    /// v126.1: it has started to leave (once: if the app restarts before it's gone, the place is simply empty).
+    public var leaving: Bool?
 }
 
 /// Today's group in the day's plan: seats it took, and for the report how full the fleet would have been without it.
@@ -187,8 +271,22 @@ public struct ContractState: Codable, Equatable, Sendable {
     /// The first offer's scene has been shown in this region.
     public var scene = false
     public var depart: ContractDepart?
+    /// v126 (optional: older saves): jobs taken here, late planes, Hezarfen has said what a delay is, and seats kept today.
+    public var taken: Int?
+    public var delays: Int?
+    public var delayIntroShown: Bool?
+    public var wait: ContractWait?
+    /// v126.1: jobs done in full per owner (raw value): the dots and "n/3" only count the owner you're dealing with.
+    /// Older saves have none: `okWho` belonged to the owner calling now.
+    public var okByOwner: [String: Int]?
 
     public init() {}
+
+    /// v126.1: jobs done in full with this owner (`ctrOkWith`).
+    public func ok(with w: ContractOwner, current: ContractOwner?) -> Int {
+        if let m = okByOwner { return m[w.rawValue] ?? 0 }
+        return w == current ? okWho : 0
+    }
 }
 
 /// Day 1 is a Monday: 0 Monday … 5 Saturday, 6 Sunday.
@@ -231,10 +329,34 @@ extension GameState {
         guard let k = contractConfig else { return o.price }
         return max(o.price, min(jsRound(Double(o.price) * (1 + k.negUp) / 5) * 5, o.top))
     }
-    /// Vehicles at the off-map place now: your running jobs' (arrived), and a finished job's waiting to leave.
+    /// The job whose vehicle should pull in now: one of its days, not arrived yet (v126.1: `ctrDue`).
     public var contractDue: ContractJob? {
         guard contractConfig != nil else { return nil }
-        return contracts.booked.first { $0.mine && $0.day == day && $0.arrived != day }
+        return contracts.booked.first { $0.mine && $0.active(on: day) && !$0.hasArrived }
+    }
+    /// v126.1: your jobs whose vehicle stands at the place now: arrived, and not over yet (even when moved to tomorrow).
+    public var contractParked: [ContractJob] {
+        guard contractConfig != nil else { return [] }
+        return contracts.booked.filter { $0.mine && $0.hasArrived && $0.lastDay >= day }
+    }
+    /// v126: today's late plane still waiting for your answer (`ctrDelayJob`).
+    public var contractDelayPending: ContractJob? {
+        guard contractConfig?.delay != nil else { return nil }
+        return contracts.booked.first { $0.mine && $0.delay?.choice == nil && $0.delay?.day == day && $0.delay != nil }
+    }
+    /// v126: seats kept empty today for a late plane that didn't come, out of `cap` (`ctrWaitSeats`).
+    public func contractWaitSeats(capacity cap: Int) -> Int {
+        guard contractConfig != nil, let w = contracts.wait, w.day == day else { return 0 }
+        return max(0, min(w.n, cap))
+    }
+    /// v126: what one empty seat kept for a late plane pays.
+    public var contractWaitPay: Int { contracts.wait?.pay ?? 0 }
+    /// v126.1: jobs done in full with this owner (`ctrOkWith`).
+    public func contractOk(with w: ContractOwner) -> Int { contracts.ok(with: w, current: contractOwner) }
+    /// v126: Albuquerque's first offer scene is short when you already had charter groups in Cappadocia.
+    public var contractSceneShort: Bool {
+        guard region == .abq, let c = parked[.cap]?.state.contracts else { return false }
+        return (c.taken ?? 0) > 0 || c.ok > 0 || c.fail > 0
     }
 }
 
@@ -300,13 +422,18 @@ extension Game {
             c.booked.removeAll { $0.n < 0 }
         }
         state.local.contracts = c
-        if let mine = state.contractToday, !red {
-            if mine.fogP != nil && w.fog != nil { ctrSay(mine.owner, .fog) } else if d == mine.day { ctrSay(mine.owner, .today, n: mine.n, price: mine.price) }
+        if K.delay != nil { contractDelayMorning() } // v126: the charter plane that was said to be late may be
+        c = ctr
+        if let mine = state.contractToday, !red, mine.delay == nil {
+            if mine.fogP != nil && w.fog != nil { ctrSay(mine.owner, .fog) }
+            else if d == mine.day { ctrSay(mine.owner, mine.warned == true ? .onTime : .today, n: mine.n, price: mine.price) }
         }
         guard state.local.chapter >= K.minChapter else { return }
-        if c.next == nil { c.next = d + K.firstWait; state.local.contracts = c }
+        if c.next == nil { c.next = max(d + K.firstWait, K.firstDay); state.local.contracts = c }
         guard c.offer == nil, !c.booked.contains(where: \.mine), d >= (c.next ?? d), state.fleetSeats >= K.minSeats,
               let owner = state.contractOwner else { return }
+        // v126: not on a crowded morning (a morning event, a chapter, several cards already): the next quiet one
+        if K.quiet && (contractEventDue || state.chapterNews != nil || state.hezQueue.count > 2 || state.transferAsk != nil || state.mergeNews != nil) { return }
         let seats = state.fleetSeats
         let n = max(12, jsRound(Double(seats) * rng.range(K.share.lowerBound, K.share.upperBound) / 2) * 2)
         let riv = state.rivals.filter(\.alive)
@@ -323,6 +450,11 @@ extension Game {
         }
         c.offer = o
         state.local.contracts = c
+    }
+
+    /// v126: a morning event is due this morning (the same test as `scheduleEvent`, which runs when the day starts).
+    private var contractEventDue: Bool {
+        state.day >= 12 && state.unlocked.contains(.crew) && state.winter == nil && state.day >= (state.nextEvent ?? 12)
     }
 
     private mutating func contractNextGap() {
@@ -366,7 +498,10 @@ extension Game {
     public mutating func acceptContract() {
         var c = ctr
         guard let o = c.offer else { return }
-        c.booked.append(ContractJob(id: state.nextID, owner: o.owner, n: o.n, price: o.price, day: o.day, len: o.len, fogP: o.fogP))
+        c.taken = (c.taken ?? 0) + 1 // v126: the how-manyth job here
+        var k = ContractJob(id: state.nextID, owner: o.owner, n: o.n, price: o.price, day: o.day, len: o.len, fogP: o.fogP)
+        k.nth = c.taken
+        c.booked.append(k)
         state.nextID += 1
         c.offer = nil
         c.met = true
@@ -421,6 +556,9 @@ extension Game {
         }
         guard c.rel <= K.breakAt else { return }
         ctrSay(w, .bye)
+        var by = c.okByOwner ?? [w.rawValue: c.okWho]
+        by[w.rawValue] = 0
+        c.okByOwner = by
         c.gone.append(w)
         c.who = (c.who + 1) % K.cast.count
         c.rel = 0
@@ -431,12 +569,73 @@ extension Game {
         ctr = c
     }
 
-    /// The vehicle of today's job pulled in at the off-map place (the town shows it arriving the first time you look).
+    /// The vehicle of a running job pulled in at the off-map place (the town shows it arriving the first time you look);
+    /// v126.1: once, it then stays until the job is over.
     public mutating func markContractArrived() {
-        guard var c = state.local.contracts, let i = c.booked.firstIndex(where: { $0.mine && $0.day == state.day && $0.arrived != state.day }) else { return }
+        guard var c = state.local.contracts, let i = c.booked.firstIndex(where: { $0.mine && $0.active(on: state.day) && !$0.hasArrived }) else { return }
         c.booked[i].arrived = state.day
         c.depart = nil
         state.local.contracts = c
+    }
+
+    /// v126.1: a finished job's vehicle starts to leave (it leaves once; after a restart the place is empty).
+    public mutating func markContractLeaving() {
+        guard var c = state.local.contracts, c.depart != nil, c.depart?.leaving != true else { return }
+        c.depart?.leaving = true
+        state.local.contracts = c
+    }
+
+    // MARK: v126: the late charter plane
+
+    /// The morning a warned charter plane's job starts: it is late with `lateP`; how likely it still makes the morning,
+    /// and whether it will (`ctrDelayMorning`). The first time, Hezarfen says what this is.
+    mutating func contractDelayMorning() {
+        guard let D = state.contractConfig?.delay, var c = state.local.contracts, let w = state.weather, w.flag != .red,
+              let i = c.booked.firstIndex(where: { $0.mine && $0.active(on: state.day) }) else { return }
+        var k = c.booked[i]
+        guard k.warned == true, k.delay == nil, state.day == k.day else { return }
+        guard rng.chance(D.lateP) else { return }
+        let q = Double(jsRound(rng.range(D.land.lowerBound, D.land.upperBound) * 10)) / 10
+        k.delay = ContractDelay(day: state.day, chance: q, lands: rng.chance(q), choice: nil)
+        c.booked[i] = k
+        c.delays = (c.delays ?? 0) + 1
+        if c.delayIntroShown != true {
+            c.delayIntroShown = true
+            state.hezQueue.append(.contractDelayIntro)
+        }
+        state.local.contracts = c
+    }
+
+    /// Your answer to a late plane (`ctrDelayChoose`): keep the seats (it lands and the group flies, or it doesn't: the
+    /// seats fly empty, the agency pays, the group moves a day) or sell them (the group moves a day; if the plane made
+    /// it after all, trust −1).
+    @discardableResult
+    public mutating func chooseContractDelay(_ ch: DelayChoice) -> DelayOutcome? {
+        guard let K = state.contractConfig, let D = K.delay, let pk = state.contractDelayPending, var c = state.local.contracts,
+              let i = c.booked.firstIndex(where: { $0.id == pk.id }), var dl = c.booked[i].delay else { return nil }
+        var k = c.booked[i]
+        dl.choice = ch
+        k.delay = dl
+        if ch == .hold && dl.lands {
+            c.booked[i] = k
+            state.local.contracts = c
+            return .landed
+        }
+        k.day += 1
+        if ch == .open && dl.lands && k.arrived == nil { k.arrived = state.day } // it landed after all: it stands there
+        c.booked[i] = k
+        if ch == .hold {
+            c.wait = ContractWait(day: state.day, n: k.n, pay: jsRound(Double(k.price) * D.waitPay), owner: k.owner)
+            state.local.contracts = c
+            return .noShow
+        }
+        state.local.contracts = c
+        if dl.lands {
+            contractRel(-1)
+            contractBreakCheck()
+            return .stranded
+        }
+        return .openOk
     }
 
     /// A finished job's vehicle has left: the place is empty again.
@@ -459,6 +658,16 @@ extension Game {
     mutating func contractSettle(plan: inout DayPlan, ledger lg: inout Ledger, events ev: inout [DayEvent], rivalEvents rev: inout [DayEvent], paxTotal: Int) {
         guard let K = state.contractConfig, var c = state.local.contracts, let w = state.weather else { return }
         let d = state.day, red = w.flag == .red
+        // v126: seats kept for a late plane that didn't make it flew empty; the agency pays for them
+        if let W = c.wait, W.day == d {
+            let n = min(W.n, plan.contractWait ?? 0)
+            c.wait = nil
+            state.local.contracts = c
+            if n > 0 {
+                lg.contractWait = n * W.pay
+                ev.append(.contractDelayNoShow(owner: W.owner, seats: n, amount: n * W.pay))
+            }
+        }
         if let mi = c.booked.firstIndex(where: { $0.mine && $0.active(on: d) }) {
             var mine = c.booked[mi]
             let owner = mine.owner, multi = mine.len > 1, dayN = d - mine.day + 1
@@ -499,10 +708,16 @@ extension Game {
                 if mine.flown == 0 {
                     ev.append(.contractWeather(company: owner.company))
                 } else if mine.short == 0 {
+                    // v126.1: the job's own owner's count; trust and the title only with the owner calling now
+                    let cur = owner == state.contractOwner
+                    var by = c.okByOwner ?? (state.contractOwner.map { [$0.rawValue: c.okWho] } ?? [:])
+                    let nOk = (by[owner.rawValue] ?? 0) + 1
+                    by[owner.rawValue] = nOk
+                    c.okByOwner = by
+                    if cur { c.okWho = nOk }
                     c.ok += 1
-                    c.okWho += 1
-                    c.rel = clamp(c.rel + 1, -9, 5)
-                    if !c.pref && c.okWho >= K.prefNeed && c.rel >= 2 {
+                    if cur { c.rel = clamp(c.rel + 1, -9, 5) }
+                    if cur && !c.pref && nOk >= K.prefNeed && c.rel >= 2 {
                         c.pref = true
                         c.prefEver = true
                         state.local.contracts = c
@@ -512,7 +727,7 @@ extension Game {
                         state.local.contracts = c
                         ctrSay(owner, .thanks)
                     }
-                    if c.okWho < K.prefNeed { ev.append(.contractProgress(owner: owner, ok: c.okWho, need: K.prefNeed)) }
+                    if cur && !c.pref && nOk < K.prefNeed { ev.append(.contractProgress(owner: owner, ok: nOk, need: K.prefNeed)) }
                 } else {
                     c.fail += 1
                     c.rel = clamp(c.rel + (Double(mine.got) >= Double(mine.got + mine.short) * 0.75 ? -1 : -2), -9, 5)
@@ -555,6 +770,16 @@ extension Game {
             rev.append(.rivalFlewGroup(rival: r.name, company: k.owner.company, n: k.n, len: k.len, balloons: grow))
         }
         c.booked.removeAll { $0.lastDay == d }
+        // v126: the evening before a charter group's first morning: maybe "the plane may be late" (never in the first jobs)
+        if let D = K.delay {
+            for i in c.booked.indices where c.booked[i].mine && c.booked[i].day == d + 1 && c.booked[i].warnRolled != true {
+                c.booked[i].warnRolled = true
+                if (c.booked[i].nth ?? 0) > D.after && rng.chance(D.warnP) {
+                    c.booked[i].warned = true
+                    ev.append(.contractDelayWarning(owner: c.booked[i].owner))
+                }
+            }
+        }
         state.local.contracts = c
     }
 }
