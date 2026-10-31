@@ -7609,7 +7609,7 @@ function ctrDelayChoose(ch) {
   const K = ctrCfg(), C = ctrState(), k = ctrDelayJob(); if (!k) return null;
   k.dl.choice = ch;
   if (ch === 'hold' && k.dl.land) return 'landed';
-  k.day++; k.arrDay = null;
+  k.day++; if (ch === 'open' && k.dl.land) k.arrived = true; /* it landed after all: it stands there, no landing to show tomorrow */
   if (ch === 'hold') { C.wait = { day: S.day, n: k.n, pay: Math.round(k.price * K.delay.waitPay), who: k.who }; return 'noShow'; }
   if (k.dl.land) { ctrRel(-1); ctrBreakCheck(); return 'stranded'; }
   return 'openOk';
@@ -7789,9 +7789,9 @@ const CTR_BAY_GY = 22.5;
 function ctrVehicles() {
   const K = ctrCfg(), C = S && S.ctr; if (!K || !C) return [];
   const out = [], room = K.kind === 'bus' ? CTR_BAYS.length : 1, many = n => K.kind === 'bus' ? clamp(Math.ceil(n / 50), 1, 3) : 1;
-  for (const k of (C.booked || []).filter(q => !q.rival && ctrActive(q))) {
-    if (k.day === S.day && k.arrDay !== S.day) continue; /* not arrived yet: ctrHumTick brings it in when you look */
-    const w = ctrOwner(k), t0 = k.day === S.day && k.arrT != null && T - k.arrT < ((CTR_KINDS[K.kind] || {}).arrDur || 8) ? k.arrT : null;
+  for (const k of (C.booked || []).filter(q => !q.rival && (ctrActive(q) || (ctrArrived(q) && kEnd(q) >= S.day)))) {
+    if (!ctrArrived(k)) continue; /* not arrived yet: ctrHumTick brings it in when you look */
+    const w = ctrOwner(k), t0 = k.arrT != null && T >= k.arrT && T - k.arrT < ((CTR_KINDS[K.kind] || {}).arrDur || 8) ? k.arrT : null; /* the arrival plays once, then it stands (after a reload too) */
     for (let i = 0; i < many(k.n) && out.length < room; i++) out.push({ col: w.col, name: w.co, t0 });
   }
   const Dp = C.depart; /* a finished job's vehicle waits until you look, then leaves */
@@ -7800,7 +7800,11 @@ function ctrVehicles() {
   return out;
 }
 /* today's job that should arrive now */
-const ctrDue = () => { const C = S && S.ctr; return C && ctrCfg() ? (C.booked || []).find(q => !q.rival && q.day === S.day && q.arrDay !== S.day) : null; };
+/* v126.1: arrive once, stay, leave once: a job's vehicle arrives the first time you look on one of its days (k.arrived,
+   kept even when a red flag or a late plane moves the job), stands there until the job is over, and leaves once. Old
+   saves: arrDay on or after the job's first day counts as arrived. */
+const ctrArrived = k => !!k.arrived || (k.arrDay != null && k.arrDay >= k.day);
+const ctrDue = () => { const C = S && S.ctr; return C && ctrCfg() ? (C.booked || []).find(q => !q.rival && ctrActive(q) && !ctrArrived(q)) : null; };
 /* the passengers change into jeeps: on a morning a job of yours flies, and in the first offer's scene */
 const ctrXferOn = () => { const k = ctrToday(); return !!(k && !ctrOff(k)) || !!(TOWN.cine && S.ctr && S.ctr.offer); };
 const ctrQ = (x0, y0, x1, y1, c) => tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], c);
@@ -8331,9 +8335,9 @@ function ctrHumTick(V, w, h) {
   if (!K || !TOWN.open) return ctrHum(0);
   const p = tiso(...ctrSpot()), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy, d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h);
   const C = S.ctr, Dp = C && C.depart;
-  if (Dp && Dp.t1 != null && T - Dp.t1 > ((ctrKind() || {}).depDur || 9)) { C.depart = null; save(); } /* gone: the place is empty again */
+  if (Dp && Dp.t1 != null && (T < Dp.t1 || T - Dp.t1 > ((ctrKind() || {}).depDur || 9))) { C.depart = null; save(); } /* gone: the place is empty again (reloaded mid-departure: it has left) */
   else if (Dp && Dp.t1 == null && S.day >= Dp.from && d < .42) { Dp.t1 = T; ctrArriveSound(true); }
-  const due = ctrDue(); if (due && d < .42) { if (C.depart) C.depart = null; due.arrDay = S.day; due.arrT = T; ctrArriveSound(); save(); } /* it pulls in as you look */
+  const due = ctrDue(); if (due && d < .42) { if (C.depart) C.depart = null; due.arrived = true; due.arrDay = S.day; due.arrT = T; ctrArriveSound(); save(); } /* it pulls in as you look */
   if (!ctrVehicles().length) return ctrHum(0);
   ctrHum(clamp(1.2 - d * 2.2, 0, 1) * clamp(V.z / .6, .3, 1));
 }
