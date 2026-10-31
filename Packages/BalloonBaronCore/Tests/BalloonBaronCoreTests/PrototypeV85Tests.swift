@@ -62,10 +62,12 @@ final class PrototypeV85Tests: XCTestCase {
         g.state.cash = 200_000
         XCTAssertTrue(g.upgrade(.hangar))
         XCTAssertTrue(g.upgrade(.hangar))
-        XCTAssertFalse(g.upgrade(.hangar), "three levels only")
         XCTAssertEqual(g.state.cash, 200_000 - 12000 - 45000)
         XCTAssertEqual(g.state.upkeepFactor, 0.7)
         XCTAssertEqual(g.state.topBuildingLevel, 3)
+        XCTAssertFalse(g.upgrade(.mast) && g.upgrade(.mast) && g.upgrade(.mast), "three levels only")
+        XCTAssertEqual(g.state.level(.mast), 3)
+        g.state.cash = 200_000 - 12000 - 45000
         g.launch(skip: true)
         let r = g.finishDay(flight: nil)
         XCTAssertEqual(r.ledger.upkeep, jsRound(Double(BalloonSize.S.upkeep) * 0.7))

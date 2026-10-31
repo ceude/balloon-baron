@@ -34,7 +34,7 @@ extension Game {
 
     mutating func addBalloon(_ size: BalloonSize, secondHand: Bool = false) {
         let used = Set(state.balloons.map(\.name))
-        let name = size == .XL ? state.region.xlName : state.region.balloonNames.first { !used.contains($0) } ?? "Balloon \(state.nextID)"
+        let name = size == .XL ? state.region.xlName : state.region.balloonNames.first { !used.contains($0) } ?? Rules.defaultBalloonName(state.nextID)
         var b = Balloon(id: state.nextID, size: size, name: name)
         if secondHand { b.used = true }
         state.balloons.append(b)
@@ -148,8 +148,9 @@ extension Game {
         let s = state
         guard let fb = s.balloon(s.flagship), fb.damagedUntil > s.day, s.flyingSelf, s.local.banUntil < s.day, s.local.flagReturn == nil,
               s.local.flagAskedUntil != fb.damagedUntil else { return [] }
+        let out = s.outsideIDs
         return s.balloons.enumerated()
-            .filter { $0.element.id != fb.id && $0.element.damagedUntil <= s.day && s.condition($0.element) > 0 }
+            .filter { $0.element.id != fb.id && $0.element.damagedUntil <= s.day && s.condition($0.element) > 0 && !out.contains($0.element.id) }
             .sorted { ($1.element.size.capacity, $0.offset) < ($0.element.size.capacity, $1.offset) }
             .map(\.element)
     }

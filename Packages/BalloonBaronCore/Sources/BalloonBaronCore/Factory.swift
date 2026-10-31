@@ -137,7 +137,10 @@ extension Game {
             } else {
                 ev.append(.factoryKept(rival: name, price: j.price))
                 state.factory = f
+                let n0 = state.outsideCount
                 addBalloon(j.size)
+                assignPilots()
+                hangarWarn(outsideBefore: n0, queue: true)
                 return
             }
         } else {
@@ -145,13 +148,15 @@ extension Game {
             f.made += 1
             if j.region == state.region {
                 state.factory = f
+                let n0 = state.outsideCount
                 addBalloon(j.size)
                 assignPilots()
+                hangarWarn(outsideBefore: n0, queue: true)
                 ev.append(.factoryReady(balloon: state.balloons.last?.name ?? "", size: j.size))
                 return
             } else if var p = state.parked[j.region] {
                 let used = Set(p.state.balloons.map(\.name))
-                p.state.balloons.append(Balloon(id: state.nextID, size: j.size, name: j.region.balloonNames.first { !used.contains($0) } ?? "Balloon \(state.nextID)"))
+                p.state.balloons.append(Balloon(id: state.nextID, size: j.size, name: j.region.balloonNames.first { !used.contains($0) } ?? Rules.defaultBalloonName(state.nextID)))
                 state.nextID += 1
                 state.parked[j.region] = p
             }

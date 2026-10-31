@@ -220,6 +220,8 @@ public struct Game: Sendable {
         if s.day >= 7 && s.tipsSeen.contains(.crew) && s.balloons.count >= 2 && s.local.selfFly && s.licenseValid { queueTip(.delegate) }
         // v117: the autopilot opens.
         if s.autopilotOK { queueTip(.autopilot) }
+        // v127: balloons outside the hangar, at most every five days.
+        hangarReminder()
         // No rival flew, yet seats stayed empty because the price was high: tourists still weigh the price.
         if !s.rivals.contains(where: \.alive), let ls = s.local.lastShare, ls.cap > 0, ls.me < ls.cap,
            Rules.willing(Double(s.price)) < 0.85 { queueTip(.noRivals) }
@@ -271,17 +273,17 @@ public struct Game: Sendable {
         let s = state
         func down(_ b: Balloon) -> Int { b.damagedUntil > s.day || s.condition(b) <= 0 ? 1 : 0 }
         func isSelf(_ b: Balloon) -> Bool { b.id == s.flagship && s.flyingSelf }
-        let ids = Set(s.pilots.map(\.id))
+        let ids = Set(s.pilots.map(\.id)), out = s.outsideIDs // v127: no pilot for a balloon outside the hangar
         var pinned = Set<Int>()
         for i in bs.indices {
             guard let p = bs[i].pinnedPilot else { continue }
             if pinned.contains(p) || !ids.contains(p) { bs[i].pinnedPilot = nil; continue }
             pinned.insert(p)
-            if !isSelf(bs[i]) && down(bs[i]) == 0 { bs[i].pilot = p }
+            if !isSelf(bs[i]) && down(bs[i]) == 0 && !out.contains(bs[i].id) { bs[i].pilot = p }
         }
         let used = Set(bs.compactMap(\.pilot))
         let need = bs.indices
-            .filter { !isSelf(bs[$0]) && bs[$0].pilot == nil }
+            .filter { !isSelf(bs[$0]) && bs[$0].pilot == nil && !out.contains(bs[$0].id) }
             .sorted { (down(bs[$0]), -bs[$0].size.capacity) < (down(bs[$1]), -bs[$1].size.capacity) }
         let ps = s.pilots.filter { !used.contains($0.id) }.sorted { ($0.level.rawValue, $0.xp) > ($1.level.rawValue, $1.xp) }
         for (k, i) in need.enumerated() where k < ps.count { bs[i].pilot = ps[k].id }

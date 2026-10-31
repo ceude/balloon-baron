@@ -9,7 +9,7 @@ public enum ShowState: Equatable, Sendable {
 
 extension Game {
     /// The balloons that would take part: every one that can fly tonight.
-    public var showFleet: [Balloon] { state.balloons.filter { $0.damagedUntil <= state.day && state.condition($0) > 0 } }
+    public var showFleet: [Balloon] { state.insideBalloons.filter { $0.damagedUntil <= state.day && state.condition($0) > 0 } } // v127: not outside the hangar
     public var showCost: Int { Rules.showPerBalloon * showFleet.count }
 
     public var showState: ShowState {

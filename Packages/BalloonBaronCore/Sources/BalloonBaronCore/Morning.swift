@@ -167,7 +167,7 @@ extension Game {
             o.balloon = b.name
             o.pay = jsRound(Double(b.size.capacity * state.price) * (e == .vip ? 2.2 : 1.4) / 50) * 50
         }
-        let fuel = state.balloons.reduce(0) { $0 + $1.size.fuel }
+        let fuel = state.insideBalloons.reduce(0) { $0 + $1.size.fuel } // v127: the balloons that can fly
         o.stock = jsRound(Double(fuel * 5) * 0.25 / 50) * 50
         return o
     }

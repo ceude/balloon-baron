@@ -275,6 +275,8 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var contracts: ContractState?
     public var transferShip: TransferShip?
     public var transferDebt: TransferDebt?
+    /// v127 (optional so older saves load): the first day Hezarfen may remind you again about balloons outside the hangar.
+    public var hangarReminder: Int?
 
     init(rivals: [Rival]) { self.rivals = rivals }
 

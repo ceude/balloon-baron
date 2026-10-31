@@ -8,7 +8,7 @@ final class PilotPinTests: XCTestCase {
     func checkInvariants(_ g: Game, _ tag: String, file: StaticString = #filePath, line: UInt = #line) {
         let s = g.state, ids = Set(s.pilots.map(\.id))
         var seen = Set<Int>(), pins = Set<Int>()
-        func down(_ b: Balloon) -> Bool { b.damagedUntil > s.day || s.condition(b) <= 0 }
+        func down(_ b: Balloon) -> Bool { b.damagedUntil > s.day || s.condition(b) <= 0 || s.isOutside(b) } // v127: no pilot outside the hangar
         func isSelf(_ b: Balloon) -> Bool { b.id == s.flagship && s.flyingSelf }
         for b in s.balloons {
             if let p = b.pilot {
@@ -85,7 +85,7 @@ final class PilotPinTests: XCTestCase {
                     let b = rng.pick(g.state.balloons).id, p = rng.pick(g.state.pilots).id
                     g.pinPilot(balloon: b, pilot: p)
                     let bb = g.state.balloons.first { $0.id == b }!
-                    if !(bb.id == g.state.flagship && g.state.flyingSelf) && bb.damagedUntil <= g.state.day && g.state.condition(bb) > 0 {
+                    if !(bb.id == g.state.flagship && g.state.flyingSelf) && bb.damagedUntil <= g.state.day && g.state.condition(bb) > 0 && !g.state.isOutside(bb) {
                         XCTAssertEqual(bb.pilot, p, "seed \(seed) step \(step): pick not applied")
                     }
                 } else if k < 36 {

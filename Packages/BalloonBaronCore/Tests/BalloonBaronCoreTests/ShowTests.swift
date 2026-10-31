@@ -9,6 +9,7 @@ final class ShowTests: XCTestCase {
         g.state.lastSelfFly = 30
         g.state.cash = 500_000
         g.state.unlocked.insert(.market)
+        g.state.buildings = [.hangar: 2] // v127: room for 12
         for i in 1..<balloons { g.state.balloons.append(Balloon(id: 700 + i, size: .M, name: "B\(i)")) }
         for i in 0..<balloons { g.state.pilots.append(Pilot(id: 800 + i, name: "P \(i)", level: .experienced)) }
         g.startDay()

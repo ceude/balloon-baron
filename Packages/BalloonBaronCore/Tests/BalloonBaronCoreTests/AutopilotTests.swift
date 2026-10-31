@@ -7,6 +7,7 @@ final class AutopilotTests: XCTestCase {
         var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 3)
         g.state.day = 200
         g.state.lastSelfFly = 200
+        g.state.buildings = [.hangar: 4] // v127: room for 48
         for i in 0..<(Rules.autopilotBalloons - g.state.balloons.count - 1) { g.state.balloons.append(Balloon(id: 700 + i, size: .M, name: "B\(i)")) }
         g.state.barons[.cap] = 150
         XCTAssertFalse(g.state.autopilotOK, "one balloon short")

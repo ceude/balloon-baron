@@ -4,24 +4,26 @@ import Foundation
 public enum Building: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     /// Wind mast: 2 shows tomorrow's flag, 3 the day after too and cuts yellow-flag accidents by 20%.
     case mast
-    /// Hangar: 2 cuts upkeep 15%, 3 cuts it 30% and envelopes wear 15% slower.
+    /// Hangar: 2 cuts upkeep 15%, 3 cuts it 30% and envelopes wear 15% slower; v127: room for `Hangar.capacity[level]`
+    /// balloons, and levels 4 to 8 only add room.
     case hangar
     /// Pilot office: 2 halves rivals' poaching, 3 gives pilots 50% more experience per flight.
     case office
     /// Your booking office: 2 brings 5% more tourists, 3 brings 12% more.
     case sales
 
-    public static let maxLevel = 3
+    /// Top level: 3, the hangar 8 (v127).
+    public var maxLevel: Int { self == .hangar ? Hangar.maxLevel : 3 }
 
     /// Cost of going from `level` to the next one, nil at the top.
     public func upgradeCost(from level: Int) -> Int? {
         let costs: [Int] = switch self {
         case .mast: [6000, 25000]
-        case .hangar: [12000, 45000]
+        case .hangar: [12000, 45000, 120_000, 350_000, 900_000, 2_400_000, 6_000_000]
         case .office: [10000, 35000]
         case .sales: [15000, 50000]
         }
-        return (1...2).contains(level) ? costs[level - 1] : nil
+        return (1..<maxLevel).contains(level) ? costs[level - 1] : nil
     }
 }
 
@@ -29,7 +31,7 @@ extension GameState {
     public func level(_ b: Building) -> Int { local.level(b) }
     /// Highest level of any building in the region.
     public var topBuildingLevel: Int { Building.allCases.map(level).max() ?? 1 }
-    public var upkeepFactor: Double { [1, 1, 0.85, 0.7][level(.hangar)] }
+    public var upkeepFactor: Double { [1, 1, 0.85, 0.7][min(3, level(.hangar))] }
     public var salesFactor: Double { [1, 1, 1.05, 1.12][level(.sales)] }
 }
 

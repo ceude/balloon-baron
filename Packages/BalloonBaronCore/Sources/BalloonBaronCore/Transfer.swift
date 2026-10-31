@@ -161,8 +161,10 @@ extension Game {
     mutating func transferArrive() {
         guard let x = state.local.transferShip, state.day >= x.day else { return }
         state.local.transferShip = nil
+        let n0 = state.outsideCount
         state.local.balloons += x.balloons
         assignPilots()
+        defer { hangarWarn(outsideBefore: n0, queue: true) } // v127: after the cargo's own card
         let due = jsRound(Double(x.balloons.reduce(0) { $0 + $1.size.cost }) * state.region.fx)
         if due > 0, let from = x.balloons.first?.imported {
             state.local.transferDebt = TransferDebt(left: Transfer.debtDays, installment: jsRound(Double(due) / Double(Transfer.debtDays)), from: from)

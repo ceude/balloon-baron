@@ -132,6 +132,9 @@ public enum Entrant: String, Codable, CaseIterable, Sendable {
 }
 
 public enum Rules {
+    /// Name of a new balloon once the region's name list is used up (its id). The core has no player-facing text: the
+    /// app sets this at launch to its localized "Balloon %@" (`balloon.default`); the English fallback is for tests.
+    public static var defaultBalloonName: (Int) -> String = { "Balloon \($0)" }
     public static let startCash = 3000
     public static let startPrice = 170
     public static let startDemand = 165

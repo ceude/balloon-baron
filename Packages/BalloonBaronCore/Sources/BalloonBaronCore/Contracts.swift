@@ -317,7 +317,7 @@ extension GameState {
         return min(k.n, cap)
     }
     /// Seats in the fleet, every balloon.
-    public var fleetSeats: Int { local.balloons.reduce(0) { $0 + $1.size.capacity } }
+    public var fleetSeats: Int { local.insideBalloons.reduce(0) { $0 + $1.size.capacity } } // v127: balloons that can fly
     /// The rival a group goes to: the most popular one still flying.
     public var contractRival: Rival? {
         var best: Rival?

@@ -204,7 +204,7 @@ extension Game {
             }
             if state.condition(state.balloons[i]) <= 0 { ev.append(.envelopeWorn(balloon: state.balloons[i].name)) }
         }
-        lg.upkeep = jsRound(Double(state.balloons.reduce(0) { $0 + $1.size.upkeep }) * state.upkeepFactor)
+        lg.upkeep = jsRound(Double(state.insideBalloons.reduce(0) { $0 + $1.size.upkeep }) * state.upkeepFactor) // v127: none outside the hangar
         let repHotels = state.rep
         for h in state.activeHotels {
             if state.ownHotels.contains(h) {

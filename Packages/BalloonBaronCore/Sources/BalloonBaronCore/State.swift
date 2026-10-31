@@ -256,6 +256,10 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case transferBrought(pilots: [String], balloons: [String], day: Int)
     /// v125: the cargo arrived: these balloons are in the fleet.
     case cargoArrived([String])
+    /// v127: the factory or the cargo left balloons outside the full hangar (how many are outside now).
+    case hangarFull(Int)
+    /// v127: the reminder, at most every `Hangar.reminderDays` days, about the balloons outside the hangar.
+    case hangarOutside(Int)
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.
@@ -433,16 +437,18 @@ public struct GameState: Codable, Equatable, Sendable {
         jsRound(Double(h.roomIncome) * (stars < h.minStars ? 0.5 : 1) * (local.winter != nil ? 0.6 : 1))
     }
 
-    /// `chartered`: hired out whole by a morning event; `late`: its pilot overslept; `strike`: its pilot is on strike.
-    public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold, chartered, late, strike }
+    /// `chartered`: hired out whole by a morning event; `late`: its pilot overslept; `strike`: its pilot is on strike;
+    /// `outside`: v127, no room in the hangar.
+    public enum FlyStatus: Equatable, Sendable { case ok, banned, damaged, worn, noPilot, licenseHold, chartered, late, strike, outside }
 
     /// v121.12: nothing can fly today and nothing can change that (all in repair, or a flying ban): the day has to be skipped.
     public var forcedSkip: Bool {
-        !local.balloons.isEmpty && local.balloons.allSatisfy { let s = status($0); return s == .damaged || s == .banned }
+        !local.balloons.isEmpty && insideBalloons.allSatisfy { let s = status($0); return s == .damaged || s == .banned }
     }
 
     public func status(_ b: Balloon) -> FlyStatus {
         if local.banUntil >= day { return .banned }
+        if isOutside(b) { return .outside }
         if b.damagedUntil > day { return .damaged }
         if condition(b) <= 0 { return .worn }
         if !licenseValid && b.id != local.flagship { return .licenseHold }
@@ -460,15 +466,16 @@ public struct GameState: Codable, Equatable, Sendable {
     }
 
     /// Balloons that will actually go up today.
-    public var flyingToday: [Balloon] { local.balloons.filter { $0.fly && status($0) == .ok } }
+    public var flyingToday: [Balloon] { insideBalloons.filter { $0.fly && status($0) == .ok } }
     public var capacityToday: Int { flyingToday.reduce(0) { $0 + sellSeats($1) } }
 
     public var influencerCost: Int { Rules.influencerCost(balloons: local.balloons.count) }
 
-    /// Flagship first, then biggest, then by name.
+    /// Flagship first, then biggest, then by name; v127: the balloons outside the hangar last.
     public var sortedFleet: [Balloon] {
-        local.balloons.sorted {
-            ($0.id == local.flagship ? 1 : 0, $0.size.capacity, $1.name) > ($1.id == local.flagship ? 1 : 0, $1.size.capacity, $0.name)
+        let out = outsideIDs
+        return local.balloons.sorted {
+            (out.contains($0.id) ? 0 : 1, $0.id == local.flagship ? 1 : 0, $0.size.capacity, $1.name) > (out.contains($1.id) ? 0 : 1, $1.id == local.flagship ? 1 : 0, $1.size.capacity, $0.name)
         }
     }
 
@@ -481,7 +488,7 @@ public struct GameState: Codable, Equatable, Sendable {
     public func isBaron(_ r: RegionID? = nil) -> Bool { barons[r ?? region] != nil }
     /// v117: the autopilot ("⏩ Advance", played by the app) opens with a big company: enough balloons here and
     /// Baron of Cappadocia.
-    public var autopilotOK: Bool { local.balloons.count >= Rules.autopilotBalloons && isBaron(.cap) }
+    public var autopilotOK: Bool { insideBalloons.count >= Rules.autopilotBalloons && isBaron(.cap) }
     public var anyBaron: Bool { !barons.isEmpty }
     public func owns(_ r: RegionID) -> Bool { r == region || parked[r] != nil }
     public func design(of b: Balloon) -> Design? { b.design.flatMap { id in designs.first { $0.id == id } } }
