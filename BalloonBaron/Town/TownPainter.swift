@@ -53,7 +53,7 @@ struct TownHits {
 enum TownGeo {
     static let TW: CGFloat = 128, TH: CGFloat = 64
     /// Building names appear from this zoom; below it the zones written in the sand do the talking.
-    static let labelZoom: CGFloat = 0.55
+    static let labelZoom: CGFloat = 0.31 // v129.2: just past the phone home zoom (at most 0.29), so names show as soon as you zoom in a little
 
     static func iso(_ gx: Double, _ gy: Double) -> CGPoint {
         CGPoint(x: CGFloat(gx - gy) * TW / 2, y: CGFloat(gx + gy) * TH / 2)

@@ -10728,7 +10728,7 @@ function townLabel(b, sx, sy, sc, full, taken) {
   ctx.textAlign = 'left';
 }
 /* Sunrise behind the town, in screen space: sky, sun, clouds, a far ridge of fairy chimneys and the valley floor. Pans a little with the map. */
-const LABEL_Z = .55;
+const LABEL_Z = .31; /* v129.2: just past the phone home zoom (at most .29), so names show as soon as you zoom in a little */
 /* Zones written in the sand: text, centre of the baseline, where a tap glides to. */
 const TOWN_ZONES = [
   { text: 'HANGAR', gx: 4, gy: 3.55, at: [4, 2] },
