@@ -9594,6 +9594,13 @@ function tdecor(t) {
     ctx.restore(); tpoly(poly, null, 'rgba(110,70,40,.35)', 2);
   };
   road(0, 7.55, 15, 8.45); road(7.55, 0, 8.45, 15); road(0.6, 3.6, 7.55, 4.1);
+  if (bri) { /* v125.x: the paved square at the crossing that the buses go round; kerbs only between the roads */
+    const [a, b] = BUS.square, sq = [tiso(a, a), tiso(b, a), tiso(b, b), tiso(a, b)];
+    tpoly(sq, '#9c968c'); ctx.save(); ctx.beginPath(); sq.forEach(([x, y], i) => i ? ctx.lineTo(x, y) : ctx.moveTo(x, y)); ctx.closePath(); ctx.clip();
+    const RR = mulberry32(77); for (let i = 0; i < 90; i++) { const p = tiso(lerp(a, b, RR()), lerp(a, b, RR())); ctx.fillStyle = RR() < .5 ? 'rgba(230,228,220,.35)' : 'rgba(50,50,60,.25)'; ctx.beginPath(); ctx.ellipse(p[0], p[1], 4, 2, 0, 0, 7); ctx.fill(); }
+    ctx.restore();
+    for (const [p, q] of [[[a, a], [7.55, a]], [[8.45, a], [b, a]], [[b, a], [b, 7.55]], [[b, 8.45], [b, b]], [[b, b], [8.45, b]], [[7.55, b], [a, b]], [[a, b], [a, 8.45]], [[a, 7.55], [a, a]]]) tpoly([tiso(...p), tiso(...q)], null, 'rgba(110,70,40,.35)', 2);
+  }
   /* launch field */
   const lf = [tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)];
   tpoly(lf, '#a3b066'); ctx.save(); ctx.globalAlpha = .25; for (let i = 0; i < 9; i++) tpoly([tiso(1 + i * .67, 4.4), tiso(1.33 + i * .67, 4.4), tiso(1.33 + i * .67, 7.2), tiso(1 + i * .67, 7.2)], i % 2 ? '#8a9a50' : '#b8c47a'); ctx.restore();
@@ -9840,6 +9847,25 @@ function phoneBox(x, y) {
   ctx.fillStyle = NIGHT_K > 0 ? '#ffe08a' : '#cfe0e8'; for (let r = 0; r < 3; r++) ctx.fillRect(x - 4.5, y - 27 + r * 7, 6, 5.5);
 }
 function pillarBox(x, y) { ctx.fillStyle = '#c0181e'; ctx.fillRect(x - 4, y - 16, 8, 16); ctx.beginPath(); ctx.ellipse(x, y - 16, 4.6, 2.4, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle = '#8a0c12'; ctx.fillRect(x + 1.5, y - 16, 2.5, 16); ctx.fillStyle = '#1a1010'; ctx.fillRect(x - 3, y - 12, 5, 1.2); ctx.fillStyle = '#2a1a1a'; ctx.fillRect(x - 4.5, y - 1.5, 9, 1.5); }
+/* v125.x: Bristol's buses go round the square at the crossing instead of over its fountain: each swings out to its own
+   side (the paved square is wider than the roads) and back into its lane. The bus along gy gives way: it waits at its
+   stop line while the one along gx goes round, then follows. Both run on the same 32 s cycle, so the timing holds for
+   ever (checked over whole cycles: the buses' footprints never touch each other or the fountain). */
+const BUS = {
+  P: 32, V: .75, stop: 7.4, wait: 4.2, lag: .6, /* cycle s, tiles/s, gy-bus stop line (path length), its wait, its offset */
+  x: [[-1, 7.75], [6.8, 7.75], [7.45, 7.33], [8.55, 7.33], [9.2, 7.75], [16, 7.75]],
+  y: [[8.25, -1], [8.25, 6.8], [8.67, 7.45], [8.67, 8.55], [8.25, 9.2], [8.25, 16]],
+  square: [7.08, 8.92] /* the paved square both buses stay on while they go round */
+};
+function alongPath(P, s) {
+  for (let i = 1; i < P.length; i++) { const l = Math.hypot(P[i][0] - P[i - 1][0], P[i][1] - P[i - 1][1]); if (s <= l || i === P.length - 1) { const f = clamp(s / l, 0, 1); return [lerp(P[i - 1][0], P[i][0], f), lerp(P[i - 1][1], P[i][1], f)]; } s -= l; }
+}
+/* where a bus is at time t: [gx, gy, onX]; past the end of its road it waits outside town until its next run */
+function busAt(t, onX) {
+  if (onX) return [...alongPath(BUS.x, pmod(t, BUS.P) * BUS.V), true];
+  const u = pmod(t - BUS.lag, BUS.P), s = u * BUS.V;
+  return [...alongPath(BUS.y, s < BUS.stop ? s : u < BUS.stop / BUS.V + BUS.wait ? BUS.stop : (u - BUS.wait) * BUS.V), false];
+}
 /* a red double-decker going along a road; onX: along gx */
 function decker(gx, gy, onX) {
   const w = onX ? 1.05 : .42, d = onX ? .42 : 1.05, H = 36;
@@ -9868,10 +9894,8 @@ function briTownScenery(items, t) {
   for (const [gx, gy] of [[7.32, 2.6], [8.7, 11.1], [3.2, 7.32]]) items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 8, p[1] + 2, 9, 3, .18); }, draw: () => phoneBox(...tiso(gx, gy)) });
   for (const [gx, gy] of [[7.3, 10.6], [11.6, 7.3], [8.7, 4.4]]) items.push({ depth: gx + gy, draw: () => pillarBox(...tiso(gx, gy)) });
   items.push({ depth: 13.7 + 4.65, draw: () => pubSign(...tiso(13.7, 4.65), t) });
-  /* a bus on each road, slowly; it waits at the crossing now and then */
-  const run = (k, ph) => { const u = pmod(t * .045 * k + ph, 1.2); return clamp(u, 0, 1) * 17 - 1; };
-  { const gx = run(1, 0), gy = 7.75; items.push({ depth: gx + gy + .6, draw: () => decker(gx, gy, true) }); }
-  { const gy = run(.8, .55), gx = 8.25; items.push({ depth: gx + gy + .6, draw: () => decker(gx, gy, false) }); }
+  /* a bus on each road, slowly */
+  for (const b of [busAt(t, true), busAt(t, false)]) items.push({ depth: b[0] + b[1] + .6, draw: () => decker(b[0], b[1], b[2]) });
   if (NIGHT_K < .3) items.push({ depth: 99, draw: () => { const c = tiso(7.5, 6); ctx.save(); ctx.globalAlpha = 1 - NIGHT_K / .3; gulls(t, c[0], c[1] - 330); ctx.restore(); } });
 }
 function townScenery(t) {

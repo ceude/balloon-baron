@@ -282,12 +282,11 @@ extension TownPainter {
             items.append(TownItem(depth: gx + gy, draw: { p in let q = TownGeo.iso(gx, gy); p.pillarBox(q.x, q.y) }))
         }
         items.append(TownItem(depth: 13.7 + 4.65, draw: { p in let q = TownGeo.iso(13.7, 4.65); p.pubSign(q.x, q.y) }))
-        // a bus on each road, slowly; it waits past the end now and then
-        let tt = t
-        func run(_ k: Double, _ ph: Double) -> Double { min(max(pmod(tt * 0.045 * k + ph, 1.2), 0), 1) * 17 - 1 }
-        let ax = run(1, 0), ay = run(0.8, 0.55)
-        items.append(TownItem(depth: ax + 7.75 + 0.6, draw: { p in p.decker(ax, 7.75, onX: true) }))
-        items.append(TownItem(depth: 8.25 + ay + 0.6, draw: { p in p.decker(8.25, ay, onX: false) }))
+        // a bus on each road, slowly; they go round the square and the one along gy gives way (`BristolBus`)
+        for onX in [true, false] {
+            let (bx, by) = BristolBus.at(t, onX: onX)
+            items.append(TownItem(depth: bx + by + 0.6, draw: { p in p.decker(bx, by, onX: onX) }))
+        }
         let k = nightK
         if k < 0.3 {
             items.append(TownItem(depth: 99, draw: { p in
@@ -381,5 +380,39 @@ extension TownPainter {
                 cl.fill(Path(ellipseIn: CGRect(x: cx + cw * 0.15 - cw * 0.3, y: cy - h * 0.012 - rh2, width: cw * 0.6, height: rh2 * 2)), with: .color(hex("#dfe3e8")))
             }
         }
+    }
+}
+
+/// v125.x: Bristol's buses go round the square at the crossing instead of over its fountain: each swings out to its own
+/// side (the paved square is wider than the roads) and back into its lane. The bus along gy gives way: it waits at its
+/// stop line while the one along gx goes round, then follows. Both run on the same 32 s cycle, so their footprints never
+/// touch each other or the fountain (prototype `BUS`, `busAt`).
+enum BristolBus {
+    /// Cycle (s), speed (tiles/s), the gy bus's stop line (path length), its wait and its offset (s).
+    static let period = 32.0, speed = 0.75, stop = 7.4, wait = 4.2, lag = 0.6
+    static let pathX: [(Double, Double)] = [(-1, 7.75), (6.8, 7.75), (7.45, 7.33), (8.55, 7.33), (9.2, 7.75), (16, 7.75)]
+    static let pathY: [(Double, Double)] = [(8.25, -1), (8.25, 6.8), (8.67, 7.45), (8.67, 8.55), (8.25, 9.2), (8.25, 16)]
+    /// The paved square both buses stay on while they go round.
+    static let square = (7.08, 8.92)
+
+    static func along(_ p: [(Double, Double)], _ s0: Double) -> (Double, Double) {
+        var s = s0
+        for i in 1..<p.count {
+            let l = hypot(p[i].0 - p[i - 1].0, p[i].1 - p[i - 1].1)
+            if s <= l || i == p.count - 1 {
+                let f = min(max(s / l, 0), 1)
+                return (p[i - 1].0 + (p[i].0 - p[i - 1].0) * f, p[i - 1].1 + (p[i].1 - p[i - 1].1) * f)
+            }
+            s -= l
+        }
+        return p[p.count - 1]
+    }
+
+    /// Where a bus is at time `t`; past the end of its road it waits outside town until its next run.
+    static func at(_ t: Double, onX: Bool) -> (Double, Double) {
+        func pmod(_ a: Double, _ m: Double) -> Double { (a.truncatingRemainder(dividingBy: m) + m).truncatingRemainder(dividingBy: m) }
+        if onX { return along(pathX, pmod(t, period) * speed) }
+        let u = pmod(t - lag, period), s = u * speed
+        return along(pathY, s < stop ? s : u < stop / speed + wait ? stop : (u - wait) * speed)
     }
 }

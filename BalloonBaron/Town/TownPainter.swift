@@ -1278,6 +1278,7 @@ struct TownPainter {
         c.fill(green, with: .color(bri ? rgba(150, 200, 100, 0.22) : rgba(120, 150, 70, 0.22)))
         vineyards([(13.2, 3.4, 1.6, 3.6), (-9, 2, 5, 4), (18, 10, 4, 5), (2, 18, 4, 3.5), (-12, 12, 4, 3)])
         road(0, 7.55, 15, 8.45); road(7.55, 0, 8.45, 15); road(0.6, 3.6, 7.55, 4.1)
+        if bri { busSquare() }
         let lf = [iso(1, 4.4), iso(7, 4.4), iso(7, 7.2), iso(1, 7.2)]
         poly(lf, hex("#a3b066"))
         var stripes = c
@@ -1314,6 +1315,25 @@ struct TownPainter {
         inner.fill(dark, with: .color(bri ? rgba(50, 50, 60, 0.25) : rgba(110, 70, 40, 0.22)))
         if bri { puddles(gx0, gy0, gx1, gy1, inner) }
         c.stroke(shape, with: .color(rgba(110, 70, 40, 0.35)), lineWidth: 2)
+    }
+
+    /// v125.x: Bristol's paved square at the crossing that the buses go round (`BristolBus.square`); kerbs only between
+    /// the roads (prototype `townGround`, `if (bri)` after the roads).
+    mutating func busSquare() {
+        let (a, b) = BristolBus.square
+        let shape = path([iso(a, a), iso(b, a), iso(b, b), iso(a, b)])
+        c.fill(shape, with: .color(hex("#9c968c")))
+        var inner = c
+        inner.clip(to: shape)
+        let (light, dark) = TownStatic.cobbles(a, a, b, b, seed: rng(77))
+        inner.fill(light, with: .color(rgba(230, 228, 220, 0.35)))
+        inner.fill(dark, with: .color(rgba(50, 50, 60, 0.25)))
+        var kerb = Path()
+        for (p, q) in [((a, a), (7.55, a)), ((8.45, a), (b, a)), ((b, a), (b, 7.55)), ((b, 8.45), (b, b)),
+                       ((b, b), (8.45, b)), ((7.55, b), (a, b)), ((a, b), (a, 8.45)), ((a, 7.55), (a, a))] {
+            kerb.move(to: iso(p.0, p.1)); kerb.addLine(to: iso(q.0, q.1))
+        }
+        c.stroke(kerb, with: .color(rgba(110, 70, 40, 0.35)), lineWidth: 2)
     }
 
     private static let outerFields: [(Double, Double)] = [(-6, 9.5), (18, 2), (10, 18), (-4, -6), (20, 15)]
