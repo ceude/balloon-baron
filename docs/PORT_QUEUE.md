@@ -2,6 +2,12 @@
 
 Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilince toplu olarak aktarılır.
 
+## Onay bekleyen deneme (port etme)
+
+Geliştirici onaylamadan Swift'e aktarılmaz.
+
+- **Yeni köy (deneme), v131:** kasabanın yeniden tasarımı yalnızca prototipte, bir anahtarın arkasında (`S.newTown`, Ayarlar › Test (prototip) › "Yeni köy (deneme)", ya da adrese `?newtown=1`). Kapalıyken kasaba aynen eskisi gibi. Ayrıntı: GAME_DESIGN "Yeni köy (deneme, v131)". Prototipte: `NT`, `NTL`, `ntSync` (eski yerleşim sabitlerini değiştirir: `KIOSK`, `JEEP_ROW_Y`, `DECOR_AT`, `STATUE_AT`, `ARCHES`, `OPEN_IN`, `HQ_TOWER`, `OUTER_FIELDS`, `CTR_KINDS.*.town`, Luksor/Bristol `CTR.shift`), `ntPlace`, `ntBuilding` (`ntSite`, `ntShop`, `ntWorkshop`, `ntSchool`, `ntOffice`, `ntBank`), `ntGround`, `ntOuterDecor`, `ntScenery`, `ntWall`, `ntLandmark` (`lmChimney`, `lmObelisk`, `lmClock`, `lmWater`), `caveHouse`, `ntVan`, `inflating`, `ntDots`, `evAt`, `fieldXY`.
+
 Kuyrukta:
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
