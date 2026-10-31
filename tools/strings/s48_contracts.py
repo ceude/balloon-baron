@@ -686,9 +686,10 @@ add("ctr.rule.rivalAny", "Turn it down and a rival flies the group.", "Reddeders
 add("ctr.pref", "Preferred operator", "Gözde ortak", "Bevorzugter Anbieter", "Operador preferido", "優先業者", "우선 협력사")
 add("ctr.pref.sub", "Offers come more often, %@ more a head", "Teklifler daha sık, kişi başı %@ fazla", "Angebote kommen öfter, %@ mehr pro Kopf",
     "Las ofertas llegan más seguido, %@ más por cabeza", "提案がより頻繁に、1人あたり%@増し", "제안이 더 자주, 1인당 %@ 더")
-add("ctr.trust", "Jobs done: %1$@/%2$@; the third makes you the preferred operator", "Başarılı iş: %1$@/%2$@ · üçüncüsünde gözde ortağı olursun",
-    "Aufträge: %1$@/%2$@ · beim 3. bevorzugt", "Trabajos: %1$@/%2$@ · al 3.º, preferido",
-    "成功した仕事：%1$@/%2$@。3回目で優先業者に", "성공한 일: %1$@/%2$@, 세 번째에 우선 협력사")
+# v126.1: per owner: only the jobs done with the owner on the card
+add("ctr.trust", "Jobs done with %1$@: %2$@/%3$@ · the third makes you their preferred operator", "%1$@ ile başarılı iş: %2$@/%3$@ · üçüncüsünde gözde ortağı olursun",
+    "Aufträge mit %1$@: %2$@/%3$@ · beim 3. bevorzugt", "Trabajos con %1$@: %2$@/%3$@ · al 3.º, preferido",
+    "%1$@との成功した仕事：%2$@/%3$@。3回目で優先業者に", "%1$@와(과) 성공한 일: %2$@/%3$@, 세 번째에 우선 협력사")
 add("ctr.accept", "Accept: %@", "Kabul et: %@", "Annehmen: %@", "Aceptar: %@", "引き受ける：%@", "수락: %@")
 add("ctr.negotiate", "Negotiate: %@", "Pazarlık: %@", "Verhandeln: %@", "Negociar: %@", "交渉：%@", "협상: %@")
 add("ctr.negotiate.safe", "Rarely walks away", "Genelde kabul eder", "Springt selten ab", "Rara vez se va", "まず逃げない", "거의 안 떠나요")
@@ -789,15 +790,15 @@ for kind, t in [("bus", ("%1$@ tour coach passengers in the baskets of %2$@.", "
 add("paper.rivalGroup.days", "Every morning for %@ days.", "%@ gün boyunca her sabah.", "%@ Tage lang jeden Morgen.", "Cada mañana durante %@ días.", "%@日間、毎朝。", "%@일 동안 매일 아침.")
 add("paper.rivalGroup.grow", "The company added balloons to its fleet with the money: %@.", "Şirket bu parayla filosuna balon ekledi: %@.",
     "Mit dem Geld hat die Firma ihre Flotte vergrößert. Ballone: %@.", "La empresa añadió globos a su flota con ese dinero: %@.", "同社はその金で気球を%@機増やした。", "회사는 그 돈으로 열기구를 %@대 늘렸다.")
-for r, t in [("abq", ("Tour groups flown in full: %@", "Eksiksiz uçurulan tur grubu: %@", "Vollständig geflogene Tourgruppen: %@", "Grupos turísticos completados: %@", "全員を飛ばしたツアーグループ：%@", "전원 태운 투어 단체: %@")),
-             ("lux", ("Cruise groups flown in full: %@", "Eksiksiz uçurulan gemi grubu: %@", "Vollständig geflogene Schiffsgruppen: %@", "Grupos de crucero completados: %@", "全員を飛ばしたクルーズグループ：%@", "전원 태운 크루즈 단체: %@")),
-             ("bri", ("Weekend groups flown in full: %@", "Eksiksiz uçurulan hafta sonu grubu: %@", "Vollständig geflogene Wochenendgruppen: %@", "Grupos de fin de semana completados: %@", "全員を飛ばした週末グループ：%@", "전원 태운 주말 단체: %@"))]:
+for r, t in [("abq", ("Total tour groups flown in full: %@", "Toplam eksiksiz uçurulan tur grubu: %@", "Vollständig geflogene Tourgruppen insgesamt: %@", "Total de grupos turísticos completados: %@", "全員を飛ばしたツアーグループ（合計）：%@", "전원 태운 투어 단체(합계): %@")),
+             ("lux", ("Total cruise groups flown in full: %@", "Toplam eksiksiz uçurulan gemi grubu: %@", "Vollständig geflogene Schiffsgruppen insgesamt: %@", "Total de grupos de crucero completados: %@", "全員を飛ばしたクルーズグループ（合計）：%@", "전원 태운 크루즈 단체(합계): %@")),
+             ("bri", ("Total weekend groups flown in full: %@", "Toplam eksiksiz uçurulan hafta sonu grubu: %@", "Vollständig geflogene Wochenendgruppen insgesamt: %@", "Total de grupos de fin de semana completados: %@", "全員を飛ばした週末グループ（合計）：%@", "전원 태운 주말 단체(합계): %@"))]:
     add(f"goal.ctrDone.{r}", *t)
-add("goal.ctrDoneAny.abq", "Tour groups flown in full, any company: %@", "Eksiksiz uçurulan tur grubu (tüm şirketler): %@", "Vollständig geflogene Tourgruppen, beliebige Firma: %@",
+add("goal.ctrDoneAny.abq", "Total tour groups flown in full (all companies): %@", "Toplam eksiksiz uçurulan tur grubu (bütün şirketler): %@", "Vollständig geflogene Tourgruppen, beliebige Firma: %@",
     "Grupos turísticos completados, cualquier empresa: %@", "全員を飛ばしたツアーグループ（どの会社でも）：%@", "전원 태운 투어 단체(어느 회사든): %@")
-add("goal.ctrDoneAny.lux", "Cruise groups flown in full, any company: %@", "Eksiksiz uçurulan grup (tüm şirketler): %@", "Vollständig geflogene Schiffsgruppen, beliebige Firma: %@",
+add("goal.ctrDoneAny.lux", "Total groups flown in full (all companies): %@", "Toplam eksiksiz uçurulan grup (bütün şirketler): %@", "Vollständig geflogene Schiffsgruppen, beliebige Firma: %@",
     "Grupos de crucero completados, cualquier empresa: %@", "全員を飛ばしたクルーズグループ（どの会社でも）：%@", "전원 태운 크루즈 단체(어느 회사든): %@")
-add("goal.ctrDoneAny.bri", "Weekend groups flown in full, any company: %@", "Eksiksiz uçurulan grup (tüm şirketler): %@", "Vollständig geflogene Wochenendgruppen, beliebige Firma: %@",
+add("goal.ctrDoneAny.bri", "Total groups flown in full (all companies): %@", "Toplam eksiksiz uçurulan grup (bütün şirketler): %@", "Vollständig geflogene Wochenendgruppen, beliebige Firma: %@",
     "Grupos de fin de semana completados, cualquier empresa: %@", "全員を飛ばした週末グループ（どの会社でも）：%@", "전원 태운 주말 단체(어느 회사든): %@")
 add("goal.ctrPref", "Become a contract company's preferred operator", "Bir tur şirketinin gözde ortağı ol", "Werde bevorzugter Anbieter einer Vertragsfirma",
     "Sé el operador preferido de una empresa contratante", "契約会社の優先業者になる", "계약 회사의 우선 협력사 되기")

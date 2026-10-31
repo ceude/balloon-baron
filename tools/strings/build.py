@@ -1,7 +1,7 @@
 """Builds BalloonBaron/Localizable.xcstrings from these sources. Edit the .py files, then run: python3 tools/strings/build.py"""
 import json, os, re, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import s1_ui, s2_hez, s3_events, s4_reviews, s5_v2, s6_world, s7_home, s8_world, s9_fleet, s10_flight, s11_intro, s12_extra, s13_report, s14_town, s15_v85, s16_morning, s17_boss, s18_bazaar, s19_home, s20_office, s21_platform, s22_a11y, s23_v101, s24_lux, s25_town, s26_flight, s27_fleet, s28_v108, s29_v110, s30_bnames, s31_show, s32_coach, s33_store, s34_factory, s35_v115, s36_v116, s37_v117, s38_opening, s39_v121, s40_v122, s41_letter, s42_port, s43_bri, s44_code, s45_pilots, s46_sell, s47_newplayer, s48_contracts, s49_uifix, s50_decorstore
+import s1_ui, s2_hez, s3_events, s4_reviews, s5_v2, s6_world, s7_home, s8_world, s9_fleet, s10_flight, s11_intro, s12_extra, s13_report, s14_town, s15_v85, s16_morning, s17_boss, s18_bazaar, s19_home, s20_office, s21_platform, s22_a11y, s23_v101, s24_lux, s25_town, s26_flight, s27_fleet, s28_v108, s29_v110, s30_bnames, s31_show, s32_coach, s33_store, s34_factory, s35_v115, s36_v116, s37_v117, s38_opening, s39_v121, s40_v122, s41_letter, s42_port, s43_bri, s44_code, s45_pilots, s46_sell, s47_newplayer, s48_contracts, s49_uifix, s50_decorstore, s51_charter
 S = s1_ui.S
 LANGS = ["en", "tr", "de", "es", "ja", "ko"]
 def specs(t):
@@ -16,6 +16,14 @@ for k, v in S.items():
     for l in LANGS:
         if specs(v[l]) != ref:
             print("MISMATCH", k, l, specs(v[l]), ref); bad += 1
+# v126.1: no emoji in the game. Colour emoji (U+1F000 and up), the symbols block U+2600–27BF (✈ ☀ ⚠ ☕ ✔ ✨ …) and the
+# emoji variation selector are refused; the text glyphs the game uses (★ ☆ ✓ ✕ ✦) are allowed.
+EMOJI = re.compile("[\U0001F000-\U0010FFFF\u2600-\u27BF\uFE0F]")
+for k, v in S.items():
+    for l in LANGS:
+        for ch in EMOJI.findall(v[l]):
+            if ch not in "★☆✓✕✦":
+                print("EMOJI", k, l, repr(ch)); bad += 1
 out = {"sourceLanguage": "en", "strings": {}, "version": "1.0"}
 for k in sorted(S):
     out["strings"][k] = {"extractionState": "manual", "localizations": {

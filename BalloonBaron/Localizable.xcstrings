@@ -17221,6 +17221,88 @@
         }
       }
     },
+    "ctr.abq.sceneShort.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schau, mein junger Freund: Hier läuft es mit dem Bus. Reisebusse auf der Route 66 halten an diesem Terminal vor der Stadt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look, kid: here it's done by coach. Tour coaches on Route 66 stop at this terminal outside the city."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira, joven amigo: aquí todo va en autobús. Los autobuses de la Ruta 66 paran en esta terminal fuera de la ciudad."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "見たまえ、若者よ。ここではバスだ。ルート66のツアーバスは町の外のこのターミナルに停まる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "보게, 젊은이. 여기선 버스로 하네. 66번 국도의 관광버스는 도시 밖 이 터미널에 서지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bak genç dostum: burada işler otobüsle. Route 66'dan gelen tur otobüsleri kasabanın dışındaki bu terminalde durur."
+          }
+        }
+      }
+    },
+    "ctr.abq.sceneShort.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Den Rest kennst du aus Kappadokien: Die Plätze gehen zuerst an die Gruppe, drei saubere Aufträge machen dich zum bevorzugten Partner. Ein Unterschied: Die Gruppe fliegt nur einen Morgen. Das erste Angebot kommt!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The rest you know from Cappadocia: the seats go to the group first, three good jobs make you a preferred partner. One difference: the group flies a single morning. The first offer is coming!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El resto ya lo sabes de Capadocia: las plazas van primero al grupo y tres buenos trabajos te hacen socio preferido. Una diferencia: el grupo vuela una sola mañana. ¡Llega la primera oferta!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あとはカッパドキアで知っての通り。席はまずグループへ、3回きちんとやれば優先パートナー。違いはひとつ、グループは朝1回だけ飛ぶ。最初の提案が来るぞ！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나머지는 카파도키아에서 알 걸세. 좌석은 먼저 단체에게, 세 번 잘하면 우선 협력사. 다른 점 하나: 단체는 아침 한 번만 탄다네. 첫 제안이 온다!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gerisini Kapadokya'dan biliyorsun: koltuklar önce gruba, üç sağlam işte gözde ortak. Bir farkı var: grup tek sabah uçar. İlk teklif geliyor!"
+          }
+        }
+      }
+    },
     "ctr.abq.tag": {
       "extractionState": "manual",
       "localizations": {
@@ -17791,6 +17873,1441 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tren hafta sonu boyunca istasyonda duracak; kasabayı sola, batı yolu boyunca kaydırırsan görürsün. Sabahları sis tahminine bak."
+          }
+        }
+      }
+    },
+    "ctr.cap.accepted": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wunderbar! Mein Flugzeug landet an dem Morgen, meine Gäste steigen am Terminal in die Jeeps. Mach die Körbe bereit!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wonderful! My plane lands that morning and my travellers take the jeeps from the terminal. Get the baskets ready!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Estupendo! Mi avión aterriza esa mañana y mis viajeros toman los jeeps en la terminal. ¡Prepara las cestas!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "決まりですね！その朝に着陸して、お客さんはターミナルからジープに乗ります。バスケットの準備をお願いします！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "좋아요! 그날 아침 비행기가 도착하고, 손님들은 터미널에서 지프를 타요. 바스켓를 준비해 주세요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Harika! Uçağım o sabah iniyor, yolcularım terminalden cipe biner. Sepetleri hazırla!"
+          }
+        }
+      }
+    },
+    "ctr.cap.delayIntro": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flugzeuge haben manchmal Verspätung, Kind. Am Morgen entscheidest du: Halte die Plätze für die Gruppe frei oder biete sie auf dem Markt an. Beides hat seinen Preis; die Karte sagt ihn dir."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Planes are sometimes late, kid. In the morning it's your call: keep the seats for the group, or put them on the market. Both have a price; the card tells you."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A veces los aviones se retrasan, muchacho. Por la mañana decides tú: guardar las plazas para el grupo o sacarlas al mercado. Las dos cosas tienen un precio; la tarjeta te lo dice."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機は時々遅れるものだ、若いの。朝に決めるのはお前だ。席をグループのために取っておくか、市場に出すか。どちらにも代償がある。カードに書いてある。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기는 가끔 늦는단다, 얘야. 아침에 네가 정하거라. 좌석을 단체 몫으로 남겨 둘지, 시장에 내놓을지. 둘 다 대가가 있지. 카드에 적혀 있다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçaklar bazen rötar yapar evlat. Sabah karar senin: koltukları gruba beklet ya da pazara aç. İkisinin de bedeli var; kartta yazıyor."
+          }
+        }
+      }
+    },
+    "ctr.cap.empty": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Vorfeld ist leer. Ein neues Charter-Angebot kommt morgens."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The apron is empty. A new charter offer comes in the morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La plataforma está vacía. Una nueva oferta de chárter llega por la mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エプロンは空っぽ。新しいチャーターの提案は朝に来る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계류장이 비었어요. 새 전세기 제안은 아침에 와요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apron boş. Yeni bir charter teklifi sabah gelir."
+          }
+        }
+      }
+    },
+    "ctr.cap.fresh": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hier landen Charterflüge aus Seoul, Shanghai und Istanbul; die Gäste fahren mit Jeeps in die Stadt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charter planes from Seoul, Shanghai and Istanbul land here; the travellers take the jeeps into town."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aquí aterrizan los chárter de Seúl, Shanghái y Estambul; los viajeros van en jeep al pueblo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ソウル、上海、イスタンブールからのチャーター便がここに着き、客はジープで町へ来る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "서울, 상하이, 이스탄불에서 온 전세기가 여기 내리고, 손님들은 지프를 타고 마을로 와요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seul'den, Şanghay'dan, İstanbul'dan charter uçakları buraya iner, yolcular cipe binip kasabaya gelir."
+          }
+        }
+      }
+    },
+    "ctr.cap.place": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NAV · NEVŞEHİR AIRPORT"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NAV · NEVŞEHİR AIRPORT"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NAV · NEVŞEHİR AIRPORT"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NAV · NEVŞEHİR AIRPORT"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NAV · NEVŞEHİR AIRPORT"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NAV · NEVŞEHİR AIRPORT"
+          }
+        }
+      }
+    },
+    "ctr.cap.prefPaper": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charterflüge kommen jetzt zuerst zu ihnen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charter planes now come to them first."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los vuelos chárter ahora van primero a ellos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チャーター便はまずこの会社へ来るようになった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전세기들이 이제 이 회사부터 찾는다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charter uçakları artık önce ona geliyor."
+          }
+        }
+      }
+    },
+    "ctr.cap.scene.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schau, Kind: der kleine Flughafen am Ende der Oststraße. Hier landen Charterflüge aus Seoul, Shanghai und Istanbul."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Look, kid: the little airport at the end of the east road. Charter planes from Seoul, Shanghai and Istanbul land here."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mira, muchacho: el pequeño aeropuerto al final de la carretera del este. Aquí aterrizan los chárter de Seúl, Shanghái y Estambul."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "見なさい、若いの。東の道の果てにある小さな空港だ。ソウル、上海、イスタンブールからのチャーター便がここに降りる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "보거라, 얘야. 동쪽 길 끝의 작은 공항이다. 서울, 상하이, 이스탄불에서 오는 전세기가 여기 내리지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bak evlat: doğu yolunun sonundaki küçük havalimanı. Seul'den, Şanghay'dan, İstanbul'dan charter uçakları buraya iner."
+          }
+        }
+      }
+    },
+    "ctr.cap.scene.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Gäste steigen am Terminal in die Jeeps und fahren über den Feldweg in die Stadt. Das erste Angebot kommt!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The travellers take the jeeps from the terminal along the dirt road into town. The first offer is coming!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los viajeros toman los jeeps en la terminal y llegan al pueblo por el camino de tierra. ¡Llega la primera oferta!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "客はターミナルでジープに乗り、土の道を通って町へ来る。最初の提案が来るぞ！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "손님들은 터미널에서 지프를 타고 흙길로 마을에 온다. 첫 제안이 온다!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolcular terminalden cipe biner, toprak yoldan kasabaya gelir. İlk teklif geliyor!"
+          }
+        }
+      }
+    },
+    "ctr.cap.scene.2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Gruppe fliegt zwei Morgen; an diesen Morgen gehen die Plätze zuerst an sie. Lehnst du ab, schnappt sich ein Konkurrent die Gruppe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The group flies two mornings; on those mornings the seats go to the group first. Turn it down and a rival grabs the group."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El grupo vuela dos mañanas; esas mañanas las plazas van primero al grupo. Si lo rechazas, un rival se lleva al grupo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グループは朝2回飛ぶ。その朝は席がまずグループに回る。断ればライバルがさらっていく。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단체는 이틀 아침을 탄다. 그 아침에는 좌석이 먼저 단체에게 간다. 거절하면 경쟁사가 채 간다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grup iki sabah uçar; o sabahlar koltuklar önce gruba gider. Reddedersen grubu bir rakip kapar."
+          }
+        }
+      }
+    },
+    "ctr.cap.scene.3": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Liefere drei Aufträge sauber ab, dann wirst du ihr bevorzugter Partner und sie kommen öfter. Das ist eine Chance, Kind, keine Pflicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deliver three jobs well and you become their preferred partner; they'll come more often. This is a chance, kid, not a duty."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cumple bien tres trabajos y serás su socio preferido; vendrán más a menudo. Es una oportunidad, muchacho, no una obligación."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3つの仕事をきちんとこなせば優先パートナーになり、もっと来てくれる。これは好機だ、若いの。義務ではない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일 세 건을 잘 해내면 우선 협력사가 되고 더 자주 온다. 이건 기회란다, 얘야. 의무가 아니야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç işi sağlam teslim edersen gözde ortakları olursun, daha sık gelirler. Bu bir fırsat evlat, zorunluluk değil."
+          }
+        }
+      }
+    },
+    "ctr.cap.tag": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charter-Angebot"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charter offer"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oferta de chárter"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チャーターの提案"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전세기 단체 제안"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charter grubu teklifi"
+          }
+        }
+      }
+    },
+    "ctr.cap.where": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug wartet die ganze Buchung über am Flughafen; zieh die Stadt nach rechts, die Oststraße entlang, dann siehst du es. Halte an beiden Morgen genug Ballone startbereit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane waits at the airport for the whole booking; drag the town to the right, along the east road, to see it. Have enough balloons ready on both mornings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El avión espera en el aeropuerto durante toda la reserva; arrastra el pueblo hacia la derecha, por la carretera del este, para verlo. Ten suficientes globos listos las dos mañanas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "予約の間、飛行機は空港で待っている。町を右へ、東の道に沿ってドラッグすれば見える。2回の朝とも十分な気球を飛べる状態に。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예약 기간 내내 비행기는 공항에서 기다려요. 마을을 오른쪽, 동쪽 길을 따라 끌면 보여요. 두 아침 모두 충분한 열기구를 띄울 준비를 해 두세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak anlaşma boyunca havalimanında bekleyecek; kasabayı sağa, doğu yolu boyunca kaydırırsan görürsün. İki sabah da yeterli balonun uçmaya hazır olsun."
+          }
+        }
+      }
+    },
+    "ctr.chen.bye": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pearl Bund macht mit einer anderen Firma weiter. Guten Tag."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pearl Bund is moving on with another company. Good day."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pearl Bund sigue con otra empresa. Buenos días."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パール・バンドは別の会社と続けます。ごきげんよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "펄 번드는 다른 회사와 계속합니다. 좋은 하루 되십시오."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pearl Bund başka bir şirketle devam ediyor. İyi günler."
+          }
+        }
+      }
+    },
+    "ctr.chen.decline": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notiert. Die Gruppe fliegt mit {r}."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noted. The group flies with {r}."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anotado. El grupo volará con {r}."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "記録しました。グループは{r}で飛びます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "기록했습니다. 단체는 {r}와(과) 납니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not ettim. Grup {r} ile uçacak."
+          }
+        }
+      }
+    },
+    "ctr.chen.fail": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Teil meiner Gäste blieb am Boden. Das kommt in den Bericht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some of my travellers stayed on the ground. This goes in the report."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Parte de mis viajeros se quedó en tierra. Esto va al informe."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "お客の一部が地上に残りました。報告書に書きます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "손님 일부가 땅에 남았습니다. 보고서에 들어갑니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolcularımın bir kısmı yerde kaldı. Bu, rapora girer."
+          }
+        }
+      }
+    },
+    "ctr.chen.intro": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ni hao. Chen Hao, Pearl Bund Travel aus Shanghai. Große Gruppen, enge Pläne. Stimmt der Kalender, stimmt das Geschäft."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ni hao. Chen Hao, Pearl Bund Travel from Shanghai. Big groups, tight schedules. If the calendar works, the business works."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ni hao. Chen Hao, de Pearl Bund Travel en Shanghái. Grupos grandes, horarios ajustados. Si el calendario funciona, el negocio funciona."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ニーハオ。上海のパール・バンド・トラベル、チェン・ハオです。大人数、きつい日程。暦が合えば、商売も合う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "니하오. 상하이 펄 번드 트래블의 천하오입니다. 큰 단체, 빡빡한 일정. 일정이 맞으면 일도 맞습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ni hao. Chen Hao, Şanghay'dan Pearl Bund Travel. Büyük gruplar, sıkı program. Takvim tutarsa iş tutar."
+          }
+        }
+      }
+    },
+    "ctr.chen.landed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelandet. Danke fürs Warten; der Plan ist gerettet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Landed. Thank you for waiting; the schedule is saved."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aterrizamos. Gracias por esperar; el programa se ha salvado."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着陸。待ってくれてありがとう。日程は守られました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "착륙했습니다. 기다려 줘서 고맙습니다. 일정을 지켰습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İndik. Beklediğin için teşekkürler; program kurtuldu."
+          }
+        }
+      }
+    },
+    "ctr.chen.late": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug hat Verspätung. Der Tower sagt, es könnte den Morgen schaffen; versprechen kann ich nichts. Du entscheidest."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane is late. The tower says it may make the morning; I can't promise. Your call."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El avión va con retraso. La torre dice que puede llegar a tiempo; no puedo prometerlo. Tú decides."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機が遅れています。管制塔は朝に間に合うかもと言いますが、約束はできません。判断はあなたに。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기가 지연됐습니다. 관제탑은 아침에 맞출 수도 있다지만 장담은 못 합니다. 결정은 당신 몫입니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak rötarlı. Kule sabaha yetişebilir diyor, söz veremem. Karar senin."
+          }
+        }
+      }
+    },
+    "ctr.chen.lostPref": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich nehme dich von der Spitze meiner Liste. Vorerst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'm taking you off the top of my list. For now."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Te saco del primer puesto de mi lista. Por ahora."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リストの一番上から外します。今のところは。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "목록 맨 위에서 빼겠습니다. 당분간은."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listemin başından çıkarıyorum. Şimdilik."
+          }
+        }
+      }
+    },
+    "ctr.chen.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chen Hao"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chen Hao"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chen Hao"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チェン・ハオ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "천하오"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chen Hao"
+          }
+        }
+      }
+    },
+    "ctr.chen.negOk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hm. Einverstanden: {p} pro Kopf. Aber Pünktlichkeit ist Pflicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hmm. Agreed: {p} a head. But punctuality is a must."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mmm. De acuerdo: {p} por cabeza. Pero la puntualidad es obligatoria."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ふむ。了解、1人{p}。ただし時間厳守で。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "흠. 좋습니다, 1인당 {p}. 단, 시간 엄수입니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hmm. Kabul: kişi başı {p}. Ama dakiklik şart."
+          }
+        }
+      }
+    },
+    "ctr.chen.negWalk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Zahlen passen nicht. Ich habe mit {r} abgeschlossen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The numbers don't work. I've signed with {r}."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los números no cuadran. He cerrado con {r}."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "数字が合いません。{r}と契約しました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "숫자가 안 맞습니다. {r}와(과) 계약했습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rakam tutmuyor. {r} ile anlaştım."
+          }
+        }
+      }
+    },
+    "ctr.chen.noShow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht geschafft. Die Gruppe fliegt morgen; für die leeren Plätze zahle ich Entschädigung, so ist die Abmachung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It didn't make it. The group flies tomorrow; I pay compensation for the empty seats, that's the deal."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No ha llegado. El grupo vuela mañana; pago la compensación por las plazas vacías, así es el trato."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "間に合いませんでした。グループは明日。空席分は補償します。そういう契約です。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "못 맞췄습니다. 단체는 내일 탑니다. 빈 좌석은 보상합니다. 계약이 그렇습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yetişemedi. Grup yarın uçar; boş koltukların tazminatını öderim, anlaşma böyle."
+          }
+        }
+      }
+    },
+    "ctr.chen.offer": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tag {d}–{e}: zwei Morgen, jeden Morgen {n} Leute. {p} pro Kopf. Die Zahlen sind klar."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Days {d}–{e}: two mornings, {n} people each morning. {p} a head. The numbers are clear."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días {d}–{e}: dos mañanas, {n} personas cada mañana. {p} por cabeza. Los números están claros."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{d}〜{e}日目：朝2回、毎朝{n}人。1人{p}。数字は明確です。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{d}~{e}일차: 이틀 아침, 매일 아침 {n}명. 1인당 {p}. 숫자는 분명합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gün {d}–{e}: iki sabah, her sabah {n} kişi. Kişi başı {p}. Rakamlar net."
+          }
+        }
+      }
+    },
+    "ctr.chen.onTime": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist pünktlich gelandet. {n} Gäste bereit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane landed right on time. {n} travellers ready."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El avión aterrizó puntual. {n} viajeros listos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機は定刻に着きました。{n}人、準備完了。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기가 정시에 착륙했습니다. {n}명 준비 완료."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak tam vaktinde indi. {n} yolcu hazır."
+          }
+        }
+      }
+    },
+    "ctr.chen.openOk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Richtige Entscheidung: Das Flugzeug landet am Nachmittag. Die Gruppe fliegt morgen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The right call: the plane lands in the afternoon. The group flies tomorrow."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Decisión correcta: el avión aterriza por la tarde. El grupo vuela mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "正しい判断です。着陸は午後。グループは明日飛びます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "옳은 판단입니다. 비행기는 오후에 착륙합니다. 단체는 내일 탑니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Doğru karar: uçak öğleden sonra iniyor. Grup yarın uçar."
+          }
+        }
+      }
+    },
+    "ctr.chen.pref": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drei Aufträge, alle drei pünktlich. Du bist jetzt mein bevorzugter Partner: Ich komme öfter, und der Preis steigt etwas."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three jobs, all three on time. You're my preferred partner now: I'll come more often, and the price goes up a little."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tres trabajos, los tres puntuales. Ahora eres mi socio preferido: vendré más a menudo y el precio sube un poco."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3回とも時間通り。これからは優先パートナーです。もっと来ます。価格も少し上げます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세 번 모두 정시. 이제 우선 협력사입니다. 더 자주 오고, 가격도 조금 올립니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç iş, üçü de tam vaktinde. Artık gözde ortağımsın: daha sık geleceğim, fiyat biraz yukarı."
+          }
+        }
+      }
+    },
+    "ctr.chen.promise": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drei Aufträge pünktlich, dann stehst du ganz oben auf meiner Liste: öfter Arbeit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three jobs on schedule and you go to the top of my list: more work, more often."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tres trabajos a tiempo y te pongo el primero de mi lista: más trabajo, más a menudo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3回予定通りなら、リストの一番上に載せます。仕事が増えます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세 번 일정대로 하면 제 목록 맨 위에 올리겠습니다. 일이 더 자주 갑니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç iş takvime uyarsa seni listemin başına yazarım: daha sık iş."
+          }
+        }
+      }
+    },
+    "ctr.chen.redSkip": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rote Flagge. Ich stelle das Programm auf eine Wanderung im Ihlara-Tal um; heute zählt nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red flag. I'm switching the programme to a walk in the Ihlara Valley; today doesn't count."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bandera roja. Cambio el programa por una caminata en el valle de Ihlara; hoy no cuenta."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "赤旗。予定をウフララ渓谷のハイキングに変えます。今日はカウントしません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빨간 깃발. 일정을 으흘라라 계곡 트레킹으로 바꿉니다. 오늘은 안 칩니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kırmızı bayrak. Programı Ihlara Vadisi yürüyüşüne çeviriyorum; bugün sayılmaz."
+          }
+        }
+      }
+    },
+    "ctr.chen.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chen"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chen"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チェン"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "천하오"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chen"
+          }
+        }
+      }
+    },
+    "ctr.chen.stranded": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist gelandet, keine Plätze. Ein Tag Hotelkosten, auf meine Rechnung. Notiert."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane landed, no seats. A day of hotel bills, on me. Noted."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El avión aterrizó y no hay plazas. Un día de hotel, a mi cuenta. Anotado."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着陸したのに席がない。ホテル1泊分は私持ち。記録しました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "착륙했는데 좌석이 없습니다. 하루 호텔비는 제가 냅니다. 기록해 두죠."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak indi, koltuk yok. Bir günlük otel parası benden çıktı. Not ettim."
+          }
+        }
+      }
+    },
+    "ctr.chen.thanks": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Plan lief perfekt. Danke."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The schedule ran perfectly. Thank you."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El programa funcionó a la perfección. Gracias."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "日程は完璧に進みました。ありがとう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "일정이 완벽하게 돌아갔습니다. 감사합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Program kusursuz işledi. Teşekkürler."
+          }
+        }
+      }
+    },
+    "ctr.chen.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gründer von Pearl Bund Travel, Shanghai"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Founder of Pearl Bund Travel, Shanghai"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fundador de Pearl Bund Travel, Shanghái"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "パール・バンド・トラベル創業者（上海）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "펄 번드 트래블 창업자, 상하이"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pearl Bund Travel kurucusu, Şanghay"
+          }
+        }
+      }
+    },
+    "ctr.chen.today": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist gelandet, auf die Minute. {n} Gäste bereit."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane has landed, right on time. {n} travellers ready."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El avión ha aterrizado, en punto. {n} viajeros listos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機は定刻に着陸。{n}人、準備完了。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기 정시 착륙. {n}명 준비 완료."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak indi, saat tam. {n} yolcu hazır."
+          }
+        }
+      }
+    },
+    "ctr.chen.warn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Shanghai ist Nebel. Das Flugzeug kommt morgen vielleicht zu spät; morgen früh wissen wir mehr."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "There's fog in Shanghai. The plane may be late tomorrow; it will be clear in the morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hay niebla en Shanghái. El avión puede llegar tarde mañana; por la mañana se sabrá."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "上海で霧です。明日は遅れるかもしれません。朝にはっきりします。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "상하이에 안개가 꼈습니다. 내일 비행기가 늦을 수 있습니다. 아침에 확실해집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şanghay'da sis var. Uçak yarın gecikebilir; sabah netleşir."
           }
         }
       }
@@ -18652,6 +20169,867 @@
           "stringUnit": {
             "state": "translated",
             "value": "Grup rakibe gider"
+          }
+        }
+      }
+    },
+    "ctr.delay.chance": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chance, dass es den Morgen schafft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "chance it makes the morning"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "probabilidad de llegar por la mañana"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "朝に間に合う見込み"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아침에 도착할 확률"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sabaha yetişme ihtimali"
+          }
+        }
+      }
+    },
+    "ctr.delay.groupSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Personen · Chartergruppe · %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "people · charter group · %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "personas · grupo chárter · %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "人 · チャーター団体 · %@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "명 · 전세기 단체 · %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "kişi · charter grubu · %@"
+          }
+        }
+      }
+    },
+    "ctr.delay.hold": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plätze freihalten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keep the seats"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar las plazas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "席を取っておく"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "좌석 지키기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koltukları beklet"
+          }
+        }
+      }
+    },
+    "ctr.delay.holdHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Schafft es das Flugzeug, fliegt die Gruppe heute. Wenn nicht, fliegen %1$@ Plätze leer und die Gruppe rückt auf morgen; die Agentur zahlt %2$@ pro Platz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If it makes it, the group flies today. If not, %1$@ seats fly empty and the group moves to tomorrow; the agency pays %2$@ per seat."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si llega, el grupo vuela hoy. Si no, %1$@ plazas vuelan vacías y el grupo pasa a mañana; la agencia paga %2$@ por plaza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "間に合えばグループは今日飛ぶ。間に合わなければ%1$@席が空のまま飛び、グループは明日へ。代理店が1席%2$@払う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "도착하면 단체는 오늘 탑니다. 못 오면 %1$@석이 빈 채로 뜨고 단체는 내일로 밀리며, 여행사가 좌석당 %2$@를 냅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yetişirse grup bugün uçar. Yetişmezse %1$@ koltuk boş kalkar, grup yarına kayar; acenta koltuk başı %2$@ öder."
+          }
+        }
+      }
+    },
+    "ctr.delay.noShowEvent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verspätung: Die Gruppe von %1$@ kam nicht, ihre Plätze flogen leer. Leere Plätze: %2$@. Entschädigung der Agentur: %3$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delay: the %1$@ group didn't come and its seats flew empty. Empty seats: %2$@. The agency's compensation: %3$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retraso: el grupo de %1$@ no llegó y sus plazas volaron vacías. Plazas vacías: %2$@. Compensación de la agencia: %3$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遅延：%1$@のグループは来ず、席は空のまま飛んだ。空席：%2$@。代理店の補償：%3$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지연: %1$@ 단체가 오지 않아 좌석이 빈 채로 떴습니다. 빈 좌석: %2$@. 여행사 보상금: %3$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rötar: %1$@ grubu gelmedi, koltukları boş kalktı. Boş koltuk: %2$@. Acentanın tazminatı: %3$@."
+          }
+        }
+      }
+    },
+    "ctr.delay.open": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Auf den Markt bringen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Put them on the market"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sacarlas al mercado"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "市場に出す"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시장에 내놓기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pazara aç"
+          }
+        }
+      }
+    },
+    "ctr.delay.openHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Plätze werden heute normal verkauft, die Gruppe rückt auf morgen. Schafft es das Flugzeug doch, wartet die Gruppe umsonst: Das Vertrauen sinkt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The seats sell as usual today and the group moves to tomorrow. If the plane makes it after all, the group waits for nothing: trust drops."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las plazas se venden hoy como siempre y el grupo pasa a mañana. Si el avión llega al final, el grupo espera para nada: baja la confianza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "席は今日いつも通り売れ、グループは明日へ。もし間に合ったら、グループは無駄に待つことに：信頼が下がる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "좌석은 오늘 평소처럼 팔리고 단체는 내일로 밀립니다. 그래도 비행기가 도착하면 단체는 헛되이 기다리게 되어 신뢰가 떨어집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koltuklar bugün normal satılır, grup yarına kayar. Uçak yine de yetişirse grup boşuna bekler: güven azalır."
+          }
+        }
+      }
+    },
+    "ctr.delay.priceNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verspätung: %1$@ Plätze bleiben für die Chartergruppe frei; die Agentur zahlt %2$@ pro Platz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delay: %1$@ seats wait empty for the charter group; the agency pays %2$@ per seat."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retraso: %1$@ plazas esperan vacías al grupo chárter; la agencia paga %2$@ por plaza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遅延：%1$@席がチャーター団体のために空いている。代理店が1席%2$@払う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지연: %1$@석이 전세기 단체를 위해 비어 있습니다. 여행사가 좌석당 %2$@를 냅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rötar: %1$@ koltuk charter grubu için boş bekliyor; acenta koltuk başı %2$@ öder."
+          }
+        }
+      }
+    },
+    "ctr.delay.res.groupFlies": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Gruppe fliegt: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The group flies: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El grupo vuela: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グループの飛行日：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단체 비행일: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grup şu günlerde uçar: %@."
+          }
+        }
+      }
+    },
+    "ctr.delay.res.landed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Gruppe fliegt heute. Personen: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The group flies today. People: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El grupo vuela hoy. Personas: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グループは今日飛ぶ：%@人。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단체는 오늘 탑니다: %@명."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grup bugün uçuyor: %@ kişi."
+          }
+        }
+      }
+    },
+    "ctr.delay.res.landed2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Morgen fliegen sie auch; die Plätze gehen zuerst an sie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "They fly tomorrow too; the seats go to them first."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mañana también vuelan; las plazas son primero para ellos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "明日も飛ぶ。席はまず彼らに。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내일도 탑니다. 좌석은 먼저 그들에게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yarın da uçacaklar; koltuklar önce onlara."
+          }
+        }
+      }
+    },
+    "ctr.delay.res.market": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Plätze sind heute auf dem Markt; die Gruppe fliegt: %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The seats are on the market today; the group flies: %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las plazas están hoy en el mercado; el grupo vuela: %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "席は今日は市場へ。グループの飛行日：%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "좌석은 오늘 시장에 나갑니다. 단체 비행일: %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Koltuklar bugün pazarda; grup şu günlerde uçar: %@."
+          }
+        }
+      }
+    },
+    "ctr.delay.res.noShow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heute fliegen %1$@ Plätze leer; die Agentur zahlt %2$@ pro Platz."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Today %1$@ seats fly empty; the agency pays %2$@ per seat."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy %1$@ plazas vuelan vacías; la agencia paga %2$@ por plaza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今日は%1$@席が空のまま飛ぶ。代理店が1席%2$@払う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "오늘 %1$@석이 빈 채로 뜹니다. 여행사가 좌석당 %2$@를 냅니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bugün %1$@ koltuk boş kalkacak, acenta koltuk başı %2$@ öder."
+          }
+        }
+      }
+    },
+    "ctr.delay.res.openOk2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Niemand hat etwas verloren."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nobody lost anything."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nadie perdió nada."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "誰も損をしていない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아무도 손해 보지 않았습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kimse bir şey kaybetmedi."
+          }
+        }
+      }
+    },
+    "ctr.delay.res.stranded2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ vertraut dir etwas weniger."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ trusts you a little less."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ confía un poco menos en ti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@の信頼が少し下がった。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@의 신뢰가 조금 떨어졌습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ sana biraz daha az güveniyor."
+          }
+        }
+      }
+    },
+    "ctr.delay.result.landed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist gelandet!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane landed!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡El avión aterrizó!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機が着いた！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기 착륙!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak indi!"
+          }
+        }
+      }
+    },
+    "ctr.delay.result.noShow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug hat es nicht geschafft"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane didn't make it"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El avión no llegó a tiempo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機は間に合わなかった"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기가 못 왔다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak yetişmedi"
+          }
+        }
+      }
+    },
+    "ctr.delay.result.stranded": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelandet, keine Plätze"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Landed, no seats"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aterrizó, sin plazas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着陸したが席がない"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "착륙했지만 좌석이 없다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak indi, koltuk yok"
+          }
+        }
+      }
+    },
+    "ctr.delay.ruleSuffix": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hat das Flugzeug Verspätung, kann sich die Gruppe um einen Tag verschieben."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If the plane is late, the group may move a day."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si el avión se retrasa, el grupo puede pasar al día siguiente."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機が遅れたら、グループは1日ずれることがある。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기가 지연되면 단체가 하루 밀릴 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak rötar yaparsa grup bir gün kayabilir."
+          }
+        }
+      }
+    },
+    "ctr.delay.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug hat Verspätung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane is late"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El avión va con retraso"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機が遅延"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기 지연"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak rötarlı"
+          }
+        }
+      }
+    },
+    "ctr.delay.warnEvent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verspätungsnachricht, %1$@: „%2$@“ Morgen früh wissen wir mehr."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delay news, %1$@: “%2$@” It will be clear in the morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aviso de retraso, %1$@: «%2$@» Por la mañana se sabrá."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遅延の知らせ、%1$@：「%2$@」朝にはっきりする。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지연 소식, %1$@: “%2$@” 아침에 확실해집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rötar haberi, %1$@: “%2$@” Sabah netleşir."
           }
         }
       }
@@ -21731,6 +24109,949 @@
         }
       }
     },
+    "ctr.jiwoo.bye": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haneul Wings fliegt mit einer anderen Firma. Auf Wiedersehen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haneul Wings will fly with another company. Goodbye."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haneul Wings volará con otra empresa. Adiós."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハヌル・ウィングスは別の会社と飛びます。さようなら。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하늘 윙스는 다른 회사와 날 거예요. 안녕히."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haneul Wings başka bir şirketle uçacak. Hoşça kal."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.decline": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verstehe, nächstes Mal! {r} nimmt diese Gruppe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I see, next time! {r} takes this group."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entiendo, ¡otra vez será! {r} se queda con este grupo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "わかりました、また今度！このグループは{r}に。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "알겠어요, 다음에요! 이 단체는 {r}에 넘길게요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anladım, başka sefere! Bu grubu {r} alır."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.fail": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Teil meiner Gäste konnte nicht fliegen. Sie waren so traurig, und ich auch."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some of my travellers couldn't fly. They were so sad, and so am I."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algunos de mis viajeros no pudieron volar. Se pusieron muy tristes, y yo también."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "お客さんの一部が乗れませんでした。みんな悲しんで、私もです。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "손님 몇 명이 못 탔어요. 다들 너무 속상해했고, 저도요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolcularımın bir kısmı uçamadı. Çok üzüldüler, ben de."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.intro": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annyeong! Ich bin Han Ji-woo von Haneul Wings aus Seoul. Meine Gäste haben Kappadokiens Ballone in Serien gesehen, jetzt wollen sie selbst fliegen!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annyeong! I'm Han Ji-woo, Haneul Wings from Seoul. My travellers saw Cappadocia's balloons in the dramas, and now they want to fly themselves!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Annyeong! Soy Han Ji-woo, de Haneul Wings en Seúl. Mis viajeros vieron los globos de Capadocia en las series y ahora quieren volar ellos mismos."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アンニョン！ソウルのハヌル・ウィングス、ハン・ジウです。お客さんがドラマでカッパドキアの気球を見て、自分でも乗りたいって！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안녕하세요! 서울 하늘 윙스의 한지우예요. 손님들이 드라마에서 카파도키아 열기구를 보고, 이제 직접 타 보고 싶대요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Annyeong! Ben Han Ji-woo, Seul'den Haneul Wings. Yolcularım Kapadokya balonlarını dizilerde gördü, şimdi kendileri uçmak istiyor!"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.landed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelandet! Vielen Dank, dass du die Plätze freigehalten hast. Meine Gäste steigen in die Jeeps!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We've landed! Thank you so much for keeping the seats. My travellers are getting into the jeeps!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Hemos aterrizado! Muchas gracias por guardar las plazas. ¡Mis viajeros ya suben a los jeeps!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着きました！席を待っていてくれて本当にありがとう。お客さんがジープに乗ってます！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "착륙했어요! 좌석을 지켜 줘서 정말 고마워요. 손님들이 지프에 타고 있어요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İndik! Koltukları beklettiğin için çok teşekkürler. Yolcularım cipe biniyor!"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.late": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist noch in der Luft! Vielleicht schafft es den Morgen, vielleicht nicht. Was machen wir?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane is still in the air! It may make the morning, or it may not. What shall we do?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡El avión sigue en el aire! Puede que llegue a tiempo por la mañana, o puede que no. ¿Qué hacemos?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機はまだ空の上！朝に間に合うかもしれないし、間に合わないかも。どうしましょう？"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기가 아직 하늘에 있어요! 아침에 맞출 수도, 못 맞출 수도 있어요. 어떡하죠?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak hâlâ havada! Sabaha yetişebilir de, yetişmeyebilir de. Ne yapalım?"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.lostPref": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich arbeite eine Weile auch mit anderen Firmen. Ich bin gekränkt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'll work with other companies too for a while. I'm hurt."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante un tiempo trabajaré también con otras empresas. Estoy dolida."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しばらく他の会社とも組みます。傷つきました。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한동안 다른 회사들과도 일할게요. 서운해요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir süre başka şirketlerle de çalışacağım. Kırgınım."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Han Ji-woo"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Han Ji-woo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Han Ji-woo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハン・ジウ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한지우"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Han Ji-woo"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.negOk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayy, hart verhandelt! Okay: {p} pro Kopf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayy, tough bargaining! Okay: {p} a head."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Ay, qué regateo! Vale: {p} por cabeza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あいやー、手強い！わかりました、1人{p}。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아이고, 흥정 세다! 좋아요, 1인당 {p}."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayy, sıkı pazarlık! Tamam: kişi başı {p}."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.negWalk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das sprengt mein Budget, tut mir leid. {r} fliegt die Gruppe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "That's over my budget, sorry. {r} will fly the group."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eso supera mi presupuesto, lo siento. {r} llevará al grupo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "予算オーバーです、ごめんなさい。グループは{r}が飛ばします。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "예산을 넘어요, 미안해요. 단체는 {r}이(가) 태울 거예요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu fiyat bütçemi aşıyor, üzgünüm. Grubu {r} uçuracak."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.noShow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es hat nicht gereicht, das Flugzeug landet mittags. Die Gruppe fliegt morgen; die leeren Plätze bezahle ich."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It didn't make it; the plane lands at noon. The group flies tomorrow, and I'll pay for the empty seats."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No ha llegado; el avión aterriza a mediodía. El grupo vuela mañana y yo pago las plazas vacías."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "間に合いませんでした。着陸はお昼です。グループは明日飛びます。空いた席の分は私が払います。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "못 맞췄어요, 비행기가 정오에 착륙해요. 단체는 내일 타고, 빈 좌석 값은 제가 낼게요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yetişemedi, uçak öğlen iniyor. Grup yarın uçar; boş koltukların parasını ben öderim."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.offer": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mein Charterflug landet am Morgen von Tag {d}: zwei Morgen, jeden Morgen {n} Leute. {p} pro Kopf. Einverstanden?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My charter lands on the morning of day {d}: two mornings, {n} people each morning. {p} a head. Okay?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi chárter aterriza la mañana del día {d}: dos mañanas, {n} personas cada mañana. {p} por cabeza. ¿Vale?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "チャーター便は{d}日目の朝に着きます。2回の朝、毎朝{n}人。1人{p}。いいですか？"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "제 전세기는 {d}일차 아침에 도착해요. 이틀 아침, 매일 아침 {n}명. 1인당 {p}. 괜찮죠?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Charter uçağım Gün {d} sabahı iniyor: iki sabah, her sabah {n} kişi. Kişi başı {p}. Olur mu?"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.onTime": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Sorge, unser Flugzeug ist pünktlich gelandet! {n} Gäste sind im Terminal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relax, our plane landed on time! {n} travellers are at the terminal."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Tranquilo, nuestro avión aterrizó a tiempo! {n} viajeros en la terminal."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ご安心を、飛行機は時間通りに着きました！{n}人がターミナルにいます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "걱정 마세요, 비행기 제시간에 착륙했어요! {n}명이 터미널에 있어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rahatla, uçağımız zamanında indi! {n} yolcu terminalde."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.openOk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gut, dass du die Plätze verkauft hast; das Flugzeug landet mittags. Die Gruppe fliegt morgen früh."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good thing you sold the seats; the plane lands at noon. The group flies tomorrow morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menos mal que vendiste las plazas; el avión aterriza a mediodía. El grupo vuela mañana por la mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "席を売っておいてよかった。着陸はお昼です。グループは明日の朝飛びます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "좌석 팔길 잘했어요. 비행기가 정오에 착륙해요. 단체는 내일 아침에 타요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İyi ki koltukları satmışsın, uçak öğlen iniyor. Grup yarın sabah uçar."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.pref": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drei Aufträge, alle drei wunderbar! Du bist jetzt mein bevorzugter Partner: Ich komme öfter und zahle etwas mehr."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three jobs, all three wonderful! You're my preferred partner now: I'll come more often, and pay a bit more."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Tres trabajos, los tres maravillosos! Ahora eres mi socio preferido: vendré más a menudo y pagaré un poco más."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3回とも最高でした！これからはあなたが優先パートナー。もっと来て、少し多めに払いますね。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세 번 다 최고였어요! 이제 우선 협력사예요. 더 자주 오고, 값도 조금 올려 드릴게요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç iş, üçü de harika! Artık gözde ortağımsın: daha sık geleceğim, fiyatı da biraz artırıyorum."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.promise": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mach drei Aufträge schön, dann erzähle ich ganz Seoul von dir und komme öfter!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Do three jobs beautifully and I'll tell everyone in Seoul about you, and come more often!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haz tres trabajos preciosos y le hablaré de ti a todo Seúl, ¡y vendré más a menudo!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3回きれいに決めてくれたら、ソウル中にあなたのことを話して、もっと来ますね！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세 번 멋지게 해 주면 서울 사람들한테 다 소문내고 더 자주 올게요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç işi güzel yaparsan seni Seul'deki herkese anlatırım, daha sık gelirim!"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.redSkip": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rote Flagge! Heute fahre ich mit meinen Gästen nach Derinkuyu; der Tag zählt nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red flag! Today I'm taking my travellers to Derinkuyu; today doesn't count."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Bandera roja! Hoy llevo a mis viajeros a Derinkuyu; hoy no cuenta."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "赤旗！今日はお客さんとデリンクユへ行きます。今日はカウントしません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빨간 깃발! 오늘은 손님들이랑 데린쿠유에 가요. 오늘은 안 쳐요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kırmızı bayrak! Bugün yolcularımla Derinkuyu'ya gidiyoruz, bugünü saymayız."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ji-woo"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ji-woo"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ji-woo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ジウ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지우"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ji-woo"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.stranded": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist gelandet, aber die Plätze sind weg! Meine Gäste warten einen Tag im Hotel."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane landed, but the seats are gone! My travellers will wait a day at the hotel."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡El avión aterrizó, pero las plazas ya no están! Mis viajeros esperarán un día en el hotel."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機は着いたのに、席が埋まってる！お客さんはホテルで1日待つことに。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기는 내렸는데 좌석이 다 찼어요! 손님들은 호텔에서 하루 기다려야 해요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak indi ama koltuklar dolmuş! Yolcularım bir gün otelde bekleyecek."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.thanks": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Fotos meiner Gäste kommen in Seoul super an! Kamsahamnida!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My travellers' photos are a hit in Seoul! Kamsahamnida!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Las fotos de mis viajeros triunfan en Seúl! ¡Kamsahamnida!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "お客さんの写真、ソウルで大人気です！カムサハムニダ！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "손님들 사진이 서울에서 난리예요! 감사합니다!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yolcularımın fotoğrafları Seul'de çok beğenildi! Kamsahamnida!"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhaberin von Haneul Wings, Seoul"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owner of Haneul Wings, Seoul"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dueña de Haneul Wings, Seúl"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハヌル・ウィングス代表（ソウル）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하늘 윙스 대표, 서울"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haneul Wings sahibi, Seul"
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.today": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir sind gelandet! {n} Gäste stehen im Terminal, alle mit dem Handy in der Hand."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We've landed! {n} travellers are at the terminal, phones ready."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Hemos aterrizado! {n} viajeros en la terminal, con el móvil preparado."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着陸しました！{n}人がターミナルで、みんなスマホを構えてます。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "착륙했어요! {n}명이 터미널에 있어요. 다들 휴대폰 준비 완료!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçağımız indi! {n} yolcu terminalde, herkes telefonunu hazırladı."
+          }
+        }
+      }
+    },
+    "ctr.jiwoo.warn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Abflug in Seoul verspätet sich. Mein Flugzeug kommt morgen früh vielleicht zu spät."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The departure from Seoul is delayed. My plane may be late tomorrow morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La salida de Seúl va con retraso. Mi avión puede llegar tarde mañana por la mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ソウル発が遅れています。明日の朝、飛行機が遅れるかもしれません。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "서울 출발이 지연됐어요. 내일 아침 비행기가 늦을 수도 있어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seul'den kalkış rötarlı. Uçağım yarın sabah gecikebilir."
+          }
+        }
+      }
+    },
     "ctr.linda.bye": {
       "extractionState": "manual",
       "localizations": {
@@ -22998,6 +26319,949 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gemi anlaşma boyunca iskelede bağlı duracak; kasabayı sağa, Nil boyunca kaydırırsan görürsün. Her sabah yeterli balonun uçmaya hazır olsun."
+          }
+        }
+      }
+    },
+    "ctr.murat.bye": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mein Bruder, hier trennen sich unsere Wege. Haliç Gündoğumu arbeitet mit einer anderen Firma."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My brother, our roads part here. Haliç Gündoğumu will work with another company."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hermano, aquí se separan nuestros caminos. Haliç Gündoğumu trabajará con otra empresa."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "兄弟、ここでお別れだ。ハリチ・ギュンドウムは別の会社と組む。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "형제, 여기서 갈라서자. 할리치 귄도우무는 다른 회사와 일할 거야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kardeşim, yollarımız ayrılıyor. Haliç Gündoğumu başka şirketle çalışacak."
+          }
+        }
+      }
+    },
+    "ctr.murat.decline": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sollte nicht sein. Diesmal nimmt {r} sie."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Not meant to be. {r} takes them this time."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No estaba escrito. Esta vez se los lleva {r}."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "縁がなかったな。今回は{r}に回す。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인연이 아니었나 보네. 이번엔 {r}이(가) 맡지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kısmet değilmiş. Bu sefer {r} alır."
+          }
+        }
+      }
+    },
+    "ctr.murat.fail": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Teil meiner Gäste blieb am Boden, mein Bruder. Gar nicht schön."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Some of my guests stayed on the ground, my brother. Not nice at all."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Algunos de mis invitados se quedaron en tierra, hermano. Nada bonito."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "客の一部が地上に残ったよ兄弟。まったくいただけない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "손님 몇 명이 땅에 남았어, 형제. 영 좋지 않아."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Misafirlerimin bir kısmı yerde kaldı kardeşim. Hiç hoş olmadı."
+          }
+        }
+      }
+    },
+    "ctr.murat.intro": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hallo, mein Bruder! Murat, Haliç Gündoğumu Turları aus Istanbul. Das „Sonnenaufgangspaket“ ist mein Ding: Morgenflug, Ballon, Frühstück, abends zurück."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hello, my brother! Murat, Haliç Gündoğumu Turları from Istanbul. The \"sunrise package\" is my thing: morning flight, balloon, breakfast, home in the evening."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Hola, hermano! Murat, de Haliç Gündoğumu Turları en Estambul. El «paquete amanecer» es lo mío: vuelo de mañana, globo, desayuno y vuelta por la tarde."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "やあ兄弟！イスタンブールのハリチ・ギュンドウム・トゥルラル、ムラトだ。「日の出パック」が俺の商売：朝の便、気球、朝食、夜に帰る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안녕, 형제! 이스탄불 할리치 귄도우무 투르라르의 무라트야. '해돋이 패키지'가 내 전문이지. 아침 비행기, 열기구, 아침 식사, 저녁 귀가."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Merhaba kardeşim! Murat, İstanbul'dan Haliç Gündoğumu Turları. \"Gün doğumu paketi\" benim işim: sabah uçağı, balon, kahvaltı, akşam dönüş."
+          }
+        }
+      }
+    },
+    "ctr.murat.landed": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gelandet! Du hast die Plätze freigehalten, danke, mein Bruder. Meine Gäste steigen in die Jeeps!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We've landed! You kept the seats, thank you, my brother. My guests are getting into the jeeps!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Aterrizamos! Guardaste las plazas, gracias, hermano. ¡Mis invitados suben a los jeeps!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "着いたぞ！席を待っててくれてありがとうな兄弟。客がジープに乗ってる！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "착륙했어! 좌석 지켜 줘서 고마워, 형제. 손님들이 지프에 타고 있어!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İndik! Koltukları beklettin, sağ ol kardeşim. Misafirlerim cipe biniyor!"
+          }
+        }
+      }
+    },
+    "ctr.murat.late": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unser Flugzeug hat Verspätung, mein Bruder! Schafft es den Morgen? Weiß der Himmel. Was machen wir mit den Plätzen?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Our plane is late, my brother! Will it make the morning? God knows. What shall we do with the seats?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Nuestro avión va con retraso, hermano! ¿Llegará por la mañana? Sabe Dios. ¿Qué hacemos con las plazas?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "俺たちの便が遅れてるんだ兄弟！朝に間に合うか？神のみぞ知る。席はどうする？"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "우리 비행기가 지연됐어, 형제! 아침에 맞출지는 하늘만 알지. 좌석은 어떻게 할까?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçağımız rötarlı kardeşim! Sabaha yetişir mi, Allah bilir. Koltukları ne yapalım?"
+          }
+        }
+      }
+    },
+    "ctr.murat.lostPref": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ich arbeite eine Weile auch mit anderen Firmen. Mein Herz ist gebrochen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "I'll work with other companies too for a while. My heart is broken."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante un tiempo trabajaré también con otras empresas. Tengo el corazón roto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "しばらく他の会社とも組む。心が折れたよ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "한동안 다른 회사들과도 일할 거야. 마음이 상했어."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bir süre başka şirketlerle de çalışacağım. Gönlüm kırık."
+          }
+        }
+      }
+    },
+    "ctr.murat.name": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Murat Bey"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Murat Bey"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Murat Bey"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ムラト・ベイ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "무라트 베이"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Murat Bey"
+          }
+        }
+      }
+    },
+    "ctr.murat.negOk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ohne Feilschen kein Geschäft! Na gut: {p} pro Kopf."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No deal without bargaining anyway! Fine: {p} a head."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Sin regateo no hay negocio! Bueno: {p} por cabeza."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "値切りなしの商売なんてないさ！いいだろう、1人{p}。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "흥정 없는 장사는 없지! 좋아, 1인당 {p}."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pazarlıksız iş olmaz zaten! Peki: kişi başı {p}."
+          }
+        }
+      }
+    },
+    "ctr.murat.negWalk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Geht nicht, mein Bruder, zu dem Preis gibt es kein Paket. Soll {r} sie fliegen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No way, my brother, no package at that price. Let {r} fly them."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Imposible, hermano, a ese precio no sale el paquete. Que los lleve {r}."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "無理だよ兄弟、その値段じゃパックにならない。{r}に飛ばしてもらう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "안 돼, 형제. 그 가격엔 패키지가 안 나와. {r}더러 태우라고 하지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Olmaz kardeşim, bu fiyata paket çıkmaz. {r} uçursun."
+          }
+        }
+      }
+    },
+    "ctr.murat.noShow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nicht geschafft, mein Bruder, die Gruppe fliegt morgen. Die leeren Plätze bezahle ich, nichts für ungut."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We didn't make it, my brother; the group flies tomorrow. I'll pay for the empty seats, no hard feelings."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No llegamos, hermano; el grupo vuela mañana. Yo pago las plazas vacías, sin rencores."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "間に合わなかったよ兄弟、グループは明日だ。空いた席の分は俺が払う。気を悪くしないでくれ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "못 맞췄어, 형제. 단체는 내일 타. 빈 좌석 값은 내가 낼게, 섭섭해하지 마."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yetişemedik kardeşim, grup yarın uçar. Boş koltukların parasını ben veririm, gönlün kalmasın."
+          }
+        }
+      }
+    },
+    "ctr.murat.offer": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mein Flugzeug landet am Morgen von Tag {d}: zwei Morgen, jeden Morgen {n} Leute, {p} pro Kopf. Abgemacht?"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My plane lands on the morning of day {d}: two mornings, {n} people each morning, {p} a head. Deal?"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mi avión aterriza la mañana del día {d}: dos mañanas, {n} personas cada mañana, {p} por cabeza. ¿Trato hecho?"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{d}日目の朝に俺の便が着く。朝2回、毎朝{n}人、1人{p}。決まりか？"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "{d}일차 아침에 내 비행기가 도착해. 이틀 아침, 매일 아침 {n}명, 1인당 {p}. 거래할까?"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gün {d} sabahı uçağım iniyor: iki sabah, her sabah {n} kişi, kişi başı {p}. Anlaştık mı?"
+          }
+        }
+      }
+    },
+    "ctr.murat.onTime": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist pünktlich gelandet, mein Bruder! {n} meiner Gäste sind im Terminal."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane landed right on time, my brother! {n} of my guests are at the terminal."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡El avión aterrizó puntual, hermano! {n} de mis invitados en la terminal."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機は定刻に着いたぞ兄弟！客{n}人がターミナルにいる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기 정시 착륙이야, 형제! 손님 {n}명이 터미널에 있어."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak tam vaktinde indi kardeşim! {n} misafirim terminalde."
+          }
+        }
+      }
+    },
+    "ctr.murat.openOk": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gut, dass du sie verkauft hast; das Flugzeug landet mittags. Die Gruppe fliegt morgen früh, mein Bruder."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Good thing you sold them; the plane lands at noon. The group flies tomorrow morning, my brother."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menos mal que las vendiste; el avión aterriza a mediodía. El grupo vuela mañana por la mañana, hermano."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "売っておいて正解だ。着陸は昼。グループは明日の朝飛ぶよ兄弟。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "팔길 잘했어. 비행기는 정오에 착륙해. 단체는 내일 아침에 타, 형제."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İyi ki satmışsın, uçak öğlen iniyor. Grup yarın sabah uçar kardeşim."
+          }
+        }
+      }
+    },
+    "ctr.murat.pref": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Drei Pakete, alle drei großartig. Du bist jetzt mein bevorzugter Partner: Ich komme öfter und zahle etwas mehr."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Three packages, all three superb. You're my preferred partner now: I'll come more often, and pay a bit more."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tres paquetes, los tres de lujo. Ahora eres mi socio preferido: vendré más a menudo y pagaré un poco más."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3回とも最高だった。これからはお前が優先パートナーだ。もっと来るし、少し多めに払う。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "패키지 세 번 다 최고였어. 이제 우선 협력사야. 더 자주 오고 값도 조금 올려 줄게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç paket, üçü de şahane. Artık gözde ortağımsın: daha sık geleceğim, fiyatı da biraz artırıyorum."
+          }
+        }
+      }
+    },
+    "ctr.murat.promise": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wenn drei Pakete gut laufen, wirst du mein bevorzugter Partner, und ich komme öfter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "If three packages go well, I'll make you my preferred partner and come more often."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si tres paquetes salen bien, te hago mi socio preferido y vengo más a menudo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3回うまくいったら、お前を優先パートナーにして、もっと来るよ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "패키지 세 번이 잘 되면 너를 우선 협력사로 삼고 더 자주 올게."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Üç paket güzel geçerse seni gözde ortağım yaparım, daha sık gelirim."
+          }
+        }
+      }
+    },
+    "ctr.murat.redSkip": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rote Flagge! Ich bringe meine Gäste zu einer Töpferwerkstatt in Avanos; heute zählt nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Red flag! I'm taking my guests to a pottery workshop in Avanos; today doesn't count."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Bandera roja! Llevo a mis invitados a un taller de cerámica en Avanos; hoy no cuenta."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "赤旗だ！客をアヴァノスの陶芸工房に連れて行く。今日はカウントなし。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "빨간 깃발! 손님들을 아바노스 도자기 공방에 데려갈게. 오늘은 안 쳐."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kırmızı bayrak! Misafirlerimi Avanos'a çömlek atölyesine götürüyorum, bugünü saymayız."
+          }
+        }
+      }
+    },
+    "ctr.murat.short": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Murat"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Murat"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Murat"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ムラト"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "무라트"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Murat"
+          }
+        }
+      }
+    },
+    "ctr.murat.stranded": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist gelandet, aber die Plätze sind verkauft! Meine Gäste warten einen Tag im Hotel. Das war nicht in Ordnung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane landed, but the seats are sold! My guests will wait a day at the hotel. That wasn't right."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡El avión aterrizó, pero las plazas están vendidas! Mis invitados esperarán un día en el hotel. Eso no estuvo bien."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機は着いたのに席が売れてる！客はホテルで1日待ちだ。これはないよ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기는 내렸는데 좌석이 팔렸잖아! 손님들은 호텔에서 하루 기다려야 해. 이건 아니지."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak indi ama koltuklar satılmış! Misafirlerim bir gün otelde bekleyecek. Olmadı bu."
+          }
+        }
+      }
+    },
+    "ctr.murat.thanks": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meine Gäste reden im Rückflug immer noch vom Ballon. Gut gemacht!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "My guests are still talking about the balloon on the flight home. Well done!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mis invitados siguen hablando del globo en el vuelo de vuelta. ¡Bien hecho!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "客は帰りの便でもまだ気球の話をしてる。いい仕事だ！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "손님들이 돌아가는 비행기에서도 열기구 얘기뿐이야. 수고했어!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Misafirlerim dönüş uçağında hâlâ balonu konuşuyor. Eline sağlık!"
+          }
+        }
+      }
+    },
+    "ctr.murat.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhaber von Haliç Gündoğumu Turları, Istanbul"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Owner of Haliç Gündoğumu Turları, Istanbul"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dueño de Haliç Gündoğumu Turları, Estambul"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ハリチ・ギュンドウム・トゥルラル社長（イスタンブール）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "할리치 귄도우무 투르라르 대표, 이스탄불"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Haliç Gündoğumu Turları sahibi, İstanbul"
+          }
+        }
+      }
+    },
+    "ctr.murat.today": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Flugzeug ist gelandet, mein Bruder! {n} meiner Gäste wollen vor dem Frühstück am Himmel sein."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The plane has landed, my brother! {n} of my guests want to be in the sky before breakfast."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡El avión ha aterrizado, hermano! {n} de mis invitados quieren estar en el cielo antes del desayuno."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛行機が着いたぞ兄弟！客{n}人、朝飯の前に空へ上がりたいってさ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "비행기 도착했어, 형제! 손님 {n}명이 아침 먹기 전에 하늘에 오르고 싶대."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçak indi kardeşim! {n} misafirim kahvaltıdan önce gökyüzünde olmak istiyor."
+          }
+        }
+      }
+    },
+    "ctr.murat.warn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In Istanbul ist der Luftverkehr dicht. Mein Flugzeug kommt morgen früh vielleicht zu spät."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Air traffic in Istanbul is jammed. My plane may be late tomorrow morning."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El tráfico aéreo en Estambul está atascado. Mi avión puede llegar tarde mañana por la mañana."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "イスタンブールの空が混んでる。明日の朝、俺の便は遅れるかもしれない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이스탄불 하늘길이 꽉 막혔어. 내일 아침 내 비행기가 늦을 수도 있어."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İstanbul'da hava trafiği sıkışık. Uçağım yarın sabah gecikebilir."
           }
         }
       }
@@ -25878,37 +30142,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aufträge: %1$@/%2$@ · beim 3. bevorzugt"
+            "value": "Aufträge mit %1$@: %2$@/%3$@ · beim 3. bevorzugt"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jobs done: %1$@/%2$@; the third makes you the preferred operator"
+            "value": "Jobs done with %1$@: %2$@/%3$@ · the third makes you their preferred operator"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Trabajos: %1$@/%2$@ · al 3.º, preferido"
+            "value": "Trabajos con %1$@: %2$@/%3$@ · al 3.º, preferido"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "成功した仕事：%1$@/%2$@。3回目で優先業者に"
+            "value": "%1$@との成功した仕事：%2$@/%3$@。3回目で優先業者に"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "성공한 일: %1$@/%2$@, 세 번째에 우선 협력사"
+            "value": "%1$@와(과) 성공한 일: %2$@/%3$@, 세 번째에 우선 협력사"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Başarılı iş: %1$@/%2$@ · üçüncüsünde gözde ortağı olursun"
+            "value": "%1$@ ile başarılı iş: %2$@/%3$@ · üçüncüsünde gözde ortağı olursun"
           }
         }
       }
@@ -42032,37 +46296,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vollständig geflogene Tourgruppen: %@"
+            "value": "Vollständig geflogene Tourgruppen insgesamt: %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tour groups flown in full: %@"
+            "value": "Total tour groups flown in full: %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grupos turísticos completados: %@"
+            "value": "Total de grupos turísticos completados: %@"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "全員を飛ばしたツアーグループ：%@"
+            "value": "全員を飛ばしたツアーグループ（合計）：%@"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "전원 태운 투어 단체: %@"
+            "value": "전원 태운 투어 단체(합계): %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eksiksiz uçurulan tur grubu: %@"
+            "value": "Toplam eksiksiz uçurulan tur grubu: %@"
           }
         }
       }
@@ -42073,37 +46337,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vollständig geflogene Wochenendgruppen: %@"
+            "value": "Vollständig geflogene Wochenendgruppen insgesamt: %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Weekend groups flown in full: %@"
+            "value": "Total weekend groups flown in full: %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grupos de fin de semana completados: %@"
+            "value": "Total de grupos de fin de semana completados: %@"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "全員を飛ばした週末グループ：%@"
+            "value": "全員を飛ばした週末グループ（合計）：%@"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "전원 태운 주말 단체: %@"
+            "value": "전원 태운 주말 단체(합계): %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eksiksiz uçurulan hafta sonu grubu: %@"
+            "value": "Toplam eksiksiz uçurulan hafta sonu grubu: %@"
           }
         }
       }
@@ -42114,37 +46378,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vollständig geflogene Schiffsgruppen: %@"
+            "value": "Vollständig geflogene Schiffsgruppen insgesamt: %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cruise groups flown in full: %@"
+            "value": "Total cruise groups flown in full: %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Grupos de crucero completados: %@"
+            "value": "Total de grupos de crucero completados: %@"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "全員を飛ばしたクルーズグループ：%@"
+            "value": "全員を飛ばしたクルーズグループ（合計）：%@"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "전원 태운 크루즈 단체: %@"
+            "value": "전원 태운 크루즈 단체(합계): %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eksiksiz uçurulan gemi grubu: %@"
+            "value": "Toplam eksiksiz uçurulan gemi grubu: %@"
           }
         }
       }
@@ -42161,7 +46425,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tour groups flown in full, any company: %@"
+            "value": "Total tour groups flown in full (all companies): %@"
           }
         },
         "es": {
@@ -42185,7 +46449,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eksiksiz uçurulan tur grubu (tüm şirketler): %@"
+            "value": "Toplam eksiksiz uçurulan tur grubu (bütün şirketler): %@"
           }
         }
       }
@@ -42202,7 +46466,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Weekend groups flown in full, any company: %@"
+            "value": "Total groups flown in full (all companies): %@"
           }
         },
         "es": {
@@ -42226,7 +46490,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eksiksiz uçurulan grup (tüm şirketler): %@"
+            "value": "Toplam eksiksiz uçurulan grup (bütün şirketler): %@"
           }
         }
       }
@@ -42243,7 +46507,7 @@
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cruise groups flown in full, any company: %@"
+            "value": "Total groups flown in full (all companies): %@"
           }
         },
         "es": {
@@ -42267,7 +46531,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Eksiksiz uçurulan grup (tüm şirketler): %@"
+            "value": "Toplam eksiksiz uçurulan grup (bütün şirketler): %@"
           }
         }
       }
@@ -65150,6 +69414,47 @@
         }
       }
     },
+    "ledger.contractWait": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Verspätungsentschädigung (leere Plätze)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Delay compensation (empty seats)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compensación por retraso (plazas vacías)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "遅延補償（空席）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지연 보상(빈 좌석)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rötar tazminatı (boş koltuklar)"
+          }
+        }
+      }
+    },
     "ledger.evening": {
       "extractionState": "manual",
       "localizations": {
@@ -77610,6 +81915,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@ otobüs yolcusu %2$@ sepetlerinde."
+          }
+        }
+      }
+    },
+    "paper.rivalGroup.sub.plane": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ Chartergäste in den Körben von %2$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ charter passengers in the baskets of %2$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ pasajeros chárter en las cestas de %2$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%2$@のバスケットにチャーター客%1$@人。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%2$@의 바스켓에 전세기 손님 %1$@명."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ charter yolcusu %2$@ sepetlerinde."
           }
         }
       }
@@ -93928,6 +98274,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Yeni şölene kalan gün: %@"
+          }
+        }
+      }
+    },
+    "sign.shuttle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BALLON-\nSHUTTLE"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BALLOON\nSHUTTLE"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TRASLADO\nGLOBOS"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "気球\nシャトル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구\n셔틀"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "BALON\nSERVİSİ"
           }
         }
       }
