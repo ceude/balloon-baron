@@ -8214,7 +8214,7 @@ const bundleWorth = () => !owned('founder') && !owned('supporter') && bundleOff(
 const decorN = () => DECOR.filter(owned).length;
 /* Purchase sheet (prototype stand-in for the store's own payment sheet). */
 /* A live picture of the town at night with this decoration, for the shop card. Runs while the canvas is on screen. */
-const DECOR_AT = { fountain: [8, 8, .55], statue: [6.9, 8.9, .6], lanterns: [7.4, 7.6, .3], flags: [7.5, 9, .26], pigeons: [7.5, 3.5, .3, 1], arch: [7.45, 15.35, .75], cafe: [14.9, 1.1, .7], rugs: [9.8, 0.9, .75] };
+const DECOR_AT = { fountain: [8, 8, .55], statue: [6.9, 8.9, .6], lanterns: [7.4, 7.6, .3], flags: [7.5, 9, .26], pigeons: [7.5, 3.5, .3, 1], arch: [8, 15.57, .75], cafe: [14.9, 1.1, .7], rugs: [9.8, 0.9, .75] };
 function nightPreview(k, cv) {
   const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1), w = r.width, hh = r.height; if (!w) return;
   cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr);
@@ -9655,7 +9655,9 @@ function decoPlaque(p) {
   ctx.fillStyle = '#c2401f'; ctx.beginPath(); ctx.arc(p[0] - 1.6, p[1] - 31, 1.8, 0, 7); ctx.arc(p[0] + 1.6, p[1] - 31, 1.8, 0, 7); ctx.fill(); ctx.beginPath(); ctx.moveTo(p[0] - 3.3, p[1] - 30.4); ctx.lineTo(p[0], p[1] - 27); ctx.lineTo(p[0] + 3.3, p[1] - 30.4); ctx.fill();
   ctx.fillStyle = '#5a3a10'; ctx.font = '700 4.5px Barlow, sans-serif'; ctx.textAlign = 'center'; let fs = 4.5; const nm = S.company || ''; while (ctx.measureText(nm).width > 26 && fs > 2.5) { fs -= .25; ctx.font = `700 ${fs}px Barlow, sans-serif`; } ctx.fillText(nm, p[0], p[1] - 22.5); ctx.textAlign = 'left';
 }
-const ARCHES = [[[6.75, 15.35], [8.15, 15.35], 23.2], [[15.35, 6.75], [15.35, 8.15], 23.2]], CAFE_AT = [14.9, 1.1], RUGS_AT = [2.5, 0.35]; /* the kilims hang on the town wall behind the hangar, where nothing hides them */
+/* v125.x: the arches stand in the gaps of the town wall where the main roads leave: each post sits on the wall's line
+   (its middle, 15.57) flush against a wall end (the gap runs WALL_GAP, 7.3–8.7), outside the road's edges (7.55–8.45) */
+const ARCHES = [[[7.37, 15.57], [8.63, 15.57], 23.2], [[15.57, 7.37], [15.57, 8.63], 23.2]], CAFE_AT = [14.9, 1.1], RUGS_AT = [2.5, 0.35]; /* the kilims hang on the town wall behind the hangar, where nothing hides them */
 /* v113 decorations. Each draws round a ground point p (screen units); iu/iv step one tile along the two grid axes. */
 const iu = (p, u, v) => [p[0] + (u - v) * TW / 2, p[1] + (u + v) * TH / 2];
 /* a flock of pigeons wheeling over the town, the way they circle Cappadocia's dovecotes */
@@ -10103,12 +10105,16 @@ function outerLandmark(x, y, hh, i) {
   chimney(x, y, hh * .42, hh, '#efc79e', '#c69068', '#6a4430');
 }
 /* A low tuff wall round the town with gaps where the roads leave. */
+const WALL_GAP = [7.3, 8.7];
 function townWall() {
   const items = [], H = 16, T0 = -.5, T1 = 15.5, th = .14;
   const bri = S.region === 'bri'; /* v124.1: a low brick wall with a stone coping */
   const seg = (gx, gy, w, d) => items.push({ depth: gx + w + gy + d - .5, draw: () => bri ? block(gx, gy, w, d, 11, { top: '#cfc6b4' }) : block(gx, gy, w, d, H, { courses: false, top: '#f3dcb8' }) });
-  for (let x = T0; x < T1; x += 1) { const w = Math.min(1, T1 - x); if (x + w > 7.55 && x < 8.45) continue; seg(x, T0 - th, w, th); seg(x, T1, w, th); }
-  for (let y = T0; y < T1; y += 1) { const d = Math.min(1, T1 - y); if (y + d > 7.55 && y < 8.45) continue; seg(T0 - th, y, th, d); seg(T1, y, th, d); }
+  /* v125.x: the gaps where the roads leave are WALL_GAP wide (the road and a little kerb each side), the wall ends trimmed
+     to it, so the welcome arch's posts stand right against them */
+  const cut = (a) => { let b = Math.min(a + 1, T1); if (b > WALL_GAP[0] && a < WALL_GAP[1]) { if (a < WALL_GAP[0]) b = WALL_GAP[0]; else if (b > WALL_GAP[1]) a = WALL_GAP[1]; else return null; } return [a, b - a]; };
+  for (let x = T0; x < T1; x += 1) { const c = cut(x); if (!c) continue; seg(c[0], T0 - th, c[1], th); seg(c[0], T1, c[1], th); }
+  for (let y = T0; y < T1; y += 1) { const c = cut(y); if (!c) continue; seg(T0 - th, c[0], th, c[1]); seg(T1, c[0], th, c[1]); }
   return items;
 }
 /* Horizon on screen: a little above the town's far corner. Zoomed in, it never drops below where the home screen

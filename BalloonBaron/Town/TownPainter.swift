@@ -1470,6 +1470,9 @@ struct TownPainter {
         return items
     }
 
+    /// The gaps in the town wall where the two main roads leave (prototype `WALL_GAP`).
+    static let wallGap = (7.3, 8.7)
+
     /// A low tuff wall round the town with gaps where the roads leave.
     func townWall() -> [TownItem] {
         var items: [TownItem] = []
@@ -1480,16 +1483,22 @@ struct TownPainter {
                 if bri { p.block(gx, gy, w, d, 11, top: "#cfc6b4") } else { p.block(gx, gy, w, d, 16, top: "#f3dcb8", courses: false) }
             })
         }
+        // v125.x: the gaps where the roads leave are `wallGap` wide, the wall ends trimmed to it, so the welcome arch's posts
+        // stand right against them (prototype `WALL_GAP`, `cut`).
+        let g = TownPainter.wallGap
+        let cut = { (a0: Double) -> (Double, Double)? in
+            var a = a0, b = min(a0 + 1, t1)
+            if b > g.0 && a < g.1 { if a < g.0 { b = g.0 } else if b > g.1 { a = g.1 } else { return nil } }
+            return (a, b - a)
+        }
         var x = t0
         while x < t1 {
-            let w = min(1, t1 - x)
-            if !(x + w > 7.55 && x < 8.45) { items.append(seg(x, t0 - th, w, th)); items.append(seg(x, t1, w, th)) }
+            if let c = cut(x) { items.append(seg(c.0, t0 - th, c.1, th)); items.append(seg(c.0, t1, c.1, th)) }
             x += 1
         }
         var y = t0
         while y < t1 {
-            let d = min(1, t1 - y)
-            if !(y + d > 7.55 && y < 8.45) { items.append(seg(t0 - th, y, th, d)); items.append(seg(t1, y, th, d)) }
+            if let c = cut(y) { items.append(seg(t0 - th, c.0, th, c.1)); items.append(seg(t1, c.0, th, c.1)) }
             y += 1
         }
         return items

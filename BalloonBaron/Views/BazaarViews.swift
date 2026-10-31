@@ -497,7 +497,7 @@ struct DecorNightPreview: View {
     private var spot: (Double, Double, CGFloat) {
         switch item {
         case .pigeons: (7.5, 3.5, 0.3)
-        case .arch: (7.45, 15.35, 0.75)
+        case .arch: (8, 15.57, 0.75)
         case .cafe: (DecorPainter.cafeAt.0, DecorPainter.cafeAt.1, 0.7)
         case .rugs: (DecorPainter.rugsAt.0, DecorPainter.rugsAt.1, 0.75)
         case .statue: (6.9, 8.9, 0.6)

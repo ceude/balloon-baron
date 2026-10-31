@@ -7,7 +7,9 @@ import BalloonBaronCore
 struct DecorPainter {
     var c: GraphicsContext
 
-    static let arches: [((Double, Double), (Double, Double), Double)] = [((6.75, 15.35), (8.15, 15.35), 23.2), ((15.35, 6.75), (15.35, 8.15), 23.2)]
+    /// v125.x: each arch stands in a gap of the town wall where a main road leaves: its posts on the wall's line (15.57),
+    /// flush against the wall ends (`TownPainter.wallGap`, 7.3–8.7), outside the road's edges (7.55–8.45).
+    static let arches: [((Double, Double), (Double, Double), Double)] = [((7.37, 15.57), (8.63, 15.57), 23.2), ((15.57, 7.37), (15.57, 8.63), 23.2)]
     static let cafeAt = (14.9, 1.1), rugsAt = (2.5, 0.35), plaqueAt = (9.15, 6.55)
 
     func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
