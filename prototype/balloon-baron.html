@@ -2003,8 +2003,8 @@ function showEvent() {
   S.eventDue = false;
   const keys = Object.keys(EVENTS).filter(k => EVENTS[k].ok() && k !== S.lastEvent);
   if (!keys.length) { nextPopup(); return; }
-  const k = S.lastEvent = pick(keys), at = evAt(k); save();
-  if (mode === 'office' && HOME.h) { openTown(at); townFocus([at[0], at[1] + 1.2], 1.15); TOWN.noLabels = true; TOWN.extra = k === 'strike' ? strikers : null; $('tClose').classList.add('gone'); }
+  const k = S.lastEvent = pick(keys), E = EVENTS[k]; save();
+  if (mode === 'office' && HOME.h) { openTown(E.at); townFocus([E.at[0], E.at[1] + 1.2], 1.15); TOWN.noLabels = true; TOWN.extra = k === 'strike' ? strikers : null; $('tClose').classList.add('gone'); }
   setTimeout(() => eventCard(k), 650);
 }
 function eventCard(k) {
@@ -2054,7 +2054,7 @@ function eventCard(k) {
 function strikers(t) {
   const items = [], n = Math.min(8, Math.max(3, S.pilots.length)), signs = ['ZAM!', 'GREV', '%15', 'ADALET'];
   for (let i = 0; i < n; i++) {
-    const gx = NT() ? 10.3 + (i % 4) * .5 : 8.4 + (i % 4) * .55, gy = NT() ? 7.3 + Math.floor(i / 4) * .45 : 13.6 + Math.floor(i / 4) * .45;
+    const gx = 8.4 + (i % 4) * .55, gy = 13.6 + Math.floor(i / 4) * .45;
     items.push({ depth: gx + gy, draw: () => {
       const q0 = tiso(gx, gy), bob = Math.abs(Math.sin(t * 4 + i)) * 4, q = [0, 0];
       ctx.save(); ctx.translate(q0[0], q0[1]); ctx.scale(1.5, 1.5);
@@ -4346,8 +4346,8 @@ let OPEN = null;
 /* v121.5: the pull-back from the film's landing to day one's view of the town (drawHomeTown) */
 let HOMEI = null;
 /* camera keys: [second, gx, gy (what the camera looks at), zoom, where that point sits on screen (x, y), horizon] */
-let OPEN_IN = [[0, 7.5, 7.5, .15, .5, .84, .6], [6, 6.6, 7.2, .3, .54, .72, .34], [12, 3.1, 5.4, .8, .44, .6, .08]];
-let OPEN_FIELD = [3.4, 5.8]; /* the old basket */
+const OPEN_IN = [[0, 7.5, 7.5, .15, .5, .84, .6], [6, 6.6, 7.2, .3, .54, .72, .34], [12, 3.1, 5.4, .8, .44, .6, .08]];
+const OPEN_FIELD = [3.4, 5.8]; /* the old basket */
 /* v121.10: the opening film again from Settings, over the running game: no name or colour pick (the Hezarfen card goes
    straight to the lift-off), and at the end the game comes back as it was, without starting a new day */
 function replayOpening() {
@@ -4530,7 +4530,6 @@ function openItems() {
   return out;
 }
 function drawOpen() {
-  ntSync();
   const O = OPEN; if (!O || O.loading || O.three) { ctx.fillStyle = '#0b0818'; ctx.fillRect(0, 0, W, H); return; } /* the 3D film draws itself */
   const t = T - O.t0;
   let V;
@@ -4757,9 +4756,9 @@ function flyChoice() {
 /* While passengers gather, the town's camera sits on your kiosk: they walk up from the road and queue in front.
    Taking off, safari jeeps pull up, everyone climbs in and the jeeps drive off to the launch field. */
 const COLV = { z: .85, ox: 0, oy: 0, hits: [], zoneHits: [] };
-let KIOSK = [9.3, 13.4]; /* front of your office in the kiosk row */
-const QUEUE_MAX = 30, JEEP_SEATS = 6; let JEEP_ROW_Y = 14.95;
-function queueSpot(i) { if (NT()) return [10.5 + (i % 6) * .24, 7.2 + Math.floor(i / 6) * .15]; return [8.85 + (i % 6) * .24, 13.72 + Math.floor(i / 6) * .19]; }
+const KIOSK = [9.3, 13.4]; /* front of your office in the kiosk row */
+const QUEUE_MAX = 30, JEEP_SEATS = 6, JEEP_ROW_Y = 14.95;
+function queueSpot(i) { return [8.85 + (i % 6) * .24, 13.72 + Math.floor(i / 6) * .19]; }
 function walkPath(pts, s) {
   for (let i = 1; i < pts.length; i++) {
     const a = pts[i - 1], b = pts[i], d = Math.hypot(b[0] - a[0], b[1] - a[1]);
@@ -4790,11 +4789,8 @@ function collectView(w, h) {
   return { z, ox: w / 2 - cx * z, oy: (top + bottom) / 2 + 30 - cy * z };
 }
 function drawCollectTown() {
-  const c = COL, now = T; let to = c.leave ? c.lastView : collectView(W, H);
-  if (c.leave && NT() && c.lastView) { /* trial: the camera follows the jeeps from the ticket office to the launch meadow */
-    if (!c.ntTrip) { c.ntTrip = 1; c.from = { z: c.lastView.z, ox: c.lastView.ox, oy: c.lastView.oy, t0: now + .6 }; }
-    const z = c.lastView.z * .8, m = tiso(8.2, 5.6); to = { z, ox: W / 2 - m[0] * z, oy: H * .55 - m[1] * z };
-  } else c.lastView = to;
+  const c = COL, now = T, to = c.leave ? c.lastView : collectView(W, H);
+  c.lastView = to;
   if (c.from == null) c.from = { z: HOME.z || to.z * .4, ox: HOME.ox || to.ox, oy: HOME.oy || to.oy, t0: now };
   const k = easeIO(clamp((now - c.from.t0) / .8, 0, 1));
   COLV.z = lerp(c.from.z, to.z, k); COLV.ox = lerp(c.from.ox, to.ox, k); COLV.oy = lerp(c.from.oy, to.oy, k);
@@ -4807,23 +4803,21 @@ function collectItems(t) {
   const G = c.ctr ? c.ctr.n : 0, shownR = Math.max(0, c.shown - G); /* v125.2: the tour group rides in jeeps, it doesn't queue */
   const total = c.seq.length - G, want = total <= QUEUE_MAX ? shownR : Math.round(shownR / Math.max(1, total) * QUEUE_MAX);
   c.people = c.people || [];
-  while (c.people.length < want) { const i = c.people.length; c.people.push({ i, t0: t, from: NT() ? [14.6 + Math.random() * 1.4, 7.55 + Math.random() * .35] : [8 + (Math.random() - .5) * .5, 9.5 + Math.random() * 2], col: ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0', '#5aa9e6', '#ff6fa8'][i % 7] }); }
+  while (c.people.length < want) { const i = c.people.length; c.people.push({ i, t0: t, from: [8 + (Math.random() - .5) * .5, 9.5 + Math.random() * 2], col: ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0', '#5aa9e6', '#ff6fa8'][i % 7] }); }
   const Jg = c.ctr ? c.ctr.jeeps : 0, L = c.leave, P = c.people.length, J = clamp(Math.max(Jg, Math.ceil(P / JEEP_SEATS)), 1, 5);
-  const nt = NT(), stop = j => nt ? [10.75 + j * .95, JEEP_ROW_Y] : [9.05 + j * .95, JEEP_ROW_Y], tl = L ? t - L : -1;
-  /* new village: the jeeps come from the launch meadow round the square to the street, and take everyone back there */
-  const jeepPath = j => nt ? [[6.9, 2.6], [6.9, 6.55], [9.45, 6.55], [9.45, JEEP_ROW_Y], stop(j)] : [[8, 10.2], [8, JEEP_ROW_Y], stop(j)], outPath = j => nt ? [stop(j), [9.45, JEEP_ROW_Y], [9.45, 6.55], [6.9, 6.55], [6.9, 3.05], [5.6 - j * .95, 3.05]] : [stop(j), [8, JEEP_ROW_Y], [8, 22]];
+  const stop = j => [9.05 + j * .95, JEEP_ROW_Y], tl = L ? t - L : -1;
+  const jeepPath = j => [[8, 10.2], [8, JEEP_ROW_Y], stop(j)], outPath = j => [stop(j), [8, JEEP_ROW_Y], [8, 22]];
   const boarded = j => c.people.filter(p => Math.min(J - 1, Math.floor(p.i * J / Math.max(1, P))) === j && tl > 1.15 + p.i * .025 + .55).length;
   for (const p of c.people) {
     const spot = queueSpot(p.i), j = Math.min(J - 1, Math.floor(p.i * J / Math.max(1, P)));
     let pos, show = true;
     const tb = tl - (1.15 + p.i * .025);
     if (tb > 0) { const k = clamp(tb / .55, 0, 1); const st = stop(j); pos = [lerp(spot[0], st[0], k), lerp(spot[1], st[1] - .25, k)]; if (k >= 1) show = false; }
-    else if (nt) { const k = clamp((t - p.t0) / 2.2, 0, 1); pos = walkPath([p.from, [spot[0], p.from[1]], spot], easeIO(k) * (Math.abs(p.from[0] - spot[0]) + Math.abs(p.from[1] - spot[1]))).p; }
     else { const k = clamp((t - p.t0) / 1.3, 0, 1); pos = walkPath([p.from, [8, spot[1]], spot], easeIO(k) * (Math.abs(p.from[1] - spot[1]) + Math.abs(8 - spot[0]))).p; }
     if (show) items.push({ depth: pos[0] + pos[1], draw: () => { const q = tiso(...pos); person(q[0], q[1], p.col, t, p.i); } });
   }
   /* passenger count over the queue, so a big day still reads right when one figure stands for several */
-  if (c.shown) items.push({ depth: 99, draw: () => { const q = nt ? tiso(10.9, 7.3) : tiso(9.4, 13.9); ctx.font = '800 19px "Barlow Condensed", sans-serif'; const txt = `${L ? Math.max(0, c.shown - Math.round(c.shown * clamp((tl - 1.15) / 1.2, 0, 1))) : c.shown} yolcu`, w = ctx.measureText(txt).width + 22;
+  if (c.shown) items.push({ depth: 99, draw: () => { const q = tiso(9.4, 13.9); ctx.font = '800 19px "Barlow Condensed", sans-serif'; const txt = `${L ? Math.max(0, c.shown - Math.round(c.shown * clamp((tl - 1.15) / 1.2, 0, 1))) : c.shown} yolcu`, w = ctx.measureText(txt).width + 22;
     ctx.fillStyle = 'rgba(255,250,243,.95)'; rrect(q[0] - w / 2, q[1] - 70, w, 28, 14); ctx.fill(); ctx.fillStyle = '#2b2350'; ctx.textAlign = 'center'; ctx.fillText(txt, q[0], q[1] - 50); ctx.textAlign = 'left'; } });
   /* v125.2: on a contract morning the first jeeps drive out to the off-map place and come back with the group, before the
      queue forms; at take-off the queue climbs into the same jeeps */
@@ -4839,12 +4833,12 @@ function collectItems(t) {
     items.push({ depth: pos[0] + pos[1] + .3, draw: () => jeep(pos[0], pos[1], alongX, t, nP) });
   }
   if (c.ctr && !L) for (let j = 0; j < Jg; j++) if (ts - j * .15 >= 2.6) { const pos = stop(j); items.push({ depth: pos[0] + pos[1] + .3, draw: () => jeep(pos[0], pos[1], true, t, 4) }); }
-  if (c.ctr && ts > .2 && ts < 3.2) items.push({ depth: 99, draw: () => { const q = nt ? tiso(12.2, JEEP_ROW_Y) : tiso(10.2, JEEP_ROW_Y); ctx.font = '800 15px "Barlow Condensed", sans-serif'; const txt = ts < 1.6 ? 'Cipler tur grubunu almaya gidiyor' : `Tur grubu geliyor: ${c.ctr.n} kişi`, w = ctx.measureText(txt).width + 20; ctx.fillStyle = 'rgba(255,250,243,.95)'; rrect(q[0] - w / 2, q[1] + 12, w, 24, 12); ctx.fill(); ctx.fillStyle = c.ctr.col; ctx.textAlign = 'center'; ctx.fillText(txt, q[0], q[1] + 29); ctx.textAlign = 'left'; } });
+  if (c.ctr && ts > .2 && ts < 3.2) items.push({ depth: 99, draw: () => { const q = tiso(10.2, JEEP_ROW_Y); ctx.font = '800 15px "Barlow Condensed", sans-serif'; const txt = ts < 1.6 ? 'Cipler tur grubunu almaya gidiyor' : `Tur grubu geliyor: ${c.ctr.n} kişi`, w = ctx.measureText(txt).width + 20; ctx.fillStyle = 'rgba(255,250,243,.95)'; rrect(q[0] - w / 2, q[1] + 12, w, 24, 12); ctx.fill(); ctx.fillStyle = c.ctr.col; ctx.textAlign = 'center'; ctx.fillText(txt, q[0], q[1] + 29); ctx.textAlign = 'left'; } });
   if (L) for (let j = 0; j < J; j++) {
     const tin = j < Jg ? 9 : tl - j * .12, tout = tl - 2.0 - j * .12;
     let r;
     if (tout > 0) { const path = outPath(j); r = walkPath(path, Math.pow(tout, 1.6) * 7); }
-    else { const path = jeepPath(j), len = nt ? pathLen(path) : 4.75 + Math.abs(stop(j)[0] - 8); r = walkPath(path, easeIO(clamp(tin / (nt ? 1.4 : 1.0), 0, 1)) * len); }
+    else { const path = jeepPath(j), len = 4.75 + Math.abs(stop(j)[0] - 8); r = walkPath(path, easeIO(clamp(tin / 1.0, 0, 1)) * len); }
     const alongX = Math.abs(r.dir[0]) > Math.abs(r.dir[1]), pos = r.p;
     items.push({ depth: pos[0] + pos[1] + .3, draw: () => jeep(pos[0], pos[1], alongX, t, Math.min(JEEP_SEATS, boarded(j) + (j < Jg ? 4 : 0))) });
   }
@@ -5472,7 +5466,7 @@ function showMenu(open) {
   group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
-  group('Test (prototip)', '#ffc23d', [toggle('star', 'Yeni köy (deneme)', NT(), () => { S.newTown = !S.newTown; save(); }), row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('star', 'Hangar testi: 400 balon, Sv. 3', chev, () => { m.hidden = true; testHangar400(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); }), row('star', 'Luksor kontrat testi (Nil gemisi)', chev, () => { m.hidden = true; testRegionContract('lux'); }), row('star', 'Bristol kontrat testi (hafta sonu treni)', chev, () => { m.hidden = true; testRegionContract('bri'); }), row('star', 'Kapadokya anlaşma testi (charter uçağı)', chev, () => { m.hidden = true; testCapContract(); })]);
+  group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('star', 'Hangar testi: 400 balon, Sv. 3', chev, () => { m.hidden = true; testHangar400(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); }), row('star', 'Luksor kontrat testi (Nil gemisi)', chev, () => { m.hidden = true; testRegionContract('lux'); }), row('star', 'Bristol kontrat testi (hafta sonu treni)', chev, () => { m.hidden = true; testRegionContract('bri'); }), row('star', 'Kapadokya anlaşma testi (charter uçağı)', chev, () => { m.hidden = true; testCapContract(); })]);
   /* v121.10: watch the opening film again; the name and colours are skipped, the company flies in its own colours */
   group('Film', '#ff5e3a', [row('star', 'Başlangıç filmini tekrar izle', chev, () => { m.hidden = true; replayOpening(); })]);
   const nb = row('trash', 'Yeni oyun başlat', '', () => {}, 'danger');
@@ -8056,7 +8050,7 @@ function cruiseShip(x0, y0, col, name, t) {
 function felucca(x, y, t, i) { const b = Math.sin(t * 1.1 + i) * 1.5; ctx.fillStyle = '#6a4a2a'; ctx.beginPath(); ctx.moveTo(x - 18, y + b); ctx.lineTo(x + 18, y + b); ctx.lineTo(x + 12, y + 6 + b); ctx.lineTo(x - 12, y + 6 + b); ctx.fill(); ctx.strokeStyle = '#4a3a2a'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x, y + b); ctx.lineTo(x, y - 34 + b); ctx.stroke(); ctx.fillStyle = '#fbf6ea'; ctx.beginPath(); ctx.moveTo(x, y - 34 + b); ctx.lineTo(x + 16, y - 4 + b); ctx.lineTo(x - 2, y - 4 + b); ctx.fill(); }
 function shipGround() {
   const q = ctrQ;
-  q(30.25, -8.6, 30.95, NT() ? -1.05 : 7.65, OUTER_LOOK.lux.road); /* the dirt track from the pier to the east road */
+  q(30.25, -8.6, 30.95, 7.65, OUTER_LOOK.lux.road); /* the dirt track from the pier to the east road */
   q(28.4, -9.95, 32.6, -8.5, '#d4b47e'); { const R = mulberry32(12); ctx.fillStyle = 'rgba(110,80,40,.25)'; for (let i = 0; i < 40; i++) { const p = tiso(28.5 + R() * 4, -9.9 + R() * 1.3); ctx.fillRect(p[0], p[1], 4, 2); } }
   q(25.5, -11.3, 35, -10.6, '#d8c08e'); q(25.5, -11.3, 35, -11.15, '#a88a5a'); /* the stone quay */
   q(30.5, -12.4, 31.5, -10.6, '#9a6a3a'); for (let y = -12.3; y < -10.6; y += .22) q(30.5, y, 31.5, y + .03, '#7a4a24'); /* the wooden pier */
@@ -8636,7 +8630,7 @@ function autoRegions() {
    The card comes up after a few seconds, once you've seen it. */
 function issueScene() {
   if (!S.issue) return;
-  const at = NT() ? ntAt('office') : [9.3, 13.6];
+  const at = [9.3, 13.6];
   /* the office sits in the top third, so it stays in view above the card that comes up from the bottom */
   if (mode === 'office' && HOME.h) { openTown(at); townFocus([at[0], at[1] + 1.2], 1.15, .3); TOWN.noLabels = true; TOWN.extra = S.issue.k === 'raise' ? strikers : null; $('tClose').classList.add('gone'); }
   setTimeout(() => { if (S.issue && mode === 'office') showIssue(S.region); }, 3500);
@@ -8712,9 +8706,8 @@ const placed = k => owned(k) && !(S.decorOff || []).includes(k);
 function decorToggle(k) { const off = S.decorOff || []; S.decorOff = off.includes(k) ? off.filter(x => x !== k) : off.concat([k]); save(); }
 /* Purchase sheet (prototype stand-in for the store's own payment sheet). */
 /* A live picture of the town at night with this decoration, for the shop card. Runs while the canvas is on screen. */
-let DECOR_AT = { fountain: [8, 8, .55], statue: [9.05, 6.95, .6], lanterns: [7.4, 7.6, .3], flags: [7.5, 9, .26], pigeons: [7.5, 3.5, .3, 1], arch: [8, 15.57, .75], cafe: [14.9, 1.1, .7], rugs: [9.8, 0.9, .75] };
+const DECOR_AT = { fountain: [8, 8, .55], statue: [9.05, 6.95, .6], lanterns: [7.4, 7.6, .3], flags: [7.5, 9, .26], pigeons: [7.5, 3.5, .3, 1], arch: [8, 15.57, .75], cafe: [14.9, 1.1, .7], rugs: [9.8, 0.9, .75] };
 function nightPreview(k, cv) {
-  ntSync();
   const r = cv.getBoundingClientRect(), dpr = Math.min(2, window.devicePixelRatio || 1), w = r.width, hh = r.height; if (!w) return;
   cv.width = Math.round(w * dpr); cv.height = Math.round(hh * dpr);
   const [gx, gy, z] = DECOR_AT[k], c = tiso(gx, gy), V = { z, ox: w / 2 - c[0] * z, oy: hh * .62 - c[1] * z, noLabels: true, hzFix: hh * .12, hzFree: true };
@@ -8803,7 +8796,7 @@ function fieldBalloons() {
 /* where each of those stands on the field (the film lands the flagship on its spot) */
 function fieldSlots() {
   const rank = b => { const d = designOf(b); return d && d.shape ? 0 : d ? 1 : b.id === S.flag ? 2 : 3; };
-  return S.balloons.map((b, i) => [b, i]).sort((x, y) => rank(x[0]) - rank(y[0]) || x[1] - y[1]).slice(0, 6).map((x, i) => { const [gx, gy] = fieldXY(i); return { b: x[0], gx, gy }; });
+  return S.balloons.map((b, i) => [b, i]).sort((x, y) => rank(x[0]) - rank(y[0]) || x[1] - y[1]).slice(0, 6).map((x, i) => ({ b: x[0], gx: 1.8 + (i % 3) * 1.9, gy: 5 + Math.floor(i / 3) * 1.4 }));
 }
 const designCost = () => hasOffice('tyo') ? 0 : DESIGN_COST;
 /* a design that uses something bought with real money: never fades, free to put on any balloon */
@@ -9599,7 +9592,6 @@ function townBuildings() {
   S.rivals.forEach((r, i) => add({ id: 'rival' + i, gx: 10.55 + i * 1.85, gy: 12.2, w: 1.2, d: 1.2, name: r.name, look: 'rival', lv: r.alive ? 1 : 0, col: r.col, col2: r.col2,
     sub: r.alive ? `Balon: ${r.balloons.length}` : r.merged ? 'Birleşti' : r.forSale ? 'Satışta' : 'Kapandı', small: true,
     tap: () => unlocked('market') ? openSection('market', 'Sen ve rakiplerin') : lockedCard(r.name, 'market') }));
-  if (NT()) L.forEach(ntPlace); /* trial: the new village puts the same buildings in new places */
   return L;
 }
 
@@ -9802,7 +9794,6 @@ function tplot(b, t) {
 
 /* ---------- buildings ---------- */
 function tbuilding(b, t) {
-  if (NT() && ntBuilding(b, t)) return;
   if (b.lv <= 0 && b.look !== 'rival') return tplot(b, t);
   const big = b.lv === 2, g = b.gx, k = b.gy;
   switch (b.look) {
@@ -10257,7 +10248,7 @@ function hotel(b, t) {
       else if (S.region === 'bri') { const pc = ['#f2b8c0', '#a8d4c8', '#f4dc8a'][Math.round(x * 7) % 3], ph = hh * .62; ctx.fillStyle = pc; ctx.fillRect(p[0] - hh * .2, p[1] - ph, hh * .4, ph); ctx.fillStyle = mix(pc, '#000000', .15); ctx.fillRect(p[0] + hh * .1, p[1] - ph, hh * .1, ph); ctx.fillStyle = '#5e6874'; ctx.beginPath(); ctx.moveTo(p[0] - hh * .23, p[1] - ph); ctx.lineTo(p[0] - hh * .12, p[1] - ph - hh * .14); ctx.lineTo(p[0] + hh * .12, p[1] - ph - hh * .14); ctx.lineTo(p[0] + hh * .23, p[1] - ph); ctx.fill(); ctx.fillStyle = '#8a5a44'; ctx.fillRect(p[0] + hh * .06, p[1] - ph - hh * .2, hh * .06, hh * .1); } /* v124: pastel Clifton houses */
       else if (S.region === 'lux') { ctx.fillStyle = '#c9ab7e'; ctx.fillRect(p[0] - hh * .2, p[1] - hh * .7, hh * .4, hh * .7); ctx.fillStyle = '#efe0c2'; ctx.fillRect(p[0] - hh * .24, p[1] - hh * .7, hh * .26, hh * .7); dome(p[0] - hh * .02, p[1] - hh * .7, hh * .17, '#f3e8d2'); } /* Nubian mud-brick house */
       else chimney(p[0], p[1], hh * .55, hh, '#efc79e', '#c69068', '#6a4430');
-      for (let i = 0; i < 3; i++) { const wy = p[1] - hh * (.18 + i * .22), wx = p[0] - hh * .08 + (i % 2) * hh * .1; ctx.fillStyle = '#ffd27a'; ctx.beginPath(); ctx.moveTo(wx - 5, wy + 8); ctx.lineTo(wx - 5, wy); ctx.arc(wx, wy, 5, Math.PI, 0); ctx.lineTo(wx + 5, wy + 8); ctx.fill(); if (NT()) nightLite(wx, wy + 2, 18, '255,190,110', .8); else lantern(wx, wy + 2); }
+      for (let i = 0; i < 3; i++) { const wy = p[1] - hh * (.18 + i * .22), wx = p[0] - hh * .08 + (i % 2) * hh * .1; ctx.fillStyle = '#ffd27a'; ctx.beginPath(); ctx.moveTo(wx - 5, wy + 8); ctx.lineTo(wx - 5, wy); ctx.arc(wx, wy, 5, Math.PI, 0); ctx.lineTo(wx + 5, wy + 8); ctx.fill(); lantern(wx, wy + 2); }
     }
     const tp = terrace.c; for (let i = 0; i < 4; i++) { const p = lp(lp(terrace.d, terrace.c, .2 + i * .2), lp(terrace.a, terrace.b, .2 + i * .2), .4); ctx.fillStyle = ['#c0392b', '#e08a1e', '#7a2a4a', '#2b5a7a'][i]; ctx.fillRect(p[0] - 7, p[1] - 4, 14, 5); }
     for (const u of [.05, .95]) { const p = lp(terrace.d, terrace.c, u); ctx.fillStyle = '#3a2416'; ctx.fillRect(p[0] - 1, p[1] - 22, 2, 22); lantern(p[0], p[1] - 24); }
@@ -10289,7 +10280,6 @@ function hotel(b, t) {
 }
 /* Approximate shadow footprint per building, drawn in a pass before everything else. */
 function buildingShadow(b) {
-  if (NT()) return ntShadow(b);
   if (b.lv <= 0 && b.look !== 'rival') return;
   const hh = { bazaar: 60, hangar: 80, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 54, agency: 100, tower: 270, rival: 44 }[b.look] || ({ 0: 60, 1: 120, 2: 140, 3: 120 })[b.star] || 60;
   boxShadow(b.gx + .3, b.gy + .3, b.w - .6, b.d - .6, hh, .18);
@@ -10374,7 +10364,7 @@ function decoFlag(p, t, c, ph) {
   ctx.fillStyle = c[1]; ctx.fillRect(p[0] + 8, p[1] - 74 + Math.sin(t * 4 + 2.5 + ph) * 2, 12, 5);
 }
 /* where they stand: arches over the two roads into town you can see, the café by the bazaar, the rugs by the workshop */
-let PLAQUE_AT = [9.15, 6.55], STATUE_AT = [9.05, 6.95]; /* v128: Hezarfen's statue moved to the square's north-east corner when the bazaar took the south-west */
+const PLAQUE_AT = [9.15, 6.55], STATUE_AT = [9.05, 6.95]; /* v128: Hezarfen's statue moved to the square's north-east corner when the bazaar took the south-west */
 /* v115: the Supporter Edition's brass plaque on two posts by the square, a heart and your company's name */
 function decoPlaque(p) {
   ctx.fillStyle = '#4a2e1a'; ctx.fillRect(p[0] - 13, p[1] - 22, 3, 22); ctx.fillRect(p[0] + 10, p[1] - 22, 3, 22);
@@ -10385,7 +10375,7 @@ function decoPlaque(p) {
 }
 /* v125.7: the arches stand in the gaps of the town wall where the main roads leave: each post sits on the wall's line
    (its middle, 15.57) flush against a wall end (the gap runs WALL_GAP, 7.3–8.7), outside the road's edges (7.55–8.45) */
-let ARCHES = [[[7.37, 15.57], [8.63, 15.57], 23.2], [[15.57, 7.37], [15.57, 8.63], 23.2]], CAFE_AT = [14.9, 1.1], RUGS_AT = [2.5, 0.35]; /* the kilims hang on the town wall behind the hangar, where nothing hides them */
+const ARCHES = [[[7.37, 15.57], [8.63, 15.57], 23.2], [[15.57, 7.37], [15.57, 8.63], 23.2]], CAFE_AT = [14.9, 1.1], RUGS_AT = [2.5, 0.35]; /* the kilims hang on the town wall behind the hangar, where nothing hides them */
 /* v113 decorations. Each draws round a ground point p (screen units); iu/iv step one tile along the two grid axes. */
 const iu = (p, u, v) => [p[0] + (u - v) * TW / 2, p[1] + (u + v) * TH / 2];
 /* a flock of pigeons wheeling over the town, the way they circle Cappadocia's dovecotes */
@@ -10714,7 +10704,6 @@ function townSky(t) {
 /* Name tag above a building. Small when zoomed out (name only), full when zoomed in. Returns its rect. */
 /* Height above the footprint centre where a building's label sits: just over its roof. */
 function townTop(b) {
-  if (NT()) return ntTop(b);
   if (b.lv <= 0 && b.look !== 'rival') return 90;
   if (b.look === 'hotel') return [95, 165, 190, 200][b.star];
   if (b.look === 'rival') return 80;
@@ -10778,22 +10767,20 @@ function outerDecor(t) {
   const R = mulberry32(9);
   const L = OUTER_LOOK[S.region] || OUTER_LOOK.cap;
   for (let i = 0; i < 420; i++) { const gx = -22 + R() * 60, gy = -22 + R() * 60; if (gx > -1 && gx < 16 && gy > -1 && gy < 16) continue; const p = tiso(gx, gy); ctx.fillStyle = R() < L.split ? L.patch[0] : L.patch[1]; ctx.beginPath(); ctx.ellipse(p[0], p[1], 8 + R() * 22, 4 + R() * 8, 0, 0, 7); ctx.fill(); }
-  const nt = NT();
-  if (nt) ntOuterDecor(L);
   /* Luxor: the Nile runs past behind the town, green banks on both sides */
-  if (S.region === 'lux' && !nt) {
+  if (S.region === 'lux') {
     const band = (y0, y1, c) => tpoly([tiso(-60, y0), tiso(70, y0), tiso(70, y1), tiso(-60, y1)], c);
     band(-15.5, -9.5, '#8fb85a'); band(-13.6, -11.2, '#3f8fa8'); band(-13.1, -12.7, 'rgba(255,255,255,.18)');
   }
   /* v124: Bristol: the harbour behind the town, the old tall ship at the quay */
-  if (S.region === 'bri' && !nt) {
+  if (S.region === 'bri') {
     const band = (y0, y1, c) => tpoly([tiso(-60, y0), tiso(70, y0), tiso(70, y1), tiso(-60, y1)], c);
     band(-15.8, -9.2, '#b8a888'); band(-14.6, -10.4, '#5f8494'); band(-13.1, -12.7, 'rgba(255,255,255,.16)');
     const s = tiso(2, -10.9); tallShip(s[0], s[1], t);
     for (const [cx, cy] of [[9, -10.2], [12, -10.2]]) { const p = tiso(cx, cy); ctx.strokeStyle = '#c0582a'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(p[0] - 8, p[1]); ctx.lineTo(p[0], p[1] - 90); ctx.lineTo(p[0] + 8, p[1]); ctx.moveTo(p[0], p[1] - 86); ctx.lineTo(p[0] - 70, p[1] - 76); ctx.stroke(); ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p[0] - 60, p[1] - 77); ctx.lineTo(p[0] - 60, p[1] - 40); ctx.stroke(); }
   }
   const dirt = (x0, y0, x1, y1) => { tpoly([tiso(x0, y0), tiso(x1, y0), tiso(x1, y1), tiso(x0, y1)], L.road); };
-  if (!nt) { dirt(-40, 7.65, 0, 8.35); dirt(15, 7.65, 55, 8.35); dirt(7.65, -40, 8.35, 0); dirt(7.65, 15, 8.35, 55); }
+  dirt(-40, 7.65, 0, 8.35); dirt(15, 7.65, 55, 8.35); dirt(7.65, -40, 8.35, 0); dirt(7.65, 15, 8.35, 55);
   for (const f of OUTER_FIELDS) { const q = [tiso(f[0], f[1]), tiso(f[0] + 3, f[1]), tiso(f[0] + 3, f[1] + 2.2), tiso(f[0], f[1] + 2.2)]; tpoly(q, L.field); tpoly(q, null, S.region === 'bri' ? 'rgba(30,70,25,.85)' : 'rgba(110,90,40,.3)', S.region === 'bri' ? 5 : 2); /* v124: hedgerows round Bristol's fields */
     if (S.region === 'lux') for (let k = 1; k < 8; k++) tpoly([tiso(f[0] + k * .37, f[1]), tiso(f[0] + k * .37, f[1] + 2.2)], null, 'rgba(60,100,40,.35)', 1.5); }
 }
@@ -10804,7 +10791,7 @@ const OUTER_LOOK = {
   lux: { patch: ['rgba(110,160,70,.24)', 'rgba(200,170,110,.18)'], split: .6, road: '#dcc28e', field: '#8db05a' },
   bri: { patch: ['rgba(70,120,50,.22)', 'rgba(150,190,90,.2)'], split: .55, road: '#a6a29a', field: '#8ab85a' }
 };
-let OUTER_FIELDS = [[-6, 9.5], [18, 2], [10, 18], [-4, -6], [20, 15]];
+const OUTER_FIELDS = [[-6, 9.5], [18, 2], [10, 18], [-4, -6], [20, 15]];
 /* Fairy chimney clusters out in the valley, and balloons inflating and lifting off the other fields. */
 function outerScenery(t) {
   const items = [], R = mulberry32(21);
@@ -10813,7 +10800,6 @@ function outerScenery(t) {
     if (gx > -2 && gx < 17 && gy > -2 && gy < 17) continue;
     if (Math.abs(gx - 8) < 1.6 || Math.abs(gy - 8) < 1.6) continue;
     if (!ctrSpotFree(gx, gy)) continue; /* v125: the coach terminal's ground */
-    if (NT() && !ntOuterFree(gx, gy)) continue;
     if (OUTER_FIELDS.some(f => gx > f[0] - 1 && gx < f[0] + 4 && gy > f[1] - 1 && gy < f[1] + 3.5)) continue;
     items.push({ at: [gx, gy], depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .14); }, draw: () => { const p = tiso(gx, gy); outerLandmark(p[0], p[1], hh, i); } });
   }
@@ -10942,8 +10928,7 @@ function townHaze(w, h) {
 }
 /* Draw the town into a region of the current canvas: w×h starting at screen y = offY, through view V (zoom and offset, hit areas). */
 function renderTown(V, w, h, dpr, offY) {
-  ntSync();
-  const prevV = TV, nt = NT(); TV = V;
+  const prevV = TV; TV = V;
   const S0 = () => ctx.setTransform(dpr, 0, 0, dpr, 0, dpr * offY), W0 = () => ctx.setTransform(dpr * V.z, 0, 0, dpr * V.z, dpr * V.ox, dpr * (V.oy + offY));
   ctx.save();
   try {
@@ -10956,18 +10941,15 @@ function renderTown(V, w, h, dpr, offY) {
     W0();
     outerDecor(T); ctrGround();
     const E = [tiso(-.5, -.5), tiso(15.5, -.5), tiso(15.5, 15.5), tiso(-.5, 15.5)];
-    if (nt) ntGround(T); /* trial: the new village's own ground, no words in the sand */
-    else {
     tpoly(E, S.winter ? 'rgba(250,252,255,.6)' : S.region === 'bri' ? 'rgba(130,180,90,.6)' : 'rgba(240,210,165,.55)'); /* v124: Bristol's lawns */
     tdecor(T);
     townZoneText();
-    }
     ctx.restore();
     S0(); townHaze(w, h);
     W0();
     const fade = (it) => { if (!it.at) return it; const sy = tiso(...it.at)[1] * V.z + V.oy, a = clamp((sy - hz) / (h * .1), 0, 1); if (a <= 0) return null;
       return { depth: it.depth, shadow: it.shadow, draw: () => { ctx.globalAlpha = a; it.draw(); ctx.globalAlpha = 1; } }; };
-    const bs = townBuildings(), scen = (nt ? ntScenery(T) : townScenery(T)).concat(outerScenery(T).concat(ctrSpotItems(T)).map(fade).filter(Boolean), nt ? ntWall() : townWall()), sky = townSky(T);
+    const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).concat(ctrSpotItems(T)).map(fade).filter(Boolean), townWall()), sky = townSky(T);
     bs.forEach(buildingShadow); scen.forEach(it => it.shadow && it.shadow()); sky.shadows.forEach(f => f());
     const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => { if (S.region === 'bri' && (b.look === 'hotel' || b.look === 'bank')) { const keep = TUFF; TUFF = BATH; try { tbuilding(b, T); } finally { TUFF = keep; } } else tbuilding(b, T); } })).concat(scen, V.extra ? V.extra(T) : S.issue && S.issue.k === 'raise' ? strikers(T) : []);
     TLATE = [];
@@ -10993,12 +10975,11 @@ function renderTown(V, w, h, dpr, offY) {
     }
     /* red dots on zones that need you: pilots or licence (EKİP), offers and sales (ŞİRKETLER) */
     const dots = navDots();
-    if (nt) ntDots(V, bs);
-    else for (const zn of TOWN_ZONES) if (zn.alert && dots[zn.alert]) {
+    for (const zn of TOWN_ZONES) if (zn.alert && dots[zn.alert]) {
       const q = zoneQuad(zn), p = [q[1][0] * V.z + V.ox + 4, q[1][1] * V.z + V.oy], r = 7 + Math.sin(T * 4) * 1.2; /* just past the end of the word */
       ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(p[0] + 6, p[1] - 6, r + 2, 0, 7); ctx.fill(); ctx.fillStyle = '#e5432f'; ctx.beginPath(); ctx.arc(p[0] + 6, p[1] - 6, r, 0, 7); ctx.fill();
     }
-    V.zoneHits = nt ? [] : V.z < LABEL_Z ? TOWN_ZONES.map(zn => ({ zn, pts: zoneQuad(zn).map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]) })) : [];
+    V.zoneHits = V.z < LABEL_Z ? TOWN_ZONES.map(zn => ({ zn, pts: zoneQuad(zn).map(([x, y]) => [x * V.z + V.ox, y * V.z + V.oy]) })) : [];
   } finally { ctx.restore(); TV = prevV; }
 }
 function drawTown() {
@@ -11173,7 +11154,7 @@ function drawShow(V, w, h, hz, S0, N) {
   const top = Math.max(150, hz * .1), bot = Math.max(top + 200, hz + (h - hz) * .14);
   N.band = [top, bot];
   const G = showGrid(n, w, top, bot), fig = showFigOn(), Hh = fig ? showFigure(fig, n, w, top, bot, G[0].R) : showHeart(n, w, top, bot, G[0].R);
-  const f = NT() ? tiso(2.9, 5.2) : tiso(3, 6.2), fx = f[0] * V.z + V.ox, fy = f[1] * V.z + V.oy, beat = st * 2, bp = beat - Math.floor(beat);
+  const f = tiso(3, 6.2), fx = f[0] * V.z + V.ox, fy = f[1] * V.z + V.oy, beat = st * 2, bp = beat - Math.floor(beat);
   /* fireworks behind the balloons for the finale */
   if (st > 16.5 && st < 25) {
     ctx.save(); ctx.globalCompositeOperation = 'lighter';
@@ -11489,7 +11470,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
   }
   ctx.save(); ctx.globalCompositeOperation = 'lighter';
   /* street lamps: a dark post, a small bright lantern, a soft halo and a warm pool of light on the cobbles */
-  const lamps = NT() ? ntLamps() : placed('lanterns') ? [[2, 7.4], [5, 7.4], [10.5, 7.4], [13.5, 7.4], [7.4, 2], [7.4, 5.5], [7.4, 10.5], [7.4, 13.5]] : [[3.5, 7.4], [11.5, 7.4], [7.4, 3.5], [7.4, 11.5]];
+  const lamps = placed('lanterns') ? [[2, 7.4], [5, 7.4], [10.5, 7.4], [13.5, 7.4], [7.4, 2], [7.4, 5.5], [7.4, 10.5], [7.4, 13.5]] : [[3.5, 7.4], [11.5, 7.4], [7.4, 3.5], [7.4, 11.5]];
   for (const [gx, gy] of lamps) {
     const p = tiso(gx, gy), fl = .9 + .1 * Math.sin(t * 9 + gx * 3) * Math.sin(t * 4.1 + gy);
     ctx.save(); ctx.translate(p[0] + 6, p[1] + 2); ctx.scale(1, .42); glow(0, 0, 58, '255,180,95', .42 * k * fl); ctx.restore();
@@ -11497,7 +11478,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
     glow(p[0], p[1] - 44, 30, '255,190,110', .38 * k * fl); glow(p[0], p[1] - 44, 7, '255,240,200', .95 * k);
   }
   /* the influencer agency's pool, lit from below (v122: once the agency is open) */
-  if (unlocked('agency')) { const pp = NT() ? tiso(9.15, 5.57) : tiso(9.8, 11.17); ctx.save(); ctx.translate(pp[0], pp[1]); ctx.scale(1, .45); glow(0, 0, 46, '80,220,230', .45 * k * (.85 + .15 * Math.sin(t * 1.7))); ctx.restore(); }
+  if (unlocked('agency')) { const pp = tiso(9.8, 11.17); ctx.save(); ctx.translate(pp[0], pp[1]); ctx.scale(1, .45); glow(0, 0, 46, '80,220,230', .45 * k * (.85 + .15 * Math.sin(t * 1.7))); ctx.restore(); }
   /* festoon lights strung along the main roads between the lamps (the bazaar's lantern strings): warm bulbs on a sagging wire, softly twinkling */
   const pairs = []; for (let i = 0; i < lamps.length; i++) for (let j = i + 1; j < lamps.length; j++) { const a2 = lamps[i], b2 = lamps[j]; if ((a2[0] === b2[0] || a2[1] === b2[1]) && Math.hypot(a2[0] - b2[0], a2[1] - b2[1]) < 4.2 && !(a2[0] < 7.4 && b2[0] > 7.4) && !(a2[1] < 7.4 && b2[1] > 7.4)) pairs.push([a2, b2]); }
   /* only with the bazaar's lantern strings */
@@ -11510,7 +11491,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
   /* the bazaar's decorations each get their own night lighting */
   if (placed('fountain')) {
     /* underwater lights: the basin glows turquoise, the jets catch the light, a ring of warm light on the paving */
-    const p = NT() ? tiso(DECOR_AT.fountain[0], DECOR_AT.fountain[1]) : tiso(8, 8);
+    const p = tiso(8, 8);
     ctx.save(); ctx.translate(p[0], p[1]); ctx.scale(1, .5); glow(0, 0, 70, '255,190,110', .25 * k); ctx.restore();
     ctx.save(); ctx.translate(p[0], p[1] - 9); ctx.scale(1, .47); glow(0, 0, 30, '90,230,255', .75 * k); ctx.restore();
     ctx.strokeStyle = `rgba(190,245,255,${.75 * k})`; ctx.lineWidth = 1.6;
@@ -11525,7 +11506,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
     ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = .6 * k; decoStatue(p); ctx.restore();
     glow(p[0], p[1] - 52, 34, '255,200,120', .35 * k); glow(p[0] - 18, p[1] - 52, 6, '255,240,200', (.5 + .5 * Math.sin(t * 2)) * k); glow(p[0] + 20, p[1] - 50, 5, '255,240,200', (.5 + .5 * Math.sin(t * 2 + 2)) * k);
   }
-  if (placed('flags')) for (const [gx, gy] of NT() ? NT_FLAGS : [[0, 4], [0, 11], [4, 15.3], [11, 15.3], [15.3, 6.6], [15.3, 11]]) {
+  if (placed('flags')) for (const [gx, gy] of [[0, 4], [0, 11], [4, 15.3], [11, 15.3], [15.3, 6.6], [15.3, 11]]) {
     /* each pole has an uplight, so the company colours glow against the night */
     const p = tiso(gx, gy), g = ctx.createLinearGradient(p[0], p[1], p[0], p[1] - 90); g.addColorStop(0, `rgba(255,235,200,${.45 * k})`); g.addColorStop(1, 'rgba(255,235,200,0)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.moveTo(p[0] - 3, p[1]); ctx.lineTo(p[0] + 3, p[1]); ctx.lineTo(p[0] + 26, p[1] - 90); ctx.lineTo(p[0] - 12, p[1] - 90); ctx.closePath(); ctx.fill();
@@ -11553,7 +11534,7 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
   if (E && (E.k === 'fireworks' || (E.k === 'nglow' && t - N.t0 > GLOW_FW))) {
     /* rockets rise from the hotel and burst in the sky above the town, in screen space */
     ctx.restore(); S0(); ctx.save(); ctx.globalCompositeOperation = 'lighter';
-    const hw = NT() ? tiso(NTL.hotels[E.hotel][0] + 1, NTL.hotels[E.hotel][1] + 1) : tiso([2, 5, 2, 5][E.hotel], [10, 10, 12.6, 12.8][E.hotel]), hx = clamp(hw[0] * V.z + V.ox, w * .2, w * .8), hy = hw[1] * V.z + V.oy, tt = t - N.t0;
+    const hw = tiso([2, 5, 2, 5][E.hotel], [10, 10, 12.6, 12.8][E.hotel]), hx = clamp(hw[0] * V.z + V.ox, w * .2, w * .8), hy = hw[1] * V.z + V.oy, tt = t - N.t0;
     for (let j = 0; j < 5; j++) { const ph = (tt * .55 + j * .21) % 1, cx = w * (.18 + j * .16) + (hx - w / 2) * .2, cy = hz * (.45 + (j % 3) * .2), col = ['255,94,58', '255,194,61', '58,208,192', '255,111,168', '155,123,224'][j];
       if (ph < .3) { const yy = hy - (hy - cy) * ph / .3; glow(cx, yy, 6, '255,230,180', .9); }
       else { const r = (ph - .3) / .7, a = (1 - r) * k; for (let i = 0; i < 18; i++) { const an = i / 18 * Math.PI * 2, x = cx + Math.cos(an) * r * w * .14, y = cy + Math.sin(an) * r * w * .14 + r * r * 24; glow(x, y, 7, col, a); } glow(cx, cy, w * .2 * r, col, .12 * a); }
@@ -11561,20 +11542,20 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
     ctx.restore(); W0(); ctx.save(); ctx.globalCompositeOperation = 'lighter';
   }
   if (E && E.k === 'lanterns') {
-    for (let i = 0; i < 40; i++) { const along = ((t - N.t0) * .9 + i * .38) % 17 - 1, onX = i % 2, W0p = NT() ? walkPath(NT_WALK[onX], pmod(along * 1.2, pathLen(NT_WALK[onX]))).p : null, gx = W0p ? W0p[0] + (i % 3) * .12 : onX ? along : 7.75 + (i % 3) * .2, gy = W0p ? W0p[1] + (i % 3) * .12 : onX ? 7.75 + (i % 3) * .2 : along, p = tiso(gx, gy);
+    for (let i = 0; i < 40; i++) { const along = ((t - N.t0) * .9 + i * .38) % 17 - 1, onX = i % 2, gx = onX ? along : 7.75 + (i % 3) * .2, gy = onX ? 7.75 + (i % 3) * .2 : along, p = tiso(gx, gy);
       glow(p[0], p[1] - 22, 16, '255,170,70', .8); ctx.fillStyle = '#ffcf7a'; ctx.fillRect(p[0] - 2, p[1] - 25, 4, 5); }
   }
   if (E && E.k === 'show') { ctx.restore(); drawShow(V, w, h, hz, S0, N); W0(); ctx.save(); ctx.globalCompositeOperation = 'lighter'; }
   if (E && E.k === 'glow') {
-    fieldBalloons().forEach((b, i) => { const [gx, gy] = fieldXY(i), p = tiso(gx, gy), f = Math.max(0, Math.sin(t * 3 + i * 1.7)); glow(p[0], p[1] - 70, 80, '255,150,60', .25 + .55 * f); });
+    fieldBalloons().forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4, p = tiso(gx, gy), f = Math.max(0, Math.sin(t * 3 + i * 1.7)); glow(p[0], p[1] - 70, 80, '255,150,60', .25 + .55 * f); });
   }
   /* v124: the Night Glow: every balloon on the field fires on the beat, in waves across the rows, all together at the end */
   if (E && E.k === 'nglow') {
-    fieldBalloons().forEach((b, i) => { const [gx, gy] = fieldXY(i), p = tiso(gx, gy); glow(p[0], p[1] - 70, 95, '255,150,60', .2 + .75 * glowPulse(t - N.t0, i)); });
+    fieldBalloons().forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4, p = tiso(gx, gy); glow(p[0], p[1] - 70, 95, '255,150,60', .2 + .75 * glowPulse(t - N.t0, i)); });
   }
   /* v124: the evening ascent: the balloons lift off the field into the dusk, their burners glowing */
   if (E && E.k === 'eve') {
-    fieldBalloons().forEach((b, i) => { const [gx, gy] = fieldXY(i), p = tiso(gx, gy), r = eveRise(t - N.t0, i); glow(p[0] + r * .3, p[1] - 70 - r, 50, '255,160,70', .35 + .4 * Math.max(0, Math.sin(t * 4 + i))); });
+    fieldBalloons().forEach((b, i) => { const gx = 1.8 + (i % 3) * 1.9, gy = 5 + Math.floor(i / 3) * 1.4, p = tiso(gx, gy), r = eveRise(t - N.t0, i); glow(p[0] + r * .3, p[1] - 70 - r, 50, '255,160,70', .35 + .4 * Math.max(0, Math.sin(t * 4 + i))); });
   }
   ctx.restore();
 }
@@ -11715,7 +11696,7 @@ function townTap(x, y) {
   /* v125: the coach terminal (its lot) shows what's booked */
   if (ctrTapHit(x, y)) { sfx('click'); ctrStatusCard(); return; }
   /* v110: the launch field, or a balloon standing on it, opens your balloons */
-  const V = TOWN, f = fieldPoly();
+  const V = TOWN, f = [tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)];
   if ([0, 90].some(up => inPoly([x, y], f.map(([fx, fy]) => [fx * V.z + V.ox, (fy - up) * V.z + V.oy]))) && unlocked('fleet')) { sfx('click'); openSection('fleet', 'Balonların'); }
 }
 (function townInput() {
@@ -11743,714 +11724,11 @@ function townTap(x, y) {
   $('tClose').onclick = closeTown;
 })();
 
-/* ==================== TRIAL (v131, not ported): the new village, "yeni köy" ====================
-   Behind S.newTown (Ayarlar > Test (prototip) > Yeni köy (deneme)) or ?newtown=1 in the address; off, the town is as it
-   was. The village tells the passenger's journey along the view toward the sunrise:
-     the two gates in the front walls, where the region's coach, train, Nile ship or charter passengers come in;
-     the arrival streets with the rivals' shops, the bazaar and the ticket (pilot) office;
-     the square in the middle round the region's landmark (a fairy chimney rising out of a fountain, an obelisk, a
-     clock tower, a water tower), with the guide office and the influencer agency on its far sides;
-     the launch meadow and the hangar at the back, open to the horizon, where the balloons are laid out and inflated;
-     the company's own buildings (workshop, your office, bank, holding, wind mast, school) on the two back flanks;
-     the hotels round a garden court at the front.
-   No writing on the ground or the roofs: every building reads by its shape. Locked buildings are building sites whose
-   walls rise with the days until they open. Each region keeps the plan and changes its dress and one big moment:
-   cave houses carved in fairy chimneys, the Nile along the back wall, the Avon and its bridge at the west gate, the
-   highway and the parking lot. */
-const NT_URL = (() => { try { return /[?&]newtown=1\b/.test(location.search); } catch (e) { return false; } })();
-const NT = () => NT_URL || !!(S && S.newTown);
-const NTL = {
-  c: [8, 8], sq: [6.1, 9.9], st: [7.45, 8.55], /* the landmark, the square, the two streets' width */
-  meadow: [[-.4, 2.85], [6.1, 2.85], [6.1, 7.55], [-.4, 7.55]], meadow2: [[-.4, -.4], [2.75, -.4], [2.75, 2.85], [-.4, 2.85]],
-  track: [6.35, 1.75, 7.45, 6.1], apron: [2.75, 2.5, 6.35, 3.25],
-  B: { hangar: [3, .2, 3.4, 2.3], holding: [7.9, .3, 2, 2], shop: [10.35, .25, 2.3, 2.3], mine: [13.35, .6, 1.6, 1.6], bank: [12.2, 3.05, 2.2, 2.2],
-    office: [10.15, 5.2, 2, 2], school: [.3, 8.45, 2, 2], influ: [8.2, 3.85, 2, 2], guide: [3.9, 8.2, 2, 2], bazaar: [6.0, 10.2, 1.4, 2.5], mast: [6.7, .75, .4, .4] },
-  rivals: [[12.65, 6.05], [14.1, 6.05], [6.15, 13.05]],
-  hotels: [[.55, 12.55, 2, 2], [12.75, 9.35, 2, 2], [9.35, 12.75, 2, 2], [12.05, 12.3, 3.2, 3]],
-  field: [[1.0, 4.35], [2.85, 3.95], [4.7, 4.3], [1.45, 6.35], [3.35, 6.05], [5.15, 6.55]],
-  infl: [[1.0, 1.0], [1.9, 2.25]],
-  court: [10.0, 10.0, 12.0, 12.25], /* the hotels' garden court */
-  houses: [[3.4, 11.35], [4.75, 12.6], [3.2, 13.85]] /* the residents' corner by the bazaar (cave houses in Cappadocia) */
-};
-/* the layout constants the old town keeps in globals: swapped in and out whenever the switch or the region changes */
-let NT_KEY = null;
-const NT_OLD = {};
-function ntSync() {
-  const on = NT(), key = on ? 'nt:' + (S && S.region) : 'old';
-  if (key === NT_KEY) return;
-  NT_KEY = key;
-  if (!NT_OLD.done) {
-    Object.assign(NT_OLD, { done: 1, KIOSK, JEEP_ROW_Y, DECOR_AT, STATUE_AT, PLAQUE_AT, ARCHES, CAFE_AT, RUGS_AT, OPEN_IN, OPEN_FIELD, HQ_TOWER, OUTER_FIELDS, kinds: {}, shift: {} });
-    for (const k in CTR_KINDS) NT_OLD.kinds[k] = { town: CTR_KINDS[k].town, xfer: CTR_KINDS[k].xfer };
-    for (const r in CTR) NT_OLD.shift[r] = CTR[r].shift;
-  }
-  const O = NT_OLD;
-  ({ KIOSK, JEEP_ROW_Y, DECOR_AT, STATUE_AT, PLAQUE_AT, ARCHES, CAFE_AT, RUGS_AT, OPEN_IN, OPEN_FIELD, HQ_TOWER, OUTER_FIELDS } = O);
-  for (const k in CTR_KINDS) Object.assign(CTR_KINDS[k], O.kinds[k]);
-  for (const r in CTR) CTR[r].shift = O.shift[r];
-  if (!on) return;
-  KIOSK = [11.15, 7.1]; JEEP_ROW_Y = 8.28;
-  STATUE_AT = [6.62, 9.3]; PLAQUE_AT = [6.95, 9.72];
-  CAFE_AT = [11.2, 11.35]; RUGS_AT = [4.6, 10.85];
-  DECOR_AT = { fountain: [10.45, 10.45, .55], statue: [6.62, 9.3, .6], lanterns: [9.6, 7.9, .3], flags: [12, 15.3, .3], pigeons: [8, 6.5, .3, 1], arch: [8, 15.57, .75], cafe: [11.2, 11.35, .7], rugs: [4.6, 10.85, .75] };
-  OPEN_FIELD = NTL.field[1].slice();
-  OPEN_IN = [[0, 7.5, 7.5, .15, .5, .84, .6], [6, 5.5, 5.8, .3, .54, .72, .34], [12, 2.9, 4.4, .8, .44, .6, .08]];
-  HQ_TOWER = [8.9, 1.3];
-  OUTER_FIELDS = S && S.region === 'lux' ? [[-6, 9.5], [18, 2.2], [10, 19], [-7, 1.5], [20, 15]] : S && S.region === 'bri' ? [[-9, 3.5], [18, 2], [11, 19], [-4, -6], [20, 15]] : [[-6, 9.5], [18, 2], [11.5, 20.5], [-4, -6], [20, 15]];
-  /* the passengers' way in: the jeeps from the ticket office's street out through the gate on the region's side */
-  const viaL = [[9.45, JEEP_ROW_Y], [9.45, 9.45], [8.2, 9.45]];
-  CTR_KINDS.bus.town = [...viaL, [8.2, 22]];
-  CTR_KINDS.train.town = [...viaL, [8.2, 17.6], [-6, 17.6]];
-  CTR_KINDS.ship.town = [[16, JEEP_ROW_Y], [24, 8]];
-  CTR_KINDS.plane.town = [[16, JEEP_ROW_Y], [23.5, 8]];
-  /* Luxor's pier moves up to the Nile that now runs along the back wall; its track meets the east road */
-  CTR.lux.shift = [0, 9];
-  CTR_KINDS.ship.xfer = Object.assign({}, O.kinds.ship.xfer, { road: s => [s, [30.6, s[1]], [30.6, -1], [24.2, -1]] });
-  /* Bristol's station moves round to the front-left, on the far bank of the Avon from the west gate */
-  CTR.bri.shift = [0, 9.6];
-}
-/* ---- the buildings: the same list, new places ---- */
-function ntPlace(b) {
-  let P = NTL.B[b.id];
-  if (!P && b.id.startsWith('rival')) { const i = +b.id.slice(5), r = NTL.rivals[i] || [12.65 + (i - 3) * 1.4, 4.4]; P = [r[0], r[1], 1.2, 1.2]; }
-  if (!P && b.id.startsWith('hotel')) P = NTL.hotels[+b.id.slice(5)];
-  if (P) [b.gx, b.gy, b.w, b.d] = P;
-  if (b.id === 'mine' || b.look === 'rival') b.look = 'shop';
-  if (b.id === 'mine') b.small = false;
-}
-const NT_UNL = { shop: 'workshop', office: 'crew', school: 'school', bank: 'bank', influ: 'agency', guide: 'guide', bazaar: 'bazaar' };
-/* how far a site has got: its walls rise with the days until the building opens; the holding waits for the baron */
-function ntProgress(b) { if (b.lv === 0) return 1; const k = NT_UNL[b.id]; return k ? clamp(S.day / UNLOCK_DAY[k], .12, .88) : .1; }
-const NT_H = { shop: 60, office: 74, school: 66, bank: 70, influ: 56, guide: 54, bazaar: 46, holding: 150 };
-function ntTop(b) {
-  if (b.lv <= 0 && b.look !== 'shop') return 60 + (NT_H[b.id] || 60) * ntProgress(b) * .6 + (b.w * b.d >= 3.5 ? 40 : 0);
-  if (b.look === 'hotel') return [95, 165, 190, 200][b.star];
-  if (b.look === 'shop') return b.id === 'mine' ? 118 : 96;
-  if (b.look === 'mast') return 175;
-  return { bazaar: 82, hangar: 120, workshop: 132, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 122, agency: 150, tower: 300 }[b.look] || 135;
-}
-function ntShadow(b) {
-  if (b.lv <= 0 && b.look !== 'shop') { const p = ntProgress(b); if (p > .2) boxShadow(b.gx + .25, b.gy + .25, b.w - .5, b.d - .5, (NT_H[b.id] || 60) * p, .12); return; }
-  const hh = { bazaar: 60, hangar: 80, workshop: 62, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 54, agency: 100, tower: 270, shop: b.id === 'mine' ? 66 : 44 }[b.look] || ({ 0: 60, 1: 120, 2: 140, 3: 120 })[b.star] || 60;
-  boxShadow(b.gx + .3, b.gy + .3, b.w - .6, b.d - .6, hh, .18);
-}
-/* the looks that change in the new village; the rest are the town's own */
-function ntBuilding(b, t) {
-  if (b.lv <= 0 && b.look !== 'shop') { ntSite(b, t); return true; }
-  switch (b.look) {
-    case 'shop': ntShop(b, t); return true;
-    case 'workshop': ntWorkshop(b, t); return true;
-    case 'school': ntSchool(b, t); return true;
-    case 'office': ntOffice(b, t); return true;
-    case 'bank': ntBank(b, t); return true;
-  }
-  return false;
-}
-const ntP = (x, y, z = 0) => upp(tiso(x, y), z);
-/* a builder: hi-vis vest, a yellow helmet; swinging a hammer or carrying a block */
-function builder(x, y, t, ph, job) {
-  const b = job === 'walk' ? Math.abs(Math.sin(t * 5 + ph)) * 1.4 : 0;
-  ctx.fillStyle = '#2a2a34'; ctx.fillRect(x - 3, y - 4, 2.2, 4); ctx.fillRect(x + .8, y - 4, 2.2, 4);
-  ctx.fillStyle = '#ff8a1e'; ctx.fillRect(x - 3.3, y - 12.5 - b, 6.6, 8.6); ctx.fillStyle = '#fff2a0'; ctx.fillRect(x - 3.3, y - 9 - b, 6.6, 1.2);
-  ell(x, y - 15.5 - b, 3, 3, '#c98a62'); ctx.fillStyle = '#ffd23a'; ctx.beginPath(); ctx.arc(x, y - 16.2 - b, 3.6, Math.PI, 0); ctx.fill(); ctx.fillRect(x - 4.4, y - 16.4 - b, 8.8, 1.2);
-  if (job === 'hammer') { const a = -1.2 + Math.abs(Math.sin(t * 4.5 + ph)) * 1.5; ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(x + 3, y - 10); ctx.lineTo(x + 3 + Math.cos(a) * 9, y - 10 + Math.sin(a) * 9); ctx.stroke(); ctx.fillStyle = '#4a4a52'; ctx.fillRect(x + 3 + Math.cos(a) * 9 - 2, y - 10 + Math.sin(a) * 9 - 1.5, 4, 3); }
-  if (job === 'walk') { ctx.fillStyle = '#e8d6b4'; ctx.fillRect(x - 5, y - 21 - b, 10, 5); ctx.fillStyle = 'rgba(120,90,60,.4)'; ctx.fillRect(x - 5, y - 17 - b, 10, 1); }
-}
-/* a tower crane: lattice mast, a jib turning slowly, the trolley and a pallet of stone on the hook */
-function towerCrane(gx, gy, H, L, t, idle) {
-  const base = tiso(gx, gy), top = [base[0], base[1] - H];
-  blobShadow(base[0] + 8, base[1] + 3, 14, 5, .2);
-  ctx.fillStyle = '#9a9690'; ctx.fillRect(base[0] - 8, base[1] - 5, 16, 6);
-  ctx.strokeStyle = '#e8a91c'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(base[0] - 4, base[1] - 4); ctx.lineTo(top[0] - 4, top[1]); ctx.moveTo(base[0] + 4, base[1] - 4); ctx.lineTo(top[0] + 4, top[1]); ctx.stroke();
-  ctx.lineWidth = .9; ctx.strokeStyle = '#c88a10'; ctx.beginPath(); for (let y = base[1] - 4, i = 0; y > top[1] + 6; y -= 8, i++) { ctx.moveTo(base[0] - 4, y); ctx.lineTo(base[0] + 4, y - 8); ctx.moveTo(base[0] - 4, y); ctx.lineTo(base[0] + 4, y); } ctx.stroke();
-  const a = idle ? .6 : .6 + Math.sin(t * .25) * .9, dx = Math.cos(a), dy = Math.sin(a);
-  const end = upp(tiso(gx + dx * L, gy + dy * L), H), back = upp(tiso(gx - dx * L * .32, gy - dy * L * .32), H);
-  ctx.strokeStyle = '#e8a91c'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(back[0], back[1]); ctx.lineTo(end[0], end[1]); ctx.stroke();
-  ctx.lineWidth = 1; ctx.strokeStyle = '#7a6a50'; ctx.beginPath(); ctx.moveTo(top[0], top[1] - 14); ctx.lineTo(end[0], end[1]); ctx.moveTo(top[0], top[1] - 14); ctx.lineTo(back[0], back[1]); ctx.stroke();
-  ctx.fillStyle = '#e8a91c'; ctx.fillRect(top[0] - 2, top[1] - 15, 4, 15);
-  ctx.fillStyle = '#8a8680'; ctx.fillRect(back[0] - 6, back[1] - 2, 12, 9); /* counterweight */
-  ctx.fillStyle = '#f2ede2'; ctx.fillRect(top[0] - 5, top[1] - 2, 10, 8); ctx.fillStyle = '#5e8ea8'; ctx.fillRect(top[0] - 4, top[1], 8, 3); /* the cab */
-  const k = idle ? .55 : .45 + Math.sin(t * .37) * .25, tr = lp(top, end, k), drop = idle ? 30 : 34 + Math.sin(t * .5) * 22;
-  ctx.strokeStyle = 'rgba(40,40,40,.8)'; ctx.lineWidth = .8; ctx.beginPath(); ctx.moveTo(tr[0], tr[1]); ctx.lineTo(tr[0], tr[1] + drop); ctx.stroke();
-  if (!idle) { ctx.fillStyle = '#e2cfa8'; ctx.fillRect(tr[0] - 6, tr[1] + drop, 12, 6); ctx.fillStyle = '#c4ab80'; ctx.fillRect(tr[0], tr[1] + drop, 6, 6); }
-  else { ctx.fillStyle = '#4a4a52'; ctx.fillRect(tr[0] - 1.5, tr[1] + drop, 3, 4); }
-}
-/* A building site where a locked building will stand: packed earth behind a low hoarding, the walls rising (as high as
-   the days have got), scaffolding round them, stone and sand, the crane on the bigger ones and the builders at work.
-   Unlocked and waiting for you to buy it (lv 0), it stands finished to the eaves with a red ribbon across the front. */
-function ntSite(b, t) {
-  const p = ntProgress(b), ready = b.lv === 0, H = NT_H[b.id] || 60, wh = H * p;
-  const pad = corners(b.gx + .08, b.gy + .08, b.w - .16, b.d - .16);
-  tpoly([pad.A, pad.B, pad.C, pad.D], '#c8a27a'); tpoly([lp(pad.A, pad.C, .06), lp(pad.B, pad.D, .06), lp(pad.A, pad.C, .94), lp(pad.B, pad.D, .94)], '#d3b089');
-  { const R = mulberry32(Math.round(b.gx * 13 + b.gy * 7)); ctx.fillStyle = 'rgba(110,75,45,.22)'; for (let i = 0; i < 20; i++) { const q = lp(lp(pad.A, pad.B, R()), lp(pad.D, pad.C, R()), R()); ctx.fillRect(q[0], q[1], 3, 1.6); } }
-  const x0 = b.gx + .3, y0 = b.gy + .3, w = b.w - .6, d = b.d - .6;
-  const raw = { lit: '#ecdcc0', shade: '#c0a07c', top: '#d6bc96', parapet: true, roofIn: '#a8886a' };
-  const big = b.w * b.d >= 3.5;
-  if (big && !ready) towerCrane(b.gx + .2, b.gy + .2, Math.max(110, wh + 80), Math.min(2.2, b.w * .95), t, false);
-  let f = null;
-  if (wh > 4) {
-    f = block(x0, y0, w, d, wh, raw);
-    /* holes left for the windows and the door: dark, never lit */
-    if (wh > 28) tface(f.D, f.C, wh, () => { ctx.fillStyle = '#5a4434'; for (const u of [.18, .43, .68]) ctx.fillRect(u, Math.min(.55, 14 / wh), .12, Math.min(.38, 20 / wh)); });
-    if (wh > 22) tface(f.C, f.B, wh, () => { ctx.fillStyle = '#4a3828'; ctx.fillRect(.38, 0, .24, Math.min(.7, 30 / wh)); });
-  } else { const fd = corners(x0, y0, w, d); tpoly([fd.A, fd.B, fd.C, fd.D], '#b8a68a'); tpoly([lp(fd.A, fd.C, .1), lp(fd.B, fd.D, .1), lp(fd.A, fd.C, .9), lp(fd.B, fd.D, .9)], '#9c8a70'); }
-  /* scaffolding on the two faces we see */
-  const sh = (wh > 4 ? wh : 0) + 16, sc = corners(x0 - .08, y0 - .08, w + .16, d + .16);
-  ctx.strokeStyle = '#8a6a48'; ctx.lineWidth = 1.6; ctx.beginPath();
-  for (const [P0, Q0] of [[sc.D, sc.C], [sc.C, sc.B]]) for (let i = 0; i <= 3; i++) { const q = lp(P0, Q0, i / 3); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[0], q[1] - sh); }
-  ctx.stroke();
-  ctx.lineWidth = 2.2; ctx.strokeStyle = '#c99a62'; ctx.beginPath();
-  for (let y = 14; y <= sh; y += 16) for (const [P0, Q0] of [[sc.D, sc.C], [sc.C, sc.B]]) { ctx.moveTo(P0[0], P0[1] - y); ctx.lineTo(Q0[0], Q0[1] - y); }
-  ctx.stroke();
-  ctx.lineWidth = .9; ctx.strokeStyle = 'rgba(110,80,50,.7)'; ctx.beginPath();
-  for (const [P0, Q0] of [[sc.D, sc.C], [sc.C, sc.B]]) for (let i = 0; i < 3; i++) { const a = lp(P0, Q0, i / 3), c = lp(P0, Q0, (i + 1) / 3); ctx.moveTo(a[0], a[1] - 2); ctx.lineTo(c[0], c[1] - Math.min(sh, 30)); }
-  ctx.stroke();
-  /* stone, a sand heap, a barrow */
-  const st = tiso(b.gx + b.w - .32, b.gy + b.d - .3);
-  for (let i = 0; i < 6; i++) { const r = Math.floor(i / 3), c = i % 3, x = st[0] - 10 + c * 7 - r * 3, y = st[1] - r * 5; ctx.fillStyle = '#efe0c4'; ctx.fillRect(x - 3, y - 5, 7, 5); ctx.fillStyle = '#cbb08a'; ctx.fillRect(x + 2, y - 5, 2, 5); }
-  const sd = tiso(b.gx + .35, b.gy + b.d - .25); ctx.fillStyle = '#e2c48e'; ctx.beginPath(); ctx.ellipse(sd[0], sd[1] - 1, 13, 6, 0, Math.PI, 0); ctx.fill(); ctx.fillStyle = 'rgba(160,120,70,.35)'; ctx.beginPath(); ctx.ellipse(sd[0] + 4, sd[1] - 1, 7, 4, 0, Math.PI, 0); ctx.fill();
-  /* hoarding along the two front edges, open by the barrow */
-  ctx.strokeStyle = '#a8845a'; ctx.lineWidth = 1.2; ctx.beginPath();
-  for (const [P0, Q0] of [[pad.D, pad.C], [pad.C, pad.B]]) for (let i = 0; i <= 6; i++) { if (i === 3 && P0 === pad.D) continue; const q = lp(P0, Q0, i / 6); ctx.moveTo(q[0], q[1]); ctx.lineTo(q[0], q[1] - 9); }
-  for (const [P0, Q0] of [[pad.D, pad.C], [pad.C, pad.B]]) { ctx.moveTo(P0[0], P0[1] - 8); ctx.lineTo(Q0[0], Q0[1] - 8); ctx.moveTo(P0[0], P0[1] - 4); ctx.lineTo(Q0[0], Q0[1] - 4); }
-  ctx.stroke();
-  if (ready) { /* finished and waiting for you: a red ribbon with a bow across the gap in the hoarding */
-    const a = lp(pad.D, pad.C, .36), c = lp(pad.D, pad.C, .64), m = lp(a, c, .5), sw = Math.sin(t * 2) * 1.2;
-    ctx.strokeStyle = '#d8283a'; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.moveTo(a[0], a[1] - 7); ctx.quadraticCurveTo(m[0], m[1] - 4 + sw, c[0], c[1] - 7); ctx.stroke();
-    ctx.fillStyle = '#e83a4a'; ctx.beginPath(); ctx.moveTo(m[0], m[1] - 6); ctx.lineTo(m[0] - 7, m[1] - 10); ctx.lineTo(m[0] - 7, m[1] - 2); ctx.closePath(); ctx.moveTo(m[0], m[1] - 6); ctx.lineTo(m[0] + 7, m[1] - 10); ctx.lineTo(m[0] + 7, m[1] - 2); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.arc(m[0], m[1] - 6, 2, 0, 7); ctx.fill();
-    return;
-  }
-  /* the builders: one on the scaffold, one at the stone pile, one carrying a block over */
-  const w1 = lp(sc.D, sc.C, .35), lift = Math.min(sh - 16, 32);
-  builder(w1[0] + 2, w1[1] - lift, t, b.gx, 'hammer');
-  builder(st[0] - 18, st[1] + 2, t, b.gy + 1, 'hammer');
-  const u = (t * .18 + b.gx * .1) % 1, back = u > .5, k2 = back ? 1 - (u - .5) * 2 : u * 2, cp = lp(tiso(b.gx + b.w - .45, b.gy + b.d - .25), tiso(b.gx + .5, b.gy + b.d - .22), k2);
-  builder(cp[0], cp[1], t, 3, back ? 'none' : 'walk');
-}
-/* ---- rivals' shops and your own office: small shops in each company's colours, its balloon on the roof ---- */
-function ntShop(b, t) {
-  const mine = b.id === 'mine', g = b.gx, k = b.gy, x0 = g + .12, y0 = k + .12, w = b.w - .24, d = b.d - .24, h = mine ? 62 : 40, col = b.col || '#ff5e3a', col2 = b.col2 || '#ffffff';
-  if (!b.lv) { /* closed: shutters down, the paint faded, no balloon */
-    const f = block(x0, y0, w, d, h, { lit: '#c8b8a0', shade: '#94846e', top: '#b6a690' });
-    tface(f.D, f.C, h, () => { ctx.fillStyle = '#8a8478'; ctx.fillRect(.12, 0, .76, .62); ctx.fillStyle = 'rgba(40,30,20,.25)'; for (let i = 1; i < 9; i++) ctx.fillRect(.12, i * .068, .76, .012); ctx.fillStyle = mix(col, '#9a9488', .6); ctx.fillRect(0, .74, 1, .12); });
-    return;
-  }
-  const f = block(x0, y0, w, d, h, { parapet: S.region !== 'bri' });
-  if (S.region === 'bri') gableRoof(x0, y0, w, d, h, 16, '#5e6874', .05);
-  /* the painted shop front: a fascia in the company colour, a big window and the door in the second colour */
-  tface(f.D, f.C, h, () => {
-    ctx.fillStyle = col; ctx.fillRect(-.01, mine ? .44 : .66, 1.02, mine ? .1 : .16); ctx.fillStyle = col2; ctx.fillRect(-.01, mine ? .42 : .64, 1.02, .025);
-    ctx.fillStyle = mix(col, '#000000', .3); ctx.fillRect(.06, 0, .5, mine ? .38 : .58); ctx.fillStyle = '#ffe2a6'; ctx.fillRect(.09, .05, .44, mine ? .3 : .48);
-    ctx.fillStyle = col; ctx.fillRect(.66, 0, .25, mine ? .36 : .56); ctx.fillStyle = col2; ctx.fillRect(.765, .2, .04, .06);
-    if (mine) { ctx.fillStyle = mix(col, '#000000', .3); for (const u of [.12, .62]) ctx.fillRect(u, .6, .26, .26); ctx.fillStyle = '#ffe2a6'; for (const u of [.14, .64]) ctx.fillRect(u + .01, .62, .22, .21); }
-  });
-  tface(f.C, f.B, h, () => { ctx.fillStyle = col; ctx.fillRect(-.01, mine ? .44 : .66, 1.02, mine ? .1 : .16); ctx.fillStyle = mix(col, '#000000', .45); ctx.fillRect(-.01, mine ? .44 : .66, 1.02, .03); });
-  if (NIGHT_K > 0) { NIGHT_WIN.push({ p: f.D, q: f.C, h, u: .31, v: 0, w: .44, hh: mine ? .3 : .5, kind: 'win' }); }
-  /* the balloon on the roof: the company's own, tethered over the shop */
-  const top = lp(f.a, f.c, .5), R = mine ? 23 : 13, by = top[1] - 6 + Math.sin(t * 1.3 + g) * 1.2;
-  ctx.strokeStyle = '#4a3a2a'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(top[0], top[1] + 2); ctx.lineTo(top[0], by - R * .3); ctx.stroke();
-  const fb = mine ? bal(S.flag) : null;
-  balloon(top[0], by, R, col, col2, mine && (t % 4) < .35, 1, null, fb ? designOf(fb) : null);
-  if (mine) tflag(f.b[0] - 3, f.b[1], col, t, 30);
-}
-/* ---- the workshop: saw-tooth factory roof; out front a half-made envelope on the sewing table ---- */
-function ntWorkshop(b, t) {
-  const big = b.lv === 2, x0 = b.gx + .2, y0 = b.gy + .2, w = b.w - .4, d = b.d - .95, h = big ? 56 : 48;
-  const f = block(x0, y0, w, d, h);
-  const P = ntP;
-  for (let i = 0; i < 4; i++) { const a = x0 + w * i / 4, bb = x0 + w * (i + 1) / 4; tpoly([P(a, y0, h), P(a, y0 + d, h), P(bb, y0 + d, h + 24), P(bb, y0, h + 24)], S.region === 'bri' ? '#6a737e' : '#d6a476'); tpoly([P(bb, y0, h + 24), P(bb, y0 + d, h + 24), P(bb, y0 + d, h), P(bb, y0, h)], 'rgba(170,218,238,.92)'); tpoly([P(bb, y0 + d, h + 24), P(bb, y0 + d, h), P(a, y0 + d, h)], mix(TUFF.shade, '#000000', .08)); }
-  opening(f.D, f.C, h, .22, 0, .26, .74, 'door'); opening(f.D, f.C, h, .62, .3, .16, .4, 'win', true); opening(f.D, f.C, h, .85, .3, .16, .4, 'win', true);
-  opening(f.C, f.B, h, .5, .3, .3, .4, 'win', true);
-  if (fabLv() >= 2) { /* the factory chimney, smoking while a balloon is being made */
-    const cb = upp(tiso(x0 + w * .9, y0 + .15), h + 10), cw = 8;
-    ctx.fillStyle = '#9a4a32'; ctx.fillRect(cb[0] - cw / 2, cb[1] - 36, cw, 38); ctx.fillStyle = '#7a3624'; ctx.fillRect(cb[0], cb[1] - 36, cw / 2, 38); ctx.fillStyle = '#5a2a1c'; ctx.fillRect(cb[0] - cw / 2 - 1.5, cb[1] - 39, cw + 3, 4);
-    if (fabBusy()) for (let i = 0; i < 5; i++) { const u = (t * .35 + i / 5) % 1; ctx.fillStyle = `rgba(235,230,225,${.5 * (1 - u)})`; ctx.beginPath(); ctx.arc(cb[0] + u * 24 + Math.sin(t + i) * 3, cb[1] - 42 - u * 56, 5 + u * 11, 0, 7); ctx.fill(); }
-  }
-  /* the sewing table and the envelope on it: its gores half sewn in the colours of your latest design, the rest
-     still bare white panels; the seamstress at her machine */
-  const cols = (S.designs && S.designs.length) ? S.designs[S.designs.length - 1].cols : myCol();
-  const tx = x0 + .2, ty = y0 + d + .28, tw = w - .45, td = .42;
-  const tb = block(tx, ty, tw, td, 13, { lit: '#b88a52', shade: '#7e5a32', top: '#cfa46c', courses: false });
-  for (const [u, v] of [[0, 1], [1, 1], [1, 0]]) { const q = tiso(tx + u * tw, ty + v * td); ctx.fillStyle = '#6a4626'; ctx.fillRect(q[0] - 1, q[1] - 2, 2, 4); }
-  const m = lp(tb.d, tb.b, .5), R = big ? 30 : 27, eq = m[1] - 3;
-  ctx.save(); ctx.beginPath(); ctx.rect(m[0] - R * 1.4, eq - R * 1.3, R * 2.8, R * 1.3); ctx.clip();
-  balloon(m[0], eq + R * 1.55, R, cols[0], cols[1] || '#ffffff', false, 1);
-  /* the panels not sewn yet: bare white, the seams pinned in dashes */
-  ctx.beginPath(); ctx.ellipse(m[0], eq, R, R, 0, Math.PI, 0); ctx.closePath(); ctx.clip();
-  ctx.fillStyle = 'rgba(248,244,236,.96)'; ctx.fillRect(m[0] + R * .12, eq - R * 1.1, R, R * 1.2);
-  ctx.strokeStyle = 'rgba(120,100,80,.55)'; ctx.lineWidth = .8; ctx.setLineDash([2, 2]); ctx.beginPath(); for (const k of [.3, .6, .85]) { ctx.moveTo(m[0] + R * k, eq); ctx.quadraticCurveTo(m[0] + R * k * .7, eq - R * .9, m[0], eq - R); } ctx.stroke(); ctx.setLineDash([]);
-  ctx.restore();
-  ctx.fillStyle = 'rgba(70,40,20,.25)'; ctx.fillRect(m[0] - R, eq - 1, R * 2, 2);
-  const mc = lp(tb.d, tb.c, .82); ctx.fillStyle = '#2b2350'; ctx.fillRect(mc[0] - 5, mc[1] - 7, 10, 5); ctx.fillRect(mc[0] + 2, mc[1] - 12, 3, 6); ctx.fillStyle = '#c0c4cc'; ctx.fillRect(mc[0] - 5, mc[1] - 3, 10, 1.5);
-  const sp = tiso(tx + tw * .8, ty + td + .32); person(sp[0], sp[1], '#9b5ab0', t * .3, 2);
-  const sp2 = tiso(tx + tw * .2, ty + td + .3); person(sp2[0], sp2[1], '#2b8a9a', t * .2, 5);
-}
-/* ---- the pilot school: the training balloon tethered over its yard and the tall tower; nothing else ---- */
-function ntSchool(b, t) {
-  const big = b.lv === 2, x0 = b.gx + .25, y0 = b.gy + .3, w = b.w - .95, d = b.d - .75, h = 64;
-  const f = block(x0, y0, w, d, h);
-  gableRoof(x0, y0, w, d, h, 24, '#c0583a');
-  for (const u of [.2, .45, .7]) opening(f.D, f.C, h, u, .25, .14, .45, 'win', true);
-  opening(f.C, f.B, h, .5, 0, .3, .6, 'door');
-  const tw = block(x0 + w + .05, y0 + .05, .45, .45, 128, { parapet: true });
-  opening(tw.D, tw.C, 128, .5, .74, .45, .18, 'win', false); opening(tw.C, tw.B, 128, .5, .74, .45, .18, 'win', false);
-  /* the training balloon over the yard, a lesson under it */
-  trainingBalloon(tiso(x0 + w * .55, y0 + d + .95), big, t);
-  const yc = tiso(x0 + w * .55, y0 + d + .95);
-  person(yc[0] - 26, yc[1] + 14, '#1f4a7a', 0, 0); /* the instructor */
-  for (let i = 0; i < (big ? 5 : 3); i++) { const p = tiso(x0 + .05 + i * .22, y0 + d + 1.45 + (i % 2) * .12); person(p[0], p[1], ['#2b2350', '#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0'][i], t * .15, i); }
-}
-/* ---- the ticket and pilot office: the two-storey house with its balcony; a rope line for the queue at its door ---- */
-function ntOffice(b, t) {
-  const big = b.lv === 2, x0 = b.gx + .3, y0 = b.gy + .25, w = b.w - .6, d = b.d - .65, h = big ? 100 : 74;
-  const f = block(x0, y0, w, d, h, { parapet: true });
-  opening(f.D, f.C, h, .3, 0, .2, big ? .35 : .48, 'door');
-  opening(f.D, f.C, h, .66, .06, .3, big ? .22 : .3, 'win', true); /* the ticket window */
-  for (const u of [.25, .5, .75]) opening(f.D, f.C, h, u, big ? .6 : .64, .14, big ? .2 : .24, 'win', u !== .5);
-  if (big) for (const u of [.25, .75]) opening(f.D, f.C, h, u, .36, .14, .16, 'win', true);
-  opening(f.C, f.B, h, .5, .55, .2, .25, 'win', true);
-  const b0 = lp(f.D, f.C, .12), b1 = lp(f.D, f.C, .88), bh = h * (big ? .55 : .58);
-  tpoly([upp(b0, bh), upp(b1, bh), [upp(b1, bh)[0] - 10, upp(b1, bh)[1] + 5], [upp(b0, bh)[0] - 10, upp(b0, bh)[1] + 5]], '#7a4a24');
-  ctx.strokeStyle = '#5a3418'; ctx.lineWidth = 1.5; ctx.beginPath(); for (let i = 0; i <= 8; i++) { const p = upp(lp(b0, b1, i / 8), bh); ctx.moveTo(p[0] - 5, p[1] + 3); ctx.lineTo(p[0] - 5, p[1] - 10); } ctx.stroke();
-  /* the counter under the ticket window, leaflets on it */
-  const cw = lp(f.D, f.C, .66); ctx.fillStyle = '#e8d2a8'; ctx.fillRect(cw[0] - 12, cw[1] - 8, 20, 3); ['#e04a3a', '#3ad0c0', '#ffc23d'].forEach((c, i) => { ctx.fillStyle = c; ctx.fillRect(cw[0] - 10 + i * 6, cw[1] - 11, 4, 3); });
-  /* the queue line: brass posts and a red rope along the pavement */
-  const q0 = tiso(x0 + w * .45, y0 + d + .22), q1 = tiso(x0 + w + .25, y0 + d + .22);
-  for (let i = 0; i <= 3; i++) { const q = lp(q0, q1, i / 3); ctx.fillStyle = '#c9a040'; ctx.fillRect(q[0] - 1, q[1] - 12, 2, 12); ell(q[0], q[1] - 13, 1.8, 1.8, '#e8c060'); }
-  ctx.strokeStyle = '#b8283a'; ctx.lineWidth = 1.3; ctx.beginPath(); for (let i = 0; i < 3; i++) { const a = lp(q0, q1, i / 3), c = lp(q0, q1, (i + 1) / 3); ctx.moveTo(a[0], a[1] - 11); ctx.quadraticCurveTo((a[0] + c[0]) / 2, (a[1] + c[1]) / 2 - 7, c[0], c[1] - 11); } ctx.stroke();
-}
-/* ---- the bank: the one white-stone building, a small temple: podium, columns under a pediment ---- */
-function ntBank(b, t) {
-  const x0 = b.gx + .3, y0 = b.gy + .35, w = b.w - .55, d = b.d - .8, h = 60, r = 22, P = ntP, xe = x0 + w, y1 = y0 + d, ym = y0 + d / 2;
-  const M = { lit: '#f6f2ea', shade: '#cfc7b8', top: '#fbf8f2', courses: false };
-  block(x0 - .14, y0 - .12, w + .34, d + .26, 6, M); block(x0 - .07, y0 - .06, w + .2, d + .14, 12, M);
-  ctx.save(); ctx.translate(0, -12);
-  const f = block(x0, y0, w - .34, d, h, M);
-  tface(f.D, f.C, h, () => { ctx.fillStyle = 'rgba(160,150,135,.28)'; for (const u of [.02, .27, .52, .77, .96]) ctx.fillRect(u, 0, .03, 1); });
-  for (const u of [.15, .4, .65, .88]) opening(f.D, f.C, h, u, .14, .1, .52, 'win', false);
-  opening(f.C, f.B, h, .5, 0, .3, .62, 'door');
-  for (let i = 0; i < 5; i++) { const q = tiso(xe - .1, y0 + .08 + i * (d - .16) / 4), cg = ctx.createLinearGradient(q[0] - 4, 0, q[0] + 4, 0); cg.addColorStop(0, '#ffffff'); cg.addColorStop(1, '#c9c0b0'); ctx.fillStyle = cg; ctx.fillRect(q[0] - 3.6, q[1] - h + 6, 7.2, h - 6); ctx.fillStyle = '#e8e2d6'; ctx.fillRect(q[0] - 5, q[1] - h + 3, 10, 4); ctx.fillRect(q[0] - 5, q[1] - 3, 10, 3); }
-  tpoly([P(x0 - .04, y0 - .06, h), P(xe + .04, y0 - .06, h), P(xe + .04, y1 + .06, h), P(x0 - .04, y1 + .06, h)], '#ece6da');
-  tpoly([P(x0 - .04, y1 + .06, h), P(xe + .04, y1 + .06, h), P(xe + .04, y1 + .06, h - 7), P(x0 - .04, y1 + .06, h - 7)], '#e2dbcd');
-  tpoly([P(xe + .04, y0 - .06, h), P(xe + .04, y1 + .06, h), P(xe + .04, y1 + .06, h - 7), P(xe + .04, y0 - .06, h - 7)], '#cfc7b8');
-  tpoly([P(x0 - .04, y0 - .06, h), P(xe + .04, y0 - .06, h), P(xe + .04, ym, h + r), P(x0 - .04, ym, h + r)], '#d6cfc2');
-  tpoly([P(x0 - .04, y1 + .06, h), P(xe + .04, y1 + .06, h), P(xe + .04, ym, h + r), P(x0 - .04, ym, h + r)], '#eee9df');
-  tpoly([P(xe + .04, y0 - .06, h), P(xe + .04, y1 + .06, h), P(xe + .04, ym, h + r)], '#f8f5ee');
-  tpoly([P(xe + .04, y0 + .12, h + 3), P(xe + .04, y1 - .12, h + 3), P(xe + .04, ym, h + r - 5)], '#ddd5c6');
-  const disc = P(xe + .04, ym, h + 9); ell(disc[0], disc[1], 3.4, 3.8, '#d8b040');
-  tpoly([P(x0 - .04, ym, h + r), P(xe + .04, ym, h + r)], null, '#ffffff', 1.5);
-  ctx.restore();
-  if (b.lv === 2) { const p = tiso(xe + .55, y1 + .1); ctx.fillStyle = '#2b2350'; ctx.fillRect(p[0] - 12, p[1] - 18, 24, 18); ctx.fillStyle = '#ffc23d'; ctx.fillRect(p[0] - 9, p[1] - 15, 18, 5); }
-}
-/* ---- the landmark in the middle of the square ---- */
-function ntLandmark(t) {
-  const p = tiso(...NTL.c), R = S.region;
-  if (R === 'lux') return lmObelisk(p, t);
-  if (R === 'bri') return lmClock(p, t);
-  if (R === 'abq') return lmWater(p, t);
-  lmChimney(p, t);
-}
-/* a round stone basin; water in it with rings on the surface */
-function basin(p, rx, ry, hh, stone, rim, t, water = true) {
-  ctx.fillStyle = mix(stone, '#000000', .18); ctx.beginPath(); ctx.ellipse(p[0], p[1], rx, ry, 0, 0, Math.PI); ctx.lineTo(p[0] - rx, p[1] - hh); ctx.ellipse(p[0], p[1] - hh, rx, ry, 0, Math.PI, 0, true); ctx.closePath(); ctx.fill();
-  const sg = ctx.createLinearGradient(p[0] - rx, 0, p[0] + rx, 0); sg.addColorStop(0, mix(stone, '#ffffff', .1)); sg.addColorStop(.55, stone); sg.addColorStop(1, mix(stone, '#000000', .22));
-  ctx.fillStyle = sg; ctx.beginPath(); ctx.ellipse(p[0], p[1], rx, ry, 0, 0, Math.PI); ctx.lineTo(p[0] - rx, p[1] - hh); ctx.ellipse(p[0], p[1] - hh, rx, ry, 0, Math.PI, 0, true); ctx.closePath(); ctx.fill();
-  ell(p[0], p[1] - hh, rx, ry, rim);
-  if (!water) return;
-  const wg = ctx.createLinearGradient(0, p[1] - hh - ry, 0, p[1] - hh + ry); wg.addColorStop(0, '#2f9ab4'); wg.addColorStop(1, '#7fd6e2');
-  ctx.fillStyle = wg; ctx.beginPath(); ctx.ellipse(p[0], p[1] - hh + 1, rx * .88, ry * .84, 0, 0, 7); ctx.fill();
-  ctx.strokeStyle = 'rgba(255,255,255,.45)'; ctx.lineWidth = 1;
-  for (let i = 0; i < 3; i++) { const k = ((t * .35 + i / 3) % 1); ctx.globalAlpha = 1 - k; ctx.beginPath(); ctx.ellipse(p[0], p[1] - hh + 1, rx * (.35 + k * .5), ry * (.35 + k * .5), 0, 0, 7); ctx.stroke(); }
-  ctx.globalAlpha = 1;
-}
-/* Cappadocia: a fairy chimney rising out of a fountain basin, water spilling from carved spouts at its foot */
-function lmChimney(p, t) {
-  blobShadow(p[0] + 30, p[1] + 6, 70, 22, .16);
-  basin(p, 74, 37, 12, '#e6cfaa', '#f4e4c6', t);
-  const base = p[1] - 14, w = 84, H = 156;
-  ctx.save(); ctx.beginPath(); ctx.ellipse(p[0], base + 2, w * .62, w * .2, 0, 0, 7); ctx.fillStyle = 'rgba(40,100,120,.35)'; ctx.fill(); ctx.restore();
-  chimney(p[0], base, w, H, '#f0c9a0', '#c99068', '#6a4430');
-  ctx.save(); ctx.beginPath(); ctx.moveTo(p[0] - w / 2, base); ctx.quadraticCurveTo(p[0] - w * .32, base - H * .55, p[0] - w * .12, base - H); ctx.lineTo(p[0] + w * .12, base - H); ctx.quadraticCurveTo(p[0] + w * .32, base - H * .55, p[0] + w / 2, base); ctx.closePath(); ctx.clip();
-  ctx.strokeStyle = 'rgba(255,240,215,.4)'; ctx.lineWidth = 1.2; for (let i = 1; i < 9; i++) { const y = base - H * i / 10; ctx.beginPath(); ctx.moveTo(p[0] - w, y + Math.sin(i * 2.1) * 2); ctx.quadraticCurveTo(p[0], y - 3, p[0] + w, y + Math.cos(i) * 2); ctx.stroke(); }
-  ctx.fillStyle = 'rgba(120,60,30,.18)'; for (let i = 0; i < 5; i++) ctx.fillRect(p[0] - w * .4 + i * 5, base - H * (.2 + i * .13), 9, 2);
-  ctx.restore();
-  /* a carved window high up, a dovecote row under the cap */
-  const wy = base - H * .62; ctx.fillStyle = '#4a2a18'; ctx.beginPath(); ctx.moveTo(p[0] - 6, wy + 9); ctx.lineTo(p[0] - 6, wy); ctx.arc(p[0], wy, 6, Math.PI, 0); ctx.lineTo(p[0] + 6, wy + 9); ctx.closePath(); ctx.fill();
-  nightLite(p[0], wy + 3, 18, '255,190,110', .8);
-  for (let i = 0; i < 4; i++) { ctx.fillStyle = '#5a3420'; ctx.beginPath(); ctx.arc(p[0] - 9 + i * 6, base - H * .84, 1.8, 0, 7); ctx.fill(); }
-  /* the spouts: water arcs from the foot into the basin, catching the light */
-  for (const [dx, s] of [[-1, -1], [1, 1], [-.4, -1], [.4, 1]]) {
-    const sx = p[0] + dx * w * .36, sy = base - 12 - Math.abs(dx) * 4, ex = sx + s * 26, ey = p[1] - 10;
-    ctx.strokeStyle = 'rgba(210,245,255,.85)'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(sx, sy); ctx.quadraticCurveTo(sx + s * 14, sy - 8, ex, ey); ctx.stroke();
-    for (let i = 0; i < 2; i++) { const k = (t * 1.6 + i * .5 + dx) % 1; ell(ex + Math.sin(k * 9) * 2, ey - k * 4, 1.4 * (1 - k), 1.2 * (1 - k), 'rgba(255,255,255,.8)'); }
-  }
-  nightLite(p[0], p[1] - 12, 46, '120,220,255', .7);
-}
-/* Luxor: a granite obelisk on a stepped plinth, the pyramidion gilded; carved signs down its face */
-function lmObelisk(p, t) {
-  blobShadow(p[0] + 60, p[1] + 10, 70, 14, .16);
-  basin(p, 72, 36, 8, '#e8d6b0', '#f6ead0', t, false);
-  for (const [s, hh] of [[.62, 10], [.42, 10]]) { const r = s * 72; ctx.fillStyle = '#d9c39a'; ctx.beginPath(); ctx.moveTo(p[0] - r, p[1] - 8 - (s < .5 ? 10 : 0)); ctx.lineTo(p[0], p[1] - 8 - r * .5 - (s < .5 ? 10 : 0)); ctx.lineTo(p[0] + r, p[1] - 8 - (s < .5 ? 10 : 0)); ctx.lineTo(p[0], p[1] - 8 + r * .5 - (s < .5 ? 10 : 0)); ctx.closePath(); ctx.fill();
-    const y0 = p[1] - 8 - (s < .5 ? 10 : 0); ctx.fillStyle = '#e8d4ac'; ctx.beginPath(); ctx.moveTo(p[0] - r, y0); ctx.lineTo(p[0], y0 + r * .5); ctx.lineTo(p[0], y0 + r * .5 + hh); ctx.lineTo(p[0] - r, y0 + hh); ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#b89c70'; ctx.beginPath(); ctx.moveTo(p[0] + r, y0); ctx.lineTo(p[0], y0 + r * .5); ctx.lineTo(p[0], y0 + r * .5 + hh); ctx.lineTo(p[0] + r, y0 + hh); ctx.closePath(); ctx.fill(); }
-  const b0 = p[1] - 28, H = 196, bw = 15, tw = 9;
-  ctx.fillStyle = '#e9c99a'; ctx.beginPath(); ctx.moveTo(p[0] - bw, b0); ctx.lineTo(p[0] - tw, b0 - H); ctx.lineTo(p[0], b0 - H + 4); ctx.lineTo(p[0], b0 + 6); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#c29a68'; ctx.beginPath(); ctx.moveTo(p[0] + bw, b0); ctx.lineTo(p[0] + tw, b0 - H); ctx.lineTo(p[0], b0 - H + 4); ctx.lineTo(p[0], b0 + 6); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = 'rgba(110,70,40,.35)'; for (let i = 0; i < 14; i++) { const y = b0 - 18 - i * 12, x = p[0] - 9 + (i % 3); ctx.fillRect(x, y, i % 2 ? 4 : 6, 2); if (i % 3 === 0) { ctx.beginPath(); ctx.arc(x + 3, y - 4, 1.6, 0, 7); ctx.fill(); } }
-  ctx.fillStyle = '#ffd36a'; ctx.beginPath(); ctx.moveTo(p[0] - tw, b0 - H); ctx.lineTo(p[0], b0 - H - 18); ctx.lineTo(p[0], b0 - H + 4); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#d8a43a'; ctx.beginPath(); ctx.moveTo(p[0] + tw, b0 - H); ctx.lineTo(p[0], b0 - H - 18); ctx.lineTo(p[0], b0 - H + 4); ctx.closePath(); ctx.fill();
-  nightLite(p[0], b0 - H - 6, 30, '255,210,120', .9); nightLite(p[0], b0 - 30, 50, '255,200,130', .6);
-}
-/* Bristol: a Victorian clock tower in honey Bath stone, a slate spire and a clock that tells the time */
-function lmClock(p, t) {
-  blobShadow(p[0] + 50, p[1] + 10, 60, 14, .16);
-  basin(p, 66, 33, 8, '#cfc8bc', '#e4ded2', t, false);
-  const keep = TUFF; TUFF = BATH;
-  try {
-    const gx = NTL.c[0] - .32, gy = NTL.c[1] - .32, s = .64, H = 150;
-    block(gx - .08, gy - .08, s + .16, s + .16, 20, { courses: false });
-    const f = block(gx, gy, s, s, H);
-    for (const [P0, Q0] of [[f.D, f.C], [f.C, f.B]]) { opening(P0, Q0, H, .5, .2, .32, .3, 'win', false); tface(P0, Q0, H, () => { ctx.fillStyle = 'rgba(90,60,30,.18)'; ctx.fillRect(0, .6, 1, .03); ctx.fillRect(0, .3, 1, .02); }); }
-    /* clock faces: today's real time */
-    const now = new Date(), hr = (now.getHours() % 12 + now.getMinutes() / 60) / 12 * Math.PI * 2, mn = now.getMinutes() / 60 * Math.PI * 2;
-    for (const [P0, Q0, sx] of [[f.D, f.C, -1], [f.C, f.B, 1]]) {
-      const c = fpt(P0, Q0, H, .5, .82), rx = 11, ry = 12, sh = sx * .5;
-      ctx.save(); ctx.translate(c[0], c[1]); ctx.transform(1, sh, 0, 1, 0, 0);
-      ell(0, 0, rx + 2.5, ry + 2.5, '#3a3226'); ell(0, 0, rx, ry, '#fbf6e6');
-      ctx.strokeStyle = '#2a2420'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(hr) * rx * .5, -Math.cos(hr) * ry * .5); ctx.moveTo(0, 0); ctx.lineTo(Math.sin(mn) * rx * .8, -Math.cos(mn) * ry * .8); ctx.stroke();
-      ctx.restore();
-      nightLite(c[0], c[1], 24, '255,235,190', .8);
-    }
-    const P = (x, y, z) => upp(tiso(x, y), z), e = .06, A = P(gx - e, gy - e, H), B = P(gx + s + e, gy - e, H), C = P(gx + s + e, gy + s + e, H), D = P(gx - e, gy + s + e, H), T0 = P(gx + s / 2, gy + s / 2, H + 74);
-    tpoly([A, D, T0], '#6a7480'); tpoly([D, C, T0], '#5e6874'); tpoly([C, B, T0], '#47505a');
-    ctx.strokeStyle = 'rgba(30,35,40,.35)'; ctx.lineWidth = .8; for (let i = 1; i < 6; i++) { ctx.beginPath(); ctx.moveTo(...lp(D, T0, i / 6)); ctx.lineTo(...lp(C, T0, i / 6)); ctx.moveTo(...lp(C, T0, i / 6)); ctx.lineTo(...lp(B, T0, i / 6)); ctx.stroke(); }
-    ctx.fillStyle = '#d8b040'; ctx.fillRect(T0[0] - 1, T0[1] - 14, 2, 14); ell(T0[0], T0[1] - 15, 2.6, 2.6, '#e8c050');
-  } finally { TUFF = keep; }
-}
-/* Albuquerque: the water tower on four splayed legs, the tank in pale paint with a turquoise band */
-function lmWater(p, t) {
-  blobShadow(p[0] + 60, p[1] + 10, 64, 14, .16);
-  basin(p, 60, 30, 5, '#d8c4a8', '#e8d8c0', t, false);
-  const top = p[1] - 128, legs = [[-30, 6], [30, 6], [-14, -9], [14, -9]];
-  ctx.strokeStyle = '#7a6a5a'; ctx.lineWidth = 3;
-  for (const [dx, dy] of legs) { ctx.beginPath(); ctx.moveTo(p[0] + dx, p[1] + dy - 6); ctx.lineTo(p[0] + dx * .55, top + 8); ctx.stroke(); }
-  ctx.lineWidth = 1.1; ctx.strokeStyle = '#8a7a6a'; ctx.beginPath();
-  for (let k = 0; k < 3; k++) { const y0 = p[1] - 30 - k * 32, y1 = y0 - 32, f0 = 1 - (k * 32 + 24) / 140 * .45, f1 = 1 - ((k + 1) * 32 + 24) / 140 * .45; ctx.moveTo(p[0] - 30 * f0, y0 + 6); ctx.lineTo(p[0] + 30 * f1, y1 + 6); ctx.moveTo(p[0] + 30 * f0, y0 + 6); ctx.lineTo(p[0] - 30 * f1, y1 + 6); ctx.moveTo(p[0] - 30 * f0, y0 + 6); ctx.lineTo(p[0] + 30 * f0, y0 + 6); }
-  ctx.stroke();
-  const rx = 34, ry = 12, th = 42, ty = top - th;
-  const tg = ctx.createLinearGradient(p[0] - rx, 0, p[0] + rx, 0); tg.addColorStop(0, '#fbf6ec'); tg.addColorStop(.6, '#e6dccb'); tg.addColorStop(1, '#b4a894');
-  ctx.fillStyle = tg; ctx.beginPath(); ctx.ellipse(p[0], top, rx, ry, 0, 0, Math.PI); ctx.lineTo(p[0] - rx, ty); ctx.lineTo(p[0] + rx, ty); ctx.closePath(); ctx.fill();
-  ctx.save(); ctx.beginPath(); ctx.ellipse(p[0], top, rx, ry, 0, 0, Math.PI); ctx.lineTo(p[0] - rx, ty); ctx.lineTo(p[0] + rx, ty); ctx.closePath(); ctx.clip();
-  ctx.fillStyle = '#2aa0a8'; ctx.beginPath(); ctx.ellipse(p[0], top - 14, rx, ry, 0, 0, Math.PI); ctx.lineTo(p[0] - rx, top - 22); ctx.ellipse(p[0], top - 22, rx, ry, 0, Math.PI, 0, true); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = 'rgba(80,60,40,.1)'; for (let i = 0; i < 8; i++) ctx.fillRect(p[0] - rx + i * 9, ty, 1, th + ry);
-  ctx.restore();
-  ctx.fillStyle = '#d2c6b2'; ctx.beginPath(); ctx.ellipse(p[0], ty, rx + 3, ry + 1, 0, 0, 7); ctx.fill();
-  ctx.fillStyle = '#c8bca8'; ctx.beginPath(); ctx.moveTo(p[0] - rx - 3, ty); ctx.lineTo(p[0], ty - 26); ctx.lineTo(p[0] + rx + 3, ty); ctx.ellipse(p[0], ty, rx + 3, ry + 1, 0, 0, Math.PI); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#e8dfcf'; ctx.beginPath(); ctx.moveTo(p[0] - rx - 3, ty); ctx.lineTo(p[0], ty - 26); ctx.lineTo(p[0] - 4, ty + ry); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#7a6a5a'; ctx.fillRect(p[0] - 1, ty - 34, 2, 9); ell(p[0], ty - 35, 2.4, 2.4, '#e05a3a');
-  ctx.strokeStyle = 'rgba(90,80,70,.8)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p[0] + 12, p[1] - 8); ctx.lineTo(p[0] + 8, top + 10); ctx.moveTo(p[0] + 16, p[1] - 8); ctx.lineTo(p[0] + 12, top + 10); for (let y = p[1] - 14; y > top + 10; y -= 6) { const k = (p[1] - y) / (p[1] - top); ctx.moveTo(p[0] + 12 - k * 4, y); ctx.lineTo(p[0] + 16 - k * 4, y); } ctx.stroke();
-  nightLite(p[0], ty - 34, 12, '255,90,60', (t % 1.6) < .8 ? 1 : .3);
-  nightLite(p[0], top - 10, 46, '255,220,160', .5);
-}
-/* ---- Cappadocia's houses carved into fairy chimneys: doors, windows, a terrace, a ladder ---- */
-function caveHouse(x, y, hh, seed, t) {
-  const w = hh * .74;
-  chimney(x, y, w, hh, '#f0c9a0', '#c69068', '#6a4430');
-  const R = mulberry32(seed);
-  ctx.fillStyle = '#4a2a18';
-  const door = [x - w * .12, y]; ctx.beginPath(); ctx.moveTo(door[0] - 5, y); ctx.lineTo(door[0] - 5, y - 11); ctx.arc(door[0], y - 11, 5, Math.PI, 0); ctx.lineTo(door[0] + 5, y); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#7a4a24'; ctx.fillRect(door[0] - 4, y - 10, 8, 10);
-  const wins = [[-.1, .36], [.12, .5], [-.04, .68]];
-  for (const [dx, k] of wins) { if (k * hh > hh * .8) continue; const wx = x + dx * w, wy = y - hh * k; ctx.fillStyle = '#3a2016'; ctx.beginPath(); ctx.moveTo(wx - 3.5, wy + 5); ctx.lineTo(wx - 3.5, wy); ctx.arc(wx, wy, 3.5, Math.PI, 0); ctx.lineTo(wx + 3.5, wy + 5); ctx.closePath(); ctx.fill(); if (R() < .7) nightLite(wx, wy + 1, 16, '255,180,90', .9); }
-  /* a small timber terrace and a ladder up to the first window */
-  ctx.fillStyle = '#8a5a30'; ctx.fillRect(x + w * .05, y - hh * .3, w * .32, 3); ctx.strokeStyle = '#6a4024'; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 0; i < 4; i++) { ctx.moveTo(x + w * .07 + i * w * .09, y - hh * .3); ctx.lineTo(x + w * .07 + i * w * .09, y - hh * .3 - 6); } ctx.moveTo(x + w * .05, y - hh * .3 - 6); ctx.lineTo(x + w * .37, y - hh * .3 - 6); ctx.stroke();
-  ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(x - w * .32, y); ctx.lineTo(x - w * .2, y - hh * .34); ctx.moveTo(x - w * .22, y); ctx.lineTo(x - w * .1, y - hh * .34); for (let i = 1; i < 6; i++) { const k = i / 6; ctx.moveTo(lerp(x - w * .32, x - w * .2, k), y - hh * .34 * k); ctx.lineTo(lerp(x - w * .22, x - w * .1, k), y - hh * .34 * k); } ctx.stroke();
-  if (R() < .6) { ctx.fillStyle = '#c0392b'; ctx.fillRect(x + w * .1, y - hh * .3 - 10, 4, 4); }
-}
-/* a small house in the region's dress, for the residents' corner */
-function ntHouse(gx, gy, i) {
-  const R = S.region, w = .9, d = .8, h = R === 'bri' ? 44 : 34 + (i % 2) * 8;
-  const f = block(gx, gy, w, d, h);
-  opening(f.D, f.C, h, .3, 0, .2, .55, 'door'); opening(f.D, f.C, h, .72, .35, .16, .3, 'win', true); opening(f.C, f.B, h, .5, .35, .22, .3, 'win', i % 2 === 0);
-  if (R === 'bri') gableRoof(gx, gy, w, d, h, 18, '#5e6874'); else flatRoof(gx, gy, w, d, h, R === 'lux' && i % 2 === 0);
-  if (R === 'lux' && i === 1) { const p = lp(f.d, f.c, .5); ctx.fillStyle = '#5a7a3a'; ctx.beginPath(); ctx.arc(p[0] - 8, p[1] - 4, 6, 0, 7); ctx.fill(); }
-}
-/* ---- vehicles that drive round: a van (any heading, like the coaches) ---- */
-function ntVan(gx, gy, hd, col, t, deck) {
-  const w = deck ? .44 : .4, d = deck ? 1.15 : .82, hh = deck ? 40 : 22, z = 4;
-  const fx = Math.cos(hd), fy = Math.sin(hd), rx = -fy, ry = fx, g = (a, b) => tiso(gx + a * fx + b * rx, gy + a * fy + b * ry);
-  const A = g(0, -w / 2), B = g(0, w / 2), C = g(-d, w / 2), D = g(-d, -w / 2), L = p => upp(p, z);
-  { const m = g(-d / 2, 0); blobShadow(m[0] + 8, m[1] + 3, 20 + 12 * Math.abs(fy), 9, .22); }
-  const body = deck ? '#c8202a' : '#f6f4ee', seen = (nx, ny) => nx + ny > 1e-6, shade = ny => mix(body, '#000000', .14 * Math.max(0, ny));
-  const winRow = right => { ctx.fillStyle = '#2a3a50'; if (deck) { for (let r = 0; r < 2; r++) for (let i = 0; i < 4; i++) ctx.fillRect(.06 + i * .235, .14 + r * .44, .18, .26); ctx.fillStyle = '#f4f0e0'; ctx.fillRect(0, .5, 1, .05); } else { ctx.fillRect(.08, .5, .84, .32); ctx.fillStyle = col; ctx.fillRect(0, .26, 1, .12); } };
-  const wheels = (p, q) => { for (const u of [.2, .82]) { const c = lp(p, q, u); ell(c[0], c[1] - 4, 4.5, 4.5, '#1f1c22'); } };
-  const faces = [
-    { n: [rx, ry], draw: () => { wheels(C, B); tpoly([L(C), L(B), upp(B, z + hh), upp(C, z + hh)], shade(ry)); tface(L(C), L(B), hh, () => winRow(true)); } },
-    { n: [-rx, -ry], draw: () => { wheels(D, A); tpoly([L(D), L(A), upp(A, z + hh), upp(D, z + hh)], shade(-ry)); tface(L(D), L(A), hh, () => winRow(false)); } },
-    { n: [-fx, -fy], draw: () => { tpoly([L(D), L(C), upp(C, z + hh), upp(D, z + hh)], shade(-fy)); tface(L(D), L(C), hh, () => { ctx.fillStyle = '#2a3a50'; ctx.fillRect(.15, .56, .7, .3); ctx.fillStyle = '#e5432f'; ctx.fillRect(.06, .14, .14, .14); ctx.fillRect(.8, .14, .14, .14); }); } },
-    { n: [fx, fy], draw: () => { tpoly([L(A), L(B), upp(B, z + hh), upp(A, z + hh)], shade(fy)); tface(L(A), L(B), hh, () => { ctx.fillStyle = '#1e2a3c'; ctx.fillRect(.08, .46, .84, .42); ctx.fillStyle = '#fff6c8'; ctx.fillRect(.08, .1, .16, .1); ctx.fillRect(.76, .1, .16, .1); }); if (NIGHT_K > 0) { const m = upp(lp(A, B, .5), z + 6); nightLite(m[0], m[1], 22, '255,240,200', .8); } } }
-  ];
-  for (const f of faces) if (seen(f.n[0], f.n[1])) f.draw();
-  tpoly([upp(A, z + hh), upp(B, z + hh), upp(C, z + hh), upp(D, z + hh)], deck ? '#b81c24' : '#ffffff');
-}
-/* the van's loop: in at the east gate, round the front of the square, out at the west gate; then back the other way */
-const NT_VAN = smoothPath([[19, 8.18], [9.45, 8.18], [9.45, 9.45], [8.18, 9.45], [8.18, 19]], 3);
-function ntVanAt(t) {
-  const L = pathLenC(NT_VAN), P = 58, u = pmod(t, P), sp = .95, run = L / sp;
-  if (u > run * 2 + 4) return null;
-  const fwd = u < run, s = fwd ? u * sp : u > run + 4 ? L - (u - run - 4) * sp : -1;
-  if (s < 0) return null;
-  const path = fwd ? NT_VAN : NT_VAN.slice().reverse(), k = fwd ? s : L - s;
-  const f = pathPt(path, k), r = pathPt(path, k - .8), hd = Math.atan2(f[1] - r[1], f[0] - r[0]);
-  return { p: [f[0] - Math.sin(hd) * .2, f[1] + Math.cos(hd) * .2], hd }; /* keeps to its right-hand side of the road */
-}
-/* ---- people walking the village: from the gates along the streets, through the square and back ---- */
-const NT_WALK = [
-  [[16.3, 7.62], [9.75, 7.62], [9.75, 6.42], [6.42, 6.42], [6.42, 9.6], [7.62, 9.6], [7.62, 16.3]],
-  [[8.42, 16.3], [8.42, 9.72], [9.72, 9.72], [9.72, 8.42], [16.3, 8.42]],
-  [[7.0, 2.9], [7.0, 6.3], [9.6, 6.3], [9.6, 7.5], [12.0, 7.5]]
-];
-function ntWalkers(items, t) {
-  const cols = ['#ff5e3a', '#14a39a', '#ffc23d', '#9b7be0', '#5aa9e6', '#ff6fa8', '#2b2350', '#e8e2d4'], hats = ['#f4e4c0', null, '#e04a3a', null, '#2b2350', null];
-  NT_WALK.forEach((path, pi) => {
-    const L = pathLen(path), n = pi === 2 ? 3 : 6;
-    for (let i = 0; i < n; i++) {
-      const s = pmod(t * (.32 + (i % 3) * .05) + i * L / n + pi * 3, L + 3) - 1.5; if (s < 0 || s > L) continue;
-      const r = walkPath(path, s), side = ((i % 2) - .5) * .14, pos = [r.p[0] + (Math.abs(r.dir[1]) > Math.abs(r.dir[0]) ? side : 0), r.p[1] + (Math.abs(r.dir[0]) >= Math.abs(r.dir[1]) ? side : 0)];
-      if (COL && pi === 2) continue;
-      items.push({ depth: pos[0] + pos[1], draw: () => { const q = tiso(...pos); tourist(q[0], q[1], cols[(i + pi * 3) % cols.length], hats[(i + pi) % hats.length], i % 3 === 0, t, i + pi * 7); } });
-    }
-  });
-  /* a couple strolling round the landmark */
-  for (let i = 0; i < 2; i++) { const a = t * .12 + i * .25, gx = NTL.c[0] + Math.cos(a) * 1.25, gy = NTL.c[1] + Math.sin(a) * 1.25; items.push({ depth: gx + gy, draw: () => { const q = tiso(gx, gy); tourist(q[0], q[1], i ? '#ff6fa8' : '#2b5ab8', i ? '#f4e4c0' : null, !i, t, 20 + i); } }); }
-}
-/* ---- balloons being laid out and inflated on the meadow: on its side and filling, standing up, lifting off ---- */
-function inflating(gx, gy, c1, c2, t, ph) {
-  const P = 26, u = pmod(t + ph, P), p = tiso(gx, gy), R = 30;
-  if (NIGHT_K > .5) return;
-  let k, rot, lift = 0, burn = false, a = 1;
-  if (u < 9) { k = .35 + .65 * easeIO3(u / 9); rot = -Math.PI / 2; }
-  else if (u < 13) { k = 1; rot = -Math.PI / 2 * (1 - easeIO3((u - 9) / 4)); burn = (t * 3) % 1 < .6; }
-  else if (u < 17) { k = 1; rot = 0; burn = (t * 1.5) % 1 < .4; }
-  else { k = 1; rot = 0; lift = Math.pow((u - 17) / 9, 1.7) * 520; burn = (t + ph) % 3 < .5; a = 1 - clamp((u - 23) / 3, 0, 1); }
-  blobShadow(p[0] + 18 + lift * .1, p[1] + 4, 26 * (1 - lift / 700), 8, .18 * a);
-  if (u < 13) { /* the cold-air fan at the mouth and two crew holding the mouth open */
-    const f = [p[0] + 22, p[1] + 2]; ctx.fillStyle = '#3a3a44'; ctx.beginPath(); ctx.arc(f[0], f[1] - 7, 7, 0, 7); ctx.fill(); ctx.strokeStyle = '#c8c8d0'; ctx.lineWidth = 1; ctx.beginPath(); for (let i = 0; i < 3; i++) { const an = t * 25 + i * 2.1; ctx.moveTo(f[0], f[1] - 7); ctx.lineTo(f[0] + Math.cos(an) * 6, f[1] - 7 + Math.sin(an) * 6); } ctx.stroke();
-    person(p[0] + 8, p[1] - 6, '#2b2350', t, ph); person(p[0] + 4, p[1] + 6, '#ff5e3a', t, ph + 1);
-  }
-  ctx.save(); ctx.globalAlpha = a; ctx.translate(p[0], p[1] - lift - 4); ctx.rotate(rot); balloon(0, 4, R * k, c1, c2, burn, 1); ctx.restore();
-}
-/* ---- everything that stands in the village besides the buildings ---- */
-const NT_TREES = { cap: [[3.0, 15.0], [14.9, 3.4], [9.75, 11.95], [11.9, 9.75], [-.0, 11.3], [5.6, 14.9]], abq: [[3.0, 15.0], [14.9, 3.4], [-.0, 11.3], [5.6, 14.9]],
-  lux: [[3.0, 15.0], [14.9, 3.4], [9.75, 11.95], [11.9, 9.75], [-.0, 11.3], [5.6, 14.9], [2.2, 7.9]], bri: [[3.0, 15.0], [14.9, 3.4], [9.75, 11.95], [11.9, 9.75], [-.0, 11.3], [5.6, 14.9]] };
-function ntTree(x, y, i, t) {
-  const R = S.region;
-  if (R === 'lux') return palm(x, y, .95 + (i % 3) * .1, t + i);
-  if (R === 'bri') return i % 2 ? oakTree(x, y, 1.1) : copperBeech(x, y, 1);
-  if (R === 'abq') return i % 2 ? roundTree(x, y, 1, '#9aa84a') : cholla(x, y, 1);
-  return i % 2 ? cypress(x, y, .95) : roundTree(x, y, .95, '#86a44c');
-}
-function ntScenery(t) {
-  const items = [], R = S.region;
-  items.push({ depth: NTL.c[0] + NTL.c[1] + .2, shadow: null, draw: () => ntLandmark(t) });
-  /* the gates: two stone posts with lanterns, where the region's passengers come in */
-  for (const [a, b2] of [[[15.5, 7.3], [15.5, 8.7]], [[7.3, 15.5], [8.7, 15.5]]]) for (const q of [a, b2]) items.push({ depth: q[0] + q[1] + .3, draw: () => { const keep = R === 'bri' ? TUFF : null; if (keep) TUFF = BATH; try { const f = block(q[0] - .17, q[1] - .17, .34, .34, 44, { courses: R !== 'abq' }); const c = lp(f.a, f.c, .5); ctx.fillStyle = TUFF.top; ctx.fillRect(c[0] - 9, c[1] - 6, 18, 6); ctx.fillStyle = '#2a2420'; ctx.fillRect(c[0] - 1.5, c[1] - 18, 3, 12); ell(c[0], c[1] - 20, 4, 5, '#ffd890'); nightLite(c[0], c[1] - 20, 26, '255,200,120', 1); } finally { if (keep) TUFF = keep; } } });
-  /* trees: few, where they frame something */
-  (NT_TREES[R] || NT_TREES.cap).forEach(([gx, gy], i) => items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 12, p[1] + 4, 14, 5, .16); }, draw: () => { const p = tiso(gx, gy); ntTree(p[0], p[1], i, t); } }));
-  /* the residents' corner: cave houses in Cappadocia, small houses elsewhere */
-  NTL.houses.forEach(([gx, gy], i) => {
-    if (R === 'cap') items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 30, p[1] + 6, 34, 9, .15); }, draw: () => { const p = tiso(gx, gy); caveHouse(p[0], p[1], [112, 90, 100][i], 40 + i, t); } });
-    else items.push({ depth: gx + gy + 1.2, draw: () => ntHouse(gx - .45, gy - .4, i) });
-  });
-  /* the launch meadow: the fleet laid out, two balloons being inflated, the evening ones lifting off at night events */
-  const NE = NIGHT && NIGHT.ev && NIGHT.ev.k, nt = NIGHT ? T - NIGHT.t0 : 0;
-  if (NIGHT_K <= 0 || HOMEI || NE === 'glow' || NE === 'nglow' || NE === 'eve') fieldSlots().forEach(({ b, gx, gy }, i) => items.push({ depth: gx + gy, shadow: () => { if (NE === 'eve' && eveRise(nt, i) > 30) return; const p = tiso(gx, gy); blobShadow(p[0] + 26, p[1] + 6, 26, 9, .18); }, draw: () => { const p = tiso(gx, gy), r = NE === 'eve' ? eveRise(nt, i) : 0; balloon(p[0] + r * .3, p[1] - r, b.size === 'XL' ? 44 : b.size === 'L' ? 38 : b.size === 'M' ? 33 : 28, myCol()[0], myCol()[1], NE === 'nglow' ? glowPulse(nt, i) > .5 : NE === 'eve' ? (t * 2 + i) % 2 < .8 : (t * 1.3 + i) % 3 < .4, 1, b.ad, designOf(b)); } }));
-  if (!OPEN && S.balloons.length) NTL.infl.forEach(([gx, gy], i) => items.push({ depth: gx + gy, draw: () => inflating(gx, gy, i ? myCol()[1] === '#ffffff' ? '#2b2350' : myCol()[1] : myCol()[0], i ? myCol()[0] : myCol()[1], t, i * 11) }));
-  /* the van going round, and the walkers */
-  if (!COL) { const v = ntVanAt(t); if (v) items.push({ depth: v.p[0] + v.p[1] + .2, draw: () => ntVan(v.p[0], v.p[1], v.hd, R === 'abq' ? '#e08a1e' : R === 'lux' ? '#1f6f8b' : '#3ad0c0', t, R === 'bri') }); }
-  ntWalkers(items, t);
-  items.push(...ntBridgeItems());
-  /* region moments */
-  if (R === 'lux') for (let i = 0; i < 3; i++) { const gx = pmod(t * (.12 + i * .03) + i * 9, 34) - 8, gy = -3.0 - (i % 2) * .7; items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); felucca(p[0], p[1], t, i); } }); }
-  if (R === 'abq') {
-    for (let i = 0; i < 4; i++) { const dir = i % 2 ? 1 : -1, s = pmod(t * (1.6 + i * .3) + i * 7, 26), gy = dir > 0 ? 15.6 + s : 41.6 - s, gx = dir > 0 ? 7.8 : 8.2; if (gy < 16.2) continue; items.push({ depth: gx + gy, draw: () => ntCar(gx, gy, dir > 0 ? Math.PI / 2 : -Math.PI / 2, ['#c0392b', '#2a5a8a', '#e8e2d4', '#2a2a30'][i], t) }); }
-    [[10.45, 10.75, 0, '#2a5a8a'], [10.45, 11.65, 0, '#e8e2d4'], [11.55, 10.75, Math.PI, '#c0392b']].forEach(([gx, gy, hd, c]) => items.push({ depth: gx + gy, draw: () => ntCar(gx, gy, hd, c, 0) }));
-  }
-  if (R === 'bri') {
-    for (const [gx, gy] of [[9.75, 6.0], [6.0, 9.75]]) items.push({ depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + 8, p[1] + 2, 9, 3, .18); }, draw: () => phoneBox(...tiso(gx, gy)) });
-    items.push({ depth: 10.1 + 9.9, draw: () => pillarBox(...tiso(10.1, 9.9)) });
-    for (let i = 0; i < 2; i++) { const gx = pmod(t * .06 + i * 17, 36) - 10, gy = 16.7; items.push({ depth: gx + gy, draw: () => narrowboat(gx, gy, i, t) }); }
-    if (NIGHT_K < .3) items.push({ depth: 99, draw: () => { const c = tiso(7.5, 6); ctx.save(); ctx.globalAlpha = 1 - NIGHT_K / .3; gulls(t, c[0], c[1] - 330); ctx.restore(); } });
-  }
-  /* festival days: bunting along the two streets */
-  if (S.fest) for (const [a, b2] of [[[10.2, 7.4], [15.2, 7.4]], [[7.4, 10.2], [7.4, 15.2]], [[10.2, 8.6], [15.2, 8.6]], [[8.6, 10.2], [8.6, 15.2]]]) items.push({ depth: a[0] + a[1] + 2.5, draw: () => {
-    const p = tiso(...a), q = tiso(...b2), H = 46; ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 2.5;
-    for (const r of [p, q]) { ctx.beginPath(); ctx.moveTo(r[0], r[1]); ctx.lineTo(r[0], r[1] - H); ctx.stroke(); }
-    ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p[0], p[1] - H); ctx.quadraticCurveTo((p[0] + q[0]) / 2, (p[1] + q[1]) / 2 - H + 14, q[0], q[1] - H); ctx.stroke();
-    for (let i = 1; i < 14; i++) { const k = i / 14, x = lerp(p[0], q[0], k), y = lerp(p[1], q[1], k) - H + 14 * 4 * k * (1 - k) + Math.sin(t * 3 + i) * .8; ctx.fillStyle = ['#ff5e3a', '#ffc23d', '#14a39a', '#9b7be0', '#ff6fa8'][i % 5]; ctx.beginPath(); ctx.moveTo(x - 4, y); ctx.lineTo(x + 4, y); ctx.lineTo(x, y + 9); ctx.fill(); }
-  } });
-  /* the bazaar's decorations, at their places in the new village */
-  if (placed('fountain')) items.push({ depth: DECOR_AT.fountain[0] + DECOR_AT.fountain[1], draw: () => decoFountain(tiso(DECOR_AT.fountain[0], DECOR_AT.fountain[1]), t) });
-  if (placed('statue')) items.push({ depth: STATUE_AT[0] + STATUE_AT[1], shadow: () => { const p = tiso(...STATUE_AT); blobShadow(p[0] + 18, p[1] + 4, 18, 6, .16); }, draw: () => decoStatue(tiso(...STATUE_AT)) });
-  if (placed('lanterns')) for (const [gx, gy] of ntLamps()) items.push({ depth: gx + gy, draw: () => decoLantern(tiso(gx, gy), t, gx) });
-  if (placed('flags')) for (const [gx, gy] of NT_FLAGS) items.push({ depth: gx + gy + .6, draw: () => decoFlag(tiso(gx, gy), t, myCol(), gx) });
-  if (placed('arch')) for (const [P, Q, dp] of ARCHES) items.push({ depth: dp, draw: () => decoArch(tiso(...P), tiso(...Q), t, myCol(), S.company || '') });
-  if (placed('cafe')) items.push({ depth: CAFE_AT[0] + CAFE_AT[1], shadow: () => { const p = tiso(...CAFE_AT); blobShadow(p[0], p[1] + 4, 70, 22, .1); }, draw: () => decoCafe(tiso(...CAFE_AT), t) });
-  if (placed('rugs')) items.push({ depth: RUGS_AT[0] + RUGS_AT[1], draw: () => decoRugs(tiso(...RUGS_AT), t) });
-  if (owned('supporter')) items.push({ depth: PLAQUE_AT[0] + PLAQUE_AT[1], draw: () => decoPlaque(tiso(...PLAQUE_AT)) });
-  if (placed('pigeons') && NIGHT_K < .3) items.push({ depth: 99, draw: () => { const c = tiso(8, 6.5); ctx.save(); ctx.globalAlpha = 1 - NIGHT_K / .3; decoPigeons([c[0], c[1] - 250], t); ctx.restore(); } });
-  return items;
-}
-const NT_FLAGS = [[15.3, 2.6], [15.3, 12.6], [2.6, 15.3], [12.6, 15.3], [15.3, 6.6], [6.6, 15.3]];
-/* street lamps: by the gates, along the streets and round the square */
-function ntLamps() { return placed('lanterns') ? [[10.0, 7.35], [12.4, 7.35], [14.6, 7.35], [7.35, 10.0], [7.35, 12.4], [7.35, 14.6], [6.0, 6.0], [9.95, 9.95]] : [[11.6, 7.35], [14.8, 7.35], [7.35, 11.6], [7.35, 14.8], [6.0, 6.0], [9.95, 9.95]]; }
-/* a parked or passing car on Albuquerque's lot and highway */
-function ntCar(gx, gy, hd, col, t) {
-  const fx = Math.cos(hd), fy = Math.sin(hd), w = .34, d = .62, g = (a, b) => tiso(gx + a * fx - b * fy, gy + a * fy + b * fx);
-  const A = g(d / 2, -w / 2), B = g(d / 2, w / 2), C = g(-d / 2, w / 2), D = g(-d / 2, -w / 2);
-  blobShadow(lp(A, C, .5)[0] + 5, lp(A, C, .5)[1] + 2, 16, 6, .2);
-  const z = 3, hh = 9, P = q => upp(q, z);
-  tpoly([P(A), P(B), P(C), P(D)], mix(col, '#000000', .3));
-  for (const [p, q] of [[D, C], [C, B], [A, B], [D, A]]) if ((q[1] + p[1]) / 2 > lp(A, C, .5)[1] - 1) tpoly([P(p), P(q), upp(q, z + hh), upp(p, z + hh)], mix(col, '#000000', .1));
-  const r = [lp(A, C, .2), lp(B, D, .2), lp(A, C, .8), lp(B, D, .8)].map(q => upp(q, z + hh)); tpoly([upp(A, z + hh), upp(B, z + hh), upp(C, z + hh), upp(D, z + hh)], col);
-  const cab = [lp(r[0], r[2], .25), lp(r[1], r[3], .25), lp(r[0], r[2], .75), lp(r[1], r[3], .75)].map(q => upp(q, 6)); tpoly(cab, '#3a4a5c'); tpoly([cab[0], cab[1], lp(cab[1], cab[2], .3), lp(cab[0], cab[3], .3)], col);
-  if (NIGHT_K > 0) { const m = upp(lp(A, B, .5), z + 4); nightLite(m[0], m[1], 20, '255,240,200', .7); }
-}
-/* a narrowboat on the Avon: long, green and red, a little chimney smoking */
-function narrowboat(gx, gy, i, t) {
-  const L = 2.2, W = .32, bob = Math.sin(t * 1.2 + i) * 1;
-  ctx.save(); ctx.translate(0, bob);
-  const hull = block(gx, gy, L, W, 8, { lit: i ? '#2a5a3a' : '#7a1f26', shade: i ? '#1f4430' : '#5a161c', top: '#3a2a20', courses: false });
-  ctx.translate(0, -8); const cab = block(gx + .3, gy + .04, L - .7, W - .08, 12, { lit: i ? '#c0392b' : '#2a5a3a', shade: i ? '#8a2a20' : '#1f4430', top: '#e8dcc0', courses: false });
-  tface(cab.D, cab.C, 12, () => { ctx.fillStyle = '#e8c860'; for (let k = 0; k < 6; k++) ctx.fillRect(.06 + k * .16, .35, .08, .4); });
-  const ch = upp(tiso(gx + .5, gy + .16), 12); ctx.fillStyle = '#2a2420'; ctx.fillRect(ch[0] - 1.5, ch[1] - 9, 3, 9);
-  for (let k = 0; k < 3; k++) { const ph = (t * .6 + k / 3) % 1; ell(ch[0] - ph * 10, ch[1] - 12 - ph * 16, 2 + ph * 5, 2 + ph * 4, `rgba(200,200,205,${.45 * (1 - ph)})`); }
-  ctx.restore();
-}
-/* ---- the wall: the front walls with their two gates; at the back the meadow runs open into the valley ---- */
-function ntWall() {
-  const items = [], H = 16, T0 = -.5, T1 = 15.5, th = .14, bri = S.region === 'bri';
-  const seg = (gx, gy, w, d) => items.push({ depth: gx + w + gy + d - .5, draw: () => bri ? block(gx, gy, w, d, 11, { top: '#cfc6b4' }) : block(gx, gy, w, d, H, { courses: false, top: S.winter ? '#f6f9fc' : TUFF.top }) });
-  const run = (a0, a1, gap, put) => { for (let x = a0; x < a1 - .01; x += 1) { let a = x, b = Math.min(x + 1, a1); if (gap && b > gap[0] && a < gap[1]) { if (a < gap[0]) b = gap[0]; else if (b > gap[1]) a = gap[1]; else continue; } put(a, b - a); } };
-  run(T0, T1, [7.3, 8.7], (a, w) => seg(a, T1, w, th)); /* front-left, the west gate */
-  run(T0, T1, [7.3, 8.7], (a, w) => seg(T1, a, th, w)); /* front-right, the east gate */
-  run(2.75, T1, null, (a, w) => seg(a, T0 - th, w, th)); /* back-right, behind the company row (the meadow's corner open) */
-  run(7.55, T1, null, (a, w) => seg(T0 - th, a, th, w)); /* back-left, behind the school and the hotels */
-  return items;
-}
-/* the outer ground keeps clear of the rivers in the new village */
-function ntOuterFree(gx, gy) {
-  if (S.region === 'lux') return !(gy > -6 && gy < -1.4);
-  if (S.region === 'bri') return !((gy > 15.7 && gy < 18.4 && gx > -6.5) || (gx > -6.4 && gx < -3.6 && gy < 18.4));
-  if (S.region === 'abq') return !(gx > 6.5 && gx < 9.6 && gy > 15);
-  return true;
-}
-/* ---- the ground of the village: dust, the meadow, the paving of the streets and the square ---- */
-const NT_GROUND = {
-  cap: { base: '#ecd3aa', grass: ['#a6b466', '#98a85a'], street: '#d6b78c', sett: '#c3a074', sq: '#e4cba2', ring: '#c7a87e', kerb: '#f6e6c8', walk: '#e6cfa6', track: '#d2b68c' },
-  abq: { base: '#e6bc92', grass: ['#b9b672', '#acaa66'], street: '#706c74', sett: '#5e5a62', sq: '#dcb48c', ring: '#c4946a', kerb: '#efe2cc', walk: '#e8d2b2', track: '#d8b48a', asphalt: true },
-  lux: { base: '#efdcb2', grass: ['#9cc36a', '#8eb85e'], street: '#e6d4aa', sett: '#cdb78a', sq: '#efe0bc', ring: '#d4bc90', kerb: '#faf0dc', walk: '#ecdcb6', track: '#dcc496' },
-  bri: { base: '#9cbf7c', grass: ['#8cba62', '#7eae58'], street: '#a49e94', sett: '#8a847c', sq: '#bdb6aa', ring: '#9a9488', kerb: '#dcd6ca', walk: '#c4beb2', track: '#b8ae94' }
-};
-let NT_NOISE = null;
-function ntNoise() {
-  if (NT_NOISE) return NT_NOISE;
-  const c = document.createElement('canvas'); c.width = c.height = 256; const g = c.getContext('2d'), R = mulberry32(99);
-  for (let i = 0; i < 90; i++) { const x = R() * 256, y = R() * 256, r = 14 + R() * 46, l = R() < .5, gr = g.createRadialGradient(x, y, 0, x, y, r); gr.addColorStop(0, l ? 'rgba(255,248,232,.16)' : 'rgba(110,70,40,.12)'); gr.addColorStop(1, 'rgba(0,0,0,0)'); for (const dx of [-256, 0, 256]) for (const dy of [-256, 0, 256]) { g.save(); g.translate(dx, dy); g.fillStyle = gr; g.fillRect(x - r, y - r, r * 2, r * 2); g.restore(); } }
-  for (let i = 0; i < 2600; i++) { g.fillStyle = R() < .5 ? `rgba(255,248,230,${.12 + R() * .2})` : `rgba(90,55,30,${.06 + R() * .12})`; g.fillRect(R() * 256, R() * 256, 1 + R() * 2, 1 + R() * 1.5); }
-  return NT_NOISE = c;
-}
-function ntGround(t) {
-  const C = NT_GROUND[S.region] || NT_GROUND.cap, g = ctx;
-  g.save(); g.transform(TW / 2, TH / 2, -TW / 2, TH / 2, 0, 0); /* from here on, grid units */
-  const pat = g.createPattern(ntNoise(), 'repeat'); pat.setTransform(new DOMMatrix().scale(1 / 64));
-  const rect = (x0, y0, x1, y1, c) => { g.fillStyle = c; g.fillRect(x0, y0, x1 - x0, y1 - y0); };
-  const poly = (pts, c) => { g.beginPath(); pts.forEach(([x, y], i) => i ? g.lineTo(x, y) : g.moveTo(x, y)); g.closePath(); g.fillStyle = c; g.fill(); };
-  const tex = (a = 1) => { g.save(); g.globalAlpha = a; g.fillStyle = pat; g.fill(); g.restore(); };
-  /* the village floor, faded at its open back edges */
-  g.beginPath(); g.rect(-.5, -.5, 16, 16); g.fillStyle = C.base; g.fill(); tex(1);
-  /* the meadow, mown in stripes, with a launch ring under each balloon */
-  for (const M of [NTL.meadow, NTL.meadow2]) { poly(M, C.grass[0]); g.save(); g.clip(); for (let x = -1; x < 7; x += .9) rect(x, -1, x + .45, 8, C.grass[1]); g.beginPath(); g.rect(-1, -1, 8, 9); tex(.8); g.restore(); }
-  g.strokeStyle = 'rgba(255,255,255,.38)'; g.lineWidth = .035; g.beginPath(); for (const [x, y] of NTL.field) { g.moveTo(x + .62, y); g.arc(x, y, .62, 0, Math.PI * 2); } g.stroke();
-  g.strokeStyle = 'rgba(70,90,40,.35)'; g.lineWidth = .05; g.beginPath(); g.moveTo(-.4, 7.55); g.lineTo(6.1, 7.55); g.lineTo(6.1, 2.85); g.lineTo(2.75, 2.85); g.lineTo(2.75, -.4); g.stroke();
-  /* the gravel track out of the square to the hangar's apron, tyre ruts in it */
-  const [tx0, ty0, tx1, ty1] = NTL.track, [ax0, ay0, ax1, ay1] = NTL.apron;
-  rect(tx0, ty0, tx1, ty1, C.track); rect(ax0, ay0, ax1, ay1, C.track); g.beginPath(); g.rect(tx0, ty0, tx1 - tx0, ty1 - ty0); g.rect(ax0, ay0, ax1 - ax0, ay1 - ay0); tex(1);
-  g.strokeStyle = 'rgba(110,80,50,.22)'; g.lineWidth = .06; g.beginPath(); for (const x of [6.72, 7.08]) { g.moveTo(x, 6.1); g.lineTo(x, 3.0); g.lineTo(3.2, x - 3.9); } g.stroke();
-  /* the two arrival streets and their pavements; the square */
-  const [s0, s1] = NTL.st, [q0, q1] = NTL.sq;
-  rect(q1 - .2, s0 - .28, 15.5, s0, C.walk); rect(s0 - .28, q1 - .2, s0, 15.5, C.walk); /* pavements on the shop side */
-  rect(q1 - .2, s1, 15.5, s1 + .2, C.walk); rect(s1, q1 - .2, s1 + .2, 15.5, C.walk);
-  rect(q1 - .2, s0, 16.5, s1, C.street); rect(s0, q1 - .2, s1, 16.5, C.street);
-  g.beginPath(); g.rect(q1 - .2, s0, 16.7 - q1, s1 - s0); g.rect(s0, q1 - .2, s1 - s0, 16.7 - q1); tex(.9);
-  g.lineWidth = .014; g.strokeStyle = C.sett;
-  if (C.asphalt) { g.strokeStyle = '#e8c84a'; g.lineWidth = .05; g.setLineDash([.4, .35]); g.beginPath(); g.moveTo(q1, 8); g.lineTo(16.5, 8); g.moveTo(8, q1); g.lineTo(8, 16.5); g.stroke(); g.setLineDash([]); }
-  else { g.beginPath(); for (let x = q1; x < 16.5; x += .16) { g.moveTo(x, s0); g.lineTo(x, s1); } for (let y = s0 + .14; y < s1; y += .14) { g.moveTo(q1, y); g.lineTo(16.5, y); }
-    for (let y = q1; y < 16.5; y += .16) { g.moveTo(s0, y); g.lineTo(s1, y); } for (let x = s0 + .14; x < s1; x += .14) { g.moveTo(x, q1); g.lineTo(x, 16.5); } g.stroke(); }
-  g.strokeStyle = C.kerb; g.lineWidth = .05; g.beginPath(); for (const y of [s0, s1]) { g.moveTo(q1, y); g.lineTo(15.5, y); } for (const x of [s0, s1]) { g.moveTo(x, q1); g.lineTo(x, 15.5); } g.stroke();
-  /* the square: setts laid in rings round the landmark, a border of larger slabs */
-  rect(q0, q0, q1, q1, C.sq); g.beginPath(); g.rect(q0, q0, q1 - q0, q1 - q0); tex(.9);
-  g.save(); g.beginPath(); g.rect(q0 + .12, q0 + .12, q1 - q0 - .24, q1 - q0 - .24); g.clip();
-  g.strokeStyle = C.ring; g.lineWidth = .016; g.beginPath(); for (let r = 1.05; r < 3; r += .17) { g.moveTo(8 + r, 8); g.arc(8, 8, r, 0, Math.PI * 2); } g.stroke();
-  g.lineWidth = .012; g.beginPath(); for (let r = 1.05; r < 3; r += .17) { const n = Math.round(r * 2 * Math.PI / .2); for (let i = 0; i < n; i++) { const a = (i + (Math.round(r * 10) % 2) * .5) / n * Math.PI * 2; g.moveTo(8 + Math.cos(a) * r, 8 + Math.sin(a) * r); g.lineTo(8 + Math.cos(a) * (r + .17), 8 + Math.sin(a) * (r + .17)); } } g.stroke();
-  g.restore();
-  g.strokeStyle = C.kerb; g.lineWidth = .12; g.strokeRect(q0 + .06, q0 + .06, q1 - q0 - .12, q1 - q0 - .12);
-  g.strokeStyle = 'rgba(90,60,30,.18)'; g.lineWidth = .02; g.strokeRect(q0 + .12, q0 + .12, q1 - q0 - .24, q1 - q0 - .24);
-  /* the garden court in front: lawn and gravel paths (Albuquerque: the parking lot) */
-  const [c0, c1, c2, c3] = NTL.court;
-  if (C.asphalt) { rect(c0, c1, c2, c3, '#77727a'); g.beginPath(); g.rect(c0, c1, c2 - c0, c3 - c1); tex(.6); g.strokeStyle = 'rgba(245,240,230,.85)'; g.lineWidth = .04; g.beginPath(); for (let y = c1 + .3; y < c3 - .2; y += .9) { g.moveTo(c0 + .1, y); g.lineTo(c0 + .9, y); g.moveTo(c2 - .9, y); g.lineTo(c2 - .1, y); } g.stroke(); }
-  else { rect(c0, c1, c2, c3, C.grass[0]); g.beginPath(); g.rect(c0, c1, c2 - c0, c3 - c1); tex(.7); rect(c0, (c1 + c3) / 2 - .16, c2, (c1 + c3) / 2 + .16, C.walk); rect((c0 + c2) / 2 - .16, c1, (c0 + c2) / 2 + .16, c3, C.walk); }
-  /* paths to the doors off the streets */
-  for (const [x0, y0, x1, y1] of [[4.1, 10.15, 5.2, 10.5], [0.9, 10.45, 2.0, 12.4], [9.1, 5.75, 9.6, 6.15], [11.2, 7.0, 11.6, 7.2]]) rect(x0, y0, x1, y1, C.walk);
-  if (S.winter) { g.beginPath(); g.rect(-.5, -.5, 16, 16); g.fillStyle = 'rgba(250,252,255,.62)'; g.fill(); }
-  g.restore();
-}
-/* ---- outside the walls: the roads from the gates and each region's water ---- */
-function ntOuterDecor(L) {
-  const R = S.region, band = (y0, y1, c) => tpoly([tiso(-60, y0), tiso(70, y0), tiso(70, y1), tiso(-60, y1)], c), q = ctrQ;
-  if (R === 'lux') { /* the Nile along the whole back wall: the green bank, the water, the shimmer */
-    band(-6.4, -.5, '#97bd62'); band(-4.7, -2.15, '#3f8fa8'); band(-4.0, -3.7, 'rgba(255,255,255,.16)'); band(-2.3, -2.15, 'rgba(240,230,200,.5)');
-    const R2 = mulberry32(4); ctx.strokeStyle = 'rgba(255,255,255,.3)'; ctx.lineWidth = 2; for (let i = 0; i < 24; i++) { const gx = -10 + R2() * 40, gy = -4.4 + R2() * 2, ph = (T * .25 + R2()) % 1, p = tiso(gx + ph * .6, gy); ctx.beginPath(); ctx.moveTo(p[0] - 12, p[1]); ctx.lineTo(p[0] + 12, p[1]); ctx.stroke(); }
-  }
-  if (R === 'bri') { /* the Avon round the west corner, its towpath, and the stone bridge at the west gate */
-    const w = '#5f8494', bank = '#7aa060';
-    q(-6.6, 15.8, 60, 18.3, bank); q(-6.6, -60, -3.4, 18.3, bank);
-    q(-5.7, -60, -4.4, 17.15, w); q(-5.7, 16.2, 60, 17.15, w);
-    q(-5.2, -60, -5.0, 16.9, 'rgba(255,255,255,.14)'); q(-5.2, 16.6, 60, 16.75, 'rgba(255,255,255,.14)');
-    q(-12, 17.3, 8.6, 17.95, L.road); /* the road from the station along the bank */
-  }
-  /* the two gate roads */
-  if (R === 'abq') { q(7.45, 15.5, 8.55, 33, '#5e5a62'); q(7.45, 15.5, 7.55, 33, '#e8e0d0'); q(8.45, 15.5, 8.55, 33, '#e8e0d0'); for (let y = 16; y < 33; y += .9) q(7.97, y, 8.03, y + .45, '#ffd23a'); }
-  else q(7.65, 15.5, 8.35, 55, L.road);
-  q(15.5, 7.65, 55, 8.35, L.road);
-}
-/* the bridge's parapets and arches stand up out of the ground */
-function ntBridgeItems() {
-  if (S.region !== 'bri') return [];
-  return [{ depth: 8.6 + 17.3, draw: () => { const keep = TUFF; TUFF = BATH; try { ctrQ(7.35, 16.0, 8.65, 17.35, '#cdb88e'); ctrQ(7.5, 16.0, 8.5, 17.35, '#b8b0a2'); for (const x of [7.35, 8.5]) block(x, 16.05, .15, 1.25, 12, { courses: true }); const a = tiso(8.65, 16.2), b = tiso(8.65, 17.15); ctx.fillStyle = 'rgba(40,60,70,.55)'; ctx.beginPath(); ctx.moveTo(a[0], a[1] + 2); ctx.quadraticCurveTo((a[0] + b[0]) / 2, (a[1] + b[1]) / 2 - 12, b[0], b[1] + 2); ctx.closePath(); ctx.fill(); } finally { TUFF = keep; } } }];
-}
-/* red dots on the buildings that need you: the pilot office (pilots, licence) and your office (offers, sales) */
-function ntDots(V, bs) {
-  const dots = navDots();
-  for (const [id, k] of [['office', 'crew'], ['mine', 'market']]) if (dots[k]) {
-    const b = bs.find(x => x.id === id); if (!b) continue;
-    const [cx, cy] = tiso(b.gx + b.w / 2, b.gy + b.d / 2), top = ntTop(b) * .8, p = [cx * V.z + V.ox + 22 * Math.max(.6, V.z / .4), (cy - top) * V.z + V.oy], r = 7 + Math.sin(T * 4) * 1.2;
-    ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(p[0], p[1], r + 2, 0, 7); ctx.fill(); ctx.fillStyle = '#e5432f'; ctx.beginPath(); ctx.arc(p[0], p[1], r, 0, 7); ctx.fill();
-  }
-}
-/* where morning events and scenes look: at the building they are about */
-const NT_EV = { strike: 'office', vip: 'hotel3', wedding: 'hotel1', doc: 'influ', fuel: 'hangar', press: 'mine' };
-function ntAt(id) { const b = townBuildings().find(x => x.id === id); return b ? [b.gx + b.w / 2, b.gy + b.d] : [8, 8]; }
-const evAt = k => NT() ? ntAt(NT_EV[k]) : EVENTS[k].at;
-const fieldXY = i => NT() ? NTL.field[i] : [1.8 + (i % 3) * 1.9, 5 + Math.floor(i / 3) * 1.4];
-const fieldPoly = () => NT() ? [tiso(-.4, 2.85), tiso(6.1, 2.85), tiso(6.1, 7.55), tiso(-.4, 7.55)] : [tiso(1, 4.4), tiso(7, 4.4), tiso(7, 7.2), tiso(1, 7.2)];
-
 /* ---------- Holding office ---------- */
 /* Tapping the holding tower zooms into it and you step onto an open-plan floor: a window over the town at sunrise,
    the cash chart on a whiteboard, and a desk per department. A desk opens its part of the holding in a sheet. */
 const HQ = { open: false, sheet: null, raf: 0, t0: 0 };
-let HQ_TOWER = [10, 2];
+const HQ_TOWER = [10, 2];
 const HQ_UNITS = {
   board: { name: 'Kasa ve hedefler', draw: b => { hqCash(b); hqGoals(b); hqTransfer(b); } },
   window: { name: 'Bölgeler', draw: b => hqRegions(b) },
@@ -13071,13 +12349,9 @@ async function open3dLoad() {
       for (const b of TB) if (b.lv <= 0 && b.look !== 'rival') R(b.gx + .12, b.gy + .12, b.gx + b.w - .12, b.gy + b.d - .12, 'rgba(150,108,70,.35)');
       const road = (a, b2, c, d) => { R(a, b2, c, d, '#c9a47a'); x.save(); x.beginPath(); x.rect((a + .5) * k, (b2 + .5) * k, (c - a) * k, (d - b2) * k); x.clip();
         for (let i = 0; i < 2600; i++) { x.fillStyle = rnd() < .5 ? 'rgba(255,240,215,.35)' : 'rgba(110,70,40,.22)'; x.beginPath(); x.ellipse((a + .5 + rnd() * (c - a)) * k, (b2 + .5 + rnd() * (d - b2)) * k, 3, 2, rnd() * 3, 0, 7); x.fill(); } x.restore(); };
-      if (NT()) { /* trial: the new village's streets, square, track and meadow */
-        road(9.9, 7.45, 15.5, 8.55); road(7.45, 9.9, 8.55, 15.5); road(6.35, 1.75, 7.45, 6.1); road(6.1, 6.1, 9.9, 9.9);
-        R(-.4, 2.85, 6.1, 7.55, '#a6b466'); R(-.4, -.4, 2.75, 2.85, '#a6b466');
-      } else {
       road(0, 7.55, 15, 8.45); road(7.55, 0, 8.45, 15); road(.6, 3.6, 7.55, 4.1);
       R(1, 4.4, 7, 7.2, '#a3b066'); for (let i = 0; i < 9; i++) R(1 + i * .67, 4.4, 1.33 + i * .67, 7.2, i % 2 ? 'rgba(120,140,70,.3)' : 'rgba(190,200,125,.3)');
-      for (let i = 0; i < 1500; i++) { x.fillStyle = `rgba(${rnd() < .5 ? '90,120,50' : '200,210,140'},.25)`; x.fillRect((1.5 + rnd() * 6) * k, (4.9 + rnd() * 2.8) * k, 2, 3); } } });
+      for (let i = 0; i < 1500; i++) { x.fillStyle = `rgba(${rnd() < .5 ? '90,120,50' : '200,210,140'},.25)`; x.fillRect((1.5 + rnd() * 6) * k, (4.9 + rnd() * 2.8) * k, 2, 3); } });
     const ground = new THREE.Mesh(new THREE.PlaneGeometry(16 * TL, 16 * TL), new THREE.MeshStandardMaterial({ map: gtex, roughness: .95, polygonOffset: true, polygonOffsetFactor: -2 }));
     ground.rotation.x = -Math.PI / 2; ground.position.set(TC.x, .05, TC.z); ground.receiveShadow = true; scene.add(ground);
     const at = (gx, gy, y = 0) => tw(gx, gy).setY(y), stone = new THREE.MeshStandardMaterial({ color: 0xf0d8b2, roughness: .95, map: mottle });
@@ -13124,11 +12398,11 @@ async function open3dLoad() {
       if (b.look === 'hotel' && b.star >= 1) box(gx + w * .2, gy + d * .2, w * .55, d * .55, hgt * .28, KIND[(K + 2) % 5].mat, hgt); /* a storey set back on the bigger hotels */
     }
     /* the fairy chimneys round the edge and the trees, where the town has them */
-    (NT() ? NTL.houses.map(([gx, gy], i) => [gx, gy, [112, 90, 100][i]]).concat([[16.6, 11, 140], [-1.2, 12.8, 130]]) : [[0.3, 6.6, 150], [16.4, 11.2, 140], [0.4, 12.6, 130], [7.7, 0.3, 120], [5.6, 15.2, 150], [0.5, 3.0, 160], [12.8, 0.2, 140]]).forEach(([gx, gy, hpx], i) => {
+    [[0.3, 6.6, 150], [16.4, 11.2, 140], [0.4, 12.6, 130], [7.7, 0.3, 120], [5.6, 15.2, 150], [0.5, 3.0, 160], [12.8, 0.2, 140]].forEach(([gx, gy, hpx], i) => {
       const hgt = hpx / PXM, r = hgt * .19, c = new THREE.Mesh(VAR[i % VAR.length], tuffMat); c.scale.set(r, hgt, r); c.position.copy(at(gx, gy, -.4)); c.rotation.y = i * 1.7; c.castShadow = c.receiveShadow = true; scene.add(c);
       if (i % 2 === 0) { const cp = new THREE.Mesh(capGeo, basaltMat); cp.scale.set(r * .55, r * .38, r * .5); cp.position.copy(at(gx, gy, hgt * .985 - .4)); cp.castShadow = true; scene.add(cp); } });
     const leaf = [new THREE.MeshStandardMaterial({ color: 0x4f6a3a, roughness: .9 }), new THREE.MeshStandardMaterial({ color: 0x7aa04a, roughness: .9, map: mottle }), new THREE.MeshStandardMaterial({ color: 0x8aa84e, roughness: .9, map: mottle })];
-    (NT() ? NT_TREES.cap : [[7.1, 6.9], [14.55, 3.35], [14.85, 4.5], [3.4, 8.9], [14.6, 7.3], [10.8, 4.4], [4.3, 7.0], [8.4, 15]]).forEach(([gx, gy], i) => {
+    [[7.1, 6.9], [14.55, 3.35], [14.85, 4.5], [3.4, 8.9], [14.6, 7.3], [10.8, 4.4], [4.3, 7.0], [8.4, 15]].forEach(([gx, gy], i) => {
       const trunk = new THREE.Mesh(new THREE.CylinderGeometry(.25, .35, 2.4, 8), wood); trunk.position.copy(at(gx, gy, 1.2)); trunk.castShadow = true; scene.add(trunk);
       const crown = i % 3 ? new THREE.Mesh(new THREE.IcosahedronGeometry(2.8, 1), leaf[1 + i % 2]) : new THREE.Mesh(new THREE.ConeGeometry(1.5, 9, 10), leaf[0]);
       crown.position.copy(at(gx, gy, i % 3 ? 4.6 : 6.4)); crown.castShadow = true; scene.add(crown); });
