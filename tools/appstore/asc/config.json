@@ -1,0 +1,35 @@
+{
+  "_comment": "Settings for asc.py. null = not decided yet (the tool warns and leaves the field alone). See README.md.",
+  "bundleId": "com.ceude.balloonbaron",
+  "locales": {
+    "tr": ["tr"],
+    "en": ["en-US"],
+    "de": ["de-DE"],
+    "es": ["es-ES"],
+    "ja": ["ja"],
+    "ko": ["ko"]
+  },
+  "extraLocales": {
+    "en": ["en-GB"],
+    "es": ["es-MX"]
+  },
+  "useExtraLocales": false,
+  "urls": {
+    "supportUrl": null,
+    "marketingUrl": null,
+    "privacyPolicyUrl": null
+  },
+  "screenshots": {
+    "iphone": { "displayType": "APP_IPHONE_67", "sizes": [[1320, 2868], [1290, 2796]] },
+    "ipad": { "displayType": "APP_IPAD_PRO_3GEN_129", "sizes": [[2064, 2752], [2048, 2732]] }
+  },
+  "previews": {
+    "iphone": { "previewType": "IPHONE_67", "file": "iphone.mp4", "sizes": [[886, 1920]] },
+    "ipad": { "previewType": "IPAD_PRO_3GEN_129", "file": "ipad.mp4", "sizes": [[1200, 1600]] }
+  },
+  "previewFrameTimeCode": "00:00:05:00",
+  "iap": {
+    "baseTerritory": "DEU",
+    "availableInNewTerritories": true
+  }
+}

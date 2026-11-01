@@ -1,0 +1,530 @@
+{
+  "_comment": "In-app purchases for App Store Connect. Names are the in-game names (tools/strings, key store.<item>); prices come from StoreKit/BalloonBaron.storekit (euros, base territory in config.json). Limits: name 30, description 45.",
+  "products": [
+    {
+      "productId": "balloonbaron.gold",
+      "referenceName": "Gold leaf",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/gold.png",
+      "reviewNote": "Gold leaf: It is a balloon pattern: after purchase it appears as a ready-made design in the Design Studio and is applied to the flagship balloon. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Gold leaf",
+          "description": "A gold leaf pattern for your balloons"
+        },
+        "tr": {
+          "name": "Altın varak",
+          "description": "Balonların için varak altın desen"
+        },
+        "de": {
+          "name": "Blattgold",
+          "description": "Ein Blattgold-Muster für deine Ballone"
+        },
+        "es": {
+          "name": "Pan de oro",
+          "description": "Estampado de pan de oro para tus globos"
+        },
+        "ja": {
+          "name": "金箔",
+          "description": "気球に着せる金箔の柄"
+        },
+        "ko": {
+          "name": "금박",
+          "description": "열기구에 입히는 금박 무늬"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.tile",
+      "referenceName": "Iznik tile",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/tile.png",
+      "reviewNote": "Iznik tile: It is a balloon pattern: after purchase it appears as a ready-made design in the Design Studio and is applied to the flagship balloon. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Iznik tile",
+          "description": "An Iznik tile pattern for your balloons"
+        },
+        "tr": {
+          "name": "İznik çinisi",
+          "description": "Balonların için İznik çinisi deseni"
+        },
+        "de": {
+          "name": "Iznik-Fliese",
+          "description": "Ein Iznik-Fliesenmuster für deine Ballone"
+        },
+        "es": {
+          "name": "Azulejo de Iznik",
+          "description": "Estampado de azulejo de Iznik para globos"
+        },
+        "ja": {
+          "name": "イズニックタイル",
+          "description": "気球に着せるイズニックタイルの柄"
+        },
+        "ko": {
+          "name": "이즈니크 타일",
+          "description": "열기구에 입히는 이즈니크 타일 무늬"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.sky",
+      "referenceName": "Constellation",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/sky.png",
+      "reviewNote": "Constellation: It is a balloon pattern: after purchase it appears as a ready-made design in the Design Studio and is applied to the flagship balloon. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Constellation",
+          "description": "A starry constellation pattern for balloons"
+        },
+        "tr": {
+          "name": "Takımyıldız",
+          "description": "Balonların için takımyıldız deseni"
+        },
+        "de": {
+          "name": "Sternbild",
+          "description": "Ein Sternbild-Muster für deine Ballone"
+        },
+        "es": {
+          "name": "Constelación",
+          "description": "Estampado de constelación para tus globos"
+        },
+        "ja": {
+          "name": "星座",
+          "description": "気球に着せる星座の柄"
+        },
+        "ko": {
+          "name": "별자리",
+          "description": "열기구에 입히는 별자리 무늬"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.kilim",
+      "referenceName": "Cappadocia kilim",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/kilim.png",
+      "reviewNote": "Cappadocia kilim: It is a balloon pattern: after purchase it appears as a ready-made design in the Design Studio and is applied to the flagship balloon. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Cappadocia kilim",
+          "description": "A Cappadocia kilim pattern for balloons"
+        },
+        "tr": {
+          "name": "Kapadokya kilimi",
+          "description": "Balonların için Kapadokya kilimi deseni"
+        },
+        "de": {
+          "name": "Kappadokien-Kelim",
+          "description": "Ein Kelim-Muster aus Kappadokien"
+        },
+        "es": {
+          "name": "Kilim de Capadocia",
+          "description": "Estampado de kilim de Capadocia para globos"
+        },
+        "ja": {
+          "name": "カッパドキアのキリム",
+          "description": "気球に着せるカッパドキアのキリム柄"
+        },
+        "ko": {
+          "name": "카파도키아 킬림",
+          "description": "열기구에 입히는 카파도키아 킬림 무늬"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.heart",
+      "referenceName": "Heart balloon",
+      "type": "NON_CONSUMABLE",
+      "price": "1.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/heart.png",
+      "reviewNote": "Heart balloon: It is a shaped balloon envelope: after purchase it appears as a ready-made design in the Design Studio and is applied to the flagship balloon. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Heart balloon",
+          "description": "A heart-shaped balloon envelope"
+        },
+        "tr": {
+          "name": "Kalp balon",
+          "description": "Kalp biçimli bir balon zarfı"
+        },
+        "de": {
+          "name": "Herzballon",
+          "description": "Eine Ballonhülle in Herzform"
+        },
+        "es": {
+          "name": "Globo corazón",
+          "description": "Una envoltura de globo con forma de corazón"
+        },
+        "ja": {
+          "name": "ハート気球",
+          "description": "ハート形の気球の球皮"
+        },
+        "ko": {
+          "name": "하트 열기구",
+          "description": "하트 모양 열기구 외피"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.star",
+      "referenceName": "Star balloon",
+      "type": "NON_CONSUMABLE",
+      "price": "1.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/star.png",
+      "reviewNote": "Star balloon: It is a shaped balloon envelope: after purchase it appears as a ready-made design in the Design Studio and is applied to the flagship balloon. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Star balloon",
+          "description": "A star-shaped balloon envelope"
+        },
+        "tr": {
+          "name": "Yıldız balon",
+          "description": "Yıldız biçimli bir balon zarfı"
+        },
+        "de": {
+          "name": "Sternballon",
+          "description": "Eine Ballonhülle in Sternform"
+        },
+        "es": {
+          "name": "Globo estrella",
+          "description": "Una envoltura de globo con forma de estrella"
+        },
+        "ja": {
+          "name": "星の気球",
+          "description": "星形の気球の球皮"
+        },
+        "ko": {
+          "name": "별 열기구",
+          "description": "별 모양 열기구 외피"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.skull",
+      "referenceName": "Skull balloon",
+      "type": "NON_CONSUMABLE",
+      "price": "1.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/skull.png",
+      "reviewNote": "Skull balloon: It is a shaped balloon envelope: after purchase it appears as a ready-made design in the Design Studio and is applied to the flagship balloon. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Skull balloon",
+          "description": "A skull-shaped balloon envelope"
+        },
+        "tr": {
+          "name": "Kurukafa balon",
+          "description": "Kurukafa biçimli bir balon zarfı"
+        },
+        "de": {
+          "name": "Totenkopf-Ballon",
+          "description": "Eine Ballonhülle in Totenkopfform"
+        },
+        "es": {
+          "name": "Globo calavera",
+          "description": "Una envoltura de globo con forma de calavera"
+        },
+        "ja": {
+          "name": "ドクロ気球",
+          "description": "ドクロ形の気球の球皮"
+        },
+        "ko": {
+          "name": "해골 열기구",
+          "description": "해골 모양 열기구 외피"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.fountain",
+      "referenceName": "Square fountain",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/fountain.png",
+      "reviewNote": "Town square fountain: It is a town decoration: after purchase it appears in the player's town (visible on the home screen, lit at night). Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Town square fountain",
+          "description": "A fountain for your town square"
+        },
+        "tr": {
+          "name": "Meydan çeşmesi",
+          "description": "Kasabanın meydanına bir çeşme"
+        },
+        "de": {
+          "name": "Brunnen am Platz",
+          "description": "Ein Brunnen für den Platz deiner Stadt"
+        },
+        "es": {
+          "name": "Fuente de la plaza",
+          "description": "Una fuente para la plaza de tu pueblo"
+        },
+        "ja": {
+          "name": "広場の噴水",
+          "description": "町の広場に置く噴水"
+        },
+        "ko": {
+          "name": "광장 분수",
+          "description": "마을 광장에 놓는 분수"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.statue",
+      "referenceName": "Hezarfen statue",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/statue.png",
+      "reviewNote": "Hezarfen statue: It is a town decoration: after purchase it appears in the player's town (visible on the home screen, lit at night). Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Hezarfen statue",
+          "description": "A statue of Hezarfen for your town"
+        },
+        "tr": {
+          "name": "Hezarfen heykeli",
+          "description": "Kasabana bir Hezarfen heykeli"
+        },
+        "de": {
+          "name": "Hezarfen-Statue",
+          "description": "Eine Hezarfen-Statue für deine Stadt"
+        },
+        "es": {
+          "name": "Estatua de Hezarfen",
+          "description": "Una estatua de Hezarfen para tu pueblo"
+        },
+        "ja": {
+          "name": "ヘザルフェン像",
+          "description": "町に建てるヘザルフェン像"
+        },
+        "ko": {
+          "name": "헤자르펜 동상",
+          "description": "마을에 세우는 헤자르펜 동상"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.flags",
+      "referenceName": "Company flags",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/flags.png",
+      "reviewNote": "Company flags: It is a town decoration: after purchase it appears in the player's town (visible on the home screen, lit at night). Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Company flags",
+          "description": "Your company's flags across your town"
+        },
+        "tr": {
+          "name": "Şirket bayrakları",
+          "description": "Kasabanda şirketinin bayrakları"
+        },
+        "de": {
+          "name": "Firmenflaggen",
+          "description": "Die Flaggen deiner Firma in der Stadt"
+        },
+        "es": {
+          "name": "Banderas de la empresa",
+          "description": "Las banderas de tu empresa en el pueblo"
+        },
+        "ja": {
+          "name": "社旗",
+          "description": "町に掲げる自社の旗"
+        },
+        "ko": {
+          "name": "회사 깃발",
+          "description": "마을에 거는 우리 회사 깃발"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.founder",
+      "referenceName": "Founder Pack",
+      "type": "NON_CONSUMABLE",
+      "price": "6.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/founder.png",
+      "reviewNote": "Founder Pack: unlocks every pattern, shaped envelope, town decoration and Balloon Show figure sold in the bazaar at once. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Founder Pack",
+          "description": "Every pattern, shape, decoration and figure"
+        },
+        "tr": {
+          "name": "Kurucu Paketi",
+          "description": "Tüm desenler, şekiller, süsler ve figürler"
+        },
+        "de": {
+          "name": "Gründerpaket",
+          "description": "Alle Muster, Formen, Deko und Figuren"
+        },
+        "es": {
+          "name": "Pack Fundador",
+          "description": "Estampados, formas, adornos y figuras"
+        },
+        "ja": {
+          "name": "創業者パック",
+          "description": "柄・形・飾り・ショーの図形をすべて"
+        },
+        "ko": {
+          "name": "창업자 팩",
+          "description": "모든 무늬, 모양, 장식, 쇼 도형"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.decorpack",
+      "referenceName": "Square Decorations",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/decorpack.png",
+      "reviewNote": "Town Square Decorations: four town decorations (pigeon flock, welcome arch, garden cafe, kilim display) that appear in the player's town. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Town Square Decorations",
+          "description": "Pigeons, welcome arch, garden café, kilims"
+        },
+        "tr": {
+          "name": "Meydan Süsleri",
+          "description": "Güvercinler, kemer, bahçe kafe, kilim sergisi"
+        },
+        "de": {
+          "name": "Platzschmuck",
+          "description": "Tauben, Bogen, Gartencafé und Kelim-Auslage"
+        },
+        "es": {
+          "name": "Adornos de la plaza",
+          "description": "Palomas, arco, café con terraza y kilims"
+        },
+        "ja": {
+          "name": "広場の飾り",
+          "description": "ハト、アーチ、ガーデンカフェ、キリム展示"
+        },
+        "ko": {
+          "name": "광장 장식",
+          "description": "비둘기, 환영 아치, 정원 카페, 킬림 전시"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.figurepack",
+      "referenceName": "Show Figures",
+      "type": "NON_CONSUMABLE",
+      "price": "0.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/figurepack.png",
+      "reviewNote": "Show Figures: five figures (star, tulip, butterfly, spiral, the company's initial) that the balloons draw in the sky in the Balloon Show finale; chosen on the show card. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Show Figures",
+          "description": "Five figures for the Balloon Show finale"
+        },
+        "tr": {
+          "name": "Şölen Figürleri",
+          "description": "Balon Şöleni finali için beş figür"
+        },
+        "de": {
+          "name": "Show-Figuren",
+          "description": "Fünf Figuren für das Finale der Ballon-Show"
+        },
+        "es": {
+          "name": "Figuras del espectáculo",
+          "description": "Cinco figuras para el final del espectáculo"
+        },
+        "ja": {
+          "name": "ショーの図形",
+          "description": "バルーンショーのフィナーレ用の5つの図形"
+        },
+        "ko": {
+          "name": "쇼 도형",
+          "description": "열기구 쇼 피날레를 위한 도형 다섯 가지"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.worldtour",
+      "referenceName": "Grand Tour",
+      "type": "NON_CONSUMABLE",
+      "price": "4.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/worldtour.png",
+      "reviewNote": "Grand Tour: unlocks the regions beyond Cappadocia (Albuquerque, Luxor, Bristol and future regions) on the world map. The whole Cappadocia campaign is free. It is offered after the player becomes Baron of Cappadocia, and from the world map. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Grand Tour",
+          "description": "Opens every region beyond Cappadocia"
+        },
+        "tr": {
+          "name": "Dünya Turu",
+          "description": "Kapadokya dışındaki tüm bölgeleri açar"
+        },
+        "de": {
+          "name": "Weltreise",
+          "description": "Öffnet alle Regionen jenseits Kappadokiens"
+        },
+        "es": {
+          "name": "Gran Tour",
+          "description": "Abre todas las regiones más allá de Capadocia"
+        },
+        "ja": {
+          "name": "グランドツアー",
+          "description": "カッパドキアの先のすべての地域を開放"
+        },
+        "ko": {
+          "name": "그랜드 투어",
+          "description": "카파도키아 너머의 모든 지역을 엽니다"
+        }
+      }
+    },
+    {
+      "productId": "balloonbaron.supporter",
+      "referenceName": "Supporter Edition",
+      "type": "NON_CONSUMABLE",
+      "price": "9.99",
+      "familySharable": false,
+      "reviewScreenshot": "review/supporter.png",
+      "reviewNote": "Supporter Edition: the Grand Tour plus everything in the Founder Pack and a supporter plaque in the player's town. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "localizations": {
+        "en": {
+          "name": "Supporter Edition",
+          "description": "Grand Tour, Founder Pack and a town plaque"
+        },
+        "tr": {
+          "name": "Destekçi Sürümü",
+          "description": "Dünya Turu, Kurucu Paketi ve destekçi plaketi"
+        },
+        "de": {
+          "name": "Unterstützer-Edition",
+          "description": "Weltreise, Gründerpaket und eine Stadttafel"
+        },
+        "es": {
+          "name": "Edición Mecenas",
+          "description": "Gran Tour, Pack Fundador y placa de mecenas"
+        },
+        "ja": {
+          "name": "サポーター版",
+          "description": "グランドツアー、創業者パック、町の銘板"
+        },
+        "ko": {
+          "name": "후원자 에디션",
+          "description": "그랜드 투어, 창업자 팩, 마을 후원자 명판"
+        }
+      }
+    }
+  ]
+}
