@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>App Store v2</title>
+<style>
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-ExtraBold.ttf); font-weight: 800; }
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-Bold.ttf); font-weight: 700; }
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: B; src: url(../../../BalloonBaron/Fonts/Barlow-SemiBold.ttf); font-weight: 600; }
+@font-face { font-family: B; src: url(../../../BalloonBaron/Fonts/Barlow-Bold.ttf); font-weight: 700; }
+html, body { margin: 0; background: #000; overflow: hidden; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="../art.js"></script>
+<script src="art2.js"></script>
+<script src="captions.js"></script>
+<script src="cities.js"></script>
+<script>
+/* The v2 App Store screens drawn as one wide sky, so the big balloons between them carry on from one screen to the
+   next while you swipe; the sky runs from dawn on screen 1 to night on screen 10. render.js opens this page with
+   ?dev=iphone|ipad&lang=tr&raw=<folder with <dev>/<scene>.png> and cuts the picture into screens. */
+const q = new URLSearchParams(location.search), DEV = q.get('dev') || 'iphone', LANG = q.get('lang') || 'tr', RAW = q.get('raw');
+const TXT = CAPTIONS[LANG];
+const D = DEV === 'ipad'
+  ? { W: 2064, H: 2752, sw: 1440, sh: 1920, bottom: 104, cap: { y: 150, size: 168, maxW: 1700, kicker: 40, sub: 50 }, kind: 'ipad' }
+  : { W: 1320, H: 2868, sw: 880, sh: 1907, bottom: 118, cap: { y: 196, size: 178, maxW: 1150, kicker: 38, sub: 45 }, kind: 'iphone' };
+const SW = D.sw, SH = D.sh, PX = (D.W - SW) / 2, PY = D.H - SH - D.bottom;
+
+/* The story, in App Store order. The first three sell the game on their own (they are what search shows). */
+const SCREENS = [
+  { id: 'hero', raw: 'home' },
+  { id: 'cities', raw: 'world' },
+  { id: 'idle', raw: 'auto-run3', ipad: 'auto-run2', pops: { iphone: [['auto-run3', [224, 1965, 840, 110], 'bar'], ['world', [108, 796, 1072, 280], 'row']], ipad: [['auto-run2', [740, 2200, 584, 86], 'bar', { f: 1.9 }], ['world', [640, 1015, 770, 205], 'row', { rowY: 300, f: 1.75 }]] } },
+  { id: 'flight', raw: 'flight', pops: { iphone: [['flight', [469, 1715, 330], 'lens', { at: [.73, .5] }]], ipad: [['flight', [732, 1668, 300], 'lens', { at: [.7, .42] }]] } },
+  { id: 'holding', raw: 'holding', pops: { iphone: [['world', [108, 300, 1072, 452], 'map']], ipad: [['world', [645, 660, 762, 330], 'map', { f: 1.6 }]] } },
+  { id: 'crew', raw: 'crew', pops: { iphone: [['crew', [56, 1338, 1184, 450], 'zoom', { f: 1.16, rot: -.02, r: 30 }]], ipad: [['crew', [24, 815, 1940, 290], 'zoom', { f: 1.12, rot: -.012, r: 24 }]] } },
+  { id: 'design', raw: 'design', pops: { iphone: [['design', [108, 252, 1076, 618], 'zoom', { f: 1.16, rot: .018, r: 46 }]], ipad: [['design', [640, 436, 772, 418], 'zoom', { f: 1.45, rot: .018, r: 30 }]] } },
+  { id: 'close', raw: 'town-lux' },
+  { id: 'night', raw: 'night' },
+  { id: 'show', raw: 'show-12' },
+];
+const N = SCREENS.length;
+const rawOf = s => s[DEV] || s.raw;
+const cv = document.getElementById('c');
+cv.width = D.W * N; cv.height = D.H;
+const ctx = cv.getContext('2d');
+W = D.W * N; H = D.H;
+const U = D.W; /* one screen */
+
+/* ---------- the sky across all screens: time of day by position ---------- */
+/* stops: [u (screen units), [zenith, upper, lower, horizon]] */
+const SKY = [
+  [0, ['#160c34', '#4a2460', '#c8586a', '#ffb07a']],
+  [1.6, ['#1c1240', '#5a2c68', '#e07466', '#ffc890']],
+  [3.4, ['#262a64', '#7a4a80', '#f09a78', '#ffdcae']],
+  [5.4, ['#2a3070', '#8a5486', '#f4a477', '#ffd9a6']],
+  [7.0, ['#1a1844', '#552c64', '#c4506a', '#ff9468']],
+  [7.9, ['#0c0f2c', '#1a1d4c', '#3a2e66', '#7a4a74']],
+  [9.0, ['#070a20', '#0e1438', '#1b2150', '#33305e']],
+  [10, ['#070a20', '#0e1438', '#1b2150', '#33305e']],
+];
+const skyAt = u => sampleStops(SKY, u);
+const nightK = u => clamp((u - 7.1) / 1.0, 0, 1);
+function drawSky() {
+  const step = 6;
+  for (let x = 0; x < W; x += step) {
+    const u = (x + step / 2) / U, [z, a, b, h] = skyAt(u);
+    const g = ctx.createLinearGradient(0, 0, 0, H);
+    g.addColorStop(0, z); g.addColorStop(.36, a); g.addColorStop(.7, b); g.addColorStop(.9, h); g.addColorStop(1, h);
+    ctx.fillStyle = g; ctx.fillRect(x, 0, step + 1, H);
+  }
+}
+function drawStars() {
+  const R = mulberry32(77);
+  for (let i = 0; i < 1400; i++) {
+    const x = R() * W, y = R() * H * .75, k = nightK(x / U) * (1 - y / (H * .8)), s = R();
+    if (k <= .02) continue;
+    ctx.fillStyle = `rgba(255,248,230,${k * (.25 + .6 * s)})`; ctx.beginPath(); ctx.arc(x, y, .8 + s * 1.8 * (U / 1320), 0, 7); ctx.fill();
+  }
+}
+/* the sun on screen 1 and the moon on screen 10 */
+function drawLights() {
+  const sx = U * .82, sy = H * .76;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (const [rr, a] of [[U * 1.6, .16], [U * .7, .22], [U * .25, .4]]) { const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, rr); g.addColorStop(0, `rgba(255,200,130,${a})`); g.addColorStop(1, 'rgba(255,200,130,0)'); ctx.fillStyle = g; ctx.fillRect(sx - rr, sy - rr, rr * 2, rr * 2); }
+  ctx.restore();
+  const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, U * .07); g.addColorStop(0, '#fffdf4'); g.addColorStop(.7, '#ffe6b0'); g.addColorStop(1, 'rgba(255,230,176,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(sx, sy, U * .07, 0, 7); ctx.fill();
+  const mx = U * 9.86, my = H * .245, mr = U * .035;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter'; const mg = ctx.createRadialGradient(mx, my, 0, mx, my, mr * 8); mg.addColorStop(0, 'rgba(200,210,255,.22)'); mg.addColorStop(1, 'rgba(200,210,255,0)'); ctx.fillStyle = mg; ctx.fillRect(mx - mr * 8, my - mr * 8, mr * 16, mr * 16); ctx.restore();
+  /* a crescent, cut on its own little canvas so the sky shows through */
+  const mc = document.createElement('canvas'); mc.width = mc.height = Math.ceil(mr * 2 + 4); const m = mc.getContext('2d'), o = mr + 2;
+  m.fillStyle = '#fff6dc'; m.beginPath(); m.arc(o, o, mr, 0, 7); m.fill();
+  m.globalCompositeOperation = 'destination-out'; m.beginPath(); m.arc(o + mr * .45, o - mr * .2, mr * .9, 0, 7); m.fill();
+  ctx.drawImage(mc, mx - o, my - o);
+}
+function drawClouds() {
+  const R = mulberry32(5);
+  for (let i = 0; i < 60; i++) {
+    const x = R() * W, y = H * (.12 + R() * .62), w = U * (.4 + R() * .7), h = w * (.05 + R() * .05), u = x / U;
+    const [, a, b, hz] = skyAt(u), lit = mix(b, hz, .6), nk = nightK(u);
+    const g = ctx.createRadialGradient(x, y, 0, x, y, w / 2);
+    g.addColorStop(0, rgba(mix(lit, '#3a3a70', nk), .22 * (1 - nk * .5))); g.addColorStop(1, rgba(lit, 0));
+    ctx.save(); ctx.translate(x, y); ctx.scale(1, h / (w / 2)); ctx.translate(-x, -y); ctx.fillStyle = g; ctx.fillRect(x - w / 2, y - w / 2, w, w); ctx.restore();
+  }
+}
+const COLS = ['#ff5e3a', '#ffc23d', '#14a39a', '#9b7be0', '#e5432f', '#5aa9e6', '#22a45d', '#ff6fa8', '#3ad0c0', '#2b2350'];
+function drawFarBalloons() {
+  const R = mulberry32(11), list = [];
+  for (let i = 0; i < 260; i++) list.push({ x: R() * W, y: H * (.08 + R() * .7), d: R(), c: COLS[Math.floor(R() * COLS.length)], s: COLS[Math.floor(R() * COLS.length)], st: R() < .5 });
+  list.sort((a, b) => a.d - b.d);
+  for (const b of list) {
+    const u = b.x / U, fx = u - Math.floor(u); if (Math.floor(u) === 1) continue; /* the four cities draw their own skies */
+    if (b.y < PY * .8 && fx > .06 && fx < .94) continue; /* nothing behind the words */
+    const hz = skyAt(u)[2], nk = nightK(u), r = U * (.006 + .03 * Math.pow(b.d, 2.4));
+    farBalloon(b.x, b.y, r, b.c, (1 - b.d) * .65 + nk * .3, mix(hz, '#1a1d4c', nk * .5), { stripe: b.st ? b.s : null, glow: nk * (R() < .55 ? 1 : .25) });
+  }
+}
+/* fairy chimneys along the bottom, lit by the time of day; windows glow at night */
+function drawGround() {
+  ctx.save();
+  const R = mulberry32(21);
+  for (let layer = 0; layer < 2; layer++) {
+    const base = H * (layer ? 1.0 : .97), n = layer ? 60 : 110;
+    for (let i = 0; i < n; i++) {
+      const x = R() * W, u = x / U; if (Math.floor(u) === 1) { R(); R(); continue; }
+      const nk = nightK(u), [, , lo, hz] = skyAt(u), h = U * (layer ? .35 + R() * .25 : .14 + R() * .14);
+      const lit = mix(mix('#e6a27a', hz, .3), '#3a3460', nk * .85), dark = mix('#5a2c3c', '#120e24', nk);
+      chimney(x, base, h * .34, h, { seed: i * 7 + layer * 1000, light: 1, lit, dark, rim: mix('#ffd59a', '#8a90d0', nk), windows: layer ? 3 : 1, lamp: nk > .5, haze: layer ? 0 : .25 * (1 - nk), hazeColor: lo });
+    }
+    const g = ctx.createLinearGradient(0, base - H * .08, 0, base); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(14,6,20,.55)');
+    ctx.fillStyle = g; ctx.fillRect(0, base - H * .08, U, H * .08); ctx.fillRect(U * 2, base - H * .08, W - U * 2, H * .08);
+  }
+  ctx.restore();
+}
+
+/* ---------- the big balloons on the seams ---------- */
+/* x in screens (an integer is a seam), y in heights, r in screen widths. */
+const BIG = [
+  { x: .1, y: .5, r: .17, cols: ['#14a39a', '#f4fff8'], pattern: 'band', pc: ['#2b2350', '#ffc23d'], burn: .7, layer: 'back' },
+  { x: 1.0, y: .68, r: .16, cols: ['#ff5e3a', '#ffc23d'], pattern: 'band', pc: ['#2b2350', '#ffffff'], burn: 1, people: 5, layer: 'front' },
+  { x: 2.0, y: .305, r: .13, cols: ['#5aa9e6', '#f2f8ff'], pattern: 'chevron', pc: ['#ffc23d', '#e5432f'], burn: .8, people: 3, layer: 'front' },
+  { x: 3.0, y: .45, r: .2, cols: ['#9b7be0', '#f4eeff'], pattern: 'stars', pc: ['#2b2350', '#ffc23d'], burn: .9, people: 4, layer: 'front' },
+  { x: 4.0, y: .76, r: .19, cols: ['#e5432f', '#ffffff'], pattern: 'diamond', pc: ['#ffc23d', '#2b2350'], burn: .6, layer: 'back' },
+  { x: 5.0, y: .5, r: .22, cols: ['#22a45d', '#fff3b0'], pattern: 'rings', pc: ['#ffffff', '#e5432f'], burn: .9, people: 5, layer: 'back' },
+  { x: 6.0, y: .78, r: .19, cols: ['#ff6fa8', '#fff0f6'], pattern: 'band', pc: ['#9b7be0', '#ffffff'], burn: .5, layer: 'back' },
+  { x: 7.0, y: .45, r: .22, cols: ['#2b2350', '#ffc23d'], pattern: 'sun', pc: ['#ffc23d', '#ff5e3a'], burn: 1, people: 4, layer: 'back' },
+  { x: 8.0, y: .78, r: .19, cols: ['#3ad0c0', '#1f6f8b'], pattern: 'chevron', pc: ['#ffffff', '#ffc23d'], burn: 1, glow: .8, layer: 'back' },
+  { x: 9.0, y: .46, r: .21, cols: ['#ffc23d', '#e5432f'], pattern: 'band', pc: ['#2b2350', '#ffffff'], burn: 1, glow: .9, people: 5, layer: 'front' },
+  { x: 9.9, y: .74, r: .15, cols: ['#e5432f', '#ffffff'], pattern: 'rings', pc: ['#ffc23d', '#2b2350'], burn: 1, glow: 1, layer: 'back' },
+  /* small ones by the captions */
+  { x: .07, y: .13, r: .045, cols: ['#ffc23d', '#e5432f'], layer: 'back' },
+  { x: 2.93, y: .1, r: .04, cols: ['#14a39a', '#ffffff'], layer: 'back' },
+  { x: 4.08, y: .16, r: .035, cols: ['#ff6fa8', '#ffffff'], layer: 'back' },
+  { x: 5.94, y: .12, r: .04, cols: ['#5aa9e6', '#ffffff'], layer: 'back' },
+  { x: 7.07, y: .17, r: .035, cols: ['#ff5e3a', '#ffc23d'], layer: 'back' },
+  { x: 8.94, y: .13, r: .04, cols: ['#9b7be0', '#ffffff'], glow: 1, burn: .6, layer: 'back' },
+];
+function bigBalloon(b) {
+  const u = b.x, [, , lo, hz] = skyAt(u), nk = nightK(u);
+  const ipadK = DEV === 'ipad' ? .8 : 1;
+  balloon2(b.x * U, b.y * H, b.r * U * ipadK, { cols: b.cols, pattern: b.pattern, pc: b.pc, burn: b.burn || 0, glow: Math.max(b.glow || 0, nk * .6), people: b.people,
+    light: u < 7 ? 1 : -1, sky: mix(lo, '#3a4a9a', nk), rim: mix('#ffe2b8', '#a8b4ff', nk), gores: 16, haze: b.layer === 'back' && b.r < .06 ? .25 : 0, hazeColor: hz });
+}
+
+/* ---------- one screen ---------- */
+let IMG = {};
+function screen(i) {
+  const s = SCREENS[i], cap = TXT.screens[s.id];
+  ctx.save(); ctx.translate(i * U, 0);
+  /* a soft dark veil behind the caption so the type reads on any sky, fading out long before the seams matter */
+  const v = ctx.createLinearGradient(0, 0, 0, PY + SH * .15); v.addColorStop(0, 'rgba(8,4,20,.42)'); v.addColorStop(.55, 'rgba(8,4,20,.12)'); v.addColorStop(1, 'rgba(8,4,20,0)');
+  ctx.fillStyle = v; ctx.fillRect(0, 0, U, PY + SH * .15);
+  if (s.id === 'cities') citiesScreen(i);
+  else device(D.kind, PX, PY, SW, SH, IMG[rawOf(s)]);
+  ctx.restore();
+}
+function popouts(i) {
+  const s = SCREENS[i], list = s.pops && s.pops[DEV]; if (!list) return;
+  ctx.save(); ctx.translate(i * U, 0);
+  const k = SW / IMG[rawOf(s)].width; /* raw px to canvas px on the phone */
+  for (const [raw, src, kind, o = {}] of list) {
+    const im = IMG[raw];
+    if (kind === 'bar') { const sc = k * (o.f || 1.4), w = src[2] * sc, hh = src[3] * sc, cx = PX + (src[0] + src[2] / 2) * k, cy = PY + (src[1] + src[3] / 2) * k; popout(im, src, cx - w / 2, cy - hh / 2, sc, { r: 55, bg: '#2a2550', ring: 'rgba(255,214,140,.95)', ringW: 4 }); }
+    if (kind === 'row') { const sc = k * (o.f || 1.22), w = src[2] * sc, hh = src[3] * sc, cy = PY + (o.rowY || 712) * k; popout(im, src, (U - w) / 2, cy - hh / 2, sc, { r: 40, rot: -.02, ringW: 0, ring: 'rgba(0,0,0,0)' }); }
+    if (kind === 'zoom') { const sc = k * o.f, w = src[2] * sc, hh = src[3] * sc, cx = PX + (src[0] + src[2] / 2) * k, cy = PY + (src[1] + src[3] / 2) * k + (o.dy || 0); popout(im, src, cx - w / 2, cy - hh / 2, sc, { r: o.r || 30, rot: o.rot, ring: 'rgba(255,255,255,.95)', ringW: 5 }); }
+    if (kind === 'lens') lens(im, src, U * o.at[0], PY + SH * o.at[1], k * 2.1);
+    if (kind === 'map') { const sc = k * (o.f || 1.08), w = src[2] * sc; popout(im, src, U * .035, PY + SH * .58, sc, { r: 44, rot: .03, ring: 'rgba(255,255,255,.95)', ringW: 6 }); }
+  }
+  ctx.restore();
+}
+function captions(i) {
+  const s = SCREENS[i], cap = TXT.screens[s.id];
+  ctx.save(); ctx.translate(i * U, 0);
+  caption2(U / 2, D.cap.y, cap, { locale: TXT.locale, maxW: D.cap.maxW, size: D.cap.size, kicker: D.cap.kicker, sub: D.cap.sub,
+    accent: i >= 7 ? '#ffd27a' : '#ffcf7a', glow: i >= 7 ? '#7a6aff' : '#ff9a5a', gold: i >= 7 ? '#ffd88a' : '#ffc95a' });
+  if (i === N - 1) brandMark(U / 2);
+  ctx.restore();
+}
+/* the closing screen's sign-off: the game's name under the phone */
+function brandMark(cx) {
+  const y = D.H - D.bottom * .38;
+  ctx.save(); ctx.textAlign = 'center'; ctx.font = `800 ${D.bottom * .42}px BC`; ctx.letterSpacing = `${D.bottom * .06}px`;
+  ctx.fillStyle = 'rgba(255,240,220,.9)'; ctx.fillText(upper(TXT.brand.join('  ·  '), TXT.locale), cx, y); ctx.restore();
+}
+
+function load(src) { return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('missing ' + src)); im.src = src; }); }
+const raws = [...new Set(SCREENS.flatMap(s => [rawOf(s), ...((s.pops && s.pops[DEV]) || []).map(p => p[0])]))];
+Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px BC'), document.fonts.load('600 40px B')])
+  .then(() => Promise.all(raws.map(r => load(`${RAW}/${DEV}/${r}.png`).then(im => { IMG[r] = im; }))))
+  .then(() => {
+    drawSky(); drawStars(); drawLights(); drawClouds(); drawFarBalloons(); drawGround();
+    BIG.filter(b => b.layer === 'back').forEach(bigBalloon);
+    for (let i = 0; i < N; i++) screen(i);
+    BIG.filter(b => b.layer === 'front').forEach(bigBalloon);
+    for (let i = 0; i < N; i++) popouts(i);
+    for (let i = 0; i < N; i++) captions(i);
+    document.title = 'done';
+  }).catch(e => { document.title = 'error ' + e.message; console.error(e); });
+</script>
+</body>
+</html>
