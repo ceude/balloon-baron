@@ -922,11 +922,11 @@ final class OpeningWorld {
         return oLerp(floorTable[i], floorTable[i + 1], x - Double(i))
     }
 
-    /// The company's balloon, in its colors with its name (`heroFor()`), with the burner's light inside.
-    func makeHero(name: String, colors: [String]) -> FilmBalloon {
+    /// The company's balloon, in its colors (`heroFor()`), with the burner's light inside.
+    func makeHero(colors: [String]) -> FilmBalloon {
         let mat = SCNMaterial()
         mat.lightingModel = .lambert
-        mat.diffuse.contents = OpeningTextures.hero(colors: colors, name: name)
+        mat.diffuse.contents = OpeningTextures.hero(colors: colors)
         OpeningKit.mipmapped(mat.diffuse)
         mat.isDoubleSided = true
         mat.shaderModifiers = [.fragment: OpeningKit.fogModifier]

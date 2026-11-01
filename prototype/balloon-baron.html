@@ -12474,8 +12474,7 @@ async function open3dLoad() {
     const b = makeBalloon(palMat[i % palMat.length], 17 + rnd() * 6); b.position.set(x, height(x, z), z); Object.assign(b.userData, { gy: height(x, z), go: 9 + rnd() * 13, v: 2.4 + rnd() * 2.2, ph: rnd() * 9, x, z }); scene.add(b); crowd.push(b); }
   let hero = null;
   const heroTex = () => tex(1024, 512, (x, w, hh) => { const c = myCol(); for (let i = 0; i < 16; i++) { x.fillStyle = i % 2 ? c[1] : c[0]; x.fillRect(i * w / 16, 0, w / 16 + 1, hh); }
-    x.fillStyle = c[0]; x.fillRect(0, hh * .5, w, hh * .12); x.fillStyle = c[1]; x.font = `800 ${hh * .09}px "Barlow Condensed", sans-serif`; x.textAlign = 'center'; x.textBaseline = 'middle';
-    for (const u of [.25, .75]) x.fillText((S.company || '').toLocaleUpperCase('tr'), w * u, hh * .56); });
+    x.fillStyle = c[0]; x.fillRect(0, hh * .5, w, hh * .12); }); /* no name on the envelope: no balloon carries text */
   const flameLight = new THREE.PointLight(0xff9a40, 0, 60, 1.6);
   /* valley mist, and dust in the light */
   const mistTex = tex(256, 256, (x, w, hh) => { const id = x.createImageData(w, hh); for (let j = 0; j < hh; j++) for (let i = 0; i < w; i++) { const d = Math.hypot(i - w / 2, j - hh / 2) / (w / 2), v = clamp((1 - d) * (.55 + fbm(i * .03, j * .03, 4) * 1.4), 0, 1); const o = (j * w + i) * 4; id.data[o] = id.data[o + 1] = id.data[o + 2] = 255; id.data[o + 3] = v * 255; } x.putImageData(id, 0, 0); });

@@ -196,7 +196,7 @@ final class OpeningFlow {
         self.company = company
         stage = .liftOff
         film.setPick(false, aspect: 0.46)
-        film.prepareHero(name: company.uppercased(with: Locale.current), colors: colors)
+        film.prepareHero(colors: colors)
         if let state { film.prepareTown(state) }
         film.start(.b)
         SoundEngine.shared.filmMusic(.b)

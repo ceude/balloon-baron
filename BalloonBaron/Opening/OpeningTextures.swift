@@ -284,21 +284,13 @@ enum OpeningTextures {
         }
     }
 
-    /// The company's envelope: its two colors in gores, a band round the middle with the company's name on both sides.
-    static func hero(colors: [String], name: String) -> CGImage? {
+    /// The company's envelope: its two colors in gores and a band round the middle. No name on it: no balloon carries text.
+    static func hero(colors: [String]) -> CGImage? {
         let c0 = colors.first ?? "#ff5e3a", c1 = colors.count > 1 ? colors[1] : "#ffc23d"
         return canvas(1024, 512) { c, wf, hf in
             let w = Double(wf), hh = Double(hf)
             for i in 0..<16 { fillRect(c, hex(i % 2 == 1 ? c1 : c0), Double(i) * w / 16, 0, w / 16 + 1, hh) }
             fillRect(c, hex(c0), 0, hh * 0.5, w, hh * 0.12)
-            let font = UIFont(name: "BarlowCondensed-ExtraBold", size: hh * 0.09) ?? UIFont.systemFont(ofSize: hh * 0.09, weight: .heavy)
-            let text = NSAttributedString(string: name, attributes: [.font: font, .foregroundColor: UIColor(cgColor: hex(c1))])
-            let size = text.size()
-            UIGraphicsPushContext(c)
-            for u in [0.25, 0.75] {
-                text.draw(at: CGPoint(x: w * u - size.width / 2, y: hh * 0.56 - size.height / 2))
-            }
-            UIGraphicsPopContext()
         }
     }
 

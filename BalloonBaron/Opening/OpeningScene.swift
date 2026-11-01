@@ -82,8 +82,8 @@ final class OpeningFilm: NSObject, SCNSceneRendererDelegate {
     func select(_ i: Int) { locked { pickSel = i } }
 
     /// Builds the company's balloon (its texture here on the main thread), then hands it to the render thread.
-    func prepareHero(name: String, colors: [String]) {
-        let h = world.makeHero(name: name, colors: colors)
+    func prepareHero(colors: [String]) {
+        let h = world.makeHero(colors: colors)
         locked {
             pending.append { [weak self] in
                 guard let self else { return }
