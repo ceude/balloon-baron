@@ -1,24 +1,34 @@
 /* Every word on the v2 App Store screenshots, one table per language. To add a language, copy the `tr` block,
    translate it, and run `node tools/appstore/v2/render.js <raw dir> <lang>`. Headlines are written in normal case;
    the page upper-cases them with the language's own rules (Turkish i → İ). `|` breaks a headline line.
-   Apple indexes the words on screenshots, so the kickers and lines carry the search terms on purpose. */
+   Apple indexes the words on screenshots, so the headlines and lines carry the search terms on purpose.
+   The badge figures are the real values on the captured game screens (shots.js): change them only together with
+   the captures, and write them the way the language writes numbers. */
 const CAPTIONS = {
   tr: {
     locale: 'tr-TR',
     brand: ['Balon Baronu', 'Kapadokya'],
-    /* the four cities on screen 2, left to right as they read on the screen */
+    noAds: 'Reklamsız',
+    /* the four cities on screen 2, top to bottom */
     cities: { cap: ['Kapadokya', 'Türkiye'], lux: ['Luksor', 'Mısır'], bri: ['Bristol', 'İngiltere'], abq: ['Albuquerque', 'ABD'] },
+    badges: {
+      idle: [['+€146.644', 'tek günde'], ['164', 'balonluk filo']],   /* the run's day 135, the hangar's 164 balloons */
+      holding: { before: ['Gün 2', '1', 'balon'], after: ['Gün 131', '164', 'balon'] },
+      rivals: ['%98', 'pazar payı'],
+    },
+    /* the App Preview's captions, one per scene in preview.js's order; the end card uses brand and noAds */
+    preview: ['Şafakta|dümen sende', 'Balon|işletmecisi ol', 'Günler akar|kasa dolar', 'Dört şehir|tek imparatorluk', 'Geceleri|ışıl ışıl', 'Gece göğünde|dev gösteri'],
     screens: {
-      hero: { kicker: 'Sıcak hava balonu tycoon', head: 'Balon|işletmecisi ol', sub: 'Kapadokya’da bir balon şirketi, dünyaya uzanan bir imparatorluk' },
-      cities: { kicker: 'Dünya turu', head: 'Dört şehir|tek imparatorluk', sub: 'Kapadokya’dan Nil’e, Bristol’den Balloon Fiesta’ya' },
-      idle: { kicker: 'Idle tycoon', head: 'Günler akar|kasa dolar', sub: 'Otomatik ilerletme: şirketin kendi kendine uçar, kazanır' },
-      flight: { kicker: 'Gerçekçi balon uçuşu', head: 'Şafakta|dümen sende', sub: 'Brülör, rüzgâr katmanları ve kusursuz bir iniş' },
-      holding: { kicker: 'Holding imparatorluğu', head: 'Tek sepetten|holdinge', sub: 'Bölgelerin otomatik modda, kazanç holding kasasında' },
-      crew: { kicker: 'Pilot ve ekip yönetimi', head: 'Her pilot|bir karakter', sub: 'Temkinli, gözü kara, sadık: ekibini sen seçersin' },
-      design: { kicker: 'Tasarım stüdyosu', head: 'Balonun|imzan olsun', sub: 'Desenler, renkler; kalp, yıldız ve kurukafa balonlar' },
-      night: { kicker: 'Şirket kur, kasaba büyüt', head: 'Geceleri|ışıl ışıl', sub: 'Ofisinden koca bir kasabaya: hangar, oteller, havai fişek' },
-      show: { kicker: 'Balon Şöleni', head: 'Gece göğünde|dev gösteri', sub: 'Filonun brülörleri aynı anda parlar, kasaba nefesini tutar' },
-      close: { kicker: 'Simülasyon ve strateji', head: 'Reklam yok|enerji yok', sub: 'Sadece sen, rüzgâr ve balonların' }
+      hero: { head: 'Balon|işletmecisi ol', sub: 'Tek balondan dev filoya' },
+      cities: { head: 'Dört şehir|tek imparatorluk', sub: 'Kapadokya’dan Balloon Fiesta’ya' },
+      flight: { head: 'Şafakta|dümen sende', sub: 'Gerçekçi sıcak hava balonu uçuşu' },
+      idle: { head: 'Günler akar|kasa dolar', sub: 'Otomatik ilerletmeli idle tycoon' },
+      holding: { head: 'Tek sepetten|holdinge', sub: 'Gün 2’den Gün 131’e' },
+      crew: { head: 'Her pilot|bir karakter', sub: 'Temkinli, gözü kara, sadık' },
+      design: { head: 'Balonun|imzan olsun', sub: 'Kalp, yıldız, kurukafa balonlar' },
+      rivals: { head: 'Rakiplerini|devral', sub: 'Strateji kazanır, pazar senin' },
+      night: { head: 'Geceleri|ışıl ışıl', sub: 'Ofisin koca bir kasaba olur' },
+      show: { head: 'Gece göğünde|dev gösteri', sub: 'Balon Şöleni: bütün filo havada' }
     }
   }
 };

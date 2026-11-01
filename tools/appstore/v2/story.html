@@ -21,41 +21,44 @@ canvas { display: block; }
 <script src="cities.js"></script>
 <script>
 /* The v2 App Store screens drawn as one wide sky, so the big balloons between them carry on from one screen to the
-   next while you swipe; the sky runs from dawn on screen 1 to night on screen 10. render.js opens this page with
+   next while you swipe; the sky runs from sunrise on screen 1 to night on screen 10. Each screen has its own layout
+   (full-bleed art, tilted phones, two phones, a before/after split, close-ups and number badges), and every one shows
+   real game screens captured by shots.js. render.js opens this page with
    ?dev=iphone|ipad&lang=tr&raw=<folder with <dev>/<scene>.png> and cuts the picture into screens. */
 const q = new URLSearchParams(location.search), DEV = q.get('dev') || 'iphone', LANG = q.get('lang') || 'tr', RAW = q.get('raw');
 const TXT = CAPTIONS[LANG];
-const D = DEV === 'ipad'
-  ? { W: 2064, H: 2752, sw: 1440, sh: 1920, bottom: 104, cap: { y: 150, size: 168, maxW: 1700, kicker: 40, sub: 50 }, kind: 'ipad' }
-  : { W: 1320, H: 2868, sw: 880, sh: 1907, bottom: 118, cap: { y: 196, size: 178, maxW: 1150, kicker: 38, sub: 45 }, kind: 'iphone' };
-const SW = D.sw, SH = D.sh, PX = (D.W - SW) / 2, PY = D.H - SH - D.bottom;
+const IPAD = DEV === 'ipad';
+const D = IPAD
+  ? { W: 2064, H: 2752, kind: 'ipad', cap: { y: .052, size: 196, maxW: 1800, sub: 82 } }
+  : { W: 1320, H: 2868, kind: 'iphone', cap: { y: .058, size: 192, maxW: 1200, sub: 66 } };
+const G = (phone, pad) => IPAD ? pad : phone; /* a value for each device */
 
-/* The story, in App Store order. The first three sell the game on their own (they are what search shows). */
-const SCREENS = [
-  { id: 'hero', raw: 'home' },
-  { id: 'cities', raw: 'world' },
-  { id: 'flight', raw: 'flight', pops: { iphone: [['flight', [469, 1715, 330], 'lens', { at: [.73, .5] }]], ipad: [['flight', [732, 1668, 300], 'lens', { at: [.7, .42] }]] } },
-  { id: 'idle', raw: 'auto-run3', ipad: 'auto-run2', pops: { iphone: [['auto-run3', [224, 1965, 840, 110], 'bar'], ['world', [108, 796, 1072, 280], 'row']], ipad: [['auto-run2', [740, 2200, 584, 86], 'bar', { f: 1.9 }], ['world', [640, 1015, 770, 205], 'row', { rowY: 300, f: 1.75 }]] } },
-  { id: 'holding', raw: 'holding', pops: { iphone: [['world', [108, 300, 1072, 452], 'map']], ipad: [['world', [645, 660, 762, 330], 'map', { f: 1.6 }]] } },
-  { id: 'crew', raw: 'crew', pops: { iphone: [['crew', [56, 1338, 1184, 450], 'zoom', { f: 1.16, rot: -.02, r: 30 }]], ipad: [['crew', [24, 815, 1940, 290], 'zoom', { f: 1.12, rot: -.012, r: 24 }]] } },
-  { id: 'design', raw: 'design', pops: { iphone: [['design', [108, 252, 1076, 618], 'zoom', { f: 1.16, rot: .018, r: 46 }]], ipad: [['design', [640, 436, 772, 418], 'zoom', { f: 1.45, rot: .018, r: 30 }]] } },
-  { id: 'close', raw: 'town-lux' },
-  { id: 'night', raw: 'night' },
-  { id: 'show', raw: 'show-12' },
-];
+/* The story, in App Store order. The first three sell the game on their own (search shows only those). */
+const SCREENS = ['hero', 'cities', 'flight', 'idle', 'holding', 'crew', 'design', 'rivals', 'night', 'show'];
 const N = SCREENS.length;
-const rawOf = s => s[DEV] || s.raw;
+/* raw captures each device needs, by name (shots.js writes <dev>/<name>.png) */
+const RAWS = ['home', 'world', 'flight', IPAD ? 'auto-run2' : 'auto-run3', 'early', 'empire', 'holding', 'crew', 'design', 'market', 'night', 'show-6', 'show-20'];
+/* Pieces of real screens lifted out, in raw pixels [x, y, w, h] (lens: [cx, cy, r]). */
+const SRC = IPAD ? {
+  bar: ['auto-run2', [740, 2200, 584, 86]], lens: ['flight', [732, 1668, 300]], hold: ['holding', [26, 28, 430, 112]],
+  rows: ['crew', [24, 815, 1150, 290]], studio: ['design', [640, 436, 772, 418]], deal: ['market', [30, 1050, 2010, 420]],
+} : {
+  bar: ['auto-run3', [224, 1965, 840, 110]], lens: ['flight', [469, 1715, 330]], hold: ['holding', [44, 44, 1040, 170]],
+  rows: ['crew', [56, 1338, 1184, 450]], studio: ['design', [108, 252, 1076, 618]], deal: ['market', [48, 1746, 1194, 790]],
+};
+
 const cv = document.getElementById('c');
 cv.width = D.W * N; cv.height = D.H;
 const ctx = cv.getContext('2d');
 W = D.W * N; H = D.H;
 const U = D.W; /* one screen */
+let IMG = {};
 
 /* ---------- the sky across all screens: time of day by position ---------- */
 /* stops: [u (screen units), [zenith, upper, lower, horizon]] */
 const SKY = [
-  [0, ['#160c34', '#4a2460', '#c8586a', '#ffb07a']],
-  [1.6, ['#1c1240', '#5a2c68', '#e07466', '#ffc890']],
+  [0, ['#141a4a', '#5a2c6a', '#f06a5a', '#ffc47a']],
+  [1, ['#18164a', '#5a2c68', '#e8705e', '#ffc88a']],
   [3.4, ['#262a64', '#7a4a80', '#f09a78', '#ffdcae']],
   [5.4, ['#2a3070', '#8a5486', '#f4a477', '#ffd9a6']],
   [7.0, ['#1a1844', '#552c64', '#c4506a', '#ff9468']],
@@ -70,7 +73,7 @@ function drawSky() {
   for (let x = 0; x < W; x += step) {
     const u = (x + step / 2) / U, [z, a, b, h] = skyAt(u);
     const g = ctx.createLinearGradient(0, 0, 0, H);
-    g.addColorStop(0, z); g.addColorStop(.36, a); g.addColorStop(.7, b); g.addColorStop(.9, h); g.addColorStop(1, h);
+    g.addColorStop(0, z); g.addColorStop(.36, a); g.addColorStop(.66, b); g.addColorStop(.86, h); g.addColorStop(1, h);
     ctx.fillStyle = g; ctx.fillRect(x, 0, step + 1, H);
   }
 }
@@ -82,14 +85,8 @@ function drawStars() {
     ctx.fillStyle = `rgba(255,248,230,${k * (.25 + .6 * s)})`; ctx.beginPath(); ctx.arc(x, y, .8 + s * 1.8 * (U / 1320), 0, 7); ctx.fill();
   }
 }
-/* the sun on screen 1 and the moon on screen 10 */
-function drawLights() {
-  const sx = U * .82, sy = H * .76;
-  ctx.save(); ctx.globalCompositeOperation = 'lighter';
-  for (const [rr, a] of [[U * 1.6, .16], [U * .7, .22], [U * .25, .4]]) { const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, rr); g.addColorStop(0, `rgba(255,200,130,${a})`); g.addColorStop(1, 'rgba(255,200,130,0)'); ctx.fillStyle = g; ctx.fillRect(sx - rr, sy - rr, rr * 2, rr * 2); }
-  ctx.restore();
-  const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, U * .07); g.addColorStop(0, '#fffdf4'); g.addColorStop(.7, '#ffe6b0'); g.addColorStop(1, 'rgba(255,230,176,0)'); ctx.fillStyle = g; ctx.beginPath(); ctx.arc(sx, sy, U * .07, 0, 7); ctx.fill();
-  const mx = U * 9.86, my = H * .245, mr = U * .035;
+function drawMoon() {
+  const mx = U * 9.84, my = H * .4, mr = U * .035;
   ctx.save(); ctx.globalCompositeOperation = 'lighter'; const mg = ctx.createRadialGradient(mx, my, 0, mx, my, mr * 8); mg.addColorStop(0, 'rgba(200,210,255,.22)'); mg.addColorStop(1, 'rgba(200,210,255,0)'); ctx.fillStyle = mg; ctx.fillRect(mx - mr * 8, my - mr * 8, mr * 16, mr * 16); ctx.restore();
   /* a crescent, cut on its own little canvas so the sky shows through */
   const mc = document.createElement('canvas'); mc.width = mc.height = Math.ceil(mr * 2 + 4); const m = mc.getContext('2d'), o = mr + 2;
@@ -108,13 +105,16 @@ function drawClouds() {
   }
 }
 const COLS = ['#ff5e3a', '#ffc23d', '#14a39a', '#9b7be0', '#e5432f', '#5aa9e6', '#22a45d', '#ff6fa8', '#3ad0c0', '#2b2350'];
+/* screens with their own full picture skip the shared far balloons and ground */
+const OWN = { cities: 1, night: 1 };
+const own = u => OWN[SCREENS[Math.floor(u)]];
 function drawFarBalloons() {
   const R = mulberry32(11), list = [];
   for (let i = 0; i < 260; i++) list.push({ x: R() * W, y: H * (.08 + R() * .7), d: R(), c: COLS[Math.floor(R() * COLS.length)], s: COLS[Math.floor(R() * COLS.length)], st: R() < .5 });
   list.sort((a, b) => a.d - b.d);
   for (const b of list) {
-    const u = b.x / U, fx = u - Math.floor(u); if (Math.floor(u) === 1) continue; /* the four cities draw their own skies */
-    if (b.y < PY * .8 && fx > .06 && fx < .94) continue; /* nothing behind the words */
+    const u = b.x / U, fx = u - Math.floor(u); if (own(u) || Math.floor(u) === 0) continue;
+    if (b.y < H * .26 && fx > .06 && fx < .94) continue; /* nothing behind the words */
     const hz = skyAt(u)[2], nk = nightK(u), r = U * (.006 + .03 * Math.pow(b.d, 2.4));
     farBalloon(b.x, b.y, r, b.c, (1 - b.d) * .65 + nk * .3, mix(hz, '#1a1d4c', nk * .5), { stripe: b.st ? b.s : null, glow: nk * (R() < .55 ? 1 : .25) });
   }
@@ -126,13 +126,11 @@ function drawGround() {
   for (let layer = 0; layer < 2; layer++) {
     const base = H * (layer ? 1.0 : .97), n = layer ? 60 : 110;
     for (let i = 0; i < n; i++) {
-      const x = R() * W, u = x / U; if (Math.floor(u) === 1) { R(); R(); continue; }
+      const x = R() * W, u = x / U; if (own(u) || u < 1) { R(); R(); continue; }
       const nk = nightK(u), [, , lo, hz] = skyAt(u), h = U * (layer ? .35 + R() * .25 : .14 + R() * .14);
       const lit = mix(mix('#e6a27a', hz, .3), '#3a3460', nk * .85), dark = mix('#5a2c3c', '#120e24', nk);
       chimney(x, base, h * .34, h, { seed: i * 7 + layer * 1000, light: 1, lit, dark, rim: mix('#ffd59a', '#8a90d0', nk), windows: layer ? 3 : 1, lamp: nk > .5, haze: layer ? 0 : .25 * (1 - nk), hazeColor: lo });
     }
-    const g = ctx.createLinearGradient(0, base - H * .08, 0, base); g.addColorStop(0, 'rgba(0,0,0,0)'); g.addColorStop(1, 'rgba(14,6,20,.55)');
-    ctx.fillStyle = g; ctx.fillRect(0, base - H * .08, U, H * .08); ctx.fillRect(U * 2, base - H * .08, W - U * 2, H * .08);
   }
   ctx.restore();
 }
@@ -140,83 +138,267 @@ function drawGround() {
 /* ---------- the big balloons on the seams ---------- */
 /* x in screens (an integer is a seam), y in heights, r in screen widths. */
 const BIG = [
-  { x: .1, y: .5, r: .17, cols: ['#14a39a', '#f4fff8'], pattern: 'band', pc: ['#2b2350', '#ffc23d'], burn: .7, layer: 'back' },
-  { x: 1.0, y: .68, r: .16, cols: ['#ff5e3a', '#ffc23d'], pattern: 'band', pc: ['#2b2350', '#ffffff'], burn: 1, people: 5, layer: 'front' },
-  { x: 2.0, y: .305, r: .13, cols: ['#5aa9e6', '#f2f8ff'], pattern: 'chevron', pc: ['#ffc23d', '#e5432f'], burn: .8, people: 3, layer: 'front' },
-  { x: 3.0, y: .45, r: .2, cols: ['#9b7be0', '#f4eeff'], pattern: 'stars', pc: ['#2b2350', '#ffc23d'], burn: .9, people: 4, layer: 'front' },
-  { x: 4.0, y: .76, r: .19, cols: ['#e5432f', '#ffffff'], pattern: 'diamond', pc: ['#ffc23d', '#2b2350'], burn: .6, layer: 'back' },
-  { x: 5.0, y: .5, r: .22, cols: ['#22a45d', '#fff3b0'], pattern: 'rings', pc: ['#ffffff', '#e5432f'], burn: .9, people: 5, layer: 'back' },
-  { x: 6.0, y: .78, r: .19, cols: ['#ff6fa8', '#fff0f6'], pattern: 'band', pc: ['#9b7be0', '#ffffff'], burn: .5, layer: 'back' },
-  { x: 7.0, y: .45, r: .22, cols: ['#2b2350', '#ffc23d'], pattern: 'sun', pc: ['#ffc23d', '#ff5e3a'], burn: 1, people: 4, layer: 'back' },
-  { x: 8.0, y: .78, r: .19, cols: ['#3ad0c0', '#1f6f8b'], pattern: 'chevron', pc: ['#ffffff', '#ffc23d'], burn: 1, glow: .8, layer: 'back' },
-  { x: 9.0, y: .46, r: .21, cols: ['#ffc23d', '#e5432f'], pattern: 'band', pc: ['#2b2350', '#ffffff'], burn: 1, glow: .9, people: 5, layer: 'front' },
-  { x: 9.9, y: .74, r: .15, cols: ['#e5432f', '#ffffff'], pattern: 'rings', pc: ['#ffc23d', '#2b2350'], burn: 1, glow: 1, layer: 'back' },
+  { x: 1.0, y: .7, r: .15, cols: ['#ff5e3a', '#ffc23d'], pattern: 'band', pc: ['#2b2350', '#ffffff'], burn: 1, people: 5, layer: 'front' },
+  { x: 2.0, y: .31, r: .12, cols: ['#5aa9e6', '#f2f8ff'], pattern: 'chevron', pc: ['#ffc23d', '#e5432f'], burn: .8, people: 3, layer: 'front' },
+  { x: 3.0, y: .33, r: .13, cols: ['#9b7be0', '#f4eeff'], pattern: 'stars', pc: ['#2b2350', '#ffc23d'], burn: .9, people: 4, layer: 'front' },
+  { x: 4.0, y: .3, r: .12, cols: ['#e5432f', '#ffffff'], pattern: 'diamond', pc: ['#ffc23d', '#2b2350'], burn: .8, layer: 'front' },
+  { x: 5.0, y: .89, r: .11, cols: ['#22a45d', '#fff3b0'], pattern: 'rings', pc: ['#ffffff', '#e5432f'], burn: .9, people: 3, layer: 'front' },
+  { x: 6.0, y: .31, r: .12, cols: ['#ff6fa8', '#fff0f6'], pattern: 'band', pc: ['#9b7be0', '#ffffff'], burn: .7, layer: 'front' },
+  { x: 7.0, y: .32, r: .13, cols: ['#2b2350', '#ffc23d'], pattern: 'sun', pc: ['#ffc23d', '#ff5e3a'], burn: 1, people: 4, layer: 'front' },
+  { x: 8.0, y: .3, r: .12, cols: ['#3ad0c0', '#1f6f8b'], pattern: 'chevron', pc: ['#ffffff', '#ffc23d'], burn: 1, glow: .8, layer: 'front' },
+  { x: 9.0, y: .33, r: .13, cols: ['#ffc23d', '#e5432f'], pattern: 'band', pc: ['#2b2350', '#ffffff'], burn: 1, glow: .9, people: 5, layer: 'front' },
   /* small ones by the captions */
-  { x: .07, y: .13, r: .045, cols: ['#ffc23d', '#e5432f'], layer: 'back' },
-  { x: 2.93, y: .1, r: .04, cols: ['#14a39a', '#ffffff'], layer: 'back' },
-  { x: 4.08, y: .16, r: .035, cols: ['#ff6fa8', '#ffffff'], layer: 'back' },
-  { x: 5.94, y: .12, r: .04, cols: ['#5aa9e6', '#ffffff'], layer: 'back' },
-  { x: 7.07, y: .17, r: .035, cols: ['#ff5e3a', '#ffc23d'], layer: 'back' },
-  { x: 8.94, y: .13, r: .04, cols: ['#9b7be0', '#ffffff'], glow: 1, burn: .6, layer: 'back' },
+  { x: 4.92, y: .22, r: .03, cols: ['#ff6fa8', '#ffffff'], layer: 'back' },
+  { x: 6.08, y: .2, r: .03, cols: ['#5aa9e6', '#ffffff'], layer: 'back' },
+  { x: 9.94, y: .5, r: .035, cols: ['#9b7be0', '#ffffff'], glow: 1, burn: .6, layer: 'back' },
 ];
 function bigBalloon(b) {
   const u = b.x, [, , lo, hz] = skyAt(u), nk = nightK(u);
-  const ipadK = DEV === 'ipad' ? .8 : 1;
-  balloon2(b.x * U, b.y * H, b.r * U * ipadK, { cols: b.cols, pattern: b.pattern, pc: b.pc, burn: b.burn || 0, glow: Math.max(b.glow || 0, nk * .6), people: b.people,
-    light: u < 7 ? 1 : -1, sky: mix(lo, '#3a4a9a', nk), rim: mix('#ffe2b8', '#a8b4ff', nk), gores: 16, haze: b.layer === 'back' && b.r < .06 ? .25 : 0, hazeColor: hz });
+  balloon2(b.x * U, b.y * H, b.r * U * G(1, .78), { cols: b.cols, pattern: b.pattern, pc: b.pc, burn: b.burn || 0, glow: Math.max(b.glow || 0, nk * .6), people: b.people,
+    light: u < 7 ? 1 : -1, sky: mix(lo, '#3a4a9a', nk), rim: mix('#ffe2b8', '#a8b4ff', nk), gores: 16, haze: b.layer === 'back' ? .25 : 0, hazeColor: hz });
 }
 
-/* ---------- one screen ---------- */
-let IMG = {};
-function screen(i) {
-  const s = SCREENS[i], cap = TXT.screens[s.id];
-  ctx.save(); ctx.translate(i * U, 0);
-  /* a soft dark veil behind the caption so the type reads on any sky, fading out long before the seams matter */
-  const v = ctx.createLinearGradient(0, 0, 0, PY + SH * .15); v.addColorStop(0, 'rgba(8,4,20,.42)'); v.addColorStop(.55, 'rgba(8,4,20,.12)'); v.addColorStop(1, 'rgba(8,4,20,0)');
-  ctx.fillStyle = v; ctx.fillRect(0, 0, U, PY + SH * .15);
-  if (s.id === 'cities') citiesScreen(i);
-  else device(D.kind, PX, PY, SW, SH, IMG[rawOf(s)]);
+/* ---------- building blocks ---------- */
+/* a device around raw image `name`, centred on (cx, cy), screen width w, tilted rot; returns its screen rect */
+function phone(name, cx, cy, w, rot = 0, o = {}) {
+  const img = IMG[name], h = w * img.height / img.width;
+  device(o.kind || D.kind, cx - w / 2, cy - h / 2, w, h, img, { rot, shadow: o.shadow || 'rgba(8,2,20,.6)' });
+  return { x: cx - w / 2, y: cy - h / 2, w, h, k: w / img.width };
+}
+/* a lifted-out piece of a real screen, width w, centred on (cx, cy) */
+function lift(key, cx, cy, w, o = {}) {
+  const [name, src] = SRC[key], img = IMG[name], s = w / src[2];
+  popout(img, src, cx - w / 2, cy - src[3] * s / 2, s, { r: o.r || 34, rot: o.rot || 0, bg: o.bg, ring: o.ring || 'rgba(255,255,255,.95)', ringW: o.ringW ?? 5 });
+}
+/* Big number badge: a glass card with a gold figure and a small label. align: 'l' | 'c' | 'r' at x. */
+function badge(x, y, num, label, o = {}) {
+  const s = o.size || G(150, 190), ls = s * .27;
+  ctx.save(); ctx.font = `800 ${s}px BC`; ctx.letterSpacing = `${-s * .01}px`;
+  const nw = ctx.measureText(num).width; ctx.font = `700 ${ls}px BC`; ctx.letterSpacing = `${ls * .16}px`;
+  const lt = upper(label, TXT.locale), lw = ctx.measureText(lt).width;
+  const pad = s * .26, w = Math.max(nw, lw) + pad * 2, h = s * 1.0 + ls * 1.5 + pad * .9;
+  const x0 = o.align === 'r' ? x - w : o.align === 'c' ? x - w / 2 : x;
+  if (o.rot) { ctx.translate(x0 + w / 2, y + h / 2); ctx.rotate(o.rot); ctx.translate(-(x0 + w / 2), -(y + h / 2)); }
+  ctx.shadowColor = 'rgba(8,2,20,.55)'; ctx.shadowBlur = s * .5; ctx.shadowOffsetY = s * .12;
+  const bg = ctx.createLinearGradient(0, y, 0, y + h); bg.addColorStop(0, 'rgba(40,26,74,.9)'); bg.addColorStop(1, 'rgba(18,10,40,.92)');
+  ctx.fillStyle = bg; rrect(x0, y, w, h, s * .24); ctx.fill(); ctx.shadowColor = 'transparent';
+  const rg = ctx.createLinearGradient(x0, y, x0 + w, y + h); rg.addColorStop(0, 'rgba(255,226,160,.95)'); rg.addColorStop(.5, 'rgba(255,200,110,.35)'); rg.addColorStop(1, 'rgba(255,226,160,.8)');
+  ctx.strokeStyle = rg; ctx.lineWidth = Math.max(2, s * .018); rrect(x0, y, w, h, s * .24); ctx.stroke();
+  ctx.textAlign = 'center'; const cx = x0 + w / 2;
+  ctx.font = `800 ${s}px BC`; ctx.letterSpacing = `${-s * .01}px`;
+  const g = ctx.createLinearGradient(0, y + pad * .6, 0, y + pad * .6 + s * .8); g.addColorStop(0, '#fffaf0'); g.addColorStop(.55, '#ffe2a0'); g.addColorStop(1, '#ffb84a');
+  ctx.fillStyle = g; ctx.fillText(num, cx, y + pad * .5 + s * .8);
+  ctx.font = `700 ${ls}px BC`; ctx.letterSpacing = `${ls * .16}px`; ctx.fillStyle = 'rgba(255,240,222,.92)';
+  ctx.fillText(lt, cx + ls * .08, y + pad * .5 + s * .8 + ls * 1.45);
+  ctx.restore();
+  return { x: x0, y, w, h };
+}
+/* a small quiet pill (the ad-free note on the first screen) */
+function pill(cx, y, text) {
+  const s = G(34, 44);
+  ctx.save(); ctx.font = `700 ${s}px BC`; ctx.letterSpacing = `${s * .18}px`;
+  const t = upper(text, TXT.locale), w = ctx.measureText(t).width + s * 1.6, h = s * 1.7;
+  ctx.fillStyle = 'rgba(16,8,34,.38)'; rrect(cx - w / 2, y, w, h, h / 2); ctx.fill();
+  ctx.strokeStyle = 'rgba(255,222,160,.75)'; ctx.lineWidth = Math.max(2, s * .06); rrect(cx - w / 2, y, w, h, h / 2); ctx.stroke();
+  ctx.textAlign = 'center'; ctx.fillStyle = '#ffe6b8'; ctx.fillText(t, cx + s * .09, y + h * .68);
   ctx.restore();
 }
-function popouts(i) {
-  const s = SCREENS[i], list = s.pops && s.pops[DEV]; if (!list) return;
-  ctx.save(); ctx.translate(i * U, 0);
-  const k = SW / IMG[rawOf(s)].width; /* raw px to canvas px on the phone */
-  for (const [raw, src, kind, o = {}] of list) {
-    const im = IMG[raw];
-    if (kind === 'bar') { const sc = k * (o.f || 1.4), w = src[2] * sc, hh = src[3] * sc, cx = PX + (src[0] + src[2] / 2) * k, cy = PY + (src[1] + src[3] / 2) * k; popout(im, src, cx - w / 2, cy - hh / 2, sc, { r: 55, bg: '#2a2550', ring: 'rgba(255,214,140,.95)', ringW: 4 }); }
-    if (kind === 'row') { const sc = k * (o.f || 1.22), w = src[2] * sc, hh = src[3] * sc, cy = PY + (o.rowY || 712) * k; popout(im, src, (U - w) / 2, cy - hh / 2, sc, { r: 40, rot: -.02, ringW: 0, ring: 'rgba(0,0,0,0)' }); }
-    if (kind === 'zoom') { const sc = k * o.f, w = src[2] * sc, hh = src[3] * sc, cx = PX + (src[0] + src[2] / 2) * k, cy = PY + (src[1] + src[3] / 2) * k + (o.dy || 0); popout(im, src, cx - w / 2, cy - hh / 2, sc, { r: o.r || 30, rot: o.rot, ring: 'rgba(255,255,255,.95)', ringW: 5 }); }
-    if (kind === 'lens') lens(im, src, U * o.at[0], PY + SH * o.at[1], k * 2.1);
-    if (kind === 'map') { const sc = k * (o.f || 1.08), w = src[2] * sc; popout(im, src, U * .035, PY + SH * .58, sc, { r: 44, rot: .03, ring: 'rgba(255,255,255,.95)', ringW: 6 }); }
+/* Headline (big, gold-white) and a short supporting line. Returns the bottom y. */
+function caption3(cx, y, cap, o = {}) {
+  const loc = TXT.locale, maxW = o.maxW || D.cap.maxW;
+  ctx.save(); ctx.textAlign = 'center';
+  const lines = cap.head.split('|').map(l => upper(l, loc));
+  let size = o.size || D.cap.size; ctx.font = `800 ${size}px BC`; ctx.letterSpacing = `${-size * .006}px`;
+  const widest = Math.max(...lines.map(l => ctx.measureText(l).width));
+  if (widest > maxW) { size = Math.floor(size * maxW / widest); ctx.font = `800 ${size}px BC`; ctx.letterSpacing = `${-size * .006}px`; }
+  const lh = size * .9;
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  const gy = y + lh * lines.length * .55, gr = maxW * .6;
+  const g0 = ctx.createRadialGradient(cx, gy, 0, cx, gy, gr); g0.addColorStop(0, rgba(o.glow || '#ff9a5a', .14)); g0.addColorStop(1, rgba(o.glow || '#ff9a5a', 0));
+  ctx.translate(cx, gy); ctx.scale(1, .45); ctx.translate(-cx, -gy); ctx.fillStyle = g0; ctx.fillRect(cx - gr, gy - gr, gr * 2, gr * 2); ctx.restore();
+  for (const line of lines) {
+    y += lh;
+    const g = ctx.createLinearGradient(0, y - size * .75, 0, y + size * .05);
+    g.addColorStop(0, '#ffffff'); g.addColorStop(.5, '#fff3dc'); g.addColorStop(1, o.gold || '#ffc95a');
+    ctx.shadowColor = 'rgba(12,2,24,.6)'; ctx.shadowBlur = size * .22; ctx.shadowOffsetY = size * .04;
+    ctx.fillStyle = g; ctx.fillText(line, cx, y);
+  }
+  if (cap.sub) {
+    const ss = o.sub || D.cap.sub; y += ss * 1.5;
+    ctx.font = `700 ${ss}px B`; ctx.letterSpacing = '0px';
+    const lw = ctx.measureText(cap.sub).width; if (lw > maxW) ctx.font = `700 ${Math.floor(ss * maxW / lw)}px B`;
+    ctx.fillStyle = 'rgba(255,242,228,.97)'; ctx.shadowColor = 'rgba(10,2,20,.7)'; ctx.shadowBlur = ss * .45; ctx.shadowOffsetY = 0;
+    ctx.fillText(cap.sub, cx, y);
   }
   ctx.restore();
+  return y;
+}
+/* a dark veil at the top so the words read on any picture */
+function veil(h, a = .45) {
+  const v = ctx.createLinearGradient(0, 0, 0, h); v.addColorStop(0, `rgba(8,4,22,${a})`); v.addColorStop(.6, `rgba(8,4,22,${a * .3})`); v.addColorStop(1, 'rgba(8,4,22,0)');
+  ctx.fillStyle = v; ctx.fillRect(0, 0, U, h);
+}
+/* a sunrise over fairy chimneys, drawn in the screen's own coordinates (the hero and the flight) */
+function sunrise(o) {
+  const sx = U * o.sun[0], sy = H * o.sun[1];
+  ctx.save(); ctx.globalCompositeOperation = 'lighter';
+  for (const [rr, a] of [[U * 1.5, .2], [U * .75, .26], [U * .3, .45], [U * .12, .6]]) { const g = ctx.createRadialGradient(sx, sy, 0, sx, sy, rr); g.addColorStop(0, `rgba(255,196,120,${a})`); g.addColorStop(1, 'rgba(255,170,100,0)'); ctx.fillStyle = g; ctx.fillRect(sx - rr, sy - rr, rr * 2, rr * 2); }
+  ctx.restore();
+  rays(sx, sy, 26, H * .9, '#ffd29a', .09, o.seed || 4);
+  const sg = ctx.createRadialGradient(sx, sy, 0, sx, sy, U * .075); sg.addColorStop(0, '#fffef6'); sg.addColorStop(.6, '#fff0c8'); sg.addColorStop(1, 'rgba(255,236,190,0)');
+  ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(sx, sy, U * .075, 0, 7); ctx.fill();
+  clouds(H * (o.sun[1] - .12), o.seed + 1, '#ffb08a', .3, 8);
+  /* a valley full of balloons, backlit and hazy toward the sun */
+  const R = mulberry32(o.seed + 2), list = [];
+  for (let i = 0; i < o.swarm; i++) list.push({ x: R() * U, y: H * lerp(o.swarmY[0], o.swarmY[1], R()), d: R(), c: COLS[Math.floor(R() * COLS.length)], s: COLS[Math.floor(R() * COLS.length)], st: R() < .5 });
+  list.sort((a, b) => a.d - b.d);
+  for (const b of list) farBalloon(b.x, b.y, U * (.005 + .02 * Math.pow(b.d, 2.6)), b.c, .2 + (1 - b.d) * .65, '#f2a07a', { stripe: b.st ? b.s : null });
+  const hz = H * o.horizon;
+  ridge2(hz, H * .02, '#c87a78', o.seed + 3); ridge2(hz + H * .02, H * .025, '#a85a64', o.seed + 4);
+  haze2(hz - H * .04, hz + H * .06, '#ffb488', .0, .5);
+  const R2 = mulberry32(o.seed + 5);
+  for (let i = 0; i < 34; i++) { const x = R2() * U * 1.1 - U * .05, hh = H * (.035 + R2() * .06); chimney(x, hz + H * .085 + R2() * H * .02, hh * .36, hh, { seed: o.seed * 50 + i, light: -1, lit: '#f6b48a', dark: '#6a3442', haze: .32, hazeColor: '#f0a080' }); }
+  haze2(hz + H * .05, hz + H * .13, '#ffb488', 0, .35);
+  for (let i = 0; i < 12; i++) { const x = R2() * U * 1.1 - U * .05, hh = H * (.05 + R2() * .06); chimney(x, hz + H * .17 + R2() * H * .02, hh * .35, hh, { seed: o.seed * 70 + i, light: -1, lit: '#e89a72', dark: '#4a2232', haze: .15, hazeColor: '#e08a70', windows: 2 }); }
+  for (const [fx, fh] of o.front) chimney(U * fx, H * 1.02, U * fh * .34, U * fh, { seed: Math.round(fx * 100), light: -1, lit: '#c47a5c', dark: '#24101c', rim: '#ffcf8a', windows: 3 });
+  const fg = ctx.createLinearGradient(0, H * .82, 0, H); fg.addColorStop(0, 'rgba(20,6,20,0)'); fg.addColorStop(1, 'rgba(20,6,20,.6)'); ctx.fillStyle = fg; ctx.fillRect(0, H * .82, U, H * .18);
+}
+function ridge2(base, amp, col, seed) {
+  const R = mulberry32(seed), p1 = R() * 6, p2 = R() * 6;
+  ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, H);
+  for (let x = -10; x <= U + 10; x += 8) ctx.lineTo(x, base - amp * (.5 + .35 * Math.sin(x / U * 7 + p1) + .15 * Math.sin(x / U * 19 + p2)));
+  ctx.lineTo(U, H); ctx.closePath(); ctx.fill();
+}
+function haze2(y0, y1, col, a0, a1) { const g = ctx.createLinearGradient(0, y0, 0, y1); g.addColorStop(0, rgba(col, a0)); g.addColorStop(1, rgba(col, a1)); ctx.fillStyle = g; ctx.fillRect(0, y0, U, y1 - y0); }
+const lit = (cx, cy, R, cols, o = {}) => balloon2(cx, cy, R, Object.assign({ cols, gores: 16, light: -1, sky: '#ffb08a', rim: '#ffe6c0' }, o));
+
+/* ---------- the screens ---------- */
+const SCREEN = {
+  /* 1: the picture everyone knows (sunrise, fairy chimneys, balloons), the real home screen in a tilted phone */
+  hero() {
+    sunrise({ sun: [.64, .58], horizon: .63, swarm: 110, swarmY: [.3, .6], seed: 40, front: [[.03, .42], [.17, .27], [.97, .34]] });
+    lit(U * .86, H * .36, U * .085, ['#14a39a', '#f4fff8'], { pattern: 'rings', pc: ['#ffc23d', '#2b2350'], burn: .8, people: 3, haze: .15, hazeColor: '#ffb08a' });
+    lit(U * .1, H * .335, U * .05, ['#9b7be0', '#ffffff'], { pattern: 'stars', pc: ['#2b2350', '#ffc23d'], burn: .6, haze: .25, hazeColor: '#ffb08a' });
+    veil(H * .3, .5);
+    lit(U * .3, H * .49, U * .25, ['#ff5e3a', '#ffc23d'], { pattern: 'band', pc: ['#2b2350', '#ffffff'], burn: 1, people: 5 });
+    phone('home', U * G(.7, .7), H * G(.9, .87), U * G(.5, .46), G(-.07, -.06));
+  },
+  cities() { veil(H * .3, .2); citiesScreen(); },
+  /* 3: dawn flight: a big balloon over the chimneys, the real flight screen tilted beside it */
+  flight() {
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, U * 1.2, H); ctx.clip();
+    sunrise({ sun: [.55, .76], horizon: .74, swarm: 60, swarmY: [.36, .72], seed: 60, front: [[.03, .36], [.95, .4]] });
+    ctx.restore();
+    veil(H * .3, .5);
+    const r = phone('flight', U * G(.62, .6), H * G(.66, .65), U * G(.5, .46), .045);
+    lit(U * G(.2, .2), H * .47, U * G(.17, .14), ['#9b7be0', '#f4eeff'], { pattern: 'stars', pc: ['#2b2350', '#ffc23d'], burn: 1, people: 4 });
+    const [name, src] = SRC.lens; lens(IMG[name], src, U * G(.22, .2), H * G(.82, .8), r.k * G(1.45, 1.5));
+  },
+  /* 4: the company runs its days by itself: real figures from the run in big badges */
+  idle() {
+    veil(H * .3);
+    phone(RAWS[3], U * G(.34, .36), H * G(.63, .62), U * G(.5, .46), -.05);
+    const B = TXT.badges.idle;
+    badge(U * .96, H * G(.45, .42), B[0][0], B[0][1], { align: 'r', rot: .02 });
+    badge(U * .96, H * G(.6, .57), B[1][0], B[1][1], { align: 'r', rot: -.015 });
+    lift('bar', U * .5, H * G(.9, .9), U * G(.86, .62), { r: G(56, 44), bg: '#2a2550', ring: 'rgba(255,214,140,.95)', ringW: 4 });
+  },
+  /* 5: before and after on a diagonal: the second morning and the empire */
+  holding() {
+    const top = U * .8, bot = U * .3; /* the seam runs from (top, 0) to (bot, H) */
+    ctx.save(); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(top, 0); ctx.lineTo(bot, H); ctx.lineTo(0, H); ctx.closePath(); ctx.clip();
+    const g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, '#1a1840'); g.addColorStop(.55, '#3e3466'); g.addColorStop(.85, '#6a5076'); g.addColorStop(1, '#7a5a76'); ctx.fillStyle = g; ctx.fillRect(0, 0, U, H);
+    { const R = mulberry32(81); for (let i = 0; i < 12; i++) { const x = R() * U * .6, hh = H * (.05 + R() * .07); chimney(x, H * 1.0, hh * .35, hh, { seed: 800 + i, light: -1, lit: '#8a6a86', dark: '#2a1e3a', haze: .2, hazeColor: '#5a4a76' }); } }
+    farBalloon(U * .14, H * .43, U * .02, '#ff5e3a', .3, '#5a4a76', { stripe: '#ffc23d' });
+    ctx.restore();
+    ctx.save(); ctx.beginPath(); ctx.moveTo(top, 0); ctx.lineTo(U, 0); ctx.lineTo(U, H); ctx.lineTo(bot, H); ctx.closePath(); ctx.clip();
+    const g2 = ctx.createLinearGradient(0, 0, 0, H); g2.addColorStop(0, '#2e1e56'); g2.addColorStop(.45, '#b2506c'); g2.addColorStop(.8, '#ff9a6a'); g2.addColorStop(1, '#ffc888'); ctx.fillStyle = g2; ctx.fillRect(0, 0, U, H);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter'; const sg = ctx.createRadialGradient(U * .75, H * .8, 0, U * .75, H * .8, U); sg.addColorStop(0, 'rgba(255,190,110,.45)'); sg.addColorStop(1, 'rgba(255,190,110,0)'); ctx.fillStyle = sg; ctx.fillRect(0, 0, U, H); ctx.restore();
+    const R = mulberry32(90); for (let i = 0; i < 70; i++) farBalloon(U * (.3 + R() * .7), H * (.28 + R() * .62), U * (.006 + .016 * R()), COLS[i % COLS.length], .3, '#f0a080', { stripe: i % 2 ? '#ffffff' : null });
+    { const R3 = mulberry32(83); for (let i = 0; i < 14; i++) { const x = U * (.3 + R3() * .75), hh = H * (.06 + R3() * .08); chimney(x, H * 1.0, hh * .35, hh, { seed: 900 + i, light: -1, lit: '#f0a882', dark: '#5a2a3a', haze: .2, hazeColor: '#ff9a70', windows: 2 }); } }
+    ctx.restore();
+    veil(H * .3, .4);
+    /* the seam's light line starts under the words, fading in */
+    const y0 = H * .24, x0 = lerp(top, bot, .24), lg = ctx.createLinearGradient(0, y0, 0, y0 + H * .08);
+    lg.addColorStop(0, 'rgba(255,246,228,0)'); lg.addColorStop(1, 'rgba(255,246,228,.95)');
+    ctx.save(); ctx.strokeStyle = 'rgba(255,236,200,.3)'; ctx.lineWidth = U * .016; ctx.filter = `blur(${U * .006}px)`; ctx.beginPath(); ctx.moveTo(x0, y0 + H * .04); ctx.lineTo(bot, H); ctx.stroke(); ctx.filter = 'none';
+    ctx.strokeStyle = lg; ctx.lineWidth = Math.max(3, U * .0035); ctx.beginPath(); ctx.moveTo(x0, y0); ctx.lineTo(bot, H); ctx.stroke(); ctx.restore();
+    const B = TXT.badges.holding;
+    const r1 = phone('early', U * G(.26, .26), H * G(.53, .52), U * G(.38, .36), -.05);
+    tag(U * G(.26, .26), r1.y - H * .04, B.before[0]);
+    badge(U * G(.26, .26), r1.y + r1.h + H * .025, B.before[1], B.before[2], { align: 'c', size: G(100, 130), rot: -.03 });
+    const r2 = phone('empire', U * G(.69, .69), H * G(.68, .67), U * G(.48, .44), .045);
+    tag(U * G(.69, .69), r2.y - H * .045, B.after[0]);
+    badge(U * .97, r2.y + r2.h * .32, B.after[1], B.after[2], { align: 'r', size: G(140, 170), rot: .03 });
+    lift('hold', U * G(.56, .6), H * G(.935, .93), U * G(.62, .48), { r: 30, rot: -.02 });
+  },
+  /* 6: the crew, with real pilot rows held up close */
+  crew() {
+    veil(H * .3);
+    phone('crew', U * G(.62, .6), H * G(.64, .63), U * G(.54, .5), .05);
+    lift('rows', U * G(.45, .45), H * G(.66, .62), U * G(.84, .76), { r: G(30, 24), rot: -.035 });
+  },
+  /* 7: the studio's preview, big, with the phone below it */
+  design() {
+    veil(H * .3);
+    phone('design', U * .52, H * G(.8, .79), U * G(.56, .5), .045);
+    lift('studio', U * .5, H * G(.47, .46), U * G(.86, .66), { r: G(46, 36), rot: -.025 });
+  },
+  /* 8: the market: 98% of it, and a rival for sale */
+  rivals() {
+    veil(H * .3);
+    phone('market', U * G(.37, .38), H * G(.64, .63), U * G(.52, .48), -.045);
+    const B = TXT.badges.rivals;
+    badge(U * .96, H * G(.44, .4), B[0], B[1], { align: 'r', rot: .025 });
+    if (SRC.deal[1][2]) lift('deal', U * G(.6, .62), H * G(.8, .79), U * G(.7, .52), { r: 30, rot: .03 });
+  },
+  /* 9: full bleed: the town at night is the picture (the night caption's lines and the morning button cropped away) */
+  night() {
+    const img = IMG.night, sy = img.height * .13, sh = img.height * .77, s = H / sh, w = img.width * s;
+    ctx.save(); ctx.beginPath(); ctx.rect(0, 0, U, H); ctx.clip(); ctx.filter = 'brightness(1.18) saturate(1.12)';
+    ctx.drawImage(img, 0, sy, img.width, sh, (U - w) / 2, 0, w, H); ctx.restore();
+    veil(H * .36, .8);
+    for (const [x0, dir] of [[0, 1], [U, -1]]) { const g = ctx.createLinearGradient(x0, 0, x0 + dir * U * .12, 0); g.addColorStop(0, 'rgba(8,10,32,.9)'); g.addColorStop(1, 'rgba(8,10,32,0)'); ctx.fillStyle = g; ctx.fillRect(Math.min(x0, x0 + dir * U * .12), 0, U * .12, H); }
+    const bt = ctx.createLinearGradient(0, H * .85, 0, H); bt.addColorStop(0, 'rgba(8,10,32,0)'); bt.addColorStop(1, 'rgba(8,10,32,.7)'); ctx.fillStyle = bt; ctx.fillRect(0, H * .85, U, H * .15);
+  },
+  /* 10: two phones from the Balloon Show */
+  show() {
+    veil(H * .3);
+    phone('show-6', U * G(.33, .34), H * G(.61, .6), U * G(.46, .42), -.06);
+    phone('show-20', U * G(.67, .66), H * G(.68, .67), U * G(.5, .46), .05);
+  },
+};
+function tag(cx, y, text) {
+  const s = G(40, 52);
+  ctx.save(); ctx.font = `800 ${s}px BC`; ctx.letterSpacing = `${s * .14}px`; ctx.textAlign = 'center';
+  const t = upper(text, TXT.locale), w = ctx.measureText(t).width + s * 1.2, h = s * 1.5;
+  ctx.fillStyle = '#ffc23d'; rrect(cx - w / 2, y, w, h, h * .3); ctx.fill();
+  ctx.fillStyle = '#2b2350'; ctx.fillText(t, cx + s * .07, y + h * .72); ctx.restore();
 }
 function captions(i) {
-  const s = SCREENS[i], cap = TXT.screens[s.id];
+  const id = SCREENS[i], cap = TXT.screens[id];
   ctx.save(); ctx.translate(i * U, 0);
-  caption2(U / 2, D.cap.y, cap, { locale: TXT.locale, maxW: D.cap.maxW, size: D.cap.size, kicker: D.cap.kicker, sub: D.cap.sub,
-    accent: i >= 7 ? '#ffd27a' : '#ffcf7a', glow: i >= 7 ? '#7a6aff' : '#ff9a5a', gold: i >= 7 ? '#ffd88a' : '#ffc95a' });
+  const y = caption3(U / 2, H * D.cap.y, cap, { glow: i >= 8 ? '#7a6aff' : '#ff9a5a', gold: i >= 8 ? '#ffd88a' : '#ffc95a' });
+  if (id === 'hero') pill(U / 2, y + G(40, 50), TXT.noAds);
   if (i === N - 1) brandMark(U / 2);
   ctx.restore();
 }
-/* the closing screen's sign-off: the game's name under the phone */
+/* the last screen's sign-off: the game's name at the bottom */
 function brandMark(cx) {
-  const y = D.H - D.bottom * .38;
-  ctx.save(); ctx.textAlign = 'center'; ctx.font = `800 ${D.bottom * .42}px BC`; ctx.letterSpacing = `${D.bottom * .06}px`;
-  ctx.fillStyle = 'rgba(255,240,220,.9)'; ctx.fillText(upper(TXT.brand.join('  ·  '), TXT.locale), cx, y); ctx.restore();
+  const s = G(46, 58), y = H - s * 1.2;
+  ctx.save(); ctx.textAlign = 'center'; ctx.font = `800 ${s}px BC`; ctx.letterSpacing = `${s * .14}px`;
+  ctx.shadowColor = 'rgba(0,0,0,.8)'; ctx.shadowBlur = 20;
+  ctx.fillStyle = 'rgba(255,240,220,.95)'; ctx.fillText(upper(TXT.brand.join('  ·  '), TXT.locale), cx, y); ctx.restore();
 }
 
 function load(src) { return new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = () => rej(new Error('missing ' + src)); im.src = src; }); }
-const raws = [...new Set(SCREENS.flatMap(s => [rawOf(s), ...((s.pops && s.pops[DEV]) || []).map(p => p[0])]))];
-Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px BC'), document.fonts.load('600 40px B')])
-  .then(() => Promise.all(raws.map(r => load(`${RAW}/${DEV}/${r}.png`).then(im => { IMG[r] = im; }))))
+Promise.all([document.fonts.load('800 100px BC'), document.fonts.load('700 40px BC'), document.fonts.load('700 40px B')])
+  .then(() => Promise.all(RAWS.map(r => load(`${RAW}/${DEV}/${r}.png`).then(im => { IMG[r] = im; }))))
   .then(() => {
-    drawSky(); drawStars(); drawLights(); drawClouds(); drawFarBalloons(); drawGround();
+    drawSky(); drawStars(); drawMoon(); drawClouds(); drawFarBalloons(); drawGround();
     BIG.filter(b => b.layer === 'back').forEach(bigBalloon);
-    for (let i = 0; i < N; i++) screen(i);
+    for (let i = 0; i < N; i++) { ctx.save(); ctx.translate(i * U, 0); ctx.beginPath(); ctx.rect(-U * .5, 0, U * 2, H); SCREEN[SCREENS[i]](); ctx.restore(); }
     BIG.filter(b => b.layer === 'front').forEach(bigBalloon);
-    for (let i = 0; i < N; i++) popouts(i);
     for (let i = 0; i < N; i++) captions(i);
     document.title = 'done';
   }).catch(e => { document.title = 'error ' + e.message; console.error(e); });
