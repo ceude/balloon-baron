@@ -9,7 +9,7 @@ const CAPTIONS = {
     /* the four cities on screen 2, left to right as they read on the screen */
     cities: { cap: ['Kapadokya', 'Türkiye'], lux: ['Luksor', 'Mısır'], bri: ['Bristol', 'İngiltere'], abq: ['Albuquerque', 'ABD'] },
     screens: {
-      hero: { kicker: 'Sıcak hava balonu tycoon', head: 'Gökyüzünün|yeni baronu', sub: 'Kapadokya’da bir balon şirketi, dünyaya uzanan bir imparatorluk' },
+      hero: { kicker: 'Sıcak hava balonu tycoon', head: 'Balon|işletmecisi ol', sub: 'Kapadokya’da bir balon şirketi, dünyaya uzanan bir imparatorluk' },
       cities: { kicker: 'Dünya turu', head: 'Dört şehir|tek imparatorluk', sub: 'Kapadokya’dan Nil’e, Bristol’den Balloon Fiesta’ya' },
       idle: { kicker: 'Idle tycoon', head: 'Günler akar|kasa dolar', sub: 'Otomatik ilerletme: şirketin kendi kendine uçar, kazanır' },
       flight: { kicker: 'Gerçekçi balon uçuşu', head: 'Şafakta|dümen sende', sub: 'Brülör, rüzgâr katmanları ve kusursuz bir iniş' },
