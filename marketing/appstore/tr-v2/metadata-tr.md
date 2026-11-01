@@ -81,24 +81,35 @@ Bütün çizimler ve sesler kodla yapıldı. Kapadokya’nın göğü seni bekli
 
 ## Ekran görüntüsü metinleri
 
-| # | Üst satır (küçük) | Başlık | Alt satır | Ekranda |
-|---|---|---|---|---|
-| 01 | Sıcak hava balonu tycoon | Gökyüzünün / yeni baronu | Kapadokya’da bir balon şirketi, dünyaya uzanan bir imparatorluk | Ana ekran: Kapadokya kasabası, 14 balon, gün doğumu |
-| 02 | Dünya turu | Dört şehir / tek imparatorluk | Kapadokya’dan Nil’e, Bristol’den Balloon Fiesta’ya | Dört çapraz panel (Kapadokya, Luksor, Bristol, Albuquerque) + gerçek Dünya haritası ekranı (3 bölge otomatik modda) |
-| 03 | Idle tycoon | Günler akar / kasa dolar | Otomatik ilerletme: şirketin kendi kendine uçar, kazanır | Otomatik ilerletme çalışırken ana ekran (Gün 135 +€146.644), büyütülmüş ilerletme çubuğu ve "Otomatik mod · günde yaklaşık €52.394 holding kasasına" kartı |
-| 04 | Gerçekçi balon uçuşu | Şafakta / dümen sende | Brülör, rüzgâr katmanları ve kusursuz bir iniş | Gün doğumunda uçuş: rüzgâr katmanları, irtifa, brülör; oyuncunun balonu büyüteçte |
-| 05 | Holding imparatorluğu | Tek sepetten / holdinge | Bölgelerin otomatik modda, kazanç holding kasasında | Holding ofisi (kasa €8.760.000, birimler, ofisler) + dünya haritası kartı |
-| 06 | Pilot ve ekip yönetimi | Her pilot / bir karakter | Temkinli, gözü kara, sadık: ekibini sen seçersin | Ekip sayfası; karakter etiketli pilot satırları büyütülmüş |
-| 07 | Tasarım stüdyosu | Balonun / imzan olsun | Desenler, renkler; kalp, yıldız ve kurukafa balonlar | Tasarım stüdyosu: Takımyıldız desenli yıldız balon, Yaratıcılık 100 |
-| 08 | Simülasyon ve strateji | Reklam yok / enerji yok | Sadece sen, rüzgâr ve balonların | Luksor ana ekranı, 29 balon |
-| 09 | Şirket kur, kasaba büyüt | Geceleri / ışıl ışıl | Ofisinden koca bir kasabaya: hangar, oteller, havai fişek | Kasaba gece, havai fişekler |
-| 10 | Balon Şöleni | Gece göğünde / dev gösteri | Filonun brülörleri aynı anda parlar, kasaba nefesini tutar | Balon Şöleni gecesi, 120 balon, ışıklar |
+Üst satırlar (kicker) kaldırıldı; her karede büyük bir başlık ve en fazla beş kelimelik, arama sonucu küçük resminde de okunan bir alt satır var.
+
+| # | Başlık | Alt satır | Görsel |
+|---|---|---|---|
+| 01 | BALON İŞLETMECİSİ OL | Tek balondan dev filoya (+ küçük "Reklamsız" etiketi) | Tam ekran gün doğumu: peri bacaları, vadiyi dolduran balonlar, ön planda burner'ı yanan büyük balon; gerçek ana ekran eğik ve alttan kırpılmış bir telefonda |
+| 02 | DÖRT ŞEHİR TEK İMPARATORLUK | Kapadokya’dan Balloon Fiesta’ya | Çapraz çizgilerle dört yamuk panel (Kapadokya, Luksor, Bristol, Albuquerque) + gerçek Dünya haritası ekranı |
+| 03 | ŞAFAKTA DÜMEN SENDE | Gerçekçi sıcak hava balonu uçuşu | Şafakta peri bacaları üstünde büyük balon (çizim), eğik telefonda gerçek uçuş ekranı, büyüteçte oyuncunun balonu |
+| 04 | GÜNLER AKAR KASA DOLAR | Otomatik ilerletmeli idle tycoon | Otomatik ilerletme çalışırken ana ekran; büyük rakam rozetleri "+€146.644 tek günde" ve "164 balonluk filo" (çekimdeki gerçek değerler), büyütülmüş ilerletme çubuğu |
+| 05 | TEK SEPETTEN HOLDİNGE | Gün 2’den Gün 131’e | Önce/sonra çapraz bölme: solda 2. gün (1 balon, küçük ofis), sağda 131. gün (164 balon, holding kulesi), altta gerçek "Şafak Balon Holding · Holding kasası €8.760.000" kartı |
+| 06 | HER PİLOT BİR KARAKTER | Temkinli, gözü kara, sadık | Eğik telefonda Ekip sayfası, önde büyütülmüş karakter etiketli pilot satırları |
+| 07 | BALONUN İMZAN OLSUN | Kalp, yıldız, kurukafa balonlar | Tasarım stüdyosunun önizlemesi yakın planda (yıldız balon, Yaratıcılık 100), altında telefon |
+| 08 | RAKİPLERİNİ DEVRAL | Strateji kazanır, pazar senin | Pazar sayfası, "%98 pazar payı" rozeti, büyütülmüş "satılık rakip · Devral" kartı |
+| 09 | GECELERİ IŞIL IŞIL | Ofisin koca bir kasaba olur | Tam ekran gerçek gece görüntüsü (havai fişekler, ışıklı kasaba) |
+| 10 | GECE GÖĞÜNDE DEV GÖSTERİ | Balon Şöleni: bütün filo havada | İki telefonda Balon Şöleni (120 balon), en altta "BALON BARONU · KAPADOKYA" imzası |
+
+"Reklam yok / enerji yok" karesi çıkarıldı: reklamsızlık artık 1. karede küçük bir etiket olarak duruyor, ikinci kez söylemek yerine bu yer yeni bir oynanış katmanına (rakipler ve pazar payı, "strateji" araması) verildi. "Enerji yok" açıklamada kalıyor.
+
+## App Preview videosu
+
+`preview/iphone.mp4` (886×1920) ve `preview/ipad.mp4` (1200×1600): 25 sn, 30 fps, H.264 High@4.0 (~10–11 Mb/sn), AAC stereo 256 kb/sn 48 kHz; Apple'ın App Preview şartlarına uygun (15–30 sn, en çok 30 fps, ses izi var). Bütün görüntüler prototipten kare kare kaydedilmiş gerçek oyun görüntüsü; üstünde yalnızca altyazı var. Müzik ve efektler kodla üretildi.
+
+Sahneler: şafakta kalkış ve brülörle yükseliş ("Şafakta dümen sende") → yolcuların toplanması, "Balonlar doldu 200/200" ("Balon işletmecisi ol") → otomatik ilerletme, günlük kazançlar ("Günler akar kasa dolar") → Bristol'den Luksor'a ve Albuquerque'ye dünya haritasında yolculuk ("Dört şehir tek imparatorluk") → gece havai fişekler ("Geceleri ışıl ışıl") → Balon Şöleni ("Gece göğünde dev gösteri") → kapanış: "BALON BARONU · KAPADOKYA" ve küçük "Reklamsız" etiketi. Önizleme karesi (poster frame) varsayılan olarak 5. saniye: uçuş sahnesi.
 
 ## Uygunluk notları
 
 - Ekran görüntülerinin hepsi prototipten alınmış gerçek oyun ekranlarını gösteriyor; çevresindeki gökyüzü, büyük balonlar ve 2. karedeki şehir panelleri pazarlama çizimi.
 - Puan, ödül, "1 numara" iddiası, fiyat ve emoji yok.
-- 2. kare (Luksor, Bristol, Albuquerque) ve 7. kare (Takımyıldız deseni, yıldız balon) uygulama içi satın alımla açılan içerik gösteriyor; açıklamada bu belirtildi. Apple bunu kabul eder, ama içerik satın alımla açılıyorsa açıklamada söylenmesi gerekir.
-- "Reklam yok" ve "enerji yok" doğru: oyunda reklam ve enerji sistemi yok.
+- 2. kare (Luksor, Bristol, Albuquerque), 7. kare (Takımyıldız deseni, yıldız balon) ve videodaki şehir yolculuğu uygulama içi satın alımla açılan içerik gösteriyor; açıklamada bu belirtildi. Apple bunu kabul eder, ama içerik satın alımla açılıyorsa açıklamada söylenmesi gerekir.
+- "Reklamsız" ve "enerji yok" doğru: oyunda reklam ve enerji sistemi yok.
+- Rozetlerdeki rakamlar (+€146.644 tek günde, 164 balon, %98 pazar payı, €8.760.000, Gün 2 / Gün 131) aynı karedeki gerçek oyun ekranlarından alındı. Çekimler kuralları oynayan simülasyonla büyütülmüş şirketten; 164 balonluk filo ekran görüntüsü için eklendi, holding kasası test durumundan.
 - Otomatik ilerletme oyun açıkken çalışır (Baron olunca, en az 35 balonla); çevrimdışı kazanç yok. Metinlerde "sen yokken kazanır" gibi bir vaat bilerek kullanılmadı.
 
