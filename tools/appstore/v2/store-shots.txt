@@ -1,0 +1,7 @@
+# Scenes for store-shots.sh: name | devices (* / iphone / ipad) | wait (seconds; "a,b,c" for several pictures;
+# videos: "lead+length") | launch arguments (BalloonBaron/DemoSetup.swift)
+home     | * | 9  | -demoDays 60
+crew     | * | 8  | -demoDays 60 -demoPage crew
+market   | * | 8  | -demoDays 60 -demoPage market
+flight   | * | 6,4 | -demoDays 60 -demoScene flight
+map      | * | 9  | -demoDays 60 -demoRegion abq -demoPage map

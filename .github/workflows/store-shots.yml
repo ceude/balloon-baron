@@ -1,0 +1,68 @@
+name: Store shots
+
+# Captures the raw game screens for the App Store set (tools/appstore/v2) from the real app, in every language the
+# app ships, on an iPhone 6.9" and an iPad Pro 13" simulator with a clean status bar. The scenes and their launch
+# arguments (BalloonBaron/DemoSetup.swift, debug builds only) are listed in tools/appstore/v2/store-shots.txt.
+# Results: the run's "store-raw" artifact and the `store-raw` branch (one commit, replaced each run):
+#   <lang>/<iphone|ipad>/<scene>.png, and with videos on <lang>/<device>/video/<scene>.mp4
+# Run from the Actions tab or: gh workflow run store-shots.yml -f langs="en de" -f scenes="home flight"
+on:
+  workflow_dispatch:
+    inputs:
+      langs:
+        description: Languages (space separated)
+        default: en tr de es ja ko
+      devices:
+        description: Devices (iphone ipad)
+        default: iphone ipad
+      scenes:
+        description: Only these scenes (space separated; empty = all)
+        default: ''
+      video:
+        description: Also record the App Preview clips
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  shots:
+    runs-on: macos-15
+    timeout-minutes: 150
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build for the simulator (Debug, newest Xcode)
+        shell: bash
+        run: |
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1)
+          [ -z "$X" ] && X=$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)
+          sudo xcode-select -s "$X"
+          xcodebuild -version
+          xcodebuild build -project BalloonBaron.xcodeproj -scheme BalloonBaron -configuration Debug \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath dd CODE_SIGNING_ALLOWED=NO > build.log 2>&1 \
+            || { grep -E "error: " build.log | sort -u | head -n 40 | while IFS= read -r l; do echo "::error::$l"; done; tail -n 60 build.log; exit 1; }
+      - name: Capture
+        shell: bash
+        env:
+          LANGS: ${{ inputs.langs }}
+          DEVICES: ${{ inputs.devices }}
+          SCENES: ${{ inputs.scenes }}
+          VIDEO: ${{ inputs.video }}
+        run: tools/appstore/v2/store-shots.sh dd/Build/Products/Debug-iphonesimulator/BalloonBaron.app out
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: store-raw
+          path: out
+      - name: Put the captures on the store-raw branch
+        if: always()
+        shell: bash
+        run: |
+          cd out
+          git init -q -b store-raw
+          git config user.name "screens-bot"
+          git config user.email "screens-bot@users.noreply.github.com"
+          git add -A
+          git commit -qm "Store captures for ${GITHUB_SHA::7}"
+          git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" store-raw
