@@ -147,7 +147,7 @@ def show_frames(dev):
         a = img(dev, name)[::4, ::4]; H, W = a.shape[:2]
         band = a[int(H * .1):int(H * .2), int(W * .1):int(W * .9)]  # the card's white top over the night sky
         return (band.min(axis=2) > 225).mean() > .3
-    fs = [f for f in frames(dev, 'show') if not card(f)]
+    fs = [f for f in frames(dev, 'show') if not card(f) and img(dev, f)[::8, ::8].mean() < 70]  # still night
     return fs[1] if len(fs) > 2 else fs[0], fs[-1]
 
 
