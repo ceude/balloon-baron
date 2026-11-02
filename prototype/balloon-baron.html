@@ -9492,7 +9492,7 @@ function showDropOut(out, Lg, ev, seized) {
     const back = S.showIds.length * SHOW.per; S.cash += back; total += back; if (back) Lg.showBack = (Lg.showBack || 0) + back;
     S.showTonight = null; S.showIds = null; S.showNext = 0; S.showCount = Math.max(0, (S.showCount || 1) - 1);
     Lg.showOff = Lg.showBack || 0;
-    ev.push(`Kazalar yüzünden şölene yeterli balon kalmadı, bu geceki şölen iptal. Kalan ücretler de kasana döndü: ${eur(back)}. Balonlar onarılınca yeniden düzenleyebilirsin.`);
+    ev.push(`Kazalar yüzünden şölene yeterli balon kalmadı (en az ${SHOW.min}), bu geceki şölen iptal. Kalan ücretler de kasana döndü: ${eur(back)}. Balonlar onarılınca yeniden düzenleyebilirsin.`);
   }
   return total;
 }
