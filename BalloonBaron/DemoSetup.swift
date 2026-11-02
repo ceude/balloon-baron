@@ -13,13 +13,20 @@ import BalloonBaronCore
 /// with `-demoPage fleet`). v126 (in Cappadocia, without `-demoRegion`): `charter` (the first charter offer's scene: the
 /// plane lands at the airport, then the card), `charterDelay` (a booked charter group whose plane is late: the card).
 /// The airport with the parked plane is the `charter` scene's last frames.
+/// App Store captures (.github/workflows/store-shots.yml, tools/appstore/v2/store-shots.txt): `-demoStore` clears the
+/// pictures (no tutorial, lessons or test button, no sponsor on any envelope, a green flag); `-demoCompany "Name"` names the
+/// company; `-demoEmpire N` grows it after the days to N balloons, Baron of Cappadocia with a holding (its tower in the town),
+/// every pilot hired, no sponsor on any envelope; `-demoTime dawn|day` sets the town's hour. Scenes: `auto` (the days advance
+/// by themselves), `fireworks` (a wedding's fireworks over the town at night), `show` (the Balloon Show with the whole
+/// fleet), `studio` (the design studio with the star balloon in the constellation pattern), `takeover` (a struggling rival
+/// offers its company; with `-demoPage market -demoSection rivals`), `travel` (the flight across the world map to the current region).
 extension GameStore {
     func applyDemoArguments() {
         let args = ProcessInfo.processInfo.arguments
         func value(_ k: String) -> String? { args.firstIndex(of: k).flatMap { $0 + 1 < args.count ? args[$0 + 1] : nil } }
         guard let days = value("-demoDays").flatMap(Int.init) else { return }
         LaunchGuard.settled() // runs are stopped from outside; that is not a crash
-        var g = Game(company: "Şafak Balon", colors: Rules.palettes[0], seed: 7)
+        var g = Game(company: value("-demoCompany") ?? "Şafak Balon", colors: Rules.palettes[0], seed: 7)
         g.state.cash = 30000
         for _ in 0..<days { Self.demoDay(&g) }
         if let r = value("-demoRegion"), r == "abq" || r == "lux" || r == "bri" {
@@ -53,7 +60,45 @@ extension GameStore {
             g.state.holding.cash = 15_000_000
             if h == "jersey" { g.sponsorJersey() }
         }
+        if let n = value("-demoEmpire").flatMap(Int.init) { Self.demoEmpire(&g, balloons: n) }
         g.startDay()
+        if let k = value("-demoSlow").flatMap(Double.init), k > 0 { DemoStudio.slow = k }
+        if args.contains("-demoStore") {
+            // App Store pictures: no lessons or coach, no test button, nothing written on any envelope, a green day
+            DemoStudio.store = true
+            _ = g.skipTutorial()
+            g.removeAllAds()
+            g.state.weather?.flag = .green
+            g.state.tipsSeen = Set(Tip.allCases)
+            if value("-demoEmpire") != nil { g.state.selfFlights = max(g.state.selfFlights ?? 0, 60) } // no flight lessons
+            g.state.tutorialDone = true
+            UserDefaults.standard.set(true, forKey: "ventTip") // the flight's one-time vent tip
+            g.state.poach = nil
+            // every postcard already in the album, so none stops the advancing days; only the happy reviews
+            var cards = g.state.postcards ?? [:]
+            for a in Achievement.allCases where cards[a] == nil { cards[a] = 1 }
+            g.state.postcards = cards
+            g.state.newPostcards = []
+            g.state.postcardsLater = []
+            g.state.letterDay = g.state.letterDay ?? 1 // the family's letter was read long ago
+            g.state.hezLater = []
+            g.state.local.reviews = g.state.local.reviews.filter { $0.stars >= 4 }
+            // no charter offer (its first one plays the airport's scene) while the days advance
+            if g.state.contractConfig != nil {
+                var c = g.state.local.contracts ?? ContractState()
+                c.next = g.state.day + 999
+                c.scene = true
+                c.met = true
+                g.state.local.contracts = c
+            }
+            // the regions on autopilot run smoothly: no open problem, no halved income
+            for r in Array(g.state.parked.keys) {
+                g.state.parked[r]?.auto.issue = nil
+                g.state.parked[r]?.auto.modifiers = []
+                g.state.parked[r]?.auto.lastIssue = g.state.day
+                g.state.parked[r]?.state.openIssue = nil
+            }
+        }
         g.state.hezQueue = []
         g.state.paper = nil
         g.state.eventDue = false
@@ -64,6 +109,11 @@ extension GameStore {
         currentRegion = g.state.region
         showIntro = args.contains("-demoIntro")
         page = value("-demoPage").flatMap(Page.init(rawValue:))
+        if args.contains("-demoStore"), let p = page {
+            // the store pictures need the page open: put it back if a first-morning card closed it
+            for t in [1.0, 2.5] { DispatchQueue.main.asyncAfter(deadline: .now() + t) { if self.page == nil { self.page = p } } }
+        }
+        pageSection = value("-demoSection").flatMap(PageSection.init(rawValue:)) // the page opens scrolled to it
         switch value("-demoScene") {
         case "issue":
             game?.state.local.openIssue = Autopilot.OpenIssue(kind: .raise, day: g.state.day)
@@ -86,6 +136,10 @@ extension GameStore {
                 }
                 gg.state.weather = w
                 game = gg
+            }
+            if args.contains("-demoBurn") {
+                // the burner held for the first 5 s, let go, then again: the balloon climbs off the field
+                DemoFlight.burn = { t in (t > 0.4 && t < 5.4) || (t > 7.4 && t < 9.6) || (t > 12 && t < 13.5) }
             }
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.fly() }
         case "glow":
@@ -167,11 +221,77 @@ extension GameStore {
                 game = gg
                 deal = DealOffer(rival: 0, bankrupt: false)
             }
+        case "auto":
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { self.startAuto() }
+        case "fireworks":
+            DemoStudio.holdNight = true
+            night = Night(event: .fireworks(game?.state.hotelDeals.first ?? .stone))
+        case "show":
+            if let ids = game?.showFleet.map(\.id) { night = Night(event: .show(balloons: ids)) }
+        case "studio":
+            DemoStudio.open = true
+            DemoStudio.preset = (pattern: .sky, shape: .star, colors: ["#2b2350", "#ffc23d", "#ffffff"])
+            page = .workshop
+        case "takeover":
+            if var gg = game, let i = gg.state.rivals.indices.first(where: { gg.state.rivals[$0].alive }) {
+                gg.state.rivals[i].offer = max(60000, gg.state.rivals[i].balloons.count * 30000)
+                game = gg
+            }
+        case "travel":
+            let to = g.state.region
+            travel = Travel(from: to == .cap ? .bri : .cap, to: to)
         case "letter", "letterRead":
             game?.state.letterDay = game?.state.day
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) { self.letter = true }
         default: break
         }
+    }
+
+    /// The App Store's late game: Baron of Cappadocia with `n` balloons, a pilot for each, the buildings at the top, the
+    /// workshop open and a holding with money in it. Balloons are bought by the rules (with the money given here).
+    private static func demoEmpire(_ g: inout Game, balloons n: Int) {
+        g.state.barons[.cap] = g.state.barons[.cap] ?? max(1, g.state.day - 30)
+        var lv = g.state.buildings ?? [:]
+        for b in Building.allCases { lv[b] = b == .hangar ? 6 : b.maxLevel }
+        while Hangar.capacity[lv[.hangar] ?? 6] < n && (lv[.hangar] ?? 6) < Hangar.maxLevel { lv[.hangar] = (lv[.hangar] ?? 6) + 1 }
+        g.state.buildings = lv
+        g.state.workshopDay = g.state.workshopDay ?? max(1, g.state.day - 60)
+        g.state.cash = 1_000_000_000
+        let sizes: [BalloonSize] = [.M, .L, .M, .S, .L]
+        var k = 0
+        while g.state.balloons.count < n, g.buyBalloon(sizes[k % sizes.count]) { k += 1 }
+        // A pilot for every balloon. Twelve seniors with twelve different names lead the crew page (it lists the big
+        // balloons' pilots first, the most senior first, then by name); the first three show the characters.
+        let traits: [PilotTrait] = [.careful, .daredevil, .loyal, .thrifty, .showman, .storyteller]
+        if let model = g.state.pilots.first {
+            for j in g.state.pilots.indices { g.state.pilots[j].level = .experienced }
+            let names = g.state.region.pilotNames, initials = g.state.region.pilotInitials
+            var i = 0
+            while g.state.pilots.count < n - 1 {
+                var p = model
+                p.id = g.state.nextID
+                g.state.nextID += 1
+                p.name = "\(names[i % names.count]) \(initials[(i * 7 + i / names.count + 3) % initials.count])."
+                p.trait = traits[(i * 5 + 1) % traits.count]
+                p.level = i < 12 ? .senior : i % 3 == 0 ? .rookie : .experienced
+                p.customWage = nil
+                p.xp = 0
+                g.state.pilots.append(p)
+                i += 1
+            }
+            let seniors = g.state.pilots.indices.filter { g.state.pilots[$0].level == .senior }
+                .sorted { g.state.pilots[$0].name.localizedCompare(g.state.pilots[$1].name) == .orderedAscending }
+            for (k, j) in seniors.enumerated() { g.state.pilots[j].trait = traits[k % traits.count] }
+        }
+        for k in StoreItem.allCases { g.grantStoreItem(k) } // the studio's star balloon and constellation, the square's decor
+        for i in g.state.balloons.indices { g.state.balloons[i].design = nil } // the balloons keep the company's colours
+        g.assignPilots()
+        // one day flown with the whole fleet, so the market's "yesterday" is the empire's
+        g.state.cash = 3_000_000
+        g.state.weather?.flag = .green
+        demoDay(&g)
+        g.state.cash = 3_043_969
+        g.state.holding.cash = max(g.state.holding.cash, 8_760_000)
     }
 
     /// Enters a region for a screenshot run; a refusal would leave every later scene in the wrong region, so it says so.
@@ -197,5 +317,22 @@ extension GameStore {
             _ = g.finishDay(flight: nil)
         }
     }
+}
+
+/// `-demoBurn`: the flight's burner held on this rhythm (seconds since the flight began).
+enum DemoFlight {
+    static var burn: ((Double) -> Bool)?
+}
+
+/// The design studio opened by `-demoScene studio`, with this design already chosen; `store`: `-demoStore` is on.
+enum DemoStudio {
+    static var store = false
+    /// `-demoScene fireworks`: the night doesn't pass by itself after a few quiet seconds.
+    static var holdNight = false
+    /// `-demoSlow 0.15`: the night and the Balloon Show run at this speed, so the CI simulator (which draws them at a few
+    /// frames a second) records them smoothly; the video is sped up again afterwards (tools/appstore/v2/clips.py).
+    static var slow = 1.0
+    static var open = false
+    static var preset: (pattern: Pattern, shape: EnvelopeShape?, colors: [String])?
 }
 #endif

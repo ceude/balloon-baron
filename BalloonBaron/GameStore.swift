@@ -286,6 +286,9 @@ final class GameStore {
     /// Shows the next popup in the prototype's order (`nextPopup`): chapter ceremony, merger news, the morning
     /// paper, the rescue plan, a morning event, a new postcard, then Hezarfen, a poaching rival and deals.
     func showNextHezarfen() {
+        #if DEBUG
+        if DemoStudio.store && auto != nil { clearForDemo(); return } // store captures: no card stops the advancing days
+        #endif
         // v122: a guided action is running; it calls back when it ends
         guard !busy, guided == nil, let g = game else { return }
         let s = g.state
@@ -892,8 +895,15 @@ final class GameStore {
         guard s.licenseValid else { stopAuto(.license); return }
         auto?.left -= 1
         autoNote = AutoNote(day: s.day, net: nil)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.45) { [weak self] in
+        var pace = 0.45
+        #if DEBUG
+        if DemoStudio.store { pace = 2.5 } // store captures: each day's takings stay on the strip long enough to photograph
+        #endif
+        DispatchQueue.main.asyncAfter(deadline: .now() + pace) { [weak self] in
             guard let self, self.auto != nil, let s = self.state else { return }
+            #if DEBUG
+            if DemoStudio.store { self.clearForDemo() }
+            #endif
             if self.busy { self.stopAuto(.waiting); return }
             self.fly(skip: s.weather?.flag == .red || s.flyingToday.isEmpty)
         }
@@ -922,6 +932,9 @@ final class GameStore {
 
     private func autoCheck() {
         guard let a = auto else { return }
+        #if DEBUG
+        if DemoStudio.store { clearForDemo() } // store captures: the days keep advancing past every card
+        #endif
         if let why = a.why { stopAuto(why); return }
         if showShots != nil { stopAuto(.show); return }
         if busy { stopAuto(.waiting); return }
@@ -955,5 +968,21 @@ final class GameStore {
 
     #if DEBUG
     func resetForTesting() { startOver() }
+
+    #if DEBUG
+    /// Store captures (`-demoStore`): every card the morning brought goes away unanswered.
+    func clearForDemo() {
+        deal = nil; buyLoan = nil; poach = nil; hezarfen = nil; postcard = nil; paper = nil; morningEvent = nil
+        chapter = nil; merge = nil; letter = false; contractCard = nil; contractScene = nil; hotelSale = nil
+        hotelBargain = nil; showShowCard = false; showGlowCard = false; showTempFlag = false; showRescue = false
+        showFactoryOrder = false; showTourOffer = false; townCard = nil; guided = nil; showShots = nil
+        game?.state.local.reviews.removeAll { $0.stars < 4 } // the review ticker shows the happy ones
+        game?.state.weather?.flag = .green // every advanced day flies
+        game?.state.mergeNews = nil
+        game?.state.chapterNews = nil
+        game?.state.hezQueue = []
+        game?.state.newPostcards = []
+    }
+    #endif
     #endif
 }

@@ -68,6 +68,66 @@ Tasarım stüdyosunda kendi balonunu tasarla: desenler, renkler; kalp, yıldız 
 Bütün çizimler ve sesler kodla yapıldı. Kapadokya’nın göğü seni bekliyor.
 ```
 
+## App Store Connect alanları
+
+`tools/appstore/asc/asc.py metadata` bu blokları okur (yukarıdaki tablo ve metinlerle aynı).
+
+```asc:name
+Balon Baronu: Kapadokya
+```
+
+```asc:subtitle
+Sıcak Hava Balonu Tycoon Oyunu
+```
+
+```asc:keywords
+idle,işletme,simülasyon,strateji,holding,imparatorluk,şirket,pilot,uçuş,patron,ekonomi,tasarım,filo
+```
+
+```asc:promotionalText
+Peri bacalarının üstünde şafak sökerken tek bir sepetle başla. Günler kendi kendine aksın, kasa dolsun; dört şehre yayılan bir balon holdingi kur. Reklam yok.
+```
+
+```asc:description
+Kapadokya’da şafak sökerken tek bir sepetle başlarsın. Birkaç yıl sonra gökyüzünün yarısı senin balonlarınla dolar, şirketin dört şehre yayılan bir holdinge dönüşür. Balon Baronu, sıcak hava balonu şirketi kurup büyüttüğün bir tycoon ve işletme simülasyonu.
+
+REKLAM YOK. ENERJİ YOK. BEKLEME YOK.
+Oyunu oynamak için kimse seni durdurmaz. Ekranı reklam kaplamaz, enerjin bitmez, sıra beklemezsin.
+
+GÜNLER AKAR, KASA DOLAR
+Filon büyüyüp Kapadokya Baronu olduğunda otomatik ilerletme açılır: günler kendi kendine akar, pilotların uçar, kazanç kasaya yazılır. Bir karar gerektiğinde oyun durur ve seni çağırır. Fethettiğin bölgeler otomatik modda müdürlerine kalır; her gün holding kasasına para gönderir. Idle oyun sevenler için rahat, tycoon sevenler için derin.
+
+ŞAFAKTA DÜMEN SENDE
+İstersen balonu kendin uçur. Brülörle yüksel, rüzgâr katmanlarını oku, iniş alanına kusursuz in. Gökyüzünde evlilik teklifleri, fotoğraf uçuşları ve hassas iniş görevleri ekstra kazandırır.
+
+ŞİRKETİNİ KUR, KASABANI BÜYÜT
+Balon al, bilet fiyatını belirle, otellerle, rehberlerle ve tur şirketleriyle anlaş. Küçük ofisin hangarlarıyla, pilot okuluyla, atölyesiyle ve otelleriyle koca bir kasabaya dönüşür. Gece olunca fenerler yanar, havai fişekler patlar.
+
+HER PİLOT BİR KARAKTER
+Temkinli mi, gözü kara mı, sadık mı? Pilotlarını işe al, yetiştir, kıdemli yap. Rakipler en iyi pilotunu ayartmaya çalışır; ekibini elinde tutmak senin işin.
+
+RAKİPLERİ GERİDE BIRAK
+Vadide başka balon şirketleri de var. Birleşirler, pazarı kızıştırırlar, kırmızı bayrakta uçarlar. Pazarı ele geçir, rakiplerini devral, Kapadokya Baronu ol.
+
+TEK SEPETTEN HOLDİNGE
+Baron olduğunda holding kurarsın. Pazarlama ve Ar-Ge birimleri, dünya ofisleri, rekor projeleri ve sponsorlu dev şekiller seni bekler.
+
+DÖRT ŞEHİR, TEK İMPARATORLUK
+• Kapadokya: peri bacaları ve gün doğumu
+• Luksor: Nil, tapınaklar ve Nil gemileri
+• Bristol: sisli sabahlar, Avon Kanyonu ve balon festivali
+• Albuquerque: çöl, kutu rüzgârı ve Balloon Fiesta
+Her şehrin kendi rüzgârı, rakipleri ve hikâyesi var. Albuquerque, Luksor ve Bristol uygulama içi Dünya Turu paketiyle açılır.
+
+GECE GÖĞÜNDE BALON ŞÖLENİ
+Filon büyüyünce bir gece bütün balonlarını kasabanın üstünde yakarsın. Brülörler aynı anda parlar, sonraki günlerde turistler kapına dizilir.
+
+BALONUN İMZAN OLSUN
+Tasarım stüdyosunda kendi balonunu tasarla: desenler, renkler; kalp, yıldız ve kurukafa biçimli balonlar (özel desenler ve biçimler uygulama içi satın alımla). Balon atölyen zamanla kendi balonlarını üreten bir fabrikaya dönüşür.
+
+Bütün çizimler ve sesler kodla yapıldı. Kapadokya’nın göğü seni bekliyor.
+```
+
 ## Üç alternatif
 
 1. **Balon Baronu: Holding Tycoon** (28) / **Kapadokya’da Balon Şirketi Kur** (30)  

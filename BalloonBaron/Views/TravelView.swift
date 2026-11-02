@@ -40,7 +40,7 @@ struct TravelView: View {
         .task {
             start = Date()
             withAnimation(.easeOut(duration: 0.4)) { shown = true }
-            try? await Task.sleep(for: .seconds(reduceMotion ? 1.2 : Self.duration + 0.35))
+            try? await Task.sleep(for: .seconds(reduceMotion ? 1.2 : (Self.duration + 0.35) / NightView.clock(1)))
             withAnimation(.easeIn(duration: 0.4)) { shown = false }
             try? await Task.sleep(for: .seconds(0.45))
             store.travel = nil
@@ -50,7 +50,7 @@ struct TravelView: View {
 
     private func progress(_ now: Date) -> Double {
         if reduceMotion { return 1 }
-        let k = min(1, max(0, now.timeIntervalSince(start) / Self.duration))
+        let k = min(1, max(0, NightView.clock(now.timeIntervalSince(start)) / Self.duration))
         return k < 0.5 ? 2 * k * k : 1 - pow(-2 * k + 2, 2) / 2
     }
 
@@ -105,7 +105,7 @@ struct TravelView: View {
                 }
                 DesignBalloon(colors: colors)
                     .frame(width: 30, height: 38)
-                    .rotationEffect(.degrees(sin(Date().timeIntervalSinceReferenceDate * 3.3) * 4), anchor: .bottom)
+                    .rotationEffect(.degrees(sin(NightView.clock(Date().timeIntervalSinceReferenceDate) * 3.3) * 4), anchor: .bottom)
                     .shadow(color: .black.opacity(0.4), radius: 4, y: 3)
                     .position(x: pos.x, y: pos.y - 19)
             }

@@ -74,6 +74,14 @@ struct DesignStudioView: View {
     private func setup() {
         guard !ready, let s = store.state else { return }
         ready = true
+        #if DEBUG
+        if let d = DemoStudio.preset {
+            pattern = d.pattern
+            shape = d.shape
+            colors = d.colors
+            return
+        }
+        #endif
         let used = Set(s.designs.map(\.pattern))
         pattern = Pattern.allCases.first { !used.contains($0) && !$0.premium } ?? .zigzag
         let main = s.colors.first ?? "#ff5e3a"

@@ -201,9 +201,11 @@ struct HomeView: View {
             }
             actionButtons(game.state)
             #if DEBUG
-            Button(loc("debug.reset")) { store.resetForTesting() }
-                .font(Theme.font(13))
-                .foregroundStyle(.white.opacity(0.7))
+            if !DemoStudio.store {
+                Button(loc("debug.reset")) { store.resetForTesting() }
+                    .font(Theme.font(13))
+                    .foregroundStyle(.white.opacity(0.7))
+            }
             #endif
         }
         .padding(12)

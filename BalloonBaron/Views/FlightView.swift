@@ -307,6 +307,9 @@ final class FlightModel {
         }
         T += dt
         driftDt += dt
+        #if DEBUG
+        if let hold = DemoFlight.burn { buttonHold = hold(T) } // store captures: the burner on a set rhythm
+        #endif
         if !sim.done {
             sim.burning = burning
             for e in sim.step(dt) { handle(e) }

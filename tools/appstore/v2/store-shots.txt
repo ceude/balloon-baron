@@ -1,7 +1,22 @@
-# Scenes for store-shots.sh: name | devices (* / iphone / ipad) | wait (seconds; "a,b,c" for several pictures;
-# videos: "lead+length") | launch arguments (BalloonBaron/DemoSetup.swift)
-home     | * | 9  | -demoDays 60
-crew     | * | 8  | -demoDays 60 -demoPage crew
-market   | * | 8  | -demoDays 60 -demoPage market
-flight   | * | 6,4 | -demoDays 60 -demoScene flight
-map      | * | 9  | -demoDays 60 -demoRegion abq -demoPage map
+# Scenes for store-shots.sh: name | devices (* / iphone / ipad) | wait | launch arguments (BalloonBaron/DemoSetup.swift).
+# wait: seconds before the picture; "a,b,c" takes name-0, name-1… after each pause; a video (video:name) "lead+length".
+# The night, show and travel videos run slowed down (-demoSlow; clips.py speeds them up again).
+# Every launch also gets -demoStore and the language; {COMPANY} is the company's name in that language.
+home     | * | 6      | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 60
+world    | * | 7      | -demoDays 60 -demoCompany {COMPANY} -demoRegion bri -demoPage map
+flight   | * | 6,1,1,1,1,1,1 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 60 -demoScene flight -demoBurn
+auto     | * | .5,.5,.5,.5,.5,.5,.5,.5,.5,.5,.5,.5,.5,.5 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene auto
+early    | * | 7      | -demoDays 1 -demoCompany {COMPANY}
+empire   | * | 6      | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164
+holding  | * | 6      | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoPage holding
+crew     | * | 6      | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoPage crew
+design   | * | 7,3,3  | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene studio
+market   | * | 6      | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene takeover -demoPage market -demoSection rivals
+night    | * | 3,1.5,1.5,1.5,1.5,1.5,1.5,1.5 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene fireworks
+show     | * | 5,1,1,1,1,1,1,1 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 120 -demoScene show
+video:flight  | * | 2+11 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 60 -demoScene flight -demoBurn
+video:collect | * | 2+7  | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 60 -demoScene collect
+video:auto    | * | 3+10 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 40 -demoScene auto
+video:travel  | * | 1+40 | -demoDays 60 -demoCompany {COMPANY} -demoRegion bri -demoScene travel -demoSlow 0.2
+video:night   | * | 1+60 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene fireworks -demoSlow 0.15
+video:show    | * | 244+90 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 120 -demoScene show -demoSlow 0.08

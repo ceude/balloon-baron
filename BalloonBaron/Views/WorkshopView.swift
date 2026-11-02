@@ -27,6 +27,11 @@ struct WorkshopView: View {
             .sheet(isPresented: $studioOpen) {
                 DesignStudioView().environment(store)
             }
+            #if DEBUG
+            .onAppear {
+                if DemoStudio.open { DemoStudio.open = false; studioOpen = true }
+            }
+            #endif
         }
     }
 

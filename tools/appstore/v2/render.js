@@ -11,7 +11,7 @@ const { execFileSync } = require('child_process');
 
 (async () => {
   const raw = path.resolve(process.argv[2] || '.'), lang = process.argv[3] || 'tr', devs = process.argv[4] ? [process.argv[4]] : ['iphone', 'ipad'];
-  const base = path.join(__dirname, '../../../marketing/appstore', `${lang}-v2`);
+  const base = process.env.OUT || path.join(__dirname, '../../../marketing/appstore', `${lang}-v2`); /* OUT: somewhere else */
   const b = await chromium.launch();
   for (const dev of devs) {
     const [w, h] = dev === 'ipad' ? [2064, 2752] : [1320, 2868];

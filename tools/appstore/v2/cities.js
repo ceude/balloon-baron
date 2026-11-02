@@ -48,11 +48,11 @@ function citiesScreen(i) {
 const CITY_LABEL = { iphone: [[.065, .31], [.065, .535], [.19, .655], [.065, .865]], ipad: [[.06, .3], [.06, .535], [.17, .66], [.06, .87]] };
 function cityLabel(x, y, name, land, rot) {
   ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
-  const s = D.W * (DEV === 'ipad' ? .05 : .075);
-  ctx.textAlign = 'left'; ctx.font = `800 ${s}px BC`; ctx.letterSpacing = `${s * .02}px`;
+  const s = D.W * (DEV === 'ipad' ? .05 : .075) * TY.headK * (CJK ? 1.05 : 1), hf = z => CJK ? TY.head(z) : `800 ${z}px BC`;
+  ctx.textAlign = 'left'; ctx.font = hf(s); ctx.letterSpacing = `${s * (CJK ? 0 : .02)}px`;
   const t = upper(name, TXT.locale); let tw = ctx.measureText(t).width;
   const fit = D.W * (DEV === 'ipad' ? .42 : .44); /* stays clear of the phone */
-  if (tw > fit) { ctx.font = `800 ${s * fit / tw}px BC`; tw = fit; }
+  if (tw > fit) { ctx.font = hf(s * fit / tw); tw = fit; }
   /* a soft shade behind the name so it reads over any landscape */
   const cx = tw / 2, cyy = -s * .2, g0 = ctx.createRadialGradient(cx, cyy, 0, cx, cyy, tw * .75);
   g0.addColorStop(0, 'rgba(14,6,26,.42)'); g0.addColorStop(1, 'rgba(14,6,26,0)');
@@ -60,8 +60,8 @@ function cityLabel(x, y, name, land, rot) {
   ctx.shadowColor = 'rgba(10,4,20,.7)'; ctx.shadowBlur = s * .3; ctx.shadowOffsetY = s * .04;
   const g = ctx.createLinearGradient(0, -s * .8, 0, 0); g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#ffe7c2');
   ctx.fillStyle = g; ctx.fillText(t, 0, 0);
-  ctx.font = `700 ${s * .3}px BC`; ctx.letterSpacing = `${s * .12}px`; ctx.fillStyle = '#ffd27a';
-  ctx.fillText(upper(land, TXT.locale), s * .03, s * .44);
+  ctx.font = TY.label(700, s * (CJK ? .36 : .3)); ctx.letterSpacing = `${s * (CJK ? .03 : .12)}px`; ctx.fillStyle = '#ffd27a';
+  ctx.fillText(upper(land, TXT.locale), s * .03, s * (CJK ? .52 : .44));
   ctx.restore();
 }
 /* soft gradient sky inside a band */

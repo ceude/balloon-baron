@@ -1,11 +1,11 @@
 name: Store shots
 
 # Captures the raw game screens for the App Store set (tools/appstore/v2) from the real app, in every language the
-# app ships, on an iPhone 6.9" and an iPad Pro 13" simulator with a clean status bar. The scenes and their launch
-# arguments (BalloonBaron/DemoSetup.swift, debug builds only) are listed in tools/appstore/v2/store-shots.txt.
-# Results: the run's "store-raw" artifact and the `store-raw` branch (one commit, replaced each run):
-#   <lang>/<iphone|ipad>/<scene>.png, and with videos on <lang>/<device>/video/<scene>.mp4
-# Run from the Actions tab or: gh workflow run store-shots.yml -f langs="en de" -f scenes="home flight"
+# app ships, on an iPhone 6.9" and an iPad Pro 13" simulator with a clean status bar (9:41, full battery). The scenes
+# and their launch arguments (BalloonBaron/DemoSetup.swift, debug builds only) are in tools/appstore/v2/store-shots.txt.
+# The app is built once; each language is captured in its own job. Results go to the `store-raw` branch (one commit,
+# replaced each run): <lang>/<iphone|ipad>/<scene>.png, videos in <lang>/<device>/video/<scene>.mov, and logs/.
+# Run from the Actions tab, or: gh workflow run store-shots.yml -f langs="en de" -f scenes="home flight" -f video=true
 on:
   workflow_dispatch:
     inputs:
@@ -19,44 +19,93 @@ on:
         description: Only these scenes (space separated; empty = all)
         default: ''
       video:
-        description: Also record the App Preview clips
-        type: boolean
-        default: false
+        description: App Preview clips (false, true, only)
+        default: 'false'
+      xcode:
+        description: Xcode version prefix to build with (empty = newest)
+        default: ''
+      runtime:
+        description: Simulator runtime prefix, e.g. iOS-18 (empty = newest)
+        default: ''
 
 permissions:
   contents: write
 
 jobs:
-  shots:
+  build:
     runs-on: macos-15
-    timeout-minutes: 150
+    outputs:
+      langs: ${{ steps.langs.outputs.list }}
     steps:
       - uses: actions/checkout@v4
-      - name: Build for the simulator (Debug, newest Xcode)
+      - id: langs
+        shell: bash
+        run: echo "list=$(echo '${{ inputs.langs }}' | python3 -c 'import json,sys; print(json.dumps(sys.stdin.read().split()))')" >> "$GITHUB_OUTPUT"
+      # Debug (the launch arguments in DemoSetup.swift are debug-only), but optimized: the simulator on the CI machine
+      # draws in software, and unoptimized drawing code gives a few frames a second in the videos
+      - name: Build for the simulator (Debug, optimized)
         shell: bash
         run: |
-          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1)
+          if [ -n "${{ inputs.xcode }}" ]; then X=$(ls -d /Applications/Xcode_${{ inputs.xcode }}*.app | sort -V | tail -n 1)
+          else X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1); fi
           [ -z "$X" ] && X=$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1)
           sudo xcode-select -s "$X"
           xcodebuild -version
           xcodebuild build -project BalloonBaron.xcodeproj -scheme BalloonBaron -configuration Debug \
-            -destination 'generic/platform=iOS Simulator' -derivedDataPath dd CODE_SIGNING_ALLOWED=NO > build.log 2>&1 \
+            -destination 'generic/platform=iOS Simulator' -derivedDataPath dd CODE_SIGNING_ALLOWED=NO \
+            SWIFT_OPTIMIZATION_LEVEL=-O SWIFT_COMPILATION_MODE=wholemodule GCC_OPTIMIZATION_LEVEL=s > build.log 2>&1 \
             || { grep -E "error: " build.log | sort -u | head -n 40 | while IFS= read -r l; do echo "::error::$l"; done; tail -n 60 build.log; exit 1; }
+          cd dd/Build/Products/Debug-iphonesimulator && ditto -c -k --keepParent BalloonBaron.app "$GITHUB_WORKSPACE/app.zip"
+          echo "$X" > "$GITHUB_WORKSPACE/xcode.txt"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: app
+          path: |
+            app.zip
+            xcode.txt
+
+  capture:
+    needs: build
+    runs-on: macos-15
+    timeout-minutes: 100
+    strategy:
+      fail-fast: false
+      matrix:
+        lang: ${{ fromJSON(needs.build.outputs.langs) }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: app
       - name: Capture
         shell: bash
         env:
-          LANGS: ${{ inputs.langs }}
+          LANGS: ${{ matrix.lang }}
           DEVICES: ${{ inputs.devices }}
           SCENES: ${{ inputs.scenes }}
           VIDEO: ${{ inputs.video }}
-        run: tools/appstore/v2/store-shots.sh dd/Build/Products/Debug-iphonesimulator/BalloonBaron.app out
+          RUNTIME_PREFIX: ${{ inputs.runtime }}
+        run: |
+          sudo xcode-select -s "$(cat xcode.txt)"
+          ditto -x -k app.zip .
+          tools/appstore/v2/store-shots.sh BalloonBaron.app out
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: store-raw
+          name: raw-${{ matrix.lang }}
+          path: out
+
+  publish:
+    needs: capture
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: raw-*
+          merge-multiple: true
           path: out
       - name: Put the captures on the store-raw branch
-        if: always()
         shell: bash
         run: |
           cd out
@@ -64,5 +113,5 @@ jobs:
           git config user.name "screens-bot"
           git config user.email "screens-bot@users.noreply.github.com"
           git add -A
-          git commit -qm "Store captures for ${GITHUB_SHA::7}"
+          git commit -qm "Store captures for ${GITHUB_SHA::7} (run ${{ github.run_id }})"
           git push -qf "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}" store-raw

@@ -381,7 +381,7 @@ struct NightView: View {
                 TimelineView(.animation) { tl in
                     Canvas(renderer: { ctx, sz in
                         let now = tl.date
-                        let t = now.timeIntervalSince(start)
+                        let t = Self.clock(now.timeIntervalSince(start))
                         let k = dawn.map { max(0.25, 1 - now.timeIntervalSince($0) * 0.75) } ?? min(1, t / 1.4)
                         var v = view ?? camera(sz)
                         NightCamera.clamp(&v, sz)
@@ -445,7 +445,7 @@ struct NightView: View {
 
     private func morningButton(day: Int) -> some View {
         TimelineView(.animation(minimumInterval: 1 / 15)) { tl in
-            let left = isShow || isGlow ? limit - tl.date.timeIntervalSince(start) : min(wait - tl.date.timeIntervalSince(idle), 25 - tl.date.timeIntervalSince(start))
+            let left = isShow || isGlow ? limit - Self.clock(tl.date.timeIntervalSince(start)) : min(wait - tl.date.timeIntervalSince(idle), 25 - Self.clock(tl.date.timeIntervalSince(start)))
             let p = dawn != nil ? 1 : min(max(1 - left / wait, 0), 1)
             Button {
                 SoundEngine.shared.play(.click)
@@ -477,12 +477,25 @@ struct NightView: View {
         .animation(.easeOut(duration: 0.6).delay(0.8), value: shown)
     }
 
+    /// The night's own clock: real seconds, slowed down for the store's video captures (`-demoSlow`, debug only).
+    static func clock(_ t: Double) -> Double {
+        #if DEBUG
+        return t * DemoStudio.slow
+        #else
+        return t
+        #endif
+    }
+
     /// The night passes after a few quiet seconds (restarting while you look around), at most 25 s.
     private func passByItself() async {
         while dawn == nil {
             try? await Task.sleep(for: .milliseconds(200))
             let now = Date()
-            if (!isShow && !isGlow && now.timeIntervalSince(idle) >= wait) || now.timeIntervalSince(start) >= limit { bringMorning() }
+            var quiet = !isShow && !isGlow && now.timeIntervalSince(idle) >= wait
+            #if DEBUG
+            if DemoStudio.holdNight { quiet = false } // store captures: the night stays to its 25 s
+            #endif
+            if quiet || Self.clock(now.timeIntervalSince(start)) >= limit { bringMorning() }
             if case .fireworks = night.event { SoundEngine.shared.firework(now.timeIntervalSince(start)) }
             if isGlow && now.timeIntervalSince(start) > Glow.fireworksAt { SoundEngine.shared.firework(now.timeIntervalSince(start)) }
         }
@@ -497,7 +510,7 @@ struct NightView: View {
         // v116: the show's highlights, if it got as far as two of its moments.
         var shots: GameStore.ShowShots?
         if case .show(let ids)? = night.event, let s = store.state {
-            let reached = ShowMoments.reached(now.timeIntervalSince(start) - 1.2)
+            let reached = ShowMoments.reached(Self.clock(now.timeIntervalSince(start)) - 1.2)
             if reached.count >= 2 { shots = GameStore.ShowShots(state: s, ids: ids, moments: reached, size: size, day: s.day - 1) }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
