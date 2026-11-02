@@ -43,7 +43,7 @@ const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM =
           const H = S.hold || (S.hold = { log: [] }), buy = (c, f) => { if ((S.holding || 0) >= c) { S.holding -= c; f(); return true; } return false; };
           for (const k of HQ_ORDER) if (!hasOffice(k) && buy(HQ_CITIES[k].cost, () => { H.offices = Object.assign({}, H.offices, { [k]: S.day }); })) L.hold.push(k + '@' + S.day);
           if ((H.rnd || 0) < 2 && buy(RD_LEVELS[H.rnd || 0].cost, () => { H.rnd = (H.rnd || 0) + 1; })) L.hold.push('rnd@' + S.day);
-          if (!(H.tvN) && buy(tvCost(), () => { H.tvN = 1; H.tvUntil = S.day + 14; H.tvCd = S.day + 30; })) L.hold.push('tv@' + S.day);
+          if (!(H.tvN) && buy(tvCost(), () => { H.tvN = 1; (H.tv = H.tv || {})[S.region] = { until: S.day + 14, cd: S.day + 30 }; })) L.hold.push('tv@' + S.day); /* v136: TV for the region you're in */
           if (!H.celeb && buy(celebCost(), () => { H.celeb = { name: 'X', until: S.day + 90 }; })) L.hold.push('celeb@' + S.day);
           if (isBaron('bri') && !H.wg && buy(WGAMES.cost, () => { H.wg = { until: S.day + WGAMES.days }; })) L.hold.push('wg@' + S.day);
         }

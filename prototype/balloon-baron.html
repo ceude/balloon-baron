@@ -260,7 +260,11 @@ body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 #hqBody .deal .dt,#hqBody .office .onm{color:var(--ink)}
 #hqBody .deal .dd,#hqBody .office .op,#hqBody .deal .dnote{color:var(--ink2)}
 #hqBody .deal .dchips span{background:rgba(34,164,93,.12);color:#1b7d47}
-#hqBody .deal .dfoot{border-top-color:var(--line)}
+#hqBody .deal .dfoot,#hqBody .deal .drows{border-top-color:var(--line)}
+#hqBody .deal .drow .rn b{color:var(--ink)}
+#hqBody .deal .drow .rn i,#hqBody .deal .drow .rs{color:var(--ink2)}
+#hqBody .deal .drow .rs.on{color:var(--green)}
+#hqBody .deal .drow .rn em{background:rgba(34,164,93,.12);color:#1b7d47}
 #hqBody .deal .dprice{color:var(--ink)}
 #hqBody .deal .dstat,#hqBody .office .ostat{color:var(--green)}
 #hqBody .dcta{background:var(--coral);color:#fff;box-shadow:0 3px 0 #c7381a}
@@ -460,6 +464,16 @@ input[type=range]{width:100%;accent-color:var(--coral);height:28px}
 .deal .dprice small{display:block;font-family:var(--body);font-size:12.5px;font-weight:600;color:rgba(244,239,255,.7)}
 .deal .dbreak{margin-left:auto;padding:8px 12px;border-radius:12px;background:rgba(255,255,255,.08);color:#ffb4a8;font-weight:800;font-size:13px;border:1.5px solid rgba(255,120,100,.4)}
 .deal .dbreak.sure{background:var(--red);color:#fff;border-color:transparent}
+/* v136: one row per region you own in the TV and billboard cards */
+.deal .drows{grid-column:1/-1;display:flex;flex-direction:column;gap:8px;border-top:1px dashed rgba(255,255,255,.15);padding-top:10px}
+.deal .drow{display:flex;align-items:center;gap:10px}
+.deal .drow .rn{flex:1;min-width:0}
+.deal .drow .rn b{font-family:var(--cond);font-weight:800;font-size:16px;color:#fff}
+.deal .drow .rn i{font-style:normal;font-size:11px;font-weight:700;margin-left:6px;color:rgba(244,239,255,.6)}
+.deal .drow .rn em{font-style:normal;font-size:11px;font-weight:800;margin-left:6px;padding:1px 6px;border-radius:9px;background:rgba(58,208,122,.16);color:#7ff0ae}
+.deal .drow .rs{display:block;font-size:12.5px;font-weight:600;color:rgba(244,239,255,.7)}
+.deal .drow .rs.on{color:#3ad07a;font-weight:800}
+.deal .drow .dcta{padding:8px 12px;font-size:15px}
 .deal .dbreak:disabled{opacity:.45}
 .deal .dterms{flex-basis:100%;font-size:12px;color:rgba(244,239,255,.6)}
 .deal .dstat{font-weight:800;color:#7ff0ae;font-size:14px}
@@ -9206,7 +9220,24 @@ const HQ_CITIES = {
 const hasOffice = k => !!(S && S.hold && S.hold.offices && S.hold.offices[k]);
 const officeCount = () => Object.keys(HQ_CITIES).filter(hasOffice).length;
 const holdCostRate = () => officeCount() === 4 ? .2 : HOLD_COST;
-const tvCost = () => Math.round(250000 * (hasOffice('nyc') ? .75 : 1));
+/* v136 (TestFlight): TV runs in one region's channels and is bought for each region on its own (it used to be one
+   €250.000 campaign for every region). €60.000 a region: four regions cost about what the old one did. */
+const TVC = { cost: 60000, days: 14, cd: 30, rep: .1, boost: 1.2 };
+const tvCost = () => Math.round(TVC.cost * (hasOffice('nyc') ? .75 : 1));
+/* an old save's national run (H.tvUntil) and wait (H.tvCd) still count for every region; new runs live in H.tv[id] */
+const tvUntilR = id => { const H = S.hold || {}; return Math.max((H.tv && H.tv[id] && H.tv[id].until) || 0, H.tvUntil || 0); };
+const tvReadyR = id => { const H = S.hold || {}; return Math.max((H.tv && H.tv[id] && H.tv[id].cd) || 0, H.tvCd || 0); };
+/* v136: the regions you own, in map order (a closed region isn't in S.regions) */
+const myRegionIds = () => REGIONS.map(R => R.id).filter(ownsRegion);
+/* v136: popularity in one region you own, or (worldwide deals, a world record) in all of them, each up to 1.4.
+   Inside the day (a record) the region you're in logs it for the report. */
+function repIn(id, d) {
+  if (id === S.region) { S.rep = Math.min(1.4, S.rep + d); return; }
+  const rs = S.regions && S.regions[id]; if (rs) rs.rep = Math.min(1.4, (rs.rep == null ? 1 : rs.rep) + d);
+}
+function repAll(d, why) {
+  const r0 = S.rep; myRegionIds().forEach(id => repIn(id, d)); if (why) repMark(why, r0);
+}
 const officeMult = id => (hasOffice('ist') && id === 'cap' ? 1.25 : 1) * (hasOffice('nyc') && id === 'abq' ? 1.2 : 1);
 const celebCost = () => hasOffice('sel') ? 420000 : 600000;
 /* v122.7: two bigger deals at the deals desk. The jersey of the league's last champion, and the balloon show at the
@@ -9219,7 +9250,7 @@ const holdOn = () => S && S.hold;
 /* holding yatırımlarının bir bölgedeki talep çarpanı */
 function holdBoost(id) {
   const H = S.hold; if (!H) return 1;
-  return (1 + (H.recBoost || 0)) * (H.tvUntil > S.day ? 1.2 : 1) * (H.celeb && H.celeb.until > S.day ? 1.1 : 1) * (H.jersey > S.day ? JERSEY.boost : 1) * (H.wg && H.wg.until > S.day ? WGAMES.boost : 1) * (H.bb && H.bb[id] > S.day ? 1.1 : 1);
+  return (1 + (H.recBoost || 0)) * (tvUntilR(id) > S.day ? TVC.boost : 1) * (H.celeb && H.celeb.until > S.day ? 1.1 : 1) * (H.jersey > S.day ? JERSEY.boost : 1) * (H.wg && H.wg.until > S.day ? WGAMES.boost : 1) * (H.bb && H.bb[id] > S.day ? 1.1 : 1);
 }
 /* v124.6: why tourists pick you or not. Popularity weighs as rep² against the rivals' (a crisis below 2★ cuts it to
    35%), see allocate(); the day's tourists are multiplied by festival, winter, weather, the sales office and the holding. */
@@ -9385,23 +9416,38 @@ function hqDeals(body, which, title) {
       foot.appendChild(b);
       if (opt.lock) foot.appendChild(h('span', 'dnote', opt.lock));
     }
+    if (opt.rows) {
+      /* v136: one row per region you own: its name and money, how its campaign stands, its own buy button */
+      const rows = h('div', 'drows');
+      for (const R of opt.rows) {
+        const D = REGION_DEF[R.id], row = h('div', 'drow');
+        row.appendChild(h('div', 'rn', `<b>${D.name}</b><i>${D.cur}</i>${R.id === S.region ? '<em>Buradasın</em>' : ''}<span class="rs${R.on ? ' on' : ''}">${R.status}</span>`));
+        if (R.buy) { const b = h('button', 'dcta', eurH(cost)); b.setAttribute('aria-label', `${D.name}: ${cta}`); b.disabled = (S.holding || 0) < cost; b.onclick = () => { holdBuy(cost, () => fn(R.id)); if (HQ.open) hqRender(); }; row.appendChild(b); }
+        rows.appendChild(row);
+      }
+      c.appendChild(rows); v.appendChild(c); return;
+    }
     c.appendChild(foot); v.appendChild(c);
   };
-  const tvOn = H.tvUntil > S.day, tvCd = (H.tvCd || 0) > S.day;
-  if (which.includes('tv')) deal('tv', 'Prime time', 'TV reklam kampanyası', 'Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların.', ['Bütün bölgelerde talep +%20', '14 gün', `${RD().name}: +0,4★`], tvCost(), 'Yayına al',
-    () => { H.tvN = (H.tvN || 0) + 1; H.tvUntil = S.day + 14; H.tvCd = S.day + 30; S.rep = Math.min(1.4, S.rep + .1); holdDeed('tv'); }, { active: tvOn ? `Yayında · ${H.tvUntil - S.day} gün kaldı` : '', lock: tvCd && !tvOn ? `Yeni kampanya için ${H.tvCd - S.day} gün` : '' });
+  if (which.includes('tv') || which.includes('bb')) v.appendChild(h('p', 'hint', 'TV ve afişler tek bir bölgede yayınlanır. Sahip olduğun her bölge için buradan alabilirsin; etkisi o bölgede kalır.'));
+  if (which.includes('celeb')) v.appendChild(h('p', 'hint', 'Anlaşmalar imzaladığın gün sahip olduğun bütün bölgelerde popülerliği artırır. Sonradan girdiğin bölge kendi popülerliğiyle başlar.'));
+  /* v136 (TestFlight): TV for each region you own, from one card, whichever region the holding was opened from */
+  const tvRows = myRegionIds().map(id => { const u = tvUntilR(id), w = tvReadyR(id), on = u > S.day; return { id, on, buy: w <= S.day, status: on ? `Yayında · kalan gün: ${u - S.day}` : w > S.day ? `Yeni kampanyaya kalan gün: ${w - S.day}` : 'Kampanya yok' }; });
+  if (which.includes('tv')) deal('tv', 'Prime time', 'TV reklam kampanyası', 'Bölgenin ulusal kanallarında akşam haberlerinden önce, gün doğumunda süzülen balonların.', ['Bölgede talep +%20', `${TVC.days} gün`, 'Bölgede popülerlik +0,4★', `Kampanyalar arası bekleme: ${TVC.cd} gün`], tvCost(), 'Yayına al',
+    id => { H.tvN = (H.tvN || 0) + 1; (H.tv = H.tv || {})[id] = { until: S.day + TVC.days, cd: S.day + TVC.cd }; repIn(id, TVC.rep); holdDeed('tv'); }, { rows: tvRows, active: tvRows.some(r => r.on) ? ' ' : '' });
   const ce = H.celeb && H.celeb.until > S.day, days = hasOffice('sel') ? 180 : 90;
-  if (which.includes('celeb')) deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, `${RD().name}: +0,6★`], celebCost(), 'Sözleşme imzala',
-    () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; S.rep = Math.min(1.4, S.rep + .15); holdDeed('celebrity'); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
+  if (which.includes('celeb')) deal('celeb', 'Yüz anlaşması', 'Ünlü reklam yüzü', ce ? `${H.celeb.name} şirketinin yüzü; afişlerde, dergilerde, her yerde.` : 'Ünlü biriyle reklam sözleşmesi. Kim olacağını menajerler belirler.', ['Bütün bölgelerde talep +%10', `${days} gün`, 'Bütün bölgelerde: +0,6★'], celebCost(), 'Sözleşme imzala',
+    () => { H.celeb = { name: pick(CELEBS), until: S.day + days }; repAll(.15); holdDeed('celebrity'); S.hezQ.push(`news:${H.celeb.name} artık ${S.company} reklamlarının yüzü! Afişler her yerde evlat, telefonlar susmuyor.`); }, { active: ce ? `${H.celeb.name} · ${H.celeb.until - S.day} gün` : '' });
   const jOn = H.jersey > S.day;
-  if (which.includes('jersey')) deal('jersey', 'Forma sponsorluğu', `Şampiyonun formasında adın`, jOn ? `Şampiyonun formasında ${S.company} yazıyor; her maçta milyonlar görüyor.` : 'Ligin son şampiyonu forma sponsoru arıyor. Her maçta, her haberde adın.', ['Bütün bölgelerde talep +%15', `${JERSEY.days} gün`, `${RD().name}: +0,4★`], JERSEY.cost, 'Sponsor ol',
-    () => { H.jersey = S.day + JERSEY.days; S.rep = Math.min(1.4, S.rep + JERSEY.rep); holdDeed('jersey'); }, { active: jOn ? `Formada adın · ${H.jersey - S.day} gün` : '' });
+  if (which.includes('jersey')) deal('jersey', 'Forma sponsorluğu', `Şampiyonun formasında adın`, jOn ? `Şampiyonun formasında ${S.company} yazıyor; her maçta milyonlar görüyor.` : 'Ligin son şampiyonu forma sponsoru arıyor. Her maçta, her haberde adın.', ['Bütün bölgelerde talep +%15', `${JERSEY.days} gün`, 'Bütün bölgelerde: +0,4★'], JERSEY.cost, 'Sponsor ol',
+    () => { H.jersey = S.day + JERSEY.days; repAll(JERSEY.rep); holdDeed('jersey'); }, { active: jOn ? `Formada adın · ${H.jersey - S.day} gün` : '' });
   const wgOn = H.wg && H.wg.until > S.day;
-  if (which.includes('wg')) deal('wg', 'Dünya sahnesi', 'Dünya Oyunları açılışında balon gösterisi', H.wg ? (wgOn ? 'Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi.' : 'Açılış töreninin gösterisini yaptın; dünya hâlâ konuşuyor.') : 'Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır.', ['Bütün bölgelerde talep +%30', `${WGAMES.days} gün`, `${RD().name}: +0,8★`], H.wg ? null : WGAMES.cost, 'Gösteriyi üstlen',
-    () => { H.wg = { until: S.day + WGAMES.days }; S.rep = Math.min(1.4, S.rep + WGAMES.rep); holdDeed('worldGames'); }, { active: wgOn ? `Tören etkisi · ${H.wg.until - S.day} gün` : H.wg ? 'Yapıldı' : '', lock: !(S.barons || {}).bri ? 'Bristol Baronu olunca' : '' });
-  const bbOn = H.bb && H.bb[S.region] > S.day;
-  if (which.includes('bb')) deal('bb', 'Açık hava', `Otoban billboardları`, `Havalimanı yolu ve otobanlarda dev afişler: ${RD().name}.`, [`${RD().name}: talep +%10`, '20 gün'], 120000, 'Afişleri as',
-    () => { if (!H.bb) H.bb = {}; H.bb[S.region] = S.day + 20; holdDeed('billboards'); }, { active: bbOn ? `Asılı · ${H.bb[S.region] - S.day} gün` : '' });
+  if (which.includes('wg')) deal('wg', 'Dünya sahnesi', 'Dünya Oyunları açılışında balon gösterisi', H.wg ? (wgOn ? 'Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi.' : 'Açılış töreninin gösterisini yaptın; dünya hâlâ konuşuyor.') : 'Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır.', ['Bütün bölgelerde talep +%30', `${WGAMES.days} gün`, 'Bütün bölgelerde: +0,8★'], H.wg ? null : WGAMES.cost, 'Gösteriyi üstlen',
+    () => { H.wg = { until: S.day + WGAMES.days }; repAll(WGAMES.rep); holdDeed('worldGames'); }, { active: wgOn ? `Tören etkisi · ${H.wg.until - S.day} gün` : H.wg ? 'Yapıldı' : '', lock: !(S.barons || {}).bri ? 'Bristol Baronu olunca' : '' });
+  /* v136: billboards for each region you own, from one card; each row names its region */
+  const bbRows = myRegionIds().map(id => { const u = (H.bb && H.bb[id]) || 0, on = u > S.day; return { id, on, buy: !on, status: on ? `Asılı · kalan gün: ${u - S.day}` : 'Kampanya yok' }; });
+  if (which.includes('bb')) deal('bb', 'Açık hava', `Otoban reklam panoları`, 'Bölgenin havalimanı yolunda ve otobanlarında dev afişler.', ['Bölgede talep +%10', '20 gün'], 120000, 'Afişleri as',
+    id => { if (!H.bb) H.bb = {}; H.bb[id] = S.day + 20; holdDeed('billboards'); }, { rows: bbRows, active: bbRows.some(r => r.on) ? ' ' : '' });
   const lv = H.rnd || 0, next = RD_LEVELS[lv];
   if (which.includes('lab')) deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [`Zarf ömrü ${envLife()} → ${next ? next.life : envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
     () => { H.rnd = lv + 1; holdDeed('research'); }, { active: next ? '' : `Seviye ${lv} · tamamlandı` });
@@ -9439,7 +9485,7 @@ function recordDay() {
   const R = RECORDS[r.k], first = !(H.records && H.records[r.k]); H.rec = null;
   /* the first attempt at each record always succeeds; beating your own record is where the odds come in */
   if (first || Math.random() < R.ok) {
-    (H.records = H.records || {})[r.k] = S.day; H.recBoost = Math.min(.25, (H.recBoost || 0) + (first ? R.boost : .02)); S.rep = Math.min(1.4, S.rep + .1);
+    (H.records = H.records || {})[r.k] = S.day; H.recBoost = Math.min(.25, (H.recBoost || 0) + (first ? R.boost : .02)); repAll(.1, 'Dünya rekoru'); /* v136: every region you own */
     S.hezQ.push(`news:${R.n} senin! ${S.company} adı bütün dünya gazetelerinde. Turistler artık her bölgede seni soruyor.`);
     paperAdd(5, `${S.company} dünya rekoru kırdı`, `${R.n}: bütün dünya bu balonu konuşuyor.`);
   } else S.hezQ.push(`news:${R.n} denemesi yarıda kaldı. Pilot sağ salim indi, balon da kurtarıldı ama rekor bu sefer olmadı. İstersen yeniden deneriz.`);
@@ -9463,7 +9509,7 @@ function hqShapes(body) {
     if (now) {
       /* breaking the deal costs what the brand has paid so far plus half of what's left: always a loss */
       const fee = adBreakFee(H.adShape, A);
-      foot.innerHTML = `<span class="dstat">Uçuyor · ${H.adShape.until - S.day} gün kaldı</span>`;
+      foot.innerHTML = `<span class="dstat">${REGION_DEF[H.adShape.region].name} üstünde uçuyor · kalan gün: ${H.adShape.until - S.day}</span>`; /* v136: names its region, as the app does */
       const b = h('button', 'dbreak', `Sözleşmeyi boz · ceza ${eurH(fee)}`); b.disabled = (S.holding || 0) < fee;
       b.onclick = () => {
         if (!b.dataset.sure) { b.dataset.sure = 1; b.textContent = `Eminim, boz (${eurH(fee)})`; b.classList.add('sure'); return; }
@@ -12377,12 +12423,14 @@ function hqOpenUnit(k) { HQ.sheet = k; sfx('click'); hqRender(); $('hqBody').par
 function hqRender() {
   $('hqName').textContent = `${S.company || 'Balon'} Holding`; $('hqCash').textContent = eurH(S.holding || 0);
   const H = S.hold || {}, L = hqLayout(), sp = $('hqSpots'); sp.replaceChildren();
-  const tvOn = H.tvUntil > S.day, bbOn = H.bb && H.bb[S.region] > S.day, ce = H.celeb && H.celeb.until > S.day, lv = H.rnd || 0;
+  const ce = H.celeb && H.celeb.until > S.day, lv = H.rnd || 0;
+  /* v136: TV and billboards run per region; the desk counts the regions with each running */
+  const tvN = myRegionIds().filter(id => tvUntilR(id) > S.day).length, bbN = myRegionIds().filter(id => H.bb && H.bb[id] > S.day).length;
   const issue = Object.values(S.regions || {}).some(r => r.auto && r.auto.issue);
   const status = {
     board: [`${eurH(S.holding || 0)}`, false],
     window: [issue ? 'Bir bölgede sorun var' : `Bölge: ${Object.keys(S.regions || {}).length + 1}`, false, issue],
-    mkt: [tvOn ? `TV yayında, ${H.tvUntil - S.day} gün` : bbOn ? 'Afişler asılı' : 'Kampanya yok', tvOn || bbOn],
+    mkt: [tvN + bbN ? `TV: ${tvN} · Afiş: ${bbN}` : 'Kampanya yok', tvN + bbN > 0],
     deals: H.wg && H.wg.until > S.day ? ['Dünya Oyunları gösterisi', true] : H.jersey > S.day ? ['Şampiyonun forması', true] : [ce ? H.celeb.name : 'Anlaşma yok', ce],
     rnd: [RD_LEVELS[lv] ? `Seviye ${lv}` : 'Tamamlandı', !RD_LEVELS[lv]],
     offices: [`Ofis: ${officeCount()}/4`, officeCount() === 4],
@@ -12509,7 +12557,7 @@ const holdGoalDone = f => !!(S.hold || {}).worldBaron || f();
 /* A holding investment gets its due: the guide of the region you're in praises it (celebrities and offices have
    their own lines) and the next morning's paper reports it. */
 const HOLD_DEEDS = {
-  tv: ['TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin.', c => `Her televizyonda reklamı var: ${c}`, 'Holdingin TV kampanyası bütün bölgelere turist getiriyor.'],
+  tv: ['TV reklamın yayında evlat! Bütün ülke balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin.', c => `Her televizyonda reklamı var: ${c}`, 'Holdingin TV kampanyası bölgeye turist getiriyor.'],
   billboards: ['Bütün şehirde ilan panoların asıldı evlat! Önünden geçen her turist yarın sabah adını hatırlayacak.', c => `Her köşede ilan panosu: ${c}`, 'Turistler otele giderken bu adı görmeden geçemiyor.'],
   celebrity: [null, c => `Ünlü bir yüz: ${c}`, 'Afişler bir gecede asıldı, telefonlar o günden beri susmuyor.'],
   jersey: ['Şampiyonun formasında adın var evlat! Her maçta milyonlar görecek; turistler stadyumdan çıkıp balona binecek.', c => `Şampiyonun formasında yeni ad: ${c}`, 'Ligin son şampiyonu yeni sezona yeni bir adla çıkıyor.'],
