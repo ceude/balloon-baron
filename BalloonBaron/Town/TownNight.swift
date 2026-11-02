@@ -429,6 +429,13 @@ struct NightView: View {
                     .background(Color(red: 20 / 255, green: 18 / 255, blue: 50 / 255).opacity(0.55), in: RoundedRectangle(cornerRadius: 14))
                     .padding(.top, 4)
             }
+            // v132: the booked show that was called off this evening
+            if let back = night.showOff {
+                Text(loc("night.showOff", eur(back))).font(Theme.font(14, .semibold))
+                    .padding(.horizontal, 12).padding(.vertical, 6)
+                    .background(Color(red: 120 / 255, green: 30 / 255, blue: 40 / 255).opacity(0.6), in: RoundedRectangle(cornerRadius: 14))
+                    .padding(.top, 4)
+            }
             Text(loc("night.wander")).font(Theme.font(12)).opacity(0.7).padding(.top, 4)
         }
         .foregroundStyle(Color(hex: "#fff8e6"))

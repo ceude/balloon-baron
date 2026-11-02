@@ -340,7 +340,9 @@ private enum OfficePainter {
                 tick.move(to: CGPoint(x: x + 3, y: mid)); tick.addLine(to: CGPoint(x: x + 2 + bs * 0.5, y: mid + bs / 2 - 1)); tick.addLine(to: CGPoint(x: x + 2 + bs * 1.3, y: mid - bs * 0.8))
                 c.stroke(tick, with: .color(Color(hex: "#1f8a4c")), lineWidth: 2)
             }
-            let (text, _) = markerFit(c, g.title, maxW: w - 18, px: fs)
+            // v132: the million goal names what it measures while it's open: the holding's cash now
+            let line = !d && g == .million ? g.title + " · " + eurH(s.holding.cash) : g.title
+            let (text, _) = markerFit(c, line, maxW: w - 18, px: fs)
             let tw = text.measure(in: CGSize(width: 2000, height: 40)).width
             c.draw(text, at: CGPoint(x: x + 15, y: mid), anchor: .leading)
             if d {

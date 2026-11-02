@@ -241,6 +241,7 @@ extension HezMessage {
         case .contractDelayIntro: loc("ctr.cap.delayIntro")
         case .hangarFull(let n): loc("hez.hangarFull", num(n))
         case .hangarOutside(let n): loc("hez.hangarOutside", num(n))
+        case let .nightCalledOff(r, show, refund): loc(show ? "hez.nightOff.show" : "hez.nightOff.glow", r.title, money(refund, in: r))
         }
     }
 }
@@ -283,6 +284,7 @@ extension DayEvent {
         case .showTonight(let n): loc("event.showTonight", num(n))
         case .showDropped(let r): loc("event.showDropped", eur(r))
         case .showCancelled(let r): loc("event.showCancelled", eur(r))
+        case .showSeized(let r): loc("event.showSeized", eur(r))
         case .rookieRepair: loc("event.rookieRepair")
         case .onlyBalloonRepair(let d): loc("event.onlyBalloonRepair", num(d))
         case let .factoryReady(b, z): loc("event.factoryReady", bname(b), z.title)

@@ -71,6 +71,11 @@ struct ReportView: View {
         let lg = report.ledger
         let s = store.state
         return VStack(alignment: .leading, spacing: 14) {
+            // v132 (TestFlight): a booked show that can't go up tonight says so at the top, not only in the list below
+            if let back = GameStore.showOff(report) {
+                ProtoCallout(tone: .red, title: loc("report.showOffTitle"),
+                             text: loc("report.showOffBody", num(Rules.showMinBalloons), eur(back)))
+            }
             ledger(lg, cash: s?.cash ?? 0)
             if lg.holdingNet != 0, let s {
                 let names = s.parked.keys.filter(s.holding.sends).sorted { $0.rawValue < $1.rawValue }.map(\.title).joined(separator: ", ")

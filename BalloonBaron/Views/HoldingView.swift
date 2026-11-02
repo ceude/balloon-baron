@@ -116,15 +116,28 @@ struct HoldingView: View {
                 HStack(spacing: 10) {
                     Image(systemName: d ? "checkmark.square.fill" : "square")
                         .foregroundStyle(d ? HoldingLux.income : HoldingLux.sub)
-                    Text(g.title).font(Theme.font(15, .semibold)).strikethrough(d)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(g.title).font(Theme.font(15, .semibold)).strikethrough(d)
+                        // v132 (TestFlight): what the million goal measures, and that it stays met once reached
+                        if let note = Self.goalNote(g, s) {
+                            Text(note).font(Theme.font(12)).foregroundStyle(HoldingLux.sub)
+                        }
+                    }
                     Spacer()
                 }
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(g.title)
-                .accessibilityValue(d ? loc("goals.finished") : "")
+                .accessibilityValue([d ? loc("goals.finished") : nil, Self.goalNote(g, s)].compactMap { $0 }.joined(separator: ", "))
             }
             hint(loc("hgoal.hint"))
         }
+    }
+
+    /// v132: under the million goal, the holding's cash now (what it measures), or the day it was reached.
+    static func goalNote(_ g: HoldingGoal, _ s: GameState) -> String? {
+        guard g == .million, s.holding.worldBaron == nil else { return nil }
+        if let d = s.holding.millionOn { return loc("hgoal.millionOn", num(d)) }
+        return s.done(g) ? nil : loc("hgoal.millionNow", eurH(s.holding.cash))
     }
 
     private func sectionTitle(_ text: String) -> some View {

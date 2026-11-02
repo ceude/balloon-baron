@@ -124,7 +124,11 @@ final class GameStore {
     /// Take-off was pressed: the collect card fades while the jeeps come (observed, unlike `collectScene`).
     var leaving = false
     /// The night between two days, with what lights it up.
-    struct Night: Equatable { var event: NightEvent? }
+    struct Night: Equatable {
+        var event: NightEvent?
+        /// v132 (TestFlight): tonight's booked show was called off (too few balloons left); the fees that came back.
+        var showOff: Int? = nil
+    }
     var night: Night?
     /// v116: the Balloon Show's highlights, waiting for the morning: the night as it was, the show's balloons, the
     /// moments it reached and the screen it played on (the pictures are drawn again from these).
@@ -261,6 +265,8 @@ final class GameStore {
         guard var g = game else { return }
         let from = g.state.region
         f(&g)
+        // v132 (TestFlight): the holding's goals are met the moment they are reached (the €1 million by a transfer, too)
+        g.holdingGoalsNow()
         let chapterDone = g.finishChapterNow()
         game = g
         if g.state.region != from { travel = Travel(from: from, to: g.state.region) }
@@ -830,6 +836,7 @@ final class GameStore {
     /// "Go to the morning" on the report plays the night first, unless the player switched the night scene off.
     func closeReport() {
         var ev: NightEvent?
+        let off = report.flatMap(Self.showOff)
         act { ev = $0.startNight() }
         // A paid Balloon Show always plays (v124: and Bristol's Night Glow); other nights follow the setting.
         let show: Bool = { if case .show? = ev { return true }; return BristolNight.kind(ev) == .glow }()
@@ -838,8 +845,14 @@ final class GameStore {
             endNight()
             return
         }
-        night = Night(event: ev)
+        night = Night(event: ev, showOff: off)
         report = nil
+    }
+
+    /// v132: the fees that came back when tonight's show was called off (the report's money line), if it was.
+    static func showOff(_ r: DayReport) -> Int? {
+        guard r.events.contains(where: { if case .showCancelled = $0 { return true }; return false }) else { return nil }
+        return r.ledger.showRefund ?? 0
     }
 
     /// The night's camera, handed to the home town as the morning comes (`HomeTownView` takes it).
@@ -923,6 +936,13 @@ final class GameStore {
         if s.over {
             stopAuto(.over)
             report = r
+            return
+        }
+        // v132 (TestFlight): a booked show called off (too few balloons after the day's accidents) stops the run and
+        // shows the day's report with the reason, instead of passing in silence
+        if Self.showOff(r) != nil {
+            report = r
+            stopAuto(.waiting)
             return
         }
         var ev: NightEvent?

@@ -153,6 +153,7 @@ struct ShowCardView: View {
         case .locked: loc("show.locked")
         case .booked: loc("show.booked")
         case .wait(let d): loc("show.wait", num(d))
+        case .glow: loc("show.glow")
         case .few: loc("show.few", num(Rules.showMinBalloons), num(g.showFleet.count))
         case .cash: loc("show.cash", eur(g.showCost))
         case .ok: loc("show.ready", num(g.showFleet.count), eur(g.showCost))
