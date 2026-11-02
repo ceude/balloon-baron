@@ -64,6 +64,8 @@ final class GameStore {
     var morningEvent: MorningEvent?
     /// Hezarfen's rescue plan, shown when cash first goes below zero.
     var showRescue = false
+    /// v133: the holding's rescue or the region's closing, when the bank comes for the last balloon (`showRuin`).
+    var showRuin = false
     /// The flagship you fly is in repair: the offer to fly another balloon meanwhile (v110).
     var showTempFlag = false
     /// v114: a rival's order for the workshop, shown in the morning.
@@ -173,7 +175,7 @@ final class GameStore {
     var busy: Bool {
         showIntro || openingFilm || homeIntro != nil || replayingOpening || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
             || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
-            || morningEvent != nil || showRescue || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || showGlowCard || postcard != nil || showAlbum || buildingCard != nil || hangarFull != nil || showBazaar || storeItem != nil
+            || morningEvent != nil || showRescue || showRuin || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || showGlowCard || postcard != nil || showAlbum || buildingCard != nil || hangarFull != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency || letter
             || contractCard != nil || contractScene != nil || showTransfer
     }
@@ -298,7 +300,11 @@ final class GameStore {
         // v122: a guided action is running; it calls back when it ends
         guard !busy, guided == nil, let g = game else { return }
         let s = g.state
-        if let c = s.chapterNews {
+        if s.ruinPending != nil {
+            // v133: the holding's decision comes before anything else
+            showRuin = true
+            Haptics.warning()
+        } else if let c = s.chapterNews {
             chapter = c
             act { $0.state.chapterNews = nil }
         } else if let m = s.mergeNews {
@@ -578,6 +584,35 @@ final class GameStore {
     func closeRescue() {
         showRescue = false
         showNextHezarfen()
+    }
+
+    /// v133: the report's "Decide": the holding's rescue card.
+    func openRuin() {
+        report = nil
+        showRuin = true
+        Haptics.warning()
+    }
+
+    /// v133: the holding pays (the day goes on to its night, as from the report) or the region closes (the player goes on
+    /// in the region with the biggest fleet, or a new company starts here when it was the only one).
+    func answerRuin(rescue: Bool) {
+        guard let s = state, s.ruinPending != nil else { showRuin = false; return }
+        let region = s.region.rawValue
+        if rescue {
+            let cost = s.rescueQuote.cost
+            var ok = false
+            act { ok = $0.acceptHoldingRescue() }
+            guard ok else { return }
+            showRuin = false
+            Telemetry.send("ruin.rescued", value: Double(cost), ["region": region])
+            SoundEngine.shared.play(.coin)
+            closeReport()
+        } else {
+            act { $0.closeRegion() }
+            showRuin = false
+            Telemetry.send("ruin.closed", value: Double(s.day), ["region": region])
+            showNextHezarfen()
+        }
     }
 
     /// The morning's order card: take it (the line is the rival's for a few days) or leave it.
@@ -884,7 +919,7 @@ final class GameStore {
         var news: [HezMessage] = []
         var why: AutoStop?
     }
-    enum AutoStop: String { case tapped, days, cash, license, waiting, show, over }
+    enum AutoStop: String { case tapped, days, cash, license, waiting, show, over, bank }
     /// The strip over the day's buttons: the day running (`net` nil while it flies), its result, or why it stopped.
     struct AutoNote: Equatable {
         var day: Int
@@ -935,6 +970,12 @@ final class GameStore {
         autoNote = AutoNote(day: r.day, net: r.net)
         if s.over {
             stopAuto(.over)
+            report = r
+            return
+        }
+        // v133: the bank is after the flagship, or the holding has to decide
+        if s.ruinPending != nil || s.flagshipNext {
+            stopAuto(.bank)
             report = r
             return
         }

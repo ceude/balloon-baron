@@ -242,6 +242,10 @@ extension HezMessage {
         case .hangarFull(let n): loc("hez.hangarFull", num(n))
         case .hangarOutside(let n): loc("hez.hangarOutside", num(n))
         case let .nightCalledOff(r, show, refund): loc(show ? "hez.nightOff.show" : "hez.nightOff.glow", r.title, money(refund, in: r))
+        case let .holdingRescued(r, cost, added): loc("hez.holdingRescued", r.title, eurH(cost), money(added, in: r))
+        case let .regionClosed(r, fresh, fee):
+            fresh ? loc("hez.regionClosed.fresh", r.title, money(Rules.seizeBelow, in: r)) : loc("hez.regionClosed", r.title, eurH(fee))
+        case .capReentered: loc("hez.capReentered")
         }
     }
 }
@@ -295,6 +299,8 @@ extension DayEvent {
         case let .founderAbsent(days): loc("event.founderAbsent", num(days))
         case let .antitrustFine(share, fine): loc("event.antitrustFine", num(share), eur(fine))
         case let .seized(b, v): loc("event.seized", bname(b), eur(v))
+        case .flagshipGrace(let d): loc("event.flagshipGrace", num(d), eur(Rules.seizeBelow))
+        case .ruinPending(let r): loc("event.ruinPending", r.title)
         case let .hotelLeft(h): loc("event.hotelLeft", h.title)
         case let .chapterDone(id, reward): loc("event.chapterDone", loc("chapter.\(id)"), loc("chapter.\(id).award"), eur(reward))
         case let .baron(r): loc("event.baron", loc("chapter.\(r.chapters.last!.id)"))

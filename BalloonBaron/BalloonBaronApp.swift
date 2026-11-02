@@ -118,6 +118,9 @@ struct RootView: View {
             if store.showRescue {
                 RescueView().transition(.opacity)
             }
+            if store.showRuin {
+                RuinView().transition(.opacity)
+            }
             if store.showTempFlag {
                 TempFlagView().transition(.opacity)
             }
@@ -215,6 +218,7 @@ struct RootView: View {
         .animation(.easeOut(duration: 0.25), value: store.paper)
         .animation(.easeOut(duration: 0.25), value: store.morningEvent)
         .animation(.easeOut(duration: 0.25), value: store.showRescue)
+        .animation(.easeOut(duration: 0.25), value: store.showRuin)
         .animation(.easeOut(duration: 0.25), value: store.showTempFlag)
         .animation(.easeOut(duration: 0.25), value: store.showShowCard)
         .animation(.easeOut(duration: 0.25), value: store.showGlowCard)

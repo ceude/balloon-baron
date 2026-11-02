@@ -159,6 +159,10 @@ struct WorldMapView: View {
             var text = s.holding.sends(r) ? loc("map.autoSub", eurH(daily)) : loc("map.keptSub")
             if let open = auto.issue { text += " " + loc("map.problemSub", open.kind.title) }
             return text
+        case .closed:
+            guard let r = pin.region else { return "" }
+            let sub = loc("map.closedSub", num(s.closedOn(r) ?? s.day), eurH(r.entryFee))
+            return s.needsPack(r) ? sub + " " + loc("map.tourNote", storePrice(.worldTour)) : sub
         case .open:
             let fee = eurH(pin.region?.entryFee ?? Holding.entryFee)
             let sub = pin == .lux || pin == .bri ? loc("map.openSub.\(pin.rawValue)", money(pin.region?.startCash ?? 0, in: pin.region ?? .cap), fee) : loc("map.openSub", fee)
@@ -181,7 +185,7 @@ struct WorldMapView: View {
                 WorldPillButton(title: loc("map.go"), style: .light) { store.goTo(r) }
             }
             .fixedSize()
-        case .open:
+        case .open, .closed:
             if game.state.needsPack(r) {
                 WorldPillButton(title: loc("map.openTour", storePrice(.worldTour))) { store.showTourOffer = true }
                     .fixedSize()
@@ -198,6 +202,8 @@ struct WorldMapView: View {
 /// Where a pin stands for the player.
 private enum MapPinStatus: Equatable {
     case here, auto, problem, open, locked, soon
+    /// v133: its company closed; it can be entered again, afresh, for its fee.
+    case closed
 
     init(_ pin: MapPin, _ s: GameState) {
         guard let r = pin.region, !pin.mystery else { self = .soon; return }
@@ -205,6 +211,8 @@ private enum MapPinStatus: Equatable {
             self = .here
         } else if let p = s.parked[r] {
             self = p.auto.issue != nil ? .problem : .auto
+        } else if s.closedOn(r) != nil {
+            self = .closed
         } else if r != .cap && s.regionOpen(r) {
             self = .open
         } else {
@@ -215,7 +223,7 @@ private enum MapPinStatus: Equatable {
     var dot: Color {
         switch self {
         case .here, .auto, .problem: Theme.sun
-        case .open: Theme.coral
+        case .open, .closed: Theme.coral
         case .locked, .soon: Color(hex: "#9a8fb8")
         }
     }
@@ -228,6 +236,7 @@ private enum MapPinStatus: Equatable {
         case .here: loc("map.here")
         case .auto, .problem: loc("map.auto")
         case .open: loc("map.unlocked")
+        case .closed: loc("map.closed")
         case .locked: loc("map.locked")
         case .soon: loc("map.soon")
         }
@@ -239,6 +248,7 @@ private enum MapPinStatus: Equatable {
         case .auto: loc("map.auto")
         case .problem: loc("map.problem")
         case .open: loc("map.unlocked")
+        case .closed: loc("map.closed")
         case .locked: loc("map.locked")
         case .soon: loc("map.soon")
         }
@@ -248,7 +258,7 @@ private enum MapPinStatus: Equatable {
         switch self {
         case .here: .green
         case .auto, .open: .yellow
-        case .problem: .red
+        case .problem, .closed: .red
         case .locked, .soon: .neutral
         }
     }

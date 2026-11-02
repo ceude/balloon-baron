@@ -115,7 +115,19 @@ struct ReportView: View {
                 store.startOver()
             }
             .buttonStyle(ChunkyButtonStyle(kind: .big))
+        } else if let s, s.ruinPending != nil {
+            // v133: with a holding, the last balloon isn't taken before you decide
+            ProtoCallout(tone: .red, title: loc("report.ruinTitle"), text: loc("report.ruinBody", eur(Rules.seizeBelow), s.region.title))
+            Button(loc("report.decide")) {
+                SoundEngine.shared.play(.click)
+                store.openRuin()
+            }
+            .buttonStyle(ChunkyButtonStyle(kind: .big))
         } else {
+            if let s, s.flagshipNext {
+                ProtoCallout(tone: .red, title: loc("grace.title", num(s.graceDaysLeft)),
+                             text: loc("grace.body", eur(Rules.seizeBelow)) + " " + loc(s.hasHolding ? "grace.holding" : "grace.noHolding"))
+            }
             if monopoly {
                 ProtoCallout(tone: .green, title: loc("report.monoTitle", (s?.region ?? .cap).title), text: loc("report.monoBody"))
             }

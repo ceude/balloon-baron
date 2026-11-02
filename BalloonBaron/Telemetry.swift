@@ -64,6 +64,7 @@ enum Telemetry {
             switch e {
             case let .chapterDone(id, _): send("chapter.done", value: Double(r.day), ["chapter": id, "region": s.region.rawValue])
             case let .baron(region): send("baron", value: Double(r.day), ["region": region.rawValue])
+            case let .ruinPending(region): send("ruin.pending", value: Double(r.day), ["region": region.rawValue])
             default: break
             }
         }

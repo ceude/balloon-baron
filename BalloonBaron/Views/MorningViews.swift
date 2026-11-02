@@ -276,6 +276,8 @@ extension PaperItem {
         case .redCaught: "redCaught"
         case .antitrust: "antitrust"
         case .seized: "seized"
+        case .holdingRescue: "holdingRescue"
+        case .regionClosed: "regionClosed"
         case .festival: "festival"
         case .rivalAccident: "rivalAccident"
         case .rivalRedCaught: "rivalRedCaught"
@@ -311,6 +313,8 @@ extension PaperItem {
         case .redCaught: loc("paper.redCaught", company)
         case .antitrust: loc("paper.antitrust", company)
         case .seized: loc("paper.seized", company)
+        case .holdingRescue: loc("paper.holdingRescue", company)
+        case .regionClosed(let r): loc("paper.regionClosed", company, r.title)
         case .festival(let i): loc("paper.festival", festivalName(i))
         case let .rivalAccident(r, _): loc("paper.rivalAccident", r)
         case let .rivalRedCaught(r, _): loc("paper.rivalRedCaught", r)
@@ -340,6 +344,7 @@ extension PaperItem {
         case .redCaught(let fine): loc("paper.redCaught.sub", eur(fine))
         case let .antitrust(share, fine): loc("paper.antitrust.sub", num(share), eur(fine))
         case .seized(let b): loc("paper.seized.sub", bname(b))
+        case .holdingRescue(let r): loc("paper.holdingRescue.sub", r.title)
         case let .rivalAccident(_, n): loc("paper.rivalAccident.sub", num(n))
         case let .rivalRedCaught(_, fine): loc("paper.rivalRedCaught.sub", eur(fine))
         case let .rivalBankrupt(_, n): loc("paper.rivalBankrupt.sub", num(n))
@@ -493,6 +498,10 @@ struct RescueView: View {
                 .padding(.horizontal, 10).padding(.vertical, 8)
                 .background(Color(hex: "#f1edf8"), in: RoundedRectangle(cornerRadius: 14))
                 CardText.title(loc("rescue.title"))
+                if s.flagshipNext {
+                    // v133: the bank is counting down to the flagship
+                    ProtoCallout(tone: .red, title: loc("grace.title", num(s.graceDaysLeft)), text: loc("grace.rescue", eur(Rules.seizeBelow)))
+                }
                 options(s)
                 Button {
                     SoundEngine.shared.play(.click)
@@ -563,6 +572,67 @@ struct RescueView: View {
     }
 }
 
+
+// MARK: Holding rescue (v133)
+
+/// The bank came for the last balloon of the region you're in while you own a holding: the holding's rescue (once per
+/// region, at a heavy price) or the region's company closes. Port of `showRuin`.
+struct RuinView: View {
+    @Environment(GameStore.self) private var store
+
+    var body: some View {
+        ModalCard {
+            if let s = store.state {
+                let q = s.rescueQuote, r = s.region, to = s.ruinNext
+                let flag = s.balloon(s.flagship) ?? s.local.balloons.first
+                HStack(alignment: .center, spacing: 10) {
+                    HezarfenAvatar(size: 40)
+                    Text(loc("ruin.hez", flag?.title ?? "", eur(Rules.seizeBelow), r.title))
+                        .font(Theme.font(13.5)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(.horizontal, 10).padding(.vertical, 8)
+                .background(Color(hex: "#f1edf8"), in: RoundedRectangle(cornerRadius: 14))
+                CardText.title(loc("ruin.title"))
+                if let used = q.usedOn {
+                    ProtoCallout(tone: .red, title: loc("ruin.used", num(used)), text: loc("ruin.used.body"))
+                } else {
+                    let price = loc("ruin.price", eur(q.added), eur(Bankruptcy.rescueTarget), eurH(Bankruptcy.rescueMin))
+                    let after = q.affordable ? loc("ruin.holding", eurH(q.holdingCash), eurH(q.holdingAfter))
+                        : loc("ruin.short", eurH(q.holdingCash), eurH(q.cost - q.holdingCash))
+                    ProtoCallout(tone: .yellow, title: loc("ruin.cost", eurH(q.cost)), text: price + " " + after)
+                }
+                option(loc("ruin.accept", eurH(q.cost)), loc("ruin.accept.sub", eur(s.cash), eur(s.cash + q.added)), enabled: q.affordable) {
+                    store.answerRuin(rescue: true)
+                }
+                option(loc("ruin.close", r.title),
+                       to.map { loc("ruin.close.sub", $0.title, r.title, eurH(r.entryFee)) } ?? loc("ruin.close.fresh"), enabled: true) {
+                    store.answerRuin(rescue: false)
+                }
+            }
+        }
+    }
+
+    private func option(_ title: String, _ sub: String, enabled: Bool, _ f: @escaping () -> Void) -> some View {
+        Button {
+            SoundEngine.shared.play(.click)
+            f()
+        } label: {
+            VStack(alignment: .leading, spacing: 3) {
+                Text(title).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
+                    .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
+                Text(sub).font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                    .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 14).padding(.vertical, 12)
+            .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.line, lineWidth: 2))
+        }
+        .buttonStyle(.plain)
+        .disabled(!enabled)
+        .opacity(enabled ? 1 : 0.5)
+    }
+}
 
 // MARK: Temporary flagship
 

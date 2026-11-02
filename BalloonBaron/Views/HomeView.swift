@@ -499,6 +499,11 @@ struct HomeView: View {
                                      text: m.detail + " " + loc("home.alert.tapSelf"), tap: takeFlight))
             }
         }
+        if s.flagshipNext && s.ruinPending == nil {
+            // v133: the bank's countdown to the flagship; a tap opens the rescue plan
+            out.append(HomeAlert(id: "grace", level: .red, title: loc("grace.title", num(s.graceDaysLeft)),
+                                 text: loc("grace.home", eur(Rules.seizeBelow)), tap: { store.showRescue = true }))
+        }
         if s.banUntil >= s.day {
             out.append(HomeAlert(id: "ban", level: .red, title: loc("home.alert.ban"),
                                  text: loc("home.alert.ban.body", num(s.banUntil - s.day + 1))))
