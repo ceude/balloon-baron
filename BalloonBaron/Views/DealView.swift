@@ -30,11 +30,12 @@ struct DealView: View {
             CardText.hint(loc("deal.used", percent(Rules.usedSellShare), percent(Rules.sellShare)))
             let terms = cash < price ? store.game?.buyLoanTerms(price: price) : nil
             if cash < price {
-                let fleet = store.game?.state.balloons.count ?? 0
-                if terms == nil, store.game?.state.unlocked.contains(.bank) == true, fleet < Rules.buyLoanBalloons {
-                    CardText.hint(loc("deal.shortFew", eur(cash), num(Rules.buyLoanBalloons), num(fleet)))
+                if terms != nil {
+                    CardText.hint(loc("deal.shortLoan", eur(cash)))
                 } else {
-                    CardText.hint(loc(terms == nil ? "deal.short" : "deal.shortLoan", eur(cash)))
+                    // v131 (TestFlight): say what blocks the purchase loan, with the numbers
+                    CardText.hint(loc("deal.cashShort", eur(cash), eur(price - cash)))
+                    BuyLoanWhy(blocks: store.game?.buyLoanBlocks(price: price) ?? [])
                 }
             }
             if let terms {
@@ -84,6 +85,51 @@ struct DealView: View {
     private func rivalColors(_ r: Rival?) -> [String] {
         let c: [String] = r?.colors ?? []
         return [c.first ?? "#9a8fb8", c.count > 1 ? c[1] : "#ffffff"]
+    }
+}
+
+/// v131 (TestFlight: "I met every condition but the game wouldn't give me the purchase loan"): everything that stops
+/// the purchase loan, one line each with the numbers, in a yellow box. Nothing when the loan can be used.
+struct BuyLoanWhy: View {
+    let blocks: [Game.BuyLoanBlock]
+    var compact = false
+
+    var body: some View {
+        let lines = blocks.compactMap(Self.text)
+        if !lines.isEmpty {
+            HStack(alignment: .top, spacing: 10) {
+                RoundedRectangle(cornerRadius: 3).fill(Theme.yellow).frame(width: 6)
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(loc("buyLoan.blockTitle"))
+                        .font(Theme.font(compact ? 14 : 15, .bold))
+                    ForEach(lines.indices, id: \.self) { i in
+                        Text(lines[i])
+                            .font(Theme.font(compact ? 13 : 14))
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                .foregroundStyle(Theme.ink)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .padding(12)
+            .background(compact ? Color.white.opacity(0.8) : Theme.yellow.opacity(0.14), in: RoundedRectangle(cornerRadius: 14))
+            .accessibilityElement(children: .combine)
+        }
+    }
+
+    static func text(_ b: Game.BuyLoanBlock) -> String? {
+        switch b {
+        case .cashEnough: nil
+        case .noBank: loc("buyLoan.why.noBank")
+        case let .fewBalloons(have, need): loc("buyLoan.why.few", num(need), num(have))
+        case .purchaseLoanRunning: loc("buyLoan.why.running")
+        case .loansFull: loc("buyLoan.why.full")
+        case let .notOpen(net, need, days):
+            days >= 7 ? loc("buyLoan.why.notOpen", eur(Game.bigLoan.amount), eur(need), eur(net))
+                : loc("buyLoan.why.notOpenFew", eur(Game.bigLoan.amount), eur(need), num(days))
+        case let .tooBig(more): loc("buyLoan.why.tooBig", eur(Rules.buyLoanMax), eur(more))
+        case let .lowDown(more): loc("buyLoan.why.lowDown", percent(Rules.buyLoanDown), eur(Rules.buyLoanReserve), eur(more))
+        }
     }
 }
 

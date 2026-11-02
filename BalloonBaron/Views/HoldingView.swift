@@ -193,32 +193,83 @@ struct HoldingView: View {
         let s = game.state
         let here = r == s.region
         let auto = s.parked[r]?.auto
-        return HStack(alignment: .center, spacing: 10) {
-            VStack(alignment: .leading, spacing: 4) {
-                HStack(spacing: 6) {
-                    Text(r.title)
-                        .font(Theme.font(19, .heavy, condensed: true))
-                        .foregroundStyle(HoldingLux.title)
-                        .lineLimit(1)
-                        .minimumScaleFactor(0.7)
-                    regionTag(here: here, auto: auto)
-                    if s.isBaron(r) {
-                        WorldTag(text: loc("map.baron"), kind: .green)
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center, spacing: 10) {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 6) {
+                        Text(r.title)
+                            .font(Theme.font(19, .heavy, condensed: true))
+                            .foregroundStyle(HoldingLux.title)
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                        regionTag(here: here, auto: auto)
+                        if s.isBaron(r) {
+                            WorldTag(text: loc("map.baron"), kind: .green)
+                        }
                     }
+                    Text(regionSubtitle(r, here: here, auto: auto, game))
+                        .font(Theme.font(13))
+                        .foregroundStyle(HoldingLux.sub)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Text(regionSubtitle(r, here: here, auto: auto, game))
-                    .font(Theme.font(13))
-                    .foregroundStyle(HoldingLux.sub)
-                    .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                regionActions(r, here: here, auto: auto, game)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            regionActions(r, here: here, auto: auto, game)
+            if !here, auto != nil { sendControls(r, s) }
         }
         .padding(12)
         .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 14))
         .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(HoldingLux.border, lineWidth: 2))
         .compositingGroup()
         .shadow(color: HoldingLux.border, radius: 0, y: 3)
+    }
+
+    /// v131 (TestFlight): a parked region's daily delivery to the holding, on (the default) or off. Off, the profit
+    /// stays in the region's cash box and a button moves it to the holding, leaving `Holding.withdrawKeep`.
+    @ViewBuilder
+    private func sendControls(_ r: RegionID, _ s: GameState) -> some View {
+        let on = s.holding.sends(r)
+        Rectangle().fill(HoldingLux.border).frame(height: 1)
+        Button {
+            SoundEngine.shared.play(.click)
+            store.act { $0.setSendsToHolding(r, !on) }
+        } label: {
+            HStack(alignment: .center, spacing: 12) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(loc("holding.sendTitle"))
+                        .font(Theme.font(15, .bold))
+                        .foregroundStyle(HoldingLux.title)
+                    Text(loc(on ? "holding.sendOn" : "holding.sendOff"))
+                        .font(Theme.font(13))
+                        .foregroundStyle(HoldingLux.sub)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                SettingsSwitch(on: on)
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(loc("holding.sendTitle"))
+        .accessibilityValue(loc(on ? "a11y.on" : "a11y.off"))
+        .accessibilityHint(loc(on ? "holding.sendOn" : "holding.sendOff"))
+        .accessibilityAddTraits(.isButton)
+        if !on, let cash = s.parked[r]?.state.cash {
+            let amount = max(0, cash - Holding.withdrawKeep)
+            HStack(alignment: .center, spacing: 10) {
+                Text(loc("holding.moveHint", money(Holding.withdrawKeep, in: r)))
+                    .font(Theme.font(13))
+                    .foregroundStyle(HoldingLux.sub)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                HoldingPill(title: loc("holding.moveOut", money(amount, in: r)), style: .ink, enabled: amount > 0) {
+                    SoundEngine.shared.play(.coin)
+                    store.act { _ = $0.withdraw(from: r, share: 1) }
+                }
+                .fixedSize()
+            }
+        }
     }
 
     private func regionTag(here: Bool, auto: Autopilot?) -> WorldTag {
@@ -232,7 +283,14 @@ struct HoldingView: View {
         if let auto {
             // Today's delivery; right after parking, the expected amount instead.
             let expected = auto.base * game.holdingBoost(r) * game.state.holding.officeMultiplier(r)
-            var text = loc("holding.autoSub", eurH(auto.today != 0 ? auto.today : Int(expected.rounded())))
+            var text: String
+            if game.state.holding.sends(r) {
+                text = loc("holding.autoSub", eurH(auto.today != 0 ? auto.today : Int(expected.rounded())))
+            } else {
+                // v131: kept in the region: yesterday's net there (after the holding's running costs), in its money
+                let kept = auto.kept ?? Int((expected * (1 - game.state.holding.expenseRate) * r.fx).rounded())
+                text = loc("holding.keptSub", money(kept, in: r), money(game.state.parked[r]?.state.cash ?? 0, in: r))
+            }
             if let open = auto.issue { text += " " + loc("map.problemSub", open.kind.title) }
             return text
         }

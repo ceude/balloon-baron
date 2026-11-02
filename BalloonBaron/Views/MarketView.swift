@@ -222,6 +222,7 @@ struct MarketView: View {
                         FleetUI.SmallButton(title: loc("marketPage.takeOver", eur(offer)), disabled: s.cash < offer) {
                             store.actBuying { _ = $0.takeOver(i) }
                         }
+                        if s.cash < offer { BuyLoanWhy(blocks: store.game?.buyLoanBlocks(price: offer) ?? [], compact: true) }
                     }
                 }
             }
@@ -235,6 +236,7 @@ struct MarketView: View {
                         FleetUI.SmallButton(title: loc("marketPage.buy", eur(sale.price)), disabled: s.cash < sale.price) {
                             store.actBuying { _ = $0.buyBankruptFleet(i) }
                         }
+                        if s.cash < sale.price { BuyLoanWhy(blocks: store.game?.buyLoanBlocks(price: sale.price) ?? [], compact: true) }
                     }
                 }
             }

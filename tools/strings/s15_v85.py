@@ -12,7 +12,7 @@ add("trait.thrifty.d", "Reads the thermals well: 15% less fuel.", "Termikleri iy
 add("trait.loyal", "Loyal", "Sadık", "Treu", "Leal", "忠実", "충성스러움")
 add("trait.loyal.d", "Rivals' offers don't interest them.", "Rakip teklifleri onu ilgilendirmez.", "Lässt sich von der Konkurrenz nicht abwerben.", "Las ofertas de los rivales no le interesan.", "ライバルの誘いに乗らない。", "경쟁사의 제안에 관심 없음.")
 add("trait.storyteller", "Storyteller", "Hikâyeci", "Geschichtenerzähler", "Cuentacuentos", "語り部", "이야기꾼")
-add("trait.storyteller.d", "Tells Cappadocia's legends: glowing reviews and a popularity boost on every flight.", "Kapadokya efsanelerini anlatır: yorumlar parlar, her uçuşta popülerlik.", "Erzählt Kappadokiens Legenden: glänzende Bewertungen und ein Beliebtheitsplus bei jedem Flug.", "Cuenta las leyendas de Capadocia: reseñas brillantes y popularidad en cada vuelo.", "カッパドキアの伝説を語る：絶賛のレビューが集まり、毎回人気アップ。", "카파도키아의 전설을 들려줌: 리뷰가 빛나고 비행마다 인기 상승.")
+add("trait.storyteller.d", "Tells the local legends: glowing reviews and a popularity boost on every flight.", "Yörenin efsanelerini anlatır: yorumlar parlar, her uçuşta popülerlik.", "Erzählt die Legenden der Gegend: glänzende Bewertungen und ein Beliebtheitsplus bei jedem Flug.", "Cuenta las leyendas del lugar: reseñas brillantes y popularidad en cada vuelo.", "土地の伝説を語る：絶賛のレビューが集まり、毎回人気アップ。", "지역의 전설을 들려줌: 리뷰가 빛나고 비행마다 인기 상승.")  # v131: every region, not Cappadocia only
 add("trait.nightOwl", "Night owl", "Gece kuşu", "Nachteule", "Noctámbulo", "夜型", "올빼미형")
 add("trait.nightOwl.d", "15% lower wage, but oversleeps now and then.", "Maaşı %15 düşük, ama arada bir uyuyakalır.", "15 % weniger Gehalt, verschläft aber ab und zu.", "Un 15 % menos de sueldo, pero a veces se duerme.", "給料15%安いが、たまに寝坊する。", "급여 15% 낮음. 하지만 가끔 늦잠을 잠.")
 

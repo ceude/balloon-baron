@@ -405,7 +405,7 @@ private struct SettingsRow: View {
 /// The game's switch: a green pill with a white knob that has a hard little shadow.
 /// The game's own switch (v110), in the chunky buttons' style: a pill with a hard drop shadow, coral when on, with a
 /// white knob that carries a small coral dot when on.
-private struct SettingsSwitch: View {
+struct SettingsSwitch: View {
     let on: Bool
 
     var body: some View {

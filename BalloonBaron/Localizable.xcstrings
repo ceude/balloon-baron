@@ -10292,6 +10292,47 @@
         }
       }
     },
+    "buyLoan.blockTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Kaufkredit ist gerade nicht möglich"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The purchase loan can't be used right now"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El préstamo de compra no está disponible ahora"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今は買収ローンを使えない"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지금은 인수 대출을 쓸 수 없어요"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Satın alma kredisi şu an kullanılamıyor"
+          }
+        }
+      }
+    },
     "buyLoan.button": {
       "extractionState": "manual",
       "localizations": {
@@ -10780,6 +10821,334 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dikkat: kışın yolcu azalır ama taksit sürer. Yeni balonların bakımı günde %1$@ ekler, pilot maaşları ayrıca. Kasa %2$@ altına düşerse banka balonlarına el koyar."
+          }
+        }
+      }
+    },
+    "buyLoan.why.few": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dafür braucht es hier eine größere Flotte. Nötige Ballone: %1$@. Du hast: %2$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "It needs a bigger fleet here. Balloons needed: %1$@. You have: %2$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hace falta una flota más grande aquí. Globos necesarios: %1$@. Tienes: %2$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ここではもっと大きな船団が必要。必要な気球：%1$@機、保有：%2$@機。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "여기서는 더 큰 기단이 필요해요. 필요한 열기구: %1$@대, 보유: %2$@대."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Burada daha büyük bir filo gerekir. Gereken balon: %1$@, sende: %2$@."
+          }
+        }
+      }
+    },
+    "buyLoan.why.full": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Bank gibt höchstens zwei Kredite gleichzeitig: Zahl zuerst einen ab."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bank gives at most two loans at once: pay one off first."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El banco da como máximo dos préstamos a la vez: cancela uno primero."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "銀行のローンは同時に二つまで。先に一つ完済しよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "은행 대출은 동시에 두 개까지예요: 먼저 하나를 갚으세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banka aynı anda en fazla iki kredi verir: önce birini kapat."
+          }
+        }
+      }
+    },
+    "buyLoan.why.lowDown": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Anteil muss mindestens %1$@ des Preises sein, und %2$@ bleiben in der Kasse: Dir fehlen noch %3$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your share must be at least %1$@ of the price, with %2$@ left in the cash box: you need %3$@ more."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu parte debe ser al menos el %1$@ del precio, y quedan %2$@ en la caja: necesitas %3$@ más."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自己負担は価格の%1$@以上、金庫には%2$@を残す。あと%3$@必要。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "내 몫은 가격의 %1$@ 이상이어야 하고 금고에 %2$@이 남아요: %3$@ 더 필요해요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senin payın fiyatın en az %1$@ kadarı olmalı ve kasada %2$@ kalır: %3$@ daha gerekir."
+          }
+        }
+      }
+    },
+    "buyLoan.why.noBank": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Bank hat noch nicht geöffnet."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bank isn't open yet."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El banco aún no ha abierto."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "銀行はまだ開いていない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "은행이 아직 열리지 않았어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banka henüz açılmadı."
+          }
+        }
+      }
+    },
+    "buyLoan.why.notOpen": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Kredit über %1$@ ist in dieser Region noch nicht freigeschaltet; das gilt auch ohne laufende Kredite. Er öffnet sich dauerhaft, sobald ein typischer Tag hier (Median-Netto der letzten zwei Wochen) %2$@ erreicht. Jetzt: %3$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The %1$@ loan hasn't opened in this region yet; it's needed even if you have no loans. It opens for good once a typical day here (the median net of the last two weeks) reaches %2$@. Now: %3$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El préstamo de %1$@ aún no se ha abierto en esta región; es necesario aunque no tengas préstamos. Se abre para siempre cuando un día típico aquí (la mediana neta de las dos últimas semanas) llega a %2$@. Ahora: %3$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この地域ではまだ%1$@のローンが開いていない。借入がなくても必要な条件だ。ここでの典型的な一日の純利益（直近2週間の中央値）が%2$@に届くと開き、その後も開いたまま。現在：%3$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 지역에서는 아직 %1$@ 대출이 열리지 않았어요. 대출이 없어도 필요한 조건이에요. 여기서 보통 하루 순이익(최근 2주 중앙값)이 %2$@에 닿으면 열리고 계속 열려 있어요. 지금: %3$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ kredisi bu bölgede henüz açılmadı; hiç kredin olmasa da bu şart. Burada tipik bir günün net kazancı (son iki haftanın ortancası) %2$@ olunca açılır ve açık kalır. Şu an: %3$@."
+          }
+        }
+      }
+    },
+    "buyLoan.why.notOpenFew": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Kredit über %1$@ ist in dieser Region noch nicht freigeschaltet; das gilt auch ohne laufende Kredite. Er öffnet sich dauerhaft, sobald ein typischer Tag hier (Median-Netto der letzten zwei Wochen) %2$@ erreicht, gezählt nach mindestens 7 Tagen hier. Bisher gezählte Tage: %3$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The %1$@ loan hasn't opened in this region yet; it's needed even if you have no loans. It opens for good once a typical day here (the median net of the last two weeks) reaches %2$@, counted after at least 7 days here. Days so far: %3$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El préstamo de %1$@ aún no se ha abierto en esta región; es necesario aunque no tengas préstamos. Se abre para siempre cuando un día típico aquí (la mediana neta de las dos últimas semanas) llega a %2$@, contado tras al menos 7 días aquí. Días contados: %3$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この地域ではまだ%1$@のローンが開いていない。借入がなくても必要な条件だ。ここでの典型的な一日の純利益（直近2週間の中央値）が%2$@に届くと開く。ここで7日以上たってから数える。数えた日数：%3$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 지역에서는 아직 %1$@ 대출이 열리지 않았어요. 대출이 없어도 필요한 조건이에요. 여기서 보통 하루 순이익(최근 2주 중앙값)이 %2$@에 닿으면 열리며, 여기서 최소 7일이 지나야 계산해요. 센 날: %3$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ kredisi bu bölgede henüz açılmadı; hiç kredin olmasa da bu şart. Burada tipik bir günün net kazancı (son iki haftanın ortancası) %2$@ olunca açılır ve açık kalır; en az 7 gün sonra sayılır. Sayılan gün: %3$@."
+          }
+        }
+      }
+    },
+    "buyLoan.why.running": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Immer nur ein Kaufkredit: Der jetzige wird noch abbezahlt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One purchase loan at a time: the current one is still being paid off."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo un préstamo de compra a la vez: el actual aún se está pagando."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "買収ローンは一度に一つだけ。今のローンはまだ返済中。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인수 대출은 한 번에 하나만: 지금 대출을 아직 갚는 중이에요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aynı anda tek satın alma kredisi olur: şimdiki hâlâ ödeniyor."
+          }
+        }
+      }
+    },
+    "buyLoan.why.tooBig": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Bank zahlt höchstens %1$@: Dir fehlen noch %2$@ eigenes Geld."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The bank pays at most %1$@: you need %2$@ more of your own."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El banco paga como máximo %1$@: necesitas %2$@ más de tu bolsillo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "銀行が払うのは最大%1$@。自己資金があと%2$@必要。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "은행은 최대 %1$@까지 내요: 자기 돈이 %2$@ 더 필요해요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banka en fazla %1$@ öder: kendi cebinden %2$@ daha gerekir."
           }
         }
       }
@@ -30669,6 +31038,47 @@
         }
       }
     },
+    "deal.cashShort": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasse: %1$@. Zum Preis fehlen: %2$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cash: %1$@. Short of the price: %2$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caja: %1$@. Falta para el precio: %2$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "所持金：%1$@。価格まであと：%2$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현금: %1$@. 가격까지 부족: %2$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasa: %1$@. Fiyata eksik: %2$@."
+          }
+        }
+      }
+    },
     "deal.crew": {
       "extractionState": "manual",
       "localizations": {
@@ -30952,88 +31362,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@ satılık!"
-          }
-        }
-      }
-    },
-    "deal.short": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Du hast %@ in der Kasse. Nimm einen Kredit auf und kauf später über die Marktseite."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "You have %@ in cash. Take out a bank loan, then buy it from the Market page."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Tienes %@ en caja. Pide un préstamo y cómpralo luego desde la página Mercado."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "資金：%@。銀行で借りれば、あとで市場画面から買える。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "금고에 %@ 있습니다. 은행에서 대출받은 뒤 시장 페이지에서 살 수 있습니다."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kasanda %@ var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin."
-          }
-        }
-      }
-    },
-    "deal.shortFew": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kasse: %1$@. Für den Kaufkredit brauchst du eine größere Flotte. Nötige Ballone: %2$@, du hast: %3$@."
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cash: %1$@. The purchase loan needs a bigger fleet. Balloons needed: %2$@, you have: %3$@."
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Caja: %1$@. El préstamo de compra pide una flota mayor. Globos necesarios: %2$@, tienes: %3$@."
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "資金：%1$@。買収ローンには保有気球がもっと必要。必要な気球：%2$@、保有：%3$@。"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "보유 현금: %1$@. 인수 대출에는 더 큰 기단이 필요합니다. 필요한 열기구: %2$@, 보유: %3$@."
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Kasanda %1$@ var. Satın alma kredisi için daha büyük bir filo gerekir. Gereken balon: %2$@, sende: %3$@."
           }
         }
       }
@@ -57237,6 +57565,47 @@
         }
       }
     },
+    "holding.keptSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autopilot: Der Gewinn bleibt in der Region, etwa %1$@ am Tag. Kasse: %2$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Autopilot: the profit stays in the region, about %1$@ a day. Cash box: %2$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Piloto automático: el beneficio se queda en la región, unos %1$@ al día. Caja: %2$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自動運営：利益は地域に残る。1日約%1$@。金庫：%2$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "자동 운영: 수익은 지역에 남아요. 하루 약 %1$@. 금고: %2$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otomatik mod: kazanç bölgede kalıyor, günde yaklaşık %1$@. Kasa: %2$@."
+          }
+        }
+      }
+    },
     "holding.lab.cta": {
       "extractionState": "manual",
       "localizations": {
@@ -57602,6 +57971,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gelir: otomatik bölgeler ve bölgelerden aktarım"
+          }
+        }
+      }
+    },
+    "holding.moveHint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An die Holding; %@ bleiben in der Kasse."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "To the holding; %@ stays in the cash box."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Al holding; quedan %@ en la caja."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホールディングスへ。金庫には%@を残す。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지주회사로 가요. 금고에 %@ 남아요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Holdinge geçer; kasada %@ kalır."
+          }
+        }
+      }
+    },
+    "holding.moveOut": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ überweisen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transfer %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Transferir %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@を移す"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 옮기기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ aktar"
           }
         }
       }
@@ -58258,6 +58709,129 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bölgeler"
+          }
+        }
+      }
+    },
+    "holding.sendOff": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus: Der Gewinn sammelt sich in der Kasse der Region; überweise ihn, wann du willst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off: the profit piles up in the region's cash box; move it whenever you like."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desactivado: el beneficio se acumula en la caja de la región; muévelo cuando quieras."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフ：利益は地域の金庫にたまる。好きなときに移そう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "꺼짐: 수익이 지역 금고에 쌓여요. 원할 때 옮기세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapalı: kazanç bölgenin kasasında birikir, istediğinde aktarırsın."
+          }
+        }
+      }
+    },
+    "holding.sendOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An: Jeden Abend geht der Gewinn des Autopiloten an die Holding."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On: each evening the autopilot's profit reaches the holding."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activado: cada tarde el beneficio del piloto automático llega al holding."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オン：自動運営の利益が毎晩ホールディングスに入る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "켜짐: 자동 운영 수익이 매일 저녁 지주회사로 들어가요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açık: otomatik modun kazancı her akşam holding kasasına geçer."
+          }
+        }
+      }
+    },
+    "holding.sendTitle": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gewinn täglich an die Holding"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Send profit to the holding daily"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enviar el beneficio al holding cada día"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "利益を毎日ホールディングスへ送る"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "수익을 매일 지주회사로 보내기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kazancı her gün holdinge aktar"
           }
         }
       }
@@ -70275,6 +70849,47 @@
         }
       }
     },
+    "ledger.contractFrom": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gruppe: %1$@ (Personen: %2$@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Group: %1$@ (people: %2$@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grupo: %1$@ (personas: %2$@)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "グループ：%1$@（%2$@人）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단체: %1$@ (%2$@명)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Grup: %1$@ (%2$@ kişi)"
+          }
+        }
+      }
+    },
     "ledger.contractPenalty": {
       "extractionState": "manual",
       "localizations": {
@@ -70927,6 +71542,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bankanın balon satışı"
+          }
+        }
+      }
+    },
+    "ledger.showRefund": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ballon-Show: Gebühren erstattet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon Show: fees refunded"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espectáculo de globos: tarifas devueltas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "バルーンショー：参加費の返金"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열기구 쇼: 참가비 환불"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balon Şöleni: ücret iadesi"
           }
         }
       }
@@ -72731,6 +73387,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nil, firavunların vadisi ve dünyanın en çetin balon pazarı."
+          }
+        }
+      }
+    },
+    "map.keptSub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Manager führt sie: Der Gewinn sammelt sich in ihrer eigenen Kasse (Überweisung an die Holding ist aus)."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your manager runs it: the profit piles up in its own cash box (sending to the holding is off)."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La dirige tu gerente: el beneficio se acumula en su propia caja (el envío al holding está desactivado)."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マネージャーが運営中：利益は地域の金庫にたまっている（ホールディングスへの送金はオフ）。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매니저가 운영 중: 수익이 지역 금고에 쌓이고 있어요(지주회사 송금 꺼짐)."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Müdürün yönetiyor: kazanç bölgenin kasasında birikiyor (holdinge aktarım kapalı)."
           }
         }
       }
@@ -106525,37 +107222,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Erzählt Kappadokiens Legenden: glänzende Bewertungen und ein Beliebtheitsplus bei jedem Flug."
+            "value": "Erzählt die Legenden der Gegend: glänzende Bewertungen und ein Beliebtheitsplus bei jedem Flug."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tells Cappadocia's legends: glowing reviews and a popularity boost on every flight."
+            "value": "Tells the local legends: glowing reviews and a popularity boost on every flight."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cuenta las leyendas de Capadocia: reseñas brillantes y popularidad en cada vuelo."
+            "value": "Cuenta las leyendas del lugar: reseñas brillantes y popularidad en cada vuelo."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "カッパドキアの伝説を語る：絶賛のレビューが集まり、毎回人気アップ。"
+            "value": "土地の伝説を語る：絶賛のレビューが集まり、毎回人気アップ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "카파도키아의 전설을 들려줌: 리뷰가 빛나고 비행마다 인기 상승."
+            "value": "지역의 전설을 들려줌: 리뷰가 빛나고 비행마다 인기 상승."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kapadokya efsanelerini anlatır: yorumlar parlar, her uçuşta popülerlik."
+            "value": "Yörenin efsanelerini anlatır: yorumlar parlar, her uçuşta popülerlik."
           }
         }
       }

@@ -73,7 +73,7 @@ struct ReportView: View {
         return VStack(alignment: .leading, spacing: 14) {
             ledger(lg, cash: s?.cash ?? 0)
             if lg.holdingNet != 0, let s {
-                let names = s.parked.keys.sorted { $0.rawValue < $1.rawValue }.map(\.title).joined(separator: ", ")
+                let names = s.parked.keys.filter(s.holding.sends).sorted { $0.rawValue < $1.rawValue }.map(\.title).joined(separator: ", ")
                 ProtoCallout(tone: .green, title: loc("report.holdTitle", eurH(lg.holdingNet)),
                              text: loc("report.holdBody", names, percent(s.holding.expenseRate), eurH(s.holding.cash)))
             }
@@ -130,8 +130,10 @@ struct ReportView: View {
     /// Prototype order; zero lines are left out. Costs are negative.
     private func lines(_ lg: Ledger) -> [(String, Int)] {
         let mission = lg.missionDone.map { loc("ledger.mission", $0.title) } ?? loc("ledger.missionReward")
+        // v131 (TestFlight): the group's line names its company, like the event under the table
+        let group = lg.contractFrom.map { loc("ledger.contractFrom", $0, num(lg.contractN ?? 0)) } ?? loc("ledger.contract", num(lg.contractN ?? 0))
         let all: [(String, Int)] = [
-            (loc("ledger.tickets"), lg.tickets), (loc("ledger.contract", num(lg.contractN ?? 0)), lg.contract ?? 0),
+            (loc("ledger.tickets"), lg.tickets), (group, lg.contract ?? 0),
             (loc("ledger.contractPenalty"), -(lg.contractPenalty ?? 0)), (loc("ledger.contractWait"), lg.contractWait ?? 0),
             (loc("ledger.contractVoucher"), -(lg.contractVoucher ?? 0)),
             (loc("ledger.evening"), lg.evening ?? 0), (loc("ledger.founderBonus"), lg.founderBonus), (mission, lg.mission),
@@ -141,7 +143,7 @@ struct ReportView: View {
             (loc("ledger.insurancePaid"), lg.insurancePaid), (loc("ledger.hotelIncome"), lg.hotelIncome),
             (loc("ledger.hotelFees"), -lg.hotelFees), (loc("ledger.antitrust"), -lg.antitrust),
             (loc("ledger.cancellations"), -lg.cancellations), (loc("ledger.fines"), -lg.fines),
-            (loc("ledger.seizure"), lg.seizure), (loc("ledger.chapterReward"), lg.chapterReward)
+            (loc("ledger.seizure"), lg.seizure), (loc("ledger.showRefund"), lg.showRefund ?? 0), (loc("ledger.chapterReward"), lg.chapterReward)
         ]
         return all.filter { $0.1 != 0 }
     }

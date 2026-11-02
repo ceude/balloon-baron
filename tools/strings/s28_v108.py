@@ -255,12 +255,6 @@ add("bank.opened", "Open.", "Açıldı.", "Freigeschaltet.", "Disponible.", "利
 
 # Purchase loan (v109.2): a mortgage for a rival up for sale
 add("deal.shortLoan", "Cash: %@. The purchase loan can pay the rest to the seller.", "Kasanda %@ var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.", "Kasse: %@. Der Kaufkredit kann den Rest an den Verkäufer zahlen.", "Caja: %@. El préstamo de compra puede pagar el resto al vendedor.", "資金：%@。不足分は買収ローンで売り手に支払える。", "금고: %@. 부족분은 인수 대출로 판매자에게 지불할 수 있습니다.")
-add("deal.shortFew", "Cash: %1$@. The purchase loan needs a bigger fleet. Balloons needed: %2$@, you have: %3$@.",
-    "Kasanda %1$@ var. Satın alma kredisi için daha büyük bir filo gerekir. Gereken balon: %2$@, sende: %3$@.",
-    "Kasse: %1$@. Für den Kaufkredit brauchst du eine größere Flotte. Nötige Ballone: %2$@, du hast: %3$@.",
-    "Caja: %1$@. El préstamo de compra pide una flota mayor. Globos necesarios: %2$@, tienes: %3$@.",
-    "資金：%1$@。買収ローンには保有気球がもっと必要。必要な気球：%2$@、保有：%3$@。",
-    "보유 현금: %1$@. 인수 대출에는 더 큰 기단이 필요합니다. 필요한 열기구: %2$@, 보유: %3$@.")
 add("buyLoan.button", "Buy with a loan (bank pays %@)", "Krediyle al (banka %@)", "Mit Kredit kaufen (Bank zahlt %@)", "Comprar con préstamo (el banco paga %@)", "ローンで買う（銀行が%@）", "대출로 사기 (은행 %@)")
 add("buyLoan.kicker", "Purchase loan", "Satın alma kredisi", "Kaufkredit", "Préstamo de compra", "買収ローン", "인수 대출")
 add("buyLoan.lead", "The bank pays the seller the %1$@ you're short; that money never goes into your cash. %2$@ comes out of your cash and %3$@ stays in it.", "Banka eksik %1$@ tutarını doğrudan satıcıya öder, kasana para girmez. Kasandan %2$@ gider, %3$@ kasada kalır.",
