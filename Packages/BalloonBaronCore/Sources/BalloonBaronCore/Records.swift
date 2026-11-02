@@ -12,6 +12,8 @@ public enum RecordAttempt: String, Codable, CaseIterable, CodingKeyRepresentable
     public var boost: Double { [0.05, 0.1][index] }
     /// Each time you beat your own record, up to `maxBoost` in all.
     public static let repeatBoost = 0.02, maxBoost = 0.25
+    /// Popularity a record set adds in every region you own (v136; it used to reach only the region you were in).
+    public static let rep = 0.1
     private var index: Int { Self.allCases.firstIndex(of: self)! }
 }
 
@@ -96,7 +98,7 @@ extension Game {
             set[r.kind] = state.day
             state.holding.records = set
             state.holding.recordBoost = min(RecordAttempt.maxBoost, (state.holding.recordBoost ?? 0) + (first ? r.kind.boost : RecordAttempt.repeatBoost))
-            state.rep = min(1.4, state.rep + 0.1)
+            repEverywhere(RecordAttempt.rep, .record)
             addPaper(.worldRecord(r.kind))
             state.hezQueue.append(.record(r.kind, success: true))
         } else {

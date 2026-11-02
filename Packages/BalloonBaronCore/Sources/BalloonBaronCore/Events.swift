@@ -158,6 +158,8 @@ public enum RepReason: String, Codable, CaseIterable, Sendable {
     case hard, crash, pilotAccident, hotels, drift, xl, designs, glow, show, prCap, absent, influencer
     /// v125: a contract group left on the ground.
     case contract
+    /// v136: a world record set (it lifts every region you own).
+    case record
 }
 
 /// How the player's own flight ended, reported by the flight scene.

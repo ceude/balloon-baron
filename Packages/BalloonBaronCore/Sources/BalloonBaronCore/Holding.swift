@@ -24,8 +24,12 @@ public struct Holding: Codable, Equatable, Sendable {
     public static let entryFee = 100000
     /// Share of a parked region's typical profit its manager delivers.
     public static let autopilotEfficiency = 0.85
-    public static let tvCost = 250000, tvDays = 14, tvCooldown = 30
-    public static let celebrityCost = 600000, celebrityDays = 90, celebrityCount = 6
+    /// v136 (TestFlight): the TV campaign runs in one region's national channels, bought for each region on its own (it
+    /// used to be one €250,000 campaign for every region). €60,000 a region: four regions cost about what the old one
+    /// did, and the simulator's regions earn €45,000–90,000 back each over its 14 days. Popularity +0.1 in that region.
+    public static let tvCost = 60000, tvDays = 14, tvCooldown = 30, tvRep = 0.1
+    /// v136: the popularity each worldwide deal adds in every region you own (`Game.repEverywhere`).
+    public static let celebrityCost = 600000, celebrityDays = 90, celebrityCount = 6, celebrityRep = 0.15
     public static let billboardCost = 120000, billboardDays = 20
     /// v122.7 (`JERSEY`, `WGAMES`): the league champion's jersey (no team named, the game is played worldwide), and the
     /// balloon show at the World Games' opening ceremony, once.
@@ -40,6 +44,8 @@ public struct Holding: Codable, Equatable, Sendable {
     public var history: [Day] = []
     /// Yesterday's autopilot income and expenses.
     public var todayGross = 0, todayCost = 0
+    /// Before v136: the one national TV campaign (every region) ran until `tvUntil`, the next could start on `tvCooldown`.
+    /// New campaigns never set these; an old save's run and wait still count for every region (`tvUntil(_:)`).
     public var tvUntil = 0, tvCooldown = 0
     public var celebrity: Celebrity?
     public var billboards: [RegionID: Int] = [:]
@@ -72,6 +78,19 @@ public struct Holding: Codable, Equatable, Sendable {
     /// was closed (cleared when it is entered again). nil in older saves.
     public var rescued: [RegionID: Int]?
     public var closed: [RegionID: Int]?
+    /// v136: each region's own TV campaign (nil in older saves).
+    public var tv: [RegionID: TVRun]?
+
+    public struct TVRun: Codable, Equatable, Sendable {
+        public var until: Int
+        /// The day the next campaign can start in that region.
+        public var cooldown: Int
+    }
+
+    /// v136: the last day of a region's TV campaign. An old save's national campaign counts in every region, as it did.
+    public func tvUntil(_ r: RegionID) -> Int { max(tv?[r]?.until ?? 0, tvUntil) }
+    /// v136: the day the next TV campaign can start in a region.
+    public func tvReady(_ r: RegionID) -> Int { max(tv?[r]?.cooldown ?? 0, tvCooldown) }
 
     /// v131: a parked region's autopilot profit goes to the holding each day.
     public func sends(_ r: RegionID) -> Bool { !(keepIn ?? []).contains(r) }
@@ -100,7 +119,7 @@ extension Game {
     /// Demand multiplier from holding campaigns in a region.
     public func holdingBoost(_ r: RegionID) -> Double {
         let h = state.holding, d = state.day
-        return (1 + (h.recordBoost ?? 0)) * (h.tvUntil > d ? 1.2 : 1) * ((h.celebrity?.until ?? 0) > d ? 1.1 : 1) * ((h.billboards[r] ?? 0) > d ? 1.1 : 1)
+        return (1 + (h.recordBoost ?? 0)) * (h.tvUntil(r) > d ? 1.2 : 1) * ((h.celebrity?.until ?? 0) > d ? 1.1 : 1) * ((h.billboards[r] ?? 0) > d ? 1.1 : 1)
             * ((h.jerseyUntil ?? 0) > d ? Holding.jerseyBoost : 1) * ((h.worldGamesUntil ?? 0) > d ? Holding.worldGamesBoost : 1)
     }
 
@@ -155,7 +174,22 @@ extension Game {
         return true
     }
 
-    public var canRunTV: Bool { state.holding.tvCooldown <= state.day }
+    /// v136: the regions you own, in map order: the one you're in and the parked ones (a closed region isn't parked).
+    public var ownedRegions: [RegionID] { RegionID.allCases.filter { state.owns($0) } }
+
+    public var canRunTV: Bool { canRunTV(in: state.region) }
+    /// v136: a region's own TV campaign can start (owned, and its 30-day wait is over).
+    public func canRunTV(in r: RegionID) -> Bool { state.owns(r) && state.holding.tvReady(r) <= state.day }
+    public func billboardsUp(in r: RegionID) -> Bool { (state.holding.billboards[r] ?? 0) > state.day }
+
+    /// v136: popularity in one region you own, the one you're in or a parked one, up to its maximum.
+    mutating func repIn(_ r: RegionID, _ d: Double) {
+        let top = Rules.repRange.upperBound
+        if r == state.region { state.rep = min(top, state.rep + d) } else if var p = state.parked[r] {
+            p.state.rep = min(top, p.state.rep + d)
+            state.parked[r] = p
+        }
+    }
 
     /// A holding investment gets its due: the guide of the region you're in praises it (celebrities and offices
     /// have their own lines) and the next morning's paper reports it.
@@ -164,13 +198,31 @@ extension Game {
         addPaper(.deed(d))
     }
 
+    /// v136 (TestFlight): a national or worldwide campaign lifts popularity in every region you own on the day you buy it:
+    /// the one you're in and each parked one, each up to its own maximum. It used to lift only the region you happened
+    /// to be in. A region entered later starts from its own popularity (the bump happened on the day of the campaign).
+    /// Inside `finishDay` (a world record) the region you're in logs it under `why` for the report.
+    mutating func repEverywhere(_ d: Double, _ why: RepReason? = nil) {
+        let top = Rules.repRange.upperBound, r0 = state.rep
+        state.rep = min(top, state.rep + d)
+        if let why { repMark(why, since: r0) }
+        for r in Array(state.parked.keys) {
+            guard var p = state.parked[r] else { continue }
+            p.state.rep = min(top, p.state.rep + d)
+            state.parked[r] = p
+        }
+    }
+
+    /// v136: a TV campaign in one region's channels (the one you're in by default), bought from any region.
     @discardableResult
-    public mutating func runTVCampaign() -> Bool {
-        guard canRunTV, spendHolding(state.holding.tvCost) else { return false }
-        state.holding.tvUntil = state.day + Holding.tvDays
-        state.holding.tvCooldown = state.day + Holding.tvCooldown
+    public mutating func runTVCampaign(in region: RegionID? = nil) -> Bool {
+        let r = region ?? state.region
+        guard canRunTV(in: r), spendHolding(state.holding.tvCost) else { return false }
+        var tv = state.holding.tv ?? [:]
+        tv[r] = Holding.TVRun(until: state.day + Holding.tvDays, cooldown: state.day + Holding.tvCooldown)
+        state.holding.tv = tv
         state.holding.tvCount = (state.holding.tvCount ?? 0) + 1
-        state.rep = min(1.4, state.rep + 0.1)
+        repIn(r, Holding.tvRep)
         celebrate(.tv)
         return true
     }
@@ -180,7 +232,7 @@ extension Game {
         guard (state.holding.celebrity?.until ?? 0) <= state.day, spendHolding(state.holding.celebrityCost) else { return false }
         let c = Celebrity(index: rng.int(Holding.celebrityCount), until: state.day + state.holding.celebrityDays)
         state.holding.celebrity = c
-        state.rep = min(1.4, state.rep + 0.15)
+        repEverywhere(Holding.celebrityRep)
         state.hezQueue.append(.celebritySigned(c.index))
         celebrate(.celebrity)
         return true
@@ -191,7 +243,7 @@ extension Game {
     public mutating func sponsorJersey() -> Bool {
         guard (state.holding.jerseyUntil ?? 0) <= state.day, spendHolding(Holding.jerseyCost) else { return false }
         state.holding.jerseyUntil = state.day + Holding.jerseyDays
-        state.rep = min(1.4, state.rep + Holding.jerseyRep)
+        repEverywhere(Holding.jerseyRep)
         celebrate(.jersey)
         return true
     }
@@ -201,15 +253,16 @@ extension Game {
     public mutating func holdWorldGamesShow() -> Bool {
         guard state.worldGamesOpen, state.holding.worldGamesUntil == nil, spendHolding(Holding.worldGamesCost) else { return false }
         state.holding.worldGamesUntil = state.day + Holding.worldGamesDays
-        state.rep = min(1.4, state.rep + Holding.worldGamesRep)
+        repEverywhere(Holding.worldGamesRep)
         celebrate(.worldGames)
         return true
     }
 
+    /// Billboards in one region (the one you're in by default); v136: any region you own, from any region.
     @discardableResult
-    public mutating func runBillboards() -> Bool {
-        let r = state.region
-        guard (state.holding.billboards[r] ?? 0) <= state.day, spendHolding(Holding.billboardCost) else { return false }
+    public mutating func runBillboards(in region: RegionID? = nil) -> Bool {
+        let r = region ?? state.region
+        guard state.owns(r), !billboardsUp(in: r), spendHolding(Holding.billboardCost) else { return false }
         state.holding.billboards[r] = state.day + Holding.billboardDays
         celebrate(.billboards)
         return true
