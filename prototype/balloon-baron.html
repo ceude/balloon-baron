@@ -8165,7 +8165,7 @@ function busItems(add, t) {
       ctx.fillStyle = on ? '#ffd23a' : '#8a7a4a'; ctx.font = '800 15px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText('66 DINER', p[0], p[1] - 39); ctx.textAlign = 'left';
     } finally { TUFF = keep; }
   });
-  for (const [gx, gy, w, hh] of [[4.2, 20.5, 210, 120], [5.6, 18.6, 150, 80], [16.4, 20.2, 230, 140], [17.6, 23.4, 160, 90], [17.4, 30.4, 200, 110], [6.2, 31.4, 180, 100]]) add(gx, gy, () => { const p = tiso(gx, gy); butte(p[0], p[1], w, hh, '#d98a78', '#9a5050'); });
+  for (const [gx, gy, w, hh] of [[4.2, 20.5, 210, 120], [5.6, 18.6, 150, 80], [16.4, 20.2, 230, 140], [17.6, 23.4, 160, 90], [17.4, 30.4, 200, 110], [6.2, 31.4, 180, 100]]) add(gx, gy, () => { const p = tiso(gx, gy); mesaRock(p[0], p[1], w, hh * .8, Math.round(gx * 37 + gy * 11), w > 190, '#d98a78', '#9a5050'); }); /* v135.1: layered mesas, not blocks */
   for (const [gx, gy, k] of [[12.4, 27.4, 0], [12.6, 29.4, 1], [14.9, 22.1, 2], [6.6, 21.6, 1], [6.4, 26.5, 0], [15.2, 26.2, 2], [11.8, 29.8, 1], [15.6, 29.2, 0], [9.2, 30.6, 2], [13.2, 31.2, 0], [16.8, 27.6, 1]]) add(gx, gy, () => { const p = tiso(gx, gy); k === 0 ? yucca(p[0], p[1], 1.1) : k === 1 ? cholla(p[0], p[1], 1) : roundTree(p[0], p[1], .6, '#7a8a50'); });
   ctrVehicles().forEach((c, i) => {
     const bx = CTR_BAYS[CTR_BAYS.length - 1 - i];
@@ -9947,7 +9947,7 @@ function block(gx, gy, w, d, h, o = {}) {
 }
 /* Arched window or door on a face, in face units (u along the wall, v up). Lit ones glow. */
 function opening(p, q, h, u, v, w, hh, kind = 'win', lit = false) {
-  if (NIGHT_K > 0) NIGHT_WIN.push({ p, q, h, u, v, w, hh, kind }); /* relit after the night falls */
+  if (NIGHT_K > 0) NIGHT_WIN.push({ p, q, h, u, v, w, hh, kind, dim: OPEN_DIM }); /* relit after the night falls */
   if (S && S.region === 'bri') return briOpening(p, q, h, u, v, w, hh, kind, lit);
   tface(p, q, h, () => {
     const x0 = u - w / 2;
@@ -10573,7 +10573,9 @@ const HQ_LOOK = {
   bri: { roof: '#5e6874', trim: '#ecd39c', dome: '#7ab0a0', tree: 'beech' },
   abq: { trim: '#3aa6a0', dome: null, tree: 'cottonwood' }
 };
-function hqHouse(b, t) {
+let OPEN_DIM = false; /* v135.1: the headquarters' windows: fewer of them lit at night, so it isn't busier by night than by day */
+function hqHouse(b, t) { OPEN_DIM = true; try { hqHouseDraw(b, t); } finally { OPEN_DIM = false; } }
+function hqHouseDraw(b, t) {
   const n = hqParts(), R = S.region, L = HQ_LOOK[R] || HQ_LOOK.cap, W = L.wall || {}, bri = R === 'bri', abq = R === 'abq', lux = R === 'lux';
   const roof = (gx, gy, w, d, h, rise) => { if (R === 'cap' || bri) hipRoof(gx, gy, w, d, h, rise, L.roof); else flatRoof(gx, gy, w, d, h, false); };
   /* stone dressings: a cornice band under the roof and quoins at the corners (Bristol's Bath stone on brick, a pale band elsewhere) */
@@ -11238,116 +11240,249 @@ function outerScenery(t) {
    rival fields far out; and each region's own land: the Nile's cane and palms with a felucca and a farmer by Luxor,
    hedged pastures with dry-stone walls and sheep by Bristol, mesas, scrub and an RV park that fills for the Fiesta by
    Albuquerque. The ground is drawn once into batched paths per layout; things off screen are skipped; at most
-   OUT_BALLOONS balloons are drawn. */
-const OUT_CALM = 13.5, OUT_PER = 12, OUT_MAX = 24, OUT_BALLOONS = 60, OUT_CELL = [2.6, 2.1];
+   OUT_BALLOONS balloons are drawn.
+   v135.1 (polish): no grid. Farm tracks meander out from the main roads and branch; plots of varied size sit along them
+   turned with the track, others lie back in loose clusters, with open land between. Only the fields in use this morning
+   (about half) lay out envelopes, one at a time just before inflating, softened toward the ground; balloons wear your
+   colours in a few variations mixed with the fleet's designs. Bigger chase van with a dust trail and a picnic table for
+   the toast; Albuquerque's mesas are layered, eroded rock; the headquarters lights fewer windows at night. */
+const OUT_CALM = 13.5, OUT_PER = 12, OUT_MAX = 24, OUT_BALLOONS = 60, OUT_USE = .55;
 const outFieldsN = () => clamp(Math.floor((inside().length - 6) / OUT_PER), 0, OUT_MAX);
 const outCrewsN = nf => Math.min(4, 1 + Math.floor(nf / 6));
 const outFlank = (x, y) => Math.abs(x - y) >= OUT_CALM;
-/* what each region keeps on its flanks, in the order the cells are handed out (nearest first, alternating sides) */
+/* v135.1: the fields in use this morning (about half of them, the nearest always), fixed for the day: only these lay out envelopes */
+const outInUse = (i, nf) => i < nf && (i === 0 || mulberry32(S.day * 131 + i * 17 + 7)() < OUT_USE);
+/* what each region keeps on its flanks, in the order the sites are handed out (nearest first, alternating sides) */
 const OUT_DECOR = {
   cap: ['orchard', 'vine', 'dovecote', 'view', 'orchard', 'farm', 'vine', 'rival', 'orchard', 'dovecote', 'farm', 'vine', 'rival'],
   abq: ['scrub', 'rv', 'mesa', 'view', 'farm', 'scrub', 'mesa', 'rival', 'scrub', 'mesa', 'rival'],
   lux: ['cane', 'palms', 'crops', 'view', 'farm', 'cane', 'palms', 'crops', 'rival', 'cane', 'palms', 'rival'],
   bri: ['pasture', 'pasture', 'farm', 'view', 'pasture', 'crops', 'pasture', 'rival', 'farm', 'pasture', 'rival']
 };
+const OUT_BIG = ['dovecote', 'view', 'mesa', 'rv', 'palms', 'farm'];
+/* v135.1: where the farm tracks leave the main roads, for the left flank: [gx, gy, heading gx, heading gy, length];
+   the right flank mirrors them (gx and gy swapped). The first three that find room are kept. */
+const OUT_TRACKS = [[8, 22.6, -1, .3, 17], [-8.6, 8, .25, 1, 15], [8, 32, 1, .6, 14], [-16, 8, -.4, -1, 12], [8, 27.5, -1, -.15, 14], [-12.5, 8, .1, 1, 13]];
 let OUTL = null;
-/* the cells of the flanks, the decor on them and the order the fields take the rest; fixed per region */
+/* a point of a site in its own frame: a along the site's long axis (u), b across it */
+const outAt = (c, a, b) => [c.cx + c.ux * a - c.uy * b, c.cy + c.uy * a + c.ux * b];
+const outIn = (c, x, y, m) => { const dx = x - c.cx, dy = y - c.cy, a = dx * c.ux + dy * c.uy, b = -dx * c.uy + dy * c.ux; return Math.abs(a) < c.w / 2 + m && Math.abs(b) < c.d / 2 + m; };
+const outLen = P => P.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - P[i][0], p[1] - P[i][1]), 0);
+/* v135.1: the valley out there, laid out once per region. Farm tracks meander out from the main roads; plots of varied
+   size sit along them, turned with the track, with gaps of open land between; a few more lie back from the tracks in
+   loose clusters. The nearest plots become your launch fields as the fleet grows (track-side first), the decor prefers
+   the plots back from the tracks; each crew drives its own track out to a landing spot beside it. */
 function outLayout() {
   const reg = S.region; if (OUTL && OUTL.reg === reg) return OUTL;
+  const R = mulberry32(135 + reg.charCodeAt(0) * 7 + reg.charCodeAt(1));
   const water = (x, y) => (reg === 'lux' || reg === 'bri') && y < -8.6;
   const vines = [[-9, 2, 5, 4], [18, 10, 4, 5], [2, 18, 4, 3.5], [-12, 12, 4, 3]];
-  const hitRect = (x, y, w, d, R, m) => x < R[0] + R[2] + m && x + w > R[0] - m && y < R[1] + R[3] + m && y + d > R[1] - m;
-  const okPt = (x, y) => outFlank(x, y) && x + y > -8 && x + y < 56 && x > -24 && y > -24 && x < 44 && y < 44 && !(x > -2.5 && x < 17.5 && y > -2.5 && y < 17.5) && Math.abs(x - 8) > 1.2 && Math.abs(y - 8) > 1.2 && ctrSpotFree(x, y) && !water(x, y);
-  const [W, D] = OUT_CELL, cells = [];
-  for (let i = 0; i < 24; i++) for (let j = 0; j < 26; j++) {
-    const x = -22 + i * 3.05 + (j % 2) * .7, y = -10 + j * 2.6; let ok = true;
-    for (let u = -.45; u <= 1.45 && ok; u += .475) for (let v = -.45; v <= 1.45 && ok; v += .475) ok = okPt(x + u * W, y + v * D);
-    if (!ok || OUTER_FIELDS.some(f => hitRect(x, y, W, D, [f[0], f[1], 3, 2.2], .8)) || vines.some(r => hitRect(x, y, W, D, r, .5))) continue;
-    const cx = x + W / 2, cy = y + D / 2;
-    cells.push({ x, y, cx, cy, side: cx > cy ? 1 : -1, dist: Math.hypot(cx - 7.5, cy - 7.5) });
+  const inRect = (x, y, r, m) => x > r[0] - m && x < r[0] + r[2] + m && y > r[1] - m && y < r[1] + r[3] + m;
+  const land0 = (x, y) => outFlank(x, y) && x + y > -8 && x + y < 56 && x > -24 && y > -24 && x < 44 && y < 44 && !(x > -2.5 && x < 17.5 && y > -2.5 && y < 17.5) && ctrSpotFree(x, y) && !water(x, y) &&
+    !OUTER_FIELDS.some(f => inRect(x, y, [f[0], f[1], 3, 2.2], .8)) && !vines.some(r => inRect(x, y, r, .4));
+  const okPt = (x, y) => land0(x, y) && Math.abs(x - 8) > 1.2 && Math.abs(y - 8) > 1.2;
+  /* 1. the tracks: a slow random walk that keeps its general heading and steers round what it meets; tracks keep
+     their distance from each other except where one branches off another */
+  const tracks = [];
+  const nearTrack = (x, y, d, skip) => tracks.some(T => T !== skip && T.P.some(p => Math.abs(p[0] - x) < d && Math.abs(p[1] - y) < d && Math.hypot(p[0] - x, p[1] - y) < d));
+  const walk = (x0, y0, a0, len, side, from) => {
+    const ok = (x, y, k) => land0(x, y) && (k < 4 || (Math.abs(x - 8) > .9 && Math.abs(y - 8) > .9)) && !nearTrack(x, y, k < 6 ? 1.2 : 3, k < 8 ? from : null);
+    if (!land0(x0, y0)) return null;
+    let x = x0, y = y0, a = a0, turn = 0;
+    const P = [[x, y]];
+    for (let k = 1; k * .45 < len; k++) {
+      turn = turn * .86 + (R() - .5) * .14; a += turn; a += (a0 - a) * .05;
+      let nx = x + Math.cos(a) * .45, ny = y + Math.sin(a) * .45;
+      if (!ok(nx, ny, k)) {
+        let found = false;
+        for (const da of [.3, -.3, .6, -.6, .9, -.9]) { const b = a + da, bx = x + Math.cos(b) * .45, by = y + Math.sin(b) * .45; if (ok(bx, by, k)) { a = b; turn *= .3; nx = bx; ny = by; found = true; break; } }
+        if (!found) break;
+      }
+      x = nx; y = ny; P.push([x, y]);
+    }
+    return P.length * .45 < 5 ? null : { P, side, len: outLen(P), from };
+  };
+  for (const side of [-1, 1]) {
+    let kept = 0;
+    for (const s0 of OUT_TRACKS) {
+      if (kept >= 3) break;
+      const [x0, y0, hx, hy, len] = side < 0 ? s0 : [s0[1], s0[0], s0[3], s0[2], s0[4]];
+      const T = walk(x0, y0, Math.atan2(hy, hx), len, side, null); if (T) { tracks.push(T); kept++; }
+    }
   }
-  const R = mulberry32(135 + reg.charCodeAt(0) * 7 + reg.charCodeAt(1));
-  cells.forEach(c => { c.key = c.dist + R() * 2.5; });
-  const bySide = s => cells.filter(c => c.side === s).sort((a, b) => a.key - b.key);
-  const L = bySide(-1), Rt = bySide(1), order = [];
-  while (L.length || Rt.length) { if (L.length) order.push(L.shift()); if (Rt.length) order.push(Rt.shift()); }
-  /* decor every other cell from the third on, so fields and decor mix instead of the fields ringing the town */
-  const decor = [], fields = [], rest = [], kinds = (OUT_DECOR[reg] || OUT_DECOR.cap).slice();
-  order.forEach((c, i) => { if (kinds.length && Math.floor(i / 2) % 2 === 1) { c.k = kinds.shift(); decor.push(c); } else if (fields.length < OUT_MAX) fields.push(c); else rest.push(c); });
-  /* rival fields belong far out: swap a 'rival' cell with the farthest field cell */
-  /* landing spots: free cells near the fields, a crew's own on its side */
-  const land = rest.slice(0, 16);
-  const crews = [];
-  for (let c = 0; c < 4; c++) {
-    const F = fields[c]; if (!F) break;
-    const cand = land.filter(q => q.side === F.side && Math.hypot(q.cx - F.cx, q.cy - F.cy) > 4.5 && !crews.some(k => k.L === q)).sort((a, b) => Math.hypot(a.cx - F.cx, a.cy - F.cy) - Math.hypot(b.cx - F.cx, b.cy - F.cy));
-    const Lc = cand[0]; if (!Lc) continue;
-    const a = [F.cx, F.cy + .7], b = [Lc.cx - .4, Lc.cy + .35], k1 = [a[0], b[1]], k2 = [b[0], a[1]], corner = outFlank(...k1) && ctrSpotFree(...k1) ? k1 : k2;
-    crews.push({ F, L: Lc, path: [a, corner, b], spot: [Lc.cx + .35, Lc.cy - .05] });
+  /* a branch off the middle of each long track */
+  for (const T of tracks.slice()) {
+    if (T.len < 9) continue;
+    const at = walkPath(T.P, T.len * (.38 + R() * .2)), a = Math.atan2(at.dir[1], at.dir[0]), turn = (1 + R() * .3) * (R() < .5 ? 1 : -1);
+    for (const tw of [turn, -turn]) { const B = walk(at.p[0], at.p[1], a + tw, 6 + R() * 4, T.side, T); if (B) { tracks.push(B); break; } }
   }
-  /* an ATV loop and a riders' loop round two decor cells deep in a flank */
-  const loopAt = (c, w, d) => { if (!c) return null; const x0 = c.cx - w / 2, y0 = c.cy - d / 2, P = [[x0, y0], [x0 + w, y0], [x0 + w, y0 + d], [x0, y0 + d]]; return P.every(p => okPt(...p)) ? P.concat([P[0]]) : null; };
+  const trackDist = (x, y) => { let m = 9; for (const T of tracks) for (const p of T.P) { const d = Math.hypot(p[0] - x, p[1] - y); if (d < m) m = d; } return m; };
+  /* 2. a landing spot beside each track, two thirds of the way out */
+  const lands = [];
+  for (const T of tracks) {
+    if (T.from) continue;
+    const s = T.len * (.58 + R() * .16), at = walkPath(T.P, s), dl = Math.hypot(...at.dir) || 1, ux = at.dir[0] / dl, uy = at.dir[1] / dl;
+    for (const sd of R() < .5 ? [1, -1] : [-1, 1]) {
+      const x = at.p[0] - uy * sd * 1.05, y = at.p[1] + ux * sd * 1.05;
+      if (okPt(x, y) && okPt(x + .7, y) && okPt(x - .5, y + .5)) { T.land = { x, y, s, at: at.p }; lands.push(T.land); break; }
+    }
+  }
+  /* 3. the plots */
+  const sites = [];
+  const fits = (cx, cy, ux, uy, w, d, m) => {
+    for (let a = -.5; a <= .501; a += .25) for (let b = -.5; b <= .501; b += .25) {
+      const x = cx + ux * a * w - uy * b * d, y = cy + uy * a * w + ux * b * d;
+      if (!okPt(x, y) || trackDist(x, y) < .34 || lands.some(L => Math.hypot(x - L.x, y - L.y) < 1.25) || sites.some(q => outIn(q, x, y, m))) return false;
+    }
+    const me = { cx, cy, ux, uy, w, d };
+    return !sites.some(q => outIn(me, q.cx, q.cy, m) || outIn(me, ...outAt(q, q.w / 2, q.d / 2), m) || outIn(me, ...outAt(q, -q.w / 2, -q.d / 2), m) || outIn(me, ...outAt(q, q.w / 2, -q.d / 2), m) || outIn(me, ...outAt(q, -q.w / 2, q.d / 2), m));
+  };
+  const addSite = (cx, cy, ux, uy, w, d, side, scat) => {
+    const poly = [[-1, -1], [1, -1], [1, 1], [-1, 1]].map(([i, j]) => outAt({ cx, cy, ux, uy }, i * w / 2 + (R() - .5) * .3, j * d / 2 + (R() - .5) * .26));
+    sites.push({ cx, cy, ux, uy, w, d, poly, side, scat, r: Math.hypot(w, d) / 2, dist: Math.hypot(cx - 7.5, cy - 7.5), seed: Math.floor(R() * 1e6) });
+  };
+  for (const T of tracks) {
+    let s = .9 + R() * 1.1;
+    while (s < T.len - .6) {
+      const at = walkPath(T.P, s), dl = Math.hypot(...at.dir) || 1, ux = at.dir[0] / dl, uy = at.dir[1] / dl;
+      let step = 1.2;
+      for (const sd of R() < .5 ? [1, -1] : [-1, 1]) {
+        if (R() < .15) continue; /* open land here */
+        const w = 1.8 + R() * 1.3, d = 1.35 + R() * 1.05, off = d / 2 + .4 + R() * .35, tw = (R() - .5) * .22;
+        const vx = ux * Math.cos(tw) - uy * Math.sin(tw), vy = ux * Math.sin(tw) + uy * Math.cos(tw);
+        const cx = at.p[0] - uy * sd * off, cy = at.p[1] + ux * sd * off;
+        if (fits(cx, cy, vx, vy, w, d, .2)) { addSite(cx, cy, vx, vy, w, d, T.side, false); step = Math.max(step, w * .8); }
+      }
+      s += step + .3 + R() * .9;
+    }
+  }
+  /* plots lying back from the tracks, in loose clusters round a few track points */
+  for (const T of tracks) for (let n = 0; n < 26; n++) {
+    const at = walkPath(T.P, R() * T.len), ang = R() * Math.PI * 2, dist = 2.6 + R() * 3.4, cx = at.p[0] + Math.cos(ang) * dist, cy = at.p[1] + Math.sin(ang) * dist;
+    const dl = Math.hypot(...at.dir) || 1, tw = (R() - .5) * .7, ux0 = at.dir[0] / dl, uy0 = at.dir[1] / dl;
+    const ux = ux0 * Math.cos(tw) - uy0 * Math.sin(tw), uy = ux0 * Math.sin(tw) + uy0 * Math.cos(tw), w = 1.6 + R() * 1.5, d = 1.3 + R() * 1.1;
+    if (fits(cx, cy, ux, uy, w, d, .3 + R() * .5)) addSite(cx, cy, ux, uy, w, d, T.side, true);
+  }
+  /* enough for every field and the decor: a few more, farther back, until there are */
+  const need = OUT_MAX + (OUT_DECOR[reg] || OUT_DECOR.cap).length + 3;
+  for (let n = 0; sites.length < need && n < 900; n++) {
+    const T = tracks[n % tracks.length], at = walkPath(T.P, R() * T.len), ang = R() * Math.PI * 2, dist = 2.2 + R() * (3 + n / 60), cx = at.p[0] + Math.cos(ang) * dist, cy = at.p[1] + Math.sin(ang) * dist;
+    const dl = Math.hypot(...at.dir) || 1, tw = (R() - .5) * .7, ux0 = at.dir[0] / dl, uy0 = at.dir[1] / dl;
+    const ux = ux0 * Math.cos(tw) - uy0 * Math.sin(tw), uy = ux0 * Math.sin(tw) + uy0 * Math.cos(tw), w = 1.7 + R() * 1.2, d = 1.35 + R() * .9;
+    if (fits(cx, cy, ux, uy, w, d, .25 + R() * .3)) addSite(cx, cy, ux, uy, w, d, T.side, true);
+  }
+  /* 4. hand them out: fields take the nearest track-side plots, decor prefers plots back from the tracks (big decor, big plots) */
+  sites.forEach(c => { c.key = c.dist + R() * 2.2; });
+  const free = sites.slice(), decor = [], fields = [], kinds = (OUT_DECOR[reg] || OUT_DECOR.cap).slice();
+  const pick = (side, forDecor, kind) => {
+    let best = null, bk = 1e9;
+    for (const c of free) { if (c.side !== side) continue; let k = c.key + (c.scat === forDecor ? 0 : 1.6); if (kind && OUT_BIG.includes(kind)) k += Math.max(0, 2.3 - c.w) * 2 + Math.max(0, 1.8 - c.d) * 2; if (k < bk) { bk = k; best = c; } }
+    if (best) free.splice(free.indexOf(best), 1);
+    return best;
+  };
+  for (let i = 0; free.length && (fields.length < OUT_MAX || kinds.length) && i < 400; i++) {
+    const side = i % 2 ? 1 : -1, wantDecor = kinds.length > 0 && (Math.floor(i / 2) % 2 === 1 || fields.length >= OUT_MAX);
+    const c = pick(side, wantDecor, wantDecor ? kinds[0] : null); if (!c) continue;
+    if (wantDecor) { c.k = kinds.shift(); decor.push(c); } else fields.push(c);
+  }
+  /* fields in the order they open: nearest first */
+  fields.sort((a, b) => a.key - b.key);
+  /* 5. the crews: one per track that has a landing spot, near tracks first */
+  const crews = tracks.filter(T => T.land).sort((a, b) => Math.hypot(a.P[0][0] - 7.5, a.P[0][1] - 7.5) - Math.hypot(b.P[0][0] - 7.5, b.P[0][1] - 7.5))
+    .map(T => { const path = []; let s = 0; path.push(T.P[0]); for (let i = 1; i < T.P.length; i++) { s += Math.hypot(T.P[i][0] - T.P[i - 1][0], T.P[i][1] - T.P[i - 1][1]); if (s >= T.land.s) break; path.push(T.P[i]); } path.push(T.land.at);
+      return { path, len: outLen(path), spot: [T.land.x, T.land.y], dir: [T.land.x - T.land.at[0], T.land.y - T.land.at[1]] }; });
+  /* alternate the sides so the second crew works the other flank */
+  const cl = crews.filter(k => k.path[0][1] - k.path[0][0] > 0), cr = crews.filter(k => k.path[0][1] - k.path[0][0] <= 0), crewsAlt = [];
+  while (cl.length || cr.length) { if (cl.length) crewsAlt.push(cl.shift()); if (cr.length) crewsAlt.push(cr.shift()); }
+  /* 6. an ATV loop and a riders' loop: a wobbly ring round a decor plot deep in a flank */
   const loops = [];
-  for (const [k, w, d] of [['dovecote', 4.2, 3.6], ['mesa', 4.4, 3.8], ['pasture', 3.6, 3.2], ['palms', 3.8, 3.2], ['orchard', 3.8, 3.2], ['scrub', 3.8, 3.2], ['cane', 3.8, 3.2]]) {
-    for (const c of decor.filter(q => q.k === k)) { const P = loopAt(c, w, d); if (P && !loops.some(l => l.c === c)) { loops.push({ c, P, len: P.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - P[i][0], p[1] - P[i][1]), 0) }); break; } }
+  for (const k of ['dovecote', 'mesa', 'pasture', 'palms', 'orchard', 'scrub', 'cane', 'farm']) {
+    for (const c of decor.filter(q => q.k === k)) {
+      if (loops.some(l => l.c === c)) continue;
+      let got = null;
+      for (const extra of [.75, 1.1, 1.45]) {
+        const ph = R() * 6, rr = c.r + extra, P = [];
+        for (let i = 0; i <= 32; i++) { const th = i / 32 * Math.PI * 2; const q = 1 + .1 * Math.sin(2 * th + ph) + .05 * Math.sin(3 * th + ph * 2); P.push([c.cx + Math.cos(th) * rr * q, c.cy + Math.sin(th) * rr * q * .86]); }
+        P[32] = P[0];
+        if (P.every(p => okPt(...p) && !sites.some(q => q !== c && outIn(q, p[0], p[1], .12)) && !lands.some(L => Math.hypot(p[0] - L.x, p[1] - L.y) < 1.1))) { got = P; break; }
+      }
+      if (got) { loops.push({ c, P: got, len: outLen(got) }); break; }
+    }
     if (loops.length >= 2) break;
   }
-  return (OUTL = { reg, cells, decor, fields, land, crews, loops, ground: null });
+  /* 7. a few trees along the tracks, in ones and twos */
+  const trees = [];
+  for (const T of tracks) for (let s = 1.4; s < T.len; s += .8 + R() * 2.4) {
+    if (R() < .4) continue;
+    const at = walkPath(T.P, s), dl = Math.hypot(...at.dir) || 1, ux = at.dir[0] / dl, uy = at.dir[1] / dl, sd = R() < .5 ? 1 : -1, off = .5 + R() * .25;
+    const x = at.p[0] - uy * sd * off, y = at.p[1] + ux * sd * off, k = .8 + R() * .4, kind = R() < .3 ? 1 : 0;
+    if (okPt(x, y) && !sites.some(q => outIn(q, x, y, .12)) && !lands.some(l => Math.hypot(l.x - x, l.y - y) < 1.4) && !loops.some(l => l.P.some(p => Math.hypot(p[0] - x, p[1] - y) < .4))) trees.push([x, y, k, kind]);
+  }
+  return (OUTL = { reg, sites, tracks, decor, fields, crews: crewsAlt, loops, lands, trees, ground: null });
 }
-/* the outer landmarks (fairy chimneys, buttes, trees…) keep clear of every cell the outskirts may use */
+/* the outer landmarks (fairy chimneys, buttes, trees…) keep clear of every plot, track and loop the outskirts use */
 function outBusy(gx, gy) {
   const L = outLayout();
-  return L.decor.concat(L.fields, L.land).some(c => gx > c.x - .9 && gx < c.x + OUT_CELL[0] + .9 && gy > c.y - .9 && gy < c.y + OUT_CELL[1] + 1.4) ||
-    L.crews.some(k => k.path.slice(1).some((p, i) => { const a = k.path[i]; return gx > Math.min(a[0], p[0]) - .6 && gx < Math.max(a[0], p[0]) + .6 && gy > Math.min(a[1], p[1]) - .6 && gy < Math.max(a[1], p[1]) + .6; })) ||
-    L.loops.some(l => gx > l.P[0][0] - .7 && gx < l.P[2][0] + .7 && gy > l.P[0][1] - .7 && gy < l.P[2][1] + .7);
+  return L.sites.some(c => outIn(c, gx, gy, .9)) ||
+    L.tracks.some(T => T.P.some(p => Math.abs(p[0] - gx) < .8 && Math.abs(p[1] - gy) < .8)) ||
+    L.lands.some(l => Math.hypot(l.x - gx, l.y - gy) < 1.8) ||
+    L.loops.some(l => Math.hypot(l.c.cx - gx, l.c.cy - gy) < l.c.r + 2.4);
 }
 /* ---- the ground, built once into a path per colour ---- */
 function outGround() {
-  const L = outLayout(), nf = outFieldsN(), nc = outCrewsN(nf), key = [nf, nc, !!S.winter, !!S.fiesta].join(':');
+  const L = outLayout(), nf = outFieldsN(), key = [nf, !!S.winter, !!S.fiesta].join(':');
   if (L.ground && L.ground.key === key) return L.ground;
   const G = new Map(), Sk = new Map(), win = c => S.winter ? mix(c, '#f4f6fa', .62) : c;
   const P = (fill) => { const c = win(fill); if (!G.has(c)) G.set(c, new Path2D()); return G.get(c); };
   const St = (col, lw, dash) => { const k = win(col) + '|' + lw + '|' + (dash || ''); if (!Sk.has(k)) Sk.set(k, { col: win(col), lw, dash, p: new Path2D() }); return Sk.get(k).p; };
-  const quad = (path, x, y, w, d) => { const a = tiso(x, y), b = tiso(x + w, y), c = tiso(x + w, y + d), e = tiso(x, y + d); path.moveTo(...a); path.lineTo(...b); path.lineTo(...c); path.lineTo(...e); path.closePath(); };
   const line = (path, p, q) => { path.moveTo(...tiso(...p)); path.lineTo(...tiso(...q)); };
+  const poly = (path, pts) => { pts.forEach((p, i) => { const q = tiso(...p); i ? path.lineTo(...q) : path.moveTo(...q); }); };
   const blob = (path, x, y, rx, ry) => { const p = tiso(x, y); path.moveTo(p[0] + rx, p[1]); path.ellipse(p[0], p[1], rx, ry, 0, 0, 7); };
-  const reg = S.region, look = OUTER_LOOK[reg] || OUTER_LOOK.cap, [W, D] = OUT_CELL;
-  /* dirt tracks first, everything else sits on them */
-  for (const k of L.crews.slice(0, nc)) for (let i = 1; i < k.path.length; i++) { line(St(look.road, 22), k.path[i - 1], k.path[i]); line(St('rgba(120,80,40,.18)', 3, '10,12'), k.path[i - 1], k.path[i]); }
-  for (const l of L.loops) for (let i = 1; i < l.P.length; i++) line(St(look.road, 14), l.P[i - 1], l.P[i]);
+  /* a plot's outline with its corners rounded off; k shrinks it toward its middle */
+  const rpoly = (path, c, k = 1, rk = .24) => { const pts = c.poly.map(p => tiso(c.cx + (p[0] - c.cx) * k, c.cy + (p[1] - c.cy) * k)), n = pts.length;
+    for (let i = 0; i < n; i++) { const p = pts[i], a = lp(p, pts[(i + n - 1) % n], rk), b = lp(p, pts[(i + 1) % n], rk); i ? path.lineTo(...a) : path.moveTo(...a); path.quadraticCurveTo(p[0], p[1], ...b); } path.closePath(); };
+  /* rows along the plot's long axis */
+  const rows = (path, c, n, inset = .14) => { for (let r = 0; r < n; r++) { const b = -c.d / 2 + inset + (r + .5) * (c.d - inset * 2) / n; line(path, outAt(c, -c.w / 2 + inset, b), outAt(c, c.w / 2 - inset, b)); } };
+  const reg = S.region, look = OUTER_LOOK[reg] || OUTER_LOOK.cap;
+  /* the farm tracks: a dusty verge, the track, a strip of weeds between the wheel ruts */
+  const tcol = reg === 'bri' ? '#b4b58e' : look.road; /* Bristol's lanes are grassy, not the grey road */
+  for (const T of L.tracks) { poly(St(mix(tcol, reg === 'bri' ? '#8ab85a' : '#ffffff', .25), 24), T.P); poly(St(tcol, 14), T.P); poly(St(reg === 'bri' ? 'rgba(110,150,70,.55)' : 'rgba(150,140,90,.3)', 3), T.P); }
+  for (const l of L.loops) poly(St(mix(tcol, reg === 'bri' ? '#8ab85a' : '#9a7a5a', reg === 'bri' ? .3 : .12), 7), l.P); /* the riders' and the ATVs' trail, a fainter path */
+  const fieldCol = reg === 'bri' ? '#97c266' : reg === 'lux' ? '#a2bd68' : reg === 'abq' ? '#b4b673' : '#b2b671';
   L.fields.forEach((c, i) => {
-    if (i < nf) { /* a mown launch field, stripes and a pale border */
-      const x = c.x + .1, y = c.y + .1, w = W - .2, d = D - .2;
-      quad(P(reg === 'bri' ? '#93c162' : reg === 'lux' ? '#9cbc62' : '#a9b468'), x, y, w, d);
-      for (let s = 0; s < 6; s += 2) quad(P(reg === 'bri' ? '#a4cc72' : '#b8c47a'), x + s * w / 6, y, w / 6, d);
-      line(St('rgba(255,250,235,.55)', 2), [x, y + d], [x + w, y + d]); line(St('rgba(255,250,235,.55)', 2), [x + w, y], [x + w, y + d]);
-    } else if (i === 0) { quad(P(look.road), c.x + .5, c.y + .4, 1.4, 1.1); } /* the chase crew's yard before the first field */
+    if (i >= nf) return;
+    /* a mown meadow (each a slightly different green), mowing stripes along it, a worn patch where the envelopes are laid out */
+    const fc = mix(fieldCol, look.road, [0, .14, .26][c.seed % 3]);
+    rpoly(P(fc), c, 1, .32); rpoly(P(mix(fc, look.road, .45)), c, .5, .5);
+    rows(St('rgba(255,250,225,.16)', 5), c, 3, .3);
   });
+  const SR = c => mulberry32(c.seed);
   for (const c of L.decor) {
-    const { x, y } = c;
     switch (c.k) {
-      case 'vine': quad(P(reg === 'cap' ? '#d9bb8c' : '#cdb07a'), x, y, W, D); for (let r = 0; r <= 7; r++) line(St('#6f8a3a', 4, '6,4'), [x + .1, y + .1 + r * (D - .2) / 7], [x + W - .1, y + .1 + r * (D - .2) / 7]); break;
-      case 'orchard': quad(P(reg === 'cap' ? '#c8bf84' : '#b9c07a'), x, y, W, D); break;
-      case 'crops': case 'cane': quad(P(c.k === 'cane' ? '#8fae58' : reg === 'bri' ? '#c8c070' : '#9cc066'), x, y, W, D); for (let r = 1; r < 9; r++) line(St('rgba(60,100,40,.3)', 1.5), [x + r * W / 9, y], [x + r * W / 9, y + D]); break;
-      case 'pasture': quad(P('#9ccb6a'), x - .2, y - .2, W + .4, D + .4); { const p = St('#b8ad94', 6); line(p, [x - .2, y - .2], [x + W + .2, y - .2]); line(p, [x + W + .2, y - .2], [x + W + .2, y + D + .2]); line(p, [x + W + .2, y + D + .2], [x - .2, y + D + .2]); line(p, [x - .2, y + D + .2], [x - .2, y - .2]); const q = St('#8a7f68', 2, '3,5'); line(q, [x - .2, y + D + .2], [x + W + .2, y + D + .2]); line(q, [x + W + .2, y - .2], [x + W + .2, y + D + .2]); } break;
-      case 'scrub': { const Rr = mulberry32(Math.round(x * 13 + y * 7)); for (let i = 0; i < 26; i++) blob(P(Rr() < .5 ? '#8a9a6a' : '#a0a878'), x + Rr() * W, y + Rr() * D, 5 + Rr() * 5, 3 + Rr() * 2); break; }
-      case 'rv': quad(P('#d8c4a4'), x, y, W, D); for (let r = 0; r < 3; r++) line(St('rgba(110,80,50,.25)', 1.5), [x + .2, y + .55 + r * .6], [x + W - .2, y + .55 + r * .6]); break;
-      case 'farm': quad(P(reg === 'bri' ? '#a8cc78' : look.road), x + .3, y + .3, 1.6, 1.3); break;
-      case 'palms': blob(P(reg === 'lux' ? '#a8bc72' : '#b8b07a'), x + W / 2, y + D / 2, 120, 50); break;
-      case 'rival': { const xx = x + .1, yy = y + .1; quad(P(look.field), xx, yy, W - .2, D - .2); quad(P('rgba(255,255,255,.12)'), xx + .2, yy + .2, W - .6, D - .6); break; }
-      case 'view': blob(P(reg === 'bri' ? '#86b45e' : reg === 'abq' ? '#c88a62' : '#d6aa82'), x + W / 2, y + D / 2, 150, 66); break;
+      case 'vine': rpoly(P(reg === 'cap' ? '#dcbf90' : '#cdb07a'), c); rows(St('#6f8a3a', 4, '6,4'), c, Math.max(5, Math.round(c.d / .26))); break;
+      case 'orchard': rpoly(P(reg === 'cap' ? '#cdc28a' : '#bcc27e'), c); break;
+      case 'crops': case 'cane': rpoly(P(c.k === 'cane' ? '#93b05c' : reg === 'bri' ? '#cbc276' : '#a0c06a'), c); rows(St('rgba(60,100,40,.3)', 1.5), c, Math.max(6, Math.round(c.d / .2)), .08); break;
+      case 'pasture': rpoly(P('#9fcb6c'), c, 1.06, .1); { const pts = c.poly.map(p => [c.cx + (p[0] - c.cx) * 1.06, c.cy + (p[1] - c.cy) * 1.06]); pts.push(pts[0]); poly(St('#b8ad94', 6), pts); poly(St('#8a7f68', 2, '3,5'), pts); } break;
+      case 'scrub': { const Rr = SR(c); for (let i = 0; i < 24; i++) { const p = outAt(c, (Rr() - .5) * c.w, (Rr() - .5) * c.d); blob(P(Rr() < .5 ? '#8f9c6c' : '#a3a97a'), p[0], p[1], 5 + Rr() * 6, 3 + Rr() * 2); } break; }
+      case 'rv': rpoly(P('#d8c4a4'), c, .9); rows(St('rgba(110,80,50,.22)', 1.5), c, 3, .3); break;
+      case 'farm': rpoly(P(reg === 'bri' ? '#a8cc78' : mix(look.road, '#ffffff', .1)), c, .62, .4); break;
+      case 'palms': blob(P(reg === 'lux' ? '#a8bc72' : '#b8b07a'), c.cx, c.cy, (c.w + c.d) * 26, (c.w + c.d) * 11); break;
+      case 'rival': rpoly(P(mix(look.field, '#d8c8a0', .2)), c); rpoly(P(mix(look.field, look.road, .5)), c, .45, .5); break;
+      case 'view': break; /* the knoll draws its own ground */
+      case 'mesa': break;
     }
   }
   return (L.ground = { key, G, Sk });
 }
 function outskirtsGround() {
   const g = outGround();
+  ctx.lineJoin = 'round';
   for (const [c, p] of g.G) { ctx.fillStyle = c; ctx.fill(p); }
   for (const s of g.Sk.values()) { ctx.strokeStyle = s.col; ctx.lineWidth = s.lw; ctx.lineCap = 'round'; ctx.setLineDash(s.dash ? s.dash.split(',').map(Number) : []); ctx.stroke(s.p); }
-  ctx.setLineDash([]); ctx.lineCap = 'butt';
+  ctx.setLineDash([]); ctx.lineCap = 'butt'; ctx.lineJoin = 'miter';
 }
 /* ---- little things that live out there ---- */
-/* things drawn many times the same way are drawn once into a small image: a standing balloon, a laid-out envelope, an orchard tree */
+/* things drawn many times the same way are drawn once into a small image: a standing balloon, an orchard tree */
 const OUT_SPR = new Map();
 function outSprite(key, w, hh, ax, ay, fn) {
   let s = OUT_SPR.get(key);
@@ -11356,46 +11491,64 @@ function outSprite(key, w, hh, ax, ay, fn) {
 }
 function outBlit(s, x, y, sc = 1, a = 1) { if (a < 1) { ctx.save(); ctx.globalAlpha *= a; } ctx.drawImage(s.c, x - s.ax * sc, y - s.ay * sc, s.w * sc, s.hh * sc); if (a < 1) ctx.restore(); }
 function outBalloon(x, y, k, c1, c2, burn, a, d) { outBlit(outSprite(`b:${c1}:${c2}:${d ? d.id : ''}:${burn ? 1 : 0}`, 90, 120, 45, 112, (ax, ay) => balloon(ax, ay, 30, c1, c2, burn, 1, null, d)), x, y, k, a); }
-function outEnvelope(gx, gy, k, c1, c2) { if (k < .999) return lyingEnvelope(gx, gy, k, c1, c2); const p = tiso(gx, gy); outBlit(outSprite(`e:${c1}:${c2}`, 100, 50, 50, 25, (ax, ay) => { lyingEnvelopeAt(ax, ay, 1, c1, c2); }), p[0], p[1]); }
-function outTree(x, y, cap) { outBlit(outSprite(`t:${cap ? 1 : 0}`, 40, 50, 20, 46, (ax, ay) => { roundTree(ax, ay, .55, '#7a9a44'); if (cap) for (let k = 0; k < 4; k++) ell(ax - 5 + (k * 7) % 11, ay - 17 - (k * 5) % 9, 1.8, 1.8, '#f0a040'); }), x, y); }
+function outTree(x, y, cap, s = 1) { outBlit(outSprite(`t:${cap ? 1 : 0}`, 40, 50, 20, 46, (ax, ay) => { roundTree(ax, ay, .55, '#7a9a44'); if (cap) for (let k = 0; k < 4; k++) ell(ax - 5 + (k * 7) % 11, ay - 17 - (k * 5) % 9, 1.8, 1.8, '#f0a040'); }), x, y, s); }
 /* a vehicle as three flat faces: along gx (alongX) or along gy */
 function vbox(gx, gy, w, d, h, lit, shade, top, lift = 0) {
   const { A, B, C, D } = corners(gx, gy, w, d), u = p => [p[0], p[1] - lift];
   tpoly([u(D), u(C), upp(u(C), h), upp(u(D), h)], lit); tpoly([u(C), u(B), upp(u(B), h), upp(u(C), h)], shade); tpoly([upp(u(A), h), upp(u(B), h), upp(u(C), h), upp(u(D), h)], top);
   return { A: u(A), B: u(B), C: u(C), D: u(D), h };
 }
-/* the chase van: white, a stripe in your colours, a trailer behind with the basket when it's loaded */
+/* the chase van: white, a stripe in your colours, a roof rack, a trailer behind with the basket when it's loaded.
+   v135.1: a third bigger with a soft outline, so it reads when you drag out to the flanks */
 function chaseVan(gx, gy, dir, loaded, t, moving) {
   const ax = Math.abs(dir[0]) > Math.abs(dir[1]), sg = ax ? Math.sign(dir[0]) || 1 : Math.sign(dir[1]) || 1, c = myCol()[0];
-  const bob = moving ? Math.sin(t * 18) * .5 : 0, vw = ax ? .62 : .32, vd = ax ? .32 : .62;
-  const tr = ax ? [gx - sg * .62, gy] : [gx, gy - sg * .62], tw = ax ? .4 : .3, td = ax ? .3 : .4;
+  const bob = moving ? Math.sin(t * 18) * .6 : 0, vw = ax ? .84 : .42, vd = ax ? .42 : .84, H = 24;
+  const tr = ax ? [gx - sg * .84, gy] : [gx, gy - sg * .84], tw = ax ? .54 : .4, td = ax ? .4 : .54;
+  const edge = f => { ctx.strokeStyle = 'rgba(50,40,40,.35)'; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(...f.D); ctx.lineTo(...f.C); ctx.lineTo(...f.B); ctx.lineTo(...upp(f.B, f.h)); ctx.lineTo(...upp(f.A, f.h)); ctx.lineTo(...upp(f.D, f.h)); ctx.closePath(); ctx.stroke(); };
   const draw = [];
-  draw.push([tr[0] + tr[1], () => { const p = tiso(...tr); blobShadow(p[0] + 6, p[1] + 3, 16, 6, .16); const f = vbox(tr[0] - tw / 2, tr[1] - td / 2, tw, td, 6, '#7a7068', '#5a524c', '#8a8078', 4);
-    if (loaded) { const q = tiso(...tr); vbox(tr[0] - .12, tr[1] - .12, .24, .24, 10, '#a8763e', '#7a522a', '#c08a50', 10); ell(q[0], q[1] - 24, 9, 5, c); } for (const p of [f.D, f.C]) ell(p[0] + (ax ? 0 : 0), p[1] + 1, 2.6, 2.6, '#2a1e18'); }]);
-  draw.push([gx + gy, () => { const p = tiso(gx, gy); blobShadow(p[0] + 8, p[1] + 4, 22, 8, .18);
-    for (const [u, v] of [[.2, 0], [.8, 0]]) { const q = tiso(gx + (ax ? (u - .5) * vw : -vw / 2 + v), gy + (ax ? vd / 2 : (u - .5) * vd)); ell(q[0], q[1] - 2, 3.2, 3, '#2a1e18'); }
-    const f = vbox(gx - vw / 2, gy - vd / 2, vw, vd, 18, '#fbfaf6', '#d6d4ce', '#eeece6', 4 + bob);
-    for (const [p, q] of [[f.D, f.C], [f.C, f.B]]) { const a = upp(p, 4 + bob + 8), b = upp(q, 4 + bob + 8); tpoly([a, b, [b[0], b[1] - 3], [a[0], a[1] - 3]], c); }
+  draw.push([tr[0] + tr[1], () => { const p = tiso(...tr); blobShadow(p[0] + 8, p[1] + 4, 21, 8, .18); const f = vbox(tr[0] - tw / 2, tr[1] - td / 2, tw, td, 7, '#7a7068', '#5a524c', '#8a8078', 5); edge(f);
+    if (loaded) { const q = tiso(...tr); vbox(tr[0] - .15, tr[1] - .15, .3, .3, 13, '#a8763e', '#7a522a', '#c08a50', 12); ell(q[0], q[1] - 30, 12, 6.5, mix(c, '#ffffff', .15)); ell(q[0] - 3, q[1] - 32, 5, 2.5, 'rgba(255,255,255,.35)'); }
+    for (const p of [f.D, f.C]) ell(p[0], p[1] + 1, 3.4, 3.4, '#2a1e18'); }]);
+  draw.push([gx + gy, () => { const p = tiso(gx, gy); blobShadow(p[0] + 10, p[1] + 5, 30, 10, .2);
+    for (const u of [.2, .8]) { const q = tiso(gx + (ax ? (u - .5) * vw : -vw / 2), gy + (ax ? vd / 2 : (u - .5) * vd)); ell(q[0], q[1] - 2.5, 4.2, 4, '#2a1e18'); ell(q[0], q[1] - 2.5, 1.6, 1.5, '#9a948a'); }
+    const f = vbox(gx - vw / 2, gy - vd / 2, vw, vd, H, '#fbfaf6', '#d6d4ce', '#eeece6', 5 + bob); edge(f);
+    for (const [a0, b0] of [[f.D, f.C], [f.C, f.B]]) { const a = upp(a0, 5 + bob + 9), b = upp(b0, 5 + bob + 9); tpoly([a, b, [b[0], b[1] - 4], [a[0], a[1] - 4]], c); }
     const fr = ax ? (sg > 0 ? [f.C, f.B] : null) : (sg > 0 ? [f.D, f.C] : null); /* the windscreen on the face toward the camera when it drives toward it */
-    if (fr) { const a = upp(lp(fr[0], fr[1], .1), 4 + bob + 13), b = upp(lp(fr[0], fr[1], .9), 4 + bob + 13); tpoly([a, b, [b[0], b[1] - 7], [a[0], a[1] - 7]], '#5a7a96'); }
-    else { const s = ax ? [f.D, f.C] : [f.C, f.B]; for (const k of [.22, .55]) { const a = upp(lp(s[0], s[1], k), 4 + bob + 13), b = upp(lp(s[0], s[1], k + .22), 4 + bob + 13); tpoly([a, b, [b[0], b[1] - 6], [a[0], a[1] - 6]], '#6a8aa6'); } }
+    if (fr) { const a = upp(lp(fr[0], fr[1], .1), 5 + bob + 16), b = upp(lp(fr[0], fr[1], .9), 5 + bob + 16); tpoly([a, b, [b[0], b[1] - 8], [a[0], a[1] - 8]], '#5a7a96'); }
+    else { const s = ax ? [f.D, f.C] : [f.C, f.B]; for (const k of [.12, .4, .68]) { const a = upp(lp(s[0], s[1], k), 5 + bob + 16), b = upp(lp(s[0], s[1], k + .2), 5 + bob + 16); tpoly([a, b, [b[0], b[1] - 7], [a[0], a[1] - 7]], '#6a8aa6'); } }
+    /* a roof rack */
+    const r0 = lp(upp(f.A, H), upp(f.C, H), .25), r1 = lp(upp(f.A, H), upp(f.C, H), .75); ctx.strokeStyle = '#8a8680'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(r0[0], r0[1] - 3); ctx.lineTo(r1[0], r1[1] - 3); ctx.stroke();
   }]);
   return draw;
 }
-/* an envelope lying on the ground, deflating: k 1 full and puffy, 0 flat and packed away */
-function lyingEnvelope(gx, gy, k, c1, c2) { const p = tiso(gx, gy); lyingEnvelopeAt(p[0], p[1], k, c1, c2); }
-function lyingEnvelopeAt(px, py, k, c1, c2) {
-  if (k <= .02) return;
-  const p = [px, py]; ctx.save(); ctx.translate(p[0], p[1]); ctx.transform(TW / 2, TH / 2, -TW / 2, TH / 2, 0, 0);
-  const len = .3 + .18 * Math.min(1, k * 1.4), wid = .11 * (.3 + .7 * k);
-  ctx.beginPath(); ctx.ellipse(0, 0, len, wid, 0, 0, 7); ctx.fillStyle = c1; ctx.fill(); ctx.save(); ctx.clip();
-  ctx.fillStyle = c2; for (let i = -4; i < 4; i += 2) ctx.fillRect(i * len / 4, -wid, len / 4, wid * 2);
-  ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(-len, -wid, len * 2, wid * .5); ctx.fillStyle = 'rgba(40,20,40,.18)'; ctx.fillRect(-len, wid * .35, len * 2, wid);
-  ctx.restore(); ctx.restore();
-  const bq = [px + len * 1.05 * TW / 2, py + len * 1.05 * TH / 2]; ctx.fillStyle = '#8a5a30'; ctx.fillRect(bq[0] - 5, bq[1] - 9, 10, 8); ctx.fillStyle = '#6a4220'; ctx.fillRect(bq[0] + 1, bq[1] - 9, 4, 8);
+/* dust kicked up behind a vehicle on a dirt track: a few soft puffs, fading */
+function dustPuffs(path, s, back, t, n = 4) {
+  const tone = S.region === 'bri' ? '210,205,190' : S.region === 'abq' ? '225,180,140' : '232,206,166';
+  for (let k = 1; k <= n; k++) { const q = tiso(...walkPath(path, clamp(s + back * k * .3, 0, 1e9)).p), r = 4 + k * 3.2 + Math.sin(t * 3 + k) * .8;
+    ctx.fillStyle = `rgba(${tone},${(.4 - k * .08).toFixed(3)})`; ctx.beginPath(); ctx.ellipse(q[0] + k * 2, q[1] - 5 - k * 2.4, r, r * .7, 0, 0, 7); ctx.fill(); }
 }
-/* someone holding up a glass: the arm raised, a glint now and then */
-function toaster(x, y, col, t, ph) {
+/* an envelope lying on the ground: k 1 full and puffy, 0 flat and packed away. v135.1: turned with its field, the
+   colours softened toward the ground and only a few seams, so a laid-out envelope reads as cloth, not a stripe */
+function lyingEnvelope(gx, gy, k, c1, c2, ang = 0) { const p = tiso(gx, gy); lyingEnvelopeAt(p[0], p[1], k, c1, c2, ang); }
+function lyingEnvelopeAt(px, py, k, c1, c2, ang = 0) {
+  if (k <= .02) return;
+  const ground = S.region === 'bri' ? '#d8e4c8' : '#efe4d0', a = mix(c1, ground, .38), b = mix(c2, ground, .3);
+  ctx.save(); ctx.translate(px, py); ctx.transform(TW / 2, TH / 2, -TW / 2, TH / 2, 0, 0); ctx.rotate(ang);
+  const len = .3 + .14 * Math.min(1, k * 1.4), wid = .17 * (.3 + .7 * k);
+  ctx.fillStyle = 'rgba(90,45,20,.1)'; ctx.beginPath(); ctx.ellipse(.03, .03, len, wid * 1.1, 0, 0, 7); ctx.fill();
+  /* a teardrop: the round crown at -len, the mouth narrowing to the basket at +len */
+  ctx.beginPath(); ctx.moveTo(-len, 0); ctx.bezierCurveTo(-len, -wid * 1.3, len * .1, -wid * 1.05, len, -wid * .28); ctx.lineTo(len, wid * .28); ctx.bezierCurveTo(len * .1, wid * 1.05, -len, wid * 1.3, -len, 0); ctx.closePath();
+  ctx.fillStyle = a; ctx.fill(); ctx.save(); ctx.clip();
+  ctx.strokeStyle = b; ctx.lineWidth = .022; for (const u of [-.45, 0, .45]) { ctx.beginPath(); ctx.moveTo(-len, u * wid * .5); ctx.quadraticCurveTo(0, u * wid * 1.5, len, u * wid * .6); ctx.stroke(); }
+  ctx.fillStyle = 'rgba(255,255,255,.2)'; ctx.fillRect(-len, -wid, len * 2, wid * .45);
+  ctx.restore();
+  /* the basket on its side at the mouth */
+  ctx.fillStyle = '#8a5a30'; ctx.fillRect(len * .96, -.05, .09, .1); ctx.fillStyle = '#6a4220'; ctx.fillRect(len * .96 + .05, -.05, .04, .1);
+  ctx.restore();
+}
+/* someone holding up a glass: the arm raised, a glint now and then. v135.1: drawn a quarter bigger out on the flanks */
+function toaster(x, y, col, t, ph, s = 1) {
+  if (s !== 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); toaster(0, 0, col, t, ph); ctx.restore(); return; }
   person(x, y, col, 0, ph); const up = (Math.sin(t * 1.3 + ph) + 1) / 2;
   ctx.strokeStyle = col; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x + 2.5, y - 11); ctx.lineTo(x + 5, y - 15 - up * 5); ctx.stroke();
   ctx.fillStyle = '#fff2c0'; ctx.fillRect(x + 4, y - 19 - up * 5, 2.2, 3.4);
@@ -11433,6 +11586,59 @@ function farmHouse(gx, gy, t) {
   if (reg === 'cap' || reg === 'bri') gableRoof(gx, gy, .9, .7, 34, 14, '#b4623e'); else flatRoof(gx, gy, .9, .7, 34, reg === 'lux');
   const tp = tiso(gx + 1.25, gy + .3); if (reg === 'lux') palm(tp[0], tp[1], .8, t); else if (reg === 'bri') oakTree(tp[0], tp[1], .9); else roundTree(tp[0], tp[1], .9, reg === 'abq' ? '#9aa84a' : '#7aa04a');
 }
+/* v135.1: a mesa of layered sandstone: a scree apron, cliffs banded in red, cream and rust strata, cut by gullies,
+   a pale caprock with a dark lip, the shaded side turned right, and a lone eroded spire beside it. w and h in pixels. */
+function mesaRock(x, y, w, h, seed, spire = true, lit = '#cf7a4c', shade = '#8e4a2c') {
+  const R = mulberry32(seed), cap = mix(lit, '#f4d0a8', .45), N = 8;
+  const rx = w * .44, ry = w * .21, jit = [], an = [];
+  for (let i = 0; i < N; i++) { jit.push(.78 + R() * .26); an.push((i + (R() - .5) * .5) / N * Math.PI * 2); }
+  /* eroded outline: one bay bitten deep out of the rim */
+  jit[Math.floor(R() * N)] *= .78;
+  const ring = (k, dy) => jit.map((j, i) => [x + Math.cos(an[i]) * rx * j * k, y - dy + Math.sin(an[i]) * ry * j * k]);
+  const top = ring(1, h), mid = ring(1.07, h * .3), base = ring(1.38, 0);
+  if (spire) mesaRock(x + w * .44, y - h * .1, w * .15, h * .82, seed + 7, false, lit, shade);
+  /* faces of the front half: the cliff above, the scree slope below; lit to the left, shaded to the right */
+  const bands = [[.14, .22, 'rgba(255,232,196,.2)'], [.34, .4, 'rgba(110,40,20,.16)'], [.52, .62, 'rgba(255,222,180,.16)'], [.76, .82, 'rgba(110,40,20,.14)']];
+  const order = [...Array(N).keys()].sort((p, q) => Math.sin(an[p]) - Math.sin(an[q]));
+  for (const i of order) {
+    const i2 = (i + 1) % N, a1 = i2 ? an[i2] : an[0] + Math.PI * 2, am = (an[i] + a1) / 2;
+    if (Math.sin(am) < -.1) continue;
+    const k = clamp((Math.cos(am) + 1) / 2, 0, 1), col = mix(lit, shade, k * k * (3 - 2 * k));
+    tpoly([mid[i], mid[i2], base[i2], base[i]], mix(col, '#e2b088', .42)); /* scree */
+    tpoly([top[i], top[i2], mid[i2], mid[i]], col);
+    for (const [f0, f1, c] of bands) tpoly([lp(top[i], mid[i], f0), lp(top[i2], mid[i2], f0), lp(top[i2], mid[i2], f1), lp(top[i], mid[i], f1)], c);
+    tpoly([top[i], top[i2], lp(top[i2], mid[i2], .08), lp(top[i], mid[i], .08)], 'rgba(60,20,10,.22)'); /* under the caprock's lip */
+    if (R() < .8) { const u = .2 + R() * .6, p0 = lp(top[i], top[i2], u), p1 = lp(mid[i], mid[i2], u + (R() - .5) * .2); ctx.strokeStyle = 'rgba(70,25,12,.26)'; ctx.lineWidth = 1.2; ctx.beginPath(); ctx.moveTo(...p0); ctx.lineTo(...lp(p0, p1, .6 + R() * .4)); ctx.stroke(); }
+  }
+  /* the caprock: a flat top, a little darker toward the shaded side, its sunny rim catching the light */
+  tpoly(top, cap); tpoly([top[0], top[1], top[2], [x + rx * .1, y - h]], 'rgba(150,70,40,.12)');
+  ctx.strokeStyle = 'rgba(255,238,210,.5)'; ctx.lineWidth = 1.6; ctx.beginPath(); let first = true;
+  for (const i of [...Array(N).keys()]) { const am = an[i]; if (Math.cos(am) < .2 && Math.sin(am) > -.2) { first ? ctx.moveTo(...top[i]) : ctx.lineTo(...top[i]); first = false; } } ctx.stroke();
+  /* boulders fallen into the scree */
+  for (let i = 0; i < 6; i++) { const a = Math.PI * (.1 + R() * .8), bx = x + Math.cos(a) * rx * 1.3, by = y - 2 + Math.sin(a) * ry * 1.25, r = 1.8 + R() * 2.6; ell(bx, by - r * .5, r * 1.3, r, i % 2 ? mix(lit, '#e2b088', .3) : shade); }
+}
+/* v135.1: the sunrise knoll: a low grassy rise with an uneven crest, a worn path up and rocks, the crowd on top */
+function viewKnoll(c, t) {
+  const reg = S.region, p = tiso(c.cx, c.cy), rx = (c.w + c.d) * 30, ry = rx * .36, hh = 16 + c.w * 4;
+  const hc = reg === 'bri' ? ['#6e9a4a', '#8cbc60', '#9cca6c'] : reg === 'abq' ? ['#a8643e', '#cc8e64', '#d89c70'] : reg === 'lux' ? ['#b89a6a', '#d8bc8a', '#e4c898'] : ['#b88458', '#dcb088', '#e8c09a'];
+  const R = mulberry32(c.seed), wob = []; for (let i = 0; i < 14; i++) wob.push(.9 + R() * .14);
+  const ring = (k, lift) => wob.map((j, i) => { const a = i / 14 * Math.PI * 2; return [p[0] + Math.cos(a) * rx * k * j, p[1] - lift + Math.sin(a) * ry * k * j]; });
+  ell(p[0] + 12, p[1] + 8, rx * 1.05, ry * 1.1, 'rgba(90,45,20,.12)');
+  tpoly(ring(1, 0), hc[0]); tpoly(ring(.86, hh * .55), hc[1]); tpoly(ring(.62, hh), hc[2]);
+  ctx.strokeStyle = mix(hc[2], '#ffffff', .35); ctx.lineWidth = 3; ctx.setLineDash([5, 4]); ctx.beginPath(); ctx.moveTo(p[0] + rx * .9, p[1] + ry * .4); ctx.quadraticCurveTo(p[0] + rx * .45, p[1] + ry * .1 - hh * .5, p[0] + rx * .2, p[1] - hh); ctx.stroke(); ctx.setLineDash([]);
+  for (let i = 0; i < 6; i++) { const a = R() * Math.PI * 2, k = .5 + R() * .45, q = [p[0] + Math.cos(a) * rx * k, p[1] - hh * (1 - k) + Math.sin(a) * ry * k]; ell(q[0], q[1] - 2, 3 + R() * 3, 2 + R() * 1.6, mix(hc[0], '#5a4030', .4)); }
+  return { top: [p[0], p[1] - hh], rx, ry };
+}
+function outTrackTree(x, y, k, kind, t) {
+  const reg = S.region;
+  if (reg === 'lux') return palm(x, y, .55 * k, t + x * .01);
+  outBlit(outSprite(`tt:${reg}:${kind}`, 50, 80, 25, 76, (ax, ay) => {
+    if (reg === 'bri') oakTree(ax, ay, kind ? .55 : .7);
+    else if (reg === 'abq') roundTree(ax, ay, kind ? .5 : .62, kind ? '#6a8a48' : '#4f6e3a');
+    else if (kind) roundTree(ax, ay, .6, '#86a24c');
+    else { ctx.fillStyle = '#6a4a2a'; ctx.fillRect(ax - 1.2, ay - 12, 2.4, 12); const g = ctx.createLinearGradient(ax - 7, 0, ax + 7, 0); g.addColorStop(0, '#9cbc5a'); g.addColorStop(1, '#5e8a3a'); ctx.fillStyle = g; ctx.beginPath(); ctx.ellipse(ax, ay - 34, 6.5, 26, 0, 0, 7); ctx.fill(); } /* a poplar */
+  }), x, y, k);
+}
 /* ---- the scene items ---- */
 let OUT_VIEW = null; /* the screen size renderTown is drawing, for skipping things off screen */
 let OUT_DAWN = 0; /* when the valley's launch wave started (each morning's dawn) */
@@ -11442,76 +11648,91 @@ function outskirtsItems(t) {
   const x0 = -V.ox / V.z - 220, x1 = (vw - V.ox) / V.z + 220, y0 = -V.oy / V.z - 120, y1 = (vh - V.oy) / V.z + 720;
   const seen = (gx, gy) => { const p = tiso(gx, gy); return p[0] > x0 && p[0] < x1 && p[1] > y0 && p[1] < y1; };
   const add = (gx, gy, draw, shadow, dep) => { if (seen(gx, gy)) items.push({ at: [gx, gy], depth: dep != null ? dep : gx + gy, draw, shadow }); };
-  const my = myCol(), fleet = S.balloons, cols = i => { const b = fleet[(i * 7) % Math.max(1, fleet.length)], d = designOf(b); return d ? [d.cols[0], d.cols[1], d] : [my[0], my[1], null]; };
+  /* v135.1: your company's colours in a few variations, mixed with the fleet's own designs */
+  const my = myCol(), fleet = S.balloons, cols = i => { const b = fleet[(i * 7) % Math.max(1, fleet.length)], d = designOf(b); if (d) return [d.cols[0], d.cols[1], d];
+    const v = i % 4; return v === 0 ? [my[0], my[1], null] : v === 1 ? [my[1], my[0], null] : v === 2 ? [my[0], '#fbf6ec', null] : [mix(my[0], '#ffffff', .3), my[1], null]; };
+  const ang = c => Math.atan2(c.uy, c.ux); /* the plot's long axis in the envelope's own (gx, gy) frame */
   let nb = 0;
-  /* your fields: three envelopes laid out at dawn, inflating in a wave, standing, lifting off and rising into the sky;
-     then a fresh one is laid out and the cycle goes on through the morning */
+  /* your fields: the ones in use this morning lay out two or three envelopes one by one from dawn, inflate them, stand
+     them up and send them up into the sky; then the next is laid out. Fields not in use today rest. */
   if (day) L.fields.slice(0, nf).forEach((c, i) => {
-    for (let j = 0; j < 3; j++) {
-      const gx = c.x + .55 + j * .75, gy = c.y + .75 + (j % 2) * .45, cc = cols(i * 3 + j), P = 46;
-      const u = T - OUT_DAWN - i * .55 - j * 1.4, ph = u < 0 ? -1 : (u % P) / P;
-      if (ph < 0 || ph < .12) { add(gx, gy, () => outEnvelope(gx, gy, 1, cc[0], cc[1])); continue; }
-      const inf = ph < .42, k = inf ? .3 + .7 * (ph - .12) / .3 : 1, alt = inf ? 0 : Math.pow((ph - .42) / .58, 1.5) * 640, a = ph > .9 ? (1 - ph) * 10 : 1;
+    const kit = outAt(c, -c.w / 2 + .3, c.d / 2 - .22);
+    add(kit[0], kit[1], () => { const p = tiso(...kit); propane(p[0], p[1]); propane(p[0] + 11, p[1] + 5); });
+    if (!outInUse(i, nf)) return;
+    const h0 = mulberry32(i * 31 + 5)(), n = 2 + (h0 < .4 ? 1 : 0), sp = Math.min(.82, c.w / (n + .3));
+    for (let j = 0; j < n; j++) {
+      const [gx, gy] = outAt(c, (j - (n - 1) / 2) * sp, (j % 2 ? .16 : -.1) * c.d), cc = cols(i * 3 + j), P = 60;
+      const u = T - OUT_DAWN - i * .9 - j * 2.6 - h0 * 4, ph = u < 0 ? -1 : (u % P) / P;
+      if (ph < .16) { if (ph >= .05) add(gx, gy, () => lyingEnvelope(gx, gy, 1, cc[0], cc[1], ang(c))); continue; }
+      const inf = ph < .42, k = inf ? .3 + .7 * (ph - .16) / .26 : 1, alt = inf ? 0 : Math.pow((ph - .42) / .58, 1.5) * 640, a = ph > .9 ? (1 - ph) * 10 : 1;
       if (!inf && ++nb > OUT_BALLOONS) continue;
-      add(gx, gy, () => { const p = tiso(gx, gy); if (inf && k < .6) lyingEnvelope(gx - .15, gy, 1 - (k - .3) / .3, cc[0], cc[1]); outBalloon(p[0] + alt * .12, p[1] - alt, k, cc[0], cc[1], inf ? ph > .3 && (t * 3 + j) % 1 < .5 : (t + i + j) % 3 < .4, a, k > .95 ? cc[2] : null); },
+      add(gx, gy, () => { const p = tiso(gx, gy); if (inf && k < .6) lyingEnvelope(gx, gy, 1 - (k - .3) / .3, cc[0], cc[1], ang(c)); outBalloon(p[0] + alt * .12, p[1] - alt, k, cc[0], cc[1], inf ? ph > .3 && (t * 3 + j) % 1 < .5 : (t + i + j) % 3 < .4, a, k > .95 ? cc[2] : null); },
         () => { const p = tiso(gx, gy); blobShadow(p[0] + 20 + alt * .12, p[1] + 6, 24 * k * (1 - alt / 900), 8 * k * (1 - alt / 900), inf ? .18 : .1); });
     }
-    add(c.x + .2, c.y + D_OUT, () => { const p = tiso(c.x + .25, c.y + D_OUT); propane(p[0], p[1]); propane(p[0] + 11, p[1] + 5); });
   });
-  if (day && !nf && L.fields[0]) { const c = L.fields[0]; add(c.cx + .2, c.cy + .1, () => { const p = tiso(c.cx + .3, c.cy + .1); propane(p[0], p[1]); propane(p[0] + 11, p[1] + 5); crate(p[0] - 20, p[1] - 6); }); }
+  if (day && !nf && L.fields[0]) { const c = L.fields[0]; add(c.cx, c.cy, () => { const p = tiso(c.cx, c.cy); propane(p[0], p[1]); propane(p[0] + 11, p[1] + 5); crate(p[0] - 20, p[1] - 6); }); }
   /* rival fields far out: their balloons in their colours */
   const rc = S.rivals.map(r => [r.col, r.col2]).concat([['#14a39a', '#e8fff9'], ['#9b7be0', '#f2ebff']]);
   if (day) L.decor.filter(c => c.k === 'rival').forEach((c, i) => {
     for (let j = 0; j < 2; j++) {
-      const ph = (t * .04 + i * .37 + j * .5) % 1, gx = c.x + .8 + j * 1.1, gy = c.y + 1.05, cc = rc[(i * 2 + j) % rc.length], inf = ph < .5, k = inf ? .35 + .65 * ph / .5 : 1, alt = inf ? 0 : Math.pow((ph - .5) / .5, 1.6) * 560;
+      const ph = (t * .04 + i * .37 + j * .5) % 1, [gx, gy] = outAt(c, (j - .5) * Math.min(1, c.w * .4), 0), cc = rc[(i * 2 + j) % rc.length], inf = ph < .5, k = inf ? .35 + .65 * ph / .5 : 1, alt = inf ? 0 : Math.pow((ph - .5) / .5, 1.6) * 560;
       if (!inf && ++nb > OUT_BALLOONS) continue;
       add(gx, gy, () => { const p = tiso(gx, gy); outBalloon(p[0], p[1] - alt, .93 * k, cc[0], cc[1], inf ? ph > .3 && (t * 3) % 1 < .5 : (t + i) % 3 < .4, ph > .9 ? (1 - ph) * 10 : 1); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 18, p[1] + 6, 22 * k, 7 * k, inf ? .16 : .08); });
     }
   });
-  /* the chase crews */
+  /* the chase crews: out along their track to the landing spot beside it, a toast, and back */
   if (day) L.crews.slice(0, nc).forEach((K, ci) => {
-    const P = 56, u = (T + ci * 14.5 + 9) % P, path = K.path, len = path.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - path[i][0], p[1] - path[i][1]), 0);
+    const P = 56, u = (T + ci * 14.5 + 9) % P, path = K.path, len = K.len;
     const ease = k => k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
     const s = u < 1 ? 0 : u < 11 ? ease((u - 1) / 10) * len : u < 35 ? len : u < 45 ? (1 - ease((u - 35) / 10)) * len : 0;
-    const at = walkPath(path, s), dir = u >= 35 ? [-at.dir[0], -at.dir[1]] : at.dir, a = u < 1 ? u : u > 45 ? Math.max(0, 46 - u) : 1;
-    if (a > 0) for (const [dp, fn] of chaseVan(at.p[0], at.p[1], dir, u > 33, t, (u > 1 && u < 11) || (u > 35 && u < 45))) items.push({ at: at.p, depth: dp + .3, draw: () => { ctx.save(); ctx.globalAlpha *= a; fn(); ctx.restore(); } });
-    const [lx, ly] = K.spot, cc = cols(ci * 5 + 1);
-    if (u > 2 && u < 13) { /* coming down onto the field, drifting in on the wind */
+    const at = walkPath(path, s), back = u >= 35, dir = back ? [-at.dir[0], -at.dir[1]] : at.dir, a = u < 1 ? u : u > 45 ? Math.max(0, 46 - u) : 1;
+    const moving = (u > 1 && u < 11) || (u > 35 && u < 45);
+    if (a > 0 && seen(...at.p)) {
+      for (const [dp, fn] of chaseVan(at.p[0], at.p[1], dir, u > 33, t, moving)) items.push({ at: at.p, depth: dp + .3, draw: () => { ctx.save(); ctx.globalAlpha *= a; fn(); ctx.restore(); } });
+      if (moving) items.push({ at: at.p, depth: at.p[0] + at.p[1] - .6, draw: () => { ctx.save(); ctx.globalAlpha *= a; dustPuffs(path, s, back ? 1 : -1, t); ctx.restore(); } });
+    }
+    const [lx, ly] = K.spot, cc = cols(ci * 5 + 1), ea = Math.atan2(K.dir[1], K.dir[0]);
+    if (u > 2 && u < 13) { /* coming down beside the track, drifting in on the wind */
       const k = (u - 2) / 11, alt = 440 * Math.pow(1 - k, 1.7), drift = (1 - k) * 1.6;
       add(lx - drift, ly, () => { const p = tiso(lx - drift, ly); balloon(p[0], p[1] - alt, 30, cc[0], cc[1], (t * 2 + ci) % 2 < .25, 1, null, cc[2]); }, () => { const p = tiso(lx - drift, ly); blobShadow(p[0] + 18, p[1] + 6, 22 * (.5 + k * .5), 8 * (.5 + k * .5), .08 + k * .1); });
     } else if (u >= 13 && u < 34) { /* down: the envelope tips over and sighs flat; the basket's people climb out and toast */
-      const k = u < 17 ? (u - 13) / 4 : 1, pk = u > 30 ? 1 - (u - 30) / 4 : 1;
-      add(lx, ly, () => { const p = tiso(lx, ly); if (k < 1) balloon(p[0] + k * 26, p[1] + k * 4, 30 * (1 - k * .7), cc[0], cc[1], false, 1 - k); lyingEnvelope(lx + .55, ly - .05, k * pk, cc[0], cc[1]); }, null, lx + ly - .2);
-      if (u > 15 && u < 33) for (let i = 0; i < 5; i++) { const gx = lx + .05 + (i % 3) * .24 + (i > 2 ? .12 : 0), gy = ly + .42 + (i > 2 ? .2 : 0); add(gx, gy, () => { const p = tiso(gx, gy); toaster(p[0], p[1], ['#ff5e3a', '#5aa9e6', '#ffc23d', '#14a39a', '#2b2350'][i], t, i * 1.3); }); }
+      const k = u < 17 ? (u - 13) / 4 : 1, pk = u > 30 ? 1 - (u - 30) / 4 : 1, ex = lx + Math.cos(ea) * .5, ey = ly + Math.sin(ea) * .5;
+      add(lx, ly, () => { const p = tiso(lx, ly); if (k < 1) balloon(p[0] + k * 26, p[1] + k * 4, 30 * (1 - k * .7), cc[0], cc[1], false, 1 - k); lyingEnvelope(ex, ey, k * pk, cc[0], cc[1], ea); }, null, lx + ly - .2);
+      if (u > 15 && u < 33) {
+        const tb = [lx - Math.cos(ea) * .42 + .1, ly - Math.sin(ea) * .42 + .25];
+        add(tb[0], tb[1], () => { const p = tiso(...tb); ctx.fillStyle = '#8a6a48'; ctx.fillRect(p[0] - 7, p[1] - 9, 1.6, 9); ctx.fillRect(p[0] + 6, p[1] - 9, 1.6, 9); ctx.fillStyle = '#fbf8f0'; ctx.fillRect(p[0] - 9, p[1] - 12, 18, 4); ctx.fillStyle = '#2e5a3a'; ctx.fillRect(p[0] - 2, p[1] - 20, 3.4, 8); ctx.fillStyle = '#e8c860'; ctx.fillRect(p[0] - 1.6, p[1] - 22, 2.6, 2.5); });
+        for (let i = 0; i < 5; i++) { const gx = tb[0] + .05 + (i % 3) * .26 - .3 + (i > 2 ? .12 : 0), gy = tb[1] + .3 + (i > 2 ? .22 : 0); add(gx, gy, () => { const p = tiso(gx, gy); toaster(p[0], p[1], ['#ff5e3a', '#5aa9e6', '#ffc23d', '#14a39a', '#2b2350'][i], t, i * 1.3, 1.25); }); }
+      }
     }
   });
   /* the decor */
   for (const c of L.decor) {
-    const { x, y } = c, [W, D] = OUT_CELL;
-    if (c.k === 'orchard') for (let i = 0; i < 12; i++) { const gx = x + .35 + (i % 4) * .63, gy = y + .4 + Math.floor(i / 4) * .65; add(gx, gy, () => { const p = tiso(gx, gy); outTree(p[0], p[1], reg === 'cap'); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 8, p[1] + 3, 10, 3.5, .14); }); }
-    if (c.k === 'cane') for (let r = 0; r < 6; r++) { const gx = x + .2 + r * .42, gy = y + .15; add(gx, gy + D / 2, () => { const a = tiso(gx, gy), b = tiso(gx, gy + D - .3); ctx.fillStyle = '#5f8a3a'; ctx.beginPath(); ctx.moveTo(a[0], a[1]); for (let k = 0; k <= 10; k++) { const q = lp(a, b, k / 10); ctx.lineTo(q[0] + Math.sin(t * 1.2 + k + r) * 1.2, q[1] - 22 - (k % 2) * 5); } ctx.lineTo(b[0], b[1]); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#7aa84a'; ctx.lineWidth = 1; ctx.stroke(); }); }
-    if (c.k === 'palms') for (const [dx, dy, s] of [[.4, .5, 1], [1.2, .3, .85], [1.9, .9, 1.1], [.9, 1.4, .9], [2.2, 1.7, .8]]) add(x + dx, y + dy, () => { const p = tiso(x + dx, y + dy); palm(p[0], p[1], s, t + dx); }, () => { const p = tiso(x + dx, y + dy); blobShadow(p[0] + 14, p[1] + 4, 16, 5, .12); });
-    if (c.k === 'farm') add(x + .5, y + .5, () => farmHouse(x + .5, y + .45, t), () => boxShadow(x + .5, y + .45, .9, .7, 40, .16), x + 1.6);
-    if (c.k === 'dovecote') { add(x + 1.3, y + 1, () => { const p = tiso(x + 1.3, y + 1); dovecoteRock(p[0], p[1], t); }, () => { const p = tiso(x + 1.3, y + 1); blobShadow(p[0] + 50, p[1] + 12, 60, 14, .14); });
-      if (day) add(x + 1.3, y + 1, () => { const p = tiso(x + 1.3, y + 1); decoPigeons([p[0], p[1] - 150], t * .8, .32); }, null, 999); }
-    if (c.k === 'mesa') add(x + 1.3, y + 1.1, () => { const p = tiso(x + 1.3, y + 1.1); butte(p[0], p[1], 260, 70, '#c8744a', '#8e4a2c'); for (const [dx, s] of [[-150, .8], [140, .7]]) yucca(p[0] + dx, p[1] + 10, s); }, () => { const p = tiso(x + 1.3, y + 1.1); blobShadow(p[0] + 60, p[1] + 10, 140, 18, .12); });
-    if (c.k === 'scrub') for (let i = 0; i < 4; i++) { const gx = x + .4 + i * .6, gy = y + .5 + (i % 2) * .9; add(gx, gy, () => { const p = tiso(gx, gy); i % 2 ? cholla(p[0], p[1], .7) : yucca(p[0], p[1], .7); }); }
-    if (c.k === 'pasture') { const n = 5 + (Math.round(x) % 3 + 3) % 3; add(x + W / 2, y + D / 2, () => { const p = tiso(x + W / 2 + Math.sin(t * .05 + x) * .3, y + D / 2); sheepFlock(p[0], p[1], n, t * .5 + x); });
-      for (const [dx, dy] of [[-.2, -.2], [W + .2, D + .2]]) add(x + dx, y + dy, () => { const p = tiso(x + dx, y + dy); oakTree(p[0], p[1], .7); }); }
+    const Rr = mulberry32(c.seed + 3);
+    if (c.k === 'orchard') { const nr = Math.max(2, Math.round(c.d / .62)), nc2 = Math.max(3, Math.round(c.w / .6));
+      for (let r = 0; r < nr; r++) for (let q = 0; q < nc2; q++) { const miss = Rr() < .08, ja = (Rr() - .5) * .12, jb = (Rr() - .5) * .12; if (miss) continue; const [gx, gy] = outAt(c, (q - (nc2 - 1) / 2) * (c.w - .4) / Math.max(1, nc2 - 1) + (r % 2) * .12 + ja, (r - (nr - 1) / 2) * (c.d - .45) / Math.max(1, nr - 1) + jb), s = .85 + Rr() * .3;
+        add(gx, gy, () => { const p = tiso(gx, gy); outTree(p[0], p[1], reg === 'cap', s); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 8, p[1] + 3, 10 * s, 3.5 * s, .14); }); } }
+    if (c.k === 'cane') { const nr = Math.max(4, Math.round(c.d / .4)); for (let r = 0; r < nr; r++) { const b = -c.d / 2 + .15 + (r + .5) * (c.d - .3) / nr, A = outAt(c, -c.w / 2 + .12, b), B = outAt(c, c.w / 2 - .12, b), m = lp(A, B, .5);
+      add(m[0], m[1], () => { const a = tiso(...A), b2 = tiso(...B); ctx.fillStyle = '#5f8a3a'; ctx.beginPath(); ctx.moveTo(a[0], a[1]); for (let k = 0; k <= 10; k++) { const q = lp(a, b2, k / 10); ctx.lineTo(q[0] + Math.sin(t * 1.2 + k + r) * 1.2, q[1] - 22 - (k % 2) * 5); } ctx.lineTo(b2[0], b2[1]); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#7aa84a'; ctx.lineWidth = 1; ctx.stroke(); }); } }
+    if (c.k === 'palms') for (const [da, db, s] of [[-.32, -.2, 1], [.05, -.32, .85], [.34, .12, 1.1], [-.05, .3, .9], [.4, -.3, .8]]) { const [gx, gy] = outAt(c, da * c.w, db * c.d); add(gx, gy, () => { const p = tiso(gx, gy); palm(p[0], p[1], s, t + da); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 14, p[1] + 4, 16, 5, .12); }); }
+    if (c.k === 'farm') { const fx = c.cx - .45, fy = c.cy - .35; add(fx, fy, () => farmHouse(fx, fy, t), () => boxShadow(fx, fy, .9, .7, 40, .16), fx + 1.1 + fy + .7); }
+    if (c.k === 'dovecote') { add(c.cx, c.cy, () => { const p = tiso(c.cx, c.cy); dovecoteRock(p[0], p[1], t); }, () => { const p = tiso(c.cx, c.cy); blobShadow(p[0] + 50, p[1] + 12, 60, 14, .14); });
+      if (day) add(c.cx, c.cy, () => { const p = tiso(c.cx, c.cy); decoPigeons([p[0], p[1] - 150], t * .8, .32); }, null, 999); }
+    if (c.k === 'mesa') { const mw = (c.w + c.d) * 46, mh = 46 + c.d * 22; add(c.cx, c.cy, () => { const p = tiso(c.cx, c.cy); mesaRock(p[0], p[1], mw, mh, c.seed); for (const [dx, s] of [[-mw * .62, .8], [mw * .58, .7]]) yucca(p[0] + dx, p[1] + 12, s); }, () => { const p = tiso(c.cx, c.cy); blobShadow(p[0] + mw * .28, p[1] + 10, mw * .55, mw * .1, .14); }); }
+    if (c.k === 'scrub') for (let i = 0; i < 5; i++) { const [gx, gy] = outAt(c, (Rr() - .5) * c.w * .85, (Rr() - .5) * c.d * .8), ch = Rr() < .5, s = .6 + Rr() * .25; add(gx, gy, () => { const p = tiso(gx, gy); ch ? cholla(p[0], p[1], s) : yucca(p[0], p[1], s); }); }
+    if (c.k === 'pasture') { const n = 5 + c.seed % 3; add(c.cx, c.cy, () => { const p = tiso(c.cx + Math.sin(t * .05 + c.cx) * .3, c.cy); sheepFlock(p[0], p[1], n, t * .5 + c.cx); });
+      for (const [a, b] of [[-.55, -.55], [.55, .55]]) { const [gx, gy] = outAt(c, a * c.w, b * c.d); add(gx, gy, () => { const p = tiso(gx, gy); oakTree(p[0], p[1], .7); }); } }
     if (c.k === 'crops' && reg === 'lux' && day) { /* the farmer and his donkey along the field's edge */
-      const k = (Math.sin(t * .05 + x) + 1) / 2, gx = x + .2 + k * (W - .4), gy = y + D + .25, dx = Math.cos(t * .05 + x) > 0 ? 1 : -1;
+      const k = (Math.sin(t * .05 + c.cx) + 1) / 2, [gx, gy] = outAt(c, (k - .5) * (c.w - .4), c.d / 2 + .25), dx = Math.cos(t * .05 + c.cx) * (c.ux - c.uy) > 0 ? 1 : -1;
       add(gx, gy, () => { const p = tiso(gx, gy); ell(p[0] - 10 * dx, p[1] - 8, 7, 4, '#8a8078'); ctx.fillStyle = '#8a8078'; ctx.fillRect(p[0] - 10 * dx + 4 * dx - 1, p[1] - 15, 3, 7); ctx.fillStyle = '#5a5048'; for (const o of [-4, 3]) ctx.fillRect(p[0] - 10 * dx + o, p[1] - 5, 1.5, 5); person(p[0], p[1], '#f2ece0', t * .3, 1); ctx.fillStyle = '#f6f2ea'; ctx.beginPath(); ctx.arc(p[0], p[1] - 18.5, 3.4, Math.PI, 0); ctx.fill(); });
     }
-    if (c.k === 'rv') { const n = S.fiesta ? 9 : 3, rcol = ['#ff5e3a', '#14a39a', '#9b7be0', '#ffc23d', '#5aa9e6']; for (let i = 0; i < n; i++) { const gx = x + .45 + (i % 3) * .85, gy = y + .4 + Math.floor(i / 3) * .6; add(gx, gy, () => { const p = tiso(gx, gy); rvCaravan(p[0], p[1], rcol[i % 5], NIGHT_K > 0); }); }
-      if (S.fiesta && NIGHT_K > 0) add(x + W / 2, y + D / 2, () => { for (let i = 0; i <= 8; i++) { const p = tiso(x + .2 + i * (W - .4) / 8, y + .15); ell(p[0], p[1] - 20 - Math.sin(i / 8 * Math.PI) * 4, 1.6, 1.6, '#ffe29a'); nightLite(p[0], p[1] - 20, 14, '255,210,130', .5); } }); }
-    if (c.k === 'view' && day) { /* the sunrise hill: a little crowd facing the balloons, a couple of cars below */
-      add(x + W / 2, y + D / 2, () => { const p = tiso(x + W / 2, y + D / 2); const hc = reg === 'bri' ? ['#6e9a4a', '#8cbc60', '#9cca6c'] : reg === 'abq' ? ['#a8643e', '#cc8e64', '#d89c70'] : reg === 'lux' ? ['#b89a6a', '#d8bc8a', '#e4c898'] : ['#b88458', '#dcb088', '#e8c09a'];
-        ell(p[0] + 10, p[1] + 8, 124, 42, 'rgba(90,45,20,.14)'); ctx.fillStyle = hc[0]; ctx.beginPath(); ctx.ellipse(p[0], p[1] - 14, 118, 38, 0, 0, Math.PI); ctx.lineTo(p[0] - 118, p[1] - 14); ctx.ellipse(p[0], p[1] + 2, 122, 40, 0, Math.PI, 0, true); ctx.fill();
-        ctx.save(); ctx.translate(0, -16); ell(p[0], p[1], 118, 38, hc[1]); ell(p[0] - 18, p[1] - 4, 80, 24, hc[2]); ctx.translate(0, 0);
-        for (let i = 0; i < 9; i++) { const q = [p[0] - 60 + i * 15 + (i % 2) * 4, p[1] - 8 + (i % 3) * 6]; if (i % 3 === 1) toaster(q[0], q[1], ['#ff6fa8', '#5aa9e6', '#ffc23d'][i % 3], t * .6, i); else tourist(q[0], q[1], ['#ffc23d', '#14a39a', '#e04a3a', '#9b7be0', '#2b2350', '#ff8a3d'][i % 6], i % 2 ? '#f4e4c0' : null, i % 4 === 0, t * .05, i); }
-        for (const [dx, col] of [[70, '#e8e2d8'], [96, '#c0392b']]) { const q = [p[0] + dx, p[1] + 26]; ell(q[0] + 6, q[1] + 2, 14, 4, 'rgba(90,45,20,.18)'); ctx.fillStyle = col; rrect(q[0] - 11, q[1] - 10, 22, 9, 3); ctx.fill(); ctx.fillStyle = '#6a8aa6'; ctx.fillRect(q[0] - 6, q[1] - 14, 11, 5); ell(q[0] - 6, q[1] - 1, 2.4, 2.4, '#2a1e18'); ell(q[0] + 6, q[1] - 1, 2.4, 2.4, '#2a1e18'); } ctx.restore(); }, null, x + y + 2);
-    }
+    if (c.k === 'rv') { const n = S.fiesta ? 9 : 3, rcol = ['#ff5e3a', '#14a39a', '#9b7be0', '#ffc23d', '#5aa9e6']; for (let i = 0; i < n; i++) { const [gx, gy] = outAt(c, ((i % 3) - 1) * Math.min(.85, c.w * .3), (Math.floor(i / 3) - 1) * Math.min(.6, c.d * .3) + (n === 3 ? .6 * Math.min(.6, c.d * .3) : 0)); add(gx, gy, () => { const p = tiso(gx, gy); rvCaravan(p[0], p[1], rcol[i % 5], NIGHT_K > 0); }); }
+      if (S.fiesta && NIGHT_K > 0) add(c.cx, c.cy, () => { const A = outAt(c, -c.w / 2 + .2, -c.d / 2 + .15), B = outAt(c, c.w / 2 - .2, -c.d / 2 + .15); for (let i = 0; i <= 8; i++) { const p = tiso(...lp(A, B, i / 8)); ell(p[0], p[1] - 20 - Math.sin(i / 8 * Math.PI) * 4, 1.6, 1.6, '#ffe29a'); nightLite(p[0], p[1] - 20, 14, '255,210,130', .5); } }); }
+    if (c.k === 'view') add(c.cx, c.cy, () => { const k = viewKnoll(c, t); if (!day) return; const p = k.top;
+      ctx.save(); for (let i = 0; i < 9; i++) { const q = [p[0] - 54 + i * 13 + (i % 2) * 4, p[1] + 2 + (i % 3) * 5]; if (i % 3 === 1) toaster(q[0], q[1], ['#ff6fa8', '#5aa9e6', '#ffc23d'][i % 3], t * .6, i); else tourist(q[0], q[1], ['#ffc23d', '#14a39a', '#e04a3a', '#9b7be0', '#2b2350', '#ff8a3d'][i % 6], i % 2 ? '#f4e4c0' : null, i % 4 === 0, t * .05, i); }
+        for (const [dx, col] of [[k.rx * .62, '#e8e2d8'], [k.rx * .84, '#c0392b']]) { const q = [p[0] + dx, p[1] + k.ry * .9 + 18]; ell(q[0] + 6, q[1] + 2, 14, 4, 'rgba(90,45,20,.18)'); ctx.fillStyle = col; rrect(q[0] - 11, q[1] - 10, 22, 9, 3); ctx.fill(); ctx.fillStyle = '#6a8aa6'; ctx.fillRect(q[0] - 6, q[1] - 14, 11, 5); ell(q[0] - 6, q[1] - 1, 2.4, 2.4, '#2a1e18'); ell(q[0] + 6, q[1] - 1, 2.4, 2.4, '#2a1e18'); } ctx.restore(); }, null, c.cx + c.cy - c.r);
   }
+  /* trees along the tracks: poplars and apricots, junipers, date palms, oaks */
+  for (const [gx, gy, k, kind] of L.trees) add(gx, gy, () => { const p = tiso(gx, gy); outTrackTree(p[0], p[1], k, kind, t); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 10 * k, p[1] + 3, 11 * k, 3.5 * k, .13); });
   /* the ATV tour and the riders, slowly round their loops */
   if (day) L.loops.forEach((l, li) => {
     const atv = li === 0 && reg !== 'bri' && reg !== 'lux', n = atv ? 5 : 3, sp = atv ? .45 : .16;
@@ -11527,11 +11748,10 @@ function outskirtsItems(t) {
       ctx.fillStyle = '#fbf8f0'; ctx.beginPath(); ctx.moveTo(p[0] - 2 + dir * 22, p[1] - 58); ctx.quadraticCurveTo(p[0] + dir * 14, p[1] - 30, p[0] - 2 - dir * 20, p[1] - 9); ctx.lineTo(p[0] - 2, p[1] - 10); ctx.closePath(); ctx.fill(); ctx.fillStyle = 'rgba(160,140,110,.2)'; ctx.beginPath(); ctx.moveTo(p[0] - 2, p[1] - 44); ctx.lineTo(p[0] - 2, p[1] - 10); ctx.lineTo(p[0] - 2 - dir * 20, p[1] - 9); ctx.fill(); }); }
   return items;
 }
-const D_OUT = OUT_CELL[1] - .25;
-/* how far the town can be dragged: out to the farthest cell in use */
+/* how far the town can be dragged: out to the farthest plot in use */
 function outskirtsExtent() {
-  const L = outLayout(), nf = outFieldsN(), use = L.decor.concat(L.fields.slice(0, Math.max(1, nf)), L.crews.slice(0, outCrewsN(nf)).map(k => k.L));
-  return use.length ? use.map(c => [c.cx, c.cy]) : [];
+  const L = outLayout(), nf = outFieldsN(), use = L.decor.concat(L.fields.slice(0, Math.max(1, nf))).map(c => [c.cx, c.cy]);
+  return use.concat(L.crews.slice(0, outCrewsN(nf)).map(k => k.spot));
 }
 /* Out in the land: fairy chimneys in Cappadocia; red buttes and junipers in Albuquerque; palm groves and temple ruins in Luxor. */
 function outerLandmark(x, y, hh, i) {
@@ -11543,6 +11763,8 @@ function outerLandmark(x, y, hh, i) {
   }
   if (S.region === 'abq') {
     if (i % 3 === 0) { roundTree(x, y, .7, '#4f6e3a'); return roundTree(x + 18, y + 6, .55, '#5a7a40'); }
+    /* v135.1: out on the flanks (never in the home view) the buttes are layered, eroded mesas */
+    if (Math.abs(x) >= OUT_CALM * TW / 2) return mesaRock(x, y, hh * (i % 2 ? 1.4 : 1.05), hh * (i % 2 ? .42 : .55), 900 + i);
     return butte(x, y, hh * (i % 2 ? 1.3 : .8), hh * (i % 2 ? .45 : .7), '#c8744a', '#8e4a2c');
   }
   if (S.region === 'lux') {
@@ -12173,10 +12395,10 @@ function nightLayer(V, w, h, hz, S0, W0, bs) {
   /* windows: about three in four are lit, mostly warm lamplight, a few deeper orange, now and then the blue flicker of a TV */
   for (const o of NIGHT_WIN) {
     const seed = Math.abs(Math.sin(o.p[0] * 12.9898 + o.p[1] * 78.233 + o.u * 37.7 + o.v * 11.3) * 43758.5) % 1;
-    if (o.kind === 'win' && seed > .74) continue;
+    if (o.kind === 'win' && seed > (o.dim ? .3 : .74)) continue;
     const tv = o.kind === 'win' && seed < .07, col = o.kind === 'door' ? '#ffb85e' : tv ? '#9cc8ff' : seed < .5 ? '#ffd68a' : '#ffb35c';
     const fl = tv ? .55 + .45 * Math.abs(Math.sin(t * 7 + seed * 40) * Math.sin(t * 2.3 + seed * 9)) : .92 + .08 * Math.sin(t * 1.3 + seed * 20);
-    const a = k * fl * (o.kind === 'door' ? .55 : 1);
+    const a = k * fl * (o.kind === 'door' ? .55 : 1) * (o.dim ? .75 : 1);
     ctx.save(); ctx.globalAlpha = a;
     tface(o.p, o.q, o.h, () => { const x0 = o.u - o.w / 2, top = o.kind === 'door' ? o.v + o.hh * .55 : o.v; ctx.beginPath(); ctx.moveTo(x0, top); ctx.lineTo(x0, o.v + o.hh - o.w / 2); ctx.quadraticCurveTo(o.u, o.v + o.hh + o.w * .45, x0 + o.w, o.v + o.hh - o.w / 2); ctx.lineTo(x0 + o.w, top); ctx.closePath(); ctx.fillStyle = col; ctx.fill();
       /* a window bar and a curtain edge so they read as windows, not dots */
