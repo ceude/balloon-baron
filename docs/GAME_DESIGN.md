@@ -75,7 +75,30 @@ Burada p, balonun kaza olasılığıdır (hava × boy × pilot).
 | 50.000 | 50 gün | 1.250 | 3 |
 | 100.000 | 80 gün | 1.500 | 8 + günlük net ≥ 10.000 |
 
-Kasa −€5.000'in altına düşerse banka balona el koyar.
+Kasa −€5.000'in altına düşerse banka balona el koyar. Ayrıntı: "İflas, holding kurtarma ve kapanan bölge (v133)".
+
+### İflas, holding kurtarma ve kapanan bölge (v133)
+Önce (`tools/sim-bankrupt.js`): gün sonunda kasa −5.000'in altındaysa banka her gün bir balon alıyordu (amiral dışındaki en büyüğü önce; %50, ikinci elde %30); son balon (amiral) gidince oyun bitiyor ve kayıt **siliniyordu**, milyonluk bir holding de dahil. Yeni bölgeye tek küçük balon ve 3–6 bin ile girildiği için sigortasız tek kaza yetiyordu; holding de bölgeye para gönderemiyor.
+- **Amiral için süre:** amiral dışındaki balonlar eskisi gibi her gün birer birer gider. Amiral ancak kasa gün sonunda **3 gün üst üste** −5.000'in altında kalınca alınır (`RegionState.debtDays`, prototipte `S.debtDays`, bölge başına; kasa bir gün sonunda çizginin üstüne çıkınca sayaç sıfırlanır). Sıradaki balon amiralse raporda, ana ekranda (dokununca kurtarma planı) ve kurtarma planında kırmızı uyarı: "Banka N gün içinde amiral balonuna el koyacak" (`grace.title`, N = 3 − sayaç). İlk böyle sabahta kurtarma planı (kredi, satış, fiyat…) kendiliğinden yeniden açılır.
+- **Holding yoksa** (Kapadokya baronu olunmadan): son balon gidince oyun eskisi gibi biter, kayıt silinir.
+- **Holding varsa** (herhangi bir baronluk) son balon alınmadan önce karar sorulur (`GameState.ruinPending`, prototipte `S.ruin`): raporda "Banka son balonuna el koymak üzere" ve "Karar ver"; kart (`RuinView`, `showRuin`) bedeli, holding kasasının önce/sonrasını ve iki seçeneği gösterir. Otomatik ilerletme bu anda ve amiral sıradayken durur. Uygulama kapatılıp açılırsa kart ilk iş olarak yeniden gelir.
+- **Holding kurtarma:** bölgenin kasası 10.000'e (bölgenin parasıyla) çıkarılır. Bedel holdingden: **kurtarılan paranın 3 katı (euroya çevrilmiş), holding kasasının %10'u ve €100.000'den hangisi büyükse** (1.000'e yukarı yuvarlanır). Her bölge için **bir kez** (`Holding.rescued`); balon, krediler, bölümler ve oteller yerinde kalır, sayaç sıfırlanır, gece normal gelir. Hezarfen ve gazete söyler. Kural sim ile seçildi: kurtarma anında holding ortancası ~€3 milyon; yalnız 3× ve €100.000 tabanı ile bedel hep €100.000'de kalıyordu (holdingin %3'ü), %10 payı onu acı tutar (ortanca €305.000), yoksul holdingde taban €100.000 kalır.
+- **Bölge kapanır** (holding yetmezse, kurtarma kullanılmışsa ya da oyuncu seçerse): bölgedeki şirket tasfiye edilir (balonlar, pilotlar, oteller, binalar bankaya), bölge silinir (`Holding.closed[bölge] = gün`). Oyuncu filosu en büyük öteki bölgesine geçer (`ruinNext`). Başka bölge yoksa aynı bölgede **ücretsiz** sıfırdan yeni şirket kurulur (küçük balon, başlangıç kasası, bölüm 1; Kapadokya'da Kapadokya rakipleri). Holding, öteki bölgeler, baron unvanları, holding hedefleri, kartpostallar ve Game Center başarımları, tasarımlar ve kayıt kalır. Hezarfen ve gazete söyler.
+- **Yeniden giriş:** kapanan bölge dünya haritasında "Kapandı" etiketiyle görünür ve giriş bedeliyle (Albuquerque/Kapadokya €100.000, Luksor €150.000, Bristol €240.000) yeniden girilir: sıfırdan, bölümler baştan, bölüm ödülleri yeniden kazanılabilir. Kazanılmış baron unvanı kalır, sonraki bölgeler açık kalır. Kapadokya da kapanınca bu yolla geri gelir (Hezarfen'in "yeniden hoş geldin" sözü). Bir bölgenin kurtarma hakkı yeniden girince geri gelmez.
+- **Simülasyon** (`tools/sim-bankrupt.js all 40 800`, 15 profil × 40 tohum = 600 oyun; `RUIN=accept` kurtarmayı karşılayabildiği her seferde alır, `RUIN=half` yarı yarıya reddeder):
+
+| | Önce | Sonra, hep kabul | Sonra, yarı yarıya |
+|---|---|---|---|
+| Oyun sonu (kayıt silinir) | 333 | 278 | 278 |
+| … holding varken | 45 (Albuquerque 30, Luksor 10, Bristol 5; toplam €88 milyon holding silindi) | 0 | 0 |
+| … holding yokken (Kapadokya) | 288 | 278 | 278 |
+| Holding kurtarma (oyun) | – | 54 (41) | 30 (28) |
+| Kurtarma bedeli: ortanca / ortalama / en çok | – | €305.000 / €388.000 / €1,39 milyon | €322.000 / €362.000 / €936.000 |
+| Kurtarma anında holding (ortanca) | – | €3,05 milyon | €3,22 milyon |
+| Kapanan bölge (oyun) | – | 56 (20): kurtarma kullanılmış 52, holding yetmedi 4 | 85 (32): reddetti 35, kullanılmış 46, yetmedi 4 |
+| Dünya Baronu | 122 | 143 | 142 |
+
+  Holding artık hiç kaybolmuyor. Holding yokken oyun sonları azaldı ama az (288 → 278): bu botlar kurtarma planına bakmıyor ve batan şirketlerin çoğu tek balona düştüğünde zaten günlerce eksidedir; süre dikkatli oyuncuya üç gün verir. Kapanan bölgelerin çoğu aynı kumarbaz botların yeniden girdikleri bölgede tekrar batmasıdır.
 
 100.000 kredisi (v109.1) bölgenin son 14 günlük ortanca net kazancı 10.000'i ilk geçtiği akşam açılır ve bir daha kapanmaz. Simülasyon (`tools/sim-loans.js`; bot krediyi açıldığı gün çekip hepsini balona harcıyor): 10 tohumda 94–122. günde açıldı, hiç el koyma yok.
 
@@ -455,6 +478,7 @@ Fiyatlar App Store'un yerel fiyat basamaklarıyla gösterilir (Avrupa'da):
 ## Otomatik ilerletme (v117)
 - **Ne zaman:** bulunulan bölgede en az 35 balon ve Kapadokya Baronu olunca, alttaki düğmelerde "İlerlet" (çizilmiş ileri sar simgesi) çıkar. Hezarfen ilk açıldığında bir kez anlatır.
 - **Ne yapar:** günleri kendi kendine oynatır. Amirali de ekip uçurur (kurucu primi ve görev yok). Kırmızı bayrakta pas geçer. Gecelerin sahnesi atlanır, ama **Balon Şöleni gecesi atlanmaz**: gösteri baştan sona oynar, sonra durur ("Şölen bitti") ve en güzel anlar kartı gelir. Her gün düğmelerin üstünde kısa bir şerit: "Gün N +€X".
+- **Ne zaman durur (v133):** banka amiral balonuna el koymak üzereyken ya da holding karar verecekken de durur ve günün raporunu gösterir ("Banka amiral balonuna el koymak üzere").
 - **Ne zaman durur:** karar ya da kart isteyen her şey (sabah olayı, hedef/bölüm, birleşme, satılık rakip, transfer teklifi, sipariş, sorun, kartpostal, Hezarfen dersi, şölen anları), kasa 3 günlük giderin altına inince, lisans yenileme uçuşu gerekince, 7 gün dolunca ya da ekrana dokununca.
 - **Durmayanlar:** gazete ve Hezarfen'in haberleri biriktirilir, durunca gösterilir (haberlerin son üçü). 35 balonla neredeyse her sabah bir manşet, çoğu gün bir sert iniş olur; kazalar sadece sayılır ("kaza: N"). Durunca şerit: sebep, gün sayısı, toplam net, kaza sayısı.
 
