@@ -1045,12 +1045,32 @@ const BUYLOAN = { max: 500000, reserve: 10000, days: 150, rate: .2, down: .2, ne
 function buyLoanTerms(price) {
   /* only for a company that already earns well (the bank opens it with the 100,000 loan, daily net ≥ 10,000) and flies
      at least 10 balloons, one at a time, and like a mortgage you put down at least a fifth of the price yourself */
-  if (!S.unl.bank || S.balloons.length < BUYLOAN.need || S.loans.length >= 2 || S.loans.some(l => l.buy) || !(S.loanOpen || {})[100000]) return null;
+  if (S.cash >= price || buyLoanWhy(price).length) return null;
   const own = Math.round(Math.max(0, Math.min(price, S.cash - BUYLOAN.reserve))), fin = price - own;
-  if (fin <= 0 || fin > BUYLOAN.max || own < price * BUYLOAN.down) return null;
+  if (fin <= 0) return null;
   const inst = Math.ceil(fin * (1 + BUYLOAN.rate) / BUYLOAN.days / 10) * 10;
   return { price, own, fin, inst, days: BUYLOAN.days, total: inst * BUYLOAN.days };
 }
+/* v131 (TestFlight: "I met every condition but couldn't take the purchase loan"): everything that stops the purchase
+   loan, in the order the bank checks, said with the numbers (Swift `buyLoanBlocks`). Empty when it can pay. */
+function buyLoanWhy(price) {
+  if (S.cash >= price) return [];
+  if (!S.unl.bank) return ['Banka henüz açılmadı.'];
+  const out = [], big = LOANS[LOANS.length - 1];
+  if (S.balloons.length < BUYLOAN.need) out.push(`En az ${BUYLOAN.need} balon gerekir. Buradaki balon: ${S.balloons.length}.`);
+  if (S.loans.some(l => l.buy)) out.push('Aynı anda tek satın alma kredisi olur: şimdiki hâlâ ödeniyor.');
+  else if (S.loans.length >= 2) out.push('Banka aynı anda en fazla iki kredi verir: önce birini kapat.');
+  if (!(S.loanOpen || {})[big.amt]) {
+    const n = Math.min(14, (S.netHist || []).length);
+    out.push(`${eur(big.amt)} kredisi bu bölgede henüz açılmadı (hiç kredin olmasa da bu şart). Tipik bir günün net kazancı (son iki haftanın ortancası) ${eur(big.net)} olunca açılır ve açık kalır. ` + (n >= 7 ? `Şu an: ${eur(dailyNet())}.` : `Önce en az 7 gün gerekir. Sayılan gün: ${n}.`));
+  }
+  const own = Math.round(Math.max(0, Math.min(price, S.cash - BUYLOAN.reserve))), fin = price - own;
+  if (fin > BUYLOAN.max) out.push(`Banka en fazla ${eur(BUYLOAN.max)} öder: kendi cebinden ${eur(fin - BUYLOAN.max)} daha gerekir.`);
+  const down = Math.ceil(price * BUYLOAN.down);
+  if (own < down) out.push(`Senin payın fiyatın en az %${Math.round(BUYLOAN.down * 100)} kadarı olmalı ve kasada ${eur(BUYLOAN.reserve)} kalır: ${eur(down - own)} daha gerekir.`);
+  return out;
+}
+const buyLoanWhyBox = price => { const w = buyLoanWhy(price); return w.length ? h('div', 'callout yel', `<b>Satın alma kredisi şu an kullanılamıyor.</b><br>${w.join('<br>')}`) : null; };
 function buyLoanCard(r, sale) {
   const price = sale ? r.forSale.price : r.offer, T = buyLoanTerms(price); if (!T) return;
   const up = (sale ? r.forSale.sizes : r.balloons).reduce((a, k) => a + SIZES[k].up, 0);
@@ -1470,6 +1490,8 @@ const rnd = (a, b) => a + Math.random() * (b - a);
 const pick = a => a[Math.floor(Math.random() * a.length)];
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 const lerp = (a, b, k) => a + (b - a) * k;
+/* v131: money in a given region's currency (a parked region's cash box) */
+const money = (n, id) => { const c = id === 'abq' ? '$' : id === 'bri' ? '£' : '€'; return (n < 0 ? '−' + c : c) + Math.abs(Math.round(n)).toLocaleString('tr-TR'); };
 const eur = n => { const r = typeof S !== 'undefined' && S ? S.region : ''; const c = r === 'abq' ? '$' : r === 'bri' ? '£' : '€'; /* v124: Bristol counts in pounds */ return (n < 0 ? '−' + c : c) + Math.abs(Math.round(n)).toLocaleString('tr-TR'); };
 const eurH = n => (n < 0 ? '−€' : '€') + Math.abs(Math.round(n)).toLocaleString('tr-TR'); /* holding kasası her zaman euro */
 const pct = n => '%' + (n * 100).toLocaleString('tr-TR', { maximumFractionDigits: 1 });
@@ -1563,7 +1585,10 @@ function newWeather() {
   if (S.region === 'abq') L = [-rnd(2, 4) * F.wind, rnd(3, 5.5) * F.wind, -rnd(1, 3.5) * F.wind, rnd(4, 7) * F.wind]; /* Albuquerque kutusu */
   if (S.region === 'lux') L = [rnd(1.5, 3.5) * F.wind, -rnd(2, 4.5) * F.wind, rnd(2.5, 5) * F.wind, -rnd(3, 6) * F.wind]; /* Nil: alçakta kuzeye, yukarıda güneye */
   if (S.region === 'bri') L = [rnd(-2.5, 1.5) * F.wind, rnd(2.5, 5) * F.wind, rnd(3, 6) * F.wind, (Math.random() < .5 ? -rnd(1, 4) : rnd(1, 3)) * F.wind]; /* v124: west wind off the Bristol Channel, east at mid heights */
-  if (!L.some(v => v > 3)) { const i = 1 + Math.floor(Math.random() * 3); L[i] = rnd(3.5, 6) * F.wind; }
+  /* always one layer that carries you east and one that brings you back. v131 (TestFlight: "all four layers blew away
+     from the field"): the eastward one must be a layer you can fly in all the way (60 m and up, above the chimneys,
+     trees, wires and the bridge), not the bottom one: on a red Cappadocia day the surface wind alone used to count */
+  if (!L.slice(1).some(v => v >= MIN_TOWARD)) { const i = 1 + Math.floor(Math.random() * 3); L[i] = rnd(3.5, 6) * F.wind; }
   if (!L.some(v => v < -.5)) { let m = 0; L.forEach((v, i) => { if (v < 3 && (L[m] >= 3 || v < L[m])) m = i; }); L[m] = -rnd(1, 4) * F.wind; }
   const target = 220 + (S.region === 'cap' ? (S.day <= 3 ? rnd(1000, 1250) : rnd(1300, 2100)) : rnd(1000, 1700)), keys = Object.keys(MISSIONS); /* v124.6: day 3 in Cappadocia is still close */
   let mission = S.day <= 2 || (Math.random() < .4 && !(S.fest && flag !== 'red')) ? null : (flag === 'yellow' && Math.random() < .5 ? 'precision' : pick(keys)); /* festivals always bring a special request */
@@ -1576,8 +1601,16 @@ function newWeather() {
     if (Math.random() < .28) W0.fog = { top: Math.round(rnd(90, 150)) };
     if (Math.random() < .4) { const x0 = 220 + rnd(380, Math.max(420, target - 220 - 760)); W0.air = { x0: Math.round(x0), x1: Math.round(x0 + rnd(420, 620)), floor: Math.round(rnd(340, 410)) }; }
   }
+  /* v131: the airport's airspace takes the top layer away; one of the two below it must then carry you there */
+  if (towardWind(W0) < MIN_TOWARD) { const u = usableLayers(W0), i = u.reduce((a, j) => W0.layers[j] > W0.layers[a] ? j : a, u[0]); W0.layers[i] = rnd(3.5, 6) * F.wind; }
   return W0;
 }
+/* v131: the layers you can fly in for the whole way to the field. The bottom one (under 60 m) never counts: fairy
+   chimneys, trees and power lines reach 95 m and Bristol's bridge 108 m. Over 60 m nothing stands in the way, except
+   in Bristol the airport's airspace (floor 340–410 m), which closes the top layer when it lies across the route. */
+const MIN_TOWARD = 3; /* m/s (11 km/h): the slowest a day's best usable layer toward the field may blow */
+function usableLayers(W) { const a = W.air, lo = Math.min(220, W.target), hi = Math.max(220, W.target); return a && a.x1 > lo && a.x0 < hi ? [1, 2] : [1, 2, 3]; }
+function towardWind(W) { const dir = W.target >= 220 ? 1 : -1; return Math.max(...usableLayers(W).map(i => W.layers[i] * dir)); }
 /* the layer wind at a height, without gusts: what the arrows on the left and the tag under the basket show */
 function windBase(alt) {
   const Ls = S.weather.layers;
@@ -1789,7 +1822,7 @@ const TRAITS = {
   daredevil: { n: 'Gözü kara', d: 'Kaza riski %30 yüksek, ama yolcular bayılır: her uçuşta popülerlik.', col: '#e5432f' },
   thrifty: { n: 'Tutumlu', d: 'Termikleri iyi okur: yakıt %15 az.', col: '#14a39a' },
   loyal: { n: 'Sadık', d: 'Rakip teklifleri onu ilgilendirmez.', col: '#2b5ab8' },
-  storyteller: { n: 'Hikâyeci', d: 'Kapadokya efsanelerini anlatır: yorumlar parlar, popülerlik.', col: '#9b7be0' },
+  storyteller: { n: 'Hikâyeci', d: 'Yörenin efsanelerini anlatır: yorumlar parlar, popülerlik.' /* v131: every region, not only Cappadocia */, col: '#9b7be0' },
   nightowl: { n: 'Gece kuşu', d: 'Maaşı %15 düşük, ama arada sabah geç kalır.', col: '#6c6488' }
 };
 const trait = p => p && p.trait && TRAITS[p.trait];
@@ -2344,12 +2377,12 @@ function finishDay(flight) {
     const out = (S.showIds || []).filter(id => { const b = bal(id); return !b || b.dmgUntil > S.day; });
     if (out.length) {
       const back = out.filter(id => bal(id)).length * SHOW.per;
-      S.showIds = S.showIds.filter(id => !out.includes(id)); S.showN = S.showIds.length; S.cash += back;
+      S.showIds = S.showIds.filter(id => !out.includes(id)); S.showN = S.showIds.length; S.cash += back; if (back) { Lg.showBack = (Lg.showBack || 0) + back; net += back; } /* v131: a line in the money table */
       if (back) ev.push(`Kaza yapan balon bu gece şölene çıkamayacak. Ücreti kasana geri döndü: ${eur(back)}.`);
     }
     /* too few left for a show: it's called off, every fee comes back and a new one can be booked at once */
     if (S.showIds.length < SHOW.min) {
-      const back = S.showIds.length * SHOW.per; S.cash += back;
+      const back = S.showIds.length * SHOW.per; S.cash += back; if (back) { Lg.showBack = (Lg.showBack || 0) + back; net += back; }
       S.showTonight = null; S.showIds = null; S.showNext = 0; S.showCount = Math.max(0, (S.showCount || 1) - 1);
       ev.push(`Kazalar yüzünden şölene yeterli balon kalmadı (en az ${SHOW.min}), bu geceki şölen iptal. Kalan ücretler de kasana döndü: ${eur(back)}. Balonlar onarılınca yeniden düzenleyebilirsin.`);
     }
@@ -2417,7 +2450,7 @@ function finishDay(flight) {
   if (S.selfFlightsNext) { S.selfFlights = S.selfFlightsNext; delete S.selfFlightsNext; }
   S.repHist.push({ d: S.day, r: S.rep }); if (S.repHist.length > 120) S.repHist.shift();
   S.lastShare = { me: paxTotal, cap: capToday, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
-  S.netHist = (S.netHist || []).concat([net]).slice(-14); loanUnlock();
+  S.netHist = (S.netHist || []).concat([net - (Lg.showBack || 0)]).slice(-14); loanUnlock(); /* a refund isn't earnings */
   autoRegions(); const hn = holdingDay(); if (hn) Lg.hold = hn;
   if (S.fiesta && fl.length) S.fiestaFlown = (S.fiestaFlown || 0) + 1;
   if (S.fest && fl.length) S.festFlown = 1;
@@ -2688,7 +2721,7 @@ function showWorldMap() {
     const it = h('div', 'item' + (owned || open ? '' : ' lock'));
     let tag = '', sub = '';
     if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = { cap: 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.', abq: 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.', lux: 'Nil, firavunların vadisi ve dünyanın en çetin balon pazarı.', bri: 'Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.' }[R.id]; }
-    else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
+    else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = sendsToHolding(R.id) ? `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.` : `Müdürün yönetiyor: kazanç bölgenin kasasında birikiyor (holdinge aktarım kapalı).`; sub += `${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
     else if (open && R.id === 'bri') { tag = '<span class="tag y">Açıldı</span>'; sub = `Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.`; }
     else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. Başlangıç kasası: ${eurH(5000)}. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.${needsPack('abq') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
@@ -3735,6 +3768,7 @@ function tabMarket(body) {
       c.appendChild(h('p', 'hint', crewNote(r)));
       const T = S.cash < r.offer && buyLoanTerms(r.offer);
       c.appendChild(T ? pbtn(`Krediyle devral (banka ${eur(T.fin)})`, () => buyLoanCard(r, false)) : pbtn(`Devral ${eur(r.offer)}`, () => takeOver(r), S.cash < r.offer));
+      { const wb = !T && buyLoanWhyBox(r.offer); if (wb) c.appendChild(wb); }
       t.appendChild(c);
     }
     if (r.forSale) {
@@ -3743,6 +3777,7 @@ function tabMarket(body) {
       c.appendChild(h('p', 'hint', crewNote(r, true)));
       const T = S.cash < r.forSale.price && buyLoanTerms(r.forSale.price);
       c.appendChild(T ? pbtn(`Krediyle satın al (banka ${eur(T.fin)})`, () => buyLoanCard(r, true)) : pbtn(`Satın al ${eur(r.forSale.price)}`, () => buyFleet(r), S.cash < r.forSale.price));
+      { const wb = !T && buyLoanWhyBox(r.forSale.price); if (wb) c.appendChild(wb); }
       t.appendChild(c);
     }
   });
@@ -3808,14 +3843,14 @@ function showReport() {
   tk.appendChild(h('div', 'perf'));
   const b = h('div', 'tbody'), led = h('div', 'led');
   const line = (k, v) => { if (!v) return; led.appendChild(h('div', null, `<span>${k}</span><span class="v ${v > 0 ? 'pos' : 'neg'}">${v > 0 ? '+' : ''}${eur(v)}</span>`)); };
-  line('Bilet geliri', L.rev); if (L.ctr) line(`Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.ctrWait) line('Rötar tazminatı (boş koltuklar)', L.ctrWait); if (L.ctrVoucher) line('Sis garantisi: kuponlar', -L.ctrVoucher); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
+  line('Bilet geliri', L.rev); if (L.ctr) line(L.ctrFrom ? `Grup: ${esc(L.ctrFrom)} (${L.ctrN} kişi)` : `Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.ctrWait) line('Rötar tazminatı (boş koltuklar)', L.ctrWait); if (L.ctrVoucher) line('Sis garantisi: kuponlar', -L.ctrVoucher); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
   line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan); if (L.xfer) line('Getirilen balonların bedeli', -L.xfer);
   line('Kaza: onarım', -L.repair); line('Kaza: yolcu tazminatı', -L.comp); line('Sigorta ödemesi', L.insPay);
-  line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize);  line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
+  line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize); if (L.showBack) line('Şölen ücreti iadesi', L.showBack);  line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
   led.appendChild(h('div', 'tot', `<span>Net</span><span class="v ${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span>`));
   led.appendChild(h('div', null, `<span>Kasa</span><span class="v">${eur(S.cash)}</span>`));
   b.appendChild(led);
-  if (L.hold) b.appendChild(h('div', 'callout grn', `<b>Holding kasasına +${eurH(L.hold)}.</b> ${Object.keys(S.regions || {}).map(id => REGION_DEF[id].name).join(', ')} otomatik modda kazandı, holding giderleri (%${Math.round(holdCostRate() * 100)}) düşüldü. Holding kasası: ${eurH(S.holding || 0)}.`));
+  if (L.hold) b.appendChild(h('div', 'callout grn', `<b>Holding kasasına +${eurH(L.hold)}.</b> ${Object.keys(S.regions || {}).filter(sendsToHolding).map(id => REGION_DEF[id].name).join(', ')} otomatik modda kazandı, holding giderleri (%${Math.round(holdCostRate() * 100)}) düşüldü. Holding kasası: ${eurH(S.holding || 0)}.`));
   /* v124.6: the stars, yesterday → today, with the biggest reasons */
   if (R.rep0 != null && stars(R.rep0) !== stars(R.rep1)) {
     const up = R.rep1 > R.rep0, why = Object.entries(R.repWhy || {}).filter(([, d]) => Math.abs(d) * 4 >= .02).sort((a, b) => Math.abs(b[1]) - Math.abs(a[1])).slice(0, 3);
@@ -4662,7 +4697,7 @@ function checkDeals() {
   c.appendChild(h('p', 'hint', crewNote(r, sale)));
   c.appendChild(h('p', 'hint', 'Rakipten alınan balonlar ikinci el sayılır: satarsan yeni fiyatının %40\'ı eder (yeni balonda %60).'));
   const T = S.cash < price && buyLoanTerms(price);
-  if (S.cash < price) c.appendChild(h('p', 'hint', T ? `Kasanda ${eur(S.cash)} var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.` : S.unl.bank && S.balloons.length < BUYLOAN.need ? `Kasanda ${eur(S.cash)} var. Satın alma kredisi için daha büyük bir filo gerekir. Gereken balon: ${BUYLOAN.need}, sende: ${S.balloons.length}.` : `Kasanda ${eur(S.cash)} var. Bankadan kredi çekip sonra Pazar sayfasından alabilirsin.`));
+  if (S.cash < price) { c.appendChild(h('p', 'hint', T ? `Kasanda ${eur(S.cash)} var. Eksiği satın alma kredisiyle bankaya ödetebilirsin.` : `Kasanda ${eur(S.cash)} var, fiyata ${eur(price - S.cash)} eksik.`)); const wb = !T && buyLoanWhyBox(price); if (wb) c.appendChild(wb); } /* v131: what blocks the loan, with the numbers */
   const yes = h('button', 'big', T ? `Krediyle al (banka ${eur(T.fin)})` : sale ? `Satın al ${eur(price)}` : `Devral ${eur(price)}`); yes.disabled = S.cash < price && !T;
   yes.onclick = () => T ? buyLoanCard(r, sale) : sale ? buyFleet(r) : takeOver(r);
   const row = h('div', 'btns');
@@ -7610,7 +7645,7 @@ function ctrSettle(Lg, ev, rev, paxTotal) {
       } else ev.push(`Kırmızı bayrak: ${w.co} grubu bugün uçmadı. Ödeme yok, ceza da yok.`);
     } else {
       const got = Math.min(mine.n, (S.plan.ctr && S.plan.ctr.held) || 0, paxTotal), short = mine.n - got;
-      Lg.rev -= got * S.price; Lg.ctr = got * mine.price; Lg.ctrN = got;
+      Lg.rev -= got * S.price; Lg.ctr = got * mine.price; Lg.ctrN = got; Lg.ctrFrom = w.co; /* v131: the report's line names the company */
       const pen = short * Math.round(mine.price * K.pen); Lg.ctrPen = pen;
       mine.got += got; mine.short += short; mine.flown++;
       Object.assign(R, { n: mine.n, got, short, rev: Lg.ctr, pen, price: mine.price, normal: Math.round(got * S.price * ((S.plan.ctr && S.plan.ctr.load) || 1)), lostRev: Math.round(((S.plan.ctr && S.plan.ctr.lost) || 0) * S.price) });
@@ -9107,6 +9142,9 @@ function holdingDay() {
   for (const id in (S.regions || {})) {
     const A = S.regions[id].auto; if (!A) continue;
     const mult = holdBoost(id) * officeMult(id);
+    /* v131: a region set to keep its money gets the same net (after the holding's running costs, so keeping it and
+       moving it by hand later is no way around them) in its own cash box and currency */
+    if (!sendsToHolding(id)) { A.kept = Math.round(Math.round((A.todayRaw || 0) * mult) * (1 - holdCostRate()) * REGION_DEF[id].fx); S.regions[id].cash += A.kept; continue; }
     gross += (A.todayRaw || 0) * mult;
   }
   gross = Math.round(gross);
@@ -9121,6 +9159,15 @@ function withdraw(share) {
   const keep = 10000, amt = Math.max(0, Math.floor(share === 1 ? S.cash - keep : S.cash * share));
   if (amt <= 0) return;
   S.cash -= amt; S.holding = (S.holding || 0) + amt / FX(); holdLog('inc', amt / FX()); sfx('coin'); refresh();
+}
+/* v131 (TestFlight): a parked region can keep its autopilot profit in its own cash box; the player moves it by hand */
+const sendsToHolding = id => !(S.hold && S.hold.keep && S.hold.keep[id]);
+function setSends(id, on) { const H = S.hold || (S.hold = {}), k = H.keep || (H.keep = {}); if (on) delete k[id]; else k[id] = 1; if (!Object.keys(k).length) delete H.keep; save(); hqRender(); }
+function withdrawFrom(id, share) {
+  if (id === S.region) return withdraw(share);
+  const rs = S.regions && S.regions[id]; if (!rs) return;
+  const keep = 10000, amt = Math.max(0, Math.floor(share === 1 ? rs.cash - keep : rs.cash * share)); if (amt <= 0) return;
+  rs.cash -= amt; const e = Math.round(amt / REGION_DEF[id].fx); S.holding = (S.holding || 0) + e; holdLog('inc', e); sfx('coin'); save(); hqRender(); refresh();
 }
 function holdBuy(cost, fn) { if ((S.holding || 0) < cost) return; S.holding -= cost; holdLog('exp', cost); fn(); sfx('coin'); refresh(); }
 /* holding nakit akışı kaydı: gelir (otomatik bölgeler, ülkelerden aktarım) ve gider (holding giderleri, yatırımlar) */
@@ -9197,7 +9244,8 @@ function hqRegions(body) {
   for (const R of REGIONS) {
     if (!ownsRegion(R.id) && !regionOpen(R.id)) continue;
     const here = R.id === S.region, rs = S.regions && S.regions[R.id], A = rs && rs.auto, it = h('div', 'item');
-    const sub = here ? 'Buradasın. Kasası ve bankası kendine ait.' : A ? `Otomatik mod: günde yaklaşık ${eurH(Math.round((A.todayRaw || A.base) * holdBoost(R.id)))} brüt.${A.issue ? ` <b>${ISSUES[A.issue.k].t}</b>, karar verene kadar yarıda.` : ''}` : `Giriş bedeli ${eurH(ENTRY_FEE)}, holding kasasından. Bölgede sıfırdan başlarsın: ${REGION_DEF[R.id].cur}3.000 ve bir küçük balon.`;
+    const send = sendsToHolding(R.id), cur = v => money(v, R.id);
+    const sub = here ? 'Buradasın. Kasası ve bankası kendine ait.' : A ? (send ? `Otomatik mod: günde yaklaşık ${eurH(Math.round((A.todayRaw || A.base) * holdBoost(R.id)))} brüt holdinge gelir.` : `Otomatik mod: kazanç bölgenin kasasında birikir (dün ${cur(A.kept || 0)}). Kasa: ${cur(rs.cash)}.`) + `${A.issue ? ` <b>${ISSUES[A.issue.k].t}</b>, karar verene kadar yarıda.` : ''}` : `Giriş bedeli ${eurH(ENTRY_FEE)}, holding kasasından. Bölgede sıfırdan başlarsın: ${REGION_DEF[R.id].cur}3.000 ve bir küçük balon.`;
     it.appendChild(h('div', 'main', `<div class="t">${R.name}${here ? ' <span class="tag g">Buradasın</span>' : A ? (A.issue ? ' <span class="tag r">Sorun var</span>' : ' <span class="tag y">Otomatik</span>') : ' <span class="tag y">Açıldı</span>'}${isBaron(R.id) ? ' <span class="tag g">Baron</span>' : ''}</div><div class="s">${sub}</div>`));
     const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
     if (A && A.issue) acts.appendChild(pbtn('Karar ver', () => showIssue(R.id)));
@@ -9206,6 +9254,14 @@ function hqRegions(body) {
     else if (!ownsRegion(R.id)) acts.appendChild(pbtn(`Gir ${eurH(entryFee(R.id))}`, () => { closePage(); enterRegion(R.id); }, (S.holding || 0) < entryFee(R.id)));
     if (acts.children.length) it.appendChild(acts);
     r.appendChild(it);
+    /* v131: the region's daily money to the holding, on or off; off, a button moves what piled up */
+    if (A && !here) {
+      const row = h('div', 'item'); row.style.cssText = 'margin-top:-4px;background:rgba(255,255,255,.55)';
+      row.appendChild(h('div', 'main', `<div class="t" style="font-size:15px">Kazancı her gün holdinge aktar</div><div class="s">${send ? 'Açık: otomatik kazanç her akşam holding kasasına geçer.' : 'Kapalı: kazanç bölgenin kasasında birikir, istediğinde aktarırsın.'}</div>`));
+      const tg = pbtn(send ? 'Açık' : 'Kapalı', () => setSends(R.id, !send), false, !send); tg.setAttribute('role', 'switch'); tg.setAttribute('aria-checked', send ? 'true' : 'false'); row.appendChild(tg);
+      r.appendChild(row);
+      if (!send) { const tb = pbtn(`${R.name} kasasından aktar (${cur(Math.max(0, rs.cash - 10000))}, ${cur(10000)} kalsın)`, () => withdrawFrom(R.id, 1), rs.cash <= 10000, true); tb.style.alignSelf = 'flex-start'; r.appendChild(tb); }
+    }
   }
   const mb = pbtn('Dünya haritası', showWorldMap, false, true); mb.style.alignSelf = 'flex-start'; r.appendChild(mb);
   body.appendChild(r);
