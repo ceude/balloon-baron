@@ -53799,37 +53799,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Holding hat die Firma gerettet, Lehrling. Region: %1$@. Sie hat %2$@ bezahlt, %3$@ sind in die Kasse geflossen. Das gibt es nur einmal: Geht sie wieder unter, kann die Holding nicht helfen. Halte die Kosten knapp."
+            "value": "Die Holding hat die Firma gerettet, Lehrling. Region: %1$@. Sie hat %2$@ bezahlt, %3$@ sind in die Kasse geflossen. Alle haben es gehört: Deine Beliebtheit hier ist um einen halben Stern gefallen. Das gibt es nur einmal: Geht sie wieder unter, kann die Holding nicht helfen. Halte die Kosten knapp."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The holding rescued the company, kid. Region: %1$@. It paid %2$@, and %3$@ went into the cash box. This happens once: if it sinks again, the holding can't save it. Keep the costs tight."
+            "value": "The holding rescued the company, kid. Region: %1$@. It paid %2$@, and %3$@ went into the cash box. Everyone heard: your popularity here fell half a star. This happens once: if it sinks again, the holding can't save it. Keep the costs tight."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El holding rescató la empresa, aprendiz. Región: %1$@. Pagó %2$@ y entraron %3$@ en la caja. Esto pasa una sola vez: si vuelve a hundirse, el holding no podrá salvarla. Controla los gastos."
+            "value": "El holding rescató la empresa, aprendiz. Región: %1$@. Pagó %2$@ y entraron %3$@ en la caja. Todos se enteraron: tu popularidad aquí bajó media estrella. Esto pasa una sola vez: si vuelve a hundirse, el holding no podrá salvarla. Controla los gastos."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ホールディングスが会社を救ったぞ、弟子よ。地域：%1$@。%2$@を払い、金庫に%3$@が入った。これは一度きりだ。また沈めば、ホールディングスでも救えん。出費を引き締めるのだ。"
+            "value": "ホールディングスが会社を救ったぞ、弟子よ。地域：%1$@。%2$@を払い、金庫に%3$@が入った。皆が知っておる。ここでの人気は星半分下がった。これは一度きりだ。また沈めば、ホールディングスでも救えん。出費を引き締めるのだ。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "지주회사가 회사를 구했네, 제자여. 지역: %1$@. %2$@를 냈고 금고에 %3$@가 들어갔네. 이건 한 번뿐일세. 또 가라앉으면 지주회사도 못 구하네. 지출을 줄이게."
+            "value": "지주회사가 회사를 구했네, 제자여. 지역: %1$@. %2$@를 냈고 금고에 %3$@가 들어갔네. 다들 알게 됐지. 이곳 인기가 별 반 개 떨어졌네. 이건 한 번뿐일세. 또 가라앉으면 지주회사도 못 구하네. 지출을 줄이게."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Holding şirketi kurtardı evlat. Bölge: %1$@. Holding %2$@ ödedi, kasaya %3$@ girdi. Bu bir kez olur; bir daha batarsa holding kurtaramaz. Masrafları sıkı tut."
+            "value": "Holding şirketi kurtardı evlat. Bölge: %1$@. Holding %2$@ ödedi, kasaya %3$@ girdi. Herkes duydu, popülerliğin burada yarım yıldız düştü. Bu bir kez olur; bir daha batarsa holding kurtaramaz. Masrafları sıkı tut."
           }
         }
       }
@@ -59447,6 +59447,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bölgeler"
+          }
+        }
+      }
+    },
+    "holding.sendHereOff": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aus. Solange du hier spielst, wird ohnehin nichts überwiesen; im Autopiloten sammelt sich der Gewinn dann in der eigenen Kasse der Region."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Off. Nothing is sent while you play here anyway; once it's on autopilot, its profit will pile up in its own cash box."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desactivado. Mientras juegas aquí no se envía nada de todos modos; con el piloto automático, el beneficio se acumulará en su propia caja."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフ。ここでプレイしている間はもともと送らない。自動運営になっても、利益は地域の金庫にたまる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "꺼짐. 여기서 플레이하는 동안에는 어차피 보내지 않아요. 자동 운영이 되어도 수익은 지역 금고에 쌓여요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kapalı. Bu bölgede oynarken zaten aktarılmaz; otomatik moda geçince de kazanç bölgenin kasasında birikir."
+          }
+        }
+      }
+    },
+    "holding.sendHereOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "An. Solange du in dieser Region spielst, wird nichts überwiesen; nur im Autopiloten, während du woanders bist, geht ihr Gewinn jeden Abend an die Holding."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "On. Nothing is sent while you play in this region; only on autopilot, while you're elsewhere, does its profit reach the holding each evening."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activado. Mientras juegas en esta región no se envía nada; solo con el piloto automático, mientras estás en otra parte, su beneficio llega al holding cada tarde."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オン。この地域でプレイしている間は送らない。自動運営で、あなたが他の地域にいる間だけ、利益が毎晩ホールディングスに入る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "켜짐. 이 지역에서 플레이하는 동안에는 보내지 않아요. 다른 지역에 가서 자동 운영이 될 때만 매일 저녁 수익이 지주회사로 들어가요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Açık. Bu bölgede oynarken aktarılmaz; yalnız otomatik modda, sen başka bölgedeyken, kazanç her akşam holding kasasına geçer."
           }
         }
       }
@@ -82130,37 +82212,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Holding springt ein: %@"
+            "value": "Rettung durch die Holding: %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The holding steps in: %@"
+            "value": "Holding bailout: %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El holding interviene: %@"
+            "value": "Rescate del holding: %@"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ホールディングスが介入：%@"
+            "value": "ホールディングスが救済：%@"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "지주회사 개입: %@"
+            "value": "지주회사 구제: %@"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Holding devreye girdi: %@"
+            "value": "Holding kurtardı: %@"
           }
         }
       }
@@ -82171,37 +82253,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die Firma hat ihren letzten Ballon im letzten Moment vor der Bank bewahrt. Region: %@."
+            "value": "Die Firma stand vor dem Aus, ihre Holding hat bezahlt. Die Kunden sind verunsichert. Region: %@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The company kept its last balloon from the bank at the last moment. Region: %@."
+            "value": "The company was about to go under and its holding paid up. Customers are uneasy. Region: %@."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La empresa salvó su último globo del banco en el último momento. Región: %@."
+            "value": "La empresa estaba a punto de hundirse y su holding pagó. Los clientes están inquietos. Región: %@."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "会社は最後の気球を土壇場で銀行から守った。地域：%@。"
+            "value": "会社は倒産寸前で、ホールディングスが資金を出した。客は不安げだ。地域：%@。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "회사가 마지막 순간에 마지막 열기구를 은행에서 지켜냈습니다. 지역: %@."
+            "value": "회사가 무너지기 직전이었고 지주회사가 돈을 댔습니다. 손님들은 불안해합니다. 지역: %@."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Şirket son balonunu bankaya kaptırmaktan son anda kurtuldu. Bölge: %@."
+            "value": "Şirket batmak üzereydi, holding parayı bastı. Müşteriler tedirgin. Bölge: %@."
           }
         }
       }
@@ -97546,37 +97628,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kasse %1$@ → %2$@. Dein Ballon und deine Kredite bleiben; der Zähler der Bank beginnt neu."
+            "value": "Kasse %1$@ → %2$@. Beliebtheit %3$@ → %4$@. Dein Ballon und deine Kredite bleiben; der Zähler der Bank beginnt neu."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cash %1$@ → %2$@. Your balloon and loans stay; the bank's count starts again."
+            "value": "Cash %1$@ → %2$@. Popularity %3$@ → %4$@. Your balloon and loans stay; the bank's count starts again."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Caja %1$@ → %2$@. Tu globo y tus préstamos se quedan; la cuenta del banco vuelve a empezar."
+            "value": "Caja %1$@ → %2$@. Popularidad %3$@ → %4$@. Tu globo y tus préstamos se quedan; la cuenta del banco vuelve a empezar."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "資金 %1$@ → %2$@。気球と借入はそのまま。銀行のカウントはリセット。"
+            "value": "資金 %1$@ → %2$@。人気 %3$@ → %4$@。気球と借入はそのまま。銀行のカウントはリセット。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "금고 %1$@ → %2$@. 열기구와 대출은 그대로이고, 은행 카운트는 다시 시작됩니다."
+            "value": "금고 %1$@ → %2$@. 인기 %3$@ → %4$@. 열기구와 대출은 그대로이고, 은행 카운트는 다시 시작됩니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kasa %1$@ → %2$@. Balonun ve kredilerin yerinde kalır; banka sayacı sıfırlanır."
+            "value": "Kasa %1$@ → %2$@. Popülerlik %3$@ → %4$@. Balonun ve kredilerin yerinde kalır; banka sayacı sıfırlanır."
           }
         }
       }
@@ -97745,6 +97827,170 @@
         }
       }
     },
+    "ruin.damage": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Was die Rettung kostet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "What the rescue costs"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo que cuesta el rescate"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "救済の代償"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "구조의 대가"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kurtarmanın bedeli"
+          }
+        }
+      }
+    },
+    "ruin.dmg.cost": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ aus der Holding-Kasse."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ from the holding's cash."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ de la caja del holding."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホールディングス資金から%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지주회사 금고에서 %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Holding kasasından: %@."
+          }
+        }
+      }
+    },
+    "ruin.dmg.once": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nur ein einziges Mal: Die Holding kann diese Region nie wieder retten, auch nicht, wenn sie schließt und du sie neu betrittst."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "One chance only: the holding can never rescue this region again, not even after it closes and you enter it again."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo una vez: el holding nunca podrá volver a rescatar esta región, ni siquiera si cierra y vuelves a entrar."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一度きり：ホールディングスはこの地域を二度と救えない。閉鎖して再参入しても同じ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "단 한 번: 지주회사는 이 지역을 다시는 구할 수 없어요. 문을 닫고 다시 들어가도 마찬가지예요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tek hak: holding bu bölgeyi bir daha asla kurtaramaz, bölge kapanıp yeniden girilse de."
+          }
+        }
+      }
+    },
+    "ruin.dmg.rep": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beliebtheit hier: %1$@ → %2$@. Die Zeitung berichtet über die Rettung."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularity here: %1$@ → %2$@. The paper will run the bailout."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularidad aquí: %1$@ → %2$@. El periódico publicará el rescate."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "この地域の人気：%1$@ → %2$@。新聞が救済を報じる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이 지역 인기: %1$@ → %2$@. 신문이 구제 소식을 실어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bu bölgede popülerlik: %1$@ → %2$@. Gazete kurtarmayı yazar."
+          }
+        }
+      }
+    },
     "ruin.hez": {
       "extractionState": "manual",
       "localizations": {
@@ -97833,37 +98079,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ fließen in die Kasse der Region, die wieder auf %2$@ steht. Der Preis ist das Dreifache des eingezahlten Geldes oder ein Zehntel der Holding-Kasse, je nachdem, was mehr ist, mindestens %3$@. Einmal pro Region."
+            "value": "%1$@ fließen in die Kasse der Region, die wieder auf %2$@ steht. Der Preis ist das Dreifache des eingezahlten Geldes oder ein Viertel der Holding-Kasse, je nachdem, was mehr ist, mindestens %3$@."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ goes into the region's cash, which comes back to %2$@. The price is three times the money put in or a tenth of the holding's cash, whichever is more, and at least %3$@. Once per region."
+            "value": "%1$@ goes into the region's cash, which comes back to %2$@. The price is three times the money put in or a quarter of the holding's cash, whichever is more, and at least %3$@."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Entran %1$@ en la caja de la región, que vuelve a %2$@. El precio es el triple del dinero aportado o una décima parte de la caja del holding, lo que sea mayor, y como mínimo %3$@. Una vez por región."
+            "value": "Entran %1$@ en la caja de la región, que vuelve a %2$@. El precio es el triple del dinero aportado o una cuarta parte de la caja del holding, lo que sea mayor, y como mínimo %3$@."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "地域の資金に%1$@が入り、%2$@に戻る。代価は投入額の3倍かホールディングス資金の10分の1の多いほう、最低%3$@。各地域につき1回だけ。"
+            "value": "地域の資金に%1$@が入り、%2$@に戻る。代価は投入額の3倍かホールディングス資金の4分の1の多いほう、最低%3$@。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "지역 금고에 %1$@이 들어가 %2$@가 됩니다. 대가는 넣은 돈의 3배와 지주회사 금고의 10분의 1 중 큰 쪽이며, 최소 %3$@입니다. 지역마다 한 번."
+            "value": "지역 금고에 %1$@이 들어가 %2$@가 됩니다. 대가는 넣은 돈의 3배와 지주회사 금고의 4분의 1 중 큰 쪽이며, 최소 %3$@입니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bölgenin kasasına %1$@ girer, kasa %2$@ olur. Bedel kurtarılan paranın üç katı ya da holding kasasının %%10'u (hangisi büyükse), en az %3$@. Her bölge için bir kez."
+            "value": "Bölgenin kasasına %1$@ girer, kasa %2$@ olur. Bedel kurtarılan paranın üç katı ya da holding kasasının %%25'i (hangisi büyükse), en az %3$@."
           }
         }
       }

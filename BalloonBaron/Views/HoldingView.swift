@@ -228,7 +228,7 @@ struct HoldingView: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
                 regionActions(r, here: here, auto: auto, game)
             }
-            if !here, auto != nil { sendControls(r, s) }
+            if here || auto != nil { sendControls(r, s, here: here) }
         }
         .padding(12)
         .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 14))
@@ -239,9 +239,12 @@ struct HoldingView: View {
 
     /// v131 (TestFlight): a parked region's daily delivery to the holding, on (the default) or off. Off, the profit
     /// stays in the region's cash box and a button moves it to the holding, leaving `Holding.withdrawKeep`.
+    /// v134 (TestFlight): the region you're in has the switch too (it had none, so the choice looked lost after
+    /// travelling). Nothing flows while you play there; the choice applies once it is parked on autopilot.
     @ViewBuilder
-    private func sendControls(_ r: RegionID, _ s: GameState) -> some View {
+    private func sendControls(_ r: RegionID, _ s: GameState, here: Bool) -> some View {
         let on = s.holding.sends(r)
+        let note = here ? (on ? "holding.sendHereOn" : "holding.sendHereOff") : (on ? "holding.sendOn" : "holding.sendOff")
         Rectangle().fill(HoldingLux.border).frame(height: 1)
         Button {
             SoundEngine.shared.play(.click)
@@ -252,7 +255,7 @@ struct HoldingView: View {
                     Text(loc("holding.sendTitle"))
                         .font(Theme.font(15, .bold))
                         .foregroundStyle(HoldingLux.title)
-                    Text(loc(on ? "holding.sendOn" : "holding.sendOff"))
+                    Text(loc(note))
                         .font(Theme.font(13))
                         .foregroundStyle(HoldingLux.sub)
                         .fixedSize(horizontal: false, vertical: true)
@@ -266,9 +269,9 @@ struct HoldingView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(loc("holding.sendTitle"))
         .accessibilityValue(loc(on ? "a11y.on" : "a11y.off"))
-        .accessibilityHint(loc(on ? "holding.sendOn" : "holding.sendOff"))
+        .accessibilityHint(loc(note))
         .accessibilityAddTraits(.isButton)
-        if !on, let cash = s.parked[r]?.state.cash {
+        if !on, !here, let cash = s.parked[r]?.state.cash {
             let amount = max(0, cash - Holding.withdrawKeep)
             HStack(alignment: .center, spacing: 10) {
                 Text(loc("holding.moveHint", money(Holding.withdrawKeep, in: r)))

@@ -596,12 +596,11 @@ struct RuinView: View {
                 if let used = q.usedOn {
                     ProtoCallout(tone: .red, title: loc("ruin.used", num(used)), text: loc("ruin.used.body"))
                 } else {
-                    let price = loc("ruin.price", eur(q.added), eur(Bankruptcy.rescueTarget), eurH(Bankruptcy.rescueMin))
-                    let after = q.affordable ? loc("ruin.holding", eurH(q.holdingCash), eurH(q.holdingAfter))
-                        : loc("ruin.short", eurH(q.holdingCash), eurH(q.cost - q.holdingCash))
-                    ProtoCallout(tone: .yellow, title: loc("ruin.cost", eurH(q.cost)), text: price + " " + after)
+                    damage(q)
                 }
-                option(loc("ruin.accept", eurH(q.cost)), loc("ruin.accept.sub", eur(s.cash), eur(s.cash + q.added)), enabled: q.affordable) {
+                option(loc("ruin.accept", eurH(q.cost)),
+                       loc("ruin.accept.sub", eur(s.cash), eur(s.cash + q.added), starsText(q.repFrom), starsText(q.repTo)),
+                       enabled: q.affordable, danger: true) {
                     store.answerRuin(rescue: true)
                 }
                 option(loc("ruin.close", r.title),
@@ -612,21 +611,50 @@ struct RuinView: View {
         }
     }
 
-    private func option(_ title: String, _ sub: String, enabled: Bool, _ f: @escaping () -> Void) -> some View {
+    /// v134 (TestFlight: "otherwise it's an infinite extra life"): the whole damage before the player says yes: the
+    /// euros, the holding's cash before and after, the popularity lost, and that it never comes back for this region.
+    private func damage(_ q: RescueQuote) -> some View {
+        let ink = Color(hex: "#8c2414")
+        let after = q.affordable ? loc("ruin.holding", eurH(q.holdingCash), eurH(q.holdingAfter))
+            : loc("ruin.short", eurH(q.holdingCash), eurH(q.cost - q.holdingCash))
+        let lines = [loc("ruin.dmg.cost", eurH(q.cost)) + " " + after,
+                     loc("ruin.dmg.rep", starsText(q.repFrom), starsText(q.repTo)),
+                     loc("ruin.dmg.once")]
+        return VStack(alignment: .leading, spacing: 7) {
+            Text(loc("ruin.damage")).font(Theme.font(15, .heavy))
+            ForEach(lines.indices, id: \.self) { i in
+                HStack(alignment: .firstTextBaseline, spacing: 7) {
+                    Circle().fill(Theme.red).frame(width: 6, height: 6).alignmentGuide(.firstTextBaseline) { $0[.bottom] - 1 }
+                    Text(lines[i]).font(Theme.font(14, i == 2 ? .bold : .regular))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Text(loc("ruin.price", eur(q.added), eur(Bankruptcy.rescueTarget), eurH(Bankruptcy.rescueMin)))
+                .font(Theme.font(12.5)).opacity(0.85)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .foregroundStyle(ink)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal, 14).padding(.vertical, 12)
+        .background(Color(hex: "#fde6e2"), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Theme.red, lineWidth: 2))
+    }
+
+    private func option(_ title: String, _ sub: String, enabled: Bool, danger: Bool = false, _ f: @escaping () -> Void) -> some View {
         Button {
             SoundEngine.shared.play(.click)
             f()
         } label: {
             VStack(alignment: .leading, spacing: 3) {
-                Text(title).font(Theme.font(15.5, .bold)).foregroundStyle(Theme.ink)
+                Text(title).font(Theme.font(15.5, .bold)).foregroundStyle(danger ? Color(hex: "#8c2414") : Theme.ink)
                     .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
                 Text(sub).font(Theme.font(13)).foregroundStyle(Theme.ink2)
                     .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 14).padding(.vertical, 12)
-            .background(Color.white, in: RoundedRectangle(cornerRadius: 16))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(Theme.line, lineWidth: 2))
+            .background(danger ? Color(hex: "#fff4f2") : Color.white, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(danger ? Theme.red : Theme.line, lineWidth: 2))
         }
         .buttonStyle(.plain)
         .disabled(!enabled)
