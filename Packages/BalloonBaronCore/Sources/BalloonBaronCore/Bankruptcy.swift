@@ -10,11 +10,13 @@ public enum Bankruptcy {
     /// The rescue puts the region's cash back up to this (in the region's money)...
     public static let rescueTarget = 10000
     /// ...for this many times the money put in, in euros, or this share of the holding's cash, whichever is more, and
-    /// never less than `rescueMin`. tools/sim-bankrupt.js: holdings are ~€3 million when it fires, where the €100,000
-    /// floor alone was 3% of it; the share keeps it painful for a rich holding.
+    /// never less than `rescueMin`. v134 (TestFlight: "otherwise it's an infinite extra life"): a quarter and €250,000
+    /// (v133: a tenth and €100,000). tools/sim-bankrupt.js: holdings are ~€3 million when it fires.
     public static let rescueMultiplier = 3.0
-    public static let rescueHoldingShare = 0.1
-    public static let rescueMin = 100000
+    public static let rescueHoldingShare = 0.25
+    public static let rescueMin = 250000
+    /// v134: the bailout is news; the region's popularity drops by this much (0.125 = half a star).
+    public static let rescueRepLoss = 0.125
 }
 
 /// What the holding's rescue would cost now.
@@ -26,6 +28,9 @@ public struct RescueQuote: Equatable, Sendable {
     public var usedOn: Int?
     /// The holding's cash now.
     public var holdingCash: Int
+    /// v134: the region's popularity now and after the rescue.
+    public var repFrom: Double
+    public var repTo: Double
     public var affordable: Bool { usedOn == nil && holdingCash >= cost }
     public var holdingAfter: Int { holdingCash - cost }
 }
@@ -47,7 +52,8 @@ extension GameState {
         let euros = Double(added) / region.fx * Bankruptcy.rescueMultiplier
         let share = Double(max(0, holding.cash)) * Bankruptcy.rescueHoldingShare
         let cost = max(Bankruptcy.rescueMin, Int((euros / 1000).rounded(.up)) * 1000, Int((share / 1000).rounded(.up)) * 1000)
-        return RescueQuote(added: added, cost: cost, usedOn: holding.rescued?[region], holdingCash: holding.cash)
+        return RescueQuote(added: added, cost: cost, usedOn: holding.rescued?[region], holdingCash: holding.cash,
+                           repFrom: local.rep, repTo: max(Rules.repRange.lowerBound, local.rep - Bankruptcy.rescueRepLoss))
     }
 
     /// Where a closed region's player goes: the other region with the biggest fleet (nil: this one starts afresh).
@@ -58,13 +64,16 @@ extension GameState {
 }
 
 extension Game {
-    /// The holding pays and the region's cash goes back up to `Bankruptcy.rescueTarget`. Once per region.
+    /// The holding pays and the region's cash goes back up to `Bankruptcy.rescueTarget`. Once per region, for good:
+    /// `Holding.rescued` is never cleared, not even when the region closes and is entered again. v134: the region's
+    /// popularity drops by `Bankruptcy.rescueRepLoss`.
     @discardableResult
     public mutating func acceptHoldingRescue() -> Bool {
         let q = state.rescueQuote
         guard state.ruinPending != nil, q.affordable, spendHolding(q.cost) else { return false }
         state.holding.rescued = (state.holding.rescued ?? [:]).merging([state.region: state.day]) { _, b in b }
         state.local.cash += q.added
+        state.rep = q.repTo
         state.local.debtDays = nil
         state.ruinPending = nil
         state.rescueShown = nil

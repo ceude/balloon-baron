@@ -97,18 +97,18 @@ final class Bankruptcy133Tests: XCTestCase {
         let cash = g.state.cash
         let q = g.state.rescueQuote
         XCTAssertEqual(q.added, Bankruptcy.rescueTarget - cash)
-        // a tenth of €2,000,000 beats three times the money put in and the €100,000 floor
-        XCTAssertEqual(q.cost, 200_000)
+        // v134: a quarter of €2,000,000 beats three times the money put in and the €250,000 floor
+        XCTAssertEqual(q.cost, 500_000)
         XCTAssertGreaterThanOrEqual(q.cost, Int(Double(q.added) / RegionID.abq.fx * 3))
         XCTAssertTrue(q.affordable)
-        XCTAssertEqual(q.holdingAfter, 1_800_000)
+        XCTAssertEqual(q.holdingAfter, 1_500_000)
         XCTAssertTrue(g.acceptHoldingRescue())
         XCTAssertEqual(g.state.cash, Bankruptcy.rescueTarget)
-        XCTAssertEqual(g.state.holding.cash, 1_800_000)
+        XCTAssertEqual(g.state.holding.cash, 1_500_000)
         XCTAssertNil(g.state.ruinPending)
         XCTAssertNil(g.state.local.debtDays)
         XCTAssertNotNil(g.state.holding.rescued?[.abq])
-        XCTAssertTrue(g.state.hezQueue.contains(.holdingRescued(.abq, cost: 200_000, added: q.added)))
+        XCTAssertTrue(g.state.hezQueue.contains(.holdingRescued(.abq, cost: 500_000, added: q.added)))
         // once per region: the next time, the region closes
         _ = g.startNight()
         g.startDay()
@@ -124,12 +124,12 @@ final class Bankruptcy133Tests: XCTestCase {
     }
 
     func testRescueMinimumAndPoorHolding() {
-        var g = withHolding(holding: 150_000)
+        var g = withHolding(holding: 300_000)
         for _ in 0..<3 { close(&g, cash: -10_000) }
         let q = g.state.rescueQuote
         XCTAssertEqual(q.cost, Bankruptcy.rescueMin)
         XCTAssertTrue(q.affordable)
-        g.state.holding.cash = 90_000
+        g.state.holding.cash = 240_000
         XCTAssertFalse(g.state.rescueQuote.affordable)
         XCTAssertFalse(g.acceptHoldingRescue())
         XCTAssertNotNil(g.state.ruinPending)
@@ -230,5 +230,77 @@ final class Bankruptcy133Tests: XCTestCase {
         XCTAssertNil(back.local.debtDays)
         XCTAssertNil(back.holding.rescued)
         XCTAssertEqual(back.graceDaysLeft, Rules.flagshipGraceDays)
+    }
+}
+
+/// v134 (TestFlight: "otherwise it's an infinite extra life"): the holding's rescue costs the largest of 3x the money,
+/// a quarter of the holding or €250,000, takes half a star of the region's popularity, and is once per region for good.
+extension Bankruptcy133Tests {
+    func ruined(_ g: inout Game) {
+        for _ in 0..<3 { close(&g, cash: -30_000) }
+        XCTAssertNotNil(g.state.ruinPending)
+    }
+
+    func test134PriceIsTheLargestOfTheThree() {
+        var g = withHolding(holding: 600_000)
+        ruined(&g)
+        // a quarter of €600,000 is €150,000 and 3x the money put in is small: the €250,000 floor
+        XCTAssertEqual(g.state.rescueQuote.cost, 250_000)
+        g.state.holding.cash = 4_000_000
+        XCTAssertEqual(g.state.rescueQuote.cost, 1_000_000, "a quarter of a rich holding")
+        g.state.cash = -2_000_000
+        let q = g.state.rescueQuote
+        XCTAssertEqual(q.cost, Int((Double(q.added) / RegionID.abq.fx * 3 / 1000).rounded(.up)) * 1000, "3x a deep hole")
+        XCTAssertGreaterThan(q.cost, 1_000_000)
+        g.state.holding.cash = 249_000
+        g.state.cash = -30_000
+        XCTAssertFalse(g.state.rescueQuote.affordable, "below the floor: no rescue, the region closes")
+        XCTAssertFalse(g.acceptHoldingRescue())
+    }
+
+    func test134RescueCostsHalfAStarAndMakesTheNews() throws {
+        var g = withHolding(holding: 2_000_000)
+        ruined(&g)
+        g.state.rep = 1.0
+        let q = g.state.rescueQuote
+        XCTAssertEqual(q.repFrom, 1.0)
+        XCTAssertEqual(q.repTo, 1.0 - Bankruptcy.rescueRepLoss, accuracy: 1e-9)
+        XCTAssertEqual(Rules.stars(q.repFrom) - Rules.stars(q.repTo), 0.5, accuracy: 1e-9, "half a star")
+        XCTAssertTrue(g.acceptHoldingRescue())
+        XCTAssertEqual(g.state.rep, 0.875, accuracy: 1e-9)
+        XCTAssertEqual(g.state.paperNext?.contains(.holdingRescue(.abq)), true, "the bailout headline")
+        // never below the popularity floor
+        var h = withHolding(holding: 2_000_000)
+        ruined(&h)
+        h.state.rep = Rules.repRange.lowerBound + 0.01
+        XCTAssertTrue(h.acceptHoldingRescue())
+        XCTAssertEqual(h.state.rep, Rules.repRange.lowerBound)
+    }
+
+    func test134OncePerRegionEvenAfterClosingAndReentering() throws {
+        var g = withHolding(holding: 3_000_000)
+        ruined(&g)
+        XCTAssertTrue(g.acceptHoldingRescue())
+        let day = try XCTUnwrap(g.state.holding.rescued?[.abq])
+        _ = g.startNight()
+        g.startDay()
+        ruined(&g)
+        XCTAssertEqual(g.state.rescueQuote.usedOn, day)
+        g.closeRegion()
+        XCTAssertEqual(g.state.region, .cap)
+        XCTAssertFalse(g.state.owns(.abq))
+        XCTAssertEqual(g.state.holding.rescued?[.abq], day, "closing keeps the record")
+        // entered again, from scratch, and broke again
+        g.state.holding.cash = 3_000_000
+        XCTAssertTrue(g.enterRegion(.abq))
+        XCTAssertEqual(g.state.holding.rescued?[.abq], day, "re-entering keeps the record")
+        g.state.balloons = [g.state.balloons.first { $0.id == g.state.flagship }!]
+        ruined(&g)
+        XCTAssertEqual(g.state.rescueQuote.usedOn, day)
+        XCTAssertFalse(g.state.rescueQuote.affordable)
+        XCTAssertFalse(g.acceptHoldingRescue())
+        // and through a save
+        let back = try JSONDecoder().decode(GameState.self, from: JSONEncoder().encode(g.state))
+        XCTAssertEqual(back.holding.rescued?[.abq], day)
     }
 }
