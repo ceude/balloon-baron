@@ -7,3 +7,9 @@ build/
 .swiftpm/
 Package.resolved
 __pycache__/
+
+# Store screenshots and App Previews live on the appstore-assets branch, not on main
+marketing/appstore/*-v2/iphone/
+marketing/appstore/*-v2/ipad/
+marketing/appstore/*-v2/preview/
+marketing/appstore/*-v2/overview.jpg
