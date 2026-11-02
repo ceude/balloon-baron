@@ -1,24 +1,28 @@
-// Usage: NODE_PATH=$(npm root -g) node tools/sim-campaign.js [seeds=6] [maxDays=1400] [firstSeed=1]
+// Usage: NODE_PATH=$(npm root -g) node tools/sim-campaign.js [seeds=6] [maxDays=1400] [firstSeed=1] [postDays=0]
+// v137: the bot buys all six offices and all four R&D levels (the new holding goals); prints the average day each
+// holding goal is met. With postDays > 0 it plays on after World Baron, buys the v137 sinks (the documentary, the
+// records) when the holding can, and prints the holding's cash every 50 days.
 // v123: a bot plays the whole game: Cappadocia, then Albuquerque and Luxor (Grand Tour owned), then the holding goals
 // (World Baron). v126: Cappadocia's charter offers (taken like the others; a late plane: seats kept when it makes the morning with ≥50%). v124: Bristol after Luxor (Night Glow booked when a chapter wants it), and the World Games show at the end. Prints per seed: chapter end days per region, entry days, baron days, holding cash at each baron.
 const { chromium } = require('playwright');
-const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM = +(process.argv[4] || 1);
+const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM = +(process.argv[4] || 1), POST = +(process.argv[5] || 0);
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 390, height: 800 } });
   p.on('pageerror', e => console.error('ERR', e.message));
   await p.goto('file://' + require('path').resolve(__dirname, '../prototype/balloon-baron.html')); await p.waitForTimeout(600);
   const res = [];
   for (let seed = FROM; seed < FROM + SEEDS; seed++) {
-    res.push(await p.evaluate(([seed, DAYS]) => {
+    res.push(await p.evaluate(([seed, DAYS, POST]) => {
       let a = seed * 9301 + 49297; Math.random = () => { a = (a * 9301 + 49297) % 233280; return a / 233280; };
       sfx = () => {}; save = () => {}; showReport = () => {}; refresh = () => {}; buildWorld = () => {}; nextPopup = () => {}; showTravel = () => {}; applyRegionTheme = () => {};
       const realStart = startDay; startDay = () => {};
       startFlight = () => finishDay({ q: Math.random() < .3 ? 'perfect' : Math.random() < .85 ? 'good' : 'far', dist: 60, mis: S.weather.mission, mok: !!S.weather.mission && Math.random() < .6 });
       S = newState(); S.company = 'Bot'; S.weather = newWeather(); S.demand = dayDemand(); rivalFlyPlan();
       S.iap = { worldTour: 1 }; /* the player bought the Grand Tour */
-      const L = { ch: { cap: [], abq: [], lux: [], bri: [] }, enter: { cap: 1 }, baron: {}, world: 0, hold: [], err: null, stuck: null };
+      const L = { ch: { cap: [], abq: [], lux: [], bri: [] }, enter: { cap: 1 }, baron: {}, world: 0, hold: [], err: null, stuck: null, goals: {}, post: [] };
+      let postEnd = 0;
       const NEXT = { cap: 'abq', abq: 'lux', lux: 'bri' };
-      const HQ_ORDER = ['ist', 'nyc', 'tyo', 'sel'];
+      const HQ_ORDER = typeof OFFICE_RATE6 !== 'undefined' ? ['ist', 'nyc', 'tyo', 'sel', 'dxb', 'par'] : ['ist', 'nyc', 'tyo', 'sel'];
       for (let d = 0; d < DAYS; d++) {
         for (const k of S.hezQ) if (!/^(news|boss|hz|ctr|insp|guide):/.test(k)) S.tips[k] = 1; /* v126: the player read yesterday's cards (a tip shows once) */
         if (S.day >= (S.nextEvent || 12)) S.nextEvent = S.day + 7 + Math.round(Math.random()); /* v126: startDay's morning-event cadence (startDay is stubbed); Cappadocia's charter offers wait for a morning without one */
@@ -42,10 +46,15 @@ const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM =
           if (isBaron() && S.cash > 30000) withdraw(1); /* not from Bristol while it is still growing */
           const H = S.hold || (S.hold = { log: [] }), buy = (c, f) => { if ((S.holding || 0) >= c) { S.holding -= c; f(); return true; } return false; };
           for (const k of HQ_ORDER) if (!hasOffice(k) && buy(HQ_CITIES[k].cost, () => { H.offices = Object.assign({}, H.offices, { [k]: S.day }); })) L.hold.push(k + '@' + S.day);
-          if ((H.rnd || 0) < 2 && buy(RD_LEVELS[H.rnd || 0].cost, () => { H.rnd = (H.rnd || 0) + 1; })) L.hold.push('rnd@' + S.day);
+          if ((H.rnd || 0) < RD_LEVELS.length && buy(RD_LEVELS[H.rnd || 0].cost, () => { H.rnd = (H.rnd || 0) + 1; })) L.hold.push('rnd@' + S.day);
           if (!(H.tvN) && buy(tvCost(), () => { H.tvN = 1; (H.tv = H.tv || {})[S.region] = { until: S.day + 14, cd: S.day + 30 }; })) L.hold.push('tv@' + S.day); /* v136: TV for the region you're in */
           if (!H.celeb && buy(celebCost(), () => { H.celeb = { name: 'X', until: S.day + 90 }; })) L.hold.push('celeb@' + S.day);
           if (isBaron('bri') && !H.wg && buy(WGAMES.cost, () => { H.wg = { until: S.day + WGAMES.days }; })) L.hold.push('wg@' + S.day);
+          /* v137: after World Baron, the new sinks: a documentary season whenever one can be made, then the records */
+          if (H.worldBaron && typeof DOC !== 'undefined') {
+            if (!docOn() && !(H.doc && H.doc.next > S.day) && buy(docCost(), () => { H.doc = { until: S.day + DOC.days, next: S.day + DOC.days + DOC.gap, n: ((H.doc && H.doc.n) || 0) + 1 }; repAll(DOC.rep); })) L.hold.push('doc@' + S.day);
+            for (const k of ['alt', 'world', 'pacific']) { const R = RECORDS[k]; if (!H.rec && !(H.records && H.records[k]) && !(R.after && !(H.records && H.records[R.after])) && buy(recCost(k), () => { H.rec = { k, done: S.day + R.days }; })) L.hold.push(k + '@' + S.day); }
+          }
         }
         /* v125: a contract offer: take it when it fits 85% of the fleet's seats (and, in Bristol, the fog forecast averages 45% or less); nothing brought along on entering */
         if (typeof ctrState === 'function' && ctrCfg() && ctrState().offer) { const O = ctrState().offer, fog = O.fogP ? O.fogP.reduce((x, y) => x + y, 0) / O.fogP.length : 0; if (O.n <= fleetSeats() * .85 && fog <= .45) ctrAccept(); else ctrDecline(); } S.xfer = null;
@@ -81,17 +90,24 @@ const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM =
         try { launch(S.weather.flag === 'red'); } catch (e) { L.err = e.message + ' @' + day; break; }
         if ((S.chapter || 0) > ch0 && S.region === reg) L.ch[reg].push(day);
         for (const id of ['cap', 'abq', 'lux', 'bri']) if (S.barons && S.barons[id] && !L.baron[id]) { L.baron[id] = S.barons[id]; L['hold_' + id] = Math.round(S.holding || 0); L['cash_' + id] = Math.round(S.cash); L['auto_' + id] = Object.keys(S.regions || {}).map(k => k + ':' + Math.round((S.regions[k].auto || {}).base || 0)).join(' '); }
-        if (S.hold && S.hold.worldBaron) { L.world = S.hold.worldBaron; break; }
+        if (typeof HOLD_GOALS !== 'undefined') HOLD_GOALS.forEach(g => { if (L.goals[g[0]] == null && g[1]()) L.goals[g[0]] = S.day; });
+        if (S.hold && S.hold.worldBaron && !L.world) { L.world = S.hold.worldBaron; postEnd = S.day + POST; }
+        if (L.world && S.day % 50 === 0) L.post.push([S.day, Math.round(S.holding || 0), Math.round((S.hold.today || {}).gross || 0)]);
+        if (L.world && S.day >= postEnd) break;
         if (S.over) { L.err = 'bankrupt @' + day; break; }
       }
       if (!L.world) { const C = chap()[S.chapter || 0]; L.stuck = { day: S.day, region: S.region, ch: S.chapter, goals: C ? C.goals.map(g => g[0] + '=' + Math.round(goalVal(g[0]) * 100) / 100 + '/' + g[1]) : HOLD_GOALS.map(g => g[0] + ':' + g[1]()), holding: Math.round(S.holding || 0), cash: Math.round(S.cash) }; }
       startDay = realStart;
       return L;
-    }, [seed, DAYS]));
+    }, [seed, DAYS, POST]));
   }
   
   /* per region: days from entering to each chapter's end (the last one is the baron) */
   for (const r of res) { const per = {}; for (const id of ['cap', 'abq', 'lux', 'bri']) per[id] = (r.ch[id] || []).map(d => d - (r.enter[id] || 1)); console.log('days in region per chapter', JSON.stringify(per), 'world', r.world); }
+  const gd = {}; for (const r of res) for (const k in r.goals) (gd[k] = gd[k] || []).push(r.goals[k]);
+  console.log('holding goals, average day met:'); for (const k of Object.keys(gd).sort((a, b) => gd[a].reduce((x, y) => x + y, 0) / gd[a].length - gd[b].reduce((x, y) => x + y, 0) / gd[b].length)) console.log('  ' + Math.round(gd[k].reduce((x, y) => x + y, 0) / gd[k].length), k, '(' + gd[k].length + ' seeds)');
+  const w = res.filter(r => r.world).map(r => r.world); console.log('World Baron: average day', Math.round(w.reduce((x, y) => x + y, 0) / w.length), 'of', res.length, 'seeds:', w.join(' '));
+  if (POST) for (const r of res) console.log('after World Baron [day, holding cash, autopilot gross]:', JSON.stringify(r.post), r.hold.filter(x => /^(doc|alt|world|pacific)@/.test(x)).join(' '));
   console.log(JSON.stringify(res.map(r => ({ hc: r.hold_cap, ha: r.hold_abq, hl: r.hold_lux, hb: r.hold_bri, cl: r.cash_lux, al: r.auto_lux, ch: r.ch, enter: r.enter, baron: r.baron, world: r.world, hold: r.hold, err: r.err, stuck: r.stuck }))));
   await b.close();
 })();

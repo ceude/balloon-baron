@@ -1576,6 +1576,13 @@ function migrate(s) {
   if (s.hold && s.hold.hq) { s.hold.offices = { [s.hold.hq]: s.day }; delete s.hold.hq; }
   for (const id in s.regions) { if (s.regions[id].cash == null) { s.regions[id].cash = 0; s.regions[id].loans = []; } }
   if (s.tut == null) s.tut = (s.selfFlights || 0) >= 1 || s.day > 1 ? { done: 1, old: 1 } : {}; /* v122: saves that already flew skip the tutorial */
+  /* v137 (developer, testing): the goals now want six offices and all four R&D levels. A World Baron who doesn't have
+     them is not one until they do; the million they had reached stays met. */
+  const H = s.hold;
+  if (H && H.worldBaron != null && !(Object.keys(H.offices || {}).length >= 6 && (H.rnd || 0) >= 4)) {
+    if (H.millionOn == null) H.millionOn = H.worldBaron;
+    delete H.worldBaron;
+  }
   return s;
 }
 const KEY = 'safak-balon-v1';
@@ -1826,7 +1833,7 @@ const BURNERS = [null, { n: 'Tek brülör', risk: 1, heat: 1 }, { n: 'Çift brü
 const TURN_VENT = .06; /* share of the balloon's price */
 const burnerLv = b => (b && b.burner) || 1;
 function equipRisk(b) { return BURNERS[burnerLv(b)].risk * (b.tvent && S.weather.flag !== 'green' ? .85 : 1); }
-function accP(b) { const p = pilotOf(b), tr = !isSelf(b) && p ? p.trait : null; return equipRisk(b) * FLAGS[S.weather.flag].acc * (tr ? traitRisk(p) : 1) * (S.weather.flag === 'yellow' && bl('mast') >= 3 ? .8 : 1) * (isSelf(b) ? 1 : p ? LEVELS[p.lvl].risk : 1) * SIZES[b.size].risk * (cond(b) < .3 ? 1.5 : 1); }
+function accP(b) { const p = pilotOf(b), tr = !isSelf(b) && p ? p.trait : null; return rdAcc() * equipRisk(b) * FLAGS[S.weather.flag].acc * (tr ? traitRisk(p) : 1) * (S.weather.flag === 'yellow' && bl('mast') >= 3 ? .8 : 1) * (isSelf(b) ? 1 : p ? LEVELS[p.lvl].risk : 1) * SIZES[b.size].risk * (cond(b) < .3 ? 1.5 : 1); }
 function premium(size, p) {
   if (S.weather.flag === 'red') return { hull: 0, pax: 0 };
   const z = SIZES[size];
@@ -2391,7 +2398,7 @@ function finishDay(flight) {
       continue;
     }
     const tp = !self && pilotOf(b) ? pilotOf(b).trait : null;
-    Lg.rev += pax * S.price; Lg.fuel += z.fuel * (S.fuelUp >= S.day ? 1.5 : 1) * (tp === 'thrifty' ? .85 : 1);
+    Lg.rev += pax * S.price; Lg.fuel += z.fuel * (S.fuelUp >= S.day ? 1.5 : 1) * (tp === 'thrifty' ? .85 : 1) * rdFuel();
     if (tp === 'showman') Lg.tips += pax * 9; if (tp === 'daredevil') repBy('Pilotların özellikleri', .003); if (tp === 'storyteller') { repBy('Pilotların özellikleri', .002); if (Math.random() < .15) addReview('perfect'); }
     const sp = b.ad && SPONSORS.find(x => x.id === b.ad);
     if (sp) { Lg.ad += adPay(sp, b.size); Lg.adRep += sp.rep; repBy('Balon reklamları', -sp.rep); adNames.push(sp.name); }
@@ -2453,7 +2460,7 @@ function finishDay(flight) {
     if (p && !isSelf(b)) { p.xp = (p.xp || 0) + (bl('office') >= 3 ? 1.5 : 1); if (p.lvl < 3 && p.xp >= XP_UP[p.lvl]) { p.lvl++; p.wage = Math.round(LEVELS[p.lvl].wage * regWage() * (p.school ? .7 : 1) * (p.trait === 'nightowl' ? .85 : 1)); ev.push(`${p.name} artık ${LEVELS[p.lvl].name.toLowerCase()} bir pilot! Kaza riski düştü, maaşı ${eur(p.wage)}/gün oldu.`); } }
     if (cond(b) <= 0) ev.push(`${b.name} balonunun zarfı ömrünü doldurdu. Yenilenmeden uçamaz.`);
   });
-  Lg.up = Math.round(inside().reduce((a, b) => a + SIZES[b.size].up, 0) * upkeepK()); /* v127: no maintenance outside the hangar */
+  Lg.up = Math.round(inside().reduce((a, b) => a + SIZES[b.size].up, 0) * upkeepK() * rdUp()); /* v127: no maintenance outside the hangar */
   { const r0 = S.rep; myHotels().forEach(x => { if (owns(x)) { Lg.hotelInc += hotelInc(x); S.rep = Math.min(1.4, S.rep + x.rep * 1.5); } else { Lg.hotel += x.fee; S.rep = Math.min(1.4, S.rep + x.rep); } }); repMark('Otel anlaşmaları', r0); }
   S.loans.forEach(l => { Lg.loan += l.inst; l.left--; });
   if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; S.holding = (S.holding || 0) + D.inst / FX(); holdLog('inc', D.inst / FX()); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
@@ -2469,7 +2476,7 @@ function finishDay(flight) {
   if (S.showTonight === S.day) net += showDropOut((S.showIds || []).filter(id => { const b = bal(id); return !b || b.dmgUntil > S.day; }), Lg, ev);
   if (S.region === 'bri' && S.fiesta && !red && paxTotal > 0) {
     const up = fl.filter(b => !(b.dmgUntil > S.day) && !(flight && flight.q === 'cancel' && isSelf(b))), seats = up.reduce((a, b) => a + sellSeats(b), 0), pax = Math.round(Math.min(seats, paxTotal) * EVE.pax);
-    if (pax > 0) { const ef = Math.round(up.reduce((a, b) => a + SIZES[b.size].fuel, 0) * EVE.fuel); Lg.eve = pax * S.price; Lg.fuel += ef; S.cash += Lg.eve - ef; net += Lg.eve - ef; S.eveDay = S.day; S.eveN = up.length; ev.push(`Festival akşamı: ${up.length} balonun ikinci kez kalktı, ${pax} yolcu akşam uçuşu yaptı. Gelir ${eur(Lg.eve)}.`); }
+    if (pax > 0) { const ef = Math.round(up.reduce((a, b) => a + SIZES[b.size].fuel, 0) * EVE.fuel * rdFuel()); Lg.eve = pax * S.price; Lg.fuel += ef; S.cash += Lg.eve - ef; net += Lg.eve - ef; S.eveDay = S.day; S.eveN = up.length; ev.push(`Festival akşamı: ${up.length} balonun ikinci kez kalktı, ${pax} yolcu akşam uçuşu yaptı. Gelir ${eur(Lg.eve)}.`); }
   }
   if (S.glowTonight === S.day) {
     repBy('Gece Işıltısı', GLOW.rep); S.glowCount = (S.glowCount || 0) + 1;
@@ -5500,6 +5507,8 @@ const GLYPH = {
   ist: '<path d="M2 20.5 L22 20.5 M6.5 14 C6.5 10.5 9 8.3 12 7.5 C15 8.3 17.5 10.5 17.5 14 Z M12 7.5 L12 5 M7 14 L7 20.5 M17 14 L17 20.5 M10.5 20.5 L10.5 18 C10.5 16.6 13.5 16.6 13.5 18 L13.5 20.5 M3.5 20.5 L3.5 8.5 M2.6 8.5 L3.5 4.5 L4.4 8.5 M2.6 12 L4.4 12 M20.5 20.5 L20.5 8.5 M19.6 8.5 L20.5 4.5 L21.4 8.5 M19.6 12 L21.4 12"/>',
   nyc: '<path d="M6.5 20.5 L17.5 20.5 M8.5 20.5 L8.5 16.5 L15.5 16.5 L15.5 20.5 M9.4 16.5 C9.8 13.5 9.6 12 10.5 10.8 L13.5 10.8 C14.4 12 14.2 13.5 14.6 16.5 M10.4 6.9 L9.3 5.7 M12 6.5 L12 4.9 M13.5 10.8 L17 4.6 M16 4.6 L18 4.6 M17 3.7 C16.2 3 16.6 2.1 17 1.5 C17.4 2.1 17.8 3 17 3.7 Z M10.5 12 L8.6 13.8"/><circle cx="12" cy="8.5" r="1.7"/>',
   sel: '<path d="M2 20.5 L22 20.5 M2 20.5 C6 15.8 9 14.5 12 14.5 C15 14.5 18 15.8 22 20.5 M11 14.5 L11.3 10.5 M13 14.5 L12.7 10.5 M9.5 10.5 L14.5 10.5 L13.8 7.8 L10.2 7.8 Z M12 7.8 L12 2.5"/>',
+  dxb: '<path d="M3 20.5 L21 20.5 M12 1.5 L12 5 M10.8 5 L13.2 5 L13.2 9 L14.2 9 L14.2 13 L15.4 13 L15.4 17 L16.6 17 L16.6 20.5 M10.8 5 L10.8 10 L9.8 10 L9.8 14 L8.6 14 L8.6 17.5 L7.4 17.5 L7.4 20.5"/>',
+  par: '<path d="M4 20.5 L20 20.5 M12 1.5 L12 4 M10.8 4 L13.2 4 M11 4 C10.6 9 9.5 12 8.2 13.5 M13 4 C13.4 9 14.5 12 15.8 13.5 M7.6 13.5 L16.4 13.5 M10 9 L14 9 M8.2 13.5 C7.5 16.5 6.5 18.8 5.5 20.5 M15.8 13.5 C16.5 16.5 17.5 18.8 18.5 20.5 M9.3 20.5 C9.5 18 10.5 16.8 12 16.8 C13.5 16.8 14.5 18 14.7 20.5"/>',
   tyo: '<path d="M5.5 20.5 C8.5 16 10 11 11 5 M18.5 20.5 C15.5 16 14 11 13 5 M10.6 5 L13.4 5 M12 5 L12 1.8 M7.8 14.6 L16.2 14.6 L15.7 12.4 L8.3 12.4 Z M9.8 9.8 L14.2 9.8 L13.9 8.3 L10.1 8.3 Z M8.4 20.5 Q12 16.2 15.6 20.5"/>'
 };
 const glyph = (k, cls) => `<svg viewBox="0 0 24 24" class="gl${cls ? ' ' + cls : ''}" aria-hidden="true">${GLYPH[k]}</svg>`;
@@ -9214,12 +9223,18 @@ const HQ_CITIES = {
   nyc: { name: 'New York', cost: 450000, perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: glyph('nyc') },
   ist: { name: 'İstanbul', cost: 350000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: glyph('ist') },
   tyo: { name: 'Tokyo', cost: 400000, perk: 'Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya\'ya giriş yarı fiyatına.', icon: glyph('tyo') },
-  sel: { name: 'Seul', cost: 400000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun ve %30 ucuz.', icon: glyph('sel') }
+  sel: { name: 'Seul', cost: 400000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun ve %30 ucuz.', icon: glyph('sel') },
+  /* v137: two more offices for a rich holding */
+  dxb: { name: 'Dubai', cost: 1500000, perk: 'Luksor\'un otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.', icon: glyph('dxb') },
+  par: { name: 'Paris', cost: 1800000, perk: 'Bristol\'ün otomatik kazancı %20 artar. Belgesel dizisi %20 daha ucuz.', icon: glyph('par') }
 };
-/* ofisler: her şehirde bir tane açılabilir, avantajları birikir; dördü birden açıksa holding giderleri azalır */
+/* ofisler: her şehirde bir tane açılabilir, avantajları birikir; dördü açıksa holding giderleri azalır, altısı açıksa daha da */
 const hasOffice = k => !!(S && S.hold && S.hold.offices && S.hold.offices[k]);
 const officeCount = () => Object.keys(HQ_CITIES).filter(hasOffice).length;
-const holdCostRate = () => officeCount() === 4 ? .2 : HOLD_COST;
+/* v137 (developer): any four offices bring the holding's expenses down to 20%, all six to 15% */
+const OFFICE_RATE4 = .2, OFFICE_RATE6 = .15;
+const fourOffices = () => officeCount() >= 4;
+const holdCostRate = () => officeCount() >= 6 ? OFFICE_RATE6 : fourOffices() ? OFFICE_RATE4 : HOLD_COST;
 /* v136 (TestFlight): TV runs in one region's channels and is bought for each region on its own (it used to be one
    €250.000 campaign for every region). €60.000 a region: four regions cost about what the old one did. */
 const TVC = { cost: 60000, days: 14, cd: 30, rep: .1, boost: 1.2 };
@@ -9238,19 +9253,37 @@ function repIn(id, d) {
 function repAll(d, why) {
   const r0 = S.rep; myRegionIds().forEach(id => repIn(id, d)); if (why) repMark(why, r0);
 }
-const officeMult = id => (hasOffice('ist') && id === 'cap' ? 1.25 : 1) * (hasOffice('nyc') && id === 'abq' ? 1.2 : 1);
+const officeMult = id => (hasOffice('ist') && id === 'cap' ? 1.25 : 1) * (hasOffice('nyc') && id === 'abq' ? 1.2 : 1)
+  * (hasOffice('dxb') && id === 'lux' ? 1.2 : 1) * (hasOffice('par') && id === 'bri' ? 1.2 : 1) * rdAutoMult();
 const celebCost = () => hasOffice('sel') ? 420000 : 600000;
 /* v122.7: two bigger deals at the deals desk. The jersey of the league's last champion, and the balloon show at the
    World Games' opening ceremony (once). */
 const JERSEY = { cost: 3000000, days: 180, boost: 1.15, rep: .1 }; /* v122.9: no team name, the game is played worldwide */
 const WGAMES = { cost: 10000000, days: 60, boost: 1.3, rep: .2 };
-const RD_LEVELS = [{ cost: 400000, life: 160 }, { cost: 900000, life: 200 }];
+/* v137: two more R&D levels for a rich holding: a weather radar network (accident risk -15% wherever you fly, so the
+   premiums drop too) and a composite basket with an efficient burner (fuel -25%, maintenance -15%). Parked regions
+   earn what that saves them: +5% and +2% (late game, the sim: premiums are 26% of a region's net, fuel and upkeep 8%). */
+const RD_LEVELS = [{ cost: 400000, life: 160 }, { cost: 900000, life: 200 }, { cost: 2000000, life: 200 }, { cost: 4000000, life: 200 }];
+const RD_ENVELOPE = 2; /* the envelope research is levels 1 and 2; the holding goal (v137) wants all four */
+const RD_FX = { acc: .85, fuel: .75, up: .85, auto3: 1.05, auto4: 1.02 };
+const rdLv = () => (S && S.hold && S.hold.rnd) || 0;
+const rdAcc = () => rdLv() >= 3 ? RD_FX.acc : 1;
+const rdFuel = () => rdLv() >= 4 ? RD_FX.fuel : 1;
+const rdUp = () => rdLv() >= 4 ? RD_FX.up : 1;
+const rdAutoMult = () => (rdLv() >= 3 ? RD_FX.auto3 : 1) * (rdLv() >= 4 ? RD_FX.auto4 : 1);
+/* v137: the streaming documentary series about the company: demand in every region and popularity in every region you
+   own; a new season can be made some time after the last one ends */
+const DOC = { cost: 2500000, days: 120, gap: 60, boost: 1.15, rep: .1 };
+const docCost = () => Math.round(DOC.cost * (hasOffice('par') ? .8 : 1));
+const docOn = () => !!(S.hold && S.hold.doc && S.hold.doc.until > S.day);
+
 const envLife = () => S && S.hold && S.hold.rnd ? RD_LEVELS[S.hold.rnd - 1].life : 120;
 const holdOn = () => S && S.hold;
 /* holding yatırımlarının bir bölgedeki talep çarpanı */
 function holdBoost(id) {
   const H = S.hold; if (!H) return 1;
-  return (1 + (H.recBoost || 0)) * (tvUntilR(id) > S.day ? TVC.boost : 1) * (H.celeb && H.celeb.until > S.day ? 1.1 : 1) * (H.jersey > S.day ? JERSEY.boost : 1) * (H.wg && H.wg.until > S.day ? WGAMES.boost : 1) * (H.bb && H.bb[id] > S.day ? 1.1 : 1);
+  return (1 + (H.recBoost || 0)) * (tvUntilR(id) > S.day ? TVC.boost : 1) * (H.celeb && H.celeb.until > S.day ? 1.1 : 1) * (H.jersey > S.day ? JERSEY.boost : 1) * (H.wg && H.wg.until > S.day ? WGAMES.boost : 1) * (H.bb && H.bb[id] > S.day ? 1.1 : 1)
+    * (H.doc && H.doc.until > S.day ? DOC.boost : 1);
 }
 /* v124.6: why tourists pick you or not. Popularity weighs as rep² against the rivals' (a crisis below 2★ cuts it to
    35%), see allocate(); the day's tourists are multiplied by festival, winter, weather, the sales office and the holding. */
@@ -9333,6 +9366,10 @@ function cashflowChart(hist) {
   </svg>`;
 }
 const INVEST_ART = {
+  doc: '<svg viewBox="0 0 64 64"><rect x="8" y="22" width="48" height="34" rx="4" fill="#1f1b2e"/><path d="M8 14 L54 6 L56 14 L10 22 Z" fill="#fff"/><path d="M16 12.6 L22 19.5 M27 10.7 L33 17.6 M38 8.8 L44 15.7" stroke="#1f1b2e" stroke-width="4"/><path d="M32 27 C38 27 42 31.5 42 37 C42 42 38 45.5 35.5 48 L28.5 48 C26 45.5 22 42 22 37 C22 31.5 26 27 32 27 Z" fill="#ff5e3a"/><path d="M32 27 C34 27 35 31.5 35 37 C35 42 33.5 45.5 33 48 L31 48 C30.5 45.5 29 42 29 37 C29 31.5 30 27 32 27 Z" fill="#ffc23d"/><rect x="29.5" y="49" width="5" height="4" rx="1" fill="#c98a5a"/></svg>',
+  radar: '<svg viewBox="0 0 64 64"><circle cx="32" cy="34" r="24" fill="#12324a"/><circle cx="32" cy="34" r="16" fill="none" stroke="#3ad0c0" stroke-width="1.5" opacity=".6"/><circle cx="32" cy="34" r="8" fill="none" stroke="#3ad0c0" stroke-width="1.5" opacity=".6"/><path d="M32 34 L32 10 C40 10 48.5 14.5 52.8 22 Z" fill="#3ad0c0" opacity=".45"/><path d="M32 34 L52.8 22" stroke="#3ad0c0" stroke-width="2.5" stroke-linecap="round"/><circle cx="43" cy="44" r="3" fill="#ffc23d"/><circle cx="22" cy="26" r="2.2" fill="#ff5e3a"/></svg>',
+  comp: '<svg viewBox="0 0 64 64"><path d="M32 6 C37 13 41 17 41 23 C41 28 37 32 32 32 C27 32 23 28 23 23 C23 17 27 13 32 6 Z" fill="#ff5e3a"/><path d="M32 15 C35 19 37 21.5 37 24.5 C37 27.3 34.8 29.5 32 29.5 C29.2 29.5 27 27.3 27 24.5 C27 21.5 29 19 32 15 Z" fill="#ffc23d"/><rect x="22" y="33" width="20" height="5" rx="2" fill="#8d93a0"/><path d="M24 38 L20 44 M40 38 L44 44" stroke="#8d93a0" stroke-width="2"/><path d="M16 44 L48 44 L45 58 L19 58 Z" fill="#2b2350"/><path d="M24 44 L22 58 M32 44 L32 58 M40 44 L42 58" stroke="#4a4270" stroke-width="1.4"/><path d="M18 49 L46 49 M19 54 L45 54" stroke="#3ad0c0" stroke-width="1.6"/></svg>',
+  pacific: '<svg viewBox="0 0 64 64"><path d="M32 4 C41 4 47 11 47 19 C47 27 41 32 37 36 L27 36 C23 32 17 27 17 19 C17 11 23 4 32 4 Z" fill="#2b7fd6"/><path d="M32 4 C35 4 37 11 37 19 C37 27 35 32 34 36 L30 36 C29 32 27 27 27 19 C27 11 29 4 32 4 Z" fill="#fff" opacity=".3"/><path d="M28 36 L29 38 M36 36 L35 38" stroke="#8a5a2e" stroke-width="1.2"/><rect x="28" y="38" width="8" height="6" rx="1.5" fill="#8a5a2e"/><path d="M4 52 C9 48 13 48 18 52 C23 56 27 56 32 52 C37 48 41 48 46 52 C51 56 55 56 60 52" fill="none" stroke="#3ad0c0" stroke-width="3" stroke-linecap="round"/><path d="M4 60 C9 56 13 56 18 60 C23 64 27 64 32 60 C37 56 41 56 46 60 C51 64 55 64 60 60" fill="none" stroke="#2b5ab8" stroke-width="3" stroke-linecap="round"/></svg>',
   rec: '<svg viewBox="0 0 64 64"><path d="M32 6c9 0 15 7 15 16 0 8-6 14-10 18h-10c-4-4-10-10-10-18 0-9 6-16 15-16z" fill="#ffc23d"/><path d="M27 40h10l-1 6h-8z" fill="#c9ccd2"/><rect x="25" y="47" width="14" height="10" rx="5" fill="#c9ccd2"/><circle cx="35" cy="52" r="2.6" fill="#2b5ab8"/><path d="M8 58l8-10 6 5 8-12" fill="none" stroke="#e5432f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   shape: '<svg viewBox="0 0 64 64"><path d="M27 6h10v8c6 4 9 10 9 18v18a5 5 0 0 1-5 5H23a5 5 0 0 1-5-5V32c0-8 3-14 9-18z" fill="#e5432f"/><rect x="18" y="30" width="28" height="12" fill="#fff"/><text x="32" y="39.5" text-anchor="middle" font-size="9" font-weight="800" fill="#e5432f" font-family="Barlow Condensed,sans-serif">FIZZ</text><rect x="26" y="56" width="12" height="6" rx="1.5" fill="#8a5a34"/></svg>',
   tv: '<svg viewBox="0 0 64 64"><rect x="6" y="12" width="52" height="34" rx="6" fill="#1f1b2e" stroke="#ffc23d" stroke-width="3"/><rect x="11" y="17" width="42" height="24" rx="3" fill="#ff5e3a"/><path d="M26 23l12 6-12 6z" fill="#fff"/><path d="M24 52h16M32 46v6" stroke="#ffc23d" stroke-width="3" stroke-linecap="round"/></svg>',
@@ -9444,37 +9481,57 @@ function hqDeals(body, which, title) {
   const wgOn = H.wg && H.wg.until > S.day;
   if (which.includes('wg')) deal('wg', 'Dünya sahnesi', 'Dünya Oyunları açılışında balon gösterisi', H.wg ? (wgOn ? 'Açılış töreninde stadyumun üstünde senin balonların süzüldü; bütün dünya izledi.' : 'Açılış töreninin gösterisini yaptın; dünya hâlâ konuşuyor.') : 'Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır.', ['Bütün bölgelerde talep +%30', `${WGAMES.days} gün`, 'Bütün bölgelerde: +0,8★'], H.wg ? null : WGAMES.cost, 'Gösteriyi üstlen',
     () => { H.wg = { until: S.day + WGAMES.days }; repAll(WGAMES.rep); holdDeed('worldGames'); }, { active: wgOn ? `Tören etkisi · ${H.wg.until - S.day} gün` : H.wg ? 'Yapıldı' : '', lock: !(S.barons || {}).bri ? 'Bristol Baronu olunca' : '' });
+  const dOn = docOn(), dWait = !dOn && H.doc && H.doc.next > S.day, season = (H.doc && H.doc.n || 0) + (dOn ? 0 : 1);
+  if (which.includes('doc')) deal('doc', 'Belgesel dizisi', 'Gökyüzünün Baronları', dOn ? `${S.company} belgeselinin ${H.doc.n}. sezonu yayında; izleyenler balona binmek için yer arıyor.` : 'Büyük bir yayın platformu için şirketinin belgesel dizisi: sabahın üçünde ısınan brülörler, rüzgârla pazarlık eden pilotlar, sepetten dünyaya bakış.', ['Bütün bölgelerde talep +%15', `${DOC.days} gün`, 'Bütün bölgelerde: +0,4★'], dWait ? null : docCost(), season > 1 ? `${season}. sezonu çek` : 'Diziyi çek',
+    () => { H.doc = { until: S.day + DOC.days, next: S.day + DOC.days + DOC.gap, n: season }; repAll(DOC.rep); holdDeed('doc'); }, { active: dOn ? `${H.doc.n}. sezon yayında · ${H.doc.until - S.day} gün` : dWait ? `Yeni sezon için ${H.doc.next - S.day} gün` : '' });
   /* v136: billboards for each region you own, from one card; each row names its region */
   const bbRows = myRegionIds().map(id => { const u = (H.bb && H.bb[id]) || 0, on = u > S.day; return { id, on, buy: !on, status: on ? `Asılı · kalan gün: ${u - S.day}` : 'Kampanya yok' }; });
   if (which.includes('bb')) deal('bb', 'Açık hava', `Otoban reklam panoları`, 'Bölgenin havalimanı yolunda ve otobanlarında dev afişler.', ['Bölgede talep +%10', '20 gün'], 120000, 'Afişleri as',
     id => { if (!H.bb) H.bb = {}; H.bb[id] = S.day + 20; holdDeed('billboards'); }, { rows: bbRows, active: bbRows.some(r => r.on) ? ' ' : '' });
-  const lv = H.rnd || 0, next = RD_LEVELS[lv];
+  const lv = H.rnd || 0, next = lv < RD_ENVELOPE ? RD_LEVELS[lv] : null;
   if (which.includes('lab')) deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [`Zarf ömrü ${envLife()} → ${next ? next.life : envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
-    () => { H.rnd = lv + 1; holdDeed('research'); }, { active: next ? '' : `Seviye ${lv} · tamamlandı` });
+    () => { H.rnd = lv + 1; holdDeed('research'); }, { active: next ? '' : `Seviye ${RD_ENVELOPE} · tamamlandı` });
+  /* v137: levels 3 and 4, one after the other once the envelope research is done */
+  const rdCard = (art, n, kicker, title, desc, chips, deed) => {
+    if (!which.includes(art)) return;
+    const done = lv >= n, ready = lv === n - 1;
+    deal(art, kicker, title, desc, chips, done ? null : RD_LEVELS[n - 1].cost, `Seviye ${n}'ü fonla`, () => { H.rnd = n; holdDeed(deed); },
+      { active: done ? `Seviye ${n} · tamamlandı` : '', lock: ready ? '' : `Önce seviye ${n - 1}` });
+  };
+  rdCard('radar', 3, 'Ar-Ge · seviye 3', 'Hava radarı ağı', 'Her bölgeye Doppler radarları ve rüzgâr sondaları: pilotlar sabah kalkmadan rüzgârın nereye döneceğini bilir.', ['Kaza riski −%15, sigorta primleri de', 'Otomatik bölgelerde kazanç +%5', 'Bütün bölgeler, kalıcı'], 'radar');
+  rdCard('comp', 4, 'Ar-Ge · seviye 4', 'Kompozit sepet ve verimli brülör', 'Karbon elyaf sepet ve gazı sonuna kadar yakan yeni brülör: balonlar hafifler, tüpler daha geç biter.', ['Yakıt −%25', 'Bakım −%15', 'Otomatik bölgelerde kazanç +%2', 'Bütün bölgeler, kalıcı'], 'composite');
   body.appendChild(v);
 }
 /* Record attempts (desk 5): sponsored world records. Open once you have entered Luxor. A success lifts demand in
    every region for good; a failed attempt can be tried again. */
 const RECORDS = {
   alt: { n: 'İrtifa rekoru', d: 'Basınçlı kabinli özel bir balonla stratosfere: dünya rekoru 21.027 metre. Pilot oksijen maskesiyle uçar, kabin donmasın diye ısıtılır.', cost: 400000, days: 25, ok: .65, boost: .05 },
-  world: { n: 'Durmadan dünya turu', d: 'İsviçre Alpleri\'nden kalkış, 20 gün jet akımlarında, iniş Mısır çölünde. İlk kez 1999\'da başarılmıştı.', cost: 900000, days: 40, ok: .5, boost: .1 }
+  world: { n: 'Durmadan dünya turu', d: 'İsviçre Alpleri\'nden kalkış, 20 gün jet akımlarında, iniş Mısır çölünde. İlk kez 1999\'da başarılmıştı.', cost: 900000, days: 40, ok: .5, boost: .1 },
+  /* v137: the big one. No sure first try: the odds are the odds. It opens once the round-the-world record is yours, and
+     setting it raises the ceiling of the records' lasting boost from 25% to 35%. */
+  pacific: { n: 'Pasifik geçişi', d: 'Japonya\'dan kalkış, jet akımında 8.000 km, iniş Kanada\'nın karlı ormanlarında. Saf sıcak hava balonuyla en uzun yolculuk.', cost: 3000000, days: 60, ok: .4, boost: .1, hard: 1, after: 'world', cap: .1 }
 };
+const REC_CAP = .25;
+const recCap = () => REC_CAP + Object.keys(RECORDS).reduce((a, k) => a + (RECORDS[k].cap && S.hold && S.hold.records && S.hold.records[k] ? RECORDS[k].cap : 0), 0);
+const recCost = k => Math.round(RECORDS[k].cost * (hasOffice('dxb') ? .75 : 1));
 function hqRecords(body) {
   const H = S.hold || (S.hold = {}), v = h('div', 'sec'); v.appendChild(h('h2', null, 'Rekor denemeleri'));
   const open = ownsRegion('lux');
   v.appendChild(h('p', 'hint', open ? 'Sponsorlu dünya rekoru denemeleri. Başarı bütün bölgelerde talebi kalıcı olarak artırır. Başarısız olursa para gider ama tekrar denenebilir.' : 'Rekor projeleri Luksor\'a girdikten sonra açılır. Önce Luksor\'u açmalısın.'));
   body.appendChild(v);
   for (const k in RECORDS) {
-    const R = RECORDS[k], did = H.records && H.records[k], now = H.rec && H.rec.k === k;
+    const R = RECORDS[k], did = H.records && H.records[k], now = H.rec && H.rec.k === k, cost = recCost(k);
+    const before = R.after && !(H.records && H.records[R.after]);
     const c = h('div', 'deal' + (did || now ? ' on' : ''));
-    c.innerHTML = `<div class="dart">${INVEST_ART.rec}</div><div class="dmain"><div class="dk">Rekor denemesi</div><div class="dt">${R.n}</div><div class="dd">${R.d}</div><div class="dchips"><span>Hazırlık ${R.days} gün</span><span>Başarı şansı %${Math.round(R.ok * 100)}</span><span>Talep kalıcı +%${Math.round(R.boost * 100)}</span></div></div>`;
+    c.innerHTML = `<div class="dart">${INVEST_ART[k === 'pacific' ? 'pacific' : 'rec']}</div><div class="dmain"><div class="dk">Rekor denemesi</div><div class="dt">${R.n}</div><div class="dd">${R.d}</div><div class="dchips"><span>Hazırlık ${R.days} gün</span><span>Başarı şansı %${Math.round(R.ok * 100)}</span><span>Talep kalıcı +%${Math.round(R.boost * 100)}</span>${R.cap ? `<span>Rekor tavanı %${Math.round(REC_CAP * 100)} → %${Math.round((REC_CAP + R.cap) * 100)}</span>` : ''}</div></div>`;
     const foot = h('div', 'dfoot');
     if (now) foot.innerHTML = `<span class="dstat">Hazırlanıyor · ${H.rec.done - S.day} gün</span>`;
     else {
-      foot.innerHTML = did ? `<span class="dstat">Rekor senin</span><span class="dprice">${eurH(R.cost)}</span>` : `<span class="dprice">${eurH(R.cost)}</span>`;
-      const b = h('button', 'dcta', did ? 'Rekoru geliştir' : 'Denemeyi başlat'); b.disabled = !open || !!H.rec || (S.holding || 0) < R.cost;
-      b.onclick = () => holdBuy(R.cost, () => { H.rec = { k, done: S.day + R.days }; holdDeed('record'); hqRender(); }); foot.appendChild(b);
+      foot.innerHTML = did ? `<span class="dstat">Rekor senin</span><span class="dprice">${eurH(cost)}</span>` : `<span class="dprice">${eurH(cost)}</span>`;
+      const b = h('button', 'dcta', did ? 'Rekoru geliştir' : 'Denemeyi başlat'); b.disabled = !open || before || !!H.rec || (S.holding || 0) < cost;
+      b.onclick = () => holdBuy(cost, () => { H.rec = { k, done: S.day + R.days }; holdDeed('record'); hqRender(); }); foot.appendChild(b);
       if (!open) foot.appendChild(h('span', 'dnote', 'Önce Luksor\'u açmalısın'));
+      else if (before) foot.appendChild(h('span', 'dnote', `Önce ${RECORDS[R.after].n.toLocaleLowerCase('tr')} rekorunu kır`));
       else if (H.rec) foot.appendChild(h('span', 'dnote', 'Aynı anda bir deneme'));
     }
     c.appendChild(foot); body.appendChild(c);
@@ -9484,8 +9541,8 @@ function recordDay() {
   const H = S.hold, r = H && H.rec; if (!r || S.day < r.done) return;
   const R = RECORDS[r.k], first = !(H.records && H.records[r.k]); H.rec = null;
   /* the first attempt at each record always succeeds; beating your own record is where the odds come in */
-  if (first || Math.random() < R.ok) {
-    (H.records = H.records || {})[r.k] = S.day; H.recBoost = Math.min(.25, (H.recBoost || 0) + (first ? R.boost : .02)); repAll(.1, 'Dünya rekoru'); /* v136: every region you own */
+  if ((first && !R.hard) || Math.random() < R.ok) {
+    (H.records = H.records || {})[r.k] = S.day; H.recBoost = Math.min(recCap(), (H.recBoost || 0) + (first ? R.boost : .02)); repAll(.1, 'Dünya rekoru'); /* v136: every region you own */
     S.hezQ.push(`news:${R.n} senin! ${S.company} adı bütün dünya gazetelerinde. Turistler artık her bölgede seni soruyor.`);
     paperAdd(5, `${S.company} dünya rekoru kırdı`, `${R.n}: bütün dünya bu balonu konuşuyor.`);
   } else S.hezQ.push(`news:${R.n} denemesi yarıda kaldı. Pilot sağ salim indi, balon da kurtarıldı ama rekor bu sefer olmadı. İstersen yeniden deneriz.`);
@@ -9547,8 +9604,9 @@ function adShapeArt(x, y, r, k) {
 }
 function hqOffices(body) {
   const H = S.hold || (S.hold = {});
-  const q = h('div', 'sec'); q.appendChild(h('h2', null, `Ofisler ${officeCount()}/4`));
-  q.appendChild(h('p', 'hint', officeCount() === 4 ? 'Dört kıtada ofisin var. Holding giderlerin %25 yerine %20.' : 'Dünyanın büyük şehirlerinde ofis aç; her ofisin kendi avantajı var. Dördünü birden açarsan holding giderleri %25 yerine %20 olur.'));
+  const n = officeCount(), all = Object.keys(HQ_CITIES).length;
+  const q = h('div', 'sec'); q.appendChild(h('h2', null, `Ofisler ${n}/${all}`));
+  q.appendChild(h('p', 'hint', n === all ? 'Altı şehirde ofisin var. Holding giderlerin %25 yerine %15.' : fourOffices() ? `${n} ofisin açık: holding giderlerin %25 yerine %20. Altısı birden açıksa %15 olur.` : 'Dünyanın büyük şehirlerinde ofis aç; her ofisin kendi avantajı var. Herhangi dört ofis açıksa holding giderleri %25 yerine %20 olur, altısı birden açıksa %15.'));
   const grid = h('div', 'offices');
   for (const k in HQ_CITIES) {
     const c = HQ_CITIES[k], own = hasOffice(k), it = h('div', 'office' + (own ? ' on' : ''));
@@ -9558,7 +9616,7 @@ function hqOffices(body) {
       const b = h('button', 'dcta', `Aç ${eurH(c.cost)}`); b.disabled = (S.holding || 0) < c.cost;
       b.onclick = () => holdBuy(c.cost, () => {
         if (!H.offices) H.offices = {}; H.offices[k] = S.day; holdDeed('office');
-        S.hezQ.push(officeCount() === 4 ? 'news:Dört ofisin de açık evlat! New York, İstanbul, Tokyo, Seul... Artık gerçek bir dünya şirketisin. Ortak giderler azaldı, holding giderlerin %20\'ye indi.' : `news:Yeni ofisin açıldı evlat: ${c.name}! ${c.perk}`);
+        S.hezQ.push(officeCount() === 6 ? 'news:Altı ofisin de açık evlat! İstanbul\'dan Paris\'e, Dubai\'den Tokyo\'ya... Holding giderlerin %15\'e indi. Sabah kahveni hangi şehirde içeceğini sen seç.' : officeCount() === 4 ? 'news:Dört ofisin açık evlat! Artık gerçek bir dünya şirketisin. Ortak giderler azaldı, holding giderlerin %20\'ye indi.' : `news:Yeni ofisin açıldı evlat: ${c.name}! ${c.perk}`);
       });
       it.appendChild(b);
     }
@@ -12396,9 +12454,9 @@ const HQ_TOWER = [10, 2];
 const HQ_UNITS = {
   board: { name: 'Kasa ve hedefler', draw: b => { hqCash(b); hqGoals(b); hqTransfer(b); } },
   window: { name: 'Bölgeler', draw: b => hqRegions(b) },
-  mkt: { name: 'Pazarlama birimi', draw: b => hqDeals(b, ['tv', 'bb'], 'Kampanyalar') },
+  mkt: { name: 'Pazarlama birimi', draw: b => hqDeals(b, ['tv', 'bb', 'doc'], 'Kampanyalar') },
   deals: { name: 'Anlaşmalar birimi', draw: b => hqDeals(b, ['celeb', 'jersey', 'wg'], 'Anlaşmalar') },
-  rnd: { name: 'Ar-Ge birimi', draw: b => hqDeals(b, ['lab'], 'Araştırma') },
+  rnd: { name: 'Ar-Ge birimi', draw: b => hqDeals(b, ['lab', 'radar', 'comp'], 'Araştırma') },
   offices: { name: 'Ofisler', draw: b => hqOffices(b) },
   rec: { name: 'Rekor projesi', draw: b => hqRecords(b) },
   shapes: { name: 'Sponsorlu şekiller', draw: b => hqShapes(b) }
@@ -12430,10 +12488,10 @@ function hqRender() {
   const status = {
     board: [`${eurH(S.holding || 0)}`, false],
     window: [issue ? 'Bir bölgede sorun var' : `Bölge: ${Object.keys(S.regions || {}).length + 1}`, false, issue],
-    mkt: [tvN + bbN ? `TV: ${tvN} · Afiş: ${bbN}` : 'Kampanya yok', tvN + bbN > 0],
+    mkt: [docOn() ? `Belgesel yayında, ${H.doc.until - S.day} gün` : tvN + bbN ? `TV: ${tvN} · Afiş: ${bbN}` : 'Kampanya yok', tvN + bbN > 0 || docOn()],
     deals: H.wg && H.wg.until > S.day ? ['Dünya Oyunları gösterisi', true] : H.jersey > S.day ? ['Şampiyonun forması', true] : [ce ? H.celeb.name : 'Anlaşma yok', ce],
-    rnd: [RD_LEVELS[lv] ? `Seviye ${lv}` : 'Tamamlandı', !RD_LEVELS[lv]],
-    offices: [`Ofis: ${officeCount()}/4`, officeCount() === 4],
+    rnd: [`Ar-Ge: ${lv}/${RD_LEVELS.length}`, !RD_LEVELS[lv]],
+    offices: [`Ofis: ${officeCount()}/${Object.keys(HQ_CITIES).length}`, officeCount() === Object.keys(HQ_CITIES).length],
     rec: [!ownsRegion('lux') ? 'Önce Luksor\'u açmalısın' : H.rec ? `${RECORDS[H.rec.k].n}, ${H.rec.done - S.day} gün` : `Rekor: ${Object.keys(H.records || {}).length}/${Object.keys(RECORDS).length}`, !!H.rec],
     shapes: [H.adShape && H.adShape.until > S.day ? `${AD_SHAPES.find(x => x.k === H.adShape.k).n}, ${H.adShape.until - S.day} gün` : 'Sözleşme yok', !!(H.adShape && H.adShape.until > S.day)]
   };
@@ -12542,14 +12600,16 @@ function plant(x, y, k) {
   for (let i = 0; i < 7; i++) { const a = -Math.PI / 2 + (i - 3) * .38; ctx.fillStyle = i % 2 ? '#4f8a3a' : '#6faa4a'; ctx.beginPath(); ctx.ellipse(x + Math.cos(a) * 16 * k, y - 22 * k + Math.sin(a) * 22 * k, 5 * k, 14 * k, a + Math.PI / 2, 0, 7); ctx.fill(); }
 }
 /* Holding cash over the last 14 days as a marker line, with today's figure in big handwriting. */
-/* The holding's own goals, written on the whiteboard under the chart. All six make you World Baron. */
+/* The holding's own goals, written on the whiteboard under the chart. All seven make you World Baron. v137: listed in the
+   order the campaign simulator meets them on average (tools/sim-campaign.js): million 219, Luxor 441, TV 442, celebrity
+   444, six offices 446, all R&D 520, World Games 631. */
 const HOLD_GOALS = [
   ['Holding kasası €1 milyon', () => (S.hold || {}).millionOn != null || (S.holding || 0) >= 1e6], /* v132: stays met once reached */
   ['Luksor Baronu', () => !!(S.barons || {}).lux],
   ['Bir TV kampanyası', () => ((S.hold || {}).tvN || 0) >= 1],
   ['Ünlü reklam yüzü', () => !!(S.hold || {}).celeb],
-  ['Zarf Ar-Ge\'si tamam', () => ((S.hold || {}).rnd || 0) >= 2],
-  ['Dört dünya ofisi', () => officeCount() >= 4],
+  ['Altı dünya ofisi', () => officeCount() >= 6], /* v137: was four */
+  ['Ar-Ge\'nin dört seviyesi tamam', () => ((S.hold || {}).rnd || 0) >= RD_LEVELS.length], /* v137: was the envelope research (2) */
   ['Dünya Oyunları gösterisi', () => !!(S.hold || {}).wg] /* v123.5: the finale; it needs the Bristol baron */
 ];
 /* Once you're World Baron, the goals stay ticked whatever the holding's cash does later. */
@@ -12564,6 +12624,9 @@ const HOLD_DEEDS = {
   worldGames: ['Bütün dünya senin balonlarını izledi evlat! Bir zamanlar tek sepetle başlamıştın, şimdi açılış töreninin göğü senin.', c => `Dünya Oyunları açılışında ${c} balonları`, 'Stadyumun üstünde yüzlerce balon süzüldü; tören dünyanın her yerinde canlı yayınlandı.'],
   research: ['Laboratuvardan iyi haber evlat: yeni zarf kumaşı daha uzun dayanıyor. Daha az yenileme, daha çok uçuş. Gerçek şirket böyle büyür.', c => `Yeni zarf kumaşı: ${c}`, 'Daha dayanıklı zarflar: daha az yenileme, daha çok güvenli uçuş.'],
   office: [null, c => `Yurt dışında yeni ofis: ${c}`, 'Oradaki seyahat acenteleri artık onun balon uçuşlarını satıyor.'],
+  doc: ['Belgeselin yayında evlat! Gece yarısı brülör yakan pilotlarını bütün dünya izliyor. Turistler artık neyi göreceklerini bilerek geliyor.', c => `Yayın platformunda yeni belgesel: ${c}`, 'Gökyüzünün Baronları dizisi en çok izlenenler listesine girdi.'],
+  radar: ['Radar ağın kuruldu evlat! Ben rüzgârı burnumla koklardım; sen artık onu ekranda görüyorsun. Kazalar azalır, sigortacı da sevinir.', c => `Kendi hava radarı ağını kurdu: ${c}`, 'Pilotlar rüzgârın döneceğini sabah kalkmadan biliyor.'],
+  composite: ['Kompozit sepetler geldi evlat! Benim sepetim söğüttendi, seninki uzay mekiğinden hafif. Yakıt da artık daha geç bitiyor.', c => `Karbon sepet, verimli brülör: ${c}`, 'Daha hafif balonlar, daha az yakıt, daha az bakım.'],
   record: ['Dünya rekoru denemesi! Bütün dünya senin balonunu izleyecek evlat. Ne olursa olsun adın her gazetede olacak.', c => `Dünya rekoru denemesi: ${c}`, 'Bütün balon dünyası denemeyi izliyor.'],
   shape: ['Bir marka kendi dev balonunu senin göğünde uçurmak istiyor evlat! Turistler biraz söylenir ama holding her gün parasını alır.', c => `Gökyüzünde dev marka balonu: ${c}`, 'Çocuklar parmakla gösteriyor, marka her gün holdinge ödüyor.']
 };
