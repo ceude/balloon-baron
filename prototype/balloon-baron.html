@@ -9745,10 +9745,10 @@ function townBuildings() {
     sub: unlocked('crew') ? `Pilot: ${np} · Sv. ${bl('office')}` : 'Yakında', tap: () => unlocked('crew') ? buildingCard('office', () => openSection('crew'), 'Ekibe git') : lockedCard('Pilot ofisi', 'crew') });
   add({ id: 'school', gx: 12, gy: 5, w: 2, d: 2, name: 'Pilot okulu', look: 'school', lv: S.school ? (np >= 8 ? 2 : 1) : (unlocked('school') ? 0 : -1),
     sub: S.school ? 'Açık' : `Kur: ${eur(SCHOOL_COST)}`, tap: () => unlocked('school') ? openSection('crew', 'Pilot okulu') : lockedCard('Pilot okulu', 'school') });
-  /* finance sits in the back row so the tall holding tower hides nothing behind it; the tower takes the inner plot so it stays on screen */
+  /* finance sits in the back row so the holding's tall headquarters hides nothing behind it; it takes the inner plot so it stays on screen */
   add({ id: 'bank', gx: 12, gy: 1, w: 2, d: 2, name: 'Banka', look: 'bank', lv: unlocked('bank') ? (S.loans.length ? 2 : 1) : -1,
     sub: unlocked('bank') ? (S.loans.length ? `Kredi: ${S.loans.length}` : 'Kredi yok') : 'Yakında', tap: () => unlocked('bank') ? openSection('bank') : lockedCard('Banka', 'bank') });
-  add({ id: 'holding', gx: 9, gy: 1, w: 2, d: 2, name: 'Holding', look: 'tower', lv: anyBaron() ? 2 : -1,
+  add({ id: 'holding', gx: 9.05, gy: .25, w: 2.75, d: 2.35, name: 'Holding', look: 'tower', lv: anyBaron() ? 2 : -1,
     sub: anyBaron() ? eurH(S.holding || 0) : 'Baron olunca', tap: () => anyBaron() ? openPage('holding') : showGoals() });
   HOTELS.forEach((x, i) => {
     const own = owns(x), deal = S.hotels.includes(x.id), lock = S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day;
@@ -10073,15 +10073,7 @@ function tbuilding(b, t) {
     }
     case 'guide': guideOffice(b, t, big); break; /* v130: no rooftop signs; a house, a tour booth and the minibus */
     case 'agency': agencyVilla(b, t, big); break; /* v130: a pink neon line round the top floor instead of the phone */
-    case 'tower': {
-      const x0 = g + .45, y0 = k + .45, w = b.w - .9, d = b.d - .9, h = 270;
-      const { A, B, C, D } = corners(x0, y0, w, d);
-      const face = (p, q, light) => { const gr = ctx.createLinearGradient(p[0], 0, q[0], 0); gr.addColorStop(0, light ? '#ffe9b0' : '#b07a2a'); gr.addColorStop(1, light ? '#d9a64a' : '#6a4410'); tpoly([p, q, upp(q, h), upp(p, h)], gr); ctx.strokeStyle = 'rgba(70,40,10,.3)'; ctx.lineWidth = 1; for (let i = 1; i < 18; i++) { ctx.beginPath(); ctx.moveTo(...upp(p, h * i / 18)); ctx.lineTo(...upp(q, h * i / 18)); ctx.stroke(); } };
-      face(D, C, true); face(C, B, false); tpoly([upp(A, h), upp(B, h), upp(C, h), upp(D, h)], '#ffd27a');
-      const top = lp(upp(A, h), upp(C, h), .5); ctx.save(); ctx.translate(top[0], top[1] - 18); ctx.fillStyle = '#ffc23d'; ctx.beginPath(); ctx.moveTo(-22, 12); ctx.lineTo(-26, -12); ctx.lineTo(-12, 0); ctx.lineTo(0, -20); ctx.lineTo(12, 0); ctx.lineTo(26, -12); ctx.lineTo(22, 12); ctx.closePath(); ctx.fill(); ctx.restore();
-      ctx.save(); ctx.globalCompositeOperation = 'lighter'; const tg = ctx.createRadialGradient(top[0], top[1], 0, top[0], top[1], 120); tg.addColorStop(0, 'rgba(255,210,120,.45)'); tg.addColorStop(1, 'rgba(255,210,120,0)'); ctx.fillStyle = tg; ctx.fillRect(top[0] - 120, top[1] - 120, 240, 240); ctx.restore();
-      break;
-    }
+    case 'tower': hqHouse(b, t); break; /* v135: the holding's headquarters in the region's own architecture */
     case 'hotel': hotel(b, t); break;
     case 'mast': windMast(b.gx + .2, b.gy + .2, t); break;
     case 'bazaar': marketRow(b, t); break; /* v128: a row of awning shops on the main road, by the square */
@@ -10459,9 +10451,145 @@ function hotel(b, t) {
   if (b.flag && b.star < 3) tflag(top[0] + 18, top[1] - (b.star === 2 ? 110 : b.star === 1 ? 100 : 50), b.flag, t, 34);
   if (own) { const c = tiso(b.gx + b.w / 2, b.gy + b.d / 2); ctx.save(); ctx.globalCompositeOperation = 'lighter'; const gl = ctx.createRadialGradient(c[0], c[1] - 40, 0, c[0], c[1] - 40, 160); gl.addColorStop(0, 'rgba(255,200,90,.13)'); gl.addColorStop(1, 'rgba(255,200,90,0)'); ctx.fillStyle = gl; ctx.fillRect(c[0] - 160, c[1] - 200, 320, 320); ctx.restore(); }
 }
+/* ---------- v135: the holding's headquarters in the region's own architecture ----------
+   The gold glass tower stood out of the town. The headquarters is now built of the town's own materials: a restored
+   stone konak round a courtyard in Cappadocia, a colonial villa with verandas in Luxor, a red-brick merchant's hall in
+   Bristol, a Pueblo Revival office in Albuquerque. Its tower stays the tallest thing in town; a flagpole in your colours,
+   a brass plaque by the gate and a little gold on the tower tell it is the holding. It grows with the holding: every city
+   office and every R&D level adds a part (hqParts 0..6), in this order: the left wing, the right wing, a floor on each
+   wing, the gatehouse, the tower's crown. */
+const hqParts = () => Math.min(6, officeCount() + ((S && S.hold && S.hold.rnd) || 0));
+const HQ_GEO = { main: [9.55, .3, 1.7, 1.05], tower: [10.68, .98, .5, .5], wl: [9.08, .3, .47, 1.95], wr: [11.25, .3, .5, 1.95], gate: [10.07, 2.08, .66, .36] };
+const HQ_MAIN_H = 96, HQ_WING_H = [50, 92], HQ_SHAFT = 192, HQ_CROWN = 34;
+/* the height of the tower's top (for the name tag and the shadow) */
+const hqTopH = n => HQ_SHAFT + (n >= 6 ? HQ_CROWN : 0) + 44;
+const HQ_LOOK = {
+  cap: { roof: '#b4553a', trim: '#fbead0', dome: '#e8b23a', tree: 'cypress' },
+  lux: { wall: { lit: '#f4dcae', shade: '#c79d66', top: '#efd9ae', courses: false }, trim: '#fdf8ec', shutter: '#3f7a5a', dome: '#e8b23a', tree: 'palm' },
+  bri: { roof: '#5e6874', trim: '#ecd39c', dome: '#7ab0a0', tree: 'beech' },
+  abq: { trim: '#3aa6a0', dome: null, tree: 'cottonwood' }
+};
+function hqHouse(b, t) {
+  const n = hqParts(), R = S.region, L = HQ_LOOK[R] || HQ_LOOK.cap, W = L.wall || {}, bri = R === 'bri', abq = R === 'abq', lux = R === 'lux';
+  const roof = (gx, gy, w, d, h, rise) => { if (R === 'cap' || bri) hipRoof(gx, gy, w, d, h, rise, L.roof); else flatRoof(gx, gy, w, d, h, false); };
+  /* stone dressings: a cornice band under the roof and quoins at the corners (Bristol's Bath stone on brick, a pale band elsewhere) */
+  const cornice = (f, h) => { for (const [p, q] of [[f.D, f.C], [f.C, f.B]]) tpoly([upp(p, h - 5), upp(q, h - 5), upp(q, h), upp(p, h)], L.trim); };
+  const quoins = (f, h) => { if (!bri) return; for (const p of [f.D, f.C]) for (let y = 4; y < h - 6; y += 12) { ctx.fillStyle = L.trim; ctx.fillRect(p[0] - (p === f.C ? 3 : 6), p[1] - y - 6, 6, 6); } };
+  /* window rows on a face: kind of opening per region, lit ones warm */
+  const row = (p, q, h, us, v, w, hh, lit) => { for (const u of us) { opening(p, q, h, u, v, w, hh, 'win', lit === true || (lit && lit(u))); if (lux) shutters(p, q, h, u, v, w, hh); if (abq) turq(p, q, h, u, v, w, hh); } };
+  const shutters = (p, q, h, u, v, w, hh) => tface(p, q, h, () => { ctx.fillStyle = L.shutter; ctx.fillRect(u - w / 2 - w * .42, v, w * .38, hh * .72); ctx.fillRect(u + w / 2 + w * .04, v, w * .38, hh * .72); });
+  const turq = (p, q, h, u, v, w, hh) => tface(p, q, h, () => { ctx.strokeStyle = L.trim; ctx.lineWidth = .012; ctx.strokeRect(u - w / 2 - .008, v - .01, w + .016, hh * .78); });
+  const wing = (G, side) => {
+    const [x, y, w, d] = G, h = HQ_WING_H[n >= (side ? 4 : 3) ? 1 : 0], f = block(x, y, w, d, h, W);
+    const two = h > 60;
+    /* the wing's end facing the street, and its long side facing the courtyard (left wing) or the bank (right wing) */
+    row(f.D, f.C, h, [.5], .14, .34, two ? .26 : .5, true);
+    if (two) row(f.D, f.C, h, [.5], .6, .34, .24, false);
+    const us = [.12, .3, .48, .66, .84];
+    row(f.C, f.B, h, us, two ? .1 : .18, .07, two ? .26 : .45, u => u > .4);
+    if (two) row(f.C, f.B, h, us, .6, .07, .24, u => u < .3 || u > .8);
+    if (bri || (!abq && !lux)) cornice(f, h); quoins(f, h);
+    roof(x, y, w, d, h, 20);
+    return f;
+  };
+  /* the courtyard: paving, a fountain, a tree and a bench */
+  const cy = corners(9.55, 1.35, 1.7, .95); tpoly([cy.A, cy.B, cy.C, cy.D], abq ? '#d9a982' : bri ? '#b8b0a2' : '#e6cfa6');
+  ctx.save(); ctx.globalAlpha = .35; ctx.strokeStyle = abq ? '#b07a54' : '#a88a64'; ctx.lineWidth = 1; for (let i = 1; i < 6; i++) { tpoly([lp(cy.A, cy.D, i / 6), lp(cy.B, cy.C, i / 6)], null, ctx.strokeStyle, 1); } ctx.restore();
+  if (n >= 1) wing(HQ_GEO.wl, 0);
+  /* the main house: two storeys, a hip roof (flat with a parapet out of Cappadocia and Bristol) */
+  const [mx, my, mw, md] = HQ_GEO.main, f = block(mx, my, mw, md, HQ_MAIN_H, W);
+  row(f.D, f.C, HQ_MAIN_H, [.1, .26, .42], .1, .1, .3, u => u !== .26);
+  row(f.D, f.C, HQ_MAIN_H, [.1, .26, .42, .58], .58, .1, .27, u => u === .26 || u === .58);
+  row(f.C, f.B, HQ_MAIN_H, [.22, .5, .78], .1, .16, .3, true);
+  row(f.C, f.B, HQ_MAIN_H, [.22, .5, .78], .58, .16, .27, u => u === .5);
+  opening(f.D, f.C, HQ_MAIN_H, .6, 0, .13, .4, 'door');
+  if (R === 'cap') { /* a wooden cumba bay over the door */
+    const c0 = lp(f.D, f.C, .52), c1 = lp(f.D, f.C, .7), by = HQ_MAIN_H * .5, bh = 30, q0 = upp(c0, by), q1 = upp(c1, by), o = [-11, 5.5];
+    const Q0 = [q0[0] + o[0], q0[1] + o[1]], Q1 = [q1[0] + o[0], q1[1] + o[1]];
+    tpoly([q0, q1, Q1, Q0], '#5a3418'); tpoly([Q0, Q1, upp(Q1, bh), upp(Q0, bh)], '#8a5a30');
+    for (let i = 0; i < 2; i++) { const p = lp(Q0, Q1, (i + .5) / 2); ctx.fillStyle = '#ffd27a'; ctx.fillRect(p[0] - 4, p[1] - bh + 6, 8, 14); }
+    tpoly([upp(q0, bh), upp(q1, bh), upp(Q1, bh), upp(Q0, bh)], L.roof);
+  }
+  if (lux) { /* a deep veranda on slim columns along the ground floor, a balcony rail above */
+    const a = lp(f.D, f.C, .04), c = lp(f.D, f.C, .5), o = [-12, 6], hv = HQ_MAIN_H * .48;
+    tpoly([upp(a, hv), upp(c, hv), [c[0] + o[0], c[1] + o[1] - hv], [a[0] + o[0], a[1] + o[1] - hv]], L.trim);
+    for (let i = 0; i <= 4; i++) { const p = lp(a, c, i / 4); ctx.fillStyle = L.trim; ctx.fillRect(p[0] + o[0] - 1.5, p[1] + o[1] - hv, 3, hv); ctx.fillStyle = 'rgba(120,90,50,.25)'; ctx.fillRect(p[0] + o[0] + .5, p[1] + o[1] - hv, 1, hv); }
+    ctx.strokeStyle = L.trim; ctx.lineWidth = 1.2; for (let i = 0; i <= 10; i++) { const p = lp(a, c, i / 10); ctx.beginPath(); ctx.moveTo(p[0] + o[0], p[1] + o[1] - hv); ctx.lineTo(p[0] + o[0], p[1] + o[1] - hv - 9); ctx.stroke(); }
+    ctx.beginPath(); ctx.moveTo(a[0] + o[0], a[1] + o[1] - hv - 9); ctx.lineTo(c[0] + o[0], c[1] + o[1] - hv - 9); ctx.stroke();
+  }
+  if (bri || R === 'cap') cornice(f, HQ_MAIN_H); quoins(f, HQ_MAIN_H);
+  roof(mx, my, mw, md, HQ_MAIN_H, 30);
+  if (bri) for (const u of [.28, .72]) { const p = upp(tiso(mx + mw * u, my + md * .5), HQ_MAIN_H + 26); ctx.fillStyle = '#8e4636'; ctx.fillRect(p[0] - 5, p[1] - 22, 10, 26); ctx.fillStyle = '#7a3426'; ctx.fillRect(p[0], p[1] - 22, 5, 26); ctx.fillStyle = '#c86a4a'; for (let i = 0; i < 3; i++) ctx.fillRect(p[0] - 4 + i * 3.5, p[1] - 27, 2.6, 5); } /* chimney stacks with pots */
+  if (abq) { /* stepped parapets over the corners, the Pueblo Revival way */
+    for (const p of [f.d, f.c]) { tpoly([[p[0] - 14, p[1] - 8], [p[0] + 6, p[1] - 8], [p[0] + 6, p[1] - 18], [p[0] - 14, p[1] - 18]], TUFF.lit); tpoly([[p[0] - 8, p[1] - 18], [p[0] + 2, p[1] - 18], [p[0] + 2, p[1] - 25], [p[0] - 8, p[1] - 25]], TUFF.top); }
+  }
+  /* the tower: the tallest thing in town. A belvedere of open arches at the top, a clock in Cappadocia and Bristol,
+     a gold dome (Cappadocia, Luxor), a green copper cupola with a gilded vane (Bristol), a gold bell (Albuquerque) */
+  const [tx, ty, tw, td] = HQ_GEO.tower, ft = block(tx, ty, tw, td, HQ_SHAFT, W);
+  for (let i = 0; i < 3; i++) for (const [p, q, lit] of [[ft.D, ft.C, true], [ft.C, ft.B, false]]) opening(p, q, HQ_SHAFT, .5, .2 + i * .17, .22, .08, 'win', lit && i === 1);
+  for (const [p, q] of [[ft.D, ft.C], [ft.C, ft.B]]) { tpoly([upp(p, HQ_SHAFT - 50), upp(q, HQ_SHAFT - 50), upp(q, HQ_SHAFT - 45), upp(p, HQ_SHAFT - 45)], L.trim); for (const u of [.3, .7]) opening(p, q, HQ_SHAFT, u, 1 - 40 / HQ_SHAFT, .28, 32 / HQ_SHAFT, 'win', false); }
+  quoins(ft, HQ_SHAFT);
+  if (R === 'cap' || bri) { /* the clock */
+    const c = upp(lp(ft.D, ft.C, .5), HQ_SHAFT - 68); ctx.save(); ctx.translate(c[0], c[1]); ctx.transform(1, .5, 0, 1, 0, 0);
+    ctx.fillStyle = '#fbf6ea'; ctx.beginPath(); ctx.arc(0, 0, 9, 0, 7); ctx.fill(); ctx.strokeStyle = '#c99a2e'; ctx.lineWidth = 1.6; ctx.stroke();
+    ctx.strokeStyle = '#2b2350'; ctx.lineWidth = 1.3; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, -6.5); ctx.moveTo(0, 0); ctx.lineTo(4.5, 1.5); ctx.stroke(); ctx.restore();
+    nightLite(c[0], c[1], 24, '255,220,150', .7);
+  }
+  if (abq) { const c = lp(lp(ft.D, ft.C, .5), lp(ft.C, ft.B, .5), .5), bp = upp(lp(ft.D, ft.C, .3), HQ_SHAFT - 26); ctx.fillStyle = '#e8b23a'; ctx.beginPath(); ctx.moveTo(bp[0] - 5, bp[1] + 6); ctx.quadraticCurveTo(bp[0] - 5, bp[1] - 5, bp[0], bp[1] - 6); ctx.quadraticCurveTo(bp[0] + 5, bp[1] - 5, bp[0] + 5, bp[1] + 6); ctx.fill(); void c; }
+  let top = ft;
+  if (n >= 6) { /* the crown: a slimmer stage of arches on top */
+    ctx.save(); ctx.translate(0, -HQ_SHAFT);
+    const fc = block(tx + .08, ty + .08, tw - .16, td - .16, HQ_CROWN, W);
+    for (const [p, q] of [[fc.D, fc.C], [fc.C, fc.B]]) opening(p, q, HQ_CROWN, .5, .18, .4, .6, 'win', true);
+    ctx.restore(); top = { a: upp(fc.a, HQ_SHAFT), b: upp(fc.b, HQ_SHAFT), c: upp(fc.c, HQ_SHAFT), d: upp(fc.d, HQ_SHAFT) };
+  }
+  const tc = lp(top.a, top.c, .5), r = Math.hypot(top.c[0] - top.a[0], top.c[1] - top.a[1]) * .38;
+  if (L.dome && !bri) dome(tc[0], tc[1] - 2, r, L.dome);
+  else if (bri) { dome(tc[0], tc[1] - 2, r, L.dome); ctx.strokeStyle = '#c99a2e'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(tc[0] - 7, tc[1] - r - 24); ctx.lineTo(tc[0] + 8, tc[1] - r - 24); ctx.stroke(); }
+  else { const p = top; tpoly([upp(p.d, 0), upp(p.c, 0), upp(p.c, 9), upp(p.d, 9)], TUFF.lit); tpoly([upp(p.c, 0), upp(p.b, 0), upp(p.b, 9), upp(p.c, 9)], TUFF.shade); tpoly([upp(p.a, 9), upp(p.b, 9), upp(p.c, 9), upp(p.d, 9)], TUFF.top); }
+  /* the flag on the tower: your company's colours */
+  tflag(tc[0] + (L.dome ? 0 : 2), tc[1] - (L.dome ? r + 22 : 9), myCol()[0], t, 30);
+  /* the courtyard's things */
+  const fo = tiso(10.35, 1.88); ell(fo[0], fo[1], 17, 8.5, abq ? '#c48a5e' : TUFF.shade); ell(fo[0], fo[1] - 2, 14, 7, abq ? '#e2b08a' : TUFF.lit); ell(fo[0], fo[1] - 2, 10.5, 5, '#5fb8c8');
+  ctx.fillStyle = TUFF.lit; ctx.fillRect(fo[0] - 2, fo[1] - 13, 4, 11); ctx.fillStyle = 'rgba(220,245,255,.8)'; for (let i = 0; i < 4; i++) { const a = t * 2 + i * 1.6; ctx.fillRect(fo[0] + Math.cos(a) * 5 - .8, fo[1] - 13 + Math.abs(Math.sin(a)) * 6, 1.6, 1.6); }
+  const tp = tiso(9.78, 2.02), tk = L.tree;
+  if (tk === 'cypress') cypress(tp[0], tp[1], .8); else if (tk === 'palm') palm(tp[0], tp[1], .62, t); else if (tk === 'beech') copperBeech(tp[0], tp[1], .7); else roundTree(tp[0], tp[1], .85, '#9aa84a');
+  if (n >= 2) wing(HQ_GEO.wr, 1);
+  let plaqueAt, plaqueH;
+  /* the courtyard wall along the street, and along the sides while there are no wings */
+  const wallH = 20, WALL = Object.assign({ courses: false }, W);
+  if (n < 1) block(9.08, 1.35, .14, .9, wallH, WALL);
+  if (n < 2) block(11.61, 1.35, .14, .9, wallH, WALL);
+  block(9.08, 2.25, .99, .12, wallH, WALL); block(10.73, 2.25, 1.02, .12, wallH, WALL);
+  if (n >= 5) { /* the gatehouse: an arched gate under a little room, a small dome or a stepped parapet on top */
+    const [gx, gy, gw, gd] = HQ_GEO.gate, h = 58, fg = block(gx, gy, gw, gd, h, W);
+    opening(fg.D, fg.C, h, .5, 0, .42, .62, 'door'); opening(fg.C, fg.B, h, .5, .55, .3, .25, 'win', true);
+    if (bri || R === 'cap') cornice(fg, h); quoins(fg, h);
+    if (lux || R === 'cap') { const c = lp(fg.a, fg.c, .5); dome(c[0], c[1] - 1, 13, lux ? '#f6eedb' : L.dome); } else roof(gx, gy, gw, gd, h, 14);
+    plaqueAt = lp(fg.D, fg.C, .9); plaqueH = 26;
+  } else { /* the gate: two piers and an arch over the opening */
+    const p0 = tiso(10.07, 2.37), p1 = tiso(10.73, 2.37);
+    for (const p of [p0, p1]) { ctx.fillStyle = W.lit || TUFF.lit; ctx.fillRect(p[0] - 4, p[1] - 34, 8, 34); ctx.fillStyle = W.top || TUFF.top; ctx.fillRect(p[0] - 5, p[1] - 37, 10, 4); }
+    ctx.strokeStyle = W.lit || TUFF.lit; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(p0[0], p0[1] - 32); ctx.quadraticCurveTo((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2 - 52, p1[0], p1[1] - 32); ctx.stroke();
+    plaqueAt = tiso(9.82, 2.37); plaqueH = 14;
+  }
+  /* the brass plaque by the gate: a small polished panel, no words at this size */
+  { const p = plaqueAt; ctx.save(); ctx.translate(p[0], p[1] - plaqueH); ctx.transform(1, -.5, 0, 1, 0, 0); const g = ctx.createLinearGradient(-5, -6, 5, 6); g.addColorStop(0, '#fff0b8'); g.addColorStop(.5, '#d9a63a'); g.addColorStop(1, '#a8761c'); ctx.fillStyle = g; ctx.fillRect(-5.5, -7, 11, 8); ctx.fillStyle = 'rgba(90,60,10,.5)'; for (let i = 0; i < 2; i++) ctx.fillRect(-3.5, -5 + i * 3, 7, .9); ctx.restore(); }
+  /* the flagpole on the corner of the forecourt, your colours */
+  const fp = tiso(9.2, 2.62); tflag(fp[0], fp[1], myCol()[0], t, 96); ctx.fillStyle = '#e8b23a'; ctx.beginPath(); ctx.arc(fp[0], fp[1] - 98, 2.6, 0, 7); ctx.fill();
+  /* a lantern either side of the gate at night */
+  for (const g of [[10.02, 2.42], [10.78, 2.42]]) { const p = tiso(...g); if (NIGHT_K > 0) lantern(p[0], p[1] - 38); }
+}
+function hqShadow() {
+  const n = hqParts(), [mx, my, mw, md] = HQ_GEO.main, [tx, ty, tw, td] = HQ_GEO.tower;
+  boxShadow(mx, my, mw, md, HQ_MAIN_H + 20, .16); boxShadow(tx, ty, tw, td, hqTopH(n) - 20, .14);
+  if (n >= 1) boxShadow(...HQ_GEO.wl, HQ_WING_H[n >= 3 ? 1 : 0], .14);
+  if (n >= 2) boxShadow(...HQ_GEO.wr, HQ_WING_H[n >= 4 ? 1 : 0], .14);
+}
 /* Approximate shadow footprint per building, drawn in a pass before everything else. */
 function buildingShadow(b) {
   if (b.lv <= 0 && b.look !== 'rival') return;
+  if (b.look === 'tower') return hqShadow();
   const hh = { bazaar: 60, hangar: 80, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 54, agency: 100, tower: 270, rival: 44 }[b.look] || ({ 0: 60, 1: 120, 2: 140, 3: 120 })[b.star] || 60;
   boxShadow(b.gx + .3, b.gy + .3, b.w - .6, b.d - .6, hh, .18);
 }
@@ -10889,7 +11017,7 @@ function townTop(b) {
   if (b.look === 'hotel') return [95, 165, 190, 200][b.star];
   if (b.look === 'rival') return 80;
   if (b.look === 'mast') return 175; /* the kiosk row steps down to the right, so neighbouring labels clear each other */
-  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 122, agency: 150, tower: 300, rival: 85 }[b.look] || 135;
+  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 122, agency: 150, tower: hqTopH(hqParts()) + 14, rival: 85 }[b.look] || 135;
 }
 function townLabel(b, sx, sy, sc, full, taken) {
   const fn = Math.round((b.small ? 13 : 16) * sc), fs = Math.round((b.small ? 11 : 13) * sc);
@@ -10981,6 +11109,7 @@ function outerScenery(t) {
     if (gx > -2 && gx < 17 && gy > -2 && gy < 17) continue;
     if (Math.abs(gx - 8) < 1.6 || Math.abs(gy - 8) < 1.6) continue;
     if (!ctrSpotFree(gx, gy)) continue; /* v125: the coach terminal's ground */
+    if (outBusy(gx, gy)) continue; /* v135: the outskirts' cells */
     if (OUTER_FIELDS.some(f => gx > f[0] - 1 && gx < f[0] + 4 && gy > f[1] - 1 && gy < f[1] + 3.5)) continue;
     items.push({ at: [gx, gy], depth: gx + gy, shadow: () => { const p = tiso(gx, gy); blobShadow(p[0] + hh * .3, p[1] + 8, hh * .3, hh * .08, .14); }, draw: () => { const p = tiso(gx, gy); outerLandmark(p[0], p[1], hh, i); } });
   }
@@ -10994,6 +11123,311 @@ function outerScenery(t) {
     }
   });
   return items;
+}
+/* ---------- v135: the outskirts grow with the company ----------
+   Outside the walls the valley had only sand. Now life is out there, but only on the two flanks of the town that the
+   home screen doesn't show (|gx − gy| ≥ OUT_CALM): the home view stays as calm as before, and you meet the valley when
+   you drag or zoom out. Your own launch fields spill out of town as the fleet grows (one per OUT_PER balloons in the
+   hangar beyond the town field's six, up to OUT_MAX), balloons inflate on them in a wave from each dawn and rise to join
+   the sky; chase crews drive out on dirt tracks to where a balloon comes down, it deflates and its passengers toast
+   (Cappadocia's champagne landing); orchards, vineyards, dovecotes, a sunrise hill with its crowd, an ATV tour and riders,
+   rival fields far out; and each region's own land: the Nile's cane and palms with a felucca and a farmer by Luxor,
+   hedged pastures with dry-stone walls and sheep by Bristol, mesas, scrub and an RV park that fills for the Fiesta by
+   Albuquerque. The ground is drawn once into batched paths per layout; things off screen are skipped; at most
+   OUT_BALLOONS balloons are drawn. */
+const OUT_CALM = 13.5, OUT_PER = 12, OUT_MAX = 24, OUT_BALLOONS = 60, OUT_CELL = [2.6, 2.1];
+const outFieldsN = () => clamp(Math.floor((inside().length - 6) / OUT_PER), 0, OUT_MAX);
+const outCrewsN = nf => Math.min(4, 1 + Math.floor(nf / 6));
+const outFlank = (x, y) => Math.abs(x - y) >= OUT_CALM;
+/* what each region keeps on its flanks, in the order the cells are handed out (nearest first, alternating sides) */
+const OUT_DECOR = {
+  cap: ['orchard', 'vine', 'dovecote', 'view', 'orchard', 'farm', 'vine', 'rival', 'orchard', 'dovecote', 'farm', 'vine', 'rival'],
+  abq: ['scrub', 'rv', 'mesa', 'view', 'farm', 'scrub', 'mesa', 'rival', 'scrub', 'mesa', 'rival'],
+  lux: ['cane', 'palms', 'crops', 'view', 'farm', 'cane', 'palms', 'crops', 'rival', 'cane', 'palms', 'rival'],
+  bri: ['pasture', 'pasture', 'farm', 'view', 'pasture', 'crops', 'pasture', 'rival', 'farm', 'pasture', 'rival']
+};
+let OUTL = null;
+/* the cells of the flanks, the decor on them and the order the fields take the rest; fixed per region */
+function outLayout() {
+  const reg = S.region; if (OUTL && OUTL.reg === reg) return OUTL;
+  const water = (x, y) => (reg === 'lux' || reg === 'bri') && y < -8.6;
+  const vines = [[-9, 2, 5, 4], [18, 10, 4, 5], [2, 18, 4, 3.5], [-12, 12, 4, 3]];
+  const hitRect = (x, y, w, d, R, m) => x < R[0] + R[2] + m && x + w > R[0] - m && y < R[1] + R[3] + m && y + d > R[1] - m;
+  const okPt = (x, y) => outFlank(x, y) && x + y > -8 && x + y < 56 && x > -24 && y > -24 && x < 44 && y < 44 && !(x > -2.5 && x < 17.5 && y > -2.5 && y < 17.5) && Math.abs(x - 8) > 1.2 && Math.abs(y - 8) > 1.2 && ctrSpotFree(x, y) && !water(x, y);
+  const [W, D] = OUT_CELL, cells = [];
+  for (let i = 0; i < 24; i++) for (let j = 0; j < 26; j++) {
+    const x = -22 + i * 3.05 + (j % 2) * .7, y = -10 + j * 2.6; let ok = true;
+    for (let u = -.45; u <= 1.45 && ok; u += .475) for (let v = -.45; v <= 1.45 && ok; v += .475) ok = okPt(x + u * W, y + v * D);
+    if (!ok || OUTER_FIELDS.some(f => hitRect(x, y, W, D, [f[0], f[1], 3, 2.2], .8)) || vines.some(r => hitRect(x, y, W, D, r, .5))) continue;
+    const cx = x + W / 2, cy = y + D / 2;
+    cells.push({ x, y, cx, cy, side: cx > cy ? 1 : -1, dist: Math.hypot(cx - 7.5, cy - 7.5) });
+  }
+  const R = mulberry32(135 + reg.charCodeAt(0) * 7 + reg.charCodeAt(1));
+  cells.forEach(c => { c.key = c.dist + R() * 2.5; });
+  const bySide = s => cells.filter(c => c.side === s).sort((a, b) => a.key - b.key);
+  const L = bySide(-1), Rt = bySide(1), order = [];
+  while (L.length || Rt.length) { if (L.length) order.push(L.shift()); if (Rt.length) order.push(Rt.shift()); }
+  /* decor every other cell from the third on, so fields and decor mix instead of the fields ringing the town */
+  const decor = [], fields = [], rest = [], kinds = (OUT_DECOR[reg] || OUT_DECOR.cap).slice();
+  order.forEach((c, i) => { if (kinds.length && Math.floor(i / 2) % 2 === 1) { c.k = kinds.shift(); decor.push(c); } else if (fields.length < OUT_MAX) fields.push(c); else rest.push(c); });
+  /* rival fields belong far out: swap a 'rival' cell with the farthest field cell */
+  /* landing spots: free cells near the fields, a crew's own on its side */
+  const land = rest.slice(0, 16);
+  const crews = [];
+  for (let c = 0; c < 4; c++) {
+    const F = fields[c]; if (!F) break;
+    const cand = land.filter(q => q.side === F.side && Math.hypot(q.cx - F.cx, q.cy - F.cy) > 4.5 && !crews.some(k => k.L === q)).sort((a, b) => Math.hypot(a.cx - F.cx, a.cy - F.cy) - Math.hypot(b.cx - F.cx, b.cy - F.cy));
+    const Lc = cand[0]; if (!Lc) continue;
+    const a = [F.cx, F.cy + .7], b = [Lc.cx - .4, Lc.cy + .35], k1 = [a[0], b[1]], k2 = [b[0], a[1]], corner = outFlank(...k1) && ctrSpotFree(...k1) ? k1 : k2;
+    crews.push({ F, L: Lc, path: [a, corner, b], spot: [Lc.cx + .35, Lc.cy - .05] });
+  }
+  /* an ATV loop and a riders' loop round two decor cells deep in a flank */
+  const loopAt = (c, w, d) => { if (!c) return null; const x0 = c.cx - w / 2, y0 = c.cy - d / 2, P = [[x0, y0], [x0 + w, y0], [x0 + w, y0 + d], [x0, y0 + d]]; return P.every(p => okPt(...p)) ? P.concat([P[0]]) : null; };
+  const loops = [];
+  for (const [k, w, d] of [['dovecote', 4.2, 3.6], ['mesa', 4.4, 3.8], ['pasture', 3.6, 3.2], ['palms', 3.8, 3.2], ['orchard', 3.8, 3.2], ['scrub', 3.8, 3.2], ['cane', 3.8, 3.2]]) {
+    for (const c of decor.filter(q => q.k === k)) { const P = loopAt(c, w, d); if (P && !loops.some(l => l.c === c)) { loops.push({ c, P, len: P.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - P[i][0], p[1] - P[i][1]), 0) }); break; } }
+    if (loops.length >= 2) break;
+  }
+  return (OUTL = { reg, cells, decor, fields, land, crews, loops, ground: null });
+}
+/* the outer landmarks (fairy chimneys, buttes, trees…) keep clear of every cell the outskirts may use */
+function outBusy(gx, gy) {
+  const L = outLayout();
+  return L.decor.concat(L.fields, L.land).some(c => gx > c.x - .9 && gx < c.x + OUT_CELL[0] + .9 && gy > c.y - .9 && gy < c.y + OUT_CELL[1] + 1.4) ||
+    L.crews.some(k => k.path.slice(1).some((p, i) => { const a = k.path[i]; return gx > Math.min(a[0], p[0]) - .6 && gx < Math.max(a[0], p[0]) + .6 && gy > Math.min(a[1], p[1]) - .6 && gy < Math.max(a[1], p[1]) + .6; })) ||
+    L.loops.some(l => gx > l.P[0][0] - .7 && gx < l.P[2][0] + .7 && gy > l.P[0][1] - .7 && gy < l.P[2][1] + .7);
+}
+/* ---- the ground, built once into a path per colour ---- */
+function outGround() {
+  const L = outLayout(), nf = outFieldsN(), nc = outCrewsN(nf), key = [nf, nc, !!S.winter, !!S.fiesta].join(':');
+  if (L.ground && L.ground.key === key) return L.ground;
+  const G = new Map(), Sk = new Map(), win = c => S.winter ? mix(c, '#f4f6fa', .62) : c;
+  const P = (fill) => { const c = win(fill); if (!G.has(c)) G.set(c, new Path2D()); return G.get(c); };
+  const St = (col, lw, dash) => { const k = win(col) + '|' + lw + '|' + (dash || ''); if (!Sk.has(k)) Sk.set(k, { col: win(col), lw, dash, p: new Path2D() }); return Sk.get(k).p; };
+  const quad = (path, x, y, w, d) => { const a = tiso(x, y), b = tiso(x + w, y), c = tiso(x + w, y + d), e = tiso(x, y + d); path.moveTo(...a); path.lineTo(...b); path.lineTo(...c); path.lineTo(...e); path.closePath(); };
+  const line = (path, p, q) => { path.moveTo(...tiso(...p)); path.lineTo(...tiso(...q)); };
+  const blob = (path, x, y, rx, ry) => { const p = tiso(x, y); path.moveTo(p[0] + rx, p[1]); path.ellipse(p[0], p[1], rx, ry, 0, 0, 7); };
+  const reg = S.region, look = OUTER_LOOK[reg] || OUTER_LOOK.cap, [W, D] = OUT_CELL;
+  /* dirt tracks first, everything else sits on them */
+  for (const k of L.crews.slice(0, nc)) for (let i = 1; i < k.path.length; i++) { line(St(look.road, 22), k.path[i - 1], k.path[i]); line(St('rgba(120,80,40,.18)', 3, '10,12'), k.path[i - 1], k.path[i]); }
+  for (const l of L.loops) for (let i = 1; i < l.P.length; i++) line(St(look.road, 14), l.P[i - 1], l.P[i]);
+  L.fields.forEach((c, i) => {
+    if (i < nf) { /* a mown launch field, stripes and a pale border */
+      const x = c.x + .1, y = c.y + .1, w = W - .2, d = D - .2;
+      quad(P(reg === 'bri' ? '#93c162' : reg === 'lux' ? '#9cbc62' : '#a9b468'), x, y, w, d);
+      for (let s = 0; s < 6; s += 2) quad(P(reg === 'bri' ? '#a4cc72' : '#b8c47a'), x + s * w / 6, y, w / 6, d);
+      line(St('rgba(255,250,235,.55)', 2), [x, y + d], [x + w, y + d]); line(St('rgba(255,250,235,.55)', 2), [x + w, y], [x + w, y + d]);
+    } else if (i === 0) { quad(P(look.road), c.x + .5, c.y + .4, 1.4, 1.1); } /* the chase crew's yard before the first field */
+  });
+  for (const c of L.decor) {
+    const { x, y } = c;
+    switch (c.k) {
+      case 'vine': quad(P(reg === 'cap' ? '#d9bb8c' : '#cdb07a'), x, y, W, D); for (let r = 0; r <= 7; r++) line(St('#6f8a3a', 4, '6,4'), [x + .1, y + .1 + r * (D - .2) / 7], [x + W - .1, y + .1 + r * (D - .2) / 7]); break;
+      case 'orchard': quad(P(reg === 'cap' ? '#c8bf84' : '#b9c07a'), x, y, W, D); break;
+      case 'crops': case 'cane': quad(P(c.k === 'cane' ? '#8fae58' : reg === 'bri' ? '#c8c070' : '#9cc066'), x, y, W, D); for (let r = 1; r < 9; r++) line(St('rgba(60,100,40,.3)', 1.5), [x + r * W / 9, y], [x + r * W / 9, y + D]); break;
+      case 'pasture': quad(P('#9ccb6a'), x - .2, y - .2, W + .4, D + .4); { const p = St('#b8ad94', 6); line(p, [x - .2, y - .2], [x + W + .2, y - .2]); line(p, [x + W + .2, y - .2], [x + W + .2, y + D + .2]); line(p, [x + W + .2, y + D + .2], [x - .2, y + D + .2]); line(p, [x - .2, y + D + .2], [x - .2, y - .2]); const q = St('#8a7f68', 2, '3,5'); line(q, [x - .2, y + D + .2], [x + W + .2, y + D + .2]); line(q, [x + W + .2, y - .2], [x + W + .2, y + D + .2]); } break;
+      case 'scrub': { const Rr = mulberry32(Math.round(x * 13 + y * 7)); for (let i = 0; i < 26; i++) blob(P(Rr() < .5 ? '#8a9a6a' : '#a0a878'), x + Rr() * W, y + Rr() * D, 5 + Rr() * 5, 3 + Rr() * 2); break; }
+      case 'rv': quad(P('#d8c4a4'), x, y, W, D); for (let r = 0; r < 3; r++) line(St('rgba(110,80,50,.25)', 1.5), [x + .2, y + .55 + r * .6], [x + W - .2, y + .55 + r * .6]); break;
+      case 'farm': quad(P(reg === 'bri' ? '#a8cc78' : look.road), x + .3, y + .3, 1.6, 1.3); break;
+      case 'palms': blob(P(reg === 'lux' ? '#a8bc72' : '#b8b07a'), x + W / 2, y + D / 2, 120, 50); break;
+      case 'rival': { const xx = x + .1, yy = y + .1; quad(P(look.field), xx, yy, W - .2, D - .2); quad(P('rgba(255,255,255,.12)'), xx + .2, yy + .2, W - .6, D - .6); break; }
+      case 'view': blob(P(reg === 'bri' ? '#86b45e' : reg === 'abq' ? '#c88a62' : '#d6aa82'), x + W / 2, y + D / 2, 150, 66); break;
+    }
+  }
+  return (L.ground = { key, G, Sk });
+}
+function outskirtsGround() {
+  const g = outGround();
+  for (const [c, p] of g.G) { ctx.fillStyle = c; ctx.fill(p); }
+  for (const s of g.Sk.values()) { ctx.strokeStyle = s.col; ctx.lineWidth = s.lw; ctx.lineCap = 'round'; ctx.setLineDash(s.dash ? s.dash.split(',').map(Number) : []); ctx.stroke(s.p); }
+  ctx.setLineDash([]); ctx.lineCap = 'butt';
+}
+/* ---- little things that live out there ---- */
+/* things drawn many times the same way are drawn once into a small image: a standing balloon, a laid-out envelope, an orchard tree */
+const OUT_SPR = new Map();
+function outSprite(key, w, hh, ax, ay, fn) {
+  let s = OUT_SPR.get(key);
+  if (!s) { if (OUT_SPR.size > 160) OUT_SPR.clear(); const c = document.createElement('canvas'), k = 2; c.width = w * k; c.height = hh * k; const o = c.getContext('2d'); o.setTransform(k, 0, 0, k, 0, 0); const keep = ctx; ctx = o; try { fn(ax, ay); } finally { ctx = keep; } s = { c, w, hh, ax, ay }; OUT_SPR.set(key, s); }
+  return s;
+}
+function outBlit(s, x, y, sc = 1, a = 1) { if (a < 1) { ctx.save(); ctx.globalAlpha *= a; } ctx.drawImage(s.c, x - s.ax * sc, y - s.ay * sc, s.w * sc, s.hh * sc); if (a < 1) ctx.restore(); }
+function outBalloon(x, y, k, c1, c2, burn, a, d) { outBlit(outSprite(`b:${c1}:${c2}:${d ? d.id : ''}:${burn ? 1 : 0}`, 90, 120, 45, 112, (ax, ay) => balloon(ax, ay, 30, c1, c2, burn, 1, null, d)), x, y, k, a); }
+function outEnvelope(gx, gy, k, c1, c2) { if (k < .999) return lyingEnvelope(gx, gy, k, c1, c2); const p = tiso(gx, gy); outBlit(outSprite(`e:${c1}:${c2}`, 100, 50, 50, 25, (ax, ay) => { lyingEnvelopeAt(ax, ay, 1, c1, c2); }), p[0], p[1]); }
+function outTree(x, y, cap) { outBlit(outSprite(`t:${cap ? 1 : 0}`, 40, 50, 20, 46, (ax, ay) => { roundTree(ax, ay, .55, '#7a9a44'); if (cap) for (let k = 0; k < 4; k++) ell(ax - 5 + (k * 7) % 11, ay - 17 - (k * 5) % 9, 1.8, 1.8, '#f0a040'); }), x, y); }
+/* a vehicle as three flat faces: along gx (alongX) or along gy */
+function vbox(gx, gy, w, d, h, lit, shade, top, lift = 0) {
+  const { A, B, C, D } = corners(gx, gy, w, d), u = p => [p[0], p[1] - lift];
+  tpoly([u(D), u(C), upp(u(C), h), upp(u(D), h)], lit); tpoly([u(C), u(B), upp(u(B), h), upp(u(C), h)], shade); tpoly([upp(u(A), h), upp(u(B), h), upp(u(C), h), upp(u(D), h)], top);
+  return { A: u(A), B: u(B), C: u(C), D: u(D), h };
+}
+/* the chase van: white, a stripe in your colours, a trailer behind with the basket when it's loaded */
+function chaseVan(gx, gy, dir, loaded, t, moving) {
+  const ax = Math.abs(dir[0]) > Math.abs(dir[1]), sg = ax ? Math.sign(dir[0]) || 1 : Math.sign(dir[1]) || 1, c = myCol()[0];
+  const bob = moving ? Math.sin(t * 18) * .5 : 0, vw = ax ? .62 : .32, vd = ax ? .32 : .62;
+  const tr = ax ? [gx - sg * .62, gy] : [gx, gy - sg * .62], tw = ax ? .4 : .3, td = ax ? .3 : .4;
+  const draw = [];
+  draw.push([tr[0] + tr[1], () => { const p = tiso(...tr); blobShadow(p[0] + 6, p[1] + 3, 16, 6, .16); const f = vbox(tr[0] - tw / 2, tr[1] - td / 2, tw, td, 6, '#7a7068', '#5a524c', '#8a8078', 4);
+    if (loaded) { const q = tiso(...tr); vbox(tr[0] - .12, tr[1] - .12, .24, .24, 10, '#a8763e', '#7a522a', '#c08a50', 10); ell(q[0], q[1] - 24, 9, 5, c); } for (const p of [f.D, f.C]) ell(p[0] + (ax ? 0 : 0), p[1] + 1, 2.6, 2.6, '#2a1e18'); }]);
+  draw.push([gx + gy, () => { const p = tiso(gx, gy); blobShadow(p[0] + 8, p[1] + 4, 22, 8, .18);
+    for (const [u, v] of [[.2, 0], [.8, 0]]) { const q = tiso(gx + (ax ? (u - .5) * vw : -vw / 2 + v), gy + (ax ? vd / 2 : (u - .5) * vd)); ell(q[0], q[1] - 2, 3.2, 3, '#2a1e18'); }
+    const f = vbox(gx - vw / 2, gy - vd / 2, vw, vd, 18, '#fbfaf6', '#d6d4ce', '#eeece6', 4 + bob);
+    for (const [p, q] of [[f.D, f.C], [f.C, f.B]]) { const a = upp(p, 4 + bob + 8), b = upp(q, 4 + bob + 8); tpoly([a, b, [b[0], b[1] - 3], [a[0], a[1] - 3]], c); }
+    const fr = ax ? (sg > 0 ? [f.C, f.B] : null) : (sg > 0 ? [f.D, f.C] : null); /* the windscreen on the face toward the camera when it drives toward it */
+    if (fr) { const a = upp(lp(fr[0], fr[1], .1), 4 + bob + 13), b = upp(lp(fr[0], fr[1], .9), 4 + bob + 13); tpoly([a, b, [b[0], b[1] - 7], [a[0], a[1] - 7]], '#5a7a96'); }
+    else { const s = ax ? [f.D, f.C] : [f.C, f.B]; for (const k of [.22, .55]) { const a = upp(lp(s[0], s[1], k), 4 + bob + 13), b = upp(lp(s[0], s[1], k + .22), 4 + bob + 13); tpoly([a, b, [b[0], b[1] - 6], [a[0], a[1] - 6]], '#6a8aa6'); } }
+  }]);
+  return draw;
+}
+/* an envelope lying on the ground, deflating: k 1 full and puffy, 0 flat and packed away */
+function lyingEnvelope(gx, gy, k, c1, c2) { const p = tiso(gx, gy); lyingEnvelopeAt(p[0], p[1], k, c1, c2); }
+function lyingEnvelopeAt(px, py, k, c1, c2) {
+  if (k <= .02) return;
+  const p = [px, py]; ctx.save(); ctx.translate(p[0], p[1]); ctx.transform(TW / 2, TH / 2, -TW / 2, TH / 2, 0, 0);
+  const len = .3 + .18 * Math.min(1, k * 1.4), wid = .11 * (.3 + .7 * k);
+  ctx.beginPath(); ctx.ellipse(0, 0, len, wid, 0, 0, 7); ctx.fillStyle = c1; ctx.fill(); ctx.save(); ctx.clip();
+  ctx.fillStyle = c2; for (let i = -4; i < 4; i += 2) ctx.fillRect(i * len / 4, -wid, len / 4, wid * 2);
+  ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(-len, -wid, len * 2, wid * .5); ctx.fillStyle = 'rgba(40,20,40,.18)'; ctx.fillRect(-len, wid * .35, len * 2, wid);
+  ctx.restore(); ctx.restore();
+  const bq = [px + len * 1.05 * TW / 2, py + len * 1.05 * TH / 2]; ctx.fillStyle = '#8a5a30'; ctx.fillRect(bq[0] - 5, bq[1] - 9, 10, 8); ctx.fillStyle = '#6a4220'; ctx.fillRect(bq[0] + 1, bq[1] - 9, 4, 8);
+}
+/* someone holding up a glass: the arm raised, a glint now and then */
+function toaster(x, y, col, t, ph) {
+  person(x, y, col, 0, ph); const up = (Math.sin(t * 1.3 + ph) + 1) / 2;
+  ctx.strokeStyle = col; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x + 2.5, y - 11); ctx.lineTo(x + 5, y - 15 - up * 5); ctx.stroke();
+  ctx.fillStyle = '#fff2c0'; ctx.fillRect(x + 4, y - 19 - up * 5, 2.2, 3.4);
+  if ((t * .7 + ph) % 3 < .12) { ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.fillRect(x + 4.5, y - 23 - up * 5, 1.4, 1.4); ctx.fillRect(x + 7, y - 21 - up * 5, 1.4, 1.4); }
+}
+function quadBike(x, y, col, t, ph, dx) {
+  const b = Math.sin(t * 14 + ph) * .6; ell(x + 4, y + 1, 9, 3, 'rgba(90,45,20,.18)');
+  ell(x - 5, y - 2, 3, 3, '#2a1e18'); ell(x + 5, y - 2, 3, 3, '#2a1e18');
+  ctx.fillStyle = col; ctx.fillRect(x - 7, y - 8 + b, 14, 5); ctx.fillStyle = '#3a2418'; ctx.beginPath(); ctx.arc(x - dx * 1, y - 17 + b, 2.6, 0, 7); ctx.fill();
+  ctx.fillStyle = '#e8e2d4'; ctx.fillRect(x - 2.5 - dx, y - 15 + b, 5, 7); ctx.fillStyle = '#ff5e3a'; ctx.beginPath(); ctx.arc(x - dx, y - 18.5 + b, 2.8, Math.PI, 0); ctx.fill();
+}
+function rider(x, y, t, ph, dx, coat) {
+  const s = Math.sin(t * 4 + ph), hc = ['#7a4a2a', '#3a2a20', '#c09060', '#f2ece0'][Math.floor(ph) % 4];
+  ell(x + 4, y + 1, 11, 3, 'rgba(90,45,20,.18)');
+  ctx.strokeStyle = mix(hc, '#000000', .25); ctx.lineWidth = 2; for (const [o, k] of [[-6, 1], [-3, -1], [4, 1], [7, -1]]) { ctx.beginPath(); ctx.moveTo(x + o * dx, y - 7); ctx.lineTo(x + o * dx + s * k * 1.5, y); ctx.stroke(); }
+  ell(x, y - 10, 9, 4.5, hc); ctx.strokeStyle = hc; ctx.lineWidth = 3.4; ctx.beginPath(); ctx.moveTo(x + 7 * dx, y - 11); ctx.lineTo(x + 11 * dx, y - 17); ctx.stroke(); ell(x + 12 * dx, y - 17, 3.4, 2.2, hc);
+  ctx.strokeStyle = mix(hc, '#000000', .45); ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(x - 9 * dx, y - 11); ctx.quadraticCurveTo(x - 12 * dx, y - 8, x - 11 * dx, y - 3); ctx.stroke();
+  ctx.fillStyle = coat; ctx.fillRect(x - 2.5, y - 21, 5, 8); ctx.fillStyle = '#3a2418'; ctx.beginPath(); ctx.arc(x, y - 24, 2.8, 0, 7); ctx.fill();
+}
+function rvCaravan(x, y, col, lit) {
+  ell(x + 8, y + 2, 22, 6, 'rgba(90,45,20,.16)');
+  ctx.fillStyle = '#f6f2ea'; rrect(x - 16, y - 17, 32, 15, 4); ctx.fill(); ctx.fillStyle = '#d8d2c6'; ctx.fillRect(x + 10, y - 17, 6, 15);
+  ctx.fillStyle = col; ctx.fillRect(x - 16, y - 9, 32, 2.5); ctx.fillStyle = lit ? '#ffd27a' : '#6a8aa6'; ctx.fillRect(x - 11, y - 14, 6, 4); ctx.fillRect(x - 1, y - 14, 6, 4);
+  ell(x - 8, y - 2, 2.6, 2.6, '#2a1e18'); ell(x + 6, y - 2, 2.6, 2.6, '#2a1e18');
+  if (lit) nightLite(x - 4, y - 12, 26, '255,200,120', .8);
+}
+function dovecoteRock(x, y, t) {
+  chimney(x - 26, y + 6, 70, 120, '#efc79e', '#c69068', '#6a4430'); chimney(x + 20, y + 10, 84, 150, '#f3cfa6', '#c8936a', '#6a4430');
+  /* the dovecotes: rows of small dark doorways framed in white paint, the way the valley's farmers marked them */
+  for (const [dx, dy] of [[14, -62], [24, -78], [10, -96], [28, -100], [-30, -48], [-22, -66]]) { ctx.fillStyle = '#fbf3e4'; ctx.beginPath(); ctx.arc(x + dx, y + dy, 5.4, Math.PI, 0); ctx.lineTo(x + dx + 5.4, y + dy + 6); ctx.lineTo(x + dx - 5.4, y + dy + 6); ctx.fill(); ctx.fillStyle = '#3a2418'; ctx.beginPath(); ctx.arc(x + dx, y + dy + 1, 3, Math.PI, 0); ctx.lineTo(x + dx + 3, y + dy + 6); ctx.lineTo(x + dx - 3, y + dy + 6); ctx.fill(); }
+}
+function farmHouse(gx, gy, t) {
+  const reg = S.region, f = block(gx, gy, .9, .7, 34, { courses: reg === 'bri' });
+  opening(f.D, f.C, 34, .3, 0, .2, .6, 'door'); opening(f.D, f.C, 34, .72, .35, .18, .35, 'win', NIGHT_K > 0); opening(f.C, f.B, 34, .5, .35, .25, .35, 'win', false);
+  if (reg === 'cap' || reg === 'bri') gableRoof(gx, gy, .9, .7, 34, 14, '#b4623e'); else flatRoof(gx, gy, .9, .7, 34, reg === 'lux');
+  const tp = tiso(gx + 1.25, gy + .3); if (reg === 'lux') palm(tp[0], tp[1], .8, t); else if (reg === 'bri') oakTree(tp[0], tp[1], .9); else roundTree(tp[0], tp[1], .9, reg === 'abq' ? '#9aa84a' : '#7aa04a');
+}
+/* ---- the scene items ---- */
+let OUT_VIEW = null; /* the screen size renderTown is drawing, for skipping things off screen */
+let OUT_DAWN = 0; /* when the valley's launch wave started (each morning's dawn) */
+function outskirtsItems(t) {
+  const L = outLayout(), nf = outFieldsN(), nc = outCrewsN(nf), items = [], reg = S.region, day = NIGHT_K <= 0;
+  const V = TV, vw = OUT_VIEW ? OUT_VIEW[0] : 400, vh = OUT_VIEW ? OUT_VIEW[1] : 900;
+  const x0 = -V.ox / V.z - 220, x1 = (vw - V.ox) / V.z + 220, y0 = -V.oy / V.z - 120, y1 = (vh - V.oy) / V.z + 720;
+  const seen = (gx, gy) => { const p = tiso(gx, gy); return p[0] > x0 && p[0] < x1 && p[1] > y0 && p[1] < y1; };
+  const add = (gx, gy, draw, shadow, dep) => { if (seen(gx, gy)) items.push({ at: [gx, gy], depth: dep != null ? dep : gx + gy, draw, shadow }); };
+  const my = myCol(), fleet = S.balloons, cols = i => { const b = fleet[(i * 7) % Math.max(1, fleet.length)], d = designOf(b); return d ? [d.cols[0], d.cols[1], d] : [my[0], my[1], null]; };
+  let nb = 0;
+  /* your fields: three envelopes laid out at dawn, inflating in a wave, standing, lifting off and rising into the sky;
+     then a fresh one is laid out and the cycle goes on through the morning */
+  if (day) L.fields.slice(0, nf).forEach((c, i) => {
+    for (let j = 0; j < 3; j++) {
+      const gx = c.x + .55 + j * .75, gy = c.y + .75 + (j % 2) * .45, cc = cols(i * 3 + j), P = 46;
+      const u = T - OUT_DAWN - i * .55 - j * 1.4, ph = u < 0 ? -1 : (u % P) / P;
+      if (ph < 0 || ph < .12) { add(gx, gy, () => outEnvelope(gx, gy, 1, cc[0], cc[1])); continue; }
+      const inf = ph < .42, k = inf ? .3 + .7 * (ph - .12) / .3 : 1, alt = inf ? 0 : Math.pow((ph - .42) / .58, 1.5) * 640, a = ph > .9 ? (1 - ph) * 10 : 1;
+      if (!inf && ++nb > OUT_BALLOONS) continue;
+      add(gx, gy, () => { const p = tiso(gx, gy); if (inf && k < .6) lyingEnvelope(gx - .15, gy, 1 - (k - .3) / .3, cc[0], cc[1]); outBalloon(p[0] + alt * .12, p[1] - alt, k, cc[0], cc[1], inf ? ph > .3 && (t * 3 + j) % 1 < .5 : (t + i + j) % 3 < .4, a, k > .95 ? cc[2] : null); },
+        () => { const p = tiso(gx, gy); blobShadow(p[0] + 20 + alt * .12, p[1] + 6, 24 * k * (1 - alt / 900), 8 * k * (1 - alt / 900), inf ? .18 : .1); });
+    }
+    add(c.x + .2, c.y + D_OUT, () => { const p = tiso(c.x + .25, c.y + D_OUT); propane(p[0], p[1]); propane(p[0] + 11, p[1] + 5); });
+  });
+  if (day && !nf && L.fields[0]) { const c = L.fields[0]; add(c.cx + .2, c.cy + .1, () => { const p = tiso(c.cx + .3, c.cy + .1); propane(p[0], p[1]); propane(p[0] + 11, p[1] + 5); crate(p[0] - 20, p[1] - 6); }); }
+  /* rival fields far out: their balloons in their colours */
+  const rc = S.rivals.map(r => [r.col, r.col2]).concat([['#14a39a', '#e8fff9'], ['#9b7be0', '#f2ebff']]);
+  if (day) L.decor.filter(c => c.k === 'rival').forEach((c, i) => {
+    for (let j = 0; j < 2; j++) {
+      const ph = (t * .04 + i * .37 + j * .5) % 1, gx = c.x + .8 + j * 1.1, gy = c.y + 1.05, cc = rc[(i * 2 + j) % rc.length], inf = ph < .5, k = inf ? .35 + .65 * ph / .5 : 1, alt = inf ? 0 : Math.pow((ph - .5) / .5, 1.6) * 560;
+      if (!inf && ++nb > OUT_BALLOONS) continue;
+      add(gx, gy, () => { const p = tiso(gx, gy); outBalloon(p[0], p[1] - alt, .93 * k, cc[0], cc[1], inf ? ph > .3 && (t * 3) % 1 < .5 : (t + i) % 3 < .4, ph > .9 ? (1 - ph) * 10 : 1); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 18, p[1] + 6, 22 * k, 7 * k, inf ? .16 : .08); });
+    }
+  });
+  /* the chase crews */
+  if (day) L.crews.slice(0, nc).forEach((K, ci) => {
+    const P = 56, u = (T + ci * 14.5 + 9) % P, path = K.path, len = path.slice(1).reduce((s, p, i) => s + Math.hypot(p[0] - path[i][0], p[1] - path[i][1]), 0);
+    const ease = k => k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    const s = u < 1 ? 0 : u < 11 ? ease((u - 1) / 10) * len : u < 35 ? len : u < 45 ? (1 - ease((u - 35) / 10)) * len : 0;
+    const at = walkPath(path, s), dir = u >= 35 ? [-at.dir[0], -at.dir[1]] : at.dir, a = u < 1 ? u : u > 45 ? Math.max(0, 46 - u) : 1;
+    if (a > 0) for (const [dp, fn] of chaseVan(at.p[0], at.p[1], dir, u > 33, t, (u > 1 && u < 11) || (u > 35 && u < 45))) items.push({ at: at.p, depth: dp + .3, draw: () => { ctx.save(); ctx.globalAlpha *= a; fn(); ctx.restore(); } });
+    const [lx, ly] = K.spot, cc = cols(ci * 5 + 1);
+    if (u > 2 && u < 13) { /* coming down onto the field, drifting in on the wind */
+      const k = (u - 2) / 11, alt = 440 * Math.pow(1 - k, 1.7), drift = (1 - k) * 1.6;
+      add(lx - drift, ly, () => { const p = tiso(lx - drift, ly); balloon(p[0], p[1] - alt, 30, cc[0], cc[1], (t * 2 + ci) % 2 < .25, 1, null, cc[2]); }, () => { const p = tiso(lx - drift, ly); blobShadow(p[0] + 18, p[1] + 6, 22 * (.5 + k * .5), 8 * (.5 + k * .5), .08 + k * .1); });
+    } else if (u >= 13 && u < 34) { /* down: the envelope tips over and sighs flat; the basket's people climb out and toast */
+      const k = u < 17 ? (u - 13) / 4 : 1, pk = u > 30 ? 1 - (u - 30) / 4 : 1;
+      add(lx, ly, () => { const p = tiso(lx, ly); if (k < 1) balloon(p[0] + k * 26, p[1] + k * 4, 30 * (1 - k * .7), cc[0], cc[1], false, 1 - k); lyingEnvelope(lx + .55, ly - .05, k * pk, cc[0], cc[1]); }, null, lx + ly - .2);
+      if (u > 15 && u < 33) for (let i = 0; i < 5; i++) { const gx = lx + .05 + (i % 3) * .24 + (i > 2 ? .12 : 0), gy = ly + .42 + (i > 2 ? .2 : 0); add(gx, gy, () => { const p = tiso(gx, gy); toaster(p[0], p[1], ['#ff5e3a', '#5aa9e6', '#ffc23d', '#14a39a', '#2b2350'][i], t, i * 1.3); }); }
+    }
+  });
+  /* the decor */
+  for (const c of L.decor) {
+    const { x, y } = c, [W, D] = OUT_CELL;
+    if (c.k === 'orchard') for (let i = 0; i < 12; i++) { const gx = x + .35 + (i % 4) * .63, gy = y + .4 + Math.floor(i / 4) * .65; add(gx, gy, () => { const p = tiso(gx, gy); outTree(p[0], p[1], reg === 'cap'); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 8, p[1] + 3, 10, 3.5, .14); }); }
+    if (c.k === 'cane') for (let r = 0; r < 6; r++) { const gx = x + .2 + r * .42, gy = y + .15; add(gx, gy + D / 2, () => { const a = tiso(gx, gy), b = tiso(gx, gy + D - .3); ctx.fillStyle = '#5f8a3a'; ctx.beginPath(); ctx.moveTo(a[0], a[1]); for (let k = 0; k <= 10; k++) { const q = lp(a, b, k / 10); ctx.lineTo(q[0] + Math.sin(t * 1.2 + k + r) * 1.2, q[1] - 22 - (k % 2) * 5); } ctx.lineTo(b[0], b[1]); ctx.closePath(); ctx.fill(); ctx.strokeStyle = '#7aa84a'; ctx.lineWidth = 1; ctx.stroke(); }); }
+    if (c.k === 'palms') for (const [dx, dy, s] of [[.4, .5, 1], [1.2, .3, .85], [1.9, .9, 1.1], [.9, 1.4, .9], [2.2, 1.7, .8]]) add(x + dx, y + dy, () => { const p = tiso(x + dx, y + dy); palm(p[0], p[1], s, t + dx); }, () => { const p = tiso(x + dx, y + dy); blobShadow(p[0] + 14, p[1] + 4, 16, 5, .12); });
+    if (c.k === 'farm') add(x + .5, y + .5, () => farmHouse(x + .5, y + .45, t), () => boxShadow(x + .5, y + .45, .9, .7, 40, .16), x + 1.6);
+    if (c.k === 'dovecote') { add(x + 1.3, y + 1, () => { const p = tiso(x + 1.3, y + 1); dovecoteRock(p[0], p[1], t); }, () => { const p = tiso(x + 1.3, y + 1); blobShadow(p[0] + 50, p[1] + 12, 60, 14, .14); });
+      if (day) add(x + 1.3, y + 1, () => { const p = tiso(x + 1.3, y + 1); decoPigeons([p[0], p[1] - 150], t * .8, .32); }, null, 999); }
+    if (c.k === 'mesa') add(x + 1.3, y + 1.1, () => { const p = tiso(x + 1.3, y + 1.1); butte(p[0], p[1], 260, 70, '#c8744a', '#8e4a2c'); for (const [dx, s] of [[-150, .8], [140, .7]]) yucca(p[0] + dx, p[1] + 10, s); }, () => { const p = tiso(x + 1.3, y + 1.1); blobShadow(p[0] + 60, p[1] + 10, 140, 18, .12); });
+    if (c.k === 'scrub') for (let i = 0; i < 4; i++) { const gx = x + .4 + i * .6, gy = y + .5 + (i % 2) * .9; add(gx, gy, () => { const p = tiso(gx, gy); i % 2 ? cholla(p[0], p[1], .7) : yucca(p[0], p[1], .7); }); }
+    if (c.k === 'pasture') { const n = 5 + (Math.round(x) % 3 + 3) % 3; add(x + W / 2, y + D / 2, () => { const p = tiso(x + W / 2 + Math.sin(t * .05 + x) * .3, y + D / 2); sheepFlock(p[0], p[1], n, t * .5 + x); });
+      for (const [dx, dy] of [[-.2, -.2], [W + .2, D + .2]]) add(x + dx, y + dy, () => { const p = tiso(x + dx, y + dy); oakTree(p[0], p[1], .7); }); }
+    if (c.k === 'crops' && reg === 'lux' && day) { /* the farmer and his donkey along the field's edge */
+      const k = (Math.sin(t * .05 + x) + 1) / 2, gx = x + .2 + k * (W - .4), gy = y + D + .25, dx = Math.cos(t * .05 + x) > 0 ? 1 : -1;
+      add(gx, gy, () => { const p = tiso(gx, gy); ell(p[0] - 10 * dx, p[1] - 8, 7, 4, '#8a8078'); ctx.fillStyle = '#8a8078'; ctx.fillRect(p[0] - 10 * dx + 4 * dx - 1, p[1] - 15, 3, 7); ctx.fillStyle = '#5a5048'; for (const o of [-4, 3]) ctx.fillRect(p[0] - 10 * dx + o, p[1] - 5, 1.5, 5); person(p[0], p[1], '#f2ece0', t * .3, 1); ctx.fillStyle = '#f6f2ea'; ctx.beginPath(); ctx.arc(p[0], p[1] - 18.5, 3.4, Math.PI, 0); ctx.fill(); });
+    }
+    if (c.k === 'rv') { const n = S.fiesta ? 9 : 3, rcol = ['#ff5e3a', '#14a39a', '#9b7be0', '#ffc23d', '#5aa9e6']; for (let i = 0; i < n; i++) { const gx = x + .45 + (i % 3) * .85, gy = y + .4 + Math.floor(i / 3) * .6; add(gx, gy, () => { const p = tiso(gx, gy); rvCaravan(p[0], p[1], rcol[i % 5], NIGHT_K > 0); }); }
+      if (S.fiesta && NIGHT_K > 0) add(x + W / 2, y + D / 2, () => { for (let i = 0; i <= 8; i++) { const p = tiso(x + .2 + i * (W - .4) / 8, y + .15); ell(p[0], p[1] - 20 - Math.sin(i / 8 * Math.PI) * 4, 1.6, 1.6, '#ffe29a'); nightLite(p[0], p[1] - 20, 14, '255,210,130', .5); } }); }
+    if (c.k === 'view' && day) { /* the sunrise hill: a little crowd facing the balloons, a couple of cars below */
+      add(x + W / 2, y + D / 2, () => { const p = tiso(x + W / 2, y + D / 2); const hc = reg === 'bri' ? ['#6e9a4a', '#8cbc60', '#9cca6c'] : reg === 'abq' ? ['#a8643e', '#cc8e64', '#d89c70'] : reg === 'lux' ? ['#b89a6a', '#d8bc8a', '#e4c898'] : ['#b88458', '#dcb088', '#e8c09a'];
+        ell(p[0] + 10, p[1] + 8, 124, 42, 'rgba(90,45,20,.14)'); ctx.fillStyle = hc[0]; ctx.beginPath(); ctx.ellipse(p[0], p[1] - 14, 118, 38, 0, 0, Math.PI); ctx.lineTo(p[0] - 118, p[1] - 14); ctx.ellipse(p[0], p[1] + 2, 122, 40, 0, Math.PI, 0, true); ctx.fill();
+        ctx.save(); ctx.translate(0, -16); ell(p[0], p[1], 118, 38, hc[1]); ell(p[0] - 18, p[1] - 4, 80, 24, hc[2]); ctx.translate(0, 0);
+        for (let i = 0; i < 9; i++) { const q = [p[0] - 60 + i * 15 + (i % 2) * 4, p[1] - 8 + (i % 3) * 6]; if (i % 3 === 1) toaster(q[0], q[1], ['#ff6fa8', '#5aa9e6', '#ffc23d'][i % 3], t * .6, i); else tourist(q[0], q[1], ['#ffc23d', '#14a39a', '#e04a3a', '#9b7be0', '#2b2350', '#ff8a3d'][i % 6], i % 2 ? '#f4e4c0' : null, i % 4 === 0, t * .05, i); }
+        for (const [dx, col] of [[70, '#e8e2d8'], [96, '#c0392b']]) { const q = [p[0] + dx, p[1] + 26]; ell(q[0] + 6, q[1] + 2, 14, 4, 'rgba(90,45,20,.18)'); ctx.fillStyle = col; rrect(q[0] - 11, q[1] - 10, 22, 9, 3); ctx.fill(); ctx.fillStyle = '#6a8aa6'; ctx.fillRect(q[0] - 6, q[1] - 14, 11, 5); ell(q[0] - 6, q[1] - 1, 2.4, 2.4, '#2a1e18'); ell(q[0] + 6, q[1] - 1, 2.4, 2.4, '#2a1e18'); } ctx.restore(); }, null, x + y + 2);
+    }
+  }
+  /* the ATV tour and the riders, slowly round their loops */
+  if (day) L.loops.forEach((l, li) => {
+    const atv = li === 0 && reg !== 'bri' && reg !== 'lux', n = atv ? 5 : 3, sp = atv ? .45 : .16;
+    for (let i = 0; i < n; i++) {
+      const s = pmod(t * sp - i * (atv ? .55 : .5) + li * 3, l.len), r = walkPath(l.P, s), [gx, gy] = r.p, dxs = Math.sign(r.dir[0] - r.dir[1]) || 1;
+      add(gx, gy, () => { const p = tiso(gx, gy); if (atv) { quadBike(p[0], p[1], i ? ['#ff5e3a', '#ffc23d', '#14a39a', '#5aa9e6'][i % 4] : '#2b2350', t, i, dxs); for (let k = 1; k < 4; k++) { const b = walkPath(l.P, Math.max(0, s - k * .12)).p, q = tiso(...b); ctx.fillStyle = `rgba(230,200,160,${.32 - k * .08})`; ctx.beginPath(); ctx.arc(q[0], q[1] - 4 - k * 2, 3 + k * 2.2, 0, 7); ctx.fill(); } } else rider(p[0], p[1], t, i + li * 2, dxs, ['#c0392b', '#2b5a7a', '#e8c070'][i % 3]); });
+    }
+  });
+  /* Luxor: a felucca tacking slowly on the Nile, out on the right flank */
+  if (reg === 'lux' && day) { const k = (Math.sin(t * .025) + 1) / 2, gx = 11 + k * 9, gy = -12.3;
+    add(gx, gy, () => { const p = tiso(gx, gy), dir = Math.cos(t * .025) > 0 ? 1 : -1; ell(p[0], p[1], 22, 4, 'rgba(255,255,255,.25)'); ctx.fillStyle = '#7a5030'; ctx.beginPath(); ctx.moveTo(p[0] - 20, p[1] - 6); ctx.lineTo(p[0] + 20, p[1] - 6); ctx.lineTo(p[0] + 13, p[1]); ctx.lineTo(p[0] - 14, p[1]); ctx.fill();
+      ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 1.6; ctx.beginPath(); ctx.moveTo(p[0] - 2, p[1] - 6); ctx.lineTo(p[0] - 2, p[1] - 44); ctx.stroke();
+      ctx.fillStyle = '#fbf8f0'; ctx.beginPath(); ctx.moveTo(p[0] - 2 + dir * 22, p[1] - 58); ctx.quadraticCurveTo(p[0] + dir * 14, p[1] - 30, p[0] - 2 - dir * 20, p[1] - 9); ctx.lineTo(p[0] - 2, p[1] - 10); ctx.closePath(); ctx.fill(); ctx.fillStyle = 'rgba(160,140,110,.2)'; ctx.beginPath(); ctx.moveTo(p[0] - 2, p[1] - 44); ctx.lineTo(p[0] - 2, p[1] - 10); ctx.lineTo(p[0] - 2 - dir * 20, p[1] - 9); ctx.fill(); }); }
+  return items;
+}
+const D_OUT = OUT_CELL[1] - .25;
+/* how far the town can be dragged: out to the farthest cell in use */
+function outskirtsExtent() {
+  const L = outLayout(), nf = outFieldsN(), use = L.decor.concat(L.fields.slice(0, Math.max(1, nf)), L.crews.slice(0, outCrewsN(nf)).map(k => k.L));
+  return use.length ? use.map(c => [c.cx, c.cy]) : [];
 }
 /* Out in the land: fairy chimneys in Cappadocia; red buttes and junipers in Albuquerque; palm groves and temple ruins in Luxor. */
 function outerLandmark(x, y, hh, i) {
@@ -11120,7 +11554,7 @@ function renderTown(V, w, h, dpr, offY) {
     /* flat things on the ground, clipped at the horizon */
     ctx.save(); ctx.beginPath(); ctx.rect(0, hz, w, h); ctx.clip();
     W0();
-    outerDecor(T); ctrGround();
+    outerDecor(T); OUT_VIEW = [w, h]; outskirtsGround(); ctrGround();
     const E = [tiso(-.5, -.5), tiso(15.5, -.5), tiso(15.5, 15.5), tiso(-.5, 15.5)];
     tpoly(E, S.winter ? 'rgba(250,252,255,.6)' : S.region === 'bri' ? 'rgba(130,180,90,.6)' : 'rgba(240,210,165,.55)'); /* v124: Bristol's lawns */
     tdecor(T);
@@ -11130,7 +11564,7 @@ function renderTown(V, w, h, dpr, offY) {
     W0();
     const fade = (it) => { if (!it.at) return it; const sy = tiso(...it.at)[1] * V.z + V.oy, a = clamp((sy - hz) / (h * .1), 0, 1); if (a <= 0) return null;
       return { depth: it.depth, shadow: it.shadow, draw: () => { ctx.globalAlpha = a; it.draw(); ctx.globalAlpha = 1; } }; };
-    const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).concat(ctrSpotItems(T)).map(fade).filter(Boolean), townWall()), sky = townSky(T);
+    const bs = townBuildings(), scen = townScenery(T).concat(outerScenery(T).concat(ctrSpotItems(T), outskirtsItems(T)).map(fade).filter(Boolean), townWall()), sky = townSky(T);
     bs.forEach(buildingShadow); scen.forEach(it => it.shadow && it.shadow()); sky.shadows.forEach(f => f());
     const items = bs.map(b => ({ depth: b.gx + b.w + b.gy + b.d - .5, draw: () => { if (S.region === 'bri' && (b.look === 'hotel' || b.look === 'bank')) { const keep = TUFF; TUFF = BATH; try { tbuilding(b, T); } finally { TUFF = keep; } } else tbuilding(b, T); } })).concat(scen, V.extra ? V.extra(T) : S.issue && S.issue.k === 'raise' ? strikers(T) : []);
     TLATE = [];
@@ -11538,7 +11972,7 @@ function endNight() {
   if (NIGHT && NIGHT.shots && NIGHT.shots.length >= 2) SHOWHL = NIGHT.shots;
   crickets(false); showMusic(false); NIGHT = null; for (const id of ['nightcap', 'nightgo']) { const el = $(id); if (el) el.remove(); } document.body.classList.remove('night');
   /* the dawn goes on over the morning: the last of the night fades and the sunrise glow sinks away */
-  DAWN = { t0: T, k: NIGHT_K };
+  DAWN = { t0: T, k: NIGHT_K }; OUT_DAWN = T; /* v135: the valley's launch wave starts with the morning */
   startDay();
   morningTown(v);
   if (AUTO) setTimeout(autoCheck, 1300); /* after the morning's first card has had its chance (nextPopup at 700 ms) */
@@ -11827,6 +12261,8 @@ function townClamp(w, h) {
   let x0 = Math.min(w * .5, w * .85 - mx, hx), x1 = Math.max(w * .5, w * .15 + mx, hx), y0 = Math.min(h * .5, h * .3 - my, hy), y1 = Math.max(h * .55, h * .8 + my, hy);
   /* v125: the coach terminal outside town can be dragged to the middle of the screen */
   const K = ctrCfg(); if (K) { const p = tiso(...ctrSpot()), ex = w / 2 + (c[0] - p[0]) * TOWN.z, ey = h * .5 + (c[1] - p[1]) * TOWN.z; x0 = Math.min(x0, ex - w * .3); x1 = Math.max(x1, ex + w * .3); y0 = Math.min(y0, ey - h * .25); y1 = Math.max(y1, ey + h * .25); } /* v125.2: any direction; v125.5: with room around it */
+  /* v135: out to the outskirts' farthest cell in use, so the valley's life can be dragged into view */
+  for (const p of outskirtsExtent()) { const q = tiso(...p), ex = w / 2 + (c[0] - q[0]) * TOWN.z, ey = h * .5 + (c[1] - q[1]) * TOWN.z; x0 = Math.min(x0, ex); x1 = Math.max(x1, ex); y0 = Math.min(y0, ey); y1 = Math.max(y1, ey); }
   TOWN.ox += clamp(sx, x0, x1) - sx;
   TOWN.oy += clamp(sy, y0, y1) - sy;
 }
@@ -12580,7 +13016,7 @@ async function open3dLoad() {
         const sock = new THREE.Mesh(new THREE.ConeGeometry(.9, 5, 12, 1, true), new THREE.MeshStandardMaterial({ color: 0xff7a4a, roughness: .7, side: THREE.DoubleSide }));
         sock.rotation.z = Math.PI / 2; sock.position.copy(at(b.gx, b.gy, 14 / PXM + 120 / PXM)).add(V3(2.6, 0, 0)); scene.add(sock);
         continue; }
-      const hpx = b.look === 'hotel' ? [60, 120, 140, 120][b.star] : { bazaar: 60, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 54, agency: 100, tower: 270 }[b.look] || 60;
+      const hpx = b.look === 'hotel' ? [60, 120, 140, 120][b.star] : { bazaar: 60, workshop: 70, office: b.lv === 2 ? 104 : 74, school: 90, bank: 85, guide: 54, agency: 100, tower: 110 }[b.look] || 60;
       const K = b.look === 'hotel' ? [0, 1, 3, 4][b.star] : kindOf[b.look] ?? 0, hgt = hpx / PXM;
       box(gx, gy, w, d, hgt, KIND[K].mat);
       /* windows that light up when night falls after the landing, on the two faces the camera sees */
