@@ -47,10 +47,12 @@ struct HoldingView: View {
         if unit == nil { dealsSection(game) }
         if unit == .marketing {
             sectionTitle(loc("hq.campaigns"))
+            hint(loc("holding.mkt.hint"))
             tvCard(game)
-            billboardCard(s)
+            billboardCard(game)
         }
         if unit == .deals {
+            hint(loc("holding.deals.hint"))
             celebrityCard(s)
             jerseyCard(s)
             worldGamesCard(s)
@@ -338,24 +340,30 @@ struct HoldingView: View {
     private func dealsSection(_ game: Game) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             sectionTitle(loc("holding.deals"))
+            hint(loc("holding.mkt.hint"))
             tvCard(game)
+            billboardCard(game)
+            hint(loc("holding.deals.hint"))
             celebrityCard(game.state)
-            billboardCard(game.state)
             researchCard(game.state)
         }
     }
 
+    /// v136 (TestFlight): a TV campaign for each region you own, each with its own run and wait, bought from one card
+    /// whichever region the holding was opened from.
     private func tvCard(_ game: Game) -> some View {
         let s = game.state, h = s.holding, d = s.day
-        let on = h.tvUntil > d
-        let lock: String? = !on && !game.canRunTV ? loc("holding.tv.lock", num(h.tvCooldown - d)) : nil
-        let chips = [loc("holding.chip.allDemand", percent(0.2)), loc("holding.chip.days", num(Holding.tvDays)),
-                     loc("holding.chip.stars", s.region.title, starsValue(0.4))]
+        let chips = [loc("holding.chip.demandRegion", percent(0.2)), loc("holding.chip.days", num(Holding.tvDays)),
+                     loc("holding.chip.starsRegion", starsValue(Holding.tvRep * 4)), loc("holding.chip.wait", num(Holding.tvCooldown))]
+        let rows = game.ownedRegions.map { r -> HoldingRegionRow in
+            let until = h.tvUntil(r), ready = h.tvReady(r)
+            let status = until > d ? loc("holding.tv.active", num(until - d)) : ready > d ? loc("holding.row.wait", num(ready - d)) : loc("holding.row.free")
+            return HoldingRegionRow(region: r, here: r == s.region, status: status, on: until > d, price: h.tvCost,
+                                    buyable: game.canRunTV(in: r), enabled: game.canRunTV(in: r) && h.cash >= h.tvCost, cta: loc("holding.tv.cta"),
+                                    action: { store.act { g in _ = g.runTVCampaign(in: r) } })
+        }
         return HoldingDealCard(art: .tv, kicker: loc("holding.tv.kicker"), title: loc("holding.tv.title"),
-                               detail: loc("holding.tv.desc"), chips: chips, price: h.tvCost, cta: loc("holding.tv.cta"),
-                               enabled: lock == nil && h.cash >= h.tvCost, lockNote: lock,
-                               active: on ? loc("holding.tv.active", num(h.tvUntil - d)) : nil,
-                               action: { store.act { g in _ = g.runTVCampaign() } })
+                               detail: loc("holding.tv.descRegion"), chips: chips, regionRows: rows, action: {})
     }
 
     private func celebrityCard(_ s: GameState) -> some View {
@@ -364,7 +372,7 @@ struct HoldingView: View {
         let detail = star.map { loc("holding.celeb.descActive", celebrityName($0.index)) } ?? loc("holding.celeb.desc")
         let active = star.map { loc("holding.celeb.active", celebrityName($0.index), num($0.until - d)) }
         let chips = [loc("holding.chip.allDemand", percent(0.1)), loc("holding.chip.days", num(h.celebrityDays)),
-                     loc("holding.chip.stars", s.region.title, starsValue(0.6))]
+                     loc("holding.chip.starsAll", starsValue(Holding.celebrityRep * 4))]
         return HoldingDealCard(art: .star, kicker: loc("holding.celeb.kicker"), title: loc("holding.celeb.title"),
                                detail: detail, chips: chips, price: h.celebrityCost, cta: loc("holding.celeb.cta"),
                                enabled: h.cash >= h.celebrityCost, active: active,
@@ -375,7 +383,7 @@ struct HoldingView: View {
     private func jerseyCard(_ s: GameState) -> some View {
         let h = s.holding, d = s.day, on = (h.jerseyUntil ?? 0) > d
         let chips = [loc("holding.chip.allDemand", percent(Holding.jerseyBoost - 1)), loc("holding.chip.days", num(Holding.jerseyDays)),
-                     loc("holding.chip.stars", s.region.title, starsValue(Holding.jerseyRep * 4))]
+                     loc("holding.chip.starsAll", starsValue(Holding.jerseyRep * 4))]
         return HoldingDealCard(art: .jersey, kicker: loc("holding.jersey.kicker"), title: loc("holding.jersey.title"),
                                detail: loc(on ? "holding.jersey.descActive" : "holding.jersey.desc", s.company), chips: chips,
                                price: Holding.jerseyCost, cta: loc("holding.jersey.cta"),
@@ -388,7 +396,7 @@ struct HoldingView: View {
     private func worldGamesCard(_ s: GameState) -> some View {
         let h = s.holding, d = s.day, held = h.worldGamesUntil != nil, on = (h.worldGamesUntil ?? 0) > d
         let chips = [loc("holding.chip.allDemand", percent(Holding.worldGamesBoost - 1)), loc("holding.chip.days", num(Holding.worldGamesDays)),
-                     loc("holding.chip.stars", s.region.title, starsValue(Holding.worldGamesRep * 4))]
+                     loc("holding.chip.starsAll", starsValue(Holding.worldGamesRep * 4))]
         return HoldingDealCard(art: .worldGames, kicker: loc("holding.wg.kicker"), title: loc("holding.wg.title"),
                                detail: loc(!held ? "holding.wg.desc" : on ? "holding.wg.descActive" : "holding.wg.descDone"), chips: chips,
                                price: Holding.worldGamesCost, cta: loc("holding.wg.cta"),
@@ -398,15 +406,18 @@ struct HoldingView: View {
                                action: { store.act { g in _ = g.holdWorldGamesShow() } })
     }
 
-    private func billboardCard(_ s: GameState) -> some View {
-        let h = s.holding, d = s.day
-        let until = h.billboards[s.region] ?? 0
-        let chips = [loc("holding.chip.regionDemand", s.region.title, percent(0.1)), loc("holding.chip.days", num(Holding.billboardDays))]
+    /// v136: billboards for each region you own, bought from one card; each row names its region.
+    private func billboardCard(_ game: Game) -> some View {
+        let s = game.state, h = s.holding, d = s.day
+        let chips = [loc("holding.chip.demandRegion", percent(0.1)), loc("holding.chip.days", num(Holding.billboardDays))]
+        let rows = game.ownedRegions.map { r -> HoldingRegionRow in
+            let until = h.billboards[r] ?? 0, up = until > d
+            return HoldingRegionRow(region: r, here: r == s.region, status: up ? loc("holding.bb.active", num(until - d)) : loc("holding.row.free"),
+                                    on: up, price: Holding.billboardCost, buyable: !up, enabled: !up && h.cash >= Holding.billboardCost,
+                                    cta: loc("holding.bb.cta"), action: { store.act { g in _ = g.runBillboards(in: r) } })
+        }
         return HoldingDealCard(art: .billboard, kicker: loc("holding.bb.kicker"), title: loc("holding.bb.title"),
-                               detail: loc("holding.bb.desc", s.region.title), chips: chips, price: Holding.billboardCost,
-                               cta: loc("holding.bb.cta"), enabled: h.cash >= Holding.billboardCost,
-                               active: until > d ? loc("holding.bb.active", num(until - d)) : nil,
-                               action: { store.act { g in _ = g.runBillboards() } })
+                               detail: loc("holding.bb.descRegion"), chips: chips, regionRows: rows, action: {})
     }
 
     private func researchCard(_ s: GameState) -> some View {
@@ -767,6 +778,8 @@ struct HoldingDealCard: View {
     var breakNote: String?
     var breakEnabled = true
     var breakAction: (() -> Void)?
+    /// v136: one row per region you own (TV, billboards); replaces the price and button.
+    var regionRows: [HoldingRegionRow] = []
     let action: () -> Void
     @State private var confirmBreak = false
 
@@ -784,7 +797,7 @@ struct HoldingDealCard: View {
         .padding(14)
         .background(HoldingLux.card, in: RoundedRectangle(cornerRadius: 20))
         .overlay(RoundedRectangle(cornerRadius: 20)
-            .strokeBorder(active != nil ? Theme.green : HoldingLux.border, lineWidth: 2))
+            .strokeBorder(active != nil || regionRows.contains(where: \.on) ? Theme.green : HoldingLux.border, lineWidth: 2))
         .compositingGroup()
         .shadow(color: HoldingLux.border, radius: 0, y: 4)
     }
@@ -825,7 +838,9 @@ struct HoldingDealCard: View {
             HoldingDash()
                 .stroke(HoldingLux.border, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
                 .frame(height: 1)
-            if let active {
+            if !regionRows.isEmpty {
+                ForEach(regionRows) { HoldingRegionRowView(row: $0) }
+            } else if let active {
                 Text(active)
                     .font(Theme.font(14, .heavy))
                     .foregroundStyle(Theme.green)
@@ -878,6 +893,61 @@ struct HoldingDealCard: View {
                 }
             }
         }
+    }
+}
+
+/// v136: a region's line in a per-region campaign card: its name, how its campaign stands, and its own buy button.
+struct HoldingRegionRow: Identifiable {
+    let region: RegionID
+    let here: Bool
+    let status: String
+    let on: Bool
+    let price: Int
+    /// The button shows (no campaign running or waiting); `enabled` also needs the holding's cash.
+    let buyable: Bool
+    let enabled: Bool
+    let cta: String
+    let action: () -> Void
+    var id: RegionID { region }
+}
+
+struct HoldingRegionRowView: View {
+    let row: HoldingRegionRow
+
+    var body: some View {
+        HStack(spacing: 10) {
+            VStack(alignment: .leading, spacing: 1) {
+                HStack(spacing: 6) {
+                    Text(row.region.title)
+                        .font(Theme.font(16, .heavy, condensed: true))
+                        .foregroundStyle(HoldingLux.title)
+                    Text(row.region.currency)
+                        .font(Theme.font(11, .bold))
+                        .foregroundStyle(HoldingLux.sub)
+                    if row.here {
+                        Text(loc("holding.row.here"))
+                            .font(Theme.font(11, .heavy))
+                            .foregroundStyle(Theme.green)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 1)
+                            .background(Theme.green.opacity(0.12), in: Capsule())
+                    }
+                }
+                Text(row.status)
+                    .font(Theme.font(12.5, row.on ? .heavy : .semibold))
+                    .foregroundStyle(row.on ? Theme.green : HoldingLux.sub)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            if row.buyable {
+                HoldingPill(title: eurH(row.price), style: .gold, enabled: row.enabled, action: row.action)
+                    .accessibilityLabel(loc("holding.row.a11y", row.region.title, row.cta))
+                    .accessibilityValue(eurH(row.price))
+            }
+        }
+        .padding(.vertical, 2)
     }
 }
 

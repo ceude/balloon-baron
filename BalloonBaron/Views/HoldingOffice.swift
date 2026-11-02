@@ -117,8 +117,10 @@ struct HoldingOfficeView: View {
             let issue = s.parked.values.contains { $0.auto.issue != nil }
             return (issue ? loc("hq.s.issue") : loc("hq.s.regions", num(s.parked.count + 1)), false, issue)
         case .marketing:
-            let tv = h.tvUntil > d, bb = (h.billboards[s.region] ?? 0) > d
-            return (tv ? loc("hq.s.tv", num(h.tvUntil - d)) : bb ? loc("hq.s.billboards") : loc("hq.s.noCampaign"), tv || bb, false)
+            // v136: TV and billboards run per region; the desk counts the regions with each running
+            let owned = RegionID.allCases.filter { s.owns($0) }
+            let tv = owned.filter { h.tvUntil($0) > d }.count, bb = owned.filter { (h.billboards[$0] ?? 0) > d }.count
+            return (tv + bb > 0 ? loc("hq.s.campaigns", num(tv), num(bb)) : loc("hq.s.noCampaign"), tv + bb > 0, false)
         case .deals:
             let c = (h.celebrity?.until ?? 0) > d ? h.celebrity : nil
             if (h.worldGamesUntil ?? 0) > d { return (loc("hq.s.worldGames"), true, false) }

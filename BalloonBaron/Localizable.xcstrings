@@ -52036,37 +52036,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dein TV-Spot läuft, Lehrling! Überall auf der Welt reden die Leute über deine Ballone. Diese Investition wirst du in der Kasse sehen."
+            "value": "Dein TV-Spot läuft, Lehrling! Das ganze Land redet über deine Ballone. Diese Investition wirst du in der Kasse sehen."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Your TV ad is on the air, kid! People all over the world are talking about your balloons. You'll see this investment pay off in your cash."
+            "value": "Your TV ad is on the air, kid! The whole country is talking about your balloons. You'll see this investment pay off in your cash."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "¡Tu anuncio ya está en la tele, aprendiz! En todo el mundo se habla de tus globos. Verás esta inversión en la caja."
+            "value": "¡Tu anuncio ya está en la tele, aprendiz! Todo el país habla de tus globos. Verás esta inversión en la caja."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "テレビCMが流れ始めたぞ、弟子よ！世界中でお前の気球が話題だ。この投資の見返りは金庫に表れる。"
+            "value": "テレビCMが流れ始めたぞ、弟子よ！国じゅうがお前の気球の話でもちきりだ。この投資の見返りは金庫に表れる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "TV 광고가 방송을 탔네, 제자여! 전 세계 사람들이 자네 열기구 이야기를 하고 있다네. 이 투자의 보답은 금고에서 확인하게 될 걸세."
+            "value": "TV 광고가 방송을 탔네, 제자여! 온 나라가 자네 열기구 이야기를 하고 있다네. 이 투자의 보답은 금고에서 확인하게 될 걸세."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "TV reklamın yayında evlat! Dünyanın dört bir yanında insanlar balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin."
+            "value": "TV reklamın yayında evlat! Bütün ülke balonlarını konuşuyor. Bu yatırımın karşılığını kasada göreceksin."
           }
         }
       }
@@ -56868,6 +56868,47 @@
         }
       }
     },
+    "holding.bb.descRegion": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Riesige Plakate an der Flughafenstraße und den Autobahnen der Region."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Giant posters along the airport road and highways of the region."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carteles gigantes en la carretera del aeropuerto y las autopistas de la región."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その地域の空港への道と高速道路に巨大看板。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그 지역 공항 도로와 고속도로의 대형 광고판."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bölgenin havalimanı yolunda ve otobanlarında dev afişler."
+          }
+        }
+      }
+    },
     "holding.bb.kicker": {
       "extractionState": "manual",
       "localizations": {
@@ -57442,6 +57483,47 @@
         }
       }
     },
+    "holding.chip.demandRegion": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nachfrage in der Region +%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demand in the region +%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Demanda en la región +%@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その地域の需要+%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "해당 지역 수요 +%@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bölgede talep +%@"
+          }
+        }
+      }
+    },
     "holding.chip.life": {
       "extractionState": "manual",
       "localizations": {
@@ -57770,6 +57852,129 @@
         }
       }
     },
+    "holding.chip.starsAll": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle Regionen: +%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All regions: +%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas las regiones: +%@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "全地域：+%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "전 지역: +%@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bütün bölgelerde: +%@"
+          }
+        }
+      }
+    },
+    "holding.chip.starsRegion": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Beliebtheit in der Region +%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularity in the region +%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Popularidad en la región +%@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その地域の人気+%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "해당 지역 인기 +%@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bölgede popülerlik +%@"
+          }
+        }
+      }
+    },
+    "holding.chip.wait": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pause zwischen Kampagnen (Tage): %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wait between campaigns (days): %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espera entre campañas (días): %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンペーン間の待機（日）：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "캠페인 간 대기(일): %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kampanyalar arası bekleme (gün): %@"
+          }
+        }
+      }
+    },
     "holding.deals": {
       "extractionState": "manual",
       "localizations": {
@@ -57807,6 +58012,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Kampanyalar ve anlaşmalar"
+          }
+        }
+      }
+    },
+    "holding.deals.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deals heben die Beliebtheit in allen deinen Regionen am Tag der Unterschrift. Eine später betretene Region beginnt mit ihrer eigenen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deals lift popularity in every region you own on the day you sign. A region you enter later starts with its own."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los acuerdos suben la popularidad en todas tus regiones el día que firmas. Una región en la que entres después empieza con la suya."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "契約は署名した日に、所有する全地域の人気を上げる。後から進出した地域は自分の人気から始まる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계약은 서명한 날 보유한 모든 지역의 인기를 올립니다. 나중에 진출한 지역은 자기 인기로 시작합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anlaşmalar imzaladığın gün sahip olduğun bütün bölgelerde popülerliği artırır. Sonradan girdiğin bölge kendi popülerliğiyle başlar."
           }
         }
       }
@@ -58713,6 +58959,47 @@
         }
       }
     },
+    "holding.mkt.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV und Plakate laufen jeweils in einer Region. Kauf sie hier für jede deiner Regionen; die Wirkung bleibt in dieser Region."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV and billboards run in one region at a time. Buy them here for any region you own; the effect stays in that region."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La TV y las vallas funcionan en una sola región. Cómpralas aquí para cualquiera de tus regiones; el efecto se queda en esa región."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テレビと看板は地域ごとに展開する。ここで所有するどの地域の分も買える。効果はその地域だけ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV와 광고판은 지역마다 따로 진행됩니다. 보유한 어느 지역이든 여기서 살 수 있고, 효과는 그 지역에만 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV ve afişler tek bir bölgede yayınlanır. Sahip olduğun her bölge için buradan alabilirsin; etkisi o bölgede kalır."
+          }
+        }
+      }
+    },
     "holding.moveHint": {
       "extractionState": "manual",
       "localizations": {
@@ -59447,6 +59734,170 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bölgeler"
+          }
+        }
+      }
+    },
+    "holding.row.a11y": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@：%2$@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@: %2$@"
+          }
+        }
+      }
+    },
+    "holding.row.free": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Keine Kampagne"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No campaign"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin campaña"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "キャンペーンなし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "캠페인 없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kampanya yok"
+          }
+        }
+      }
+    },
+    "holding.row.here": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Du bist hier"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "You're here"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estás aquí"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "現在地"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "현재 위치"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buradasın"
+          }
+        }
+      }
+    },
+    "holding.row.wait": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nächste Kampagne in Tagen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next campaign in days: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próxima campaña en días: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次のキャンペーンまで：%@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다음 캠페인까지 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni kampanyaya kalan gün: %@"
           }
         }
       }
@@ -60267,6 +60718,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ulusal kanallarda akşam haberlerinden önce, gün doğumunda süzülen balonların."
+          }
+        }
+      }
+    },
+    "holding.tv.descRegion": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deine Ballone im Sonnenaufgang, auf den großen Sendern der Region direkt vor den Abendnachrichten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your balloons gliding at sunrise, on the region's national channels right before the evening news."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus globos planeando al amanecer, en los canales nacionales de la región justo antes de las noticias de la noche."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "その地域の全国放送で、夕方のニュース直前に朝日の中を漂うあなたの気球。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "그 지역 전국 방송 저녁 뉴스 직전, 해돋이 속을 떠다니는 당신의 열기구."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bölgenin ulusal kanallarında akşam haberlerinden önce, gün doğumunda süzülen balonların."
           }
         }
       }
@@ -66745,6 +67237,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Afişler asılı"
+          }
+        }
+      }
+    },
+    "hq.s.campaigns": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV: %1$@ · Plakate: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV: %1$@ · Billboards: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV: %1$@ · Vallas: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テレビ：%1$@・看板：%2$@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV: %1$@ · 광고판: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "TV: %1$@ · Afiş: %2$@"
           }
         }
       }
@@ -81802,37 +82335,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die TV-Kampagne der Holding bringt Touristen in jede Region."
+            "value": "Die TV-Kampagne der Holding bringt Touristen in die Region."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The holding's TV campaign brings tourists to every region."
+            "value": "The holding's TV campaign brings tourists to the region."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "La campaña de TV del holding atrae turistas a todas las regiones."
+            "value": "La campaña de TV del holding atrae turistas a la región."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ホールディングスのテレビキャンペーンで、どの地域にも観光客が来る。"
+            "value": "ホールディングスのテレビキャンペーンで、その地域に観光客が来る。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "지주회사의 TV 캠페인이 모든 지역에 관광객을 부른다."
+            "value": "지주회사의 TV 캠페인이 그 지역에 관광객을 부른다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Holdingin TV kampanyası bütün bölgelere turist getiriyor."
+            "value": "Holdingin TV kampanyası bölgeye turist getiriyor."
           }
         }
       }
@@ -91755,6 +92288,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tanıtım eksik (rehber, otel)"
+          }
+        }
+      }
+    },
+    "repWhy.record": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weltrekord"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "World record"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Récord mundial"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "世界記録"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "세계 기록"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dünya rekoru"
           }
         }
       }
