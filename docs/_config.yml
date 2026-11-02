@@ -1,0 +1,5 @@
+# GitHub Pages: only the public pages (index, support, privacy policy) are published; the working docs stay out.
+exclude:
+  - "*.md"
+  - "*.png"
+  - licenses

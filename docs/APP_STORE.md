@@ -28,7 +28,8 @@ Burada yazanlar senin hesabında yapılacaklar.
    - Her ürün için incelemeye bir ekran görüntüsü yüklenir: Çarşı'daki satın alma kartı yeterli.
 5. **Game Center**: 24 başarım ve 2 lider tablosu (aşağıdaki tablolar).
 6. **App Privacy** (Uygulama Gizliliği) soruları: aşağıdaki cevaplar.
-7. **Gizlilik politikası adresi**: `docs/privacy-policy.html` herkese açık bir adreste olmalı. En kolayı: repo ayarları → *Pages* → `main` dalı, `/docs` klasörü. Adres `https://ceude.github.io/balloon-baron/privacy-policy.html` olur. Pages, özel repoda yalnızca ücretli GitHub planında çalışır; olmazsa dosyayı herhangi bir siteye koyabiliriz.
+7. **Adresler (GitHub Pages, `docs/`):** destek `https://ceude.github.io/balloon-baron/support.html`, pazarlama `https://ceude.github.io/balloon-baron/`, gizlilik `https://ceude.github.io/balloon-baron/privacy-policy.html`. Pages bir kez açılmalı: repo Settings → Pages → Source: Deploy from a branch, `main`, `/docs`.
+   Eski not: **Gizlilik politikası adresi**: `docs/privacy-policy.html` herkese açık bir adreste olmalı. En kolayı: repo ayarları → *Pages* → `main` dalı, `/docs` klasörü. Adres `https://ceude.github.io/balloon-baron/privacy-policy.html` olur. Pages, özel repoda yalnızca ücretli GitHub planında çalışır; olmazsa dosyayı herhangi bir siteye koyabiliriz.
 8. **Xcode → Product → Archive → Distribute App → App Store Connect → Upload.** Birkaç dakika sonra yapı TestFlight sekmesinde görünür.
 9. **TestFlight**:
    - **Dahili test:** Senin ve ekleyeceğin 100 kişiye kadar App Store Connect kullanıcısı. Apple incelemesi gerekmez.
