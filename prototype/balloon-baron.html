@@ -840,6 +840,7 @@ body.night #cv{touch-action:none}
 .nightcap b{font-family:'Barlow Condensed',sans-serif;font-size:26px;letter-spacing:.02em}
 .nightcap span{font-size:15px;font-weight:600;background:rgba(20,18,50,.55);border-radius:14px;padding:6px 12px;margin-top:4px}
 .nightcap small{font-size:12px;opacity:.7;margin-top:4px}
+.nightcap span.off{font-size:14px;background:rgba(120,30,40,.6)}
 .tfl{max-height:162px;overflow-y:auto;margin:-4px 0 12px;border:2px solid #e3dff0;border-radius:14px;background:#fff}
 .tfl button{display:flex;justify-content:space-between;align-items:center;width:100%;padding:12px 14px;border:0;border-bottom:1px solid #eeeaf6;background:none;font:inherit;text-align:left;cursor:pointer;color:#2a2340}
 .tfl button:last-child{border-bottom:0}.tfl button span{font-size:13px;color:#6b6385}
@@ -1134,6 +1135,7 @@ function showState() {
   if (!unlocked('market')) return 'locked';
   if (S.showTonight === S.day) return 'booked';
   if ((S.showNext || 0) > S.day) return 'wait';
+  if (S.glowTonight === S.day) return 'glow'; /* v132: a booked Night Glow keeps its night */
   if (showFleet().length < SHOW.min) return 'few';
   return S.cash < showCost() ? 'cash' : 'ok';
 }
@@ -2363,7 +2365,7 @@ function finishDay(flight) {
   Lg.up = Math.round(inside().reduce((a, b) => a + SIZES[b.size].up, 0) * upkeepK()); /* v127: no maintenance outside the hangar */
   { const r0 = S.rep; myHotels().forEach(x => { if (owns(x)) { Lg.hotelInc += hotelInc(x); S.rep = Math.min(1.4, S.rep + x.rep * 1.5); } else { Lg.hotel += x.fee; S.rep = Math.min(1.4, S.rep + x.rep); } }); repMark('Otel anlaşmaları', r0); }
   S.loans.forEach(l => { Lg.loan += l.inst; l.left--; });
-  if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; S.holding = (S.holding || 0) + D.inst / FX(); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
+  if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; S.holding = (S.holding || 0) + D.inst / FX(); holdLog('inc', D.inst / FX()); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
   S.loans = S.loans.filter(l => l.left > 0);
   const ctrR = ctrSettle(Lg, ev, rev, paxTotal);
   let net = (Lg.ctr || 0) + (Lg.ctrWait || 0) - (Lg.ctrPen || 0) - (Lg.ctrVoucher || 0) - (Lg.xfer || 0) + Lg.rev + Lg.founder + Lg.hotelInc + Lg.mission + Lg.ad + Lg.tips + Lg.insPay - Lg.fuel - Lg.wage - Lg.up - Lg.ins - Lg.loan - Lg.repair - Lg.comp - Lg.fine - Lg.cancel - Lg.hotel;
@@ -2372,21 +2374,8 @@ function finishDay(flight) {
   repBy('Dev balon', fl.filter(b => b.size === 'XL').length * .005);
   const dRep = Math.min(.015, fl.reduce((a, b) => { const d = designOf(b); return a + (d ? .003 * d.score / 100 * freshness(d) + (d.shape ? .0015 : 0) : 0); }, 0));
   if (dRep) { repBy('Balon tasarımların', dRep); Lg.designRep = dRep; if (Math.random() < .25) { const d = designOf(pick(fl.filter(designOf))); addReview('design', { d: d.name }); } }
-  if (S.showTonight === S.day) {
-    /* a balloon that crashed today can't go up tonight: it drops out and its fee comes back */
-    const out = (S.showIds || []).filter(id => { const b = bal(id); return !b || b.dmgUntil > S.day; });
-    if (out.length) {
-      const back = out.filter(id => bal(id)).length * SHOW.per;
-      S.showIds = S.showIds.filter(id => !out.includes(id)); S.showN = S.showIds.length; S.cash += back; if (back) { Lg.showBack = (Lg.showBack || 0) + back; net += back; } /* v131: a line in the money table */
-      if (back) ev.push(`Kaza yapan balon bu gece şölene çıkamayacak. Ücreti kasana geri döndü: ${eur(back)}.`);
-    }
-    /* too few left for a show: it's called off, every fee comes back and a new one can be booked at once */
-    if (S.showIds.length < SHOW.min) {
-      const back = S.showIds.length * SHOW.per; S.cash += back; if (back) { Lg.showBack = (Lg.showBack || 0) + back; net += back; }
-      S.showTonight = null; S.showIds = null; S.showNext = 0; S.showCount = Math.max(0, (S.showCount || 1) - 1);
-      ev.push(`Kazalar yüzünden şölene yeterli balon kalmadı (en az ${SHOW.min}), bu geceki şölen iptal. Kalan ücretler de kasana döndü: ${eur(back)}. Balonlar onarılınca yeniden düzenleyebilirsin.`);
-    }
-  }
+  /* a balloon that crashed today can't go up tonight: it drops out and its fee comes back (v132: showDropOut) */
+  if (S.showTonight === S.day) net += showDropOut((S.showIds || []).filter(id => { const b = bal(id); return !b || b.dmgUntil > S.day; }), Lg, ev);
   if (S.region === 'bri' && S.fiesta && !red && paxTotal > 0) {
     const up = fl.filter(b => !(b.dmgUntil > S.day) && !(flight && flight.q === 'cancel' && isSelf(b))), seats = up.reduce((a, b) => a + sellSeats(b), 0), pax = Math.round(Math.min(seats, paxTotal) * EVE.pax);
     if (pax > 0) { const ef = Math.round(up.reduce((a, b) => a + SIZES[b.size].fuel, 0) * EVE.fuel); Lg.eve = pax * S.price; Lg.fuel += ef; S.cash += Lg.eve - ef; net += Lg.eve - ef; S.eveDay = S.day; S.eveN = up.length; ev.push(`Festival akşamı: ${up.length} balonun ikinci kez kalktı, ${pax} yolcu akşam uçuşu yaptı. Gelir ${eur(Lg.eve)}.`); }
@@ -2438,6 +2427,8 @@ function finishDay(flight) {
       paperAdd(5, `Banka ${S.company} balonuna el koydu`, `${take.name} borç karşılığı satıldı.`);
       ev.push(`Banka borcun için ${take.name} balonuna el koydu ve sattı: ${eur(v)}.`);
       if (take.id === S.flag && S.balloons.length) S.flag = S.balloons[0].id;
+      /* v132 (TestFlight): the bank's balloon can't go up in tonight's show either; its fee comes back */
+      if (S.showTonight === S.day && (S.showIds || []).includes(take.id)) net += showDropOut([take.id], Lg, ev, true);
     }
     if (!S.balloons.length) S.over = true;
   }
@@ -2464,7 +2455,7 @@ function finishDay(flight) {
   praiseCheck(flight, red && !fl.length);
   if (S.region === 'cap' && fl.length && !S.storyDone && S.day <= 3) hezAdd('hasan'); /* v121: after the first flight, the grandfather's story */
   lastReport = { day: S.day, flag: S.weather.flag, Lg, net, ev, rev, paxTotal, capToday, skip: S.plan.skip, rep0, rep1: S.rep, repWhy: REPW, ctr: ctrR }; REPW = null;
-  S.day++; S.plan = null; fabDay(ev); milestoneCheck(); achCheck(); if (anyBaron()) holdGoalsCheck();
+  S.day++; S.plan = null; fabDay(ev); milestoneCheck(); achCheck(); holdGoalsNow();
   if (S.region === 'abq') {
     if (S.fiesta && S.day > S.fiesta.end) { S.fiesta = null; S.fiestaNext = S.day + 30; }
     else if (!S.fiesta && S.day >= (S.fiestaNext || 0) && !S.winter) { S.fiesta = { start: S.day, end: S.day + 3 }; S.hezQ.push('news:Albuquerque Balloon Fiesta başladı evlat! Dört gün boyunca dünyanın dört bir yanından turist akın edecek, gökyüzü yüzlerce balonla dolacak. Bütün balonlarını havaya kaldır!'); }
@@ -3518,7 +3509,7 @@ function tabFleet(body) {
   s.appendChild(chips);
   /* v111: the Balloon Show, once the market is open and the fleet is big enough */
   if (unlocked('market') && inside().length >= SHOW.min) {
-    const ss = showState(), sb = h('button', 'adbtn showbtn', `<i style="background:#ffc23d"></i>Balon Şöleni Düzenle · ${ss === 'ok' ? `${showFleet().length} balon, ${eur(showCost())}` : ss === 'booked' ? 'bu gece' : ss === 'wait' ? `${S.showNext - S.day} gün sonra` : ss === 'few' ? `en az ${SHOW.min} uçabilen balon` : `${eur(showCost())} gerekli`}`);
+    const ss = showState(), sb = h('button', 'adbtn showbtn', `<i style="background:#ffc23d"></i>Balon Şöleni Düzenle · ${ss === 'ok' ? `${showFleet().length} balon, ${eur(showCost())}` : ss === 'booked' ? 'bu gece' : ss === 'wait' ? `${S.showNext - S.day} gün sonra` : ss === 'glow' ? 'bu gece Gece Işıltısı var' : ss === 'few' ? `en az ${SHOW.min} uçabilen balon` : `${eur(showCost())} gerekli`}`);
     sb.onclick = () => showCard(); s.appendChild(sb);
   }
   /* v124: Bristol's Night Glow, on festival days */
@@ -3842,6 +3833,8 @@ function showReport() {
   tk.appendChild(h('div', 'stub', `<div><div class="d">Gün ${R.day}</div><div class="m">${FLAGS[R.flag].name}, ${R.skip ? 'uçuş yapılmadı' : `${R.paxTotal}/${R.capToday} koltuk doldu`}</div></div><div style="text-align:right"><div class="m">Uçuş defteri</div><div class="d" style="font-size:24px">${esc(S.company)}</div></div>`));
   tk.appendChild(h('div', 'perf'));
   const b = h('div', 'tbody'), led = h('div', 'led');
+  /* v132 (TestFlight): a booked show that can't go up tonight says so at the top, not only in the list below */
+  if (L.showOff != null) b.appendChild(h('div', 'callout red', `<b>Bu gece Balon Şöleni yok.</b> Bugünden sonra şölene yeterli balon kalmadı (en az ${SHOW.min} gerekiyor), bu geceki şölen iptal. Bütün ücretler kasana döndü: ${eur(L.showOff)}. Yeterli balon uçabilir olunca yenisini hemen düzenleyebilirsin.`));
   const line = (k, v) => { if (!v) return; led.appendChild(h('div', null, `<span>${k}</span><span class="v ${v > 0 ? 'pos' : 'neg'}">${v > 0 ? '+' : ''}${eur(v)}</span>`)); };
   line('Bilet geliri', L.rev); if (L.ctr) line(L.ctrFrom ? `Grup: ${esc(L.ctrFrom)} (${L.ctrN} kişi)` : `Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.ctrWait) line('Rötar tazminatı (boş koltuklar)', L.ctrWait); if (L.ctrVoucher) line('Sis garantisi: kuponlar', -L.ctrVoucher); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); line('Maaşlar', -L.wage); line('Bakım', -L.up);
   line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan); if (L.xfer) line('Getirilen balonların bedeli', -L.xfer);
@@ -5014,7 +5007,7 @@ function showRepChart() {
   if (unlocked('guide')) act('Rehber ofisi', gcd > 0 ? `Yeni tanıtım için ${gcd} gün beklemelisin.` : 'Üç rehberden birini seç: seni müşterilerine önerirler, hemen popülerlik ve birkaç gün turist.', 'Rehberler', () => { m.hidden = true; showGuides(); }, gcd > 0);
   if (unlocked('agency')) act('Influencer ajansı', icd > 0 ? `Yeni kampanya için ${icd} gün beklemelisin.` : S.day <= S.influUntil ? 'Kampanya sürüyor.' : 'Üç influencer\'dan birini seç: hemen popülerlik, kampanya boyunca her gün biraz daha.', 'Ajans', () => { m.hidden = true; showAgency(); }, icd > 0);
   if (S.region === 'bri' && S.fiesta) { const gs = glowState(); act('Gece Işıltısı', gs === 'ok' ? 'Festival gecesi balonların çayırda müzikle ışıldar, sonra havai fişekler. Her festivalde bir kez.' : gs === 'booked' ? 'Işıltı bu gece.' : gs === 'done' ? 'Bu festivalin ışıltısı yapıldı.' : gs === 'few' ? `En az ${GLOW.min} uçabilen balon gerekiyor.` : gs === 'show' ? 'Bu gece Balon Şöleni var.' : `Kasada ${eur(GLOW.cost)} olmalı.`, eur(GLOW.cost), () => { m.hidden = true; glowCard(); }, gs !== 'ok'); }
-  if (unlocked('market') && inside().length >= SHOW.min) { const ss = showState(); act('Balon Şöleni Düzenle', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
+  if (unlocked('market') && inside().length >= SHOW.min) { const ss = showState(); act('Balon Şöleni Düzenle', ss === 'ok' ? `Bütün balonların bir gece kasabanın üstünde gösteri yapar. Hemen +0,2★ ve 3 gün şölen turistleri. ${showFleet().length} balon.` : ss === 'booked' ? 'Şölen bu gece.' : ss === 'wait' ? `Yeni şölen için ${S.showNext - S.day} gün beklemelisin.` : ss === 'glow' ? 'Bu gece Gece Işıltısı var. Şölen başka bir gece olabilir.' : ss === 'few' ? `En az ${SHOW.min} uçabilen balon gerekiyor.` : `Kasada ${eur(showCost())} olmalı.`, eur(showCost()), () => { m.hidden = true; showCard(); }, ss !== 'ok'); }
   const close = h('button', 'big', 'Kapat'); close.onclick = () => { m.hidden = true; }; c.appendChild(close);
   m.appendChild(c); m.hidden = false;
 }
@@ -7146,6 +7139,18 @@ function switchRegion(id) {
   cur.auto = makeAuto(cur, S.region);
   /* an undecided problem stays with its region: it waits on autopilot and comes back when you do */
   if (cur.issue) { cur.auto.issue = cur.issue; cur.issue = null; }
+  /* v132 (TestFlight): a Balloon Show or Night Glow booked for tonight can't happen with you gone. It's called off, its
+     fee goes back to that region's cash box and the guide says so (it used to vanish without a word). */
+  const rname = REGION_DEF[S.region].name; /* eur() still counts in this region's money here */
+  if (cur.showTonight === S.day && cur.showIds) {
+    const back = cur.showIds.filter(id => (cur.balloons || []).some(b => b.id === id)).length * SHOW.per;
+    cur.cash += back; cur.showTonight = null; cur.showIds = null; cur.showNext = 0; cur.showCount = Math.max(0, (cur.showCount || 1) - 1);
+    S.hezQ.push(`news:Şölen gününde bölgeden ayrıldın evlat, bu geceki Balon Şöleni iptal oldu. Bölge: ${rname}. Ücret oranın kasasına döndü: ${eur(back)}.`);
+  }
+  if (cur.glowTonight === S.day) {
+    cur.cash += GLOW.cost; cur.glowTonight = null; cur.glowFest = null; cur.glowN = null;
+    S.hezQ.push(`news:Gece Işıltısı gününde bölgeden ayrıldın evlat, bu geceki ışıltı iptal oldu. Bölge: ${rname}. Ücret oranın kasasına döndü: ${eur(GLOW.cost)}.`);
+  }
   if (!S.regions) S.regions = {};
   S.regions[S.region] = cur;
   const next = S.regions[id] || newRegionState(id);
@@ -9152,13 +9157,13 @@ function holdingDay() {
   S.holding = (S.holding || 0) + gross - cost;
   if (gross) { holdLog('inc', gross); holdLog('exp', cost); }
   S.hold.today = { gross, cost };
-  recordDay(); adShapeDay();
+  recordDay(); adShapeDay(); markMillion();
   return gross - cost;
 }
 function withdraw(share) {
   const keep = 10000, amt = Math.max(0, Math.floor(share === 1 ? S.cash - keep : S.cash * share));
   if (amt <= 0) return;
-  S.cash -= amt; S.holding = (S.holding || 0) + amt / FX(); holdLog('inc', amt / FX()); sfx('coin'); refresh();
+  S.cash -= amt; S.holding = (S.holding || 0) + amt / FX(); holdLog('inc', amt / FX()); holdGoalsNow(); sfx('coin'); refresh();
 }
 /* v131 (TestFlight): a parked region can keep its autopilot profit in its own cash box; the player moves it by hand */
 const sendsToHolding = id => !(S.hold && S.hold.keep && S.hold.keep[id]);
@@ -9167,7 +9172,7 @@ function withdrawFrom(id, share) {
   if (id === S.region) return withdraw(share);
   const rs = S.regions && S.regions[id]; if (!rs) return;
   const keep = 10000, amt = Math.max(0, Math.floor(share === 1 ? rs.cash - keep : rs.cash * share)); if (amt <= 0) return;
-  rs.cash -= amt; const e = Math.round(amt / REGION_DEF[id].fx); S.holding = (S.holding || 0) + e; holdLog('inc', e); sfx('coin'); save(); hqRender(); refresh();
+  rs.cash -= amt; const e = Math.round(amt / REGION_DEF[id].fx); S.holding = (S.holding || 0) + e; holdLog('inc', e); holdGoalsNow(); sfx('coin'); save(); hqRender(); refresh();
 }
 function holdBuy(cost, fn) { if ((S.holding || 0) < cost) return; S.holding -= cost; holdLog('exp', cost); fn(); sfx('coin'); refresh(); }
 /* holding nakit akışı kaydı: gelir (otomatik bölgeler, ülkelerden aktarım) ve gider (holding giderleri, yatırımlar) */
@@ -9454,7 +9459,7 @@ function showCard(done) {
     const go = h('button', 'big', `Onayla ve düzenle: ${eur(showCost())}`); go.onclick = () => { bookShow(); refresh(); showCard(true); }; c.appendChild(go);
     close('Vazgeç');
   } else {
-    const why = { locked: 'Pazar açılınca düzenleyebilirsin.', booked: 'Şölen bu gece. Gün bitince kasabanın üstünde başlayacak.', wait: `Yeni şölene kalan gün: ${(S.showNext || 0) - S.day}.`, few: `Şölen için en az ${SHOW.min} uçabilen balon gerekiyor. Şu an: ${n}.`, cash: `Kasada ${eur(showCost())} olmalı (${n} × ${eur(SHOW.per)}).` }[st];
+    const why = { locked: 'Pazar açılınca düzenleyebilirsin.', booked: 'Şölen bu gece. Gün bitince kasabanın üstünde başlayacak.', wait: `Yeni şölene kalan gün: ${(S.showNext || 0) - S.day}.`, glow: 'Bu gece Gece Işıltısı var. Şölen başka bir gece olabilir.', few: `Şölen için en az ${SHOW.min} uçabilen balon gerekiyor. Şu an: ${n}.`, cash: `Kasada ${eur(showCost())} olmalı (${n} × ${eur(SHOW.per)}).` }[st];
     c.appendChild(h('div', 'callout red', why));
     close('Kapat', true);
   }
@@ -9469,6 +9474,27 @@ function figPicker(c, done) {
   chip(null, 'Filona göre');
   for (const k of Object.keys(SHOP).filter(q => SHOP[q].kind === 'fig')) chip(k, k === 'finitial' ? `${SHOP[k].n}: ${esc(figLetter())}` : SHOP[k].n, shopThumb(k));
   c.appendChild(row);
+}
+/* v111 / v132: balloons that can't go up tonight (crashed, sold, taken by the bank) drop out of the show and their fees
+   come back (a sold one's went with the sale); with fewer than SHOW.min left the show is called off, every fee comes back
+   and a new one can be booked at once. Each step is a line in the report; the report shows a cancellation at the top
+   (Lg.showOff) and the night says it. Returns what came back to the cash. */
+function showDropOut(out, Lg, ev, seized) {
+  if (S.showTonight !== S.day || !S.showIds) return 0;
+  let total = 0;
+  const gone = S.showIds.filter(id => out.includes(id));
+  if (gone.length) {
+    const back = gone.filter(id => seized || bal(id)).length * SHOW.per;
+    S.showIds = S.showIds.filter(id => !gone.includes(id)); S.showN = S.showIds.length; S.cash += back; total += back;
+    if (back) { Lg.showBack = (Lg.showBack || 0) + back; ev.push(seized ? `Bankanın aldığı balon bu geceki şölendeydi, çıkamayacak. Ücreti kasana döndü: ${eur(back)}.` : `Kaza yapan balon bu gece şölene çıkamayacak. Ücreti kasana geri döndü: ${eur(back)}.`); }
+  }
+  if (S.showIds.length < SHOW.min) {
+    const back = S.showIds.length * SHOW.per; S.cash += back; total += back; if (back) Lg.showBack = (Lg.showBack || 0) + back;
+    S.showTonight = null; S.showIds = null; S.showNext = 0; S.showCount = Math.max(0, (S.showCount || 1) - 1);
+    Lg.showOff = Lg.showBack || 0;
+    ev.push(`Kazalar yüzünden şölene yeterli balon kalmadı, bu geceki şölen iptal. Kalan ücretler de kasana döndü: ${eur(back)}. Balonlar onarılınca yeniden düzenleyebilirsin.`);
+  }
+  return total;
 }
 function bookShow() {
   const n = showFleet().length; S.showIds = showFleet().map(b => b.id);
@@ -11398,7 +11424,8 @@ function startNight() {
   const show = ev && ev.k === 'show', ng = ev && ev.k === 'nglow'; if (show) SHOWSPR = {};
   NIGHT = { t0: T, ev, v: show ? showView(W, H) : null, idle: T, wait: show ? SHOW_LEN : ng ? GLOW.dur : ev && ev.k === 'eve' ? 8 : ev ? 5.5 : 3.5 };
   mode = 'night'; hideAll(); $('hud').hidden = true;
-  const cap = h('div', 'nightcap', `<b>Gün ${S.day - 1} gecesi</b>${ev ? `<span>${esc(ev.line)}</span>` : ''}<small>Kasabayı gezebilirsin</small>`); cap.id = 'nightcap';
+  const off = lastReport && lastReport.day === S.day - 1 && lastReport.Lg.showOff != null ? lastReport.Lg.showOff : null; /* v132: the show called off this evening */
+  const cap = h('div', 'nightcap', `<b>Gün ${S.day - 1} gecesi</b>${ev ? `<span>${esc(ev.line)}</span>` : ''}${off != null ? `<span class="off">Balon Şöleni iptal. Ücretler iade: ${eur(off)}</span>` : ''}<small>Kasabayı gezebilirsin</small>`); cap.id = 'nightcap';
   document.body.appendChild(cap); requestAnimationFrame(() => cap.classList.add('on'));
   const go = h('button', 'big nightgo', `Gün ${S.day} sabahına geç${glyph('sun')}`); go.id = 'nightgo'; go.onclick = () => { if (NIGHT && !NIGHT.dawn) { NIGHT.dawn = T; sfx('click'); } };
   document.body.appendChild(go); requestAnimationFrame(() => go.classList.add('on')); document.body.classList.add('night');
@@ -11934,7 +11961,7 @@ function plant(x, y, k) {
 /* Holding cash over the last 14 days as a marker line, with today's figure in big handwriting. */
 /* The holding's own goals, written on the whiteboard under the chart. All six make you World Baron. */
 const HOLD_GOALS = [
-  ['Holding kasası €1 milyon', () => (S.holding || 0) >= 1e6],
+  ['Holding kasası €1 milyon', () => (S.hold || {}).millionOn != null || (S.holding || 0) >= 1e6], /* v132: stays met once reached */
   ['Luksor Baronu', () => !!(S.barons || {}).lux],
   ['Bir TV kampanyası', () => ((S.hold || {}).tvN || 0) >= 1],
   ['Ünlü reklam yüzü', () => !!(S.hold || {}).celeb],
@@ -11977,6 +12004,12 @@ function milestoneCheck() {
   if (d === 365) paperAdd(2, `Bir yaşında: ${S.company}`, 'Kasaba, balon şirketinin ilk doğum gününü kutluyor.');
   else paperAdd(2, `Gökyüzünde gün ${d}: ${S.company}`, 'Şirket ilk sabahından beri gökyüzünden hiç inmedi.');
 }
+/* v132 (TestFlight): the €1 million goal is met the moment the holding's cash reaches it (a transfer by hand, the day's
+   autopilot income) and stays met when the money is spent later (it used to untick). */
+function markMillion() { if ((S.holding || 0) >= 1e6 && !(S.hold && S.hold.millionOn != null)) { if (!S.hold) S.hold = {}; S.hold.millionOn = S.day; } }
+function holdGoalsNow() { markMillion(); if (anyBaron()) holdGoalsCheck(); }
+/* under the million goal: the holding's cash now (what it measures), or the day it was reached */
+function millionNote() { const H = S.hold || {}; if (H.worldBaron) return ''; if (H.millionOn != null) return `Ulaşıldı: gün ${H.millionOn}`; return (S.holding || 0) >= 1e6 ? '' : `Holding kasası şu an: ${eurH(S.holding || 0)}`; }
 function holdGoalsCheck() {
   const done = HOLD_GOALS.every(g => g[1]()); if (!done || (S.hold || {}).worldBaron) return;
   S.hold.worldBaron = S.day; S.hezQ.push('news:Dünya Baronu! Holdingin bütün hedeflerini bitirdin evlat. Galata\'dan Üsküdar\'a uçan bir adam olarak söylüyorum: senden büyüğünü görmedim.');
@@ -11984,7 +12017,7 @@ function holdGoalsCheck() {
 }
 function hqGoals(body) {
   const sec = h('div', 'sec'); sec.appendChild(h('h2', null, (S.hold || {}).worldBaron ? 'Dünya Baronu' + glyph('crown', 'gcrown') : 'Holding hedefleri'));
-  for (const [t, f] of HOLD_GOALS) { const d = holdGoalDone(f); sec.appendChild(h('div', 'goal' + (d ? ' done' : ''), `<span class="gk">${d ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${t}</b><span>${d ? 'tamam' : ''}</span></div></div>`)); }
+  HOLD_GOALS.forEach(([t, f], i) => { const d = holdGoalDone(f), note = i === 0 ? millionNote() : ''; sec.appendChild(h('div', 'goal' + (d ? ' done' : ''), `<span class="gk">${d ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${t}</b><span>${d ? 'tamam' : ''}</span></div>${note ? `<div class="hint">${esc(note)}</div>` : ''}</div>`)); });
   sec.appendChild(h('p', 'hint', 'Hepsi tamamlanınca Dünya Baronu olursun.')); body.appendChild(sec);
 }
 const INK_MARKER = '#1d2a6e', MARKER = px => `${px}px "Caveat Brush", "Comic Sans MS", cursive`;
@@ -11996,7 +12029,8 @@ function hqChart(x, y, w, h, t) {
   /* rows shrink on a short board; the chart only draws when it still has room */
   const row = clamp(Math.floor((h - 50) / HOLD_GOALS.length), 9, 15), fs = Math.min(14, row - 1), gy = y + h - HOLD_GOALS.length * row + 6; h = gy - y - fs * 1.25 - 24; /* room for the day labels under the chart */
   ctx.font = MARKER(14); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  HOLD_GOALS.forEach(([txt, f], i) => { const d = holdGoalDone(f), yy = gy + i * row, j = Math.sin(i * 2.3) * .6;
+  HOLD_GOALS.forEach(([txt0, f], i) => { const d = holdGoalDone(f), yy = gy + i * row, j = Math.sin(i * 2.3) * .6;
+    const txt = !d && i === 0 ? `${txt0} · ${eurH(S.holding || 0)}` : txt0; /* v132: the million goal names what it measures while open */
     /* a hand-drawn box, a tick when done, and the goal crossed through */
     const bx = Math.min(8, fs * .6); ctx.strokeStyle = INK_MARKER; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(x + 2, yy - bx + j); ctx.lineTo(x + 2.5 + bx, yy - bx - .4); ctx.lineTo(x + 2 + bx, yy + .2); ctx.lineTo(x + 2.3, yy - j); ctx.closePath(); ctx.stroke();
     if (d) { ctx.strokeStyle = '#1f8a4c'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x + 3, yy - bx * .5); ctx.lineTo(x + 2 + bx * .5, yy - 1); ctx.lineTo(x + 2 + bx * 1.3, yy - bx * 1.3); ctx.stroke(); }
@@ -12068,6 +12102,8 @@ function autoDay() {
   else if (S.cash < cost * 3) AUTO.why = 'Kasa azalıyor';
   else if (AUTO.left <= 0) AUTO.why = `${AUTO_DAYS} gün tamam`;
   if (S.over) { const w = AUTO.why; autoStop(w); showReport(); return; }
+  /* v132 (TestFlight): a booked show called off stops the run and shows the day's report with the reason */
+  if (L.showOff != null) { autoStop('Seni bekleyen bir şey var'); showReport(); return; }
   tab = 'plan'; $('menu').hidden = true; startNight();
 }
 function autoCheck() {
