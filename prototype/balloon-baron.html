@@ -1848,6 +1848,68 @@ function addBalloon(size) {
 function addUsedBalloon(size) { addBalloon(size); S.balloons[S.balloons.length - 1].used = 1; }
 const sellValue = b => Math.round(SIZES[b.size].cost * (b.used ? .4 : .6));
 const seizeValue = b => Math.round(SIZES[b.size].cost * (b.used ? .3 : .5));
+/* v133: bankruptcy. While cash closes a day below SEIZE_LINE the bank takes one balloon a day, the biggest that isn't
+   the flagship first. The flagship only goes once cash has closed FLAG_GRACE days in a row below the line (S.debtDays,
+   per region; a day that closes above it starts the count again). Without a holding that ends the game as before. With
+   one, losing the last balloon only closes this region: the holding can rescue it once per region (RESCUE: the region's
+   cash back up to 10,000 in its money, for three times the money put in, in euros, or a tenth of the holding's cash,
+   whichever is more, and never under €100,000; tools/sim-bankrupt.js found holdings of ~€3 million when it fires, where
+   the €100,000 floor alone cost 3%), or the region's company is wound up and you go on in your other regions, or start this one
+   afresh when it was your only one. */
+const SEIZE_LINE = -5000, FLAG_GRACE = 3, RESCUE = { to: 10000, mult: 3, share: .1, min: 100000 };
+const hasHolding = () => anyBaron();
+/* the flagship is all the bank has left to take */
+const flagNext = () => S.cash < SEIZE_LINE && S.balloons.length > 0 && S.balloons.every(b => b.id === S.flag);
+/* closes of the day below the line before the bank takes the flagship (1: tonight) */
+const graceLeft = () => Math.max(1, FLAG_GRACE - (S.debtDays || 0));
+function rescueQuote() {
+  const add = Math.max(0, Math.round(RESCUE.to - S.cash)), cost = Math.max(RESCUE.min, Math.ceil(add / FX() * RESCUE.mult / 1000) * 1000, Math.ceil((S.holding || 0) * RESCUE.share / 1000) * 1000);
+  const used = S.hold && S.hold.rescued && S.hold.rescued[S.region];
+  return { add, cost, used: used != null ? used : null, ok: used == null && (S.holding || 0) >= cost };
+}
+/* where a closed region's player goes: the other region with the biggest fleet (none: this one starts afresh) */
+const ruinNext = () => Object.keys(S.regions || {}).sort((a, b) => S.regions[b].balloons.length - S.regions[a].balloons.length || REGIONS.findIndex(R => R.id === a) - REGIONS.findIndex(R => R.id === b))[0] || null;
+function applyRescue() {
+  const Q = rescueQuote(); if (!Q.ok || !S.ruin) return;
+  const H = S.hold || (S.hold = {});
+  S.holding -= Q.cost; holdLog('exp', Q.cost); (H.rescued = H.rescued || {})[S.region] = S.day;
+  S.cash += Q.add; S.debtDays = 0; S.ruin = null; S.rescueShown = false;
+  S.hezQ.push(`news:Holding ${REGION_DEF[S.region].name} şirketini kurtardı evlat: ${eurH(Q.cost)} ödedi, kasaya ${eur(Q.add)} girdi. Bu bir kez olur; bir daha batarsa holding kurtaramaz. Masrafları sıkı tut.`);
+  paperAdd(5, `Holding devreye girdi: ${S.company}`, `${REGION_DEF[S.region].name} şirketi son balonunu bankaya kaptırmaktan son anda kurtuldu.`);
+}
+function closeRegion() {
+  if (!S.ruin) return;
+  const id = S.region, name = REGION_DEF[id].name, to = ruinNext(), H = S.hold || (S.hold = {});
+  S.ruin = null; (H.closed = H.closed || {})[id] = S.day;
+  /* nothing booked for tonight goes up in a closed region (its fee went with the company) */
+  S.showTonight = null; S.showIds = null; S.glowTonight = null; S.issue = null; S.xfer = null;
+  paperAdd(6, `${S.company}: ${name} şirketi kapandı`, 'Banka son balonu da aldı. Holding ve öteki bölgeler ayakta.');
+  if (to) {
+    S.hezQ.push(`news:${name} şirketi kapandı evlat. Banka balonları, pilotlar ve binalarla birlikte her şeyi aldı. Holding ve öteki bölgelerin duruyor, baron unvanların da senin. Dünya haritasından ${name} bölgesine yeniden girebilirsin: giriş bedeli ${eurH(entryFee(id))}, küçük bir balonla sıfırdan.`);
+    switchRegion(to); delete S.regions[id];
+  } else {
+    /* no other region to go to: a new company here, free, from a small balloon */
+    S.hezQ.push(`news:${name} şirketi kapandı evlat. Başka bölgen olmadığı için burada sıfırdan, küçük bir balonla yeni bir şirket kurduk; holdingin ve baron unvanların yerinde. Bu sefer kasayı ${eur(SEIZE_LINE)} altına düşürme.`);
+    const next = newRegionState(id); RKEYS.forEach(k => { S[k] = next[k]; }); delete H.closed[id];
+    S.weather = null; S.demand = null; S.plan = null; S.candidates = []; S.rivals.forEach(r => { r.fly = null; });
+    $('menu').hidden = true; tab = 'plan'; startDay();
+  }
+  save();
+}
+/* The bank is about to take the last balloon of a region while you own a holding: the holding's rescue, or close it. */
+function showRuin() {
+  const m = $('menu'); m.replaceChildren(); $('report').hidden = true;
+  const Q = rescueQuote(), id = S.region, name = REGION_DEF[id].name, to = ruinNext(), fb = bal(S.flag) || S.balloons[0];
+  const c = h('div', 'card rescue');
+  c.appendChild(h('div', 'hzline', `${HEZ_AV}<span>Evlat, banka son balonun için geldi${fb ? `: ${esc(fb.name)}` : ''}. Kasa üç gündür ${eur(SEIZE_LINE)} altında. Holdingin ve öteki bölgelerin ne olursa olsun yerinde kalır; karar ${esc(name)} şirketi için.</span>`));
+  c.appendChild(h('h1', null, 'Holding kurtarma'));
+  if (Q.used != null) c.appendChild(h('div', 'callout red', `<b>Holding bu bölgeyi bir kez kurtardı (gün ${Q.used}).</b> İkinci kurtarma yok.`));
+  else c.appendChild(h('div', 'callout yel', `<b>Bedel: ${eurH(Q.cost)}, holding kasasından.</b> Bölgenin kasasına ${eur(Q.add)} girer, kasa ${eur(RESCUE.to)} olur. Bedel kurtarılan paranın üç katı ya da holding kasasının %10'u (hangisi büyükse), en az ${eurH(RESCUE.min)}. Her bölge için bir kez.<br>${Q.ok ? `Holding kasası: ${eurH(S.holding || 0)} → ${eurH((S.holding || 0) - Q.cost)}` : `Holding kasası: ${eurH(S.holding || 0)}. <b>Yetmiyor: ${eurH(Q.cost - (S.holding || 0))} eksik.</b>`}`));
+  const opt = (title, sub, fn, dis) => { const b = h('button', 'opt', `<b>${title}</b><span>${sub}</span>`); b.disabled = !!dis; b.onclick = () => { m.hidden = true; fn(); refresh(); }; c.appendChild(b); };
+  opt(`Holding kurtarsın: ${eurH(Q.cost)}`, `Kasa ${eur(S.cash)} → ${eur(S.cash + Q.add)}. Balonların ve kredilerin yerinde kalır; banka sayacı sıfırlanır.`, () => { applyRescue(); sfx('coin'); tab = 'plan'; startNight(); }, !Q.ok);
+  opt(`${esc(name)} şirketini kapat`, to ? `Banka buradaki her şeyi alır: balonlar, pilotlar, oteller, binalar. Sen ${esc(REGION_DEF[to].name)} bölgesine geçersin. ${esc(name)} bölgesine sonra dünya haritasından yeniden girebilirsin: ${eurH(entryFee(id))}, küçük bir balonla sıfırdan. Baron unvanların ve holding hedeflerin yerinde kalır.` : `Banka buradaki her şeyi alır. Başka bölgen olmadığı için burada ücretsiz, küçük bir balonla sıfırdan yeni bir şirket kurarsın. Holdingin, baron unvanların ve holding hedeflerin yerinde kalır.`, () => { sfx('low'); closeRegion(); });
+  m.appendChild(c); m.hidden = false;
+}
 
 /* ---------- market ---------- */
 const willing = p => 1 / (1 + Math.exp((p - 230) / 30));
@@ -2119,6 +2181,7 @@ function showRescue() {
   const c = h('div', 'card rescue');
   c.appendChild(h('div', 'hzline', `${HEZ_AV}<span>Kasan eksiye düştü evlat. Panik yok, ama bugün bir şeyler yapmalıyız. ${eur(-5000)}'nin altına inersen banka balonuna el koyar.</span>`));
   c.appendChild(h('h1', null, 'Kurtarma planı'));
+  if (flagNext()) c.appendChild(h('div', 'callout red', `<b>Banka ${graceLeft()} gün içinde amiral balonuna el koyacak.</b> Kasa gün sonunda ${eur(SEIZE_LINE)} üstüne çıkarsa sayaç sıfırlanır.`));
   const opt = (title, sub, fn, dis) => { const b = h('button', 'opt', `<b>${title}</b><span>${sub}</span>`); b.disabled = !!dis; b.onclick = () => { fn(); sfx('coin'); refresh(); showRescueStep(); }; c.appendChild(b); };
   const idle = S.pilots.filter(p => !S.balloons.some(b => b.pilot === p.id)), sellable = S.balloons.filter(b => b.id !== S.flag).sort((a, b) => SIZES[a.size].cost - SIZES[b.size].cost);
   /* the guides' flight and a hotel deal (only when there's none yet) bring customers fastest; on this card they may take
@@ -2141,6 +2204,7 @@ function showRescueStep() { if (S.cash >= 0) { $('menu').hidden = true; S.hezQ.u
 function nextPopup() {
   if (TRAVEL || GA) return; /* v122: a guided action is running; it calls back when it ends */
   if (mode !== 'office' || !$('menu').hidden || !$('report').hidden || !$('page').hidden || !$('hez').hidden) return;
+  if (S.ruin) { showRuin(); return; } /* v133: the holding's decision comes before anything else */
   if (SHOWHL) { showHighlights(); return; }
   if (S.chapterNews != null) { showChapter(); return; }
   if (S.mergeNews) { showMerge(); return; }
@@ -2418,9 +2482,12 @@ function finishDay(flight) {
     ev.push(`Rekabet Kurumu tekel cezası kesti: ${eur(fine)}. Pazar payın: %${Math.round(shr * 100)}.`);
   }
 
-  if (S.cash < -5000) {
+  if (S.cash < SEIZE_LINE) {
+    /* v133: the flagship only after FLAG_GRACE closes in a row below the line; with a holding, the holding decides */
+    S.debtDays = (S.debtDays || 0) + 1;
     const sellable = S.balloons.filter(b => b.id !== S.flag).sort((a, b) => SIZES[b.size].cost - SIZES[a.size].cost);
-    const take = sellable[0] || S.balloons[0];
+    let take = sellable[0];
+    if (!take && S.balloons.length && S.debtDays >= FLAG_GRACE) { if (hasHolding()) S.ruin = { day: S.day }; else take = S.balloons[0]; }
     if (take) {
       const v = seizeValue(take); S.cash += v; Lg.seize = v; net += v;
       S.balloons = S.balloons.filter(b => b !== take);
@@ -2431,7 +2498,12 @@ function finishDay(flight) {
       if (S.showTonight === S.day && (S.showIds || []).includes(take.id)) net += showDropOut([take.id], Lg, ev, true);
     }
     if (!S.balloons.length) S.over = true;
-  }
+    else if (S.ruin) ev.push(`Banka son balonun için geldi. Holding karar verecek: ya bölgeyi kurtarır ya da ${REGION_DEF[S.region].name} şirketi kapanır.`);
+    else if (flagNext()) {
+      ev.push(`Banka ${graceLeft()} gün içinde amiral balonuna el koyacak. Kasa gün sonunda ${eur(SEIZE_LINE)} üstüne çıkarsa sayaç sıfırlanır.`);
+      if (S.debtDays === 1 || take) S.rescueShown = false; /* the rescue plan opens again the first morning the flagship is next */
+    }
+  } else S.debtDays = 0;
 
   const capToday = fl.reduce((a, b) => a + sellSeats(b), 0);
   genReviews({ xl: fl.some(b => b.size === 'XL'), mis: flight && flight.mok && flight.q !== 'hard' && flight.q !== 'crash' ? flight.mis : null, ads: adNames, q: flight ? flight.q : null, acc: accNames, red, flew: paxTotal > 0, skip: S.plan.skip, flag: S.weather.flag });
@@ -2653,7 +2725,8 @@ function showChapter() {
   m.appendChild(c); m.hidden = false;
 }
 /* Each region opens when you're baron of the one before it. */
-const regionOpen = id => id === 'abq' ? isBaron('cap') : id === 'lux' ? isBaron('abq') : id === 'bri' ? isBaron('lux') : false;
+const regionOpen = id => id === 'cap' ? true /* v133: only ever not yours after its company closed */ : id === 'abq' ? isBaron('cap') : id === 'lux' ? isBaron('abq') : id === 'bri' ? isBaron('lux') : false;
+const closedOn = id => S.hold && S.hold.closed ? S.hold.closed[id] : undefined;
 /* v115: Cappadocia is free; America and Egypt need the Grand Tour */
 const needsPack = id => (id === 'abq' || id === 'lux' || id === 'bri') && !owned('worldTour');
 const REGIONS = [
@@ -2713,6 +2786,7 @@ function showWorldMap() {
     let tag = '', sub = '';
     if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = { cap: 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.', abq: 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.', lux: 'Nil, firavunların vadisi ve dünyanın en çetin balon pazarı.', bri: 'Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.' }[R.id]; }
     else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = sendsToHolding(R.id) ? `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.` : `Müdürün yönetiyor: kazanç bölgenin kasasında birikiyor (holdinge aktarım kapalı).`; sub += `${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
+    else if (open && closedOn(R.id) != null) { tag = '<span class="tag r">Kapandı</span>'; sub = `Şirketin burada ${closedOn(R.id)}. günde kapandı. Yeniden girersen sıfırdan başlarsın: küçük bir balon ve bölgenin başlangıç kasası, bölümler baştan. Kazandığın baron unvanları yerinde kalır. Giriş bedeli ${eurH(entryFee(R.id))} holding kasasından.`; }
     else if (open && R.id === 'bri') { tag = '<span class="tag y">Açıldı</span>'; sub = `Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.`; }
     else if (open && R.id === 'lux') { tag = '<span class="tag y">Açıldı</span>'; sub = `Nil kıyısı, Krallar Vadisi, Hatşepsut Tapınağı. Dünyanın en çetin balon pazarı: rakipler güçlü ve çabuk birleşir. Başlangıç kasası: ${eurH(5000)}. Giriş bedeli ${eurH(entryFee('lux'))} holding kasasından.${needsPack('lux') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (open) { tag = '<span class="tag y">Açıldı</span>'; sub = `Dünyanın en büyük balon festivalinin şehri. Meşhur "kutu" rüzgârları seni kalktığın yere geri getirir. Giriş bedeli ${eurH(ENTRY_FEE)} holding kasasından (FAA lisansı ve ofis); bölgede sıfırdan başlarsın.${needsPack('abq') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
@@ -3131,6 +3205,7 @@ function renderHome() {
     if (isSelf(fbm)) alert('mis', `<b>Bugünkü görev: ${M.name} (+${eur(misReward(Wx.mission))})</b> ${M.desc}`);
     else alert('mis', `<b>Kendin uçurursan bugünkü görev: ${M.name} (+${eur(misReward(Wx.mission))})</b> ${M.desc} Dokun, uçuşu sen üstlen.`, () => { S.selfFly = true; assignPilots(); refresh(); });
   }
+  if (flagNext() && !S.ruin) alert('red', `<b>Banka ${graceLeft()} gün içinde amiral balonuna el koyacak.</b> Kasayı gün sonuna kadar ${eur(SEIZE_LINE)} üstüne çıkar. Kurtarma planı için dokun.`, showRescue);
   if (S.banUntil >= S.day) alert('red', `<b>Uçuş yasağın var.</b> ${S.banUntil - S.day + 1} gün daha kalkamazsın.`);
   if (Wx.flag === 'red' && flying().length) alert('red', `<b>Bugün uçuş yasak.</b> Kalkarsan %35 ihtimalle ${eur(5000)} ceza, sigorta geçersiz.`);
   if (S.issue) alert('red', `<b>${ISSUES[S.issue.k].t}.</b> ${S.issue.k === 'raise' ? 'Pilotların ofisin önünde bekliyor. ' : ''}Karar vermek için dokun.`, issueScene);
@@ -3861,7 +3936,12 @@ function showReport() {
   if (S.over) {
     b.appendChild(h('div', 'callout red', `<b>Tüm balonların elden çıktı.</b> ${esc(S.company)} kapandı.`));
     const nb = h('button', 'big', 'Yeni şirket kur'); nb.onclick = () => { S = newState(); setupName = ''; startIntro(); }; b.appendChild(nb);
+  } else if (S.ruin) {
+    /* v133: with a holding, the last balloon isn't taken before you decide */
+    b.appendChild(h('div', 'callout red', `<b>Banka son balonuna el koymak üzere.</b> Kasa üç gündür ${eur(SEIZE_LINE)} altında. Holding ya ${esc(REGION_DEF[S.region].name)} şirketini kurtarır ya da şirket kapanır; holdingin ve öteki bölgelerin her durumda yerinde kalır.`));
+    const nb = h('button', 'big', 'Karar ver'); nb.onclick = () => { sfx('click'); showRuin(); }; b.appendChild(nb);
   } else {
+    if (flagNext()) b.appendChild(h('div', 'callout red', `<b>Banka ${graceLeft()} gün içinde amiral balonuna el koyacak.</b> Kasa gün sonunda ${eur(SEIZE_LINE)} altında kaldıkça sayaç işler, üstüne çıkınca sıfırlanır. ${hasHolding() ? 'O gün holding ya bu bölgeyi kurtarır ya da bölge kapanır.' : 'Son balon da giderse şirket kapanır.'}`));
     if (allDead && !S.monopolyShown) { S.monopolyShown = true; save(); b.appendChild(h('div', 'callout grn', '<b>Kapadokya göğünde tek şirket sensin.</b> Fiyatı artık sen belirliyorsun.')); }
     b.appendChild(h('p', 'hint', `Yarın ${FLAGS[S.weather.flag].name.toLowerCase()}, yerde rüzgâr ${S.weather.surf} km/sa.`));
     const nb = h('button', 'big', `Gün ${S.day} sabahına geç`); nb.onclick = () => { tab = 'plan'; startNight(); }; b.appendChild(nb);
@@ -7022,7 +7102,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'hangarHz', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'glowN', 'eveDay', 'eveN', 'ctr', 'xferShip', 'xferDebt'];
+const RKEYS = ['inspDay', 'inspN', 'hangarHz', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'glowN', 'eveDay', 'eveN', 'ctr', 'xferShip', 'xferDebt', 'debtDays'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -7095,7 +7175,7 @@ function newRegionState(id) {
     school: false, demandBase: id === 'bri' ? 145 : 165, chapter: 0, monopolyShown: false, absentNotice: 0, fiesta: null, fiestaNext: S.day + 12, fiestaFlown: 0, netHist: [], nextEvent: S.day + 14 /* v125.6: no morning event (press, VIP…) on the first days in a new region */
   };
   if (id === 'bri') { st.fogFlown = 0; st.glowCount = 0; }
-  st.rivals = (id === 'bri' ? BRI_RIVALS : id === 'lux' ? LUX_RIVALS : ABQ_RIVALS).map(r => ({ ...r, balloons: r.balloons.slice(), alive: true, dmg: r.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, lowDays: 0 }));
+  st.rivals = (id === 'cap' ? newState().rivals /* v133: Cappadocia started again after it closed */ : id === 'bri' ? BRI_RIVALS : id === 'lux' ? LUX_RIVALS : ABQ_RIVALS).map(r => ({ ...r, balloons: r.balloons.slice(), alive: true, dmg: r.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, lowDays: 0 }));
   const first = { id: S.nextId++, size: 'S', name: REGION_DEF[id].bnames[0], fly: true, dmgUntil: 0, pilot: null, flights: 0 };
   st.balloons.push(first); st.flag = first.id;
   return st;
@@ -7170,6 +7250,8 @@ function enterRegion(id) {
   const fee = entryFee(id);
   if ((S.holding || 0) < fee) return;
   S.holding -= fee; holdLog('exp', fee);
+  if (closedOn(id) != null) delete S.hold.closed[id]; /* v133: a closed region entered again */
+  if (id === 'cap') S.hezQ.push('news:Kapadokya\'ya yeniden hoş geldin evlat! Her şeyin başladığı yer. Küçük bir balonla, sıfırdan başlıyorsun; ama bu sefer yanında bir holding var.');
   if (id === 'lux') S.hezQ.push('hz:Luksor evlat, dünyanın en çetin balon pazarı! 5.000 € ve küçük bir balonla başlıyorsun; rakipler sana karşı çabuk birleşir.§Nil\'in rüzgârı alçakta kuzeye, yukarıda güneye eser. Arada bir Nil gemileri yanaşır, kasaba turistle dolar. Holding buraya para gönderemez. Sabırlı ol evlat, Nil sabırlıyı sever.');
   if (id === 'bri') S.hezQ.push('hz:Bristol evlat! Sabahları sis olur, rüzgâr batıdan eser, havalimanının göğüne girme. 6.000 sterlin ve küçük bir balonla başlıyorsun.§Sisli sabah iniş alanını görmek için alçal. Her ay dört günlük bir balon festivali var: akşamları balonlar ikinci kez kalkar, gece de Gece Işıltısı düzenleyebilirsin. Sir Reginald Ashby\'nin Clifton Crown\'u burada yüz yıldır uçuyor; rakipler çabuk birleşir. Şemsiyeni al evlat.');
   if (id === 'abq') S.hezQ.push('hz:Amerika evlat! Burada rüzgâr "kutu" gibi döner: alçakta bir yöne, yukarıda ters yöne. 3.000 dolar ve küçük bir balonla sıfırdan başlıyorsun.§Usta pilot kalktığı yere geri döner. Her 30 günde bir Balloon Fiesta var: dört gün turist iki katına çıkar. Kapadokya otomatik modda kazanır, kazancı holdinge gider; ama holding buraya para gönderemez. Bir sorun olursa seni çağırırım.');
@@ -12102,6 +12184,8 @@ function autoDay() {
   else if (S.cash < cost * 3) AUTO.why = 'Kasa azalıyor';
   else if (AUTO.left <= 0) AUTO.why = `${AUTO_DAYS} gün tamam`;
   if (S.over) { const w = AUTO.why; autoStop(w); showReport(); return; }
+  /* v133: the bank is after the flagship, or the holding has to decide */
+  if (S.ruin || flagNext()) { autoStop('Banka amiral balonuna el koymak üzere'); showReport(); return; }
   /* v132 (TestFlight): a booked show called off stops the run and shows the day's report with the reason */
   if (L.showOff != null) { autoStop('Seni bekleyen bir şey var'); showReport(); return; }
   tab = 'plan'; $('menu').hidden = true; startNight();

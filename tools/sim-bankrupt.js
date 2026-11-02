@@ -1,4 +1,4 @@
-// Usage: NODE_PATH=$(npm root -g) node tools/sim-bankrupt.js [profiles=all] [seeds=40] [days=800] [firstSeed=1]
+// Usage: NODE_PATH=$(npm root -g) [RUIN=accept|half] node tools/sim-bankrupt.js [profiles=all] [seeds=40] [days=800] [firstSeed=1]
 //   profiles: comma list of ordinary,overexp,gambler,neglect,allbad,newbie,newbieMild,redOnly,noIns,noRenew,badPrice,priceHigh,priceLow,noHangar,stuckNoRenew (or "all")
 // Can a careless player still go bankrupt? Bots with different habits play the whole campaign on the prototype's real
 // game code (Cappadocia, then Albuquerque, Luxor and Bristol with the Grand Tour owned, as tools/sim-campaign.js does).
@@ -12,6 +12,10 @@ const PROF = (process.argv[2] && process.argv[2] !== 'all') ? process.argv[2].sp
    SELFQ=safe: the founder never lands hard or crashes (as in the other sims); otherwise 2% of green, 8% of yellow and 25% of
    red own flights end in a hard landing or a crash. */
 const TRACE = !!process.env.TRACE, SAFE = process.env.SELFQ === 'safe';
+/* v133: when the bank comes for a region's last balloon and the player owns a holding, the bot takes the holding's
+   rescue whenever it can pay (RUIN=accept, the default) or only half the time (RUIN=half); otherwise the region closes
+   and the bot goes on in another region (or a fresh start of this one). */
+const RUIN = process.env.RUIN || 'accept';
 const SEEDS = +(process.argv[3] || 40), DAYS = +(process.argv[4] || 800), FROM = +(process.argv[5] || 1);
 /* profile switches
    buf: cash cushion kept when buying (×), loans: 'starter' (10k while small) | 'all' (biggest loan whenever the bank allows, two at once),
@@ -47,14 +51,14 @@ const PROFILES = {
     p.on('pageerror', e => console.error('ERR', e.message));
     await p.goto('file://' + require('path').resolve(__dirname, '../prototype/balloon-baron.html')); await p.waitForTimeout(600);
     for (let seed = FROM; seed < FROM + SEEDS; seed++) {
-      const r = await p.evaluate(([seed, DAYS, prof, P0, BADP, TRACE, SAFE]) => {
+      const r = await p.evaluate(([seed, DAYS, prof, P0, BADP, TRACE, SAFE, RUIN]) => {
         let a = seed * 9301 + 49297; Math.random = () => { a = (a * 9301 + 49297) % 233280; return a / 233280; };
         sfx = () => {}; save = () => {}; showReport = () => {}; refresh = () => {}; buildWorld = () => {}; nextPopup = () => {}; showTravel = () => {}; applyRegionTheme = () => {};
         const realStart = startDay; startDay = () => {};
         /* the founder's own landing: worse on yellow, much worse on red */
         const Q = SAFE ? { green: [.3, .55, .15, 0, 0] } : { green: [.3, .55, .13, .015], yellow: [.2, .5, .22, .06], red: [.1, .4, .25, .15] };
         startFlight = () => { const q = Q[S.weather.flag] || Q.green, x = Math.random(); const k = x < q[0] ? 'perfect' : x < q[0] + q[1] ? 'good' : x < q[0] + q[1] + q[2] ? 'far' : x < q[0] + q[1] + q[2] + q[3] ? 'hard' : 'crash'; finishDay({ q: k, dist: 60, mis: S.weather.mission, mok: !!S.weather.mission && k !== 'hard' && k !== 'crash' && Math.random() < .6 }); };
-        const L = { prof, seed, over: null, overRegion: null, seized: 0, seizedBy: {}, seizeDays: [], minCash: 0, minCashRegion: 'cap', negRun: 0, negMax: 0, groundRun: 0, groundMax: 0, baron: {}, enter: { cap: 1 }, world: 0, causes: {}, reds: 0, fines: 0, crashes: 0, loansTaken: 0, buyLoans: 0, err: null };
+        const L = { prof, seed, rescues: [], closes: [], over: null, overRegion: null, seized: 0, seizedBy: {}, seizeDays: [], minCash: 0, minCashRegion: 'cap', negRun: 0, negMax: 0, groundRun: 0, groundMax: 0, baron: {}, enter: { cap: 1 }, world: 0, causes: {}, reds: 0, fines: 0, crashes: 0, loansTaken: 0, buyLoans: 0, err: null };
         if (!window.__paW) { const pa = paperAdd; window.__paW = 1; paperAdd = (pr, hd, sub) => { if (window.__onPaper) window.__onPaper(hd); return pa(pr, hd, sub); }; }
         window.__onPaper = hd => { if (/^Banka .*el koydu/.test(hd) && hd.includes(S.company)) { L.seized++; L.seizedBy[S.region] = (L.seizedBy[S.region] || 0) + 1; L.seizeDays.push(S.region + S.day); L.seizeToday = 1; } };
         S = newState(); S.company = 'Bot'; S.weather = newWeather(); S.demand = dayDemand(); rivalFlyPlan();
@@ -161,6 +165,11 @@ const PROFILES = {
           if (!skip && !flying().length) L.groundRun++; else if (!skip) L.groundRun = 0; L.groundMax = Math.max(L.groundMax, L.groundRun);
           L.seizeToday = 0;
           try { launch(skip); } catch (e) { L.err = e.message + ' @' + day; break; }
+          if (S.ruin) {
+            const Q = rescueQuote(), h0 = Math.round(S.holding || 0);
+            if (Q.ok && (RUIN === 'accept' || Math.random() < .5)) { applyRescue(); L.rescues.push({ r: reg, d: day, cost: Q.cost, h0, h1: Math.round(S.holding) }); }
+            else { L.closes.push({ r: reg, d: day, h: h0, why: Q.used != null ? 'used' : Q.ok ? 'declined' : 'poor' }); closeRegion(); }
+          }
           const G = lastReport ? lastReport.Lg : {};
           if (G.repair || G.comp) L.crashes++; if (G.fine) L.fines++;
           hist.push({ acc: (G.repair || 0) + (G.comp || 0) - (G.insPay || 0), fines: (G.fine || 0) + (G.mono || 0), loans: G.loan || 0, xfer: G.xfer || 0, opex: (G.wage || 0) + (G.up || 0) + (G.fuel || 0) + (G.ins || 0) + (G.hotel || 0) + (G.ctrPen || 0) + (G.cancel || 0), inc: (G.rev || 0) + (G.tips || 0) + (G.founder || 0) + (G.hotelInc || 0) + (G.mission || 0) + (G.ad || 0) + (G.ctr || 0) + (G.ctrWait || 0) + (G.eve || 0), buys: Math.max(0, spent) });
@@ -175,16 +184,26 @@ const PROFILES = {
           if (S.cash < 0) L.negRun++; else L.negRun = 0; L.negMax = Math.max(L.negMax, L.negRun);
           for (const id of ['cap', 'abq', 'lux', 'bri']) if (S.barons && S.barons[id] && !L.baron[id]) L.baron[id] = S.barons[id];
           if (S.hold && S.hold.worldBaron) { L.world = S.hold.worldBaron; break; }
-          if (S.over) { L.over = day; L.overRegion = reg; L.overHolding = Math.round(S.holding || 0); break; }
+          if (S.over) { L.over = day; L.overRegion = reg; L.overHolding = Math.round(S.holding || 0); L.overBaron = anyBaron(); break; }
         }
         L.end = { day: S.day, region: S.region, ch: S.chapter || 0, cash: Math.round(S.cash), n: S.balloons.length, pilots: S.pilots.length, wages: S.pilots.reduce((x, q) => x + pilotWage(q), 0), loanInst: S.loans.reduce((x, l) => x + l.inst, 0), fly: flying().length, holding: Math.round(S.holding || 0), loans: S.loans.length };
         startDay = realStart; delete L.seizeToday; delete L.negRun; delete L.groundRun;
         return L;
-      }, [seed, DAYS, prof, PROFILES[prof], BAD, TRACE, SAFE]);
+      }, [seed, DAYS, prof, PROFILES[prof], BAD, TRACE, SAFE, RUIN]);
       out.push(r); console.log(JSON.stringify(r));
     }
   }));
   const med = xs => { const s = xs.filter(x => x != null).sort((a, b) => a - b); return s.length ? s[s.length >> 1] : '-'; };
+  console.log(`\nRUIN=${RUIN}: profile runs | game over (with a holding) | rescues: runs, count, avg cost, avg holding before | regions closed (poor/declined/used)`);
+  let T = { runs: 0, over: 0, overH: 0, resc: 0, rescRuns: 0, cost: 0, closes: 0 };
+  for (const pf of PROF) {
+    const R = out.filter(o => o.prof === pf), ov = R.filter(o => o.over), rs = R.flatMap(o => o.rescues || []), cl = R.flatMap(o => o.closes || []), why = {};
+    cl.forEach(c => { why[c.why] = (why[c.why] || 0) + 1; });
+    const avg = xs => xs.length ? Math.round(xs.reduce((a, b) => a + b, 0) / xs.length) : '-';
+    console.log(`${pf.padEnd(12)} ${R.length} | ${ov.length} (${ov.filter(o => o.overBaron).length}) | ${R.filter(o => (o.rescues || []).length).length} ${rs.length} ${avg(rs.map(x => x.cost))} ${avg(rs.map(x => x.h0))} | ${cl.length} ${JSON.stringify(why)}`);
+    T.runs += R.length; T.over += ov.length; T.overH += ov.filter(o => o.overBaron).length; T.resc += rs.length; T.rescRuns += R.filter(o => (o.rescues || []).length).length; T.cost += rs.reduce((a, x) => a + x.cost, 0); T.closes += cl.length;
+  }
+  console.log(`TOTAL ${T.runs} runs | game over ${T.over} (with a holding ${T.overH}) | rescues ${T.resc} in ${T.rescRuns} runs, avg cost ${T.resc ? Math.round(T.cost / T.resc) : '-'} | regions closed ${T.closes}`);
   console.log('\nprofile   runs bankrupt(day med, region) seizedRuns seizures(med/max) worstCash(med/min) negDaysMax groundMax capBaron(n, med day) world(n, med) crashes reds main seizure cause');
   for (const pf of PROF) {
     const R = out.filter(o => o.prof === pf), ov = R.filter(o => o.over), cs = {};
