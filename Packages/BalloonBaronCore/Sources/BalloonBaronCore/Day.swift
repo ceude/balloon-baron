@@ -313,8 +313,16 @@ extension Game {
         }
 
         if state.cash < Rules.seizeBelow {
+            // v133: the flagship only after `flagshipGraceDays` closes in a row below the line; with a holding, the
+            // holding decides (`rescueQuote`, `closeRegion`)
+            let debt = (state.local.debtDays ?? 0) + 1
+            state.local.debtDays = debt
             let sellable = state.balloons.filter { $0.id != state.flagship }.sorted { $0.size.cost > $1.size.cost }
-            if let take = sellable.first ?? state.balloons.first {
+            var take = sellable.first
+            if take == nil, let last = state.balloons.first, debt >= Rules.flagshipGraceDays {
+                if state.hasHolding { state.ruinPending = state.day } else { take = last }
+            }
+            if let take {
                 let v = seizeValue(take)
                 state.cash += v
                 lg.seizure = v
@@ -327,7 +335,17 @@ extension Game {
                 }
                 if take.id == state.flagship, let first = state.balloons.first { state.flagship = first.id }
             }
-            if state.balloons.isEmpty { state.over = true }
+            if state.balloons.isEmpty {
+                state.over = true
+            } else if state.ruinPending != nil {
+                ev.append(.ruinPending(state.region))
+            } else if state.flagshipNext {
+                ev.append(.flagshipGrace(daysLeft: state.graceDaysLeft))
+                // the rescue plan opens again on the first morning the flagship is next
+                if debt == 1 || take != nil { state.rescueShown = nil }
+            }
+        } else {
+            state.local.debtDays = nil
         }
 
         let flown = flyingIDs.compactMap(state.balloon)

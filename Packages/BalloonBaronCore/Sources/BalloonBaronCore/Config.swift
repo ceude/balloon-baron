@@ -173,6 +173,8 @@ public enum Rules {
     public static let repRange = 0.4...1.4
     public static let maxLoans = 2
     public static let seizeBelow = -5000
+    /// v133: the bank takes the flagship only once cash has closed this many days in a row below `seizeBelow`.
+    public static let flagshipGraceDays = 3
     public static let redFine = 5000
     public static let redCatch = 0.35
     public static let xlName = "Kapadokya Yıldızı"

@@ -43,6 +43,10 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case founderAbsent(days: Int)
     case antitrustFine(sharePercent: Int, fine: Int)
     case seized(balloon: String, value: Int)
+    /// v133: only the flagship is left and cash closed below the line: the bank takes it after `daysLeft` more such closes.
+    case flagshipGrace(daysLeft: Int)
+    /// v133: the bank came for the last balloon; the holding decides (rescue or close the region).
+    case ruinPending(RegionID)
     case hotelLeft(Hotel)
     case chapterDone(String, reward: Int)
     case baron(RegionID)

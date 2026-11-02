@@ -41,6 +41,9 @@ public enum PaperItem: Codable, Equatable, Sendable {
     case redCaught(fine: Int)
     case antitrust(sharePercent: Int, fine: Int)
     case seized(balloon: String)
+    /// v133: the holding rescued a region's company from the bank; a region's company closed.
+    case holdingRescue(RegionID)
+    case regionClosed(RegionID)
     case festival(Int)
     case rivalAccident(rival: String, count: Int)
     case rivalRedCaught(rival: String, fine: Int)
@@ -78,8 +81,8 @@ public enum PaperItem: Codable, Equatable, Sendable {
         case .accident(_, _, let severe): severe ? 5 : 3
         case .redCaught, .festival, .newEntrant, .passedBoss, .show, .nightGlow, .briFestival: 4
         case .airspace, .preferredOperator, .rivalGroup: 3
-        case .antitrust, .seized: 5
-        case .rivalBankrupt, .worldBaron, .worldRecord: 6
+        case .antitrust, .seized, .holdingRescue: 5
+        case .rivalBankrupt, .worldBaron, .worldRecord, .regionClosed: 6
         }
     }
 }

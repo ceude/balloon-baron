@@ -68,6 +68,10 @@ public struct Holding: Codable, Equatable, Sendable {
     /// whatever the cash does later (it used to untick when the money was spent).
     public var millionOn: Int?
     public static let millionGoal = 1_000_000
+    /// v133: the day the holding rescued each region from the bank (once per region), and the day each region's company
+    /// was closed (cleared when it is entered again). nil in older saves.
+    public var rescued: [RegionID: Int]?
+    public var closed: [RegionID: Int]?
 
     /// v131: a parked region's autopilot profit goes to the holding each day.
     public func sends(_ r: RegionID) -> Bool { !(keepIn ?? []).contains(r) }
@@ -317,8 +321,15 @@ extension Game {
     @discardableResult
     public mutating func enterRegion(_ r: RegionID) -> Bool {
         guard !state.owns(r), state.regionOpen(r), !state.needsPack(r), spendHolding(r.entryFee) else { return false }
-        state.hezQueue.append(.enteredRegion(r))
-        state.hezQueue.append(.guideHello(r))
+        // v133: a region whose company closed, entered again (Cappadocia only ever this way)
+        state.holding.closed?[r] = nil
+        if state.holding.closed?.isEmpty == true { state.holding.closed = nil }
+        if r == .cap {
+            state.hezQueue.append(.capReentered)
+        } else {
+            state.hezQueue.append(.enteredRegion(r))
+            state.hezQueue.append(.guideHello(r))
+        }
         // v125: the card to bring balloons and pilots, once, on entering
         if !state.parked.isEmpty || !state.local.balloons.isEmpty { state.transferAsk = r }
         switchRegion(r)

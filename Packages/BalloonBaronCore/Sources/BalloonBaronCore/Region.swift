@@ -198,6 +198,8 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var lastMerge: Int?
     public var firstMissionGiven = false
     public var poach: PoachOffer?
+    /// v133: days in a row this region's cash closed below `Rules.seizeBelow` (`S.debtDays`); nil once it closes above.
+    public var debtDays: Int? = nil
     public var school = false
     public var demandBase = Rules.startDemand
     /// Index into the region's chapters; equal to the count once you're its baron.

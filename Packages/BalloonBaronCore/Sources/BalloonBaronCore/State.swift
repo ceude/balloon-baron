@@ -263,6 +263,13 @@ public enum HezMessage: Codable, Equatable, Sendable {
     /// v132: you left a region on the day of its booked Balloon Show (`show`) or Night Glow: it's called off and the fee
     /// went back to that region's cash box.
     case nightCalledOff(RegionID, show: Bool, refund: Int)
+    /// v133: the holding paid `cost` (euros) to put `added` (the region's money) into the region's cash.
+    case holdingRescued(RegionID, cost: Int, added: Int)
+    /// v133: the region's company closed. `fresh`: it was your only region and starts again here; otherwise you can
+    /// enter it again from the world map for `fee`.
+    case regionClosed(RegionID, fresh: Bool, fee: Int)
+    /// v133: Cappadocia entered again after its company closed.
+    case capReentered
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.
@@ -374,6 +381,9 @@ public struct GameState: Codable, Equatable, Sendable {
     public var rateAsked: Int?
     /// v125: entering a region asks once whether to bring balloons and pilots from the others (`S.xfer`).
     public var transferAsk: RegionID?
+    /// v133: the bank came for the last balloon of the region you're in while you own a holding (the day): the holding's
+    /// rescue or the region's closing waits for your answer (`S.ruin`).
+    public var ruinPending: Int?
     /// v125.7: decorations put away in storage from the bazaar (`S.decorOff`). They stay owned; put away they aren't
     /// drawn in any town. nil (old saves): everything owned is placed.
     public var storedDecor: Set<StoreItem>?
