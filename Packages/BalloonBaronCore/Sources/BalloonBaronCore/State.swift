@@ -260,6 +260,9 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case hangarFull(Int)
     /// v127: the reminder, at most every `Hangar.reminderDays` days, about the balloons outside the hangar.
     case hangarOutside(Int)
+    /// v132: you left a region on the day of its booked Balloon Show (`show`) or Night Glow: it's called off and the fee
+    /// went back to that region's cash box.
+    case nightCalledOff(RegionID, show: Bool, refund: Int)
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.

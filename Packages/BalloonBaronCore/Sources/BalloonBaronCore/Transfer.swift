@@ -176,7 +176,9 @@ extension Game {
     mutating func transferPay(_ lg: inout Ledger) {
         guard var d = state.local.transferDebt else { return }
         lg.transfer = d.installment
-        state.holding.cash += jsRound(Double(d.installment) / state.region.fx)
+        let eur = jsRound(Double(d.installment) / state.region.fx)
+        state.holding.cash += eur
+        state.holding.log(day: state.day, income: eur) // v132: the whiteboard's line worked back from today matches the cash
         d.left -= 1
         state.local.transferDebt = d.left > 0 ? d : nil
     }

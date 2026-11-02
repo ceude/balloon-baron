@@ -249,25 +249,7 @@ extension Game {
         // v111: the Balloon Show is tonight. A balloon that crashed today (or was sold) drops out; its fee comes back.
         if state.local.showTonight == state.day {
             let ids = state.local.showIDs ?? []
-            let keep = ids.filter { id in state.balloon(id).map { $0.damagedUntil <= state.day } ?? false }
-            if keep.count < ids.count {
-                let refund = ids.filter { id in state.balloon(id) != nil && !keep.contains(id) }.count * Rules.showPerBalloon
-                state.local.showIDs = keep
-                state.cash += refund
-                if refund > 0 { lg.showRefund = (lg.showRefund ?? 0) + refund }
-                if refund > 0 { ev.append(.showDropped(refund: refund)) }
-            }
-            // Too few left for a show: it's called off, every fee comes back and a new one can be booked at once.
-            if keep.count < Rules.showMinBalloons {
-                let refund = keep.count * Rules.showPerBalloon
-                state.cash += refund
-                if refund > 0 { lg.showRefund = (lg.showRefund ?? 0) + refund }
-                state.local.showTonight = nil
-                state.local.showIDs = nil
-                state.local.showNext = nil
-                state.local.showCount = max(0, (state.local.showCount ?? 1) - 1)
-                ev.append(.showCancelled(refund: refund))
-            }
+            showDropOut(ids.filter { id in state.balloon(id).map { $0.damagedUntil > state.day } ?? true }, ledger: &lg, events: &ev)
         }
         if state.local.showTonight == state.day {
             let n = state.local.showIDs?.count ?? 0
@@ -339,6 +321,10 @@ extension Game {
                 state.balloons.removeAll { $0.id == take.id }
                 addPaper(.seized(balloon: take.name))
                 ev.append(.seized(balloon: take.name, value: v))
+                // v132 (TestFlight): the bank's balloon can't go up in tonight's show either; its fee comes back
+                if state.local.showTonight == state.day, state.local.showIDs?.contains(take.id) == true {
+                    showDropOut([take.id], ledger: &lg, events: &ev, seized: true)
+                }
                 if take.id == state.flagship, let first = state.balloons.first { state.flagship = first.id }
             }
             if state.balloons.isEmpty { state.over = true }
@@ -399,7 +385,7 @@ extension Game {
         state.plan = nil
         milestoneCheck()
         checkAchievements()
-        if state.anyBaron { checkHoldingGoals() }
+        holdingGoalsNow()
         if state.region.hasFiesta {
             if let f = state.fiesta, state.day > f.end {
                 state.fiesta = nil

@@ -64,6 +64,10 @@ public struct Holding: Codable, Equatable, Sendable {
     /// v131: parked regions whose autopilot profit stays in their own cash box instead of reaching the holding (the
     /// player moves it by hand). nil or absent: the region sends (the default).
     public var keepIn: [RegionID]?
+    /// v132 (TestFlight): the day the holding's cash first reached `millionGoal`. The goal stays ticked from then on,
+    /// whatever the cash does later (it used to untick when the money was spent).
+    public var millionOn: Int?
+    public static let millionGoal = 1_000_000
 
     /// v131: a parked region's autopilot profit goes to the holding each day.
     public func sends(_ r: RegionID) -> Bool { !(keepIn ?? []).contains(r) }
@@ -108,6 +112,7 @@ extension Game {
         let eur = jsRound(Double(amt) / state.region.fx)
         state.holding.cash += eur
         state.holding.log(day: state.day, income: eur)
+        holdingGoalsNow()
         return amt
     }
 
@@ -135,6 +140,7 @@ extension Game {
         let eur = jsRound(Double(amt) / r.fx)
         state.holding.cash += eur
         state.holding.log(day: state.day, income: eur)
+        holdingGoalsNow()
         return amt
     }
 
@@ -265,6 +271,24 @@ extension Game {
         // An undecided problem stays with its region: it waits on autopilot and comes back when you do.
         auto.issue = cur.openIssue
         cur.openIssue = nil
+        // v132 (TestFlight): a Balloon Show or Night Glow booked for tonight can't happen with you gone. It's called
+        // off, its fee goes back to that region's cash box and the guide says so (it used to vanish without a word).
+        if cur.showTonight == state.day, let ids = cur.showIDs {
+            let refund = ids.filter { id in cur.balloons.contains { $0.id == id } }.count * Rules.showPerBalloon
+            cur.cash += refund
+            cur.showTonight = nil
+            cur.showIDs = nil
+            cur.showNext = nil
+            cur.showCount = max(0, (cur.showCount ?? 1) - 1)
+            state.hezQueue.append(.nightCalledOff(from, show: true, refund: refund))
+        }
+        if cur.glowTonight == state.day {
+            cur.cash += Glow.cost
+            cur.glowTonight = nil
+            cur.glowFest = nil
+            cur.glowN = nil
+            state.hezQueue.append(.nightCalledOff(from, show: false, refund: Glow.cost))
+        }
         state.parked[from] = ParkedRegion(state: cur, auto: auto)
         var next: RegionState
         if let p = state.parked.removeValue(forKey: r) {
@@ -345,6 +369,7 @@ extension Game {
         state.holding.todayGross = g
         state.holding.todayCost = cost
         let extra = recordDay() + adShapeDay()
+        markMillion()
         return g - cost + extra
     }
 

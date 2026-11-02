@@ -33,6 +33,8 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case showDropped(refund: Int)
     /// v111: too few balloons left after today's crashes: tonight's show is called off, the rest of the fees come back.
     case showCancelled(refund: Int)
+    /// v132: the balloon the bank took tonight was in the show: it drops out and its fee comes back.
+    case showSeized(refund: Int)
     /// v111: in your first own flights a crash costs one day in repair.
     case rookieRepair
     /// v121.12: your only balloon is repaired in a hurry.

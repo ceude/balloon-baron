@@ -59,7 +59,7 @@ extension GameState {
     public func done(_ g: HoldingGoal) -> Bool {
         if holding.worldBaron != nil { return true }
         switch g {
-        case .million: return holding.cash >= 1_000_000
+        case .million: return holding.millionOn != nil || holding.cash >= Holding.millionGoal
         case .baronLux: return barons[.lux] != nil
         case .tv: return (holding.tvCount ?? 0) >= 1
         case .celebrity: return holding.celebrity != nil
@@ -97,6 +97,18 @@ extension Game {
         guard Self.milestones.contains(d) || (d > 500 && d % 100 == 0) else { return }
         state.hezQueue.append(.milestone(d))
         addPaper(.milestone(d))
+    }
+
+    /// v132: the €1 million goal is met the moment the holding's cash reaches it, and stays met.
+    mutating func markMillion() {
+        if state.holding.millionOn == nil && state.holding.cash >= Holding.millionGoal { state.holding.millionOn = state.day }
+    }
+
+    /// v132: the holding goals are checked wherever the holding's cash can rise (a transfer by hand, the day's autopilot
+    /// income), not only at the end of the day; the app also calls this after every action.
+    public mutating func holdingGoalsNow() {
+        markMillion()
+        if state.anyBaron { checkHoldingGoals() }
     }
 
     mutating func checkHoldingGoals() {
