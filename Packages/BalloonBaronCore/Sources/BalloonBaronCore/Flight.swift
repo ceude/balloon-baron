@@ -84,6 +84,20 @@ public enum FlightWorld {
         baseWind(at: alt, w) + w.flag.gust * 0.6 * (sin(t * 0.11 + alt * 0.013) + 0.6 * sin(t * 0.37 + alt * 0.031))
     }
 
+    /// v131: the layers you can fly in for the whole way to the field. The bottom one (under 60 m) never counts: fairy
+    /// chimneys, trees and power lines reach 95 m and Bristol's bridge 108 m. Over 60 m nothing stands in the way, except
+    /// in Bristol the airport's airspace (floor 340–410 m), which closes the top layer when it lies across the route.
+    public static func usableLayers(_ w: Weather) -> [Int] {
+        guard let a = w.air, a.x1 > min(launchX, w.target), a.x0 < max(launchX, w.target) else { return [1, 2, 3] }
+        return [1, 2]
+    }
+
+    /// v131: the best wind toward the landing field among the usable layers (m/s; at least `Rules.minTowardWind`).
+    public static func towardWind(_ w: Weather) -> Double {
+        let dir = w.target >= launchX ? 1.0 : -1.0
+        return usableLayers(w).map { w.layers[$0] * dir }.max() ?? 0
+    }
+
     /// The layer wind at a height without gusts: what the arrows on the left and the tag under the basket show.
     public static func baseWind(at alt: Double, _ w: Weather) -> Double {
         let ls = w.layers, c = Rules.windCenters

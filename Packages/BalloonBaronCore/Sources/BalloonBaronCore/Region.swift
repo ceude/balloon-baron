@@ -311,6 +311,8 @@ public struct Autopilot: Codable, Equatable, Sendable {
     /// Today's raw profit (euros) and what reached the holding after boosts.
     public var todayRaw = 0.0
     public var today = 0
+    /// v131: what stayed in the region's own cash box yesterday (its currency), when it doesn't send to the holding.
+    public var kept: Int?
 }
 
 public struct ParkedRegion: Codable, Equatable, Sendable {

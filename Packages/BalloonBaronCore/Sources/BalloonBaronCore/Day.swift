@@ -254,12 +254,14 @@ extension Game {
                 let refund = ids.filter { id in state.balloon(id) != nil && !keep.contains(id) }.count * Rules.showPerBalloon
                 state.local.showIDs = keep
                 state.cash += refund
+                if refund > 0 { lg.showRefund = (lg.showRefund ?? 0) + refund }
                 if refund > 0 { ev.append(.showDropped(refund: refund)) }
             }
             // Too few left for a show: it's called off, every fee comes back and a new one can be booked at once.
             if keep.count < Rules.showMinBalloons {
                 let refund = keep.count * Rules.showPerBalloon
                 state.cash += refund
+                if refund > 0 { lg.showRefund = (lg.showRefund ?? 0) + refund }
                 state.local.showTonight = nil
                 state.local.showIDs = nil
                 state.local.showNext = nil
@@ -362,7 +364,7 @@ extension Game {
         state.repHistory.append(RepPoint(day: state.day, rep: state.rep))
         if state.repHistory.count > 120 { state.repHistory.removeFirst() }
         state.lastShare = MarketShare(me: paxTotal, cap: capToday, rivals: plan.rivalPax, demand: state.demand ?? 0, extra: min(plan.referrals, paxTotal))
-        state.netHistory = Array((state.netHistory + [lg.net]).suffix(14))
+        state.netHistory = Array((state.netHistory + [lg.net - (lg.showRefund ?? 0)]).suffix(14)) // a refund isn't earnings
         loanUnlock()
         runAutopilots()
         lg.holdingNet = holdingDay()

@@ -79,8 +79,10 @@ public struct Game: Sendable {
             l = [rng.range(-2.5, 1.5) * flag.wind, rng.range(2.5, 5) * flag.wind, rng.range(3, 6) * flag.wind,
                  (rng.chance(0.5) ? -rng.range(1, 4) : rng.range(1, 3)) * flag.wind]
         }
-        // Always leave one layer that carries you east and one that brings you back.
-        if !l.contains(where: { $0 > 3 }) { l[1 + rng.int(3)] = rng.range(3.5, 6) * flag.wind }
+        // Always leave one layer that carries you east and one that brings you back. v131: the eastward one must be a
+        // layer you can fly in all the way (60 m and up, above the chimneys, trees, wires and the bridge), not the
+        // bottom one: on a red Cappadocia day the surface wind alone used to count.
+        if !l[1...].contains(where: { $0 >= Rules.minTowardWind }) { l[1 + rng.int(3)] = rng.range(3.5, 6) * flag.wind }
         if !l.contains(where: { $0 < -0.5 }) {
             var m = 0
             for (i, v) in l.enumerated() where v < 3 && (l[m] >= 3 || v < l[m]) { m = i }
@@ -109,6 +111,11 @@ public struct Game: Sendable {
                 let x0 = 220 + rng.range(380, max(420, target - 220 - 760))
                 w.air = Airspace(x0: Double(jsRound(x0)), x1: Double(jsRound(x0 + rng.range(420, 620))), floor: Double(jsRound(rng.range(340, 410))))
             }
+        }
+        // v131: the airport's airspace takes the top layer away; one of the two below it must then carry you there.
+        if FlightWorld.towardWind(w) < Rules.minTowardWind {
+            let i = FlightWorld.usableLayers(w).max { w.layers[$0] < w.layers[$1] } ?? 2
+            w.layers[i] = rng.range(3.5, 6) * flag.wind
         }
         return w
     }

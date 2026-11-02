@@ -278,12 +278,61 @@ extension Game {
         public var total: Int { installment * days }
     }
 
-    /// What the bank would lend to buy something at `price`, or nil when the purchase loan can't be used.
-    public func buyLoanTerms(price: Int) -> BuyLoanTerms? {
-        guard state.unlocked.contains(.bank), state.balloons.count >= Rules.buyLoanBalloons, state.loans.count < Rules.maxLoans, !state.loans.contains(where: { $0.purchase == true }),
-              (state.local.loansOpen ?? []).contains(100_000) else { return nil }
+    /// v131 (TestFlight: "I met every condition but couldn't take the purchase loan"): why the purchase loan can't pay
+    /// for something at `price`, in the order the bank checks. The offer card and the Market page say it with the numbers.
+    public enum BuyLoanBlock: Equatable, Sendable {
+        /// Cash covers the price: no loan needed.
+        case cashEnough
+        /// The bank isn't open yet.
+        case noBank
+        /// Balloons in this region: `have` of `need`.
+        case fewBalloons(have: Int, need: Int)
+        /// A purchase loan is still being paid off.
+        case purchaseLoanRunning
+        /// Two loans already (the bank's limit).
+        case loansFull
+        /// The 100,000 loan hasn't opened in this region: the median daily net of the last two weeks is `net` (0 with
+        /// less than a week of days), it must reach `need`. Each region opens it on its own, in its own money.
+        case notOpen(net: Int, need: Int, days: Int)
+        /// The bank pays at most `Rules.buyLoanMax`: `more` of your own money is missing.
+        case tooBig(more: Int)
+        /// Your share must be at least a fifth of the price: `more` is missing (cash above `Rules.buyLoanReserve`).
+        case lowDown(more: Int)
+    }
+
+    /// The 100,000 loan, which opens the purchase loan.
+    public static var bigLoan: LoanOffer { Rules.loans.last { $0.minDailyNet > 0 }! }
+
+    /// Everything that stops the purchase loan paying for something at `price`, in the order the bank checks; empty
+    /// when it can. With cash enough for the price, only `.cashEnough`.
+    public func buyLoanBlocks(price: Int) -> [BuyLoanBlock] {
+        if state.cash >= price { return [.cashEnough] }
+        var out: [BuyLoanBlock] = []
+        if !state.unlocked.contains(.bank) { return [.noBank] }
+        if state.balloons.count < Rules.buyLoanBalloons { out.append(.fewBalloons(have: state.balloons.count, need: Rules.buyLoanBalloons)) }
+        if state.loans.contains(where: { $0.purchase == true }) {
+            out.append(.purchaseLoanRunning)
+        } else if state.loans.count >= Rules.maxLoans {
+            out.append(.loansFull)
+        }
+        let big = Self.bigLoan
+        if !(state.local.loansOpen ?? []).contains(big.amount) {
+            out.append(.notOpen(net: dailyNet, need: big.minDailyNet, days: min(14, state.local.netHistory.count)))
+        }
         let own = max(0, min(price, state.cash - Rules.buyLoanReserve)), fin = price - own
-        guard fin > 0, fin <= Rules.buyLoanMax, Double(own) >= Double(price) * Rules.buyLoanDown else { return nil }
+        if fin > Rules.buyLoanMax { out.append(.tooBig(more: fin - Rules.buyLoanMax)) }
+        let down = Int((Double(price) * Rules.buyLoanDown).rounded(.up))
+        if own < down { out.append(.lowDown(more: down - own)) }
+        return out
+    }
+
+    /// The first thing that stops the purchase loan, nil when it can pay for something at `price`.
+    public func buyLoanBlock(price: Int) -> BuyLoanBlock? { buyLoanBlocks(price: price).first }
+
+    /// What the bank would lend to buy something at `price`, or nil when the purchase loan can't be used (`buyLoanBlock`).
+    public func buyLoanTerms(price: Int) -> BuyLoanTerms? {
+        guard buyLoanBlock(price: price) == nil else { return nil }
+        let own = max(0, min(price, state.cash - Rules.buyLoanReserve)), fin = price - own
         let inst = Int((Double(fin) * (1 + Rules.buyLoanRate) / Double(Rules.buyLoanDays) / 10).rounded(.up)) * 10
         return BuyLoanTerms(price: price, own: own, financed: fin, installment: inst, days: Rules.buyLoanDays)
     }

@@ -685,6 +685,7 @@ extension Game {
                 lg.tickets -= got * state.price
                 lg.contract = got * mine.price
                 lg.contractN = got
+                lg.contractFrom = owner.company
                 let perSeat = jsRound(Double(mine.price) * K.pen), pen = short * perSeat
                 if pen > 0 { lg.contractPenalty = pen }
                 mine.got += got

@@ -239,6 +239,9 @@ public enum Rules {
     public static let windCenters: [Double] = [30, 120, 265, 500]
     /// v111: the wind changes right at the dashed line between two layers, blended over this many meters.
     public static let windBlend = 24.0
+    /// v131 (TestFlight: "all four layers blew away from the field"): every day has a usable layer (`FlightWorld.usableLayers`)
+    /// that carries you toward the landing field at least this fast (m/s; 11 km/h).
+    public static let minTowardWind = 3.0
     /// v111: your first own flights: the flying coach speaks, and a crash costs one day in repair.
     public static let coachFlights = 3
     /// v122: a thermal's lift on the vertical speed per simulated second inside its column (was 0.5).

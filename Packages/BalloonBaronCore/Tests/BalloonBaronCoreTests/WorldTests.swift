@@ -79,17 +79,19 @@ final class WorldTests: XCTestCase {
         g.state.pilots = (0..<20).map { Pilot(id: 900 + $0, name: "P\($0)", level: .rookie) }
         g.state.monopolyDays = 50
         g.state.festivalNext = 999 // no festival crowds: the cash box stays empty
-        var fine = 0, cashAtFine = 0
+        var fine = 0, cashAtFine = 0, fleetWorth = 0
         for _ in 0..<80 where fine == 0 {
             g.state.monopolyDays = 50
             g.state.cash = -1000
+            // a seizure on an earlier day may have taken a balloon
+            fleetWorth = g.state.balloons.reduce(0) { $0 + $1.size.cost }
             let r = play(&g)
             fine = r.ledger.antitrust
-            // The day's takings were in the box when the fine came; a seizure after it doesn't count.
-            cashAtFine = -1000 + r.net + fine - r.ledger.seizure
+            // The day's takings were in the box when the fine came; a seizure or a chapter reward after it doesn't count.
+            cashAtFine = -1000 + r.net + fine - r.ledger.seizure - r.ledger.chapterReward
         }
         XCTAssertGreaterThan(fine, 0)
-        XCTAssertEqual(fine, jsRound(Double(max(0, cashAtFine) + 20 * 60000) * Rules.monopolyRate / 100) * 100,
+        XCTAssertEqual(fine, jsRound(Double(max(0, cashAtFine) + fleetWorth) * Rules.monopolyRate / 100) * 100,
                        "3% of company worth: the balloons count even when the cash box is empty")
     }
 
@@ -321,7 +323,9 @@ final class WorldTests: XCTestCase {
     /// A goal-driven player becomes Cappadocia's baron within a reasonable time.
     func testChaptersAreReachable() {
         var reached = 0
-        for seed: UInt64 in [1, 2, 3] {
+        // v131: eight seeds, not three: the winds' fix (a usable layer toward the field) shifted the random sequence and
+        // two of the old three seeds became baron on day 222 instead of before 190 (56 seeds: 172 vs 177 days on average).
+        for seed: UInt64 in 1...8 {
             var g = newGame(seed: seed)
             for _ in 0..<220 where !g.state.isBaron(.cap) && !g.state.over {
                 play(&g)
@@ -357,7 +361,7 @@ final class WorldTests: XCTestCase {
             if g.state.isBaron(.cap) { reached += 1 }
             XCTAssertGreaterThanOrEqual(g.state.chapter, 1, "seed \(seed): the founding chapter is easy")
         }
-        print("barons: \(reached)/3")
-        XCTAssertGreaterThanOrEqual(reached, 2, "a focused player should become baron by day 220")
+        print("barons: \(reached)/8")
+        XCTAssertGreaterThanOrEqual(reached, 6, "a focused player should become baron by day 220")
     }
 }

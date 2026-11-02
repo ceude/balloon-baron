@@ -104,6 +104,11 @@ public struct Ledger: Codable, Equatable, Sendable {
     /// v126: what the agency paid for seats kept empty for a late charter plane.
     public var contractWait: Int?
     public var transfer: Int?
+    /// v131: the company whose group flew today, for the report's line (optional: older saved reports).
+    public var contractFrom: String?
+    /// v131: Balloon Show fees that came back tonight (a balloon dropped out, or the show was called off). They went
+    /// into the cash box without a report line before (TestFlight).
+    public var showRefund: Int?
     public var missionDone: Mission?
     public var adRepLoss = 0.0
     /// Popularity your designs brought today.
@@ -115,7 +120,7 @@ public struct Ledger: Codable, Equatable, Sendable {
     public var fines = 0, cancellations = 0, hotelFees = 0, antitrust = 0
 
     public var net: Int {
-        tickets + (evening ?? 0) + (contract ?? 0) + (contractWait ?? 0) - (contractPenalty ?? 0) - (contractVoucher ?? 0) - (transfer ?? 0) + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
+        tickets + (evening ?? 0) + (contract ?? 0) + (showRefund ?? 0) + (contractWait ?? 0) - (contractPenalty ?? 0) - (contractVoucher ?? 0) - (transfer ?? 0) + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
             - fuel - wages - upkeep - insurance - loans - repairs - compensation - fines - cancellations - hotelFees - antitrust
     }
 }

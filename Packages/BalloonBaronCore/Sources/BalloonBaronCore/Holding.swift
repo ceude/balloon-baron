@@ -61,6 +61,12 @@ public struct Holding: Codable, Equatable, Sendable {
     /// The jersey deal runs until this day; the World Games show was held, and its effect lasts until this day.
     public var jerseyUntil: Int?
     public var worldGamesUntil: Int?
+    /// v131: parked regions whose autopilot profit stays in their own cash box instead of reaching the holding (the
+    /// player moves it by hand). nil or absent: the region sends (the default).
+    public var keepIn: [RegionID]?
+
+    /// v131: a parked region's autopilot profit goes to the holding each day.
+    public func sends(_ r: RegionID) -> Bool { !(keepIn ?? []).contains(r) }
 
     public func has(_ o: Office) -> Bool { offices[o] != nil }
     public var expenseRate: Double { offices.count == Office.allCases.count ? Self.allOfficesExpenseRate : Self.expenseRate }
@@ -100,6 +106,33 @@ extension Game {
         guard amt > 0 else { return 0 }
         state.cash -= amt
         let eur = jsRound(Double(amt) / state.region.fx)
+        state.holding.cash += eur
+        state.holding.log(day: state.day, income: eur)
+        return amt
+    }
+
+    /// v131: turns a region's daily delivery to the holding on or off. Off, its autopilot profit stays in its cash box.
+    public mutating func setSendsToHolding(_ r: RegionID, _ on: Bool) {
+        var k = (state.holding.keepIn ?? []).filter { $0 != r }
+        if !on { k.append(r) }
+        state.holding.keepIn = k.isEmpty ? nil : k.sorted { $0.rawValue < $1.rawValue }
+    }
+
+    /// The cash box of a region you own: the one you're in, or a parked one.
+    public func regionCash(_ r: RegionID) -> Int? { r == state.region ? state.cash : state.parked[r]?.state.cash }
+
+    /// v131: moves money from a parked region's cash box to the holding, like `withdraw` does for the region you're in.
+    @discardableResult
+    public mutating func withdraw(from r: RegionID, share: Double) -> Int {
+        if r == state.region { return withdraw(share: share) }
+        guard var p = state.parked[r] else { return 0 }
+        let cash = p.state.cash
+        guard cash > Holding.withdrawKeep else { return 0 }
+        let amt = share >= 1 ? cash - Holding.withdrawKeep : Int((Double(cash) * share).rounded(.down))
+        guard amt > 0 else { return 0 }
+        p.state.cash -= amt
+        state.parked[r] = p
+        let eur = jsRound(Double(amt) / r.fx)
         state.holding.cash += eur
         state.holding.log(day: state.day, income: eur)
         return amt
@@ -291,9 +324,21 @@ extension Game {
     }
 
     /// Autopilot income reaches the holding minus its own running costs. Returns the net.
+    /// v131: a region set to keep its money gets the same net (after the holding's running costs, so keeping and moving
+    /// by hand later is no way around them) in its own cash box and currency.
     mutating func holdingDay() -> Int {
         var gross = 0.0
-        for (r, p) in state.parked { gross += p.auto.todayRaw * holdingBoost(r) * state.holding.officeMultiplier(r) }
+        for (r, p) in state.parked {
+            let day = p.auto.todayRaw * holdingBoost(r) * state.holding.officeMultiplier(r)
+            if state.holding.sends(r) {
+                gross += day
+            } else if var q = state.parked[r] {
+                let kept = jsRound(Double(jsRound(day)) * (1 - state.holding.expenseRate) * r.fx)
+                q.state.cash += kept
+                q.auto.kept = kept
+                state.parked[r] = q
+            }
+        }
         let g = jsRound(gross), cost = jsRound(Double(g) * state.holding.expenseRate)
         state.holding.cash += g - cost
         if g != 0 { state.holding.log(day: state.day, income: g, expense: cost) }
