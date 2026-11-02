@@ -294,6 +294,7 @@ body.zoomed .chirp{transform:translateY(calc(-100% - 420px));opacity:0}
 .card.post{align-items:center;text-align:center}.hlgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;width:100%;margin:4px 0 12px}.hl{padding:6px 6px 8px;border:0;border-radius:12px;background:#fffaf3;box-shadow:0 6px 14px rgba(43,35,80,.22);display:flex;flex-direction:column;gap:5px;cursor:pointer}.hl:nth-child(odd){transform:rotate(-1.6deg)}.hl:nth-child(even){transform:rotate(1.4deg)}.hl img{width:100%;aspect-ratio:4/5;border-radius:7px;display:block;background:#141238}.hl b{font:800 15px 'Barlow Condensed',sans-serif;color:#2b2350}.shimg{width:100%;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:#eee8f6;box-shadow:0 8px 20px rgba(43,35,80,.2)}.shimg img{width:100%;height:100%;display:block}.pwrap{transform:rotate(-2deg);filter:drop-shadow(0 8px 14px rgba(43,35,80,.25))}
 .pgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.pitem{padding:0}.pitem svg{width:100%;height:auto}.pcd.lock{filter:grayscale(1) opacity(.45)}
 .card.rescue{border-top:6px solid var(--red)}
+.ruindmg ul{margin:6px 0 6px 18px;padding:0}.ruindmg li{margin:3px 0}.ruindmg .small{font-size:12.5px;opacity:.85}.card.rescue .opt.danger{background:#fff4f2;box-shadow:0 0 0 2px var(--red) inset,0 3px 0 #a8321f}.card.rescue .opt.danger b{color:#8c2414}
 .regrow{display:grid;grid-template-columns:1fr auto;align-items:center;gap:2px 10px;text-align:left;padding:12px 14px;border-radius:16px;background:#fff;box-shadow:0 0 0 2px var(--line) inset,0 3px 0 var(--line)}
 .regrow b{font-family:var(--cond);font-weight:800;font-size:21px;color:var(--ink)}
 .regrow span{grid-column:1;font-size:13px;color:var(--ink2)}
@@ -1852,11 +1853,11 @@ const seizeValue = b => Math.round(SIZES[b.size].cost * (b.used ? .3 : .5));
    the flagship first. The flagship only goes once cash has closed FLAG_GRACE days in a row below the line (S.debtDays,
    per region; a day that closes above it starts the count again). Without a holding that ends the game as before. With
    one, losing the last balloon only closes this region: the holding can rescue it once per region (RESCUE: the region's
-   cash back up to 10,000 in its money, for three times the money put in, in euros, or a tenth of the holding's cash,
-   whichever is more, and never under €100,000; tools/sim-bankrupt.js found holdings of ~€3 million when it fires, where
-   the €100,000 floor alone cost 3%), or the region's company is wound up and you go on in your other regions, or start this one
+   cash back up to 10,000 in its money, for three times the money put in, in euros, or a quarter of the holding's cash,
+   whichever is more, and never under €250,000; v134 (TestFlight: "otherwise it's an infinite extra life") also takes half a
+   star of the region's popularity, a bailout headline in the paper; v133 was a tenth and €100,000), or the region's company is wound up and you go on in your other regions, or start this one
    afresh when it was your only one. */
-const SEIZE_LINE = -5000, FLAG_GRACE = 3, RESCUE = { to: 10000, mult: 3, share: .1, min: 100000 };
+const SEIZE_LINE = -5000, FLAG_GRACE = 3, RESCUE = { to: 10000, mult: 3, share: .25, min: 250000, rep: .125 }; /* rep .125 = half a star */
 const hasHolding = () => anyBaron();
 /* the flagship is all the bank has left to take */
 const flagNext = () => S.cash < SEIZE_LINE && S.balloons.length > 0 && S.balloons.every(b => b.id === S.flag);
@@ -1865,7 +1866,7 @@ const graceLeft = () => Math.max(1, FLAG_GRACE - (S.debtDays || 0));
 function rescueQuote() {
   const add = Math.max(0, Math.round(RESCUE.to - S.cash)), cost = Math.max(RESCUE.min, Math.ceil(add / FX() * RESCUE.mult / 1000) * 1000, Math.ceil((S.holding || 0) * RESCUE.share / 1000) * 1000);
   const used = S.hold && S.hold.rescued && S.hold.rescued[S.region];
-  return { add, cost, used: used != null ? used : null, ok: used == null && (S.holding || 0) >= cost };
+  return { add, cost, used: used != null ? used : null, ok: used == null && (S.holding || 0) >= cost, rep0: S.rep, rep1: Math.max(.4, S.rep - RESCUE.rep) };
 }
 /* where a closed region's player goes: the other region with the biggest fleet (none: this one starts afresh) */
 const ruinNext = () => Object.keys(S.regions || {}).sort((a, b) => S.regions[b].balloons.length - S.regions[a].balloons.length || REGIONS.findIndex(R => R.id === a) - REGIONS.findIndex(R => R.id === b))[0] || null;
@@ -1874,8 +1875,10 @@ function applyRescue() {
   const H = S.hold || (S.hold = {});
   S.holding -= Q.cost; holdLog('exp', Q.cost); (H.rescued = H.rescued || {})[S.region] = S.day;
   S.cash += Q.add; S.debtDays = 0; S.ruin = null; S.rescueShown = false;
-  S.hezQ.push(`news:Holding ${REGION_DEF[S.region].name} şirketini kurtardı evlat: ${eurH(Q.cost)} ödedi, kasaya ${eur(Q.add)} girdi. Bu bir kez olur; bir daha batarsa holding kurtaramaz. Masrafları sıkı tut.`);
-  paperAdd(5, `Holding devreye girdi: ${S.company}`, `${REGION_DEF[S.region].name} şirketi son balonunu bankaya kaptırmaktan son anda kurtuldu.`);
+  /* v134: the bailout is news: the region's popularity drops half a star */
+  S.rep = Q.rep1;
+  S.hezQ.push(`news:Holding ${REGION_DEF[S.region].name} şirketini kurtardı evlat: ${eurH(Q.cost)} ödedi, kasaya ${eur(Q.add)} girdi. Herkes duydu, popülerliğin burada yarım yıldız düştü. Bu bir kez olur, bir daha batarsa holding kurtaramaz. Masrafları sıkı tut.`);
+  paperAdd(5, `Holding kurtardı: ${S.company}`, `${REGION_DEF[S.region].name} şirketi batmak üzereydi, holding parayı bastı. Müşteriler tedirgin.`);
 }
 function closeRegion() {
   if (!S.ruin) return;
@@ -1904,9 +1907,19 @@ function showRuin() {
   c.appendChild(h('div', 'hzline', `${HEZ_AV}<span>Evlat, banka son balonun için geldi${fb ? `: ${esc(fb.name)}` : ''}. Kasa üç gündür ${eur(SEIZE_LINE)} altında. Holdingin ve öteki bölgelerin ne olursa olsun yerinde kalır; karar ${esc(name)} şirketi için.</span>`));
   c.appendChild(h('h1', null, 'Holding kurtarma'));
   if (Q.used != null) c.appendChild(h('div', 'callout red', `<b>Holding bu bölgeyi bir kez kurtardı (gün ${Q.used}).</b> İkinci kurtarma yok.`));
-  else c.appendChild(h('div', 'callout yel', `<b>Bedel: ${eurH(Q.cost)}, holding kasasından.</b> Bölgenin kasasına ${eur(Q.add)} girer, kasa ${eur(RESCUE.to)} olur. Bedel kurtarılan paranın üç katı ya da holding kasasının %10'u (hangisi büyükse), en az ${eurH(RESCUE.min)}. Her bölge için bir kez.<br>${Q.ok ? `Holding kasası: ${eurH(S.holding || 0)} → ${eurH((S.holding || 0) - Q.cost)}` : `Holding kasası: ${eurH(S.holding || 0)}. <b>Yetmiyor: ${eurH(Q.cost - (S.holding || 0))} eksik.</b>`}`));
+  else {
+    /* v134: the whole damage, up front, before the player says yes */
+    const dmg = h('div', 'callout red ruindmg');
+    dmg.innerHTML = `<b>Kurtarmanın bedeli</b><ul>`
+      + `<li><b>${eurH(Q.cost)}</b> holding kasasından. ${Q.ok ? `Holding kasası: ${eurH(S.holding || 0)} → <b>${eurH((S.holding || 0) - Q.cost)}</b>` : `Holding kasası: ${eurH(S.holding || 0)}. <b>Yetmiyor: ${eurH(Q.cost - (S.holding || 0))} eksik.</b>`}</li>`
+      + `<li>Popülerlik burada: ${stars(Q.rep0)} → <b>${stars(Q.rep1)}</b>. Gazete "holding kurtardı" diye yazar.</li>`
+      + `<li><b>Tek hak.</b> Holding bu bölgeyi bir daha asla kurtaramaz, bölge kapanıp yeniden girilse de.</li></ul>`
+      + `<span class="small">Bölgenin kasasına ${eur(Q.add)} girer, kasa ${eur(RESCUE.to)} olur. Bedel kurtarılan paranın üç katı ya da holding kasasının %25'i (hangisi büyükse), en az ${eurH(RESCUE.min)}.</span>`;
+    c.appendChild(dmg);
+  }
   const opt = (title, sub, fn, dis) => { const b = h('button', 'opt', `<b>${title}</b><span>${sub}</span>`); b.disabled = !!dis; b.onclick = () => { m.hidden = true; fn(); refresh(); }; c.appendChild(b); };
-  opt(`Holding kurtarsın: ${eurH(Q.cost)}`, `Kasa ${eur(S.cash)} → ${eur(S.cash + Q.add)}. Balonların ve kredilerin yerinde kalır; banka sayacı sıfırlanır.`, () => { applyRescue(); sfx('coin'); tab = 'plan'; startNight(); }, !Q.ok);
+  opt(`Holding kurtarsın: ${eurH(Q.cost)}`, `Kasa ${eur(S.cash)} → ${eur(S.cash + Q.add)}. Popülerlik ${stars(Q.rep0)} → ${stars(Q.rep1)}. Balonların ve kredilerin yerinde kalır; banka sayacı sıfırlanır.`, () => { applyRescue(); sfx('coin'); tab = 'plan'; startNight(); }, !Q.ok);
+  const ob = c.lastChild; if (ob) ob.classList.add('danger');
   opt(`${esc(name)} şirketini kapat`, to ? `Banka buradaki her şeyi alır: balonlar, pilotlar, oteller, binalar. Sen ${esc(REGION_DEF[to].name)} bölgesine geçersin. ${esc(name)} bölgesine sonra dünya haritasından yeniden girebilirsin: ${eurH(entryFee(id))}, küçük bir balonla sıfırdan. Baron unvanların ve holding hedeflerin yerinde kalır.` : `Banka buradaki her şeyi alır. Başka bölgen olmadığı için burada ücretsiz, küçük bir balonla sıfırdan yeni bir şirket kurarsın. Holdingin, baron unvanların ve holding hedeflerin yerinde kalır.`, () => { sfx('low'); closeRegion(); });
   m.appendChild(c); m.hidden = false;
 }
@@ -9341,13 +9354,17 @@ function hqRegions(body) {
     else if (!ownsRegion(R.id)) acts.appendChild(pbtn(`Gir ${eurH(entryFee(R.id))}`, () => { closePage(); enterRegion(R.id); }, (S.holding || 0) < entryFee(R.id)));
     if (acts.children.length) it.appendChild(acts);
     r.appendChild(it);
-    /* v131: the region's daily money to the holding, on or off; off, a button moves what piled up */
-    if (A && !here) {
+    /* v131: the region's daily money to the holding, on or off; off, a button moves what piled up.
+       v134 (TestFlight): the region you're in has the switch too. Nothing flows while you play there; the choice takes
+       effect when you leave it and it goes on autopilot (it used to show no switch, so the setting looked lost). */
+    if ((A && !here) || here) {
       const row = h('div', 'item'); row.style.cssText = 'margin-top:-4px;background:rgba(255,255,255,.55)';
-      row.appendChild(h('div', 'main', `<div class="t" style="font-size:15px">Kazancı her gün holdinge aktar</div><div class="s">${send ? 'Açık: otomatik kazanç her akşam holding kasasına geçer.' : 'Kapalı: kazanç bölgenin kasasında birikir, istediğinde aktarırsın.'}</div>`));
+      const note = here ? (send ? 'Açık. Bu bölgede oynarken aktarılmaz; yalnız otomatik modda, sen başka bölgedeyken, kazanç her akşam holding kasasına geçer.' : 'Kapalı. Bu bölgede oynarken zaten aktarılmaz; otomatik moda geçince de kazanç bölgenin kasasında birikir.')
+        : send ? 'Açık: otomatik kazanç her akşam holding kasasına geçer.' : 'Kapalı: kazanç bölgenin kasasında birikir, istediğinde aktarırsın.';
+      row.appendChild(h('div', 'main', `<div class="t" style="font-size:15px">Kazancı her gün holdinge aktar</div><div class="s">${note}</div>`));
       const tg = pbtn(send ? 'Açık' : 'Kapalı', () => setSends(R.id, !send), false, !send); tg.setAttribute('role', 'switch'); tg.setAttribute('aria-checked', send ? 'true' : 'false'); row.appendChild(tg);
       r.appendChild(row);
-      if (!send) { const tb = pbtn(`${R.name} kasasından aktar (${cur(Math.max(0, rs.cash - 10000))}, ${cur(10000)} kalsın)`, () => withdrawFrom(R.id, 1), rs.cash <= 10000, true); tb.style.alignSelf = 'flex-start'; r.appendChild(tb); }
+      if (!send && !here) { const tb = pbtn(`${R.name} kasasından aktar (${cur(Math.max(0, rs.cash - 10000))}, ${cur(10000)} kalsın)`, () => withdrawFrom(R.id, 1), rs.cash <= 10000, true); tb.style.alignSelf = 'flex-start'; r.appendChild(tb); }
     }
   }
   const mb = pbtn('Dünya haritası', showWorldMap, false, true); mb.style.alignSelf = 'flex-start'; r.appendChild(mb);
