@@ -3,7 +3,7 @@ import SwiftUI
 /// Small line drawings that stand in for emoji (prototype `GLYPH`): 24×24, round strokes like `ProtoIcon`, drawn in
 /// the colour of the text around them (`foregroundStyle`). The path data is the prototype's, so both draw the same.
 struct LineGlyph: View {
-    enum Kind: Hashable { case gift, sun, crown, mosque, liberty, namsan, tokyoTower }
+    enum Kind: Hashable { case gift, sun, crown, mosque, liberty, namsan, tokyoTower, burj, eiffel }
     let kind: Kind
     var size: CGFloat = 14
     /// Stroke width in the 24-unit grid; small glyphs take a heavier line so they still read next to bold text.
@@ -38,6 +38,12 @@ struct LineGlyph: View {
                    + "M13.5 10.8 L17 4.6 M16 4.6 L18 4.6 M17 3.7 C16.2 3 16.6 2.1 17 1.5 C17.4 2.1 17.8 3 17 3.7 Z M10.5 12 L8.6 13.8", [(12, 8.5, 1.7)]),
         .namsan: ("M2 20.5 L22 20.5 M2 20.5 C6 15.8 9 14.5 12 14.5 C15 14.5 18 15.8 22 20.5 "
                   + "M11 14.5 L11.3 10.5 M13 14.5 L12.7 10.5 M9.5 10.5 L14.5 10.5 L13.8 7.8 L10.2 7.8 Z M12 7.8 L12 2.5", []),
+        // v137: the Dubai and Paris offices (prototype `GLYPH.dxb`, `GLYPH.par`)
+        .burj: ("M3 20.5 L21 20.5 M12 1.5 L12 5 M10.8 5 L13.2 5 L13.2 9 L14.2 9 L14.2 13 L15.4 13 L15.4 17 L16.6 17 L16.6 20.5 "
+                + "M10.8 5 L10.8 10 L9.8 10 L9.8 14 L8.6 14 L8.6 17.5 L7.4 17.5 L7.4 20.5", []),
+        .eiffel: ("M4 20.5 L20 20.5 M12 1.5 L12 4 M10.8 4 L13.2 4 M11 4 C10.6 9 9.5 12 8.2 13.5 M13 4 C13.4 9 14.5 12 15.8 13.5 "
+                  + "M7.6 13.5 L16.4 13.5 M10 9 L14 9 M8.2 13.5 C7.5 16.5 6.5 18.8 5.5 20.5 M15.8 13.5 C16.5 16.5 17.5 18.8 18.5 20.5 "
+                  + "M9.3 20.5 C9.5 18 10.5 16.8 12 16.8 C13.5 16.8 14.5 18 14.7 20.5", []),
         .tokyoTower: ("M5.5 20.5 C8.5 16 10 11 11 5 M18.5 20.5 C15.5 16 14 11 13 5 M10.6 5 L13.4 5 M12 5 L12 1.8 "
                       + "M7.8 14.6 L16.2 14.6 L15.7 12.4 L8.3 12.4 Z M9.8 9.8 L14.2 9.8 L13.9 8.3 L10.1 8.3 Z M8.4 20.5 Q12 16.2 15.6 20.5", []),
     ]

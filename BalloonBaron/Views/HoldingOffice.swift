@@ -120,6 +120,8 @@ struct HoldingOfficeView: View {
             // v136: TV and billboards run per region; the desk counts the regions with each running
             let owned = RegionID.allCases.filter { s.owns($0) }
             let tv = owned.filter { h.tvUntil($0) > d }.count, bb = owned.filter { (h.billboards[$0] ?? 0) > d }.count
+            // v137: the documentary series on air comes first
+            if h.documentaryOn(d) { return (loc("hq.s.documentary", num((h.documentary?.until ?? d) - d)), true, false) }
             return (tv + bb > 0 ? loc("hq.s.campaigns", num(tv), num(bb)) : loc("hq.s.noCampaign"), tv + bb > 0, false)
         case .deals:
             let c = (h.celebrity?.until ?? 0) > d ? h.celebrity : nil
@@ -128,7 +130,8 @@ struct HoldingOfficeView: View {
             return (c.map { celebrityName($0.index) } ?? loc("hq.s.noDeal"), c != nil, false)
         case .research:
             let top = h.research >= Holding.researchLevels.count
-            return (top ? loc("hq.s.done") : loc("hq.s.level", num(h.research)), top, false)
+            // v137: "R&D: 2/4", the goal wants all four levels
+            return (loc("hq.s.research", num(h.research), num(Holding.researchLevels.count)), top, false)
         case .offices:
             return (loc("hq.s.offices", num(h.offices.count), num(Office.allCases.count)), h.offices.count == Office.allCases.count, false)
         case .records:

@@ -50,6 +50,7 @@ struct HoldingView: View {
             hint(loc("holding.mkt.hint"))
             tvCard(game)
             billboardCard(game)
+            documentaryCard(game)
         }
         if unit == .deals {
             hint(loc("holding.deals.hint"))
@@ -60,6 +61,8 @@ struct HoldingView: View {
         if unit == .research {
             sectionTitle(loc("hq.lab"))
             researchCard(s)
+            labCard(Holding.radarLevel, s)
+            labCard(Holding.compositeLevel, s)
         }
         if unit == nil || unit == .offices { officesSection(s) }
         if unit == .records {
@@ -74,14 +77,20 @@ struct HoldingView: View {
         }
     }
 
-    /// Desk 5: a sponsored world record. The first attempt at each always works; the odds shown apply to beating your own.
+    /// Desk 5: a sponsored world record. The first attempt at the first two always works; the odds shown apply to beating
+    /// your own. v137: the Pacific crossing's odds are the odds every time, and it opens after the round-the-world record.
     private func recordCard(_ k: RecordAttempt, _ s: GameState) -> some View {
-        let h = s.holding, run = h.record, now = run?.kind == k, set = s.recordSet(k)
-        let chips = [loc("holding.chip.prep", num(k.days)), loc("holding.chip.odds", percent(k.odds)), loc("holding.chip.allDemandLasting", percent(k.boost))]
-        let lock: String? = !s.recordsOpen ? loc("holding.rec.lockNote") : run != nil && !now ? loc("holding.rec.oneAtATime") : nil
-        return HoldingDealCard(art: .record, kicker: loc("holding.rec.kicker"), title: k.title, detail: k.detail, chips: chips,
-                               price: k.cost, cta: loc(set ? "holding.rec.again" : "holding.rec.cta"),
-                               enabled: lock == nil && h.cash >= k.cost, lockNote: lock ?? (set ? loc("holding.rec.yours") : nil),
+        let h = s.holding, run = h.record, now = run?.kind == k, set = s.recordSet(k), cost = h.recordCost(k)
+        var chips = [loc("holding.chip.prep", num(k.days)), loc("holding.chip.odds", percent(k.odds)), loc("holding.chip.allDemandLasting", percent(k.boost))]
+        if k.ceilingRaise > 0 {
+            chips.append(loc("holding.chip.recCeiling", percent(RecordAttempt.maxBoost), percent(RecordAttempt.maxBoost + k.ceilingRaise)))
+        }
+        let lock: String? = !s.recordsOpen ? loc("holding.rec.lockNote")
+            : s.recordLocked(k) ? loc("holding.rec.after", (k.after ?? .world).title)
+            : run != nil && !now ? loc("holding.rec.oneAtATime") : nil
+        return HoldingDealCard(art: k == .pacific ? .pacific : .record, kicker: loc("holding.rec.kicker"), title: k.title, detail: k.detail, chips: chips,
+                               price: cost, cta: loc(set ? "holding.rec.again" : "holding.rec.cta"),
+                               enabled: lock == nil && h.cash >= cost, lockNote: lock ?? (set ? loc("holding.rec.yours") : nil),
                                active: now ? loc("holding.rec.active", num((run?.done ?? s.day) - s.day)) : nil,
                                action: { store.act { g in _ = g.startRecord(k) } })
     }
@@ -137,7 +146,11 @@ struct HoldingView: View {
 
     /// v132: under the million goal, the holding's cash now (what it measures), or the day it was reached.
     static func goalNote(_ g: HoldingGoal, _ s: GameState) -> String? {
-        guard g == .million, s.holding.worldBaron == nil else { return nil }
+        guard s.holding.worldBaron == nil else { return nil }
+        // v137: how far the two longer goals have come
+        if g == .offices, !s.done(g) { return loc("hgoal.officesNow", num(s.holding.offices.count), num(Office.allCases.count)) }
+        if g == .research, !s.done(g) { return loc("hgoal.researchNow", num(s.holding.research), num(Holding.researchLevels.count)) }
+        guard g == .million else { return nil }
         if let d = s.holding.millionOn { return loc("hgoal.millionOn", num(d)) }
         return s.done(g) ? nil : loc("hgoal.millionNow", eurH(s.holding.cash))
     }
@@ -420,10 +433,11 @@ struct HoldingView: View {
                                detail: loc("holding.bb.descRegion"), chips: chips, regionRows: rows, action: {})
     }
 
+    /// The envelope research, levels 1 and 2 (v137: levels 3 and 4 have their own cards).
     private func researchCard(_ s: GameState) -> some View {
         let h = s.holding
-        let lv = h.research
-        let next: Holding.ResearchLevel? = lv < Holding.researchLevels.count ? Holding.researchLevels[lv] : nil
+        let lv = min(h.research, Holding.envelopeResearch)
+        let next: Holding.ResearchLevel? = lv < Holding.envelopeResearch ? Holding.researchLevels[lv] : nil
         let chips = [loc("holding.chip.life", num(s.envelopeLife), num(next?.life ?? s.envelopeLife)), loc("holding.chip.permanent")]
         return HoldingDealCard(art: .lab, kicker: loc("holding.lab.kicker"), title: loc("holding.lab.title"),
                                detail: loc(next == nil ? "holding.lab.descDone" : "holding.lab.desc"), chips: chips,
@@ -433,15 +447,50 @@ struct HoldingView: View {
                                action: { store.act { g in _ = g.fundResearch() } })
     }
 
+    /// v137: R&D level 3 (the weather radar network) and 4 (the composite basket), one after the other.
+    private func labCard(_ n: Int, _ s: GameState) -> some View {
+        let h = s.holding, done = h.research >= n, ready = h.research == n - 1, radar = n == Holding.radarLevel
+        let chips = radar
+            ? [loc("holding.radar.chipRisk", percent(1 - Holding.radarAccident)), loc("holding.chip.autoIncome", percent(Holding.radarAutopilot - 1)), loc("holding.chip.permanent")]
+            : [loc("holding.comp.chipFuel", percent(1 - Holding.compositeFuel)), loc("holding.comp.chipUpkeep", percent(1 - Holding.compositeUpkeep)),
+               loc("holding.chip.autoIncome", percent(Holding.compositeAutopilot - 1)), loc("holding.chip.permanent")]
+        let key = radar ? "radar" : "comp"
+        return HoldingDealCard(art: radar ? .radar : .composite, kicker: loc("holding.lab.kickerLevel", num(n)), title: loc("holding.\(key).title"),
+                               detail: loc("holding.\(key).desc"), chips: chips,
+                               price: done ? nil : Holding.researchLevels[n - 1].cost, cta: loc("holding.lab.cta", num(n)),
+                               enabled: ready && h.cash >= Holding.researchLevels[n - 1].cost,
+                               lockNote: done || ready ? nil : loc("holding.lab.first", num(n - 1)),
+                               active: done ? loc("holding.lab.done", num(n)) : nil,
+                               action: { store.act { g in _ = g.fundResearch() } })
+    }
+
+    /// v137: the streaming documentary series: a season of 120 days, a new one 60 days after it ends.
+    private func documentaryCard(_ game: Game) -> some View {
+        let s = game.state, h = s.holding, d = s.day, doc = h.documentary
+        let on = h.documentaryOn(d), wait = !on && !game.canMakeDocumentary, season = (doc?.season ?? 0) + (on ? 0 : 1)
+        let chips = [loc("holding.chip.allDemand", percent(Holding.documentaryBoost - 1)), loc("holding.chip.days", num(Holding.documentaryDays)),
+                     loc("holding.chip.starsAll", starsValue(Holding.documentaryRep * 4))]
+        let active: String? = on ? loc("holding.doc.active", num(doc?.season ?? 1), num((doc?.until ?? d) - d))
+            : wait ? loc("holding.doc.wait", num((doc?.next ?? d) - d)) : nil
+        return HoldingDealCard(art: .documentary, kicker: loc("holding.doc.kicker"), title: loc("holding.doc.title"),
+                               detail: on ? loc("holding.doc.descActive", s.company) : loc("holding.doc.desc"), chips: chips,
+                               price: h.documentaryCost, cta: season > 1 ? loc("holding.doc.ctaSeason", num(season)) : loc("holding.doc.cta"),
+                               enabled: game.canMakeDocumentary && h.cash >= h.documentaryCost, active: active,
+                               action: { store.act { g in _ = g.makeDocumentary() } })
+    }
+
     // MARK: Offices
 
     private func officesSection(_ s: GameState) -> some View {
         let h = s.holding
         let offices = Office.allCases
         let count = offices.filter { h.has($0) }.count
+        // v137 (developer): any four offices 20%, all six 15%
         let text = count == offices.count
-            ? loc("holding.officesAll", percent(Holding.allOfficesExpenseRate), percent(Holding.expenseRate))
-            : loc("holding.officesHint", percent(Holding.expenseRate), percent(Holding.allOfficesExpenseRate))
+            ? loc("holding.officesSix", percent(Holding.allOfficesExpenseRate), percent(Holding.expenseRate))
+            : count >= Holding.fewOffices
+            ? loc("holding.officesFour", num(count), percent(Holding.fourOfficesExpenseRate), percent(Holding.expenseRate), percent(Holding.allOfficesExpenseRate))
+            : loc("holding.officesRule", percent(Holding.expenseRate), percent(Holding.fourOfficesExpenseRate), percent(Holding.allOfficesExpenseRate))
         let rows = Array(stride(from: 0, to: offices.count, by: 2))
         return VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("holding.offices", "\(count)/\(offices.count)"))
@@ -999,7 +1048,7 @@ struct HoldingChipFlow: Layout {
 
 /// Code-drawn art for the deal cards (64×64 artboard, after the prototype's SVGs).
 struct HoldingArt: View {
-    enum Kind { case tv, star, billboard, lab, record, jersey, worldGames, shape(AdShape) }
+    enum Kind { case tv, star, billboard, lab, record, jersey, worldGames, shape(AdShape), documentary, radar, composite, pacific }
     let kind: Kind
 
     var body: some View {
@@ -1014,6 +1063,10 @@ struct HoldingArt: View {
             case .jersey: drawJersey(&ctx, k)
             case .worldGames: drawWorldGames(&ctx, k)
             case .shape(let s): AdShapeArt.draw(&ctx, s, center: CGPoint(x: 32 * k, y: 32 * k), size: 56 * k)
+            case .documentary: drawDocumentary(&ctx, k)
+            case .radar: drawRadar(&ctx, k)
+            case .composite: drawComposite(&ctx, k)
+            case .pacific: drawPacific(&ctx, k)
             }
         }
         .accessibilityHidden(true)
@@ -1047,6 +1100,54 @@ struct HoldingArt: View {
             ctx.stroke(line([(x + 2, y + 9), (x + 1.6, y + 12)], k), with: .color(wicker), lineWidth: 0.8 * k)
             ctx.fill(Path(roundedRect: rect(x - 2, y + 12, 4, 3.5, k), cornerRadius: 0.6 * k), with: .color(wicker))
         }
+    }
+
+    // v137: the new investments (`INVEST_ART.doc`, `.radar`, `.comp`, `.pacific`)
+
+    /// A clapperboard with a balloon on its screen.
+    private func drawDocumentary(_ ctx: inout GraphicsContext, _ k: CGFloat) {
+        let dark = Color(hex: "#1f1b2e")
+        ctx.fill(Path(roundedRect: rect(8, 22, 48, 34, k), cornerRadius: 4 * k), with: .color(dark))
+        ctx.fill(svg("M8 14 L54 6 L56 14 L10 22 Z", k), with: .color(.white))
+        ctx.stroke(svg("M16 12.6 L22 19.5 M27 10.7 L33 17.6 M38 8.8 L44 15.7", k), with: .color(dark), lineWidth: 4 * k)
+        ctx.fill(svg("M32 27 C38 27 42 31.5 42 37 C42 42 38 45.5 35.5 48 L28.5 48 C26 45.5 22 42 22 37 C22 31.5 26 27 32 27 Z", k), with: .color(Color(hex: "#ff5e3a")))
+        ctx.fill(svg("M32 27 C34 27 35 31.5 35 37 C35 42 33.5 45.5 33 48 L31 48 C30.5 45.5 29 42 29 37 C29 31.5 30 27 32 27 Z", k), with: .color(Self.gold))
+        ctx.fill(Path(roundedRect: rect(29.5, 49, 5, 4, k), cornerRadius: 1 * k), with: .color(Color(hex: "#c98a5a")))
+    }
+
+    /// A weather radar: rings, a sweep and two echoes.
+    private func drawRadar(_ ctx: inout GraphicsContext, _ k: CGFloat) {
+        ctx.fill(Path(ellipseIn: rect(8, 10, 48, 48, k)), with: .color(Color(hex: "#12324a")))
+        ctx.stroke(Path(ellipseIn: rect(16, 18, 32, 32, k)), with: .color(Self.teal.opacity(0.6)), lineWidth: 1.5 * k)
+        ctx.stroke(Path(ellipseIn: rect(24, 26, 16, 16, k)), with: .color(Self.teal.opacity(0.6)), lineWidth: 1.5 * k)
+        ctx.fill(svg("M32 34 L32 10 C40 10 48.5 14.5 52.8 22 Z", k), with: .color(Self.teal.opacity(0.45)))
+        ctx.stroke(line([(32, 34), (52.8, 22)], k), with: .color(Self.teal), style: StrokeStyle(lineWidth: 2.5 * k, lineCap: .round))
+        ctx.fill(Path(ellipseIn: rect(40, 41, 6, 6, k)), with: .color(Self.gold))
+        ctx.fill(Path(ellipseIn: rect(19.8, 23.8, 4.4, 4.4, k)), with: .color(Color(hex: "#ff5e3a")))
+    }
+
+    /// A composite basket under an efficient burner's flame.
+    private func drawComposite(_ ctx: inout GraphicsContext, _ k: CGFloat) {
+        ctx.fill(svg("M32 6 C37 13 41 17 41 23 C41 28 37 32 32 32 C27 32 23 28 23 23 C23 17 27 13 32 6 Z", k), with: .color(Color(hex: "#ff5e3a")))
+        ctx.fill(svg("M32 15 C35 19 37 21.5 37 24.5 C37 27.3 34.8 29.5 32 29.5 C29.2 29.5 27 27.3 27 24.5 C27 21.5 29 19 32 15 Z", k), with: .color(Self.gold))
+        let steel = Color(hex: "#8d93a0")
+        ctx.fill(Path(roundedRect: rect(22, 33, 20, 5, k), cornerRadius: 2 * k), with: .color(steel))
+        ctx.stroke(svg("M24 38 L20 44 M40 38 L44 44", k), with: .color(steel), lineWidth: 2 * k)
+        ctx.fill(polygon([(16, 44), (48, 44), (45, 58), (19, 58)], k), with: .color(Color(hex: "#2b2350")))
+        ctx.stroke(svg("M24 44 L22 58 M32 44 L32 58 M40 44 L42 58", k), with: .color(Color(hex: "#4a4270")), lineWidth: 1.4 * k)
+        ctx.stroke(svg("M18 49 L46 49 M19 54 L45 54", k), with: .color(Self.teal), lineWidth: 1.6 * k)
+    }
+
+    /// A balloon over two rows of ocean waves.
+    private func drawPacific(_ ctx: inout GraphicsContext, _ k: CGFloat) {
+        let wicker = Color(hex: "#8a5a2e")
+        ctx.fill(svg("M32 4 C41 4 47 11 47 19 C47 27 41 32 37 36 L27 36 C23 32 17 27 17 19 C17 11 23 4 32 4 Z", k), with: .color(Color(hex: "#2b7fd6")))
+        ctx.fill(svg("M32 4 C35 4 37 11 37 19 C37 27 35 32 34 36 L30 36 C29 32 27 27 27 19 C27 11 29 4 32 4 Z", k), with: .color(.white.opacity(0.3)))
+        ctx.stroke(svg("M28 36 L29 38 M36 36 L35 38", k), with: .color(wicker), lineWidth: 1.2 * k)
+        ctx.fill(Path(roundedRect: rect(28, 38, 8, 6, k), cornerRadius: 1.5 * k), with: .color(wicker))
+        let wave = StrokeStyle(lineWidth: 3 * k, lineCap: .round)
+        ctx.stroke(svg("M4 52 C9 48 13 48 18 52 C23 56 27 56 32 52 C37 48 41 48 46 52 C51 56 55 56 60 52", k), with: .color(Self.teal), style: wave)
+        ctx.stroke(svg("M4 60 C9 56 13 56 18 60 C23 64 27 64 32 60 C37 56 41 56 46 60 C51 64 55 64 60 60", k), with: .color(Color(hex: "#2b5ab8")), style: wave)
     }
 
     /// A balloon envelope centred at (x, y), half as wide as `w`, its mouth 9 below the centre.

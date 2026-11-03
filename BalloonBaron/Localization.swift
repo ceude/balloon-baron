@@ -64,8 +64,9 @@ extension Pattern { var title: String { storeItem.map { loc("store.\($0.rawValue
 extension Office {
     var title: String { loc("office.\(rawValue)") }
     var perk: String { loc("office.\(rawValue).perk") }
-    /// Istanbul a mosque, New York the Statue of Liberty, Seoul Namsan Tower, Tokyo Tokyo Tower.
-    var glyph: LineGlyph.Kind { [.mosque, .liberty, .namsan, .tokyoTower][Office.allCases.firstIndex(of: self)!] }
+    /// Istanbul a mosque, New York the Statue of Liberty, Seoul Namsan Tower, Tokyo Tokyo Tower; v137: Dubai the Burj
+    /// Khalifa, Paris the Eiffel Tower.
+    var glyph: LineGlyph.Kind { [.mosque, .liberty, .namsan, .tokyoTower, .burj, .eiffel][Office.allCases.firstIndex(of: self)!] }
 }
 extension Design {
     var title: String { gift?.title ?? (name.isEmpty ? "\(pattern.title) \(number)" : name) }
@@ -213,6 +214,7 @@ extension HezMessage {
         case let .regionIssue(r, i): loc("hez.regionIssue", r.title, i.body)
         case .officeOpened(let o): loc("hez.officeOpened", o.title) + " " + o.perk
         case .allOffices: loc("hez.allOffices")
+        case .sixOffices: loc("hez.sixOffices")
         case .celebritySigned(let i): loc("hez.celebritySigned", celebrityName(i))
         case let .boss(r, line): loc("boss.\(r.rawValue).\(line.rawValue)")
         case .festivalStarted(let i): loc("hez.festival.\(i)")
