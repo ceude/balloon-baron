@@ -9,6 +9,8 @@ public enum Office: String, Codable, CaseIterable, CodingKeyRepresentable, Senda
     /// v137 (developer): all six cost about the same, around €700,000 (they were €350,000–450,000, Dubai and Paris
     /// €1.5M and €1.8M).
     public var cost: Int { [650_000, 750_000, 700_000, 700_000, 700_000, 750_000][index] }
+    /// v140 (developer): each office's rent and staff, euros a day, paid by the holding every evening.
+    public var rent: Int { [1000, 2000, 1500, 1500, 1500, 2000][index] }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
 
     /// v138 (developer): the order the offices are listed in, cheapest first (İstanbul, then Seoul, Tokyo and Dubai,
@@ -38,14 +40,36 @@ public struct Holding: Codable, Equatable, Sendable {
     /// v136 (TestFlight): the TV campaign runs in one region's national channels, bought for each region on its own (it
     /// used to be one €250,000 campaign for every region). €60,000 a region: four regions cost about what the old one
     /// did, and the simulator's regions earn €45,000–90,000 back each over its 14 days. Popularity +0.1 in that region.
-    public static let tvCost = 60000, tvDays = 14, tvCooldown = 30, tvRep = 0.1
+    /// v140 (developer, `tools/sim-holding.js`): €120,000 for 21 days, +15%, a new one 45 days after the last (it was
+    /// €60,000, 14 days, +20%, 30 days).
+    public static let tvCost = 120_000, tvDays = 21, tvCooldown = 45, tvRep = 0.1, tvBoost = 1.15
     /// v136: the popularity each worldwide deal adds in every region you own (`Game.repEverywhere`).
-    public static let celebrityCost = 600000, celebrityDays = 90, celebrityCount = 6, celebrityRep = 0.15
-    public static let billboardCost = 120000, billboardDays = 20
+    /// v140 (developer): €1.8M for 180 days (was €600,000 for 90). The first deal, a holding goal, stays €600,000 (a
+    /// rising star signs for less); Seoul takes 25% off either (it made them twice as long and 30% cheaper).
+    public static let celebrityCost = 1_800_000, celebrityFirstCost = 600_000, celebrityDays = 180, celebrityCount = 6
+    public static let celebrityRep = 0.15, celebrityBoost = 1.1, seoulDiscount = 0.75
+    /// v140: €80,000 for 30 days, +8% (were €120,000, 20 days, +10%).
+    public static let billboardCost = 80000, billboardDays = 30, billboardBoost = 1.08
     /// v122.7 (`JERSEY`, `WGAMES`): the league champion's jersey (no team named, the game is played worldwide), and the
-    /// balloon show at the World Games' opening ceremony, once.
-    public static let jerseyCost = 3_000_000, jerseyDays = 180, jerseyBoost = 1.15, jerseyRep = 0.1
+    /// balloon show at the World Games' opening ceremony. v140 (developer): the jersey €10M for a season of 360 days
+    /// (was €3M, 180); the World Games come round every 360 days after a show, each show 1.5 times the last (€10M,
+    /// €15M, €22.5M...).
+    public static let jerseyCost = 10_000_000, jerseyDays = 360, jerseyBoost = 1.15, jerseyRep = 0.1
     public static let worldGamesCost = 10_000_000, worldGamesDays = 60, worldGamesBoost = 1.3, worldGamesRep = 0.2
+    public static let worldGamesAgain = 360, worldGamesStep = 1.5
+    /// v140 (developer): the International Balloon Festival the holding hosts in a region it owns. One at a time, a new
+    /// one 90 days after the last; €1.5M, each €500,000 more than the one before, at most €5M. Ten days of +40% tourists
+    /// there and +0.15 popularity there; every festival held in a region adds +3% tourists there for good (its festival
+    /// fame), up to +15%.
+    public static let festivalBase = 1_500_000, festivalStep = 500_000, festivalMax = 5_000_000
+    public static let festivalEvery = 90, festivalDays = 10, festivalBoost = 1.4, festivalRep = 0.15
+    public static let festivalFame = 0.03, festivalFameMax = 0.15
+    /// v140 (developer): the Hot Air Foundation. Projects without end, €1M and each €500,000 more than the last; each is
+    /// a named project in a region you own and lifts popularity in every region you own.
+    public static let foundationBase = 1_000_000, foundationStep = 500_000, foundationRep = 0.05
+    /// v140: Tokyo's Asian tour operators bring +5% tourists to every region; Paris lifts Bristol by 20% also while you
+    /// play there (it lifted only its autopilot income).
+    public static let tokyoBoost = 1.05, parisBoost = 1.2
     /// Levels 1 and 2 are the envelope research. v137: level 3 is a weather radar network, level 4 a composite basket and
     /// an efficient burner (they keep the envelope's 200 flights). The holding goal wants all four.
     public static let researchLevels = [ResearchLevel(cost: 400000, life: 160), ResearchLevel(cost: 900000, life: 200),
@@ -54,11 +78,13 @@ public struct Holding: Codable, Equatable, Sendable {
     /// v137: the radar cuts accident risk (and so the premiums) by 15%; the composite basket fuel by 25% and upkeep by
     /// 15%. Parked regions earn what that saves a late-game region: +5% and +2% (`tools/sim-campaign.js`: premiums are
     /// about 36% of its net, fuel and upkeep 8%).
+    /// v140 (developer): level 4 lifts parked regions by 5% too (it was 2%), so the €4M level is felt.
     public static let radarAccident = 0.85, radarAutopilot = 1.05
-    public static let compositeFuel = 0.75, compositeUpkeep = 0.85, compositeAutopilot = 1.02
+    public static let compositeFuel = 0.75, compositeUpkeep = 0.85, compositeAutopilot = 1.05
     /// v137: the streaming documentary series: demand in every region for 120 days, popularity in every region you own,
     /// and a new season 60 days after one ends.
-    public static let documentaryCost = 2_500_000, documentaryDays = 120, documentaryGap = 60
+    /// v140: €3M (was €2.5M); Paris still takes 20% off.
+    public static let documentaryCost = 3_000_000, documentaryDays = 120, documentaryGap = 60
     public static let documentaryBoost = 1.15, documentaryRep = 0.1
     /// What you leave in a region's cash box when you take "all".
     public static let withdrawKeep = 10000
@@ -109,6 +135,33 @@ public struct Holding: Codable, Equatable, Sendable {
     /// v137: true once the records use the new ladder (`world` was the €900,000 attempt before; see `RecordAttempt`).
     /// A new holding starts on it; an older save has no key and decodes nil.
     public var recordsV2: Bool? = true
+    /// v140: how many World Games shows were held and the day of the last (nil in older saves: one show, held
+    /// `worldGamesDays` before `worldGamesUntil`).
+    public var worldGamesCount: Int?
+    public var worldGamesOn: Int?
+    /// v140: the International Balloon Festival (nil until the first) and the festivals held in each region.
+    public var festival: HostedFestival?
+    public var festivalsIn: [RegionID: Int]?
+    /// v140: the Hot Air Foundation's projects in each region (nil until the first) and the last one funded.
+    public var foundation: [RegionID: Int]?
+    public var lastProject: FundedProject?
+    /// v140: yesterday's office rent (nil in older saves).
+    public var todayRent: Int?
+
+    public struct HostedFestival: Codable, Equatable, Sendable {
+        public var region: RegionID
+        /// The festival runs until `until`; the next can be held from `next`. `count`: festivals held so far.
+        public var until: Int
+        public var next: Int
+        public var count: Int
+    }
+
+    public struct FundedProject: Codable, Equatable, Sendable {
+        public var region: RegionID
+        /// Index into that region's list (`fdn.<region>.<index % perRegion>`), and the day it was funded.
+        public var index: Int
+        public var day: Int
+    }
 
     public struct Documentary: Codable, Equatable, Sendable {
         /// The season on air runs until `until`; the next can be made from `next`.
@@ -143,17 +196,36 @@ public struct Holding: Codable, Equatable, Sendable {
         (research >= Self.radarLevel ? Self.radarAutopilot : 1) * (research >= Self.compositeLevel ? Self.compositeAutopilot : 1)
     }
     public var documentaryCost: Int { jsRound(Double(Self.documentaryCost) * (has(.par) ? 0.8 : 1)) }
+    /// v140: the offices' rent and staff, euros a day.
+    public var officeRent: Int { offices.keys.reduce(0) { $0 + $1.rent } }
+    /// v140: World Games shows held, the day of the last, the next show's price and the first day it can be held.
+    public var worldGamesHeld: Int { worldGamesUntil == nil ? 0 : worldGamesCount ?? 1 }
+    public var worldGamesLast: Int? { worldGamesUntil.map { worldGamesOn ?? $0 - Self.worldGamesDays } }
+    public var worldGamesPrice: Int { jsRound(Double(Self.worldGamesCost) * pow(Self.worldGamesStep, Double(worldGamesHeld))) }
+    public var worldGamesNext: Int { worldGamesLast.map { $0 + Self.worldGamesAgain } ?? 0 }
+    /// v140: the next festival's price, whether one runs in a region, a region's lasting festival fame.
+    public var festivalCost: Int { min(Self.festivalMax, Self.festivalBase + Self.festivalStep * (festival?.count ?? 0)) }
+    public func festivalOn(_ r: RegionID, day: Int) -> Bool { festival.map { $0.region == r && $0.until > day } ?? false }
+    public func festivalReady(day: Int) -> Bool { (festival?.next ?? 0) <= day }
+    public func festivalFame(_ r: RegionID) -> Double { min(Self.festivalFameMax, Self.festivalFame * Double(festivalsIn?[r] ?? 0)) }
+    /// v140: the foundation's projects in all and in one region, and the next project's price.
+    public var projects: Int { foundation?.values.reduce(0, +) ?? 0 }
+    public func projects(in r: RegionID) -> Int { foundation?[r] ?? 0 }
+    public var projectCost: Int { Self.foundationBase + Self.foundationStep * projects }
     public func documentaryOn(_ day: Int) -> Bool { (documentary?.until ?? 0) > day }
     /// v137: a record attempt's price (Dubai's office takes a quarter off).
     public func recordCost(_ k: RecordAttempt) -> Int { jsRound(Double(k.cost) * (has(.dxb) ? 0.75 : 1)) }
     public var tvCost: Int { jsRound(Double(Self.tvCost) * (has(.nyc) ? 0.75 : 1)) }
-    public var celebrityCost: Int { has(.sel) ? 420000 : Self.celebrityCost }
-    public var celebrityDays: Int { has(.sel) ? 180 : Self.celebrityDays }
+    public var celebrityCost: Int { jsRound(Double(celebrity == nil ? Self.celebrityFirstCost : Self.celebrityCost) * (has(.sel) ? Self.seoulDiscount : 1)) }
+    public var celebrityDays: Int { Self.celebrityDays }
     /// Office bonus on a parked region's income; v137: with the R&D levels' savings.
     public func officeMultiplier(_ r: RegionID) -> Double {
         (has(.ist) && r == .cap ? 1.25 : 1) * (has(.nyc) && r == .abq ? 1.2 : 1)
-            * (has(.dxb) && r == .lux ? 1.2 : 1) * (has(.par) && r == .bri ? 1.2 : 1) * researchAutopilot
+            * (has(.dxb) && r == .lux ? 1.2 : 1) * (has(.par) && r == .bri ? Self.parisBoost : 1) * (has(.tyo) ? Self.tokyoBoost : 1) * researchAutopilot
     }
+    /// v140: the offices' pull on tourists in the region you play: Tokyo everywhere, Paris in Bristol. Parked regions get
+    /// theirs in `officeMultiplier`.
+    public func officeHere(_ r: RegionID) -> Double { (has(.tyo) ? Self.tokyoBoost : 1) * (has(.par) && r == .bri ? Self.parisBoost : 1) }
 
     mutating func log(day: Int, income: Int = 0, expense: Int = 0) {
         if history.last?.day != day {
@@ -169,9 +241,15 @@ extension Game {
     /// Demand multiplier from holding campaigns in a region.
     public func holdingBoost(_ r: RegionID) -> Double {
         let h = state.holding, d = state.day
-        return (1 + (h.recordBoost ?? 0)) * (h.tvUntil(r) > d ? 1.2 : 1) * ((h.celebrity?.until ?? 0) > d ? 1.1 : 1) * ((h.billboards[r] ?? 0) > d ? 1.1 : 1)
+        return (1 + (h.recordBoost ?? 0)) * (h.tvUntil(r) > d ? Holding.tvBoost : 1) * ((h.celebrity?.until ?? 0) > d ? Holding.celebrityBoost : 1)
+            * ((h.billboards[r] ?? 0) > d ? Holding.billboardBoost : 1)
             * ((h.jerseyUntil ?? 0) > d ? Holding.jerseyBoost : 1) * ((h.worldGamesUntil ?? 0) > d ? Holding.worldGamesBoost : 1)
-            * (h.documentaryOn(d) ? Holding.documentaryBoost : 1)
+            * (h.documentaryOn(d) ? Holding.documentaryBoost : 1) * festivalBoost(r)
+    }
+
+    /// v140: the hosted festival's ten days in a region and that region's lasting festival fame.
+    public func festivalBoost(_ r: RegionID) -> Double {
+        (state.holding.festivalOn(r, day: state.day) ? Holding.festivalBoost : 1) * (1 + state.holding.festivalFame(r))
     }
 
     /// Takes money out of the region you're playing into the holding, converted to euros.
@@ -299,13 +377,59 @@ extension Game {
         return true
     }
 
-    /// v122.7: the balloon show at the World Games' opening ceremony, once.
+    /// v140: a World Games show can be held: open (the Bristol baron), none in effect, 360 days since the last.
+    public var canHoldWorldGames: Bool {
+        let h = state.holding
+        return state.worldGamesOpen && (h.worldGamesUntil ?? 0) <= state.day && h.worldGamesNext <= state.day
+    }
+
+    /// v122.7: the balloon show at the World Games' opening ceremony. v140: again every 360 days, each 1.5 times the last.
     @discardableResult
     public mutating func holdWorldGamesShow() -> Bool {
-        guard state.worldGamesOpen, state.holding.worldGamesUntil == nil, spendHolding(Holding.worldGamesCost) else { return false }
+        let n = state.holding.worldGamesHeld
+        guard canHoldWorldGames, spendHolding(state.holding.worldGamesPrice) else { return false }
         state.holding.worldGamesUntil = state.day + Holding.worldGamesDays
+        state.holding.worldGamesOn = state.day
+        state.holding.worldGamesCount = n + 1
         repEverywhere(Holding.worldGamesRep)
         celebrate(.worldGames)
+        return true
+    }
+
+    /// v140: the holding's International Balloon Festival can be held in a region you own (none running, 90 days since
+    /// the last).
+    public func canHostFestival(in r: RegionID) -> Bool { state.owns(r) && state.holding.festivalReady(day: state.day) }
+
+    /// v140: the International Balloon Festival in a region you own: ten days of tourists, popularity there, and the
+    /// region's festival fame. The guide says so and the paper reports it.
+    @discardableResult
+    public mutating func hostFestival(in r: RegionID) -> Bool {
+        guard canHostFestival(in: r), spendHolding(state.holding.festivalCost) else { return false }
+        let d = state.day
+        state.holding.festival = Holding.HostedFestival(region: r, until: d + Holding.festivalDays, next: d + Holding.festivalEvery,
+                                                        count: (state.holding.festival?.count ?? 0) + 1)
+        var n = state.holding.festivalsIn ?? [:]
+        n[r, default: 0] += 1
+        state.holding.festivalsIn = n
+        repIn(r, Holding.festivalRep)
+        state.hezQueue.append(.festivalHosted(r))
+        addPaper(.festivalHosted(r))
+        return true
+    }
+
+    /// v140: the Hot Air Foundation funds its next project in a region you own: popularity in every region you own, a
+    /// monument in that region's town, the guide's word and a story in the paper.
+    @discardableResult
+    public mutating func fundProject(in r: RegionID) -> Bool {
+        guard state.owns(r), spendHolding(state.holding.projectCost) else { return false }
+        let i = state.holding.projects(in: r)
+        var f = state.holding.foundation ?? [:]
+        f[r] = i + 1
+        state.holding.foundation = f
+        state.holding.lastProject = Holding.FundedProject(region: r, index: i, day: state.day)
+        repEverywhere(Holding.foundationRep)
+        state.hezQueue.append(.foundationProject(r, i))
+        addPaper(.foundationProject(r, i, count: state.holding.projects))
         return true
     }
 
@@ -495,13 +619,16 @@ extension Game {
             }
         }
         let g = jsRound(gross), cost = jsRound(Double(g) * state.holding.expenseRate)
-        state.holding.cash += g - cost
-        if g != 0 { state.holding.log(day: state.day, income: g, expense: cost) }
+        // v140: the offices' rent and staff, every evening (never more than the holding has)
+        let rent = min(state.holding.officeRent, max(0, state.holding.cash + g - cost))
+        state.holding.cash += g - cost - rent
+        if g != 0 || rent != 0 { state.holding.log(day: state.day, income: g, expense: cost + rent) }
         state.holding.todayGross = g
         state.holding.todayCost = cost
+        state.holding.todayRent = rent == 0 && state.holding.todayRent == nil ? nil : rent
         let extra = recordDay() + adShapeDay()
         markMillion()
-        return g - cost + extra
+        return g - cost - rent + extra
     }
 
     /// What a choice costs the holding up front, for a parked region or the one you're in.
@@ -593,6 +720,9 @@ extension Game {
 }
 
 extension GameState {
+    /// v140: the holding's International Balloon Festival is on in the region you're in (the sky fills like a Fiesta's,
+    /// bunting in the town, a glow on its nights).
+    public var hostedFestivalHere: Bool { holding.festivalOn(region, day: day) }
     /// v123.5: Baron of Bristol, the fourth region. 
     public var bristolBaron: Bool { barons[.bri] != nil }
     /// v123.5: the World Games show is the holding's finale: it opens once you're Baron of Bristol.

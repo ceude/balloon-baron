@@ -103,7 +103,7 @@ final class Campaigns136Tests: XCTestCase {
         XCTAssertTrue(g.runBillboards())
         XCTAssertEqual(g.state.holding.billboards, [.lux: d + Holding.billboardDays])
         XCTAssertFalse(g.runBillboards(), "one set per region at a time")
-        XCTAssertEqual(g.holdingBoost(.lux), 1.1, accuracy: 1e-9)
+        XCTAssertEqual(g.holdingBoost(.lux), 1.08, accuracy: 1e-9, "v140: +8%")
         XCTAssertEqual(g.holdingBoost(.cap), 1, accuracy: 1e-9)
         let r = [rep(g, .cap), rep(g, .abq), rep(g, .lux)]
         g.switchRegion(.cap)
@@ -126,7 +126,7 @@ final class Campaigns136Tests: XCTestCase {
         XCTAssertEqual(rep(g, .lux), 1.0 + Holding.tvRep, accuracy: 1e-9, "Luxor's popularity")
         XCTAssertEqual(rep(g, .cap), 1.0, accuracy: 1e-9, "not the region you're standing in")
         XCTAssertEqual(rep(g, .abq), 1.0, accuracy: 1e-9)
-        XCTAssertEqual(g.holdingBoost(.lux), 1.2, accuracy: 1e-9)
+        XCTAssertEqual(g.holdingBoost(.lux), 1.15, accuracy: 1e-9, "v140: +15%")
         XCTAssertEqual(g.holdingBoost(.cap), 1, accuracy: 1e-9)
         XCTAssertEqual(g.holdingBoost(.abq), 1, accuracy: 1e-9)
         XCTAssertEqual(g.state.holding.tvCount, 1, "the TV goal counts any region's campaign")
@@ -137,7 +137,7 @@ final class Campaigns136Tests: XCTestCase {
         let d = g.state.day
         XCTAssertTrue(g.runTVCampaign(in: .cap))
         XCTAssertFalse(g.canRunTV(in: .cap))
-        XCTAssertFalse(g.runTVCampaign(in: .cap), "Cappadocia waits 30 days")
+        XCTAssertFalse(g.runTVCampaign(in: .cap), "Cappadocia waits 45 days")
         XCTAssertTrue(g.canRunTV(in: .abq))
         XCTAssertTrue(g.runTVCampaign(), "the region you're in still can")
         XCTAssertTrue(g.runTVCampaign(in: .lux))
@@ -151,8 +151,10 @@ final class Campaigns136Tests: XCTestCase {
         XCTAssertTrue(g.runTVCampaign(in: .cap))
     }
 
-    func testFourRegionsCostAboutTheOldNationalCampaign() {
-        XCTAssertEqual(Holding.tvCost * 4, 240_000, "the old one cost 250,000 for every region")
+    /// v140 (developer): €120,000 for 21 days, +15%, 45 days between campaigns in a region.
+    func testTVPrices() {
+        XCTAssertEqual([Holding.tvCost, Holding.tvDays, Holding.tvCooldown], [120_000, 21, 45])
+        XCTAssertEqual(Holding.tvBoost, 1.15)
     }
 
     func testAnOldSavesNationalTVStillCoversEveryRegion() throws {
@@ -166,13 +168,13 @@ final class Campaigns136Tests: XCTestCase {
         var back = Game(state: try JSONDecoder().decode(GameState.self, from: Data(json.utf8)))
         XCTAssertNil(back.state.holding.tv)
         for r in regions {
-            XCTAssertEqual(back.holdingBoost(r), 1.2, accuracy: 1e-9, "the old run still lifts \(r)")
+            XCTAssertEqual(back.holdingBoost(r), Holding.tvBoost, accuracy: 1e-9, "the old run still lifts \(r)")
             XCTAssertFalse(back.canRunTV(in: r), "and its wait still holds in \(r)")
         }
         back.state.day = d + 21
         XCTAssertTrue(back.canRunTV(in: .abq))
         XCTAssertTrue(back.runTVCampaign(in: .abq))
-        XCTAssertEqual(back.holdingBoost(.abq), 1.2, accuracy: 1e-9)
+        XCTAssertEqual(back.holdingBoost(.abq), Holding.tvBoost, accuracy: 1e-9)
         XCTAssertEqual(back.holdingBoost(.cap), 1, accuracy: 1e-9)
         XCTAssertEqual(back.state.holding.tvUntil, d + 5, "a new campaign never writes the old national fields")
     }
@@ -184,7 +186,7 @@ final class Campaigns136Tests: XCTestCase {
         XCTAssertEqual(g.state.holding.billboards, [.abq: d + Holding.billboardDays])
         XCTAssertFalse(g.runBillboards(in: .abq))
         XCTAssertFalse(g.runBillboards(in: .bri), "not a region you own")
-        XCTAssertEqual(g.holdingBoost(.abq), 1.1, accuracy: 1e-9)
+        XCTAssertEqual(g.holdingBoost(.abq), 1.08, accuracy: 1e-9)
         XCTAssertEqual(g.holdingBoost(.cap), 1, accuracy: 1e-9)
         XCTAssertEqual(g.ownedRegions, [.cap, .abq, .lux])
     }

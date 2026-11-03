@@ -273,6 +273,10 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case regionClosed(RegionID, fresh: Bool, fee: Int)
     /// v133: Cappadocia entered again after its company closed.
     case capReentered
+    /// v140: the holding's International Balloon Festival opens in a region; the foundation funded a region's project
+    /// (index into its list, `fdn.<region>.<index % perRegion>`).
+    case festivalHosted(RegionID)
+    case foundationProject(RegionID, Int)
 }
 
 /// Shown once, before other popups, when two rivals join forces against you.

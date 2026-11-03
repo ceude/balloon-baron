@@ -174,6 +174,7 @@ final class LuxorTests: XCTestCase {
         for seed in 1...20 as ClosedRange<UInt64> {
             var g = luxorReady()
             g.rng = SplitMix64(seed: seed)
+            g.state.holding.cash = 3_000_000 // v140: the altitude record costs €1.5M
             XCTAssertFalse(g.startRecord(.altitude), "only after entering Luxor")
             g.enterRegion(.lux)
             XCTAssertTrue(g.startRecord(.altitude))

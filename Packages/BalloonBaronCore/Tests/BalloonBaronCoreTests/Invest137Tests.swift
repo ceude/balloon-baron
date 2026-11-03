@@ -31,9 +31,9 @@ final class Invest137Tests: XCTestCase {
         var g = rich()
         let cash = g.state.holding.cash, d = g.state.day
         let repHere = g.state.rep, repCap = g.state.parked[.cap]!.state.rep
-        XCTAssertEqual(g.state.holding.documentaryCost, 2_500_000)
+        XCTAssertEqual(g.state.holding.documentaryCost, 3_000_000, "v140: €3M")
         XCTAssertTrue(g.makeDocumentary())
-        XCTAssertEqual(g.state.holding.cash, cash - 2_500_000)
+        XCTAssertEqual(g.state.holding.cash, cash - 3_000_000)
         XCTAssertEqual(g.state.holding.documentary, Holding.Documentary(until: d + 120, next: d + 180, season: 1))
         XCTAssertEqual(g.holdingBoost(.abq), 1.15, accuracy: 1e-9)
         XCTAssertEqual(g.holdingBoost(.cap), 1.15, accuracy: 1e-9, "every region")
@@ -49,7 +49,7 @@ final class Invest137Tests: XCTestCase {
         XCTAssertTrue(g.canMakeDocumentary)
         // Paris takes a fifth off
         g.state.holding.offices[.par] = d
-        XCTAssertEqual(g.state.holding.documentaryCost, 2_000_000)
+        XCTAssertEqual(g.state.holding.documentaryCost, 2_400_000)
         XCTAssertTrue(g.makeDocumentary())
         XCTAssertEqual(g.state.holding.documentary?.season, 2)
         let back = try reload(g)
@@ -81,8 +81,8 @@ final class Invest137Tests: XCTestCase {
         XCTAssertTrue(g.state.hezQueue.contains(.deed(.composite)))
         XCTAssertEqual(g.state.holding.fuelFactor, 0.75)
         XCTAssertEqual(g.state.holding.upkeepFactor, 0.85)
-        XCTAssertEqual(g.state.holding.officeMultiplier(.lux), 1.05 * 1.02, accuracy: 1e-9)
-        XCTAssertEqual(g.state.holding.officeMultiplier(.cap), 1.05 * 1.02, accuracy: 1e-9)
+        XCTAssertEqual(g.state.holding.officeMultiplier(.lux), 1.05 * 1.05, accuracy: 1e-9, "v140: level 4 +5% (was +2%)")
+        XCTAssertEqual(g.state.holding.officeMultiplier(.cap), 1.05 * 1.05, accuracy: 1e-9)
         XCTAssertEqual(g.state.envelopeLife, 200)
         XCTAssertTrue(g.state.met(.research))
         XCTAssertFalse(g.fundResearch(), "four levels in all")
@@ -113,7 +113,7 @@ final class Invest137Tests: XCTestCase {
 
     func testRecordLadder() throws {
         XCTAssertEqual(RecordAttempt.allCases, [.altitude, .pacific, .world], "price and difficulty rise")
-        XCTAssertEqual(RecordAttempt.allCases.map(\.cost), [400_000, 900_000, 3_000_000])
+        XCTAssertEqual(RecordAttempt.allCases.map(\.cost), [1_500_000, 4_000_000, 8_000_000], "v140")
         XCTAssertEqual(RecordAttempt.allCases.map(\.days), [25, 40, 60])
         XCTAssertEqual(RecordAttempt.allCases.map(\.odds), [0.65, 0.5, 0.4])
         XCTAssertEqual(RecordAttempt.allCases.map(\.boost), [0.05, 0.1, 0.15])
@@ -127,13 +127,14 @@ final class Invest137Tests: XCTestCase {
         XCTAssertEqual(g.state.recordCeiling, 0.25, accuracy: 1e-9)
         let cash = g.state.holding.cash
         XCTAssertTrue(g.startRecord(.world))
-        XCTAssertEqual(g.state.holding.cash, cash - 3_000_000)
+        XCTAssertEqual(g.state.holding.cash, cash - 8_000_000)
         XCTAssertEqual(g.state.holding.record, RecordRun(kind: .world, done: g.state.day + 60))
         XCTAssertFalse(g.startRecord(.altitude), "one attempt at a time")
         // Dubai takes a quarter off
         g.state.holding.offices[.dxb] = 1
-        XCTAssertEqual(g.state.holding.recordCost(.world), 2_250_000)
-        XCTAssertEqual(g.state.holding.recordCost(.pacific), 675_000)
+        XCTAssertEqual(g.state.holding.recordCost(.world), 6_000_000)
+        XCTAssertEqual(g.state.holding.recordCost(.pacific), 3_000_000)
+        XCTAssertEqual(g.state.holding.recordCost(.altitude), 1_125_000)
         // a set round-the-world record raises the ceiling to 35%
         g.state.holding.records?[.world] = 5
         XCTAssertEqual(g.state.recordCeiling, 0.35, accuracy: 1e-9)

@@ -8,7 +8,8 @@ import Foundation
 public enum RecordAttempt: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     case altitude, pacific, world
 
-    public var cost: Int { [400000, 900000, 3_000_000][index] }
+    /// v140 (developer, `tools/sim-holding.js`): €1.5M, €4M and €8M (were €400,000, €900,000 and €3M).
+    public var cost: Int { [1_500_000, 4_000_000, 8_000_000][index] }
     public var days: Int { [25, 40, 60][index] }
     /// Shown odds. The first attempt at the first two records always succeeds; the odds apply when you try to beat your
     /// own. The round-the-world flight's odds are the odds every time.
@@ -41,6 +42,11 @@ public enum HoldingDeed: String, Codable, Sendable {
     case jersey, worldGames
     /// v137: the documentary series, R&D level 3 (radar) and level 4 (composite basket).
     case documentary, radar, composite
+}
+
+/// v140: the Hot Air Foundation's projects, a list for each region that goes round. Name: `fdn.<region>.<index>`.
+public enum FoundationProject {
+    public static let perRegion = 5
 }
 
 public enum AdShape: String, Codable, CaseIterable, Sendable {

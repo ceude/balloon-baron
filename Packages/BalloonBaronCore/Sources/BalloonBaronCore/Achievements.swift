@@ -7,6 +7,8 @@ public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, 
     /// v124: entering Bristol, the first Night Glow, Baron of Bristol.
     case bri, nightGlow, baronBri
     case world
+    /// v140: the Hot Air Foundation's first project.
+    case patron
 }
 
 /// The holding's own goals, written on the office whiteboard. All seven make you World Baron. Text: `hgoal.<rawValue>`.
@@ -54,6 +56,7 @@ extension GameState {
         case .nightGlow: return (local.glowCount ?? 0) >= 1
         case .baronBri: return barons[.bri] != nil
         case .world: return holding.worldBaron != nil
+        case .patron: return holding.projects >= 1
         }
     }
 

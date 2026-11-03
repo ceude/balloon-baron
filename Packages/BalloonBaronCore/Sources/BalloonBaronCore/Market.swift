@@ -169,6 +169,8 @@ extension Game {
 /// v124.6: what multiplies the day's tourists, shown under the price meter. Text: `why.<rawValue>`.
 public enum DemandFactor: String, Sendable {
     case fiesta, festival, winter, flag, sales, holding
+    /// v140: the holding's International Balloon Festival, the region's festival fame, the offices (Tokyo, Paris).
+    case hostedFestival, festivalFame, offices
 }
 
 extension Game {
@@ -195,7 +197,11 @@ extension Game {
         if state.winter != nil { add(.winter, 0.55) }
         add(.flag, (state.weather?.flag ?? .green).demand)
         add(.sales, state.salesFactor)
-        add(.holding, holdingBoost(state.region))
+        let r = state.region, fest = festivalBoost(r)
+        if state.holding.festivalOn(r, day: state.day) { add(.hostedFestival, Holding.festivalBoost) }
+        add(.festivalFame, 1 + state.holding.festivalFame(r))
+        add(.holding, holdingBoost(r) / fest)
+        add(.offices, state.holding.officeHere(r))
         return out
     }
 

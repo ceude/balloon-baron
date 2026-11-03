@@ -72,6 +72,9 @@ public enum PaperItem: Codable, Equatable, Sendable {
     /// v125: you became a contract company's preferred operator; a rival flew a group you didn't take.
     case preferredOperator(company: String, kind: ContractKind)
     case rivalGroup(rival: String, company: String, n: Int, len: Int, balloons: Int, kind: ContractKind)
+    /// v140: the holding's International Balloon Festival opens; the foundation's project (`count`: projects so far).
+    case festivalHosted(RegionID)
+    case foundationProject(RegionID, Int, count: Int)
 
     public var priority: Int {
         switch self {
@@ -79,7 +82,8 @@ public enum PaperItem: Codable, Equatable, Sendable {
         case .vip, .wedding, .record, .night, .milestone: 2
         case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine, .deed: 3
         case .accident(_, _, let severe): severe ? 5 : 3
-        case .redCaught, .festival, .newEntrant, .passedBoss, .show, .nightGlow, .briFestival: 4
+        case .redCaught, .festival, .newEntrant, .passedBoss, .show, .nightGlow, .briFestival, .festivalHosted: 4
+        case .foundationProject: 3
         case .airspace, .preferredOperator, .rivalGroup: 3
         case .antitrust, .seized, .holdingRescue: 5
         case .rivalBankrupt, .worldBaron, .worldRecord, .regionClosed: 6
@@ -103,6 +107,8 @@ public enum NightEvent: Codable, Equatable, Sendable {
     /// v124 Bristol: the booked Night Glow, with this many balloons; a festival evening's ascent at dusk.
     case nightGlow(balloons: Int)
     case eveningAscent(balloons: Int)
+    /// v140: a night of the holding's International Balloon Festival: the guest balloons glow on the field.
+    case festivalGlow
 }
 
 extension Game {
@@ -264,6 +270,8 @@ extension Game {
             ev = .eveningAscent(balloons: state.local.eveN ?? 1)
         } else if let f = state.festival {
             ev = .lanterns(festival: f.index)
+        } else if state.holding.festivalOn(state.region, day: state.day) {
+            ev = .festivalGlow
         } else if state.fiesta != nil {
             ev = .balloonGlow
         } else if let w = state.winter, state.winterNight != w.start {
