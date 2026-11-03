@@ -182,7 +182,7 @@ extension Game {
             let seats = up.reduce(0) { $0 + state.sellSeats($1) }
             let pax = jsRound(Double(min(seats, paxTotal)) * EveningAscent.pax)
             if pax > 0 {
-                let fuel = jsRound(Double(up.reduce(0) { $0 + $1.size.fuel }) * EveningAscent.fuel)
+                let fuel = jsRound(Double(up.reduce(0) { $0 + $1.size.fuel }) * EveningAscent.fuel * state.holding.fuelFactor)
                 lg.evening = pax * state.price
                 lg.fuel += fuel
                 state.local.eveDay = state.day

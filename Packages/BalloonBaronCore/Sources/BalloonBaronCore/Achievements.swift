@@ -10,8 +10,10 @@ public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, 
 }
 
 /// The holding's own goals, written on the office whiteboard. All seven make you World Baron. Text: `hgoal.<rawValue>`.
+/// v137: listed in the order the campaign simulator meets them on average (`tools/sim-campaign.js`, 32 seeds: million
+/// 219, Luxor 441, TV 442, celebrity 444, six offices 446, all four R&D levels 520, World Games 631).
 public enum HoldingGoal: String, CaseIterable, Sendable {
-    case million, baronLux, tv, celebrity, research, offices
+    case million, baronLux, tv, celebrity, offices, research
     /// v123.5: the finale, the World Games show (it needs the Baron of Bristol).
     case worldGames
 }
@@ -57,7 +59,11 @@ extension GameState {
 
     /// Once you're World Baron the goals stay ticked, whatever the holding's cash does later.
     public func done(_ g: HoldingGoal) -> Bool {
-        if holding.worldBaron != nil { return true }
+        holding.worldBaron != nil || met(g)
+    }
+
+    /// The goal as it stands today, whatever the title says. v137: six offices and all four R&D levels.
+    public func met(_ g: HoldingGoal) -> Bool {
         switch g {
         case .million: return holding.millionOn != nil || holding.cash >= Holding.millionGoal
         case .baronLux: return barons[.lux] != nil

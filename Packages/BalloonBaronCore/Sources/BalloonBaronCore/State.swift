@@ -217,7 +217,10 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case fiestaStarted
     case regionIssue(RegionID, Issue)
     case officeOpened(Office)
+    /// Four offices open (v137: any four; it was all four): expenses down to 20%.
     case allOffices
+    /// v137: all six offices: expenses down to 15%.
+    case sixOffices
     case celebritySigned(Int)
     /// The region's rival boss speaks (text `boss.<region>.<line>`), once per region and line.
     case boss(RegionID, BossLine)

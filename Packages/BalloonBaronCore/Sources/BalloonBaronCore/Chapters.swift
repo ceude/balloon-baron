@@ -156,6 +156,13 @@ extension GameState {
         }
         if region == .cap { fix(&local.pilots); fix(&local.candidates) }
         else if parked[.cap] != nil { fix(&parked[.cap]!.state.pilots); fix(&parked[.cap]!.state.candidates) }
+        // v137 (developer, still testing): the holding goals want six offices and all four R&D levels. A World Baron
+        // who doesn't have them is not one until they do; the million they had reached stays met, and the postcard
+        // stays in the album (it isn't granted twice).
+        if let w = holding.worldBaron, !HoldingGoal.allCases.allSatisfy(met) {
+            if holding.millionOn == nil { holding.millionOn = w }
+            holding.worldBaron = nil
+        }
         guard version < 4 else { return }
         func shift(_ c: Int) -> Int { c >= 2 ? c + 1 : c }
         local.chapter = shift(local.chapter)

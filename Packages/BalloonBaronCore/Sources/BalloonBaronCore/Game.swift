@@ -342,7 +342,7 @@ public struct Game: Sendable {
         let traitRisk = trait(of: b)?.accidentFactor ?? 1
         let radar = flag == .yellow && state.level(.mast) >= 3 ? 0.8 : 1
         let equipment = Burners.risk[b.burners - 1] * (b.hasTurningVent && flag != .green ? Burners.turningVentRisk : 1)
-        return equipment * flag.accident * traitRisk * radar * pilotRisk * b.size.risk * (state.condition(b) < 0.3 ? 1.5 : 1)
+        return state.holding.accidentFactor * equipment * flag.accident * traitRisk * radar * pilotRisk * b.size.risk * (state.condition(b) < 0.3 ? 1.5 : 1)
     }
 
     /// Daily premiums for one balloon given its accident chance. Nothing is insurable on a red day.

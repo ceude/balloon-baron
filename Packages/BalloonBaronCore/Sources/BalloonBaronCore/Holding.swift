@@ -1,10 +1,12 @@
 import Foundation
 
-/// City offices of the holding. Perks stack; all four cut holding expenses.
+/// City offices of the holding. Perks stack; any four cut holding expenses, all six cut them further.
 public enum Office: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     case ist, nyc, sel, tyo
+    /// v137: Dubai (Luxor +20%, records 25% cheaper) and Paris (Bristol +20%, the documentary 20% cheaper).
+    case dxb, par
 
-    public var cost: Int { [350000, 450000, 400000, 400000][index] }
+    public var cost: Int { [350000, 450000, 400000, 400000, 1_500_000, 1_800_000][index] }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
 }
 
@@ -20,7 +22,8 @@ public struct Holding: Codable, Equatable, Sendable {
     public struct ResearchLevel: Sendable { public let cost: Int, life: Int }
 
     public static let expenseRate = 0.25
-    public static let allOfficesExpenseRate = 0.2
+    /// v137 (developer): any four offices bring the holding's running costs down to 20%, all six to 15%.
+    public static let fourOfficesExpenseRate = 0.2, allOfficesExpenseRate = 0.15, fewOffices = 4
     public static let entryFee = 100000
     /// Share of a parked region's typical profit its manager delivers.
     public static let autopilotEfficiency = 0.85
@@ -35,7 +38,20 @@ public struct Holding: Codable, Equatable, Sendable {
     /// balloon show at the World Games' opening ceremony, once.
     public static let jerseyCost = 3_000_000, jerseyDays = 180, jerseyBoost = 1.15, jerseyRep = 0.1
     public static let worldGamesCost = 10_000_000, worldGamesDays = 60, worldGamesBoost = 1.3, worldGamesRep = 0.2
-    public static let researchLevels = [ResearchLevel(cost: 400000, life: 160), ResearchLevel(cost: 900000, life: 200)]
+    /// Levels 1 and 2 are the envelope research. v137: level 3 is a weather radar network, level 4 a composite basket and
+    /// an efficient burner (they keep the envelope's 200 flights). The holding goal wants all four.
+    public static let researchLevels = [ResearchLevel(cost: 400000, life: 160), ResearchLevel(cost: 900000, life: 200),
+                                        ResearchLevel(cost: 2_000_000, life: 200), ResearchLevel(cost: 4_000_000, life: 200)]
+    public static let envelopeResearch = 2, radarLevel = 3, compositeLevel = 4
+    /// v137: the radar cuts accident risk (and so the premiums) by 15%; the composite basket fuel by 25% and upkeep by
+    /// 15%. Parked regions earn what that saves a late-game region: +5% and +2% (`tools/sim-campaign.js`: premiums are
+    /// about 26% of its net, fuel and upkeep 8%).
+    public static let radarAccident = 0.85, radarAutopilot = 1.05
+    public static let compositeFuel = 0.75, compositeUpkeep = 0.85, compositeAutopilot = 1.02
+    /// v137: the streaming documentary series: demand in every region for 120 days, popularity in every region you own,
+    /// and a new season 60 days after one ends.
+    public static let documentaryCost = 2_500_000, documentaryDays = 120, documentaryGap = 60
+    public static let documentaryBoost = 1.15, documentaryRep = 0.1
     /// What you leave in a region's cash box when you take "all".
     public static let withdrawKeep = 10000
 
@@ -80,6 +96,15 @@ public struct Holding: Codable, Equatable, Sendable {
     public var closed: [RegionID: Int]?
     /// v136: each region's own TV campaign (nil in older saves).
     public var tv: [RegionID: TVRun]?
+    /// v137: the documentary series (nil until the first season).
+    public var documentary: Documentary?
+
+    public struct Documentary: Codable, Equatable, Sendable {
+        /// The season on air runs until `until`; the next can be made from `next`.
+        public var until: Int
+        public var next: Int
+        public var season: Int
+    }
 
     public struct TVRun: Codable, Equatable, Sendable {
         public var until: Int
@@ -96,13 +121,27 @@ public struct Holding: Codable, Equatable, Sendable {
     public func sends(_ r: RegionID) -> Bool { !(keepIn ?? []).contains(r) }
 
     public func has(_ o: Office) -> Bool { offices[o] != nil }
-    public var expenseRate: Double { offices.count == Office.allCases.count ? Self.allOfficesExpenseRate : Self.expenseRate }
+    public var expenseRate: Double {
+        offices.count >= Office.allCases.count ? Self.allOfficesExpenseRate : offices.count >= Self.fewOffices ? Self.fourOfficesExpenseRate : Self.expenseRate
+    }
+    /// v137: what the R&D levels bought so far do.
+    public var accidentFactor: Double { research >= Self.radarLevel ? Self.radarAccident : 1 }
+    public var fuelFactor: Double { research >= Self.compositeLevel ? Self.compositeFuel : 1 }
+    public var upkeepFactor: Double { research >= Self.compositeLevel ? Self.compositeUpkeep : 1 }
+    public var researchAutopilot: Double {
+        (research >= Self.radarLevel ? Self.radarAutopilot : 1) * (research >= Self.compositeLevel ? Self.compositeAutopilot : 1)
+    }
+    public var documentaryCost: Int { jsRound(Double(Self.documentaryCost) * (has(.par) ? 0.8 : 1)) }
+    public func documentaryOn(_ day: Int) -> Bool { (documentary?.until ?? 0) > day }
+    /// v137: a record attempt's price (Dubai's office takes a quarter off).
+    public func recordCost(_ k: RecordAttempt) -> Int { jsRound(Double(k.cost) * (has(.dxb) ? 0.75 : 1)) }
     public var tvCost: Int { jsRound(Double(Self.tvCost) * (has(.nyc) ? 0.75 : 1)) }
     public var celebrityCost: Int { has(.sel) ? 420000 : Self.celebrityCost }
     public var celebrityDays: Int { has(.sel) ? 180 : Self.celebrityDays }
-    /// Office bonus on a parked region's income.
+    /// Office bonus on a parked region's income; v137: with the R&D levels' savings.
     public func officeMultiplier(_ r: RegionID) -> Double {
         (has(.ist) && r == .cap ? 1.25 : 1) * (has(.nyc) && r == .abq ? 1.2 : 1)
+            * (has(.dxb) && r == .lux ? 1.2 : 1) * (has(.par) && r == .bri ? 1.2 : 1) * researchAutopilot
     }
 
     mutating func log(day: Int, income: Int = 0, expense: Int = 0) {
@@ -121,6 +160,7 @@ extension Game {
         let h = state.holding, d = state.day
         return (1 + (h.recordBoost ?? 0)) * (h.tvUntil(r) > d ? 1.2 : 1) * ((h.celebrity?.until ?? 0) > d ? 1.1 : 1) * ((h.billboards[r] ?? 0) > d ? 1.1 : 1)
             * ((h.jerseyUntil ?? 0) > d ? Holding.jerseyBoost : 1) * ((h.worldGamesUntil ?? 0) > d ? Holding.worldGamesBoost : 1)
+            * (h.documentaryOn(d) ? Holding.documentaryBoost : 1)
     }
 
     /// Takes money out of the region you're playing into the holding, converted to euros.
@@ -273,7 +313,7 @@ extension Game {
         let lv = state.holding.research
         guard lv < Holding.researchLevels.count, spendHolding(Holding.researchLevels[lv].cost) else { return false }
         state.holding.research = lv + 1
-        celebrate(.research)
+        celebrate(lv + 1 == Holding.radarLevel ? .radar : lv + 1 == Holding.compositeLevel ? .composite : .research)
         return true
     }
 
@@ -281,8 +321,24 @@ extension Game {
     public mutating func openOffice(_ o: Office) -> Bool {
         guard !state.holding.has(o), spendHolding(o.cost) else { return false }
         state.holding.offices[o] = state.day
-        state.hezQueue.append(state.holding.offices.count == Office.allCases.count ? .allOffices : .officeOpened(o))
+        let n = state.holding.offices.count
+        state.hezQueue.append(n == Office.allCases.count ? .sixOffices : n == Holding.fewOffices ? .allOffices : .officeOpened(o))
         celebrate(.office)
+        return true
+    }
+
+    /// v137: a documentary season can be made (none on air, and the gap after the last one is over).
+    public var canMakeDocumentary: Bool { (state.holding.documentary?.next ?? 0) <= state.day }
+
+    /// v137: the streaming documentary series about the company: a new season.
+    @discardableResult
+    public mutating func makeDocumentary() -> Bool {
+        guard canMakeDocumentary, spendHolding(state.holding.documentaryCost) else { return false }
+        let d = state.day
+        state.holding.documentary = Holding.Documentary(until: d + Holding.documentaryDays, next: d + Holding.documentaryDays + Holding.documentaryGap,
+                                                        season: (state.holding.documentary?.season ?? 0) + 1)
+        repEverywhere(Holding.documentaryRep)
+        celebrate(.documentary)
         return true
     }
 

@@ -3,14 +3,23 @@ import Foundation
 /// Sponsored world records, the holding's fifth desk. Open once you've entered Luxor. Text: `record.<rawValue>`.
 public enum RecordAttempt: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     case altitude, world
+    /// v137: the Pacific crossing, the big one: no sure first try, opens after the round-the-world record, and setting
+    /// it raises the records' ceiling from 25% to 35%.
+    case pacific
 
-    public var cost: Int { [400000, 900000][index] }
-    public var days: Int { [25, 40][index] }
-    /// Shown odds. The first attempt at each record always succeeds; the odds apply when you try to beat your own.
-    public var odds: Double { [0.65, 0.5][index] }
+    public var cost: Int { [400000, 900000, 3_000_000][index] }
+    public var days: Int { [25, 40, 60][index] }
+    /// Shown odds. The first attempt at the first two records always succeeds; the odds apply when you try to beat your
+    /// own. The Pacific crossing's odds are the odds every time.
+    public var odds: Double { [0.65, 0.5, 0.4][index] }
+    public var sureFirst: Bool { self != .pacific }
+    /// The record that has to be yours before this one can be tried.
+    public var after: RecordAttempt? { self == .pacific ? .world : nil }
+    /// How much setting it raises the ceiling of the records' boost.
+    public var ceilingRaise: Double { self == .pacific ? 0.1 : 0 }
     /// Lasting demand boost in every region for setting the record.
-    public var boost: Double { [0.05, 0.1][index] }
-    /// Each time you beat your own record, up to `maxBoost` in all.
+    public var boost: Double { [0.05, 0.1, 0.1][index] }
+    /// Each time you beat your own record, up to `maxBoost` in all (more with the Pacific crossing).
     public static let repeatBoost = 0.02, maxBoost = 0.25
     /// Popularity a record set adds in every region you own (v136; it used to reach only the region you were in).
     public static let rep = 0.1
@@ -29,6 +38,8 @@ public enum HoldingDeed: String, Codable, Sendable {
     case tv, billboards, celebrity, research, office, record, shape
     /// v122.7: the champion's jersey, the World Games' opening show.
     case jersey, worldGames
+    /// v137: the documentary series, R&D level 3 (radar) and level 4 (composite basket).
+    case documentary, radar, composite
 }
 
 public enum AdShape: String, Codable, CaseIterable, Sendable {
@@ -49,6 +60,10 @@ public struct AdContract: Codable, Equatable, Sendable {
 extension GameState {
     public var recordsOpen: Bool { owns(.lux) }
     public func recordSet(_ k: RecordAttempt) -> Bool { holding.records?[k] != nil }
+    /// v137: a record waiting for another to be set first.
+    public func recordLocked(_ k: RecordAttempt) -> Bool { k.after.map { !recordSet($0) } ?? false }
+    /// v137: the ceiling of the records' lasting boost.
+    public var recordCeiling: Double { RecordAttempt.allCases.reduce(RecordAttempt.maxBoost) { $0 + (recordSet($1) ? $1.ceilingRaise : 0) } }
     /// The shaped balloon over a region today, if any.
     public func adShape(over r: RegionID) -> AdShape? {
         guard let a = holding.adShape, a.until >= day, a.region == r else { return nil }
@@ -59,7 +74,7 @@ extension GameState {
 extension Game {
     @discardableResult
     public mutating func startRecord(_ k: RecordAttempt) -> Bool {
-        guard state.recordsOpen, state.holding.record == nil, spendHolding(k.cost) else { return false }
+        guard state.recordsOpen, state.holding.record == nil, !state.recordLocked(k), spendHolding(state.holding.recordCost(k)) else { return false }
         state.holding.record = RecordRun(kind: k, done: state.day + k.days)
         celebrate(.record)
         return true
@@ -93,11 +108,11 @@ extension Game {
         guard let r = state.holding.record, state.day >= r.done else { return 0 }
         state.holding.record = nil
         let first = !state.recordSet(r.kind)
-        if first || rng.chance(r.kind.odds) {
+        if (first && r.kind.sureFirst) || rng.chance(r.kind.odds) {
             var set = state.holding.records ?? [:]
             set[r.kind] = state.day
             state.holding.records = set
-            state.holding.recordBoost = min(RecordAttempt.maxBoost, (state.holding.recordBoost ?? 0) + (first ? r.kind.boost : RecordAttempt.repeatBoost))
+            state.holding.recordBoost = min(state.recordCeiling, (state.holding.recordBoost ?? 0) + (first ? r.kind.boost : RecordAttempt.repeatBoost))
             repEverywhere(RecordAttempt.rep, .record)
             addPaper(.worldRecord(r.kind))
             state.hezQueue.append(.record(r.kind, success: true))

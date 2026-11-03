@@ -81,7 +81,7 @@ extension Game {
             }
             let t = trait(of: b)
             lg.tickets += pax * state.price
-            lg.fuel += jsRound(Double(z.fuel) * (state.fuelUpUntil.map { $0 >= state.day } == true ? 1.5 : 1) * (t == .thrifty ? 0.85 : 1))
+            lg.fuel += jsRound(Double(z.fuel) * (state.fuelUpUntil.map { $0 >= state.day } == true ? 1.5 : 1) * (t == .thrifty ? 0.85 : 1) * state.holding.fuelFactor)
             switch t {
             case .showman: lg.tips += pax * 9
             case .daredevil: rep(.traits, 0.003)
@@ -204,7 +204,7 @@ extension Game {
             }
             if state.condition(state.balloons[i]) <= 0 { ev.append(.envelopeWorn(balloon: state.balloons[i].name)) }
         }
-        lg.upkeep = jsRound(Double(state.insideBalloons.reduce(0) { $0 + $1.size.upkeep }) * state.upkeepFactor) // v127: none outside the hangar
+        lg.upkeep = jsRound(Double(state.insideBalloons.reduce(0) { $0 + $1.size.upkeep }) * state.upkeepFactor * state.holding.upkeepFactor) // v127: none outside the hangar
         let repHotels = state.rep
         for h in state.activeHotels {
             if state.ownHotels.contains(h) {
