@@ -121,12 +121,20 @@ add("holding.chip.autoIncome", "Autopilot income +%@", "Otomatik bölgelerde kaz
 # The Pacific crossing
 add("record.pacific", "Across the Pacific", "Pasifik geçişi", "Über den Pazifik", "Travesía del Pacífico", "太平洋横断", "태평양 횡단")
 add("record.pacific.d",
-    "Take-off in Japan, 8,000 km on the jet stream, landing in Canada's snowy forests. The longest journey in a pure hot-air balloon.",
-    "Japonya'dan kalkış, jet akımında 8.000 km, iniş Kanada'nın karlı ormanlarında. Saf sıcak hava balonuyla en uzun yolculuk.",
-    "Start in Japan, 8.000 km im Jetstream, Landung in Kanadas verschneiten Wäldern. Die längste Reise in einem reinen Heißluftballon.",
-    "Despegue en Japón, 8.000 km en la corriente en chorro, aterrizaje en los bosques nevados de Canadá. El viaje más largo en un globo de aire caliente puro.",
-    "日本を離陸し、ジェット気流に乗って8,000km、カナダの雪の森に着陸。純粋な熱気球による最長の旅。",
-    "일본에서 이륙해 제트기류를 타고 8,000km, 캐나다의 눈 덮인 숲에 착륙. 순수 열기구로 가는 가장 긴 여정.")
+    "Take-off in Japan, 8,000 km on the jet stream, landing in North America's snowy forests. Crossing an ocean in a single balloon.",
+    "Japonya'dan kalkış, jet akımında 8.000 km, iniş Kuzey Amerika'nın karlı ormanlarında. Bir okyanusu tek balonla aşmak.",
+    "Start in Japan, 8.000 km im Jetstream, Landung in den verschneiten Wäldern Nordamerikas. Ein Ozean in einem einzigen Ballon.",
+    "Despegue en Japón, 8.000 km en la corriente en chorro, aterrizaje en los bosques nevados de Norteamérica. Cruzar un océano en un solo globo.",
+    "日本を離陸し、ジェット気流に乗って8,000km、北米の雪の森に着陸。一つの気球で大洋を越える。",
+    "일본에서 이륙해 제트기류를 타고 8,000km, 북아메리카의 눈 덮인 숲에 착륙. 열기구 하나로 대양을 건넙니다.")
+# v137 (developer): the round-the-world flight is the pinnacle of the ladder now
+add("record.world.d",
+    "Take-off in the Swiss Alps, 20 days in the jet streams over two oceans, landing in the Egyptian desert. Breitling Orbiter 3 first did it in 1999.",
+    "İsviçre Alpleri'nden kalkış, 20 gün jet akımlarında, iki okyanus, iniş Mısır çölünde. İlk kez 1999'da Breitling Orbiter 3 başarmıştı.",
+    "Start in den Schweizer Alpen, 20 Tage in den Jetstreams über zwei Ozeane, Landung in der ägyptischen Wüste. Breitling Orbiter 3 schaffte es 1999 als Erster.",
+    "Despegue en los Alpes suizos, 20 días en las corrientes en chorro sobre dos océanos, aterrizaje en el desierto egipcio. El Breitling Orbiter 3 lo logró por primera vez en 1999.",
+    "スイス・アルプスから離陸し、ジェット気流に乗って二つの大洋を越える20日間、エジプトの砂漠に着陸。1999年にブライトリング・オービター3号が初めて達成した。",
+    "스위스 알프스에서 이륙해 제트기류 속에서 두 대양을 건너는 20일, 이집트 사막에 착륙. 1999년 브라이틀링 오비터 3호가 처음 성공했습니다.")
 add("holding.rec.after", "First set this record: %@", "Önce bu rekoru kır: %@", "Erst diesen Rekord aufstellen: %@",
     "Primero bate este récord: %@", "先にこの記録を達成：%@", "먼저 이 기록을 세우세요: %@")
 add("holding.chip.recCeiling", "Records' ceiling %1$@ → %2$@", "Rekor tavanı %1$@ → %2$@", "Rekord-Obergrenze %1$@ → %2$@",

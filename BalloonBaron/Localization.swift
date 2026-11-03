@@ -64,9 +64,9 @@ extension Pattern { var title: String { storeItem.map { loc("store.\($0.rawValue
 extension Office {
     var title: String { loc("office.\(rawValue)") }
     var perk: String { loc("office.\(rawValue).perk") }
-    /// Istanbul a mosque, New York the Statue of Liberty, Seoul Namsan Tower, Tokyo Tokyo Tower; v137: Dubai the Burj
-    /// Khalifa, Paris the Eiffel Tower.
-    var glyph: LineGlyph.Kind { [.mosque, .liberty, .namsan, .tokyoTower, .burj, .eiffel][Office.allCases.firstIndex(of: self)!] }
+    /// v137: each city's landmark: Istanbul the Bosphorus Bridge, New York the Statue of Liberty, Seoul N Seoul Tower,
+    /// Tokyo Skytree, Dubai the Burj Khalifa, Paris the Eiffel Tower.
+    var glyph: LineGlyph.Kind { [.bosphorus, .liberty, .namsan, .skytree, .burj, .eiffel][Office.allCases.firstIndex(of: self)!] }
 }
 extension Design {
     var title: String { gift?.title ?? (name.isEmpty ? "\(pattern.title) \(number)" : name) }

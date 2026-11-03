@@ -78,7 +78,8 @@ struct HoldingView: View {
     }
 
     /// Desk 5: a sponsored world record. The first attempt at the first two always works; the odds shown apply to beating
-    /// your own. v137: the Pacific crossing's odds are the odds every time, and it opens after the round-the-world record.
+    /// your own. v137: the round-the-world flight, the ladder's top, has odds that are the odds every time and opens after
+    /// the Pacific crossing.
     private func recordCard(_ k: RecordAttempt, _ s: GameState) -> some View {
         let h = s.holding, run = h.record, now = run?.kind == k, set = s.recordSet(k), cost = h.recordCost(k)
         var chips = [loc("holding.chip.prep", num(k.days)), loc("holding.chip.odds", percent(k.odds)), loc("holding.chip.allDemandLasting", percent(k.boost))]
@@ -88,7 +89,7 @@ struct HoldingView: View {
         let lock: String? = !s.recordsOpen ? loc("holding.rec.lockNote")
             : s.recordLocked(k) ? loc("holding.rec.after", (k.after ?? .world).title)
             : run != nil && !now ? loc("holding.rec.oneAtATime") : nil
-        return HoldingDealCard(art: k == .pacific ? .pacific : .record, kicker: loc("holding.rec.kicker"), title: k.title, detail: k.detail, chips: chips,
+        return HoldingDealCard(art: k == .pacific ? .pacific : k == .world ? .globe : .record, kicker: loc("holding.rec.kicker"), title: k.title, detail: k.detail, chips: chips,
                                price: cost, cta: loc(set ? "holding.rec.again" : "holding.rec.cta"),
                                enabled: lock == nil && h.cash >= cost, lockNote: lock ?? (set ? loc("holding.rec.yours") : nil),
                                active: now ? loc("holding.rec.active", num((run?.done ?? s.day) - s.day)) : nil,
@@ -1048,7 +1049,7 @@ struct HoldingChipFlow: Layout {
 
 /// Code-drawn art for the deal cards (64×64 artboard, after the prototype's SVGs).
 struct HoldingArt: View {
-    enum Kind { case tv, star, billboard, lab, record, jersey, worldGames, shape(AdShape), documentary, radar, composite, pacific }
+    enum Kind { case tv, star, billboard, lab, record, jersey, worldGames, shape(AdShape), documentary, radar, composite, pacific, globe }
     let kind: Kind
 
     var body: some View {
@@ -1067,6 +1068,7 @@ struct HoldingArt: View {
             case .radar: drawRadar(&ctx, k)
             case .composite: drawComposite(&ctx, k)
             case .pacific: drawPacific(&ctx, k)
+            case .globe: drawGlobe(&ctx, k)
             }
         }
         .accessibilityHidden(true)
@@ -1136,6 +1138,17 @@ struct HoldingArt: View {
         ctx.fill(polygon([(16, 44), (48, 44), (45, 58), (19, 58)], k), with: .color(Color(hex: "#2b2350")))
         ctx.stroke(svg("M24 44 L22 58 M32 44 L32 58 M40 44 L42 58", k), with: .color(Color(hex: "#4a4270")), lineWidth: 1.4 * k)
         ctx.stroke(svg("M18 49 L46 49 M19 54 L45 54", k), with: .color(Self.teal), lineWidth: 1.6 * k)
+    }
+
+    /// The round-the-world flight: a globe, a dashed route over it and a balloon (`INVEST_ART.globe`).
+    private func drawGlobe(_ ctx: inout GraphicsContext, _ k: CGFloat) {
+        ctx.fill(Path(ellipseIn: rect(9, 15, 42, 42, k)), with: .color(Color(hex: "#2b7fd6")))
+        ctx.stroke(svg("M30 15 C21 21 21 51 30 57 M30 15 C39 21 39 51 30 57 M9 36 L51 36 M12 26 L48 26 M12 46 L48 46", k),
+                   with: .color(.white.opacity(0.45)), lineWidth: 1.6 * k)
+        ctx.stroke(svg("M8 30 C9 17 22 8 38 9", k), with: .color(Self.gold),
+                   style: StrokeStyle(lineWidth: 2.4 * k, lineCap: .round, dash: [3 * k, 4 * k]))
+        ctx.fill(svg("M50 4 C55 4 58 8 58 12 C58 16 55 18 53 20 L47 20 C45 18 42 16 42 12 C42 8 45 4 50 4 Z", k), with: .color(Color(hex: "#ff5e3a")))
+        ctx.fill(Path(roundedRect: rect(48, 21, 4, 3.5, k), cornerRadius: 1 * k), with: .color(Color(hex: "#8a5a2e")))
     }
 
     /// A balloon over two rows of ocean waves.
