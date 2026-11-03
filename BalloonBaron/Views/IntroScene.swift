@@ -67,8 +67,8 @@ enum IntroScene {
             ctx.fill(Path(ellipseIn: CGRect(x: cx - w / 2, y: cy - w * 0.06, width: w, height: w * 0.12)), with: .radialGradient(
                 Gradient(colors: [Color(red: 1, green: 190 / 255, blue: 150 / 255).opacity(0.28), .clear]), center: CGPoint(x: cx, y: cy), startRadius: 0, endRadius: w / 2))
         }
-        // Balloons already up, drifting, hazier the further they are.
-        for i in 0..<11 {
+        // Balloons already up, drifting, hazier the further they are. v139: Cappadocia fills its sky at every depth in its own land.
+        for i in 0..<11 where ["lux", "abq", "bri"].contains(key) {
             var r = Mulberry32(seed: UInt32(100 + i))
             let a = r.next(), d = r.next()
             let x = CGFloat((a * Double(W) * 1.4 + t * (3 + d * 9)).truncatingRemainder(dividingBy: Double(W) * 1.4)) - W * 0.2
@@ -79,7 +79,7 @@ enum IntroScene {
                                  burn: d > 0.7 && sin(t * 2 + Double(i)) > 0.6, alpha: 0.55 + d * 0.4, time: t)
         }
         // v138: the land, in backlit layers (`introLand`).
-        let land = Land(W: W, H: H, gy: gy, u: u, t: t, L: L)
+        let land = Land(W: W, H: H, gy: gy, u: u, t: t, lift: lift, L: L)
         switch key {
         case "lux": land.lux(&ctx)
         case "abq": land.abq(&ctx)
@@ -120,11 +120,11 @@ enum IntroScene {
 /// backlit silhouettes: darker the nearer, softer and warmer the further, a haze pooling between the layers, each layer
 /// lit towards the sun and edged with a thin rim of light. The middle stays clear for the balloon.
 private struct Land {
-    let W: CGFloat, H: CGFloat, gy: CGFloat, u: CGFloat, t: Double, L: IntroScene.Look
+    let W: CGFloat, H: CGFloat, gy: CGFloat, u: CGFloat, t: Double, lift: Double, L: IntroScene.Look
     let sx: CGFloat, sun: String, haze: String, rimC: String, rw: CGFloat, step: CGFloat
 
-    init(W: CGFloat, H: CGFloat, gy: CGFloat, u: CGFloat, t: Double, L: IntroScene.Look) {
-        self.W = W; self.H = H; self.gy = gy; self.u = u; self.t = t; self.L = L
+    init(W: CGFloat, H: CGFloat, gy: CGFloat, u: CGFloat, t: Double, lift: Double, L: IntroScene.Look) {
+        self.W = W; self.H = H; self.gy = gy; self.u = u; self.t = t; self.lift = lift; self.L = L
         sx = W * 0.66; sun = L.sky[4]; haze = ScenePainter.mixHex(L.sky[3], L.sky[4], 0.55)
         rimC = ScenePainter.mixHex(sun, "#ffffff", 0.45); rw = max(1, u * 0.0035); step = max(3, W / 180)
     }
@@ -191,17 +191,6 @@ private struct Land {
             Gradient(stops: [.init(color: c(haze, 0), location: 0), .init(color: c(haze, a), location: 0.55), .init(color: c(haze, 0), location: 1)]),
             startPoint: pt(0, gy - u * 0.05), endPoint: pt(0, gy + u * 0.04)))
     }
-    /// A fairy chimney with its basalt cap.
-    private func chim(_ p: inout Path, _ x: CGFloat, _ b: CGFloat, _ h: CGFloat, _ w: CGFloat) {
-        p.move(to: pt(x - w * 0.5, b))
-        p.addQuadCurve(to: pt(x - w * 0.13, b - h * 0.86), control: pt(x - w * 0.34, b - h * 0.5))
-        p.addLine(to: pt(x - w * 0.3, b - h * 0.875))
-        p.addQuadCurve(to: pt(x, b - h * 1.01), control: pt(x - w * 0.27, b - h * 0.99))
-        p.addQuadCurve(to: pt(x + w * 0.3, b - h * 0.875), control: pt(x + w * 0.27, b - h * 0.99))
-        p.addLine(to: pt(x + w * 0.13, b - h * 0.86))
-        p.addQuadCurve(to: pt(x + w * 0.5, b), control: pt(x + w * 0.34, b - h * 0.5))
-        p.closeSubpath()
-    }
     /// Flat-topped land with sloping shoulders: [x0, x1, height] in screen widths and u.
     private func tableland(_ x: CGFloat, base: CGFloat, _ list: [(CGFloat, CGFloat, CGFloat)], edge e: CGFloat, smooth: Bool) -> CGFloat {
         var hh = base
@@ -214,47 +203,244 @@ private struct Land {
         return gy - hh
     }
 
-    // MARK: Cappadocia: Erciyes with its snow, the valley's flat-topped rim, fairy chimneys in clusters
+    // MARK: Cappadocia (v139): the famous sunrise over Göreme, full of balloons
 
+    /// v139 (developer): Cappadocia, the game's home. Erciyes's snows far off in the haze, the Uçhisar rock with its flag
+    /// on the horizon, the Göreme rim with its banded tuff, a Love Valley field of slender chimneys, poplars, and near
+    /// chimneys in cream, apricot and rose tuff, lit on the side facing the sun, with cave windows and doors cut into them.
+    /// Vineyard rows and a track lead in to the balloon, and the sky is full of balloons at every depth.
     func cap(_ ctx: inout GraphicsContext) {
-        let X = W * 0.24
-        func erc(_ x: CGFloat) -> CGFloat { let d = abs(x - X) / (u * 0.46); return d >= 1 ? 0 : min(u * 0.2, u * 0.235 * pow(1 - d, 1.7)) }
-        func farY(_ x: CGFloat) -> CGFloat { gy - u * 0.055 - wave(x, 0.013, u * 0.015, 1) - wave(x, 0.041, u * 0.006, 0) - erc(x) }
-        sil(&ctx, 0.8, 0.25, 0.5) { ridge(&$0, bot: gy, farY) }
-        // The snow, tinted by the dawn.
-        var snow = Path()
-        let sn = u * 0.145
-        var x = X - u * 0.2, first = true
-        while x <= X + u * 0.2 { if erc(x) >= sn { first ? snow.move(to: pt(x, farY(x))) : snow.addLine(to: pt(x, farY(x))); first = false }; x += step / 2 }
-        x = X + u * 0.2
-        while x >= X - u * 0.2 {
-            if erc(x) >= sn { snow.addLine(to: pt(x, farY(x) + (erc(x) - sn) * 0.75 + u * 0.006 * abs(sin((x - X) / u * 38)) * min(1, (erc(x) - sn) / (u * 0.02)))) }
-            x -= step / 2
+        let TUFF = "#dc9a7c", ROSE = "#c8787a", CREAM = "#f8dcb4", BASALT = "#4a2c36", POPLAR = "#56603a", ink = L.ink
+        // A colour at depth k: near it is the rock's own shade, far it melts into the haze.
+        func tone(_ base: String, _ k: Double) -> String { ScenePainter.mixHex(ScenePainter.mixHex(base, "#4e202e", 0.56 * (1 - k)), haze, k * 0.8) }
+        let litC = ScenePainter.mixHex(sun, CREAM, 0.3)
+        // A flat layer lit towards the sun, with a rim of light along its top.
+        func layer(_ ctx: inout GraphicsContext, _ k: Double, _ base: String, _ glow: Double, _ rim: Double, _ build: (inout Path) -> Void) {
+            var p = Path(); build(&p)
+            if rim > 0 { ctx.fill(p.offsetBy(dx: 0, dy: -rw), with: across(c(rimC, rim * 0.2), c(rimC, rim))) }
+            let col = tone(base, k)
+            ctx.fill(p, with: across(c(col), ScenePainter.mix(col, sun, glow)))
         }
-        snow.closeSubpath()
-        ctx.fill(snow, with: across(ScenePainter.mix("#ffffff", sun, 0.35).opacity(0.55), ScenePainter.mix("#ffffff", sun, 0.2).opacity(0.85)))
-        hazeBand(&ctx, gy - u * 0.26, 0.5)
-        // The valley rim: tablelands with eroded shoulders.
-        let mesas: [(CGFloat, CGFloat, CGFloat)] = [(-0.1, 0.2, 0.08), (0.3, 0.47, 0.055), (0.6, 0.84, 0.07), (0.9, 1.15, 0.095)]
-        sil(&ctx, 0.56, 0.3, 0.55) { p in ridge(&p, bot: gy) { x in tableland(x, base: u * 0.035 + wave(x, 0.02, u * 0.006, 2), mesas, edge: u * 0.05, smooth: true) } }
-        hazeBand(&ctx, gy - u * 0.14, 0.38)
-        // Fairy chimneys in two clusters, leaving the middle to the balloon.
-        let b1 = gy + u * 0.005
-        sil(&ctx, 0.32, 0.3, 0.7) { p in
-            hump(&p, -W * 0.02, W * 0.38, b1, u * 0.025); hump(&p, W * 0.62, W * 1.02, b1, u * 0.022)
-            for (x, h) in [(0.05, 0.13), (0.1, 0.19), (0.16, 0.11), (0.22, 0.16), (0.29, 0.09), (0.7, 0.1), (0.76, 0.16), (0.82, 0.12), (0.88, 0.2), (0.95, 0.13)] as [(CGFloat, CGFloat)] {
-                chim(&p, W * x, b1 - u * 0.012, u * h, u * h * 0.4)
+        // A rounded rock lit from its side facing the sun: shadow side, body, a warm lit flank and a rim of light.
+        func solid(_ ctx: inout GraphicsContext, _ x: CGFloat, _ w: CGFloat, _ k: Double, _ base: String, _ glow: Double, _ rim: Double, _ build: (inout Path) -> Void) {
+            var p = Path(); build(&p)
+            let s: CGFloat = x < sx ? 1 : -1, col = tone(base, k), sh = ScenePainter.mixHex(col, ink, 0.42 * (1 - k)), lc = ScenePainter.mixHex(col, litC, glow)
+            if rim > 0 { ctx.fill(p.offsetBy(dx: s * rw * 1.2, dy: -rw * 0.5), with: .color(c(rimC, rim * 0.75))) }
+            ctx.fill(p, with: .linearGradient(Gradient(stops: [.init(color: c(sh), location: 0), .init(color: c(col), location: 0.5), .init(color: c(lc), location: 0.85),
+                                                               .init(color: ScenePainter.mix(lc, rimC, 0.3), location: 1)]),
+                                              startPoint: pt(x - s * w * 0.5, 0), endPoint: pt(x + s * w * 0.5, 0)))
+        }
+        // A fairy chimney's tuff cone, pinched under its cap or worn to a point.
+        func cone(_ p: inout Path, _ x: CGFloat, _ b: CGFloat, _ h: CGFloat, _ w: CGFloat, _ capped: Bool) {
+            let nw = capped ? w * 0.16 : w * 0.06, top = b - h * (capped ? 0.86 : 1)
+            p.move(to: pt(x - w * 0.5, b))
+            p.addCurve(to: pt(x - nw, top), control1: pt(x - w * 0.38, b - h * 0.32), control2: pt(x - nw * 1.8, top + h * 0.28))
+            if capped { p.addLine(to: pt(x + nw, top)) } else { p.addQuadCurve(to: pt(x + nw, top), control: pt(x, top - h * 0.04)) }
+            p.addCurve(to: pt(x + w * 0.5, b), control1: pt(x + nw * 1.8, top + h * 0.28), control2: pt(x + w * 0.38, b - h * 0.32))
+            p.closeSubpath()
+        }
+        // The basalt cap: a flat, slightly tilted hat.
+        func hat(_ p: inout Path, _ x: CGFloat, _ b: CGFloat, _ h: CGFloat, _ w: CGFloat) {
+            let y0 = b - h * 0.86, cw = w * 0.3, ch = h * 0.12
+            p.move(to: pt(x - cw, y0 + ch * 0.1))
+            p.addQuadCurve(to: pt(x - cw * 0.35, y0 - ch), control: pt(x - cw * 1.08, y0 - ch * 0.55))
+            p.addQuadCurve(to: pt(x + cw * 0.4, y0 - ch * 0.96), control: pt(x, y0 - ch * 1.12))
+            p.addQuadCurve(to: pt(x + cw, y0 + ch * 0.1), control: pt(x + cw * 1.06, y0 - ch * 0.5))
+            p.addQuadCurve(to: pt(x - cw, y0 + ch * 0.1), control: pt(x, y0 + ch * 0.32))
+            p.closeSubpath()
+        }
+        func chimney(_ ctx: inout GraphicsContext, _ x: CGFloat, _ b: CGFloat, _ h: CGFloat, _ w: CGFloat, _ k: Double, _ capped: Bool, _ glow: Double, _ rim: Double, _ base: String = "#dc9a7c") {
+            solid(&ctx, x, w, k, base, glow, rim) { cone(&$0, x, b, h, w, capped) }
+            if capped { solid(&ctx, x, w * 0.6, k, BASALT, glow * 0.5, rim) { hat(&$0, x, b, h, w) } }
+        }
+        // The tuff's bands, inside a shape.
+        func strata(_ ctx: inout GraphicsContext, _ top: CGFloat, _ bot: CGFloat, _ a: Double, _ build: (inout Path) -> Void) {
+            var p = Path(); build(&p)
+            var g = ctx
+            g.clip(to: p)
+            var y = bot, i = 0
+            while y > top {
+                g.fill(Path(CGRect(x: 0, y: y - u * 0.0022, width: W, height: u * 0.0022)), with: .color(i % 2 == 1 ? c(CREAM, a) : c(ink, a * 0.7)))
+                y -= u * (0.007 + 0.005 * CGFloat((i * 7) % 3)); i += 1
             }
         }
-        hazeBand(&ctx, gy - u * 0.05, 0.25)
-        ground(&ctx); mist(&ctx, 0.3)
-        // The nearest chimneys frame the edges.
-        let b0 = gy + u * 0.03
-        sil(&ctx, 0.12, 0.22, 0.9) { p in
-            hump(&p, -W * 0.2, W * 0.2, b0, u * 0.045); hump(&p, W * 0.82, W * 1.2, b0, u * 0.04)
-            chim(&p, W * 0.01, b0 - u * 0.02, u * 0.36, u * 0.15); chim(&p, W * 0.11, b0 - u * 0.02, u * 0.23, u * 0.1)
-            chim(&p, W * 0.97, b0 - u * 0.02, u * 0.31, u * 0.13); chim(&p, W * 0.885, b0 - u * 0.015, u * 0.17, u * 0.08)
+        // Windows and doors cut in the rock: dark arches with a sill catching the light.
+        func caves(_ ctx: inout GraphicsContext, _ list: [(CGFloat, CGFloat, CGFloat, Bool)], _ k: Double) {
+            let dark = ScenePainter.mix(tone(TUFF, k), ink, 0.6)
+            for (x, y, s, door) in list {
+                let hh = s * (door ? 1.5 : 0.75)
+                var p = Path()
+                p.move(to: pt(x - s / 2, y)); p.addLine(to: pt(x - s / 2, y - hh + s / 2))
+                p.addArc(center: pt(x, y - hh + s / 2), radius: s / 2, startAngle: .radians(.pi), endAngle: .radians(0), clockwise: false)
+                p.addLine(to: pt(x + s / 2, y)); p.closeSubpath()
+                ctx.fill(p, with: .color(dark))
+                ctx.fill(Path(CGRect(x: x - s * 0.65, y: y, width: s * 1.3, height: max(1, s * 0.14))), with: .color(c(litC, 0.55)))
+            }
         }
+        // The balloons already up: (x, how high: 0 horizon, 1 top of the sky, depth: 0 far, 1 near).
+        let cols = ["#ff5e3a", "#ffc23d", "#14a39a", "#9b7be0", "#5aa9e6", "#ff6fa8", "#22a45d", "#e5432f"]
+        let ttop = max(70, H * 0.14) + min(W * 0.13, 64) * 0.75 + 10
+        func skyB(_ ctx: inout GraphicsContext, _ list: [(CGFloat, CGFloat, CGFloat)], _ seed: Int) {
+            for (i, (fx, f, d)) in list.enumerated() {
+                let r = u * (0.0065 + pow(d, 1.4) * 0.036), drift = CGFloat(t) * u * (0.004 + d * 0.014) * (i % 2 == 1 ? 1 : 0.7)
+                let x = (W * fx + drift).truncatingRemainder(dividingBy: W * 1.2) - W * 0.1
+                let bob: CGFloat = CGFloat(sin(t * 0.5 + Double(i + seed))) * u * 0.004, rise: CGFloat = CGFloat(lift) * u * 0.25 * d
+                let y: CGFloat = max(ttop + r * 2.6, gy - (gy - ttop) * f) + bob + rise
+                let col = cols[(i * 3 + seed) % 8], hz = ScenePainter.mixHex(haze, L.sky[2], Double(f) * 0.7), k = Double(1 - d) * 0.72
+                ScenePainter.balloon(&ctx, x: x, y: y, r: r, colors: [ScenePainter.mixHex(col, hz, k), ScenePainter.mixHex("#fff6e8", hz, k)],
+                                     burn: d > 0.6 && sin(t * 1.8 + Double(i) * 2.3) > 0.55, alpha: Double(0.7 + d * 0.3), time: t)
+            }
+        }
+
+        // Erciyes: a far volcano, broad-shouldered, its summit a little ragged and deep in snow.
+        let X = W * 0.23
+        func erc(_ x: CGFloat) -> CGFloat {
+            let d = abs(x - X) / (u * 0.52), d2 = abs(x - X - u * 0.09) / (u * 0.2)
+            let m1: CGFloat = d >= 1 ? 0 : u * 0.25 * pow(1 - d, 1.6), m2: CGFloat = d2 >= 1 ? 0 : u * 0.165 * pow(1 - d2, 1.5), m = max(m1, m2)
+            guard m > u * 0.2 else { return m }
+            return m - (m - u * 0.2) * 0.5 + u * 0.003 * sin((x - X) / u * 70)
+        }
+        func farY(_ x: CGFloat) -> CGFloat { gy - u * 0.05 - wave(x, 0.013, u * 0.012, 1) - wave(x, 0.041, u * 0.005, 0) - erc(x) }
+        layer(&ctx, 0.86, "#8a6a9a", 0.22, 0.45) { ridge(&$0, bot: gy, farY) }
+        // The snow above a snowline, pink in the dawn, running down in gullies, its west side in shade.
+        do {
+            let snowC = ScenePainter.mixHex("#ffffff", sun, 0.3)
+            func line(_ x: CGFloat) -> CGFloat {
+                let q: CGFloat = (x - X) / (u * 0.02) + 40, i = Int(floor(q)), f: CGFloat = q - CGFloat(i)
+                let h: CGFloat = CGFloat((i * 7919) % 17) / 17, len: CGFloat = 0.006 + 0.055 * h * h
+                let base: CGFloat = gy - u * 0.22 + u * 0.01 * sin((x - X) / u * 9)
+                let tongue: CGFloat = pow(max(0, 1 - abs(f - 0.5) * 2), 1.6)
+                return base + u * len * tongue
+            }
+            var mountain = Path(); ridge(&mountain, bot: gy, farY)
+            var g = ctx
+            g.clip(to: mountain)
+            var snow = Path()
+            snow.move(to: pt(X - u * 0.4, gy - u * 0.5))
+            var x = X - u * 0.4
+            while x <= X + u * 0.4 { snow.addLine(to: pt(x, line(x))); x += step / 3 }
+            snow.addLine(to: pt(X + u * 0.4, gy - u * 0.5)); snow.closeSubpath()
+            g.fill(snow, with: across(c(snowC, 0.82), c(snowC, 0.95)))
+            g.clip(to: snow)
+            g.fill(Path(CGRect(x: X - u * 0.4, y: gy - u * 0.5, width: u * 0.41, height: u * 0.5)), with: .linearGradient(
+                Gradient(colors: [c("#8a6aa8", 0.38), c("#8a6aa8", 0)]), startPoint: pt(X - u * 0.14, 0), endPoint: pt(X + u * 0.01, 0)))
+        }
+        hazeBand(&ctx, gy - u * 0.24, 0.42)
+        // The far balloons, tiny over other valleys; one hangs against the sun.
+        skyB(&ctx, [(0.04, 0.12, 0.04), (0.1, 0.22, 0.1), (0.17, 0.09, 0), (0.23, 0.3, 0.14), (0.29, 0.16, 0.05), (0.36, 0.25, 0.12), (0.41, 0.1, 0.02),
+                    (0.46, 0.34, 0.18), (0.52, 0.2, 0.08), (0.58, 0.13, 0.03), (0.72, 0.18, 0.06), (0.78, 0.28, 0.13), (0.84, 0.11, 0.02), (0.89, 0.21, 0.09),
+                    (0.95, 0.32, 0.15), (0.62, 0.38, 0.2), (0.27, 0.42, 0.22), (0.08, 0.38, 0.2)], 1)
+        ScenePainter.balloon(&ctx, x: sx + u * 0.035 + CGFloat(sin(t * 0.2)) * u * 0.004, y: gy - u * 0.1 + CGFloat(sin(t * 0.5)) * u * 0.003, r: u * 0.014,
+                             colors: [ScenePainter.mixHex("#7a2a3a", sun, 0.2), ScenePainter.mixHex("#7a2a3a", sun, 0.45)], time: t)
+        // Uçhisar: the castle rock over its village, the flag on top.
+        let Ux = W * 0.345, Ub = gy - u * 0.03, Uw = u * 0.1, Uh = u * 0.13
+        let UP: [(CGFloat, CGFloat)] = [(-1.3, 0), (-1, 0.1), (-0.75, 0.17), (-0.55, 0.24), (-0.44, 0.36), (-0.4, 0.55), (-0.34, 0.72), (-0.24, 0.84), (-0.14, 0.88),
+                                        (-0.07, 0.97), (0.02, 1), (0.12, 0.96), (0.18, 0.9), (0.26, 0.92), (0.33, 0.82), (0.38, 0.66), (0.44, 0.46), (0.56, 0.3),
+                                        (0.78, 0.2), (1.05, 0.12), (1.4, 0)]
+        func uch(_ p: inout Path) {
+            p.move(to: pt(Ux + UP[0].0 * Uw, Ub))
+            for i in 1..<UP.count {
+                let (a, b) = UP[i - 1], (cc, d) = UP[i]
+                p.addQuadCurve(to: pt(Ux + (a + cc) / 2 * Uw, Ub - (b + d) / 2 * Uh), control: pt(Ux + a * Uw, Ub - b * Uh))
+            }
+            p.addLine(to: pt(Ux + 1.4 * Uw, Ub)); p.addLine(to: pt(Ux + 1.4 * Uw, gy)); p.addLine(to: pt(Ux - 1.3 * Uw, gy)); p.closeSubpath()
+            // The village's houses stepping up its foot.
+            for (hx, hy, hw) in [(-1.05, 0.07, 0.14), (-0.86, 0.12, 0.12), (-0.66, 0.18, 0.13), (-0.5, 0.25, 0.1), (0.5, 0.26, 0.11), (0.66, 0.2, 0.14), (0.86, 0.15, 0.12), (1.05, 0.08, 0.14)] as [(CGFloat, CGFloat, CGFloat)] {
+                p.addRect(CGRect(x: Ux + hx * Uw - hw * Uw / 2, y: Ub - hy * Uh - u * 0.012, width: hw * Uw, height: u * 0.014))
+            }
+            p.addRect(CGRect(x: Ux - u * 0.0012, y: Ub - Uh - u * 0.028, width: u * 0.0024, height: u * 0.028))
+        }
+        // The valley rim: Göreme's tablelands with banded tuff.
+        let mesas: [(CGFloat, CGFloat, CGFloat)] = [(-0.1, 0.12, 0.06), (0.42, 0.55, 0.045), (0.6, 0.78, 0.05), (0.86, 1.15, 0.085)]
+        func rimY(_ x: CGFloat) -> CGFloat { tableland(x, base: u * 0.03 + wave(x, 0.02, u * 0.005, 2), mesas, edge: u * 0.045, smooth: true) }
+        layer(&ctx, 0.6, ROSE, 0.32, 0.6) { p in ridge(&p, bot: gy, rimY); uch(&p) }
+        strata(&ctx, gy - u * 0.1, gy, 0.07) { ridge(&$0, bot: gy, rimY) }
+        // The castle's caves, and its flag.
+        for (hx, hy) in [(-0.16, 0.74), (0.08, 0.7), (-0.24, 0.5), (0.02, 0.52), (0.22, 0.56), (-0.1, 0.34), (0.3, 0.38)] as [(CGFloat, CGFloat)] {
+            ctx.fill(Path(ellipseIn: CGRect(x: Ux + hx * Uw - u * 0.0024, y: Ub - hy * Uh - u * 0.0034, width: u * 0.0048, height: u * 0.0068)),
+                     with: .color(ScenePainter.mix(tone(ROSE, 0.6), ink, 0.35)))
+        }
+        do {
+            let fx = Ux + u * 0.0012, fy = Ub - Uh - u * 0.028, fl = CGFloat(sin(t * 3)) * u * 0.0015
+            var p = Path()
+            p.move(to: pt(fx, fy)); p.addLine(to: pt(fx + u * 0.016, fy + fl)); p.addLine(to: pt(fx + u * 0.016, fy + u * 0.011 + fl)); p.addLine(to: pt(fx, fy + u * 0.011)); p.closeSubpath()
+            ctx.fill(p, with: .color(ScenePainter.mix("#e30a17", haze, 0.25)))
+        }
+        hazeBand(&ctx, gy - u * 0.12, 0.34)
+        // The Love Valley: a field of slender chimneys across the valley floor, poplars between them.
+        do {
+            var G = Mulberry32(seed: 77)
+            let fb = gy - u * 0.006
+            for i in 0..<26 {
+                let x = W * (CGFloat(i) + CGFloat(G.next()) * 0.7) / 26
+                let h = u * (0.022 + CGFloat(G.next()) * 0.045) * (abs(x - W * 0.5) < W * 0.12 ? 0.7 : 1)
+                let w = h * (0.3 + CGFloat(G.next()) * 0.12), b = fb + u * 0.004 * CGFloat(G.next()), capped = G.next() > 0.35
+                chimney(&ctx, x, b, h, w, 0.5, capped, 0.35, 0.45, i % 3 == 0 ? ROSE : TUFF)
+            }
+            for (px, ph) in [(0.38, 0.05), (0.4, 0.065), (0.42, 0.045), (0.58, 0.055), (0.6, 0.07), (0.625, 0.05), (0.68, 0.045)] as [(CGFloat, CGFloat)] {
+                let x = W * px, h = u * ph, b = gy - u * 0.002
+                solid(&ctx, x, h * 0.3, 0.48, POPLAR, 0.35, 0.4) { p in
+                    p.move(to: pt(x, b - h)); p.addQuadCurve(to: pt(x + h * 0.06, b - h * 0.08), control: pt(x + h * 0.17, b - h * 0.55))
+                    p.addLine(to: pt(x - h * 0.06, b - h * 0.08)); p.addQuadCurve(to: pt(x, b - h), control: pt(x - h * 0.17, b - h * 0.55)); p.closeSubpath()
+                    p.addRect(CGRect(x: x - h * 0.012, y: b - h * 0.1, width: h * 0.024, height: h * 0.1))
+                }
+            }
+        }
+        // Balloons rising from the valley, some still behind the chimneys.
+        skyB(&ctx, [(0.12, 0.1, 0.32), (0.33, 0.06, 0.3), (0.67, 0.08, 0.34), (0.86, 0.14, 0.38), (0.5, 0.48, 0.4), (0.2, 0.52, 0.42), (0.75, 0.56, 0.46),
+                    (0.94, 0.5, 0.44), (0.42, 0.62, 0.38)], 3)
+        hazeBand(&ctx, gy - u * 0.08, 0.18)
+        // Chimneys at middle distance, in clusters left and right.
+        do {
+            let b1 = gy + u * 0.006
+            layer(&ctx, 0.36, ROSE, 0.3, 0.55) { p in hump(&p, -W * 0.05, W * 0.38, b1, u * 0.02); hump(&p, W * 0.62, W * 1.05, b1, u * 0.018) }
+            for (x, h, cpd, base) in [(0.24, 0.14, true, TUFF), (0.3, 0.09, false, ROSE), (0.35, 0.06, true, TUFF), (0.04, 0.1, false, ROSE), (0.16, 0.12, true, ROSE),
+                                      (0.66, 0.08, true, TUFF), (0.71, 0.13, true, ROSE), (0.76, 0.09, false, TUFF), (0.8, 0.16, true, TUFF), (0.97, 0.11, true, ROSE)] as [(CGFloat, CGFloat, Bool, String)] {
+                chimney(&ctx, W * x, b1 - u * 0.008, u * h, u * h * 0.36, 0.34, cpd, 0.45, 0.7, base)
+            }
+        }
+        hazeBand(&ctx, gy - u * 0.04, 0.22)
+        ground(&ctx); mist(&ctx, 0.26)
+        // Vineyard rows and a track leading in to the balloon.
+        do {
+            let vy = gy - u * 0.03, y0 = gy + u * 0.012, y1 = gy + (H - gy) * 0.24
+            for i in -16...16 where abs(i) >= 3 {
+                let bx = W * 0.5 + CGFloat(i) * W * 0.07
+                var p = Path()
+                let fx: CGFloat = W * 0.5 + (bx - W * 0.5) * (y0 - vy) / (y1 - vy)
+                p.move(to: pt(fx, y0)); p.addLine(to: pt(bx, y1))
+                ctx.stroke(p, with: .linearGradient(Gradient(colors: [c(ink, 0), c(ink, 0.2)]), startPoint: pt(0, y0), endPoint: pt(0, y1)),
+                           style: StrokeStyle(lineWidth: max(1.2, u * 0.005), lineCap: .round, dash: [max(1, u * 0.004), max(1.5, u * 0.006)]))
+            }
+            var tr = Path()
+            tr.move(to: pt(W * 0.494, gy + u * 0.006))
+            tr.addCurve(to: pt(W * 0.1, H + 2), control1: pt(W * 0.46, gy + (H - gy) * 0.2), control2: pt(W * 0.24, gy + (H - gy) * 0.35))
+            tr.addLine(to: pt(W * 0.1 + u * 0.07, H + 2))
+            tr.addCurve(to: pt(W * 0.506, gy + u * 0.006), control1: pt(W * 0.3, gy + (H - gy) * 0.36), control2: pt(W * 0.5, gy + (H - gy) * 0.2))
+            tr.closeSubpath()
+            ctx.fill(tr, with: .linearGradient(Gradient(stops: [.init(color: c(litC, 0.5), location: 0), .init(color: c(litC, 0.14), location: 0.5), .init(color: c(litC, 0.04), location: 1)]),
+                                               startPoint: pt(0, gy), endPoint: pt(0, H)))
+        }
+        // The nearest chimneys frame the edges, cave windows and doors cut in them.
+        do {
+            let b0 = gy + u * 0.03
+            layer(&ctx, 0.12, TUFF, 0.25, 0.7) { p in hump(&p, -W * 0.2, W * 0.26, b0, u * 0.045); hump(&p, W * 0.74, W * 1.2, b0, u * 0.042) }
+            let lx = W * 0.035
+            chimney(&ctx, lx, b0 - u * 0.015, u * 0.36, u * 0.15, 0.1, true, 0.55, 0.8)
+            strata(&ctx, b0 - u * 0.36, b0, 0.05) { cone(&$0, lx, b0 - u * 0.015, u * 0.36, u * 0.15, true) }
+            caves(&ctx, [(lx + u * 0.02, b0 - u * 0.03, u * 0.024, true), (lx - u * 0.01, b0 - u * 0.13, u * 0.012, false), (lx + u * 0.024, b0 - u * 0.16, u * 0.011, false)], 0.1)
+            chimney(&ctx, W * 0.15, b0 - u * 0.012, u * 0.24, u * 0.1, 0.12, true, 0.55, 0.8, ROSE)
+            chimney(&ctx, W * 0.23, b0 - u * 0.005, u * 0.12, u * 0.055, 0.16, true, 0.5, 0.7)
+            let R0 = W * 0.94, Rh = u * 0.3, Rw = u * 0.2
+            solid(&ctx, R0, Rw, 0.1, TUFF, 0.55, 0.8) { cone(&$0, R0, b0, Rh, Rw, false) }
+            strata(&ctx, b0 - Rh, b0, 0.05) { cone(&$0, R0, b0, Rh, Rw, false) }
+            caves(&ctx, [(R0 - Rw * 0.12, b0 - u * 0.022, u * 0.026, true), (R0 - Rw * 0.22, b0 - Rh * 0.42, u * 0.013, false),
+                         (R0 + Rw * 0.02, b0 - Rh * 0.47, u * 0.012, false), (R0 - Rw * 0.1, b0 - Rh * 0.68, u * 0.011, false)], 0.1)
+            chimney(&ctx, W * 0.81, b0 - u * 0.012, u * 0.17, u * 0.07, 0.13, true, 0.55, 0.8, ROSE)
+            chimney(&ctx, W * 0.75, b0 - u * 0.004, u * 0.09, u * 0.045, 0.17, false, 0.5, 0.7)
+        }
+        // The near balloons, high and crisp.
+        skyB(&ctx, [(0.13, 0.8, 0.72), (0.82, 0.74, 0.78), (0.36, 0.92, 0.6), (0.64, 0.95, 0.66), (0.97, 0.9, 0.9), (0.05, 0.62, 0.62)], 5)
     }
 
     // MARK: Luxor: the Theban hills across the Nile, a pylon, an obelisk, a colonnade, date palms
