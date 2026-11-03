@@ -26,7 +26,7 @@ Burada yazanlar senin hesabında yapılacaklar.
 4. **Uygulama içi satın almalar** (aşağıdaki tablo):
    - Her biri *Non-Consumable* olarak açılır.
    - Her ürün için incelemeye bir ekran görüntüsü yüklenir: Çarşı'daki satın alma kartı yeterli.
-5. **Game Center**: 24 başarım ve 2 lider tablosu (aşağıdaki tablolar).
+5. **Game Center**: 25 başarım ve 2 lider tablosu (aşağıdaki tablolar).
 6. **App Privacy** (Uygulama Gizliliği) soruları: aşağıdaki cevaplar.
 7. **Adresler (GitHub Pages, `docs/`):** destek `https://ceude.github.io/balloon-baron/support.html`, pazarlama `https://ceude.github.io/balloon-baron/`, gizlilik `https://ceude.github.io/balloon-baron/privacy-policy.html`. Pages bir kez açılmalı: repo Settings → Pages → Source: Deploy from a branch, `main`, `/docs`.
    Eski not: **Gizlilik politikası adresi**: `docs/privacy-policy.html` herkese açık bir adreste olmalı. En kolayı: repo ayarları → *Pages* → `main` dalı, `/docs` klasörü. Adres `https://ceude.github.io/balloon-baron/privacy-policy.html` olur. Pages, özel repoda yalnızca ücretli GitHub planında çalışır; olmazsa dosyayı herhangi bir siteye koyabiliriz.
@@ -126,7 +126,7 @@ Bu dosya App Store Connect olmadan da çalışır. TestFlight'ta Apple'ın test 
 - `balloonbaron.lb.passengers`: Toplam yolcu / Total passengers
 - `balloonbaron.lb.bestday`: En kalabalık gün / Best day (passengers)
 
-**Başarımlar** (kartpostallar). Toplam puan 1000'i geçmemeli, bu tabloda 955.
+**Başarımlar** (kartpostallar). Toplam puan 1000'i geçmemeli, bu tabloda 985.
 
 | Kimlik | İngilizce | Türkçe | Açıklama (EN) | Puan |
 |---|---|---|---|---|
@@ -154,6 +154,7 @@ Bu dosya App Store Connect olmadan da çalışır. TestFlight'ta Apple'ın test 
 | `balloonbaron.ach.lux` | Sky of the Nile | Nil'in göğü | You entered Luxor | 40 |
 | `balloonbaron.ach.baronLux` | Baron of Luxor | Luksor Baronu | The valley of the pharaohs is yours | 100 |
 | `balloonbaron.ach.world` | World Baron | Dünya Baronu | Every goal of the holding | 100 |
+| `balloonbaron.ach.patron` | Patron of the skies | Gökyüzünün hayırseveri | The foundation's first project | 30 |
 
 Başarımlar oyunda kartpostal olarak kutlanıyor, bu yüzden Game Center afişi kapalı (`showsCompletionBanner = false`).
 
