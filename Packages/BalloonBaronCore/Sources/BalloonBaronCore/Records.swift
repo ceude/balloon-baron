@@ -1,25 +1,26 @@
 import Foundation
 
 /// Sponsored world records, the holding's fifth desk. Open once you've entered Luxor. Text: `record.<rawValue>`.
+/// v137 (developer): the ladder rises in price and difficulty: the altitude record, the Pacific crossing (the ocean, in
+/// the old round-the-world slot: €900,000, 40 days, 50%), then the nonstop round-the-world flight as the pinnacle
+/// (€3M, 60 days, 40% even on the first try, after the Pacific, +15% for good and the records' ceiling 25% → 35%).
+/// Saves from before kept the €900,000 attempt as `world`; `GameState.migrate` moves it to `pacific` (`Holding.recordsV2`).
 public enum RecordAttempt: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
-    case altitude, world
-    /// v137: the Pacific crossing, the big one: no sure first try, opens after the round-the-world record, and setting
-    /// it raises the records' ceiling from 25% to 35%.
-    case pacific
+    case altitude, pacific, world
 
     public var cost: Int { [400000, 900000, 3_000_000][index] }
     public var days: Int { [25, 40, 60][index] }
     /// Shown odds. The first attempt at the first two records always succeeds; the odds apply when you try to beat your
-    /// own. The Pacific crossing's odds are the odds every time.
+    /// own. The round-the-world flight's odds are the odds every time.
     public var odds: Double { [0.65, 0.5, 0.4][index] }
-    public var sureFirst: Bool { self != .pacific }
+    public var sureFirst: Bool { self != .world }
     /// The record that has to be yours before this one can be tried.
-    public var after: RecordAttempt? { self == .pacific ? .world : nil }
+    public var after: RecordAttempt? { self == .world ? .pacific : nil }
     /// How much setting it raises the ceiling of the records' boost.
-    public var ceilingRaise: Double { self == .pacific ? 0.1 : 0 }
+    public var ceilingRaise: Double { self == .world ? 0.1 : 0 }
     /// Lasting demand boost in every region for setting the record.
-    public var boost: Double { [0.05, 0.1, 0.1][index] }
-    /// Each time you beat your own record, up to `maxBoost` in all (more with the Pacific crossing).
+    public var boost: Double { [0.05, 0.1, 0.15][index] }
+    /// Each time you beat your own record, up to `maxBoost` in all (more with the round-the-world flight).
     public static let repeatBoost = 0.02, maxBoost = 0.25
     /// Popularity a record set adds in every region you own (v136; it used to reach only the region you were in).
     public static let rep = 0.1
@@ -76,6 +77,7 @@ extension Game {
     public mutating func startRecord(_ k: RecordAttempt) -> Bool {
         guard state.recordsOpen, state.holding.record == nil, !state.recordLocked(k), spendHolding(state.holding.recordCost(k)) else { return false }
         state.holding.record = RecordRun(kind: k, done: state.day + k.days)
+        state.holding.recordsV2 = true
         celebrate(.record)
         return true
     }

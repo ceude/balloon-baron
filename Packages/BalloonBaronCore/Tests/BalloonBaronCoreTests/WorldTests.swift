@@ -215,7 +215,7 @@ final class WorldTests: XCTestCase {
 
     func testHoldingInvestmentsAndOffices() {
         var g = baronGame()
-        g.state.holding.cash = 3_000_000
+        g.state.holding.cash = 5_000_000 // v137: offices cost about €700,000 each
         XCTAssertTrue(g.openOffice(.nyc))
         XCTAssertEqual(g.state.holding.tvCost, 45000)
         XCTAssertTrue(g.runTVCampaign())

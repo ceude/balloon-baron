@@ -109,75 +109,99 @@ final class Invest137Tests: XCTestCase {
         XCTAssertEqual(Double(f4), Double(f3) * 0.75, accuracy: Double(f3) * 0.02 + 1)
     }
 
-    // MARK: Pacific crossing
+    // MARK: Records ladder
 
-    func testPacificCrossing() throws {
+    func testRecordLadder() throws {
+        XCTAssertEqual(RecordAttempt.allCases, [.altitude, .pacific, .world], "price and difficulty rise")
+        XCTAssertEqual(RecordAttempt.allCases.map(\.cost), [400_000, 900_000, 3_000_000])
+        XCTAssertEqual(RecordAttempt.allCases.map(\.days), [25, 40, 60])
+        XCTAssertEqual(RecordAttempt.allCases.map(\.odds), [0.65, 0.5, 0.4])
+        XCTAssertEqual(RecordAttempt.allCases.map(\.boost), [0.05, 0.1, 0.15])
         var g = rich()
         g.state.parked[.lux] = ParkedRegion(state: g.newRegionState(.lux), auto: Autopilot(base: 1000, since: g.state.day, lastIssue: g.state.day))
         XCTAssertTrue(g.state.recordsOpen)
-        XCTAssertTrue(g.state.recordLocked(.pacific))
-        XCTAssertFalse(g.startRecord(.pacific), "after the round-the-world record")
-        g.state.holding.records = [.world: 1, .altitude: 1]
+        XCTAssertTrue(g.state.recordLocked(.world))
+        XCTAssertFalse(g.startRecord(.world), "after the Pacific crossing")
+        g.state.holding.records = [.pacific: 1, .altitude: 1]
         g.state.holding.recordBoost = 0.25
         XCTAssertEqual(g.state.recordCeiling, 0.25, accuracy: 1e-9)
         let cash = g.state.holding.cash
-        XCTAssertTrue(g.startRecord(.pacific))
+        XCTAssertTrue(g.startRecord(.world))
         XCTAssertEqual(g.state.holding.cash, cash - 3_000_000)
-        XCTAssertEqual(g.state.holding.record, RecordRun(kind: .pacific, done: g.state.day + 60))
+        XCTAssertEqual(g.state.holding.record, RecordRun(kind: .world, done: g.state.day + 60))
         XCTAssertFalse(g.startRecord(.altitude), "one attempt at a time")
         // Dubai takes a quarter off
         g.state.holding.offices[.dxb] = 1
-        XCTAssertEqual(g.state.holding.recordCost(.pacific), 2_250_000)
-        XCTAssertEqual(g.state.holding.recordCost(.altitude), 300_000)
-        // a set record raises the ceiling to 35%
-        g.state.holding.records?[.pacific] = 5
+        XCTAssertEqual(g.state.holding.recordCost(.world), 2_250_000)
+        XCTAssertEqual(g.state.holding.recordCost(.pacific), 675_000)
+        // a set round-the-world record raises the ceiling to 35%
+        g.state.holding.records?[.world] = 5
         XCTAssertEqual(g.state.recordCeiling, 0.35, accuracy: 1e-9)
-        XCTAssertEqual(try reload(g).state.holding.record?.kind, .pacific)
+        let back = try reload(g)
+        XCTAssertEqual(back.state.holding.record?.kind, .world, "a new save isn't migrated again")
+        XCTAssertEqual(back.state.holding.records?[.world], 5)
     }
 
-    func testPacificFirstTryIsNotSure() {
+    func testRoundTheWorldFirstTryIsNotSure() {
         var wins = 0
         for seed in 0..<200 {
             var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: UInt64(seed))
-            g.state.holding.records = [.world: 1]
+            g.state.holding.records = [.pacific: 1]
             g.state.holding.recordBoost = 0.1
-            g.state.holding.record = RecordRun(kind: .pacific, done: g.state.day)
+            g.state.holding.record = RecordRun(kind: .world, done: g.state.day)
             _ = g.recordDay()
-            if g.state.recordSet(.pacific) {
+            if g.state.recordSet(.world) {
                 wins += 1
-                XCTAssertEqual(g.state.holding.recordBoost ?? 0, 0.2, accuracy: 1e-9)
+                XCTAssertEqual(g.state.holding.recordBoost ?? 0, 0.25, accuracy: 1e-9)
             }
             XCTAssertNil(g.state.holding.record)
         }
         XCTAssertGreaterThan(wins, 55)
         XCTAssertLessThan(wins, 105)
-        // the old two still succeed the first time
-        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 1)
-        g.state.holding.record = RecordRun(kind: .altitude, done: g.state.day)
-        _ = g.recordDay()
-        XCTAssertTrue(g.state.recordSet(.altitude))
+        // the first two still succeed the first time
+        for k in [RecordAttempt.altitude, .pacific] {
+            var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 1)
+            g.state.holding.record = RecordRun(kind: k, done: g.state.day)
+            _ = g.recordDay()
+            XCTAssertTrue(g.state.recordSet(k))
+        }
     }
 
-    func testPacificRaisesTheBoostCeiling() {
+    func testRoundTheWorldRaisesTheBoostCeiling() {
         var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 3)
-        g.state.holding.records = [.world: 1, .altitude: 1]
+        g.state.holding.records = [.pacific: 1, .altitude: 1]
         g.state.holding.recordBoost = 0.25
         var tries = 0
-        while !g.state.recordSet(.pacific) && tries < 50 {
-            g.state.holding.record = RecordRun(kind: .pacific, done: g.state.day)
+        while !g.state.recordSet(.world) && tries < 50 {
+            g.state.holding.record = RecordRun(kind: .world, done: g.state.day)
             _ = g.recordDay()
             tries += 1
         }
-        XCTAssertTrue(g.state.recordSet(.pacific))
-        XCTAssertEqual(g.state.holding.recordBoost ?? 0, 0.35, accuracy: 1e-9, "25% + 10%, inside the new ceiling")
+        XCTAssertTrue(g.state.recordSet(.world))
+        XCTAssertEqual(g.state.holding.recordBoost ?? 0, 0.35, accuracy: 1e-9, "25% + 15%, held at the new ceiling")
+    }
+
+    /// Before the new ladder `world` was the €900,000 attempt: it becomes the Pacific crossing (same price, odds and boost).
+    func testOldRecordsMoveToTheNewLadder() throws {
+        var g = rich()
+        g.state.holding.records = [.altitude: 3, .world: 7]
+        g.state.holding.record = RecordRun(kind: .world, done: g.state.day + 5)
+        g.state.holding.recordBoost = 0.15
+        g.state.holding.recordsV2 = nil // an older save has no key
+        let back = try reload(g)
+        XCTAssertEqual(back.state.holding.records, [.altitude: 3, .pacific: 7])
+        XCTAssertEqual(back.state.holding.record?.kind, .pacific)
+        XCTAssertEqual(back.state.holding.recordBoost, 0.15)
+        XCTAssertEqual(back.state.holding.recordsV2, true)
+        XCTAssertFalse(back.state.recordLocked(.world), "the round-the-world flight is open to them")
+        XCTAssertEqual(try reload(back).state.holding.records, [.altitude: 3, .pacific: 7], "only once")
     }
 
     // MARK: Offices
 
     func testDubaiAndParis() {
         var g = rich()
-        XCTAssertEqual(Office.dxb.cost, 1_500_000)
-        XCTAssertEqual(Office.par.cost, 1_800_000)
+        XCTAssertEqual(Office.allCases.map(\.cost), [650_000, 750_000, 700_000, 700_000, 700_000, 750_000], "all about €700,000")
         XCTAssertTrue(g.openOffice(.dxb))
         XCTAssertEqual(g.state.hezQueue.last, .officeOpened(.dxb))
         XCTAssertTrue(g.openOffice(.par))
@@ -282,6 +306,7 @@ final class Invest137Tests: XCTestCase {
         h.offices[.par] = 7
         h.documentary = Holding.Documentary(until: 10, next: 20, season: 1)
         h.records?[.pacific] = 8
+        XCTAssertNil(h.recordsV2, "an older holding decodes without the new ladder's mark")
         let back = try JSONDecoder().decode(Holding.self, from: JSONEncoder().encode(h))
         XCTAssertEqual(back, h)
     }

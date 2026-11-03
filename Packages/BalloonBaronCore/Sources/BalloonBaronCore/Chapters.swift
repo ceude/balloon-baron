@@ -163,6 +163,15 @@ extension GameState {
             if holding.millionOn == nil { holding.millionOn = w }
             holding.worldBaron = nil
         }
+        // v137 (developer): the records' new ladder. The €900,000 attempt an older save made (`world`) is the Pacific
+        // crossing now: same price, odds and boost. A save of the early v137 prototype order (`pacific` the €3M top)
+        // swaps the other way, so each record keeps what was paid for and earned.
+        if holding.recordsV2 == nil {
+            func swap(_ k: RecordAttempt) -> RecordAttempt { k == .world ? .pacific : k == .pacific ? .world : k }
+            if let r = holding.records { holding.records = Dictionary(uniqueKeysWithValues: r.map { (swap($0.key), $0.value) }) }
+            if let run = holding.record { holding.record?.kind = swap(run.kind) }
+            holding.recordsV2 = true
+        }
         guard version < 4 else { return }
         func shift(_ c: Int) -> Int { c >= 2 ? c + 1 : c }
         local.chapter = shift(local.chapter)

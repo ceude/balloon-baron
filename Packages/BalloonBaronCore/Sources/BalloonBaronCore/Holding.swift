@@ -6,7 +6,9 @@ public enum Office: String, Codable, CaseIterable, CodingKeyRepresentable, Senda
     /// v137: Dubai (Luxor +20%, records 25% cheaper) and Paris (Bristol +20%, the documentary 20% cheaper).
     case dxb, par
 
-    public var cost: Int { [350000, 450000, 400000, 400000, 1_500_000, 1_800_000][index] }
+    /// v137 (developer): all six cost about the same, around €700,000 (they were €350,000–450,000, Dubai and Paris
+    /// €1.5M and €1.8M).
+    public var cost: Int { [650_000, 750_000, 700_000, 700_000, 700_000, 750_000][index] }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
 }
 
@@ -98,6 +100,9 @@ public struct Holding: Codable, Equatable, Sendable {
     public var tv: [RegionID: TVRun]?
     /// v137: the documentary series (nil until the first season).
     public var documentary: Documentary?
+    /// v137: true once the records use the new ladder (`world` was the €900,000 attempt before; see `RecordAttempt`).
+    /// A new holding starts on it; an older save has no key and decodes nil.
+    public var recordsV2: Bool? = true
 
     public struct Documentary: Codable, Equatable, Sendable {
         /// The season on air runs until `until`; the next can be made from `next`.
