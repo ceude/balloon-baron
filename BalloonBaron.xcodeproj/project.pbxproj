@@ -34,6 +34,7 @@
 		3745C3DBD6BB8317AC2AF5CB /* Telemetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F376872405998A225098DA /* Telemetry.swift */; };
 		37A512CC536FFCC07E95ABE3 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32555776BC90AFB75C336EF3 /* SetupView.swift */; };
 		3AAB38726CD2EDBCEB8BD584 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64334C9F947BE9EF2E1B63A6 /* Sound.swift */; };
+		3B5D19974DC6BB078BB3E303 /* TownOutskirts.swift in Sources */ = {isa = PBXBuildFile; fileRef = D12341A30BBC018AF6118055 /* TownOutskirts.swift */; };
 		3E01C8C73A7FE27BD224BEBD /* TutorialLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 888452AE9AD785ED3A1BACCF /* TutorialLayer.swift */; };
 		3F0B240D7BF72C3BE57BA5F9 /* HoldingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D3ED97BD630A253467C06E76 /* HoldingView.swift */; };
 		4187BA67C12CC08B33B52612 /* PostcardScenes.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4C8C51BD9123B333EB42CF /* PostcardScenes.swift */; };
@@ -99,6 +100,7 @@
 		C9DAAF451BF565688EC4D187 /* ChapterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E80660872C36D7349FC2CB0 /* ChapterView.swift */; };
 		CA5116D52B42DB0B9B044FE6 /* TransferView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 625270736AE0B66CF3B0BBA4 /* TransferView.swift */; };
 		CDE747CAF5B1BDD693D6FB79 /* OfficeSceneView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4DC99A8B37B92CB3C497642 /* OfficeSceneView.swift */; };
+		D6DA6685AB474B4BD8383189 /* TownHQ.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6CBA26757B563CD346BBE79 /* TownHQ.swift */; };
 		D8A8F36DCC2528347D214C6F /* PoachView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF94474E4B1A4F2261794B11 /* PoachView.swift */; };
 		D94B9EE2BB63306E4E84C569 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5A7F9E6E220C47610C3B3C41 /* Assets.xcassets */; };
 		DA44FBC3675F4777CFB47A4E /* LineGlyph.swift in Sources */ = {isa = PBXBuildFile; fileRef = B632960ED55BC368BDCB46A2 /* LineGlyph.swift */; };
@@ -218,11 +220,13 @@
 		CBC38C06FC44700CC832EDD9 /* LockGlyph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "LockGlyph.swift"; sourceTree = "<group>"; };
 		CC97203FAEDF6E7A3B866323 /* DancingScript-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "DancingScript-SemiBold.ttf"; sourceTree = "<group>"; };
 		CF94474E4B1A4F2261794B11 /* PoachView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "PoachView.swift"; sourceTree = "<group>"; };
+		D12341A30BBC018AF6118055 /* TownOutskirts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownOutskirts.swift"; sourceTree = "<group>"; };
 		D319BFA50E962451010EB785 /* RedFlagView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RedFlagView.swift"; sourceTree = "<group>"; };
 		D3ED97BD630A253467C06E76 /* HoldingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HoldingView.swift"; sourceTree = "<group>"; };
 		D52781B3C21E6E615FEAE5F9 /* OpeningView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpeningView.swift"; sourceTree = "<group>"; };
 		D5B20ABBDA63F2F318C03DED /* FleetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FleetView.swift"; sourceTree = "<group>"; };
 		D6B191228284CEC62FA071BA /* OpeningTextures.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpeningTextures.swift"; sourceTree = "<group>"; };
+		D6CBA26757B563CD346BBE79 /* TownHQ.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownHQ.swift"; sourceTree = "<group>"; };
 		DA747D61B806F541F6AB8DF8 /* TownModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownModel.swift"; sourceTree = "<group>"; };
 		E41E0E443CD82E29A38F212D /* CollectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CollectView.swift"; sourceTree = "<group>"; };
 		EF5A711E98261C68FB98A0B0 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Haptics.swift"; sourceTree = "<group>"; };
@@ -330,9 +334,11 @@
 				2EE1C83431E7F8EFDA702F3A /* TownContracts.swift */,
 				18984496BC160B829AD4E3E8 /* TownDecor.swift */,
 				BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */,
+				D6CBA26757B563CD346BBE79 /* TownHQ.swift */,
 				AA424231B72FE15F1972F9C8 /* TownIdentity.swift */,
 				DA747D61B806F541F6AB8DF8 /* TownModel.swift */,
 				FBF39B153C032C3B1F8AFDEF /* TownNight.swift */,
+				D12341A30BBC018AF6118055 /* TownOutskirts.swift */,
 				028E3000896415942F6E8508 /* TownPainter.swift */,
 				6A3337359B8711905BE6CC88 /* TownShow.swift */,
 				151A0BC3B17C01FBFECAA493 /* TownViews.swift */,
@@ -552,9 +558,11 @@
 				289E7E966F30C2BF3CD4E2BC /* TownContracts.swift in Sources */,
 				96D085A373064DE08FC6CA2F /* TownDecor.swift in Sources */,
 				89387608271733A9FA3C605B /* TownExtras.swift in Sources */,
+				D6DA6685AB474B4BD8383189 /* TownHQ.swift in Sources */,
 				2D3D05FCA9C1BB58C369E9CA /* TownIdentity.swift in Sources */,
 				9A10F15161315C7C8ACF36B5 /* TownModel.swift in Sources */,
 				32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */,
+				3B5D19974DC6BB078BB3E303 /* TownOutskirts.swift in Sources */,
 				202A37F855488615D2088520 /* TownPainter.swift in Sources */,
 				AB73A244A1F086C3E12B9E43 /* TownShow.swift in Sources */,
 				BBB4A8150F49C505DE1C2F67 /* TownViews.swift in Sources */,

@@ -71,16 +71,4 @@ final class Outskirts135Tests: XCTestCase {
         XCTAssertEqual(Double(used) / Double(200 * 23), Outskirts.useShare, accuracy: 0.05)
         XCTAssertEqual(Outskirts.inUse(5, fields: 24, day: 300), Outskirts.inUse(5, fields: 24, day: 300))
     }
-
-    func testHeadquartersParts() {
-        var h = Holding()
-        XCTAssertEqual(Outskirts.hqParts(h), 0)
-        h.offices = [.nyc: 1, .ist: 2]
-        XCTAssertEqual(Outskirts.hqParts(h), 2)
-        h.research = 2
-        XCTAssertEqual(Outskirts.hqParts(h), 4)
-        // v137: six offices and four R&D levels grow it to ten, no further
-        h.research = 9
-        XCTAssertEqual(Outskirts.hqParts(h), Outskirts.maxHQParts)
-    }
 }

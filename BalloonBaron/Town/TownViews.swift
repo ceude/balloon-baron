@@ -25,6 +25,10 @@ final class TownCanvasModel {
     var instant = false
     /// v125: the region's contract place (town grid point): dragging can bring it to the middle of the screen.
     var contractSpot: (Double, Double)?
+    /// v135: the outskirts' plots in use and the crews' landing spots: dragging can reach the farthest of them.
+    var outskirtsExtent: [GridPoint] = []
+    /// v135: when this morning's launch wave began on the outskirts' fields (painter time).
+    var dawn: Double = 0
     /// v125: the first offer's scene: its camera glide (start time and view, target), and the view it last showed.
     var cine: (t0: Double, from: TownViewport, card: Bool)?
     var cineView: TownViewport?
@@ -84,6 +88,11 @@ final class TownCanvasModel {
             x0 = min(x0, ex - 0.3 * w); x1 = max(x1, ex + 0.3 * w)
             y0 = min(y0, ey - 0.25 * h); y1 = max(y1, ey + 0.25 * h)
         }
+        // v135: out to the outskirts' farthest plot in use, so the valley's life can be dragged into view
+        for q in outskirtsExtent {
+            let p = TownGeo.iso(q.x, q.y), ex = w / 2 + (c.x - p.x) * view.z, ey = h * 0.5 + (c.y - p.y) * view.z
+            x0 = min(x0, ex); x1 = max(x1, ex); y0 = min(y0, ey); y1 = max(y1, ey)
+        }
         view.ox += min(max(sx, x0), x1) - sx
         view.oy += min(max(sy, y0), y1) - sy
     }
@@ -125,6 +134,7 @@ struct HomeTownView: View {
                         model.size = sz
                         model.instant = reduceMotion
                         model.contractSpot = Self.contractSpot(s)
+                        model.outskirtsExtent = OutskirtsStatic.layout(s.region).extent(fields: s.outskirtsFields)
                         model.home = homeViewport(width: sz.width, dockTop: h)
                         if model.mode == .home { model.view = model.home } else { model.step(now: model.time(tl.date)) }
                         // At home the town stops at the dock; zoomed in it fills the screen.
@@ -225,7 +235,7 @@ struct HomeTownView: View {
             else if model.night { v.hzFix = NightCamera.horizon(v, sz) }
             else { v.hzCap = homeHz }
         }
-        model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, strike: s.local.openIssue?.kind == .raise)
+        model.hits = TownPainter.render(&c, state: s, time: now, viewport: v, size: sz, strike: s.local.openIssue?.kind == .raise, dawn: model.dawn)
         contractTick(s, v, sz, now)
     }
 
@@ -378,6 +388,7 @@ struct HomeTownView: View {
     /// `morningTown`: zoomed or not, dragged left or right, the town stays where the night's camera was and the
     /// day's controls and cards come in over it. Dragging or zooming out keeps them; zooming in ends the hold.
     private func startMorning() {
+        model.dawn = model.now // v135: the valley's launch wave starts with the morning
         guard let v = store.morningCamera else { return }
         store.morningCamera = nil
         // A new day starts from the home screen (`hideAll`), or from the night's camera when it was closer.

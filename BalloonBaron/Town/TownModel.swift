@@ -117,13 +117,14 @@ enum Town {
                               lv: s.local.school ? (np >= 8 ? 2 : 1) : (open.contains(.school) ? 0 : -1),
                               sub: s.local.school ? loc("town.sub.open") : loc("town.sub.build", eur(Rules.schoolCost)),
                               tap: open.contains(.school) || s.local.school ? .page(.crew, section: .school) : locked(school, .school)))
-        // Finance sits in the back row so the tall holding tower hides nothing behind it.
+        // Finance sits in the back row so the holding's tall headquarters hides nothing behind it.
         let bank = loc("town.b.bank")
         L.append(TownBuilding(id: "bank", gx: 12, gy: 1, w: 2, d: 2, name: bank, look: .bank,
                               lv: open.contains(.bank) ? (s.local.loans.isEmpty ? 1 : 2) : -1,
                               sub: open.contains(.bank) ? (s.local.loans.isEmpty ? loc("town.sub.noLoans") : loc("town.sub.loans", num(s.local.loans.count))) : soon,
                               tap: open.contains(.bank) ? .page(.bank, section: nil) : locked(bank, .bank)))
-        L.append(TownBuilding(id: "holding", gx: 9, gy: 1, w: 2, d: 2, name: loc("town.b.holding"), look: .tower,
+        // v135: the headquarters' plot (the regional building with its courtyard; it stays clear of the FINANCE zone)
+        L.append(TownBuilding(id: "holding", gx: 9.05, gy: 0.25, w: 2.75, d: 2.35, name: loc("town.b.holding"), look: .tower,
                               lv: s.anyBaron ? 2 : -1, sub: s.anyBaron ? eurH(s.holding.cash) : loc("town.sub.baron"),
                               tap: s.anyBaron ? .page(.holding, section: nil) : .goals))
 
@@ -196,7 +197,7 @@ enum Town {
         case .bank: return 130
         case .guide: return 122 // v130: over the gable and the guide's umbrella
         case .agency: return 150 // v130: over the top floor and its neon (the phone sign on the roof went)
-        case .tower: return 300
+        case .tower: return Double(TownPainter.hqTop) + 14 // v135: just over the headquarters' tower
         case .mast: return 175
         case .bazaar: return 82
         }

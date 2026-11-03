@@ -189,7 +189,7 @@ enum OpeningTown {
             case .bank: hpx = 85
             case .guide: hpx = 48
             case .agency: hpx = 100
-            case .tower: hpx = 270
+            case .tower: hpx = 110 // v135: the low headquarters (its tower is a thin part of the plot)
             default: hpx = 60
             }
             let K = b.look == .hotel ? [0, 1, 3, 4][min(3, b.star)] : kindOf[b.look] ?? 0, hgt = hpx / PXM

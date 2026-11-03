@@ -384,7 +384,10 @@ extension TownPainter {
             }
         }
         for (gx, gy, w, hh) in [(4.2, 20.5, 210.0, 120.0), (5.6, 18.6, 150, 80), (16.4, 20.2, 230, 140), (17.6, 23.4, 160, 90), (17.4, 30.4, 200, 110), (6.2, 31.4, 180, 100)] {
-            add(gx, gy, nil) { p in let q = p.iso(gx, gy); p.butte(q.x, q.y, CGFloat(w), CGFloat(hh), "#d98a78", "#9a5050") }
+            add(gx, gy, nil) { p in // v135.1: layered mesas, not blocks
+                let q = p.iso(gx, gy)
+                p.mesaRock(q.x, q.y, CGFloat(w), CGFloat(hh) * 0.8, Int((gx * 37 + gy * 11).rounded()), spire: w > 190, lit: "#d98a78", shade: "#9a5050")
+            }
         }
         for (gx, gy, k) in [(12.4, 27.4, 0), (12.6, 29.4, 1), (14.9, 22.1, 2), (6.6, 21.6, 1), (6.4, 26.5, 0), (15.2, 26.2, 2), (11.8, 29.8, 1), (15.6, 29.2, 0),
                             (9.2, 30.6, 2), (13.2, 31.2, 0), (16.8, 27.6, 1)] {

@@ -1,8 +1,7 @@
 import Foundation
 
 /// v135 / v135.1: the life outside the town's walls, on the two flanks the home screen doesn't show (|gx − gy| ≥
-/// `calm`), and the holding's headquarters growing with the holding. Port of the prototype's `OUT_*`, `outFieldsN`,
-/// `outCrewsN`, `outInUse`, `hqParts` and `outLayout`. The app draws it; the numbers and the layout live here.
+/// `calm`). Port of the prototype's `OUT_*`, `outFieldsN`, `outCrewsN`, `outInUse` and `outLayout`. The app draws it; the numbers and the layout live here.
 public enum Outskirts {
     /// The home view never looks this far sideways (in grid units of |gx − gy|).
     public static let calm = 13.5
@@ -13,8 +12,6 @@ public enum Outskirts {
     public static let maxBalloons = 60
     /// About this share of the fields is in use on a morning (the nearest always).
     public static let useShare = 0.55
-    /// The headquarters' parts: one per city office and R&D level, up to ten (v137: six offices, four R&D levels).
-    public static let maxHQParts = 10
 
     /// Launch fields outside town for this many balloons inside the hangar.
     public static func fields(inside: Int) -> Int { clamp((inside - 6) / perField, 0, maxFields) }
@@ -27,8 +24,6 @@ public enum Outskirts {
         var r = Mulberry32(seed: UInt32(truncatingIfNeeded: day * 131 + i * 17 + 7))
         return r.next() < useShare
     }
-    /// The headquarters' parts for a holding: open city offices plus R&D levels, at most `maxHQParts`.
-    public static func hqParts(_ h: Holding) -> Int { min(maxHQParts, h.offices.count + h.research) }
 
     /// Is this point on one of the flanks?
     public static func flank(_ x: Double, _ y: Double) -> Bool { abs(x - y) >= calm }
@@ -37,8 +32,6 @@ public enum Outskirts {
 extension GameState {
     /// v135: launch fields outside town (from the balloons inside the hangar).
     public var outskirtsFields: Int { Outskirts.fields(inside: insideBalloons.count) }
-    /// v135: how far the holding's headquarters has grown (0 … 10).
-    public var hqParts: Int { Outskirts.hqParts(holding) }
 }
 
 /// A point on the town grid.

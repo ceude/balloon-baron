@@ -46,6 +46,8 @@ enum NightCamera {
 struct NightWindow {
     var p: CGPoint, q: CGPoint, h: CGFloat, u: CGFloat, v: CGFloat, w: CGFloat, hh: CGFloat
     var door: Bool
+    /// v135.1: the holding's headquarters: fewer windows lit at night, a little dimmer.
+    var dim = false
 }
 
 extension TownPainter {
@@ -278,11 +280,11 @@ extension TownPainter {
         lit.blendMode = .plusLighter
         for o in windows {
             let seed = abs(sin(Double(o.p.x) * 12.9898 + Double(o.p.y) * 78.233 + Double(o.u) * 37.7 + Double(o.v) * 11.3) * 43758.5).truncatingRemainder(dividingBy: 1)
-            if !o.door && seed > 0.74 { continue }
+            if !o.door && seed > (o.dim ? 0.3 : 0.74) { continue }
             let tv = !o.door && seed < 0.07
             let col = o.door ? hex("#ffb85e") : tv ? hex("#9cc8ff") : hex(seed < 0.5 ? "#ffd68a" : "#ffb35c")
             let fl = tv ? 0.55 + 0.45 * abs(sin(t * 7 + seed * 40) * sin(t * 2.3 + seed * 9)) : 0.92 + 0.08 * sin(t * 1.3 + seed * 20)
-            let a = k * fl * (o.door ? 0.55 : 1)
+            let a = k * fl * (o.door ? 0.55 : 1) * (o.dim ? 0.75 : 1)
             var f = face(o.p, o.q, o.h)
             f.opacity = a
             let x0 = o.u - o.w / 2, top = o.door ? o.v + o.hh * 0.55 : o.v

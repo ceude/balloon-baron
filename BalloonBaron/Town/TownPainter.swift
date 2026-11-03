@@ -118,6 +118,10 @@ struct TownPainter {
     var collect: CollectScene? = nil
     /// Pilots on strike outside your office (a morning event).
     var strike = false
+    /// v135.1: drawing the holding's headquarters: its windows light up less at night.
+    var openDim = false
+    /// v135: when this morning's launch wave began on the outskirts' fields (painter time).
+    var dawn: Double = 0
 
     static let tuffLit = "#f1d6b0", tuffShade = "#b9825c", tuffTop = "#f8e4c4"
     static let sunShadow = CGSize(width: 0.55, height: 0.2)
@@ -149,8 +153,8 @@ struct TownPainter {
 
     /// Draws everything and returns the tap targets.
     static func render(_ ctx: inout GraphicsContext, state: GameState, time: Double, viewport: TownViewport, size: CGSize,
-                       night: TownNight? = nil, collect: CollectScene? = nil, strike: Bool = false) -> TownHits {
-        var p = TownPainter(c: ctx, s: state, t: time, v: viewport, size: size, night: night, collect: collect, strike: strike)
+                       night: TownNight? = nil, collect: CollectScene? = nil, strike: Bool = false, dawn: Double = 0) -> TownHits {
+        var p = TownPainter(c: ctx, s: state, t: time, v: viewport, size: size, night: night, collect: collect, strike: strike, dawn: dawn)
         return p.renderAll()
     }
 
@@ -165,6 +169,7 @@ struct TownPainter {
         flat.concatenate(worldTransform)
         c = flat
         outerDecor()
+        outskirtsGround() // v135: the life outside the walls, on the flanks
         contractGround() // v125: the contract place outside town
         let E = [iso(-0.5, -0.5), iso(15.5, -0.5), iso(15.5, 15.5), iso(-0.5, 15.5)]
         poly(E, s.region == .bri ? rgba(130, 180, 90, 0.6) : rgba(240, 210, 165, 0.55)) // v124: Bristol's lawns
@@ -191,7 +196,7 @@ struct TownPainter {
             }
             return out
         }
-        let scen = scenery() + (outerScenery() + contractItems()).compactMap(fade) + townWall()
+        let scen = scenery() + (outerScenery() + contractItems() + outskirtsItems()).compactMap(fade) + townWall()
         let sky = skyBalloons()
         for b in bs { buildingShadow(b) }
         for it in scen { it.shadow?(&self) }
@@ -363,7 +368,7 @@ struct TownPainter {
     mutating func opening(_ p: CGPoint, _ q: CGPoint, _ h: CGFloat, _ u: CGFloat, _ v: CGFloat, _ w: CGFloat, _ hh: CGFloat,
                                   door: Bool = false, lit: Bool = false) {
         if s.region == .bri { // v124.1: sash windows and painted doors
-            if night != nil { windows.append(NightWindow(p: p, q: q, h: h, u: u, v: v, w: w, hh: hh, door: door)) }
+            if night != nil { windows.append(NightWindow(p: p, q: q, h: h, u: u, v: v, w: w, hh: hh, door: door, dim: openDim)) }
             bristolOpening(p, q, h, u, v, w, hh, door: door, lit: lit)
             return
         }
@@ -376,7 +381,7 @@ struct TownPainter {
         arch.addLine(to: pt(x0 + w, v))
         arch.closeSubpath()
         f.fill(arch, with: .color(hex(door ? "#5a3418" : lit ? "#ffd27a" : "#3a2018")))
-        if night != nil { windows.append(NightWindow(p: p, q: q, h: h, u: u, v: v, w: w, hh: hh, door: door)) }
+        if night != nil { windows.append(NightWindow(p: p, q: q, h: h, u: u, v: v, w: w, hh: hh, door: door, dim: openDim)) }
         if door {
             f.fill(Path(CGRect(x: x0 + w * 0.1, y: v, width: w * 0.35, height: hh * 0.8)), with: .color(hex("#7a4a24")))
             f.fill(Path(CGRect(x: x0 + w * 0.55, y: v, width: w * 0.35, height: hh * 0.8)), with: .color(hex("#7a4a24")))
@@ -658,6 +663,8 @@ struct TownPainter {
                 roundTree(x + 18, y + 6, 0.55, "#5a7a40")
                 return
             }
+            // v135.1: out on the flanks (never in the home view) the buttes are layered, eroded mesas
+            if abs(x) >= CGFloat(Outskirts.calm) * TownGeo.TW / 2 { mesaRock(x, y, hh * (i % 2 == 1 ? 1.4 : 1.05), hh * (i % 2 == 1 ? 0.42 : 0.55), 900 + i); return }
             butte(x, y, hh * (i % 2 == 1 ? 1.3 : 0.8), hh * (i % 2 == 1 ? 0.45 : 0.7), "#c8744a", "#8e4a2c")
         case .bri:
             bristolOuter(x, y, hh, i)
@@ -752,7 +759,7 @@ struct TownPainter {
         case .bank: h = 85
         case .guide: h = 54
         case .agency: h = 100
-        case .tower: h = 270
+        case .tower: hqShadow(); return
         case .kiosk: h = 44
         case .hotel: h = [60, 120, 140, 120][b.star]
         case .bazaar: h = 60
@@ -816,7 +823,7 @@ struct TownPainter {
         case .bank: bank(b, big)
         case .guide: guideOffice(b, big)
         case .agency: agency(g, k, big)
-        case .tower: tower(b)
+        case .tower: hqHouse(b) // v135: the holding's headquarters in the region's own architecture
         case .kiosk: kiosk(b)
         case .hotel: hotel(b)
         case .mast: windMast(b.gx + 0.2, b.gy + 0.2)
@@ -1069,29 +1076,6 @@ struct TownPainter {
             p.addLine(to: pt(b.x + CGFloat(sin(t + Double(i) + 1)) * 3, b.y))
         }
         c.stroke(p, with: .color(Color.white.opacity(0.5)), lineWidth: 1.2)
-    }
-
-    /// Holding tower: gold glass with a crown and a glow.
-    mutating func tower(_ b: TownBuilding) {
-        let x0 = b.gx + 0.45, y0 = b.gy + 0.45, w = b.w - 0.9, d = b.d - 0.9
-        let h: CGFloat = 270
-        let (A, B, C, D) = corners(x0, y0, w, d)
-        for (p, q, light) in [(D, C, true), (C, B, false)] {
-            let g = grad([(hex(light ? "#ffe9b0" : "#b07a2a"), 0), (hex(light ? "#d9a64a" : "#6a4410"), 1)])
-            polyShade([p, q, upp(q, h), upp(p, h)], .linearGradient(g, startPoint: pt(p.x, 0), endPoint: pt(q.x, 0)))
-            var floors = Path()
-            for i in 1..<18 {
-                let z = h * CGFloat(i) / 18
-                floors.move(to: upp(p, z)); floors.addLine(to: upp(q, z))
-            }
-            c.stroke(floors, with: .color(rgba(70, 40, 10, 0.3)), lineWidth: 1)
-        }
-        poly([upp(A, h), upp(B, h), upp(C, h), upp(D, h)], hex("#ffd27a"))
-        let top = lp(upp(A, h), upp(C, h), 0.5)
-        let cx = top.x, cy = top.y - 18
-        poly([pt(cx - 22, cy + 12), pt(cx - 26, cy - 12), pt(cx - 12, cy), pt(cx, cy - 20), pt(cx + 12, cy), pt(cx + 26, cy - 12), pt(cx + 22, cy + 12)],
-             hex("#ffc23d"))
-        glow(top.x, top.y, 120, Color(red: 1, green: 210 / 255, blue: 120 / 255), 0.45)
     }
 
     /// Booking office kiosk: awning and mini balloon in the company's colors; boarded up once it's gone.
@@ -1469,6 +1453,7 @@ struct TownPainter {
             if gx > -2 && gx < 17 && gy > -2 && gy < 17 { continue }
             if abs(gx - 8) < 1.6 || abs(gy - 8) < 1.6 { continue }
             if let P = ContractPlace.of(s.region), s.contractConfig != nil, !P.isFree(gx, gy) { continue } // v125: the contract place's ground
+            if OutskirtsStatic.busy(s.region, i, gx, gy) { continue } // v135: the outskirts' plots, tracks and loops
             if Self.outerFields.contains(where: { gx > $0.0 - 1 && gx < $0.0 + 4 && gy > $0.1 - 1 && gy < $0.1 + 3.5 }) { continue }
             items.append(TownItem(depth: gx + gy, at: (gx, gy), shadow: { p in
                 let q = TownGeo.iso(gx, gy); p.blobShadow(q.x + hh * 0.3, q.y + 8, hh * 0.3, hh * 0.08, 0.14)
