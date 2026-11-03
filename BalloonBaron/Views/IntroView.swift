@@ -234,7 +234,7 @@ struct IntroView: View {
         let dt = scene.step(T)
         intro.step(dt)
         let gy = size.height * 0.74
-        // Rising, the balloon comes towards you: it grows, and passing the title it throws a soft shadow on it.
+        // Rising, the balloon comes towards you: it grows.
         let R0 = min(size.width, size.height) * 0.1
         let near = min(1, intro.y / Double(size.height * 0.55))
         let R = R0 * CGFloat(1 + 0.85 * pow(near, 1.6))
@@ -248,12 +248,7 @@ struct IntroView: View {
         let bx = size.width / 2 + sway, by = gy + R0 * 0.1 - y
         ScenePainter.ell(&ctx, size.width / 2, gy + R0 * 0.12, R0 * 0.6 / (1 + y / 120), R0 * 0.12,
                          Color(red: 40 / 255, green: 20 / 255, blue: 30 / 255).opacity(0.3))
-        if near > 0.2 {
-            var shadow = ctx
-            shadow.addFilter(.blur(radius: R * 0.35))
-            ScenePainter.ell(&shadow, bx + R * 0.5, by - R * 1.3, R * 0.95, R * 1.15,
-                             Color(red: 20 / 255, green: 8 / 255, blue: 30 / 255).opacity(0.38 * min(1, (near - 0.2) * 2)))
-        }
+        // v138: no soft shadow on the title any more (it read as a stray dark disc).
         if intro.hold {
             // The burner lights the envelope and the grass.
             var glow = ctx

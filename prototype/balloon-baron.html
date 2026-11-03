@@ -4578,7 +4578,7 @@ function introLand(L, gy, u, t) {
 
   /* Albuquerque: the Sandias catching the first light, mesas, the Fiesta's balloons going up over the desert, yuccas */
   function abqLand() {
-    const crest = x => { const p = W * .36; if (x < p) return u * (.1 + .065 * Math.pow(x / p, .7)); return u * Math.max(.035, .165 - (x - p) / W * .2); };
+    const crest = x => { const p = W * .36; if (x < p) return u * (.1 + .065 * Math.pow(Math.max(0, x) / p, .7)); return u * Math.max(.035, .165 - (x - p) / W * .2); };
     const farY = x => gy - u * .035 - crest(x) - wave(x, .09, u * .004, 0) - wave(x, .23, u * .0025, 1);
     sil(ridge(farY, gy), .78, .3, .55);
     /* the Sandias' west face goes pink at dawn ("sandía": watermelon) */

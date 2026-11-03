@@ -310,4 +310,9 @@ final class Invest137Tests: XCTestCase {
         let back = try JSONDecoder().decode(Holding.self, from: JSONEncoder().encode(h))
         XCTAssertEqual(back, h)
     }
+
+    func testOfficesListedCheapestFirst() {
+        XCTAssertEqual(Office.byPrice, [.ist, .sel, .tyo, .dxb, .nyc, .par])
+        XCTAssertEqual(Office.allCases, [.ist, .nyc, .sel, .tyo, .dxb, .par], "saved and goal order unchanged")
+    }
 }

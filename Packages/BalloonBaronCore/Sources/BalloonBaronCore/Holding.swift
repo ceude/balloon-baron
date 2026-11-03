@@ -10,6 +10,12 @@ public enum Office: String, Codable, CaseIterable, CodingKeyRepresentable, Senda
     /// €1.5M and €1.8M).
     public var cost: Int { [650_000, 750_000, 700_000, 700_000, 700_000, 750_000][index] }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
+
+    /// v138 (developer): the order the offices are listed in, cheapest first (İstanbul, then Seoul, Tokyo and Dubai,
+    /// then New York and Paris). Ties keep `allCases` order. `allCases` itself stays as it is (saves and goals).
+    public static var byPrice: [Office] {
+        allCases.enumerated().sorted { ($0.element.cost, $0.offset) < ($1.element.cost, $1.offset) }.map(\.element)
+    }
 }
 
 public struct Celebrity: Codable, Equatable, Sendable {

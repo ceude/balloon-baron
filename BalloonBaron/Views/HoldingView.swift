@@ -484,7 +484,7 @@ struct HoldingView: View {
 
     private func officesSection(_ s: GameState) -> some View {
         let h = s.holding
-        let offices = Office.allCases
+        let offices = Office.byPrice // v138: cheapest first
         let count = offices.filter { h.has($0) }.count
         // v137 (developer): any four offices 20%, all six 15%
         let text = count == offices.count
