@@ -10559,18 +10559,13 @@ function hotel(b, t) {
    The gold glass tower stood out of the town. The headquarters is now built of the town's own materials: a restored
    stone konak round a courtyard in Cappadocia, a colonial villa with verandas in Luxor, a red-brick merchant's hall in
    Bristol, a Pueblo Revival office in Albuquerque. Its tower stays the tallest thing in town; a flagpole in your colours,
-   a brass plaque by the gate and a little gold on the tower tell it is the holding. It grows with the holding: every city
-   office and every R&D level adds a part (hqParts 0..6), in this order: the left wing, the right wing, a floor on each
-   wing, the gatehouse, the tower's crown. v135.1: with six offices and four R&D levels it goes on to 10: a third storey on
-   the main house, an arcade along the courtyard's street side, a lantern stage on the tower, a gilded statue in the
-   forecourt. */
-const HQ_MAX = 10;
-const hqParts = () => Math.min(HQ_MAX, officeCount() + ((S && S.hold && S.hold.rnd) || 0));
+   a brass plaque by the gate and a little gold on the tower tell it is the holding. v135.1 (developer): it stands complete
+   from the day the holding exists: both wings two storeys high, a three-storey main house, the gatehouse, an arcade along
+   the courtyard's street side, the tower with its crown and lantern stage, a gilded statue in the forecourt. */
 const HQ_GEO = { main: [9.55, .3, 1.7, 1.05], tower: [10.68, .98, .5, .5], wl: [9.08, .3, .47, 1.95], wr: [11.25, .3, .5, 1.95], gate: [10.07, 2.08, .66, .36] };
-const HQ_MAIN_H = 96, HQ_MAIN_H3 = 132, HQ_WING_H = [50, 92], HQ_SHAFT = 192, HQ_CROWN = 34, HQ_LANTERN = 26;
-const hqMainH = n => n >= 7 ? HQ_MAIN_H3 : HQ_MAIN_H;
+const HQ_MAIN_H = 132, HQ_WING_H = 92, HQ_SHAFT = 192, HQ_CROWN = 34, HQ_LANTERN = 26;
 /* the height of the tower's top (for the name tag and the shadow) */
-const hqTopH = n => HQ_SHAFT + (n >= 6 ? HQ_CROWN : 0) + (n >= 9 ? HQ_LANTERN : 0) + 44;
+const HQ_TOP = HQ_SHAFT + HQ_CROWN + HQ_LANTERN + 44;
 const HQ_LOOK = {
   cap: { roof: '#b4553a', trim: '#fbead0', dome: '#e8b23a', tree: 'cypress' },
   lux: { wall: { lit: '#f4dcae', shade: '#c79d66', top: '#efd9ae', courses: false }, trim: '#fdf8ec', shutter: '#3f7a5a', dome: '#e8b23a', tree: 'palm' },
@@ -10580,7 +10575,7 @@ const HQ_LOOK = {
 let OPEN_DIM = false; /* v135.1: the headquarters' windows: fewer of them lit at night, so it isn't busier by night than by day */
 function hqHouse(b, t) { OPEN_DIM = true; try { hqHouseDraw(b, t); } finally { OPEN_DIM = false; } }
 function hqHouseDraw(b, t) {
-  const n = hqParts(), R = S.region, L = HQ_LOOK[R] || HQ_LOOK.cap, W = L.wall || {}, bri = R === 'bri', abq = R === 'abq', lux = R === 'lux';
+  const R = S.region, L = HQ_LOOK[R] || HQ_LOOK.cap, W = L.wall || {}, bri = R === 'bri', abq = R === 'abq', lux = R === 'lux';
   const roof = (gx, gy, w, d, h, rise) => { if (R === 'cap' || bri) hipRoof(gx, gy, w, d, h, rise, L.roof); else flatRoof(gx, gy, w, d, h, false); };
   /* stone dressings: a cornice band under the roof and quoins at the corners (Bristol's Bath stone on brick, a pale band elsewhere) */
   const cornice = (f, h) => { for (const [p, q] of [[f.D, f.C], [f.C, f.B]]) tpoly([upp(p, h - 5), upp(q, h - 5), upp(q, h), upp(p, h)], L.trim); };
@@ -10590,7 +10585,7 @@ function hqHouseDraw(b, t) {
   const shutters = (p, q, h, u, v, w, hh) => tface(p, q, h, () => { ctx.fillStyle = L.shutter; ctx.fillRect(u - w / 2 - w * .42, v, w * .38, hh * .72); ctx.fillRect(u + w / 2 + w * .04, v, w * .38, hh * .72); });
   const turq = (p, q, h, u, v, w, hh) => tface(p, q, h, () => { ctx.strokeStyle = L.trim; ctx.lineWidth = .012; ctx.strokeRect(u - w / 2 - .008, v - .01, w + .016, hh * .78); });
   const wing = (G, side) => {
-    const [x, y, w, d] = G, h = HQ_WING_H[n >= (side ? 4 : 3) ? 1 : 0], f = block(x, y, w, d, h, W);
+    const [x, y, w, d] = G, h = HQ_WING_H, f = block(x, y, w, d, h, W);
     const two = h > 60;
     /* the wing's end facing the street, and its long side facing the courtyard (left wing) or the bank (right wing) */
     row(f.D, f.C, h, [.5], .14, .34, two ? .26 : .5, true);
@@ -10605,25 +10600,24 @@ function hqHouseDraw(b, t) {
   /* the courtyard: paving, a fountain, a tree and a bench */
   const cy = corners(9.55, 1.35, 1.7, .95); tpoly([cy.A, cy.B, cy.C, cy.D], abq ? '#d9a982' : bri ? '#b8b0a2' : '#e6cfa6');
   ctx.save(); ctx.globalAlpha = .35; ctx.strokeStyle = abq ? '#b07a54' : '#a88a64'; ctx.lineWidth = 1; for (let i = 1; i < 6; i++) { tpoly([lp(cy.A, cy.D, i / 6), lp(cy.B, cy.C, i / 6)], null, ctx.strokeStyle, 1); } ctx.restore();
-  if (n >= 1) wing(HQ_GEO.wl, 0);
-  /* the main house: two storeys (three from part 7), a hip roof (flat with a parapet out of Cappadocia and Bristol);
-     window rows are placed in pixels so the lower floors stay where they were */
-  const MH = hqMainH(n), [mx, my, mw, md] = HQ_GEO.main, f = block(mx, my, mw, md, MH, W), px = v => v / MH;
+  wing(HQ_GEO.wl, 0);
+  /* the main house: three storeys, a hip roof (flat with a parapet out of Cappadocia and Bristol); window rows in pixels */
+  const MH = HQ_MAIN_H, [mx, my, mw, md] = HQ_GEO.main, f = block(mx, my, mw, md, MH, W), px = v => v / MH;
   row(f.D, f.C, MH, [.1, .26, .42], px(9.6), .1, px(28.8), u => u !== .26);
   row(f.D, f.C, MH, [.1, .26, .42, .58], px(55.7), .1, px(25.9), u => u === .26 || u === .58);
   row(f.C, f.B, MH, [.22, .5, .78], px(9.6), .16, px(28.8), true);
   row(f.C, f.B, MH, [.22, .5, .78], px(55.7), .16, px(25.9), u => u === .5);
-  if (MH > HQ_MAIN_H) { row(f.D, f.C, MH, [.1, .26, .42, .58], px(97), .1, px(24), u => u === .42); row(f.C, f.B, MH, [.22, .5, .78], px(97), .16, px(24), u => u === .78); }
+  row(f.D, f.C, MH, [.1, .26, .42, .58], px(97), .1, px(24), u => u === .42); row(f.C, f.B, MH, [.22, .5, .78], px(97), .16, px(24), u => u === .78);
   opening(f.D, f.C, MH, .6, 0, .13, px(38.4), 'door');
   if (R === 'cap') { /* a wooden cumba bay over the door */
-    const c0 = lp(f.D, f.C, .52), c1 = lp(f.D, f.C, .7), by = HQ_MAIN_H * .5, bh = 30, q0 = upp(c0, by), q1 = upp(c1, by), o = [-11, 5.5];
+    const c0 = lp(f.D, f.C, .52), c1 = lp(f.D, f.C, .7), by = 48, bh = 30, q0 = upp(c0, by), q1 = upp(c1, by), o = [-11, 5.5];
     const Q0 = [q0[0] + o[0], q0[1] + o[1]], Q1 = [q1[0] + o[0], q1[1] + o[1]];
     tpoly([q0, q1, Q1, Q0], '#5a3418'); tpoly([Q0, Q1, upp(Q1, bh), upp(Q0, bh)], '#8a5a30');
     for (let i = 0; i < 2; i++) { const p = lp(Q0, Q1, (i + .5) / 2); ctx.fillStyle = '#ffd27a'; ctx.fillRect(p[0] - 4, p[1] - bh + 6, 8, 14); }
     tpoly([upp(q0, bh), upp(q1, bh), upp(Q1, bh), upp(Q0, bh)], L.roof);
   }
   if (lux) { /* a deep veranda on slim columns along the ground floor, a balcony rail above */
-    const a = lp(f.D, f.C, .04), c = lp(f.D, f.C, .5), o = [-12, 6], hv = HQ_MAIN_H * .48;
+    const a = lp(f.D, f.C, .04), c = lp(f.D, f.C, .5), o = [-12, 6], hv = 46;
     tpoly([upp(a, hv), upp(c, hv), [c[0] + o[0], c[1] + o[1] - hv], [a[0] + o[0], a[1] + o[1] - hv]], L.trim);
     for (let i = 0; i <= 4; i++) { const p = lp(a, c, i / 4); ctx.fillStyle = L.trim; ctx.fillRect(p[0] + o[0] - 1.5, p[1] + o[1] - hv, 3, hv); ctx.fillStyle = 'rgba(120,90,50,.25)'; ctx.fillRect(p[0] + o[0] + .5, p[1] + o[1] - hv, 1, hv); }
     ctx.strokeStyle = L.trim; ctx.lineWidth = 1.2; for (let i = 0; i <= 10; i++) { const p = lp(a, c, i / 10); ctx.beginPath(); ctx.moveTo(p[0] + o[0], p[1] + o[1] - hv); ctx.lineTo(p[0] + o[0], p[1] + o[1] - hv - 9); ctx.stroke(); }
@@ -10658,8 +10652,8 @@ function hqHouseDraw(b, t) {
     ctx.restore(); for (let i = n0; i < NIGHT_WIN.length; i++) { NIGHT_WIN[i].p = upp(NIGHT_WIN[i].p, lift); NIGHT_WIN[i].q = upp(NIGHT_WIN[i].q, lift); }
     return { a: upp(fs.a, lift), b: upp(fs.b, lift), c: upp(fs.c, lift), d: upp(fs.d, lift) };
   };
-  if (n >= 6) top = stage(.08, HQ_SHAFT, HQ_CROWN, .18, .4, .6); /* the crown: a slimmer stage of arches */
-  if (n >= 9) top = stage(.14, HQ_SHAFT + HQ_CROWN, HQ_LANTERN, .2, .34, .55); /* v135.1: the lantern stage above it */
+  top = stage(.08, HQ_SHAFT, HQ_CROWN, .18, .4, .6); /* the crown: a slimmer stage of arches */
+  top = stage(.14, HQ_SHAFT + HQ_CROWN, HQ_LANTERN, .2, .34, .55); /* the lantern stage above it */
   const tc = lp(top.a, top.c, .5), r = Math.hypot(top.c[0] - top.a[0], top.c[1] - top.a[1]) * .38;
   if (L.dome && !bri) dome(tc[0], tc[1] - 2, r, L.dome);
   else if (bri) { dome(tc[0], tc[1] - 2, r, L.dome); ctx.strokeStyle = '#c99a2e'; ctx.lineWidth = 1.4; ctx.beginPath(); ctx.moveTo(tc[0] - 7, tc[1] - r - 24); ctx.lineTo(tc[0] + 8, tc[1] - r - 24); ctx.stroke(); }
@@ -10671,35 +10665,24 @@ function hqHouseDraw(b, t) {
   ctx.fillStyle = TUFF.lit; ctx.fillRect(fo[0] - 2, fo[1] - 13, 4, 11); ctx.fillStyle = 'rgba(220,245,255,.8)'; for (let i = 0; i < 4; i++) { const a = t * 2 + i * 1.6; ctx.fillRect(fo[0] + Math.cos(a) * 5 - .8, fo[1] - 13 + Math.abs(Math.sin(a)) * 6, 1.6, 1.6); }
   const tp = tiso(9.78, 2.02), tk = L.tree;
   if (tk === 'cypress') cypress(tp[0], tp[1], .8); else if (tk === 'palm') palm(tp[0], tp[1], .62, t); else if (tk === 'beech') copperBeech(tp[0], tp[1], .7); else roundTree(tp[0], tp[1], .85, '#9aa84a');
-  if (n >= 2) wing(HQ_GEO.wr, 1);
-  let plaqueAt, plaqueH;
-  /* the courtyard wall along the street, and along the sides while there are no wings */
-  const wallH = 20, WALL = Object.assign({ courses: false }, W);
-  if (n < 1) block(9.08, 1.35, .14, .9, wallH, WALL);
-  if (n < 2) block(11.61, 1.35, .14, .9, wallH, WALL);
-  if (n >= 8) { /* v135.1: an arcade along the street side of the courtyard: arches on slim piers under a cornice */
-    for (const [ax, aw] of [[9.08, .99], [10.73, 1.02]]) { const fa = block(ax, 2.25, aw, .12, 40, WALL); const k = Math.round(aw / .2);
-      for (let i = 0; i < k; i++) opening(fa.D, fa.C, 40, (i + .5) / k, 0, .62 / k, .72, 'win', false);
-      if (bri || R === 'cap') cornice(fa, 40); }
-  } else { block(9.08, 2.25, .99, .12, wallH, WALL); block(10.73, 2.25, 1.02, .12, wallH, WALL); }
-  if (n >= 5) { /* the gatehouse: an arched gate under a little room, a small dome or a stepped parapet on top */
-    const [gx, gy, gw, gd] = HQ_GEO.gate, h = 58, fg = block(gx, gy, gw, gd, h, W);
-    opening(fg.D, fg.C, h, .5, 0, .42, .62, 'door'); opening(fg.C, fg.B, h, .5, .55, .3, .25, 'win', true);
-    if (bri || R === 'cap') cornice(fg, h); quoins(fg, h);
-    if (lux || R === 'cap') { const c = lp(fg.a, fg.c, .5); dome(c[0], c[1] - 1, 13, lux ? '#f6eedb' : L.dome); } else roof(gx, gy, gw, gd, h, 14);
-    plaqueAt = lp(fg.D, fg.C, .9); plaqueH = 26;
-  } else { /* the gate: two piers and an arch over the opening */
-    const p0 = tiso(10.07, 2.37), p1 = tiso(10.73, 2.37);
-    for (const p of [p0, p1]) { ctx.fillStyle = W.lit || TUFF.lit; ctx.fillRect(p[0] - 4, p[1] - 34, 8, 34); ctx.fillStyle = W.top || TUFF.top; ctx.fillRect(p[0] - 5, p[1] - 37, 10, 4); }
-    ctx.strokeStyle = W.lit || TUFF.lit; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(p0[0], p0[1] - 32); ctx.quadraticCurveTo((p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2 - 52, p1[0], p1[1] - 32); ctx.stroke();
-    plaqueAt = tiso(9.82, 2.37); plaqueH = 14;
-  }
+  wing(HQ_GEO.wr, 1);
+  /* the courtyard's street side: an arcade of arches on slim piers under a cornice */
+  const WALL = Object.assign({ courses: false }, W);
+  for (const [ax, aw] of [[9.08, .99], [10.73, 1.02]]) { const fa = block(ax, 2.25, aw, .12, 40, WALL); const k = Math.round(aw / .2);
+    for (let i = 0; i < k; i++) opening(fa.D, fa.C, 40, (i + .5) / k, 0, .62 / k, .72, 'win', false);
+    if (bri || R === 'cap') cornice(fa, 40); }
+  /* the gatehouse: an arched gate under a little room, a small dome or a stepped parapet on top */
+  const [gx, gy, gw, gd] = HQ_GEO.gate, gh = 58, fg = block(gx, gy, gw, gd, gh, W);
+  opening(fg.D, fg.C, gh, .5, 0, .42, .62, 'door'); opening(fg.C, fg.B, gh, .5, .55, .3, .25, 'win', true);
+  if (bri || R === 'cap') cornice(fg, gh); quoins(fg, gh);
+  if (lux || R === 'cap') { const c = lp(fg.a, fg.c, .5); dome(c[0], c[1] - 1, 13, lux ? '#f6eedb' : L.dome); } else roof(gx, gy, gw, gd, gh, 14);
+  const plaqueAt = lp(fg.D, fg.C, .9), plaqueH = 26;
   /* the brass plaque by the gate: a small polished panel, no words at this size */
   { const p = plaqueAt; ctx.save(); ctx.translate(p[0], p[1] - plaqueH); ctx.transform(1, -.5, 0, 1, 0, 0); const g = ctx.createLinearGradient(-5, -6, 5, 6); g.addColorStop(0, '#fff0b8'); g.addColorStop(.5, '#d9a63a'); g.addColorStop(1, '#a8761c'); ctx.fillStyle = g; ctx.fillRect(-5.5, -7, 11, 8); ctx.fillStyle = 'rgba(90,60,10,.5)'; for (let i = 0; i < 2; i++) ctx.fillRect(-3.5, -5 + i * 3, 7, .9); ctx.restore(); }
   /* the flagpole on the corner of the forecourt, your colours */
   const fp = tiso(9.2, 2.62); tflag(fp[0], fp[1], myCol()[0], t, 96); ctx.fillStyle = '#e8b23a'; ctx.beginPath(); ctx.arc(fp[0], fp[1] - 98, 2.6, 0, 7); ctx.fill();
-  /* v135.1: a gilded statue of the founder on a stone plinth in the forecourt */
-  if (n >= 10) { block(11.12, 2.48, .3, .3, 18, { courses: false, lit: W.lit, shade: W.shade, top: W.top }); const sp = upp(tiso(11.27, 2.63), 18);
+  /* a gilded statue of the founder on a stone plinth in the forecourt */
+  { block(11.12, 2.48, .3, .3, 18, { courses: false, lit: W.lit, shade: W.shade, top: W.top }); const sp = upp(tiso(11.27, 2.63), 18);
     const g = ctx.createLinearGradient(sp[0] - 6, 0, sp[0] + 6, 0); g.addColorStop(0, '#fff0b0'); g.addColorStop(.5, '#e0aa3a'); g.addColorStop(1, '#9a6a18');
     ctx.fillStyle = g; ctx.fillRect(sp[0] - 4, sp[1] - 20, 8, 14); ctx.fillRect(sp[0] - 4, sp[1] - 6, 3, 6); ctx.fillRect(sp[0] + 1, sp[1] - 6, 3, 6);
     ctx.beginPath(); ctx.arc(sp[0], sp[1] - 24, 4, 0, 7); ctx.fill(); ctx.strokeStyle = g; ctx.lineWidth = 2.6; ctx.beginPath(); ctx.moveTo(sp[0] + 3, sp[1] - 18); ctx.lineTo(sp[0] + 9, sp[1] - 30); ctx.stroke(); }
@@ -10707,10 +10690,9 @@ function hqHouseDraw(b, t) {
   for (const g of [[10.02, 2.42], [10.78, 2.42]]) { const p = tiso(...g); if (NIGHT_K > 0) lantern(p[0], p[1] - 38); }
 }
 function hqShadow() {
-  const n = hqParts(), [mx, my, mw, md] = HQ_GEO.main, [tx, ty, tw, td] = HQ_GEO.tower;
-  boxShadow(mx, my, mw, md, hqMainH(n) + 20, .16); boxShadow(tx, ty, tw, td, hqTopH(n) - 20, .14);
-  if (n >= 1) boxShadow(...HQ_GEO.wl, HQ_WING_H[n >= 3 ? 1 : 0], .14);
-  if (n >= 2) boxShadow(...HQ_GEO.wr, HQ_WING_H[n >= 4 ? 1 : 0], .14);
+  const [mx, my, mw, md] = HQ_GEO.main, [tx, ty, tw, td] = HQ_GEO.tower;
+  boxShadow(mx, my, mw, md, HQ_MAIN_H + 20, .16); boxShadow(tx, ty, tw, td, HQ_TOP - 20, .14);
+  boxShadow(...HQ_GEO.wl, HQ_WING_H, .14); boxShadow(...HQ_GEO.wr, HQ_WING_H, .14);
 }
 /* Approximate shadow footprint per building, drawn in a pass before everything else. */
 function buildingShadow(b) {
@@ -11143,7 +11125,7 @@ function townTop(b) {
   if (b.look === 'hotel') return [95, 165, 190, 200][b.star];
   if (b.look === 'rival') return 80;
   if (b.look === 'mast') return 175; /* the kiosk row steps down to the right, so neighbouring labels clear each other */
-  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 122, agency: 150, tower: hqTopH(hqParts()) + 14, rival: 85 }[b.look] || 135;
+  return { bazaar: 82, hangar: 120, workshop: 145, office: b.lv === 2 ? 150 : 120, school: 160, bank: 130, guide: 122, agency: 150, tower: HQ_TOP + 14, rival: 85 }[b.look] || 135;
 }
 function townLabel(b, sx, sy, sc, full, taken) {
   const fn = Math.round((b.small ? 13 : 16) * sc), fs = Math.round((b.small ? 11 : 13) * sc);
