@@ -1576,6 +1576,14 @@ function migrate(s) {
   if (s.hold && s.hold.hq) { s.hold.offices = { [s.hold.hq]: s.day }; delete s.hold.hq; }
   for (const id in s.regions) { if (s.regions[id].cash == null) { s.regions[id].cash = 0; s.regions[id].loans = []; } }
   if (s.tut == null) s.tut = (s.selfFlights || 0) >= 1 || s.day > 1 ? { done: 1, old: 1 } : {}; /* v122: saves that already flew skip the tutorial */
+  /* v137 (developer): the records' new ladder. The €900.000 attempt an older save made ('world') is the Pacific crossing
+     now (same price, odds and boost); a save of the early v137 order ('pacific' the €3M top) swaps the other way. */
+  if (s.hold && !s.hold.recV2) {
+    const sw = k => k === 'world' ? 'pacific' : k === 'pacific' ? 'world' : k, R = s.hold.records;
+    if (R) { const n = {}; for (const k in R) n[sw(k)] = R[k]; s.hold.records = n; }
+    if (s.hold.rec) s.hold.rec.k = sw(s.hold.rec.k);
+    s.hold.recV2 = 1;
+  }
   /* v137 (developer, testing): the goals now want six offices and all four R&D levels. A World Baron who doesn't have
      them is not one until they do; the million they had reached stays met. */
   const H = s.hold;
@@ -5500,16 +5508,18 @@ const SET_IC = {
 const setIcon = (k, cls) => `<svg viewBox="0 0 24 24" class="${cls || ''}">${SET_IC[k]}</svg>`;
 /* Small line drawings in place of emoji (24×24, round strokes like the side buttons); the app's LineGlyph draws
    the same paths. Offices: Istanbul a mosque, New York the Statue of Liberty, Seoul Namsan Tower, Tokyo Tokyo Tower. */
+/* v137 (developer): each office city's own landmark, all six clearly apart at small size: the Bosphorus Bridge,
+   the Statue of Liberty, N Seoul Tower on Namsan, Tokyo Skytree, Burj Khalifa, the Eiffel Tower */
 const GLYPH = {
   gift: '<path d="M3.5 8 L20.5 8 L20.5 11.5 L3.5 11.5 Z M5 11.5 L5 20.5 L19 20.5 L19 11.5 M12 8 L12 20.5 M12 8 C9.5 8 6.5 6.8 7.2 4.6 C7.9 2.6 10.8 4 12 8 M12 8 C14.5 8 17.5 6.8 16.8 4.6 C16.1 2.6 13.2 4 12 8"/>',
   sun: '<path d="M12 2.5 L12 4.5 M12 19.5 L12 21.5 M2.5 12 L4.5 12 M19.5 12 L21.5 12 M5.3 5.3 L6.7 6.7 M17.3 17.3 L18.7 18.7 M5.3 18.7 L6.7 17.3 M17.3 6.7 L18.7 5.3"/><circle cx="12" cy="12" r="4.2"/>',
   crown: '<path d="M4.5 17.5 L3 7.5 L8.5 11.5 L12 5 L15.5 11.5 L21 7.5 L19.5 17.5 Z M4.5 20.5 L19.5 20.5" fill="#ffc23d" stroke="#c98a00"/>',
-  ist: '<path d="M2 20.5 L22 20.5 M6.5 14 C6.5 10.5 9 8.3 12 7.5 C15 8.3 17.5 10.5 17.5 14 Z M12 7.5 L12 5 M7 14 L7 20.5 M17 14 L17 20.5 M10.5 20.5 L10.5 18 C10.5 16.6 13.5 16.6 13.5 18 L13.5 20.5 M3.5 20.5 L3.5 8.5 M2.6 8.5 L3.5 4.5 L4.4 8.5 M2.6 12 L4.4 12 M20.5 20.5 L20.5 8.5 M19.6 8.5 L20.5 4.5 L21.4 8.5 M19.6 12 L21.4 12"/>',
+  ist: '<path d="M1.5 15 L22.5 15 M6 18.5 L6 4.5 M18 18.5 L18 4.5 M5 4.5 L7 4.5 M17 4.5 L19 4.5 M5.2 9 L6.8 9 M17.2 9 L18.8 9 M1.5 11 C3.5 10 5 8 6 5.5 C9 12.5 15 12.5 18 5.5 C19 8 20.5 10 22.5 11 M9 9.8 L9 15 M12 10.8 L12 15 M15 9.8 L15 15 M1.5 20.5 C3.5 19.3 5.5 19.3 7.5 20.5 C9.5 21.7 11.5 21.7 13.5 20.5 C15.5 19.3 17.5 19.3 19.5 20.5 C20.5 21.1 21.5 21.2 22.5 20.8"/>',
   nyc: '<path d="M6.5 20.5 L17.5 20.5 M8.5 20.5 L8.5 16.5 L15.5 16.5 L15.5 20.5 M9.4 16.5 C9.8 13.5 9.6 12 10.5 10.8 L13.5 10.8 C14.4 12 14.2 13.5 14.6 16.5 M10.4 6.9 L9.3 5.7 M12 6.5 L12 4.9 M13.5 10.8 L17 4.6 M16 4.6 L18 4.6 M17 3.7 C16.2 3 16.6 2.1 17 1.5 C17.4 2.1 17.8 3 17 3.7 Z M10.5 12 L8.6 13.8"/><circle cx="12" cy="8.5" r="1.7"/>',
-  sel: '<path d="M2 20.5 L22 20.5 M2 20.5 C6 15.8 9 14.5 12 14.5 C15 14.5 18 15.8 22 20.5 M11 14.5 L11.3 10.5 M13 14.5 L12.7 10.5 M9.5 10.5 L14.5 10.5 L13.8 7.8 L10.2 7.8 Z M12 7.8 L12 2.5"/>',
+  sel: '<path d="M2 20.5 L22 20.5 M2 20.5 C6 16.5 9 15.2 12 15.2 C15 15.2 18 16.5 22 20.5 M11.2 15.2 L11.4 9.5 M12.8 15.2 L12.6 9.5 M9.3 9.5 L14.7 9.5 L14 7.2 L10 7.2 Z M11 7.2 L11.3 5.2 L12.7 5.2 L13 7.2 M12 5.2 L12 1.5"/>',
   dxb: '<path d="M3 20.5 L21 20.5 M12 1.5 L12 5 M10.8 5 L13.2 5 L13.2 9 L14.2 9 L14.2 13 L15.4 13 L15.4 17 L16.6 17 L16.6 20.5 M10.8 5 L10.8 10 L9.8 10 L9.8 14 L8.6 14 L8.6 17.5 L7.4 17.5 L7.4 20.5"/>',
   par: '<path d="M4 20.5 L20 20.5 M12 1.5 L12 4 M10.8 4 L13.2 4 M11 4 C10.6 9 9.5 12 8.2 13.5 M13 4 C13.4 9 14.5 12 15.8 13.5 M7.6 13.5 L16.4 13.5 M10 9 L14 9 M8.2 13.5 C7.5 16.5 6.5 18.8 5.5 20.5 M15.8 13.5 C16.5 16.5 17.5 18.8 18.5 20.5 M9.3 20.5 C9.5 18 10.5 16.8 12 16.8 C13.5 16.8 14.5 18 14.7 20.5"/>',
-  tyo: '<path d="M5.5 20.5 C8.5 16 10 11 11 5 M18.5 20.5 C15.5 16 14 11 13 5 M10.6 5 L13.4 5 M12 5 L12 1.8 M7.8 14.6 L16.2 14.6 L15.7 12.4 L8.3 12.4 Z M9.8 9.8 L14.2 9.8 L13.9 8.3 L10.1 8.3 Z M8.4 20.5 Q12 16.2 15.6 20.5"/>'
+  tyo: '<path d="M8 20.5 L16 20.5 M9.6 20.5 L11.4 5.5 M14.4 20.5 L12.6 5.5 M8.6 13.4 L15.4 13.4 M9.4 12 L14.6 12 M10.2 8.6 L13.8 8.6 M12 5.5 L12 1.5"/>'
 };
 const glyph = (k, cls) => `<svg viewBox="0 0 24 24" class="gl${cls ? ' ' + cls : ''}" aria-hidden="true">${GLYPH[k]}</svg>`;
 /* The menu behind the top-right button: a settings screen in the game's own look. Rows sit on white cards with the
@@ -9220,14 +9230,15 @@ function tree(x, base, w, hgt, crown, trunk) {
 const HOLD_COST = .25; /* maaş, bina vb. giderler: otomatik gelirin %25'i */
 const CELEBS = ['Selin Arda (oyuncu)', 'Kenji Mori (aktör)', 'Lucía Varela (şarkıcı)', 'Emre Kaan (futbolcu)', 'Ji-ho Park (K-pop yıldızı)', 'Maya Collins (sunucu)'];
 const HQ_CITIES = {
-  nyc: { name: 'New York', cost: 450000, perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: glyph('nyc') },
-  ist: { name: 'İstanbul', cost: 350000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: glyph('ist') },
-  tyo: { name: 'Tokyo', cost: 400000, perk: 'Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya\'ya giriş yarı fiyatına.', icon: glyph('tyo') },
-  sel: { name: 'Seul', cost: 400000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun ve %30 ucuz.', icon: glyph('sel') },
+  nyc: { name: 'New York', cost: 750000, perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: glyph('nyc') },
+  ist: { name: 'İstanbul', cost: 650000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: glyph('ist') },
+  tyo: { name: 'Tokyo', cost: 700000, perk: 'Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya\'ya giriş yarı fiyatına.', icon: glyph('tyo') },
+  sel: { name: 'Seul', cost: 700000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun ve %30 ucuz.', icon: glyph('sel') },
   /* v137: two more offices for a rich holding */
-  dxb: { name: 'Dubai', cost: 1500000, perk: 'Luksor\'un otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.', icon: glyph('dxb') },
-  par: { name: 'Paris', cost: 1800000, perk: 'Bristol\'ün otomatik kazancı %20 artar. Belgesel dizisi %20 daha ucuz.', icon: glyph('par') }
+  dxb: { name: 'Dubai', cost: 700000, perk: 'Luksor\'un otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.', icon: glyph('dxb') },
+  par: { name: 'Paris', cost: 750000, perk: 'Bristol\'ün otomatik kazancı %20 artar. Belgesel dizisi %20 daha ucuz.', icon: glyph('par') }
 };
+/* v137 (developer): all six cost about the same, around €700.000 */
 /* ofisler: her şehirde bir tane açılabilir, avantajları birikir; dördü açıksa holding giderleri azalır, altısı açıksa daha da */
 const hasOffice = k => !!(S && S.hold && S.hold.offices && S.hold.offices[k]);
 const officeCount = () => Object.keys(HQ_CITIES).filter(hasOffice).length;
@@ -9369,6 +9380,7 @@ const INVEST_ART = {
   doc: '<svg viewBox="0 0 64 64"><rect x="8" y="22" width="48" height="34" rx="4" fill="#1f1b2e"/><path d="M8 14 L54 6 L56 14 L10 22 Z" fill="#fff"/><path d="M16 12.6 L22 19.5 M27 10.7 L33 17.6 M38 8.8 L44 15.7" stroke="#1f1b2e" stroke-width="4"/><path d="M32 27 C38 27 42 31.5 42 37 C42 42 38 45.5 35.5 48 L28.5 48 C26 45.5 22 42 22 37 C22 31.5 26 27 32 27 Z" fill="#ff5e3a"/><path d="M32 27 C34 27 35 31.5 35 37 C35 42 33.5 45.5 33 48 L31 48 C30.5 45.5 29 42 29 37 C29 31.5 30 27 32 27 Z" fill="#ffc23d"/><rect x="29.5" y="49" width="5" height="4" rx="1" fill="#c98a5a"/></svg>',
   radar: '<svg viewBox="0 0 64 64"><circle cx="32" cy="34" r="24" fill="#12324a"/><circle cx="32" cy="34" r="16" fill="none" stroke="#3ad0c0" stroke-width="1.5" opacity=".6"/><circle cx="32" cy="34" r="8" fill="none" stroke="#3ad0c0" stroke-width="1.5" opacity=".6"/><path d="M32 34 L32 10 C40 10 48.5 14.5 52.8 22 Z" fill="#3ad0c0" opacity=".45"/><path d="M32 34 L52.8 22" stroke="#3ad0c0" stroke-width="2.5" stroke-linecap="round"/><circle cx="43" cy="44" r="3" fill="#ffc23d"/><circle cx="22" cy="26" r="2.2" fill="#ff5e3a"/></svg>',
   comp: '<svg viewBox="0 0 64 64"><path d="M32 6 C37 13 41 17 41 23 C41 28 37 32 32 32 C27 32 23 28 23 23 C23 17 27 13 32 6 Z" fill="#ff5e3a"/><path d="M32 15 C35 19 37 21.5 37 24.5 C37 27.3 34.8 29.5 32 29.5 C29.2 29.5 27 27.3 27 24.5 C27 21.5 29 19 32 15 Z" fill="#ffc23d"/><rect x="22" y="33" width="20" height="5" rx="2" fill="#8d93a0"/><path d="M24 38 L20 44 M40 38 L44 44" stroke="#8d93a0" stroke-width="2"/><path d="M16 44 L48 44 L45 58 L19 58 Z" fill="#2b2350"/><path d="M24 44 L22 58 M32 44 L32 58 M40 44 L42 58" stroke="#4a4270" stroke-width="1.4"/><path d="M18 49 L46 49 M19 54 L45 54" stroke="#3ad0c0" stroke-width="1.6"/></svg>',
+  globe: '<svg viewBox="0 0 64 64"><circle cx="30" cy="36" r="21" fill="#2b7fd6"/><path d="M30 15 C21 21 21 51 30 57 M30 15 C39 21 39 51 30 57 M9 36 L51 36 M12 26 L48 26 M12 46 L48 46" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.6"/><path d="M8 30 C9 17 22 8 38 9" fill="none" stroke="#ffc23d" stroke-width="2.4" stroke-linecap="round" stroke-dasharray="3 4"/><path d="M50 4 C55 4 58 8 58 12 C58 16 55 18 53 20 L47 20 C45 18 42 16 42 12 C42 8 45 4 50 4 Z" fill="#ff5e3a"/><rect x="48" y="21" width="4" height="3.5" rx="1" fill="#8a5a2e"/></svg>',
   pacific: '<svg viewBox="0 0 64 64"><path d="M32 4 C41 4 47 11 47 19 C47 27 41 32 37 36 L27 36 C23 32 17 27 17 19 C17 11 23 4 32 4 Z" fill="#2b7fd6"/><path d="M32 4 C35 4 37 11 37 19 C37 27 35 32 34 36 L30 36 C29 32 27 27 27 19 C27 11 29 4 32 4 Z" fill="#fff" opacity=".3"/><path d="M28 36 L29 38 M36 36 L35 38" stroke="#8a5a2e" stroke-width="1.2"/><rect x="28" y="38" width="8" height="6" rx="1.5" fill="#8a5a2e"/><path d="M4 52 C9 48 13 48 18 52 C23 56 27 56 32 52 C37 48 41 48 46 52 C51 56 55 56 60 52" fill="none" stroke="#3ad0c0" stroke-width="3" stroke-linecap="round"/><path d="M4 60 C9 56 13 56 18 60 C23 64 27 64 32 60 C37 56 41 56 46 60 C51 64 55 64 60 60" fill="none" stroke="#2b5ab8" stroke-width="3" stroke-linecap="round"/></svg>',
   rec: '<svg viewBox="0 0 64 64"><path d="M32 6c9 0 15 7 15 16 0 8-6 14-10 18h-10c-4-4-10-10-10-18 0-9 6-16 15-16z" fill="#ffc23d"/><path d="M27 40h10l-1 6h-8z" fill="#c9ccd2"/><rect x="25" y="47" width="14" height="10" rx="5" fill="#c9ccd2"/><circle cx="35" cy="52" r="2.6" fill="#2b5ab8"/><path d="M8 58l8-10 6 5 8-12" fill="none" stroke="#e5432f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>',
   shape: '<svg viewBox="0 0 64 64"><path d="M27 6h10v8c6 4 9 10 9 18v18a5 5 0 0 1-5 5H23a5 5 0 0 1-5-5V32c0-8 3-14 9-18z" fill="#e5432f"/><rect x="18" y="30" width="28" height="12" fill="#fff"/><text x="32" y="39.5" text-anchor="middle" font-size="9" font-weight="800" fill="#e5432f" font-family="Barlow Condensed,sans-serif">FIZZ</text><rect x="26" y="56" width="12" height="6" rx="1.5" fill="#8a5a34"/></svg>',
@@ -9506,10 +9518,11 @@ function hqDeals(body, which, title) {
    every region for good; a failed attempt can be tried again. */
 const RECORDS = {
   alt: { n: 'İrtifa rekoru', d: 'Basınçlı kabinli özel bir balonla stratosfere: dünya rekoru 21.027 metre. Pilot oksijen maskesiyle uçar, kabin donmasın diye ısıtılır.', cost: 400000, days: 25, ok: .65, boost: .05 },
-  world: { n: 'Durmadan dünya turu', d: 'İsviçre Alpleri\'nden kalkış, 20 gün jet akımlarında, iniş Mısır çölünde. İlk kez 1999\'da başarılmıştı.', cost: 900000, days: 40, ok: .5, boost: .1 },
-  /* v137: the big one. No sure first try: the odds are the odds. It opens once the round-the-world record is yours, and
-     setting it raises the ceiling of the records' lasting boost from 25% to 35%. */
-  pacific: { n: 'Pasifik geçişi', d: 'Japonya\'dan kalkış, jet akımında 8.000 km, iniş Kanada\'nın karlı ormanlarında. Saf sıcak hava balonuyla en uzun yolculuk.', cost: 3000000, days: 60, ok: .4, boost: .1, hard: 1, after: 'world', cap: .1 }
+  /* v137 (developer): price and difficulty rise along the ladder. The Pacific crossing takes the old round-the-world
+     slot; the nonstop round-the-world flight is the pinnacle: no sure first try, it opens once the Pacific is yours and
+     raises the ceiling of the records' lasting boost from 25% to 35%. Older saves: see migrate (recV2). */
+  pacific: { n: 'Pasifik geçişi', d: 'Japonya\'dan kalkış, jet akımında 8.000 km, iniş Kuzey Amerika\'nın karlı ormanlarında. Bir okyanusu tek balonla aşmak.', cost: 900000, days: 40, ok: .5, boost: .1 },
+  world: { n: 'Durmadan dünya turu', d: 'İsviçre Alpleri\'nden kalkış, 20 gün jet akımlarında, iki okyanus, iniş Mısır çölünde. İlk kez 1999\'da Breitling Orbiter 3 başarmıştı.', cost: 3000000, days: 60, ok: .4, boost: .15, hard: 1, after: 'pacific', cap: .1 }
 };
 const REC_CAP = .25;
 const recCap = () => REC_CAP + Object.keys(RECORDS).reduce((a, k) => a + (RECORDS[k].cap && S.hold && S.hold.records && S.hold.records[k] ? RECORDS[k].cap : 0), 0);
@@ -9523,13 +9536,13 @@ function hqRecords(body) {
     const R = RECORDS[k], did = H.records && H.records[k], now = H.rec && H.rec.k === k, cost = recCost(k);
     const before = R.after && !(H.records && H.records[R.after]);
     const c = h('div', 'deal' + (did || now ? ' on' : ''));
-    c.innerHTML = `<div class="dart">${INVEST_ART[k === 'pacific' ? 'pacific' : 'rec']}</div><div class="dmain"><div class="dk">Rekor denemesi</div><div class="dt">${R.n}</div><div class="dd">${R.d}</div><div class="dchips"><span>Hazırlık ${R.days} gün</span><span>Başarı şansı %${Math.round(R.ok * 100)}</span><span>Talep kalıcı +%${Math.round(R.boost * 100)}</span>${R.cap ? `<span>Rekor tavanı %${Math.round(REC_CAP * 100)} → %${Math.round((REC_CAP + R.cap) * 100)}</span>` : ''}</div></div>`;
+    c.innerHTML = `<div class="dart">${INVEST_ART[k === 'pacific' ? 'pacific' : k === 'world' ? 'globe' : 'rec']}</div><div class="dmain"><div class="dk">Rekor denemesi</div><div class="dt">${R.n}</div><div class="dd">${R.d}</div><div class="dchips"><span>Hazırlık ${R.days} gün</span><span>Başarı şansı %${Math.round(R.ok * 100)}</span><span>Talep kalıcı +%${Math.round(R.boost * 100)}</span>${R.cap ? `<span>Rekor tavanı %${Math.round(REC_CAP * 100)} → %${Math.round((REC_CAP + R.cap) * 100)}</span>` : ''}</div></div>`;
     const foot = h('div', 'dfoot');
     if (now) foot.innerHTML = `<span class="dstat">Hazırlanıyor · ${H.rec.done - S.day} gün</span>`;
     else {
       foot.innerHTML = did ? `<span class="dstat">Rekor senin</span><span class="dprice">${eurH(cost)}</span>` : `<span class="dprice">${eurH(cost)}</span>`;
       const b = h('button', 'dcta', did ? 'Rekoru geliştir' : 'Denemeyi başlat'); b.disabled = !open || before || !!H.rec || (S.holding || 0) < cost;
-      b.onclick = () => holdBuy(cost, () => { H.rec = { k, done: S.day + R.days }; holdDeed('record'); hqRender(); }); foot.appendChild(b);
+      b.onclick = () => holdBuy(cost, () => { H.rec = { k, done: S.day + R.days }; H.recV2 = 1; holdDeed('record'); hqRender(); }); foot.appendChild(b);
       if (!open) foot.appendChild(h('span', 'dnote', 'Önce Luksor\'u açmalısın'));
       else if (before) foot.appendChild(h('span', 'dnote', `Önce ${RECORDS[R.after].n.toLocaleLowerCase('tr')} rekorunu kır`));
       else if (H.rec) foot.appendChild(h('span', 'dnote', 'Aynı anda bir deneme'));
