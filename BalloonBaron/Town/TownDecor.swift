@@ -11,6 +11,8 @@ struct DecorPainter {
     /// flush against the wall ends (`TownPainter.wallGap`, 7.3–8.7), outside the road's edges (7.55–8.45).
     static let arches: [((Double, Double), (Double, Double), Double)] = [((7.37, 15.57), (8.63, 15.57), 23.2), ((15.57, 7.37), (15.57, 8.63), 23.2)]
     static let cafeAt = (14.9, 1.1), rugsAt = (2.5, 0.35), plaqueAt = (9.15, 6.55)
+    /// v140: the Hot Air Foundation's monument, on the grass by the launch field (prototype `FOUND_AT`).
+    static let foundationAt = (6.6, 5.6)
 
     func pt(_ x: CGFloat, _ y: CGFloat) -> CGPoint { CGPoint(x: x, y: y) }
     func hex(_ h: String) -> Color { Color(hex: h) }
@@ -161,6 +163,63 @@ struct DecorPainter {
         t.draw(r, at: .zero, anchor: .bottom)
     }
 
+    /// v140: the Hot Air Foundation's monument for the `n` projects funded in this region (prototype `decoFoundation`): a
+    /// stone plinth with a bronze balloon; a second project plants a flower bed round it, a third sets a brass plate in
+    /// the plinth, a fourth hangs a laurel wreath on it, a fifth lights two lamps. No words on it.
+    mutating func foundation(_ p: CGPoint, _ n: Int, night: Double) {
+        if n >= 2 {
+            oval(p.x, p.y, 30, 15, hex("#7a5434"))
+            oval(p.x, p.y - 1, 27, 13, hex("#5f8f3e"))
+            var R = Mulberry32(seed: 17)
+            let blooms = ["#ff6fa8", "#ffc23d", "#fff3d8", "#e5432f"]
+            for i in 0..<22 {
+                let a = Double(i) / 22 * Double.pi * 2, rr = 0.72 + CGFloat(R.next()) * 0.22
+                oval(p.x + CGFloat(cos(a)) * 27 * rr, p.y - 1 + CGFloat(sin(a)) * 13 * rr, 1.7, 1.7, hex(blooms[i % 4]))
+            }
+        }
+        // base slab and plinth, lit from the left like the town's buildings
+        func slab(_ w: CGFloat, _ h: CGFloat, _ y0: CGFloat, _ top: String, _ l: String, _ r: String) {
+            let a = pt(p.x, p.y - y0 - w / 2), b = pt(p.x + w, p.y - y0), cc = pt(p.x, p.y - y0 + w / 2), d = pt(p.x - w, p.y - y0)
+            fill([d, cc, pt(cc.x, cc.y - h), pt(d.x, d.y - h)], hex(l))
+            fill([cc, b, pt(b.x, b.y - h), pt(cc.x, cc.y - h)], hex(r))
+            fill([pt(a.x, a.y - h), pt(b.x, b.y - h), pt(cc.x, cc.y - h), pt(d.x, d.y - h)], hex(top))
+        }
+        slab(15, 3, 0, "#e8e0d0", "#cfc4b0", "#b9ad98")
+        slab(9, 20, 3, "#efe8da", "#d9cfbc", "#c2b6a0")
+        if n >= 3 { fill([pt(p.x + 2, p.y - 12), pt(p.x + 7, p.y - 14.5), pt(p.x + 7, p.y - 8.5), pt(p.x + 2, p.y - 6)], hex("#d9a640")) }
+        if n >= 4 { c.stroke(Path(ellipseIn: CGRect(x: p.x - 7.9, y: p.y - 15.4, width: 6.8, height: 6.8)), with: .color(hex("#4f8a3a")), lineWidth: 1.6) }
+        // the bronze balloon
+        let top = p.y - 23
+        rect(p.x - 3, top - 5, 6, 5, hex("#6a4220"))
+        var ropes = Path()
+        ropes.move(to: pt(p.x - 3, top - 5)); ropes.addLine(to: pt(p.x - 4, top - 9))
+        ropes.move(to: pt(p.x + 3, top - 5)); ropes.addLine(to: pt(p.x + 4, top - 9))
+        c.stroke(ropes, with: .color(hex("#6a4220")), lineWidth: 0.8)
+        var env = Path()
+        env.move(to: pt(p.x - 4, top - 9))
+        env.addCurve(to: pt(p.x, top - 34), control1: pt(p.x - 14, top - 16), control2: pt(p.x - 13, top - 34))
+        env.addCurve(to: pt(p.x + 4, top - 9), control1: pt(p.x + 13, top - 34), control2: pt(p.x + 14, top - 16))
+        env.closeSubpath()
+        c.fill(env, with: .linearGradient(Gradient(stops: [.init(color: hex("#7a4a1a"), location: 0), .init(color: hex("#e8b04a"), location: 0.4),
+                                                           .init(color: hex("#c98a2a"), location: 0.6), .init(color: hex("#6a3e14"), location: 1)]),
+                                          startPoint: pt(p.x - 9, 0), endPoint: pt(p.x + 9, 0)))
+        var gores = Path()
+        gores.move(to: pt(p.x, top - 34)); gores.addQuadCurve(to: pt(p.x - 2, top - 9), control: pt(p.x - 6, top - 22))
+        gores.move(to: pt(p.x, top - 34)); gores.addQuadCurve(to: pt(p.x + 2, top - 9), control: pt(p.x + 6, top - 22))
+        c.stroke(gores, with: .color(Color(red: 90 / 255, green: 50 / 255, blue: 15 / 255).opacity(0.5)), lineWidth: 0.8)
+        var shine = c
+        shine.translateBy(x: p.x - 5, y: top - 26)
+        shine.rotate(by: .radians(0.3))
+        shine.fill(Path(ellipseIn: CGRect(x: -1.6, y: -4, width: 3.2, height: 8)), with: .color(Color(red: 1, green: 240 / 255, blue: 200 / 255).opacity(0.55)))
+        if n >= 5 {
+            for s: CGFloat in [-1, 1] {
+                let q = iu(p, s * 0.32, -s * 0.32)
+                rect(q.x - 1, q.y - 30, 2, 30, hex("#3a2a20"))
+                oval(q.x, q.y - 33, 3, 4.2, Color(red: 1, green: 207 / 255, blue: 106 / 255).opacity(night > 0 ? 1 : 0.55))
+            }
+        }
+    }
+
     /// The bazaar thumbnail of the pigeons: a dovecote on a pole with pigeons flying round it (64 × 72 units).
     mutating func dovecote() {
         rect(30.5, 36, 3.5, 22, hex("#6a4a30")); rect(21, 24, 22, 14, hex("#e8d2ac")); rect(34, 24, 9, 14, hex("#c9ad84"))
@@ -190,6 +249,13 @@ extension TownPainter {
         if s.owned(.supporter) {
             let a = DecorPainter.plaqueAt
             items.append(TownItem(depth: a.0 + a.1, draw: { p in var d = DecorPainter(c: p.c); d.plaque(TownGeo.iso(a.0, a.1), name) }))
+        }
+        // v140: the Hot Air Foundation's monument for this region's projects
+        let projects = s.holding.projects(in: s.region)
+        if projects > 0 {
+            let a = DecorPainter.foundationAt
+            items.append(TownItem(depth: a.0 + a.1, shadow: { p in let q = TownGeo.iso(a.0, a.1); p.blobShadow(q.x + 10, q.y + 3, 16, 6, 0.16) },
+                                  draw: { p in var d = DecorPainter(c: p.c); d.foundation(TownGeo.iso(a.0, a.1), projects, night: nk) }))
         }
         if s.placed(.rugs) {
             let a = DecorPainter.rugsAt

@@ -5,6 +5,8 @@ import BalloonBaronCore
 /// A desk of the holding office and the part of the holding it opens. Names: `hq.<rawValue>`.
 enum HoldingUnit: String, CaseIterable, Identifiable {
     case board, window, marketing, deals, research, offices, records, shapes
+    /// v140: the International Balloon Festival and the Hot Air Foundation, a fourth row of desks.
+    case festival, foundation
     var id: String { rawValue }
 }
 
@@ -56,7 +58,17 @@ struct HoldingView: View {
             hint(loc("holding.deals.hint"))
             celebrityCard(s)
             jerseyCard(s)
-            worldGamesCard(s)
+            worldGamesCard(game)
+        }
+        if unit == .festival {
+            sectionTitle(loc("holding.fest.section"))
+            hint(loc("holding.fest.hint"))
+            festivalCard(game)
+        }
+        if unit == .foundation {
+            sectionTitle(loc("holding.fdn.section"))
+            hint(loc("holding.fdn.hint"))
+            foundationCard(game)
         }
         if unit == .research {
             sectionTitle(loc("hq.lab"))
@@ -367,7 +379,7 @@ struct HoldingView: View {
     /// whichever region the holding was opened from.
     private func tvCard(_ game: Game) -> some View {
         let s = game.state, h = s.holding, d = s.day
-        let chips = [loc("holding.chip.demandRegion", percent(0.2)), loc("holding.chip.days", num(Holding.tvDays)),
+        let chips = [loc("holding.chip.demandRegion", percent(Holding.tvBoost - 1)), loc("holding.chip.days", num(Holding.tvDays)),
                      loc("holding.chip.starsRegion", starsValue(Holding.tvRep * 4)), loc("holding.chip.wait", num(Holding.tvCooldown))]
         let rows = game.ownedRegions.map { r -> HoldingRegionRow in
             let until = h.tvUntil(r), ready = h.tvReady(r)
@@ -383,9 +395,10 @@ struct HoldingView: View {
     private func celebrityCard(_ s: GameState) -> some View {
         let h = s.holding, d = s.day
         let star: Celebrity? = (h.celebrity?.until ?? 0) > d ? h.celebrity : nil
-        let detail = star.map { loc("holding.celeb.descActive", celebrityName($0.index)) } ?? loc("holding.celeb.desc")
+        // v140: the first deal is a rising star's, cheaper; the card says so
+        let detail = star.map { loc("holding.celeb.descActive", celebrityName($0.index)) } ?? loc(h.celebrity == nil ? "holding.celeb.descFirst" : "holding.celeb.desc")
         let active = star.map { loc("holding.celeb.active", celebrityName($0.index), num($0.until - d)) }
-        let chips = [loc("holding.chip.allDemand", percent(0.1)), loc("holding.chip.days", num(h.celebrityDays)),
+        let chips = [loc("holding.chip.allDemand", percent(Holding.celebrityBoost - 1)), loc("holding.chip.days", num(h.celebrityDays)),
                      loc("holding.chip.starsAll", starsValue(Holding.celebrityRep * 4))]
         return HoldingDealCard(art: .star, kicker: loc("holding.celeb.kicker"), title: loc("holding.celeb.title"),
                                detail: detail, chips: chips, price: h.celebrityCost, cta: loc("holding.celeb.cta"),
@@ -406,24 +419,67 @@ struct HoldingView: View {
                                action: { store.act { g in _ = g.sponsorJersey() } })
     }
 
-    /// v122.7: the World Games' opening show, once.
-    private func worldGamesCard(_ s: GameState) -> some View {
-        let h = s.holding, d = s.day, held = h.worldGamesUntil != nil, on = (h.worldGamesUntil ?? 0) > d
+    /// v122.7: the World Games' opening show. v140: the Games come round every 360 days, each show 1.5 times the last.
+    private func worldGamesCard(_ game: Game) -> some View {
+        let s = game.state, h = s.holding, d = s.day, held = h.worldGamesHeld, on = (h.worldGamesUntil ?? 0) > d
+        let wait = !on && held > 0 && h.worldGamesNext > d
         let chips = [loc("holding.chip.allDemand", percent(Holding.worldGamesBoost - 1)), loc("holding.chip.days", num(Holding.worldGamesDays)),
-                     loc("holding.chip.starsAll", starsValue(Holding.worldGamesRep * 4))]
+                     loc("holding.chip.starsAll", starsValue(Holding.worldGamesRep * 4)),
+                     loc("holding.wg.chipStep", Holding.worldGamesStep.formatted(.number.precision(.fractionLength(0...1))))]
+        let detail = held == 0 ? "holding.wg.desc" : on ? "holding.wg.descActive" : wait ? "holding.wg.descDone" : "holding.wg.descAgain"
+        let active: String? = on ? loc("holding.wg.active", num((h.worldGamesUntil ?? d) - d)) : wait ? loc("holding.wg.wait", num(held), num(h.worldGamesNext - d)) : nil
         return HoldingDealCard(art: .worldGames, kicker: loc("holding.wg.kicker"), title: loc("holding.wg.title"),
-                               detail: loc(!held ? "holding.wg.desc" : on ? "holding.wg.descActive" : "holding.wg.descDone"), chips: chips,
-                               price: Holding.worldGamesCost, cta: loc("holding.wg.cta"),
-                               enabled: s.worldGamesOpen && !held && h.cash >= Holding.worldGamesCost,
-                               lockNote: s.worldGamesOpen || held ? nil : loc("holding.wg.lockBri"),
-                               active: on ? loc("holding.wg.active", num((h.worldGamesUntil ?? d) - d)) : held ? loc("holding.wg.held") : nil,
+                               detail: loc(detail), chips: chips,
+                               price: h.worldGamesPrice, cta: held > 0 ? loc("holding.wg.ctaN", num(held + 1)) : loc("holding.wg.cta"),
+                               enabled: game.canHoldWorldGames && h.cash >= h.worldGamesPrice,
+                               lockNote: s.worldGamesOpen || held > 0 ? nil : loc("holding.wg.lockBri"),
+                               active: active,
                                action: { store.act { g in _ = g.holdWorldGamesShow() } })
+    }
+
+    /// v140: the International Balloon Festival, hosted in one region you own at a time, a new one every 90 days.
+    private func festivalCard(_ game: Game) -> some View {
+        let s = game.state, h = s.holding, d = s.day, f = h.festival
+        let on = f.map { $0.until > d } ?? false, wait = !on && !h.festivalReady(day: d)
+        let chips = [loc("holding.chip.demandRegion", percent(Holding.festivalBoost - 1)), loc("holding.chip.days", num(Holding.festivalDays)),
+                     loc("holding.chip.starsRegion", starsValue(Holding.festivalRep * 4)),
+                     loc("holding.fest.chipFame", percent(Holding.festivalFame), percent(Holding.festivalFameMax)),
+                     loc("holding.fest.chipEvery", num(Holding.festivalEvery)),
+                     loc("holding.fest.chipStep", eurH(Holding.festivalStep), eurH(Holding.festivalMax))]
+        let rows = game.ownedRegions.map { r -> HoldingRegionRow in
+            let live = h.festivalOn(r, day: d), n = h.festivalsIn?[r] ?? 0
+            let status = live ? loc("holding.fest.on", num((f?.until ?? d) - d))
+                : n > 0 ? loc("holding.fest.fame", percent(h.festivalFame(r)), num(n)) : loc("holding.fest.none")
+            return HoldingRegionRow(region: r, here: r == s.region, status: status, on: live, price: h.festivalCost,
+                                    buyable: !on && !wait, enabled: game.canHostFestival(in: r) && h.cash >= h.festivalCost,
+                                    cta: loc("holding.fest.cta"), action: { store.act { g in _ = g.hostFestival(in: r) } })
+        }
+        return HoldingDealCard(art: .festival, kicker: loc("holding.fest.kicker"), title: loc("holding.fest.title"),
+                               detail: on ? loc("holding.fest.descOn", (f?.region ?? s.region).title) : loc("holding.fest.desc"), chips: chips,
+                               rowsNote: wait ? loc("holding.fest.wait", num((f?.next ?? d) - d)) : nil, regionRows: rows, action: {})
+    }
+
+    /// v140: the Hot Air Foundation: projects without end, each in a region you own, each €500,000 more than the last.
+    private func foundationCard(_ game: Game) -> some View {
+        let s = game.state, h = s.holding, n = h.projects
+        let chips = [loc("holding.chip.starsAll", starsValue(Holding.foundationRep * 4)), loc("holding.fdn.chipMonument"),
+                     loc("holding.fdn.chipStep", eurH(Holding.foundationStep))]
+        let rows = game.ownedRegions.map { r -> HoldingRegionRow in
+            let here = h.projects(in: r)
+            let next = loc("holding.fdn.next", projectName(r, here))
+            return HoldingRegionRow(region: r, here: r == s.region, status: here > 0 ? next + " · " + loc("holding.fdn.here", num(here)) : next,
+                                    on: here > 0, price: h.projectCost, buyable: true, enabled: h.cash >= h.projectCost,
+                                    cta: loc("holding.fdn.cta"), action: { store.act { g in _ = g.fundProject(in: r) } })
+        }
+        return HoldingDealCard(art: .foundation, kicker: loc("holding.fdn.kicker"),
+                               title: n > 0 ? loc("holding.fdn.titleN", num(n)) : loc("holding.fdn.title"),
+                               detail: loc("holding.fdn.desc"), chips: chips, regionRows: rows, action: {})
     }
 
     /// v136: billboards for each region you own, bought from one card; each row names its region.
     private func billboardCard(_ game: Game) -> some View {
         let s = game.state, h = s.holding, d = s.day
-        let chips = [loc("holding.chip.demandRegion", percent(0.1)), loc("holding.chip.days", num(Holding.billboardDays))]
+        let chips = [loc("holding.chip.demandRegion", percent(Holding.billboardBoost - 1)), loc("holding.chip.days", num(Holding.billboardDays))]
         let rows = game.ownedRegions.map { r -> HoldingRegionRow in
             let until = h.billboards[r] ?? 0, up = until > d
             return HoldingRegionRow(region: r, here: r == s.region, status: up ? loc("holding.bb.active", num(until - d)) : loc("holding.row.free"),
@@ -493,9 +549,11 @@ struct HoldingView: View {
             ? loc("holding.officesFour", num(count), percent(Holding.fourOfficesExpenseRate), percent(Holding.expenseRate), percent(Holding.allOfficesExpenseRate))
             : loc("holding.officesRule", percent(Holding.expenseRate), percent(Holding.fourOfficesExpenseRate), percent(Holding.allOfficesExpenseRate))
         let rows = Array(stride(from: 0, to: offices.count, by: 2))
+        // v140: the offices' rent and staff, paid every evening
+        let rent = count > 0 ? loc("holding.officesRent", eurH(h.officeRent)) : loc("holding.officesRentNone")
         return VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("holding.offices", "\(count)/\(offices.count)"))
-            hint(text)
+            hint(text + " " + rent)
             Grid(horizontalSpacing: 10, verticalSpacing: 10) {
                 ForEach(rows, id: \.self) { i in
                     GridRow {
@@ -522,6 +580,11 @@ struct HoldingView: View {
             Text(o.perk)
                 .font(Theme.font(12))
                 .foregroundStyle(HoldingLux.sub)
+                .fixedSize(horizontal: false, vertical: true)
+            // v140: its rent and staff
+            Text(loc("holding.office.rent", eurH(o.rent)))
+                .font(Theme.font(11.5, .semibold))
+                .foregroundStyle(HoldingLux.expense)
                 .fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 4)
             if open {
@@ -630,6 +693,21 @@ struct HoldingCashBox: View {
                 total(loc("holding.income"), "+" + eurH(income), HoldingLux.income)
                 total(loc("holding.expenses"), "−" + eurH(expense), HoldingLux.expense)
                 total(loc("holding.net"), (net >= 0 ? "+" : "−") + eurH(abs(net)), HoldingLux.text)
+            }
+            // v140: the offices' rent and staff, a daily expense of its own
+            if holding.officeRent > 0 {
+                HStack(alignment: .firstTextBaseline) {
+                    Text(loc("holding.rentLine"))
+                        .font(Theme.font(12.5))
+                    Spacer(minLength: 6)
+                    Text("−" + loc("holding.perDayValue", eurH(holding.officeRent)))
+                        .font(Theme.font(16, .heavy, condensed: true))
+                        .foregroundStyle(HoldingLux.expense)
+                }
+                .padding(.horizontal, 10)
+                .padding(.vertical, 6)
+                .background(HoldingLux.expense.opacity(0.1), in: RoundedRectangle(cornerRadius: 10))
+                .accessibilityElement(children: .combine)
             }
             legend
             if days.isEmpty {
@@ -828,6 +906,8 @@ struct HoldingDealCard: View {
     var breakNote: String?
     var breakEnabled = true
     var breakAction: (() -> Void)?
+    /// v140: a line over the region rows (the wait for the next festival).
+    var rowsNote: String?
     /// v136: one row per region you own (TV, billboards); replaces the price and button.
     var regionRows: [HoldingRegionRow] = []
     let action: () -> Void
@@ -889,6 +969,11 @@ struct HoldingDealCard: View {
                 .stroke(HoldingLux.border, style: StrokeStyle(lineWidth: 1, dash: [4, 3]))
                 .frame(height: 1)
             if !regionRows.isEmpty {
+                if let rowsNote {
+                    Text(rowsNote)
+                        .font(Theme.font(12.5, .semibold))
+                        .foregroundStyle(HoldingLux.sub)
+                }
                 ForEach(regionRows) { HoldingRegionRowView(row: $0) }
             } else if let active {
                 Text(active)
@@ -1049,7 +1134,7 @@ struct HoldingChipFlow: Layout {
 
 /// Code-drawn art for the deal cards (64×64 artboard, after the prototype's SVGs).
 struct HoldingArt: View {
-    enum Kind { case tv, star, billboard, lab, record, jersey, worldGames, shape(AdShape), documentary, radar, composite, pacific, globe }
+    enum Kind { case tv, star, billboard, lab, record, jersey, worldGames, shape(AdShape), documentary, radar, composite, pacific, globe, festival, foundation }
     let kind: Kind
 
     var body: some View {
@@ -1069,6 +1154,8 @@ struct HoldingArt: View {
             case .composite: drawComposite(&ctx, k)
             case .pacific: drawPacific(&ctx, k)
             case .globe: drawGlobe(&ctx, k)
+            case .festival: drawLineArt(&ctx, k, Self.festivalArt)
+            case .foundation: drawLineArt(&ctx, k, Self.foundationArt)
             }
         }
         .accessibilityHidden(true)
@@ -1218,6 +1305,30 @@ struct HoldingArt: View {
         let stand = StrokeStyle(lineWidth: 3 * k, lineCap: .round)
         ctx.stroke(line([(24, 52), (40, 52)], k), with: .color(Self.gold), style: stand)
         ctx.stroke(line([(32, 46), (32, 52)], k), with: .color(Self.gold), style: stand)
+    }
+
+    /// v140: line art in the 24-unit grid of the office landmarks (prototype `INVEST_ART.hf` / `.fdn`), each part in its
+    /// own colour: the festival's two balloons over bunting, the foundation's bronze balloon on a plinth between laurels.
+    static let festivalArt: [(String, String)] = [
+        ("M9 2.5 C5.7 2.5 3.5 5 3.5 8 C3.5 11 6.3 13 7.6 15 L10.4 15 C11.7 13 14.5 11 14.5 8 C14.5 5 12.3 2.5 9 2.5 Z M7.8 15 L8 16.6 L10 16.6 L10.2 15 "
+            + "M9 2.5 C7.6 4.5 7.2 6.5 7.2 8.2 C7.2 10.5 7.9 12.7 8.3 15 M9 2.5 C10.4 4.5 10.8 6.5 10.8 8.2 C10.8 10.5 10.1 12.7 9.7 15", "#ff5e3a"),
+        ("M18.2 6 C16.4 6 15.3 7.3 15.3 8.8 C15.3 10.3 16.7 11.3 17.4 12.4 L19 12.4 C19.7 11.3 21.1 10.3 21.1 8.8 C21.1 7.3 20 6 18.2 6 Z "
+            + "M17.5 12.4 L17.6 13.6 L18.8 13.6 L18.9 12.4", "#14a39a"),
+        ("M1.5 18.5 C8 21 16 21 22.5 18.5 M4.6 19.4 L5.6 22 L6.8 19.9 M10.6 20.3 L11.8 22.8 L13 20.3 M17 19.9 L18.2 22 L19.2 19.4", "#e0a020"),
+    ]
+    static let foundationArt: [(String, String)] = [
+        ("M6.5 20.5 L17.5 20.5 M8 20.5 L8 16.4 L16 16.4 L16 20.5 M7 16.4 L17 16.4", "#8d93a0"),
+        ("M12 3 C9.3 3 7.6 5 7.6 7.4 C7.6 9.8 9.8 11.4 10.8 13 L13.2 13 C14.2 11.4 16.4 9.8 16.4 7.4 C16.4 5 14.7 3 12 3 Z M11 13 L11.2 16.4 M13 13 L12.8 16.4 "
+            + "M12 3 C11 5 10.8 6.5 10.8 8 C10.8 9.8 11.2 11.4 11.5 13 M12 3 C13 5 13.2 6.5 13.2 8 C13.2 9.8 12.8 11.4 12.5 13", "#c98a1a"),
+        ("M4.6 18 C2.8 15 2.9 11.4 4.8 8.6 M3.9 14.6 L2.4 13.8 M3.8 12 L2.4 10.9 M4.3 9.7 L3.4 8.3 "
+            + "M19.4 18 C21.2 15 21.1 11.4 19.2 8.6 M20.1 14.6 L21.6 13.8 M20.2 12 L21.6 10.9 M19.7 9.7 L20.6 8.3", "#4f9a4a"),
+    ]
+
+    private func drawLineArt(_ ctx: inout GraphicsContext, _ k: CGFloat, _ parts: [(String, String)]) {
+        let s = k * 64 / 24
+        for (d, col) in parts {
+            ctx.stroke(svg(d, s), with: .color(Color(hex: col)), style: StrokeStyle(lineWidth: 1.5 * s, lineCap: .round, lineJoin: .round))
+        }
     }
 
     private func drawStar(_ ctx: inout GraphicsContext, _ k: CGFloat) {

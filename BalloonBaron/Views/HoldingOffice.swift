@@ -141,24 +141,32 @@ struct HoldingOfficeView: View {
         case .shapes:
             if let a = h.adShape, a.until >= d { return (loc("hq.s.shapeRun", a.shape.title, num(a.until - d)), true, false) }
             return (loc("hq.s.noShape"), false, false)
+        case .festival:
+            // v140: the festival running and where, the wait for the next, or how many were held
+            if let f = h.festival, f.until > d { return (loc("hq.s.festivalOn", f.region.title, num(f.until - d)), true, false) }
+            if let f = h.festival, f.next > d { return (loc("hq.s.festivalWait", num(f.next - d)), false, false) }
+            return (h.festival.map { loc("hq.s.festivals", num($0.count)) } ?? loc("hq.s.noFestival"), false, false)
+        case .foundation:
+            return (h.projects > 0 ? loc("hq.s.projects", num(h.projects)) : loc("hq.s.noProject"), false, false)
         }
     }
 
     /// Where things stand on screen (also where the labels go).
-    /// Three rows of desks (v105: record attempts and shaped balloons joined). A desk with its label is about 175 pt
-    /// tall and the first label needs 140 pt under the wall, so the floor is never shorter than 540 pt; `h` is the
-    /// whole drawing, taller than the screen on small phones.
+    /// Rows of desks (v105: record attempts and shaped balloons joined; v140: a fourth row, the festival office and the
+    /// foundation). A desk with its label is about 175 pt tall and the first label needs 140 pt under the wall, so the
+    /// floor is never shorter than 715 pt; `h` is the whole drawing, taller than the screen on most phones (it scrolls).
     struct Layout {
         let w: CGFloat, h: CGFloat, top: CGFloat = 86
-        let wall: CGFloat, rowA: CGFloat, rowB: CGFloat, rowC: CGFloat
+        let wall: CGFloat, rowA: CGFloat, rowB: CGFloat, rowC: CGFloat, rowD: CGFloat
         init(size: CGSize) {
             w = size.width
             wall = top + max(230, (size.height - top) * 0.36)
-            let floor = max(size.height - wall, 540)
+            let floor = max(size.height - wall, 715)
             h = wall + floor
-            rowA = wall + floor * 0.26
-            rowB = wall + floor * 0.585
-            rowC = wall + floor * 0.91
+            rowA = wall + floor * 0.196
+            rowB = wall + floor * 0.44
+            rowC = wall + floor * 0.684
+            rowD = wall + floor * 0.928
         }
 
         func spot(_ u: HoldingUnit) -> CGPoint {
@@ -172,6 +180,8 @@ struct HoldingOfficeView: View {
             case .offices: CGPoint(x: w * 0.73, y: rowB - 92)
             case .records: CGPoint(x: w * 0.27, y: rowC - 92)
             case .shapes: CGPoint(x: w * 0.73, y: rowC - 92)
+            case .festival: CGPoint(x: w * 0.27, y: rowD - 92)
+            case .foundation: CGPoint(x: w * 0.73, y: rowD - 92)
             }
         }
     }
@@ -226,6 +236,9 @@ private enum OfficePainter {
         desk(&c, cx: w * 0.73, y: L.rowB, kind: .offices, k: 3, w: w, t: t)
         desk(&c, cx: w * 0.27, y: L.rowC, kind: .records, k: 4, w: w, t: t)
         desk(&c, cx: w * 0.73, y: L.rowC, kind: .shapes, k: 5, w: w, t: t)
+        plant(&c, w * 0.5, L.rowC + 30, 0.7)
+        desk(&c, cx: w * 0.27, y: L.rowD, kind: .festival, k: 6, w: w, t: t)
+        desk(&c, cx: w * 0.73, y: L.rowD, kind: .foundation, k: 7, w: w, t: t)
         plant(&c, 12, h - 10, 1.1)
         plant(&c, w - 14, h - 6, 1)
     }
@@ -387,13 +400,15 @@ private enum OfficePainter {
         func fill(_ p: Path, _ hex: String) { c.fill(p, with: .color(Color(hex: hex))) }
         func rr(_ x: CGFloat, _ y: CGFloat, _ ww: CGFloat, _ hh: CGFloat, _ r: CGFloat) -> Path { Path(roundedRect: CGRect(x: x, y: y, width: ww, height: hh), cornerRadius: r) }
         let dw = min(w * 0.4, 170), dh: CGFloat = 14, x = cx - dw / 2
-        fill(rr(cx - 22 + CGFloat(k) * 8, y - 66, 34, 40, 8), "#3d3560")
-        let bob = CGFloat(sin(t * 2 + Double(k))) * 1.2, px = cx - 6 + CGFloat(k) * 8
-        fill(rr(px - 13, y - 44 + bob, 26, 30, 9), ["#ff5e3a", "#14a39a", "#9b7be0", "#ffc23d", "#5aa9e6", "#e0408a"][k])
-        fill(Path(ellipseIn: CGRect(x: px - 10, y: y - 64 + bob, width: 20, height: 20)), "#e0a47a")
+        // v140: the fourth row's people sit like the first row's
+        let ko = CGFloat(k > 5 ? k - 5 : k)
+        fill(rr(cx - 22 + ko * 8, y - 66, 34, 40, 8), "#3d3560")
+        let bob = CGFloat(sin(t * 2 + Double(k))) * 1.2, px = cx - 6 + ko * 8
+        fill(rr(px - 13, y - 44 + bob, 26, 30, 9), ["#ff5e3a", "#14a39a", "#9b7be0", "#ffc23d", "#5aa9e6", "#e0408a", "#22a45d", "#c98a3a"][k])
+        fill(Path(ellipseIn: CGRect(x: px - 10, y: y - 64 + bob, width: 20, height: 20)), ["#e0a47a", "#e0a47a", "#e0a47a", "#e0a47a", "#e0a47a", "#e0a47a", "#a8724e", "#f0c09a"][k])
         var hair = Path()
         hair.addArc(center: CGPoint(x: px, y: y - 58 + bob), radius: 10, startAngle: .degrees(180), endAngle: .degrees(0), clockwise: false)
-        fill(hair, ["#3a2418", "#1f1b2e", "#7a4a24", "#2b2350", "#c9a040", "#1f1b2e"][k])
+        fill(hair, ["#3a2418", "#1f1b2e", "#7a4a24", "#2b2350", "#c9a040", "#1f1b2e", "#1f1b2e", "#8a8a8a"][k])
         fill(rr(x, y - dh, dw, dh, 5), "#e8c495")
         fill(Path(CGRect(x: x + 6, y: y, width: dw - 12, height: 34)), "#b07a48")
         fill(Path(CGRect(x: x + 6, y: y + 30, width: dw - 12, height: 4)), "#9a6a3c")
@@ -441,6 +456,45 @@ private enum OfficePainter {
             var rope = Path(); rope.move(to: CGPoint(x: gx, y: y - dh - 22)); rope.addLine(to: CGPoint(x: gx, y: y - dh - 34))
             c.stroke(rope, with: .color(Color(hex: "#7a4a24")), lineWidth: 1.2)
             fill(Path(ellipseIn: CGRect(x: gx - 7, y: y - dh - 47, width: 14, height: 14)), "#ffc23d")
+        case .festival:
+            // v140: the festival poster on screen (three balloons over a meadow) and bunting on a little stand
+            fill(Path(CGRect(x: mx - 22, y: y - dh - 18, width: 44, height: 6)), "#7ac06a")
+            for (col, dx, dy) in [("#ff5e3a", -10.0, -30.0), ("#ffc23d", 2, -34), ("#14a39a", 12, -28)] as [(String, CGFloat, CGFloat)] {
+                fill(Path(ellipseIn: CGRect(x: mx + dx - 4.2, y: y - dh + dy - 4.2, width: 8.4, height: 8.4)), col)
+                fill(Path(CGRect(x: mx + dx - 1, y: y - dh + dy + 5, width: 2, height: 2)), "#8a5a34")
+            }
+            let gx = x + 14
+            var poles = Path()
+            poles.move(to: CGPoint(x: gx, y: y - dh)); poles.addLine(to: CGPoint(x: gx, y: y - dh - 26))
+            poles.move(to: CGPoint(x: gx + 34, y: y - dh)); poles.addLine(to: CGPoint(x: gx + 34, y: y - dh - 26))
+            c.stroke(poles, with: .color(Color(hex: "#6a4a32")), lineWidth: 1.6)
+            var wire = Path()
+            wire.move(to: CGPoint(x: gx, y: y - dh - 25)); wire.addQuadCurve(to: CGPoint(x: gx + 34, y: y - dh - 25), control: CGPoint(x: gx + 17, y: y - dh - 17))
+            c.stroke(wire, with: .color(Color(hex: "#6a4a32")), lineWidth: 0.8)
+            for i in 1..<6 {
+                let kk = CGFloat(i) / 6, fx = gx + 34 * kk, fy = y - dh - 25 + 16 * kk * (1 - kk) + CGFloat(sin(t * 3 + Double(i))) * 0.6
+                var flag = Path(); flag.move(to: CGPoint(x: fx - 2.6, y: fy)); flag.addLine(to: CGPoint(x: fx + 2.6, y: fy)); flag.addLine(to: CGPoint(x: fx, y: fy + 6)); flag.closeSubpath()
+                fill(flag, ["#ff5e3a", "#ffc23d", "#14a39a", "#9b7be0", "#ff6fa8"][i % 5])
+            }
+        case .foundation:
+            // v140: a heart on screen and a small bronze balloon on a stone plinth, the foundation's monuments in little
+            var heart = Path()
+            heart.addEllipse(in: CGRect(x: mx - 9.5, y: y - dh - 34, width: 10, height: 10))
+            heart.addEllipse(in: CGRect(x: mx - 0.5, y: y - dh - 34, width: 10, height: 10))
+            heart.move(to: CGPoint(x: mx - 9.6, y: y - dh - 27.5)); heart.addLine(to: CGPoint(x: mx, y: y - dh - 16)); heart.addLine(to: CGPoint(x: mx + 9.6, y: y - dh - 27.5)); heart.closeSubpath()
+            fill(heart, "#e5432f")
+            let gx = x + 26
+            fill(Path(CGRect(x: gx - 9, y: y - dh - 10, width: 18, height: 10)), "#cfc6b6")
+            fill(Path(CGRect(x: gx - 11, y: y - dh - 12, width: 22, height: 3)), "#e4dccd")
+            var env = Path()
+            env.move(to: CGPoint(x: gx, y: y - dh - 15))
+            env.addCurve(to: CGPoint(x: gx, y: y - dh - 33), control1: CGPoint(x: gx - 9, y: y - dh - 20), control2: CGPoint(x: gx - 8, y: y - dh - 33))
+            env.addCurve(to: CGPoint(x: gx, y: y - dh - 15), control1: CGPoint(x: gx + 8, y: y - dh - 33), control2: CGPoint(x: gx + 9, y: y - dh - 20))
+            env.closeSubpath()
+            c.fill(env, with: .linearGradient(Gradient(stops: [.init(color: Color(hex: "#8a5a24"), location: 0), .init(color: Color(hex: "#e8b04a"), location: 0.45),
+                                                               .init(color: Color(hex: "#7a4a1a"), location: 1)]),
+                                              startPoint: CGPoint(x: gx - 7, y: 0), endPoint: CGPoint(x: gx + 7, y: 0)))
+            fill(Path(CGRect(x: gx - 2, y: y - dh - 15, width: 4, height: 3)), "#8a5a24")
         case .shapes:
             AdShapeArt.draw(&c, .bottle, center: CGPoint(x: mx, y: y - dh - 25), size: 30)
             AdShapeArt.draw(&c, .rocket, center: CGPoint(x: x + 26, y: y - dh - 14), size: 26)

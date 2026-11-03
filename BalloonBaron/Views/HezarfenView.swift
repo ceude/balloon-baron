@@ -61,6 +61,8 @@ struct HezarfenView: View {
         if let (_, l) = boss { return loc(["boss.ok.0", "boss.ok.1", "boss.ok.2"][(day + l.rawValue.count) % 3]) }
         if case .praise = message { return loc("hez.thanks") }
         if case .deed = message { return loc("hez.thanks") }
+        if case .festivalHosted = message { return loc("hez.thanks") }
+        if case .foundationProject = message { return loc("hez.thanks") }
         if case .milestone = message { return loc("hez.thanks") }
         if message == .tip(.show) { return loc("hez.toShow") }
         if message == .tip(.price) || message == .tip(.price3) { return loc("hez.toPrice") }

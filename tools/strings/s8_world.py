@@ -162,13 +162,6 @@ add("holding.legendIncome",
  "Ingresos: regiones en piloto automático y transferencias de regiones",
  "収入：自動運営の地域と地域からの送金",
  "수입: 자동 운영 지역 수익과 지역 이체")
-add("holding.legendExpense",
- "Expenses: holding costs (%@) and investments",
- "Gider: holding giderleri (%@) ve yatırımlar",
- "Ausgaben: Holding-Ausgaben (%@) und Investitionen",
- "Gastos: costes del holding (%@) e inversiones",
- "支出：ホールディングス経費（%@）と投資",
- "지출: 지주회사 비용(%@)과 투자")
 add("holding.chartEmpty",
  "The chart fills up once money first reaches the holding.",
  "Grafik, holdinge ilk para girdiğinde dolmaya başlar.",

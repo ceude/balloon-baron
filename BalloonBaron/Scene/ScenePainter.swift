@@ -424,12 +424,14 @@ enum ScenePainter {
         var owners: [[String]] = []
         for r in s.rivals where r.alive { for _ in r.balloons { owners.append(r.colors) } }
         for _ in 0..<max(0, s.balloons.count - 1) { owners.append(s.colors) }
-        if s.fiesta != nil {
+        // v140: the holding's own festival fills the sky like a Fiesta
+        let crowd = s.fiesta != nil || s.hostedFestivalHere
+        if crowd {
             let sw = Studio.swatches
             for i in 0..<30 { owners.append([sw[i % sw.count], sw[(i + 3) % sw.count]]) }
         }
         var r = Mulberry32(seed: UInt32(truncatingIfNeeded: s.weather?.seed ?? 1) &+ 99)
-        let n = min(s.fiesta != nil ? Rules.fiestaBalloons : 18, owners.count)
+        let n = min(crowd ? Rules.fiestaBalloons : 18, owners.count)
         return (0..<n).map { i in
             BackgroundBalloon(x: -400 + r.next() * 3800, alt: 60 + r.next() * 500, colors: owners[i % owners.count],
                               phase: r.next() * 6, scale: 0.55 + r.next() * 0.3)

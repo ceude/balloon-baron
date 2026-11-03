@@ -145,9 +145,9 @@ extension TownPainter {
         rect(p.x + 8, p.y - 74 + CGFloat(sin(tt * 4 + 2.5 + ph)) * 2, 12, 5, hex(colors.count > 1 ? colors[1] : "#ffc23d"))
     }
 
-    /// Festival days: bunting strung along the main roads.
+    /// Festival days: bunting strung along the main roads (v140: also the holding's International Balloon Festival).
     func bunting() -> [TownItem] {
-        guard s.local.festival != nil else { return [] }
+        guard s.local.festival != nil || s.hostedFestivalHere else { return [] }
         let tt = t
         let spans: [(Double, Double)] = [(7.5, 1), (7.5, 5), (7.5, 9.5), (1, 7.5), (4.5, 7.5), (10.5, 7.5)]
         return spans.map { along in

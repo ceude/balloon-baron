@@ -676,7 +676,7 @@ extension TownPainter {
                     }
                 }
             case .rv:
-                let fiesta = s.local.fiesta != nil, n = fiesta ? 9 : 3, rcol = ["#ff5e3a", "#14a39a", "#9b7be0", "#ffc23d", "#5aa9e6"], lit = dark
+                let fiesta = s.local.fiesta != nil || s.hostedFestivalHere, n = fiesta ? 9 : 3, rcol = ["#ff5e3a", "#14a39a", "#9b7be0", "#ffc23d", "#5aa9e6"], lit = dark
                 for i in 0..<n {
                     let a = Double(i % 3 - 1) * min(0.85, c.w * 0.3)
                     let b = Double(i / 3 - 1) * min(0.6, c.d * 0.3) + (n == 3 ? 0.6 * min(0.6, c.d * 0.3) : 0)

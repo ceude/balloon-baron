@@ -13,7 +13,7 @@ final class OfficeSceneModel {
     /// Rebuilds the world (like `buildWorld()`) when the day, region or fleet changes.
     func sync(_ s: GameState) {
         let alive = s.local.rivals.filter { $0.alive }.count
-        let k = "\(s.region.rawValue)|\(s.weather?.seed ?? 0)|\(s.local.balloons.count)|\(alive)|\(s.local.fiesta != nil)|\(s.colors.joined())"
+        let k = "\(s.region.rawValue)|\(s.weather?.seed ?? 0)|\(s.local.balloons.count)|\(alive)|\(s.local.fiesta != nil || s.hostedFestivalHere)|\(s.colors.joined())"
         guard k != key else { return }
         key = k
         bg = ScenePainter.backgroundBalloons(s)

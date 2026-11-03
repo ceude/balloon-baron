@@ -300,6 +300,8 @@ extension PaperItem {
         case .briFestival: "briFestival"
         case .preferredOperator: "preferredOperator"
         case .rivalGroup: "rivalGroup"
+        case .festivalHosted: "festivalHosted"
+        case .foundationProject: "foundationProject"
         }
     }
 
@@ -334,6 +336,8 @@ extension PaperItem {
         case .briFestival: loc("paper.briFestival")
         case .preferredOperator(let co, _): loc("paper.preferredOperator", company, co)
         case let .rivalGroup(r, co, _, _, _, _): loc("paper.rivalGroup", r, co)
+        case .festivalHosted: loc("paper.festivalHosted", company)
+        case let .foundationProject(r, i, _): loc("paper.foundationProject", projectName(r, i))
         }
     }
 
@@ -355,6 +359,8 @@ extension PaperItem {
         case .factoryGrew(_, let lv): Factory.levelTitle(lv)
         case .airspace(let fine): loc("paper.airspace.sub", eur(fine))
         case .nightGlow(let n): loc("paper.nightGlow.sub", num(n))
+        case .festivalHosted(let r): loc("paper.festivalHosted.sub", r.title)
+        case let .foundationProject(r, _, n): loc("paper.foundationProject.sub", num(n), r.title)
         case let .preferredOperator(_, kind): loc("ctr.\(Self.contractRegion(kind)).prefPaper")
         case let .rivalGroup(r, _, n, len, grow, kind):
             [len > 1 ? loc("paper.rivalGroup.days", num(len)) : nil, loc("paper.rivalGroup.sub.\(kind.rawValue)", num(n), r),
@@ -376,6 +382,7 @@ extension NightEvent {
         case .show: "show"
         case .nightGlow: "nglow"
         case .eveningAscent: "eve"
+        case .festivalGlow: "fglow"
         }
     }
 
@@ -809,6 +816,7 @@ extension Achievement {
         switch self {
         case .mission, .fleet5, .pax1k, .design, .upgrade3: ["#4f9ee0", "#9fd2f0", "#e6f4fb"]
         case .star45, .fest, .world, .nightGlow: ["#0f0e2e", "#2b2350", "#5a4a8a"]
+        case .patron: ["#6b7fc4", "#f0b48c", "#ffdca8"] // v140: sunrise
         case .bri, .baronBri: ["#4f9ee0", "#9fd2f0", "#e6f4fb"]
         case .hotel, .hotelOwn, .rivalDown, .boss: ["#3a2a6a", "#c8607a", "#ffb070"]
         case .winter: ["#7fa6cf", "#c7dcef", "#f2f7fc"]

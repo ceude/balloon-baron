@@ -248,9 +248,14 @@ extension HezMessage {
         case let .regionClosed(r, fresh, fee):
             fresh ? loc("hez.regionClosed.fresh", r.title, money(Rules.seizeBelow, in: r)) : loc("hez.regionClosed", r.title, eurH(fee))
         case .capReentered: loc("hez.capReentered")
+        case .festivalHosted(let r): loc("hez.festivalHosted", r.title)
+        case let .foundationProject(r, i): loc("hez.foundationProject", projectName(r, i))
         }
     }
 }
+
+/// v140: the name of a region's Hot Air Foundation project; each region's list of five goes round.
+func projectName(_ r: RegionID, _ i: Int) -> String { loc("fdn.\(r.rawValue).\(i % FoundationProject.perRegion)") }
 
 extension Review {
     func text(company: String, designs: [Design] = []) -> String {

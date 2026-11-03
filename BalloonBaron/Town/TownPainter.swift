@@ -1412,7 +1412,7 @@ struct TownPainter {
         let colors = s.colors, tt = t
         // v124: the Night Glow fires on the beat, the evening ascent lifts off.
         let nk = BristolNight.kind(night?.event), nt = night.map { t - $0.t0 } ?? 0
-        let packed = night != nil && night?.event != .balloonGlow && nk == nil && night?.fieldShown != true
+        let packed = night != nil && night?.event != .balloonGlow && night?.event != .festivalGlow && nk == nil && night?.fieldShown != true
         for (i, b) in s.fieldBalloons.prefix(packed ? 0 : 6).enumerated() {
             let gx = 1.8 + Double(i % 3) * 1.9, gy = 5 + Double(i / 3) * 1.4
             let r: CGFloat = b.size == .XL ? 44 : b.size == .L ? 38 : b.size == .M ? 33 : 28

@@ -342,6 +342,24 @@ private struct PostcardPainter {
             fill("M0 14 C0 4 7 0 12 0 C17 0 24 4 24 14 C24 22 16 26 14 30 L10 30 C8 26 0 22 0 14Z", c0, in: g)
             stroke("M4 6 C4 14 7 22 10 30 M20 6 C20 14 17 22 14 30 M12 0 L12 30", c1, 1.6, in: g)
             stroke("M2 14 L22 14", "#ffc23d", 2, in: g)
+        case .patron:
+            // v140: the foundation's first monument at sunrise: a bronze balloon on its plinth among flowers
+            circle(112, 50, 10, "#fff0c8")
+            valley()
+            balloon(34, 18, 0.55, Self.cols[2], "#ffffff")
+            balloon(116, 26, 0.45, Self.cols[3], "#ffffff")
+            balloon(96, 10, 0.5, c0, c1)
+            ellipse(62, 70, 26, 4.5, "#5f8f3e")
+            for i in 0..<10 { circle(40 + CGFloat(i) * 4.8, 69 + CGFloat(i % 2) * 1.6, 1.3, ["#ff6fa8", "#ffc23d", "#fff3d8", "#e5432f"][i % 4]) }
+            fill("M52 70 L52 52 L72 52 L72 70Z", "#e4dccd")
+            fill("M66 52 L72 52 L72 70 L66 70Z", "#c9bea8")
+            fill("M49 52 L75 52 L75 49 L49 49Z", "#efe8da")
+            c.fill(HezarfenAvatar.svgPath("M60 44 C52 40 51 24 62 24 C73 24 72 40 64 44Z"),
+                   with: .linearGradient(Gradient(stops: [.init(color: Color(hex: "#7a4a1a"), location: 0), .init(color: Color(hex: "#e8b04a"), location: 0.4),
+                                                          .init(color: Color(hex: "#6a3e14"), location: 1)]),
+                                         startPoint: CGPoint(x: 51, y: 0), endPoint: CGPoint(x: 73, y: 0)))
+            rect(59.5, 44.5, 5, 4, "#6a4220", rx: 1)
+            fill("M58 58 L64 56.5 L64 61 L58 62.5Z", "#d9a640")
         case .baronCap:
             circle(75, 56, 14, "#fff0c8")
             valley()

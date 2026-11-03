@@ -526,6 +526,12 @@ struct HomeView: View {
         if let fb, s.isSelf(fb), fst == .ok, fb.fly {
             out.append(HomeAlert(id: "founder", level: .green, title: loc("home.founderBonus")))
         }
+        // v140: the holding's International Balloon Festival in the region you're in
+        if s.hostedFestivalHere, let hf = s.holding.festival {
+            out.append(HomeAlert(id: "hfest", level: .mission,
+                                 title: loc("home.alert.hfest", num(s.day - (hf.until - Holding.festivalDays) + 1), num(Holding.festivalDays)),
+                                 text: loc("home.alert.hfest.body", percent(Holding.festivalBoost - 1))))
+        }
         if let f = s.local.festival {
             out.append(HomeAlert(id: "festival", level: .mission, title: loc("home.alert.festival", festivalName(f.index), num(s.day - f.start + 1), num(Rules.festivalDays)),
                                  text: loc("home.alert.festival.body")))

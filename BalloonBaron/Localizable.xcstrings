@@ -2174,6 +2174,88 @@
         }
       }
     },
+    "ach.patron": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gönner der Lüfte"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patron of the skies"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mecenas de los cielos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "空の篤志家"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "하늘의 후원자"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gökyüzünün hayırseveri"
+          }
+        }
+      }
+    },
+    "ach.patron.d": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das erste Projekt der Stiftung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The foundation's first project"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El primer proyecto de la fundación"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "財団の最初の事業"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재단의 첫 사업"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vakfın ilk projesi"
+          }
+        }
+      }
+    },
     "ach.pax10k": {
       "extractionState": "manual",
       "localizations": {
@@ -37475,6 +37557,826 @@
         }
       }
     },
+    "fdn.abq.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Ballonpiloten-Programm für Jugendliche"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A balloon pilot programme for young people"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un programa de pilotos de globo para jóvenes"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "若者のための気球パイロット養成プログラム"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "청소년 열기구 조종사 프로그램"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gençlere balon pilotluğu programı"
+          }
+        }
+      }
+    },
+    "fdn.abq.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Pappeln am Ufer des Rio Grande"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cottonwoods replanted along the Rio Grande"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuevos álamos a orillas del Río Grande"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "リオ・グランデ河畔のハコヤナギ植樹"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "리오그란데 강가의 미루나무 심기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rio Grande kıyısına yeni kavaklar"
+          }
+        }
+      }
+    },
+    "fdn.abq.2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wetterstationen für die Schulen der Stadt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Weather stations for the city's schools"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estaciones meteorológicas para las escuelas de la ciudad"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "市内の学校に気象観測所"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "시내 학교들에 기상 관측소"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Şehrin okullarına hava istasyonları"
+          }
+        }
+      }
+    },
+    "fdn.abq.3": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Musikschule für alle in der Old Town"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A community music school in Old Town"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una escuela de música comunitaria en Old Town"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オールドタウンの地域音楽学校"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "올드타운의 지역 음악 학교"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Old Town'da bir mahalle müzik okulu"
+          }
+        }
+      }
+    },
+    "fdn.abq.4": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Fahrbücherei für die Wüstenstraßen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A mobile library for desert roads"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una biblioteca móvil para los caminos del desierto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "砂漠の道を走る移動図書館"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사막 길을 달리는 이동 도서관"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Çöl yollarında gezici kütüphane"
+          }
+        }
+      }
+    },
+    "fdn.bri.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Gemeinschaftsballon für Bristol"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A community balloon for Bristol"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un globo comunitario para Bristol"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ブリストル市民の気球"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "브리스톨 시민의 열기구"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bristol halkının balonu"
+          }
+        }
+      }
+    },
+    "fdn.bri.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Segelclub für Jugendliche im Hafen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A youth sailing club in the harbour"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un club de vela juvenil en el puerto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "港の若者向けセーリングクラブ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "항구의 청소년 요트 클럽"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Limanda gençler için yelken kulübü"
+          }
+        }
+      }
+    },
+    "fdn.bri.2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Wildblumenwiese am Avon"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A wildflower meadow along the Avon"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un prado de flores silvestres junto al Avon"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "エイボン川沿いの野の花の草原"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "에이번강 변의 야생화 초원"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avon kıyısında kır çiçeği çayırı"
+          }
+        }
+      }
+    },
+    "fdn.bri.3": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Lesesaal in einem georgianischen Stadthaus"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A reading room in a Georgian townhouse"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una sala de lectura en una casa georgiana"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ジョージ王朝様式の邸宅の閲覧室"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "조지 왕조풍 타운하우스의 열람실"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "18. yüzyıldan kalma bir konakta okuma salonu"
+          }
+        }
+      }
+    },
+    "fdn.bri.4": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ballon-Wissenschaftswerkstätten für Schulen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloon science workshops for schools"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Talleres de ciencia del globo para escuelas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "学校向けの気球サイエンス教室"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "학교를 위한 열기구 과학 교실"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Okullara balon bilimi atölyeleri"
+          }
+        }
+      }
+    },
+    "fdn.cap.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurierung der Fresken einer Felsenkirche in Göreme"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restoring a rock-cut church's frescoes in Göreme"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restauración de los frescos de una iglesia rupestre en Göreme"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ギョレメの岩窟教会フレスコ画の修復"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "괴레메 암굴 교회 프레스코화 복원"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Göreme'de kaya kilisesi fresklerinin restorasyonu"
+          }
+        }
+      }
+    },
+    "fdn.cap.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stipendien für junge Töpfer in Avanos"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Scholarships for young potters in Avanos"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Becas para jóvenes alfareros de Avanos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "アヴァノスの若い陶芸家への奨学金"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아바노스 젊은 도공들을 위한 장학금"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avanos'ta genç çömlekçilere burs"
+          }
+        }
+      }
+    },
+    "fdn.cap.2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Wanderwege im Ihlara-Tal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New footpaths for the Ihlara Valley"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuevos senderos en el valle de Ihlara"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "イフララ渓谷の新しい遊歩道"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "으흘라라 계곡의 새 산책로"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ihlara Vadisi'ne yeni yürüyüş yolları"
+          }
+        }
+      }
+    },
+    "fdn.cap.3": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Kinderbibliothek in Ürgüp"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A children's library in Ürgüp"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una biblioteca infantil en Ürgüp"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ユルギュップの子ども図書館"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "위르귑의 어린이 도서관"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ürgüp'te bir çocuk kütüphanesi"
+          }
+        }
+      }
+    },
+    "fdn.cap.4": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Fotoschule für die Jugend des Tals"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A photography school for the valley's young"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una escuela de fotografía para los jóvenes del valle"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "谷の若者のための写真学校"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계곡 청년들을 위한 사진 학교"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vadinin gençleri için fotoğraf okulu"
+          }
+        }
+      }
+    },
+    "fdn.lux.0": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Schule am Westufer des Nils"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A school on the Nile's west bank"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una escuela en la orilla oeste del Nilo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナイル西岸の学校"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "나일강 서안의 학교"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nil'in batı yakasında bir okul"
+          }
+        }
+      }
+    },
+    "fdn.lux.1": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eine Werkstatt für die Malereien thebanischer Gräber"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A workshop restoring Theban tomb paintings"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un taller para restaurar las pinturas de las tumbas tebanas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "テーベの墓壁画の修復工房"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "테베 무덤 벽화 복원 공방"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Teb mezar resimleri için restorasyon atölyesi"
+          }
+        }
+      }
+    },
+    "fdn.lux.2": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Arztboot für die Dörfer am Fluss"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A clinic boat for the river villages"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un barco clínica para las aldeas del río"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "川沿いの村を回る診療船"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "강변 마을을 도는 진료선"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nehir köylerine gezici sağlık teknesi"
+          }
+        }
+      }
+    },
+    "fdn.lux.3": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lehrstellen bei den Feluken-Bootsbauern"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apprenticeships with the felucca builders"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aprendices con los constructores de falúas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ファルーカ職人のもとでの見習い制度"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "펠루카 장인들의 도제 과정"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Feluka ustalarının yanında çıraklık"
+          }
+        }
+      }
+    },
+    "fdn.lux.4": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Setzlinge für die Dattelhaine"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New saplings for the date groves"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nuevos plantones para los palmerales"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ナツメヤシ林に新しい苗木"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "대추야자 숲에 새 묘목"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hurma bahçelerine yeni fidanlar"
+          }
+        }
+      }
+    },
     "festival.0": {
       "extractionState": "manual",
       "localizations": {
@@ -53383,6 +54285,47 @@
         }
       }
     },
+    "hez.festivalHosted": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ist diese Woche die Ballonhauptstadt der Welt, Lehrling! Dein eigenes Festival: zehn Tage Piloten aus allen Kontinenten und ein Himmel voller Farben. Die Touristen werden in Scharen kommen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is the balloon capital of the world this week, kid! Your own festival: ten days of pilots from every continent and a sky full of colour. The tourists will pour in."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡%@ es esta semana la capital mundial del globo, aprendiz! Tu propio festival: diez días de pilotos de todos los continentes y un cielo lleno de color. Los turistas llegarán en masa."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "今週は%@が世界の気球の都だ、弟子よ！お前の祭りだ。十日間、あらゆる大陸から操縦士が集まり、空は色であふれる。観光客が押し寄せるぞ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이번 주 세계 열기구의 수도는 바로 %@, 제자여! 자네의 축제야. 열흘 동안 모든 대륙에서 조종사들이 모이고 하늘이 온통 색으로 물들지. 관광객이 몰려올 거야."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ bu hafta dünyanın balon başkenti evlat! Senin festivalin: on gün boyunca her kıtadan pilotlar, gökyüzü renk renk. Turistler akın edecek."
+          }
+        }
+      }
+    },
     "hez.fiestaStarted": {
       "extractionState": "manual",
       "localizations": {
@@ -53584,6 +54527,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Filo sayfası açıldı evlat. Kasa dolunca ikinci balonu düşünebilirsin, ama her balona bir pilot lazım."
+          }
+        }
+      }
+    },
+    "hez.foundationProject": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das neue Projekt der Stiftung: %@. Geld kommt und geht, Lehrling, aber daran erinnern sich die Leute jahrelang. In all deinen Regionen spricht man voller Wärme von dir."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The foundation's new project: %@. Money comes and goes, kid, but people remember this for years. Every region you own speaks your name kindly."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El nuevo proyecto de la fundación: %@. El dinero va y viene, aprendiz, pero esto la gente lo recuerda durante años. En todas tus regiones hablan bien de ti."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "財団の新しい事業だ：%@。金は入っては出ていくものだが、弟子よ、これは人々が何年も覚えている。お前のどの地域でも、皆がお前の名を温かく口にしている。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재단의 새 사업일세: %@. 돈은 들어왔다 나가는 것이지만, 제자여, 이건 사람들이 몇 년이고 기억한다네. 자네의 모든 지역에서 자네 이름을 따뜻하게 부르고 있어."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vakfın yeni projesi: %@. Para gelir gider evlat, ama bunu insanlar yıllarca hatırlar. Bütün bölgelerinde adını sevgiyle anıyorlar."
           }
         }
       }
@@ -57442,6 +58426,47 @@
         }
       }
     },
+    "holding.celeb.descFirst": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein erster Vertrag ist mit einem aufstrebenden Star: Diesmal machen dir die Agenten einen besseren Preis. Spätere Gesichter kosten mehr."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your first contract is with a rising star: the agents give you a better price this time. Later faces cost more."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu primer contrato es con una estrella en ascenso: esta vez los representantes te hacen mejor precio. Las siguientes caras costarán más."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "最初の契約は売り出し中のスター。今回はエージェントが値引きしてくれる。次からの顔はもっと高い。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "첫 계약은 떠오르는 스타와 맺습니다. 이번엔 에이전시가 할인해 줍니다. 다음 얼굴부터는 더 비쌉니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "İlk sözleşmen yükselen bir yıldızla: menajerler bu sefer indirim yapıyor. Sonraki yüzler daha pahalı."
+          }
+        }
+      }
+    },
     "holding.celeb.kicker": {
       "extractionState": "manual",
       "localizations": {
@@ -58959,6 +59984,1031 @@
         }
       }
     },
+    "holding.fdn.chipMonument": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ein Denkmal in der Stadt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A monument in the town"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un monumento en el pueblo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "町に記念碑"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마을에 기념비"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kasabada bir anıt"
+          }
+        }
+      }
+    },
+    "holding.fdn.chipStep": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jedes Projekt %@ teurer"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each project %@ more"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada proyecto %@ más"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事業ごとに%@ずつ値上がり"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사업마다 %@씩 인상"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her proje %@ daha pahalı"
+          }
+        }
+      }
+    },
+    "holding.fdn.cta": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projekt finanzieren"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fund the project"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Financiar el proyecto"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事業に出資する"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사업 후원하기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projeyi fonla"
+          }
+        }
+      }
+    },
+    "holding.fdn.desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gib zurück, was du verdient hast: von der Restaurierung eines Freskos bis zur Schulbibliothek hinterlässt jedes Projekt eine bleibende Spur in einer Region. Ein kleines Denkmal in ihrer Stadt erinnert daran."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Give back what you earned: from restoring a fresco to a school library, every project leaves a lasting mark on a region. A small monument in its town remembers it."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devuelve lo que has ganado: de restaurar un fresco a una biblioteca escolar, cada proyecto deja una huella duradera en una región. Un pequeño monumento en su pueblo lo recuerda."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "稼いだものを還元しよう。フレスコ画の修復から学校の図書室まで、事業はどれも地域に消えない足跡を残す。町の小さな記念碑がそれを伝える。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "번 것을 돌려주세요. 프레스코화 복원부터 학교 도서관까지, 모든 사업이 지역에 오래 남는 흔적을 남깁니다. 마을의 작은 기념비가 그것을 기억합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kazandığını geri ver: fresk restorasyonundan okul kitaplığına, her proje bir bölgede kalıcı bir iz bırakır. Kasabasında küçük bir anıt projeyi anar."
+          }
+        }
+      }
+    },
+    "holding.fdn.here": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projekte hier: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projects here: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proyectos aquí: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ここでの事業：%@件"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이곳의 사업: %@건"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buradaki proje: %@"
+          }
+        }
+      }
+    },
+    "holding.fdn.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gib den Orten etwas zurück, an denen du fliegst. Jedes Projekt hebt deine Beliebtheit in allen Regionen, und ein kleines Denkmal in der Stadt der Region erinnert daran. Ein Ende gibt es nicht."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Give back where you fly. Every project lifts your popularity in all your regions, and a small monument in that region's town remembers it. There is no end to them."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Devuelve algo a los lugares donde vuelas. Cada proyecto aumenta tu popularidad en todas tus regiones, y un pequeño monumento en el pueblo de esa región lo recuerda. No tienen fin."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "飛ぶ土地に恩返しを。事業ごとに全地域で人気が上がり、その地域の町に小さな記念碑が残る。事業に終わりはない。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "날아다니는 곳에 보답하세요. 사업마다 모든 지역에서 인기가 오르고, 그 지역 마을의 작은 기념비가 사업을 기억합니다. 사업에는 끝이 없습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uçtuğun yerlere bir şey geri ver. Her proje bütün bölgelerinde popülerliğini artırır, o bölgenin kasabasında küçük bir anıt projeyi anar. Projelerin sonu yok."
+          }
+        }
+      }
+    },
+    "holding.fdn.kicker": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heißluft-Stiftung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hot Air Foundation"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fundación Aire Caliente"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホットエア財団"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "핫에어 재단"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sıcak Hava Vakfı"
+          }
+        }
+      }
+    },
+    "holding.fdn.next": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Als Nächstes: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siguiente: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다음: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sıradaki: %@"
+          }
+        }
+      }
+    },
+    "holding.fdn.section": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projekte der Stiftung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Foundation projects"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proyectos de la fundación"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "財団の事業"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재단 사업"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vakıf projeleri"
+          }
+        }
+      }
+    },
+    "holding.fdn.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das erste Projekt der Stiftung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The foundation's first project"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El primer proyecto de la fundación"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "財団の最初の事業"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재단의 첫 사업"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vakfın ilk projesi"
+          }
+        }
+      }
+    },
+    "holding.fdn.titleN": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Das Vermächtnis der Stiftung · Projekte: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The foundation's legacy · projects: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El legado de la fundación · proyectos: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "財団の足跡・事業%@件"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재단의 유산 · 사업: %@건"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vakfın mirası · proje: %@"
+          }
+        }
+      }
+    },
+    "holding.fest.chipEvery": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zwischen Festivals (Tage): %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Between festivals (days): %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entre festivales (días): %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの間隔（日）：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 간격(일): %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivaller arası (gün): %@"
+          }
+        }
+      }
+    },
+    "holding.fest.chipFame": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalruhm: dauerhaft +%1$@ (bis %2$@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival fame: lasting +%1$@ (up to %2$@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fama de festival: +%1$@ para siempre (hasta %2$@)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フェスティバルの名声：永続+%1$@（最大%2$@）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 명성: 영구 +%1$@ (최대 %2$@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival ünü: kalıcı +%1$@ (en çok %2$@)"
+          }
+        }
+      }
+    },
+    "holding.fest.chipStep": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jedes Festival %1$@ teurer (bis %2$@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each festival %1$@ more (up to %2$@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada festival %1$@ más (hasta %2$@)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "毎回%1$@ずつ値上がり（最大%2$@）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제마다 %1$@씩 인상 (최대 %2$@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her festival %1$@ daha pahalı (en çok %2$@)"
+          }
+        }
+      }
+    },
+    "holding.fest.cta": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival ausrichten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Host the festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Organizar el festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りを開く"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 열기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivali düzenle"
+          }
+        }
+      }
+    },
+    "holding.fest.desc": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein eigenes Festival: Piloten aus aller Welt, leuchtende Nächte, volle Plätze. Die Touristen strömen herbei, und jedes Festival macht den Namen der Region ein wenig bekannter."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your own festival: pilots from all over the world, glowing nights, packed squares. Tourists pour in, and every festival makes the region's name a little better known."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu propio festival: pilotos de todo el mundo, noches resplandecientes, plazas llenas. Los turistas llegan en masa y cada festival da a conocer un poco más la región."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自分の祭り：世界中の操縦士、輝く夜、にぎわう広場。観光客が押し寄せ、祭りのたびに地域の名が少しずつ知れ渡る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신만의 축제: 전 세계의 조종사, 빛나는 밤, 붐비는 광장. 관광객이 몰려들고, 축제를 열 때마다 지역의 이름이 조금씩 더 알려집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kendi festivalin: dünyanın dört bir yanından pilotlar, ışıl ışıl geceler, kalabalık meydanlar. Turist akın eder; her festival bölgenin adını biraz daha duyurur."
+          }
+        }
+      }
+    },
+    "holding.fest.descOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ ist gerade die Ballonhauptstadt der Welt: Piloten aus allen Kontinenten, leuchtende Nächte, volle Plätze."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ is the balloon capital of the world right now: pilots from every continent, glowing nights, packed squares."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ es ahora mismo la capital mundial del globo: pilotos de todos los continentes, noches resplandecientes, plazas llenas."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "いま世界の気球の都は%@：あらゆる大陸の操縦士、輝く夜、にぎわう広場。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "지금 세계 열기구의 수도는 %@: 모든 대륙의 조종사, 빛나는 밤, 붐비는 광장."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ şu an dünyanın balon başkenti: her kıtadan pilotlar, ışıl ışıl geceler, kalabalık meydanlar."
+          }
+        }
+      }
+    },
+    "holding.fest.fame": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalruhm +%1$@ · Festivals: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival fame +%1$@ · festivals: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fama de festival +%1$@ · festivales: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "名声+%1$@・開催%2$@回"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 명성 +%1$@ · 축제: %2$@회"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival ünü +%1$@ · festival: %2$@"
+          }
+        }
+      }
+    },
+    "holding.fest.hint": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lade Piloten aus allen Kontinenten in eine deiner Regionen ein. Jedes Festival macht die Region dauerhaft ein wenig berühmter. Immer nur ein Festival zugleich."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invite pilots from every continent to a region you own. Each festival leaves that region a little more famous for good. One festival at a time."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Invita a pilotos de todos los continentes a una de tus regiones. Cada festival deja esa región un poco más famosa para siempre. Un festival a la vez."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "自分の地域にあらゆる大陸から操縦士を招こう。祭りを開くたびに、その地域の名はずっと少しずつ高まる。開催は一度に一つ。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "소유한 지역에 모든 대륙의 조종사를 초대하세요. 축제를 열 때마다 그 지역은 영구히 조금 더 유명해집니다. 축제는 한 번에 하나."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sahip olduğun bir bölgeye her kıtadan pilotları davet et. Her festival o bölgeyi kalıcı olarak biraz daha ünlü yapar. Aynı anda bir festival."
+          }
+        }
+      }
+    },
+    "holding.fest.kicker": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internationales Ereignis"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "International event"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Evento internacional"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "国際イベント"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "국제 행사"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uluslararası etkinlik"
+          }
+        }
+      }
+    },
+    "holding.fest.none": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch kein Festival"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No festival yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ開催なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 축제 없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz festival yok"
+          }
+        }
+      }
+    },
+    "holding.fest.on": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival läuft · Resttage: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival on · days left: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival en curso · días restantes: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開催中・残り日数：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 중 · 남은 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival sürüyor · kalan gün: %@"
+          }
+        }
+      }
+    },
+    "holding.fest.section": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internationales Ballonfestival"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "International Balloon Festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival Internacional de Globos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "国際バルーンフェスティバル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "국제 열기구 축제"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uluslararası Balon Festivali"
+          }
+        }
+      }
+    },
+    "holding.fest.title": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internationales Ballonfestival"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "International Balloon Festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival Internacional de Globos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "国際バルーンフェスティバル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "국제 열기구 축제"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uluslararası Balon Festivali"
+          }
+        }
+      }
+    },
+    "holding.fest.wait": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nächstes Festival in Tagen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next festival in days: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próximo festival en días: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次の祭りまであと%@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다음 축제까지 남은 일수: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonraki festivale kalan gün: %@"
+          }
+        }
+      }
+    },
     "holding.goals": {
       "extractionState": "manual",
       "localizations": {
@@ -59785,37 +61835,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ausgaben: Holding-Ausgaben (%@) und Investitionen"
+            "value": "Ausgaben: Holding-Ausgaben (%@), Büromieten und Investitionen"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Expenses: holding costs (%@) and investments"
+            "value": "Expenses: holding costs (%@), office rent and investments"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gastos: costes del holding (%@) e inversiones"
+            "value": "Gastos: costes del holding (%@), alquiler de oficinas e inversiones"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "支出：ホールディングス経費（%@）と投資"
+            "value": "支出：ホールディングス経費（%@）、オフィスの家賃と投資"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "지출: 지주회사 비용(%@)과 투자"
+            "value": "지출: 지주회사 비용(%@), 사무소 임대료와 투자"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gider: holding giderleri (%@) ve yatırımlar"
+            "value": "Gider: holding giderleri (%@), ofis kiraları ve yatırımlar"
           }
         }
       }
@@ -60025,6 +62075,47 @@
         }
       }
     },
+    "holding.office.rent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miete und Personal: %@/Tag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rent and staff: %@/day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alquiler y personal: %@/día"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "家賃と人件費：%@/日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "임대료와 인건비: %@/일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kira ve personel: %@/gün"
+          }
+        }
+      }
+    },
     "holding.officeIsOpen": {
       "extractionState": "manual",
       "localizations": {
@@ -60230,6 +62321,88 @@
         }
       }
     },
+    "holding.officesRent": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miete und Personal deiner Büros zahlt die Holding jeden Abend: %@ am Tag."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rent and staff for your offices come out of the holding every evening: %@ a day."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El alquiler y el personal de tus oficinas salen del holding cada noche: %@ al día."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフィスの家賃と人件費は毎晩ホールディングスから支払われる：1日%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사무소 임대료와 인건비는 매일 저녁 지주회사에서 나갑니다: 하루 %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ofislerinin kirası ve personeli her akşam holding kasasından ödenir: günde %@."
+          }
+        }
+      }
+    },
+    "holding.officesRentNone": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miete und Personal jedes Büros zahlt die Holding jeden Abend."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each office's rent and staff come out of the holding every evening."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El alquiler y el personal de cada oficina salen del holding cada noche."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "各オフィスの家賃と人件費は毎晩ホールディングスから支払われる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "각 사무소의 임대료와 인건비는 매일 저녁 지주회사에서 나갑니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her ofisin kirası ve personeli her akşam holding kasasından ödenir."
+          }
+        }
+      }
+    },
     "holding.officesRule": {
       "extractionState": "manual",
       "localizations": {
@@ -60349,6 +62522,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aç %@"
+          }
+        }
+      }
+    },
+    "holding.perDayValue": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/Tag"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/day"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/día"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@/gün"
           }
         }
       }
@@ -60923,6 +63137,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Bölgeler"
+          }
+        }
+      }
+    },
+    "holding.rentLine": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Büromiete und Personal"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Office rent and staff"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alquiler y personal de oficinas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフィスの家賃と人件費"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사무소 임대료와 인건비"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ofis kirası ve personel"
           }
         }
       }
@@ -62116,6 +64371,47 @@
         }
       }
     },
+    "holding.wg.chipStep": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nächste Spiele: Preis ×%@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next Games: price ×%@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próximos Juegos: precio ×%@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次の大会：価格×%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다음 대회: 가격 ×%@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonraki Oyunlar: fiyat ×%@"
+          }
+        }
+      }
+    },
     "holding.wg.cta": {
       "extractionState": "manual",
       "localizations": {
@@ -62157,43 +64453,84 @@
         }
       }
     },
+    "holding.wg.ctaN": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Show Nr. %@ übernehmen"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Take on show no. %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Organizar el espectáculo n.º %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@回目のショーを引き受ける"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@번째 쇼 맡기"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@. gösteriyi üstlen"
+          }
+        }
+      }
+    },
     "holding.wg.desc": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Die offizielle Ballonshow der Eröffnungsfeier der Weltspiele. Hunderte Ballone über dem Stadion, weltweit live. Gibt es nur einmal."
+            "value": "Die offizielle Ballonshow der Eröffnungsfeier der Weltspiele. Hunderte Ballone über dem Stadion, weltweit live. Die Spiele finden alle 360 Tage statt."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The official balloon show of the World Games opening ceremony. Hundreds of balloons over the stadium, live around the world. It happens once."
+            "value": "The official balloon show of the World Games opening ceremony. Hundreds of balloons over the stadium, live around the world. The Games come round every 360 days."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "El espectáculo oficial de globos de la ceremonia inaugural de los Juegos Mundiales. Cientos de globos sobre el estadio, en directo para todo el mundo. Solo se hace una vez."
+            "value": "El espectáculo oficial de globos de la ceremonia inaugural de los Juegos Mundiales. Cientos de globos sobre el estadio, en directo para todo el mundo. Los Juegos se celebran cada 360 días."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "世界競技大会開会式の公式バルーンショー。スタジアムの上に何百もの気球、世界中に生中継。一度きりだ。"
+            "value": "世界競技大会開会式の公式バルーンショー。スタジアムの上に何百もの気球、世界中に生中継。大会は360日ごとに開かれる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "세계 대회 개막식의 공식 열기구 쇼. 경기장 위의 수백 대의 열기구, 전 세계 생중계. 단 한 번뿐입니다."
+            "value": "세계 대회 개막식의 공식 열기구 쇼. 경기장 위의 수백 대의 열기구, 전 세계 생중계. 대회는 360일마다 열립니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Bir kez yapılır."
+            "value": "Dünya Oyunları açılış töreninin resmî balon gösterisi. Stadyumun üstünde yüzlerce balon, bütün dünyada canlı yayın. Oyunlar 360 günde bir yapılır."
           }
         }
       }
@@ -62239,43 +64576,84 @@
         }
       }
     },
+    "holding.wg.descAgain": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Neue Weltspiele stehen an, und die Veranstalter bieten dir wieder die Eröffnungsshow an. Jede Show ist größer als die letzte."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "New World Games are coming, and the organisers offer you the opening show again. Each show is bigger than the last."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Llegan nuevos Juegos Mundiales y los organizadores vuelven a ofrecerte el espectáculo inaugural. Cada uno es más grande que el anterior."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新しい世界競技大会が近づき、主催者が再び開会式のショーを依頼してきた。毎回、前回より大きなショーになる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "새 세계 대회가 다가오고, 주최 측이 다시 개막식 쇼를 제안합니다. 쇼는 매번 지난번보다 커집니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yeni Dünya Oyunları geliyor; organizatörler açılış gösterisini yine sana teklif ediyor. Her seferinde daha büyük bir gösteri."
+          }
+        }
+      }
+    },
     "holding.wg.descDone": {
       "extractionState": "manual",
       "localizations": {
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Du hast die Show zur Eröffnungsfeier gemacht; die Welt spricht noch davon."
+            "value": "Du hast die Show zur Eröffnungsfeier gemacht; die Welt spricht noch davon. Die Veranstalter wollen dich auch für die nächsten Spiele."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "You put on the opening ceremony's show; the world is still talking about it."
+            "value": "You put on the opening ceremony's show; the world is still talking about it. The organisers want you for the next Games too."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Hiciste el espectáculo de la ceremonia inaugural; el mundo aún habla de ello."
+            "value": "Hiciste el espectáculo de la ceremonia inaugural; el mundo aún habla de ello. Los organizadores te quieren también para los próximos Juegos."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "開会式のショーを成功させた。世界はまだその話をしている。"
+            "value": "開会式のショーを成功させた。世界はまだその話をしている。主催者は次の大会でもあなたを望んでいる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "개막식 쇼를 해냈습니다. 세계는 아직도 그 이야기를 합니다."
+            "value": "개막식 쇼를 해냈습니다. 세계는 아직도 그 이야기를 합니다. 주최 측은 다음 대회에도 당신을 원합니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Açılış töreninin gösterisini yaptın; dünya hâlâ konuşuyor."
+            "value": "Açılış töreninin gösterisini yaptın; dünya hâlâ konuşuyor. Organizatörler sonraki Oyunlar için de seni istiyor."
           }
         }
       }
@@ -62440,6 +64818,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Dünya Oyunları açılışında balon gösterisi"
+          }
+        }
+      }
+    },
+    "holding.wg.wait": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows: %1$@ · nächste Spiele in Tagen: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Shows: %1$@ · next Games in days: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Espectáculos: %1$@ · próximos Juegos en días: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ショー：%1$@回・次の大会まであと%2$@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "쇼: %1$@회 · 다음 대회까지 남은 일수: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gösteri: %1$@ · sonraki Oyunlara kalan gün: %2$@"
           }
         }
       }
@@ -63916,6 +66335,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Nil gemilerinin yanaşmasına kalan gün: %@."
+          }
+        }
+      }
+    },
+    "home.alert.hfest": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internationales Ballonfestival, Tag %1$@/%2$@!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "International Balloon Festival, day %1$@/%2$@!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¡Festival Internacional de Globos, día %1$@/%2$@!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "国際バルーンフェスティバル、%1$@/%2$@日目！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "국제 열기구 축제, %1$@/%2$@일차!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uluslararası Balon Festivali, gün %1$@/%2$@!"
+          }
+        }
+      }
+    },
+    "home.alert.hfest.body": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein eigenes Festival: Touristen +%@, der Himmel voller Ballone aus allen Kontinenten."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your own festival: tourists +%@, and the sky full of balloons from every continent."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu propio festival: turistas +%@ y el cielo lleno de globos de todos los continentes."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "あなたの祭り：観光客+%@、空はあらゆる大陸の気球でいっぱい。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "당신의 축제: 관광객 +%@, 하늘은 모든 대륙의 열기구로 가득합니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senin festivalin: turist +%@, gökyüzü her kıtadan balonla dolu."
           }
         }
       }
@@ -68143,6 +70644,88 @@
         }
       }
     },
+    "hq.festival": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalbüro"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival office"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oficina del festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フェスティバル事務局"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 사무국"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival ofisi"
+          }
+        }
+      }
+    },
+    "hq.foundation": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heißluft-Stiftung"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hot Air Foundation"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fundación Aire Caliente"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホットエア財団"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "핫에어 재단"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sıcak Hava Vakfı"
+          }
+        }
+      }
+    },
     "hq.lab": {
       "extractionState": "manual",
       "localizations": {
@@ -68553,6 +71136,129 @@
         }
       }
     },
+    "hq.s.festivalOn": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, Tage: %2$@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, days: %2$@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, días: %2$@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@、残り%2$@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, 남은 일수: %2$@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, gün: %2$@"
+          }
+        }
+      }
+    },
+    "hq.s.festivalWait": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nächstes Festival in Tagen: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Next festival in days: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Próximo festival en días: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "次の祭りまで%@日"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "다음 축제까지 %@일"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonraki festivale gün: %@"
+          }
+        }
+      }
+    },
+    "hq.s.festivals": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivals: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivals: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivales: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "開催：%@回"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제: %@회"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival: %@"
+          }
+        }
+      }
+    },
     "hq.s.issue": {
       "extractionState": "manual",
       "localizations": {
@@ -68840,6 +71546,88 @@
         }
       }
     },
+    "hq.s.noFestival": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch kein Festival"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No festival yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ開催なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 축제 없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz festival yok"
+          }
+        }
+      }
+    },
+    "hq.s.noProject": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noch kein Projekt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No project yet"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin proyectos"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "まだ事業なし"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "아직 사업 없음"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Henüz proje yok"
+          }
+        }
+      }
+    },
     "hq.s.noShape": {
       "extractionState": "manual",
       "localizations": {
@@ -68918,6 +71706,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ofis: %1$@/%2$@"
+          }
+        }
+      }
+    },
+    "hq.s.projects": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projekte: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projects: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proyectos: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "事業：%@件"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사업: %@건"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proje: %@"
           }
         }
       }
@@ -80730,6 +83559,47 @@
         }
       }
     },
+    "night.fglow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nacht des Internationalen Ballonfestivals: Ballone aus allen Kontinenten leuchten auf der Wiese."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "International Balloon Festival night: balloons from every continent glow on the field."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche del Festival Internacional de Globos: globos de todos los continentes brillan en el campo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "国際バルーンフェスティバルの夜：あらゆる大陸の気球が地上で輝く。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "국제 열기구 축제의 밤: 모든 대륙에서 온 열기구들이 들판에서 빛납니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uluslararası Balon Festivali gecesi: her kıtadan balonlar yerde ışıldıyor."
+          }
+        }
+      }
+    },
     "night.fireworks": {
       "extractionState": "manual",
       "localizations": {
@@ -81802,37 +84672,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Autopilot-Einnahmen in Bristol +20 %. Die Doku-Serie 20 % günstiger."
+            "value": "Bristol +20 %: die Autopilot-Einnahmen und die Touristen, solange du dort spielst. Die Doku-Serie 20 % günstiger."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bristol's autopilot income +20%. The documentary series 20% cheaper."
+            "value": "Bristol +20%: its autopilot income, and its tourists while you play there. The documentary series 20% cheaper."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ingresos en piloto automático de Bristol +20 %. La serie documental un 20 % más barata."
+            "value": "Bristol +20 %: sus ingresos en piloto automático y sus turistas mientras juegas allí. La serie documental un 20 % más barata."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ブリストルの自動運営収入+20%。ドキュメンタリーシリーズが20%安くなる。"
+            "value": "ブリストル+20%：自動運営の収入と、そこでプレイ中の観光客。ドキュメンタリーシリーズが20%安くなる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "브리스톨 자동 운영 수입 +20%. 다큐멘터리 시리즈 20% 할인."
+            "value": "브리스톨 +20%: 자동 운영 수입, 그리고 그곳에서 플레이하는 동안의 관광객. 다큐멘터리 시리즈 20% 할인."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bristol'ün otomatik kazancı %20 artar. Belgesel dizisi %20 daha ucuz."
+            "value": "Bristol'de %20 fazla: otomatikteyken kazancı, oradayken turisti. Belgesel dizisi %20 daha ucuz."
           }
         }
       }
@@ -81884,37 +84754,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Promi-Verträge laufen doppelt so lang und kosten 30 % weniger."
+            "value": "Promi-Verträge 25 % günstiger."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Celebrity contracts last twice as long and cost 30% less."
+            "value": "Celebrity contracts 25% cheaper."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Los contratos con famosos duran el doble y cuestan un 30 % menos."
+            "value": "Contratos con famosos un 25 % más baratos."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "有名人との契約が2倍長く、30%安くなる。"
+            "value": "有名人との契約が25%安くなる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "유명인 계약 기간 2배, 비용 30% 할인."
+            "value": "유명인 계약 25% 할인."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ünlü sözleşmeleri iki kat uzun sürer ve %30 daha ucuzdur."
+            "value": "Ünlü sözleşmeleri %25 daha ucuz."
           }
         }
       }
@@ -81966,37 +84836,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kostenlose Designproduktion, Kreativität +10, Designs bleiben 60 Tage frisch. Einstieg in Asien zum halben Preis."
+            "value": "Asiatische Reiseveranstalter: Touristen +5 % in jeder Region. Kostenlose Designproduktion, Kreativität +10, Designs bleiben 60 Tage frisch."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Free design production, creativity +10, designs stay fresh for 60 days. Half-price entry to Asia."
+            "value": "Asian tour operators: tourists +5% in every region. Free design production, creativity +10, designs stay fresh for 60 days."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Diseños gratis, creatividad +10, los diseños siguen frescos 60 días. Entrada a Asia a mitad de precio."
+            "value": "Agencias de viajes asiáticas: turistas +5 % en todas las regiones. Diseños gratis, creatividad +10, los diseños siguen frescos 60 días."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "デザイン制作が無料、創造性+10、デザインの鮮度が60日間持続。アジア進出が半額。"
+            "value": "アジアの旅行会社：全地域で観光客+5%。デザイン制作が無料、創造性+10、デザインの鮮度が60日間持続。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "디자인 제작 무료, 창의성 +10, 디자인 신선도 60일 유지. 아시아 진출 반값."
+            "value": "아시아 여행사: 모든 지역 관광객 +5%. 디자인 제작 무료, 창의성 +10, 디자인 신선도 60일 유지."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya'ya giriş yarı fiyatına."
+            "value": "Asyalı tur şirketleri: bütün bölgelerde turist +%5. Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır."
           }
         }
       }
@@ -84379,6 +87249,88 @@
         }
       }
     },
+    "paper.festivalHosted": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internationales Ballonfestival von %@ eröffnet"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ International Balloon Festival opens"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre el Festival Internacional de Globos de %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@国際バルーンフェスティバル開幕"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ 국제 열기구 축제 개막"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ Uluslararası Balon Festivali başladı"
+          }
+        }
+      }
+    },
+    "paper.festivalHosted.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zehn Tage lang empfängt %@ Ballone aus aller Welt."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "For ten days %@ welcomes balloons from all over the world."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante diez días, %@ recibe globos de todo el mundo."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "十日間、%@に世界中から気球が集まる。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "열흘 동안 %@에 전 세계의 열기구가 모입니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ on gün boyunca dünyanın dört bir yanından balonları ağırlıyor."
+          }
+        }
+      }
+    },
     "paper.fold": {
       "extractionState": "manual",
       "localizations": {
@@ -84416,6 +87368,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Gazeteyi katla"
+          }
+        }
+      }
+    },
+    "paper.foundationProject": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Heißluft-Stiftung: %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hot Air Foundation: %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fundación Aire Caliente: %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ホットエア財団：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "핫에어 재단: %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sıcak Hava Vakfı: %@"
+          }
+        }
+      }
+    },
+    "paper.foundationProject.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Projekt Nr. %1$@ der Stiftung, für %2$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The foundation's project no. %1$@, for %2$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Proyecto n.º %1$@ de la fundación, para %2$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "財団の%1$@件目の事業、%2$@にて。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "재단의 %1$@번째 사업, 지역: %2$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vakfın %1$@. projesi; bölge: %2$@."
           }
         }
       }
@@ -85072,6 +88106,88 @@
           "stringUnit": {
             "state": "translated",
             "value": "Akşam kalkışında balonlar gün batımında Avon'un üstüne yükseldi."
+          }
+        }
+      }
+    },
+    "paper.night.fglow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalnacht: Die Ballone der Welt leuchteten"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival night: the world's balloons glowed"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche de festival: brillaron los globos del mundo"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "祭りの夜、世界の気球が輝いた"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제의 밤, 세계의 열기구가 빛나다"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival gecesi: dünyanın balonları ışıldadı"
+          }
+        }
+      }
+    },
+    "paper.night.fglow.sub": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Gastpiloten des internationalen Festivals zündeten ihre Brenner zur Musik."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The international festival's guest pilots fired their burners to music."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los pilotos invitados del festival internacional encendieron sus quemadores al ritmo de la música."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "国際フェスティバルのゲスト操縦士たちが音楽に合わせてバーナーを焚いた。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "국제 축제의 초청 조종사들이 음악에 맞춰 버너를 켰습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uluslararası festivalin konuk pilotları brülörlerini müzikle yaktı."
           }
         }
       }
@@ -113120,6 +116236,47 @@
         }
       }
     },
+    "why.festivalFame": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festivalruhm"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival fame"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fama de festival"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "フェスティバルの名声"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "축제 명성"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival ünü"
+          }
+        }
+      }
+    },
     "why.fiesta": {
       "extractionState": "manual",
       "localizations": {
@@ -113243,6 +116400,47 @@
         }
       }
     },
+    "why.hostedFestival": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Internationales Festival"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "International festival"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Festival internacional"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "国際フェスティバル"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "국제 축제"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Uluslararası festival"
+          }
+        }
+      }
+    },
     "why.interest": {
       "extractionState": "manual",
       "localizations": {
@@ -113280,6 +116478,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "turist ilgisi %@"
+          }
+        }
+      }
+    },
+    "why.offices": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Büros"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Offices"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oficinas"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "オフィス"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사무소"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ofisler"
           }
         }
       }

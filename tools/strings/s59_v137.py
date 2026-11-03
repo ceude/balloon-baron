@@ -13,13 +13,6 @@ add("office.dxb.perk",
     "Ingresos en piloto automático de Luxor +20 %. Intentos de récord un 25 % más baratos.",
     "ルクソールの自動運営収入+20%。記録挑戦が25%安くなる。",
     "룩소르 자동 운영 수입 +20%. 기록 도전 25% 할인.")
-add("office.par.perk",
-    "Bristol's autopilot income +20%. The documentary series 20% cheaper.",
-    "Bristol'ün otomatik kazancı %20 artar. Belgesel dizisi %20 daha ucuz.",
-    "Autopilot-Einnahmen in Bristol +20 %. Die Doku-Serie 20 % günstiger.",
-    "Ingresos en piloto automático de Bristol +20 %. La serie documental un 20 % más barata.",
-    "ブリストルの自動運営収入+20%。ドキュメンタリーシリーズが20%安くなる。",
-    "브리스톨 자동 운영 수입 +20%. 다큐멘터리 시리즈 20% 할인.")
 
 # The expense rule: any four offices 20%, all six 15%
 add("holding.officesRule",

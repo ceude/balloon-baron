@@ -247,7 +247,7 @@ extension TownPainter {
                 glow(p.x, p.y - 22, 16, (255, 170, 70), 0.8)
                 world.fill(Path(CGRect(x: p.x - 2, y: p.y - 25, width: 4, height: 5)), with: .color(hex("#ffcf7a")))
             }
-        case .balloonGlow:
+        case .balloonGlow, .festivalGlow:
             for i in 0..<min(6, s.local.balloons.count) {
                 let gx = 1.8 + Double(i % 3) * 1.9, gy = 5 + Double(i / 3) * 1.4, p = iso(gx, gy), f = max(0, sin(t * 3 + Double(i) * 1.7))
                 glow(p.x, p.y - 70, 80, (255, 150, 60), 0.25 + 0.55 * f)

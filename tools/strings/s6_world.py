@@ -157,20 +157,6 @@ add("office.nyc.perk",
  "Campañas de TV un 25 % más baratas, ingresos en piloto automático de Albuquerque +20 %.",
  "テレビCMが25%安く、アルバカーキの自動運営収入+20%。",
  "TV 캠페인 25% 할인, 앨버커키 자동 운영 수입 +20%.")
-add("office.sel.perk",
- "Celebrity contracts last twice as long and cost 30% less.",
- "Ünlü sözleşmeleri iki kat uzun sürer ve %30 daha ucuzdur.",
- "Promi-Verträge laufen doppelt so lang und kosten 30 % weniger.",
- "Los contratos con famosos duran el doble y cuestan un 30 % menos.",
- "有名人との契約が2倍長く、30%安くなる。",
- "유명인 계약 기간 2배, 비용 30% 할인.")
-add("office.tyo.perk",
- "Free design production, creativity +10, designs stay fresh for 60 days. Half-price entry to Asia.",
- "Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya'ya giriş yarı fiyatına.",
- "Kostenlose Designproduktion, Kreativität +10, Designs bleiben 60 Tage frisch. Einstieg in Asien zum halben Preis.",
- "Diseños gratis, creatividad +10, los diseños siguen frescos 60 días. Entrada a Asia a mitad de precio.",
- "デザイン制作が無料、創造性+10、デザインの鮮度が60日間持続。アジア進出が半額。",
- "디자인 제작 무료, 창의성 +10, 디자인 신선도 60일 유지. 아시아 진출 반값.")
 
 # Made-up celebrities for the holding's ad deal
 for i, v in enumerate([
