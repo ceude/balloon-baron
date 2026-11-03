@@ -4381,10 +4381,10 @@ function pickSpots() {
    already up, the company balloon waiting on the grass and the game's name in the sky. Luxor is ready for when
    Egypt opens. */
 const INTRO_LOOK = {
-  cap: { sky: ['#120d33', '#3a2460', '#a24e7a', '#f0875a', '#ffd59a'], far: '#4e3460', mid: '#c8866a', midShade: '#8a5060', cap: '#4a2a2a', ground: ['#6e4a3a', '#2a1822'], name: 'CAPPADOCIA' },
-  abq: { sky: ['#0f1534', '#31275c', '#bc4e6a', '#ff8f4e', '#ffcf80'], far: '#5e345a', mid: '#a8503a', midShade: '#6a3022', cap: '#3f7a3a', ground: ['#8a4e2c', '#28120a'], name: 'ALBUQUERQUE' },
-  lux: { sky: ['#0d1836', '#2a3664', '#b0605a', '#f2a656', '#ffe2a0'], far: '#6a5260', mid: '#c89a62', midShade: '#8a6440', cap: '#2e5a2a', ground: ['#a07a4a', '#30200e'], name: 'LUXOR' },
-  bri: { sky: ['#1a2236', '#3a4a66', '#8a8aa0', '#d8b49a', '#eee2cc'], far: '#4a5868', mid: '#cdb07a', midShade: '#8a7450', cap: '#3a5a2e', ground: ['#4a6a34', '#1a2a14'], name: 'BRISTOL' } /* v124 */
+  cap: { sky: ['#120d33', '#3a2460', '#a24e7a', '#f0875a', '#ffd59a'], far: '#4e3460', mid: '#c8866a', midShade: '#8a5060', cap: '#4a2a2a', ground: ['#6e4a3a', '#2a1822'], ink: '#24152c', name: 'CAPPADOCIA' },
+  abq: { sky: ['#0f1534', '#31275c', '#bc4e6a', '#ff8f4e', '#ffcf80'], far: '#5e345a', mid: '#a8503a', midShade: '#6a3022', cap: '#3f7a3a', ground: ['#8a4e2c', '#28120a'], ink: '#25121e', name: 'ALBUQUERQUE' },
+  lux: { sky: ['#0d1836', '#2a3664', '#b0605a', '#f2a656', '#ffe2a0'], far: '#6a5260', mid: '#c89a62', midShade: '#8a6440', cap: '#2e5a2a', ground: ['#a07a4a', '#30200e'], ink: '#261a22', name: 'LUXOR' },
+  bri: { sky: ['#1a2236', '#3a4a66', '#8a8aa0', '#d8b49a', '#eee2cc'], far: '#4a5868', mid: '#cdb07a', midShade: '#8a7450', cap: '#3a5a2e', ground: ['#4a6a34', '#1a2a14'], ink: '#1c2a24', name: 'BRISTOL' } /* v124 */
 };
 function introScene(gy) {
   const L = INTRO_LOOK[S.region] || INTRO_LOOK.cap, t = INTRO.t, lift = Math.min(1, INTRO.y / (H * .45)), u = Math.min(W, H);
@@ -4407,54 +4407,25 @@ function introScene(gy) {
     const y = Math.max(H * .24, gy * (.24 + (1 - d) * .45)) + Math.sin(t * .6 + i) * 4 + lift * u * .25 * d, r = u * (.014 + d * .03), c = PC_COLS[(i * 3) % 8];
     balloon(x, y, r, mix(c, L.sky[3], (1 - d) * .55), mix('#ffffff', L.sky[3], (1 - d) * .55), d > .7 && Math.sin(t * 2 + i) > .6, .55 + d * .4);
   }
-  /* the far skyline */
-  ctx.fillStyle = L.far; ctx.beginPath(); ctx.moveTo(0, gy);
-  for (let x = 0; x <= W + 20; x += 16) {
-    let y = gy - u * (.07 + .03 * Math.sin(x * .011 + 1) + .015 * Math.sin(x * .037));
-    if (S.region === 'cap') y -= Math.max(0, u * .2 - Math.abs(x - W * .3) * .55); /* Erciyes */
-    if (S.region === 'abq') y -= u * .1 * (.6 + .4 * Math.sin(x * .006 + 2)) * Math.min(1, x / (W * .4)); /* the Sandias */
-    ctx.lineTo(x, y);
-  }
-  ctx.lineTo(W, gy); ctx.fill();
-  if (S.region === 'cap') { ctx.fillStyle = 'rgba(255,240,235,.55)'; ctx.beginPath(); ctx.moveTo(W * .3 - u * .07, gy - u * .19); ctx.lineTo(W * .3, gy - u * .27); ctx.lineTo(W * .3 + u * .07, gy - u * .19); ctx.quadraticCurveTo(W * .3, gy - u * .2, W * .3 - u * .07, gy - u * .19); ctx.fill(); }
-  if (S.region === 'lux') for (const [px, ps] of [[W * .22, 1], [W * .34, .7], [W * .8, .55]]) { ctx.fillStyle = mix(L.far, '#000', .1); ctx.beginPath(); ctx.moveTo(px - u * .16 * ps, gy - u * .04); ctx.lineTo(px, gy - u * .2 * ps); ctx.lineTo(px + u * .16 * ps, gy - u * .04); ctx.fill(); }
-  /* the region's landmarks, in two rows */
-  const row = (base, n, hMin, hMax, seed, k) => {
-    const R3 = mulberry32(seed), items = [];
-    for (let i = 0; i < n; i++) items.push({ x: (i + .2 + R3() * .6) * W / n, h: u * (hMin + R3() * (hMax - hMin)), s: R3() });
-    for (const it of items) {
-      const body = mix(L.mid, L.far, k), shade = mix(L.midShade, L.far, k);
-      if (S.region === 'cap') chimney(it.x, base, it.h * .36, it.h, body, shade, mix(L.cap, L.far, k));
-      else if (S.region === 'bri') { /* v124: spires, Georgian terraces and round trees */
-        if (it.s < .3) { ctx.fillStyle = body; ctx.fillRect(it.x - it.h * .07, base - it.h * .55, it.h * .14, it.h * .55); ctx.beginPath(); ctx.moveTo(it.x - it.h * .08, base - it.h * .55); ctx.lineTo(it.x, base - it.h); ctx.lineTo(it.x + it.h * .08, base - it.h * .55); ctx.fill(); }
-        else if (it.s < .65) { ctx.fillStyle = body; ctx.fillRect(it.x - it.h * .6, base - it.h * .42, it.h * 1.2, it.h * .42); ctx.fillStyle = shade; for (let c = 0; c < 5; c++) ctx.fillRect(it.x - it.h * .55 + c * it.h * .24, base - it.h * .5, it.h * .06, it.h * .1); }
-        else { const col = mix(L.cap, L.far, k); ell(it.x, base - it.h * .45, it.h * .3, it.h * .3, col); ell(it.x - it.h * .18, base - it.h * .32, it.h * .2, it.h * .18, col); ctx.fillStyle = col; ctx.fillRect(it.x - it.h * .03, base - it.h * .2, it.h * .06, it.h * .2); }
-      }
-      else if (S.region === 'abq') {
-        if (it.s < .55) { ctx.fillStyle = body; ctx.beginPath(); ctx.moveTo(it.x - it.h * .9, base); ctx.lineTo(it.x - it.h * .6, base - it.h * .55); ctx.lineTo(it.x + it.h * .6, base - it.h * .55); ctx.lineTo(it.x + it.h * .9, base); ctx.fill(); ctx.fillStyle = shade; ctx.fillRect(it.x - it.h * .6, base - it.h * .55, it.h * 1.2, it.h * .07); }
-        else { ctx.fillStyle = mix(L.cap, L.far, k); const w = it.h * .09; rrect(it.x - w / 2, base - it.h * .6, w, it.h * .6, w / 2); ctx.fill(); rrect(it.x - w * 2.2, base - it.h * .45, w * .8, it.h * .25, w * .4); ctx.fill(); ctx.fillRect(it.x - w * 2.2, base - it.h * .24, w * 2, w * .7); rrect(it.x + w * 1.4, base - it.h * .52, w * .8, it.h * .22, w * .4); ctx.fill(); ctx.fillRect(it.x + w * .4, base - it.h * .32, w * 1.6, w * .7); }
-      } else {
-        if (it.s < .5) { ctx.fillStyle = body; for (let c = 0; c < 3; c++) ctx.fillRect(it.x + (c - 1) * it.h * .22 - it.h * .06, base - it.h * .7, it.h * .12, it.h * .7); ctx.fillRect(it.x - it.h * .36, base - it.h * .78, it.h * .72, it.h * .1); }
-        else { ctx.strokeStyle = mix(L.cap, L.far, k); ctx.lineWidth = it.h * .05; ctx.beginPath(); ctx.moveTo(it.x, base); ctx.quadraticCurveTo(it.x + it.h * .1, base - it.h * .5, it.x + it.h * .05, base - it.h); ctx.stroke(); ctx.fillStyle = ctx.strokeStyle; for (let f = 0; f < 6; f++) { const a = f / 6 * Math.PI * 2; ctx.beginPath(); ctx.ellipse(it.x + it.h * .05 + Math.cos(a) * it.h * .2, base - it.h + Math.sin(a) * it.h * .06 + it.h * .04, it.h * .22, it.h * .05, a, 0, 7); ctx.fill(); } }
-      }
-    }
-  };
-  row(gy - u * .005, 9, .1, .2, 11, .55);
-  row(gy + u * .02, 6, .18, .34, 23, .12);
-  /* the launch field and the morning mist over it */
-  const gd = ctx.createLinearGradient(0, gy, 0, H); gd.addColorStop(0, L.ground[0]); gd.addColorStop(1, L.ground[1]); ctx.fillStyle = gd; ctx.fillRect(0, gy, W, H - gy);
-  const mist = ctx.createLinearGradient(0, gy - u * .06, 0, gy + u * .05); mist.addColorStop(0, 'rgba(255,215,190,0)'); mist.addColorStop(.5, 'rgba(255,215,190,.28)'); mist.addColorStop(1, 'rgba(255,215,190,0)'); ctx.fillStyle = mist; ctx.fillRect(0, gy - u * .06, W, u * .11);
+  introLand(L, gy, u, t);
   /* the game's name in the sky; it stays put and the balloon rises past it, in front. As the balloon comes
      closer the title falls back: a little smaller, a little softer, as if far behind */
   {
     ctx.save(); ctx.textAlign = 'center';
     const ty = Math.max(70, H * .14), fs = Math.min(W * .13, 64), back = Math.min(1, lift * 1.4);
     ctx.translate(W / 2, ty); ctx.scale(1 - back * .06, 1 - back * .06); ctx.translate(-W / 2, -ty);
-    ctx.filter = `blur(${(back * 1.6).toFixed(2)}px)`; ctx.globalAlpha = 1 - back * .25;
-    ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`; ctx.shadowColor = 'rgba(10,4,24,.6)'; ctx.shadowBlur = 24;
+    /* v138: no canvas blur or shadow blur (Safari drew them as a dark band under the title): a crisp drop shadow,
+       and the region's name hand-spaced between two thin gold rules */
+    ctx.globalAlpha = 1 - back * .3;
+    ctx.font = `800 ${fs}px "Barlow Condensed", sans-serif`;
+    ctx.fillStyle = 'rgba(14,6,30,.38)'; ctx.fillText('BALLOON BARON', W / 2, ty + fs * .045);
     const tg = ctx.createLinearGradient(0, ty - fs, 0, ty); tg.addColorStop(0, '#ffffff'); tg.addColorStop(.6, '#fff1d0'); tg.addColorStop(1, '#ffc23d');
     ctx.fillStyle = tg; ctx.fillText('BALLOON BARON', W / 2, ty);
-    ctx.font = `700 ${fs * .32}px "Barlow Condensed", sans-serif`; ctx.letterSpacing = `${fs * .12}px`; ctx.fillStyle = '#ffcf7a'; ctx.fillText(L.name, W / 2 + fs * .06, ty + fs * .52); ctx.letterSpacing = '0px';
+    const ss = fs * .32, sp = fs * .12, sy2 = ty + fs * .52; ctx.font = `700 ${ss}px "Barlow Condensed", sans-serif`; ctx.textAlign = 'left';
+    const ws = [...L.name].map(ch => ctx.measureText(ch).width), tw = ws.reduce((x, y) => x + y, 0) + sp * (ws.length - 1);
+    let cx = W / 2 - tw / 2; ctx.fillStyle = '#ffcf7a'; [...L.name].forEach((ch, i) => { ctx.fillText(ch, cx, sy2); cx += ws[i] + sp; });
+    const rl = fs * .55, rg = fs * .22, ry = sy2 - ss * .36;
+    for (const s of [-1, 1]) { const x0 = W / 2 + s * (tw / 2 + rg), x1 = x0 + s * rl, lg = ctx.createLinearGradient(x0, 0, x1, 0); lg.addColorStop(0, 'rgba(255,207,122,.85)'); lg.addColorStop(1, 'rgba(255,207,122,0)'); ctx.fillStyle = lg; ctx.fillRect(Math.min(x0, x1), ry - .75, rl, 1.5); }
     ctx.restore();
   }
 }
@@ -4464,9 +4435,9 @@ function drawIntro(dt) {
   if (mode === 'intro') introScene(groundY); else scenery(.3, groundY, 40, camX, kx, dt, mode === 'setup', false);
   const R0 = Math.min(W, H) * .1, near = Math.min(1, INTRO.y / (H * .55)), R = R0 * (1 + .85 * Math.pow(near, 1.6));
   if (mode === 'intro') {
-    /* rising, the balloon comes towards you: it grows, and passing the title it throws a soft shadow on it */
+    /* rising, the balloon comes towards you: it grows */
     const sway = INTRO.y > 2 ? Math.sin(INTRO.t * 2.1) * R * .1 : 0, bx = W / 2 + sway, by = groundY + R0 * .1 - INTRO.y;
-    if (near > .2) { ctx.save(); ctx.filter = `blur(${(R * .35).toFixed(1)}px)`; ctx.fillStyle = `rgba(20,8,30,${(.38 * Math.min(1, (near - .2) * 2)).toFixed(3)})`; ctx.beginPath(); ctx.ellipse(bx + R * .5, by - R * 1.3, R * .95, R * 1.15, 0, 0, 7); ctx.fill(); ctx.restore(); }
+    /* v138: the soft shadow it used to throw on the title is gone (Safari drew it as a hard dark disc) */
     ctx.fillStyle = 'rgba(40,20,30,.3)'; ctx.beginPath(); ctx.ellipse(W / 2, groundY + R * .12, R * .6 / (1 + INTRO.y / 120), R * .12, 0, 0, 7); ctx.fill();
     if (INTRO.hold) { /* the burner lights the envelope and the grass */ ctx.save(); ctx.globalCompositeOperation = 'lighter'; const gl = ctx.createRadialGradient(bx, by - R * 1.2, 0, bx, by - R * 1.2, R * 2.4); gl.addColorStop(0, 'rgba(255,170,70,.35)'); gl.addColorStop(1, 'rgba(255,170,70,0)'); ctx.fillStyle = gl; ctx.fillRect(bx - R * 2.4, by - R * 3.6, R * 4.8, R * 4.8); ctx.restore(); }
     balloon3d(bx, by, R, myCol()[0], myCol()[1], INTRO.hold);
@@ -4485,6 +4456,218 @@ function drawIntro(dt) {
     });
   }
   if (SC.title) storyTitle();
+}
+/* v138 (developer): the title screen's landscape, rebuilt in layers. The sun is behind everything, so the land is a
+   set of backlit silhouettes: darker the nearer they are, softer and warmer the further, a haze pooling between the
+   layers, each layer lit towards the sun and edged with a thin rim of light. Every region keeps the middle of the
+   frame clear for the balloon: its landmarks stand to the left and right, its tallest silhouettes frame the edges. */
+const hexA = (c, a) => { const [r, g, b] = hex(c); return `rgba(${r},${g},${b},${a})`; };
+function introLand(L, gy, u, t) {
+  const sx = W * .66, sun = L.sky[4], haze = mix(L.sky[3], L.sky[4], .55), rimC = mix(sun, '#ffffff', .45), rw = Math.max(1, u * .0035), step = Math.max(3, W / 180);
+  const dc = k => mix(L.ink, haze, k);
+  const across = (c0, c1) => { const g = ctx.createLinearGradient(sx - W * .8, 0, sx + W * .8, 0); g.addColorStop(0, c0); g.addColorStop(.5, c1); g.addColorStop(1, c0); return g; };
+  /* a silhouette at depth k (0 near, 1 far), lit towards the sun by `glow`, with a rim of light `rim` along its top */
+  const sil = (build, k, glow, rim) => {
+    if (rim) { ctx.save(); ctx.translate(0, -rw); ctx.fillStyle = across(hexA(rimC, rim * .2), hexA(rimC, rim)); ctx.beginPath(); build(); ctx.fill(); ctx.restore(); }
+    ctx.fillStyle = across(dc(k), mix(dc(k), sun, glow)); ctx.beginPath(); build(); ctx.fill();
+  };
+  const ridge = (f, bot) => () => { ctx.moveTo(-4, bot); for (let x = -4; x <= W + 8; x += step) ctx.lineTo(x, f(x)); ctx.lineTo(W + 8, bot); ctx.closePath(); };
+  const hazeBand = (top, a) => { const g = ctx.createLinearGradient(0, top, 0, gy); g.addColorStop(0, hexA(haze, 0)); g.addColorStop(1, hexA(haze, a)); ctx.fillStyle = g; ctx.fillRect(0, top, W, gy - top + 1); };
+  const hump = (x0, x1, b, hh) => { ctx.moveTo(x0, b); ctx.quadraticCurveTo((x0 + x1) / 2, b - hh * 2, x1, b); ctx.closePath(); };
+  const wave = (x, a, b, c) => Math.sin(x * a + c) * b;
+  /* the launch field: warm where the sun skims it, darkening towards you */
+  const ground = () => {
+    const g = ctx.createLinearGradient(0, gy, 0, H); g.addColorStop(0, mix(L.ground[0], haze, .3)); g.addColorStop(.3, mix(L.ground[0], L.ink, .3)); g.addColorStop(1, L.ground[1]);
+    ctx.fillStyle = g; ctx.fillRect(0, gy, W, H - gy);
+    /* the field isn't flat: long low swells, a shade darker, roll towards you */
+    for (let i = 0; i < 3; i++) { const y0 = gy + (H - gy) * (.16 + i * .26), hh = (H - gy) * .07; ctx.fillStyle = hexA(L.ink, .1 + i * .04); ctx.beginPath(); ctx.moveTo(-4, y0 + hh); ctx.quadraticCurveTo(W * (.25 + i * .25), y0 - hh, W + 4, y0 + hh * (i % 2 ? .2 : 1.4)); ctx.lineTo(W + 4, H); ctx.lineTo(-4, H); ctx.closePath(); ctx.fill(); }
+    ctx.save(); ctx.translate(sx, gy); ctx.scale(1, .1); const sg = ctx.createRadialGradient(0, 0, 0, 0, 0, W * .7); sg.addColorStop(0, hexA(sun, .5)); sg.addColorStop(1, hexA(sun, 0)); ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(0, 0, W * .7, 0, 7); ctx.fill(); ctx.restore();
+  };
+  /* morning mist lying on the horizon */
+  const mist = a => { const m = ctx.createLinearGradient(0, gy - u * .05, 0, gy + u * .04); m.addColorStop(0, hexA(haze, 0)); m.addColorStop(.55, hexA(haze, a)); m.addColorStop(1, hexA(haze, 0)); ctx.fillStyle = m; ctx.fillRect(0, gy - u * .05, W, u * .09); };
+  const R = S.region;
+  if (R === 'lux') luxLand(); else if (R === 'abq') abqLand(); else if (R === 'bri') briLand(); else capLand();
+
+  /* Cappadocia: Erciyes with its snow, the valley's flat-topped rim, and fairy chimneys in clusters */
+  function capLand() {
+    const X = W * .24, ERC = x => { const d = Math.abs(x - X) / (u * .46); return d >= 1 ? 0 : Math.min(u * .2, u * .235 * Math.pow(1 - d, 1.7)); };
+    const farY = x => gy - u * .055 - wave(x, .013, u * .015, 1) - wave(x, .041, u * .006, 0) - ERC(x);
+    sil(ridge(farY, gy), .8, .25, .5);
+    /* the snow, tinted by the dawn */
+    ctx.fillStyle = across(hexA(mix('#ffffff', sun, .35), .55), hexA(mix('#ffffff', sun, .2), .85)); ctx.beginPath();
+    let first = true; const sn = u * .145;
+    for (let x = X - u * .2; x <= X + u * .2; x += step / 2) { if (ERC(x) < sn) continue; const y = farY(x); first ? ctx.moveTo(x, y) : ctx.lineTo(x, y); first = false; }
+    for (let x = X + u * .2; x >= X - u * .2; x -= step / 2) { if (ERC(x) < sn) continue; ctx.lineTo(x, farY(x) + (ERC(x) - sn) * .75 + u * .006 * Math.abs(Math.sin((x - X) / u * 38)) * Math.min(1, (ERC(x) - sn) / (u * .02))); }
+    ctx.fill();
+    hazeBand(gy - u * .26, .5);
+    /* the valley rim: tablelands with eroded shoulders */
+    const mesas = [[-.1, .2, .08], [.3, .47, .055], [.6, .84, .07], [.9, 1.15, .095]];
+    const rimY = x => { let hh = u * .035 + wave(x, .02, u * .006, 2); for (const [a, b, m] of mesas) { const x0 = W * a, x1 = W * b, e = u * .05; const k = x < x0 ? 1 - (x0 - x) / e : x > x1 ? 1 - (x - x1) / e : 1; if (k > 0) hh = Math.max(hh, u * m * (k >= 1 ? 1 : k * k * (3 - 2 * k))); } return gy - hh; };
+    sil(ridge(rimY, gy), .56, .3, .55);
+    hazeBand(gy - u * .14, .38);
+    /* fairy chimneys in two clusters, leaving the middle to the balloon */
+    const chim = (x, b, h, w) => { ctx.moveTo(x - w * .5, b); ctx.quadraticCurveTo(x - w * .34, b - h * .5, x - w * .13, b - h * .86); ctx.lineTo(x - w * .3, b - h * .875); ctx.quadraticCurveTo(x - w * .27, b - h * .99, x, b - h * 1.01); ctx.quadraticCurveTo(x + w * .27, b - h * .99, x + w * .3, b - h * .875); ctx.lineTo(x + w * .13, b - h * .86); ctx.quadraticCurveTo(x + w * .34, b - h * .5, x + w * .5, b); ctx.closePath(); };
+    const b1 = gy + u * .005;
+    sil(() => { hump(-W * .02, W * .38, b1, u * .025); hump(W * .62, W * 1.02, b1, u * .022);
+      for (const [x, h] of [[.05, .13], [.1, .19], [.16, .11], [.22, .16], [.29, .09], [.7, .1], [.76, .16], [.82, .12], [.88, .2], [.95, .13]]) chim(W * x, b1 - u * .012, u * h, u * h * .4);
+    }, .32, .3, .7);
+    hazeBand(gy - u * .05, .25);
+    ground(); mist(.3);
+    /* the nearest chimneys frame the edges */
+    const b0 = gy + u * .03;
+    sil(() => { hump(-W * .2, W * .2, b0, u * .045); hump(W * .82, W * 1.2, b0, u * .04);
+      chim(W * .01, b0 - u * .02, u * .36, u * .15); chim(W * .11, b0 - u * .02, u * .23, u * .1); chim(W * .97, b0 - u * .02, u * .31, u * .13); chim(W * .885, b0 - u * .015, u * .17, u * .08);
+    }, .12, .22, .9);
+  }
+
+  /* Luxor: the Theban hills and al-Qurn across the Nile, the river catching the sun, a pylon and an obelisk on
+     the left, a colonnade on the right, date palms framing the edges */
+  function luxLand() {
+    const Q = W * .3, QURN = x => { const d = Math.abs(x - Q) / (u * .4); return d >= 1 ? 0 : u * .12 * Math.pow(1 - d, 1.25); };
+    const farY = x => gy - u * .075 - wave(x, .011, u * .012, 2) - wave(x, .033, u * .005, 0) - QURN(x) - Math.max(0, u * .035 - Math.abs(x - W * .08) * .3);
+    sil(ridge(farY, gy), .82, .25, .45);
+    hazeBand(gy - u * .22, .45);
+    /* the west bank, a line of tiny palms on it */
+    const nTop = gy - u * .062, nBot = gy - u * .036;
+    sil(() => { ctx.moveTo(-4, gy); ctx.lineTo(-4, nTop - u * .006); for (let x = 0; x <= W + 8; x += step) ctx.lineTo(x, nTop - u * .006 - wave(x, .05, u * .002, 0)); ctx.lineTo(W + 8, gy); ctx.closePath();
+      for (let i = 0; i < 16; i++) { const x = W * (i + .5) / 16 + Math.sin(i * 7.3) * W * .02; if (Math.abs(x - sx) < W * .07) continue; palmShape(x, nTop - u * .004, u * (.022 + .01 * ((i * 5) % 3) / 2), (i % 2 ? .12 : -.1), false); }
+    }, .62, .3, .4);
+    ctx.strokeStyle = across(dc(.62), mix(dc(.62), sun, .3)); ctx.lineWidth = Math.max(.6, u * .0012); ctx.lineCap = 'round'; ctx.beginPath();
+    for (let i = 0; i < 16; i++) { const x = W * (i + .5) / 16 + Math.sin(i * 7.3) * W * .02; if (Math.abs(x - sx) < W * .07) continue; palmShape(x, nTop - u * .004, u * (.022 + .01 * ((i * 5) % 3) / 2), (i % 2 ? .12 : -.1), false, true); }
+    ctx.stroke();
+    /* the Nile: the sky in it, the sun's path glittering across */
+    const ng = ctx.createLinearGradient(0, nTop, 0, nBot); ng.addColorStop(0, mix(L.sky[3], haze, .4)); ng.addColorStop(1, mix(L.sky[2], L.ink, .2)); ctx.fillStyle = ng; ctx.fillRect(0, nTop, W, nBot - nTop + 1);
+    ctx.save(); ctx.globalCompositeOperation = 'lighter';
+    const gl = ctx.createLinearGradient(sx - u * .2, 0, sx + u * .2, 0); gl.addColorStop(0, hexA(sun, 0)); gl.addColorStop(.5, hexA(sun, .6)); gl.addColorStop(1, hexA(sun, 0)); ctx.fillStyle = gl; ctx.fillRect(sx - u * .2, nTop, u * .4, nBot - nTop);
+    const G = mulberry32(5); ctx.fillStyle = hexA('#fff4d6', .8);
+    for (let i = 0; i < 26; i++) { const yy = nTop + G() * (nBot - nTop), spread = u * (.04 + (yy - nTop) / (nBot - nTop) * .12), xx = sx + (G() - .5) * 2 * spread, a = .5 + .5 * Math.sin(t * 2.4 + i * 1.9); if (a < .25) continue; ctx.globalAlpha = a; ctx.fillRect(xx - u * .012 * a, yy, u * .024 * a, Math.max(1, u * .0028)); }
+    ctx.restore();
+    /* a felucca sailing down the river */
+    { const fx = W * .47 - ((t * u * .003) % (W * .08)), fy = nTop + (nBot - nTop) * .55, fs = u * .055;
+      sil(() => { ctx.moveTo(fx - fs * .35, fy - fs * .06); ctx.quadraticCurveTo(fx, fy + fs * .1, fx + fs * .4, fy - fs * .08); ctx.lineTo(fx + fs * .3, fy - fs * .1); ctx.closePath();
+        ctx.moveTo(fx - fs * .02, fy - fs * .1); ctx.lineTo(fx + fs * .04, fy - fs * .1); ctx.lineTo(fx + fs * .02, fy - fs * .85); ctx.closePath();
+        ctx.moveTo(fx - fs * .4, fy - fs * .2); ctx.lineTo(fx + fs * .1, fy - fs * 1.05); ctx.quadraticCurveTo(fx + fs * .2, fy - fs * .5, fx + fs * .02, fy - fs * .14); ctx.closePath(); }, .38, .3, .6); }
+    /* the east bank */
+    sil(() => { ctx.moveTo(-4, gy + 2); ctx.lineTo(-4, nBot); for (let x = 0; x <= W + 8; x += step) ctx.lineTo(x, nBot + wave(x, .03, u * .002, 1)); ctx.lineTo(W + 8, gy + 2); ctx.closePath(); }, .42, .3, .5);
+    hazeBand(gy - u * .1, .22);
+    /* the temple: a pylon with its gate, an obelisk, a colonnade with papyrus capitals */
+    const b = gy - u * .004, P = W * .19, tw = u * .125, th = u * .17, gap = u * .045;
+    sil(() => {
+      for (const s of [-1, 1]) { const ix = P + s * gap / 2, ox = P + s * (gap / 2 + tw); ctx.moveTo(ix, b); ctx.lineTo(ox, b); ctx.lineTo(ox - s * u * .014, b - th); ctx.lineTo(ox - s * u * .008, b - th); ctx.lineTo(ox - s * u * .008, b - th - u * .012); ctx.lineTo(ix + s * u * .004, b - th - u * .012); ctx.lineTo(ix + s * u * .004, b - th); ctx.lineTo(ix + s * u * .008, b - th); ctx.closePath(); }
+      ctx.rect(P - gap / 2 - 1, b - th * .66, gap + 2, th * .66); /* the gate's lintel block */
+      const ox = W * .36, ow = u * .024, oh = u * .2; ctx.moveTo(ox - ow / 2, b); ctx.lineTo(ox - ow * .32, b - oh); ctx.lineTo(ox, b - oh - u * .022); ctx.lineTo(ox + ow * .32, b - oh); ctx.lineTo(ox + ow / 2, b); ctx.closePath();
+      ctx.rect(W * .02, b - u * .012, W * .38, u * .012);
+      const c0 = W * .61, c1 = W * .97, n = 6, cw = u * .024, ch = u * .14;
+      for (let i = 0; i < n; i++) { const cx = c0 + (c1 - c0) * i / (n - 1), top = b - ch * (i === n - 1 ? .72 : 1);
+        ctx.moveTo(cx - cw * .55, b); ctx.lineTo(cx - cw * .5, top + u * .022); ctx.quadraticCurveTo(cx - cw * .95, top + u * .01, cx - cw * .9, top); ctx.lineTo(cx + cw * .9, top); ctx.quadraticCurveTo(cx + cw * .95, top + u * .01, cx + cw * .5, top + u * .022); ctx.lineTo(cx + cw * .55, b); ctx.closePath(); }
+      ctx.rect(c0 - cw, b - ch - u * .02, (c1 - c0) * .8 + cw * 2, u * .02);
+      ctx.rect(c0 - cw * 1.4, b - u * .01, c1 - c0 + cw * 2.8, u * .01);
+    }, .26, .32, .8);
+    /* the flagpole recesses in the pylon's face, and the gate's opening showing the light behind */
+    ctx.fillStyle = mix(dc(.26), L.ink, .25); for (const s of [-1, 1]) for (const f of [.3, .62]) { const fx = P + s * (gap / 2 + tw * f); ctx.fillRect(fx - u * .004, b - th * .92, u * .008, th * .92); }
+    ctx.fillStyle = mix(dc(.26), sun, .25); ctx.fillRect(P - gap * .3, b - th * .5, gap * .6, th * .5);
+    ground(); mist(.22);
+    /* date palms frame the edges */
+    sil(() => { hump(-W * .2, W * .26, gy + u * .035, u * .04); hump(W * .76, W * 1.2, gy + u * .035, u * .035);
+      palmShape(W * .05, gy + u * .01, u * .4, .14, true); palmShape(W * .17, gy + u * .015, u * .27, -.12, true); palmShape(W * .95, gy + u * .01, u * .35, -.16, true); palmShape(W * .85, gy + u * .02, u * .21, .08, true);
+    }, .05, .16, .85);
+    /* palms stroke their leaflets after the fill */
+    ctx.strokeStyle = across(dc(.05), mix(dc(.05), sun, .16)); ctx.lineCap = 'round';
+    for (const [x, by, hh, ln] of [[.05, .01, .4, .14], [.17, .015, .27, -.12], [.95, .01, .35, -.16], [.85, .02, .21, .08]]) { ctx.lineWidth = Math.max(.8, u * hh * .0075); ctx.beginPath(); palmShape(W * x, gy + u * by, u * hh, ln, true, true); ctx.stroke(); }
+  }
+
+  /* Albuquerque: the Sandias catching the first light, mesas, the Fiesta's balloons going up over the desert, yuccas */
+  function abqLand() {
+    const crest = x => { const p = W * .36; if (x < p) return u * (.1 + .065 * Math.pow(x / p, .7)); return u * Math.max(.035, .165 - (x - p) / W * .2); };
+    const farY = x => gy - u * .035 - crest(x) - wave(x, .09, u * .004, 0) - wave(x, .23, u * .0025, 1);
+    sil(ridge(farY, gy), .78, .3, .55);
+    /* the Sandias' west face goes pink at dawn ("sandía": watermelon) */
+    ctx.save(); ctx.beginPath(); ridge(farY, gy)(); ctx.clip(); const pk = ctx.createLinearGradient(0, gy - u * .2, 0, gy); pk.addColorStop(0, hexA('#ff7a8a', .22)); pk.addColorStop(1, hexA('#ff7a8a', 0)); ctx.fillStyle = pk; ctx.fillRect(0, gy - u * .22, W, u * .22); ctx.restore();
+    hazeBand(gy - u * .22, .42);
+    const mesas = [[.05, .2, .055], [.55, .86, .075], [.9, 1.1, .05]];
+    const mY = x => { let hh = u * .025 + wave(x, .017, u * .005, 3); for (const [a, b, m] of mesas) { const x0 = W * a, x1 = W * b, e = u * .035; const k = x < x0 ? 1 - (x0 - x) / e : x > x1 ? 1 - (x - x1) / e : 1; if (k > 0) hh = Math.max(hh, u * m * Math.min(1, k * 1.6) - (k < 1 ? u * .01 * (1 - k) : 0)); } return gy - hh; };
+    sil(ridge(mY, gy), .54, .32, .6);
+    hazeBand(gy - u * .12, .3);
+    /* the Fiesta's mass ascension, low over the field */
+    for (let i = 0; i < 12; i++) { const G = mulberry32(300 + i), x = W * (.04 + .92 * (i + G() * .6) / 12), d = G(); if (Math.abs(x - W * .5) < u * .1) continue;
+      const y = gy - u * (.05 + d * .09) + Math.sin(t * .7 + i) * 2, c = PC_COLS[(i * 5 + 1) % 8];
+      balloon(x, y, u * (.012 + (1 - d) * .012), mix(c, haze, .3 + d * .3), mix('#ffffff', haze, .3 + d * .3), Math.sin(t * 1.7 + i * 2) > .7, .95); }
+    ground(); mist(.25);
+    /* yuccas and low desert scrub frame the edges */
+    const yucca = (x, b, h) => { for (let i = 0; i < 15; i++) { const a = -Math.PI * (.06 + .88 * i / 14), l = h * (.24 + .08 * Math.sin(i * 2.7)), bx = x, by = b - h * .06, ex = bx + Math.cos(a) * l, ey = by + Math.sin(a) * l * .9, nx = -Math.sin(a) * h * .018, ny = Math.cos(a) * h * .018; ctx.moveTo(bx - nx, by - ny); ctx.lineTo(ex, ey); ctx.lineTo(bx + nx, by + ny); ctx.closePath(); }
+      ctx.moveTo(x - h * .012, b - h * .2); ctx.quadraticCurveTo(x + h * .02, b - h * .6, x + h * .045, b - h); ctx.lineTo(x + h * .055, b - h * .99); ctx.quadraticCurveTo(x + h * .035, b - h * .6, x + h * .012, b - h * .2); ctx.closePath();
+      for (let j = 0; j < 12; j++) { const k = .64 + j * .029, px = x + h * (.012 + .045 * k), py = b - h * k, s = j % 2 ? 1 : -1, r = h * (.016 - j * .0008); ctx.moveTo(px, py); ctx.lineTo(px + s * h * .03, py + h * .008); ctx.moveTo(px + s * h * .034 + r, py + h * .016); ctx.ellipse(px + s * h * .034, py + h * .016, r, r * 1.3, 0, 0, 7); } };
+    sil(() => { hump(-W * .25, W * .32, gy + u * .035, u * .035); hump(W * .7, W * 1.25, gy + u * .035, u * .03);
+      for (const [x, s] of [[.03, .9], [.2, .55], [.83, .45], [.95, .7]]) hump(W * x - u * .08 * s, W * x + u * .08 * s, gy + u * .006, u * .03 * s);
+      yucca(W * .09, gy + u * .005, u * .3); yucca(W * .91, gy + u * .005, u * .26); yucca(W * .22, gy + u * .012, u * .15);
+    }, .05, .18, .85);
+  }
+
+  /* Bristol: soft hills, Clifton's terraces and Cabot Tower, the Avon Gorge with the Suspension Bridge against the
+     sun, fog lying in the valley, green hills with oaks framing the edges */
+  function briLand() {
+    const farY = x => gy - u * .075 - wave(x, .008, u * .025, 1) - wave(x, .021, u * .012, 0);
+    sil(ridge(farY, gy), .82, .2, .35);
+    hazeBand(gy - u * .2, .5);
+    /* Clifton on its hill: a roofline of terraces, Cabot Tower */
+    const cY = x => gy - u * (.03 + .06 * Math.max(0, 1 - Math.pow((x - W * .16) / (W * .36), 2)));
+    sil(() => { ridge(x => cY(x) - (x < W * .4 ? (Math.floor(x / (u * .018)) % 3 === 0 ? u * .004 : u * .009) : 0), gy)();
+      const cx = W * .21, cb = cY(cx) - u * .006; ctx.rect(cx - u * .009, cb - u * .07, u * .018, u * .07); ctx.moveTo(cx - u * .012, cb - u * .07); ctx.lineTo(cx, cb - u * .1); ctx.lineTo(cx + u * .012, cb - u * .07); ctx.closePath();
+    }, .6, .25, .45);
+    hazeBand(gy - u * .12, .35);
+    /* the Avon Gorge and the bridge across it */
+    const deck = gy - u * .125, L0 = W * .6, L1 = W * .92, tw = u * .03, th = u * .085;
+    sil(() => {
+      ctx.moveTo(W * .4, gy + 2); ctx.quadraticCurveTo(W * .48, deck - u * .002, L0 - tw, deck); ctx.lineTo(L0 + tw * .3, deck); ctx.quadraticCurveTo(L0 + u * .02, deck + u * .05, L0 + u * .045, gy - u * .01); ctx.lineTo(L0 + u * .06, gy + 2); ctx.closePath();
+      ctx.moveTo(L1 - u * .06, gy + 2); ctx.lineTo(L1 - u * .045, gy - u * .01); ctx.quadraticCurveTo(L1 - u * .02, deck + u * .05, L1 - tw * .3, deck); ctx.lineTo(W + 8, deck - u * .01); ctx.lineTo(W + 8, gy + 2); ctx.closePath();
+      for (let i = 0; i < 8; i++) { const x = L1 + u * .01 + i * u * .03; ctx.moveTo(x - u * .02, deck - u * .008); ctx.arc(x, deck - u * .008 - u * .004 * (i % 3), u * .02, Math.PI, 0); ctx.closePath(); } /* Leigh Woods */
+      for (const x of [L0, L1]) { const top = deck - th; ctx.moveTo(x - tw / 2, deck); ctx.lineTo(x - tw * .42, top); ctx.lineTo(x + tw * .42, top); ctx.lineTo(x + tw / 2, deck); ctx.closePath(); ctx.rect(x - tw * .55, top - u * .006, tw * 1.1, u * .006); }
+      ctx.rect(L0, deck - u * .004, L1 - L0, u * .006);
+    }, .36, .3, .7);
+    /* the openings through the towers */
+    for (const x of [L0, L1]) { ctx.fillStyle = mix(dc(.36), sun, .3); ctx.beginPath(); ctx.moveTo(x - tw * .17, deck); ctx.lineTo(x - tw * .17, deck - th * .55); ctx.arc(x, deck - th * .55, tw * .17, Math.PI, 0); ctx.lineTo(x + tw * .17, deck); ctx.closePath(); ctx.fill(); }
+    /* chains and hangers */
+    ctx.strokeStyle = dc(.36); ctx.lineWidth = Math.max(1, u * .0035); ctx.beginPath();
+    const top = deck - th + u * .006, mid = (L0 + L1) / 2, cy = 2 * (deck - u * .006) - top;
+    ctx.moveTo(L0, top); ctx.quadraticCurveTo(mid, cy, L1, top); ctx.moveTo(L0, top); ctx.lineTo(L0 - u * .05, deck + u * .004); ctx.moveTo(L1, top); ctx.lineTo(L1 + u * .05, deck - u * .004); ctx.stroke();
+    ctx.lineWidth = Math.max(.6, u * .0013); ctx.beginPath();
+    for (let x = L0 + u * .015; x < L1 - u * .01; x += u * .015) { const k = (x - L0) / (L1 - L0), y = (1 - k) * (1 - k) * top + 2 * k * (1 - k) * cy + k * k * top; ctx.moveTo(x, y); ctx.lineTo(x, deck); } ctx.stroke();
+    /* the river below, catching the sun */
+    ctx.fillStyle = across(hexA(haze, .3), hexA(mix(sun, '#ffffff', .4), .8)); ctx.fillRect(L0 + u * .05, gy - u * .012, L1 - L0 - u * .1, u * .01);
+    /* fog lying in the valley, drifting */
+    for (let i = 0; i < 5; i++) { const fx = ((W * (i * .27) + t * u * .006 * (1 + i % 2)) % (W * 1.4)) - W * .2, fy = gy - u * (.02 + .02 * (i % 3)), fw = u * (.5 + .1 * (i % 2));
+      ctx.save(); ctx.translate(fx, fy); ctx.scale(1, .1); const fg = ctx.createRadialGradient(0, 0, 0, 0, 0, fw); fg.addColorStop(0, hexA(mix(haze, '#ffffff', .4), .5)); fg.addColorStop(1, hexA(haze, 0)); ctx.fillStyle = fg; ctx.beginPath(); ctx.arc(0, 0, fw, 0, 7); ctx.fill(); ctx.restore(); }
+    hazeBand(gy - u * .06, .3);
+    ground(); mist(.4);
+    /* green hills and oaks */
+    const oak = (x, b, h) => { for (const [dx, dy, r] of [[0, .66, .22], [-.2, .56, .17], [.21, .55, .18], [-.33, .44, .12], [.34, .43, .13], [-.09, .82, .14], [.11, .8, .15], [0, .47, .16], [-.16, .4, .12], [.18, .4, .12]]) { ctx.moveTo(x + h * dx + h * r, b - h * dy); ctx.arc(x + h * dx, b - h * dy, h * r, 0, 7); }
+      ctx.moveTo(x - h * .04, b); ctx.quadraticCurveTo(x - h * .02, b - h * .2, x - h * .1, b - h * .42); ctx.lineTo(x + h * .1, b - h * .42); ctx.quadraticCurveTo(x + h * .02, b - h * .2, x + h * .04, b); ctx.closePath(); };
+    sil(() => { hump(-W * .35, W * .38, gy + u * .04, u * .06); hump(W * .68, W * 1.3, gy + u * .04, u * .05);
+      oak(W * .07, gy - u * .04, u * .22); oak(W * .21, gy - u * .012, u * .13); oak(W * 1.0, gy - u * .035, u * .19);
+    }, .14, .2, .8);
+  }
+}
+/* A date palm: a curved trunk and a crown of drooping fronds. `fill` draws the trunk and the fronds' spines into the
+   current path; `strokes` the leaflets (stroked thin), so each frond reads as a feather, not a blob. */
+function palmShape(x, b, h, lean, full, strokes) {
+  const Tx = x + lean * h, Ty = b - h, Cx = x + lean * h * .15, Cy = b - h * .5, wb = h * .05, wt = h * .028;
+  if (!strokes) { ctx.moveTo(x - wb / 2, b); ctx.quadraticCurveTo(Cx - (wb + wt) / 4, Cy, Tx - wt / 2, Ty); ctx.lineTo(Tx + wt / 2, Ty); ctx.quadraticCurveTo(Cx + (wb + wt) / 4, Cy, x + wb / 2, b); ctx.closePath(); }
+  const A = full ? [-3.35, -3.0, -2.6, -2.2, -1.8, -1.35, -.95, -.55, -.15, .2] : [-3.1, -2.4, -1.6, -.8, -.05];
+  A.forEach((a, i) => {
+    const ca = Math.cos(a), sa = Math.sin(a), len = h * (full ? .34 + .07 * ((i * 7) % 3) / 2 : .42) * (.75 + .25 * Math.abs(ca));
+    const Ex = Tx + ca * len, Ey = Ty + sa * len * .7 + len * (.45 * Math.abs(ca) + .14), Qx = Tx + ca * len * .55, Qy = Ty + sa * len * .7 - len * .1;
+    const P = k => [(1 - k) * (1 - k) * Tx + 2 * k * (1 - k) * Qx + k * k * Ex, (1 - k) * (1 - k) * Ty + 2 * k * (1 - k) * Qy + k * k * Ey];
+    const D = k => { const dx = 2 * (1 - k) * (Qx - Tx) + 2 * k * (Ex - Qx), dy = 2 * (1 - k) * (Qy - Ty) + 2 * k * (Ey - Qy), m = Math.hypot(dx, dy) || 1; return [dx / m, dy / m]; };
+    if (!strokes) { /* the spine, tapering */
+      const n = 8, l = [], r = [];
+      for (let j = 0; j <= n; j++) { const k = j / n, [px, py] = P(k), [dx, dy] = D(k), w = len * .035 * (1 - k * .85); l.push([px - dy * w, py + dx * w]); r.push([px + dy * w, py - dx * w]); }
+      ctx.moveTo(l[0][0], l[0][1]); l.forEach(p => ctx.lineTo(p[0], p[1])); r.reverse().forEach(p => ctx.lineTo(p[0], p[1])); ctx.closePath();
+    } else if (full) { /* the leaflets, both sides, angled towards the tip and hanging a little */
+      for (let k = .1; k < .97; k += .07) { const [px, py] = P(k), [dx, dy] = D(k), lp = len * .19 * (1 - k * .6);
+        for (const s of [-1, 1]) { let vx = dx * .8 - dy * s, vy = dy * .8 + dx * s + .3; const m = Math.hypot(vx, vy); vx /= m; vy /= m; ctx.moveTo(px, py); ctx.lineTo(px + vx * lp, py + vy * lp); } }
+    } else { for (let k = .15; k < .97; k += .2) { const [px, py] = P(k), [dx, dy] = D(k), lp = len * .25 * (1 - k * .5); for (const s of [-1, 1]) { ctx.moveTo(px, py); ctx.lineTo(px + (dx * .5 - dy * s) * lp, py + (dy * .5 + dx * s + .5) * lp); } } }
+  });
+  if (!strokes && full) { ctx.moveTo(Tx + h * .035, Ty + h * .02); ctx.arc(Tx, Ty + h * .02, h * .035, 0, 7); }
 }
 /* ---------- the opening (v119) ----------
    A new game opens like a film, in the game's own town: after the title's balloon rises out of frame, a drone shot comes
@@ -9229,13 +9412,14 @@ function tree(x, base, w, hgt, crown, trunk) {
    oynanan bölgeden ise sadece holding sayfasından istenince çekilir. */
 const HOLD_COST = .25; /* maaş, bina vb. giderler: otomatik gelirin %25'i */
 const CELEBS = ['Selin Arda (oyuncu)', 'Kenji Mori (aktör)', 'Lucía Varela (şarkıcı)', 'Emre Kaan (futbolcu)', 'Ji-ho Park (K-pop yıldızı)', 'Maya Collins (sunucu)'];
+/* v138 (developer): listed by price, cheapest first: İstanbul, then the €700.000 ones, then the €750.000 ones */
 const HQ_CITIES = {
-  nyc: { name: 'New York', cost: 750000, perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: glyph('nyc') },
   ist: { name: 'İstanbul', cost: 650000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: glyph('ist') },
-  tyo: { name: 'Tokyo', cost: 700000, perk: 'Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya\'ya giriş yarı fiyatına.', icon: glyph('tyo') },
   sel: { name: 'Seul', cost: 700000, perk: 'Ünlü reklam yüzü sözleşmeleri iki kat uzun ve %30 ucuz.', icon: glyph('sel') },
+  tyo: { name: 'Tokyo', cost: 700000, perk: 'Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır. Asya\'ya giriş yarı fiyatına.', icon: glyph('tyo') },
   /* v137: two more offices for a rich holding */
   dxb: { name: 'Dubai', cost: 700000, perk: 'Luksor\'un otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.', icon: glyph('dxb') },
+  nyc: { name: 'New York', cost: 750000, perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: glyph('nyc') },
   par: { name: 'Paris', cost: 750000, perk: 'Bristol\'ün otomatik kazancı %20 artar. Belgesel dizisi %20 daha ucuz.', icon: glyph('par') }
 };
 /* v137 (developer): all six cost about the same, around €700.000 */
