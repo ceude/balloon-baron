@@ -9262,7 +9262,7 @@ const JERSEY = { cost: 3000000, days: 180, boost: 1.15, rep: .1 }; /* v122.9: no
 const WGAMES = { cost: 10000000, days: 60, boost: 1.3, rep: .2 };
 /* v137: two more R&D levels for a rich holding: a weather radar network (accident risk -15% wherever you fly, so the
    premiums drop too) and a composite basket with an efficient burner (fuel -25%, maintenance -15%). Parked regions
-   earn what that saves them: +5% and +2% (late game, the sim: premiums are 26% of a region's net, fuel and upkeep 8%). */
+   earn what that saves them: +5% and +2% (late game, the sim: premiums are 36% of a late region's net, fuel and upkeep 8%). */
 const RD_LEVELS = [{ cost: 400000, life: 160 }, { cost: 900000, life: 200 }, { cost: 2000000, life: 200 }, { cost: 4000000, life: 200 }];
 const RD_ENVELOPE = 2; /* the envelope research is levels 1 and 2; the holding goal (v137) wants all four */
 const RD_FX = { acc: .85, fuel: .75, up: .85, auto3: 1.05, auto4: 1.02 };
@@ -12850,8 +12850,8 @@ const HOLD_GOALS = [
   ['Luksor Baronu', () => !!(S.barons || {}).lux],
   ['Bir TV kampanyası', () => ((S.hold || {}).tvN || 0) >= 1],
   ['Ünlü reklam yüzü', () => !!(S.hold || {}).celeb],
-  ['Altı dünya ofisi', () => officeCount() >= 6], /* v137: was four */
-  ['Ar-Ge\'nin dört seviyesi tamam', () => ((S.hold || {}).rnd || 0) >= RD_LEVELS.length], /* v137: was the envelope research (2) */
+  ['Altı dünya ofisi', () => officeCount() >= 6, () => `Ofis: ${officeCount()}/${Object.keys(HQ_CITIES).length}`], /* v137: was four */
+  ['Ar-Ge\'nin dört seviyesi tamam', () => ((S.hold || {}).rnd || 0) >= RD_LEVELS.length, () => `Ar-Ge: ${(S.hold || {}).rnd || 0}/${RD_LEVELS.length}`], /* v137: was the envelope research (2) */
   ['Dünya Oyunları gösterisi', () => !!(S.hold || {}).wg] /* v123.5: the finale; it needs the Bristol baron */
 ];
 /* Once you're World Baron, the goals stay ticked whatever the holding's cash does later. */
@@ -12905,7 +12905,7 @@ function holdGoalsCheck() {
 }
 function hqGoals(body) {
   const sec = h('div', 'sec'); sec.appendChild(h('h2', null, (S.hold || {}).worldBaron ? 'Dünya Baronu' + glyph('crown', 'gcrown') : 'Holding hedefleri'));
-  HOLD_GOALS.forEach(([t, f], i) => { const d = holdGoalDone(f), note = i === 0 ? millionNote() : ''; sec.appendChild(h('div', 'goal' + (d ? ' done' : ''), `<span class="gk">${d ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${t}</b><span>${d ? 'tamam' : ''}</span></div>${note ? `<div class="hint">${esc(note)}</div>` : ''}</div>`)); });
+  HOLD_GOALS.forEach(([t, f, nf], i) => { const d = holdGoalDone(f), note = i === 0 ? millionNote() : nf && !d ? nf() : ''; /* v137: offices and R&D say how far they are */ sec.appendChild(h('div', 'goal' + (d ? ' done' : ''), `<span class="gk">${d ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${t}</b><span>${d ? 'tamam' : ''}</span></div>${note ? `<div class="hint">${esc(note)}</div>` : ''}</div>`)); });
   sec.appendChild(h('p', 'hint', 'Hepsi tamamlanınca Dünya Baronu olursun.')); body.appendChild(sec);
 }
 const INK_MARKER = '#1d2a6e', MARKER = px => `${px}px "Caveat Brush", "Comic Sans MS", cursive`;

@@ -45,7 +45,7 @@ public struct Holding: Codable, Equatable, Sendable {
     public static let envelopeResearch = 2, radarLevel = 3, compositeLevel = 4
     /// v137: the radar cuts accident risk (and so the premiums) by 15%; the composite basket fuel by 25% and upkeep by
     /// 15%. Parked regions earn what that saves a late-game region: +5% and +2% (`tools/sim-campaign.js`: premiums are
-    /// about 26% of its net, fuel and upkeep 8%).
+    /// about 36% of its net, fuel and upkeep 8%).
     public static let radarAccident = 0.85, radarAutopilot = 1.05
     public static let compositeFuel = 0.75, compositeUpkeep = 0.85, compositeAutopilot = 1.02
     /// v137: the streaming documentary series: demand in every region for 120 days, popularity in every region you own,
