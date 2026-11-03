@@ -1,82 +1,44 @@
-// Usage: NODE_PATH=$(npm root -g) node tools/sim-holding.js [seeds=16] [postDays=400] [modes=goals,spend,prop] [firstSeed=1] [out.json]
+// Usage: NODE_PATH=$(npm root -g) node tools/sim-holding.js [seeds=16] [postDays=400] [modes=goals,spend] [firstSeed=1] [out.json]
 // The holding's late-game economy: where its money comes from, where it can go, and how much piles up.
 // The campaign bot of tools/sim-campaign.js plays the whole game (Cappadocia, Albuquerque, Luxor, Bristol, World Baron)
-// and then `postDays` more days. Modes:
+// and then `postDays` more days, on the prototype as it is. Modes:
 //   goals: the bot of sim-campaign.js (buys the holding goals; after World Baron a documentary season whenever it can and
-//          the record ladder). The baseline.
-//   spend: today's prices; the bot buys every holding item the moment it can afford it (TV and billboards in every
-//          region, celebrity, jersey, documentary, records and their improvement attempts, World Games), keeping a reserve
-//          for the next holding goal until World Baron. The player who tries hard to spend.
-//   prop:  a proposed rebalance, implemented here only (nothing in the game changes): realistic prices, marketing boosts
-//          that add up to a cap instead of multiplying, office running costs, and new late-game systems (hosted festival,
-//          estates, rival buyouts, a foundation, a stratospheric capsule programme). Same spending bot as `spend`.
+//          the record ladder once). The baseline.
+//   spend: the bot buys every holding item: every campaign the moment it can pay for it (TV and billboards in every
+//          region, celebrity, documentary, the International Balloon Festival in the region with the least festival
+//          fame), the big projects saved up for in turns (jersey, records and their improvement attempts, the World
+//          Games again every 360 days), and Hot Air Foundation projects with what is over the next big project's price.
+//          It keeps a reserve for the next holding goal until World Baron. The player who tries hard to spend.
+// A mode can carry tweaks (TWEAKS below), e.g. `goals+celebFull`: page code that changes one number to see what it does.
 // Prints per mode: milestone days, holding cash and income at each, the cash curve (median, 10th and 90th percentile)
-// by days after World Baron, cash measured in days of income, and where the money went. With out.json it also writes
-// every seed's daily samples (for charts).
-// Results (32 seeds, 400 days after World Baron), holding cash median at +400: goals €42M (300 days of income), spend €44M
-// (214 days: the bot spends only 43% of its income, and stacked campaigns lift the income from €140k to €200k a day),
-// prop €3.3M (23 days; 94% of income spent). World Baron day: 604 today, 630 with the proposal.
+// by days after World Baron, cash measured in days of income, and where the money went (office rent included). With
+// out.json it also writes every seed's daily samples (for charts).
+// Results (32 seeds, 400 days after World Baron), median:
+//   v139 (commit 35dc6e8, before):  World Baron day 604. goals: cash +100/+200/+400 €10.3M / €18.2M / €42.3M, 22% of
+//     income spent. spend: €9.3M / €19.7M / €44.1M, 43% spent.
+//   v140 (developer's price table, office rent, festival, foundation, no cap; this file): World Baron day 606.
+//     goals: €4.0M / €10.7M / €30.9M, 44% spent. spend: €3.6M / €3.3M / €8.4M, 90% spent.
+//   goals+celebFull (first celebrity €1.8M): World Baron 617 (+11 days), so the first deal stays €600,000.
+//   spend+rd4old: €5k a day less income (R&D 4 at +2%); spend+noTyo: €11k a day less (Tokyo's +5%); goals+noPar: €5k.
 const { chromium } = require('playwright');
-const SEEDS = +(process.argv[2] || 16), POST = +(process.argv[3] || 400), MODES = (process.argv[4] || 'goals,spend,prop').split(','), FROM = +(process.argv[5] || 1), OUT = process.argv[6];
+const SEEDS = +(process.argv[2] || 16), POST = +(process.argv[3] || 400), MODES = (process.argv[4] || 'goals,spend').split(','), FROM = +(process.argv[5] || 1), OUT = process.argv[6];
 
-/* The proposal, as page code. Everything here only exists inside this simulator. */
-const PROPOSAL = `
-  /* existing items, new prices and effects (the report's table) */
-  TVC.cost = 120000; TVC.days = 21; TVC.cd = 45; TVC.boost = 1.15;   /* New York keeps its 25% off */
-  JERSEY.cost = 10000000; JERSEY.days = 360; JERSEY.boost = 1.15; JERSEY.rep = .1;
-  WGAMES.again = 360; WGAMES.step = 1.5;                               /* the first show stays €10M (a goal); every Games after it */
-  DOC.cost = 3000000; DOC.days = 120; DOC.gap = 60;                    /* Paris keeps its 20% off */
-  RECORDS.alt.cost = 1500000; RECORDS.pacific.cost = 4000000; RECORDS.world.cost = 8000000; /* Dubai keeps its 25% off */
-  PX = {
-    celeb: { cost: 1800000, days: 180, sel: .75, selDays: 180 },     /* Seoul: 25% off, no longer twice as long */
-    bb: { cost: 80000, days: 30, boost: .08 },
-    cap: .5,                                                         /* temporary campaigns add up, to +50% at most in a region */
-    upkeep: { ist: 1000, sel: 1500, tyo: 1500, dxb: 1500, nyc: 2000, par: 2000 }, /* rent and staff, € a day */
-    fest: { base: 1500000, step: 500000, max: 5000000, every: 90, days: 10, boost: .4, rep: .15, fame: .03, fameMax: .15 },
-    estate: { tiers: [[1200000, 3000], [3000000, 4500], [7000000, 6500]], rep: .05 }, /* per region: price, € a day */
-    buyout: { base: 2500000, step: 1.5, per: 3, gain: .15 },          /* per region, up to 3 rivals: price ×1.5 each, +15% income */
-    found: { base: 1000000, step: 500000, rep: .05 },                  /* projects without end, each €500,000 bigger; +0.05 popularity everywhere */
-    strato: [{ cost: 8000000, days: 60 }, { cost: 15000000, days: 90 }, { cost: 25000000, days: 120 }], stratoInc: 30000
-  };
-  /* temporary campaigns in a region, added up (festival and records are outside the cap) */
-  pxTemp = function (id) {
-    const H = S.hold || {};
-    return (tvUntilR(id) > S.day ? TVC.boost - 1 : 0) + (H.celeb && H.celeb.until > S.day ? .1 : 0) + (H.jersey > S.day ? JERSEY.boost - 1 : 0)
-      + (H.wg && H.wg.until > S.day ? WGAMES.boost - 1 : 0) + (H.bb && H.bb[id] > S.day ? PX.bb.boost : 0) + (H.doc && H.doc.until > S.day ? DOC.boost - 1 : 0);
-  };
-  holdBoost = function (id) {
-    const H = S.hold; if (!H) return 1; const P = H.px || {};
-    return (1 + (H.recBoost || 0)) * (1 + Math.min(PX.cap, pxTemp(id))) * (1 + ((P.fame || {})[id] || 0)) * (P.festOn && P.festOn[id] > S.day ? 1 + PX.fest.boost : 1);
-  };
-  holdingDay = function () {
-    if (!S.hold) S.hold = { log: [] };
-    const H = S.hold, P = H.px || (H.px = {});
-    let gross = 0;
-    for (const id in (S.regions || {})) {
-      const A = S.regions[id].auto; if (!A) continue;
-      gross += (A.todayRaw || 0) * holdBoost(id) * officeMult(id) * (1 + PX.buyout.gain * ((P.buy || {})[id] || 0));
-    }
-    /* estates earn wherever they are, parked or not (a hotel has its own manager) */
-    for (const id in (P.est || {})) for (let t = 0; t < P.est[id]; t++) gross += PX.estate.tiers[t][1];
-    if (P.strato >= PX.strato.length && S.day >= P.stratoBusy) gross += PX.stratoInc;
-    gross = Math.round(gross);
-    const upkeep = Object.keys(HQ_CITIES).filter(hasOffice).reduce((a, k) => a + PX.upkeep[k], 0);
-    const cost = Math.round(gross * holdCostRate()) + upkeep;
-    S.holding = (S.holding || 0) + gross - cost;
-    if (gross) { holdLog('inc', gross); holdLog('exp', cost); }
-    H.today = { gross, cost };
-    recordDay(); adShapeDay(); markMillion();
-    return gross - cost;
-  };
-`;
-
+/* Variants: page code run after the prototype loads, to try a change without touching the game. A mode is a bot and
+   optional tweaks, e.g. `goals+celebFull`. */
+const TWEAKS = {
+  celebFull: 'CELEB.first = CELEB.cost;',                                   /* the first celebrity deal at the full €1.8M */
+  noRent: 'for (const k in HQ_CITIES) HQ_CITIES[k].rent = 0;',              /* offices without rent */
+  rd4old: 'RD_FX.auto4 = 1.02;',                                           /* R&D level 4 at its old +2% */
+  noTyo: 'OFFICE_FX.tyo = 1;',                                              /* Tokyo without its +5% tourists */
+  noPar: 'OFFICE_FX.par = 1;'                                              /* Paris without its Bristol +20% */
+};
 (async () => {
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 390, height: 800 } });
   p.on('pageerror', e => console.error('ERR', e.message));
   const all = {};
   for (const MODE of MODES) {
     await p.goto('file://' + require('path').resolve(__dirname, '../prototype/balloon-baron.html')); await p.waitForTimeout(500);
-    if (MODE.startsWith('prop')) await p.addScriptTag({ content: PROPOSAL });
+    for (const t of MODE.split('+').slice(1)) await p.addScriptTag({ content: TWEAKS[t] });
     const res = [];
     for (let seed = FROM; seed < FROM + SEEDS; seed++) {
       res.push(await p.evaluate(([seed, POST, MODE]) => {
@@ -86,7 +48,7 @@ const PROPOSAL = `
         startFlight = () => finishDay({ q: Math.random() < .3 ? 'perfect' : Math.random() < .85 ? 'good' : 'far', dist: 60, mis: S.weather.mission, mok: !!S.weather.mission && Math.random() < .6 });
         S = newState(); S.company = 'Bot'; S.weather = newWeather(); S.demand = dayDemand(); rivalFlyPlan();
         S.iap = { worldTour: 1 };
-        const PROP = MODE.startsWith('prop'), SPEND = MODE === 'spend' || MODE === 'prop';
+        const SPEND = MODE.split('+')[0] === 'spend';
         const L = { baron: {}, enter: { cap: 1 }, world: 0, err: null, days: [], spent: {}, buys: [], at: {} };
         let postEnd = 99999, dayIn = 0, dayAuto = 0;
         /* money into the holding from the region you play (withdrawals) is counted with the autopilot as income */
@@ -95,9 +57,7 @@ const PROPOSAL = `
         const H = () => S.hold || (S.hold = { log: [] });
         const spend = (cat, c, f) => { if ((S.holding || 0) < c) return false; S.holding -= c; holdLog('exp', c); f(); L.spent[cat] = (L.spent[cat] || 0) + c; (L.dspent = L.dspent || {})[cat] = ((L.dspent || {})[cat] || 0) + c; return true; };
         const officeOrder = Object.keys(HQ_CITIES).sort((x, y) => HQ_CITIES[x].cost - HQ_CITIES[y].cost);
-        const celebC = () => PROP ? Math.round(PX.celeb.cost * (hasOffice('sel') ? PX.celeb.sel : 1)) : celebCost();
-        const celebD = () => PROP ? (hasOffice('sel') ? PX.celeb.selDays : PX.celeb.days) : (hasOffice('sel') ? 180 : 90);
-        const bbC = () => PROP ? PX.bb.cost : 120000, bbD = () => PROP ? PX.bb.days : 20;
+        const celebC = () => celebCost(), celebD = () => CELEB.days;
         /* the holding goals, in the order the campaign bot buys them */
         const goals = () => {
           const h = H(), out = [];
@@ -105,30 +65,27 @@ const PROPOSAL = `
           if ((h.rnd || 0) < RD_LEVELS.length) out.push({ k: 'rnd', c: RD_LEVELS[h.rnd || 0].cost, f: () => { h.rnd = (h.rnd || 0) + 1; } });
           if (!h.tvN) out.push({ k: 'tv', c: tvCost(), f: () => { h.tvN = 1; (h.tv = h.tv || {})[S.region] = { until: S.day + TVC.days, cd: S.day + TVC.cd }; repIn(S.region, TVC.rep); } });
           if (!h.celeb) out.push({ k: 'celeb', c: celebC(), f: () => { h.celeb = { name: 'X', until: S.day + celebD() }; repAll(.15); } });
-          if (!h.wg) out.push({ k: 'wg', c: WGAMES.cost, f: () => { h.wg = { until: S.day + WGAMES.days, n: 1, at: S.day }; repAll(WGAMES.rep); } });
+          if (!h.wg) out.push({ k: 'wg', c: wgCost(), f: () => { h.wg = { until: S.day + WGAMES.days, n: 1, at: S.day }; repAll(WGAMES.rep); } });
           return out;
         };
         /* everything else the holding can buy today, in the order the spending bot tries them */
         const extras = () => {
           const h = H(), d = S.day, out = [], P = h.px || (h.px = {}), mine = myRegionIds();
-          for (const id of mine) if (tvReadyR(id) <= d) out.push({ k: 'tv', cls: 'mkt', b: TVC.boost - 1, ids: [id], c: tvCost(), f: () => { h.tvN = (h.tvN || 0) + 1; (h.tv = h.tv || {})[id] = { until: d + TVC.days, cd: d + TVC.cd }; repIn(id, TVC.rep); } });
-          if (!(h.celeb && h.celeb.until > d)) out.push({ k: 'celeb', cls: 'mkt', b: .1, ids: mine, c: celebC(), f: () => { h.celeb = { name: 'X', until: d + celebD() }; repAll(.15); } });
-          if (!(h.doc && h.doc.next > d)) out.push({ k: 'doc', cls: 'mkt', b: DOC.boost - 1, ids: mine, c: docCost(), f: () => { h.doc = { until: d + DOC.days, next: d + DOC.days + DOC.gap, n: ((h.doc && h.doc.n) || 0) + 1 }; repAll(DOC.rep); } });
-          if (!(h.jersey > d)) out.push({ k: 'jersey', cls: 'big', b: JERSEY.boost - 1, ids: mine, c: JERSEY.cost, f: () => { h.jersey = d + JERSEY.days; repAll(JERSEY.rep); } });
+          for (const id of mine) if (tvReadyR(id) <= d) out.push({ k: 'tv', cls: 'mkt', c: tvCost(), f: () => { h.tvN = (h.tvN || 0) + 1; (h.tv = h.tv || {})[id] = { until: d + TVC.days, cd: d + TVC.cd }; repIn(id, TVC.rep); } });
+          if (!(h.celeb && h.celeb.until > d)) out.push({ k: 'celeb', cls: 'mkt', c: celebC(), f: () => { h.celeb = { name: 'X', until: d + celebD() }; repAll(CELEB.rep); } });
+          if (!(h.doc && h.doc.next > d)) out.push({ k: 'doc', cls: 'mkt', c: docCost(), f: () => { h.doc = { until: d + DOC.days, next: d + DOC.days + DOC.gap, n: ((h.doc && h.doc.n) || 0) + 1 }; repAll(DOC.rep); } });
+          if (!(h.jersey > d)) out.push({ k: 'jersey', cls: 'big', c: JERSEY.cost, f: () => { h.jersey = d + JERSEY.days; repAll(JERSEY.rep); } });
           /* the record ladder first (a record not yet set), then attempts to improve one while the lasting boost is under its ceiling */
           const recs = ['alt', 'pacific', 'world'].filter(k => !(RECORDS[k].after && !(h.records && h.records[RECORDS[k].after])));
           const rk = recs.find(k => !(h.records && h.records[k])) || ((h.recBoost || 0) < recCap() - 1e-9 ? recs[0] : null);
           if (!h.rec && rk) out.push({ k: 'record', cls: 'big', c: recCost(rk), f: () => { h.rec = { k: rk, done: d + RECORDS[rk].days }; h.recV2 = 1; } });
-          if (PROP && h.wg && WGAMES.again && d >= h.wg.at + WGAMES.again) out.push({ k: 'wg', cls: 'big', c: Math.round(WGAMES.cost * Math.pow(WGAMES.step, h.wg.n)), f: () => { h.wg = { until: d + WGAMES.days, n: h.wg.n + 1, at: d }; repAll(WGAMES.rep); } });
-          if (PROP) {
-            const F = PX.fest; if ((P.festNext || 0) <= d) { const id = mine.slice().sort((x, y) => (((P.fame || {})[x]) || 0) - (((P.fame || {})[y]) || 0))[0], n = P.festN || 0;
-              out.push({ k: 'festival', cls: 'mkt', c: Math.min(F.max, F.base + F.step * n), f: () => { P.festN = n + 1; P.festNext = d + F.every; (P.festOn = P.festOn || {})[id] = d + F.days; const fm = P.fame = P.fame || {}; fm[id] = Math.min(F.fameMax, (fm[id] || 0) + F.fame); repIn(id, F.rep); } }); }
-            for (const id of mine) { const t = (P.est || {})[id] || 0; if (t < PX.estate.tiers.length) out.push({ k: 'estate', cls: 'inv', c: PX.estate.tiers[t][0], f: () => { (P.est = P.est || {})[id] = t + 1; repIn(id, PX.estate.rep); } }); }
-            for (const id of mine) { const n = (P.buy || {})[id] || 0; if (n < PX.buyout.per && id !== S.region) out.push({ k: 'buyout', cls: 'inv', c: Math.round(PX.buyout.base * Math.pow(PX.buyout.step, n)), f: () => { (P.buy = P.buy || {})[id] = n + 1; } }); }
-            const st = P.strato || 0; if (st < PX.strato.length && !(P.stratoBusy > d)) out.push({ k: 'strato', cls: 'big', c: PX.strato[st].cost, f: () => { P.strato = st + 1; P.stratoBusy = d + PX.strato[st].days; } });
-            const fn = P.found || 0; out.push({ k: 'foundation', cls: 'found', c: PX.found.base + PX.found.step * fn, f: () => { P.found = fn + 1; repAll(PX.found.rep); } });
-          }
-          for (const id of mine) if (!((h.bb || {})[id] > d)) out.push({ k: 'billboards', cls: 'mkt', b: PROP ? PX.bb.boost : .1, ids: [id], c: bbC(), f: () => { (h.bb = h.bb || {})[id] = d + bbD(); } });
+          /* v140: the World Games again, 360 days after the last show, each 1.5 times the last */
+          if (h.wg && !(h.wg.until > d) && wgNext() <= d) out.push({ k: 'wg', cls: 'big', c: wgCost(), f: () => { h.wg = { until: d + WGAMES.days, n: wgN() + 1, at: d }; repAll(WGAMES.rep); } });
+          /* v140: the hosted festival, in the owned region with the least festival fame */
+          if (hfReady()) { const id = mine.slice().sort((x, y) => (((h.fame || {})[x]) || 0) - (((h.fame || {})[y]) || 0))[0]; out.push({ k: 'festival', cls: 'mkt', c: hfCost(), f: () => hostFestival(id) }); }
+          /* v140: the foundation, its projects round the owned regions */
+          { const id = mine.slice().sort((x, y) => foundIn(x) - foundIn(y))[0]; out.push({ k: 'foundation', cls: 'found', c: foundCost(), f: () => fundProject(id) }); }
+          for (const id of mine) if (!((h.bb || {})[id] > d)) out.push({ k: 'billboards', cls: 'mkt', ids: [id], c: BB.cost, f: () => { (h.bb = h.bb || {})[id] = d + BB.days; } });
           return out;
         };
         /* trailing income (autopilot net + withdrawals), for "cash in days of income" */
@@ -164,22 +121,17 @@ const PROPOSAL = `
                 for (const k of ['alt', 'world', 'pacific']) { const R = RECORDS[k]; if (!h.rec && !(h.records && h.records[k]) && !(R.after && !(h.records && h.records[R.after]))) spend('record', recCost(k), () => { h.rec = { k, done: S.day + R.days }; }); }
               }
             } else {
-              const X = extras();
-              if (!PROP) { for (const x of X) if ((S.holding || 0) - x.c >= reserve) spend(x.k, x.c, x.f); }
-              else {
-                /* 1. campaigns, when they add something under the region's cap; 2. the big projects, cheapest first, saved up
-                   for; 3. estates and buyouts with what is over the next big project's price; 4. the foundation with what is
-                   over the whole of it (or over 30 days of income when nothing big is left) */
-                const cash = () => (S.holding || 0) - reserve, inc = Math.max(0, inc30.reduce((x, y) => x + y, 0) / Math.max(1, inc30.length));
-                for (const x of X.filter(x => x.cls === 'mkt')) { if (x.b && x.ids.reduce((a, id) => a + Math.min(x.b, Math.max(0, PX.cap - pxTemp(id))), 0) < x.b * x.ids.length * .5) continue; if (cash() >= x.c) spend(x.k, x.c, x.f); }
-                /* big projects take turns: the kind bought longest ago (or never) first, so every one gets saved up for */
-                const lb = L.lastBig = L.lastBig || {}, turn = (u, v) => ((lb[u.k] ?? -1) - (lb[v.k] ?? -1)) || (u.c - v.c);
-                const next = extras().filter(x => x.cls === 'big').sort(turn)[0];
-                if (next && cash() >= next.c && spend(next.k, next.c, next.f)) lb[next.k] = S.day;
-                const tgt = (extras().filter(x => x.cls === 'big').sort(turn)[0] || {}).c;
-                for (const x of X.filter(x => x.cls === 'inv')) if (cash() - x.c >= (tgt || 0)) spend(x.k, x.c, x.f);
-                for (const x of extras().filter(x => x.cls === 'found')) if (cash() - x.c >= (tgt || inc * 30)) spend(x.k, x.c, x.f);
-              }
+              /* 1. every campaign (TV, billboards, celebrity, documentary, the hosted festival) the moment it can be paid;
+                 2. the big projects (jersey, records, World Games), saved up for in turns; 3. the foundation with what is
+                 over the next big project's price (or over 30 days of income when nothing big is waiting) */
+              const X = extras(), cash = () => (S.holding || 0) - reserve, inc = Math.max(0, inc30.reduce((x, y) => x + y, 0) / Math.max(1, inc30.length));
+              for (const x of X.filter(x => x.cls === 'mkt')) if (cash() >= x.c) spend(x.k, x.c, x.f);
+              /* big projects take turns: the kind bought longest ago (or never) first, so every one gets saved up for */
+              const lb = L.lastBig = L.lastBig || {}, turn = (u, v) => ((lb[u.k] ?? -1) - (lb[v.k] ?? -1)) || (u.c - v.c);
+              const next = extras().filter(x => x.cls === 'big').sort(turn)[0];
+              if (next && cash() >= next.c && spend(next.k, next.c, next.f)) lb[next.k] = S.day;
+              const tgt = (extras().filter(x => x.cls === 'big').sort(turn)[0] || {}).c;
+              for (const x of extras().filter(x => x.cls === 'found')) if (cash() - x.c >= (tgt || inc * 30)) spend(x.k, x.c, x.f);
             }
           }
           if (typeof ctrState === 'function' && ctrCfg() && ctrState().offer) { const O = ctrState().offer, fog = O.fogP ? O.fogP.reduce((x, y) => x + y, 0) / O.fogP.length : 0; if (O.n <= fleetSeats() * .85 && fog <= .45) ctrAccept(); else ctrDecline(); } S.xfer = null;
@@ -216,15 +168,16 @@ const PROPOSAL = `
           for (const id of ['cap', 'abq', 'lux', 'bri']) if (S.barons && S.barons[id] && !L.baron[id]) L.baron[id] = S.barons[id];
           if (S.hold && S.hold.worldBaron && !L.world) { L.world = S.hold.worldBaron; postEnd = S.day + POST; }
           const td = (S.hold && S.hold.today) || {};
+          if (td.rent) L.spent.rent = (L.spent.rent || 0) + td.rent; /* v140: the offices' rent, counted with the spending */
           const base = Object.keys(S.regions || {}).reduce((x, id) => x + ((S.regions[id].auto || {}).todayRaw || 0) * officeMult(id), 0);
           inc30.push(hNight + dayIn); if (inc30.length > 30) inc30.shift();
           const spentToday = Object.values(L.dspent).reduce((x, y) => x + y, 0);
-          L.days.push([S.day, Math.round(S.holding || 0), Math.round(td.gross || 0), Math.round(td.cost || 0), Math.round(dayIn), Math.round(spentToday), Math.round(inc30.reduce((x, y) => x + y, 0) / inc30.length), Math.round(base)]);
+          L.days.push([S.day, Math.round(S.holding || 0), Math.round(td.gross || 0), Math.round((td.cost || 0) + (td.rent || 0)), Math.round(dayIn), Math.round(spentToday), Math.round(inc30.reduce((x, y) => x + y, 0) / inc30.length), Math.round(base)]);
           if (L.world && S.day >= postEnd) break;
           if (S.over) { L.err = 'bankrupt @' + S.day; break; }
         }
         const h = S.hold || {};
-        L.end = { auto: Object.keys(S.regions || {}).filter(id => S.regions[id].auto).map(id => id + ':' + Math.round(S.regions[id].auto.base * officeMult(id))).join(' '), rnd: h.rnd, offices: officeCount(), recBoost: h.recBoost, records: h.records, px: h.px, wg: h.wg, rep: myRegionIds().map(id => id + ':' + Math.round((id === S.region ? S.rep : S.regions[id].rep) * 100) / 100).join(' ') };
+        L.end = { auto: Object.keys(S.regions || {}).filter(id => S.regions[id].auto).map(id => id + ':' + Math.round(S.regions[id].auto.base * officeMult(id))).join(' '), rnd: h.rnd, offices: officeCount(), recBoost: h.recBoost, records: h.records, wg: h.wg, fame: h.fame, fdn: h.fdn && h.fdn.n, rep: myRegionIds().map(id => id + ':' + Math.round((id === S.region ? S.rep : S.regions[id].rep) * 100) / 100).join(' ') };
         withdraw = wd; startDay = realStart;
         return L;
       }, [seed, POST, MODE]));
