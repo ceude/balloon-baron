@@ -75,11 +75,13 @@ final class MaraTests: XCTestCase {
         XCTAssertEqual(RegionID.mara.currency, "USD")
         XCTAssertEqual(RegionID.mara.fx, RegionID.abq.fx)
         var g = inMara()
-        g.state.cash = 44000
+        g.state.cash = 94000
         let h = g.state.holding.cash
         let sent = g.withdraw(share: 1)
-        XCTAssertEqual(sent, 34000, "the region keeps its reserve, as in Bristol")
+        XCTAssertEqual(sent, 34000, "v141.1: the Mara's box keeps $60,000")
+        XCTAssertEqual(g.state.cash, Mara.withdrawKeep)
         XCTAssertEqual(g.state.holding.cash - h, jsRound(34000 / 1.1), "dollars to euros at 1.1")
+        XCTAssertEqual(Holding.withdrawKeep(.bri), 10000, "elsewhere 10,000")
     }
 
     /// The hardest region: fewer tourists, a dearer start, the biggest rivals, dearer fuel and pilots, a park fee, worse
@@ -97,7 +99,7 @@ final class MaraTests: XCTestCase {
         XCTAssertEqual(RegionID.mara.wageFactor, 1.1)
         XCTAssertLessThan(Mara.rainsGreen, 0.35, "the rains ground more mornings than any winter")
         XCTAssertGreaterThan(1 - Mara.rainsYellow, 1 - 0.7)
-        XCTAssertLessThan(Mara.rainsDemand, 0.55)
+        XCTAssertLessThanOrEqual(Mara.rainsDemand, 0.55)
         // the chapters ask more than Bristol's
         let b = RegionID.bri.chapters, m = RegionID.mara.chapters
         XCTAssertEqual(m.map(\.id), ["tentedCamp", "oloololo", "migration", "baronMara"])
@@ -141,7 +143,7 @@ final class MaraTests: XCTestCase {
         guard let w1 = g.state.winter else { return XCTFail("the long rains") }
         XCTAssertEqual(w1.long, true)
         XCTAssertEqual(w1.end - w1.start + 1, Mara.longRains)
-        XCTAssertTrue(g.state.hezQueue.contains(.rainsComing(long: true, days: 12)))
+        XCTAssertTrue(g.state.hezQueue.contains(.rainsComing(long: true, days: Mara.longRains)))
         g.state.day = w1.end + 1
         g.maraRains()
         XCTAssertNil(g.state.winter)

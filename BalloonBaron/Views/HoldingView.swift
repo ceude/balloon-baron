@@ -199,7 +199,7 @@ struct HoldingView: View {
     }
 
     private func withdrawSection(_ s: GameState) -> some View {
-        let canTake = s.cash > Holding.withdrawKeep
+        let canTake = s.cash > Holding.withdrawKeep(s.region)
         let hintKey = s.region == .bri ? "holding.withdrawHintFx.bri" : s.region.fx != 1 ? "holding.withdrawHintFx" : "holding.withdrawHint" // v124: pounds
         return VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("holding.withdrawTitle", s.region.title))
@@ -207,7 +207,7 @@ struct HoldingView: View {
             HStack(spacing: 8) {
                 HoldingPill(title: percent(0.25), enabled: canTake) { take(0.25) }
                 HoldingPill(title: percent(0.5), enabled: canTake) { take(0.5) }
-                HoldingPill(title: loc("holding.withdrawAll", eur(Holding.withdrawKeep)), enabled: canTake) { take(1) }
+                HoldingPill(title: loc("holding.withdrawAll", eur(Holding.withdrawKeep(s.region))), enabled: canTake) { take(1) }
             }
         }
     }
@@ -301,9 +301,9 @@ struct HoldingView: View {
         .accessibilityHint(loc(note))
         .accessibilityAddTraits(.isButton)
         if !on, !here, let cash = s.parked[r]?.state.cash {
-            let amount = max(0, cash - Holding.withdrawKeep)
+            let amount = max(0, cash - Holding.withdrawKeep(r))
             HStack(alignment: .center, spacing: 10) {
-                Text(loc("holding.moveHint", money(Holding.withdrawKeep, in: r)))
+                Text(loc("holding.moveHint", money(Holding.withdrawKeep(r), in: r)))
                     .font(Theme.font(13))
                     .foregroundStyle(HoldingLux.sub)
                     .fixedSize(horizontal: false, vertical: true)

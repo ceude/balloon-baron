@@ -101,6 +101,8 @@ public struct Holding: Codable, Equatable, Sendable {
     public static let documentaryBoost = 1.15, documentaryRep = 0.1
     /// What you leave in a region's cash box when you take "all".
     public static let withdrawKeep = 10000
+    /// v141.1: what a transfer leaves in a region's box: `withdrawKeep`, in the Maasai Mara `Mara.withdrawKeep`.
+    public static func withdrawKeep(_ r: RegionID) -> Int { r == .mara ? Mara.withdrawKeep : withdrawKeep }
 
     public var cash = 0
     /// Last 30 days of income and expenses.
@@ -270,9 +272,9 @@ extension Game {
     /// `share` 1 means everything but `Holding.withdrawKeep`.
     @discardableResult
     public mutating func withdraw(share: Double) -> Int {
-        let cash = state.cash
-        guard cash > Holding.withdrawKeep else { return 0 }
-        let amt = share >= 1 ? cash - Holding.withdrawKeep : Int((Double(cash) * share).rounded(.down))
+        let cash = state.cash, keep = Holding.withdrawKeep(state.region)
+        guard cash > keep else { return 0 }
+        let amt = share >= 1 ? cash - keep : Int((Double(cash) * share).rounded(.down))
         guard amt > 0 else { return 0 }
         state.cash -= amt
         let eur = jsRound(Double(amt) / state.region.fx)
@@ -297,9 +299,9 @@ extension Game {
     public mutating func withdraw(from r: RegionID, share: Double) -> Int {
         if r == state.region { return withdraw(share: share) }
         guard var p = state.parked[r] else { return 0 }
-        let cash = p.state.cash
-        guard cash > Holding.withdrawKeep else { return 0 }
-        let amt = share >= 1 ? cash - Holding.withdrawKeep : Int((Double(cash) * share).rounded(.down))
+        let cash = p.state.cash, keep = Holding.withdrawKeep(r)
+        guard cash > keep else { return 0 }
+        let amt = share >= 1 ? cash - keep : Int((Double(cash) * share).rounded(.down))
         guard amt > 0 else { return 0 }
         p.state.cash -= amt
         state.parked[r] = p

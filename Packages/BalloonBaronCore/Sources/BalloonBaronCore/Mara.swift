@@ -8,15 +8,20 @@ public enum Mara {
     /// Euros the holding pays to enter ($330,000).
     public static let entryFee = 300_000
     public static let startCash = 6000, startPrice = 210, startDemand = 125
-    /// The reserve's fee for every passenger flown, in dollars (a line on the report).
-    public static let parkFee = 12
+    /// The reserve's fee for every passenger flown, in dollars (a line on the report). v141.1 (developer): $12 → $10.
+    public static let parkFee = 10
     /// Fuel trucked in from Nairobi, bush pilots' wages.
     public static let fuel = 1.3, wage = 1.1
     /// The weather outside the rains, and in them: green below the first, yellow below the second, red above.
-    public static let green = 0.45, yellow = 0.82, rainsGreen = 0.25, rainsYellow = 0.58
-    /// The rains: half the tourists; the long rains (12 days) and the short rains (6 days) take turns, the next 40 days
-    /// after the last ends, and they don't come to a newcomer with less than $20,000 in the box.
-    public static let rainsDemand = 0.5, longRains = 12, shortRains = 6, rainsEvery = 40, rainsCash = 20000
+    /// v141.1 (developer: milder rains, tuned with tools/sim-bankrupt.js): in the rains 28% green, 34% yellow, 38% red
+    /// (was 25/33/42).
+    public static let green = 0.45, yellow = 0.82, rainsGreen = 0.28, rainsYellow = 0.62
+    /// The rains: tourists ×0.55 (was ×0.5); the long rains (10 days, was 12) and the short rains (5, was 6) take turns, the
+    /// next 45 days (was 40) after the last ends, and they don't come to a newcomer with less than $20,000 in the box.
+    public static let rainsDemand = 0.55, longRains = 10, shortRains = 5, rainsEvery = 45, rainsCash = 20000
+    /// v141.1: what a transfer to the holding leaves in the Mara's cash box (10,000 elsewhere): its bush days cost more to
+    /// run, and a careful player who sent everything away lost balloons to the bank after red days and antitrust fines.
+    public static let withdrawKeep = 60000
     /// The first rains a month in, the first migration after 16 days.
     public static let firstRains = 30, firstMigration = 16
     /// The Great Migration: six days about every six weeks (36 days after the last ends), demand ×1.8.
