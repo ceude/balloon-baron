@@ -10464,7 +10464,7 @@ function hqDeals(body, which, title) {
       ['Bütün bölgelerde: +0,2★', 'Kasabada bir anıt', `Her proje ${eurH(FOUND.step)} daha pahalı`], foundCost(), 'Projeyi fonla', id => fundProject(id), { rows: fRows, active: n ? ' ' : '' });
   }
   const lv = H.rnd || 0, next = lv < RD_ENVELOPE ? RD_LEVELS[lv] : null;
-  if (which.includes('lab')) deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [`Zarf ömrü ${envLife()} → ${next ? next.life : envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
+  if (which.includes('lab')) deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [next ? `Zarf ömrü ${envLife()} → ${next.life} uçuş` : `Zarf ömrü: ${envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
     () => { H.rnd = lv + 1; holdDeed('research'); }, { active: next ? '' : `Seviye ${RD_ENVELOPE} · tamamlandı` });
   /* v137: levels 3 and 4, one after the other once the envelope research is done */
   const rdCard = (art, n, kicker, title, desc, chips, deed) => {

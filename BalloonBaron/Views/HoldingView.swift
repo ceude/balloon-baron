@@ -497,7 +497,7 @@ struct HoldingView: View {
         let h = s.holding
         let lv = min(h.research, Holding.envelopeResearch)
         let next: Holding.ResearchLevel? = lv < Holding.envelopeResearch ? Holding.researchLevels[lv] : nil
-        let chips = [loc("holding.chip.life", num(s.envelopeLife), num(next?.life ?? s.envelopeLife)), loc("holding.chip.permanent")]
+        let chips = [next.map { loc("holding.chip.life", num(s.envelopeLife), num($0.life)) } ?? loc("holding.chip.lifeDone", num(s.envelopeLife)), loc("holding.chip.permanent")] // v141.4: no "200 → 200" once done
         return HoldingDealCard(art: .lab, kicker: loc("holding.lab.kicker"), title: loc("holding.lab.title"),
                                detail: loc(next == nil ? "holding.lab.descDone" : "holding.lab.desc"), chips: chips,
                                price: next?.cost, cta: loc("holding.lab.cta", num(lv + 1)),

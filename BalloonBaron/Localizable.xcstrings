@@ -65191,6 +65191,47 @@
         }
       }
     },
+    "holding.chip.lifeDone": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hüllen-Lebensdauer (Flüge): %@"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Envelope life (flights): %@"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vida de la envoltura (vuelos): %@"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "球皮寿命（フライト）：%@"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "외피 수명(비행): %@"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zarf ömrü (uçuş): %@"
+          }
+        }
+      }
+    },
     "holding.chip.odds": {
       "extractionState": "manual",
       "localizations": {

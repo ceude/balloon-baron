@@ -228,6 +228,7 @@ add("holding.chip.regionDemand", "%1$@: demand +%2$@", "%1$@: talep +%2$@", "%1$
 add("holding.chip.stars", "%1$@: +%2$@", "%1$@: +%2$@", "%1$@: +%2$@", "%1$@: +%2$@", "%1$@：+%2$@", "%1$@: +%2$@")
 add("holding.chip.days", "Days: %@", "Gün: %@", "Tage: %@", "Días: %@", "日数：%@", "일수: %@")
 add("holding.chip.life", "Envelope life (flights): %1$@ → %2$@", "Zarf ömrü (uçuş): %1$@ → %2$@", "Hüllen-Lebensdauer (Flüge): %1$@ → %2$@", "Vida de la envoltura (vuelos): %1$@ → %2$@", "球皮寿命（フライト）：%1$@ → %2$@", "외피 수명(비행): %1$@ → %2$@")
+add("holding.chip.lifeDone", "Envelope life (flights): %@", "Zarf ömrü (uçuş): %@", "Hüllen-Lebensdauer (Flüge): %@", "Vida de la envoltura (vuelos): %@", "球皮寿命（フライト）：%@", "외피 수명(비행): %@")  # v141.4: research done, no arrow
 add("holding.chip.permanent", "All regions, permanent", "Bütün bölgeler, kalıcı", "Alle Regionen, dauerhaft", "Todas las regiones, permanente", "全地域・恒久", "전 지역, 영구")
 add("holding.tv.kicker", "Prime time", "Altın kuşak", "Primetime", "Máxima audiencia", "ゴールデンタイム", "프라임 타임")
 add("holding.tv.title", "TV ad campaign", "TV reklam kampanyası", "TV-Werbekampagne", "Campaña de anuncios en TV", "テレビCMキャンペーン", "TV 광고 캠페인")
