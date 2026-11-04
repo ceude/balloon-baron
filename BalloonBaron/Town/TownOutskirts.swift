@@ -730,7 +730,7 @@ extension TownPainter {
                         p.ellipse(q.x - 6, q.y - 1, 2.4, 2.4, p.hex("#2a1e18")); p.ellipse(q.x + 6, q.y - 1, 2.4, 2.4, p.hex("#2a1e18"))
                     }
                 }
-            // v141 the Mara: acacias and a termite mound; a herd grazing slowly; a Maasai manyatta (a ring of low earth houses
+            // v141 the Mara: acacias and a thorn bush; a herd grazing slowly; a Maasai manyatta (a ring of low earth houses
             // inside a thorn fence, cattle in the middle, people in red and blue shukas); a waterhole with elephants and zebras
             case .savanna:
                 for _ in 0..<4 {
@@ -738,7 +738,7 @@ extension TownPainter {
                     add(at.x, at.y, shadow: { p in let q = gp(at); p.blobShadow(q.x + 14 * sc, q.y + 4, 22 * sc, 6 * sc, 0.12) }) { p in let w = gp(at); p.acacia(w.x, w.y, sc) }
                 }
                 let m = c.at(c.w * 0.35, c.d * 0.3)
-                add(m.x, m.y) { p in let w = gp(m); p.termiteMound(w.x, w.y, 1) }
+                add(m.x, m.y) { p in let w = gp(m); p.thornBush(w.x, w.y, 1) }
             case .herd:
                 let n = 7 + c.seed % 5, kind: HerdKind = c.seed % 3 == 0 ? .zebra : .gnu
                 for i in 0..<n {

@@ -162,11 +162,18 @@ extension TownPainter {
 
     /// v130: the tour minibus: white, a teal stripe, windows down its side, headlights and wheels.
     mutating func minibus(_ gx: Double, _ gy: Double) {
-        let h: CGFloat = 22
-        block(gx, gy, 0.52, 0.88, h, lit: "#ffffff", shade: "#d8d8d8", top: "#f4f4f4", courses: false)
+        let h: CGFloat = 22, mara = s.region == .mara // v141.1: in the Mara a khaki safari van with its roof popped up
+        if mara { block(gx, gy, 0.52, 0.88, h, lit: "#d8c8a0", shade: "#a8946c", top: "#c8b890", courses: false) }
+        else { block(gx, gy, 0.52, 0.88, h, lit: "#ffffff", shade: "#d8d8d8", top: "#f4f4f4", courses: false) }
         let (_, B, C, D) = corners(gx, gy, 0.52, 0.88)
+        if mara {
+            let keep = c
+            c.translateBy(x: 0, y: -h)
+            block(gx + 0.07, gy + 0.14, 0.38, 0.6, 9, lit: "#efe6cc", shade: "#c8b890", top: "#e4d8b8", courses: false)
+            c = keep
+        }
         let side = face(C, B, h)
-        side.fill(Path(CGRect(x: 0, y: 0.3, width: 1, height: 0.14)), with: .color(hex("#3ad0c0")))
+        side.fill(Path(CGRect(x: 0, y: 0.3, width: 1, height: 0.14)), with: .color(hex(mara ? "#2a6a4a" : "#3ad0c0")))
         var win = Path()
         for i in 0..<4 { win.addRect(CGRect(x: 0.08 + CGFloat(i) * 0.22, y: 0.55, width: 0.16, height: 0.3)) }
         side.fill(win, with: .color(hex("#4a5a6a")))

@@ -28,11 +28,9 @@ public enum Office: String, Codable, CaseIterable, CodingKeyRepresentable, Senda
         }
     }
 
-    /// v138 (developer): the order the offices are listed in, cheapest first (İstanbul, then Seoul, Tokyo and Dubai,
-    /// then New York and Paris). Ties keep `allCases` order. `allCases` itself stays as it is (saves and goals).
-    public static var byPrice: [Office] {
-        allCases.enumerated().sorted { ($0.element.cost, $0.offset) < ($1.element.cost, $1.offset) }.map(\.element)
-    }
+    /// v141.1 (developer): the order the offices are listed in everywhere: İstanbul, Seoul, New York, London, Tokyo,
+    /// Dubai (it replaces v138's cheapest-first). `allCases` itself stays as it is (saves and goals).
+    public static let listed: [Office] = [.ist, .sel, .nyc, .lon, .tyo, .dxb]
 }
 
 public struct Celebrity: Codable, Equatable, Sendable {

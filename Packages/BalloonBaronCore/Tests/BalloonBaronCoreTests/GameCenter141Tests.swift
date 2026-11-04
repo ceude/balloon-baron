@@ -20,3 +20,12 @@ final class GameCenter141Tests: XCTestCase {
         XCTAssertGreaterThan(Achievement.baronMara.gameCenterPoints, Achievement.baronBri.gameCenterPoints, "the hardest baron is worth the most")
     }
 }
+
+/// v141.1: the offices are listed İstanbul, Seoul, New York, London, Tokyo, Dubai, every office once.
+final class OfficeOrder141Tests: XCTestCase {
+    func testListedOrder() {
+        XCTAssertEqual(Office.listed, [.ist, .sel, .nyc, .lon, .tyo, .dxb])
+        XCTAssertEqual(Set(Office.listed), Set(Office.allCases))
+        XCTAssertEqual(Office.lon.rawValue, "par", "the save key stays")
+    }
+}

@@ -624,48 +624,110 @@ private struct Land {
                 p.addEllipse(in: CGRect(x: x + h * dx - h * rx, y: b - h * dy - h * ry, width: h * rx * 2, height: h * ry * 2))
             }
         }
+        // v141.1 (developer: "to the v139 Cappadocia quality"): one more far range, strata on the escarpment's face, the Mara
+        // River catching the sun on the plain, a finer herd and giraffes, rim light everywhere, richer grass near you.
         func esc(_ x: CGFloat) -> CGFloat { let k = min(max((W * 0.62 - x) / (W * 0.22), 0), 1); return gy - u * (0.03 + 0.1 * (k * k * (3 - 2 * k))) - wave(x, 0.02, u * 0.003, 1) }
-        sil(&ctx, 0.86, 0.15, 0.3) { p in ridge(&p, bot: gy) { x in gy - u * 0.05 - wave(x, 0.006, u * 0.025, 2) - wave(x, 0.017, u * 0.01, 0) } }
+        sil(&ctx, 0.94, 0.1, 0.18) { p in ridge(&p, bot: gy) { x in gy - u * 0.085 - wave(x, 0.0045, u * 0.022, 1.3) - wave(x, 0.013, u * 0.008, 0.4) } }
+        hazeBand(&ctx, gy - u * 0.2, 0.3)
+        sil(&ctx, 0.84, 0.15, 0.3) { p in ridge(&p, bot: gy) { x in gy - u * 0.05 - wave(x, 0.006, u * 0.025, 2) - wave(x, 0.017, u * 0.01, 0) } }
         hazeBand(&ctx, gy - u * 0.16, 0.45)
-        sil(&ctx, 0.68, 0.22, 0.5) { p in ridge(&p, bot: gy, esc) }
+        sil(&ctx, 0.66, 0.24, 0.6) { p in ridge(&p, bot: gy, esc) }
+        do { // the escarpment's strata, faint lighter lines along its face
+            var face = Path(); ridge(&face, bot: gy, esc)
+            var g = ctx
+            g.clip(to: face)
+            var lines = Path()
+            for i in 1..<6 {
+                var x: CGFloat = -4, first = true
+                while x <= W * 0.72 {
+                    let y = esc(x) + (gy - esc(x)) * CGFloat(i) / 6.5 + wave(x, 0.025, u * 0.0025, CGFloat(i) * 1.7)
+                    if first { lines.move(to: pt(x, y)); first = false } else { lines.addLine(to: pt(x, y)) }
+                    x += step
+                }
+            }
+            g.stroke(lines, with: .color(c(ScenePainter.mixHex(sun, haze, 0.35), 0.16)), lineWidth: max(1, u * 0.0018))
+        }
         hazeBand(&ctx, gy - u * 0.08, 0.4)
-        sil(&ctx, 0.5, 0.25, 0.45) { p in
+        sil(&ctx, 0.5, 0.25, 0.5) { p in // far acacias dotting the plain
             var r = Mulberry32(seed: 41)
-            for _ in 0..<16 {
-                let x = CGFloat(r.next()) * W, h = u * CGFloat(0.03 + r.next() * 0.025)
+            for _ in 0..<22 {
+                let x = CGFloat(r.next()) * W, h = u * CGFloat(0.022 + r.next() * 0.03), dy = CGFloat(r.next()) * u * 0.006, lean = CGFloat(r.next() - 0.5) * 0.4
                 if abs(x - W * 0.5) < u * 0.1 { continue }
-                acac(&p, x, gy - u * 0.012, h)
+                acac(&p, x, gy - u * 0.012 + dy, h, lean)
             }
         }
-        sil(&ctx, 0.3, 0.25, 0.6) { p in
-            for i in 0..<26 { // wildebeest in a long line, heads down
-                let fi = CGFloat(i), step = W * 0.021
-                let x = W * 0.04 + fi * step + CGFloat(sin(Double(i) * 2.3)) * u * 0.006 + CGFloat((t * Double(u) * 0.004).truncatingRemainder(dividingBy: Double(step)))
-                let b = gy - u * (0.004 + 0.003 * CGFloat(sin(Double(i)))), s = u * (0.007 + 0.002 * CGFloat(i % 3))
-                if abs(x - W * 0.5) < u * 0.05 { continue }
-                p.addEllipse(in: CGRect(x: x - s * 1.4, y: b - s * 1.8, width: s * 2.8, height: s * 1.4))
-                p.addRect(CGRect(x: x - s * 1.1, y: b - s * 0.6, width: s * 0.28, height: s * 0.6)); p.addRect(CGRect(x: x + s * 0.8, y: b - s * 0.6, width: s * 0.28, height: s * 0.6))
-                p.move(to: pt(x + s * 1.1, b - s * 1.5)); p.addLine(to: pt(x + s * 2.1, b - s * 0.7)); p.addLine(to: pt(x + s * 1.7, b - s * 0.4)); p.addLine(to: pt(x + s * 0.8, b - s * 0.9)); p.closeSubpath()
+        do { // the Mara River winding across the plain, a ribbon of light where it faces the sun
+            func cy(_ x: CGFloat) -> CGFloat { gy - u * 0.011 + wave(x, 0.011, u * 0.004, 0.7) + wave(x, 0.027, u * 0.0015, 2.1) }
+            func hw(_ x: CGFloat) -> CGFloat { u * (0.0035 + 0.003 * (0.5 + 0.5 * CGFloat(sin(Double(x) * 0.009 + 1)))) }
+            var river = Path()
+            var x: CGFloat = -4
+            river.move(to: pt(x, cy(x) - hw(x)))
+            while x <= W + 8 { river.addLine(to: pt(x, cy(x) - hw(x))); x += step }
+            x = W + 8
+            while x >= -4 { river.addLine(to: pt(x, cy(x) + hw(x))); x -= step }
+            river.closeSubpath()
+            let edge = c(ScenePainter.mixHex(haze, L.ink, 0.3), 0.8)
+            ctx.fill(river, with: across(edge, ScenePainter.mix(sun, "#ffffff", 0.7)))
+            var g = ctx
+            g.blendMode = .plusLighter
+            g.fill(Path(ellipseIn: CGRect(x: sx - u * 0.18, y: cy(sx) - u * 0.03, width: u * 0.36, height: u * 0.06)), with: .radialGradient(
+                Gradient(colors: [c(sun, 0.35), c(sun, 0)]), center: pt(sx, cy(sx)), startRadius: 0, endRadius: u * 0.18))
+            sil(&ctx, 0.46, 0.25, 0.45) { p in // gallery trees along its bank
+                var r = Mulberry32(seed: 57)
+                for _ in 0..<30 {
+                    let tx = CGFloat(r.next()) * W, rr = u * CGFloat(0.006 + r.next() * 0.008)
+                    if abs(tx - W * 0.5) < u * 0.08 { continue }
+                    let ty = cy(tx) - hw(tx)
+                    p.addEllipse(in: CGRect(x: tx - rr, y: ty - rr * 0.5 - rr * 0.75, width: rr * 2, height: rr * 1.5))
+                }
             }
-            for (x, s) in [(W * 0.78, u * 0.05), (W * 0.84, u * 0.042)] { // two giraffes against the sun
-                let b = gy - u * 0.004
-                for dx: CGFloat in [-0.3, -0.12, 0.14, 0.3] { p.addRect(CGRect(x: x + s * dx, y: b - s * 0.9, width: s * 0.06, height: s * 0.9)) }
-                p.addEllipse(in: CGRect(x: x - s * 0.42, y: b - s * 1.18, width: s * 0.84, height: s * 0.36))
-                p.move(to: pt(x + s * 0.2, b - s * 1.1)); p.addLine(to: pt(x + s * 0.52, b - s * 2)); p.addLine(to: pt(x + s * 0.66, b - s * 1.96)); p.addLine(to: pt(x + s * 0.4, b - s * 1)); p.closeSubpath()
-                p.addEllipse(in: CGRect(x: x + s * 0.5, y: b - s * 2.09, width: s * 0.28, height: s * 0.14))
+        }
+        sil(&ctx, 0.3, 0.25, 0.75) { p in
+            for i in 0..<30 { // wildebeest in a long line, heads down, humped shoulders and curved horns
+                let fi = CGFloat(i), step = W * 0.019
+                let x = W * 0.02 + fi * step + CGFloat(sin(Double(i) * 2.3)) * u * 0.006 + CGFloat((t * Double(u) * 0.004).truncatingRemainder(dividingBy: Double(step)))
+                let b = gy - u * (0.002 + 0.003 * CGFloat(sin(Double(i)))), s = u * (0.0065 + 0.0018 * CGFloat(i % 3))
+                if abs(x - W * 0.5) < u * 0.05 { continue }
+                p.addEllipse(in: CGRect(x: x - s * 1.3, y: b - s * 1.67, width: s * 2.6, height: s * 1.24))
+                p.addEllipse(in: CGRect(x: x + s * 0.08, y: b - s * 1.9, width: s * 1.24, height: s * 1))
+                for lx: CGFloat in [-1, -0.7, 0.6, 0.9] { p.addRect(CGRect(x: x + lx * s - s * 0.1, y: b - s * 0.62, width: s * 0.2, height: s * 0.62)) }
+                p.move(to: pt(x + s * 1.1, b - s * 1.6)); p.addLine(to: pt(x + s * 2.05, b - s * 0.62)); p.addLine(to: pt(x + s * 1.7, b - s * 0.38)); p.addLine(to: pt(x + s * 0.85, b - s * 1.05)); p.closeSubpath()
+                p.move(to: pt(x + s * 1.75, b - s * 0.95)); p.addQuadCurve(to: pt(x + s * 2.05, b - s * 1.35), control: pt(x + s * 1.6, b - s * 1.5))
+                p.addLine(to: pt(x + s * 2, b - s * 1.25)); p.addQuadCurve(to: pt(x + s * 1.85, b - s * 0.9), control: pt(x + s * 1.75, b - s * 1.3)); p.closeSubpath()
+                p.move(to: pt(x - s * 1.25, b - s * 1.2)); p.addLine(to: pt(x - s * 1.6, b - s * 0.6)); p.addLine(to: pt(x - s * 1.45, b - s * 0.6)); p.addLine(to: pt(x - s * 1.1, b - s * 1.1)); p.closeSubpath()
+            }
+            for (x, s) in [(W * 0.78, u * 0.05), (W * 0.84, u * 0.042), (W * 0.885, u * 0.028)] { // two giraffes and a calf against the sun
+                let b = gy - u * 0.003
+                for (lx, lw) in [(-0.3, 0.065), (-0.12, 0.06), (0.14, 0.06), (0.3, 0.065)] as [(CGFloat, CGFloat)] {
+                    p.move(to: pt(x + s * lx, b)); p.addLine(to: pt(x + s * (lx - lw * 0.2), b - s * 0.92)); p.addLine(to: pt(x + s * (lx + lw * 1.2), b - s * 0.92))
+                    p.addLine(to: pt(x + s * (lx + lw * 0.5), b)); p.closeSubpath()
+                }
+                p.addEllipse(in: CGRect(x: x - s * 0.42, y: b - s * 1.19, width: s * 0.84, height: s * 0.38))
+                p.move(to: pt(x + s * 0.18, b - s * 1.12)); p.addQuadCurve(to: pt(x + s * 0.5, b - s * 2.02), control: pt(x + s * 0.4, b - s * 1.6))
+                p.addLine(to: pt(x + s * 0.66, b - s * 1.98)); p.addQuadCurve(to: pt(x + s * 0.42, b - s * 1.02), control: pt(x + s * 0.52, b - s * 1.5)); p.closeSubpath()
+                p.addEllipse(in: CGRect(x: x + s * 0.5, y: b - s * 2.115, width: s * 0.32, height: s * 0.15))
+                for ox: CGFloat in [0.56, 0.62] { p.addRect(CGRect(x: x + s * ox, y: b - s * 2.2, width: s * 0.025, height: s * 0.12)) }
+                p.move(to: pt(x - s * 0.4, b - s * 1.02)); p.addLine(to: pt(x - s * 0.5, b - s * 0.55)); p.addLine(to: pt(x - s * 0.46, b - s * 0.55)); p.addLine(to: pt(x - s * 0.36, b - s * 1)); p.closeSubpath()
             }
         }
         hazeBand(&ctx, gy - u * 0.03, 0.25)
         ground(&ctx); mist(&ctx, 0.3)
-        // tufts of dry grass on the near field, lit by the low sun
-        var tufts = Path()
-        var r = Mulberry32(seed: 17)
-        for _ in 0..<90 {
-            let x = CGFloat(r.next()) * W, b = gy + (H - gy) * CGFloat(0.08 + r.next() * 0.5), hh = u * CGFloat(0.012 + r.next() * 0.02)
-            if abs(x - W / 2) < u * 0.14 && b < gy + (H - gy) * 0.3 { continue }
-            for d: CGFloat in [-1, 0, 1] { tufts.move(to: pt(x + d * hh * 0.2, b)); tufts.addLine(to: pt(x + d * hh * 0.45, b - hh)) }
+        // the near field: dry red-oat grass in three bands, taller and darker towards you, the seed heads catching the sun
+        for (n, y0, y1, h0, h1, a, seed) in [(120, 0.04, 0.3, 0.008, 0.016, 0.55, 17), (110, 0.25, 0.62, 0.016, 0.03, 0.7, 18), (70, 0.55, 1.0, 0.03, 0.055, 0.85, 19)] as [(Int, CGFloat, CGFloat, CGFloat, CGFloat, Double, UInt32)] {
+            var r = Mulberry32(seed: seed)
+            var blades = Path(), heads = Path()
+            for i in 0..<n {
+                let x = CGFloat(r.next()) * W, b = gy + (H - gy) * (y0 + CGFloat(r.next()) * (y1 - y0)), hh = u * (h0 + CGFloat(r.next()) * (h1 - h0))
+                if abs(x - W / 2) < u * 0.14 && b < gy + (H - gy) * 0.3 { continue }
+                for d: CGFloat in [-1, -0.4, 0.3, 1] {
+                    let tx = x + d * hh * 0.45 + CGFloat(sin(t * 0.8 + Double(i))) * hh * 0.04, ty = b - hh * (1 - abs(d) * 0.15)
+                    blades.move(to: pt(x + d * hh * 0.15, b)); blades.addQuadCurve(to: pt(tx, ty), control: pt(x + d * hh * 0.25, b - hh * 0.6))
+                    if h0 >= 0.016 && r.next() < 0.3 { heads.addEllipse(in: CGRect(x: tx - hh * 0.04, y: ty - hh * 0.18, width: hh * 0.08, height: hh * 0.2)) }
+                }
+            }
+            ctx.stroke(blades, with: across(c(ScenePainter.mixHex(L.ground[0], L.ink, 0.3), a), c(ScenePainter.mixHex(sun, "#ffffff", 0.2), a * 0.8)), lineWidth: max(1, u * (0.0016 + h1 * 0.04)))
+            ctx.fill(heads, with: across(c(ScenePainter.mixHex(L.ground[0], L.ink, 0.1), a * 0.7), c(ScenePainter.mixHex(sun, "#ffffff", 0.35), a)))
         }
-        ctx.stroke(tufts, with: across(c(ScenePainter.mixHex(L.ground[0], L.ink, 0.2), 0.7), c(ScenePainter.mixHex(sun, "#ffffff", 0.2), 0.55)), lineWidth: max(1, u * 0.0022))
         // the big acacias framing the field, near and dark
         sil(&ctx, 0.1, 0.18, 0.85) { p in acac(&p, W * 0.08, gy + u * 0.03, u * 0.34, -0.2); acac(&p, W * 0.97, gy + u * 0.025, u * 0.26, 0.2); acac(&p, W * 0.24, gy + u * 0.006, u * 0.13) }
     }

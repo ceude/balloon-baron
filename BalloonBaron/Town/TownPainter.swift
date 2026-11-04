@@ -852,9 +852,12 @@ struct TownPainter {
     /// Barrel vault in company colors, big open doors, propane and crates.
     mutating func hangar(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.25, y0 = b.gy + 0.2, w = b.w - 0.5, d = b.d - 0.4
-        let wallH: CGFloat = big ? 46 : 36, rise: CGFloat = 52, col = s.colors
+        // v141.1: the Mara's hangar is khaki canvas on a timber frame, the company's pennant on top
+        let mara = s.region == .mara
+        let wallH: CGFloat = big ? 46 : 36, rise: CGFloat = 52, col = mara ? ["#f0e2bc", "#dcc89c"] : s.colors
         let brick = s.region == .bri // v124.1: Bristol's hangar in the town's brick
-        let f = block(x0, y0, w, d, wallH, lit: brick ? nil : "#ead2b0", shade: brick ? nil : "#b48a64", top: brick ? nil : "#e9d2b0")
+        let f = mara ? block(x0, y0, w, d, wallH, lit: "#b88a5a", shade: "#7a5434", top: "#a87a4a", courses: false)
+            : block(x0, y0, w, d, wallH, lit: brick ? nil : "#ead2b0", shade: brick ? nil : "#b48a64", top: brick ? nil : "#e9d2b0")
         let N = 14
         let P = { (x: Double, y: Double, z: CGFloat) -> CGPoint in CGPoint(x: TownGeo.iso(x, y).x, y: TownGeo.iso(x, y).y - z) }
         let zh = { (sv: Double) -> CGFloat in wallH + rise * CGFloat(sin(Double.pi * sv)) }
@@ -864,12 +867,18 @@ struct TownPainter {
             let shade = 0.55 + 0.45 * cos(Double.pi * (s0 + s1) / 2 - 0.6)
             let base = col.count > 1 ? col[i % 4 < 2 ? 0 : 1] : (col.first ?? "#ff5e3a")
             poly([P(x0 - 0.05, yA, zh(s0)), P(x0 + w + 0.05, yA, zh(s0)), P(x0 + w + 0.05, yB, zh(s1)), P(x0 - 0.05, yB, zh(s1))],
-                 mix(base, "#2a1020", min(max(1 - shade, 0), 0.5)))
+                 mix(base, mara ? "#5a3a1a" : "#2a1020", min(max(1 - shade, 0), mara ? 0.32 : 0.5)))
+            if mara && i % 2 == 0 { // the timber ribs under the canvas
+                line(P(x0 - 0.05, yA, zh(s0)), P(x0 + w + 0.05, yA, zh(s0)), mix("#6a4a2a", "#2a1020", min(max(1 - shade, 0), 0.4)), 2)
+            }
         }
         var end: [CGPoint] = []
         for i in 0...N { end.append(P(x0 + w, y0 + d * Double(i) / Double(N), zh(Double(i) / Double(N)))) }
         end.append(P(x0 + w, y0 + d, wallH)); end.append(P(x0 + w, y0, wallH))
-        poly(end, hex("#c09068"))
+        poly(end, hex(mara ? "#a8946c" : "#c09068"))
+        if mara {
+            for i in 1..<4 { line(P(x0 + w, y0 + d * Double(i) / 4, wallH), P(x0 + w, y0 + d * Double(i) / 4, zh(Double(i) / 4)), hex("#6a4a2a"), 2) }
+        }
         opening(f.D, f.C, wallH, 0.5, 0, 0.62, 0.95)
         var door = face(f.D, f.C, wallH)
         door.fill(Path(CGRect(x: 0.2, y: 0, width: 0.6, height: 0.9)), with: .color(hex("#2a1a14")))
@@ -881,16 +890,19 @@ struct TownPainter {
         let cp = iso(x0 + 0.3, y0 + d + 0.35)
         crate(cp.x, cp.y); crate(cp.x + 18, cp.y + 6)
         windsock(f.b.x + 6, f.b.y - rise, pole: 40, speed: 2)
-        if big { flag(f.a.x, f.a.y - rise + 10, col.first ?? "#ff5e3a") }
+        if big || mara { flag(f.a.x, f.a.y - rise + 10, s.colors.first ?? "#ff5e3a") }
     }
 
     /// Sawtooth glass roof and the latest design's fabric drying on lines.
     mutating func workshop(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.2, y0 = b.gy + 0.25, w = b.w - 0.4, d = b.d - 0.6
         let h: CGFloat = big ? 64 : 52
-        let f = block(x0, y0, w, d, h)
+        // v141.1: in the Mara a timber workshop under thatch instead of the glass sawtooth
+        let mara = s.region == .mara
+        let f = mara ? block(x0, y0, w, d, h, lit: "#b88a5a", shade: "#7a5434", top: "#a87a4a", courses: false) : block(x0, y0, w, d, h)
         let P = { (x: Double, y: Double, z: CGFloat) -> CGPoint in CGPoint(x: TownGeo.iso(x, y).x, y: TownGeo.iso(x, y).y - z) }
-        for i in 0..<3 {
+        if mara { thatchRoof(x0, y0, w, d, h, 40) }
+        for i in 0..<(mara ? 0 : 3) {
             let a = x0 + w * Double(i) / 3, bb = x0 + w * Double(i + 1) / 3
             poly([P(a, y0, h), P(a, y0 + d, h), P(bb, y0 + d, h + 26), P(bb, y0, h + 26)], hex("#d9a77a"))
             poly([P(bb, y0, h + 26), P(bb, y0 + d, h + 26), P(bb, y0 + d, h), P(bb, y0, h)], rgba(160, 215, 240, 0.85))
@@ -965,8 +977,10 @@ struct TownPainter {
         capFlag(fp.x, fp.y, 78)
         for u: CGFloat in [0.2, 0.45, 0.7] { opening(f.D, f.C, h, u, 0.25, 0.14, 0.45, lit: true) }
         opening(f.C, f.B, h, 0.5, 0, 0.3, 0.6, door: true)
-        let tw = block(x0 + w + 0.05, y0 + 0.1, 0.45, 0.45, 120, parapet: true)
+        let tw = s.region == .mara ? block(x0 + w + 0.05, y0 + 0.1, 0.45, 0.45, 120, lit: "#b88a5a", shade: "#7a5434", top: "#a87a4a", courses: false)
+            : block(x0 + w + 0.05, y0 + 0.1, 0.45, 0.45, 120, parapet: true)
         opening(tw.D, tw.C, 120, 0.5, 0.72, 0.45, 0.2)
+        if s.region == .mara { let tc = lp(tw.a, tw.c, 0.5); thatchCone(tc.x, tc.y + 4, 24, 28) } // v141.1: a timber lookout, thatched
         let bc = lp(tw.D, tw.C, 0.5)
         ellipse(bc.x, bc.y - 120 * 0.78, 5, 5, hex("#ffc23d"))
         let ws = iso(x0 + w + 0.62, y0 + d + 0.02)
@@ -984,10 +998,17 @@ struct TownPainter {
     mutating func bank(_ b: TownBuilding, _ big: Bool) {
         let x0 = b.gx + 0.3, y0 = b.gy + 0.35, w = b.w - 0.6, d = b.d - 0.7
         let h: CGFloat = 70
-        block(x0 - 0.15, y0 - 0.05, w + 0.3, d + 0.3, 10, lit: "#efe8dc", shade: "#b8ad9c", top: "#f6f1e8", courses: false)
-        let f = block(x0, y0, w, d, h, lit: "#efe8dc", shade: "#b8ad9c", top: "#f6f1e8", courses: false)
+        // v141.1: in the Mara a stone bank with a timber veranda
+        let mara = s.region == .mara
+        let (ml, ms, mt) = mara ? ("#d8c29c", "#a68c66", "#cbb48c") : ("#efe8dc", "#b8ad9c", "#f6f1e8")
+        block(x0 - 0.15, y0 - 0.05, w + 0.3, d + 0.3, 10, lit: ml, shade: ms, top: mt, courses: mara)
+        let f = block(x0, y0, w, d, h, lit: ml, shade: ms, top: mt, courses: mara)
         for i in 0..<5 {
             let p = lp(lp(f.D, f.C, 0.08), lp(f.D, f.C, 0.92), CGFloat(i) / 4), q = pt(p.x - 8, p.y + 4)
+            if mara {
+                rect(q.x - 2.5, q.y - h + 6, 5, h - 6, hex("#6a4424")); rect(q.x + 1, q.y - h + 6, 1.5, h - 6, hex("#4a2e18"))
+                continue
+            }
             rect(q.x - 5, q.y - h + 6, 10, h - 6, hex("#fbf8f2"))
             rect(q.x + 2, q.y - h + 6, 3, h - 6, rgba(120, 100, 80, 0.25))
         }
@@ -1030,7 +1051,8 @@ struct TownPainter {
     mutating func agency(_ g: Double, _ k: Double, _ big: Bool) {
         let x0 = g + 0.25, y0 = k + 0.25, w = 1.5, d = 1.15
         let h1: CGFloat = 54, h2: CGFloat = 46
-        let lit = "#f6e2c8", shade = "#c4936c", top = "#efd9b8"
+        let mara = s.region == .mara // v141.1: red-earth plaster, thatch over the upper floor
+        let (lit, shade, top) = mara ? ("#e2b68c", "#a8724c", "#d2a074") : ("#f6e2c8", "#c4936c", "#efd9b8")
         let f1 = block(x0, y0, w, d, h1, lit: lit, shade: shade, top: top, courses: false)
         glass(f1.D, f1.C, h1, 0.08, 0.62, 0.04, 0.82, lit: true)
         opening(f1.D, f1.C, h1, 0.8, 0, 0.18, 0.62, door: true)
@@ -1047,7 +1069,7 @@ struct TownPainter {
         // Upper floor, set back, standing on the roof.
         let keep = c
         c.translateBy(x: 0, y: -h1)
-        let f2 = block(x0 + 0.55, y0 + 0.05, 0.9, 0.75, h2, lit: lit, shade: shade, top: top, courses: false, parapet: true, roofIn: "#e2c7a2")
+        let f2 = block(x0 + 0.55, y0 + 0.05, 0.9, 0.75, h2, lit: lit, shade: shade, top: top, courses: false, parapet: !mara, roofIn: "#e2c7a2")
         glass(f2.D, f2.C, h2, 0.1, 0.9, 0.1, 0.85, lit: true)
         glass(f2.C, f2.B, h2, 0.25, 0.75, 0.25, 0.8, lit: false)
         // Pergola over the roof terrace.
@@ -1074,7 +1096,12 @@ struct TownPainter {
         let ip = lp(f2.D, f2.C, 0.1)
         person(ip.x - 26, ip.y + 12, "#ff6fa8", big ? t : 0, 3)
         // v130: a pink neon line round the top floor's roof, brighter while a campaign runs.
-        neon([f2.d, f2.c, f2.b], (255, 92, 170), big ? 1 : 0.8)
+        if mara {
+            neon([upp(f2.D, h2 - 6), upp(f2.C, h2 - 6), upp(f2.B, h2 - 6)], (255, 92, 170), big ? 1 : 0.8)
+            thatchRoof(x0 + 0.55, y0 + 0.05, 0.9, 0.75, h2, 30)
+        } else {
+            neon([f2.d, f2.c, f2.b], (255, 92, 170), big ? 1 : 0.8)
+        }
         c = keep
         // Turquoise pool in the front garden.
         let (pA, pB, pC, pD) = corners(x0 + 0.05, y0 + d + 0.12, 1.3, 0.4)
@@ -1112,14 +1139,15 @@ struct TownPainter {
             }
             return
         }
-        let f = block(x0, y0, w, d, 44)
-        let a0 = upp(f.D, 40), a1 = upp(f.C, 40), a2 = pt(a1.x - 12, a1.y + 10), a3 = pt(a0.x - 12, a0.y + 10)
+        let f = block(x0, y0, w, d, 44), ah: CGFloat = s.region == .mara ? 27 : 40
+        // v141; v141.1: thatch first, the company's canvas awning under its eaves
+        if s.region == .mara { thatchRoof(x0, y0, w, d, 44, 30) }
+        let a0 = upp(f.D, ah), a1 = upp(f.C, ah), a2 = pt(a1.x - 12, a1.y + 10), a3 = pt(a0.x - 12, a0.y + 10)
         for i in 0..<4 {
             let k0 = CGFloat(i) / 4, k1 = CGFloat(i + 1) / 4
             poly([lp(a0, a1, k0), lp(a0, a1, k1), lp(a3, a2, k1), lp(a3, a2, k0)], hex(i % 2 == 1 ? c2 : c1))
         }
-        opening(f.D, f.C, 44, 0.5, 0, 0.3, 0.55, door: true)
-        if s.region == .mara { thatchRoof(x0, y0, w, d, 44, 30) } // v141
+        opening(f.D, f.C, 44, 0.5, 0, 0.3, s.region == .mara ? 0.45 : 0.55, door: true)
         let top = lp(f.a, f.c, 0.5)
         balloon(top.x, top.y - (s.region == .mara ? 36 : 4), 11, [c1, c2])
     }
@@ -1519,9 +1547,10 @@ struct TownPainter {
         var items: [TownItem] = []
         let t0 = -0.5, t1 = 15.5, th = 0.14
         let bri = s.region == .bri // v124.1: a low brick wall with a stone coping
+        let mara = s.region == .mara // v141.1: a boma, the thorn fence of a camp
         let seg = { (gx: Double, gy: Double, w: Double, d: Double) -> TownItem in
             TownItem(depth: gx + w + gy + d - 0.5, draw: { p in
-                if bri { p.block(gx, gy, w, d, 11, top: "#cfc6b4") } else { p.block(gx, gy, w, d, 16, top: "#f3dcb8", courses: false) }
+                if mara { p.bomaSeg(gx, gy, w, d) } else if bri { p.block(gx, gy, w, d, 11, top: "#cfc6b4") } else { p.block(gx, gy, w, d, 16, top: "#f3dcb8", courses: false) }
             })
         }
         // v125.7: the gaps where the roads leave are `wallGap` wide, the wall ends trimmed to it, so the welcome arch's posts

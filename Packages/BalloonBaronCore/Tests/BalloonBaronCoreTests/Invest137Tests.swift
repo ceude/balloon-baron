@@ -324,8 +324,8 @@ final class Invest137Tests: XCTestCase {
         XCTAssertEqual(back, h)
     }
 
-    func testOfficesListedCheapestFirst() {
-        XCTAssertEqual(Office.byPrice, [.ist, .sel, .tyo, .dxb, .nyc, .lon])
+    func testOfficesListedInTheDevelopersOrder() {
+        XCTAssertEqual(Office.listed, [.ist, .sel, .nyc, .lon, .tyo, .dxb], "v141.1: replaces v138's cheapest first")
         XCTAssertEqual(Office.allCases, [.ist, .nyc, .sel, .tyo, .dxb, .lon], "saved and goal order unchanged")
     }
 }

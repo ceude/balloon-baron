@@ -50,8 +50,9 @@ struct HoldingView: View {
         if unit == .marketing {
             sectionTitle(loc("hq.campaigns"))
             hint(loc("holding.mkt.hint"))
-            tvCard(game)
+            // v141.1 (developer): cheapest first: billboards, TV, the documentary
             billboardCard(game)
+            tvCard(game)
             documentaryCard(game)
         }
         if unit == .deals {
@@ -367,8 +368,8 @@ struct HoldingView: View {
         VStack(alignment: .leading, spacing: 12) {
             sectionTitle(loc("holding.deals"))
             hint(loc("holding.mkt.hint"))
-            tvCard(game)
             billboardCard(game)
+            tvCard(game)
             hint(loc("holding.deals.hint"))
             celebrityCard(game.state)
             researchCard(game.state)
@@ -540,7 +541,7 @@ struct HoldingView: View {
 
     private func officesSection(_ s: GameState) -> some View {
         let h = s.holding
-        let offices = Office.byPrice // v138: cheapest first
+        let offices = Office.listed // v141.1: İstanbul, Seoul, New York, London, Tokyo, Dubai
         let count = offices.filter { h.has($0) }.count
         // v137 (developer): any four offices 20%, all six 15%
         let text = count == offices.count

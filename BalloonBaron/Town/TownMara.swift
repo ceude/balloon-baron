@@ -2,9 +2,9 @@ import SwiftUI
 import BalloonBaronCore
 
 // v141: the Maasai Mara's camp (prototype `thatchRoof`, `thatchCone`, `rondavel`, `acacia`, `maraOpening`,
-// `termiteMound`, `kopjeRock`, `safariTent`, `landCruiser`, `giraffe`, `maraTownScenery`, `enkaji`, `cow`,
+// `thornBush`, `bomaSeg`, `kopjeRock`, `safariTent`, `landCruiser`, `giraffe`, `maraTownScenery`, `enkaji`, `cow`,
 // `acaciaSil` and the Mara branches of the town painter): sun-baked red-earth plaster under makuti thatch, the hotels'
-// canvas tents and the lodges' dressed stone, flat-topped acacias, Land Cruisers, a boma fire ring, termite mounds and a
+// canvas tents and the lodges' dressed stone, flat-topped acacias, Land Cruisers, a boma fire ring, thorn bushes and a
 // giraffe on the edge; outside, the Mara River with hippos and riverine trees, a Maasai manyatta, a waterhole and herds.
 
 extension TownPainter {
@@ -104,16 +104,54 @@ extension TownPainter {
         ellipse(x - h * 0.2, y - h * 0.9, h * 0.3, h * 0.07, col)
     }
 
-    /// A termite mound: a red-earth spire with a lit side.
-    mutating func termiteMound(_ x: CGFloat, _ y: CGFloat, _ s: CGFloat) {
-        var m = Path()
-        m.move(to: pt(x - 9 * s, y)); m.addQuadCurve(to: pt(x - 2 * s, y - 30 * s), control: pt(x - 7 * s, y - 18 * s))
-        m.addLine(to: pt(x + 1 * s, y - 26 * s)); m.addQuadCurve(to: pt(x + 4 * s, y - 22 * s), control: pt(x + 5 * s, y - 20 * s))
-        m.addQuadCurve(to: pt(x + 10 * s, y), control: pt(x + 8 * s, y - 10 * s)); m.closeSubpath()
-        c.fill(m, with: .color(hex("#9a5232")))
-        var l = Path()
-        l.move(to: pt(x - 9 * s, y)); l.addQuadCurve(to: pt(x - 2 * s, y - 30 * s), control: pt(x - 7 * s, y - 18 * s)); l.addLine(to: pt(x - 1 * s, y)); l.closeSubpath()
-        c.fill(l, with: .color(hex("#c47a4a")))
+    /// v141.1: a low whistling-thorn bush (the termite mounds read as fairy chimneys): a tangle of grey twigs, small olive
+    /// tufts on top, greener in the rains.
+    mutating func thornBush(_ x: CGFloat, _ y: CGFloat, _ k: CGFloat) {
+        ellipse(x + 4 * k, y + 1, 17 * k, 4 * k, rgba(90, 60, 20, 0.16))
+        var tw = Path()
+        for i in 0..<7 {
+            let a = -Double.pi * (0.12 + 0.76 * Double(i) / 6)
+            tw.move(to: pt(x, y)); tw.addLine(to: pt(x + CGFloat(cos(a)) * 15 * k, y + CGFloat(sin(a)) * 12 * k))
+        }
+        c.stroke(tw, with: .color(hex("#5a4430")), style: StrokeStyle(lineWidth: 1.3 * k, lineCap: .round))
+        let wet = maraRains
+        for (dx, dy, r, col) in [(-9.0, -6.0, 7.0, "#6e6e42"), (8, -5, 6, "#6e6e42"), (-6, -10, 7, "#7e7e4a"), (6, -11, 8, "#8a8a52"), (0, -14, 6, "#9a9a5e")] {
+            ellipse(x + CGFloat(dx) * k, y + CGFloat(dy) * k, CGFloat(r) * k, CGFloat(r) * 0.6 * k, wet ? mix(col, "#5a9a3a", 0.45) : hex(col))
+        }
+        var sp = Path()
+        for i in 0..<5 {
+            let a = -Double.pi * (0.2 + 0.6 * Double(i) / 4)
+            sp.move(to: pt(x + CGFloat(cos(a)) * 9 * k, y - 6 * k + CGFloat(sin(a)) * 6 * k))
+            sp.addLine(to: pt(x + CGFloat(cos(a)) * 17 * k, y - 6 * k + CGFloat(sin(a)) * 11 * k))
+        }
+        c.stroke(sp, with: .color(rgba(70, 50, 30, 0.55)), style: StrokeStyle(lineWidth: 0.8 * k, lineCap: .round))
+    }
+
+    /// v141.1: a boma, the thorn-branch fence of a camp, on rough posts (the low plaster wall read as Cappadocia).
+    mutating func bomaSeg(_ gx: Double, _ gy: Double, _ w: Double, _ d: Double) {
+        let along = w >= d
+        let p = along ? iso(gx, gy + d / 2) : iso(gx + w / 2, gy), q = along ? iso(gx + w, gy + d / 2) : iso(gx + w / 2, gy + d)
+        let H: CGFloat = 18, n = 12, sd = gx * 3.1 + gy * 1.7
+        poly([pt(p.x, p.y + 1), pt(q.x, q.y + 1), pt(q.x + 8, q.y + 4), pt(p.x + 8, p.y + 4)], rgba(90, 60, 20, 0.14))
+        for (col, kk, ph) in [("#5a4632", 1.0, 0.0), ("#7a6448", 0.72, 1.3)] {
+            var m = Path()
+            m.move(to: p)
+            for i in 0...n {
+                let mm = lp(p, q, CGFloat(i) / CGFloat(n))
+                m.addLine(to: pt(mm.x, mm.y - H * CGFloat(kk) * (0.7 + 0.3 * CGFloat(sin(Double(i) * 2.3 + sd + ph)))))
+            }
+            m.addLine(to: q); m.closeSubpath()
+            c.fill(m, with: .color(hex(col)))
+        }
+        var tw = Path()
+        for i in 0..<16 {
+            let mm = lp(p, q, (CGFloat(i) + 0.5) / 16)
+            let hh = H * (0.45 + 0.45 * CGFloat(((i * 7 + Int(sd.rounded())) % 5 + 5) % 5) / 4)
+            tw.move(to: pt(mm.x - 5, mm.y - hh * 0.25)); tw.addLine(to: pt(mm.x + 4, mm.y - hh))
+            tw.move(to: pt(mm.x + 3, mm.y - hh * 0.3)); tw.addLine(to: pt(mm.x - 3, mm.y - hh * 0.85))
+        }
+        c.stroke(tw, with: .color(hex("#8a7254")), style: StrokeStyle(lineWidth: 1, lineCap: .round))
+        for u: CGFloat in [0.02, 0.98] { let mm = lp(p, q, u); rect(mm.x - 1.6, mm.y - H - 5, 3.2, H + 5, hex("#4a3420")) }
     }
 
     /// A granite kopje: rounded boulders, a bush in a cleft.
@@ -228,7 +266,7 @@ extension TownPainter {
         }
     }
 
-    /// The Mara's things in camp: Land Cruisers by the square, a boma fire ring (lit at night), termite mounds and a
+    /// The Mara's things in camp: Land Cruisers by the square, a boma fire ring (lit at night), thorn bushes and a
     /// giraffe browsing an acacia on the camp's edge.
     func maraScenery() -> [TownItem] {
         var items: [TownItem] = []
@@ -249,24 +287,24 @@ extension TownPainter {
             }
         }))
         for (gx, gy, k) in [(15.9, 2.2, 1.1), (-0.9, 9.4, 1.3), (12.2, 15.9, 0.9)] {
-            items.append(TownItem(depth: gx + gy, draw: { p in let q = p.iso(gx, gy); p.termiteMound(q.x, q.y, CGFloat(k)) }))
+            items.append(TownItem(depth: gx + gy, draw: { p in let q = p.iso(gx, gy); p.thornBush(q.x, q.y, CGFloat(k)) }))
         }
         items.append(TownItem(depth: 16.6 + 13.6, draw: { p in let q = p.iso(16.6, 13.6); p.acacia(q.x + 26, q.y - 4, 1.3); p.giraffe(q.x, q.y, 0.9) }))
         return items
     }
 
-    /// The camp's edges: acacias, a termite mound, a kopje.
+    /// The camp's edges: acacias, a thorn bush, a kopje.
     mutating func maraEdge(_ x: CGFloat, _ y: CGFloat, _ hh: CGFloat, _ seed: Double) {
         let k = Int((seed * 10).rounded()) % 3
         if k == 0 { acacia(x - 16, y, 1.5); acacia(x + 20, y + 8, 1.1); return }
-        if k == 1 { termiteMound(x - 20, y + 4, 1.2); acacia(x + 8, y, 1.7); return }
+        if k == 1 { thornBush(x - 20, y + 4, 1.2); acacia(x + 8, y, 1.7); return }
         kopjeRock(x, y, hh * 0.5)
     }
 
-    /// Out on the plains: acacias, kopjes, termite mounds, now and then a few giraffes.
+    /// Out on the plains: acacias, kopjes, thorn bushes, now and then a few giraffes.
     mutating func maraOuter(_ x: CGFloat, _ y: CGFloat, _ hh: CGFloat, _ i: Int) {
         if i % 6 == 0 { kopjeRock(x, y, hh * 0.5); return }
-        if i % 6 == 3 { termiteMound(x - 18, y + 4, 1.1); acacia(x + 6, y, 1.6); return }
+        if i % 6 == 3 { thornBush(x - 18, y + 4, 1.1); acacia(x + 6, y, 1.6); return }
         if i % 9 == 4 { acacia(x + 20, y - 2, 1.4); giraffe(x - 6, y + 4, 0.8); return }
         acacia(x, y, 1.3 + CGFloat(i % 3) * 0.25)
         if i % 2 == 1 { acacia(x + 30, y + 8, 0.9) }
@@ -275,7 +313,8 @@ extension TownPainter {
     /// The Mara River behind the camp: a band of riverine green, brown water, hippos (`outerDecor`).
     mutating func maraRiver() {
         func band(_ y0: Double, _ y1: Double, _ col: Color) { poly([iso(-60, y0), iso(70, y0), iso(70, y1), iso(-60, y1)], col) }
-        band(-15.5, -9.5, hex("#8a9a52")); band(-13.4, -11.4, hex("#7a6e4a")); band(-13.1, -12.8, Color.white.opacity(0.12))
+        band(-15.5, -9.5, hex("#8a9a52")); band(-13.9, -10.9, hex("#c8a870")); band(-13.5, -11.3, hex("#6e7c5e")) // v141.1: sandy banks, the water catches the light
+        band(-13.3, -12.95, rgba(255, 236, 190, 0.22)); band(-12.2, -11.95, rgba(255, 236, 190, 0.14))
         for (hx, hy) in [(3.0, -12.4), (3.6, -12.1), (11.5, -12.6), (19, -12.3)] {
             let q = iso(hx + sin(t * 0.2 + hx) * 0.05, hy)
             ellipse(q.x, q.y, 9, 4, hex("#4a4040")); ellipse(q.x + 7, q.y - 2, 4, 2.6, hex("#4a4040")); ellipse(q.x + 8, q.y - 3.4, 1, 1, .white)
