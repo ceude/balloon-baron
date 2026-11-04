@@ -11,6 +11,46 @@ public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, 
     case patron
     /// v141: entering the Maasai Mara, Baron of the Maasai Mara.
     case mara, baronMara
+
+    /// v141.1: Game Center points (`balloonbaron.ach.<rawValue>` in App Store Connect; docs/APP_STORE.md). Apple allows
+    /// 1000 in all; `gameCenterReserve` is kept free for a future Asian region's two postcards.
+    public var gameCenterPoints: Int {
+        switch self {
+        case .first: 5
+        case .mission: 10
+        case .perfect10: 25
+        case .fleet5: 10
+        case .fleet10: 20
+        case .fleet20: 35
+        case .hotel: 10
+        case .hotelOwn: 25
+        case .star45: 30
+        case .pax1k: 15
+        case .pax10k: 35
+        case .winter: 15
+        case .fest: 10
+        case .rivalDown: 25
+        case .boss: 35
+        case .design: 10
+        case .upgrade3: 25
+        case .xl: 40
+        case .baronCap: 50
+        case .abq: 20
+        case .baronAbq: 50
+        case .lux: 20
+        case .baronLux: 60
+        case .bri: 20
+        case .nightGlow: 15
+        case .baronBri: 60
+        case .world: 100
+        case .patron: 15
+        case .mara: 20
+        case .baronMara: 70
+        }
+    }
+    /// Points kept free for a future region's entry and baron postcards (Apple's limit is 1000).
+    public static let gameCenterReserve = 120
+    public static let gameCenterLimit = 1000
 }
 
 /// The holding's own goals, written on the office whiteboard. All seven make you World Baron. Text: `hgoal.<rawValue>`.

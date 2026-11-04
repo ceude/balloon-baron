@@ -2352,7 +2352,7 @@ function showHez(k) {
   $('hez').classList.remove('story');
   const el = $('hez'); let long = !news && !boss && !hz && !insp && !gh && HEZ_SHORT[k] ? HEZ[k] : null; /* v122: one sentence, the rest behind "Daha fazla" */
   let text = news ? k.slice(5) : hz ? k.slice(3) : insp ? k.slice(5) : gh ? G.hello : boss ? BOSS_LINES[S.region][k.slice(5)].replace(/\{c\}/g, S.company) : long ? HEZ_SHORT[k] : HEZ[k];
-  if (text.includes('§')) { const [a, b] = text.split('§'); text = a; long = a + ' ' + b; } /* v125.5: a region's first-day lines: the short part first, the rest behind "Daha fazla" */
+  if (text.includes('§')) text = text.split('§').join(' '); /* v141.1 (developer): a region's first-day lines (Hezarfen, the guide, the rival boss) are shown in full; v125.5 put the rest behind "Daha fazla" */
   el.innerHTML = boss ? `<div class="hzcol">${BOSS_AV[S.region]}<span class="hzname boss">${BOSS[S.region].name}</span></div><div class="hzb"><span class="bosst">${BOSS[S.region].title}</span><p></p></div>`
     : insp ? `<div class="hzcol">${INSP_AV}<span class="hzname boss">${I.name}</span></div><div class="hzb"><span class="bosst">${I.title}</span><p></p></div>`
     : `<div class="hzcol">${G.av()}<span class="hzname">${G.name}</span></div><div class="hzb"><p></p></div>`;
@@ -4601,32 +4601,56 @@ function introLand(L, gy, u, t) {
       ctx.moveTo(x - h * .025, b); ctx.lineTo(x - h * .018 + lean * h * .05, b - h * .5); ctx.lineTo(x - h * .3, b - h * .78); ctx.lineTo(x - h * .27, b - h * .8); ctx.lineTo(x + lean * h * .05, b - h * .58); ctx.lineTo(x + h * .26, b - h * .82); ctx.lineTo(x + h * .29, b - h * .8); ctx.lineTo(x + h * .025 + lean * h * .05, b - h * .5); ctx.lineTo(x + h * .025, b); ctx.closePath();
       for (const [dx, dy, rx, ry] of [[0, .84, .62, .07], [-.3, .87, .34, .055], [.28, .88, .36, .055], [-.05, .92, .4, .05]]) { ctx.moveTo(x + h * (dx + rx), b - h * dy); ctx.ellipse(x + h * dx, b - h * dy, h * rx, h * ry, 0, 0, Math.PI * 2); }
     };
-    /* the escarpment: a long flat top on the left, falling away toward the sun; soft hills beyond on the right */
+    /* the escarpment: a long flat top on the left, falling away toward the sun; soft hills beyond on the right.
+       v141.1 (developer: "to the v139 Cappadocia quality"): one more far range, strata on the escarpment's face, the Mara
+       River catching the sun on the plain, a finer herd and giraffes, rim light everywhere, richer grass near you */
     const esc = x => { const k = clamp((W * .62 - x) / (W * .22), 0, 1); return gy - u * (.03 + .1 * (k * k * (3 - 2 * k))) - wave(x, .02, u * .003, 1); };
-    sil(ridge(x => gy - u * .05 - wave(x, .006, u * .025, 2) - wave(x, .017, u * .01, 0), gy), .86, .15, .3);
+    sil(ridge(x => gy - u * .085 - wave(x, .0045, u * .022, 1.3) - wave(x, .013, u * .008, .4), gy), .94, .1, .18);
+    hazeBand(gy - u * .2, .3);
+    sil(ridge(x => gy - u * .05 - wave(x, .006, u * .025, 2) - wave(x, .017, u * .01, 0), gy), .84, .15, .3);
     hazeBand(gy - u * .16, .45);
-    sil(ridge(esc, gy), .68, .22, .5);
+    sil(ridge(esc, gy), .66, .24, .6);
+    { /* the escarpment's strata, faint lighter lines along its face */
+      ctx.save(); ctx.beginPath(); ridge(esc, gy)(); ctx.clip(); ctx.strokeStyle = hexA(mix(sun, haze, .35), .16); ctx.lineWidth = Math.max(1, u * .0018);
+      for (let i = 1; i < 6; i++) { ctx.beginPath(); for (let x = -4; x <= W * .72; x += step) { const y = esc(x) + (gy - esc(x)) * i / 6.5 + wave(x, .025, u * .0025, i * 1.7); if (x === -4) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.stroke(); }
+      ctx.restore(); }
     hazeBand(gy - u * .08, .4);
-    /* far acacias dotting the plain and the herd crossing it */
-    sil(() => { const Ra = mulberry32(41); for (let i = 0; i < 16; i++) { const x = Ra() * W, h = u * (.03 + Ra() * .025); if (Math.abs(x - W * .5) < u * .1) continue; acac(x, gy - u * .012, h); } }, .5, .25, .45);
-    sil(() => { /* wildebeest in a long line, heads down, a few zebra among them */
-      for (let i = 0; i < 26; i++) { const x = W * .04 + i * W * .021 + Math.sin(i * 2.3) * u * .006 + ((t * u * .004) % (W * .021)), b = gy - u * (.004 + .003 * Math.sin(i)), s = u * (.007 + .002 * (i % 3));
+    /* far acacias dotting the plain */
+    sil(() => { const Ra = mulberry32(41); for (let i = 0; i < 22; i++) { const x = Ra() * W, h = u * (.022 + Ra() * .03); if (Math.abs(x - W * .5) < u * .1) continue; acac(x, gy - u * .012 + Ra() * u * .006, h, (Ra() - .5) * .4); } }, .5, .25, .5);
+    { /* the Mara River winding across the plain, a ribbon of light where it faces the sun */
+      const cy = x => gy - u * .011 + wave(x, .011, u * .004, .7) + wave(x, .027, u * .0015, 2.1), hw = x => u * (.0035 + .003 * (.5 + .5 * Math.sin(x * .009 + 1)));
+      const rg = ctx.createLinearGradient(sx - W * .7, 0, sx + W * .7, 0); rg.addColorStop(0, hexA(mix(haze, L.ink, .3), .8)); rg.addColorStop(.5, hexA(mix(sun, '#ffffff', .7), 1)); rg.addColorStop(1, hexA(mix(haze, L.ink, .3), .8));
+      ctx.fillStyle = rg; ctx.beginPath(); for (let x = -4; x <= W + 8; x += step) ctx.lineTo(x, cy(x) - hw(x)); for (let x = W + 8; x >= -4; x -= step) ctx.lineTo(x, cy(x) + hw(x)); ctx.closePath(); ctx.fill();
+      ctx.save(); ctx.globalCompositeOperation = 'lighter'; const gl = ctx.createRadialGradient(sx, cy(sx), 0, sx, cy(sx), u * .18); gl.addColorStop(0, hexA(sun, .35)); gl.addColorStop(1, hexA(sun, 0)); ctx.fillStyle = gl; ctx.fillRect(sx - u * .18, cy(sx) - u * .03, u * .36, u * .06); ctx.restore();
+      /* gallery trees along its bank */
+      sil(() => { const Rb = mulberry32(57); for (let i = 0; i < 30; i++) { const x = Rb() * W, r = u * (.006 + Rb() * .008); if (Math.abs(x - W * .5) < u * .08) continue; const y = cy(x) - hw(x); ctx.moveTo(x + r, y); ctx.ellipse(x, y - r * .5, r, r * .75, 0, 0, Math.PI * 2); } }, .46, .25, .45); }
+    sil(() => { /* wildebeest in a long line, heads down, humped shoulders and curved horns */
+      for (let i = 0; i < 30; i++) { const x = W * .02 + i * W * .019 + Math.sin(i * 2.3) * u * .006 + ((t * u * .004) % (W * .019)), b = gy - u * (.002 + .003 * Math.sin(i)), s = u * (.0065 + .0018 * (i % 3));
         if (Math.abs(x - W * .5) < u * .05) continue;
-        ctx.moveTo(x + s * 1.4, b - s * 1.1); ctx.ellipse(x, b - s * 1.1, s * 1.4, s * .7, 0, 0, Math.PI * 2);
-        ctx.rect(x - s * 1.1, b - s * .6, s * .28, s * .6); ctx.rect(x + s * .8, b - s * .6, s * .28, s * .6);
-        ctx.moveTo(x + s * 1.1, b - s * 1.5); ctx.lineTo(x + s * 2.1, b - s * .7); ctx.lineTo(x + s * 1.7, b - s * .4); ctx.lineTo(x + s * .8, b - s * .9); ctx.closePath(); }
-      /* two giraffes against the sun */
-      for (const [x, s] of [[W * .78, u * .05], [W * .84, u * .042]]) { const b = gy - u * .004;
-        ctx.rect(x - s * .3, b - s * .9, s * .06, s * .9); ctx.rect(x - s * .12, b - s * .9, s * .06, s * .9); ctx.rect(x + s * .14, b - s * .86, s * .06, s * .86); ctx.rect(x + s * .3, b - s * .86, s * .06, s * .86);
-        ctx.moveTo(x + s * .42, b - s * 1); ctx.ellipse(x, b - s * 1, s * .42, s * .18, -.12, 0, Math.PI * 2);
-        ctx.moveTo(x + s * .2, b - s * 1.1); ctx.lineTo(x + s * .52, b - s * 2); ctx.lineTo(x + s * .66, b - s * 1.96); ctx.lineTo(x + s * .4, b - s * 1); ctx.closePath();
-        ctx.moveTo(x + s * .76, b - s * 2.02); ctx.ellipse(x + s * .64, b - s * 2.02, s * .14, s * .07, .3, 0, Math.PI * 2); }
-    }, .3, .25, .6);
+        ctx.moveTo(x + s * 1.3, b - s * 1.05); ctx.ellipse(x, b - s * 1.05, s * 1.3, s * .62, 0, 0, Math.PI * 2);
+        ctx.moveTo(x + s * 1.3, b - s * 1.4); ctx.ellipse(x + s * .7, b - s * 1.4, s * .62, s * .5, -.2, 0, Math.PI * 2);
+        for (const lx of [-1, -.7, .6, .9]) ctx.rect(x + lx * s - s * .1, b - s * .62, s * .2, s * .62);
+        ctx.moveTo(x + s * 1.1, b - s * 1.6); ctx.lineTo(x + s * 2.05, b - s * .62); ctx.lineTo(x + s * 1.7, b - s * .38); ctx.lineTo(x + s * .85, b - s * 1.05); ctx.closePath();
+        ctx.moveTo(x + s * 1.75, b - s * .95); ctx.quadraticCurveTo(x + s * 1.6, b - s * 1.5, x + s * 2.05, b - s * 1.35); ctx.lineTo(x + s * 2, b - s * 1.25); ctx.quadraticCurveTo(x + s * 1.75, b - s * 1.3, x + s * 1.85, b - s * .9); ctx.closePath();
+        ctx.moveTo(x - s * 1.25, b - s * 1.2); ctx.lineTo(x - s * 1.6, b - s * .6); ctx.lineTo(x - s * 1.45, b - s * .6); ctx.lineTo(x - s * 1.1, b - s * 1.1); ctx.closePath(); }
+      /* two giraffes and a calf against the sun: long tapering legs, the neck's mane, ossicones */
+      for (const [x, s] of [[W * .78, u * .05], [W * .84, u * .042], [W * .885, u * .028]]) { const b = gy - u * .003;
+        for (const [lx, lw] of [[-.3, .065], [-.12, .06], [.14, .06], [.3, .065]]) { ctx.moveTo(x + s * lx, b); ctx.lineTo(x + s * (lx - lw * .2), b - s * .92); ctx.lineTo(x + s * (lx + lw * 1.2), b - s * .92); ctx.lineTo(x + s * (lx + lw * .5), b); ctx.closePath(); }
+        ctx.moveTo(x + s * .42, b - s * 1); ctx.ellipse(x, b - s * 1, s * .42, s * .19, -.14, 0, Math.PI * 2);
+        ctx.moveTo(x + s * .18, b - s * 1.12); ctx.quadraticCurveTo(x + s * .4, b - s * 1.6, x + s * .5, b - s * 2.02); ctx.lineTo(x + s * .66, b - s * 1.98); ctx.quadraticCurveTo(x + s * .52, b - s * 1.5, x + s * .42, b - s * 1.02); ctx.closePath();
+        ctx.moveTo(x + s * .8, b - s * 2.04); ctx.ellipse(x + s * .66, b - s * 2.04, s * .16, s * .075, .35, 0, Math.PI * 2);
+        for (const ox of [.56, .62]) { ctx.rect(x + s * ox, b - s * 2.2, s * .025, s * .12); }
+        ctx.moveTo(x - s * .4, b - s * 1.02); ctx.lineTo(x - s * .5, b - s * .55); ctx.lineTo(x - s * .46, b - s * .55); ctx.lineTo(x - s * .36, b - s * 1); ctx.closePath(); }
+    }, .3, .25, .75);
     hazeBand(gy - u * .03, .25);
     ground(); mist(.3);
-    /* tufts of dry grass on the near field, lit by the low sun */
-    ctx.strokeStyle = across(hexA(mix(L.ground[0], L.ink, .2), .7), hexA(mix(sun, '#ffffff', .2), .55)); ctx.lineWidth = Math.max(1, u * .0022);
-    { const Rg = mulberry32(17); ctx.beginPath(); for (let i = 0; i < 90; i++) { const x = Rg() * W, b = gy + (H - gy) * (.08 + Rg() * .5), hh = u * (.012 + Rg() * .02); if (Math.abs(x - W / 2) < u * .14 && b < gy + (H - gy) * .3) continue; for (const d of [-1, 0, 1]) { ctx.moveTo(x + d * hh * .2, b); ctx.lineTo(x + d * hh * .45, b - hh); } } ctx.stroke(); }
+    /* the near field: dry red-oat grass in three bands, taller and darker towards you, the seed heads catching the sun */
+    for (const [n, y0, y1, h0, h1, a, seed] of [[120, .04, .3, .008, .016, .55, 17], [110, .25, .62, .016, .03, .7, 18], [70, .55, 1, .03, .055, .85, 19]]) {
+      const Rg = mulberry32(seed); ctx.strokeStyle = across(hexA(mix(L.ground[0], L.ink, .3), a), hexA(mix(sun, '#ffffff', .2), a * .8)); ctx.lineWidth = Math.max(1, u * (.0016 + h1 * .04));
+      const heads = []; ctx.beginPath();
+      for (let i = 0; i < n; i++) { const x = Rg() * W, b = gy + (H - gy) * (y0 + Rg() * (y1 - y0)), hh = u * (h0 + Rg() * (h1 - h0)); if (Math.abs(x - W / 2) < u * .14 && b < gy + (H - gy) * .3) continue;
+        for (const d of [-1, -.4, .3, 1]) { const tx = x + d * hh * .45 + Math.sin(t * .8 + i) * hh * .04, ty = b - hh * (1 - Math.abs(d) * .15); ctx.moveTo(x + d * hh * .15, b); ctx.quadraticCurveTo(x + d * hh * .25, b - hh * .6, tx, ty); if (h0 >= .016 && Rg() < .3) heads.push([tx, ty, hh]); } }
+      ctx.stroke(); ctx.fillStyle = across(hexA(mix(L.ground[0], L.ink, .1), a * .7), hexA(mix(sun, '#ffffff', .35), a)); ctx.beginPath(); for (const [x, y, hh] of heads) { ctx.moveTo(x + hh * .05, y); ctx.ellipse(x, y - hh * .08, hh * .04, hh * .1, .2, 0, Math.PI * 2); } ctx.fill(); }
     /* the big acacias framing the field, near and dark */
     sil(() => { acac(W * .08, gy + u * .03, u * .34, -.2); acac(W * .97, gy + u * .025, u * .26, .2); acac(W * .24, gy + u * .006, u * .13); }, .1, .18, .85);
   }
@@ -6222,9 +6246,20 @@ function testAbqEntry() {
   if (TOWN.open) { TOWN.open = false; TOWN.hold = false; $('town').hidden = true; document.body.classList.remove('mhold', 'zoomed'); }
   enterRegion('abq');
 }
+/* v141.1 (prototype only): a test that jumps to a later region parks the regions a real save would own behind it, each
+   with a small fleet run by its manager, so the holding's per-region rows list them all */
+function testPark(ids) {
+  S.regions = S.regions || {};
+  for (const [i, id] of ids.entries()) {
+    const rs = newRegionState(id); rs.balloons = []; rs.pilots = []; rs.chapter = 4; rs.rep = 1.2;
+    for (let j = 0; j < 12 + i * 2; j++) rs.balloons.push({ id: S.nextId++, size: j % 3 ? 'M' : 'L', name: 'Balon ' + (j + 1), fly: true, dmgUntil: 0, pilot: null, flights: 20 });
+    rs.auto = makeAuto(rs, id); S.regions[id] = rs;
+  }
+}
 function testBristol() {
   S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 90; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1; S.tut = { done: 1 };
   S.barons = { cap: 30, abq: 55, lux: 80 }; S.baron = { cap: 30 }; S.iap = { worldTour: 1 }; S.holding = 150000; S.storyDone = 1; S.letter = { day: 50, rated: 50 };
+  testPark(['cap', 'abq', 'lux']);
   const st = newRegionState('bri'); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = 'bri'; applyRegionTheme();
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1 };
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
@@ -6239,6 +6274,7 @@ function testBristol() {
 function testMara() {
   S = newState(); S.company = 'Test Balon'; S.colors = PICK[0].c; S.day = 140; S.tutorialDone = true; S.selfFlights = 5; S.ventTip = 1; S.tut = { done: 1 };
   S.barons = { cap: 30, abq: 55, lux: 80, bri: 120 }; S.baron = { cap: 30 }; S.iap = { worldTour: 1 }; S.holding = 150000; S.storyDone = 1; S.letter = { day: 50, rated: 50 };
+  testPark(['cap', 'abq', 'lux', 'bri']);
   const st = newRegionState('mara'); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = 'mara'; applyRegionTheme();
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1 };
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
@@ -6256,11 +6292,7 @@ function testBriBaron() {
   S.barons = { cap: 139, abq: 288, lux: 424, bri: 560 }; S.baron = { cap: 139 }; S.iap = { worldTour: 1 }; S.storyDone = 1; S.letter = { day: 50, rated: 50 }; S.rateAsked = 12;
   S.holding = 1500000; S.hold = { log: [], offices: { ist: 300, par: 500 } };
   S.regions = {};
-  for (const [id, n] of [['cap', 30], ['abq', 26], ['lux', 28]]) {
-    const rs = newRegionState(id); rs.balloons = []; rs.pilots = []; rs.chapter = 4; rs.rep = 1.25;
-    for (let i = 0; i < n; i++) rs.balloons.push({ id: S.nextId++, size: i % 3 ? 'M' : 'L', name: 'Balon ' + (i + 1), fly: true, dmgUntil: 0, pilot: null, flights: 20 });
-    rs.auto = makeAuto(rs, id); S.regions[id] = rs;
-  }
+  testPark(['cap', 'abq', 'lux']);
   const st = newRegionState('bri'); Object.keys(st).forEach(k => { S[k] = st[k]; }); S.region = 'bri'; applyRegionTheme();
   S.unl = { ins: 1, fleet: 1, bank: 1, market: 1, crew: 1, guide: 1, agency: 1, bazaar: 1, workshop: 1, school: 1 }; S.unlV = 2;
   Object.keys(HEZ).forEach(k => { S.tips[k] = 1; });
@@ -7861,7 +7893,7 @@ const CHAPTERS_MARA = [
 ];
 /* v141: the Mara's numbers in one place (tuned with tools/sim-campaign.js): the reserve's fee per passenger flown, fuel
    trucked in from Nairobi, bush pilots' wages, the rains and the Great Migration, the rangers' fine, the weather */
-const MARA_FX = { entry: 300000, cash: 6000, price: 210, demand: 125, park: 12, fuel: 1.3, wage: 1.1, rains: .5, longRains: 12, shortRains: 6, rainsEvery: 40, rainsCash: 20000,
+const MARA_FX = { entry: 300000, cash: 6000, price: 210, demand: 125, park: 12, fuel: 1.3, wage: 1.1, rains: .5, longRains: 12, shortRains: 6, rainsEvery: 40, rainsCash: 20000, keep: 10000,
   migration: 1.8, migrationDays: 6, migrationEvery: 36, herdFine: 1200, green: .45, yellow: .82, rainG: .25, rainY: .58 };
 const regFuel = () => S && S.region === 'mara' ? MARA_FX.fuel : 1;
 const chap = () => S.region === 'mara' ? CHAPTERS_MARA : S.region === 'bri' ? CHAPTERS_BRI : S.region === 'lux' ? CHAPTERS_LUX : S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;
@@ -10063,15 +10095,13 @@ const CELEBS = ['Selin Arda (oyuncu)', 'Kenji Mori (aktör)', 'Lucía Varela (ş
    Seoul: 25% off the celebrity (no longer twice as long). Tokyo: Asian tour operators, +5% tourists in every region
    (the one you play and the parked ones). Paris: Bristol +20% also while you play there (tourists). */
 const HQ_CITIES = {
+  /* v141.1 (developer): listed İstanbul, Seoul, New York, London, Tokyo, Dubai everywhere (the save keys stay) */
   ist: { name: 'İstanbul', cost: 650000, rent: 1000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: glyph('ist') },
   sel: { name: 'Seul', cost: 700000, rent: 1500, perk: 'Ünlü sözleşmeleri %25 daha ucuz.', icon: glyph('sel') },
-  tyo: { name: 'Tokyo', cost: 700000, rent: 1500, need: 'lux', perk: 'Asyalı tur şirketleri: bütün bölgelerde turist +%5. Luksor\'un otomatik kazancı %20 artar. Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır.', icon: glyph('tyo') },
-  /* v137: two more offices for a rich holding */
-  dxb: { name: 'Dubai', cost: 700000, rent: 1500, need: 'mara', perk: 'Maasai Mara\'nın otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.', icon: glyph('dxb') },
   nyc: { name: 'New York', cost: 750000, rent: 2000, need: 'abq', perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: glyph('nyc') },
-  /* v141 (developer): the Paris office becomes London (the save key stays 'par', so an office bought in Paris is now the
-     London office), with Big Ben for its icon */
-  par: { name: 'Londra', cost: 750000, rent: 2000, need: 'bri', perk: 'Bristol\'de %20 fazla: otomatikteyken kazancı, oradayken turisti. Belgesel dizisi %20 daha ucuz.', icon: glyph('par') }
+  par: { name: 'Londra', cost: 750000, rent: 2000, need: 'bri', perk: 'Bristol\'de %20 fazla: otomatikteyken kazancı, oradayken turisti. Belgesel dizisi %20 daha ucuz.', icon: glyph('par') },
+  tyo: { name: 'Tokyo', cost: 700000, rent: 1500, need: 'lux', perk: 'Asyalı tur şirketleri: bütün bölgelerde turist +%5. Luksor\'un otomatik kazancı %20 artar. Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır.', icon: glyph('tyo') },
+  dxb: { name: 'Dubai', cost: 700000, rent: 1500, need: 'mara', perk: 'Maasai Mara\'nın otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.', icon: glyph('dxb') }
 };
 /* v141 (developer): an office opens only in a region's orbit: New York with Albuquerque, Tokyo with Luxor, London with
    Bristol, Dubai with the Maasai Mara (the region entered). İstanbul and Seoul need nothing. One already open stays. */
@@ -10235,8 +10265,11 @@ function holdingDay() {
   recordDay(); adShapeDay(); markMillion();
   return gross - cost - rent;
 }
+/* v141.1: what a transfer to the holding leaves in a region's cash box: 10,000, in the Maasai Mara more (its bush days cost
+   more to run, and a careful player who sent everything lost balloons to the bank after the rains and fines) */
+const withdrawKeep = id => id === 'mara' ? MARA_FX.keep : 10000;
 function withdraw(share) {
-  const keep = 10000, amt = Math.max(0, Math.floor(share === 1 ? S.cash - keep : S.cash * share));
+  const keep = withdrawKeep(S.region), amt = Math.max(0, Math.floor(share === 1 ? S.cash - keep : S.cash * share));
   if (amt <= 0) return;
   S.cash -= amt; S.holding = (S.holding || 0) + amt / FX(); holdLog('inc', amt / FX()); holdGoalsNow(); sfx('coin'); refresh();
 }
@@ -10246,7 +10279,7 @@ function setSends(id, on) { const H = S.hold || (S.hold = {}), k = H.keep || (H.
 function withdrawFrom(id, share) {
   if (id === S.region) return withdraw(share);
   const rs = S.regions && S.regions[id]; if (!rs) return;
-  const keep = 10000, amt = Math.max(0, Math.floor(share === 1 ? rs.cash - keep : rs.cash * share)); if (amt <= 0) return;
+  const keep = withdrawKeep(id), amt = Math.max(0, Math.floor(share === 1 ? rs.cash - keep : rs.cash * share)); if (amt <= 0) return;
   rs.cash -= amt; const e = Math.round(amt / REGION_DEF[id].fx); S.holding = (S.holding || 0) + e; holdLog('inc', e); holdGoalsNow(); sfx('coin'); save(); hqRender(); refresh();
 }
 function holdBuy(cost, fn) { if ((S.holding || 0) < cost) return; S.holding -= cost; holdLog('exp', cost); fn(); sfx('coin'); refresh(); }
@@ -10325,7 +10358,7 @@ function hqTransfer(body) {
   const w = h('div', 'sec'); w.appendChild(h('h2', null, `${RD().name} kasasından aktar`));
   w.appendChild(h('p', 'hint', `${RD().name} kasasında ${eur(S.cash)} var. Aktardığın para holdinge ${S.region === 'abq' || S.region === 'mara' ? '1,1\'e bölünerek euro olarak ' : S.region === 'bri' ? 'sterlinden euroya sabit kurla çevrilerek (£1 = €1,20) ' : ''}geçer; holding parası ülkelere geri dönmez.`));
   const row = h('div', 'btns');
-  [[.25, '%25'], [.5, '%50'], [1, `Hepsi (${eur(10000)} kalsın)`]].forEach(([k, l]) => { const b = h('button', 'ghost', l); b.disabled = S.cash <= 10000; b.onclick = () => withdraw(k); row.appendChild(b); });
+  [[.25, '%25'], [.5, '%50'], [1, `Hepsi (${eur(withdrawKeep(S.region))} kalsın)`]].forEach(([k, l]) => { const b = h('button', 'ghost', l); b.disabled = S.cash <= withdrawKeep(S.region); b.onclick = () => withdraw(k); row.appendChild(b); });
   w.appendChild(row); body.appendChild(w);
 }
 function hqRegions(body) {
@@ -10353,7 +10386,7 @@ function hqRegions(body) {
       row.appendChild(h('div', 'main', `<div class="t" style="font-size:15px">Kazancı her gün holdinge aktar</div><div class="s">${note}</div>`));
       const tg = pbtn(send ? 'Açık' : 'Kapalı', () => setSends(R.id, !send), false, !send); tg.setAttribute('role', 'switch'); tg.setAttribute('aria-checked', send ? 'true' : 'false'); row.appendChild(tg);
       r.appendChild(row);
-      if (!send && !here) { const tb = pbtn(`${R.name} kasasından aktar (${cur(Math.max(0, rs.cash - 10000))}, ${cur(10000)} kalsın)`, () => withdrawFrom(R.id, 1), rs.cash <= 10000, true); tb.style.alignSelf = 'flex-start'; r.appendChild(tb); }
+      if (!send && !here) { const tb = pbtn(`${R.name} kasasından aktar (${cur(Math.max(0, rs.cash - withdrawKeep(R.id)))}, ${cur(withdrawKeep(R.id))} kalsın)`, () => withdrawFrom(R.id, 1), rs.cash <= withdrawKeep(R.id), true); tb.style.alignSelf = 'flex-start'; r.appendChild(tb); }
     }
   }
   const mb = pbtn('Dünya haritası', showWorldMap, false, true); mb.style.alignSelf = 'flex-start'; r.appendChild(mb);
@@ -10364,7 +10397,7 @@ function hqDeals(body, which, title) {
   /* kampanyalar: büyük, parlak anlaşma kartları */
   const v = h('div', 'sec'); v.appendChild(h('h2', null, title));
   const deal = (art, kicker, title, desc, chips, cost, cta, fn, opt = {}) => {
-    const c = h('div', 'deal' + (opt.active ? ' on' : ''));
+    const c = h('div', 'deal' + (opt.active ? ' on' : '')); c.dataset.k = art;
     c.innerHTML = `<div class="dart">${INVEST_ART[art]}</div><div class="dmain"><div class="dk">${kicker}</div><div class="dt">${title}</div><div class="dd">${desc}</div><div class="dchips">${chips.map(x => `<span>${x}</span>`).join('')}</div></div>`;
     const foot = h('div', 'dfoot');
     if (opt.active) foot.innerHTML = `<span class="dstat">${opt.active}</span>`;
@@ -10437,6 +10470,8 @@ function hqDeals(body, which, title) {
   };
   rdCard('radar', 3, 'Ar-Ge · seviye 3', 'Hava radarı ağı', 'Her bölgeye Doppler radarları ve rüzgâr sondaları: pilotlar sabah kalkmadan rüzgârın nereye döneceğini bilir.', ['Kaza riski −%15, sigorta primleri de', 'Otomatik bölgelerde kazanç +%5', 'Bütün bölgeler, kalıcı'], 'radar');
   rdCard('comp', 4, 'Ar-Ge · seviye 4', 'Kompozit sepet ve verimli brülör', 'Karbon elyaf sepet ve gazı sonuna kadar yakan yeni brülör: balonlar hafifler, tüpler daha geç biter.', ['Yakıt −%25', 'Bakım −%15', 'Otomatik bölgelerde kazanç +%5', 'Bütün bölgeler, kalıcı'], 'composite');
+  /* v141.1 (developer): the cards in the order asked, cheapest first (billboards, TV, documentary; R&D keeps its ladder) */
+  for (const k of which) { const c = v.querySelector(`.deal[data-k="${k}"]`); if (c) v.appendChild(c); }
   body.appendChild(v);
 }
 /* Record attempts (desk 5): sponsored world records. Open once you have entered Luxor. A success lifts demand in
@@ -11108,15 +11143,18 @@ function tbuilding(b, t) {
   switch (b.look) {
     case 'hangar': {
       /* barrel vault in company colours, big open doors, propane and crates */
-      const x0 = g + .25, y0 = k + .2, w = b.w - .5, d = b.d - .4, wallH = big ? 46 : 36, rise = 52, c = myCol();
-      const f = block(x0, y0, w, d, wallH, S.region === 'bri' ? {} : { lit: '#ead2b0', shade: '#b48a64', top: '#e9d2b0' });
+      const mara = S.region === 'mara'; /* v141.1: the Mara's hangar is khaki canvas on a timber frame, the company's pennant on top */
+      const x0 = g + .25, y0 = k + .2, w = b.w - .5, d = b.d - .4, wallH = big ? 46 : 36, rise = 52, c = mara ? ['#f0e2bc', '#f0e2bc', '#dcc89c', '#dcc89c'] : myCol();
+      const f = block(x0, y0, w, d, wallH, S.region === 'bri' ? {} : mara ? { lit: '#b88a5a', shade: '#7a5434', top: '#a87a4a', courses: false } : { lit: '#ead2b0', shade: '#b48a64', top: '#e9d2b0' });
       const N = 14, P = (x, y, z) => upp(tiso(x, y), z), zh = s => wallH + rise * Math.sin(Math.PI * s);
       for (let i = 0; i < N; i++) {
         const s0 = i / N, s1 = (i + 1) / N, yA = y0 + d * s0, yB = y0 + d * s1, shade = .55 + .45 * Math.cos(Math.PI * (s0 + s1) / 2 - .6);
-        tpoly([P(x0 - .05, yA, zh(s0)), P(x0 + w + .05, yA, zh(s0)), P(x0 + w + .05, yB, zh(s1)), P(x0 - .05, yB, zh(s1))], mix(c[i % 4 < 2 ? 0 : 1], '#2a1020', clamp(1 - shade, 0, .5)));
+        tpoly([P(x0 - .05, yA, zh(s0)), P(x0 + w + .05, yA, zh(s0)), P(x0 + w + .05, yB, zh(s1)), P(x0 - .05, yB, zh(s1))], mix(c[i % 4 < 2 ? 0 : 1], mara ? '#5a3a1a' : '#2a1020', clamp(1 - shade, 0, mara ? .32 : .5)));
+        if (mara && i % 2 === 0) tpoly([P(x0 - .05, yA, zh(s0)), P(x0 + w + .05, yA, zh(s0))], null, mix('#6a4a2a', '#2a1020', clamp(1 - shade, 0, .4)), 2); /* the timber ribs under the canvas */
       }
       const end = []; for (let i = 0; i <= N; i++) end.push(P(x0 + w, y0 + d * i / N, zh(i / N))); end.push(P(x0 + w, y0 + d, wallH), P(x0 + w, y0, wallH));
-      tpoly(end, '#c09068');
+      tpoly(end, mara ? '#a8946c' : '#c09068');
+      if (mara) { ctx.strokeStyle = '#6a4a2a'; ctx.lineWidth = 2; for (let i = 1; i < 4; i++) { const a = P(x0 + w, y0 + d * i / 4, wallH), q = P(x0 + w, y0 + d * i / 4, zh(i / 4)); ctx.beginPath(); ctx.moveTo(...a); ctx.lineTo(...q); ctx.stroke(); } }
       opening(f.D, f.C, wallH, .5, 0, .62, .95, 'win', false);
       tface(f.D, f.C, wallH, () => { ctx.fillStyle = '#2a1a14'; ctx.fillRect(.2, 0, .6, .9); ctx.fillStyle = '#7a4a22'; ctx.fillRect(.12, 0, .1, .92); ctx.fillRect(.78, 0, .1, .92); });
       const door = lp(f.D, f.C, .5); ctx.fillStyle = '#6b4426'; ctx.fillRect(door[0] - 9, door[1] - 14, 18, 12); /* a basket inside */
@@ -11124,15 +11162,16 @@ function tbuilding(b, t) {
       const cp = tiso(x0 + .3, y0 + d + .35); crate(cp[0], cp[1]); crate(cp[0] + 18, cp[1] + 6);
       const ws = upp(f.b, wallH * 0 + 0); ctx.strokeStyle = '#3a2416'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(ws[0] + 6, ws[1] - rise); ctx.lineTo(ws[0] + 6, ws[1] - rise - 40); ctx.stroke();
       ctx.fillStyle = '#ff8a3d'; ctx.beginPath(); ctx.moveTo(ws[0] + 6, ws[1] - rise - 40); ctx.lineTo(ws[0] + 30 + Math.sin(t * 2) * 3, ws[1] - rise - 34); ctx.lineTo(ws[0] + 6, ws[1] - rise - 30); ctx.fill(); /* windsock */
-      if (big) tflag(f.a[0], f.a[1] - rise + 10, c[0], t);
+      if (big || mara) tflag(f.a[0], f.a[1] - rise + 10, myCol()[0], t);
       break;
     }
     case 'workshop': {
       const x0 = g + .2, y0 = k + .25, w = b.w - .4, d = b.d - .6, h = big ? 64 : 52;
-      const f = block(x0, y0, w, d, h);
-      /* sawtooth glass roof */
+      const f = block(x0, y0, w, d, h, S.region === 'mara' ? { lit: '#b88a5a', shade: '#7a5434', top: '#a87a4a', courses: false } : {});
+      /* sawtooth glass roof; v141.1: in the Mara a timber workshop under thatch */
       const P = (x, y, z) => upp(tiso(x, y), z);
-      for (let i = 0; i < 3; i++) { const a = x0 + w * i / 3, bb = x0 + w * (i + 1) / 3; tpoly([P(a, y0, h), P(a, y0 + d, h), P(bb, y0 + d, h + 26), P(bb, y0, h + 26)], '#d9a77a'); tpoly([P(bb, y0, h + 26), P(bb, y0 + d, h + 26), P(bb, y0 + d, h), P(bb, y0, h)], 'rgba(160,215,240,.85)'); }
+      if (S.region === 'mara') thatchRoof(x0, y0, w, d, h, 40);
+      else for (let i = 0; i < 3; i++) { const a = x0 + w * i / 3, bb = x0 + w * (i + 1) / 3; tpoly([P(a, y0, h), P(a, y0 + d, h), P(bb, y0 + d, h + 26), P(bb, y0, h + 26)], '#d9a77a'); tpoly([P(bb, y0, h + 26), P(bb, y0 + d, h + 26), P(bb, y0 + d, h), P(bb, y0, h)], 'rgba(160,215,240,.85)'); }
       opening(f.D, f.C, h, .3, 0, .22, .7, 'door'); opening(f.D, f.C, h, .72, .3, .22, .45, 'win', true);
       opening(f.C, f.B, h, .5, .35, .3, .4, 'win', true);
       /* fabric drying on lines: the latest design's colours */
@@ -11179,8 +11218,9 @@ function tbuilding(b, t) {
       const fp = tiso(x0 - .14, y0 + d + .14); capFlag(fp[0], fp[1], t, 78);
       for (const u of [.2, .45, .7]) opening(f.D, f.C, h, u, .25, .14, .45, 'win', true);
       opening(f.C, f.B, h, .5, 0, .3, .6, 'door');
-      const tw = block(x0 + w + .05, y0 + .1, .45, .45, 120, { parapet: true });
+      const tw = block(x0 + w + .05, y0 + .1, .45, .45, 120, S.region === 'mara' ? { lit: '#b88a5a', shade: '#7a5434', top: '#a87a4a', courses: false } : { parapet: true });
       opening(tw.D, tw.C, 120, .5, .72, .45, .2, 'win', false);
+      if (S.region === 'mara') { const tc = lp(tw.a, tw.c, .5); thatchCone(tc[0], tc[1] + 4, 24, 28); } /* v141.1: a timber lookout under a thatched cap */
       ctx.fillStyle = '#ffc23d'; const bc = lp(tw.D, tw.C, .5); ctx.beginPath(); ctx.arc(bc[0], bc[1] - 120 * .78, 5, 0, 7); ctx.fill();
       const ws = tiso(x0 + w + .62, y0 + d + .02); windsockPole(ws[0], ws[1], 50, t);
       /* the training balloon, tethered low over the yard on four ropes, its basket just off the ground */
@@ -11190,11 +11230,11 @@ function tbuilding(b, t) {
     }
     case 'bank': {
       const x0 = g + .3, y0 = k + .35, w = b.w - .6, d = b.d - .7, h = 70;
-      const marble = { lit: '#efe8dc', shade: '#b8ad9c', top: '#f6f1e8', courses: false };
+      const marble = S.region === 'mara' ? { lit: '#d8c29c', shade: '#a68c66', top: '#cbb48c', courses: true } /* v141.1: a stone bank with a timber veranda */ : { lit: '#efe8dc', shade: '#b8ad9c', top: '#f6f1e8', courses: false };
       const steps = block(x0 - .15, y0 - .05, w + .3, d + .3, 10, marble);
       const f = block(x0, y0, w, d, h, marble);
       /* colonnade on the lit side */
-      for (let i = 0; i < 5; i++) { const p = lp(lp(f.D, f.C, .08), lp(f.D, f.C, .92), i / 4), q = [p[0] - 8, p[1] + 4]; ctx.fillStyle = '#fbf8f2'; ctx.fillRect(q[0] - 5, q[1] - h + 6, 10, h - 6); ctx.fillStyle = 'rgba(120,100,80,.25)'; ctx.fillRect(q[0] + 2, q[1] - h + 6, 3, h - 6); }
+      for (let i = 0; i < 5; i++) { const p = lp(lp(f.D, f.C, .08), lp(f.D, f.C, .92), i / 4), q = [p[0] - 8, p[1] + 4]; if (S.region === 'mara') { ctx.fillStyle = '#6a4424'; ctx.fillRect(q[0] - 2.5, q[1] - h + 6, 5, h - 6); ctx.fillStyle = '#4a2e18'; ctx.fillRect(q[0] + 1, q[1] - h + 6, 1.5, h - 6); continue; } ctx.fillStyle = '#fbf8f2'; ctx.fillRect(q[0] - 5, q[1] - h + 6, 10, h - 6); ctx.fillStyle = 'rgba(120,100,80,.25)'; ctx.fillRect(q[0] + 2, q[1] - h + 6, 3, h - 6); }
       gableRoof(x0, y0, w, d, h, 22, '#e2d8c6', .14);
       const pd = upp(lp(f.D, f.C, .5), h + 9); ctx.fillStyle = '#c98a00'; ctx.font = '800 20px "Barlow Condensed", sans-serif'; ctx.textAlign = 'center'; ctx.fillText(RD().cur, pd[0], pd[1] + 4); ctx.textAlign = 'left';
       if (big) { const p = tiso(x0 + w + .4, y0 + d + .2); ctx.fillStyle = '#2b2350'; ctx.fillRect(p[0] - 14, p[1] - 22, 28, 22); ctx.fillStyle = '#ffc23d'; ctx.fillRect(p[0] - 10, p[1] - 18, 20, 6); } /* an armoured van while you owe money */
@@ -11209,11 +11249,11 @@ function tbuilding(b, t) {
     case 'rival': {
       const x0 = g + .1, y0 = k + .1, w = b.w - .2, d = b.d - .2;
       if (!b.lv) { const f = block(x0, y0, w, d, 34, { lit: '#9a8a78', shade: '#6a5a48', top: '#8a7a68' }); tface(f.D, f.C, 34, () => { ctx.fillStyle = '#5a3a20'; for (let i = 0; i < 3; i++) { ctx.save(); ctx.translate(.5, .45); ctx.rotate((i - 1) * .3); ctx.fillRect(-.5, -.06, 1, .12); ctx.restore(); } }); break; }
-      const f = block(x0, y0, w, d, 44);
-      const a0 = upp(f.D, 40), a1 = upp(f.C, 40), a2 = [a1[0] - 12, a1[1] + 10], a3 = [a0[0] - 12, a0[1] + 10];
+      const f = block(x0, y0, w, d, 44), ah = S.region === 'mara' ? 27 : 40;
+      if (S.region === 'mara') thatchRoof(x0, y0, w, d, 44, 30); /* v141; v141.1: thatch first, the company's canvas awning under its eaves */
+      const a0 = upp(f.D, ah), a1 = upp(f.C, ah), a2 = [a1[0] - 12, a1[1] + 10], a3 = [a0[0] - 12, a0[1] + 10];
       for (let i = 0; i < 4; i++) tpoly([lp(a0, a1, i / 4), lp(a0, a1, (i + 1) / 4), lp(a3, a2, (i + 1) / 4), lp(a3, a2, i / 4)], i % 2 ? b.col2 : b.col);
-      opening(f.D, f.C, 44, .5, 0, .3, .55, 'door');
-      if (S.region === 'mara') thatchRoof(x0, y0, w, d, 44, 30); /* v141 */
+      opening(f.D, f.C, 44, .5, 0, .3, S.region === 'mara' ? .45 : .55, 'door');
       const top = lp(f.a, f.c, .5); balloon(top[0], top[1] - (S.region === 'mara' ? 36 : 4), 11, b.col, b.col2, false, 1);
       break;
     }
@@ -11303,7 +11343,7 @@ function glassWall(p, q, h, u0, u1, v0, v1, lit) {
    influencer films, a pink neon line round the top floor (brighter while a campaign runs) and a pool in the garden */
 function agencyVilla(b, t, big) {
   const g = b.gx, k = b.gy, x0 = g + .25, y0 = k + .25, w = 1.5, d = 1.15, h1 = 54, h2 = 46;
-  const plaster = { lit: '#f6e2c8', shade: '#c4936c', top: '#efd9b8', courses: false };
+  const mara = S.region === 'mara', plaster = mara ? { lit: '#e2b68c', shade: '#a8724c', top: '#d2a074', courses: false } /* v141.1 */ : { lit: '#f6e2c8', shade: '#c4936c', top: '#efd9b8', courses: false };
   const f1 = block(x0, y0, w, d, h1, plaster);
   glassWall(f1.D, f1.C, h1, .08, .62, .04, .82, true); opening(f1.D, f1.C, h1, .8, 0, .18, .62, 'door');
   glassWall(f1.C, f1.B, h1, .2, .8, .3, .78, false);
@@ -11311,7 +11351,7 @@ function agencyVilla(b, t, big) {
   const R = mulberry32(77); for (let i = 0; i < 26; i++) { const a = lp(f1.D, f1.C, .62 + R() * .1), y = h1 * (.2 + R() * .8); ctx.fillStyle = R() < .3 ? '#7aa04a' : R() < .6 ? '#e0408a' : '#ff6fa8'; ctx.beginPath(); ctx.arc(a[0] + R() * 6 - 3, a[1] - y, 2.5 + R() * 2, 0, 7); ctx.fill(); }
   /* upper floor, set back, standing on the roof */
   ctx.save(); ctx.translate(0, -h1);
-  const f2 = block(x0 + .55, y0 + .05, .9, .75, h2, { ...plaster, parapet: true, roofIn: '#e2c7a2' });
+  const f2 = block(x0 + .55, y0 + .05, .9, .75, h2, mara ? plaster : { ...plaster, parapet: true, roofIn: '#e2c7a2' });
   glassWall(f2.D, f2.C, h2, .1, .9, .1, .85, true);
   glassWall(f2.C, f2.B, h2, .25, .75, .25, .8, false);
   const pa = tiso(x0 + .08, y0 + .1), pb = tiso(x0 + .5, y0 + .1), pc = tiso(x0 + .5, y0 + 1.05), pd = tiso(x0 + .08, y0 + 1.05), ph = 30;
@@ -11321,7 +11361,8 @@ function agencyVilla(b, t, big) {
   ctx.beginPath(); ctx.moveTo(...upp(pd, ph)); ctx.lineTo(...upp(pc, ph)); ctx.stroke();
   { const R2 = mulberry32(12); for (let i = 0; i < 16; i++) { const a = upp(lp(lp(pa, pd, R2()), lp(pb, pc, R2()), R2()), ph + 1); ctx.fillStyle = R2() < .5 ? '#7aa04a' : '#5f8a3a'; ctx.beginPath(); ctx.arc(a[0], a[1], 2.2 + R2() * 1.8, 0, 7); ctx.fill(); } }
   const ip = lp(f2.D, f2.C, .1); person(ip[0] - 26, ip[1] + 12, '#ff6fa8', big ? t : 0, 3);
-  neon([f2.d, f2.c, f2.b], '255,92,170', big ? 1 : .8);
+  if (mara) { neon([upp(f2.D, h2 - 6), upp(f2.C, h2 - 6), upp(f2.B, h2 - 6)], '255,92,170', big ? 1 : .8); thatchRoof(x0 + .55, y0 + .05, .9, .75, h2, 30); } /* v141.1: the neon under the thatch's eaves */
+  else neon([f2.d, f2.c, f2.b], '255,92,170', big ? 1 : .8);
   ctx.restore();
   /* turquoise pool in the front garden, lit from below at night */
   const pl = corners(x0 + .05, y0 + d + .12, 1.3, .4); tpoly([pl.A, pl.B, pl.C, pl.D], '#efe2cc');
@@ -11348,9 +11389,11 @@ function guideOffice(b, t, big) {
 }
 /* the tour minibus: white, a teal stripe, windows down its side, headlights and wheels */
 function minibus(gx, gy) {
-  block(gx, gy, .52, .88, 22, { lit: '#ffffff', shade: '#d8d8d8', top: '#f4f4f4', courses: false });
+  const mara = S && S.region === 'mara'; /* v141.1: in the Mara a khaki safari van with its roof popped up */
+  block(gx, gy, .52, .88, 22, mara ? { lit: '#d8c8a0', shade: '#a8946c', top: '#c8b890', courses: false } : { lit: '#ffffff', shade: '#d8d8d8', top: '#f4f4f4', courses: false });
   const c = corners(gx, gy, .52, .88);
-  tface(c.C, c.B, 22, () => { ctx.fillStyle = '#3ad0c0'; ctx.fillRect(0, .3, 1, .14); ctx.fillStyle = '#4a5a6a'; for (let i = 0; i < 4; i++) ctx.fillRect(.08 + i * .22, .55, .16, .3); });
+  if (mara) { ctx.save(); ctx.translate(0, -22); block(gx + .07, gy + .14, .38, .6, 9, { lit: '#efe6cc', shade: '#c8b890', top: '#e4d8b8', courses: false }); ctx.restore(); }
+  tface(c.C, c.B, 22, () => { ctx.fillStyle = mara ? '#2a6a4a' : '#3ad0c0'; ctx.fillRect(0, .3, 1, .14); ctx.fillStyle = '#4a5a6a'; for (let i = 0; i < 4; i++) ctx.fillRect(.08 + i * .22, .55, .16, .3); });
   tface(c.D, c.C, 22, () => { ctx.fillStyle = '#4a5a6a'; ctx.fillRect(.1, .52, .8, .34); ctx.fillStyle = '#ffd27a'; ctx.fillRect(.08, .2, .12, .1); ctx.fillRect(.8, .2, .12, .1); });
   for (const [u, s] of [[.2, 1], [.8, 1]]) { const p = lp(c.C, c.B, u); ell(p[0], p[1] - 1, 3.4 * s, 3.6 * s, '#2a2430'); }
 }
@@ -11365,7 +11408,7 @@ function tourBooth(gx, gy, big) {
   tface(f.D, f.C, h, () => { ctx.fillStyle = '#e8d2a8'; ctx.fillRect(.06, .38, .88, .06); for (let i = 0; i < 4; i++) { ctx.fillStyle = ['#e04a3a', '#3ad0c0', '#ffc23d', '#5aa9e6'][i]; ctx.fillRect(.14 + i * .07 + (i > 1 ? .4 : 0), .44, .05, .07); } });
   if (big) { const m = fpt(f.D, f.C, h, .5, .62); nightLite(m[0], m[1], 22, '255,210,140', .7); }
   const e = .07, P = (x, y, z) => upp(tiso(x, y), z), A = P(gx - e, gy - e, h), B = P(gx + W + e, gy - e, h), C = P(gx + W + e, gy + D + e, h), Dd = P(gx - e, gy + D + e, h), top = P(gx + W / 2, gy + D / 2, h + 20);
-  const rc = S.region === 'bri' ? '#5e6874' : S.region === 'abq' ? '#8a5a34' : S.region === 'lux' ? '#7a5a3a' : '#a8502e';
+  const rc = S.region === 'bri' ? '#5e6874' : S.region === 'abq' ? '#8a5a34' : S.region === 'lux' ? '#7a5a3a' : S.region === 'mara' ? THATCH /* v141.1 */ : '#a8502e';
   tpoly([A, B, top], mix(rc, '#000000', .35)); tpoly([A, Dd, top], mix(rc, '#000000', .15)); tpoly([Dd, C, top], rc); tpoly([C, B, top], mix(rc, '#000000', .3));
   ctx.strokeStyle = 'rgba(40,15,5,.3)'; ctx.lineWidth = 1; for (let i = 1; i < 4; i++) { ctx.beginPath(); ctx.moveTo(...lp(Dd, top, i / 4)); ctx.lineTo(...lp(C, top, i / 4)); ctx.stroke(); }
   ell(top[0], top[1] - 1, 2.2, 2.2, '#ffc23d');
@@ -12114,7 +12157,7 @@ function maraTownScenery(items, t) {
   for (const [gx, gy, c] of [[9.2, 6.7, '#7a8a5a'], [10.2, 6.75, '#c8b48a']]) items.push({ depth: gx + gy + 1, shadow: () => boxShadow(gx, gy, .7, .34, 18, .16), draw: () => landCruiser(gx, gy, t, c) });
   items.push({ depth: 6.6 + 9.6, draw: () => { const p = tiso(6.6, 9.6); for (let i = 0; i < 7; i++) { const a = i / 7 * Math.PI * 2; ell(p[0] + Math.cos(a) * 14, p[1] + Math.sin(a) * 6, 4, 2.6, '#7a6a5a'); } ctx.strokeStyle = '#5a3a20'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(p[0] - 7, p[1] + 2); ctx.lineTo(p[0] + 6, p[1] - 2); ctx.moveTo(p[0] - 5, p[1] - 3); ctx.lineTo(p[0] + 7, p[1] + 2); ctx.stroke();
     if (NIGHT_K > 0 || HOMEI) { const f = 1 + Math.sin(t * 9) * .15; ctx.fillStyle = '#ffb030'; ctx.beginPath(); ctx.moveTo(p[0] - 6, p[1]); ctx.quadraticCurveTo(p[0], p[1] - 22 * f, p[0] + 6, p[1]); ctx.fill(); ctx.fillStyle = '#fff0a0'; ctx.beginPath(); ctx.moveTo(p[0] - 3, p[1]); ctx.quadraticCurveTo(p[0], p[1] - 11 * f, p[0] + 3, p[1]); ctx.fill(); nightLite(p[0], p[1] - 8, 60, '255,170,80', .9); } } });
-  for (const [gx, gy, s] of [[15.9, 2.2, 1.1], [-.9, 9.4, 1.3], [12.2, 15.9, .9]]) items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); termiteMound(p[0], p[1], s); } });
+  for (const [gx, gy, s] of [[15.9, 2.2, 1.1], [-.9, 9.4, 1.3], [12.2, 15.9, .9]]) items.push({ depth: gx + gy, draw: () => { const p = tiso(gx, gy); thornBush(p[0], p[1], s); } });
   items.push({ depth: 16.6 + 13.6, draw: () => { const p = tiso(16.6, 13.6); acacia(p[0] + 26, p[1] - 4, 1.3); giraffe(p[0], p[1], .9, t); } });
 }
 function briTownScenery(items, t) {
@@ -12166,7 +12209,7 @@ function townScenery(t) {
 /* What stands on the town's edges: Cappadocia's fairy chimneys, Albuquerque's red buttes, Luxor's palm clumps and an obelisk. */
 function edgeLandmark(x, y, hh, seed) {
   if (S.region === 'abq') return;
-  if (S.region === 'mara') { const k = Math.round(seed * 10) % 3; if (k === 0) { acacia(x - 16, y, 1.5); return acacia(x + 20, y + 8, 1.1); } if (k === 1) { termiteMound(x - 20, y + 4, 1.2); return acacia(x + 8, y, 1.7); } return kopjeRock(x, y, hh * .5); } /* v141 */
+  if (S.region === 'mara') { const k = Math.round(seed * 10) % 3; if (k === 0) { acacia(x - 16, y, 1.5); return acacia(x + 20, y + 8, 1.1); } if (k === 1) { thornBush(x - 20, y + 4, 1.2); return acacia(x + 8, y, 1.7); } return kopjeRock(x, y, hh * .5); } /* v141 */
   if (S.region === 'bri') { const k = Math.round(seed * 10) % 3; if (k === 0) { copperBeech(x - 14, y, 1.3); return oakTree(x + 16, y + 6, 1.2); } if (k === 1) { hedge(x - 30, y + 2, 60); return sheepFlock(x, y - 2, 5, T); } oakTree(x, y, 1.4); return copperBeech(x + 22, y + 8, 1); }
   if (S.region === 'lux') {
     if (Math.round(seed) % 3 === 0) return obelisk(x, y, hh * .9);
@@ -12184,9 +12227,27 @@ function hotelTree(x, y, s) {
   cypress(x, y, s);
 }
 /* v141: a termite mound: a red-earth spire with a few ribs */
-function termiteMound(x, y, s = 1) {
-  ctx.fillStyle = '#9a5232'; ctx.beginPath(); ctx.moveTo(x - 9 * s, y); ctx.quadraticCurveTo(x - 7 * s, y - 18 * s, x - 2 * s, y - 30 * s); ctx.lineTo(x + 1 * s, y - 26 * s); ctx.quadraticCurveTo(x + 5 * s, y - 20 * s, x + 4 * s, y - 22 * s); ctx.quadraticCurveTo(x + 8 * s, y - 10 * s, x + 10 * s, y); ctx.fill();
-  ctx.fillStyle = '#c47a4a'; ctx.beginPath(); ctx.moveTo(x - 9 * s, y); ctx.quadraticCurveTo(x - 7 * s, y - 18 * s, x - 2 * s, y - 30 * s); ctx.lineTo(x - 1 * s, y); ctx.fill();
+/* v141.1: a low whistling-thorn bush (the termite mounds read as fairy chimneys): a tangle of grey twigs, small olive
+   tufts on top, greener in the rains */
+function thornBush(x, y, s = 1) {
+  ell(x + 4 * s, y + 1, 17 * s, 4 * s, 'rgba(90,60,20,.16)');
+  ctx.strokeStyle = '#5a4430'; ctx.lineWidth = 1.3 * s; ctx.lineCap = 'round';
+  for (let i = 0; i < 7; i++) { const a = -Math.PI * (.12 + .76 * i / 6); ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a) * 15 * s, y + Math.sin(a) * 12 * s); ctx.stroke(); }
+  for (const [dx, dy, r, c] of [[-9, -6, 7, '#6e6e42'], [8, -5, 6, '#6e6e42'], [-6, -10, 7, '#7e7e4a'], [6, -11, 8, '#8a8a52'], [0, -14, 6, '#9a9a5e']]) ell(x + dx * s, y + dy * s, r * s, r * .6 * s, S && S.winter ? mix(c, '#5a9a3a', .45) : c);
+  ctx.strokeStyle = 'rgba(70,50,30,.55)'; ctx.lineWidth = .8 * s; for (let i = 0; i < 5; i++) { const a = -Math.PI * (.2 + .6 * i / 4); ctx.beginPath(); ctx.moveTo(x + Math.cos(a) * 9 * s, y - 6 * s + Math.sin(a) * 6 * s); ctx.lineTo(x + Math.cos(a) * 17 * s, y - 6 * s + Math.sin(a) * 11 * s); ctx.stroke(); }
+  ctx.lineCap = 'butt';
+}
+/* v141.1: a boma: the thorn-branch fence of a camp, on rough posts (the low plaster wall read as Cappadocia) */
+function bomaSeg(gx, gy, w, d) {
+  const along = w >= d, a = along ? [gx, gy + d / 2] : [gx + w / 2, gy], b = along ? [gx + w, gy + d / 2] : [gx + w / 2, gy + d];
+  const p = tiso(...a), q = tiso(...b), H = 18, n = 12, sd = gx * 3.1 + gy * 1.7;
+  ctx.fillStyle = 'rgba(90,60,20,.14)'; ctx.beginPath(); ctx.moveTo(p[0], p[1] + 1); ctx.lineTo(q[0], q[1] + 1); ctx.lineTo(q[0] + 8, q[1] + 4); ctx.lineTo(p[0] + 8, p[1] + 4); ctx.fill();
+  for (const [col, k, ph] of [['#5a4632', 1, 0], ['#7a6448', .72, 1.3]]) { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(p[0], p[1]);
+    for (let i = 0; i <= n; i++) { const m = lp(p, q, i / n); ctx.lineTo(m[0], m[1] - H * k * (.7 + .3 * Math.sin(i * 2.3 + sd + ph))); }
+    ctx.lineTo(q[0], q[1]); ctx.closePath(); ctx.fill(); }
+  ctx.strokeStyle = '#8a7254'; ctx.lineWidth = 1; ctx.lineCap = 'round';
+  for (let i = 0; i < 16; i++) { const m = lp(p, q, (i + .5) / 16), hh = H * (.45 + .45 * (((i * 7 + Math.round(sd)) % 5 + 5) % 5) / 4); ctx.beginPath(); ctx.moveTo(m[0] - 5, m[1] - hh * .25); ctx.lineTo(m[0] + 4, m[1] - hh); ctx.moveTo(m[0] + 3, m[1] - hh * .3); ctx.lineTo(m[0] - 3, m[1] - hh * .85); ctx.stroke(); }
+  ctx.lineCap = 'butt'; ctx.fillStyle = '#4a3420'; for (const u of [.02, .98]) { const m = lp(p, q, u); ctx.fillRect(m[0] - 1.6, m[1] - H - 5, 3.2, H + 5); }
 }
 /* v141: a granite kopje: rounded boulders piled up, a bush in a cleft */
 function kopjeRock(x, y, hh) {
@@ -12327,7 +12388,7 @@ function outerDecor(t) {
   /* v141: the Mara River runs behind the camp: a band of riverine green, brown water, hippos in it */
   if (S.region === 'mara') {
     const band = (y0, y1, c) => tpoly([tiso(-60, y0), tiso(70, y0), tiso(70, y1), tiso(-60, y1)], c);
-    band(-15.5, -9.5, '#8a9a52'); band(-13.4, -11.4, '#7a6e4a'); band(-13.1, -12.8, 'rgba(255,255,255,.12)');
+    band(-15.5, -9.5, '#8a9a52'); band(-13.9, -10.9, '#c8a870'); band(-13.5, -11.3, '#6e7c5e'); band(-13.3, -12.95, 'rgba(255,236,190,.22)'); band(-12.2, -11.95, 'rgba(255,236,190,.14)'); /* v141.1: sandy banks, the water catches the light */
     for (const [hx, hy] of [[3, -12.4], [3.6, -12.1], [11.5, -12.6], [19, -12.3]]) { const p = tiso(hx + Math.sin(t * .2 + hx) * .05, hy); ell(p[0], p[1], 9, 4, '#4a4040'); ell(p[0] + 7, p[1] - 2, 4, 2.6, '#4a4040'); ell(p[0] + 8, p[1] - 3.4, 1, 1, '#ffffff'); }
   }
   /* v124: Bristol: the harbour behind the town, the old tall ship at the quay */
@@ -12874,7 +12935,7 @@ function outskirtsItems(t) {
     if (c.k === 'scrub') for (let i = 0; i < 5; i++) { const [gx, gy] = outAt(c, (Rr() - .5) * c.w * .85, (Rr() - .5) * c.d * .8), ch = Rr() < .5, s = .6 + Rr() * .25; add(gx, gy, () => { const p = tiso(gx, gy); ch ? cholla(p[0], p[1], s) : yucca(p[0], p[1], s); }); }
     /* v141: the Mara's plains */
     if (c.k === 'savanna') { for (let i = 0; i < 4; i++) { const [gx, gy] = outAt(c, (Rr() - .5) * c.w * .8, (Rr() - .5) * c.d * .7), s = .8 + Rr() * .5; add(gx, gy, () => { const p = tiso(gx, gy); acacia(p[0], p[1], s); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 14 * s, p[1] + 4, 22 * s, 6 * s, .12); }); }
-      const [mx, my] = outAt(c, c.w * .35, c.d * .3); add(mx, my, () => { const p = tiso(mx, my); termiteMound(p[0], p[1], 1); }); }
+      const [mx, my] = outAt(c, c.w * .35, c.d * .3); add(mx, my, () => { const p = tiso(mx, my); thornBush(p[0], p[1], 1); }); }
     if (c.k === 'herd') { const n = 7 + c.seed % 5, kind = c.seed % 3 === 0 ? 'zebra' : 'gnu'; for (let i = 0; i < n; i++) { const a = (Rr() - .5) * c.w * .8, b = (Rr() - .5) * c.d * .7, d = Rr() < .7 ? 1 : -1;
       const g0 = outAt(c, a, b); add(g0[0], g0[1], () => { const k = Math.sin(t * .03 + c.seed) * .5, q = outAt(c, a + k, b), p = tiso(...q); maraBeast(i % 4 === 3 ? 'zebra' : kind, p[0], p[1], Math.cos(t * .03 + c.seed) > 0 ? d : -d, 2.6, 1, t + i); }); } }
     if (c.k === 'manyatta') { const rr = Math.min(c.w, c.d) * .42, ring = (k, f) => { for (let i = 0; i < 16; i++) { const a = i / 16 * Math.PI * 2; f(c.cx + Math.cos(a) * rr * k, c.cy + Math.sin(a) * rr * k, i, a); } };
@@ -12929,7 +12990,7 @@ function cow(x, y, col, d) { ell(x, y - 5, 6, 3.4, col); ctx.fillStyle = col; ct
 function outerLandmark(x, y, hh, i) {
   if (S.region === 'mara') { /* v141: acacias, kopjes, termite mounds, now and then a few giraffes */
     if (i % 6 === 0) return kopjeRock(x, y, hh * .5);
-    if (i % 6 === 3) { termiteMound(x - 18, y + 4, 1.1); return acacia(x + 6, y, 1.6); }
+    if (i % 6 === 3) { thornBush(x - 18, y + 4, 1.1); return acacia(x + 6, y, 1.6); }
     if (i % 9 === 4) { acacia(x + 20, y - 2, 1.4); return giraffe(x - 6, y + 4, .8, T + i); }
     acacia(x, y, 1.3 + (i % 3) * .25); if (i % 2) acacia(x + 30, y + 8, .9); return;
   }
@@ -12957,7 +13018,7 @@ const WALL_GAP = [7.3, 8.7];
 function townWall() {
   const items = [], H = 16, T0 = -.5, T1 = 15.5, th = .14;
   const bri = S.region === 'bri'; /* v124.1: a low brick wall with a stone coping */
-  const seg = (gx, gy, w, d) => items.push({ depth: gx + w + gy + d - .5, draw: () => bri ? block(gx, gy, w, d, 11, { top: '#cfc6b4' }) : block(gx, gy, w, d, H, { courses: false, top: '#f3dcb8' }) });
+  const seg = (gx, gy, w, d) => items.push({ depth: gx + w + gy + d - .5, draw: () => S.region === 'mara' ? bomaSeg(gx, gy, w, d) /* v141.1 */ : bri ? block(gx, gy, w, d, 11, { top: '#cfc6b4' }) : block(gx, gy, w, d, H, { courses: false, top: '#f3dcb8' }) });
   /* v125.7: the gaps where the roads leave are WALL_GAP wide (the road and a little kerb each side), the wall ends trimmed
      to it, so the welcome arch's posts stand right against them */
   const cut = (a) => { let b = Math.min(a + 1, T1); if (b > WALL_GAP[0] && a < WALL_GAP[1]) { if (a < WALL_GAP[0]) b = WALL_GAP[0]; else if (b > WALL_GAP[1]) a = WALL_GAP[1]; else return null; } return [a, b - a]; };
@@ -13871,7 +13932,7 @@ const HQ_TOWER = [10, 2];
 const HQ_UNITS = {
   board: { name: 'Kasa ve hedefler', draw: b => { hqCash(b); hqGoals(b); hqTransfer(b); } },
   window: { name: 'Bölgeler', draw: b => hqRegions(b) },
-  mkt: { name: 'Pazarlama birimi', draw: b => hqDeals(b, ['tv', 'bb', 'doc'], 'Kampanyalar') },
+  mkt: { name: 'Pazarlama birimi', draw: b => hqDeals(b, ['bb', 'tv', 'doc'], 'Kampanyalar') }, /* v141.1: cheapest first */
   deals: { name: 'Anlaşmalar birimi', draw: b => hqDeals(b, ['celeb', 'jersey', 'wg'], 'Anlaşmalar') },
   rnd: { name: 'Ar-Ge birimi', draw: b => hqDeals(b, ['lab', 'radar', 'comp'], 'Araştırma') },
   offices: { name: 'Ofisler', draw: b => hqOffices(b) },
@@ -13967,6 +14028,7 @@ function hqScene(L, t) {
   for (let i = 0; i < 9; i++) { const x = wx0 + R() * (wx1 - wx0), hh = 16 + R() * 26;
     if (S.region === 'abq') butte(x, hz + 4, hh * 1.2, hh * .6, '#d98e5e', '#a65e38');
     else if (S.region === 'lux') palmSil(x, hz + 6, hh, '#7a8a4a');
+    else if (S.region === 'mara') acaciaSil(x, hz + 6, hh * .8, '#6a6a3a'); /* v141.1 */
     else if (S.region === 'bri') { if (i % 3) oakTree(x, hz + 6, hh / 40); else { ctx.fillStyle = '#c8b080'; ctx.fillRect(x - 3, hz + 4 - hh * .6, 6, hh * .6); ctx.beginPath(); ctx.moveTo(x - 3.5, hz + 4 - hh * .6); ctx.lineTo(x, hz + 4 - hh * 1.1); ctx.lineTo(x + 3.5, hz + 4 - hh * .6); ctx.fill(); } } /* v124 */
     else chimney(x, hz + 4, hh * .42, hh, '#e8b48e', '#c98d68', '#7a4e38'); }
   for (let i = 0; i < 7; i++) { const x = wx0 + 6 + i * (wx1 - wx0) / 7, bw = 14 + R() * 12, bh = 10 + R() * 16; ctx.fillStyle = '#f1d6b0'; ctx.fillRect(x, wy1 - bh, bw, bh); ctx.fillStyle = '#c9925f'; ctx.fillRect(x + bw, wy1 - bh + 2, 5, bh - 2); ctx.fillStyle = '#ffd27a'; ctx.fillRect(x + 4, wy1 - bh + 5, 3, 4); }

@@ -50,6 +50,8 @@ const PROFILES = {
     const p = await b.newPage({ viewport: { width: 390, height: 800 } });
     p.on('pageerror', e => console.error('ERR', e.message));
     await p.goto('file://' + require('path').resolve(__dirname, '../prototype/balloon-baron.html')); await p.waitForTimeout(600);
+    /* v141.1: MARAFX='{"rains":.6}' overrides the Mara's numbers for a tuning run */
+    if (process.env.MARAFX) await p.evaluate(o => Object.assign(MARA_FX, o), JSON.parse(process.env.MARAFX));
     for (let seed = FROM; seed < FROM + SEEDS; seed++) {
       const r = await p.evaluate(([seed, DAYS, prof, P0, BADP, TRACE, SAFE, RUIN]) => {
         let a = seed * 9301 + 49297; Math.random = () => { a = (a * 9301 + 49297) % 233280; return a / 233280; };
@@ -179,7 +181,7 @@ const PROFILES = {
             const c = { accidents: s('acc'), fines: s('fines'), loans: s('loans'), xferDebt: s('xfer'), opexOverIncome: Math.max(0, s('opex') - s('inc')), purchases: s('buys') };
             const top = Object.keys(c).sort((x, y) => c[y] - c[x])[0]; L.causes[top] = (L.causes[top] || 0) + 1;
           }
-          if (TRACE) (L.trace = L.trace || []).push([reg, day, S.weather && lastReport.flag, nb, Math.round(cash0 + lent - spent), Math.round(S.cash), Math.round(lastReport.net), S.balloons.length].join(' '));
+          if (TRACE) (L.trace = L.trace || []).push([reg, day, S.weather && lastReport.flag, nb, Math.round(cash0 + lent - spent), Math.round(S.cash), Math.round(lastReport.net), S.balloons.length, 'mono' + ((lastReport.Lg || {}).mono || 0) + ' park' + ((lastReport.Lg || {}).park || 0), S.winter ? 'rain' : '-', 'wd' + Math.round(L.wdToday || 0)].join(' '));
           if (S.cash < L.minCash) { L.minCash = Math.round(S.cash); L.minCashRegion = S.region; }
           if (S.cash < 0) L.negRun++; else L.negRun = 0; L.negMax = Math.max(L.negMax, L.negRun);
           for (const id of ['cap', 'abq', 'lux', 'bri', 'mara']) if (S.barons && S.barons[id] && !L.baron[id]) L.baron[id] = S.barons[id];

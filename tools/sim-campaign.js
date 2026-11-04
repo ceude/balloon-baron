@@ -12,6 +12,8 @@ const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM =
   const b = await chromium.launch(); const p = await b.newPage({ viewport: { width: 390, height: 800 } });
   p.on('pageerror', e => console.error('ERR', e.message));
   await p.goto('file://' + require('path').resolve(__dirname, '../prototype/balloon-baron.html')); await p.waitForTimeout(600);
+  /* v141.1: MARAFX='{"rains":.6}' overrides the Mara's numbers for a tuning run */
+  if (process.env.MARAFX) await p.evaluate(o => Object.assign(MARA_FX, o), JSON.parse(process.env.MARAFX));
   const res = [];
   for (let seed = FROM; seed < FROM + SEEDS; seed++) {
     res.push(await p.evaluate(([seed, DAYS, POST]) => {

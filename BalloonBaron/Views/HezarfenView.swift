@@ -18,13 +18,9 @@ struct HezarfenView: View {
 
     private var shortKey: String? {
         if case .tip(let t) = message, Self.shortTips.contains(t) { return "tip.\(t.rawValue).short" }
-        // v125.5: a new region's first-day texts say the short part; the rest is behind "More"
-        switch message {
-        case .enteredRegion(let r) where r != .cap: return "hez.entered.\(r.rawValue).short"
-        case .guideHello(let r) where r != .cap: return "guide.\(r.rawValue).hello.short"
-        case .boss(let r, .hello) where r != .cap: return "boss.\(r.rawValue).hello.short"
-        default: return nil
-        }
+        // v141.1 (developer): a new region's first-day texts (Hezarfen, the guide, the rival boss) are shown in full;
+        // v125.5 said the short part and put the rest behind "More".
+        return nil
     }
 
     private func shortText(_ key: String) -> String {

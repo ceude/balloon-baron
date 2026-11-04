@@ -6,7 +6,8 @@ import BalloonBaronCore
 /// Game Center: sign-in at launch, every postcard as an achievement, two leaderboards. Without the Game Center
 /// capability, or when the player declines, every call quietly does nothing.
 enum GameCenter {
-    /// App Store Connect ids: `balloonbaron.ach.<postcard>` for the 22 postcards, and the two leaderboards.
+    /// App Store Connect ids: `balloonbaron.ach.<postcard>` for every postcard (points: `Achievement.gameCenterPoints`,
+    /// docs/APP_STORE.md), and the two leaderboards.
     static func achievementID(_ a: Achievement) -> String { "balloonbaron.ach.\(a.rawValue)" }
     static let totalPassengers = "balloonbaron.lb.passengers"
     static let bestDay = "balloonbaron.lb.bestday"
