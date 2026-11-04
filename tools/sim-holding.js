@@ -53,7 +53,7 @@ const TWEAKS = {
         let postEnd = 99999, dayIn = 0, dayAuto = 0;
         /* money into the holding from the region you play (withdrawals) is counted with the autopilot as income */
         const wd = withdraw; withdraw = s => { const h0 = S.holding || 0; wd(s); dayIn += (S.holding || 0) - h0; };
-        const NEXT = { cap: 'abq', abq: 'lux', lux: 'bri' };
+        const NEXT = { cap: 'abq', abq: 'lux', lux: 'bri', bri: 'mara' }; /* v141: the Maasai Mara after Bristol (World Baron needs it: Dubai's office and the first safari-plane group) */
         const H = () => S.hold || (S.hold = { log: [] });
         const spend = (cat, c, f) => { if ((S.holding || 0) < c) return false; S.holding -= c; holdLog('exp', c); f(); L.spent[cat] = (L.spent[cat] || 0) + c; (L.dspent = L.dspent || {})[cat] = ((L.dspent || {})[cat] || 0) + c; return true; };
         const officeOrder = Object.keys(HQ_CITIES).sort((x, y) => HQ_CITIES[x].cost - HQ_CITIES[y].cost);
@@ -61,7 +61,7 @@ const TWEAKS = {
         /* the holding goals, in the order the campaign bot buys them */
         const goals = () => {
           const h = H(), out = [];
-          for (const k of officeOrder) if (!hasOffice(k)) out.push({ k: 'office', c: HQ_CITIES[k].cost, f: () => { h.offices = Object.assign({}, h.offices, { [k]: S.day }); } });
+          for (const k of officeOrder) if (!hasOffice(k) && officeOpenable(k)) out.push({ k: 'office', c: HQ_CITIES[k].cost, f: () => { h.offices = Object.assign({}, h.offices, { [k]: S.day }); } });
           if ((h.rnd || 0) < RD_LEVELS.length) out.push({ k: 'rnd', c: RD_LEVELS[h.rnd || 0].cost, f: () => { h.rnd = (h.rnd || 0) + 1; } });
           if (!h.tvN) out.push({ k: 'tv', c: tvCost(), f: () => { h.tvN = 1; (h.tv = h.tv || {})[S.region] = { until: S.day + TVC.days, cd: S.day + TVC.cd }; repIn(S.region, TVC.rep); } });
           if (!h.celeb) out.push({ k: 'celeb', c: celebC(), f: () => { h.celeb = { name: 'X', until: S.day + celebD() }; repAll(.15); } });
@@ -165,7 +165,7 @@ const TWEAKS = {
           try { launch(S.weather.flag === 'red'); } catch (e) { L.err = e.message + ' @' + S.day; break; }
           /* the night: autopilot net (after running costs), record payouts etc. */
           const hNight = (S.holding || 0) - h0;
-          for (const id of ['cap', 'abq', 'lux', 'bri']) if (S.barons && S.barons[id] && !L.baron[id]) L.baron[id] = S.barons[id];
+          for (const id of ['cap', 'abq', 'lux', 'bri', 'mara']) if (S.barons && S.barons[id] && !L.baron[id]) L.baron[id] = S.barons[id];
           if (S.hold && S.hold.worldBaron && !L.world) { L.world = S.hold.worldBaron; postEnd = S.day + POST; }
           const td = (S.hold && S.hold.today) || {};
           if (td.rent) L.spent.rent = (L.spent.rent || 0) + td.rent; /* v140: the offices' rent, counted with the spending */
@@ -193,7 +193,7 @@ const TWEAKS = {
   for (const MODE of MODES) {
     const R = all[MODE];
     console.log(`\n=== ${MODE} (${R.length} seeds${R.filter(r => r.err).length ? ', errors: ' + R.filter(r => r.err).map(r => r.err).join(', ') : ''}) ===`);
-    const ms = [['Luxor baron', r => r.baron.lux], ['Bristol baron', r => r.baron.bri], ['World Baron', r => r.world]];
+    const ms = [['Luxor baron', r => r.baron.lux], ['Bristol baron', r => r.baron.bri], ['Mara baron', r => r.baron.mara], ['World Baron', r => r.world]];
     for (const [n, f] of ms) {
       const ds = R.map(f).filter(Boolean);
       const cash = R.filter(f).map(r => at(r, f(r))[1]), inc = R.filter(f).map(r => at(r, f(r))[6]);
