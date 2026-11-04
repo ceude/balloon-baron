@@ -6,7 +6,7 @@ import XCTest
 final class WindReachTests: XCTestCase {
     /// Many seeds, every region, summer and winter, early and late days.
     func days(_ n: Int, _ body: (RegionID, Weather) -> Void) {
-        for r in [RegionID.cap, .abq, .lux, .bri] {
+        for r in [RegionID.cap, .abq, .lux, .bri, .mara] { // v141: the Maasai Mara too
             for seed in 0..<n {
                 var g = Game(company: "T", colors: ["#ffffff", "#000000"], seed: UInt64(seed) &* 7919 &+ 13)
                 g.state.region = r

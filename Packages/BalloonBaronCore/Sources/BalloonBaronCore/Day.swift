@@ -81,7 +81,7 @@ extension Game {
             }
             let t = trait(of: b)
             lg.tickets += pax * state.price
-            lg.fuel += jsRound(Double(z.fuel) * (state.fuelUpUntil.map { $0 >= state.day } == true ? 1.5 : 1) * (t == .thrifty ? 0.85 : 1) * state.holding.fuelFactor)
+            lg.fuel += jsRound(Double(z.fuel) * (state.fuelUpUntil.map { $0 >= state.day } == true ? 1.5 : 1) * (t == .thrifty ? 0.85 : 1) * state.holding.fuelFactor * state.region.fuelFactor)
             switch t {
             case .showman: lg.tips += pax * 9
             case .daredevil: rep(.traits, 0.003)
@@ -141,6 +141,8 @@ extension Game {
                 }
                 // v124: Bristol's landings and the airport
                 if state.region.bristol { bristolLanding(f, weather: weather, ledger: &lg, events: &ev) }
+                // v141: the Mara's herds and river
+                if state.region.maraPlains { maraLanding(f, ledger: &lg, events: &ev) }
             } else if rng.chance(accidentChance(b)) {
                 severity = rng.range(0.2, 1)
             } else {
@@ -225,6 +227,8 @@ extension Game {
         transferPay(&lg)
         contractSettle(plan: &plan, ledger: &lg, events: &ev, rivalEvents: &rev, paxTotal: paxTotal)
         state.plan = plan
+        // v141: the Mara's park fee for every passenger flown
+        if state.region == .mara && paxTotal > 0 { lg.park = paxTotal * Mara.parkFee }
 
         // v124: a Bristol festival day's evening ascent and the Night Glow
         bristolEvening(flying: flyingIDs, cancelledSelf: cancelled, paxTotal: paxTotal, red: red, ledger: &lg, events: &ev)
@@ -412,6 +416,7 @@ extension Game {
                 state.fiesta = Fiesta(start: state.day, end: state.day + state.region.fiestaDays - 1)
                 state.hezQueue.append(.fiestaStarted)
                 if state.region.bristol { addPaper(.briFestival) }
+                if state.region.maraPlains { addPaper(.migration) }
             }
         }
         if state.region.hasFestivals {
@@ -426,7 +431,9 @@ extension Game {
                 addPaper(.festival(n % Rules.festivalCount))
             }
         }
-        if let w = state.winter, state.day > w.end {
+        if state.region.rainy {
+            maraRains()
+        } else if let w = state.winter, state.day > w.end {
             state.winter = nil
             state.nextWinter = state.day + 45
             state.hezQueue.append(.spring)

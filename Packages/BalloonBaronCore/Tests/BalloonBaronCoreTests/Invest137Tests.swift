@@ -48,7 +48,7 @@ final class Invest137Tests: XCTestCase {
         g.state.day = d + 180
         XCTAssertTrue(g.canMakeDocumentary)
         // Paris takes a fifth off
-        g.state.holding.offices[.par] = d
+        g.state.holding.offices[.lon] = d
         XCTAssertEqual(g.state.holding.documentaryCost, 2_400_000)
         XCTAssertTrue(g.makeDocumentary())
         XCTAssertEqual(g.state.holding.documentary?.season, 2)
@@ -200,22 +200,34 @@ final class Invest137Tests: XCTestCase {
 
     // MARK: Offices
 
-    func testDubaiAndParis() {
+    /// v141: every region entered, so every office can open (Dubai with the Mara, London with Bristol, …).
+    func everywhere() -> Game {
         var g = rich()
+        g.state.barons[.abq] = 1; XCTAssertTrue(g.enterRegion(.lux))
+        g.state.barons[.lux] = 1; XCTAssertTrue(g.enterRegion(.bri))
+        g.state.barons[.bri] = 1; XCTAssertTrue(g.enterRegion(.mara))
+        g.state.hezQueue = []
+        return g
+    }
+
+    /// v141: Dubai lifts the Maasai Mara (it was Luxor), London (was Paris) lifts Bristol.
+    func testDubaiAndLondon() {
+        var g = everywhere()
         XCTAssertEqual(Office.allCases.map(\.cost), [650_000, 750_000, 700_000, 700_000, 700_000, 750_000], "all about €700,000")
         XCTAssertTrue(g.openOffice(.dxb))
         XCTAssertEqual(g.state.hezQueue.last, .officeOpened(.dxb))
-        XCTAssertTrue(g.openOffice(.par))
-        XCTAssertEqual(g.state.holding.officeMultiplier(.lux), 1.2, accuracy: 1e-9)
+        XCTAssertTrue(g.openOffice(.lon))
+        XCTAssertEqual(g.state.holding.officeMultiplier(.mara), 1.2, accuracy: 1e-9)
+        XCTAssertEqual(g.state.holding.officeMultiplier(.lux), 1, accuracy: 1e-9, "Luxor's +20% is Tokyo's now")
         XCTAssertEqual(g.state.holding.officeMultiplier(.bri), 1.2, accuracy: 1e-9)
         XCTAssertEqual(g.state.holding.officeMultiplier(.cap), 1, accuracy: 1e-9)
-        XCTAssertFalse(g.openOffice(.par), "one each")
+        XCTAssertFalse(g.openOffice(.lon), "one each")
     }
 
     func testExpenseRateFourAnyOfficesThenSix() {
-        var g = rich()
+        var g = everywhere()
         XCTAssertEqual(g.state.holding.expenseRate, 0.25)
-        for o in [Office.dxb, .par, .ist] { XCTAssertTrue(g.openOffice(o)) }
+        for o in [Office.dxb, .lon, .ist] { XCTAssertTrue(g.openOffice(o)) }
         XCTAssertEqual(g.state.holding.expenseRate, 0.25, "three offices")
         XCTAssertTrue(g.openOffice(.sel))
         XCTAssertEqual(g.state.holding.expenseRate, 0.2, "any four (developer)")
@@ -247,7 +259,7 @@ final class Invest137Tests: XCTestCase {
         XCTAssertFalse(g.state.done(.offices))
         XCTAssertFalse(g.state.done(.research))
         g.state.holding.offices[.dxb] = 2
-        g.state.holding.offices[.par] = 2
+        g.state.holding.offices[.lon] = 2
         g.state.holding.research = 4
         g.checkHoldingGoals()
         XCTAssertNotNil(g.state.holding.worldBaron)
@@ -276,7 +288,7 @@ final class Invest137Tests: XCTestCase {
         XCTAssertEqual(back.state.postcards?[.world], 300, "the postcard stays in the album")
         // meeting the new goals makes them World Baron again, without a second postcard
         back.state.holding.offices[.dxb] = 400
-        back.state.holding.offices[.par] = 400
+        back.state.holding.offices[.lon] = 400
         back.state.holding.research = 4
         back.holdingGoalsNow()
         XCTAssertNotNil(back.state.holding.worldBaron)
@@ -304,7 +316,7 @@ final class Invest137Tests: XCTestCase {
         XCTAssertNil(h.documentary)
         XCTAssertEqual(h.offices.count, 2)
         XCTAssertEqual(h.research, 2)
-        h.offices[.par] = 7
+        h.offices[.lon] = 7
         h.documentary = Holding.Documentary(until: 10, next: 20, season: 1)
         h.records?[.pacific] = 8
         XCTAssertNil(h.recordsV2, "an older holding decodes without the new ladder's mark")
@@ -313,7 +325,7 @@ final class Invest137Tests: XCTestCase {
     }
 
     func testOfficesListedCheapestFirst() {
-        XCTAssertEqual(Office.byPrice, [.ist, .sel, .tyo, .dxb, .nyc, .par])
-        XCTAssertEqual(Office.allCases, [.ist, .nyc, .sel, .tyo, .dxb, .par], "saved and goal order unchanged")
+        XCTAssertEqual(Office.byPrice, [.ist, .sel, .tyo, .dxb, .nyc, .lon])
+        XCTAssertEqual(Office.allCases, [.ist, .nyc, .sel, .tyo, .dxb, .lon], "saved and goal order unchanged")
     }
 }

@@ -9,6 +9,8 @@ public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, 
     case world
     /// v140: the Hot Air Foundation's first project.
     case patron
+    /// v141: entering the Maasai Mara, Baron of the Maasai Mara.
+    case mara, baronMara
 }
 
 /// The holding's own goals, written on the office whiteboard. All seven make you World Baron. Text: `hgoal.<rawValue>`.
@@ -55,6 +57,8 @@ extension GameState {
         case .bri: return owns(.bri)
         case .nightGlow: return (local.glowCount ?? 0) >= 1
         case .baronBri: return barons[.bri] != nil
+        case .mara: return owns(.mara)
+        case .baronMara: return barons[.mara] != nil
         case .world: return holding.worldBaron != nil
         case .patron: return holding.projects >= 1
         }

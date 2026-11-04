@@ -5,12 +5,14 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
     case cap, abq, lux
     /// v124: Bristol, England. Opens after the Luxor baron.
     case bri
+    /// v141: the Maasai Mara, Kenya. Opens after the Bristol baron; the hardest region.
+    case mara
 
     /// ISO currency of the region's own cash box.
-    public var currency: String { self == .abq ? "USD" : self == .bri ? "GBP" : "EUR" }
+    public var currency: String { self == .abq || self == .mara ? "USD" : self == .bri ? "GBP" : "EUR" }
     /// Local money per euro. Every price is the same number in every region; only the holding converts.
     /// Bristol counts in pounds at a fixed £1 = €1.20 (v124.2).
-    public var fx: Double { self == .abq ? 1.1 : self == .bri ? 1 / 1.2 : 1 }
+    public var fx: Double { self == .abq || self == .mara ? 1.1 : self == .bri ? 1 / 1.2 : 1 }
     /// The signature XL balloon.
     public var xlName: String {
         switch self {
@@ -18,6 +20,7 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         case .abq: "Fiesta Yıldızı"
         case .lux: "Teb Yıldızı"
         case .bri: "Avon Yıldızı"
+        case .mara: "Mara Yıldızı"
         }
     }
     /// The region before it: becoming its baron opens this one (none for Cappadocia).
@@ -27,20 +30,28 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         case .abq: .cap
         case .lux: .abq
         case .bri: .lux
+        case .mara: .bri
         }
     }
     /// What the holding pays to open the region.
-    public var entryFee: Int { self == .bri ? 240000 : self == .lux ? 150000 : Holding.entryFee }
+    public var entryFee: Int { self == .mara ? Mara.entryFee : self == .bri ? 240000 : self == .lux ? 150000 : Holding.entryFee }
     /// Cash in the region's box on the first day.
-    public var startCash: Int { self == .bri ? 6000 : self == .lux ? 5000 : Rules.startCash }
-    /// The ticket price on the first day (v124: £185 in Bristol).
-    public var startPrice: Int { self == .bri ? 185 : Rules.startPrice }
-    /// Tourists a day at the start (v124: Bristol has fewer, 145).
-    public var startDemand: Int { self == .bri ? 145 : Rules.startDemand }
-    /// v124: Bristol's pilots cost 15% more (`regWage`).
-    public var wageFactor: Double { self == .bri ? 1.15 : 1 }
+    public var startCash: Int { self == .mara ? Mara.startCash : self == .bri ? 6000 : self == .lux ? 5000 : Rules.startCash }
+    /// The ticket price on the first day (v124: £185 in Bristol; v141: $210 in the Mara).
+    public var startPrice: Int { self == .mara ? Mara.startPrice : self == .bri ? 185 : Rules.startPrice }
+    /// Tourists a day at the start (v124: Bristol has fewer, 145; v141: the Mara fewer still, 125).
+    public var startDemand: Int { self == .mara ? Mara.startDemand : self == .bri ? 145 : Rules.startDemand }
+    /// v124: Bristol's pilots cost 15% more (`regWage`); v141: the Mara's bush pilots 10% more.
+    public var wageFactor: Double { self == .bri ? 1.15 : self == .mara ? Mara.wage : 1 }
     /// v124: Bristol's changeable weather: more yellow flags (green 42%, yellow 43%, red 15%; winter as everywhere).
-    public var greenShare: Double { self == .bri ? 0.42 : 0.55 }
+    /// v141: the Mara green 45%, yellow 37%, red 18%; its rains are worse than winter (`rainsShares`).
+    public var greenShare: Double { self == .bri ? 0.42 : self == .mara ? Mara.green : 0.55 }
+    /// Where yellow ends and red begins (`rollFlag`'s second threshold).
+    public var yellowTop: Double { self == .mara ? Mara.yellow : 0.85 }
+    /// v141: fuel is trucked in from Nairobi (`regFuel`).
+    public var fuelFactor: Double { self == .mara ? Mara.fuel : 1 }
+    /// v141: the Mara's "winter" is its rains (long and short in turn), not snow.
+    public var rainy: Bool { self == .mara }
 
     public var balloonNames: [String] {
         switch self {
@@ -49,6 +60,7 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
                     "Santa Fe", "Mesa", "Zuni", "Acoma", "Chama", "Galisteo", "Pecos", "Cibola"]
         case .lux: LUX.balloonNames
         case .bri: BRI.balloonNames
+        case .mara: MARA.balloonNames
         }
     }
 
@@ -64,6 +76,7 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
                     "Cody", "Maya", "Ryan", "Ava", "Miguel", "Chloe", "Ethan", "Lily"]
         case .lux: LUX.pilotNames
         case .bri: BRI.pilotNames
+        case .mara: MARA.pilotNames
         }
     }
 
@@ -79,16 +92,20 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
     public var westWinds: Bool { self == .bri }
     /// v124: Bristol's morning fog, the airport's airspace and its own flight world (bridge, harbour, fields, mud).
     public var bristol: Bool { self == .bri }
+    /// v141: the Mara's dawn drift (low air back toward the escarpment, east over the plains in the middle, the top either
+    /// way), its river, herds and kopjes on the flight line (`maraWorld`), no power lines.
+    public var maraPlains: Bool { self == .mara }
     /// Albuquerque's Balloon Fiesta, and Luxor's Nile cruise season, which uses the same days and goal.
     public var hasFiesta: Bool { self != .cap }
-    public var fiestaEvery: Int { self == .lux ? 21 : Rules.fiestaEvery }
-    public var fiestaDays: Int { self == .lux ? 3 : Rules.fiestaDays }
-    public var fiestaDemand: Double { self == .lux ? 1.6 : self == .bri ? 1.8 : Rules.fiestaDemand }
+    /// v141: the Mara's Great Migration: six days about every six weeks, demand ×1.8.
+    public var fiestaEvery: Int { self == .lux ? 21 : self == .mara ? Mara.migrationEvery : Rules.fiestaEvery }
+    public var fiestaDays: Int { self == .lux ? 3 : self == .mara ? Mara.migrationDays : Rules.fiestaDays }
+    public var fiestaDemand: Double { self == .lux ? 1.6 : self == .bri ? 1.8 : self == .mara ? Mara.migration : Rules.fiestaDemand }
     public var hasFestivals: Bool { self == .cap }
     /// Rivals here fight harder: more campaigns, more hotel poaching, faster and bigger fleet growth.
     public var rivalEdge: Bool { self != .cap }
     /// Luxor's rivals join forces sooner, more often, and at a smaller share of the market.
-    public var mergesEarly: Bool { self == .lux || self == .bri }
+    public var mergesEarly: Bool { self == .lux || self == .bri || self == .mara }
     /// The rival owned by the region's boss (Kenan Arslan, Dale Whitaker, Nabil Haddad).
     public var bossCompany: String {
         switch self {
@@ -96,6 +113,7 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         case .abq: "Sandia Sky Rides"
         case .lux: "Theban Skies"
         case .bri: "Clifton Crown Balloons"
+        case .mara: "Oloololo Sky Safaris"
         }
     }
 
@@ -120,8 +138,20 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
             [Rival(id: 0, name: "Clifton Crown Balloons", colors: ["#7a2a34", "#e8d6a0"], style: .safe, balloons: [.L, .L, .L, .L, .L, .M, .M, .M, .M, .M, .M], price: 230, rep: 1.3, cash: 150000),
              Rival(id: 1, name: "Severn Sky Co.", colors: ["#2a6a5a", "#e6f2ea"], style: .mid, balloons: [.L, .L, .M, .M, .M, .M, .S], price: 190, rep: 1.1, cash: 65000),
              Rival(id: 2, name: "Harbourside Air", colors: ["#e0a020", "#1f2a44"], style: .risky, balloons: [.M, .M, .S, .S, .S, .S], price: 145, rep: 0.95, cash: 30000)]
+        // v141: the hardest market: an old safari family with the biggest fleet of all, a strong middle, a cheap outfit.
+        case .mara:
+            [Rival(id: 0, name: "Oloololo Sky Safaris", colors: ["#8a5a1a", "#f2e2b8"], style: .safe, balloons: [.L, .L, .L, .L, .L, .L, .M, .M, .M, .M, .M, .M], price: 245, rep: 1.32, cash: 170000),
+             Rival(id: 1, name: "Mara Dawn Balloons", colors: ["#c0392b", "#fbe6c8"], style: .mid, balloons: [.L, .L, .L, .M, .M, .M, .M, .S], price: 200, rep: 1.12, cash: 70000),
+             Rival(id: 2, name: "Talek Air", colors: ["#2a7a5a", "#f0e6c0"], style: .risky, balloons: [.M, .M, .S, .S, .S, .S, .S], price: 150, rep: 0.95, cash: 35000)]
         }
     }
+}
+
+private enum MARA {
+    static let balloonNames = ["Talek", "Olare", "Oloololo", "Musiara", "Sekenani", "Ngama", "Keekorok", "Rekero",
+                               "Naboisho", "Siana", "Lemek", "Olkiombo", "Kichwa", "Sand River", "Rhino Ridge", "Ol Kurruk"]
+    static let pilotNames = ["Brian", "Wanjiku", "Kevin", "Achieng", "Kiprop", "Mercy", "Otieno", "Njeri",
+                             "Dennis", "Wairimu", "Saitoti", "Faith", "Mutua", "Naserian", "Collins", "Akinyi"]
 }
 
 private enum BRI {
@@ -279,6 +309,10 @@ public struct RegionState: Codable, Equatable, Sendable {
     public var transferDebt: TransferDebt?
     /// v127 (optional so older saves load): the first day Hezarfen may remind you again about balloons outside the hangar.
     public var hangarReminder: Int?
+    /// v141 the Mara (optional so older saves load): rainy seasons come through (a chapter goal), and how many have begun
+    /// (the long and the short rains take turns).
+    public var rainsDone: Int?
+    public var rainsCount: Int?
 
     init(rivals: [Rival]) { self.rivals = rivals }
 

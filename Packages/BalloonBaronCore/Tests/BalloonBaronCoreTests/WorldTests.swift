@@ -216,7 +216,8 @@ final class WorldTests: XCTestCase {
     func testHoldingInvestmentsAndOffices() {
         var g = baronGame()
         g.state.holding.cash = 5_000_000 // v137: offices cost about €700,000 each
-        XCTAssertTrue(g.openOffice(.nyc))
+        XCTAssertFalse(g.openOffice(.nyc), "v141: New York opens with Albuquerque")
+        g.state.holding.offices[.nyc] = g.state.day // an office from before v141 stays
         XCTAssertEqual(g.state.holding.tvCost, 90000, "v140: €120,000, New York takes 25% off")
         XCTAssertTrue(g.runTVCampaign())
         XCTAssertFalse(g.runTVCampaign(), "cooldown")
@@ -232,8 +233,8 @@ final class WorldTests: XCTestCase {
         XCTAssertTrue(g.fundResearch())
         XCTAssertEqual(g.state.envelopeLife, 160)
         XCTAssertEqual(g.state.holding.expenseRate, 0.25)
+        g.state.holding.offices[.tyo] = g.state.day // v141: Tokyo opens with Luxor; an old one stays
         XCTAssertTrue(g.openOffice(.ist))
-        XCTAssertTrue(g.openOffice(.tyo))
         XCTAssertEqual(g.state.holding.expenseRate, 0.2)
         XCTAssertEqual(g.state.hezQueue.last, .allOffices)
         XCTAssertEqual(g.state.holding.officeMultiplier(.cap), 1.25 * Holding.tokyoBoost, accuracy: 1e-9, "v140: Tokyo +5% everywhere")

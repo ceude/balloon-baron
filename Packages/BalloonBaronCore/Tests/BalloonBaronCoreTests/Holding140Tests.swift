@@ -64,7 +64,7 @@ final class Holding140Tests: XCTestCase {
         XCTAssertEqual(g.state.holding.cash, cash - 80_000 - 10_000_000)
         XCTAssertEqual(g.state.holding.jerseyUntil, d + 360)
         XCTAssertEqual(g.state.holding.documentaryCost, 3_000_000)
-        g.state.holding.offices[.par] = d
+        g.state.holding.offices[.lon] = d
         XCTAssertEqual(g.state.holding.documentaryCost, 2_400_000, "Paris still takes 20% off")
         XCTAssertEqual(RecordAttempt.allCases.map(\.cost), [1_500_000, 4_000_000, 8_000_000])
         g.state.holding.offices[.dxb] = d
@@ -85,10 +85,10 @@ final class Holding140Tests: XCTestCase {
 
     func testOfficeRentIsADailyHoldingExpense() {
         var g = rich()
-        XCTAssertEqual(Office.allCases.map(\.rent), [1000, 2000, 1500, 1500, 1500, 2000], "İstanbul, New York, Seoul, Tokyo, Dubai, Paris")
-        XCTAssertEqual(Dictionary(uniqueKeysWithValues: Office.allCases.map { ($0, $0.rent) })[.par], 2000)
+        XCTAssertEqual(Office.allCases.map(\.rent), [1000, 2000, 1500, 1500, 1500, 2000], "İstanbul, New York, Seoul, Tokyo, Dubai, London")
+        XCTAssertEqual(Dictionary(uniqueKeysWithValues: Office.allCases.map { ($0, $0.rent) })[.lon], 2000)
         XCTAssertTrue(g.openOffice(.ist))
-        XCTAssertTrue(g.openOffice(.par))
+        XCTAssertTrue(g.openOffice(.nyc)) // v141: New York opens with Albuquerque, where this game plays
         XCTAssertEqual(g.state.holding.officeRent, 3000)
         g.state.parked[.cap]!.auto.todayRaw = 40_000
         let cash = g.state.holding.cash
@@ -121,10 +121,10 @@ final class Holding140Tests: XCTestCase {
         h.offices[.tyo] = 1
         for r in RegionID.allCases {
             XCTAssertEqual(h.officeHere(r), 1.05, accuracy: 1e-9, "Tokyo: +5% tourists in \(r) while you play there")
-            XCTAssertEqual(h.officeMultiplier(r), 1.05, accuracy: 1e-9, "and on its autopilot")
+            XCTAssertEqual(h.officeMultiplier(r), r == .lux ? 1.05 * 1.2 : 1.05, accuracy: 1e-9, "and on its autopilot (v141: Luxor's +20% moved to Tokyo)")
         }
-        h.offices[.par] = 1
-        XCTAssertEqual(h.officeHere(.bri), 1.05 * 1.2, accuracy: 1e-9, "Paris: Bristol +20% also while you play there")
+        h.offices[.lon] = 1
+        XCTAssertEqual(h.officeHere(.bri), 1.05 * 1.2, accuracy: 1e-9, "London (was Paris): Bristol +20% also while you play there")
         XCTAssertEqual(h.officeMultiplier(.bri), 1.05 * 1.2, accuracy: 1e-9)
         XCTAssertEqual(h.officeHere(.lux), 1.05, accuracy: 1e-9)
         var g = rich()

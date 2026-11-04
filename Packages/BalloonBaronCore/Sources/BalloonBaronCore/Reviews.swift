@@ -7,6 +7,8 @@ public struct Review: Codable, Equatable, Sendable {
         case influencer, guide, proposal, valley, panorama, precision, xl, meh, rival, absent, design, welcome
         /// v124 Bristol: landed among sheep or cows; in the tidal mud.
         case farm, mud
+        /// v141 the Mara: came down among a herd; in the Mara River.
+        case herd, river
 
         /// Stars of each variant; the count is the number of text variants.
         public var variants: [Int] {
@@ -36,6 +38,8 @@ public struct Review: Codable, Equatable, Sendable {
             case .welcome: [5]
             case .farm: [2, 3]
             case .mud: [2, 2]
+            case .herd: [2, 3]
+            case .river: [1, 2]
             }
         }
 

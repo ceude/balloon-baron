@@ -194,7 +194,7 @@ extension Game {
         func add(_ f: DemandFactor, _ k: Double) { if abs(k - 1) > 0.004 { out.append((f, k)) } }
         if state.fiesta != nil { add(.fiesta, state.region.fiestaDemand) }
         if state.festival != nil { add(.festival, Rules.festivalDemand) }
-        if state.winter != nil { add(.winter, 0.55) }
+        if state.winter != nil { add(.winter, state.region.rainy ? Mara.rainsDemand : 0.55) }
         add(.flag, (state.weather?.flag ?? .green).demand)
         add(.sales, state.salesFactor)
         let r = state.region, fest = festivalBoost(r)

@@ -52,7 +52,7 @@ public struct Game: Sendable {
     mutating func dayDemand() -> Int {
         if let d = TutorialScene.demand[state.tutorialScene] { return d }
         let flag = state.weather?.flag ?? .green
-        return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? 0.55 : 1)
+        return jsRound(Double(state.demandBase) * demandGrowth() * rng.range(0.85, 1.15) * flag.demand * (state.winter != nil ? (state.region.rainy ? Mara.rainsDemand : 0.55) : 1)
                        * (state.fiesta != nil ? state.region.fiestaDemand : 1) * (state.festival != nil ? Rules.festivalDemand : 1)
                        * state.salesFactor * holdingBoost(state.region) * state.holding.officeHere(state.region))
     }
@@ -78,6 +78,11 @@ public struct Game: Sendable {
             // v124: west wind off the Bristol Channel, east at mid heights
             l = [rng.range(-2.5, 1.5) * flag.wind, rng.range(2.5, 5) * flag.wind, rng.range(3, 6) * flag.wind,
                  (rng.chance(0.5) ? -rng.range(1, 4) : rng.range(1, 3)) * flag.wind]
+        } else if state.region.maraPlains {
+            // v141: the escarpment's dawn drift: low air back toward the Oloololo, east over the plains in the middle, the
+            // top either way
+            l = [rng.range(-1.5, 1.5) * flag.wind, -rng.range(1, 3.5) * flag.wind, rng.range(2, 5) * flag.wind,
+                 (rng.chance(0.5) ? rng.range(2, 6) : -rng.range(1, 3)) * flag.wind]
         }
         // Always leave one layer that carries you east and one that brings you back. v131: the eastward one must be a
         // layer you can fly in all the way (60 m and up, above the chimneys, trees, wires and the bridge), not the
@@ -90,7 +95,8 @@ public struct Game: Sendable {
         }
         // v124: Bristol's field is nearer, like Albuquerque's (`cap ? 1300–2100 : 1000–1700` in the prototype).
         // v124.6: in Cappadocia the field is still close on day 3 (days 1-2 are the fixed scenario)
-        let target = 220 + (state.region.boxWinds || state.region.bristol ? rng.range(1000, 1700)
+        // v141: the Mara's landing sites lie far out on the plains (as far as Cappadocia's)
+        let target = 220 + (state.region.maraPlains ? rng.range(1350, 1850) : state.region.boxWinds || state.region.bristol ? rng.range(1000, 1700)
             : state.region == .cap && state.day <= 3 ? rng.range(1000, 1250) : rng.range(1300, 2100))
         // Festivals always bring a special request.
         var mission: Mission? = state.day <= 2 || (rng.chance(0.4) && !(state.festival != nil && flag != .red)) ? nil
@@ -149,7 +155,8 @@ public struct Game: Sendable {
         if let f = state.festival, state.day > f.end { state.festival = nil }
         if let w = state.winter, state.day > w.end {
             state.winter = nil
-            state.nextWinter = state.day + 45
+            if state.region.rainy { state.local.rainsDone = (state.local.rainsDone ?? 0) + 1 }
+            state.nextWinter = state.day + (state.region.rainy ? Mara.rainsEvery : 45)
         }
     }
 

@@ -60,6 +60,9 @@ public enum DayEvent: Codable, Equatable, Sendable {
     case airspaceFine(fine: Int)
     case eveningAscent(balloons: Int, pax: Int, income: Int)
     case nightGlowTonight(balloons: Int)
+    /// v141 the Mara: came down among a herd (the rangers' fine); in the Mara River (a crash).
+    case herdLanding(HerdKind, fine: Int)
+    case riverLanding
     /// v125 contracts: a foggy morning under Bristol's guarantee (refund and vouchers); a red flag (nothing owed); the
     /// group flew (`dayN`/`len` for a block, 0 for one day); seats missing; a job that never flew for the weather; jobs
     /// done in full with the owner so far; trust lost over people left on the ground.
@@ -124,10 +127,12 @@ public struct Ledger: Codable, Equatable, Sendable {
     // Costs
     public var fuel = 0, wages = 0, upkeep = 0, insurance = 0, loans = 0, repairs = 0, compensation = 0
     public var fines = 0, cancellations = 0, hotelFees = 0, antitrust = 0
+    /// v141: the Maasai Mara's park fee, per passenger flown (optional so older saved reports load).
+    public var park: Int?
 
     public var net: Int {
         tickets + (evening ?? 0) + (contract ?? 0) + (showRefund ?? 0) + (contractWait ?? 0) - (contractPenalty ?? 0) - (contractVoucher ?? 0) - (transfer ?? 0) + founderBonus + hotelIncome + mission + ads + tips + insurancePaid + seizure + chapterReward
-            - fuel - wages - upkeep - insurance - loans - repairs - compensation - fines - cancellations - hotelFees - antitrust
+            - fuel - wages - upkeep - insurance - loans - repairs - compensation - fines - cancellations - hotelFees - antitrust - (park ?? 0)
     }
 }
 
@@ -155,6 +160,8 @@ public struct DayReport: Codable, Equatable, Sendable {
 /// v124.6: why popularity changed on a day. Text: `repWhy.<rawValue>`.
 public enum RepReason: String, Codable, CaseIterable, Sendable {
     case cancelled, traits, ads, mission, moment, perfect, good, far, farm, mud, airspace, pilotsSafe
+    /// v141: landed among a herd in the Mara.
+    case herd
     case hard, crash, pilotAccident, hotels, drift, xl, designs, glow, show, prCap, absent, influencer
     /// v125: a contract group left on the ground.
     case contract
@@ -175,6 +182,9 @@ public struct FlightResult: Codable, Equatable, Sendable {
     public var farm: PenAnimal?
     public var mud: Bool?
     public var airFine: Bool?
+    /// v141 the Mara: came down among these animals; in the river (the landing is then a crash).
+    public var herd: HerdKind?
+    public var river: Bool?
 
     public init(landing: Landing, distance: Double = 0, mission: Mission? = nil, missionDone: Bool = false, moment: FlightMoment.Kind? = nil) {
         self.landing = landing; self.distance = distance; self.mission = mission; self.missionDone = missionDone; self.moment = moment

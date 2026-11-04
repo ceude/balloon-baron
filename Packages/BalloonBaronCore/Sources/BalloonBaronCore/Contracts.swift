@@ -5,10 +5,14 @@ import Foundation
 // mornings), London weekend trains in Bristol (Saturday and Sunday, with a fog guarantee). Each region has its own cast
 // of three owners; saying no, or not delivering, sends the group to the most popular rival, who grows with it.
 // v126: Cappadocia's charter flights (two mornings, a plane that may be late).
+// v141: the Maasai Mara's safari planes (lodge guests flown in to a dirt airstrip for two or three mornings; a storm over
+// the Rift Valley or zebras on the strip make them late from the second job on).
 
 /// What stands at the off-map place and brings the group: coaches, a cruise ship, a steam train or (v126) a charter plane.
 public enum ContractKind: String, Codable, Sendable {
     case bus, ship, train, plane
+    /// v141: a single-engine bush plane at the Mara's dirt airstrip.
+    case bush
 }
 
 /// The owners of the contract companies, three per region (`CTR_CAST_*`). Their names, titles and lines live in the
@@ -18,6 +22,8 @@ public enum ContractOwner: String, Codable, CaseIterable, Sendable {
     case farouk, dalia, hamza
     case nigel, priya, fiona
     case jiwoo, chen, murat
+    /// v141: the Mara's safari plane operators.
+    case grace, rajesh, peter
 
     public var company: String {
         switch self {
@@ -33,6 +39,9 @@ public enum ContractOwner: String, Codable, CaseIterable, Sendable {
         case .jiwoo: "Haneul Wings"
         case .chen: "Pearl Bund Travel"
         case .murat: "Haliç Gündoğumu Turları"
+        case .grace: "Rift Valley Air Safaris"
+        case .rajesh: "Acacia Wings"
+        case .peter: "Kilima Air"
         }
     }
 
@@ -51,6 +60,9 @@ public enum ContractOwner: String, Codable, CaseIterable, Sendable {
         case .jiwoo: "#e0408a"
         case .chen: "#c0392b"
         case .murat: "#1f6f8b"
+        case .grace: "#1f4a6a"
+        case .rajesh: "#2a5a8a"
+        case .peter: "#2a7a4a"
         }
     }
 }
@@ -134,6 +146,17 @@ public struct ContractConfig: Sendable {
             k.minSeats = 48; k.gap = 7...10; k.prefGap = 5...7; k.lead = 3...4; k.len = 2...2; k.weekend = true
             k.share = 0.25...0.4; k.price = 0.9...1; k.prefPrice = 1.04; k.fogGuarantee = true
             k.redCut = 0; k.redMove = false
+            return k
+        // v141: lodge guests for two or three mornings, priced near the market, late planes from the second job on,
+        // at a dirt airstrip laid out like Cappadocia's airport.
+        case .mara:
+            var k = ContractConfig(kind: .bush, cast: [.grace, .rajesh, .peter])
+            k.minSeats = 56; k.gap = 10...14; k.prefGap = 7...9; k.len = 2...3; k.share = 0.25...0.4
+            k.price = 0.85...0.95; k.prefPrice = 1.05
+            k.redCut = 0; k.redMove = false
+            var d = ContractDelayConfig(); d.after = 1
+            k.delay = d
+            k.sceneZoom = 0.6
             return k
         }
     }

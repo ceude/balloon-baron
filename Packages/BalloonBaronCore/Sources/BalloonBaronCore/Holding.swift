@@ -3,8 +3,10 @@ import Foundation
 /// City offices of the holding. Perks stack; any four cut holding expenses, all six cut them further.
 public enum Office: String, Codable, CaseIterable, CodingKeyRepresentable, Sendable {
     case ist, nyc, sel, tyo
-    /// v137: Dubai (Luxor +20%, records 25% cheaper) and Paris (Bristol +20%, the documentary 20% cheaper).
-    case dxb, par
+    /// v137: Dubai and Paris. v141 (developer): Dubai lifts the Maasai Mara's autopilot +20% (records 25% cheaper as
+    /// before; its old Luxor +20% moved to Tokyo); Paris became London (Bristol +20%, the documentary 20% cheaper), its
+    /// saved key stays "par" so an office bought as Paris is the London office.
+    case dxb, lon = "par"
 
     /// v137 (developer): all six cost about the same, around €700,000 (they were €350,000–450,000, Dubai and Paris
     /// €1.5M and €1.8M).
@@ -12,6 +14,19 @@ public enum Office: String, Codable, CaseIterable, CodingKeyRepresentable, Senda
     /// v140 (developer): each office's rent and staff, euros a day, paid by the holding every evening.
     public var rent: Int { [1000, 2000, 1500, 1500, 1500, 2000][index] }
     private var index: Int { Self.allCases.firstIndex(of: self)! }
+
+    /// v141 (developer): the region you must have entered (own) before this office can open: New York with Albuquerque,
+    /// Tokyo with Luxor, London with Bristol, Dubai with the Maasai Mara. İstanbul and Seoul need nothing. An office
+    /// already open stays open.
+    public var needs: RegionID? {
+        switch self {
+        case .ist, .sel: nil
+        case .nyc: .abq
+        case .tyo: .lux
+        case .lon: .bri
+        case .dxb: .mara
+        }
+    }
 
     /// v138 (developer): the order the offices are listed in, cheapest first (İstanbul, then Seoul, Tokyo and Dubai,
     /// then New York and Paris). Ties keep `allCases` order. `allCases` itself stays as it is (saves and goals).
@@ -69,7 +84,7 @@ public struct Holding: Codable, Equatable, Sendable {
     public static let foundationBase = 1_000_000, foundationStep = 500_000, foundationRep = 0.05
     /// v140: Tokyo's Asian tour operators bring +5% tourists to every region; Paris lifts Bristol by 20% also while you
     /// play there (it lifted only its autopilot income).
-    public static let tokyoBoost = 1.05, parisBoost = 1.2
+    public static let tokyoBoost = 1.05, londonBoost = 1.2
     /// Levels 1 and 2 are the envelope research. v137: level 3 is a weather radar network, level 4 a composite basket and
     /// an efficient burner (they keep the envelope's 200 flights). The holding goal wants all four.
     public static let researchLevels = [ResearchLevel(cost: 400000, life: 160), ResearchLevel(cost: 900000, life: 200),
@@ -195,7 +210,7 @@ public struct Holding: Codable, Equatable, Sendable {
     public var researchAutopilot: Double {
         (research >= Self.radarLevel ? Self.radarAutopilot : 1) * (research >= Self.compositeLevel ? Self.compositeAutopilot : 1)
     }
-    public var documentaryCost: Int { jsRound(Double(Self.documentaryCost) * (has(.par) ? 0.8 : 1)) }
+    public var documentaryCost: Int { jsRound(Double(Self.documentaryCost) * (has(.lon) ? 0.8 : 1)) }
     /// v140: the offices' rent and staff, euros a day.
     public var officeRent: Int { offices.keys.reduce(0) { $0 + $1.rent } }
     /// v140: World Games shows held, the day of the last, the next show's price and the first day it can be held.
@@ -221,11 +236,12 @@ public struct Holding: Codable, Equatable, Sendable {
     /// Office bonus on a parked region's income; v137: with the R&D levels' savings.
     public func officeMultiplier(_ r: RegionID) -> Double {
         (has(.ist) && r == .cap ? 1.25 : 1) * (has(.nyc) && r == .abq ? 1.2 : 1)
-            * (has(.dxb) && r == .lux ? 1.2 : 1) * (has(.par) && r == .bri ? Self.parisBoost : 1) * (has(.tyo) ? Self.tokyoBoost : 1) * researchAutopilot
+            * (has(.tyo) && r == .lux ? 1.2 : 1) * (has(.dxb) && r == .mara ? 1.2 : 1) * (has(.lon) && r == .bri ? Self.londonBoost : 1)
+            * (has(.tyo) ? Self.tokyoBoost : 1) * researchAutopilot
     }
-    /// v140: the offices' pull on tourists in the region you play: Tokyo everywhere, Paris in Bristol. Parked regions get
-    /// theirs in `officeMultiplier`.
-    public func officeHere(_ r: RegionID) -> Double { (has(.tyo) ? Self.tokyoBoost : 1) * (has(.par) && r == .bri ? Self.parisBoost : 1) }
+    /// v140: the offices' pull on tourists in the region you play: Tokyo everywhere, London (was Paris) in Bristol. Parked
+    /// regions get theirs in `officeMultiplier`.
+    public func officeHere(_ r: RegionID) -> Double { (has(.tyo) ? Self.tokyoBoost : 1) * (has(.lon) && r == .bri ? Self.londonBoost : 1) }
 
     mutating func log(day: Int, income: Int = 0, expense: Int = 0) {
         if history.last?.day != day {
@@ -454,13 +470,16 @@ extension Game {
 
     @discardableResult
     public mutating func openOffice(_ o: Office) -> Bool {
-        guard !state.holding.has(o), spendHolding(o.cost) else { return false }
+        guard !state.holding.has(o), canOpenOffice(o), spendHolding(o.cost) else { return false }
         state.holding.offices[o] = state.day
         let n = state.holding.offices.count
         state.hezQueue.append(n == Office.allCases.count ? .sixOffices : n == Holding.fewOffices ? .allOffices : .officeOpened(o))
         celebrate(.office)
         return true
     }
+
+    /// v141: the office's region has been entered (or it needs none, or it is already open).
+    public func canOpenOffice(_ o: Office) -> Bool { state.holding.has(o) || o.needs.map { state.owns($0) } ?? true }
 
     /// v137: a documentary season can be made (none on air, and the gap after the last one is over).
     public var canMakeDocumentary: Bool { (state.holding.documentary?.next ?? 0) <= state.day }
@@ -500,11 +519,12 @@ extension Game {
         st.price = r.startPrice
         st.demandBase = r.startDemand
         if r.bristol { st.fogFlown = 0; st.glowCount = 0 }
-        st.nextWinter = state.day + 40
+        st.nextWinter = state.day + (r.rainy ? Mara.firstRains : 40)
+        if r.rainy { st.rainsDone = 0; st.rainsCount = 0 }
         // v125.5: no morning event before the region's welcome cards: the first comes two weeks in
         st.nextEvent = state.day + 14
         st.firstMissionGiven = true
-        if r.hasFiesta { st.fiestaNext = state.day + 12 }
+        if r.hasFiesta { st.fiestaNext = state.day + (r == .mara ? Mara.firstMigration : 12) }
         st.balloons.append(Balloon(id: state.nextID, size: .S, name: r.balloonNames[0]))
         st.flagship = state.nextID
         return st

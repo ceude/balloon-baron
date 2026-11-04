@@ -148,6 +148,9 @@ public struct Airspace: Codable, Equatable, Sendable {
 
 public struct Winter: Codable, Equatable, Sendable {
     public var start: Int, end: Int
+    /// v141 the Mara's rains: the long rains (true) or the short rains (false); nil for a winter.
+    public var long: Bool?
+    public init(start: Int, end: Int, long: Bool? = nil) { self.start = start; self.end = end; self.long = long }
 }
 
 /// A bankrupt rival's hotel, offered to you at `Rules.hotelBargainShare` of its price.
@@ -210,6 +213,9 @@ public enum HezMessage: Codable, Equatable, Sendable {
     case tip(Tip)
     case winterComing
     case spring
+    /// v141 the Mara: the long or the short rains begin (`days` long); they're over.
+    case rainsComing(long: Bool, days: Int)
+    case rainsOver
     case entrant(Entrant)
     /// Cappadocia baron: the holding opens.
     case holdingOpened

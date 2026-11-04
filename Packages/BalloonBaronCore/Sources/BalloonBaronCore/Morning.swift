@@ -69,6 +69,10 @@ public enum PaperItem: Codable, Equatable, Sendable {
     case airspace(fine: Int)
     case nightGlow(balloons: Int)
     case briFestival
+    /// v141 the Mara: the Great Migration arrives; the company came down among a herd (the fine); in the river.
+    case migration
+    case herdLanding(fine: Int)
+    case riverLanding
     /// v125: you became a contract company's preferred operator; a rival flew a group you didn't take.
     case preferredOperator(company: String, kind: ContractKind)
     case rivalGroup(rival: String, company: String, n: Int, len: Int, balloons: Int, kind: ContractKind)
@@ -82,7 +86,8 @@ public enum PaperItem: Codable, Equatable, Sendable {
         case .vip, .wedding, .record, .night, .milestone: 2
         case .documentary, .pressGood, .pressBad, .rivalAccident, .rivalRedCaught, .hotelLost, .inspectorFine, .deed: 3
         case .accident(_, _, let severe): severe ? 5 : 3
-        case .redCaught, .festival, .newEntrant, .passedBoss, .show, .nightGlow, .briFestival, .festivalHosted: 4
+        case .redCaught, .festival, .newEntrant, .passedBoss, .show, .nightGlow, .briFestival, .festivalHosted, .migration, .riverLanding: 4
+        case .herdLanding: 3
         case .foundationProject: 3
         case .airspace, .preferredOperator, .rivalGroup: 3
         case .antitrust, .seized, .holdingRescue: 5
@@ -109,6 +114,9 @@ public enum NightEvent: Codable, Equatable, Sendable {
     case eveningAscent(balloons: Int)
     /// v140: a night of the holding's International Balloon Festival: the guest balloons glow on the field.
     case festivalGlow
+    /// v141 the Mara: a Great Migration night (camp fires, the herds' calls); the first night of the rains.
+    case migrationNight
+    case rainNight
 }
 
 extension Game {
@@ -273,7 +281,10 @@ extension Game {
         } else if state.holding.festivalOn(state.region, day: state.day) {
             ev = .festivalGlow
         } else if state.fiesta != nil {
-            ev = .balloonGlow
+            ev = state.region.maraPlains ? .migrationNight : .balloonGlow
+        } else if let w = state.winter, state.winterNight != w.start, state.region.rainy {
+            state.winterNight = w.start
+            ev = .rainNight
         } else if let w = state.winter, state.winterNight != w.start {
             state.winterNight = w.start
             ev = .snow

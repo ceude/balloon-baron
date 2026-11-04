@@ -47,8 +47,10 @@ public struct GridPoint: Equatable, Sendable {
 public struct OutskirtsLayout: Sendable {
     public enum Decor: String, Sendable {
         case orchard, vine, dovecote, view, farm, rival, scrub, rv, mesa, cane, palms, crops, pasture
+        /// v141 the Mara: acacia grass, a herd grazing, a Maasai manyatta, a waterhole.
+        case savanna, herd, manyatta, waterhole
         /// Decor that wants a big plot.
-        var big: Bool { [.dovecote, .view, .mesa, .rv, .palms, .farm].contains(self) }
+        var big: Bool { [.dovecote, .view, .mesa, .rv, .palms, .farm, .manyatta, .waterhole].contains(self) }
     }
 
     /// A plot: centre, long axis (ux, uy), size along and across it, its slightly uneven corners.
@@ -109,6 +111,7 @@ public struct OutskirtsLayout: Sendable {
         case .abq: return [.scrub, .rv, .mesa, .view, .farm, .scrub, .mesa, .rival, .scrub, .mesa, .rival]
         case .lux: return [.cane, .palms, .crops, .view, .farm, .cane, .palms, .crops, .rival, .cane, .palms, .rival]
         case .bri: return [.pasture, .pasture, .farm, .view, .pasture, .crops, .pasture, .rival, .farm, .pasture, .rival]
+        case .mara: return [.savanna, .herd, .manyatta, .view, .waterhole, .savanna, .herd, .rival, .savanna, .waterhole, .rival]
         }
     }
 
@@ -139,7 +142,7 @@ public struct OutskirtsLayout: Sendable {
         region = reg
         let code = Array(reg.rawValue.utf8)
         var R = Mulberry32(seed: UInt32(135 + Int(code[0]) * 7 + Int(code[1])))
-        let wet = reg == .lux || reg == .bri
+        let wet = reg == .lux || reg == .bri || reg == .mara
         func inRect(_ x: Double, _ y: Double, _ r: (Double, Double, Double, Double), _ m: Double) -> Bool {
             x > r.0 - m && x < r.0 + r.2 + m && y > r.1 - m && y < r.1 + r.3 + m
         }

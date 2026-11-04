@@ -9,6 +9,8 @@ public enum ObstacleKind: String, Codable, Sendable {
     case plain
     /// Bristol: oaks and copper beeches, church spires, the tall ship's masts, dock cranes, the observatory, the bridge.
     case tree, spire, mast, crane, observatory, bridge
+    /// v141 the Mara: flat-topped acacias, granite kopjes; the river (a landing in it, not an obstacle).
+    case acacia, kopje, river
 }
 
 /// The animals in a fenced field. Landing among them angers the farmer.

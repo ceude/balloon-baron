@@ -158,6 +158,8 @@ public struct FlightSim: Sendable {
         case airborne, missionDone, fuelOut, landed, moment(FlightMoment.Kind)
         /// v124: flying into the airport's airspace (a warning), and staying in it three seconds (the fine is coming).
         case airspaceWarning, airspaceViolated
+        /// v141 the Mara: low over a herd (don't land here), low over the river (never land here), once each.
+        case herdWarning, riverWarning
     }
 
     public let weather: Weather
@@ -174,6 +176,9 @@ public struct FlightSim: Sendable {
     /// v124: Bristol's landmarks on today's flight line (nil elsewhere), and what a crash hit there.
     public let bristol: BristolWorld?
     public var hit: ObstacleKind?
+    /// v141: the Mara's river and herds on today's flight line (nil elsewhere); warned low over a herd, over the river.
+    public let mara: MaraWorld?
+    public var herdWarned = false, riverWarned = false
     /// v124: inside the airport's airspace now, seconds in it, warned, fined.
     public var inAirspace = false
     public var airspaceTime = 0.0
@@ -194,14 +199,16 @@ public struct FlightSim: Sendable {
     /// v122: the tutorial's look at the landing field slows the flight to this share while the camera is away.
     public var slow = 1.0
 
-    public init(weather: Weather, pax: Int, burners: Int = 1, turningVent: Bool = false, region: RegionID = .cap) {
+    /// `migration`: the Great Migration is on (more herds in the Mara).
+    public init(weather: Weather, pax: Int, burners: Int = 1, turningVent: Bool = false, region: RegionID = .cap, migration: Bool = false) {
         self.weather = weather
         self.pax = pax
         burnerPower = Burners.heat[clamp(burners, 1, 3) - 1]
         self.turningVent = turningVent
         var obs = FlightWorld.obstacles(for: weather)
-        lines = FlightWorld.powerLines(for: weather)
+        lines = region.maraPlains ? [] : FlightWorld.powerLines(for: weather) // v141: no power lines on the savanna
         bristol = region.bristol ? BristolWorld.build(weather, obstacles: &obs, lines: lines) : nil
+        mara = region.maraPlains ? MaraWorld.build(weather, obstacles: &obs, migration: migration) : nil
         obstacles = obs
         moment = FlightMoment.roll(weather)
     }
@@ -215,6 +222,12 @@ public struct FlightSim: Sendable {
         if b.bridgeHeight(at: x) > 0 { return .bridge }
         guard let o = obstacles.filter({ abs(x - $0.x) < $0.w / 2 }).max(by: { $0.h < $1.h }) else { return nil }
         return o.kind == .plain ? .tree : o.kind
+    }
+
+    /// `maraHit`: what a crash at x hit in the Mara (an acacia or a kopje).
+    func maraHit(_ x: Double) -> ObstacleKind? {
+        guard mara != nil else { return nil }
+        return obstacles.filter({ abs(x - $0.x) < $0.w / 2 }).max(by: { $0.h < $1.h })?.kind
     }
 
     public var distanceToTarget: Double { abs(x - weather.target) }
@@ -246,7 +259,7 @@ public struct FlightSim: Sendable {
             let th = FlightWorld.terrainHeight(at: x, obstacles, lines: lines, bristol: bristol)
             if th > 4 && alt < th {
                 hitWire = lines.contains { $0.wire(at: x) != nil }
-                hit = hitWire ? nil : bristolHit(x)
+                hit = hitWire ? nil : bristolHit(x) ?? maraHit(x)
                 land(.crash)
                 return ev + [.landed]
             }
@@ -299,6 +312,11 @@ public struct FlightSim: Sendable {
             moment = m
         }
         if airborne && alt > 0 && fuel <= 0 && !fuelWarned { fuelWarned = true; ev.append(.fuelOut) }
+        // v141 `maraTick`: low over a herd or the river, a word of warning, once each
+        if let m = mara, airborne, alt <= 90 {
+            if !herdWarned && m.herd(at: x, time: t) != nil { herdWarned = true; ev.append(.herdWarning) }
+            if !riverWarned && m.inRiver(x) { riverWarned = true; ev.append(.riverWarning) }
+        }
         // v124 `briAirTick`: a warning on the way in, a fine after three seconds inside
         if let a = weather.air, airborne {
             inAirspace = a.contains(x: x, alt: alt)
@@ -318,7 +336,10 @@ public struct FlightSim: Sendable {
         burning = false
         venting = false
         let dist = distanceToTarget
-        let landing = q ?? (dist < FlightWorld.landingZone ? .perfect : dist < 260 ? .good : .far)
+        var landing = q ?? (dist < FlightWorld.landingZone ? .perfect : dist < 260 ? .good : .far)
+        // v141: the Mara River: coming down in it or on its banks is a disaster, whatever the touchdown
+        var river = false
+        if let m = mara, landing != .crash, m.inRiver(x) { landing = .crash; hit = .river; river = true }
         if mission == .precision && dist < 40 && landing != .hard && landing != .crash { missionDone = true }
         result = FlightResult(landing: landing, distance: dist, mission: mission, missionDone: mission != nil && missionDone,
                               moment: moment?.done == true ? moment?.kind : nil)
@@ -328,6 +349,9 @@ public struct FlightSim: Sendable {
             result?.mud = b.mud(at: x) ? true : nil
         }
         if airspaceFined { result?.airFine = true }
+        if let m = mara {
+            if river { result?.river = true } else if landing != .crash { result?.herd = m.herd(at: x, time: t) }
+        }
     }
 
     /// Cancel before take-off: passengers get refunds and compensation.

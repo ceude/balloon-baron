@@ -9,13 +9,15 @@ public enum GoalKind: String, Codable, Sendable {
     case seats
     /// v124 Bristol: an own flight ended safely on a foggy morning; a Night Glow held.
     case fog, glow
+    /// v141 the Mara: a rainy season come through.
+    case rains
     /// Building levels: the wind mast, the hangar, or any building.
     case bldMast, bldHangar, bldTop
     /// v125: contract jobs delivered in full (any company); preferred operator of one (kept, but no chapter asks it).
     case ctrDone, ctrPref
 
     /// Shown as done / not yet instead of a count.
-    public var yesNo: Bool { [.workshop, .factoryBuilt, .school, .xl, .influencer, .guide, .fiesta, .fog, .glow, .ctrPref, .bldMast, .bldHangar, .bldTop].contains(self) }
+    public var yesNo: Bool { [.workshop, .factoryBuilt, .school, .xl, .influencer, .guide, .fiesta, .fog, .rains, .glow, .ctrPref, .bldMast, .bldHangar, .bldTop].contains(self) }
     var building: Bool { [.bldMast, .bldHangar, .bldTop].contains(self) }
 }
 
@@ -63,6 +65,15 @@ public struct Chapter: Equatable, Sendable {
                 Chapter(id: "festivalBri", reward: 20000, goals: [g(.seats, 380), g(.hotelOwn, 1), g(.fiesta, 1), g(.glow, 1), g(.ctrDone, 3), g(.share, 0.55)]),
                 Chapter(id: "baronBri", reward: 0, goals: [g(.share, 0.75), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.8), g(.xl, 1), g(.bldHangar, 3)])
             ]
+        // v141: the hardest: bigger fleets and higher stars than Bristol's; the escarpment wants a rainy season come
+        // through, the migration a flight in the Great Migration.
+        case .mara:
+            return [
+                Chapter(id: "tentedCamp", reward: 5000, goals: [g(.seats, 56), g(.pilots, 3), g(.stars, 4.7), g(.hotelDeal, 2), g(.guide, 1), g(.bldMast, 2)]),
+                Chapter(id: "oloololo", reward: 10000, goals: [g(.seats, 240), g(.influencer, 1), g(.stars, 4.75), g(.share, 0.35), g(.rains, 1), g(.ctrDone, 2), g(.bldHangar, 2)]),
+                Chapter(id: "migration", reward: 20000, goals: [g(.seats, 420), g(.hotelOwn, 1), g(.fiesta, 1), g(.ctrDone, 3), g(.share, 0.55)]),
+                Chapter(id: "baronMara", reward: 0, goals: [g(.share, 0.75), g(.hotelOwn, 2), g(.school, 1), g(.stars, 4.85), g(.xl, 1), g(.bldHangar, 3)])
+            ]
         }
     }
 }
@@ -95,6 +106,7 @@ extension GameState {
         case .fiesta: return Double(s.fiestaFlown)
         case .fog: return Double(s.fogFlown ?? 0)
         case .glow: return Double(s.glowCount ?? 0)
+        case .rains: return Double(s.rainsDone ?? 0)
         case .ctrDone: return Double(s.contracts?.ok ?? 0)
         case .ctrPref: return s.contracts?.prefEver == true ? 1 : 0
         case .bldMast: return Double(level(.mast))

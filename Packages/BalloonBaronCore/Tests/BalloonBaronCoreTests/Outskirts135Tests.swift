@@ -11,7 +11,7 @@ final class Outskirts135Tests: XCTestCase {
         case .abq: rects = [(3, 17.5, 19, 33)]; shift = (0, 12)
         case .lux: rects = [(23.5, -12.5, 37, -6.5), (29.5, -9, 31.8, 8.6)]; shift = (0, 0)
         case .bri: rects = [(-20, 3, -5.6, 10.6)]; shift = (0, 0)
-        case .cap: rects = [(19.5, -2.5, 48, 9.6)]; shift = (0, 0)
+        case .cap, .mara: rects = [(19.5, -2.5, 48, 9.6)]; shift = (0, 0)
         }
         return { gx, gy in let x = gx - shift.0, y = gy - shift.1; return !rects.contains { x > $0.0 && x < $0.2 && y > $0.1 && y < $0.3 } }
     }
