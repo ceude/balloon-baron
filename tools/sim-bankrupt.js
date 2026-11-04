@@ -1,7 +1,7 @@
 // Usage: NODE_PATH=$(npm root -g) [RUIN=accept|half] node tools/sim-bankrupt.js [profiles=all] [seeds=40] [days=800] [firstSeed=1]
 //   profiles: comma list of ordinary,overexp,gambler,neglect,allbad,newbie,newbieMild,redOnly,noIns,noRenew,badPrice,priceHigh,priceLow,noHangar,stuckNoRenew (or "all")
 // Can a careless player still go bankrupt? Bots with different habits play the whole campaign on the prototype's real
-// game code (Cappadocia, then Albuquerque, Luxor and Bristol with the Grand Tour owned, as tools/sim-campaign.js does).
+// game code (Cappadocia, then Albuquerque, Luxor, Bristol and the Maasai Mara with the Grand Tour owned, as tools/sim-campaign.js does).
 // The game ends (S.over) only when cash is below -5,000 at the close of a day and the bank has taken the last balloon
 // (one seizure a day, biggest non-flagship first). Per run: bankrupt day and region, seizures, worst cash, longest
 // stretch below zero, longest stretch with nothing able to fly, baron days, and what drained the money on seizure days.
@@ -57,13 +57,13 @@ const PROFILES = {
         const realStart = startDay; startDay = () => {};
         /* the founder's own landing: worse on yellow, much worse on red */
         const Q = SAFE ? { green: [.3, .55, .15, 0, 0] } : { green: [.3, .55, .13, .015], yellow: [.2, .5, .22, .06], red: [.1, .4, .25, .15] };
-        startFlight = () => { const q = Q[S.weather.flag] || Q.green, x = Math.random(); const k = x < q[0] ? 'perfect' : x < q[0] + q[1] ? 'good' : x < q[0] + q[1] + q[2] ? 'far' : x < q[0] + q[1] + q[2] + q[3] ? 'hard' : 'crash'; finishDay({ q: k, dist: 60, mis: S.weather.mission, mok: !!S.weather.mission && k !== 'hard' && k !== 'crash' && Math.random() < .6 }); };
+        startFlight = () => { const q = Q[S.weather.flag] || Q.green, x = Math.random(); const k = x < q[0] ? 'perfect' : x < q[0] + q[1] ? 'good' : x < q[0] + q[1] + q[2] ? 'far' : x < q[0] + q[1] + q[2] + q[3] ? 'hard' : 'crash'; const mara = S.region === 'mara', river = mara && k !== 'crash' && Math.random() < .02, q2 = river ? 'crash' : k; finishDay({ q: q2, dist: 60, mis: S.weather.mission, mok: !!S.weather.mission && q2 !== 'hard' && q2 !== 'crash' && Math.random() < .6, herd: mara && q2 !== 'crash' && Math.random() < .08 ? 'gnu' : null, river }); }; /* v141: in the Mara, 8% herd landings and 2% river landings, as in sim-campaign */
         const L = { prof, seed, rescues: [], closes: [], over: null, overRegion: null, seized: 0, seizedBy: {}, seizeDays: [], minCash: 0, minCashRegion: 'cap', negRun: 0, negMax: 0, groundRun: 0, groundMax: 0, baron: {}, enter: { cap: 1 }, world: 0, causes: {}, reds: 0, fines: 0, crashes: 0, loansTaken: 0, buyLoans: 0, err: null };
         if (!window.__paW) { const pa = paperAdd; window.__paW = 1; paperAdd = (pr, hd, sub) => { if (window.__onPaper) window.__onPaper(hd); return pa(pr, hd, sub); }; }
         window.__onPaper = hd => { if (/^Banka .*el koydu/.test(hd) && hd.includes(S.company)) { L.seized++; L.seizedBy[S.region] = (L.seizedBy[S.region] || 0) + 1; L.seizeDays.push(S.region + S.day); L.seizeToday = 1; } };
         S = newState(); S.company = 'Bot'; S.weather = newWeather(); S.demand = dayDemand(); rivalFlyPlan();
         S.iap = { worldTour: 1 };
-        const NEXT = { cap: 'abq', abq: 'lux', lux: 'bri' }, HQ_ORDER = ['ist', 'nyc', 'tyo', 'sel'];
+        const NEXT = { cap: 'abq', abq: 'lux', lux: 'bri', bri: 'mara' } /* v141 */, HQ_ORDER = ['ist', 'nyc', 'tyo', 'sel'];
         const hist = []; /* the last 10 days' money, for the cause of a seizure */
         for (let d = 0; d < DAYS; d++) {
           const P = P0.newbie && S.day <= P0.newbie ? Object.assign({}, P0.early ? P0 : BADP, P0.early || { hangar: 'lazy' }) : P0;
@@ -102,7 +102,7 @@ const PROFILES = {
           if (isBaron('lux')) {
             if (isBaron() && S.cash > 30000) withdraw(1);
             const H = S.hold || (S.hold = { log: [] }), buy = (c, f) => { if ((S.holding || 0) >= c) { S.holding -= c; f(); return true; } return false; };
-            for (const k of HQ_ORDER) if (!hasOffice(k)) buy(HQ_CITIES[k].cost, () => { H.offices = Object.assign({}, H.offices, { [k]: S.day }); });
+            for (const k of HQ_ORDER) if (!hasOffice(k) && officeOpenable(k)) buy(HQ_CITIES[k].cost, () => { H.offices = Object.assign({}, H.offices, { [k]: S.day }); });
             if ((H.rnd || 0) < 2) buy(RD_LEVELS[H.rnd || 0].cost, () => { H.rnd = (H.rnd || 0) + 1; });
             if (!(H.tvN)) buy(tvCost(), () => { H.tvN = 1; H.tvUntil = S.day + 14; H.tvCd = S.day + 30; });
             if (!H.celeb) buy(celebCost(), () => { H.celeb = { name: 'X', until: S.day + 90 }; });
@@ -182,7 +182,7 @@ const PROFILES = {
           if (TRACE) (L.trace = L.trace || []).push([reg, day, S.weather && lastReport.flag, nb, Math.round(cash0 + lent - spent), Math.round(S.cash), Math.round(lastReport.net), S.balloons.length].join(' '));
           if (S.cash < L.minCash) { L.minCash = Math.round(S.cash); L.minCashRegion = S.region; }
           if (S.cash < 0) L.negRun++; else L.negRun = 0; L.negMax = Math.max(L.negMax, L.negRun);
-          for (const id of ['cap', 'abq', 'lux', 'bri']) if (S.barons && S.barons[id] && !L.baron[id]) L.baron[id] = S.barons[id];
+          for (const id of ['cap', 'abq', 'lux', 'bri', 'mara']) if (S.barons && S.barons[id] && !L.baron[id]) L.baron[id] = S.barons[id];
           if (S.hold && S.hold.worldBaron) { L.world = S.hold.worldBaron; break; }
           if (S.over) { L.over = day; L.overRegion = reg; L.overHolding = Math.round(S.holding || 0); L.overBaron = anyBaron(); break; }
         }

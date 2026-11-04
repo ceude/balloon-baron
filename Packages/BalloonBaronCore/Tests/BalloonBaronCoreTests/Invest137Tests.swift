@@ -263,7 +263,7 @@ final class Invest137Tests: XCTestCase {
         g.state.holding.research = 4
         g.checkHoldingGoals()
         XCTAssertNotNil(g.state.holding.worldBaron)
-        XCTAssertEqual(HoldingGoal.allCases, [.million, .baronLux, .tv, .celebrity, .offices, .research, .worldGames],
+        XCTAssertEqual(HoldingGoal.allCases, [.million, .baronLux, .tv, .celebrity, .research, .offices, .worldGames],
                        "in the order the simulator meets them")
     }
 

@@ -105,7 +105,7 @@ Burada yazanlar senin hesabında yapılacaklar.
 | `balloonbaron.decorpack` | Meydan Süsleri | Square Decorations | Paket (v115) | 0,99 € |
 | `balloonbaron.figurepack` | Şölen Figürleri | Show Figures | Paket (v115) | 0,99 € |
 | `balloonbaron.founder` | Kurucu Paketi | Founder Pack | Paket (v113) | 6,99 € |
-| `balloonbaron.worldtour` | Dünya Turu | Grand Tour | Bölge kilidi (v115) | 4,99 € |
+| `balloonbaron.worldtour` | Dünya Turu | Grand Tour | Bölge kilidi (v115): Albuquerque, Luksor, Bristol ve Maasai Mara (v141) | 4,99 € |
 | `balloonbaron.supporter` | Destekçi Sürümü | Supporter Edition | Paket (v115) | 9,99 € |
 
 - Fener dizileri (`lanterns`) Hezarfen'in hediyesi. Ürün değil, App Store'a girilmez.
@@ -155,6 +155,10 @@ Bu dosya App Store Connect olmadan da çalışır. TestFlight'ta Apple'ın test 
 | `balloonbaron.ach.baronLux` | Baron of Luxor | Luksor Baronu | The valley of the pharaohs is yours | 100 |
 | `balloonbaron.ach.world` | World Baron | Dünya Baronu | Every goal of the holding | 100 |
 | `balloonbaron.ach.patron` | Patron of the skies | Gökyüzünün hayırseveri | The foundation's first project | 30 |
+
+v141: Maasai Mara'nın iki kartpostalı (`mara` "Sky of the savanna" / "Savananın göğü", `baronMara` "Baron of the Maasai Mara" / "Maasai Mara Baronu") oyunda var. Bristol'ünkiler gibi Game Center'a girilmedi: puan toplamı 985 ve sınır 1000. Girilecekse puan bütçesi yeniden dağıtılmalı (geliştiricinin kararı).
+
+Dünya Turu'nun mağaza açıklaması (v141, `tools/appstore/asc/iap.json`, en fazla 45 karakter): en "Albuquerque, Luxor, Bristol and Maasai Mara", tr "Albuquerque, Luksor, Bristol ve Maasai Mara", de "Albuquerque, Luxor, Bristol und Maasai Mara", es "Albuquerque, Luxor, Bristol y Maasai Mara", ja "アルバカーキ、ルクソール、ブリストル、マサイマラ", ko "앨버커키, 룩소르, 브리스톨, 마사이마라". İnceleme notu da dört bölgeyi sayar.
 
 Başarımlar oyunda kartpostal olarak kutlanıyor, bu yüzden Game Center afişi kapalı (`showsCompletionBanner = false`).
 

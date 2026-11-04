@@ -9735,7 +9735,7 @@ function iapBuy(k, then, over) {
     decor: 'Kasabana kalıcı bir süs. Çarşıdan alınır, şehirde görünür.',
     fig: `Balon Şöleni'nin finalinde balonların gökyüzünde bu figürü çizer${k === 'finitial' ? `: şirketinin baş harfi, ${esc((S.company || 'B').trim()[0].toLocaleUpperCase('tr'))}` : ''}. Kalıcıdır; şölen kartından istediğin figürü seçersin.`,
     pack: k === 'figPack' ? 'Balon Şöleni\'nin finali için beş figür: Yıldız, Lale, Kelebek, Girdap ve şirketinin baş harfi. Kalıcıdır; şölen kartından istediğini seçersin.' : 'Kasabana dört kalıcı süs: güvercin sürüsü, karşılama kemeri, bahçe kafe ve kilim sergisi. Hepsi kasabada görünür, gece kendi ışıkları yanar.',
-    unlock: 'Kapadokya\'nın ötesi: Amerika\'da Albuquerque, ardından Mısır\'da Luksor ve gelecek bütün bölgeler. Bölgelere girişin oyun içi bedeli yine holding kasasından ödenir.',
+    unlock: 'Kapadokya\'nın ötesi: Amerika\'da Albuquerque, Mısır\'da Luksor, İngiltere\'de Bristol ve Kenya\'da Maasai Mara. Bölgelere girişin oyun içi bedeli yine holding kasasından ödenir.',
     supporter: 'Dünya Turu, Kurucu Paketi\'ndeki her şey ve kasabanda bir destekçi plaketi. Oyunu geliştirenlere en büyük destek.',
     bundle: `Çarşıdaki her şey tek seferde: desenler, şekilli balonlar, kasaba süsleri ve şölen figürleri. Henüz sahip olmadığın ${left} ürünün hepsi.`
   }[K.kind]));
@@ -9764,10 +9764,10 @@ function showTourOffer() {
   c.appendChild(h('div', 'chap', 'Dünya Turu'));
   c.appendChild(h('h1', null, 'Gökyüzü Kapadokya\'dan büyük'));
   c.appendChild(h('div', 'iapimg tourimg', `<img src="${shopThumb('worldTour')}" alt="">`));
-  c.appendChild(h('p', 'lead', 'Kapadokya senin. Dünya Turu ile Amerika\'da Albuquerque\'ye, sonra Mısır\'da Luksor\'a açılırsın; kendi holdingini kurar, gelecek bütün bölgelere de girersin. Bir kez alınır.'));
+  c.appendChild(h('p', 'lead', 'Kapadokya senin. Dünya Turu ile Amerika\'da Albuquerque\'ye, Mısır\'da Luksor\'a, İngiltere\'de Bristol\'e ve Kenya\'da Maasai Mara\'ya açılırsın; kendi holdingini de kurarsın. Bir kez alınır.'));
   const close = then => { m.hidden = true; refresh(); if (then) then(); };
   const opt = (k, title, sub, price, big) => { const b = h('button', 'touropt' + (big ? ' main' : ''), `<span><b>${title}</b><small>${sub}</small></span><em>${price}</em>`); b.onclick = () => iapBuy(k, () => close(showWorldMap)); c.appendChild(b); };
-  opt('worldTour', SHOP.worldTour.n, 'Amerika, Mısır ve gelecek bölgeler', SHOP.worldTour.price, true);
+  opt('worldTour', SHOP.worldTour.n, 'Albuquerque, Luksor, Bristol ve Maasai Mara', SHOP.worldTour.price, true);
   if (!owned('founder')) opt('supporter', SHOP.supporter.n, `Dünya Turu + ${SHOP.founder.n} + kasabanda destekçi plaketi`, `<s>${priceTxt(SHOP.worldTour.p + SHOP.founder.p)}</s> ${SHOP.supporter.price}`);
   c.appendChild(h('p', 'hint', 'Prototip: gerçek ödeme yok. App Store yerel fiyatlandırması kullanılacak.'));
   const x = h('button', 'ghost', 'Şimdilik Kapadokya\'da kal'); x.style.width = '100%'; x.onclick = () => close(() => setTimeout(nextPopup, 250)); c.appendChild(x);
@@ -14044,14 +14044,15 @@ function plant(x, y, k) {
 /* Holding cash over the last 14 days as a marker line, with today's figure in big handwriting. */
 /* The holding's own goals, written on the whiteboard under the chart. All seven make you World Baron. v137: listed in the
    order the campaign simulator meets them on average (tools/sim-campaign.js): million 219, Luxor 441, TV 442, celebrity
-   444, six offices 446, all R&D 520, World Games 631. */
+   444, six offices 446, all R&D 520, World Games 631. v141 (8 seeds): offices need their regions (Dubai the Mara), so six
+   offices moved after R&D: million 210, Luxor 432, TV 433, celebrity 433, R&D 497, six offices 565, World Games 619. */
 const HOLD_GOALS = [
   ['Holding kasası €1 milyon', () => (S.hold || {}).millionOn != null || (S.holding || 0) >= 1e6], /* v132: stays met once reached */
   ['Luksor Baronu', () => !!(S.barons || {}).lux],
   ['Bir TV kampanyası', () => ((S.hold || {}).tvN || 0) >= 1],
   ['Ünlü reklam yüzü', () => !!(S.hold || {}).celeb],
-  ['Altı dünya ofisi', () => officeCount() >= 6, () => `Ofis: ${officeCount()}/${Object.keys(HQ_CITIES).length}`], /* v137: was four */
   ['Ar-Ge\'nin dört seviyesi tamam', () => ((S.hold || {}).rnd || 0) >= RD_LEVELS.length, () => `Ar-Ge: ${(S.hold || {}).rnd || 0}/${RD_LEVELS.length}`], /* v137: was the envelope research (2) */
+  ['Altı dünya ofisi', () => officeCount() >= 6, () => `Ofis: ${officeCount()}/${Object.keys(HQ_CITIES).length}`], /* v137: was four; v141: after R&D, since Dubai needs the Mara */
   ['Dünya Oyunları gösterisi', () => !!(S.hold || {}).wg] /* v123.5: the finale; it needs the Bristol baron */
 ];
 /* Once you're World Baron, the goals stay ticked whatever the holding's cash does later. */

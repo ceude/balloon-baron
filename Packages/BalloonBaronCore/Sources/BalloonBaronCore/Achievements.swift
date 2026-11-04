@@ -15,9 +15,10 @@ public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, 
 
 /// The holding's own goals, written on the office whiteboard. All seven make you World Baron. Text: `hgoal.<rawValue>`.
 /// v137: listed in the order the campaign simulator meets them on average (`tools/sim-campaign.js`, 32 seeds: million
-/// 219, Luxor 441, TV 442, celebrity 444, six offices 446, all four R&D levels 520, World Games 631).
+/// 219, Luxor 441, TV 442, celebrity 444, six offices 446, all four R&D levels 520, World Games 631). v141: the offices
+/// open with their regions (Dubai needs the Maasai Mara), so six offices come after R&D (8 seeds: R&D 497, offices 565).
 public enum HoldingGoal: String, CaseIterable, Sendable {
-    case million, baronLux, tv, celebrity, offices, research
+    case million, baronLux, tv, celebrity, research, offices
     /// v123.5: the finale, the World Games show (it needs the Baron of Bristol).
     case worldGames
 }
