@@ -265,12 +265,12 @@ add("buyLoan.own", "Your share", "Senin payın", "Dein Anteil", "Tu parte", "自
 add("buyLoan.bank", "Bank pays", "Banka öder", "Bank zahlt", "Paga el banco", "銀行負担", "은행 부담")
 add("buyLoan.installment", "Installment, days: %@", "Taksit, gün: %@", "Rate, Tage: %@", "Cuota, días: %@", "返済、日数：%@", "할부, 일수: %@")
 add("buyLoan.total", "Total repaid (interest %@)", "Toplam geri ödeme (faiz %@)", "Insgesamt zurück (Zins %@)", "Total a devolver (interés %@)", "返済総額（利息%@）", "총 상환액 (이자 %@)")
-add("buyLoan.warning", "Careful: in winter fewer tourists come, but the installments don't stop. The new balloons add %1$@ a day in upkeep, plus pilot wages. If your cash falls below %2$@, the bank seizes your balloons.",
-    "Dikkat: kışın yolcu azalır ama taksit sürer. Yeni balonların bakımı günde %1$@ ekler, pilot maaşları ayrıca. Kasa %2$@ altına düşerse banka balonlarına el koyar.",
-    "Vorsicht: Im Winter kommen weniger Touristen, die Rate läuft aber weiter. Die neuen Ballone kosten täglich %1$@ Wartung, dazu die Pilotengehälter. Fällt deine Kasse unter %2$@, pfändet die Bank deine Ballone.",
-    "Cuidado: en invierno llegan menos turistas, pero la cuota sigue. Los globos nuevos suman %1$@ al día de mantenimiento, más los sueldos de los pilotos. Si tu caja baja de %2$@, el banco embarga tus globos.",
-    "注意：冬は観光客が減るが返済は続く。新しい気球の整備費が1日%1$@増え、パイロットの給料も別にかかる。金庫が%2$@を下回ると銀行が気球を差し押さえる。",
-    "주의: 겨울에는 관광객이 줄지만 할부는 계속됩니다. 새 열기구로 유지비가 하루 %1$@ 늘고, 조종사 급여는 별도입니다. 금고가 %2$@ 아래로 떨어지면 은행이 열기구를 압류합니다.")
+add("buyLoan.warning", "Careful: in the low season fewer tourists come, but the installments don't stop. The new balloons add %1$@ a day in upkeep, plus pilot wages. If your cash falls below %2$@, the bank seizes your balloons.",
+    "Dikkat: ölü sezonda yolcu azalır ama taksit sürer. Yeni balonların bakımı günde %1$@ ekler, pilot maaşları ayrıca. Kasa %2$@ altına düşerse banka balonlarına el koyar.",
+    "Vorsicht: In der Nebensaison kommen weniger Touristen, die Rate läuft aber weiter. Die neuen Ballone kosten täglich %1$@ Wartung, dazu die Pilotengehälter. Fällt deine Kasse unter %2$@, pfändet die Bank deine Ballone.",
+    "Cuidado: en temporada baja llegan menos turistas, pero la cuota sigue. Los globos nuevos suman %1$@ al día de mantenimiento, más los sueldos de los pilotos. Si tu caja baja de %2$@, el banco embarga tus globos.",
+    "注意：閑散期は観光客が減るが返済は続く。新しい気球の整備費が1日%1$@増え、パイロットの給料も別にかかる。金庫が%2$@を下回ると銀行が気球を差し押さえる。",
+    "주의: 비수기에는 관광객이 줄지만 할부는 계속됩니다. 새 열기구로 유지비가 하루 %1$@ 늘고, 조종사 급여는 별도입니다. 금고가 %2$@ 아래로 떨어지면 은행이 열기구를 압류합니다.")
 add("buyLoan.confirm", "Take over with the loan", "Krediyle devral", "Mit Kredit übernehmen", "Adquirir con el préstamo", "ローンで買収する", "대출로 인수")
 add("buyLoan.confirmFleet", "Buy the fleet with the loan", "Krediyle satın al", "Flotte mit Kredit kaufen", "Comprar la flota con el préstamo", "ローンでフリートを買う", "대출로 기단 구매")
 add("buyLoan.cancel", "Not now", "Vazgeç", "Nicht jetzt", "Ahora no", "やめておく", "다음에")

@@ -11651,37 +11651,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vorsicht: Im Winter kommen weniger Touristen, die Rate läuft aber weiter. Die neuen Ballone kosten täglich %1$@ Wartung, dazu die Pilotengehälter. Fällt deine Kasse unter %2$@, pfändet die Bank deine Ballone."
+            "value": "Vorsicht: In der Nebensaison kommen weniger Touristen, die Rate läuft aber weiter. Die neuen Ballone kosten täglich %1$@ Wartung, dazu die Pilotengehälter. Fällt deine Kasse unter %2$@, pfändet die Bank deine Ballone."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Careful: in winter fewer tourists come, but the installments don't stop. The new balloons add %1$@ a day in upkeep, plus pilot wages. If your cash falls below %2$@, the bank seizes your balloons."
+            "value": "Careful: in the low season fewer tourists come, but the installments don't stop. The new balloons add %1$@ a day in upkeep, plus pilot wages. If your cash falls below %2$@, the bank seizes your balloons."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cuidado: en invierno llegan menos turistas, pero la cuota sigue. Los globos nuevos suman %1$@ al día de mantenimiento, más los sueldos de los pilotos. Si tu caja baja de %2$@, el banco embarga tus globos."
+            "value": "Cuidado: en temporada baja llegan menos turistas, pero la cuota sigue. Los globos nuevos suman %1$@ al día de mantenimiento, más los sueldos de los pilotos. Si tu caja baja de %2$@, el banco embarga tus globos."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "注意：冬は観光客が減るが返済は続く。新しい気球の整備費が1日%1$@増え、パイロットの給料も別にかかる。金庫が%2$@を下回ると銀行が気球を差し押さえる。"
+            "value": "注意：閑散期は観光客が減るが返済は続く。新しい気球の整備費が1日%1$@増え、パイロットの給料も別にかかる。金庫が%2$@を下回ると銀行が気球を差し押さえる。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "주의: 겨울에는 관광객이 줄지만 할부는 계속됩니다. 새 열기구로 유지비가 하루 %1$@ 늘고, 조종사 급여는 별도입니다. 금고가 %2$@ 아래로 떨어지면 은행이 열기구를 압류합니다."
+            "value": "주의: 비수기에는 관광객이 줄지만 할부는 계속됩니다. 새 열기구로 유지비가 하루 %1$@ 늘고, 조종사 급여는 별도입니다. 금고가 %2$@ 아래로 떨어지면 은행이 열기구를 압류합니다."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dikkat: kışın yolcu azalır ama taksit sürer. Yeni balonların bakımı günde %1$@ ekler, pilot maaşları ayrıca. Kasa %2$@ altına düşerse banka balonlarına el koyar."
+            "value": "Dikkat: ölü sezonda yolcu azalır ama taksit sürer. Yeni balonların bakımı günde %1$@ ekler, pilot maaşları ayrıca. Kasa %2$@ altına düşerse banka balonlarına el koyar."
           }
         }
       }
@@ -87946,6 +87946,47 @@
         }
       }
     },
+    "marketPage.hotelRains": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "In der Regenzeit ist die Belegung niedrig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Occupancy is low in the rains."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la temporada de lluvias la ocupación es baja."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "雨季は稼働率が低い。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "우기에는 점유율이 낮습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Yağmurlarda doluluk düşük."
+          }
+        }
+      }
+    },
     "marketPage.hotelWinter": {
       "extractionState": "manual",
       "localizations": {
@@ -98653,37 +98694,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Von Kappadokien über Albuquerque bis Luxor, Büros auf vier Kontinenten."
+            "value": "Von Kappadokien über Albuquerque, Luxor und Bristol bis in die Maasai Mara: Ballone auf vier Kontinenten."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "From Cappadocia to Albuquerque and Luxor, offices on four continents."
+            "value": "From Cappadocia to Albuquerque, Luxor, Bristol and the Maasai Mara: balloons on four continents."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "De Capadocia a Albuquerque y Luxor, oficinas en cuatro continentes."
+            "value": "De Capadocia a Albuquerque, Luxor, Bristol y el Maasai Mara: globos en cuatro continentes."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "カッパドキアからアルバカーキ、ルクソールまで、4大陸にオフィス。"
+            "value": "カッパドキアからアルバカーキ、ルクソール、ブリストル、マサイマラまで、4大陸に気球。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "카파도키아에서 앨버커키, 룩소르까지, 네 대륙에 사무소."
+            "value": "카파도키아에서 앨버커키, 룩소르, 브리스톨, 마사이마라까지, 네 대륙에 기구."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kapadokya'dan Albuquerque'ye ve Luksor'a, dört kıtada ofis."
+            "value": "Kapadokya'dan Albuquerque'ye, Luksor'a, Bristol'e ve Maasai Mara'ya: dört kıtada balonlar."
           }
         }
       }
@@ -125631,19 +125672,19 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@: Du kannst Ballone aus deinen Regionen im Autopilot mitbringen, Lehrling. Die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb); die Reise dauert %3$@ Tage."
+            "value": "%1$@: Du kannst Ballone aus deinen Regionen im Autopilot mitbringen. Die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb); die Reise dauert %3$@ Tage."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@: You can bring balloons from your regions on autopilot, kid. The cargo takes %2$@ seats (two small or one medium basket); the trip takes %3$@ days."
+            "value": "%1$@: You can bring balloons from your regions on autopilot. The cargo takes %2$@ seats (two small or one medium basket); the trip takes %3$@ days."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@: Puedes traer globos de tus regiones en piloto automático, aprendiz. En la carga caben %2$@ plazas (dos cestas pequeñas o una mediana); el viaje dura %3$@ días."
+            "value": "%1$@: Puedes traer globos de tus regiones en piloto automático. En la carga caben %2$@ plazas (dos cestas pequeñas o una mediana); el viaje dura %3$@ días."
           }
         },
         "ja": {
@@ -125661,7 +125702,7 @@
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@: Otomatik moddaki bölgelerinden balon getirebilirsin evlat. Kargoya %2$@ koltuk sığar (iki küçük ya da bir orta sepet), yolculuk %3$@ gün."
+            "value": "%1$@: Otomatik moddaki bölgelerinden balon getirebilirsin. Kargoya %2$@ koltuk sığar (iki küçük ya da bir orta sepet), yolculuk %3$@ gün."
           }
         }
       }

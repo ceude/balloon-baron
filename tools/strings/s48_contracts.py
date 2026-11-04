@@ -870,10 +870,10 @@ add("common.next", "Next", "Devam", "Weiter", "Siguiente", "次へ", "다음")
 add("xfer.sumBalloons", "Balloons (in %@ days)", "Balonlar (%@ gün sonra)", "Ballone (in %@ Tagen)", "Globos (en %@ días)", "気球（%@日後）", "열기구(%@일 후)")
 add("xfer.sumPilots", "Pilots (right away)", "Pilotlar (hemen)", "Piloten (sofort)", "Pilotos (enseguida)", "パイロット（すぐ）", "조종사(바로)")
 add("xfer.nothing", "none", "yok", "keine", "ninguno", "なし", "없음")
-add("xfer.bNote", "%1$@: You can bring balloons from your regions on autopilot, kid. The cargo takes %2$@ seats (two small or one medium basket); the trip takes %3$@ days.",
-    "%1$@: Otomatik moddaki bölgelerinden balon getirebilirsin evlat. Kargoya %2$@ koltuk sığar (iki küçük ya da bir orta sepet), yolculuk %3$@ gün.",
-    "%1$@: Du kannst Ballone aus deinen Regionen im Autopilot mitbringen, Lehrling. Die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb); die Reise dauert %3$@ Tage.",
-    "%1$@: Puedes traer globos de tus regiones en piloto automático, aprendiz. En la carga caben %2$@ plazas (dos cestas pequeñas o una mediana); el viaje dura %3$@ días.",
+add("xfer.bNote", "%1$@: You can bring balloons from your regions on autopilot. The cargo takes %2$@ seats (two small or one medium basket); the trip takes %3$@ days.",
+    "%1$@: Otomatik moddaki bölgelerinden balon getirebilirsin. Kargoya %2$@ koltuk sığar (iki küçük ya da bir orta sepet), yolculuk %3$@ gün.",
+    "%1$@: Du kannst Ballone aus deinen Regionen im Autopilot mitbringen. Die Fracht fasst %2$@ Plätze (zwei kleine oder ein mittlerer Korb); die Reise dauert %3$@ Tage.",
+    "%1$@: Puedes traer globos de tus regiones en piloto automático. En la carga caben %2$@ plazas (dos cestas pequeñas o una mediana); el viaje dura %3$@ días.",
     "%1$@：自動運営中の地域から気球を持ってこられるぞ。貨物に積めるのは%2$@席（小2つか中1つ）、輸送は%3$@日だ。",
     "%1$@: 자동 운영 중인 지역에서 열기구를 가져올 수 있네. 화물에는 %2$@석(소형 두 개나 중형 한 개)이 실리고, 운송은 %3$@일 걸리지.")
 add("xfer.pNote", "Pilots come with you at once; they keep their level and trait, and are paid in %@.", "Pilotlar seninle hemen gelir; seviyelerini ve özelliklerini korur, maaşları %@ ile ödenir.",

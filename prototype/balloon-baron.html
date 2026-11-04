@@ -1106,7 +1106,7 @@ function buyLoanCard(r, sale) {
   c.appendChild(h('h1', null, sale ? `${r.name} filosu` : r.name));
   c.appendChild(h('p', 'lead', `Banka eksik ${eur(T.fin)} tutarını doğrudan satıcıya öder; kasana para girmez. Kasandan ${eur(T.own)} gider, ${eur(S.cash - T.own)} kasada kalır.`));
   c.appendChild(h('div', 'fmix', `<div><span>Fiyat</span><b>${eur(price)}</b></div><div><span>Senin payın</span><b>${eur(T.own)}</b></div><div><span>Banka öder</span><b>${eur(T.fin)}</b></div><div><span>Taksit, ${T.days} gün</span><b>${eur(T.inst)}/gün</b></div><div><span>Toplam geri ödeme (faiz %${Math.round(BUYLOAN.rate * 100)})</span><b>${eur(T.total)}</b></div>`));
-  c.appendChild(h('div', 'callout yel', `<b>Dikkat.</b> Kışın yolcu azalır ama taksit sürer. Yeni balonların bakımı da günde ${eur(up)} ekler, pilot maaşları ayrıca. Kasa ${eur(-5000)} altına düşerse banka balonlarına el koyar.`));
+  c.appendChild(h('div', 'callout yel', `<b>Dikkat.</b> Ölü sezonda yolcu azalır ama taksit sürer. Yeni balonların bakımı da günde ${eur(up)} ekler, pilot maaşları ayrıca. Kasa ${eur(-5000)} altına düşerse banka balonlarına el koyar.`));
   const yes = h('button', 'big', sale ? 'Krediyle satın al' : 'Krediyle devral');
   yes.onclick = () => { S.loans.push({ amt: T.fin, inst: T.inst, left: T.days, buy: 1 }); S.cash += T.fin; sale ? buyFleet(r) : takeOver(r); };
   const x = h('button', 'ghost', 'Vazgeç'); x.style.width = '100%'; x.onclick = () => { m.hidden = true; };
@@ -2642,7 +2642,7 @@ function finishDay(flight) {
   if (rpTot) S.shareNow = paxTotal / rpTot;
   net += checkChapters(ev, Lg, rpTot > 0);
   if (paxTotal > (S.bestPax || 0) && S.day > 5) { if (S.bestPax && paxTotal >= S.bestPax + 8) paperAdd(2, `Rekor sabah: ${S.company} ${paxTotal} yolcu uçurdu`, 'Şirketin bugüne kadarki en kalabalık günü.'); S.bestPax = paxTotal; }
-  { const B = bossRival(); if (B && B.alive && paxTotal > (B.lastPax || 0) && B.lastPax > 0 && S.day > 8) { if (!(S.bossSaid && S.bossSaid[S.region + ':passed'])) paperAdd(4, `${S.company}, ${B.name}'yi geçti`, S.region === 'cap' && !S.storyDone ? 'Yıllar önce Hasan Usta\'nın şirketini Göreme Sky almıştı. Şimdi vadinin en çok yolcu uçuran şirketi torununun.' : 'Vadinin en çok yolcu uçuran şirketi değişti.'); bossSay('passed'); } }
+  { const B = bossRival(); if (B && B.alive && paxTotal > (B.lastPax || 0) && B.lastPax > 0 && S.day > 8) { if (!(S.bossSaid && S.bossSaid[S.region + ':passed'])) paperAdd(4, `Zirve değişti: ${S.company}, ${B.name} şirketini geçti`, /* v141.4 (QA): no suffix straight after a name, as in the app */ S.region === 'cap' && !S.storyDone ? 'Yıllar önce Hasan Usta\'nın şirketini Göreme Sky almıştı. Şimdi vadinin en çok yolcu uçuran şirketi torununun.' : 'Vadinin en çok yolcu uçuran şirketi değişti.'); bossSay('passed'); } }
   (S.stat = S.stat || {}).pax = (S.stat.pax || 0) + paxTotal;
   praiseCheck(flight, red && !fl.length);
   if (S.region === 'cap' && fl.length && !S.storyDone && S.day <= 3) hezAdd('hasan'); /* v121: after the first flight, the grandfather's story */
@@ -2806,7 +2806,7 @@ function showGoals() {
       it.innerHTML = `<span class="gk">${done ? '✓' : ''}</span><div class="gm"><div class="gt"><b>${g[2]}</b><span>${goalText(g)}</span></div><div class="gb"><i style="width:${Math.round(goalPct(g) * 100)}%"></i></div></div>`;
       c.appendChild(it);
     }
-    c.appendChild(h('p', 'hint', C.reward ? `Bölümü bitirince: ${C.awardShort}, ${eur(C.reward)}.` : `Hepsini aynı gün sağlayan, Kapadokya'nın baronu olur ve dünyaya açılır. Dikkat: Rekabet Kurumu ve birleşen rakipler seni durdurmaya çalışacak.`));
+    c.appendChild(h('p', 'hint', C.reward ? `Bölümü bitirince: ${C.awardShort}, ${eur(C.reward)}.` : `Hepsini aynı gün tamamlarsan ${REGION_DEF[S.region].name} baronu olursun ve dünyaya açılırsın. Dikkat: Rekabet Kurumu ve birleşen rakipler seni durdurmaya çalışacak.`));
   }
   const ok = h('button', isBaron() ? 'ghost' : 'big', 'Kapat'); ok.onclick = () => { m.hidden = true; }; if (isBaron()) ok.style.width = '100%'; c.appendChild(ok);
   m.appendChild(c); m.hidden = false;
@@ -2959,7 +2959,7 @@ function simRivals(rev) {
         const fleet = entrantFleet(e);
         Object.assign(r, { name: e.name, style: e.style, balloons: fleet.balloons, price: e.price, rep: e.rep, cash: fleet.cash, col: c[0], col2: c[1], alive: true, dmg: fleet.balloons.map(() => 0), lastPax: 0, lastCap: 0, forSale: null, offer: null, lowDays: 0, highDays: 0, deadDay: null, offerSeen: false, offerNo: false, saleSeen: false, saleNo: false, fly: [], warChestUntil: S.day + 20, merged: null });
         paperAdd(4, `Yeni şirket: ${e.name} göğe çıkıyor`, 'Vadide rekabet kızışacak.');
-        rev.push(`Yeni rakip: ${e.name} Kapadokya'da uçmaya başladı!`); S.hezQ.push('news:' + e.intro);
+        rev.push(`Yeni rakip: ${e.name} ${REGION_DEF[S.region].name} bölgesinde uçmaya başladı!`); /* v141.4 (QA): it said Cappadocia in every region */ S.hezQ.push('news:' + e.intro);
       }
       return;
     }
@@ -2987,7 +2987,7 @@ function simRivals(rev) {
     r.lastPax = pax; r.lastCap = cap;
     if (S.pilots.some(x => x.trait !== 'loyal') && !S.poach && r.cash > 15000 && Math.random() < (bl('office') >= 2 ? .02 : .04)) {
       const best = S.pilots.filter(x => x.trait !== 'loyal').sort((a, b) => b.lvl - a.lvl || (b.xp || 0) - (a.xp || 0))[0];
-      if (best.lvl >= 2 || Math.random() < .3) { S.poach = { ri, pid: best.id, wage: Math.round(pilotWage(best) * 1.35 / 10) * 10 }; if (r.name === BOSS[S.region].co) bossSay('poach'); rev.push(`${r.name}, pilotun ${best.name}'a iş teklif etti!`); }
+      if (best.lvl >= 2 || Math.random() < .3) { S.poach = { ri, pid: best.id, wage: Math.round(pilotWage(best) * 1.35 / 10) * 10 }; if (r.name === BOSS[S.region].co) bossSay('poach'); rev.push(`${r.name} senin pilotunu ayartmaya çalışıyor: ${best.name} iş teklifi aldı!`); }
     }
     if (r.cash > 20000 && Math.random() < .03) {
       const hx = HOTELS.find(x => !S.hotels.includes(x.id) && !owns(x) && !hotelOwner(x) && !(S.hotelTaken[x.id] && S.hotelTaken[x.id].until > S.day) && starVal(r.rep) >= x.min);
@@ -4002,7 +4002,7 @@ function tabMarket(body) {
     it.insertAdjacentHTML('beforeend', `<span class="sw8" style="background:#2b2350;color:#ffc23d">${'★'.repeat(Math.round(x.min) - 1) || '★'}</span>`);
     const fmt = v => v.toLocaleString('tr-TR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
     const body2 = own
-      ? `Senin otelin: ücret yok, ~${eur(hotelInc(x))}/gün oda geliri, ~${Math.round(x.pax * 1.5)} misafir, +${fmt(x.rep * 6)}★/gün.${starVal(S.rep) < x.min ? ' Popülerliğin otelin seviyesinin altında, doluluk yarıya düştü.' : ''}${S.winter ? ' Kışın doluluk düşük.' : ''}`
+      ? `Senin otelin: ücret yok, ~${eur(hotelInc(x))}/gün oda geliri, ~${Math.round(x.pax * 1.5)} misafir, +${fmt(x.rep * 6)}★/gün.${starVal(S.rep) < x.min ? ' Popülerliğin otelin seviyesinin altında, doluluk yarıya düştü.' : ''}${S.winter ? (S.region === 'mara' ? ' Yağmurlarda doluluk düşük.' : ' Kışın doluluk düşük.') : ''}`
       : `${x.min.toLocaleString('tr-TR', { minimumFractionDigits: 1 })}★ ister. Anlaşma ${eur(x.fee)}/gün: ~${x.pax} misafir, +${fmt(x.rep * 4)}★/gün. Misafirlerin bilete verebileceği en yüksek fiyat: ${eur(x.c)}. Satın alırsan ücret biter, oda geliri gelir.`;
     it.appendChild(h('div', 'main', `<div class="t">${x.name}${own ? ' <span class="tag g">Senin oteli</span>' : has ? ' <span class="tag g">Anlaşmalı</span>' : ''}</div><div class="s">${body2}</div>`));
     if (owner) it.querySelector('.s').insertAdjacentHTML('afterbegin', `<b style="color:var(--red)">Sahibi: ${esc(owner)}. Bu otelle anlaşma yapılamaz.</b> `);
@@ -4087,7 +4087,7 @@ function showReport() {
     const nb = h('button', 'big', 'Karar ver'); nb.onclick = () => { sfx('click'); showRuin(); }; b.appendChild(nb);
   } else {
     if (flagNext()) b.appendChild(h('div', 'callout red', `<b>Banka ${graceLeft()} gün içinde amiral balonuna el koyacak.</b> Kasa gün sonunda ${eur(SEIZE_LINE)} altında kaldıkça sayaç işler, üstüne çıkınca sıfırlanır. ${hasHolding() ? 'O gün holding ya bu bölgeyi kurtarır ya da bölge kapanır.' : 'Son balon da giderse şirket kapanır.'}`));
-    if (allDead && !S.monopolyShown) { S.monopolyShown = true; save(); b.appendChild(h('div', 'callout grn', '<b>Kapadokya göğünde tek şirket sensin.</b> Fiyatı artık sen belirliyorsun.')); }
+    if (allDead && !S.monopolyShown) { S.monopolyShown = true; save(); b.appendChild(h('div', 'callout grn', `<b>${REGION_DEF[S.region].name} göğünde tek şirket sensin.</b> Fiyatı artık sen belirliyorsun.`)); }
     b.appendChild(h('p', 'hint', `Yarın ${FLAGS[S.weather.flag].name.toLowerCase()}, yerde rüzgâr ${S.weather.surf} km/sa.`));
     const nb = h('button', 'big', `Gün ${S.day} sabahına geç`); nb.onclick = () => { tab = 'plan'; startNight(); }; b.appendChild(nb);
   }
@@ -9523,7 +9523,7 @@ function showXfer() {
     c.appendChild(h('h1', null, k === 'b' ? 'Hangi balonlar gelsin?' : k === 'p' ? 'Hangi pilotlar gelsin?' : 'Filonu getir'));
     const row = (key, html, full) => { const on = sel.has(key), b = h('button', 'xrow' + (on ? ' on' : ''), `<i>${on ? '✓' : ''}</i>${html}`); b.disabled = !on && full; b.onclick = () => { on ? sel.delete(key) : sel.add(key); sfx('click'); draw(); }; return b; };
     if (k === 'b') {
-      c.appendChild(h('p', 'hint', `${guide().name}: Otomatik moddaki bölgelerinden balon getirebilirsin evlat. Kargoya ${XFER.seats} koltuk sığar (iki küçük ya da bir orta sepet), yolculuk ${XFER.ship} gün.`));
+      c.appendChild(h('p', 'hint', `${guide().name}: Otomatik moddaki bölgelerinden balon getirebilirsin. Kargoya ${XFER.seats} koltuk sığar (iki küçük ya da bir orta sepet), yolculuk ${XFER.ship} gün.`));
       /* v125.6: when nothing more fits, say why the other rows are grey */
       const full = B.some(x => !sel.has('b' + x.b.id) && (nb >= XFER.maxB || selSeats() + SIZES[x.b.size].cap > XFER.seats));
       c.appendChild(h('div', 'xh', `<span>Seçilen koltuk</span><b>${selSeats()}/${XFER.seats}</b>`));
@@ -14174,7 +14174,7 @@ function millionNote() { const H = S.hold || {}; if (H.worldBaron) return ''; if
 function holdGoalsCheck() {
   const done = HOLD_GOALS.every(g => g[1]()); if (!done || (S.hold || {}).worldBaron) return;
   S.hold.worldBaron = S.day; S.hezQ.push('news:Dünya Baronu! Holdingin bütün hedeflerini bitirdin evlat. Galata\'dan Üsküdar\'a uçan bir adam olarak söylüyorum: senden büyüğünü görmedim.');
-  paperAdd(6, `${S.company} artık bir dünya devi`, 'Kapadokya\'dan Albuquerque\'ye ve Luksor\'a, dört kıtada ofis.');
+  paperAdd(6, `${S.company} artık bir dünya devi`, 'Kapadokya\'dan Albuquerque\'ye, Luksor\'a, Bristol\'e ve Maasai Mara\'ya: dört kıtada balonlar.');
 }
 function hqGoals(body) {
   const sec = h('div', 'sec'); sec.appendChild(h('h2', null, (S.hold || {}).worldBaron ? 'Dünya Baronu' + glyph('crown', 'gcrown') : 'Holding hedefleri'));

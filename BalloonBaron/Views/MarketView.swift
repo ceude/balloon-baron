@@ -314,7 +314,7 @@ struct MarketView: View {
         var t = loc("marketPage.hotelOwnBody", eur(s.hotelIncome(h)), num(Int((Double(h.guests) * 1.5).rounded())),
                     starsPerDay(h.repPerDay * 6))
         if s.stars < h.minStars { t += " " + loc("marketPage.hotelHalf") }
-        if s.winter != nil { t += " " + loc("marketPage.hotelWinter") }
+        if s.winter != nil { t += " " + loc(s.region.rainy ? "marketPage.hotelRains" : "marketPage.hotelWinter") } // v141.4: the Mara's rains
         return t
     }
 
