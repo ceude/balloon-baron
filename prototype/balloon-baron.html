@@ -2997,7 +2997,7 @@ function simRivals(rev) {
       const id = pick(S.hotels), hx = HOTELS.find(x => x.id === id);
       S.hotels = S.hotels.filter(x => x !== id); S.hotelTaken[id] = { by: r.name, until: S.day + 12 }; if (r.name === BOSS[S.region].co) bossSay('hotel');
       paperAdd(3, `${hx.name} ${r.name} ile anlaştı`, 'Otel misafirleri artık rakibe gidiyor.');
-      rev.push(`${hx.name}, ${r.name}'in daha iyi teklifini kabul etti ve seninle anlaşmayı bitirdi!`);
+      rev.push(`${hx.name}, ${r.name} şirketinden gelen daha iyi teklifi kabul edip seninle anlaşmasını bitirdi!`);
     }
     if (r.cash > 12000 && !(r.campUntil > S.day) && Math.random() < (RIVAL_EDGE() ? .06 : .04)) {
       r.campUntil = S.day + 3; r.cash -= 4000; r.rep = Math.min(1.4, r.rep + .1); r.price = Math.round(r.price * .95);
