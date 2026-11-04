@@ -5,6 +5,8 @@ Prototipte yapılıp henüz iOS koduna geçmemiş değişiklikler. Karar verilin
 Kuyrukta:
 - Prototipe özel: hikâye uçuşunda "TEST · uçuşu bitir" kutusu (`#testEnd`), Swift'e alınmaz.
 
+v141.2 (Kasım 2026, geliştiricinin isteğiyle, prototip ve Swift birlikte, aktarıldı): kısa ofis sayfası (`holding.officesIntro` / `officesIntroSix` / `officesRentDay`, kısa `office.<id>.perk`, `holding.office.rent`, `holding.officeLocked`; prototipte `hqOffices`, `HQ_CITIES[k].perk`) ve holding hedeflerinde TV kampanyası yerine Mara'nın ilk safari uçağı grubu (`HoldingGoal.maraGroup`, en sonda; `GameState.maraGroups`; `hgoal.maraGroup`, `hgoal.maraGroupNote`; prototipte `HOLD_GOALS`, `maraGroupDone`, `migrate`). Metinler `tools/strings/s63_v1412.py`. Testler `MaraGoal1412Tests`. Ayrıntı: GAME_DESIGN "Başarımlar ve holding hedefleri", "Holding".
+
 v141.1 (Kasım 2026, geliştiricinin isteğiyle, prototip ve Swift birlikte, aktarıldı): Maasai Mara rötuşu. Ayrıntı: GAME_DESIGN "Maasai Mara (v141)", "Holding"; APP_STORE "Game Center".
   - Denge: yağmurlar 10 / 5 gün, her 45 günde bir, talep ×0,55, bayraklar 28/34/38 (`Mara.longRains`, `shortRains`, `rainsEvery`, `rainsDemand`, `rainsGreen`, `rainsYellow`; prototipte `MARA_FX`); koruma alanı ücreti $10 (`Mara.parkFee`); aktarım Mara kasasında $60.000 bırakır (`Mara.withdrawKeep`, `Holding.withdrawKeep(_:)`, prototipte `withdrawKeep`). Testler `MaraBalance1411Tests`, `MaraTests`.
   - Game Center: her kartpostalın puanı (`Achievement.gameCenterPoints`, toplam 880, `gameCenterReserve` 120), test `GameCenter141Tests`; App Store Connect'te güncellenecek ve oluşturulacak başarımlar docs/APP_STORE.md tablosunda.

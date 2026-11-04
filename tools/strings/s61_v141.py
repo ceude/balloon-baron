@@ -522,9 +522,6 @@ for i, t in enumerate(FDN):
     add(f"fdn.mara.{i}", *t)
 
 # ---- Offices: Paris became London; they open with their regions ----
-add("holding.officeLocked", "Locked. Enter this region first to open it: %@", "Kilitli. Açmak için önce bu bölgeye gir: %@",
-    "Gesperrt. Betritt zuerst diese Region, um es zu eröffnen: %@", "Bloqueada. Para abrirla, entra antes en esta región: %@",
-    "ロック中。開くには先にこの地域へ進出しよう：%@", "잠김. 열려면 먼저 이 지역에 진출하세요: %@")
 add("holding.officesNeedRegions", "Some offices open only once you've entered their region.",
     "Bazı ofisler ancak bölgelerine girince açılır.",
     "Manche Büros lassen sich erst eröffnen, wenn du ihre Region betreten hast.",
@@ -620,27 +617,6 @@ add("tour.worldSub", "Albuquerque, Luxor, Bristol and the Maasai Mara", "Albuque
 
 # ---- Offices: London (save key "par"), and the perks that moved ----
 add("office.par", "London", "Londra", "London", "Londres", "ロンドン", "런던")
-add("office.par.perk",
-    "Bristol +20%: its autopilot income, and its tourists while you play there. The documentary series 20% cheaper.",
-    "Bristol'de %20 fazla: otomatikteyken kazancı, oradayken turisti. Belgesel dizisi %20 daha ucuz.",
-    "Bristol +20 %: die Autopilot-Einnahmen und die Touristen, solange du dort spielst. Die Doku-Serie 20 % günstiger.",
-    "Bristol +20 %: sus ingresos en piloto automático y sus turistas mientras juegas allí. La serie documental un 20 % más barata.",
-    "ブリストル+20%：自動運営の収入と、そこでプレイ中の観光客。ドキュメンタリーシリーズが20%安くなる。",
-    "브리스톨 +20%: 자동 운영 수입, 그리고 그곳에서 플레이하는 동안의 관광객. 다큐멘터리 시리즈 20% 할인.")
-add("office.dxb.perk",
-    "The Maasai Mara's autopilot income +20%. Record attempts 25% cheaper.",
-    "Maasai Mara'nın otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.",
-    "Autopilot-Einnahmen in der Maasai Mara +20 %. Rekordversuche 25 % günstiger.",
-    "Ingresos en piloto automático del Maasai Mara +20 %. Intentos de récord un 25 % más baratos.",
-    "マサイマラの自動運営収入+20%。記録挑戦が25%安くなる。",
-    "마사이마라 자동 운영 수입 +20%. 기록 도전 25% 할인.")
-add("office.tyo.perk",
-    "Asian tour operators: tourists +5% in every region. Luxor's autopilot income +20%. Free design production, creativity +10, designs stay fresh for 60 days.",
-    "Asyalı tur şirketleri: bütün bölgelerde turist +%5. Luksor'un otomatik kazancı %20 artar. Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır.",
-    "Asiatische Reiseveranstalter: Touristen +5 % in jeder Region. Autopilot-Einnahmen in Luxor +20 %. Kostenlose Designproduktion, Kreativität +10, Designs bleiben 60 Tage frisch.",
-    "Agencias de viajes asiáticas: turistas +5 % en todas las regiones. Ingresos en piloto automático de Luxor +20 %. Diseños gratis, creatividad +10, los diseños siguen frescos 60 días.",
-    "アジアの旅行会社：全地域で観光客+5%。ルクソールの自動運営収入+20%。デザイン制作が無料、創造性+10、デザインの鮮度が60日間持続。",
-    "아시아 여행사: 모든 지역 관광객 +5%. 룩소르 자동 운영 수입 +20%. 디자인 제작 무료, 창의성 +10, 디자인 신선도 60일 유지.")
 add("ceremony.baronHint.bri",
     "The skies of four regions are yours. The Maasai Mara has opened on the world map: the toughest sky in the game.",
     "Dört bölgenin göğü senin. Dünya haritasında Maasai Mara açıldı: oyunun en çetin göğü.",

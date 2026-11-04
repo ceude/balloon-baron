@@ -1655,7 +1655,9 @@ function migrate(s) {
   /* v137 (developer, testing): the goals now want six offices and all four R&D levels. A World Baron who doesn't have
      them is not one until they do; the million they had reached stays met. */
   const H = s.hold;
-  if (H && H.worldBaron != null && !(Object.keys(H.offices || {}).length >= 6 && (H.rnd || 0) >= 4)) {
+  /* v141.2: and the Maasai Mara's first safari-plane group (the TV campaign goal is gone) */
+  const mara = s.region === 'mara' ? s : (s.regions || {}).mara, maraOk = !!(mara && mara.ctr && (mara.ctr.ok || 0) >= 1);
+  if (H && H.worldBaron != null && !(Object.keys(H.offices || {}).length >= 6 && (H.rnd || 0) >= 4 && maraOk)) {
     if (H.millionOn == null) H.millionOn = H.worldBaron;
     delete H.worldBaron;
   }
@@ -10099,12 +10101,12 @@ const CELEBS = ['Selin Arda (oyuncu)', 'Kenji Mori (aktör)', 'Lucía Varela (ş
    (the one you play and the parked ones). Paris: Bristol +20% also while you play there (tourists). */
 const HQ_CITIES = {
   /* v141.1 (developer): listed İstanbul, Seoul, New York, London, Tokyo, Dubai everywhere (the save keys stay) */
-  ist: { name: 'İstanbul', cost: 650000, rent: 1000, perk: 'Kapadokya\'nın otomatik kazancı %25 artar.', icon: glyph('ist') },
-  sel: { name: 'Seul', cost: 700000, rent: 1500, perk: 'Ünlü sözleşmeleri %25 daha ucuz.', icon: glyph('sel') },
-  nyc: { name: 'New York', cost: 750000, rent: 2000, need: 'abq', perk: 'TV kampanyaları %25 daha ucuz, Albuquerque\'nin otomatik kazancı %20 artar.', icon: glyph('nyc') },
-  par: { name: 'Londra', cost: 750000, rent: 2000, need: 'bri', perk: 'Bristol\'de %20 fazla: otomatikteyken kazancı, oradayken turisti. Belgesel dizisi %20 daha ucuz.', icon: glyph('par') },
-  tyo: { name: 'Tokyo', cost: 700000, rent: 1500, need: 'lux', perk: 'Asyalı tur şirketleri: bütün bölgelerde turist +%5. Luksor\'un otomatik kazancı %20 artar. Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır.', icon: glyph('tyo') },
-  dxb: { name: 'Dubai', cost: 700000, rent: 1500, need: 'mara', perk: 'Maasai Mara\'nın otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.', icon: glyph('dxb') }
+  ist: { name: 'İstanbul', cost: 650000, rent: 1000, perk: 'Kapadokya +%25 otomatik kazanç', icon: glyph('ist') },
+  sel: { name: 'Seul', cost: 700000, rent: 1500, perk: 'Ünlü −%25', icon: glyph('sel') },
+  nyc: { name: 'New York', cost: 750000, rent: 2000, need: 'abq', perk: 'TV −%25 · Albuquerque +%20', icon: glyph('nyc') },
+  par: { name: 'Londra', cost: 750000, rent: 2000, need: 'bri', perk: 'Bristol +%20 · Belgesel −%20', icon: glyph('par') },
+  tyo: { name: 'Tokyo', cost: 700000, rent: 1500, need: 'lux', perk: 'Luksor +%20 · Turist +%5 · Tasarım', icon: glyph('tyo') },
+  dxb: { name: 'Dubai', cost: 700000, rent: 1500, need: 'mara', perk: 'Mara +%20 · Rekor −%25', icon: glyph('dxb') }
 };
 /* v141 (developer): an office opens only in a region's orbit: New York with Albuquerque, Tokyo with Luxor, London with
    Bristol, Dubai with the Maasai Mara (the region entered). İstanbul and Seoul need nothing. One already open stays. */
@@ -10583,14 +10585,14 @@ function hqOffices(body) {
   const H = S.hold || (S.hold = {});
   const n = officeCount(), all = Object.keys(HQ_CITIES).length;
   const q = h('div', 'sec'); q.appendChild(h('h2', null, `Ofisler ${n}/${all}`));
-  q.appendChild(h('p', 'hint', (n === all ? 'Altı şehirde ofisin var. Holding giderlerin %25 yerine %15.' : fourOffices() ? `${n} ofisin açık: holding giderlerin %25 yerine %20. Altısı birden açıksa %15 olur.` : 'Dünyanın büyük şehirlerinde ofis aç; her ofisin kendi avantajı var. Herhangi dört ofis açıksa holding giderleri %25 yerine %20 olur, altısı birden açıksa %15.')
-    + (n ? ` Ofislerin kirası ve personeli her akşam holding kasasından ödenir: günde ${eurH(officeRent())}.` : ' Her ofisin kirası ve personeli her akşam holding kasasından ödenir.') + (n < all ? ' New York, Tokyo, Londra ve Dubai ancak kendi bölgelerine girince açılır.' : '')));
+  /* v141.2 (developer): one short line: the expense rule and the day's rent */
+  q.appendChild(h('p', 'hint', (n === all ? '6 ofis açık: giderler %15.' : '4 ofis: giderler %20. 6 ofis: %15.') + (n ? ` Kira: günde ${eurH(officeRent())}.` : '')));
   const grid = h('div', 'offices');
   for (const k in HQ_CITIES) {
     const c = HQ_CITIES[k], own = hasOffice(k), it = h('div', 'office' + (own ? ' on' : ''));
-    it.innerHTML = `<div class="oi">${c.icon}</div><div class="onm">${c.name}</div><div class="op">${c.perk}</div><div class="orent">Kira ve personel: ${eurH(c.rent)}/gün</div>`;
+    it.innerHTML = `<div class="oi">${c.icon}</div><div class="onm">${c.name}</div><div class="op">${c.perk}</div><div class="orent">Kira: ${eurH(c.rent)}/gün</div>`;
     if (own) it.appendChild(h('div', 'ostat', 'Açık'));
-    else if (!officeOpenable(k)) { it.classList.add('lock'); it.appendChild(h('div', 'olock', `${LOCK}<span>Kilitli. Açmak için önce bu bölgeye gir: <b>${REGION_DEF[c.need].name}</b></span>`)); }
+    else if (!officeOpenable(k)) { it.classList.add('lock'); it.appendChild(h('div', 'olock', `${LOCK}<span>Açan bölge: <b>${REGION_DEF[c.need].name}</b></span>`)); }
     else {
       const b = h('button', 'dcta', `Aç ${eurH(c.cost)}`); b.disabled = (S.holding || 0) < c.cost;
       b.onclick = () => holdBuy(c.cost, () => {
@@ -14110,16 +14112,21 @@ function plant(x, y, k) {
 /* The holding's own goals, written on the whiteboard under the chart. All seven make you World Baron. v137: listed in the
    order the campaign simulator meets them on average (tools/sim-campaign.js): million 219, Luxor 441, TV 442, celebrity
    444, six offices 446, all R&D 520, World Games 631. v141 (8 seeds): offices need their regions (Dubai the Mara), so six
-   offices moved after R&D: million 210, Luxor 432, TV 433, celebrity 433, R&D 497, six offices 565, World Games 619. */
+   offices moved after R&D: million 210, Luxor 432, TV 433, celebrity 433, R&D 497, six offices 565, World Games 619.
+   v141.2 (developer, 24 seeds): the TV goal gave way to the Mara's first safari-plane group: million 220, Luxor 436,
+   celebrity 438, R&D 509, six offices 570, World Games 631, the Mara's first group 646; World Baron 631 → 657. */
 const HOLD_GOALS = [
   ['Holding kasası €1 milyon', () => (S.hold || {}).millionOn != null || (S.holding || 0) >= 1e6], /* v132: stays met once reached */
   ['Luksor Baronu', () => !!(S.barons || {}).lux],
-  ['Bir TV kampanyası', () => ((S.hold || {}).tvN || 0) >= 1],
   ['Ünlü reklam yüzü', () => !!(S.hold || {}).celeb],
   ['Ar-Ge\'nin dört seviyesi tamam', () => ((S.hold || {}).rnd || 0) >= RD_LEVELS.length, () => `Ar-Ge: ${(S.hold || {}).rnd || 0}/${RD_LEVELS.length}`], /* v137: was the envelope research (2) */
   ['Altı dünya ofisi', () => officeCount() >= 6, () => `Ofis: ${officeCount()}/${Object.keys(HQ_CITIES).length}`], /* v137: was four; v141: after R&D, since Dubai needs the Mara */
-  ['Dünya Oyunları gösterisi', () => !!(S.hold || {}).wg] /* v123.5: the finale; it needs the Bristol baron */
+  ['Dünya Oyunları gösterisi', () => !!(S.hold || {}).wg], /* v123.5; it needs the Bristol baron */
+  ['Mara\'da ilk safari uçağı grubu', () => maraGroupDone(), () => ownsRegion('mara') ? '' : 'Maasai Mara, Bristol baronluğuyla açılır.'] /* v141.2 (developer): replaces the TV campaign goal; last, as the simulator meets it */
 ];
+/* v141.2: the Maasai Mara's first safari-plane group flown in full (its contract box, whether you're there or it runs on
+   autopilot) */
+const maraGroupDone = () => { const st = S.region === 'mara' ? S : (S.regions || {}).mara; return !!(st && st.ctr && (st.ctr.ok || 0) >= 1); };
 /* Once you're World Baron, the goals stay ticked whatever the holding's cash does later. */
 const holdGoalDone = f => !!(S.hold || {}).worldBaron || f();
 /* A holding investment gets its due: the guide of the region you're in praises it (celebrities and offices have

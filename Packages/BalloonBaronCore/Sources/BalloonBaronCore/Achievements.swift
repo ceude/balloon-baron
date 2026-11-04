@@ -58,9 +58,13 @@ public enum Achievement: String, Codable, CaseIterable, CodingKeyRepresentable, 
 /// 219, Luxor 441, TV 442, celebrity 444, six offices 446, all four R&D levels 520, World Games 631). v141: the offices
 /// open with their regions (Dubai needs the Maasai Mara), so six offices come after R&D (8 seeds: R&D 497, offices 565).
 public enum HoldingGoal: String, CaseIterable, Sendable {
-    case million, baronLux, tv, celebrity, research, offices
-    /// v123.5: the finale, the World Games show (it needs the Baron of Bristol).
+    /// v141.2 (developer): the TV campaign goal gave way to the Maasai Mara's first safari-plane group (`maraGroup`).
+    /// Still in the simulator's order (24 seeds): million 220, Luxor 436, celebrity 438, R&D 509, six offices 570, World
+    /// Games 631, the Mara's first group 646 (World Baron 631 → 657).
+    case million, baronLux, celebrity, research, offices
+    /// v123.5: the World Games show (it needs the Baron of Bristol).
     case worldGames
+    case maraGroup
 }
 
 /// What a region's rival boss says, once each. Text: `boss.<region>.<rawValue>`.
@@ -105,6 +109,11 @@ extension GameState {
         }
     }
 
+    /// v141.2: safari-plane groups flown in full in the Maasai Mara, whether you're there or it runs on autopilot.
+    public var maraGroups: Int {
+        (region == .mara ? local.contracts : parked[.mara]?.state.contracts)?.ok ?? 0
+    }
+
     /// Once you're World Baron the goals stay ticked, whatever the holding's cash does later.
     public func done(_ g: HoldingGoal) -> Bool {
         holding.worldBaron != nil || met(g)
@@ -115,7 +124,7 @@ extension GameState {
         switch g {
         case .million: return holding.millionOn != nil || holding.cash >= Holding.millionGoal
         case .baronLux: return barons[.lux] != nil
-        case .tv: return (holding.tvCount ?? 0) >= 1
+        case .maraGroup: return maraGroups >= 1
         case .celebrity: return holding.celebrity != nil
         case .research: return holding.research >= Holding.researchLevels.count
         case .offices: return holding.offices.count >= Office.allCases.count

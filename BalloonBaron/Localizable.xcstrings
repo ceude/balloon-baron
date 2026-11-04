@@ -63756,6 +63756,88 @@
         }
       }
     },
+    "hgoal.maraGroup": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Erste Safariflug-Gruppe in der Mara"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "First safari-plane group in the Mara"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Primer grupo de avioneta safari en el Mara"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マラで初のサファリ機グループ"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마라 첫 사파리 비행기 단체"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mara'da ilk safari uçağı grubu"
+          }
+        }
+      }
+    },
+    "hgoal.maraGroupNote": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Die Maasai Mara öffnet mit dem Baron von Bristol."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The Maasai Mara opens with the Baron of Bristol."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Maasai Mara se abre al ser barón de Bristol."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マサイマラはブリストル男爵で開放。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마사이마라는 브리스톨 남작이 되면 열립니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Maasai Mara, Bristol baronluğuyla açılır."
+          }
+        }
+      }
+    },
     "hgoal.million": {
       "extractionState": "manual",
       "localizations": {
@@ -64080,47 +64162,6 @@
           "stringUnit": {
             "state": "translated",
             "value": "Holding hedefleri"
-          }
-        }
-      }
-    },
-    "hgoal.tv": {
-      "extractionState": "manual",
-      "localizations": {
-        "de": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Eine TV-Kampagne"
-          }
-        },
-        "en": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "A TV campaign"
-          }
-        },
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Una campaña de TV"
-          }
-        },
-        "ja": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "テレビCMキャンペーン"
-          }
-        },
-        "ko": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "TV 캠페인"
-          }
-        },
-        "tr": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Bir TV kampanyası"
           }
         }
       }
@@ -68354,37 +68395,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Miete und Personal: %@/Tag"
+            "value": "Miete: %@/Tag"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Rent and staff: %@/day"
+            "value": "Rent: %@/day"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Alquiler y personal: %@/día"
+            "value": "Alquiler: %@/día"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "家賃と人件費：%@/日"
+            "value": "家賃：%@/日"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "임대료와 인건비: %@/일"
+            "value": "임대료: %@/일"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kira ve personel: %@/gün"
+            "value": "Kira: %@/gün"
           }
         }
       }
@@ -68436,37 +68477,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Gesperrt. Betritt zuerst diese Region, um es zu eröffnen: %@"
+            "value": "Öffnet mit %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Locked. Enter this region first to open it: %@"
+            "value": "Opens with %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bloqueada. Para abrirla, entra antes en esta región: %@"
+            "value": "Se abre con %@"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ロック中。開くには先にこの地域へ進出しよう：%@"
+            "value": "%@で開放"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "잠김. 열려면 먼저 이 지역에 진출하세요: %@"
+            "value": "%@ 진출 시 개방"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kilitli. Açmak için önce bu bölgeye gir: %@"
+            "value": "Açan bölge: %@"
           }
         }
       }
@@ -68635,6 +68676,88 @@
         }
       }
     },
+    "holding.officesIntro": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 Büros: Ausgaben %1$@. Alle 6: %2$@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 offices: expenses %1$@. All 6: %2$@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 oficinas: gastos %1$@. Las 6: %2$@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4オフィスで経費%1$@、6つで%2$@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "사무소 4곳: 비용 %1$@. 6곳: %2$@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "4 ofis: giderler %1$@. 6 ofis: %2$@."
+          }
+        }
+      }
+    },
+    "holding.officesIntroSix": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alle 6 offen: Ausgaben %@."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "All 6 open: expenses %@."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las 6 abiertas: gastos %@."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6オフィスすべて開設：経費%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6곳 모두 개설: 비용 %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "6 ofis açık: giderler %@."
+          }
+        }
+      }
+    },
     "holding.officesNeedRegions": {
       "extractionState": "manual",
       "localizations": {
@@ -68713,6 +68836,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ofislerinin kirası ve personeli her akşam holding kasasından ödenir: günde %@."
+          }
+        }
+      }
+    },
+    "holding.officesRentDay": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Miete: %@ pro Tag."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rent: %@ a day."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alquiler: %@ al día."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "家賃：1日%@。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "임대료: 하루 %@."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kira: günde %@."
           }
         }
       }
@@ -91847,37 +92011,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Autopilot-Einnahmen in der Maasai Mara +20 %. Rekordversuche 25 % günstiger."
+            "value": "Mara +20 % · Rekorde −25 %"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "The Maasai Mara's autopilot income +20%. Record attempts 25% cheaper."
+            "value": "Mara +20% · Records −25%"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ingresos en piloto automático del Maasai Mara +20 %. Intentos de récord un 25 % más baratos."
+            "value": "Mara +20 % · Récords −25 %"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "マサイマラの自動運営収入+20%。記録挑戦が25%安くなる。"
+            "value": "マラ +20% · 記録 −25%"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "마사이마라 자동 운영 수입 +20%. 기록 도전 25% 할인."
+            "value": "마라 +20% · 기록 −25%"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Maasai Mara'nın otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz."
+            "value": "Mara +%20 · Rekor −%25"
           }
         }
       }
@@ -91929,37 +92093,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Autopilot-Einnahmen in Kappadokien +25 %."
+            "value": "Kappadokien +25 % Autopilot"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cappadocia's autopilot income +25%."
+            "value": "Cappadocia +25% autopilot"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ingresos en piloto automático de Capadocia +25 %."
+            "value": "Capadocia +25 % automático"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "カッパドキアの自動運営収入+25%。"
+            "value": "カッパドキア自動運営 +25%"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "카파도키아 자동 운영 수입 +25%."
+            "value": "카파도키아 자동 운영 +25%"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kapadokya'nın otomatik kazancı %25 artar."
+            "value": "Kapadokya +%25 otomatik kazanç"
           }
         }
       }
@@ -92011,37 +92175,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "TV-Kampagnen 25 % günstiger, Autopilot-Einnahmen in Albuquerque +20 %."
+            "value": "TV −25 % · Albuquerque +20 %"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "TV campaigns 25% cheaper, Albuquerque's autopilot income +20%."
+            "value": "TV −25% · Albuquerque +20%"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Campañas de TV un 25 % más baratas, ingresos en piloto automático de Albuquerque +20 %."
+            "value": "TV −25 % · Albuquerque +20 %"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "テレビCMが25%安く、アルバカーキの自動運営収入+20%。"
+            "value": "TV −25% · アルバカーキ +20%"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "TV 캠페인 25% 할인, 앨버커키 자동 운영 수입 +20%."
+            "value": "TV −25% · 앨버커키 +20%"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "TV kampanyaları %25 daha ucuz, Albuquerque'nin otomatik kazancı %20 artar."
+            "value": "TV −%25 · Albuquerque +%20"
           }
         }
       }
@@ -92093,37 +92257,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bristol +20 %: die Autopilot-Einnahmen und die Touristen, solange du dort spielst. Die Doku-Serie 20 % günstiger."
+            "value": "Bristol +20 % · Doku −20 %"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bristol +20%: its autopilot income, and its tourists while you play there. The documentary series 20% cheaper."
+            "value": "Bristol +20% · Documentary −20%"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bristol +20 %: sus ingresos en piloto automático y sus turistas mientras juegas allí. La serie documental un 20 % más barata."
+            "value": "Bristol +20 % · Documental −20 %"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "ブリストル+20%：自動運営の収入と、そこでプレイ中の観光客。ドキュメンタリーシリーズが20%安くなる。"
+            "value": "ブリストル +20% · ドキュメンタリー −20%"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "브리스톨 +20%: 자동 운영 수입, 그리고 그곳에서 플레이하는 동안의 관광객. 다큐멘터리 시리즈 20% 할인."
+            "value": "브리스톨 +20% · 다큐 −20%"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bristol'de %20 fazla: otomatikteyken kazancı, oradayken turisti. Belgesel dizisi %20 daha ucuz."
+            "value": "Bristol +%20 · Belgesel −%20"
           }
         }
       }
@@ -92175,37 +92339,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Promi-Verträge 25 % günstiger."
+            "value": "Promis −25 %"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Celebrity contracts 25% cheaper."
+            "value": "Celebrities −25%"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Contratos con famosos un 25 % más baratos."
+            "value": "Famosos −25 %"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "有名人との契約が25%安くなる。"
+            "value": "有名人 −25%"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "유명인 계약 25% 할인."
+            "value": "유명인 −25%"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ünlü sözleşmeleri %25 daha ucuz."
+            "value": "Ünlü −%25"
           }
         }
       }
@@ -92257,37 +92421,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asiatische Reiseveranstalter: Touristen +5 % in jeder Region. Autopilot-Einnahmen in Luxor +20 %. Kostenlose Designproduktion, Kreativität +10, Designs bleiben 60 Tage frisch."
+            "value": "Luxor +20 % · Touristen +5 % · Designs"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asian tour operators: tourists +5% in every region. Luxor's autopilot income +20%. Free design production, creativity +10, designs stay fresh for 60 days."
+            "value": "Luxor +20% · Tourists +5% · Designs"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Agencias de viajes asiáticas: turistas +5 % en todas las regiones. Ingresos en piloto automático de Luxor +20 %. Diseños gratis, creatividad +10, los diseños siguen frescos 60 días."
+            "value": "Luxor +20 % · Turistas +5 % · Diseños"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "アジアの旅行会社：全地域で観光客+5%。ルクソールの自動運営収入+20%。デザイン制作が無料、創造性+10、デザインの鮮度が60日間持続。"
+            "value": "ルクソール +20% · 観光客 +5% · デザイン"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "아시아 여행사: 모든 지역 관광객 +5%. 룩소르 자동 운영 수입 +20%. 디자인 제작 무료, 창의성 +10, 디자인 신선도 60일 유지."
+            "value": "룩소르 +20% · 관광객 +5% · 디자인"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Asyalı tur şirketleri: bütün bölgelerde turist +%5. Luksor'un otomatik kazancı %20 artar. Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır."
+            "value": "Luksor +%20 · Turist +%5 · Tasarım"
           }
         }
       }

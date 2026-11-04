@@ -4,15 +4,6 @@ from s1_ui import add
 # office perks, the World Games again every 360 days, the International Balloon Festival and the Hot Air Foundation.
 
 # Offices: perks and rent
-add("office.sel.perk",
-    "Celebrity contracts 25% cheaper.",
-    "Ünlü sözleşmeleri %25 daha ucuz.",
-    "Promi-Verträge 25 % günstiger.",
-    "Contratos con famosos un 25 % más baratos.",
-    "有名人との契約が25%安くなる。",
-    "유명인 계약 25% 할인.")
-add("holding.office.rent", "Rent and staff: %@/day", "Kira ve personel: %@/gün", "Miete und Personal: %@/Tag",
-    "Alquiler y personal: %@/día", "家賃と人件費：%@/日", "임대료와 인건비: %@/일")
 add("holding.officesRent",
     "Rent and staff for your offices come out of the holding every evening: %@ a day.",
     "Ofislerinin kirası ve personeli her akşam holding kasasından ödenir: günde %@.",

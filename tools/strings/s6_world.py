@@ -143,20 +143,6 @@ add("office.ist", "Istanbul", "İstanbul", "Istanbul", "Estambul", "イスタン
 add("office.nyc", "New York", "New York", "New York", "Nueva York", "ニューヨーク", "뉴욕")
 add("office.sel", "Seoul", "Seul", "Seoul", "Seúl", "ソウル", "서울")
 add("office.tyo", "Tokyo", "Tokyo", "Tokio", "Tokio", "東京", "도쿄")
-add("office.ist.perk",
- "Cappadocia's autopilot income +25%.",
- "Kapadokya'nın otomatik kazancı %25 artar.",
- "Autopilot-Einnahmen in Kappadokien +25 %.",
- "Ingresos en piloto automático de Capadocia +25 %.",
- "カッパドキアの自動運営収入+25%。",
- "카파도키아 자동 운영 수입 +25%.")
-add("office.nyc.perk",
- "TV campaigns 25% cheaper, Albuquerque's autopilot income +20%.",
- "TV kampanyaları %25 daha ucuz, Albuquerque'nin otomatik kazancı %20 artar.",
- "TV-Kampagnen 25 % günstiger, Autopilot-Einnahmen in Albuquerque +20 %.",
- "Campañas de TV un 25 % más baratas, ingresos en piloto automático de Albuquerque +20 %.",
- "テレビCMが25%安く、アルバカーキの自動運営収入+20%。",
- "TV 캠페인 25% 할인, 앨버커키 자동 운영 수입 +20%.")
 
 # Made-up celebrities for the holding's ad deal
 for i, v in enumerate([

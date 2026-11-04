@@ -108,7 +108,6 @@ for k, en, tr, de, es, ja, ko in [
 # Holding goals on the whiteboard
 add("hgoal.million", "Holding cash €1 million", "Holding kasası €1 milyon", "Holding-Kasse 1 Mio. €", "Caja del holding: 1 millón de €", "ホールディングス資金100万ユーロ", "지주회사 금고 100만 유로")
 add("hgoal.baronAbq", "Baron of Albuquerque", "Albuquerque Baronu", "Baron von Albuquerque", "Barón de Albuquerque", "アルバカーキの男爵", "앨버커키의 남작")
-add("hgoal.tv", "A TV campaign", "Bir TV kampanyası", "Eine TV-Kampagne", "Una campaña de TV", "テレビCMキャンペーン", "TV 캠페인")
 add("hgoal.celebrity", "A celebrity ambassador", "Ünlü reklam yüzü", "Ein Promi als Werbegesicht", "Una cara famosa", "有名人の広告塔", "유명인 광고 모델")
 add("hgoal.research", "Envelope research done", "Zarf Ar-Ge'si tamam", "Hüllenforschung abgeschlossen", "Investigación de envolturas terminada", "球皮研究の完了", "외피 연구 완료")
 add("hgoal.offices", "Four world offices", "Dört dünya ofisi", "Vier Büros weltweit", "Cuatro oficinas en el mundo", "世界4都市のオフィス", "세계 4대 사무소")

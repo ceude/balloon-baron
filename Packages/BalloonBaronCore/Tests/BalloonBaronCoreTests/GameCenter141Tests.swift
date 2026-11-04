@@ -42,3 +42,59 @@ final class MaraBalance1411Tests: XCTestCase {
         XCTAssertEqual(Holding.withdrawKeep(.cap), 10000)
     }
 }
+
+extension Game {
+    /// v141.2: the Maasai Mara entered and its first safari-plane group flown in full (it runs on autopilot).
+    mutating func flewMaraGroup() {
+        var st = newRegionState(.mara)
+        var c = ContractState(); c.ok = 1
+        st.contracts = c
+        state.parked[.mara] = ParkedRegion(state: st, auto: Autopilot(base: 1000, since: state.day, lastIssue: state.day))
+    }
+}
+
+extension HoldingGoal {
+    /// The order the campaign simulator meets them on average (v141.2).
+    static let order1412: [HoldingGoal] = [.million, .baronLux, .celebrity, .research, .offices, .worldGames, .maraGroup]
+}
+
+/// v141.2 (developer): the TV goal is gone; the Mara's first safari-plane group counts, there or on autopilot.
+final class MaraGoal1412Tests: XCTestCase {
+    func newGame() -> Game {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 42)
+        g.startDay()
+        return g
+    }
+
+    func testTheMarasFirstGroupIsAGoal() {
+        var g = newGame()
+        XCTAssertFalse(HoldingGoal.allCases.map(\.rawValue).contains("tv"))
+        XCTAssertFalse(g.state.met(.maraGroup))
+        g.state.holding.tvCount = 3
+        XCTAssertFalse(g.state.met(.maraGroup), "TV campaigns no longer count")
+        g.flewMaraGroup()
+        XCTAssertTrue(g.state.met(.maraGroup))
+        XCTAssertEqual(g.state.maraGroups, 1)
+    }
+
+    func testAWorldBaronWithoutTheMaraGroupLosesTheTitleOnLoad() throws {
+        var g = newGame()
+        g.state.barons = [.cap: 1, .abq: 2, .lux: 3, .bri: 4]
+        g.state.holding.millionOn = 10
+        g.state.holding.tvCount = 1
+        g.state.holding.celebrity = Celebrity(index: 0, until: 100)
+        g.state.holding.research = Holding.researchLevels.count
+        for o in Office.allCases { g.state.holding.offices[o] = 1 }
+        g.state.holding.worldGamesUntil = 60
+        g.state.holding.worldBaron = 300
+        g.state.postcards = [.world: 300]
+        let data = try JSONEncoder().encode(g.state)
+        var back = Game(state: try JSONDecoder().decode(GameState.self, from: data))
+        back.state.migrate()
+        XCTAssertNil(back.state.holding.worldBaron, "the Mara's first group is wanted now")
+        XCTAssertEqual(back.state.postcards?[.world], 300, "the postcard stays in the album")
+        back.flewMaraGroup()
+        back.holdingGoalsNow()
+        XCTAssertNotNil(back.state.holding.worldBaron)
+    }
+}

@@ -249,7 +249,7 @@ final class Invest137Tests: XCTestCase {
         var g = rich()
         g.state.barons[.lux] = 3
         g.state.holding.millionOn = 1
-        g.state.holding.tvCount = 1
+        g.flewMaraGroup()
         g.state.holding.celebrity = Celebrity(index: 0, until: 100)
         g.state.holding.worldGamesUntil = 60
         g.state.holding.research = 2
@@ -263,7 +263,7 @@ final class Invest137Tests: XCTestCase {
         g.state.holding.research = 4
         g.checkHoldingGoals()
         XCTAssertNotNil(g.state.holding.worldBaron)
-        XCTAssertEqual(HoldingGoal.allCases, [.million, .baronLux, .tv, .celebrity, .research, .offices, .worldGames],
+        XCTAssertEqual(HoldingGoal.allCases, HoldingGoal.order1412,
                        "in the order the simulator meets them")
     }
 
@@ -271,7 +271,7 @@ final class Invest137Tests: XCTestCase {
     func testOldWorldBaronIsCheckedAgainOnLoad() throws {
         var g = rich()
         g.state.barons[.lux] = 3
-        g.state.holding.tvCount = 1
+        g.flewMaraGroup()
         g.state.holding.celebrity = Celebrity(index: 0, until: 100)
         g.state.holding.worldGamesUntil = 60
         g.state.holding.research = 2
@@ -299,7 +299,7 @@ final class Invest137Tests: XCTestCase {
     func testFullWorldBaronStaysOnLoad() throws {
         var g = rich()
         g.state.barons[.lux] = 3
-        g.state.holding.tvCount = 1
+        g.flewMaraGroup()
         g.state.holding.celebrity = Celebrity(index: 0, until: 100)
         g.state.holding.worldGamesUntil = 60
         g.state.holding.research = 4

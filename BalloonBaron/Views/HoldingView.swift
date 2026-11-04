@@ -164,6 +164,7 @@ struct HoldingView: View {
         // v137: how far the two longer goals have come
         if g == .offices, !s.done(g) { return loc("hgoal.officesNow", num(s.holding.offices.count), num(Office.allCases.count)) }
         if g == .research, !s.done(g) { return loc("hgoal.researchNow", num(s.holding.research), num(Holding.researchLevels.count)) }
+        if g == .maraGroup, !s.done(g), !s.owns(.mara) { return loc("hgoal.maraGroupNote") } // v141.2
         guard g == .million else { return nil }
         if let d = s.holding.millionOn { return loc("hgoal.millionOn", num(d)) }
         return s.done(g) ? nil : loc("hgoal.millionNow", eurH(s.holding.cash))
@@ -543,18 +544,15 @@ struct HoldingView: View {
         let h = s.holding
         let offices = Office.listed // v141.1: İstanbul, Seoul, New York, London, Tokyo, Dubai
         let count = offices.filter { h.has($0) }.count
-        // v137 (developer): any four offices 20%, all six 15%
+        // v141.2 (developer): one short line: the expense rule (any four 20%, all six 15%) and the day's rent
         let text = count == offices.count
-            ? loc("holding.officesSix", percent(Holding.allOfficesExpenseRate), percent(Holding.expenseRate))
-            : count >= Holding.fewOffices
-            ? loc("holding.officesFour", num(count), percent(Holding.fourOfficesExpenseRate), percent(Holding.expenseRate), percent(Holding.allOfficesExpenseRate))
-            : loc("holding.officesRule", percent(Holding.expenseRate), percent(Holding.fourOfficesExpenseRate), percent(Holding.allOfficesExpenseRate))
+            ? loc("holding.officesIntroSix", percent(Holding.allOfficesExpenseRate))
+            : loc("holding.officesIntro", percent(Holding.fourOfficesExpenseRate), percent(Holding.allOfficesExpenseRate))
         let rows = Array(stride(from: 0, to: offices.count, by: 2))
-        // v140: the offices' rent and staff, paid every evening
-        let rent = count > 0 ? loc("holding.officesRent", eurH(h.officeRent)) : loc("holding.officesRentNone")
+        let rent = count > 0 ? " " + loc("holding.officesRentDay", eurH(h.officeRent)) : ""
         return VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("holding.offices", "\(count)/\(offices.count)"))
-            hint(text + " " + rent + (count < offices.count ? " " + loc("holding.officesNeedRegions") : ""))
+            hint(text + rent)
             Grid(horizontalSpacing: 10, verticalSpacing: 10) {
                 ForEach(rows, id: \.self) { i in
                     GridRow {
