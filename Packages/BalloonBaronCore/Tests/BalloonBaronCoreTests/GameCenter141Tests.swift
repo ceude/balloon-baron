@@ -38,7 +38,7 @@ final class MaraBalance1411Tests: XCTestCase {
         XCTAssertEqual(Mara.rainsDemand, 0.55)
         XCTAssertEqual(Mara.rainsGreen, 0.28); XCTAssertEqual(Mara.rainsYellow, 0.62)
         XCTAssertLessThan(Mara.rainsGreen, 0.35, "the rains still ground more mornings than any winter")
-        XCTAssertEqual(Holding.withdrawKeep(.mara), 60000)
+        XCTAssertEqual(Holding.withdrawKeep(.mara), 50000)
         XCTAssertEqual(Holding.withdrawKeep(.cap), 10000)
     }
 }

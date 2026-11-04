@@ -78,9 +78,9 @@ final class MaraTests: XCTestCase {
         g.state.cash = 94000
         let h = g.state.holding.cash
         let sent = g.withdraw(share: 1)
-        XCTAssertEqual(sent, 34000, "v141.1: the Mara's box keeps $60,000")
+        XCTAssertEqual(sent, 44000, "v141.3: the Mara's box keeps $50,000")
         XCTAssertEqual(g.state.cash, Mara.withdrawKeep)
-        XCTAssertEqual(g.state.holding.cash - h, jsRound(34000 / 1.1), "dollars to euros at 1.1")
+        XCTAssertEqual(g.state.holding.cash - h, jsRound(44000 / 1.1), "dollars to euros at 1.1")
         XCTAssertEqual(Holding.withdrawKeep(.bri), 10000, "elsewhere 10,000")
     }
 

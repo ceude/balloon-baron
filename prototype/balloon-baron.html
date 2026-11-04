@@ -7898,7 +7898,7 @@ const CHAPTERS_MARA = [
 /* v141.1 (developer: milder rains, a $10 reserve fee; tuned with tools/sim-bankrupt.js so a careful player stops losing
    balloons to the bank): long rains 12 → 10 days, short 6 → 5, every 40 → 45 days, demand ×.5 → ×.55, flags in the rains
    25/33/42 → 28/34/38; the park fee $12 → $10; a transfer to the holding leaves $60,000 in the Mara's box (keep) */
-const MARA_FX = { entry: 300000, cash: 6000, price: 210, demand: 125, park: 10, fuel: 1.3, wage: 1.1, rains: .55, longRains: 10, shortRains: 5, rainsEvery: 45, rainsCash: 20000, keep: 60000,
+const MARA_FX = { entry: 300000, cash: 6000, price: 210, demand: 125, park: 10, fuel: 1.3, wage: 1.1, rains: .55, longRains: 10, shortRains: 5, rainsEvery: 45, rainsCash: 20000, keep: 50000,
   migration: 1.8, migrationDays: 6, migrationEvery: 36, herdFine: 1200, green: .45, yellow: .82, rainG: .28, rainY: .62 };
 const regFuel = () => S && S.region === 'mara' ? MARA_FX.fuel : 1;
 const chap = () => S.region === 'mara' ? CHAPTERS_MARA : S.region === 'bri' ? CHAPTERS_BRI : S.region === 'lux' ? CHAPTERS_LUX : S.region === 'abq' ? CHAPTERS_ABQ : CHAPTERS;

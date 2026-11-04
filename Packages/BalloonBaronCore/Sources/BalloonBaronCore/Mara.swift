@@ -21,7 +21,7 @@ public enum Mara {
     public static let rainsDemand = 0.55, longRains = 10, shortRains = 5, rainsEvery = 45, rainsCash = 20000
     /// v141.1: what a transfer to the holding leaves in the Mara's cash box (10,000 elsewhere): its bush days cost more to
     /// run, and a careful player who sent everything away lost balloons to the bank after red days and antitrust fines.
-    public static let withdrawKeep = 60000
+    public static let withdrawKeep = 50000
     /// The first rains a month in, the first migration after 16 days.
     public static let firstRains = 30, firstMigration = 16
     /// The Great Migration: six days about every six weeks (36 days after the last ends), demand ×1.8.
