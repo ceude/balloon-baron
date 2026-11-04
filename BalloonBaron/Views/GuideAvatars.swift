@@ -22,9 +22,36 @@ struct GuideAvatar: View {
         switch r {
         case .abq: ("#5aa9e6", ["#2a3a6a", "#c06a5a", "#f6c08a"], franklin)
         case .bri: ("#c86a7a", ["#6a86a8", "#c8a0a8", "#f2d8b8"], maggie)
+        case .mara: ("#c0392b", ["#3a5a7a", "#e89a5a", "#f6d8a0"], lemayian)
         default: ("#c9a040", ["#1f4f6b", "#c88a4a", "#f2d69a"], imhotep)
         }
     }
+
+    /// v141: Lemayian Ole Sankale, the Mara's guide: a Maasai elder and retired safari guide; close-cropped grey hair,
+    /// beaded earrings in stretched lobes, the beaded collar and a red checked shuka over the shoulder.
+    private static let lemayian: [ArtItem] = [
+        ArtItem(path: HezarfenAvatar.svgPath("M0 80 Q20 74 40 79 Q60 72 100 78 L100 100 L0 100Z"), fill: Color(hex: "#b07a44").opacity(0.45)),
+        .fill("M12 100 C15 80 30 72 50 72 C70 72 85 80 88 100Z", "#c0392b"),
+        ArtItem(path: HezarfenAvatar.svgPath("M20 84 L80 84 M16 92 L84 92 M30 76 L30 100 M42 73 L42 100 M58 73 L58 100 M70 76 L70 100"), stroke: Color(hex: "#7a1414").opacity(0.7), width: 1.3),
+        ArtItem(path: HezarfenAvatar.svgPath("M18 88 L82 88 M36 74 L36 100 M64 74 L64 100"), stroke: Color(hex: "#1f2a5a").opacity(0.5), width: 0.8),
+        .fill("M60 72 C69 74 76 80 79 90 L71 94 C68 85 64 79 57 75Z", "#a82a20"),
+        .box(43, 58, 14, 14, 4, "#3e2214"),
+        .line("M35 67 Q50 79 65 67", "#2a6ab0", 2.6),
+        .line("M34 70.5 Q50 83 66 70.5", "#f4f0e4", 2.6),
+        .line("M33 74 Q50 87 67 74", "#e8b23a", 2.6),
+        .line("M32 77.5 Q50 91 68 77.5", "#2a8a4a", 2.6),
+        .dot(40, 74.6, 0.9, "#c0392b"), .dot(50, 77, 0.9, "#c0392b"), .dot(60, 74.6, 0.9, "#c0392b"), .dot(45, 83, 0.9, "#c0392b"), .dot(55, 83, 0.9, "#c0392b"),
+        .oval(50, 46, 16, 20, "#4a2a1a"),
+        .fill("M34 38 C34 25 41 21 50 21 C59 21 66 25 66 38 C62 31 57 29 50 29 C43 29 38 31 34 38Z", "#aaa6a0"),
+        .oval(33.8, 46, 2.6, 4, "#3e2214"), .oval(66.2, 46, 2.6, 4, "#3e2214"),
+        .line("M33 49 C29.5 54 29.6 60 33 61.5 C35.4 60 35.4 54 34.4 49.5 M67 49 C70.5 54 70.4 60 67 61.5 C64.6 60 64.6 54 65.6 49.5", "#3e2214", 1.7),
+        .dot(32.4, 60.6, 1.4, "#e8b23a"), .dot(34.4, 61.4, 1.2, "#2a6ab0"), .dot(67.6, 60.6, 1.4, "#e8b23a"), .dot(65.6, 61.4, 1.2, "#2a6ab0"),
+        .line("M38 42 Q43 40 47 42 M53 42 Q57 40 62 42", "#d8d4ce", 1.8),
+        .line("M39.5 46.5 Q43 44.6 46.5 46.5 M53.5 46.5 Q57 44.6 60.5 46.5", "#140a06", 2),
+        .line("M37 48.5 L35 50 M63 48.5 L65 50", "#2a140a", 0.9),
+        .fill("M50 48 L47.6 54.5 Q50 56 52.4 54.5", "#3a1e12"),
+        ArtItem(path: HezarfenAvatar.svgPath("M42 57 Q50 64 58 57 Q50 60.8 42 57Z"), fill: Color.white, stroke: Color(hex: "#2a140a"), width: 1.2)
+    ]
 
     /// v124: Maggie Holloway: grey bun, reading glasses, a cardigan and a tape measure round her neck.
     private static let maggie: [ArtItem] = [

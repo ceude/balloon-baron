@@ -403,6 +403,27 @@ private struct PostcardPainter {
                 many(8, 0.5, 10, 34)
                 crown(75, 18, 1.2)
             }
+        case .mara, .baronMara:
+            // v141: the Mara at sunrise: flat-topped acacias, a herd on the plain, balloons over the escarpment
+            circle(104, 50, 12, "#fff0c8")
+            var esc = c
+            esc.opacity = 0.55
+            esc.fill(HezarfenAvatar.svgPath("M6 56 L30 50 L52 53 L78 47 L110 52 L144 49 L144 72 L6 72Z"), with: .color(Color(hex: "#8a6a5a")))
+            fill("M6 62 Q40 57 75 60 Q110 56 144 60 L144 72 L6 72Z", "#c9a05a")
+            for (x, y, s) in [(24.0, 60.0, 1.0), (128, 59, 0.8)] {
+                stroke("M\(f(x)) \(f(y)) L\(f(x + 1)) \(f(y - 13 * s))", "#3a2a1a", 1.6 * CGFloat(s))
+                fill("M\(f(x - 12 * s)) \(f(y - 13 * s)) Q\(f(x + 1)) \(f(y - 21 * s)) \(f(x + 14 * s)) \(f(y - 13 * s)) Q\(f(x + 1)) \(f(y - 11 * s)) \(f(x - 12 * s)) \(f(y - 13 * s))Z", "#3a3a1e")
+            }
+            for (i, x) in [46.0, 52, 57, 63, 68, 74, 80, 86].enumerated() {
+                c.fill(Path(ellipseIn: CGRect(x: x - 2.6, y: 64 + Double(i % 2) - 1.4, width: 5.2, height: 2.8)), with: .color(Color(hex: "#3a2a20")))
+            }
+            if a == .mara {
+                balloon(70, 14, 0.9, c0, c1)
+                balloon(112, 24, 0.5, Self.cols[2], "#ffffff")
+            } else {
+                many(8, 0.5, 14, 38)
+                crown(75, 16, 1.2)
+            }
         case .nightGlow:
             // v124: balloons glowing on the festival field, fireworks above
             for _ in 0..<16 {

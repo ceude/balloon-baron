@@ -66,7 +66,7 @@ extension Office {
     var perk: String { loc("office.\(rawValue).perk") }
     /// v137: each city's landmark: Istanbul the Bosphorus Bridge, New York the Statue of Liberty, Seoul N Seoul Tower,
     /// Tokyo Skytree, Dubai the Burj Khalifa, Paris the Eiffel Tower.
-    var glyph: LineGlyph.Kind { [.bosphorus, .liberty, .namsan, .skytree, .burj, .eiffel][Office.allCases.firstIndex(of: self)!] }
+    var glyph: LineGlyph.Kind { [.bosphorus, .liberty, .namsan, .skytree, .burj, .bigBen][Office.allCases.firstIndex(of: self)!] }
 }
 extension Design {
     var title: String { gift?.title ?? (name.isEmpty ? "\(pattern.title) \(number)" : name) }
@@ -143,8 +143,8 @@ extension Goal {
         case .cash: loc("goal.cash", eur(Int(target)))
         case .hotelOwn: loc("goal.hotelOwn", num(Int(target)))
         case .share: loc("goal.share", percent(target))
-        case .xl: loc("goal.xl", region.xlName)
-        case .fiesta where region == .lux || region == .bri: loc("goal.fiesta.\(region.rawValue)")
+        case .xl: loc("goal.xl", bname(region.xlName))
+        case .fiesta where region == .lux || region == .bri || region == .mara: loc("goal.fiesta.\(region.rawValue)")
         default: loc("goal.\(kind.rawValue)")
         }
     }
@@ -179,7 +179,7 @@ extension Factory {
 /// Balloon names are saved as the core's lists have them; the few that are words or Turkish spellings are
 /// shown per language (older saves keep working, and a language switch renames them too).
 private let balloonNameKeys: [String: String] = [
-    "Şafak": "dawn", "Güvercin": "dove", "Kapadokya Yıldızı": "capStar", "Fiesta Yıldızı": "fiestaStar", "Teb Yıldızı": "thebesStar", "Avon Yıldızı": "avonStar",
+    "Şafak": "dawn", "Güvercin": "dove", "Kapadokya Yıldızı": "capStar", "Fiesta Yıldızı": "fiestaStar", "Teb Yıldızı": "thebesStar", "Avon Yıldızı": "avonStar", "Mara Yıldızı": "maraStar",
     "Hatşepsut": "hatshepsut", "İsis": "isis", "File": "philae", "Teb": "thebes", "Abidos": "abydos", "Amon": "amun", "Kurna": "qurna"
 ]
 func bname(_ raw: String) -> String {
@@ -207,10 +207,12 @@ extension HezMessage {
         case .tip(let t): loc("hez.\(t.rawValue)")
         case .winterComing: loc("hez.winterComing")
         case .spring: loc("hez.spring")
+        case let .rainsComing(long, days): loc(long ? "hez.rainsLong" : "hez.rainsShort", num(days))
+        case .rainsOver: loc("hez.rainsOver")
         case .entrant(let e): loc("hez.entrant.\(e.rawValue)")
         case .holdingOpened: loc("hez.holdingOpened")
         case .enteredRegion(let r): loc("hez.entered.\(r.rawValue)", eur(r.startCash))
-        case .fiestaStarted: loc(currentRegion == .lux || currentRegion == .bri ? "hez.fiestaStarted.\(currentRegion.rawValue)" : "hez.fiestaStarted")
+        case .fiestaStarted: loc(currentRegion == .lux || currentRegion == .bri || currentRegion == .mara ? "hez.fiestaStarted.\(currentRegion.rawValue)" : "hez.fiestaStarted")
         case let .regionIssue(r, i): loc("hez.regionIssue", r.title, i.body)
         case .officeOpened(let o): loc("hez.officeOpened", o.title) + " " + o.perk
         case .allOffices: loc("hez.allOffices")
@@ -240,7 +242,7 @@ extension HezMessage {
              bs.isEmpty ? nil : loc("hez.xfer.balloons", listText(bs.map(bname)), num(day))].compactMap { $0 }.joined(separator: "; ")
                 + ". " + loc("hez.xfer.end", currentRegion.title)
         case .cargoArrived(let bs): loc("hez.cargoArrived", listText(bs.map(bname)))
-        case .contractDelayIntro: loc("ctr.cap.delayIntro")
+        case .contractDelayIntro: loc(currentRegion == .mara ? "ctr.mara.delayIntro" : "ctr.cap.delayIntro")
         case .hangarFull(let n): loc("hez.hangarFull", num(n))
         case .hangarOutside(let n): loc("hez.hangarOutside", num(n))
         case let .nightCalledOff(r, show, refund): loc(show ? "hez.nightOff.show" : "hez.nightOff.glow", r.title, money(refund, in: r))
@@ -315,6 +317,8 @@ extension DayEvent {
         case .fogFlown: loc("event.fogFlown")
         case let .farmLanding(a, fine): loc("event.farmLanding.\(a.rawValue)", eur(fine))
         case .mudLanding: loc("event.mudLanding")
+        case let .herdLanding(k, fine): loc("event.herdLanding.\(k.rawValue)", eur(fine))
+        case .riverLanding: loc("event.riverLanding")
         case .airspaceFine(let fine): loc("event.airspaceFine", eur(fine))
         case let .eveningAscent(n, pax, income): loc("event.eveningAscent", num(n), num(pax), eur(income))
         case .nightGlowTonight(let n): loc("event.nightGlowTonight", num(n))

@@ -26,6 +26,8 @@ struct ContractPlace {
         case .bri: ContractPlace(spot: (-11, 6.4), shift: (0, 0), free: [(-20, 3, -5.6, 10.6)], tap: (-18, 3.8, -6.4, 9.8), town: [(8, 14.95), (8, 8), (-6, 8)])
         // v126: NAV · Nevşehir Airport at the end of the east road
         case .cap: ContractPlace(spot: (30, 3), shift: (0, 0), free: [(19.5, -2.5, 48, 9.6)], tap: (23.5, -0.2, 36.5, 7.6), town: [(8, 14.95), (8, 8), (23.5, 8)])
+        // v141: the Mara's dirt airstrip, laid out like Cappadocia's airport
+        case .mara: ContractPlace(spot: (30, 3), shift: (0, 0), free: [(19.5, -2.5, 48, 9.6)], tap: (23.5, -0.2, 36.5, 7.6), town: [(8, 14.95), (8, 8), (23.5, 8)])
         }
     }
 
@@ -71,6 +73,7 @@ extension ContractKind {
         case .ship: "lux"
         case .train: "bri"
         case .plane: "cap"
+        case .bush: "mara"
         }
     }
 
@@ -81,6 +84,7 @@ extension ContractKind {
         case .ship: 1
         case .train: 2
         case .plane: 3
+        case .bush: 4
         }
     }
 
@@ -89,7 +93,7 @@ extension ContractKind {
     var arrDur: Double {
         switch self {
         case .bus: 8.6
-        case .plane: 13.5
+        case .plane, .bush: 13.5
         case .ship, .train: 8
         }
     }
@@ -97,7 +101,7 @@ extension ContractKind {
     var depDur: Double {
         switch self {
         case .bus: 12.2
-        case .plane: 14
+        case .plane, .bush: 14
         case .ship, .train: 9
         }
     }
@@ -173,6 +177,7 @@ extension TownPainter {
         case .ship: shipGround()
         case .train: trainGround()
         case .plane: airGround()
+        case .bush: bushGround()
         }
         c = keep
     }
@@ -189,6 +194,7 @@ extension TownPainter {
         case .ship: shipItems(add)
         case .train: trainItems(add)
         case .plane: airItems(add)
+        case .bush: bushItems(add)
         }
         if ContractGeo.jeepsOn(s) && !ContractGeo.vehicles(s, t).isEmpty { jeepItems(add, K.kind) }
         let (sx, sy) = P.shift
@@ -953,7 +959,7 @@ extension TownPainter {
             doors = { i in (-15.6 + Double(i % 3) * 2.2, 6.75) }
             via = { d in [(d.0, 7.3), (d.0 + 0.3, 8)] }
             road = { s in [s, (s.0, 8), (-5.6, 8)] }
-        case .plane: // from the terminal's front door to the dirt stand, then the east road
+        case .plane, .bush: // from the terminal's front door (the Mara: the banda) to the dirt stand, then the east road
             stops = [(25.7, 6.55), (26.7, 6.55), (27.7, 6.55)]
             doors = { i in (30.75 + Double(i % 2) * 0.5, 7.1) }
             via = { d in [(d.0, 7.35), (28.6, 7.35)] }
@@ -984,6 +990,163 @@ extension TownPainter {
                 p.c = keep
             }
         }
+    }
+
+    // MARK: v141 the Mara's airstrip
+
+    /// The Mara's dirt airstrip (`bushGround`): a red murram strip with wheel tracks and white marker stones, a worn patch
+    /// of red earth for an apron, the jeep stand.
+    private mutating func bushGround() {
+        let A = AirGeo.self, x0 = A.rwy.0, x1 = A.rwy.1
+        var R = rng(57)
+        for (x, y, rx, ry) in [(26.0, 3.6, 90.0, 40.0), (28.4, 3.9, 110, 46), (30.6, 3.3, 80, 34), (27.2, 2.9, 70, 26), (29.8, 4.6, 70, 28)] {
+            let p = iso(x, y)
+            ellipse(p.x, p.y, CGFloat(rx), CGFloat(ry), hex("#bf8a5c").opacity(0.4))
+        }
+        var specks = Path()
+        for _ in 0..<60 { let p = iso(24.8 + R.next() * 6.8, 2.5 + R.next() * 2.6); specks.addRect(CGRect(x: p.x, y: p.y, width: 4, height: 2)) }
+        c.fill(specks, with: .color(rgba(120, 60, 30, 0.18)))
+        quad(A.inX - 0.4, 1.6, A.inX + 0.4, 2.35, "#b8714a"); quad(A.outX - 0.4, 1.6, A.outX + 0.4, 2.35, "#b8714a")
+        quad(x0, 0.25, x1, 1.75, "#b8683e")
+        quad(x0, 0.6, x1, 0.78, rgba(120, 56, 28, 0.35)); quad(x0, 1.22, x1, 1.4, rgba(120, 56, 28, 0.35))
+        var dirt = Path()
+        for _ in 0..<160 { let p = iso(x0 + R.next() * (x1 - x0), 0.3 + R.next() * 1.4); dirt.addRect(CGRect(x: p.x, y: p.y, width: 3, height: 1.5)) }
+        c.fill(dirt, with: .color(rgba(90, 40, 20, 0.22)))
+        var x = x0 + 0.4
+        while x < x1 { for y in [0.18, 1.82] { let p = iso(x, y); ellipse(p.x, p.y, 3.4, 1.8, hex("#f4f0e6")) }; x += 1.6 }
+        var stand = c
+        stand.opacity = 0.5
+        stand.fill(Path { $0.addLines(q(24.8, 5.85, 29.9, 7.65)); $0.closeSubpath() }, with: .color(hex("#c49a6a")))
+        var sp = Path()
+        for _ in 0..<46 { let p = iso(24.9 + R.next() * 4.9, 5.9 + R.next() * 1.7); sp.addRect(CGRect(x: p.x, y: p.y, width: 4, height: 2)) }
+        c.fill(sp, with: .color(rgba(90, 60, 40, 0.22)))
+    }
+
+    /// The banda (a round thatched shelter, the strip's name board), the windsock, fuel drums, a ranger's Land Cruiser,
+    /// acacias and zebras round the strip, the bush plane and its passengers (`bushItems`).
+    private func bushItems(_ add: (Double, Double, Double?, @escaping (inout TownPainter) -> Void) -> Void) {
+        add(31.6, 6.3, 31.6 + 6.3 + 1.2) { p in
+            let cc = p.iso(31.6, 6.3), r: CGFloat = 64
+            for a in [0.0, 1.3, 2.6, 3.9, 5.2] { p.rect(cc.x + CGFloat(cos(a)) * r * 0.8 - 2, cc.y + CGFloat(sin(a)) * r * 0.4 - 30, 4, 30, p.hex("#5a3a20")) }
+            p.rect(cc.x - 30, cc.y - 8, 60, 4, p.hex("#8a5a34")); p.rect(cc.x - 26, cc.y + 4, 52, 4, p.hex("#8a5a34"))
+            p.thatchCone(cc.x, cc.y - 30, r, 34)
+            let s0 = p.pt(cc.x - 46, cc.y + 14)
+            p.rect(s0.x - 1.5, s0.y - 40, 3, 40, p.hex("#5a3a20")); p.rect(s0.x + 64, s0.y - 30, 3, 30, p.hex("#5a3a20"))
+            let box = Path(roundedRect: CGRect(x: s0.x - 8, y: s0.y - 58, width: 88, height: 22), cornerRadius: 4)
+            p.c.fill(box, with: .color(p.hex("#2a5a3a"))); p.c.stroke(box, with: .color(p.hex("#f2e2b8")), lineWidth: 1.5)
+            p.sign("TALEK AIRSTRIP", s0.x + 36, s0.y - 47, size: 12, color: p.hex("#f6efd8"))
+        }
+        add(22.6, 2.6, nil) { p in // the windsock by the strip
+            let q = p.iso(22.6, 2.6)
+            p.rect(q.x - 1.5, q.y - 58, 3, 58, p.hex("#8a8a90"))
+            let sway = CGFloat(sin(p.t * 2.3)) * 3, dx: CGFloat = 30, k = 0.85 + 0.15 * CGFloat(sin(p.t * 3.1))
+            for i in 0..<5 {
+                let fi = CGFloat(i)
+                let x0 = q.x + fi * dx * k / 5, x1 = q.x + (fi + 1) * dx * k / 5, r0 = 6 - fi * 0.8, r1 = 6 - (fi + 1) * 0.8
+                let y0 = q.y - 56 + fi * (1 + sway * 0.2), y1 = q.y - 56 + (fi + 1) * (1 + sway * 0.2)
+                p.poly([p.pt(x0, y0 - r0), p.pt(x1, y1 - r1), p.pt(x1, y1 + r1), p.pt(x0, y0 + r0)], p.hex(i % 2 == 1 ? "#f6f2ea" : "#ff6a2a"))
+            }
+        }
+        add(33.6, 4.2, nil) { p in // fuel drums
+            let q = p.iso(33.6, 4.2)
+            for (dx, dy, col) in [(0.0, 0.0, "#2a6a4a"), (9, 3, "#c0392b"), (-8, 4, "#2a6a4a")] {
+                p.rect(q.x + CGFloat(dx) - 4, q.y + CGFloat(dy) - 11, 8, 11, p.hex(col))
+                p.ellipse(q.x + CGFloat(dx), q.y + CGFloat(dy) - 11, 4, 1.8, p.mix(col, "#ffffff", 0.25))
+            }
+        }
+        add(26.2, 6.6, 26.2 + 6.6 + 0.5) { p in p.landCruiser(26.0, 6.5, "#7a8a5a") }
+        for (gx, gy) in [(21.4, 4.6), (34.4, 2.4), (37.6, 3.6), (38.8, 6.4), (21.2, 6.8), (36.8, 7.3)] {
+            add(gx, gy, nil) { p in let q = p.iso(gx, gy); p.acacia(q.x, q.y, 0.9) }
+        }
+        for (gx, gy, d) in [(35.6, 5.4, 1.0), (36.2, 5.9, -1), (36.9, 5.2, 1)] {
+            add(gx, gy, nil) { p in let q = p.iso(gx + sin(p.t * 0.05 + gx) * 0.1, gy); p.zebra(q.x, q.y, CGFloat(d), 2.4) }
+        }
+        let T = t, vs = ContractGeo.vehicles(s, T)
+        if let v = vs.first {
+            let leaving = v.t1 != nil, u: Double? = leaving ? T - v.t1! : v.t0.map { T - $0 }
+            if leaving || u == nil || u! >= 0 {
+                let pose = AirGeo.planePose(u, leaving: leaving)
+                let al = leaving ? 1 - ContractGeo.clamp01(((u ?? 0) - 11.5) / 2) : ContractGeo.clamp01((u ?? 9) / 0.8)
+                let parked = u == nil || (!leaving && u! > 13), col = v.color
+                add(pose.gx, pose.gy, pose.gx + pose.gy + 1.2 + Double(pose.alt) / 60) { p in
+                    let keep = p.c
+                    p.c.opacity *= al
+                    p.bushPlane(pose.gx, pose.gy, pose.hd, pose.alt, col, prop: parked ? 0 : pose.prop, stairs: parked)
+                    p.c = keep
+                }
+            }
+        }
+        if ContractGeo.jeepsOn(s) && vs.contains(where: { $0.t0 == nil && $0.t1 == nil }) {
+            let cols = ["#ff5e3a", "#14a39a", "#ffc23d", "#9b7be0", "#5aa9e6", "#ff6fa8"], path = [(26.95, 4.4), (26.95, 5.2), (30.6, 5.2), (30.6, 5.55)]
+            let L = CoachPath.len(path)
+            for i in 0..<6 {
+                let k = (T * 0.12 + Double(i) / 6).truncatingRemainder(dividingBy: 1), pos = CollectScene.walk(path, k * L).p
+                add(pos.0, pos.1, nil) { p in let q = p.iso(pos.0, pos.1); p.person(q.x, q.y, cols[i], p.t, Double(i)) }
+            }
+        }
+    }
+
+    /// A single-engine bush plane (`bushPlane`): a high wing on struts, one propeller at the nose, fixed gear, the
+    /// operator's colour on the cheatline, wingtips and fin.
+    mutating func bushPlane(_ gx: Double, _ gy: Double, _ hd: Double, _ alt: CGFloat, _ col: String, prop: Double, stairs: Bool) {
+        let fx = cos(hd), fy = sin(hd), rx = -fy, ry = fx, Z0 = 13 + alt
+        func G(_ a: Double, _ b: Double) -> CGPoint { iso(gx + a * fx + b * rx, gy + a * fy + b * ry) }
+        func P(_ a: Double, _ b: Double, _ z: CGFloat) -> CGPoint { upp(G(a, b), z + Z0) }
+        do {
+            let k = min(max(1 - alt / 320, 0.15), 1)
+            let sh: [(Double, Double)] = [(1.1, 0), (0.2, 0.15), (0.1, 1.25), (-0.12, 1.25), (-0.22, 0.15), (-1, 0.1), (-1.15, 0.42), (-1.2, 0),
+                                          (-1.15, -0.42), (-1, -0.1), (-0.22, -0.15), (-0.12, -1.25), (0.1, -1.25), (0.2, -0.15)]
+            poly(sh.map { let p = G($0.0, $0.1); return pt(p.x + alt * 0.25, p.y + alt * 0.1) }, hex("#3a2a1a").opacity(Double(0.2 * k)))
+        }
+        if alt < 60 {
+            for (a, b) in [(0.85, 0.0), (-0.05, 0.34), (-0.05, -0.34)] {
+                let top = P(a, b, -1), bot = P(a, b, -12)
+                line(top, bot, hex("#4a4a50"), 1.8)
+                ellipse(bot.x, bot.y + 1, 3.6, 3.6, hex("#1f1c22"))
+            }
+        }
+        let sec: [(Double, CGFloat, CGFloat)] = [(-1.2, 2.5, 9), (-0.9, 5.5, 5), (-0.5, 8, 1), (0, 9, 0), (0.6, 9, 0), (0.95, 7.5, 0), (1.12, 5, -1)]
+        let cs = sec.map { (c: P($0.0, 0, $0.2), R: $0.1) }
+        func nrm(_ i: Int) -> CGPoint {
+            let p = cs[max(0, i - 1)].c, q = cs[min(cs.count - 1, i + 1)].c
+            var dx = q.x - p.x, dy = q.y - p.y
+            let l = max(hypot(dx, dy), 1e-9)
+            dx /= l; dy /= l
+            var nx = -dy, ny = dx
+            if ny > 0 { nx = -nx; ny = -ny }
+            return pt(nx, ny)
+        }
+        func edge(_ k: CGFloat) -> [CGPoint] {
+            cs.indices.map { i in let n = nrm(i), r = cs[i].R * (1 + abs(n.x) * 0.25); return pt(cs[i].c.x + n.x * r * k, cs[i].c.y + n.y * r * k) }
+        }
+        func band(_ k0: CGFloat, _ k1: CGFloat, _ c: Color) { poly(edge(k0) + edge(k1).reversed(), c) }
+        poly(edge(1) + edge(-1).reversed(), hex("#f6f5f0"))
+        band(-0.15, -1, hex("#dcdad2")); band(0.95, 0.55, .white); band(0.1, -0.25, hex(col))
+        var a = -0.6
+        while a <= 0.55 { let p = P(a, 0, 3.5); ellipse(p.x, p.y, 1.8, 2.1, hex("#2a3a50")); a += 0.2 }
+        do { let p = P(0.82, 0, 4.5), q = P(0.98, 0, 3); poly([pt(p.x, p.y - 3), pt(q.x, q.y - 2), pt(q.x, q.y + 2), pt(p.x, p.y + 3)], hex("#1e2a3c")) }
+        let wing = [(0.42, 0.12), (0.3, 1.25), (0.08, 1.25), (0.02, 0.12), (0.02, -0.12), (0.08, -1.25), (0.3, -1.25), (0.42, -0.12)].map { P($0.0, $0.1, 9) }
+        for b in [-0.6, 0.6] { line(P(0.2, b * 0.3, -1), P(0.2, b, 9), hex("#a8a8a8"), 1.2) }
+        poly(wing.map { pt($0.x, $0.y + 2.5) }, hex("#bdbbb4")); poly(wing, hex("#f2f1ec")); outline(wing, hex("#c8c6c0"), 1)
+        var tips = Path()
+        tips.move(to: P(0.08, 1.25, 9)); tips.addLine(to: P(0.3, 1.25, 9)); tips.move(to: P(0.08, -1.25, 9)); tips.addLine(to: P(0.3, -1.25, 9))
+        c.stroke(tips, with: .color(hex(col)), lineWidth: 2.6)
+        do { // the propeller at the nose
+            let ctr = P(1.2, 0, 1.5)
+            func ring(_ th: Double) -> CGPoint { P(1.21, 0.17 * cos(th), 1.5 + 10 * CGFloat(sin(th))) }
+            if prop > 0.5 { poly((0..<18).map { ring(Double($0) / 18 * .pi * 2) }, hex("#6a6a74").opacity(0.3 * prop)) }
+            if prop < 0.9 {
+                let ang = t * prop * 30
+                var bl = Path()
+                for k in 0..<3 { bl.move(to: ctr); bl.addLine(to: ring(ang + Double(k) * .pi * 2 / 3)) }
+                c.stroke(bl, with: .color(hex("#4a4a54")), style: StrokeStyle(lineWidth: 2, lineCap: .round))
+            }
+            ellipse(ctr.x, ctr.y, 2.6, 2.6, hex("#3a3a40"))
+        }
+        poly([P(-0.75, 0, 6), P(-1.05, 0, 26), P(-1.22, 0, 26), P(-1.2, 0, 9)], hex(col))
+        poly([P(-1.0, 0.5, 9), P(-1.0, -0.5, 9), P(-1.2, -0.5, 9.5), P(-1.2, 0.5, 9.5)], hex("#f0efea"))
+        if stairs { let d = P(-0.4, -0.3, -1), g = G(-0.4, -0.6); poly([pt(d.x - 2.5, d.y), pt(d.x + 2.5, d.y), pt(g.x + 4, g.y), pt(g.x - 4, g.y)], hex("#d8d4c8")) }
+        if (t * 1.2).truncatingRemainder(dividingBy: 1) < 0.12 { let p = P(-0.1, 0, 10); ellipse(p.x, p.y - 8, 2.4, 2.4, hex("#ff3a2a")) }
     }
 
     func hexMix(_ a: String, _ b: String, _ k: Double) -> String {

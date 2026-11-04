@@ -60,7 +60,7 @@ private struct FlightLook {
 
 /// The running flight (`FL` in the prototype). A plain class: the TimelineView redraws every frame.
 final class FlightModel {
-    enum Tip { case tutorial, pax, fuel, vent, goal, wrong, still, near, lowFuel, airspace, airspaceFined }
+    enum Tip { case tutorial, pax, fuel, vent, goal, wrong, still, near, lowFuel, airspace, airspaceFined, herd, river }
 
     /// Shown once ever, the first time a flight leaves the ground.
     static let ventTipKey = "ventTip"
@@ -250,7 +250,7 @@ final class FlightModel {
 
     init(state s: GameState, weather w: Weather, pax: Int) {
         let fb = s.balloon(s.flagship)
-        sim = FlightSim(weather: w, pax: pax, burners: fb?.burners ?? 1, turningVent: fb?.hasTurningVent ?? false, region: s.region)
+        sim = FlightSim(weather: w, pax: pax, burners: fb?.burners ?? 1, turningVent: fb?.hasTurningVent ?? false, region: s.region, migration: s.fiesta != nil)
         self.pax = pax
         tutorial = !s.tutorialDone
         coached = (s.selfFlights ?? 0) < Rules.coachFlights
@@ -374,6 +374,12 @@ final class FlightModel {
         case .airspaceViolated:
             tip = .airspaceFined
             Haptics.landed(.hard)
+        case .herdWarning:
+            // v141: low over a herd in the Mara
+            tip = .herd
+        case .riverWarning:
+            tip = .river
+            SoundEngine.shared.play(.thud)
         case .moment:
             momentAt = T
             SoundEngine.shared.play(.coin)
@@ -486,6 +492,7 @@ final class FlightModel {
             case .abq: return loc("flight.land.crash.abq")
             case .lux: return loc("flight.land.crash.lux")
             case .bri: return loc("flight.hit.\((sim.hit ?? .tree).rawValue)")
+            case .mara: return loc("flight.hit.\((sim.hit ?? .acacia).rawValue)")
             }
         case .cancel: return ""
         }
@@ -497,6 +504,9 @@ final class FlightModel {
         if let a = r.farm { out.append(loc("flight.land.farm.\(a.rawValue)")) }
         if r.mud == true { out.append(loc("flight.land.mud")) }
         if r.airFine == true { out.append(loc("flight.land.airFine")) }
+        // v141: the Mara's herds and river
+        if let k = r.herd { out.append(loc("flight.land.herd.\(k.rawValue)")) }
+        if r.river == true { out.append(loc("flight.land.river")) }
         return out
     }
 
@@ -851,6 +861,8 @@ private struct FlightStage: View {
         case .lowFuel: return loc("flight.coach.lowFuel")
         case .airspace: return loc("flight.tip.airspace", num(Int(model.sim.weather.air?.floor ?? 0)))
         case .airspaceFined: return loc("flight.tip.airspaceFined")
+        case .herd: return loc("flight.tip.herd")
+        case .river: return loc("flight.tip.river")
         }
     }
 
@@ -951,6 +963,7 @@ private enum FlightPainter {
                                       background: m.bg, inFlight: true)
         if look.mission == .valley { valleyZone(&ctx, cam: cam, vx: look.valley) }
         if let b = f.bristol { BristolPainter.world(&ctx, cam: cam, b, p: p, time: m.T) } // v124
+        if let mw = f.mara { MaraPainter.world(&ctx, cam: cam, mw, p: p, time: m.T, flightTime: f.t) } // v141
         // v124: in Bristol's fog the field (flags, glow, trailer) shows only once you're under the fog's top
         if !f.fieldHidden {
             ScenePainter.landingField(&ctx, cam: cam, target: look.target, p: p)

@@ -463,31 +463,31 @@
       "price": "4.99",
       "familySharable": false,
       "reviewScreenshot": "review/worldtour.png",
-      "reviewNote": "Grand Tour: unlocks the regions beyond Cappadocia (Albuquerque, Luxor, Bristol and future regions) on the world map. The whole Cappadocia campaign is free. It is offered after the player becomes Baron of Cappadocia, and from the world map. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
+      "reviewNote": "Grand Tour: unlocks the regions beyond Cappadocia (Albuquerque, Luxor, Bristol and Maasai Mara) on the world map. The whole Cappadocia campaign is free. It is offered after the player becomes Baron of Cappadocia, and from the world map. Non-consumable, restorable with \"Restore purchases\" in the bazaar. The bazaar (shop) opens on game day 11; to get there quickly, play a few days (each day: tap \"Collect passengers\", take off, land). No login needed.",
       "localizations": {
         "en": {
           "name": "Grand Tour",
-          "description": "Opens every region beyond Cappadocia"
+          "description": "Albuquerque, Luxor, Bristol and Maasai Mara"
         },
         "tr": {
           "name": "Dünya Turu",
-          "description": "Kapadokya dışındaki tüm bölgeleri açar"
+          "description": "Albuquerque, Luksor, Bristol ve Maasai Mara"
         },
         "de": {
           "name": "Weltreise",
-          "description": "Öffnet alle Regionen jenseits Kappadokiens"
+          "description": "Albuquerque, Luxor, Bristol und Maasai Mara"
         },
         "es": {
           "name": "Gran Tour",
-          "description": "Abre todas las regiones más allá de Capadocia"
+          "description": "Albuquerque, Luxor, Bristol y Maasai Mara"
         },
         "ja": {
           "name": "グランドツアー",
-          "description": "カッパドキアの先のすべての地域を開放"
+          "description": "アルバカーキ、ルクソール、ブリストル、マサイマラ"
         },
         "ko": {
           "name": "그랜드 투어",
-          "description": "카파도키아 너머의 모든 지역을 엽니다"
+          "description": "앨버커키, 룩소르, 브리스톨, 마사이마라"
         }
       }
     },

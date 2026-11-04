@@ -194,7 +194,7 @@ struct PriceSheetView: View {
             if !factors.isEmpty { // v129: the count on the right like the other rows, what changes it as a quiet caption under the label
                 VStack(alignment: .leading, spacing: 1) {
                     whyRow(loc("why.tourists"), num(g.touristsToday()), Theme.ink)
-                    Text(factors.map { loc("why.\($0.factor.rawValue)", g.state.weather?.flag.title ?? "") + " " + Self.pct($0.k) }.joined(separator: " · "))
+                    Text(factors.map { loc("why.\($0.factor.rawValue)" + Self.regional($0.factor, g.state.region), g.state.weather?.flag.title ?? "") + " " + Self.pct($0.k) }.joined(separator: " · "))
                         .font(Theme.font(11.5))
                         .foregroundStyle(Theme.ink2.opacity(0.8))
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -234,6 +234,8 @@ struct PriceSheetView: View {
     }
 
     /// "+40%" / "−93%".
+    /// v141: the Mara's "winter" is its rains, and its fiesta the Great Migration.
+    static func regional(_ f: DemandFactor, _ r: RegionID) -> String { r == .mara && (f == .winter || f == .fiesta) ? ".mara" : "" }
     static func pct(_ k: Double) -> String {
         (k >= 1 ? "+" : "−") + percent(abs(k - 1))
     }

@@ -296,7 +296,7 @@ struct HomeView: View {
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
                     if winter {
-                        Text(loc("home.winter"))
+                        Text(loc(store.state?.region.rainy == true ? "home.rains" : "home.winter"))
                             .font(Theme.font(12, .semibold))
                             .foregroundStyle(Color(hex: "#bfe0ff"))
                             .lineLimit(1)
@@ -475,7 +475,11 @@ struct HomeView: View {
         let takeFlight: () -> Void = { store.act { $0.setSelfFly(true) } }
         let renewCost = eur(Rules.recertCost)
 
-        if let w = s.winter {
+        if let w = s.winter, s.region.rainy { // v141: the Mara's long and short rains
+            out.append(HomeAlert(id: "winter", level: .winter,
+                                 title: loc(w.long == false ? "home.alert.rainsShort" : "home.alert.rainsLong", num(s.day - w.start + 1), num(w.end - w.start + 1)),
+                                 text: loc("home.alert.rains.body")))
+        } else if let w = s.winter {
             out.append(HomeAlert(id: "winter", level: .winter,
                                  title: loc("home.alert.winter", num(s.day - w.start + 1), num(w.end - w.start + 1)),
                                  text: loc("home.alert.winter.body")))
@@ -537,7 +541,7 @@ struct HomeView: View {
                                  text: loc("home.alert.festival.body")))
         }
         // Luxor's Nile cruise season uses the Fiesta's days with its own words; so does Bristol's festival (v124).
-        let cruise = s.region == .lux || s.region == .bri ? "." + s.region.rawValue : ""
+        let cruise = s.region == .lux || s.region == .bri || s.region == .mara ? "." + s.region.rawValue : ""
         if let f = s.fiesta, s.region == .bri {
             // v124: the festival's alert offers this festival's Night Glow while it can still be booked
             let open = s.local.glowFest != f.start

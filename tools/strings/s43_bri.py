@@ -208,13 +208,6 @@ add("ceremony.baronLead.bri",
  "Día %1$@. Dos de cada tres globos en el cielo de %2$@ llevan los colores de %3$@. Maggie Holloway se quita las gafas y se seca los ojos: «Cuarenta años cosiendo envolturas de globos, cielo, y ninguna subió tan alto. Ven, que pongo el té».",
  "%1$@日目。%2$@の空を飛ぶ気球の3機に2機が%3$@の色だ。マギー・ホロウェイが眼鏡を外して目元をぬぐう。「40年も気球を縫ってきたけど、こんなに高く上がったのは一つもなかったよ、あんた。さあおいで、お茶を淹れるから。」",
  "%1$@일째. %2$@ 하늘의 열기구 셋 중 둘이 %3$@의 색을 띠고 있습니다. 매기 홀로웨이가 안경을 벗고 눈가를 훔칩니다. “40년 동안 열기구를 꿰맸지만 이렇게 높이 오른 건 하나도 없었단다, 얘야. 이리 와, 차 한잔 끓여 줄게.”")
-add("ceremony.baronHint.bri",
- "The skies of four regions are yours. The holding's last goal is waiting: the World Games show.",
- "Dört bölgenin göğü senin. Holdingin son hedefi seni bekliyor: Dünya Oyunları gösterisi.",
- "Der Himmel über vier Regionen gehört dir. Das letzte Ziel der Holding wartet: die Show bei den Weltspielen.",
- "Los cielos de cuatro regiones son tuyos. Te espera el último objetivo del holding: el espectáculo de los Juegos Mundiales.",
- "4つの地域の空は君のものだ。ホールディングスの最後の目標が待っている。ワールドゲームズのショーだ。",
- "네 지역의 하늘이 당신 것입니다. 지주회사의 마지막 목표가 기다립니다: 월드 게임 쇼.")
 # v124: after the Luxor baron, Bristol is open on the map (was "Bristol and the Maasai Mara very soon")
 add("ceremony.baronHint.lux",
  "The skies of three regions are yours. Bristol has opened on the world map.",

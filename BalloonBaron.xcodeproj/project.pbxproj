@@ -50,8 +50,10 @@
 		6AE93E02F2C06440AEC0B209 /* MorningViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C131F9B2830128FA15F1DB /* MorningViews.swift */; };
 		6BF97F9ABE79515BD389A972 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF5A711E98261C68FB98A0B0 /* Haptics.swift */; };
 		6CA0670E0F754D157A8E17A7 /* Yomogi-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1650AFF74B010808635EB604 /* Yomogi-Regular.ttf */; };
+		6CF3E54ACD3715B1D6ABA2B5 /* TownMara.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84BC072989E22DCAA637CF9C /* TownMara.swift */; };
 		6DB89744E0F09A9CE4F4AB95 /* OpeningView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D52781B3C21E6E615FEAE5F9 /* OpeningView.swift */; };
 		70E271D8D3F5A06FED61E6BE /* OpeningWorld.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BCFE5F999B3DEA6CEE1D9E1 /* OpeningWorld.swift */; };
+		723A83E132EBA1AF380EC376 /* MaraPainter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A08E40E853C9C80A3851FD6 /* MaraPainter.swift */; };
 		732BABB35291CAF9CFA96542 /* Gaegu-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 22723823825DD9B1F7F96443 /* Gaegu-Regular.ttf */; };
 		79B8CE209311039EBF6C306B /* DealView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3655D7D3B1C7B70D724F89A0 /* DealView.swift */; };
 		830D0F939F4AAC7708ACF61A /* CrewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57EF8C34E905788B88E5C1BE /* CrewView.swift */; };
@@ -150,6 +152,7 @@
 		344C57C234A4658DBD789843 /* Barlow-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Barlow-Medium.ttf"; sourceTree = "<group>"; };
 		35623869A60618088C41AF72 /* HoldingOffice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HoldingOffice.swift"; sourceTree = "<group>"; };
 		3655D7D3B1C7B70D724F89A0 /* DealView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DealView.swift"; sourceTree = "<group>"; };
+		3A08E40E853C9C80A3851FD6 /* MaraPainter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MaraPainter.swift"; sourceTree = "<group>"; };
 		3CEEC4F422DE558F3634CD19 /* WorldMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorldMapView.swift"; sourceTree = "<group>"; };
 		3E80660872C36D7349FC2CB0 /* ChapterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ChapterView.swift"; sourceTree = "<group>"; };
 		4526DE27B1C957F767B5AAA2 /* GlowViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "GlowViews.swift"; sourceTree = "<group>"; };
@@ -185,6 +188,7 @@
 		7B692CFCCDF5CA5AF763E4B8 /* ProtoIcon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProtoIcon.swift"; sourceTree = "<group>"; };
 		7EDB158A34F42484C541CFE0 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "HomeView.swift"; sourceTree = "<group>"; };
 		8480E19BC8DE8F1B439520EE /* BalloonArt.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "BalloonArt.swift"; sourceTree = "<group>"; };
+		84BC072989E22DCAA637CF9C /* TownMara.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TownMara.swift"; sourceTree = "<group>"; };
 		886AE7B8C4529C9B43D57D54 /* GreatVibes-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "GreatVibes-Regular.ttf"; sourceTree = "<group>"; };
 		888452AE9AD785ED3A1BACCF /* TutorialLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TutorialLayer.swift"; sourceTree = "<group>"; };
 		8BCD169363A678C776CEF029 /* RepChartView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "RepChartView.swift"; sourceTree = "<group>"; };
@@ -336,6 +340,7 @@
 				BA5CA19DA1612B9FB6730BC7 /* TownExtras.swift */,
 				D6CBA26757B563CD346BBE79 /* TownHQ.swift */,
 				AA424231B72FE15F1972F9C8 /* TownIdentity.swift */,
+				84BC072989E22DCAA637CF9C /* TownMara.swift */,
 				DA747D61B806F541F6AB8DF8 /* TownModel.swift */,
 				FBF39B153C032C3B1F8AFDEF /* TownNight.swift */,
 				D12341A30BBC018AF6118055 /* TownOutskirts.swift */,
@@ -427,6 +432,7 @@
 			children = (
 				2D7BE289C7562657B915A5A1 /* Balloon3D.swift */,
 				759B91984D338381CCB45902 /* BristolPainter.swift */,
+				3A08E40E853C9C80A3851FD6 /* MaraPainter.swift */,
 				F4DC99A8B37B92CB3C497642 /* OfficeSceneView.swift */,
 				AC0AFDF1E7A3A9121D93DD8E /* ScenePainter.swift */,
 			);
@@ -549,6 +555,7 @@
 				70E271D8D3F5A06FED61E6BE /* OpeningWorld.swift in Sources */,
 				9918316F55A4B8C2B4D3F7FE /* Balloon3D.swift in Sources */,
 				C264D505971AD590C53B4058 /* BristolPainter.swift in Sources */,
+				723A83E132EBA1AF380EC376 /* MaraPainter.swift in Sources */,
 				CDE747CAF5B1BDD693D6FB79 /* OfficeSceneView.swift in Sources */,
 				43D34FF299E13570C04FCAA5 /* ScenePainter.swift in Sources */,
 				571496AACD5147313750FB23 /* ShowFigures.swift in Sources */,
@@ -560,6 +567,7 @@
 				89387608271733A9FA3C605B /* TownExtras.swift in Sources */,
 				D6DA6685AB474B4BD8383189 /* TownHQ.swift in Sources */,
 				2D3D05FCA9C1BB58C369E9CA /* TownIdentity.swift in Sources */,
+				6CF3E54ACD3715B1D6ABA2B5 /* TownMara.swift in Sources */,
 				9A10F15161315C7C8ACF36B5 /* TownModel.swift in Sources */,
 				32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */,
 				3B5D19974DC6BB078BB3E303 /* TownOutskirts.swift in Sources */,

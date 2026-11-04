@@ -164,6 +164,23 @@ extension TownPainter {
             case .rival:
                 P(hexMix(look.field, "#d8c8a0", 0.2)) { rpoly(&$0, c) }
                 P(hexMix(look.field, look.road, 0.5)) { rpoly(&$0, c, 0.45, 0.5) }
+            // v141 the Mara's plains: patches of golden grass, the herd's grazing ground, the manyatta's packed earth, the waterhole
+            case .savanna:
+                var R = Mulberry32(seed: UInt32(truncatingIfNeeded: c.seed))
+                for _ in 0..<18 {
+                    let p = c.at((R.next() - 0.5) * c.w, (R.next() - 0.5) * c.d)
+                    let col = R.next() < 0.5 ? "#d8bc72" : "#c4ac62"
+                    let rx = CGFloat(8 + R.next() * 10), ry = CGFloat(3 + R.next() * 3)
+                    P(col) { blob(&$0, p, rx, ry) }
+                }
+            case .herd: P("#c2b066") { blob(&$0, GridPoint(c.cx, c.cy), CGFloat(c.w + c.d) * 24, CGFloat(c.w + c.d) * 9) }
+            case .manyatta:
+                P("#b8946a") { blob(&$0, GridPoint(c.cx, c.cy), CGFloat(c.w + c.d) * 22, CGFloat(c.w + c.d) * 9) }
+                P("#a88660") { blob(&$0, GridPoint(c.cx, c.cy), CGFloat(c.w + c.d) * 8, CGFloat(c.w + c.d) * 3.2) }
+            case .waterhole:
+                P("#9a7a52") { blob(&$0, GridPoint(c.cx, c.cy), CGFloat(c.w + c.d) * 20, CGFloat(c.w + c.d) * 8) }
+                P("#6a8a8a") { blob(&$0, GridPoint(c.cx, c.cy), CGFloat(c.w + c.d) * 15, CGFloat(c.w + c.d) * 5.6) }
+                P("#8aaaa6") { blob(&$0, GridPoint(c.cx - 0.2, c.cy - 0.1), CGFloat(c.w + c.d) * 7, CGFloat(c.w + c.d) * 2) }
             case .view, .mesa, .dovecote, nil: break
             }
         }
@@ -189,6 +206,7 @@ extension TownPainter {
         switch s.region {
         case .lux: palm(x, y, 0.55 * k, tt: t + Double(x) * 0.01)
         case .bri: oakTree(x, y, (kind == 1 ? 0.55 : 0.7) * k)
+        case .mara: acacia(x, y, (kind == 1 ? 0.6 : 0.75) * k)
         case .abq: roundTree(x, y, (kind == 1 ? 0.5 : 0.62) * k, kind == 1 ? "#6a8a48" : "#4f6e3a")
         case .cap:
             if kind == 1 { roundTree(x, y, 0.6 * k, "#86a24c"); return }
@@ -442,7 +460,7 @@ extension TownPainter {
     @discardableResult
     mutating func viewKnoll(_ c0: OutskirtsLayout.Site) -> (top: CGPoint, rx: CGFloat, ry: CGFloat) {
         let reg = s.region, p = iso(c0.cx, c0.cy), rx = CGFloat(c0.w + c0.d) * 30, ry = rx * 0.36, hh = 16 + CGFloat(c0.w) * 4
-        let hc = reg == .bri ? ["#6e9a4a", "#8cbc60", "#9cca6c"] : reg == .abq ? ["#a8643e", "#cc8e64", "#d89c70"]
+        let hc = reg == .mara ? ["#a8865a", "#c8a46e", "#d6b47a"] : reg == .bri ? ["#6e9a4a", "#8cbc60", "#9cca6c"] : reg == .abq ? ["#a8643e", "#cc8e64", "#d89c70"]
             : reg == .lux ? ["#b89a6a", "#d8bc8a", "#e4c898"] : ["#b88458", "#dcb088", "#e8c09a"]
         var R = Mulberry32(seed: UInt32(truncatingIfNeeded: c0.seed))
         var wob: [CGFloat] = []
@@ -712,6 +730,53 @@ extension TownPainter {
                         p.ellipse(q.x - 6, q.y - 1, 2.4, 2.4, p.hex("#2a1e18")); p.ellipse(q.x + 6, q.y - 1, 2.4, 2.4, p.hex("#2a1e18"))
                     }
                 }
+            // v141 the Mara: acacias and a termite mound; a herd grazing slowly; a Maasai manyatta (a ring of low earth houses
+            // inside a thorn fence, cattle in the middle, people in red and blue shukas); a waterhole with elephants and zebras
+            case .savanna:
+                for _ in 0..<4 {
+                    let at = c.at((Rr.next() - 0.5) * c.w * 0.8, (Rr.next() - 0.5) * c.d * 0.7), sc = CGFloat(0.8 + Rr.next() * 0.5)
+                    add(at.x, at.y, shadow: { p in let q = gp(at); p.blobShadow(q.x + 14 * sc, q.y + 4, 22 * sc, 6 * sc, 0.12) }) { p in let w = gp(at); p.acacia(w.x, w.y, sc) }
+                }
+                let m = c.at(c.w * 0.35, c.d * 0.3)
+                add(m.x, m.y) { p in let w = gp(m); p.termiteMound(w.x, w.y, 1) }
+            case .herd:
+                let n = 7 + c.seed % 5, kind: HerdKind = c.seed % 3 == 0 ? .zebra : .gnu
+                for i in 0..<n {
+                    let a = (Rr.next() - 0.5) * c.w * 0.8, b = (Rr.next() - 0.5) * c.d * 0.7, d: CGFloat = Rr.next() < 0.7 ? 1 : -1
+                    let at = c.at(a, b), seed = Double(c.seed)
+                    add(at.x, at.y) { p in
+                        let q = c.at(a + sin(tt * 0.03 + seed) * 0.5, b), w = gp(q)
+                        p.beast(i % 4 == 3 ? .zebra : kind, w.x, w.y, cos(tt * 0.03 + seed) > 0 ? d : -d, 2.6)
+                    }
+                }
+            case .manyatta:
+                let rr = min(c.w, c.d) * 0.42
+                for i in 0..<16 {
+                    let a = Double(i) / 16 * .pi * 2, f = GridPoint(c.cx + cos(a) * rr * 1.08, c.cy + sin(a) * rr * 1.08)
+                    add(f.x, f.y) { p in let q = gp(f); for j in 0..<4 { p.ellipse(q.x - 9 + CGFloat(j) * 6, q.y - 4 - CGFloat(j % 2) * 2, 5, 4, p.hex(j % 2 == 1 ? "#5a4022" : "#7a5a32")) } }
+                    if i % 2 == 0 {
+                        let h = GridPoint(c.cx + cos(a) * rr * 0.72, c.cy + sin(a) * rr * 0.72)
+                        add(h.x, h.y, shadow: { p in let q = gp(h); p.blobShadow(q.x + 8, q.y + 3, 16, 5, 0.14) }) { p in let q = gp(h); p.enkaji(q.x, q.y) }
+                    }
+                }
+                for i in 0..<5 {
+                    let at = c.at((Rr.next() - 0.5) * rr * 0.9, (Rr.next() - 0.5) * rr * 0.7)
+                    add(at.x, at.y) { p in let w = gp(GridPoint(at.x + sin(tt * 0.04 + Double(i)) * 0.08, at.y)); p.cow(w.x, w.y, i % 2 == 1 ? "#8a5a3a" : "#e8e0d0", i % 2 == 1 ? 1 : -1) }
+                }
+                if day {
+                    for i in 0..<3 {
+                        let at = c.at(rr * (0.2 + Double(i) * 0.25), -rr * 0.2)
+                        add(at.x, at.y) { p in let w = gp(at); p.person(w.x, w.y, i == 1 ? "#1f5aa8" : "#c0392b", tt * 0.3, Double(i)) }
+                    }
+                }
+            case .waterhole:
+                let kinds: [HerdKind] = [.elephant, .elephant, .zebra, .gnu, .zebra]
+                for (i, k) in kinds.enumerated() {
+                    let at = c.at((Double(i) / Double(kinds.count) - 0.5) * c.w * 0.9, c.d * 0.34 * (i % 2 == 1 ? 1 : -1))
+                    add(at.x, at.y) { p in let w = gp(at); p.beast(k, w.x, w.y, i % 2 == 1 ? 1 : -1, k == .elephant ? 2.4 : 2.6) }
+                }
+                let ac = c.at(c.w * 0.55, -c.d * 0.45)
+                add(ac.x, ac.y) { p in let w = gp(ac); p.acacia(w.x, w.y, 1.2) }
             case .vine, .rival, nil: break
             }
         }
@@ -725,7 +790,7 @@ extension TownPainter {
         // the ATV tour and the riders, slowly round their loops
         if day {
             for (li, l) in L.loops.enumerated() {
-                let atv = li == 0 && reg != .bri && reg != .lux, n = atv ? 5 : 3, sp = atv ? 0.45 : 0.16
+                let atv = li == 0 && reg != .bri && reg != .lux && reg != .mara, n = atv ? 5 : 3, sp = atv ? 0.45 : 0.16
                 for i in 0..<n {
                     let raw = tt * sp - Double(i) * (atv ? 0.55 : 0.5) + Double(li) * 3
                     let sAlong = (raw.truncatingRemainder(dividingBy: l.len) + l.len).truncatingRemainder(dividingBy: l.len)

@@ -553,13 +553,13 @@ struct HoldingView: View {
         let rent = count > 0 ? loc("holding.officesRent", eurH(h.officeRent)) : loc("holding.officesRentNone")
         return VStack(alignment: .leading, spacing: 10) {
             sectionTitle(loc("holding.offices", "\(count)/\(offices.count)"))
-            hint(text + " " + rent)
+            hint(text + " " + rent + (count < offices.count ? " " + loc("holding.officesNeedRegions") : ""))
             Grid(horizontalSpacing: 10, verticalSpacing: 10) {
                 ForEach(rows, id: \.self) { i in
                     GridRow {
-                        officeCard(offices[i], h)
+                        officeCard(offices[i], h, s)
                         if i + 1 < offices.count {
-                            officeCard(offices[i + 1], h)
+                            officeCard(offices[i + 1], h, s)
                         } else {
                             Color.clear
                         }
@@ -569,18 +569,23 @@ struct HoldingView: View {
         }
     }
 
-    private func officeCard(_ o: Office, _ h: Holding) -> some View {
+    private func officeCard(_ o: Office, _ h: Holding, _ s: GameState) -> some View {
         let open = h.has(o)
+        // v141: New York, Tokyo, London and Dubai open only once their region is entered
+        let need = open ? nil : o.needs.flatMap { s.owns($0) ? nil : $0 }
         return VStack(alignment: .leading, spacing: 5) {
-            LineGlyph(kind: o.glyph, size: 34, weight: 1.7)
-                .foregroundStyle(open ? Theme.coral : HoldingLux.title)
-            Text(o.title)
-                .font(Theme.font(19, .heavy, condensed: true))
-                .foregroundStyle(HoldingLux.title)
-            Text(o.perk)
-                .font(Theme.font(12))
-                .foregroundStyle(HoldingLux.sub)
-                .fixedSize(horizontal: false, vertical: true)
+            Group {
+                LineGlyph(kind: o.glyph, size: 34, weight: 1.7)
+                    .foregroundStyle(open ? Theme.coral : HoldingLux.title)
+                Text(o.title)
+                    .font(Theme.font(19, .heavy, condensed: true))
+                    .foregroundStyle(HoldingLux.title)
+                Text(o.perk)
+                    .font(Theme.font(12))
+                    .foregroundStyle(HoldingLux.sub)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .opacity(need == nil ? 1 : 0.55)
             // v140: its rent and staff
             Text(loc("holding.office.rent", eurH(o.rent)))
                 .font(Theme.font(11.5, .semibold))
@@ -591,6 +596,17 @@ struct HoldingView: View {
                 Text(loc("holding.officeIsOpen"))
                     .font(Theme.font(15, .heavy, condensed: true))
                     .foregroundStyle(HoldingLux.income)
+            } else if let r = need {
+                HStack(alignment: .top, spacing: 7) {
+                    Image(systemName: "lock.fill").font(.system(size: 11, weight: .bold))
+                    Text(loc("holding.officeLocked", r.title))
+                        .font(Theme.font(12, .semibold))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .foregroundStyle(HoldingLux.title)
+                .padding(.horizontal, 9).padding(.vertical, 7)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(HoldingLux.border.opacity(0.35), in: RoundedRectangle(cornerRadius: 11))
             } else {
                 HoldingPill(title: loc("holding.openOffice", eurH(o.cost)), style: .gold, enabled: h.cash >= o.cost) {
                     store.act { g in _ = g.openOffice(o) }

@@ -264,6 +264,55 @@ struct ContractAvatar: View {
             ArtItem.fill("M38.6 58.6 C42 54.4 47 55.6 50 56 C53 55.6 58 54.4 61.4 58.6 C57 58.4 54 58.6 50 59 C46 58.6 43 58.4 38.6 58.6Z", "#3a3438"),
             ArtItem.line("M45 61 Q50 64 55 61", "#9a4a3a", 1.8)
         ])
+        // v141: the Maasai Mara's safari plane operators (prototype `GRACE_AV`, `RAJESH_AV`, `PETER_AV`)
+        case .grace: ("#1f4a6a", [("#2a5a7a", 0), ("#f0c890", 1)], [
+            ArtItem.fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#f4f2ec"),
+            ArtItem.line("M50 72 L50 100", "#d8d4c8", 1.2),
+            ArtItem.line("M22 78 L36 73 M78 78 L64 73", "#d8b040", 3),
+            ArtItem.line("M22 81 L35 76.5 M78 81 L65 76.5", "#1f2a50", 1.2),
+            ArtItem.line("M44 71 L50 79 L56 71", "#1f2a50", 2.6),
+            ArtItem.box(43, 58, 14, 14, 4, "#4e2c1c"), ArtItem.oval(50, 46, 16, 19, "#5e3622"),
+            ArtItem.fill("M33 44 C30 26 40 19 50 19 C60 19 70 26 67 44 C65 33 59 28 50 28 C41 28 35 33 33 44Z", "#1a120e"),
+            ArtItem.dot(50, 16, 7.5, "#1a120e"),
+            ArtItem.fill("M35 32 L65 32 L63 37 L54 37 L50 34.5 L46 37 L37 37Z", "#2a2a30"),
+            ArtItem.line("M38 33.4 L46 33.4 M54 33.4 L62 33.4", "#6a6a74", 1.2),
+            ArtItem.line("M39 42 Q43 40 47 42 M53 42 Q57 40 61 42", "#140c08", 2),
+            ArtItem.dot(43, 46.4, 1.7, "#140c08"), ArtItem.dot(57, 46.4, 1.7, "#140c08"),
+            ArtItem.fill("M50 48 L48.4 53.6 Q50 55 51.8 54", "#4a2a1a"),
+            ArtItem.line("M43 58 Q50 63.5 57 58", "#ffffff", 2.2),
+            ArtItem.dot(35, 51, 1.5, "#e8b23a"), ArtItem.dot(65, 51, 1.5, "#e8b23a")
+        ])
+        case .rajesh: ("#2a5a8a", [("#3a4a6a", 0), ("#d8e0e8", 1)], [
+            ArtItem.fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#1f2a44"),
+            ArtItem.fill("M41 70 L50 86 L59 70Z", "#a8c8e8"),
+            ArtItem.fill("M30 76 L41 70 L46 90Z M70 76 L59 70 L54 90Z", "#2a3858"),
+            ArtItem.box(43, 58, 14, 14, 4, "#a87048"), ArtItem.oval(50, 46, 17, 20, "#b47a52"),
+            ArtItem.fill("M32 42 C30 24 40 18 51 18 C62 18 70 24 68 42 C66 32 60 27 52 27 C44 27 38 30 36 34 C34 36 33 38 32 42Z", "#1a1614"),
+            ArtItem.line("M33 40 C33 36 34 34 35 33 M67 40 C67 36 66 34 65 33", "#9a9894", 2.4),
+            ArtItem(path: Path(roundedRect: CGRect(x: 36.5, y: 42.5, width: 11, height: 8), cornerRadius: 2.4), fill: Color.white.opacity(0.18), stroke: Color(hex: "#2a2a30"), width: 1.6),
+            ArtItem(path: Path(roundedRect: CGRect(x: 52.5, y: 42.5, width: 11, height: 8), cornerRadius: 2.4), fill: Color.white.opacity(0.18), stroke: Color(hex: "#2a2a30"), width: 1.6),
+            ArtItem.line("M47.5 46 L52.5 46", "#2a2a30", 1.6),
+            ArtItem.dot(42, 46.6, 1.6, "#1f1b2e"), ArtItem.dot(58, 46.6, 1.6, "#1f1b2e"),
+            ArtItem.fill("M50 49 L48.4 54.6 Q50 55.8 51.8 55", "#9a6440"),
+            ArtItem.fill("M40 57.6 C44 55 47 56.4 50 56.4 C53 56.4 56 55 60 57.6 C56 59 53 58.6 50 58.6 C47 58.6 44 59 40 57.6Z", "#1a1614"),
+            ArtItem.line("M45 61.6 Q50 63.4 55 61.6", "#7a3a2a", 1.6)
+        ])
+        case .peter: ("#2a7a4a", [("#2a7a4a", 0), ("#f4e0a0", 1)], [
+            ArtItem.fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#2a8a4a"),
+            ArtItem.line("M42 70 L50 78 L58 70", "#f6f2e8", 3),
+            ArtItem.fill("M47 76 L53 76 L52 84 L48 84Z", "#f6f2e8"),
+            ArtItem.box(43, 58, 14, 14, 4, "#3a2016"), ArtItem.oval(50, 47, 18, 19, "#46281a"),
+            ArtItem.fill("M28 34 C32 22 68 22 72 34 C72 37 28 37 28 34Z", "#c8a868"),
+            ArtItem.fill("M33 34 C34 22 42 17 50 17 C58 17 66 22 67 34Z", "#d8b878"),
+            ArtItem.line("M33 31 L67 31", "#8a6a3a", 2.4),
+            ArtItem.line("M38 42 Q43 39.6 47 42 M53 42 Q57 39.6 62 42", "#140a06", 2.2),
+            ArtItem.line("M39 46.4 Q43 44 47 46.4 M53 46.4 Q57 44 61 46.4", "#140a06", 2),
+            ArtItem.fill("M50 48 L47.6 54 Q50 55.6 52.4 54", "#3a2016"),
+            ArtItem.fill("M34 54 C36 64 43 68 50 68 C57 68 64 64 66 54 C62 59 57 61 50 61 C43 61 38 59 34 54Z", "#1a100a"),
+            ArtItem(path: HezarfenAvatar.svgPath("M41 56 Q50 64 59 56 Q50 60 41 56Z"), fill: Color.white, stroke: Color(hex: "#1a100a"), width: 1),
+            ArtItem(path: Path(ellipseIn: CGRect(x: 35, y: 50.2, width: 6, height: 3.6)), fill: Color(hex: "#8a3a2a").opacity(0.3)),
+            ArtItem(path: Path(ellipseIn: CGRect(x: 59, y: 50.2, width: 6, height: 3.6)), fill: Color(hex: "#8a3a2a").opacity(0.3))
+        ])
         }
     }
 }

@@ -62,8 +62,34 @@ struct BossAvatar: View {
         case .abq: ("#5aa9e6", ["#e08a4a", "#f6d08a"], dale)
         case .lux: ("#1f6f8b", ["#1f6f8b", "#e8c47a"], nabil)
         case .bri: ("#7a2a34", ["#4a5a70", "#b8c4cc"], reginald)
+        case .mara: ("#8a5a2a", ["#b8643a", "#e8a860", "#f6dca0"], catherine)
         }
     }
+
+    /// v141: Catherine Wanjiru, Oloololo Sky Safaris: short natural hair with a silver streak, gold hoops, a khaki safari
+    /// jacket and a kitenge scarf, an acacia behind her.
+    private static let catherine: [ArtItem] = [
+        ArtItem(path: HezarfenAvatar.svgPath("M66 30 Q80 23 96 30 Q80 33 66 30Z"), fill: Color(hex: "#5a3a22").opacity(0.4)),
+        ArtItem(path: HezarfenAvatar.svgPath("M80 30 L81 52 M74 31 L80 40 M88 31 L81 41"), stroke: Color(hex: "#5a3a22").opacity(0.4), width: 1.3),
+        .fill("M12 100 C15 79 30 70 50 70 C70 70 85 79 88 100Z", "#b8a070"),
+        .fill("M24 86 L36 86 L36 95 L24 95Z M64 86 L76 86 L76 95 L64 95Z", "#a08a5c"),
+        .line("M50 82 L50 100", "#8a7448", 1.2),
+        .fill("M41 70 L50 84 L59 70Z", "#f4efe4"),
+        .fill("M33 72 C40 79 46 81 50 81 C54 81 60 79 67 72 L69 77 C60 85 40 85 31 77Z", "#e0602a"),
+        .dot(37, 78, 1.5, "#1f6a8a"), .dot(45, 81.4, 1.5, "#1f6a8a"), .dot(55, 81.4, 1.5, "#1f6a8a"), .dot(63, 78, 1.5, "#1f6a8a"),
+        .dot(41, 80, 0.9, "#ffd27a"), .dot(50, 82.4, 0.9, "#ffd27a"), .dot(59, 80, 0.9, "#ffd27a"),
+        .box(43, 58, 14, 14, 4, "#5a3422"),
+        .oval(50, 46, 17, 20, "#6e4028"),
+        .fill("M32 44 C29 26 39 18 50 18 C61 18 71 26 68 44 C66 34 62 29 56 28 C50 27 44 28 39 31 C36 34 33 38 32 44Z", "#1e1612"),
+        .line("M34 39 C32 29 38 22 46 20", "#a8a29c", 2.6),
+        ArtItem(path: Path(ellipseIn: CGRect(x: 30.6, y: 50.6, width: 4.8, height: 4.8)), stroke: Color(hex: "#e8b23a"), width: 1.4),
+        ArtItem(path: Path(ellipseIn: CGRect(x: 64.6, y: 50.6, width: 4.8, height: 4.8)), stroke: Color(hex: "#e8b23a"), width: 1.4),
+        .line("M38 41 Q43 39 47 41 M53 41 Q57 39 62 41", "#140c08", 2.2),
+        .fill("M39 46 Q43 44 47 46 Q43 47.6 39 46Z M53 46 Q57 44 61 46 Q57 47.6 53 46Z", "#ffffff"),
+        .dot(43, 46, 1.6, "#140c08"), .dot(57, 46, 1.6, "#140c08"),
+        .fill("M50 48 L48 54 Q50 55.5 52 54.5", "#5a3220"),
+        .line("M43 59 Q50 62.5 57 59", "#8a2a2a", 2.2)
+    ]
 
     /// v124: Sir Reginald Ashby: silver hair, monocle, clipped moustache, tweed and a silk cravat.
     private static let reginald: [ArtItem] = [
@@ -298,6 +324,9 @@ extension PaperItem {
         case .airspace: "airspace"
         case .nightGlow: "nightGlow"
         case .briFestival: "briFestival"
+        case .migration: "migration"
+        case .herdLanding: "herdLanding"
+        case .riverLanding: "riverLanding"
         case .preferredOperator: "preferredOperator"
         case .rivalGroup: "rivalGroup"
         case .festivalHosted: "festivalHosted"
@@ -334,6 +363,8 @@ extension PaperItem {
         case .factoryGrew: loc("paper.factoryGrew", company)
         case .airspace, .nightGlow: loc("paper.\(key)", company)
         case .briFestival: loc("paper.briFestival")
+        case .migration: loc("paper.migration")
+        case .herdLanding, .riverLanding: loc("paper.\(key)", company)
         case .preferredOperator(let co, _): loc("paper.preferredOperator", company, co)
         case let .rivalGroup(r, co, _, _, _, _): loc("paper.rivalGroup", r, co)
         case .festivalHosted: loc("paper.festivalHosted", company)
@@ -359,6 +390,7 @@ extension PaperItem {
         case .factoryGrew(_, let lv): Factory.levelTitle(lv)
         case .airspace(let fine): loc("paper.airspace.sub", eur(fine))
         case .nightGlow(let n): loc("paper.nightGlow.sub", num(n))
+        case .herdLanding(let fine): loc("paper.herdLanding.sub", eur(fine))
         case .festivalHosted(let r): loc("paper.festivalHosted.sub", r.title)
         case let .foundationProject(r, _, n): loc("paper.foundationProject.sub", num(n), r.title)
         case let .preferredOperator(_, kind): loc("ctr.\(Self.contractRegion(kind)).prefPaper")
@@ -383,13 +415,15 @@ extension NightEvent {
         case .nightGlow: "nglow"
         case .eveningAscent: "eve"
         case .festivalGlow: "fglow"
+        case .migrationNight: "migration"
+        case .rainNight: "rain"
         }
     }
 
     /// Text key: in Luxor the glow night is the Nile night, the cruise ships lit up; in Bristol the festival night.
     private var textKey: String {
         guard self == .balloonGlow else { return key }
-        return currentRegion == .lux ? "glow.lux" : currentRegion == .bri ? "glow.bri" : key
+        return currentRegion == .lux ? "glow.lux" : currentRegion == .bri ? "glow.bri" : currentRegion == .mara ? "migration" : key
     }
 
     /// The line under "Night of day N".
@@ -818,6 +852,7 @@ extension Achievement {
         case .star45, .fest, .world, .nightGlow: ["#0f0e2e", "#2b2350", "#5a4a8a"]
         case .patron: ["#6b7fc4", "#f0b48c", "#ffdca8"] // v140: sunrise
         case .bri, .baronBri: ["#4f9ee0", "#9fd2f0", "#e6f4fb"]
+        case .mara, .baronMara: ["#3a3a7a", "#e8865a", "#ffd690"] // v141: a savanna sunrise
         case .hotel, .hotelOwn, .rivalDown, .boss: ["#3a2a6a", "#c8607a", "#ffb070"]
         case .winter: ["#7fa6cf", "#c7dcef", "#f2f7fc"]
         case .abq, .baronAbq: ["#3f62b4", "#f09a6a", "#ffd08a"]

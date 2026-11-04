@@ -11,20 +11,6 @@ add("office.sel.perk",
     "Contratos con famosos un 25 % más baratos.",
     "有名人との契約が25%安くなる。",
     "유명인 계약 25% 할인.")
-add("office.tyo.perk",
-    "Asian tour operators: tourists +5% in every region. Free design production, creativity +10, designs stay fresh for 60 days.",
-    "Asyalı tur şirketleri: bütün bölgelerde turist +%5. Tasarım üretimi bedava, yaratıcılık +10, tasarımlar 60 gün taze kalır.",
-    "Asiatische Reiseveranstalter: Touristen +5 % in jeder Region. Kostenlose Designproduktion, Kreativität +10, Designs bleiben 60 Tage frisch.",
-    "Agencias de viajes asiáticas: turistas +5 % en todas las regiones. Diseños gratis, creatividad +10, los diseños siguen frescos 60 días.",
-    "アジアの旅行会社：全地域で観光客+5%。デザイン制作が無料、創造性+10、デザインの鮮度が60日間持続。",
-    "아시아 여행사: 모든 지역 관광객 +5%. 디자인 제작 무료, 창의성 +10, 디자인 신선도 60일 유지.")
-add("office.par.perk",
-    "Bristol +20%: its autopilot income, and its tourists while you play there. The documentary series 20% cheaper.",
-    "Bristol'de %20 fazla: otomatikteyken kazancı, oradayken turisti. Belgesel dizisi %20 daha ucuz.",
-    "Bristol +20 %: die Autopilot-Einnahmen und die Touristen, solange du dort spielst. Die Doku-Serie 20 % günstiger.",
-    "Bristol +20 %: sus ingresos en piloto automático y sus turistas mientras juegas allí. La serie documental un 20 % más barata.",
-    "ブリストル+20%：自動運営の収入と、そこでプレイ中の観光客。ドキュメンタリーシリーズが20%安くなる。",
-    "브리스톨 +20%: 자동 운영 수입, 그리고 그곳에서 플레이하는 동안의 관광객. 다큐멘터리 시리즈 20% 할인.")
 add("holding.office.rent", "Rent and staff: %@/day", "Kira ve personel: %@/gün", "Miete und Personal: %@/Tag",
     "Alquiler y personal: %@/día", "家賃と人件費：%@/日", "임대료와 인건비: %@/일")
 add("holding.officesRent",

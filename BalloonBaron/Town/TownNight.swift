@@ -101,7 +101,7 @@ extension TownPainter {
             sky.fill(Path(ellipseIn: CGRect(x: mx - 15, y: my - 15, width: 30, height: 30)), with: .color(hex("#fff8dc")))
             sky.fill(Path(ellipseIn: CGRect(x: mx + 7 - 13, y: my - 4 - 13, width: 26, height: 26)), with: .color(mix("#fff8dc", "#262a62", 0.85)))
         }
-        if case .shootingStar = n.event {
+        if n.event == .shootingStar || n.event == .migrationNight { // v141: a migration night under the stars
             let p = (t - n.t0).truncatingRemainder(dividingBy: 3.5) / 0.9
             if p < 1 {
                 let x0 = w * 0.15 + CGFloat(p) * w * 0.5, y0 = hz * 0.15 + CGFloat(p) * hz * 0.25

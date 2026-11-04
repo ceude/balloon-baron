@@ -198,6 +198,7 @@ final class SoundEngine {
     func contractArrive(_ kind: Int, leaving: Bool = false) {
         guard started else { return }
         if kind == 3 { planeSound(leaving: leaving); return } // v126
+        if kind == 4 { planeSound(leaving: leaving, bush: true); return } // v141: the Mara's bush plane, one smaller engine, a higher note
         if leaving && kind == 0 {
             tone(60, 110, 1.4, .sawtooth, 0.03); tone(311, 311, 0.3, .sawtooth, 0.03, 0.3); tone(392, 392, 0.3, .sawtooth, 0.025, 0.3)
             return
@@ -223,10 +224,10 @@ final class SoundEngine {
     /// v126 `planeSound`: the charter plane's own sounds, timed to its landing (13.5 s: the approach with turbine whine
     /// and propeller beat, two tyre screeches at touchdown, reverse thrust, idle on the taxiway) or its take-off (14 s:
     /// idle, the spool-up of the take-off run, the climb fading away).
-    func planeSound(leaving: Bool) {
+    func planeSound(leaving: Bool, bush: Bool = false) {
         guard started else { return }
         _ = Synth.planeSpecs.count // built here, not on the render thread
-        synth.send(.plane(leaving))
+        synth.send(bush ? .bushPlane(leaving) : .plane(leaving))
         guard !leaving else { return }
         for d in [4.5, 4.72] { // the screech of the tyres
             synth.send(.voice(VoiceSpec(noise: true, filter: .bandpass, filterFreq: 2600, vol: 0.22, attack: 0.02, decayEnd: 0.26, floor: 0.001, length: 0.3, delay: d)))
@@ -593,6 +594,8 @@ private enum Command {
     case hum(Int, Double)
     /// v126: the charter plane lands (false) or takes off (true).
     case plane(Bool)
+    /// v141: the Mara's bush plane: the same tracks a little higher (×1.35).
+    case bushPlane(Bool)
 }
 
 /// RBJ cookbook biquad, transposed direct form II. Q follows Web Audio
@@ -767,7 +770,8 @@ private final class Synth {
         HumSpec(nf: 140, bandpass: false, of: 34, wave: .sawtooth, og: 0.75, lf: 6.5, ld: 0.25, square: false),
         HumSpec(nf: 520, bandpass: false, of: 44, wave: .sine, og: 0.35, lf: 0.28, ld: 0.5, square: false),
         HumSpec(nf: 820, bandpass: true, of: 30, wave: .sine, og: 0, lf: 1.6, ld: 0.95, square: true),
-        HumSpec(nf: 1500, bandpass: true, of: 30, wave: .sine, og: 0, lf: 0.3, ld: 0.25, square: false) // v126: the plane's APU
+        HumSpec(nf: 1500, bandpass: true, of: 30, wave: .sine, og: 0, lf: 0.3, ld: 0.25, square: false), // v126: the plane's APU
+        HumSpec(nf: 1800, bandpass: true, of: 30, wave: .sine, og: 0, lf: 0.4, ld: 0.25, square: false) // v141: the bush plane ticking over
     ]
 
     // v126: the charter plane (`planeSound`): noise through a bandpass (Q 0.8), a sawtooth engine through a 700 Hz
@@ -796,7 +800,7 @@ private final class Synth {
                   eg: PlaneTrack(p: [(0, 0), (1, 0.02), (4.4, 0.02), (8, 0.06), (13.5, 0)]),
                   wg: PlaneTrack(p: [(0, 0), (1, 0.005), (4.3, 0.005), (8, 0.016), (13.5, 0)]), end: 13.7)
     ]
-    private var planeOn = false, planeSpec = 0, planeStart: Int64 = 0
+    private var planeOn = false, planeSpec = 0, planeStart: Int64 = 0, planePitch = 1.0
     private var planeNoise = Biquad(), planeEngLP = Biquad()
     private var planeEngPhase = 0.0, planeWhPhase = 0.0, planeLfo = 0.0
     private var humKind = -1
@@ -908,7 +912,8 @@ private final class Synth {
                 humOscLP.set(.lowpass, 90, 0.7, sr)
             }
             humTarget = 0.22 * level
-        case .plane(let leaving):
+        case .plane(let leaving), .bushPlane(let leaving):
+            if case .bushPlane = c { planePitch = 1.35 } else { planePitch = 1 }
             planeOn = true
             planeSpec = leaving ? 1 : 0
             planeStart = frame
@@ -1203,12 +1208,12 @@ private final class Synth {
                     } else {
                         if f % 64 == 0 { planeNoise.set(.bandpass, P.nf.at(tt), 0.8, sr) }
                         let nz = planeNoise.process(noise()) * P.ng.at(tt)
-                        let edt = P.ef.at(tt) / sr
+                        let edt = P.ef.at(tt) * planePitch / sr
                         let en = planeEngLP.process(Synth.osc(.sawtooth, planeEngPhase, edt)) * P.eg.at(tt)
                         planeEngPhase += edt
                         if planeEngPhase >= 1 { planeEngPhase -= 1 }
                         let wh = sin(2 * Double.pi * planeWhPhase) * P.wg.at(tt)
-                        planeWhPhase += P.wf.at(tt) / sr
+                        planeWhPhase += P.wf.at(tt) * planePitch / sr
                         if planeWhPhase >= 1 { planeWhPhase -= 1 }
                         let am = 0.7 + 0.3 * (planeLfo < 0.5 ? 1.0 : -1.0)
                         planeLfo += 22 / sr

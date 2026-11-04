@@ -30,6 +30,9 @@ extension TownPainter {
         case .lux: return HQLook(trim: "#fdf8ec", dome: "#e8b23a", wall: ("#f4dcae", "#c79d66", "#efd9ae"))
         case .bri: return HQLook(roof: "#5e6874", trim: "#ecd39c", dome: "#7ab0a0")
         case .abq: return HQLook(trim: "#3aa6a0", dome: nil)
+        // v141: an old colonial-era safari lodge: dressed fieldstone, white trim, deep verandas, makuti thatch, a stone tower
+        // capped with a thatched cone (still the tallest thing in the camp)
+        case .mara: return HQLook(trim: "#f6eedc", dome: nil, wall: ("#d6c09a", "#a68c66", "#c8b088"))
         }
     }
 
@@ -47,15 +50,15 @@ extension TownPainter {
     }
 
     private mutating func hqHouseDraw() {
-        let R = s.region, L = hqLook, bri = R == .bri, abq = R == .abq, lux = R == .lux, cap = R == .cap
+        let R = s.region, L = hqLook, bri = R == .bri, abq = R == .abq, lux = R == .lux, cap = R == .cap, mara = R == .mara
         let T = tuff, W = L.wall
-        let wl = W?.lit ?? T.lit, ws = W?.shade ?? T.shade, wt = W?.top ?? T.top, wc = W == nil
+        let wl = W?.lit ?? T.lit, ws = W?.shade ?? T.shade, wt = W?.top ?? T.top, wc = W == nil || mara
         @discardableResult
         func wallBlock(_ p: inout TownPainter, _ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, courses: Bool? = nil) -> Box {
             p.block(gx, gy, w, d, h, lit: wl, shade: ws, top: wt, courses: courses ?? wc)
         }
         func roof(_ p: inout TownPainter, _ gx: Double, _ gy: Double, _ w: Double, _ d: Double, _ h: CGFloat, _ rise: CGFloat) {
-            if cap || bri { p.hipRoof(gx, gy, w, d, h, rise, L.roof) } else { p.flatRoof(gx, gy, w, d, h, dome: false) }
+            if cap || bri || mara { p.hipRoof(gx, gy, w, d, h, rise, L.roof) } else { p.flatRoof(gx, gy, w, d, h, dome: false) }
         }
         // stone dressings: a cornice band under the roof, quoins at the corners (Bristol's Bath stone on brick)
         func cornice(_ p: inout TownPainter, _ f: Box, _ h: CGFloat) {
@@ -100,7 +103,7 @@ extension TownPainter {
 
         // the courtyard: paving, a fountain, a tree
         let (cA, cB, cC, cD) = me.corners(9.55, 1.35, 1.7, 0.95)
-        me.poly([cA, cB, cC, cD], me.hex(abq ? "#d9a982" : bri ? "#b8b0a2" : "#e6cfa6"))
+        me.poly([cA, cB, cC, cD], me.hex(abq ? "#d9a982" : bri ? "#b8b0a2" : mara ? "#d2b484" : "#e6cfa6"))
         var joints = Path()
         for i in 1..<6 { let k = CGFloat(i) / 6; joints.move(to: me.lp(cA, cD, k)); joints.addLine(to: me.lp(cB, cC, k)) }
         me.c.stroke(joints, with: .color(me.hex(abq ? "#b07a54" : "#a88a64").opacity(0.35)), lineWidth: 1)
@@ -124,7 +127,7 @@ extension TownPainter {
             for i in 0..<2 { let q = me.lp(Q0, Q1, (CGFloat(i) + 0.5) / 2); me.rect(q.x - 4, q.y - bh + 6, 8, 14, me.hex("#ffd27a")) }
             me.poly([me.upp(q0, bh), me.upp(q1, bh), me.upp(Q1, bh), me.upp(Q0, bh)], me.hex(L.roof))
         }
-        if lux { // a deep veranda on slim columns along the ground floor, a balcony rail above
+        if lux || mara { // a deep veranda on slim columns along the ground floor, a balcony rail above
             let a = me.lp(f.D, f.C, 0.04), c2 = me.lp(f.D, f.C, 0.5), o = me.pt(-12, 6), hv: CGFloat = 46
             me.poly([me.upp(a, hv), me.upp(c2, hv), me.pt(c2.x + o.x, c2.y + o.y - hv), me.pt(a.x + o.x, a.y + o.y - hv)], me.hex(L.trim))
             for i in 0...4 {
@@ -198,7 +201,9 @@ extension TownPainter {
         _ = stage(&me, 0.08, S, Self.hqCrown, 0.18, 0.4, 0.6) // the crown
         let top = stage(&me, 0.14, S + Self.hqCrown, Self.hqLantern, 0.2, 0.34, 0.55) // the lantern stage
         let tc = me.lp(top.a, top.c, 0.5), r = hypot(top.c.x - top.a.x, top.c.y - top.a.y) * 0.38
-        if let dome = L.dome {
+        if mara {
+            me.thatchCone(tc.x, tc.y + 3, r * 2.7, r * 3.2) // v141: the tower's thatched cap
+        } else if let dome = L.dome {
             me.dome(tc.x, tc.y - 2, r, dome)
             if bri { me.line(me.pt(tc.x - 7, tc.y - r - 24), me.pt(tc.x + 8, tc.y - r - 24), me.hex("#c99a2e"), 1.4) } // the gilded vane
         } else {
@@ -207,7 +212,7 @@ extension TownPainter {
             me.poly([me.upp(top.a, 9), me.upp(top.b, 9), me.upp(top.c, 9), me.upp(top.d, 9)], me.hex(T.top))
         }
         let mine = s.colors.first ?? "#ff5e3a"
-        me.flag(tc.x + (L.dome != nil ? 0 : 2), tc.y - (L.dome != nil ? r + 22 : 9), mine, hgt: 30)
+        me.flag(tc.x + (L.dome != nil || mara ? 0 : 2), tc.y - (mara ? r * 3.2 - 4 : L.dome != nil ? r + 22 : 9), mine, hgt: 30)
 
         // the courtyard's things: a fountain and a tree
         let fo = me.iso(10.35, 1.88)
@@ -225,6 +230,7 @@ extension TownPainter {
         case .lux: me.palm(tp.x, tp.y, 0.62)
         case .bri: me.copperBeech(tp.x, tp.y, 0.7)
         case .abq: me.roundTree(tp.x, tp.y, 0.85, "#9aa84a")
+        case .mara: me.acacia(tp.x, tp.y, 0.7)
         }
         wing(&me, Self.hqWingR, 1)
 

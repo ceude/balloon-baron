@@ -3,7 +3,7 @@ import SwiftUI
 /// Small line drawings that stand in for emoji (prototype `GLYPH`): 24×24, round strokes like `ProtoIcon`, drawn in
 /// the colour of the text around them (`foregroundStyle`). The path data is the prototype's, so both draw the same.
 struct LineGlyph: View {
-    enum Kind: Hashable { case gift, sun, crown, bosphorus, liberty, namsan, skytree, burj, eiffel }
+    enum Kind: Hashable { case gift, sun, crown, bosphorus, liberty, namsan, skytree, burj, bigBen }
     let kind: Kind
     var size: CGFloat = 14
     /// Stroke width in the 24-unit grid; small glyphs take a heavier line so they still read next to bold text.
@@ -41,12 +41,13 @@ struct LineGlyph: View {
         .namsan: ("M2 20.5 L22 20.5 M2 20.5 C6 16.5 9 15.2 12 15.2 C15 15.2 18 16.5 22 20.5 M11.2 15.2 L11.4 9.5 "
                   + "M12.8 15.2 L12.6 9.5 M9.3 9.5 L14.7 9.5 L14 7.2 L10 7.2 Z M11 7.2 L11.3 5.2 L12.7 5.2 L13 7.2 "
                   + "M12 5.2 L12 1.5", []),
-        // v137: the Dubai and Paris offices (prototype `GLYPH.dxb`, `GLYPH.par`)
+        // v137: the Dubai office (prototype `GLYPH.dxb`); v141: London's Big Ben (the Elizabeth Tower) in place of Paris'
+        // Eiffel Tower (`GLYPH.par`): a square shaft, the wider clock stage, the pointed belfry and spire
         .burj: ("M3 20.5 L21 20.5 M12 1.5 L12 5 M10.8 5 L13.2 5 L13.2 9 L14.2 9 L14.2 13 L15.4 13 L15.4 17 L16.6 17 L16.6 20.5 "
                 + "M10.8 5 L10.8 10 L9.8 10 L9.8 14 L8.6 14 L8.6 17.5 L7.4 17.5 L7.4 20.5", []),
-        .eiffel: ("M4 20.5 L20 20.5 M12 1.5 L12 4 M10.8 4 L13.2 4 M11 4 C10.6 9 9.5 12 8.2 13.5 M13 4 C13.4 9 14.5 12 15.8 13.5 "
-                  + "M7.6 13.5 L16.4 13.5 M10 9 L14 9 M8.2 13.5 C7.5 16.5 6.5 18.8 5.5 20.5 M15.8 13.5 C16.5 16.5 17.5 18.8 18.5 20.5 "
-                  + "M9.3 20.5 C9.5 18 10.5 16.8 12 16.8 C13.5 16.8 14.5 18 14.7 20.5", []),
+        .bigBen: ("M6 20.5 L18 20.5 M9.8 20.5 L9.8 11.2 M14.2 20.5 L14.2 11.2 M8.9 11.2 L15.1 11.2 L15.1 5.8 L8.9 5.8 Z "
+                  + "M9.5 5.8 L10.4 4.2 L13.6 4.2 L14.5 5.8 M10.4 4.2 L12 1.2 L13.6 4.2 M9.8 14.4 L14.2 14.4 M9.8 17.5 L14.2 17.5 "
+                  + "M12 8.5 L12 7.3 M12 8.5 L12.9 8.9", [(12, 8.5, 1.9)]),
         // v137: Tokyo Skytree (Tokyo Tower looked like the Eiffel Tower): straight legs, the two decks, the mast
         .skytree: ("M8 20.5 L16 20.5 M9.6 20.5 L11.4 5.5 M14.4 20.5 L12.6 5.5 M8.6 13.4 L15.4 13.4 M9.4 12 L14.6 12 "
                    + "M10.2 8.6 L13.8 8.6 M12 5.5 L12 1.5", []),

@@ -1021,7 +1021,7 @@ final class GameStore {
     /// Hezarfen's messages that are news, not lessons or offers: on autopilot they wait for the stop.
     static func isNews(_ m: HezMessage) -> Bool {
         switch m {
-        case .winterComing, .spring, .entrant, .fiestaStarted, .festivalStarted, .eventOutcome, .praise, .deed, .milestone,
+        case .winterComing, .spring, .rainsComing, .rainsOver, .entrant, .fiestaStarted, .festivalStarted, .eventOutcome, .praise, .deed, .milestone,
              .boss, .flagshipBack, .rescued, .inspector, .record, .celebritySigned, .cargoArrived, .hangarFull, .hangarOutside: return true
         default: return false
         }

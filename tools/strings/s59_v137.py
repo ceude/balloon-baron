@@ -5,14 +5,6 @@ from s1_ui import add
 
 # Offices 5 and 6
 add("office.dxb", "Dubai", "Dubai", "Dubai", "Dubái", "ドバイ", "두바이")
-add("office.par", "Paris", "Paris", "Paris", "París", "パリ", "파리")
-add("office.dxb.perk",
-    "Luxor's autopilot income +20%. Record attempts 25% cheaper.",
-    "Luksor'un otomatik kazancı %20 artar. Rekor denemeleri %25 daha ucuz.",
-    "Autopilot-Einnahmen in Luxor +20 %. Rekordversuche 25 % günstiger.",
-    "Ingresos en piloto automático de Luxor +20 %. Intentos de récord un 25 % más baratos.",
-    "ルクソールの自動運営収入+20%。記録挑戦が25%安くなる。",
-    "룩소르 자동 운영 수입 +20%. 기록 도전 25% 할인.")
 
 # The expense rule: any four offices 20%, all six 15%
 add("holding.officesRule",

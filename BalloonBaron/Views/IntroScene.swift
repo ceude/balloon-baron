@@ -18,6 +18,9 @@ enum IntroScene {
         // v124: an overcast dawn over Bristol
         case "bri": Look(sky: ["#1a2236", "#3a4a66", "#8a8aa0", "#d8b49a", "#eee2cc"], far: "#4a5868", mid: "#cdb07a", midShade: "#8a7450",
                          cap: "#3a5a2e", ground: ["#4a6a34", "#1a2a14"], ink: "#1c2a24", name: "BRISTOL")
+        // v141: the Maasai Mara's sunrise
+        case "mara": Look(sky: ["#101634", "#2e2a5e", "#a8486a", "#f4863c", "#ffd690"], far: "#5a3a5a", mid: "#b8784a", midShade: "#7a4a2a",
+                          cap: "#4a5a2a", ground: ["#9a6e3a", "#2a180c"], ink: "#22140c", name: "MAASAI MARA")
         default: Look(sky: ["#120d33", "#3a2460", "#a24e7a", "#f0875a", "#ffd59a"], far: "#4e3460", mid: "#c8866a", midShade: "#8a5060",
                       cap: "#4a2a2a", ground: ["#6e4a3a", "#2a1822"], ink: "#24152c", name: "CAPPADOCIA")
         }
@@ -68,7 +71,7 @@ enum IntroScene {
                 Gradient(colors: [Color(red: 1, green: 190 / 255, blue: 150 / 255).opacity(0.28), .clear]), center: CGPoint(x: cx, y: cy), startRadius: 0, endRadius: w / 2))
         }
         // Balloons already up, drifting, hazier the further they are. v139: Cappadocia fills its sky at every depth in its own land.
-        for i in 0..<11 where ["lux", "abq", "bri"].contains(key) {
+        for i in 0..<(key == "mara" ? 17 : 11) where ["lux", "abq", "bri", "mara"].contains(key) { // v141: the Mara's dawn sky is full of balloons
             var r = Mulberry32(seed: UInt32(100 + i))
             let a = r.next(), d = r.next()
             let x = CGFloat((a * Double(W) * 1.4 + t * (3 + d * 9)).truncatingRemainder(dividingBy: Double(W) * 1.4)) - W * 0.2
@@ -84,6 +87,7 @@ enum IntroScene {
         case "lux": land.lux(&ctx)
         case "abq": land.abq(&ctx)
         case "bri": land.bri(&ctx)
+        case "mara": land.mara(&ctx)
         default: land.cap(&ctx)
         }
         // The game's name in the sky. It stays put; the hero balloon, drawn after the scene, rises past it in front.
@@ -605,6 +609,66 @@ private struct Land {
     }
 
     // MARK: Bristol: Clifton and Cabot Tower, the Suspension Bridge over the Avon Gorge, fog, oaks
+
+    // MARK: Maasai Mara (v141)
+
+    /// v141: the Maasai Mara at sunrise: the long flat wall of the Oloololo escarpment far off, soft hills in the haze,
+    /// the plains running out to the sun, a line of wildebeest crossing and two giraffes against the light, flat-topped
+    /// acacias framing the field, the dry grass catching the rim of the sun.
+    func mara(_ ctx: inout GraphicsContext) {
+        func acac(_ p: inout Path, _ x: CGFloat, _ b: CGFloat, _ h: CGFloat, _ lean: CGFloat = 0) {
+            p.move(to: pt(x - h * 0.025, b)); p.addLine(to: pt(x - h * 0.018 + lean * h * 0.05, b - h * 0.5)); p.addLine(to: pt(x - h * 0.3, b - h * 0.78))
+            p.addLine(to: pt(x - h * 0.27, b - h * 0.8)); p.addLine(to: pt(x + lean * h * 0.05, b - h * 0.58)); p.addLine(to: pt(x + h * 0.26, b - h * 0.82))
+            p.addLine(to: pt(x + h * 0.29, b - h * 0.8)); p.addLine(to: pt(x + h * 0.025 + lean * h * 0.05, b - h * 0.5)); p.addLine(to: pt(x + h * 0.025, b)); p.closeSubpath()
+            for (dx, dy, rx, ry) in [(0.0, 0.84, 0.62, 0.07), (-0.3, 0.87, 0.34, 0.055), (0.28, 0.88, 0.36, 0.055), (-0.05, 0.92, 0.4, 0.05)] as [(CGFloat, CGFloat, CGFloat, CGFloat)] {
+                p.addEllipse(in: CGRect(x: x + h * dx - h * rx, y: b - h * dy - h * ry, width: h * rx * 2, height: h * ry * 2))
+            }
+        }
+        func esc(_ x: CGFloat) -> CGFloat { let k = min(max((W * 0.62 - x) / (W * 0.22), 0), 1); return gy - u * (0.03 + 0.1 * (k * k * (3 - 2 * k))) - wave(x, 0.02, u * 0.003, 1) }
+        sil(&ctx, 0.86, 0.15, 0.3) { p in ridge(&p, bot: gy) { x in gy - u * 0.05 - wave(x, 0.006, u * 0.025, 2) - wave(x, 0.017, u * 0.01, 0) } }
+        hazeBand(&ctx, gy - u * 0.16, 0.45)
+        sil(&ctx, 0.68, 0.22, 0.5) { p in ridge(&p, bot: gy, esc) }
+        hazeBand(&ctx, gy - u * 0.08, 0.4)
+        sil(&ctx, 0.5, 0.25, 0.45) { p in
+            var r = Mulberry32(seed: 41)
+            for _ in 0..<16 {
+                let x = CGFloat(r.next()) * W, h = u * CGFloat(0.03 + r.next() * 0.025)
+                if abs(x - W * 0.5) < u * 0.1 { continue }
+                acac(&p, x, gy - u * 0.012, h)
+            }
+        }
+        sil(&ctx, 0.3, 0.25, 0.6) { p in
+            for i in 0..<26 { // wildebeest in a long line, heads down
+                let fi = CGFloat(i), step = W * 0.021
+                let x = W * 0.04 + fi * step + CGFloat(sin(Double(i) * 2.3)) * u * 0.006 + CGFloat((t * Double(u) * 0.004).truncatingRemainder(dividingBy: Double(step)))
+                let b = gy - u * (0.004 + 0.003 * CGFloat(sin(Double(i)))), s = u * (0.007 + 0.002 * CGFloat(i % 3))
+                if abs(x - W * 0.5) < u * 0.05 { continue }
+                p.addEllipse(in: CGRect(x: x - s * 1.4, y: b - s * 1.8, width: s * 2.8, height: s * 1.4))
+                p.addRect(CGRect(x: x - s * 1.1, y: b - s * 0.6, width: s * 0.28, height: s * 0.6)); p.addRect(CGRect(x: x + s * 0.8, y: b - s * 0.6, width: s * 0.28, height: s * 0.6))
+                p.move(to: pt(x + s * 1.1, b - s * 1.5)); p.addLine(to: pt(x + s * 2.1, b - s * 0.7)); p.addLine(to: pt(x + s * 1.7, b - s * 0.4)); p.addLine(to: pt(x + s * 0.8, b - s * 0.9)); p.closeSubpath()
+            }
+            for (x, s) in [(W * 0.78, u * 0.05), (W * 0.84, u * 0.042)] { // two giraffes against the sun
+                let b = gy - u * 0.004
+                for dx: CGFloat in [-0.3, -0.12, 0.14, 0.3] { p.addRect(CGRect(x: x + s * dx, y: b - s * 0.9, width: s * 0.06, height: s * 0.9)) }
+                p.addEllipse(in: CGRect(x: x - s * 0.42, y: b - s * 1.18, width: s * 0.84, height: s * 0.36))
+                p.move(to: pt(x + s * 0.2, b - s * 1.1)); p.addLine(to: pt(x + s * 0.52, b - s * 2)); p.addLine(to: pt(x + s * 0.66, b - s * 1.96)); p.addLine(to: pt(x + s * 0.4, b - s * 1)); p.closeSubpath()
+                p.addEllipse(in: CGRect(x: x + s * 0.5, y: b - s * 2.09, width: s * 0.28, height: s * 0.14))
+            }
+        }
+        hazeBand(&ctx, gy - u * 0.03, 0.25)
+        ground(&ctx); mist(&ctx, 0.3)
+        // tufts of dry grass on the near field, lit by the low sun
+        var tufts = Path()
+        var r = Mulberry32(seed: 17)
+        for _ in 0..<90 {
+            let x = CGFloat(r.next()) * W, b = gy + (H - gy) * CGFloat(0.08 + r.next() * 0.5), hh = u * CGFloat(0.012 + r.next() * 0.02)
+            if abs(x - W / 2) < u * 0.14 && b < gy + (H - gy) * 0.3 { continue }
+            for d: CGFloat in [-1, 0, 1] { tufts.move(to: pt(x + d * hh * 0.2, b)); tufts.addLine(to: pt(x + d * hh * 0.45, b - hh)) }
+        }
+        ctx.stroke(tufts, with: across(c(ScenePainter.mixHex(L.ground[0], L.ink, 0.2), 0.7), c(ScenePainter.mixHex(sun, "#ffffff", 0.2), 0.55)), lineWidth: max(1, u * 0.0022))
+        // the big acacias framing the field, near and dark
+        sil(&ctx, 0.1, 0.18, 0.85) { p in acac(&p, W * 0.08, gy + u * 0.03, u * 0.34, -0.2); acac(&p, W * 0.97, gy + u * 0.025, u * 0.26, 0.2); acac(&p, W * 0.24, gy + u * 0.006, u * 0.13) }
+    }
 
     func bri(_ ctx: inout GraphicsContext) {
         sil(&ctx, 0.82, 0.2, 0.35) { p in ridge(&p, bot: gy) { x in gy - u * 0.075 - wave(x, 0.008, u * 0.025, 1) - wave(x, 0.021, u * 0.012, 0) } }

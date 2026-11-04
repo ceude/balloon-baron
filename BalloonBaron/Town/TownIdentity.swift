@@ -33,6 +33,9 @@ struct MarketStyle {
                                       goods: ["#c8402a", "#e0a020", "#8a5a2a", "#d06a2a", "#3a7a3a"], lamps: ["#d8a838"])
         case .bri: return MarketStyle(awnings: [["#2e6a3e", "#f4efe4"], ["#a8232c", "#f4efe4"], ["#1f4a7a", "#f4efe4"]],
                                       goods: ["#c8302a", "#7ab040", "#e8a020", "#f2d2a0", "#9a3a6a"], lamps: [])
+        // v141: the Mara's market: shuka cloth in red and blue checks, beadwork, carvings
+        case .mara: return MarketStyle(awnings: [["#c0392b", "#1f3a7a", "#c0392b", "#f4efe4"], ["#1f5aa8", "#f4efe4"], ["#e8a020", "#2a2a2a", "#e8a020", "#f4efe4"]],
+                                       goods: ["#c0392b", "#1f5aa8", "#e8b23a", "#f4efe4", "#2a8a4a"], lamps: [])
         }
     }
 }
@@ -211,6 +214,7 @@ extension TownPainter {
         let rc: String
         switch s.region {
         case .bri: rc = "#5e6874"
+        case .mara: rc = TownPainter.thatch
         case .abq: rc = "#8a5a34"
         case .lux: rc = "#7a5a3a"
         case .cap: rc = "#a8502e"

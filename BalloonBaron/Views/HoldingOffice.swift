@@ -270,6 +270,7 @@ private enum OfficePainter {
             case .bri: if i % 3 == 0 { windowSpire(&g, cx, hz + 4, hh) } else { windowOak(&g, cx, hz + 6, hh / 40) } // v124
             case .abq: windowButte(&g, cx, hz + 4, hh * 1.2, hh * 0.6)
             case .lux: windowPalm(&g, cx, hz + 6, hh)
+            case .mara: windowAcacia(&g, cx, hz + 6, hh) // v141
             case .cap: ScenePainter.chimney(&g, cx, hz + 4, hh * 0.42, hh, body: Color(hex: "#e8b48e"), shade: Color(hex: "#c98d68"), cap: Color(hex: "#7a4e38"))
             }
         }
@@ -320,6 +321,16 @@ private enum OfficePainter {
     }
 
     /// Luxor out of the window: a date palm in silhouette (`palmSil`).
+    /// v141: a flat-topped acacia seen through the office window in the Mara.
+    static func windowAcacia(_ c: inout GraphicsContext, _ x: CGFloat, _ y: CGFloat, _ h: CGFloat) {
+        let col = Color(hex: "#6a7a4a")
+        var t = Path()
+        t.move(to: CGPoint(x: x, y: y)); t.addLine(to: CGPoint(x: x, y: y - h * 0.55)); t.addLine(to: CGPoint(x: x - h * 0.25, y: y - h * 0.8))
+        t.move(to: CGPoint(x: x, y: y - h * 0.55)); t.addLine(to: CGPoint(x: x + h * 0.28, y: y - h * 0.82))
+        c.stroke(t, with: .color(Color(hex: "#5a4a30")), lineWidth: max(1.2, h * 0.05))
+        c.fill(Path(ellipseIn: CGRect(x: x - h * 0.62, y: y - h * 0.94, width: h * 1.24, height: h * 0.2)), with: .color(col))
+    }
+
     static func windowPalm(_ c: inout GraphicsContext, _ x: CGFloat, _ y: CGFloat, _ h: CGFloat) {
         let col = Color(hex: "#7a8a4a")
         var trunk = Path()

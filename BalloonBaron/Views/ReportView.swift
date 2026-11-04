@@ -154,7 +154,7 @@ struct ReportView: View {
             (loc("ledger.contractPenalty"), -(lg.contractPenalty ?? 0)), (loc("ledger.contractWait"), lg.contractWait ?? 0),
             (loc("ledger.contractVoucher"), -(lg.contractVoucher ?? 0)),
             (loc("ledger.evening"), lg.evening ?? 0), (loc("ledger.founderBonus"), lg.founderBonus), (mission, lg.mission),
-            (loc("ledger.ads"), lg.ads), (loc("ledger.tips"), lg.tips), (loc("ledger.fuel"), -lg.fuel),
+            (loc("ledger.ads"), lg.ads), (loc("ledger.tips"), lg.tips), (loc("ledger.fuel"), -lg.fuel), (loc("ledger.park"), -(lg.park ?? 0)),
             (loc("ledger.wages"), -lg.wages), (loc("ledger.upkeep"), -lg.upkeep), (loc("ledger.insurance"), -lg.insurance),
             (loc("ledger.loans"), -lg.loans), (loc("ledger.transfer"), -(lg.transfer ?? 0)), (loc("ledger.repairs"), -lg.repairs), (loc("ledger.compensation"), -lg.compensation),
             (loc("ledger.insurancePaid"), lg.insurancePaid), (loc("ledger.hotelIncome"), lg.hotelIncome),
