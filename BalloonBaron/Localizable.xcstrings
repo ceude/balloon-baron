@@ -35157,6 +35157,53 @@
         }
       }
     },
+    "ctr.negotiate.atCap": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Der Preis ist schon ganz oben, Verhandeln ist unnötig."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The price is already at the top, no need to haggle."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El precio ya está en el máximo, no hace falta regatear."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Le prix est déjà au plafond, inutile de négocier."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "価格はもう上限。交渉は不要。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가격이 이미 최고예요. 협상할 필요 없어요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fiyat zaten tavanda, pazarlık gerekmez."
+          }
+        }
+      }
+    },
     "ctr.negotiate.risk": {
       "extractionState": "manual",
       "localizations": {

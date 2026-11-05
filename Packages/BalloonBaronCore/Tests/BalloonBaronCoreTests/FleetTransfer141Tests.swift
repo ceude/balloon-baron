@@ -3,7 +3,8 @@ import XCTest
 
 /// QA v141: the same crew brought along from Cappadocia through every region to the Maasai Mara (the v125 transfer:
 /// 16 seats and two pilots a time, pilots at once, balloons by cargo ten days later). Names, levels, experience, traits,
-/// designs and equipment travel; pins and sponsor deals stay behind; wages follow the region (Bristol ×1.15, the Mara
+/// designs and equipment travel; sponsor deals stay behind, and so does a pin on a pilot who doesn't come (v141.7: a pin
+/// whose balloon and pilot both come is put back when the cargo arrives); wages follow the region (Bristol ×1.15, the Mara
 /// ×1.1); nothing is duplicated or lost, going back to an earlier region finds it without them.
 final class FleetTransfer141Tests: XCTestCase {
     /// Every balloon and pilot id in the game: the region you're in, the parked ones and the cargo on its way.
@@ -90,7 +91,9 @@ final class FleetTransfer141Tests: XCTestCase {
         days(&g, Transfer.shipDays)
         XCTAssertNil(g.state.local.transferShip)
         let peri = try XCTUnwrap(g.state.local.balloons.first { $0.id == 501 })
-        XCTAssertEqual(peri.name, "Peri"); XCTAssertEqual(peri.design, 5); XCTAssertEqual(peri.burners, 2); XCTAssertNil(peri.pinnedPilot)
+        XCTAssertEqual(peri.name, "Peri"); XCTAssertEqual(peri.design, 5); XCTAssertEqual(peri.burners, 2)
+        XCTAssertEqual(peri.pinnedPilot, 601, "v141.7: Mehmet came too, so his pin on Peri is back")
+        XCTAssertEqual(peri.pilot, 601)
         let tuf = try XCTUnwrap(g.state.local.balloons.first { $0.id == 502 })
         XCTAssertEqual(tuf.design, 9); XCTAssertTrue(tuf.hasTurningVent); XCTAssertEqual(tuf.imported, .cap)
         g.pinPilot(balloon: 501, pilot: 600)
@@ -109,6 +112,7 @@ final class FleetTransfer141Tests: XCTestCase {
             XCTAssertEqual(a.imported, from)
             days(&g, Transfer.shipDays)
             XCTAssertEqual(Set(g.state.local.balloons.filter { $0.imported == from }.map(\.id)), Set(cargo), "\(r): cargo arrived")
+            XCTAssertEqual(g.state.local.balloons.first { $0.id == 501 }?.pinnedPilot, 600, "\(r): Ayşe's pin on Peri travels")
             let ids = allIDs(g)
             XCTAssertEqual(ids.balloons.count, Set(ids.balloons).count, "\(r): no balloon twice")
             XCTAssertEqual(ids.pilots.count, Set(ids.pilots).count, "\(r): no pilot twice")
@@ -158,5 +162,54 @@ final class FleetTransfer141Tests: XCTestCase {
         XCTAssertEqual(g.state.local.balloons.count, 8)
         XCTAssertEqual(g.state.outsideCount, 2)
         XCTAssertTrue(g.state.local.outsideIDs.isSuperset(of: [700, 701]), "the newest stand outside")
+    }
+
+    /// v141.7: pins come back with the cargo only for pairs that both came and are still free: a pin on a pilot who
+    /// stayed home is dropped, a pilot fired while the cargo sails loses the pin, and a pilot the player pinned to
+    /// another balloon in the meantime keeps that newer pin.
+    func testPinsComeBackWithTheCargo() {
+        var g = Game(company: "Crew Air", colors: Rules.palettes[0], seed: 11)
+        g.startDay()
+        g.grantStoreItem(.worldTour)
+        g.state.holding.cash = 5_000_000
+        g.state.local.balloons = [Balloon(id: 700, size: .S, name: "A"), Balloon(id: 701, size: .S, name: "B"),
+                                  Balloon(id: 702, size: .L, name: "C")]
+        g.state.local.flagship = 702
+        g.state.local.pilots = [Pilot(id: 800, name: "Ayşe K.", level: .senior), Pilot(id: 801, name: "Can D.", level: .rookie)]
+        g.pinPilot(balloon: 700, pilot: 800)
+        g.pinPilot(balloon: 701, pilot: 801)
+        g.state.barons[.cap] = g.state.day
+        XCTAssertTrue(g.enterRegion(.abq))
+        g.applyTransfer(balloons: [700, 701], pilots: [800]) // Can stays home
+        let ship = g.state.local.transferShip!.balloons
+        XCTAssertEqual(ship.first { $0.id == 700 }?.pinnedPilot, 800, "the pin sails with the balloon")
+        XCTAssertNil(ship.first { $0.id == 701 }?.pinnedPilot, "Can stayed home: no pin")
+        XCTAssertTrue(ship.allSatisfy { $0.pilot == nil })
+        days(&g, Transfer.shipDays)
+        let a = g.state.local.balloons.first { $0.id == 700 }
+        XCTAssertEqual(a?.pinnedPilot, 800)
+        XCTAssertEqual(a?.pilot, 800, "Ayşe flies her balloon again")
+
+        // a second run: the pilot is pinned to a local balloon while the cargo sails, the newer pin wins
+        var h = Game(company: "Crew Air", colors: Rules.palettes[0], seed: 12)
+        h.startDay()
+        h.grantStoreItem(.worldTour)
+        h.state.holding.cash = 5_000_000
+        h.state.local.balloons = [Balloon(id: 700, size: .S, name: "A"), Balloon(id: 701, size: .S, name: "B"),
+                                  Balloon(id: 702, size: .L, name: "C")]
+        h.state.local.flagship = 702
+        h.state.local.pilots = [Pilot(id: 800, name: "Ayşe K.", level: .senior), Pilot(id: 801, name: "Can D.", level: .rookie)]
+        h.pinPilot(balloon: 700, pilot: 800)
+        h.pinPilot(balloon: 701, pilot: 801)
+        h.state.barons[.cap] = h.state.day
+        XCTAssertTrue(h.enterRegion(.abq))
+        h.applyTransfer(balloons: [700, 701], pilots: [800, 801])
+        let local = h.state.local.balloons.first!.id
+        h.pinPilot(balloon: local, pilot: 800)
+        h.fire(801)
+        days(&h, Transfer.shipDays)
+        XCTAssertEqual(h.state.local.balloons.first { $0.id == local }?.pinnedPilot, 800, "the newer pin stays")
+        XCTAssertNil(h.state.local.balloons.first { $0.id == 700 }?.pinnedPilot, "Ayşe is already pinned elsewhere")
+        XCTAssertNil(h.state.local.balloons.first { $0.id == 701 }?.pinnedPilot, "Can was let go while the cargo sailed")
     }
 }

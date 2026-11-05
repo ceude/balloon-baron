@@ -3,9 +3,10 @@ import Foundation
 // v125–v125.1: bringing balloons and pilots into a new region (`XFER` in the prototype). Only when you enter a new
 // region: up to two balloons (16 seats, small or medium baskets) and two pilots from regions on autopilot come with you.
 // Pilots arrive at once; balloons come by cargo ten days later, and the new region pays the holding back for them over
-// 30 days. Balloons keep their name, design and equipment (a sponsor deal stays home); pilots keep level, experience
-// and trait, their wage the same number in the new region's money (Bristol's ×1.15 on or off). The region they leave
-// earns less on autopilot. What you bring doesn't count toward the new region's goals.
+// 30 days. Balloons keep their name, design and equipment (a sponsor deal stays home) and, v141.7, their pin on a pilot
+// who came along too; pilots keep level, experience and trait, their wage the same number in the new region's money
+// (Bristol's ×1.15 on or off). The region they leave earns less on autopilot. What you bring
+// doesn't count toward the new region's goals.
 public enum Transfer {
     public static let maxBalloons = 2, maxPilots = 2, seats = 16
     public static let sizes: [BalloonSize] = [.S, .M]
@@ -116,7 +117,9 @@ extension Game {
             for var b in bs {
                 rs.balloons.removeAll { $0.id == b.id }
                 b.pilot = nil
-                b.pinnedPilot = nil
+                // v141.7: a pin on a pilot who comes along travels with the balloon and is put back when the cargo
+                // arrives (`assignPilots` drops it if that pilot left or was pinned elsewhere in the meantime)
+                if let pin = b.pinnedPilot, !ps.contains(where: { $0.id == pin }) { b.pinnedPilot = nil }
                 b.ad = nil
                 b.damagedUntil = 0
                 b.imported = r
@@ -157,7 +160,9 @@ extension Game {
     /// Skips the card: start from scratch.
     public mutating func skipTransfer() { state.transferAsk = nil }
 
-    /// The cargo arrives in the morning (`xferArrive`): the balloons join the fleet and the payments start.
+    /// The cargo arrives in the morning (`xferArrive`): the balloons join the fleet and the payments start. v141.7: pins
+    /// kept for pilots who came along are applied again by `assignPilots` (only if that pilot is still here and not
+    /// pinned to another balloon).
     mutating func transferArrive() {
         guard let x = state.local.transferShip, state.day >= x.day else { return }
         state.local.transferShip = nil

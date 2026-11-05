@@ -694,6 +694,13 @@ add("ctr.accept", "Accept: %@", "Kabul et: %@", "Annehmen: %@", "Aceptar: %@", "
 add("ctr.negotiate", "Negotiate: %@", "Pazarlık: %@", "Verhandeln: %@", "Negociar: %@", "交渉：%@", "협상: %@")
 add("ctr.negotiate.safe", "Rarely walks away", "Genelde kabul eder", "Springt selten ab", "Rara vez se va", "まず逃げない", "거의 안 떠나요")
 add("ctr.negotiate.risk", "May go to a rival", "Rakibe gidebilir", "Kann abspringen", "Puede irse a otro", "ライバルに行くかも", "경쟁사로 갈 수 있어요")
+# v141.7: the offer is already at the cap (no negotiation button); a short note in its place
+add("ctr.negotiate.atCap", "The price is already at the top, no need to haggle.",
+    "Fiyat zaten tavanda, pazarlık gerekmez.",
+    "Der Preis ist schon ganz oben, Verhandeln ist unnötig.",
+    "El precio ya está en el máximo, no hace falta regatear.",
+    "価格はもう上限。交渉は不要。",
+    "가격이 이미 최고예요. 협상할 필요 없어요.")
 add("ctr.decline", "Decline", "Reddet", "Ablehnen", "Rechazar", "断る", "거절")
 add("ctr.decline.sub", "The group goes to a rival", "Grup rakibe gider", "Geht zur Konkurrenz", "Se va con un rival", "グループはライバルへ", "단체는 경쟁사로")
 add("ctr.deal", "You have a deal", "Anlaştık!", "Abgemacht", "Trato hecho", "契約成立", "계약 성사")

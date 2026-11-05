@@ -81,6 +81,14 @@ struct ContractOfferView: View {
                             withAnimation { result = (o, ctrText(w, "negWalk", rival: riv ?? loc("ctr.rival")), false, riv) }
                         }
                     }
+                } else if !o.negotiated {
+                    // v141.7: the offer is already at the cap, so no negotiation; a short note where the button would be
+                    Text(loc("ctr.negotiate.atCap"))
+                        .font(Theme.font(12.5)).foregroundStyle(Theme.ink2)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .frame(maxWidth: .infinity, minHeight: compact ? 46 : 50)
+                        .padding(.horizontal, 6)
                 }
                 option(loc("ctr.decline"), loc("ctr.decline.sub"), red: true) {
                     SoundEngine.shared.play(.click)

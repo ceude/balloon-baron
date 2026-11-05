@@ -771,6 +771,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 .ctrmore{display:inline;margin-left:6px;background:none;padding:0;color:var(--ink2);font:700 13.5px Barlow,sans-serif;text-decoration:underline}
 .ctrrow{display:flex;gap:8px;margin-top:8px}.ctrrow .opt{flex:1;margin:0;padding:9px 12px}.ctrrow .opt b{font-size:14.5px}.ctrrow .opt span{font-size:12px}
 .ctrrow .opt.no b{color:#a8302a}
+.ctrrow .ctrcap{flex:1;margin:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:6px 8px;font-size:12.5px;line-height:1.3;color:var(--ink2)}
 .ctrfog{display:flex;align-items:center;gap:8px;margin:2px 0 6px;font-size:12.5px;color:var(--ink2)}.ctrfog b{font-family:var(--cond);font-weight:800;font-size:15px;padding:2px 8px;border-radius:99px;background:#e6eef4;color:#3a5a7a}.ctrfog b.mid{background:#fff3cf;color:#6b4c00}.ctrfog b.hi{background:#fde6e2;color:#8c2414}
 .ctrhd b{display:block;font-family:var(--cond);font-weight:800;font-size:21px;line-height:1.05;color:var(--ink)}
 .ctrhd span{display:block;font-size:13px;color:var(--ink2)}
@@ -8689,7 +8690,7 @@ function ctrCard() {
     const ng = h('button', 'opt', `<b>Pazarlık: ${eur(ctrNegPrice(O))}</b><span>${C.pref ? 'Genelde kabul eder' : 'Rakibe gidebilir'}</span>`);
     ng.onclick = () => { const r = ctrNegotiate(); if (r === 'ok') { sfx('coin'); ctrAccept(); ctrResult(w, 'negOk', O); } else { sfx('low'); ctrResult(w, 'negWalk', O, riv); } };
     row.appendChild(ng);
-  }
+  } else if (!O.neg) row.appendChild(h('p', 'ctrcap', 'Fiyat zaten tavanda, pazarlık gerekmez.')); /* v141.7: at the cap, a note where the button would be */
   const no = h('button', 'opt no', '<b>Reddet</b><span>Grup rakibe gider</span>');
   no.onclick = () => { ctrDecline(); ctrResult(w, 'decline', O, riv); };
   row.appendChild(no); c.appendChild(row);
@@ -9471,7 +9472,9 @@ function xferApply(sel) {
     const seats0 = rs.balloons.reduce((a, b) => a + SIZES[b.size].cap, 0);
     const bs = []; for (const b of rs.balloons) if ((sel[id].b || []).includes(b.id) && XFER.sizes.includes(b.size) && moved.b.length + bs.length < XFER.maxB && xferSeats(moved.b.concat(bs)) + SIZES[b.size].cap <= XFER.seats) bs.push(b);
     const ps = rs.pilots.filter(p => (sel[id].p || []).includes(p.id)).slice(0, XFER.maxP - moved.p.length);
-    for (const b of bs) { rs.balloons = rs.balloons.filter(x => x !== b); Object.assign(b, { pilot: null, pin: null, ad: null, dmgUntil: 0, imp: id }); moved.b.push(b); }
+    /* v141.7: a pin on a pilot who comes along travels with the balloon; assignPilots puts it back when the cargo arrives
+       (dropped if that pilot left or was pinned to another balloon in the meantime) */
+    for (const b of bs) { rs.balloons = rs.balloons.filter(x => x !== b); Object.assign(b, { pilot: null, pin: ps.some(p => p.id === b.pin) ? b.pin : null, ad: null, dmgUntil: 0, imp: id }); moved.b.push(b); }
     for (const p of ps) {
       rs.pilots = rs.pilots.filter(x => x !== p); rs.balloons.forEach(b => { if (b.pin === p.id) b.pin = null; if (b.pilot === p.id) b.pilot = null; });
       if (p.wage) p.wage = Math.round(p.wage / wageF(id) * wageF(to) / 5) * 5;

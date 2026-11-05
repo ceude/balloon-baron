@@ -200,6 +200,7 @@ FR.update({
 "ctr.negotiate": "Négocier : %@",
 "ctr.negotiate.safe": "Part rarement",
 "ctr.negotiate.risk": "Risque de partir",
+"ctr.negotiate.atCap": "Le prix est déjà au plafond, inutile de négocier.",
 "ctr.decline": "Refuser",
 "ctr.decline.sub": "Ira chez un concurrent",
 "ctr.deal": "Marché conclu",
