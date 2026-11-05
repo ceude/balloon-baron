@@ -22,9 +22,10 @@ FORCE = dict(p.split('=') for p in os.environ.get('AUTO_PICK', '').split(',') if
 DEVS = ('iphone', 'ipad')
 # frames of one launch are <scene>-<n> (store-shots.txt takes them a second or so apart)
 PICK = {'design': 'design-1'}
+# hold: the holding page's title bar, the company's name to the end of the value pill (not the close button)
 FIXED = {
     'iphone': {'studio': ['design', [40, 335, 1240, 610]], 'hold': ['holding', [24, 195, 1130, 160]]},
-    'ipad': {'studio': ['design', [470, 840, 1130, 385]], 'hold': ['holding', [0, 66, 2064, 132]]},
+    'ipad': {'studio': ['design', [470, 840, 1130, 385]], 'hold': ['holding', [14, 66, 1926, 132]]},
 }
 CARD = {'iphone': (48, 1224), 'ipad': (366, 1334)}   # the office pages' card: left edge, width
 ROW = {'iphone': 161, 'ipad': 108}                    # one pilot row

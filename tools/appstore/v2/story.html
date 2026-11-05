@@ -350,7 +350,8 @@ const SCREEN = {
     const r2 = phone('empire', U * G(.69, .69), H * G(.68, .67), U * G(.48, .44), .045);
     tag(U * G(.69, .69), r2.y - H * .045, B.after[0]);
     badge(U * .97, r2.y + r2.h * .32, B.after[1], B.after[2], { align: 'r', size: G(140, 170), rot: .03 });
-    lift('hold', U * G(.56, .6), H * G(.935, .93), U * G(.62, SHOTS_APP ? .9 : .48), { r: 30, rot: -.02 });
+    /* the app's bar is the screen's full width: centred, so the value at its end stays on the screen */
+    lift('hold', U * G(.56, SHOTS_APP ? .5 : .6), H * G(.935, .93), U * G(.62, SHOTS_APP ? .9 : .48), { r: 30, rot: -.02 });
   },
   /* 6: the crew, with real pilot rows held up close */
   crew() {
