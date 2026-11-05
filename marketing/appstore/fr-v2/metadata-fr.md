@@ -93,7 +93,7 @@ Sıra ve hikâye Türkçe setle aynı; her karede büyük başlık ve kısa bir 
 | 03 | Pilote / à l’aube | Vol réaliste en montgolfière |
 | 04 | Les jours filent, / la caisse se remplit | Jeu de gestion idle avec avance rapide |
 | 05 | D’une nacelle / à un empire | Du jour 2 au jour (gün) |
-| 06 | Chaque pilote / a son caractère | Méthodique, casse-cou, fidèle |
+| 06 | Chaque pilote / a son style | Méthodique, casse-cou, fidèle |
 | 07 | Ton ballon, / ta signature | Ballons cœur, étoile et tête de mort |
 | 08 | Rachète / tes concurrents | La stratégie gagne le marché |
 | 09 | La nuit, / tout s’illumine | Ton bureau devient une ville |

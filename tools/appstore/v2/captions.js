@@ -169,7 +169,7 @@ const CAPTIONS = {
       flight: { head: 'Pilote|à l’aube', sub: 'Vol réaliste en montgolfière' },
       idle: { head: 'Les jours filent,|la caisse se remplit', sub: 'Jeu de gestion idle avec avance rapide' },
       holding: { head: 'D’une nacelle|à un empire', sub: 'Du jour 2 au jour @DAY' },
-      crew: { head: 'Chaque pilote|a son caractère', sub: 'Méthodique, casse-cou, fidèle' },
+      crew: { head: 'Chaque pilote|a son style', sub: 'Méthodique, casse-cou, fidèle' },
       design: { head: 'Ton ballon,|ta signature', sub: 'Ballons cœur, étoile et tête de mort' },
       rivals: { head: 'Rachète|tes concurrents', sub: 'La stratégie gagne le marché' },
       night: { head: 'La nuit,|tout s’illumine', sub: 'Ton bureau devient une ville' },
