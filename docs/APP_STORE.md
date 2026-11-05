@@ -127,40 +127,40 @@ Bu dosya App Store Connect olmadan da çalışır. TestFlight'ta Apple'ın test 
 - `balloonbaron.lb.passengers`: Toplam yolcu / Total passengers
 - `balloonbaron.lb.bestday`: En kalabalık gün / Best day (passengers)
 
-**Başarımlar** (kartpostallar). v141.1 (geliştirici kararı): bütün kartpostallar Game Center'da, Bristol'ün ve Maasai Mara'nın kartpostalları dahil. Apple'ın sınırı 1000 puan; toplam **880**, 120 puan gelecekteki bir Asya şehri bölgesinin iki kartpostalı için boş bırakıldı (örneğin giriş 20, baron 70). Puanlar çekirdekte `Achievement.gameCenterPoints` (testi `GameCenter141Tests`). Yayından önce App Store Connect'te var olan başarımların puanı değiştirilebilir: "değişti" satırlarının puanı güncellenmeli, "yeni" satırlar oluşturulmalı (ikisinin de başlık ve açıklaması altı dilde, oyundaki `ach.<id>` ve `ach.<id>.d` metinleri).
+**Başarımlar** (kartpostallar). v141.1 (geliştirici kararı): bütün kartpostallar Game Center'da, Bristol'ün ve Maasai Mara'nın kartpostalları dahil. Apple'ın sınırı 1000 puan; toplam **880**, 120 puan gelecekteki bir Asya şehri bölgesinin iki kartpostalı için boş bırakıldı (örneğin giriş 20, baron 70). Puanlar çekirdekte `Achievement.gameCenterPoints` (testi `GameCenter141Tests`). Yayından önce App Store Connect'te var olan başarımların puanı değiştirilebilir: "değişti" satırlarının puanı güncellenmeli, "yeni" satırlar oluşturulmalı (ikisinin de başlık ve açıklaması yedi dilde, oyundaki `ach.<id>` ve `ach.<id>.d` metinleri; Fransızca v142'de eklendi, var olan başarımlara da fr-FR yerelleştirmesi girilmeli).
 
-| Kimlik | Puan | Önce | Durum | en | tr | de | es | ja | ko | Açıklama (en) |
-|---|---|---|---|---|---|---|---|---|---|---|
-| `balloonbaron.ach.first` | 5 | 10 | değişti | First flight | İlk uçuş | Erster Flug | Primer vuelo | 初フライト | 첫 비행 | Your company's first morning |
-| `balloonbaron.ach.mission` | 10 | 20 | değişti | First special request | İlk özel istek | Erster Sonderwunsch | Primer encargo especial | 初めての特別依頼 | 첫 특별 요청 | You completed a request |
-| `balloonbaron.ach.perfect10` | 25 | 40 | değişti | Light as a feather | Tüy gibi | Federleicht | Como una pluma | 羽のように | 깃털처럼 | 10 perfect landings |
-| `balloonbaron.ach.fleet5` | 10 | 20 | değişti | Small fleet | Küçük filo | Kleine Flotte | Pequeña flota | 小さな船団 | 작은 기단 | 5 balloons |
-| `balloonbaron.ach.fleet10` | 20 | 40 | değişti | A crowded sky | Gökyüzü kalabalık | Voller Himmel | Cielo concurrido | にぎやかな空 | 붐비는 하늘 | 10 balloons |
-| `balloonbaron.ach.fleet20` | 35 | 60 | değişti | Armada | Armada | Armada | Armada | 大艦隊 | 대함대 | 20 balloons |
-| `balloonbaron.ach.hotel` | 10 | 15 | değişti | Hotel partner | Otel ortağı | Hotelpartner | Socio hotelero | ホテルの相棒 | 호텔 파트너 | Your first hotel deal |
-| `balloonbaron.ach.hotelOwn` | 25 | 40 | değişti | Hotel owner | Otel sahibi | Hotelbesitzer | Dueño de hotel | ホテルオーナー | 호텔 주인 | You bought a hotel |
-| `balloonbaron.ach.star45` | 30 | 50 | değişti | Darling of the valley | Vadinin gözdesi | Liebling des Tals | Favorito del valle | 谷の人気者 | 계곡의 인기 스타 | 4.5★ popularity |
-| `balloonbaron.ach.pax1k` | 15 | 30 | değişti | A thousand passengers | Bin yolcu | Tausend Passagiere | Mil pasajeros | 乗客千人 | 승객 천 명 | 1,000 passengers flown in all |
-| `balloonbaron.ach.pax10k` | 35 | 60 | değişti | Ten thousand passengers | On bin yolcu | Zehntausend Passagiere | Diez mil pasajeros | 乗客1万人 | 승객 만 명 | 10,000 passengers flown in all |
-| `balloonbaron.ach.winter` | 15 | 30 | değişti | Through the winter | Kışı atlattın | Winter überstanden | Superaste el invierno | 冬を越えた | 겨울을 버텼다 | Your first winter is over |
-| `balloonbaron.ach.fest` | 10 | 20 | değişti | Festival spirit | Festival havası | Festivalstimmung | Ambiente de fiesta | お祭り気分 | 축제 분위기 | You flew in a festival |
-| `balloonbaron.ach.rivalDown` | 25 | 40 | değişti | A rival fell | Rakip düştü | Ein Konkurrent weniger | Cayó un rival | ライバル陥落 | 경쟁자 몰락 | A rival went bankrupt |
-| `balloonbaron.ach.boss` | 35 | 60 | değişti | The old master | Eski usta | Der alte Meister | El viejo maestro | 古参の退場 | 노장의 퇴장 | The valley's old owner stepped aside |
-| `balloonbaron.ach.design` | 10 | 20 | değişti | Your own pattern | Kendi desenin | Dein eigenes Muster | Tu propio diseño | 自分の柄 | 나만의 무늬 | Your first balloon design |
-| `balloonbaron.ach.upgrade3` | 25 | 40 | değişti | Masterwork | Usta işi | Meisterwerk | Obra maestra | 匠の技 | 장인의 솜씨 | You took a building to level 3 |
-| `balloonbaron.ach.xl` | 40 | 60 | değişti | Giant balloon | Dev balon | Riesenballon | Globo gigante | 巨大気球 | 거대 열기구 | Your giant balloon is in the sky |
-| `balloonbaron.ach.baronCap` | 50 | 80 | değişti | Baron of Cappadocia | Kapadokya Baronu | Baron von Kappadokien | Barón de Capadocia | カッパドキアの男爵 | 카파도키아의 남작 | Master of the valley |
-| `balloonbaron.ach.abq` | 20 | 40 | değişti | New World | Yeni Dünya | Neue Welt | Nuevo Mundo | 新世界 | 신대륙 | You entered Albuquerque |
-| `balloonbaron.ach.baronAbq` | 50 | 80 | değişti | Baron of Albuquerque | Albuquerque Baronu | Baron von Albuquerque | Barón de Albuquerque | アルバカーキの男爵 | 앨버커키의 남작 | The sky of two continents |
-| `balloonbaron.ach.lux` | 20 | 40 | değişti | Sky of the Nile | Nil'in göğü | Himmel des Nils | Cielo del Nilo | ナイルの空 | 나일의 하늘 | You entered Luxor |
-| `balloonbaron.ach.baronLux` | 60 | 100 | değişti | Baron of Luxor | Luksor Baronu | Baron von Luxor | Barón de Luxor | ルクソールの男爵 | 룩소르의 남작 | The valley of the pharaohs is yours |
-| `balloonbaron.ach.bri` | 20 | – | yeni | Sky of the Avon | Avon'un göğü | Himmel über dem Avon | El cielo del Avon | エイボンの空 | 에이번의 하늘 | You entered Bristol |
-| `balloonbaron.ach.nightGlow` | 15 | – | yeni | Night Glow | Gece Işıltısı | Night Glow | Night Glow | ナイトグロー | 나이트 글로 | Your balloons glowed on a festival night |
-| `balloonbaron.ach.baronBri` | 60 | – | yeni | Baron of Bristol | Bristol Baronu | Baron von Bristol | Barón de Bristol | ブリストル男爵 | 브리스톨 남작 | Master of the gorge and the festival |
-| `balloonbaron.ach.world` | 100 | 100 | aynı | World Baron | Dünya Baronu | Weltbaron | Barón mundial | 世界の男爵 | 세계의 남작 | All holding goals complete |
-| `balloonbaron.ach.patron` | 15 | 30 | değişti | Patron of the skies | Gökyüzünün hayırseveri | Gönner der Lüfte | Mecenas de los cielos | 空の篤志家 | 하늘의 후원자 | The foundation's first project |
-| `balloonbaron.ach.mara` | 20 | – | yeni | Sky of the savanna | Savananın göğü | Himmel über der Savanne | El cielo de la sabana | サバンナの空 | 사바나의 하늘 | You entered the Maasai Mara |
-| `balloonbaron.ach.baronMara` | 70 | – | yeni | Baron of the Maasai Mara | Maasai Mara Baronu | Baron der Maasai Mara | Barón del Maasai Mara | マサイマラ男爵 | 마사이마라 남작 | Master of the savanna and the Great Migration |
+| Kimlik | Puan | Önce | Durum | en | tr | de | es | ja | ko | fr | Açıklama (en) |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| `balloonbaron.ach.first` | 5 | 10 | değişti | First flight | İlk uçuş | Erster Flug | Primer vuelo | 初フライト | 첫 비행 | Premier vol | Your company's first morning |
+| `balloonbaron.ach.mission` | 10 | 20 | değişti | First special request | İlk özel istek | Erster Sonderwunsch | Primer encargo especial | 初めての特別依頼 | 첫 특별 요청 | Première demande spéciale | You completed a request |
+| `balloonbaron.ach.perfect10` | 25 | 40 | değişti | Light as a feather | Tüy gibi | Federleicht | Como una pluma | 羽のように | 깃털처럼 | Léger comme une plume | 10 perfect landings |
+| `balloonbaron.ach.fleet5` | 10 | 20 | değişti | Small fleet | Küçük filo | Kleine Flotte | Pequeña flota | 小さな船団 | 작은 기단 | Petite flotte | 5 balloons |
+| `balloonbaron.ach.fleet10` | 20 | 40 | değişti | A crowded sky | Gökyüzü kalabalık | Voller Himmel | Cielo concurrido | にぎやかな空 | 붐비는 하늘 | Un ciel bien rempli | 10 balloons |
+| `balloonbaron.ach.fleet20` | 35 | 60 | değişti | Armada | Armada | Armada | Armada | 大艦隊 | 대함대 | Armada | 20 balloons |
+| `balloonbaron.ach.hotel` | 10 | 15 | değişti | Hotel partner | Otel ortağı | Hotelpartner | Socio hotelero | ホテルの相棒 | 호텔 파트너 | Partenaire hôtelier | Your first hotel deal |
+| `balloonbaron.ach.hotelOwn` | 25 | 40 | değişti | Hotel owner | Otel sahibi | Hotelbesitzer | Dueño de hotel | ホテルオーナー | 호텔 주인 | Propriétaire d’hôtel | You bought a hotel |
+| `balloonbaron.ach.star45` | 30 | 50 | değişti | Darling of the valley | Vadinin gözdesi | Liebling des Tals | Favorito del valle | 谷の人気者 | 계곡의 인기 스타 | Chouchou de la vallée | 4.5★ popularity |
+| `balloonbaron.ach.pax1k` | 15 | 30 | değişti | A thousand passengers | Bin yolcu | Tausend Passagiere | Mil pasajeros | 乗客千人 | 승객 천 명 | Mille passagers | 1,000 passengers flown in all |
+| `balloonbaron.ach.pax10k` | 35 | 60 | değişti | Ten thousand passengers | On bin yolcu | Zehntausend Passagiere | Diez mil pasajeros | 乗客1万人 | 승객 만 명 | Dix mille passagers | 10,000 passengers flown in all |
+| `balloonbaron.ach.winter` | 15 | 30 | değişti | Through the winter | Kışı atlattın | Winter überstanden | Superaste el invierno | 冬を越えた | 겨울을 버텼다 | L’hiver est passé | Your first winter is over |
+| `balloonbaron.ach.fest` | 10 | 20 | değişti | Festival spirit | Festival havası | Festivalstimmung | Ambiente de fiesta | お祭り気分 | 축제 분위기 | Esprit de fête | You flew in a festival |
+| `balloonbaron.ach.rivalDown` | 25 | 40 | değişti | A rival fell | Rakip düştü | Ein Konkurrent weniger | Cayó un rival | ライバル陥落 | 경쟁자 몰락 | Un concurrent à terre | A rival went bankrupt |
+| `balloonbaron.ach.boss` | 35 | 60 | değişti | The old master | Eski usta | Der alte Meister | El viejo maestro | 古参の退場 | 노장의 퇴장 | Le vieux maître | The valley's old owner stepped aside |
+| `balloonbaron.ach.design` | 10 | 20 | değişti | Your own pattern | Kendi desenin | Dein eigenes Muster | Tu propio diseño | 自分の柄 | 나만의 무늬 | Ton propre motif | Your first balloon design |
+| `balloonbaron.ach.upgrade3` | 25 | 40 | değişti | Masterwork | Usta işi | Meisterwerk | Obra maestra | 匠の技 | 장인의 솜씨 | Chef-d’œuvre | You took a building to level 3 |
+| `balloonbaron.ach.xl` | 40 | 60 | değişti | Giant balloon | Dev balon | Riesenballon | Globo gigante | 巨大気球 | 거대 열기구 | Ballon géant | Your giant balloon is in the sky |
+| `balloonbaron.ach.baronCap` | 50 | 80 | değişti | Baron of Cappadocia | Kapadokya Baronu | Baron von Kappadokien | Barón de Capadocia | カッパドキアの男爵 | 카파도키아의 남작 | Baron de Cappadoce | Master of the valley |
+| `balloonbaron.ach.abq` | 20 | 40 | değişti | New World | Yeni Dünya | Neue Welt | Nuevo Mundo | 新世界 | 신대륙 | Nouveau Monde | You entered Albuquerque |
+| `balloonbaron.ach.baronAbq` | 50 | 80 | değişti | Baron of Albuquerque | Albuquerque Baronu | Baron von Albuquerque | Barón de Albuquerque | アルバカーキの男爵 | 앨버커키의 남작 | Baron d’Albuquerque | The sky of two continents |
+| `balloonbaron.ach.lux` | 20 | 40 | değişti | Sky of the Nile | Nil'in göğü | Himmel des Nils | Cielo del Nilo | ナイルの空 | 나일의 하늘 | Le ciel du Nil | You entered Luxor |
+| `balloonbaron.ach.baronLux` | 60 | 100 | değişti | Baron of Luxor | Luksor Baronu | Baron von Luxor | Barón de Luxor | ルクソールの男爵 | 룩소르의 남작 | Baron de Louxor | The valley of the pharaohs is yours |
+| `balloonbaron.ach.bri` | 20 | – | yeni | Sky of the Avon | Avon'un göğü | Himmel über dem Avon | El cielo del Avon | エイボンの空 | 에이번의 하늘 | Le ciel de l’Avon | You entered Bristol |
+| `balloonbaron.ach.nightGlow` | 15 | – | yeni | Night Glow | Gece Işıltısı | Night Glow | Night Glow | ナイトグロー | 나이트 글로 | Night Glow | Your balloons glowed on a festival night |
+| `balloonbaron.ach.baronBri` | 60 | – | yeni | Baron of Bristol | Bristol Baronu | Baron von Bristol | Barón de Bristol | ブリストル男爵 | 브리스톨 남작 | Baron de Bristol | Master of the gorge and the festival |
+| `balloonbaron.ach.world` | 100 | 100 | aynı | World Baron | Dünya Baronu | Weltbaron | Barón mundial | 世界の男爵 | 세계의 남작 | Baron du monde | All holding goals complete |
+| `balloonbaron.ach.patron` | 15 | 30 | değişti | Patron of the skies | Gökyüzünün hayırseveri | Gönner der Lüfte | Mecenas de los cielos | 空の篤志家 | 하늘의 후원자 | Mécène des cieux | The foundation's first project |
+| `balloonbaron.ach.mara` | 20 | – | yeni | Sky of the savanna | Savananın göğü | Himmel über der Savanne | El cielo de la sabana | サバンナの空 | 사바나의 하늘 | Le ciel de la savane | You entered the Maasai Mara |
+| `balloonbaron.ach.baronMara` | 70 | – | yeni | Baron of the Maasai Mara | Maasai Mara Baronu | Baron der Maasai Mara | Barón del Maasai Mara | マサイマラ男爵 | 마사이마라 남작 | Baron du Maasai Mara | Master of the savanna and the Great Migration |
 
 Başarımlar oyunda kartpostal olarak kutlanıyor, bu yüzden Game Center afişi kapalı (`showsCompletionBanner = false`).
 
