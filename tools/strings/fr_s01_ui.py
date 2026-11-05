@@ -83,7 +83,7 @@ FR = {
 "mission.desc.precision": "Pose-toi à moins de 40 m de l’équipe au sol.",
 "hotel.stone": "Maisons de pierre de Göreme",
 "hotel.mansion": "Manoir Peri d’Ürgüp",
-"hotel.cave": "Hôtel troglodyte d’Uçhisar",
+"hotel.cave": "Troglodytes d’Uçhisar",
 "hotel.palace": "Cappadoce Palace Resort",
 "sponsor.carpet": "Maison du tapis de Göreme",
 "sponsor.wine": "Vignes de Cappadoce",
