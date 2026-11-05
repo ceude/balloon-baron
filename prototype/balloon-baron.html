@@ -2916,7 +2916,7 @@ function showWorldMap() {
     const it = h('div', 'item' + (owned || open ? '' : ' lock'));
     let tag = '', sub = '';
     if (here) { tag = '<span class="tag g">Buradasın</span>'; sub = { cap: 'Peribacaları ve gün doğumu. Her şeyin başladığı yer.', abq: 'Çöl, Sandia dağları ve meşhur kutu rüzgârları.', lux: 'Nil, firavunların vadisi ve dünyanın en çetin balon pazarı.', bri: 'Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.', mara: 'Savana, büyük göç ve dünyanın en çetin balon safarisi.' }[R.id]; }
-    else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = sendsToHolding(R.id) ? `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.` : `Müdürün yönetiyor: kazanç bölgenin kasasında birikiyor (holdinge aktarım kapalı).`; sub += `${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
+    else if (owned) { tag = A && A.issue ? '<span class="tag r">Sorun var</span>' : '<span class="tag y">Otomatik mod</span>'; sub = sendsToHolding(R.id) ? `Müdürün yönetiyor: günde yaklaşık ${eurH(A ? A.today || A.base : 0)} holding kasasına geliyor.` : !isBaron(R.id) ? `Müdürün yönetiyor: baron olana kadar kâr bölgenin kasasında kalır.` : `Müdürün yönetiyor: kazanç bölgenin kasasında birikiyor (holdinge aktarım kapalı).`; sub += `${A && A.issue ? ` <b>${ISSUES[A.issue.k].t}:</b> karar verene kadar kazanç yarıda.` : ''}`; }
     else if (open && closedOn(R.id) != null) { tag = '<span class="tag r">Kapandı</span>'; sub = `Şirketin burada ${closedOn(R.id)}. günde kapandı. Yeniden girersen sıfırdan başlarsın: küçük bir balon ve bölgenin başlangıç kasası, bölümler baştan. Kazandığın baron unvanları yerinde kalır. Giriş bedeli ${eurH(entryFee(R.id))} holding kasasından.`; }
     else if (open && R.id === 'mara') { tag = '<span class="tag y">Açıldı</span>'; sub = `Kenya'da savananın üstünde gün doğumu safarisi. En çetin bölge: az turist, pahalı yakıt, yolcu başı koruma alanı ücreti, güçlü rakipler, yağmur mevsimleri; sürülerin arasına inmek ceza, nehre inmek felaket. Başlangıç kasası: ${money(6000, 'mara')}. Giriş bedeli ${eurH(entryFee('mara'))} holding kasasından.${needsPack('mara') ? ` Önce Dünya Turu'nu açarsın: ${SHOP.worldTour.price}, bir kez.` : ''}`; }
     else if (open && R.id === 'bri') { tag = '<span class="tag y">Açıldı</span>'; sub = `Avon Kanyonu, sisli İngiliz sabahları ve balon ustalarının şehri.`; }
@@ -10278,8 +10278,11 @@ function withdraw(share) {
   if (amt <= 0) return;
   S.cash -= amt; S.holding = (S.holding || 0) + amt / FX(); holdLog('inc', amt / FX()); holdGoalsNow(); sfx('coin'); refresh();
 }
-/* v131 (TestFlight): a parked region can keep its autopilot profit in its own cash box; the player moves it by hand */
-const sendsToHolding = id => !(S.hold && S.hold.keep && S.hold.keep[id]);
+/* v131 (TestFlight): a parked region can keep its autopilot profit in its own cash box; the player moves it by hand.
+   v141.4 (TestFlight): a region whose baron title you haven't earned yet never sends: its money is what makes you baron
+   there, so it always stays in its cash box, whatever the switch says. `sendSwitch` is the switch itself (kept as set). */
+const sendSwitch = id => !(S.hold && S.hold.keep && S.hold.keep[id]);
+const sendsToHolding = id => isBaron(id) && sendSwitch(id);
 function setSends(id, on) { const H = S.hold || (S.hold = {}), k = H.keep || (H.keep = {}); if (on) delete k[id]; else k[id] = 1; if (!Object.keys(k).length) delete H.keep; save(); hqRender(); }
 function withdrawFrom(id, share) {
   if (id === S.region) return withdraw(share);
@@ -10388,8 +10391,10 @@ function hqRegions(body) {
       const row = h('div', 'item'); row.style.cssText = 'margin-top:-4px;background:rgba(255,255,255,.55)';
       const note = here ? (send ? 'Açık. Bu bölgede oynarken aktarılmaz; yalnız otomatik modda, sen başka bölgedeyken, kazanç her akşam holding kasasına geçer.' : 'Kapalı. Bu bölgede oynarken zaten aktarılmaz; otomatik moda geçince de kazanç bölgenin kasasında birikir.')
         : send ? 'Açık: otomatik kazanç her akşam holding kasasına geçer.' : 'Kapalı: kazanç bölgenin kasasında birikir, istediğinde aktarırsın.';
-      row.appendChild(h('div', 'main', `<div class="t" style="font-size:15px">Kazancı her gün holdinge aktar</div><div class="s">${note}</div>`));
-      const tg = pbtn(send ? 'Açık' : 'Kapalı', () => setSends(R.id, !send), false, !send); tg.setAttribute('role', 'switch'); tg.setAttribute('aria-checked', send ? 'true' : 'false'); row.appendChild(tg);
+      /* v141.4: not baron here yet: the switch is locked off and says why */
+      const locked = !isBaron(R.id);
+      row.appendChild(h('div', 'main', `<div class="t" style="font-size:15px">Kazancı her gün holdinge aktar</div><div class="s">${locked ? 'Baron olana kadar kâr bölgenin kasasında kalır.' : note}</div>`));
+      const tg = pbtn(locked ? 'Kilitli' : send ? 'Açık' : 'Kapalı', () => setSends(R.id, !send), locked, !send); tg.setAttribute('role', 'switch'); tg.setAttribute('aria-checked', send ? 'true' : 'false'); if (locked) tg.setAttribute('aria-disabled', 'true'); row.appendChild(tg);
       r.appendChild(row);
       if (!send && !here) { const tb = pbtn(`${R.name} kasasından aktar (${cur(Math.max(0, rs.cash - withdrawKeep(R.id)))}, ${cur(withdrawKeep(R.id))} kalsın)`, () => withdrawFrom(R.id, 1), rs.cash <= withdrawKeep(R.id), true); tb.style.alignSelf = 'flex-start'; r.appendChild(tb); }
     }

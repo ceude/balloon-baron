@@ -69988,6 +69988,88 @@
         }
       }
     },
+    "holding.sendLocked": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bis du hier Baron bist, bleibt der Gewinn in der Region."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Until you're baron here, the profit stays in the region."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hasta que seas barón aquí, el beneficio se queda en la región."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ここで男爵になるまで、利益は地域に残る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "이곳의 남작이 되기 전까지 수익은 지역에 남아요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baron olana kadar kâr bölgenin kasasında kalır."
+          }
+        }
+      }
+    },
+    "holding.sendLockedTag": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gesperrt"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Locked"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bloqueado"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ロック中"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "잠김"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Kilitli"
+          }
+        }
+      }
+    },
     "holding.sendOff": {
       "extractionState": "manual",
       "localizations": {
@@ -86015,6 +86097,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Müdürün yönetiyor: kazanç bölgenin kasasında birikiyor (holdinge aktarım kapalı)."
+          }
+        }
+      }
+    },
+    "map.keptSubBaron": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dein Manager führt sie: Bis du hier Baron bist, bleibt der Gewinn in ihrer eigenen Kasse."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Your manager runs it: until you're baron here, the profit stays in its own cash box."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La dirige tu gerente: hasta que seas barón aquí, el beneficio se queda en su propia caja."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マネージャーが運営中：ここで男爵になるまで、利益は地域の金庫に残る。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "매니저가 운영 중: 이곳의 남작이 되기 전까지 수익은 지역 금고에 남아요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Müdürün yönetiyor: baron olana kadar kâr bölgenin kasasında kalır."
           }
         }
       }

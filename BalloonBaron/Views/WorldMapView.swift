@@ -156,7 +156,8 @@ struct WorldMapView: View {
             guard let r = pin.region, let auto = s.parked[r]?.auto else { return "" }
             let daily = auto.today != 0 ? auto.today : Int(auto.base.rounded())
             // v131: a region that keeps its profit says so instead of "reaches the holding"
-            var text = s.holding.sends(r) ? loc("map.autoSub", eurH(daily)) : loc("map.keptSub")
+            // v141.4: not baron there yet, it keeps its profit whatever the switch says
+            var text = s.sendsToHolding(r) ? loc("map.autoSub", eurH(daily)) : loc(s.isBaron(r) ? "map.keptSub" : "map.keptSubBaron")
             if let open = auto.issue { text += " " + loc("map.problemSub", open.kind.title) }
             return text
         case .closed:

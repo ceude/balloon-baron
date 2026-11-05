@@ -78,7 +78,7 @@ struct ReportView: View {
             }
             ledger(lg, cash: s?.cash ?? 0)
             if lg.holdingNet != 0, let s {
-                let names = s.parked.keys.filter(s.holding.sends).sorted { $0.rawValue < $1.rawValue }.map(\.title).joined(separator: ", ")
+                let names = s.parked.keys.filter(s.sendsToHolding).sorted { $0.rawValue < $1.rawValue }.map(\.title).joined(separator: ", ")
                 ProtoCallout(tone: .green, title: loc("report.holdTitle", eurH(lg.holdingNet)),
                              text: loc("report.holdBody", names, percent(s.holding.expenseRate), eurH(s.holding.cash)))
             }

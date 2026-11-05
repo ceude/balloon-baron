@@ -196,7 +196,8 @@ public struct Holding: Codable, Equatable, Sendable {
     /// v136: the day the next TV campaign can start in a region.
     public func tvReady(_ r: RegionID) -> Int { max(tv?[r]?.cooldown ?? 0, tvCooldown) }
 
-    /// v131: a parked region's autopilot profit goes to the holding each day.
+    /// v131: the region's "send the profit to the holding daily" switch. v141.4: what actually happens is
+    /// `GameState.sendsToHolding`, which also needs the region's baron title.
     public func sends(_ r: RegionID) -> Bool { !(keepIn ?? []).contains(r) }
 
     public func has(_ o: Office) -> Bool { offices[o] != nil }
@@ -625,11 +626,12 @@ extension Game {
     /// Autopilot income reaches the holding minus its own running costs. Returns the net.
     /// v131: a region set to keep its money gets the same net (after the holding's running costs, so keeping and moving
     /// by hand later is no way around them) in its own cash box and currency.
+    /// v141.4: so does a region whose baron title you have not won yet, whatever its switch says.
     mutating func holdingDay() -> Int {
         var gross = 0.0
         for (r, p) in state.parked {
             let day = p.auto.todayRaw * holdingBoost(r) * state.holding.officeMultiplier(r)
-            if state.holding.sends(r) {
+            if state.sendsToHolding(r) {
                 gross += day
             } else if var q = state.parked[r] {
                 let kept = jsRound(Double(jsRound(day)) * (1 - state.holding.expenseRate) * r.fx)

@@ -523,6 +523,10 @@ public struct GameState: Codable, Equatable, Sendable {
     }
 
     public func isBaron(_ r: RegionID? = nil) -> Bool { barons[r ?? region] != nil }
+    /// v141.4 (TestFlight): a region's autopilot profit goes to the holding each evening only once you're its baron and
+    /// while its switch (`Holding.sends`) is on. Before that it always stays in the region's own cash box, since that money
+    /// is what makes you baron there; the switch keeps whatever the player set and works once the title is won.
+    public func sendsToHolding(_ r: RegionID) -> Bool { isBaron(r) && holding.sends(r) }
     /// v117: the autopilot ("⏩ Advance", played by the app) opens with a big company: enough balloons here and
     /// Baron of Cappadocia.
     public var autopilotOK: Bool { insideBalloons.count >= Rules.autopilotBalloons && isBaron(.cap) }

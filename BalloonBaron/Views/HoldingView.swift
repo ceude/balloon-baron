@@ -271,10 +271,13 @@ struct HoldingView: View {
     /// stays in the region's cash box and a button moves it to the holding, leaving `Holding.withdrawKeep`.
     /// v134 (TestFlight): the region you're in has the switch too (it had none, so the choice looked lost after
     /// travelling). Nothing flows while you play there; the choice applies once it is parked on autopilot.
+    /// v141.4 (TestFlight): until you're the region's baron the switch is locked off with a note: its profit always stays
+    /// in its own cash box (the player's setting is kept and applies once the title is won).
     @ViewBuilder
     private func sendControls(_ r: RegionID, _ s: GameState, here: Bool) -> some View {
-        let on = s.holding.sends(r)
-        let note = here ? (on ? "holding.sendHereOn" : "holding.sendHereOff") : (on ? "holding.sendOn" : "holding.sendOff")
+        let locked = !s.isBaron(r)
+        let on = s.sendsToHolding(r)
+        let note = locked ? "holding.sendLocked" : here ? (on ? "holding.sendHereOn" : "holding.sendHereOff") : (on ? "holding.sendOn" : "holding.sendOff")
         Rectangle().fill(HoldingLux.border).frame(height: 1)
         Button {
             SoundEngine.shared.play(.click)
@@ -291,14 +294,26 @@ struct HoldingView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                SettingsSwitch(on: on)
+                if locked {
+                    HStack(spacing: 4) {
+                        Image(systemName: "lock.fill").font(.system(size: 11, weight: .bold))
+                        Text(loc("holding.sendLockedTag")).font(Theme.font(12, .bold))
+                    }
+                    .foregroundStyle(HoldingLux.sub)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 5)
+                    .background(Capsule().fill(HoldingLux.border.opacity(0.35)))
+                } else {
+                    SettingsSwitch(on: on)
+                }
             }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .disabled(locked)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(loc("holding.sendTitle"))
-        .accessibilityValue(loc(on ? "a11y.on" : "a11y.off"))
+        .accessibilityValue(loc(locked ? "holding.sendLockedTag" : on ? "a11y.on" : "a11y.off"))
         .accessibilityHint(loc(note))
         .accessibilityAddTraits(.isButton)
         if !on, !here, let cash = s.parked[r]?.state.cash {
@@ -330,7 +345,7 @@ struct HoldingView: View {
             // Today's delivery; right after parking, the expected amount instead.
             let expected = auto.base * game.holdingBoost(r) * game.state.holding.officeMultiplier(r)
             var text: String
-            if game.state.holding.sends(r) {
+            if game.state.sendsToHolding(r) {
                 text = loc("holding.autoSub", eurH(auto.today != 0 ? auto.today : Int(expected.rounded())))
             } else {
                 // v131: kept in the region: yesterday's net there (after the holding's running costs), in its money
