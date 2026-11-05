@@ -32,3 +32,6 @@ for r, h in INFLU.items():
 
 # Home: with nothing flying, the ticket card opens the flight plan; its action word says so.
 add("home.planGo", "Plan ›", "Plan ›", "Plan ›", "Plan ›", "プラン ›", "계획 ›")
+
+# Bristol: the weather widget says when the morning is foggy (the fog is rolled with the morning's weather).
+add("home.fog", "Foggy morning", "Sisli sabah", "Nebliger Morgen", "Mañana con niebla", "霧の朝", "안개 낀 아침")

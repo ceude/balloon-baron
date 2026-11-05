@@ -3335,7 +3335,7 @@ function dockOpen(v) {
 function renderHome() {
   if (!S.weather) return;
   const Wx = S.weather, F = FLAGS[Wx.flag];
-  $('wx').innerHTML = `<div class="wxh"><span class="flagmini" style="background:${F.col}"></span><div><div class="wxt">${F.name}${S.winter ? (S.region === 'mara' ? ', yağmurlar' : ', kış') : ''}</div><div class="wxs">Yerde rüzgâr ${Wx.surf} km/sa</div></div></div>` +
+  $('wx').innerHTML = `<div class="wxh"><span class="flagmini" style="background:${F.col}"></span><div><div class="wxt">${F.name}${S.winter ? (S.region === 'mara' ? ', yağmurlar' : ', kış') : ''}</div><div class="wxs">Yerde rüzgâr ${Wx.surf} km/sa</div>${Wx.fog ? '<div class="wxs" style="color:#bfe0ff;font-weight:600;opacity:1">Sisli sabah</div>' : ''}</div></div>` + /* v141.4 (TestFlight): Bristol's fog shows in the morning, so "fly on a foggy day" can be planned */
     [3, 2, 1, 0].map(i => { const v = Wx.layers[i], w = Math.min(44, Math.abs(v) / 10 * 44); return `<div class="lr"><span>${BANDS[i][0]}–${BANDS[i][1]} m</span><span class="lt"><i class="${v >= 0 ? 'r' : 'l'}" style="${v >= 0 ? 'left:50%' : 'right:50%'};width:${w}%"></i></span><b>${Math.round(Math.abs(v) * 3.6)}</b></div>`; }).join('');
   const al = $('alerts'); al.replaceChildren();
   const alert = (cls, html, on) => { const a = h(on ? 'button' : 'div', 'alert ' + cls, html); if (on) a.onclick = on; al.appendChild(a); };

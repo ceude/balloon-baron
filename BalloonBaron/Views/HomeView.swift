@@ -295,6 +295,15 @@ struct HomeView: View {
                         .opacity(0.75)
                         .lineLimit(1)
                         .minimumScaleFactor(0.7)
+                    // v141.4 (TestFlight): Bristol's morning fog is known before you fly, so the chapter's "fly on a foggy
+                    // day" can be planned rather than met by chance
+                    if w.fog != nil {
+                        Text(loc("home.fog"))
+                            .font(Theme.font(12, .semibold))
+                            .foregroundStyle(Color(hex: "#bfe0ff"))
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
                     if winter {
                         Text(loc(store.state?.region.rainy == true ? "home.rains" : "home.winter"))
                             .font(Theme.font(12, .semibold))
