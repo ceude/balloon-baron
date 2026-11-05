@@ -9662,13 +9662,14 @@ function autoRegions() {
   return Math.round(total * FX());
 }
 /* In the region you're in, the camera first goes to your office: pilots asking for a raise wave placards there.
-   The card comes up after a few seconds, once you've seen it. */
+   The card comes up as the glide (450 ms) settles. v141.4 (TestFlight): it waited 3.5 s, so the camera sat still on
+   the office for three seconds first. */
 function issueScene() {
   if (!S.issue) return;
   const at = [9.3, 13.6];
   /* the office sits in the top third, so it stays in view above the card that comes up from the bottom */
   if (mode === 'office' && HOME.h) { openTown(at); townFocus([at[0], at[1] + 1.2], 1.15, .3); TOWN.noLabels = true; TOWN.extra = S.issue.k === 'raise' ? strikers : null; $('tClose').classList.add('gone'); }
-  setTimeout(() => { if (S.issue && mode === 'office') showIssue(S.region); }, 3500);
+  setTimeout(() => { if (S.issue && mode === 'office') showIssue(S.region); }, 450);
 }
 function showIssue(id) {
   const live = id === S.region, rs = live ? null : S.regions[id], A = live ? (S.issue && { ...makeAuto(S, id), issue: S.issue }) : rs && rs.auto;

@@ -747,14 +747,18 @@ final class GameStore {
     }
 
     /// `issueScene`: the camera flies to your office (pilots asking for a raise wave placards there) and the
-    /// decision card comes up three and a half seconds later.
+    /// decision card comes up as the glide (0.65 s, `TownView.renderEvent`) settles.
+    /// v141.4 (TestFlight): it used to wait three and a half seconds, so the camera sat still on the office for nearly
+    /// three seconds before anything happened; the card's 0.25 s fade now starts just before the glide ends.
+    static let issueCardDelay = 0.5
+
     func showLiveIssue() {
         guard let g = game, g.liveIssue != nil else { return }
         let r = g.state.region
         page = nil
         collectScene.from = nil
         issueScene = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) { [self] in
+        DispatchQueue.main.asyncAfter(deadline: .now() + Self.issueCardDelay) { [self] in
             guard issueScene, game?.liveIssue != nil, game?.state.region == r else { issueScene = false; return }
             issueRegion = r
         }
