@@ -79383,37 +79383,37 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Zeigt das Tal der ganzen Welt"
+            "value": "Zeigt diesen Ort der ganzen Welt"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Shows the valley to the whole world"
+            "value": "Shows this place to the whole world"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Muestra el valle al mundo entero"
+            "value": "Muestra este lugar al mundo entero"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "谷を世界中に見せてくれる"
+            "value": "この土地を世界中に紹介してくれる"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "계곡을 온 세상에 보여 줍니다"
+            "value": "이곳을 온 세상에 알립니다"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Vadiyi bütün dünyaya gösterir"
+            "value": "Burayı bütün dünyaya tanıtır"
           }
         }
       }
@@ -109877,6 +109877,170 @@
           "stringUnit": {
             "state": "translated",
             "value": "Instagram'da @gezginayse'nin videosunu görüp geldik. Gerçekten anlattığı kadar güzeldi!"
+          }
+        }
+      }
+    },
+    "review.influencer.0.abq": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir kamen wegen des Instagram-Videos von @mesa.maddie. Es war wirklich so schön, wie sie erzählt hat!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We came after seeing @mesa.maddie's video on Instagram. It really was as beautiful as she said!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vinimos tras ver el vídeo de @mesa.maddie en Instagram. ¡Era tan bonito como contaba!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagramで@mesa.maddieの動画を見て来た。本当に言っていた通り素晴らしかった！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인스타그램에서 @mesa.maddie 영상을 보고 왔어요. 정말 말한 그대로 아름다웠어요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram'da @mesa.maddie hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!"
+          }
+        }
+      }
+    },
+    "review.influencer.0.bri": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir kamen wegen des Instagram-Videos von @harbourside.hattie. Es war wirklich so schön, wie sie erzählt hat!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We came after seeing @harbourside.hattie's video on Instagram. It really was as beautiful as she said!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vinimos tras ver el vídeo de @harbourside.hattie en Instagram. ¡Era tan bonito como contaba!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagramで@harbourside.hattieの動画を見て来た。本当に言っていた通り素晴らしかった！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인스타그램에서 @harbourside.hattie 영상을 보고 왔어요. 정말 말한 그대로 아름다웠어요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram'da @harbourside.hattie hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!"
+          }
+        }
+      }
+    },
+    "review.influencer.0.lux": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir kamen wegen des Instagram-Videos von @layla.on.the.nile. Es war wirklich so schön, wie sie erzählt hat!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We came after seeing @layla.on.the.nile's video on Instagram. It really was as beautiful as she said!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vinimos tras ver el vídeo de @layla.on.the.nile en Instagram. ¡Era tan bonito como contaba!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagramで@layla.on.the.nileの動画を見て来た。本当に言っていた通り素晴らしかった！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인스타그램에서 @layla.on.the.nile 영상을 보고 왔어요. 정말 말한 그대로 아름다웠어요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram'da @layla.on.the.nile hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!"
+          }
+        }
+      }
+    },
+    "review.influencer.0.mara": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Wir kamen wegen des Instagram-Videos von @savanna.amani. Es war wirklich so schön, wie sie erzählt hat!"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "We came after seeing @savanna.amani's video on Instagram. It really was as beautiful as she said!"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vinimos tras ver el vídeo de @savanna.amani en Instagram. ¡Era tan bonito como contaba!"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagramで@savanna.amaniの動画を見て来た。本当に言っていた通り素晴らしかった！"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "인스타그램에서 @savanna.amani 영상을 보고 왔어요. 정말 말한 그대로 아름다웠어요!"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instagram'da @savanna.amani hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!"
           }
         }
       }

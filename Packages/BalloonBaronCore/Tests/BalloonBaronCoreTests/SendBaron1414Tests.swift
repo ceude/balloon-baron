@@ -70,3 +70,14 @@ final class SendBaron1414Tests: XCTestCase {
         XCTAssertEqual(moved, 40_000 - Holding.withdrawKeep(.abq))
     }
 }
+
+/// v141.4 (TestFlight): reviews belong to their region.
+final class RegionReviews1414Tests: XCTestCase {
+    func testTheGoremeLocalOnlyWelcomes() {
+        var g = Game(company: "Test Air", colors: Rules.palettes[0], seed: 7)
+        let local = Review.reviewers.count - 1
+        XCTAssertEqual(Review.reviewers[local].country, "goreme")
+        for _ in 0..<400 { g.addReview(.influencer) }
+        XCTAssertFalse(g.state.reviews.contains { $0.kind != .welcome && $0.reviewer == local })
+    }
+}

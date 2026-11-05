@@ -15,3 +15,17 @@ add("map.keptSubBaron", "Your manager runs it: until you're baron here, the prof
     "La dirige tu gerente: hasta que seas barón aquí, el beneficio se queda en su propia caja.",
     "マネージャーが運営中：ここで男爵になるまで、利益は地域の金庫に残る。",
     "매니저가 운영 중: 이곳의 남작이 되기 전까지 수익은 지역 금고에 남아요.")
+
+# The influencer review named Cappadocia's @gezginayse in every region: each region has its own (fictional) handle.
+# Turkish avoids a suffix on the handle ("… hesabındaki videoyu").
+INFLU = {
+    "abq": "@mesa.maddie", "lux": "@layla.on.the.nile", "bri": "@harbourside.hattie", "mara": "@savanna.amani",
+}
+for r, h in INFLU.items():
+    add(f"review.influencer.0.{r}",
+        f"We came after seeing {h}'s video on Instagram. It really was as beautiful as she said!",
+        f"Instagram'da {h} hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!",
+        f"Wir kamen wegen des Instagram-Videos von {h}. Es war wirklich so schön, wie sie erzählt hat!",
+        f"Vinimos tras ver el vídeo de {h} en Instagram. ¡Era tan bonito como contaba!",
+        f"Instagramで{h}の動画を見て来た。本当に言っていた通り素晴らしかった！",
+        f"인스타그램에서 {h} 영상을 보고 왔어요. 정말 말한 그대로 아름다웠어요!")

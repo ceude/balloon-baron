@@ -75,7 +75,9 @@ public struct Review: Codable, Equatable, Sendable {
 extension Game {
     mutating func addReview(_ kind: Review.Kind, _ args: [String: String] = [:]) {
         let v = rng.int(kind.variants.count)
-        let r = Review(reviewer: rng.int(Review.reviewers.count), kind: kind, variant: v, stars: kind.variants[v], day: state.day, args: args)
+        // v141.4 (TestFlight): the last reviewer is the Göreme local who welcomes a new company in Cappadocia; random
+        // reviews come from the travellers only (as in the prototype), so no "Mehmet, Göreme" reviews a flight in Bristol.
+        let r = Review(reviewer: rng.int(Review.reviewers.count - 1), kind: kind, variant: v, stars: kind.variants[v], day: state.day, args: args)
         state.reviews.insert(r, at: 0)
         if state.reviews.count > 40 { state.reviews.removeLast(state.reviews.count - 40) }
     }

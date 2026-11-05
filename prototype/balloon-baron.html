@@ -3183,30 +3183,31 @@ const REV = {
   mud: [[2, 'Nehrin çamuruna indik. Manzara harikaydı ama ayakkabılarım orada kaldı.'], [2, 'Gelgit çekilmiş, balon çamura oturdu. Kahvaltıyı otelde yaptık, çamurlu.']],
   rival: [[5, 'Önce {r} ile uçacaktık, iyi ki fikrimizi değiştirmişiz. {c} harikaydı.'], [4, '{r} doluydu, {c} ile uçtuk. Hiç pişman değiliz.']]
 };
-/* Lines that name a place have their own version in Albuquerque and Luxor (same stars, same slot). */
+/* Lines that name a place have their own version in the other regions (same stars, same slot). v141.4 (TestFlight): so
+   does the influencer's handle, @gezginayse is Cappadocia's. */
 const REV_AT = {
   abq: { perfect: { 1: 'Sandia Dağları\'nda gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Kavak ağacına çarptık! Herkes iyi ama bu kabul edilemez.' },
     cheap: { 1: '{p} ödedim, Albuquerque\'nin en iyi fiyatı bu olabilir.' }, general: { 0: 'Albuquerque\'ye gelip balona binmemek olmaz. Bu ekip çok profesyonel.' },
     m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Bütün Rio Grande vadisi ayaklarımızın altındaydı.' },
     m_valley: { 0: 'Rio Grande\'nin üstünden süzüldük, suya dokunacak gibiydik!', 1: 'Nehrin üstünde alçak uçuş inanılmazdı, balıkçıllar hemen yanımızdan havalandı.' },
-    xl: { 2: 'Fiesta Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' } },
+    xl: { 2: 'Fiesta Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' }, influ: { 0: 'Instagram\'da @mesa.maddie hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!' } },
   lux: { perfect: { 1: 'Krallar Vadisi\'nde gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Hurma ağaçlarına çarptık! Herkes iyi ama bu kabul edilemez.' },
     cheap: { 1: '{p} ödedim, Luksor\'un en iyi fiyatı bu olabilir.' }, general: { 0: 'Luksor\'a gelip balona binmemek olmaz. Bu ekip çok profesyonel.' },
     m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Tapınaklar ve Nil ayaklarımızın altındaydı.' },
     m_valley: { 0: 'Nil\'in üstünden süzüldük, feluka yelkenlerine dokunacak gibiydik!', 1: 'Nil\'in üstünde alçak uçuş inanılmazdı, balıkçılar bize el salladı.' },
-    xl: { 2: 'Teb Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' } },
+    xl: { 2: 'Teb Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' }, influ: { 0: 'Instagram\'da @layla.on.the.nile hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!' } },
   /* v124 */
   bri: { perfect: { 1: 'Asma köprünün üstünde gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Meşe ağaçlarına çarptık! Herkes iyi ama bu kabul edilemez.' },
     cheap: { 1: '{p} ödedim, Bristol\'ün en iyi fiyatı bu olabilir.' }, general: { 0: 'Bristol\'e gelip balona binmemek olmaz. Bu ekip çok profesyonel.', 1: 'Sabah sisi kalkarken Clifton\'ın üstündeydik. Yağmur da yağmadı, şükür.' },
     m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Kanyon, liman ve Bristol Kanalı ayaklarımızın altındaydı.' },
     m_valley: { 0: 'Avon\'un üstünden süzüldük, köprünün kulelerine dokunacak gibiydik!', 1: 'Kanyonda alçak uçuş inanılmazdı, martılar hemen yanımızdan havalandı.' },
-    xl: { 2: 'Avon Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' } },
+    xl: { 2: 'Avon Yıldızı\'nı uzaktan görüp rezervasyon yaptık, pişman değiliz.' }, influ: { 0: 'Instagram\'da @harbourside.hattie hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!' } },
   /* v141 */
   mara: { perfect: { 1: 'Savanada gün doğumu, altımızda zürafalar ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Akasya ağacına çarptık! Herkes iyi ama bu kabul edilemez.' },
     cheap: { 1: '{p} ödedim, Mara\'nın en iyi fiyatı bu olabilir.' }, general: { 0: 'Mara\'ya gelip balon safarisine çıkmamak olmaz. Bu ekip çok profesyonel.', 1: 'Büyük Göç\'ü yukarıdan izledik: binlerce yaban öküzü nehre doğru akıyordu. Unutulmaz.' },
     m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Oloololo Sırtı\'ndan ufka kadar savana ayaklarımızın altındaydı.' },
     m_valley: { 0: 'Mara Nehri\'nin üstünden alçaktan süzüldük, su aygırları başlarını kaldırıp bize baktı!', 1: 'Nehrin üstünde alçak uçuş inanılmazdı; kıyıda bir timsah güneşleniyordu.' },
-    xl: { 2: 'Mara Yıldızı\'nı kamptan görüp rezervasyon yaptık, pişman değiliz.' } }
+    xl: { 2: 'Mara Yıldızı\'nı kamptan görüp rezervasyon yaptık, pişman değiliz.' }, influ: { 0: 'Instagram\'da @savanna.amani hesabındaki videoyu görüp geldik. Gerçekten anlattığı kadar güzeldi!' } }
 };
 function addReview(kind, vars) {
   const i = Math.floor(Math.random() * REV[kind].length), [stars, text0] = REV[kind][i], [n, c] = pick(REVIEWERS);
@@ -6594,7 +6595,7 @@ const GUIDE_NAMES = { cap: ['Ayşe', 'Sena', 'Ekin'], abq: ['Emily', 'Carlos', '
 const guideName = G => (GUIDE_NAMES[(S && S.region) || 'cap'] || GUIDE_NAMES.cap)[GUIDES_PICK.indexOf(G)] || G.n;
 const INFLU_PICK = [
   { id: 'local', n: 'Yerel gezgin', t: 'Küçük ama sadık takipçiler', k: .6, rep: .06, days: 2, pax: 5, cd: 8 },
-  { id: 'travel', n: 'Gezi influencer\'ı', t: 'Vadiyi bütün dünyaya gösterir', k: 1, rep: .1, days: 3, pax: 8, cd: 10 },
+  { id: 'travel', n: 'Gezi influencer\'ı', t: 'Burayı bütün dünyaya tanıtır', k: 1, rep: .1, days: 3, pax: 8, cd: 10 },
   { id: 'star', n: 'Ünlü gezgin', t: 'Milyonlarca takipçi, pahalı', k: 1.8, rep: .16, days: 4, pax: 12, cd: 12 }
 ];
 const influPrice = I => Math.round(influCost() * I.k / 100) * 100;

@@ -65,7 +65,7 @@ add("offers.wait", "Days until a new deal: %@", "Yeni anlaşmaya kalan gün: %@"
 add("influ.local.name", "Local traveller", "Yerel gezgin", "Lokale Reisende", "Viajera local", "地元の旅人", "동네 여행자")
 add("influ.local.title", "Small but loyal following", "Küçük ama sadık takipçiler", "Wenige, aber treue Follower", "Pocos seguidores, pero fieles", "少ないが熱心なフォロワー", "적지만 충성스러운 팔로워")
 add("influ.travel.name", "Travel influencer", "Gezi influencer'ı", "Reise-Influencer", "Influencer de viajes", "旅行インフルエンサー", "여행 인플루언서")
-add("influ.travel.title", "Shows the valley to the whole world", "Vadiyi bütün dünyaya gösterir", "Zeigt das Tal der ganzen Welt", "Muestra el valle al mundo entero", "谷を世界中に見せてくれる", "계곡을 온 세상에 보여 줍니다")
+add("influ.travel.title", "Shows this place to the whole world", "Burayı bütün dünyaya tanıtır", "Zeigt diesen Ort der ganzen Welt", "Muestra este lugar al mundo entero", "この土地を世界中に紹介してくれる", "이곳을 온 세상에 알립니다")
 add("influ.star.name", "Famous traveller", "Ünlü gezgin", "Berühmter Reisender", "Viajero famoso", "有名な旅人", "유명 여행자")
 add("influ.star.title", "Millions of followers, pricey", "Milyonlarca takipçi, pahalı", "Millionen Follower, teuer", "Millones de seguidores, caro", "フォロワー数百万、高額", "팔로워 수백만, 비쌈")
 add("agency.sub", "They fly with you and post about it; %@ every day of the campaign", "Seninle uçup paylaşırlar; kampanya boyunca her gün %@", "Sie fliegen mit dir und posten darüber; an jedem Kampagnentag %@", "Vuelan contigo y lo publican; %@ cada día de campaña", "一緒に飛んで発信してくれる。キャンペーン中は毎日%@", "함께 날고 소식을 올립니다. 캠페인 기간 매일 %@")
