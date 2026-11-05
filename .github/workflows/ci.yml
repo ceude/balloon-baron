@@ -1,7 +1,7 @@
 name: CI
 
 # Every push checks what the developer's Mac will see: the core's tests on Swift 5.9,
-# and the whole iOS app built with Xcode 15.2 (no signing). Errors go to the run's summary page.
+# and the whole iOS app built with the newest Xcode (GitHub retired the macOS 14 runners with Xcode 15.2 on 2026-11-02). Errors go to the run's summary page.
 on:
   push:
     branches: [main]
@@ -30,14 +30,14 @@ jobs:
           exit $status
 
   app:
-    runs-on: macos-14
+    runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
-      - name: Build the app with Xcode 15.2 for the simulator
+      - name: Build the app with the newest Xcode for the simulator
         shell: bash
         run: |
           set +e
-          sudo xcode-select -s /Applications/Xcode_15.2.app
+          X=$(ls -d /Applications/Xcode_26*.app 2>/dev/null | sort -V | tail -n 1); [ -z "$X" ] && X=$(ls -d /Applications/Xcode_*.app | sort -V | tail -n 1); sudo xcode-select -s "$X"
           xcodebuild build -project BalloonBaron.xcodeproj -scheme BalloonBaron \
             -destination 'generic/platform=iOS Simulator' CODE_SIGNING_ALLOWED=NO > build.log 2>&1
           status=$?
