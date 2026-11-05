@@ -49,7 +49,7 @@ FR = {
 "crew.f.all": "Tous",
 "crew.f.idle": "Sans ballon",
 "crew.f.school": "Formation maison",
-"crew.fireIdle": "Renvoyer ceux qui n’ont pas de ballon (%@)",
+"crew.fireIdle": "Renvoyer ceux sans ballon (%@)",
 "crew.row.repair": "%@ · en réparation",
 "crew.row.worn": "%@ · enveloppe hors d’usage",
 "crew.empty": "Aucun pilote dans ce filtre.",
@@ -113,7 +113,7 @@ FR = {
 "hez.noRivals": "Hier, tu avais le ciel rien que pour toi, mon enfant : aucun concurrent n’a volé. Pourtant, tes places ne se sont pas remplies, parce que les touristes surveillent leur porte-monnaie même sans concurrence : quand le prix grimpe trop, certains renoncent au ballon et préfèrent marcher dans la vallée. Regarde l’aiguille sur la carte des prix ; plus elle glisse vers « cher », plus ils sont nombreux à dire non. Une nacelle pleine rapporte souvent plus que le billet le plus cher.",
 "settings.night": "Scène de nuit",
 "settings.collect": "Animation d’embarquement",
-"skip.title": "Pas de vol aujourd’hui ?",
+"skip.title": "Rester au sol ?",
 "skip.lead": "Le temps est bon pour voler. Si tu fais l’impasse, pas de recettes de billets aujourd’hui, mais les salaires et l’entretien seront payés quand même.",
 "skip.fly": "Non, on vole",
 }

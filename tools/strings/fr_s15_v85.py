@@ -34,7 +34,7 @@ FR = {
 "building.hangar.3": "Réserve de tissu",
 "building.hangar.3.d": "L’entretien baisse de 30 % et les enveloppes s’usent 15 % moins vite.",
 "building.office": "Bureau des pilotes",
-"building.office.2": "Salle de repos des pilotes",
+"building.office.2": "Salle de repos",
 "building.office.2.d": "Deux fois moins de risques que tes concurrents te débauchent tes pilotes.",
 "building.office.3": "Simulateur de vol",
 "building.office.3.d": "Les pilotes gagnent de l’expérience 50 % plus vite.",

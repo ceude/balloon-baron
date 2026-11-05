@@ -58,7 +58,7 @@ FR = {
 "repWhy.prCap": "Manque de promotion (guides, hôtels)",
 "repWhy.absent": "Le fondateur n’a pas volé",
 "repWhy.influencer": "Publication d’influenceur",
-"tut.priceAgain": "Pas encore plus de passagers : touche − une fois de plus.",
+"tut.priceAgain": "Toujours pas plus de passagers : touche − encore une fois.",
 "tip.priceRep.short": "Hier, des places sont restées vides, mon enfant : pas à cause du prix, mais parce que tes étoiles dégringolent.",
 "hez.priceRep": "Hier, toutes les places n’ont pas été remplies, mon enfant, mais ton prix est correct. Le problème, c’est ta popularité : les accidents et les atterrissages brutaux ont fait chuter tes étoiles, et les touristes vont d’abord chez la compagnie la mieux notée. Les atterrissages en douceur, les missions réussies et les guides feront remonter tes étoiles. Baisser le prix n’aide qu’un peu.",
 "tip.priceRiv.short": "Hier, des places sont restées vides, mon enfant : il y avait plus de places dans le ciel que de touristes.",

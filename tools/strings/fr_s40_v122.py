@@ -20,7 +20,7 @@ FR = {
 "flight.toTarget": "VERS LA CIBLE",
 "price.paxUp": "Passagers : +%@",
 "tip.welcome.short": "Bienvenue, mon enfant ! Une seule chose à faire aujourd’hui : fixe ton prix, embarque les passagers, envole-toi.",
-"tip.insurance.short": "C’est ici que tu actives ou coupes l’assurance, maintenant, mon enfant ; un seul accident peut vider ta caisse en une matinée.",
+"tip.insurance.short": "Désormais, c’est ici que tu actives ou coupes l’assurance, mon enfant : un seul accident peut vider ta caisse en une matinée.",
 "tip.fleet.short": "Le hangar est ouvert, mon enfant : quand ta caisse le permettra, c’est ici que tu achèteras ton deuxième ballon.",
 "tip.bank.short": "La banque est ouverte : un prêt fait gagner du temps, mais les intérêts sont un ennemi patient, mon enfant.",
 "tip.crew.short": "Le bureau des pilotes est ouvert : chaque ballon a besoin d’un pilote, mon enfant.",

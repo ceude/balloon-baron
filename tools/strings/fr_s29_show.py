@@ -19,7 +19,7 @@ FR = {
 "bname.abydos": "Abydos",
 "bname.amun": "Amon",
 "bname.qurna": "Gournah",
-"fleet.row.youFly": "C’est toi qui pilotes",
+"fleet.row.youFly": "Piloté par toi",
 "fleetPage.nameBtn": "Nom : %@ · changer",
 "fleetPage.flyMyself": "Je le pilote",
 "rename.title": "Baptise ton ballon",

@@ -11916,7 +11916,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Salle de repos des pilotes"
+            "value": "Salle de repos"
           }
         },
         "ja": {
@@ -14689,7 +14689,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un mot de %@"
+            "value": "Un mot laissé par %@"
           }
         },
         "ja": {
@@ -19530,7 +19530,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Renvoyer ceux qui n’ont pas de ballon (%@)"
+            "value": "Renvoyer ceux sans ballon (%@)"
           }
         },
         "ja": {
@@ -25311,7 +25311,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Le groupe ira chez un concurrent"
+            "value": "Ira chez un concurrent"
           }
         },
         "ja": {
@@ -35181,7 +35181,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Peut aller voir ailleurs"
+            "value": "Risque de partir"
           }
         },
         "ja": {
@@ -51161,7 +51161,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "C’est toi qui pilotes"
+            "value": "Piloté par toi"
           }
         },
         "ja": {
@@ -51443,7 +51443,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uniquement avec les grandes nacelles."
+            "value": "Grandes nacelles uniquement."
           }
         },
         "ja": {
@@ -51490,7 +51490,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Uniquement avec les nacelles moyennes et grandes."
+            "value": "Nacelles moyennes et grandes uniquement."
           }
         },
         "ja": {
@@ -59386,7 +59386,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Aujourd’hui, tu pilotes toi-même le ballon %@."
+            "value": "Aujourd’hui, tu pilotes le ballon %@."
           }
         },
         "ja": {
@@ -82463,7 +82463,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ta compagnie est interdite de vol."
+            "value": "Interdiction de vol."
           }
         },
         "ja": {
@@ -85518,7 +85518,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Un pilote mène le ballon amiral"
+            "value": "Un pilote aux commandes du ballon amiral"
           }
         },
         "ja": {
@@ -85941,7 +85941,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Assurance appareil %@"
+            "value": "Assurance ballon %@"
           }
         },
         "ja": {
@@ -87586,7 +87586,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pas de vol aujourd’hui"
+            "value": "Rester au sol"
           }
         },
         "ja": {
@@ -90594,7 +90594,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pub télé à l’antenne · jours : %@"
+            "value": "Télé à l’antenne · jours : %@"
           }
         },
         "ja": {
@@ -93978,7 +93978,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Les pilotes veulent une augmentation"
+            "value": "Grogne des pilotes"
           }
         },
         "ja": {
@@ -95576,7 +95576,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Dédommagement des passagers"
+            "value": "Dédommagements"
           }
         },
         "ja": {
@@ -111556,7 +111556,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "%1$@ devient le prestataire privilégié de %2$@"
+            "value": "%2$@ : %1$@ devient son prestataire privilégié"
           }
         },
         "ja": {
@@ -116397,7 +116397,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bon rapport qualité-prix"
+            "value": "Bon prix"
           }
         },
         "ja": {
@@ -117431,7 +117431,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pas de vol aujourd’hui"
+            "value": "Rester au sol"
           }
         },
         "ja": {
@@ -117619,7 +117619,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu as raison, pas de vol aujourd’hui"
+            "value": "Tu as raison, je reste au sol"
           }
         },
         "ja": {
@@ -122742,7 +122742,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Resté au sol aujourd’hui"
+            "value": "Journée au sol"
           }
         },
         "ja": {
@@ -134116,7 +134116,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pas de vol aujourd’hui ?"
+            "value": "Rester au sol ?"
           }
         },
         "ja": {
@@ -138440,7 +138440,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "C’est ici que tu actives ou coupes l’assurance, maintenant, mon enfant ; un seul accident peut vider ta caisse en une matinée."
+            "value": "Désormais, c’est ici que tu actives ou coupes l’assurance, mon enfant : un seul accident peut vider ta caisse en une matinée."
           }
         },
         "ja": {
@@ -142858,7 +142858,7 @@
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pas encore plus de passagers : touche − une fois de plus."
+            "value": "Toujours pas plus de passagers : touche − encore une fois."
           }
         },
         "ja": {

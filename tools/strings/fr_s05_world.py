@@ -81,7 +81,7 @@ FR = {
 "celebrity.3": "Emre Kaan (footballeur)",
 "celebrity.4": "Ji-ho Park (star de la K-pop)",
 "celebrity.5": "Maya Collins (animatrice télé)",
-"issue.raise": "Les pilotes veulent une augmentation",
+"issue.raise": "Grogne des pilotes",
 "issue.raise.body": "Les pilotes réclament une augmentation, sinon ils ne voleront pas pendant trois jours.",
 "issue.raise.hez": "Pas de pilote, pas de vol, mon enfant. Une augmentation coûte généralement moins cher qu’une grève.",
 "issue.raise.a": "Accorder l’augmentation",

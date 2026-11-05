@@ -55,6 +55,6 @@ FR = {
 "red.risk": "Risque d’accident très élevé : jusqu’à %@ par ballon.",
 "red.reviews": "Les passagers écriront dans leurs avis que tu as enfreint les règles.",
 "red.sure": "Tu confirmes ?",
-"red.skip": "Pas de vol aujourd’hui",
+"red.skip": "Rester au sol",
 "red.fly": "Voler quand même",
 }
