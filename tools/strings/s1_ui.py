@@ -113,7 +113,7 @@ for k, v in {
     add("hotel." + k, *v)
 for k, v in {
  "carpet": ("Göreme Carpet House", "Göreme Halı Evi", "Göreme Teppichhaus", "Casa de Alfombras Göreme", "ギョレメ・カーペットハウス", "괴레메 카펫 하우스"),
- "wine": ("Cappadocia Vineyards", "Kapadokya Bağları", "Weingüter Kappadokien", "Viñedos de Capadocia", "カッパドキア・ワイナリー", "카파도키아 포도원"),
+ "wine": ("Cappadocia Vineyards", "Kapadokya Bağları", "Traubenhof Kappadokien", "Viñedos de Capadocia", "カッパドキア・ぶどう園", "카파도키아 포도원"),
  "bank": ("Peri Bank", "Peri Bankası", "Peri Bank", "Banco Peri", "ペリ銀行", "페리 은행"),
  "energy": ("Turbo Energy Drink", "Turbo Enerji İçeceği", "Turbo Energydrink", "Bebida energética Turbo", "ターボ・エナジードリンク", "터보 에너지 드링크"),
 }.items():

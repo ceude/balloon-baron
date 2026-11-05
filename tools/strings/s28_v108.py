@@ -40,6 +40,9 @@ add("deal.fleetRow", "%1$@ · seats: %2$@", "%1$@ · koltuk: %2$@", "%1$@ · Pl�
 # Reviews that name a place get their own lines in Albuquerque and Luxor: review.<kind>.<variant>.<region>
 RR = {
  "abq": {
+  "perfect.0": ("The pilot set us down in the middle of the field like a feather. Not even our coffee spilled!", "Pilot bizi tarlanın tam ortasına kuş tüyü gibi indirdi. Kahvemiz bile dökülmedi!",
+                "Der Pilot hat uns wie eine Feder mitten aufs Feld gesetzt. Nicht mal unser Kaffee ist übergeschwappt!", "El piloto nos posó en medio del campo como una pluma. ¡Ni siquiera se nos derramó el café!",
+                "パイロットは野原の真ん中に羽のように降ろしてくれた。コーヒーすら一滴もこぼれなかった！", "조종사가 깃털처럼 들판 한가운데 내려 줬어요. 커피 한 방울도 안 흘렸어요!"),
   "perfect.1": ("Sunrise over the Sandia Mountains and a flawless landing. The morning of my life.", "Sandia Dağları'nda gün doğumu ve kusursuz bir iniş. Hayatımın en güzel sabahıydı.",
                 "Sonnenaufgang über den Sandia Mountains und eine makellose Landung. Der Morgen meines Lebens.", "Amanecer sobre las montañas Sandia y un aterrizaje perfecto. La mañana de mi vida.",
                 "サンディア山脈の日の出と完璧な着陸。人生最高の朝。", "샌디아 산맥 위의 일출과 완벽한 착륙. 인생 최고의 아침이었어요."),

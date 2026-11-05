@@ -1121,7 +1121,7 @@ const dailyNet = () => { const h = (S.netHist || []).slice(-14).sort((a, b) => a
 const PALETTES = [['#ff5e3a', '#ffc23d'], ['#14a39a', '#e8fff9'], ['#2b2350', '#ffc23d'], ['#ff6fa8', '#fff0f6']];
 const SPONSORS = [
   { id: 'hali',   name: 'Göreme Halı Evi',      min: 'S', pay: 30,  rep: .002, hit: 'az',        col: '#8c2f39', fg: '#ffe9c7', txt: 'HALI EVİ' },
-  { id: 'sarap',  name: 'Kapadokya Bağları',    min: 'M', pay: 55,  rep: .004, hit: 'orta',      col: '#5b1f4a', fg: '#f7d6ea', txt: 'BAĞLAR' },
+  { id: 'sarap',  name: 'Kapadokya Bağları',    min: 'M', pay: 55,  rep: .004, hit: 'orta',      col: '#5b1f4a', fg: '#f7d6ea', txt: 'ÜZÜM SUYU' },
   { id: 'banka',  name: 'Peri Bankası',         min: 'M', pay: 90,  rep: .007, hit: 'yüksek',    col: '#0d5c8c', fg: '#ffffff', txt: 'PERİ BANK' },
   { id: 'enerji', name: 'Turbo Enerji İçeceği', min: 'L', pay: 150, rep: .013, hit: 'çok yüksek', col: '#c4f000', fg: '#1a1a1a', txt: 'TURBO!' }
 ];
@@ -1415,7 +1415,7 @@ const BOSS_LINES = {
     poach: 'Pilotunla bir kahve içtim, ona iyi bir teklif yaptım. Bu Amerika, evlat. Herkes en iyi teklife gider.',
     accident: 'Kutu rüzgârına yenildin, değil mi? Herkes bir kere yenilir. Ben iki kere yenildim, sonra Sandia\'yı kurdum.',
     deal: 'Tamam, kabul. Sezon kötü geçti. Sandia\'yı devralmak istersen konuşalım. Ama balonlarıma iyi bak, her biri bir hikâye.',
-    gone: 'Son balonumu da sattım. Albuquerque artık senin, evlat. Fiesta\'da bir bira ısmarlarsın.',
+    gone: 'Son balonumu da sattım. Albuquerque artık senin, evlat. Fiesta\'da bir kahve ısmarlarsın.',
     baron: 'Albuquerque Baronu ha? İki kıtada vadi. Şapkamı çıkarıyorum. Gerçekten çıkarıyorum, bak.'
   },
   lux: {
@@ -1436,11 +1436,11 @@ const BOSS_LINES = {
     ch1: 'Dört balonla kulübe girdiğini mi sanıyorsun? Benim hangarımda balonlar soyadıyla anılır. Sabah çayını bitirmeden filonu sayarım.',
     ch2: 'Festival yaklaşıyor. Bristol\'de herkes Clifton Crown\'un balonlarını görmeye gelir. Senin balonların da gökyüzünde olacak, kabul. Arka sıralarda.',
     passed: 'Dün benden fazla yolcu uçurmuşsun. Kulüpte konuşuluyor. Ben konuşmuyorum. Ama konuşuluyor.',
-    hotel: 'O otelin sahibiyle aynı okulda okuduk. Burada anlaşmalar öğle yemeğinde, kristal kadehle yapılır, sevgili dostum.',
+    hotel: 'O otelin sahibiyle aynı okulda okuduk. Burada anlaşmalar öğle yemeğinde, porselen tabaklar arasında yapılır, sevgili dostum.',
     poach: 'Pilotuna Clifton\'da bir daire ve kulübe üyelik teklif ettim. Centilmence bir teklif, kabul edersin.',
     accident: 'Bir koyun tarlasına mı indin, yoksa çamura mı? Bu kanyonda bir centilmen inişini seçer.',
     deal: 'Peki. Kabul etmeliyim, rüzgâr senden yana döndü. Clifton Crown\'u devralmak istersen avukatlarım hazır. Yalnız tacı logodan silme, rica ederim.',
-    gone: 'Son balonumu da sattım. Hangarı bir müzeye bağışlıyorum. Bristol artık senin. Festivalde bir kadeh kaldırırım, uzaktan.',
+    gone: 'Son balonumu da sattım. Hangarı bir müzeye bağışlıyorum. Bristol artık senin. Festivalde seni alkışlarım, uzaktan.',
     baron: 'Bristol Baronu. Büyük büyükbabam görse monoklü düşerdi. Ben düşürmüyorum, bak. Ama şapkamı çıkarıyorum. Hak ettin.'
   },
   /* v141: the Mara's old safari family */
@@ -3154,7 +3154,7 @@ document.addEventListener('pointerdown', e => { audioInit(); if (e.target.closes
 const REVIEWERS = [['Emily', 'Birleşik Krallık'], ['Kenji', 'Japonya'], ['Lucía', 'İspanya'], ['Mehmet', 'İstanbul'], ['Ji-woo', 'Güney Kore'], ['Ahmed', 'Mısır'],
   ['Olga', 'Polonya'], ['Marco', 'İtalya'], ['Priya', 'Hindistan'], ['Tom', 'ABD'], ['Chloé', 'Fransa'], ['Wei', 'Çin'], ['Ayşe', 'Ankara'], ['Lukas', 'Almanya'], ['Ana', 'Brezilya'], ['Noah', 'Hollanda']];
 const REV = {
-  perfect: [[5, 'Pilot bizi tarlanın tam ortasına kuş tüyü gibi indirdi. Şampanya bile dökülmedi!'], [5, 'Gün doğumu, peribacaları ve kusursuz bir iniş. Hayatımın sabahıydı.'], [5, 'Kaptan rüzgârı okuyor resmen. Kesinlikle tekrar uçarım.']],
+  perfect: [[5, 'Pilot bizi tarlanın tam ortasına kuş tüyü gibi indirdi. Çayımız bile dökülmedi!'], [5, 'Gün doğumu, peribacaları ve kusursuz bir iniş. Hayatımın sabahıydı.'], [5, 'Kaptan rüzgârı okuyor resmen. Kesinlikle tekrar uçarım.']],
   good: [[4, 'Manzara muhteşemdi, iniş biraz sarsıntılıydı ama sorun değil.'], [4, 'Ekip çok ilgiliydi, inişteki sıcak çikolata ikramı harikaydı.'], [5, 'Fotoğraflar inanılmaz çıktı, pilot en güzel açıları biliyordu.']],
   far: [[3, 'İnişten sonra bir tarlada bir saat araç bekledik. Manzara güzeldi ama…'], [2, 'Pilot nereye indiğimizi kendisi de bilmiyordu sanırım.']],
   hard: [[2, 'Sepet devrildi, dizim hâlâ ağrıyor. Bir daha düşünürüm.'], [1, 'İniş tam bir rodeo gibiydi. Hiç komik değil.']],
@@ -3186,7 +3186,7 @@ const REV = {
 /* Lines that name a place have their own version in the other regions (same stars, same slot). v141.4 (TestFlight): so
    does the influencer's handle, @gezginayse is Cappadocia's. */
 const REV_AT = {
-  abq: { perfect: { 1: 'Sandia Dağları\'nda gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Kavak ağacına çarptık! Herkes iyi ama bu kabul edilemez.' },
+  abq: { perfect: { 0: 'Pilot bizi tarlanın tam ortasına kuş tüyü gibi indirdi. Kahvemiz bile dökülmedi!', 1: 'Sandia Dağları\'nda gün doğumu ve kusursuz bir iniş. Hayatımın sabahıydı.' }, crash: { 0: 'Kavak ağacına çarptık! Herkes iyi ama bu kabul edilemez.' },
     cheap: { 1: '{p} ödedim, Albuquerque\'nin en iyi fiyatı bu olabilir.' }, general: { 0: 'Albuquerque\'ye gelip balona binmemek olmaz. Bu ekip çok profesyonel.' },
     m_panorama: { 0: 'Fotoğrafçımız 550 metreden çektiği kareye bayıldı. Bütün Rio Grande vadisi ayaklarımızın altındaydı.' },
     m_valley: { 0: 'Rio Grande\'nin üstünden süzüldük, suya dokunacak gibiydik!', 1: 'Nehrin üstünde alçak uçuş inanılmazdı, balıkçıllar hemen yanımızdan havalandı.' },
@@ -7768,7 +7768,7 @@ const REGION_DEF = {
     bnames: ['Sandia', 'Rio Grande', 'Corrales', 'Bernalillo', 'Placitas', 'Isleta', 'Jemez', 'Taos', 'Santa Fe', 'Mesa', 'Zuni', 'Acoma', 'Chama', 'Galisteo', 'Pecos', 'Cibola'],
     pnames: ['Jake', 'Emma', 'Luis', 'Sofia', 'Tyler', 'Grace', 'Diego', 'Hannah', 'Cody', 'Maya', 'Ryan', 'Ava', 'Miguel', 'Chloe', 'Ethan', 'Lily'],
     hotels: ['Old Town Adobe Inn', 'Los Poblanos Hacienda', 'Sandia Peak Lodge', 'Rio Grande Grand Resort'],
-    sponsors: [['Green Chile Co.', 'GREEN CHILE'], ['Rio Grande Winery', 'WINERY'], ['Turquoise Bank', 'TURQUOISE'], ['Route 66 Energy', 'ROUTE 66!']],
+    sponsors: [['Green Chile Co.', 'GREEN CHILE'], ['Rio Grande Orchards', 'ORCHARDS'], ['Turquoise Bank', 'TURQUOISE'], ['Route 66 Energy', 'ROUTE 66!']],
     valley: ['Rio Grande dokunuşu', 'Rio Grande nehrinin üstünde 150 m altına alçal, nehri selamla.']
   },
   lux: {
@@ -7785,7 +7785,7 @@ const REGION_DEF = {
     bnames: ['Clifton', 'Avon', 'Ashton', 'Severn', 'Redland', 'Cabot', 'Brandon', 'Leigh Woods', 'Kingsweston', 'Bedminster', 'Hotwells', 'Downs', 'Mendip', 'Cotham', 'Brunel', 'Portishead'],
     pnames: ['Oliver', 'Amelia', 'George', 'Isla', 'Harry', 'Poppy', 'Jack', 'Freya', 'Alfie', 'Evie', 'Charlie', 'Ruby', 'Archie', 'Florence', 'Thomas', 'Daisy'],
     hotels: ['Harbourside Inn', 'Clifton Terrace Hotel', 'Avon Gorge Lodge', 'Royal Crescent Grand'],
-    sponsors: [['Cider Press Co.', 'CIDER'], ['Severn Bank', 'SEVERN'], ['Harbour Tea Rooms', 'TEA ROOMS'], ['Westcountry Mobile', 'WESTCOUNTRY']],
+    sponsors: [['Apple Press Co.', 'APPLE PRESS'], ['Severn Bank', 'SEVERN'], ['Harbour Tea Rooms', 'TEA ROOMS'], ['Westcountry Mobile', 'WESTCOUNTRY']],
     valley: ['Avon dokunuşu', 'Avon nehrinin üstünde 150 m altına alçal, kanyonu selamla.']
   },
   /* v141: the Maasai Mara counts in dollars, like Albuquerque */
@@ -7836,7 +7836,7 @@ const BRI_RIVALS = [
 const ENTRANTS_BRI = [
   { name: 'Cotswold Air Holidays', style: 'safe', rich: true, balloons: ['L', 'L', 'L', 'M', 'M'], price: 215, rep: 1.15, cash: 95000, intro: 'Cotswold Air Holidays, Londra\'daki tur şirketlerinin parasıyla Bristol\'e geldi! Filosu büyük, kesesi derin. Sir Reginald\'dan sonra en tehlikelisi bu olabilir canım.' },
   { name: 'Cheap Skies Bristol', style: 'risky', balloons: ['M', 'M', 'S', 'S', 'S', 'S'], price: 130, rep: .9, cash: 35000, intro: 'Cheap Skies Bristol diye bir ucuzcu açıldı. Öğrencilere yarı fiyata bilet satacaklar, sisi de pek takmayacaklar.' },
-  { name: 'Royal Crescent Flights', style: 'mid', balloons: ['L', 'M', 'M'], price: 270, rep: 1.3, cash: 60000, intro: 'Royal Crescent Flights adında lüks bir butik şirket açıldı. Az balon, şampanyalı kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.' },
+  { name: 'Royal Crescent Flights', style: 'mid', balloons: ['L', 'M', 'M'], price: 270, rep: 1.3, cash: 60000, intro: 'Royal Crescent Flights adında lüks bir butik şirket açıldı. Az balon, gurme kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.' },
   { name: 'Mendip Balloon Co.', style: 'mid', balloons: ['L', 'M', 'M', 'M'], price: 190, rep: 1.05, cash: 50000, intro: 'Mendip tepelerinden bir aile şirketi Mendip Balloon Co.\'yu kurdu. Dengeli, sağlam, sabırlı bir rakip.' }
 ];
 /* v141: the Maasai Mara, the hardest market: an old safari family with the biggest fleet of all, a strong middle, a cheap
@@ -7849,7 +7849,7 @@ const MARA_RIVALS = [
 const ENTRANTS_MARA = [
   { name: 'Serengeti Crossing Balloons', style: 'safe', rich: true, balloons: ['L', 'L', 'L', 'L', 'M', 'M'], price: 235, rep: 1.18, cash: 110000, intro: 'Serengeti Crossing Balloons, Tanzanya\'dan sınırı geçip Mara\'ya geldi! Filosu büyük, kesesi derin. Oloololo Sky\'dan sonra en tehlikelisi bu olabilir dostum.' },
   { name: 'Budget Bush Flights', style: 'risky', balloons: ['M', 'M', 'S', 'S', 'S', 'S'], price: 140, rep: .9, cash: 35000, intro: 'Budget Bush Flights diye bir ucuzcu açıldı. Sırt çantalı gezginlere yarı fiyata bilet satacaklar; sürülere de pek dikkat etmeyecekler.' },
-  { name: 'Leopard Rock Luxury Flights', style: 'mid', balloons: ['L', 'M', 'M'], price: 300, rep: 1.32, cash: 70000, intro: 'Leopard Rock Luxury Flights adında lüks bir butik şirket açıldı. Az balon, inişte şampanyalı kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.' },
+  { name: 'Leopard Rock Luxury Flights', style: 'mid', balloons: ['L', 'M', 'M'], price: 300, rep: 1.32, cash: 70000, intro: 'Leopard Rock Luxury Flights adında lüks bir butik şirket açıldı. Az balon, inişte gurme kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.' },
   { name: 'Narok Highlands Balloons', style: 'mid', balloons: ['L', 'M', 'M', 'M'], price: 200, rep: 1.05, cash: 55000, intro: 'Narok\'tan bir aile şirketi Narok Highlands Balloons\'u kurdu. Dengeli, sağlam, sabırlı bir rakip.' }
 ];
 const ENTRANTS_LUX = [
@@ -12101,7 +12101,7 @@ function shopThumb(k) {
 }
 /* ---------- v124: Bristol's town ----------
    Honey Bath-stone walls and slate roofs come from TUFF_BY.bri and the roof functions; here the street furniture:
-   red telephone boxes and pillar boxes, a double-decker bus on each main road, the pub's hanging sign, puddles on the
+   red telephone boxes and pillar boxes, a double-decker bus on each main road, a hanging sign, puddles on the
    cobbles, copper beeches and oaks, sheep behind hedges at the edges, the harbour with its tall ship behind the town,
    and gulls overhead. */
 function copperBeech(x, y, s = 1) { roundTree(x, y, s * 1.05, '#7a2a3a'); ell(x + 6 * s, y - 22 * s, 9 * s, 8 * s, 'rgba(150,60,70,.45)'); }
@@ -12454,8 +12454,8 @@ function outerScenery(t) {
    home screen doesn't show (|gx − gy| ≥ OUT_CALM): the home view stays as calm as before, and you meet the valley when
    you drag or zoom out. Your own launch fields spill out of town as the fleet grows (one per OUT_PER balloons in the
    hangar beyond the town field's six, up to OUT_MAX), balloons inflate on them in a wave from each dawn and rise to join
-   the sky; chase crews drive out on dirt tracks to where a balloon comes down, it deflates and its passengers toast
-   (Cappadocia's champagne landing); orchards, vineyards, dovecotes, a sunrise hill with its crowd, an ATV tour and riders,
+   the sky; chase crews drive out on dirt tracks to where a balloon comes down, it deflates and its passengers celebrate
+   with juice (v141.5: no champagne, the App Store rating is 4+); orchards, vineyards, dovecotes, a sunrise hill with its crowd, an ATV tour and riders,
    rival fields far out; and each region's own land: the Nile's cane and palms with a felucca and a farmer by Luxor,
    hedged pastures with dry-stone walls and sheep by Bristol, mesas, scrub and an RV park that fills for the Fiesta by
    Albuquerque. The ground is drawn once into batched paths per layout; things off screen are skipped; at most
@@ -12464,7 +12464,7 @@ function outerScenery(t) {
    turned with the track, others lie back in loose clusters, with open land between. Only the fields in use this morning
    (about half) lay out envelopes, one at a time just before inflating, softened toward the ground; balloons wear your
    colours in a few variations mixed with the fleet's designs. Bigger chase van with a dust trail and a picnic table for
-   the toast; Albuquerque's mesas are layered, eroded rock; the headquarters lights fewer windows at night. */
+   the celebration; Albuquerque's mesas are layered, eroded rock; the headquarters lights fewer windows at night. */
 const OUT_CALM = 13.5, OUT_PER = 12, OUT_MAX = 24, OUT_BALLOONS = 60, OUT_USE = .55;
 const outFieldsN = () => clamp(Math.floor((inside().length - 6) / OUT_PER), 0, OUT_MAX);
 const outCrewsN = nf => Math.min(4, 1 + Math.floor(nf / 6));
@@ -12771,12 +12771,13 @@ function lyingEnvelopeAt(px, py, k, c1, c2, ang = 0) {
   ctx.fillStyle = '#8a5a30'; ctx.fillRect(len * .96, -.05, .09, .1); ctx.fillStyle = '#6a4220'; ctx.fillRect(len * .96 + .05, -.05, .04, .1);
   ctx.restore();
 }
-/* someone holding up a glass: the arm raised, a glint now and then. v135.1: drawn a quarter bigger out on the flanks */
+/* someone raising a cup of juice: the arm raised, a glint now and then. v135.1: drawn a quarter bigger out on the flanks.
+   v141.5: an orange-juice cup with a white rim, not a champagne glass (App Store 4+: no alcohol anywhere) */
 function toaster(x, y, col, t, ph, s = 1) {
   if (s !== 1) { ctx.save(); ctx.translate(x, y); ctx.scale(s, s); toaster(0, 0, col, t, ph); ctx.restore(); return; }
   person(x, y, col, 0, ph); const up = (Math.sin(t * 1.3 + ph) + 1) / 2;
   ctx.strokeStyle = col; ctx.lineWidth = 1.8; ctx.beginPath(); ctx.moveTo(x + 2.5, y - 11); ctx.lineTo(x + 5, y - 15 - up * 5); ctx.stroke();
-  ctx.fillStyle = '#fff2c0'; ctx.fillRect(x + 4, y - 19 - up * 5, 2.2, 3.4);
+  ctx.fillStyle = '#ff9a2e'; ctx.fillRect(x + 3.8, y - 19 - up * 5, 2.6, 3.2); ctx.fillStyle = '#ffffff'; ctx.fillRect(x + 3.8, y - 19 - up * 5, 2.6, .8);
   if ((t * .7 + ph) % 3 < .12) { ctx.fillStyle = 'rgba(255,255,255,.95)'; ctx.fillRect(x + 4.5, y - 23 - up * 5, 1.4, 1.4); ctx.fillRect(x + 7, y - 21 - up * 5, 1.4, 1.4); }
 }
 function quadBike(x, y, col, t, ph, dx) {
@@ -12906,7 +12907,7 @@ function outskirtsItems(t) {
       add(gx, gy, () => { const p = tiso(gx, gy); outBalloon(p[0], p[1] - alt, .93 * k, cc[0], cc[1], inf ? ph > .3 && (t * 3) % 1 < .5 : (t + i) % 3 < .4, ph > .9 ? (1 - ph) * 10 : 1); }, () => { const p = tiso(gx, gy); blobShadow(p[0] + 18, p[1] + 6, 22 * k, 7 * k, inf ? .16 : .08); });
     }
   });
-  /* the chase crews: out along their track to the landing spot beside it, a toast, and back */
+  /* the chase crews: out along their track to the landing spot beside it, a juice toast, and back */
   if (day) L.crews.slice(0, nc).forEach((K, ci) => {
     const P = 56, u = (T + ci * 14.5 + 9) % P, path = K.path, len = K.len;
     const ease = k => k < .5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
@@ -12921,12 +12922,12 @@ function outskirtsItems(t) {
     if (u > 2 && u < 13) { /* coming down beside the track, drifting in on the wind */
       const k = (u - 2) / 11, alt = 440 * Math.pow(1 - k, 1.7), drift = (1 - k) * 1.6;
       add(lx - drift, ly, () => { const p = tiso(lx - drift, ly); balloon(p[0], p[1] - alt, 30, cc[0], cc[1], (t * 2 + ci) % 2 < .25, 1, null, cc[2]); }, () => { const p = tiso(lx - drift, ly); blobShadow(p[0] + 18, p[1] + 6, 22 * (.5 + k * .5), 8 * (.5 + k * .5), .08 + k * .1); });
-    } else if (u >= 13 && u < 34) { /* down: the envelope tips over and sighs flat; the basket's people climb out and toast */
+    } else if (u >= 13 && u < 34) { /* down: the envelope tips over and sighs flat; the basket's people climb out and raise their juice */
       const k = u < 17 ? (u - 13) / 4 : 1, pk = u > 30 ? 1 - (u - 30) / 4 : 1, ex = lx + Math.cos(ea) * .5, ey = ly + Math.sin(ea) * .5;
       add(lx, ly, () => { const p = tiso(lx, ly); if (k < 1) balloon(p[0] + k * 26, p[1] + k * 4, 30 * (1 - k * .7), cc[0], cc[1], false, 1 - k); lyingEnvelope(ex, ey, k * pk, cc[0], cc[1], ea); }, null, lx + ly - .2);
       if (u > 15 && u < 33) {
         const tb = [lx - Math.cos(ea) * .42 + .1, ly - Math.sin(ea) * .42 + .25];
-        add(tb[0], tb[1], () => { const p = tiso(...tb); ctx.fillStyle = '#8a6a48'; ctx.fillRect(p[0] - 7, p[1] - 9, 1.6, 9); ctx.fillRect(p[0] + 6, p[1] - 9, 1.6, 9); ctx.fillStyle = '#fbf8f0'; ctx.fillRect(p[0] - 9, p[1] - 12, 18, 4); ctx.fillStyle = '#2e5a3a'; ctx.fillRect(p[0] - 2, p[1] - 20, 3.4, 8); ctx.fillStyle = '#e8c860'; ctx.fillRect(p[0] - 1.6, p[1] - 22, 2.6, 2.5); });
+        add(tb[0], tb[1], () => { const p = tiso(...tb); ctx.fillStyle = '#8a6a48'; ctx.fillRect(p[0] - 7, p[1] - 9, 1.6, 9); ctx.fillRect(p[0] + 6, p[1] - 9, 1.6, 9); ctx.fillStyle = '#fbf8f0'; ctx.fillRect(p[0] - 9, p[1] - 12, 18, 4); /* v141.5: a jug of orange juice and two paper cups */ ctx.fillStyle = '#e6f2f6'; ctx.fillRect(p[0] - 3, p[1] - 21, 6, 9); ctx.fillRect(p[0] + 3, p[1] - 19.5, 1.4, 5); ctx.fillRect(p[0] - 4, p[1] - 21, 1.6, 1.4); ctx.fillStyle = '#ff9a2e'; ctx.fillRect(p[0] - 2.4, p[1] - 18.5, 4.8, 6.3); ctx.fillStyle = '#ffffff'; ctx.fillRect(p[0] - 7.5, p[1] - 15, 2.4, 3); ctx.fillRect(p[0] + 5.5, p[1] - 15, 2.4, 3); });
         for (let i = 0; i < 5; i++) { const gx = tb[0] + .05 + (i % 3) * .26 - .3 + (i > 2 ? .12 : 0), gy = tb[1] + .3 + (i > 2 ? .22 : 0); add(gx, gy, () => { const p = tiso(gx, gy); toaster(p[0], p[1], ['#ff5e3a', '#5aa9e6', '#ffc23d', '#14a39a', '#2b2350'][i], t, i * 1.3, 1.25); }); }
       }
     }

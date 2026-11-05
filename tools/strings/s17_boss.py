@@ -137,12 +137,12 @@ add("boss.abq.deal",
  "わかった、認めるよ。今季は散々だった。サンディアを引き継ぎたいなら話そう。だが俺の気球は大事にしてくれ。どれも物語があるんだ。",
  "좋아, 인정하지. 시즌이 안 좋았어. 샌디아를 인수하고 싶다면 얘기해 보자고. 하지만 내 열기구들 잘 돌봐 줘. 하나하나가 이야기거든.")
 add("boss.abq.gone",
- "I sold my last balloon. Albuquerque is yours now, kid. Buy me a beer at the Fiesta.",
- "Son balonumu da sattım. Albuquerque artık senin, evlat. Fiesta'da bir bira ısmarlarsın.",
- "Ich habe meinen letzten Ballon verkauft. Albuquerque gehört jetzt dir, Kleiner. Auf der Fiesta schuldest du mir ein Bier.",
- "He vendido mi último globo. Albuquerque es tuya, chico. Me debes una cerveza en la Fiesta.",
- "最後の気球も売ったよ。アルバカーキはもうお前のものだ、新入り。フィエスタでビールをおごってくれ。",
- "마지막 열기구도 팔았어. 앨버커키는 이제 네 거야, 친구. 피에스타에서 맥주 한잔 사.")
+ "I sold my last balloon. Albuquerque is yours now, kid. Buy me a coffee at the Fiesta.",
+ "Son balonumu da sattım. Albuquerque artık senin, evlat. Fiesta'da bir kahve ısmarlarsın.",
+ "Ich habe meinen letzten Ballon verkauft. Albuquerque gehört jetzt dir, Kleiner. Auf der Fiesta schuldest du mir einen Kaffee.",
+ "He vendido mi último globo. Albuquerque es tuya, chico. Me debes un café en la Fiesta.",
+ "最後の気球も売ったよ。アルバカーキはもうお前のものだ、新入り。フィエスタでコーヒーをおごってくれ。",
+ "마지막 열기구도 팔았어. 앨버커키는 이제 네 거야, 친구. 피에스타에서 커피 한잔 사.")
 add("boss.abq.baron",
  "Baron of Albuquerque, huh? Valleys on two continents. I tip my hat to you. Look, I really am.",
  "Albuquerque Baronu ha? İki kıtada vadi. Şapkamı çıkarıyorum. Gerçekten çıkarıyorum, bak.",

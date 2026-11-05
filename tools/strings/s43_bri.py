@@ -31,7 +31,7 @@ add("regions.lockedBri", "Opens when you're baron of Luxor", "Luksor baronu olun
 # Local names
 for k, name in [("stone", "Harbourside Inn"), ("mansion", "Clifton Terrace Hotel"), ("cave", "Avon Gorge Lodge"), ("palace", "Royal Crescent Grand")]:
     add("bri.hotel." + k, name, name, name, name, name, name)
-for k, name in [("carpet", "Cider Press Co."), ("wine", "Severn Bank"), ("bank", "Harbour Tea Rooms"), ("energy", "Westcountry Mobile")]:
+for k, name in [("carpet", "Apple Press Co."), ("wine", "Severn Bank"), ("bank", "Harbour Tea Rooms"), ("energy", "Westcountry Mobile")]:
     add("bri.sponsor." + k, name, name, name, name, name, name)
 add("bri.mission.valley", "Touch of the Avon", "Avon dokunuşu", "Gruß an den Avon", "Toque del Avon", "エイボン・タッチ", "에이번 터치")
 add("bri.mission.desc.valley",
@@ -102,12 +102,12 @@ add("hez.entrant.cheapSkies",
  "チープ・スカイズ・ブリストルという格安業者が開業した。学生に半額でチケットを売るつもりで、霧なんてあまり気にしないらしい。",
  "칩 스카이즈 브리스톨이라는 저가 업체가 문을 열었어요. 학생들에게 반값에 표를 팔 거고, 안개는 별로 신경 쓰지 않을 거예요.")
 add("hez.entrant.royalCrescent",
- "A luxury boutique company called Royal Crescent Flights has opened. Few balloons, champagne breakfasts, very high prices. The rich tourists will go to them.",
- "Royal Crescent Flights adında lüks bir butik şirket açıldı. Az balon, şampanyalı kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.",
- "Ein Luxus-Boutiqueunternehmen namens Royal Crescent Flights hat eröffnet. Wenige Ballons, Champagnerfrühstück, sehr hohe Preise. Die reichen Touristen werden zu ihnen gehen.",
- "Ha abierto una empresa boutique de lujo llamada Royal Crescent Flights. Pocos globos, desayuno con champán, precios muy altos. Los turistas ricos irán con ellos.",
- "ロイヤル・クレセント・フライツという高級ブティック会社が開業した。気球は少なく、シャンパン付きの朝食、とても高い料金。裕福な観光客はそっちへ行くだろう。",
- "로열 크레센트 플라이츠라는 고급 부티크 회사가 문을 열었어요. 열기구는 적고, 샴페인 아침 식사에, 가격은 아주 비싸요. 부유한 관광객들은 그쪽으로 갈 거예요.")
+ "A luxury boutique company called Royal Crescent Flights has opened. Few balloons, gourmet breakfasts, very high prices. The rich tourists will go to them.",
+ "Royal Crescent Flights adında lüks bir butik şirket açıldı. Az balon, gurme kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.",
+ "Ein Luxus-Boutiqueunternehmen namens Royal Crescent Flights hat eröffnet. Wenige Ballons, Gourmetfrühstück, sehr hohe Preise. Die reichen Touristen werden zu ihnen gehen.",
+ "Ha abierto una empresa boutique de lujo llamada Royal Crescent Flights. Pocos globos, desayunos gourmet, precios muy altos. Los turistas ricos irán con ellos.",
+ "ロイヤル・クレセント・フライツという高級ブティック会社が開業した。気球は少なく、グルメな朝食、とても高い料金。裕福な観光客はそっちへ行くだろう。",
+ "로열 크레센트 플라이츠라는 고급 부티크 회사가 문을 열었어요. 열기구는 적고, 고급 조식에, 가격은 아주 비싸요. 부유한 관광객들은 그쪽으로 갈 거예요.")
 add("hez.entrant.mendip",
  "A family from the Mendip Hills has founded Mendip Balloon Co. A balanced, solid, patient rival.",
  "Mendip tepelerinden bir aile şirketi Mendip Balloon Co.'yu kurdu. Dengeli, sağlam, sabırlı bir rakip.",
@@ -149,12 +149,12 @@ add("boss.bri.passed",
  "昨日は私より多くの乗客を乗せたそうだね。クラブで噂になっている。私は口にしない。だが噂にはなっている。",
  "어제 자네가 나보다 승객을 더 태웠다더군. 클럽에서 말들이 많아. 나는 말하지 않네. 하지만 말들이 많지.")
 add("boss.bri.hotel",
- "That hotel's owner and I went to the same school. Here deals are made over lunch with crystal glasses, my dear fellow.",
- "O otelin sahibiyle aynı okulda okuduk. Burada anlaşmalar öğle yemeğinde, kristal kadehle yapılır, sevgili dostum.",
- "Der Besitzer dieses Hotels und ich waren auf derselben Schule. Hier werden Geschäfte beim Mittagessen mit Kristallgläsern gemacht, mein Lieber.",
- "El dueño de ese hotel y yo fuimos al mismo colegio. Aquí los tratos se cierran en el almuerzo, con copas de cristal, querido amigo.",
- "あのホテルのオーナーとは同じ学校の出でね。ここでは取引は昼食の席で、クリスタルのグラスを傾けて決まるのだよ、君。",
- "그 호텔 주인과 나는 같은 학교를 다녔다네. 이곳에선 거래가 점심 자리에서 크리스털 잔을 들고 이루어지지, 친애하는 친구.")
+ "That hotel's owner and I went to the same school. Here deals are made over lunch on fine china, my dear fellow.",
+ "O otelin sahibiyle aynı okulda okuduk. Burada anlaşmalar öğle yemeğinde, porselen tabaklar arasında yapılır, sevgili dostum.",
+ "Der Besitzer dieses Hotels und ich waren auf derselben Schule. Hier werden Geschäfte beim Mittagessen über feinem Porzellan gemacht, mein Lieber.",
+ "El dueño de ese hotel y yo fuimos al mismo colegio. Aquí los tratos se cierran en el almuerzo, sobre porcelana fina, querido amigo.",
+ "あのホテルのオーナーとは同じ学校の出でね。ここでは取引は昼食の席で、上等な磁器を前にして決まるのだよ、君。",
+ "그 호텔 주인과 나는 같은 학교를 다녔다네. 이곳에선 거래가 점심 자리에서 고급 도자기 그릇을 앞에 두고 이루어지지, 친애하는 친구.")
 add("boss.bri.poach",
  "I offered your pilot a flat in Clifton and a club membership. A gentlemanly offer; you'll accept it.",
  "Pilotuna Clifton'da bir daire ve kulübe üyelik teklif ettim. Centilmence bir teklif, kabul edersin.",
@@ -177,12 +177,12 @@ add("boss.bri.deal",
  "よろしい。風が君の側に回ったことは認めねばなるまい。クリフトン・クラウンを引き継ぎたいなら、私の弁護士がいつでも応じる。ただ、ロゴから王冠は消さないでくれたまえ。",
  "좋네. 바람이 자네 쪽으로 돌아섰다는 걸 인정해야겠군. 클리프턴 크라운을 인수하고 싶다면 내 변호사들이 준비돼 있네. 다만 로고에서 왕관만은 지우지 말아 주게.")
 add("boss.bri.gone",
- "I've sold my last balloon. I'm giving the hangar to a museum. Bristol is yours now. I'll raise a glass at the festival, from a distance.",
- "Son balonumu da sattım. Hangarı bir müzeye bağışlıyorum. Bristol artık senin. Festivalde bir kadeh kaldırırım, uzaktan.",
- "Ich habe meinen letzten Ballon verkauft. Den Hangar schenke ich einem Museum. Bristol gehört jetzt dir. Beim Festival erhebe ich ein Glas, aus der Ferne.",
- "He vendido mi último globo. Donaré el hangar a un museo. Bristol es tuyo ahora. En el festival alzaré una copa, desde lejos.",
- "最後の気球も売ったよ。格納庫は博物館に寄贈する。ブリストルはもう君のものだ。祭りでは遠くから杯を掲げよう。",
- "마지막 열기구도 팔았네. 격납고는 박물관에 기증하겠네. 이제 브리스톨은 자네 것이야. 축제 때 멀리서 잔을 들겠네.")
+ "I've sold my last balloon. I'm giving the hangar to a museum. Bristol is yours now. I'll applaud you at the festival, from a distance.",
+ "Son balonumu da sattım. Hangarı bir müzeye bağışlıyorum. Bristol artık senin. Festivalde seni alkışlarım, uzaktan.",
+ "Ich habe meinen letzten Ballon verkauft. Den Hangar schenke ich einem Museum. Bristol gehört jetzt dir. Beim Festival applaudiere ich dir, aus der Ferne.",
+ "He vendido mi último globo. Donaré el hangar a un museo. Bristol es tuyo ahora. En el festival te aplaudiré, desde lejos.",
+ "最後の気球も売ったよ。格納庫は博物館に寄贈する。ブリストルはもう君のものだ。祭りでは遠くから拍手を送ろう。",
+ "마지막 열기구도 팔았네. 격납고는 박물관에 기증하겠네. 이제 브리스톨은 자네 것이야. 축제 때 멀리서 박수를 보내겠네.")
 add("boss.bri.baron",
  "Baron of Bristol. My great-grandfather would have dropped his monocle. I'm not dropping mine, you see. But I take my hat off to you. You've earned it.",
  "Bristol Baronu. Büyük büyükbabam görse monoklü düşerdi. Ben düşürmüyorum, bak. Ama şapkamı çıkarıyorum. Hak ettin.",

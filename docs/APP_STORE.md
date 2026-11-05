@@ -86,6 +86,7 @@ Burada yazanlar senin hesabında yapılacaklar.
   - Türkçe iPhone seti `marketing/appstore/tr` içinde: 9 adet, 1290×2796, 6,7"/6,9" boyutu.
   - iPad seti (2048×2732) ve diğer diller, iPad düzeni bitince aynı araçla (`tools/appstore/panorama.js`) çıkacak.
 - **Yaş sınırı:** Bütün sorulara "Yok / None". Sonuç 4+. Simüle kumar yok; şiddet yok (kaza var ama grafik değil).
+  - **Alkol, Tütün veya Uyuşturucu Kullanımı ya da Göndermeleri (Alcohol, Tobacco, or Drug Use or References): Yok / None → 4+.** v141.5'te bütün göndermeler kaldırıldı: şampanyalı iniş kutlaması portakal suyuna döndü (sürahi ve karton bardaklar), şampanya / bira / şarap / elma şarabı geçen yorum, rakip ve sponsor metinleri altı dilde çay, kahve, gurme kahvaltı, üzüm suyu ve elma suyu oldu. Oyunda tütün ya da uyuşturucu hiç yok. Yeni metin eklerken bu kurala uy.
 - **Telif:** © 2026 (adın ya da şirket adın)
 
 ## 3. Uygulama içi satın almalar (Non-Consumable)

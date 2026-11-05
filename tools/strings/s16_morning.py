@@ -56,7 +56,7 @@ add("paper.night.shooting", "A shooting star was seen in the night", "Gece bir k
 add("paper.night.shooting.sub", "Early-rising balloon passengers say they saw it too.", "Erken kalkan balon yolcuları da gördüklerini söylüyor.", "Früh aufgestandene Ballonpassagiere sagen, sie hätten sie auch gesehen.", "Los pasajeros madrugadores dicen que también la vieron.", "早起きした気球の乗客も見たという。", "일찍 일어난 열기구 승객들도 봤다고 전했다.")
 
 # Festivals of Cappadocia
-add("festival.0", "Grape Harvest Festival", "Bağ Bozumu Festivali", "Weinlesefest", "Fiesta de la Vendimia", "ぶどう収穫祭", "포도 수확 축제")
+add("festival.0", "Grape Harvest Festival", "Bağ Bozumu Festivali", "Traubenerntefest", "Fiesta de la Vendimia", "ぶどう収穫祭", "포도 수확 축제")
 add("festival.1", "Holiday week", "Bayram tatili", "Feiertagswoche", "Semana de fiesta", "祝日の連休", "명절 연휴")
 add("festival.2", "Cappadocia Festival of Lights", "Kapadokya Işık Şenliği", "Lichterfest von Kappadokien", "Fiesta de las Luces de Capadocia", "カッパドキア光の祭典", "카파도키아 빛 축제")
 
@@ -89,13 +89,13 @@ add("paper.night.shooting", "A shooting star was seen in the night", "Gece bir k
 add("paper.night.shooting.sub", "Early-rising balloon passengers say they saw it too.", "Erken kalkan balon yolcuları da gördüklerini söylüyor.", "Früh aufgestandene Ballonpassagiere sagen, sie hätten sie auch gesehen.", "Los pasajeros madrugadores dicen que también la vieron.", "早起きした気球の乗客も見たという。", "일찍 일어난 열기구 승객들도 봤다고 전했다.")
 
 # Festivals of Cappadocia
-add("festival.0", "Grape Harvest Festival", "Bağ Bozumu Festivali", "Weinlesefest", "Fiesta de la Vendimia", "ぶどう収穫祭", "포도 수확 축제")
+add("festival.0", "Grape Harvest Festival", "Bağ Bozumu Festivali", "Traubenerntefest", "Fiesta de la Vendimia", "ぶどう収穫祭", "포도 수확 축제")
 add("festival.1", "Holiday week", "Bayram tatili", "Feiertagswoche", "Semana de fiesta", "祝日の連休", "명절 연휴")
 add("festival.2", "Cappadocia Festival of Lights", "Kapadokya Işık Şenliği", "Lichterfest von Kappadokien", "Fiesta de las Luces de Capadocia", "カッパドキア光の祭典", "카파도키아 빛 축제")
 add("hez.festival.0",
  "The Grape Harvest Festival has begun, kid! For four days the valley will be full of tourists. A special request comes every day, and the rewards are 50% higher. Put all your balloons up.",
  "Bağ Bozumu Festivali başladı evlat! Dört gün boyunca vadi turistle dolacak. Her gün özel bir istek gelecek, ödülleri de %50 fazla. Bütün balonlarını kaldır.",
- "Das Weinlesefest hat begonnen, Lehrling! Vier Tage lang wird das Tal voller Touristen sein. Jeden Tag kommt ein Sonderwunsch, und die Belohnungen sind 50 % höher. Bring alle Ballone in die Luft.",
+ "Das Traubenerntefest hat begonnen, Lehrling! Vier Tage lang wird das Tal voller Touristen sein. Jeden Tag kommt ein Sonderwunsch, und die Belohnungen sind 50 % höher. Bring alle Ballone in die Luft.",
  "¡Ha empezado la Fiesta de la Vendimia, aprendiz! Durante cuatro días el valle estará lleno de turistas. Cada día llegará un encargo especial, y las recompensas son un 50 % mayores. Sube todos tus globos.",
  "ぶどう収穫祭が始まったぞ、弟子よ！4日間、谷は観光客でいっぱいだ。毎日特別依頼が来て、報酬も50%増しだ。気球を全部飛ばすのだ。",
  "포도 수확 축제가 시작됐네, 제자여! 나흘 동안 계곡이 관광객으로 가득할 걸세. 매일 특별 요청이 오고 보상도 50% 더 많다네. 열기구를 모두 띄우게.")

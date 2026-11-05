@@ -7,7 +7,7 @@ import BalloonBaronCore
 // screen doesn't show (|gx − gy| ≥ `Outskirts.calm`): farm tracks meander out from the main roads, plots along them;
 // the nearest become launch fields as the fleet grows, the rest carry each region's own land. The fields in use this
 // morning lay out envelopes one at a time from dawn, inflate them and send them up; chase crews drive out to landings
-// beside their track and toast. The layout (core `OutskirtsLayout`) and its ground are built once and cached; things off
+// beside their track and celebrate with juice (v141.5: no champagne, the App Store rating is 4+). The layout (core `OutskirtsLayout`) and its ground are built once and cached; things off
 // screen are skipped and at most `Outskirts.maxBalloons` balloons are drawn.
 
 /// The outskirts' layouts and ground, built once (per region; the ground per field count, winter and Fiesta) in world
@@ -324,7 +324,8 @@ extension TownPainter {
         g.fill(Path(CGRect(x: len * 0.96 + 0.05, y: -0.05, width: 0.04, height: 0.1)), with: .color(hex("#6a4220")))
     }
 
-    /// Someone holding up a glass: the arm raised, a glint now and then; s scales the figure.
+    /// Someone raising a cup of juice: the arm raised, a glint now and then; s scales the figure.
+    /// v141.5: an orange-juice cup with a white rim, not a champagne glass.
     mutating func toaster(_ x: CGFloat, _ y: CGFloat, _ col: String, _ tt: Double, _ ph: Double, _ sc: CGFloat = 1) {
         if sc != 1 {
             let keep = c
@@ -336,7 +337,7 @@ extension TownPainter {
         person(x, y, col, 0, ph)
         let up = CGFloat((sin(tt * 1.3 + ph) + 1) / 2)
         line(pt(x + 2.5, y - 11), pt(x + 5, y - 15 - up * 5), hex(col), 1.8)
-        rect(x + 4, y - 19 - up * 5, 2.2, 3.4, hex("#fff2c0"))
+        rect(x + 3.8, y - 19 - up * 5, 2.6, 3.2, hex("#ff9a2e")); rect(x + 3.8, y - 19 - up * 5, 2.6, 0.8, Color.white)
         if (tt * 0.7 + ph).truncatingRemainder(dividingBy: 3) < 0.12 {
             rect(x + 4.5, y - 23 - up * 5, 1.4, 1.4, Color.white.opacity(0.95)); rect(x + 7, y - 21 - up * 5, 1.4, 1.4, Color.white.opacity(0.95))
         }
@@ -556,7 +557,7 @@ extension TownPainter {
                     }
                 }
             }
-            // the chase crews: out along their track to the landing spot, a toast, and back
+            // the chase crews: out along their track to the landing spot, a juice toast, and back
             for (ci, K) in L.crews.prefix(nc).enumerated() {
                 let P = 56.0, u = (tt + Double(ci) * 14.5 + 9).truncatingRemainder(dividingBy: P), path = K.path, len = K.len
                 func ease(_ k: Double) -> Double { k < 0.5 ? 2 * k * k : 1 - pow(-2 * k + 2, 2) / 2 }
@@ -582,7 +583,7 @@ extension TownPainter {
                         let q = TownGeo.iso(lx - drift, ly), f = CGFloat(0.5 + k * 0.5)
                         p.blobShadow(q.x + 18, q.y + 6, 22 * f, 8 * f, 0.08 + k * 0.1)
                     }) { p in let q = TownGeo.iso(lx - drift, ly); p.balloon(q.x, q.y - alt, 30, cc.0, burn: burn, design: cc.1) }
-                } else if u >= 13 && u < 34 { // down: the envelope tips over and sighs flat; the passengers toast
+                } else if u >= 13 && u < 34 { // down: the envelope tips over and sighs flat; the passengers raise their juice
                     let k = u < 17 ? (u - 13) / 4 : 1, pk = u > 30 ? 1 - (u - 30) / 4 : 1, ex = lx + cos(ea) * 0.5, ey = ly + sin(ea) * 0.5
                     add(lx, ly, depth: lx + ly - 0.2) { p in
                         let q = TownGeo.iso(lx, ly), kk = CGFloat(k)
@@ -591,11 +592,14 @@ extension TownPainter {
                     }
                     if u > 15 && u < 33 {
                         let tb = (lx - cos(ea) * 0.42 + 0.1, ly - sin(ea) * 0.42 + 0.25)
-                        add(tb.0, tb.1) { p in // a folding table with a white cloth and the bottle
+                        add(tb.0, tb.1) { p in // a folding table with a white cloth, a jug of orange juice and two paper cups (v141.5)
                             let q = TownGeo.iso(tb.0, tb.1)
                             p.rect(q.x - 7, q.y - 9, 1.6, 9, p.hex("#8a6a48")); p.rect(q.x + 6, q.y - 9, 1.6, 9, p.hex("#8a6a48"))
                             p.rect(q.x - 9, q.y - 12, 18, 4, p.hex("#fbf8f0"))
-                            p.rect(q.x - 2, q.y - 20, 3.4, 8, p.hex("#2e5a3a")); p.rect(q.x - 1.6, q.y - 22, 2.6, 2.5, p.hex("#e8c860"))
+                            let jug = p.hex("#e6f2f6")
+                            p.rect(q.x - 3, q.y - 21, 6, 9, jug); p.rect(q.x + 3, q.y - 19.5, 1.4, 5, jug); p.rect(q.x - 4, q.y - 21, 1.6, 1.4, jug)
+                            p.rect(q.x - 2.4, q.y - 18.5, 4.8, 6.3, p.hex("#ff9a2e"))
+                            p.rect(q.x - 7.5, q.y - 15, 2.4, 3, Color.white); p.rect(q.x + 5.5, q.y - 15, 2.4, 3, Color.white)
                         }
                         let shirts = ["#ff5e3a", "#5aa9e6", "#ffc23d", "#14a39a", "#2b2350"]
                         for i in 0..<5 {

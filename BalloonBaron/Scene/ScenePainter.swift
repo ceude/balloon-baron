@@ -162,10 +162,10 @@ enum ScenePainter {
         let i = Sponsor.allCases.firstIndex(of: sp) ?? 0
         let texts: [String]
         switch region {
-        case .cap: texts = ["HALI EVİ", "BAĞLAR", "PERİ BANK", "TURBO!"]
-        case .abq: texts = ["GREEN CHILE", "WINERY", "TURQUOISE", "ROUTE 66!"]
+        case .cap: texts = ["HALI EVİ", "ÜZÜM SUYU", "PERİ BANK", "TURBO!"]
+        case .abq: texts = ["GREEN CHILE", "ORCHARDS", "TURQUOISE", "ROUTE 66!"]
         case .lux: texts = ["KARKADE", "PAPYRUS", "NILE CRUISE", "SCARAB"]
-        case .bri: texts = ["CIDER", "SEVERN", "TEA ROOMS", "WESTCOUNTRY"]
+        case .bri: texts = ["APPLE PRESS", "SEVERN", "TEA ROOMS", "WESTCOUNTRY"]
         case .mara: texts = ["KAHAWA", "SAVANNA", "KERICHO TEA", "TWIGA"]
         }
         return texts[min(i, texts.count - 1)]

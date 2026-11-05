@@ -16,7 +16,7 @@ add("map.soon", "Coming soon", "Yakında", "Demnächst", "Próximamente", "近�
 # Albuquerque's own names
 for k, name in [("stone", "Old Town Adobe Inn"), ("mansion", "Los Poblanos Hacienda"), ("cave", "Sandia Peak Lodge"), ("palace", "Rio Grande Grand Resort")]:
     add("abq.hotel." + k, name, name, name, name, name, name)
-for k, name in [("carpet", "Green Chile Co."), ("wine", "Rio Grande Winery"), ("bank", "Turquoise Bank"), ("energy", "Route 66 Energy")]:
+for k, name in [("carpet", "Green Chile Co."), ("wine", "Rio Grande Orchards"), ("bank", "Turquoise Bank"), ("energy", "Route 66 Energy")]:
     add("abq.sponsor." + k, name, name, name, name, name, name)
 add("abq.mission.valley", "Rio Grande touch", "Rio Grande dokunuşu", "Gruß an den Rio Grande", "Toque del Río Grande", "リオグランデ・タッチ", "리오그란데 터치")
 add("abq.mission.desc.valley",

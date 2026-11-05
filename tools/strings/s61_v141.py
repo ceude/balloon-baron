@@ -110,12 +110,12 @@ add("hez.entrant.budgetBush",
     "バジェット・ブッシュ・フライツという格安業者が開業した。バックパッカーに半額でチケットを売るそうだ。群れにはあまり気を配らないだろう。",
     "버짓 부시 플라이츠라는 저가 업체가 문을 열었네. 배낭여행객에게 반값에 표를 팔 거고, 동물 무리에는 별로 신경 쓰지 않을 걸세.")
 add("hez.entrant.leopardRock",
-    "A luxury boutique company called Leopard Rock Luxury Flights has opened. Few balloons, a champagne breakfast after landing, very high prices. The rich tourists will go to them.",
-    "Leopard Rock Luxury Flights adında lüks bir butik şirket açıldı. Az balon, inişte şampanyalı kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.",
-    "Eine Luxus-Boutiquefirma namens Leopard Rock Luxury Flights hat eröffnet. Wenige Ballons, Champagnerfrühstück nach der Landung, sehr hohe Preise. Die reichen Touristen gehen zu ihnen.",
-    "Ha abierto una empresa boutique de lujo llamada Leopard Rock Luxury Flights. Pocos globos, desayuno con champán al aterrizar y precios altísimos. Los turistas ricos irán con ellos.",
-    "レパード・ロック・ラグジュアリー・フライツという高級ブティック会社が開業した。気球は少なく、着陸後にはシャンパンの朝食、値段はとても高い。裕福な観光客はそちらへ行くだろう。",
-    "레퍼드 록 럭셔리 플라이츠라는 고급 부티크 회사가 문을 열었네. 열기구는 적고, 착륙 후엔 샴페인 아침 식사, 가격은 아주 비싸지. 부유한 관광객은 그쪽으로 갈 걸세.")
+    "A luxury boutique company called Leopard Rock Luxury Flights has opened. Few balloons, a gourmet breakfast after landing, very high prices. The rich tourists will go to them.",
+    "Leopard Rock Luxury Flights adında lüks bir butik şirket açıldı. Az balon, inişte gurme kahvaltı, çok yüksek fiyat. Zengin turistler onlara gidecek.",
+    "Eine Luxus-Boutiquefirma namens Leopard Rock Luxury Flights hat eröffnet. Wenige Ballons, Gourmetfrühstück nach der Landung, sehr hohe Preise. Die reichen Touristen gehen zu ihnen.",
+    "Ha abierto una empresa boutique de lujo llamada Leopard Rock Luxury Flights. Pocos globos, desayuno gourmet al aterrizar y precios altísimos. Los turistas ricos irán con ellos.",
+    "レパード・ロック・ラグジュアリー・フライツという高級ブティック会社が開業した。気球は少なく、着陸後にはグルメな朝食、値段はとても高い。裕福な観光客はそちらへ行くだろう。",
+    "레퍼드 록 럭셔리 플라이츠라는 고급 부티크 회사가 문을 열었네. 열기구는 적고, 착륙 후엔 고급 조식, 가격은 아주 비싸지. 부유한 관광객은 그쪽으로 갈 걸세.")
 add("hez.entrant.narokHighlands",
     "A family from Narok has founded Narok Highlands Balloons. A balanced, solid, patient rival.",
     "Narok'tan bir aile şirketi Narok Highlands Balloons'u kurdu. Dengeli, sağlam, sabırlı bir rakip.",
