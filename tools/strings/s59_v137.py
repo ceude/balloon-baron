@@ -36,12 +36,12 @@ add("hez.allOffices",
     "オフィスが4つになったぞ、弟子よ！もう本物の世界企業だ。共通経費が減り、ホールディングスの経費は20%になった。6つすべて開けば15%だ。",
     "사무소가 네 곳이 되었네, 제자여! 이제 진짜 세계적인 회사일세. 공통 비용이 줄어 지주회사 비용이 20%로 내려갔다네. 여섯 곳을 모두 열면 15%가 되지.")
 add("hez.sixOffices",
-    "All six offices are open, kid! From Istanbul to Paris, from Dubai to Tokyo... Holding expenses are down to 15%. Pick the city for your morning coffee.",
-    "Altı ofisin de açık evlat! İstanbul'dan Paris'e, Dubai'den Tokyo'ya... Holding giderlerin %15'e indi. Sabah kahveni hangi şehirde içeceğini sen seç.",
-    "Alle sechs Büros sind offen, Lehrling! Von Istanbul bis Paris, von Dubai bis Tokio … Die Holding-Ausgaben liegen nur noch bei 15 %. Such dir die Stadt für deinen Morgenkaffee aus.",
-    "¡Las seis oficinas están abiertas, aprendiz! De Estambul a París, de Dubái a Tokio... Los gastos del holding bajaron al 15 %. Elige en qué ciudad tomas el café de la mañana.",
-    "6つのオフィスがすべて開いたぞ、弟子よ！イスタンブールからパリ、ドバイから東京まで……ホールディングスの経費は15%になった。朝のコーヒーはどの街で飲むか選ぶといい。",
-    "여섯 사무소가 모두 문을 열었네, 제자여! 이스탄불에서 파리까지, 두바이에서 도쿄까지... 지주회사 비용이 15%로 내려갔다네. 아침 커피는 어느 도시에서 마실지 골라 보게.")
+    "All six offices are open, kid! From Istanbul to London, from Dubai to Tokyo... Holding expenses are down to 15%. Pick the city for your morning coffee.",
+    "Altı ofisin de açık evlat! İstanbul'dan Londra'ya, Dubai'den Tokyo'ya... Holding giderlerin %15'e indi. Sabah kahveni hangi şehirde içeceğini sen seç.",
+    "Alle sechs Büros sind offen, Lehrling! Von Istanbul bis London, von Dubai bis Tokio … Die Holding-Ausgaben liegen nur noch bei 15 %. Such dir die Stadt für deinen Morgenkaffee aus.",
+    "¡Las seis oficinas están abiertas, aprendiz! De Estambul a Londres, de Dubái a Tokio... Los gastos del holding bajaron al 15 %. Elige en qué ciudad tomas el café de la mañana.",
+    "6つのオフィスがすべて開いたぞ、弟子よ！イスタンブールからロンドン、ドバイから東京まで……ホールディングスの経費は15%になった。朝のコーヒーはどの街で飲むか選ぶといい。",
+    "여섯 사무소가 모두 문을 열었네, 제자여! 이스탄불에서 런던까지, 두바이에서 도쿄까지... 지주회사 비용이 15%로 내려갔다네. 아침 커피는 어느 도시에서 마실지 골라 보게.")
 
 # Holding goals (developer): six offices, all four R&D levels
 add("hgoal.offices", "Six world offices", "Altı dünya ofisi", "Sechs Büros weltweit", "Seis oficinas en el mundo", "世界6都市のオフィス", "세계 6개 도시 사무소")

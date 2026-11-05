@@ -4,7 +4,7 @@ FR = {
 "holding.officesRule": "Ouvre des bureaux dans les grandes villes du monde ; chacun apporte son avantage. Avec quatre bureaux ouverts, quels qu’ils soient, les charges de la holding passent de %1$@ à %2$@ ; avec les six, à %3$@.",
 "holding.officesFour": "Bureaux ouverts : %1$@. Les charges de la holding sont de %2$@ au lieu de %3$@ ; avec les six ouverts, elles tombent à %4$@.",
 "holding.officesSix": "Tu as des bureaux dans six grandes villes. Les charges de la holding sont de %1$@ au lieu de %2$@.",
-"hez.sixOffices": "Les six bureaux sont ouverts, mon enfant ! D’Istanbul à Paris, de Dubaï à Tokyo… Les charges de la holding sont descendues à 15 %. Choisis la ville où tu prendras ton café du matin.",
+"hez.sixOffices": "Les six bureaux sont ouverts, mon enfant ! D’Istanbul à Londres, de Dubaï à Tokyo… Les charges de la holding sont descendues à 15 %. Choisis la ville où tu prendras ton café du matin.",
 "hgoal.officesNow": "Bureaux : %1$@/%2$@",
 "hgoal.researchNow": "R&D : %1$@/%2$@",
 "hq.s.research": "R&D : %1$@/%2$@",
