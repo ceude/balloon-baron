@@ -1,4 +1,4 @@
-# key: (en, tr, de, es, ja, ko)
+# key: (en, tr, de, es, ja, ko). French is in fr_*.py (FR = {key: text}), merged by build.py.
 S = {}
 def add(key, en, tr, de, es, ja, ko):
     S[key] = dict(en=en, tr=tr, de=de, es=es, ja=ja, ko=ko)

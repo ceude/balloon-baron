@@ -498,6 +498,7 @@
 				es,
 				ja,
 				ko,
+				fr,
 			);
 			mainGroup = FAD58DE7366495DB4650CFEF;
 			productRefGroup = 86024CAD1E83101D97359D73 /* Products */;

@@ -227,6 +227,7 @@ put("PBXProject", PROJECT, f"""{{
 \t\t\t\tes,
 \t\t\t\tja,
 \t\t\t\tko,
+\t\t\t\tfr,
 \t\t\t);
 \t\t\tmainGroup = {MAIN};
 \t\t\tproductRefGroup = {PRODUCTS} /* Products */;

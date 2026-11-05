@@ -15,5 +15,5 @@ Prototip yeni hesapta `claude.ai/artifact/9LyVDNN1dngsGGydyFuNYt` adresinde (v11
 - **GitHub Actions (`.github/workflows/ci.yml`):** `main`'e her gönderide çekirdek testleri Swift 5.9 ile çalışır ve uygulamanın tamamı macOS'ta Xcode 15.2 (15C500b) ile simülatör için derlenir. Sonuç, hatalar ve uyarılar çalışmanın özet sayfasında yazar (Actions sekmesi). Geliştiricinin Mac'iyle aynı Xcode olduğu için burada derlenen Mac'te de derlenir.
 - Çekirdek (yerelde): `tools/install-swift-linux.sh && export PATH=/opt/swift/usr/bin:$PATH && cd Packages/BalloonBaronCore && swift test`
 - Prototip: Playwright ile (`NODE_PATH=$(npm root -g) node test.js`), Chromium hazır.
-- Metinler: `python3 tools/strings/build.py` (altı dil, yer tutucu kontrolü). Windows'ta da çalışır.
+- Metinler: `python3 tools/strings/build.py` (yedi dil, yer tutucu kontrolü). Windows'ta da çalışır.
 - Dosya ekleyip çıkarınca: `python3 tools/gen_xcodeproj.py` (Windows'ta da aynı çıktıyı verir).
