@@ -2772,7 +2772,7 @@ const YESNO = ['ctrPref', 'workshop', 'fabBuilt', 'school', 'xl', 'influ', 'guid
 function goalText(g) {
   const v = goalVal(g[0]), f1 = x => x.toLocaleString('tr-TR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
   if ((g[0] === 'seats' || g[0] === 'pilots') && XFER.local && (g[0] === 'seats' ? S.balloons : S.pilots).some(x => x.imp)) return `${v}/${g[1]} (getirilenler hariç)`; /* v125 */
-  return g[0] === 'stars' ? `${f1(v)}★ / ${f1(g[1])}★` : g[0] === 'cash' ? `${eur(v)} / ${eur(g[1])}` : g[0] === 'share' ? `%${Math.round(v * 100)} / %${Math.round(g[1] * 100)}` : YESNO.includes(g[0]) ? (v >= g[1] ? 'tamam' : 'yok') : `${v}/${g[1]}`;
+  return g[0] === 'stars' ? `${f1(v)}★ / ${f1(g[1])}★` : g[0] === 'cash' ? `${eur(v)} / ${eur(g[1])}` : g[0] === 'share' ? `%${Math.round(v * 100)} / %${Math.round(g[1] * 100)}` : YESNO.includes(g[0]) ? (v >= g[1] ? 'tamam' : 'bekliyor') /* v141.4: pairs with 'tamam' */ : `${v}/${g[1]}`;
 }
 const goalPct = g => g[0].startsWith('bld') ? clamp((goalVal(g[0]) - 1) / (g[1] - 1), 0, 1) : clamp(goalVal(g[0]) / g[1], 0, 1);
 function checkChapters(ev, Lg, flew) {
@@ -3569,7 +3569,7 @@ function renderAct() {
   if (K) notes.push(held < K.n ? `Tur grubu ${K.n} kişi ama bugün yalnızca ${held} koltuğun uçabiliyor: eksik koltuk başına ${eur(Math.round(K.price * CTR[S.region].pen))} ceza.` : `Tur grubu ${K.n} kişi, kişi başı ${eur(K.price)}: koltuklar önce onlara.`);
   if (S.docDay === S.day && fl.some(b => b.id === S.flag)) notes.push('Amiralde 4 koltuk belgesel ekibinde.');
   $('est').innerHTML = n ? `<div class="res"><div><b>${pax}/${cap}</b><span>koltuk dolar</span></div><div class="rr"><b>${eur(income)}</b><span>${delta ? `<em class="${delta > 0 ? 'up' : 'dn'}">${delta > 0 ? '▲ +' : '▼ −'}${eur(Math.abs(delta)).replace('€', '€')}</em>` : 'tahmini gelir'}</span></div></div><div class="bar big"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></div>${notes.length ? `<p class="estn">${notes.join(' ')}</p>` : ''}` : `<span>Bugün uçacak balon yok</span>`;
-  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${K ? `Bugünkü tur grubu: ${held}/${K.n} kişi · ` : ''}${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">Ayarla ›</span>`;
+  $('pcard').innerHTML = `<span class="pp"><small>Bilet</small><b>${eur(S.price)}</b></span><span class="pf">${n ? `<span>Tahmini <b>${pax}/${cap}</b> yolcu · <b>${eur(income)}</b></span><span class="bar"><i style="width:${Math.round(pax / Math.max(1, cap) * 100)}%"></i></span><span class="who">${K ? `Bugünkü tur grubu: ${held}/${K.n} kişi · ` : ''}${whoFlies(fl)}</span>` : `<span class="why">${noneReason()}</span>`}</span><span class="pgo">${n ? 'Ayarla ›' : 'Plan ›'}</span>`; /* v141.4: nothing flies: the card opens the plan */
   /* v122: price changes count the passengers up or down where you can see it */
   /* v124.6: "more passengers" only once the estimate has really gone up; until then, one more tap on − */
   if (TUTA && TUTA.k === 'price' && TUTA.pax0 == null && S.price === TUTA.p0) TUTA.pax0 = pax;
@@ -14317,7 +14317,7 @@ function priceSheet(open) {
   if (!open && TUTA && TUTA.k === 'price') { tutStep('price'); TUTA = null; setTimeout(tutHome, 350); } /* v122: on to "Yolcu topla" */
   if (!open && TUTA && TUTA.k === 'price2' && TUTA.up) { tutStep('price2'); TUTA = null; } /* v122.4: day 2's lesson is done */
 }
-$('pcard').onclick = () => priceSheet(true);
+$('pcard').onclick = () => flying().length ? priceSheet(true) : showFleetPlan(); /* v141.4 (TestFlight): its reason says "open the plan" */
 $('grab').onclick = () => dockOpen(!$('dock').classList.contains('open'));
 /* drag the dock up to open it, down to fold it back to the strip */
 (function dockDrag() {

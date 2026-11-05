@@ -752,7 +752,10 @@ struct HomeView: View {
     private func ticketCard(_ g: Game) -> some View {
         let s = g.state
         let est = g.estimatedIncome()
-        return Button { showPrice = true } label: {
+        // v141.4 (TestFlight): with nothing flying the card says why and "Open the plan", so it opens the flight plan
+        // (as the big button does), not the price sheet; its action word says so too.
+        let none = s.flyingToday.isEmpty
+        return Button { if none { showPlan = true } else { showPrice = true } } label: {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 0) {
                     Text(loc("home.ticket"))
@@ -773,7 +776,7 @@ struct HomeView: View {
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                Text(loc("home.adjust"))
+                Text(loc(none ? "home.planGo" : "home.adjust"))
                     .font(Theme.font(16, .heavy, condensed: true))
                     .foregroundStyle(Theme.coral)
             }

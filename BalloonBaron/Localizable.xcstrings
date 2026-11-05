@@ -54414,19 +54414,19 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "noch nicht"
+            "value": "offen"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "not yet"
+            "value": "pending"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "aún no"
+            "value": "pendiente"
           }
         },
         "ja": {
@@ -54438,13 +54438,13 @@
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "아직"
+            "value": "미완료"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "henüz değil"
+            "value": "bekliyor"
           }
         }
       }
@@ -75888,6 +75888,47 @@
           "stringUnit": {
             "state": "translated",
             "value": "Uçuş planını aç"
+          }
+        }
+      }
+    },
+    "home.planGo": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan ›"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan ›"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan ›"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "プラン ›"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "계획 ›"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Plan ›"
           }
         }
       }

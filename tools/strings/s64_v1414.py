@@ -29,3 +29,6 @@ for r, h in INFLU.items():
         f"Vinimos tras ver el vídeo de {h} en Instagram. ¡Era tan bonito como contaba!",
         f"Instagramで{h}の動画を見て来た。本当に言っていた通り素晴らしかった！",
         f"인스타그램에서 {h} 영상을 보고 왔어요. 정말 말한 그대로 아름다웠어요!")
+
+# Home: with nothing flying, the ticket card opens the flight plan; its action word says so.
+add("home.planGo", "Plan ›", "Plan ›", "Plan ›", "Plan ›", "プラン ›", "계획 ›")

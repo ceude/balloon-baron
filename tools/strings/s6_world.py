@@ -122,7 +122,8 @@ add("goal.school", "Found a pilot school", "Pilot okulu kur", "Gründe eine Pilo
 add("goal.xl", "Your giant balloon in the sky: %@", "Dev balonun gökyüzünde: %@", "Dein Riesenballon am Himmel: %@", "Tu globo gigante en el cielo: %@", "巨大気球を空へ：%@", "거대 열기구를 하늘로: %@")
 add("goal.fiesta", "Fly at a Balloon Fiesta", "Bir Balloon Fiesta'da uç", "Flieg bei einer Balloon Fiesta", "Vuela en una Balloon Fiesta", "バルーン・フィエスタで飛ぶ", "벌룬 피에스타에서 비행하기")
 add("goal.done", "done", "tamam", "erledigt", "hecho", "達成", "완료")
-add("goal.notYet", "not yet", "henüz değil", "noch nicht", "aún no", "未達成", "아직")
+# v141.4 (TestFlight): a status that pairs with "done", not "not yet"
+add("goal.notYet", "pending", "bekliyor", "offen", "pendiente", "未達成", "미완료")
 
 # Design patterns
 for k, v in {
