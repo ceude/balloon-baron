@@ -500,9 +500,9 @@ final class GameStore {
         T.cineArrive = nil
         contractScene = ContractScene(short: state?.contractSceneShort ?? false)
         let kind = state?.contractConfig?.kind
-        // v126: the plane's sound runs with its landing
-        DispatchQueue.main.asyncAfter(deadline: .now() + (kind == .plane ? 1.6 : 2.4)) {
-            if self.contractScene != nil, let k = kind { SoundEngine.shared.contractArrive(k.sound) }
+        // v126: the plane's sound runs with its landing (v141.6: the Mara's bush plane too); once per region (v141.6)
+        DispatchQueue.main.asyncAfter(deadline: .now() + (kind == .plane || kind == .bush ? 1.6 : 2.4)) {
+            if self.contractScene != nil, let k = kind, let e = self.state?.contractSceneEvent { T.sound(e, k) }
         }
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.6) {
             if self.contractScene != nil { self.contractScene?.line = 0 }

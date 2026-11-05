@@ -8759,7 +8759,7 @@ function ctrScene() {
     if (i >= L.length) { $('hez').hidden = true; $('hez').classList.remove('story'); setTimeout(ctrCard, 500); return; }
     storySay2(guide(), L[i++], [['Geç', () => { i = L.length; say(); }, 'ghost'], [i < L.length ? 'Devam' : 'Teklife bak', say, 'big']]);
   };
-  setTimeout(() => ctrArriveSound(), K.kind === 'plane' || K.kind === 'bush' ? 1600 : 2400); /* v126: the plane's sound runs with its landing */
+  setTimeout(() => { if (TOWN.cine) vehSound(`${S.company}:${S.region}:scene`); }, K.kind === 'plane' || K.kind === 'bush' ? 1600 : 2400); /* v126: the plane's sound runs with its landing */
   setTimeout(say, 2600);
 }
 function ctrSceneEnd() {
@@ -8799,8 +8799,8 @@ function ctrHez(k) {
    Each region's contract place lies on its own road out of town, past the edge of every default view (checked by
    drawing it alone through the home camera on phones and iPads: no pixel lands on screen). Near town the road stays the
    town's dirt road. Albuquerque: the Route 66 highway ends at a coach terminal; Luxor: a cruise pier on the Nile; Bristol:
-   a small station with a red steam train. The vehicle stands there for as long as a job you took runs, with its own
-   ambient sound; empty otherwise. On a contract morning the passengers walk to the game's safari jeeps, which drive off
+   a small station with a red steam train. The vehicle stands there for as long as a job you took runs (silently: it
+   sounds only as it arrives and leaves, v141.6); empty otherwise. On a contract morning the passengers walk to the game's safari jeeps, which drive off
    along the dirt road towards town (and vanish before the default view). */
 let CTR_HIDE = false; /* tests: draw the town without the contract place */
 const CTR_BAYS = [9.2, 10.2, 11.2]; /* Albuquerque: bay lines across the lot (gx); a coach is parked along gy */
@@ -8812,7 +8812,7 @@ function ctrVehicles() {
   const K = ctrCfg(), C = S && S.ctr; if (!K || !C) return [];
   const out = [], room = K.kind === 'bus' ? CTR_BAYS.length : 1, many = n => K.kind === 'bus' ? clamp(Math.ceil(n / 50), 1, 3) : 1;
   for (const k of (C.booked || []).filter(q => !q.rival && (ctrActive(q) || (ctrArrived(q) && kEnd(q) >= S.day)))) {
-    if (!ctrArrived(k)) continue; /* not arrived yet: ctrHumTick brings it in when you look */
+    if (!ctrArrived(k)) continue; /* not arrived yet: ctrTick brings it in when you look */
     const w = ctrOwner(k), t0 = k.arrT != null && T >= k.arrT && T - k.arrT < ((CTR_KINDS[K.kind] || {}).arrDur || 8) ? k.arrT : null; /* the arrival plays once, then it stands (after a reload too) */
     for (let i = 0; i < many(k.n) && out.length < room; i++) out.push({ col: w.col, name: w.co, t0 });
   }
@@ -9319,55 +9319,21 @@ function bushItems(add, t) {
     for (let i = 0; i < 6; i++) { const k = ((t * .12) + i / 6) % 1, pos = walkPath(path, k * L).p; add(pos[0], pos[1], () => { const q2 = tiso(...pos); person(q2[0], q2[1], cols[i], t, i); }, pos[0] + pos[1]); }
   }
 }
-/* v126: the plane's own sounds: on arrival the approach (turbine whine and propeller beat), the screech of the wheels
-   at touchdown, reverse thrust, then idle on the taxiway; leaving, idle, the spool-up of the take-off run and the climb
-   fading away. Timed to planePose. */
-function planeSound(leaving, pk = 1) {
-  if (!AC) return; const t = AC.currentTime, o = out();
-  const src = AC.createBufferSource(); src.buffer = noiseBuf(3); src.loop = true;
-  const nf = AC.createBiquadFilter(); nf.type = 'bandpass'; nf.Q.value = .8; const ng = AC.createGain(); ng.gain.value = 0;
-  const eng = AC.createOscillator(); eng.type = 'sawtooth'; if (pk !== 1) { eng.detune.value = 1200 * Math.log2(pk); } const ef = AC.createBiquadFilter(); ef.type = 'lowpass'; ef.frequency.value = 700; const eg = AC.createGain(); eg.gain.value = 0;
-  const wh = AC.createOscillator(); wh.type = 'sine'; if (pk !== 1) wh.detune.value = 1200 * Math.log2(pk); const wg = AC.createGain(); wg.gain.value = 0;
-  const lfo = AC.createOscillator(); lfo.type = 'square'; lfo.frequency.value = 22; const lg = AC.createGain(); lg.gain.value = .3; const am = AC.createGain(); am.gain.value = .7;
-  src.connect(nf).connect(ng).connect(am); eng.connect(ef).connect(eg).connect(am); lfo.connect(lg).connect(am.gain); am.connect(o); wh.connect(wg).connect(o);
-  const at = (p, v, s) => p.linearRampToValueAtTime(v, t + s), set = (p, v, s) => p.setValueAtTime(v, t + s);
-  let end;
-  if (!leaving) {
-    set(nf.frequency, 900, 0); at(nf.frequency, 600, 4.5); set(eng.frequency, 118, 0); at(eng.frequency, 92, 4.5); set(wh.frequency, 1500, 0); at(wh.frequency, 1150, 4.5);
-    set(ng.gain, 0, 0); at(ng.gain, .1, 3.6); at(ng.gain, .08, 4.5); at(ng.gain, .16, 5.1); at(ng.gain, .05, 7.5); at(ng.gain, .03, 12); at(ng.gain, 0, 13.4); /* reverse thrust swell after touchdown */
-    set(eg.gain, 0, 0); at(eg.gain, .05, 3.6); at(eg.gain, .02, 8); at(eg.gain, 0, 13.4);
-    set(wg.gain, 0, 0); at(wg.gain, .012, 3.6); at(wg.gain, .006, 8); at(wg.gain, 0, 13.4);
-    end = 13.6;
-    for (const d of [4.5, 4.72]) { const s2 = AC.createBufferSource(); s2.buffer = noiseBuf(.3); const f2 = AC.createBiquadFilter(); f2.type = 'bandpass'; f2.frequency.value = 2600; f2.Q.value = 3; const g2 = AC.createGain(); g2.gain.setValueAtTime(0, t + d); g2.gain.linearRampToValueAtTime(.22, t + d + .02); g2.gain.exponentialRampToValueAtTime(.001, t + d + .26); s2.connect(f2).connect(g2).connect(o); s2.start(t + d); s2.stop(t + d + .3); tone(1900, 1500, .22, 'sawtooth', .02, d); } /* the screech of the tyres */
-  } else {
-    set(nf.frequency, 500, 0); at(nf.frequency, 500, 4.5); at(nf.frequency, 1100, 9); at(nf.frequency, 700, 13.5); set(eng.frequency, 80, 0); at(eng.frequency, 80, 4.5); at(eng.frequency, 140, 9); at(eng.frequency, 120, 13.5);
-    set(wh.frequency, 900, 0); at(wh.frequency, 900, 4.3); at(wh.frequency, 2100, 8); at(wh.frequency, 1700, 13.5);
-    set(ng.gain, 0, 0); at(ng.gain, .03, 1); at(ng.gain, .03, 4.4); at(ng.gain, .17, 8); at(ng.gain, .12, 9.5); at(ng.gain, 0, 13.5);
-    set(eg.gain, 0, 0); at(eg.gain, .02, 1); at(eg.gain, .02, 4.4); at(eg.gain, .06, 8); at(eg.gain, 0, 13.5);
-    set(wg.gain, 0, 0); at(wg.gain, .005, 1); at(wg.gain, .005, 4.3); at(wg.gain, .016, 8); at(wg.gain, 0, 13.5);
-    end = 13.7;
-  }
-  for (const n of [src, eng, wh, lfo]) { n.start(t); n.stop(t + end); }
-}
-/* ---- per kind: where things are, how the jeeps go, what you hear ---- */
+/* ---- per kind: where things are, how the jeeps go ---- */
 const CTR_KINDS = {
   bus: { ground: busGround, items: busItems, free: [[3, 17.5, 19, 33]], tap: [8.4, 18.6, 14.6, 26.5], arrDur: 8.6, depDur: 12.2, /* v126.1: the coaches drive in and out on curves */
     town: [[8, 14.95], [8, 22]],
-    xfer: { doors: i => [CTR_BAYS[CTR_BAYS.length - 1 - (i % 3)] + .3, CTR_BAY_GY + .2], via: d => [[d[0], 20.8]], stops: [[9.3, 19.7], [10.25, 19.7], [11.2, 19.7]], road: s => [s, [8, s[1]], [8, 11.6]] },
-    hum: { nf: 140, nt: 'lowpass', of: 34, ot: 'sawtooth', og: .75, lf: 6.5, ld: .25 } },
+    xfer: { doors: i => [CTR_BAYS[CTR_BAYS.length - 1 - (i % 3)] + .3, CTR_BAY_GY + .2], via: d => [[d[0], 20.8]], stops: [[9.3, 19.7], [10.25, 19.7], [11.2, 19.7]], road: s => [s, [8, s[1]], [8, 11.6]] } },
   ship: { ground: shipGround, items: shipItems, free: [[23.5, -12.5, 37, -6.5], [29.5, -9, 31.8, 8.6]], tap: [26, -13.8, 34.5, -8.4],
     town: [[8, 14.95], [8, 8], [24, 8]],
-    xfer: { doors: () => [31, -12.1], via: () => [[31, -10.8], [31, -9.8]], stops: [[29, -9.2], [29.8, -9.2], [31.8, -9.2]], road: s => [s, [30.6, s[1]], [30.6, 8], [24.2, 8]] },
-    hum: { nf: 520, nt: 'lowpass', of: 44, ot: 'sine', og: .35, lf: .28, ld: .5 } },
+    xfer: { doors: () => [31, -12.1], via: () => [[31, -10.8], [31, -9.8]], stops: [[29, -9.2], [29.8, -9.2], [31.8, -9.2]], road: s => [s, [30.6, s[1]], [30.6, 8], [24.2, 8]] } },
   train: { ground: trainGround, items: trainItems, free: [[-20, 3, -5.6, 10.6]], tap: [-18, 3.8, -6.4, 9.8],
     town: [[8, 14.95], [8, 8], [-6, 8]],
-    xfer: { doors: i => [-15.6 + (i % 3) * 2.2, 6.75], via: d => [[d[0], 7.3], [d[0] + .3, 8]], stops: [[-10.6, 9.1], [-9.6, 9.1], [-8.6, 9.1]], road: s => [s, [s[0], 8], [-5.6, 8]] },
-    hum: { nf: 820, nt: 'bandpass', of: 0, ot: 'sine', og: 0, lf: 1.6, ld: .95, sq: true } },
+    xfer: { doors: i => [-15.6 + (i % 3) * 2.2, 6.75], via: d => [[d[0], 7.3], [d[0] + .3, 8]], stops: [[-10.6, 9.1], [-9.6, 9.1], [-8.6, 9.1]], road: s => [s, [s[0], 8], [-5.6, 8]] } },
   /* v126: arrDur / depDur: the landing and the take-off take longer than a coach pulling in */
   plane: { ground: airGround, items: airItems, free: [[19.5, -2.5, 48, 9.6]], tap: [23.5, -.2, 36.5, 7.6], arrDur: 13.5, depDur: 14,
     town: [[8, 14.95], [8, 8], [23.5, 8]],
-    xfer: { doors: i => [30.75 + (i % 2) * .5, 7.1], via: d => [[d[0], 7.35], [28.6, 7.35]], stops: [[25.7, 6.55], [26.7, 6.55], [27.7, 6.55]], road: s => [s, [s[0], 8], [23, 8]] },
-    hum: { nf: 1500, nt: 'bandpass', of: 0, ot: 'sine', og: 0, lf: .3, ld: .25 } }
+    xfer: { doors: i => [30.75 + (i % 2) * .5, 7.1], via: d => [[d[0], 7.35], [28.6, 7.35]], stops: [[25.7, 6.55], [26.7, 6.55], [27.7, 6.55]], road: s => [s, [s[0], 8], [23, 8]] } }
 };
 CTR_KINDS.bush = Object.assign({}, CTR_KINDS.plane, { ground: bushGround, items: bushItems }); /* v141: the Mara's airstrip, laid out like Cappadocia's airport */
 const ctrKind = () => { const K = ctrCfg(); return K && CTR_KINDS[K.kind]; };
@@ -9415,48 +9381,76 @@ function ctrTapHit(x, y) {
   const [a, b, c, d] = KK.tap, s = K.shift;
   return inPoly([x, y], [tiso(a + s[0], b + s[1]), tiso(c + s[0], b + s[1]), tiso(c + s[0], d + s[1]), tiso(a + s[0], d + s[1])].map(([fx, fy]) => [fx * TOWN.z + TOWN.ox, (fy - 20) * TOWN.z + TOWN.oy]));
 }
-/* The place's own sound while its vehicle stands in view: the coaches' idling engines, the river lapping at the ship,
-   the steam engine's slow chuff; loudness from how close it is to the screen's middle. */
-let hum = null;
-function ctrHum(level) {
-  if (!AC || !soundOn) level = 0;
-  const KK = ctrKind(), P = KK ? KK.hum : null;
-  if (hum && P && hum.P !== P) { hum.stop(); hum = null; }
-  if (!hum && level > .01 && AC && P) {
-    const src = AC.createBufferSource(); src.buffer = noiseBuf(2); src.loop = true;
-    const f = AC.createBiquadFilter(); f.type = P.nt; f.frequency.value = P.nf; f.Q.value = P.nt === 'bandpass' ? .9 : .7;
-    const o = AC.createOscillator(); o.type = P.ot; o.frequency.value = P.of || 30; const of = AC.createBiquadFilter(); of.type = 'lowpass'; of.frequency.value = 90; const og = AC.createGain(); og.gain.value = P.og;
-    const lfo = AC.createOscillator(); lfo.type = P.sq ? 'square' : 'sine'; lfo.frequency.value = P.lf; const lg = AC.createGain(); lg.gain.value = P.ld * .5;
-    const g = AC.createGain(); g.gain.value = 0; const am = AC.createGain(); am.gain.value = .55;
-    src.connect(f).connect(am); o.connect(of).connect(og).connect(am); lfo.connect(lg).connect(am.gain); am.connect(g).connect(out());
-    src.start(); o.start(); lfo.start(); hum = { P, g, stop: () => { try { src.stop(); o.stop(); lfo.stop(); } catch (e) {} } };
-  }
-  if (!hum) return;
-  hum.g.gain.setTargetAtTime(.22 * level, AC.currentTime, .25);
-  if (level <= .01 && !hum.off) { hum.off = setTimeout(() => { if (hum && hum.g.gain.value < .005) { hum.stop(); hum = null; } else if (hum) hum.off = null; }, 1500); }
-  else if (level > .01 && hum.off) { clearTimeout(hum.off); hum.off = null; }
+/* v141.6 (TestFlight, Bristol: "the train sound keeps coming, even on the end-of-day card"): a contract vehicle makes
+   a sound only as it arrives or leaves, once, and only where you can see it. The old ambient loop while it stood there
+   (ctrHum: a chuffing train, idling coaches, lapping water, a plane's APU) is gone: it ran the whole time the place was
+   anywhere near the screen. The arrival and the departure happen the first time you look at the place (zoomed in, the
+   place on screen and near the middle) with no card, page or sheet up; the volume follows how close it is to the
+   middle and the zoom. VEH_SND remembers every vehicle event that has sounded, so none can sound twice. */
+const VEH_SND = new Set();
+const uiCovered = () => mode !== 'office' || !!TRAVEL || TOWN.night || TOWN.leaving || !$('hez').hidden || !$('page').hidden || !$('hq').hidden || !$('psheet').hidden || !$('collect').hidden || !!document.querySelector('.modal:not([hidden])');
+/* how loud a vehicle there sounds from this camera (.5 … 1), or null when the place isn't in view */
+function ctrLook(V, w, h) {
+  const p = tiso(...ctrSpot()), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy;
+  if (sx < w * .05 || sx > w * .95 || sy < h * .08 || sy > h * .92) return null;
+  const d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h); if (d >= .42) return null;
+  return clamp(1.25 - d * 1.6, .5, 1) * clamp(V.z / .6, .55, 1);
 }
-function ctrHumTick(V, w, h) {
-  const K = ctrCfg();
-  if (!K || !TOWN.open) return ctrHum(0);
-  const p = tiso(...ctrSpot()), sx = p[0] * V.z + V.ox, sy = p[1] * V.z + V.oy, d = Math.hypot(sx - w / 2, sy - h / 2) / Math.max(w, h);
-  const C = S.ctr, Dp = C && C.depart;
+function ctrTick(V, w, h) {
+  const K = ctrCfg(), C = S.ctr; if (!K || !C || !TOWN.open) return;
+  const Dp = C.depart;
   if (Dp && Dp.t1 != null && (T < Dp.t1 || T - Dp.t1 > ((ctrKind() || {}).depDur || 9))) { C.depart = null; save(); } /* gone: the place is empty again (reloaded mid-departure: it has left) */
-  else if (Dp && Dp.t1 == null && S.day >= Dp.from && d < .42) { Dp.t1 = T; ctrArriveSound(true); }
-  const due = ctrDue(); if (due && d < .42) { if (C.depart) C.depart = null; due.arrived = true; due.arrDay = S.day; due.arrT = T; ctrArriveSound(); save(); } /* it pulls in as you look */
-  if (!ctrVehicles().length) return ctrHum(0);
-  ctrHum(clamp(1.2 - d * 2.2, 0, 1) * clamp(V.z / .6, .3, 1));
+  if (uiCovered()) return;
+  const g = ctrLook(V, w, h); if (g == null) return;
+  const due = ctrDue();
+  if (due) { if (C.depart) C.depart = null; due.arrived = true; due.arrDay = S.day; due.arrT = T; vehSound(`${S.company}:${S.region}:a:${due.id}`, false, g); save(); } /* it pulls in as you look */
+  else if (C.depart && C.depart.t1 == null && S.day >= C.depart.from) { C.depart.t1 = T; vehSound(`${S.company}:${S.region}:d:${C.depart.from}:${C.depart.name}`, true, g); }
 }
-/* the arrival in the first offer's scene: a coach horn, a ship's horn, a steam whistle */
-function ctrArriveSound(leaving) {
-  if (!AC) return; const k = (ctrCfg() || {}).kind;
-  if (k === 'plane') return planeSound(leaving); /* v126 */
-  if (k === 'bush') return planeSound(leaving, 1.35); /* v141: one smaller engine, a higher note */
-  if (leaving && k === 'bus') { tone(60, 110, 1.4, 'sawtooth', .03); tone(311, 311, .3, 'sawtooth', .03, .3); tone(392, 392, .3, 'sawtooth', .025, .3); return; } /* engine revs, a short toot */
-  if (leaving && k === 'train') { tone(1108, 1128, .5, 'sine', .03); tone(880, 900, .5, 'square', .018); for (let i = 0; i < 8; i++) tone(180, 90, .12, 'sawtooth', .02, .6 + i * (.5 - i * .03)); return; } /* whistle, then chuffs speeding up */
-  if (k === 'ship') { tone(98, 96, 1.5, 'sawtooth', .045); tone(147, 145, 1.5, 'sawtooth', .03); tone(98, 96, 1.1, 'sawtooth', .045, 1.9); tone(147, 145, 1.1, 'sawtooth', .03, 1.9); }
-  else if (k === 'train') { tone(880, 900, 1.2, 'square', .018); tone(1108, 1128, 1.2, 'sine', .03); tone(880, 900, .4, 'square', .018, 1.5); tone(1108, 1128, .4, 'sine', .03, 1.5); }
-  else { tone(311, 311, .45, 'sawtooth', .035); tone(392, 392, .45, 'sawtooth', .03); tone(311, 311, .3, 'sawtooth', .035, .55); tone(392, 392, .3, 'sawtooth', .03, .55); }
+/* One voice: an oscillator (or noise) through a filter, a linear attack, a hold, an exponential release; the pitch
+   glides from f to f2 over the whole voice. The app's VehicleSound has the same table. */
+const VX = (w, f, f2, d, a, hd, r, v, ft = 'lowpass', fc = 2000, q = .7) => ({ w, f, f2, d, a, h: hd, r, v, ft, fc, q });
+const hornNote = (f, d, hd, v) => [VX('triangle', f, f, d, .06, hd, .35, v, 'lowpass', 1100), VX('triangle', f * 1.006, f * 1.006, d, .06, hd, .35, v * .8, 'lowpass', 1100), VX('sine', f / 2, f / 2, d, .06, hd, .35, v * .5)];
+const clack = (d, e) => [VX('noise', 1, 1, d, .004, 0, .07, .05 * e, 'bandpass', 700, .9), VX('sine', 140, 90, d, .003, 0, .08, .04 * e)];
+const clacks = (ts, es, gaps) => ts.flatMap((t, i) => [...clack(t, es[i]), ...clack(t + gaps[i], es[i] * .8)]);
+const toot = (d, hd) => [VX('triangle', 349, 349, d, .03, hd, .2, .016, 'lowpass', 1300), VX('triangle', 440, 440, d, .03, hd, .2, .014, 'lowpass', 1300)];
+const blast = (d, hd) => [VX('sawtooth', 110, 108, d, .18, hd, .5, .03, 'lowpass', 380, .3), VX('sawtooth', 165, 162, d, .18, hd, .5, .02, 'lowpass', 380, .3), VX('sine', 55, 55, d, .18, hd, .5, .022)];
+/* every sound under 3 s of audible length, low-passed, below the UI's clicks. The planes' sounds start later, so they
+   play with the landing (touchdown 4.5 s in) and the take-off run (4.4 … 9 s). */
+const VEH_SFX = {
+  /* a mellow British two-tone horn (high, low) and soft clickety-clack pairs, slowing and fading as it pulls in */
+  train: { arr: [...hornNote(392, 0, .32, .02), ...hornNote(330, .5, .45, .02), ...clacks([.15, .7, 1.3, 1.95, 2.6], [1, .85, .65, .45, .25], [.12, .12, .13, .14, .14])],
+    /* leaving: the horn, then the clacks speeding up, swelling and fading away */
+    dep: [...hornNote(392, 0, .25, .02), ...hornNote(330, .45, .35, .02), ...clacks([1, 1.5, 1.92, 2.28, 2.6], [.3, .55, .7, .55, .3], [.12, .11, .1, .095, .09])] },
+  /* the diesel settling, a soft air-brake sigh, a friendly two-note toot; leaving: a toot and the engine pulling away */
+  bus: { arr: [VX('sawtooth', 70, 48, 0, .05, .5, .9, .05, 'lowpass', 240), VX('noise', 1, 1, .9, .03, .12, .45, .022, 'lowpass', 2400), ...toot(1.6, .14), ...toot(1.95, .1)],
+    dep: [...toot(0, .14), VX('sawtooth', 50, 82, .3, .4, .8, 1.2, .045, 'lowpass', 260), VX('sine', 100, 164, .3, .4, .8, 1.2, .015)] },
+  /* a deep, rounded ship's horn: one long blast and a short one; leaving: one long blast and the screws churning */
+  ship: { arr: [...blast(0, 1), ...blast(1.9, .35)], dep: [...blast(0, 1.5), VX('noise', 1, 1, .6, .6, .6, 1, .02, 'lowpass', 500)] },
+  /* the charter plane: a jet's soft roar and whine coming down, two light tyre chirps, a short reverse-thrust swell;
+     leaving: the roar, whine and rumble rising with the take-off run and fading as it climbs */
+  plane: { arr: [VX('noise', 1, 1, 2.6, 1.2, .4, 1.3, .045, 'lowpass', 900), VX('sine', 1250, 1000, 2.6, 1, .5, 1.2, .006), VX('noise', 1, 1, 4.5, .01, .02, .12, .03, 'bandpass', 1600, 1.5), VX('noise', 1, 1, 4.68, .01, .02, .1, .02, 'bandpass', 1600, 1.5), VX('noise', 1, 1, 4.7, .25, .1, .55, .04, 'lowpass', 700)],
+    dep: [VX('noise', 1, 1, 5.2, .9, .6, 1.5, .05, 'lowpass', 1000), VX('sine', 1300, 1900, 5.2, .9, .6, 1.5, .007), VX('sawtooth', 75, 110, 5.2, .9, .6, 1.5, .03, 'lowpass', 300)] },
+  /* the Mara's bush plane: a single propeller's low drone and the air, a soft bump on the dirt strip */
+  bush: { arr: [VX('sawtooth', 105, 88, 2.6, 1, .6, 1.2, .035, 'lowpass', 420), VX('noise', 1, 1, 2.6, 1, .6, 1.2, .025, 'lowpass', 700), VX('noise', 1, 1, 4.5, .02, .1, .3, .04, 'lowpass', 400)],
+    dep: [VX('sawtooth', 90, 130, 5.2, .8, .7, 1.5, .04, 'lowpass', 480), VX('noise', 1, 1, 5.2, .8, .7, 1.5, .025, 'lowpass', 800)] }
+};
+let vxNoise = null;
+function vxPlay(o, g) {
+  const t = AC.currentTime + o.d, end = t + o.a + o.h + o.r;
+  let src;
+  if (o.w === 'noise') { src = AC.createBufferSource(); src.buffer = vxNoise || (vxNoise = noiseBuf(3)); src.loop = true; }
+  else { src = AC.createOscillator(); src.type = o.w; src.frequency.setValueAtTime(o.f, t); if (o.f2 !== o.f) src.frequency.exponentialRampToValueAtTime(o.f2, end); }
+  const fl = AC.createBiquadFilter(); fl.type = o.ft; fl.frequency.value = o.fc; fl.Q.value = o.q;
+  const gn = AC.createGain(); gn.gain.setValueAtTime(0, t); gn.gain.linearRampToValueAtTime(o.v * g, t + o.a); gn.gain.setValueAtTime(o.v * g, t + o.a + o.h); gn.gain.exponentialRampToValueAtTime(.0001, end);
+  src.connect(fl).connect(gn).connect(out()); src.start(t); src.stop(end + .02);
+}
+/* a vehicle's arrival or departure sound, once per event (key); g: how loud from where you look */
+function vehSound(key, leaving, g = 1) {
+  if (VEH_SND.has(key)) return;
+  VEH_SND.add(key);
+  const R = VEH_SFX[(ctrCfg() || {}).kind];
+  if (!AC || !soundOn || !R) return;
+  for (const o of leaving ? R.dep : R.arr) vxPlay(o, g);
 }
 
 /* ---------- v125: bringing balloons and pilots into a new region ----------
@@ -13198,7 +13192,7 @@ function drawTown() {
     if (TOWN.night && !TOWN.leaving) { if (!TOWN.anim) nightClamp(TOWN, r.width, r.height); TOWN.hzFix = nightHorizon(TOWN, r.width, r.height); }
     else if (!TOWN.anim && !TOWN.cine) townClamp(r.width, r.height);
     renderTown(TOWN, r.width, r.height, dpr, 0);
-    ctrHumTick(TOWN, r.width, r.height);
+    ctrTick(TOWN, r.width, r.height);
   } finally { ctx = keep; }
 }
 /* The home screen shows the town above the day's cards: a fixed overview you tap into. */
@@ -13891,7 +13885,7 @@ function closeTown() {
   document.body.classList.remove('zoomed', 'mhold'); TOWN.hold = false;
   const night = TOWN.night;
   townGlide({ z: HOME.z, ox: HOME.ox, oy: HOME.oy }, () => {
-    TOWN.open = false; TOWN.leaving = false; TOWN.night = false; TOWN.hzFix = null; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); ctrHum(0); refresh();
+    TOWN.open = false; TOWN.leaving = false; TOWN.night = false; TOWN.hzFix = null; $('town').hidden = true; cancelAnimationFrame(TOWN.raf); refresh();
   });
   if (night) TOWN.anim.hz = [TOWN.hzFix, homeHorizon()];
 }

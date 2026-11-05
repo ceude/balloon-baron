@@ -1,5 +1,6 @@
 import AVFoundation
 import Foundation
+import BalloonBaronCore
 import UIKit
 import os
 
@@ -183,55 +184,15 @@ final class SoundEngine {
         }
     }
 
-    /// v125: the contract place's ambient sound while its vehicle stands in view (`ctrHum`); 0 turns it off.
-    private var humSent = (-1, -1.0)
-    func contractHum(_ kind: Int, level: Double) {
-        guard started else { return }
-        let l = (level * 50).rounded() / 50
-        guard humSent.0 != kind || abs(humSent.1 - l) > 0.001 else { return }
-        humSent = (kind, l)
-        synth.send(.hum(kind, l))
-    }
-
-    /// v125: a coach horn, a ship's horn, a steam whistle as the vehicle comes in; leaving: engine revs and a short toot,
-    /// the same ship's horn, a whistle and chuffs speeding up (`ctrArriveSound`).
-    func contractArrive(_ kind: Int, leaving: Bool = false) {
-        guard started else { return }
-        if kind == 3 { planeSound(leaving: leaving); return } // v126
-        if kind == 4 { planeSound(leaving: leaving, bush: true); return } // v141: the Mara's bush plane, one smaller engine, a higher note
-        if leaving && kind == 0 {
-            tone(60, 110, 1.4, .sawtooth, 0.03); tone(311, 311, 0.3, .sawtooth, 0.03, 0.3); tone(392, 392, 0.3, .sawtooth, 0.025, 0.3)
-            return
-        }
-        if leaving && kind == 2 {
-            tone(1108, 1128, 0.5, .sine, 0.03); tone(880, 900, 0.5, .square, 0.018)
-            for i in 0..<8 { tone(180, 90, 0.12, .sawtooth, 0.02, 0.6 + Double(i) * (0.5 - Double(i) * 0.03)) }
-            return
-        }
-        switch kind {
-        case 1:
-            tone(98, 96, 1.5, .sawtooth, 0.045); tone(147, 145, 1.5, .sawtooth, 0.03)
-            tone(98, 96, 1.1, .sawtooth, 0.045, 1.9); tone(147, 145, 1.1, .sawtooth, 0.03, 1.9)
-        case 2:
-            tone(880, 900, 1.2, .square, 0.018); tone(1108, 1128, 1.2, .sine, 0.03)
-            tone(880, 900, 0.4, .square, 0.018, 1.5); tone(1108, 1128, 0.4, .sine, 0.03, 1.5)
-        default:
-            tone(311, 311, 0.45, .sawtooth, 0.035); tone(392, 392, 0.45, .sawtooth, 0.03)
-            tone(311, 311, 0.3, .sawtooth, 0.035, 0.55); tone(392, 392, 0.3, .sawtooth, 0.03, 0.55)
-        }
-    }
-
-    /// v126 `planeSound`: the charter plane's own sounds, timed to its landing (13.5 s: the approach with turbine whine
-    /// and propeller beat, two tyre screeches at touchdown, reverse thrust, idle on the taxiway) or its take-off (14 s:
-    /// idle, the spool-up of the take-off run, the climb fading away).
-    func planeSound(leaving: Bool, bush: Bool = false) {
-        guard started else { return }
-        _ = Synth.planeSpecs.count // built here, not on the render thread
-        synth.send(bush ? .bushPlane(leaving) : .plane(leaving))
-        guard !leaving else { return }
-        for d in [4.5, 4.72] { // the screech of the tyres
-            synth.send(.voice(VoiceSpec(noise: true, filter: .bandpass, filterFreq: 2600, vol: 0.22, attack: 0.02, decayEnd: 0.26, floor: 0.001, length: 0.3, delay: d)))
-            tone(1900, 1500, 0.22, .sawtooth, 0.02, d)
+    /// v141.6 (TestFlight, Bristol): a contract vehicle's arrival or departure (`vehSound`), at `gain` (0.5 … 1, from
+    /// how near the middle of the screen the place is and the zoom). Played once per event (the town asks
+    /// `ContractTown.sound`); there is no ambient sound while a vehicle just stands there any more.
+    func vehicle(_ kind: ContractKind, leaving: Bool, gain: Double = 1) {
+        guard started, enabled else { return }
+        for v in VehicleSound.voices(kind, leaving: leaving) {
+            var v = v
+            v.vol *= gain
+            synth.send(.voice(v))
         }
     }
 
@@ -324,6 +285,10 @@ struct VoiceSpec {
     var floor = 0.0001
     var length = 0.15                            // voice stops here
     var delay = 0.0
+    /// v141.6: full volume this long after the attack before the decay; tones through `filter` too; the filter's Q.
+    var hold = 0.0
+    var filtered = false
+    var q = 1.0
 
     init(noise: Bool, filter: FilterKind, filterFreq: Double, vol: Double, attack: Double,
          decayEnd: Double, floor: Double, length: Double, delay: Double) {
@@ -590,12 +555,6 @@ private enum Command {
     case filmStart(Int32, FilmPart)
     case filmNote(Int32, FilmNote)
     case filmStop
-    /// v125: the contract place's ambient sound (kind 0 bus, 1 ship, 2 train) at this level (0 = off).
-    case hum(Int, Double)
-    /// v126: the charter plane lands (false) or takes off (true).
-    case plane(Bool)
-    /// v141: the Mara's bush plane: the same tracks a little higher (×1.35).
-    case bushPlane(Bool)
 }
 
 /// RBJ cookbook biquad, transposed direct form II. Q follows Web Audio
@@ -656,11 +615,13 @@ private struct Voice {
     var t = 0
     var length = 0
     var attack = 0
+    var holdEnd = 0
     var decayEnd = 0
     var sweep = 0
     var freq = 440.0, fRatio = 1.0
     var phase = 0.0
     var vol = 0.1, gain = 0.1, gRatio = 1.0, floor = 0.0001
+    var filtered = false
     var filter = Biquad()
 }
 
@@ -763,49 +724,6 @@ private final class Synth {
     private var filmActive = false
     private var filmCtrl = 0
 
-    // v125: the contract place's hum (`ctrHum`): noise through a filter, a low oscillator through a 90 Hz lowpass, both
-    // under a slow (or square) tremolo; the level glides like setTargetAtTime(…, 0.25 s).
-    struct HumSpec { var nf: Double; var bandpass: Bool; var of: Double; var wave: Wave; var og: Double; var lf: Double; var ld: Double; var square: Bool }
-    static let humSpec: [HumSpec] = [
-        HumSpec(nf: 140, bandpass: false, of: 34, wave: .sawtooth, og: 0.75, lf: 6.5, ld: 0.25, square: false),
-        HumSpec(nf: 520, bandpass: false, of: 44, wave: .sine, og: 0.35, lf: 0.28, ld: 0.5, square: false),
-        HumSpec(nf: 820, bandpass: true, of: 30, wave: .sine, og: 0, lf: 1.6, ld: 0.95, square: true),
-        HumSpec(nf: 1500, bandpass: true, of: 30, wave: .sine, og: 0, lf: 0.3, ld: 0.25, square: false), // v126: the plane's APU
-        HumSpec(nf: 1800, bandpass: true, of: 30, wave: .sine, og: 0, lf: 0.4, ld: 0.25, square: false) // v141: the bush plane ticking over
-    ]
-
-    // v126: the charter plane (`planeSound`): noise through a bandpass (Q 0.8), a sawtooth engine through a 700 Hz
-    // lowpass, both beaten by a 22 Hz square (0.4 … 1), and a sine turbine whine; every frequency and gain follows
-    // linear ramps between these points (seconds, value), like the prototype's linearRampToValueAtTime.
-    struct PlaneTrack {
-        let p: [(Double, Double)]
-        @inline(__always) func at(_ t: Double) -> Double {
-            if t <= p[0].0 { return p[0].1 }
-            for i in 1..<p.count where t < p[i].0 {
-                let a = p[i - 1], b = p[i]
-                return a.1 + (b.1 - a.1) * (t - a.0) / max(b.0 - a.0, 1e-9)
-            }
-            return p[p.count - 1].1
-        }
-    }
-    struct PlaneSpec { let nf, ef, wf, ng, eg, wg: PlaneTrack; let end: Double }
-    static let planeSpecs: [PlaneSpec] = [
-        PlaneSpec(nf: PlaneTrack(p: [(0, 900), (4.5, 600)]), ef: PlaneTrack(p: [(0, 118), (4.5, 92)]), wf: PlaneTrack(p: [(0, 1500), (4.5, 1150)]),
-                  ng: PlaneTrack(p: [(0, 0), (3.6, 0.1), (4.5, 0.08), (5.1, 0.16), (7.5, 0.05), (12, 0.03), (13.4, 0)]),
-                  eg: PlaneTrack(p: [(0, 0), (3.6, 0.05), (8, 0.02), (13.4, 0)]),
-                  wg: PlaneTrack(p: [(0, 0), (3.6, 0.012), (8, 0.006), (13.4, 0)]), end: 13.6),
-        PlaneSpec(nf: PlaneTrack(p: [(0, 500), (4.5, 500), (9, 1100), (13.5, 700)]), ef: PlaneTrack(p: [(0, 80), (4.5, 80), (9, 140), (13.5, 120)]),
-                  wf: PlaneTrack(p: [(0, 900), (4.3, 900), (8, 2100), (13.5, 1700)]),
-                  ng: PlaneTrack(p: [(0, 0), (1, 0.03), (4.4, 0.03), (8, 0.17), (9.5, 0.12), (13.5, 0)]),
-                  eg: PlaneTrack(p: [(0, 0), (1, 0.02), (4.4, 0.02), (8, 0.06), (13.5, 0)]),
-                  wg: PlaneTrack(p: [(0, 0), (1, 0.005), (4.3, 0.005), (8, 0.016), (13.5, 0)]), end: 13.7)
-    ]
-    private var planeOn = false, planeSpec = 0, planeStart: Int64 = 0, planePitch = 1.0
-    private var planeNoise = Biquad(), planeEngLP = Biquad()
-    private var planeEngPhase = 0.0, planeWhPhase = 0.0, planeLfo = 0.0
-    private var humKind = -1
-    private var humNoise = Biquad(), humOscLP = Biquad()
-    private var humGain = 0.0, humTarget = 0.0, humPhase = 0.0, humLfo = 0.0
     /// The prototype's score peaks near full scale; a little headroom on a phone speaker, like the burner.
     private let filmLevel = 0.8
 
@@ -902,26 +820,6 @@ private final class Synth {
         case .filmStart(let id, let part): startFilm(id, part)
         case .filmNote(let id, let n): addFilm(id, n)
         case .filmStop: fadeFilm()
-        case let .hum(kind, level):
-            if kind != humKind {
-                humKind = kind
-                let P = Synth.humSpec[kind]
-                humNoise = Biquad()
-                humNoise.set(P.bandpass ? .bandpass : .lowpass, P.nf, P.bandpass ? 0.9 : 0.7, sr)
-                humOscLP = Biquad()
-                humOscLP.set(.lowpass, 90, 0.7, sr)
-            }
-            humTarget = 0.22 * level
-        case .plane(let leaving), .bushPlane(let leaving):
-            if case .bushPlane = c { planePitch = 1.35 } else { planePitch = 1 }
-            planeOn = true
-            planeSpec = leaving ? 1 : 0
-            planeStart = frame
-            planeNoise = Biquad()
-            planeNoise.set(.bandpass, Synth.planeSpecs[planeSpec].nf.at(0), 0.8, sr)
-            planeEngLP = Biquad()
-            planeEngLP.set(.lowpass, 700, 1, sr)
-            planeEngPhase = 0; planeWhPhase = 0; planeLfo = 0
         }
     }
 
@@ -1105,15 +1003,17 @@ private final class Synth {
         v.start = frame + Int64(s.delay * sr)
         v.length = max(1, Int(s.length * sr))
         v.attack = Int(s.attack * sr)
-        v.decayEnd = max(v.attack + 1, Int(s.decayEnd * sr))
+        v.holdEnd = v.attack + Int(s.hold * sr)
+        v.decayEnd = max(v.holdEnd + 1, Int(s.decayEnd * sr))
         v.sweep = max(1, Int(s.sweep * sr))
         v.freq = s.f1
         v.fRatio = pow(s.f2 / s.f1, 1 / Double(v.sweep))
         v.vol = s.vol
         v.gain = s.vol
         v.floor = s.floor
-        v.gRatio = pow(s.floor / s.vol, 1 / Double(v.decayEnd - v.attack))
-        if s.noise { v.filter.set(s.filter, s.filterFreq, 1, sr) }
+        v.gRatio = pow(s.floor / s.vol, 1 / Double(v.decayEnd - v.holdEnd))
+        v.filtered = s.noise || s.filtered
+        if v.filtered { v.filter.set(s.filter, s.filterFreq, s.q, sr) }
         voices[voiceCount] = v
         voiceCount += 1
     }
@@ -1186,42 +1086,6 @@ private final class Synth {
                 // the opening film's score
                 if filmActive { mono += filmSample() }
 
-                // v125: the contract place's hum
-                if humKind >= 0 && (humGain > 0.00001 || humTarget > 0) {
-                    humGain += (humTarget - humGain) * (1 - exp(-1 / (0.25 * sr)))
-                    let P = Synth.humSpec[humKind]
-                    let dt = P.of / sr
-                    let o = humOscLP.process(Synth.osc(P.wave, humPhase, dt)) * P.og
-                    humPhase += dt
-                    if humPhase >= 1 { humPhase -= 1 }
-                    let l = P.square ? (humLfo < 0.5 ? 1.0 : -1.0) : sin(2 * Double.pi * humLfo)
-                    humLfo += P.lf / sr
-                    if humLfo >= 1 { humLfo -= 1 }
-                    mono += (humNoise.process(noise()) + o) * max(0, 0.55 + l * P.ld * 0.5) * humGain
-                }
-
-                // v126: the charter plane
-                if planeOn {
-                    let P = Synth.planeSpecs[planeSpec], f = frame - planeStart, tt = Double(f) / sr
-                    if tt >= P.end {
-                        planeOn = false
-                    } else {
-                        if f % 64 == 0 { planeNoise.set(.bandpass, P.nf.at(tt), 0.8, sr) }
-                        let nz = planeNoise.process(noise()) * P.ng.at(tt)
-                        let edt = P.ef.at(tt) * planePitch / sr
-                        let en = planeEngLP.process(Synth.osc(.sawtooth, planeEngPhase, edt)) * P.eg.at(tt)
-                        planeEngPhase += edt
-                        if planeEngPhase >= 1 { planeEngPhase -= 1 }
-                        let wh = sin(2 * Double.pi * planeWhPhase) * P.wg.at(tt)
-                        planeWhPhase += P.wf.at(tt) * planePitch / sr
-                        if planeWhPhase >= 1 { planeWhPhase -= 1 }
-                        let am = 0.7 + 0.3 * (planeLfo < 0.5 ? 1.0 : -1.0)
-                        planeLfo += 22 / sr
-                        if planeLfo >= 1 { planeLfo -= 1 }
-                        mono += (nz + en) * am + wh
-                    }
-                }
-
                 // one-shot voices
                 var k = 0
                 while k < voiceCount {
@@ -1232,13 +1096,15 @@ private final class Synth {
                         src = v.filter.process(noise())
                     } else {
                         let dt = v.freq / sr
-                        src = Synth.osc(v.wave, v.phase, dt)
+                        let o = Synth.osc(v.wave, v.phase, dt)
+                        src = v.filtered ? v.filter.process(o) : o
                         v.phase += dt
                         if v.phase >= 1 { v.phase -= floor(v.phase) }
                         if v.t < v.sweep { v.freq *= v.fRatio }
                     }
                     let g: Double
                     if v.t < v.attack { g = v.vol * Double(v.t) / Double(v.attack) }
+                    else if v.t < v.holdEnd { g = v.vol }
                     else if v.t < v.decayEnd { g = v.gain; v.gain *= v.gRatio }
                     else { g = v.floor }
                     mono += src * g

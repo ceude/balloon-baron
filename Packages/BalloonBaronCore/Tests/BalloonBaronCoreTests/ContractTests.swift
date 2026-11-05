@@ -317,6 +317,41 @@ final class ContractTests: XCTestCase {
         XCTAssertNil(g.state.local.contracts!.booked.first { $0.id == k.id })
     }
 
+    /// v141.6 (TestFlight, Bristol): a train sounds once as it arrives and once as it leaves, never in between and never
+    /// twice, however often the town asks.
+    func testVehicleSoundsOncePerArrivalAndDeparture() {
+        var g = inRegion(.bri)
+        var log = VehicleSoundLog()
+        let k = book(&g, n: 30, price: 180, len: 2)
+        setFlag(&g, .green)
+        var sounds: [VehicleSoundEvent.Moment] = []
+        func look() { // every frame the town is looked at asks for both
+            for e in [g.state.contractArrivalEvent, g.state.contractDepartureEvent].compactMap({ $0 }) where log.first(e) {
+                sounds.append(e.moment)
+                if e.moment == .arrive { g.markContractArrived() } else { g.markContractLeaving() }
+            }
+        }
+        for _ in 0..<3 { look() }
+        XCTAssertEqual(sounds, [.arrive])
+        XCTAssertEqual(g.state.contractArrivalEvent, nil, "arrived: no second arrival")
+        _ = run(&g)
+        g.startDay()
+        for _ in 0..<3 { look() }
+        XCTAssertEqual(sounds, [.arrive], "the second day it just stands there")
+        _ = run(&g)
+        XCTAssertNil(g.state.local.contracts!.booked.first { $0.id == k.id })
+        g.startDay()
+        for _ in 0..<3 { look() }
+        XCTAssertEqual(sounds, [.arrive, .depart])
+        // the app redraws, the departure state is reset by a reload that lost `leaving`: the log still says no
+        g.state.local.contracts?.depart?.leaving = nil
+        XCTAssertNotNil(g.state.contractDepartureEvent)
+        look()
+        XCTAssertEqual(sounds, [.arrive, .depart])
+        XCTAssertTrue(log.first(g.state.contractSceneEvent))
+        XCTAssertFalse(log.first(g.state.contractSceneEvent))
+    }
+
     func testJobThatNeverFlewIsNobodysFault() {
         var g = inRegion(.lux)
         _ = book(&g, n: 20, price: 140, len: 1)

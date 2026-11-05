@@ -59,7 +59,16 @@ final class ContractTown {
     var cineArrive: Double?
     /// An arrival or departure waiting to be written to the game (outside the canvas's drawing).
     var pending = false
-    var humLevel = 0.0
+    /// v141.6: every vehicle event that has sounded (`VEH_SND`): none sounds twice, whatever redraws the town.
+    private var sounded = VehicleSoundLog()
+
+    /// Plays a vehicle's arrival or departure once per event; false (and silent) when it has already sounded.
+    @discardableResult
+    func sound(_ e: VehicleSoundEvent, _ kind: ContractKind, gain: Double = 1) -> Bool {
+        guard sounded.first(e) else { return false }
+        SoundEngine.shared.vehicle(kind, leaving: e.moment == .depart, gain: gain)
+        return true
+    }
 }
 
 /// A vehicle at the place: its owner's color, and when it is pulling in (`t0`) or leaving (`t1`).
@@ -74,17 +83,6 @@ extension ContractKind {
         case .train: "bri"
         case .plane: "cap"
         case .bush: "mara"
-        }
-    }
-
-    /// The sound engine's index for its arrival and its hum.
-    var sound: Int {
-        switch self {
-        case .bus: 0
-        case .ship: 1
-        case .train: 2
-        case .plane: 3
-        case .bush: 4
         }
     }
 

@@ -190,13 +190,11 @@ struct HomeTownView: View {
                 }
                 .onChange(of: store.hqDive) { _, dive in if dive { diveIntoTower() } }
                 .onChange(of: covered) { _, c in
-                    if c { SoundEngine.shared.contractHum(0, level: 0) }
                     if c { DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { if covered { asleep = true } } } else { asleep = false }
                 }
                 .onChange(of: store.night) { old, new in if old != nil, new == nil { startMorning() } }
-                .onChange(of: store.collecting) { _, on in if on { collectFromHere(); SoundEngine.shared.contractHum(0, level: 0) } }
+                .onChange(of: store.collecting) { _, on in if on { collectFromHere() } }
                 .onChange(of: store.contractScene == nil) { _, ended in if ended { endContractScene() } }
-                .onDisappear { SoundEngine.shared.contractHum(0, level: 0) }
                 .onChange(of: store.page) { old, new in
                     // Leaving the office, the camera steps back out in front of the tower (`closeHQ`).
                     if old == .holding, new == nil, model.mode == .zoomed { model.focus(Self.tower.0, Self.tower.1) }
@@ -278,45 +276,56 @@ struct HomeTownView: View {
         model.glide(to: model.home, dur: 0.8, inOut: true)
     }
 
-    /// v125 `ctrHumTick`: near the screen's middle the job's vehicle pulls in (the first time you look on its first day),
-    /// a finished job's vehicle leaves, and the place's ambient sound follows how close it is.
+    /// v125 `ctrHumTick`, v141.6 `ctrTick`: looking at the place (zoomed in, the place on screen near the middle, nothing
+    /// over the town), a job's vehicle pulls in (the first time you look on one of its days) or a finished job's vehicle
+    /// leaves, each with its sound, once (`ContractTown.sound`). There is no ambient loop any more: it used to play the
+    /// whole time the place was near the middle, also from the home screen (the place lies just off it), and kept
+    /// playing under a card or the day's report (the frames drawn before the town went to sleep under it turned it back
+    /// on, and with the town asleep nothing turned it off).
     private func contractTick(_ s: GameState, _ v: TownViewport, _ sz: CGSize, _ now: Double) {
         guard let K = s.contractConfig, let P = ContractPlace.of(s.region) else { return }
-        let T = ContractTown.shared, kind = K.kind.sound
-        let p = v.screen(TownGeo.iso(P.center.0, P.center.1))
-        let d = hypot(p.x - sz.width / 2, p.y - sz.height / 2) / max(sz.width, sz.height)
-        if let dp = s.local.contracts?.depart {
+        let T = ContractTown.shared
+        if let dp = s.local.contracts?.depart,
+           (T.departT.map { now - $0 > K.kind.depDur || now < $0 } ?? false) || (dp.leaving == true && T.departT == nil) {
             // v126.1: gone (or the app restarted mid-departure: it has left, no second departure)
-            if (T.departT.map { now - $0 > K.kind.depDur || now < $0 } ?? false) || (dp.leaving == true && T.departT == nil) {
-                if !T.pending {
-                    T.pending = true
-                    DispatchQueue.main.async {
-                        store.act { $0.clearContractDepart() }
-                        T.departT = nil
-                        T.pending = false
-                    }
-                }
-            } else if T.departT == nil && s.day >= dp.from && d < 0.42 && !T.pending {
-                T.departT = now
+            if !T.pending {
+                T.pending = true
                 DispatchQueue.main.async {
-                    SoundEngine.shared.contractArrive(kind, leaving: true)
-                    store.act { $0.markContractLeaving() }
+                    store.act { $0.clearContractDepart() }
+                    T.departT = nil
+                    T.pending = false
                 }
             }
+            return
         }
-        if let due = s.contractDue, d < 0.42, !T.pending {
+        guard model.mode == .zoomed, !covered, !store.busy, !store.showPriceSheet, !T.pending,
+              let gain = Self.contractLook(P, v, sz) else { return }
+        if let due = s.contractDue, let e = s.contractArrivalEvent {
             T.pending = true
             T.arriveT[due.id] = now
             T.departT = nil
             DispatchQueue.main.async {
-                SoundEngine.shared.contractArrive(kind)
+                T.sound(e, K.kind, gain: gain)
                 store.act { $0.markContractArrived() }
                 T.pending = false
             }
+        } else if T.departT == nil, let e = s.contractDepartureEvent {
+            T.departT = now
+            DispatchQueue.main.async {
+                T.sound(e, K.kind, gain: gain)
+                store.act { $0.markContractLeaving() }
+            }
         }
-        let on = !ContractGeo.vehicles(s, now).isEmpty
-        let level = on ? min(max(1.2 - Double(d) * 2.2, 0), 1) * min(max(Double(v.z) / 0.6, 0.3), 1) : 0
-        DispatchQueue.main.async { SoundEngine.shared.contractHum(kind, level: level) }
+    }
+
+    /// v141.6 `ctrLook`: how loud a vehicle at the place sounds from this camera (0.5 … 1: nearer the middle and closer
+    /// in is louder), or nil when the place isn't in view.
+    private static func contractLook(_ P: ContractPlace, _ v: TownViewport, _ sz: CGSize) -> Double? {
+        let p = v.screen(TownGeo.iso(P.center.0, P.center.1))
+        guard p.x >= sz.width * 0.05, p.x <= sz.width * 0.95, p.y >= sz.height * 0.08, p.y <= sz.height * 0.92 else { return nil }
+        let d = Double(hypot(p.x - sz.width / 2, p.y - sz.height / 2) / max(sz.width, sz.height))
+        guard d < 0.42 else { return nil }
+        return min(max(1.25 - d * 1.6, 0.5), 1) * min(max(Double(v.z) / 0.6, 0.55), 1)
     }
 
     /// The camera glides from what the home showed to your office in 0.8 s and stays there while the jeeps leave.
