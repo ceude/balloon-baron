@@ -29,7 +29,7 @@ from asc_files import (FileError, TIMECODE_RE, check_preview, check_screenshot, 
 
 log = logging.getLogger("asc")
 DEFAULT_ROOT = os.path.abspath(os.path.join(HERE, "..", "..", ".."))
-ALL_LANGS = ["tr", "en", "de", "es", "ja", "ko"]
+ALL_LANGS = ["tr", "en", "de", "es", "ja", "ko", "fr"]
 EDITABLE_VERSION = {"PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED", "INVALID_BINARY"}
 LIVE_INFO = {"READY_FOR_DISTRIBUTION", "READY_FOR_SALE", "REPLACED_WITH_NEW_INFO", "PROCESSING_FOR_DISTRIBUTION",
              "PROCESSING_FOR_APP_STORE"}
@@ -772,9 +772,9 @@ def build_parser():
         p.add_argument("--dry-run", action="store_true", help="validate files and print every request; write nothing")
         p.add_argument("--offline", action="store_true", help="with --dry-run: no requests at all, even with credentials")
         p.add_argument("--yes", action="store_true", help="write without asking")
-        p.add_argument("--extra-locales", action="store_true", help="also en-GB and es-MX (config extraLocales)")
+        p.add_argument("--extra-locales", action="store_true", help="also en-GB, es-MX and fr-CA (config extraLocales)")
         if langs:
-            p.add_argument("--langs", default=",".join(ALL_LANGS), help="tr,en,de,es,ja,ko (default: all)")
+            p.add_argument("--langs", default=",".join(ALL_LANGS), help="tr,en,de,es,ja,ko,fr (default: all)")
         return p
 
     writer("metadata", "store texts: appStoreVersionLocalizations + appInfoLocalizations")

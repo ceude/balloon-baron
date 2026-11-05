@@ -19,6 +19,9 @@
     ],
     "ko": [
       "ko"
+    ],
+    "fr": [
+      "fr-FR"
     ]
   },
   "extraLocales": {
@@ -27,6 +30,9 @@
     ],
     "es": [
       "es-MX"
+    ],
+    "fr": [
+      "fr-CA"
     ]
   },
   "useExtraLocales": false,

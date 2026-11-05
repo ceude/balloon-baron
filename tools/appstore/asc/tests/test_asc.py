@@ -364,7 +364,7 @@ class IapData(unittest.TestCase):
         for f in glob.glob(os.path.join(ROOT, "tools", "strings", "*.py")):
             for line in open(f, encoding="utf-8"):
                 line = line.strip()
-                if line.startswith('add("store.'):
+                if line.startswith('add("store.') and line.endswith(")"):  # one-line add() calls only
                     a = ast.literal_eval(line[3:])
                     strings[a[0]] = a[1:7]
         keys = {"decorpack": "decorPack", "figurepack": "figurePack", "worldtour": "worldTour"}
@@ -373,6 +373,12 @@ class IapData(unittest.TestCase):
             game = strings["store." + keys.get(s, s)]
             order = ["en", "tr", "de", "es", "ja", "ko"]  # the argument order of add() in tools/strings
             self.assertEqual([p["localizations"][l]["name"] for l in order], list(game), p["productId"])
+            fr = {}  # French is in its own tables, tools/strings/fr_*.py
+            for f in glob.glob(os.path.join(ROOT, "tools", "strings", "fr_*.py")):
+                ns = {}
+                exec(open(f, encoding="utf-8").read(), ns)
+                fr.update(ns["FR"])
+            self.assertEqual(p["localizations"]["fr"]["name"], fr["store." + keys.get(s, s)], p["productId"])
 
 
 class FakeApi(asc_client.Api):
@@ -463,7 +469,7 @@ class Idempotency(unittest.TestCase):
         self.assertEqual(writes[0][:2], ("PATCH", "/v2/inAppPurchases/G"))
         self.assertEqual(set(writes[0][2]), {"reviewNote"})  # reference name kept, review note filled
         created = [w[2]["locale"] for w in writes[1:]]
-        self.assertEqual(created, ["de-DE", "es-ES", "ja", "ko"])  # tr and en-US exist; tr's hand-typed name is kept
+        self.assertEqual(created, ["de-DE", "es-ES", "ja", "ko", "fr-FR"])  # tr and en-US exist; tr's hand-typed name is kept
         self.assertTrue(any("Varak altın" in w for w in rep.warnings))
 
     def test_wrong_iap_type_stops(self):

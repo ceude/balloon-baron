@@ -231,7 +231,7 @@ Her ürün için yapılanlar:
    - referans adı,
    - `familySharable=false`,
    - inceleme notu.
-2. Altı dilde ad (≤30) ve açıklama (≤45) eklenir. Adlar oyundaki adlardır (`tools/strings`, `store.<ürün>` anahtarı).
+2. Yedi dilde ad (≤30) ve açıklama (≤45) eklenir. Adlar oyundaki adlardır (`tools/strings`, `store.<ürün>` anahtarı).
 3. **Fiyat:** taban ülke `config.json` → `iap.baseTerritory` (varsayılan `DEU`, Almanya, EUR). O ülkenin fiyat noktaları arasında .storekit'teki euro fiyatı (0,99 / 1,99 / 4,99 / 6,99 / 9,99) aranır ve fiyat programı kurulur. Diğer ülkelerin fiyatını Apple eşitler. Komut satırından değiştirmek için `--base-territory TUR`.
 4. **Satış bölgeleri:** bütün ülkeler, yeni ülkeler de otomatik.
 5. **İnceleme ekran görüntüsü:** `review/<ürün>.png`. Ürünün çarşıdaki satın alma kartını gösterir.

@@ -151,5 +151,29 @@ const CAPTIONS = {
       night: { head: '밤이면|반짝이는 마을', sub: '사무실이 큰 마을이 된다' },
       show: { head: '밤하늘을 수놓는|열기구 쇼', sub: '모든 기단이 하늘로' }
     }
+  },
+  fr: {
+    locale: 'fr-FR',
+    brand: ['Balloon Baron', 'Cappadoce'],
+    noAds: 'Sans pub',
+    cities: { cap: ['Cappadoce', 'Turquie'], lux: ['Louxor', 'Égypte'], bri: ['Bristol', 'Angleterre'], abq: ['Albuquerque', 'États-Unis'] },
+    badges: {
+      idle: [['@IDLE', 'en une journée'], ['@FLEET', 'ballons dans la flotte']],
+      holding: { before: ['Jour 2', '1', 'ballon'], after: ['Jour @DAY', '@FLEET', 'ballons'] },
+      rivals: ['@SHARE', 'de parts de marché'],
+    },
+    preview: ['Pilote à|l’aube', 'Bâtis ton empire|de montgolfières', 'Les jours filent,|la caisse se remplit', 'Quatre villes,|un empire', 'La nuit,|tout s’illumine', 'Un show géant|dans le ciel'],
+    screens: {
+      hero: { head: 'Bâtis ton empire|de montgolfières', sub: 'D’une nacelle à toute une flotte' },
+      cities: { head: 'Quatre villes,|un empire', sub: 'De la Cappadoce à la Balloon Fiesta' },
+      flight: { head: 'Pilote|à l’aube', sub: 'Vol réaliste en montgolfière' },
+      idle: { head: 'Les jours filent,|la caisse se remplit', sub: 'Jeu de gestion idle avec avance rapide' },
+      holding: { head: 'D’une nacelle|à un empire', sub: 'Du jour 2 au jour @DAY' },
+      crew: { head: 'Chaque pilote|a son caractère', sub: 'Méthodique, casse-cou, fidèle' },
+      design: { head: 'Ton ballon,|ta signature', sub: 'Ballons cœur, étoile et tête de mort' },
+      rivals: { head: 'Rachète|tes concurrents', sub: 'La stratégie gagne le marché' },
+      night: { head: 'La nuit,|tout s’illumine', sub: 'Ton bureau devient une ville' },
+      show: { head: 'Un show géant|dans le ciel', sub: 'Spectacle de ballons\u00a0: toute la flotte' }
+    }
   }
 };if (typeof module !== 'undefined') module.exports = CAPTIONS;

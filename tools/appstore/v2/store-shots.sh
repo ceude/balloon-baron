@@ -5,7 +5,7 @@
 set -u
 APP=$1; OUT=$2
 LIST="$(dirname "$0")/store-shots.txt"
-LANGS=${LANGS:-"en tr de es ja ko"}; DEVICES=${DEVICES:-"iphone ipad"}; SCENES=${SCENES:-}; VIDEO=${VIDEO:-false}
+LANGS=${LANGS:-"en tr de es ja ko fr"}; DEVICES=${DEVICES:-"iphone ipad"}; SCENES=${SCENES:-}; VIDEO=${VIDEO:-false}
 BID=com.ceude.balloonbaron
 SIMCTL=$(xcrun -f simctl)
 mkdir -p "$OUT"
@@ -21,10 +21,10 @@ echo "runtime $RUNTIME / phone $PHONE / ipad $IPAD"
 limit() { local t=$1; shift; perl -e 'alarm shift; exec @ARGV' "$t" "$@"; }
 stamp() { echo "$(date +%H:%M:%S) $*"; }
 # the company on screen, named in each language (the Turkish set's "Şafak Balon": "Dawn Balloon")
-company_of() { case $1 in en) echo "Daybreak Balloons";; tr) echo "Şafak Balon";; de) echo "Ballon Morgenrot";; es) echo "Globos Alba";; ja) echo "あけぼの気球";; ko) echo "새벽 열기구";; esac; }
+company_of() { case $1 in en) echo "Daybreak Balloons";; tr) echo "Şafak Balon";; de) echo "Ballon Morgenrot";; es) echo "Globos Alba";; ja) echo "あけぼの気球";; ko) echo "새벽 열기구";; fr) echo "Ballons de l’Aube";; esac; }
 # a screenshot, taken again while the frame is still blank (a white launch frame compresses to a tiny PNG)
 shoot() { for t in 1 2 3 4 5; do limit 30 xcrun simctl io "$1" screenshot "$2" < /dev/null > /dev/null 2>&1; [ "$(stat -f%z "$2" 2>/dev/null || echo 0)" -gt 250000 ] && return; echo "  blank $2, again"; sleep 3; done; }
-locale_of() { case $1 in en) echo en_US;; tr) echo tr_TR;; de) echo de_DE;; es) echo es_ES;; ja) echo ja_JP;; ko) echo ko_KR;; esac; }
+locale_of() { case $1 in en) echo en_US;; tr) echo tr_TR;; de) echo de_DE;; es) echo es_ES;; ja) echo ja_JP;; ko) echo ko_KR;; fr) echo fr_FR;; esac; }
 wanted() { [ -z "$SCENES" ] && return 0; for s in $SCENES; do [ "$s" = "$1" ] && return 0; done; return 1; }
 
 for DEV in $DEVICES; do

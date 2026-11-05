@@ -33,6 +33,10 @@
         "ko": {
           "name": "금박",
           "description": "열기구에 입히는 금박 무늬"
+        },
+        "fr": {
+          "name": "Feuille d’or",
+          "description": "Un motif feuille d’or pour tes ballons"
         }
       }
     },
@@ -68,6 +72,10 @@
         "ko": {
           "name": "이즈니크 타일",
           "description": "열기구에 입히는 이즈니크 타일 무늬"
+        },
+        "fr": {
+          "name": "Céramique d’Iznik",
+          "description": "Un motif céramique d’Iznik pour tes ballons"
         }
       }
     },
@@ -103,6 +111,10 @@
         "ko": {
           "name": "별자리",
           "description": "열기구에 입히는 별자리 무늬"
+        },
+        "fr": {
+          "name": "Constellation",
+          "description": "Un motif constellation pour tes ballons"
         }
       }
     },
@@ -138,6 +150,10 @@
         "ko": {
           "name": "카파도키아 킬림",
           "description": "열기구에 입히는 카파도키아 킬림 무늬"
+        },
+        "fr": {
+          "name": "Kilim de Cappadoce",
+          "description": "Un motif kilim de Cappadoce pour tes ballons"
         }
       }
     },
@@ -173,6 +189,10 @@
         "ko": {
           "name": "하트 열기구",
           "description": "하트 모양 열기구 외피"
+        },
+        "fr": {
+          "name": "Ballon cœur",
+          "description": "Une enveloppe de ballon en forme de cœur"
         }
       }
     },
@@ -208,6 +228,10 @@
         "ko": {
           "name": "별 열기구",
           "description": "별 모양 열기구 외피"
+        },
+        "fr": {
+          "name": "Ballon étoile",
+          "description": "Une enveloppe de ballon en forme d’étoile"
         }
       }
     },
@@ -243,6 +267,10 @@
         "ko": {
           "name": "해골 열기구",
           "description": "해골 모양 열기구 외피"
+        },
+        "fr": {
+          "name": "Ballon tête de mort",
+          "description": "Une enveloppe en forme de tête de mort"
         }
       }
     },
@@ -278,6 +306,10 @@
         "ko": {
           "name": "광장 분수",
           "description": "마을 광장에 놓는 분수"
+        },
+        "fr": {
+          "name": "Fontaine de la place",
+          "description": "Une fontaine pour la place de ta ville"
         }
       }
     },
@@ -313,6 +345,10 @@
         "ko": {
           "name": "헤자르펜 동상",
           "description": "마을에 세우는 헤자르펜 동상"
+        },
+        "fr": {
+          "name": "Statue de Hezarfen",
+          "description": "Une statue de Hezarfen pour ta ville"
         }
       }
     },
@@ -348,6 +384,10 @@
         "ko": {
           "name": "회사 깃발",
           "description": "마을에 거는 우리 회사 깃발"
+        },
+        "fr": {
+          "name": "Drapeaux de la compagnie",
+          "description": "Les drapeaux de ta compagnie en ville"
         }
       }
     },
@@ -383,6 +423,10 @@
         "ko": {
           "name": "창업자 팩",
           "description": "모든 무늬, 모양, 장식, 쇼 도형"
+        },
+        "fr": {
+          "name": "Pack Fondateur",
+          "description": "Tous les motifs, formes, décors et figures"
         }
       }
     },
@@ -418,6 +462,10 @@
         "ko": {
           "name": "광장 장식",
           "description": "비둘기, 환영 아치, 정원 카페, 킬림 전시"
+        },
+        "fr": {
+          "name": "Décorations de la place",
+          "description": "Pigeons, arche, café-jardin et kilims"
         }
       }
     },
@@ -453,6 +501,10 @@
         "ko": {
           "name": "쇼 도형",
           "description": "열기구 쇼 피날레를 위한 도형 다섯 가지"
+        },
+        "fr": {
+          "name": "Figures du spectacle",
+          "description": "Cinq figures pour le final du spectacle"
         }
       }
     },
@@ -488,6 +540,10 @@
         "ko": {
           "name": "그랜드 투어",
           "description": "앨버커키, 룩소르, 브리스톨, 마사이마라"
+        },
+        "fr": {
+          "name": "Grand Tour",
+          "description": "Albuquerque, Louxor, Bristol et le Mara"
         }
       }
     },
@@ -523,6 +579,10 @@
         "ko": {
           "name": "후원자 에디션",
           "description": "그랜드 투어, 창업자 팩, 마을 후원자 명판"
+        },
+        "fr": {
+          "name": "Édition Soutien",
+          "description": "Grand Tour, Pack Fondateur et une plaque"
         }
       }
     }

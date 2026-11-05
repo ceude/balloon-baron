@@ -11,7 +11,7 @@ on:
     inputs:
       langs:
         description: Languages (space separated)
-        default: en tr de es ja ko
+        default: en tr de es ja ko fr
       devices:
         description: Devices (iphone ipad)
         default: iphone ipad
