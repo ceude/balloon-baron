@@ -3,7 +3,7 @@
 // fillText goes through the app's own catalog (<raw>/tr2en.json, made by tr2en.py) plus a few extras below.
 //   NODE_PATH=$(npm root -g) node tools/appstore/v2/shots.js <raw> iphone        (writes <raw>/saves.json)
 //   NODE_PATH=$(npm root -g) node tools/marketing/reels/capture.js <raw> [scene…]   (writes <raw>/clips/<scene>/0000.jpg…, 1329x2880)
-// PROBE=1 takes one frame per scene and lists the texts that stayed Turkish.
+// PROBE=1 takes one frame per scene. Either way it lists the texts that stayed Turkish and were on screen.
 const { chromium } = require('playwright');
 const fs = require('fs');
 const path = require('path');
@@ -21,9 +21,16 @@ Object.assign(DICT, {
   'Dünya haritası': 'World map', 'Otomatik': 'Autopilot', 'Otomatik mod': 'Autopilot', 'Buradasın': 'You are here', 'Kilitli': 'Locked', 'Yakında': 'Soon', 'Baron': 'Baron', 'Bölgeye git': 'Go there', 'Kapat': 'Close',
   'Brülör': 'Burner', 'BRÜLÖR': 'BURNER', 'VALF': 'VENT', 'İrtifa': 'Altitude', 'Dikey': 'Vertical', 'Yakıt': 'Fuel', 'Panorama fotoğrafı': 'Panorama photo',
   'Hedef': 'Goals', 'Holding': 'Holding', 'Pazar': 'Market', 'Banka': 'Bank', 'Ekip': 'Crew', 'Filo': 'Fleet', 'Pas geç': 'Skip', 'İlerlet': 'Advance', 'Sigorta': 'Insurance', 'Bilet': 'Ticket', 'Ayarla': 'Set',
+  'Balonlarının pilotu yok. Birini kendin uçur ya da pilot al.': 'No pilot for your balloons. Fly one yourself or hire a pilot.', 'SON DAKİKA': 'BREAKING NEWS', 'BALON': 'BALLOON', 'SERVİSİ': 'SHUTTLE', 'İlerliyor': 'In progress', 'Rekor projesi': 'Record project',
+  'Amirali sen uçuruyorsun': 'You fly the flagship', 'Amirali pilot uçuruyor': 'A pilot flies the flagship', 'Turistlere göre': 'By tourists',
+  'Hedef: sağdaki iniş alanı.': 'Goal: the landing field on the right.', 'Yer ekibinin tam yanına, 40 m içine in.': 'Land right by the ground crew, within 40 m.',
+  'Fransa': 'France', 'Almanya': 'Germany', 'Hollanda': 'Netherlands', 'Birleşik Krallık': 'United Kingdom', 'İtalya': 'Italy', 'İspanya': 'Spain', 'Japonya': 'Japan', 'Çin': 'China', 'Kore': 'Korea', 'Rusya': 'Russia', 'Brezilya': 'Brazil',
   'HANGAR': 'HANGAR', 'EKİP': 'CREW', 'FİNANS': 'FINANCE', 'ŞİRKETLER': 'COMPANIES', 'AJANS': 'AGENCY', 'SATIŞ': 'SALES', 'OTEL': 'HOTEL', 'OTELLER': 'HOTELS',
 });
-const PAT = { 'Bugünkü görev: (.+)': "Today's mission: $1", '(\\+?[\\d.,]+) yolcu': '$1 passengers', 'Yolcu topla \\(1 balon\\)': 'Collect passengers (1 balloon)', '✓ ?Sigorta': '✓ Insurance', 'Kurucuyla uçuş:?': "Founder's flight", 'Tahmini': 'Expected', 'yolcu ·': 'passengers ·', 'Gün (\\d+) sabahına geç': 'On to the morning of day $1', 'Gün (\\d+)': 'Day $1', 'Yolcu topla \\((\\d+) balon\\)': 'Collect passengers ($1 balloons)', 'Tahmini (\\S+) yolcu · (.+)': 'Expected $1 passengers · $2',
+const PAT = { 'Bilet (\\S+), (\\d+) (?:balon|balloons)': 'Ticket $1, $2 balloons', 'Bilet (.+)': 'Ticket $1', '(\\d+) koltuk': '$1 seats', '(\\d+) dışarıda': '$1 grounded',
+  '(\\d+) pilot bekliyor': '$1 pilots waiting', '(\\d+) onarımda': '$1 in repair', '(\\d+) pilotu uyuyakaldı': '$1 pilot overslept', '(\\d+) yolcu sepette\\.': '$1 passengers in the basket.',
+  'Amirali sen uçuruyorsun: yolcuları %25 fazla öder \\((.+)\\)\\.': 'You fly the flagship: its passengers pay 25% more ($1).', 'Pazar payın: %(\\d+)\\.': 'Your market share: $1%.',
+  'Sarı bayrak −%(\\d+)': 'Yellow flag −$1%', 'Holding yatırımları \\+%(\\d+)': 'Holding investments +$1%', '(.+), gün (\\d+)': '$1, day $2', 'amiral balonundaki yolcular %25 fazla öder\\.': 'passengers in the flagship pay 25% more.', 'Bugünkü görev: ([^(]+?)( \\(\\+.+\\))?': "Today's mission: $1$2", '(\\+?[\\d.,]+) yolcu': '$1 passengers', 'Yolcu topla \\(1 balon\\)': 'Collect passengers (1 balloon)', '✓ ?Sigorta': '✓ Insurance', 'Kurucuyla uçuş:?': "Founder's flight", 'Tahmini': 'Expected', 'yolcu ·': 'passengers ·', 'Gün (\\d+) sabahına geç': 'On to the morning of day $1', 'Gün (\\d+)': 'Day $1', 'Yolcu topla \\((\\d+) balon\\)': 'Collect passengers ($1 balloons)', 'Tahmini (\\S+) yolcu · (.+)': 'Expected $1 passengers · $2',
   'Yerde rüzgâr (\\d+) km/sa': 'Surface wind $1 km/h', '(\\d+) km/sa': '$1 km/h', 'İniş alanı (.+) km': 'Landing field $1 km', 'Gün (\\d+) gecesi': 'Night of day $1',
   'Balon Şöleni · (\\d+) balon': 'Balloon Show · $1 balloons', '(.+) Holding': '$1 Holding', 'Holding kasası (.+)': 'Holding cash $1', '(\\d+)\\. gün': 'Day $1' };
 
@@ -72,22 +79,42 @@ const SCENES = [
         P.push([new RegExp('^' + re + '$'), out]);
       }
       window.__miss = new Set();
+      const fix = v => v.replace(/Luksor/g, 'Luxor').replace(/Kapadokya/g, 'Cappadocia');
+      const turkish = t => /[çğıöşüÇĞİÖŞÜâ]|\b(ve|bir|gün|balon|yolcu|koltuk|bilet)\b/i.test(t);
+      /* English for t, or null. Exact entries first, then patterns (whose captured pieces are translated too, as in
+         "Today's mission: <mission>"), then a line of " · "-separated parts piece by piece. */
+      const en = (t, depth = 0) => {
+        if (dict[t] !== undefined) return fix(dict[t]);
+        if (depth > 3) return null;
+        for (const [re, out] of P) if (re.test(t)) return fix(t.replace(re, (m, ...g) => out.replace(/\$(\d)/g, (q, i) => { const v = g[i - 1]; if (typeof v !== 'string') return v ?? ''; const w = v.trim(); return turkish(w) ? (en(w, depth + 1) ?? v) : v; })));
+        if (t.includes(' · ')) { const parts = t.split(' · ').map(x => turkish(x) ? en(x.trim(), depth + 1) : x); if (parts.every(x => x != null)) return parts.join(' · '); }
+        return null;
+      };
       const tl = s => {
         if (typeof s !== 'string') return s;
         const t = s.trim(); if (!t || !/[a-zçğıöşüâîû]/i.test(t)) return s;
-        const fix = v => v.replace(/Luksor/g, 'Luxor').replace(/Kapadokya/g, 'Cappadocia');
-        if (dict[t] !== undefined) return s.replace(t, fix(dict[t]));
-        /* the pieces a pattern captured are looked up too (mission names inside "Today's mission: …") */
-        for (const [re, out] of P) if (re.test(t)) return s.replace(t, fix(t.replace(re, (m, ...g) => out.replace(/\$(\d)/g, (q, i) => { const v = g[i - 1]; return typeof v === 'string' && dict[v.trim()] !== undefined ? dict[v.trim()] : v; }))));
-        if (/[çğıöşüÇĞİÖŞÜâ]|\b(ve|bir|gün|balon|yolcu)\b/i.test(t)) window.__miss.add(t);
-        return s;
+        const e = en(t); return e != null ? s.replace(t, e) : s;
       };
       window.__tl = tl;
+      /* what stays Turkish and is actually on screen: canvas text drawn this frame, and visible DOM text */
+      window.__cmiss = new Set();
       const C = CanvasRenderingContext2D.prototype;
-      for (const f of ['fillText', 'strokeText', 'measureText']) { const o = C[f]; C[f] = function (t, ...a) { return o.call(this, tl(t), ...a); }; }
+      for (const f of ['fillText', 'strokeText']) { const o = C[f]; C[f] = function (t, ...a) { const v = tl(t); if (typeof v === 'string' && turkish(v)) window.__cmiss.add(v.trim()); return o.call(this, v, ...a); }; }
+      { const o = C.measureText; C.measureText = function (t, ...a) { return o.call(this, tl(t), ...a); }; }
       window.__translateDOM = () => {
         const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
         for (let n; (n = w.nextNode());) { if (n.parentNode && /SCRIPT|STYLE/.test(n.parentNode.nodeName)) continue; const v = tl(n.nodeValue); if (v !== n.nodeValue) n.nodeValue = v; }
+      };
+      window.__visibleMiss = () => {
+        const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        for (let n; (n = w.nextNode());) {
+          const el = n.parentElement, t = n.nodeValue.trim(); if (!el || !t || !turkish(t) || /SCRIPT|STYLE/.test(el.nodeName)) continue;
+          if (el.checkVisibility && !el.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true })) continue;
+          const r = document.createRange(); r.selectNodeContents(n); const b = r.getBoundingClientRect();
+          if (b.width < 1 || b.bottom < 0 || b.top > innerHeight || b.right < 0 || b.left > innerWidth) continue;
+          window.__miss.add(t);
+        }
+        for (const t of window.__cmiss) window.__miss.add('[canvas] ' + t); window.__cmiss.clear();
       };
     }, [DICT, PAT]);
     const p = await ctxB.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
@@ -110,13 +137,13 @@ const SCENES = [
       if (sc.at && sc.at[f]) await p.evaluate(sc.at[f]);
       await p.evaluate(() => { $('hez').hidden = true; $('toast') && ($('toast').style.display = 'none'); __translateDOM(); });
       await p.clock.runFor(STEP * (sc.step || 1));
-      await p.evaluate(() => __translateDOM());
+      await p.evaluate(() => { __translateDOM(); __visibleMiss(); });
       await p.screenshot({ path: path.join(dir, String(f).padStart(4, '0') + '.jpg'), type: 'jpeg', quality: 93 });
     }
     const miss = await p.evaluate(() => [...__miss]); miss.forEach(m => missing.add(sc.id + ': ' + m));
     console.log(sc.id, n, 'frames', errs.length ? errs : '');
     await ctxB.close();
   }
-  if (missing.size) console.log('still Turkish:\n' + [...missing].join('\n'));
+  if (missing.size) console.log('still Turkish on screen:\n' + [...missing].join('\n'));
   await br.close();
 })();
