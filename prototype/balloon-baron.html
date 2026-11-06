@@ -14152,8 +14152,9 @@ const HOLD_DEEDS = {
 };
 function holdDeed(k) {
   const [hz, head, sub] = HOLD_DEEDS[k];
-  if (hz) S.hezQ.push('news:' + hz);
-  paperAdd(3, head(S.company), sub);
+  /* v141.8: buying the same thing for several regions at once (TV, billboards) gets one word and one story, not one each */
+  if (hz && !S.hezQ.includes('news:' + hz)) S.hezQ.push('news:' + hz);
+  if (!(S.paperNext || []).some(p => p.head === head(S.company))) paperAdd(3, head(S.company), sub);
 }
 /* The company's round days get a word from the guide and a story in the morning paper. */
 const MILESTONES = {

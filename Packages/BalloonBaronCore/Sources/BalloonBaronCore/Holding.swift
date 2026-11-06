@@ -340,8 +340,9 @@ extension Game {
     /// A holding investment gets its due: the guide of the region you're in praises it (celebrities and offices
     /// have their own lines) and the next morning's paper reports it.
     mutating func celebrate(_ d: HoldingDeed) {
-        if d != .celebrity && d != .office { state.hezQueue.append(.deed(d)) }
-        addPaper(.deed(d))
+        // v141.8: buying the same thing for several regions at once (TV, billboards) gets one word and one story, not one each
+        if d != .celebrity && d != .office && !state.hezQueue.contains(.deed(d)) { state.hezQueue.append(.deed(d)) }
+        if !(state.paperNext ?? []).contains(.deed(d)) { addPaper(.deed(d)) }
     }
 
     /// v136 (TestFlight): a national or worldwide campaign lifts popularity in every region you own on the day you buy it:
