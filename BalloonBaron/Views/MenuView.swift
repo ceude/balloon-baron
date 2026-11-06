@@ -28,7 +28,7 @@ struct MenuView: View {
     @State private var armed = false
 
     private static let privacyURL = URL(string: "https://ceude.github.io/balloon-baron/privacy-policy.html")!
-    private static let supportURL = URL(string: "https://github.com/ceude/balloon-baron/issues")!
+    private static let supportURL = URL(string: "https://ceude.github.io/balloon-baron/support.html")!
 
     private enum Tint {
         static let game = Theme.coral

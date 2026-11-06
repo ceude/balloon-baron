@@ -83,7 +83,8 @@ enum Telemetry {
     }
 
     static func bought(_ k: StoreItem, day: Int) {
-        send("store.bought", value: Double(day), ["item": k.rawValue])
+        _ = k  // v141.8: no item name, so the App Store privacy answers (no purchase data) stay true
+        send("store.bought", value: Double(day), [:])
     }
 
     /// v122: a step of the tutorial that shows (`tutorial.price` … `tutorial.ga_bank_done`), once each, with the day:

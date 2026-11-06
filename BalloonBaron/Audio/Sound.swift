@@ -154,7 +154,7 @@ final class SoundEngine {
         guard started else { return }
         switch s {
         case .tick:
-            let now = ProcessInfo.processInfo.systemUptime
+            let now = Date().timeIntervalSinceReferenceDate
             if now - lastTick < 0.035 { return }
             lastTick = now
             tone(1500, 1300, 0.04, .sine, 0.05)
