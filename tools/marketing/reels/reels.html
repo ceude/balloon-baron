@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Balloon Baron reels</title>
+<style>
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-ExtraBold.ttf); font-weight: 800; }
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-Bold.ttf); font-weight: 700; }
+@font-face { font-family: B; src: url(../../../BalloonBaron/Fonts/Barlow-Bold.ttf); font-weight: 700; }
+@font-face { font-family: B; src: url(../../../BalloonBaron/Fonts/Barlow-ExtraBold.ttf); font-weight: 800; }
+html, body { margin: 0; background: #000; overflow: hidden; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="../../appstore/art.js"></script>
+<script src="../../appstore/v2/art2.js"></script>
+<script src="lib.js"></script>
+<script src="reels.js"></script>
+<script>
+/* render.js drives this page: init(reel, clipDir, clipCounts, worldPath) once, then frame(f) for every frame. */
+const cv = document.getElementById('c'); cv.width = W; cv.height = H;
+ctx = cv.getContext('2d');
+let REEL;
+async function init(n, dir, counts, world) {
+  CLIPDIR = dir; CLIPS = counts; WORLD_D = world; REEL = REELS[n];
+  await Promise.all(['800 40px BC', '700 40px BC', '700 40px B', '800 40px B'].map(f => document.fonts.load(f)));
+  ICON = await loadImg('../../../BalloonBaron/Assets.xcassets/AppIcon.appiconset/AppIcon.png');
+  buildDawn();
+  return REEL.frames;
+}
+async function frame(f, q = .94) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  await REEL.draw(f);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  grainOverlay(f, .035);
+  return q === 'png' ? cv.toDataURL('image/png') : cv.toDataURL('image/jpeg', q);
+}
+</script>
+</body>
+</html>
