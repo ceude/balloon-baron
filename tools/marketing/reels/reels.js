@@ -76,7 +76,7 @@ REELS[1] = {
       if (i < 2) await footage('flight', f, B(10), { start: 90, speed: 1.6, z0: 1.7, z1: 1.5, fx: .42, fy: .66, len: 30 });
       else await footage('collect', f, B(12), { start: 10, speed: 1.2, z0: 1.06, z1: 1.0, fx: .5, fy: .7, len: 30 });
       shade(.32, .2, .6);
-      kinetic(f, [words[i]], 540, 300, { f0: B(10 + i), size: 200 });
+      kinetic(f, [words[i]], 540, 300, { f0: B(10 + i), size: 190, maxW: 740 }); /* inside the right 150 px margin */
     } else if (f < B(24)) {
       /* the growth: a new picture on every beat, the fleet counter racing */
       const seq = [['early', 1.95], ['town10', 1.75], ['town10', 1.6], ['town40', 1.55], ['town40', 1.45], ['town90', 1.3], ['town90', 1.2], ['empire', 1.12], ['empire', 1.04], ['empire', 1.0]]; /* wider as the fleet grows */
@@ -275,3 +275,56 @@ REELS[3] = {
 
 /* a tuning sheet (not a reel): the dawn world at camera heights 0, 150, … */
 REELS[0] = { frames: 10, async draw(f) { dawn({ t: 10, cam: { x: 0, y: 200 + f * 150, z: 1 } }); if (f === 9) endCard(f + 60, 0, ['TEST', '*LINE.*']); } };
+
+/* ======================= sound: the same moments, as events for sfx.js =======================
+   [frame, sound, options]. Frames use the same B() beats as the pictures above, so a hit lands on the frame its
+   word, cut or counter does. Sounds: boom (808 kick + sub drop), kick, clap, snare, whoosh, riser (o.len frames long, ending on
+   its frame: the hit it leads into), coin, kaching, fwoosh (burner), scratch, bwomp, tick, tock, shimmer, laugh (o.n "ha"s,
+   o.gap frames apart), pop, ding. o.g scales the level. */
+const counterTicks = (a, b, step = 2) => { const ev = []; for (let f = a; f < b; f += step) ev.push([f, 'coin', { g: .35 + .3 * (f - a) / (b - a), p: 1 + .25 * (f - a) / (b - a) }]); return ev; };
+/* the end card's own beats (endCard in lib.js: headline, icon at +2, title +2.5, line +3, pill +3.5) */
+const endSfx = f0 => [[f0, 'riser', { len: B(2) }], [f0, 'boom', { g: 1.1 }], [f0 + 5, 'clap'], [f0 + B(2), 'shimmer'], [f0 + B(2), 'kick', { g: .7 }],
+  [f0 + B(2.5), 'boom', { g: .8 }], [f0 + B(3), 'tick', { g: .6 }], [f0 + B(3.5), 'ding'], [f0 + B(3.5), 'clap', { g: .7 }]];
+REELS[1].sfx = [
+  [0, 'boom', { g: 1.2 }], [0, 'whoosh', { g: .6, rev: 1 }], [B(1), 'boom'], [B(1), 'clap'],                           /* HE THINKS / YOU CAN'T FLY */
+  [B(2), 'whoosh'], [B(2) + 3, 'pop'], [B(4), 'clap', { g: .8 }],                                                       /* the phone, the taunt, DAY 2 tag */
+  [B(6), 'kick'], [B(6), 'laugh', { n: 4, gap: B(.5) }],                                                                /* HA HA */
+  [B(8), 'riser', { len: B(1.5) }], [B(8), 'boom', { g: 1.2 }], [B(8), 'fwoosh'], [B(9), 'boom'],                     /* CHALLENGE ACCEPTED */
+  [B(10), 'snare'], [B(10), 'fwoosh', { g: .7 }], [B(11), 'snare'], [B(12), 'whoosh', { g: .7 }], [B(12), 'snare'], [B(12), 'kaching'], [B(13), 'snare'],
+  ...[14, 16, 18, 20, 22, 23].map(b => [B(b), 'whoosh', { g: .45, short: 1 }]),                                         /* a cut on every beat */
+  [B(14), 'kick', { g: .8 }], ...[15, 17, 19].map(b => [B(b), 'boom', { g: .9 }]), [B(21), 'boom', { g: 1.25 }], [B(21), 'shimmer', { g: .6 }], /* 10, 40, 90, 164 */
+  [B(24), 'whoosh'], ...counterTicks(B(24), B(25.5)), [B(25.5), 'kaching'], [B(25), 'clap'],                            /* the bank, on autopilot */
+  [B(26), 'scratch'], [B(26) + 6, 'bwomp'],                                                                             /* ...wait. 164?! */
+  [B(28), 'boom', { g: 1.1 }], [B(28), 'clap'],                                                                         /* WHO'S CUTE NOW? */
+  ...endSfx(B(30)),
+];
+REELS[2].sfx = [
+  [0, 'boom', { g: 1.2 }], [6, 'clap'], [B(1), 'boom'], [B(1), 'whoosh', { g: .6 }],                                     /* hook */
+  ...[2, 3, 4, 5, 6, 7, 8].map(b => [B(b), 'whoosh', { g: .4, short: 1 }]),
+  [B(2), 'kick', { g: .8 }], [B(4), 'boom', { g: .85 }], [B(6), 'boom', { g: .9 }], [B(7), 'boom', { g: 1.05 }],          /* 10, 40, 90, 164 */
+  [B(9), 'riser', { len: B(1) }], [B(9), 'boom', { g: 1.2 }],                                                           /* BARON. */
+  ...SPLITS.map(([, at]) => [at, 'ding', { g: .8 }]),                                                                   /* the splits */
+  ...Array.from({ length: 28 }, (_, i) => [B(2 + i), i % 2 ? 'tock' : 'tick', { g: .55 }]),                             /* the timer runs to B(30) */
+  ...[10, 15, 19, 23].map(b => [B(b), 'whoosh', { g: .8 }]), ...[10, 15, 19, 23].map(b => [B(b + 1.2), 'pop']),          /* map legs, the pin lands */
+  [B(10) + 2, 'pop'], [B(10) + 2, 'laugh', { n: 2, gap: 6, g: .55 }],                                                   /* Lucky. Try that abroad. */
+  ...[12, 17, 21].flatMap(b => [[B(b), 'boom'], ...counterTicks(B(b), B(b) + 24, 3)]),                            /* the cities, holding cash */
+  [B(26), 'whoosh'], ...counterTicks(B(26), B(29.5), 3), [B(30), 'riser', { len: B(2) }],
+  [B(30), 'boom', { g: 1.3 }], [B(30), 'kaching'], [B(30), 'ding'],                                                     /* 8,760,000 · WORLD EMPIRE · timer stops */
+  [B(32), 'scratch'], [B(32) + 6, 'bwomp'],                                                                             /* ...okay. That was fast. */
+  ...endSfx(B(34)),
+];
+REELS[3].sfx = [
+  [0, 'boom', { g: 1.2 }], [0, 'fwoosh', { g: 1.1 }], [B(1), 'clap'], [B(1) + 5, 'boom'],                                /* POV: YOU OWN THE SUNRISE. */
+  [B(8), 'riser', { len: B(8), g: .35, air: 1 }],                                                                          /* the crane up, a long swell of air */
+  ...[4, 6, 8, 10, 12].map(b => [B(b), 'fwoosh', { g: .55 }]),                                                          /* the hero's burner on the beats */
+  [B(4), 'shimmer', { g: .5 }], [B(5), 'clap', { g: .8 }], [B(6), 'clap', { g: .8 }], [B(7), 'clap'],                   /* DOZENS OF / BALLOONS. / ALL YOURS. */
+  [B(8), 'whoosh'], [B(8) + 4, 'pop'], [B(10), 'laugh', { n: 3, gap: 7, g: .75 }],                                      /* the rival drifts in, smug */
+  [B(12), 'riser', { len: B(1) }], [B(12), 'boom'], [B(13), 'boom', { g: 1.1 }],                                       /* OH REALLY? */
+  ...[14, 15, 16, 17].map((b, i) => [B(b), 'fwoosh', { g: .8 + i * .1 }]),                                              /* the fleet launches in waves */
+  [B(14), 'kick'], [B(15), 'boom', { g: .85 }], [B(16), 'boom', { g: .95 }], [B(17), 'boom', { g: 1.2 }],              /* 10, 40, 90, 164 */
+  [B(18), 'clap'], [B(18) + 5, 'clap'], [B(18), 'shimmer', { g: .6 }],                                                  /* YOUR FLEET. YOUR SKY. */
+  [B(20), 'whoosh'], [B(20), 'snare'], [B(22), 'whoosh'], [B(22), 'snare'],                                             /* FLY IT YOURSELF / BUILD THE TOWN */
+  [B(24), 'whoosh', { g: .9 }], [B(24), 'boom', { g: .9 }], [B(25), 'boom'], [B(24), 'shimmer', { g: .7, low: 1 }],     /* THEN OWN THE NIGHT */
+  [B(26), 'scratch', { g: .8 }], [B(26) + 5, 'bwomp'],                                                                  /* ...how?! */
+  ...endSfx(B(28)),
+];
