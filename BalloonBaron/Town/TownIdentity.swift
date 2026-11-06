@@ -33,9 +33,9 @@ struct MarketStyle {
                                       goods: ["#c8402a", "#e0a020", "#8a5a2a", "#d06a2a", "#3a7a3a"], lamps: ["#d8a838"])
         case .bri: return MarketStyle(awnings: [["#2e6a3e", "#f4efe4"], ["#a8232c", "#f4efe4"], ["#1f4a7a", "#f4efe4"]],
                                       goods: ["#c8302a", "#7ab040", "#e8a020", "#f2d2a0", "#9a3a6a"], lamps: [])
-        // v141: the Mara's market: shuka cloth in red and blue checks, beadwork, carvings
+        // v141: the Mara's market: shuka cloth in red and blue checks, beadwork, carvings; v141.8: lanterns in Maasai bead colours
         case .mara: return MarketStyle(awnings: [["#c0392b", "#1f3a7a", "#c0392b", "#f4efe4"], ["#1f5aa8", "#f4efe4"], ["#e8a020", "#2a2a2a", "#e8a020", "#f4efe4"]],
-                                       goods: ["#c0392b", "#1f5aa8", "#e8b23a", "#f4efe4", "#2a8a4a"], lamps: [])
+                                       goods: ["#c0392b", "#1f5aa8", "#e8b23a", "#f4efe4", "#2a8a4a"], lamps: ["#c0392b", "#1f5aa8", "#e8a020", "#2a8a4a"])
         }
     }
 }
@@ -391,7 +391,8 @@ extension TownPainter {
                     for j in 0..<4 { ellipse(x - 3 + CGFloat(j) * 2, y + 1 + CGFloat(j % 2), 1.3, 1.3, hex(["#ff6fa8", "#ffffff", "#e04a3a", "#ffc23d"][j])) }
                     continue
                 }
-                let col = M.lamps[(i * 3 + Int((u * 5).rounded())) % M.lamps.count]
+                // v141.8 (TestFlight crash): the Mara's list was empty and `% 0` trapped; an empty list now falls back
+                let col = M.lamps.isEmpty ? "#e8a020" : M.lamps[(i * 3 + Int((u * 5).rounded())) % M.lamps.count]
                 if R == .abq { // punched tin
                     rect(x - 2.6, y, 5.2, 7, hex("#c8ccd2"))
                     poly([pt(x - 3.4, y), pt(x, y - 2.6), pt(x + 3.4, y)], hex("#8a9098"))
