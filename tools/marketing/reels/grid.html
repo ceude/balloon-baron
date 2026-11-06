@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Balloon Baron grid</title>
+<style>
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-ExtraBold.ttf); font-weight: 800; }
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-Bold.ttf); font-weight: 700; }
+@font-face { font-family: B; src: url(../../../BalloonBaron/Fonts/Barlow-Bold.ttf); font-weight: 700; }
+html, body { margin: 0; background: #000; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="../../appstore/art.js"></script>
+<script src="../../appstore/v2/art2.js"></script>
+<script src="tr.js"></script>
+<script src="lib.js"></script>
+<script>
+/* The Instagram profile-grid panorama: one dawn scene 2160 wide, cut by grid.js into two posts that sit side by
+   side (left, right). Drawn 2160x1920; grid.js crops a square band (y 520–1600) and a 3:4 band (y 340–1780),
+   so every word sits inside y 560–1560 and the seam (x 1080) falls between words. A big balloon and the sun's
+   rays cross the seam, so the two posts read as one picture. */
+W = 2160; H = 1920;
+const cv = document.getElementById('c'); cv.width = W; cv.height = H; ctx = cv.getContext('2d');
+async function draw(lang) {
+  LANG = lang;
+  await Promise.all(['800 40px BC', '700 40px BC', '700 40px B'].map(f => document.fonts.load(f)));
+  buildDawn();
+  const cam = { x: 0, y: 1080, z: 1 };
+  dawn({ t: 12, cam, sun: [W / 2, HZ - 10], burn: 1, extra: band => {
+    if (band !== 'near') return;
+    /* the hero on the seam, burner lit, and a smaller pair behind it either side */
+    spriteBalloon(SPRITES.near[3], 560, 1280, 95, 0, 3);
+    spriteBalloon(SPRITES.near[7], 1640, 1180, 110, .7, 3);
+    spriteBalloon(SPRITES.hero, W / 2, 1000, 235, 1, 2.3);
+  } });
+  /* soft shade behind the words, top and bottom */
+  let g = ctx.createLinearGradient(0, 340, 0, 980); g.addColorStop(0, 'rgba(14,6,36,.6)'); g.addColorStop(.5, 'rgba(14,6,36,.4)'); g.addColorStop(1, 'rgba(14,6,36,0)'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, 980);
+  g = ctx.createLinearGradient(0, 1240, 0, 1780); g.addColorStop(0, 'rgba(14,6,36,0)'); g.addColorStop(.6, 'rgba(14,6,36,.55)'); g.addColorStop(1, 'rgba(14,6,36,.8)'); ctx.fillStyle = g; ctx.fillRect(0, 1240, W, 680);
+  vig(.25);
+  /* the title, one word on each post */
+  const [l, r] = lang === 'tr' ? ['BALON', 'BARONU'] : ['BALLOON', 'BARON'];
+  drawLine(l, 540, 820, 250); drawLine(r, 1620, 820, 250);
+  label(tx('CAPPADOCIA'), 540, 885, 46, '#ffd28a', { track: .5 }); label(tx('ON THE APP STORE'), 1620, 885, 46, '#ffd28a', { track: .3 });
+  /* the line across the bottom, split at the seam */
+  drawLine(tx('FROM ONE BASKET'), 540, 1500, 120); drawLine('*' + tx('TO A WORLD EMPIRE') + '*', 1620, 1500, 120);
+  grainOverlay(3, .03);
+  return cv.toDataURL('image/png');
+}
+</script>
+</body>
+</html>

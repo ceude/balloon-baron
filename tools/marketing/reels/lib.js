@@ -5,6 +5,17 @@ W = 1080; H = 1920;
 let ctx;
 const FPS = 30, BPM = 120, BEAT = FPS * 60 / BPM; /* 15 frames: every cut lands on a frame */
 const ACC = '#ff6a3d', GOLD = '#ffc95a';
+/* language: 'en', or 'tr' with TR_TEXT (tr.js). Every word goes through tx() where it is drawn, so the reels'
+   timelines stay one. A word missing from the table is listed in MISSING (render.js reports it). */
+let LANG = 'en';
+const MISSING = new Set();
+function tx(s) {
+  if (LANG === 'en' || typeof s !== 'string' || !/[A-Za-z]/.test(s)) return s;
+  if (TR_TEXT[s] !== undefined) return TR_TEXT[s];
+  if (!tx.done) { tx.done = new Set(Object.values(TR_TEXT)); }
+  if (!tx.done.has(s)) MISSING.add(s);
+  return s;
+}
 
 /* ---------- time ---------- */
 const prog = (f, a, b) => clamp((f - a) / (b - a), 0, 1);
@@ -61,7 +72,8 @@ function fitSize(lines, size, maxW, font = s => `800 ${s}px BC`) {
 /* Headline lines punched in one after another. o: f0 (start frame), stagger, size, maxW, out (exit frame), gold,
    acc (accent colour), from ('punch' | 'up' | 'slam'), lh, align */
 function kinetic(f, lines, cx, y, o = {}) {
-  const size = fitSize(lines, o.size || 150, o.maxW || 860), lh = size * (o.lh || .92), f0 = o.f0 || 0, st = o.stagger ?? 4;
+  lines = lines.map(tx);
+  const size = fitSize(lines, o.size || 150, o.maxW || (LANG === 'tr' ? 780 : 860)) /* Turkish runs longer: keep it inside the right margin */, lh = size * (o.lh || .92), f0 = o.f0 || 0, st = o.stagger ?? 4;
   let yy = y;
   lines.forEach((line, i) => {
     yy += lh; const a = f0 + i * st; if (f < a) return;
@@ -78,6 +90,7 @@ function kinetic(f, lines, cx, y, o = {}) {
   return yy;
 }
 function drawLine(line, cx, y, size, o = {}) {
+  line = tx(line);
   ctx.font = `800 ${size}px BC`; ctx.letterSpacing = `${-size * .01}px`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
   const parts = segs(line), ws = parts.map(p => ctx.measureText(p.t).width), tot = ws.reduce((a, b) => a + b, 0);
   let x = o.align === 'left' ? cx : cx - tot / 2;
@@ -95,11 +108,12 @@ function drawLine(line, cx, y, size, o = {}) {
 }
 /* small tracked label (kickers, name tags) */
 function label(text, x, y, size, color = '#ffe6b8', o = {}) {
+  text = tx(text);
   ctx.save(); ctx.font = `${o.w || 700} ${size}px ${o.font || 'BC'}`; ctx.letterSpacing = `${size * (o.track ?? .16)}px`; ctx.textAlign = o.align || 'center';
   ctx.shadowColor = 'rgba(10,2,20,.7)'; ctx.shadowBlur = size * .4; ctx.fillStyle = color; ctx.globalAlpha = o.alpha ?? 1;
   ctx.fillText(text, x + (o.align === 'left' ? 0 : size * (o.track ?? .16) / 2), y); ctx.restore();
 }
-function fmt(n) { return Math.round(n).toLocaleString('en-US'); }
+function fmt(n) { return Math.round(n).toLocaleString(LANG === 'tr' ? 'tr-TR' : 'en-US'); }
 
 /* ---------- finishing ---------- */
 let NOISE;
@@ -211,8 +225,8 @@ function buildDawn() {
     const gg = ctx.createLinearGradient(0, base + 20, 0, base + 600); gg.addColorStop(0, mix(dark, lit, .25)); gg.addColorStop(1, mix(dark, '#120818', .5));
     ctx.fillStyle = gg; ctx.fillRect(0, base + 20, W, WH);
   });
-  const far = field(90, 60, 170, HZ + 120, 21, '#d88a7a', '#7a3a5a', .35);
-  const mid = field(36, 180, 380, HZ + 260, 33, '#e6a27a', '#5a2c44', .12);
+  const far = field(Math.round(90 * W / 1080), 60, 170, HZ + 120, 21, '#d88a7a', '#7a3a5a', .35);
+  const mid = field(Math.round(36 * W / 1080), 180, 380, HZ + 260, 33, '#e6a27a', '#5a2c44', .12);
   const near = layer(LW, WH, () => {
     const R = mulberry32(55);
     for (const [x, h] of [[60, 820], [260, 520], [LW - 120, 900], [LW - 330, 560], [LW * .52, 380], [LW * .36, 300], [LW * .7, 330]])
@@ -221,7 +235,7 @@ function buildDawn() {
   });
   /* the balloons: depth d (0 far .. 1 near), world position, sway */
   const R = mulberry32(17), bal = [];
-  for (let i = 0; i < 90; i++) {
+  for (let i = 0, n = Math.round(90 * W / 1080); i < n; i++) {
     const d = Math.pow(R(), 1.9);
     bal.push({ x: R() * LW - MARGIN, y: lerp(250, HZ - 60, Math.pow(R(), .7)), d, s: Math.floor(R() * DESIGNS.length), ph: R() * 9, v: 8 + R() * 18, burnPh: R() * 9, rank: R(), c: COLS2[Math.floor(R() * COLS2.length)], st: COLS2[Math.floor(R() * COLS2.length)] });
   }
@@ -397,6 +411,7 @@ function rivalBadge(cx, cy, r, e, o = {}) {
 }
 /* a trash-talk bubble from the rival; typed out from frame f0 */
 function bubble(f, f0, text, x, y, w, o = {}) {
+  text = tx(text);
   if (f < f0) return;
   const k = eBack(prog(f, f0, f0 + 7), 1.4), n = Math.floor((f - f0 - 3) * (o.cps || 2.2));
   const size = o.size || 52, pad = 34, av = o.noAvatar ? 0 : 110;
@@ -465,6 +480,7 @@ function worldMap(mx, my, k, f, o = {}) {
   return (c) => { const [px, py] = mapPt(c); return [W / 2 + (px - mx) * k, H / 2 + (py - my) * k]; };
 }
 function pin(x, y, name, f, f0, o = {}) {
+  name = tx(name); o = Object.assign({}, o, { tag: tx(o.tag) });
   if (f < f0) return;
   const k = eBack(prog(f, f0, f0 + 8), 2), pulse = (f - f0) % 30 / 30;
   ctx.save(); ctx.translate(x, y); ctx.scale(k, k);
@@ -537,7 +553,7 @@ function endCard(f, f0, head, o = {}) {
     ctx.fillStyle = 'rgba(255,255,255,.22)'; rrect(cx - w / 2 + 8, y + 6, w - 16, h * .42, h * .3); ctx.fill();
     /* a sheen sweeping across */
     ctx.save(); rrect(cx - w / 2, y, w, h, h / 2); ctx.clip(); const sx = cx - w + ((f - pf) % 45) / 45 * w * 2.5; const sg = ctx.createLinearGradient(sx - 80, 0, sx + 80, 0); sg.addColorStop(0, 'rgba(255,255,255,0)'); sg.addColorStop(.5, 'rgba(255,255,255,.35)'); sg.addColorStop(1, 'rgba(255,255,255,0)'); ctx.fillStyle = sg; ctx.fillRect(cx - w / 2, y, w, h); ctx.restore();
-    ctx.font = '800 64px BC'; ctx.letterSpacing = '4px'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(120,20,0,.5)'; ctx.shadowBlur = 8; ctx.fillText('ON THE APP STORE', cx + 2, y + h * .7);
+    ctx.font = '800 64px BC'; ctx.letterSpacing = '4px'; ctx.textAlign = 'center'; ctx.fillStyle = '#fff'; ctx.shadowColor = 'rgba(120,20,0,.5)'; ctx.shadowBlur = 8; ctx.fillText(tx('ON THE APP STORE'), cx + 2, y + h * .7);
     ctx.restore();
   }
 }

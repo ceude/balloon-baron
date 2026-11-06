@@ -146,6 +146,16 @@ const S = {
       return lp(saw) * (k < .04 ? k / .04 : k > .8 ? (1 - k) / .2 : 1) * .7;
     });
   },
+  /* a building popping up: a low thud, a metal clank (inharmonic partials), a short rising scrape and dust */
+  build(o) {
+    let ph = 0; const parts = [[620, .5], [987, .35], [1530, .25], [2210, .15]], lp = biquad('lp', 1200, .7), bp = biquad('bp', 900, 3);
+    return mono(.6, t => {
+      ph += 2 * Math.PI * (55 + 70 * Math.exp(-t / .03)) / SR;
+      let clank = 0; if (t > .015) for (const [f, a] of parts) clank += Math.sin(2 * Math.PI * f * (t - .015)) * a * env(t - .015, .0005, .07 + f / 30000);
+      bp.set(500 + 2500 * Math.min(1, t / .12), 3);
+      return Math.sin(ph) * env(t, .002, .09) * .9 + clank * .55 + bp(noise()) * env(t, .01, .05) * .5 + lp(noise()) * env(t, .002, .12) * .35;
+    }, (rnd() - .5) * .5);
+  },
   /* clock: tick high, tock lower */
   tick(o) { let a = 0; return mono(.05, t => { a += 2 * Math.PI * 3200 / SR; return Math.sin(a) * env(t, .0003, .007) * .8 + noise() * env(t, 0, .002) * .3; }, .3); },
   tock(o) { let a = 0; return mono(.06, t => { a += 2 * Math.PI * 2100 / SR; return Math.sin(a) * env(t, .0003, .009) * .8 + noise() * env(t, 0, .002) * .3; }, -.3); },
@@ -185,9 +195,9 @@ const S = {
   },
 };
 /* sound levels in the mix (before normalising) */
-const LEVEL = { boom: 1, kick: .85, clap: .55, snare: .6, whoosh: .45, riser: .4, coin: .35, kaching: .55, fwoosh: .55, scratch: .6, bwomp: .6, tick: .3, tock: .3, pop: .4, ding: .4, shimmer: .45, laugh: 1.6 };
+const LEVEL = { build: .7, boom: 1, kick: .85, clap: .55, snare: .6, whoosh: .45, riser: .4, coin: .35, kaching: .55, fwoosh: .55, scratch: .6, bwomp: .6, tick: .3, tock: .3, pop: .4, ding: .4, shimmer: .45, laugh: 1.6 };
 /* a short room on a send, for claps, the laugh, bells */
-const SEND = { clap: .25, snare: .2, laugh: .22, ding: .35, shimmer: .4, kaching: .25, pop: .2, bwomp: .2 };
+const SEND = { build: .15, clap: .25, snare: .2, laugh: .22, ding: .35, shimmer: .4, kaching: .25, pop: .2, bwomp: .2 };
 function room(L, R) {
   const mk = (d, fb) => { const z = new Float32Array(Math.round(d * SR)); let i = 0, lp = 0; return x => { const y = z[i]; lp = y * .6 + lp * .4; z[i] = x + lp * fb; i = (i + 1) % z.length; return y; }; };
   const cl = [.0297, .0371, .0411, .0437].map(d => mk(d, .78)), cr = [.0307, .0353, .0423, .0451].map(d => mk(d, .78));

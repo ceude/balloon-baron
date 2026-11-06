@@ -16,15 +16,17 @@ canvas { display: block; }
 <canvas id="c"></canvas>
 <script src="../../appstore/art.js"></script>
 <script src="../../appstore/v2/art2.js"></script>
+<script src="tr.js"></script>
 <script src="lib.js"></script>
+<script src="town.js"></script>
 <script src="reels.js"></script>
 <script>
 /* render.js drives this page: init(reel, clipDir, clipCounts, worldPath) once, then frame(f) for every frame. */
 const cv = document.getElementById('c'); cv.width = W; cv.height = H;
 ctx = cv.getContext('2d');
 let REEL;
-async function init(n, dir, counts, world) {
-  CLIPDIR = dir; CLIPS = counts; WORLD_D = world; REEL = REELS[n];
+async function init(n, dir, counts, world, lang) {
+  LANG = lang || 'en'; CLIPDIR = dir; CLIPS = counts; WORLD_D = world; REEL = REELS[n];
   await Promise.all(['800 40px BC', '700 40px BC', '700 40px B', '800 40px B'].map(f => document.fonts.load(f)));
   ICON = await loadImg('../../../BalloonBaron/Assets.xcassets/AppIcon.appiconset/AppIcon.png');
   buildDawn();

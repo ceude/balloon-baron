@@ -1,6 +1,8 @@
 /* The three reels. Each is { frames, draw: async f => … } on a 120 BPM grid (a beat is 15 frames, a bar 60), so
    every cut and every word lands on a beat for the music added in Instagram. */
 const REELS = {};
+/* the frames where the growth montages' town-building steps 1..8 begin (town.js), shared with the sound */
+const REEL1_STEPS = [15, 16, 17, 18, 19, 20, 21, 22].map(B), REEL2_STEPS = [2, 3, 4, 5, 6, 7, 8, 9].map(B);
 
 /* backdrop behind phones and the rival: the dawn world, drifting */
 function backdrop(f, o = {}) {
@@ -17,6 +19,7 @@ async function footage(id, f, f0, o = {}) {
   ctx.filter = 'none';
 }
 function tag(text, x, y, f, f0, o = {}) {
+  text = tx(text);
   if (f < f0) return;
   const k = eBack(prog(f, f0, f0 + 7), 1.8), s = o.size || 46;
   ctx.save(); ctx.font = `800 ${s}px BC`; ctx.letterSpacing = `${s * .1}px`;
@@ -78,10 +81,10 @@ REELS[1] = {
       shade(.32, .2, .6);
       kinetic(f, [words[i]], 540, 300, { f0: B(10 + i), size: 190, maxW: 740 }); /* inside the right 150 px margin */
     } else if (f < B(24)) {
-      /* the growth: a new picture on every beat, the fleet counter racing */
-      const seq = [['early', 1.95], ['town10', 1.75], ['town10', 1.6], ['town40', 1.55], ['town40', 1.45], ['town90', 1.3], ['town90', 1.2], ['empire', 1.12], ['empire', 1.04], ['empire', 1.0]]; /* wider as the fleet grows */
-      const i = Math.floor((f - B(14)) / BEAT), [id, z] = seq[i], f0 = B(14 + i);
-      await footage(id, f, f0, { z0: z + .06, z1: z, fx: .5, fy: .47, len: 15, kick: .04, start: i % 2 ? 20 : 0 });
+      /* the growth: the town builds itself a step on every beat while the fleet counter races */
+      const i = Math.floor((f - B(14)) / BEAT), f0 = B(14 + i);
+      const vals0 = [1, 10, 10, 40, 40, 90, 90, 164, 164, 164], cnt = Math.round(lerp(i ? vals0[i - 1] : 1, vals0[i], eOut(prog(f, f0, f0 + 8))));
+      town(f, { steps: REEL1_STEPS, count: cnt, zoom: lerp(1.75, 1.15, eIO(prog(f, B(14), B(22)))) * (1 + beatPulse(f, B(14)) * .015), t: t });
       shade(.42, .25, .65);
       const vals = [1, 10, 10, 40, 40, 90, 90, 164, 164, 164], prev = i ? vals[i - 1] : 1;
       const v = Math.round(lerp(prev, vals[i], eOut(prog(f, f0, f0 + 8))));
@@ -147,10 +150,10 @@ REELS[2] = {
     const [sx, sy] = shakeAt(f, [0, B(1), B(9), B(30)], 16);
     ctx.save(); ctx.translate(sx, sy);
     if (f < B(10)) {
-      /* Cappadocia from one balloon to the full fleet, a cut on every beat */
-      const seq = [['early', 1.95], ['early', 1.75], ['town10', 1.7], ['town10', 1.6], ['town40', 1.5], ['town40', 1.42], ['town90', 1.25], ['empire', 1.12], ['empire', 1.04], ['empire', 1.0]];
-      const i = Math.floor(f / BEAT), [id, z] = seq[i];
-      await footage(id, f, B(i), { z0: z + .06, z1: z, fx: .5, fy: .47, len: 15, kick: .035, start: i % 2 ? 20 : 0 });
+      /* Cappadocia from one balloon to the full fleet: the town builds itself on the beats */
+      const i = Math.floor(f / BEAT), vals0 = [1, 1, 10, 10, 40, 40, 90, 164, 164, 164];
+      const cnt = Math.round(lerp(vals0[Math.max(0, i - 1)], vals0[i], eOut(prog(f, B(i), B(i) + 8))));
+      town(f, { steps: REEL2_STEPS, count: cnt, zoom: lerp(1.8, 1.15, eIO(prog(f, 0, B(9)))) * (1 + beatPulse(f, B(2)) * .015), t: t });
       shade(.5, .35, .7);
       if (f < B(2)) {
         kinetic(f, ['1 BALLOON TO A', 'WORLD *EMPIRE*'], 540, 560, { f0: 0, stagger: 6, size: 160 });
@@ -182,7 +185,7 @@ REELS[2] = {
         for (let i = 0; i < order.indexOf(a); i++) { const p = P(CITIES[order[i]]), q = P(CITIES[order[i + 1]]); route(p, q, 1, f); }
         const pa = P(CITIES[a]), pb = P(CITIES[b]);
         route(pa, pb, k, f);
-        pin(pb[0], pb[1], CITIES[b].name, f, f0 + B(1.2), { side: b === 'abq' || b === 'bri' ? 'l' : 'r', size: 58, tag: b === 'mara' ? 'NEXT: THE TOUGHEST SKY' : null, locked: b === 'mara' });
+        pin(pb[0], pb[1], CITIES[b].name, f, f0 + B(1.2), { side: b === 'abq' || b === 'bri' || b === 'mara' ? 'l' : 'r', size: 58, tag: b === 'mara' ? 'NEXT: THE TOUGHEST SKY' : null, locked: b === 'mara' });
         if (f0 === B(10)) bubble(f, B(10) + 2, 'Lucky. Try that abroad.', 70, 1330, 870, { size: 54, cps: 2 });
       }
     } else if (f < B(32)) {
@@ -291,7 +294,7 @@ REELS[1].sfx = [
   [B(6), 'kick'], [B(6), 'laugh', { n: 4, gap: B(.5) }],                                                                /* HA HA */
   [B(8), 'riser', { len: B(1.5) }], [B(8), 'boom', { g: 1.2 }], [B(8), 'fwoosh'], [B(9), 'boom'],                     /* CHALLENGE ACCEPTED */
   [B(10), 'snare'], [B(10), 'fwoosh', { g: .7 }], [B(11), 'snare'], [B(12), 'whoosh', { g: .7 }], [B(12), 'snare'], [B(12), 'kaching'], [B(13), 'snare'],
-  ...[14, 16, 18, 20, 22, 23].map(b => [B(b), 'whoosh', { g: .45, short: 1 }]),                                         /* a cut on every beat */
+  ...REEL1_STEPS.map((f, k) => [f, 'build', { g: .8 + k * .04 }]), [B(14), 'whoosh', { g: .5 }],                       /* the town builds itself */
   [B(14), 'kick', { g: .8 }], ...[15, 17, 19].map(b => [B(b), 'boom', { g: .9 }]), [B(21), 'boom', { g: 1.25 }], [B(21), 'shimmer', { g: .6 }], /* 10, 40, 90, 164 */
   [B(24), 'whoosh'], ...counterTicks(B(24), B(25.5)), [B(25.5), 'kaching'], [B(25), 'clap'],                            /* the bank, on autopilot */
   [B(26), 'scratch'], [B(26) + 6, 'bwomp'],                                                                             /* ...wait. 164?! */
@@ -300,7 +303,7 @@ REELS[1].sfx = [
 ];
 REELS[2].sfx = [
   [0, 'boom', { g: 1.2 }], [6, 'clap'], [B(1), 'boom'], [B(1), 'whoosh', { g: .6 }],                                     /* hook */
-  ...[2, 3, 4, 5, 6, 7, 8].map(b => [B(b), 'whoosh', { g: .4, short: 1 }]),
+  ...REEL2_STEPS.map((f, k) => [f, 'build', { g: .75 + k * .04 }]),
   [B(2), 'kick', { g: .8 }], [B(4), 'boom', { g: .85 }], [B(6), 'boom', { g: .9 }], [B(7), 'boom', { g: 1.05 }],          /* 10, 40, 90, 164 */
   [B(9), 'riser', { len: B(1) }], [B(9), 'boom', { g: 1.2 }],                                                           /* BARON. */
   ...SPLITS.map(([, at]) => [at, 'ding', { g: .8 }]),                                                                   /* the splits */

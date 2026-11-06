@@ -3,6 +3,7 @@
 // fillText goes through the app's own catalog (<raw>/tr2en.json, made by tr2en.py) plus a few extras below.
 //   NODE_PATH=$(npm root -g) node tools/appstore/v2/shots.js <raw> iphone        (writes <raw>/saves.json)
 //   NODE_PATH=$(npm root -g) node tools/marketing/reels/capture.js <raw> [scene…]   (writes <raw>/clips/<scene>/0000.jpg…, 1329x2880)
+// REEL_LANG=tr records the prototype as it is, in Turkish (no translation, the company is Şafak Balon).
 // PROBE=1 takes one frame per scene. Either way it lists the texts that stayed Turkish and were on screen.
 const { chromium } = require('playwright');
 const fs = require('fs');
@@ -34,7 +35,11 @@ const PAT = { 'Bilet (\\S+), (\\d+) (?:balon|balloons)': 'Ticket $1, $2 balloons
   'Yerde rüzgâr (\\d+) km/sa': 'Surface wind $1 km/h', '(\\d+) km/sa': '$1 km/h', 'İniş alanı (.+) km': 'Landing field $1 km', 'Gün (\\d+) gecesi': 'Night of day $1',
   'Balon Şöleni · (\\d+) balon': 'Balloon Show · $1 balloons', '(.+) Holding': '$1 Holding', 'Holding kasası (.+)': 'Holding cash $1', '(\\d+)\\. gün': 'Day $1' };
 
-const clean = `S.hezQ = []; S.paper = null; S.paperNext = null; S.eventDue = false; S.nextEvent = 99999; S.chapterNews = null; S.late = null; S.newPost = []; S.tutorialDone = true; S.tips = new Proxy({}, { get: () => 1 }); S.iap = Object.fromEntries(Object.keys(SHOP).map(k => [k, 1])); S.ach = Object.fromEntries(ACHS.map(a => [a[0], 1])); S.tut = { done: 1 }; S.ventTip = 1; S.selfFlights = Math.max(S.selfFlights || 0, 60); S.company = 'Daybreak Balloons';`;
+/* Turkish reels: the prototype's own words, nothing translated */
+const TR = process.env.REEL_LANG === 'tr';
+if (TR) { for (const k in DICT) delete DICT[k]; for (const k in PAT) delete PAT[k]; }
+const COMPANY = TR ? 'Şafak Balon' : 'Daybreak Balloons';
+const clean = `S.hezQ = []; S.paper = null; S.paperNext = null; S.eventDue = false; S.nextEvent = 99999; S.chapterNews = null; S.late = null; S.newPost = []; S.tutorialDone = true; S.tips = new Proxy({}, { get: () => 1 }); S.iap = Object.fromEntries(Object.keys(SHOP).map(k => [k, 1])); S.ach = Object.fromEntries(ACHS.map(a => [a[0], 1])); S.tut = { done: 1 }; S.ventTip = 1; S.selfFlights = Math.max(S.selfFlights || 0, 60); S.company = '${COMPANY}';`;
 const fleet = n => `S.barons = Object.assign({}, S.barons, { cap: 120 }); S.holding = 8760000; S.bld = Object.assign({}, S.bld, { hangar: 6 }); const sz = ['M','L','M','S','L']; while (S.balloons.length < ${n}) addBalloon(sz[S.balloons.length % 5]); while (S.pilots.length < ${n}) S.pilots.push({ id: S.nextId++, name: P_NAMES[S.pilots.length % P_NAMES.length] + ' ' + pilotInitial(S.pilots.length) + '.', lvl: 2, xp: 0, trait: null }); S.cash = ${Math.round(n * 18500)}; assignPilots();`;
 const green = "S.weather.flag = 'green'; const nw = newWeather; newWeather = () => { const w = nw(); w.flag = 'green'; return w; };";
 const noUI = "document.getElementById('sheet').style.visibility = 'hidden';";
@@ -69,7 +74,7 @@ const SCENES = [
     if (only.length && !only.includes(sc.id)) continue;
     const dir = path.join(raw, 'clips', sc.id); fs.rmSync(dir, { recursive: true, force: true }); fs.mkdirSync(dir, { recursive: true });
     const ctxB = await br.newContext({ viewport: { width: 443, height: 960 }, deviceScaleFactor: 3, hasTouch: true }); /* 1329x2880: sharp even when the reels zoom in */
-    await ctxB.addInitScript(([dict, pat]) => {
+    await ctxB.addInitScript(([dict, pat, TRMODE]) => {
       try { localStorage.clear(); } catch (e) {}
       const P = Object.entries(pat).map(([k, v]) => [new RegExp('^' + k + '$'), v]);
       /* catalog entries with placeholders become patterns too */
@@ -80,7 +85,7 @@ const SCENES = [
       }
       window.__miss = new Set();
       const fix = v => v.replace(/Luksor/g, 'Luxor').replace(/Kapadokya/g, 'Cappadocia');
-      const turkish = t => /[çğıöşüÇĞİÖŞÜâ]|\b(ve|bir|gün|balon|yolcu|koltuk|bilet)\b/i.test(t);
+      const turkish = t => !TRMODE && /[çğıöşüÇĞİÖŞÜâ]|\b(ve|bir|gün|balon|yolcu|koltuk|bilet)\b/i.test(t);
       /* English for t, or null. Exact entries first, then patterns (whose captured pieces are translated too, as in
          "Today's mission: <mission>"), then a line of " · "-separated parts piece by piece. */
       const en = (t, depth = 0) => {
@@ -116,7 +121,7 @@ const SCENES = [
         }
         for (const t of window.__cmiss) window.__miss.add('[canvas] ' + t); window.__cmiss.clear();
       };
-    }, [DICT, PAT]);
+    }, [DICT, PAT, TR]);
     const p = await ctxB.newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message));
     await p.clock.install({ time: new Date('2026-06-01T05:30:00') }); await p.clock.pauseAt(new Date('2026-06-01T05:30:01'));
     await p.goto(GAME);

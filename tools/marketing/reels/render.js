@@ -15,6 +15,8 @@ const clipsDir = path.join(raw, 'clips');
 const counts = Object.fromEntries(fs.readdirSync(clipsDir).map(d => [d, fs.readdirSync(path.join(clipsDir, d)).filter(f => f.endsWith('.jpg')).length]));
 const proto = fs.readFileSync(path.join(ROOT, 'prototype/balloon-baron.html'), 'utf8');
 const world = proto.match(/const WORLD_SVG = `<svg[^>]*><path d="([^"]+)"/)[1];
+/* REEL_LANG=tr: the Turkish reels (tr.js), from clips captured with REEL_LANG=tr */
+const LANG = process.env.REEL_LANG || 'en';
 const stills = process.env.STILLS ? process.env.STILLS.split(',').map(Number) : null;
 /* COVER=f1,f2,f3: the cover picture of each reel (in the order of the reels asked for), as reel<n>-cover.png */
 const covers = process.env.COVER ? process.env.COVER.split(',').map(Number) : null;
@@ -25,7 +27,7 @@ const covers = process.env.COVER ? process.env.COVER.split(',').map(Number) : nu
     const p = await br.newPage({ viewport: { width: 1080, height: 1920 } });
     const errs = []; p.on('pageerror', e => errs.push(e.message)); p.on('console', m => { if (m.type() === 'error') errs.push(m.text()); });
     await p.goto('file://' + path.join(__dirname, 'reels.html'));
-    const frames = await p.evaluate(([n, d, c, w]) => init(+n, d, c, w), [n, 'file://' + clipsDir, counts, world]);
+    const frames = await p.evaluate(([n, d, c, w, l]) => init(+n, d, c, w, l), [n, 'file://' + clipsDir, counts, world, LANG]);
     if (covers) {
       const url = await p.evaluate(f => frame(f, 'png'), covers[reels.indexOf(n)]);
       fs.writeFileSync(path.join(out, `reel${n}-cover.png`), Buffer.from(url.split(',')[1], 'base64'));
@@ -36,7 +38,7 @@ const covers = process.env.COVER ? process.env.COVER.split(',').map(Number) : nu
         const url = await p.evaluate(f => frame(f, 1), f);
         fs.writeFileSync(path.join(out, `still-${n}-${String(f).padStart(3, '0')}.jpg`), Buffer.from(url.split(',')[1], 'base64'));
       }
-      console.log('reel', n, 'stills', stills.join(','), errs);
+      console.log('reel', n, 'stills', stills.join(','), errs, await p.evaluate(() => [...MISSING]));
       await p.close(); continue;
     }
     const file = path.join(out, `reel${n}.mp4`);
@@ -50,7 +52,8 @@ const covers = process.env.COVER ? process.env.COVER.split(',').map(Number) : nu
       if (f % 60 === 0) process.stdout.write(`reel ${n} frame ${f}/${frames} ${((Date.now() - t0) / 1000).toFixed(0)}s\n`);
     }
     ff.stdin.end(); await new Promise(r => ff.on('close', r));
-    console.log('wrote', file, frames, 'frames', errs.length ? errs : 'no errors');
+    const miss = await p.evaluate(() => [...MISSING]);
+    console.log('wrote', file, frames, 'frames', errs.length ? errs : 'no errors', miss.length ? 'UNTRANSLATED: ' + miss.join(' | ') : '');
     await p.close();
   }
   await br.close();
