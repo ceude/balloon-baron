@@ -9,7 +9,7 @@ const CAPTIONS = {
     locale: 'tr-TR',
     brand: ['Balon Baronu', 'Kapadokya'],
     noAds: 'Reklamsız',
-    /* the four cities on screen 2, top to bottom */
+    /* the four painted landscapes on screen 2, top to bottom (the headline counts five regions: the Maasai Mara is on the world map) */
     cities: { cap: ['Kapadokya', 'Türkiye'], lux: ['Luksor', 'Mısır'], bri: ['Bristol', 'İngiltere'], abq: ['Albuquerque', 'ABD'] },
     badges: {
       idle: [['+€146.644', 'tek günde'], ['164', 'balonluk filo']],   /* the run's day 135, the hangar's 164 balloons */
@@ -20,7 +20,7 @@ const CAPTIONS = {
     preview: ['Şafakta|dümen sende', 'Balon|işletmecisi ol', 'Günler akar|kasa dolar', 'Dört şehir|tek imparatorluk', 'Geceleri|ışıl ışıl', 'Gece göğünde|dev gösteri'],
     screens: {
       hero: { head: 'Balon|işletmecisi ol', sub: 'Tek balondan dev filoya' },
-      cities: { head: 'Dört şehir|tek imparatorluk', sub: 'Kapadokya’dan Balloon Fiesta’ya' },
+      cities: { head: 'Beş bölge|tek imparatorluk', sub: 'Kapadokya’dan Maasai Mara’ya' },
       flight: { head: 'Şafakta|dümen sende', sub: 'Gerçekçi sıcak hava balonu uçuşu' },
       idle: { head: 'Günler akar|kasa dolar', sub: 'Otomatik ilerletmeli idle tycoon' },
       holding: { head: 'Tek sepetten|holdinge', sub: 'Gün 2’den Gün 131’e' },
@@ -45,7 +45,7 @@ const CAPTIONS = {
     preview: ['Fly it yourself|at dawn', 'Become a|balloon tycoon', 'Days roll by,|cash rolls in', 'Four cities,|one empire', 'Glowing|after dark', 'A giant show|in the night sky'],
     screens: {
       hero: { head: 'Become a|balloon tycoon', sub: 'From one basket to hundreds' },
-      cities: { head: 'Four cities,|one empire', sub: 'Cappadocia to Balloon Fiesta' },
+      cities: { head: 'Five regions,|one empire', sub: 'Cappadocia to the Maasai Mara' },
       flight: { head: 'Fly it yourself|at dawn', sub: 'Realistic hot air balloon flight' },
       idle: { head: 'Days roll by,|cash rolls in', sub: 'Idle tycoon with auto-advance' },
       holding: { head: 'From one basket|to big business', sub: 'Day 2 to Day @DAY' },
@@ -69,7 +69,7 @@ const CAPTIONS = {
     preview: ['Du fliegst|im Morgenrot', 'Gründe deine|Ballonfirma', 'Die Tage laufen,|die Kasse klingelt', 'Vier Städte,|ein Imperium', 'Nachts hell|erleuchtet', 'Große Show|am Nachthimmel'],
     screens: {
       hero: { head: 'Gründe deine|Ballonfirma', sub: 'Vom Korb zur Riesenflotte' },
-      cities: { head: 'Vier Städte,|ein Imperium', sub: 'Von Kappadokien zur Balloon Fiesta' },
+      cities: { head: 'Fünf Regionen,|ein Imperium', sub: 'Von Kappadokien bis in die Maasai Mara' },
       flight: { head: 'Du fliegst|im Morgenrot', sub: 'Realistische Heißluftballonfahrt' },
       idle: { head: 'Die Tage laufen,|die Kasse klingelt', sub: 'Wirtschaftssimulation mit Vorspulen' },
       holding: { head: 'Vom Korb|zum Konzern', sub: 'Tag 2 bis Tag @DAY' },
@@ -93,7 +93,7 @@ const CAPTIONS = {
     preview: ['Vuela tú mismo|al amanecer', 'Conviértete en|magnate del globo', 'Pasan los días,|entra el dinero', 'Cuatro ciudades,|un imperio', 'De noche,|todo brilla', 'Gran espectáculo|en el cielo nocturno'],
     screens: {
       hero: { head: 'Conviértete en|magnate del globo', sub: 'De un globo a cientos' },
-      cities: { head: 'Cuatro ciudades,|un imperio', sub: 'De Capadocia a Balloon Fiesta' },
+      cities: { head: 'Cinco regiones,|un imperio', sub: 'De Capadocia al Maasai Mara' },
       flight: { head: 'Vuela tú mismo|al amanecer', sub: 'Vuelo realista en globo aerostático' },
       idle: { head: 'Pasan los días,|entra el dinero', sub: 'Simulador de negocios idle' },
       holding: { head: 'De una cesta|a un holding', sub: 'Del día 2 al @DAY' },
@@ -117,7 +117,7 @@ const CAPTIONS = {
     preview: ['夜明けの空を|自分で操縦', '気球会社の|社長になろう', '日々は進み|お金が貯まる', '4つの都市に|気球帝国を', '夜の町が|きらめく', '夜空を彩る|バルーンショー'],
     screens: {
       hero: { head: '気球会社の|社長になろう', sub: '1機の気球から大船団へ' },
-      cities: { head: '4つの都市に|気球帝国を', sub: 'カッパドキアからバルーンフィエスタへ' },
+      cities: { head: '5つの地域に|気球帝国を', sub: 'カッパドキアからマサイマラへ' },
       flight: { head: '夜明けの空を|自分で操縦', sub: 'リアルな熱気球フライト' },
       idle: { head: '日々は進み|お金が貯まる', sub: '早送りできる放置経営シミュレーション' },
       holding: { head: '気球1機から|大企業へ', sub: '2日目から@DAY日目まで' },
@@ -141,7 +141,7 @@ const CAPTIONS = {
     preview: ['새벽 하늘을|직접 날다', '열기구 회사의|사장이 되자', '하루가 흐르면|금고가 찬다', '네 도시,|하나의 제국', '밤이면|반짝이는 마을', '밤하늘을 수놓는|열기구 쇼'],
     screens: {
       hero: { head: '열기구 회사의|사장이 되자', sub: '열기구 하나에서 대기단으로' },
-      cities: { head: '네 도시,|하나의 제국', sub: '카파도키아에서 벌룬 피에스타까지' },
+      cities: { head: '다섯 지역,|하나의 제국', sub: '카파도키아에서 마사이마라까지' },
       flight: { head: '새벽 하늘을|직접 날다', sub: '리얼한 열기구 비행' },
       idle: { head: '하루가 흐르면|금고가 찬다', sub: '빨리 감기로 즐기는 방치형 타이쿤' },
       holding: { head: '바구니 하나에서|대기업으로', sub: '2일차에서 @DAY일차까지' },
@@ -165,7 +165,7 @@ const CAPTIONS = {
     preview: ['Pilote à|l’aube', 'Bâtis ton empire|de montgolfières', 'Les jours filent,|la caisse se remplit', 'Quatre villes,|un empire', 'La nuit,|tout s’illumine', 'Un show géant|dans le ciel'],
     screens: {
       hero: { head: 'Bâtis ton empire|de montgolfières', sub: 'D’une nacelle à toute une flotte' },
-      cities: { head: 'Quatre villes,|un empire', sub: 'De la Cappadoce à la Balloon Fiesta' },
+      cities: { head: 'Cinq régions,|un empire', sub: 'De la Cappadoce au Maasai Mara' },
       flight: { head: 'Pilote|à l’aube', sub: 'Vol réaliste en montgolfière' },
       idle: { head: 'Les jours filent,|la caisse se remplit', sub: 'Jeu de gestion idle avec avance rapide' },
       holding: { head: 'D’une nacelle|à un empire', sub: 'Du jour 2 au jour @DAY' },
