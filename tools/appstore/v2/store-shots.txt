@@ -3,7 +3,7 @@
 # The night, show and travel videos run slowed down (-demoSlow; clips.py speeds them up again).
 # Every launch also gets -demoStore and the language; {COMPANY} is the company's name in that language.
 home     | * | 6      | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 60
-world    | * | 7      | -demoDays 60 -demoCompany {COMPANY} -demoRegion bri -demoPage map
+world    | * | 7      | -demoDays 60 -demoCompany {COMPANY} -demoRegion mara -demoPage map
 flight   | * | 6,1,1,1,1,1,1 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 60 -demoScene flight -demoBurn
 auto     | * | .5,.5,.5,.5,.5,.5,.5,.5,.5,.5,.5,.5,.5,.5 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene auto
 early    | * | 7      | -demoDays 1 -demoCompany {COMPANY}
