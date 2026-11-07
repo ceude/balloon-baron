@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>App Preview v3</title>
+<style>
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-ExtraBold.ttf); font-weight: 800; }
+@font-face { font-family: BC; src: url(../../../BalloonBaron/Fonts/BarlowCondensed-Bold.ttf); font-weight: 700; }
+@font-face { font-family: B; src: url(../../../BalloonBaron/Fonts/Barlow-Bold.ttf); font-weight: 700; }
+html, body { margin: 0; background: #000; overflow: hidden; }
+canvas { display: block; }
+</style>
+</head>
+<body>
+<canvas id="c"></canvas>
+<script src="../art.js"></script>
+<script src="../v2/art2.js"></script>
+<script src="../../marketing/reels/tr.js"></script>
+<script src="../../marketing/reels/lib.js"></script>
+<script src="timeline.js"></script>
+<script src="draw.js"></script>
+<script>
+/* render.js drives this page: init(lang, device, clip dir, clip counts), then frame(f) for every frame. */
+const cv = document.getElementById('c');
+async function init(lang, dev, dir, counts) {
+  PV_LANG = lang; PV_DEV = dev;
+  [W, H] = dev === 'ipad' ? [1200, 1600] : [886, 1920];
+  cv.width = W; cv.height = H; ctx = cv.getContext('2d');
+  CLIPDIR = dir; CLIPS = counts;
+  await Promise.all(['800 40px BC', '700 40px BC', '700 40px B'].map(f => document.fonts.load(f)));
+  ICON = await loadImg('../../../BalloonBaron/Assets.xcassets/AppIcon.appiconset/AppIcon.png');
+  return PREVIEW.frames;
+}
+async function frame(f, q = .94) {
+  ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; ctx.filter = 'none';
+  ctx.fillStyle = '#000'; ctx.fillRect(0, 0, W, H);
+  await drawPV(f);
+  ctx.setTransform(1, 0, 0, 1, 0, 0);
+  grainOverlay(f, .025);
+  return q === 'png' ? cv.toDataURL('image/png') : cv.toDataURL('image/jpeg', q);
+}
+</script>
+</body>
+</html>

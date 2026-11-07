@@ -4,6 +4,9 @@
 //   node tools/marketing/reels/sfx.js <silent dir> <out dir> [1 2 3]
 // reads <silent dir>/reel<n>.mp4, writes <out dir>/reel<n>.mp4 and <out dir>/reel<n>-sfx.wav. The music is added in
 // Instagram on top, so the track leaves headroom and keeps to the 120 BPM grid.
+// TIMELINE=<file.js> NAMES=a,b: the same for another timeline that defines PREVIEW = { frames, sfx, music, lufs }
+// (tools/appstore/preview3/timeline.js): reads <silent dir>/<name>.mp4, writes <out dir>/<name>.mp4 for each name,
+// with a synthesised 120 BPM music bed under the effects when PREVIEW.music is set.
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
@@ -16,7 +19,9 @@ const FFMPEG = process.env.FFMPEG || 'ffmpeg';
 /* the timelines: lib.js and reels.js run here without a page (only their constants and event lists are used) */
 const C = { Math, console }; vm.createContext(C);
 for (const f of ['lib.js', 'reels.js']) vm.runInContext(fs.readFileSync(path.join(__dirname, f), 'utf8'), C);
+if (process.env.TIMELINE) vm.runInContext(fs.readFileSync(path.resolve(process.env.TIMELINE), 'utf8'), C);
 const REELS = vm.runInContext('REELS', C);
+const JOBS = process.env.TIMELINE ? process.env.NAMES.split(',').map(n => [n, vm.runInContext('PREVIEW', C)]) : reels.map(n => ['reel' + n, REELS[n]]);
 
 /* ---------- DSP ---------- */
 let seed = 1; const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
@@ -209,6 +214,40 @@ function room(L, R) {
   }
 }
 
+/* The music bed: 120 BPM, A minor - F - C - G a bar each (2 s), four-on-the-floor kick, claps on 2 and 4, off-beat
+   hats, a pumping saw bass, a detuned pad ducked by the kick and a plucked sixteenth-note arpeggio. It opens on the
+   first frame (autoplay starts muted, but the store's sound-on viewers get the downbeat) and rings out on the last bar. */
+function musicBed(frames) {
+  const len = Math.round(frames / FPS * SR), L = new Float32Array(len), Rr = new Float32Array(len), beat = SR / 2;
+  const chords = [[220, 261.63, 329.63], [174.61, 220, 261.63], [261.63, 329.63, 392], [196, 246.94, 293.66]], roots = [55, 43.65, 65.41, 49];
+  const add = (i, v, pan = 0) => { if (i >= 0 && i < len) { L[i] += v * (1 - pan); Rr[i] += v * (1 + pan); } };
+  const nb = Math.floor(len / beat), last = nb - 4; /* the last bar holds the chord and lets it ring */
+  for (let b = 0; b < nb; b++) {
+    const t0 = b * beat, bar = Math.floor(b / 4), ch = chords[bar % 4], root = roots[bar % 4], end = b >= last;
+    /* kick */
+    if (!end || b === last) { let ph = 0; for (let i = 0; i < SR * .3; i++) { const t = i / SR; ph += 2 * Math.PI * (48 + 80 * Math.exp(-t / .03)) / SR; add(t0 + i, Math.sin(ph) * env(t, .002, .12) * .55); } }
+    /* claps on 2 and 4 */
+    if (b % 2 === 1 && !end) { const bp = biquad('bp', 1500, 1); for (let i = 0; i < SR * .2; i++) { const t = i / SR; let e = 0; for (const d of [0, .01, .02]) e = Math.max(e, env(t - d, .0008, .008)); e = Math.max(e, env(t - .025, .001, .06) * .6); add(t0 + i, bp(noise()) * e * .5, .1); } }
+    /* hats on the off-beat and a soft one on the beat */
+    if (!end) for (const [off, g, dec] of [[.5, .16, .05], [0, .06, .02], [.25, .05, .015], [.75, .05, .015]]) { const hp = biquad('hp', 7000, .7), st = t0 + Math.round(off * beat); for (let i = 0; i < SR * .08; i++) add(st + i, hp(noise()) * env(i / SR, .0005, dec) * g, -.2); }
+    /* bass: eighths, pumping */
+    if (!end) for (const off of [0, .5]) { const lp = biquad('lp', 380, 1.2), st = t0 + Math.round(off * beat); let ph = 0; for (let i = 0; i < beat * .48; i++) { const t = i / SR; ph += root * 2 / SR; const saw = (ph % 1) * 2 - 1; add(st + i, lp(saw) * env(t, .006, .16) * .32); } }
+    /* pluck arpeggio, sixteenths */
+    if (!end) for (let k = 0; k < 4; k++) { const f = ch[(b * 4 + k) % 3] * 2 * (k === 3 ? 2 : 1), st = t0 + Math.round(k * beat / 4), lp = biquad('lp', 2600, .8); let ph = 0; for (let i = 0; i < SR * .18; i++) { const t = i / SR; ph += f / SR; const sq = (ph % 1) < .5 ? 1 : -1; add(st + i, lp(sq) * env(t, .002, .07) * .07, (k % 2 ? .35 : -.35)); } }
+  }
+  /* pad: three detuned saws per chord tone, low-passed, ducked by the kick, held through the last bar */
+  const lpL = biquad('lp', 1300, .7), lpR = biquad('lp', 1300, .7); const ph = new Float64Array(18);
+  for (let i = 0; i < len; i++) {
+    const b = Math.floor(i / beat), bar = Math.min(Math.floor(b / 4), Math.floor(last / 4)), ch = chords[bar % 4], inb = (i % beat) / beat;
+    let vl = 0, vr = 0; ch.forEach((f, j) => { for (let d = 0; d < 3; d++) { const k = j * 3 + d, det = [0.996, 1, 1.004][d]; ph[k] += f * det / SR; const v = (ph[k] % 1) * 2 - 1; if (d === 0) vl += v; else if (d === 2) vr += v; else { vl += v * .5; vr += v * .5; } } });
+    const duck = b >= last ? 1 : .55 + .45 * Math.min(1, inb * 3), fadeIn = Math.min(1, i / (SR * .02)), out = i > len - SR * 1.2 ? (len - i) / (SR * 1.2) : 1;
+    L[i] += lpL(vl) * .045 * duck * fadeIn * out; Rr[i] += lpR(vr) * .045 * duck * fadeIn * out;
+  }
+  /* a crash on the first downbeat and on the last bar */
+  for (const st of [0, last * beat]) { const hp = biquad('hp', 4000, .6); for (let i = 0; i < SR * 1.6; i++) add(st + i, hp(noise()) * env(i / SR, .001, .5) * .22); }
+  return { L, R: Rr };
+}
+
 function writeWav(file, L, R) {
   const n = L.length, b = Buffer.alloc(44 + n * 8);
   b.write('RIFF', 0); b.writeUInt32LE(36 + n * 8, 4); b.write('WAVE', 8); b.write('fmt ', 12); b.writeUInt32LE(16, 16); b.writeUInt16LE(3, 20); b.writeUInt16LE(2, 22);
@@ -218,10 +257,10 @@ function writeWav(file, L, R) {
 }
 
 fs.mkdirSync(out, { recursive: true });
-for (const n of reels) {
-  const R = REELS[n], len = Math.round(R.frames / FPS * SR);
+for (const [n, R] of JOBS) {
+  const len = Math.round(R.frames / FPS * SR);
   const L = new Float32Array(len), Rr = new Float32Array(len), sL = new Float32Array(len), sR = new Float32Array(len);
-  seed = 1000 + +n;
+  seed = 1000 + (parseInt(String(n).replace(/\D/g, '')) || 7);
   const map = [];
   for (const [f, name, o = {}] of R.sfx.slice().sort((a, b) => a[0] - b[0])) {
     const s = S[name](o), g = (o.g ?? 1) * LEVEL[name], at = Math.round(f / FPS * SR) - (s.pre || 0), send = SEND[name] || 0;
@@ -229,20 +268,21 @@ for (const n of reels) {
     map.push(`${(f / FPS).toFixed(2).padStart(6)}s  f${String(f).padStart(3)}  ${name}${o.n ? ' x' + o.n : ''}${o.len ? ` (from ${((f - o.len) / FPS).toFixed(2)}s)` : ''}`);
   }
   room(sL, sR); for (let i = 0; i < len; i++) { L[i] += sL[i]; Rr[i] += sR[i]; }
+  if (R.music) { const m = musicBed(R.frames); for (let i = 0; i < len; i++) { L[i] += m.L[i] * .9; Rr[i] += m.R[i] * .9; } }
   /* a 4 ms fade in (a hit on the very first sample makes the AAC encoder overshoot) and a fade out at the end */
   for (let i = 0; i < SR * .004; i++) { const k = i / (SR * .004); L[i] *= k; Rr[i] *= k; }
   for (let i = 0; i < SR * .05; i++) { const k = i / (SR * .05); L[len - 1 - i] *= k; Rr[len - 1 - i] *= k; }
-  const raw = path.join(out, `reel${n}-sfx-raw.wav`), wav = path.join(out, `reel${n}-sfx.wav`);
+  const target = R.lufs || -13, raw = path.join(out, `${n}-sfx-raw.wav`), wav = path.join(out, `${n}-sfx.wav`);
   writeWav(raw, L, Rr);
   /* loudness: measure, then normalise linearly to -13 LUFS, then a true-peak-safe limiter (-1.5 dBFS at 4x) */
-  const m = spawnSync(FFMPEG, ['-hide_banner', '-i', raw, '-af', 'loudnorm=I=-13:TP=-1.5:LRA=20:print_format=json', '-f', 'null', '-']).stderr.toString();
+  const m = spawnSync(FFMPEG, ['-hide_banner', '-i', raw, '-af', `loudnorm=I=${target}:TP=-1.5:LRA=20:print_format=json`, '-f', 'null', '-']).stderr.toString();
   let meas; try { meas = JSON.parse(m.slice(m.lastIndexOf('{'), m.lastIndexOf('}') + 1)); } catch (e) { meas = null; }
-  const gain = meas ? -13 - +meas.input_i : 0;
+  const gain = meas ? target - +meas.input_i : 0;
   execFileSync(FFMPEG, ['-y', '-loglevel', 'error', '-i', raw, '-af', `highpass=f=28:p=2,volume=${gain.toFixed(2)}dB,aresample=192000,alimiter=limit=0.79:attack=1:release=60:level=false,aresample=48000`, '-c:a', 'pcm_f32le', wav]);
   fs.unlinkSync(raw);
-  const mp4 = path.join(out, `reel${n}.mp4`);
-  execFileSync(FFMPEG, ['-y', '-loglevel', 'error', '-i', path.join(silent, `reel${n}.mp4`), '-i', wav, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy',
+  const mp4 = path.join(out, `${n}.mp4`);
+  execFileSync(FFMPEG, ['-y', '-loglevel', 'error', '-i', path.join(silent, `${n}.mp4`), '-i', wav, '-map', '0:v:0', '-map', '1:a:0', '-c:v', 'copy',
     '-c:a', 'aac', '-b:a', '320k', '-ar', '48000', '-ac', '2', '-movflags', '+faststart', '-shortest', mp4]);
-  fs.writeFileSync(path.join(out, `reel${n}-sfx-map.txt`), map.join('\n') + '\n');
-  console.log(`reel ${n}: ${R.sfx.length} sounds, measured ${meas ? meas.input_i : '?'} LUFS raw, gain ${gain.toFixed(1)} dB -> ${mp4}`);
+  fs.writeFileSync(path.join(out, `${n}-sfx-map.txt`), map.join('\n') + '\n');
+  console.log(`${n}: ${R.sfx.length} sounds, measured ${meas ? meas.input_i : '?'} LUFS raw, gain ${gain.toFixed(1)} dB -> ${mp4}`);
 }
