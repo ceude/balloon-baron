@@ -4,7 +4,7 @@ import BalloonBaronCore
 
 /// Screenshot runs on the simulator (.github/workflows/screens.yml), debug builds only. Launch arguments:
 /// `-demoDays N` plays N days with a simple bot and opens on the home screen; `-demoIntro` keeps the intro;
-/// `-demoPage fleet` opens an office page (`-demoUnit deals` then a holding desk, `-demoHolding deals|jersey` its money and deal); `-demoRegion abq` plays on in Albuquerque after Cappadocia, `-demoRegion lux` then on in Luxor.
+/// `-demoPage fleet` opens an office page (`-demoUnit deals` then a holding desk, `-demoHolding deals|jersey` its money and deal); `-demoRegion abq` plays on in Albuquerque after Cappadocia, `-demoRegion lux` then on in Luxor, `bri` in Bristol, `mara` in the Maasai Mara.
 /// One scene on top: `-demoScene issue` (pilots asking for a raise outside the office, then the card), `collect`, `album`, `deal`,
 /// `letter` (the family's letter, sealed) and `letterRead` (the letter already open).
 /// v124: `flight` (your own flight; in Bristol on a foggy morning with the airport's airspace), `glow` (Bristol's Night Glow night).
@@ -16,7 +16,7 @@ import BalloonBaronCore
 /// App Store captures (.github/workflows/store-shots.yml, tools/appstore/v2/store-shots.txt): `-demoStore` clears the
 /// pictures (no tutorial, lessons or test button, no sponsor on any envelope, a green flag); `-demoCompany "Name"` names the
 /// company; `-demoEmpire N` grows it after the days to N balloons, Baron of Cappadocia with a holding (its tower in the town),
-/// every pilot hired, no sponsor on any envelope; `-demoTime dawn|day` sets the town's hour. Scenes: `auto` (the days advance
+/// every pilot hired, no sponsor on any envelope. Scenes: `auto` (the days advance
 /// by themselves), `fireworks` (a wedding's fireworks over the town at night), `show` (the Balloon Show with the whole
 /// fleet), `studio` (the design studio with the star balloon in the constellation pattern), `takeover` (a struggling rival
 /// offers its company; with `-demoPage market -demoSection rivals`), `travel` (the flight across the world map to the current region).
@@ -29,7 +29,7 @@ extension GameStore {
         var g = Game(company: value("-demoCompany") ?? "Şafak Balon", colors: Rules.palettes[0], seed: 7)
         g.state.cash = 30000
         for _ in 0..<days { Self.demoDay(&g) }
-        if let r = value("-demoRegion"), r == "abq" || r == "lux" || r == "bri" {
+        if let r = value("-demoRegion"), r == "abq" || r == "lux" || r == "bri" || r == "mara" {
             g.state.barons[.cap] = g.state.day
             g.state.holding.cash = 400_000
             // Regions past Cappadocia need the World Tour; without it enterRegion refuses and the run stays home.
@@ -38,7 +38,7 @@ extension GameStore {
             g.state.transferAsk = nil
             g.state.cash = 120_000
             for _ in 0..<20 { Self.demoDay(&g) }
-            if r == "lux" || r == "bri" {
+            if r == "lux" || r == "bri" || r == "mara" {
                 g.state.barons[.abq] = g.state.day
                 g.state.holding.cash = max(g.state.holding.cash, 400_000)
                 Self.demoEnter(&g, .lux)
@@ -46,10 +46,18 @@ extension GameStore {
                 g.state.cash = 120_000
                 for _ in 0..<20 { Self.demoDay(&g) }
             }
-            if r == "bri" {
+            if r == "bri" || r == "mara" {
                 g.state.barons[.lux] = g.state.day
                 g.state.holding.cash = max(g.state.holding.cash, 400_000)
                 Self.demoEnter(&g, .bri)
+                g.state.transferAsk = nil
+                g.state.cash = 120_000
+                for _ in 0..<20 { Self.demoDay(&g) }
+            }
+            if r == "mara" {
+                g.state.barons[.bri] = g.state.day
+                g.state.holding.cash = max(g.state.holding.cash, 400_000)
+                Self.demoEnter(&g, .mara)
                 g.state.transferAsk = nil
                 g.state.cash = 120_000
                 for _ in 0..<20 { Self.demoDay(&g) }

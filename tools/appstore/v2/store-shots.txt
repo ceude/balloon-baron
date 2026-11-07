@@ -20,3 +20,16 @@ video:auto    | * | 3+10 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 40 -
 video:travel  | * | 1+40 | -demoDays 60 -demoCompany {COMPANY} -demoRegion bri -demoScene travel -demoSlow 0.2
 video:night   | * | 1+60 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene fireworks -demoSlow 0.15
 video:show    | * | 244+90 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 120 -demoScene show -demoSlow 0.08
+# App Preview v3 (tools/appstore/preview3): more clips from the real app
+video:dawn      | * | 2+12 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene flight -demoBurn
+video:early     | * | 3+6  | -demoDays 1 -demoCompany {COMPANY}
+video:empire    | * | 3+7  | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164
+video:collect164 | * | 2+8 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene collect
+video:auto164   | * | 3+10 | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoScene auto
+video:holding   | * | 3+6  | -demoDays 130 -demoCompany {COMPANY} -demoEmpire 164 -demoPage holding
+video:map       | * | 3+5  | -demoDays 60 -demoCompany {COMPANY} -demoRegion mara -demoPage map
+video:abq       | * | 3+5  | -demoDays 60 -demoCompany {COMPANY} -demoRegion abq
+video:lux       | * | 3+5  | -demoDays 60 -demoCompany {COMPANY} -demoRegion lux
+video:bri       | * | 3+5  | -demoDays 60 -demoCompany {COMPANY} -demoRegion bri
+video:mara      | * | 3+6  | -demoDays 60 -demoCompany {COMPANY} -demoRegion mara
+video:maraflight | * | 2+11 | -demoDays 60 -demoCompany {COMPANY} -demoRegion mara -demoScene flight -demoBurn
