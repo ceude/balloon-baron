@@ -26,7 +26,7 @@ Burada yazanlar senin hesabında yapılacaklar.
 4. **Uygulama içi satın almalar** (aşağıdaki tablo):
    - Her biri *Non-Consumable* olarak açılır.
    - Her ürün için incelemeye bir ekran görüntüsü yüklenir: Çarşı'daki satın alma kartı yeterli.
-5. **Game Center**: 25 başarım ve 2 lider tablosu (aşağıdaki tablolar).
+5. **Game Center**: 30 başarım ve 2 lider tablosu (aşağıdaki tablolar).
 6. **App Privacy** (Uygulama Gizliliği) soruları: aşağıdaki cevaplar.
 7. **Adresler (GitHub Pages, `docs/`):** destek `https://ceude.github.io/balloon-baron/support.html`, pazarlama `https://ceude.github.io/balloon-baron/`, gizlilik `https://ceude.github.io/balloon-baron/privacy-policy.html`. Pages bir kez açılmalı: repo Settings → Pages → Source: Deploy from a branch, `main`, `/docs`.
    Eski not: **Gizlilik politikası adresi**: `docs/privacy-policy.html` herkese açık bir adreste olmalı. En kolayı: repo ayarları → *Pages* → `main` dalı, `/docs` klasörü. Adres `https://ceude.github.io/balloon-baron/privacy-policy.html` olur. Pages, özel repoda yalnızca ücretli GitHub planında çalışır; olmazsa dosyayı herhangi bir siteye koyabiliriz.
@@ -47,8 +47,8 @@ Burada yazanlar senin hesabında yapılacaklar.
   - EN: `balloon,hot air,tycoon,cappadocia,business,sim,manager,flight,pilot,empire,idle,strategy,turkey`
   - TR: `balon,sıcak hava,kapadokya,tycoon,işletme,simülasyon,şirket,pilot,uçuş,strateji,imparatorluk`
 - **Tanıtım metni (170):**
-  - EN: Fly at dawn over the fairy chimneys, read the wind, land perfectly and grow one basket into a balloon empire that reaches America.
-  - TR: Peri bacalarının üstünde şafakta uç, rüzgârı oku, kusursuz in ve tek bir sepetten Amerika'ya uzanan bir balon imparatorluğu kur.
+  - EN: Fly at dawn over the fairy chimneys, read the wind, land perfectly and grow one basket into a balloon empire across five regions.
+  - TR: Peri bacalarının üstünde şafakta uç, rüzgârı oku, kusursuz in ve tek bir sepetten beş bölgeye yayılan bir balon imparatorluğu kur.
 
 **Açıklama (EN):**
 
@@ -62,7 +62,7 @@ Burada yazanlar senin hesabında yapılacaklar.
 >
 > DESIGN YOUR BALLOONS: patterns, colours, heart, star and skull envelopes.
 >
-> GO GLOBAL: become the Baron of Cappadocia, open a holding, fly the Balloon Fiesta in Albuquerque and open offices in New York, Istanbul, Tokyo and Seoul.
+> GO GLOBAL: become the Baron of Cappadocia, open a holding, fly the Balloon Fiesta in Albuquerque, the Nile at Luxor, the Avon Gorge in Bristol and the Maasai Mara savanna, and open offices in Istanbul, Seoul, New York, London, Tokyo and Dubai.
 >
 > No ads. No energy timers. Every piece of art and sound is made in code.
 
@@ -78,7 +78,7 @@ Burada yazanlar senin hesabında yapılacaklar.
 >
 > BALONUNU TASARLA: desenler, renkler, kalp, yıldız ve kurukafa balonlar.
 >
-> DÜNYAYA AÇIL: Kapadokya Baronu ol, holding kur, Albuquerque'de Balloon Fiesta'da uç; New York, İstanbul, Tokyo ve Seul'de ofis aç.
+> DÜNYAYA AÇIL: Kapadokya Baronu ol, holding kur; Albuquerque'de Balloon Fiesta'da, Luksor'da Nil'in, Bristol'de Avon Kanyonu'nun, Kenya'da Maasai Mara savanasının üstünde uç; İstanbul, Seul, New York, Londra, Tokyo ve Dubai'de ofis aç.
 >
 > Reklam yok. Enerji beklemesi yok. Bütün çizimler ve sesler kodla yapıldı.
 
@@ -177,7 +177,7 @@ Başarımlar oyunda kartpostal olarak kutlanıyor, bu yüzden Game Center afişi
 
 ## 6. İnceleme notu (App Review)
 
-> No login needed. The game saves on the device. All purchases are non-consumable and can be restored from the bazaar ("Restore purchases"). Balloon patterns, shaped envelopes, town decorations and Balloon Show figures change the look of the game; shop patterns and shapes never fade and can be applied to any balloon for free. The whole Cappadocia campaign is free; the "Grand Tour" unlocks the further regions (America, Egypt) after the player becomes Baron of Cappadocia. The "Founder Pack" unlocks every pattern, shape, decoration and show figure at once; the "Supporter Edition" is the Grand Tour plus the Founder Pack and a supporter plaque in town. The bazaar opens on game day 11; to reach it quickly, play a few days (each day: tap "Collect passengers", take off, land).
+> No login needed. The game saves on the device. All purchases are non-consumable and can be restored from the bazaar ("Restore purchases"). Balloon patterns, shaped envelopes, town decorations and Balloon Show figures change the look of the game; shop patterns and shapes never fade and can be applied to any balloon for free. The whole Cappadocia campaign is free; the "Grand Tour" unlocks the further regions (Albuquerque, Luxor, Bristol and the Maasai Mara) after the player becomes Baron of Cappadocia; each region opens once the player is baron of the one before it. The "Founder Pack" unlocks every pattern, shape, decoration and show figure at once; the "Supporter Edition" is the Grand Tour plus the Founder Pack and a supporter plaque in town. The bazaar opens on game day 11; to reach it quickly, play a few days (each day: tap "Collect passengers", take off, land).
 
 ## 7. Sürüm numaraları
 
