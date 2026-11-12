@@ -282,6 +282,8 @@ private struct DayCover: View {
             }
         }
         .animation(.easeOut(duration: 0.35), value: store.report == nil)
+        // v142b: the burner and vent sit on the bottom edge; see FlightView
+        .defersSystemGestures(on: store.report == nil ? .bottom : [])
         .onChange(of: store.report == nil) { _, none in
             if !none { DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) { flightShown = false } }
         }

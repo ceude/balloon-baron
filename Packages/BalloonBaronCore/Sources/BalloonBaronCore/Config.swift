@@ -229,8 +229,12 @@ public enum Rules {
     public static let showRep = 0.05, showPax = 4.0
     public static let balloonNames = ["Şafak", "Güvercin", "Zelve", "Uçhisar", "Avanos", "Ihlara", "Ortahisar", "Kızılçukur",
                                       "Paşabağ", "Erciyes", "Soğanlı", "Mustafapaşa", "Göreme", "Çavuşin", "Ürgüp", "Sinasos"]
+    /// v142b (TestFlight: "three Deryas and two Cerens in a crew of eight"): 40 names, and new pilots take one the crew
+    /// doesn't have yet (`GameState.freshPilotName`).
     public static let pilotNames = ["Mert", "Elif", "Kerem", "Zeynep", "Hakan", "Selin", "Burak", "Derya",
-                                    "Emre", "Aslı", "Onur", "Ceren", "Tolga", "Melis", "Cem", "İpek"]
+                                    "Emre", "Aslı", "Onur", "Ceren", "Tolga", "Melis", "Cem", "İpek",
+                                    "Can", "Defne", "Ozan", "Ebru", "Serkan", "Gizem", "Barış", "Pınar", "Volkan", "Esra", "Umut", "Tuğba",
+                                    "Kaan", "Sibel", "Murat", "Nazlı", "Levent", "Gamze", "Oğuz", "Büşra", "Sinan", "Damla", "Yusuf", "Merve"]
 
     /// Company colors offered at setup (primary, secondary).
     public static let palettes: [[String]] = [

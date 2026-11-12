@@ -45,6 +45,9 @@ extension Game {
         lv[b] = n + 1
         state.buildings = lv
         addPaper(.upgrade(b, level: n + 1))
+        // v142b (TestFlight: balloons that came in from outside after a bigger hangar had no pilot, with pilots idle):
+        // a bigger hangar lets balloons in, so they get their pilots now, not at the next placing.
+        assignPilots()
         return true
     }
 

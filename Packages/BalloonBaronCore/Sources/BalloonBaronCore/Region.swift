@@ -73,7 +73,9 @@ public enum RegionID: String, Codable, CaseIterable, CodingKeyRepresentable, Sen
         switch self {
         case .cap: Rules.pilotNames
         case .abq: ["Jake", "Emma", "Luis", "Sofia", "Tyler", "Grace", "Diego", "Hannah",
-                    "Cody", "Maya", "Ryan", "Ava", "Miguel", "Chloe", "Ethan", "Lily"]
+                    "Cody", "Maya", "Ryan", "Ava", "Miguel", "Chloe", "Ethan", "Lily",
+                    "Carlos", "Isabella", "Mateo", "Olivia", "Brandon", "Ashley", "Javier", "Megan", "Travis", "Natalie", "Adrian", "Brianna",
+                    "Marcus", "Valeria", "Kyle", "Rachel", "Andrés", "Jasmine", "Dylan", "Camila", "Hunter", "Elena", "Joaquín", "Kayla"]
         case .lux: LUX.pilotNames
         case .bri: BRI.pilotNames
         case .mara: MARA.pilotNames
@@ -151,21 +153,27 @@ private enum MARA {
     static let balloonNames = ["Talek", "Olare", "Oloololo", "Musiara", "Sekenani", "Ngama", "Keekorok", "Rekero",
                                "Naboisho", "Siana", "Lemek", "Olkiombo", "Kichwa", "Sand River", "Rhino Ridge", "Ol Kurruk"]
     static let pilotNames = ["Brian", "Wanjiku", "Kevin", "Achieng", "Kiprop", "Mercy", "Otieno", "Njeri",
-                             "Dennis", "Wairimu", "Saitoti", "Faith", "Mutua", "Naserian", "Collins", "Akinyi"]
+                             "Dennis", "Wairimu", "Saitoti", "Faith", "Mutua", "Naserian", "Collins", "Akinyi",
+                             "Joseph", "Wambui", "Peter", "Atieno", "Kipchoge", "Nyambura", "Lemayian", "Grace", "Ochieng", "Wanjiru", "Moses", "Chebet",
+                             "Simiyu", "Nekesa", "Kamau", "Jepkosgei", "Sankale", "Nashipae", "Daniel", "Esther", "Kimani", "Mumbi", "Kiplagat", "Wangari"]
 }
 
 private enum BRI {
     static let balloonNames = ["Clifton", "Avon", "Ashton", "Severn", "Redland", "Cabot", "Brandon", "Leigh Woods",
                                "Kingsweston", "Bedminster", "Hotwells", "Downs", "Mendip", "Cotham", "Brunel", "Portishead"]
     static let pilotNames = ["Oliver", "Amelia", "George", "Isla", "Harry", "Poppy", "Jack", "Freya",
-                             "Alfie", "Evie", "Charlie", "Ruby", "Archie", "Florence", "Thomas", "Daisy"]
+                             "Alfie", "Evie", "Charlie", "Ruby", "Archie", "Florence", "Thomas", "Daisy",
+                             "Jacob", "Sophie", "William", "Grace", "Noah", "Lily", "James", "Ella", "Oscar", "Millie", "Henry", "Rosie",
+                             "Joshua", "Hannah", "Dan", "Megan", "Luke", "Chloe", "Sam", "Imogen", "Ben", "Lucy", "Callum", "Holly"]
 }
 
 private enum LUX {
     static let balloonNames = ["Karnak", "Memnon", "Hatşepsut", "Nefertari", "Teb", "Abidos", "Dendera", "Esna",
                                "Edfu", "Kom Ombo", "File", "Kurna", "Habu", "Amon", "Horus", "İsis"]
     static let pilotNames = ["Ahmed", "Mona", "Karim", "Yasmin", "Omar", "Nour", "Tarek", "Salma",
-                             "Hassan", "Laila", "Youssef", "Mariam", "Khaled", "Dina", "Mostafa", "Hana"]
+                             "Hassan", "Laila", "Youssef", "Mariam", "Khaled", "Dina", "Mostafa", "Hana",
+                             "Mahmoud", "Aya", "Mohamed", "Heba", "Amr", "Rania", "Hany", "Nada", "Sherif", "Reem", "Ibrahim", "Shaimaa",
+                             "Walid", "Noha", "Mina", "Marwa", "Ayman", "Eman", "Sayed", "Ghada", "Ramy", "Doaa", "Bassem", "Samira"]
 }
 
 /// Pins on the world map. Regions without a `RegionID` are only "coming soon"; the mystery one has no name yet.

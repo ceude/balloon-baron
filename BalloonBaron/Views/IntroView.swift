@@ -113,6 +113,8 @@ struct IntroView: View {
             .contentShape(Rectangle())
             .gesture(holdGesture)
         }
+        // v142b: the burner sits near the home indicator; take that edge so a press starts at once (see FlightView)
+        .defersSystemGestures(on: .bottom)
         .onAppear {
             SoundEngine.shared.start()
             intro.fast = store.state != nil // the first launch ever (no saved game) climbs calmly

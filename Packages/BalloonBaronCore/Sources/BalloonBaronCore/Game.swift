@@ -130,7 +130,9 @@ public struct Game: Sendable {
         func make(_ level: PilotLevel, school: Bool = false) -> Pilot {
             let initial = rng.pick(state.region.pilotInitials)
             defer { state.nextID += 1 }
-            let name = "\(rng.pick(state.region.pilotNames)) \(initial).", trait = rollTrait()
+            // v142b: a first name the crew and today's list don't have yet
+            let name = state.freshPilotName(&rng, initial: initial, taken: state.pilots.map(\.name) + state.candidates.map(\.name))
+            let trait = rollTrait()
             // v124: Bristol's wages are 15% higher; the region's wage is fixed when the pilot is hired.
             let wage = state.region.wageFactor != 1 ? Pilot.baseWage(level, school: school, trait: trait, region: state.region) : nil
             return Pilot(id: state.nextID, name: name, level: level, fromSchool: school, customWage: wage, trait: trait)

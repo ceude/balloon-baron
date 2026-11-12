@@ -1058,7 +1058,20 @@ const B_NAMES = ['Şafak', 'Güvercin', 'Zelve', 'Uçhisar', 'Avanos', 'Ihlara',
 /* v124.4: a surname initial; Turkish surnames never start with Q, W or X (nor Ğ), so Cappadocia uses the Turkish letters */
 const INITIALS_TR = 'ABCÇDEFGHİKLMNOÖPRSŞTUÜVYZ', INITIALS_EN = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 const pilotInitial = i => { const L = !S || S.region === 'cap' ? INITIALS_TR : INITIALS_EN; return L[i == null ? Math.floor(Math.random() * L.length) : i % L.length]; };
-const P_NAMES = ['Mert', 'Elif', 'Kerem', 'Zeynep', 'Hakan', 'Selin', 'Burak', 'Derya', 'Emre', 'Aslı', 'Onur', 'Ceren', 'Tolga', 'Melis', 'Cem', 'İpek'];
+/* v142b (TestFlight: "8 kişilik ekipte 3 Derya, 2 Ceren"): 40 names per region, and a new pilot takes a first name the crew
+   doesn't have yet (freshPilotName). */
+const P_NAMES = ['Mert', 'Elif', 'Kerem', 'Zeynep', 'Hakan', 'Selin', 'Burak', 'Derya', 'Emre', 'Aslı', 'Onur', 'Ceren', 'Tolga', 'Melis', 'Cem', 'İpek',
+  'Can', 'Defne', 'Ozan', 'Ebru', 'Serkan', 'Gizem', 'Barış', 'Pınar', 'Volkan', 'Esra', 'Umut', 'Tuğba', 'Kaan', 'Sibel', 'Murat', 'Nazlı', 'Levent', 'Gamze', 'Oğuz', 'Büşra', 'Sinan', 'Damla', 'Yusuf', 'Merve'];
+/* v142b: a name nobody in the crew, on the hire list or in `also` has: a free first name while the region's list has one,
+   then a surname initial that makes the full name new ("Derya K."). */
+function freshPilotName(also) {
+  const taken = [...(S.pilots || []), ...(S.candidates || []), ...(also || [])].map(p => p.name);
+  const firsts = new Set(taken.map(n => n.replace(/ \S+\.$/, ''))), all = new Set(taken);
+  const free = P_NAMES.filter(n => !firsts.has(n)), first = pick(free.length ? free : P_NAMES);
+  let name = first + ' ' + pilotInitial() + '.';
+  for (let k = 0; k < 60 && all.has(name); k++) name = first + ' ' + pilotInitial() + '.';
+  return name;
+}
 const LOANS = [
   { amt: 10000, days: 40, inst: 300, need: 0 },
   { amt: 25000, days: 45, inst: 650, need: 2 },
@@ -1940,9 +1953,9 @@ function newCandidates() {
   S.candidates = [];
   for (let i = 0; i < 3; i++) {
     const r = Math.random(), lvl = r < .5 ? 1 : r < .85 ? 2 : 3;
-    S.candidates.push({ id: S.nextId++, name: pick(P_NAMES) + ' ' + pilotInitial() + '.', lvl, xp: 0, trait: rollTrait() });
+    S.candidates.push({ id: S.nextId++, name: freshPilotName(), lvl, xp: 0, trait: rollTrait() });
   }
-  if (S.school) S.candidates.unshift({ id: S.nextId++, name: pick(P_NAMES) + ' ' + pilotInitial() + '.', lvl: Math.random() < .3 ? 2 : 1, xp: 0, school: true, trait: rollTrait() });
+  if (S.school) S.candidates.unshift({ id: S.nextId++, name: freshPilotName(), lvl: Math.random() < .3 ? 2 : 1, xp: 0, school: true, trait: rollTrait() });
 }
 function addBalloon(size) {
   const used = new Set(S.balloons.map(x => x.name)); const name = size === 'XL' ? RD().xl : B_NAMES.find(n => !used.has(n)) || ('Balon ' + S.nextId);
@@ -2415,6 +2428,8 @@ function showPoach() {
   const c = h('div', 'card');
   c.insertAdjacentHTML('beforeend', balloonIcon(r.col, r.col2).replace('class="ic"', 'class="ic" style="width:56px;height:56px"'));
   c.appendChild(h('h1', null, `${r.name} pilotunu istiyor`));
+  /* v142b (TestFlight: "pilotumun özelliklerini göremiyorum, karar için önemli"): who it is, at a glance */
+  c.appendChild(pilotItem(p));
   c.appendChild(h('p', 'lead', `${esc(p.name)} (${LEVELS[p.lvl].name.toLowerCase()}) için günlük ${eur(P.wage)} teklif ettiler. Şu an ${eur(pilotWage(p))} alıyor. Kalması için maaşını eşitlemen gerekiyor.`));
   const yes = h('button', 'big', `Zam yap: ${eur(P.wage)}/gün`); yes.onclick = () => { p.wage = P.wage; m.hidden = true; refresh(); setTimeout(nextPopup, 250); };
   const no = h('button', 'ghost', 'Bırak gitsin'); no.onclick = () => { S.pilots = S.pilots.filter(x => x !== p); assignPilots(); m.hidden = true; refresh(); setTimeout(nextPopup, 250); };
@@ -3801,13 +3816,17 @@ const CREW_FILTERS = {
   senior: ['Kıdemli', p => p.lvl === 3], mid: ['Deneyimli', p => p.lvl === 2], rookie: ['Çaylak', p => p.lvl === 1], school: ['Okul mezunu', p => !!p.school]
 };
 /* A pilot's card: what the old crew row showed, and Kov. */
+/* The pilot's row: level, trait, wage, risk, balloon and experience (the pilot card; v142b: the poach card too). */
+function pilotItem(p) {
+  const b = S.balloons.find(x => x.pilot === p.id), it = h('div', 'item');
+  it.appendChild(h('div', 'av', esc(p.name[0]))).style.background = CREW_COL[p.lvl - 1];
+  it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, kaza riski ${pilotRiskText(p)}. ${b ? `${esc(b.name)} balonunda.` : 'Boşta.'}${p.lvl < 3 ? ` Tecrübe ${Math.round(p.xp || 0)}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}${traitLine(p)}</div>`));
+  return it;
+}
 function pilotCard(p) {
   const m = $('menu'); m.replaceChildren();
   const b = S.balloons.find(x => x.pilot === p.id), c = h('div', 'card');
-  const it = h('div', 'item');
-  it.appendChild(h('div', 'av', esc(p.name[0]))).style.background = CREW_COL[p.lvl - 1];
-  it.appendChild(h('div', 'main', `<div class="t">${esc(p.name)} <span class="tag n">${LEVELS[p.lvl].name}</span>${p.school ? ' <span class="tag g">Okul mezunu</span>' : ''}${traitTag(p)}</div><div class="s">${eur(pilotWage(p))}/gün, kaza riski ${pilotRiskText(p)}. ${b ? `${esc(b.name)} balonunda.` : 'Boşta.'}${p.lvl < 3 ? ` Tecrübe ${Math.round(p.xp || 0)}/${XP_UP[p.lvl]} uçuş.` : ' En üst seviye.'}${traitLine(p)}</div>`));
-  c.appendChild(it);
+  c.appendChild(pilotItem(p));
   const acts = h('div', 'btns');
   /* v124.4: send the pilot to another balloon */
   const own = S.balloons.filter(x => !isSelf(x));
@@ -5245,9 +5264,11 @@ const rivalCrew = r => dealCrew(r, false);
 function crewFor(o, sizes, style) {
   if (o.crew && o.crew.length === sizes.length) return o.crew;
   const mix = CREW_MIX[style] || CREW_MIX.mid;
+  const joining = [];
   o.crew = sizes.map(() => {
     const x = Math.random(), lvl = x < mix[0] ? 1 : x < mix[0] + mix[1] ? 2 : 3;
-    return { name: pick(P_NAMES) + ' ' + pilotInitial() + '.', lvl, xp: 0, trait: rollTrait(), wage: Math.round(LEVELS[lvl].wage * rnd(.9, 1.1)) };
+    const name = freshPilotName(joining); joining.push({ name }); /* v142b */
+    return { name, lvl, xp: 0, trait: rollTrait(), wage: Math.round(LEVELS[lvl].wage * rnd(.9, 1.1)) };
   });
   return o.crew;
 }
@@ -7767,7 +7788,7 @@ const REGION_DEF = {
   abq: {
     name: 'Albuquerque', land: 'ABD', cur: '$', fx: 1.1, xl: 'Fiesta Yıldızı',
     bnames: ['Sandia', 'Rio Grande', 'Corrales', 'Bernalillo', 'Placitas', 'Isleta', 'Jemez', 'Taos', 'Santa Fe', 'Mesa', 'Zuni', 'Acoma', 'Chama', 'Galisteo', 'Pecos', 'Cibola'],
-    pnames: ['Jake', 'Emma', 'Luis', 'Sofia', 'Tyler', 'Grace', 'Diego', 'Hannah', 'Cody', 'Maya', 'Ryan', 'Ava', 'Miguel', 'Chloe', 'Ethan', 'Lily'],
+    pnames: ['Jake', 'Emma', 'Luis', 'Sofia', 'Tyler', 'Grace', 'Diego', 'Hannah', 'Cody', 'Maya', 'Ryan', 'Ava', 'Miguel', 'Chloe', 'Ethan', 'Lily', 'Carlos', 'Isabella', 'Mateo', 'Olivia', 'Brandon', 'Ashley', 'Javier', 'Megan', 'Travis', 'Natalie', 'Adrian', 'Brianna', 'Marcus', 'Valeria', 'Kyle', 'Rachel', 'Andrés', 'Jasmine', 'Dylan', 'Camila', 'Hunter', 'Elena', 'Joaquín', 'Kayla'],
     hotels: ['Old Town Adobe Inn', 'Los Poblanos Hacienda', 'Sandia Peak Lodge', 'Rio Grande Grand Resort'],
     sponsors: [['Green Chile Co.', 'GREEN CHILE'], ['Rio Grande Orchards', 'ORCHARDS'], ['Turquoise Bank', 'TURQUOISE'], ['Route 66 Energy', 'ROUTE 66!']],
     valley: ['Rio Grande dokunuşu', 'Rio Grande nehrinin üstünde 150 m altına alçal, nehri selamla.']
@@ -7775,7 +7796,7 @@ const REGION_DEF = {
   lux: {
     name: 'Luksor', land: 'Mısır', cur: '€', fx: 1, xl: 'Teb Yıldızı',
     bnames: ['Karnak', 'Memnon', 'Hatşepsut', 'Nefertari', 'Teb', 'Abidos', 'Dendera', 'Esna', 'Edfu', 'Kom Ombo', 'File', 'Kurna', 'Habu', 'Amon', 'Horus', 'İsis'],
-    pnames: ['Ahmed', 'Mona', 'Karim', 'Yasmin', 'Omar', 'Nour', 'Tarek', 'Salma', 'Hassan', 'Laila', 'Youssef', 'Mariam', 'Khaled', 'Dina', 'Mostafa', 'Hana'],
+    pnames: ['Ahmed', 'Mona', 'Karim', 'Yasmin', 'Omar', 'Nour', 'Tarek', 'Salma', 'Hassan', 'Laila', 'Youssef', 'Mariam', 'Khaled', 'Dina', 'Mostafa', 'Hana', 'Mahmoud', 'Aya', 'Mohamed', 'Heba', 'Amr', 'Rania', 'Hany', 'Nada', 'Sherif', 'Reem', 'Ibrahim', 'Shaimaa', 'Walid', 'Noha', 'Mina', 'Marwa', 'Ayman', 'Eman', 'Sayed', 'Ghada', 'Ramy', 'Doaa', 'Bassem', 'Samira'],
     hotels: ['Memnon View Inn', 'Theban Garden Hotel', 'Karnak Nile Lodge', 'Nefertari Palace Resort'],
     sponsors: [['Karkade Co.', 'KARKADE'], ['Papyrus Bank', 'PAPYRUS'], ['Nile Cruise Line', 'NILE CRUISE'], ['Scarab Mobile', 'SCARAB']],
     valley: ['Nil dokunuşu', 'Nil\'in üstünde 150 m altına alçal, felukaları selamla.']
@@ -7784,7 +7805,7 @@ const REGION_DEF = {
   bri: {
     name: 'Bristol', land: 'İngiltere', cur: '£', fx: 1 / 1.2, xl: 'Avon Yıldızı',
     bnames: ['Clifton', 'Avon', 'Ashton', 'Severn', 'Redland', 'Cabot', 'Brandon', 'Leigh Woods', 'Kingsweston', 'Bedminster', 'Hotwells', 'Downs', 'Mendip', 'Cotham', 'Brunel', 'Portishead'],
-    pnames: ['Oliver', 'Amelia', 'George', 'Isla', 'Harry', 'Poppy', 'Jack', 'Freya', 'Alfie', 'Evie', 'Charlie', 'Ruby', 'Archie', 'Florence', 'Thomas', 'Daisy'],
+    pnames: ['Oliver', 'Amelia', 'George', 'Isla', 'Harry', 'Poppy', 'Jack', 'Freya', 'Alfie', 'Evie', 'Charlie', 'Ruby', 'Archie', 'Florence', 'Thomas', 'Daisy', 'Jacob', 'Sophie', 'William', 'Grace', 'Noah', 'Lily', 'James', 'Ella', 'Oscar', 'Millie', 'Henry', 'Rosie', 'Joshua', 'Hannah', 'Dan', 'Megan', 'Luke', 'Chloe', 'Sam', 'Imogen', 'Ben', 'Lucy', 'Callum', 'Holly'],
     hotels: ['Harbourside Inn', 'Clifton Terrace Hotel', 'Avon Gorge Lodge', 'Royal Crescent Grand'],
     sponsors: [['Apple Press Co.', 'APPLE PRESS'], ['Severn Bank', 'SEVERN'], ['Harbour Tea Rooms', 'TEA ROOMS'], ['Westcountry Mobile', 'WESTCOUNTRY']],
     valley: ['Avon dokunuşu', 'Avon nehrinin üstünde 150 m altına alçal, kanyonu selamla.']
@@ -7793,7 +7814,7 @@ const REGION_DEF = {
   mara: {
     name: 'Maasai Mara', land: 'Kenya', cur: '$', fx: 1.1, xl: 'Mara Yıldızı',
     bnames: ['Talek', 'Olare', 'Oloololo', 'Musiara', 'Sekenani', 'Ngama', 'Keekorok', 'Rekero', 'Naboisho', 'Siana', 'Lemek', 'Olkiombo', 'Kichwa', 'Sand River', 'Rhino Ridge', 'Ol Kurruk'],
-    pnames: ['Brian', 'Wanjiku', 'Kevin', 'Achieng', 'Kiprop', 'Mercy', 'Otieno', 'Njeri', 'Dennis', 'Wairimu', 'Saitoti', 'Faith', 'Mutua', 'Naserian', 'Collins', 'Akinyi'],
+    pnames: ['Brian', 'Wanjiku', 'Kevin', 'Achieng', 'Kiprop', 'Mercy', 'Otieno', 'Njeri', 'Dennis', 'Wairimu', 'Saitoti', 'Faith', 'Mutua', 'Naserian', 'Collins', 'Akinyi', 'Joseph', 'Wambui', 'Peter', 'Atieno', 'Kipchoge', 'Nyambura', 'Lemayian', 'Grace', 'Ochieng', 'Wanjiru', 'Moses', 'Chebet', 'Simiyu', 'Nekesa', 'Kamau', 'Jepkosgei', 'Sankale', 'Nashipae', 'Daniel', 'Esther', 'Kimani', 'Mumbi', 'Kiplagat', 'Wangari'],
     hotels: ['Talek River Camp', 'Oloololo Ridge Lodge', 'Acacia Tented Camp', 'Mara Crown Lodge'],
     sponsors: [['Kahawa Coffee Co.', 'KAHAWA'], ['Savanna Bank', 'SAVANNA'], ['Kericho Tea Estates', 'KERICHO TEA'], ['Twiga Mobile', 'TWIGA']],
     valley: ['Mara dokunuşu', 'Mara Nehri\'nin üstünde 150 m altına alçal, su aygırlarını selamla; ama kıyısına inme.']
@@ -10706,7 +10727,7 @@ const UPGRADES = {
 };
 const bl = k => (S.bld && S.bld[k]) || 1;
 const upkeepK = () => [1, 1, .85, .7][Math.min(3, bl('hangar'))]; /* v127: levels 4+ only add room */
-function upgrade(k) { const n = bl(k), L = UPGRADES[k].lv[n]; if (!L || S.cash < L.cost) return; S.cash -= L.cost; S.bld = Object.assign({}, S.bld, { [k]: n + 1 }); sfx('coin'); paperAdd(1, `${S.company} ${UPGRADES[k].name.toLowerCase()} büyüdü`, L.t + ' açıldı.'); refresh(); }
+function upgrade(k) { const n = bl(k), L = UPGRADES[k].lv[n]; if (!L || S.cash < L.cost) return; S.cash -= L.cost; S.bld = Object.assign({}, S.bld, { [k]: n + 1 }); assignPilots(); /* v142b: balloons that move into a bigger hangar get their pilots now */ sfx('coin'); paperAdd(1, `${S.company} ${UPGRADES[k].name.toLowerCase()} büyüdü`, L.t + ' açıldı.'); refresh(); }
 /* A building's card: what it is now, the next level, and the way into its page. */
 function buildingCard(k, open, openLabel) {
   const m = $('menu'); m.replaceChildren();

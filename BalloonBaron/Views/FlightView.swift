@@ -539,6 +539,11 @@ struct FlightView: View {
         .overlay {
             if confirmAbort, let model { abortCard(model) }
         }
+        // v142b (TestFlight: "pressing the Burner button itself starts a bit late, higher up on the right it's instant"):
+        // the button sits right above the home indicator, where iOS holds every new touch back until it is sure it isn't
+        // the swipe home (its system-gesture gate, a few tenths of a second). Our gestures take that edge first: a press
+        // fires on touch-down there too, and going home during a flight takes a second swipe.
+        .defersSystemGestures(on: .bottom)
         .onAppear(perform: setup)
         .onDisappear { SoundEngine.shared.burner(false) }
         .onChange(of: phase) { _, p in if p != .active { model?.pause() } } // leaving the app pauses the flight

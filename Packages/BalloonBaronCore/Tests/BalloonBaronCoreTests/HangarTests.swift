@@ -79,8 +79,7 @@ final class HangarTests: XCTestCase {
         XCTAssertTrue(g.state.isOutside(g.state.balloons.last!))
         XCTAssertNotNil(g.hangarWarn(outsideBefore: 0))
         XCTAssertEqual(g.state.local.hangarReminder, g.state.day + Hangar.reminderDays)
-        XCTAssertTrue(g.upgrade(.hangar))
-        g.assignPilots()
+        XCTAssertTrue(g.upgrade(.hangar)) // v142b: the upgrade places the pilots itself
         XCTAssertEqual(g.state.outsideCount, 0)
         XCTAssertNotNil(g.state.balloons.last?.pilot, "moved in and got a pilot")
     }
