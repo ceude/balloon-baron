@@ -4,6 +4,7 @@
 // records) when the holding can, and prints the holding's cash every 50 days.
 // v141: the Maasai Mara after Bristol (the hardest region; a Mara flight lands among a herd now and then: the rangers'
 // fine), offices only where their region is owned (Dubai with the Mara, so World Baron needs the Mara entered).
+// v142: the bot uses the balloon workshop once it's founded (lines grown, balloons built on the line, rival orders taken).
 // v123: a bot plays the whole game: Cappadocia, then Albuquerque and Luxor (Grand Tour owned), then the holding goals
 // (World Baron). v126: Cappadocia's charter offers (taken like the others; a late plane: seats kept when it makes the morning with ≥50%). v124: Bristol after Luxor (Night Glow booked when a chapter wants it), and the World Games show at the end. Prints per seed: chapter end days per region, entry days, baron days, holding cash at each baron.
 const { chromium } = require('playwright');
@@ -68,7 +69,20 @@ const SEEDS = +(process.argv[2] || 6), DAYS = +(process.argv[3] || 1400), FROM =
         /* v127: the hangar holds hangarCap() balloons; a full hangar is grown (with the same cash cushion) before the next balloon */
         const hasRoom = () => typeof hangarCap !== 'function' || S.balloons.length < hangarCap();
         const growHangar = buf => { const Lv = UPGRADES.hangar.lv[bl('hangar')]; if (Lv && S.cash > Lv.cost + buf) { S.cash -= Lv.cost; S.bld = Object.assign({}, S.bld, { hangar: bl('hangar') + 1 }); } };
-        const buyB = (z, buf) => { if (hasRoom()) { S.cash -= SIZES[z].cost; addBalloon(z); } else growHangar(buf); };
+        /* v142: the workshop as a player uses it, once it's founded: a free line builds the balloon at half price (it joins in
+           3–5 days), the lines are grown (in every region, they're per region since v142) when the cash allows, a rival's order is taken */
+        const fabOn = typeof fabLv === 'function' && S.workshop;
+        const buyB = (z, buf) => { if (!hasRoom()) growHangar(buf); else if (fabOn && fabCan(z) && !fabBusy()) fabBuild(z); else { S.cash -= SIZES[z].cost; addBalloon(z); } };
+        if (fabOn && S.workshop.order && !fabBusy()) fabAccept();
+        /* a line is grown for the size the bot buys now (medium from 3 balloons, large from 14) while the balloons still to buy at
+           that size save more than the levels still cost, and only with cash to spare (twice the level's price + €40,000).
+           Tried for v142 (24 seeds): saving up for the line (no full-price balloon meanwhile) made every new region 10–20 days
+           slower, buying it with only a €40,000 cushion 1–8 days slower; this way it's a little faster than not using it. */
+        if (fabOn && !S.winter && !saving && !baron) {
+          const n = S.balloons.length, tgt = n >= 14 ? 4 : n >= 3 ? 3 : 0, z = tgt === 4 ? 'L' : 'M', nx = FAB.lv[fabLv() + 1];
+          let rest = 0; for (let l = fabLv() + 1; l <= tgt; l++) rest += FAB.lv[l].cost;
+          if (tgt && fabLv() < tgt && ((tgt === 4 ? 45 : 14) - n) * (SIZES[z].cost - fabCost(z)) > rest && S.cash > 2 * nx.cost + 40000) fabUpgrade();
+        }
         if (S.unl.fleet && !S.winter && !saving && !baron) {
           if (S.balloons.length < 3 && S.cash >= SIZES.S.cost + 1500) buyB('S', 1500);
           else if (S.balloons.length >= 3 && S.balloons.length < 14 && S.cash > SIZES.M.cost + 15000) buyB('M', 15000);

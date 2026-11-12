@@ -71,7 +71,21 @@ final class CampaignSimTests: XCTestCase {
             if g.state.loans.isEmpty && g.state.balloons.count < 4 && g.state.cash < 15000 && (g.state.day >= 6 || g.state.region != .cap) { _ = g.takeLoan(0) }
             func room() -> Bool { g.state.balloons.count < g.state.hangarCapacity }
             func grow(_ buf: Int) { if let cost = Building.hangar.upgradeCost(from: g.state.level(.hangar)), g.state.cash > cost + buf { _ = g.upgrade(.hangar) } }
-            func buy(_ z: BalloonSize, _ buf: Int) { if room() { _ = g.buyBalloon(z) } else { grow(buf) } }
+            // v142: the workshop as a player uses it, once it's founded: a free line builds the balloon at half price, the lines
+            // are grown (per region since v142) when the cash allows, a rival's order is taken
+            func buy(_ z: BalloonSize, _ buf: Int) {
+                if !room() { grow(buf) } else if g.state.factoryCan(z) && !g.state.factoryBusy { _ = g.buildBalloon(z) } else { _ = g.buyBalloon(z) }
+            }
+            if g.state.factory?.order != nil && !g.state.factoryBusy { _ = g.acceptFactoryOrder() }
+            // a line is grown for the size bought now (medium from 3 balloons, large from 14) while the balloons still to buy at
+            // that size save more than the levels still cost, and only with cash to spare (twice the level's price + 40,000),
+            // as `tools/sim-campaign.js` does (v142: saving up for it, or a smaller cushion, made the new regions slower)
+            if g.state.workshopDay != nil && g.state.winter == nil && !saving && !g.state.isBaron() {
+                let n = g.state.balloons.count, tgt = n >= 14 ? 4 : n >= 3 ? 3 : 0, z: BalloonSize = tgt == 4 ? .L : .M, lv = g.state.factoryLevel
+                let rest = lv < tgt ? Rules.factoryLevelCost[(lv - 1)..<(tgt - 1)].reduce(0, +) : 0
+                if tgt > 0, lv < tgt, let cost = g.state.factoryNextCost, ((tgt == 4 ? 45 : 14) - n) * (z.cost - g.state.factoryCost(z)) > rest,
+                   g.state.cash > 2 * cost + 40000 { _ = g.upgradeFactory() }
+            }
             if g.state.winter == nil && !saving && !g.state.isBaron() {
                 let n = g.state.balloons.count
                 if n < 3 && g.state.cash >= BalloonSize.S.cost + 1500 { buy(.S, 1500) }
