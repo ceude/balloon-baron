@@ -91,7 +91,7 @@ FR = {
 "letter.addrPlace": "Göreme, Nevşehir",
 "letter.greeting": "À toi qui as fondé %@,",
 "letter.p1": "Ta compagnie a aujourd’hui %@ jours. Te voir aller si loin, en renvoyant tes ballons dans le ciel chaque matin, nous rend vraiment heureux.",
-"letter.p2": "Nous avons créé ce jeu pour notre fille. S’il t’a plu, voudrais-tu écrire quelques lignes sur l’App Store ? Ce sont des mots comme les tiens qui aident d’autres joueurs à découvrir la Cappadoce.",
+"letter.p2": "Nous avons mis tout notre cœur dans ce jeu. S’il t’a plu, voudrais-tu écrire quelques lignes sur l’App Store ? Ce sont des mots comme les tiens qui aident d’autres joueurs à découvrir la Cappadoce.",
 "letter.signOff": "Avec toute notre affection,",
 "letter.signature": "S. & U.",
 "letter.rate": "Laisser un avis sur l’App Store",

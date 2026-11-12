@@ -1604,7 +1604,7 @@ const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;',
 let S = null;
 function newState() {
   const s = {
-    day: 1, ch4: 1, cash: 3000, rep: 1, price: 170, strikes: 0, banUntil: 0, selfFly: true, nextId: 1, lastSelfFly: 1,
+    day: 1, ch4: 1, fabV2: 1, cash: 3000, rep: 1, price: 170, strikes: 0, banUntil: 0, selfFly: true, nextId: 1, lastSelfFly: 1,
     company: '', colors: PALETTES[0],
     ins: { hull: true, pax: true }, balloons: [], pilots: [], candidates: [], loans: [], demandBase: 165,
     rivals: [
@@ -1651,6 +1651,17 @@ function migrate(s) {
     s.chapter = shift(s.chapter); for (const id in s.regions) s.regions[id].chapter = shift(s.regions[id].chapter);
     if (s.chapterNews != null && s.chapterNews >= 1) s.chapterNews++;
     s.ch4 = 1;
+  }
+  /* v142: the workshop's lines are per region now. An older save's shared level (and its tally) goes to Cappadocia, where the
+     workshop chapter goal is; any other region you're in starts at level 1. A balloon on the line (or an order) stays on
+     the line where you are and comes out as before. */
+  if (!s.fabV2) {
+    const W = s.workshop, cap = s.region === 'cap' ? null : (s.regions || {}).cap;
+    if (W && s.region !== 'cap') {
+      if (cap) { cap.fab = {}; FAB_KEYS.forEach(k => { if (k !== 'job' && k !== 'order' && W[k] != null) cap.fab[k] = W[k]; }); }
+      FAB_KEYS.forEach(k => { if (k !== 'job' && k !== 'order') delete W[k]; }); W.lv = 1;
+    }
+    s.fabV2 = 1;
   }
   /* the Hezarfen balloon left the bazaar; whoever bought it gets the skull in its place */
   if (s.iap && s.iap.hezarfen) { s.iap.skull = s.iap.hezarfen; delete s.iap.hezarfen; }
@@ -1879,6 +1890,24 @@ const fabCan = z => fabSizes().includes(z);
 const fabCost = z => Math.round(SIZES[z].cost * (1 - FAB.disc) / 100) * 100;
 const fabPrice = z => Math.round(SIZES[z].cost * FAB.orderK / 100) * 100;
 const fabBusy = () => !!(S.workshop && S.workshop.job);
+/* v142 (developer, version 1.0.1): each region has its own workshop lines. The workshop is founded once (S.workshop.day;
+   the designs stay shared), but its level, the balloon on the line, a rival's order and the tally belong to the region you
+   are in: S.workshop holds the current region's, a region left behind keeps its own in S.regions[id].fab (fabPark), and a
+   newly entered region starts at level 1 (the lines are bought again, the same numbers in that region's money). */
+const FAB_KEYS = ['lv', 'job', 'order', 'built', 'made', 'saved', 'earned', 'orders'];
+function fabPark(cur) { const W = S.workshop; if (!W) return; const f = {}; FAB_KEYS.forEach(k => { if (W[k] != null) f[k] = W[k]; }); f.order = null; /* an order is good for the day only */ cur.fab = f; }
+function fabTake(next) { const W = S.workshop; if (!W) return; const f = next.fab || { lv: 1 }; FAB_KEYS.forEach(k => { delete W[k]; }); Object.assign(W, f); if (!W.lv) W.lv = 1; delete next.fab; }
+/* a region on autopilot finishes the balloon on its own line: its fleet, or the rival who ordered it (the money to its box) */
+function fabParkedDay() {
+  for (const id in (S.regions || {})) {
+    const R = S.regions[id], F = R.fab, j = F && F.job; if (!j || S.day < j.done) continue;
+    F.job = null;
+    if (j.rname) { R.cash += j.price; F.earned = (F.earned || 0) + j.price - fabCost(j.size); const r = (R.rivals || []).find(x => x.name === j.rname && x.alive); if (r) { r.balloons.push(j.size); r.dmg.push(0); continue; } }
+    else { F.saved = (F.saved || 0) + SIZES[j.size].cost - fabCost(j.size); F.made = (F.made || 0) + 1; }
+    const used = new Set(R.balloons.map(b => b.name)), nm = REGION_DEF[id].bnames.find(n => !used.has(n)) || 'Balon ' + S.nextId;
+    R.balloons.push({ id: S.nextId++, size: j.size, name: nm, fly: true, dmgUntil: 0, pilot: null, flights: 0 });
+  }
+}
 function fabUpgrade() { const L = FAB.lv[fabLv() + 1]; if (!L || S.cash < L.cost) return false; S.cash -= L.cost; S.workshop.lv = fabLv() + 1; sfx('coin'); paperAdd(1, `${S.company} atölyesi büyüdü`, `${L.t} açıldı.`); return true; }
 /* your own balloon: paid now, ready in a few days */
 function fabBuild(z) { if (!fabCan(z) || fabBusy() || S.cash < fabCost(z)) return false; S.cash -= fabCost(z); S.workshop.job = { size: z, done: S.day + FAB.days[z], region: S.region }; S.workshop.built = (S.workshop.built || 0) + 1; sfx('coin'); return true; }
@@ -1902,6 +1931,7 @@ function fabDecline() { if (S.workshop) S.workshop.order = null; }
 /* after the day: a finished balloon goes to its owner; an unanswered order lapses */
 function fabDay(ev) {
   const W = S.workshop; if (!W) return;
+  fabParkedDay();
   if (W.order && W.order.until < S.day) fabDecline();
   const j = W.job; if (!j || S.day < j.done) return;
   W.job = null;
@@ -2010,7 +2040,7 @@ function closeRegion() {
   } else {
     /* no other region to go to: a new company here, free, from a small balloon */
     S.hezQ.push(`news:${name} şirketi kapandı evlat. Başka bölgen olmadığı için burada sıfırdan, küçük bir balonla yeni bir şirket kurduk; holdingin ve baron unvanların yerinde. Bu sefer kasayı ${eur(SEIZE_LINE)} altına düşürme.`);
-    const next = newRegionState(id); RKEYS.forEach(k => { S[k] = next[k]; }); delete H.closed[id];
+    const next = newRegionState(id); RKEYS.forEach(k => { S[k] = next[k]; }); delete H.closed[id]; fabTake(next); /* v142: the bank took the workshop's lines too */
     S.weather = null; S.demand = null; S.plan = null; S.candidates = []; S.rivals.forEach(r => { r.fly = null; });
     $('menu').hidden = true; tab = 'plan'; startDay();
   }
@@ -2564,7 +2594,7 @@ function finishDay(flight) {
   Lg.up = Math.round(inside().reduce((a, b) => a + SIZES[b.size].up, 0) * upkeepK() * rdUp()); /* v127: no maintenance outside the hangar */
   { const r0 = S.rep; myHotels().forEach(x => { if (owns(x)) { Lg.hotelInc += hotelInc(x); S.rep = Math.min(1.4, S.rep + x.rep * 1.5); } else { Lg.hotel += x.fee; S.rep = Math.min(1.4, S.rep + x.rep); } }); repMark('Otel anlaşmaları', r0); }
   S.loans.forEach(l => { Lg.loan += l.inst; l.left--; });
-  if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; S.holding = (S.holding || 0) + D.inst / FX(); holdLog('inc', D.inst / FX()); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
+  if (S.xferDebt) { const D = S.xferDebt; Lg.xfer = D.inst; Lg.xferN = XFER.debtDays - D.left + 1; /* v142: which instalment (one batch per region: balloons come only on entering it) */ S.holding = (S.holding || 0) + D.inst / FX(); holdLog('inc', D.inst / FX()); D.left--; if (D.left <= 0) S.xferDebt = null; } /* v125: the balloons brought from home */
   S.loans = S.loans.filter(l => l.left > 0);
   const ctrR = ctrSettle(Lg, ev, rev, paxTotal);
   if (S.region === 'mara' && paxTotal > 0) Lg.park = paxTotal * MARA_FX.park; /* v141: the reserve's fee for every passenger flown */
@@ -4078,7 +4108,7 @@ function showReport() {
   if (L.showOff != null) b.appendChild(h('div', 'callout red', `<b>Bu gece Balon Şöleni yok.</b> Bugünden sonra şölene yeterli balon kalmadı (en az ${SHOW.min} gerekiyor), bu geceki şölen iptal. Bütün ücretler kasana döndü: ${eur(L.showOff)}. Yeterli balon uçabilir olunca yenisini hemen düzenleyebilirsin.`));
   const line = (k, v) => { if (!v) return; led.appendChild(h('div', null, `<span>${k}</span><span class="v ${v > 0 ? 'pos' : 'neg'}">${v > 0 ? '+' : ''}${eur(v)}</span>`)); };
   line('Bilet geliri', L.rev); if (L.ctr) line(L.ctrFrom ? `Grup: ${esc(L.ctrFrom)} (${L.ctrN} kişi)` : `Tur grubu (${L.ctrN} kişi)`, L.ctr); if (L.ctrPen) line('Tur grubu: eksik koltuk cezası', -L.ctrPen); if (L.ctrWait) line('Rötar tazminatı (boş koltuklar)', L.ctrWait); if (L.ctrVoucher) line('Sis garantisi: kuponlar', -L.ctrVoucher); if (L.eve) line('Akşam kalkışı (festival)', L.eve); line('Kurucu uçuşu primi', L.founder || 0); line(L.missionName ? `Görev: ${L.missionName}` : 'Görev ödülü', L.mission); line('Reklam geliri', L.ad); line('Bahşiş', L.tips); line('Yakıt', -L.fuel); if (L.park) line('Koruma alanı ücreti', -L.park); line('Maaşlar', -L.wage); line('Bakım', -L.up);
-  line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan); if (L.xfer) line('Getirilen balonların bedeli', -L.xfer);
+  line('Sigorta primi', -L.ins); line('Kredi taksiti', -L.loan); if (L.xfer) line(L.xferN ? `Getirilen balonların bedeli (taksit ${L.xferN}/${XFER.debtDays})` : 'Getirilen balonların bedeli', -L.xfer);
   line('Kaza: onarım', -L.repair); line('Kaza: yolcu tazminatı', -L.comp); line('Sigorta ödemesi', L.insPay);
   line('Otel gelirleri', L.hotelInc); line('Otel anlaşmaları', -L.hotel); line('Rekabet cezası', -L.mono); line('İptal tazminatı', -L.cancel); line('Ceza', -L.fine); line('Bankanın sattığı balon', L.seize); if (L.showBack) line('Şölen ücreti iadesi', L.showBack);  line(L.chapterName ? `Bölüm ödülü: ${L.chapterName}` : 'Bölüm ödülü', L.chapter || 0);
   led.appendChild(h('div', 'tot', `<span>Net</span><span class="v ${R.net >= 0 ? 'pos' : 'neg'}">${R.net >= 0 ? '+' : ''}${eur(R.net)}</span>`));
@@ -5904,7 +5934,7 @@ function showLetter() {
   <div class="sheet"><div class="photo"><img src="${LETTER_IMG}" alt="Oyunu yapan aile, Kapadokya'da balonların altında"><i class="tape tl"></i><i class="tape tr"></i><i class="tape bl"></i><i class="tape br"></i></div>
   <div class="hi">Sevgili ${esc(S.company)} kurucusu,</div>
   <div class="body" style="position:relative"><p>Bugün şirketinin ${S.day}. günü. Bu kadar yol gelmen, balonlarını her sabah yeniden göğe salman bizi gerçekten çok mutlu etti.</p>
-  <p>Kızımız için yaptığımız oyunu sevdiysen App Store'a birkaç cümle yazar mısın? Başka oyuncuların Kapadokya'yı bulmasını senin sözlerin sağlıyor.</p><svg class="blot" style="right:-16px;top:-14px;width:18px" viewBox="0 0 20 20"><path d="M10 3c3 0 3 3 5 4s3 3 1 5-2 4-5 4-4-2-6-3-3-3-1-6 3-4 6-4z" fill="#1f2350" opacity=".55"/><circle cx="17" cy="4" r="1.1" fill="#1f2350" opacity=".5"/></svg></div>
+  <p>Bu oyunu büyük bir özenle yaptık; sevdiysen App Store'a birkaç cümle yazar mısın? Başka oyuncuların Kapadokya'yı bulmasını senin sözlerin sağlıyor.</p><svg class="blot" style="right:-16px;top:-14px;width:18px" viewBox="0 0 20 20"><path d="M10 3c3 0 3 3 5 4s3 3 1 5-2 4-5 4-4-2-6-3-3-3-1-6 3-4 6-4z" fill="#1f2350" opacity=".55"/><circle cx="17" cy="4" r="1.1" fill="#1f2350" opacity=".5"/></svg></div>
   <div class="sign">Sevgiler,<br>S. &amp; U.<svg class="blot" style="left:8px;top:2px;width:34px;transform:rotate(-20deg)" viewBox="0 0 40 40"><path d="M20 8c5 0 6 5 9 6s6 2 5 7-5 4-6 8-4 5-8 4-5-4-9-5-6-4-4-8 2-5 4-8 5-4 9-4z" fill="#1f2350" opacity=".78"/><circle cx="35" cy="9" r="2" fill="#1f2350" opacity=".7"/><circle cx="6" cy="31" r="1.4" fill="#1f2350" opacity=".6"/><circle cx="31" cy="35" r="1" fill="#1f2350" opacity=".6"/></svg></div>
   <button class="rate">App Store'da yorum yaz</button><button class="later">Şimdi değil</button></div>`;
   $('wrap').appendChild(L); sfx('click');
@@ -7994,9 +8024,11 @@ function switchRegion(id) {
     S.hezQ.push(`news:Gece Işıltısı gününde bölgeden ayrıldın evlat, bu geceki ışıltı iptal oldu. Bölge: ${rname}. Ücret oranın kasasına döndü: ${eur(GLOW.cost)}.`);
   }
   if (!S.regions) S.regions = {};
+  fabPark(cur); /* v142: the workshop's lines stay with their region */
   S.regions[S.region] = cur;
   const next = S.regions[id] || newRegionState(id);
   delete S.regions[id];
+  fabTake(next);
   next.issue = next.auto && next.auto.issue ? { ...next.auto.issue, seen: null } : null;
   RKEYS.forEach(k => { S[k] = next[k]; });
   S.region = id;
@@ -10032,6 +10064,7 @@ function tabWorkshop(body) {
     it.appendChild(pbtn(eur(nx.cost), () => { fabUpgrade(); refresh(); }, S.cash < nx.cost));
     top.appendChild(it);
   } else top.appendChild(h('p', 'hint', 'Atölyen en üst seviyede: küçük, orta ve büyük balon üretebilirsin.'));
+  if (Object.keys(S.regions || {}).length) top.appendChild(h('p', 'hint', 'Her bölgenin kendi üretim hatları var; tasarımların bütün bölgelerde geçerli.')); /* v142: the lines are per region */
   body.appendChild(top);
   if (lv >= 2) {
     const pr = h('div', 'sec'); pr.appendChild(h('h2', null, 'Üretim'));
@@ -10227,7 +10260,9 @@ const FOUND_PROJ = {
 };
 const foundN = () => (S.hold && S.hold.fdn && S.hold.fdn.n) || 0;
 const foundIn = id => (S.hold && S.hold.fdn && S.hold.fdn.by && S.hold.fdn.by[id]) || 0;
-const foundCost = () => FOUND.base + FOUND.step * foundN();
+/* v142 (developer): priced per region: a region's next project costs €1M + €500.000 for each one already funded THERE
+   (it was €500.000 more for every project anywhere, so funding one region made every region's next project dearer) */
+const foundCost = id => FOUND.base + FOUND.step * foundIn(id);
 const foundNext = id => FOUND_PROJ[id][foundIn(id) % FOUND_PROJ[id].length];
 function fundProject(id) {
   const H = S.hold, D = H.fdn || (H.fdn = { n: 0, by: {} }), name = foundNext(id);
@@ -10444,7 +10479,7 @@ function hqDeals(body, which, title) {
       for (const R of opt.rows) {
         const D = REGION_DEF[R.id], row = h('div', 'drow');
         row.appendChild(h('div', 'rn', `<b>${D.name}</b><i>${D.cur}</i>${R.id === S.region ? '<em>Buradasın</em>' : ''}<span class="rs${R.on ? ' on' : ''}">${R.status}</span>`));
-        if (R.buy) { const b = h('button', 'dcta', eurH(cost)); b.setAttribute('aria-label', `${D.name}: ${cta}`); b.disabled = (S.holding || 0) < cost; b.onclick = () => { holdBuy(cost, () => fn(R.id)); if (HQ.open) hqRender(); }; row.appendChild(b); }
+        if (R.buy) { const rc = R.cost != null ? R.cost : cost; /* v142: the foundation prices each region on its own */ const b = h('button', 'dcta', eurH(rc)); b.setAttribute('aria-label', `${D.name}: ${cta}`); b.disabled = (S.holding || 0) < rc; b.onclick = () => { holdBuy(rc, () => fn(R.id)); if (HQ.open) hqRender(); }; row.appendChild(b); }
         rows.appendChild(row);
       }
       c.appendChild(rows); v.appendChild(c); return;
@@ -10484,9 +10519,9 @@ function hqDeals(body, which, title) {
   }
   /* v140: the Hot Air Foundation's projects, without end */
   if (which.includes('fdn')) {
-    const n = foundN(), fRows = myRegionIds().map(id => ({ id, on: foundIn(id) > 0, buy: true, status: `Sıradaki: ${foundNext(id)}${foundIn(id) ? ` · Buradaki proje: ${foundIn(id)}` : ''}` }));
+    const n = foundN(), fRows = myRegionIds().map(id => ({ id, on: foundIn(id) > 0, buy: true, cost: foundCost(id), status: `Sıradaki: ${foundNext(id)}${foundIn(id) ? ` · Buradaki proje: ${foundIn(id)}` : ''}` }));
     deal('fdn', 'Sıcak Hava Vakfı', n ? `Vakfın mirası · proje: ${n}` : 'Vakfın ilk projesi', 'Kazandığını geri ver: fresk restorasyonundan okul kitaplığına, her proje bir bölgede kalıcı bir iz bırakır. Kasabada küçük bir anıt projeyi anar.',
-      ['Bütün bölgelerde: +0,2★', 'Kasabada bir anıt', `Her proje ${eurH(FOUND.step)} daha pahalı`], foundCost(), 'Projeyi fonla', id => fundProject(id), { rows: fRows, active: n ? ' ' : '' });
+      ['Bütün bölgelerde: +0,2★', 'Kasabada bir anıt', `Bölgedeki her proje ${eurH(FOUND.step)} daha pahalı`], foundCost(S.region), 'Projeyi fonla', id => fundProject(id), { rows: fRows, active: n ? ' ' : '' });
   }
   const lv = H.rnd || 0, next = lv < RD_ENVELOPE ? RD_LEVELS[lv] : null;
   if (which.includes('lab')) deal('lab', 'Ar-Ge', 'Akademisyenlerle zarf araştırması', next ? 'Üniversitelerle yeni kumaş araştırması; zarflar daha geç yıpranır.' : 'Araştırma tamamlandı, zarfların en dayanıklı halinde.', [next ? `Zarf ömrü ${envLife()} → ${next.life} uçuş` : `Zarf ömrü: ${envLife()} uçuş`, 'Bütün bölgeler, kalıcı'], next ? next.cost : null, `Seviye ${lv + 1}'i fonla`,
@@ -14148,7 +14183,7 @@ const HOLD_GOALS = [
   ['Ar-Ge\'nin dört seviyesi tamam', () => ((S.hold || {}).rnd || 0) >= RD_LEVELS.length, () => `Ar-Ge: ${(S.hold || {}).rnd || 0}/${RD_LEVELS.length}`], /* v137: was the envelope research (2) */
   ['Altı dünya ofisi', () => officeCount() >= 6, () => `Ofis: ${officeCount()}/${Object.keys(HQ_CITIES).length}`], /* v137: was four; v141: after R&D, since Dubai needs the Mara */
   ['Dünya Oyunları gösterisi', () => !!(S.hold || {}).wg], /* v123.5; it needs the Bristol baron */
-  ['Mara\'da ilk safari uçağı grubu', () => maraGroupDone(), () => ownsRegion('mara') ? '' : 'Maasai Mara, Bristol baronluğuyla açılır.'] /* v141.2 (developer): replaces the TV campaign goal; last, as the simulator meets it */
+  ['Mara\'da bir safari uçağı grubunu uçur', () => maraGroupDone(), () => ownsRegion('mara') ? 'Mara\'da bir safari uçağı anlaşmasını kabul et ve grubu eksiksiz uçur.' : 'Maasai Mara, Bristol baronluğuyla açılır.'] /* v141.2 (developer): replaces the TV campaign goal; last, as the simulator meets it. v142 (players found it unclear): says what to do, and a line under it in the goals list */
 ];
 /* v141.2: the Maasai Mara's first safari-plane group flown in full (its contract box, whether you're there or it runs on
    autopilot) */

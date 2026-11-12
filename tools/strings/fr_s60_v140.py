@@ -52,7 +52,7 @@ FR = {
 "holding.fdn.titleN": "L’héritage de la fondation · projets : %@",
 "holding.fdn.desc": "Rends ce que tu as gagné : de la restauration d’une fresque à la bibliothèque d’une école, chaque projet laisse une trace durable dans une région. Un petit monument dans sa ville en garde le souvenir.",
 "holding.fdn.chipMonument": "Un monument en ville",
-"holding.fdn.chipStep": "Chaque projet coûte %@ de plus",
+"holding.fdn.chipStep": "Par région : chaque projet coûte %@ de plus",
 "holding.fdn.next": "Prochain : %@",
 "holding.fdn.here": "Projets ici : %@",
 "holding.fdn.cta": "Financer le projet",

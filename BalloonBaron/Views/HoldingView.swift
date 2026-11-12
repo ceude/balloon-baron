@@ -164,7 +164,8 @@ struct HoldingView: View {
         // v137: how far the two longer goals have come
         if g == .offices, !s.done(g) { return loc("hgoal.officesNow", num(s.holding.offices.count), num(Office.allCases.count)) }
         if g == .research, !s.done(g) { return loc("hgoal.researchNow", num(s.holding.research), num(Holding.researchLevels.count)) }
-        if g == .maraGroup, !s.done(g), !s.owns(.mara) { return loc("hgoal.maraGroupNote") } // v141.2
+        // v141.2: how the Mara opens; v142 (players found the goal unclear): once there, what to do
+        if g == .maraGroup, !s.done(g) { return loc(s.owns(.mara) ? "hgoal.maraGroupHow" : "hgoal.maraGroupNote") }
         guard g == .million else { return nil }
         if let d = s.holding.millionOn { return loc("hgoal.millionOn", num(d)) }
         return s.done(g) ? nil : loc("hgoal.millionNow", eurH(s.holding.cash))
@@ -476,7 +477,8 @@ struct HoldingView: View {
                                rowsNote: wait ? loc("holding.fest.wait", num((f?.next ?? d) - d)) : nil, regionRows: rows, action: {})
     }
 
-    /// v140: the Hot Air Foundation: projects without end, each in a region you own, each €500,000 more than the last.
+    /// v140: the Hot Air Foundation: projects without end, each in a region you own; v142: each region's next project is
+    /// €500,000 more for every project already funded there.
     private func foundationCard(_ game: Game) -> some View {
         let s = game.state, h = s.holding, n = h.projects
         let chips = [loc("holding.chip.starsAll", starsValue(Holding.foundationRep * 4)), loc("holding.fdn.chipMonument"),
@@ -485,7 +487,7 @@ struct HoldingView: View {
             let here = h.projects(in: r)
             let next = loc("holding.fdn.next", projectName(r, here))
             return HoldingRegionRow(region: r, here: r == s.region, status: here > 0 ? next + " · " + loc("holding.fdn.here", num(here)) : next,
-                                    on: here > 0, price: h.projectCost, buyable: true, enabled: h.cash >= h.projectCost,
+                                    on: here > 0, price: h.projectCost(in: r), buyable: true, enabled: h.cash >= h.projectCost(in: r), // v142: per region
                                     cta: loc("holding.fdn.cta"), action: { store.act { g in _ = g.fundProject(in: r) } })
         }
         return HoldingDealCard(art: .foundation, kicker: loc("holding.fdn.kicker"),

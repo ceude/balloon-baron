@@ -47941,6 +47941,53 @@
         }
       }
     },
+    "factory.perRegion": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Jede Region hat ihre eigenen Produktionslinien; deine Designs gelten in allen Regionen."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Each region has its own production lines; your designs work in every region."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada región tiene sus propias líneas de producción; tus diseños sirven en todas las regiones."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Chaque région a ses propres lignes de production ; tes motifs servent dans toutes les régions."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "生産ラインは地域ごと。デザインはすべての地域で使える。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "생산 라인은 지역마다 따로 있고, 디자인은 모든 지역에서 쓸 수 있습니다."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Her bölgenin kendi üretim hatları var; tasarımların bütün bölgelerde geçerli."
+          }
+        }
+      }
+    },
     "factory.priceDays": {
       "extractionState": "manual",
       "localizations": {
@@ -73139,43 +73186,90 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Erste Safariflug-Gruppe in der Mara"
+            "value": "Safariflug-Gruppe in der Mara fliegen"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "First safari-plane group in the Mara"
+            "value": "Fly a full safari-plane group in the Mara"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Primer grupo de avioneta safari en el Mara"
+            "value": "Vuela un grupo de avioneta safari en el Mara"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Premier groupe d’avion de safari dans le Mara"
+            "value": "Faire voler un groupe d’avion de safari au Mara"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "マラで初のサファリ機グループ"
+            "value": "マラでサファリ機の団体を乗せる"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "마라 첫 사파리 비행기 단체"
+            "value": "마라에서 사파리 비행기 단체 태우기"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Mara'da ilk safari uçağı grubu"
+            "value": "Mara'da bir safari uçağı grubunu uçur"
+          }
+        }
+      }
+    },
+    "hgoal.maraGroupHow": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nimm in der Mara einen Safariflug-Auftrag an und fliege die ganze Gruppe."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accept a safari-plane deal in the Mara and fly the whole group."
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acepta un trato de avioneta safari en el Mara y vuela con todo el grupo."
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Accepte un contrat d’avion de safari dans le Mara et fais voler tout le groupe."
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "マラでサファリ機の契約を受けて、団体を一人残らず乗せよう。"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "마라에서 사파리 비행기 계약을 수락하고 단체 전원을 태우세요."
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mara'da bir safari uçağı anlaşmasını kabul et ve grubu eksiksiz uçur."
           }
         }
       }
@@ -76147,43 +76241,43 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Jedes Projekt %@ teurer"
+            "value": "Pro Region: jedes Projekt %@ teurer"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Each project %@ more"
+            "value": "Per region: each project %@ more"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cada proyecto %@ más"
+            "value": "Por región: cada proyecto %@ más"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Chaque projet coûte %@ de plus"
+            "value": "Par région : chaque projet coûte %@ de plus"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "事業ごとに%@ずつ値上がり"
+            "value": "地域ごとに事業のたびに%@ずつ値上がり"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "사업마다 %@씩 인상"
+            "value": "지역별로 사업마다 %@씩 인상"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Her proje %@ daha pahalı"
+            "value": "Bölgedeki her proje %@ daha pahalı"
           }
         }
       }
@@ -96727,6 +96821,53 @@
         }
       }
     },
+    "ledger.transferN": {
+      "extractionState": "manual",
+      "localizations": {
+        "de": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mitgebrachte Ballone (Rate %1$@/%2$@)"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Balloons brought from home (instalment %1$@/%2$@)"
+          }
+        },
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Globos traídos de casa (cuota %1$@/%2$@)"
+          }
+        },
+        "fr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ballons rapatriés (échéance %1$@/%2$@)"
+          }
+        },
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "持ち込んだ気球の代金（分割 %1$@/%2$@）"
+          }
+        },
+        "ko": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "가져온 열기구 대금 (할부 %1$@/%2$@)"
+          }
+        },
+        "tr": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Getirilen balonların bedeli (taksit %1$@/%2$@)"
+          }
+        }
+      }
+    },
     "ledger.upkeep": {
       "extractionState": "manual",
       "localizations": {
@@ -97156,43 +97297,43 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Wenn dir das Spiel gefällt, das wir für unsere Tochter gemacht haben: Schreibst du ein paar Sätze im App Store? Gerade deine Worte sorgen dafür, dass andere Kappadokien finden."
+            "value": "Wir haben unser ganzes Herz in dieses Spiel gesteckt. Wenn es dir gefällt: Schreibst du ein paar Sätze im App Store? Gerade deine Worte sorgen dafür, dass andere Kappadokien finden."
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "We made this game for our daughter. If you've enjoyed it, would you write a few lines on the App Store? It's words like yours that help other players find Cappadocia."
+            "value": "We put our hearts into this game. If you've enjoyed it, would you write a few lines on the App Store? It's words like yours that help other players find Cappadocia."
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Si te ha gustado el juego que hicimos para nuestra hija, ¿nos escribirías unas líneas en la App Store? Son tus palabras las que ayudan a otros a descubrir Capadocia."
+            "value": "Pusimos todo nuestro corazón en este juego. Si te ha gustado, ¿nos escribirías unas líneas en la App Store? Son tus palabras las que ayudan a otros a descubrir Capadocia."
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Nous avons créé ce jeu pour notre fille. S’il t’a plu, voudrais-tu écrire quelques lignes sur l’App Store ? Ce sont des mots comme les tiens qui aident d’autres joueurs à découvrir la Cappadoce."
+            "value": "Nous avons mis tout notre cœur dans ce jeu. S’il t’a plu, voudrais-tu écrire quelques lignes sur l’App Store ? Ce sont des mots comme les tiens qui aident d’autres joueurs à découvrir la Cappadoce."
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "娘のために作ったこのゲームを気に入ってもらえたなら、App Storeに少しだけ感想を書いてもらえませんか？ ほかのプレイヤーがカッパドキアに出会えるのは、あなたの言葉のおかげなんです。"
+            "value": "大切に作ってきたこのゲームを気に入ってもらえたなら、App Storeに少しだけ感想を書いてもらえませんか？ ほかのプレイヤーがカッパドキアに出会えるのは、あなたの言葉のおかげなんです。"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "딸아이를 위해 만든 게임인데, 즐겁게 하셨다면 App Store에 몇 줄 남겨 주시겠어요? 다른 플레이어들이 카파도키아를 찾게 되는 건 바로 창업자님의 한마디 덕분이에요."
+            "value": "정성을 다해 만든 게임인데, 즐겁게 하셨다면 App Store에 몇 줄 남겨 주시겠어요? 다른 플레이어들이 카파도키아를 찾게 되는 건 바로 창업자님의 한마디 덕분이에요."
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Kızımız için yaptığımız oyunu sevdiysen App Store'a birkaç cümle yazar mısın? Başka oyuncuların Kapadokya'yı bulmasını senin sözlerin sağlıyor."
+            "value": "Bu oyunu büyük bir özenle yaptık; sevdiysen App Store'a birkaç cümle yazar mısın? Başka oyuncuların Kapadokya'yı bulmasını senin sözlerin sağlıyor."
           }
         }
       }

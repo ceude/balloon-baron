@@ -359,7 +359,10 @@ public struct GameState: Codable, Equatable, Sendable {
     public var holding = Holding()
     public var workshopDay: Int?
     /// v114: the workshop grown into a factory: its level, the balloon on the line, a rival's order waiting.
+    /// v142: the factory of the region you're in; a parked region keeps its own (`RegionState.parkedFactory`).
     public var factory: Factory?
+    /// v142: the workshop's lines are per region. nil in older saves, whose shared factory `migrate` hands to Cappadocia.
+    public var factoryPerRegion: Bool? = true
     public var designs: [Design] = []
     public var chapterNews: ChapterNews?
     public var mergeNews: MergeNews?

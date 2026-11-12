@@ -2,7 +2,8 @@ import Foundation
 
 /// v114: the balloon workshop grows into a factory (prototype `FAB`). Level 1 designs; level 2 builds small balloons,
 /// 3 medium, 4 large, at half price, one at a time. Now and then, while the line is free, a rival asks you for a balloon
-/// it wouldn't buy otherwise: the money is yours, the rival grows by a balloon.
+/// it wouldn't buy otherwise: the money is yours, the rival grows by a balloon. v142: each region has its own (`GameState.factory`
+/// for the region you're in, `RegionState.parkedFactory` for the others); a newly entered region starts at level 1.
 public struct Factory: Codable, Equatable, Sendable {
     public var level = 1
     public var job: FactoryJob?
@@ -121,8 +122,38 @@ extension Game {
         rev.append(.factoryOrderAsk(rival: r.name, size: z))
     }
 
+    /// v142: a region on autopilot finishes the balloon on its own line: into its fleet, or to the rival who ordered it
+    /// (the money into that region's cash box; kept if the rival is gone).
+    mutating func parkedFactoryDay(tomorrow: Int) {
+        for r in RegionID.allCases {
+            guard var p = state.parked[r], var f = p.state.parkedFactory, let j = f.job, tomorrow >= j.done else { continue }
+            f.job = nil
+            var keep = true
+            if let name = j.rival {
+                p.state.cash += j.price
+                f.earned += j.price - state.factoryCost(j.size)
+                if let i = p.state.rivals.firstIndex(where: { $0.name == name && $0.alive }) {
+                    p.state.rivals[i].balloons.append(j.size)
+                    p.state.rivals[i].damagedUntil.append(0)
+                    keep = false
+                }
+            } else {
+                f.saved += j.size.cost - state.factoryCost(j.size)
+                f.made += 1
+            }
+            if keep {
+                let used = Set(p.state.balloons.map(\.name))
+                p.state.balloons.append(Balloon(id: state.nextID, size: j.size, name: r.balloonNames.first { !used.contains($0) } ?? Rules.defaultBalloonName(state.nextID)))
+                state.nextID += 1
+            }
+            p.state.parkedFactory = f
+            state.parked[r] = p
+        }
+    }
+
     /// After the day: a finished balloon goes to its owner; an unanswered order lapses.
     mutating func factoryDay(_ ev: inout [DayEvent], tomorrow: Int) {
+        parkedFactoryDay(tomorrow: tomorrow)
         guard var f = state.factory else { return }
         if let o = f.order, o.until < tomorrow { f.order = nil }
         guard let j = f.job, tomorrow >= j.done else { state.factory = f; return }

@@ -82,6 +82,8 @@ struct WorkshopView: View {
             } else {
                 FleetUI.Hint(loc("factory.top"))
             }
+            // v142: the lines are per region (a newly entered region starts at level 1); the designs are shared
+            if !s.parked.isEmpty { FleetUI.Hint(loc("factory.perRegion")) }
         }
     }
 

@@ -186,8 +186,9 @@ add("holding.fdn.desc",
     "稼いだものを還元しよう。フレスコ画の修復から学校の図書室まで、事業はどれも地域に消えない足跡を残す。町の小さな記念碑がそれを伝える。",
     "번 것을 돌려주세요. 프레스코화 복원부터 학교 도서관까지, 모든 사업이 지역에 오래 남는 흔적을 남깁니다. 마을의 작은 기념비가 그것을 기억합니다.")
 add("holding.fdn.chipMonument", "A monument in the town", "Kasabada bir anıt", "Ein Denkmal in der Stadt", "Un monumento en el pueblo", "町に記念碑", "마을에 기념비")
-add("holding.fdn.chipStep", "Each project %@ more", "Her proje %@ daha pahalı", "Jedes Projekt %@ teurer", "Cada proyecto %@ más",
-    "事業ごとに%@ずつ値上がり", "사업마다 %@씩 인상")
+# v142: priced per region (each region's next project counts only the projects funded there)
+add("holding.fdn.chipStep", "Per region: each project %@ more", "Bölgedeki her proje %@ daha pahalı", "Pro Region: jedes Projekt %@ teurer",
+    "Por región: cada proyecto %@ más", "地域ごとに事業のたびに%@ずつ値上がり", "지역별로 사업마다 %@씩 인상")
 add("holding.fdn.next", "Next: %@", "Sıradaki: %@", "Als Nächstes: %@", "Siguiente: %@", "次：%@", "다음: %@")
 add("holding.fdn.here", "Projects here: %@", "Buradaki proje: %@", "Projekte hier: %@", "Proyectos aquí: %@", "ここでの事業：%@件", "이곳의 사업: %@건")
 add("holding.fdn.cta", "Fund the project", "Projeyi fonla", "Projekt finanzieren", "Financiar el proyecto", "事業に出資する", "사업 후원하기")

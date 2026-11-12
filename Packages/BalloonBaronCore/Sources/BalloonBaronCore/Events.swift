@@ -113,6 +113,9 @@ public struct Ledger: Codable, Equatable, Sendable {
     /// v126: what the agency paid for seats kept empty for a late charter plane.
     public var contractWait: Int?
     public var transfer: Int?
+    /// v142: which of the `Transfer.debtDays` instalments today's `transfer` is (the report shows "7/30"). A region pays
+    /// for one batch at a time (balloons come only when you enter it), so there is never more than one running.
+    public var transferNo: Int?
     /// v131: the company whose group flew today, for the report's line (optional: older saved reports).
     public var contractFrom: String?
     /// v131: Balloon Show fees that came back tonight (a balloon dropped out, or the show was called off). They went

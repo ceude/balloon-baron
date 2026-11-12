@@ -77,8 +77,9 @@ public struct Holding: Codable, Equatable, Sendable {
     public static let festivalBase = 1_500_000, festivalStep = 500_000, festivalMax = 5_000_000
     public static let festivalEvery = 90, festivalDays = 10, festivalBoost = 1.4, festivalRep = 0.15
     public static let festivalFame = 0.03, festivalFameMax = 0.15
-    /// v140 (developer): the Hot Air Foundation. Projects without end, €1M and each €500,000 more than the last; each is
-    /// a named project in a region you own and lifts popularity in every region you own.
+    /// v140 (developer): the Hot Air Foundation. Projects without end; each is a named project in a region you own and
+    /// lifts popularity in every region you own. v142 (developer): priced per region, €1M and €500,000 more for each
+    /// project already funded in that region (it was €500,000 more for every project anywhere).
     public static let foundationBase = 1_000_000, foundationStep = 500_000, foundationRep = 0.05
     /// v140: Tokyo's Asian tour operators bring +5% tourists to every region; Paris lifts Bristol by 20% also while you
     /// play there (it lifted only its autopilot income).
@@ -224,10 +225,11 @@ public struct Holding: Codable, Equatable, Sendable {
     public func festivalOn(_ r: RegionID, day: Int) -> Bool { festival.map { $0.region == r && $0.until > day } ?? false }
     public func festivalReady(day: Int) -> Bool { (festival?.next ?? 0) <= day }
     public func festivalFame(_ r: RegionID) -> Double { min(Self.festivalFameMax, Self.festivalFame * Double(festivalsIn?[r] ?? 0)) }
-    /// v140: the foundation's projects in all and in one region, and the next project's price.
+    /// v140: the foundation's projects in all and in one region; v142: the next project's price in a region counts only
+    /// the projects funded there.
     public var projects: Int { foundation?.values.reduce(0, +) ?? 0 }
     public func projects(in r: RegionID) -> Int { foundation?[r] ?? 0 }
-    public var projectCost: Int { Self.foundationBase + Self.foundationStep * projects }
+    public func projectCost(in r: RegionID) -> Int { Self.foundationBase + Self.foundationStep * projects(in: r) }
     public func documentaryOn(_ day: Int) -> Bool { (documentary?.until ?? 0) > day }
     /// v137: a record attempt's price (Dubai's office takes a quarter off).
     public func recordCost(_ k: RecordAttempt) -> Int { jsRound(Double(k.cost) * (has(.dxb) ? 0.75 : 1)) }
@@ -439,7 +441,7 @@ extension Game {
     /// monument in that region's town, the guide's word and a story in the paper.
     @discardableResult
     public mutating func fundProject(in r: RegionID) -> Bool {
-        guard state.owns(r), spendHolding(state.holding.projectCost) else { return false }
+        guard state.owns(r), spendHolding(state.holding.projectCost(in: r)) else { return false }
         let i = state.holding.projects(in: r)
         var f = state.holding.foundation ?? [:]
         f[r] = i + 1
@@ -559,6 +561,11 @@ extension Game {
             cur.glowN = nil
             state.hezQueue.append(.nightCalledOff(from, show: false, refund: Glow.cost))
         }
+        // v142: the workshop's lines stay with their region (a rival's order is good for the day only)
+        if var f = state.factory {
+            f.order = nil
+            cur.parkedFactory = f
+        }
         state.parked[from] = ParkedRegion(state: cur, auto: auto)
         var next: RegionState
         if let p = state.parked.removeValue(forKey: r) {
@@ -575,6 +582,9 @@ extension Game {
         next.candidates = []
         next.rivalPlanDay = 0
         for i in next.rivals.indices { next.rivals[i].flyToday = [] }
+        // v142: this region's own lines; a region entered for the first time starts at level 1
+        state.factory = next.parkedFactory
+        next.parkedFactory = nil
         state.local = next
         state.region = r
         startDay()

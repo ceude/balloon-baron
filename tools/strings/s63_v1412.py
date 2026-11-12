@@ -30,8 +30,9 @@ for k, t in PERKS.items():
     add(f"office.{k}.perk", *t)
 
 # ---- The holding's goal ----
-add("hgoal.maraGroup", "First safari-plane group in the Mara", "Mara'da ilk safari uçağı grubu", "Erste Safariflug-Gruppe in der Mara",
-    "Primer grupo de avioneta safari en el Mara", "マラで初のサファリ機グループ", "마라 첫 사파리 비행기 단체")
+# v142 (players found it unclear): says what to do; a line under it in the goals list says how (s65_v142.py)
+add("hgoal.maraGroup", "Fly a full safari-plane group in the Mara", "Mara'da bir safari uçağı grubunu uçur", "Safariflug-Gruppe in der Mara fliegen",
+    "Vuela un grupo de avioneta safari en el Mara", "マラでサファリ機の団体を乗せる", "마라에서 사파리 비행기 단체 태우기")
 add("hgoal.maraGroupNote", "The Maasai Mara opens with the Baron of Bristol.", "Maasai Mara, Bristol baronluğuyla açılır.",
     "Die Maasai Mara öffnet mit dem Baron von Bristol.", "El Maasai Mara se abre al ser barón de Bristol.",
     "マサイマラはブリストル男爵で開放。", "마사이마라는 브리스톨 남작이 되면 열립니다.")

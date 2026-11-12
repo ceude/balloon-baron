@@ -168,6 +168,24 @@ extension GameState {
         }
         if region == .cap { fix(&local.pilots); fix(&local.candidates) }
         else if parked[.cap] != nil { fix(&parked[.cap]!.state.pilots); fix(&parked[.cap]!.state.candidates) }
+        // v142 (developer): the workshop's lines are per region. An older save's shared level and tally go to Cappadocia,
+        // where the workshop chapter goal is; another region you're in starts at level 1. A balloon on the line (or a
+        // rival's order) stays on the line where you are and comes out as before (its own region's fleet).
+        if factoryPerRegion == nil {
+            if region != .cap, var f = factory {
+                if parked[.cap] != nil {
+                    var c = f
+                    c.job = nil
+                    c.order = nil
+                    parked[.cap]?.state.parkedFactory = c
+                }
+                f = Factory()
+                f.job = factory?.job
+                f.order = factory?.order
+                factory = f
+            }
+            factoryPerRegion = true
+        }
         // v137 (developer, still testing): the holding goals want six offices and all four R&D levels. A World Baron
         // who doesn't have them is not one until they do; the million they had reached stays met, and the postcard
         // stays in the album (it isn't granted twice).

@@ -81,7 +81,7 @@ FR = {
 "office.par.perk": "Bristol +20 % · Documentaire −20 %",
 "office.tyo.perk": "Louxor +20 % · Touristes +5 % · Motifs",
 "office.dxb.perk": "Mara +20 % · Records −25 %",
-"hgoal.maraGroup": "Premier groupe d’avion de safari dans le Mara",
+"hgoal.maraGroup": "Faire voler un groupe d’avion de safari au Mara",
 "hgoal.maraGroupNote": "Le Maasai Mara s’ouvre avec le titre de baron de Bristol.",
 "holding.sendLocked": "Tant que tu n’es pas baron ici, les bénéfices restent dans la région.",
 "holding.sendLockedTag": "Verrouillé",

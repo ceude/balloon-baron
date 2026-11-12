@@ -84,7 +84,7 @@ const TWEAKS = {
           /* v140: the hosted festival, in the owned region with the least festival fame */
           if (hfReady()) { const id = mine.slice().sort((x, y) => (((h.fame || {})[x]) || 0) - (((h.fame || {})[y]) || 0))[0]; out.push({ k: 'festival', cls: 'mkt', c: hfCost(), f: () => hostFestival(id) }); }
           /* v140: the foundation, its projects round the owned regions */
-          { const id = mine.slice().sort((x, y) => foundIn(x) - foundIn(y))[0]; out.push({ k: 'foundation', cls: 'found', c: foundCost(), f: () => fundProject(id) }); }
+          { const id = mine.slice().sort((x, y) => foundIn(x) - foundIn(y))[0]; out.push({ k: 'foundation', cls: 'found', c: foundCost(id), f: () => fundProject(id) }) /* v142: priced per region */; }
           for (const id of mine) if (!((h.bb || {})[id] > d)) out.push({ k: 'billboards', cls: 'mkt', ids: [id], c: BB.cost, f: () => { (h.bb = h.bb || {})[id] = d + BB.days; } });
           return out;
         };

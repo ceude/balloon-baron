@@ -113,6 +113,7 @@ extension Game {
             next.candidates = []
             next.rivalPlanDay = 0
             state.local = next
+            state.factory = nil // v142: the bank took the workshop's lines too (the workshop and designs stay)
             startDay()
         }
     }

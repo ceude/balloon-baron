@@ -193,8 +193,8 @@ public struct Fiesta: Codable, Equatable, Sendable {
 }
 
 /// Everything that belongs to one region. The active region lives in `GameState.local`; the
-/// others are parked with an autopilot. Holding money, the founder's license, the workshop and
-/// designs, Hezarfen's lessons and the day counter are company-wide.
+/// others are parked with an autopilot. Holding money, the founder's license, the workshop's founding and
+/// designs, Hezarfen's lessons and the day counter are company-wide; v142: the workshop's lines (`Factory`) are per region.
 public struct RegionState: Codable, Equatable, Sendable {
     public var cash = Rules.startCash
     public var loans: [Loan] = []
@@ -321,6 +321,9 @@ public struct RegionState: Codable, Equatable, Sendable {
     /// (the long and the short rains take turns).
     public var rainsDone: Int?
     public var rainsCount: Int?
+    /// v142: this region's workshop lines while it's parked (the region you're in keeps its own in `GameState.factory`).
+    /// nil: level 1, nothing on the line. Optional so older saves load.
+    public var parkedFactory: Factory?
 
     init(rivals: [Rival]) { self.rivals = rivals }
 

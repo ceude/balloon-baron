@@ -227,12 +227,13 @@ final class Holding140Tests: XCTestCase {
 
     // MARK: Hot Air Foundation
 
+    /// v142 (developer): each region's next project costs €1M + €500,000 for each project already funded there.
     func testFoundationProjectsCostMoreEachTimeAndLiftEveryRegion() throws {
         var g = rich()
         setRep(&g, .cap, 1.0)
         setRep(&g, .abq, 1.0)
         var cash = g.state.holding.cash
-        XCTAssertEqual(g.state.holding.projectCost, 1_000_000)
+        XCTAssertEqual(g.state.holding.projectCost(in: .cap), 1_000_000)
         XCTAssertFalse(g.fundProject(in: .bri), "only in a region you own")
         XCTAssertTrue(g.fundProject(in: .cap))
         XCTAssertEqual(g.state.holding.cash, cash - 1_000_000)
@@ -240,11 +241,12 @@ final class Holding140Tests: XCTestCase {
         XCTAssertEqual(rep(g, .abq), 1.05, accuracy: 1e-9)
         XCTAssertEqual(g.state.hezQueue.last, .foundationProject(.cap, 0))
         XCTAssertEqual(g.state.paperNext?.last, .foundationProject(.cap, 0, count: 1))
-        XCTAssertEqual(g.state.holding.projectCost, 1_500_000)
+        XCTAssertEqual(g.state.holding.projectCost(in: .cap), 1_500_000)
+        XCTAssertEqual(g.state.holding.projectCost(in: .abq), 1_000_000, "v142: Cappadocia's project doesn't make Albuquerque's dearer")
         cash = g.state.holding.cash
         XCTAssertTrue(g.fundProject(in: .cap), "no wait between projects")
         XCTAssertTrue(g.fundProject(in: .abq))
-        XCTAssertEqual(g.state.holding.cash, cash - 1_500_000 - 2_000_000)
+        XCTAssertEqual(g.state.holding.cash, cash - 1_500_000 - 1_000_000)
         XCTAssertEqual(g.state.holding.projects, 3, "the foundation's legacy")
         XCTAssertEqual(g.state.holding.projects(in: .cap), 2, "two monuments' worth in Cappadocia's town")
         XCTAssertEqual(g.state.holding.lastProject, Holding.FundedProject(region: .abq, index: 0, day: g.state.day))
@@ -252,7 +254,9 @@ final class Holding140Tests: XCTestCase {
         XCTAssertEqual(rep(g, .cap), 1.15, accuracy: 1e-9)
         let back = try reload(g)
         XCTAssertEqual(back.state.holding.foundation, [.cap: 2, .abq: 1])
-        XCTAssertEqual(back.state.holding.projectCost, 2_500_000)
+        XCTAssertEqual(back.state.holding.projectCost(in: .cap), 2_000_000, "two funded in Cappadocia")
+        XCTAssertEqual(back.state.holding.projectCost(in: .abq), 1_500_000)
+        XCTAssertEqual(back.state.holding.projectCost(in: .lux), 1_000_000)
     }
 
     func testFoundationPostcard() {
@@ -278,7 +282,7 @@ final class Holding140Tests: XCTestCase {
         XCTAssertNil(h.worldGamesCount)
         XCTAssertEqual(h.worldGamesHeld, 0)
         XCTAssertEqual(h.festivalCost, 1_500_000)
-        XCTAssertEqual(h.projectCost, 1_000_000)
+        XCTAssertEqual(h.projectCost(in: .cap), 1_000_000)
         XCTAssertEqual(h.officeRent, 2500)
         h.festival = Holding.HostedFestival(region: .cap, until: 10, next: 90, count: 1)
         h.festivalsIn = [.cap: 1]
