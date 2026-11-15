@@ -137,7 +137,7 @@ LD_RUNPATH_SEARCH_PATHS = (
 \t"$(inherited)",
 \t"@executable_path/Frameworks",
 );
-MARKETING_VERSION = 1.0;
+MARKETING_VERSION = 1.0.1;
 PRODUCT_BUNDLE_IDENTIFIER = com.ceude.balloonbaron;
 PRODUCT_NAME = "$(TARGET_NAME)";
 SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
