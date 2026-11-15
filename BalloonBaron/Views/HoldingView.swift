@@ -32,6 +32,14 @@ struct HoldingView: View {
                     }
                 }
             }
+            // v143.1 (TestFlight): the autopilot report opens over this page. It used to be drawn at the app's root,
+            // under the holding desk's sheet, so tapping "Report" seemed to do nothing.
+            if let r = store.autoReport, store.game != nil {
+                AutoReportView(region: r)
+                    .foregroundStyle(Theme.ink)  // not the dark office's light text
+                    .transition(.opacity)
+                    .zIndex(10)
+            }
         }
         .foregroundStyle(HoldingLux.text)
     }

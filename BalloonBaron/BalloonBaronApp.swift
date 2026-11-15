@@ -62,10 +62,6 @@ struct RootView: View {
                 IssueView(region: r)
                     .transition(.opacity)
             }
-            if let r = store.autoReport, store.game != nil {
-                AutoReportView(region: r)
-                    .transition(.opacity)
-            }
             if let t = store.travel, store.game != nil {
                 TravelView(travel: t)
                     .transition(.opacity)
