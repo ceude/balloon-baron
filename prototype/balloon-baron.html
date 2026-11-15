@@ -10411,7 +10411,7 @@ function showAutoReport(id) {
   const x = h('button', 'pclose cardx', '✕'); x.setAttribute('aria-label', 'Kapat'); x.onclick = () => { sfx('click'); m.hidden = true; }; c.appendChild(x);
   c.appendChild(h('div', 'chap', 'Otomatik mod raporu'));
   c.appendChild(h('h1', null, REGION_DEF[id].name));
-  c.appendChild(h('div', 'arsub', `Otomatik mod · ayrıldığın gün: ${A.left ? A.left.day : A.since}`));
+  c.appendChild(h('div', 'arsub', `Gün ${A.left ? A.left.day : A.since} itibarıyla otomatik modda`));
   const row = (l, v, cls = '') => `<div><span>${l}</span><span class="v ${cls}">${v}</span></div>`, chg = k => (k >= 1 ? '+%' : '−%') + Math.round(Math.abs(k - 1) * 100);
   const D = A.lastDay;
   if (D && D.gross != null) {
@@ -10432,7 +10432,7 @@ function showAutoReport(id) {
   if (L) {
     const a = L.avg, lines = [['Bilet', a.tickets], ['Bahşiş', a.tips], ['Tur grupları', a.contract], ['Oteller', a.hotels], ['Yakıt', -a.fuel], ['Koruma alanı ücreti', -a.park],
       ['Pilot maaşları', -a.wages], ['Bakım', -a.upkeep], ['Sigorta primi', -a.insurance], ['Kredi taksiti', -a.loans], ['Getirilen balonların bedeli', -a.transfer], ['Diğer', a.other]].filter(x => x[1]);
-    let t = `<h3>Ayrıldığında (günlük ortalama, gün sayısı: ${L.days})</h3>`;
+    let t = `<h3>Burada oynadığın son ${L.days} gün (günlük ortalama)</h3>`;
     if (L.days) { lines.forEach(([l, v]) => { t += row(l, sgn(v), v > 0 ? 'pos' : 'neg'); }); t += `<div class="tot"><span>Net</span><span class="v ${a.net >= 0 ? 'pos' : 'neg'}">${sgn(a.net)}</span></div>`; }
     t += `<p class="arfact">${L.occ != null ? `Doluluk: %${Math.round(L.occ * 100)} · koltuk: ${a.pax}/${a.seats}` : 'Doluluk: uçuş yok'}<br>Balon: ${L.balloons} · koltuk: ${L.seats} · pilot: ${L.pilots}<br>${L.rivalMin != null ? `Bilet: ${cur(L.price)} · rakipler: en ucuz ${cur(L.rivalMin)}, ortalama ${cur(L.rivalAvg)}` : `Bilet: ${cur(L.price)} · rakip yok`}</p>`;
     c.appendChild(h('div', 'led arled', t));

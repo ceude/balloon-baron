@@ -5929,43 +5929,43 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Bei deiner Abreise (Tagesdurchschnitt, Tage: %@)"
+            "value": "Deine letzten %@ Tage hier (Tagesdurchschnitt)"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "When you left (daily average, days: %@)"
+            "value": "Your last %@ days here (daily average)"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Cuando te fuiste (media diaria, días: %@)"
+            "value": "Tus últimos %@ días aquí (media diaria)"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "À ton départ (moyenne par jour, jours : %@)"
+            "value": "Tes %@ derniers jours ici (moyenne par jour)"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "離れたとき（1日平均、日数：%@）"
+            "value": "ここで遊んだ最後の%@日間（1日平均）"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "떠날 때 (일 평균, 일수: %@)"
+            "value": "여기서 플레이한 마지막 %@일 (일 평균)"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Ayrıldığında (günlük ortalama, gün sayısı: %@)"
+            "value": "Burada oynadığın son %@ gün (günlük ortalama)"
           }
         }
       }
@@ -6352,43 +6352,43 @@
         "de": {
           "stringUnit": {
             "state": "translated",
-            "value": "Autopilot · Tag deiner Abreise: %@"
+            "value": "Im Autopilot seit Tag %@"
           }
         },
         "en": {
           "stringUnit": {
             "state": "translated",
-            "value": "Autopilot · day you left: %@"
+            "value": "On autopilot since day %@"
           }
         },
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Piloto automático · día en que te fuiste: %@"
+            "value": "En piloto automático desde el día %@"
           }
         },
         "fr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Pilote automatique · jour du départ : %@"
+            "value": "En pilote automatique depuis le jour %@"
           }
         },
         "ja": {
           "stringUnit": {
             "state": "translated",
-            "value": "自動運営 · 離れた日：%@"
+            "value": "%@日目から自動運営"
           }
         },
         "ko": {
           "stringUnit": {
             "state": "translated",
-            "value": "자동 운영 · 떠난 날: %@"
+            "value": "%@일차부터 자동 운영"
           }
         },
         "tr": {
           "stringUnit": {
             "state": "translated",
-            "value": "Otomatik mod · ayrıldığın gün: %@"
+            "value": "Gün %@ itibarıyla otomatik modda"
           }
         }
       }

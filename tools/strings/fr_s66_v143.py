@@ -2,7 +2,7 @@
 FR = {
 "autoRep.open": "Rapport ›",
 "autoRep.kicker": "Rapport du pilote automatique",
-"autoRep.sub": "Pilote automatique · jour du départ : %@",
+"autoRep.sub": "En pilote automatique depuis le jour %@",
 "autoRep.yesterday": "Gains d’hier (jour %@)",
 "autoRep.base": "Base",
 "autoRep.swing": "Variation du jour",
@@ -28,7 +28,7 @@ FR = {
 "autoRep.firstEvening": "Le premier détail arrive ce soir.",
 "autoRep.week": "7 derniers jours",
 "autoRep.weekA11y": "Gains des derniers jours : %@",
-"autoRep.left": "À ton départ (moyenne par jour, jours : %@)",
+"autoRep.left": "Tes %@ derniers jours ici (moyenne par jour)",
 "autoRep.contract": "Groupes de touristes",
 "autoRep.hotels": "Hôtels",
 "autoRep.other": "Autres",

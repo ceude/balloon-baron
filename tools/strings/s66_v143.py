@@ -6,8 +6,8 @@ from s1_ui import add
 
 add("autoRep.open", "Report ›", "Rapor ›", "Bericht ›", "Informe ›", "レポート ›", "보고서 ›")
 add("autoRep.kicker", "Autopilot report", "Otomatik mod raporu", "Autopilot-Bericht", "Informe del piloto automático", "自動運営レポート", "자동 운영 보고서")
-add("autoRep.sub", "Autopilot · day you left: %@", "Otomatik mod · ayrıldığın gün: %@", "Autopilot · Tag deiner Abreise: %@",
-    "Piloto automático · día en que te fuiste: %@", "自動運営 · 離れた日：%@", "자동 운영 · 떠난 날: %@")
+add("autoRep.sub", "On autopilot since day %@", "Gün %@ itibarıyla otomatik modda", "Im Autopilot seit Tag %@",
+    "En piloto automático desde el día %@", "%@日目から自動運営", "%@일차부터 자동 운영")
 add("autoRep.yesterday", "Yesterday's earnings (day %@)", "Dünkü kazanç (gün %@)", "Ertrag von gestern (Tag %@)",
     "Ganancia de ayer (día %@)", "昨日の稼ぎ（%@日目）", "어제 수익 (%@일차)")
 add("autoRep.base", "Base", "Temel kazanç", "Grundertrag", "Base", "基本の稼ぎ", "기본 수익")
@@ -43,9 +43,9 @@ add("autoRep.firstEvening", "The first breakdown comes this evening.", "İlk dö
 add("autoRep.week", "Last 7 days", "Son 7 gün", "Letzte 7 Tage", "Últimos 7 días", "直近7日", "최근 7일")
 add("autoRep.weekA11y", "Earnings of the last days: %@", "Son günlerin kazancı: %@", "Ertrag der letzten Tage: %@",
     "Ganancias de los últimos días: %@", "直近の稼ぎ：%@", "최근 수익: %@")
-add("autoRep.left", "When you left (daily average, days: %@)", "Ayrıldığında (günlük ortalama, gün sayısı: %@)",
-    "Bei deiner Abreise (Tagesdurchschnitt, Tage: %@)", "Cuando te fuiste (media diaria, días: %@)",
-    "離れたとき（1日平均、日数：%@）", "떠날 때 (일 평균, 일수: %@)")
+add("autoRep.left", "Your last %@ days here (daily average)", "Burada oynadığın son %@ gün (günlük ortalama)",
+    "Deine letzten %@ Tage hier (Tagesdurchschnitt)", "Tus últimos %@ días aquí (media diaria)",
+    "ここで遊んだ最後の%@日間（1日平均）", "여기서 플레이한 마지막 %@일 (일 평균)")
 add("autoRep.contract", "Tour groups", "Tur grupları", "Tourgruppen", "Grupos turísticos", "ツアー団体", "단체 관광")
 add("autoRep.hotels", "Hotels", "Oteller", "Hotels", "Hoteles", "ホテル", "호텔")
 add("autoRep.other", "Other", "Diğer", "Sonstiges", "Otros", "その他", "기타")
