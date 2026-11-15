@@ -32,6 +32,7 @@
 		2EC0AA89BE01211B35404B76 /* Platform.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45339BBAA04927D7F285CA21 /* Platform.swift */; };
 		31B04EE6C024E443356BDA4B /* TutorialCoach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 690B6FEB48442969E47A5436 /* TutorialCoach.swift */; };
 		32166E8076D2BAC0A2145811 /* TownNight.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF39B153C032C3B1F8AFDEF /* TownNight.swift */; };
+		33ADEC9FAD2E86D86179C472 /* AutoReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF88B8575DA93601737E91E /* AutoReportView.swift */; };
 		3745C3DBD6BB8317AC2AF5CB /* Telemetry.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1F376872405998A225098DA /* Telemetry.swift */; };
 		37A512CC536FFCC07E95ABE3 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32555776BC90AFB75C336EF3 /* SetupView.swift */; };
 		3AAB38726CD2EDBCEB8BD584 /* Sound.swift in Sources */ = {isa = PBXBuildFile; fileRef = 64334C9F947BE9EF2E1B63A6 /* Sound.swift */; };
@@ -199,6 +200,7 @@
 		9662F101C27DC417A5D0A108 /* FlightView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FlightView.swift"; sourceTree = "<group>"; };
 		99A21C41BCDC5DB2BD7E3B4C /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShareCard.swift"; sourceTree = "<group>"; };
 		99FDE99656F4C143FD9555D7 /* OpeningKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpeningKit.swift"; sourceTree = "<group>"; };
+		9CF88B8575DA93601737E91E /* AutoReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AutoReportView.swift"; sourceTree = "<group>"; };
 		9F81A32D63C6E3949B8B2AA2 /* FleetPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FleetPlanView.swift"; sourceTree = "<group>"; };
 		A1E82B36F0B974360466A00D /* OpeningScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OpeningScene.swift"; sourceTree = "<group>"; };
 		A258F2D4FE78330C3E2FFE72 /* WorkshopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WorkshopView.swift"; sourceTree = "<group>"; };
@@ -375,6 +377,7 @@
 			isa = PBXGroup;
 			children = (
 				1DB9359E7A5D91DE3E717B69 /* AdShapeArt.swift */,
+				9CF88B8575DA93601737E91E /* AutoReportView.swift */,
 				8480E19BC8DE8F1B439520EE /* BalloonArt.swift */,
 				B3141C729AE6B19C61AE6F2A /* BankView.swift */,
 				73920F4A7D747582F67B5D94 /* BazaarViews.swift */,
@@ -580,6 +583,7 @@
 				AB73A244A1F086C3E12B9E43 /* TownShow.swift in Sources */,
 				BBB4A8150F49C505DE1C2F67 /* TownViews.swift in Sources */,
 				E4784A24C39AC33337B15154 /* AdShapeArt.swift in Sources */,
+				33ADEC9FAD2E86D86179C472 /* AutoReportView.swift in Sources */,
 				AE31F22E38F84889D245B4D9 /* BalloonArt.swift in Sources */,
 				8C32AAD571E1BBB5AAC70233 /* BankView.swift in Sources */,
 				E69B4CB75937456ED93981A4 /* BazaarViews.swift in Sources */,

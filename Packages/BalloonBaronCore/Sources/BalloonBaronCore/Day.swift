@@ -373,6 +373,8 @@ extension Game {
         if state.repHistory.count > 120 { state.repHistory.removeFirst() }
         state.lastShare = MarketShare(me: paxTotal, cap: capToday, rivals: plan.rivalPax, demand: state.demand ?? 0, extra: min(plan.referrals, paxTotal))
         state.netHistory = Array((state.netHistory + [lg.net - (lg.showRefund ?? 0)]).suffix(14)) // a refund isn't earnings
+        // v143: the day's lines in short, for the autopilot report
+        state.local.recentDays = Array(((state.local.recentDays ?? []) + [DayLines(lg, net: lg.net - (lg.showRefund ?? 0), pax: paxTotal, seats: capToday)]).suffix(14))
         loanUnlock()
         runAutopilots()
         lg.holdingNet = holdingDay()

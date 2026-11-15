@@ -44,6 +44,8 @@ final class GameStore {
     var townCard: TownCard?
     /// A parked region whose problem the player is deciding.
     var issueRegion: RegionID?
+    /// v143: a parked region whose autopilot report is open (from the holding's Regions page).
+    var autoReport: RegionID?
     /// A problem waiting in the region you're in: the camera goes to your office first, the card follows.
     var issueScene = false
     /// The dream-flight intro runs at every launch, like the prototype.
@@ -174,7 +176,7 @@ final class GameStore {
     /// Anything already covering the home screen; the next popup waits for it.
     var busy: Bool {
         showIntro || openingFilm || homeIntro != nil || replayingOpening || collecting || showShots != nil || hotelSale != nil || hotelBargain != nil || hezarfen != nil || chapter != nil || merge != nil || poach != nil || deal != nil || showMenu
-            || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || paper != nil
+            || townCard != nil || report != nil || flightPax != nil || page != nil || issueRegion != nil || autoReport != nil || paper != nil
             || morningEvent != nil || showRescue || showRuin || showTempFlag || showFactoryOrder || showTourOffer || showShowCard || showGlowCard || postcard != nil || showAlbum || buildingCard != nil || hangarFull != nil || showBazaar || storeItem != nil
             || night != nil || travel != nil || issueScene || buyLoan != nil || showGuides || showAgency || letter
             || contractCard != nil || contractScene != nil || showTransfer
@@ -434,6 +436,7 @@ final class GameStore {
         deal = nil
         page = nil
         issueRegion = nil
+        autoReport = nil
         collecting = false
         flightPax = nil
         showMenu = false
@@ -776,6 +779,7 @@ final class GameStore {
         if let s = state, !s.owns(r), s.needsPack(r) { showTourOffer = true; return }
         page = nil
         issueRegion = nil
+        autoReport = nil
         act { g in
             if g.state.owns(r) { g.switchRegion(r) } else { _ = g.enterRegion(r) }
         }

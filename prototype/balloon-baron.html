@@ -619,6 +619,18 @@ button.srow:active{background:#f6f3fb}
 .led .tot{border-top:2px solid var(--ink);padding-top:8px;margin-top:4px;font-weight:700}
 .led .tot .v{font-size:22px}
 .pos{color:var(--green)} .neg{color:var(--red)}
+/* v143: the autopilot report */
+.card.autorep{gap:10px;border-top:6px solid var(--coral)}
+.autorep .chap{font-family:var(--cond);font-weight:800;font-size:13px;letter-spacing:.06em;color:var(--coral);text-transform:uppercase;padding-right:44px}
+.autorep h1{font-size:28px}
+.autorep .arsub{font-size:14px;color:var(--ink2);margin-top:-6px}
+.autorep h3{margin:0 0 2px;font-family:var(--cond);font-weight:800;font-size:18px}
+.arled{font-size:14px;gap:4px}.arled .v{font-size:15px}.arled .tot .v{font-size:18px}.arled .tot{padding-top:5px;border-top-width:1.5px}
+.arspark{background:#fff;border:1.5px solid var(--line);border-radius:12px;padding:8px 10px}
+.arsh{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:700;color:var(--ink2)}.arsh b{font-family:var(--cond);color:var(--ink);font-size:15px}
+.arspark svg{width:100%;height:44px;display:block;margin-top:2px}
+.arfact{margin:4px 0 0;font-size:13.5px;color:var(--ink2);line-height:1.5}
+.autorep .hint{margin:0;font-size:13.5px}
 .ev{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px;font-size:14px;line-height:1.4}
 .ev li{display:flex;gap:10px}
 .ev li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;margin-top:6px;background:var(--coral)}
@@ -2681,6 +2693,7 @@ function finishDay(flight) {
   S.repHist.push({ d: S.day, r: S.rep }); if (S.repHist.length > 120) S.repHist.shift();
   S.lastShare = { me: paxTotal, cap: capToday, rivals: S.plan.rpax.slice(), demand: S.demand, extra: Math.min(S.plan.extra || 0, paxTotal) };
   S.netHist = (S.netHist || []).concat([net - (Lg.showBack || 0)]).slice(-14); loanUnlock(); /* a refund isn't earnings */
+  S.recent = (S.recent || []).concat([dayLines(Lg, net - (Lg.showBack || 0), paxTotal, capToday)]).slice(-14); /* v143: for the autopilot report */
   autoRegions(); const hn = holdingDay(); if (hn) Lg.hold = hn;
   if (S.fiesta && fl.length) S.fiestaFlown = (S.fiestaFlown || 0) + 1;
   if (S.fest && fl.length) S.festFlown = 1;
@@ -7865,7 +7878,7 @@ function applyRegionTheme() {
   MISSIONS.valley.name = d.valley[0]; MISSIONS.valley.desc = d.valley[1];
 }
 /* her bölgenin kendine ait durumu; kasa, krediler, lisans ve tasarımlar holding seviyesinde */
-const RKEYS = ['inspDay', 'inspN', 'hangarHz', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'glowN', 'eveDay', 'eveN', 'ctr', 'xferShip', 'xferDebt', 'debtDays', 'rainsDone', 'rainsN'];
+const RKEYS = ['inspDay', 'inspN', 'hangarHz', 'cash', 'loans', 'weather', 'demand', 'balloons', 'pilots', 'candidates', 'rivals', 'price', 'rep', 'strikes', 'banUntil', 'flag', 'selfFly', 'lastShare', 'shareNow', 'hotels', 'ownHotels', 'hotelTaken', 'hotelOwner', 'hotelBargains', 'reviews', 'repHist', 'influUntil', 'influCd', 'guideCd', 'guideUntil', 'guidePax', 'influPax', 'influCount', 'guideCount', 'plan', 'winter', 'nextWinter', 'monoDays', 'domDays', 'lastMerge', 'firstMis', 'poach', 'school', 'demandBase', 'chapter', 'monopolyShown', 'absentNotice', 'fiesta', 'fiestaNext', 'fiestaFlown', 'netHist', 'lastGuide', 'fest', 'festNext', 'festN', 'bestPax', 'strikeDay', 'charter', 'fuelUp', 'nextEvent', 'lastEvent', 'bld', 'fc', 'late', 'docDay', 'winterNight', 'issue', 'strikeUntil', 'loanOpen', 'rivalBusts', 'flagBack', 'flagAsk', 'showTonight', 'showNext', 'showN', 'showUntil', 'lastShow', 'showCount', 'showIds', 'fogFlown', 'glowCount', 'glowTonight', 'glowFest', 'glowN', 'eveDay', 'eveN', 'ctr', 'xferShip', 'xferDebt', 'debtDays', 'rainsDone', 'rainsN', 'recent'];
 /* Albuquerque's companies are stronger than Cappadocia's: bigger fleets, better known, deeper pockets (and RIVAL_EDGE) */
 const ABQ_RIVALS = [
   { name: 'Sandia Sky Rides', col: '#5aa9e6', col2: '#eaf4fc', style: 'safe', balloons: ['L', 'L', 'L', 'L', 'M', 'M', 'M', 'M'], price: 205, rep: 1.2, cash: 90000 },
@@ -8010,6 +8023,7 @@ function switchRegion(id) {
   const cur = {};
   RKEYS.forEach(k => { cur[k] = S[k]; });
   cur.auto = makeAuto(cur, S.region);
+  cur.auto.left = autoSnap(cur); /* v143: the region as you left it, for its autopilot report */
   /* an undecided problem stays with its region: it waits on autopilot and comes back when you do */
   if (cur.issue) { cur.auto.issue = cur.issue; cur.issue = null; }
   /* v132 (TestFlight): a Balloon Show or Night Glow booked for tonight can't happen with you gone. It's called off, its
@@ -9539,6 +9553,11 @@ function xferApply(sel) {
     const lost = seats0 ? bs.reduce((a, b) => a + SIZES[b.size].cap, 0) / seats0 : 0, k = Math.max(0, 1 - lost - XFER.pilotCut * ps.length);
     if (rs.auto) rs.auto.base = Math.round(rs.auto.base * k);
     rs.netHist = (rs.netHist || []).map(v => Math.round(v * k));
+    /* v143: the report's "when you left" follows: the fleet as it is now, its money in proportion */
+    if (rs.auto && rs.auto.left) {
+      const L = rs.auto.left, a = L.avg; [...LINE_KEYS, 'net'].forEach(q => { a[q] = Math.round(a[q] * k); }); a.other = a.net - linesNamed(a);
+      Object.assign(L, { balloons: rs.balloons.length, seats: rs.balloons.reduce((t, b) => t + SIZES[b.size].cap, 0), pilots: rs.pilots.length });
+    }
   }
   /* balloons come by cargo (ship and truck): XFER.ship days later they join the fleet (xferArrive), pilots with them */
   S.pilots.push(...moved.p); /* pilots fly in with you */
@@ -9701,8 +9720,9 @@ function autoRegions() {
   for (const id in (S.regions || {})) {
     const rs = S.regions[id], A = rs.auto; if (!A) continue;
     A.mods = (A.mods || []).filter(m => m.until > S.day);
-    const mult = A.mods.reduce((a, m) => a * m.mult, 1) * (A.issue ? .5 : 1);
-    const inc = A.base * rnd(.85, 1.15) * mult;
+    const after = A.mods.reduce((a, m) => a * m.mult, 1), mult = after * (A.issue ? .5 : 1), swing = rnd(.85, 1.15);
+    const inc = A.base * swing * mult;
+    A.lastDay = { day: S.day, base: A.base, swing, factors: autoFactors(id, after, !!A.issue) }; /* v143: holdingDay fills in the money */
     A.todayRaw = inc; A.today = Math.round(inc * holdBoost(id) * officeMult(id)); total += inc;
     if (!A.issue && S.day - (A.lastIssue || A.since) >= 6 && Math.random() < .07) {
       /* a hotel tug-of-war needs a partner hotel there: hotels you own aren't anyone's to take */
@@ -10308,23 +10328,118 @@ const pctTxt = k => (k >= 1 ? '+%' : '−%') + Math.round(Math.abs(k - 1) * 100)
 function holdingDay() {
   if (!S.hold) S.hold = { log: [] };
   let gross = 0;
+  const sent = [];
   for (const id in (S.regions || {})) {
     const A = S.regions[id].auto; if (!A) continue;
     const mult = holdBoost(id) * officeMult(id);
     /* v131: a region set to keep its money gets the same net (after the holding's running costs, so keeping it and
        moving it by hand later is no way around them) in its own cash box and currency */
-    if (!sendsToHolding(id)) { A.kept = Math.round(Math.round((A.todayRaw || 0) * mult) * (1 - holdCostRate()) * REGION_DEF[id].fx); S.regions[id].cash += A.kept; continue; }
+    if (!sendsToHolding(id)) {
+      A.kept = Math.round(Math.round((A.todayRaw || 0) * mult) * (1 - holdCostRate()) * REGION_DEF[id].fx); S.regions[id].cash += A.kept;
+      const g = Math.round((A.todayRaw || 0) * mult), n = Math.round(g * (1 - holdCostRate()));
+      autoNote(A, g, g - n, 0, false, A.kept); /* v143 */
+      continue;
+    }
     gross += (A.todayRaw || 0) * mult;
+    sent.push([id, (A.todayRaw || 0) * mult]);
   }
   gross = Math.round(gross);
   /* v140: the offices' rent and staff, every day (never more than the holding has) */
   const cost = Math.round(gross * holdCostRate()), rent = Math.min(officeRent(), Math.max(0, (S.holding || 0) + gross - cost));
+  autoShare(sent, gross, cost, rent);
   S.holding = (S.holding || 0) + gross - cost - rent;
   if (gross) holdLog('inc', gross);
   if (cost + rent) holdLog('exp', cost + rent);
   S.hold.today = { gross, cost, rent };
   recordDay(); adShapeDay(); markMillion();
   return gross - cost - rent;
+}
+/* v143: the autopilot report. Each played day keeps its report lines in short (S.recent, the last 14); leaving a region
+   keeps their average with the fleet and prices (A.left); each evening keeps how the autopilot money was worked out
+   (A.lastDay: base × swing × factors = gross, minus its share of the holding's costs and office rent, adding up to what
+   the holding booked) and the last seven evenings (A.week). Older saves have none of it: the report says so. */
+const LINE_KEYS = ['tickets', 'tips', 'contract', 'hotels', 'fuel', 'park', 'wages', 'upkeep', 'insurance', 'loans', 'transfer'];
+const linesNamed = L => L.tickets + L.tips + L.contract + L.hotels - L.fuel - L.park - L.wages - L.upkeep - L.insurance - L.loans - L.transfer;
+function dayLines(Lg, net, pax, seats) {
+  const L = { tickets: (Lg.rev || 0) + (Lg.eve || 0), tips: Lg.tips || 0, contract: (Lg.ctr || 0) + (Lg.ctrWait || 0) - (Lg.ctrPen || 0) - (Lg.ctrVoucher || 0),
+    hotels: (Lg.hotelInc || 0) - (Lg.hotel || 0), fuel: Lg.fuel || 0, park: Lg.park || 0, wages: Lg.wage || 0, upkeep: Lg.up || 0, insurance: Lg.ins || 0,
+    loans: Lg.loan || 0, transfer: Lg.xfer || 0, net, pax, seats };
+  L.other = net - linesNamed(L); return L;
+}
+function autoSnap(rs) {
+  const d = (rs.recent || []).slice(-14), n = d.length, a = {}, sum = k => d.reduce((t, x) => t + (x[k] || 0), 0);
+  [...LINE_KEYS, 'net', 'pax', 'seats'].forEach(k => { a[k] = n ? Math.round(sum(k) / n) : 0; });
+  a.other = a.net - linesNamed(a);
+  const rp = (rs.rivals || []).filter(r => r.alive).map(r => r.price);
+  return { day: S.day, days: n, avg: a, occ: sum('seats') ? Math.min(1, sum('pax') / sum('seats')) : null, balloons: rs.balloons.length,
+    seats: rs.balloons.reduce((t, b) => t + SIZES[b.size].cap, 0), pilots: rs.pilots.length, price: rs.price,
+    rivalMin: rp.length ? Math.min(...rp) : null, rivalAvg: rp.length ? Math.round(rp.reduce((t, x) => t + x, 0) / rp.length) : null };
+}
+/* the multipliers on a parked region's day that aren't 1; their product is holdBoost × officeMult × the decision's and the problem's */
+function autoFactors(id, after, issue) {
+  const H = S.hold || {}, d = S.day;
+  const off = (hasOffice('ist') && id === 'cap' ? 1.25 : 1) * (hasOffice('nyc') && id === 'abq' ? 1.2 : 1) * (hasOffice('tyo') && id === 'lux' ? 1.2 : 1)
+    * (hasOffice('dxb') && id === 'mara' ? 1.2 : 1) * (hasOffice('par') && id === 'bri' ? OFFICE_FX.par : 1);
+  return [['after', after], ['issue', issue ? .5 : 1], ['record', S.hold ? 1 + (H.recBoost || 0) : 1], ['tv', S.hold && tvUntilR(id) > d ? TVC.boost : 1],
+    ['celebrity', H.celeb && H.celeb.until > d ? CELEB.boost : 1], ['billboards', H.bb && H.bb[id] > d ? BB.boost : 1], ['jersey', H.jersey > d ? JERSEY.boost : 1],
+    ['worldGames', H.wg && H.wg.until > d ? WGAMES.boost : 1], ['documentary', H.doc && H.doc.until > d ? DOC.boost : 1],
+    ['festival', S.hold && hfOn(id) ? HFEST.boost : 1], ['fame', S.hold ? 1 + hfFame(id) : 1], ['office', off], ['tokyo', hasOffice('tyo') ? OFFICE_FX.tyo : 1], ['research', rdAutoMult()]]
+    .filter(x => x[1] !== 1).map(([k, m]) => ({ k, m }));
+}
+function autoNote(A, gross, expense, rent, sent, kept) {
+  const D = A.lastDay; if (!D) return;
+  Object.assign(D, { gross, expense, rent, rate: holdCostRate(), net: gross - expense - rent, sent, kept });
+  A.week = (A.week || []).concat([D.net]).slice(-7);
+}
+/* shares the holding's evening among the regions that sent to it, rounded so they add up to what it booked (the
+   rounding goes to the biggest region); the rent by each region's gross */
+function autoShare(list, g, cost, rent) {
+  list.sort((a, b) => a[0] < b[0] ? -1 : 1); if (!list.length) return;
+  const gs = list.map(x => Math.round(x[1])); let top = 0; gs.forEach((v, i) => { if (v > gs[top]) top = i; });
+  gs[top] += g - gs.reduce((a, v) => a + v, 0);
+  const cs = gs.map(v => Math.round(v * holdCostRate())); cs[top] += cost - cs.reduce((a, v) => a + v, 0);
+  const rs = gs.map(v => g > 0 ? Math.round(rent * v / g) : 0); if (g > 0) rs[top] += rent - rs.reduce((a, v) => a + v, 0);
+  list.forEach(([id], i) => autoNote(S.regions[id].auto, gs[i], cs[i], rs[i], true, null));
+}
+const AUTO_F = { after: 'Kararının etkisi', issue: 'Bekleyen sorun', record: 'Dünya rekorları', tv: 'TV kampanyası', celebrity: 'Ünlü yüz', billboards: 'Reklam panoları',
+  jersey: 'Forma sponsorluğu', worldGames: 'Dünya Oyunları gösterisi', documentary: 'Belgesel', festival: 'Uluslararası Balon Festivali', fame: 'Festival ünü',
+  office: 'Bölgenin şehir ofisi', tokyo: 'Tokyo ofisi', research: 'Ar-Ge' };
+function showAutoReport(id) {
+  const rs = S.regions && S.regions[id], A = rs && rs.auto; if (!A) return;
+  const m = $('menu'); m.replaceChildren(); m.classList.remove('evm');
+  const c = h('div', 'card autorep'), cur = v => money(v, id), sgn = v => v > 0 ? '+' + cur(v) : v < 0 ? '−' + cur(-v) : cur(0);
+  const x = h('button', 'pclose cardx', '✕'); x.setAttribute('aria-label', 'Kapat'); x.onclick = () => { sfx('click'); m.hidden = true; }; c.appendChild(x);
+  c.appendChild(h('div', 'chap', 'Otomatik mod raporu'));
+  c.appendChild(h('h1', null, REGION_DEF[id].name));
+  c.appendChild(h('div', 'arsub', `Otomatik mod · ayrıldığın gün: ${A.left ? A.left.day : A.since}`));
+  const row = (l, v, cls = '') => `<div><span>${l}</span><span class="v ${cls}">${v}</span></div>`, chg = k => (k >= 1 ? '+%' : '−%') + Math.round(Math.abs(k - 1) * 100);
+  const D = A.lastDay;
+  if (D && D.gross != null) {
+    let t = `<h3>Dünkü kazanç (gün ${D.day})</h3>` + row('Temel kazanç', eurH(D.base)) + row('Günlük dalgalanma', chg(D.swing), D.swing >= 1 ? 'pos' : 'neg');
+    D.factors.forEach(f => { t += row(AUTO_F[f.k], chg(f.m), f.m >= 1 ? 'pos' : 'neg'); });
+    t += `<div class="tot"><span>Brüt</span><span class="v">${eurH(D.gross)}</span></div>` + row(`Holding giderleri (%${Math.round(D.rate * 100)})`, '−' + eurH(D.expense), 'neg');
+    if (D.rent) t += row('Ofis kirası payı', '−' + eurH(D.rent), 'neg');
+    t += D.sent ? `<div class="tot"><span>Holdinge giden</span><span class="v pos">${eurH(D.net)}</span></div>` : `<div class="tot"><span>Bölge kasasında kalan</span><span class="v pos">${cur(D.kept || 0)}</span></div>`;
+    c.appendChild(h('div', 'led arled', t));
+  } else c.appendChild(h('p', 'hint', 'İlk döküm bu akşam gelir.'));
+  if (A.week && A.week.length) {
+    const w = A.week, lo = Math.min(...w), hi = Math.max(lo + 1, ...w), W = 300, H = 44;
+    const pts = w.map((v, i) => [w.length > 1 ? 6 + (W - 12) * i / (w.length - 1) : W / 2, H - 5 - (H - 10) * (v - lo) / (hi - lo)]);
+    const sp = h('div', 'arspark', `<div class="arsh"><span>Son 7 gün</span><b>${eurH(w[w.length - 1])}</b></div><svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img" aria-label="Son günlerin kazancı: ${w.map(eurH).join(', ')}"><polyline points="${pts.map(p => p.join(',')).join(' ')}" fill="none" stroke="var(--coral)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>`);
+    c.appendChild(sp);
+  }
+  const L = A.left;
+  if (L) {
+    const a = L.avg, lines = [['Bilet', a.tickets], ['Bahşiş', a.tips], ['Tur grupları', a.contract], ['Oteller', a.hotels], ['Yakıt', -a.fuel], ['Koruma alanı ücreti', -a.park],
+      ['Pilot maaşları', -a.wages], ['Bakım', -a.upkeep], ['Sigorta primi', -a.insurance], ['Kredi taksiti', -a.loans], ['Getirilen balonların bedeli', -a.transfer], ['Diğer', a.other]].filter(x => x[1]);
+    let t = `<h3>Ayrıldığında (günlük ortalama, gün sayısı: ${L.days})</h3>`;
+    if (L.days) { lines.forEach(([l, v]) => { t += row(l, sgn(v), v > 0 ? 'pos' : 'neg'); }); t += `<div class="tot"><span>Net</span><span class="v ${a.net >= 0 ? 'pos' : 'neg'}">${sgn(a.net)}</span></div>`; }
+    t += `<p class="arfact">${L.occ != null ? `Doluluk: %${Math.round(L.occ * 100)} · koltuk: ${a.pax}/${a.seats}` : 'Doluluk: uçuş yok'}<br>Balon: ${L.balloons} · koltuk: ${L.seats} · pilot: ${L.pilots}<br>${L.rivalMin != null ? `Bilet: ${cur(L.price)} · rakipler: en ucuz ${cur(L.rivalMin)}, ortalama ${cur(L.rivalAvg)}` : `Bilet: ${cur(L.price)} · rakip yok`}</p>`;
+    c.appendChild(h('div', 'led arled', t));
+  } else c.appendChild(h('div', 'callout yel', 'Bu bölgeden bu sürümden önce ayrıldın; döküm bir sonraki ayrılışında görünür.'));
+  c.appendChild(h('p', 'hint', 'Kazanç bu bölgedeki son 14 günden belirlendi. Artırmak için bölgeye git, ayarla (fiyat, filo, pilotlar), sonra ayrıl.'));
+  const go = h('button', 'big', 'Bölgeye git'); go.style.width = '100%'; go.onclick = () => { sfx('click'); m.hidden = true; closePage(); switchRegion(id); }; c.appendChild(go);
+  m.appendChild(c); m.hidden = false;
 }
 /* v141.1: what a transfer to the holding leaves in a region's cash box: 10,000, in the Maasai Mara more (its bush days cost
    more to run, and a careful player who sent everything lost balloons to the bank after the rains and fines) */
@@ -10435,6 +10550,7 @@ function hqRegions(body) {
     it.appendChild(h('div', 'main', `<div class="t">${R.name}${here ? ' <span class="tag g">Buradasın</span>' : A ? (A.issue ? ' <span class="tag r">Sorun var</span>' : ' <span class="tag y">Otomatik</span>') : ' <span class="tag y">Açıldı</span>'}${isBaron(R.id) ? ' <span class="tag g">Baron</span>' : ''}</div><div class="s">${sub}</div>`));
     const acts = h('div'); acts.style.cssText = 'display:flex;flex-direction:column;gap:6px';
     if (A && A.issue) acts.appendChild(pbtn('Karar ver', () => showIssue(R.id)));
+    if (A && !here) acts.appendChild(pbtn('Rapor ›', () => showAutoReport(R.id))); /* v143: the autopilot report */
     if (!here && ownsRegion(R.id)) acts.appendChild(pbtn('Bölgeye git', () => { closePage(); switchRegion(R.id); }, false, true));
     if (!ownsRegion(R.id) && needsPack(R.id)) acts.appendChild(pbtn(`Dünya Turu ${SHOP.worldTour.price}`, () => { closePage(); showTourOffer(); }));
     else if (!ownsRegion(R.id)) acts.appendChild(pbtn(`Gir ${eurH(entryFee(R.id))}`, () => { closePage(); enterRegion(R.id); }, (S.holding || 0) < entryFee(R.id)));

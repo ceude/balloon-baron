@@ -368,6 +368,11 @@ struct HoldingView: View {
                     HoldingPill(title: loc("map.decide"), style: .coral) { store.issueRegion = r }
                 }
                 if auto != nil {
+                    // v143: how the autopilot's money is made, and the region as you left it
+                    HoldingPill(title: loc("autoRep.open"), style: .ink) {
+                        SoundEngine.shared.play(.click)
+                        store.autoReport = r
+                    }
                     HoldingPill(title: loc("map.go")) { store.goTo(r) }
                 } else if game.state.needsPack(r) {
                     HoldingPill(title: loc("map.openTour", storePrice(.worldTour)), style: .gold) { store.showTourOffer = true }

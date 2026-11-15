@@ -540,6 +540,7 @@ extension Game {
         var cur = state.local
         let from = state.region
         var auto = makeAutopilot(cur, region: from)
+        auto.left = AutoSnapshot(cur, day: state.day)
         // An undecided problem stays with its region: it waits on autopilot and comes back when you do.
         auto.issue = cur.openIssue
         cur.openIssue = nil
@@ -618,9 +619,13 @@ extension Game {
             guard var p = state.parked[r] else { continue }
             var a = p.auto
             a.modifiers.removeAll { $0.until <= state.day }
-            let mult = a.modifiers.reduce(1) { $0 * $1.mult } * (a.issue != nil ? 0.5 : 1)
-            let inc = a.base * rng.range(0.85, 1.15) * mult
+            let after = a.modifiers.reduce(1) { $0 * $1.mult }
+            let mult = after * (a.issue != nil ? 0.5 : 1)
+            let swing = rng.range(0.85, 1.15)
+            let inc = a.base * swing * mult
             a.todayRaw = inc
+            // v143: the evening's breakdown for the autopilot report; `holdingDay` fills in the money
+            a.lastDay = AutoDay(day: state.day, base: a.base, swing: swing, factors: autopilotFactors(r, after: after, issue: a.issue != nil))
             a.today = jsRound(inc * holdingBoost(r) * state.holding.officeMultiplier(r))
             if a.issue == nil && state.day - a.lastIssue >= 6 && rng.chance(0.07) {
                 // A hotel tug-of-war needs a partner hotel there: hotels you own aren't anyone's to take.
@@ -640,20 +645,26 @@ extension Game {
     /// v141.4: so does a region whose baron title you have not won yet, whatever its switch says.
     mutating func holdingDay() -> Int {
         var gross = 0.0
+        var sentDays: [(RegionID, Double)] = []
         for (r, p) in state.parked {
             let day = p.auto.todayRaw * holdingBoost(r) * state.holding.officeMultiplier(r)
             if state.sendsToHolding(r) {
                 gross += day
+                sentDays.append((r, day))
             } else if var q = state.parked[r] {
                 let kept = jsRound(Double(jsRound(day)) * (1 - state.holding.expenseRate) * r.fx)
                 q.state.cash += kept
                 q.auto.kept = kept
+                // v143: the report's breakdown, in euros, and the region's money for what stayed
+                let g = jsRound(day), net = jsRound(Double(g) * (1 - state.holding.expenseRate))
+                q.auto.noteDay(gross: g, expense: g - net, rent: 0, rate: state.holding.expenseRate, sent: false, kept: kept)
                 state.parked[r] = q
             }
         }
         let g = jsRound(gross), cost = jsRound(Double(g) * state.holding.expenseRate)
         // v140: the offices' rent and staff, every evening (never more than the holding has)
         let rent = min(state.holding.officeRent, max(0, state.holding.cash + g - cost))
+        shareOut(sentDays, gross: g, cost: cost, rent: rent)
         state.holding.cash += g - cost - rent
         if g != 0 || rent != 0 { state.holding.log(day: state.day, income: g, expense: cost + rent) }
         state.holding.todayGross = g
@@ -662,6 +673,43 @@ extension Game {
         let extra = recordDay() + adShapeDay()
         markMillion()
         return g - cost - rent + extra
+    }
+
+    /// v143: the multipliers on a parked region's day, each one that isn't 1, for the autopilot report. Their product
+    /// is `after` × the problem's half × `holdingBoost` × `officeMultiplier`.
+    func autopilotFactors(_ r: RegionID, after: Double, issue: Bool) -> [AutoFactor] {
+        let h = state.holding, d = state.day
+        let regionOffice: Double = (h.has(.ist) && r == .cap ? 1.25 : 1) * (h.has(.nyc) && r == .abq ? 1.2 : 1)
+            * (h.has(.tyo) && r == .lux ? 1.2 : 1) * (h.has(.dxb) && r == .mara ? 1.2 : 1) * (h.has(.lon) && r == .bri ? Holding.londonBoost : 1)
+        let all: [(AutoFactor.Kind, Double)] = [
+            (.after, after), (.issue, issue ? 0.5 : 1), (.record, 1 + (h.recordBoost ?? 0)),
+            (.tv, h.tvUntil(r) > d ? Holding.tvBoost : 1), (.celebrity, (h.celebrity?.until ?? 0) > d ? Holding.celebrityBoost : 1),
+            (.billboards, (h.billboards[r] ?? 0) > d ? Holding.billboardBoost : 1), (.jersey, (h.jerseyUntil ?? 0) > d ? Holding.jerseyBoost : 1),
+            (.worldGames, (h.worldGamesUntil ?? 0) > d ? Holding.worldGamesBoost : 1), (.documentary, h.documentaryOn(d) ? Holding.documentaryBoost : 1),
+            (.festival, h.festivalOn(r, day: d) ? Holding.festivalBoost : 1), (.fame, 1 + h.festivalFame(r)),
+            (.office, regionOffice), (.tokyo, h.has(.tyo) ? Holding.tokyoBoost : 1), (.research, h.researchAutopilot)
+        ]
+        return all.filter { $0.1 != 1 }.map { AutoFactor(kind: $0.0, mult: $0.1) }
+    }
+
+    /// v143: shares the holding's evening among the regions that sent to it, for their reports: each region's gross,
+    /// running costs and part of the office rent (by its gross), rounded so that they add up to what the holding booked
+    /// (the rounding goes to the biggest region).
+    private mutating func shareOut(_ days: [(RegionID, Double)], gross g: Int, cost: Int, rent: Int) {
+        let list = days.sorted { $0.0.rawValue < $1.0.rawValue }
+        guard !list.isEmpty else { return }
+        var gs = list.map { jsRound($0.1) }
+        let top = gs.indices.max { gs[$0] < gs[$1] } ?? 0
+        gs[top] += g - gs.reduce(0, +)
+        var cs = gs.map { jsRound(Double($0) * state.holding.expenseRate) }
+        cs[top] += cost - cs.reduce(0, +)
+        var rs = gs.map { g > 0 ? jsRound(Double(rent) * Double($0) / Double(g)) : 0 }
+        if g > 0 { rs[top] += rent - rs.reduce(0, +) }
+        for (i, (r, _)) in list.enumerated() {
+            guard var q = state.parked[r] else { continue }
+            q.auto.noteDay(gross: gs[i], expense: cs[i], rent: rs[i], rate: state.holding.expenseRate, sent: true, kept: nil)
+            state.parked[r] = q
+        }
     }
 
     /// What a choice costs the holding up front, for a parked region or the one you're in.

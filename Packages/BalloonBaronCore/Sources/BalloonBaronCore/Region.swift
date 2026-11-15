@@ -324,6 +324,9 @@ public struct RegionState: Codable, Equatable, Sendable {
     /// v142: this region's workshop lines while it's parked (the region you're in keeps its own in `GameState.factory`).
     /// nil: level 1, nothing on the line. Optional so older saves load.
     public var parkedFactory: Factory?
+    /// v143: the last 14 days' report lines in short (`DayLines`), for the autopilot report's "when you left". nil in older
+    /// saves; it fills from the next day played.
+    public var recentDays: [DayLines]?
 
     init(rivals: [Rival]) { self.rivals = rivals }
 
@@ -360,6 +363,131 @@ public struct Autopilot: Codable, Equatable, Sendable {
     public var today = 0
     /// v131: what stayed in the region's own cash box yesterday (its currency), when it doesn't send to the holding.
     public var kept: Int?
+    /// v143 (optional so older saves load): the region as you left it (nil when it was parked before v143), the last
+    /// evening's breakdown, and the last seven evenings' earnings in euros (what reached the holding, or what stayed in
+    /// the region's box after the holding's running costs).
+    public var left: AutoSnapshot?
+    public var lastDay: AutoDay?
+    public var week: [Int]?
+
+    /// v143: `holdingDay`'s money for the evening `runAutopilots` began, and the seven-evening list.
+    mutating func noteDay(gross: Int, expense: Int, rent: Int, rate: Double, sent: Bool, kept: Int?) {
+        guard var d = lastDay else { return }
+        d.gross = gross; d.expense = expense; d.rent = rent; d.expenseRate = rate
+        d.net = gross - expense - rent; d.sent = sent; d.kept = kept
+        lastDay = d
+        week = Array(((week ?? []) + [d.net]).suffix(7))
+    }
+}
+
+/// v143: one played day's report in short, in the region's money. Costs are positive; `contract` and `hotels` can be
+/// negative (penalty, fees); `other` is whatever the named lines leave of `net`, so the lines add up to `net` (the
+/// day's net as `netHistory` counts it).
+public struct DayLines: Codable, Equatable, Sendable {
+    public var tickets = 0, tips = 0, contract = 0, hotels = 0
+    public var fuel = 0, park = 0, wages = 0, upkeep = 0, insurance = 0, loans = 0, transfer = 0
+    public var other = 0, net = 0
+    /// Passengers flown and seats offered by the balloons that went up.
+    public var pax = 0, seats = 0
+
+    public init() {}
+
+    init(_ lg: Ledger, net: Int, pax: Int, seats: Int) {
+        tickets = lg.tickets + (lg.evening ?? 0)
+        tips = lg.tips
+        contract = (lg.contract ?? 0) + (lg.contractWait ?? 0) - (lg.contractPenalty ?? 0) - (lg.contractVoucher ?? 0)
+        hotels = lg.hotelIncome - lg.hotelFees
+        fuel = lg.fuel; park = lg.park ?? 0; wages = lg.wages; upkeep = lg.upkeep; insurance = lg.insurance
+        loans = lg.loans; transfer = lg.transfer ?? 0
+        self.net = net; self.pax = pax; self.seats = seats
+        other = net - named
+    }
+
+    /// The named lines, income minus costs.
+    var named: Int { tickets + tips + contract + hotels - fuel - park - wages - upkeep - insurance - loans - transfer }
+
+    /// Per-day averages of `days`, each line rounded; `other` takes the rounding so the lines still add up to `net`.
+    static func average(_ days: [DayLines]) -> DayLines {
+        var a = DayLines()
+        guard !days.isEmpty else { return a }
+        let n = Double(days.count)
+        func avg(_ k: KeyPath<DayLines, Int>) -> Int { jsRound(Double(days.reduce(0) { $0 + $1[keyPath: k] }) / n) }
+        a.tickets = avg(\.tickets); a.tips = avg(\.tips); a.contract = avg(\.contract); a.hotels = avg(\.hotels)
+        a.fuel = avg(\.fuel); a.park = avg(\.park); a.wages = avg(\.wages); a.upkeep = avg(\.upkeep)
+        a.insurance = avg(\.insurance); a.loans = avg(\.loans); a.transfer = avg(\.transfer)
+        a.net = avg(\.net); a.pax = avg(\.pax); a.seats = avg(\.seats)
+        a.other = a.net - a.named
+        return a
+    }
+
+    func scaled(_ k: Double) -> DayLines {
+        var a = self
+        for p in [\DayLines.tickets, \.tips, \.contract, \.hotels, \.fuel, \.park, \.wages, \.upkeep, \.insurance, \.loans, \.transfer, \.net] {
+            a[keyPath: p] = jsRound(Double(a[keyPath: p]) * k)
+        }
+        a.other = a.net - a.named
+        return a
+    }
+}
+
+/// v143: a region as you left it for autopilot: its last days' report lines on average (`avg`, region's money), the
+/// passengers against seats offered, the fleet, and your ticket price against the rivals'.
+public struct AutoSnapshot: Codable, Equatable, Sendable {
+    /// The day you left and how many played days `avg` covers (up to 14).
+    public var day: Int
+    public var days: Int
+    public var avg: DayLines
+    /// Passengers / seats offered over those days (nil when no balloon went up).
+    public var occupancy: Double?
+    public var balloons: Int, seats: Int, pilots: Int
+    public var price: Int
+    public var rivalMin: Int?, rivalAvg: Int?
+
+    init(_ rs: RegionState, day: Int) {
+        let d = Array((rs.recentDays ?? []).suffix(14))
+        self.day = day
+        days = d.count
+        avg = DayLines.average(d)
+        let pax = d.reduce(0) { $0 + $1.pax }, seats = d.reduce(0) { $0 + $1.seats }
+        occupancy = seats > 0 ? min(1, Double(pax) / Double(seats)) : nil
+        balloons = rs.balloons.count
+        self.seats = rs.balloons.reduce(0) { $0 + $1.size.capacity }
+        pilots = rs.pilots.count
+        price = rs.price
+        let rp = rs.rivals.filter(\.alive).map(\.price)
+        rivalMin = rp.min()
+        rivalAvg = rp.isEmpty ? nil : jsRound(Double(rp.reduce(0, +)) / Double(rp.count))
+    }
+}
+
+/// v143: one evening of a parked region's autopilot, as `runAutopilots` and `holdingDay` worked it out: `base` (euros)
+/// × `swing` × each factor = `gross` (euros, this region's part of the holding's gross); minus its part of the holding's
+/// running costs and of the office rent = `net`. A region that keeps its money gets `kept` (its money) in its box.
+public struct AutoDay: Codable, Equatable, Sendable {
+    public var day: Int
+    public var base: Double
+    public var swing: Double
+    public var factors: [AutoFactor]
+    public var gross = 0
+    public var expenseRate = 0.0
+    public var expense = 0
+    public var rent = 0
+    public var net = 0
+    public var sent = true
+    public var kept: Int?
+}
+
+/// v143: one multiplier on a parked region's day. Text: `autoRep.f.<kind>`.
+public struct AutoFactor: Codable, Equatable, Sendable {
+    public enum Kind: String, Codable, CaseIterable, Sendable {
+        /// A decision's after-effect (a strike, a price war...) and a problem still waiting (×0.5).
+        case after, issue
+        case record, tv, celebrity, billboards, jersey, worldGames, documentary, festival, fame
+        /// The region's own city office, Tokyo's tour operators, the R&D levels.
+        case office, tokyo, research
+    }
+    public var kind: Kind
+    public var mult: Double
 }
 
 public struct ParkedRegion: Codable, Equatable, Sendable {

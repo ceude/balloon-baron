@@ -145,6 +145,14 @@ extension Game {
             let k = max(0, 1 - lost - Transfer.pilotCut * Double(ps.count))
             p.auto.base = Double(jsRound(p.auto.base * k))
             rs.netHistory = rs.netHistory.map { jsRound(Double($0) * k) }
+            // v143: the report's "when you left" follows: the fleet as it is now, its money in proportion
+            if var snap = p.auto.left {
+                snap.avg = snap.avg.scaled(k)
+                snap.balloons = rs.balloons.count
+                snap.seats = rs.balloons.reduce(0) { $0 + $1.size.capacity }
+                snap.pilots = rs.pilots.count
+                p.auto.left = snap
+            }
             p.state = rs
             state.parked[r] = p
         }
