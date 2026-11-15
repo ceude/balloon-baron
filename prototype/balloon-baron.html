@@ -648,6 +648,7 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 #abort:disabled{opacity:.5;box-shadow:none;cursor:not-allowed}
 #vent{position:absolute;left:max(16px, env(safe-area-inset-left, 0px));bottom:max(22px, env(safe-area-inset-bottom, 0px));z-index:4;width:76px;height:76px;border-radius:50%;
   background:#fff;color:var(--ink);font-family:var(--cond);font-weight:800;font-size:17px;box-shadow:0 6px 0 rgba(0,0,0,.3);touch-action:none;-webkit-user-select:none;user-select:none}
+#vent::before{content:'';position:absolute;inset:-22px;border-radius:50%} /* v142c: a touch just beside the vent no longer lights the burner */
 #vent.on{transform:translateY(5px);box-shadow:0 1px 0 rgba(0,0,0,.3),0 0 0 7px rgba(90,169,230,.45)}
 #tip.up{bottom:auto;top:var(--tipTop, 66px);box-sizing:border-box;width:min(320px,calc(100% - 180px));font-size:13px;line-height:1.35;padding:9px 12px;border-radius:14px} /* v111.1: over the sky, under the flight panel, not over the field */
 .dem{font-size:13px;line-height:1.35;color:rgba(255,255,255,.8);text-align:center}

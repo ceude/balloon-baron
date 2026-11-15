@@ -770,13 +770,15 @@ private struct FlightStage: View {
             .background(Circle().fill(Color(red: 90 / 255, green: 169 / 255, blue: 230 / 255).opacity(on ? 0.45 : 0)).padding(-7))
             .compositingGroup()
             .offset(y: on ? 5 : 0)
-            .contentShape(Circle())
+            // v142c (TestFlight): a touch just beside the vent landed on the sky and lit the burner instead, the
+            // opposite of what was meant. The vent now takes touches up to 22 pt outside its circle.
+            .contentShape(Circle().inset(by: -22))
             .gesture(
                 DragGesture(minimumDistance: 0)
                     .onChanged { v in
                         // pointerleave: sliding off the button lets go.
                         let dx = v.location.x - 38, dy = v.location.y - 38
-                        let inside = dx * dx + dy * dy < 52 * 52
+                        let inside = dx * dx + dy * dy < 74 * 74
                         if inside != m.ventHold { m.setVent(inside) }
                     }
                     .onEnded { _ in m.setVent(false) }
