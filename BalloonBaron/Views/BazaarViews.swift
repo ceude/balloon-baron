@@ -283,10 +283,14 @@ struct BazaarView: View {
     var body: some View {
         let s = store.state
         return ModalCard(onClose: { store.closeBazaar() }) {
+            // v144 (App Review 2.1(b)): the same screen is the Shop in Settings, from the first minute of a new game
+            Text(loc("shop.title")).font(Theme.font(14, .heavy, condensed: true)).tracking(0.8).textCase(.uppercase).foregroundStyle(Theme.coral)
             CardText.title(loc("bazaar.title"))
             CardText.lead(loc("bazaar.lead"))
+            if shop.missing && !shop.loading { pricesFailed }
             if let s {
-                if s.bundleWorth { founderCard(s) }
+                tourSection(s)
+                founderCard(s)
                 if !s.ownedDecorations.isEmpty { myDecorations(s) }
                 section(.decoration, "bazaar.decor", s)
                 section(.figure, "bazaar.figures", s)
@@ -310,7 +314,69 @@ struct BazaarView: View {
         .onAppear {
             Telemetry.storeViewed("bazaar", s)
             if s?.bundleWorth == true { Telemetry.offer("founder", "shown", s) }
+            if shop.missing { Task { await shop.load() } }
         }
+    }
+
+    @MainActor private var shop: Shop { Shop.shared }
+
+    /// v144: the App Store's prices didn't load: every item is still listed, with a way to ask again.
+    @MainActor private var pricesFailed: some View {
+        HStack(spacing: 10) {
+            Text(loc("shop.pricesFailed")).font(Theme.font(13)).foregroundStyle(Theme.ink2)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Button {
+                SoundEngine.shared.play(.click)
+                Task { await shop.load() }
+            } label: {
+                Text(loc("shop.retry")).font(Theme.font(14, .heavy)).foregroundStyle(.white)
+                    .padding(.horizontal, 12).padding(.vertical, 7)
+                    .background(Theme.ink, in: Capsule())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(.horizontal, 12).padding(.vertical, 9)
+        .background(Color(hex: "#fff8ea"), in: RoundedRectangle(cornerRadius: 14))
+        .overlay(RoundedRectangle(cornerRadius: 14).stroke(Color(hex: "#c99a4a"), lineWidth: 1.5))
+    }
+
+    /// v144: the Grand Tour and the Supporter Edition on top of the shop, from day one. Buying early only means no
+    /// paywall later: each region still opens when you become baron of the one before it.
+    @MainActor private func tourSection(_ s: GameState) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(loc("store.worldTour")).font(Theme.font(13, .bold)).foregroundStyle(Theme.ink2)
+            CardText.hint(loc("shop.tour.hint"))
+            tourRow(.worldTour, sub: loc("tour.worldSub"), own: s.owned(.worldTour), s)
+            tourRow(.supporter, sub: loc("tour.supporterSub", StoreItem.founder.title), own: s.owned(.supporter), s)
+        }
+    }
+
+    @MainActor private func tourRow(_ k: StoreItem, sub: String, own: Bool, _ s: GameState) -> some View {
+        Button {
+            SoundEngine.shared.play(.click)
+            Telemetry.offer("grandTour", "shop." + k.rawValue, s)
+            store.storeItem = k
+        } label: {
+            HStack(alignment: .center, spacing: 10) {
+                StoreThumb(item: k, colors: s.colors, company: s.company).frame(width: 40, height: 45).accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(k.title).font(Theme.font(19, .heavy, condensed: true)).foregroundStyle(Theme.ink)
+                    Text(sub).font(Theme.font(12.5)).foregroundStyle(Theme.ink2).fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 6)
+                Text(own ? loc("bazaar.yours") : shop.label(k))
+                    .font(Theme.font(14, .heavy)).foregroundStyle(.white)
+                    .lineLimit(2).multilineTextAlignment(.center).minimumScaleFactor(0.8)
+                    .padding(.horizontal, 10).padding(.vertical, 4)
+                    .background(own ? Theme.green : Theme.ink, in: Capsule())
+            }
+            .padding(.horizontal, 12).padding(.vertical, 10)
+            .background(k == .worldTour ? Color(hex: "#fff6f2") : Color.white, in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(k == .worldTour ? Theme.coral : Theme.line, lineWidth: 2))
+        }
+        .buttonStyle(.plain)
+        .disabled(own)
     }
 
     /// v125.7: the decorations you own, each in town or put away in storage, with a toggle; put away it stays yours
@@ -361,7 +427,8 @@ struct BazaarView: View {
             CardText.hint(loc(key == "bazaar.decor" ? "bazaar.decor.hint2" : key + ".hint"))
             LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 8)], spacing: 8) {
                 // v115: the small decorations and the figures are sold as packs, the rest one by one
-                ForEach(StoreItem.allCases.filter { kind == .figure ? $0 == .figurePack : (($0.kind == kind && ($0.isProduct || $0.gift)) || (kind == .decoration && $0 == .decorPack)) }, id: \.self) { k in // TestFlight: Hezarfen's gift lanterns were filtered out
+                // v144: from Settings the shop opens before the bazaar does; Hezarfen's gift waits for the bazaar
+                ForEach(StoreItem.allCases.filter { kind == .figure ? $0 == .figurePack : (($0.kind == kind && ($0.isProduct || ($0.gift && (s.unlocked.contains(.bazaar) || s.owned($0))))) || (kind == .decoration && $0 == .decorPack)) }, id: \.self) { k in // TestFlight: Hezarfen's gift lanterns were filtered out
                     let own = k.kind == .pack ? (s.owned(k) || k.packItems.allSatisfy(s.owned)) : s.owned(k), locked = false
                     Button {
                         SoundEngine.shared.play(.click)
@@ -386,7 +453,7 @@ struct BazaarView: View {
                             HStack(spacing: 3) {
                                 if locked && !own && !k.gift { LockGlyph(size: 11) }
                                 if k.gift && !own { LineGlyph(kind: .gift, size: 13, weight: 2.6) }
-                                Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : storePrice(k))
+                                Text(own ? loc("bazaar.yours") : k.gift ? loc("bazaar.gift") : locked ? loc("bazaar.locked") : shop.label(k))
                             }
                                 .font(Theme.font(13, .heavy)).foregroundStyle(.white)
                                 .padding(.horizontal, 9).padding(.vertical, 2)
@@ -409,8 +476,10 @@ struct BazaarView: View {
     }
 
     /// v113: the Founder Pack on top of the bazaar: a few of what's in it, how many, the price struck through and the pack's.
-    private func founderCard(_ s: GameState) -> some View {
-        let left = s.bundleLeft
+    /// v144: always listed; the saving only while it is worth it (`bundleWorth`), "Yours" once it is.
+    @MainActor private func founderCard(_ s: GameState) -> some View {
+        let own = s.owned(.founder) || s.owned(.supporter) || s.bundleLeft.isEmpty, worth = s.bundleWorth
+        let left = own ? StoreItem.bundle : s.bundleLeft
         var peek: [StoreItem] = []
         for kind in [StoreItem.Kind.shape, .figure, .decoration, .pattern, .shape, .figure] {
             if let q = left.first(where: { $0.kind == kind && !peek.contains($0) }) { peek.append(q) }
@@ -424,8 +493,10 @@ struct BazaarView: View {
                 HStack {
                     Text(StoreItem.founder.title).font(Theme.font(22, .heavy, condensed: true)).foregroundStyle(Color(hex: "#ffd27a"))
                     Spacer()
-                    Text(loc("store.off", StoreItem.percent(s.bundleOff))).font(Theme.font(13, .heavy)).foregroundStyle(.white)
-                        .padding(.horizontal, 9).padding(.vertical, 3).background(Theme.coral, in: Capsule())
+                    if worth {
+                        Text(loc("store.off", StoreItem.percent(s.bundleOff))).font(Theme.font(13, .heavy)).foregroundStyle(.white)
+                            .padding(.horizontal, 9).padding(.vertical, 3).background(Theme.coral, in: Capsule())
+                    }
                 }
                 HStack(spacing: 5) {
                     ForEach(peek.prefix(6), id: \.self) { q in
@@ -441,8 +512,16 @@ struct BazaarView: View {
                 HStack(alignment: .firstTextBaseline) {
                     Text(loc("bazaar.founderLeft", num(left.count))).font(Theme.font(13)).foregroundStyle(.white.opacity(0.85))
                     Spacer()
-                    Text(StoreItem.price(of: s.bundleWas)).font(Theme.font(13)).strikethrough().foregroundStyle(.white.opacity(0.6))
-                    Text(storePrice(.founder)).font(Theme.font(20, .heavy, condensed: true)).foregroundStyle(.white)
+                    if own {
+                        Text(loc("bazaar.yours")).font(Theme.font(14, .heavy)).foregroundStyle(.white)
+                            .padding(.horizontal, 9).padding(.vertical, 2).background(Theme.green, in: Capsule())
+                    } else {
+                        if worth {
+                            Text(StoreItem.price(of: s.bundleWas)).font(Theme.font(13)).strikethrough().foregroundStyle(.white.opacity(0.6))
+                        }
+                        Text(shop.label(.founder)).font(Theme.font(20, .heavy, condensed: true)).foregroundStyle(.white)
+                            .lineLimit(1).minimumScaleFactor(0.6)
+                    }
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 12)
@@ -450,6 +529,7 @@ struct BazaarView: View {
             .overlay(RoundedRectangle(cornerRadius: 18).stroke(Color(hex: "#e8b04a"), lineWidth: 2))
         }
         .buttonStyle(.plain)
+        .disabled(own)
     }
 }
 
@@ -496,7 +576,7 @@ struct StoreItemView: View {
                                 in: RoundedRectangle(cornerRadius: 16))
             }
             CardText.lead(lead(s))
-            if item == .founder, let s {
+            if item == .founder, let s, s.bundleWorth {
                 HStack(alignment: .firstTextBaseline, spacing: 10) {
                     Text(StoreItem.price(of: s.bundleWas)).font(Theme.font(16)).strikethrough().foregroundStyle(Theme.ink2)
                     Text(shop.price(.founder)).font(Theme.font(28, .heavy, condensed: true)).foregroundStyle(Theme.ink)
@@ -507,7 +587,9 @@ struct StoreItemView: View {
             }
             if item.gift { CardText.hint(loc("store.giftNote")) }
             if let note = shop.note { CardText.hint(note) }
-            Button(item.gift ? loc("store.takeGift") : shop.buying == item ? loc("store.buying") : loc("store.buy", shop.price(item))) {
+            // v144: without the App Store's price the button says so, and a tap asks the App Store again
+            Button(item.gift ? loc("store.takeGift") : shop.buying == item ? loc("store.buying")
+                   : shop.products[item].map { loc("store.buy", $0.displayPrice) } ?? (shop.loading ? loc("store.buy", "…") : loc("shop.buyRetry"))) {
                 if item.gift {
                     store.takeGift(item)
                 } else {
@@ -664,7 +746,8 @@ struct TourOfferView: View {
                 if shop.buying == k {
                     ProgressView().tint(Theme.ink)
                 } else {
-                    Text(storePrice(k)).font(Theme.font(17, .heavy)).foregroundStyle(Theme.ink)
+                    Text(shop.label(k)).font(Theme.font(17, .heavy)).foregroundStyle(Theme.ink)
+                        .lineLimit(2).multilineTextAlignment(.trailing).minimumScaleFactor(0.8)
                 }
             }
             .padding(.horizontal, 14).padding(.vertical, 12)

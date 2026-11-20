@@ -117,6 +117,22 @@ struct MenuView: View {
     @ViewBuilder
     private var content: some View {
         let s = store.state
+        // v144 (App Review 2.1(b)): the shop first, from the first minute of a new game (the bazaar in town opens on
+        // day 9); Restore purchases sits with it.
+        group(loc("settings.purchases"), Tint.shop) {
+            row(.shop, loc("shop.title")) {
+                store.showMenu = false
+                store.showBazaar = true
+            }
+            divider
+            row(.bag, loc("settings.restore")) {
+                Task { @MainActor in await Shop.shared.restore() }
+                message = loc("settings.restoring")
+            }
+        }
+        if !message.isEmpty && open == nil && message == loc("settings.restoring") {
+            Text(message).font(Theme.font(13)).foregroundStyle(Theme.ink2).padding(.top, 8)
+        }
         group(loc("settings.game"), Tint.game) {
             row(.trophy, loc("settings.album"), value: s.map { "\(num($0.achievements.count))/\(num(Achievement.allCases.count))" }) {
                 store.showMenu = false
@@ -151,14 +167,8 @@ struct MenuView: View {
             row(.paste, loc("settings.loadCode"), open: open == .load) { toggle(.load) }
         }
         if let open { codeBox(open) }
-        if !message.isEmpty && open == nil {
+        if !message.isEmpty && open == nil && message != loc("settings.restoring") {
             Text(message).font(Theme.font(13)).foregroundStyle(Theme.ink2).padding(.top, 8)
-        }
-        group(loc("settings.purchases"), Tint.shop) {
-            row(.bag, loc("settings.restore")) {
-                Task { @MainActor in await Shop.shared.restore() }
-                message = loc("settings.restoring")
-            }
         }
         group(loc("settings.about"), Tint.about) {
             row(.shield, loc("settings.privacy")) { openURL(Self.privacyURL) }

@@ -12,6 +12,9 @@ final class Shop {
     private(set) var buying: StoreItem?
     /// A note for the purchase card (pending, failed, unavailable); nil when there's nothing to say.
     var note: String?
+    /// v144: the App Store's product list is being fetched. Until it is, and when it fails (no network, a sandbox
+    /// hiccup), the shop still lists every item, with "Price unavailable" and a "Try again" in place of the price.
+    private(set) var loading = false
     @ObservationIgnored private var grant: (StoreItem, Bool) -> Void = { _, _ in }
     @ObservationIgnored private var updates: Task<Void, Never>?
 
@@ -25,6 +28,9 @@ final class Shop {
     }
 
     func load() async {
+        guard !loading else { return }
+        loading = true
+        defer { loading = false }
         let ids = StoreItem.allCases.filter(\.isProduct).map(\.productID)
         guard let list = try? await Product.products(for: ids) else { return }
         for p in list { if let k = item(p.id) { products[k] = p } }
@@ -32,6 +38,12 @@ final class Shop {
 
     /// The App Store's price in the player's currency, or the tier price until it loads.
     func price(_ k: StoreItem) -> String { products[k]?.displayPrice ?? StoreItem.price(k) }
+
+    /// v144: the price as the shop shows it: the App Store's, "…" while it loads, or "Price unavailable".
+    func label(_ k: StoreItem) -> String { products[k]?.displayPrice ?? (loading ? "…" : loc("shop.noPrice")) }
+
+    /// v144: some product the App Store should sell didn't come back (no network, sandbox trouble).
+    var missing: Bool { StoreItem.allCases.contains { $0.isProduct && products[$0] == nil } }
 
     /// Shows the App Store sheet; true once the item is the player's.
     func buy(_ k: StoreItem) async -> Bool {

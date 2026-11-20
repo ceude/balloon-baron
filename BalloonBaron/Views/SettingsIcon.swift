@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Line icons for the settings rows (`SET_IC`), drawn like the side buttons' `ProtoIcon`: 24×24, round strokes.
 struct SettingsIcon: View {
-    enum Kind { case trophy, game, moon, people, sound, haptic, bell, cloud, copy, paste, bag, shield, mail, info, trash, chevron, down, close, film }
+    enum Kind { case trophy, shop, game, moon, people, sound, haptic, bell, cloud, copy, paste, bag, shield, mail, info, trash, chevron, down, close, film }
     let kind: Kind
     var color: Color = Theme.ink
     var width: CGFloat = 2
@@ -41,6 +41,16 @@ struct SettingsIcon: View {
             line(&path, [p(12, 13), p(12, 16.5)])
             round(&path, 9.5, 16.5, 5, 3.5, 0.8)
             line(&path, [p(8.5, 20), p(15.5, 20)])
+        case .shop:
+            // v144: a shop front: the striped awning with its scalloped edge, the window and the door
+            line(&path, [p(5.5, 4.5), p(18.5, 4.5), p(20, 9.5), p(4, 9.5)])
+            path.closeSubpath()
+            path.move(to: p(4, 9.5))
+            path.addQuadCurve(to: p(9.33, 9.5), control: p(6.67, 13))
+            path.addQuadCurve(to: p(14.67, 9.5), control: p(12, 13))
+            path.addQuadCurve(to: p(20, 9.5), control: p(17.33, 13))
+            line(&path, [p(5.5, 11.5), p(5.5, 20), p(18.5, 20), p(18.5, 11.5)])
+            line(&path, [p(10, 20), p(10, 15), p(14, 15), p(14, 20)])
         case .film:
             // a clapperboard with a play mark
             round(&path, 4, 10, 16, 10, 2)

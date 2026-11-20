@@ -849,6 +849,8 @@ textarea{box-sizing:border-box;background:#fff;width:100%;font:13px var(--body);
 /* v125.7: your decorations, each in town or put away in storage, with a toggle */
 .shopi.dec{padding-bottom:8px}.shopi.dec em{margin-top:auto;font-style:normal;font-size:12px;font-weight:700;color:var(--green)}.shopi.dec.off em{color:#8a7a66}.shopi.dec.off img{opacity:.45;filter:grayscale(.6)}
 .shopi.dec button{margin-top:4px;width:100%;padding:5px 4px;border-radius:10px;border:0;background:var(--ink);color:#fff;font-weight:800;font-size:13px}.shopi.dec.off button{background:var(--green)}
+/* v144: the Grand Tour rows on top of the shop */
+.bazaar .chap{font-family:var(--cond);font-weight:800;font-size:14px;letter-spacing:.06em;color:var(--coral);text-transform:uppercase}.bazaar .touropt{margin:6px 0;padding:10px 12px}.bazaar .touropt img{width:40px;height:45px;flex:0 0 auto;border-radius:8px}.bazaar .touropt>span{flex:1}.bazaar .touropt b{font-size:19px}.bazaar .touropt em{font-size:14px;background:var(--ink);color:#fff;border-radius:10px;padding:3px 10px;white-space:normal;text-align:center}.bazaar .touropt.own em{background:var(--green)}.bazaar .touropt:disabled{opacity:1}.founder.own .fp b{font-size:14px;background:var(--green);border-radius:10px;padding:2px 9px;font-family:inherit}
 .touropt{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;text-align:left;margin:6px 0;padding:12px 14px;border-radius:16px;border:2px solid var(--line);background:#fff;color:var(--ink)}.touropt b{display:block;font-family:var(--cond);font-size:20px}.touropt small{font-size:12.5px;color:var(--ink2)}.touropt em{font-style:normal;font-weight:800;font-size:17px;white-space:nowrap}.touropt em s{font-weight:600;font-size:13px;opacity:.6;margin-right:4px}.touropt.main{border-color:var(--coral);background:#fff6f2}.tourimg img{width:150px!important;height:auto!important}.bundleg.figs img{background:#141838}
 .packg{display:grid;grid-template-columns:1fr 1fr;gap:3px;width:72px;height:72px}.packg img{width:100%!important;height:34px!important;object-fit:contain;border-radius:6px}.packg{align-content:center}.packg.n5{grid-template-columns:1fr 1fr 1fr}.shopi b{margin-bottom:5px}.shopt{position:relative;display:flex;justify-content:center}.shopt em{position:absolute;right:-6px;top:-4px;font:800 10.5px 'Barlow Condensed',sans-serif;font-style:normal;letter-spacing:.2px;color:#fff;background:var(--coral);border-radius:8px;padding:1px 6px;box-shadow:0 2px 0 #c9472b}.shopi.lock{opacity:.6}.shopi.lock span{background:#8a8398}.shopi.fig img{background:#141838;border-radius:12px}.shopi.region img{border-radius:12px}
 .iapimg.fig{background:linear-gradient(#0d1030,#2a2350)}
@@ -6035,6 +6037,7 @@ const SET_IC = {
   cloud: '<path d="M7 18.5a4.5 4.5 0 0 1-.6-9 6 6 0 0 1 11.4 1.6A3.8 3.8 0 0 1 17.5 18.5z"/><path d="M9.5 13.5l2 2 3.5-3.5"/>',
   copy: '<rect x="8.5" y="8.5" width="11" height="12" rx="2"/><path d="M15.5 8.5V5.5a2 2 0 0 0-2-2h-7a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h2"/>',
   paste: '<path d="M9 4.5h6v2.5H9z"/><path d="M15 5.5h2.5a1.5 1.5 0 0 1 1.5 1.5v12.5a1.5 1.5 0 0 1-1.5 1.5h-11A1.5 1.5 0 0 1 5 19.5V7a1.5 1.5 0 0 1 1.5-1.5H9"/><path d="M12 10.5v6.5M9.5 14.5 12 17l2.5-2.5"/>',
+  shop: '<path d="M5.5 4.5h13l1.5 5h-16z"/><path d="M4 9.5q2.67 3.5 5.33 0t5.34 0t5.33 0M5.5 11.5V20h13v-8.5M10 20v-5h4v5"/>', /* v144 */
   bag: '<path d="M5 8h14l-1 12.5H6z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8M9.5 14a2.5 2.5 0 1 0 2.5-2.5h-1.5M11.5 10l-1.2 1.5 1.2 1.3"/>',
   shield: '<path d="M12 3.5 19 6v5.5c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9.5 12l2 2 3.5-3.5"/>',
   mail: '<rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="m4 7 8 6 8-6"/>',
@@ -6114,6 +6117,8 @@ function showMenu(open) {
   const chev = setIcon('chev', 'sc'), down = setIcon('down', 'sc');
   const toggle = (icon, label, on, set) => { const r = row(icon, label, `<em class="tg${on ? ' on' : ''}"><i></i></em>`, () => { set(); showMenu(open); }); r.setAttribute('role', 'switch'); r.setAttribute('aria-checked', on); return r; };
   const n = ACHS.filter(a => S.ach && S.ach[a[0]]).length;
+  /* v144 (App Review 2.1(b)): the shop first, from the first minute of a new game (the bazaar in town opens on day 9) */
+  group('Satın alımlar', '#9b7be0', [row('shop', 'Mağaza', chev, showBazaar), row('bag', 'Satın alımları geri yükle', chev, () => toast('Satın alımlar geri yükleniyor…'))]);
   group('Oyun', 'var(--coral)', [
     row('trophy', 'Başarımlar', `${n}/${ACHS.length}${chev}`, showAlbum),
     row('game', 'Game Center', chev, () => {}),
@@ -6161,7 +6166,6 @@ function showMenu(open) {
     box.append(ta, btns, msg);
     c.appendChild(box);
   }
-  group('Satın alımlar', '#9b7be0', [row('bag', 'Satın alımları geri yükle', chev, () => {})]);
   group('Hakkında', 'var(--ink2)', [row('shield', 'Gizlilik politikası', chev, () => {}), row('mail', 'Destek', chev, () => {}), row('info', 'Sürüm', '1.0', null, 'info')]);
   /* prototype only: jump straight into a fleet big enough to try the Balloon Show */
   group('Test (prototip)', '#ffc23d', [row('star', 'Şölen testi: 20 balon, €50.000', chev, () => { m.hidden = true; testShowGame(); }), row('star', 'Hangar testi: 400 balon, Sv. 3', chev, () => { m.hidden = true; testHangar400(); }), row('mail', '49. günden başla (ertesi sabah mektup)', chev, () => { m.hidden = true; test49(); }), row('mail', 'Mektup testi (hemen)', chev, () => { m.hidden = true; delete S.letter; showLetter(); }), row('star', 'Puan penceresi testi', chev, () => { m.hidden = true; showRateMock(() => {}); }), row('cloud', 'Bristol testi: 6 balon, £40.000', chev, () => { m.hidden = true; testBristol(); }), row('star', 'Luksor Baronu olarak başla', chev, () => { m.hidden = true; testLuxBaron(); }), row('star', 'Bristol Baronu olarak başla (Mara açık)', chev, () => { m.hidden = true; testBriBaron(); }), row('cloud', 'Maasai Mara testi: 6 balon, $40.000', chev, () => { m.hidden = true; testMara(); }), row('star', 'Mara kontrat testi (safari uçağı)', chev, () => { m.hidden = true; testRegionContract('mara'); }), row('star', 'Albuquerque kontrat testi', chev, () => { m.hidden = true; testAbqContract(); }), row('star', 'Albuquerque giriş testi (filo getir)', chev, () => { m.hidden = true; testAbqEntry(); }), row('star', 'Luksor kontrat testi (Nil gemisi)', chev, () => { m.hidden = true; testRegionContract('lux'); }), row('star', 'Bristol kontrat testi (hafta sonu treni)', chev, () => { m.hidden = true; testRegionContract('bri'); }), row('star', 'Kapadokya anlaşma testi (charter uçağı)', chev, () => { m.hidden = true; testCapContract(); })]);
@@ -10946,11 +10950,23 @@ const LOCK = '<svg class="lk" viewBox="0 0 12 14" aria-hidden="true"><path d="M3
 function showBazaar() {
   const m = $('menu'); m.replaceChildren();
   const c = h('div', 'card bazaar');
+  /* v144 (App Review 2.1(b)): the same screen is the Shop in Settings, from the first minute of a new game */
+  c.appendChild(h('div', 'chap', 'Mağaza'));
   c.appendChild(h('h1', null, 'Çarşı'));
   c.appendChild(h('p', 'lead', 'Kasabanı süsle, balonlarına özel desen ve şekil al.'));
-  if (bundleWorth()) {
-    const left = bundleLeft(), d = h('button', 'founder', `<div class="fh"><b>${SHOP.founder.n}</b><span class="off">%${bundleOff()} indirim</span></div><div class="fthumbs">${bundlePeek(left).map(q => `<img class="k-${SHOP[q].kind}" src="${shopThumb(q)}" alt="">`).join('')}${left.length > 6 ? `<i>+${left.length - 6}</i>` : ''}</div><div class="fp"><span>Çarşıdaki ${left.length} ürünün hepsi</span><span><s>${priceTxt(bundleWas())}</s> <b>${SHOP.founder.price}</b></span></div>`);
-    d.onclick = () => iapBuy('founder', showBazaar); c.appendChild(d);
+  /* v144: the Grand Tour and the Supporter Edition on top. Buying early only means no paywall later: each region
+     still opens when you become baron of the one before it. */
+  c.appendChild(h('div', 'lbl', SHOP.worldTour.n));
+  c.appendChild(h('p', 'hint', 'Kapadokya ücretsiz. Dünya Turu Albuquerque, Luksor, Bristol ve Maasai Mara\'yı açar; her bölge yine bir öncekinin baronu olunca açılır.'));
+  for (const [k, sub] of [['worldTour', 'Albuquerque, Luksor, Bristol ve Maasai Mara'], ['supporter', `Dünya Turu + ${SHOP.founder.n} + kasabanda destekçi plaketi`]]) {
+    const own = owned(k), b = h('button', 'touropt' + (k === 'worldTour' ? ' main' : '') + (own ? ' own' : ''), `<img src="${shopThumb(k)}" alt=""><span><b>${SHOP[k].n}</b><small>${sub}</small></span><em>${own ? '✓ Senin' : SHOP[k].price}</em>`);
+    b.disabled = own; b.onclick = () => iapBuy(k, showBazaar); c.appendChild(b);
+  }
+  /* v144: the Founder Pack is always listed; the saving only while it is worth it, "Senin" once it is */
+  {
+    const own = owned('founder') || owned('supporter') || !bundleLeft().length, worth = bundleWorth(), left = own ? BUNDLE : bundleLeft();
+    const d = h('button', 'founder' + (own ? ' own' : ''), `<div class="fh"><b>${SHOP.founder.n}</b>${worth ? `<span class="off">%${bundleOff()} indirim</span>` : ''}</div><div class="fthumbs">${bundlePeek(left).map(q => `<img class="k-${SHOP[q].kind}" src="${shopThumb(q)}" alt="">`).join('')}${left.length > 6 ? `<i>+${left.length - 6}</i>` : ''}</div><div class="fp"><span>Çarşıdaki ürün: ${left.length}</span><span>${own ? '<b>✓ Senin</b>' : `${worth ? `<s>${priceTxt(bundleWas())}</s> ` : ''}<b>${SHOP.founder.price}</b>`}</span></div>`);
+    d.disabled = own; d.onclick = () => iapBuy('founder', showBazaar); c.appendChild(d);
   }
   /* v125.7: your decorations: each one in town or put away in storage; a toggle puts it away or places it again */
   const mine = DECOR.filter(owned);
@@ -10966,7 +10982,8 @@ function showBazaar() {
     c.appendChild(g);
   }
   /* v115: the small decorations and the figures are sold as packs; patterns, shapes and the big decorations one by one */
-  const SECS = [['decor', 'Kasaba süsleri', () => Object.keys(SHOP).filter(k => SHOP[k].kind === 'decor' && !SHOP[k].pack).concat(['decorPack'])],
+  /* v144: from Settings the shop opens before the bazaar does; Hezarfen's gift lanterns wait for the bazaar */
+  const SECS = [['decor', 'Kasaba süsleri', () => Object.keys(SHOP).filter(k => SHOP[k].kind === 'decor' && !SHOP[k].pack && (!SHOP[k].gift || unlocked('bazaar') || owned(k))).concat(['decorPack'])],
     ['fig', 'Şölen figürleri', () => ['figPack']], ['shape', 'Balon şekilleri'], ['pat', 'Özel desenler']];
   for (const [kind, lab, list] of SECS) {
     c.appendChild(h('div', 'lbl', lab));
@@ -10982,6 +10999,7 @@ function showBazaar() {
     c.appendChild(g);
   }
   c.appendChild(h('p', 'hint', 'Fiyatlar App Store\'da ülkene göre yerel para biriminde görünür.'));
+  const rs = h('button', 'ghost', 'Satın alımları geri yükle'); rs.style.width = '100%'; rs.onclick = () => { sfx('click'); toast('Satın alımlar geri yükleniyor…'); }; c.appendChild(rs);
   const x = h('button', 'big', 'Kapat'); x.onclick = () => { m.hidden = true; }; c.appendChild(x);
   m.appendChild(c); m.hidden = false; sfx('click');
 }
